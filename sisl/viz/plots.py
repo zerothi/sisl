@@ -9,183 +9,7 @@ import os
 
 import sisl
 from .plot import Plot, PLOTS_CONSTANTS
-
-class GapEvolutionPlot(Plot):
-    '''
-    Representation of the evolution of a gap. It reads the gap from multiple bands files.
-    '''
-
-    _plotType = "Gap evolution"
-    
-    _requirements = {
-        "files": ["*.bands"]
-    }
-    
-    _parameters = (
-
-        {
-            "key": "rootDir" ,
-            "name": "Root directory",
-            "default": None,
-            "help": '''The root directory. BE CAREFUL: Not the same as simulation directory''',
-            "onUpdate": "readData"
-        },
-
-        {
-            "key": "independentVariable" ,
-            "name": "Independent variable",
-            "default": None,
-            "inputField": {
-                    "type": "dropdown",
-                    "width": "s100% m50% l33%",
-                    "params": {
-                        "placeholder": "Choose the independent variable...",
-                        "options": [
-                            {"label": "None", "value": None},
-                            {"label": "Strain", "value": "strain"},
-                        ],
-                        "isClearable": False,
-                        "isSearchable": False,
-                    }
-                },
-            "help": '''This determines how the independent variable should be obtained<br>
-                    None means that the gap values will be just sorted by the file name and the independent variable will be the index. ''',
-            "onUpdate": "readData"
-        },
-
-    )
-
-    def _readSiesOut(self):
-        
-        resultsDir = "unitCell"
-        independentVariable = "Strain"; axis = 0
-        simDirs = os.listdir(self.settings["rootDir"]) if self.settings["rootDir"] else [self.settings["rootFdf"]]
-        allGapsInfo = []
-
-        for simDir in os.listdir(rootDir):
-            
-            simName = simDir
-            simDir = os.path.join(rootDir, simDir, resultsDir)
-            
-            if not os.path.exists(simDir):
-                continue
-            
-            bandsFiles = [ os.path.join(simDir, fileName) for fileName in sorted(os.listdir(simDir)) if ".bands" in fileName]
-            
-            if not independentVariable:
-                
-                independentVariable = "Index",
-                independentVals = False
-                
-            if independentVariable == "Strain":
-                
-                relaxedGeom = sisl.get_sile(bandsFiles[0].replace(".bands", ".XV")).read_geometry()
-                relaxedVec = relaxedGeom.cell[axis, :]
-                independentVals = []
-            
-            gapEvolution = []; gapLimitsLocsEv = []
-            
-            for fileName in bandsFiles:
-                
-                #Do the things needed to get the values for the independent variable (the thing that is modifying the gap)
-                if independentVariable == "Strain":
-                    
-                    stretchedVec = sisl.get_sile(fileName.replace(".bands", ".XV")).read_geometry().cell[axis,:]
-                    
-                    independentVals.append(np.linalg.norm(stretchedVec - relaxedVec)/np.linalg.norm(relaxedVec))
-                    
-                #Do the things needed to get the gap  
-                ticks, Ks, bands = readData(fileName)
-
-                gaps, gapLimitsLocs = calculateSpinGaps(bands)
-
-                gapEvolution.append(gaps)
-                gapLimitsLocsEv.append(gapLimitsLocs)
-            
-            
-            gapEvolution = np.array(gapEvolution)
-            
-            allGapsInfo.append([simName, gapEvolution, gapLimitsLocsEv, independentVals])
-            
-        allGapsInfo = np.array(allGapsInfo)
-        df = pd.DataFrame(allGapsInfo[:,1:], columns = ["Gap evolution", "Gap locations", independentVariable], index=allGapsInfo[:,0])
-        df.head()
-    
-    @afterSettingsUpdate
-    def readData(self, updateFig = True, **kwargs):
-        '''
-        Gets the information for the bands plot and stores it into self.df
-
-        Returns
-        -----------
-        dataRead: boolean
-            whether data has been read succesfully or not
-        '''
-
-        self.setFiles()
-        
-        #We try to read from the different sources using the _readFromSources method of the parent Plot class.
-        bands = self._readFromSources()
-
-        #Save the bands to dataframes so that we can easily query them
-        self.dfs = []
-        for spinComponentBands in bands:
-            df = pd.DataFrame(spinComponentBands)
-
-            #Set the column headers as strings instead of int (These are the wavefunctions numbers)
-            df.columns = df.columns.astype(str)
-
-            self.dfs.append(df)
-
-        if updateFig:
-            self.setData(updateFig = updateFig)
-        
-        return self
-    
-    @afterSettingsUpdate
-    def setData(self, updateFig = True, **kwargs):
-        
-        '''
-        Converts the bands dataframe into a data object for plotly.
-
-        It stores the data under self.data, so that it can be accessed by posterior methods.
-
-        Returns
-        ---------
-        self.data: list of dicts
-            contains a dictionary for each band with all its information.
-        '''
-
-        self.reqBandsDfs = []; self.data = []
-
-        for iSpin, df in enumerate(self.dfs):
-            #If the path has changed we need to produce the band structure again
-            if self.path != self.settings["path"]:
-                self.order = ["fromH"]
-                self.readData()
-
-            Erange = np.array(self.settings["Erange"]) + self.fermi
-            reqBandsDf = df[ df < Erange[1] + 3 ][ df > Erange[0] - 3 ].dropna(axis = 1, how = "all")
-
-            #Define the data of the plot as a list of dictionaries {x, y, 'type', 'name'}
-            self.data = [ *self.data, *[{
-                            'x': self.Ks[~np.isnan(reqBandsDf[str(column)] - self.fermi)].tolist(),
-                            'y': (reqBandsDf[str(column)] - self.fermi)[~np.isnan(reqBandsDf[str(column)] - self.fermi)].tolist(),
-                            'mode': 'lines', 
-                            'name': "{} spin {}".format(int(column) + 1, PLOTS_CONSTANTS["spins"][iSpin]) if len(self.dfs) == 2 else str(int(column) + 1), 
-                            'line': {"color": [self.settings["spinUpColor"],self.settings["spinDownColor"]][iSpin], 'width' : self.settings["bandsWidth"]},
-                            'hoverinfo':'name',
-                            "hovertemplate": '%{y:.2f} eV',
-                        } for column in reqBandsDf.columns ] ]
-            
-            self.reqBandsDfs.append(reqBandsDf)
-
-        self.data = sorted(self.data, key = lambda x: x["name"])
-
-        if updateFig:
-            self.getFigure()
-        
-        return self
+from.plotutils import sortOrbitals
         
 class BandsPlot(Plot):
 
@@ -292,7 +116,11 @@ class BandsPlot(Plot):
         },
 
     )
-    
+
+    def _afterInit(self):
+
+        self.updateSettings(updateFig = False, xaxis_title = 'K', yaxis_title = "Energy (eV)")
+
     def _readfromH(self):
 
         if not hasattr(self, "H"):
@@ -343,7 +171,12 @@ class BandsPlot(Plot):
             #Set the column headers as strings instead of int (These are the wavefunctions numbers)
             df.columns = df.columns.astype(str)
 
-            self.dfs.append(df)
+        self.dfs.append(df)
+
+        y = {
+            'tickvals': self.ticks[0],
+            'ticktext': self.settings["ticks"].split(",") if self.source != "siesOut" else self.ticks[1],
+        }
         
         return self
     
@@ -369,7 +202,7 @@ class BandsPlot(Plot):
                 self.readData()
 
             Erange = np.array(self.settings["Erange"]) + self.fermi
-            reqBandsDf = df[ df < Erange[1] + 3 ][ df > Erange[0] - 3 ].dropna(axis = 1, how = "all")
+            reqBandsDf = df[ df < Erange[1]][ df > Erange[0]].dropna(axis = 1, how = "all")
 
             #Define the data of the plot as a list of dictionaries {x, y, 'type', 'name'}
             self.data = [ *self.data, *[{
@@ -387,4 +220,349 @@ class BandsPlot(Plot):
 
         self.data = sorted(self.data, key = lambda x: x["name"])
 
+class PdosPlot(Plot):
+
+    '''
+    Plot representation of the projected density of states.
+    '''
+
+    #Define all the class attributes
+    _plotType = "PDOS"
+
+    _requirements = {"files": ["$struct$.PDOS"]}
+
+    _parameters = (
         
+        {
+            "key": "Erange",
+            "name": "Energy range" ,
+            "default": [-2,4],
+            "inputField": {
+                "type": "rangeslider",
+                "width": "s100%",
+                "params": {
+                    "min": -10,
+                    "max": 10,
+                    "step": 0.1,
+                    "marks": { **{ i: str(i) for i in range(-10,11) }, 0: "Ef",},
+                }
+            },
+            "help": "Energy range where the PDOS is displayed. Default: [-2,4]",
+            "onUpdate": "setData",
+        },
+
+        {
+            "key": "requests",
+            "name": "PDOS queries" ,
+            "default": [{"active": True, "linename": "DOS", "species": None, "atoms": None, "orbitals": None, "spin": None, "normalize": False}],
+            "inputField": {
+                "type": "queries",
+                "width": "s100%",
+                "queryForm": [
+                    {
+                        "key": "linename",
+                        "name": "Name",
+                        "default": "DOS",
+                        "inputField": {
+                            "type": "textinput",
+                            "width": "s100% m50% l20%",
+                            "params": {
+                                "placeholder": "Name of the line..."
+                            },
+                        }
+                    },
+
+                    {
+                        "key" : "species",
+                        "name" : "Species",
+                        "default": None,
+                        "inputField": {
+                            "type": "dropdown",
+                            "width": "s100% m50% l40%",
+                            "params": {
+                                "options":  [],
+                                "isMulti": True,
+                                "placeholder": "",
+                                "isClearable": True,
+                                "isSearchable": True,    
+                            },
+                        },
+                    },
+
+                    {
+                        "key" : "atoms",
+                        "name" : "Atoms",
+                        "default": None,
+                        "inputField": {
+                            "type": "dropdown",
+                            "width": "s100% m50% l40%",
+                            "params": {
+                                "options":  [],
+                                "isMulti": True,
+                                "placeholder": "",
+                                "isClearable": True,
+                                "isSearchable": True,    
+                            },
+                        },
+                    },
+
+                    {
+                        "key" : "orbitals",
+                        "name" : "Orbitals",
+                        "default": None,
+                        "inputField": {
+                            "type": "dropdown",
+                            "width": "s100% m50% l50%",
+                            "params": {
+                                "options":  [],
+                                "isMulti": True,
+                                "placeholder": "",
+                                "isClearable": True,
+                                "isSearchable": True,    
+                            },
+                        },
+                    },
+
+                    {
+                        "key" : "spin",
+                        "name" : "Spin",
+                        "default": None,
+                        "inputField": {
+                            "type": "dropdown",
+                            "width": "s100% m50% l25%",
+                            "params": {
+                                "options":  [],
+                                "placeholder": "",
+                                "isMulti": False,
+                                "isClearable": True,
+                            },
+                            "style": {
+                                "width": 200
+                            }
+                        },
+                    },
+
+                    {
+                        "key" : "normalize",
+                        "name": "Normalize",
+                        "default": False,
+                        "inputField": {
+                            "type": "switch",
+                            "width": "s100% m50% l25%",
+                        },
+                        
+                    },
+
+
+                ]
+            },
+
+            "help": '''Here you can ask for the specific PDOS that you need. 
+                    <br>TIP: Queries can be activated and deactivated.''',
+            "onUpdate": "setData",
+        },
+    
+    )
+    
+    def _afterInit(self):
+
+        self.updateSettings(updateFig = False, xaxis_title = 'Density of states (1/eV)', yaxis_title = "Energy (eV)")
+
+    def _readfromH(self):
+
+        if not hasattr(self, "H"):
+            self.setupHamiltonian()
+
+        #Calculate the pdos with sisl using the last geometry and the hamiltonian
+        self.monkhorstPackGrid = [15, 1, 1]
+        Erange = self.settings["Erange"]
+        self.E = np.linspace( Erange[0], Erange[-1], 1000) 
+
+        mp = sisl.MonkhorstPack(self.H, self.monkhorstPackGrid)
+        self.PDOSinfo = mp.asaverage().PDOS(self.E + self.fermi , eta=True)
+
+    def _readSiesOut(self):
+
+        #Get the info from the .PDOS file
+        self.geom, self.E, self.PDOSinfo = sisl.get_sile(self.requiredFiles[0]).read_data()
+
+        self.fermi = 0    
+
+    def _afterRead(self):
+
+        '''
+
+        Gets the information out of the .pdos and processes it into self.PDOSdicts so that it can be accessed by 
+        the self.setData() method once the orbitals/atoms to display PDOS are selected.
+
+        The method stores all the information in a pandas dataframe that looks like this:
+
+             |  species  |     1s     |    2s      |
+        _____|___________|____________|____________|......
+             |           |            |            |
+        iAt  |  string   | PDOS array | PDOS array |
+        _____|___________|____________|____________|......
+             .           .            .            .
+             .           .            .            .
+
+        Returns
+        ---------
+        self.df:
+            The dataframe obtained
+        self.E:
+            The energy values where PDOS is calculated
+
+        '''
+
+        #Get the orbital where each atom starts
+        orbitals = np.array([0] + [len(atom) for atom in self.geom.atoms]).cumsum()[:-1]
+
+        #Initialize a dataframe to store all the information
+        self.df = pd.DataFrame()
+        
+        #Normalize self.PDOSinfo to do the same treatment for both spin-polarized and spinless simulations
+        self.hasSpin = len(self.PDOSinfo.shape) == 3
+        self.PDOSinfo = np.moveaxis(self.PDOSinfo, 0, -1) if self.hasSpin else self.PDOSinfo
+
+        #Save the information of each atom
+        for at, initOrb in zip( self.geom.atoms, orbitals ):
+    
+            atDict = {orb.name() : self.PDOSinfo[ initOrb + iOrb , :] for iOrb, orb in enumerate(at) }
+            atDict["species"] = at.tag
+            
+            self.df = self.df.append(atDict, ignore_index = True)
+        
+        #"Inform" the queries of the available options
+        for i, param in enumerate(self.params):
+
+            if param["key"] == "requests":
+                for iParam, reqParam in enumerate(self.params[i]["inputField"]["queryForm"]):
+
+                    options = []
+                    
+                    if reqParam["key"] == "atoms":
+
+                        options = [{ "label": "{} ({})".format(i, self.df.iloc[i]["species"]), "value": i } 
+                            for i in range( self.df.shape[0] )]
+                
+                    elif reqParam["key"] == "species":
+
+                        options = [{ "label": spec, "value": spec } for spec in self.df.species.unique()]
+                    
+                    elif reqParam["key"] == "orbitals":
+
+                        orbitals = sortOrbitals([column for column in self.df.columns.tolist() if column != "species"])
+
+                        options = [{ "label": orbName, "value": orbName } for orbName in orbitals]
+                    
+                    elif reqParam["key"] == "spin":
+
+                        options = [{ "label": "↑", "value": 0 },{ "label": "↓", "value": 1 }] if self.hasSpin else []
+
+                    if options:
+                        self.params[i]["inputField"]["queryForm"][iParam]["inputField"]["params"]["options"] = options
+
+    def _setData(self):
+        '''
+
+        Uses the information processed by the self.readData() method and converts it into a data object for plotly.
+
+        It stores the data under self.data, so that it can be accessed by posterior methods.
+
+        Arguments
+        ---------
+        requests: list of [ list of (int, str and dict) ]
+            contains all the user's requests for the PDOS display.
+
+            The contributions of all the requests under a request group [ ] will be summed and displayed together.
+        
+        normalize: bool
+            whether the contribution is normalized by the number of atoms.
+
+        Returns
+        ---------
+        self.data: list of dicts
+            contains a dictionary for each band with all its information.
+
+        '''
+
+        #Get only the energies we are interested in
+        if not self.fermi:
+            Emin, Emax = np.array(self.settings["Erange"])
+            Estep = ( max(self.E) - min(self.E) ) / len(self.E)
+            iEmax = int( ( Emax - min(self.E) ) / Estep )
+            iEmin = int( ( Emin - min(self.E) ) / Estep )
+            self.Ecut = self.E[ iEmin : iEmax+1 ]
+        #else:
+        #    self.readData( fromH = True )
+
+        #Initialize the data object for the plotly graph
+        self.data = []
+
+        #Go request by request and plot the corresponding PDOS contribution
+        for request in self.settings["requests"]:
+
+            #Use only the active requests
+            if not request["active"]:
+                continue
+
+            #Get the part of the dataframe that the request is asking for
+            reqDf = self.df.copy()
+
+            if request.get("atoms"):
+                reqDf = reqDf.iloc[np.array(request["atoms"])]
+
+            if request.get("species"):
+                reqDf = reqDf[ reqDf["species"].isin(request["species"]) ]
+
+            if request.get("orbitals"):
+                reqDf = reqDf[ request["orbitals"] ]
+            
+            #Remove the species column if it is still there
+            try:
+                PDOS = reqDf.drop("species", axis = 1)
+            except KeyError:
+                PDOS = reqDf
+
+            if PDOS.isnull().values.all(axis=0)[0]:
+
+                PDOS = []
+                log.warning("No PDOS for the following request: {}".format(request.params))
+            else:
+                
+                PDOS = PDOS.sum(1, skipna = True)
+
+                if request.get("normalize"):
+                    PDOS = PDOS.mean()
+                else:
+                    PDOS = PDOS.sum(0)
+            
+            #Get the spin component (or the sum of both components)
+            if self.hasSpin:
+                spinReq = request.get("spin")
+                if type(spinReq) == int:
+                    PDOS = PDOS[:, spinReq]
+                else:
+                    PDOS = PDOS.sum(1)
+            
+            self.data.append({
+                        'type': 'scatter',
+                        'x': PDOS[ iEmin : iEmax + 1 ] if not self.fermi else PDOS,
+                        'y': self.Ecut if not self.fermi else self.E ,
+                        'mode': 'lines', 
+                        'name': request["linename"], 
+                        'line': {'width' : 1},
+                        "hoverinfo": "name",
+                    })
+        
+        return self.data
+
+    def addRequest(self, newReq = {}, **kwargs):
+        '''
+        Adds a new PDOS request. The new request can be passed as a dict or as a list of keyword arguments.
+        The keyword arguments will overwrite what has been passed as a dict if there is conflict.
+        '''
+
+        self.updateSettings(requests = [*self.settings["requests"], {"active": True, "linename": len(self.settings["requests"]), **newReq, **kwargs}])
+
+        return self

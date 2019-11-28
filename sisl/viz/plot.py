@@ -391,10 +391,15 @@ class Plot(Configurable):
         #Give an ID to the plot
         self.id = str(uuid.uuid4())
 
+        #Give the user the possibility to overwrite default settings
+        if callable( getattr(self, "_afterInit", None )):
+            self._afterInit()
+
         #Try to generate the figure (if the settings required are still not there, it won't be generated)
         try:
             self.readData()
-        except Exception:
+        except Exception as e:
+            print("The plot has been initialized correctly, but the current settings were not enough to generate the figure.\n (Error: {})".format(e))
             pass
     
     def __str__(self):
@@ -433,13 +438,40 @@ class Plot(Configurable):
         result = self._readFromSources()
 
         if callable( getattr(self, "_afterRead", None )):
-            self._afterRead(result)
+            if result is not None:
+                self._afterRead(result)
+            else: 
+                self._afterRead()
 
         if updateFig:
             self.setData(updateFig = updateFig)
         
         return self
-
+    
+    def _readFromSources(self):
+        
+        '''
+        Tries to read the data from the different possible sources in the order 
+        determined by self.settings["readingOrder"].
+        '''
+        
+        errors = []
+        #Try to read in the order specified by the user
+        for source in self.settings["readingOrder"]:
+            try:
+                #Get the reading function
+                readingFunc = PLOTS_CONSTANTS["readFuncs"][source](self)
+                #Execute it
+                data = readingFunc()
+                self.source = source
+                return data
+            except Exception as e:
+                errors.append("\t- {}: {}.{}".format(source, type(e).__name__, e))
+                
+        else:
+            raise Exception("Could not read or generate data for {} from any of the possible sources.\n\n Here are the errors for each source:\n\n {}  "
+                            .format(self.__class__.__name__, "\n".join(errors)) )
+    
     @afterSettingsUpdate
     def setFiles(self, **kwargs):
         '''
@@ -481,30 +513,6 @@ class Plot(Configurable):
         self.fermi = self.H.fermi_level()
 
         return self
-
-    def _readFromSources(self):
-        
-        '''
-        Tries to read the data from the different possible sources in the order 
-        determined by self.settings["readingOrder"].
-        '''
-        
-        errors = []
-        #Try to read in the order specified by the user
-        for source in self.settings["readingOrder"]:
-            try:
-                #Get the reading function
-                readingFunc = PLOTS_CONSTANTS["readFuncs"][source](self)
-                #Execute it
-                data = readingFunc()
-                self.source = source
-                return data
-            except Exception as e:
-                errors.append("\t- {}: {}.{}".format(source, type(e).__name__, e))
-                
-        else:
-            raise Exception("Could not read or generate data for {} from any of the possible sources.\n\n Here are the errors for each source:\n\n {}  "
-                            .format(self.__class__.__name__, "\n".join(errors)) )
     
     @afterSettingsUpdate
     def setData(self, updateFig = True, **kwargs):
@@ -540,10 +548,6 @@ class Plot(Configurable):
         self.layout = {
             'title': '{} {}'.format(self.struct, self._plotType),
             'hovermode': 'closest',
-            'xaxis' : {
-                'tickvals': self.ticks[0],
-                'ticktext': self.settings["ticks"].split(",") if self.source != "siesOut" else self.ticks[1],
-            },
             **self.getSettingsGroup("layout")
         }
             
@@ -595,10 +599,10 @@ class Plot(Configurable):
             figure = json.dumps(self.figure, cls=plotly.utils.PlotlyJSONEncoder)
 
         else:
-            figure = {
+            figure = json.dumps({
                 "data": [],
                 "layout": {}
-            }
+            }, cls=plotly.utils.PlotlyJSONEncoder )
 
         infoDict = {
             "id": self.id,
