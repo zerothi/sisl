@@ -191,7 +191,7 @@ if __name__ == "__main__":
     n = {"a": "first", "b": "second", "c": "third"}
     for d in "abc":
         p.add_argument("--boundary-condition-{}".format(d), "-bc-{}".format(d), nargs=2, type=str, default=["periodic", "periodic"],
-                       metavar=["BC-bottom", "BC-top"],
+                       metavar=("BC-bottom", "BC-top"),
                        help=("Boundary condition along the {} lattice vector [periodic, neumann, dirichlet]. "
                              "Provide two to specify separate BC at the start and end of the lattice vector, respectively.".format(n[d])))
 
@@ -202,16 +202,16 @@ if __name__ == "__main__":
     p.add_argument("--dtype", "-d", choices=["d", "f"], default="d",
                    help="Precision of data (d==double, f==single)")
 
-    p.add_argument("--elec-V", "-ebV", nargs=2, action="append", metavar=["NAME", "V"], default=[],
+    p.add_argument("--elec-V", "-ebV", nargs=2, action="append", metavar=("NAME", "V"), default=[],
                    help="Specify the potential on the electrode")
 
     p.add_argument("--tolerance", "-T", type=float, default=1e-10,
                    help="Precision required for the pyamg solver. NOTE when using single precision arrays this should probably be on the order of 1e-5")
 
-    p.add_argument("--shape", "-s", nargs=3, type=int, required=True, metavar=["X", "Y", "Z"],
-                   help="Grid shape, this *has* to be conforming to the TranSiesta calculation, read from output: 'InitMesh: MESH = X x Y x Z'")
+    p.add_argument("--shape", "-s", nargs=3, type=int, required=True, metavar=("A", "B", "C"),
+                   help="Grid shape, this *has* to be conforming to the TranSiesta calculation, read from output: 'InitMesh: MESH = A x B x C'")
 
-    p.add_argument("--pyamg-shape", "-ps", nargs=3, type=int, metavar=["X", "Y", "Z"], default=None,
+    p.add_argument("--pyamg-shape", "-ps", nargs=3, type=int, metavar=("A", "B", "C"), default=None,
                    help="Grid used to solve the Poisson equation, if shape is different the Grid will be interpolated after.")
 
     p.add_argument("--geometry", default="siesta.TBT.nc",

@@ -71,16 +71,9 @@ class fdfSileSiesta(SileSiesta):
     >>> fdf = fdfSileSiesta('tmp/RUN.fdf', base='.') # reads output files in './' folder
     """
 
-    def __init__(self, filename, mode='r', base=None):
-        super(fdfSileSiesta, self).__init__(filename, mode=mode, comment=['#', '!', ';'], base=base)
-
-    @property
-    def file(self):
-        """ Return the current file name (without the directory prefix) """
-        return self._file
-
     def _setup(self, *args, **kwargs):
         """ Setup the `fdfSileSiesta` after initialization """
+        self._comment = ['#', '!', ';']
 
         # List of parent file-handles used while reading
         # This is because fdf enables inclusion of other files
