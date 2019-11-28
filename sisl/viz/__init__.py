@@ -17,3 +17,4 @@ Miscellaneous routines
 """
 
 from .plots import *
+from .configurable import *

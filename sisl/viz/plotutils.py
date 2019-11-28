@@ -63,3 +63,25 @@ def calculateSpinGaps(bands):
         gaps[i], gapLimitsLocs[i] = calculateGap(spinBands)
         
     return gaps, gapLimitsLocs
+
+def sortOrbitals(orbitals):
+    '''
+    Function that sorts a list of orbital names scientifically. (1s -> 2s -> etc)
+
+    Arguments
+    ---------
+    orbitals: list of str
+        the list of orbitals to sort
+    
+    Return
+    --------
+    sortedOrbs: list
+    '''
+
+    def sortKey(x):
+
+        l = "spdfghi"
+
+        return x[0], l.index(x[1]) 
+
+    return sorted(orbitals, key = sortKey)

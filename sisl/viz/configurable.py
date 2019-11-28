@@ -19,7 +19,7 @@ class Configurable:
         
         return self
     
-    def updateSettings(self, exFromDecorator = False, **kwargs):
+    def updateSettings(self, exFromDecorator = False, updateFig = True, **kwargs):
         
         #Initialize the settings in case there are none yet
         if "settings" not in vars(self):
@@ -42,7 +42,7 @@ class Configurable:
             self.settingsHistory.append(deepcopy(self.settings))
         
             #Run the functions specified
-            if not exFromDecorator and hasattr(self, "_onSettingsUpdate"):
+            if not exFromDecorator and hasattr(self, "_onSettingsUpdate") and updateFig:
                 
                 #Get the unique names of the functions that should be executed
                 funcNames = set([param.get("onUpdate", None) for param in self.params if param["key"] in updated])
