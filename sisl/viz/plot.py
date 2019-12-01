@@ -3,6 +3,7 @@ This file contains the Plot class, which should be inherited by all plot classes
 '''
 import uuid
 import os
+import sys
 import numpy as np
 import json
 
@@ -48,7 +49,8 @@ class Plot(Configurable):
             "icon": "format_paint",
             "subGroups":[
                 {"key": "xaxis", "name": "X axis"},
-                {"key": "yaxis", "name": "Y axis"}
+                {"key": "yaxis", "name": "Y axis"},
+                {"key": "animation", "name": "Animation"}
             ],
             "description": "Data may loose its value if it is not well presented. Play with this parameters to <b>make your plot as beautiful and easy to understand as you can</b>."
         },
@@ -106,6 +108,22 @@ class Plot(Configurable):
         },
 
         {
+            "key": "title",
+            "name": "Title",
+            "group": "layout",
+            "inputField": {
+                "type": "textinput",
+                "width": "s100% l40%",
+                "params": {
+                    "placeholder": "Title of your plot...",
+                }
+            },
+            "default": "",
+            "help": "Think of a memorable title for your plot!",
+            "onUpdate": "getFigure"
+        },
+
+        {
             "key": "showlegend",
             "name": "Show Legend",
             "group": "layout",
@@ -143,6 +161,18 @@ class Plot(Configurable):
                 "width": "s50% m30% l15%",
             },
             "onUpdate": "getFigure",
+        },
+
+        {
+            "key": "frameDuration",
+            "name": "Frame duration",
+            'default': 500,
+            "inputField": {
+                "type": "textinput",
+                "placeholder": "Write the desired duration...",
+                "width": "offset-s1 offset-m1 m4 s10"
+            },
+            "help": "Time (in ms) that each frame will be displayed. <br> This is only meaningful if you have an animation",
         },
         
         
@@ -431,8 +461,11 @@ class Plot(Configurable):
 
         if callable( getattr(self, "_beforeRead", None )):
             self._beforeRead()
-
-        self.setFiles()
+        
+        try:    
+            self.setFiles()
+        except Exception:
+            pass
         
         #We try to read from the different sources using the _readFromSources method of the parent Plot class.
         result = self._readFromSources()
@@ -481,7 +514,10 @@ class Plot(Configurable):
         rootFdf = self.settings["rootFdf"]
         self.rootDir, fdfFile = os.path.split( rootFdf )
         self.fdfSile = sisl.get_sile(rootFdf)
-        self.struct = self.fdfSile.get("SystemLabel")
+        self.struct = self.fdfSile.get("SystemLabel", "")
+
+        #Update the title
+        self.updateSettings(updateFig = False, title = '{} {}'.format(self.struct, self._plotType) )
             
         #Check that the required files are there
         #if RequirementsFilter().check(self.rootFdf, self.__class__.__name__ ):
@@ -545,17 +581,79 @@ class Plot(Configurable):
 
         '''
 
+        framesLayout = {}
+
+        #If it is an animation, extra work needs to be done.
+        if getattr(self, 'frames', []):
+
+            #This will create the buttons needed no control the animation
+            framesLayout = {
+
+                "sliders": [
+                    {
+                        "active": 0,
+                        "yanchor": "top",
+                        "xanchor": "left",
+                        "currentvalue": {
+                            "font": {"size": 20},
+                            #"prefix": "Bands file:",
+                            "visible": True,
+                            "xanchor": "right"
+                        },
+                        "transition": {"duration": 300, "easing": "cubic-in-out"},
+                        "pad": {"b": 10, "t": 50},
+                        "len": 0.9,
+                        "x": 0.1,
+                        "y": 0,
+                        "steps": [
+                            {"args": [
+                            [frame["name"]],
+                            {"frame": {"duration": int(self.settings["frameDuration"]), "redraw": False},
+                            "mode": "immediate",
+                            "transition": {"duration": 300}}
+                        ],
+                            "label": frame["name"],
+                            "method": "animate"} for frame in self.frames
+                        ]
+                    }
+                ],
+                
+                "updatemenus": [
+
+                    {'type': 'buttons',
+                    'buttons': [
+                        {
+                            'label': 'Play',
+                            'method': 'animate',
+                            'args': [None, {"frame": {"duration": int(self.settings["frameDuration"]), "redraw": False},
+                                            "fromcurrent": True, "transition": {"duration": 100,
+                                                                                "easing": "quadratic-in-out"}}],
+                        },
+
+                        {
+                            'label': 'Pause',
+                            'method': 'animate',
+                            'args': [ [None], {"frame": {"duration": 0, "redraw": False},
+                                            'mode': 'immediate',
+                                            "transition": {"duration": 0}}],
+                        }
+                    ]}
+                ]
+            }
+
         self.layout = {
-            'title': '{} {}'.format(self.struct, self._plotType),
             'hovermode': 'closest',
-            **self.getSettingsGroup("layout")
+            **self.getSettingsGroup("layout"),
+            **framesLayout
         }
             
         self.figure = go.Figure({
             'data': self.data,
             'layout': self.layout,
+            'frames': getattr(self, 'frames', []),
         })
-        
+
+
         return self.figure
     
     #-------------------------------------------
@@ -566,7 +664,7 @@ class Plot(Configurable):
         
         return self.figure.show()
     
-    def merge(self, plotsToMerge, inplace = True, **kwargs):
+    def merge(self, plotsToMerge, inplace = False, asAnimation = False, **kwargs):
         '''
         Merges this plot's instance with the list of plots provided (EXPERIMENTAL)
         '''
@@ -576,12 +674,48 @@ class Plot(Configurable):
             plotsToMerge = [plotsToMerge]
             
         if inplace:
-            for plot in plotsToMerge:
-                self.data = [*self.data, *plot.data]
+            merged = self
+        else:
+            merged = Plot()
+            merged.data = self.data
+
+        if asAnimation and not hasattr(merged, 'frames'):
+            merged.frames = [{'name': 'Start', 'data': self.data}]
+
+        for i, plot in enumerate(plotsToMerge):
+
+            if asAnimation:
+                merged.frames = [ *merged.frames, {'name': 'Frame {}'.format(i+1), 'data': plot.data }]
+            else:
+                merged.data = [*merged.data, *plot.data]
+    
+        merged.getFigure()
         
-            self.getFigure()
-            
-            return self
+        return merged
+    
+    def normalize(self, axis = "y"):
+        '''
+        Normalizes all data between 0 and 1 along the requested axis
+        '''
+        
+        self.data = [{**lineData, 
+            axis: (np.array(lineData[axis]) - np.min(lineData[axis]))/(np.max(lineData[axis]) - np.min(lineData[axis]))
+        } for lineData in self.data]
+
+        self.getFigure()
+
+        return self
+    
+    def swapAxes(self):
+
+        self.data = [{**lineData, 
+            "x": lineData["y"], "y": lineData["x"]
+        } for lineData in self.data]
+
+        self.getFigure()
+
+        return self
+
     
     #-------------------------------------------
     #           GUI ORIENTED METHODS
@@ -601,7 +735,7 @@ class Plot(Configurable):
         else:
             figure = json.dumps({
                 "data": [],
-                "layout": {}
+                "layout": {},
             }, cls=plotly.utils.PlotlyJSONEncoder )
 
         infoDict = {
@@ -613,4 +747,8 @@ class Plot(Configurable):
         }
 
         return infoDict
+
+
+
+
     
