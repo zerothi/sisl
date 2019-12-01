@@ -85,3 +85,18 @@ def sortOrbitals(orbitals):
         return x[0], l.index(x[1]) 
 
     return sorted(orbitals, key = sortKey)
+
+def initSinglePlot(PlotClass, **kwargs):
+    '''
+    Initialize a single plot. This function is meant to be used in multiprocessing, when multiple plots need to be initialized
+    '''
+
+    plot = PlotClass(**kwargs)
+
+    return plot.data
+
+def initPdosPlot(PDOSFile):
+
+    from .plots import PdosPlot
+
+    return initSinglePlot(PdosPlot, PDOSFile = PDOSFile)

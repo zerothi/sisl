@@ -4,13 +4,15 @@ This file contains all the plot subclasses
 
 import numpy as np
 import pandas as pd
+import multiprocessing as mp
+import tqdm
 
 import os
 
 import sisl
 from .plot import Plot, PLOTS_CONSTANTS
-from.plotutils import sortOrbitals
-        
+from.plotutils import sortOrbitals, initSinglePlot, initPdosPlot
+
 class BandsPlot(Plot):
 
     '''
@@ -24,6 +26,21 @@ class BandsPlot(Plot):
     }
     
     _parameters = (
+
+        {
+            "key": "bandsFile" ,
+            "name": "Path to bands file",
+            "default": None,
+            "inputField": {
+                "type": "textinput",
+                "width": "s100% m50% l33%",
+                "params": {
+                    "placeholder": "Write the path to your bands file here...",
+                }
+            },
+            "help": '''This parameter explicitly sets a .bands file. Otherwise, the bands file is attempted to read from the fdf file ''',
+            "onUpdate": "readData",
+        },
     
         {
             "key": "Erange" ,
@@ -153,7 +170,9 @@ class BandsPlot(Plot):
         
         #Get the info from the bands file
         self.path = self.settings["path"] #This should be modified at some point, it's just so that setData works correctly
-        self.ticks, self.Ks, bands = sisl.get_sile(self.requiredFiles[0]).read_data()
+
+        bandsFile = self.settings["bandsFile"] or self.requiredFiles[0]
+        self.ticks, self.Ks, bands = sisl.get_sile(bandsFile).read_data()
         self.fermi = 0.0 #Energies are already shifted
 
         #Axes are switched so that the returned array is a list like [spinUpBands, spinDownBands]
@@ -220,6 +239,42 @@ class BandsPlot(Plot):
 
         self.data = sorted(self.data, key = lambda x: x["name"])
 
+class BandsAnimation(Plot):
+
+    #Define all the class attributes
+    _plotType = "Bands animation"
+
+    _parameters = BandsPlot._parameters
+
+    def _readSiesOut(self):
+
+        #Find all the bands files within the root directory
+        wdir = os.path.join(self.rootDir, self.settings["resultsPath"])
+        files = os.listdir( wdir )
+        bandsFiles = sorted( [ fileName for fileName in files if (".bands" in fileName)] )
+
+        self.singlePlots = []
+        for i, bandsFile in enumerate(bandsFiles):
+
+            print("Getting bands... ({}/{})".format(i+1, len(bandsFiles)))
+            self.singlePlots.append(BandsPlot(bandsFile = os.path.join(wdir, bandsFile)))
+            
+    def _setData(self):
+
+        self.frames=[]
+        self.data = self.singlePlots[0].data
+
+        for plot in self.singlePlots:
+
+            plot.updateSettings(**self.settings)
+
+            # if i == 0:
+            #     reqBandsDf = df[ df < Erange[1] + 3 ][ df > Erange[0] - 3 ].dropna(axis = 1, how = "all")
+            #     reqColumns = reqBandsDf.columns
+            
+            #Define the frames of the animation
+            self.frames.append({'name': os.path.basename(plot.settings["bandsFile"]), 'data': plot.data})
+
 class PdosPlot(Plot):
 
     '''
@@ -233,6 +288,21 @@ class PdosPlot(Plot):
 
     _parameters = (
         
+        {
+            "key": "PDOSFile" ,
+            "name": "Path to PDOS file",
+            "default": None,
+            "inputField": {
+                "type": "textinput",
+                "width": "s100% m50% l33%",
+                "params": {
+                    "placeholder": "Write the path to your PDOS file here...",
+                }
+            },
+            "help": '''This parameter explicitly sets a .PDOS file. Otherwise, the PDOS file is attempted to read from the fdf file ''',
+            "onUpdate": "readData",
+        },
+
         {
             "key": "Erange",
             "name": "Energy range" ,
@@ -353,7 +423,6 @@ class PdosPlot(Plot):
                         
                     },
 
-
                 ]
             },
 
@@ -383,8 +452,9 @@ class PdosPlot(Plot):
 
     def _readSiesOut(self):
 
+        PDOSFile = self.settings["PDOSFile"] or self.requiredFiles[0]
         #Get the info from the .PDOS file
-        self.geom, self.E, self.PDOSinfo = sisl.get_sile(self.requiredFiles[0]).read_data()
+        self.geom, self.E, self.PDOSinfo = sisl.get_sile(PDOSFile).read_data()
 
         self.fermi = 0    
 
@@ -566,3 +636,48 @@ class PdosPlot(Plot):
         self.updateSettings(requests = [*self.settings["requests"], {"active": True, "linename": len(self.settings["requests"]), **newReq, **kwargs}])
 
         return self
+
+class PdosAnimation(Plot):
+    
+    '''
+    Plot representation of the projected density of states.
+    '''
+
+    #Define all the class attributes
+    _plotType = "PDOS animation"
+
+    _requirements = {"files": ["$struct$.PDOS"]}
+
+    _parameters = PdosPlot._parameters
+
+    def _readSiesOut(self):
+
+        #At the moment read data only from PDOS files (maybe in a future generate it also with Hs)
+
+        #Get the relevant files
+        wdir = os.path.join(self.rootDir, self.settings["resultsPath"])
+        files = os.listdir( wdir )
+        self.PDOSFiles = sorted( [ fileName for fileName in files if (".PDOS" in fileName)] )
+
+        nFiles = len(self.PDOSFiles)
+        pool = mp.Pool( processes = min(nFiles, mp.cpu_count() - 1) )
+        self.singlePlots = [None]*nFiles
+        
+        progress = tqdm.tqdm(pool.imap(initPdosPlot, self.PDOSFiles), total=nFiles)
+        progress.set_description("Reading the files needed in {} processes".format(pool._processes))
+
+        for i, res in enumerate(progress):
+            self.singlePlots[i] = res
+
+    def _setData(self):
+
+        self.frames = []
+        self.data = self.singlePlots[0]
+
+        for i, plot in enumerate(self.singlePlots):
+
+            #plot.updateSettings(**self.settings, bandsFile = plot.bandsFile)
+            
+            #Define the frames of the animation
+            self.frames.append({'name': self.PDOSFiles[i], 'data': plot})
+
