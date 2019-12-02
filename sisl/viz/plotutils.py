@@ -1,3 +1,6 @@
+import pickle
+
+from .plot import Plot
 
 def calculateGap(bands):
     '''
@@ -86,17 +89,30 @@ def sortOrbitals(orbitals):
 
     return sorted(orbitals, key = sortKey)
 
-def initSinglePlot(PlotClass, **kwargs):
+def initSinglePlot(argsTuple):
     '''
     Initialize a single plot. This function is meant to be used in multiprocessing, when multiple plots need to be initialized
     '''
 
+    PlotClass, *args = argsTuple
+
+    kwargs = { key: args[i+1] for i, key in enumerate(args) if i%2 == 0 }
+
     plot = PlotClass(**kwargs)
 
-    return plot.data
+    return plot._getDictToSave()
 
-def initPdosPlot(PDOSFile):
+def load(path):
 
-    from .plots import PdosPlot
-
-    return initSinglePlot(PdosPlot, PDOSFile = PDOSFile)
+    with open(path, 'rb') as handle:
+        saved = pickle.load(handle)
+    
+    PlotClass = list(filter(lambda cls: cls.__name__ == saved['additionalInfo']['className'], Plot.__subclasses__()))[0]
+    
+    plt = PlotClass()
+    
+    for key, val in saved.items():
+        if key != "additionalInfo":
+            setattr(plt, key, val)
+    
+    return plt

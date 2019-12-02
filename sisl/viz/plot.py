@@ -6,6 +6,7 @@ import os
 import sys
 import numpy as np
 import json
+import pickle
 
 import plotly
 import plotly.graph_objects as go
@@ -468,13 +469,10 @@ class Plot(Configurable):
             pass
         
         #We try to read from the different sources using the _readFromSources method of the parent Plot class.
-        result = self._readFromSources()
+        self._readFromSources()
 
         if callable( getattr(self, "_afterRead", None )):
-            if result is not None:
-                self._afterRead(result)
-            else: 
-                self._afterRead()
+            self._afterRead()
 
         if updateFig:
             self.setData(updateFig = updateFig)
@@ -718,10 +716,10 @@ class Plot(Configurable):
 
     
     #-------------------------------------------
-    #           GUI ORIENTED METHODS
+    #       DATA TRANSFER/STORAGE METHODS
     #-------------------------------------------
 
-    def _getJsonifiableInfo(self):
+    def _getDictForGUI(self):
         '''
         This method is thought mainly to prepare data to be sent through the API to the GUI.
         Data has to be sent as JSON, so this method can only return JSONifiable objects. (no numpy arrays, no NaN,...)
@@ -747,8 +745,28 @@ class Plot(Configurable):
         }
 
         return infoDict
+    
+    def _getDictToSave(self):
+        '''
+        Generates the dict with all the info needed to clone this same plot in an other object
+        '''
 
+        return { 
+            **{ k: getattr(self, k,None) for k in self.__dict__ if k not in ['geom', 'fdfSile']},
+            'additionalInfo': {
+                "className": self.__class__.__name__
+            }
+        }
+    
+    def save(self, path):
+        '''
+        Saves the plot dictionary so that it can be loaded in the future.
+        '''
 
+        with open(path, 'wb') as handle:
+            pickle.dump(self._getDictToSave(), handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+        return self
 
 
     

@@ -5,13 +5,14 @@ This file contains all the plot subclasses
 import numpy as np
 import pandas as pd
 import multiprocessing as mp
+import itertools
 import tqdm
 
 import os
 
 import sisl
 from .plot import Plot, PLOTS_CONSTANTS
-from.plotutils import sortOrbitals, initSinglePlot, initPdosPlot
+from.plotutils import sortOrbitals, initSinglePlot
 
 class BandsPlot(Plot):
 
@@ -164,7 +165,7 @@ class BandsPlot(Plot):
 
         bands = band.eigh()
 
-        return [bands]
+        return self._bandsToDfs([bands]) 
 
     def _readSiesOut(self):
         
@@ -176,9 +177,9 @@ class BandsPlot(Plot):
         self.fermi = 0.0 #Energies are already shifted
 
         #Axes are switched so that the returned array is a list like [spinUpBands, spinDownBands]
-        return np.rollaxis(bands, 1)
+        return self._bandsToDfs(np.rollaxis(bands, 1))
     
-    def _afterRead(self, bands):
+    def _bandsToDfs(self, bands):
         '''
         Gets the bands read and stores them in a convenient way into self.dfs
         '''
@@ -659,25 +660,46 @@ class PdosAnimation(Plot):
         files = os.listdir( wdir )
         self.PDOSFiles = sorted( [ fileName for fileName in files if (".PDOS" in fileName)] )
 
+        kwargsDict = { "PDOSFile": self.PDOSFiles }
+
         nFiles = len(self.PDOSFiles)
         pool = mp.Pool( processes = min(nFiles, mp.cpu_count() - 1) )
-        self.singlePlots = [None]*nFiles
         
-        progress = tqdm.tqdm(pool.imap(initPdosPlot, self.PDOSFiles), total=nFiles)
+        self.singlePlots = [None]*nFiles
+
+        #Prepare the arguments to be passed to the plot initializing function
+        kwargsList = []
+        for key, val in kwargsDict.items():
+            kwargsList = [*kwargsList, itertools.repeat(key), val]
+        zipped = zip(itertools.repeat(PdosPlot), *kwargsList)
+
+        progress = tqdm.tqdm(pool.imap(initSinglePlot, zipped ), total=nFiles)
         progress.set_description("Reading the files needed in {} processes".format(pool._processes))
 
+        def load(saved):
+    
+            PlotClass = list(filter(lambda cls: cls.__name__ == saved['additionalInfo']['className'], Plot.__subclasses__()))[0]
+            
+            plt = PlotClass()
+            
+            for key, val in saved.items():
+                if key != "additionalInfo":
+                    setattr(plt, key, val)
+            
+            return plt
+
         for i, res in enumerate(progress):
-            self.singlePlots[i] = res
+            self.singlePlots[i] = load(res)
 
     def _setData(self):
 
         self.frames = []
-        self.data = self.singlePlots[0]
+        self.data = self.singlePlots[0].data
 
         for i, plot in enumerate(self.singlePlots):
 
             #plot.updateSettings(**self.settings, bandsFile = plot.bandsFile)
             
             #Define the frames of the animation
-            self.frames.append({'name': self.PDOSFiles[i], 'data': plot})
+            self.frames.append({'name': plot.settings["PDOSFile"], 'data': plot.data})
 
