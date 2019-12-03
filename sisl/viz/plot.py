@@ -746,25 +746,29 @@ class Plot(Configurable):
 
         return infoDict
     
-    def _getDictToSave(self):
+    def _getPickleable(self):
         '''
-        Generates the dict with all the info needed to clone this same plot in an other object
+        Removes from the instance the attributes that are not pickleable.
         '''
 
-        return { 
-            **{ k: getattr(self, k,None) for k in self.__dict__ if k not in ['geom', 'fdfSile']},
-            'additionalInfo': {
-                "className": self.__class__.__name__
-            }
-        }
+        unpickleableAttrs = ['geom', 'fdfSile']
+
+        for attr in ['geom', 'fdfSile']:
+            if hasattr(self, attr):
+                delattr(self, attr)
+
+        return self
     
     def save(self, path):
         '''
-        Saves the plot dictionary so that it can be loaded in the future.
+        Saves the plot so that it can be loaded in the future.
         '''
 
+        #The following method actually modifies 'self', so there's no need to get the return
+        self._getPickleable()
+
         with open(path, 'wb') as handle:
-            pickle.dump(self._getDictToSave(), handle, protocol=pickle.HIGHEST_PROTOCOL)
+            pickle.dump(self, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
         return self
 
