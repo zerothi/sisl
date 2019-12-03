@@ -12,7 +12,7 @@ import os
 
 import sisl
 from .plot import Plot, PLOTS_CONSTANTS
-from.plotutils import sortOrbitals, initSinglePlot
+from.plotutils import sortOrbitals, initMultiplePlots
 
 class BandsPlot(Plot):
 
@@ -193,10 +193,10 @@ class BandsPlot(Plot):
 
         self.dfs.append(df)
 
-        y = {
-            'tickvals': self.ticks[0],
-            'ticktext': self.settings["ticks"].split(",") if self.source != "siesOut" else self.ticks[1],
-        }
+        # y = {
+        #     'tickvals': self.ticks[0],
+        #     'ticktext': self.settings["ticks"].split(",") if self.source != "siesOut" else self.ticks[1],
+        # }
         
         return self
     
@@ -249,16 +249,14 @@ class BandsAnimation(Plot):
 
     def _readSiesOut(self):
 
-        #Find all the bands files within the root directory
+        #Get the relevant files
         wdir = os.path.join(self.rootDir, self.settings["resultsPath"])
         files = os.listdir( wdir )
-        bandsFiles = sorted( [ fileName for fileName in files if (".bands" in fileName)] )
+        self.bandsFiles = sorted( [ fileName for fileName in files if (".bands" in fileName)] )
 
-        self.singlePlots = []
-        for i, bandsFile in enumerate(bandsFiles):
+        kwargsList = [{ "bandsFile": bandsFile } for bandsFile in self.bandsFiles]
 
-            print("Getting bands... ({}/{})".format(i+1, len(bandsFiles)))
-            self.singlePlots.append(BandsPlot(bandsFile = os.path.join(wdir, bandsFile)))
+        self.singlePlots = initMultiplePlots(BandsPlot, kwargsList = kwargsList)
             
     def _setData(self):
 
@@ -267,11 +265,7 @@ class BandsAnimation(Plot):
 
         for plot in self.singlePlots:
 
-            plot.updateSettings(**self.settings)
-
-            # if i == 0:
-            #     reqBandsDf = df[ df < Erange[1] + 3 ][ df > Erange[0] - 3 ].dropna(axis = 1, how = "all")
-            #     reqColumns = reqBandsDf.columns
+            #plot.updateSettings(**{**self.settings, "bandsFile": plot.settings["bandsFile"]} )
             
             #Define the frames of the animation
             self.frames.append({'name': os.path.basename(plot.settings["bandsFile"]), 'data': plot.data})
@@ -660,36 +654,9 @@ class PdosAnimation(Plot):
         files = os.listdir( wdir )
         self.PDOSFiles = sorted( [ fileName for fileName in files if (".PDOS" in fileName)] )
 
-        kwargsDict = { "PDOSFile": self.PDOSFiles }
+        kwargsList = [{ "PDOSFile": PDOSFile } for PDOSFile in self.PDOSFiles]
 
-        nFiles = len(self.PDOSFiles)
-        pool = mp.Pool( processes = min(nFiles, mp.cpu_count() - 1) )
-        
-        self.singlePlots = [None]*nFiles
-
-        #Prepare the arguments to be passed to the plot initializing function
-        kwargsList = []
-        for key, val in kwargsDict.items():
-            kwargsList = [*kwargsList, itertools.repeat(key), val]
-        zipped = zip(itertools.repeat(PdosPlot), *kwargsList)
-
-        progress = tqdm.tqdm(pool.imap(initSinglePlot, zipped ), total=nFiles)
-        progress.set_description("Reading the files needed in {} processes".format(pool._processes))
-
-        def load(saved):
-    
-            PlotClass = list(filter(lambda cls: cls.__name__ == saved['additionalInfo']['className'], Plot.__subclasses__()))[0]
-            
-            plt = PlotClass()
-            
-            for key, val in saved.items():
-                if key != "additionalInfo":
-                    setattr(plt, key, val)
-            
-            return plt
-
-        for i, res in enumerate(progress):
-            self.singlePlots[i] = load(res)
+        self.singlePlots = initMultiplePlots(PdosPlot, kwargsList = kwargsList)
 
     def _setData(self):
 
@@ -698,7 +665,7 @@ class PdosAnimation(Plot):
 
         for i, plot in enumerate(self.singlePlots):
 
-            #plot.updateSettings(**self.settings, bandsFile = plot.bandsFile)
+            #plot.updateSettings(**{**self.settings, "PDOSFile": plot.settings["PDOSFile"]})
             
             #Define the frames of the animation
             self.frames.append({'name': plot.settings["PDOSFile"], 'data': plot.data})

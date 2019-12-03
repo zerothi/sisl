@@ -1,3 +1,8 @@
+import numpy as np
+import itertools
+import multiprocessing as mp
+import tqdm
+
 import pickle
 
 from .plot import Plot
@@ -94,25 +99,48 @@ def initSinglePlot(argsTuple):
     Initialize a single plot. This function is meant to be used in multiprocessing, when multiple plots need to be initialized
     '''
 
-    PlotClass, *args = argsTuple
+    PlotClass, args, kwargs = argsTuple
 
-    kwargs = { key: args[i+1] for i, key in enumerate(args) if i%2 == 0 }
+    return PlotClass(**kwargs)._getPickleable()
 
-    plot = PlotClass(**kwargs)
+def initMultiplePlots(PlotClass, argsList = None, kwargsList = None, nPlots = None):
+    '''
+    Makes use of the multiprocessing module to initialize multiple plots in the fastest way possible
 
-    return plot._getDictToSave()
+    Arguments
+    ----------
+    PlotClass: child class of sisl.viz.Plot or array of child classes of sisl.viz.Plot
+        If a single class is passed, it will generate all plots with this class.
+        If an array of classes is passed, it will iterate over the array to generate the plots.
+    argsList
+    '''
+
+    #Prepare the arguments to be passed to the initSinglePlot function
+    toZip = [PlotClass, argsList, kwargsList]
+    for i, arg in enumerate(toZip):
+        if not isinstance(arg, (list, tuple, np.ndarray)):
+            toZip[i] = itertools.repeat(arg)
+        else:
+            nPlots = len(arg)
+    
+    #Create a pool with the appropiate number of processes
+    pool = mp.Pool( processes = min(nPlots, mp.cpu_count() - 1) )
+    #Define the plots array to store all the plots that we initialize
+    plots = [None]*nPlots
+
+    #Initialize the pool iterator and the progress bar that controls it
+    progress = tqdm.tqdm(pool.imap(initSinglePlot, zip(*toZip) ), total=nPlots)
+    progress.set_description("Reading the files needed in {} processes".format(pool._processes))
+
+    #Run the processes and store each result in the plots array
+    for i, res in enumerate(progress):
+        plots[i] = res
+
+    return plots
 
 def load(path):
 
     with open(path, 'rb') as handle:
-        saved = pickle.load(handle)
-    
-    PlotClass = list(filter(lambda cls: cls.__name__ == saved['additionalInfo']['className'], Plot.__subclasses__()))[0]
-    
-    plt = PlotClass()
-    
-    for key, val in saved.items():
-        if key != "additionalInfo":
-            setattr(plt, key, val)
+        plt = pickle.load(handle)
     
     return plt
