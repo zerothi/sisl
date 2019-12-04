@@ -262,11 +262,13 @@ class BandsAnimation(Plot):
     def _setData(self):
 
         self.frames=[]
-        self.data = self.singlePlots[0].data
 
-        for plot in self.singlePlots:
+        for i, plot in enumerate(self.singlePlots):
 
-            #plot.updateSettings(**{**self.settings, "bandsFile": plot.settings["bandsFile"]} )
+            plot.updateSettings(**{key:val for key, val in self.settings.items() if key not in ["bandsFile", "rootFdf"]})
+
+            if i == 0:
+                self.data = plot.data
             
             #Define the frames of the animation
             self.frames.append({'name': os.path.basename(plot.settings["bandsFile"]), 'data': plot.data})
