@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import multiprocessing as mp
 import itertools
+from copy import deepcopy
 import tqdm
 
 import os
@@ -252,7 +253,7 @@ class BandsAnimation(Plot):
         #Get the relevant files
         wdir = os.path.join(self.rootDir, self.settings["resultsPath"])
         files = os.listdir( wdir )
-        self.bandsFiles = sorted( [ fileName for fileName in files if (".bands" in fileName)] )
+        self.bandsFiles = sorted( [ os.path.join(wdir, fileName) for fileName in files if (".bands" in fileName)] )
 
         kwargsList = [{ "bandsFile": bandsFile } for bandsFile in self.bandsFiles]
 
@@ -652,21 +653,25 @@ class PdosAnimation(Plot):
         #Get the relevant files
         wdir = os.path.join(self.rootDir, self.settings["resultsPath"])
         files = os.listdir( wdir )
-        self.PDOSFiles = sorted( [ fileName for fileName in files if (".PDOS" in fileName)] )
+        self.PDOSFiles = sorted( [ os.path.join(wdir, fileName) for fileName in files if (".PDOS" in fileName)] )
 
         kwargsList = [{ "PDOSFile": PDOSFile } for PDOSFile in self.PDOSFiles]
 
         self.singlePlots = initMultiplePlots(PdosPlot, kwargsList = kwargsList)
 
+        self.params = deepcopy(self.singlePlots[0].params)
+
     def _setData(self):
 
         self.frames = []
-        self.data = self.singlePlots[0].data
 
         for i, plot in enumerate(self.singlePlots):
 
-            #plot.updateSettings(**{**self.settings, "PDOSFile": plot.settings["PDOSFile"]})
+            plot.updateSettings(**{key:val for key, val in self.settings.items() if key not in ["PDOSFile", "rootFdf"]})
+
+            if i == 0:
+                self.data = plot.data
             
             #Define the frames of the animation
-            self.frames.append({'name': plot.settings["PDOSFile"], 'data': plot.data})
+            self.frames.append({'name': os.path.basename(plot.settings["PDOSFile"]), 'data': plot.data})
 
