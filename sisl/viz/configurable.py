@@ -9,7 +9,7 @@ class Configurable:
         #Get the parameters of all the classes the object belongs to
         self.params = []
         for clss in type.mro(self.__class__):
-            if hasattr(clss, "_parameters"):
+            if "_parameters" in vars(clss):
                 self.params = [*self.params, *clss._parameters]
 
         #Define the settings dictionary, taking the value of each parameter from kwargs if it is there or from the defaults otherwise.
@@ -118,7 +118,7 @@ def beforeSettingsInit(method):
 
 #Run the method after having updated the settings
 def afterSettingsUpdate(method):
-    
+
     def updateAndExecute(obj, *args, **kwargs):
         
         obj.updateSettings(**kwargs, exFromDecorator = True)

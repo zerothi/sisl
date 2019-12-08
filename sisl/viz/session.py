@@ -1,14 +1,15 @@
-import sisl
-from sisl.viz import Plot, Configurable, afterSettingsInit
-
 import pickle
 
 import uuid
 import os
+import glob
 
 from copy import deepcopy
 
-from fileScrapper import findFiles
+import sisl
+from .plot import Plot, MultiplePlot, Animation
+from .configurable import Configurable, afterSettingsInit
+from .plotutils import findFiles
 
 class Session(Configurable):
 
@@ -130,15 +131,19 @@ class Session(Configurable):
         '''
 
         def get_all_subclasses(cls):
+
             all_subclasses = []
 
             for subclass in cls.__subclasses__():
-                all_subclasses.append(subclass)
+
+                if subclass not in [MultiplePlot, Animation]:
+                    all_subclasses.append(subclass)
+
                 all_subclasses.extend(get_all_subclasses(subclass))
 
             return all_subclasses
         
-        return get_all_subclasses(sisl.viz.Plot) 
+        return sorted(get_all_subclasses(sisl.viz.Plot), key = lambda clss: clss._plotType) 
 
     def newPlot(self, plotClass, tabID = None, structID = None, **kwargs):
         '''

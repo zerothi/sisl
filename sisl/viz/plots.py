@@ -12,8 +12,8 @@ import tqdm
 import os
 
 import sisl
-from .plot import Plot, PLOTS_CONSTANTS
-from.plotutils import sortOrbitals, initMultiplePlots
+from .plot import Plot, MultiplePlot, Animation, PLOTS_CONSTANTS
+from .plotutils import sortOrbitals, initMultiplePlots, copyParams, findFiles
 
 class BandsPlot(Plot):
 
@@ -241,37 +241,25 @@ class BandsPlot(Plot):
 
         self.data = sorted(self.data, key = lambda x: x["name"])
 
-class BandsAnimation(Plot):
+class BandsAnimation(Animation):
 
     #Define all the class attributes
     _plotType = "Bands animation"
 
-    _parameters = BandsPlot._parameters
+    _parameters = copyParams( BandsPlot._parameters, exclude = ["bandsFile"])
 
-    def _readSiesOut(self):
+    #All these are variables used by MultiplePlot
+    _plotClasses = BandsPlot
 
-        #Get the relevant files
-        wdir = os.path.join(self.rootDir, self.settings["resultsPath"])
-        files = os.listdir( wdir )
-        self.bandsFiles = sorted( [ os.path.join(wdir, fileName) for fileName in files if (".bands" in fileName)] )
+    def _getInitKwargsList(self):
 
-        kwargsList = [{ "bandsFile": bandsFile } for bandsFile in self.bandsFiles]
+        self.bandsFiles = findFiles(self.wdir, "*.bands", sort = True)
 
-        self.singlePlots = initMultiplePlots(BandsPlot, kwargsList = kwargsList)
-            
-    def _setData(self):
+        return [{ "bandsFile": bandsFile } for bandsFile in self.bandsFiles]
 
-        self.frames=[]
+    def _getFrameNames(self):
 
-        for i, plot in enumerate(self.singlePlots):
-
-            plot.updateSettings(**{key:val for key, val in self.settings.items() if key not in ["bandsFile", "rootFdf"]})
-
-            if i == 0:
-                self.data = plot.data
-            
-            #Define the frames of the animation
-            self.frames.append({'name': os.path.basename(plot.settings["bandsFile"]), 'data': plot.data})
+        return [os.path.basename( childPlot.settings["bandsFile"] ) for childPlot in self.childPlots]
 
 class PdosPlot(Plot):
 
@@ -635,7 +623,7 @@ class PdosPlot(Plot):
 
         return self
 
-class PdosAnimation(Plot):
+class PdosAnimation(Animation):
     
     '''
     Plot representation of the projected density of states.
@@ -644,36 +632,22 @@ class PdosAnimation(Plot):
     #Define all the class attributes
     _plotType = "PDOS animation"
 
-    _requirements = {"files": ["$struct$.PDOS"]}
+    _parameters = copyParams( PdosPlot._parameters, exclude = ["PDOSFile"])
 
-    _parameters = PdosPlot._parameters
+    #All these are variables used by MultiplePlot
+    _plotClasses = PdosPlot
 
-    def _readSiesOut(self):
+    def _getInitKwargsList(self):
 
-        #At the moment read data only from PDOS files (maybe in a future generate it also with Hs)
+        self.PDOSFiles = findFiles(self.wdir, "*.PDOS", sort = True)
 
-        #Get the relevant files
-        wdir = os.path.join(self.rootDir, self.settings["resultsPath"])
-        files = os.listdir( wdir )
-        self.PDOSFiles = sorted( [ os.path.join(wdir, fileName) for fileName in files if (".PDOS" in fileName)] )
+        return [{ "PDOSFile": PDOSFile } for PDOSFile in self.PDOSFiles]
 
-        kwargsList = [{ "PDOSFile": PDOSFile } for PDOSFile in self.PDOSFiles]
+    def _getFrameNames(self):
 
-        self.singlePlots = initMultiplePlots(PdosPlot, kwargsList = kwargsList)
+        return [os.path.basename( childPlot.settings["PDOSFile"] ) for childPlot in self.childPlots]
 
-        self.params = deepcopy(self.singlePlots[0].params)
+    def _afterChildsUpdated(self):
 
-    def _setData(self):
-
-        self.frames = []
-
-        for i, plot in enumerate(self.singlePlots):
-
-            plot.updateSettings(**{key:val for key, val in self.settings.items() if key not in ["PDOSFile", "rootFdf"]})
-
-            if i == 0:
-                self.data = plot.data
-            
-            #Define the frames of the animation
-            self.frames.append({'name': os.path.basename(plot.settings["PDOSFile"]), 'data': plot.data})
-
+        #This will make sure that the correct options are available for the PDOS requests of the parent plot.
+        self.params = copyParams( self.childPlots[0].params, exclude = ["PDOSFile"])

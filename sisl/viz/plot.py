@@ -14,6 +14,7 @@ import plotly.graph_objects as go
 import sisl
 
 from .configurable import *
+from .plotutils import applyMethodOnMultiplePlots, initMultiplePlots, repeatIfChilds
 
 PLOTS_CONSTANTS = {
     "spins": ["up", "down"],
@@ -163,19 +164,6 @@ class Plot(Configurable):
             },
             "onUpdate": "getFigure",
         },
-
-        {
-            "key": "frameDuration",
-            "name": "Frame duration",
-            'default': 500,
-            "inputField": {
-                "type": "textinput",
-                "placeholder": "Write the desired duration...",
-                "width": "offset-s1 offset-m1 m4 s10"
-            },
-            "help": "Time (in ms) that each frame will be displayed. <br> This is only meaningful if you have an animation",
-        },
-        
         
         *[
             param for iAxis, axis in enumerate(["xaxis", "yaxis"]) for param in [
@@ -425,11 +413,18 @@ class Plot(Configurable):
         #Give the user the possibility to overwrite default settings
         if callable( getattr(self, "_afterInit", None )):
             self._afterInit()
-
+        
         #Try to generate the figure (if the settings required are still not there, it won't be generated)
         try:
-            self.readData()
+
+            if MultiplePlot in type.mro(self.__class__):
+                #If its a multiple plot try to inititialize all its child plots
+                self.initAllPlots()
+            else:
+                self.readData()
+                
         except Exception as e:
+            raise e
             print("The plot has been initialized correctly, but the current settings were not enough to generate the figure.\n (Error: {})".format(e))
             pass
     
@@ -449,6 +444,7 @@ class Plot(Configurable):
         
         return string
     
+    @repeatIfChilds
     @afterSettingsUpdate
     def readData(self, updateFig = True, **kwargs):
         '''
@@ -511,6 +507,7 @@ class Plot(Configurable):
         #Set the fdfSile
         rootFdf = self.settings["rootFdf"]
         self.rootDir, fdfFile = os.path.split( rootFdf )
+        self.wdir = os.path.join(self.rootDir, self.settings["resultsPath"])
         self.fdfSile = sisl.get_sile(rootFdf)
         self.struct = self.fdfSile.get("SystemLabel", "")
 
@@ -519,12 +516,11 @@ class Plot(Configurable):
             
         #Check that the required files are there
         #if RequirementsFilter().check(self.rootFdf, self.__class__.__name__ ):
-        if True:
+        if hasattr(self, "_requirements"):
             #If they are there, we can confidently build this list
             self.requiredFiles = [ os.path.join( self.rootDir, self.settings["resultsPath"], req.replace("$struct$", self.struct) ) for req in self.__class__._requirements["files"] ]
-        else:
-            log.error("\t the required files were not found, please check your file system.")
-            raise Exception("The required files were not found, please check your file system.")
+        #else:
+            #raise Exception("The required files were not found, please check your file system.")
 
         return self
     
@@ -548,6 +544,7 @@ class Plot(Configurable):
 
         return self
     
+    @repeatIfChilds
     @afterSettingsUpdate
     def setData(self, updateFig = True, **kwargs):
         
@@ -563,7 +560,7 @@ class Plot(Configurable):
             self.getFigure()
         
         return self
-
+    
     @afterSettingsUpdate
     def getFigure(self, **kwargs):
 
@@ -578,6 +575,27 @@ class Plot(Configurable):
             the updated version of the figure.
 
         '''
+
+        if getattr(self, "childPlots", None):
+            #Then it is a multiple plot and we need to create the figure from the child plots
+
+            self.data = []; self.frames = []
+
+            if getattr(self, "_isAnimation", False):
+
+                self.data = self.childPlots[0].data
+                frameNames = self._getFrameNames()
+                
+                for frameName , plot in zip(frameNames , self.childPlots):
+
+                    self.frames = [*self.frames, {'name': frameName, 'data': plot.data}]
+            
+            else:
+
+                for plot in self.childPlots:
+
+                    self.data = [*self.data, *plot.data]
+            
 
         framesLayout = {}
 
@@ -713,8 +731,7 @@ class Plot(Configurable):
         self.getFigure()
 
         return self
-
-    
+  
     #-------------------------------------------
     #       DATA TRANSFER/STORAGE METHODS
     #-------------------------------------------
@@ -772,5 +789,65 @@ class Plot(Configurable):
 
         return self
 
+#================================================
+#               ANIMATION CLASS
+#================================================
 
+class MultiplePlot(Plot):
+
+    def initAllPlots(self, updateFig = True):
+
+        try:
+            self.setFiles()
+        except Exception:
+            pass
+
+        #Go on to run the init method of the Plot class, which, since a "childPlots" attribute exists, will run for each child plot.
+        self.childPlots = initMultiplePlots(self._plotClasses, kwargsList = self._getInitKwargsList())
+
+        if callable( getattr(self, "_afterChildsUpdated", None )):
+            self._afterChildsUpdated()
+
+        if updateFig:
+            self.getFigure()
+
+        return self
     
+    def updateSettings(self, **kwargs):
+        '''
+        This method takes into account that on plots that contain childs, one may want to update only the parent settings or all the child's settings.
+        '''
+
+        if kwargs.get("onlyOnParent", False) or kwargs.get("exFromDecorator", False):
+
+            return super().updateSettings(**kwargs)
+        
+        else:
+
+            repeatIfChilds(Configurable.updateSettings)(self, **kwargs)
+
+            if callable( getattr(self, "_afterChildsUpdated", None )):
+                self._afterChildsUpdated()
+
+            return self
+        
+class Animation(MultiplePlot):
+
+    _isAnimation = True
+
+    _parameters = (
+        
+        {
+            "key": "frameDuration",
+            "name": "Frame duration",
+            'default': 500,
+            "inputField": {
+                "type": "textinput",
+                "placeholder": "Write the desired duration...",
+                "width": "offset-s1 offset-m1 m4 s10"
+            },
+            "help": "Time (in ms) that each frame will be displayed. <br> This is only meaningful if you have an animation",
+            "onUpdate": "getFigure"
+        },
+    )
+
