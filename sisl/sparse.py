@@ -1704,24 +1704,30 @@ class SparseCSR(object):
         return self
 
     def __getstate__(self):
-        """ Return dictionary with the current state """
-        d = {}
-        # Reduce array sizes
-        self.finalize()
-        return {
+        """ Return dictionary with the current state (finalizing the object may reduce memory footprint) """
+        d = {
             'shape': self._shape[:],
             'ncol': self.ncol.copy(),
             'col': self.col.copy(),
-            'D': self._D.copy()
+            'D': self._D.copy(),
+            'finalized': self._finalized
         }
+        if not self.finalized:
+            d['ptr'] = self.ptr.copy()
+        return d
 
     def __setstate__(self, state):
         """ Reset state of the object """
         self._shape = tuple(state['shape'][:])
         self.ncol = state['ncol']
-        self.ptr = insert(_a.cumsumi(self.ncol), 0, 0)
         self.col = state['col']
         self._D = state['D']
+        self._nnz = self.ncol.sum()
+        self._finalized = state['finalized']
+        if self.finalized:
+            self.ptr = insert(_a.cumsumi(self.ncol), 0, 0)
+        else:
+            self.ptr = state['ptr']
 
 
 def ispmatrix(matrix, map_row=None, map_col=None):
