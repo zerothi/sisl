@@ -96,28 +96,105 @@ def sortOrbitals(orbitals):
     return sorted(orbitals, key = sortKey)
 
 def copyParams(params, only = [], exclude = []):
+    '''
+    Function that returns a copy of the provided plot parameters.
+
+    Arguments
+    ----------
+    params: tuple
+        The parameters that have to be copied. This will come presumably from the "_parameters" variable of some plot class.
+    only: array-like
+        Use this if you only want a certain set of parameters. Pass the wanted keys as a list.
+    exclude: array-like
+        Use this if there are some parameters that you don't want. Pass the unwanted keys as a list.
+        This argument will not be used if "only" is present.
+    
+    Returns
+    ----------
+    copiedParams: tuple
+        The params that the user asked for. They are not linked to the input params, so they can be modified independently.
+    ''' 
 
     if only:
         return tuple( param for param in deepcopy(params) if param["key"] in only)
     else:
         return tuple( param for param in deepcopy(params) if param["key"] not in exclude)
 
-def copyDict(dictInst, exclude = []):
-    return {k: v for k,v  in deepcopy(dictInst).iteritems() if k not in exclude}
+def copyDict(dictInst, only = [], exclude = []):
+    '''
+    Function that returns a copy of a dict. This function is thought to be used for the settings dictionary, for example.
+
+    Arguments
+    ----------
+    dictInst: dict
+        The dictionary that needs to be copied.
+    only: array-like
+        Use this if you only want a certain set of values. Pass the wanted keys as a list.
+    exclude: array-like
+        Use this if there are some values that you don't want. Pass the unwanted keys as a list.
+        This argument will not be used if "only" is present.
+    
+    Returns
+    ----------
+    copiedDict: dict
+        The dictionary that the user asked for. It is not linked to the input dict, so it can be modified independently.
+    ''' 
+
+    if only:
+        return {k: v for k,v  in deepcopy(dictInst).iteritems() if k in only}
+    else:
+        return {k: v for k,v  in deepcopy(dictInst).iteritems() if k not in exclude}
 
 def load(path):
+    '''
+    Loads a previously saved python object using pickle. To be used for plots, sessions, etc...
+
+    Arguments
+    ----------
+    path: str
+        The path to the saved object.
+    
+    Returns
+    ----------
+    loadedObj: object
+        The object that was saved.
+    '''
 
     with open(path, 'rb') as handle:
-        plt = pickle.load(handle)
+        loadedObj = pickle.load(handle)
     
-    return plt
+    return loadedObj
 
 #-------------------------------------
 #            Filesystem
 #-------------------------------------
 
 def findFiles(rootDir, searchString, depth = [0,0], sort = True, sortFn = None):
-    
+    '''
+    Function that finds files (or directories) according to some conditions.
+
+    Arguments
+    -----------
+    rootDir: str
+        Path of the directory from which the search will start.
+    searchString: str
+        This is the string that will be passed to glob.glob() to find files or directories. 
+        It works mostly like bash, so you can use wildcards, for example.
+    depth: array-like of length 2
+        It will specify the limits of the search. 
+        For example, depth = [1,3] will make the function search for the searchString from 1 to 3 directories deep from rootDir.
+        (0 depth means to look for files in the rootDir)
+    sort: optional, boolean
+        Whether the returned list of paths should be sorted.
+    sortFn: optional, function
+        The function that has to be used for sorting the paths. Only meaningful if sort is True.
+
+    Returns
+    -----------
+    paths: list
+        A list with all the paths found for the given conditions and sorted according to the provided arguments.
+    '''
+
     files = []
     for depth in range(depth[0],depth[1] + 1):
         newFiles = glob.glob(os.path.join(rootDir,"*/"*depth, searchString))
@@ -133,12 +210,12 @@ def findFiles(rootDir, searchString, depth = [0,0], sort = True, sortFn = None):
 #         Multiprocessing
 #-------------------------------------
 
-def applyMethod(argsTuple):
+def _applyMethod(argsTuple):
     '''
     Apply a method to an object. This function is meant for multiprocessing.
     '''
 
-    obj, method, args, kwargs = argsTuple
+    method, obj, args, kwargs = argsTuple
 
     if args == None:
         args = []
@@ -147,7 +224,7 @@ def applyMethod(argsTuple):
 
     return obj._getPickleable()
 
-def initSinglePlot(argsTuple):
+def _initSinglePlot(argsTuple):
     '''
     Initialize a single plot. This function is meant to be used in multiprocessing, when multiple plots need to be initialized
     '''
@@ -156,75 +233,159 @@ def initSinglePlot(argsTuple):
 
     return PlotClass(**kwargs)._getPickleable()
 
-def initMultiplePlots(PlotClass, argsList = None, kwargsList = None, nPlots = None):
+def runMultiple(func, *args, argsList = None, kwargsList = None):
     '''
-    Makes use of the multiprocessing module to initialize multiple plots in the fastest way possible
+
+    Makes use of the pathos.multiprocessing module to run a function simultanously multiple times.
+    This is meant mainly to update multiple plots at the same time, which can accelerate significantly the process of visualizing data.
+
+    All arguments passed to the function, except func, can be passed as specified in the arguments section of this documentation
+    or as a list containing multiple instances of them.
+    If a list is passed, each time the function needs to be run it will take the next item of the list.
+    If a single item is passed instead, this item will be repeated for each function run.
+    However, at least one argument must be a list, so that the number of times that the function has to be ran is defined.
 
     Arguments
     ----------
-    PlotClass: child class of sisl.viz.Plot or array of child classes of sisl.viz.Plot
-        If a single class is passed, it will generate all plots with this class.
-        If an array of classes is passed, it will iterate over the array to generate the plots.
-    argsList
+    func: function
+        The function to be executed. It has to be prepared to recieve the arguments as they are provided to it (zipped).
+
+        See the applyMethod() function as an example.
+    *args:
+        Contains all the arguments that are specific to the individual function that we want to run.
+        See each function separately to understand what you need to pass (you may not need this parameter).
+    argsList: array-like
+        An array of arguments that have to be passed to the executed function.
+
+        Can also be a list of arrays (see this function's description).
+
+        WARNING: Currently it only works properly for a list of arrays. Didn't fix this because the lack of interest
+        of argsList on Plot's methods (everything is passed as keyword arguments).
+
+    kwargsList: dict
+        A dictionary with the keyword arguments that have to be passed to the executed function.
+        
+        If the executed function is a Plot's method, these can be the settings, for example.
+
+        Can also be a list of dicts (see this function's description).
+
+    Returns
+    ----------
+    results: list
+        A list with all the returned values or objects from each function execution.
+        This list is ordered, so results[0] is the result of executing the function with argsList[0] and kwargsList[0].  
     '''
 
     #Prepare the arguments to be passed to the initSinglePlot function
-    toZip = [PlotClass, argsList, kwargsList]
+    toZip = [*args, argsList, kwargsList]
     for i, arg in enumerate(toZip):
         if not isinstance(arg, (list, tuple, np.ndarray)):
             toZip[i] = itertools.repeat(arg)
         else:
-            nPlots = len(arg)
+            nTasks = len(arg)
     
     #Create a pool with the appropiate number of processes
-    pool = Pool( min(nPlots, os.cpu_count() - 1) )
+    pool = Pool( min(nTasks, os.cpu_count() - 1) )
     #Define the plots array to store all the plots that we initialize
-    plots = [None]*nPlots
+    results = [None]*nTasks
 
     #Initialize the pool iterator and the progress bar that controls it
-    progress = tqdm.tqdm(pool.imap(initSinglePlot, zip(*toZip) ), total=nPlots)
-    progress.set_description("Reading the files needed in {} processes".format(pool.nodes))
+    progress = tqdm.tqdm(pool.imap(func, zip(*toZip) ), total = nTasks)
+    progress.set_description("Updating {} plots in {} processes".format(nTasks, pool.nodes))
 
     #Run the processes and store each result in the plots array
     for i, res in enumerate(progress):
-        plots[i] = res
-
-    return plots
-
-def applyMethodOnMultiplePlots(objs, method, argsList = None, kwargsList = None):
+        results[i] = res
     
+    return results
+
+def initMultiplePlots(PlotClass, argsList = None, kwargsList = None):
     '''
-    Makes use of the multiprocessing module to manipulate multiple plots faster
+    Initializes a set of plots in multiple processes simultanously making use of runMultiple()
+
+    All arguments passed to the function, can be passed as specified in the arguments section of this documentation
+    or as a list containing multiple instances of them.
+    If a list is passed, each time the function needs to be run it will take the next item of the list.
+    If a single item is passed instead, this item will be repeated for each function run.
+    However, at least one argument must be a list, so that the number of times that the function has to be ran is defined.
 
     Arguments
     ----------
+    PlotClass: child class of sisl.viz.Plot
+        The plot class that must be initialized
+
+        Can also be a list of classes (see this function's description).
+    argsList: array-like
+        An array of arguments that have to be passed to the executed function.
+
+        Can also be a list of arrays (see this function's description).
+
+        WARNING: Currently it only works properly for a list of arrays. Didn't fix this because the lack of interest
+        of argsList on Plot's methods (everything is passed as keyword arguments).
+    kwargsList: dict
+        A dictionary with the keyword arguments that have to be passed to the executed function.
+        
+        If the executed function is a Plot's method, these can be the settings, for example.
+
+        Can also be a list of dicts (see this function's description).
+
+    Returns
+    ----------
+    plots: list
+        A list with all the initialized plots.
+        This list is ordered, so plots[0] is the plot initialized with argsList[0] and kwargsList[0].  
     '''
 
-    #Prepare the arguments to be passed to the initSinglePlot function
-    toZip = [objs, method, argsList, kwargsList]
-    for i, arg in enumerate(toZip):
-        if not isinstance(arg, (list, tuple, np.ndarray)):
-            toZip[i] = itertools.repeat(arg)
-        else:
-            nPlots = len(arg)
+    return runMultiple(_initSinglePlot, PlotClass, argsList = argsList, kwargsList = kwargsList)
+
+def applyMethodOnMultipleObjs(method, objs, argsList = None, kwargsList = None):
     
-    #Create a pool with the appropiate number of processes
-    pool = Pool( min(nPlots, os.cpu_count() - 1) )
-    #Define the plots array to store all the plots that we initialize
-    plots = [None]*nPlots
+    '''
+    Applies a given method to the objects provided on multiple processes simultanously making use of the runMultiple() function.
 
-    #Initialize the pool iterator and the progress bar that controls it
-    progress = tqdm.tqdm(pool.imap(applyMethod, zip(*toZip) ), total=nPlots)
-    progress.set_description("Updating plots in {} processes".format(pool.nodes))
+    This is useful in principle for any kind of object and any method, but has been tested only on plots.
 
-    #Run the processes and store each result in the plots array
-    for i, res in enumerate(progress):
-        plots[i] = res
-    
-    return plots
+    All arguments passed to the function, except method, can be passed as specified in the arguments section of this documentation
+    or as a list containing multiple instances of them.
+    If a list is passed, each time the function needs to be run it will take the next item of the list.
+    If a single item is passed instead, this item will be repeated for each function run.
+    However, at least one argument must be a list, so that the number of times that the function has to be ran is defined.
 
-#This is a decorator that will force a method to be run on all plots in case there are childPlots.
+    Arguments
+    ----------
+    method: func
+        The method to be executed.
+    objs: object
+        The object to which we need to apply the method (e.g. a plot)
+
+        Can also be a list of objects (see this function's description).
+    argsList: array-like
+        An array of arguments that have to be passed to the executed function.
+
+        Can also be a list of arrays (see this function's description).
+
+        WARNING: Currently it only works properly for a list of arrays. Didn't fix this because the lack of interest
+        of argsList on Plot's methods (everything is passed as keyword arguments).
+    kwargsList: dict
+        A dictionary with the keyword arguments that have to be passed to the executed function.
+        
+        If the executed function is a Plot's method, these can be the settings, for example.
+
+        Can also be a list of dicts (see this function's description).
+
+    Returns
+    ----------
+    plots: list
+        A list with all the initialized plots.
+        This list is ordered, so plots[0] is the plot initialized with argsList[0] and kwargsList[0].  
+    '''
+
+    return runMultiple(_applyMethod, method, objs, argsList = argsList, kwargsList = kwargsList)
+
 def repeatIfChilds(method):
+    '''
+    Decorator that will force a method to be run on all the plot's childPlots in case there are any.
+    '''
     
     def applyToAllPlots(obj, *args, **kwargs):
         
@@ -232,7 +393,7 @@ def repeatIfChilds(method):
 
             kwargsList = kwargs.get("kwargsList", kwargs)
             
-            obj.childPlots = applyMethodOnMultiplePlots(obj.childPlots, method, kwargsList = kwargsList)
+            obj.childPlots = applyMethodOnMultipleObjs(method, obj.childPlots, kwargsList = kwargsList)
                 
             obj.updateSettings(onlyOnParent = True, updateFig = False, **kwargs).getFigure()
         
