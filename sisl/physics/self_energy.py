@@ -34,8 +34,12 @@ class SelfEnergy(object):
     """
 
     def __init__(self, *args, **kwargs):
-        """ Self-energy class for constructing a self-energy. """
+        r""" Self-energy class for constructing a self-energy. """
         pass
+
+    def __len__(self):
+        r"""Dimension of the self-energy"""
+        raise NotImplementedError
 
     @staticmethod
     def se2scat(SE):
@@ -189,6 +193,10 @@ class RecursiveSI(SemiInfinite):
         cols = array_arange(idx, idx + n)
         # Delete all values in columns, but keep them to retain the supercell information
         self.spgeom1._csr.delete_columns(cols, keep_shape=True)
+
+    def __len__(self):
+        r"""Dimension of the self-energy"""
+        return len(self.spgeom0)
 
     def green(self, E, k=(0, 0, 0), dtype=None, eps=1e-14, **kwargs):
         r""" Return a dense matrix with the bulk Green function at energy `E` and k-point `k` (default Gamma).
@@ -599,6 +607,10 @@ class RealSpaceSE(SelfEnergy):
         }
         self.set_options(**options)
         self.initialize()
+
+    def __len__(self):
+        r"""Dimension of the self-energy"""
+        return len(self.parent) * np.prod(self._unfold)
 
     def __str__(self):
         """ String representation of RealSpaceSE """
