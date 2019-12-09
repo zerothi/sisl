@@ -44,6 +44,7 @@ Known problems:
 from __future__ import print_function, division
 
 import sys
+import warnings
 import argparse as argp
 import numpy as np
 import sisl as si
@@ -53,22 +54,26 @@ import pyamg
 _script = sys.argv[0]
 
 
-def pyamg_solve(A, b, tolerance=1e-12):
+def pyamg_solve(A, b, tolerance=1e-12, accel=None):
     print("\nSetting up pyamg solver...")
     ml = pyamg.aggregation.smoothed_aggregation_solver(A, max_levels=1000)
+    del A
     print(ml)
-    M = ml.aspreconditioner(cycle='W') # pre-conditioner
     residuals = []
     def callback(x):
         # residuals calculated in the solve function is a pre-conditioned residual
         #residuals.append(np.linalg.norm(b - A.dot(x)) ** 0.5)
         print("    {:4d}  residual = {:.5e}   x0-residual = {:.5e}".format(len(residuals) - 1, residuals[-1], residuals[-1] / residuals[0]))
-    x = ml.solve(b, tol=tolerance, callback=callback, residuals=residuals, accel="cg", maxiter=1e7)
+    x = ml.solve(b, tol=tolerance, callback=callback, residuals=residuals,
+                 accel=accel, cycle='W', maxiter=1e7)
     print('Done solving the Poisson equation!')
     return x
 
 
-def solve_poisson(geometry, shape, radius=2.0, dtype=np.float64, tolerance=1e-12, boundary=None, **elecs_V):
+def solve_poisson(geometry, shape, radius=2.0,
+                  dtype=np.float64, tolerance=1e-12,
+                  accel=None, boundary_fft=True,
+                  box=False, boundary=None, **elecs_V):
     """ Solve Poisson equation """
     error = False
     elecs = []
@@ -166,7 +171,7 @@ def solve_poisson(geometry, shape, radius=2.0, dtype=np.float64, tolerance=1e-12
     print("\nApplying electrode potentials")
     for i, elec in enumerate(elecs):
         print("  - {}".format(elec))
-        idx = grid.index_fold(grid.index(elec_shapes[i]))
+        idx = grid.index_truncate(grid.index(elec_shapes[i]))
         idx = grid.pyamg_index(idx)
         V = elecs_V[elec]
         grid.pyamg_fix(A, b, idx, V)
@@ -175,10 +180,46 @@ def solve_poisson(geometry, shape, radius=2.0, dtype=np.float64, tolerance=1e-12
 
     # Now we have initialized both A and b with correct boundary conditions
     # Lets solve the Poisson equation!
-    x = pyamg_solve(A, b, tolerance=tolerance)
-    grid.grid = x.reshape(shape)
+    if box:
+        # No point in solving the boundary problem if requesting a box
+        boundary_fft = False
+        grid.grid = b.reshape(shape)
+        del A
+    else:
+        x = pyamg_solve(A, b, tolerance=tolerance, accel=accel)
+        grid.grid = x.reshape(shape)
 
-    del A, b
+        del A, b
+
+    if boundary_fft:
+        # Change boundaries to always use dirichlet
+        # This ensures that once we set the boundaries we don't
+        # get any side-effects
+        grid.set_bc(a=grid.DIRICHLET, b=grid.DIRICHLET, c=grid.DIRICHLET)
+        A, b = grid.topyamg()
+
+        # Solve only for the boundary fixed
+        def sl2idx(grid, sl):
+            return grid.pyamg_index(grid.mgrid(sl))
+
+        # Create slices
+        sl = [slice(0, g) for g in grid.shape]
+        new_sl = sl[:]
+
+        # One boundary at a time
+        for i in (0, 1, 2):
+            new_sl = sl[:]
+            new_sl[i] = slice(0, 1)
+            idx = sl2idx(grid, new_sl)
+            grid.pyamg_fix(A, b, idx, grid.grid[new_sl[0], new_sl[1], new_sl[2]].reshape(-1))
+            new_sl[i] = slice(grid.shape[i] - 1, grid.shape[i])
+            idx = sl2idx(grid, new_sl)
+            grid.pyamg_fix(A, b, idx, grid.grid[new_sl[0], new_sl[1], new_sl[2]].reshape(-1))
+
+        grid.grid = _fake()
+        x = pyamg_solve(A, b, tolerance=tolerance, accel=accel)
+        grid.grid = x.reshape(shape)
+        del A, b
 
     return grid
 
@@ -191,13 +232,13 @@ if __name__ == "__main__":
     n = {"a": "first", "b": "second", "c": "third"}
     for d in "abc":
         p.add_argument("--boundary-condition-{}".format(d), "-bc-{}".format(d), nargs=2, type=str, default=["periodic", "periodic"],
-                       metavar=("BC-bottom", "BC-top"),
+                       metavar=("BOTTOM", "TOP"),
                        help=("Boundary condition along the {} lattice vector [periodic, neumann, dirichlet]. "
                              "Provide two to specify separate BC at the start and end of the lattice vector, respectively.".format(n[d])))
 
-    p.add_argument("--radius", "-R", type=float, default=2.,
+    p.add_argument("--radius", "-R", type=float, default=3.,
                    help=("Radius of atoms when figuring out the electrode sizes, this corresponds to the extend of each electrode where boundary"
-                         "conditions are fixed."))
+                         "conditions are fixed [3. Ang]."))
 
     p.add_argument("--dtype", "-d", choices=["d", "f"], default="d",
                    help="Precision of data (d==double, f==single)")
@@ -217,8 +258,19 @@ if __name__ == "__main__":
     p.add_argument("--geometry", default="siesta.TBT.nc",
                    help="siesta.TBT.nc file which contains the geometry and electrode information, currently we cannot read that from fdf-files.")
 
+    p.add_argument("--acceleration", '-A', dest='accel', default='cg',
+                   help="""Acceleration method for pyamg. May be useful if it fails to converge
+
+Try one of: cg, gmres, fgmres, cr, cgnr, cgne, bicgstab, steepest_descent, minimal_residual""")
+
+    p.add_argument("--box", dest='box', action='store_true', default=False,
+                   help="Only store the initial box solution (i.e. do not run PyAMG).")
+
+    p.add_argument("--no-boundary-fft", dest='boundary_fft', action='store_false', default=True,
+                   help="Once the electrode boundary conditions are solved, using this flag will disable we solution of the FFT equivalent to find the required potential drop that corresponds to the FFT solution")
+
     p.add_argument("--out", "-o", action="append", default=None,
-                   help="Output file to store the resulting Poisson solution. It *has* to have TSV.nc file ending to make the file conforming ")
+                   help="Output file to store the resulting Poisson solution. It *has* to have TSV.nc file ending to make the file conforming with TranSiesta.")
 
     # Parse args
     args = p.parse_args()
@@ -244,10 +296,10 @@ if __name__ == "__main__":
         dtype = np.float64
 
     # Now we can solve Poisson
-    if not args.pyamg_shape is None:
-        shape = args.pyamg_shape
-    else:
+    if args.pyamg_shape is None:
         shape = args.shape
+    else:
+        shape = args.pyamg_shape
 
     # Create the boundary conditions
     boundary = []
@@ -256,9 +308,11 @@ if __name__ == "__main__":
     boundary.append(args.boundary_condition_c)
 
     V = solve_poisson(geometry, shape, radius=args.radius, boundary=boundary,
-                      dtype=dtype, tolerance=args.tolerance, **elecs_V)
+                      dtype=dtype, tolerance=args.tolerance, box=args.box,
+                      accel=args.accel, boundary_fft=args.boundary_fft,
+                      **elecs_V)
 
-    if not np.all(V.shape == shape):
+    if np.any(np.array(shape) != np.array(V.shape)):
         print("\nInterpolating the solution...")
         V = V.interp(args.shape)
         print("Done interpolating!")

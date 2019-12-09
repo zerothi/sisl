@@ -29,7 +29,7 @@ class tsvncSileSiesta(gridncSileSiesta):
     def read_grid(self, *args, **kwargs):
         """ Reads the TranSiesta potential input grid """
         sc = self.read_supercell().swapaxes(0, 2)
-        
+
         # Create the grid
         na = len(self._dimension('a'))
         nb = len(self._dimension('b'))

@@ -513,7 +513,7 @@ class Grid(SuperCellChild):
         Examples
         --------
         >>> grid = Grid([10, 10, 10])
-        >>> assert np.all(grid.index2primary([-1, -1, -1]) == 9)
+        >>> assert np.all(grid.index_fold([-1, -1, -1]) == 9)
 
         Parameters
         ----------
@@ -526,6 +526,10 @@ class Grid(SuperCellChild):
         -------
         numpy.ndarray
             all indices are then within the shape of the grid
+
+        See Also
+        --------
+        index_truncate : truncate indices by removing indices outside the primary cell
         """
         index = _a.asarrayi(index)
         ndim = index.ndim
@@ -535,6 +539,41 @@ class Grid(SuperCellChild):
             index = np.unique(index.reshape(-1, 3) % _a.asarrayi(self.shape)[None, :], axis=0)
         else:
             index = index.reshape(-1, 3) % _a.asarrayi(self.shape)[None, :]
+
+        if ndim == 1:
+            return index.ravel()
+        return index
+
+    def index_truncate(self, index):
+        """ Remove indices from *outside* the grid to only retain indices in the "primary" grid
+
+        Examples
+        --------
+        >>> grid = Grid([10, 10, 10])
+        >>> assert len(grid.index_truncate([-1, -1, -1])) == 0
+
+        Parameters
+        ----------
+        index : array_like
+           indices for grid-positions
+
+        Returns
+        -------
+        numpy.ndarray
+            all indices are then within the shape of the grid (others have been removed
+
+        See Also
+        --------
+        index_fold : fold indices into the primary cell
+        """
+        index = _a.asarrayi(index)
+        ndim = index.ndim
+
+        index.shape = (-1, 3)
+        log_and_reduce = np.logical_and.reduce
+        index = index[log_and_reduce(0 <= index, axis=1), :]
+        s = _a.asarrayi(self.shape).reshape(1, 3)
+        index = index[log_and_reduce(index < s, axis=1), :]
 
         if ndim == 1:
             return index.ravel()
@@ -1029,38 +1068,21 @@ class Grid(SuperCellChild):
            Default to the grid's boundary conditions, else `bc` *must* be a list of elements
            with elements corresponding to `Grid.PERIODIC`/`Grid.NEUMANN`...
         """
-        C = -1
-
         def Neumann(idx_bc, idx_p1):
-            # TODO check this BC
             # Set all boundary equations to 0
             s = array_arange(A.indptr[idx_bc], A.indptr[idx_bc+1])
             A.data[s] = 0
             # force the boundary cells to equal the neighbouring cell
-            A[idx_bc, idx_bc] = -C # I am not sure this is correct, but setting it to 0 does NOT work
-            A[idx_bc, idx_p1] = C
-            # ensure the neighbouring cell doesn't connect to the boundary (no back propagation)
-            A[idx_p1, idx_bc] = 0
-            # Ensure the sum of the source for the neighbouring cells equals 0
-            # To make it easy to figure out the diagonal elements we first
-            # set it to 0, then sum off-diagonal terms, and set the diagonal
-            # equal to the sum.
-            A[idx_p1, idx_p1] = 0
-            n = A.indptr[idx_p1+1] - A.indptr[idx_p1]
-            s = array_arange(A.indptr[idx_p1], n=n)
-            n = np.split(A.data[s], np.cumsum(n)[:-1])
-            n = _a.fromiteri(map(np.sum, n))
-            # update diagonal
-            A[idx_p1, idx_p1] = -n
-            del s, n
+            A[idx_bc, idx_bc] = 1
+            A[idx_bc, idx_p1] = -1
             A.eliminate_zeros()
             b[idx_bc] = 0.
         def Dirichlet(idx):
             # Default pyamg Poisson matrix has Dirichlet BC
             b[idx] = 0.
         def Periodic(idx1, idx2):
-            A[idx1, idx2] = C
-            A[idx2, idx1] = C
+            A[idx1, idx2] = -1
+            A[idx2, idx1] = -1
 
         def sl2idx(sl):
             return self.pyamg_index(self.mgrid(sl))
