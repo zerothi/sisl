@@ -1,4 +1,4 @@
-LEARN HOW TO USE IT
+Learn how to use it
 --------
 
 Did you download sisl but you don't know how to use the visualization module?
@@ -9,7 +9,7 @@ In both cases, we recommend you to take a look at the [demo notebook](Demo.ipynb
 
 Don't be lazy and read the docs too, though! :)
 
-BUILD YOUR OWN PLOTS
+Build your own plots
 --------
 
 Do you need to plot something that is not implemented yet?
