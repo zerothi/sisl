@@ -1,3 +1,13 @@
+LEARN HOW TO USE IT
+--------
+
+Did you download sisl but you don't know how to use the visualization module?
+
+Are you already a user of the sisl visualization module but you want to get a quick display of what can be done with it?
+
+In both cases, we recommend you to take a look at the [demo notebook](Demo.ipynb), where we have stuffed all the practical information.
+
+Don't be lazy and read the docs too, though! :)
 
 BUILD YOUR OWN PLOTS
 --------
@@ -8,4 +18,4 @@ Take a look at the [DIY notebook](DIY.ipynb) to check how easy it is to build an
 
 Furthermore, you can **share your representation so that other users can profit from it as well as you can profit from the available representations** so that no code needs to be repeated by thousands of researchers any more. 
 
-Of course, following the guide,  you will get a **graphical interface to interact with your plots** with almost any additional effort.
+Of course, following the guide, you will get a **graphical interface to interact with your plots** with almost any additional effort.
