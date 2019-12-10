@@ -14,7 +14,7 @@ import plotly.graph_objects as go
 import sisl
 
 from .configurable import *
-from .plotutils import applyMethodOnMultiplePlots, initMultiplePlots, repeatIfChilds
+from .plotutils import applyMethodOnMultipleObjs, initMultiplePlots, repeatIfChilds
 
 PLOTS_CONSTANTS = {
     "spins": ["up", "down"],
@@ -424,7 +424,6 @@ class Plot(Configurable):
                 self.readData()
                 
         except Exception as e:
-            raise e
             print("The plot has been initialized correctly, but the current settings were not enough to generate the figure.\n (Error: {})".format(e))
             pass
     
@@ -438,7 +437,7 @@ class Plot(Configurable):
         
         '''.format(
             self.__class__.__name__,
-            self._plotType,
+            getattr(self, "_plotType", None),
             "\n".join([ "\t- {}: {}".format(key,value) for key, value in self.settings.items()])
         )
         
@@ -664,7 +663,7 @@ class Plot(Configurable):
         }
             
         self.figure = go.Figure({
-            'data': self.data,
+            'data': getattr(self, 'data', []),
             'layout': self.layout,
             'frames': getattr(self, 'frames', []),
         })
@@ -677,8 +676,10 @@ class Plot(Configurable):
     #-------------------------------------------
 
     def show(self):
+
+        fig = getattr(self, "figure", self.getFigure())
         
-        return self.figure.show()
+        return fig.show()
     
     def merge(self, plotsToMerge, inplace = False, asAnimation = False, **kwargs):
         '''
