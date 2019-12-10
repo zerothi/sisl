@@ -73,6 +73,7 @@ def pyamg_solve(A, b, tolerance=1e-12, accel=None):
 def solve_poisson(geometry, shape, radius=2.0,
                   dtype=np.float64, tolerance=1e-12,
                   accel=None, boundary_fft=True,
+                  device_val=None,
                   box=False, boundary=None, **elecs_V):
     """ Solve Poisson equation """
     error = False
@@ -99,10 +100,11 @@ def solve_poisson(geometry, shape, radius=2.0,
         bc = [[si.Grid.PERIODIC, si.Grid.PERIODIC] for _ in range(3)]
     else:
         bc = []
+        def bc2bc(s):
+            return {'periodic': 'PERIODIC', 'dirichlet': 'DIRICHLET', 'neumann': 'NEUMANN',
+                    'p': 'PERIODIC', 'd': 'DIRICHLET', 'n': 'NEUMANN'}.get(s.lower(), s.upper())
         for bottom, top in boundary:
-            bottom = bottom.upper()
-            top = top.upper()
-            bc.append([getattr(si.Grid, bottom), getattr(si.Grid, top)])
+            bc.append([getattr(si.Grid, bc2bc(bottom)), getattr(si.Grid, bc2bc(top))])
         if len(bc) != 3:
             raise ValueError("{}: Requires a 3x2 list input for the boundary conditions.".format(_script))
 
@@ -110,13 +112,11 @@ def solve_poisson(geometry, shape, radius=2.0,
         """ Takes two lists A and B which are forming a tree """
         AA, BB = None, None
         if len(A) == 1:
-            #add_A.append(A[0])
             AA = si.Sphere(radius, xyz[A[0]])
             if len(B) == 0:
                 return AA
 
         if len(B) == 1:
-            #add_B.append(B[0])
             BB = si.Sphere(radius, xyz[B[0]])
             if len(A) == 0:
                 return BB
@@ -135,22 +135,6 @@ def solve_poisson(geometry, shape, radius=2.0,
 
         return AA | BB
 
-    #add_A = []
-    #add_B = []
-
-    print("Constructing electrode regions for fixing potential")
-    elec_shapes = []
-    xyz = geometry.xyz
-    for elec in elecs:
-        print("  - {}".format(elec))
-        # Get electrode indices and coordinates
-        idx_elec = geometry.names[elec]
-        idx_1, idx_2 = np.array_split(idx_elec, 2)
-        #add_A.clear()
-        #add_B.clear()
-        elec_shapes.append(_create_shape_tree(xyz, idx_1, idx_2))
-        #assert len(add_A) + len(add_B) == len(idx_elec)
-
     # Create grid
     grid = si.Grid(shape, geometry=geometry, bc=bc, dtype=dtype)
     class _fake(object):
@@ -167,16 +151,33 @@ def solve_poisson(geometry, shape, radius=2.0,
     # Construct matrices we need to specify the boundary conditions on
     A, b = grid.topyamg()
 
+    # Short-hand notation
+    xyz = geometry.xyz
+
+    if not device_val is None:
+        print("\nApplying device potential = {}".format(device_val))
+        idx = geometry.names[elec]
+        idx_1, idx_2 = np.array_split(idx, 2)
+        device = _create_shape_tree(xyz, idx_1, idx_2)
+        del idx_1, idx_2
+        idx = grid.index_truncate(grid.index(device))
+        idx = grid.pyamg_index(idx)
+        grid.pyamg_fix(A, b, idx, device_val)
+
     # Apply electrode constants
     print("\nApplying electrode potentials")
     for i, elec in enumerate(elecs):
-        print("  - {}".format(elec))
-        idx = grid.index_truncate(grid.index(elec_shapes[i]))
-        idx = grid.pyamg_index(idx)
         V = elecs_V[elec]
+        print("  - {} = {}".format(elec, V))
+
+        idx = geometry.names[elec]
+        idx_1, idx_2 = np.array_split(idx, 2)
+        elec_shape = _create_shape_tree(xyz, idx_1, idx_2)
+
+        idx = grid.index_truncate(grid.index(elec_shape))
+        idx = grid.pyamg_index(idx)
         grid.pyamg_fix(A, b, idx, V)
-        del idx
-    del elec_shapes
+    del idx, idx_1, idx_2, elec_shape
 
     # Now we have initialized both A and b with correct boundary conditions
     # Lets solve the Poisson equation!
@@ -195,7 +196,12 @@ def solve_poisson(geometry, shape, radius=2.0,
         # Change boundaries to always use dirichlet
         # This ensures that once we set the boundaries we don't
         # get any side-effects
-        grid.set_bc(a=grid.DIRICHLET, b=grid.DIRICHLET, c=grid.DIRICHLET)
+        periodic = grid.bc[:, 0] == grid.PERIODIC
+        bc = np.repeat(np.array([grid.DIRICHLET], np.int32), 6).reshape(3, 2)
+        for i in (0, 1, 2):
+            if periodic[i]:
+                bc[i, :] = grid.PERIODIC
+        grid.set_bc(bc)
         A, b = grid.topyamg()
 
         # Solve only for the boundary fixed
@@ -208,6 +214,8 @@ def solve_poisson(geometry, shape, radius=2.0,
 
         # One boundary at a time
         for i in (0, 1, 2):
+            if periodic[i]:
+                continue
             new_sl = sl[:]
             new_sl[i] = slice(0, 1)
             idx = sl2idx(grid, new_sl)
@@ -231,9 +239,9 @@ if __name__ == "__main__":
 
     n = {"a": "first", "b": "second", "c": "third"}
     for d in "abc":
-        p.add_argument("--boundary-condition-{}".format(d), "-bc-{}".format(d), nargs=2, type=str, default=["periodic", "periodic"],
+        p.add_argument("--boundary-condition-{}".format(d), "-bc-{}".format(d), nargs=2, type=str, default=["p", "p"],
                        metavar=("BOTTOM", "TOP"),
-                       help=("Boundary condition along the {} lattice vector [periodic, neumann, dirichlet]. "
+                       help=("Boundary condition along the {} lattice vector [periodic/p, neumann/n, dirichlet/d]. "
                              "Provide two to specify separate BC at the start and end of the lattice vector, respectively.".format(n[d])))
 
     p.add_argument("--radius", "-R", type=float, default=3.,
@@ -257,6 +265,9 @@ if __name__ == "__main__":
 
     p.add_argument("--geometry", default="siesta.TBT.nc",
                    help="siesta.TBT.nc file which contains the geometry and electrode information, currently we cannot read that from fdf-files.")
+
+    p.add_argument("--device", '-D', type=float, default=None,
+                   help="Fix the value of all device atoms to a value. In some cases this turns out to yield a better box boundary. The default is to *not* fix the potential on the device atoms.")
 
     p.add_argument("--acceleration", '-A', dest='accel', default='cg',
                    help="""Acceleration method for pyamg. May be useful if it fails to converge
@@ -310,6 +321,7 @@ Try one of: cg, gmres, fgmres, cr, cgnr, cgne, bicgstab, steepest_descent, minim
     V = solve_poisson(geometry, shape, radius=args.radius, boundary=boundary,
                       dtype=dtype, tolerance=args.tolerance, box=args.box,
                       accel=args.accel, boundary_fft=args.boundary_fft,
+                      device_val=args.device,
                       **elecs_V)
 
     if np.any(np.array(shape) != np.array(V.shape)):
