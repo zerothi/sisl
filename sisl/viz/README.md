@@ -1,4 +1,12 @@
-Learn how to use it
+
+Welcome to the sisl visualization module!
+
+Hey, there's a graphical interface for it!
+--------
+
+Did you know this? You can use the [graphical interface](https://github.com/pfebrer96/sisl-GUI) to **produce and manage plots in a visual way**. This is likely to **accelerate your analysis process** dramatically as well as becoming a very useful **platform to discuss and share results** with your collaborators/colleagues.
+
+Learn how to use the package
 --------
 
 Did you download sisl but you don't know how to use the visualization module?
