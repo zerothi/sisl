@@ -668,6 +668,8 @@ class Plot(Configurable):
             'frames': getattr(self, 'frames', []),
         })
 
+        if callable( getattr(self, "_afterGetFigure", None )):
+            self._afterGetFigure()
 
         return self.figure
     
@@ -677,9 +679,10 @@ class Plot(Configurable):
 
     def show(self):
 
-        fig = getattr(self, "figure", self.getFigure())
+        if not hasattr(self, "figure"):
+            self.getFigure()
         
-        return fig.show()
+        return self.figure.show()
     
     def merge(self, plotsToMerge, inplace = False, asAnimation = False, **kwargs):
         '''
