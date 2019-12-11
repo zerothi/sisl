@@ -1356,6 +1356,15 @@ class Grid(SuperCellChild):
                        action=RemoveDirectionGrid,
                        help='Reduce the grid by removing a subset of the grid (along DIR).')
 
+        # Scale the grid with this value
+        class ScaleGrid(argparse.Action):
+
+            def __call__(self, parser, ns, value, option_string=None):
+                ns._grid.grid *= value
+        p.add_argument(*opts('--scale', '-S'), type=float,
+                       action=ScaleGrid,
+                       help='Scale grid values.')
+
         # Define size of grid
         class PrintInfo(argparse.Action):
 
