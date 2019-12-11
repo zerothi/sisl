@@ -20,7 +20,8 @@ PLOTS_CONSTANTS = {
     "spins": ["up", "down"],
     "readFuncs": {
         "fromH": lambda obj: obj._readfromH, 
-        "siesOut": lambda obj: obj._readSiesOut
+        "siesOut": lambda obj: obj._readSiesOut,
+        "noSource": lambda obj: obj._readNoSource
     }
 }
 
@@ -71,7 +72,7 @@ class Plot(Configurable):
             "key": "readingOrder",
             "name": "Output reading/generating order",
             "group": "dataread",
-            "default": ("guiOut", "siesOut", "fromH"),
+            "default": ("guiOut", "siesOut", "fromH", "noSource"),
             "help": "Order in which the plot tries to read the data it needs.",
             "onUpdate": "readData",
             
@@ -735,7 +736,20 @@ class Plot(Configurable):
         self.getFigure()
 
         return self
-  
+    
+    def vLine(self, x):
+        '''
+        Draws a vertical line in the figure (NOT WORKING YET!)
+        '''
+
+        yrange = self.figure.layout.yaxis.range or [0, 7000]
+
+        print(yrange)
+    
+        self.figure.add_scatter(mode = "lines", x = [x,x], y = yrange, hoverinfo = 'none', showlegend = False)
+
+        return self
+
     #-------------------------------------------
     #       DATA TRANSFER/STORAGE METHODS
     #-------------------------------------------
