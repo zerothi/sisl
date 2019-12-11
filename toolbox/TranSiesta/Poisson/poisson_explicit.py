@@ -324,7 +324,7 @@ Try one of: cg, gmres, fgmres, cr, cgnr, cgne, bicgstab, steepest_descent, minim
                       device_val=args.device,
                       **elecs_V)
 
-    if np.any(np.array(shape) != np.array(V.shape)):
+    if np.any(np.array(args.shape) != np.array(V.shape)):
         print("\nInterpolating the solution...")
         V = V.interp(args.shape)
         print("Done interpolating!")
