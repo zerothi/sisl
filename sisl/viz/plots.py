@@ -241,6 +241,12 @@ class BandsPlot(Plot):
 
         self.data = sorted(self.data, key = lambda x: x["name"])
 
+    def _afterGetFigure(self):
+
+        #Add the ticks
+        self.figure.layout.xaxis.tickvals = self.ticks[0]
+        self.figure.layout.xaxis.ticktext = self.ticks[1]
+
 class BandsAnimation(Animation):
 
     #Define all the class attributes
