@@ -270,9 +270,6 @@ class _SparseGeometry(object):
                 # Not found, i.e. new, so no need to translate
                 pass
 
-        if len(old) not in [self.n_s, sc.n_s]:
-            raise SislError("Not all supercells are accounted for")
-
         # 1. Ensure that any one of the *old* supercells that
         #    are now deleted are put in the end
         for i, j in enumerate(deleted.nonzero()[0]):
