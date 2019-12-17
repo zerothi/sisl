@@ -266,7 +266,7 @@ class _SparseGeometry(object):
                 old.append(j)
                 new.append(i)
                 deleted[j] = False
-            except:
+            except ValueError:
                 # Not found, i.e. new, so no need to translate
                 pass
 
@@ -307,12 +307,11 @@ class _SparseGeometry(object):
             new = array_arange(new * size, n=n)
 
             # Move data to new positions
-            self._csr.translate_columns(old, new)
+            self._csr.translate_columns(old, new, clean=False)
 
             max_n = new.max() + 1
         else:
             max_n = 0
-
         # Make sure we delete all column values where we have put fake values
         delete = _a.arangei(sc.n_s * size, max(max_n, self.shape[1]))
         if len(delete) > 0:
@@ -322,6 +321,7 @@ class _SparseGeometry(object):
         shape = list(self._csr.shape)
         shape[1] = size * sc.n_s
         self._csr._shape = tuple(shape)
+        self._csr._clean_columns()
 
         self.geometry.set_nsc(*args, **kwargs)
 
@@ -1696,7 +1696,7 @@ class SparseOrbital(_SparseGeometry):
     def sub_orbital(self, atom, orbital):
         """ Retain only a subset of the orbitals on `atom` according to `orbital`
 
-        This allows one to retain only a given subset of the sparse matrix elements. 
+        This allows one to retain only a given subset of the sparse matrix elements.
 
         Parameters
         ----------
