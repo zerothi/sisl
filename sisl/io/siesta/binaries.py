@@ -171,7 +171,7 @@ class onlysSileSiesta(SileBinSiesta):
     def read_overlap(self, **kwargs):
         """ Returns the overlap matrix from the TranSiesta file """
         tshs_g = self.read_geometry()
-        geom = _geometry_align(tshs_g, kwargs.get('geometry', tshs_g), self.__class__, 'read_overlap')
+        geom = _geometry_align(tshs_g, kwargs.get('geometry', None) or tshs_g, self.__class__, 'read_overlap')
 
         # read the sizes used...
         sizes = _siesta.read_tshs_sizes(self.file)
