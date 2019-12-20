@@ -233,7 +233,7 @@ def _initSinglePlot(argsTuple):
 
     return PlotClass(**kwargs)._getPickleable()
 
-def runMultiple(func, *args, argsList = None, kwargsList = None):
+def runMultiple(func, *args, argsList = None, kwargsList = None, messageFn = None):
     '''
 
     Makes use of the pathos.multiprocessing module to run a function simultanously multiple times.
@@ -269,6 +269,9 @@ def runMultiple(func, *args, argsList = None, kwargsList = None):
 
         Can also be a list of dicts (see this function's description).
 
+    messageFn: function
+        Function that recieves the number of tasks and nodes and needs to return a string to display as a description of the progress bar.
+
     Returns
     ----------
     results: list
@@ -283,7 +286,7 @@ def runMultiple(func, *args, argsList = None, kwargsList = None):
             toZip[i] = itertools.repeat(arg)
         else:
             nTasks = len(arg)
-    
+
     #Create a pool with the appropiate number of processes
     pool = Pool( min(nTasks, os.cpu_count() - 1) )
     #Define the plots array to store all the plots that we initialize
@@ -291,11 +294,22 @@ def runMultiple(func, *args, argsList = None, kwargsList = None):
 
     #Initialize the pool iterator and the progress bar that controls it
     progress = tqdm.tqdm(pool.imap(func, zip(*toZip) ), total = nTasks)
-    progress.set_description("Updating {} plots in {} processes".format(nTasks, pool.nodes))
+
+    #Set a description for the progress bar
+    if not callable(messageFn):
+        message = "Updating {} plots in {} processes".format(nTasks, pool.nodes)
+    else:
+        message = messageFn(nTasks, pool.nodes)
+
+    progress.set_description(message)
 
     #Run the processes and store each result in the plots array
     for i, res in enumerate(progress):
         results[i] = res
+    
+    pool.close()
+    pool.join()
+    pool.clear()
     
     return results
 
