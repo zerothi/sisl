@@ -796,6 +796,36 @@ class LDOSmap(Plot):
             "help": '''Provide the points to generate the path through which STS need to be calculated.''',
             "onUpdate": "readData",
         },
+
+        {
+            "key": "zmin",
+            "name": "Lower Z bound",
+            "default": 0,
+            "inputField": {
+                "type": "number",
+                "width": "s30%",
+                "params": {
+                    "min": 0,
+                    "step": 10*-6
+                }
+            },
+            "onUpdate": "setData", 
+        },
+
+        {
+            "key": "zmax",
+            "name": "Upper Z bound",
+            "default": 0,
+            "inputField": {
+                "type": "number",
+                "width": "s30%",
+                "params": {
+                    "min": 0,
+                    "step": 10*-6
+                }
+            },
+            "onUpdate": "setData", 
+        },
     
     )
 
@@ -903,9 +933,19 @@ class LDOSmap(Plot):
         os.remove(outputFile)
         os.remove(tempFdf)
 
+        #Update the values for the limits so that they are automatically set
+        self.updateSettings(updateFig = False, zmin = 0, zmax = 0)
+
     def _setData(self):
 
-        self.data = [{'type': 'heatmap', 'z': self.spectra.T, 'y': np.linspace(*self.settings["Erange"], self.settings["nE"])}]
+        self.data = [{
+            'type': 'heatmap',
+            'z': self.spectra.T,
+            #These limits determine the contrast of the image
+            'zmin': self.settings["zmin"],
+            'zmax': self.settings["zmax"],
+            #Yaxis is the energy axis
+            'y': np.linspace(*self.settings["Erange"], self.settings["nE"])}]
 
     def plotSTSpectra(spectra, path):
 
