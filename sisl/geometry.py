@@ -404,7 +404,6 @@ class Geometry(SuperCellChild):
         sc = self.sc.copy()
         for i in range(3):
             sc = sc.cut(supercell[i], i)
-        sc.set_nsc(supercell)
 
         # Now we need to find the atoms that are in the primary cell
         # We do this by finding all coordinates within the primary unit-cell
