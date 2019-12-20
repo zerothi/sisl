@@ -13,6 +13,7 @@ from sisl.physics import SparseOrbitalBZ
 from sisl.physics import DensityMatrix, EnergyDensityMatrix
 from sisl.physics import DynamicalMatrix
 from sisl.physics import Hamiltonian
+from sisl.physics.overlap import Overlap
 try:
     from . import _siesta
 except:
@@ -217,7 +218,7 @@ class ncSileSiesta(SileCDFSiesta):
 
     def read_overlap(self, **kwargs):
         """ Returns a overlap matrix from the underlying NetCDF file """
-        S = self._read_class(SparseOrbitalBZ, **kwargs)
+        S = self._read_class(Overlap, **kwargs)
 
         sp = self._crt_grp(self, 'SPARSE')
         S._csr._D[:, 0] = sp.variables['S'][:]

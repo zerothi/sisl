@@ -18,6 +18,7 @@ from sisl import Geometry, Atom, Atoms, SuperCell, Grid
 from sisl.unit.siesta import unit_convert
 from sisl.physics.sparse import SparseOrbitalBZ
 from sisl.physics import Hamiltonian, DensityMatrix, EnergyDensityMatrix
+from sisl.physics.overlap import Overlap
 from ._help import *
 
 
@@ -189,7 +190,7 @@ class onlysSileSiesta(SileBinSiesta):
         _bin_check(self, 'read_overlap', 'could not read overlap matrix.')
 
         # Create the Hamiltonian container
-        S = SparseOrbitalBZ(geom, nnzpr=1)
+        S = Overlap(geom, nnzpr=1)
 
         # Create the new sparse matrix
         S._csr.ncol = ncol.astype(np.int32, copy=False)
@@ -597,7 +598,7 @@ class hsxSileSiesta(SileBinSiesta):
                             'inconsistent with HSX file.')
 
         # Create the Hamiltonian container
-        S = SparseOrbitalBZ(geom, nnzpr=1)
+        S = Overlap(geom, nnzpr=1)
 
         # Create the new sparse matrix
         S._csr.ncol = ncol.astype(np.int32, copy=False)
