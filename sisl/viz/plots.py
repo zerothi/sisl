@@ -14,7 +14,7 @@ import shutil
 
 import sisl
 from .plot import Plot, MultiplePlot, Animation, PLOTS_CONSTANTS
-from .plotutils import sortOrbitals, initMultiplePlots, copyParams, findFiles
+from .plotutils import sortOrbitals, initMultiplePlots, copyParams, findFiles, runMultiple
 
 class BandsPlot(Plot):
 
@@ -744,6 +744,46 @@ class LDOSmap(Plot):
         },
 
         {
+            "key": "trajectory",
+            "name": "Trajectory",
+            "default": [],
+            "help": '''You can directly provide a trajectory instead of the corner points.<br>
+                    This option has preference over 'points', but can't be used through the GUI.<br>
+                    It is useful if you want a non-straight trajectory.''',
+            "onUpdate": "readData", 
+        },
+
+        {
+            "key": "widenFunc",
+            "name": "Widen function",
+            "default": None,
+            "help": '''You can widen the path with this parameter. 
+                    This option has preference over 'widenX', 'widenY' and 'widenZ', but can't be used through the GUI.<br>
+                    This must be a function that gets a point of the path and returns a set of points surrounding it (including the point itself).<br>
+                    All points of the path must be widened with the same amount of points, otherwise you will get an error.''',
+            "onUpdate": "readData", 
+        },
+
+        {
+            "key" : "widenMethod",
+            "name" : "Widen Method",
+            "default": "sum",
+            "inputField": {
+                "type": "dropdown",
+                "width": "s100% m50% l40%",
+                "params": {
+                    "options":  [{"label": "Sum", "value": "sum"}, {"label" : "Average", "value": "average"}],
+                    "isMulti": True,
+                    "placeholder": "",
+                    "isClearable": True,
+                    "isSearchable": True,    
+                },
+            },
+            "help": "Determines whether values surrounding a point should be summed or averaged",
+            "onUpdate": "setData",
+        },
+
+        {
             "key": "points",
             "name": "Path points" ,
             "default": [{"x": 0, "y": 0, "z": 0, "active": True}],
@@ -865,82 +905,175 @@ class LDOSmap(Plot):
             print("\nFERMI LEVEL NOT FOUND IN THE OUTPUT FILE. \nEnergy values will be absolute\n")
             self.fermi = 0
 
-        Emin, Emax = np.array(self.settings["Erange"]) + self.fermi
-
-        Estep = (Emax - Emin)/self.settings["nE"]
-
-        points = np.array([[point["x"],point["y"],point["z"]] for point in self.settings["points"] if point["active"]])
-        if len(points) < 2:
-            raise Exception("You need more than 1 point to generate a path! You better provide 2 next time...\n")
-
-        #Generate an evenly distributed path along the points provided
-        self.path = []
-        #This array will store the number of points that each stage has
-        pointsByStage = np.zeros(len(points) - 1)
-
-        for i, point in enumerate(points[1:]):
-
-            prevPoint = points[i]
-
-            distance = np.linalg.norm(point - prevPoint)
-            nSteps = int(round(distance/self.settings["distStep"])) + 1
-
-            #Add the trajectory from the previous point to this one to the path
-            self.path = [*self.path, *np.linspace(prevPoint, point, nSteps)]
-
-            pointsByStage[i] = nSteps
+        #Get the path (this also sets some attributes: 'distances', 'pointsByStage', 'totalPoints')
+        self._getPath()
         
-        self.path = np.array(self.path)
-
-        #Get the number of points for each stage and the total number of points in the path
-        totalPoints = int(pointsByStage.sum())
-        iCorners = pointsByStage.cumsum()
-
         #Prepare the array that will store all the spectra
-        self.spectra = np.zeros((totalPoints, self.settings["nE"]))
+        self.spectra = np.zeros((self.path.shape[0], self.path.shape[1], self.settings["nE"]))
 
         #Copy selected WFSX into WFSX if it exists (denchar reads from .WFSX)
         shutil.copyfile(os.path.join(self.rootDir, '{}.selected.WFSX'.format(self.struct)),
             os.path.join(self.rootDir, '{}.WFSX'.format(self.struct) ) )
 
-        tempFdf = os.path.join(self.rootDir, '{}STS.fdf'.format(self.struct))
-        outputFile = os.path.join(self.rootDir, '{}.STS'.format(self.struct))
-
         #Denchar needs to be run from the directory where everything is stored
         cwd = os.getcwd()
         os.chdir(self.rootDir)
 
-        for iPoint, point in enumerate(self.path):
+        def getSpectraForPath(argsTuple):
 
-            #Generate the appropiate input file
+            path, nE, iPath, rootDir, struct, STSflags, args, kwargs = argsTuple
 
-            #Copy the root fdf
-            shutil.copyfile( self.settings["rootFdf"], tempFdf )
+            #Generate a temporal directory so that we don't interfere with the other processes
+            tempDir = "{}tempSTS".format(iPath)
 
-            #And then append flags for denchar
-            with open(tempFdf, "a") as fh:
-                fh.write(self._getdencharSTSfdf(point))
+            os.makedirs(tempDir, exist_ok = True)
+            os.chdir(tempDir)
 
-            #Do the STS calculation for the point
-            os.system("denchar < {}".format(tempFdf))
+            tempFdf = os.path.join('{}STS.fdf'.format(struct))
+            outputFile = os.path.join('{}.STS'.format(struct))
 
-            #Retrieve and save the output appropiately
-            spectrum = np.loadtxt(outputFile)
+            #Link all the needed files to this directory
+            os.system("ln -s ../*fdf ../*out ../*ion* ../*WFSX ../*DIM ../*PLD . ")
 
-            self.spectra[iPoint,:] = np.flip(spectrum[:,1])
+            spectra = []
+
+            for i, point in enumerate(path):
+
+                #Generate the appropiate input file
+
+                #Copy the root fdf
+                shutil.copyfile( os.path.basename(kwargs["rootFdf"]), tempFdf )
+
+                #And then append flags for denchar
+                with open(tempFdf, "a") as fh:
+                    fh.write(STSflags[i])
+                    
+                #Do the STS calculation for the point
+                os.system("denchar < {} > /dev/null".format(tempFdf))
+
+                if i%100 == 0 and i != 0:
+                    print("PATH {}. Points calculated: {}".format(iPath, i))
+
+                #Retrieve and save the output appropiately
+                try:
+                    spectrum = np.loadtxt(outputFile)
+
+                    spectra.append(spectrum[:,1])
+                except Exception:
+                    #If any spectrum was read, just fill it with zeros
+
+                    spectra.append(np.zeros(nE))
+
+                
+            os.chdir("..")
+            shutil.rmtree(tempDir, ignore_errors=True)
+
+            return spectra
+
+        self.spectra = runMultiple(
+            getSpectraForPath,
+            self.path,
+            self.settings["nE"],
+            list( range(self.path.shape[0]) ),
+            self.rootDir, self.struct,
+            #All the strings that need to be added to each file
+            [ [self._getdencharSTSfdf(point) for point in points] for points in self.path ],
+            kwargsList = {"rootFdf" : self.settings["rootFdf"]},
+            messageFn = lambda nTasks, nodes: "Calculating {} simultaneous paths in {} nodes".format(nTasks, nodes)
+        )
+
+        self.spectra = np.array(self.spectra)
+
+
+        #for i in range(self.path.shape[0]):
+
+            
+            
+            # for j in range(self.path.shape[1]):
+
+            #     point = self.path[i,j,:]
+
+            #     #Generate the appropiate input file
+
+            #     #Copy the root fdf
+            #     shutil.copyfile( self.settings["rootFdf"], tempFdf )
+
+            #     #And then append flags for denchar
+            #     with open(tempFdf, "a") as fh:
+            #         fh.write(self._getdencharSTSfdf(point))
+
+            #     #Do the STS calculation for the point
+            #     os.system("denchar < {}".format(tempFdf))
+
+            #     #Retrieve and save the output appropiately
+            #     spectrum = np.loadtxt(outputFile)
+
+            #     self.spectra[i, j,:] = spectrum[:,1]
 
         os.chdir(cwd)
-        os.remove(outputFile)
-        os.remove(tempFdf)
-
+        
         #Update the values for the limits so that they are automatically set
         self.updateSettings(updateFig = False, zmin = 0, zmax = 0)
+    
+    def _getPath(self):
+
+        if self.settings["trajectory"]:
+            #If the user provides a trajectory, we are going to use that without questioning it
+            self.path = np.array(self.settings["trajectory"])
+
+            #At the moment these make little sense, but in the future there will be the possibility to add breakpoints
+            self.pointsByStage = np.array([len(self.path)])
+            self.distances = np.array( [np.linalg.norm(self.path[-1] - self.path[0])] )
+        else:
+            #Otherwise, we will calculate the trajectory according to the points provided
+            points = np.array([[point["x"],point["y"],point["z"]] for point in self.settings["points"] if point["active"]])
+
+            nCorners = len(points)
+            if nCorners < 2:
+                raise Exception("You need more than 1 point to generate a path! You better provide 2 next time...\n")
+
+            #Generate an evenly distributed path along the points provided
+            self.path = []
+            #This array will store the number of points that each stage has
+            self.pointsByStage = np.zeros(nCorners - 1)
+            self.distances = np.zeros(nCorners - 1)
+
+            for i, point in enumerate(points[1:]):
+
+                prevPoint = points[i]
+
+                self.distances[i] = np.linalg.norm(point - prevPoint)
+                nSteps = int(round(self.distances[i]/self.settings["distStep"])) + 1
+
+                #Add the trajectory from the previous point to this one to the path
+                self.path = [*self.path, *np.linspace(prevPoint, point, nSteps)]
+
+                self.pointsByStage[i] = nSteps
+            
+            self.path = np.array(self.path)
+        
+        #Then, let's widen the path if the user wants to do it (check also points that surround the path)
+        if callable(self.settings["widenFunc"]):
+            self.path = self.settings["widenFunc"](self.path)
+        else:
+            #This is just to normalize path
+            self.path = np.expand_dims(self.path, 0)
+        
+        #Store the total number of points of the path
+        self.nPathPoints = self.path.shape[1]
+        self.totalPoints = self.path.shape[0] * self.path.shape[1]
+        self.iCorners = self.pointsByStage.cumsum()
 
     def _setData(self):
 
+        if self.settings["widenMethod"] == "sum":
+            spectraToPlot = self.spectra.sum(axis = 0)
+        elif self.settings["widenMethod"] == "average":
+            spectraToPlot = self.spectra.mean(axis = 0)
+
         self.data = [{
             'type': 'heatmap',
-            'z': self.spectra.T,
+            'z': spectraToPlot.T,
             #These limits determine the contrast of the image
             'zmin': self.settings["zmin"],
             'zmax': self.settings["zmax"],
@@ -1042,14 +1175,3 @@ class LDOSmap(Plot):
         print('-  Press "t" to save the data to a file.')
         print('-  Click on a part of the image to get the point of the material to which it corresponds.')
         plt.show()
-
-    def showSTS(struct, directory, templatePath):
-
-        #Get directories to switch between them
-        home = os.getcwd()
-
-        os.chdir(directory)
-        spectra, path = getSTSpectra(struct, templatePath)
-        os.chdir(home)
-
-        plotSTSpectra(spectra, path)
