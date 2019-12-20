@@ -10,6 +10,7 @@ from copy import deepcopy
 import tqdm
 
 import os
+import shutil
 
 import sisl
 from .plot import Plot, MultiplePlot, Animation, PLOTS_CONSTANTS
@@ -555,8 +556,13 @@ class PdosPlot(Plot):
             iEmax = int( ( Emax - min(self.E) ) / Estep )
             iEmin = int( ( Emin - min(self.E) ) / Estep )
             self.Ecut = self.E[ iEmin : iEmax+1 ]
+            
+            if len(self.Ecut) <= 1:
+                print("PDOS Plot error: There is no data for the provided energy range ({}).\n The energy range of the read data is: [{},{}]"
+                    .format(self.settings["Erange"], min(self.E), max(self.E))
+                )
         #else:
-        #    self.readData( fromH = True )
+        #    self.readData()
 
         #Initialize the data object for the plotly graph
         self.data = []
@@ -589,7 +595,7 @@ class PdosPlot(Plot):
             if PDOS.isnull().values.all(axis=0)[0]:
 
                 PDOS = []
-                log.warning("No PDOS for the following request: {}".format(request.params))
+                print("PDOS Plot warning: No PDOS for the following request: {}".format(request.params))
             else:
                 
                 PDOS = PDOS.sum(1, skipna = True)
@@ -657,3 +663,353 @@ class PdosAnimation(Animation):
 
         #This will make sure that the correct options are available for the PDOS requests of the parent plot.
         self.params = copyParams( self.childPlots[0].params, exclude = ["PDOSFile"])
+
+class LDOSmap(Plot):
+    '''
+    Generates a heat map with the STS spectra along a path.
+    '''
+    
+    _plotType = "LDOS map"
+    
+    _requirements = {
+        "files": ["$struct$.DIM", "$struct$.PLD", "*.ion" , "$struct$.selected.WFSX"]
+    }
+
+    _parameters = (
+        
+        {
+            "key": "Erange" ,
+            "name": "Energy range",
+            "default": [-2,4],
+            "inputField": {
+                "type": "rangeslider",
+                "width": "s90%",
+                "params": {
+                    "min": -10,
+                    "max": 10,
+                    "allowCross": False,
+                    "step": 0.1,
+                    "marks": { **{ i: str(i) for i in range(-10,11) }, 0: "Ef",},
+                }
+            },
+            "help": "Energy range where the STS spectra are computed.",
+            "onUpdate": "readData",           
+        },
+        
+        {
+            "key": "nE",
+            "name": "Energy points",
+            "default": 100,
+            "inputField": {
+                "type": "number",
+                "width": "s30%",
+                "params": {
+                    "min": 1,
+                    "step": 1
+                }
+            },
+            "onUpdate": "readData", 
+        },
+
+        {
+            "key": "STSEta",
+            "name": "Smearing factor (eV)",
+            "default": 0.05,
+            "inputField": {
+                "type": "number",
+                "width": "s30%",
+                "params": {
+                    "min": 1,
+                    "step": 1
+                }
+            },
+            "help": '''This determines the smearing factor of each STS spectra. You can play with this to modify sensibility in the vertical direction.
+                <br> If the smearing value is too high, your map will have a lot of vertical noise''',
+            "onUpdate": "readData", 
+        },
+
+        {
+            "key": "distStep",
+            "name": "Distance step (Ang)",
+            "default": 0.1,
+            "inputField": {
+                "type": "number",
+                "width": "s30%",
+                "params": {
+                    "min": 1,
+                    "step": 1
+                }
+            },
+            "onUpdate": "readData", 
+        },
+
+        {
+            "key": "points",
+            "name": "Path points" ,
+            "default": [{"x": 0, "y": 0, "z": 0, "active": True}],
+            "inputField":{
+                "type": "queries",
+                "width": "s100%",
+                "queryForm": [
+                    {
+                        "key": "x",
+                        "name": "x",
+                        "default": 0,
+                        "inputField": {
+                            "type": "number",
+                            "width": "s30%",
+                            "params": {
+                                "step": 0.01
+                            }
+                        },
+                    },
+
+                    {
+                        "key": "y",
+                        "name": "y",
+                        "default": 0,
+                        "inputField": {
+                            "type": "number",
+                            "width": "s30%",
+                            "params": {
+                                "step": 0.01
+                            }
+                        },
+                    },
+
+                    {
+                        "key": "z",
+                        "name": "z",
+                        "default": 0,
+                        "inputField": {
+                            "type": "number",
+                            "width": "s30%",
+                            "params": {
+                                "step": 0.01
+                            }
+                        },
+                    },
+
+                ]
+            },
+
+            "help": '''Provide the points to generate the path through which STS need to be calculated.''',
+            "onUpdate": "readData",
+        },
+    
+    )
+
+    def _afterInit(self):
+
+        self.updateSettings(updateFig = False, xaxis_title = "Path coordinate", yaxis_title = "E-Ef (eV)")
+
+    def _getdencharSTSfdf(self, stsPosition):
+        
+        return '''
+            Denchar.PlotSTS .true.
+            Denchar.PlotWaveFunctions   .false.
+            Denchar.PlotCharge .false.
+
+            %block Denchar.STSposition
+                {} {} {}
+            %endblock Denchar.STSposition
+
+            Denchar.STSEmin {} eV
+            Denchar.STSEmax {} eV
+            Denchar.STSEnergyPoints {}
+            Denchar.CoorUnits Ang
+            Denchar.STSEta {} eV
+            '''.format(*stsPosition, *(np.array(self.settings["Erange"]) + self.fermi), self.settings["nE"], self.settings["STSEta"])
+
+    def _readSiesOut(self):
+        '''Function that uses denchar to get STSpecra along a path'''
+
+        #Find fermi level
+        self.fermi = False
+        for line in open(os.path.join(self.rootDir, "{}.out".format(self.struct)) ):
+            if "Fermi =" in line:
+                self.fermi = float(line.split()[-1])
+                print("\nFERMI LEVEL FOUND: {} eV\n Energies will be relative to this level (E-Ef)\n".format(self.fermi))
+
+        if not self.fermi:
+            print("\nFERMI LEVEL NOT FOUND IN THE OUTPUT FILE. \nEnergy values will be absolute\n")
+            self.fermi = 0
+
+        Emin, Emax = np.array(self.settings["Erange"]) + self.fermi
+
+        Estep = (Emax - Emin)/self.settings["nE"]
+
+        points = np.array([[point["x"],point["y"],point["z"]] for point in self.settings["points"] if point["active"]])
+        if len(points) < 2:
+            raise Exception("You need more than 1 point to generate a path! You better provide 2 next time...\n")
+
+        #Generate an evenly distributed path along the points provided
+        self.path = []
+        #This array will store the number of points that each stage has
+        pointsByStage = np.zeros(len(points) - 1)
+
+        for i, point in enumerate(points[1:]):
+
+            prevPoint = points[i]
+
+            distance = np.linalg.norm(point - prevPoint)
+            nSteps = int(round(distance/self.settings["distStep"])) + 1
+
+            #Add the trajectory from the previous point to this one to the path
+            self.path = [*self.path, *np.linspace(prevPoint, point, nSteps)]
+
+            pointsByStage[i] = nSteps
+        
+        self.path = np.array(self.path)
+
+        #Get the number of points for each stage and the total number of points in the path
+        totalPoints = int(pointsByStage.sum())
+        iCorners = pointsByStage.cumsum()
+
+        #Prepare the array that will store all the spectra
+        self.spectra = np.zeros((totalPoints, self.settings["nE"]))
+
+        #Copy selected WFSX into WFSX if it exists (denchar reads from .WFSX)
+        shutil.copyfile(os.path.join(self.rootDir, '{}.selected.WFSX'.format(self.struct)),
+            os.path.join(self.rootDir, '{}.WFSX'.format(self.struct) ) )
+
+        tempFdf = os.path.join(self.rootDir, '{}STS.fdf'.format(self.struct))
+        outputFile = os.path.join(self.rootDir, '{}.STS'.format(self.struct))
+
+        #Denchar needs to be run from the directory where everything is stored
+        cwd = os.getcwd()
+        os.chdir(self.rootDir)
+
+        for iPoint, point in enumerate(self.path):
+
+            #Generate the appropiate input file
+
+            #Copy the root fdf
+            shutil.copyfile( self.settings["rootFdf"], tempFdf )
+
+            #And then append flags for denchar
+            with open(tempFdf, "a") as fh:
+                fh.write(self._getdencharSTSfdf(point))
+
+            #Do the STS calculation for the point
+            os.system("denchar < {}".format(tempFdf))
+
+            #Retrieve and save the output appropiately
+            spectrum = np.loadtxt(outputFile)
+
+            self.spectra[iPoint,:] = np.flip(spectrum[:,1])
+
+        os.chdir(cwd)
+        os.remove(outputFile)
+        os.remove(tempFdf)
+
+    def _setData(self):
+
+        self.data = [{'type': 'heatmap', 'z': self.spectra.T, 'y': np.linspace(*self.settings["Erange"], self.settings["nE"])}]
+
+    def plotSTSpectra(spectra, path):
+
+        Emin, Emax = -6, 1
+        Ef = -4.18
+
+        distances = np.zeros(len(path))
+        for iStage, (stage, stageSpectra) in enumerate(zip(path, spectra)):
+
+            if iStage == 0:
+                spectraToPlot = stageSpectra
+            else:    
+                spectraToPlot = np.concatenate((spectraToPlot, stageSpectra))
+
+            distances[iStage] = np.linalg.norm(stage[-1] - stage[0])
+
+        fig = plt.figure()
+        plt.rcParams['xtick.bottom'] = plt.rcParams['xtick.labelbottom'] = True
+        plt.rcParams['xtick.top'] = plt.rcParams['xtick.labeltop'] = False
+
+        # Add funcionality
+        def keypress(event, im):
+
+            #Change saturation
+            if event.key in ["up", "down"]:
+
+                vmin, vmax = im.get_clim()
+                factor = [0.99, 1.01][["up","down"].index(event.key)]
+                im.set_clim(vmax=vmax*factor)
+                fig.canvas.draw()
+
+            if event.key == "r":
+
+                data = im.get_array()
+                im.set_clim(vmin=np.amin(data), vmax=np.amax(data))
+                fig.canvas.draw()
+
+            #Save file
+            elif event.key == "t":
+
+                data = im.get_array()
+                [minX, maxX, minE, maxE] = im.get_extent()
+
+                fileName = input("\nPlease provide a file name (or path) to save the data:  ")
+
+                df = pd.DataFrame(data, np.linspace(minE, maxE, data.shape[0]), np.linspace(minX, maxX, data.shape[1]))
+
+                with open(fileName, "w") as f:
+                    f.write("#LDOS spectra for different positions\n")
+                    f.write("#First column contains the energies (eV), first row contains the path coordinate (Ang)\n")
+                    df.to_csv(f, float_format = "%.3e")
+                print(f"Saved to {fileName}!\n")
+
+        #Print the point in the material that corresponds to the clicked spot
+        def onClick(event, path, distances):
+
+            distances = np.cumsum(distances)
+            if not event.xdata:
+                return
+
+            pathCoordinate = event.xdata
+
+            for i, distance in enumerate(distances):
+
+                if pathCoordinate < distance :
+
+                    stage = path[i]
+                    nPoints = len(stage)
+
+                    if i > 0:
+                        prevDistance = distances[i-1]
+                    else:
+                        prevDistance = 0.0
+
+                    distStep = (distance - prevDistance)/(nPoints-1)
+                    clickedPoint = stage[int(round((pathCoordinate - prevDistance)/distStep))]
+
+                    print(f"\nClicked zone corresponds to {clickedPoint} in the material.\n")
+                    break
+
+        im = plt.imshow(spectraToPlot.T, extent=[0, distances.sum(), Emin - Ef, Emax - Ef], aspect = "auto", origin='upper')
+        plt.xlabel("Path coordinate (Ang)")
+        plt.ylabel("Energy (eV)")
+
+        for i, _ in enumerate(distances[:-1]):
+            plt.axvline(distances[0:i+1].sum(), color = "r")
+
+        #Listen to events
+        fig.canvas.mpl_connect('key_press_event', lambda event: keypress(event, im))
+        fig.canvas.mpl_connect('button_press_event', lambda event: onClick(event, path, distances))
+
+        print("\nINSTRUCTIONS\n.............")
+        print("-  You can increase or decrease the saturation by pressing the up and down arrows (r to reset)")
+        print('-  Press "t" to save the data to a file.')
+        print('-  Click on a part of the image to get the point of the material to which it corresponds.')
+        plt.show()
+
+    def showSTS(struct, directory, templatePath):
+
+        #Get directories to switch between them
+        home = os.getcwd()
+
+        os.chdir(directory)
+        spectra, path = getSTSpectra(struct, templatePath)
+        os.chdir(home)
+
+        plotSTSpectra(spectra, path)
