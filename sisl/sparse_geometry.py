@@ -277,7 +277,12 @@ class _SparseGeometry(object):
             old.append(j)
             # Move to the end (*HAS* to be higher than the number of
             # cells in the new supercell structure)
-            new.append(sc.n_s + i)
+            new.append(max(self.n_s, sc.n_s) + i)
+
+        # Check that we will translate all indices in the old
+        # sparsity pattern to the new one
+        if len(old) not in [self.n_s, sc.n_s]:
+            raise SislError("Not all supercells are accounted for")
 
         old = _a.arrayi(old)
         new = _a.arrayi(new)
