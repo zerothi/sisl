@@ -303,6 +303,30 @@ class TestSparseAtom(object):
         assert s.nnz == 4
         assert s[0, 0] == 1
 
+    def test_set_nsc3(self, setup):
+        g = graphene(atom=Atom(6, R=1.43))
+        s = SparseAtom(g)
+
+        s.set_nsc((3, 3, 1))
+        s.construct([[0.1, 1.43], [1, 2]])
+
+        s55 = s.copy()
+        s55.set_nsc((5, 5, 1))
+        s77 = s55.copy()
+        s77.set_nsc((7, 7, 1))
+        s59 = s77.copy()
+        s59.set_nsc((5, 9, 1))
+        assert s.nnz == s55.nnz
+        assert s.nnz == s77.nnz
+        assert s.nnz == s59.nnz
+
+        s55.set_nsc((3, 3, 1))
+        s77.set_nsc((3, 3, 1))
+        s59.set_nsc((3, 3, 1))
+        assert s.nnz == s55.nnz
+        assert s.nnz == s77.nnz
+        assert s.nnz == s59.nnz
+
     def test_edges1(self, setup):
         g = graphene(atom=Atom(6, R=1.43))
         s = SparseAtom(g)
