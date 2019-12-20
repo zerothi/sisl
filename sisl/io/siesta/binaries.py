@@ -55,6 +55,11 @@ def _geometry_align(geom_b, geom_u, cls, method):
     ------
     SislError : if the geometries have non-equal atom count
     """
+    if geom_b is None:
+        return geom_u
+    elif geom_u is None:
+        return geom_b
+
     # Default to use the users geometry
     geom = geom_u
 
