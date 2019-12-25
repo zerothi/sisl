@@ -25,7 +25,9 @@ class BandsPlot(Plot):
     _plotType = "Bands"
     
     _requirements = {
-        "files": ["$struct$.bands", "*.bands"]
+        "siesOut": {
+            "files": ["$struct$.bands", "*.bands"]
+        }
     }
     
     _parameters = (
@@ -277,7 +279,11 @@ class PdosPlot(Plot):
     #Define all the class attributes
     _plotType = "PDOS"
 
-    _requirements = {"files": ["$struct$.PDOS"]}
+    _requirements = {
+        "siesOut": {
+            "files": ["$struct$.PDOS"]
+        }
+    }
 
     _parameters = (
         
@@ -672,7 +678,17 @@ class LDOSmap(Plot):
     _plotType = "LDOS map"
     
     _requirements = {
-        "files": ["$struct$.DIM", "$struct$.PLD", "*.ion" , "$struct$.selected.WFSX"]
+        "siesOut": {
+            "files": ["$struct$.DIM", "$struct$.PLD", "*.ion" , "$struct$.selected.WFSX"],
+            "codes": {
+
+                "denchar": {
+                    "reason": "The 'denchar' code is used in this case to generate STS spectra."
+                }
+
+            }
+        },
+        
     }
 
     _parameters = (
