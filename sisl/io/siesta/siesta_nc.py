@@ -459,9 +459,62 @@ class ncSileSiesta(SileCDFSiesta):
         # Store the lasto variable as the remaining thing to do
         self.variables['lasto'][:] = geom.lasto + 1
 
-    def write_overlap(self, **kwargs):
+    def _write_sparsity(self, csr, nsc):
+        # Append the sparsity pattern
+        # Create basis group
+        sp = self._crt_grp(self, 'SPARSE')
+
+        self._crt_dim(sp, 'nnzs', csr.col.shape[0])
+        v = self._crt_var(sp, 'n_col', 'i4', ('no_u',))
+        v.info = "Number of non-zero elements per row"
+        v[:] = csr.ncol[:]
+        v = self._crt_var(sp, 'list_col', 'i4', ('nnzs',),
+                          chunksizes=(len(csr.col),), **self._cmp_args)
+        v.info = "Supercell column indices in the sparse format"
+        v[:] = csr.col[:] + 1  # correct for fortran indices
+        v = self._crt_var(sp, 'isc_off', 'i4', ('n_s', 'xyz'))
+        v.info = "Index of supercell coordinates"
+        v[:, :] = _siesta.siesta_sc_off(*nsc).T
+        return sp
+
+    def _write_overlap_elements(self, spgroup, csr, orthogonal, S_idx):
+        v = self._crt_var(spgroup, 'S', 'f8', ('nnzs',),
+                          chunksizes=(len(csr.col),), **self._cmp_args)
+        v.info = "Overlap matrix"
+        if orthogonal:
+            # We need to create the orthogonal pattern
+            tmp = csr.copy(dims=[0])
+            tmp.empty(keep_nnz=True)
+            for i in range(tmp.shape[0]):
+                tmp[i, i] = 1.
+
+            if tmp.nnz != csr.nnz:
+                # We have added more stuff, something that we currently do not allow.
+                raise ValueError(self.__class__.__name__ + '.write_hamiltonian '
+                                 'is trying to write a Hamiltonian in Siesta format with '
+                                 'not all on-site terms defined. Please correct. '
+                                 'I.e. add explicitly *all* on-site terms.')
+
+            v[:] = tmp._D[:, 0]
+            del tmp
+        else:
+            v[:] = csr._D[:, S_idx]
+
+    def write_overlap(self, S, **kwargs):
         """ Write the overlap matrix to the NetCDF file """
-        raise NotImplementedError('Currently not implemented')
+        csr = S._csr.copy()
+        if csr.nnz == 0:
+            raise SileError(str(self) + '.write_overlap cannot write a zero element sparse matrix!')
+
+        # Convert to siesta CSR
+        _csr_to_siesta(S.geometry, csr)
+        csr.finalize()
+
+        # Ensure that the geometry is written
+        self.write_geometry(S.geometry)
+
+        spgroup = self._write_sparsity(csr, S.geometry.nsc)
+        self._write_overlap_elements(spgroup, csr, S.orthogonal, S.S_idx)
 
     def write_hamiltonian(self, H, **kwargs):
         """ Writes Hamiltonian model to file
@@ -497,45 +550,11 @@ class ncSileSiesta(SileCDFSiesta):
         v.info = 'Total charge'
         v[0] = kwargs.get('Q', kwargs.get('Qtot', H.geometry.q0))
 
-        # Append the sparsity pattern
-        # Create basis group
-        sp = self._crt_grp(self, 'SPARSE')
-
-        self._crt_dim(sp, 'nnzs', csr.col.shape[0])
-        v = self._crt_var(sp, 'n_col', 'i4', ('no_u',))
-        v.info = "Number of non-zero elements per row"
-        v[:] = csr.ncol[:]
-        v = self._crt_var(sp, 'list_col', 'i4', ('nnzs',),
-                          chunksizes=(len(csr.col),), **self._cmp_args)
-        v.info = "Supercell column indices in the sparse format"
-        v[:] = csr.col[:] + 1  # correct for fortran indices
-        v = self._crt_var(sp, 'isc_off', 'i4', ('n_s', 'xyz'))
-        v.info = "Index of supercell coordinates"
-        v[:, :] = _siesta.siesta_sc_off(*H.geometry.nsc).T
+        spgroup = self._write_sparsity(csr, H.geometry.nsc)
 
         # Save tight-binding parameters
-        v = self._crt_var(sp, 'S', 'f8', ('nnzs',),
-                          chunksizes=(len(csr.col),), **self._cmp_args)
-        v.info = "Overlap matrix"
-        if H.orthogonal:
-            # We need to create the orthogonal pattern
-            tmp = csr.copy(dims=[0])
-            tmp.empty(keep_nnz=True)
-            for i in range(tmp.shape[0]):
-                tmp[i, i] = 1.
-
-            if tmp.nnz != H.nnz:
-                # We have added more stuff, something that we currently do not allow.
-                raise ValueError(self.__class__.__name__ + '.write_hamiltonian '
-                                 'is trying to write a Hamiltonian in Siesta format with '
-                                 'not all on-site terms defined. Please correct. '
-                                 'I.e. add explicitly *all* on-site terms.')
-
-            v[:] = tmp._D[:, 0]
-            del tmp
-        else:
-            v[:] = csr._D[:, H.S_idx]
-        v = self._crt_var(sp, 'H', 'f8', ('spin', 'nnzs'),
+        self._write_overlap_elements(spgroup, csr, H.orthogonal, H.S_idx)
+        v = self._crt_var(spgroup, 'H', 'f8', ('spin', 'nnzs'),
                           chunksizes=(1, len(csr.col)), **self._cmp_args)
         v.info = "Hamiltonian"
         v.unit = "Ry"

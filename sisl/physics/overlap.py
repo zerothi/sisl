@@ -1,12 +1,4 @@
-from __future__ import print_function, division
-
 import numpy as np
-from scipy.interpolate import CubicSpline
-
-from sisl._help import _range as range
-import sisl._array as _a
-from .distribution import get_distribution
-from .electron import EigenvalueElectron, EigenstateElectron, spin_squared
 from .sparse import SparseOrbitalBZ
 
 __all__ = ['Overlap']
@@ -15,9 +7,10 @@ __all__ = ['Overlap']
 class Overlap(SparseOrbitalBZ):
     """ Sparse Overlap matrix object
 
-    Generally speaking, the Overlap should be accessed as part of eg. `Hamiltonian.S` rather than as a separate object.
-    This class should only be used when the overlap is not particularly associated to another physical object like the
-    Hamiltonian. This could be eg. the output of a Siesta "onlyS" calculation.
+    The Overlap object contains orbital overlaps. It should be used when the overlaps are not associated with
+    another physical object such as a Hamiltonian, as is the case with eg. Siesta onlyS outputs.
+    When the overlap is associated with a Hamiltonian, then this object should not be used as the overlap is stored
+    in the Hamiltonian itself.
 
     Parameters
     ----------
@@ -88,8 +81,6 @@ class Overlap(SparseOrbitalBZ):
             if it is a string it will create a new sile using `get_sile`.
         * : args passed directly to ``read_overlap(,**)``
         """
-        # This only works because, they *must*
-        # have been imported previously
         from sisl.io import get_sile, BaseSile
         if isinstance(sile, BaseSile):
             return sile.read_overlap(*args, **kwargs)
