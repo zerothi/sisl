@@ -59,6 +59,14 @@ def test_nc_overlap(sisl_tmp, sisl_system):
     S.finalize()
     assert np.allclose(S._csr._D.sum(), tb.no)
 
+    # Write test
+    f = sisl_tmp('s.nc', _dir)
+    with ncSileSiesta(f, "w") as s:
+        S.write(s)
+    S2 = ncSileSiesta(f).read_overlap()
+    assert S._csr.spsame(S2._csr)
+    assert np.allclose(S._csr._D, S2._csr._D)
+
 
 def test_nc_dynamical_matrix(sisl_tmp, sisl_system):
     f = sisl_tmp('grdyn.nc', _dir)
