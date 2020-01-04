@@ -17,7 +17,9 @@ gsc = get_sile_class
 
 
 def _my_intersect(a, b):
-    return [k for k in get_siles(a) if k in set(get_siles(b))]
+    a = get_siles(a)
+    b = set(get_siles(b))
+    return [k for k in a if k in b]
 
 
 def _fnames(base, variants):
