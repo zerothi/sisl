@@ -185,22 +185,24 @@ class BandsPlot(Plot):
     
     def _bandsToDfs(self, bands):
         '''
-        Gets the bands read and stores them in a convenient way into self.dfs
+        Gets the bands read and stores them in a convenient way into self.df
         '''
 
-        self.dfs = []
-        for spinComponentBands in bands:
-            df = pd.DataFrame(spinComponentBands)
+        self.isSpinPolarized = bands.shape[0] == 2
+        self.df = pd.DataFrame()
 
-            #Set the column headers as strings instead of int (These are the wavefunctions numbers)
-            df.columns = df.columns.astype(str)
+        for iSpin, spinComponentBands in enumerate(bands):
+            
+            df = pd.DataFrame(spinComponentBands.T)
+            df.columns = self.Ks
+            #We insert these columns at the beggining so that the user can see them if it prints the dataframe
+            df.insert(0, "iBand", range(1, spinComponentBands.shape[1] + 1))
+            df.insert(1, "iSpin", iSpin)
+            df.insert(2, "Emin", np.min(spinComponentBands, axis = 0))
+            df.insert(3, "Emax", np.max(spinComponentBands, axis = 0))
 
-        self.dfs.append(df)
-
-        # y = {
-        #     'tickvals': self.ticks[0],
-        #     'ticktext': self.settings["ticks"].split(",") if self.source != "siesOut" else self.ticks[1],
-        # }
+            #Append the dataframe to the main dataframe
+            self.df = self.df.append(df, ignore_index = True)
         
         return self
     
@@ -217,38 +219,36 @@ class BandsPlot(Plot):
             contains a dictionary for each band with all its information.
         '''
 
-        self.reqBandsDfs = []; self.data = []
+        #If the path has changed we need to produce the band structure again
+        if self.path != self.settings["path"]:
+            self.order = ["fromH"]
+            self.readData()
 
-        for iSpin, df in enumerate(self.dfs):
-            #If the path has changed we need to produce the band structure again
-            if self.path != self.settings["path"]:
-                self.order = ["fromH"]
-                self.readData()
+        self.data = []
 
-            Erange = np.array(self.settings["Erange"]) + self.fermi
-            reqBandsDf = df[ df < Erange[1]][ df > Erange[0]].dropna(axis = 1, how = "all")
+        Erange = np.array(self.settings["Erange"]) + self.fermi
 
-            #Define the data of the plot as a list of dictionaries {x, y, 'type', 'name'}
-            self.data = [ *self.data, *[{
-                            'type': 'scatter',
-                            'x': self.Ks,
-                            'y': reqBandsDf[str(column)] - self.fermi,
-                            'mode': 'lines', 
-                            'name': "{} spin {}".format(int(column) + 1, PLOTS_CONSTANTS["spins"][iSpin]) if len(self.dfs) == 2 else str(int(column) + 1), 
-                            'line': {"color": [self.settings["spinUpColor"],self.settings["spinDownColor"]][iSpin], 'width' : self.settings["bandsWidth"]},
-                            'hoverinfo':'name',
-                            "hovertemplate": '%{y:.2f} eV',
-                        } for column in reqBandsDf.columns ] ]
-            
-            self.reqBandsDfs.append(reqBandsDf)
+        #Get the bands that matter for the plot
+        self.plotDF = self.df[ (self.df["Emin"] <= Erange[1]) & (self.df["Emax"] >= Erange[0]) ].dropna(axis = 0, how = "all")
 
-        self.data = sorted(self.data, key = lambda x: x["name"])
+        #Define the data of the plot as a list of dictionaries {x, y, 'type', 'name'}
+        self.data = [ *self.data, *[{
+                        'type': 'scatter',
+                        'x': self.Ks,
+                        'y': band.loc[self.Ks] - self.fermi,
+                        'mode': 'lines', 
+                        'name': "{} spin {}".format( band["iBand"], PLOTS_CONSTANTS["spins"][int(band["iSpin"])]) if self.isSpinPolarized else str(int(band["iBand"])) , 
+                        'line': {"color": [self.settings["spinUpColor"],self.settings["spinDownColor"]][int(band["iSpin"])], 'width' : self.settings["bandsWidth"]},
+                        'hoverinfo':'name',
+                        "hovertemplate": '%{y:.2f} eV',
+                    } for i, band in self.plotDF.sort_values("iBand").iterrows() ] ]
 
     def _afterGetFigure(self):
 
         #Add the ticks
         self.figure.layout.xaxis.tickvals = self.ticks[0]
         self.figure.layout.xaxis.ticktext = self.ticks[1]
+        self.figure.layout.yaxis.range = np.array(self.settings["Erange"]) + self.fermi
 
 class BandsAnimation(Animation):
 
@@ -484,15 +484,27 @@ class PdosPlot(Plot):
         '''
 
         #Get the orbital where each atom starts
-        orbitals = np.array([0] + [len(atom) for atom in self.geom.atoms]).cumsum()[:-1]
+        orbitals = self.geom.orbitals.cumsum()[:-1]
 
         #Initialize a dataframe to store all the information
         self.df = pd.DataFrame()
+
+        print(geom.atoms[iAt].symbol)
+        print(geom.atoms[iAt].Z)
+        print(geom.atoms[iAt].mass)
+        print(orb.name())
+        print(orb.Z)
+        print(orb.n)
+        print(orb.l)
+        print(orb.m)
+        print(orb.P)
+        print(orb.q0)
         
         #Normalize self.PDOSinfo to do the same treatment for both spin-polarized and spinless simulations
         self.hasSpin = len(self.PDOSinfo.shape) == 3
-        self.PDOSinfo = np.moveaxis(self.PDOSinfo, 0, -1) if self.hasSpin else self.PDOSinfo
 
+
+        self.PDOSinfo = np.moveaxis(self.PDOSinfo, 0, -1) if self.hasSpin else self.PDOSinfo
         #Save the information of each atom
         for at, initOrb in zip( self.geom.atoms, orbitals ):
     
