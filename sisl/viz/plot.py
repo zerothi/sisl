@@ -7,6 +7,7 @@ import sys
 import numpy as np
 import json
 import pickle
+import time
 
 import plotly
 import plotly.graph_objects as go
@@ -24,6 +25,22 @@ PLOTS_CONSTANTS = {
         "noSource": lambda obj: obj._readNoSource
     }
 }
+
+#Wrapper to time methods
+def timeit(method):
+
+    def timed(obj, *args, **kwargs):
+
+        start = time.time()
+
+        result = method(obj, *args, **kwargs)
+
+        print("{}: {} seconds".format(method.__name__, time.time() - start))
+
+        return result
+    
+    return timed
+    
 
 class Plot(Configurable):
     
@@ -596,7 +613,6 @@ class Plot(Configurable):
 
                     self.data = [*self.data, *plot.data]
             
-
         framesLayout = {}
 
         #If it is an animation, extra work needs to be done.
