@@ -485,33 +485,54 @@ class PdosPlot(Plot):
 
         #Get the orbital where each atom starts
         orbitals = self.geom.orbitals.cumsum()[:-1]
-
-        #Initialize a dataframe to store all the information
-        self.df = pd.DataFrame()
-
-        print(geom.atoms[iAt].symbol)
-        print(geom.atoms[iAt].Z)
-        print(geom.atoms[iAt].mass)
-        print(orb.name())
-        print(orb.Z)
-        print(orb.n)
-        print(orb.l)
-        print(orb.m)
-        print(orb.P)
-        print(orb.q0)
         
         #Normalize self.PDOSinfo to do the same treatment for both spin-polarized and spinless simulations
-        self.hasSpin = len(self.PDOSinfo.shape) == 3
+        self.isSpinPolarized = len(self.PDOSinfo.shape) == 3
 
+        #Initialize the dataframe to store all the info
+        self.df = pd.DataFrame()
 
-        self.PDOSinfo = np.moveaxis(self.PDOSinfo, 0, -1) if self.hasSpin else self.PDOSinfo
-        #Save the information of each atom
-        for at, initOrb in zip( self.geom.atoms, orbitals ):
-    
-            atDict = {orb.name() : self.PDOSinfo[ initOrb + iOrb , :] for iOrb, orb in enumerate(at) }
-            atDict["species"] = at.tag
+        #Normalize the PDOSinfo array
+        self.PDOSinfo = [self.PDOSinfo] if not self.isSpinPolarized else self.PDOSinfo 
+
+        #Loop over all spin components
+        for iSpin, spinComponentPDOS in enumerate(self.PDOSinfo):
+
+            #Initialize the dictionary with all the properties of the orbital
+            orbProperties = {
+                "iAtom": [],
+                "Species": [],
+                "Atom Z": [],
+                "Spin": [],
+                "Orbital name": [],
+                "Z shell": [],
+                "n": [],
+                "l": [],
+                "m": [],
+                "Polarized": [],
+                "Initial charge": [],
+            }     
+
+            #Loop over all orbitals of the basis
+            for iAt, iOrb in self.geom.iter_orbitals():
+
+                atom = self.geom.atoms[iAt]
+                orb = atom[iOrb]
+
+                orbProperties["iAtom"].append(iAt + 1)
+                orbProperties["Species"].append(atom.symbol)
+                orbProperties["Atom Z"].append(atom.Z)
+                orbProperties["Spin"].append(iSpin)
+                orbProperties["Orbital name"].append(orb.name())
+                orbProperties["Z shell"].append(orb.Z)
+                orbProperties["n"].append(orb.n)
+                orbProperties["l"].append(orb.l)
+                orbProperties["m"].append(orb.m)
+                orbProperties["Polarized"].append(orb.P)
+                orbProperties["Initial charge"].append(orb.q0)
             
-            self.df = self.df.append(atDict, ignore_index = True)
+            #Append this part of the dataframe (a full spin component)
+            self.df = self.df.append( pd.concat([pd.DataFrame(orbProperties), pd.DataFrame(spinComponentPDOS, columns = self.E)], axis=1, sort = False), ignore_index = True)
         
         #"Inform" the queries of the available options
         for i, param in enumerate(self.params):
@@ -522,23 +543,25 @@ class PdosPlot(Plot):
                     options = []
                     
                     if reqParam["key"] == "atoms":
-
-                        options = [{ "label": "{} ({})".format(i, self.df.iloc[i]["species"]), "value": i } 
-                            for i in range( self.df.shape[0] )]
+                        
+                        options = [{ "label": "{} ({})".format(iAt, self.geom.atoms[iAt - 1].symbol), "value": iAt } 
+                            for iAt in self.df["iAtom"].unique()]
+                        
                 
                     elif reqParam["key"] == "species":
-
-                        options = [{ "label": spec, "value": spec } for spec in self.df.species.unique()]
+                        
+                        options = [{ "label": spec, "value": spec } for spec in self.df.Species.unique()]
+                        
                     
                     elif reqParam["key"] == "orbitals":
-
-                        orbitals = sortOrbitals([column for column in self.df.columns.tolist() if column != "species"])
-
-                        options = [{ "label": orbName, "value": orbName } for orbName in orbitals]
+                        
+                        options = [{ "label": orbName, "value": orbName } for orbName in self.df["Orbital name"].unique()]
+                        
                     
                     elif reqParam["key"] == "spin":
 
-                        options = [{ "label": "↑", "value": 0 },{ "label": "↓", "value": 1 }] if self.hasSpin else []
+                        options = [{ "label": "↑", "value": 0 },{ "label": "↓", "value": 1 }] if self.isSpinPolarized else []
+                        
 
                     if options:
                         self.params[i]["inputField"]["queryForm"][iParam]["inputField"]["params"]["options"] = options
@@ -567,23 +590,23 @@ class PdosPlot(Plot):
 
         '''
 
-        #Get only the energies we are interested in
-        if not self.fermi:
-            Emin, Emax = np.array(self.settings["Erange"])
-            Estep = ( max(self.E) - min(self.E) ) / len(self.E)
-            iEmax = int( ( Emax - min(self.E) ) / Estep )
-            iEmin = int( ( Emin - min(self.E) ) / Estep )
-            self.Ecut = self.E[ iEmin : iEmax+1 ]
-            
-            if len(self.Ecut) <= 1:
-                print("PDOS Plot error: There is no data for the provided energy range ({}).\n The energy range of the read data is: [{},{}]"
-                    .format(self.settings["Erange"], min(self.E), max(self.E))
-                )
-        #else:
-        #    self.readData()
-
         #Initialize the data object for the plotly graph
         self.data = []
+
+        #Get only the energies we are interested in 
+        Emin, Emax = np.array(self.settings["Erange"])
+        plotEvals = [Evalue for Evalue in self.E if Emin < Evalue < Emax]
+
+        #Inform and abort if there is no data
+        if len(plotEvals) == 0:
+            print("PDOS Plot error: There is no data for the provided energy range ({}).\n The energy range of the read data is: [{},{}]"
+                .format(self.settings["Erange"], min(self.E), max(self.E))
+            )
+
+            return self.data
+
+        #If there is data, get it (drop the columns that we don't want)
+        self.reqDf = self.df.drop([Evalue for Evalue in self.E if Evalue not in plotEvals], axis = 1)
 
         #Go request by request and plot the corresponding PDOS contribution
         for request in self.settings["requests"]:
@@ -592,54 +615,41 @@ class PdosPlot(Plot):
             if not request["active"]:
                 continue
 
-            #Get the part of the dataframe that the request is asking for
-            reqDf = self.df.copy()
+            reqDf = self.reqDf.copy()
 
             if request.get("atoms"):
-                reqDf = reqDf.iloc[np.array(request["atoms"])]
+                reqDf = reqDf[reqDf["iAtom"].isin(request["atoms"])]
 
             if request.get("species"):
-                reqDf = reqDf[ reqDf["species"].isin(request["species"]) ]
+                reqDf = reqDf[reqDf["Species"].isin(request["species"])]
 
             if request.get("orbitals"):
-                reqDf = reqDf[ request["orbitals"] ]
-            
-            #Remove the species column if it is still there
-            try:
-                PDOS = reqDf.drop("species", axis = 1)
-            except KeyError:
-                PDOS = reqDf
+                reqDf = reqDf[reqDf["Orbital name"].isin(request["orbitals"])]
 
-            if PDOS.isnull().values.all(axis=0)[0]:
+            if request.get("spin") != None:
+                reqDf = reqDf[reqDf["Spin"].isin(request["spin"])]
 
-                PDOS = []
+
+            if reqDf.empty:
                 print("PDOS Plot warning: No PDOS for the following request: {}".format(request.params))
+                PDOS = []
             else:
-                
-                PDOS = PDOS.sum(1, skipna = True)
+                PDOS = reqDf[plotEvals].values
 
                 if request.get("normalize"):
-                    PDOS = PDOS.mean()
+                    PDOS = PDOS.mean(axis = 0)
                 else:
-                    PDOS = PDOS.sum(0)
-            
-            #Get the spin component (or the sum of both components)
-            if self.hasSpin:
-                spinReq = request.get("spin")
-                if type(spinReq) == int:
-                    PDOS = PDOS[:, spinReq]
-                else:
-                    PDOS = PDOS.sum(1)
+                    PDOS = PDOS.sum(axis = 0)   
             
             self.data.append({
-                        'type': 'scatter',
-                        'x': PDOS[ iEmin : iEmax + 1 ] if not self.fermi else PDOS,
-                        'y': self.Ecut if not self.fermi else self.E ,
-                        'mode': 'lines', 
-                        'name': request["linename"], 
-                        'line': {'width' : 1},
-                        "hoverinfo": "name",
-                    })
+                'type': 'scatter',
+                'x': PDOS,
+                'y': plotEvals ,
+                'mode': 'lines', 
+                'name': request["linename"], 
+                'line': {'width' : 1},
+                "hoverinfo": "name",
+            })
         
         return self.data
 
@@ -649,7 +659,13 @@ class PdosPlot(Plot):
         The keyword arguments will overwrite what has been passed as a dict if there is conflict.
         '''
 
-        self.updateSettings(requests = [*self.settings["requests"], {"active": True, "linename": len(self.settings["requests"]), **newReq, **kwargs}])
+        request = {"active": True, "linename": len(self.settings["requests"]), **newReq, **kwargs}
+
+        try:
+            self.updateSettings(requests = [*self.settings["requests"], request ])
+        except Exception as e:
+            print("There was a problem with your new request ({}): \n\n {}".format(request, e))
+            self.undoSettings()
 
         return self
 
