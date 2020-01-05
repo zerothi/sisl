@@ -954,6 +954,9 @@ class LDOSmap(Plot):
         
         #Prepare the array that will store all the spectra
         self.spectra = np.zeros((self.path.shape[0], self.path.shape[1], self.settings["nE"]))
+        #Other helper arrays
+        pathIs = np.linspace(0, self.path.shape[0] - 1, self.path.shape[0] )
+        Epoints = np.linspace( *(np.array(self.settings["Erange"]) + self.fermi), self.settings["nE"] )
 
         #Copy selected WFSX into WFSX if it exists (denchar reads from .WFSX)
         shutil.copyfile(os.path.join(self.rootDir, '{}.selected.WFSX'.format(self.struct)),
@@ -1008,7 +1011,7 @@ class LDOSmap(Plot):
 
                     spectra.append(np.zeros(nE))
 
-                
+            
             os.chdir("..")
             shutil.rmtree(tempDir, ignore_errors=True)
 
@@ -1018,7 +1021,7 @@ class LDOSmap(Plot):
             getSpectraForPath,
             self.path,
             self.settings["nE"],
-            list( range(self.path.shape[0]) ),
+            pathIs,
             self.rootDir, self.struct,
             #All the strings that need to be added to each file
             [ [self._getdencharSTSfdf(point) for point in points] for points in self.path ],
@@ -1027,32 +1030,16 @@ class LDOSmap(Plot):
         )
 
         self.spectra = np.array(self.spectra)
+        moved = np.moveaxis(self.spectra, 0, -1)
+        iterableSpectra = moved.reshape(moved.shape[0], -1)
 
+        self.dfDictionary = {
+            "iPath": np.tile(pathIs, self.spectra.shape[2]),
+            "E": np.repeat(Epoints, len(pathIs)),
+            **{pos: LDOS for pos, LDOS in enumerate(iterableSpectra)}
+        }
 
-        #for i in range(self.path.shape[0]):
-
-            
-            
-            # for j in range(self.path.shape[1]):
-
-            #     point = self.path[i,j,:]
-
-            #     #Generate the appropiate input file
-
-            #     #Copy the root fdf
-            #     shutil.copyfile( self.settings["rootFdf"], tempFdf )
-
-            #     #And then append flags for denchar
-            #     with open(tempFdf, "a") as fh:
-            #         fh.write(self._getdencharSTSfdf(point))
-
-            #     #Do the STS calculation for the point
-            #     os.system("denchar < {}".format(tempFdf))
-
-            #     #Retrieve and save the output appropiately
-            #     spectrum = np.loadtxt(outputFile)
-
-            #     self.spectra[i, j,:] = spectrum[:,1]
+        self.df = pd.DataFrame(self.dfDictionary)
 
         os.chdir(cwd)
         
@@ -1061,7 +1048,7 @@ class LDOSmap(Plot):
     
     def _getPath(self):
 
-        if self.settings["trajectory"]:
+        if list(self.settings["trajectory"]):
             #If the user provides a trajectory, we are going to use that without questioning it
             self.path = np.array(self.settings["trajectory"])
 
@@ -1109,15 +1096,16 @@ class LDOSmap(Plot):
         self.iCorners = self.pointsByStage.cumsum()
 
     def _setData(self):
-
+        
+        groupedByE = self.df.drop("iPath", axis = 1).groupby("E")
         if self.settings["widenMethod"] == "sum":
-            spectraToPlot = self.spectra.sum(axis = 0)
+            spectraToPlot = groupedByE.sum()
         elif self.settings["widenMethod"] == "average":
-            spectraToPlot = self.spectra.mean(axis = 0)
-
+            spectraToPlot = groupedByE.mean()
+        
         self.data = [{
             'type': 'heatmap',
-            'z': spectraToPlot.T,
+            'z': spectraToPlot.sort_index().values,
             #These limits determine the contrast of the image
             'zmin': self.settings["zmin"],
             'zmax': self.settings["zmax"],
