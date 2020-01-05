@@ -4,6 +4,7 @@ This file contains all the plot subclasses
 
 import numpy as np
 import pandas as pd
+import xarray as xr
 import multiprocessing as mp
 import itertools
 from copy import deepcopy
@@ -1030,16 +1031,14 @@ class LDOSmap(Plot):
         )
 
         self.spectra = np.array(self.spectra)
-        moved = np.moveaxis(self.spectra, 0, -1)
-        iterableSpectra = moved.reshape(moved.shape[0], -1)
 
-        self.dfDictionary = {
-            "iPath": np.tile(pathIs, self.spectra.shape[2]),
-            "E": np.repeat(Epoints, len(pathIs)),
-            **{pos: LDOS for pos, LDOS in enumerate(iterableSpectra)}
-        }
-
-        self.df = pd.DataFrame(self.dfDictionary)
+        #WITH XARRAY
+        self.xarr = xr.DataArray(
+            name = "LDOSmap",
+            data = self.spectra,
+            dims = ["iPath", "x", "E"],
+            coords = [pathIs, list(range(self.path.shape[1])), Epoints] 
+        )
 
         os.chdir(cwd)
         
@@ -1096,16 +1095,16 @@ class LDOSmap(Plot):
         self.iCorners = self.pointsByStage.cumsum()
 
     def _setData(self):
-        
-        groupedByE = self.df.drop("iPath", axis = 1).groupby("E")
+
+        #With xarray
         if self.settings["widenMethod"] == "sum":
-            spectraToPlot = groupedByE.sum()
+            spectraToPlot = self.xarr.sum(dim = "iPath")
         elif self.settings["widenMethod"] == "average":
-            spectraToPlot = groupedByE.mean()
+            spectraToPlot = self.xarr.mean(dim = "iPath")
         
         self.data = [{
             'type': 'heatmap',
-            'z': spectraToPlot.sort_index().values,
+            'z': spectraToPlot.transpose("E", "x").values,
             #These limits determine the contrast of the image
             'zmin': self.settings["zmin"],
             'zmax': self.settings["zmax"],
