@@ -5,7 +5,8 @@ import tqdm
 
 import os
 import glob
-import pickle
+import dill as pickle
+#import pickle
 from copy import deepcopy
 
 def calculateGap(bands):
