@@ -79,16 +79,89 @@ class Configurable:
             
         return self
     
+    def undoSetting(self, settingKey):
+        '''
+        Undoes only a particular setting and lives the others unchanged.
+
+        At the moment it is a 'fake' undo function, since it actually updates the settings.
+
+        '''
+
+        #Get the actual settings for that group
+        actualSetting = self.getSetting(settingKey)
+
+        #Try to find any different values for the settings
+        for pastValue in reversed(self.getSettingHistory(settingKey)):
+
+            if pastValue != actualSetting:
+
+                return self.updateSettings( **{settingKey: pastValue} )
+        else:
+            print("There is no registry of the setting '{}' having been changed. Sorry :(".format(settingKey))
+            
+            return self
+
+    def undoSettingsGroup(self, groupKey):
+
+        '''
+        Takes the desired group of settings one step back, but the rest of the settings remain unchanged.
+
+        At the moment it is a 'fake' undo function, since it actually updates the settings.
+
+        '''
+
+        #Get the actual settings for that group
+        actualSettings = self.getSettingsGroup(groupKey)
+
+        #Try to find any different values for the settings
+        for i in range(len(self.settingsHistory)):
+
+            previousSettings = self.getSettingsGroup(groupKey, stepsBack = i)
+
+            if previousSettings != actualSettings:
+
+                return self.updateSettings(previousSettings)
+        else:
+            print("There is no registry of any setting of the group '{}' having been changed. Sorry :(".format(groupKey))
+            
+            return self
+    
+    def getSetting(self, settingKey):
+
+        '''
+        Gets the value for a given setting.
+        '''
+
+        return deepcopy(self.settings[settingKey])
+
     def getSettingHistory(self, settingKey):
         
         return deepcopy([step[settingKey] for step in self.settingsHistory])
     
-    def getSettingsGroup(self, groupKey):
+    def getSettingsGroup(self, groupKey, stepsBack = 0):
         '''
         Gets the subset of the settings that corresponds to a given group
+
+        Arguments
+        -----------
+        groupKey: str
+            The key of the settings group that we desire.
+        stepsBack: optional, int
+            If you don't want the actual settings, but some point of the settings history,
+            use this argument to state how many steps back you want the settings' values.
+
+        Returns
+        -----------
+        settingsGroup: dict
+            A subset of the settings with only those that belong to the asked group.
         '''
 
-        return deepcopy({ setting["key"]: self.settings[setting["key"]] for setting in self.params if setting.get("group", None) == groupKey })
+        if stepsBack:
+            settings = self.settingsHistory[-stepsBack]
+        else:
+            settings = self.settings
+
+        return deepcopy({ setting["key"]: settings[setting["key"]] for setting in self.params if setting.get("group", None) == groupKey })
 
 #DECORATORS TO USE WHEN DEFINING METHODS IN CLASSES THAT INHERIT FROM Configurable
 #Run the method after having initialized the settings
