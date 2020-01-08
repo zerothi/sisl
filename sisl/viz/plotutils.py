@@ -9,6 +9,16 @@ import dill as pickle
 #import pickle
 from copy import deepcopy
 
+#-------------------------------------
+#            Informative
+#-------------------------------------
+
+def getPlotClasses():
+    from .session import Session
+
+    return Session.getPlotClasses(None)
+
+#------------------------------------
 def calculateGap(bands):
     '''
     Calculates the gap of a set of bands
@@ -146,6 +156,10 @@ def copyDict(dictInst, only = [], exclude = []):
     else:
         return {k: v for k,v  in deepcopy(dictInst).iteritems() if k not in exclude}
 
+#-------------------------------------
+#            Filesystem
+#-------------------------------------
+
 def load(path):
     '''
     Loads a previously saved python object using pickle. To be used for plots, sessions, etc...
@@ -165,10 +179,6 @@ def load(path):
         loadedObj = pickle.load(handle)
     
     return loadedObj
-
-#-------------------------------------
-#            Filesystem
-#-------------------------------------
 
 def findFiles(rootDir, searchString, depth = [0,0], sort = True, sortFn = None):
     '''
