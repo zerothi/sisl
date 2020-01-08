@@ -38,11 +38,11 @@ class Bloch(object):
     The general idea may be summarized in the following equation:
 
     .. math::
-        \mathbf M_{k}^N =\frac1N
+        \mathbf M_{K}^N =\frac1N
         \;
         \sum_{
          \substack{j=0\\
-           k_j=2\pi\frac{k+j}N
+           k_j=\frac{K+j}N
          }
         }^{N-1}
         \quad
@@ -75,7 +75,7 @@ class Bloch(object):
     def __init__(self, *bloch):
         """ Create `Bloch` object """
         self._bloch = _a.arrayi(bloch).ravel()
-        self._bloch = np.where(self._bloch < 1, 1, self._bloch)
+        self._bloch = np.where(self._bloch < 1, 1, self._bloch).astype(np.int32, astype=False)
         if len(self._bloch) != 3:
             raise ValueError(self.__class__.__name__ + ' requires 3 input values')
         if np.any(self._bloch < 1):
@@ -163,7 +163,7 @@ class Bloch(object):
         del M0
         for i in range(1, K_unfold.shape[0]):
             M[i] = func(*args, k=K_unfold[i, :], **kwargs)
-        return bloch_unfold(_a.arrayi(self._bloch), K_unfold, M)
+        return bloch_unfold(self._bloch, K_unfold, M)
 
     def unfold(self, M, k_unfold):
         r""" Unfold the matrix list of matrices `M` into a corresponding k-point (unfolding k-points are `k_unfold`)
@@ -181,4 +181,4 @@ class Bloch(object):
         """
         if isinstance(M, (list, tuple)):
             M = np.stack(M)
-        return bloch_unfold(_a.arrayi(self._bloch), k_unfold, M)
+        return bloch_unfold(self._bloch, k_unfold, M)

@@ -251,7 +251,7 @@ if __name__ == "__main__":
     p.add_argument("--dtype", "-d", choices=["d", "f"], default="d",
                    help="Precision of data (d==double, f==single)")
 
-    p.add_argument("--elec-V", "-ebV", nargs=2, action="append", metavar=("NAME", "V"), default=[],
+    p.add_argument("--elec-V", "-e-V", nargs=2, action="append", metavar=("NAME", "V"), default=[],
                    help="Specify the potential on the electrode")
 
     p.add_argument("--tolerance", "-T", type=float, default=1e-10,
@@ -278,7 +278,7 @@ Try one of: cg, gmres, fgmres, cr, cgnr, cgne, bicgstab, steepest_descent, minim
                    help="Only store the initial box solution (i.e. do not run PyAMG).")
 
     p.add_argument("--no-boundary-fft", dest='boundary_fft', action='store_false', default=True,
-                   help="Once the electrode boundary conditions are solved, using this flag will disable we solution of the FFT equivalent to find the required potential drop that corresponds to the FFT solution")
+                   help="Once the electrode boundary conditions are solved we perform a second solution with boundaries fixed. Using this flag disables this second solution.")
 
     p.add_argument("--out", "-o", action="append", default=None,
                    help="Output file to store the resulting Poisson solution. It *has* to have TSV.nc file ending to make the file conforming with TranSiesta.")
