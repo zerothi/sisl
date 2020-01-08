@@ -983,7 +983,7 @@ class LDOSmap(Plot):
             #Link all the needed files to this directory
             os.system("ln -s ../*fdf ../*out ../*ion* ../*WFSX ../*DIM ../*PLD . ")
 
-            spectra = []
+            spectra = []; failedPoints = 0
 
             for i, point in enumerate(path):
 
@@ -1000,17 +1000,22 @@ class LDOSmap(Plot):
                 os.system("denchar < {} > /dev/null".format(tempFdf))
 
                 if i%100 == 0 and i != 0:
-                    print("PATH {}. Points calculated: {}".format(iPath, i))
+                    print("PATH {}. Points calculated: {}".format(int(iPath), i))
 
                 #Retrieve and save the output appropiately
                 try:
                     spectrum = np.loadtxt(outputFile)
 
                     spectra.append(spectrum[:,1])
-                except Exception:
+                except Exception as e:
+                    
+                    print("Error calculating the spectra for point {}: \n{}".format(point, e))
+                    failedPoints += 1
                     #If any spectrum was read, just fill it with zeros
-
                     spectra.append(np.zeros(nE))
+            
+            if failedPoints:
+                print("Path {} finished with {} error{} ({}/{} points succesfully calculated)".format(int(iPath), failedPoints, "s" if failedPoints > 1 else "", len(path) - failedPoints, len(path)))
 
             
             os.chdir("..")

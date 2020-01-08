@@ -90,7 +90,6 @@ class Configurable:
 
         return deepcopy({ setting["key"]: self.settings[setting["key"]] for setting in self.params if setting.get("group", None) == groupKey })
 
-
 #DECORATORS TO USE WHEN DEFINING METHODS IN CLASSES THAT INHERIT FROM Configurable
 #Run the method after having initialized the settings
 def afterSettingsInit(method):

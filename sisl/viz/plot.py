@@ -6,7 +6,8 @@ import os
 import sys
 import numpy as np
 import json
-import pickle
+import dill as pickle
+#import pickle
 import time
 
 import plotly
@@ -40,8 +41,76 @@ def timeit(method):
         return result
     
     return timed
-    
 
+#------------------------------------------------
+#               ANIMATION CLASS
+#------------------------------------------------
+
+class MultiplePlot:
+
+    def initAllPlots(self, updateFig = True):
+
+        try:
+            self.setFiles()
+        except Exception:
+            pass
+
+        #Init all the plots that compose this multiple plot.
+        self.childPlots = initMultiplePlots(self._plotClasses, kwargsList = self._getInitKwargsList())
+
+        if callable( getattr(self, "_afterChildsUpdated", None )):
+            self._afterChildsUpdated()
+
+        if updateFig:
+            self.getFigure()
+
+        return self
+    
+    def updateSettings(self, **kwargs):
+        '''
+        This method takes into account that on plots that contain childs, one may want to update only the parent settings or all the child's settings.
+
+        Use
+        ------
+        Call update settings
+        '''
+
+        if kwargs.get("onlyOnParent", False) or kwargs.get("exFromDecorator", False):
+
+            return super().updateSettings(**kwargs)
+        
+        else:
+
+            repeatIfChilds(Configurable.updateSettings)(self, **kwargs)
+
+            if callable( getattr(self, "_afterChildsUpdated", None )):
+                self._afterChildsUpdated()
+
+            return self
+        
+class Animation(MultiplePlot):
+
+    _isAnimation = True
+
+    _parameters = (
+        
+        {
+            "key": "frameDuration",
+            "name": "Frame duration",
+            'default': 500,
+            "inputField": {
+                "type": "textinput",
+                "placeholder": "Write the desired duration...",
+                "width": "offset-s1 offset-m1 m4 s10"
+            },
+            "help": "Time (in ms) that each frame will be displayed. <br> This is only meaningful if you have an animation",
+            "onUpdate": "getFigure"
+        },
+    )
+
+#------------------------------------------------
+#               ANIMATION CLASS
+#------------------------------------------------    
 class Plot(Configurable):
     
     _onSettingsUpdate = {
@@ -428,6 +497,11 @@ class Plot(Configurable):
         #Give an ID to the plot
         self.id = str(uuid.uuid4())
 
+        #Check if we need to convert this plot to an animation
+        if kwargs.get("animation"):
+            self.__class__ = Animation
+
+
         #Give the user the possibility to overwrite default settings
         if callable( getattr(self, "_afterInit", None )):
             self._afterInit()
@@ -524,6 +598,7 @@ class Plot(Configurable):
         #Set the fdfSile
         rootFdf = self.settings["rootFdf"]
         self.rootDir, fdfFile = os.path.split( rootFdf )
+        self.rootDir = "." if self.rootDir == "" else self.rootDir
         self.wdir = os.path.join(self.rootDir, self.settings["resultsPath"])
         self.fdfSile = sisl.get_sile(rootFdf)
         self.struct = self.fdfSile.get("SystemLabel", "")
@@ -535,7 +610,7 @@ class Plot(Configurable):
         #if RequirementsFilter().check(self.rootFdf, self.__class__.__name__ ):
         if hasattr(self, "_requirements"):
             #If they are there, we can confidently build this list
-            self.requiredFiles = [ os.path.join( self.rootDir, self.settings["resultsPath"], req.replace("$struct$", self.struct) ) for req in self.__class__._requirements["files"] ]
+            self.requiredFiles = [ os.path.join( self.rootDir, self.settings["resultsPath"], req.replace("$struct$", self.struct) ) for req in self.__class__._requirements["siesOut"]["files"] ]
         #else:
             #raise Exception("The required files were not found, please check your file system.")
 
@@ -822,66 +897,4 @@ class Plot(Configurable):
             pickle.dump(self, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
         return self
-
-#================================================
-#               ANIMATION CLASS
-#================================================
-
-class MultiplePlot(Plot):
-
-    def initAllPlots(self, updateFig = True):
-
-        try:
-            self.setFiles()
-        except Exception:
-            pass
-
-        #Go on to run the init method of the Plot class, which, since a "childPlots" attribute exists, will run for each child plot.
-        self.childPlots = initMultiplePlots(self._plotClasses, kwargsList = self._getInitKwargsList())
-
-        if callable( getattr(self, "_afterChildsUpdated", None )):
-            self._afterChildsUpdated()
-
-        if updateFig:
-            self.getFigure()
-
-        return self
-    
-    def updateSettings(self, **kwargs):
-        '''
-        This method takes into account that on plots that contain childs, one may want to update only the parent settings or all the child's settings.
-        '''
-
-        if kwargs.get("onlyOnParent", False) or kwargs.get("exFromDecorator", False):
-
-            return super().updateSettings(**kwargs)
-        
-        else:
-
-            repeatIfChilds(Configurable.updateSettings)(self, **kwargs)
-
-            if callable( getattr(self, "_afterChildsUpdated", None )):
-                self._afterChildsUpdated()
-
-            return self
-        
-class Animation(MultiplePlot):
-
-    _isAnimation = True
-
-    _parameters = (
-        
-        {
-            "key": "frameDuration",
-            "name": "Frame duration",
-            'default': 500,
-            "inputField": {
-                "type": "textinput",
-                "placeholder": "Write the desired duration...",
-                "width": "offset-s1 offset-m1 m4 s10"
-            },
-            "help": "Time (in ms) that each frame will be displayed. <br> This is only meaningful if you have an animation",
-            "onUpdate": "getFigure"
-        },
-    )
 
