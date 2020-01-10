@@ -75,7 +75,7 @@ class Bloch(object):
     def __init__(self, *bloch):
         """ Create `Bloch` object """
         self._bloch = _a.arrayi(bloch).ravel()
-        self._bloch = np.where(self._bloch < 1, 1, self._bloch).astype(np.int32, astype=False)
+        self._bloch = np.where(self._bloch < 1, 1, self._bloch).astype(np.int32, copy=False)
         if len(self._bloch) != 3:
             raise ValueError(self.__class__.__name__ + ' requires 3 input values')
         if np.any(self._bloch < 1):
