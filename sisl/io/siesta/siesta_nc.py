@@ -158,7 +158,7 @@ class ncSileSiesta(SileCDFSiesta):
         geom = self.read_geometry()
 
         # Populate the things
-        sp = self._crt_grp(self, 'SPARSE')
+        sp = self.groups['SPARSE']
 
         # Now create the tight-binding stuff (we re-create the
         # array, hence just allocate the smallest amount possible)
@@ -186,7 +186,7 @@ class ncSileSiesta(SileCDFSiesta):
         geom = self.read_geometry()
 
         # Populate the things
-        sp = self._crt_grp(self, 'SPARSE')
+        sp = self.groups['SPARSE']
 
         # Since we may read in an orthogonal basis (stored in a Siesta compliant file)
         # we can check whether it is orthogonal by checking the sum of the absolute S
@@ -220,7 +220,7 @@ class ncSileSiesta(SileCDFSiesta):
         """ Returns a overlap matrix from the underlying NetCDF file """
         S = self._read_class(Overlap, **kwargs)
 
-        sp = self._crt_grp(self, 'SPARSE')
+        sp = self.groups['SPARSE']
         S._csr._D[:, 0] = sp.variables['S'][:]
 
         return S
@@ -229,7 +229,7 @@ class ncSileSiesta(SileCDFSiesta):
         """ Returns a Hamiltonian from the underlying NetCDF file """
         H = self._read_class_spin(Hamiltonian, **kwargs)
 
-        sp = self._crt_grp(self, 'SPARSE')
+        sp = self.groups['SPARSE']
         if sp.variables['H'].unit != 'Ry':
             raise SileError(self.__class__.__name__ + '.read_hamiltonian requires the stored matrix to be in Ry!')
 
@@ -253,7 +253,7 @@ class ncSileSiesta(SileCDFSiesta):
         """
         D = self._read_class_spin(DynamicalMatrix, **kwargs)
 
-        sp = self._crt_grp(self, 'SPARSE')
+        sp = self.groups['SPARSE']
         if sp.variables['H'].unit != 'Ry**2':
             raise SileError(self.__class__.__name__ + '.read_dynamical_matrix requires the stored matrix to be in Ry**2!')
         D._csr._D[:, 0] = sp.variables['H'][0, :] * Ry2eV ** 2
@@ -265,7 +265,7 @@ class ncSileSiesta(SileCDFSiesta):
         # This also adds the spin matrix
         DM = self._read_class_spin(DensityMatrix, **kwargs)
 
-        sp = self._crt_grp(self, 'SPARSE')
+        sp = self.groups['SPARSE']
         for i in range(len(DM.spin)):
             DM._csr._D[:, i] = sp.variables['DM'][i, :]
 
@@ -283,7 +283,7 @@ class ncSileSiesta(SileCDFSiesta):
         if Ef.size == 1:
             Ef = np.tile(Ef, 2)
 
-        sp = self._crt_grp(self, 'SPARSE')
+        sp = self.groups['SPARSE']
         for i in range(len(EDM.spin)):
             EDM._csr._D[:, i] = sp.variables['EDM'][i, :] * Ry2eV
             if i < 2 and 'DM' in sp.variables:
@@ -421,6 +421,27 @@ class ncSileSiesta(SileCDFSiesta):
                 ba.Element = a.symbol
                 ba.Number_of_orbitals = np.int32(a.no)
 
+    def _write_settings(self):
+        """ Internal method for writing settings.
+
+        Sadly the settings are not correct since we have no recollection of
+        what created the matrices.
+        So the values are just *some* values
+        """
+        # Create the settings
+        st = self._crt_grp(self, 'SETTINGS')
+        v = self._crt_var(st, 'ElectronicTemperature', 'f8', ('one',))
+        v.info = "Electronic temperature used for smearing DOS"
+        v.unit = "Ry"
+        v[:] = 0.025 / Ry2eV
+        v = self._crt_var(st, 'BZ', 'i4', ('xyz', 'xyz'))
+        v.info = "Grid used for the Brillouin zone integration"
+        v[:, :] = np.identity(3) * 2
+        v = self._crt_var(st, 'BZ_displ', 'f8', ('xyz',))
+        v.info = "Monkhorst-Pack k-grid displacements"
+        v.unit = "b**-1"
+        v[:] = 0.
+
     def write_geometry(self, geom):
         """ Creates the NetCDF file and writes the geometry information """
         sile_raise_write(self)
@@ -477,7 +498,7 @@ class ncSileSiesta(SileCDFSiesta):
         v[:, :] = _siesta.siesta_sc_off(*nsc).T
         return sp
 
-    def _write_overlap_elements(self, spgroup, csr, orthogonal, S_idx):
+    def _write_overlap(self, spgroup, csr, orthogonal, S_idx):
         v = self._crt_var(spgroup, 'S', 'f8', ('nnzs',),
                           chunksizes=(len(csr.col),), **self._cmp_args)
         v.info = "Overlap matrix"
@@ -490,10 +511,10 @@ class ncSileSiesta(SileCDFSiesta):
 
             if tmp.nnz != csr.nnz:
                 # We have added more stuff, something that we currently do not allow.
-                raise ValueError(self.__class__.__name__ + '.write_hamiltonian '
-                                 'is trying to write a Hamiltonian in Siesta format with '
-                                 'not all on-site terms defined. Please correct. '
-                                 'I.e. add explicitly *all* on-site terms.')
+                raise ValueError(self.__class__.__name__ + '._write_overlap '
+                                 'is trying to write an Overlap in Siesta format with '
+                                 'not all diagonal terms defined. Please correct. '
+                                 'I.e. explicitly add *all* diagonal overlap terms.')
 
             v[:] = tmp._D[:, 0]
             del tmp
@@ -514,7 +535,9 @@ class ncSileSiesta(SileCDFSiesta):
         self.write_geometry(S.geometry)
 
         spgroup = self._write_sparsity(csr, S.geometry.nsc)
-        self._write_overlap_elements(spgroup, csr, S.orthogonal, S.S_idx)
+        # We offload the overlap writing since it may be used in
+        # some of the other matrix write methods (H, DM, EDM, etc.)
+        self._write_overlap(spgroup, csr, S.orthogonal, S.S_idx)
 
     def write_hamiltonian(self, H, **kwargs):
         """ Writes Hamiltonian model to file
@@ -550,10 +573,12 @@ class ncSileSiesta(SileCDFSiesta):
         v.info = 'Total charge'
         v[0] = kwargs.get('Q', kwargs.get('Qtot', H.geometry.q0))
 
+        # Append the sparsity pattern
         spgroup = self._write_sparsity(csr, H.geometry.nsc)
 
-        # Save tight-binding parameters
-        self._write_overlap_elements(spgroup, csr, H.orthogonal, H.S_idx)
+        # Save sparse matrices
+        self._write_overlap(spgroup, csr, H.orthogonal, H.S_idx)
+
         v = self._crt_var(spgroup, 'H', 'f8', ('spin', 'nnzs'),
                           chunksizes=(1, len(csr.col)), **self._cmp_args)
         v.info = "Hamiltonian"
@@ -562,19 +587,7 @@ class ncSileSiesta(SileCDFSiesta):
         for i in range(len(H.spin)):
             v[i, :] = csr._D[:, i] / Ry2eV
 
-        # Create the settings
-        st = self._crt_grp(self, 'SETTINGS')
-        v = self._crt_var(st, 'ElectronicTemperature', 'f8', ('one',))
-        v.info = "Electronic temperature used for smearing DOS"
-        v.unit = "Ry"
-        v[:] = 0.025 / Ry2eV
-        v = self._crt_var(st, 'BZ', 'i4', ('xyz', 'xyz'))
-        v.info = "Grid used for the Brillouin zone integration"
-        v[:] = np.identity(3) * 2
-        v = self._crt_var(st, 'BZ_displ', 'i4', ('xyz',))
-        v.info = "Monkhorst-Pack k-grid displacements"
-        v.unit = "b**-1"
-        v[:] = np.zeros([3], np.float64)
+        self._write_settings()
 
     def write_density_matrix(self, DM, **kwargs):
         """ Writes density matrix model to file
@@ -584,7 +597,6 @@ class ncSileSiesta(SileCDFSiesta):
         DM : DensityMatrix
            the model to be saved in the NC file
         """
-        DM.finalize()
         csr = DM._csr.copy()
         if csr.nnz == 0:
             raise SileError(str(self) + '.write_density_matrix cannot write a zero element sparse matrix!')
@@ -610,63 +622,19 @@ class ncSileSiesta(SileCDFSiesta):
             v[:] = kwargs['Q']
 
         # Append the sparsity pattern
-        # Create basis group
-        sp = self._crt_grp(self, 'SPARSE')
-
-        self._crt_dim(sp, 'nnzs', csr.col.shape[0])
-        v = self._crt_var(sp, 'n_col', 'i4', ('no_u',))
-        v.info = "Number of non-zero elements per row"
-        v[:] = csr.ncol[:]
-        v = self._crt_var(sp, 'list_col', 'i4', ('nnzs',),
-                          chunksizes=(len(csr.col),), **self._cmp_args)
-        v.info = "Supercell column indices in the sparse format"
-        v[:] = csr.col[:] + 1  # correct for fortran indices
-        v = self._crt_var(sp, 'isc_off', 'i4', ('n_s', 'xyz'))
-        v.info = "Index of supercell coordinates"
-        v[:, :] = _siesta.siesta_sc_off(*DM.geometry.nsc).T
+        spgroup = self._write_sparsity(csr, DM.geometry.nsc)
 
         # Save sparse matrices
-        v = self._crt_var(sp, 'S', 'f8', ('nnzs',),
-                          chunksizes=(len(csr.col),), **self._cmp_args)
-        v.info = "Overlap matrix"
-        if DM.orthogonal:
-            # We need to create the orthogonal pattern
-            tmp = csr.copy(dims=[0])
-            tmp.empty(keep_nnz=True)
-            for i in range(tmp.shape[0]):
-                tmp[i, i] = 1.
+        self._write_overlap(spgroup, csr, DM.orthogonal, DM.S_idx)
 
-            if tmp.nnz != DM.nnz:
-                # We have added more stuff, something that we currently do not allow.
-                raise ValueError(self.__class__.__name__ + '.write_density_matrix '
-                                 'is trying to write a density matrix in Siesta format with '
-                                 'not all on-site terms defined. Please correct. '
-                                 'I.e. add explicitly *all* on-site terms.')
-
-            v[:] = tmp._D[:, 0]
-            del tmp
-        else:
-            v[:] = csr._D[:, DM.S_idx]
-        v = self._crt_var(sp, 'DM', 'f8', ('spin', 'nnzs'),
+        v = self._crt_var(spgroup, 'DM', 'f8', ('spin', 'nnzs'),
                           chunksizes=(1, len(csr.col)), **self._cmp_args)
         v.info = "Density matrix"
         _mat_spin_convert(csr, DM.spin)
         for i in range(len(DM.spin)):
             v[i, :] = csr._D[:, i]
 
-        # Create the settings
-        st = self._crt_grp(self, 'SETTINGS')
-        v = self._crt_var(st, 'ElectronicTemperature', 'f8', ('one',))
-        v.info = "Electronic temperature used for smearing DOS"
-        v.unit = "Ry"
-        v[:] = 0.025 / Ry2eV
-        v = self._crt_var(st, 'BZ', 'i4', ('xyz', 'xyz'))
-        v.info = "Grid used for the Brillouin zone integration"
-        v[:] = np.identity(3) * 2
-        v = self._crt_var(st, 'BZ_displ', 'i4', ('xyz',))
-        v.info = "Monkhorst-Pack k-grid displacements"
-        v.unit = "b**-1"
-        v[:] = np.zeros([3], np.float64)
+        self._write_settings()
 
     def write_energy_density_matrix(self, EDM, **kwargs):
         """ Writes energy density matrix model to file
@@ -676,7 +644,6 @@ class ncSileSiesta(SileCDFSiesta):
         EDM : EnergyDensityMatrix
            the model to be saved in the NC file
         """
-        EDM.finalize()
         csr = EDM._csr.copy()
         if csr.nnz == 0:
             raise SileError(str(self) + '.write_energy_density_matrix cannot write a zero element sparse matrix!')
@@ -706,44 +673,12 @@ class ncSileSiesta(SileCDFSiesta):
             v[:] = kwargs['Q']
 
         # Append the sparsity pattern
-        # Create basis group
-        sp = self._crt_grp(self, 'SPARSE')
+        spgroup = self._write_sparsity(csr, EDM.geometry.nsc)
 
-        self._crt_dim(sp, 'nnzs', csr.col.shape[0])
-        v = self._crt_var(sp, 'n_col', 'i4', ('no_u',))
-        v.info = "Number of non-zero elements per row"
-        v[:] = csr.ncol[:]
-        v = self._crt_var(sp, 'list_col', 'i4', ('nnzs',),
-                          chunksizes=(len(csr.col),), **self._cmp_args)
-        v.info = "Supercell column indices in the sparse format"
-        v[:] = csr.col[:] + 1  # correct for fortran indices
-        v = self._crt_var(sp, 'isc_off', 'i4', ('n_s', 'xyz'))
-        v.info = "Index of supercell coordinates"
-        v[:, :] = _siesta.siesta_sc_off(*EDM.geometry.nsc).T
+        # Save sparse matrices
+        self._write_overlap(spgroup, csr, EDM.orthogonal, EDM.S_idx)
 
-        # Save tight-binding parameters
-        v = self._crt_var(sp, 'S', 'f8', ('nnzs',),
-                          chunksizes=(len(csr.col),), **self._cmp_args)
-        v.info = "Overlap matrix"
-        if EDM.orthogonal:
-            # We need to create the orthogonal pattern
-            tmp = csr.copy(dims=[0])
-            tmp.empty(keep_nnz=True)
-            for i in range(tmp.shape[0]):
-                tmp[i, i] = 1.
-
-            if tmp.nnz != EDM.nnz:
-                # We have added more stuff, something that we currently do not allow.
-                raise ValueError(self.__class__.__name__ + '.write_energy_density_matrix '
-                                 'is trying to write a density matrix in Siesta format with '
-                                 'not all on-site terms defined. Please correct. '
-                                 'I.e. add explicitly *all* on-site terms.')
-
-            v[:] = tmp._D[:, 0]
-            del tmp
-        else:
-            v[:] = csr._D[:, EDM.S_idx]
-        v = self._crt_var(sp, 'EDM', 'f8', ('spin', 'nnzs'),
+        v = self._crt_var(spgroup, 'EDM', 'f8', ('spin', 'nnzs'),
                           chunksizes=(1, len(csr.col)), **self._cmp_args)
         v.info = "Energy density matrix"
         v.unit = "Ry"
@@ -751,19 +686,7 @@ class ncSileSiesta(SileCDFSiesta):
         for i in range(len(EDM.spin)):
             v[i, :] = csr._D[:, i] / Ry2eV
 
-        # Create the settings
-        st = self._crt_grp(self, 'SETTINGS')
-        v = self._crt_var(st, 'ElectronicTemperature', 'f8', ('one',))
-        v.info = "Electronic temperature used for smearing DOS"
-        v.unit = "Ry"
-        v[:] = 0.025 / Ry2eV
-        v = self._crt_var(st, 'BZ', 'i4', ('xyz', 'xyz'))
-        v.info = "Grid used for the Brillouin zone integration"
-        v[:] = np.identity(3) * 2
-        v = self._crt_var(st, 'BZ_displ', 'i4', ('xyz',))
-        v.info = "Monkhorst-Pack k-grid displacements"
-        v.unit = "b**-1"
-        v[:] = np.zeros([3], np.float64)
+        self._write_settings()
 
     def write_dynamical_matrix(self, D, **kwargs):
         """ Writes dynamical matrix model to file
@@ -773,7 +696,6 @@ class ncSileSiesta(SileCDFSiesta):
         D : DynamicalMatrix
            the model to be saved in the NC file
         """
-        D.finalize()
         csr = D._csr.copy()
         if csr.nnz == 0:
             raise SileError(str(self) + '.write_dynamical_matrix cannot write a zero element sparse matrix!')
@@ -800,62 +722,18 @@ class ncSileSiesta(SileCDFSiesta):
         v[:] = 0.
 
         # Append the sparsity pattern
-        # Create basis group
-        sp = self._crt_grp(self, 'SPARSE')
+        spgroup = self._write_sparsity(csr, D.geometry.nsc)
 
-        self._crt_dim(sp, 'nnzs', csr.col.shape[0])
-        v = self._crt_var(sp, 'n_col', 'i4', ('no_u',))
-        v.info = "Number of non-zero elements per row"
-        v[:] = csr.ncol[:]
-        v = self._crt_var(sp, 'list_col', 'i4', ('nnzs',),
-                          chunksizes=(len(csr.col),), **self._cmp_args)
-        v.info = "Supercell column indices in the sparse format"
-        v[:] = csr.col[:] + 1  # correct for fortran indices
-        v = self._crt_var(sp, 'isc_off', 'i4', ('n_s', 'xyz'))
-        v.info = "Index of supercell coordinates"
-        v[:, :] = _siesta.siesta_sc_off(*D.geometry.nsc).T
+        # Save sparse matrices
+        self._write_overlap(spgroup, csr, D.orthogonal, D.S_idx)
 
-        # Save tight-binding parameters
-        v = self._crt_var(sp, 'S', 'f8', ('nnzs',),
-                          chunksizes=(len(csr.col),), **self._cmp_args)
-        v.info = "Overlap matrix"
-        if D.orthogonal:
-            # We need to create the orthogonal pattern
-            tmp = csr.copy(dims=[0])
-            tmp.empty(keep_nnz=True)
-            for i in range(tmp.shape[0]):
-                tmp[i, i] = 1.
-
-            if tmp.nnz != D.nnz:
-                # We have added more stuff, something that we currently do not allow.
-                raise ValueError(self.__class__.__name__ + '.write_dynamical_matrix '
-                                 'is trying to write a Hamiltonian in Siesta format with '
-                                 'not all on-site terms defined. Please correct. '
-                                 'I.e. add explicitly *all* on-site terms.')
-
-            v[:] = tmp._D[:, 0]
-            del tmp
-        else:
-            v[:] = csr._D[:, D.S_idx]
-        v = self._crt_var(sp, 'H', 'f8', ('spin', 'nnzs'),
+        v = self._crt_var(spgroup, 'H', 'f8', ('spin', 'nnzs'),
                           chunksizes=(1, len(csr.col)), **self._cmp_args)
         v.info = "Dynamical matrix"
         v.unit = "Ry**2"
         v[0, :] = csr._D[:, 0] / Ry2eV ** 2
 
-        # Create the settings
-        st = self._crt_grp(self, 'SETTINGS')
-        v = self._crt_var(st, 'ElectronicTemperature', 'f8', ('one',))
-        v.info = "Electronic temperature used for smearing DOS"
-        v.unit = "Ry"
-        v[:] = 0.025 / Ry2eV
-        v = self._crt_var(st, 'BZ', 'i4', ('xyz', 'xyz'))
-        v.info = "Grid used for the Brillouin zone integration"
-        v[:] = np.identity(3) * 2
-        v = self._crt_var(st, 'BZ_displ', 'i4', ('xyz',))
-        v.info = "Monkhorst-Pack k-grid displacements"
-        v.unit = "b**-1"
-        v[:] = np.zeros([3], np.float64)
+        self._write_settings()
 
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
