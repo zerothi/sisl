@@ -3618,7 +3618,6 @@ class Geometry(SuperCellChild):
                     g = ns._geometry
                     # Change all coordinates using the reciprocal cell and move to unit-cell (% 1.)
                     fxyz = g.fxyz % 1.
-                    fxyz -= np.amin(fxyz, axis=0)
                     ns._geometry.xyz[:, :] = dot(fxyz, g.cell)
         p.add_argument(*opts('--unit-cell', '-uc'), choices=['translate', 'tr', 't', 'mod'],
                        action=MoveUnitCell,
