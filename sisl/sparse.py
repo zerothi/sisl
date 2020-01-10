@@ -242,6 +242,10 @@ class SparseCSR(object):
         # Denote that this sparsity pattern hasn't been finalized
         self._finalized = False
 
+    def diagonal(self):
+        r""" Return the diagonal elements from the matrix """
+        return np.array([self[i, i] for i in range(self.shape[0])], dtype=self.dtype)
+
     def diags(self, diagonals, offsets=0, dim=None, dtype=None):
         """ Create a `SparseCSR` with diagonal elements with the same shape as the routine
 
