@@ -516,7 +516,7 @@ class RealSpaceSE(SelfEnergy):
 
     .. math::
         \boldsymbol\Sigma^\mathcal{R}(E) = \mathbf S^\mathcal{R} (E+i\eta) - \mathbf H^\mathcal{R}
-             - \sum_{\mathbf k} \mathbf G_{\mathbf k}(E)
+             - \Big[\sum_{\mathbf k} \mathbf G_{\mathbf k}(E)\Big]^{-1}
 
     The method actually used is relying on `RecursiveSI` and `~sisl.physics.Bloch` objects.
 
@@ -783,7 +783,7 @@ class RealSpaceSE(SelfEnergy):
 
         .. math::
             \boldsymbol\Sigma^{\mathcal{R}}(E) = \mathbf S^{\mathcal{R}} E - \mathbf H^{\mathcal{R}}
-               - \sum_{\mathbf k} \mathbf G_{\mathbf k}(E)
+               - \Big[\sum_{\mathbf k} \mathbf G_{\mathbf k}(E)\Big]^{-1}
 
         Parameters
         ----------
@@ -1027,7 +1027,7 @@ class RealSpaceSI(SelfEnergy):
 
     .. math::
         \boldsymbol\Sigma^\mathcal{R}(E) = \mathbf S^\mathcal{R} (E+i\eta) - \mathbf H^\mathcal{R}
-             - \sum_{\mathbf k} \mathbf G_{\mathbf k}(E)
+             - \Big[\sum_{\mathbf k} \mathbf G_{\mathbf k}(E)\Big]^{-1}
 
     The method actually used is relying on `RecursiveSI` and `~sisl.physics.Bloch` objects.
 
@@ -1366,7 +1366,7 @@ class RealSpaceSI(SelfEnergy):
         The real space self-energy is calculated via:
         .. math::
             \boldsymbol\Sigma^{\mathcal{R}}(E) = \mathbf S^{\mathcal{R}} E - \mathbf H^{\mathcal{R}}
-               - \sum_{\mathbf k} \mathbf G_{\mathbf k}(E)
+               - \Big[\sum_{\mathbf k} \mathbf G_{\mathbf k}(E)\Big]^{-1}
 
         Parameters
         ----------
