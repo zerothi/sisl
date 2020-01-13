@@ -43,6 +43,16 @@ class SelfEnergy(object):
 
     @staticmethod
     def se2scat(SE):
+        r""" Calculate the scattering matrix from the self-energy
+
+        .. math::
+            \boldsymbol\Gamma = i(\boldsymbol\Sigma - \boldsymbol \Sigma ^\dagger)
+
+        Parameters
+        ----------
+        SE : matrix
+            self-energy matrix
+        """
         return 1j * (SE - conjugate(SE.T))
 
     def _setup(self, *args, **kwargs):
