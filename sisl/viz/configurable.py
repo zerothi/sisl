@@ -126,11 +126,26 @@ class Configurable:
             
             return self
     
+    def getParam(self, settingKey):
+        '''
+        Gets the parameter info for a given setting
+        '''
+
+        for param in self.params:
+            if param["key"] == settingKey:
+                return param
+        else:
+            return None
+
     def getSetting(self, settingKey):
 
         '''
         Gets the value for a given setting.
         '''
+        
+        #A setting can be a function that returns the true value of the setting
+        if callable( self.settings[settingKey] ):
+            return self.settings[settingKey](self)
 
         return deepcopy(self.settings[settingKey])
 
@@ -162,6 +177,16 @@ class Configurable:
             settings = self.settings
 
         return deepcopy({ setting["key"]: settings[setting["key"]] for setting in self.params if setting.get("group", None) == groupKey })
+    
+    def isDefault(self, settingKey):
+
+        '''
+        Checks if the current value for a setting is the default one.
+        
+        DOESN'T WORK FOR VALUES THAT ARE FUNCTIONS!
+        '''
+
+        return self.settings[settingKey] == self.getParam(settingKey)["default"]
 
 #DECORATORS TO USE WHEN DEFINING METHODS IN CLASSES THAT INHERIT FROM Configurable
 #Run the method after having initialized the settings
