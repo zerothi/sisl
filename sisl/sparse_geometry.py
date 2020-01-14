@@ -2085,7 +2085,7 @@ class SparseOrbital(_SparseGeometry):
         2. Use neighbor cell couplings from `self` as the couplings to `other`
            This *may* cause problems if the coupling atoms are not exactly equi-positioned.
            If the coupling coordinates and the coordinates in `other` differ by more than
-           0.001 Ang, a warning will be issued.
+           0.01 Ang, a warning will be issued.
            If this difference is above `eps` the couplings will be removed.
 
         When appending sparse matrices made up of atoms, this method assumes that
@@ -2101,10 +2101,12 @@ class SparseOrbital(_SparseGeometry):
         True
 
         To retain couplings only from the *left* sparse matrix, do:
+
         >>> sporb = left.append(right, 0, scale=(2, 0))
         >>> sporb = (sporb + sporb.transpose()) * 0.5
 
         To retain couplings only from the *right* sparse matrix, do:
+
         >>> sporb = left.append(right, 0, scale=(0, 2.))
         >>> sporb = (sporb + sporb.transpose()) * 0.5
 
