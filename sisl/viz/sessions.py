@@ -11,5 +11,3 @@ class BasicSession(Session):
     def _afterInit(self):
         
         self.addTab("First tab")
-
-        print( os.listdir( self.getSetting("rootDir") ) )
