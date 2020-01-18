@@ -614,7 +614,7 @@ class SuperCell(object):
 
         Parameters
         ----------
-        sc_off : (3)
+        sc_off : (3,) or list of (3,)
             super cell specification. For each axis having value ``None`` all supercells
             along that axis is returned.
         """

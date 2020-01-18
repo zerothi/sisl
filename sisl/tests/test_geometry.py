@@ -519,26 +519,26 @@ class TestGeometry(object):
 
     @pytest.mark.xfail(raises=ValueError)
     def test_append_xfail(self, setup):
-        s = setup.g.append(setup.g, 0, align='not')
+        s = setup.g.append(setup.g, 0, offset='not')
 
     @pytest.mark.xfail(raises=ValueError)
     def test_prepend_xfail(self, setup):
-        s = setup.g.prepend(setup.g, 0, align='not')
+        s = setup.g.prepend(setup.g, 0, offset='not')
 
-    def test_append_prepend_align(self, setup):
+    def test_append_prepend_offset(self, setup):
         for axis in [0, 1, 2]:
             t = setup.g.sc.cell[axis, :].copy()
             t *= 10. / (t ** 2).sum() ** 0.5
             s1 = setup.g.copy()
             s2 = setup.g.translate(t)
 
-            S = s1.append(s2, axis, align='min')
+            S = s1.append(s2, axis, offset='min')
             s = setup.g.append(setup.g, axis)
 
             assert np.allclose(s.cell[axis, :], S.cell[axis, :])
             assert np.allclose(s.xyz, S.xyz)
 
-            P = s2.prepend(s1, axis, align='min')
+            P = s2.prepend(s1, axis, offset='min')
             p = setup.g.prepend(setup.g, axis)
 
             assert np.allclose(p.cell[axis, :], P.cell[axis, :])

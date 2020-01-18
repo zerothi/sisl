@@ -1143,7 +1143,7 @@ class _gfSileSiesta(SileBinSiesta):
         """
         no = len(H)
         if S is None:
-            S = np.eye(no, dtype=np.complex128)
+            S = np.eye(no, dtype=H.dtype)
         self._step_counter('write_hamiltonian', HS=True, read=True)
         _siesta.write_gf_hs(self._iu, self._ik, self._E[self._iE],
                             H.astype(np.complex128, 'C', copy=False).T,

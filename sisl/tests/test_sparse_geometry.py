@@ -6,7 +6,7 @@ import math as m
 import numpy as np
 import scipy as sc
 
-from sisl import Geometry, Atom
+from sisl import Geometry, Atom, SuperCell
 from sisl.geom import fcc, graphene
 from sisl.sparse_geometry import *
 
@@ -466,3 +466,24 @@ def test_sparse_atom_symmetric(n0, n1, n2):
 
     # Check that we have counted all nnz
     assert s.nnz == nnz
+
+
+def test_sparse_orbital_add_axis(setup):
+    g = setup.g.copy()
+    s = SparseOrbital(g)
+    s.construct([[0.1, 1.5], [1, 2]])
+    s1 = s.add(s, axis=2)
+    s2 = SparseOrbital(g.append(SuperCell([0, 0, 10]), 2).add(g, offset=[0, 0, 5]))
+    s2.construct([[0.1, 1.5], [1, 2]])
+    assert s1.spsame(s2)
+
+
+def test_sparse_orbital_add_no_axis():
+    from sisl.geom import sc
+    g = (sc(1., Atom(1, R=1.5)) * 2).add(SuperCell([0, 0, 5]))
+    s = SparseOrbital(g)
+    s.construct([[0.1, 1.5], [1, 2]])
+    s1 = s.add(s, offset=[0, 0, 3])
+    s2 = SparseOrbital(g.add(g, offset=[0, 0, 3]))
+    s2.construct([[0.1, 1.5], [1, 2]])
+    assert s1.spsame(s2)

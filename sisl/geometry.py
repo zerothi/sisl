@@ -1689,7 +1689,7 @@ class Geometry(SuperCellChild):
                 'Unknown what, not one of [xyz,position,mass,cell]')
         return np.mean(g.xyz, axis=0)
 
-    def append(self, other, axis, align='none'):
+    def append(self, other, axis, offset='none'):
         """ Appends two structures along `axis`
 
         This will automatically add the ``self.cell[axis,:]`` to all atomic
@@ -1713,11 +1713,13 @@ class Geometry(SuperCellChild):
         axis : int
             Cell direction to which the `other` geometry should be
             appended.
-        align : {'none', 'min'}
+        offset : {'none', 'min', (3,)}
             By default appending two structures will simply use the coordinates,
             as is.
             With 'min', the routine will shift both the structures along the cell
-            axis of `self` such that they coincide at the first atom.
+            axis of `self` such that they coincide at the first atom, lastly one
+            may use a specified offset to manually select how `other` is displaced.
+            NOTE: That `self.cell[axis, :]` will be added to `offset` always.
 
         See Also
         --------
@@ -1726,7 +1728,20 @@ class Geometry(SuperCellChild):
         attach : attach a geometry
         insert : insert a geometry
         """
-        align = align.lower()
+        if isinstance(offset, _str):
+            offset = offset.lower()
+            if offset == 'none':
+                offset = self.cell[axis, :].reshape(1, 3)
+            elif offset == 'min':
+                # We want to align at the minimum position along the `axis`
+                min_f = self.fxyz[:, axis].min()
+                min_other_f = dot(other.xyz, self.icell.T)[:, axis].min()
+                offset = self.cell[axis, :] * (1 + min_f - min_other_f)
+            else:
+                raise ValueError(self.__class__.__name__ + '.append requires align keyword to be one of [none, min, (3,)]')
+        else:
+            offset = (self.cell[axis, :] + _a.arrayd(offset)).reshape(1, 3)
+
         if isinstance(other, SuperCell):
             # Only extend the supercell.
             xyz = np.copy(self.xyz)
@@ -1735,23 +1750,14 @@ class Geometry(SuperCellChild):
             names = self._names.copy()
 
         else:
-            if align == 'none':
-                xyz = np.append(self.xyz, self.cell[axis, :][None, :] + other.xyz, axis=0)
-            elif align == 'min':
-                # We want to align at the minimum position along the `axis`
-                min_f = self.fxyz[:, axis].min()
-                min_other_f = dot(other.xyz, self.icell.T)[:, axis].min()
-                displ = self.cell[axis, :] * (1 + min_f - min_other_f)
-                xyz = np.append(self.xyz, displ[None, :] + other.xyz, axis=0)
-            else:
-                raise ValueError(self.__class__.__name__ + '.append requires align keyword to be one of [none, min]')
+            xyz = np.append(self.xyz, offset + other.xyz, axis=0)
             atom = self.atoms.append(other.atom)
             sc = self.sc.append(other.sc, axis)
             names = self._names.merge(other._names, offset=len(self))
 
         return self.__class__(xyz, atom=atom, sc=sc, names=names)
 
-    def prepend(self, other, axis, align='none'):
+    def prepend(self, other, axis, offset='none'):
         """ Prepend two structures along `axis`
 
         This will automatically add the ``self.cell[axis,:]`` to all atomic
@@ -1775,11 +1781,13 @@ class Geometry(SuperCellChild):
         axis : int
             Cell direction to which the `other` geometry should be
             prepended
-        align : {'none', 'min'}
-            By default prepending two structures will simply use the coordinates,
+        offset : {'none', 'min', (3,)}
+            By default appending two structures will simply use the coordinates,
             as is.
             With 'min', the routine will shift both the structures along the cell
-            axis of `other` such that they coincide at the first atom.
+            axis of `other` such that they coincide at the first atom, lastly one
+            may use a specified offset to manually select how `self` is displaced.
+            NOTE: That `other.cell[axis, :]` will be added to `offset` always.
 
         See Also
         --------
@@ -1788,7 +1796,19 @@ class Geometry(SuperCellChild):
         attach : attach a geometry
         insert : insert a geometry
         """
-        align = align.lower()
+        if isinstance(offset, _str):
+            offset = offset.lower()
+            if offset == 'none':
+                offset = other.cell[axis, :].reshape(1, 3)
+            elif offset == 'min':
+                # We want to align at the minimum position along the `axis`
+                min_f = other.fxyz[:, axis].min()
+                min_other_f = dot(self.xyz, other.icell.T)[:, axis].min()
+                offset = other.cell[axis, :] * (1 + min_f - min_other_f)
+            else:
+                raise ValueError(self.__class__.__name__ + '.prepend requires align keyword to be one of [none, min, (3,)]')
+        else:
+            offset = (other.cell[axis, :] + _a.arrayd(offset)).reshape(1, 3)
         if isinstance(other, SuperCell):
             # Only extend the supercell.
             xyz = np.copy(self.xyz)
@@ -1797,23 +1817,14 @@ class Geometry(SuperCellChild):
             names = self._names.copy()
 
         else:
-            if align == 'none':
-                xyz = np.append(other.xyz, other.cell[axis, :][None, :] + self.xyz, axis=0)
-            elif align == 'min':
-                # We want to align at the minimum position along the `axis`
-                min_f = other.fxyz[:, axis].min()
-                min_other_f = dot(self.xyz, other.icell.T)[:, axis].min()
-                displ = other.cell[axis, :] * (1 + min_f - min_other_f)
-                xyz = np.append(other.xyz, displ[None, :] + self.xyz, axis=0)
-            else:
-                raise ValueError(self.__class__.__name__ + '.prepend requires align keyword to be one of [none, min]')
+            xyz = np.append(other.xyz, offset + self.xyz, axis=0)
             atom = self.atoms.prepend(other.atom)
-            sc = self.sc.append(other.sc, axis)
+            sc = self.sc.prepend(other.sc, axis)
             names = other._names.merge(self._names, offset=len(other))
 
         return self.__class__(xyz, atom=atom, sc=sc, names=names)
 
-    def add(self, other):
+    def add(self, other, offset=(0, 0, 0)):
         """ Merge two geometries (or a Geometry and SuperCell) by adding the two atoms together
 
         If `other` is a Geometry only the atoms gets added, to also add the supercell vectors
@@ -1823,6 +1834,9 @@ class Geometry(SuperCellChild):
         ----------
         other : Geometry or SuperCell
             Other geometry class which is added
+        offset : (3,), optional
+            offset in geometry of `other` when adding the atoms. Only if `other` is
+            of instance `Geometry`.
 
         See Also
         --------
@@ -1837,7 +1851,7 @@ class Geometry(SuperCellChild):
             atom = self.atoms.copy()
             names = self._names.copy()
         else:
-            xyz = np.append(self.xyz, other.xyz, axis=0)
+            xyz = np.append(self.xyz, other.xyz + _a.arrayd(offset).reshape(1, 3), axis=0)
             sc = self.sc.copy()
             atom = self.atoms.add(other.atom)
             names = self._names.merge(other._names, offset=len(self))

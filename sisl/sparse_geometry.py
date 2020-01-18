@@ -2066,8 +2066,131 @@ class SparseOrbital(_SparseGeometry):
 
         return R
 
+    def add(self, other, axis=None, offset=(0, 0, 0)):
+        r""" Add two sparse matrices by adding the parameters to one set. The final matrix will have no couplings between `self` and `other`
+
+        The final sparse matrix will not have any couplings between `self` and `other`. Not even if they
+        have commensurate overlapping regions. If you want to create couplings you have to use `append` but that
+        requires the structures are commensurate in the coupling region.
+
+        Parameters
+        ----------
+        other : SparseGeometry
+            the other sparse matrix to be added, all atoms will be appended
+        axis : int or None, optional
+            whether a specific axis of the cell will be added to the final geometry.
+            For ``None`` the final cell will be that of `self`, otherwise the lattice
+            vector corresponding to `axis` will be appended.
+        offset : (3,), optional
+            offset in geometry of `other` when adding the atoms.
+
+        See Also
+        --------
+        append : append two matrices by also adding overlap couplings
+        prepend : see `append`
+        """
+        # Check that the sparse matrices are compatible
+        if not (type(self) is type(other)):
+            raise ValueError(self.__class__.__name__ + '.add requires other to be of same type: {}'.format(other.__class__.__name__))
+
+        if self.dtype != other.dtype:
+            raise ValueError(self.__class__.__name__ + '.add requires the same datatypes in the two matrices.')
+
+        if self.dim != other.dim:
+            raise ValueError(self.__class__.__name__ + '.add requires the same number of dimensions in the matrix.')
+
+        if axis is None:
+            geom = self.geometry.add(other.geometry, offset=offset)
+        else:
+            # Same effect but also adds the lattice vectors
+            geom = self.geometry.append(other, axis, offset=offset)
+
+        # Now we have the correct geometry, then create the correct
+        # class
+        # New indices and data (the constructor for SparseCSR copies)
+        full = self.__class__(geom, self.dim, self.dtype, 1, **self._cls_kwargs())
+        full._csr.ptr = concatenate((self._csr.ptr[:-1], other._csr.ptr))
+        full._csr.ptr[self.no:] += self._csr.ptr[-1]
+        full._csr.ncol = concatenate((self._csr.ncol, other._csr.ncol))
+        full._csr._D = concatenate((self._csr._D, other._csr._D))
+        full._csr._nnz = full._csr.ncol.sum()
+        full._csr._finalized = False
+
+        # Retrieve the maximum number of orbitals (in the supercell)
+        # This may be used to remove couplings
+        full_no_s = geom.no_s
+
+        # Now we have to transfer the indices to the new sparse pattern
+
+        # First create a local copy of the columns, then we transfer, and then we collect.
+        s_col = self._csr.col.copy()
+        transfer_idx = _a.arangei(self.geometry.no_s).reshape(-1, self.geometry.no)
+        transfer_idx += _a.arangei(self.geometry.n_s).reshape(-1, 1) * other.geometry.no
+        # Remove couplings along axis
+        if not axis is None:
+            idx = (self.geometry.sc.sc_off[:, axis] != 0).nonzero()[0]
+            # Tell the routine to delete these indices
+            transfer_idx[idx, :] = full_no_s + 1
+        idx = array_arange(self._csr.ptr[:-1], n=self._csr.ncol)
+        s_col[idx] = transfer_idx.ravel()[s_col[idx]]
+
+        # Same for the other, but correct for deleted supercells and supercells along
+        # disconnected auxiliary cells.
+        o_col = other._csr.col.copy()
+        transfer_idx = _a.arangei(other.geometry.no_s).reshape(-1, other.geometry.no)
+
+        # Transfer the correct supercells
+        o_idx = []
+        s_idx = []
+        idx_delete = []
+        for isc, sc in enumerate(other.geometry.sc.sc_off):
+            try:
+                s_idx.append(self.geometry.sc.sc_index(sc))
+                o_idx.append(isc)
+            except ValueError:
+                idx_delete.append(isc)
+        # o_idx are transferred to s_idx
+        transfer_idx[o_idx, :] += _a.arangei(1, other.geometry.n_s + 1)[s_idx].reshape(-1, 1) * self.geometry.no
+        # Remove some columns
+        transfer_idx[idx_delete, :] = full_no_s + 1
+        # Clean-up to not confuse the rest of the algorithm
+        del o_idx, s_idx, idx_delete
+
+        # Now figure out if the supercells can be kept, at all...
+        # find SC indices in other corresponding to self
+        o_idx_uc = other.geometry.sc.sc_index([0] * 3)
+        o_idx_sc = _a.arangei(other.geometry.sc.n_s)
+        # Remove couplings along axis
+        for i in range(3):
+            if i == axis:
+                idx = (other.geometry.sc.sc_off[:, axis] != 0).nonzero()[0]
+            elif not allclose(geom.cell[i, :], other.cell[i, :]):
+                # This will happen in case `axis` is None
+                idx = (other.geometry.sc.sc_off[:, i] != 0).nonzero()[0]
+            else:
+                # When axis is not specified and cell parameters
+                # are commensurate, then we will not change couplings
+                continue
+            # Tell the routine to delete these indices
+            transfer_idx[idx, :] = full_no_s + 1
+
+        idx = array_arange(other._csr.ptr[:-1], n=other._csr.ncol)
+        o_col[idx] = transfer_idx.ravel()[o_col[idx]]
+
+        # Now we need to decide whether the
+        del transfer_idx, idx
+        full._csr.col = concatenate([s_col, o_col])
+
+        # Clean up (they could potentially be very large arrays)
+        del s_col, o_col
+
+        # Ensure we remove the elements
+        full._csr._clean_columns()
+
+        return full
+
     def prepend(self, other, axis, eps=0.01):
-        """ See `append` for details
+        r""" See `append` for details
 
         This is currently equivalent to:
 
@@ -2076,7 +2199,7 @@ class SparseOrbital(_SparseGeometry):
         return other.append(self, axis, eps)
 
     def append(self, other, axis, eps=0.01, scale=1):
-        """ Append `other` along `axis` to construct a new connected sparse matrix
+        r""" Append `other` along `axis` to construct a new connected sparse matrix
 
         This method tries to append two sparse geometry objects together by
         the following these steps:
@@ -2139,6 +2262,7 @@ class SparseOrbital(_SparseGeometry):
         See Also
         --------
         prepend : equivalent scheme as this method
+        add : merge two matrices without considering overlap or commensurability
         transpose : ensure hermiticity by using this routine
         Geometry.append
         Geometry.prepend
@@ -2203,7 +2327,7 @@ class SparseOrbital(_SparseGeometry):
         o_col = other._csr.col.copy()
         # transfer
         transfer_idx = _a.arangei(other.geometry.no_s).reshape(-1, other.geometry.no)
-        transfer_idx += (_a.arangei(1, other.geometry.n_s + 1).reshape(-1, 1)) * self.geometry.no
+        transfer_idx += _a.arangei(1, other.geometry.n_s + 1).reshape(-1, 1) * self.geometry.no
         idx = array_arange(other._csr.ptr[:-1], n=other._csr.ncol)
         o_col[idx] = transfer_idx.ravel()[o_col[idx]]
 
