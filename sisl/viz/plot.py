@@ -43,73 +43,7 @@ def timeit(method):
     return timed
 
 #------------------------------------------------
-#               ANIMATION CLASS
-#------------------------------------------------
-
-class MultiplePlot:
-
-    def initAllPlots(self, updateFig = True):
-
-        try:
-            self.setFiles()
-        except Exception:
-            pass
-
-        #Init all the plots that compose this multiple plot.
-        self.childPlots = initMultiplePlots(self._plotClasses, kwargsList = self._getInitKwargsList())
-
-        if callable( getattr(self, "_afterChildsUpdated", None )):
-            self._afterChildsUpdated()
-
-        if updateFig:
-            self.getFigure()
-
-        return self
-    
-    def updateSettings(self, **kwargs):
-        '''
-        This method takes into account that on plots that contain childs, one may want to update only the parent settings or all the child's settings.
-
-        Use
-        ------
-        Call update settings
-        '''
-
-        if kwargs.get("onlyOnParent", False) or kwargs.get("exFromDecorator", False):
-
-            return super().updateSettings(**kwargs)
-        
-        else:
-
-            repeatIfChilds(Configurable.updateSettings)(self, **kwargs)
-
-            if callable( getattr(self, "_afterChildsUpdated", None )):
-                self._afterChildsUpdated()
-
-            return self
-        
-class Animation(MultiplePlot):
-
-    _isAnimation = True
-
-    _parameters = (
-        
-        {
-            "key": "frameDuration",
-            "name": "Frame duration",
-            'default': 500,
-            "inputField": {
-                "type": "textinput",
-                "placeholder": "Write the desired duration...",
-                "width": "offset-s1 offset-m1 m4 s10"
-            },
-            "help": "Time (in ms) that each frame will be displayed. <br> This is only meaningful if you have an animation",
-            "onUpdate": "getFigure"
-        },
-    )
-
-#------------------------------------------------
-#               ANIMATION CLASS
+#                 PLOT CLASS
 #------------------------------------------------    
 class Plot(Configurable):
     
@@ -898,3 +832,68 @@ class Plot(Configurable):
 
         return self
 
+#------------------------------------------------
+#               ANIMATION CLASS
+#------------------------------------------------
+
+class MultiplePlot(Plot):
+
+    def initAllPlots(self, updateFig = True):
+
+        try:
+            self.setFiles()
+        except Exception:
+            pass
+
+        #Init all the plots that compose this multiple plot.
+        self.childPlots = initMultiplePlots(self._plotClasses, kwargsList = self._getInitKwargsList())
+
+        if callable( getattr(self, "_afterChildsUpdated", None )):
+            self._afterChildsUpdated()
+
+        if updateFig:
+            self.getFigure()
+
+        return self
+    
+    def updateSettings(self, **kwargs):
+        '''
+        This method takes into account that on plots that contain childs, one may want to update only the parent settings or all the child's settings.
+
+        Use
+        ------
+        Call update settings
+        '''
+
+        if kwargs.get("onlyOnParent", False) or kwargs.get("exFromDecorator", False):
+
+            return super().updateSettings(**kwargs)
+        
+        else:
+
+            repeatIfChilds(Configurable.updateSettings)(self, **kwargs)
+
+            if callable( getattr(self, "_afterChildsUpdated", None )):
+                self._afterChildsUpdated()
+
+            return self
+        
+class Animation(MultiplePlot):
+
+    _isAnimation = True
+
+    _parameters = (
+        
+        {
+            "key": "frameDuration",
+            "name": "Frame duration",
+            'default': 500,
+            "inputField": {
+                "type": "textinput",
+                "placeholder": "Write the desired duration...",
+                "width": "offset-s1 offset-m1 m4 s10"
+            },
+            "help": "Time (in ms) that each frame will be displayed. <br> This is only meaningful if you have an animation",
+            "onUpdate": "getFigure"
+        },
+    )
