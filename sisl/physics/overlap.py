@@ -1,6 +1,5 @@
 from __future__ import print_function, division
 
-import numpy as np
 from .sparse import SparseOrbitalBZ
 
 __all__ = ['Overlap']
@@ -29,8 +28,9 @@ class Overlap(SparseOrbitalBZ):
 
     def __init__(self, geometry, dtype=None, nnzpr=None, **kwargs):
         """ Initialize Overlap """
-        kwargs["orthogonal"] = True # Avoid the dim += 1 in super
-        super(Overlap, self).__init__(geometry, 1, np.float64, nnzpr, **kwargs)
+        kwargs["orthogonal"] = True  # Avoid the dim += 1 in super
+        kwargs["dim"] = 1
+        super(Overlap, self).__init__(geometry, dtype=dtype, nnzpr=nnzpr, **kwargs)
 
     def _reset(self):
         super(Overlap, self)._reset()
@@ -56,7 +56,7 @@ class Overlap(SparseOrbitalBZ):
            The sparse matrix in a `scipy.sparse` format.
         **kwargs : optional
            any arguments that are directly passed to the ``__init__`` method
-           of the class.
+           of the class. `dtype` and `nnzpr` are overridden.
 
         Returns
         -------

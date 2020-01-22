@@ -139,7 +139,7 @@ class SparseOrbitalBZ(SparseOrbital):
            returned sparse matrix to be non-orthogonal
         **kwargs : optional
            any arguments that are directly passed to the ``__init__`` method
-           of the class.
+           of the class. `dim`, `dtype`, `nnzpr` and `orthogonal` are overridden.
 
         Returns
         -------
@@ -164,7 +164,7 @@ class SparseOrbitalBZ(SparseOrbital):
             nnzpr = max(nnzpr, P[i].nnz // P[i].shape[0])
 
         # Create the sparse object
-        p = cls(geometry, dim, P[0].dtype, nnzpr, orthogonal=S is None, **kwargs)
+        p = cls(geometry, dim=dim, dtype=P[0].dtype, nnzpr=nnzpr, orthogonal=S is None, **kwargs)
 
         if p._size != P[0].shape[0]:
             raise ValueError(cls.__name__ + '.fromsp cannot create a new class, the geometry ' + \
