@@ -775,6 +775,10 @@ def berry_curvature(state, energy, dHk, dSk=None, degenerate=None):
     if state.ndim == 1:
         return berry_curvature(state.reshape(1, -1), energy, dHk, dSk, degenerate).ravel()
 
+    if degenerate is None:
+        # Fix following routine
+        degenerate = []
+
     dtype = find_common_type([state.dtype, dHk[0].dtype], [])
     if dSk is None:
         v_matrix = _velocity_matrix_ortho(state, dHk, degenerate, dtype)
