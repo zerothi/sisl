@@ -46,7 +46,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
     def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
         """ Initialize Hamiltonian """
-        super(Hamiltonian, self).__init__(geometry, dim, dtype, nnzpr, **kwargs)
+        super(Hamiltonian, self).__init__(geometry, dim=dim, dtype=dtype, nnzpr=nnzpr, **kwargs)
         self._reset()
 
     def _reset(self):

@@ -162,7 +162,7 @@ class ncSileSiesta(SileCDFSiesta):
 
         # Now create the tight-binding stuff (we re-create the
         # array, hence just allocate the smallest amount possible)
-        C = cls(geom, dim, nnzpr=1)
+        C = cls(geom, dim=dim, nnzpr=1)
 
         C._csr.ncol = np.array(sp.variables['n_col'][:], np.int32)
         # Update maximum number of connections (in case future stuff happens)

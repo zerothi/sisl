@@ -41,7 +41,7 @@ class EnergyDensityMatrix(_realspace_DensityMatrix):
     """
 
     def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
-        super(EnergyDensityMatrix, self).__init__(geometry, dim, dtype, nnzpr, **kwargs)
+        super(EnergyDensityMatrix, self).__init__(geometry, dim=dim, dtype=dtype, nnzpr=nnzpr, **kwargs)
         self._reset()
 
     def _reset(self):

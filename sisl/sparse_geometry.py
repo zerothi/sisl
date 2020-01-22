@@ -131,7 +131,7 @@ class _SparseGeometry(object):
         """
         if dtype is None:
             dtype = self.dtype
-        new = self.__class__(self.geometry.copy(), self.dim, dtype, 1, **self._cls_kwargs())
+        new = self.__class__(self.geometry.copy(), dim=self.dim, dtype=dtype, nnzpr=1, **self._cls_kwargs())
         # Be sure to copy the content of the SparseCSR object
         new._csr = self._csr.copy(dtype=dtype)
         return new
@@ -717,7 +717,7 @@ class _SparseGeometry(object):
             nnzpr = max(nnzpr, P[i].nnz // P[i].shape[0])
 
         # Create the sparse object
-        p = cls(geometry, dim, P[0].dtype, nnzpr, **kwargs)
+        p = cls(geometry, dim=dim, dtype=P[0].dtype, nnzpr=nnzpr, **kwargs)
 
         if p._size != P[0].shape[0]:
             raise ValueError(cls.__name__ + '.fromsp cannot create a new class, the geometry ' + \
@@ -1039,7 +1039,7 @@ class SparseAtom(_SparseGeometry):
         # Now we have a correct geometry, and
         # we are now ready to create the sparsity pattern
         # Reduce the sparsity pattern, first create the new one
-        S = self.__class__(geom, self.dim, self.dtype, np.amax(self._csr.ncol), **self._cls_kwargs())
+        S = self.__class__(geom, dim=self.dim, dtype=self.dtype, nnzpr=np.amax(self._csr.ncol), **self._cls_kwargs())
 
         def _sca2sca(M, a, m, seps, axis):
             # Converts an o from M to m
@@ -1098,7 +1098,7 @@ class SparseAtom(_SparseGeometry):
         idx.shape = (-1,)
 
         # Now create the new sparse orbital class
-        S = self.__class__(geom, self.dim, self.dtype, 1, **self._cls_kwargs())
+        S = self.__class__(geom, dim=self.dim, dtype=self.dtype, nnzpr=1, **self._cls_kwargs())
         S._csr = self._csr.sub(idx)
 
         return S
@@ -1129,7 +1129,7 @@ class SparseAtom(_SparseGeometry):
         """
         # Create the new sparse object
         g = self.geometry.tile(reps, axis)
-        S = self.__class__(g, self.dim, self.dtype, 1, **self._cls_kwargs())
+        S = self.__class__(g, dim=self.dim, dtype=self.dtype, nnzpr=1, **self._cls_kwargs())
 
         # Now begin to populate it accordingly
         # Retrieve local pointers to the information
@@ -1209,7 +1209,7 @@ class SparseAtom(_SparseGeometry):
         """
         # Create the new sparse object
         g = self.geometry.repeat(reps, axis)
-        S = self.__class__(g, self.dim, self.dtype, 1, **self._cls_kwargs())
+        S = self.__class__(g, dim=self.dim, dtype=self.dtype, nnzpr=1, **self._cls_kwargs())
 
         # Now begin to populate it accordingly
         # Retrieve local pointers to the information
@@ -1552,7 +1552,7 @@ class SparseOrbital(_SparseGeometry):
         # Now we have a correct geometry, and
         # we are now ready to create the sparsity pattern
         # Reduce the sparsity pattern, first create the new one
-        S = self.__class__(geom, self.dim, self.dtype, np.amax(self._csr.ncol), **self._cls_kwargs())
+        S = self.__class__(geom, dim=self.dim, dtype=self.dtype, nnzpr=np.amax(self._csr.ncol), **self._cls_kwargs())
 
         def _sco2sco(M, o, m, seps, axis):
             # Converts an o from M to m
@@ -1690,7 +1690,7 @@ class SparseOrbital(_SparseGeometry):
         idx.shape = (-1,)
 
         # Now create the new sparse orbital class
-        S = self.__class__(geom, self.dim, self.dtype, 1, **self._cls_kwargs())
+        S = self.__class__(geom, dim=self.dim, dtype=self.dtype, nnzpr=1, **self._cls_kwargs())
         S._csr = self._csr.sub(idx)
 
         return S
@@ -1768,7 +1768,7 @@ class SparseOrbital(_SparseGeometry):
             geom.atoms.replace_atom(old_atom, new_atom)
 
         # Now create the new sparse orbital class
-        SG = self.__class__(geom, self.dim, self.dtype, 1, **self._cls_kwargs())
+        SG = self.__class__(geom, dim=self.dim, dtype=self.dtype, nnzpr=1, **self._cls_kwargs())
 
         rem_orbs = delete(_a.arangei(old_atom.no), orbital)
         # Find orbitals to remove (note this HAS to be from the original array)
@@ -1806,7 +1806,7 @@ class SparseOrbital(_SparseGeometry):
         """
         # Create the new sparse object
         g = self.geometry.tile(reps, axis)
-        S = self.__class__(g, self.dim, self.dtype, 1, **self._cls_kwargs())
+        S = self.__class__(g, dim=self.dim, dtype=self.dtype, nnzpr=1, **self._cls_kwargs())
 
         # Now begin to populate it accordingly
         # Retrieve local pointers to the information
@@ -1886,7 +1886,7 @@ class SparseOrbital(_SparseGeometry):
         """
         # Create the new sparse object
         g = self.geometry.repeat(reps, axis)
-        S = self.__class__(g, self.dim, self.dtype, 1, **self._cls_kwargs())
+        S = self.__class__(g, dim=self.dim, dtype=self.dtype, nnzpr=1, **self._cls_kwargs())
 
         # Now begin to populate it accordingly
         # Retrieve local pointers to the information
@@ -2108,7 +2108,7 @@ class SparseOrbital(_SparseGeometry):
         # Now we have the correct geometry, then create the correct
         # class
         # New indices and data (the constructor for SparseCSR copies)
-        full = self.__class__(geom, self.dim, self.dtype, 1, **self._cls_kwargs())
+        full = self.__class__(geom, dim=self.dim, dtype=self.dtype, nnzpr=1, **self._cls_kwargs())
         full._csr.ptr = concatenate((self._csr.ptr[:-1], other._csr.ptr))
         full._csr.ptr[self.no:] += self._csr.ptr[-1]
         full._csr.ncol = concatenate((self._csr.ncol, other._csr.ncol))
@@ -2308,7 +2308,7 @@ class SparseOrbital(_SparseGeometry):
         # create the new sparsity patterns with offset
 
         # New indices and data (the constructor for SparseCSR copies)
-        full = self.__class__(geom, self.dim, self.dtype, 1, **self._cls_kwargs())
+        full = self.__class__(geom, dim=self.dim, dtype=self.dtype, nnzpr=1, **self._cls_kwargs())
         full._csr.ptr = concatenate((self._csr.ptr[:-1], other._csr.ptr))
         full._csr.ptr[self.no:] += self._csr.ptr[-1]
         full._csr.ncol = concatenate((self._csr.ncol, other._csr.ncol))
