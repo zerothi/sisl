@@ -20,6 +20,7 @@ One may also plot real-space wavefunctions.
    velocity
    velocity_matrix
    berry_phase
+   berry_curvature
    wavefunction
    spin_moment
    spin_orbital_moment
@@ -80,7 +81,8 @@ from .state import Coefficient, State, StateC
 __all__ = ['DOS', 'PDOS']
 __all__ += ['velocity', 'velocity_matrix']
 __all__ += ['spin_moment', 'spin_orbital_moment']
-__all__ += ['inv_eff_mass_tensor', 'berry_phase']
+__all__ += ['inv_eff_mass_tensor']
+__all__ += ['berry_phase', 'berry_curvature']
 __all__ += ['wavefunction']
 __all__ += ['CoefficientElectron', 'StateElectron', 'StateCElectron']
 __all__ += ['EigenvalueElectron', 'EigenvectorElectron', 'EigenstateElectron']
@@ -725,6 +727,98 @@ def _velocity_matrix_ortho(state, dHk, degenerate, dtype):
         v[s, :, 2] = conj(state).dot(dHk[2].dot(state[s, :]))
 
     return v * _velocity_const
+
+
+def berry_curvature(state, energy, dHk, dSk=None, degenerate=None):
+    r""" Calculate the Berry curvature matrix for a set of states (using Kubo)
+
+    The Berry curvature is calculated using the following expression (:math:`\alpha`, :math:`\beta` corresponding to Cartesian directions):
+
+    .. math::
+
+       \boldsymbol\Sigma_{n,\alpha\beta} = - \frac2\hbar^2 \Im\sum_{m\neq n}
+                \frac{v_{nm,\alpha} v_{mn,\beta}}
+                     {[\epsilon_m - \epsilon_n]^2}
+
+    For details see [1]_.
+
+    Parameters
+    ----------
+    state : array_like
+       vectors describing the electronic states, 2nd dimension contains the states. In case of degenerate
+       states the vectors *may* be rotated upon return.
+    energy : array_like, optional
+       energies of the states. In case of degenerate
+       states the eigenvalues of the states will be averaged in the degenerate sub-space.
+    dHk : list of array_like
+       Hamiltonian derivative with respect to :math:`\mathbf k`. This needs to be a tuple or
+       list of the Hamiltonian derivative along the 3 Cartesian directions.
+    dSk : list of array_like, optional
+       :math:`\delta \mathbf S_k` matrix required for non-orthogonal basis.
+       Same derivative as `dHk`.
+    degenerate : list of array_like, optional
+       a list containing the indices of degenerate states. In that case a prior diagonalization
+       is required to decouple them. This is done 3 times along each of the Cartesian directions.
+
+    See Also
+    --------
+    velocity : calculate state velocities
+    velocity_matrix : calculate state velocities between all states
+
+    Returns
+    -------
+    numpy.ndarray
+        Berry curvature with final dimension ``(state.shape[0], 3, 3)``.
+
+    .. [1] X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, "Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation", PRB, *74*, 195118 (2006)
+    """
+    if state.ndim == 1:
+        return berry_curvature(state.reshape(1, -1), energy, dHk, dSk, degenerate).ravel()
+
+    dtype = find_common_type([state.dtype, dHk[0].dtype], [])
+    if dSk is None:
+        v_matrix = _velocity_matrix_ortho(state, dHk, degenerate, dtype)
+    else:
+        v_matrix = _velocity_matrix_non_ortho(state, dHk, energy, dSk, degenerate, dtype)
+    return _berry_curvature(v_matrix, energy, degenerate)
+
+
+# This reverses the velocity unit (squared since Berry curvature is v.v)
+_berry_curvature_const = constant.hbar('eV ps') ** 2
+
+
+def _berry_curvature(v_M, energy, degenerate):
+    r""" Calculate Berry curvature for a given velocity matrix """
+
+    # All matrix elements along the 3 directions
+    N = v_M.shape[0]
+    # For cases where all states are degenerate then we would not be able
+    # to calculate anything. Hence we need to initialize as zero
+    # This is a vector of matrices
+    #   \Sigma_{n, \alpha \beta}
+    sigma = np.zeros([N, 3, 3], dtype=v_M.dtype)
+
+    # Fast index deletion
+    index = _a.arangei(N)
+
+    for n in range(N):
+
+        # Calculate the Berry-curvature from the velocity matrix
+        idx = index
+        for deg in degenerate:
+            if n in deg:
+                # We skip degenerate states as that would lead to overflow
+                idx = np.delete(index, deg)
+        if len(idx) == N:
+            idx = np.delete(index, n)
+
+        # Note we do not use an epsilon for accuracy
+        fac = - 2 / (energy[idx] - energy[n]).reshape(-1, 1) ** 2
+        sigma[n, 0, :] = (v_M[idx, n, 0].reshape(-1, 1) * v_M[n, idx, :] * fac).imag.sum(0)
+        sigma[n, 1, :] = (v_M[idx, n, 1].reshape(-1, 1) * v_M[n, idx, :] * fac).imag.sum(0)
+        sigma[n, 2, :] = (v_M[idx, n, 2].reshape(-1, 1) * v_M[n, idx, :] * fac).imag.sum(0)
+
+    return sigma * _berry_curvature_const
 
 
 def inv_eff_mass_tensor(state, ddHk, energy=None, ddSk=None, degenerate=None, as_matrix=False):
@@ -1728,6 +1822,41 @@ class StateCElectron(_electron_State, StateC):
         except:
             raise SislError(self.__class__.__name__ + '.velocity_matrix requires the parent to have a spin associated.')
         return velocity_matrix(self.state, self.parent.dHk(**opt), self.c, dSk, degenerate=deg)
+
+    def berry_curvature(self, eps=1e-4):
+        r""" Calculate Berry curvature for the states
+
+        This routine calls `~sisl.physics.electron.berry_curvature` with appropriate arguments
+        and returns the Berry curvature for the states.
+
+        Note that the coefficients associated with the `StateCElectron` *must* correspond
+        to the energies of the states.
+
+        See `~sisl.physics.electron.berry_curvature` for details.
+
+        Parameters
+        ----------
+        eps : float, optional
+           precision used to find degenerate states.
+        """
+        try:
+            opt = {'k': self.info.get('k', (0, 0, 0))}
+            gauge = self.info.get('gauge', None)
+            if not gauge is None:
+                opt['gauge'] = gauge
+
+            # Get dSk before spin
+            if self.parent.orthogonal:
+                dSk = None
+            else:
+                dSk = self.parent.dSk(**opt)
+
+            if 'spin' in self.info:
+                opt['spin'] = self.info.get('spin', None)
+            deg = self.degenerate(eps)
+        except:
+            raise SislError(self.__class__.__name__ + '.berry_curvature requires the parent to have a spin associated.')
+        return berry_curvature(self.state, self.c, self.parent.dHk(**opt), dSk, degenerate=deg)
 
     def inv_eff_mass_tensor(self, as_matrix=False, eps=1e-3):
         r""" Calculate inverse effective mass tensor for the states
