@@ -120,16 +120,94 @@ class Configurable:
             
             return self
     
-    def getParam(self, settingKey):
+    def getParam(self, settingKey, justDict = True, paramsExtractor = False):
         '''
-        Gets the parameter info for a given setting
+        Gets the parameter for a given setting. 
+        
+        By default it returns its dictionary, so that one can check the information that it contains.
+        You can ask for the parameter itself by setting justDict to False. However, if you want to
+        modify the parameter you should use the modifyParam() method instead.
+
+        Arguments
+        ----------
+        settingKey: str
+            The key of the desired parameter.
+        justDict: bool, optional (True)
+            If set to False, returns the actual parameter object. By default it returns just the info.
+        paramsExtractor: function, optional
+            A function that accepts the object (self) and returns its params (NOT A COPY OF THEM!).
+            This will only be used in case this method is used outside the class, where objects
+            have a different structure (e.g. QueriesInput inputField) or if there is some nested params
+            field that the class is not aware of (although this second case is probably not advisable).
+        
+        Returns
+        ----------
+        param: dict or InputField
+            The parameter in the form specified by justDict.
         '''
 
-        for param in self.params:
+        for param in self.params if not paramsExtractor else paramsExtractor(self):
             if param.key == settingKey:
-                return param
+                return param.__dict__ if justDict else param
         else:
             return None
+    
+    def modifyParam(self, settingKey, *args, **kwargs):
+        '''
+        Modifies a parameter using a provided function
+
+        Arguments
+        --------
+        settingKey: str
+            The key of the parameter to be modified
+        *args:
+            Depending on what you pass the setting will be modified in different ways:
+                - Two arguments:
+                    the first argument will be interpreted as the attribute that you want to change,
+                    and the second one as the value that you want to set.
+
+                    Ex: obj.modifyParam("length", "default", 3)
+                    will set the default attribute of the parameter with key "length" to 3
+                
+                - One argument and it is a dictionary:
+                    the keys will be interpreted as attributes that you want to change and the values
+                    as the value that you want them to have. 
+                
+                - One argument and it is a function:
+
+                    the function will recieve the parameter and can act on it in any way you like.
+                    It doesn't need to return the parameter, just modify it.
+                    In this function, you can call predefined methods of the parameter, for example.
+
+                    Ex: obj.modifyParam("length", lambda param: param.incrementByOne() )
+
+                    given that you know that this type of parameter has this method
+        **kwargs: optional
+            They are passed directly to the Configurable.getParam method to retrieve the parameter.
+
+        Returns
+        --------
+        self:
+            The configurable object.
+        '''
+
+        if len(args) == 2:
+           
+            modFunction = lambda obj: setattr(obj, *args)
+
+        elif isinstance(args[0], dict):
+
+            def modFunction(obj):
+                for attr, val in args[0].items():
+                    setattr(obj, attr, val)
+
+        elif callable(args[0]):
+
+            modFunction = args[0]
+
+        modFunction(self.getParam(settingKey, justDict = False, **kwargs))
+
+        return self
 
     def getSetting(self, settingKey):
 

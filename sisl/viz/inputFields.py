@@ -2,6 +2,8 @@
 
 from copy import deepcopy
 
+from .configurable import Configurable
+
 TEXT_INPUT = {
     "type": "textinput",
     "width": "s100%",
@@ -256,4 +258,19 @@ class QueriesInput(InputField):
         }
 
         super().__init__(*args, **kwargs, inputType = "queries", inputFieldAttrs = inputFieldAttrs)
+    
+    def getParam(self, key, **kwargs):
 
+        '''
+        Gets the parameter info for a given key. It uses the Configurable.getParam method.
+        '''
+
+        return Configurable.getParam(self, key, paramsExtractor = lambda obj: obj.inputField["queryForm"], **kwargs)
+
+    def modifyParam(self, key, *args, **kwargs):
+
+        '''
+        Uses Configurable.modifyParam to modify a parameter
+        '''
+
+        return Configurable.modifyParam(self, key, *args, paramsExtractor = lambda obj: obj.inputField["queryForm"], **kwargs)
