@@ -11,14 +11,16 @@ from .plot import Plot, MultiplePlot, Animation
 from .configurable import Configurable, afterSettingsInit
 from .plotutils import findFiles
 
+from .inputFields import InputField, TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput
+
 class Session(Configurable):
 
     _onSettingsUpdate = {
-        "__config":{
+        "functions": ["getStructures"],
+        "config":{
             "multipleFunc": False,
-            "importanceOrder": ["getStructures"]
+            "order": False,
         },
-        "getStructures": lambda obj: obj.getStructures,
     }
 
     _paramGroups = (
@@ -47,60 +49,43 @@ class Session(Configurable):
 
     _parameters = (
         
-        {
-            "key": "rootDir",
-            "name": "Root directory",
-            "group": "filesystem",
-            "default": os.getcwd(),
-            "inputField": {
-                "type": "textinput",
-                "width": "s100% l50%",
-                "params": {
-                    "placeholder": "Write the path here...",
-                }
-            },
-            #"onUpdate": "getStructures"
-        },
+        TextInput(
+            key = "rootDir", name = "Root directory",
+            group = "filesystem",
+            default = os.getcwd(),
+            width = "s100% l50%",
+            params = {
+                "placeholder": "Write the path here..."
+            }
+        ),
 
-        {
-            "key": "searchDepth",
-            "name": "Search depth",
-            "group": "filesystem",
-            "default": [0,3],
-            "inputField": {
-                "type": "rangeslider",
-                "width": "s100% l50%",
-                "params": {
-                    "min": 0,
-                    "max": 15,
-                    "allowCross": False,
-                    "step": 1,
-                    "marks": { i: str(i) for i in range(0,16) },
-                    "updatemode": "drag",
-                    "units": "eV",
-                },
-                "styles": {}
+        RangeSlider(
+            key = "searchDepth", name = "Search depth",
+            group = "filesystem",
+            default = [0,3],
+            width = "s100% l50%",
+            params = {
+                "min": 0,
+                "max": 15,
+                "allowCross": False,
+                "step": 1,
+                "marks": { i: str(i) for i in range(0,16) },
+                "updatemode": "drag",
+                "units": "eV",
             },
-            "help": "Determines the depth limits of the search for structures (from the root directory).",
-            #"onUpdate": "getStructures"
-        },
+            help = "Determines the depth limits of the search for structures (from the root directory)."
+        ),
 
-        {
-            "key": "showTooltips",
-            "name": "Show Tooltips",
-            "default": True,
-            "group": "gui",
-            "inputField": {
-                "type": "switch",
-                "width": "s50% m30% l15%",
-                "params": {
-                    "offLabel": "No",
-                    "onLabel": "Yes"
-                }
+        SwitchInput(
+            key = "showTooltips", name = "Show Tooltips",
+            group = "gui",
+            default = True,
+            params = {
+                "offLabel": "No",
+                "onLabel": "Yes"
             },
-            "help": "Tooltips help you understand how something works or what something will do.<br>If you are already familiar with the interface, you can turn this off.",
-            "onUpdate": "getFigure",
-        },
+            help = "Tooltips help you understand how something works or what something will do.<br>If you are already familiar with the interface, you can turn this off."
+        )
 
     )
 
@@ -345,7 +330,7 @@ class Session(Configurable):
 
         #Get the structures
         self.warehouse["structs"] = {
-            str(uuid.uuid4()): {"name": os.path.basename(path), "path": path } for path in findFiles(self.settings["rootDir"], "*fdf", self.settings["searchDepth"])
+            str(uuid.uuid4()): {"name": os.path.basename(path), "path": path } for path in findFiles(self.setting("rootDir"), "*fdf", self.setting("searchDepth"))
         }
 
         #Avoid passing unnecessary info to the browser.
@@ -365,7 +350,7 @@ class Session(Configurable):
             "id": self.id,
             "tabs": self.warehouse["tabs"],
             "settings": self.settings,
-            "params": self.params,
+            "params": [ param.__dict__ for param in self.params ],
             "paramGroups": self._paramGroups
         }
 

@@ -16,6 +16,7 @@ import shutil
 import sisl
 from .plot import Plot, MultiplePlot, Animation, PLOTS_CONSTANTS
 from .plotutils import sortOrbitals, initMultiplePlots, copyParams, findFiles, runMultiple
+from .inputFields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput
 
 class BandsPlot(Plot):
 
@@ -33,110 +34,67 @@ class BandsPlot(Plot):
     
     _parameters = (
 
-        {
-            "key": "bandsFile" ,
-            "name": "Path to bands file",
-            "default": None,
-            "inputField": {
-                "type": "textinput",
-                "width": "s100% m50% l33%",
-                "params": {
-                    "placeholder": "Write the path to your bands file here...",
-                }
+        TextInput(
+            key = "bandsFile", name = "Path to bands file",
+            width = "s100% m50% l33%",
+            params = {
+                "placeholder": "Write the path to your bands file here...",
             },
-            "help": '''This parameter explicitly sets a .bands file. Otherwise, the bands file is attempted to read from the fdf file ''',
-            "onUpdate": "readData",
-        },
-    
-        {
-            "key": "Erange" ,
-            "name": "Energy range",
-            "default": [-2,4],
-            "inputField": {
-                "type": "rangeslider",
-                "width": "s90%",
-                "params": {
-                    "min": -10,
-                    "max": 10,
-                    "allowCross": False,
-                    "step": 0.1,
-                    "marks": { **{ i: str(i) for i in range(-10,11) }, 0: "Ef",},
-                }
-            },
-            "help": "Energy range where the bands are displayed.",
-            "onUpdate": "setData",
-        },
+            help = '''This parameter explicitly sets a .bands file. Otherwise, the bands file is attempted to read from the fdf file '''
+        ),
 
-        {
-            "key": "path" ,
-            "name": "Bands path",
-            "default": "0,0,0/100/0.5,0,0",
-            "inputField": {
-                "type": "textinput",
-                "width": "s100% m50% l33%",
-                "params": {
-                    "placeholder": "Write your path here...",
-                }
+        RangeSlider(
+            key = "Erange", name = "Energy range",
+            default = [-2,4],
+            width = "s90%",
+            params = {
+                "min": -10,
+                "max": 10,
+                "allowCross": False,
+                "step": 0.1,
+                "marks": { **{ i: str(i) for i in range(-10,11) }, 0: "Ef",},
             },
-            "help": '''Path along which bands are drawn in format:
-                            <br>p1x,p1y,p1z/<number of points from P1 to P2>/p2x,p2y,p2z/...''',
-            "onUpdate": "readData",
-        },
+            help = "Energy range where the bands are displayed."
+        ),
 
-        {
-            "key": "ticks" ,
-            "name": "K ticks",
-            "default": "A,B",
-            "inputField": {
-                "type": "textinput",
-                "width": "s100% m50%",
-                "params": {
-                    "placeholder": "Write your ticks...",
-                }
+        TextInput(
+            key = "path", name = "Bands path",
+            default = "0,0,0/100/0.5,0,0",
+            width = "s100% m50% l33%",
+            params = {
+                "placeholder": "Write your path here..."
             },
-            "help": "Ticks that should be displayed at the corners of the path (separated by commas).",
-            "onUpdate": "getFigure",
-        },
+            help = '''Path along which bands are drawn in format:
+                            <br>p1x,p1y,p1z/<number of points from P1 to P2>/p2x,p2y,p2z/...'''
+        ),
 
-        {
-            "key": "bandsWidth",
-            "name": "Band lines width",
-            "default": 1,
-            "inputField": {
-                "type": "number",
-                "width": "s50% m30% l30%",
-                "params": {
-                    "min": 0,
-                    "step": 0.1
-                }
+        TextInput(
+            key = "ticks", name = "K ticks",
+            default = "A,B",
+            width = "s100% m50%",
+            params = {
+                "placeholder": "Write your ticks..."
             },
-            "help": "Width of the lines that represent the bands",
-            "onUpdate": "setData",
-        },
-        
-        {
-            "key": "spinUpColor",
-            "name": "No spin/spin up line color",
-            "default": "black",
-            "inputField": {
-                "type": "color",
-                "width": "s50% m33% l15%",
-            },
-            "help":"Choose the color to display the bands. <br> This will be used for the spin up bands if the calculation is spin polarized",
-            "onUpdate": "setData",
-        },
+            help = "Ticks that should be displayed at the corners of the path (separated by commas)."
+        ),
 
-        {
-            "key": "spinDownColor",
-            "name": "Spin down line color",
-            "default": "blue",
-            "inputField": {
-                "type": "color",
-                "width": "s50% m33% l15%",
-            },
-            "help": "Choose the color for the spin down bands.<br>Only used if the calculation is spin polarized.",
-            "onUpdate": "setData",
-        },
+        FloatInput(
+            key = "bandsWidth", name = "Band lines width",
+            default = 1,
+            help = "Width of the lines that represent the bands"
+        ),
+
+        ColorPicker(
+            key = "spinUpColor", name = "No spin/spin up line color",
+            default = "black",
+            help = "Choose the color to display the bands. <br> This will be used for the spin up bands if the calculation is spin polarized"
+        ),
+
+        ColorPicker(
+            key = "spinDownColor", name = "Spin down line color",
+            default = "blue",
+            help = "Choose the color for the spin down bands.<br>Only used if the calculation is spin polarized."
+        ),
 
     )
 
@@ -150,7 +108,7 @@ class BandsPlot(Plot):
             self.setupHamiltonian()
         
         #Get the path requested
-        self.path = self.settings["path"]
+        self.path = self.setting("path")
         bandPoints, divisions = [], []
         for item in self.path.split("/"):
             splittedItem = item.split(",")
@@ -175,9 +133,9 @@ class BandsPlot(Plot):
     def _readSiesOut(self):
         
         #Get the info from the bands file
-        self.path = self.settings["path"] #This should be modified at some point, it's just so that setData works correctly
+        self.path = self.setting("path") #This should be modified at some point, it's just so that setData works correctly
 
-        bandsFile = self.settings["bandsFile"] or self.requiredFiles[0]
+        bandsFile = self.setting("bandsFile") or self.requiredFiles[0]
         self.ticks, self.Ks, bands = sisl.get_sile(bandsFile).read_data()
         self.fermi = 0.0 #Energies are already shifted
 
@@ -221,13 +179,13 @@ class BandsPlot(Plot):
         '''
 
         #If the path has changed we need to produce the band structure again
-        if self.path != self.settings["path"]:
+        if self.path != self.setting("path"):
             self.order = ["fromH"]
             self.readData()
 
         self.data = []
 
-        Erange = np.array(self.settings["Erange"]) + self.fermi
+        Erange = np.array(self.setting("Erange")) + self.fermi
 
         #Get the bands that matter for the plot
         self.plotDF = self.df[ (self.df["Emin"] <= Erange[1]) & (self.df["Emax"] >= Erange[0]) ].dropna(axis = 0, how = "all")
@@ -239,7 +197,7 @@ class BandsPlot(Plot):
                         'y': band.loc[self.Ks] - self.fermi,
                         'mode': 'lines', 
                         'name': "{} spin {}".format( band["iBand"], PLOTS_CONSTANTS["spins"][int(band["iSpin"])]) if self.isSpinPolarized else str(int(band["iBand"])) , 
-                        'line': {"color": [self.settings["spinUpColor"],self.settings["spinDownColor"]][int(band["iSpin"])], 'width' : self.settings["bandsWidth"]},
+                        'line': {"color": [self.setting("spinUpColor"),self.setting("spinDownColor")][int(band["iSpin"])], 'width' : self.setting("bandsWidth")},
                         'hoverinfo':'name',
                         "hovertemplate": '%{y:.2f} eV',
                     } for i, band in self.plotDF.sort_values("iBand").iterrows() ] ]
@@ -249,7 +207,7 @@ class BandsPlot(Plot):
         #Add the ticks
         self.figure.layout.xaxis.tickvals = self.ticks[0]
         self.figure.layout.xaxis.ticktext = self.ticks[1]
-        self.figure.layout.yaxis.range = np.array(self.settings["Erange"]) + self.fermi
+        self.figure.layout.yaxis.range = np.array(self.setting("Erange")) + self.fermi
 
 class BandsAnimation(Animation):
 
@@ -444,7 +402,7 @@ class PdosPlot(Plot):
 
         #Calculate the pdos with sisl using the last geometry and the hamiltonian
         self.monkhorstPackGrid = [15, 1, 1]
-        Erange = self.settings["Erange"]
+        Erange = self.setting("Erange")
         self.E = np.linspace( Erange[0], Erange[-1], 1000) 
 
         mp = sisl.MonkhorstPack(self.H, self.monkhorstPackGrid)
@@ -452,7 +410,7 @@ class PdosPlot(Plot):
 
     def _readSiesOut(self):
 
-        PDOSFile = self.settings["PDOSFile"] or self.requiredFiles[0]
+        PDOSFile = self.setting("PDOSFile") or self.requiredFiles[0]
         #Get the info from the .PDOS file
         self.geom, self.E, self.PDOSinfo = sisl.get_sile(PDOSFile).read_data()
 
@@ -538,34 +496,34 @@ class PdosPlot(Plot):
         #"Inform" the queries of the available options
         for i, param in enumerate(self.params):
 
-            if param["key"] == "requests":
+            if param.key == "requests":
                 for iParam, reqParam in enumerate(self.params[i]["inputField"]["queryForm"]):
 
                     options = []
                     
-                    if reqParam["key"] == "atoms":
+                    if reqParam.key == "atoms":
                         
                         options = [{ "label": "{} ({})".format(iAt, self.geom.atoms[iAt - 1].symbol), "value": iAt } 
                             for iAt in self.df["iAtom"].unique()]
                         
                 
-                    elif reqParam["key"] == "species":
+                    elif reqParam.key == "species":
                         
                         options = [{ "label": spec, "value": spec } for spec in self.df.Species.unique()]
                         
                     
-                    elif reqParam["key"] == "orbitals":
+                    elif reqParam.key == "orbitals":
                         
                         options = [{ "label": orbName, "value": orbName } for orbName in self.df["Orbital name"].unique()]
                         
                     
-                    elif reqParam["key"] == "spin":
+                    elif reqParam.key == "spin":
 
                         options = [{ "label": "↑", "value": 0 },{ "label": "↓", "value": 1 }] if self.isSpinPolarized else []
                         
 
                     if options:
-                        self.params[i]["inputField"]["queryForm"][iParam]["inputField"]["params"]["options"] = options
+                        self.params[i].inputField["queryForm"][iParam].inputField["params"]["options"] = options
 
     def _setData(self):
         '''
@@ -595,13 +553,13 @@ class PdosPlot(Plot):
         self.data = []
 
         #Get only the energies we are interested in 
-        Emin, Emax = np.array(self.settings["Erange"])
+        Emin, Emax = np.array(self.setting("Erange"))
         plotEvals = [Evalue for Evalue in self.E if Emin < Evalue < Emax]
 
         #Inform and abort if there is no data
         if len(plotEvals) == 0:
             print("PDOS Plot error: There is no data for the provided energy range ({}).\n The energy range of the read data is: [{},{}]"
-                .format(self.settings["Erange"], min(self.E), max(self.E))
+                .format(self.setting("Erange"), min(self.E), max(self.E))
             )
 
             return self.data
@@ -610,7 +568,7 @@ class PdosPlot(Plot):
         self.reqDf = self.df.drop([Evalue for Evalue in self.E if Evalue not in plotEvals], axis = 1)
 
         #Go request by request and plot the corresponding PDOS contribution
-        for request in self.settings["requests"]:
+        for request in self.setting("requests"):
 
             #Use only the active requests
             if not request["active"]:
@@ -670,7 +628,7 @@ class PdosPlot(Plot):
 
         return self
 
-class PdosAnimation(Animation):
+""" class PdosAnimation(Animation):
     
     '''
     Plot representation of the projected density of states.
@@ -697,7 +655,7 @@ class PdosAnimation(Animation):
     def _afterChildsUpdated(self):
 
         #This will make sure that the correct options are available for the PDOS requests of the parent plot.
-        self.params = copyParams( self.childPlots[0].params, exclude = ["PDOSFile"])
+        self.params = copyParams( self.childPlots[0].params, exclude = ["PDOSFile"]) """
 
 class LDOSmap(Plot):
     '''
@@ -934,7 +892,7 @@ class LDOSmap(Plot):
             Denchar.STSEnergyPoints {}
             Denchar.CoorUnits Ang
             Denchar.STSEta {} eV
-            '''.format(*stsPosition, *(np.array(self.settings["Erange"]) + self.fermi), self.settings["nE"], self.settings["STSEta"])
+            '''.format(*stsPosition, *(np.array(self.setting("Erange")) + self.fermi), self.setting("nE"), self.setting("STSEta"))
 
     def _readSiesOut(self):
         '''Function that uses denchar to get STSpecra along a path'''
@@ -954,10 +912,10 @@ class LDOSmap(Plot):
         self._getPath()
         
         #Prepare the array that will store all the spectra
-        self.spectra = np.zeros((self.path.shape[0], self.path.shape[1], self.settings["nE"]))
+        self.spectra = np.zeros((self.path.shape[0], self.path.shape[1], self.setting("nE")))
         #Other helper arrays
         pathIs = np.linspace(0, self.path.shape[0] - 1, self.path.shape[0] )
-        Epoints = np.linspace( *(np.array(self.settings["Erange"]) + self.fermi), self.settings["nE"] )
+        Epoints = np.linspace( *(np.array(self.setting("Erange")) + self.fermi), self.setting("nE") )
 
         #Copy selected WFSX into WFSX if it exists (denchar reads from .WFSX)
         shutil.copyfile(os.path.join(self.rootDir, '{}.selected.WFSX'.format(self.struct)),
@@ -1026,12 +984,12 @@ class LDOSmap(Plot):
         self.spectra = runMultiple(
             getSpectraForPath,
             self.path,
-            self.settings["nE"],
+            self.setting("nE"),
             pathIs,
             self.rootDir, self.struct,
             #All the strings that need to be added to each file
             [ [self._getdencharSTSfdf(point) for point in points] for points in self.path ],
-            kwargsList = {"rootFdf" : self.settings["rootFdf"]},
+            kwargsList = {"rootFdf" : self.setting("rootFdf")},
             messageFn = lambda nTasks, nodes: "Calculating {} simultaneous paths in {} nodes".format(nTasks, nodes)
         )
 
@@ -1052,16 +1010,16 @@ class LDOSmap(Plot):
     
     def _getPath(self):
 
-        if list(self.settings["trajectory"]):
+        if list(self.setting("trajectory")):
             #If the user provides a trajectory, we are going to use that without questioning it
-            self.path = np.array(self.settings["trajectory"])
+            self.path = np.array(self.setting("trajectory"))
 
             #At the moment these make little sense, but in the future there will be the possibility to add breakpoints
             self.pointsByStage = np.array([len(self.path)])
             self.distances = np.array( [np.linalg.norm(self.path[-1] - self.path[0])] )
         else:
             #Otherwise, we will calculate the trajectory according to the points provided
-            points = np.array([[point["x"],point["y"],point["z"]] for point in self.settings["points"] if point["active"]])
+            points = np.array([[point["x"],point["y"],point["z"]] for point in self.setting("points") if point["active"]])
 
             nCorners = len(points)
             if nCorners < 2:
@@ -1078,7 +1036,7 @@ class LDOSmap(Plot):
                 prevPoint = points[i]
 
                 self.distances[i] = np.linalg.norm(point - prevPoint)
-                nSteps = int(round(self.distances[i]/self.settings["distStep"])) + 1
+                nSteps = int(round(self.distances[i]/self.setting("distStep"))) + 1
 
                 #Add the trajectory from the previous point to this one to the path
                 self.path = [*self.path, *np.linspace(prevPoint, point, nSteps)]
@@ -1088,8 +1046,8 @@ class LDOSmap(Plot):
             self.path = np.array(self.path)
         
         #Then, let's widen the path if the user wants to do it (check also points that surround the path)
-        if callable(self.settings["widenFunc"]):
-            self.path = self.settings["widenFunc"](self.path)
+        if callable(self.setting("widenFunc")):
+            self.path = self.setting("widenFunc")(self.path)
         else:
             #This is just to normalize path
             self.path = np.expand_dims(self.path, 0)
@@ -1102,112 +1060,16 @@ class LDOSmap(Plot):
     def _setData(self):
 
         #With xarray
-        if self.settings["widenMethod"] == "sum":
+        if self.setting("widenMethod") == "sum":
             spectraToPlot = self.xarr.sum(dim = "iPath")
-        elif self.settings["widenMethod"] == "average":
+        elif self.setting("widenMethod") == "average":
             spectraToPlot = self.xarr.mean(dim = "iPath")
         
         self.data = [{
             'type': 'heatmap',
             'z': spectraToPlot.transpose("E", "x").values,
             #These limits determine the contrast of the image
-            'zmin': self.settings["zmin"],
-            'zmax': self.settings["zmax"],
+            'zmin': self.setting("zmin"),
+            'zmax': self.setting("zmax"),
             #Yaxis is the energy axis
-            'y': np.linspace(*self.settings["Erange"], self.settings["nE"])}]
-
-    def plotSTSpectra(spectra, path):
-
-        Emin, Emax = -6, 1
-        Ef = -4.18
-
-        distances = np.zeros(len(path))
-        for iStage, (stage, stageSpectra) in enumerate(zip(path, spectra)):
-
-            if iStage == 0:
-                spectraToPlot = stageSpectra
-            else:    
-                spectraToPlot = np.concatenate((spectraToPlot, stageSpectra))
-
-            distances[iStage] = np.linalg.norm(stage[-1] - stage[0])
-
-        fig = plt.figure()
-        plt.rcParams['xtick.bottom'] = plt.rcParams['xtick.labelbottom'] = True
-        plt.rcParams['xtick.top'] = plt.rcParams['xtick.labeltop'] = False
-
-        # Add funcionality
-        def keypress(event, im):
-
-            #Change saturation
-            if event.key in ["up", "down"]:
-
-                vmin, vmax = im.get_clim()
-                factor = [0.99, 1.01][["up","down"].index(event.key)]
-                im.set_clim(vmax=vmax*factor)
-                fig.canvas.draw()
-
-            if event.key == "r":
-
-                data = im.get_array()
-                im.set_clim(vmin=np.amin(data), vmax=np.amax(data))
-                fig.canvas.draw()
-
-            #Save file
-            elif event.key == "t":
-
-                data = im.get_array()
-                [minX, maxX, minE, maxE] = im.get_extent()
-
-                fileName = input("\nPlease provide a file name (or path) to save the data:  ")
-
-                df = pd.DataFrame(data, np.linspace(minE, maxE, data.shape[0]), np.linspace(minX, maxX, data.shape[1]))
-
-                with open(fileName, "w") as f:
-                    f.write("#LDOS spectra for different positions\n")
-                    f.write("#First column contains the energies (eV), first row contains the path coordinate (Ang)\n")
-                    df.to_csv(f, float_format = "%.3e")
-                print(f"Saved to {fileName}!\n")
-
-        #Print the point in the material that corresponds to the clicked spot
-        def onClick(event, path, distances):
-
-            distances = np.cumsum(distances)
-            if not event.xdata:
-                return
-
-            pathCoordinate = event.xdata
-
-            for i, distance in enumerate(distances):
-
-                if pathCoordinate < distance :
-
-                    stage = path[i]
-                    nPoints = len(stage)
-
-                    if i > 0:
-                        prevDistance = distances[i-1]
-                    else:
-                        prevDistance = 0.0
-
-                    distStep = (distance - prevDistance)/(nPoints-1)
-                    clickedPoint = stage[int(round((pathCoordinate - prevDistance)/distStep))]
-
-                    print(f"\nClicked zone corresponds to {clickedPoint} in the material.\n")
-                    break
-
-        im = plt.imshow(spectraToPlot.T, extent=[0, distances.sum(), Emin - Ef, Emax - Ef], aspect = "auto", origin='upper')
-        plt.xlabel("Path coordinate (Ang)")
-        plt.ylabel("Energy (eV)")
-
-        for i, _ in enumerate(distances[:-1]):
-            plt.axvline(distances[0:i+1].sum(), color = "r")
-
-        #Listen to events
-        fig.canvas.mpl_connect('key_press_event', lambda event: keypress(event, im))
-        fig.canvas.mpl_connect('button_press_event', lambda event: onClick(event, path, distances))
-
-        print("\nINSTRUCTIONS\n.............")
-        print("-  You can increase or decrease the saturation by pressing the up and down arrows (r to reset)")
-        print('-  Press "t" to save the data to a file.')
-        print('-  Click on a part of the image to get the point of the material to which it corresponds.')
-        plt.show()
+            'y': np.linspace(*self.setting("Erange"), self.setting("nE"))}]
