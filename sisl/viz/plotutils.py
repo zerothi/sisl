@@ -127,9 +127,9 @@ def copyParams(params, only = [], exclude = []):
     ''' 
 
     if only:
-        return tuple( param for param in deepcopy(params) if param["key"] in only)
+        return tuple( param for param in deepcopy(params) if param.key in only)
     else:
-        return tuple( param for param in deepcopy(params) if param["key"] not in exclude)
+        return tuple( param for param in deepcopy(params) if param.key not in exclude)
 
 def copyDict(dictInst, only = [], exclude = []):
     '''

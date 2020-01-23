@@ -17,6 +17,7 @@ import sisl
 
 from .configurable import *
 from .plotutils import applyMethodOnMultipleObjs, initMultiplePlots, repeatIfChilds
+from .inputFields import InputField, TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput
 
 PLOTS_CONSTANTS = {
     "spins": ["up", "down"],
@@ -48,13 +49,11 @@ def timeit(method):
 class Plot(Configurable):
     
     _onSettingsUpdate = {
-        "__config":{
+        "functions": ["readData", "setData", "getFigure"],
+        "config":{
             "multipleFunc": False,
-            "importanceOrder": ["readData", "setData", "getFigure"]
+            "order": True,
         },
-        "readData": lambda obj: obj.readData,
-        "setData": lambda obj: obj.setData,
-        "getFigure": lambda obj: obj.getFigure,
     }
 
     _paramGroups = (
@@ -87,339 +86,203 @@ class Plot(Configurable):
     )
     
     _parameters = (
-        
-        {
-            "key": "readingOrder",
-            "name": "Output reading/generating order",
-            "group": "dataread",
-            "default": ("guiOut", "siesOut", "fromH", "noSource"),
-            "help": "Order in which the plot tries to read the data it needs.",
-            "onUpdate": "readData",
-            
-        },
 
-        {
-            "key": "rootFdf",
-            "name": "Path to fdf file",
-            "group": "dataread",
-            "inputField": {
-                "type": "textinput",
-                "width": "s100%",
-                "params": {
-                    "placeholder": "Write the path here...",
-                }
-            },
-            "default": None,
-            "help": "Path to the fdf file that is the 'parent' of the results.",
-            "onUpdate": "readData"
-        },
+        InputField(
+            key = "readingOrder", name = "Output reading/generating order",
+            group = "dataread",
+            default = ("guiOut", "siesOut", "fromH", "noSource"),
+            help = "Order in which the plot tries to read the data it needs."
+        ),
 
-        {
-            "key": "resultsPath",
-            "name": "Path to your results",
-            "group": "dataread",
-            "inputField": {
-                "type": "textinput",
-                "width": "s100% m50% l33%",
-                "params": {
-                    "placeholder": "Write the path here...",
-                }
-            },
-            "default": ".",
-            "help": "Directory where the files with the simulations results are located.<br> This path has to be relative to the root fdf.",
-            "onUpdate": "readData"
-        },
+        TextInput(
+            key = "rootFdf", name = "Path to fdf file",
+            group = "dataread",
+            help = "Path to the fdf file that is the 'parent' of the results.",
+            params = {
+                "placeholder": "Write the path here..."
+            }
+        ),
 
-        {
-            "key": "title",
-            "name": "Title",
-            "group": "layout",
-            "inputField": {
-                "type": "textinput",
-                "width": "s100% l40%",
-                "params": {
-                    "placeholder": "Title of your plot...",
-                }
+        TextInput(
+            key = "resultsPath", name = "Path to your results",
+            group = "dataread",
+            default = "",
+            params = {
+                "placeholder": "Write the path here..."
             },
-            "default": "",
-            "help": "Think of a memorable title for your plot!",
-            "onUpdate": "getFigure"
-        },
+            width = "s100% m50% l33%",
+            help = "Directory where the files with the simulations results are located.<br> This path has to be relative to the root fdf.",
+        ),
 
-        {
-            "key": "showlegend",
-            "name": "Show Legend",
-            "group": "layout",
-            "default": True,
-            "inputField": {
-                "type": "switch",
-                "width": "s50% m30% l15%",
-                "params": {
-                    "offLabel": "No",
-                    "onLabel": "Yes"
-                }
+        TextInput(
+            key = "title", name = "Title",
+            group = "layout",
+            params = {
+                "placeholder": "Title of your plot..."
             },
-            "onUpdate": "getFigure",
-        },
+            width = "s100% l40%",
+            help = "Think of a memorable title for your plot!",
+        ),
 
-        {
-            "key": "paper_bgcolor",
-            "name": "Figure color",
-            "group": "layout",
-            "default": "white",
-            "inputField": {
-                "type": "color",
-                "width": "s50% m30% l15%",
-            },
-            "onUpdate": "getFigure",
-        },
+        SwitchInput(
+            key = "showlegend", name = "Show Legend",
+            group = "layout",
+            default = False,
+            params = {
+                "offLabel": "No",
+                "onLabel": "Yes"
+            }
+        ),
 
-        {
-            "key": "plot_bgcolor",
-            "name": "Plot color",
-            "group": "layout",
-            "default": "white",
-            "inputField": {
-                "type": "color",
-                "width": "s50% m30% l15%",
-            },
-            "onUpdate": "getFigure",
-        },
+        ColorPicker(
+            key = "paper_bgcolor", name = "Figure color",
+            group = "layout",
+            default = "white",
+        ),
+
+        ColorPicker(
+            key = "plot_bgcolor", name = "Plot color",
+            group = "layout",
+            default = "white",
+        ),
         
         *[
             param for iAxis, axis in enumerate(["xaxis", "yaxis"]) for param in [
             
-            {
-              "key": "{}_title".format(axis),
-              "name": "Title",
-              "group": "layout",
-              "subGroup": axis,
-              "default": "",
-              "inputField": {
-                    "type": "textinput",
-                    "width": "s100% m50%",
-                    "params": {
-                        "placeholder": "Write the axis title...",
-                    }
+            TextInput(
+                key = "{}_title".format(axis), name = "Title",
+                group = "layout", subGroup = axis,
+                params = {
+                    "placeholder": "Write the axis title..."
                 },
-              "onUpdate": "getFigure",
-            },
-            
-            {
-              "key": "{}_type".format(axis),
-              "name": "Type",
-              "group": "layout",
-              "subGroup": axis,
-              "default": "-",
-              "inputField": {
-                    "type": "dropdown",
-                    "width": "s100% m50% l33%",
-                    "params": {
-                        "placeholder": "Choose the axis scale...",
-                        "options": [
-                            {"label": "Automatic", "value": "-"},
-                            {"label": "Linear", "value": "linear"},
-                            {"label": "Logarithmic", "value": "log"},
-                            {"label": "Date", "value": "date"},
-                            {"label": "Category", "value": "category"},
-                            {"label": "Multicategory", "value": "multicategory"}
-                        ],
-                        "isClearable": False,
-                        "isSearchable": False,
-                    }
-                },
-              "onUpdate": "getFigure",
-            },
+                width = "s100% m50%"
+            ),
 
-            {
-              "key": "{}_visible".format(axis),
-              "name": "Visible",
-              "group": "layout",
-              "subGroup": axis,
-              "default": True,
-              "inputField": {
-                    "type": "switch",
-                    "width": "s50% m50% l25%",
-                    "params": {
-                        "offLabel": "No",
-                        "onLabel": "Yes"
-                    }
+            DropdownInput(
+                key = "{}_type".format(axis), name = "Type",
+                group = "layout", subGroup = axis,
+                default = "-",
+                params = {
+                    "placeholder": "Choose the axis scale...",
+                    "options": [
+                        {"label": "Automatic", "value": "-"},
+                        {"label": "Linear", "value": "linear"},
+                        {"label": "Logarithmic", "value": "log"},
+                        {"label": "Date", "value": "date"},
+                        {"label": "Category", "value": "category"},
+                        {"label": "Multicategory", "value": "multicategory"}
+                    ],
+                    "isClearable": False,
+                    "isSearchable": False,
                 },
-              "onUpdate": "getFigure",
-            },
-                
-            {
-              "key": "{}_color".format(axis),
-              "name": "Color",
-              "group": "layout",
-              "subGroup": axis,
-              "default": "black",
-              "inputField": {
-                    "type": "color",
-                    "width": "s50% m50% l25%",
-                },
-              "onUpdate": "getFigure",
-            },
-            
-            {
-              "key": "{}_showgrid".format(axis),
-              "name": "Show grid",
-              "group": "layout",
-              "subGroup": axis,
-              "default": False,
-              "inputField": {
-                    "type": "switch",
-                    "width": "s50% m50% l25%",
-                    "params": {
-                        "offLabel": "No",
-                        "onLabel": "Yes"
-                    }
-                },
-              "onUpdate": "getFigure",
-            },
-                
-            {
-              "key": "{}_gridcolor".format(axis),
-              "name": "Grid color",
-              "group": "layout",
-              "subGroup": axis,
-              "default": "#ccc",
-              "inputField": {
-                    "type": "color",
-                    "width": "s50% m50% l25%",
-                },
-              "onUpdate": "getFigure",
-            },
+                width = "s100% m50%"
+            ),
 
-            {
-              "key": "{}_showline".format(axis),
-              "name": "Show axis line",
-              "group": "layout",
-              "subGroup": axis,
-              "default": False,
-              "inputField": {
-                "type": "switch",
-                "width": "s50% m30% l30%",
-                "params": {
+            SwitchInput(
+                key = "{}_visible".format(axis), name = "Visible",
+                group = "layout", subGroup = axis,
+                default = True,
+                params = {
                     "offLabel": "No",
                     "onLabel": "Yes"
+                },
+                width = "s50% m50% l25%"
+            ),
+
+            ColorPicker(
+                key = "{}_color".format(axis), name = "Color",
+                group = "layout", subGroup = axis,
+                default = "black",
+                width = "s50% m50% l25%"
+            ),
+
+            SwitchInput(
+                key = "{}_showgrid".format(axis), name = "Show grid",
+                group = "layout", subGroup = axis,
+                default = False,
+                params = {
+                    "offLabel": "No",
+                    "onLabel": "Yes"
+                },
+                width = "s50% m50% l25%"
+            ),
+
+            ColorPicker(
+                key = "{}_gridcolor".format(axis), name = "Grid color",
+                group = "layout", subGroup = axis,
+                default = "#ccc",
+                width = "s50% m50% l25%"
+            ),
+
+            SwitchInput(
+                key = "{}_showline".format(axis), name = "Show axis line",
+                group = "layout", subGroup = axis,
+                default = False,
+                params = {
+                    "offLabel": "No",
+                    "onLabel": "Yes"
+                },
+                width = "s50% m30% l30%",
+            ),
+
+            FloatInput(
+                key = "{}_linewidth".format(axis), name = "Axis line width",
+                group = "layout", subGroup = axis,
+                default = 1,
+            ),
+
+            ColorPicker(
+                key = "{}_linecolor".format(axis), name = "Axis line color",
+                group = "layout", subGroup = axis,
+                default = "black",
+                width = "s50% m30% l30%",
+            ),
+
+            SwitchInput(
+                key = "{}_zeroline".format(axis), name = "Zero line",
+                group = "layout", subGroup = axis,
+                default = [False, True][iAxis],
+                params = {
+                    "offLabel": "Hide",
+                    "onLabel": "Show"
                 }
-            },
-              "onUpdate": "getFigure",
-            },
+            ),
 
-            {
-              "key": "{}_linewidth".format(axis),
-              "name": "Axis line width",
-              "group": "layout",
-              "subGroup": axis,
-              "default": 1,
-              "inputField": {
-                    "type": "number",
-                    "width": "s50% m30% l30%",
-                    "params": {
-                        "min": 0,
-                        "step": 0.1
-                    }
-                },
-              "onUpdate": "getFigure",
-            },
-                
-            {
-              "key": "{}_linecolor".format(axis),
-              "name": "Axis line color",
-              "group": "layout",
-              "subGroup": axis,
-              "default": "black",
-              "inputField": {
-                    "type": "color",
-                    "width": "s50% m30% l30%",
-                },
-              "onUpdate": "getFigure",
-            },
-            
-            {
-              "key": "{}_zeroline".format(axis),
-              "name": "Zero line",
-              "group": "layout",
-              "subGroup": axis,
-              "default": [False, True][iAxis],
-              "inputField": {
-                    "type": "switch",
-                    "width": "s50% m30% l15%",
-                    "params": {
-                        "offLabel": "Hide",
-                        "onLabel": "Show"
-                    }
-                },
-              "onUpdate": "getFigure",
-            },
-                
-            {
-              "key": "{}_zerolinecolor".format(axis),
-              "name": "Zero line color",
-              "group": "layout",
-              "subGroup": axis,
-              "default": "#ccc",
-              "inputField": {
-                    "type": "color",
-                    "width": "s50% m30% l15%",
-                },
-              "onUpdate": "getFigure",
-            },
+            ColorPicker(
+                key = "{}_zerolinecolor".format(axis), name = "Zero line color",
+                group = "layout", subGroup = axis,
+                default = "#ccc",
+            ),
 
-            {
-              "key": "{}_ticks".format(axis),
-              "name": "Ticks position",
-              "group": "layout",
-              "subGroup": axis,
-              "default": "outside",
-              "inputField": {
-                    "type": "dropdown",
-                    "width": "s100% m50% l33%",
-                    "params": {
-                        "placeholder": "Choose the ticks positions...",
-                        "options": [
-                            {"label": "Outside", "value": "outside"},
-                            {"label": "Inside", "value": "Inside"},
-                            {"label": "No ticks", "value": ""},
-                        ],
-                        "isClearable": False,
-                        "isSearchable": False,
-                    }
+            DropdownInput(
+                key = "{}_ticks".format(axis), name = "Ticks position",
+                group = "layout", subGroup = axis,
+                default = "outside",
+                params = {
+                    "placeholder": "Choose the ticks positions...",
+                    "options": [
+                        {"label": "Outside", "value": "outside"},
+                        {"label": "Inside", "value": "Inside"},
+                        {"label": "No ticks", "value": ""},
+                    ],
+                    "isClearable": False,
+                    "isSearchable": False,
                 },
-              "onUpdate": "getFigure",
-            },
-            
-            {
-              "key": "{}_tickcolor".format(axis),
-              "name": "Tick color",
-              "group": "layout",
-              "subGroup": axis,
-              "default": "white",
-              "inputField": {
-                    "type": "color",
-                    "width": "s50% m30% l15%",
-                },
-              "onUpdate": "getFigure",
-            },
-            
-            {
-              "key": "{}_ticklen".format(axis),
-              "name": "Tick length",
-              "group": "layout",
-              "subGroup": axis,
-              "default": 5,
-              "inputField": {
-                    "type": "number",
-                    "width": "s50% m30% l15%",
-                    "params": {
-                        "min": 0,
-                        "step": 0.1
-                    }
-                },
-              "onUpdate": "getFigure",
-            }]
+                width = "s100% m50% l33%"
+            ),
+
+            ColorPicker(
+                key = "{}_tickcolor".format(axis), name = "Tick color",
+                group = "layout", subGroup = axis,
+                default = "white",
+            ),
+
+            FloatInput(
+                key = "{}_ticklen".format(axis), name = "Tick length",
+                group = "layout", subGroup = axis,
+                default = 5,
+                width = "s50% m30% l15%"
+            )]
             
         ]
         
@@ -509,7 +372,7 @@ class Plot(Configurable):
         
         errors = []
         #Try to read in the order specified by the user
-        for source in self.settings["readingOrder"]:
+        for source in self.setting("readingOrder"):
             try:
                 #Get the reading function
                 readingFunc = PLOTS_CONSTANTS["readFuncs"][source](self)
@@ -530,10 +393,11 @@ class Plot(Configurable):
         Checks if the required files are available and then builds a list with them
         '''
         #Set the fdfSile
-        rootFdf = self.settings["rootFdf"]
+        rootFdf = self.setting("rootFdf")
         self.rootDir, fdfFile = os.path.split( rootFdf )
         self.rootDir = "." if self.rootDir == "" else self.rootDir
-        self.wdir = os.path.join(self.rootDir, self.settings["resultsPath"])
+        print(self.setting("resultsPath"))
+        self.wdir = os.path.join(self.rootDir, self.setting("resultsPath"))
         self.fdfSile = sisl.get_sile(rootFdf)
         self.struct = self.fdfSile.get("SystemLabel", "")
 
@@ -544,7 +408,7 @@ class Plot(Configurable):
         #if RequirementsFilter().check(self.rootFdf, self.__class__.__name__ ):
         if hasattr(self, "_requirements"):
             #If they are there, we can confidently build this list
-            self.requiredFiles = [ os.path.join( self.rootDir, self.settings["resultsPath"], req.replace("$struct$", self.struct) ) for req in self.__class__._requirements["siesOut"]["files"] ]
+            self.requiredFiles = [ os.path.join( self.rootDir, self.setting("resultsPath"), req.replace("$struct$", self.struct) ) for req in self.__class__._requirements["siesOut"]["files"] ]
         #else:
             #raise Exception("The required files were not found, please check your file system.")
 
@@ -649,7 +513,7 @@ class Plot(Configurable):
                         "steps": [
                             {"args": [
                             [frame["name"]],
-                            {"frame": {"duration": int(self.settings["frameDuration"]), "redraw": False},
+                            {"frame": {"duration": int(self.setting("frameDuration")), "redraw": False},
                             "mode": "immediate",
                             "transition": {"duration": 300}}
                         ],
@@ -666,7 +530,7 @@ class Plot(Configurable):
                         {
                             'label': 'Play',
                             'method': 'animate',
-                            'args': [None, {"frame": {"duration": int(self.settings["frameDuration"]), "redraw": False},
+                            'args': [None, {"frame": {"duration": int(self.setting("frameDuration")), "redraw": False},
                                             "fromcurrent": True, "transition": {"duration": 100,
                                                                                 "easing": "quadratic-in-out"}}],
                         },
@@ -684,6 +548,7 @@ class Plot(Configurable):
 
         self.layout = {
             'hovermode': 'closest',
+            #Need to register this on whatToRunOnUpdate somehow
             **self.getSettingsGroup("layout"),
             **framesLayout
         }
@@ -703,12 +568,12 @@ class Plot(Configurable):
     #       PLOT MANIPULATION METHODS
     #-------------------------------------------
 
-    def show(self):
+    def show(self, *args, **kwargs):
 
         if not hasattr(self, "figure"):
             self.getFigure()
         
-        return self.figure.show()
+        return self.figure.show(*args, **kwargs)
     
     def merge(self, plotsToMerge, inplace = False, asAnimation = False, **kwargs):
         '''
@@ -800,7 +665,7 @@ class Plot(Configurable):
             "id": self.id,
             "figure": figure,
             "settings": self.settings,
-            "params": self.params,
+            "params": [param.__dict__ for param in self.params],
             "paramGroups": self._paramGroups
         }
 
