@@ -9,6 +9,8 @@ import json
 import dill as pickle
 #import pickle
 import time
+from types import MethodType, FunctionType
+import itertools
 
 import plotly
 import plotly.graph_objects as go
@@ -287,12 +289,38 @@ class Plot(Configurable):
         ]
         
     )
-    
+
+    @classmethod
+    def animated(cls, param, vals):
+
+        def _getInitKwargsList(self):
+
+            return [{ param: val } for val in vals]
+        
+        def _getFrameNames(self):
+
+            return ["Frame {}".format(i+1) for i in range(len(vals))]
+        
+        return Animation( _plugins = {
+            "_getInitKwargsList": _getInitKwargsList,
+            "_getFrameNames": _getFrameNames,
+            "_plotClasses": cls
+        })
+
     @afterSettingsInit
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
         
         #Give an ID to the plot
         self.id = str(uuid.uuid4())
+
+        #If plugins have been provided, then add them.
+        #Plugins are an easy way of extending a plot. They can be methods, variables...
+        #They are added to the object instance, not the whole class.
+        if kwargs.get("_plugins"):
+            for name, plugin in kwargs.get("_plugins").items():
+                if isinstance(plugin, FunctionType):
+                    plugin = MethodType(plugin, self)
+                setattr(self, name, plugin)
 
         #Check if we need to convert this plot to an animation
         if kwargs.get("animation"):
@@ -474,7 +502,7 @@ class Plot(Configurable):
             if getattr(self, "_isAnimation", False):
 
                 self.data = self.childPlots[0].data
-                frameNames = self._getFrameNames()
+                frameNames = self._getFrameNames() if hasattr(self, "_getFrameNames") else itertools.repeat(None)
                 
                 for frameName , plot in zip(frameNames , self.childPlots):
 
@@ -665,7 +693,7 @@ class Plot(Configurable):
             "id": self.id,
             "figure": figure,
             "settings": self.settings,
-            "params": [param.__dict__ for param in self.params],
+            "params": self.params,
             "paramGroups": self._paramGroups
         }
 
@@ -748,17 +776,14 @@ class Animation(MultiplePlot):
     _isAnimation = True
 
     _parameters = (
-        
-        {
-            "key": "frameDuration",
-            "name": "Frame duration",
-            'default': 500,
-            "inputField": {
-                "type": "textinput",
-                "placeholder": "Write the desired duration...",
-                "width": "offset-s1 offset-m1 m4 s10"
+
+        IntegerInput(
+            key = "frameDuration", name = "Frame duration",
+            default = 500,
+            params = {
+                "step": 100
             },
-            "help": "Time (in ms) that each frame will be displayed. <br> This is only meaningful if you have an animation",
-            "onUpdate": "getFigure"
-        },
+            help = "Time (in ms) that each frame will be displayed. <br> This is only meaningful if you have an animation"
+        ),
+
     )

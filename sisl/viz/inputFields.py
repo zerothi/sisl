@@ -297,6 +297,9 @@ class InputField:
 
         return self
 
+    def to_json(self):
+
+        return self.__dict__
 
 class TextInput(InputField):
 
@@ -365,6 +368,15 @@ class QueriesInput(InputField):
         '''
 
         return Configurable.getParam(self, key, paramsExtractor = lambda obj: obj.inputField["queryForm"], **kwargs)
+    
+    def getParam(self, *args, **kwargs):
+        '''
+        Just a clone of getQueryParam.
+
+        Because Configurable looks for this method when modifying parameters, but the other name is clearer.
+        '''
+
+        return self.getQueryParam(*args, **kwargs)
 
     def modifyQueryParam(self, key, *args, **kwargs):
 
@@ -372,4 +384,4 @@ class QueriesInput(InputField):
         Uses Configurable.modifyParam to modify a parameter inside QueryForm
         '''
 
-        return Configurable.modifyParam(self, key, *args, paramsExtractor = lambda obj: obj.inputField["queryForm"], **kwargs)
+        return Configurable.modifyParam(self, key, *args, **kwargs)

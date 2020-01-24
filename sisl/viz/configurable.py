@@ -120,7 +120,7 @@ class Configurable:
             
             return self
     
-    def getParam(self, settingKey, justDict = True, paramsExtractor = False):
+    def getParam(self, settingKey, justDict = True, paramsExtractor = False, param = False):
         '''
         Gets the parameter for a given setting. 
         
