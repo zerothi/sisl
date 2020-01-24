@@ -18,6 +18,49 @@ def getPlotClasses():
 
     return Session.getPlotClasses(None)
 
+#-------------------------------------
+#           Python helpers
+#-------------------------------------
+def modifyNestedDict(obj, nestedKey, val, separator = "."):
+    '''
+    Use it to modify a nested dictionary with ease. 
+    
+    It modifies the dictionary itself, does not return anything.
+
+    Arguments
+    ----------
+    obj: dict
+        The dictionary to modify.
+    nestedKey: str
+        The key to modify. See the separator argument for how it should look like.
+
+        The function will work too if this is a simple key, without any nesting
+    val: 
+        The new value to give to the target key.
+    separator: str, optional (".")
+        It defines how hierarchy is indicated in the provided key.
+
+        For example:
+            if separator is "." and nestedKey is "xaxis.length"
+
+            {
+                "xaxis: {
+                    "aKey": whatever,
+                    "anotherKey": whatever,
+                    "length": ---This is the value that will be modified---
+                },
+                "moreKeys": whatever,
+                "notRelevant": whatever
+            }
+    '''
+
+    ref = obj
+    splitted = nestedKey.split(separator)
+    for key in splitted[:-1]:
+        ref = ref[key]
+    
+    ref[splitted[-1]] = val
+
 #------------------------------------
 def calculateGap(bands):
     '''

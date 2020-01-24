@@ -154,7 +154,35 @@ class Configurable:
     
     def modifyParam(self, settingKey, *args, **kwargs):
         '''
-        Modifies a parameter using a provided function
+        Modifies a given parameter.
+        
+        See *args to know how can it be used.
+
+        This is a general schema of how an input field parameter looks internally, so that you
+        can know what do you want to change:
+
+        (Note that it is very easy to modify nested values, more on this in *args explanation)
+
+        {
+            "key": whatever,
+            "name": whatever,
+            "default": whatever,
+            .
+            . (keys that affect, let's say, the programmatic functionality of the parameter,
+            . they can be modified with Configurable.modifyParam)
+            .
+            "inputField": {
+                "type": whatever,
+                "width": whatever,  (keys that affect the inputField control that is displayed
+                "params": {          they can be modified with Configurable.modifyInputField)
+                    whatever
+                },
+                "style": {
+                    whatever
+                }
+
+            }
+        }
 
         Arguments
         --------
@@ -168,10 +196,25 @@ class Configurable:
 
                     Ex: obj.modifyParam("length", "default", 3)
                     will set the default attribute of the parameter with key "length" to 3
-                
+
+                    Modifying nested keys is possible using dot notation.
+
+                    Ex: obj.modifyParam("length", "inputField.width", 3)
+                    will modify the width key inside inputField on the schema above.
+
+                    The last key, but only the last one, will be created if it does not exist.
+                    
+                    Ex: obj.modifyParam("length", "inputField.width.inWinter.duringDay", 3)
+                    will only work if all the path before duringDay exists and the value of inWinter is a dictionary.
+
+                    Otherwise you could go like this: obj.modifyParam("length", "inputField.width.inWinter", {"duringDay": 3})
+
                 - One argument and it is a dictionary:
                     the keys will be interpreted as attributes that you want to change and the values
-                    as the value that you want them to have. 
+                    as the value that you want them to have.
+
+                    Each key-value pair in the dictionary will be updated in exactly the same way as
+                    it is in the previous case.
                 
                 - One argument and it is a function:
 
@@ -181,7 +224,7 @@ class Configurable:
 
                     Ex: obj.modifyParam("length", lambda param: param.incrementByOne() )
 
-                    given that you know that this type of parameter has this method
+                    given that you know that this type of parameter has this method.
         **kwargs: optional
             They are passed directly to the Configurable.getParam method to retrieve the parameter.
 
@@ -191,24 +234,10 @@ class Configurable:
             The configurable object.
         '''
 
-        if len(args) == 2:
-           
-            modFunction = lambda obj: setattr(obj, *args)
-
-        elif isinstance(args[0], dict):
-
-            def modFunction(obj):
-                for attr, val in args[0].items():
-                    setattr(obj, attr, val)
-
-        elif callable(args[0]):
-
-            modFunction = args[0]
-
-        modFunction(self.getParam(settingKey, justDict = False, **kwargs))
+        self.getParam(settingKey, justDict = False, **kwargs).modify(*args)
 
         return self
-
+    
     def getSetting(self, settingKey):
 
         '''
