@@ -1,6 +1,7 @@
 #This file defines all the currently available input fields so that it is easier to develop plots
 
 from copy import deepcopy
+import json
 
 from .configurable import Configurable
 from .plotutils import modifyNestedDict
@@ -298,8 +299,9 @@ class InputField:
         return self
 
     def to_json(self):
-
-        return self.__dict__
+        return json.loads(
+            json.dumps(self, default=lambda o: getattr(o, '__dict__', str(o)))
+        )
 
 class TextInput(InputField):
 

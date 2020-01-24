@@ -270,7 +270,7 @@ class PdosPlot(Plot):
 
         QueriesInput(
             key = "requests", name = "PDOS queries",
-            default = [{"active": True, "linename": "DOS", "species": None, "atoms": None, "orbitals": None, "spin": None, "normalize": False}],
+            default = [{"active": True, "linename": "DOS", "species": None, "atoms": None, "orbitals": None, "spin": None, "normalize": False, "color": "black", "linewidth": 1}],
             help = '''Here you can ask for the specific PDOS that you need. 
                     <br>TIP: Queries can be activated and deactivated.''',
             queryForm = [
@@ -345,9 +345,20 @@ class PdosPlot(Plot):
                         "offLabel": "No",
                         "onLabel": "Yes"
                     }
+                ),
+
+                ColorPicker(
+                    key = "color", name = "Line color",
+                    default = None,
+                ),
+
+                FloatInput(
+                    key = "linewidth", name = "Line width",
+                    default = 1,
                 )
             ]
-        ) 
+        )
+
     )
     
     def _afterInit(self):
@@ -465,7 +476,7 @@ class PdosPlot(Plot):
             }
 
             for key, val in options.items():
-                requestsInput.modifyQueryParam(key, "inputField.options", val)
+                requestsInput.modifyQueryParam(key, "inputField.params.options", val)
 
         #And then apply it
         self.modifyParam("requests", modifier)
@@ -551,7 +562,7 @@ class PdosPlot(Plot):
                 'y': plotEvals ,
                 'mode': 'lines', 
                 'name': request["linename"], 
-                'line': {'width' : 1},
+                'line': {'width' : request["linewidth"], "color": request["color"]},
                 "hoverinfo": "name",
             })
         
