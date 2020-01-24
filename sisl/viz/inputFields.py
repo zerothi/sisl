@@ -3,6 +3,7 @@
 from copy import deepcopy
 
 from .configurable import Configurable
+from .plotutils import modifyNestedDict
 
 TEXT_INPUT = {
     "type": "textinput",
@@ -90,6 +91,7 @@ allInputs = {
     "integer": INTEGER_INPUT,
     "float": FLOAT_INPUT,
     "rangeslider": RANGE_SLIDER,
+    "queries": QUERIES_INPUT
 }
 
 allowedTypes = allInputs.keys()
@@ -198,7 +200,104 @@ class InputField:
         for key, value in kwargs.items():
 
             setattr(self, key, value)
+
+    def modify(self, *args):
+        '''
+        Modifies the parameter.
         
+        See *args to know how can it be used.
+
+        This is a general schema of how an input field parameter looks internally, so that you
+        can know what do you want to change:
+
+        (Note that it is very easy to modify nested values, more on this in *args explanation)
+
+        {
+            "key": whatever,
+            "name": whatever,
+            "default": whatever,
+            .
+            . (keys that affect, let's say, the programmatic functionality of the parameter,
+            . they can be modified with Configurable.modifyParam)
+            .
+            "inputField": {
+                "type": whatever,
+                "width": whatever,  (keys that affect the inputField control that is displayed
+                "params": {          they can be modified with Configurable.modifyInputField)
+                    whatever
+                },
+                "style": {
+                    whatever
+                }
+
+            }
+        }
+
+        Arguments
+        --------
+        *args:
+            Depending on what you pass the setting will be modified in different ways:
+                - Two arguments:
+                    the first argument will be interpreted as the attribute that you want to change,
+                    and the second one as the value that you want to set.
+
+                    Ex: obj.modifyParam("length", "default", 3)
+                    will set the default attribute of the parameter with key "length" to 3
+
+                    Modifying nested keys is possible using dot notation.
+
+                    Ex: obj.modifyParam("length", "inputField.width", 3)
+                    will modify the width key inside inputField on the schema above.
+
+                    The last key, but only the last one, will be created if it does not exist.
+                    
+                    Ex: obj.modifyParam("length", "inputField.width.inWinter.duringDay", 3)
+                    will only work if all the path before duringDay exists and the value of inWinter is a dictionary.
+
+                    Otherwise you could go like this: obj.modifyParam("length", "inputField.width.inWinter", {"duringDay": 3})
+
+                - One argument and it is a dictionary:
+                    the keys will be interpreted as attributes that you want to change and the values
+                    as the value that you want them to have.
+
+                    Each key-value pair in the dictionary will be updated in exactly the same way as
+                    it is in the previous case.
+                
+                - One argument and it is a function:
+
+                    the function will recieve the parameter and can act on it in any way you like.
+                    It doesn't need to return the parameter, just modify it.
+                    In this function, you can call predefined methods of the parameter, for example.
+
+                    Ex: obj.modifyParam("length", lambda param: param.incrementByOne() )
+
+                    given that you know that this type of parameter has this method.
+
+        Returns
+        --------
+        self:
+            The configurable object.
+        '''
+                
+        if len(args) == 2:
+           
+            modFunction = lambda obj: modifyNestedDict( obj.__dict__, *args)
+
+        elif isinstance(args[0], dict):
+
+            def modFunction(obj):
+                for attr, val in args[0].items():
+                    modifyNestedDict( obj.__dict__, attr, val)
+
+        elif callable(args[0]):
+
+            modFunction = args[0]
+
+        modFunction(self)
+
+        return self
+
+
 class TextInput(InputField):
 
     def __init__(self, *args, **kwargs):
@@ -253,13 +352,13 @@ class QueriesInput(InputField):
     def __init__(self, queryForm = [], *args, **kwargs):
 
         inputFieldAttrs = {
-            **kwargs.get(["inputFieldAttrs"], {}),
+            **kwargs.get("inputFieldAttrs", {}),
             "queryForm": queryForm 
         }
 
         super().__init__(*args, **kwargs, inputType = "queries", inputFieldAttrs = inputFieldAttrs)
     
-    def getParam(self, key, **kwargs):
+    def getQueryParam(self, key, **kwargs):
 
         '''
         Gets the parameter info for a given key. It uses the Configurable.getParam method.
@@ -267,10 +366,10 @@ class QueriesInput(InputField):
 
         return Configurable.getParam(self, key, paramsExtractor = lambda obj: obj.inputField["queryForm"], **kwargs)
 
-    def modifyParam(self, key, *args, **kwargs):
+    def modifyQueryParam(self, key, *args, **kwargs):
 
         '''
-        Uses Configurable.modifyParam to modify a parameter
+        Uses Configurable.modifyParam to modify a parameter inside QueryForm
         '''
 
         return Configurable.modifyParam(self, key, *args, paramsExtractor = lambda obj: obj.inputField["queryForm"], **kwargs)

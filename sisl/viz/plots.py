@@ -246,149 +246,108 @@ class PdosPlot(Plot):
 
     _parameters = (
         
-        {
-            "key": "PDOSFile" ,
-            "name": "Path to PDOS file",
-            "default": None,
-            "inputField": {
-                "type": "textinput",
-                "width": "s100% m50% l33%",
-                "params": {
-                    "placeholder": "Write the path to your PDOS file here...",
-                }
+        TextInput(
+            key = "PDOSFile", name = "Path to PDOS file",
+            width = "s100% m50% l33%",
+            params = {
+                "placeholder": "Write the path to your PDOS file here...",
             },
-            "help": '''This parameter explicitly sets a .PDOS file. Otherwise, the PDOS file is attempted to read from the fdf file ''',
-            "onUpdate": "readData",
-        },
+            help = '''This parameter explicitly sets a .PDOS file. Otherwise, the PDOS file is attempted to read from the fdf file '''
+        ),
 
-        {
-            "key": "Erange",
-            "name": "Energy range" ,
-            "default": [-2,4],
-            "inputField": {
-                "type": "rangeslider",
-                "width": "s100%",
-                "params": {
-                    "min": -10,
-                    "max": 10,
-                    "step": 0.1,
-                    "marks": { **{ i: str(i) for i in range(-10,11) }, 0: "Ef",},
-                }
+        RangeSlider(
+            key = "Erange", name = "Energy range",
+            default = [-2,4],
+            width = "s100%",
+            params = {
+                "min": -10,
+                "max": 10,
+                "step": 0.1,
+                "marks": { **{ i: str(i) for i in range(-10,11) }, 0: "Ef",}
             },
-            "help": "Energy range where the PDOS is displayed. Default: [-2,4]",
-            "onUpdate": "setData",
-        },
+            help = "Energy range where the PDOS is displayed."
+        ),
 
-        {
-            "key": "requests",
-            "name": "PDOS queries" ,
-            "default": [{"active": True, "linename": "DOS", "species": None, "atoms": None, "orbitals": None, "spin": None, "normalize": False}],
-            "inputField": {
-                "type": "queries",
-                "width": "s100%",
-                "queryForm": [
-                    {
-                        "key": "linename",
-                        "name": "Name",
-                        "default": "DOS",
-                        "inputField": {
-                            "type": "textinput",
-                            "width": "s100% m50% l20%",
-                            "params": {
-                                "placeholder": "Name of the line..."
-                            },
-                        }
-                    },
-
-                    {
-                        "key" : "species",
-                        "name" : "Species",
-                        "default": None,
-                        "inputField": {
-                            "type": "dropdown",
-                            "width": "s100% m50% l40%",
-                            "params": {
-                                "options":  [],
-                                "isMulti": True,
-                                "placeholder": "",
-                                "isClearable": True,
-                                "isSearchable": True,    
-                            },
-                        },
-                    },
-
-                    {
-                        "key" : "atoms",
-                        "name" : "Atoms",
-                        "default": None,
-                        "inputField": {
-                            "type": "dropdown",
-                            "width": "s100% m50% l40%",
-                            "params": {
-                                "options":  [],
-                                "isMulti": True,
-                                "placeholder": "",
-                                "isClearable": True,
-                                "isSearchable": True,    
-                            },
-                        },
-                    },
-
-                    {
-                        "key" : "orbitals",
-                        "name" : "Orbitals",
-                        "default": None,
-                        "inputField": {
-                            "type": "dropdown",
-                            "width": "s100% m50% l50%",
-                            "params": {
-                                "options":  [],
-                                "isMulti": True,
-                                "placeholder": "",
-                                "isClearable": True,
-                                "isSearchable": True,    
-                            },
-                        },
-                    },
-
-                    {
-                        "key" : "spin",
-                        "name" : "Spin",
-                        "default": None,
-                        "inputField": {
-                            "type": "dropdown",
-                            "width": "s100% m50% l25%",
-                            "params": {
-                                "options":  [],
-                                "placeholder": "",
-                                "isMulti": False,
-                                "isClearable": True,
-                            },
-                            "style": {
-                                "width": 200
-                            }
-                        },
-                    },
-
-                    {
-                        "key" : "normalize",
-                        "name": "Normalize",
-                        "default": False,
-                        "inputField": {
-                            "type": "switch",
-                            "width": "s100% m50% l25%",
-                        },
-                        
-                    },
-
-                ]
-            },
-
-            "help": '''Here you can ask for the specific PDOS that you need. 
+        QueriesInput(
+            key = "requests", name = "PDOS queries",
+            default = [{"active": True, "linename": "DOS", "species": None, "atoms": None, "orbitals": None, "spin": None, "normalize": False}],
+            help = '''Here you can ask for the specific PDOS that you need. 
                     <br>TIP: Queries can be activated and deactivated.''',
-            "onUpdate": "setData",
-        },
-    
+            queryForm = [
+
+                TextInput(
+                    key = "linename", name = "Name",
+                    default = "DOS",
+                    width = "s100% m50% l20%",
+                    params = {
+                        "placeholder": "Name of the line..."
+                    },
+                ),
+
+                DropdownInput(
+                    key = "species", name = "Species",
+                    default = None,
+                    width = "s100% m50% l40%",
+                    params = {
+                        "options":  [],
+                        "isMulti": True,
+                        "placeholder": "",
+                        "isClearable": True,
+                        "isSearchable": True,  
+                    },
+                ),
+
+                DropdownInput(
+                    key = "atoms", name = "Atoms",
+                    default = None,
+                    width = "s100% m50% l40%",
+                    params = {
+                        "options":  [],
+                        "isMulti": True,
+                        "placeholder": "",
+                        "isClearable": True,
+                        "isSearchable": True,  
+                    },
+                ),
+
+                DropdownInput(
+                    key = "orbitals", name = "Orbitals",
+                    default = None,
+                    width = "s100% m50% l50%",
+                    params = {
+                        "options":  [],
+                        "isMulti": True,
+                        "placeholder": "",
+                        "isClearable": True,
+                        "isSearchable": True,  
+                    },
+                ),
+
+                DropdownInput(
+                    key = "spin", name = "Spin",
+                    default = None,
+                    width = "s100% m50% l25%",
+                    params = {
+                        "options":  [],
+                        "isMulti": False,
+                        "placeholder": "",
+                        "isClearable": True, 
+                    },
+                    style = {
+                        "width": 200
+                    }
+                ),
+
+                SwitchInput(
+                    key = "normalize", name = "Normalize",
+                    default = False,
+                    params = {
+                        "offLabel": "No",
+                        "onLabel": "Yes"
+                    }
+                )
+            ]
+        ) 
     )
     
     def _afterInit(self):
@@ -494,36 +453,22 @@ class PdosPlot(Plot):
             self.df = self.df.append( pd.concat([pd.DataFrame(orbProperties), pd.DataFrame(spinComponentPDOS, columns = self.E)], axis=1, sort = False), ignore_index = True)
         
         #"Inform" the queries of the available options
-        for i, param in enumerate(self.params):
+        #First define the function that will modify all the fields of the query form
+        def modifier(requestsInput):
 
-            if param.key == "requests":
-                for iParam, reqParam in enumerate(self.params[i]["inputField"]["queryForm"]):
+            options = {
+                "atoms": [{ "label": "{} ({})".format(iAt, self.geom.atoms[iAt - 1].symbol), "value": iAt } 
+                    for iAt in self.df["iAtom"].unique()],
+                "species": [{ "label": spec, "value": spec } for spec in self.df.Species.unique()],
+                "orbitals": [{ "label": orbName, "value": orbName } for orbName in self.df["Orbital name"].unique()],
+                "spin": [{ "label": "↑", "value": 0 },{ "label": "↓", "value": 1 }] if self.isSpinPolarized else []
+            }
 
-                    options = []
-                    
-                    if reqParam.key == "atoms":
-                        
-                        options = [{ "label": "{} ({})".format(iAt, self.geom.atoms[iAt - 1].symbol), "value": iAt } 
-                            for iAt in self.df["iAtom"].unique()]
-                        
-                
-                    elif reqParam.key == "species":
-                        
-                        options = [{ "label": spec, "value": spec } for spec in self.df.Species.unique()]
-                        
-                    
-                    elif reqParam.key == "orbitals":
-                        
-                        options = [{ "label": orbName, "value": orbName } for orbName in self.df["Orbital name"].unique()]
-                        
-                    
-                    elif reqParam.key == "spin":
+            for key, val in options.items():
+                requestsInput.modifyQueryParam(key, "inputField.options", val)
 
-                        options = [{ "label": "↑", "value": 0 },{ "label": "↓", "value": 1 }] if self.isSpinPolarized else []
-                        
-
-                    if options:
-                        self.params[i].inputField["queryForm"][iParam].inputField["params"]["options"] = options
+        #And then apply it
+        self.modifyParam("requests", modifier)
 
     def _setData(self):
         '''
