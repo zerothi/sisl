@@ -129,7 +129,7 @@ class Plot(Configurable):
         SwitchInput(
             key = "showlegend", name = "Show Legend",
             group = "layout",
-            default = False,
+            default = True,
             params = {
                 "offLabel": "No",
                 "onLabel": "Yes"
