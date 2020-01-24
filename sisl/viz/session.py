@@ -350,7 +350,7 @@ class Session(Configurable):
             "id": self.id,
             "tabs": self.warehouse["tabs"],
             "settings": self.settings,
-            "params": [ param.__dict__ for param in self.params ],
+            "params": self.params,
             "paramGroups": self._paramGroups
         }
 
