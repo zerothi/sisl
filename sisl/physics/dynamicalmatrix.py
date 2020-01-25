@@ -27,13 +27,15 @@ class DynamicalMatrix(SparseOrbitalBZ):
 
     def _reset(self):
         super(DynamicalMatrix, self)._reset()
-        self.Dk = self.Pk
-        self.dDk = self.dPk
-        self.ddDk = self.ddPk
-
         self.Dk = self._Pk
         self.dDk = self.dPk
         self.ddDk = self.ddPk
+
+    @property
+    def D(self):
+        r""" Access the dynamical matrix elements """
+        self._def_dim = 0
+        return self
 
     def Dk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
         r""" Setup the dynamical matrix for a given k-point
@@ -183,17 +185,6 @@ class DynamicalMatrix(SparseOrbitalBZ):
         tuple of tuples : for each of the Cartesian directions
         """
         pass
-
-    def _get_D(self):
-        self._def_dim = 0
-        return self
-
-    def _set_D(self, key, value):
-        if len(key) == 2:
-            self._def_dim = 0
-        self[key] = value
-
-    D = property(_get_D, _set_D, doc="Access elements to the sparse dynamical matrix")
 
     def apply_newton(self):
         """ Sometimes the dynamical matrix does not obey Newtons 3rd law.

@@ -581,6 +581,12 @@ class DensityMatrix(_realspace_DensityMatrix):
         self.dDk = self.dPk
         self.ddDk = self.ddPk
 
+    @property
+    def D(self):
+        r""" Access the density matrix elements """
+        self._def_dim = self.UP
+        return self
+
     def orbital_momentum(self, projection='orbital', method='onsite'):
         r""" Calculate orbital angular momentum on either atoms or orbitals
 
@@ -958,17 +964,6 @@ class DensityMatrix(_realspace_DensityMatrix):
         tuple of tuples : for each of the Cartesian directions
         """
         pass
-
-    def _get_D(self):
-        self._def_dim = self.UP
-        return self
-
-    def _set_D(self, key, value):
-        if len(key) == 2:
-            self._def_dim = self.UP
-        self[key] = value
-
-    D = property(_get_D, _set_D, doc="Access elements to the sparse density matrix")
 
     @staticmethod
     def read(sile, *args, **kwargs):

@@ -107,19 +107,13 @@ class SparseOrbitalBZ(SparseOrbital):
         s += str(self.geometry).replace('\n', '\n ')
         return s + '\n}'
 
-    def _get_S(self):
+    @property
+    def S(self):
+        r""" Access the overlap elements associated with the sparse matrix """
         if self.orthogonal:
             return None
         self._def_dim = self.S_idx
         return self
-
-    def _set_S(self, key, value):
-        if self.orthogonal:
-            return
-        self._def_dim = self.S_idx
-        self[key] = value
-
-    S = property(_get_S, _set_S, doc="Access elements to the sparse overlap")
 
     @classmethod
     def fromsp(cls, geometry, P, S=None, **kwargs):

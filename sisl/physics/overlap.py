@@ -7,7 +7,7 @@ __all__ = ['Overlap']
 
 
 class Overlap(SparseOrbitalBZ):
-    """ Sparse overlap matrix object
+    r""" Sparse overlap matrix object
 
     The Overlap object contains orbital overlaps. It should be used when the overlaps are not associated with
     another physical object such as a Hamiltonian, as is the case with eg. Siesta onlyS outputs.
@@ -19,6 +19,8 @@ class Overlap(SparseOrbitalBZ):
     geometry : Geometry
       parent geometry to create an overlap matrix from. The overlap matrix will
       have size equivalent to the number of orbitals in the geometry.
+    dim : int, optional
+      number of dimensions used to store the overlap matrix
     dtype : np.dtype, optional
       data type contained in the matrix.
     nnzpr : int, optional
@@ -27,21 +29,28 @@ class Overlap(SparseOrbitalBZ):
       per orbital.
     """
 
-    def __init__(self, geometry, dtype=None, nnzpr=None, **kwargs):
-        """ Initialize Overlap """
-        kwargs["orthogonal"] = True # Avoid the dim += 1 in super
-        super(Overlap, self).__init__(geometry, 1, np.float64, nnzpr, **kwargs)
+    def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
+        r""" Initialize Overlap """
+        # Since this *is* the overlap matrix, we should never use the
+        # orthogonal keyword
+        kwargs["orthogonal"] = True
+        super(Overlap, self).__init__(geometry, dim, np.float64, nnzpr, **kwargs)
+        self._reset()
 
     def _reset(self):
         super(Overlap, self)._reset()
-        self._orthogonal = False
-        self.S_idx = 0
-        self.Sk = self._Sk
+        self.Sk = self._Pk
         self.dSk = self._dPk
         self.ddSk = self._ddPk
 
+    @property
+    def S(self):
+        r""" Access the overlap elements """
+        self._def_dim = 0
+        return self
+
     @classmethod
-    def fromsp(cls, geometry, S, **kwargs):
+    def fromsp(cls, geometry, P, **kwargs):
         r""" Create an Overlap object from a preset `Geometry` and a sparse matrix
 
         The passed sparse matrix is in one of `scipy.sparse` formats.
@@ -52,8 +61,9 @@ class Overlap(SparseOrbitalBZ):
         ----------
         geometry : Geometry
            geometry to describe the new sparse geometry
-        S : scipy.sparse
-           The sparse matrix in a `scipy.sparse` format.
+        P : list of scipy.sparse or scipy.sparse
+           the new sparse matrices that are to be populated in the sparse
+           matrix
         **kwargs : optional
            any arguments that are directly passed to the ``__init__`` method
            of the class.
@@ -65,7 +75,7 @@ class Overlap(SparseOrbitalBZ):
         """
         # Using S explicitly in the argument ensures users will not pass it through
         # kwargs, if they do, an error will be raised.
-        return super(Overlap, cls).fromsp(geometry, P=[S], S=None, **kwargs)
+        return super(Overlap, cls).fromsp(geometry, P=P, S=None, **kwargs)
 
     @staticmethod
     def read(sile, *args, **kwargs):

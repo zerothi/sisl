@@ -55,6 +55,12 @@ class Hamiltonian(SparseOrbitalBZSpin):
         self.dHk = self.dPk
         self.ddHk = self.ddPk
 
+    @property
+    def H(self):
+        r""" Access the Hamiltonian elements """
+        self._def_dim = self.UP
+        return self
+
     def Hk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
         r""" Setup the Hamiltonian for a given k-point
 
@@ -215,17 +221,6 @@ class Hamiltonian(SparseOrbitalBZSpin):
         tuple of tuples : for each of the Cartesian directions
         """
         pass
-
-    def _get_H(self):
-        self._def_dim = self.UP
-        return self
-
-    def _set_H(self, key, value):
-        if len(key) == 2:
-            self._def_dim = self.UP
-        self[key] = value
-
-    H = property(_get_H, _set_H, doc="Access elements to the sparse Hamiltonian")
 
     def shift(self, E):
         r""" Shift the electronic structure by a constant energy

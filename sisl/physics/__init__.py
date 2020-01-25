@@ -44,6 +44,7 @@ Physical quantites
    DensityMatrix
    Hamiltonian
    DynamicalMatrix
+   Overlap
    SelfEnergy
    SemiInfinite
    RecursiveSI
@@ -63,8 +64,10 @@ Electrons (:mod:`~sisl.physics.electron`)
    ~electron.velocity
    ~electron.velocity_matrix
    ~electron.berry_phase
+   ~electron.berry_curvature
    ~electron.wavefunction
    ~electron.spin_moment
+   ~electron.spin_orbital_moment
    ~electron.spin_squared
    EigenvalueElectron
    EigenvectorElectron
@@ -173,6 +176,7 @@ from .energydensitymatrix import *
 from .densitymatrix import *
 from .hamiltonian import *
 from .dynamicalmatrix import *
+from .overlap import *
 from .self_energy import *
 
 __all__ = [s for s in dir() if not s.startswith('_')]
