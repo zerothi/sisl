@@ -18,7 +18,7 @@ import plotly.graph_objects as go
 import sisl
 
 from .configurable import *
-from .plotutils import applyMethodOnMultipleObjs, initMultiplePlots, repeatIfChilds
+from .plotutils import applyMethodOnMultipleObjs, initMultiplePlots, repeatIfChilds, dictOfLists2listOfDicts
 from .inputFields import InputField, TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput
 
 PLOTS_CONSTANTS = {
@@ -291,16 +291,128 @@ class Plot(Configurable):
     )
 
     @classmethod
-    def animated(cls, param, vals):
+    def animated(cls, *args, fixed = {}, frameNames = None, **kwargs):
+        '''Creates an animation out of a class.
 
-        def _getInitKwargsList(self):
+        This class method returns an animation with frames belonging to a given plot class.
 
-            return [{ param: val } for val in vals]
+        For example, if you run `BandsPlot.animated()` you will get an animation made of bands plots.
+
+        If no arguments are passed, you will get the default animation for that plot, if there is any.
+
+        Parameters
+        -----------
+        *args:
+            Depending on what you pass the arguments will be interpreted differently:
+                - Two arguments:
+                    First: str
+                        Key of the setting that you want to animate.
+                    Second: array-like
+                        Values that you want the setting to have at each animation frame.
+
+                    Ex: BandsPlot.animated("bandsFile", ["file1", "file2", "file3"] )
+                    will produce an animation where each frame uses a different bandsFile.
+
+                - One argument and it is a dictionary:
+                    First: dict
+                        The keys of this dictionary will be the setting keys you want to animate
+                        and the values are of course the values for each frame for that setting. 
+
+                    It works exactly as the previous case, but in this case we have multiple settings to animate.
+                
+                - One argument and it is a function:
+                    First: function
+                        With this function you can produce any settings you want without limitations.
+
+                        It will be used as the `_getInitKwargsList` method of the animation, so it needs to
+                        accept self (the animation object) and return a list of dictionaries which are the 
+                        settings for each frame.
+
+                    the function will recieve the parameter and can act on it in any way you like.
+                    It doesn't need to return the parameter, just modify it.
+                    In this function, you can call predefined methods of the parameter, for example.
+
+                    Ex: obj.modifyParam("length", lambda param: param.incrementByOne() )
+
+                    given that you know that this type of parameter has this method.
+        fixed: dict, optional
+            A dictionary containing values for settings that will be fixed along the animation.
+            For the settings that you don't specify here you will get the defaults.
+        frameNames: list of str or function, optional
+            If it is a list of strings, each string will be used as the name for the corresponding frame.
+
+            If it is a function, it should accept `self` (the animation object) and return a list of strings
+            with the frame names. Note that you can access the plot instance responsible for each frame under
+            `self.childPlots`. The function will be run each time the figure is generated, so in this way your
+            frame names will be dynamic.
+
+            FRAME NAMES SHOULD BE UNIQUE, OTHERWISE THE ANIMATION WILL HAVE A WEIRD BEHAVIOR.
+
+            If this is not provided, frame names will be generated automatically.
+        **kwargs:
+            Will be passed directly to animation initialization, so it can contain the settings for the animation, for example.
+
+            If args are not passed and the default animation is being created. Some keyword arguments may be used by the method
+            that generates the default animation. One recurrent example of this is the keyword `wdir`. 
+
+        Returns
+        --------
+        Animation
+            The Animation that you asked for
         
-        def _getFrameNames(self):
+        '''
 
-            return ["Frame {}".format(i+1) for i in range(len(vals))]
+        #Try to retrieve the default animation if no arguments are provided
+        if len(args) == 0:
+
+            return cls._defaultAnimation(**kwargs) if hasattr(cls, "_defaultAnimation" ) else None
+
+        #Define how the getInitkwargsList will look like
+        elif len(args) == 2:
+           
+            def _getInitKwargsList(self):
+
+                #Adding the fixed values to the list
+                vals = { 
+                    **{key: np.full(len(args[1]), val) for key, val in fixed.items()},
+                    args[0]: args[1]
+                }
+
+                return dictOfLists2listOfDicts(vals)
+
+        elif isinstance(args[0], dict):
+
+            def _getInitKwargsList(self):
+
+                nFrames = len(args[0].values()[0])
+
+                #Adding the fixed values to the list
+                vals = { 
+                    **{key: np.full(nFrames, val) for key, val in fixed.items()},
+                    **args[0]
+                }
+
+                return dictOfLists2listOfDicts(vals)
+
+        elif callable(args[0]):
+
+            _getInitKwargsList = args[0]
         
+        #Define how to get the framenames
+        if frameNames:
+
+            if callable(frameNames):
+                _getFrameNames = frameNames
+            else:
+                def _getFrameNames(self):
+
+                    return frameNames
+        else:
+            def _getFrameNames(self):
+
+                return ["Frame {}".format(i+1) for i in range(len(self.childPlots))]
+        
+        #Return the initialized animation
         return Animation( _plugins = {
             "_getInitKwargsList": _getInitKwargsList,
             "_getFrameNames": _getFrameNames,
@@ -577,7 +689,7 @@ class Plot(Configurable):
         self.layout = {
             'hovermode': 'closest',
             #Need to register this on whatToRunOnUpdate somehow
-            **self.getSettingsGroup("layout"),
+            **self.settingsGroup("layout"),
             **framesLayout
         }
             
@@ -694,7 +806,7 @@ class Plot(Configurable):
             "figure": figure,
             "settings": self.settings,
             "params": self.params,
-            "paramGroups": self._paramGroups
+            "paramGroups": self.paramGroups
         }
 
         return infoDict
@@ -775,11 +887,23 @@ class Animation(MultiplePlot):
 
     _isAnimation = True
 
+    _paramGroups = (
+
+        {
+            "key": "animation",
+            "name": "Animation specific settings",
+            "icon": "videocam",
+            "description": "The fact that you have not studied cinematography is not a good excuse for creating ugly animations. <b>Customize your animation with these settings</b>"
+        },
+
+    )
+
     _parameters = (
 
         IntegerInput(
             key = "frameDuration", name = "Frame duration",
             default = 500,
+            group = "animation",
             params = {
                 "step": 100
             },

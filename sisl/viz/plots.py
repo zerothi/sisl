@@ -98,6 +98,17 @@ class BandsPlot(Plot):
 
     )
 
+    @classmethod
+    def _defaultAnimation(self, wdir = None, **kwargs):
+        
+        bandsFiles = findFiles(wdir, "*.bands", sort = True)
+
+        def _getFrameNames(self):
+
+            return [os.path.basename( childPlot.setting("bandsFile")) for childPlot in self.childPlots]
+
+        return BandsPlot.animated("bandsFile", bandsFiles, frameNames = _getFrameNames, wdir = wdir, **kwargs)
+
     def _afterInit(self):
 
         self.updateSettings(updateFig = False, xaxis_title = 'K', yaxis_title = "Energy (eV)")
@@ -208,26 +219,6 @@ class BandsPlot(Plot):
         self.figure.layout.xaxis.tickvals = self.ticks[0]
         self.figure.layout.xaxis.ticktext = self.ticks[1]
         self.figure.layout.yaxis.range = np.array(self.setting("Erange")) + self.fermi
-
-class BandsAnimation(Animation):
-
-    #Define all the class attributes
-    _plotType = "Bands animation"
-
-    _parameters = copyParams( BandsPlot._parameters, exclude = ["bandsFile"])
-
-    #All these are variables used by MultiplePlot
-    _plotClasses = BandsPlot
-
-    def _getInitKwargsList(self):
-
-        self.bandsFiles = findFiles(self.wdir, "*.bands", sort = True)
-
-        return [{ "bandsFile": bandsFile } for bandsFile in self.bandsFiles]
-
-    def _getFrameNames(self):
-
-        return [os.path.basename( childPlot.settings["bandsFile"] ) for childPlot in self.childPlots]
 
 class PdosPlot(Plot):
 
@@ -361,6 +352,17 @@ class PdosPlot(Plot):
 
     )
     
+    @classmethod
+    def _defaultAnimation(self, wdir = None, **kwargs):
+        
+        PDOSfiles = findFiles(wdir, "*.PDOS", sort = True)
+
+        def _getFrameNames(self):
+
+            return [os.path.basename( childPlot.setting("PDOSFile")) for childPlot in self.childPlots]
+
+        return PdosPlot.animated("PDOSFile", bandsFiles, frameNames = _getFrameNames, wdir = wdir, **kwargs)
+
     def _afterInit(self):
 
         self.updateSettings(updateFig = False, xaxis_title = 'Density of states (1/eV)', yaxis_title = "Energy (eV)")
