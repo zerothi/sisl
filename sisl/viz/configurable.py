@@ -8,10 +8,12 @@ class Configurable:
         self.settingsHistory = []
         
         #Get the parameters of all the classes the object belongs to
-        self.params = []
+        self.params = []; self.paramGroups = []
         for clss in type.mro(self.__class__):
             if "_parameters" in vars(clss):
                 self.params = [*self.params, *clss._parameters]
+            if "_paramGroups" in vars(clss):
+                self.paramGroups = [*clss._paramGroups, *self.paramGroups]
 
         #Define the settings dictionary, taking the value of each parameter from kwargs if it is there or from the defaults otherwise.
         self.settings = { param.key: kwargs.get( param.key, deepcopy(param.default) ) for param in self.params}
@@ -305,6 +307,18 @@ class Configurable:
             settings = self.settings
 
         return deepcopy({ setting.key: settings[setting.key] for setting in self.params if getattr(setting, "group", None) == groupKey })
+    
+    def settingsGroup(self, groupKey):
+        '''
+        Gets the subset of the settings that corresponds to a given group and logs its use
+
+        This method is to `getSettingsGroup` the same as `setting` is to `getSetting`.
+
+        That is, the return is exactly the same but the use of the settings is logged to update
+        the plot properly.
+        '''
+
+        return deepcopy({ setting.key: self.setting(setting.key) for setting in self.params if getattr(setting, "group", None) == groupKey })
 
     def settingsUpdatesLog(self, frame = -1):
         '''

@@ -131,7 +131,7 @@ class Session(Configurable):
         
         return sorted(get_all_subclasses(sisl.viz.Plot), key = lambda clss: clss._plotType) 
 
-    def newPlot(self, plotClass, tabID = None, structID = None, **kwargs):
+    def newPlot(self, plotClass, tabID = None, structID = None, animation = False ,**kwargs):
         '''
         Get a new plot from the specified class
 
@@ -141,8 +141,12 @@ class Session(Configurable):
             The name of the desired class
         tabID: str
             Tab where the plot should be stored
-        structID: str (optional, None)
+        structID: str, optional
             The ID of the structure for which we want the plot
+        animation: bool, optional
+            Whether the initialized plot should be an animation.
+            
+            If true, it uses the `Plot.animated` method to initialize the plot
         **kwargs:
             Passed directly to plot initialization
 
@@ -162,7 +166,10 @@ class Session(Configurable):
         if structID:
             kwargs = {**kwargs, "rootFdf": self.warehouse["structs"][structID]["path"] }
 
-        newPlot = ReqPlotClass(**kwargs)
+        if animation:
+            newPlot = ReqPlotClass.animated(wdir = self.setting("rootDir"))
+        else:
+            newPlot = ReqPlotClass(**kwargs)
 
         self.warehouse["plots"][newPlot.id] = newPlot
 
