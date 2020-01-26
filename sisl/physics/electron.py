@@ -756,6 +756,7 @@ def berry_curvature(state, energy, dHk, dSk=None, degenerate=None):
     dSk : list of array_like, optional
        :math:`\delta \mathbf S_k` matrix required for non-orthogonal basis.
        Same derivative as `dHk`.
+       NOTE: Using non-orthogonal basis sets are not tested.
     degenerate : list of array_like, optional
        a list containing the indices of degenerate states. In that case a prior diagonalization
        is required to decouple them. This is done 3 times along each of the Cartesian directions.
@@ -784,6 +785,7 @@ def berry_curvature(state, energy, dHk, dSk=None, degenerate=None):
         v_matrix = _velocity_matrix_ortho(state, dHk, degenerate, dtype)
     else:
         v_matrix = _velocity_matrix_non_ortho(state, dHk, energy, dSk, degenerate, dtype)
+        warn('berry_curvature calculation for non-orthogonal basis sets are not tested! Do not expect this to be correct!')
     return _berry_curvature(v_matrix, energy, degenerate)
 
 
@@ -800,7 +802,7 @@ def _berry_curvature(v_M, energy, degenerate):
     # to calculate anything. Hence we need to initialize as zero
     # This is a vector of matrices
     #   \Sigma_{n, \alpha \beta}
-    sigma = np.zeros([N, 3, 3], dtype=v_M.dtype)
+    sigma = np.zeros([N, 3, 3], dtype=dtype_complex_to_real(v_M.dtype))
 
     # Fast index deletion
     index = _a.arangei(N)

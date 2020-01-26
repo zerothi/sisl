@@ -69,7 +69,7 @@ def get_distribution(method, smearing=0.1, x0=0.):
     callable
         a function which accepts one argument
     """
-    m = method.lower()
+    m = method.lower().replace('-', '_')
     if m in ['gauss', 'gaussian']:
         return partial(gaussian, sigma=smearing, x0=x0)
     elif m in ['lorentz', 'lorentzian']:
