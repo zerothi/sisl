@@ -167,7 +167,8 @@ class Session(Configurable):
             kwargs = {**kwargs, "rootFdf": self.warehouse["structs"][structID]["path"] }
 
         if animation:
-            newPlot = ReqPlotClass.animated(wdir = self.setting("rootDir"))
+            wdir = os.path.dirname(self.warehouse["structs"][structID]["path"]) if structID else self.setting("rootDir")
+            newPlot = ReqPlotClass.animated(wdir = wdir)
         else:
             newPlot = ReqPlotClass(**kwargs)
 
