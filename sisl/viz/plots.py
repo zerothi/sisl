@@ -15,7 +15,7 @@ import shutil
 import sisl
 from .plot import Plot, MultiplePlot, Animation, PLOTS_CONSTANTS
 from .plotutils import sortOrbitals, initMultiplePlots, copyParams, findFiles, runMultiple, calculateGap
-from .inputFields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput
+from .inputFields import InputField, TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput
 
 class BandsPlot(Plot):
 
@@ -637,196 +637,116 @@ class LDOSmap(Plot):
     }
 
     _parameters = (
-        
-        {
-            "key": "Erange" ,
-            "name": "Energy range",
-            "default": [-2,4],
-            "inputField": {
-                "type": "rangeslider",
-                "width": "s90%",
-                "params": {
-                    "min": -10,
-                    "max": 10,
-                    "allowCross": False,
-                    "step": 0.1,
-                    "marks": { **{ i: str(i) for i in range(-10,11) }, 0: "Ef",},
-                }
-            },
-            "help": "Energy range where the STS spectra are computed.",
-            "onUpdate": "readData",           
-        },
-        
-        {
-            "key": "nE",
-            "name": "Energy points",
-            "default": 100,
-            "inputField": {
-                "type": "number",
-                "width": "s30%",
-                "params": {
-                    "min": 1,
-                    "step": 1
-                }
-            },
-            "onUpdate": "readData", 
-        },
 
-        {
-            "key": "STSEta",
-            "name": "Smearing factor (eV)",
-            "default": 0.05,
-            "inputField": {
-                "type": "number",
-                "width": "s30%",
-                "params": {
-                    "min": 1,
-                    "step": 1
-                }
+        RangeSlider(
+            key = "Erange", name = "Energy range",
+            default = [-2,4],
+            width = "s90%",
+            params = {
+                "min": -10,
+                "max": 10,
+                "allowCross": False,
+                "step": 0.1,
+                "marks": { **{ i: str(i) for i in range(-10,11) }, 0: "Ef",},
             },
-            "help": '''This determines the smearing factor of each STS spectra. You can play with this to modify sensibility in the vertical direction.
-                <br> If the smearing value is too high, your map will have a lot of vertical noise''',
-            "onUpdate": "readData", 
-        },
+            help = "Energy range where the STS spectra are computed."
+        ),
 
-        {
-            "key": "distStep",
-            "name": "Distance step (Ang)",
-            "default": 0.1,
-            "inputField": {
-                "type": "number",
-                "width": "s30%",
-                "params": {
-                    "min": 1,
-                    "step": 1
-                }
+        IntegerInput(
+            key = "nE", name = "Energy points",
+            default = 100,
+            params = {
+                "min": 1
             },
-            "onUpdate": "readData", 
-        },
+            help = "The number of energy points that are calculated for each spectra"
+        ),
 
-        {
-            "key": "trajectory",
-            "name": "Trajectory",
-            "default": [],
-            "help": '''You can directly provide a trajectory instead of the corner points.<br>
+        FloatInput(
+            key = "STSEta", name = "Smearing factor (eV)",
+            default = 0.05,
+            params = {
+                "min": 0.01,
+                "step": 0.01
+            },
+            help = '''This determines the smearing factor of each STS spectra. You can play with this to modify sensibility in the vertical direction.
+                <br> If the smearing value is too high, your map will have a lot of vertical noise'''
+        ),
+
+        FloatInput(
+            key = "distStep", name = "Distance step (Ang)",
+            default = 0.1,
+            params = {
+                "min": 0,
+                "step": 0.01,
+            },
+            help = "The step in distance between one point and the next one in the path."
+        ),
+
+        InputField(
+            key = "trajectory", name = "Trajectory",
+            default = [],
+            help = '''You can directly provide a trajectory instead of the corner points.<br>
                     This option has preference over 'points', but can't be used through the GUI.<br>
-                    It is useful if you want a non-straight trajectory.''',
-            "onUpdate": "readData", 
-        },
+                    It is useful if you want a non-straight trajectory.'''
+        ),
 
-        {
-            "key": "widenFunc",
-            "name": "Widen function",
-            "default": None,
-            "help": '''You can widen the path with this parameter. 
+        InputField(
+            key = "widenFunc", name = "Widen function",
+            default = None,
+            help = '''You can widen the path with this parameter. 
                     This option has preference over 'widenX', 'widenY' and 'widenZ', but can't be used through the GUI.<br>
                     This must be a function that gets a point of the path and returns a set of points surrounding it (including the point itself).<br>
-                    All points of the path must be widened with the same amount of points, otherwise you will get an error.''',
-            "onUpdate": "readData", 
-        },
+                    All points of the path must be widened with the same amount of points, otherwise you will get an error.'''
+        ),
 
-        {
-            "key" : "widenMethod",
-            "name" : "Widen Method",
-            "default": "sum",
-            "inputField": {
-                "type": "dropdown",
-                "width": "s100% m50% l40%",
-                "params": {
-                    "options":  [{"label": "Sum", "value": "sum"}, {"label" : "Average", "value": "average"}],
-                    "isMulti": True,
-                    "placeholder": "",
-                    "isClearable": True,
-                    "isSearchable": True,    
-                },
+        DropdownInput(
+            key = "widenMethod", name = "Widen method",
+            default = "sum",
+            width = "s100% m50% l40%",
+            params = {
+                "options":  [{"label": "Sum", "value": "sum"}, {"label" : "Average", "value": "average"}],
+                "isMulti": False,
+                "placeholder": "",
+                "isClearable": False,
+                "isSearchable": True, 
             },
-            "help": "Determines whether values surrounding a point should be summed or averaged",
-            "onUpdate": "setData",
-        },
+            help = "Determines whether values surrounding a point should be summed or averaged"
+        ),
 
-        {
-            "key": "points",
-            "name": "Path points" ,
-            "default": [{"x": 0, "y": 0, "z": 0, "active": True}],
-            "inputField":{
-                "type": "queries",
-                "width": "s100%",
-                "queryForm": [
-                    {
-                        "key": "x",
-                        "name": "x",
-                        "default": 0,
-                        "inputField": {
-                            "type": "number",
-                            "width": "s30%",
-                            "params": {
-                                "step": 0.01
-                            }
-                        },
-                    },
+        QueriesInput(
+            key = "points", name = "Path corners",
+            default = [{"x": 0, "y": 0, "z": 0, "active": True}],
+            queryForm = [
 
-                    {
-                        "key": "y",
-                        "name": "y",
-                        "default": 0,
-                        "inputField": {
-                            "type": "number",
-                            "width": "s30%",
-                            "params": {
-                                "step": 0.01
-                            }
-                        },
-                    },
+                FloatInput(
+                    key = key, name = key.upper(),
+                    default = 0,
+                    width = "s30%",
+                    params = {
+                        "step" : 0.01
+                    }
+                ) for key in ("x", "y", "z")
+            ],
+            help = '''Provide the points to generate the path through which STS need to be calculated.'''
+        ),
 
-                    {
-                        "key": "z",
-                        "name": "z",
-                        "default": 0,
-                        "inputField": {
-                            "type": "number",
-                            "width": "s30%",
-                            "params": {
-                                "step": 0.01
-                            }
-                        },
-                    },
-
-                ]
+        FloatInput(
+            key = "cmin", name = "Lower color limit",
+            default = 0,
+            params = {
+                "step": 10*-6
             },
+            help = "All points below this value will be displayed as 0."
+        ),
 
-            "help": '''Provide the points to generate the path through which STS need to be calculated.''',
-            "onUpdate": "readData",
-        },
-
-        {
-            "key": "zmin",
-            "name": "Lower Z bound",
-            "default": 0,
-            "inputField": {
-                "type": "number",
-                "width": "s30%",
-                "params": {
-                    "min": 0,
-                    "step": 10*-6
-                }
+        FloatInput(
+            key = "cmax", name = "Upper color limit",
+            default = 0,
+            params = {
+                "step": 10*-6
             },
-            "onUpdate": "setData", 
-        },
-
-        {
-            "key": "zmax",
-            "name": "Upper Z bound",
-            "default": 0,
-            "inputField": {
-                "type": "number",
-                "width": "s30%",
-                "params": {
-                    "min": 0,
-                    "step": 10*-6
-                }
-            },
-            "onUpdate": "setData", 
-        },
+            help = "All points above this value will be displayed as the maximum.<br> Decreasing this value will increase saturation."
+        ),
     
     )
 
@@ -964,7 +884,7 @@ class LDOSmap(Plot):
         os.chdir(cwd)
         
         #Update the values for the limits so that they are automatically set
-        self.updateSettings(updateFig = False, zmin = 0, zmax = 0)
+        self.updateSettings(updateFig = False, cmin = 0, cmax = 0)
     
     def _getPath(self):
 
@@ -1027,8 +947,8 @@ class LDOSmap(Plot):
             'type': 'heatmap',
             'z': spectraToPlot.transpose("E", "x").values,
             #These limits determine the contrast of the image
-            'zmin': self.setting("zmin"),
-            'zmax': self.setting("zmax"),
+            'cmin': self.setting("cmin"),
+            'cmax': self.setting("cmax"),
             #Yaxis is the energy axis
             'y': np.linspace(*self.setting("Erange"), self.setting("nE"))}]
     
