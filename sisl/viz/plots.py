@@ -5,10 +5,9 @@ This file contains all the plot subclasses
 import numpy as np
 import pandas as pd
 import xarray as xr
-import multiprocessing as mp
+import matplotlib
+import matplotlib.pyplot as plt
 import itertools
-from copy import deepcopy
-import tqdm
 
 import os
 import shutil
@@ -1031,3 +1030,231 @@ class LDOSmap(Plot):
             'zmax': self.setting("zmax"),
             #Yaxis is the energy axis
             'y': np.linspace(*self.setting("Erange"), self.setting("nE"))}]
+    
+class BondLengthMap(Plot):
+    
+    '''
+    Colorful representation of bond lengths.
+    '''
+
+    _plotType = "Bond length"
+    
+    _requirements = {
+        
+    }
+    
+    _parameters = (
+        
+        SwitchInput(
+            key = "geomFromOutput", name = "Geometry from output",
+            default = True,
+            params = {
+                "offLabel": "No",
+                "onLabel": "Yes",
+            },
+            help = "In case the geometry is read from the fdf file, this will determine whether the input or the output geometry is taken.<br>This setting will be ignored if geomFile is passed"
+        ),
+        
+        TextInput(
+            key = "geomFile", name = "Path to the geometry file",
+            width = "s100% m50% l33%",
+            params = {
+                "placeholder": "Write the path to your geometry file here..."
+            },
+            help = '''This parameter explicitly sets a geometry file. Otherwise, the geometry is attempted to read from the fdf file '''
+        ),
+        
+        FloatInput(
+            key = "bondThreshold", name = "Bond length threshold",
+            default = 1.7,
+            params = {
+                "step": 0.01
+            },
+            help = "Maximum distance between two atoms to draw a bond"
+        ),
+        
+        TextInput(
+            key = "cmap", name = "Plotly colormap",
+            default = "solar",
+            width = "s100% m50% l33%",
+            params = {
+                "placeholder": "Write a valid plotly colormap here..."
+            },
+            help = '''This determines the colormap to be used for the bond lengths display.<br>
+            You can see all valid colormaps here: <a>https://plot.ly/python/builtin-colorscales/<a/><br>
+            Note that you can reverse a color map by adding _r'''
+        ),
+        
+        IntegerInput(
+            key = "tileX", name = "Tile first axis",
+            default = 1,
+            params = {
+                "min": 1
+            },
+            help = "Number of unit cells to display along the first axis"
+        ),
+        
+        IntegerInput(
+            key = "tileY", name = "Tile second axis",
+            default = 1,
+            params = {
+                "min": 1
+            },
+            help = "Number of unit cells to display along the second axis"
+        ),
+        
+        IntegerInput(
+            key = "tileZ", name = "Tile third axis",
+            default = 1,
+            params = {
+                "min": 1
+            },
+            help = "Number of unit cells to display along the third axis"
+        ),
+            
+        DropdownInput(
+            key = "ortAxis", name = "Out of plane axis",
+            default = "z",
+            width = "s100% m50% l33%",
+            params = {
+                "placeholder": "Choose the out of plane axis...",
+                "options": [
+                    {"label": ax, "value": ax} for ax in ("x", "y", "z")
+                ],
+                "isClearable": True,
+                "isSearchable": True,
+            },
+            help = "This is the axis that is out of plane, to draw only a 2D map along the other two."
+        ),
+        
+        FloatInput(
+            key = "cmin", name = "Color scale low limit",
+            default = 0,
+            params = {
+                "step": 0.01
+            }
+        ),
+        
+        FloatInput(
+            key = "cmax", name = "Color scale high limit",
+            default = 0,
+            params = {
+                "step": 0.01
+            }
+        ),
+        
+        IntegerInput(
+            key = "pointsPerBond", name = "Points per bond",
+            default = 5,
+            help = "Number of points that fill a bond <br>More points will make it look more like a line but will slow plot rendering down."
+        )
+    
+    )
+    
+    @classmethod
+    def _defaultAnimation(self, wdir = None, **kwargs):
+        
+        geomsFiles = findFiles(wdir, "*.XV", sort = True)
+
+        #def _getFrameNames(self):
+
+            #return [os.path.basename( childPlot.setting("bandsFile")) for childPlot in self.childPlots]
+
+        return BondLengthMap.animated("geomFile", geomsFiles, wdir = wdir, **kwargs)
+
+    def _afterInit(self):
+
+        #self.updateSettings(updateFig = False, xaxis_title = 'X (Ang)', yaxis_title = "Y (Ang)")
+        pass
+
+    def _readSiesOut(self):
+        
+        if self.setting("geomFile"):
+            self.geom = sisl.get_sile(self.setting("geomFile")).read_geometry()
+        else:
+            self.geom = sisl.get_sile(self.setting("rootFdf")).read_geometry(output = self.setting("geomFromOutput"))
+        
+        #If there isn't a supercell in all directions define it
+        self.geom.set_nsc([3,3,3])
+        
+        #Build the dataframe with all the bonds info
+        bondsDict = {
+            "From": [],
+            "To": [],
+            "From Species": [],
+            "To Species": [],
+            "Bond Length": [],
+            "initX": [],
+            "initY": [],
+            "initZ": [],
+            "finalX": [],
+            "finalY": [],
+            "finalZ": [],
+        }
+
+        for at in self.geom:
+
+            _, neighs = self.geom.close(at, R = (0.1, self.setting("bondThreshold")))
+
+            for neigh in neighs:
+
+                bondsDict["From"].append(at)
+                bondsDict["To"].append(neigh)
+                bondsDict["From Species"].append(self.geom.atoms[at].symbol)
+                bondsDict["To Species"].append(self.geom.atom[neigh % self.geom.na].symbol)
+                bondsDict["Bond Length"].append(np.linalg.norm(self.geom[at] - self.geom[neigh]))
+                bondsDict["initX"].append(self.geom[at][0])
+                bondsDict["initY"].append(self.geom[at][1])
+                bondsDict["initZ"].append(self.geom[at][2])
+                bondsDict["finalX"].append(self.geom[neigh][0])
+                bondsDict["finalY"].append(self.geom[neigh][1])
+                bondsDict["finalZ"].append(self.geom[neigh][2])
+
+        self.df = pd.DataFrame(bondsDict)
+    
+    def _setData(self):
+        
+        """ #Define a colormap
+        cmap = plt.cm.get_cmap(self.setting("cmap"))
+        
+        #Get the normalizer
+        cmin = self.setting("cmin") or self.df["Bond Length"].min()
+        cmax = self.setting("cmax") or self.df["Bond Length"].max()
+        norm = matplotlib.colors.Normalize(cmin, cmax) """
+        
+        self.data = []
+        tileCombs = itertools.product(*[range(self.setting(tile)) for tile in ("tileX", "tileY", "tileZ")])
+        pointsPerBond = self.setting("pointsPerBond")
+        
+        for tiles in tileCombs :
+            
+            #Get the translation vector
+            translate = np.array(tiles).dot(self.geom.cell)
+        
+            #Draw bonds
+            self.data = [*self.data, *[{
+                            'type': 'scatter',
+                            'x': np.linspace(bond["initX"], bond["finalX"], pointsPerBond) + translate[0],
+                            'y': np.linspace(bond["initY"], bond["finalY"], pointsPerBond) + translate[1],
+                            'mode': 'markers', 
+                            'name': "{}{}-{}{}".format(bond["From Species"], bond["From"], bond["To Species"], bond["To"]), 
+                            #'line': {"color": "rgba{}".format(cmap(norm(bond["Bond Length"])) ), "width": 3},
+                            'marker': {"size": 3, "color": [bond["Bond Length"]]*pointsPerBond, "coloraxis": "coloraxis"},
+                            "showlegend": False,
+                            'hoverinfo': "name",
+                            'hovertemplate':'{:.2f} Ang'.format(bond["Bond Length"]),
+                        } for i, bond in self.df.iterrows() ]]
+
+    def _afterGetFigure(self):
+
+        #Add the ticks
+        self.figure.layout.yaxis.scaleratio = 1
+        self.figure.layout.yaxis.scaleanchor = "x"
+        
+        self.figure.update_layout(coloraxis = {
+            'colorscale': self.setting("cmap"),
+            "cmin": self.setting("cmin") or self.df["Bond Length"].min(),
+            "cmax": self.setting("cmax") or self.df["Bond Length"].max() 
+        })
+        
+        self.updateSettings(updateFig = False, xaxis_title = 'X (Ang)', yaxis_title = "Y (Ang)")

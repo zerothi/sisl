@@ -365,7 +365,7 @@ class Plot(Configurable):
         #Try to retrieve the default animation if no arguments are provided
         if len(args) == 0:
 
-            return cls._defaultAnimation(**kwargs) if hasattr(cls, "_defaultAnimation" ) else None
+            return cls._defaultAnimation(fixed = fixed, frameNames = frameNames, **kwargs) if hasattr(cls, "_defaultAnimation" ) else None
 
         #Define how the getInitkwargsList will look like
         elif len(args) == 2:
@@ -616,9 +616,20 @@ class Plot(Configurable):
                 self.data = self.childPlots[0].data
                 frameNames = self._getFrameNames() if hasattr(self, "_getFrameNames") else itertools.repeat(None)
                 
+                maxN = np.max([[len(plot.data) for plot in self.childPlots]])
+                
                 for frameName , plot in zip(frameNames , self.childPlots):
+                    
+                    data = plot.data
+                    nTraces = len(data)
+                    if nTraces < maxN:
+                        nAddTraces = maxN - nTraces
+                        print(nAddTraces)
+                        data = [*data, *np.full(nAddTraces, {"type": "scatter", "x":  [0], "y": [0], "visible": False})]
 
-                    self.frames = [*self.frames, {'name': frameName, 'data': plot.data}]
+                    self.frames = [*self.frames, {'name': frameName, 'data': data, "layout": plot.settingsGroup("layout")}]
+                    #self.data = [*self.data, *plot.data]
+
             
             else:
 
@@ -632,6 +643,37 @@ class Plot(Configurable):
         if getattr(self, 'frames', []):
 
             #This will create the buttons needed no control the animation
+
+            #Animate method
+            steps = [
+                {"args": [
+                [frame["name"]],
+                {"frame": {"duration": int(self.setting("frameDuration")), "redraw": True},
+                "mode": "immediate",
+                "transition": {"duration": 300}}
+            ],
+                "label": frame["name"],
+                "method": "animate"} for frame in self.frames
+            ]
+
+            #Update method
+            """ steps = []
+            breakpoints = np.array([len(frame["data"]) for frame in self.frames]).cumsum()
+            for i, frame in enumerate(self.frames):
+                
+                steps.append({
+                    "label": frame["name"],
+                    "method": "restyle",
+                    "args": [
+                        {"x": [data["x"] for data in frame["data"]],
+                        "y": [data["y"] for data in frame["data"]],
+                        "visible": [data.get("visible", True) for data in frame["data"]],
+                        "mode": [data.get("mode",None) for data in frame["data"]],
+                        "marker": [data.get("marker", {}) for data in frame["data"]],
+                        "line": [data.get("line", {}) for data in frame["data"]]},
+                    ]
+                }) """
+            
             framesLayout = {
 
                 "sliders": [
@@ -645,21 +687,12 @@ class Plot(Configurable):
                             "visible": True,
                             "xanchor": "right"
                         },
-                        "transition": {"duration": 300, "easing": "cubic-in-out"},
+                        #"transition": {"duration": 300, "easing": "cubic-in-out"},
                         "pad": {"b": 10, "t": 50},
                         "len": 0.9,
                         "x": 0.1,
                         "y": 0,
-                        "steps": [
-                            {"args": [
-                            [frame["name"]],
-                            {"frame": {"duration": int(self.setting("frameDuration")), "redraw": False},
-                            "mode": "immediate",
-                            "transition": {"duration": 300}}
-                        ],
-                            "label": frame["name"],
-                            "method": "animate"} for frame in self.frames
-                        ]
+                        "steps": steps
                     }
                 ],
                 
@@ -670,7 +703,7 @@ class Plot(Configurable):
                         {
                             'label': 'Play',
                             'method': 'animate',
-                            'args': [None, {"frame": {"duration": int(self.setting("frameDuration")), "redraw": False},
+                            'args': [None, {"frame": {"duration": int(self.setting("frameDuration")), "redraw": True},
                                             "fromcurrent": True, "transition": {"duration": 100,
                                                                                 "easing": "quadratic-in-out"}}],
                         },
@@ -678,7 +711,7 @@ class Plot(Configurable):
                         {
                             'label': 'Pause',
                             'method': 'animate',
-                            'args': [ [None], {"frame": {"duration": 0, "redraw": False},
+                            'args': [ [None], {"frame": {"duration": 0}, "redraw": True,
                                             'mode': 'immediate',
                                             "transition": {"duration": 0}}],
                         }
