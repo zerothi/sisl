@@ -624,7 +624,6 @@ class Plot(Configurable):
                     nTraces = len(data)
                     if nTraces < maxN:
                         nAddTraces = maxN - nTraces
-                        print(nAddTraces)
                         data = [*data, *np.full(nAddTraces, {"type": "scatter", "x":  [0], "y": [0], "visible": False})]
 
                     self.frames = [*self.frames, {'name': frameName, 'data': data, "layout": plot.settingsGroup("layout")}]

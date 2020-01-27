@@ -14,7 +14,7 @@ import shutil
 
 import sisl
 from .plot import Plot, MultiplePlot, Animation, PLOTS_CONSTANTS
-from .plotutils import sortOrbitals, initMultiplePlots, copyParams, findFiles, runMultiple
+from .plotutils import sortOrbitals, initMultiplePlots, copyParams, findFiles, runMultiple, calculateGap
 from .inputFields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput
 
 class BandsPlot(Plot):
@@ -98,7 +98,7 @@ class BandsPlot(Plot):
     )
 
     @classmethod
-    def _defaultAnimation(self, wdir = None, **kwargs):
+    def _defaultAnimation(self, wdir = None, frameNames = None, **kwargs):
         
         bandsFiles = findFiles(wdir, "*.bands", sort = True)
 
@@ -134,7 +134,6 @@ class BandsPlot(Plot):
         self.ticks = band.lineartick()
         self.Ks = band.lineark()
         self.kPath = band._k
-
 
         bands = band.eigh()
 
@@ -172,6 +171,8 @@ class BandsPlot(Plot):
 
             #Append the dataframe to the main dataframe
             self.df = self.df.append(df, ignore_index = True)
+        
+            self.gap = calculateGap(spinComponentBands)
         
         return self
     
@@ -352,7 +353,7 @@ class PdosPlot(Plot):
     )
     
     @classmethod
-    def _defaultAnimation(self, wdir = None, **kwargs):
+    def _defaultAnimation(self, wdir = None, frameNames = None, **kwargs):
         
         PDOSfiles = findFiles(wdir, "*.PDOS", sort = True)
 
@@ -1048,6 +1049,7 @@ class BondLengthMap(Plot):
         SwitchInput(
             key = "geomFromOutput", name = "Geometry from output",
             default = True,
+            group = "readdata",
             params = {
                 "offLabel": "No",
                 "onLabel": "Yes",
@@ -1057,11 +1059,37 @@ class BondLengthMap(Plot):
         
         TextInput(
             key = "geomFile", name = "Path to the geometry file",
+            group = "readdata",
             width = "s100% m50% l33%",
             params = {
                 "placeholder": "Write the path to your geometry file here..."
             },
             help = '''This parameter explicitly sets a geometry file. Otherwise, the geometry is attempted to read from the fdf file '''
+        ),
+
+        TextInput(
+            key = "strainRef", name = "Strain reference geometry",
+            default = None,
+            group = "readdata",
+            width = "s100% m50% l33%",
+            params = {
+                "placeholder": "Write the path to your strain reference file here..."
+            },
+            help = '''The path to a geometry used to calculate strain from.<br>
+            This geometry will probably be the relaxed one<br>
+            If provided, colors can indicate strain values. Otherwise they are just bond length'''
+        ),
+
+        SwitchInput(
+            key = "showStrain", name = "Bond display mode",
+            default = True,
+            params = {
+                "offLabel": "Length",
+                "onLabel": "Strain"
+            },
+            help = '''Determines whether, <b>IF POSSIBLE</b>, strain values should be displayed instead of lengths<br>
+            If this is set to show strain, but no strain reference is set, <b>it will be ignored</b>
+            '''
         ),
         
         FloatInput(
@@ -1113,18 +1141,33 @@ class BondLengthMap(Plot):
         ),
             
         DropdownInput(
-            key = "ortAxis", name = "Out of plane axis",
-            default = "z",
+            key = "xAxis", name = "Coordinate in X axis",
+            default = "X",
             width = "s100% m50% l33%",
             params = {
-                "placeholder": "Choose the out of plane axis...",
+                "placeholder": "Choose the coordinate of the X axis...",
                 "options": [
-                    {"label": ax, "value": ax} for ax in ("x", "y", "z")
+                    {"label": ax, "value": ax} for ax in ("X", "Y", "Z")
                 ],
-                "isClearable": True,
+                "isClearable": False,
                 "isSearchable": True,
             },
-            help = "This is the axis that is out of plane, to draw only a 2D map along the other two."
+            help = "This is the coordinate that will be shown in the X axis of the plot "
+        ),
+
+        DropdownInput(
+            key = "yAxis", name = "Coordinate in Y axis",
+            default = "Y",
+            width = "s100% m50% l33%",
+            params = {
+                "placeholder": "Choose the coordinate of the Y axis...",
+                "options": [
+                    {"label": ax, "value": ax} for ax in ("X", "Y", "Z")
+                ],
+                "isClearable": False,
+                "isSearchable": True,
+            },
+            help = "This is the coordinate that will be shown in the Y axis of the plot "
         ),
         
         FloatInput(
@@ -1142,6 +1185,17 @@ class BondLengthMap(Plot):
                 "step": 0.01
             }
         ),
+
+        FloatInput(
+            key = "cmid", name = "Color scale mid point",
+            default = None,
+            params = {
+                "step": 0.01
+            },
+            help = '''Sets the middle point of the color scale. Only meaningful in diverging colormaps<br>
+            If this is set 'cmin' and 'cmax' are ignored. In strain representations this might be set to 0.
+            '''
+        ),
         
         IntegerInput(
             key = "pointsPerBond", name = "Points per bond",
@@ -1152,7 +1206,7 @@ class BondLengthMap(Plot):
     )
     
     @classmethod
-    def _defaultAnimation(self, wdir = None, **kwargs):
+    def _defaultAnimation(self, wdir = None, frameNames = None, **kwargs):
         
         geomsFiles = findFiles(wdir, "*.XV", sort = True)
 
@@ -1164,7 +1218,7 @@ class BondLengthMap(Plot):
 
     def _afterInit(self):
 
-        #self.updateSettings(updateFig = False, xaxis_title = 'X (Ang)', yaxis_title = "Y (Ang)")
+        self.updateSettings(updateFig = False, xaxis_title = 'X (Ang)', yaxis_title = "Y (Ang)", yaxis_zeroline = False)
         pass
 
     def _readSiesOut(self):
@@ -1174,27 +1228,34 @@ class BondLengthMap(Plot):
         else:
             self.geom = sisl.get_sile(self.setting("rootFdf")).read_geometry(output = self.setting("geomFromOutput"))
         
+        self.isStrain = False
+        if self.setting("strainRef"):
+            self.relaxedGeom = sisl.get_sile(self.setting("strainRef")).read_geometry()
+            self.isStrain = True
+
+            self.relaxedGeom.set_nsc([3,3,3])
+
+        
         #If there isn't a supercell in all directions define it
         self.geom.set_nsc([3,3,3])
         
         #Build the dataframe with all the bonds info
-        bondsDict = {
-            "From": [],
-            "To": [],
-            "From Species": [],
-            "To Species": [],
-            "Bond Length": [],
-            "initX": [],
-            "initY": [],
-            "initZ": [],
-            "finalX": [],
-            "finalY": [],
-            "finalZ": [],
-        }
+        dfKeys = ("From", "To", "From Species", "To Species", "Bond Length",
+            "initX", "initY", "initZ", "finalX", "finalY", "finalZ")
+        strainKeys = ("Relaxed Length", "Strain") if self.isStrain else ()
+
+        dfKeys = (*dfKeys, *strainKeys)
+        bondsDict = { key: [] for key in dfKeys}
 
         for at in self.geom:
 
-            _, neighs = self.geom.close(at, R = (0.1, self.setting("bondThreshold")))
+            #If there is a strain reference we take the neighbors of each atom from it
+            if self.isStrain:
+                geom = self.relaxedGeom
+            else:
+                geom = self.geom
+            
+            _, neighs = geom.close(at, R = (0.1, self.setting("bondThreshold")))
 
             for neigh in neighs:
 
@@ -1203,12 +1264,20 @@ class BondLengthMap(Plot):
                 bondsDict["From Species"].append(self.geom.atoms[at].symbol)
                 bondsDict["To Species"].append(self.geom.atom[neigh % self.geom.na].symbol)
                 bondsDict["Bond Length"].append(np.linalg.norm(self.geom[at] - self.geom[neigh]))
+
+                if self.isStrain:
+                    relLength = np.linalg.norm(self.relaxedGeom[at] - self.relaxedGeom[neigh])
+                    bondsDict["Relaxed Length"].append(relLength)
+                    bondsDict["Strain"].append( (bondsDict["Bond Length"][-1] - relLength)/relLength )
+
                 bondsDict["initX"].append(self.geom[at][0])
                 bondsDict["initY"].append(self.geom[at][1])
                 bondsDict["initZ"].append(self.geom[at][2])
                 bondsDict["finalX"].append(self.geom[neigh][0])
                 bondsDict["finalY"].append(self.geom[neigh][1])
                 bondsDict["finalZ"].append(self.geom[neigh][2])
+
+        
 
         self.df = pd.DataFrame(bondsDict)
     
@@ -1225,6 +1294,9 @@ class BondLengthMap(Plot):
         self.data = []
         tileCombs = itertools.product(*[range(self.setting(tile)) for tile in ("tileX", "tileY", "tileZ")])
         pointsPerBond = self.setting("pointsPerBond")
+        self.showStrain = self.isStrain and self.setting("showStrain")
+        colorColumn = "Strain" if self.showStrain else "Bond Length"
+        xAxis = self.setting("xAxis"); yAxis = self.setting("yAxis")
         
         for tiles in tileCombs :
             
@@ -1234,15 +1306,19 @@ class BondLengthMap(Plot):
             #Draw bonds
             self.data = [*self.data, *[{
                             'type': 'scatter',
-                            'x': np.linspace(bond["initX"], bond["finalX"], pointsPerBond) + translate[0],
-                            'y': np.linspace(bond["initY"], bond["finalY"], pointsPerBond) + translate[1],
+                            'x': np.linspace(bond["init{}".format(xAxis)], bond["final{}".format(xAxis)], pointsPerBond) + translate[["X","Y","Z"].index(xAxis)],
+                            'y': np.linspace(bond["init{}".format(yAxis)], bond["final{}".format(yAxis)], pointsPerBond) + translate[["X","Y","Z"].index(yAxis)],
                             'mode': 'markers', 
                             'name': "{}{}-{}{}".format(bond["From Species"], bond["From"], bond["To Species"], bond["To"]), 
                             #'line': {"color": "rgba{}".format(cmap(norm(bond["Bond Length"])) ), "width": 3},
-                            'marker': {"size": 3, "color": [bond["Bond Length"]]*pointsPerBond, "coloraxis": "coloraxis"},
+                            'marker': {
+                                "size": 3, 
+                                "color": [bond[colorColumn]]*pointsPerBond, 
+                                "coloraxis": "coloraxis"
+                            },
                             "showlegend": False,
                             'hoverinfo': "name",
-                            'hovertemplate':'{:.2f} Ang'.format(bond["Bond Length"]),
+                            'hovertemplate':'{:.2f} Ang{}'.format(bond["Bond Length"], ". Strain: {:.3f}".format(bond["Strain"]) if self.isStrain else "" ),
                         } for i, bond in self.df.iterrows() ]]
 
     def _afterGetFigure(self):
@@ -1251,10 +1327,19 @@ class BondLengthMap(Plot):
         self.figure.layout.yaxis.scaleratio = 1
         self.figure.layout.yaxis.scaleanchor = "x"
         
+        colorColumn = "Strain" if self.showStrain else "Bond Length"
+        cmap = self.setting("cmap")
+        reverse = "_r" in cmap
+        cmap = cmap[:-2] if reverse else cmap
         self.figure.update_layout(coloraxis = {
-            'colorscale': self.setting("cmap"),
-            "cmin": self.setting("cmin") or self.df["Bond Length"].min(),
-            "cmax": self.setting("cmax") or self.df["Bond Length"].max() 
+            'colorbar': {
+                'title': "Strain" if self.showStrain else "Length (Ang)"
+            },
+            'colorscale': cmap,
+            'reversescale': reverse ,
+            "cmin": (self.setting("cmin") or self.df[colorColumn].min()) if self.setting("cmid") == None else None,
+            "cmax": (self.setting("cmax") or self.df[colorColumn].max()) if self.setting("cmid") == None else None,
+            "cmid": self.setting("cmid"),
         })
         
         self.updateSettings(updateFig = False, xaxis_title = 'X (Ang)', yaxis_title = "Y (Ang)")
