@@ -856,10 +856,25 @@ class Plot(Configurable):
 
         return self
     
-    def save(self, path):
+    def save(self, path, html = False):
         '''
         Saves the plot so that it can be loaded in the future.
+
+        Parameters
+        ---------
+        path: str
+            The path to the file where you want to save the plot
+        html: bool
+            If set to true, saves just an html of the plot.
+
+        Returns
+        ---------
+        self
         '''
+
+        if html:
+            plotly.offline.plot(self.figure, filename='{}.html'.format(path.replace(".html", "")))
+            return self
 
         #The following method actually modifies 'self', so there's no need to get the return
         self._getPickleable()
@@ -868,7 +883,19 @@ class Plot(Configurable):
             pickle.dump(self, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
         return self
+    
+    def html(self, path):
 
+        '''
+        Just a shortcut for save( html = True )
+
+        Arguments
+        --------
+        path: str
+            The path to the file where you want to save the plot.
+        '''
+
+        return self.save(path, html = True)
 #------------------------------------------------
 #               ANIMATION CLASS
 #------------------------------------------------
