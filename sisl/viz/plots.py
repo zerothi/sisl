@@ -618,6 +618,7 @@ class PdosPlot(Plot):
 class LDOSmap(Plot):
     '''
     Generates a heat map with the STS spectra along a path.
+
     '''
     
     _plotType = "LDOS map"
@@ -715,17 +716,33 @@ class LDOSmap(Plot):
 
         QueriesInput(
             key = "points", name = "Path corners",
-            default = [{"x": 0, "y": 0, "z": 0, "active": True}],
+            default = [{"x": 0, "y": 0, "z": 0, "atom": None, "active": True}],
             queryForm = [
 
-                FloatInput(
+                *[FloatInput(
                     key = key, name = key.upper(),
                     default = 0,
                     width = "s30%",
                     params = {
                         "step" : 0.01
                     }
-                ) for key in ("x", "y", "z")
+                ) for key in ("x", "y", "z")],
+
+                DropdownInput(
+                    key = "atom", name = "Atom index",
+                    default = None,
+                    params = {
+                        "options":  [],
+                        "isMulti": False,
+                        "placeholder": "",
+                        "isClearable": True,
+                        "isSearchable": True, 
+                    },
+                    help = '''You can provide an atom index instead of the coordinates<br>
+                    If an atom is provided, x, y and z will be interpreted as the supercell indices.<br>
+                    That is: atom 23 [x=0,y=0,z=0] is atom 23 in the primary cell, while atom 23 [x=1,y=0,z=0]
+                    is the image of atom 23 in the adjacent cell in the direction of x'''
+                )
             ],
             help = '''Provide the points to generate the path through which STS need to be calculated.'''
         ),
@@ -775,12 +792,20 @@ class LDOSmap(Plot):
     def _readSiesOut(self):
         '''Function that uses denchar to get STSpecra along a path'''
 
+        self.geom = self.fdfSile.read_geometry(output = True)
+
         #Find fermi level
         self.fermi = False
-        for line in open(os.path.join(self.rootDir, "{}.out".format(self.struct)) ):
-            if "Fermi =" in line:
-                self.fermi = float(line.split()[-1])
-                print("\nFERMI LEVEL FOUND: {} eV\n Energies will be relative to this level (E-Ef)\n".format(self.fermi))
+        for outFileName in (self.struct, self.fdfSile.base_file.replace(".fdf", "")):
+            try:
+                for line in open(os.path.join(self.rootDir, "{}.out".format(outFileName)) ):
+                    if "Fermi =" in line:
+                        self.fermi = float(line.split()[-1])
+                        print("\nFERMI LEVEL FOUND: {} eV\n Energies will be relative to this level (E-Ef)\n".format(self.fermi))
+                break
+            except FileNotFoundError:
+                pass
+        
 
         if not self.fermi:
             print("\nFERMI LEVEL NOT FOUND IN THE OUTPUT FILE. \nEnergy values will be absolute\n")
@@ -798,6 +823,15 @@ class LDOSmap(Plot):
         #Copy selected WFSX into WFSX if it exists (denchar reads from .WFSX)
         shutil.copyfile(os.path.join(self.rootDir, '{}.selected.WFSX'.format(self.struct)),
             os.path.join(self.rootDir, '{}.WFSX'.format(self.struct) ) )
+        
+        #Get the fdf file and replace include paths so that they work
+        with open(self.setting("rootFdf"), "r") as f:
+            self.fdfLines = f.readlines()
+        
+        for i, line in enumerate(self.fdfLines):
+            if "%include" in line and not os.path.isabs(line.split()[-1]):
+
+                self.fdfLines[i] = "%include {}\n".format(os.path.join("../", line.split()[-1]))
 
         #Denchar needs to be run from the directory where everything is stored
         cwd = os.getcwd()
@@ -823,13 +857,9 @@ class LDOSmap(Plot):
 
             for i, point in enumerate(path):
 
-                #Generate the appropiate input file
-
-                #Copy the root fdf
-                shutil.copyfile( os.path.basename(kwargs["rootFdf"]), tempFdf )
-
-                #And then append flags for denchar
-                with open(tempFdf, "a") as fh:
+                #Write the fdf
+                with open(tempFdf, "w") as fh:
+                    fh.writelines(kwargs["fdfLines"])
                     fh.write(STSflags[i])
                     
                 #Do the STS calculation for the point
@@ -867,8 +897,9 @@ class LDOSmap(Plot):
             self.rootDir, self.struct,
             #All the strings that need to be added to each file
             [ [self._getdencharSTSfdf(point) for point in points] for points in self.path ],
-            kwargsList = {"rootFdf" : self.setting("rootFdf")},
-            messageFn = lambda nTasks, nodes: "Calculating {} simultaneous paths in {} nodes".format(nTasks, nodes)
+            kwargsList = {"rootFdf" : self.setting("rootFdf"), "fdfLines": self.fdfLines },
+            messageFn = lambda nTasks, nodes: "Calculating {} simultaneous paths in {} nodes".format(nTasks, nodes),
+            serial = self.isChildPlot
         )
 
         self.spectra = np.array(self.spectra)
@@ -897,7 +928,15 @@ class LDOSmap(Plot):
             self.distances = np.array( [np.linalg.norm(self.path[-1] - self.path[0])] )
         else:
             #Otherwise, we will calculate the trajectory according to the points provided
-            points = np.array([[point["x"],point["y"],point["z"]] for point in self.setting("points") if point["active"]])
+            points = []
+            for reqPoint in self.setting("points"):
+
+                if reqPoint.get("atom"):
+                    translate = np.array([reqPoint["x"],reqPoint["y"],reqPoint["z"]]).dot(self.geom.cell)
+                    points.append(self.geom[reqPoint["atom"]] + translate)
+                else:
+                    points.append([reqPoint["x"],reqPoint["y"],reqPoint["z"]])
+            points = np.array(points)
 
             nCorners = len(points)
             if nCorners < 2:
@@ -947,8 +986,8 @@ class LDOSmap(Plot):
             'type': 'heatmap',
             'z': spectraToPlot.transpose("E", "x").values,
             #These limits determine the contrast of the image
-            'cmin': self.setting("cmin"),
-            'cmax': self.setting("cmax"),
+            'zmin': self.setting("cmin"),
+            'zmax': self.setting("cmax"),
             #Yaxis is the energy axis
             'y': np.linspace(*self.setting("Erange"), self.setting("nE"))}]
     

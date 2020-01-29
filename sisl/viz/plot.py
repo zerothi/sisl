@@ -374,7 +374,7 @@ class Plot(Configurable):
 
                 #Adding the fixed values to the list
                 vals = { 
-                    **{key: np.full(len(args[1]), val) for key, val in fixed.items()},
+                    **{key: itertools.repeat(val) for key, val in fixed.items()},
                     args[0]: args[1]
                 }
 
@@ -388,7 +388,7 @@ class Plot(Configurable):
 
                 #Adding the fixed values to the list
                 vals = { 
-                    **{key: np.full(nFrames, val) for key, val in fixed.items()},
+                    **{key: itertools.repeat(val) for key, val in fixed.items()},
                     **args[0]
                 }
 
@@ -421,6 +421,9 @@ class Plot(Configurable):
 
     @afterSettingsInit
     def __init__(self, *args, **kwargs):
+
+        #Set the isChildPlot attribute to let the plot know if it is part of a bigger picture (e.g. Animation)
+        self.isChildPlot = kwargs.get("isChildPlot", False)
         
         #Give an ID to the plot
         self.id = str(uuid.uuid4())
@@ -909,8 +912,10 @@ class MultiplePlot(Plot):
         except Exception:
             pass
 
+        
+
         #Init all the plots that compose this multiple plot.
-        self.childPlots = initMultiplePlots(self._plotClasses, kwargsList = self._getInitKwargsList())
+        self.childPlots = initMultiplePlots(self._plotClasses, kwargsList = [ {**kwargs, "isChildPlot":True} for kwargs in self._getInitKwargsList()])
 
         if callable( getattr(self, "_afterChildsUpdated", None )):
             self._afterChildsUpdated()

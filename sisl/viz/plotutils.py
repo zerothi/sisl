@@ -255,10 +255,16 @@ def findFiles(rootDir = ".", searchString = "*", depth = [0,0], sort = True, sor
     searchString: str
         This is the string that will be passed to glob.glob() to find files or directories. 
         It works mostly like bash, so you can use wildcards, for example.
-    depth: array-like of length 2
-        It will specify the limits of the search. 
-        For example, depth = [1,3] will make the function search for the searchString from 1 to 3 directories deep from rootDir.
-        (0 depth means to look for files in the rootDir)
+    depth: array-like of length 2 or int
+        If it is an array:
+
+            It will specify the limits of the search. 
+            For example, depth = [1,3] will make the function search for the searchString from 1 to 3 directories deep from rootDir.
+            (0 depth means to look for files in the rootDir)
+        
+        If it is an int:
+            Only that depth level will be searched.
+            That is, depth = 1 is the same as depth = [1,1].
     sort: optional, boolean
         Whether the returned list of paths should be sorted.
     sortFn: optional, function
@@ -269,6 +275,9 @@ def findFiles(rootDir = ".", searchString = "*", depth = [0,0], sort = True, sor
     paths: list
         A list with all the paths found for the given conditions and sorted according to the provided arguments.
     '''
+    #Normalize the depth parameter
+    if isinstance(depth, int):
+        depth = [depth]*2
 
     files = []
     for depth in range(depth[0],depth[1] + 1):
@@ -308,7 +317,7 @@ def _initSinglePlot(argsTuple):
 
     return PlotClass(**kwargs)._getPickleable()
 
-def runMultiple(func, *args, argsList = None, kwargsList = None, messageFn = None):
+def runMultiple(func, *args, argsList = None, kwargsList = None, messageFn = None, serial = False):
     '''
 
     Makes use of the pathos.multiprocessing module to run a function simultanously multiple times.
@@ -336,7 +345,6 @@ def runMultiple(func, *args, argsList = None, kwargsList = None, messageFn = Non
 
         WARNING: Currently it only works properly for a list of arrays. Didn't fix this because the lack of interest
         of argsList on Plot's methods (everything is passed as keyword arguments).
-
     kwargsList: dict
         A dictionary with the keyword arguments that have to be passed to the executed function.
         
@@ -346,6 +354,10 @@ def runMultiple(func, *args, argsList = None, kwargsList = None, messageFn = Non
 
     messageFn: function
         Function that recieves the number of tasks and nodes and needs to return a string to display as a description of the progress bar.
+    serial: bool
+        If set to true, multiprocessing is not used.
+
+        This seems to have little sense, but it is useful to switch easily between multiprocessing and serial with the same code.
 
     Returns
     ----------
@@ -361,6 +373,10 @@ def runMultiple(func, *args, argsList = None, kwargsList = None, messageFn = Non
             toZip[i] = itertools.repeat(arg)
         else:
             nTasks = len(arg)
+    
+    #Run things in serial mode in case it is demanded
+    if serial:
+        return [func(argsTuple) for argsTuple in zip(*toZip) ]
 
     #Create a pool with the appropiate number of processes
     pool = Pool( min(nTasks, os.cpu_count() - 1) )
@@ -388,7 +404,7 @@ def runMultiple(func, *args, argsList = None, kwargsList = None, messageFn = Non
     
     return results
 
-def initMultiplePlots(PlotClass, argsList = None, kwargsList = None):
+def initMultiplePlots(PlotClass, argsList = None, kwargsList = None, **kwargs):
     '''
     Initializes a set of plots in multiple processes simultanously making use of runMultiple()
 
@@ -425,7 +441,7 @@ def initMultiplePlots(PlotClass, argsList = None, kwargsList = None):
         This list is ordered, so plots[0] is the plot initialized with argsList[0] and kwargsList[0].  
     '''
 
-    return runMultiple(_initSinglePlot, PlotClass, argsList = argsList, kwargsList = kwargsList)
+    return runMultiple(_initSinglePlot, PlotClass, argsList = argsList, kwargsList = kwargsList, **kwargs)
 
 def applyMethodOnMultipleObjs(method, objs, argsList = None, kwargsList = None):
     
