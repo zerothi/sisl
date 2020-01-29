@@ -247,8 +247,8 @@ class Configurable:
         '''
         
         #A setting can be a function that returns the true value of the setting
-        if callable( self.settings[settingKey] ):
-            return self.settings[settingKey](self)
+        #if callable( self.settings[settingKey] ):
+        #    return self.settings[settingKey](self)
 
         return deepcopy(self.settings[settingKey])
     
