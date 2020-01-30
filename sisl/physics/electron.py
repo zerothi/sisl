@@ -21,6 +21,7 @@ One may also plot real-space wavefunctions.
    velocity_matrix
    berry_phase
    berry_curvature
+   conductivity
    wavefunction
    spin_moment
    spin_orbital_moment
@@ -83,6 +84,7 @@ __all__ += ['velocity', 'velocity_matrix']
 __all__ += ['spin_moment', 'spin_orbital_moment']
 __all__ += ['inv_eff_mass_tensor']
 __all__ += ['berry_phase', 'berry_curvature']
+__all__ += ['conductivity']
 __all__ += ['wavefunction']
 __all__ += ['CoefficientElectron', 'StateElectron', 'StateCElectron']
 __all__ += ['EigenvalueElectron', 'EigenvectorElectron', 'EigenstateElectron']
@@ -827,6 +829,49 @@ def _berry_curvature(v_M, energy, degenerate):
         sigma[n, 2, :] = (v_M[idx, n, 2].reshape(-1, 1) * v_M[n, idx, :] * fac).imag.sum(0)
 
     return sigma * _berry_curvature_const
+
+
+def conductivity(bz, distribution='fermi-dirac', method='ahc'):
+    r""" Electronic conductivity for a given `BrillouinZone` integral
+
+    Currently the *only* implemented method is the anomalous Hall conductivity (AHC)
+    which may be calculated as:
+
+    .. math::
+       \sigma_{\alpha\beta} = \frac{-e^2}{\hbar}\int\,\mathrm d\mathbf k\sum_nf_n(\mathbf k)\Sigma_{n,\alpha\beta}(\mathbf k)
+
+    where :math:`\Sigma_{n,\alpha\beta}` is the Berry curvature for state :math:`n` and :math:`f_n` is
+    the occupation for state :math:`n`.
+
+    Parameters
+    ----------
+    bz : BrillouinZone
+        containing the integration grid and has the ``bz.parent`` as an instance of Hamiltonian.
+    distribution : str or func, optional
+        distribution used to find occupations
+    method : {'ahc'}
+       'ahc' calculates the anomalous Hall conductivity
+    """
+    from .hamiltonian import Hamiltonian
+    # Currently we require the conductivity calculation to *only* accept Hamiltonians
+    if not isinstance(bz.parent, Hamiltonian):
+        raise SislError('conductivity: requires the Brillouin zone object to contain a Hamiltonian!')
+
+    if isinstance(distribution, str):
+        distribution = get_distribution(distribution)
+
+    method = method.lower()
+    if method == 'ahc':
+        def _ahc(es):
+            occ = distribution(es.eig)
+            bc = es.berry_curvature()
+            return (bc * occ.reshape(-1, 1, 1)).sum(0)
+
+        cond = - bz.asaverage().eigenstate(wrap=_ahc) / constant.hbar('eV ps')
+    else:
+        raise SislError('conductivity: requires the method to be [ahc]')
+
+    return cond
 
 
 def inv_eff_mass_tensor(state, ddHk, energy=None, ddSk=None, degenerate=None, as_matrix=False):
