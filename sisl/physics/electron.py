@@ -766,12 +766,14 @@ def berry_curvature(state, energy, dHk, dSk=None, degenerate=None):
     velocity : calculate state velocities
     velocity_matrix : calculate state velocities between all states
 
+    References
+    ----------
+    .. [1] X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, "Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation", PRB, *74*, 195118 (2006)
+
     Returns
     -------
     numpy.ndarray
         Berry curvature with final dimension ``(state.shape[0], 3, 3)``.
-
-    .. [1] X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, "Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation", PRB, *74*, 195118 (2006)
     """
     if state.ndim == 1:
         return berry_curvature(state.reshape(1, -1), energy, dHk, dSk, degenerate).ravel()
@@ -845,7 +847,7 @@ def inv_eff_mass_tensor(state, ddHk, energy=None, ddSk=None, degenerate=None, as
     of :math:`\mathbf M`.
 
     Currently this routine only returns the above quations, however, the inverse effective mass tensor
-    also has contributions from some off-diagonal elements, see PRB 75 (195121) 2007.
+    also has contributions from some off-diagonal elements, see [1]_.
 
     Notes
     -----
@@ -878,6 +880,10 @@ def inv_eff_mass_tensor(state, ddHk, energy=None, ddSk=None, degenerate=None, as
     See Also
     --------
     velocity : band velocity
+
+    References
+    ----------
+    .. [1] J. R. Yates, X. Wang, D. Vanderbilt, I. Souza, "Spectral and Fermi surface properties from Wannier interpolation", PRB, *75*, 195121 (2007)
 
     Returns
     -------
