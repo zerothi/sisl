@@ -1,4 +1,3 @@
-# 16 "sisl/physics/_bloch.c"
 #define PY_SSIZE_T_CLEAN 
 #include "Python.h"
 #ifndef Py_PYTHON_H
@@ -937,47 +936,26 @@ typedef volatile __pyx_atomic_int_type __pyx_atomic_int;
 #define __Pyx_FastGIL_Remember() 
 #define __Pyx_FastGIL_Forget() 
 #define __Pyx_FastGilFuncInit() 
-# 963 "sisl/physics/_bloch.c"
 typedef npy_int8 __pyx_t_5numpy_int8_t;
-# 972 "sisl/physics/_bloch.c"
 typedef npy_int16 __pyx_t_5numpy_int16_t;
-# 981 "sisl/physics/_bloch.c"
 typedef npy_int32 __pyx_t_5numpy_int32_t;
-# 990 "sisl/physics/_bloch.c"
 typedef npy_int64 __pyx_t_5numpy_int64_t;
-# 999 "sisl/physics/_bloch.c"
 typedef npy_uint8 __pyx_t_5numpy_uint8_t;
-# 1008 "sisl/physics/_bloch.c"
 typedef npy_uint16 __pyx_t_5numpy_uint16_t;
-# 1017 "sisl/physics/_bloch.c"
 typedef npy_uint32 __pyx_t_5numpy_uint32_t;
-# 1026 "sisl/physics/_bloch.c"
 typedef npy_uint64 __pyx_t_5numpy_uint64_t;
-# 1035 "sisl/physics/_bloch.c"
 typedef npy_float32 __pyx_t_5numpy_float32_t;
-# 1044 "sisl/physics/_bloch.c"
 typedef npy_float64 __pyx_t_5numpy_float64_t;
-# 1053 "sisl/physics/_bloch.c"
 typedef npy_long __pyx_t_5numpy_int_t;
-# 1062 "sisl/physics/_bloch.c"
 typedef npy_longlong __pyx_t_5numpy_long_t;
-# 1071 "sisl/physics/_bloch.c"
 typedef npy_longlong __pyx_t_5numpy_longlong_t;
-# 1080 "sisl/physics/_bloch.c"
 typedef npy_ulong __pyx_t_5numpy_uint_t;
-# 1089 "sisl/physics/_bloch.c"
 typedef npy_ulonglong __pyx_t_5numpy_ulong_t;
-# 1098 "sisl/physics/_bloch.c"
 typedef npy_ulonglong __pyx_t_5numpy_ulonglong_t;
-# 1107 "sisl/physics/_bloch.c"
 typedef npy_intp __pyx_t_5numpy_intp_t;
-# 1116 "sisl/physics/_bloch.c"
 typedef npy_uintp __pyx_t_5numpy_uintp_t;
-# 1125 "sisl/physics/_bloch.c"
 typedef npy_double __pyx_t_5numpy_float_t;
-# 1134 "sisl/physics/_bloch.c"
 typedef npy_double __pyx_t_5numpy_double_t;
-# 1143 "sisl/physics/_bloch.c"
 typedef npy_longdouble __pyx_t_5numpy_longdouble_t;
 
 #if CYTHON_CCOMPLEX
@@ -1009,15 +987,10 @@ struct __pyx_array_obj;
 struct __pyx_MemviewEnum_obj;
 struct __pyx_memoryview_obj;
 struct __pyx_memoryviewslice_obj;
-# 1182 "sisl/physics/_bloch.c"
 typedef npy_cfloat __pyx_t_5numpy_cfloat_t;
-# 1191 "sisl/physics/_bloch.c"
 typedef npy_cdouble __pyx_t_5numpy_cdouble_t;
-# 1200 "sisl/physics/_bloch.c"
 typedef npy_clongdouble __pyx_t_5numpy_clongdouble_t;
-# 1209 "sisl/physics/_bloch.c"
 typedef npy_cdouble __pyx_t_5numpy_complex_t;
-# 1218 "sisl/physics/_bloch.c"
 struct __pyx_array_obj {
   PyObject_HEAD
   struct __pyx_vtabstruct_array *__pyx_vtab;
@@ -1034,12 +1007,10 @@ struct __pyx_array_obj {
   int free_data;
   int dtype_is_object;
 };
-# 1243 "sisl/physics/_bloch.c"
 struct __pyx_MemviewEnum_obj {
   PyObject_HEAD
   PyObject *name;
 };
-# 1256 "sisl/physics/_bloch.c"
 struct __pyx_memoryview_obj {
   PyObject_HEAD
   struct __pyx_vtabstruct_memoryview *__pyx_vtab;
@@ -1054,7 +1025,6 @@ struct __pyx_memoryview_obj {
   int dtype_is_object;
   __Pyx_TypeInfo *typeinfo;
 };
-# 1279 "sisl/physics/_bloch.c"
 struct __pyx_memoryviewslice_obj {
   struct __pyx_memoryview_obj __pyx_base;
   __Pyx_memviewslice from_slice;
@@ -1062,12 +1032,10 @@ struct __pyx_memoryviewslice_obj {
   PyObject *(*to_object_func)(char *);
   int (*to_dtype_func)(char *, PyObject *);
 };
-# 1297 "sisl/physics/_bloch.c"
 struct __pyx_vtabstruct_array {
   PyObject *(*get_memview)(struct __pyx_array_obj *);
 };
 static struct __pyx_vtabstruct_array *__pyx_vtabptr_array;
-# 1311 "sisl/physics/_bloch.c"
 struct __pyx_vtabstruct_memoryview {
   char *(*get_item_pointer)(struct __pyx_memoryview_obj *, PyObject *);
   PyObject *(*is_slice)(struct __pyx_memoryview_obj *, PyObject *);
@@ -1078,7 +1046,6 @@ struct __pyx_vtabstruct_memoryview {
   PyObject *(*assign_item_from_object)(struct __pyx_memoryview_obj *, char *, PyObject *);
 };
 static struct __pyx_vtabstruct_memoryview *__pyx_vtabptr_memoryview;
-# 1331 "sisl/physics/_bloch.c"
 struct __pyx_vtabstruct__memoryviewslice {
   struct __pyx_vtabstruct_memoryview __pyx_base;
 };
@@ -1855,9 +1822,7 @@ static PyObject *__pyx_memoryview_convert_item_to_object(struct __pyx_memoryview
 static PyObject *__pyx_memoryview_assign_item_from_object(struct __pyx_memoryview_obj *__pyx_v_self, char *__pyx_v_itemp, PyObject *__pyx_v_value);
 static PyObject *__pyx_memoryviewslice_convert_item_to_object(struct __pyx_memoryviewslice_obj *__pyx_v_self, char *__pyx_v_itemp);
 static PyObject *__pyx_memoryviewslice_assign_item_from_object(struct __pyx_memoryviewslice_obj *__pyx_v_self, char *__pyx_v_itemp, PyObject *__pyx_v_value);
-# 2123 "sisl/physics/_bloch.c"
 static PyTypeObject *__pyx_ptype_7cpython_4type_type = 0;
-# 2136 "sisl/physics/_bloch.c"
 static PyTypeObject *__pyx_ptype_5numpy_dtype = 0;
 static PyTypeObject *__pyx_ptype_5numpy_flatiter = 0;
 static PyTypeObject *__pyx_ptype_5numpy_broadcast = 0;
@@ -2279,7 +2244,6 @@ static PyObject *__pyx_codeobj__29;
 static PyObject *__pyx_codeobj__31;
 static PyObject *__pyx_codeobj__33;
 static PyObject *__pyx_codeobj__40;
-# 2568 "sisl/physics/_bloch.c"
 static PyObject *__pyx_pw_4sisl_7physics_6_bloch_1bloch_unfold(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds);
 static char __pyx_doc_4sisl_7physics_6_bloch_bloch_unfold[] = " Exposed unfolding method using the TILING method\n\n    Parameters\n    ----------\n    B : [x, y, z]\n      the number of unfolds per direction\n    k : [product(B), 3]\n      k-points where M has been evaluated at\n    M : [B[2], B[1], B[0], :, :]\n       matrix at given k-points\n    dtype : dtype\n       resulting unfolded matrix dtype\n    ";
 static PyMethodDef __pyx_mdef_4sisl_7physics_6_bloch_1bloch_unfold = {"bloch_unfold", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_4sisl_7physics_6_bloch_1bloch_unfold, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4sisl_7physics_6_bloch_bloch_unfold};
@@ -2399,7 +2363,6 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_bloch_unfold(CYTHON_UNUSED PyOb
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_k.rcbuffer->pybuffer, (PyObject*)__pyx_v_k, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 2, 0, __pyx_stack) == -1)) __PYX_ERR(0, 12, __pyx_L1_error)
   }
   __pyx_pybuffernd_k.diminfo[0].strides = __pyx_pybuffernd_k.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_k.diminfo[0].shape = __pyx_pybuffernd_k.rcbuffer->pybuffer.shape[0]; __pyx_pybuffernd_k.diminfo[1].strides = __pyx_pybuffernd_k.rcbuffer->pybuffer.strides[1]; __pyx_pybuffernd_k.diminfo[1].shape = __pyx_pybuffernd_k.rcbuffer->pybuffer.shape[1];
-# 2695 "sisl/physics/_bloch.c"
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_M), __pyx_n_s_flags); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_c_contiguous); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 29, __pyx_L1_error)
@@ -2409,15 +2372,12 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_bloch_unfold(CYTHON_UNUSED PyOb
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_4 = ((!__pyx_t_3) != 0);
   if (unlikely(__pyx_t_4)) {
-# 2712 "sisl/physics/_bloch.c"
     __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple_, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 30, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __PYX_ERR(0, 30, __pyx_L1_error)
-# 2725 "sisl/physics/_bloch.c"
   }
-# 2734 "sisl/physics/_bloch.c"
   __pyx_t_5 = 0;
   __pyx_t_6 = -1;
   if (__pyx_t_5 < 0) {
@@ -2459,14 +2419,11 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_bloch_unfold(CYTHON_UNUSED PyOb
   }
   __pyx_t_3 = (__pyx_t_4 != 0);
   if (__pyx_t_3) {
-# 2783 "sisl/physics/_bloch.c"
     __Pyx_XDECREF(__pyx_r);
     __Pyx_INCREF(((PyObject *)__pyx_v_M));
     __pyx_r = ((PyObject *)__pyx_v_M);
     goto __pyx_L0;
-# 2795 "sisl/physics/_bloch.c"
   }
-# 2804 "sisl/physics/_bloch.c"
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_M), __pyx_n_s_dtype); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 36, __pyx_L1_error)
@@ -2480,7 +2437,6 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_bloch_unfold(CYTHON_UNUSED PyOb
   __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 36, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_3) {
-# 2825 "sisl/physics/_bloch.c"
     __Pyx_XDECREF(__pyx_r);
     __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_n_s_unfold64); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 37, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_11);
@@ -2545,9 +2501,7 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_bloch_unfold(CYTHON_UNUSED PyOb
     __pyx_r = __pyx_t_1;
     __pyx_t_1 = 0;
     goto __pyx_L0;
-# 2897 "sisl/physics/_bloch.c"
   }
-# 2906 "sisl/physics/_bloch.c"
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_M), __pyx_n_s_dtype); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 38, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_GetModuleGlobalName(__pyx_t_11, __pyx_n_s_np); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 38, __pyx_L1_error)
@@ -2561,7 +2515,6 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_bloch_unfold(CYTHON_UNUSED PyOb
   __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_11); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 38, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
   if (__pyx_t_3) {
-# 2927 "sisl/physics/_bloch.c"
     __Pyx_XDECREF(__pyx_r);
     __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_unfold128); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 39, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
@@ -2626,15 +2579,12 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_bloch_unfold(CYTHON_UNUSED PyOb
     __pyx_r = __pyx_t_11;
     __pyx_t_11 = 0;
     goto __pyx_L0;
-# 2999 "sisl/physics/_bloch.c"
   }
-# 3008 "sisl/physics/_bloch.c"
   __pyx_t_11 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
   __Pyx_Raise(__pyx_t_11, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
   __PYX_ERR(0, 40, __pyx_L1_error)
-# 3023 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -2659,7 +2609,6 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_bloch_unfold(CYTHON_UNUSED PyOb
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 3057 "sisl/physics/_bloch.c"
 static PyObject *__pyx_pw_4sisl_7physics_6_bloch_3_unfold64(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds);
 static char __pyx_doc_4sisl_7physics_6_bloch_2_unfold64[] = " Main unfolding routine for a matrix `m`. ";
 static PyMethodDef __pyx_mdef_4sisl_7physics_6_bloch_3_unfold64 = {"_unfold64", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_4sisl_7physics_6_bloch_3_unfold64, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4sisl_7physics_6_bloch_2_unfold64};
@@ -2764,22 +2713,15 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_2_unfold64(CYTHON_UNUSED PyObje
   __pyx_pybuffer_M.refcount = 0;
   __pyx_pybuffernd_M.data = NULL;
   __pyx_pybuffernd_M.rcbuffer = &__pyx_pybuffer_M;
-# 3169 "sisl/physics/_bloch.c"
   __pyx_t_1 = 0;
   __pyx_v_B0 = (*((int const *) ( ((char *) (((int const *) __pyx_v_B.data) + __pyx_t_1)) )));
-# 3179 "sisl/physics/_bloch.c"
   __pyx_t_2 = 1;
   __pyx_v_B1 = (*((int const *) ( ((char *) (((int const *) __pyx_v_B.data) + __pyx_t_2)) )));
-# 3189 "sisl/physics/_bloch.c"
   __pyx_t_3 = 2;
   __pyx_v_B2 = (*((int const *) ( ((char *) (((int const *) __pyx_v_B.data) + __pyx_t_3)) )));
-# 3199 "sisl/physics/_bloch.c"
   __pyx_v_N = ((__pyx_v_B0 * __pyx_v_B1) * __pyx_v_B2);
-# 3208 "sisl/physics/_bloch.c"
   __pyx_v_N1 = (__pyx_v_m.shape[1]);
-# 3217 "sisl/physics/_bloch.c"
   __pyx_v_N2 = (__pyx_v_m.shape[2]);
-# 3226 "sisl/physics/_bloch.c"
   __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 57, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 57, __pyx_L1_error)
@@ -2829,19 +2771,16 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_2_unfold64(CYTHON_UNUSED PyObje
   __pyx_t_9 = 0;
   __pyx_v_M = ((PyArrayObject *)__pyx_t_8);
   __pyx_t_8 = 0;
-# 3283 "sisl/physics/_bloch.c"
   __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_float_complex(((PyObject *)__pyx_v_M), PyBUF_WRITABLE); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 58, __pyx_L1_error)
   __pyx_v_MM = __pyx_t_10;
   __pyx_t_10.memview = NULL;
   __pyx_t_10.data = NULL;
-# 3295 "sisl/physics/_bloch.c"
   __pyx_t_11 = (__pyx_v_B0 == __pyx_v_B1);
   if (__pyx_t_11) {
     __pyx_t_11 = (__pyx_v_B1 == 1);
   }
   __pyx_t_12 = (__pyx_t_11 != 0);
   if (__pyx_t_12) {
-# 3309 "sisl/physics/_bloch.c"
     __pyx_t_13.data = __pyx_v_K2pi.data;
     __pyx_t_13.memview = __pyx_v_K2pi.memview;
     __PYX_INC_MEMVIEW(&__pyx_t_13, 0);
@@ -2860,17 +2799,14 @@ __pyx_f_4sisl_7physics_6_bloch__unfold64_single(__pyx_v_B2, __pyx_t_13, __pyx_v_
     __PYX_XDEC_MEMVIEW(&__pyx_t_13, 1);
     __pyx_t_13.memview = NULL;
     __pyx_t_13.data = NULL;
-# 3335 "sisl/physics/_bloch.c"
     goto __pyx_L3;
   }
-# 3345 "sisl/physics/_bloch.c"
   __pyx_t_12 = (__pyx_v_B0 == __pyx_v_B2);
   if (__pyx_t_12) {
     __pyx_t_12 = (__pyx_v_B2 == 1);
   }
   __pyx_t_11 = (__pyx_t_12 != 0);
   if (__pyx_t_11) {
-# 3359 "sisl/physics/_bloch.c"
     __pyx_t_13.data = __pyx_v_K2pi.data;
     __pyx_t_13.memview = __pyx_v_K2pi.memview;
     __PYX_INC_MEMVIEW(&__pyx_t_13, 0);
@@ -2889,17 +2825,14 @@ __pyx_f_4sisl_7physics_6_bloch__unfold64_single(__pyx_v_B1, __pyx_t_13, __pyx_v_
     __PYX_XDEC_MEMVIEW(&__pyx_t_13, 1);
     __pyx_t_13.memview = NULL;
     __pyx_t_13.data = NULL;
-# 3385 "sisl/physics/_bloch.c"
     goto __pyx_L3;
   }
-# 3395 "sisl/physics/_bloch.c"
   __pyx_t_11 = (__pyx_v_B1 == __pyx_v_B2);
   if (__pyx_t_11) {
     __pyx_t_11 = (__pyx_v_B2 == 1);
   }
   __pyx_t_12 = (__pyx_t_11 != 0);
   if (__pyx_t_12) {
-# 3409 "sisl/physics/_bloch.c"
     __pyx_t_13.data = __pyx_v_K2pi.data;
     __pyx_t_13.memview = __pyx_v_K2pi.memview;
     __PYX_INC_MEMVIEW(&__pyx_t_13, 0);
@@ -2918,20 +2851,16 @@ __pyx_f_4sisl_7physics_6_bloch__unfold64_single(__pyx_v_B0, __pyx_t_13, __pyx_v_
     __PYX_XDEC_MEMVIEW(&__pyx_t_13, 1);
     __pyx_t_13.memview = NULL;
     __pyx_t_13.data = NULL;
-# 3435 "sisl/physics/_bloch.c"
     goto __pyx_L3;
   }
-# 3445 "sisl/physics/_bloch.c"
            {
     __pyx_f_4sisl_7physics_6_bloch__unfold64_3(__pyx_v_B0, __pyx_v_B1, __pyx_v_B2, __pyx_v_K2pi, __pyx_v_N1, __pyx_v_N2, __pyx_v_m, __pyx_v_MM);
   }
   __pyx_L3:;
-# 3457 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_M));
   __pyx_r = ((PyObject *)__pyx_v_M);
   goto __pyx_L0;
-# 3471 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
@@ -2961,7 +2890,6 @@ __pyx_f_4sisl_7physics_6_bloch__unfold64_single(__pyx_v_B0, __pyx_t_13, __pyx_v_
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 3509 "sisl/physics/_bloch.c"
 static void __pyx_f_4sisl_7physics_6_bloch__unfold64_matrix(double const __pyx_v_w, Py_ssize_t const __pyx_v_B0, Py_ssize_t const __pyx_v_B1, Py_ssize_t const __pyx_v_B2, double const __pyx_v_k0, double const __pyx_v_k1, double const __pyx_v_k2, Py_ssize_t const __pyx_v_N1, Py_ssize_t const __pyx_v_N2, __Pyx_memviewslice __pyx_v_m, __Pyx_memviewslice __pyx_v_M) {
   Py_ssize_t __pyx_v_j0;
   Py_ssize_t __pyx_v_j1;
@@ -3012,61 +2940,42 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold64_matrix(double const __pyx_v
   Py_ssize_t __pyx_t_29;
   Py_ssize_t __pyx_t_30;
   Py_ssize_t __pyx_t_31;
-# 3567 "sisl/physics/_bloch.c"
   __pyx_t_1 = __pyx_t_double_complex_from_parts(1., 0);
   __pyx_v_aph0 = __pyx_t_1;
   __pyx_v_aph1 = __pyx_t_1;
   __pyx_v_aph2 = __pyx_t_1;
-# 3579 "sisl/physics/_bloch.c"
   __pyx_t_2 = ((__pyx_v_B0 > 1) != 0);
   if (__pyx_t_2) {
-# 3589 "sisl/physics/_bloch.c"
     __pyx_v_aph0 = __Pyx_c_sum_double(__pyx_t_double_complex_from_parts(cos(__pyx_v_k0), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts(sin(__pyx_v_k0), 0)));
-# 3598 "sisl/physics/_bloch.c"
   }
-# 3607 "sisl/physics/_bloch.c"
   __pyx_t_2 = ((__pyx_v_B1 > 1) != 0);
   if (__pyx_t_2) {
-# 3617 "sisl/physics/_bloch.c"
     __pyx_v_aph1 = __Pyx_c_sum_double(__pyx_t_double_complex_from_parts(cos(__pyx_v_k1), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts(sin(__pyx_v_k1), 0)));
-# 3626 "sisl/physics/_bloch.c"
   }
-# 3635 "sisl/physics/_bloch.c"
   __pyx_t_2 = ((__pyx_v_B2 > 1) != 0);
   if (__pyx_t_2) {
-# 3645 "sisl/physics/_bloch.c"
     __pyx_v_aph2 = __Pyx_c_sum_double(__pyx_t_double_complex_from_parts(cos(__pyx_v_k2), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts(sin(__pyx_v_k2), 0)));
-# 3654 "sisl/physics/_bloch.c"
   }
-# 3663 "sisl/physics/_bloch.c"
   __pyx_v_J = 0;
-# 3672 "sisl/physics/_bloch.c"
   __pyx_t_3 = __pyx_v_B2;
   __pyx_t_4 = __pyx_t_3;
   for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
     __pyx_v_j2 = __pyx_t_5;
-# 3684 "sisl/physics/_bloch.c"
     __pyx_t_6 = __pyx_v_B1;
     __pyx_t_7 = __pyx_t_6;
     for (__pyx_t_8 = 0; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
       __pyx_v_j1 = __pyx_t_8;
-# 3696 "sisl/physics/_bloch.c"
       __pyx_t_9 = __pyx_v_B0;
       __pyx_t_10 = __pyx_t_9;
       for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
         __pyx_v_j0 = __pyx_t_11;
-# 3708 "sisl/physics/_bloch.c"
         __pyx_v_rph = ((((-__pyx_v_j0) * __pyx_v_k0) - (__pyx_v_j1 * __pyx_v_k1)) - (__pyx_v_j2 * __pyx_v_k2));
-# 3717 "sisl/physics/_bloch.c"
         __pyx_v_ph = __Pyx_c_sum_double(__pyx_t_double_complex_from_parts((__pyx_v_w * cos(__pyx_v_rph)), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((__pyx_v_w * sin(__pyx_v_rph)), 0)));
-# 3726 "sisl/physics/_bloch.c"
         __pyx_t_12 = __pyx_v_N1;
         __pyx_t_13 = __pyx_t_12;
         for (__pyx_t_14 = 0; __pyx_t_14 < __pyx_t_13; __pyx_t_14+=1) {
           __pyx_v_j = __pyx_t_14;
-# 3738 "sisl/physics/_bloch.c"
           __pyx_v_ph2 = __pyx_v_ph;
-# 3747 "sisl/physics/_bloch.c"
           __pyx_t_15.data = __pyx_v_m.data;
           __pyx_t_15.memview = __pyx_v_m.memview;
           __PYX_INC_MEMVIEW(&__pyx_t_15, 0);
@@ -3085,7 +2994,6 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_mj, 0);
           __pyx_v_mj = __pyx_t_15;
           __pyx_t_15.memview = NULL;
           __pyx_t_15.data = NULL;
-# 3773 "sisl/physics/_bloch.c"
           __pyx_t_16.data = __pyx_v_M.data;
           __pyx_t_16.memview = __pyx_v_M.memview;
           __PYX_INC_MEMVIEW(&__pyx_t_16, 0);
@@ -3104,56 +3012,42 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_MJ, 0);
           __pyx_v_MJ = __pyx_t_16;
           __pyx_t_16.memview = NULL;
           __pyx_t_16.data = NULL;
-# 3799 "sisl/physics/_bloch.c"
           __pyx_v_I = 0;
-# 3808 "sisl/physics/_bloch.c"
           __pyx_t_17 = __pyx_v_B2;
           __pyx_t_18 = __pyx_t_17;
           for (__pyx_t_19 = 0; __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
             __pyx_v__ = __pyx_t_19;
-# 3820 "sisl/physics/_bloch.c"
             __pyx_v_ph1 = __pyx_v_ph2;
-# 3829 "sisl/physics/_bloch.c"
             __pyx_t_20 = __pyx_v_B1;
             __pyx_t_21 = __pyx_t_20;
             for (__pyx_t_22 = 0; __pyx_t_22 < __pyx_t_21; __pyx_t_22+=1) {
               __pyx_v__ = __pyx_t_22;
-# 3841 "sisl/physics/_bloch.c"
               __pyx_v_ph0 = __pyx_v_ph1;
-# 3850 "sisl/physics/_bloch.c"
               __pyx_t_23 = __pyx_v_B0;
               __pyx_t_24 = __pyx_t_23;
               for (__pyx_t_25 = 0; __pyx_t_25 < __pyx_t_24; __pyx_t_25+=1) {
                 __pyx_v__ = __pyx_t_25;
-# 3862 "sisl/physics/_bloch.c"
                 __pyx_t_26 = __pyx_v_N2;
                 __pyx_t_27 = __pyx_t_26;
                 for (__pyx_t_28 = 0; __pyx_t_28 < __pyx_t_27; __pyx_t_28+=1) {
                   __pyx_v_i = __pyx_t_28;
-# 3874 "sisl/physics/_bloch.c"
                   __pyx_t_29 = __pyx_v_I;
                   __pyx_t_30 = __pyx_v_i;
                   __pyx_t_31 = __pyx_v_I;
                   *((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) __pyx_v_MJ.data) + __pyx_t_31)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) __pyx_v_MJ.data) + __pyx_t_29)) ))), __Pyx_c_prod_float((*((__pyx_t_float_complex const *) ( ((char *) (((__pyx_t_float_complex const *) __pyx_v_mj.data) + __pyx_t_30)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_v_ph0)), ((float)__Pyx_CIMAG(__pyx_v_ph0)))));
-# 3886 "sisl/physics/_bloch.c"
                   __pyx_v_I = (__pyx_v_I + 1);
                 }
-# 3896 "sisl/physics/_bloch.c"
                 __pyx_v_ph0 = __Pyx_c_prod_double(__pyx_v_ph0, __pyx_v_aph0);
               }
-# 3906 "sisl/physics/_bloch.c"
               __pyx_v_ph1 = __Pyx_c_prod_double(__pyx_v_ph1, __pyx_v_aph1);
             }
-# 3916 "sisl/physics/_bloch.c"
             __pyx_v_ph2 = __Pyx_c_prod_double(__pyx_v_ph2, __pyx_v_aph2);
           }
-# 3926 "sisl/physics/_bloch.c"
           __pyx_v_J = (__pyx_v_J + 1);
         }
       }
     }
   }
-# 3941 "sisl/physics/_bloch.c"
   goto __pyx_L0;
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_15, 0);
@@ -3163,7 +3057,6 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_MJ, 0);
   __PYX_XDEC_MEMVIEW(&__pyx_v_MJ, 0);
   __PYX_XDEC_MEMVIEW(&__pyx_v_mj, 0);
 }
-# 3959 "sisl/physics/_bloch.c"
 static void __pyx_f_4sisl_7physics_6_bloch__unfold64_3(Py_ssize_t const __pyx_v_B0, Py_ssize_t const __pyx_v_B1, Py_ssize_t const __pyx_v_B2, __Pyx_memviewslice __pyx_v_K2pi, Py_ssize_t const __pyx_v_N1, Py_ssize_t const __pyx_v_N2, __Pyx_memviewslice __pyx_v_m, __Pyx_memviewslice __pyx_v_M) {
   Py_ssize_t __pyx_v_N;
   double __pyx_v_k0;
@@ -3181,28 +3074,21 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold64_3(Py_ssize_t const __pyx_v_
   Py_ssize_t __pyx_t_8;
   Py_ssize_t __pyx_t_9;
   __Pyx_memviewslice __pyx_t_10 = { 0, 0, { 0 }, { 0 }, { 0 } };
-# 3984 "sisl/physics/_bloch.c"
   __pyx_v_N = ((__pyx_v_B0 * __pyx_v_B1) * __pyx_v_B2);
-# 3993 "sisl/physics/_bloch.c"
   __pyx_v_w = (1. / __pyx_v_N);
-# 4002 "sisl/physics/_bloch.c"
   __pyx_t_1 = __pyx_v_N;
   __pyx_t_2 = __pyx_t_1;
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_T = __pyx_t_3;
-# 4014 "sisl/physics/_bloch.c"
     __pyx_t_4 = __pyx_v_T;
     __pyx_t_5 = 0;
     __pyx_v_k0 = (*((double const *) ( ((char *) (((double const *) ( (__pyx_v_K2pi.data + __pyx_t_4 * __pyx_v_K2pi.strides[0]) )) + __pyx_t_5)) )));
-# 4025 "sisl/physics/_bloch.c"
     __pyx_t_6 = __pyx_v_T;
     __pyx_t_7 = 1;
     __pyx_v_k1 = (*((double const *) ( ((char *) (((double const *) ( (__pyx_v_K2pi.data + __pyx_t_6 * __pyx_v_K2pi.strides[0]) )) + __pyx_t_7)) )));
-# 4036 "sisl/physics/_bloch.c"
     __pyx_t_8 = __pyx_v_T;
     __pyx_t_9 = 2;
     __pyx_v_k2 = (*((double const *) ( ((char *) (((double const *) ( (__pyx_v_K2pi.data + __pyx_t_8 * __pyx_v_K2pi.strides[0]) )) + __pyx_t_9)) )));
-# 4047 "sisl/physics/_bloch.c"
     __pyx_t_10.data = __pyx_v_m.data;
     __pyx_t_10.memview = __pyx_v_m.memview;
     __PYX_INC_MEMVIEW(&__pyx_t_10, 0);
@@ -3226,14 +3112,12 @@ __pyx_f_4sisl_7physics_6_bloch__unfold64_matrix(__pyx_v_w, __pyx_v_B0, __pyx_v_B
     __pyx_t_10.memview = NULL;
     __pyx_t_10.data = NULL;
   }
-# 4080 "sisl/physics/_bloch.c"
   goto __pyx_L0;
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_10, 0);
   __Pyx_WriteUnraisable("sisl.physics._bloch._unfold64_3", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 1);
   __pyx_L0:;
 }
-# 4095 "sisl/physics/_bloch.c"
 static void __pyx_f_4sisl_7physics_6_bloch__unfold64_single(Py_ssize_t const __pyx_v_N, __Pyx_memviewslice __pyx_v_K2pi, Py_ssize_t const __pyx_v_N1, Py_ssize_t const __pyx_v_N2, __Pyx_memviewslice __pyx_v_m, __Pyx_memviewslice __pyx_v_M) {
   double __pyx_v_k;
   double __pyx_v_w;
@@ -3285,16 +3169,12 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold64_single(Py_ssize_t const __p
   Py_ssize_t __pyx_t_34;
   Py_ssize_t __pyx_t_35;
   Py_ssize_t __pyx_t_36;
-# 4154 "sisl/physics/_bloch.c"
   __pyx_v_NN2 = (__pyx_v_N * __pyx_v_N2);
-# 4163 "sisl/physics/_bloch.c"
   __pyx_v_w = (1. / __pyx_v_N);
-# 4172 "sisl/physics/_bloch.c"
   __pyx_t_1 = __pyx_v_N;
   __pyx_t_2 = __pyx_t_1;
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_T = __pyx_t_3;
-# 4184 "sisl/physics/_bloch.c"
     __pyx_t_4.data = __pyx_v_m.data;
     __pyx_t_4.memview = __pyx_v_m.memview;
     __PYX_INC_MEMVIEW(&__pyx_t_4, 0);
@@ -3317,20 +3197,16 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_mT, 0);
     __pyx_v_mT = __pyx_t_4;
     __pyx_t_4.memview = NULL;
     __pyx_t_4.data = NULL;
-# 4214 "sisl/physics/_bloch.c"
     __pyx_t_5 = __pyx_v_T;
     __pyx_v_k = (*((double const *) ( (__pyx_v_K2pi.data + __pyx_t_5 * __pyx_v_K2pi.strides[0]) )));
-# 4224 "sisl/physics/_bloch.c"
     __pyx_t_6 = __pyx_v_N1;
     __pyx_t_7 = __pyx_t_6;
     for (__pyx_t_8 = 0; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
       __pyx_v_j = __pyx_t_8;
-# 4236 "sisl/physics/_bloch.c"
       __pyx_t_9 = __pyx_v_N2;
       __pyx_t_10 = __pyx_t_9;
       for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
         __pyx_v_i = __pyx_t_11;
-# 4248 "sisl/physics/_bloch.c"
         __pyx_t_12 = __pyx_v_j;
         __pyx_t_13 = __pyx_v_i;
         __pyx_t_14 = __pyx_v_j;
@@ -3340,34 +3216,24 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_mT, 0);
         *((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) ( (__pyx_v_M.data + __pyx_t_16 * __pyx_v_M.strides[0]) )) + __pyx_t_17)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) ( (__pyx_v_M.data + __pyx_t_12 * __pyx_v_M.strides[0]) )) + __pyx_t_13)) ))), __Pyx_c_prod_float((*((__pyx_t_float_complex const *) ( ((char *) (((__pyx_t_float_complex const *) ( (__pyx_v_mT.data + __pyx_t_14 * __pyx_v_mT.strides[0]) )) + __pyx_t_15)) ))), __pyx_t_float_complex_from_parts(((float)__pyx_v_w), 0)));
       }
     }
-# 4265 "sisl/physics/_bloch.c"
     __pyx_v_aph = __Pyx_c_sum_double(__pyx_t_double_complex_from_parts(cos(__pyx_v_k), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts(sin(__pyx_v_k), 0)));
-# 4274 "sisl/physics/_bloch.c"
     __pyx_v_ph = __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(__pyx_v_w, 0), __pyx_v_aph);
-# 4283 "sisl/physics/_bloch.c"
     __pyx_t_6 = __pyx_v_N;
     __pyx_t_7 = __pyx_t_6;
     for (__pyx_t_8 = 1; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
       __pyx_v_c = __pyx_t_8;
-# 4295 "sisl/physics/_bloch.c"
       __pyx_v_J = (__pyx_v_c * __pyx_v_N1);
-# 4304 "sisl/physics/_bloch.c"
       __pyx_v_I = (__pyx_v_c * __pyx_v_N2);
-# 4313 "sisl/physics/_bloch.c"
       __pyx_v_phc = __Pyx_c_conj_double(__pyx_v_ph);
-# 4322 "sisl/physics/_bloch.c"
       __pyx_t_9 = __pyx_v_N1;
       __pyx_t_10 = __pyx_t_9;
       for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
         __pyx_v_j = __pyx_t_11;
-# 4334 "sisl/physics/_bloch.c"
         __pyx_v_Jj = (__pyx_v_J + __pyx_v_j);
-# 4343 "sisl/physics/_bloch.c"
         __pyx_t_18 = __pyx_v_N2;
         __pyx_t_19 = __pyx_t_18;
         for (__pyx_t_20 = 0; __pyx_t_20 < __pyx_t_19; __pyx_t_20+=1) {
           __pyx_v_i = __pyx_t_20;
-# 4355 "sisl/physics/_bloch.c"
           __pyx_t_21 = __pyx_v_j;
           __pyx_t_22 = (__pyx_v_I + __pyx_v_i);
           __pyx_t_23 = __pyx_v_j;
@@ -3375,7 +3241,6 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_mT, 0);
           __pyx_t_25 = __pyx_v_j;
           __pyx_t_26 = (__pyx_v_I + __pyx_v_i);
           *((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) ( (__pyx_v_M.data + __pyx_t_25 * __pyx_v_M.strides[0]) )) + __pyx_t_26)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) ( (__pyx_v_M.data + __pyx_t_21 * __pyx_v_M.strides[0]) )) + __pyx_t_22)) ))), __Pyx_c_prod_float((*((__pyx_t_float_complex const *) ( ((char *) (((__pyx_t_float_complex const *) ( (__pyx_v_mT.data + __pyx_t_23 * __pyx_v_mT.strides[0]) )) + __pyx_t_24)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_v_ph)), ((float)__Pyx_CIMAG(__pyx_v_ph)))));
-# 4370 "sisl/physics/_bloch.c"
           __pyx_t_27 = __pyx_v_Jj;
           __pyx_t_28 = __pyx_v_i;
           __pyx_t_29 = __pyx_v_j;
@@ -3385,30 +3250,23 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_mT, 0);
           *((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) ( (__pyx_v_M.data + __pyx_t_31 * __pyx_v_M.strides[0]) )) + __pyx_t_32)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) ( (__pyx_v_M.data + __pyx_t_27 * __pyx_v_M.strides[0]) )) + __pyx_t_28)) ))), __Pyx_c_prod_float((*((__pyx_t_float_complex const *) ( ((char *) (((__pyx_t_float_complex const *) ( (__pyx_v_mT.data + __pyx_t_29 * __pyx_v_mT.strides[0]) )) + __pyx_t_30)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_v_phc)), ((float)__Pyx_CIMAG(__pyx_v_phc)))));
         }
       }
-# 4387 "sisl/physics/_bloch.c"
       __pyx_v_ph = __Pyx_c_prod_double(__pyx_v_ph, __pyx_v_aph);
     }
   }
-# 4398 "sisl/physics/_bloch.c"
   __pyx_t_1 = __pyx_v_N;
   __pyx_t_2 = __pyx_t_1;
   for (__pyx_t_3 = 1; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_c = __pyx_t_3;
-# 4410 "sisl/physics/_bloch.c"
     __pyx_v_J = (__pyx_v_c * __pyx_v_N1);
-# 4419 "sisl/physics/_bloch.c"
     __pyx_t_6 = (__pyx_v_J + __pyx_v_N1);
     __pyx_t_7 = __pyx_t_6;
     for (__pyx_t_8 = __pyx_v_J; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
       __pyx_v_j = __pyx_t_8;
-# 4431 "sisl/physics/_bloch.c"
       __pyx_v_I = (__pyx_v_j - __pyx_v_N1);
-# 4440 "sisl/physics/_bloch.c"
       __pyx_t_9 = __pyx_v_NN2;
       __pyx_t_10 = __pyx_t_9;
       for (__pyx_t_11 = __pyx_v_N2; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
         __pyx_v_i = __pyx_t_11;
-# 4452 "sisl/physics/_bloch.c"
         __pyx_t_33 = __pyx_v_I;
         __pyx_t_34 = (__pyx_v_i - __pyx_v_N2);
         __pyx_t_35 = __pyx_v_j;
@@ -3417,7 +3275,6 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_mT, 0);
       }
     }
   }
-# 4470 "sisl/physics/_bloch.c"
   goto __pyx_L0;
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_4, 0);
@@ -3425,7 +3282,6 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_mT, 0);
   __pyx_L0:;
   __PYX_XDEC_MEMVIEW(&__pyx_v_mT, 0);
 }
-# 4487 "sisl/physics/_bloch.c"
 static PyObject *__pyx_pw_4sisl_7physics_6_bloch_5_unfold128(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds);
 static char __pyx_doc_4sisl_7physics_6_bloch_4_unfold128[] = " Main unfolding routine for a matrix `m`. ";
 static PyMethodDef __pyx_mdef_4sisl_7physics_6_bloch_5_unfold128 = {"_unfold128", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_4sisl_7physics_6_bloch_5_unfold128, METH_VARARGS|METH_KEYWORDS, __pyx_doc_4sisl_7physics_6_bloch_4_unfold128};
@@ -3530,22 +3386,15 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_4_unfold128(CYTHON_UNUSED PyObj
   __pyx_pybuffer_M.refcount = 0;
   __pyx_pybuffernd_M.data = NULL;
   __pyx_pybuffernd_M.rcbuffer = &__pyx_pybuffer_M;
-# 4599 "sisl/physics/_bloch.c"
   __pyx_t_1 = 0;
   __pyx_v_B0 = (*((int const *) ( ((char *) (((int const *) __pyx_v_B.data) + __pyx_t_1)) )));
-# 4609 "sisl/physics/_bloch.c"
   __pyx_t_2 = 1;
   __pyx_v_B1 = (*((int const *) ( ((char *) (((int const *) __pyx_v_B.data) + __pyx_t_2)) )));
-# 4619 "sisl/physics/_bloch.c"
   __pyx_t_3 = 2;
   __pyx_v_B2 = (*((int const *) ( ((char *) (((int const *) __pyx_v_B.data) + __pyx_t_3)) )));
-# 4629 "sisl/physics/_bloch.c"
   __pyx_v_N = ((__pyx_v_B0 * __pyx_v_B1) * __pyx_v_B2);
-# 4638 "sisl/physics/_bloch.c"
   __pyx_v_N1 = (__pyx_v_m.shape[1]);
-# 4647 "sisl/physics/_bloch.c"
   __pyx_v_N2 = (__pyx_v_m.shape[2]);
-# 4656 "sisl/physics/_bloch.c"
   __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_np); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 243, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_4, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 243, __pyx_L1_error)
@@ -3595,19 +3444,16 @@ static PyObject *__pyx_pf_4sisl_7physics_6_bloch_4_unfold128(CYTHON_UNUSED PyObj
   __pyx_t_9 = 0;
   __pyx_v_M = ((PyArrayObject *)__pyx_t_8);
   __pyx_t_8 = 0;
-# 4713 "sisl/physics/_bloch.c"
   __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_double_complex(((PyObject *)__pyx_v_M), PyBUF_WRITABLE); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 244, __pyx_L1_error)
   __pyx_v_MM = __pyx_t_10;
   __pyx_t_10.memview = NULL;
   __pyx_t_10.data = NULL;
-# 4725 "sisl/physics/_bloch.c"
   __pyx_t_11 = (__pyx_v_B0 == __pyx_v_B1);
   if (__pyx_t_11) {
     __pyx_t_11 = (__pyx_v_B1 == 1);
   }
   __pyx_t_12 = (__pyx_t_11 != 0);
   if (__pyx_t_12) {
-# 4739 "sisl/physics/_bloch.c"
     __pyx_t_13.data = __pyx_v_K2pi.data;
     __pyx_t_13.memview = __pyx_v_K2pi.memview;
     __PYX_INC_MEMVIEW(&__pyx_t_13, 0);
@@ -3626,17 +3472,14 @@ __pyx_f_4sisl_7physics_6_bloch__unfold128_single(__pyx_v_B2, __pyx_t_13, __pyx_v
     __PYX_XDEC_MEMVIEW(&__pyx_t_13, 1);
     __pyx_t_13.memview = NULL;
     __pyx_t_13.data = NULL;
-# 4765 "sisl/physics/_bloch.c"
     goto __pyx_L3;
   }
-# 4775 "sisl/physics/_bloch.c"
   __pyx_t_12 = (__pyx_v_B0 == __pyx_v_B2);
   if (__pyx_t_12) {
     __pyx_t_12 = (__pyx_v_B2 == 1);
   }
   __pyx_t_11 = (__pyx_t_12 != 0);
   if (__pyx_t_11) {
-# 4789 "sisl/physics/_bloch.c"
     __pyx_t_13.data = __pyx_v_K2pi.data;
     __pyx_t_13.memview = __pyx_v_K2pi.memview;
     __PYX_INC_MEMVIEW(&__pyx_t_13, 0);
@@ -3655,17 +3498,14 @@ __pyx_f_4sisl_7physics_6_bloch__unfold128_single(__pyx_v_B1, __pyx_t_13, __pyx_v
     __PYX_XDEC_MEMVIEW(&__pyx_t_13, 1);
     __pyx_t_13.memview = NULL;
     __pyx_t_13.data = NULL;
-# 4815 "sisl/physics/_bloch.c"
     goto __pyx_L3;
   }
-# 4825 "sisl/physics/_bloch.c"
   __pyx_t_11 = (__pyx_v_B1 == __pyx_v_B2);
   if (__pyx_t_11) {
     __pyx_t_11 = (__pyx_v_B2 == 1);
   }
   __pyx_t_12 = (__pyx_t_11 != 0);
   if (__pyx_t_12) {
-# 4839 "sisl/physics/_bloch.c"
     __pyx_t_13.data = __pyx_v_K2pi.data;
     __pyx_t_13.memview = __pyx_v_K2pi.memview;
     __PYX_INC_MEMVIEW(&__pyx_t_13, 0);
@@ -3684,20 +3524,16 @@ __pyx_f_4sisl_7physics_6_bloch__unfold128_single(__pyx_v_B0, __pyx_t_13, __pyx_v
     __PYX_XDEC_MEMVIEW(&__pyx_t_13, 1);
     __pyx_t_13.memview = NULL;
     __pyx_t_13.data = NULL;
-# 4865 "sisl/physics/_bloch.c"
     goto __pyx_L3;
   }
-# 4875 "sisl/physics/_bloch.c"
            {
     __pyx_f_4sisl_7physics_6_bloch__unfold128_3(__pyx_v_B0, __pyx_v_B1, __pyx_v_B2, __pyx_v_K2pi, __pyx_v_N1, __pyx_v_N2, __pyx_v_m, __pyx_v_MM);
   }
   __pyx_L3:;
-# 4887 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_M));
   __pyx_r = ((PyObject *)__pyx_v_M);
   goto __pyx_L0;
-# 4901 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_4);
   __Pyx_XDECREF(__pyx_t_5);
@@ -3727,7 +3563,6 @@ __pyx_f_4sisl_7physics_6_bloch__unfold128_single(__pyx_v_B0, __pyx_t_13, __pyx_v
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 4939 "sisl/physics/_bloch.c"
 static void __pyx_f_4sisl_7physics_6_bloch__unfold128_matrix(double const __pyx_v_w, Py_ssize_t const __pyx_v_B0, Py_ssize_t const __pyx_v_B1, Py_ssize_t const __pyx_v_B2, double const __pyx_v_k0, double const __pyx_v_k1, double const __pyx_v_k2, Py_ssize_t const __pyx_v_N1, Py_ssize_t const __pyx_v_N2, __Pyx_memviewslice __pyx_v_m, __Pyx_memviewslice __pyx_v_M) {
   Py_ssize_t __pyx_v_j0;
   Py_ssize_t __pyx_v_j1;
@@ -3778,61 +3613,42 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold128_matrix(double const __pyx_
   Py_ssize_t __pyx_t_29;
   Py_ssize_t __pyx_t_30;
   Py_ssize_t __pyx_t_31;
-# 4997 "sisl/physics/_bloch.c"
   __pyx_t_1 = __pyx_t_double_complex_from_parts(1., 0);
   __pyx_v_aph0 = __pyx_t_1;
   __pyx_v_aph1 = __pyx_t_1;
   __pyx_v_aph2 = __pyx_t_1;
-# 5009 "sisl/physics/_bloch.c"
   __pyx_t_2 = ((__pyx_v_B0 > 1) != 0);
   if (__pyx_t_2) {
-# 5019 "sisl/physics/_bloch.c"
     __pyx_v_aph0 = __Pyx_c_sum_double(__pyx_t_double_complex_from_parts(cos(__pyx_v_k0), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts(sin(__pyx_v_k0), 0)));
-# 5028 "sisl/physics/_bloch.c"
   }
-# 5037 "sisl/physics/_bloch.c"
   __pyx_t_2 = ((__pyx_v_B1 > 1) != 0);
   if (__pyx_t_2) {
-# 5047 "sisl/physics/_bloch.c"
     __pyx_v_aph1 = __Pyx_c_sum_double(__pyx_t_double_complex_from_parts(cos(__pyx_v_k1), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts(sin(__pyx_v_k1), 0)));
-# 5056 "sisl/physics/_bloch.c"
   }
-# 5065 "sisl/physics/_bloch.c"
   __pyx_t_2 = ((__pyx_v_B2 > 1) != 0);
   if (__pyx_t_2) {
-# 5075 "sisl/physics/_bloch.c"
     __pyx_v_aph2 = __Pyx_c_sum_double(__pyx_t_double_complex_from_parts(cos(__pyx_v_k2), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts(sin(__pyx_v_k2), 0)));
-# 5084 "sisl/physics/_bloch.c"
   }
-# 5093 "sisl/physics/_bloch.c"
   __pyx_v_J = 0;
-# 5102 "sisl/physics/_bloch.c"
   __pyx_t_3 = __pyx_v_B2;
   __pyx_t_4 = __pyx_t_3;
   for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
     __pyx_v_j2 = __pyx_t_5;
-# 5114 "sisl/physics/_bloch.c"
     __pyx_t_6 = __pyx_v_B1;
     __pyx_t_7 = __pyx_t_6;
     for (__pyx_t_8 = 0; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
       __pyx_v_j1 = __pyx_t_8;
-# 5126 "sisl/physics/_bloch.c"
       __pyx_t_9 = __pyx_v_B0;
       __pyx_t_10 = __pyx_t_9;
       for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
         __pyx_v_j0 = __pyx_t_11;
-# 5138 "sisl/physics/_bloch.c"
         __pyx_v_rph = ((((-__pyx_v_j0) * __pyx_v_k0) - (__pyx_v_j1 * __pyx_v_k1)) - (__pyx_v_j2 * __pyx_v_k2));
-# 5147 "sisl/physics/_bloch.c"
         __pyx_v_ph = __Pyx_c_sum_double(__pyx_t_double_complex_from_parts((__pyx_v_w * cos(__pyx_v_rph)), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts((__pyx_v_w * sin(__pyx_v_rph)), 0)));
-# 5156 "sisl/physics/_bloch.c"
         __pyx_t_12 = __pyx_v_N1;
         __pyx_t_13 = __pyx_t_12;
         for (__pyx_t_14 = 0; __pyx_t_14 < __pyx_t_13; __pyx_t_14+=1) {
           __pyx_v_j = __pyx_t_14;
-# 5168 "sisl/physics/_bloch.c"
           __pyx_v_ph2 = __pyx_v_ph;
-# 5177 "sisl/physics/_bloch.c"
           __pyx_t_15.data = __pyx_v_m.data;
           __pyx_t_15.memview = __pyx_v_m.memview;
           __PYX_INC_MEMVIEW(&__pyx_t_15, 0);
@@ -3851,7 +3667,6 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_mj, 0);
           __pyx_v_mj = __pyx_t_15;
           __pyx_t_15.memview = NULL;
           __pyx_t_15.data = NULL;
-# 5203 "sisl/physics/_bloch.c"
           __pyx_t_16.data = __pyx_v_M.data;
           __pyx_t_16.memview = __pyx_v_M.memview;
           __PYX_INC_MEMVIEW(&__pyx_t_16, 0);
@@ -3870,56 +3685,42 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_MJ, 0);
           __pyx_v_MJ = __pyx_t_16;
           __pyx_t_16.memview = NULL;
           __pyx_t_16.data = NULL;
-# 5229 "sisl/physics/_bloch.c"
           __pyx_v_I = 0;
-# 5238 "sisl/physics/_bloch.c"
           __pyx_t_17 = __pyx_v_B2;
           __pyx_t_18 = __pyx_t_17;
           for (__pyx_t_19 = 0; __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
             __pyx_v__ = __pyx_t_19;
-# 5250 "sisl/physics/_bloch.c"
             __pyx_v_ph1 = __pyx_v_ph2;
-# 5259 "sisl/physics/_bloch.c"
             __pyx_t_20 = __pyx_v_B1;
             __pyx_t_21 = __pyx_t_20;
             for (__pyx_t_22 = 0; __pyx_t_22 < __pyx_t_21; __pyx_t_22+=1) {
               __pyx_v__ = __pyx_t_22;
-# 5271 "sisl/physics/_bloch.c"
               __pyx_v_ph0 = __pyx_v_ph1;
-# 5280 "sisl/physics/_bloch.c"
               __pyx_t_23 = __pyx_v_B0;
               __pyx_t_24 = __pyx_t_23;
               for (__pyx_t_25 = 0; __pyx_t_25 < __pyx_t_24; __pyx_t_25+=1) {
                 __pyx_v__ = __pyx_t_25;
-# 5292 "sisl/physics/_bloch.c"
                 __pyx_t_26 = __pyx_v_N2;
                 __pyx_t_27 = __pyx_t_26;
                 for (__pyx_t_28 = 0; __pyx_t_28 < __pyx_t_27; __pyx_t_28+=1) {
                   __pyx_v_i = __pyx_t_28;
-# 5304 "sisl/physics/_bloch.c"
                   __pyx_t_29 = __pyx_v_I;
                   __pyx_t_30 = __pyx_v_i;
                   __pyx_t_31 = __pyx_v_I;
                   *((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) __pyx_v_MJ.data) + __pyx_t_31)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) __pyx_v_MJ.data) + __pyx_t_29)) ))), __Pyx_c_prod_double((*((__pyx_t_double_complex const *) ( ((char *) (((__pyx_t_double_complex const *) __pyx_v_mj.data) + __pyx_t_30)) ))), __pyx_v_ph0));
-# 5316 "sisl/physics/_bloch.c"
                   __pyx_v_I = (__pyx_v_I + 1);
                 }
-# 5326 "sisl/physics/_bloch.c"
                 __pyx_v_ph0 = __Pyx_c_prod_double(__pyx_v_ph0, __pyx_v_aph0);
               }
-# 5336 "sisl/physics/_bloch.c"
               __pyx_v_ph1 = __Pyx_c_prod_double(__pyx_v_ph1, __pyx_v_aph1);
             }
-# 5346 "sisl/physics/_bloch.c"
             __pyx_v_ph2 = __Pyx_c_prod_double(__pyx_v_ph2, __pyx_v_aph2);
           }
-# 5356 "sisl/physics/_bloch.c"
           __pyx_v_J = (__pyx_v_J + 1);
         }
       }
     }
   }
-# 5371 "sisl/physics/_bloch.c"
   goto __pyx_L0;
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_15, 0);
@@ -3929,7 +3730,6 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_MJ, 0);
   __PYX_XDEC_MEMVIEW(&__pyx_v_MJ, 0);
   __PYX_XDEC_MEMVIEW(&__pyx_v_mj, 0);
 }
-# 5389 "sisl/physics/_bloch.c"
 static void __pyx_f_4sisl_7physics_6_bloch__unfold128_3(Py_ssize_t const __pyx_v_B0, Py_ssize_t const __pyx_v_B1, Py_ssize_t const __pyx_v_B2, __Pyx_memviewslice __pyx_v_K2pi, Py_ssize_t const __pyx_v_N1, Py_ssize_t const __pyx_v_N2, __Pyx_memviewslice __pyx_v_m, __Pyx_memviewslice __pyx_v_M) {
   Py_ssize_t __pyx_v_N;
   double __pyx_v_k0;
@@ -3947,28 +3747,21 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold128_3(Py_ssize_t const __pyx_v
   Py_ssize_t __pyx_t_8;
   Py_ssize_t __pyx_t_9;
   __Pyx_memviewslice __pyx_t_10 = { 0, 0, { 0 }, { 0 }, { 0 } };
-# 5414 "sisl/physics/_bloch.c"
   __pyx_v_N = ((__pyx_v_B0 * __pyx_v_B1) * __pyx_v_B2);
-# 5423 "sisl/physics/_bloch.c"
   __pyx_v_w = (1. / __pyx_v_N);
-# 5432 "sisl/physics/_bloch.c"
   __pyx_t_1 = __pyx_v_N;
   __pyx_t_2 = __pyx_t_1;
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_T = __pyx_t_3;
-# 5444 "sisl/physics/_bloch.c"
     __pyx_t_4 = __pyx_v_T;
     __pyx_t_5 = 0;
     __pyx_v_k0 = (*((double const *) ( ((char *) (((double const *) ( (__pyx_v_K2pi.data + __pyx_t_4 * __pyx_v_K2pi.strides[0]) )) + __pyx_t_5)) )));
-# 5455 "sisl/physics/_bloch.c"
     __pyx_t_6 = __pyx_v_T;
     __pyx_t_7 = 1;
     __pyx_v_k1 = (*((double const *) ( ((char *) (((double const *) ( (__pyx_v_K2pi.data + __pyx_t_6 * __pyx_v_K2pi.strides[0]) )) + __pyx_t_7)) )));
-# 5466 "sisl/physics/_bloch.c"
     __pyx_t_8 = __pyx_v_T;
     __pyx_t_9 = 2;
     __pyx_v_k2 = (*((double const *) ( ((char *) (((double const *) ( (__pyx_v_K2pi.data + __pyx_t_8 * __pyx_v_K2pi.strides[0]) )) + __pyx_t_9)) )));
-# 5477 "sisl/physics/_bloch.c"
     __pyx_t_10.data = __pyx_v_m.data;
     __pyx_t_10.memview = __pyx_v_m.memview;
     __PYX_INC_MEMVIEW(&__pyx_t_10, 0);
@@ -3992,14 +3785,12 @@ __pyx_f_4sisl_7physics_6_bloch__unfold128_matrix(__pyx_v_w, __pyx_v_B0, __pyx_v_
     __pyx_t_10.memview = NULL;
     __pyx_t_10.data = NULL;
   }
-# 5510 "sisl/physics/_bloch.c"
   goto __pyx_L0;
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_10, 0);
   __Pyx_WriteUnraisable("sisl.physics._bloch._unfold128_3", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 1);
   __pyx_L0:;
 }
-# 5525 "sisl/physics/_bloch.c"
 static void __pyx_f_4sisl_7physics_6_bloch__unfold128_single(Py_ssize_t const __pyx_v_N, __Pyx_memviewslice __pyx_v_K2pi, Py_ssize_t const __pyx_v_N1, Py_ssize_t const __pyx_v_N2, __Pyx_memviewslice __pyx_v_m, __Pyx_memviewslice __pyx_v_M) {
   double __pyx_v_k;
   double __pyx_v_w;
@@ -4051,16 +3842,12 @@ static void __pyx_f_4sisl_7physics_6_bloch__unfold128_single(Py_ssize_t const __
   Py_ssize_t __pyx_t_34;
   Py_ssize_t __pyx_t_35;
   Py_ssize_t __pyx_t_36;
-# 5584 "sisl/physics/_bloch.c"
   __pyx_v_NN2 = (__pyx_v_N * __pyx_v_N2);
-# 5593 "sisl/physics/_bloch.c"
   __pyx_v_w = (1. / __pyx_v_N);
-# 5602 "sisl/physics/_bloch.c"
   __pyx_t_1 = __pyx_v_N;
   __pyx_t_2 = __pyx_t_1;
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_T = __pyx_t_3;
-# 5614 "sisl/physics/_bloch.c"
     __pyx_t_4.data = __pyx_v_m.data;
     __pyx_t_4.memview = __pyx_v_m.memview;
     __PYX_INC_MEMVIEW(&__pyx_t_4, 0);
@@ -4083,20 +3870,16 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_mT, 0);
     __pyx_v_mT = __pyx_t_4;
     __pyx_t_4.memview = NULL;
     __pyx_t_4.data = NULL;
-# 5644 "sisl/physics/_bloch.c"
     __pyx_t_5 = __pyx_v_T;
     __pyx_v_k = (*((double const *) ( (__pyx_v_K2pi.data + __pyx_t_5 * __pyx_v_K2pi.strides[0]) )));
-# 5654 "sisl/physics/_bloch.c"
     __pyx_t_6 = __pyx_v_N1;
     __pyx_t_7 = __pyx_t_6;
     for (__pyx_t_8 = 0; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
       __pyx_v_j = __pyx_t_8;
-# 5666 "sisl/physics/_bloch.c"
       __pyx_t_9 = __pyx_v_N2;
       __pyx_t_10 = __pyx_t_9;
       for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
         __pyx_v_i = __pyx_t_11;
-# 5678 "sisl/physics/_bloch.c"
         __pyx_t_12 = __pyx_v_j;
         __pyx_t_13 = __pyx_v_i;
         __pyx_t_14 = __pyx_v_j;
@@ -4106,34 +3889,24 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_mT, 0);
         *((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) ( (__pyx_v_M.data + __pyx_t_16 * __pyx_v_M.strides[0]) )) + __pyx_t_17)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) ( (__pyx_v_M.data + __pyx_t_12 * __pyx_v_M.strides[0]) )) + __pyx_t_13)) ))), __Pyx_c_prod_double((*((__pyx_t_double_complex const *) ( ((char *) (((__pyx_t_double_complex const *) ( (__pyx_v_mT.data + __pyx_t_14 * __pyx_v_mT.strides[0]) )) + __pyx_t_15)) ))), __pyx_t_double_complex_from_parts(__pyx_v_w, 0)));
       }
     }
-# 5695 "sisl/physics/_bloch.c"
     __pyx_v_aph = __Pyx_c_sum_double(__pyx_t_double_complex_from_parts(cos(__pyx_v_k), 0), __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(0, 1.0), __pyx_t_double_complex_from_parts(sin(__pyx_v_k), 0)));
-# 5704 "sisl/physics/_bloch.c"
     __pyx_v_ph = __Pyx_c_prod_double(__pyx_t_double_complex_from_parts(__pyx_v_w, 0), __pyx_v_aph);
-# 5713 "sisl/physics/_bloch.c"
     __pyx_t_6 = __pyx_v_N;
     __pyx_t_7 = __pyx_t_6;
     for (__pyx_t_8 = 1; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
       __pyx_v_c = __pyx_t_8;
-# 5725 "sisl/physics/_bloch.c"
       __pyx_v_J = (__pyx_v_c * __pyx_v_N1);
-# 5734 "sisl/physics/_bloch.c"
       __pyx_v_I = (__pyx_v_c * __pyx_v_N2);
-# 5743 "sisl/physics/_bloch.c"
       __pyx_v_phc = __Pyx_c_conj_double(__pyx_v_ph);
-# 5752 "sisl/physics/_bloch.c"
       __pyx_t_9 = __pyx_v_N1;
       __pyx_t_10 = __pyx_t_9;
       for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
         __pyx_v_j = __pyx_t_11;
-# 5764 "sisl/physics/_bloch.c"
         __pyx_v_Jj = (__pyx_v_J + __pyx_v_j);
-# 5773 "sisl/physics/_bloch.c"
         __pyx_t_18 = __pyx_v_N2;
         __pyx_t_19 = __pyx_t_18;
         for (__pyx_t_20 = 0; __pyx_t_20 < __pyx_t_19; __pyx_t_20+=1) {
           __pyx_v_i = __pyx_t_20;
-# 5785 "sisl/physics/_bloch.c"
           __pyx_t_21 = __pyx_v_j;
           __pyx_t_22 = (__pyx_v_I + __pyx_v_i);
           __pyx_t_23 = __pyx_v_j;
@@ -4141,7 +3914,6 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_mT, 0);
           __pyx_t_25 = __pyx_v_j;
           __pyx_t_26 = (__pyx_v_I + __pyx_v_i);
           *((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) ( (__pyx_v_M.data + __pyx_t_25 * __pyx_v_M.strides[0]) )) + __pyx_t_26)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) ( (__pyx_v_M.data + __pyx_t_21 * __pyx_v_M.strides[0]) )) + __pyx_t_22)) ))), __Pyx_c_prod_double((*((__pyx_t_double_complex const *) ( ((char *) (((__pyx_t_double_complex const *) ( (__pyx_v_mT.data + __pyx_t_23 * __pyx_v_mT.strides[0]) )) + __pyx_t_24)) ))), __pyx_v_ph));
-# 5800 "sisl/physics/_bloch.c"
           __pyx_t_27 = __pyx_v_Jj;
           __pyx_t_28 = __pyx_v_i;
           __pyx_t_29 = __pyx_v_j;
@@ -4151,23 +3923,18 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_mT, 0);
           *((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) ( (__pyx_v_M.data + __pyx_t_31 * __pyx_v_M.strides[0]) )) + __pyx_t_32)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) ( (__pyx_v_M.data + __pyx_t_27 * __pyx_v_M.strides[0]) )) + __pyx_t_28)) ))), __Pyx_c_prod_double((*((__pyx_t_double_complex const *) ( ((char *) (((__pyx_t_double_complex const *) ( (__pyx_v_mT.data + __pyx_t_29 * __pyx_v_mT.strides[0]) )) + __pyx_t_30)) ))), __pyx_v_phc));
         }
       }
-# 5817 "sisl/physics/_bloch.c"
       __pyx_v_ph = __Pyx_c_prod_double(__pyx_v_ph, __pyx_v_aph);
     }
   }
-# 5828 "sisl/physics/_bloch.c"
   __pyx_t_1 = __pyx_v_N;
   __pyx_t_2 = __pyx_t_1;
   for (__pyx_t_3 = 1; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_c = __pyx_t_3;
-# 5840 "sisl/physics/_bloch.c"
     __pyx_v_J = (__pyx_v_c * __pyx_v_N1);
-# 5849 "sisl/physics/_bloch.c"
     __pyx_t_6 = (__pyx_v_J + __pyx_v_N1);
     __pyx_t_7 = __pyx_t_6;
     for (__pyx_t_8 = __pyx_v_J; __pyx_t_8 < __pyx_t_7; __pyx_t_8+=1) {
       __pyx_v_j = __pyx_t_8;
-# 5861 "sisl/physics/_bloch.c"
       __pyx_v_I = (__pyx_v_j - __pyx_v_N1);
 
 
@@ -4194,7 +3961,6 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_mT, 0);
       }
     }
   }
-# 5897 "sisl/physics/_bloch.c"
   goto __pyx_L0;
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_4, 0);
@@ -4202,7 +3968,6 @@ __PYX_XDEC_MEMVIEW(&__pyx_v_mT, 0);
   __pyx_L0:;
   __PYX_XDEC_MEMVIEW(&__pyx_v_mT, 0);
 }
-# 5914 "sisl/physics/_bloch.c"
 static CYTHON_UNUSED int __pyx_pw_5numpy_7ndarray_1__getbuffer__(PyObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags);
 static CYTHON_UNUSED int __pyx_pw_5numpy_7ndarray_1__getbuffer__(PyObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags) {
   int __pyx_r;
@@ -4242,112 +4007,79 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   __Pyx_RefNannySetupContext("__getbuffer__", 0);
   __pyx_v_info->obj = Py_None; __Pyx_INCREF(Py_None);
   __Pyx_GIVEREF(__pyx_v_info->obj);
-# 5961 "sisl/physics/_bloch.c"
   __pyx_v_endian_detector = 1;
-# 5970 "sisl/physics/_bloch.c"
   __pyx_v_little_endian = ((((char *)(&__pyx_v_endian_detector))[0]) != 0);
-# 5979 "sisl/physics/_bloch.c"
   __pyx_v_ndim = PyArray_NDIM(__pyx_v_self);
-# 5988 "sisl/physics/_bloch.c"
   __pyx_t_2 = (((__pyx_v_flags & PyBUF_C_CONTIGUOUS) == PyBUF_C_CONTIGUOUS) != 0);
   if (__pyx_t_2) {
   } else {
     __pyx_t_1 = __pyx_t_2;
     goto __pyx_L4_bool_binop_done;
   }
-# 6002 "sisl/physics/_bloch.c"
   __pyx_t_2 = ((!(PyArray_CHKFLAGS(__pyx_v_self, NPY_ARRAY_C_CONTIGUOUS) != 0)) != 0);
   __pyx_t_1 = __pyx_t_2;
   __pyx_L4_bool_binop_done:;
-# 6013 "sisl/physics/_bloch.c"
   if (unlikely(__pyx_t_1)) {
-# 6022 "sisl/physics/_bloch.c"
     __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 272, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __PYX_ERR(1, 272, __pyx_L1_error)
-# 6035 "sisl/physics/_bloch.c"
   }
-# 6044 "sisl/physics/_bloch.c"
   __pyx_t_2 = (((__pyx_v_flags & PyBUF_F_CONTIGUOUS) == PyBUF_F_CONTIGUOUS) != 0);
   if (__pyx_t_2) {
   } else {
     __pyx_t_1 = __pyx_t_2;
     goto __pyx_L7_bool_binop_done;
   }
-# 6058 "sisl/physics/_bloch.c"
   __pyx_t_2 = ((!(PyArray_CHKFLAGS(__pyx_v_self, NPY_ARRAY_F_CONTIGUOUS) != 0)) != 0);
   __pyx_t_1 = __pyx_t_2;
   __pyx_L7_bool_binop_done:;
-# 6069 "sisl/physics/_bloch.c"
   if (unlikely(__pyx_t_1)) {
-# 6078 "sisl/physics/_bloch.c"
     __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 276, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __PYX_ERR(1, 276, __pyx_L1_error)
-# 6091 "sisl/physics/_bloch.c"
   }
-# 6100 "sisl/physics/_bloch.c"
   __pyx_v_info->buf = PyArray_DATA(__pyx_v_self);
-# 6109 "sisl/physics/_bloch.c"
   __pyx_v_info->ndim = __pyx_v_ndim;
-# 6118 "sisl/physics/_bloch.c"
   __pyx_t_1 = (((sizeof(npy_intp)) != (sizeof(Py_ssize_t))) != 0);
   if (__pyx_t_1) {
-# 6128 "sisl/physics/_bloch.c"
     __pyx_v_info->strides = ((Py_ssize_t *)PyObject_Malloc((((sizeof(Py_ssize_t)) * 2) * ((size_t)__pyx_v_ndim))));
-# 6137 "sisl/physics/_bloch.c"
     __pyx_v_info->shape = (__pyx_v_info->strides + __pyx_v_ndim);
-# 6146 "sisl/physics/_bloch.c"
     __pyx_t_4 = __pyx_v_ndim;
     __pyx_t_5 = __pyx_t_4;
     for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
       __pyx_v_i = __pyx_t_6;
-# 6158 "sisl/physics/_bloch.c"
       (__pyx_v_info->strides[__pyx_v_i]) = (PyArray_STRIDES(__pyx_v_self)[__pyx_v_i]);
-# 6167 "sisl/physics/_bloch.c"
       (__pyx_v_info->shape[__pyx_v_i]) = (PyArray_DIMS(__pyx_v_self)[__pyx_v_i]);
     }
-# 6177 "sisl/physics/_bloch.c"
     goto __pyx_L9;
   }
-# 6187 "sisl/physics/_bloch.c"
            {
     __pyx_v_info->strides = ((Py_ssize_t *)PyArray_STRIDES(__pyx_v_self));
-# 6197 "sisl/physics/_bloch.c"
     __pyx_v_info->shape = ((Py_ssize_t *)PyArray_DIMS(__pyx_v_self));
   }
   __pyx_L9:;
-# 6208 "sisl/physics/_bloch.c"
   __pyx_v_info->suboffsets = NULL;
-# 6217 "sisl/physics/_bloch.c"
   __pyx_v_info->itemsize = PyArray_ITEMSIZE(__pyx_v_self);
-# 6226 "sisl/physics/_bloch.c"
   __pyx_v_info->readonly = (!(PyArray_ISWRITEABLE(__pyx_v_self) != 0));
-# 6235 "sisl/physics/_bloch.c"
   __pyx_v_f = NULL;
-# 6244 "sisl/physics/_bloch.c"
   __pyx_t_7 = PyArray_DESCR(__pyx_v_self);
   __pyx_t_3 = ((PyObject *)__pyx_t_7);
   __Pyx_INCREF(__pyx_t_3);
   __pyx_v_descr = ((PyArray_Descr *)__pyx_t_3);
   __pyx_t_3 = 0;
-# 6257 "sisl/physics/_bloch.c"
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   __Pyx_GOTREF(__pyx_v_info->obj);
   __Pyx_DECREF(__pyx_v_info->obj);
   __pyx_v_info->obj = ((PyObject *)__pyx_v_self);
-# 6270 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((!(PyDataType_HASFIELDS(__pyx_v_descr) != 0)) != 0);
   if (__pyx_t_1) {
-# 6280 "sisl/physics/_bloch.c"
     __pyx_t_4 = __pyx_v_descr->type_num;
     __pyx_v_t = __pyx_t_4;
-# 6290 "sisl/physics/_bloch.c"
     __pyx_t_2 = ((__pyx_v_descr->byteorder == '>') != 0);
     if (!__pyx_t_2) {
       goto __pyx_L15_next_or;
@@ -4360,7 +4092,6 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       goto __pyx_L14_bool_binop_done;
     }
     __pyx_L15_next_or:;
-# 6310 "sisl/physics/_bloch.c"
     __pyx_t_2 = ((__pyx_v_descr->byteorder == '<') != 0);
     if (__pyx_t_2) {
     } else {
@@ -4370,87 +4101,66 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     __pyx_t_2 = ((!(__pyx_v_little_endian != 0)) != 0);
     __pyx_t_1 = __pyx_t_2;
     __pyx_L14_bool_binop_done:;
-# 6327 "sisl/physics/_bloch.c"
     if (unlikely(__pyx_t_1)) {
-# 6336 "sisl/physics/_bloch.c"
       __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 306, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_Raise(__pyx_t_3, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __PYX_ERR(1, 306, __pyx_L1_error)
-# 6349 "sisl/physics/_bloch.c"
     }
-# 6358 "sisl/physics/_bloch.c"
     switch (__pyx_v_t) {
       case NPY_BYTE:
       __pyx_v_f = ((char *)"b");
       break;
       case NPY_UBYTE:
-# 6371 "sisl/physics/_bloch.c"
       __pyx_v_f = ((char *)"B");
       break;
       case NPY_SHORT:
-# 6382 "sisl/physics/_bloch.c"
       __pyx_v_f = ((char *)"h");
       break;
       case NPY_USHORT:
-# 6393 "sisl/physics/_bloch.c"
       __pyx_v_f = ((char *)"H");
       break;
       case NPY_INT:
-# 6404 "sisl/physics/_bloch.c"
       __pyx_v_f = ((char *)"i");
       break;
       case NPY_UINT:
-# 6415 "sisl/physics/_bloch.c"
       __pyx_v_f = ((char *)"I");
       break;
       case NPY_LONG:
-# 6426 "sisl/physics/_bloch.c"
       __pyx_v_f = ((char *)"l");
       break;
       case NPY_ULONG:
-# 6437 "sisl/physics/_bloch.c"
       __pyx_v_f = ((char *)"L");
       break;
       case NPY_LONGLONG:
-# 6448 "sisl/physics/_bloch.c"
       __pyx_v_f = ((char *)"q");
       break;
       case NPY_ULONGLONG:
-# 6459 "sisl/physics/_bloch.c"
       __pyx_v_f = ((char *)"Q");
       break;
       case NPY_FLOAT:
-# 6470 "sisl/physics/_bloch.c"
       __pyx_v_f = ((char *)"f");
       break;
       case NPY_DOUBLE:
-# 6481 "sisl/physics/_bloch.c"
       __pyx_v_f = ((char *)"d");
       break;
       case NPY_LONGDOUBLE:
-# 6492 "sisl/physics/_bloch.c"
       __pyx_v_f = ((char *)"g");
       break;
       case NPY_CFLOAT:
-# 6503 "sisl/physics/_bloch.c"
       __pyx_v_f = ((char *)"Zf");
       break;
       case NPY_CDOUBLE:
-# 6514 "sisl/physics/_bloch.c"
       __pyx_v_f = ((char *)"Zd");
       break;
       case NPY_CLONGDOUBLE:
-# 6525 "sisl/physics/_bloch.c"
       __pyx_v_f = ((char *)"Zg");
       break;
       case NPY_OBJECT:
-# 6536 "sisl/physics/_bloch.c"
       __pyx_v_f = ((char *)"O");
       break;
       default:
-# 6547 "sisl/physics/_bloch.c"
       __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_t); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 325, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_8 = PyUnicode_Format(__pyx_kp_u_unknown_dtype_code_in_numpy_pxd, __pyx_t_3); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 325, __pyx_L1_error)
@@ -4464,27 +4174,18 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __PYX_ERR(1, 325, __pyx_L1_error)
       break;
     }
-# 6568 "sisl/physics/_bloch.c"
     __pyx_v_info->format = __pyx_v_f;
-# 6577 "sisl/physics/_bloch.c"
     __pyx_r = 0;
     goto __pyx_L0;
-# 6587 "sisl/physics/_bloch.c"
   }
-# 6596 "sisl/physics/_bloch.c"
            {
     __pyx_v_info->format = ((char *)PyObject_Malloc(0xFF));
-# 6606 "sisl/physics/_bloch.c"
     (__pyx_v_info->format[0]) = '^';
-# 6615 "sisl/physics/_bloch.c"
     __pyx_v_offset = 0;
-# 6624 "sisl/physics/_bloch.c"
     __pyx_t_9 = __pyx_f_5numpy__util_dtypestring(__pyx_v_descr, (__pyx_v_info->format + 1), (__pyx_v_info->format + 0xFF), (&__pyx_v_offset)); if (unlikely(__pyx_t_9 == ((char *)NULL))) __PYX_ERR(1, 332, __pyx_L1_error)
     __pyx_v_f = __pyx_t_9;
-# 6634 "sisl/physics/_bloch.c"
     (__pyx_v_f[0]) = '\x00';
   }
-# 6646 "sisl/physics/_bloch.c"
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -4507,7 +4208,6 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 6678 "sisl/physics/_bloch.c"
 static CYTHON_UNUSED void __pyx_pw_5numpy_7ndarray_3__releasebuffer__(PyObject *__pyx_v_self, Py_buffer *__pyx_v_info);
 static CYTHON_UNUSED void __pyx_pw_5numpy_7ndarray_3__releasebuffer__(PyObject *__pyx_v_self, Py_buffer *__pyx_v_info) {
   __Pyx_RefNannyDeclarations
@@ -4522,37 +4222,27 @@ static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_s
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("__releasebuffer__", 0);
-# 6700 "sisl/physics/_bloch.c"
   __pyx_t_1 = (PyArray_HASFIELDS(__pyx_v_self) != 0);
   if (__pyx_t_1) {
-# 6710 "sisl/physics/_bloch.c"
     PyObject_Free(__pyx_v_info->format);
-# 6719 "sisl/physics/_bloch.c"
   }
-# 6728 "sisl/physics/_bloch.c"
   __pyx_t_1 = (((sizeof(npy_intp)) != (sizeof(Py_ssize_t))) != 0);
   if (__pyx_t_1) {
-# 6738 "sisl/physics/_bloch.c"
     PyObject_Free(__pyx_v_info->strides);
-# 6747 "sisl/physics/_bloch.c"
   }
-# 6758 "sisl/physics/_bloch.c"
   __Pyx_RefNannyFinishContext();
 }
-# 6769 "sisl/physics/_bloch.c"
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew1(PyObject *__pyx_v_a) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew1", 0);
-# 6782 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyArray_MultiIterNew(1, ((void *)__pyx_v_a)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 822, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 6798 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("numpy.PyArray_MultiIterNew1", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -4562,20 +4252,17 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew1(PyObject *__
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 6816 "sisl/physics/_bloch.c"
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew2(PyObject *__pyx_v_a, PyObject *__pyx_v_b) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew2", 0);
-# 6829 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyArray_MultiIterNew(2, ((void *)__pyx_v_a), ((void *)__pyx_v_b)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 825, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 6845 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("numpy.PyArray_MultiIterNew2", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -4585,20 +4272,17 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew2(PyObject *__
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 6863 "sisl/physics/_bloch.c"
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew3(PyObject *__pyx_v_a, PyObject *__pyx_v_b, PyObject *__pyx_v_c) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew3", 0);
-# 6876 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyArray_MultiIterNew(3, ((void *)__pyx_v_a), ((void *)__pyx_v_b), ((void *)__pyx_v_c)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 828, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 6892 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("numpy.PyArray_MultiIterNew3", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -4608,20 +4292,17 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew3(PyObject *__
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 6910 "sisl/physics/_bloch.c"
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew4(PyObject *__pyx_v_a, PyObject *__pyx_v_b, PyObject *__pyx_v_c, PyObject *__pyx_v_d) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew4", 0);
-# 6923 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyArray_MultiIterNew(4, ((void *)__pyx_v_a), ((void *)__pyx_v_b), ((void *)__pyx_v_c), ((void *)__pyx_v_d)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 831, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 6939 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("numpy.PyArray_MultiIterNew4", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -4631,20 +4312,17 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew4(PyObject *__
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 6957 "sisl/physics/_bloch.c"
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew5(PyObject *__pyx_v_a, PyObject *__pyx_v_b, PyObject *__pyx_v_c, PyObject *__pyx_v_d, PyObject *__pyx_v_e) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew5", 0);
-# 6970 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyArray_MultiIterNew(5, ((void *)__pyx_v_a), ((void *)__pyx_v_b), ((void *)__pyx_v_c), ((void *)__pyx_v_d), ((void *)__pyx_v_e)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 834, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 6986 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("numpy.PyArray_MultiIterNew5", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -4654,36 +4332,29 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew5(PyObject *__
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 7004 "sisl/physics/_bloch.c"
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyDataType_SHAPE(PyArray_Descr *__pyx_v_d) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("PyDataType_SHAPE", 0);
-# 7017 "sisl/physics/_bloch.c"
   __pyx_t_1 = (PyDataType_HASSUBARRAY(__pyx_v_d) != 0);
   if (__pyx_t_1) {
-# 7027 "sisl/physics/_bloch.c"
     __Pyx_XDECREF(__pyx_r);
     __Pyx_INCREF(((PyObject*)__pyx_v_d->subarray->shape));
     __pyx_r = ((PyObject*)__pyx_v_d->subarray->shape);
     goto __pyx_L0;
-# 7039 "sisl/physics/_bloch.c"
   }
-# 7048 "sisl/physics/_bloch.c"
            {
     __Pyx_XDECREF(__pyx_r);
     __Pyx_INCREF(__pyx_empty_tuple);
     __pyx_r = __pyx_empty_tuple;
     goto __pyx_L0;
   }
-# 7064 "sisl/physics/_bloch.c"
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 7078 "sisl/physics/_bloch.c"
 static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx_v_descr, char *__pyx_v_f, char *__pyx_v_end, int *__pyx_v_offset) {
   PyArray_Descr *__pyx_v_child = 0;
   int __pyx_v_endian_detector;
@@ -4704,11 +4375,8 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
   long __pyx_t_8;
   char *__pyx_t_9;
   __Pyx_RefNannySetupContext("_util_dtypestring", 0);
-# 7106 "sisl/physics/_bloch.c"
   __pyx_v_endian_detector = 1;
-# 7115 "sisl/physics/_bloch.c"
   __pyx_v_little_endian = ((((char *)(&__pyx_v_endian_detector))[0]) != 0);
-# 7124 "sisl/physics/_bloch.c"
   if (unlikely(__pyx_v_descr->names == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
     __PYX_ERR(1, 851, __pyx_L1_error)
@@ -4724,7 +4392,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     #endif
     __Pyx_XDECREF_SET(__pyx_v_childname, __pyx_t_3);
     __pyx_t_3 = 0;
-# 7147 "sisl/physics/_bloch.c"
     if (unlikely(__pyx_v_descr->fields == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
       __PYX_ERR(1, 852, __pyx_L1_error)
@@ -4734,7 +4401,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     if (!(likely(PyTuple_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(1, 852, __pyx_L1_error)
     __Pyx_XDECREF_SET(__pyx_v_fields, ((PyObject*)__pyx_t_3));
     __pyx_t_3 = 0;
-# 7164 "sisl/physics/_bloch.c"
     if (likely(__pyx_v_fields != Py_None)) {
       PyObject* sequence = __pyx_v_fields;
       Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
@@ -4762,7 +4428,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     __pyx_t_3 = 0;
     __Pyx_XDECREF_SET(__pyx_v_new_offset, __pyx_t_4);
     __pyx_t_4 = 0;
-# 7199 "sisl/physics/_bloch.c"
     __pyx_t_4 = __Pyx_PyInt_From_int((__pyx_v_offset[0])); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 855, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_3 = PyNumber_Subtract(__pyx_v_new_offset, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 855, __pyx_L1_error)
@@ -4772,15 +4437,12 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_6 = ((((__pyx_v_end - __pyx_v_f) - ((int)__pyx_t_5)) < 15) != 0);
     if (unlikely(__pyx_t_6)) {
-# 7216 "sisl/physics/_bloch.c"
       __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 856, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_Raise(__pyx_t_3, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __PYX_ERR(1, 856, __pyx_L1_error)
-# 7229 "sisl/physics/_bloch.c"
     }
-# 7238 "sisl/physics/_bloch.c"
     __pyx_t_7 = ((__pyx_v_child->byteorder == '>') != 0);
     if (!__pyx_t_7) {
       goto __pyx_L8_next_or;
@@ -4793,7 +4455,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
       goto __pyx_L7_bool_binop_done;
     }
     __pyx_L8_next_or:;
-# 7258 "sisl/physics/_bloch.c"
     __pyx_t_7 = ((__pyx_v_child->byteorder == '<') != 0);
     if (__pyx_t_7) {
     } else {
@@ -4803,17 +4464,13 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     __pyx_t_7 = ((!(__pyx_v_little_endian != 0)) != 0);
     __pyx_t_6 = __pyx_t_7;
     __pyx_L7_bool_binop_done:;
-# 7275 "sisl/physics/_bloch.c"
     if (unlikely(__pyx_t_6)) {
-# 7284 "sisl/physics/_bloch.c"
       __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 860, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_Raise(__pyx_t_3, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __PYX_ERR(1, 860, __pyx_L1_error)
-# 7297 "sisl/physics/_bloch.c"
     }
-# 7306 "sisl/physics/_bloch.c"
     while (1) {
       __pyx_t_3 = __Pyx_PyInt_From_int((__pyx_v_offset[0])); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 870, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
@@ -4822,37 +4479,27 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
       __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(1, 870, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       if (!__pyx_t_6) break;
-# 7322 "sisl/physics/_bloch.c"
       (__pyx_v_f[0]) = 0x78;
-# 7331 "sisl/physics/_bloch.c"
       __pyx_v_f = (__pyx_v_f + 1);
-# 7340 "sisl/physics/_bloch.c"
       __pyx_t_8 = 0;
       (__pyx_v_offset[__pyx_t_8]) = ((__pyx_v_offset[__pyx_t_8]) + 1);
     }
-# 7351 "sisl/physics/_bloch.c"
     __pyx_t_8 = 0;
     (__pyx_v_offset[__pyx_t_8]) = ((__pyx_v_offset[__pyx_t_8]) + __pyx_v_child->elsize);
-# 7361 "sisl/physics/_bloch.c"
     __pyx_t_6 = ((!(PyDataType_HASFIELDS(__pyx_v_child) != 0)) != 0);
     if (__pyx_t_6) {
-# 7371 "sisl/physics/_bloch.c"
       __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_child->type_num); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 878, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_XDECREF_SET(__pyx_v_t, __pyx_t_4);
       __pyx_t_4 = 0;
-# 7383 "sisl/physics/_bloch.c"
       __pyx_t_6 = (((__pyx_v_end - __pyx_v_f) < 5) != 0);
       if (unlikely(__pyx_t_6)) {
-# 7393 "sisl/physics/_bloch.c"
         __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__7, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 880, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_Raise(__pyx_t_4, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         __PYX_ERR(1, 880, __pyx_L1_error)
-# 7406 "sisl/physics/_bloch.c"
       }
-# 7415 "sisl/physics/_bloch.c"
       __pyx_t_4 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_BYTE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 883, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = PyObject_RichCompare(__pyx_v_t, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 883, __pyx_L1_error)
@@ -4863,7 +4510,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 98;
         goto __pyx_L15;
       }
-# 7433 "sisl/physics/_bloch.c"
       __pyx_t_3 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_UBYTE); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 884, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = PyObject_RichCompare(__pyx_v_t, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 884, __pyx_L1_error)
@@ -4874,7 +4520,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 66;
         goto __pyx_L15;
       }
-# 7451 "sisl/physics/_bloch.c"
       __pyx_t_4 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_SHORT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 885, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = PyObject_RichCompare(__pyx_v_t, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 885, __pyx_L1_error)
@@ -4885,7 +4530,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 0x68;
         goto __pyx_L15;
       }
-# 7469 "sisl/physics/_bloch.c"
       __pyx_t_3 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_USHORT); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 886, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = PyObject_RichCompare(__pyx_v_t, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 886, __pyx_L1_error)
@@ -4896,7 +4540,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 72;
         goto __pyx_L15;
       }
-# 7487 "sisl/physics/_bloch.c"
       __pyx_t_4 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_INT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 887, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = PyObject_RichCompare(__pyx_v_t, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 887, __pyx_L1_error)
@@ -4907,7 +4550,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 0x69;
         goto __pyx_L15;
       }
-# 7505 "sisl/physics/_bloch.c"
       __pyx_t_3 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_UINT); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 888, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = PyObject_RichCompare(__pyx_v_t, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 888, __pyx_L1_error)
@@ -4918,7 +4560,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 73;
         goto __pyx_L15;
       }
-# 7523 "sisl/physics/_bloch.c"
       __pyx_t_4 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_LONG); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 889, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = PyObject_RichCompare(__pyx_v_t, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 889, __pyx_L1_error)
@@ -4929,7 +4570,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 0x6C;
         goto __pyx_L15;
       }
-# 7541 "sisl/physics/_bloch.c"
       __pyx_t_3 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_ULONG); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 890, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = PyObject_RichCompare(__pyx_v_t, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 890, __pyx_L1_error)
@@ -4940,7 +4580,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 76;
         goto __pyx_L15;
       }
-# 7559 "sisl/physics/_bloch.c"
       __pyx_t_4 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_LONGLONG); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 891, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = PyObject_RichCompare(__pyx_v_t, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 891, __pyx_L1_error)
@@ -4951,7 +4590,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 0x71;
         goto __pyx_L15;
       }
-# 7577 "sisl/physics/_bloch.c"
       __pyx_t_3 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_ULONGLONG); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 892, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = PyObject_RichCompare(__pyx_v_t, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 892, __pyx_L1_error)
@@ -4962,7 +4600,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 81;
         goto __pyx_L15;
       }
-# 7595 "sisl/physics/_bloch.c"
       __pyx_t_4 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_FLOAT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 893, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = PyObject_RichCompare(__pyx_v_t, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 893, __pyx_L1_error)
@@ -4973,7 +4610,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 0x66;
         goto __pyx_L15;
       }
-# 7613 "sisl/physics/_bloch.c"
       __pyx_t_3 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_DOUBLE); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 894, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = PyObject_RichCompare(__pyx_v_t, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 894, __pyx_L1_error)
@@ -4984,7 +4620,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 0x64;
         goto __pyx_L15;
       }
-# 7631 "sisl/physics/_bloch.c"
       __pyx_t_4 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_LONGDOUBLE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 895, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = PyObject_RichCompare(__pyx_v_t, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 895, __pyx_L1_error)
@@ -4995,7 +4630,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 0x67;
         goto __pyx_L15;
       }
-# 7649 "sisl/physics/_bloch.c"
       __pyx_t_3 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_CFLOAT); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 896, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = PyObject_RichCompare(__pyx_v_t, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 896, __pyx_L1_error)
@@ -5008,7 +4642,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         __pyx_v_f = (__pyx_v_f + 1);
         goto __pyx_L15;
       }
-# 7669 "sisl/physics/_bloch.c"
       __pyx_t_4 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_CDOUBLE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 897, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = PyObject_RichCompare(__pyx_v_t, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 897, __pyx_L1_error)
@@ -5021,7 +4654,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         __pyx_v_f = (__pyx_v_f + 1);
         goto __pyx_L15;
       }
-# 7689 "sisl/physics/_bloch.c"
       __pyx_t_3 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_CLONGDOUBLE); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 898, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = PyObject_RichCompare(__pyx_v_t, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 898, __pyx_L1_error)
@@ -5034,7 +4666,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         __pyx_v_f = (__pyx_v_f + 1);
         goto __pyx_L15;
       }
-# 7709 "sisl/physics/_bloch.c"
       __pyx_t_4 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_OBJECT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 899, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = PyObject_RichCompare(__pyx_v_t, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 899, __pyx_L1_error)
@@ -5045,7 +4676,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 79;
         goto __pyx_L15;
       }
-# 7727 "sisl/physics/_bloch.c"
                {
         __pyx_t_3 = __Pyx_PyUnicode_FormatSafe(__pyx_kp_u_unknown_dtype_code_in_numpy_pxd, __pyx_v_t); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 901, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
@@ -5057,24 +4687,18 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         __PYX_ERR(1, 901, __pyx_L1_error)
       }
       __pyx_L15:;
-# 7746 "sisl/physics/_bloch.c"
       __pyx_v_f = (__pyx_v_f + 1);
-# 7755 "sisl/physics/_bloch.c"
       goto __pyx_L13;
     }
-# 7765 "sisl/physics/_bloch.c"
              {
       __pyx_t_9 = __pyx_f_5numpy__util_dtypestring(__pyx_v_child, __pyx_v_f, __pyx_v_end, __pyx_v_offset); if (unlikely(__pyx_t_9 == ((char *)NULL))) __PYX_ERR(1, 906, __pyx_L1_error)
       __pyx_v_f = __pyx_t_9;
     }
     __pyx_L13:;
-# 7778 "sisl/physics/_bloch.c"
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 7788 "sisl/physics/_bloch.c"
   __pyx_r = __pyx_v_f;
   goto __pyx_L0;
-# 7800 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_3);
@@ -5090,47 +4714,35 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 7824 "sisl/physics/_bloch.c"
 static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_arr, PyObject *__pyx_v_base) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_array_base", 0);
-# 7835 "sisl/physics/_bloch.c"
   Py_INCREF(__pyx_v_base);
-# 7844 "sisl/physics/_bloch.c"
   (void)(PyArray_SetBaseObject(__pyx_v_arr, __pyx_v_base));
-# 7855 "sisl/physics/_bloch.c"
   __Pyx_RefNannyFinishContext();
 }
-# 7866 "sisl/physics/_bloch.c"
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__pyx_v_arr) {
   PyObject *__pyx_v_base;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("get_array_base", 0);
-# 7880 "sisl/physics/_bloch.c"
   __pyx_v_base = PyArray_BASE(__pyx_v_arr);
-# 7889 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((__pyx_v_base == NULL) != 0);
   if (__pyx_t_1) {
-# 7899 "sisl/physics/_bloch.c"
     __Pyx_XDECREF(__pyx_r);
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
-# 7910 "sisl/physics/_bloch.c"
   }
-# 7919 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_base));
   __pyx_r = ((PyObject *)__pyx_v_base);
   goto __pyx_L0;
-# 7933 "sisl/physics/_bloch.c"
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 7947 "sisl/physics/_bloch.c"
 static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -5143,7 +4755,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
   PyObject *__pyx_t_7 = NULL;
   PyObject *__pyx_t_8 = NULL;
   __Pyx_RefNannySetupContext("import_array", 0);
-# 7967 "sisl/physics/_bloch.c"
   {
     __Pyx_PyThreadState_declare
     __Pyx_PyThreadState_assign
@@ -5152,16 +4763,13 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
     __Pyx_XGOTREF(__pyx_t_2);
     __Pyx_XGOTREF(__pyx_t_3);
              {
-# 7983 "sisl/physics/_bloch.c"
       __pyx_t_4 = _import_array(); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(1, 1036, __pyx_L3_error)
-# 7992 "sisl/physics/_bloch.c"
     }
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     goto __pyx_L8_try_end;
     __pyx_L3_error:;
-# 8006 "sisl/physics/_bloch.c"
     __pyx_t_4 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
     if (__pyx_t_4) {
       __Pyx_AddTraceback("numpy.import_array", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -5169,7 +4777,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GOTREF(__pyx_t_7);
-# 8021 "sisl/physics/_bloch.c"
       __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__8, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 1038, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_Raise(__pyx_t_8, 0, 0, 0);
@@ -5178,7 +4785,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
     }
     goto __pyx_L5_except_error;
     __pyx_L5_except_error:;
-# 8037 "sisl/physics/_bloch.c"
     __Pyx_XGIVEREF(__pyx_t_1);
     __Pyx_XGIVEREF(__pyx_t_2);
     __Pyx_XGIVEREF(__pyx_t_3);
@@ -5186,7 +4792,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
     goto __pyx_L1_error;
     __pyx_L8_try_end:;
   }
-# 8054 "sisl/physics/_bloch.c"
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -5200,7 +4805,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 8076 "sisl/physics/_bloch.c"
 static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -5213,7 +4817,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
   PyObject *__pyx_t_7 = NULL;
   PyObject *__pyx_t_8 = NULL;
   __Pyx_RefNannySetupContext("import_umath", 0);
-# 8096 "sisl/physics/_bloch.c"
   {
     __Pyx_PyThreadState_declare
     __Pyx_PyThreadState_assign
@@ -5222,16 +4825,13 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
     __Pyx_XGOTREF(__pyx_t_2);
     __Pyx_XGOTREF(__pyx_t_3);
              {
-# 8112 "sisl/physics/_bloch.c"
       __pyx_t_4 = _import_umath(); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(1, 1042, __pyx_L3_error)
-# 8121 "sisl/physics/_bloch.c"
     }
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     goto __pyx_L8_try_end;
     __pyx_L3_error:;
-# 8135 "sisl/physics/_bloch.c"
     __pyx_t_4 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
     if (__pyx_t_4) {
       __Pyx_AddTraceback("numpy.import_umath", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -5239,7 +4839,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GOTREF(__pyx_t_7);
-# 8150 "sisl/physics/_bloch.c"
       __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 1044, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_Raise(__pyx_t_8, 0, 0, 0);
@@ -5248,7 +4847,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
     }
     goto __pyx_L5_except_error;
     __pyx_L5_except_error:;
-# 8166 "sisl/physics/_bloch.c"
     __Pyx_XGIVEREF(__pyx_t_1);
     __Pyx_XGIVEREF(__pyx_t_2);
     __Pyx_XGIVEREF(__pyx_t_3);
@@ -5256,7 +4854,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
     goto __pyx_L1_error;
     __pyx_L8_try_end:;
   }
-# 8183 "sisl/physics/_bloch.c"
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -5270,7 +4867,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 8205 "sisl/physics/_bloch.c"
 static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -5283,7 +4879,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
   PyObject *__pyx_t_7 = NULL;
   PyObject *__pyx_t_8 = NULL;
   __Pyx_RefNannySetupContext("import_ufunc", 0);
-# 8225 "sisl/physics/_bloch.c"
   {
     __Pyx_PyThreadState_declare
     __Pyx_PyThreadState_assign
@@ -5292,9 +4887,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
     __Pyx_XGOTREF(__pyx_t_2);
     __Pyx_XGOTREF(__pyx_t_3);
              {
-# 8241 "sisl/physics/_bloch.c"
       __pyx_t_4 = _import_umath(); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(1, 1048, __pyx_L3_error)
-# 8250 "sisl/physics/_bloch.c"
     }
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -5329,7 +4922,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
     }
     goto __pyx_L5_except_error;
     __pyx_L5_except_error:;
-# 8292 "sisl/physics/_bloch.c"
     __Pyx_XGIVEREF(__pyx_t_1);
     __Pyx_XGIVEREF(__pyx_t_2);
     __Pyx_XGIVEREF(__pyx_t_3);
@@ -5337,7 +4929,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
     goto __pyx_L1_error;
     __pyx_L8_try_end:;
   }
-# 8309 "sisl/physics/_bloch.c"
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -5351,7 +4942,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 8332 "sisl/physics/_bloch.c"
 static int __pyx_array___cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds);
 static int __pyx_array___cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_shape = 0;
@@ -5436,7 +5026,6 @@ static int __pyx_array___cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, P
     if (values[4]) {
       __pyx_v_allocate_buffer = __Pyx_PyObject_IsTrue(values[4]); if (unlikely((__pyx_v_allocate_buffer == (int)-1) && PyErr_Occurred())) __PYX_ERR(2, 123, __pyx_L3_error)
     } else {
-# 8424 "sisl/physics/_bloch.c"
       __pyx_v_allocate_buffer = ((int)1);
     }
   }
@@ -5453,7 +5042,6 @@ static int __pyx_array___cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, P
     PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "format"); __PYX_ERR(2, 122, __pyx_L1_error)
   }
   __pyx_r = __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(((struct __pyx_array_obj *)__pyx_v_self), __pyx_v_shape, __pyx_v_itemsize, __pyx_v_format, __pyx_v_mode, __pyx_v_allocate_buffer);
-# 8450 "sisl/physics/_bloch.c"
   goto __pyx_L0;
   __pyx_L1_error:;
   __pyx_r = -1;
@@ -5483,42 +5071,32 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
   Py_ssize_t __pyx_t_11;
   __Pyx_RefNannySetupContext("__cinit__", 0);
   __Pyx_INCREF(__pyx_v_format);
-# 8487 "sisl/physics/_bloch.c"
   if (unlikely(__pyx_v_shape == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
     __PYX_ERR(2, 129, __pyx_L1_error)
   }
   __pyx_t_1 = PyTuple_GET_SIZE(__pyx_v_shape); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(2, 129, __pyx_L1_error)
   __pyx_v_self->ndim = ((int)__pyx_t_1);
-# 8501 "sisl/physics/_bloch.c"
   __pyx_v_self->itemsize = __pyx_v_itemsize;
-# 8510 "sisl/physics/_bloch.c"
   __pyx_t_2 = ((!(__pyx_v_self->ndim != 0)) != 0);
   if (unlikely(__pyx_t_2)) {
-# 8520 "sisl/physics/_bloch.c"
     __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__10, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 133, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __PYX_ERR(2, 133, __pyx_L1_error)
-# 8533 "sisl/physics/_bloch.c"
   }
-# 8542 "sisl/physics/_bloch.c"
   __pyx_t_2 = ((__pyx_v_itemsize <= 0) != 0);
   if (unlikely(__pyx_t_2)) {
-# 8552 "sisl/physics/_bloch.c"
     __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__11, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 136, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __PYX_ERR(2, 136, __pyx_L1_error)
-# 8565 "sisl/physics/_bloch.c"
   }
-# 8574 "sisl/physics/_bloch.c"
   __pyx_t_2 = PyBytes_Check(__pyx_v_format);
   __pyx_t_4 = ((!(__pyx_t_2 != 0)) != 0);
   if (__pyx_t_4) {
-# 8585 "sisl/physics/_bloch.c"
     __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_format, __pyx_n_s_encode); if (unlikely(!__pyx_t_5)) __PYX_ERR(2, 139, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = NULL;
@@ -5538,9 +5116,7 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF_SET(__pyx_v_format, __pyx_t_3);
     __pyx_t_3 = 0;
-# 8612 "sisl/physics/_bloch.c"
   }
-# 8621 "sisl/physics/_bloch.c"
   if (!(likely(PyBytes_CheckExact(__pyx_v_format))||((__pyx_v_format) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "bytes", Py_TYPE(__pyx_v_format)->tp_name), 0))) __PYX_ERR(2, 140, __pyx_L1_error)
   __pyx_t_3 = __pyx_v_format;
   __Pyx_INCREF(__pyx_t_3);
@@ -5549,29 +5125,22 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
   __Pyx_DECREF(__pyx_v_self->_format);
   __pyx_v_self->_format = ((PyObject*)__pyx_t_3);
   __pyx_t_3 = 0;
-# 8637 "sisl/physics/_bloch.c"
   if (unlikely(__pyx_v_self->_format == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
     __PYX_ERR(2, 141, __pyx_L1_error)
   }
   __pyx_t_7 = __Pyx_PyBytes_AsWritableString(__pyx_v_self->_format); if (unlikely((!__pyx_t_7) && PyErr_Occurred())) __PYX_ERR(2, 141, __pyx_L1_error)
   __pyx_v_self->format = __pyx_t_7;
-# 8651 "sisl/physics/_bloch.c"
   __pyx_v_self->_shape = ((Py_ssize_t *)PyObject_Malloc((((sizeof(Py_ssize_t)) * __pyx_v_self->ndim) * 2)));
-# 8660 "sisl/physics/_bloch.c"
   __pyx_v_self->_strides = (__pyx_v_self->_shape + __pyx_v_self->ndim);
-# 8669 "sisl/physics/_bloch.c"
   __pyx_t_4 = ((!(__pyx_v_self->_shape != 0)) != 0);
   if (unlikely(__pyx_t_4)) {
-# 8679 "sisl/physics/_bloch.c"
     __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__12, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 148, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __PYX_ERR(2, 148, __pyx_L1_error)
-# 8692 "sisl/physics/_bloch.c"
   }
-# 8701 "sisl/physics/_bloch.c"
   __pyx_t_8 = 0;
   __pyx_t_3 = __pyx_v_shape; __Pyx_INCREF(__pyx_t_3); __pyx_t_1 = 0;
   for (;;) {
@@ -5587,10 +5156,8 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
     __pyx_v_dim = __pyx_t_9;
     __pyx_v_idx = __pyx_t_8;
     __pyx_t_8 = (__pyx_t_8 + 1);
-# 8724 "sisl/physics/_bloch.c"
     __pyx_t_4 = ((__pyx_v_dim <= 0) != 0);
     if (unlikely(__pyx_t_4)) {
-# 8734 "sisl/physics/_bloch.c"
       __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_idx); if (unlikely(!__pyx_t_5)) __PYX_ERR(2, 153, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __pyx_t_6 = PyInt_FromSsize_t(__pyx_v_dim); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 153, __pyx_L1_error)
@@ -5612,42 +5179,30 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
       __Pyx_Raise(__pyx_t_10, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       __PYX_ERR(2, 153, __pyx_L1_error)
-# 8763 "sisl/physics/_bloch.c"
     }
-# 8772 "sisl/physics/_bloch.c"
     (__pyx_v_self->_shape[__pyx_v_idx]) = __pyx_v_dim;
-# 8781 "sisl/physics/_bloch.c"
   }
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-# 8791 "sisl/physics/_bloch.c"
   __pyx_t_4 = (__Pyx_PyString_Equals(__pyx_v_mode, __pyx_n_s_fortran, Py_EQ)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(2, 157, __pyx_L1_error)
   if (__pyx_t_4) {
-# 8801 "sisl/physics/_bloch.c"
     __pyx_v_order = 'F';
-# 8810 "sisl/physics/_bloch.c"
     __Pyx_INCREF(__pyx_n_u_fortran);
     __Pyx_GIVEREF(__pyx_n_u_fortran);
     __Pyx_GOTREF(__pyx_v_self->mode);
     __Pyx_DECREF(__pyx_v_self->mode);
     __pyx_v_self->mode = __pyx_n_u_fortran;
-# 8823 "sisl/physics/_bloch.c"
     goto __pyx_L10;
   }
-# 8833 "sisl/physics/_bloch.c"
   __pyx_t_4 = (__Pyx_PyString_Equals(__pyx_v_mode, __pyx_n_s_c, Py_EQ)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(2, 160, __pyx_L1_error)
   if (likely(__pyx_t_4)) {
-# 8843 "sisl/physics/_bloch.c"
     __pyx_v_order = 'C';
-# 8852 "sisl/physics/_bloch.c"
     __Pyx_INCREF(__pyx_n_u_c);
     __Pyx_GIVEREF(__pyx_n_u_c);
     __Pyx_GOTREF(__pyx_v_self->mode);
     __Pyx_DECREF(__pyx_v_self->mode);
     __pyx_v_self->mode = __pyx_n_u_c;
-# 8865 "sisl/physics/_bloch.c"
     goto __pyx_L10;
   }
-# 8875 "sisl/physics/_bloch.c"
            {
     __pyx_t_3 = __Pyx_PyString_FormatSafe(__pyx_kp_s_Invalid_mode_expected_c_or_fortr, __pyx_v_mode); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 164, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
@@ -5659,37 +5214,26 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
     __PYX_ERR(2, 164, __pyx_L1_error)
   }
   __pyx_L10:;
-# 8894 "sisl/physics/_bloch.c"
   __pyx_v_self->len = __pyx_fill_contig_strides_array(__pyx_v_self->_shape, __pyx_v_self->_strides, __pyx_v_itemsize, __pyx_v_self->ndim, __pyx_v_order);
-# 8903 "sisl/physics/_bloch.c"
   __pyx_v_self->free_data = __pyx_v_allocate_buffer;
-# 8912 "sisl/physics/_bloch.c"
   __pyx_t_10 = PyObject_RichCompare(__pyx_v_format, __pyx_n_b_O, Py_EQ); __Pyx_XGOTREF(__pyx_t_10); if (unlikely(!__pyx_t_10)) __PYX_ERR(2, 170, __pyx_L1_error)
   __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_10); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(2, 170, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
   __pyx_v_self->dtype_is_object = __pyx_t_4;
-# 8924 "sisl/physics/_bloch.c"
   __pyx_t_4 = (__pyx_v_allocate_buffer != 0);
   if (__pyx_t_4) {
-# 8934 "sisl/physics/_bloch.c"
     __pyx_v_self->data = ((char *)malloc(__pyx_v_self->len));
-# 8943 "sisl/physics/_bloch.c"
     __pyx_t_4 = ((!(__pyx_v_self->data != 0)) != 0);
     if (unlikely(__pyx_t_4)) {
-# 8953 "sisl/physics/_bloch.c"
       __pyx_t_10 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__13, NULL); if (unlikely(!__pyx_t_10)) __PYX_ERR(2, 176, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_Raise(__pyx_t_10, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       __PYX_ERR(2, 176, __pyx_L1_error)
-# 8966 "sisl/physics/_bloch.c"
     }
-# 8975 "sisl/physics/_bloch.c"
     __pyx_t_4 = (__pyx_v_self->dtype_is_object != 0);
     if (__pyx_t_4) {
-# 8985 "sisl/physics/_bloch.c"
       __pyx_v_p = ((PyObject **)__pyx_v_self->data);
-# 8994 "sisl/physics/_bloch.c"
       if (unlikely(__pyx_v_itemsize == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "integer division or modulo by zero");
         __PYX_ERR(2, 180, __pyx_L1_error)
@@ -5702,16 +5246,11 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
       __pyx_t_9 = __pyx_t_1;
       for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_9; __pyx_t_11+=1) {
         __pyx_v_i = __pyx_t_11;
-# 9014 "sisl/physics/_bloch.c"
         (__pyx_v_p[__pyx_v_i]) = Py_None;
-# 9023 "sisl/physics/_bloch.c"
         Py_INCREF(Py_None);
       }
-# 9033 "sisl/physics/_bloch.c"
     }
-# 9042 "sisl/physics/_bloch.c"
   }
-# 9053 "sisl/physics/_bloch.c"
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -5726,7 +5265,6 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 9077 "sisl/physics/_bloch.c"
 static CYTHON_UNUSED int __pyx_array_getbuffer(PyObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags);
 static CYTHON_UNUSED int __pyx_array_getbuffer(PyObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags) {
   int __pyx_r;
@@ -5757,80 +5295,56 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array_2__getbuffer__(stru
   __Pyx_RefNannySetupContext("__getbuffer__", 0);
   __pyx_v_info->obj = Py_None; __Pyx_INCREF(Py_None);
   __Pyx_GIVEREF(__pyx_v_info->obj);
-# 9115 "sisl/physics/_bloch.c"
   __pyx_v_bufmode = -1;
-# 9124 "sisl/physics/_bloch.c"
   __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_self->mode, __pyx_n_u_c, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(2, 187, __pyx_L1_error)
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
-# 9135 "sisl/physics/_bloch.c"
     __pyx_v_bufmode = (PyBUF_C_CONTIGUOUS | PyBUF_ANY_CONTIGUOUS);
-# 9144 "sisl/physics/_bloch.c"
     goto __pyx_L3;
   }
-# 9154 "sisl/physics/_bloch.c"
   __pyx_t_2 = (__Pyx_PyUnicode_Equals(__pyx_v_self->mode, __pyx_n_u_fortran, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(2, 189, __pyx_L1_error)
   __pyx_t_1 = (__pyx_t_2 != 0);
   if (__pyx_t_1) {
-# 9165 "sisl/physics/_bloch.c"
     __pyx_v_bufmode = (PyBUF_F_CONTIGUOUS | PyBUF_ANY_CONTIGUOUS);
-# 9174 "sisl/physics/_bloch.c"
   }
   __pyx_L3:;
-# 9184 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((!((__pyx_v_flags & __pyx_v_bufmode) != 0)) != 0);
   if (unlikely(__pyx_t_1)) {
-# 9194 "sisl/physics/_bloch.c"
     __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__14, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 192, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __PYX_ERR(2, 192, __pyx_L1_error)
-# 9207 "sisl/physics/_bloch.c"
   }
-# 9216 "sisl/physics/_bloch.c"
   __pyx_t_4 = __pyx_v_self->data;
   __pyx_v_info->buf = __pyx_t_4;
-# 9226 "sisl/physics/_bloch.c"
   __pyx_t_5 = __pyx_v_self->len;
   __pyx_v_info->len = __pyx_t_5;
-# 9236 "sisl/physics/_bloch.c"
   __pyx_t_6 = __pyx_v_self->ndim;
   __pyx_v_info->ndim = __pyx_t_6;
-# 9246 "sisl/physics/_bloch.c"
   __pyx_t_7 = __pyx_v_self->_shape;
   __pyx_v_info->shape = __pyx_t_7;
-# 9256 "sisl/physics/_bloch.c"
   __pyx_t_7 = __pyx_v_self->_strides;
   __pyx_v_info->strides = __pyx_t_7;
-# 9266 "sisl/physics/_bloch.c"
   __pyx_v_info->suboffsets = NULL;
-# 9275 "sisl/physics/_bloch.c"
   __pyx_t_5 = __pyx_v_self->itemsize;
   __pyx_v_info->itemsize = __pyx_t_5;
-# 9285 "sisl/physics/_bloch.c"
   __pyx_v_info->readonly = 0;
-# 9294 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((__pyx_v_flags & PyBUF_FORMAT) != 0);
   if (__pyx_t_1) {
-# 9304 "sisl/physics/_bloch.c"
     __pyx_t_4 = __pyx_v_self->format;
     __pyx_v_info->format = __pyx_t_4;
-# 9314 "sisl/physics/_bloch.c"
     goto __pyx_L5;
   }
-# 9324 "sisl/physics/_bloch.c"
            {
     __pyx_v_info->format = NULL;
   }
   __pyx_L5:;
-# 9336 "sisl/physics/_bloch.c"
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   __Pyx_GOTREF(__pyx_v_info->obj);
   __Pyx_DECREF(__pyx_v_info->obj);
   __pyx_v_info->obj = ((PyObject *)__pyx_v_self);
-# 9351 "sisl/physics/_bloch.c"
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -5851,7 +5365,6 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array_2__getbuffer__(stru
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 9381 "sisl/physics/_bloch.c"
 static void __pyx_array___dealloc__(PyObject *__pyx_v_self);
 static void __pyx_array___dealloc__(PyObject *__pyx_v_self) {
   __Pyx_RefNannyDeclarations
@@ -5866,35 +5379,23 @@ static void __pyx_array___pyx_pf_15View_dot_MemoryView_5array_4__dealloc__(struc
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("__dealloc__", 0);
-# 9403 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((__pyx_v_self->callback_free_data != NULL) != 0);
   if (__pyx_t_1) {
-# 9413 "sisl/physics/_bloch.c"
     __pyx_v_self->callback_free_data(__pyx_v_self->data);
-# 9422 "sisl/physics/_bloch.c"
     goto __pyx_L3;
   }
-# 9432 "sisl/physics/_bloch.c"
   __pyx_t_1 = (__pyx_v_self->free_data != 0);
   if (__pyx_t_1) {
-# 9442 "sisl/physics/_bloch.c"
     __pyx_t_1 = (__pyx_v_self->dtype_is_object != 0);
     if (__pyx_t_1) {
-# 9452 "sisl/physics/_bloch.c"
       __pyx_memoryview_refcount_objects_in_slice(__pyx_v_self->data, __pyx_v_self->_shape, __pyx_v_self->_strides, __pyx_v_self->ndim, 0);
-# 9461 "sisl/physics/_bloch.c"
     }
-# 9470 "sisl/physics/_bloch.c"
     free(__pyx_v_self->data);
-# 9479 "sisl/physics/_bloch.c"
   }
   __pyx_L3:;
-# 9489 "sisl/physics/_bloch.c"
   PyObject_Free(__pyx_v_self->_shape);
-# 9500 "sisl/physics/_bloch.c"
   __Pyx_RefNannyFinishContext();
 }
-# 9512 "sisl/physics/_bloch.c"
 static PyObject *__pyx_pw_15View_dot_MemoryView_5array_7memview_1__get__(PyObject *__pyx_v_self);
 static PyObject *__pyx_pw_15View_dot_MemoryView_5array_7memview_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -5912,14 +5413,12 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_5array_7memview___get__(struct _
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
-# 9537 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = ((struct __pyx_vtabstruct_array *)__pyx_v_self->__pyx_vtab)->get_memview(__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 223, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 9553 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("View.MemoryView.array.memview.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -5929,7 +5428,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_5array_7memview___get__(struct _
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 9571 "sisl/physics/_bloch.c"
 static PyObject *__pyx_array_get_memview(struct __pyx_array_obj *__pyx_v_self) {
   int __pyx_v_flags;
   PyObject *__pyx_r = NULL;
@@ -5938,9 +5436,7 @@ static PyObject *__pyx_array_get_memview(struct __pyx_array_obj *__pyx_v_self) {
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("get_memview", 0);
-# 9587 "sisl/physics/_bloch.c"
   __pyx_v_flags = ((PyBUF_ANY_CONTIGUOUS | PyBUF_FORMAT) | PyBUF_WRITABLE);
-# 9596 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_flags); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 228, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -5963,7 +5459,6 @@ static PyObject *__pyx_array_get_memview(struct __pyx_array_obj *__pyx_v_self) {
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
-# 9628 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -5975,7 +5470,6 @@ static PyObject *__pyx_array_get_memview(struct __pyx_array_obj *__pyx_v_self) {
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 9649 "sisl/physics/_bloch.c"
 static Py_ssize_t __pyx_array___len__(PyObject *__pyx_v_self);
 static Py_ssize_t __pyx_array___len__(PyObject *__pyx_v_self) {
   Py_ssize_t __pyx_r;
@@ -5992,15 +5486,12 @@ static Py_ssize_t __pyx_array___pyx_pf_15View_dot_MemoryView_5array_6__len__(str
   Py_ssize_t __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__len__", 0);
-# 9673 "sisl/physics/_bloch.c"
   __pyx_r = (__pyx_v_self->_shape[0]);
   goto __pyx_L0;
-# 9685 "sisl/physics/_bloch.c"
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 9699 "sisl/physics/_bloch.c"
 static PyObject *__pyx_array___getattr__(PyObject *__pyx_v_self, PyObject *__pyx_v_attr);
 static PyObject *__pyx_array___getattr__(PyObject *__pyx_v_self, PyObject *__pyx_v_attr) {
   PyObject *__pyx_r = 0;
@@ -6019,7 +5510,6 @@ static PyObject *__pyx_array___pyx_pf_15View_dot_MemoryView_5array_8__getattr__(
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__getattr__", 0);
-# 9725 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_memview); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 234, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -6029,7 +5519,6 @@ static PyObject *__pyx_array___pyx_pf_15View_dot_MemoryView_5array_8__getattr__(
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
-# 9744 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -6040,7 +5529,6 @@ static PyObject *__pyx_array___pyx_pf_15View_dot_MemoryView_5array_8__getattr__(
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 9764 "sisl/physics/_bloch.c"
 static PyObject *__pyx_array___getitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_item);
 static PyObject *__pyx_array___getitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_item) {
   PyObject *__pyx_r = 0;
@@ -6059,7 +5547,6 @@ static PyObject *__pyx_array___pyx_pf_15View_dot_MemoryView_5array_10__getitem__
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__getitem__", 0);
-# 9790 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_memview); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 237, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -6069,7 +5556,6 @@ static PyObject *__pyx_array___pyx_pf_15View_dot_MemoryView_5array_10__getitem__
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
-# 9809 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -6080,7 +5566,6 @@ static PyObject *__pyx_array___pyx_pf_15View_dot_MemoryView_5array_10__getitem__
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 9829 "sisl/physics/_bloch.c"
 static int __pyx_array___setitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_item, PyObject *__pyx_v_value);
 static int __pyx_array___setitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_item, PyObject *__pyx_v_value) {
   int __pyx_r;
@@ -6098,12 +5583,10 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array_12__setitem__(struc
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__setitem__", 0);
-# 9854 "sisl/physics/_bloch.c"
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_memview); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 240, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (unlikely(PyObject_SetItem(__pyx_t_1, __pyx_v_item, __pyx_v_value) < 0)) __PYX_ERR(2, 240, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 9868 "sisl/physics/_bloch.c"
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -6114,7 +5597,6 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array_12__setitem__(struc
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 9886 "sisl/physics/_bloch.c"
 static PyObject *__pyx_pw___pyx_array_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused);
 static PyObject *__pyx_pw___pyx_array_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
@@ -6144,7 +5626,6 @@ static PyObject *__pyx_pf___pyx_array___reduce_cython__(CYTHON_UNUSED struct __p
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(2, 2, __pyx_L1_error)
-# 9923 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("View.MemoryView.array.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -6153,7 +5634,6 @@ static PyObject *__pyx_pf___pyx_array___reduce_cython__(CYTHON_UNUSED struct __p
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 9940 "sisl/physics/_bloch.c"
 static PyObject *__pyx_pw___pyx_array_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state);
 static PyObject *__pyx_pw___pyx_array_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
@@ -6182,7 +5662,6 @@ static PyObject *__pyx_pf___pyx_array_2__setstate_cython__(CYTHON_UNUSED struct 
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(2, 4, __pyx_L1_error)
-# 9977 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("View.MemoryView.array.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -6191,7 +5670,6 @@ static PyObject *__pyx_pf___pyx_array_2__setstate_cython__(CYTHON_UNUSED struct 
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 9994 "sisl/physics/_bloch.c"
 static struct __pyx_array_obj *__pyx_array_new(PyObject *__pyx_v_shape, Py_ssize_t __pyx_v_itemsize, char *__pyx_v_format, char *__pyx_v_mode, char *__pyx_v_buf) {
   struct __pyx_array_obj *__pyx_v_result = 0;
   struct __pyx_array_obj *__pyx_r = NULL;
@@ -6202,10 +5680,8 @@ static struct __pyx_array_obj *__pyx_array_new(PyObject *__pyx_v_shape, Py_ssize
   PyObject *__pyx_t_4 = NULL;
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("array_cwrapper", 0);
-# 10012 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((__pyx_v_buf == NULL) != 0);
   if (__pyx_t_1) {
-# 10022 "sisl/physics/_bloch.c"
     __pyx_t_2 = PyInt_FromSsize_t(__pyx_v_itemsize); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 249, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_3 = __Pyx_PyBytes_FromString(__pyx_v_format); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 249, __pyx_L1_error)
@@ -6231,10 +5707,8 @@ static struct __pyx_array_obj *__pyx_array_new(PyObject *__pyx_v_shape, Py_ssize
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_v_result = ((struct __pyx_array_obj *)__pyx_t_4);
     __pyx_t_4 = 0;
-# 10055 "sisl/physics/_bloch.c"
     goto __pyx_L3;
   }
-# 10065 "sisl/physics/_bloch.c"
            {
     __pyx_t_4 = PyInt_FromSsize_t(__pyx_v_itemsize); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 251, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
@@ -6256,27 +5730,22 @@ static struct __pyx_array_obj *__pyx_array_new(PyObject *__pyx_v_shape, Py_ssize
     __pyx_t_4 = 0;
     __pyx_t_5 = 0;
     __pyx_t_3 = 0;
-# 10094 "sisl/physics/_bloch.c"
     __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 252, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_allocate_buffer, Py_False) < 0) __PYX_ERR(2, 252, __pyx_L1_error)
-# 10105 "sisl/physics/_bloch.c"
     __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)__pyx_array_type), __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(2, 251, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_v_result = ((struct __pyx_array_obj *)__pyx_t_5);
     __pyx_t_5 = 0;
-# 10119 "sisl/physics/_bloch.c"
     __pyx_v_result->data = __pyx_v_buf;
   }
   __pyx_L3:;
-# 10130 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(((PyObject *)__pyx_r));
   __Pyx_INCREF(((PyObject *)__pyx_v_result));
   __pyx_r = __pyx_v_result;
   goto __pyx_L0;
-# 10144 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
@@ -6290,7 +5759,6 @@ static struct __pyx_array_obj *__pyx_array_new(PyObject *__pyx_v_shape, Py_ssize
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 10167 "sisl/physics/_bloch.c"
 static int __pyx_MemviewEnum___init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds);
 static int __pyx_MemviewEnum___init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_name = 0;
@@ -6344,18 +5812,15 @@ static int __pyx_MemviewEnum___pyx_pf_15View_dot_MemoryView_4Enum___init__(struc
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__init__", 0);
-# 10228 "sisl/physics/_bloch.c"
   __Pyx_INCREF(__pyx_v_name);
   __Pyx_GIVEREF(__pyx_v_name);
   __Pyx_GOTREF(__pyx_v_self->name);
   __Pyx_DECREF(__pyx_v_self->name);
   __pyx_v_self->name = __pyx_v_name;
-# 10243 "sisl/physics/_bloch.c"
   __pyx_r = 0;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 10257 "sisl/physics/_bloch.c"
 static PyObject *__pyx_MemviewEnum___repr__(PyObject *__pyx_v_self);
 static PyObject *__pyx_MemviewEnum___repr__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -6372,18 +5837,15 @@ static PyObject *__pyx_MemviewEnum___pyx_pf_15View_dot_MemoryView_4Enum_2__repr_
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__repr__", 0);
-# 10281 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_self->name);
   __pyx_r = __pyx_v_self->name;
   goto __pyx_L0;
-# 10295 "sisl/physics/_bloch.c"
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 10308 "sisl/physics/_bloch.c"
 static PyObject *__pyx_pw___pyx_MemviewEnum_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused);
 static PyObject *__pyx_pw___pyx_MemviewEnum_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
@@ -6408,7 +5870,6 @@ static PyObject *__pyx_pf___pyx_MemviewEnum___reduce_cython__(struct __pyx_Memvi
   PyObject *__pyx_t_4 = NULL;
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("__reduce_cython__", 0);
-# 10340 "sisl/physics/_bloch.c"
   __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_v_self->name);
@@ -6416,16 +5877,13 @@ static PyObject *__pyx_pf___pyx_MemviewEnum___reduce_cython__(struct __pyx_Memvi
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_self->name);
   __pyx_v_state = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
-# 10355 "sisl/physics/_bloch.c"
   __pyx_t_1 = __Pyx_GetAttr3(((PyObject *)__pyx_v_self), __pyx_n_s_dict, Py_None); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v__dict = __pyx_t_1;
   __pyx_t_1 = 0;
-# 10367 "sisl/physics/_bloch.c"
   __pyx_t_2 = (__pyx_v__dict != Py_None);
   __pyx_t_3 = (__pyx_t_2 != 0);
   if (__pyx_t_3) {
-# 10378 "sisl/physics/_bloch.c"
     __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 8, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_v__dict);
@@ -6436,21 +5894,16 @@ static PyObject *__pyx_pf___pyx_MemviewEnum___reduce_cython__(struct __pyx_Memvi
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF_SET(__pyx_v_state, ((PyObject*)__pyx_t_4));
     __pyx_t_4 = 0;
-# 10396 "sisl/physics/_bloch.c"
     __pyx_v_use_setstate = 1;
-# 10405 "sisl/physics/_bloch.c"
     goto __pyx_L3;
   }
-# 10415 "sisl/physics/_bloch.c"
            {
     __pyx_t_3 = (__pyx_v_self->name != Py_None);
     __pyx_v_use_setstate = __pyx_t_3;
   }
   __pyx_L3:;
-# 10428 "sisl/physics/_bloch.c"
   __pyx_t_3 = (__pyx_v_use_setstate != 0);
   if (__pyx_t_3) {
-# 10438 "sisl/physics/_bloch.c"
     __Pyx_XDECREF(__pyx_r);
     __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_pyx_unpickle_Enum); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 13, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
@@ -6479,9 +5932,7 @@ static PyObject *__pyx_pf___pyx_MemviewEnum___reduce_cython__(struct __pyx_Memvi
     __pyx_r = __pyx_t_5;
     __pyx_t_5 = 0;
     goto __pyx_L0;
-# 10474 "sisl/physics/_bloch.c"
   }
-# 10483 "sisl/physics/_bloch.c"
            {
     __Pyx_XDECREF(__pyx_r);
     __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_pyx_unpickle_Enum); if (unlikely(!__pyx_t_5)) __PYX_ERR(2, 15, __pyx_L1_error)
@@ -6509,7 +5960,6 @@ static PyObject *__pyx_pf___pyx_MemviewEnum___reduce_cython__(struct __pyx_Memvi
     __pyx_t_4 = 0;
     goto __pyx_L0;
   }
-# 10518 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_4);
@@ -6523,7 +5973,6 @@ static PyObject *__pyx_pf___pyx_MemviewEnum___reduce_cython__(struct __pyx_Memvi
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 10540 "sisl/physics/_bloch.c"
 static PyObject *__pyx_pw___pyx_MemviewEnum_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state);
 static PyObject *__pyx_pw___pyx_MemviewEnum_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
@@ -6551,7 +6000,6 @@ static PyObject *__pyx_pf___pyx_MemviewEnum_2__setstate_cython__(struct __pyx_Me
   __pyx_t_1 = __pyx_unpickle_Enum__set_state(__pyx_v_self, ((PyObject*)__pyx_v___pyx_state)); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 10576 "sisl/physics/_bloch.c"
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -6563,31 +6011,22 @@ static PyObject *__pyx_pf___pyx_MemviewEnum_2__setstate_cython__(struct __pyx_Me
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 10596 "sisl/physics/_bloch.c"
 static void *__pyx_align_pointer(void *__pyx_v_memory, size_t __pyx_v_alignment) {
   Py_intptr_t __pyx_v_aligned_p;
   size_t __pyx_v_offset;
   void *__pyx_r;
   int __pyx_t_1;
-# 10609 "sisl/physics/_bloch.c"
   __pyx_v_aligned_p = ((Py_intptr_t)__pyx_v_memory);
-# 10618 "sisl/physics/_bloch.c"
   __pyx_v_offset = (__pyx_v_aligned_p % __pyx_v_alignment);
-# 10627 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((__pyx_v_offset > 0) != 0);
   if (__pyx_t_1) {
-# 10637 "sisl/physics/_bloch.c"
     __pyx_v_aligned_p = (__pyx_v_aligned_p + (__pyx_v_alignment - __pyx_v_offset));
-# 10646 "sisl/physics/_bloch.c"
   }
-# 10655 "sisl/physics/_bloch.c"
   __pyx_r = ((void *)__pyx_v_aligned_p);
   goto __pyx_L0;
-# 10667 "sisl/physics/_bloch.c"
   __pyx_L0:;
   return __pyx_r;
 }
-# 10680 "sisl/physics/_bloch.c"
 static int __pyx_memoryview___cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds);
 static int __pyx_memoryview___cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_obj = 0;
@@ -6674,15 +6113,12 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview___cinit_
   int __pyx_t_3;
   int __pyx_t_4;
   __Pyx_RefNannySetupContext("__cinit__", 0);
-# 10774 "sisl/physics/_bloch.c"
   __Pyx_INCREF(__pyx_v_obj);
   __Pyx_GIVEREF(__pyx_v_obj);
   __Pyx_GOTREF(__pyx_v_self->obj);
   __Pyx_DECREF(__pyx_v_self->obj);
   __pyx_v_self->obj = __pyx_v_obj;
-# 10787 "sisl/physics/_bloch.c"
   __pyx_v_self->flags = __pyx_v_flags;
-# 10796 "sisl/physics/_bloch.c"
   __pyx_t_2 = (((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))) == ((PyObject *)__pyx_memoryview_type));
   __pyx_t_3 = (__pyx_t_2 != 0);
   if (!__pyx_t_3) {
@@ -6695,46 +6131,28 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview___cinit_
   __pyx_t_1 = __pyx_t_2;
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
-# 10816 "sisl/physics/_bloch.c"
     __pyx_t_4 = __Pyx_GetBuffer(__pyx_v_obj, (&__pyx_v_self->view), __pyx_v_flags); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(2, 349, __pyx_L1_error)
-# 10825 "sisl/physics/_bloch.c"
     __pyx_t_1 = ((((PyObject *)__pyx_v_self->view.obj) == NULL) != 0);
     if (__pyx_t_1) {
-# 10835 "sisl/physics/_bloch.c"
       ((Py_buffer *)(&__pyx_v_self->view))->obj = Py_None;
-# 10844 "sisl/physics/_bloch.c"
       Py_INCREF(Py_None);
-# 10853 "sisl/physics/_bloch.c"
     }
-# 10862 "sisl/physics/_bloch.c"
   }
-# 10871 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((__pyx_memoryview_thread_locks_used < 8) != 0);
   if (__pyx_t_1) {
-# 10881 "sisl/physics/_bloch.c"
     __pyx_v_self->lock = (__pyx_memoryview_thread_locks[__pyx_memoryview_thread_locks_used]);
-# 10890 "sisl/physics/_bloch.c"
     __pyx_memoryview_thread_locks_used = (__pyx_memoryview_thread_locks_used + 1);
-# 10899 "sisl/physics/_bloch.c"
   }
-# 10908 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((__pyx_v_self->lock == NULL) != 0);
   if (__pyx_t_1) {
-# 10918 "sisl/physics/_bloch.c"
     __pyx_v_self->lock = PyThread_allocate_lock();
-# 10927 "sisl/physics/_bloch.c"
     __pyx_t_1 = ((__pyx_v_self->lock == NULL) != 0);
     if (unlikely(__pyx_t_1)) {
-# 10937 "sisl/physics/_bloch.c"
       PyErr_NoMemory(); __PYX_ERR(2, 361, __pyx_L1_error)
-# 10946 "sisl/physics/_bloch.c"
     }
-# 10955 "sisl/physics/_bloch.c"
   }
-# 10964 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((__pyx_v_flags & PyBUF_FORMAT) != 0);
   if (__pyx_t_1) {
-# 10974 "sisl/physics/_bloch.c"
     __pyx_t_2 = (((__pyx_v_self->view.format[0]) == 'O') != 0);
     if (__pyx_t_2) {
     } else {
@@ -6745,19 +6163,14 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview___cinit_
     __pyx_t_1 = __pyx_t_2;
     __pyx_L11_bool_binop_done:;
     __pyx_v_self->dtype_is_object = __pyx_t_1;
-# 10992 "sisl/physics/_bloch.c"
     goto __pyx_L10;
   }
-# 11002 "sisl/physics/_bloch.c"
            {
     __pyx_v_self->dtype_is_object = __pyx_v_dtype_is_object;
   }
   __pyx_L10:;
-# 11014 "sisl/physics/_bloch.c"
   __pyx_v_self->acquisition_count_aligned_p = ((__pyx_atomic_int *)__pyx_align_pointer(((void *)(&(__pyx_v_self->acquisition_count[0]))), (sizeof(__pyx_atomic_int))));
-# 11023 "sisl/physics/_bloch.c"
   __pyx_v_self->typeinfo = NULL;
-# 11034 "sisl/physics/_bloch.c"
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -6767,7 +6180,6 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview___cinit_
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 11053 "sisl/physics/_bloch.c"
 static void __pyx_memoryview___dealloc__(PyObject *__pyx_v_self);
 static void __pyx_memoryview___dealloc__(PyObject *__pyx_v_self) {
   __Pyx_RefNannyDeclarations
@@ -6789,54 +6201,37 @@ static void __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_2__deal
   PyThread_type_lock __pyx_t_6;
   PyThread_type_lock __pyx_t_7;
   __Pyx_RefNannySetupContext("__dealloc__", 0);
-# 11082 "sisl/physics/_bloch.c"
   __pyx_t_1 = (__pyx_v_self->obj != Py_None);
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
-# 11093 "sisl/physics/_bloch.c"
     __Pyx_ReleaseBuffer((&__pyx_v_self->view));
-# 11102 "sisl/physics/_bloch.c"
   }
-# 11111 "sisl/physics/_bloch.c"
   __pyx_t_2 = ((__pyx_v_self->lock != NULL) != 0);
   if (__pyx_t_2) {
-# 11121 "sisl/physics/_bloch.c"
     __pyx_t_3 = __pyx_memoryview_thread_locks_used;
     __pyx_t_4 = __pyx_t_3;
     for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
       __pyx_v_i = __pyx_t_5;
-# 11133 "sisl/physics/_bloch.c"
       __pyx_t_2 = (((__pyx_memoryview_thread_locks[__pyx_v_i]) == __pyx_v_self->lock) != 0);
       if (__pyx_t_2) {
-# 11143 "sisl/physics/_bloch.c"
         __pyx_memoryview_thread_locks_used = (__pyx_memoryview_thread_locks_used - 1);
-# 11152 "sisl/physics/_bloch.c"
         __pyx_t_2 = ((__pyx_v_i != __pyx_memoryview_thread_locks_used) != 0);
         if (__pyx_t_2) {
-# 11162 "sisl/physics/_bloch.c"
           __pyx_t_6 = (__pyx_memoryview_thread_locks[__pyx_memoryview_thread_locks_used]);
           __pyx_t_7 = (__pyx_memoryview_thread_locks[__pyx_v_i]);
-# 11172 "sisl/physics/_bloch.c"
           (__pyx_memoryview_thread_locks[__pyx_v_i]) = __pyx_t_6;
           (__pyx_memoryview_thread_locks[__pyx_memoryview_thread_locks_used]) = __pyx_t_7;
-# 11182 "sisl/physics/_bloch.c"
         }
-# 11191 "sisl/physics/_bloch.c"
         goto __pyx_L6_break;
-# 11200 "sisl/physics/_bloch.c"
       }
     }
              {
-# 11211 "sisl/physics/_bloch.c"
       PyThread_free_lock(__pyx_v_self->lock);
     }
     __pyx_L6_break:;
-# 11222 "sisl/physics/_bloch.c"
   }
-# 11233 "sisl/physics/_bloch.c"
   __Pyx_RefNannyFinishContext();
 }
-# 11244 "sisl/physics/_bloch.c"
 static char *__pyx_memoryview_get_item_pointer(struct __pyx_memoryview_obj *__pyx_v_self, PyObject *__pyx_v_index) {
   Py_ssize_t __pyx_v_dim;
   char *__pyx_v_itemp;
@@ -6851,9 +6246,7 @@ static char *__pyx_memoryview_get_item_pointer(struct __pyx_memoryview_obj *__py
   Py_ssize_t __pyx_t_6;
   char *__pyx_t_7;
   __Pyx_RefNannySetupContext("get_item_pointer", 0);
-# 11266 "sisl/physics/_bloch.c"
   __pyx_v_itemp = ((char *)__pyx_v_self->view.buf);
-# 11275 "sisl/physics/_bloch.c"
   __pyx_t_1 = 0;
   if (likely(PyList_CheckExact(__pyx_v_index)) || PyTuple_CheckExact(__pyx_v_index)) {
     __pyx_t_2 = __pyx_v_index; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
@@ -6898,17 +6291,13 @@ static char *__pyx_memoryview_get_item_pointer(struct __pyx_memoryview_obj *__py
     __pyx_t_5 = 0;
     __pyx_v_dim = __pyx_t_1;
     __pyx_t_1 = (__pyx_t_1 + 1);
-# 11327 "sisl/physics/_bloch.c"
     __pyx_t_6 = __Pyx_PyIndex_AsSsize_t(__pyx_v_idx); if (unlikely((__pyx_t_6 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(2, 394, __pyx_L1_error)
     __pyx_t_7 = __pyx_pybuffer_index((&__pyx_v_self->view), __pyx_v_itemp, __pyx_t_6, __pyx_v_dim); if (unlikely(__pyx_t_7 == ((char *)NULL))) __PYX_ERR(2, 394, __pyx_L1_error)
     __pyx_v_itemp = __pyx_t_7;
-# 11338 "sisl/physics/_bloch.c"
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-# 11348 "sisl/physics/_bloch.c"
   __pyx_r = __pyx_v_itemp;
   goto __pyx_L0;
-# 11360 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_5);
@@ -6919,7 +6308,6 @@ static char *__pyx_memoryview_get_item_pointer(struct __pyx_memoryview_obj *__py
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 11380 "sisl/physics/_bloch.c"
 static PyObject *__pyx_memoryview___getitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_index);
 static PyObject *__pyx_memoryview___getitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_index) {
   PyObject *__pyx_r = 0;
@@ -6945,18 +6333,14 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_4_
   PyObject *__pyx_t_5 = NULL;
   char *__pyx_t_6;
   __Pyx_RefNannySetupContext("__getitem__", 0);
-# 11413 "sisl/physics/_bloch.c"
   __pyx_t_1 = (__pyx_v_index == __pyx_builtin_Ellipsis);
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
-# 11424 "sisl/physics/_bloch.c"
     __Pyx_XDECREF(__pyx_r);
     __Pyx_INCREF(((PyObject *)__pyx_v_self));
     __pyx_r = ((PyObject *)__pyx_v_self);
     goto __pyx_L0;
-# 11436 "sisl/physics/_bloch.c"
   }
-# 11445 "sisl/physics/_bloch.c"
   __pyx_t_3 = _unellipsify(__pyx_v_index, __pyx_v_self->view.ndim); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 403, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   if (likely(__pyx_t_3 != Py_None)) {
@@ -6986,23 +6370,18 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_4_
   __pyx_t_4 = 0;
   __pyx_v_indices = __pyx_t_5;
   __pyx_t_5 = 0;
-# 11482 "sisl/physics/_bloch.c"
   __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_have_slices); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(2, 406, __pyx_L1_error)
   if (__pyx_t_2) {
-# 11492 "sisl/physics/_bloch.c"
     __Pyx_XDECREF(__pyx_r);
     __pyx_t_3 = ((PyObject *)__pyx_memview_slice(__pyx_v_self, __pyx_v_indices)); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 407, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
-# 11506 "sisl/physics/_bloch.c"
   }
-# 11515 "sisl/physics/_bloch.c"
            {
     __pyx_t_6 = ((struct __pyx_vtabstruct_memoryview *)__pyx_v_self->__pyx_vtab)->get_item_pointer(__pyx_v_self, __pyx_v_indices); if (unlikely(__pyx_t_6 == ((char *)NULL))) __PYX_ERR(2, 409, __pyx_L1_error)
     __pyx_v_itemp = __pyx_t_6;
-# 11526 "sisl/physics/_bloch.c"
     __Pyx_XDECREF(__pyx_r);
     __pyx_t_3 = ((struct __pyx_vtabstruct_memoryview *)__pyx_v_self->__pyx_vtab)->convert_item_to_object(__pyx_v_self, __pyx_v_itemp); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 410, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
@@ -7010,7 +6389,6 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_4_
     __pyx_t_3 = 0;
     goto __pyx_L0;
   }
-# 11543 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
@@ -7024,7 +6402,6 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_4_
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 11566 "sisl/physics/_bloch.c"
 static int __pyx_memoryview___setitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_index, PyObject *__pyx_v_value);
 static int __pyx_memoryview___setitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_index, PyObject *__pyx_v_value) {
   int __pyx_r;
@@ -7048,18 +6425,14 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_6__setit
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("__setitem__", 0);
   __Pyx_INCREF(__pyx_v_index);
-# 11597 "sisl/physics/_bloch.c"
   __pyx_t_1 = (__pyx_v_self->view.readonly != 0);
   if (unlikely(__pyx_t_1)) {
-# 11607 "sisl/physics/_bloch.c"
     __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__17, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __PYX_ERR(2, 414, __pyx_L1_error)
-# 11620 "sisl/physics/_bloch.c"
   }
-# 11629 "sisl/physics/_bloch.c"
   __pyx_t_2 = _unellipsify(__pyx_v_index, __pyx_v_self->view.ndim); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 416, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   if (likely(__pyx_t_2 != Py_None)) {
@@ -7089,28 +6462,22 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_6__setit
   __pyx_t_3 = 0;
   __Pyx_DECREF_SET(__pyx_v_index, __pyx_t_4);
   __pyx_t_4 = 0;
-# 11666 "sisl/physics/_bloch.c"
   __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_have_slices); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(2, 418, __pyx_L1_error)
   if (__pyx_t_1) {
-# 11676 "sisl/physics/_bloch.c"
     __pyx_t_2 = ((struct __pyx_vtabstruct_memoryview *)__pyx_v_self->__pyx_vtab)->is_slice(__pyx_v_self, __pyx_v_value); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 419, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_v_obj = __pyx_t_2;
     __pyx_t_2 = 0;
-# 11688 "sisl/physics/_bloch.c"
     __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_obj); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(2, 420, __pyx_L1_error)
     if (__pyx_t_1) {
-# 11698 "sisl/physics/_bloch.c"
       __pyx_t_2 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_self), __pyx_v_index); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 421, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_4 = ((struct __pyx_vtabstruct_memoryview *)__pyx_v_self->__pyx_vtab)->setitem_slice_assignment(__pyx_v_self, __pyx_t_2, __pyx_v_obj); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 421, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-# 11712 "sisl/physics/_bloch.c"
       goto __pyx_L5;
     }
-# 11722 "sisl/physics/_bloch.c"
              {
       __pyx_t_4 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_self), __pyx_v_index); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 423, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
@@ -7121,17 +6488,14 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_6__setit
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     }
     __pyx_L5:;
-# 11740 "sisl/physics/_bloch.c"
     goto __pyx_L4;
   }
-# 11750 "sisl/physics/_bloch.c"
            {
     __pyx_t_2 = ((struct __pyx_vtabstruct_memoryview *)__pyx_v_self->__pyx_vtab)->setitem_indexed(__pyx_v_self, __pyx_v_index, __pyx_v_value); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 425, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   }
   __pyx_L4:;
-# 11766 "sisl/physics/_bloch.c"
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -7147,7 +6511,6 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_6__setit
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 11790 "sisl/physics/_bloch.c"
 static PyObject *__pyx_memoryview_is_slice(struct __pyx_memoryview_obj *__pyx_v_self, PyObject *__pyx_v_obj) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -7162,11 +6525,9 @@ static PyObject *__pyx_memoryview_is_slice(struct __pyx_memoryview_obj *__pyx_v_
   int __pyx_t_9;
   __Pyx_RefNannySetupContext("is_slice", 0);
   __Pyx_INCREF(__pyx_v_obj);
-# 11812 "sisl/physics/_bloch.c"
   __pyx_t_1 = __Pyx_TypeCheck(__pyx_v_obj, __pyx_memoryview_type);
   __pyx_t_2 = ((!(__pyx_t_1 != 0)) != 0);
   if (__pyx_t_2) {
-# 11823 "sisl/physics/_bloch.c"
     {
       __Pyx_PyThreadState_declare
       __Pyx_PyThreadState_assign
@@ -7175,13 +6536,10 @@ static PyObject *__pyx_memoryview_is_slice(struct __pyx_memoryview_obj *__pyx_v_
       __Pyx_XGOTREF(__pyx_t_4);
       __Pyx_XGOTREF(__pyx_t_5);
                {
-# 11839 "sisl/physics/_bloch.c"
         __pyx_t_6 = __Pyx_PyInt_From_int(((__pyx_v_self->flags & (~PyBUF_WRITABLE)) | PyBUF_ANY_CONTIGUOUS)); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 430, __pyx_L4_error)
         __Pyx_GOTREF(__pyx_t_6);
-# 11849 "sisl/physics/_bloch.c"
         __pyx_t_7 = __Pyx_PyBool_FromLong(__pyx_v_self->dtype_is_object); if (unlikely(!__pyx_t_7)) __PYX_ERR(2, 431, __pyx_L4_error)
         __Pyx_GOTREF(__pyx_t_7);
-# 11859 "sisl/physics/_bloch.c"
         __pyx_t_8 = PyTuple_New(3); if (unlikely(!__pyx_t_8)) __PYX_ERR(2, 430, __pyx_L4_error)
         __Pyx_GOTREF(__pyx_t_8);
         __Pyx_INCREF(__pyx_v_obj);
@@ -7198,7 +6556,6 @@ static PyObject *__pyx_memoryview_is_slice(struct __pyx_memoryview_obj *__pyx_v_
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
         __Pyx_DECREF_SET(__pyx_v_obj, __pyx_t_7);
         __pyx_t_7 = 0;
-# 11883 "sisl/physics/_bloch.c"
       }
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -7208,7 +6565,6 @@ static PyObject *__pyx_memoryview_is_slice(struct __pyx_memoryview_obj *__pyx_v_
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
-# 11900 "sisl/physics/_bloch.c"
       __pyx_t_9 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_TypeError);
       if (__pyx_t_9) {
         __Pyx_AddTraceback("View.MemoryView.memoryview.is_slice", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -7216,7 +6572,6 @@ static PyObject *__pyx_memoryview_is_slice(struct __pyx_memoryview_obj *__pyx_v_
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_GOTREF(__pyx_t_8);
         __Pyx_GOTREF(__pyx_t_6);
-# 11915 "sisl/physics/_bloch.c"
         __Pyx_XDECREF(__pyx_r);
         __pyx_r = Py_None; __Pyx_INCREF(Py_None);
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -7226,7 +6581,6 @@ static PyObject *__pyx_memoryview_is_slice(struct __pyx_memoryview_obj *__pyx_v_
       }
       goto __pyx_L6_except_error;
       __pyx_L6_except_error:;
-# 11932 "sisl/physics/_bloch.c"
       __Pyx_XGIVEREF(__pyx_t_3);
       __Pyx_XGIVEREF(__pyx_t_4);
       __Pyx_XGIVEREF(__pyx_t_5);
@@ -7240,14 +6594,11 @@ static PyObject *__pyx_memoryview_is_slice(struct __pyx_memoryview_obj *__pyx_v_
       goto __pyx_L0;
       __pyx_L9_try_end:;
     }
-# 11953 "sisl/physics/_bloch.c"
   }
-# 11962 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_obj);
   __pyx_r = __pyx_v_obj;
   goto __pyx_L0;
-# 11976 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
@@ -7260,7 +6611,6 @@ static PyObject *__pyx_memoryview_is_slice(struct __pyx_memoryview_obj *__pyx_v_
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 11997 "sisl/physics/_bloch.c"
 static PyObject *__pyx_memoryview_setitem_slice_assignment(struct __pyx_memoryview_obj *__pyx_v_self, PyObject *__pyx_v_dst, PyObject *__pyx_v_src) {
   __Pyx_memviewslice __pyx_v_dst_slice;
   __Pyx_memviewslice __pyx_v_src_slice;
@@ -7271,11 +6621,8 @@ static PyObject *__pyx_memoryview_setitem_slice_assignment(struct __pyx_memoryvi
   int __pyx_t_3;
   int __pyx_t_4;
   __Pyx_RefNannySetupContext("setitem_slice_assignment", 0);
-# 12015 "sisl/physics/_bloch.c"
   if (!(likely(((__pyx_v_src) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_src, __pyx_memoryview_type))))) __PYX_ERR(2, 441, __pyx_L1_error)
-# 12024 "sisl/physics/_bloch.c"
   if (!(likely(((__pyx_v_dst) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_dst, __pyx_memoryview_type))))) __PYX_ERR(2, 442, __pyx_L1_error)
-# 12033 "sisl/physics/_bloch.c"
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_src, __pyx_n_s_ndim); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 443, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(2, 443, __pyx_L1_error)
@@ -7284,9 +6631,7 @@ static PyObject *__pyx_memoryview_setitem_slice_assignment(struct __pyx_memoryvi
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(2, 443, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 12049 "sisl/physics/_bloch.c"
   __pyx_t_4 = __pyx_memoryview_copy_contents((__pyx_memoryview_get_slice_from_memoryview(((struct __pyx_memoryview_obj *)__pyx_v_src), (&__pyx_v_src_slice))[0]), (__pyx_memoryview_get_slice_from_memoryview(((struct __pyx_memoryview_obj *)__pyx_v_dst), (&__pyx_v_dst_slice))[0]), __pyx_t_2, __pyx_t_3, __pyx_v_self->dtype_is_object); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(2, 441, __pyx_L1_error)
-# 12060 "sisl/physics/_bloch.c"
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -7298,7 +6643,6 @@ static PyObject *__pyx_memoryview_setitem_slice_assignment(struct __pyx_memoryvi
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 12080 "sisl/physics/_bloch.c"
 static PyObject *__pyx_memoryview_setitem_slice_assign_scalar(struct __pyx_memoryview_obj *__pyx_v_self, struct __pyx_memoryview_obj *__pyx_v_dst, PyObject *__pyx_v_value) {
   int __pyx_v_array[0x80];
   void *__pyx_v_tmp;
@@ -7319,62 +6663,42 @@ static PyObject *__pyx_memoryview_setitem_slice_assign_scalar(struct __pyx_memor
   PyObject *__pyx_t_10 = NULL;
   PyObject *__pyx_t_11 = NULL;
   __Pyx_RefNannySetupContext("setitem_slice_assign_scalar", 0);
-# 12108 "sisl/physics/_bloch.c"
   __pyx_v_tmp = NULL;
-# 12117 "sisl/physics/_bloch.c"
   __pyx_v_dst_slice = __pyx_memoryview_get_slice_from_memoryview(__pyx_v_dst, (&__pyx_v_tmp_slice));
-# 12126 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((((size_t)__pyx_v_self->view.itemsize) > (sizeof(__pyx_v_array))) != 0);
   if (__pyx_t_1) {
-# 12136 "sisl/physics/_bloch.c"
     __pyx_v_tmp = PyMem_Malloc(__pyx_v_self->view.itemsize);
-# 12145 "sisl/physics/_bloch.c"
     __pyx_t_1 = ((__pyx_v_tmp == NULL) != 0);
     if (unlikely(__pyx_t_1)) {
-# 12155 "sisl/physics/_bloch.c"
       PyErr_NoMemory(); __PYX_ERR(2, 457, __pyx_L1_error)
-# 12164 "sisl/physics/_bloch.c"
     }
-# 12173 "sisl/physics/_bloch.c"
     __pyx_v_item = __pyx_v_tmp;
-# 12182 "sisl/physics/_bloch.c"
     goto __pyx_L3;
   }
-# 12192 "sisl/physics/_bloch.c"
            {
     __pyx_v_item = ((void *)__pyx_v_array);
   }
   __pyx_L3:;
-# 12204 "sisl/physics/_bloch.c"
            {
-# 12213 "sisl/physics/_bloch.c"
     __pyx_t_1 = (__pyx_v_self->dtype_is_object != 0);
     if (__pyx_t_1) {
-# 12223 "sisl/physics/_bloch.c"
       (((PyObject **)__pyx_v_item)[0]) = ((PyObject *)__pyx_v_value);
-# 12232 "sisl/physics/_bloch.c"
       goto __pyx_L8;
     }
-# 12242 "sisl/physics/_bloch.c"
              {
       __pyx_t_2 = ((struct __pyx_vtabstruct_memoryview *)__pyx_v_self->__pyx_vtab)->assign_item_from_object(__pyx_v_self, ((char *)__pyx_v_item), __pyx_v_value); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 466, __pyx_L6_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     }
     __pyx_L8:;
-# 12256 "sisl/physics/_bloch.c"
     __pyx_t_1 = ((__pyx_v_self->view.suboffsets != NULL) != 0);
     if (__pyx_t_1) {
-# 12266 "sisl/physics/_bloch.c"
       __pyx_t_2 = assert_direct_dimensions(__pyx_v_self->view.suboffsets, __pyx_v_self->view.ndim); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 471, __pyx_L6_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-# 12277 "sisl/physics/_bloch.c"
     }
-# 12286 "sisl/physics/_bloch.c"
     __pyx_memoryview_slice_assign_scalar(__pyx_v_dst_slice, __pyx_v_dst->view.ndim, __pyx_v_self->view.itemsize, __pyx_v_item, __pyx_v_self->dtype_is_object);
   }
-# 12296 "sisl/physics/_bloch.c"
                {
                     {
       PyMem_Free(__pyx_v_tmp);
@@ -7414,7 +6738,6 @@ static PyObject *__pyx_memoryview_setitem_slice_assign_scalar(struct __pyx_memor
     }
     __pyx_L7:;
   }
-# 12345 "sisl/physics/_bloch.c"
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -7426,7 +6749,6 @@ static PyObject *__pyx_memoryview_setitem_slice_assign_scalar(struct __pyx_memor
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 12365 "sisl/physics/_bloch.c"
 static PyObject *__pyx_memoryview_setitem_indexed(struct __pyx_memoryview_obj *__pyx_v_self, PyObject *__pyx_v_index, PyObject *__pyx_v_value) {
   char *__pyx_v_itemp;
   PyObject *__pyx_r = NULL;
@@ -7434,14 +6756,11 @@ static PyObject *__pyx_memoryview_setitem_indexed(struct __pyx_memoryview_obj *_
   char *__pyx_t_1;
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("setitem_indexed", 0);
-# 12380 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((struct __pyx_vtabstruct_memoryview *)__pyx_v_self->__pyx_vtab)->get_item_pointer(__pyx_v_self, __pyx_v_index); if (unlikely(__pyx_t_1 == ((char *)NULL))) __PYX_ERR(2, 478, __pyx_L1_error)
   __pyx_v_itemp = __pyx_t_1;
-# 12390 "sisl/physics/_bloch.c"
   __pyx_t_2 = ((struct __pyx_vtabstruct_memoryview *)__pyx_v_self->__pyx_vtab)->assign_item_from_object(__pyx_v_self, __pyx_v_itemp, __pyx_v_value); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 479, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-# 12403 "sisl/physics/_bloch.c"
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -7453,7 +6772,6 @@ static PyObject *__pyx_memoryview_setitem_indexed(struct __pyx_memoryview_obj *_
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 12423 "sisl/physics/_bloch.c"
 static PyObject *__pyx_memoryview_convert_item_to_object(struct __pyx_memoryview_obj *__pyx_v_self, char *__pyx_v_itemp) {
   PyObject *__pyx_v_struct = NULL;
   PyObject *__pyx_v_bytesitem = 0;
@@ -7472,17 +6790,14 @@ static PyObject *__pyx_memoryview_convert_item_to_object(struct __pyx_memoryview
   size_t __pyx_t_10;
   int __pyx_t_11;
   __Pyx_RefNannySetupContext("convert_item_to_object", 0);
-# 12449 "sisl/physics/_bloch.c"
   __pyx_t_1 = __Pyx_Import(__pyx_n_s_struct, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 484, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_struct = __pyx_t_1;
   __pyx_t_1 = 0;
-# 12461 "sisl/physics/_bloch.c"
   __pyx_t_1 = __Pyx_PyBytes_FromStringAndSize(__pyx_v_itemp + 0, __pyx_v_self->view.itemsize - 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 487, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_bytesitem = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
-# 12473 "sisl/physics/_bloch.c"
   {
     __Pyx_PyThreadState_declare
     __Pyx_PyThreadState_assign
@@ -7491,7 +6806,6 @@ static PyObject *__pyx_memoryview_convert_item_to_object(struct __pyx_memoryview
     __Pyx_XGOTREF(__pyx_t_3);
     __Pyx_XGOTREF(__pyx_t_4);
              {
-# 12489 "sisl/physics/_bloch.c"
       __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_struct, __pyx_n_s_unpack); if (unlikely(!__pyx_t_5)) __PYX_ERR(2, 489, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_5);
       __pyx_t_6 = __Pyx_PyBytes_FromString(__pyx_v_self->view.format); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 489, __pyx_L3_error)
@@ -7545,23 +6859,18 @@ static PyObject *__pyx_memoryview_convert_item_to_object(struct __pyx_memoryview
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __pyx_v_result = __pyx_t_1;
       __pyx_t_1 = 0;
-# 12550 "sisl/physics/_bloch.c"
     }
-# 12559 "sisl/physics/_bloch.c"
               {
       __pyx_t_10 = strlen(__pyx_v_self->view.format);
       __pyx_t_11 = ((__pyx_t_10 == 1) != 0);
       if (__pyx_t_11) {
-# 12571 "sisl/physics/_bloch.c"
         __Pyx_XDECREF(__pyx_r);
         __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_result, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 494, __pyx_L5_except_error)
         __Pyx_GOTREF(__pyx_t_1);
         __pyx_r = __pyx_t_1;
         __pyx_t_1 = 0;
         goto __pyx_L6_except_return;
-# 12585 "sisl/physics/_bloch.c"
       }
-# 12594 "sisl/physics/_bloch.c"
       __Pyx_XDECREF(__pyx_r);
       __Pyx_INCREF(__pyx_v_result);
       __pyx_r = __pyx_v_result;
@@ -7573,7 +6882,6 @@ static PyObject *__pyx_memoryview_convert_item_to_object(struct __pyx_memoryview
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-# 12613 "sisl/physics/_bloch.c"
     __Pyx_ErrFetch(&__pyx_t_1, &__pyx_t_5, &__pyx_t_9);
     __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_struct, __pyx_n_s_error); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 490, __pyx_L5_except_error)
     __Pyx_GOTREF(__pyx_t_6);
@@ -7587,7 +6895,6 @@ static PyObject *__pyx_memoryview_convert_item_to_object(struct __pyx_memoryview
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GOTREF(__pyx_t_1);
-# 12634 "sisl/physics/_bloch.c"
       __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__18, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 491, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_Raise(__pyx_t_6, 0, 0, 0);
@@ -7596,7 +6903,6 @@ static PyObject *__pyx_memoryview_convert_item_to_object(struct __pyx_memoryview
     }
     goto __pyx_L5_except_error;
     __pyx_L5_except_error:;
-# 12650 "sisl/physics/_bloch.c"
     __Pyx_XGIVEREF(__pyx_t_2);
     __Pyx_XGIVEREF(__pyx_t_3);
     __Pyx_XGIVEREF(__pyx_t_4);
@@ -7609,7 +6915,6 @@ static PyObject *__pyx_memoryview_convert_item_to_object(struct __pyx_memoryview
     __Pyx_ExceptionReset(__pyx_t_2, __pyx_t_3, __pyx_t_4);
     goto __pyx_L0;
   }
-# 12672 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_5);
@@ -7626,7 +6931,6 @@ static PyObject *__pyx_memoryview_convert_item_to_object(struct __pyx_memoryview
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 12697 "sisl/physics/_bloch.c"
 static PyObject *__pyx_memoryview_assign_item_from_object(struct __pyx_memoryview_obj *__pyx_v_self, char *__pyx_v_itemp, PyObject *__pyx_v_value) {
   PyObject *__pyx_v_struct = NULL;
   char __pyx_v_c;
@@ -7649,16 +6953,13 @@ static PyObject *__pyx_memoryview_assign_item_from_object(struct __pyx_memoryvie
   char *__pyx_t_13;
   char *__pyx_t_14;
   __Pyx_RefNannySetupContext("assign_item_from_object", 0);
-# 12727 "sisl/physics/_bloch.c"
   __pyx_t_1 = __Pyx_Import(__pyx_n_s_struct, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 500, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_struct = __pyx_t_1;
   __pyx_t_1 = 0;
-# 12739 "sisl/physics/_bloch.c"
   __pyx_t_2 = PyTuple_Check(__pyx_v_value);
   __pyx_t_3 = (__pyx_t_2 != 0);
   if (__pyx_t_3) {
-# 12750 "sisl/physics/_bloch.c"
     __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_struct, __pyx_n_s_pack); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 506, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_4 = __Pyx_PyBytes_FromString(__pyx_v_self->view.format); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 506, __pyx_L1_error)
@@ -7681,10 +6982,8 @@ static PyObject *__pyx_memoryview_assign_item_from_object(struct __pyx_memoryvie
     if (!(likely(PyBytes_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "bytes", Py_TYPE(__pyx_t_4)->tp_name), 0))) __PYX_ERR(2, 506, __pyx_L1_error)
     __pyx_v_bytesvalue = ((PyObject*)__pyx_t_4);
     __pyx_t_4 = 0;
-# 12780 "sisl/physics/_bloch.c"
     goto __pyx_L3;
   }
-# 12790 "sisl/physics/_bloch.c"
            {
     __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_struct, __pyx_n_s_pack); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 508, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
@@ -7742,7 +7041,6 @@ static PyObject *__pyx_memoryview_assign_item_from_object(struct __pyx_memoryvie
     __pyx_t_4 = 0;
   }
   __pyx_L3:;
-# 12855 "sisl/physics/_bloch.c"
   __pyx_t_9 = 0;
   if (unlikely(__pyx_v_bytesvalue == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' is not iterable");
@@ -7755,15 +7053,11 @@ static PyObject *__pyx_memoryview_assign_item_from_object(struct __pyx_memoryvie
   for (__pyx_t_14 = __pyx_t_12; __pyx_t_14 < __pyx_t_13; __pyx_t_14++) {
     __pyx_t_11 = __pyx_t_14;
     __pyx_v_c = (__pyx_t_11[0]);
-# 12875 "sisl/physics/_bloch.c"
     __pyx_v_i = __pyx_t_9;
-# 12884 "sisl/physics/_bloch.c"
     __pyx_t_9 = (__pyx_t_9 + 1);
-# 12893 "sisl/physics/_bloch.c"
     (__pyx_v_itemp[__pyx_v_i]) = __pyx_v_c;
   }
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-# 12906 "sisl/physics/_bloch.c"
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -7782,7 +7076,6 @@ static PyObject *__pyx_memoryview_assign_item_from_object(struct __pyx_memoryvie
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 12934 "sisl/physics/_bloch.c"
 static CYTHON_UNUSED int __pyx_memoryview_getbuffer(PyObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags);
 static CYTHON_UNUSED int __pyx_memoryview_getbuffer(PyObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags) {
   int __pyx_r;
@@ -7813,7 +7106,6 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_8__getbu
   __Pyx_RefNannySetupContext("__getbuffer__", 0);
   __pyx_v_info->obj = Py_None; __Pyx_INCREF(Py_None);
   __Pyx_GIVEREF(__pyx_v_info->obj);
-# 12972 "sisl/physics/_bloch.c"
   __pyx_t_2 = ((__pyx_v_flags & PyBUF_WRITABLE) != 0);
   if (__pyx_t_2) {
   } else {
@@ -7824,92 +7116,67 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_8__getbu
   __pyx_t_1 = __pyx_t_2;
   __pyx_L4_bool_binop_done:;
   if (unlikely(__pyx_t_1)) {
-# 12990 "sisl/physics/_bloch.c"
     __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__19, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 516, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __PYX_ERR(2, 516, __pyx_L1_error)
-# 13003 "sisl/physics/_bloch.c"
   }
-# 13012 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((__pyx_v_flags & PyBUF_ND) != 0);
   if (__pyx_t_1) {
-# 13022 "sisl/physics/_bloch.c"
     __pyx_t_4 = __pyx_v_self->view.shape;
     __pyx_v_info->shape = __pyx_t_4;
-# 13032 "sisl/physics/_bloch.c"
     goto __pyx_L6;
   }
-# 13042 "sisl/physics/_bloch.c"
            {
     __pyx_v_info->shape = NULL;
   }
   __pyx_L6:;
-# 13054 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((__pyx_v_flags & PyBUF_STRIDES) != 0);
   if (__pyx_t_1) {
-# 13064 "sisl/physics/_bloch.c"
     __pyx_t_4 = __pyx_v_self->view.strides;
     __pyx_v_info->strides = __pyx_t_4;
-# 13074 "sisl/physics/_bloch.c"
     goto __pyx_L7;
   }
-# 13084 "sisl/physics/_bloch.c"
            {
     __pyx_v_info->strides = NULL;
   }
   __pyx_L7:;
-# 13096 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((__pyx_v_flags & PyBUF_INDIRECT) != 0);
   if (__pyx_t_1) {
-# 13106 "sisl/physics/_bloch.c"
     __pyx_t_4 = __pyx_v_self->view.suboffsets;
     __pyx_v_info->suboffsets = __pyx_t_4;
-# 13116 "sisl/physics/_bloch.c"
     goto __pyx_L8;
   }
-# 13126 "sisl/physics/_bloch.c"
            {
     __pyx_v_info->suboffsets = NULL;
   }
   __pyx_L8:;
-# 13138 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((__pyx_v_flags & PyBUF_FORMAT) != 0);
   if (__pyx_t_1) {
-# 13148 "sisl/physics/_bloch.c"
     __pyx_t_5 = __pyx_v_self->view.format;
     __pyx_v_info->format = __pyx_t_5;
-# 13158 "sisl/physics/_bloch.c"
     goto __pyx_L9;
   }
-# 13168 "sisl/physics/_bloch.c"
            {
     __pyx_v_info->format = NULL;
   }
   __pyx_L9:;
-# 13180 "sisl/physics/_bloch.c"
   __pyx_t_6 = __pyx_v_self->view.buf;
   __pyx_v_info->buf = __pyx_t_6;
-# 13190 "sisl/physics/_bloch.c"
   __pyx_t_7 = __pyx_v_self->view.ndim;
   __pyx_v_info->ndim = __pyx_t_7;
-# 13200 "sisl/physics/_bloch.c"
   __pyx_t_8 = __pyx_v_self->view.itemsize;
   __pyx_v_info->itemsize = __pyx_t_8;
-# 13210 "sisl/physics/_bloch.c"
   __pyx_t_8 = __pyx_v_self->view.len;
   __pyx_v_info->len = __pyx_t_8;
-# 13220 "sisl/physics/_bloch.c"
   __pyx_t_1 = __pyx_v_self->view.readonly;
   __pyx_v_info->readonly = __pyx_t_1;
-# 13230 "sisl/physics/_bloch.c"
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   __Pyx_GOTREF(__pyx_v_info->obj);
   __Pyx_DECREF(__pyx_v_info->obj);
   __pyx_v_info->obj = ((PyObject *)__pyx_v_self);
-# 13245 "sisl/physics/_bloch.c"
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -7930,7 +7197,6 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_8__getbu
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 13275 "sisl/physics/_bloch.c"
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_1T_1__get__(PyObject *__pyx_v_self);
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_1T_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -7950,20 +7216,16 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_1T___get__(struct _
   PyObject *__pyx_t_1 = NULL;
   int __pyx_t_2;
   __Pyx_RefNannySetupContext("__get__", 0);
-# 13302 "sisl/physics/_bloch.c"
   __pyx_t_1 = __pyx_memoryview_copy_object(__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 550, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_memoryviewslice_type))))) __PYX_ERR(2, 550, __pyx_L1_error)
   __pyx_v_result = ((struct __pyx_memoryviewslice_obj *)__pyx_t_1);
   __pyx_t_1 = 0;
-# 13315 "sisl/physics/_bloch.c"
   __pyx_t_2 = __pyx_memslice_transpose((&__pyx_v_result->from_slice)); if (unlikely(__pyx_t_2 == ((int)0))) __PYX_ERR(2, 551, __pyx_L1_error)
-# 13324 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_result));
   __pyx_r = ((PyObject *)__pyx_v_result);
   goto __pyx_L0;
-# 13338 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("View.MemoryView.memoryview.T.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -7974,7 +7236,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_1T___get__(struct _
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 13358 "sisl/physics/_bloch.c"
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_4base_1__get__(PyObject *__pyx_v_self);
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_4base_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -7991,18 +7252,15 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_4base___get__(struc
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
-# 13382 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_self->obj);
   __pyx_r = __pyx_v_self->obj;
   goto __pyx_L0;
-# 13396 "sisl/physics/_bloch.c"
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 13411 "sisl/physics/_bloch.c"
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_5shape_1__get__(PyObject *__pyx_v_self);
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_5shape_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -8025,7 +7283,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_5shape___get__(stru
   Py_ssize_t *__pyx_t_4;
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
-# 13441 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 560, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -8044,7 +7301,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_5shape___get__(stru
   __pyx_r = __pyx_t_5;
   __pyx_t_5 = 0;
   goto __pyx_L0;
-# 13469 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_5);
@@ -8055,7 +7311,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_5shape___get__(stru
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 13489 "sisl/physics/_bloch.c"
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_7strides_1__get__(PyObject *__pyx_v_self);
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_7strides_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -8079,18 +7334,14 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_7strides___get__(st
   Py_ssize_t *__pyx_t_5;
   PyObject *__pyx_t_6 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
-# 13520 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((__pyx_v_self->view.strides == NULL) != 0);
   if (unlikely(__pyx_t_1)) {
-# 13530 "sisl/physics/_bloch.c"
     __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__20, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 566, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __PYX_ERR(2, 566, __pyx_L1_error)
-# 13543 "sisl/physics/_bloch.c"
   }
-# 13552 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 568, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -8109,7 +7360,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_7strides___get__(st
   __pyx_r = __pyx_t_6;
   __pyx_t_6 = 0;
   goto __pyx_L0;
-# 13580 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_6);
@@ -8120,7 +7370,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_7strides___get__(st
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 13600 "sisl/physics/_bloch.c"
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_10suboffsets_1__get__(PyObject *__pyx_v_self);
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_10suboffsets_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -8144,10 +7393,8 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_10suboffsets___get_
   Py_ssize_t *__pyx_t_5;
   Py_ssize_t *__pyx_t_6;
   __Pyx_RefNannySetupContext("__get__", 0);
-# 13631 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((__pyx_v_self->view.suboffsets == NULL) != 0);
   if (__pyx_t_1) {
-# 13641 "sisl/physics/_bloch.c"
     __Pyx_XDECREF(__pyx_r);
     __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_self->view.ndim); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 573, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
@@ -8157,9 +7404,7 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_10suboffsets___get_
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
-# 13658 "sisl/physics/_bloch.c"
   }
-# 13667 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 575, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -8178,7 +7423,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_10suboffsets___get_
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
-# 13695 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
@@ -8189,7 +7433,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_10suboffsets___get_
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 13715 "sisl/physics/_bloch.c"
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_4ndim_1__get__(PyObject *__pyx_v_self);
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_4ndim_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -8207,14 +7450,12 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_4ndim___get__(struc
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
-# 13740 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->view.ndim); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 579, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 13756 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("View.MemoryView.memoryview.ndim.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -8224,7 +7465,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_4ndim___get__(struc
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 13775 "sisl/physics/_bloch.c"
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_8itemsize_1__get__(PyObject *__pyx_v_self);
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_8itemsize_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -8242,14 +7482,12 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_8itemsize___get__(s
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
-# 13800 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyInt_FromSsize_t(__pyx_v_self->view.itemsize); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 583, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 13816 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("View.MemoryView.memoryview.itemsize.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -8259,7 +7497,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_8itemsize___get__(s
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 13835 "sisl/physics/_bloch.c"
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_6nbytes_1__get__(PyObject *__pyx_v_self);
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_6nbytes_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -8279,7 +7516,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_6nbytes___get__(str
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
-# 13862 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_size); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 587, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -8292,7 +7528,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_6nbytes___get__(str
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
-# 13884 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -8304,7 +7539,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_6nbytes___get__(str
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 13905 "sisl/physics/_bloch.c"
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_4size_1__get__(PyObject *__pyx_v_self);
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_4size_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -8329,14 +7563,11 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_4size___get__(struc
   Py_ssize_t *__pyx_t_5;
   PyObject *__pyx_t_6 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
-# 13937 "sisl/physics/_bloch.c"
   __pyx_t_1 = (__pyx_v_self->_size == Py_None);
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
-# 13948 "sisl/physics/_bloch.c"
     __Pyx_INCREF(__pyx_int_1);
     __pyx_v_result = __pyx_int_1;
-# 13958 "sisl/physics/_bloch.c"
     __pyx_t_4 = (__pyx_v_self->view.shape + __pyx_v_self->view.ndim);
     for (__pyx_t_5 = __pyx_v_self->view.shape; __pyx_t_5 < __pyx_t_4; __pyx_t_5++) {
       __pyx_t_3 = __pyx_t_5;
@@ -8344,26 +7575,21 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_4size___get__(struc
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_XDECREF_SET(__pyx_v_length, __pyx_t_6);
       __pyx_t_6 = 0;
-# 13973 "sisl/physics/_bloch.c"
       __pyx_t_6 = PyNumber_InPlaceMultiply(__pyx_v_result, __pyx_v_length); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 595, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF_SET(__pyx_v_result, __pyx_t_6);
       __pyx_t_6 = 0;
     }
-# 13986 "sisl/physics/_bloch.c"
     __Pyx_INCREF(__pyx_v_result);
     __Pyx_GIVEREF(__pyx_v_result);
     __Pyx_GOTREF(__pyx_v_self->_size);
     __Pyx_DECREF(__pyx_v_self->_size);
     __pyx_v_self->_size = __pyx_v_result;
-# 13999 "sisl/physics/_bloch.c"
   }
-# 14008 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_self->_size);
   __pyx_r = __pyx_v_self->_size;
   goto __pyx_L0;
-# 14022 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_AddTraceback("View.MemoryView.memoryview.size.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -8375,7 +7601,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_4size___get__(struc
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 14043 "sisl/physics/_bloch.c"
 static Py_ssize_t __pyx_memoryview___len__(PyObject *__pyx_v_self);
 static Py_ssize_t __pyx_memoryview___len__(PyObject *__pyx_v_self) {
   Py_ssize_t __pyx_r;
@@ -8393,23 +7618,17 @@ static Py_ssize_t __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_1
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("__len__", 0);
-# 14068 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((__pyx_v_self->view.ndim >= 1) != 0);
   if (__pyx_t_1) {
-# 14078 "sisl/physics/_bloch.c"
     __pyx_r = (__pyx_v_self->view.shape[0]);
     goto __pyx_L0;
-# 14088 "sisl/physics/_bloch.c"
   }
-# 14097 "sisl/physics/_bloch.c"
   __pyx_r = 0;
   goto __pyx_L0;
-# 14109 "sisl/physics/_bloch.c"
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 14123 "sisl/physics/_bloch.c"
 static PyObject *__pyx_memoryview___repr__(PyObject *__pyx_v_self);
 static PyObject *__pyx_memoryview___repr__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -8429,7 +7648,6 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_12
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("__repr__", 0);
-# 14150 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_base); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 608, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -8439,10 +7657,8 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_12
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_name_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 608, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-# 14167 "sisl/physics/_bloch.c"
   __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_builtin_id, ((PyObject *)__pyx_v_self)); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 609, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-# 14177 "sisl/physics/_bloch.c"
   __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 608, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_1);
@@ -8457,7 +7673,6 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_12
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
-# 14201 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -8469,7 +7684,6 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_12
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 14222 "sisl/physics/_bloch.c"
 static PyObject *__pyx_memoryview___str__(PyObject *__pyx_v_self);
 static PyObject *__pyx_memoryview___str__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -8488,7 +7702,6 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_14
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__str__", 0);
-# 14248 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_base); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 612, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -8509,7 +7722,6 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_14
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 14278 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -8520,7 +7732,6 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_14
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 14298 "sisl/physics/_bloch.c"
 static PyObject *__pyx_memoryview_is_c_contig(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused);
 static PyObject *__pyx_memoryview_is_c_contig(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
@@ -8540,16 +7751,13 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_16
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("is_c_contig", 0);
-# 14325 "sisl/physics/_bloch.c"
   __pyx_v_mslice = __pyx_memoryview_get_slice_from_memoryview(__pyx_v_self, (&__pyx_v_tmp));
-# 14334 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_memviewslice_is_contig((__pyx_v_mslice[0]), 'C', __pyx_v_self->view.ndim)); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 619, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 14350 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("View.MemoryView.memoryview.is_c_contig", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -8559,7 +7767,6 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_16
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 14369 "sisl/physics/_bloch.c"
 static PyObject *__pyx_memoryview_is_f_contig(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused);
 static PyObject *__pyx_memoryview_is_f_contig(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
@@ -8579,16 +7786,13 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_18
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("is_f_contig", 0);
-# 14396 "sisl/physics/_bloch.c"
   __pyx_v_mslice = __pyx_memoryview_get_slice_from_memoryview(__pyx_v_self, (&__pyx_v_tmp));
-# 14405 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_memviewslice_is_contig((__pyx_v_mslice[0]), 'F', __pyx_v_self->view.ndim)); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 625, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 14421 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("View.MemoryView.memoryview.is_f_contig", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -8598,7 +7802,6 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_18
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 14440 "sisl/physics/_bloch.c"
 static PyObject *__pyx_memoryview_copy(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused);
 static PyObject *__pyx_memoryview_copy(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
@@ -8619,21 +7822,16 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_20
   __Pyx_memviewslice __pyx_t_1;
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("copy", 0);
-# 14468 "sisl/physics/_bloch.c"
   __pyx_v_flags = (__pyx_v_self->flags & (~PyBUF_F_CONTIGUOUS));
-# 14477 "sisl/physics/_bloch.c"
   __pyx_memoryview_slice_copy(__pyx_v_self, (&__pyx_v_mslice));
-# 14486 "sisl/physics/_bloch.c"
   __pyx_t_1 = __pyx_memoryview_copy_new_contig((&__pyx_v_mslice), ((char *)"c"), __pyx_v_self->view.ndim, __pyx_v_self->view.itemsize, (__pyx_v_flags | PyBUF_C_CONTIGUOUS), __pyx_v_self->dtype_is_object); if (unlikely(PyErr_Occurred())) __PYX_ERR(2, 632, __pyx_L1_error)
   __pyx_v_mslice = __pyx_t_1;
-# 14496 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_2 = __pyx_memoryview_copy_object_from_slice(__pyx_v_self, (&__pyx_v_mslice)); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 637, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
-# 14512 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_AddTraceback("View.MemoryView.memoryview.copy", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -8643,7 +7841,6 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_20
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 14531 "sisl/physics/_bloch.c"
 static PyObject *__pyx_memoryview_copy_fortran(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused);
 static PyObject *__pyx_memoryview_copy_fortran(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
@@ -8665,21 +7862,16 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_22
   __Pyx_memviewslice __pyx_t_1;
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("copy_fortran", 0);
-# 14560 "sisl/physics/_bloch.c"
   __pyx_v_flags = (__pyx_v_self->flags & (~PyBUF_C_CONTIGUOUS));
-# 14569 "sisl/physics/_bloch.c"
   __pyx_memoryview_slice_copy(__pyx_v_self, (&__pyx_v_src));
-# 14578 "sisl/physics/_bloch.c"
   __pyx_t_1 = __pyx_memoryview_copy_new_contig((&__pyx_v_src), ((char *)"fortran"), __pyx_v_self->view.ndim, __pyx_v_self->view.itemsize, (__pyx_v_flags | PyBUF_F_CONTIGUOUS), __pyx_v_self->dtype_is_object); if (unlikely(PyErr_Occurred())) __PYX_ERR(2, 644, __pyx_L1_error)
   __pyx_v_dst = __pyx_t_1;
-# 14588 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_2 = __pyx_memoryview_copy_object_from_slice(__pyx_v_self, (&__pyx_v_dst)); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 649, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
-# 14604 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_AddTraceback("View.MemoryView.memoryview.copy_fortran", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -8689,7 +7881,6 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_22
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 14621 "sisl/physics/_bloch.c"
 static PyObject *__pyx_pw___pyx_memoryview_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused);
 static PyObject *__pyx_pw___pyx_memoryview_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
@@ -8719,7 +7910,6 @@ static PyObject *__pyx_pf___pyx_memoryview___reduce_cython__(CYTHON_UNUSED struc
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(2, 2, __pyx_L1_error)
-# 14658 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("View.MemoryView.memoryview.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -8728,7 +7918,6 @@ static PyObject *__pyx_pf___pyx_memoryview___reduce_cython__(CYTHON_UNUSED struc
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 14675 "sisl/physics/_bloch.c"
 static PyObject *__pyx_pw___pyx_memoryview_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state);
 static PyObject *__pyx_pw___pyx_memoryview_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
@@ -8757,7 +7946,6 @@ static PyObject *__pyx_pf___pyx_memoryview_2__setstate_cython__(CYTHON_UNUSED st
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(2, 4, __pyx_L1_error)
-# 14712 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("View.MemoryView.memoryview.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -8766,7 +7954,6 @@ static PyObject *__pyx_pf___pyx_memoryview_2__setstate_cython__(CYTHON_UNUSED st
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 14729 "sisl/physics/_bloch.c"
 static PyObject *__pyx_memoryview_new(PyObject *__pyx_v_o, int __pyx_v_flags, int __pyx_v_dtype_is_object, __Pyx_TypeInfo *__pyx_v_typeinfo) {
   struct __pyx_memoryview_obj *__pyx_v_result = 0;
   PyObject *__pyx_r = NULL;
@@ -8775,7 +7962,6 @@ static PyObject *__pyx_memoryview_new(PyObject *__pyx_v_o, int __pyx_v_flags, in
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("memoryview_cwrapper", 0);
-# 14745 "sisl/physics/_bloch.c"
   __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_flags); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 654, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = __Pyx_PyBool_FromLong(__pyx_v_dtype_is_object); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 654, __pyx_L1_error)
@@ -8796,14 +7982,11 @@ static PyObject *__pyx_memoryview_new(PyObject *__pyx_v_o, int __pyx_v_flags, in
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_result = ((struct __pyx_memoryview_obj *)__pyx_t_2);
   __pyx_t_2 = 0;
-# 14773 "sisl/physics/_bloch.c"
   __pyx_v_result->typeinfo = __pyx_v_typeinfo;
-# 14782 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_result));
   __pyx_r = ((PyObject *)__pyx_v_result);
   goto __pyx_L0;
-# 14796 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -8816,22 +7999,18 @@ static PyObject *__pyx_memoryview_new(PyObject *__pyx_v_o, int __pyx_v_flags, in
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 14817 "sisl/physics/_bloch.c"
 static CYTHON_INLINE int __pyx_memoryview_check(PyObject *__pyx_v_o) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("memoryview_check", 0);
-# 14830 "sisl/physics/_bloch.c"
   __pyx_t_1 = __Pyx_TypeCheck(__pyx_v_o, __pyx_memoryview_type);
   __pyx_r = __pyx_t_1;
   goto __pyx_L0;
-# 14843 "sisl/physics/_bloch.c"
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 14856 "sisl/physics/_bloch.c"
 static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
   PyObject *__pyx_v_tup = NULL;
   PyObject *__pyx_v_result = NULL;
@@ -8854,11 +8033,9 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
   int __pyx_t_10;
   PyObject *__pyx_t_11 = NULL;
   __Pyx_RefNannySetupContext("_unellipsify", 0);
-# 14886 "sisl/physics/_bloch.c"
   __pyx_t_1 = PyTuple_Check(__pyx_v_index);
   __pyx_t_2 = ((!(__pyx_t_1 != 0)) != 0);
   if (__pyx_t_2) {
-# 14897 "sisl/physics/_bloch.c"
     __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 668, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_INCREF(__pyx_v_index);
@@ -8866,25 +8043,19 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
     PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_v_index);
     __pyx_v_tup = __pyx_t_3;
     __pyx_t_3 = 0;
-# 14912 "sisl/physics/_bloch.c"
     goto __pyx_L3;
   }
-# 14922 "sisl/physics/_bloch.c"
            {
     __Pyx_INCREF(__pyx_v_index);
     __pyx_v_tup = __pyx_v_index;
   }
   __pyx_L3:;
-# 14935 "sisl/physics/_bloch.c"
   __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 672, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_v_result = ((PyObject*)__pyx_t_3);
   __pyx_t_3 = 0;
-# 14947 "sisl/physics/_bloch.c"
   __pyx_v_have_slices = 0;
-# 14956 "sisl/physics/_bloch.c"
   __pyx_v_seen_ellipsis = 0;
-# 14965 "sisl/physics/_bloch.c"
   __Pyx_INCREF(__pyx_int_0);
   __pyx_t_3 = __pyx_int_0;
   if (likely(PyList_CheckExact(__pyx_v_tup)) || PyTuple_CheckExact(__pyx_v_tup)) {
@@ -8935,14 +8106,11 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
     __Pyx_DECREF(__pyx_t_3);
     __pyx_t_3 = __pyx_t_7;
     __pyx_t_7 = 0;
-# 15023 "sisl/physics/_bloch.c"
     __pyx_t_2 = (__pyx_v_item == __pyx_builtin_Ellipsis);
     __pyx_t_1 = (__pyx_t_2 != 0);
     if (__pyx_t_1) {
-# 15034 "sisl/physics/_bloch.c"
       __pyx_t_1 = ((!(__pyx_v_seen_ellipsis != 0)) != 0);
       if (__pyx_t_1) {
-# 15044 "sisl/physics/_bloch.c"
         __pyx_t_8 = PyObject_Length(__pyx_v_tup); if (unlikely(__pyx_t_8 == ((Py_ssize_t)-1))) __PYX_ERR(2, 678, __pyx_L1_error)
         __pyx_t_7 = PyList_New(1 * ((((__pyx_v_ndim - __pyx_t_8) + 1)<0) ? 0:((__pyx_v_ndim - __pyx_t_8) + 1))); if (unlikely(!__pyx_t_7)) __PYX_ERR(2, 678, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
@@ -8955,22 +8123,16 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
         }
         __pyx_t_9 = __Pyx_PyList_Extend(__pyx_v_result, __pyx_t_7); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(2, 678, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-# 15064 "sisl/physics/_bloch.c"
         __pyx_v_seen_ellipsis = 1;
-# 15073 "sisl/physics/_bloch.c"
         goto __pyx_L7;
       }
-# 15083 "sisl/physics/_bloch.c"
                {
         __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_result, __pyx_slice__24); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(2, 681, __pyx_L1_error)
       }
       __pyx_L7:;
-# 15095 "sisl/physics/_bloch.c"
       __pyx_v_have_slices = 1;
-# 15104 "sisl/physics/_bloch.c"
       goto __pyx_L6;
     }
-# 15114 "sisl/physics/_bloch.c"
              {
       __pyx_t_2 = PySlice_Check(__pyx_v_item);
       __pyx_t_10 = ((!(__pyx_t_2 != 0)) != 0);
@@ -8983,7 +8145,6 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
       __pyx_t_1 = __pyx_t_10;
       __pyx_L9_bool_binop_done:;
       if (unlikely(__pyx_t_1)) {
-# 15134 "sisl/physics/_bloch.c"
         __pyx_t_7 = __Pyx_PyString_FormatSafe(__pyx_kp_s_Cannot_index_with_type_s, ((PyObject *)Py_TYPE(__pyx_v_item))); if (unlikely(!__pyx_t_7)) __PYX_ERR(2, 685, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
         __pyx_t_11 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_7); if (unlikely(!__pyx_t_11)) __PYX_ERR(2, 685, __pyx_L1_error)
@@ -8992,9 +8153,7 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
         __Pyx_Raise(__pyx_t_11, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
         __PYX_ERR(2, 685, __pyx_L1_error)
-# 15150 "sisl/physics/_bloch.c"
       }
-# 15159 "sisl/physics/_bloch.c"
       __pyx_t_10 = (__pyx_v_have_slices != 0);
       if (!__pyx_t_10) {
       } else {
@@ -9006,21 +8165,16 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
       __pyx_t_1 = __pyx_t_2;
       __pyx_L11_bool_binop_done:;
       __pyx_v_have_slices = __pyx_t_1;
-# 15178 "sisl/physics/_bloch.c"
       __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_result, __pyx_v_item); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(2, 688, __pyx_L1_error)
     }
     __pyx_L6:;
-# 15189 "sisl/physics/_bloch.c"
   }
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-# 15200 "sisl/physics/_bloch.c"
   __pyx_t_5 = PyList_GET_SIZE(__pyx_v_result); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(2, 690, __pyx_L1_error)
   __pyx_v_nslices = (__pyx_v_ndim - __pyx_t_5);
-# 15210 "sisl/physics/_bloch.c"
   __pyx_t_1 = (__pyx_v_nslices != 0);
   if (__pyx_t_1) {
-# 15220 "sisl/physics/_bloch.c"
     __pyx_t_3 = PyList_New(1 * ((__pyx_v_nslices<0) ? 0:__pyx_v_nslices)); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 692, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     { Py_ssize_t __pyx_temp;
@@ -9032,9 +8186,7 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
     }
     __pyx_t_9 = __Pyx_PyList_Extend(__pyx_v_result, __pyx_t_3); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(2, 692, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-# 15239 "sisl/physics/_bloch.c"
   }
-# 15248 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   if (!__pyx_v_have_slices) {
   } else {
@@ -9062,7 +8214,6 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
   __pyx_r = ((PyObject*)__pyx_t_11);
   __pyx_t_11 = 0;
   goto __pyx_L0;
-# 15285 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
@@ -9079,7 +8230,6 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 15310 "sisl/physics/_bloch.c"
 static PyObject *assert_direct_dimensions(Py_ssize_t *__pyx_v_suboffsets, int __pyx_v_ndim) {
   Py_ssize_t __pyx_v_suboffset;
   PyObject *__pyx_r = NULL;
@@ -9090,24 +8240,19 @@ static PyObject *assert_direct_dimensions(Py_ssize_t *__pyx_v_suboffsets, int __
   int __pyx_t_4;
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("assert_direct_dimensions", 0);
-# 15328 "sisl/physics/_bloch.c"
   __pyx_t_2 = (__pyx_v_suboffsets + __pyx_v_ndim);
   for (__pyx_t_3 = __pyx_v_suboffsets; __pyx_t_3 < __pyx_t_2; __pyx_t_3++) {
     __pyx_t_1 = __pyx_t_3;
     __pyx_v_suboffset = (__pyx_t_1[0]);
-# 15340 "sisl/physics/_bloch.c"
     __pyx_t_4 = ((__pyx_v_suboffset >= 0) != 0);
     if (unlikely(__pyx_t_4)) {
-# 15350 "sisl/physics/_bloch.c"
       __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__25, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(2, 699, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_Raise(__pyx_t_5, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __PYX_ERR(2, 699, __pyx_L1_error)
-# 15363 "sisl/physics/_bloch.c"
     }
   }
-# 15375 "sisl/physics/_bloch.c"
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -9119,7 +8264,6 @@ static PyObject *assert_direct_dimensions(Py_ssize_t *__pyx_v_suboffsets, int __
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 15395 "sisl/physics/_bloch.c"
 static struct __pyx_memoryview_obj *__pyx_memview_slice(struct __pyx_memoryview_obj *__pyx_v_memview, PyObject *__pyx_v_indices) {
   int __pyx_v_new_ndim;
   int __pyx_v_suboffset_dim;
@@ -9152,12 +8296,9 @@ static struct __pyx_memoryview_obj *__pyx_memview_slice(struct __pyx_memoryview_
   int __pyx_t_11;
   Py_ssize_t __pyx_t_12;
   __Pyx_RefNannySetupContext("memview_slice", 0);
-# 15435 "sisl/physics/_bloch.c"
   __pyx_v_new_ndim = 0;
   __pyx_v_suboffset_dim = -1;
-# 15445 "sisl/physics/_bloch.c"
   (void)(memset((&__pyx_v_dst), 0, (sizeof(__pyx_v_dst))));
-# 15454 "sisl/physics/_bloch.c"
   #ifndef CYTHON_WITHOUT_ASSERTIONS
   if (unlikely(!Py_OptimizeFlag)) {
     if (unlikely(!((__pyx_v_memview->view.ndim > 0) != 0))) {
@@ -9166,39 +8307,28 @@ static struct __pyx_memoryview_obj *__pyx_memview_slice(struct __pyx_memoryview_
     }
   }
   #endif
-# 15470 "sisl/physics/_bloch.c"
   __pyx_t_1 = __Pyx_TypeCheck(((PyObject *)__pyx_v_memview), __pyx_memoryviewslice_type);
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
-# 15481 "sisl/physics/_bloch.c"
     if (!(likely(((((PyObject *)__pyx_v_memview)) == Py_None) || likely(__Pyx_TypeTest(((PyObject *)__pyx_v_memview), __pyx_memoryviewslice_type))))) __PYX_ERR(2, 721, __pyx_L1_error)
     __pyx_t_3 = ((PyObject *)__pyx_v_memview);
     __Pyx_INCREF(__pyx_t_3);
     __pyx_v_memviewsliceobj = ((struct __pyx_memoryviewslice_obj *)__pyx_t_3);
     __pyx_t_3 = 0;
-# 15494 "sisl/physics/_bloch.c"
     __pyx_v_p_src = (&__pyx_v_memviewsliceobj->from_slice);
-# 15503 "sisl/physics/_bloch.c"
     goto __pyx_L3;
   }
-# 15513 "sisl/physics/_bloch.c"
            {
     __pyx_memoryview_slice_copy(__pyx_v_memview, (&__pyx_v_src));
-# 15523 "sisl/physics/_bloch.c"
     __pyx_v_p_src = (&__pyx_v_src);
   }
   __pyx_L3:;
-# 15534 "sisl/physics/_bloch.c"
   __pyx_t_4 = __pyx_v_p_src->memview;
   __pyx_v_dst.memview = __pyx_t_4;
-# 15544 "sisl/physics/_bloch.c"
   __pyx_t_5 = __pyx_v_p_src->data;
   __pyx_v_dst.data = __pyx_t_5;
-# 15554 "sisl/physics/_bloch.c"
   __pyx_v_p_dst = (&__pyx_v_dst);
-# 15563 "sisl/physics/_bloch.c"
   __pyx_v_p_suboffset_dim = (&__pyx_v_suboffset_dim);
-# 15572 "sisl/physics/_bloch.c"
   __pyx_t_6 = 0;
   if (likely(PyList_CheckExact(__pyx_v_indices)) || PyTuple_CheckExact(__pyx_v_indices)) {
     __pyx_t_3 = __pyx_v_indices; __Pyx_INCREF(__pyx_t_3); __pyx_t_7 = 0;
@@ -9243,32 +8373,21 @@ static struct __pyx_memoryview_obj *__pyx_memview_slice(struct __pyx_memoryview_
     __pyx_t_9 = 0;
     __pyx_v_dim = __pyx_t_6;
     __pyx_t_6 = (__pyx_t_6 + 1);
-# 15624 "sisl/physics/_bloch.c"
     __pyx_t_2 = (PyIndex_Check(__pyx_v_index) != 0);
     if (__pyx_t_2) {
-# 15634 "sisl/physics/_bloch.c"
       __pyx_t_10 = __Pyx_PyIndex_AsSsize_t(__pyx_v_index); if (unlikely((__pyx_t_10 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(2, 747, __pyx_L1_error)
-# 15643 "sisl/physics/_bloch.c"
       __pyx_t_11 = __pyx_memoryview_slice_memviewslice(__pyx_v_p_dst, (__pyx_v_p_src->shape[__pyx_v_dim]), (__pyx_v_p_src->strides[__pyx_v_dim]), (__pyx_v_p_src->suboffsets[__pyx_v_dim]), __pyx_v_dim, __pyx_v_new_ndim, __pyx_v_p_suboffset_dim, __pyx_t_10, 0, 0, 0, 0, 0, 0); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(2, 744, __pyx_L1_error)
-# 15652 "sisl/physics/_bloch.c"
       goto __pyx_L6;
     }
-# 15662 "sisl/physics/_bloch.c"
     __pyx_t_2 = (__pyx_v_index == Py_None);
     __pyx_t_1 = (__pyx_t_2 != 0);
     if (__pyx_t_1) {
-# 15673 "sisl/physics/_bloch.c"
       (__pyx_v_p_dst->shape[__pyx_v_new_ndim]) = 1;
-# 15682 "sisl/physics/_bloch.c"
       (__pyx_v_p_dst->strides[__pyx_v_new_ndim]) = 0;
-# 15691 "sisl/physics/_bloch.c"
       (__pyx_v_p_dst->suboffsets[__pyx_v_new_ndim]) = -1L;
-# 15700 "sisl/physics/_bloch.c"
       __pyx_v_new_ndim = (__pyx_v_new_ndim + 1);
-# 15709 "sisl/physics/_bloch.c"
       goto __pyx_L6;
     }
-# 15719 "sisl/physics/_bloch.c"
              {
       __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_index, __pyx_n_s_start); if (unlikely(!__pyx_t_9)) __PYX_ERR(2, 756, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
@@ -9284,7 +8403,6 @@ static struct __pyx_memoryview_obj *__pyx_memview_slice(struct __pyx_memoryview_
       __pyx_t_10 = 0;
       __pyx_L7_bool_binop_done:;
       __pyx_v_start = __pyx_t_10;
-# 15742 "sisl/physics/_bloch.c"
       __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_index, __pyx_n_s_stop); if (unlikely(!__pyx_t_9)) __PYX_ERR(2, 757, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(2, 757, __pyx_L1_error)
@@ -9299,7 +8417,6 @@ static struct __pyx_memoryview_obj *__pyx_memview_slice(struct __pyx_memoryview_
       __pyx_t_10 = 0;
       __pyx_L9_bool_binop_done:;
       __pyx_v_stop = __pyx_t_10;
-# 15764 "sisl/physics/_bloch.c"
       __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_index, __pyx_n_s_step); if (unlikely(!__pyx_t_9)) __PYX_ERR(2, 758, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(2, 758, __pyx_L1_error)
@@ -9314,65 +8431,49 @@ static struct __pyx_memoryview_obj *__pyx_memview_slice(struct __pyx_memoryview_
       __pyx_t_10 = 0;
       __pyx_L11_bool_binop_done:;
       __pyx_v_step = __pyx_t_10;
-# 15786 "sisl/physics/_bloch.c"
       __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_index, __pyx_n_s_start); if (unlikely(!__pyx_t_9)) __PYX_ERR(2, 760, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       __pyx_t_1 = (__pyx_t_9 != Py_None);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __pyx_v_have_start = __pyx_t_1;
-# 15799 "sisl/physics/_bloch.c"
       __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_index, __pyx_n_s_stop); if (unlikely(!__pyx_t_9)) __PYX_ERR(2, 761, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       __pyx_t_1 = (__pyx_t_9 != Py_None);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __pyx_v_have_stop = __pyx_t_1;
-# 15812 "sisl/physics/_bloch.c"
       __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_index, __pyx_n_s_step); if (unlikely(!__pyx_t_9)) __PYX_ERR(2, 762, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       __pyx_t_1 = (__pyx_t_9 != Py_None);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __pyx_v_have_step = __pyx_t_1;
-# 15825 "sisl/physics/_bloch.c"
       __pyx_t_11 = __pyx_memoryview_slice_memviewslice(__pyx_v_p_dst, (__pyx_v_p_src->shape[__pyx_v_dim]), (__pyx_v_p_src->strides[__pyx_v_dim]), (__pyx_v_p_src->suboffsets[__pyx_v_dim]), __pyx_v_dim, __pyx_v_new_ndim, __pyx_v_p_suboffset_dim, __pyx_v_start, __pyx_v_stop, __pyx_v_step, __pyx_v_have_start, __pyx_v_have_stop, __pyx_v_have_step, 1); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(2, 764, __pyx_L1_error)
-# 15834 "sisl/physics/_bloch.c"
       __pyx_v_new_ndim = (__pyx_v_new_ndim + 1);
     }
     __pyx_L6:;
-# 15845 "sisl/physics/_bloch.c"
   }
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-# 15855 "sisl/physics/_bloch.c"
   __pyx_t_1 = __Pyx_TypeCheck(((PyObject *)__pyx_v_memview), __pyx_memoryviewslice_type);
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
-# 15866 "sisl/physics/_bloch.c"
     __Pyx_XDECREF(((PyObject *)__pyx_r));
-# 15875 "sisl/physics/_bloch.c"
     if (unlikely(!__pyx_v_memviewsliceobj)) { __Pyx_RaiseUnboundLocalError("memviewsliceobj"); __PYX_ERR(2, 774, __pyx_L1_error) }
-# 15884 "sisl/physics/_bloch.c"
     if (unlikely(!__pyx_v_memviewsliceobj)) { __Pyx_RaiseUnboundLocalError("memviewsliceobj"); __PYX_ERR(2, 775, __pyx_L1_error) }
-# 15893 "sisl/physics/_bloch.c"
     __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_v_dst, __pyx_v_new_ndim, __pyx_v_memviewsliceobj->to_object_func, __pyx_v_memviewsliceobj->to_dtype_func, __pyx_v_memview->dtype_is_object); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 773, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     if (!(likely(((__pyx_t_3) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_3, __pyx_memoryview_type))))) __PYX_ERR(2, 773, __pyx_L1_error)
     __pyx_r = ((struct __pyx_memoryview_obj *)__pyx_t_3);
     __pyx_t_3 = 0;
     goto __pyx_L0;
-# 15907 "sisl/physics/_bloch.c"
   }
-# 15916 "sisl/physics/_bloch.c"
            {
     __Pyx_XDECREF(((PyObject *)__pyx_r));
-# 15926 "sisl/physics/_bloch.c"
     __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_v_dst, __pyx_v_new_ndim, NULL, NULL, __pyx_v_memview->dtype_is_object); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 778, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-# 15936 "sisl/physics/_bloch.c"
     if (!(likely(((__pyx_t_3) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_3, __pyx_memoryview_type))))) __PYX_ERR(2, 778, __pyx_L1_error)
     __pyx_r = ((struct __pyx_memoryview_obj *)__pyx_t_3);
     __pyx_t_3 = 0;
     goto __pyx_L0;
   }
-# 15951 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_9);
@@ -9385,7 +8486,6 @@ static struct __pyx_memoryview_obj *__pyx_memview_slice(struct __pyx_memoryview_
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 15972 "sisl/physics/_bloch.c"
 static int __pyx_memoryview_slice_memviewslice(__Pyx_memviewslice *__pyx_v_dst, Py_ssize_t __pyx_v_shape, Py_ssize_t __pyx_v_stride, Py_ssize_t __pyx_v_suboffset, int __pyx_v_dim, int __pyx_v_new_ndim, int *__pyx_v_suboffset_dim, Py_ssize_t __pyx_v_start, Py_ssize_t __pyx_v_stop, Py_ssize_t __pyx_v_step, int __pyx_v_have_start, int __pyx_v_have_stop, int __pyx_v_have_step, int __pyx_v_is_slice) {
   Py_ssize_t __pyx_v_new_shape;
   int __pyx_v_negative_step;
@@ -9393,31 +8493,22 @@ static int __pyx_memoryview_slice_memviewslice(__Pyx_memviewslice *__pyx_v_dst, 
   int __pyx_t_1;
   int __pyx_t_2;
   int __pyx_t_3;
-# 15987 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((!(__pyx_v_is_slice != 0)) != 0);
   if (__pyx_t_1) {
-# 15997 "sisl/physics/_bloch.c"
     __pyx_t_1 = ((__pyx_v_start < 0) != 0);
     if (__pyx_t_1) {
-# 16007 "sisl/physics/_bloch.c"
       __pyx_v_start = (__pyx_v_start + __pyx_v_shape);
-# 16016 "sisl/physics/_bloch.c"
     }
-# 16025 "sisl/physics/_bloch.c"
     __pyx_t_1 = (0 <= __pyx_v_start);
     if (__pyx_t_1) {
       __pyx_t_1 = (__pyx_v_start < __pyx_v_shape);
     }
     __pyx_t_2 = ((!(__pyx_t_1 != 0)) != 0);
     if (__pyx_t_2) {
-# 16039 "sisl/physics/_bloch.c"
       __pyx_t_3 = __pyx_memoryview_err_dim(__pyx_builtin_IndexError, ((char *)"Index out of bounds (axis %d)"), __pyx_v_dim); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(2, 828, __pyx_L1_error)
-# 16048 "sisl/physics/_bloch.c"
     }
-# 16057 "sisl/physics/_bloch.c"
     goto __pyx_L3;
   }
-# 16067 "sisl/physics/_bloch.c"
            {
     __pyx_t_1 = ((__pyx_v_have_step != 0) != 0);
     if (__pyx_t_1) {
@@ -9429,7 +8520,6 @@ static int __pyx_memoryview_slice_memviewslice(__Pyx_memviewslice *__pyx_v_dst, 
     __pyx_t_2 = __pyx_t_1;
     __pyx_L6_bool_binop_done:;
     __pyx_v_negative_step = __pyx_t_2;
-# 16086 "sisl/physics/_bloch.c"
     __pyx_t_1 = (__pyx_v_have_step != 0);
     if (__pyx_t_1) {
     } else {
@@ -9440,190 +8530,126 @@ static int __pyx_memoryview_slice_memviewslice(__Pyx_memviewslice *__pyx_v_dst, 
     __pyx_t_2 = __pyx_t_1;
     __pyx_L9_bool_binop_done:;
     if (__pyx_t_2) {
-# 16104 "sisl/physics/_bloch.c"
       __pyx_t_3 = __pyx_memoryview_err_dim(__pyx_builtin_ValueError, ((char *)"Step may not be zero (axis %d)"), __pyx_v_dim); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(2, 834, __pyx_L1_error)
-# 16113 "sisl/physics/_bloch.c"
     }
-# 16122 "sisl/physics/_bloch.c"
     __pyx_t_2 = (__pyx_v_have_start != 0);
     if (__pyx_t_2) {
-# 16132 "sisl/physics/_bloch.c"
       __pyx_t_2 = ((__pyx_v_start < 0) != 0);
       if (__pyx_t_2) {
-# 16142 "sisl/physics/_bloch.c"
         __pyx_v_start = (__pyx_v_start + __pyx_v_shape);
-# 16151 "sisl/physics/_bloch.c"
         __pyx_t_2 = ((__pyx_v_start < 0) != 0);
         if (__pyx_t_2) {
-# 16161 "sisl/physics/_bloch.c"
           __pyx_v_start = 0;
-# 16170 "sisl/physics/_bloch.c"
         }
-# 16179 "sisl/physics/_bloch.c"
         goto __pyx_L12;
       }
-# 16189 "sisl/physics/_bloch.c"
       __pyx_t_2 = ((__pyx_v_start >= __pyx_v_shape) != 0);
       if (__pyx_t_2) {
-# 16199 "sisl/physics/_bloch.c"
         __pyx_t_2 = (__pyx_v_negative_step != 0);
         if (__pyx_t_2) {
-# 16209 "sisl/physics/_bloch.c"
           __pyx_v_start = (__pyx_v_shape - 1);
-# 16218 "sisl/physics/_bloch.c"
           goto __pyx_L14;
         }
-# 16228 "sisl/physics/_bloch.c"
                  {
           __pyx_v_start = __pyx_v_shape;
         }
         __pyx_L14:;
-# 16240 "sisl/physics/_bloch.c"
       }
       __pyx_L12:;
-# 16250 "sisl/physics/_bloch.c"
       goto __pyx_L11;
     }
-# 16260 "sisl/physics/_bloch.c"
              {
       __pyx_t_2 = (__pyx_v_negative_step != 0);
       if (__pyx_t_2) {
-# 16271 "sisl/physics/_bloch.c"
         __pyx_v_start = (__pyx_v_shape - 1);
-# 16280 "sisl/physics/_bloch.c"
         goto __pyx_L15;
       }
-# 16290 "sisl/physics/_bloch.c"
                {
         __pyx_v_start = 0;
       }
       __pyx_L15:;
     }
     __pyx_L11:;
-# 16304 "sisl/physics/_bloch.c"
     __pyx_t_2 = (__pyx_v_have_stop != 0);
     if (__pyx_t_2) {
-# 16314 "sisl/physics/_bloch.c"
       __pyx_t_2 = ((__pyx_v_stop < 0) != 0);
       if (__pyx_t_2) {
-# 16324 "sisl/physics/_bloch.c"
         __pyx_v_stop = (__pyx_v_stop + __pyx_v_shape);
-# 16333 "sisl/physics/_bloch.c"
         __pyx_t_2 = ((__pyx_v_stop < 0) != 0);
         if (__pyx_t_2) {
-# 16343 "sisl/physics/_bloch.c"
           __pyx_v_stop = 0;
-# 16352 "sisl/physics/_bloch.c"
         }
-# 16361 "sisl/physics/_bloch.c"
         goto __pyx_L17;
       }
-# 16371 "sisl/physics/_bloch.c"
       __pyx_t_2 = ((__pyx_v_stop > __pyx_v_shape) != 0);
       if (__pyx_t_2) {
-# 16381 "sisl/physics/_bloch.c"
         __pyx_v_stop = __pyx_v_shape;
-# 16390 "sisl/physics/_bloch.c"
       }
       __pyx_L17:;
-# 16400 "sisl/physics/_bloch.c"
       goto __pyx_L16;
     }
-# 16410 "sisl/physics/_bloch.c"
              {
       __pyx_t_2 = (__pyx_v_negative_step != 0);
       if (__pyx_t_2) {
-# 16421 "sisl/physics/_bloch.c"
         __pyx_v_stop = -1L;
-# 16430 "sisl/physics/_bloch.c"
         goto __pyx_L19;
       }
-# 16440 "sisl/physics/_bloch.c"
                {
         __pyx_v_stop = __pyx_v_shape;
       }
       __pyx_L19:;
     }
     __pyx_L16:;
-# 16454 "sisl/physics/_bloch.c"
     __pyx_t_2 = ((!(__pyx_v_have_step != 0)) != 0);
     if (__pyx_t_2) {
-# 16464 "sisl/physics/_bloch.c"
       __pyx_v_step = 1;
-# 16473 "sisl/physics/_bloch.c"
     }
-# 16482 "sisl/physics/_bloch.c"
     __pyx_v_new_shape = ((__pyx_v_stop - __pyx_v_start) / __pyx_v_step);
-# 16491 "sisl/physics/_bloch.c"
     __pyx_t_2 = (((__pyx_v_stop - __pyx_v_start) - (__pyx_v_step * __pyx_v_new_shape)) != 0);
     if (__pyx_t_2) {
-# 16501 "sisl/physics/_bloch.c"
       __pyx_v_new_shape = (__pyx_v_new_shape + 1);
-# 16510 "sisl/physics/_bloch.c"
     }
-# 16519 "sisl/physics/_bloch.c"
     __pyx_t_2 = ((__pyx_v_new_shape < 0) != 0);
     if (__pyx_t_2) {
-# 16529 "sisl/physics/_bloch.c"
       __pyx_v_new_shape = 0;
-# 16538 "sisl/physics/_bloch.c"
     }
-# 16547 "sisl/physics/_bloch.c"
     (__pyx_v_dst->strides[__pyx_v_new_ndim]) = (__pyx_v_stride * __pyx_v_step);
-# 16556 "sisl/physics/_bloch.c"
     (__pyx_v_dst->shape[__pyx_v_new_ndim]) = __pyx_v_new_shape;
-# 16565 "sisl/physics/_bloch.c"
     (__pyx_v_dst->suboffsets[__pyx_v_new_ndim]) = __pyx_v_suboffset;
   }
   __pyx_L3:;
-# 16576 "sisl/physics/_bloch.c"
   __pyx_t_2 = (((__pyx_v_suboffset_dim[0]) < 0) != 0);
   if (__pyx_t_2) {
-# 16586 "sisl/physics/_bloch.c"
     __pyx_v_dst->data = (__pyx_v_dst->data + (__pyx_v_start * __pyx_v_stride));
-# 16595 "sisl/physics/_bloch.c"
     goto __pyx_L23;
   }
-# 16605 "sisl/physics/_bloch.c"
            {
     __pyx_t_3 = (__pyx_v_suboffset_dim[0]);
     (__pyx_v_dst->suboffsets[__pyx_t_3]) = ((__pyx_v_dst->suboffsets[__pyx_t_3]) + (__pyx_v_start * __pyx_v_stride));
   }
   __pyx_L23:;
-# 16618 "sisl/physics/_bloch.c"
   __pyx_t_2 = ((__pyx_v_suboffset >= 0) != 0);
   if (__pyx_t_2) {
-# 16628 "sisl/physics/_bloch.c"
     __pyx_t_2 = ((!(__pyx_v_is_slice != 0)) != 0);
     if (__pyx_t_2) {
-# 16638 "sisl/physics/_bloch.c"
       __pyx_t_2 = ((__pyx_v_new_ndim == 0) != 0);
       if (__pyx_t_2) {
-# 16648 "sisl/physics/_bloch.c"
         __pyx_v_dst->data = ((((char **)__pyx_v_dst->data)[0]) + __pyx_v_suboffset);
-# 16657 "sisl/physics/_bloch.c"
         goto __pyx_L26;
       }
-# 16667 "sisl/physics/_bloch.c"
                {
-# 16676 "sisl/physics/_bloch.c"
         __pyx_t_3 = __pyx_memoryview_err_dim(__pyx_builtin_IndexError, ((char *)"All dimensions preceding dimension %d must be indexed and not sliced"), __pyx_v_dim); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(2, 895, __pyx_L1_error)
       }
       __pyx_L26:;
-# 16687 "sisl/physics/_bloch.c"
       goto __pyx_L25;
     }
-# 16697 "sisl/physics/_bloch.c"
              {
       (__pyx_v_suboffset_dim[0]) = __pyx_v_new_ndim;
     }
     __pyx_L25:;
-# 16709 "sisl/physics/_bloch.c"
   }
-# 16718 "sisl/physics/_bloch.c"
   __pyx_r = 0;
   goto __pyx_L0;
-# 16730 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   {
     #ifdef WITH_THREAD
@@ -9638,7 +8664,6 @@ static int __pyx_memoryview_slice_memviewslice(__Pyx_memviewslice *__pyx_v_dst, 
   __pyx_L0:;
   return __pyx_r;
 }
-# 16753 "sisl/physics/_bloch.c"
 static char *__pyx_pybuffer_index(Py_buffer *__pyx_v_view, char *__pyx_v_bufp, Py_ssize_t __pyx_v_index, Py_ssize_t __pyx_v_dim) {
   Py_ssize_t __pyx_v_shape;
   Py_ssize_t __pyx_v_stride;
@@ -9652,15 +8677,11 @@ static char *__pyx_pybuffer_index(Py_buffer *__pyx_v_view, char *__pyx_v_bufp, P
   PyObject *__pyx_t_3 = NULL;
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("pybuffer_index", 0);
-# 16774 "sisl/physics/_bloch.c"
   __pyx_v_suboffset = -1L;
-# 16783 "sisl/physics/_bloch.c"
   __pyx_t_1 = __pyx_v_view->itemsize;
   __pyx_v_itemsize = __pyx_t_1;
-# 16793 "sisl/physics/_bloch.c"
   __pyx_t_2 = ((__pyx_v_view->ndim == 0) != 0);
   if (__pyx_t_2) {
-# 16803 "sisl/physics/_bloch.c"
     if (unlikely(__pyx_v_itemsize == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "integer division or modulo by zero");
       __PYX_ERR(2, 913, __pyx_L1_error)
@@ -9670,34 +8691,23 @@ static char *__pyx_pybuffer_index(Py_buffer *__pyx_v_view, char *__pyx_v_bufp, P
       __PYX_ERR(2, 913, __pyx_L1_error)
     }
     __pyx_v_shape = __Pyx_div_Py_ssize_t(__pyx_v_view->len, __pyx_v_itemsize);
-# 16820 "sisl/physics/_bloch.c"
     __pyx_v_stride = __pyx_v_itemsize;
-# 16829 "sisl/physics/_bloch.c"
     goto __pyx_L3;
   }
-# 16839 "sisl/physics/_bloch.c"
            {
     __pyx_v_shape = (__pyx_v_view->shape[__pyx_v_dim]);
-# 16849 "sisl/physics/_bloch.c"
     __pyx_v_stride = (__pyx_v_view->strides[__pyx_v_dim]);
-# 16858 "sisl/physics/_bloch.c"
     __pyx_t_2 = ((__pyx_v_view->suboffsets != NULL) != 0);
     if (__pyx_t_2) {
-# 16868 "sisl/physics/_bloch.c"
       __pyx_v_suboffset = (__pyx_v_view->suboffsets[__pyx_v_dim]);
-# 16877 "sisl/physics/_bloch.c"
     }
   }
   __pyx_L3:;
-# 16888 "sisl/physics/_bloch.c"
   __pyx_t_2 = ((__pyx_v_index < 0) != 0);
   if (__pyx_t_2) {
-# 16898 "sisl/physics/_bloch.c"
     __pyx_v_index = (__pyx_v_index + (__pyx_v_view->shape[__pyx_v_dim]));
-# 16907 "sisl/physics/_bloch.c"
     __pyx_t_2 = ((__pyx_v_index < 0) != 0);
     if (unlikely(__pyx_t_2)) {
-# 16917 "sisl/physics/_bloch.c"
       __pyx_t_3 = PyInt_FromSsize_t(__pyx_v_dim); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 924, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_Out_of_bounds_on_buffer_access_a, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 924, __pyx_L1_error)
@@ -9709,14 +8719,10 @@ static char *__pyx_pybuffer_index(Py_buffer *__pyx_v_view, char *__pyx_v_bufp, P
       __Pyx_Raise(__pyx_t_3, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __PYX_ERR(2, 924, __pyx_L1_error)
-# 16936 "sisl/physics/_bloch.c"
     }
-# 16945 "sisl/physics/_bloch.c"
   }
-# 16954 "sisl/physics/_bloch.c"
   __pyx_t_2 = ((__pyx_v_index >= __pyx_v_shape) != 0);
   if (unlikely(__pyx_t_2)) {
-# 16964 "sisl/physics/_bloch.c"
     __pyx_t_3 = PyInt_FromSsize_t(__pyx_v_dim); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 927, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_Out_of_bounds_on_buffer_access_a, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 927, __pyx_L1_error)
@@ -9728,21 +8734,14 @@ static char *__pyx_pybuffer_index(Py_buffer *__pyx_v_view, char *__pyx_v_bufp, P
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __PYX_ERR(2, 927, __pyx_L1_error)
-# 16983 "sisl/physics/_bloch.c"
   }
-# 16992 "sisl/physics/_bloch.c"
   __pyx_v_resultp = (__pyx_v_bufp + (__pyx_v_index * __pyx_v_stride));
-# 17001 "sisl/physics/_bloch.c"
   __pyx_t_2 = ((__pyx_v_suboffset >= 0) != 0);
   if (__pyx_t_2) {
-# 17011 "sisl/physics/_bloch.c"
     __pyx_v_resultp = ((((char **)__pyx_v_resultp)[0]) + __pyx_v_suboffset);
-# 17020 "sisl/physics/_bloch.c"
   }
-# 17029 "sisl/physics/_bloch.c"
   __pyx_r = __pyx_v_resultp;
   goto __pyx_L0;
-# 17041 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
@@ -9752,7 +8751,6 @@ static char *__pyx_pybuffer_index(Py_buffer *__pyx_v_view, char *__pyx_v_bufp, P
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 17059 "sisl/physics/_bloch.c"
 static int __pyx_memslice_transpose(__Pyx_memviewslice *__pyx_v_memslice) {
   int __pyx_v_ndim;
   Py_ssize_t *__pyx_v_shape;
@@ -9769,33 +8767,25 @@ static int __pyx_memslice_transpose(__Pyx_memviewslice *__pyx_v_memslice) {
   int __pyx_t_7;
   int __pyx_t_8;
   int __pyx_t_9;
-# 17083 "sisl/physics/_bloch.c"
   __pyx_t_1 = __pyx_v_memslice->memview->view.ndim;
   __pyx_v_ndim = __pyx_t_1;
-# 17093 "sisl/physics/_bloch.c"
   __pyx_t_2 = __pyx_v_memslice->shape;
   __pyx_v_shape = __pyx_t_2;
-# 17103 "sisl/physics/_bloch.c"
   __pyx_t_2 = __pyx_v_memslice->strides;
   __pyx_v_strides = __pyx_t_2;
-# 17113 "sisl/physics/_bloch.c"
   __pyx_t_3 = __Pyx_div_long(__pyx_v_ndim, 2);
   __pyx_t_4 = __pyx_t_3;
   for (__pyx_t_1 = 0; __pyx_t_1 < __pyx_t_4; __pyx_t_1+=1) {
     __pyx_v_i = __pyx_t_1;
-# 17125 "sisl/physics/_bloch.c"
     __pyx_v_j = ((__pyx_v_ndim - 1) - __pyx_v_i);
-# 17134 "sisl/physics/_bloch.c"
     __pyx_t_5 = (__pyx_v_strides[__pyx_v_j]);
     __pyx_t_6 = (__pyx_v_strides[__pyx_v_i]);
     (__pyx_v_strides[__pyx_v_i]) = __pyx_t_5;
     (__pyx_v_strides[__pyx_v_j]) = __pyx_t_6;
-# 17146 "sisl/physics/_bloch.c"
     __pyx_t_6 = (__pyx_v_shape[__pyx_v_j]);
     __pyx_t_5 = (__pyx_v_shape[__pyx_v_i]);
     (__pyx_v_shape[__pyx_v_i]) = __pyx_t_6;
     (__pyx_v_shape[__pyx_v_j]) = __pyx_t_5;
-# 17158 "sisl/physics/_bloch.c"
     __pyx_t_8 = (((__pyx_v_memslice->suboffsets[__pyx_v_i]) >= 0) != 0);
     if (!__pyx_t_8) {
     } else {
@@ -9806,15 +8796,11 @@ static int __pyx_memslice_transpose(__Pyx_memviewslice *__pyx_v_memslice) {
     __pyx_t_7 = __pyx_t_8;
     __pyx_L6_bool_binop_done:;
     if (__pyx_t_7) {
-# 17176 "sisl/physics/_bloch.c"
       __pyx_t_9 = __pyx_memoryview_err(__pyx_builtin_ValueError, ((char *)"Cannot transpose memoryview with indirect dimensions")); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(2, 953, __pyx_L1_error)
-# 17185 "sisl/physics/_bloch.c"
     }
   }
-# 17195 "sisl/physics/_bloch.c"
   __pyx_r = 1;
   goto __pyx_L0;
-# 17207 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   {
     #ifdef WITH_THREAD
@@ -9829,7 +8815,6 @@ static int __pyx_memslice_transpose(__Pyx_memviewslice *__pyx_v_memslice) {
   __pyx_L0:;
   return __pyx_r;
 }
-# 17231 "sisl/physics/_bloch.c"
 static void __pyx_memoryviewslice___dealloc__(PyObject *__pyx_v_self);
 static void __pyx_memoryviewslice___dealloc__(PyObject *__pyx_v_self) {
   __Pyx_RefNannyDeclarations
@@ -9843,31 +8828,24 @@ static void __pyx_memoryviewslice___dealloc__(PyObject *__pyx_v_self) {
 static void __pyx_memoryviewslice___pyx_pf_15View_dot_MemoryView_16_memoryviewslice___dealloc__(struct __pyx_memoryviewslice_obj *__pyx_v_self) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__", 0);
-# 17252 "sisl/physics/_bloch.c"
   __PYX_XDEC_MEMVIEW((&__pyx_v_self->from_slice), 1);
-# 17263 "sisl/physics/_bloch.c"
   __Pyx_RefNannyFinishContext();
 }
-# 17274 "sisl/physics/_bloch.c"
 static PyObject *__pyx_memoryviewslice_convert_item_to_object(struct __pyx_memoryviewslice_obj *__pyx_v_self, char *__pyx_v_itemp) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("convert_item_to_object", 0);
-# 17288 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((__pyx_v_self->to_object_func != NULL) != 0);
   if (__pyx_t_1) {
-# 17298 "sisl/physics/_bloch.c"
     __Pyx_XDECREF(__pyx_r);
     __pyx_t_2 = __pyx_v_self->to_object_func(__pyx_v_itemp); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 977, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_r = __pyx_t_2;
     __pyx_t_2 = 0;
     goto __pyx_L0;
-# 17312 "sisl/physics/_bloch.c"
   }
-# 17321 "sisl/physics/_bloch.c"
            {
     __Pyx_XDECREF(__pyx_r);
     __pyx_t_2 = __pyx_memoryview_convert_item_to_object(((struct __pyx_memoryview_obj *)__pyx_v_self), __pyx_v_itemp); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 979, __pyx_L1_error)
@@ -9876,7 +8854,6 @@ static PyObject *__pyx_memoryviewslice_convert_item_to_object(struct __pyx_memor
     __pyx_t_2 = 0;
     goto __pyx_L0;
   }
-# 17339 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_AddTraceback("View.MemoryView._memoryviewslice.convert_item_to_object", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -9886,7 +8863,6 @@ static PyObject *__pyx_memoryviewslice_convert_item_to_object(struct __pyx_memor
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 17357 "sisl/physics/_bloch.c"
 static PyObject *__pyx_memoryviewslice_assign_item_from_object(struct __pyx_memoryviewslice_obj *__pyx_v_self, char *__pyx_v_itemp, PyObject *__pyx_v_value) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -9894,22 +8870,17 @@ static PyObject *__pyx_memoryviewslice_assign_item_from_object(struct __pyx_memo
   int __pyx_t_2;
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("assign_item_from_object", 0);
-# 17372 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((__pyx_v_self->to_dtype_func != NULL) != 0);
   if (__pyx_t_1) {
-# 17382 "sisl/physics/_bloch.c"
     __pyx_t_2 = __pyx_v_self->to_dtype_func(__pyx_v_itemp, __pyx_v_value); if (unlikely(__pyx_t_2 == ((int)0))) __PYX_ERR(2, 983, __pyx_L1_error)
-# 17391 "sisl/physics/_bloch.c"
     goto __pyx_L3;
   }
-# 17401 "sisl/physics/_bloch.c"
            {
     __pyx_t_3 = __pyx_memoryview_assign_item_from_object(((struct __pyx_memoryview_obj *)__pyx_v_self), __pyx_v_itemp, __pyx_v_value); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 985, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   }
   __pyx_L3:;
-# 17417 "sisl/physics/_bloch.c"
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -9921,7 +8892,6 @@ static PyObject *__pyx_memoryviewslice_assign_item_from_object(struct __pyx_memo
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 17438 "sisl/physics/_bloch.c"
 static PyObject *__pyx_pw_15View_dot_MemoryView_16_memoryviewslice_4base_1__get__(PyObject *__pyx_v_self);
 static PyObject *__pyx_pw_15View_dot_MemoryView_16_memoryviewslice_4base_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -9938,18 +8908,15 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_16_memoryviewslice_4base___get__
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
-# 17462 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_self->from_object);
   __pyx_r = __pyx_v_self->from_object;
   goto __pyx_L0;
-# 17476 "sisl/physics/_bloch.c"
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 17489 "sisl/physics/_bloch.c"
 static PyObject *__pyx_pw___pyx_memoryviewslice_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused);
 static PyObject *__pyx_pw___pyx_memoryviewslice_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
@@ -9979,7 +8946,6 @@ static PyObject *__pyx_pf___pyx_memoryviewslice___reduce_cython__(CYTHON_UNUSED 
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(2, 2, __pyx_L1_error)
-# 17526 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("View.MemoryView._memoryviewslice.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -9988,7 +8954,6 @@ static PyObject *__pyx_pf___pyx_memoryviewslice___reduce_cython__(CYTHON_UNUSED 
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 17543 "sisl/physics/_bloch.c"
 static PyObject *__pyx_pw___pyx_memoryviewslice_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state);
 static PyObject *__pyx_pw___pyx_memoryviewslice_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
@@ -10017,7 +8982,6 @@ static PyObject *__pyx_pf___pyx_memoryviewslice_2__setstate_cython__(CYTHON_UNUS
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(2, 4, __pyx_L1_error)
-# 17580 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("View.MemoryView._memoryviewslice.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -10026,7 +8990,6 @@ static PyObject *__pyx_pf___pyx_memoryviewslice_2__setstate_cython__(CYTHON_UNUS
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 17597 "sisl/physics/_bloch.c"
 static PyObject *__pyx_memoryview_fromslice(__Pyx_memviewslice __pyx_v_memviewslice, int __pyx_v_ndim, PyObject *(*__pyx_v_to_object_func)(char *), int (*__pyx_v_to_dtype_func)(char *, PyObject *), int __pyx_v_dtype_is_object) {
   struct __pyx_memoryviewslice_obj *__pyx_v_result = 0;
   Py_ssize_t __pyx_v_suboffset;
@@ -10043,16 +9006,12 @@ static PyObject *__pyx_memoryview_fromslice(__Pyx_memviewslice __pyx_v_memviewsl
   Py_ssize_t *__pyx_t_8;
   Py_ssize_t __pyx_t_9;
   __Pyx_RefNannySetupContext("memoryview_fromslice", 0);
-# 17621 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((((PyObject *)__pyx_v_memviewslice.memview) == Py_None) != 0);
   if (__pyx_t_1) {
-# 17631 "sisl/physics/_bloch.c"
     __Pyx_XDECREF(__pyx_r);
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
-# 17642 "sisl/physics/_bloch.c"
   }
-# 17651 "sisl/physics/_bloch.c"
   __pyx_t_2 = __Pyx_PyBool_FromLong(__pyx_v_dtype_is_object); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 1009, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 1009, __pyx_L1_error)
@@ -10071,11 +9030,8 @@ static PyObject *__pyx_memoryview_fromslice(__Pyx_memviewslice __pyx_v_memviewsl
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_result = ((struct __pyx_memoryviewslice_obj *)__pyx_t_2);
   __pyx_t_2 = 0;
-# 17677 "sisl/physics/_bloch.c"
   __pyx_v_result->from_slice = __pyx_v_memviewslice;
-# 17686 "sisl/physics/_bloch.c"
   __PYX_INC_MEMVIEW((&__pyx_v_memviewslice), 1);
-# 17695 "sisl/physics/_bloch.c"
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_memviewslice.memview), __pyx_n_s_base); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 1014, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_2);
@@ -10083,59 +9039,39 @@ static PyObject *__pyx_memoryview_fromslice(__Pyx_memviewslice __pyx_v_memviewsl
   __Pyx_DECREF(__pyx_v_result->from_object);
   __pyx_v_result->from_object = __pyx_t_2;
   __pyx_t_2 = 0;
-# 17710 "sisl/physics/_bloch.c"
   __pyx_t_4 = __pyx_v_memviewslice.memview->typeinfo;
   __pyx_v_result->__pyx_base.typeinfo = __pyx_t_4;
-# 17720 "sisl/physics/_bloch.c"
   __pyx_t_5 = __pyx_v_memviewslice.memview->view;
   __pyx_v_result->__pyx_base.view = __pyx_t_5;
-# 17730 "sisl/physics/_bloch.c"
   __pyx_v_result->__pyx_base.view.buf = ((void *)__pyx_v_memviewslice.data);
-# 17739 "sisl/physics/_bloch.c"
   __pyx_v_result->__pyx_base.view.ndim = __pyx_v_ndim;
-# 17748 "sisl/physics/_bloch.c"
   ((Py_buffer *)(&__pyx_v_result->__pyx_base.view))->obj = Py_None;
-# 17757 "sisl/physics/_bloch.c"
   Py_INCREF(Py_None);
-# 17766 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((((struct __pyx_memoryview_obj *)__pyx_v_memviewslice.memview)->flags & PyBUF_WRITABLE) != 0);
   if (__pyx_t_1) {
-# 17776 "sisl/physics/_bloch.c"
     __pyx_v_result->__pyx_base.flags = PyBUF_RECORDS;
-# 17785 "sisl/physics/_bloch.c"
     goto __pyx_L4;
   }
-# 17795 "sisl/physics/_bloch.c"
            {
     __pyx_v_result->__pyx_base.flags = PyBUF_RECORDS_RO;
   }
   __pyx_L4:;
-# 17807 "sisl/physics/_bloch.c"
   __pyx_v_result->__pyx_base.view.shape = ((Py_ssize_t *)__pyx_v_result->from_slice.shape);
-# 17816 "sisl/physics/_bloch.c"
   __pyx_v_result->__pyx_base.view.strides = ((Py_ssize_t *)__pyx_v_result->from_slice.strides);
-# 17825 "sisl/physics/_bloch.c"
   __pyx_v_result->__pyx_base.view.suboffsets = NULL;
-# 17834 "sisl/physics/_bloch.c"
   __pyx_t_7 = (__pyx_v_result->from_slice.suboffsets + __pyx_v_ndim);
   for (__pyx_t_8 = __pyx_v_result->from_slice.suboffsets; __pyx_t_8 < __pyx_t_7; __pyx_t_8++) {
     __pyx_t_6 = __pyx_t_8;
     __pyx_v_suboffset = (__pyx_t_6[0]);
-# 17846 "sisl/physics/_bloch.c"
     __pyx_t_1 = ((__pyx_v_suboffset >= 0) != 0);
     if (__pyx_t_1) {
-# 17856 "sisl/physics/_bloch.c"
       __pyx_v_result->__pyx_base.view.suboffsets = ((Py_ssize_t *)__pyx_v_result->from_slice.suboffsets);
-# 17865 "sisl/physics/_bloch.c"
       goto __pyx_L6_break;
-# 17874 "sisl/physics/_bloch.c"
     }
   }
   __pyx_L6_break:;
-# 17885 "sisl/physics/_bloch.c"
   __pyx_t_9 = __pyx_v_result->__pyx_base.view.itemsize;
   __pyx_v_result->__pyx_base.view.len = __pyx_t_9;
-# 17895 "sisl/physics/_bloch.c"
   __pyx_t_7 = (__pyx_v_result->__pyx_base.view.shape + __pyx_v_ndim);
   for (__pyx_t_8 = __pyx_v_result->__pyx_base.view.shape; __pyx_t_8 < __pyx_t_7; __pyx_t_8++) {
     __pyx_t_6 = __pyx_t_8;
@@ -10143,7 +9079,6 @@ static PyObject *__pyx_memoryview_fromslice(__Pyx_memviewslice __pyx_v_memviewsl
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_XDECREF_SET(__pyx_v_length, __pyx_t_2);
     __pyx_t_2 = 0;
-# 17910 "sisl/physics/_bloch.c"
     __pyx_t_2 = PyInt_FromSsize_t(__pyx_v_result->__pyx_base.view.len); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 1040, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_3 = PyNumber_InPlaceMultiply(__pyx_t_2, __pyx_v_length); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 1040, __pyx_L1_error)
@@ -10153,16 +9088,12 @@ static PyObject *__pyx_memoryview_fromslice(__Pyx_memviewslice __pyx_v_memviewsl
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_v_result->__pyx_base.view.len = __pyx_t_9;
   }
-# 17927 "sisl/physics/_bloch.c"
   __pyx_v_result->to_object_func = __pyx_v_to_object_func;
-# 17936 "sisl/physics/_bloch.c"
   __pyx_v_result->to_dtype_func = __pyx_v_to_dtype_func;
-# 17945 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_result));
   __pyx_r = ((PyObject *)__pyx_v_result);
   goto __pyx_L0;
-# 17959 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
@@ -10175,7 +9106,6 @@ static PyObject *__pyx_memoryview_fromslice(__Pyx_memviewslice __pyx_v_memviewsl
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 17980 "sisl/physics/_bloch.c"
 static __Pyx_memviewslice *__pyx_memoryview_get_slice_from_memoryview(struct __pyx_memoryview_obj *__pyx_v_memview, __Pyx_memviewslice *__pyx_v_mslice) {
   struct __pyx_memoryviewslice_obj *__pyx_v_obj = 0;
   __Pyx_memviewslice *__pyx_r;
@@ -10184,29 +9114,22 @@ static __Pyx_memviewslice *__pyx_memoryview_get_slice_from_memoryview(struct __p
   int __pyx_t_2;
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("get_slice_from_memview", 0);
-# 17996 "sisl/physics/_bloch.c"
   __pyx_t_1 = __Pyx_TypeCheck(((PyObject *)__pyx_v_memview), __pyx_memoryviewslice_type);
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
-# 18007 "sisl/physics/_bloch.c"
     if (!(likely(((((PyObject *)__pyx_v_memview)) == Py_None) || likely(__Pyx_TypeTest(((PyObject *)__pyx_v_memview), __pyx_memoryviewslice_type))))) __PYX_ERR(2, 1052, __pyx_L1_error)
     __pyx_t_3 = ((PyObject *)__pyx_v_memview);
     __Pyx_INCREF(__pyx_t_3);
     __pyx_v_obj = ((struct __pyx_memoryviewslice_obj *)__pyx_t_3);
     __pyx_t_3 = 0;
-# 18020 "sisl/physics/_bloch.c"
     __pyx_r = (&__pyx_v_obj->from_slice);
     goto __pyx_L0;
-# 18030 "sisl/physics/_bloch.c"
   }
-# 18039 "sisl/physics/_bloch.c"
            {
     __pyx_memoryview_slice_copy(__pyx_v_memview, __pyx_v_mslice);
-# 18049 "sisl/physics/_bloch.c"
     __pyx_r = __pyx_v_mslice;
     goto __pyx_L0;
   }
-# 18062 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_WriteUnraisable("View.MemoryView.get_slice_from_memview", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
@@ -10216,7 +9139,6 @@ static __Pyx_memviewslice *__pyx_memoryview_get_slice_from_memoryview(struct __p
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 18080 "sisl/physics/_bloch.c"
 static void __pyx_memoryview_slice_copy(struct __pyx_memoryview_obj *__pyx_v_memview, __Pyx_memviewslice *__pyx_v_dst) {
   int __pyx_v_dim;
   Py_ssize_t *__pyx_v_shape;
@@ -10229,29 +9151,20 @@ static void __pyx_memoryview_slice_copy(struct __pyx_memoryview_obj *__pyx_v_mem
   int __pyx_t_4;
   Py_ssize_t __pyx_t_5;
   __Pyx_RefNannySetupContext("slice_copy", 0);
-# 18100 "sisl/physics/_bloch.c"
   __pyx_t_1 = __pyx_v_memview->view.shape;
   __pyx_v_shape = __pyx_t_1;
-# 18110 "sisl/physics/_bloch.c"
   __pyx_t_1 = __pyx_v_memview->view.strides;
   __pyx_v_strides = __pyx_t_1;
-# 18120 "sisl/physics/_bloch.c"
   __pyx_t_1 = __pyx_v_memview->view.suboffsets;
   __pyx_v_suboffsets = __pyx_t_1;
-# 18130 "sisl/physics/_bloch.c"
   __pyx_v_dst->memview = ((struct __pyx_memoryview_obj *)__pyx_v_memview);
-# 18139 "sisl/physics/_bloch.c"
   __pyx_v_dst->data = ((char *)__pyx_v_memview->view.buf);
-# 18148 "sisl/physics/_bloch.c"
   __pyx_t_2 = __pyx_v_memview->view.ndim;
   __pyx_t_3 = __pyx_t_2;
   for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
     __pyx_v_dim = __pyx_t_4;
-# 18160 "sisl/physics/_bloch.c"
     (__pyx_v_dst->shape[__pyx_v_dim]) = (__pyx_v_shape[__pyx_v_dim]);
-# 18169 "sisl/physics/_bloch.c"
     (__pyx_v_dst->strides[__pyx_v_dim]) = (__pyx_v_strides[__pyx_v_dim]);
-# 18178 "sisl/physics/_bloch.c"
     if ((__pyx_v_suboffsets != 0)) {
       __pyx_t_5 = (__pyx_v_suboffsets[__pyx_v_dim]);
     } else {
@@ -10259,26 +9172,21 @@ static void __pyx_memoryview_slice_copy(struct __pyx_memoryview_obj *__pyx_v_mem
     }
     (__pyx_v_dst->suboffsets[__pyx_v_dim]) = __pyx_t_5;
   }
-# 18195 "sisl/physics/_bloch.c"
   __Pyx_RefNannyFinishContext();
 }
-# 18206 "sisl/physics/_bloch.c"
 static PyObject *__pyx_memoryview_copy_object(struct __pyx_memoryview_obj *__pyx_v_memview) {
   __Pyx_memviewslice __pyx_v_memviewslice;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("memoryview_copy", 0);
-# 18220 "sisl/physics/_bloch.c"
   __pyx_memoryview_slice_copy(__pyx_v_memview, (&__pyx_v_memviewslice));
-# 18229 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __pyx_memoryview_copy_object_from_slice(__pyx_v_memview, (&__pyx_v_memviewslice)); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 1080, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 18245 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("View.MemoryView.memoryview_copy", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -10288,7 +9196,6 @@ static PyObject *__pyx_memoryview_copy_object(struct __pyx_memoryview_obj *__pyx
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 18263 "sisl/physics/_bloch.c"
 static PyObject *__pyx_memoryview_copy_object_from_slice(struct __pyx_memoryview_obj *__pyx_v_memview, __Pyx_memviewslice *__pyx_v_memviewslice) {
   PyObject *(*__pyx_v_to_object_func)(char *);
   int (*__pyx_v_to_dtype_func)(char *, PyObject *);
@@ -10300,35 +9207,26 @@ static PyObject *__pyx_memoryview_copy_object_from_slice(struct __pyx_memoryview
   int (*__pyx_t_4)(char *, PyObject *);
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("memoryview_copy_from_slice", 0);
-# 18282 "sisl/physics/_bloch.c"
   __pyx_t_1 = __Pyx_TypeCheck(((PyObject *)__pyx_v_memview), __pyx_memoryviewslice_type);
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
-# 18293 "sisl/physics/_bloch.c"
     __pyx_t_3 = ((struct __pyx_memoryviewslice_obj *)__pyx_v_memview)->to_object_func;
     __pyx_v_to_object_func = __pyx_t_3;
-# 18303 "sisl/physics/_bloch.c"
     __pyx_t_4 = ((struct __pyx_memoryviewslice_obj *)__pyx_v_memview)->to_dtype_func;
     __pyx_v_to_dtype_func = __pyx_t_4;
-# 18313 "sisl/physics/_bloch.c"
     goto __pyx_L3;
   }
-# 18323 "sisl/physics/_bloch.c"
            {
     __pyx_v_to_object_func = NULL;
-# 18333 "sisl/physics/_bloch.c"
     __pyx_v_to_dtype_func = NULL;
   }
   __pyx_L3:;
-# 18344 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
-# 18353 "sisl/physics/_bloch.c"
   __pyx_t_5 = __pyx_memoryview_fromslice((__pyx_v_memviewslice[0]), __pyx_v_memview->view.ndim, __pyx_v_to_object_func, __pyx_v_to_dtype_func, __pyx_v_memview->dtype_is_object); if (unlikely(!__pyx_t_5)) __PYX_ERR(2, 1097, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_r = __pyx_t_5;
   __pyx_t_5 = 0;
   goto __pyx_L0;
-# 18368 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_AddTraceback("View.MemoryView.memoryview_copy_from_slice", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -10338,28 +9236,21 @@ static PyObject *__pyx_memoryview_copy_object_from_slice(struct __pyx_memoryview
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 18386 "sisl/physics/_bloch.c"
 static Py_ssize_t abs_py_ssize_t(Py_ssize_t __pyx_v_arg) {
   Py_ssize_t __pyx_r;
   int __pyx_t_1;
-# 18397 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((__pyx_v_arg < 0) != 0);
   if (__pyx_t_1) {
-# 18407 "sisl/physics/_bloch.c"
     __pyx_r = (-__pyx_v_arg);
     goto __pyx_L0;
-# 18417 "sisl/physics/_bloch.c"
   }
-# 18426 "sisl/physics/_bloch.c"
            {
     __pyx_r = __pyx_v_arg;
     goto __pyx_L0;
   }
-# 18440 "sisl/physics/_bloch.c"
   __pyx_L0:;
   return __pyx_r;
 }
-# 18452 "sisl/physics/_bloch.c"
 static char __pyx_get_best_slice_order(__Pyx_memviewslice *__pyx_v_mslice, int __pyx_v_ndim) {
   int __pyx_v_i;
   Py_ssize_t __pyx_v_c_stride;
@@ -10369,58 +9260,40 @@ static char __pyx_get_best_slice_order(__Pyx_memviewslice *__pyx_v_mslice, int _
   int __pyx_t_2;
   int __pyx_t_3;
   int __pyx_t_4;
-# 18469 "sisl/physics/_bloch.c"
   __pyx_v_c_stride = 0;
-# 18478 "sisl/physics/_bloch.c"
   __pyx_v_f_stride = 0;
-# 18487 "sisl/physics/_bloch.c"
   for (__pyx_t_1 = (__pyx_v_ndim - 1); __pyx_t_1 > -1; __pyx_t_1-=1) {
     __pyx_v_i = __pyx_t_1;
-# 18497 "sisl/physics/_bloch.c"
     __pyx_t_2 = (((__pyx_v_mslice->shape[__pyx_v_i]) > 1) != 0);
     if (__pyx_t_2) {
-# 18507 "sisl/physics/_bloch.c"
       __pyx_v_c_stride = (__pyx_v_mslice->strides[__pyx_v_i]);
-# 18516 "sisl/physics/_bloch.c"
       goto __pyx_L4_break;
-# 18525 "sisl/physics/_bloch.c"
     }
   }
   __pyx_L4_break:;
-# 18536 "sisl/physics/_bloch.c"
   __pyx_t_1 = __pyx_v_ndim;
   __pyx_t_3 = __pyx_t_1;
   for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
     __pyx_v_i = __pyx_t_4;
-# 18548 "sisl/physics/_bloch.c"
     __pyx_t_2 = (((__pyx_v_mslice->shape[__pyx_v_i]) > 1) != 0);
     if (__pyx_t_2) {
-# 18558 "sisl/physics/_bloch.c"
       __pyx_v_f_stride = (__pyx_v_mslice->strides[__pyx_v_i]);
-# 18567 "sisl/physics/_bloch.c"
       goto __pyx_L7_break;
-# 18576 "sisl/physics/_bloch.c"
     }
   }
   __pyx_L7_break:;
-# 18587 "sisl/physics/_bloch.c"
   __pyx_t_2 = ((abs_py_ssize_t(__pyx_v_c_stride) <= abs_py_ssize_t(__pyx_v_f_stride)) != 0);
   if (__pyx_t_2) {
-# 18597 "sisl/physics/_bloch.c"
     __pyx_r = 'C';
     goto __pyx_L0;
-# 18607 "sisl/physics/_bloch.c"
   }
-# 18616 "sisl/physics/_bloch.c"
            {
     __pyx_r = 'F';
     goto __pyx_L0;
   }
-# 18630 "sisl/physics/_bloch.c"
   __pyx_L0:;
   return __pyx_r;
 }
-# 18642 "sisl/physics/_bloch.c"
 static void _copy_strided_to_strided(char *__pyx_v_src_data, Py_ssize_t *__pyx_v_src_strides, char *__pyx_v_dst_data, Py_ssize_t *__pyx_v_dst_strides, Py_ssize_t *__pyx_v_src_shape, Py_ssize_t *__pyx_v_dst_shape, int __pyx_v_ndim, size_t __pyx_v_itemsize) {
   CYTHON_UNUSED Py_ssize_t __pyx_v_i;
   CYTHON_UNUSED Py_ssize_t __pyx_v_src_extent;
@@ -10433,18 +9306,12 @@ static void _copy_strided_to_strided(char *__pyx_v_src_data, Py_ssize_t *__pyx_v
   Py_ssize_t __pyx_t_4;
   Py_ssize_t __pyx_t_5;
   Py_ssize_t __pyx_t_6;
-# 18662 "sisl/physics/_bloch.c"
   __pyx_v_src_extent = (__pyx_v_src_shape[0]);
-# 18671 "sisl/physics/_bloch.c"
   __pyx_v_dst_extent = (__pyx_v_dst_shape[0]);
-# 18680 "sisl/physics/_bloch.c"
   __pyx_v_src_stride = (__pyx_v_src_strides[0]);
-# 18689 "sisl/physics/_bloch.c"
   __pyx_v_dst_stride = (__pyx_v_dst_strides[0]);
-# 18698 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((__pyx_v_ndim == 1) != 0);
   if (__pyx_t_1) {
-# 18708 "sisl/physics/_bloch.c"
     __pyx_t_2 = ((__pyx_v_src_stride > 0) != 0);
     if (__pyx_t_2) {
     } else {
@@ -10457,7 +9324,6 @@ static void _copy_strided_to_strided(char *__pyx_v_src_data, Py_ssize_t *__pyx_v
       __pyx_t_1 = __pyx_t_2;
       goto __pyx_L5_bool_binop_done;
     }
-# 18728 "sisl/physics/_bloch.c"
     __pyx_t_2 = (((size_t)__pyx_v_src_stride) == __pyx_v_itemsize);
     if (__pyx_t_2) {
       __pyx_t_2 = (__pyx_v_itemsize == ((size_t)__pyx_v_dst_stride));
@@ -10465,55 +9331,38 @@ static void _copy_strided_to_strided(char *__pyx_v_src_data, Py_ssize_t *__pyx_v
     __pyx_t_3 = (__pyx_t_2 != 0);
     __pyx_t_1 = __pyx_t_3;
     __pyx_L5_bool_binop_done:;
-# 18743 "sisl/physics/_bloch.c"
     if (__pyx_t_1) {
-# 18752 "sisl/physics/_bloch.c"
       (void)(memcpy(__pyx_v_dst_data, __pyx_v_src_data, (__pyx_v_itemsize * __pyx_v_dst_extent)));
-# 18761 "sisl/physics/_bloch.c"
       goto __pyx_L4;
     }
-# 18771 "sisl/physics/_bloch.c"
              {
       __pyx_t_4 = __pyx_v_dst_extent;
       __pyx_t_5 = __pyx_t_4;
       for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
         __pyx_v_i = __pyx_t_6;
-# 18784 "sisl/physics/_bloch.c"
         (void)(memcpy(__pyx_v_dst_data, __pyx_v_src_data, __pyx_v_itemsize));
-# 18793 "sisl/physics/_bloch.c"
         __pyx_v_src_data = (__pyx_v_src_data + __pyx_v_src_stride);
-# 18802 "sisl/physics/_bloch.c"
         __pyx_v_dst_data = (__pyx_v_dst_data + __pyx_v_dst_stride);
       }
     }
     __pyx_L4:;
-# 18814 "sisl/physics/_bloch.c"
     goto __pyx_L3;
   }
-# 18824 "sisl/physics/_bloch.c"
            {
     __pyx_t_4 = __pyx_v_dst_extent;
     __pyx_t_5 = __pyx_t_4;
     for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
       __pyx_v_i = __pyx_t_6;
-# 18837 "sisl/physics/_bloch.c"
       _copy_strided_to_strided(__pyx_v_src_data, (__pyx_v_src_strides + 1), __pyx_v_dst_data, (__pyx_v_dst_strides + 1), (__pyx_v_src_shape + 1), (__pyx_v_dst_shape + 1), (__pyx_v_ndim - 1), __pyx_v_itemsize);
-# 18846 "sisl/physics/_bloch.c"
       __pyx_v_src_data = (__pyx_v_src_data + __pyx_v_src_stride);
-# 18855 "sisl/physics/_bloch.c"
       __pyx_v_dst_data = (__pyx_v_dst_data + __pyx_v_dst_stride);
     }
   }
   __pyx_L3:;
-# 18869 "sisl/physics/_bloch.c"
 }
-# 18879 "sisl/physics/_bloch.c"
 static void copy_strided_to_strided(__Pyx_memviewslice *__pyx_v_src, __Pyx_memviewslice *__pyx_v_dst, int __pyx_v_ndim, size_t __pyx_v_itemsize) {
-# 18888 "sisl/physics/_bloch.c"
   _copy_strided_to_strided(__pyx_v_src->data, __pyx_v_src->strides, __pyx_v_dst->data, __pyx_v_dst->strides, __pyx_v_src->shape, __pyx_v_dst->shape, __pyx_v_ndim, __pyx_v_itemsize);
-# 18899 "sisl/physics/_bloch.c"
 }
-# 18909 "sisl/physics/_bloch.c"
 static Py_ssize_t __pyx_memoryview_slice_get_size(__Pyx_memviewslice *__pyx_v_src, int __pyx_v_ndim) {
   int __pyx_v_i;
   Py_ssize_t __pyx_v_size;
@@ -10522,25 +9371,19 @@ static Py_ssize_t __pyx_memoryview_slice_get_size(__Pyx_memviewslice *__pyx_v_sr
   int __pyx_t_2;
   int __pyx_t_3;
   int __pyx_t_4;
-# 18925 "sisl/physics/_bloch.c"
   __pyx_t_1 = __pyx_v_src->memview->view.itemsize;
   __pyx_v_size = __pyx_t_1;
-# 18935 "sisl/physics/_bloch.c"
   __pyx_t_2 = __pyx_v_ndim;
   __pyx_t_3 = __pyx_t_2;
   for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
     __pyx_v_i = __pyx_t_4;
-# 18947 "sisl/physics/_bloch.c"
     __pyx_v_size = (__pyx_v_size * (__pyx_v_src->shape[__pyx_v_i]));
   }
-# 18957 "sisl/physics/_bloch.c"
   __pyx_r = __pyx_v_size;
   goto __pyx_L0;
-# 18969 "sisl/physics/_bloch.c"
   __pyx_L0:;
   return __pyx_r;
 }
-# 18981 "sisl/physics/_bloch.c"
 static Py_ssize_t __pyx_fill_contig_strides_array(Py_ssize_t *__pyx_v_shape, Py_ssize_t *__pyx_v_strides, Py_ssize_t __pyx_v_stride, int __pyx_v_ndim, char __pyx_v_order) {
   int __pyx_v_idx;
   Py_ssize_t __pyx_r;
@@ -10548,41 +9391,30 @@ static Py_ssize_t __pyx_fill_contig_strides_array(Py_ssize_t *__pyx_v_shape, Py_
   int __pyx_t_2;
   int __pyx_t_3;
   int __pyx_t_4;
-# 18996 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((__pyx_v_order == 'F') != 0);
   if (__pyx_t_1) {
-# 19006 "sisl/physics/_bloch.c"
     __pyx_t_2 = __pyx_v_ndim;
     __pyx_t_3 = __pyx_t_2;
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_idx = __pyx_t_4;
-# 19018 "sisl/physics/_bloch.c"
       (__pyx_v_strides[__pyx_v_idx]) = __pyx_v_stride;
-# 19027 "sisl/physics/_bloch.c"
       __pyx_v_stride = (__pyx_v_stride * (__pyx_v_shape[__pyx_v_idx]));
     }
-# 19037 "sisl/physics/_bloch.c"
     goto __pyx_L3;
   }
-# 19047 "sisl/physics/_bloch.c"
            {
     for (__pyx_t_2 = (__pyx_v_ndim - 1); __pyx_t_2 > -1; __pyx_t_2-=1) {
       __pyx_v_idx = __pyx_t_2;
-# 19058 "sisl/physics/_bloch.c"
       (__pyx_v_strides[__pyx_v_idx]) = __pyx_v_stride;
-# 19067 "sisl/physics/_bloch.c"
       __pyx_v_stride = (__pyx_v_stride * (__pyx_v_shape[__pyx_v_idx]));
     }
   }
   __pyx_L3:;
-# 19079 "sisl/physics/_bloch.c"
   __pyx_r = __pyx_v_stride;
   goto __pyx_L0;
-# 19091 "sisl/physics/_bloch.c"
   __pyx_L0:;
   return __pyx_r;
 }
-# 19103 "sisl/physics/_bloch.c"
 static void *__pyx_memoryview_copy_data_to_temp(__Pyx_memviewslice *__pyx_v_src, __Pyx_memviewslice *__pyx_v_tmpslice, char __pyx_v_order, int __pyx_v_ndim) {
   int __pyx_v_i;
   void *__pyx_v_result;
@@ -10595,67 +9427,45 @@ static void *__pyx_memoryview_copy_data_to_temp(__Pyx_memviewslice *__pyx_v_src,
   struct __pyx_memoryview_obj *__pyx_t_4;
   int __pyx_t_5;
   int __pyx_t_6;
-# 19123 "sisl/physics/_bloch.c"
   __pyx_t_1 = __pyx_v_src->memview->view.itemsize;
   __pyx_v_itemsize = __pyx_t_1;
-# 19133 "sisl/physics/_bloch.c"
   __pyx_v_size = __pyx_memoryview_slice_get_size(__pyx_v_src, __pyx_v_ndim);
-# 19142 "sisl/physics/_bloch.c"
   __pyx_v_result = malloc(__pyx_v_size);
-# 19151 "sisl/physics/_bloch.c"
   __pyx_t_2 = ((!(__pyx_v_result != 0)) != 0);
   if (__pyx_t_2) {
-# 19161 "sisl/physics/_bloch.c"
     __pyx_t_3 = __pyx_memoryview_err(__pyx_builtin_MemoryError, NULL); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(2, 1221, __pyx_L1_error)
-# 19170 "sisl/physics/_bloch.c"
   }
-# 19179 "sisl/physics/_bloch.c"
   __pyx_v_tmpslice->data = ((char *)__pyx_v_result);
-# 19188 "sisl/physics/_bloch.c"
   __pyx_t_4 = __pyx_v_src->memview;
   __pyx_v_tmpslice->memview = __pyx_t_4;
-# 19198 "sisl/physics/_bloch.c"
   __pyx_t_3 = __pyx_v_ndim;
   __pyx_t_5 = __pyx_t_3;
   for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
     __pyx_v_i = __pyx_t_6;
-# 19210 "sisl/physics/_bloch.c"
     (__pyx_v_tmpslice->shape[__pyx_v_i]) = (__pyx_v_src->shape[__pyx_v_i]);
-# 19219 "sisl/physics/_bloch.c"
     (__pyx_v_tmpslice->suboffsets[__pyx_v_i]) = -1L;
   }
-# 19229 "sisl/physics/_bloch.c"
   (void)(__pyx_fill_contig_strides_array((&(__pyx_v_tmpslice->shape[0])), (&(__pyx_v_tmpslice->strides[0])), __pyx_v_itemsize, __pyx_v_ndim, __pyx_v_order));
-# 19238 "sisl/physics/_bloch.c"
   __pyx_t_3 = __pyx_v_ndim;
   __pyx_t_5 = __pyx_t_3;
   for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
     __pyx_v_i = __pyx_t_6;
-# 19250 "sisl/physics/_bloch.c"
     __pyx_t_2 = (((__pyx_v_tmpslice->shape[__pyx_v_i]) == 1) != 0);
     if (__pyx_t_2) {
-# 19260 "sisl/physics/_bloch.c"
       (__pyx_v_tmpslice->strides[__pyx_v_i]) = 0;
-# 19269 "sisl/physics/_bloch.c"
     }
   }
-# 19279 "sisl/physics/_bloch.c"
   __pyx_t_2 = (__pyx_memviewslice_is_contig((__pyx_v_src[0]), __pyx_v_order, __pyx_v_ndim) != 0);
   if (__pyx_t_2) {
-# 19289 "sisl/physics/_bloch.c"
     (void)(memcpy(__pyx_v_result, __pyx_v_src->data, __pyx_v_size));
-# 19298 "sisl/physics/_bloch.c"
     goto __pyx_L9;
   }
-# 19308 "sisl/physics/_bloch.c"
            {
     copy_strided_to_strided(__pyx_v_src, __pyx_v_tmpslice, __pyx_v_ndim, __pyx_v_itemsize);
   }
   __pyx_L9:;
-# 19320 "sisl/physics/_bloch.c"
   __pyx_r = __pyx_v_result;
   goto __pyx_L0;
-# 19332 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   {
     #ifdef WITH_THREAD
@@ -10670,7 +9480,6 @@ static void *__pyx_memoryview_copy_data_to_temp(__Pyx_memviewslice *__pyx_v_src,
   __pyx_L0:;
   return __pyx_r;
 }
-# 19355 "sisl/physics/_bloch.c"
 static int __pyx_memoryview_err_extents(int __pyx_v_i, Py_ssize_t __pyx_v_extent1, Py_ssize_t __pyx_v_extent2) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -10682,7 +9491,6 @@ static int __pyx_memoryview_err_extents(int __pyx_v_i, Py_ssize_t __pyx_v_extent
   PyGILState_STATE __pyx_gilstate_save = __Pyx_PyGILState_Ensure();
   #endif
   __Pyx_RefNannySetupContext("_err_extents", 0);
-# 19374 "sisl/physics/_bloch.c"
   __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 1251, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = PyInt_FromSsize_t(__pyx_v_extent1); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 1251, __pyx_L1_error)
@@ -10700,7 +9508,6 @@ static int __pyx_memoryview_err_extents(int __pyx_v_i, Py_ssize_t __pyx_v_extent
   __pyx_t_1 = 0;
   __pyx_t_2 = 0;
   __pyx_t_3 = 0;
-# 19399 "sisl/physics/_bloch.c"
   __pyx_t_3 = __Pyx_PyString_Format(__pyx_kp_s_got_differing_extents_in_dimensi, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 1250, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -10710,7 +9517,6 @@ static int __pyx_memoryview_err_extents(int __pyx_v_i, Py_ssize_t __pyx_v_extent
   __Pyx_Raise(__pyx_t_4, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __PYX_ERR(2, 1250, __pyx_L1_error)
-# 19418 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -10724,7 +9530,6 @@ static int __pyx_memoryview_err_extents(int __pyx_v_i, Py_ssize_t __pyx_v_extent
   #endif
   return __pyx_r;
 }
-# 19440 "sisl/physics/_bloch.c"
 static int __pyx_memoryview_err_dim(PyObject *__pyx_v_error, char *__pyx_v_msg, int __pyx_v_dim) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -10737,7 +9542,6 @@ static int __pyx_memoryview_err_dim(PyObject *__pyx_v_error, char *__pyx_v_msg, 
   #endif
   __Pyx_RefNannySetupContext("_err_dim", 0);
   __Pyx_INCREF(__pyx_v_error);
-# 19460 "sisl/physics/_bloch.c"
   __pyx_t_2 = __Pyx_decode_c_string(__pyx_v_msg, 0, strlen(__pyx_v_msg), NULL, NULL, PyUnicode_DecodeASCII); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 1255, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_dim); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 1255, __pyx_L1_error)
@@ -10766,7 +9570,6 @@ static int __pyx_memoryview_err_dim(PyObject *__pyx_v_error, char *__pyx_v_msg, 
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(2, 1255, __pyx_L1_error)
-# 19498 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -10781,7 +9584,6 @@ static int __pyx_memoryview_err_dim(PyObject *__pyx_v_error, char *__pyx_v_msg, 
   #endif
   return __pyx_r;
 }
-# 19521 "sisl/physics/_bloch.c"
 static int __pyx_memoryview_err(PyObject *__pyx_v_error, char *__pyx_v_msg) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -10795,10 +9597,8 @@ static int __pyx_memoryview_err(PyObject *__pyx_v_error, char *__pyx_v_msg) {
   #endif
   __Pyx_RefNannySetupContext("_err", 0);
   __Pyx_INCREF(__pyx_v_error);
-# 19542 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((__pyx_v_msg != NULL) != 0);
   if (unlikely(__pyx_t_1)) {
-# 19552 "sisl/physics/_bloch.c"
     __pyx_t_3 = __Pyx_decode_c_string(__pyx_v_msg, 0, strlen(__pyx_v_msg), NULL, NULL, PyUnicode_DecodeASCII); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 1260, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_INCREF(__pyx_v_error);
@@ -10821,14 +9621,11 @@ static int __pyx_memoryview_err(PyObject *__pyx_v_error, char *__pyx_v_msg) {
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __PYX_ERR(2, 1260, __pyx_L1_error)
-# 19582 "sisl/physics/_bloch.c"
   }
-# 19591 "sisl/physics/_bloch.c"
            {
     __Pyx_Raise(__pyx_v_error, 0, 0, 0);
     __PYX_ERR(2, 1262, __pyx_L1_error)
   }
-# 19605 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
@@ -10843,7 +9640,6 @@ static int __pyx_memoryview_err(PyObject *__pyx_v_error, char *__pyx_v_msg) {
   #endif
   return __pyx_r;
 }
-# 19628 "sisl/physics/_bloch.c"
 static int __pyx_memoryview_copy_contents(__Pyx_memviewslice __pyx_v_src, __Pyx_memviewslice __pyx_v_dst, int __pyx_v_src_ndim, int __pyx_v_dst_ndim, int __pyx_v_dtype_is_object) {
   void *__pyx_v_tmpdata;
   size_t __pyx_v_itemsize;
@@ -10862,34 +9658,22 @@ static int __pyx_memoryview_copy_contents(__Pyx_memviewslice __pyx_v_src, __Pyx_
   int __pyx_t_6;
   void *__pyx_t_7;
   int __pyx_t_8;
-# 19654 "sisl/physics/_bloch.c"
   __pyx_v_tmpdata = NULL;
-# 19663 "sisl/physics/_bloch.c"
   __pyx_t_1 = __pyx_v_src.memview->view.itemsize;
   __pyx_v_itemsize = __pyx_t_1;
-# 19673 "sisl/physics/_bloch.c"
   __pyx_v_order = __pyx_get_best_slice_order((&__pyx_v_src), __pyx_v_src_ndim);
-# 19682 "sisl/physics/_bloch.c"
   __pyx_v_broadcasting = 0;
-# 19691 "sisl/physics/_bloch.c"
   __pyx_v_direct_copy = 0;
-# 19700 "sisl/physics/_bloch.c"
   __pyx_t_2 = ((__pyx_v_src_ndim < __pyx_v_dst_ndim) != 0);
   if (__pyx_t_2) {
-# 19710 "sisl/physics/_bloch.c"
     __pyx_memoryview_broadcast_leading((&__pyx_v_src), __pyx_v_src_ndim, __pyx_v_dst_ndim);
-# 19719 "sisl/physics/_bloch.c"
     goto __pyx_L3;
   }
-# 19729 "sisl/physics/_bloch.c"
   __pyx_t_2 = ((__pyx_v_dst_ndim < __pyx_v_src_ndim) != 0);
   if (__pyx_t_2) {
-# 19739 "sisl/physics/_bloch.c"
     __pyx_memoryview_broadcast_leading((&__pyx_v_dst), __pyx_v_dst_ndim, __pyx_v_src_ndim);
-# 19748 "sisl/physics/_bloch.c"
   }
   __pyx_L3:;
-# 19758 "sisl/physics/_bloch.c"
   __pyx_t_3 = __pyx_v_dst_ndim;
   __pyx_t_4 = __pyx_v_src_ndim;
   if (((__pyx_t_3 > __pyx_t_4) != 0)) {
@@ -10898,118 +9682,75 @@ static int __pyx_memoryview_copy_contents(__Pyx_memviewslice __pyx_v_src, __Pyx_
     __pyx_t_5 = __pyx_t_4;
   }
   __pyx_v_ndim = __pyx_t_5;
-# 19774 "sisl/physics/_bloch.c"
   __pyx_t_5 = __pyx_v_ndim;
   __pyx_t_3 = __pyx_t_5;
   for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
     __pyx_v_i = __pyx_t_4;
-# 19786 "sisl/physics/_bloch.c"
     __pyx_t_2 = (((__pyx_v_src.shape[__pyx_v_i]) != (__pyx_v_dst.shape[__pyx_v_i])) != 0);
     if (__pyx_t_2) {
-# 19796 "sisl/physics/_bloch.c"
       __pyx_t_2 = (((__pyx_v_src.shape[__pyx_v_i]) == 1) != 0);
       if (__pyx_t_2) {
-# 19806 "sisl/physics/_bloch.c"
         __pyx_v_broadcasting = 1;
-# 19815 "sisl/physics/_bloch.c"
         (__pyx_v_src.strides[__pyx_v_i]) = 0;
-# 19824 "sisl/physics/_bloch.c"
         goto __pyx_L7;
       }
-# 19834 "sisl/physics/_bloch.c"
                {
         __pyx_t_6 = __pyx_memoryview_err_extents(__pyx_v_i, (__pyx_v_dst.shape[__pyx_v_i]), (__pyx_v_src.shape[__pyx_v_i])); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(2, 1294, __pyx_L1_error)
       }
       __pyx_L7:;
-# 19846 "sisl/physics/_bloch.c"
     }
-# 19855 "sisl/physics/_bloch.c"
     __pyx_t_2 = (((__pyx_v_src.suboffsets[__pyx_v_i]) >= 0) != 0);
     if (__pyx_t_2) {
-# 19865 "sisl/physics/_bloch.c"
       __pyx_t_6 = __pyx_memoryview_err_dim(__pyx_builtin_ValueError, ((char *)"Dimension %d is not direct"), __pyx_v_i); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(2, 1297, __pyx_L1_error)
-# 19874 "sisl/physics/_bloch.c"
     }
   }
-# 19884 "sisl/physics/_bloch.c"
   __pyx_t_2 = (__pyx_slices_overlap((&__pyx_v_src), (&__pyx_v_dst), __pyx_v_ndim, __pyx_v_itemsize) != 0);
   if (__pyx_t_2) {
-# 19894 "sisl/physics/_bloch.c"
     __pyx_t_2 = ((!(__pyx_memviewslice_is_contig(__pyx_v_src, __pyx_v_order, __pyx_v_ndim) != 0)) != 0);
     if (__pyx_t_2) {
-# 19904 "sisl/physics/_bloch.c"
       __pyx_v_order = __pyx_get_best_slice_order((&__pyx_v_dst), __pyx_v_ndim);
-# 19913 "sisl/physics/_bloch.c"
     }
-# 19922 "sisl/physics/_bloch.c"
     __pyx_t_7 = __pyx_memoryview_copy_data_to_temp((&__pyx_v_src), (&__pyx_v_tmp), __pyx_v_order, __pyx_v_ndim); if (unlikely(__pyx_t_7 == ((void *)NULL))) __PYX_ERR(2, 1304, __pyx_L1_error)
     __pyx_v_tmpdata = __pyx_t_7;
-# 19932 "sisl/physics/_bloch.c"
     __pyx_v_src = __pyx_v_tmp;
-# 19941 "sisl/physics/_bloch.c"
   }
-# 19950 "sisl/physics/_bloch.c"
   __pyx_t_2 = ((!(__pyx_v_broadcasting != 0)) != 0);
   if (__pyx_t_2) {
-# 19960 "sisl/physics/_bloch.c"
     __pyx_t_2 = (__pyx_memviewslice_is_contig(__pyx_v_src, 'C', __pyx_v_ndim) != 0);
     if (__pyx_t_2) {
-# 19970 "sisl/physics/_bloch.c"
       __pyx_v_direct_copy = __pyx_memviewslice_is_contig(__pyx_v_dst, 'C', __pyx_v_ndim);
-# 19979 "sisl/physics/_bloch.c"
       goto __pyx_L12;
     }
-# 19989 "sisl/physics/_bloch.c"
     __pyx_t_2 = (__pyx_memviewslice_is_contig(__pyx_v_src, 'F', __pyx_v_ndim) != 0);
     if (__pyx_t_2) {
-# 19999 "sisl/physics/_bloch.c"
       __pyx_v_direct_copy = __pyx_memviewslice_is_contig(__pyx_v_dst, 'F', __pyx_v_ndim);
-# 20008 "sisl/physics/_bloch.c"
     }
     __pyx_L12:;
-# 20018 "sisl/physics/_bloch.c"
     __pyx_t_2 = (__pyx_v_direct_copy != 0);
     if (__pyx_t_2) {
-# 20028 "sisl/physics/_bloch.c"
       __pyx_memoryview_refcount_copying((&__pyx_v_dst), __pyx_v_dtype_is_object, __pyx_v_ndim, 0);
-# 20037 "sisl/physics/_bloch.c"
       (void)(memcpy(__pyx_v_dst.data, __pyx_v_src.data, __pyx_memoryview_slice_get_size((&__pyx_v_src), __pyx_v_ndim)));
-# 20046 "sisl/physics/_bloch.c"
       __pyx_memoryview_refcount_copying((&__pyx_v_dst), __pyx_v_dtype_is_object, __pyx_v_ndim, 1);
-# 20055 "sisl/physics/_bloch.c"
       free(__pyx_v_tmpdata);
-# 20064 "sisl/physics/_bloch.c"
       __pyx_r = 0;
       goto __pyx_L0;
-# 20074 "sisl/physics/_bloch.c"
     }
-# 20083 "sisl/physics/_bloch.c"
   }
-# 20092 "sisl/physics/_bloch.c"
   __pyx_t_2 = (__pyx_v_order == 'F');
   if (__pyx_t_2) {
     __pyx_t_2 = ('F' == __pyx_get_best_slice_order((&__pyx_v_dst), __pyx_v_ndim));
   }
   __pyx_t_8 = (__pyx_t_2 != 0);
   if (__pyx_t_8) {
-# 20106 "sisl/physics/_bloch.c"
     __pyx_t_5 = __pyx_memslice_transpose((&__pyx_v_src)); if (unlikely(__pyx_t_5 == ((int)0))) __PYX_ERR(2, 1326, __pyx_L1_error)
-# 20115 "sisl/physics/_bloch.c"
     __pyx_t_5 = __pyx_memslice_transpose((&__pyx_v_dst)); if (unlikely(__pyx_t_5 == ((int)0))) __PYX_ERR(2, 1327, __pyx_L1_error)
-# 20124 "sisl/physics/_bloch.c"
   }
-# 20133 "sisl/physics/_bloch.c"
   __pyx_memoryview_refcount_copying((&__pyx_v_dst), __pyx_v_dtype_is_object, __pyx_v_ndim, 0);
-# 20142 "sisl/physics/_bloch.c"
   copy_strided_to_strided((&__pyx_v_src), (&__pyx_v_dst), __pyx_v_ndim, __pyx_v_itemsize);
-# 20151 "sisl/physics/_bloch.c"
   __pyx_memoryview_refcount_copying((&__pyx_v_dst), __pyx_v_dtype_is_object, __pyx_v_ndim, 1);
-# 20160 "sisl/physics/_bloch.c"
   free(__pyx_v_tmpdata);
-# 20169 "sisl/physics/_bloch.c"
   __pyx_r = 0;
   goto __pyx_L0;
-# 20181 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   {
     #ifdef WITH_THREAD
@@ -11024,67 +9765,47 @@ static int __pyx_memoryview_copy_contents(__Pyx_memviewslice __pyx_v_src, __Pyx_
   __pyx_L0:;
   return __pyx_r;
 }
-# 20204 "sisl/physics/_bloch.c"
 static void __pyx_memoryview_broadcast_leading(__Pyx_memviewslice *__pyx_v_mslice, int __pyx_v_ndim, int __pyx_v_ndim_other) {
   int __pyx_v_i;
   int __pyx_v_offset;
   int __pyx_t_1;
   int __pyx_t_2;
   int __pyx_t_3;
-# 20218 "sisl/physics/_bloch.c"
   __pyx_v_offset = (__pyx_v_ndim_other - __pyx_v_ndim);
-# 20227 "sisl/physics/_bloch.c"
   for (__pyx_t_1 = (__pyx_v_ndim - 1); __pyx_t_1 > -1; __pyx_t_1-=1) {
     __pyx_v_i = __pyx_t_1;
-# 20237 "sisl/physics/_bloch.c"
     (__pyx_v_mslice->shape[(__pyx_v_i + __pyx_v_offset)]) = (__pyx_v_mslice->shape[__pyx_v_i]);
-# 20246 "sisl/physics/_bloch.c"
     (__pyx_v_mslice->strides[(__pyx_v_i + __pyx_v_offset)]) = (__pyx_v_mslice->strides[__pyx_v_i]);
-# 20255 "sisl/physics/_bloch.c"
     (__pyx_v_mslice->suboffsets[(__pyx_v_i + __pyx_v_offset)]) = (__pyx_v_mslice->suboffsets[__pyx_v_i]);
   }
-# 20265 "sisl/physics/_bloch.c"
   __pyx_t_1 = __pyx_v_offset;
   __pyx_t_2 = __pyx_t_1;
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
-# 20277 "sisl/physics/_bloch.c"
     (__pyx_v_mslice->shape[__pyx_v_i]) = 1;
-# 20286 "sisl/physics/_bloch.c"
     (__pyx_v_mslice->strides[__pyx_v_i]) = (__pyx_v_mslice->strides[0]);
-# 20295 "sisl/physics/_bloch.c"
     (__pyx_v_mslice->suboffsets[__pyx_v_i]) = -1L;
   }
-# 20307 "sisl/physics/_bloch.c"
 }
-# 20317 "sisl/physics/_bloch.c"
 static void __pyx_memoryview_refcount_copying(__Pyx_memviewslice *__pyx_v_dst, int __pyx_v_dtype_is_object, int __pyx_v_ndim, int __pyx_v_inc) {
   int __pyx_t_1;
-# 20327 "sisl/physics/_bloch.c"
   __pyx_t_1 = (__pyx_v_dtype_is_object != 0);
   if (__pyx_t_1) {
-# 20337 "sisl/physics/_bloch.c"
     __pyx_memoryview_refcount_objects_in_slice_with_gil(__pyx_v_dst->data, __pyx_v_dst->shape, __pyx_v_dst->strides, __pyx_v_ndim, __pyx_v_inc);
-# 20346 "sisl/physics/_bloch.c"
   }
-# 20357 "sisl/physics/_bloch.c"
 }
-# 20367 "sisl/physics/_bloch.c"
 static void __pyx_memoryview_refcount_objects_in_slice_with_gil(char *__pyx_v_data, Py_ssize_t *__pyx_v_shape, Py_ssize_t *__pyx_v_strides, int __pyx_v_ndim, int __pyx_v_inc) {
   __Pyx_RefNannyDeclarations
   #ifdef WITH_THREAD
   PyGILState_STATE __pyx_gilstate_save = __Pyx_PyGILState_Ensure();
   #endif
   __Pyx_RefNannySetupContext("refcount_objects_in_slice_with_gil", 0);
-# 20381 "sisl/physics/_bloch.c"
   __pyx_memoryview_refcount_objects_in_slice(__pyx_v_data, __pyx_v_shape, __pyx_v_strides, __pyx_v_ndim, __pyx_v_inc);
-# 20392 "sisl/physics/_bloch.c"
   __Pyx_RefNannyFinishContext();
   #ifdef WITH_THREAD
   __Pyx_PyGILState_Release(__pyx_gilstate_save);
   #endif
 }
-# 20406 "sisl/physics/_bloch.c"
 static void __pyx_memoryview_refcount_objects_in_slice(char *__pyx_v_data, Py_ssize_t *__pyx_v_shape, Py_ssize_t *__pyx_v_strides, int __pyx_v_ndim, int __pyx_v_inc) {
   CYTHON_UNUSED Py_ssize_t __pyx_v_i;
   __Pyx_RefNannyDeclarations
@@ -11093,53 +9814,36 @@ static void __pyx_memoryview_refcount_objects_in_slice(char *__pyx_v_data, Py_ss
   Py_ssize_t __pyx_t_3;
   int __pyx_t_4;
   __Pyx_RefNannySetupContext("refcount_objects_in_slice", 0);
-# 20422 "sisl/physics/_bloch.c"
   __pyx_t_1 = (__pyx_v_shape[0]);
   __pyx_t_2 = __pyx_t_1;
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
-# 20434 "sisl/physics/_bloch.c"
     __pyx_t_4 = ((__pyx_v_ndim == 1) != 0);
     if (__pyx_t_4) {
-# 20444 "sisl/physics/_bloch.c"
       __pyx_t_4 = (__pyx_v_inc != 0);
       if (__pyx_t_4) {
-# 20454 "sisl/physics/_bloch.c"
         Py_INCREF((((PyObject **)__pyx_v_data)[0]));
-# 20463 "sisl/physics/_bloch.c"
         goto __pyx_L6;
       }
-# 20473 "sisl/physics/_bloch.c"
                {
         Py_DECREF((((PyObject **)__pyx_v_data)[0]));
       }
       __pyx_L6:;
-# 20485 "sisl/physics/_bloch.c"
       goto __pyx_L5;
     }
-# 20495 "sisl/physics/_bloch.c"
              {
-# 20504 "sisl/physics/_bloch.c"
       __pyx_memoryview_refcount_objects_in_slice(__pyx_v_data, (__pyx_v_shape + 1), (__pyx_v_strides + 1), (__pyx_v_ndim - 1), __pyx_v_inc);
     }
     __pyx_L5:;
-# 20515 "sisl/physics/_bloch.c"
     __pyx_v_data = (__pyx_v_data + (__pyx_v_strides[0]));
   }
-# 20527 "sisl/physics/_bloch.c"
   __Pyx_RefNannyFinishContext();
 }
-# 20538 "sisl/physics/_bloch.c"
 static void __pyx_memoryview_slice_assign_scalar(__Pyx_memviewslice *__pyx_v_dst, int __pyx_v_ndim, size_t __pyx_v_itemsize, void *__pyx_v_item, int __pyx_v_dtype_is_object) {
-# 20547 "sisl/physics/_bloch.c"
   __pyx_memoryview_refcount_copying(__pyx_v_dst, __pyx_v_dtype_is_object, __pyx_v_ndim, 0);
-# 20556 "sisl/physics/_bloch.c"
   __pyx_memoryview__slice_assign_scalar(__pyx_v_dst->data, __pyx_v_dst->shape, __pyx_v_dst->strides, __pyx_v_ndim, __pyx_v_itemsize, __pyx_v_item);
-# 20565 "sisl/physics/_bloch.c"
   __pyx_memoryview_refcount_copying(__pyx_v_dst, __pyx_v_dtype_is_object, __pyx_v_ndim, 1);
-# 20576 "sisl/physics/_bloch.c"
 }
-# 20586 "sisl/physics/_bloch.c"
 static void __pyx_memoryview__slice_assign_scalar(char *__pyx_v_data, Py_ssize_t *__pyx_v_shape, Py_ssize_t *__pyx_v_strides, int __pyx_v_ndim, size_t __pyx_v_itemsize, void *__pyx_v_item) {
   CYTHON_UNUSED Py_ssize_t __pyx_v_i;
   Py_ssize_t __pyx_v_stride;
@@ -11148,42 +9852,30 @@ static void __pyx_memoryview__slice_assign_scalar(char *__pyx_v_data, Py_ssize_t
   Py_ssize_t __pyx_t_2;
   Py_ssize_t __pyx_t_3;
   Py_ssize_t __pyx_t_4;
-# 20602 "sisl/physics/_bloch.c"
   __pyx_v_stride = (__pyx_v_strides[0]);
-# 20611 "sisl/physics/_bloch.c"
   __pyx_v_extent = (__pyx_v_shape[0]);
-# 20620 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((__pyx_v_ndim == 1) != 0);
   if (__pyx_t_1) {
-# 20630 "sisl/physics/_bloch.c"
     __pyx_t_2 = __pyx_v_extent;
     __pyx_t_3 = __pyx_t_2;
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_i = __pyx_t_4;
-# 20642 "sisl/physics/_bloch.c"
       (void)(memcpy(__pyx_v_data, __pyx_v_item, __pyx_v_itemsize));
-# 20651 "sisl/physics/_bloch.c"
       __pyx_v_data = (__pyx_v_data + __pyx_v_stride);
     }
-# 20661 "sisl/physics/_bloch.c"
     goto __pyx_L3;
   }
-# 20671 "sisl/physics/_bloch.c"
            {
     __pyx_t_2 = __pyx_v_extent;
     __pyx_t_3 = __pyx_t_2;
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_i = __pyx_t_4;
-# 20684 "sisl/physics/_bloch.c"
       __pyx_memoryview__slice_assign_scalar(__pyx_v_data, (__pyx_v_shape + 1), (__pyx_v_strides + 1), (__pyx_v_ndim - 1), __pyx_v_itemsize, __pyx_v_item);
-# 20693 "sisl/physics/_bloch.c"
       __pyx_v_data = (__pyx_v_data + __pyx_v_stride);
     }
   }
   __pyx_L3:;
-# 20707 "sisl/physics/_bloch.c"
 }
-# 20716 "sisl/physics/_bloch.c"
 static PyObject *__pyx_pw_15View_dot_MemoryView_1__pyx_unpickle_Enum(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds);
 static PyMethodDef __pyx_mdef_15View_dot_MemoryView_1__pyx_unpickle_Enum = {"__pyx_unpickle_Enum", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_15View_dot_MemoryView_1__pyx_unpickle_Enum, METH_VARARGS|METH_KEYWORDS, 0};
 static PyObject *__pyx_pw_15View_dot_MemoryView_1__pyx_unpickle_Enum(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
@@ -11268,10 +9960,8 @@ static PyObject *__pyx_pf_15View_dot_MemoryView___pyx_unpickle_Enum(CYTHON_UNUSE
   PyObject *__pyx_t_5 = NULL;
   int __pyx_t_6;
   __Pyx_RefNannySetupContext("__pyx_unpickle_Enum", 0);
-# 20808 "sisl/physics/_bloch.c"
   __pyx_t_1 = ((__pyx_v___pyx_checksum != 0xb068931) != 0);
   if (__pyx_t_1) {
-# 20818 "sisl/physics/_bloch.c"
     __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 5, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_INCREF(__pyx_n_s_PickleError);
@@ -11286,7 +9976,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView___pyx_unpickle_Enum(CYTHON_UNUSE
     __pyx_v___pyx_PickleError = __pyx_t_2;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-# 20840 "sisl/physics/_bloch.c"
     __pyx_t_2 = __Pyx_PyInt_From_long(__pyx_v___pyx_checksum); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 6, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_Incompatible_checksums_s_vs_0xb0, __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 6, __pyx_L1_error)
@@ -11312,9 +10001,7 @@ static PyObject *__pyx_pf_15View_dot_MemoryView___pyx_unpickle_Enum(CYTHON_UNUSE
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __PYX_ERR(2, 6, __pyx_L1_error)
-# 20873 "sisl/physics/_bloch.c"
   }
-# 20882 "sisl/physics/_bloch.c"
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_MemviewEnum_type), __pyx_n_s_new); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 7, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = NULL;
@@ -11334,23 +10021,18 @@ static PyObject *__pyx_pf_15View_dot_MemoryView___pyx_unpickle_Enum(CYTHON_UNUSE
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v___pyx_result = __pyx_t_3;
   __pyx_t_3 = 0;
-# 20909 "sisl/physics/_bloch.c"
   __pyx_t_1 = (__pyx_v___pyx_state != Py_None);
   __pyx_t_6 = (__pyx_t_1 != 0);
   if (__pyx_t_6) {
-# 20920 "sisl/physics/_bloch.c"
     if (!(likely(PyTuple_CheckExact(__pyx_v___pyx_state))||((__pyx_v___pyx_state) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_v___pyx_state)->tp_name), 0))) __PYX_ERR(2, 9, __pyx_L1_error)
     __pyx_t_3 = __pyx_unpickle_Enum__set_state(((struct __pyx_MemviewEnum_obj *)__pyx_v___pyx_result), ((PyObject*)__pyx_v___pyx_state)); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 9, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-# 20932 "sisl/physics/_bloch.c"
   }
-# 20941 "sisl/physics/_bloch.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v___pyx_result);
   __pyx_r = __pyx_v___pyx_result;
   goto __pyx_L0;
-# 20953 "sisl/physics/_bloch.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
@@ -11365,7 +10047,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView___pyx_unpickle_Enum(CYTHON_UNUSE
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 20976 "sisl/physics/_bloch.c"
 static PyObject *__pyx_unpickle_Enum__set_state(struct __pyx_MemviewEnum_obj *__pyx_v___pyx_result, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -11378,7 +10059,6 @@ static PyObject *__pyx_unpickle_Enum__set_state(struct __pyx_MemviewEnum_obj *__
   PyObject *__pyx_t_7 = NULL;
   PyObject *__pyx_t_8 = NULL;
   __Pyx_RefNannySetupContext("__pyx_unpickle_Enum__set_state", 0);
-# 20996 "sisl/physics/_bloch.c"
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(2, 12, __pyx_L1_error)
@@ -11455,7 +10135,6 @@ static PyObject *__pyx_unpickle_Enum__set_state(struct __pyx_MemviewEnum_obj *__
 
 
   }
-# 21082 "sisl/physics/_bloch.c"
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -12332,59 +11011,45 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
 static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
-# 21966 "sisl/physics/_bloch.c"
   __pyx_tuple_ = PyTuple_Pack(1, __pyx_kp_s_bloch_unfold_requires_M_to_be_C); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 30, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
-# 21977 "sisl/physics/_bloch.c"
   __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_s_bloch_unfold_requires_dtype_to_b); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 40, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
-# 21988 "sisl/physics/_bloch.c"
   __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_u_ndarray_is_not_C_contiguous); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(1, 272, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
-# 21999 "sisl/physics/_bloch.c"
   __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_u_ndarray_is_not_Fortran_contiguou); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(1, 276, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
-# 22010 "sisl/physics/_bloch.c"
   __pyx_tuple__5 = PyTuple_Pack(1, __pyx_kp_u_Non_native_byte_order_not_suppor); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(1, 306, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
-# 22021 "sisl/physics/_bloch.c"
   __pyx_tuple__6 = PyTuple_Pack(1, __pyx_kp_u_Format_string_allocated_too_shor); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(1, 856, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__6);
   __Pyx_GIVEREF(__pyx_tuple__6);
-# 22032 "sisl/physics/_bloch.c"
   __pyx_tuple__7 = PyTuple_Pack(1, __pyx_kp_u_Format_string_allocated_too_shor_2); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(1, 880, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__7);
   __Pyx_GIVEREF(__pyx_tuple__7);
-# 22043 "sisl/physics/_bloch.c"
   __pyx_tuple__8 = PyTuple_Pack(1, __pyx_kp_s_numpy_core_multiarray_failed_to); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(1, 1038, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__8);
   __Pyx_GIVEREF(__pyx_tuple__8);
-# 22054 "sisl/physics/_bloch.c"
   __pyx_tuple__9 = PyTuple_Pack(1, __pyx_kp_s_numpy_core_umath_failed_to_impor); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(1, 1044, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__9);
   __Pyx_GIVEREF(__pyx_tuple__9);
-# 22065 "sisl/physics/_bloch.c"
   __pyx_tuple__10 = PyTuple_Pack(1, __pyx_kp_s_Empty_shape_tuple_for_cython_arr); if (unlikely(!__pyx_tuple__10)) __PYX_ERR(2, 133, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__10);
   __Pyx_GIVEREF(__pyx_tuple__10);
-# 22076 "sisl/physics/_bloch.c"
   __pyx_tuple__11 = PyTuple_Pack(1, __pyx_kp_s_itemsize_0_for_cython_array); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(2, 136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
-# 22087 "sisl/physics/_bloch.c"
   __pyx_tuple__12 = PyTuple_Pack(1, __pyx_kp_s_unable_to_allocate_shape_and_str); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(2, 148, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__12);
   __Pyx_GIVEREF(__pyx_tuple__12);
-# 22098 "sisl/physics/_bloch.c"
   __pyx_tuple__13 = PyTuple_Pack(1, __pyx_kp_s_unable_to_allocate_array_data); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(2, 176, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__13);
   __Pyx_GIVEREF(__pyx_tuple__13);
-# 22109 "sisl/physics/_bloch.c"
   __pyx_tuple__14 = PyTuple_Pack(1, __pyx_kp_s_Can_only_create_a_buffer_that_is); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(2, 192, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__14);
   __Pyx_GIVEREF(__pyx_tuple__14);
@@ -12407,23 +11072,18 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__16 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(2, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__16);
   __Pyx_GIVEREF(__pyx_tuple__16);
-# 22139 "sisl/physics/_bloch.c"
   __pyx_tuple__17 = PyTuple_Pack(1, __pyx_kp_s_Cannot_assign_to_read_only_memor); if (unlikely(!__pyx_tuple__17)) __PYX_ERR(2, 414, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__17);
   __Pyx_GIVEREF(__pyx_tuple__17);
-# 22150 "sisl/physics/_bloch.c"
   __pyx_tuple__18 = PyTuple_Pack(1, __pyx_kp_s_Unable_to_convert_item_to_object); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(2, 491, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__18);
   __Pyx_GIVEREF(__pyx_tuple__18);
-# 22161 "sisl/physics/_bloch.c"
   __pyx_tuple__19 = PyTuple_Pack(1, __pyx_kp_s_Cannot_create_writable_memory_vi); if (unlikely(!__pyx_tuple__19)) __PYX_ERR(2, 516, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__19);
   __Pyx_GIVEREF(__pyx_tuple__19);
-# 22172 "sisl/physics/_bloch.c"
   __pyx_tuple__20 = PyTuple_Pack(1, __pyx_kp_s_Buffer_view_does_not_expose_stri); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(2, 566, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__20);
   __Pyx_GIVEREF(__pyx_tuple__20);
-# 22183 "sisl/physics/_bloch.c"
   __pyx_tuple__21 = PyTuple_New(1); if (unlikely(!__pyx_tuple__21)) __PYX_ERR(2, 573, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__21);
   __Pyx_INCREF(__pyx_int_neg_1);
@@ -12449,11 +11109,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__23 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(2, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__23);
   __Pyx_GIVEREF(__pyx_tuple__23);
-# 22216 "sisl/physics/_bloch.c"
   __pyx_slice__24 = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice__24)) __PYX_ERR(2, 678, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_slice__24);
   __Pyx_GIVEREF(__pyx_slice__24);
-# 22227 "sisl/physics/_bloch.c"
   __pyx_tuple__25 = PyTuple_Pack(1, __pyx_kp_s_Indirect_dimensions_not_supporte); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(2, 699, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__25);
   __Pyx_GIVEREF(__pyx_tuple__25);
@@ -12476,38 +11134,30 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__27 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__27)) __PYX_ERR(2, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__27);
   __Pyx_GIVEREF(__pyx_tuple__27);
-# 22257 "sisl/physics/_bloch.c"
   __pyx_tuple__28 = PyTuple_Pack(3, __pyx_n_s_B, __pyx_n_s_k, __pyx_n_s_M); if (unlikely(!__pyx_tuple__28)) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__28);
   __Pyx_GIVEREF(__pyx_tuple__28);
   __pyx_codeobj__29 = (PyObject*)__Pyx_PyCode_New(3, 0, 3, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__28, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sisl_physics__bloch_pyx, __pyx_n_s_bloch_unfold, 12, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__29)) __PYX_ERR(0, 12, __pyx_L1_error)
-# 22269 "sisl/physics/_bloch.c"
   __pyx_tuple__30 = PyTuple_Pack(11, __pyx_n_s_B, __pyx_n_s_K2pi, __pyx_n_s_m, __pyx_n_s_B0, __pyx_n_s_B1, __pyx_n_s_B2, __pyx_n_s_N, __pyx_n_s_N1, __pyx_n_s_N2, __pyx_n_s_M, __pyx_n_s_MM); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__30);
   __Pyx_GIVEREF(__pyx_tuple__30);
   __pyx_codeobj__31 = (PyObject*)__Pyx_PyCode_New(3, 0, 11, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__30, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sisl_physics__bloch_pyx, __pyx_n_s_unfold64, 46, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__31)) __PYX_ERR(0, 46, __pyx_L1_error)
-# 22281 "sisl/physics/_bloch.c"
   __pyx_tuple__32 = PyTuple_Pack(11, __pyx_n_s_B, __pyx_n_s_K2pi, __pyx_n_s_m, __pyx_n_s_B0, __pyx_n_s_B1, __pyx_n_s_B2, __pyx_n_s_N, __pyx_n_s_N1, __pyx_n_s_N2, __pyx_n_s_M, __pyx_n_s_MM); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 232, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__32);
   __Pyx_GIVEREF(__pyx_tuple__32);
   __pyx_codeobj__33 = (PyObject*)__Pyx_PyCode_New(3, 0, 11, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sisl_physics__bloch_pyx, __pyx_n_s_unfold128, 232, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__33)) __PYX_ERR(0, 232, __pyx_L1_error)
-# 22293 "sisl/physics/_bloch.c"
   __pyx_tuple__34 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct_or_indirect); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(2, 286, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__34);
   __Pyx_GIVEREF(__pyx_tuple__34);
-# 22304 "sisl/physics/_bloch.c"
   __pyx_tuple__35 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct); if (unlikely(!__pyx_tuple__35)) __PYX_ERR(2, 287, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__35);
   __Pyx_GIVEREF(__pyx_tuple__35);
-# 22315 "sisl/physics/_bloch.c"
   __pyx_tuple__36 = PyTuple_Pack(1, __pyx_kp_s_strided_and_indirect); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(2, 288, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__36);
   __Pyx_GIVEREF(__pyx_tuple__36);
-# 22326 "sisl/physics/_bloch.c"
   __pyx_tuple__37 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_direct); if (unlikely(!__pyx_tuple__37)) __PYX_ERR(2, 291, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__37);
   __Pyx_GIVEREF(__pyx_tuple__37);
-# 22337 "sisl/physics/_bloch.c"
   __pyx_tuple__38 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_indirect); if (unlikely(!__pyx_tuple__38)) __PYX_ERR(2, 292, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__38);
   __Pyx_GIVEREF(__pyx_tuple__38);
@@ -12881,12 +11531,10 @@ if (!__Pyx_RefNanny) {
   #if defined(__Pyx_Generator_USED) || defined(__Pyx_Coroutine_USED)
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
-# 22718 "sisl/physics/_bloch.c"
   __pyx_t_1 = __Pyx_Import(__pyx_n_s_numpy, 0, -1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 22730 "sisl/physics/_bloch.c"
   __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 9, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_bloch_unfold);
@@ -12894,17 +11542,14 @@ if (!__Pyx_RefNanny) {
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_bloch_unfold);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_all, __pyx_t_1) < 0) __PYX_ERR(0, 9, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 22745 "sisl/physics/_bloch.c"
   __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4sisl_7physics_6_bloch_1bloch_unfold, NULL, __pyx_n_s_sisl_physics__bloch); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_bloch_unfold, __pyx_t_1) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 22757 "sisl/physics/_bloch.c"
   __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4sisl_7physics_6_bloch_3_unfold64, NULL, __pyx_n_s_sisl_physics__bloch); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_unfold64, __pyx_t_1) < 0) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 22769 "sisl/physics/_bloch.c"
   __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4sisl_7physics_6_bloch_5_unfold128, NULL, __pyx_n_s_sisl_physics__bloch); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 232, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_unfold128, __pyx_t_1) < 0) __PYX_ERR(0, 232, __pyx_L1_error)
@@ -12919,50 +11564,42 @@ if (!__Pyx_RefNanny) {
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 22791 "sisl/physics/_bloch.c"
   __pyx_t_1 = __pyx_capsule_create(((void *)(&__pyx_array_getbuffer)), ((char *)"getbuffer(obj, view, flags)")); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem((PyObject *)__pyx_array_type->tp_dict, __pyx_n_s_pyx_getbuffer, __pyx_t_1) < 0) __PYX_ERR(2, 209, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_array_type);
-# 22804 "sisl/physics/_bloch.c"
   __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__34, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 286, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_XGOTREF(generic);
   __Pyx_DECREF_SET(generic, __pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __pyx_t_1 = 0;
-# 22818 "sisl/physics/_bloch.c"
   __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__35, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 287, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_XGOTREF(strided);
   __Pyx_DECREF_SET(strided, __pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __pyx_t_1 = 0;
-# 22832 "sisl/physics/_bloch.c"
   __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__36, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 288, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_XGOTREF(indirect);
   __Pyx_DECREF_SET(indirect, __pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __pyx_t_1 = 0;
-# 22846 "sisl/physics/_bloch.c"
   __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__37, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 291, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_XGOTREF(contiguous);
   __Pyx_DECREF_SET(contiguous, __pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __pyx_t_1 = 0;
-# 22860 "sisl/physics/_bloch.c"
   __pyx_t_1 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__38, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 292, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_XGOTREF(indirect_contiguous);
   __Pyx_DECREF_SET(indirect_contiguous, __pyx_t_1);
   __Pyx_GIVEREF(__pyx_t_1);
   __pyx_t_1 = 0;
-# 22874 "sisl/physics/_bloch.c"
   __pyx_memoryview_thread_locks_used = 0;
-# 22883 "sisl/physics/_bloch.c"
   __pyx_t_2[0] = PyThread_allocate_lock();
   __pyx_t_2[1] = PyThread_allocate_lock();
   __pyx_t_2[2] = PyThread_allocate_lock();
@@ -12972,13 +11609,11 @@ if (!__Pyx_RefNanny) {
   __pyx_t_2[6] = PyThread_allocate_lock();
   __pyx_t_2[7] = PyThread_allocate_lock();
   memcpy(&(__pyx_memoryview_thread_locks[0]), __pyx_t_2, sizeof(__pyx_memoryview_thread_locks[0]) * (8));
-# 22900 "sisl/physics/_bloch.c"
   __pyx_t_1 = __pyx_capsule_create(((void *)(&__pyx_memoryview_getbuffer)), ((char *)"getbuffer(obj, view, flags)")); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 545, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem((PyObject *)__pyx_memoryview_type->tp_dict, __pyx_n_s_pyx_getbuffer, __pyx_t_1) < 0) __PYX_ERR(2, 545, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   PyType_Modified(__pyx_memoryview_type);
-# 22913 "sisl/physics/_bloch.c"
   __pyx_t_1 = __pyx_capsule_create(((void *)(&__pyx_memoryview_getbuffer)), ((char *)"getbuffer(obj, view, flags)")); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 991, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem((PyObject *)__pyx_memoryviewslice_type->tp_dict, __pyx_n_s_pyx_getbuffer, __pyx_t_1) < 0) __PYX_ERR(2, 991, __pyx_L1_error)
@@ -12994,7 +11629,6 @@ if (!__Pyx_RefNanny) {
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_pyx_unpickle_Enum, __pyx_t_1) < 0) __PYX_ERR(2, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 22939 "sisl/physics/_bloch.c"
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);

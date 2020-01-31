@@ -16,7 +16,7 @@ __all__ = ['matrix_dk']
 
 def matrix_dk(gauge, M, const int idx, sc,
               np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
-    dtype = phase_dtype(k, dtype, True)
+    dtype = phase_dtype(k, M.dtype, dtype, True)
 
     # This is the differentiated matrix with respect to k
     #  - i R

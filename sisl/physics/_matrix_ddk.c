@@ -1,4 +1,3 @@
-# 16 "sisl/physics/_matrix_ddk.c"
 #define PY_SSIZE_T_CLEAN 
 #include "Python.h"
 #ifndef Py_PYTHON_H
@@ -861,47 +860,26 @@ typedef struct {
   char enc_packmode;
   char is_valid_array;
 } __Pyx_BufFmt_Context;
-# 887 "sisl/physics/_matrix_ddk.c"
 typedef npy_int8 __pyx_t_5numpy_int8_t;
-# 896 "sisl/physics/_matrix_ddk.c"
 typedef npy_int16 __pyx_t_5numpy_int16_t;
-# 905 "sisl/physics/_matrix_ddk.c"
 typedef npy_int32 __pyx_t_5numpy_int32_t;
-# 914 "sisl/physics/_matrix_ddk.c"
 typedef npy_int64 __pyx_t_5numpy_int64_t;
-# 923 "sisl/physics/_matrix_ddk.c"
 typedef npy_uint8 __pyx_t_5numpy_uint8_t;
-# 932 "sisl/physics/_matrix_ddk.c"
 typedef npy_uint16 __pyx_t_5numpy_uint16_t;
-# 941 "sisl/physics/_matrix_ddk.c"
 typedef npy_uint32 __pyx_t_5numpy_uint32_t;
-# 950 "sisl/physics/_matrix_ddk.c"
 typedef npy_uint64 __pyx_t_5numpy_uint64_t;
-# 959 "sisl/physics/_matrix_ddk.c"
 typedef npy_float32 __pyx_t_5numpy_float32_t;
-# 968 "sisl/physics/_matrix_ddk.c"
 typedef npy_float64 __pyx_t_5numpy_float64_t;
-# 977 "sisl/physics/_matrix_ddk.c"
 typedef npy_long __pyx_t_5numpy_int_t;
-# 986 "sisl/physics/_matrix_ddk.c"
 typedef npy_longlong __pyx_t_5numpy_long_t;
-# 995 "sisl/physics/_matrix_ddk.c"
 typedef npy_longlong __pyx_t_5numpy_longlong_t;
-# 1004 "sisl/physics/_matrix_ddk.c"
 typedef npy_ulong __pyx_t_5numpy_uint_t;
-# 1013 "sisl/physics/_matrix_ddk.c"
 typedef npy_ulonglong __pyx_t_5numpy_ulong_t;
-# 1022 "sisl/physics/_matrix_ddk.c"
 typedef npy_ulonglong __pyx_t_5numpy_ulonglong_t;
-# 1031 "sisl/physics/_matrix_ddk.c"
 typedef npy_intp __pyx_t_5numpy_intp_t;
-# 1040 "sisl/physics/_matrix_ddk.c"
 typedef npy_uintp __pyx_t_5numpy_uintp_t;
-# 1049 "sisl/physics/_matrix_ddk.c"
 typedef npy_double __pyx_t_5numpy_float_t;
-# 1058 "sisl/physics/_matrix_ddk.c"
 typedef npy_double __pyx_t_5numpy_double_t;
-# 1067 "sisl/physics/_matrix_ddk.c"
 typedef npy_longdouble __pyx_t_5numpy_longdouble_t;
 
 #if CYTHON_CCOMPLEX
@@ -926,13 +904,9 @@ static CYTHON_INLINE __pyx_t_float_complex __pyx_t_float_complex_from_parts(floa
     typedef struct { double real, imag; } __pyx_t_double_complex;
 #endif
 static CYTHON_INLINE __pyx_t_double_complex __pyx_t_double_complex_from_parts(double, double);
-# 1102 "sisl/physics/_matrix_ddk.c"
 typedef npy_cfloat __pyx_t_5numpy_cfloat_t;
-# 1111 "sisl/physics/_matrix_ddk.c"
 typedef npy_cdouble __pyx_t_5numpy_cdouble_t;
-# 1120 "sisl/physics/_matrix_ddk.c"
 typedef npy_clongdouble __pyx_t_5numpy_clongdouble_t;
-# 1129 "sisl/physics/_matrix_ddk.c"
 typedef npy_cdouble __pyx_t_5numpy_complex_t;
 
 
@@ -1478,9 +1452,7 @@ static int __Pyx_check_binary_version(void);
 
 
 static int __Pyx_InitStrings(__Pyx_StringTabEntry *t);
-# 1689 "sisl/physics/_matrix_ddk.c"
 static PyTypeObject *__pyx_ptype_7cpython_4type_type = 0;
-# 1702 "sisl/physics/_matrix_ddk.c"
 static PyTypeObject *__pyx_ptype_5numpy_dtype = 0;
 static PyTypeObject *__pyx_ptype_5numpy_flatiter = 0;
 static PyTypeObject *__pyx_ptype_5numpy_broadcast = 0;
@@ -1680,7 +1652,6 @@ static PyObject *__pyx_tuple__11;
 static PyObject *__pyx_tuple__13;
 static PyObject *__pyx_codeobj__12;
 static PyObject *__pyx_codeobj__14;
-# 1912 "sisl/physics/_matrix_ddk.c"
 static PyObject *__pyx_pw_4sisl_7physics_11_matrix_ddk_1matrix_ddk(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds);
 static PyMethodDef __pyx_mdef_4sisl_7physics_11_matrix_ddk_1matrix_ddk = {"matrix_ddk", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_4sisl_7physics_11_matrix_ddk_1matrix_ddk, METH_VARARGS|METH_KEYWORDS, 0};
 static PyObject *__pyx_pw_4sisl_7physics_11_matrix_ddk_1matrix_ddk(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
@@ -1816,10 +1787,10 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_matrix_ddk(CYTHON_UNUSED 
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
-  int __pyx_t_4;
-  PyObject *__pyx_t_5 = NULL;
-  int __pyx_t_6;
-  PyObject *__pyx_t_7 = NULL;
+  PyObject *__pyx_t_4 = NULL;
+  int __pyx_t_5;
+  PyObject *__pyx_t_6 = NULL;
+  int __pyx_t_7;
   PyObject *__pyx_t_8 = NULL;
   PyObject *__pyx_t_9 = NULL;
   __Pyx_RefNannySetupContext("matrix_ddk", 0);
@@ -1833,105 +1804,109 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_matrix_ddk(CYTHON_UNUSED 
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_k.rcbuffer->pybuffer, (PyObject*)__pyx_v_k, &__Pyx_TypeInfo_nn___pyx_t_5numpy_float64_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 18, __pyx_L1_error)
   }
   __pyx_pybuffernd_k.diminfo[0].strides = __pyx_pybuffernd_k.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_k.diminfo[0].shape = __pyx_pybuffernd_k.rcbuffer->pybuffer.shape[0];
-# 2072 "sisl/physics/_matrix_ddk.c"
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_phase_dtype); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 20, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_3 = NULL;
-  __pyx_t_4 = 0;
+  __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_M, __pyx_n_s_dtype); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 20, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_3);
+  __pyx_t_4 = NULL;
+  __pyx_t_5 = 0;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_3 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_3)) {
+    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_4)) {
       PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_3);
+      __Pyx_INCREF(__pyx_t_4);
       __Pyx_INCREF(function);
       __Pyx_DECREF_SET(__pyx_t_2, function);
-      __pyx_t_4 = 1;
+      __pyx_t_5 = 1;
     }
   }
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
-    PyObject *__pyx_temp[3] = {__pyx_t_3, ((PyObject *)__pyx_v_k), __pyx_v_dtype};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+    PyObject *__pyx_temp[4] = {__pyx_t_4, ((PyObject *)__pyx_v_k), __pyx_t_3, __pyx_v_dtype};
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 3+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else
   #endif
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
-    PyObject *__pyx_temp[3] = {__pyx_t_3, ((PyObject *)__pyx_v_k), __pyx_v_dtype};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
+    PyObject *__pyx_temp[4] = {__pyx_t_4, ((PyObject *)__pyx_v_k), __pyx_t_3, __pyx_v_dtype};
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 3+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_GOTREF(__pyx_t_1);
+    __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else
   #endif
   {
-    __pyx_t_5 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 20, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    if (__pyx_t_3) {
-      __Pyx_GIVEREF(__pyx_t_3); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_3); __pyx_t_3 = NULL;
+    __pyx_t_6 = PyTuple_New(3+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 20, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    if (__pyx_t_4) {
+      __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_4); __pyx_t_4 = NULL;
     }
     __Pyx_INCREF(((PyObject *)__pyx_v_k));
     __Pyx_GIVEREF(((PyObject *)__pyx_v_k));
-    PyTuple_SET_ITEM(__pyx_t_5, 0+__pyx_t_4, ((PyObject *)__pyx_v_k));
+    PyTuple_SET_ITEM(__pyx_t_6, 0+__pyx_t_5, ((PyObject *)__pyx_v_k));
+    __Pyx_GIVEREF(__pyx_t_3);
+    PyTuple_SET_ITEM(__pyx_t_6, 1+__pyx_t_5, __pyx_t_3);
     __Pyx_INCREF(__pyx_v_dtype);
     __Pyx_GIVEREF(__pyx_v_dtype);
-    PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_4, __pyx_v_dtype);
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_5, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
+    PyTuple_SET_ITEM(__pyx_t_6, 2+__pyx_t_5, __pyx_v_dtype);
+    __pyx_t_3 = 0;
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_6, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 20, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF_SET(__pyx_v_dtype, __pyx_t_1);
   __pyx_t_1 = 0;
-# 2129 "sisl/physics/_matrix_ddk.c"
-  __pyx_t_6 = (__Pyx_PyString_Equals(__pyx_v_gauge, __pyx_n_s_R, Py_EQ)); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 23, __pyx_L1_error)
-  if (__pyx_t_6) {
-# 2139 "sisl/physics/_matrix_ddk.c"
+  __pyx_t_7 = (__Pyx_PyString_Equals(__pyx_v_gauge, __pyx_n_s_R, Py_EQ)); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 23, __pyx_L1_error)
+  if (__pyx_t_7) {
     __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_phase_rsc); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 24, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __pyx_t_5 = NULL;
-    __pyx_t_4 = 0;
+    __pyx_t_6 = NULL;
+    __pyx_t_5 = 0;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
-      __pyx_t_5 = PyMethod_GET_SELF(__pyx_t_2);
-      if (likely(__pyx_t_5)) {
+      __pyx_t_6 = PyMethod_GET_SELF(__pyx_t_2);
+      if (likely(__pyx_t_6)) {
         PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-        __Pyx_INCREF(__pyx_t_5);
+        __Pyx_INCREF(__pyx_t_6);
         __Pyx_INCREF(function);
         __Pyx_DECREF_SET(__pyx_t_2, function);
-        __pyx_t_4 = 1;
+        __pyx_t_5 = 1;
       }
     }
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
-      PyObject *__pyx_temp[4] = {__pyx_t_5, __pyx_v_sc, ((PyObject *)__pyx_v_k), __pyx_v_dtype};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 3+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
-      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+      PyObject *__pyx_temp[4] = {__pyx_t_6, __pyx_v_sc, ((PyObject *)__pyx_v_k), __pyx_v_dtype};
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 3+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
-      PyObject *__pyx_temp[4] = {__pyx_t_5, __pyx_v_sc, ((PyObject *)__pyx_v_k), __pyx_v_dtype};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 3+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
-      __Pyx_XDECREF(__pyx_t_5); __pyx_t_5 = 0;
+      PyObject *__pyx_temp[4] = {__pyx_t_6, __pyx_v_sc, ((PyObject *)__pyx_v_k), __pyx_v_dtype};
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 3+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_GOTREF(__pyx_t_1);
     } else
     #endif
     {
-      __pyx_t_3 = PyTuple_New(3+__pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 24, __pyx_L1_error)
+      __pyx_t_3 = PyTuple_New(3+__pyx_t_5); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 24, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
-      if (__pyx_t_5) {
-        __Pyx_GIVEREF(__pyx_t_5); PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_5); __pyx_t_5 = NULL;
+      if (__pyx_t_6) {
+        __Pyx_GIVEREF(__pyx_t_6); PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_t_6); __pyx_t_6 = NULL;
       }
       __Pyx_INCREF(__pyx_v_sc);
       __Pyx_GIVEREF(__pyx_v_sc);
-      PyTuple_SET_ITEM(__pyx_t_3, 0+__pyx_t_4, __pyx_v_sc);
+      PyTuple_SET_ITEM(__pyx_t_3, 0+__pyx_t_5, __pyx_v_sc);
       __Pyx_INCREF(((PyObject *)__pyx_v_k));
       __Pyx_GIVEREF(((PyObject *)__pyx_v_k));
-      PyTuple_SET_ITEM(__pyx_t_3, 1+__pyx_t_4, ((PyObject *)__pyx_v_k));
+      PyTuple_SET_ITEM(__pyx_t_3, 1+__pyx_t_5, ((PyObject *)__pyx_v_k));
       __Pyx_INCREF(__pyx_v_dtype);
       __Pyx_GIVEREF(__pyx_v_dtype);
-      PyTuple_SET_ITEM(__pyx_t_3, 2+__pyx_t_4, __pyx_v_dtype);
+      PyTuple_SET_ITEM(__pyx_t_3, 2+__pyx_t_5, __pyx_v_dtype);
       __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_3, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 24, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
@@ -1945,57 +1920,56 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_matrix_ddk(CYTHON_UNUSED 
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_v_phases = __pyx_t_1;
     __pyx_t_1 = 0;
-# 2205 "sisl/physics/_matrix_ddk.c"
     __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_dot); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 25, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_v_sc, __pyx_n_s_sc_off); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 25, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-    __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_sc, __pyx_n_s_cell); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 25, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    __pyx_t_7 = NULL;
-    __pyx_t_4 = 0;
+    __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_sc, __pyx_n_s_cell); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 25, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    __pyx_t_4 = NULL;
+    __pyx_t_5 = 0;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
-      __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_2);
-      if (likely(__pyx_t_7)) {
+      __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_2);
+      if (likely(__pyx_t_4)) {
         PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-        __Pyx_INCREF(__pyx_t_7);
+        __Pyx_INCREF(__pyx_t_4);
         __Pyx_INCREF(function);
         __Pyx_DECREF_SET(__pyx_t_2, function);
-        __pyx_t_4 = 1;
+        __pyx_t_5 = 1;
       }
     }
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_2)) {
-      PyObject *__pyx_temp[3] = {__pyx_t_7, __pyx_t_3, __pyx_t_5};
-      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
-      __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+      PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_t_3, __pyx_t_6};
+      __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     } else
     #endif
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
-      PyObject *__pyx_temp[3] = {__pyx_t_7, __pyx_t_3, __pyx_t_5};
-      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 2+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
-      __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+      PyObject *__pyx_temp[3] = {__pyx_t_4, __pyx_t_3, __pyx_t_6};
+      __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 2+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
+      __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     } else
     #endif
     {
-      __pyx_t_8 = PyTuple_New(2+__pyx_t_4); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 25, __pyx_L1_error)
+      __pyx_t_8 = PyTuple_New(2+__pyx_t_5); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 25, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_8);
-      if (__pyx_t_7) {
-        __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_7); __pyx_t_7 = NULL;
+      if (__pyx_t_4) {
+        __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_8, 0, __pyx_t_4); __pyx_t_4 = NULL;
       }
       __Pyx_GIVEREF(__pyx_t_3);
-      PyTuple_SET_ITEM(__pyx_t_8, 0+__pyx_t_4, __pyx_t_3);
-      __Pyx_GIVEREF(__pyx_t_5);
-      PyTuple_SET_ITEM(__pyx_t_8, 1+__pyx_t_4, __pyx_t_5);
+      PyTuple_SET_ITEM(__pyx_t_8, 0+__pyx_t_5, __pyx_t_3);
+      __Pyx_GIVEREF(__pyx_t_6);
+      PyTuple_SET_ITEM(__pyx_t_8, 1+__pyx_t_5, __pyx_t_6);
       __pyx_t_3 = 0;
-      __pyx_t_5 = 0;
+      __pyx_t_6 = 0;
       __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_8, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 25, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_1);
       __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
@@ -2003,7 +1977,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_matrix_ddk(CYTHON_UNUSED 
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_v_Rs = __pyx_t_1;
     __pyx_t_1 = 0;
-# 2270 "sisl/physics/_matrix_ddk.c"
     __pyx_t_1 = PyNumber_Multiply(__pyx_v_Rs, __pyx_v_Rs); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 26, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_2 = PyNumber_Multiply(__pyx_t_1, __pyx_v_phases); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 26, __pyx_L1_error)
@@ -2020,34 +1993,33 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_matrix_ddk(CYTHON_UNUSED 
     __pyx_t_8 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 26, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_copy, Py_False) < 0) __PYX_ERR(0, 26, __pyx_L1_error)
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_2, __pyx_t_8); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 26, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_2, __pyx_t_8); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 26, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __pyx_t_8 = PyNumber_Negative(__pyx_t_5); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 26, __pyx_L1_error)
+    __pyx_t_8 = PyNumber_Negative(__pyx_t_6); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 26, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_v_Rd = __pyx_t_8;
     __pyx_t_8 = 0;
-# 2304 "sisl/physics/_matrix_ddk.c"
     __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_roll); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 27, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 27, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 27, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
     __Pyx_INCREF(__pyx_v_Rs);
     __Pyx_GIVEREF(__pyx_v_Rs);
-    PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_v_Rs);
+    PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_v_Rs);
     __Pyx_INCREF(__pyx_int_1);
     __Pyx_GIVEREF(__pyx_int_1);
-    PyTuple_SET_ITEM(__pyx_t_5, 1, __pyx_int_1);
+    PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_int_1);
     __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 27, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_axis, __pyx_int_1) < 0) __PYX_ERR(0, 27, __pyx_L1_error)
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_5, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_6, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 27, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_t_2 = PyNumber_Multiply(__pyx_t_1, __pyx_v_phases); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 27, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
@@ -2060,22 +2032,21 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_matrix_ddk(CYTHON_UNUSED 
     __Pyx_INCREF(__pyx_v_dtype);
     __Pyx_GIVEREF(__pyx_v_dtype);
     PyTuple_SET_ITEM(__pyx_t_2, 0, __pyx_v_dtype);
-    __pyx_t_5 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 27, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_copy, Py_False) < 0) __PYX_ERR(0, 27, __pyx_L1_error)
-    __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_2, __pyx_t_5); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 27, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 27, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_copy, Py_False) < 0) __PYX_ERR(0, 27, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_2, __pyx_t_6); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 27, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyNumber_Negative(__pyx_t_8); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 27, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_t_6 = PyNumber_Negative(__pyx_t_8); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 27, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __pyx_v_Ro = __pyx_t_5;
-    __pyx_t_5 = 0;
-# 2354 "sisl/physics/_matrix_ddk.c"
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_roll); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 28, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_v_Ro = __pyx_t_6;
+    __pyx_t_6 = 0;
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_roll); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 28, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 28, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_INCREF(__pyx_v_Rs);
@@ -2087,9 +2058,9 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_matrix_ddk(CYTHON_UNUSED 
     __pyx_t_2 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     if (PyDict_SetItem(__pyx_t_2, __pyx_n_s_axis, __pyx_int_1) < 0) __PYX_ERR(0, 28, __pyx_L1_error)
-    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_8, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
+    __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_8, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 28, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __pyx_t_2 = PyNumber_InPlaceMultiply(__pyx_v_Ro, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 28, __pyx_L1_error)
@@ -2097,20 +2068,15 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_matrix_ddk(CYTHON_UNUSED 
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF_SET(__pyx_v_Ro, __pyx_t_2);
     __pyx_t_2 = 0;
-# 2385 "sisl/physics/_matrix_ddk.c"
     __Pyx_DECREF(__pyx_v_phases);
     __pyx_v_phases = NULL;
     __Pyx_DECREF(__pyx_v_Rs);
     __pyx_v_Rs = NULL;
-# 2397 "sisl/physics/_matrix_ddk.c"
     __pyx_v_p_opt = 1;
-# 2406 "sisl/physics/_matrix_ddk.c"
     goto __pyx_L3;
   }
-# 2416 "sisl/physics/_matrix_ddk.c"
-  __pyx_t_6 = (__Pyx_PyString_Equals(__pyx_v_gauge, __pyx_n_s_r, Py_EQ)); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(0, 32, __pyx_L1_error)
-  if (__pyx_t_6) {
-# 2426 "sisl/physics/_matrix_ddk.c"
+  __pyx_t_7 = (__Pyx_PyString_Equals(__pyx_v_gauge, __pyx_n_s_r, Py_EQ)); if (unlikely(__pyx_t_7 < 0)) __PYX_ERR(0, 32, __pyx_L1_error)
+  if (__pyx_t_7) {
     __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_M, __pyx_n_s_finalize); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 33, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_8 = NULL;
@@ -2129,7 +2095,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_matrix_ddk(CYTHON_UNUSED 
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-# 2452 "sisl/physics/_matrix_ddk.c"
     __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_M, __pyx_n_s_Rij); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 34, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_8 = NULL;
@@ -2155,11 +2120,10 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_matrix_ddk(CYTHON_UNUSED 
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_v_rij = __pyx_t_2;
     __pyx_t_2 = 0;
-# 2485 "sisl/physics/_matrix_ddk.c"
     __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_phase_rij); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_8 = NULL;
-    __pyx_t_4 = 0;
+    __pyx_t_5 = 0;
     if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_1))) {
       __pyx_t_8 = PyMethod_GET_SELF(__pyx_t_1);
       if (likely(__pyx_t_8)) {
@@ -2167,13 +2131,13 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_matrix_ddk(CYTHON_UNUSED 
         __Pyx_INCREF(__pyx_t_8);
         __Pyx_INCREF(function);
         __Pyx_DECREF_SET(__pyx_t_1, function);
-        __pyx_t_4 = 1;
+        __pyx_t_5 = 1;
       }
     }
     #if CYTHON_FAST_PYCALL
     if (PyFunction_Check(__pyx_t_1)) {
       PyObject *__pyx_temp[5] = {__pyx_t_8, __pyx_v_rij, __pyx_v_sc, ((PyObject *)__pyx_v_k), __pyx_v_dtype};
-      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_4, 4+__pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 35, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_5, 4+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 35, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
       __Pyx_GOTREF(__pyx_t_2);
     } else
@@ -2181,32 +2145,32 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_matrix_ddk(CYTHON_UNUSED 
     #if CYTHON_FAST_PYCCALL
     if (__Pyx_PyFastCFunction_Check(__pyx_t_1)) {
       PyObject *__pyx_temp[5] = {__pyx_t_8, __pyx_v_rij, __pyx_v_sc, ((PyObject *)__pyx_v_k), __pyx_v_dtype};
-      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_4, 4+__pyx_t_4); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 35, __pyx_L1_error)
+      __pyx_t_2 = __Pyx_PyCFunction_FastCall(__pyx_t_1, __pyx_temp+1-__pyx_t_5, 4+__pyx_t_5); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 35, __pyx_L1_error)
       __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
       __Pyx_GOTREF(__pyx_t_2);
     } else
     #endif
     {
-      __pyx_t_5 = PyTuple_New(4+__pyx_t_4); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 35, __pyx_L1_error)
-      __Pyx_GOTREF(__pyx_t_5);
+      __pyx_t_6 = PyTuple_New(4+__pyx_t_5); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 35, __pyx_L1_error)
+      __Pyx_GOTREF(__pyx_t_6);
       if (__pyx_t_8) {
-        __Pyx_GIVEREF(__pyx_t_8); PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_t_8); __pyx_t_8 = NULL;
+        __Pyx_GIVEREF(__pyx_t_8); PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_t_8); __pyx_t_8 = NULL;
       }
       __Pyx_INCREF(__pyx_v_rij);
       __Pyx_GIVEREF(__pyx_v_rij);
-      PyTuple_SET_ITEM(__pyx_t_5, 0+__pyx_t_4, __pyx_v_rij);
+      PyTuple_SET_ITEM(__pyx_t_6, 0+__pyx_t_5, __pyx_v_rij);
       __Pyx_INCREF(__pyx_v_sc);
       __Pyx_GIVEREF(__pyx_v_sc);
-      PyTuple_SET_ITEM(__pyx_t_5, 1+__pyx_t_4, __pyx_v_sc);
+      PyTuple_SET_ITEM(__pyx_t_6, 1+__pyx_t_5, __pyx_v_sc);
       __Pyx_INCREF(((PyObject *)__pyx_v_k));
       __Pyx_GIVEREF(((PyObject *)__pyx_v_k));
-      PyTuple_SET_ITEM(__pyx_t_5, 2+__pyx_t_4, ((PyObject *)__pyx_v_k));
+      PyTuple_SET_ITEM(__pyx_t_6, 2+__pyx_t_5, ((PyObject *)__pyx_v_k));
       __Pyx_INCREF(__pyx_v_dtype);
       __Pyx_GIVEREF(__pyx_v_dtype);
-      PyTuple_SET_ITEM(__pyx_t_5, 3+__pyx_t_4, __pyx_v_dtype);
-      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_5, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 35, __pyx_L1_error)
+      PyTuple_SET_ITEM(__pyx_t_6, 3+__pyx_t_5, __pyx_v_dtype);
+      __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_1, __pyx_t_6, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 35, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
-      __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+      __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     }
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_reshape); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
@@ -2217,7 +2181,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_matrix_ddk(CYTHON_UNUSED 
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_v_phases = __pyx_t_2;
     __pyx_t_2 = 0;
-# 2554 "sisl/physics/_matrix_ddk.c"
     __pyx_t_2 = PyNumber_Multiply(__pyx_v_rij, __pyx_v_rij); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 36, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_1 = PyNumber_Multiply(__pyx_t_2, __pyx_v_phases); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 36, __pyx_L1_error)
@@ -2231,22 +2194,21 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_matrix_ddk(CYTHON_UNUSED 
     __Pyx_INCREF(__pyx_v_dtype);
     __Pyx_GIVEREF(__pyx_v_dtype);
     PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_dtype);
-    __pyx_t_5 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 36, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
-    if (PyDict_SetItem(__pyx_t_5, __pyx_n_s_copy, Py_False) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
-    __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_1, __pyx_t_5); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 36, __pyx_L1_error)
+    __pyx_t_6 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 36, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
+    if (PyDict_SetItem(__pyx_t_6, __pyx_n_s_copy, Py_False) < 0) __PYX_ERR(0, 36, __pyx_L1_error)
+    __pyx_t_8 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_1, __pyx_t_6); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 36, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
-    __pyx_t_5 = PyNumber_Negative(__pyx_t_8); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 36, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
+    __pyx_t_6 = PyNumber_Negative(__pyx_t_8); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 36, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __pyx_v_Rd = __pyx_t_5;
-    __pyx_t_5 = 0;
-# 2588 "sisl/physics/_matrix_ddk.c"
-    __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_roll); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 37, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_v_Rd = __pyx_t_6;
+    __pyx_t_6 = 0;
+    __Pyx_GetModuleGlobalName(__pyx_t_6, __pyx_n_s_roll); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 37, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
     __pyx_t_8 = PyTuple_New(2); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 37, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     __Pyx_INCREF(__pyx_v_rij);
@@ -2258,9 +2220,9 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_matrix_ddk(CYTHON_UNUSED 
     __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 37, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_axis, __pyx_int_1) < 0) __PYX_ERR(0, 37, __pyx_L1_error)
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_5, __pyx_t_8, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 37, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_6, __pyx_t_8, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 37, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_1 = PyNumber_Multiply(__pyx_t_2, __pyx_v_phases); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 37, __pyx_L1_error)
@@ -2277,121 +2239,116 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_matrix_ddk(CYTHON_UNUSED 
     __pyx_t_8 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 37, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
     if (PyDict_SetItem(__pyx_t_8, __pyx_n_s_copy, Py_False) < 0) __PYX_ERR(0, 37, __pyx_L1_error)
-    __pyx_t_5 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_1, __pyx_t_8); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 37, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_6 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_1, __pyx_t_8); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 37, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __pyx_t_8 = PyNumber_Negative(__pyx_t_5); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 37, __pyx_L1_error)
+    __pyx_t_8 = PyNumber_Negative(__pyx_t_6); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 37, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __pyx_v_Ro = __pyx_t_8;
     __pyx_t_8 = 0;
-# 2638 "sisl/physics/_matrix_ddk.c"
     __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_roll); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 38, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_8);
-    __pyx_t_5 = PyTuple_New(2); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 38, __pyx_L1_error)
-    __Pyx_GOTREF(__pyx_t_5);
+    __pyx_t_6 = PyTuple_New(2); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 38, __pyx_L1_error)
+    __Pyx_GOTREF(__pyx_t_6);
     __Pyx_INCREF(__pyx_v_rij);
     __Pyx_GIVEREF(__pyx_v_rij);
-    PyTuple_SET_ITEM(__pyx_t_5, 0, __pyx_v_rij);
+    PyTuple_SET_ITEM(__pyx_t_6, 0, __pyx_v_rij);
     __Pyx_INCREF(__pyx_int_neg_1);
     __Pyx_GIVEREF(__pyx_int_neg_1);
-    PyTuple_SET_ITEM(__pyx_t_5, 1, __pyx_int_neg_1);
+    PyTuple_SET_ITEM(__pyx_t_6, 1, __pyx_int_neg_1);
     __pyx_t_1 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 38, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     if (PyDict_SetItem(__pyx_t_1, __pyx_n_s_axis, __pyx_int_1) < 0) __PYX_ERR(0, 38, __pyx_L1_error)
-    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_5, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 38, __pyx_L1_error)
+    __pyx_t_2 = __Pyx_PyObject_Call(__pyx_t_8, __pyx_t_6, __pyx_t_1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 38, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_1 = PyNumber_InPlaceMultiply(__pyx_v_Ro, __pyx_t_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 38, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF_SET(__pyx_v_Ro, __pyx_t_1);
     __pyx_t_1 = 0;
-# 2669 "sisl/physics/_matrix_ddk.c"
     __Pyx_DECREF(__pyx_v_rij);
     __pyx_v_rij = NULL;
     __Pyx_DECREF(__pyx_v_phases);
     __pyx_v_phases = NULL;
-# 2681 "sisl/physics/_matrix_ddk.c"
     __pyx_v_p_opt = 1;
-# 2690 "sisl/physics/_matrix_ddk.c"
   }
   __pyx_L3:;
-# 2700 "sisl/physics/_matrix_ddk.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_matrix_ddk); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 42, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-  __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_M, __pyx_n_s_csr); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 42, __pyx_L1_error)
-  __Pyx_GOTREF(__pyx_t_5);
+  __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_M, __pyx_n_s_csr); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 42, __pyx_L1_error)
+  __Pyx_GOTREF(__pyx_t_6);
   __pyx_t_8 = __Pyx_PyInt_From_int(__pyx_v_idx); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 42, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
   if (unlikely(!__pyx_v_Rd)) { __Pyx_RaiseUnboundLocalError("Rd"); __PYX_ERR(0, 42, __pyx_L1_error) }
   if (unlikely(!__pyx_v_Ro)) { __Pyx_RaiseUnboundLocalError("Ro"); __PYX_ERR(0, 42, __pyx_L1_error) }
   __pyx_t_3 = __Pyx_PyInt_From_long(__pyx_v_p_opt); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 42, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
-  __pyx_t_7 = NULL;
-  __pyx_t_4 = 0;
+  __pyx_t_4 = NULL;
+  __pyx_t_5 = 0;
   if (CYTHON_UNPACK_METHODS && unlikely(PyMethod_Check(__pyx_t_2))) {
-    __pyx_t_7 = PyMethod_GET_SELF(__pyx_t_2);
-    if (likely(__pyx_t_7)) {
+    __pyx_t_4 = PyMethod_GET_SELF(__pyx_t_2);
+    if (likely(__pyx_t_4)) {
       PyObject* function = PyMethod_GET_FUNCTION(__pyx_t_2);
-      __Pyx_INCREF(__pyx_t_7);
+      __Pyx_INCREF(__pyx_t_4);
       __Pyx_INCREF(function);
       __Pyx_DECREF_SET(__pyx_t_2, function);
-      __pyx_t_4 = 1;
+      __pyx_t_5 = 1;
     }
   }
   #if CYTHON_FAST_PYCALL
   if (PyFunction_Check(__pyx_t_2)) {
-    PyObject *__pyx_temp[8] = {__pyx_t_7, __pyx_t_5, __pyx_t_8, __pyx_v_Rd, __pyx_v_Ro, __pyx_v_dtype, __pyx_v_format, __pyx_t_3};
-    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 7+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 42, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+    PyObject *__pyx_temp[8] = {__pyx_t_4, __pyx_t_6, __pyx_t_8, __pyx_v_Rd, __pyx_v_Ro, __pyx_v_dtype, __pyx_v_format, __pyx_t_3};
+    __pyx_t_1 = __Pyx_PyFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 7+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 42, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else
   #endif
   #if CYTHON_FAST_PYCCALL
   if (__Pyx_PyFastCFunction_Check(__pyx_t_2)) {
-    PyObject *__pyx_temp[8] = {__pyx_t_7, __pyx_t_5, __pyx_t_8, __pyx_v_Rd, __pyx_v_Ro, __pyx_v_dtype, __pyx_v_format, __pyx_t_3};
-    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_4, 7+__pyx_t_4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 42, __pyx_L1_error)
-    __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
+    PyObject *__pyx_temp[8] = {__pyx_t_4, __pyx_t_6, __pyx_t_8, __pyx_v_Rd, __pyx_v_Ro, __pyx_v_dtype, __pyx_v_format, __pyx_t_3};
+    __pyx_t_1 = __Pyx_PyCFunction_FastCall(__pyx_t_2, __pyx_temp+1-__pyx_t_5, 7+__pyx_t_5); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 42, __pyx_L1_error)
+    __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
     __Pyx_GOTREF(__pyx_t_1);
-    __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
+    __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   } else
   #endif
   {
-    __pyx_t_9 = PyTuple_New(7+__pyx_t_4); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 42, __pyx_L1_error)
+    __pyx_t_9 = PyTuple_New(7+__pyx_t_5); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 42, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_9);
-    if (__pyx_t_7) {
-      __Pyx_GIVEREF(__pyx_t_7); PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_7); __pyx_t_7 = NULL;
+    if (__pyx_t_4) {
+      __Pyx_GIVEREF(__pyx_t_4); PyTuple_SET_ITEM(__pyx_t_9, 0, __pyx_t_4); __pyx_t_4 = NULL;
     }
-    __Pyx_GIVEREF(__pyx_t_5);
-    PyTuple_SET_ITEM(__pyx_t_9, 0+__pyx_t_4, __pyx_t_5);
+    __Pyx_GIVEREF(__pyx_t_6);
+    PyTuple_SET_ITEM(__pyx_t_9, 0+__pyx_t_5, __pyx_t_6);
     __Pyx_GIVEREF(__pyx_t_8);
-    PyTuple_SET_ITEM(__pyx_t_9, 1+__pyx_t_4, __pyx_t_8);
+    PyTuple_SET_ITEM(__pyx_t_9, 1+__pyx_t_5, __pyx_t_8);
     __Pyx_INCREF(__pyx_v_Rd);
     __Pyx_GIVEREF(__pyx_v_Rd);
-    PyTuple_SET_ITEM(__pyx_t_9, 2+__pyx_t_4, __pyx_v_Rd);
+    PyTuple_SET_ITEM(__pyx_t_9, 2+__pyx_t_5, __pyx_v_Rd);
     __Pyx_INCREF(__pyx_v_Ro);
     __Pyx_GIVEREF(__pyx_v_Ro);
-    PyTuple_SET_ITEM(__pyx_t_9, 3+__pyx_t_4, __pyx_v_Ro);
+    PyTuple_SET_ITEM(__pyx_t_9, 3+__pyx_t_5, __pyx_v_Ro);
     __Pyx_INCREF(__pyx_v_dtype);
     __Pyx_GIVEREF(__pyx_v_dtype);
-    PyTuple_SET_ITEM(__pyx_t_9, 4+__pyx_t_4, __pyx_v_dtype);
+    PyTuple_SET_ITEM(__pyx_t_9, 4+__pyx_t_5, __pyx_v_dtype);
     __Pyx_INCREF(__pyx_v_format);
     __Pyx_GIVEREF(__pyx_v_format);
-    PyTuple_SET_ITEM(__pyx_t_9, 5+__pyx_t_4, __pyx_v_format);
+    PyTuple_SET_ITEM(__pyx_t_9, 5+__pyx_t_5, __pyx_v_format);
     __Pyx_GIVEREF(__pyx_t_3);
-    PyTuple_SET_ITEM(__pyx_t_9, 6+__pyx_t_4, __pyx_t_3);
-    __pyx_t_5 = 0;
+    PyTuple_SET_ITEM(__pyx_t_9, 6+__pyx_t_5, __pyx_t_3);
+    __pyx_t_6 = 0;
     __pyx_t_8 = 0;
     __pyx_t_3 = 0;
     __pyx_t_1 = __Pyx_PyObject_Call(__pyx_t_2, __pyx_t_9, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 42, __pyx_L1_error)
@@ -2402,13 +2359,12 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_matrix_ddk(CYTHON_UNUSED 
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 2790 "sisl/physics/_matrix_ddk.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
-  __Pyx_XDECREF(__pyx_t_5);
-  __Pyx_XDECREF(__pyx_t_7);
+  __Pyx_XDECREF(__pyx_t_4);
+  __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_8);
   __Pyx_XDECREF(__pyx_t_9);
   { PyObject *__pyx_type, *__pyx_value, *__pyx_tb;
@@ -2433,7 +2389,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_matrix_ddk(CYTHON_UNUSED 
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 2830 "sisl/physics/_matrix_ddk.c"
 static PyObject *__pyx_pw_4sisl_7physics_11_matrix_ddk_3_matrix_ddk(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds);
 static PyMethodDef __pyx_mdef_4sisl_7physics_11_matrix_ddk_3_matrix_ddk = {"_matrix_ddk", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_4sisl_7physics_11_matrix_ddk_3_matrix_ddk, METH_VARARGS|METH_KEYWORDS, 0};
 static PyObject *__pyx_pw_4sisl_7physics_11_matrix_ddk_3_matrix_ddk(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
@@ -2567,7 +2522,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
   int __pyx_t_11;
   PyObject *__pyx_t_12 = NULL;
   __Pyx_RefNannySetupContext("_matrix_ddk", 0);
-# 2971 "sisl/physics/_matrix_ddk.c"
   __pyx_t_1 = PyList_New(6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 51, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(Py_None);
@@ -2590,7 +2544,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
   PyList_SET_ITEM(__pyx_t_1, 5, Py_None);
   __pyx_v_dd = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
-# 3001 "sisl/physics/_matrix_ddk.c"
   __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 53, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_complex128); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 53, __pyx_L1_error)
@@ -2601,7 +2554,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
   __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 53, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_3) {
-# 3019 "sisl/physics/_matrix_ddk.c"
     __Pyx_INCREF(__pyx_v_format);
     __pyx_t_1 = __pyx_v_format;
     __pyx_t_4 = (__Pyx_PyString_Equals(__pyx_t_1, __pyx_n_s_array, Py_EQ)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 55, __pyx_L1_error)
@@ -2622,7 +2574,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_4 = (__pyx_t_3 != 0);
     if (__pyx_t_4) {
-# 3047 "sisl/physics/_matrix_ddk.c"
       __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_phase3_array_c128); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 56, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_csr, __pyx_n_s_ptr); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 56, __pyx_L1_error)
@@ -2707,7 +2658,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (__Pyx_PyObject_SetSlice(__pyx_v_dd, __pyx_t_1, 0, 3, NULL, NULL, NULL, 0, 1, 0) < 0) __PYX_ERR(0, 56, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 3139 "sisl/physics/_matrix_ddk.c"
       __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_phase3_array_c128); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 57, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_v_csr, __pyx_n_s_ptr); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 57, __pyx_L1_error)
@@ -2792,10 +2742,8 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (__Pyx_PyObject_SetSlice(__pyx_v_dd, __pyx_t_1, 3, 0, NULL, NULL, NULL, 1, 0, 0) < 0) __PYX_ERR(0, 57, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 3231 "sisl/physics/_matrix_ddk.c"
       goto __pyx_L4;
     }
-# 3241 "sisl/physics/_matrix_ddk.c"
              {
       __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_phase3_csr_c128); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 61, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
@@ -2881,7 +2829,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (__Pyx_PyObject_SetSlice(__pyx_v_dd, __pyx_t_1, 0, 3, NULL, NULL, NULL, 0, 1, 0) < 0) __PYX_ERR(0, 61, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 3334 "sisl/physics/_matrix_ddk.c"
       __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_phase3_csr_c128); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 62, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_csr, __pyx_n_s_ptr); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 62, __pyx_L1_error)
@@ -2966,7 +2913,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (__Pyx_PyObject_SetSlice(__pyx_v_dd, __pyx_t_1, 3, 0, NULL, NULL, NULL, 1, 0, 0) < 0) __PYX_ERR(0, 62, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 3426 "sisl/physics/_matrix_ddk.c"
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(PyList_GET_ITEM(__pyx_v_dd, 0), __pyx_n_s_asformat); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 63, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_12 = NULL;
@@ -2986,7 +2932,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (unlikely(__Pyx_SetItemInt(__pyx_v_dd, 0, __pyx_t_1, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 63, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 3453 "sisl/physics/_matrix_ddk.c"
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(PyList_GET_ITEM(__pyx_v_dd, 1), __pyx_n_s_asformat); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 64, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_12 = NULL;
@@ -3006,7 +2951,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (unlikely(__Pyx_SetItemInt(__pyx_v_dd, 1, __pyx_t_1, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 64, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 3480 "sisl/physics/_matrix_ddk.c"
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(PyList_GET_ITEM(__pyx_v_dd, 2), __pyx_n_s_asformat); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 65, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_12 = NULL;
@@ -3026,7 +2970,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (unlikely(__Pyx_SetItemInt(__pyx_v_dd, 2, __pyx_t_1, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 65, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 3507 "sisl/physics/_matrix_ddk.c"
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(PyList_GET_ITEM(__pyx_v_dd, 3), __pyx_n_s_asformat); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 66, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_12 = NULL;
@@ -3046,7 +2989,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (unlikely(__Pyx_SetItemInt(__pyx_v_dd, 3, __pyx_t_1, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 66, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 3534 "sisl/physics/_matrix_ddk.c"
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(PyList_GET_ITEM(__pyx_v_dd, 4), __pyx_n_s_asformat); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 67, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_12 = NULL;
@@ -3066,7 +3008,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (unlikely(__Pyx_SetItemInt(__pyx_v_dd, 4, __pyx_t_1, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 67, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 3561 "sisl/physics/_matrix_ddk.c"
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(PyList_GET_ITEM(__pyx_v_dd, 5), __pyx_n_s_asformat); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 68, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_12 = NULL;
@@ -3088,10 +3029,8 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     }
     __pyx_L4:;
-# 3590 "sisl/physics/_matrix_ddk.c"
     goto __pyx_L3;
   }
-# 3600 "sisl/physics/_matrix_ddk.c"
   __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 70, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_float64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 70, __pyx_L1_error)
@@ -3102,7 +3041,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
   __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 70, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_4) {
-# 3618 "sisl/physics/_matrix_ddk.c"
     __Pyx_INCREF(__pyx_v_format);
     __pyx_t_1 = __pyx_v_format;
     __pyx_t_3 = (__Pyx_PyString_Equals(__pyx_t_1, __pyx_n_s_array, Py_EQ)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 71, __pyx_L1_error)
@@ -3123,7 +3061,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_3 = (__pyx_t_4 != 0);
     if (__pyx_t_3) {
-# 3646 "sisl/physics/_matrix_ddk.c"
       __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_phase3_array_f64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 72, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_v_csr, __pyx_n_s_ptr); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 72, __pyx_L1_error)
@@ -3208,7 +3145,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (__Pyx_PyObject_SetSlice(__pyx_v_dd, __pyx_t_1, 0, 3, NULL, NULL, NULL, 0, 1, 0) < 0) __PYX_ERR(0, 72, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 3738 "sisl/physics/_matrix_ddk.c"
       __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_phase3_array_f64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 73, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_csr, __pyx_n_s_ptr); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 73, __pyx_L1_error)
@@ -3293,10 +3229,8 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (__Pyx_PyObject_SetSlice(__pyx_v_dd, __pyx_t_1, 3, 0, NULL, NULL, NULL, 1, 0, 0) < 0) __PYX_ERR(0, 73, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 3830 "sisl/physics/_matrix_ddk.c"
       goto __pyx_L8;
     }
-# 3840 "sisl/physics/_matrix_ddk.c"
              {
       __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_phase3_csr_f64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 75, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
@@ -3382,7 +3316,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (__Pyx_PyObject_SetSlice(__pyx_v_dd, __pyx_t_1, 0, 3, NULL, NULL, NULL, 0, 1, 0) < 0) __PYX_ERR(0, 75, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 3933 "sisl/physics/_matrix_ddk.c"
       __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_phase3_csr_f64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 76, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_v_csr, __pyx_n_s_ptr); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 76, __pyx_L1_error)
@@ -3467,7 +3400,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (__Pyx_PyObject_SetSlice(__pyx_v_dd, __pyx_t_1, 3, 0, NULL, NULL, NULL, 1, 0, 0) < 0) __PYX_ERR(0, 76, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 4025 "sisl/physics/_matrix_ddk.c"
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(PyList_GET_ITEM(__pyx_v_dd, 0), __pyx_n_s_asformat); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 77, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_10 = NULL;
@@ -3487,7 +3419,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (unlikely(__Pyx_SetItemInt(__pyx_v_dd, 0, __pyx_t_1, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 77, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 4052 "sisl/physics/_matrix_ddk.c"
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(PyList_GET_ITEM(__pyx_v_dd, 1), __pyx_n_s_asformat); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 78, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_10 = NULL;
@@ -3507,7 +3438,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (unlikely(__Pyx_SetItemInt(__pyx_v_dd, 1, __pyx_t_1, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 78, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 4079 "sisl/physics/_matrix_ddk.c"
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(PyList_GET_ITEM(__pyx_v_dd, 2), __pyx_n_s_asformat); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 79, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_10 = NULL;
@@ -3527,7 +3457,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (unlikely(__Pyx_SetItemInt(__pyx_v_dd, 2, __pyx_t_1, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 79, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 4106 "sisl/physics/_matrix_ddk.c"
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(PyList_GET_ITEM(__pyx_v_dd, 3), __pyx_n_s_asformat); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 80, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_10 = NULL;
@@ -3547,7 +3476,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (unlikely(__Pyx_SetItemInt(__pyx_v_dd, 3, __pyx_t_1, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 80, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 4133 "sisl/physics/_matrix_ddk.c"
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(PyList_GET_ITEM(__pyx_v_dd, 4), __pyx_n_s_asformat); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 81, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_10 = NULL;
@@ -3567,7 +3495,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (unlikely(__Pyx_SetItemInt(__pyx_v_dd, 4, __pyx_t_1, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 81, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 4160 "sisl/physics/_matrix_ddk.c"
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(PyList_GET_ITEM(__pyx_v_dd, 5), __pyx_n_s_asformat); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 82, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_10 = NULL;
@@ -3589,10 +3516,8 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     }
     __pyx_L8:;
-# 4189 "sisl/physics/_matrix_ddk.c"
     goto __pyx_L3;
   }
-# 4199 "sisl/physics/_matrix_ddk.c"
   __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 84, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_complex64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 84, __pyx_L1_error)
@@ -3603,7 +3528,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
   __pyx_t_3 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 84, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_t_3) {
-# 4217 "sisl/physics/_matrix_ddk.c"
     __Pyx_INCREF(__pyx_v_format);
     __pyx_t_1 = __pyx_v_format;
     __pyx_t_4 = (__Pyx_PyString_Equals(__pyx_t_1, __pyx_n_s_array, Py_EQ)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 85, __pyx_L1_error)
@@ -3624,7 +3548,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_4 = (__pyx_t_3 != 0);
     if (__pyx_t_4) {
-# 4245 "sisl/physics/_matrix_ddk.c"
       __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_phase3_array_c64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 86, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_csr, __pyx_n_s_ptr); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 86, __pyx_L1_error)
@@ -3709,7 +3632,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (__Pyx_PyObject_SetSlice(__pyx_v_dd, __pyx_t_1, 0, 3, NULL, NULL, NULL, 0, 1, 0) < 0) __PYX_ERR(0, 86, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 4337 "sisl/physics/_matrix_ddk.c"
       __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_phase3_array_c64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 87, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_csr, __pyx_n_s_ptr); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 87, __pyx_L1_error)
@@ -3794,10 +3716,8 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (__Pyx_PyObject_SetSlice(__pyx_v_dd, __pyx_t_1, 3, 0, NULL, NULL, NULL, 1, 0, 0) < 0) __PYX_ERR(0, 87, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 4429 "sisl/physics/_matrix_ddk.c"
       goto __pyx_L12;
     }
-# 4439 "sisl/physics/_matrix_ddk.c"
              {
       __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_phase3_csr_c64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 89, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
@@ -3883,7 +3803,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (__Pyx_PyObject_SetSlice(__pyx_v_dd, __pyx_t_1, 0, 3, NULL, NULL, NULL, 0, 1, 0) < 0) __PYX_ERR(0, 89, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 4532 "sisl/physics/_matrix_ddk.c"
       __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_phase3_csr_c64); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 90, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_10 = __Pyx_PyObject_GetAttrStr(__pyx_v_csr, __pyx_n_s_ptr); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 90, __pyx_L1_error)
@@ -3968,7 +3887,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (__Pyx_PyObject_SetSlice(__pyx_v_dd, __pyx_t_1, 3, 0, NULL, NULL, NULL, 1, 0, 0) < 0) __PYX_ERR(0, 90, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 4624 "sisl/physics/_matrix_ddk.c"
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(PyList_GET_ITEM(__pyx_v_dd, 0), __pyx_n_s_asformat); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 91, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_5 = NULL;
@@ -3988,7 +3906,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (unlikely(__Pyx_SetItemInt(__pyx_v_dd, 0, __pyx_t_1, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 91, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 4651 "sisl/physics/_matrix_ddk.c"
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(PyList_GET_ITEM(__pyx_v_dd, 1), __pyx_n_s_asformat); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 92, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_5 = NULL;
@@ -4008,7 +3925,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (unlikely(__Pyx_SetItemInt(__pyx_v_dd, 1, __pyx_t_1, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 92, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 4678 "sisl/physics/_matrix_ddk.c"
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(PyList_GET_ITEM(__pyx_v_dd, 2), __pyx_n_s_asformat); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 93, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_5 = NULL;
@@ -4028,7 +3944,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (unlikely(__Pyx_SetItemInt(__pyx_v_dd, 2, __pyx_t_1, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 93, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 4705 "sisl/physics/_matrix_ddk.c"
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(PyList_GET_ITEM(__pyx_v_dd, 3), __pyx_n_s_asformat); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 94, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_5 = NULL;
@@ -4048,7 +3963,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (unlikely(__Pyx_SetItemInt(__pyx_v_dd, 3, __pyx_t_1, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 94, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 4732 "sisl/physics/_matrix_ddk.c"
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(PyList_GET_ITEM(__pyx_v_dd, 4), __pyx_n_s_asformat); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 95, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_5 = NULL;
@@ -4068,7 +3982,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (unlikely(__Pyx_SetItemInt(__pyx_v_dd, 4, __pyx_t_1, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 95, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 4759 "sisl/physics/_matrix_ddk.c"
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(PyList_GET_ITEM(__pyx_v_dd, 5), __pyx_n_s_asformat); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 96, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_5 = NULL;
@@ -4090,10 +4003,8 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     }
     __pyx_L12:;
-# 4788 "sisl/physics/_matrix_ddk.c"
     goto __pyx_L3;
   }
-# 4798 "sisl/physics/_matrix_ddk.c"
   __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 98, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_float32); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 98, __pyx_L1_error)
@@ -4104,7 +4015,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
   __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_1); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(0, 98, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (likely(__pyx_t_4)) {
-# 4816 "sisl/physics/_matrix_ddk.c"
     __Pyx_INCREF(__pyx_v_format);
     __pyx_t_1 = __pyx_v_format;
     __pyx_t_3 = (__Pyx_PyString_Equals(__pyx_t_1, __pyx_n_s_array, Py_EQ)); if (unlikely(__pyx_t_3 < 0)) __PYX_ERR(0, 99, __pyx_L1_error)
@@ -4125,7 +4035,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __pyx_t_3 = (__pyx_t_4 != 0);
     if (__pyx_t_3) {
-# 4844 "sisl/physics/_matrix_ddk.c"
       __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_phase3_array_f32); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 100, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_csr, __pyx_n_s_ptr); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 100, __pyx_L1_error)
@@ -4210,7 +4119,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (__Pyx_PyObject_SetSlice(__pyx_v_dd, __pyx_t_1, 0, 3, NULL, NULL, NULL, 0, 1, 0) < 0) __PYX_ERR(0, 100, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 4936 "sisl/physics/_matrix_ddk.c"
       __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_phase3_array_f32); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 101, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_12 = __Pyx_PyObject_GetAttrStr(__pyx_v_csr, __pyx_n_s_ptr); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 101, __pyx_L1_error)
@@ -4295,10 +4203,8 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (__Pyx_PyObject_SetSlice(__pyx_v_dd, __pyx_t_1, 3, 0, NULL, NULL, NULL, 1, 0, 0) < 0) __PYX_ERR(0, 101, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 5028 "sisl/physics/_matrix_ddk.c"
       goto __pyx_L16;
     }
-# 5038 "sisl/physics/_matrix_ddk.c"
              {
       __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_phase3_csr_f32); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 103, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
@@ -4384,7 +4290,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (__Pyx_PyObject_SetSlice(__pyx_v_dd, __pyx_t_1, 0, 3, NULL, NULL, NULL, 0, 1, 0) < 0) __PYX_ERR(0, 103, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 5131 "sisl/physics/_matrix_ddk.c"
       __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_phase3_csr_f32); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 104, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_csr, __pyx_n_s_ptr); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 104, __pyx_L1_error)
@@ -4469,7 +4374,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (__Pyx_PyObject_SetSlice(__pyx_v_dd, __pyx_t_1, 3, 0, NULL, NULL, NULL, 1, 0, 0) < 0) __PYX_ERR(0, 104, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 5223 "sisl/physics/_matrix_ddk.c"
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(PyList_GET_ITEM(__pyx_v_dd, 0), __pyx_n_s_asformat); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 105, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_12 = NULL;
@@ -4489,7 +4393,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (unlikely(__Pyx_SetItemInt(__pyx_v_dd, 0, __pyx_t_1, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 105, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 5250 "sisl/physics/_matrix_ddk.c"
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(PyList_GET_ITEM(__pyx_v_dd, 1), __pyx_n_s_asformat); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 106, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_12 = NULL;
@@ -4509,7 +4412,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (unlikely(__Pyx_SetItemInt(__pyx_v_dd, 1, __pyx_t_1, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 106, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 5277 "sisl/physics/_matrix_ddk.c"
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(PyList_GET_ITEM(__pyx_v_dd, 2), __pyx_n_s_asformat); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 107, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_12 = NULL;
@@ -4529,7 +4431,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (unlikely(__Pyx_SetItemInt(__pyx_v_dd, 2, __pyx_t_1, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 107, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 5304 "sisl/physics/_matrix_ddk.c"
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(PyList_GET_ITEM(__pyx_v_dd, 3), __pyx_n_s_asformat); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 108, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_12 = NULL;
@@ -4549,7 +4450,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (unlikely(__Pyx_SetItemInt(__pyx_v_dd, 3, __pyx_t_1, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 108, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 5331 "sisl/physics/_matrix_ddk.c"
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(PyList_GET_ITEM(__pyx_v_dd, 4), __pyx_n_s_asformat); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 109, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_12 = NULL;
@@ -4569,7 +4469,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       if (unlikely(__Pyx_SetItemInt(__pyx_v_dd, 4, __pyx_t_1, long, 1, __Pyx_PyInt_From_long, 1, 0, 0) < 0)) __PYX_ERR(0, 109, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 5358 "sisl/physics/_matrix_ddk.c"
       __pyx_t_2 = __Pyx_PyObject_GetAttrStr(PyList_GET_ITEM(__pyx_v_dd, 5), __pyx_n_s_asformat); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 110, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_12 = NULL;
@@ -4591,10 +4490,8 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
       __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     }
     __pyx_L16:;
-# 5387 "sisl/physics/_matrix_ddk.c"
     goto __pyx_L3;
   }
-# 5397 "sisl/physics/_matrix_ddk.c"
            {
     __pyx_t_1 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__2, NULL); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 113, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
@@ -4613,7 +4510,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
   __Pyx_INCREF(__pyx_v_dd);
   __pyx_r = __pyx_v_dd;
   goto __pyx_L0;
-# 5425 "sisl/physics/_matrix_ddk.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -4632,7 +4528,6 @@ static PyObject *__pyx_pf_4sisl_7physics_11_matrix_ddk_2_matrix_ddk(CYTHON_UNUSE
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 5453 "sisl/physics/_matrix_ddk.c"
 static CYTHON_UNUSED int __pyx_pw_5numpy_7ndarray_1__getbuffer__(PyObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags);
 static CYTHON_UNUSED int __pyx_pw_5numpy_7ndarray_1__getbuffer__(PyObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags) {
   int __pyx_r;
@@ -4672,112 +4567,79 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   __Pyx_RefNannySetupContext("__getbuffer__", 0);
   __pyx_v_info->obj = Py_None; __Pyx_INCREF(Py_None);
   __Pyx_GIVEREF(__pyx_v_info->obj);
-# 5500 "sisl/physics/_matrix_ddk.c"
   __pyx_v_endian_detector = 1;
-# 5509 "sisl/physics/_matrix_ddk.c"
   __pyx_v_little_endian = ((((char *)(&__pyx_v_endian_detector))[0]) != 0);
-# 5518 "sisl/physics/_matrix_ddk.c"
   __pyx_v_ndim = PyArray_NDIM(__pyx_v_self);
-# 5527 "sisl/physics/_matrix_ddk.c"
   __pyx_t_2 = (((__pyx_v_flags & PyBUF_C_CONTIGUOUS) == PyBUF_C_CONTIGUOUS) != 0);
   if (__pyx_t_2) {
   } else {
     __pyx_t_1 = __pyx_t_2;
     goto __pyx_L4_bool_binop_done;
   }
-# 5541 "sisl/physics/_matrix_ddk.c"
   __pyx_t_2 = ((!(PyArray_CHKFLAGS(__pyx_v_self, NPY_ARRAY_C_CONTIGUOUS) != 0)) != 0);
   __pyx_t_1 = __pyx_t_2;
   __pyx_L4_bool_binop_done:;
-# 5552 "sisl/physics/_matrix_ddk.c"
   if (unlikely(__pyx_t_1)) {
-# 5561 "sisl/physics/_matrix_ddk.c"
     __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__3, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 272, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __PYX_ERR(1, 272, __pyx_L1_error)
-# 5574 "sisl/physics/_matrix_ddk.c"
   }
-# 5583 "sisl/physics/_matrix_ddk.c"
   __pyx_t_2 = (((__pyx_v_flags & PyBUF_F_CONTIGUOUS) == PyBUF_F_CONTIGUOUS) != 0);
   if (__pyx_t_2) {
   } else {
     __pyx_t_1 = __pyx_t_2;
     goto __pyx_L7_bool_binop_done;
   }
-# 5597 "sisl/physics/_matrix_ddk.c"
   __pyx_t_2 = ((!(PyArray_CHKFLAGS(__pyx_v_self, NPY_ARRAY_F_CONTIGUOUS) != 0)) != 0);
   __pyx_t_1 = __pyx_t_2;
   __pyx_L7_bool_binop_done:;
-# 5608 "sisl/physics/_matrix_ddk.c"
   if (unlikely(__pyx_t_1)) {
-# 5617 "sisl/physics/_matrix_ddk.c"
     __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__4, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 276, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __PYX_ERR(1, 276, __pyx_L1_error)
-# 5630 "sisl/physics/_matrix_ddk.c"
   }
-# 5639 "sisl/physics/_matrix_ddk.c"
   __pyx_v_info->buf = PyArray_DATA(__pyx_v_self);
-# 5648 "sisl/physics/_matrix_ddk.c"
   __pyx_v_info->ndim = __pyx_v_ndim;
-# 5657 "sisl/physics/_matrix_ddk.c"
   __pyx_t_1 = (((sizeof(npy_intp)) != (sizeof(Py_ssize_t))) != 0);
   if (__pyx_t_1) {
-# 5667 "sisl/physics/_matrix_ddk.c"
     __pyx_v_info->strides = ((Py_ssize_t *)PyObject_Malloc((((sizeof(Py_ssize_t)) * 2) * ((size_t)__pyx_v_ndim))));
-# 5676 "sisl/physics/_matrix_ddk.c"
     __pyx_v_info->shape = (__pyx_v_info->strides + __pyx_v_ndim);
-# 5685 "sisl/physics/_matrix_ddk.c"
     __pyx_t_4 = __pyx_v_ndim;
     __pyx_t_5 = __pyx_t_4;
     for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
       __pyx_v_i = __pyx_t_6;
-# 5697 "sisl/physics/_matrix_ddk.c"
       (__pyx_v_info->strides[__pyx_v_i]) = (PyArray_STRIDES(__pyx_v_self)[__pyx_v_i]);
-# 5706 "sisl/physics/_matrix_ddk.c"
       (__pyx_v_info->shape[__pyx_v_i]) = (PyArray_DIMS(__pyx_v_self)[__pyx_v_i]);
     }
-# 5716 "sisl/physics/_matrix_ddk.c"
     goto __pyx_L9;
   }
-# 5726 "sisl/physics/_matrix_ddk.c"
            {
     __pyx_v_info->strides = ((Py_ssize_t *)PyArray_STRIDES(__pyx_v_self));
-# 5736 "sisl/physics/_matrix_ddk.c"
     __pyx_v_info->shape = ((Py_ssize_t *)PyArray_DIMS(__pyx_v_self));
   }
   __pyx_L9:;
-# 5747 "sisl/physics/_matrix_ddk.c"
   __pyx_v_info->suboffsets = NULL;
-# 5756 "sisl/physics/_matrix_ddk.c"
   __pyx_v_info->itemsize = PyArray_ITEMSIZE(__pyx_v_self);
-# 5765 "sisl/physics/_matrix_ddk.c"
   __pyx_v_info->readonly = (!(PyArray_ISWRITEABLE(__pyx_v_self) != 0));
-# 5774 "sisl/physics/_matrix_ddk.c"
   __pyx_v_f = NULL;
-# 5783 "sisl/physics/_matrix_ddk.c"
   __pyx_t_7 = PyArray_DESCR(__pyx_v_self);
   __pyx_t_3 = ((PyObject *)__pyx_t_7);
   __Pyx_INCREF(__pyx_t_3);
   __pyx_v_descr = ((PyArray_Descr *)__pyx_t_3);
   __pyx_t_3 = 0;
-# 5796 "sisl/physics/_matrix_ddk.c"
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   __Pyx_GOTREF(__pyx_v_info->obj);
   __Pyx_DECREF(__pyx_v_info->obj);
   __pyx_v_info->obj = ((PyObject *)__pyx_v_self);
-# 5809 "sisl/physics/_matrix_ddk.c"
   __pyx_t_1 = ((!(PyDataType_HASFIELDS(__pyx_v_descr) != 0)) != 0);
   if (__pyx_t_1) {
-# 5819 "sisl/physics/_matrix_ddk.c"
     __pyx_t_4 = __pyx_v_descr->type_num;
     __pyx_v_t = __pyx_t_4;
-# 5829 "sisl/physics/_matrix_ddk.c"
     __pyx_t_2 = ((__pyx_v_descr->byteorder == '>') != 0);
     if (!__pyx_t_2) {
       goto __pyx_L15_next_or;
@@ -4790,7 +4652,6 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       goto __pyx_L14_bool_binop_done;
     }
     __pyx_L15_next_or:;
-# 5849 "sisl/physics/_matrix_ddk.c"
     __pyx_t_2 = ((__pyx_v_descr->byteorder == '<') != 0);
     if (__pyx_t_2) {
     } else {
@@ -4800,87 +4661,66 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     __pyx_t_2 = ((!(__pyx_v_little_endian != 0)) != 0);
     __pyx_t_1 = __pyx_t_2;
     __pyx_L14_bool_binop_done:;
-# 5866 "sisl/physics/_matrix_ddk.c"
     if (unlikely(__pyx_t_1)) {
-# 5875 "sisl/physics/_matrix_ddk.c"
       __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 306, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_Raise(__pyx_t_3, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __PYX_ERR(1, 306, __pyx_L1_error)
-# 5888 "sisl/physics/_matrix_ddk.c"
     }
-# 5897 "sisl/physics/_matrix_ddk.c"
     switch (__pyx_v_t) {
       case NPY_BYTE:
       __pyx_v_f = ((char *)"b");
       break;
       case NPY_UBYTE:
-# 5910 "sisl/physics/_matrix_ddk.c"
       __pyx_v_f = ((char *)"B");
       break;
       case NPY_SHORT:
-# 5921 "sisl/physics/_matrix_ddk.c"
       __pyx_v_f = ((char *)"h");
       break;
       case NPY_USHORT:
-# 5932 "sisl/physics/_matrix_ddk.c"
       __pyx_v_f = ((char *)"H");
       break;
       case NPY_INT:
-# 5943 "sisl/physics/_matrix_ddk.c"
       __pyx_v_f = ((char *)"i");
       break;
       case NPY_UINT:
-# 5954 "sisl/physics/_matrix_ddk.c"
       __pyx_v_f = ((char *)"I");
       break;
       case NPY_LONG:
-# 5965 "sisl/physics/_matrix_ddk.c"
       __pyx_v_f = ((char *)"l");
       break;
       case NPY_ULONG:
-# 5976 "sisl/physics/_matrix_ddk.c"
       __pyx_v_f = ((char *)"L");
       break;
       case NPY_LONGLONG:
-# 5987 "sisl/physics/_matrix_ddk.c"
       __pyx_v_f = ((char *)"q");
       break;
       case NPY_ULONGLONG:
-# 5998 "sisl/physics/_matrix_ddk.c"
       __pyx_v_f = ((char *)"Q");
       break;
       case NPY_FLOAT:
-# 6009 "sisl/physics/_matrix_ddk.c"
       __pyx_v_f = ((char *)"f");
       break;
       case NPY_DOUBLE:
-# 6020 "sisl/physics/_matrix_ddk.c"
       __pyx_v_f = ((char *)"d");
       break;
       case NPY_LONGDOUBLE:
-# 6031 "sisl/physics/_matrix_ddk.c"
       __pyx_v_f = ((char *)"g");
       break;
       case NPY_CFLOAT:
-# 6042 "sisl/physics/_matrix_ddk.c"
       __pyx_v_f = ((char *)"Zf");
       break;
       case NPY_CDOUBLE:
-# 6053 "sisl/physics/_matrix_ddk.c"
       __pyx_v_f = ((char *)"Zd");
       break;
       case NPY_CLONGDOUBLE:
-# 6064 "sisl/physics/_matrix_ddk.c"
       __pyx_v_f = ((char *)"Zg");
       break;
       case NPY_OBJECT:
-# 6075 "sisl/physics/_matrix_ddk.c"
       __pyx_v_f = ((char *)"O");
       break;
       default:
-# 6086 "sisl/physics/_matrix_ddk.c"
       __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_t); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 325, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_8 = PyUnicode_Format(__pyx_kp_u_unknown_dtype_code_in_numpy_pxd, __pyx_t_3); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 325, __pyx_L1_error)
@@ -4894,27 +4734,18 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __PYX_ERR(1, 325, __pyx_L1_error)
       break;
     }
-# 6107 "sisl/physics/_matrix_ddk.c"
     __pyx_v_info->format = __pyx_v_f;
-# 6116 "sisl/physics/_matrix_ddk.c"
     __pyx_r = 0;
     goto __pyx_L0;
-# 6126 "sisl/physics/_matrix_ddk.c"
   }
-# 6135 "sisl/physics/_matrix_ddk.c"
            {
     __pyx_v_info->format = ((char *)PyObject_Malloc(0xFF));
-# 6145 "sisl/physics/_matrix_ddk.c"
     (__pyx_v_info->format[0]) = '^';
-# 6154 "sisl/physics/_matrix_ddk.c"
     __pyx_v_offset = 0;
-# 6163 "sisl/physics/_matrix_ddk.c"
     __pyx_t_9 = __pyx_f_5numpy__util_dtypestring(__pyx_v_descr, (__pyx_v_info->format + 1), (__pyx_v_info->format + 0xFF), (&__pyx_v_offset)); if (unlikely(__pyx_t_9 == ((char *)NULL))) __PYX_ERR(1, 332, __pyx_L1_error)
     __pyx_v_f = __pyx_t_9;
-# 6173 "sisl/physics/_matrix_ddk.c"
     (__pyx_v_f[0]) = '\x00';
   }
-# 6185 "sisl/physics/_matrix_ddk.c"
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -4937,7 +4768,6 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 6217 "sisl/physics/_matrix_ddk.c"
 static CYTHON_UNUSED void __pyx_pw_5numpy_7ndarray_3__releasebuffer__(PyObject *__pyx_v_self, Py_buffer *__pyx_v_info);
 static CYTHON_UNUSED void __pyx_pw_5numpy_7ndarray_3__releasebuffer__(PyObject *__pyx_v_self, Py_buffer *__pyx_v_info) {
   __Pyx_RefNannyDeclarations
@@ -4952,37 +4782,27 @@ static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_s
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("__releasebuffer__", 0);
-# 6239 "sisl/physics/_matrix_ddk.c"
   __pyx_t_1 = (PyArray_HASFIELDS(__pyx_v_self) != 0);
   if (__pyx_t_1) {
-# 6249 "sisl/physics/_matrix_ddk.c"
     PyObject_Free(__pyx_v_info->format);
-# 6258 "sisl/physics/_matrix_ddk.c"
   }
-# 6267 "sisl/physics/_matrix_ddk.c"
   __pyx_t_1 = (((sizeof(npy_intp)) != (sizeof(Py_ssize_t))) != 0);
   if (__pyx_t_1) {
-# 6277 "sisl/physics/_matrix_ddk.c"
     PyObject_Free(__pyx_v_info->strides);
-# 6286 "sisl/physics/_matrix_ddk.c"
   }
-# 6297 "sisl/physics/_matrix_ddk.c"
   __Pyx_RefNannyFinishContext();
 }
-# 6308 "sisl/physics/_matrix_ddk.c"
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew1(PyObject *__pyx_v_a) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew1", 0);
-# 6321 "sisl/physics/_matrix_ddk.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyArray_MultiIterNew(1, ((void *)__pyx_v_a)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 822, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 6337 "sisl/physics/_matrix_ddk.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("numpy.PyArray_MultiIterNew1", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -4992,20 +4812,17 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew1(PyObject *__
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 6355 "sisl/physics/_matrix_ddk.c"
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew2(PyObject *__pyx_v_a, PyObject *__pyx_v_b) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew2", 0);
-# 6368 "sisl/physics/_matrix_ddk.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyArray_MultiIterNew(2, ((void *)__pyx_v_a), ((void *)__pyx_v_b)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 825, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 6384 "sisl/physics/_matrix_ddk.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("numpy.PyArray_MultiIterNew2", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -5015,20 +4832,17 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew2(PyObject *__
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 6402 "sisl/physics/_matrix_ddk.c"
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew3(PyObject *__pyx_v_a, PyObject *__pyx_v_b, PyObject *__pyx_v_c) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew3", 0);
-# 6415 "sisl/physics/_matrix_ddk.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyArray_MultiIterNew(3, ((void *)__pyx_v_a), ((void *)__pyx_v_b), ((void *)__pyx_v_c)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 828, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 6431 "sisl/physics/_matrix_ddk.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("numpy.PyArray_MultiIterNew3", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -5038,20 +4852,17 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew3(PyObject *__
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 6449 "sisl/physics/_matrix_ddk.c"
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew4(PyObject *__pyx_v_a, PyObject *__pyx_v_b, PyObject *__pyx_v_c, PyObject *__pyx_v_d) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew4", 0);
-# 6462 "sisl/physics/_matrix_ddk.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyArray_MultiIterNew(4, ((void *)__pyx_v_a), ((void *)__pyx_v_b), ((void *)__pyx_v_c), ((void *)__pyx_v_d)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 831, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 6478 "sisl/physics/_matrix_ddk.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("numpy.PyArray_MultiIterNew4", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -5061,20 +4872,17 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew4(PyObject *__
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 6496 "sisl/physics/_matrix_ddk.c"
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew5(PyObject *__pyx_v_a, PyObject *__pyx_v_b, PyObject *__pyx_v_c, PyObject *__pyx_v_d, PyObject *__pyx_v_e) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew5", 0);
-# 6509 "sisl/physics/_matrix_ddk.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyArray_MultiIterNew(5, ((void *)__pyx_v_a), ((void *)__pyx_v_b), ((void *)__pyx_v_c), ((void *)__pyx_v_d), ((void *)__pyx_v_e)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 834, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 6525 "sisl/physics/_matrix_ddk.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("numpy.PyArray_MultiIterNew5", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -5084,36 +4892,29 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew5(PyObject *__
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 6543 "sisl/physics/_matrix_ddk.c"
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyDataType_SHAPE(PyArray_Descr *__pyx_v_d) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("PyDataType_SHAPE", 0);
-# 6556 "sisl/physics/_matrix_ddk.c"
   __pyx_t_1 = (PyDataType_HASSUBARRAY(__pyx_v_d) != 0);
   if (__pyx_t_1) {
-# 6566 "sisl/physics/_matrix_ddk.c"
     __Pyx_XDECREF(__pyx_r);
     __Pyx_INCREF(((PyObject*)__pyx_v_d->subarray->shape));
     __pyx_r = ((PyObject*)__pyx_v_d->subarray->shape);
     goto __pyx_L0;
-# 6578 "sisl/physics/_matrix_ddk.c"
   }
-# 6587 "sisl/physics/_matrix_ddk.c"
            {
     __Pyx_XDECREF(__pyx_r);
     __Pyx_INCREF(__pyx_empty_tuple);
     __pyx_r = __pyx_empty_tuple;
     goto __pyx_L0;
   }
-# 6603 "sisl/physics/_matrix_ddk.c"
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 6617 "sisl/physics/_matrix_ddk.c"
 static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx_v_descr, char *__pyx_v_f, char *__pyx_v_end, int *__pyx_v_offset) {
   PyArray_Descr *__pyx_v_child = 0;
   int __pyx_v_endian_detector;
@@ -5134,11 +4935,8 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
   long __pyx_t_8;
   char *__pyx_t_9;
   __Pyx_RefNannySetupContext("_util_dtypestring", 0);
-# 6645 "sisl/physics/_matrix_ddk.c"
   __pyx_v_endian_detector = 1;
-# 6654 "sisl/physics/_matrix_ddk.c"
   __pyx_v_little_endian = ((((char *)(&__pyx_v_endian_detector))[0]) != 0);
-# 6663 "sisl/physics/_matrix_ddk.c"
   if (unlikely(__pyx_v_descr->names == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
     __PYX_ERR(1, 851, __pyx_L1_error)
@@ -5154,7 +4952,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     #endif
     __Pyx_XDECREF_SET(__pyx_v_childname, __pyx_t_3);
     __pyx_t_3 = 0;
-# 6686 "sisl/physics/_matrix_ddk.c"
     if (unlikely(__pyx_v_descr->fields == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
       __PYX_ERR(1, 852, __pyx_L1_error)
@@ -5164,7 +4961,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     if (!(likely(PyTuple_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(1, 852, __pyx_L1_error)
     __Pyx_XDECREF_SET(__pyx_v_fields, ((PyObject*)__pyx_t_3));
     __pyx_t_3 = 0;
-# 6703 "sisl/physics/_matrix_ddk.c"
     if (likely(__pyx_v_fields != Py_None)) {
       PyObject* sequence = __pyx_v_fields;
       Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
@@ -5192,7 +4988,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     __pyx_t_3 = 0;
     __Pyx_XDECREF_SET(__pyx_v_new_offset, __pyx_t_4);
     __pyx_t_4 = 0;
-# 6738 "sisl/physics/_matrix_ddk.c"
     __pyx_t_4 = __Pyx_PyInt_From_int((__pyx_v_offset[0])); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 855, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_3 = PyNumber_Subtract(__pyx_v_new_offset, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 855, __pyx_L1_error)
@@ -5202,15 +4997,12 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_6 = ((((__pyx_v_end - __pyx_v_f) - ((int)__pyx_t_5)) < 15) != 0);
     if (unlikely(__pyx_t_6)) {
-# 6755 "sisl/physics/_matrix_ddk.c"
       __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 856, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_Raise(__pyx_t_3, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __PYX_ERR(1, 856, __pyx_L1_error)
-# 6768 "sisl/physics/_matrix_ddk.c"
     }
-# 6777 "sisl/physics/_matrix_ddk.c"
     __pyx_t_7 = ((__pyx_v_child->byteorder == '>') != 0);
     if (!__pyx_t_7) {
       goto __pyx_L8_next_or;
@@ -5223,7 +5015,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
       goto __pyx_L7_bool_binop_done;
     }
     __pyx_L8_next_or:;
-# 6797 "sisl/physics/_matrix_ddk.c"
     __pyx_t_7 = ((__pyx_v_child->byteorder == '<') != 0);
     if (__pyx_t_7) {
     } else {
@@ -5233,17 +5024,13 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     __pyx_t_7 = ((!(__pyx_v_little_endian != 0)) != 0);
     __pyx_t_6 = __pyx_t_7;
     __pyx_L7_bool_binop_done:;
-# 6814 "sisl/physics/_matrix_ddk.c"
     if (unlikely(__pyx_t_6)) {
-# 6823 "sisl/physics/_matrix_ddk.c"
       __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 860, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_Raise(__pyx_t_3, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __PYX_ERR(1, 860, __pyx_L1_error)
-# 6836 "sisl/physics/_matrix_ddk.c"
     }
-# 6845 "sisl/physics/_matrix_ddk.c"
     while (1) {
       __pyx_t_3 = __Pyx_PyInt_From_int((__pyx_v_offset[0])); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 870, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
@@ -5252,37 +5039,27 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
       __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(1, 870, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       if (!__pyx_t_6) break;
-# 6861 "sisl/physics/_matrix_ddk.c"
       (__pyx_v_f[0]) = 0x78;
-# 6870 "sisl/physics/_matrix_ddk.c"
       __pyx_v_f = (__pyx_v_f + 1);
-# 6879 "sisl/physics/_matrix_ddk.c"
       __pyx_t_8 = 0;
       (__pyx_v_offset[__pyx_t_8]) = ((__pyx_v_offset[__pyx_t_8]) + 1);
     }
-# 6890 "sisl/physics/_matrix_ddk.c"
     __pyx_t_8 = 0;
     (__pyx_v_offset[__pyx_t_8]) = ((__pyx_v_offset[__pyx_t_8]) + __pyx_v_child->elsize);
-# 6900 "sisl/physics/_matrix_ddk.c"
     __pyx_t_6 = ((!(PyDataType_HASFIELDS(__pyx_v_child) != 0)) != 0);
     if (__pyx_t_6) {
-# 6910 "sisl/physics/_matrix_ddk.c"
       __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_child->type_num); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 878, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_XDECREF_SET(__pyx_v_t, __pyx_t_4);
       __pyx_t_4 = 0;
-# 6922 "sisl/physics/_matrix_ddk.c"
       __pyx_t_6 = (((__pyx_v_end - __pyx_v_f) < 5) != 0);
       if (unlikely(__pyx_t_6)) {
-# 6932 "sisl/physics/_matrix_ddk.c"
         __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__7, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 880, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_Raise(__pyx_t_4, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         __PYX_ERR(1, 880, __pyx_L1_error)
-# 6945 "sisl/physics/_matrix_ddk.c"
       }
-# 6954 "sisl/physics/_matrix_ddk.c"
       __pyx_t_4 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_BYTE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 883, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = PyObject_RichCompare(__pyx_v_t, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 883, __pyx_L1_error)
@@ -5293,7 +5070,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 98;
         goto __pyx_L15;
       }
-# 6972 "sisl/physics/_matrix_ddk.c"
       __pyx_t_3 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_UBYTE); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 884, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = PyObject_RichCompare(__pyx_v_t, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 884, __pyx_L1_error)
@@ -5304,7 +5080,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 66;
         goto __pyx_L15;
       }
-# 6990 "sisl/physics/_matrix_ddk.c"
       __pyx_t_4 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_SHORT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 885, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = PyObject_RichCompare(__pyx_v_t, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 885, __pyx_L1_error)
@@ -5315,7 +5090,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 0x68;
         goto __pyx_L15;
       }
-# 7008 "sisl/physics/_matrix_ddk.c"
       __pyx_t_3 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_USHORT); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 886, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = PyObject_RichCompare(__pyx_v_t, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 886, __pyx_L1_error)
@@ -5326,7 +5100,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 72;
         goto __pyx_L15;
       }
-# 7026 "sisl/physics/_matrix_ddk.c"
       __pyx_t_4 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_INT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 887, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = PyObject_RichCompare(__pyx_v_t, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 887, __pyx_L1_error)
@@ -5337,7 +5110,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 0x69;
         goto __pyx_L15;
       }
-# 7044 "sisl/physics/_matrix_ddk.c"
       __pyx_t_3 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_UINT); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 888, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = PyObject_RichCompare(__pyx_v_t, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 888, __pyx_L1_error)
@@ -5348,7 +5120,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 73;
         goto __pyx_L15;
       }
-# 7062 "sisl/physics/_matrix_ddk.c"
       __pyx_t_4 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_LONG); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 889, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = PyObject_RichCompare(__pyx_v_t, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 889, __pyx_L1_error)
@@ -5359,7 +5130,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 0x6C;
         goto __pyx_L15;
       }
-# 7080 "sisl/physics/_matrix_ddk.c"
       __pyx_t_3 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_ULONG); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 890, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = PyObject_RichCompare(__pyx_v_t, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 890, __pyx_L1_error)
@@ -5370,7 +5140,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 76;
         goto __pyx_L15;
       }
-# 7098 "sisl/physics/_matrix_ddk.c"
       __pyx_t_4 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_LONGLONG); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 891, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = PyObject_RichCompare(__pyx_v_t, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 891, __pyx_L1_error)
@@ -5381,7 +5150,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 0x71;
         goto __pyx_L15;
       }
-# 7116 "sisl/physics/_matrix_ddk.c"
       __pyx_t_3 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_ULONGLONG); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 892, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = PyObject_RichCompare(__pyx_v_t, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 892, __pyx_L1_error)
@@ -5392,7 +5160,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 81;
         goto __pyx_L15;
       }
-# 7134 "sisl/physics/_matrix_ddk.c"
       __pyx_t_4 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_FLOAT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 893, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = PyObject_RichCompare(__pyx_v_t, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 893, __pyx_L1_error)
@@ -5403,7 +5170,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 0x66;
         goto __pyx_L15;
       }
-# 7152 "sisl/physics/_matrix_ddk.c"
       __pyx_t_3 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_DOUBLE); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 894, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = PyObject_RichCompare(__pyx_v_t, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 894, __pyx_L1_error)
@@ -5414,7 +5180,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 0x64;
         goto __pyx_L15;
       }
-# 7170 "sisl/physics/_matrix_ddk.c"
       __pyx_t_4 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_LONGDOUBLE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 895, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = PyObject_RichCompare(__pyx_v_t, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 895, __pyx_L1_error)
@@ -5425,7 +5190,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 0x67;
         goto __pyx_L15;
       }
-# 7188 "sisl/physics/_matrix_ddk.c"
       __pyx_t_3 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_CFLOAT); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 896, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = PyObject_RichCompare(__pyx_v_t, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 896, __pyx_L1_error)
@@ -5438,7 +5202,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         __pyx_v_f = (__pyx_v_f + 1);
         goto __pyx_L15;
       }
-# 7208 "sisl/physics/_matrix_ddk.c"
       __pyx_t_4 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_CDOUBLE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 897, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = PyObject_RichCompare(__pyx_v_t, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 897, __pyx_L1_error)
@@ -5451,7 +5214,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         __pyx_v_f = (__pyx_v_f + 1);
         goto __pyx_L15;
       }
-# 7228 "sisl/physics/_matrix_ddk.c"
       __pyx_t_3 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_CLONGDOUBLE); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 898, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = PyObject_RichCompare(__pyx_v_t, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 898, __pyx_L1_error)
@@ -5464,7 +5226,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         __pyx_v_f = (__pyx_v_f + 1);
         goto __pyx_L15;
       }
-# 7248 "sisl/physics/_matrix_ddk.c"
       __pyx_t_4 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_OBJECT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 899, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = PyObject_RichCompare(__pyx_v_t, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 899, __pyx_L1_error)
@@ -5475,7 +5236,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 79;
         goto __pyx_L15;
       }
-# 7266 "sisl/physics/_matrix_ddk.c"
                {
         __pyx_t_3 = __Pyx_PyUnicode_FormatSafe(__pyx_kp_u_unknown_dtype_code_in_numpy_pxd, __pyx_v_t); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 901, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
@@ -5487,24 +5247,18 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         __PYX_ERR(1, 901, __pyx_L1_error)
       }
       __pyx_L15:;
-# 7285 "sisl/physics/_matrix_ddk.c"
       __pyx_v_f = (__pyx_v_f + 1);
-# 7294 "sisl/physics/_matrix_ddk.c"
       goto __pyx_L13;
     }
-# 7304 "sisl/physics/_matrix_ddk.c"
              {
       __pyx_t_9 = __pyx_f_5numpy__util_dtypestring(__pyx_v_child, __pyx_v_f, __pyx_v_end, __pyx_v_offset); if (unlikely(__pyx_t_9 == ((char *)NULL))) __PYX_ERR(1, 906, __pyx_L1_error)
       __pyx_v_f = __pyx_t_9;
     }
     __pyx_L13:;
-# 7317 "sisl/physics/_matrix_ddk.c"
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 7327 "sisl/physics/_matrix_ddk.c"
   __pyx_r = __pyx_v_f;
   goto __pyx_L0;
-# 7339 "sisl/physics/_matrix_ddk.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_3);
@@ -5520,47 +5274,35 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 7363 "sisl/physics/_matrix_ddk.c"
 static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_arr, PyObject *__pyx_v_base) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_array_base", 0);
-# 7374 "sisl/physics/_matrix_ddk.c"
   Py_INCREF(__pyx_v_base);
-# 7383 "sisl/physics/_matrix_ddk.c"
   (void)(PyArray_SetBaseObject(__pyx_v_arr, __pyx_v_base));
-# 7394 "sisl/physics/_matrix_ddk.c"
   __Pyx_RefNannyFinishContext();
 }
-# 7405 "sisl/physics/_matrix_ddk.c"
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__pyx_v_arr) {
   PyObject *__pyx_v_base;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("get_array_base", 0);
-# 7419 "sisl/physics/_matrix_ddk.c"
   __pyx_v_base = PyArray_BASE(__pyx_v_arr);
-# 7428 "sisl/physics/_matrix_ddk.c"
   __pyx_t_1 = ((__pyx_v_base == NULL) != 0);
   if (__pyx_t_1) {
-# 7438 "sisl/physics/_matrix_ddk.c"
     __Pyx_XDECREF(__pyx_r);
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
-# 7449 "sisl/physics/_matrix_ddk.c"
   }
-# 7458 "sisl/physics/_matrix_ddk.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_base));
   __pyx_r = ((PyObject *)__pyx_v_base);
   goto __pyx_L0;
-# 7472 "sisl/physics/_matrix_ddk.c"
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 7486 "sisl/physics/_matrix_ddk.c"
 static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -5573,7 +5315,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
   PyObject *__pyx_t_7 = NULL;
   PyObject *__pyx_t_8 = NULL;
   __Pyx_RefNannySetupContext("import_array", 0);
-# 7506 "sisl/physics/_matrix_ddk.c"
   {
     __Pyx_PyThreadState_declare
     __Pyx_PyThreadState_assign
@@ -5582,16 +5323,13 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
     __Pyx_XGOTREF(__pyx_t_2);
     __Pyx_XGOTREF(__pyx_t_3);
              {
-# 7522 "sisl/physics/_matrix_ddk.c"
       __pyx_t_4 = _import_array(); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(1, 1036, __pyx_L3_error)
-# 7531 "sisl/physics/_matrix_ddk.c"
     }
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     goto __pyx_L8_try_end;
     __pyx_L3_error:;
-# 7545 "sisl/physics/_matrix_ddk.c"
     __pyx_t_4 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
     if (__pyx_t_4) {
       __Pyx_AddTraceback("numpy.import_array", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -5599,7 +5337,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GOTREF(__pyx_t_7);
-# 7560 "sisl/physics/_matrix_ddk.c"
       __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__8, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 1038, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_Raise(__pyx_t_8, 0, 0, 0);
@@ -5608,7 +5345,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
     }
     goto __pyx_L5_except_error;
     __pyx_L5_except_error:;
-# 7576 "sisl/physics/_matrix_ddk.c"
     __Pyx_XGIVEREF(__pyx_t_1);
     __Pyx_XGIVEREF(__pyx_t_2);
     __Pyx_XGIVEREF(__pyx_t_3);
@@ -5616,7 +5352,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
     goto __pyx_L1_error;
     __pyx_L8_try_end:;
   }
-# 7593 "sisl/physics/_matrix_ddk.c"
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -5630,7 +5365,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 7615 "sisl/physics/_matrix_ddk.c"
 static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -5643,7 +5377,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
   PyObject *__pyx_t_7 = NULL;
   PyObject *__pyx_t_8 = NULL;
   __Pyx_RefNannySetupContext("import_umath", 0);
-# 7635 "sisl/physics/_matrix_ddk.c"
   {
     __Pyx_PyThreadState_declare
     __Pyx_PyThreadState_assign
@@ -5652,16 +5385,13 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
     __Pyx_XGOTREF(__pyx_t_2);
     __Pyx_XGOTREF(__pyx_t_3);
              {
-# 7651 "sisl/physics/_matrix_ddk.c"
       __pyx_t_4 = _import_umath(); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(1, 1042, __pyx_L3_error)
-# 7660 "sisl/physics/_matrix_ddk.c"
     }
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     goto __pyx_L8_try_end;
     __pyx_L3_error:;
-# 7674 "sisl/physics/_matrix_ddk.c"
     __pyx_t_4 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
     if (__pyx_t_4) {
       __Pyx_AddTraceback("numpy.import_umath", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -5669,7 +5399,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GOTREF(__pyx_t_7);
-# 7689 "sisl/physics/_matrix_ddk.c"
       __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 1044, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_Raise(__pyx_t_8, 0, 0, 0);
@@ -5678,7 +5407,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
     }
     goto __pyx_L5_except_error;
     __pyx_L5_except_error:;
-# 7705 "sisl/physics/_matrix_ddk.c"
     __Pyx_XGIVEREF(__pyx_t_1);
     __Pyx_XGIVEREF(__pyx_t_2);
     __Pyx_XGIVEREF(__pyx_t_3);
@@ -5686,7 +5414,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
     goto __pyx_L1_error;
     __pyx_L8_try_end:;
   }
-# 7722 "sisl/physics/_matrix_ddk.c"
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -5700,7 +5427,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 7744 "sisl/physics/_matrix_ddk.c"
 static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -5713,7 +5439,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
   PyObject *__pyx_t_7 = NULL;
   PyObject *__pyx_t_8 = NULL;
   __Pyx_RefNannySetupContext("import_ufunc", 0);
-# 7764 "sisl/physics/_matrix_ddk.c"
   {
     __Pyx_PyThreadState_declare
     __Pyx_PyThreadState_assign
@@ -5722,9 +5447,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
     __Pyx_XGOTREF(__pyx_t_2);
     __Pyx_XGOTREF(__pyx_t_3);
              {
-# 7780 "sisl/physics/_matrix_ddk.c"
       __pyx_t_4 = _import_umath(); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(1, 1048, __pyx_L3_error)
-# 7789 "sisl/physics/_matrix_ddk.c"
     }
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -5759,7 +5482,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
     }
     goto __pyx_L5_except_error;
     __pyx_L5_except_error:;
-# 7831 "sisl/physics/_matrix_ddk.c"
     __Pyx_XGIVEREF(__pyx_t_1);
     __Pyx_XGIVEREF(__pyx_t_2);
     __Pyx_XGIVEREF(__pyx_t_3);
@@ -5767,7 +5489,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
     goto __pyx_L1_error;
     __pyx_L8_try_end:;
   }
-# 7848 "sisl/physics/_matrix_ddk.c"
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -6053,48 +5774,37 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
 static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
-# 8141 "sisl/physics/_matrix_ddk.c"
   __pyx_tuple_ = PyTuple_Pack(2, __pyx_int_neg_1, __pyx_int_1); if (unlikely(!__pyx_tuple_)) __PYX_ERR(0, 24, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple_);
   __Pyx_GIVEREF(__pyx_tuple_);
-# 8152 "sisl/physics/_matrix_ddk.c"
   __pyx_tuple__2 = PyTuple_Pack(1, __pyx_kp_s_matrix_ddk_currently_only_suppor); if (unlikely(!__pyx_tuple__2)) __PYX_ERR(0, 113, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__2);
   __Pyx_GIVEREF(__pyx_tuple__2);
-# 8163 "sisl/physics/_matrix_ddk.c"
   __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_u_ndarray_is_not_C_contiguous); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(1, 272, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
-# 8174 "sisl/physics/_matrix_ddk.c"
   __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_u_ndarray_is_not_Fortran_contiguou); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(1, 276, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
-# 8185 "sisl/physics/_matrix_ddk.c"
   __pyx_tuple__5 = PyTuple_Pack(1, __pyx_kp_u_Non_native_byte_order_not_suppor); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(1, 306, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
-# 8196 "sisl/physics/_matrix_ddk.c"
   __pyx_tuple__6 = PyTuple_Pack(1, __pyx_kp_u_Format_string_allocated_too_shor); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(1, 856, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__6);
   __Pyx_GIVEREF(__pyx_tuple__6);
-# 8207 "sisl/physics/_matrix_ddk.c"
   __pyx_tuple__7 = PyTuple_Pack(1, __pyx_kp_u_Format_string_allocated_too_shor_2); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(1, 880, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__7);
   __Pyx_GIVEREF(__pyx_tuple__7);
-# 8218 "sisl/physics/_matrix_ddk.c"
   __pyx_tuple__8 = PyTuple_Pack(1, __pyx_kp_s_numpy_core_multiarray_failed_to); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(1, 1038, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__8);
   __Pyx_GIVEREF(__pyx_tuple__8);
-# 8229 "sisl/physics/_matrix_ddk.c"
   __pyx_tuple__9 = PyTuple_Pack(1, __pyx_kp_s_numpy_core_umath_failed_to_impor); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(1, 1044, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__9);
   __Pyx_GIVEREF(__pyx_tuple__9);
-# 8240 "sisl/physics/_matrix_ddk.c"
   __pyx_tuple__11 = PyTuple_Pack(13, __pyx_n_s_gauge, __pyx_n_s_M, __pyx_n_s_idx, __pyx_n_s_sc, __pyx_n_s_k, __pyx_n_s_dtype, __pyx_n_s_format, __pyx_n_s_phases, __pyx_n_s_Rs, __pyx_n_s_Rd, __pyx_n_s_Ro, __pyx_n_s_p_opt, __pyx_n_s_rij); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(0, 18, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
   __pyx_codeobj__12 = (PyObject*)__Pyx_PyCode_New(7, 0, 13, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__11, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sisl_physics__matrix_ddk_pyx, __pyx_n_s_matrix_ddk_2, 18, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__12)) __PYX_ERR(0, 18, __pyx_L1_error)
-# 8252 "sisl/physics/_matrix_ddk.c"
   __pyx_tuple__13 = PyTuple_Pack(8, __pyx_n_s_csr_2, __pyx_n_s_idx, __pyx_n_s_Rd, __pyx_n_s_Ro, __pyx_n_s_dtype, __pyx_n_s_format, __pyx_n_s_p_opt, __pyx_n_s_dd); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(0, 48, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__13);
   __Pyx_GIVEREF(__pyx_tuple__13);
@@ -6405,12 +6115,10 @@ if (!__Pyx_RefNanny) {
   #if defined(__Pyx_Generator_USED) || defined(__Pyx_Coroutine_USED)
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
-# 8570 "sisl/physics/_matrix_ddk.c"
   __pyx_t_1 = __Pyx_Import(__pyx_n_s_numpy, 0, -1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) __PYX_ERR(0, 6, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 8582 "sisl/physics/_matrix_ddk.c"
   __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 9, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s__10);
@@ -6421,7 +6129,6 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (__pyx_import_star(__pyx_t_2) < 0) __PYX_ERR(0, 9, __pyx_L1_error);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-# 8600 "sisl/physics/_matrix_ddk.c"
   __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 10, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_n_s__10);
@@ -6432,7 +6139,6 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (__pyx_import_star(__pyx_t_1) < 0) __PYX_ERR(0, 10, __pyx_L1_error);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 8618 "sisl/physics/_matrix_ddk.c"
   __Pyx_GetModuleGlobalName(__pyx_t_1, __pyx_n_s_np); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(__pyx_t_1, __pyx_n_s_dot_2); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 12, __pyx_L1_error)
@@ -6440,7 +6146,6 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_dot, __pyx_t_2) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-# 8633 "sisl/physics/_matrix_ddk.c"
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 13, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_roll_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 13, __pyx_L1_error)
@@ -6448,7 +6153,6 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_roll, __pyx_t_1) < 0) __PYX_ERR(0, 13, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 8648 "sisl/physics/_matrix_ddk.c"
   __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 15, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_matrix_ddk_2);
@@ -6456,12 +6160,10 @@ if (!__Pyx_RefNanny) {
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_matrix_ddk_2);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_all, __pyx_t_1) < 0) __PYX_ERR(0, 15, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 8663 "sisl/physics/_matrix_ddk.c"
   __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4sisl_7physics_11_matrix_ddk_1matrix_ddk, NULL, __pyx_n_s_sisl_physics__matrix_ddk); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 18, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_matrix_ddk_2, __pyx_t_1) < 0) __PYX_ERR(0, 18, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 8675 "sisl/physics/_matrix_ddk.c"
   __pyx_t_1 = PyCFunction_NewEx(&__pyx_mdef_4sisl_7physics_11_matrix_ddk_3_matrix_ddk, NULL, __pyx_n_s_sisl_physics__matrix_ddk); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 48, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_matrix_ddk, __pyx_t_1) < 0) __PYX_ERR(0, 48, __pyx_L1_error)
@@ -6476,7 +6178,6 @@ if (!__Pyx_RefNanny) {
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_1) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 8700 "sisl/physics/_matrix_ddk.c"
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);

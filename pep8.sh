@@ -18,7 +18,9 @@ autopep8 -j -1 --select "$select" --in-place -r --exclude build,dist . **/*.pyx 
 # Non-Python files
 autopep8 --select "W291,W293" --in-place CHANGELOG
 
-# Kill all empty lines in fortran
+# Remove white-space on empty lines
 sed -i -s -e 's/^[[:space:]]*$//g' **/*.f90
-# Kill all trailing white-space
+# Remove trailing white-space
 sed -i -s -e 's/\([^[:space:]]\)[[:space:]]?$/\1/g' **/*.f90
+# Delete all comments in Cythonized sources
+sed -i -s -e '/^# [0-9].*\.c\"/d' sisl/**/*.c

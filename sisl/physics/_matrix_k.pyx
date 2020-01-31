@@ -17,7 +17,7 @@ __all__ = ['matrix_k', 'matrix_k_nc', 'matrix_k_so', 'matrix_k_nc_diag']
 
 def matrix_k(gauge, M, const int idx, sc,
              np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
-    dtype = phase_dtype(k, dtype)
+    dtype = phase_dtype(k, M.dtype, dtype)
     if gauge == 'R':
         phases = phase_rsc(sc, k, dtype)
         p_opt = 1
@@ -63,7 +63,7 @@ def _matrix_k(csr, const int idx, phases, dtype, format, p_opt):
 
 def matrix_k_nc(gauge, M, sc,
                 np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
-    dtype = phase_dtype(k, dtype, True)
+    dtype = phase_dtype(k, M.dtype, dtype, True)
     if gauge == 'R':
         phases = phase_rsc(sc, k, dtype)
         p_opt = 1
@@ -100,7 +100,7 @@ def _matrix_k_nc(csr, phases, dtype, format, p_opt):
 
 def matrix_k_so(gauge, M, sc,
                 np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
-    dtype = phase_dtype(k, dtype, True)
+    dtype = phase_dtype(k, M.dtype, dtype, True)
     if gauge == 'R':
         phases = phase_rsc(sc, k, dtype)
         p_opt = 1
@@ -137,7 +137,7 @@ def _matrix_k_so(csr, phases, dtype, format, p_opt):
 
 def matrix_k_nc_diag(gauge, M, const int idx, sc,
                      np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
-    dtype = phase_dtype(k, dtype, True)
+    dtype = phase_dtype(k, M.dtype, dtype, True)
     if gauge == 'R':
         phases = phase_rsc(sc, k, dtype)
         p_opt = 1
