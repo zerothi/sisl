@@ -107,11 +107,11 @@ If sisl was used to produce scientific contributions, please use this [DOI][doi]
 We recommend to specify the version of sisl in combination of this citation:
 
     @misc{zerothi_sisl,
-      author       = {Papior, Nick},
-      title        = {sisl: v<fill-version>},
-      year         = {2019},
-      doi          = {10.5281/zenodo.597181},
-      url          = {https://doi.org/10.5281/zenodo.597181}
+      author = {Papior, Nick},
+      title  = {sisl: v<fill-version>},
+      year   = {2019},
+      doi    = {10.5281/zenodo.597181},
+      url    = {https://doi.org/10.5281/zenodo.597181}
     }
 
 To get the BibTeX entry easily you may issue the following command:
