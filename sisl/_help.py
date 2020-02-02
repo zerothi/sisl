@@ -7,7 +7,7 @@ import warnings
 import numpy as np
 
 __all__ = ['array_fill_repeat']
-__all__ += ['isndarray', 'isiterable']
+__all__ += ['isndarray', 'isiterable', 'voigt_matrix']
 __all__ += ['get_dtype']
 __all__ += ['dtype_complex_to_real', 'dtype_real_to_complex']
 __all__ += ['wrap_filterwarnings']
@@ -75,6 +75,38 @@ def array_fill_repeat(array, size, cls=None):
             return np.tile(np.array(array, dtype=cls), reps)
         return np.array(array, dtype=cls)
 
+def voigt_matrix(M, to_voigt):
+    r""" Convert a matrix from Voigt representation to dense, or from matrix to Voigt
+
+    Parameters
+    ----------
+    M : array_like
+       matrix with last dimension having the Voigt representation or the last 2 dimensions
+       having the symmetric matrix
+    to_voigt : logical
+       if True, the input matrix is assumed *not* to be in Voigt representation and will
+       be returned in Voigt notation. Otherwise, the opposite will happen
+    """
+    if to_voigt:
+        m = np.empty(M.shape[:-2] + (6,), dtype=M.dtype)
+        m[..., 0] = M[..., 0, 0] # xx
+        m[..., 1] = M[..., 1, 1] # yy
+        m[..., 2] = M[..., 2, 2] # zz
+        m[..., 3] = (M[..., 2, 1] + M[..., 1, 2]) * 0.5 # zy
+        m[..., 4] = (M[..., 2, 0] + M[..., 0, 2]) * 0.5 # zx
+        m[..., 5] = (M[..., 1, 0] + M[..., 0, 1]) * 0.5 # xy
+    else:
+        m = np.empty(M.shape[:-1] + (3, 3), dtype=M.dtype)
+        m[..., 0, 0] = M[..., 0] # xx
+        m[..., 1, 1] = M[..., 1] # yy
+        m[..., 2, 2] = M[..., 2] # zz
+        m[..., 0, 1] = M[..., 5] # xy
+        m[..., 1, 0] = M[..., 5] # xy
+        m[..., 0, 2] = M[..., 4] # xz
+        m[..., 2, 0] = M[..., 4] # xz
+        m[..., 1, 2] = M[..., 3] # zy
+        m[..., 2, 1] = M[..., 3] # zy
+    return m
 
 _Iterable = collections_abc.Iterable
 
