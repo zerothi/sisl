@@ -196,9 +196,9 @@ def _velocity(mode, hw, dDk, degenerate):
             vv = conj(S).dot((dDk[2]).dot(S.T))
             mode[deg, :] = eigh_destroy(vv)[1].T.dot(S)
 
-    v[:, 0] = (conj(mode.T) * dDk[0].dot(mode.T)).sum(0).real
-    v[:, 1] = (conj(mode.T) * dDk[1].dot(mode.T)).sum(0).real
-    v[:, 2] = (conj(mode.T) * dDk[2].dot(mode.T)).sum(0).real
+    v[:, 0] = einsum('ij,ji->i', conj(mode), dDk[0].dot(mode.T)).real
+    v[:, 1] = einsum('ij,ji->i', conj(mode), dDk[1].dot(mode.T)).real
+    v[:, 2] = einsum('ij,ji->i', conj(mode), dDk[2].dot(mode.T)).real
 
     # Set everything to zero for the negative frequencies
     v[hw < 0, :] = 0
