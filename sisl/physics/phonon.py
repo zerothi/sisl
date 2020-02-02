@@ -40,7 +40,7 @@ using automatic arguments.
 from __future__ import print_function, division
 
 import numpy as np
-from numpy import conj, dot, fabs, exp
+from numpy import conj, dot, fabs, exp, einsum
 from numpy import delete
 
 import sisl._array as _a
