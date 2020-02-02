@@ -75,6 +75,7 @@ def array_fill_repeat(array, size, cls=None):
             return np.tile(np.array(array, dtype=cls), reps)
         return np.array(array, dtype=cls)
 
+
 def voigt_matrix(M, to_voigt):
     r""" Convert a matrix from Voigt representation to dense, or from matrix to Voigt
 
