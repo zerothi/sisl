@@ -701,14 +701,14 @@ class TestHamiltonian(object):
             es = H.eigenstate(k)
 
             d = es.expectation(D)
-            assert np.allclose(d - D, 0)
+            assert np.allclose(d, D)
             d = es.expectation(D, diag=False)
-            assert np.allclose(d - I, 0)
+            assert np.allclose(d, I)
 
             d = es.expectation(I)
-            assert np.allclose(d - D, 0)
+            assert np.allclose(d, D)
             d = es.expectation(I, diag=False)
-            assert np.allclose(d - I, 0)
+            assert np.allclose(d, I)
 
     def test_velocity_orthogonal(self, setup):
         H = setup.H.copy()

@@ -1028,7 +1028,7 @@ def _inv_eff_mass_tensor_ortho(state, ddHk, degenerate, as_matrix):
             state[deg, :] = eigh_destroy(vv)[1].T.dot(S)
 
     for i in range(6):
-        M[:, i] = (conj(state.T) * ddHk[i].dot(state.T)).sum(0).real
+        M[:, i] = einsum('ij,ji->i', conj(state), ddHk[i].dot(state.T)).real
 
     if as_matrix:
         M[:, 8] = M[:, 2] # zz
@@ -1718,25 +1718,19 @@ class _electron_State(object):
             a vector if `diag` is true, otherwise a matrix with expectation values
         """
         ndim = A.ndim
-        n = len(self)
-        if diag:
-            a = _a.emptyz(n)
-        else:
-            a = _a.emptyz([n, n])
-
         s = self.state
-        if ndim == 1 and diag:
-            for i in range(n):
-                a[i] = (s[i, :].conj() * A * s[i, :]).sum()
-        elif ndim == 2 and diag:
-            for i in range(n):
-                a[i] = (s[i, :].conj() * A.dot(s[i, :])).sum()
-        elif ndim == 1:
-            for i in range(n):
-                a[i, :] = s.conj().dot((A * s[i, :]).T)
+
+        if diag:
+            if ndim == 2:
+                a = einsum('ij,ji->i', s.conj(), A.dot(s.T))
+            elif ndim == 1:
+                a = einsum('ij,j,ij->i', s.conj(), A, s)
         elif ndim == 2:
-            for i in range(n):
-                a[i, :] = s.conj().dot(A.dot(s[i, :]))
+            a = s.conj().dot(A.dot(s.T))
+        elif ndim == 1:
+            a = einsum('ij,j,jk', s.conj(), A, s.T)
+        else:
+            raise ValueError('expectation: requires matrix A to be 1D or 2D')
         return a
 
     def wavefunction(self, grid, spinor=0, eta=False):
