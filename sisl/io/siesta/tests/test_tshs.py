@@ -40,7 +40,7 @@ def test_tshs_soc_pt2_xx(sisl_files, sisl_tmp):
 def test_tshs_soc_pt2_xx_pdos(sisl_files):
     fdf = sisl.get_sile(sisl_files(_dir, 'SOC_Pt2_xx.fdf'), base=sisl_files(_dir))
     HS = fdf.read_hamiltonian()
-    HS.eigenstate().PDOS(np.linspace(-2, 2, 0.01))
+    HS.eigenstate().PDOS(np.linspace(-2, 2, 400))
 
 
 def test_tshs_warn(sisl_files):
