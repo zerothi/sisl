@@ -90,7 +90,7 @@ from numbers import Integral, Real
 
 from numpy import pi
 import numpy as np
-from numpy import sum, dot, cross
+from numpy import sum, dot, cross, argsort
 
 from sisl.oplist import oplist
 from sisl.unit import units
@@ -971,7 +971,6 @@ class MonkhorstPack(BrillouinZone):
 
         del kw
         self._k.shape = (-1, 3)
-        self._k = np.where(self._k > .5, self._k - 1, self._k)
         self._w.shape = (-1,)
 
         # Store information regarding size and diagonal elements
@@ -1241,7 +1240,7 @@ class MonkhorstPack(BrillouinZone):
             k_pos = np.abs(k)
 
             # Sort k-points and weights
-            idx = np.argsort(k_pos)
+            idx = argsort(k_pos)
 
             # Re-arange according to k value
             k_pos = k_pos[idx]
@@ -1260,7 +1259,7 @@ class MonkhorstPack(BrillouinZone):
             w = np.delete(w, idx_same)
         else:
             # Sort them, because it makes more visual sense
-            idx = np.argsort(k)
+            idx = argsort(k)
             k = k[idx]
             w = w[idx]
 
