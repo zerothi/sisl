@@ -161,7 +161,7 @@ def PDOS(E, eig, state, S=None, distribution='gaussian', spin=None):
 
     .. math::
 
-       \mathrm{PDOS}_\nu^\Sigma(E) &= \sum_i \psi^*_{i,\nu} \boldsymbol\sigma_z \boldsymbol\sigma_z [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
+       \mathrm{PDOS}_\nu^\sigma(E) &= \sum_i \psi^*_{i,\nu} \boldsymbol\sigma_z \boldsymbol\sigma_z [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
        \\
        \mathrm{PDOS}_\nu^x(E) &= \sum_i \psi^*_{i,\nu} \boldsymbol\sigma_x [\mathbf S | \psi_{i}\rangle]_\nu D(E-\epsilon_i)
        \\
@@ -739,7 +739,7 @@ def berry_flux(state, energy, dHk, dSk=None, degenerate=None, complex=False):
 
     .. math::
 
-       \boldsymbol\Sigma_{n,\alpha\beta} = - \frac2\hbar^2\Im\sum_{m\neq n}
+       \boldsymbol\Omega_{n,\alpha\beta} = - \frac2\hbar^2\Im\sum_{m\neq n}
                 \frac{v_{nm,\alpha} v_{mn,\beta}}
                      {[\epsilon_m - \epsilon_n]^2}
 
@@ -813,7 +813,7 @@ def _berry_flux(v_M, energy, degenerate):
     # For cases where all states are degenerate then we would not be able
     # to calculate anything. Hence we need to initialize as zero
     # This is a vector of matrices
-    #   \Sigma_{n, \alpha \beta}
+    #   \Omega_{n, \alpha \beta}
     sigma = np.zeros([N, 3, 3], dtype=dtype_real_to_complex(v_M.dtype))
 
     # Fast index deletion
@@ -844,9 +844,9 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc', complex=False):
     which may be calculated as:
 
     .. math::
-       \sigma_{\alpha\beta} = \frac{-e^2}{\hbar}\int\,\mathrm d\mathbf k\sum_nf_n(\mathbf k)\Sigma_{n,\alpha\beta}(\mathbf k)
+       \sigma_{\alpha\beta} = \frac{-e^2}{\hbar}\int\,\mathrm d\mathbf k\sum_nf_n(\mathbf k)\Omega_{n,\alpha\beta}(\mathbf k)
 
-    where :math:`\Sigma_{n,\alpha\beta}` is the Berry curvature for state :math:`n` and :math:`f_n` is
+    where :math:`\Omega_{n,\alpha\beta}` is the Berry curvature for state :math:`n` and :math:`f_n` is
     the occupation for state :math:`n`.
 
     Parameters
