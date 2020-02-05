@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 from math import pi
 import numpy as np

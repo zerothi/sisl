@@ -83,7 +83,6 @@ Which does mathematical operations (averaging/summing) using `~sisl.oplist`.
    BandStructure
 
 """
-from __future__ import print_function, division
 
 import types
 from numbers import Integral, Real
@@ -106,7 +105,7 @@ from sisl.grid import Grid
 __all__ = ['BrillouinZone', 'MonkhorstPack', 'BandStructure']
 
 
-class BrillouinZone(object):
+class BrillouinZone:
     """ A class to construct Brillouin zone related quantities
 
     It takes any object (which has access to cell-vectors) as an argument

@@ -35,7 +35,6 @@ Various distributions using different smearing techniques.
    :noindex:
 
 """
-from __future__ import print_function, division
 
 from functools import partial
 

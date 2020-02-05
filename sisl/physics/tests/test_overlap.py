@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 import pytest
 
@@ -35,7 +34,7 @@ def setup():
     return t()
 
 
-class TestOverlap(object):
+class TestOverlap:
 
     def test_objects(self, setup):
         assert len(setup.S.xyz) == 2

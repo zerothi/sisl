@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 import pytest
 
@@ -48,7 +47,7 @@ def _to_voight(m):
 
 
 @pytest.mark.hamiltonian
-class TestHamiltonian(object):
+class TestHamiltonian:
 
     def test_objects(self, setup):
         assert len(setup.H.xyz) == 2

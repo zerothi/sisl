@@ -1,11 +1,9 @@
-from __future__ import print_function, division
 
 import os
 import numpy as np
 
 from .sile import SileSiesta
 from ..sile import *
-from sisl.io._help import *
 
 from sisl import Geometry, Atom, SuperCell
 from sisl.utils.cmd import *

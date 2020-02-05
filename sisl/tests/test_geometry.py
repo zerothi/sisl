@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 import pytest
 
@@ -32,7 +31,7 @@ def setup():
 
 @pytest.mark.geom
 @pytest.mark.geometry
-class TestGeometry(object):
+class TestGeometry:
 
     def test_objects(self, setup):
         str(setup.g)

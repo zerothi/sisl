@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 try:
     from StringIO import StringIO
@@ -6,7 +5,6 @@ except Exception:
     from io import StringIO
 import numpy as np
 
-from sisl._help import _str
 from sisl.utils import *
 from sisl.unit.siesta import unit_convert
 
@@ -35,7 +33,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         elec_mol_proj : str or tuple
            electrode-molecule-projection
         """
-        if isinstance(elec_mol_proj, _str):
+        if isinstance(elec_mol_proj, str):
             elec_mol_proj = elec_mol_proj.split('.')
         if len(elec_mol_proj) == 1:
             return elec_mol_proj
@@ -130,7 +128,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         transmission_eig : projected transmission decomposed in eigenchannels
         """
         mol_proj_elec = self._mol_proj_elec(elec_mol_proj_from)
-        if not isinstance(elec_mol_proj_to, _str):
+        if not isinstance(elec_mol_proj_to, str):
             elec_mol_proj_to = '.'.join(elec_mol_proj_to)
         return self._value_avg(elec_mol_proj_to + '.T', mol_proj_elec, kavg=kavg)
 
@@ -152,7 +150,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         transmission : projected transmission
         """
         mol_proj_elec = self._mol_proj_elec(elec_mol_proj_from)
-        if not isinstance(elec_mol_proj_to, _str):
+        if not isinstance(elec_mol_proj_to, str):
             elec_mol_proj_to = '.'.join(elec_mol_proj_to)
         return self._value_avg(elec_mol_proj_to + '.T.Eig', mol_proj_elec, kavg=kavg)
 

@@ -1,7 +1,6 @@
 """
 Sile object for reading/writing Wannier90 in/output
 """
-from __future__ import print_function
 
 import numpy as np
 from scipy.sparse import lil_matrix

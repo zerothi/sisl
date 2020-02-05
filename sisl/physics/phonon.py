@@ -37,7 +37,6 @@ using automatic arguments.
    EigenmodePhonon
 
 """
-from __future__ import print_function, division
 
 import numpy as np
 from numpy import conj, dot, fabs, exp, einsum
@@ -263,7 +262,7 @@ def _displacement(mode, hw, mass):
     return U
 
 
-class _phonon_Mode(object):
+class _phonon_Mode:
     __slots__ = []
 
     @property

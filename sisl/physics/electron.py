@@ -50,7 +50,6 @@ automatically passes the correct ``S`` because it knows the states :math:`k`-poi
    EigenstateElectron
 
 """
-from __future__ import print_function, division
 
 from functools import reduce
 import numpy as np
@@ -73,7 +72,6 @@ from sisl.linalg import svd_destroy, eigvals_destroy
 from sisl.linalg import eigh_destroy, det_destroy
 from sisl.messages import info, warn, SislError, tqdm_eta
 from sisl._help import dtype_complex_to_real, dtype_real_to_complex
-from sisl._help import _range as range
 from .distribution import get_distribution
 from .spin import Spin
 from .sparse import SparseOrbitalBZSpin
@@ -210,7 +208,7 @@ def PDOS(E, eig, state, S=None, distribution='gaussian', spin=None):
 
     # Figure out whether we are dealing with a non-colinear calculation
     if S is None:
-        class S(object):
+        class S:
             __slots__ = []
             shape = (state.shape[1], state.shape[1])
             @staticmethod
@@ -313,7 +311,7 @@ def spin_moment(state, S=None):
         return spin_moment(state.reshape(1, -1), S).ravel()
 
     if S is None:
-        class S(object):
+        class S:
             __slots__ = []
             shape = (state.shape[1] // 2, state.shape[1] // 2)
             @staticmethod
@@ -393,7 +391,7 @@ def spin_orbital_moment(state, S=None):
         return spin_orbital_moment(state.reshape(1, -1), S)[0]
 
     if S is None:
-        class S(object):
+        class S:
             __slots__ = []
             shape = (state.shape[1] // 2, state.shape[1] // 2)
             @staticmethod
@@ -464,7 +462,7 @@ def spin_squared(state_alpha, state_beta, S=None):
         raise ValueError('spin_squared requires alpha and beta states to have same number of orbitals')
 
     if S is None:
-        class S(object):
+        class S:
             __slots__ = []
             shape = (state_alpha.shape[1], state_alpha.shape[1])
             @staticmethod
@@ -1539,7 +1537,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     np.seterr(**old_err)
 
 
-class _electron_State(object):
+class _electron_State:
     __slots__ = []
 
     def __is_nc(self):
@@ -1581,7 +1579,7 @@ class _electron_State(object):
         else:
             n = self.shape[1]
 
-        class __FakeSk(object):
+        class __FakeSk:
             """ Replacement object which superseedes a matrix """
             __slots__ = []
             shape = (n, n)

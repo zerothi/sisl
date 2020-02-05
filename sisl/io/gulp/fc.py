@@ -1,7 +1,6 @@
 """
 Sile object for reading the force constant matrix written by GULP
 """
-from __future__ import print_function, division
 
 import numpy as np
 from numpy import abs as np_abs

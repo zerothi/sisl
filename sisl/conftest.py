@@ -1,5 +1,4 @@
 """ Global sisl fixtures """
-from __future__ import print_function
 
 import contextlib
 import os
@@ -41,7 +40,7 @@ def sisl_tmp(request, tmpdir_factory):
     The scope of the `sisl_tmp` fixture is at a function level to
     clean up after each function.
     """
-    class FileFactory(object):
+    class FileFactory:
         def __init__(self):
             self.base = tmpdir_factory.getbasetemp()
             self.dirs = []
@@ -120,7 +119,7 @@ def sisl_files():
 @pytest.fixture(scope='session')
 def sisl_system():
     """ A preset list of geometries/Hamiltonians. """
-    class System(object):
+    class System:
         pass
 
     d = System()

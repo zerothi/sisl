@@ -1,8 +1,6 @@
-from __future__ import print_function, division
 
 # To check for integers
 from numbers import Integral, Real
-from six import string_types
 from math import acos
 from itertools import product
 
@@ -17,8 +15,6 @@ from ._math_small import is_ascending
 from ._indices import indices_in_sphere_with_dist, indices_le, indices_gt_le
 from ._indices import list_index_le
 from .messages import info, warn, SislError
-from ._help import _str
-from ._help import _range as range
 from ._help import isndarray
 from .utils import default_ArgumentParser, default_namespace, cmd, str_spec
 from .utils import angle, direction
@@ -259,14 +255,14 @@ class Geometry(SuperCellChild):
 
     def __setitem__(self, atom, value):
         """ Specify geometry coordinates """
-        if isinstance(atom, _str):
+        if isinstance(atom, str):
             self.names.add_name(atom, value)
-        elif isinstance(value, _str):
+        elif isinstance(value, str):
             self.names.add_name(value, atom)
 
     def __getitem__(self, atom):
         """ Geometry coordinates (allows supercell indices) """
-        if isinstance(atom, (Integral, _str)):
+        if isinstance(atom, (Integral, str)):
             return self.axyz(atom)
 
         elif isinstance(atom, slice):
@@ -1417,7 +1413,7 @@ class Geometry(SuperCellChild):
             # either
             #  (r, axis)
             #  ((...), method
-            if isinstance(m[1], _str):
+            if isinstance(m[1], str):
                 method = method_tbl[m[1]]
                 m = m[0]
 
@@ -1469,7 +1465,7 @@ class Geometry(SuperCellChild):
            whether the returned value is in radians
         """
         xi = self.axyz(atom)
-        if isinstance(dir, (_str, Integral)):
+        if isinstance(dir, (str, Integral)):
             dir = self.cell[direction(dir), :]
         else:
             dir = _a.asarrayd(dir)
@@ -1728,7 +1724,7 @@ class Geometry(SuperCellChild):
         attach : attach a geometry
         insert : insert a geometry
         """
-        if isinstance(offset, _str):
+        if isinstance(offset, str):
             offset = offset.lower()
             if offset == 'none':
                 offset = self.cell[axis, :].reshape(1, 3)
@@ -1796,7 +1792,7 @@ class Geometry(SuperCellChild):
         attach : attach a geometry
         insert : insert a geometry
         """
-        if isinstance(offset, _str):
+        if isinstance(offset, str):
             offset = offset.lower()
             if offset == 'none':
                 offset = other.cell[axis, :].reshape(1, 3)
@@ -1979,7 +1975,7 @@ class Geometry(SuperCellChild):
             v = self.cell[axis, :]
             v = v / (v[0]**2 + v[1]**2 + v[2]**2) ** .5 * dist
 
-        elif isinstance(dist, string_types):
+        elif isinstance(dist, str):
             # We have a single rational number
             if axis is None:
                 raise ValueError(self.__class__.__name__ + ".attach, `axis` has not been specified, please specify the axis when using a distance")
@@ -3379,7 +3375,7 @@ class Geometry(SuperCellChild):
 
         # Now parse all of the shells with the correct routine
         # First we grap the routine:
-        if isinstance(method, _str):
+        if isinstance(method, str):
             if method == 'median':
                 def func(lst):
                     return np.median(lst, overwrite_input=True)

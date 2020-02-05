@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 import sys
 import inspect
@@ -7,8 +6,6 @@ import ast
 import operator as op
 from numbers import Integral
 from math import pi
-
-from sisl._help import _range as range
 
 __all__ = ['merge_instances', 'str_spec', 'direction', 'angle']
 __all__ += ['iter_shape', 'math_eval', 'allow_kwargs']

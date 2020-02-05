@@ -9,12 +9,11 @@ from numpy import ndarray, bool_
 
 from ._indices import indices_only
 from ._array import arrayi
-from ._help import _str
 from .messages import SislError
 from .utils.ranges import list2str
 
 
-class NamedIndex(object):
+class NamedIndex:
     __slots__ = ('_name', '_index')
 
     def __init__(self, name=None, index=None):
@@ -27,7 +26,7 @@ class NamedIndex(object):
         self._name = []
         self._index = []
 
-        if isinstance(name, _str):
+        if isinstance(name, str):
             self.add_name(name, index)
         elif not name is None:
             for n, i in zip(name, index):
@@ -97,7 +96,7 @@ class NamedIndex(object):
 
     def __setitem__(self, name, index):
         """ Equivalent to `add_name` """
-        if isinstance(name, _str):
+        if isinstance(name, str):
             self.add_name(name, index)
         else:
             self.add_name(index, name)
@@ -108,7 +107,7 @@ class NamedIndex(object):
             i = self._name.index(name)
             return self._index[i]
         except:
-            if isinstance(name, _str):
+            if isinstance(name, str):
                 return None
             return name
 
@@ -205,7 +204,7 @@ class NamedIndex(object):
         """
         if name is None:
             name = self._name
-        elif isinstance(name, _str):
+        elif isinstance(name, str):
             name = [name]
 
         new_index = []
@@ -225,7 +224,7 @@ class NamedIndex(object):
         names : str or iterable of str
             The name(s) which the new object contain.
         """
-        if isinstance(names, _str):
+        if isinstance(names, str):
             names = [names]
 
         for name in names:

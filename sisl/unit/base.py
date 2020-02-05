@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 import pyparsing as pp
 
@@ -179,7 +178,7 @@ def unit_convert(fr, to, opts=None, tbl=None):
 # doing complex unit-specifications (i.e. eV/Ang etc.)
 
 
-class UnitParser(object):
+class UnitParser:
     """ Object for converting between units for a set of unit-tables.
 
     Parameters

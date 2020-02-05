@@ -1,7 +1,6 @@
 """
 Sile object for reading/writing PDB files
 """
-from __future__ import print_function
 
 import numpy as np
 

@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 import pytest
 
@@ -61,7 +60,7 @@ def setup():
 
 
 @pytest.mark.dynamicalmatrix
-class TestDynamicalMatrix(object):
+class TestDynamicalMatrix:
 
     def test_objects(self, setup):
         assert len(setup.D.xyz) == 2

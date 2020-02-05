@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 
 def configuration(parent_package='', top_path=None):

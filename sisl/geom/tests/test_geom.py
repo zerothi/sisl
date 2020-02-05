@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 import pytest
 
@@ -9,7 +8,7 @@ import math as m
 import numpy as np
 
 
-class Test(object):
+class Test:
 
     def test_basis(self):
         a = sc(2.52, Atom['Fe'])

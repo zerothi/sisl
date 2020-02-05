@@ -1,14 +1,11 @@
-from __future__ import print_function, division
 
 import numpy as np
-
-from sisl._help import _str
 
 
 __all__ = ['Spin']
 
 
-class Spin(object):
+class Spin:
     r""" Spin class to determine configurations and spin components.
 
     The basic class `Spin` implements a generic method to determine a spin configuration.
@@ -66,7 +63,7 @@ class Spin(object):
         # Copy data-type
         self._dtype = dtype
 
-        if isinstance(kind, _str):
+        if isinstance(kind, str):
             kind = kind.lower()
 
         kind = {'unpolarized': Spin.UNPOLARIZED, '': Spin.UNPOLARIZED,

@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 import warnings
 import functools as ftool
@@ -16,14 +15,14 @@ from .geometry import Geometry
 from .messages import warn, SislError, SislWarning, tqdm_eta
 from ._indices import indices_only
 from ._help import get_dtype
-from ._help import _zip as zip, _range as range, _map as map
 from .utils.ranges import array_arange, list2str
 from .sparse import SparseCSR, isspmatrix
+
 
 __all__ = ['SparseAtom', 'SparseOrbital']
 
 
-class _SparseGeometry(object):
+class _SparseGeometry:
     """ Sparse object containing sparse elements for a given geometry.
 
     This is a base class intended to be sub-classed because the sparsity information

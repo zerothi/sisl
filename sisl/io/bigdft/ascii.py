@@ -2,7 +2,6 @@
 Sile object for reading/writing ascii files from BigDFT
 """
 
-from __future__ import division, print_function
 
 # Import sile objects
 from .sile import SileBigDFT

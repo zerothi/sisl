@@ -138,7 +138,7 @@ except ImportError:
     from time import time as _time
     from sys import stdout as _stdout
 
-    class _tqdm(object):
+    class _tqdm:
         """ Fake tqdm progress-bar. I should update this to also work in regular instances """
         __slots__ = ["total", "desc", "t0", "n", "l"]
 
@@ -190,7 +190,7 @@ def tqdm_eta(count, desc, unit, eta):
     else:
         # Since the eta bar is not needed we simply create a fake object which
         # has the required 2 methods, update and close.
-        class Fake(object):
+        class Fake:
             __slots__ = []
             def update(self, n=1):
                 pass

@@ -1,9 +1,7 @@
-from __future__ import print_function, division
 
 import numpy as np
 from scipy.interpolate import CubicSpline
 
-from sisl._help import _range as range
 import sisl._array as _a
 from .distribution import get_distribution
 from .electron import EigenvalueElectron, EigenstateElectron, spin_squared

@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 import warnings
 
@@ -6,7 +5,6 @@ import numpy as np
 from scipy.sparse import csr_matrix, SparseEfficiencyWarning
 
 import sisl.linalg as lin
-from sisl._help import _range as range
 from sisl.sparse import isspmatrix
 from sisl.sparse_geometry import SparseOrbital
 from .spin import Spin

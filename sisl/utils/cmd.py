@@ -41,7 +41,7 @@ def default_namespace(**kwargs):
     **kwargs : dict
        the dictionary keys added to the namespace object.
     """
-    class CustomNamespace(object):
+    class CustomNamespace:
         pass
     namespace = CustomNamespace()
     namespace._actions_run = False

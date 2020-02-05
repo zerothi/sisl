@@ -47,7 +47,6 @@ For the above same functions we may do::
   >>> selector()
   Func - 1
 """
-from __future__ import print_function, division
 
 import time
 
@@ -57,7 +56,7 @@ from .messages import warn
 __all__ = ['Selector', 'TimeSelector']
 
 
-class Selector(object):
+class Selector:
     """ Base class for implementing a selector of class routines
 
     This class should contain a list of routines and may then be used

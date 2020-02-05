@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 import pytest
 approx = pytest.approx

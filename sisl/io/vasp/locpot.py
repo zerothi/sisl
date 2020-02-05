@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 from numbers import Integral
 import numpy as np

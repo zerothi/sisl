@@ -1,7 +1,6 @@
 """
 Sile object for reading/writing GULP in/output
 """
-from __future__ import print_function, division
 
 import os.path as osp
 import numpy as np

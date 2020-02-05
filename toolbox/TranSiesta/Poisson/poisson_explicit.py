@@ -41,8 +41,6 @@ Known problems:
 - It may not always converge which requires some fine-tuning of the tolerances,
   secondly it may converge too fast so the solution is not really good.
 """
-from __future__ import print_function, division
-
 import sys
 import warnings
 import argparse as argp
@@ -137,7 +135,7 @@ def solve_poisson(geometry, shape, radius=2.0,
 
     # Create grid
     grid = si.Grid(shape, geometry=geometry, bc=bc, dtype=dtype)
-    class _fake(object):
+    class _fake:
         @property
         def shape(self):
             return shape

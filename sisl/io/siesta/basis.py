@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 from sisl._help import xml_parse
 from sisl.atom import Atom

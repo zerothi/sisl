@@ -1,4 +1,3 @@
-from __future__ import division, print_function
 
 # Import sile objects
 from .sile import SileScaleUp

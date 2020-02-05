@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 from numbers import Integral
 import numpy as np
@@ -12,6 +11,7 @@ except Exception as e:
 from sisl.messages import warn, SislError
 from ..sile import add_sile, SileError
 from .sile import SileBinSiesta
+from ._help import *
 
 import sisl._array as _a
 from sisl import Geometry, Atom, Atoms, SuperCell, Grid
@@ -19,8 +19,6 @@ from sisl.unit.siesta import unit_convert
 from sisl.physics.sparse import SparseOrbitalBZ
 from sisl.physics import Hamiltonian, DensityMatrix, EnergyDensityMatrix
 from sisl.physics.overlap import Overlap
-from ._help import *
-
 
 __all__ = ['tshsSileSiesta', 'onlysSileSiesta', 'tsdeSileSiesta']
 __all__ += ['hsxSileSiesta', 'dmSileSiesta']

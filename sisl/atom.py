@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 # We need this for python3 support PY3
 from six import add_metaclass
@@ -10,14 +9,14 @@ import numpy as np
 from .messages import info
 from . import _array as _a
 from ._indices import list_index_le
-from ._help import array_fill_repeat, _str
+from ._help import array_fill_repeat
 from .shape import Sphere
 from .orbital import Orbital
 
 __all__ = ['PeriodicTable', 'Atom', 'Atoms']
 
 
-class PeriodicTable(object):
+class PeriodicTable:
     r""" Periodic table for creating an `Atom`, or retrieval of atomic information via atomic numbers
 
     Enables *lookup* of atomic numbers/names/labels to get
@@ -940,7 +939,7 @@ class AtomMeta(type):
 #   class ...(..., metaclass=MetaClass)
 # This below construct handles both python2 and python3 cases
 @add_metaclass(AtomMeta)
-class Atom(object):
+class Atom:
     """ Atomic information, mass, name number of orbitals and ranges
 
     Object to handle atomic mass, name, number of orbitals and
@@ -1229,7 +1228,7 @@ class Atom(object):
         self.__init__(d['Z'], d['orbital'], d['mass'], d['tag'])
 
 
-class Atoms(object):
+class Atoms:
     """ A list-like object to contain a list of different atoms with minimum
     data duplication.
 
@@ -1294,7 +1293,7 @@ class Atoms(object):
                         uatom.append(a)
                     specie[i] = s
 
-            elif isinstance(atom[0], (_str, Integral)):
+            elif isinstance(atom[0], (str, Integral)):
                 for i, a in enumerate(atom):
                     a = Atom(a)
                     try:
@@ -1309,7 +1308,7 @@ class Atoms(object):
             else:
                 raise ValueError('atom keyword was wrong input')
 
-        elif isinstance(atom, (_str, Integral)):
+        elif isinstance(atom, (str, Integral)):
             uatom = [Atom(atom)]
             specie = [0]
 

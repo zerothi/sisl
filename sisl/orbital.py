@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 # To check for integers
 from functools import partial
@@ -16,7 +15,6 @@ from scipy.interpolate import UnivariateSpline
 
 from . import _plot as plt
 from . import _array as _a
-from ._help import _str
 from .shape import Sphere
 from sisl.utils.mathematics import cart2spher
 
@@ -80,7 +78,7 @@ def _rspherical_harm(m, l, theta, cos_phi):
     return _rspher_harm_fact[l][m] * (lpmv(m, l, cos_phi) * cos(m*theta))
 
 
-class Orbital(object):
+class Orbital:
     """ Base class for orbital information.
 
     The orbital class is still in an experimental stage and will probably evolve over some time.
@@ -755,7 +753,7 @@ class AtomicOrbital(Orbital):
         P = kwargs.get('P', False)
 
         if len(args) > 0:
-            if isinstance(args[0], _str):
+            if isinstance(args[0], str):
                 # String specification of the atomic orbital
                 s = args.pop(0)
 

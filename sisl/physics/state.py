@@ -1,10 +1,8 @@
-from __future__ import print_function, division
 
 import numpy as np
 
 import sisl._array as _a
 from sisl.messages import warn
-from sisl._help import _range as range
 
 
 __all__ = ['Coefficient', 'State', 'StateC']
@@ -41,7 +39,7 @@ def _couter1(c, v):
     return _outer_(v * c, _conj(v))
 
 
-class ParentContainer(object):
+class ParentContainer:
     """ A container for parent and information """
     __slots__ = ['parent', 'info']
 

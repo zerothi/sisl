@@ -2,7 +2,6 @@
 
 This class is the basis of many different objects.
 """
-from __future__ import print_function, division
 
 import math
 from numbers import Integral
@@ -21,7 +20,7 @@ from ._supercell import cell_invert, cell_reciprocal
 __all__ = ['SuperCell', 'SuperCellChild']
 
 
-class SuperCell(object):
+class SuperCell:
     r""" A cell class to retain lattice vectors and a supercell structure
 
     The supercell structure is comprising the *primary* unit-cell and neighbouring
@@ -1004,7 +1003,7 @@ class SuperCell(object):
         return axes
 
 
-class SuperCellChild(object):
+class SuperCellChild:
     """ Class to be inherited by using the ``self.sc`` as a `SuperCell` object
 
     Initialize by a `SuperCell` object and get access to several different

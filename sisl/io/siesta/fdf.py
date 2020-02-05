@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 import warnings
 from datetime import datetime
@@ -8,7 +7,6 @@ from sisl import constant
 from sisl.unit.siesta import units
 import sisl._array as _a
 from sisl._indices import indices_only
-from sisl._help import _str
 from sisl.utils.ranges import list2str
 from sisl.messages import SislError, info, warn
 from sisl.utils.mathematics import fnorm
@@ -45,7 +43,7 @@ Bohr2Ang = unit_convert('Bohr', 'Ang')
 
 
 def _listify_str(arg):
-    if isinstance(arg, _str):
+    if isinstance(arg, str):
         return [arg]
     return arg
 
@@ -412,7 +410,7 @@ class fdfSileSiesta(SileSiesta):
         def write(fh, value):
             if value is None:
                 return
-            if isinstance(value, _str):
+            if isinstance(value, str):
                 fh.write(self.print(key, value))
                 if '\n' not in value:
                     fh.write('\n')

@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 import pytest
 
@@ -32,7 +31,7 @@ def setup():
 
 
 @pytest.mark.geometry
-class TestGeometryReturn(object):
+class TestGeometryReturn:
 
     def test_fl_o(self, setup):
         # first o is always one element longer than the number of atoms

@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 from numbers import Integral
 
@@ -27,7 +26,6 @@ from ._array import asarrayi, arrayi, fulli
 from ._indices import indices, indices_only, sorted_unique
 from .messages import warn, SislError
 from ._help import array_fill_repeat, get_dtype, isiterable
-from ._help import _range as range, _zip as zip, _map as map
 from .utils.ranges import array_arange
 
 # Although this re-implements the CSR in scipy.sparse.csr_matrix
@@ -36,7 +34,7 @@ from .utils.ranges import array_arange
 __all__ = ['SparseCSR', 'ispmatrix', 'ispmatrixd']
 
 
-class SparseCSR(object):
+class SparseCSR:
     """
     A compressed sparse row matrix, slightly different than :class:`~scipy.sparse.csr_matrix`.
 

@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 from numbers import Integral
 
@@ -16,7 +15,6 @@ from sisl._indices import indices
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
-from sisl._help import _str
 from sisl.unit.siesta import unit_convert
 
 __all__ = ['_ncSileTBtrans', '_devncSileTBtrans']

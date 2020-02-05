@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 from numbers import Integral
 try:
@@ -24,7 +23,6 @@ import sisl._array as _a
 from sisl import Geometry, Atoms
 from sisl import units, constant
 from sisl.messages import warn, info, SislError
-from sisl._help import _range as range
 from sisl._help import wrap_filterwarnings
 from sisl.unit.siesta import unit_convert
 from sisl.physics.distribution import fermi_dirac

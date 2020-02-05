@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 from functools import wraps
 from os.path import splitext, isfile, dirname, join, abspath, basename
@@ -53,7 +52,7 @@ __sile_rules = []
 __siles = []
 
 
-class _sile_rule(object):
+class _sile_rule:
     """ Internal data-structure to check whether a file is the same as this sile """
 
     __slots__ = ('cls', 'case', 'suffix', 'gzip', 'bases', 'base_names')
@@ -323,7 +322,7 @@ def get_siles(attrs=None):
     return siles
 
 
-class BaseSile(object):
+class BaseSile:
     """ Base class for all sisl files """
 
     @property

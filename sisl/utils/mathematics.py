@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 from numpy import dot, sqrt, square
 from numpy import cos, sin, arctan2, arccos

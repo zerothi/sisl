@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 import numpy as np
 from scipy.sparse import lil_matrix
@@ -13,7 +12,6 @@ from sisl.messages import warn
 from sisl import Geometry, Atom, SuperCell
 from sisl.sparse import ispmatrix, ispmatrixd
 from sisl.physics import Hamiltonian
-from sisl._help import _range as range
 from sisl._help import wrap_filterwarnings
 from sisl import _array as _a
 

@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 import numpy as np
 from numpy import dot, conjugate
@@ -24,7 +23,7 @@ __all__ += ['RecursiveSI']
 __all__ += ['RealSpaceSE', 'RealSpaceSI']
 
 
-class SelfEnergy(object):
+class SelfEnergy:
     r""" Self-energy object able to calculate the dense self-energy for a given sparse matrix
 
     The self-energy object contains a `SparseGeometry` object which, in it-self

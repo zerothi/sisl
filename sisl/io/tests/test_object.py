@@ -50,7 +50,7 @@ def test_get_sile2():
     gsc('test.this_file_does_not_exist')
 
 
-class TestObject(object):
+class TestObject:
 
     def test_siesta_sources(self):
         pytest.importorskip("sisl.io.siesta._siesta")

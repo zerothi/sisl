@@ -49,7 +49,6 @@ Advanced classes
    Selector
 
 """
-from __future__ import print_function
 
 __author__ = "Nick Papior"
 __copyright__ = "LGPL-3.0"

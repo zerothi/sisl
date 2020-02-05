@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 import pytest
 
@@ -26,7 +25,7 @@ def setup():
 
 
 @pytest.mark.grid
-class TestGrid(object):
+class TestGrid:
 
     def test_print(self, setup):
         str(setup.g)

@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 
 import pytest
 
@@ -44,7 +43,7 @@ def setup():
 
 
 @pytest.mark.geometry
-class TestGeometry(object):
+class TestGeometry:
 
     def test_help(self):
         with pytest.raises(SystemExit):
