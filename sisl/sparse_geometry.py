@@ -1819,11 +1819,10 @@ class SparseOrbital(_SparseGeometry):
             col = csr.col
             D = csr._D
         else:
-            ptr = csr.ptr
-            idx = array_arange(ptr[:-1], n=ncol)
+            idx = array_arange(csr.ptr[:-1], n=ncol)
             col = csr.col[idx]
             D = csr._D[idx, :]
-            del ptr, idx
+            del idx
 
         # Information for the new Hamiltonian sparse matrix
         no_n = int32(S.no)
@@ -1894,16 +1893,14 @@ class SparseOrbital(_SparseGeometry):
         geom = self.geometry
         no = int32(self.no)
         csr = self._csr
-        ncol = csr.ncol
         if self.finalized or csr.nnz == csr.ptr[-1]:
             col = csr.col
             D = csr._D
         else:
-            ptr = csr.ptr
-            idx = array_arange(ptr[:-1], n=ncol)
+            idx = array_arange(csr.ptr[:-1], n=csr.ncol)
             col = csr.col[idx]
             D = csr._D[idx, :]
-            del ptr, idx
+            del idx
 
         # Information for the new Hamiltonian sparse matrix
         no_n = int32(S.no)
@@ -1914,10 +1911,16 @@ class SparseOrbital(_SparseGeometry):
         sc_index = geom_n.sc_index
 
         # Create new indptr, indices and D
-        ncol = repeat(ncol, reps)
+        idx = array_arange(repeat(geom.firsto[:-1], reps),
+                           repeat(geom.firsto[1:], reps))
+        ncol = csr.ncol[idx]
         # Now indptr is complete
         indptr = insert(_a.cumsumi(ncol), 0, 0)
-        del ncol
+        # Note that D above is already reduced to a *finalized* state
+        # So we have to re-create the reduced index pointer
+        # Then we take repeat the data by smart indexing
+        D = D[array_arange(insert(_a.cumsumi(csr.ncol), 0, 0)[idx], n=ncol), :]
+        del ncol, idx
         indices = _a.emptyi([indptr[-1]])
 
         # Now we should fill the data
@@ -1970,12 +1973,6 @@ class SparseOrbital(_SparseGeometry):
 
         # In the repeat we have to tile individual atomic couplings
         # So we should split the arrays and tile them individually
-        # Now D is made up of D values, per atom
-        if geom.na == 1:
-            D = tile(D, (reps, 1))
-        else:
-            ntile = ftool.partial(tile, reps=(reps, 1))
-            D = np.vstack(tuple(map(ntile, np.split(D, _a.cumsumi(ncol)[geom.lasto[:geom.na-1]], axis=0))))
         S._csr = SparseCSR((D, indices, indptr),
                            shape=(geom_n.no, geom_n.no_s))
 

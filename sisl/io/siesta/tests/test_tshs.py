@@ -24,6 +24,24 @@ def test_tshs_si_pdos_kgrid(sisl_files, sisl_tmp):
     assert np.allclose(HS1._csr._D, HS2._csr._D)
 
 
+def test_tshs_si_pdos_kgrid_repeat_tile(sisl_files, sisl_tmp):
+    si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.TSHS'))
+    HS = si.read_hamiltonian()
+    HSr = HS.repeat(3, 2).repeat(3, 0).repeat(3, 1)
+    HSt = HS.tile(3, 2).tile(3, 0).tile(3, 1)
+    assert np.allclose(HSr.eigh(), HSt.eigh())
+
+
+def test_tshs_si_pdos_kgrid_repeat_tile_not_used(sisl_files, sisl_tmp):
+    si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.TSHS'))
+    HS = si.read_hamiltonian()
+    for i in range(HS.no):
+        HS._csr._extend_empty(i, 3 + i % 3)
+    HSt = HS.tile(3, 2).tile(3, 0).tile(3, 1)
+    HSr = HS.repeat(3, 2).repeat(3, 0).repeat(3, 1)
+    assert np.allclose(HSr.eigh(), HSt.eigh())
+
+
 def test_tshs_soc_pt2_xx(sisl_files, sisl_tmp):
     fdf = sisl.get_sile(sisl_files(_dir, 'SOC_Pt2_xx.fdf'), base=sisl_files(_dir))
     HS1 = fdf.read_hamiltonian()
