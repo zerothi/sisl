@@ -37,7 +37,7 @@ MICRO = 7
 ISRELEASED = False
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 GIT_REVISION = "01a5bf18d6f322bb4dff5fa31936881c3446b811"
-REVISION_YEAR = 2019
+REVISION_YEAR = 2020
 
 
 # The MANIFEST should be updated (which it only is

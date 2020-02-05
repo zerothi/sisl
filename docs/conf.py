@@ -127,7 +127,7 @@ autosummary_generate = [f for f in autosummary_generate if 'api-generated' not i
 # General information about the project.
 project = u'sisl'
 author = u'Nick Papior'
-copyright = u'2015-2019, ' + author
+copyright = u'2015-2020, ' + author
 
 # If building this on RTD, mock out fortran sources
 on_rtd = os.environ.get('READTHEDOCS', 'false').lower() == 'true'

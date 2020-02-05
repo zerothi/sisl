@@ -109,7 +109,7 @@ We recommend to specify the version of sisl in combination of this citation:
     @misc{zerothi_sisl,
       author = {Papior, Nick},
       title  = {sisl: v<fill-version>},
-      year   = {2019},
+      year   = {2020},
       doi    = {10.5281/zenodo.597181},
       url    = {https://doi.org/10.5281/zenodo.597181}
     }
