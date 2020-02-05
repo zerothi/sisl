@@ -1,7 +1,4 @@
 
-# We need this for python3 support PY3
-from six import add_metaclass
-
 from numbers import Integral, Real
 
 import numpy as np
@@ -938,8 +935,7 @@ class AtomMeta(type):
 # The designation of metaclass in python3 is actually:
 #   class ...(..., metaclass=MetaClass)
 # This below construct handles both python2 and python3 cases
-@add_metaclass(AtomMeta)
-class Atom:
+class Atom(metaclass=AtomMeta):
     """ Atomic information, mass, name number of orbitals and ranges
 
     Object to handle atomic mass, name, number of orbitals and

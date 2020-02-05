@@ -46,7 +46,6 @@ if osp.exists('MANIFEST'):
 # The install_requires should also be the
 # requirements for the actual running of sisl
 install_requires = [
-    'six',
     'setuptools',
     'numpy>=1.13',
     'scipy>=0.18',

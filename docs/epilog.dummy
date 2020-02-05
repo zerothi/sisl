@@ -11,7 +11,6 @@
 .. These are external links:
 .. _LGPL: http://www.gnu.org/licenses/lgpl.html
 .. _Python: https://www.python.org/
-.. _six: https://pypi.python.org/pypi/six
 .. _setuptools: https://pypi.python.org/pypi/setuptools
 .. _NetCDF: https://www.unidata.ucar.edu/netcdf
 .. _netcdf4-py: http://github.com/Unidata/netcdf4-python

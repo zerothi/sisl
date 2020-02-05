@@ -10,7 +10,6 @@ Required dependencies
 ---------------------
 
 - `Python`_ 3.5 or above
-- `six`_
 - `setuptools`_
 - `numpy`_ (1.13 or later)
 - `scipy`_ (0.18 or later)
