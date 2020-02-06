@@ -961,6 +961,41 @@ class MonkhorstPack(BrillouinZone):
         # Calculate k-points and weights along all directions
         kw = [self.grid(Dn[i], displacement[i], size[i], centered, i == i_trs) for i in (0, 1, 2)]
 
+        # Now figure out if we have a 0 point along the TRS direction
+        if trs:
+            # Figure out if the first value is zero
+            if abs(kw[i_trs][0][0]) < 1e-10:
+                # Find indices we want to delete
+                ik1, ik2 = (i_trs + 1) % 3, (i_trs + 2) % 3
+                k1, k2 = kw[ik1][0], kw[ik2][0]
+                k_dup = _a.emptyd([k1.size, k2.size, 2])
+                k_dup[:, :, 0] = k1.reshape(-1, 1)
+                k_dup[:, :, 1] = k2.reshape(1, -1)
+                # Figure out the duplicate values
+                # To do this we calculate the norm matrix
+                # Note for a 100 x 100 k-point sampling this will produce
+                # a 100 ^ 4 matrix ~ 93 MB
+                # For larger k-point samplings this is probably not so good (300x300 -> 7.5 GB)
+                k_dup = k_dup.reshape(k1.size, k2.size, 1, 1, 2) + k_dup.reshape(1, 1, k1.size, k2.size, 2)
+                k_dup = ((k_dup[..., 0] ** 2 + k_dup[..., 1] ** 2) ** 0.5 < 1e-10).nonzero()
+                # At this point we have found all duplicate points, to only take one
+                # half of the points we only take the lower half
+                # Also, the Gamma point is *always* zero, so we shouldn't do <=!
+                # Now check the case where one of the directions is (only) the Gamma-point
+                if kw[ik1][0].size == 1 and kw[ik1][0][0] == 0.:
+                    # We keep all indices for the ik1 direction (since it is the Gamma-point!
+                    rel = (k_dup[1] > k_dup[3]).nonzero()[0]
+                elif kw[ik2][0].size == 1 and kw[ik2][0][0] == 0.:
+                    # We keep all indices for the ik2 direction (since it is the Gamma-point!
+                    rel = (k_dup[0] > k_dup[2]).nonzero()[0]
+                else:
+                    rel = np.logical_and(k_dup[0] > k_dup[2], k_dup[1] > k_dup[3])
+                k_dup = (k_dup[0][rel], k_dup[1][rel], k_dup[2][rel], k_dup[3][rel])
+                del rel, k1, k2
+            else:
+                # To signal we can't do this
+                k_dup = None
+
         self._k = _a.emptyd((kw[0][0].size, kw[1][0].size, kw[2][0].size, 3))
         self._w = _a.onesd(self._k.shape[:-1])
         for i in (0, 1, 2):
@@ -970,8 +1005,26 @@ class MonkhorstPack(BrillouinZone):
             self._w[...] *= np.rollaxis(w, 0, i + 1)
 
         del kw
+        # Now clean up a few of the points
+        if trs and k_dup is not None:
+            # Create the correct indices in the ravelled indices
+            k = [0] * 3
+            k[ik1] = k_dup[2]
+            k[ik2] = k_dup[3]
+            k_del = np.ravel_multi_index(tuple(k), self._k.shape[:-1])
+            k[ik1] = k_dup[0]
+            k[ik2] = k_dup[1]
+            k_dup = np.ravel_multi_index(tuple(k), self._k.shape[:-1])
+            del k
+
         self._k.shape = (-1, 3)
         self._w.shape = (-1,)
+
+        if trs and k_dup is not None:
+            self._k = np.delete(self._k, k_del, 0)
+            self._w[k_dup] += self._w[k_del]
+            self._w = np.delete(self._w, k_del)
+            del k_dup, k_del
 
         # Store information regarding size and diagonal elements
         # This information is basically only necessary when
