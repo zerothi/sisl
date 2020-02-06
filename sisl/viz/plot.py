@@ -868,15 +868,15 @@ class Plot(Configurable):
         path: str
             The path to the file where you want to save the plot
         html: bool
-            If set to true, saves just an html of the plot.
+            If set to true, saves just an html file of the plot visualization.
 
         Returns
         ---------
         self
         '''
 
-        if html:
-            plotly.offline.plot(self.figure, filename='{}.html'.format(path.replace(".html", "")))
+        if html or os.path.splitext(path)[-1] == "html":
+            self.figure.write_html('{}.html'.format(path.replace(".html", "")))
             return self
 
         #The following method actually modifies 'self', so there's no need to get the return
