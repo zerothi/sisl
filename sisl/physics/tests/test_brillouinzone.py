@@ -411,8 +411,9 @@ class TestBrillouinZone(object):
     def test_replace_gamma_trs(self):
         g = geom.graphene()
         bz = MonkhorstPack(g, [2, 2, 2], trs=False)
+        N_bz = len(bz)
         bz_gamma = MonkhorstPack(g, [3, 3, 3], size=[0.5] * 3, trs=True)
-        assert len(bz) == 2 ** 3
+        N_bz_gamma = len(bz_gamma)
         bz.replace([0] * 3, bz_gamma)
-        assert len(bz) == 2 ** 3 + 3 ** 3 - 3 ** 2 - 1
+        assert len(bz) == N_bz + N_bz_gamma - 1
         assert bz.weight.sum() == pytest.approx(1.)

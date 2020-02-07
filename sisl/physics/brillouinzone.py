@@ -1208,7 +1208,7 @@ class MonkhorstPack(BrillouinZone):
                 idx = k2idx(k[0]).tolist()
                 weight = weights[idx[data_axis]]
                 idx[data_axis] = slice(None)
-                grid[idx] = v * weight
+                grid[tuple(idx)] = v * weight
 
             del v
 
@@ -1224,8 +1224,8 @@ class MonkhorstPack(BrillouinZone):
                     idx = k2idx(k[i]).tolist()
                     weight = weights[idx[data_axis]]
                     idx[data_axis] = slice(None)
-                    grid[idx] = wrap(func(*args, k=k[i], **kwargs),
-                                     parent=parent, k=k[i], weight=w[i]) * weight
+                    grid[tuple(idx)] = wrap(func(*args, k=k[i], **kwargs),
+                                            parent=parent, k=k[i], weight=w[i]) * weight
                     eta.update()
             eta.close()
             return grid
