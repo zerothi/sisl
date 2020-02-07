@@ -1,0 +1,21 @@
+name: test-env
+channels:
+  - conda-forge
+dependencies:
+  - gcc_linux-64
+  - gfortran_linux-64
+  - libgcc-ng
+  - libgfortran-ng
+  - python=3.8
+  - pip
+  - setuptools
+  - pyparsing>=1.5.7
+  - numpy>=1.13
+  - scipy
+  - netcdf4
+  # Testing facilities
+  - pytest
+  - pytest-cov
+  - pytest-env
+  - pytest-faulthandler
+  - coveralls
