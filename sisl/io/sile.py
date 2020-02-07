@@ -898,20 +898,17 @@ class SileCDF(BaseSile):
             yield head
 
         if dimension:
-            for dim in head.dimensions.values():
-                yield dim
+            yield from head.dimensions.values()
         if variable:
-            for var in head.variables.values():
-                yield var
+            yield from head.variables.values()
 
         if levels == 0:
             # Stop the iterator
             return
 
         for grp in head.groups.values():
-            for dvg in self.iter(group, dimension, variable,
-                                 levels=levels-1, root=grp.path):
-                yield dvg
+            yield from self.iter(group, dimension, variable,
+                                 levels=levels-1, root=grp.path)
 
     __iter__ = iter
 

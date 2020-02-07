@@ -857,8 +857,7 @@ class BrillouinZone:
             for i in range(len(self)):
                 yield self.k[i], self.weight[i]
         else:
-            for k in self.k:
-                yield k
+            yield from self.k
 
     __iter__ = iter
 

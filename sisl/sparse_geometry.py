@@ -451,8 +451,7 @@ class _SparseGeometry:
         >>> for i, j in self.iter_nnz():
         ...    self[i, j] # is then the non-zero value
         """
-        for i, j in self._csr:
-            yield i, j
+        yield from self._csr
 
     __iter__ = iter_nnz
 
@@ -935,12 +934,10 @@ class SparseAtom(_SparseGeometry):
             only loop on the non-zero elements coinciding with the atoms
         """
         if atom is None:
-            for i, j in self._csr:
-                yield i, j
+            yield from self._csr
         else:
             atom = _a.asarrayi(atom).ravel()
-            for i, j in self._csr.iter_nnz(atom):
-                yield i, j
+            yield from self._csr.iter_nnz(atom)
 
     def set_nsc(self, *args, **kwargs):
         """ Reset the number of allowed supercells in the sparse atom
@@ -1449,11 +1446,9 @@ class SparseOrbital(_SparseGeometry):
         elif not orbital is None:
             orbital = _a.asarrayi(orbital)
         if orbital is None:
-            for i, j in self._csr:
-                yield i, j
+            yield from self._csr
         else:
-            for i, j in self._csr.iter_nnz(orbital):
-                yield i, j
+            yield from self._csr.iter_nnz(orbital)
 
     def set_nsc(self, *args, **kwargs):
         """ Reset the number of allowed supercells in the sparse orbital

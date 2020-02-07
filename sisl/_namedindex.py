@@ -44,8 +44,7 @@ class NamedIndex:
 
     def __iter__(self):
         """ Iterate names in the group """
-        for name in self._name:
-            yield name
+        yield from self._name
 
     def __len__(self):
         """ Number of uniquely defined names """

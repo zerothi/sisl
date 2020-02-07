@@ -597,8 +597,7 @@ class Geometry(SuperCellChild):
         iter_species : iterate across indices and atomic species
         iter_orbitals : iterate across atomic indices and orbital indices
         """
-        for ia in range(len(self)):
-            yield ia
+        yield from range(len(self))
 
     __iter__ = iter
 
@@ -947,8 +946,7 @@ class Geometry(SuperCellChild):
 
         method = method.lower()
         if method == 'rand' or method == 'random':
-            for ias, idxs in self.iter_block_rand(iR, R, atom):
-                yield ias, idxs
+            yield from self.iter_block_rand(iR, R, atom)
         else:
             if R is None:
                 R = self.maxR()
@@ -961,8 +959,7 @@ class Geometry(SuperCellChild):
                 dS = (Cube(R * (2 * iR - 0.975)),
                       Cube(R * (2 * iR + 0.025)))
 
-            for ias, idxs in self.iter_block_shape(dS):
-                yield ias, idxs
+            yield from self.iter_block_shape(dS)
 
     def copy(self):
         """ A copy of the object. """

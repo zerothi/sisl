@@ -1130,8 +1130,7 @@ class Atom(metaclass=AtomMeta):
 
     def __iter__(self):
         """ Loop on all orbitals in this atom """
-        for o in self.orbital:
-            yield o
+        yield from self.orbital
 
     def iter(self, group=False):
         """ Loop on all orbitals in this atom
@@ -1162,8 +1161,7 @@ class Atom(metaclass=AtomMeta):
                 yield self.orbital[i:j]
                 i = j
             return
-        for o in self.orbital:
-            yield o
+        yield from self.orbital
 
     def __str__(self):
         # Create orbitals output
@@ -1669,8 +1667,7 @@ class Atoms:
 
     def __iter__(self):
         """ Loop on all atoms with the same specie in order of atoms """
-        for atom in self.iter():
-            yield atom
+        yield from self.iter()
 
     def __contains__(self, key):
         """ Determine whether the `key` is in the unique atoms list """

@@ -1767,8 +1767,7 @@ def ispmatrix(matrix, map_row=None, map_col=None):
 
     if map_row is None and map_col is None:
         # Skip unique checks
-        for r, c in _ispmatrix_all(matrix):
-            yield r, c
+        yield from _ispmatrix_all(matrix)
         return
 
     if map_row is None:
