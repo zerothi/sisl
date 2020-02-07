@@ -1,4 +1,3 @@
-
 import pytest
 
 from sisl import Atom

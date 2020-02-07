@@ -1,4 +1,3 @@
-
 from numbers import Integral
 import numpy as np
 

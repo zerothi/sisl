@@ -1,4 +1,3 @@
-
 import numpy as np
 
 import sisl._array as _a
@@ -73,7 +72,7 @@ class Coefficient(ParentContainer):
     __slots__ = ['c']
 
     def __init__(self, c, parent=None, **info):
-        super(Coefficient, self).__init__(parent, **info)
+        super().__init__(parent, **info)
         self.c = np.atleast_1d(c)
 
     def __str__(self):
@@ -228,7 +227,7 @@ class State(ParentContainer):
 
     def __init__(self, state, parent=None, **info):
         """ Define a state container with a given set of states """
-        super(State, self).__init__(parent, **info)
+        super().__init__(parent, **info)
         self.state = np.atleast_2d(state)
 
     def __str__(self):
@@ -679,7 +678,7 @@ class StateC(State):
 
     def __init__(self, state, c, parent=None, **info):
         """ Define a state container with a given set of states and coefficients for the states """
-        super(StateC, self).__init__(state, parent, **info)
+        super().__init__(state, parent, **info)
         self.c = np.atleast_1d(c)
         if len(self.c) != len(self.state):
             raise ValueError(self.__class__.__name__ + ' could not be created with coefficients and states '

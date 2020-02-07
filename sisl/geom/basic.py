@@ -1,4 +1,3 @@
-
 import numpy as np
 
 from sisl import Geometry, SuperCell

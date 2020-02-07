@@ -1,4 +1,3 @@
-
 import numpy as np
 from scipy.sparse import lil_matrix
 
@@ -65,8 +64,8 @@ class rhamSileScaleUp(SileScaleUp):
 
         # Check again, to be sure...
         if no + 1 != g.no:
-            raise ValueError(('The Geometry has a different number of '
-                              'orbitals, please correct by adding the orbocc file.'))
+            raise ValueError('The Geometry has a different number of '
+                              'orbitals, please correct by adding the orbocc file.')
 
         # Now, we know the size etc. of the Hamiltonian
         m_sc = m_sc * 2 + 1

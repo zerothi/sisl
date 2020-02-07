@@ -1,4 +1,3 @@
-
 from .sile import SileSiesta
 from ..sile import add_sile, sile_fh_open
 

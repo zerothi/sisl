@@ -1,4 +1,3 @@
-
 import numpy as np
 from .sparse import SparseOrbitalBZ
 
@@ -33,11 +32,11 @@ class Overlap(SparseOrbitalBZ):
         # Since this *is* the overlap matrix, we should never use the
         # orthogonal keyword
         kwargs["orthogonal"] = True
-        super(Overlap, self).__init__(geometry, dim, np.float64, nnzpr, **kwargs)
+        super().__init__(geometry, dim, np.float64, nnzpr, **kwargs)
         self._reset()
 
     def _reset(self):
-        super(Overlap, self)._reset()
+        super()._reset()
         self.Sk = self._Pk
         self.dSk = self._dPk
         self.ddSk = self._ddPk
@@ -74,7 +73,7 @@ class Overlap(SparseOrbitalBZ):
         """
         # Using S explicitly in the argument ensures users will not pass it through
         # kwargs, if they do, an error will be raised.
-        return super(Overlap, cls).fromsp(geometry, P=P, S=None, **kwargs)
+        return super().fromsp(geometry, P=P, S=None, **kwargs)
 
     @staticmethod
     def read(sile, *args, **kwargs):

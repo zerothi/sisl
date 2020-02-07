@@ -1,4 +1,3 @@
-
 import pytest
 
 pytestmark = pytest.mark.spin

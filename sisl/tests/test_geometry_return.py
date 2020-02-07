@@ -1,4 +1,3 @@
-
 import pytest
 
 from numbers import Integral, Real

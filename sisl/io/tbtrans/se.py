@@ -1,4 +1,3 @@
-
 try:
     from StringIO import StringIO
 except Exception:

@@ -1,4 +1,3 @@
-
 import numpy as np
 
 from sisl._help import xml_parse

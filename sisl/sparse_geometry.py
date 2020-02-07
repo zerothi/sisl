@@ -1,4 +1,3 @@
-
 import warnings
 import functools as ftool
 from numbers import Integral
@@ -951,7 +950,7 @@ class SparseAtom(_SparseGeometry):
         --------
         SuperCell.set_nsc : the underlying called method
         """
-        super(SparseAtom, self).set_nsc(self.na, *args, **kwargs)
+        super().set_nsc(self.na, *args, **kwargs)
 
     def cut(self, seps, axis, *args, **kwargs):
         """ Cuts the sparse atom model into different parts.
@@ -1026,7 +1025,7 @@ class SparseAtom(_SparseGeometry):
             nsc[axis] = isc[axis] * seps + i
 
             if out:
-                warn('Cut the connection at nsc={0} in direction {1}.'.format(nsc[axis], axis))
+                warn('Cut the connection at nsc={} in direction {}.'.format(nsc[axis], axis))
 
         # Update number of super-cells
         nsc[:] = nsc[:] * 2 + 1
@@ -1462,7 +1461,7 @@ class SparseOrbital(_SparseGeometry):
         --------
         SuperCell.set_nsc : the underlying called method
         """
-        super(SparseOrbital, self).set_nsc(self.no, *args, **kwargs)
+        super().set_nsc(self.no, *args, **kwargs)
 
     def cut(self, seps, axis, *args, **kwargs):
         """ Cuts the sparse orbital model into different parts.
@@ -1537,7 +1536,7 @@ class SparseOrbital(_SparseGeometry):
             nsc[axis] = isc[axis] * seps + i
 
             if out:
-                warn('Cut the connection at nsc={0} in direction {1}.'.format(nsc[axis], axis))
+                warn('Cut the connection at nsc={} in direction {}.'.format(nsc[axis], axis))
 
         # Update number of super-cells
         nsc[:] = nsc[:] * 2 + 1
@@ -1595,7 +1594,7 @@ class SparseOrbital(_SparseGeometry):
             atom = self.geometry.atoms.index(atom)
             atom = (self.geometry.atoms.specie == atom).nonzero()[0]
         # This will digress to call .sub
-        return super(SparseOrbital, self).remove(atom)
+        return super().remove(atom)
 
     def remove_orbital(self, atom, orbital):
         """ Remove a subset of orbitals on `atom` according to `orbital`

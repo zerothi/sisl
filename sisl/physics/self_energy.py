@@ -1,4 +1,3 @@
-
 import numpy as np
 from numpy import dot, conjugate
 from numpy import subtract

@@ -1,4 +1,3 @@
-
 # Import sile objects
 from .sile import SileScaleUp
 from ..sile import *
@@ -159,7 +158,7 @@ class restartSileScaleUp(refSileScaleUp):
         except:
             ref = None
 
-        restart = super(restartSileScaleUp, self).read_geometry()
+        restart = super().read_geometry()
         if not ref is None:
             restart.sc = SuperCell(np.dot(ref.sc.cell, restart.sc.cell.T),
                                    nsc=restart.nsc)

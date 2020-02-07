@@ -1,4 +1,3 @@
-
 import warnings
 from datetime import datetime
 import numpy as np
@@ -485,7 +484,7 @@ class fdfSileSiesta(SileSiesta):
         self.write_supercell(geom.sc, fmt, *args, **kwargs)
 
         self._write('\n')
-        self._write('NumberOfAtoms {0}\n'.format(geom.na))
+        self._write('NumberOfAtoms {}\n'.format(geom.na))
         unit = kwargs.get('unit', 'Ang').capitalize()
         is_fractional = unit in ['Frac', 'Fractional']
         if is_fractional:
@@ -515,10 +514,10 @@ class fdfSileSiesta(SileSiesta):
 
         # Write out species
         # First swap key and value
-        self._write('NumberOfSpecies {0}\n'.format(n_species))
+        self._write('NumberOfSpecies {}\n'.format(n_species))
         self._write('%block ChemicalSpeciesLabel\n')
         for i, a in enumerate(geom.atom.atom):
-            self._write(' {0} {1} {2}\n'.format(i + 1, a.Z, a.tag))
+            self._write(' {} {} {}\n'.format(i + 1, a.Z, a.tag))
         self._write('%endblock ChemicalSpeciesLabel\n')
 
         _write_block = True

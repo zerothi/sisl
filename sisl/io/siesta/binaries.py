@@ -1,4 +1,3 @@
-
 from numbers import Integral
 import numpy as np
 
@@ -887,10 +886,10 @@ class _gfSileSiesta(SileBinSiesta):
         ret_E = self._E[idxE]
         if abs(ret_E - E) > 5e-3:
             warn(self.__class__.__name__ + " requesting energy " +
-                 "{0:.5f} eV, found {1:.5f} eV as the closest energy!".format(E, ret_E))
+                 "{:.5f} eV, found {:.5f} eV as the closest energy!".format(E, ret_E))
         elif abs(ret_E - E) > 1e-3:
             info(self.__class__.__name__ + " requesting energy " +
-                 "{0:.5f} eV, found {1:.5f} eV as the closest energy!".format(E, ret_E))
+                 "{:.5f} eV, found {:.5f} eV as the closest energy!".format(E, ret_E))
         return idxE
 
     def kindex(self, k):
@@ -908,9 +907,9 @@ class _gfSileSiesta(SileBinSiesta):
         ret_k = self._k[ik, :]
         if not np.allclose(ret_k, k, atol=0.0001):
             warn(SileWarning(self.__class__.__name__ + " requesting k-point " +
-                             "[{0:.3f}, {1:.3f}, {2:.3f}]".format(*k) +
+                             "[{:.3f}, {:.3f}, {:.3f}]".format(*k) +
                              " found " +
-                             "[{0:.3f}, {1:.3f}, {2:.3f}]".format(*ret_k)))
+                             "[{:.3f}, {:.3f}, {:.3f}]".format(*ret_k)))
         return ik
 
     def read_header(self):

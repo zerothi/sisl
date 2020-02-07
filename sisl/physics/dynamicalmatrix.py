@@ -1,4 +1,3 @@
-
 import numpy as np
 from scipy.sparse import lil_matrix
 
@@ -21,11 +20,11 @@ class DynamicalMatrix(SparseOrbitalBZ):
     """ Dynamical matrix of a geometry """
 
     def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
-        super(DynamicalMatrix, self).__init__(geometry, dim, dtype, nnzpr, **kwargs)
+        super().__init__(geometry, dim, dtype, nnzpr, **kwargs)
         self._reset()
 
     def _reset(self):
-        super(DynamicalMatrix, self)._reset()
+        super()._reset()
         self.Dk = self._Pk
         self.dDk = self.dPk
         self.ddDk = self.ddPk

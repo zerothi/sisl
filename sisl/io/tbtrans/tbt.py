@@ -1,4 +1,3 @@
-
 from numbers import Integral
 try:
     from StringIO import StringIO
@@ -411,8 +410,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             If `atom` or `orbital` is specified they are returned in that order.
         """
         if not atom is None and not orbital is None:
-            raise ValueError(('Both atom and orbital keyword in DOS request '
-                              'cannot be specified, only one at a time.'))
+            raise ValueError('Both atom and orbital keyword in DOS request '
+                              'cannot be specified, only one at a time.')
         # Cast to lower
         norm = norm.lower()
         if norm == 'none':
@@ -2535,7 +2534,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 else:
                     ns._tbt.write_tbtav(value)
         p.add_argument('--tbt-av', action=AVOut, nargs='?', default=None,
-                       help='Create "{0}" with the k-averaged quantities of this file.'.format(self.file.replace('TBT.nc', 'TBT.AV.nc')))
+                       help='Create "{}" with the k-averaged quantities of this file.'.format(self.file.replace('TBT.nc', 'TBT.AV.nc')))
 
         class Plot(argparse.Action):
 

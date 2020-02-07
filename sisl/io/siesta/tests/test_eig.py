@@ -1,4 +1,3 @@
-
 import pytest
 import os.path as osp
 import sisl

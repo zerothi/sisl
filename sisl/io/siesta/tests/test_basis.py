@@ -1,4 +1,3 @@
-
 import pytest
 import os.path as osp
 from sisl.io.siesta.basis import *

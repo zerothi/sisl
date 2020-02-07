@@ -1,4 +1,3 @@
-
 from ..sile import add_sile
 
 from sisl.io.siesta.binaries import _gfSileSiesta

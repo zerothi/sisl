@@ -1,4 +1,3 @@
-
 import numpy as np
 
 from ..sile import add_sile, sile_fh_open

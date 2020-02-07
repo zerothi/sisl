@@ -1,4 +1,3 @@
-
 import os
 import numpy as np
 
@@ -30,7 +29,7 @@ class outSileSiesta(SileSiesta):
     _job_completed = False
 
     def readline(self):
-        line = super(outSileSiesta, self).readline()
+        line = super().readline()
         if 'Job completed' in line:
             self._job_completed = True
         return line

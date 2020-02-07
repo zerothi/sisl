@@ -1,4 +1,3 @@
-
 import numpy as np
 
 from sisl.utils import strmap

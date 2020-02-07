@@ -912,7 +912,7 @@ class MonkhorstPack(BrillouinZone):
     """
 
     def __init__(self, parent, nkpt, displacement=None, size=None, centered=True, trs=True):
-        super(MonkhorstPack, self).__init__(parent)
+        super().__init__(parent)
 
         if isinstance(nkpt, Integral):
             nkpt = np.diag([nkpt] * 3)
@@ -1047,7 +1047,7 @@ class MonkhorstPack(BrillouinZone):
 
     def __getstate__(self):
         """ Return dictionary with the current state """
-        state = super(MonkhorstPack, self).__getstate__()
+        state = super().__getstate__()
         state['diag'] = self._diag
         state['displ'] = self._displ
         state['size'] = self._size
@@ -1057,7 +1057,7 @@ class MonkhorstPack(BrillouinZone):
 
     def __setstate__(self, state):
         """ Reset state of the object """
-        super(MonkhorstPack, self).__setstate__(state)
+        super().__setstate__(state)
         self._diag = state['diag']
         self._displ = state['displ']
         self._size = state['size']
@@ -1449,7 +1449,7 @@ class BandStructure(BrillouinZone):
     """
 
     def __init__(self, parent, point, division, name=None):
-        super(BandStructure, self).__init__(parent)
+        super().__init__(parent)
 
         # Copy over points
         self.point = _a.arrayd(point)
@@ -1507,7 +1507,7 @@ class BandStructure(BrillouinZone):
 
     def __getstate__(self):
         """ Return dictionary with the current state """
-        state = super(BandStructure, self).__getstate__()
+        state = super().__getstate__()
         state['point'] = self.point.copy()
         state['division'] = self.division.copy()
         state['name'] = list(self.name)
@@ -1515,7 +1515,7 @@ class BandStructure(BrillouinZone):
 
     def __setstate__(self, state):
         """ Reset state of the object """
-        super(BandStructure, self).__setstate__(state)
+        super().__setstate__(state)
         self.point = state['point']
         self.division = state['division']
         self.name = state['name']

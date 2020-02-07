@@ -87,8 +87,8 @@ class asciiSileBigDFT(SileBigDFT):
                     t = ls[4]
                 spec.append(Atom(s, tag=t))
 
-        except IOError as e:
-            print("I/O error({0}): {1}".format(e.errno, e.strerror))
+        except OSError as e:
+            print("I/O error({}): {}".format(e.errno, e.strerror))
         except Exception:
             # Allowed pass due to pythonic reading
             pass

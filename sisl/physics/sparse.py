@@ -1,4 +1,3 @@
-
 import warnings
 
 import numpy as np
@@ -218,8 +217,7 @@ class SparseOrbitalBZ(SparseOrbital):
         --------
         Geometry.iter_orbitals : method used to iterate orbitals
         """
-        for ia, io in self.geometry.iter_orbitals(local=local):
-            yield ia, io
+        yield from self.geometry.iter_orbitals(local=local)
 
     def _Pk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', _dim=0):
         r""" Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a polarized system
@@ -529,13 +527,13 @@ class SparseOrbitalBZ(SparseOrbital):
 
     def __getstate__(self):
         return {
-            'sparseorbitalbz': super(SparseOrbitalBZ, self).__getstate__(),
+            'sparseorbitalbz': super().__getstate__(),
             'orthogonal': self._orthogonal
         }
 
     def __setstate__(self, state):
         self._orthogonal = state['orthogonal']
-        super(SparseOrbitalBZ, self).__setstate__(state['sparseorbitalbz'])
+        super().__setstate__(state['sparseorbitalbz'])
         self._reset()
 
 
@@ -588,12 +586,12 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             spin = kwargs.pop('spin')
         self._spin = Spin(spin, dtype)
 
-        super(SparseOrbitalBZSpin, self).__init__(geometry, len(self.spin), self.spin.dtype, nnzpr, **kwargs)
+        super().__init__(geometry, len(self.spin), self.spin.dtype, nnzpr, **kwargs)
         self._reset()
 
     def _reset(self):
         r""" Reset object according to the options, please refer to `SparseOrbital.reset` for details """
-        super(SparseOrbitalBZSpin, self)._reset()
+        super()._reset()
 
         if self.spin.is_unpolarized:
             self.UP = 0
@@ -890,7 +888,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            if true, also emply a spin-box Hermitian operator to ensure TRS, otherwise
            only return the transpose values.
         """
-        new = super(SparseOrbitalBZSpin, self).transpose()
+        new = super().transpose()
         sp = self.spin
         D = new._csr._D
 
@@ -960,7 +958,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
     def __getstate__(self):
         return {
-            'sparseorbitalbzspin': super(SparseOrbitalBZSpin, self).__getstate__(),
+            'sparseorbitalbzspin': super().__getstate__(),
             'spin': self._spin.__getstate__(),
             'orthogonal': self._orthogonal,
         }
@@ -970,4 +968,4 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         spin = Spin()
         spin.__setstate__(state['spin'])
         self._spin = spin
-        super(SparseOrbitalBZSpin, self).__setstate__(state['sparseorbitalbzspin'])
+        super().__setstate__(state['sparseorbitalbzspin'])

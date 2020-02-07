@@ -1,4 +1,3 @@
-
 import pytest
 import os.path as osp
 from sisl.io.vasp.doscar import *

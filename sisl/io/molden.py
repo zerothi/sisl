@@ -1,4 +1,3 @@
-
 # Import sile objects
 from .sile import *
 

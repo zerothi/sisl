@@ -72,10 +72,10 @@ class gotSileGULP(SileGULP):
         f, _ = self.step_to(self._keys['sc'])
         if not f:
             raise ValueError(
-                ('SileGULP tries to lookup the SuperCell vectors '
+                'SileGULP tries to lookup the SuperCell vectors '
                  'using key "' + self._keys['sc'] + '". \n'
                  'Use ".set_supercell_key(...)" to search for different name.\n'
-                 'This could not be found found in file: "' + self.file + '".'))
+                 'This could not be found found in file: "' + self.file + '".')
 
         # skip 1 line
         self.readline()

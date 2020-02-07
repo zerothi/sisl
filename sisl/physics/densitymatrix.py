@@ -1,4 +1,3 @@
-
 from numbers import Integral
 from scipy.sparse import csr_matrix, triu, tril
 from scipy.sparse import hstack as ss_hstack
@@ -570,11 +569,11 @@ class DensityMatrix(_realspace_DensityMatrix):
 
     def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
         """ Initialize density matrix """
-        super(DensityMatrix, self).__init__(geometry, dim, dtype, nnzpr, **kwargs)
+        super().__init__(geometry, dim, dtype, nnzpr, **kwargs)
         self._reset()
 
     def _reset(self):
-        super(DensityMatrix, self)._reset()
+        super()._reset()
         self.Dk = self.Pk
         self.dDk = self.dPk
         self.ddDk = self.ddPk

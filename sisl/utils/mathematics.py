@@ -1,4 +1,3 @@
-
 from numpy import dot, sqrt, square
 from numpy import cos, sin, arctan2, arccos
 from numpy import asarray, take, delete, empty

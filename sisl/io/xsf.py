@@ -1,4 +1,3 @@
-
 import os.path as osp
 import numpy as np
 
@@ -377,7 +376,7 @@ class axsfSile(xsfSile):
     """
 
     def _setup(self, *args, **kwargs):
-        super(axsfSile, self)._setup(*args, **kwargs)
+        super()._setup(*args, **kwargs)
         # Correct number of steps
         if self._md_steps is None:
             self._md_steps = 1

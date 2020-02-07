@@ -1,4 +1,4 @@
-"""Electron related functions and classes
+r"""Electron related functions and classes
 =========================================
 
 .. module:: sisl.physics.electron

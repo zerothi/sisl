@@ -288,8 +288,7 @@ class SuperCell:
 
     def __iter__(self):
         """ Iterate the supercells and the indices of the supercells """
-        for i, sc in enumerate(self.sc_off):
-            yield i, sc
+        yield from enumerate(self.sc_off)
 
     def copy(self, cell=None, origo=None):
         """ A deepcopy of the object
@@ -356,8 +355,8 @@ class SuperCell:
         dist = np.sqrt((dot(cell.T, (x - ix).T) ** 2).sum(0))
         idx = (dist <= tol).nonzero()[0]
         if len(idx) == 0:
-            raise ValueError(('Could not fit the cell parameters to the coordinates '
-                              'due to insufficient accuracy (try increase the tolerance)'))
+            raise ValueError('Could not fit the cell parameters to the coordinates '
+                              'due to insufficient accuracy (try increase the tolerance)')
 
         # Reduce problem to allowed values below the tolerance
         x = x[idx, :]

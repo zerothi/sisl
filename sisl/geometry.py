@@ -1,4 +1,3 @@
-
 # To check for integers
 from numbers import Integral, Real
 from math import acos
@@ -1039,7 +1038,7 @@ class Geometry(SuperCellChild):
             sorted geometry
         """
         axes = _a.arrayi(axes).ravel()
-        idx = np.lexsort(tuple((self.xyz[:, i] for i in axes)))
+        idx = np.lexsort(tuple(self.xyz[:, i] for i in axes))
         return self.sub(idx)
 
     def optimize_nsc(self, axis=None, R=None):
@@ -1180,7 +1179,7 @@ class Geometry(SuperCellChild):
         """
         if self.na % seps != 0:
             raise ValueError(self.__class__.__name__ + '.cut '
-                             'cannot be cut into {0} different '.format(seps) +
+                             'cannot be cut into {} different '.format(seps) +
                              'pieces. Please check your geometry and input.')
         # Truncate to the correct segments
         lseg = seg % seps
@@ -3312,10 +3311,10 @@ class Geometry(SuperCellChild):
         if R is None:
             R = self.maxR()
             if R < 0:
-                raise ValueError((self.__class__.__name__ +
+                raise ValueError(self.__class__.__name__ +
                                   ".distance cannot determine the `R` parameter. "
                                   "The internal `maxR()` is negative and thus not set. "
-                                  "Set an explicit value for `R`."))
+                                  "Set an explicit value for `R`.")
         elif np.any(self.nsc > 1):
             maxR = fnorm(self.cell).max()
             # These loops could be leveraged if we look at angles...
@@ -3990,9 +3989,9 @@ lattice vector.
         # This is merely for testing purposes and may not be used for anything.
         print('Cell:')
         for i in (0, 1, 2):
-            print('  {0:10.6f} {1:10.6f} {2:10.6f}'.format(*g.cell[i, :]))
+            print('  {:10.6f} {:10.6f} {:10.6f}'.format(*g.cell[i, :]))
         print('SuperCell:')
-        print('  {0:d} {1:d} {2:d}'.format(*g.nsc))
+        print('  {:d} {:d} {:d}'.format(*g.nsc))
         print(' {:>10s} {:>10s} {:>10s}  {:>3s}'.format('x', 'y', 'z', 'Z'))
         for ia in g:
             print(' {1:10.6f} {2:10.6f} {3:10.6f}  {0:3d}'.format(g.atoms[ia].Z,

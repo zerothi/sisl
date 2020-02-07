@@ -1,4 +1,3 @@
-
 try:
     from StringIO import StringIO
 except Exception:
@@ -314,7 +313,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
     @default_ArgumentParser(description="Extract data from a TBT.Proj.nc file")
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
-        p, namespace = super(tbtprojncSileTBtrans, self).ArgumentParser(p, *args, **kwargs)
+        p, namespace = super().ArgumentParser(p, *args, **kwargs)
 
         # We limit the import to occur here
         import argparse

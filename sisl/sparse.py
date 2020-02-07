@@ -1,4 +1,3 @@
-
 from numbers import Integral
 
 # To speed up the extension algorithm we limit
@@ -1863,8 +1862,7 @@ def _ispmatrix_all(matrix):
                 yield r, c
 
     elif isspmatrix_coo(matrix):
-        for r, c in zip(matrix.row, matrix.col):
-            yield r, c
+        yield from zip(matrix.row, matrix.col)
 
     elif isspmatrix_csc(matrix):
         for c in range(matrix.shape[1]):
@@ -1923,8 +1921,7 @@ def ispmatrixd(matrix, map_row=None, map_col=None):
                 yield rr, c, m
 
     elif isspmatrix_coo(matrix):
-        for r, c, m in zip(map_row(matrix.row), map_col(matrix.col), matrix.data):
-            yield r, c, m
+        yield from zip(map_row(matrix.row), map_col(matrix.col), matrix.data)
 
     elif isspmatrix_csc(matrix):
         for c in range(matrix.shape[1]):

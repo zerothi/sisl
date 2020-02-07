@@ -1,4 +1,3 @@
-
 from functools import wraps
 from os.path import splitext, isfile, dirname, join, abspath, basename
 import gzip
@@ -956,7 +955,7 @@ def sile_raise_write(self, ok=('w', 'a')):
         is_ok = is_ok or (O in self._mode)
     if not is_ok:
         raise SileError(('Writing to file not possible; allowed '
-                         'modes={0}, used mode={1}'.format(ok, self._mode)), self)
+                         'modes={}, used mode={}'.format(ok, self._mode)), self)
 
 
 def sile_raise_read(self, ok=('r', 'a')):
@@ -965,7 +964,7 @@ def sile_raise_read(self, ok=('r', 'a')):
         is_ok = is_ok or (O in self._mode)
     if not is_ok:
         raise SileError('Reading file not possible; allowed '
-                        'modes={0}, used mode={1}'.format(
+                        'modes={}, used mode={}'.format(
                             ok, self._mode), self)
 
 

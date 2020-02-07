@@ -1,4 +1,3 @@
-
 import os.path as osp
 import numpy as np
 
@@ -51,7 +50,7 @@ class omxSileOpenMX(SileOpenMX):
     """
 
     def __init__(self, filename, mode='r', base=None):
-        super(omxSileOpenMX, self).__init__(filename, mode=mode, base=base)
+        super().__init__(filename, mode=mode, base=base)
 
     @property
     def file(self):

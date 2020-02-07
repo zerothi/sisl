@@ -1,4 +1,3 @@
-
 import pytest
 import os.path as osp
 from sisl import geom

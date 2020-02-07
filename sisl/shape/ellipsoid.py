@@ -1,4 +1,3 @@
-
 from math import pi
 import numpy as np
 from numpy import dot
@@ -36,7 +35,7 @@ class Ellipsoid(PureShape):
     __slots__ = ('_v', '_iv')
 
     def __init__(self, v, center=None):
-        super(Ellipsoid, self).__init__(center)
+        super().__init__(center)
         v = _a.asarrayd(v)
         if v.size == 1:
             self._v = np.identity(3, np.float64) * v # a "Euclidean" sphere
@@ -122,7 +121,7 @@ class Ellipsoid(PureShape):
 
     def set_center(self, center):
         """ Change the center of the object """
-        super(Ellipsoid, self).__init__(center)
+        super().__init__(center)
 
     def within_index(self, other):
         """ Return indices of the points that are within the shape """
@@ -159,7 +158,7 @@ class Sphere(Ellipsoid):
             raise ValueError(self.__class__.__name__ + ' is defined via a single radius. '
                              'An array with more than 1 element is not an allowed argument '
                              'to __init__.')
-        super(Sphere, self).__init__(radius, center=center)
+        super().__init__(radius, center=center)
 
     def __str__(self):
         return '{0}{{c({2:.2f} {3:.2f} {4:.2f}) r({1:.2f})}}'.format(self.__class__.__name__, self.radius, *self.center)

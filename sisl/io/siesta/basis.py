@@ -1,4 +1,3 @@
-
 from sisl._help import xml_parse
 from sisl.atom import Atom
 from sisl.orbital import SphericalOrbital

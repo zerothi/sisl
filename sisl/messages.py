@@ -156,13 +156,13 @@ except ImportError:
             self.l -= n
             m, s = divmod((_time() - self.t0) / self.n * self.l, 60)
             h, m = divmod(m, 60)
-            _stdout.write("{0}  ETA = {1:5d}h {2:2d}m {3:4.1f}s\r".format(self.desc, int(h), int(m), s))
+            _stdout.write("{}  ETA = {:5d}h {:2d}m {:4.1f}s\r".format(self.desc, int(h), int(m), s))
             _stdout.flush()
 
         def close(self):
             m, s = divmod(_time() - self.t0, 60)
             h, m = divmod(m, 60)
-            _stdout.write("{0} finished after {1:d}h {2:d}m {3:.1f}s\n".format(self.desc, int(h), int(m), s))
+            _stdout.write("{} finished after {:d}h {:d}m {:.1f}s\n".format(self.desc, int(h), int(m), s))
             _stdout.flush()
 
 

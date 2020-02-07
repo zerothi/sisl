@@ -90,7 +90,7 @@ class NamedIndex:
             return self.__class__.__name__ + '{}'
         s = self.__class__.__name__ + '{{groups: {0}'.format(N)
         for name, idx in zip(self._name, self._index):
-            s += ',\n {0}: [{1}]'.format(name, list2str(idx))
+            s += ',\n {}: [{}]'.format(name, list2str(idx))
         return s + '\n}'
 
     def __setitem__(self, name, index):

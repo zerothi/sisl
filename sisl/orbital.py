@@ -1,4 +1,3 @@
-
 # To check for integers
 from functools import partial
 from numbers import Integral
@@ -363,7 +362,7 @@ class SphericalOrbital(Orbital):
         # Initialize R and tag through the parent
         # Note that the maximum range of the orbital will be the
         # maximum value in r.
-        super(SphericalOrbital, self).__init__(self.R, q0, tag)
+        super().__init__(self.R, q0, tag)
 
     def copy(self):
         """ Create an exact copy of this object """
@@ -381,7 +380,7 @@ class SphericalOrbital(Orbital):
         radial : bool, optional
            also compare that the radial parts are the same
         """
-        same = super(SphericalOrbital, self).equal(other, psi, radial)
+        same = super().equal(other, psi, radial)
         if not same:
             return False
         if isinstance(other, SphericalOrbital):
@@ -739,7 +738,7 @@ class AtomicOrbital(Orbital):
 
     def __init__(self, *args, **kwargs):
         """ Initialize atomic orbital object """
-        super(AtomicOrbital, self).__init__(kwargs.get('R', 0.), q0=kwargs.get('q0', 0.), tag=kwargs.get('tag', ''))
+        super().__init__(kwargs.get('R', 0.), q0=kwargs.get('q0', 0.), tag=kwargs.get('tag', ''))
 
         # Ensure args is a list (to be able to pop)
         args = list(args)
@@ -919,7 +918,7 @@ class AtomicOrbital(Orbital):
     def name(self, tex=False):
         """ Return named specification of the atomic orbital """
         if tex:
-            name = '{0}{1}'.format(self.n, {0: 's', 1: 'p', 2: 'd', 3: 'f', 4: 'g'}.get(self.l))
+            name = '{}{}'.format(self.n, {0: 's', 1: 'p', 2: 'd', 3: 'f', 4: 'g'}.get(self.l))
             if self.l == 1:
                 name += {0: '_z', 1: '_x', -1: '_y'}.get(self.m)
             elif self.l == 2:
@@ -933,7 +932,7 @@ class AtomicOrbital(Orbital):
             if self.P:
                 return name + r'\zeta^{}\mathrm{{P}}'.format(self.Z)
             return name + r'\zeta^{}'.format(self.Z)
-        name = '{0}{1}'.format(self.n, {0: 's', 1: 'p', 2: 'd', 3: 'f', 4: 'g'}.get(self.l))
+        name = '{}{}'.format(self.n, {0: 's', 1: 'p', 2: 'd', 3: 'f', 4: 'g'}.get(self.l))
         if self.l == 1:
             name += {0: 'z', 1: 'x', -1: 'y'}.get(self.m)
         elif self.l == 2:
