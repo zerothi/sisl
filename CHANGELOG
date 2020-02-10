@@ -1,3 +1,34 @@
+0.9.8
+=====
+
+- fixed #160 by removing all(?) TRS k-points in a Monkhorst Pack grid
+
+- fixed repeat for SparseGeometryOrbital #161
+
+- changed lots of places for einsum in electron.py for increased performance
+
+- added AHC conductivity calculations `conductivity` (not tested)
+
+- added Berry curvature calculations `berry_flux` (not tested)
+
+- added Overlap class to directly use overlap matrices (without having a
+	second matrix).
+
+- fixed geometry align issue when reading geometries from Siesta output #153
+
+- fixed pickling a sparse matrix #150
+
+- Fixed TSV.nc write-out for grid files (see poisson_explicit.py)
+
+- Fixed fermi level calculation for non-polarized calculations
+
+- Reverted Fermi calculation routine for more stable implementation
+
+- fixed DynamiclMatrix reading for number of atoms not divisable by 4 #145
+
+A huge thanks to Jonas L. B. for fixes, suggestions etc.
+
+
 0.9.7
 =====
 
