@@ -217,9 +217,9 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         dE = np.diff(E)
         dEm, dEM = np.amin(dE) * 1000, np.amax(dE) * 1000 # convert to meV
         if (dEM - dEm) < 1e-3: # 0.001 meV
-            prnt("     {:.5f} -- {:.5f} eV  [{:.3f} meV]".format(Em, EM, dEm))
+            prnt(f"     {Em:.5f} -- {EM:.5f} eV  [{dEm:.3f} meV]")
         else:
-            prnt("     {:.5f} -- {:.5f} eV  [{:.3f} -- {:.3f} meV]".format(Em, EM, dEm, dEM))
+            prnt(f"     {Em:.5f} -- {EM:.5f} eV  [{dEm:.3f} -- {dEM:.3f} meV]")
         prnt("  - imaginary part (eta): {:.4f} meV".format(self.eta() * 1e3))
         prnt("  - atoms with DOS (fortran indices):")
         prnt("     " + list2str(self.a_dev + 1))
@@ -244,8 +244,8 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
             except:
                 n_btd = 'unknown'
             prnt()
-            prnt("Electrode: {}".format(elec))
-            prnt("  - number of BTD blocks: {}".format(n_btd))
+            prnt(f"Electrode: {elec}")
+            prnt(f"  - number of BTD blocks: {n_btd}")
             prnt("  - Bloch: [{}, {}, {}]".format(*bloch))
             gelec = self.groups[elec]
             if 'TBT' in self._trans_type:

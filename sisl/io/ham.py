@@ -229,7 +229,7 @@ class hamiltonianSile(Sile):
             fmt2_str = ' {{0:d}}[{{1:d}}] {{2:d}}[{{3:d}}] {{4:{0}}} {{5:{0}}}\n'.format(
                 fmt)
         else:
-            fmt1_str = ' {{0:d}} {{1:d}} {{2:{0}}}\n'.format(fmt)
+            fmt1_str = f' {{0:d}} {{1:d}} {{2:{fmt}}}\n'
             fmt2_str = ' {{0:d}} {{1:d}} {{2:{0}}} {{3:{0}}}\n'.format(fmt)
 
         # We currently force the model to be finalized

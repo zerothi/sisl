@@ -384,7 +384,7 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
             # Extract maximum R
             R = ia_atom.maxR()
             if R <= 0.:
-                warn("Atom '{}' does not have a wave-function, skipping atom.".format(ia_atom))
+                warn(f"Atom '{ia_atom}' does not have a wave-function, skipping atom.")
                 eta.update()
                 continue
 

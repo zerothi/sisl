@@ -986,7 +986,7 @@ def test_op3(setup):
         S[0, j] = i
 
     for op in ['add', 'sub', 'mul', 'pow']:
-        func = getattr(S, '__{}__'.format(op))
+        func = getattr(S, f'__{op}__')
         s = func(1)
         assert s.dtype == np.int32
         s = func(1.)
@@ -997,7 +997,7 @@ def test_op3(setup):
 
     S = S.copy(dtype=np.float64)
     for op in ['add', 'sub', 'mul', 'pow']:
-        func = getattr(S, '__{}__'.format(op))
+        func = getattr(S, f'__{op}__')
         s = func(1)
         assert s.dtype == np.float64
         s = func(1.)
@@ -1008,7 +1008,7 @@ def test_op3(setup):
 
     S = S.copy(dtype=np.complex128)
     for op in ['add', 'sub', 'mul', 'pow']:
-        func = getattr(S, '__{}__'.format(op))
+        func = getattr(S, f'__{op}__')
         s = func(1)
         assert s.dtype == np.complex128
         s = func(1.)

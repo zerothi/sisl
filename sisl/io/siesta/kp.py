@@ -60,7 +60,7 @@ class kpSileSiesta(SileSiesta):
         sile_raise_write(self)
 
         nk = len(k)
-        self._write('{}\n'.format(nk))
+        self._write(f'{nk}\n')
         _fmt = ('{:d}' + (' {:' + fmt + '}') * 4) + '\n'
 
         for i, (kk, w) in enumerate(zip(np.atleast_2d(k), weight)):

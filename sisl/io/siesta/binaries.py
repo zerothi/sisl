@@ -75,15 +75,15 @@ def _geometry_align(geom_b, geom_u, cls, method):
 
     # Try and figure out what to do
     if not np.allclose(geom_b.xyz, geom.xyz):
-        warn("{cls}.{method} has mismatched atomic coordinates, will copy geometry and use file XYZ.".format(cls=cls.__name__, method=method))
+        warn(f"{cls.__name__}.{method} has mismatched atomic coordinates, will copy geometry and use file XYZ.")
         geom, is_copy = get_copy(geom, is_copy)
         geom.xyz[:, :] = geom_b.xyz[:, :]
     if not np.allclose(geom_b.sc.cell, geom.sc.cell):
-        warn("{cls}.{method} has non-equal lattice vectors, will copy geometry and use file lattice.".format(cls=cls.__name__, method=method))
+        warn(f"{cls.__name__}.{method} has non-equal lattice vectors, will copy geometry and use file lattice.")
         geom, is_copy = get_copy(geom, is_copy)
         geom.sc.cell[:, :] = geom_b.sc.cell[:, :]
     if not np.array_equal(geom_b.nsc, geom.nsc):
-        warn("{cls}.{method} has non-equal number of supercells, will copy geometry and use file supercell count.".format(cls=cls.__name__, method=method))
+        warn(f"{cls.__name__}.{method} has non-equal number of supercells, will copy geometry and use file supercell count.")
         geom, is_copy = get_copy(geom, is_copy)
         geom.set_nsc(geom_b.nsc)
 
@@ -92,7 +92,7 @@ def _geometry_align(geom_b, geom_u, cls, method):
     # prefer to use the user-supplied atomic species, but fill with
     # *random* orbitals
     if not np.array_equal(geom_b.atoms.orbitals, geom.atoms.orbitals):
-        warn("{cls}.{method} has non-equal number of orbitals per atom, will correct with *empty* orbitals.".format(cls=cls.__name__, method=method))
+        warn(f"{cls.__name__}.{method} has non-equal number of orbitals per atom, will correct with *empty* orbitals.")
         geom, is_copy = get_copy(geom, is_copy)
 
         # Now create a new atom specie with the correct number of orbitals
@@ -264,7 +264,7 @@ class tshsSileSiesta(onlysSileSiesta):
         # Find all indices where dS == 1 (remember col is in fortran indices)
         idx = col[np.isclose(dS, 1.).nonzero()[0]]
         if np.any(idx > no):
-            print('Number of orbitals: {}'.format(no))
+            print(f'Number of orbitals: {no}')
             print(idx)
             raise SileError(str(self) + '.read_hamiltonian could not assert '
                             'the supercell connections in the primary unit-cell.')
@@ -886,10 +886,10 @@ class _gfSileSiesta(SileBinSiesta):
         ret_E = self._E[idxE]
         if abs(ret_E - E) > 5e-3:
             warn(self.__class__.__name__ + " requesting energy " +
-                 "{:.5f} eV, found {:.5f} eV as the closest energy!".format(E, ret_E))
+                 f"{E:.5f} eV, found {ret_E:.5f} eV as the closest energy!")
         elif abs(ret_E - E) > 1e-3:
             info(self.__class__.__name__ + " requesting energy " +
-                 "{:.5f} eV, found {:.5f} eV as the closest energy!".format(E, ret_E))
+                 f"{E:.5f} eV, found {ret_E:.5f} eV as the closest energy!")
         return idxE
 
     def kindex(self, k):

@@ -378,7 +378,7 @@ class TestHamiltonian:
             H[0, j] = i
 
         for op in ['add', 'sub', 'mul', 'pow']:
-            func = getattr(H, '__{}__'.format(op))
+            func = getattr(H, f'__{op}__')
             h = func(1)
             assert h.dtype == np.int32
             h = func(1.)
@@ -389,7 +389,7 @@ class TestHamiltonian:
 
         H = H.copy(dtype=np.float64)
         for op in ['add', 'sub', 'mul', 'pow']:
-            func = getattr(H, '__{}__'.format(op))
+            func = getattr(H, f'__{op}__')
             h = func(1)
             assert h.dtype == np.float64
             h = func(1.)
@@ -400,7 +400,7 @@ class TestHamiltonian:
 
         H = H.copy(dtype=np.complex128)
         for op in ['add', 'sub', 'mul', 'pow']:
-            func = getattr(H, '__{}__'.format(op))
+            func = getattr(H, f'__{op}__')
             h = func(1)
             assert h.dtype == np.complex128
             h = func(1.)

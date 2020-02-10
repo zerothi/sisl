@@ -1442,7 +1442,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
         # Extract maximum R
         R = atom.maxR()
         if R <= 0.:
-            warn("wavefunction: Atom '{}' does not have a wave-function, skipping atom.".format(atom))
+            warn(f"wavefunction: Atom '{atom}' does not have a wave-function, skipping atom.")
             eta.update()
             continue
 
@@ -1493,7 +1493,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
             oR = os[0].R
 
             if oR <= 0.:
-                warn("wavefunction: Orbital(s) '{}' does not have a wave-function, skipping orbital!".format(os))
+                warn(f"wavefunction: Orbital(s) '{os}' does not have a wave-function, skipping orbital!")
                 # Skip these orbitals
                 io += len(os)
                 continue

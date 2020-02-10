@@ -85,14 +85,14 @@ def solve_poisson(geometry, shape, radius=2.0,
         error = error or (name not in elecs_V)
 
     if len(elecs) == 0:
-        raise ValueError("{}: Could not find any electrodes in the geometry.".format(_script))
+        raise ValueError(f"{_script}: Could not find any electrodes in the geometry.")
 
     error = error or len(elecs) != len(elecs_V)
     if error:
         for name in elecs:
             if not name in elecs_V:
-                print(" missing electrode bias: {}".format(name))
-        raise ValueError("{}: Missing electrode arguments for specifying the bias.".format(_script))
+                print(f" missing electrode bias: {name}")
+        raise ValueError(f"{_script}: Missing electrode arguments for specifying the bias.")
 
     if boundary is None:
         bc = [[si.Grid.PERIODIC, si.Grid.PERIODIC] for _ in range(3)]
@@ -104,7 +104,7 @@ def solve_poisson(geometry, shape, radius=2.0,
         for bottom, top in boundary:
             bc.append([getattr(si.Grid, bc2bc(bottom)), getattr(si.Grid, bc2bc(top))])
         if len(bc) != 3:
-            raise ValueError("{}: Requires a 3x2 list input for the boundary conditions.".format(_script))
+            raise ValueError(f"{_script}: Requires a 3x2 list input for the boundary conditions.")
 
     def _create_shape_tree(xyz, A, B):
         """ Takes two lists A and B which are forming a tree """
@@ -153,7 +153,7 @@ def solve_poisson(geometry, shape, radius=2.0,
     xyz = geometry.xyz
 
     if not device_val is None:
-        print("\nApplying device potential = {}".format(device_val))
+        print(f"\nApplying device potential = {device_val}")
         idx = geometry.names[elec]
         idx_1, idx_2 = np.array_split(idx, 2)
         device = _create_shape_tree(xyz, idx_1, idx_2)
@@ -166,7 +166,7 @@ def solve_poisson(geometry, shape, radius=2.0,
     print("\nApplying electrode potentials")
     for i, elec in enumerate(elecs):
         V = elecs_V[elec]
-        print("  - {} = {}".format(elec, V))
+        print(f"  - {elec} = {V}")
 
         idx = geometry.names[elec]
         idx_1, idx_2 = np.array_split(idx, 2)
@@ -237,7 +237,7 @@ if __name__ == "__main__":
 
     n = {"a": "first", "b": "second", "c": "third"}
     for d in "abc":
-        p.add_argument("--boundary-condition-{}".format(d), "-bc-{}".format(d), nargs=2, type=str, default=["p", "p"],
+        p.add_argument(f"--boundary-condition-{d}", f"-bc-{d}", nargs=2, type=str, default=["p", "p"],
                        metavar=("BOTTOM", "TOP"),
                        help=("Boundary condition along the {} lattice vector [periodic/p, neumann/n, dirichlet/d]. "
                              "Provide two to specify separate BC at the start and end of the lattice vector, respectively.".format(n[d])))
@@ -285,7 +285,7 @@ Try one of: cg, gmres, fgmres, cr, cgnr, cgne, bicgstab, steepest_descent, minim
     args = p.parse_args()
 
     if args.out is None:
-        print(">\n>\n>{}: No out-files has been specified, work will be carried out but not saved!\n>\n>\n".format(_script))
+        print(f">\n>\n>{_script}: No out-files has been specified, work will be carried out but not saved!\n>\n>\n")
 
     # Read in geometry
     geometry = si.get_sile(args.geometry).read_geometry()
@@ -330,5 +330,5 @@ Try one of: cg, gmres, fgmres, cr, cgnr, cgne, bicgstab, steepest_descent, minim
     print("")
     # Write solution to the output
     for out in args.out:
-        print("Writing to file: {}...".format(out))
+        print(f"Writing to file: {out}...")
         V.write(out)

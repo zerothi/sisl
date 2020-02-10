@@ -47,9 +47,9 @@ except Exception as e:
 
     # Add Mock modules
     MOCK_MODULES = ['sisl.io.siesta._siesta']
-    MOCK_MODULES.extend(['sisl._{}'.format(a)
+    MOCK_MODULES.extend([f'sisl._{a}'
                          for a in ['indices', 'math_small', 'sparse', 'supercell']])
-    MOCK_MODULES.extend(['sisl.physics._matrix_{}'.format(a)
+    MOCK_MODULES.extend([f'sisl.physics._matrix_{a}'
                          for a in ['ddk', 'diag_k_nc_dtype',
                                    'dk', 'k_dtype', 'k_factor_dtype',
                                    'k_nc_dtype', 'k', 'k_so_dtype']])

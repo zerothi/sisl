@@ -88,7 +88,7 @@ class asciiSileBigDFT(SileBigDFT):
                 spec.append(Atom(s, tag=t))
 
         except OSError as e:
-            print("I/O error({}): {}".format(e.errno, e.strerror))
+            print(f"I/O error({e.errno}): {e.strerror}")
         except Exception:
             # Allowed pass due to pythonic reading
             pass
@@ -134,7 +134,7 @@ class asciiSileBigDFT(SileBigDFT):
         # Write out the cell
         self._write('# Created by sisl\n')
         # We write the cell coordinates as the cell coordinates
-        fmt_str = '{{:{0}}} '.format(fmt) * 3 + '\n'
+        fmt_str = f'{{:{fmt}}} ' * 3 + '\n'
         self._write(
             fmt_str.format(
                 geom.cell[0, 0], geom.cell[1, 0], geom.cell[1, 1]))

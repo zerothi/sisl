@@ -20,7 +20,7 @@ if len(sys.argv) > 1:
     N = int(sys.argv[1])
 else:
     N = 200
-print("N = {}".format(N))
+print(f"N = {N}")
 
 # Always fix the random seed to make each profiling concurrent
 np.random.seed(1234567890)

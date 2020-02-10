@@ -65,7 +65,7 @@ class NamedIndex:
            the indices that has a name associated
         """
         if name in self._name:
-            raise SislError(self.__class__.__name__ + '.add_name already contains name {}, please delete group name before adding.'.format(name))
+            raise SislError(self.__class__.__name__ + f'.add_name already contains name {name}, please delete group name before adding.')
         self._name.append(name)
         if isinstance(index, ndarray) and index.dtype == bool_:
             index = np.flatnonzero(index)
@@ -88,7 +88,7 @@ class NamedIndex:
         N = len(self)
         if N == 0:
             return self.__class__.__name__ + '{}'
-        s = self.__class__.__name__ + '{{groups: {0}'.format(N)
+        s = self.__class__.__name__ + f'{{groups: {N}'
         for name, idx in zip(self._name, self._index):
             s += ',\n {}: [{}]'.format(name, list2str(idx))
         return s + '\n}'
@@ -186,7 +186,7 @@ class NamedIndex:
                 del new[name]
 
         else:
-            raise ValueError("{}.merge wrong argument: duplicate.".format(self.__class__.__name__))
+            raise ValueError(f"{self.__class__.__name__}.merge wrong argument: duplicate.")
 
         return new
 
@@ -228,7 +228,7 @@ class NamedIndex:
 
         for name in names:
             if name not in self._name:
-                raise ValueError("{}.sub_name specified name ({}) is not in object.".format(self.__class__.__name__, name))
+                raise ValueError(f"{self.__class__.__name__}.sub_name specified name ({name}) is not in object.")
 
         new_index = []
         for name in self:

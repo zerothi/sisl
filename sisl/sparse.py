@@ -199,7 +199,7 @@ class SparseCSR:
         # unpack size and check the sizes are "physical"
         M, N, K = arg1
         if M <= 0 or N <= 0 or K <= 0:
-            raise ValueError(self.__class__.__name__ + " invalid size of sparse matrix, one of the dimensions is zero: M={}, N={}, K={}".format(M, N, K))
+            raise ValueError(self.__class__.__name__ + f" invalid size of sparse matrix, one of the dimensions is zero: M={M}, N={N}, K={K}")
 
         # Store shape
         self._shape = (M, N, K)
@@ -387,7 +387,7 @@ class SparseCSR:
                 ccol[:] = ccol[idx]
                 if not sorted_unique(ccol):
                     raise SislError('You cannot have two elements between the same ' +
-                                    'i,j index (i={}), something has went terribly wrong.'.format(r))
+                                    f'i,j index (i={r}), something has went terribly wrong.')
                 DD[:, :] = DD[idx, :]
 
         else:
@@ -396,7 +396,7 @@ class SparseCSR:
                 ptr2 = ptr[r+1]
                 if unique(col[ptr1:ptr2]).shape[0] != ptr2 - ptr1:
                     raise SislError('You cannot have two elements between the same ' +
-                                    'i,j index (i={}), something has went terribly wrong.'.format(r))
+                                    f'i,j index (i={r}), something has went terribly wrong.')
 
         if len(col) != self.nnz:
             raise SislError('Final size in the sparse matrix finalization went wrong.') # pragma: no cover

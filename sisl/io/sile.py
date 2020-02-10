@@ -71,7 +71,7 @@ class _sile_rule:
         s = '{cls}{{case={case}, suffix={suffix}, gzip={gzip},\n '.format(cls=self.cls.__name__, case=self.case,
                                                                           suffix=self.suffix, gzip=self.gzip)
         for b in self.bases:
-            s += ' {},\n '.format(b.__name__)
+            s += f' {b.__name__},\n '
         return s[:-3] + '\n}'
 
     def build_bases(self):
@@ -424,7 +424,7 @@ class BaseSile:
     def __getattr__(self, name):
         """ Override to check the handle """
         if name == 'fh':
-            raise AttributeError("The filehandle for {} has not been opened yet...".format(self.file))
+            raise AttributeError(f"The filehandle for {self.file} has not been opened yet...")
         return getattr(self.fh, name)
 
     @classmethod

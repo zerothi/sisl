@@ -122,9 +122,9 @@ class Selector:
         s = self.__class__.__name__ + '{{n={0}, \n'.format(len(self))
         for r, p in zip(self.routines, self.performances):
             if p is None:
-                s += '  {{{0}: <not tried>}},\n'.format(r.__name__)
+                s += f'  {{{r.__name__}: <not tried>}},\n'
             else:
-                s += '  {{{0}: {1}}},\n'.format(r.__name__, p)
+                s += f'  {{{r.__name__}: {p}}},\n'
         return s + '}'
 
     def prepend(self, routine):

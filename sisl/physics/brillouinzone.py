@@ -1125,7 +1125,7 @@ class MonkhorstPack(BrillouinZone):
             # define the Grid size, etc.
             diag = self._diag.copy()
             if not np.all(self._displ == 0):
-                raise SislError(self.__class__.__name__ + '.{} requires the displacement to be 0 for all k-points.'.format(self._bz_attr))
+                raise SislError(self.__class__.__name__ + f'.{self._bz_attr} requires the displacement to be 0 for all k-points.')
             displ = self._displ.copy()
             size = self._size.copy()
             steps = size / diag
@@ -1166,7 +1166,7 @@ class MonkhorstPack(BrillouinZone):
 
             if data_axis is None:
                 if v.size != 1:
-                    raise SislError(self.__class__.__name__ + '.{} requires one value per-kpoint because of the 3D grid values'.format(self._bz_attr))
+                    raise SislError(self.__class__.__name__ + f'.{self._bz_attr} requires one value per-kpoint because of the 3D grid values')
 
             else:
 

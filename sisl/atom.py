@@ -1739,7 +1739,7 @@ class Atoms:
             if a.no != atom.no:
                 a1 = '  ' + str(a).replace('\n', '\n  ')
                 a2 = '  ' + str(atom).replace('\n', '\n  ')
-                info('Substituting atom\n{}\n->\n{}\nwith a different number of orbitals!'.format(a1, a2))
+                info(f'Substituting atom\n{a1}\n->\n{a2}\nwith a different number of orbitals!')
         self._specie[index] = specie
         # Update orbital counts...
         self._update_orbitals()
@@ -1778,7 +1778,7 @@ class Atoms:
                 if atom.no != atom_to.no:
                     a1 = '  ' + str(atom).replace('\n', '\n  ')
                     a2 = '  ' + str(atom_to).replace('\n', '\n  ')
-                    info('Replacing atom\n{}\n->\n{}\nwith a different number of orbitals!'.format(a1, a2))
+                    info(f'Replacing atom\n{a1}\n->\n{a2}\nwith a different number of orbitals!')
                     update_orbitals = True
                 self._atom[i] = atom_to
 

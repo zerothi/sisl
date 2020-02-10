@@ -225,7 +225,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
         slvl = 'LEVEL-'+str(ilvl)
         if slvl in self.groups:
             return self._crt_grp(self, slvl)
-        raise ValueError("Level {} does not exist in {}.".format(ilvl, self.file))
+        raise ValueError(f"Level {ilvl} does not exist in {self.file}.")
 
     def _add_lvl(self, ilvl):
         """ Simply adds and returns a group if it does not exist it will be created """
@@ -331,11 +331,11 @@ class deltancSileTBtrans(SileCDFTBtrans):
             # point, this warning will proceed...
             # I.e. even though the variable has not been set, it will WARN
             # Hence we out-comment this for now...
-            warn(SileWarning('Overwriting k-point {} and energy point {} correction.'.format(ik, iE)))
+            warn(SileWarning(f'Overwriting k-point {ik} and energy point {iE} correction.'))
         elif ilvl == 3 and warn_E:
-            warn(SileWarning('Overwriting energy point {} correction.'.format(iE)))
+            warn(SileWarning(f'Overwriting energy point {iE} correction.'))
         elif ilvl == 2 and warn_k:
-            warn(SileWarning('Overwriting k-point {} correction.'.format(ik)))
+            warn(SileWarning(f'Overwriting k-point {ik} correction.'))
 
         if ilvl == 1:
             dim = ('spin', 'nnzs')
@@ -402,7 +402,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
         lvl = self._get_lvl(ilvl)
 
         if iE < 0 and ilvl in [3, 4]:
-            raise ValueError("Energy {} eV does not exist in the file.".format(E))
+            raise ValueError(f"Energy {E} eV does not exist in the file.")
         if ik < 0 and ilvl in [2, 4]:
             raise ValueError("k-point requested does not exist in the file.")
 

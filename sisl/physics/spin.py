@@ -98,12 +98,12 @@ class Spin:
     def __str__(self):
         s = self.__class__.__name__
         if self.is_unpolarized:
-            return s + '{{unpolarized, kind={}}}'.format(self.dkind)
+            return s + f'{{unpolarized, kind={self.dkind}}}'
         if self.is_polarized:
-            return s + '{{polarized, kind={}}}'.format(self.dkind)
+            return s + f'{{polarized, kind={self.dkind}}}'
         if self.is_noncolinear:
-            return s + '{{non-colinear, kind={}}}'.format(self.dkind)
-        return s + '{{spin-orbit, kind={}}}'.format(self.dkind)
+            return s + f'{{non-colinear, kind={self.dkind}}}'
+        return s + f'{{spin-orbit, kind={self.dkind}}}'
 
     def copy(self):
         """ Create a copy of the spin-object """

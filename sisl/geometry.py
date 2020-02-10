@@ -572,7 +572,7 @@ class Geometry(SuperCellChild):
 
     def __str__(self):
         """ str of the object """
-        s = self.__class__.__name__ + '{{na: {0}, no: {1},\n '.format(self.na, self.no)
+        s = self.__class__.__name__ + f'{{na: {self.na}, no: {self.no},\n '
         s += str(self.atom).replace('\n', '\n ')
         if len(self.names) > 0:
             s += ',\n ' + str(self.names).replace('\n', '\n ')
@@ -3839,7 +3839,7 @@ class Geometry(SuperCellChild):
                     if isinstance(vs, bool):
                         if vs:
                             vs = 1. / np.max(sqrt(square(v).sum(1)))
-                            info('Scaling vector by: {}'.format(vs))
+                            info(f'Scaling vector by: {vs}')
                         else:
                             vs = 1.
 
@@ -3950,7 +3950,7 @@ lattice vector.
                 geometry = get_sile(input_file).read_geometry()
             else:
                 from .messages import info
-                info("Cannot find file '{}'!".format(input_file))
+                info(f"Cannot find file '{input_file}'!")
                 geometry = Geometry
                 stdout_geom = False
 

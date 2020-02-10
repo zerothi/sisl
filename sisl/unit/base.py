@@ -197,7 +197,7 @@ class UnitParser:
                     if to in tbl[k]:
                         return tbl[k][fr] / tbl[k][to]
                     break
-            raise ValueError('The unit conversion is not from the same group: {} to {}!'.format(fr, to))
+            raise ValueError(f'The unit conversion is not from the same group: {fr} to {to}!')
 
         def group(unit):
             tbl = self._table
@@ -210,7 +210,7 @@ class UnitParser:
             tbl = self._table
             k = tbl.get(group, None)
             if k is None:
-                raise ValueError('The unit-group {} does not exist!'.format(group))
+                raise ValueError(f'The unit-group {group} does not exist!')
             return k['DEFAULT']
 
         self._left = []
@@ -352,7 +352,7 @@ class UnitParser:
             right = list(self._right)
             self._empty_list(self._left)
             self._empty_list(self._right)
-            raise ValueError('The unit conversion is not from the same group: {} to {}!'.format(left, right))
+            raise ValueError(f'The unit conversion is not from the same group: {left} to {right}!')
         self._empty_list(self._left)
         self._empty_list(self._right)
         return conv_A / conv_B

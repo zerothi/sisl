@@ -81,7 +81,7 @@ class fdfSileSiesta(SileSiesta):
             self._parent_fh.append(self.fh)
             self.fh = open(self.dir_file(f), self._mode)
         else:
-            warn(str(self) + ' is trying to include file: {} but the file seems not to exist? Will disregard file!'.format(f))
+            warn(str(self) + f' is trying to include file: {f} but the file seems not to exist? Will disregard file!')
 
     def _popfile(self):
         if len(self._parent_fh) > 0:
@@ -425,7 +425,7 @@ class fdfSileSiesta(SileSiesta):
                     write(fh, value)
                     if keep:
                         fh.write('# Old value ({})\n'.format(datetime.today().strftime('%Y-%m-%d %H:%M')))
-                        fh.write('{}'.format(line))
+                        fh.write(f'{line}')
                     do_write = False
                 else:
                     fh.write(line)
@@ -434,7 +434,7 @@ class fdfSileSiesta(SileSiesta):
     def print(key, value):
         """ Return a string which is pretty-printing the key+value """
         if isinstance(value, list):
-            s = '%block {}'.format(key)
+            s = f'%block {key}'
             # if the value has any new-values
             has_nl = False
             for v in value:
@@ -447,9 +447,9 @@ class fdfSileSiesta(SileSiesta):
                 s += '\n{}'.format(''.join(value))
             else:
                 s += '\n{} {}'.format(value[0], '\n'.join(value[1:]))
-            s += '%endblock {}'.format(key)
+            s += f'%endblock {key}'
         else:
-            s = '{} {}'.format(key, value)
+            s = f'{key} {value}'
         return s
 
     @sile_fh_open()
@@ -468,7 +468,7 @@ class fdfSileSiesta(SileSiesta):
             unit = 'Ang'
 
         # Write out the cell
-        self._write('LatticeConstant 1.0 {}\n'.format(unit))
+        self._write(f'LatticeConstant 1.0 {unit}\n')
         self._write('%block LatticeVectors\n')
         self._write(fmt_str.format(*sc.cell[0, :] * conv))
         self._write(fmt_str.format(*sc.cell[1, :] * conv))
@@ -484,14 +484,14 @@ class fdfSileSiesta(SileSiesta):
         self.write_supercell(geom.sc, fmt, *args, **kwargs)
 
         self._write('\n')
-        self._write('NumberOfAtoms {}\n'.format(geom.na))
+        self._write(f'NumberOfAtoms {geom.na}\n')
         unit = kwargs.get('unit', 'Ang').capitalize()
         is_fractional = unit in ['Frac', 'Fractional']
         if is_fractional:
             self._write('AtomicCoordinatesFormat Fractional\n')
         else:
             conv = unit_convert('Ang', unit)
-            self._write('AtomicCoordinatesFormat {}\n'.format(unit))
+            self._write(f'AtomicCoordinatesFormat {unit}\n')
         self._write('%block AtomicCoordinatesAndAtomicSpecies\n')
 
         n_species = len(geom.atoms.atom)
@@ -503,8 +503,8 @@ class fdfSileSiesta(SileSiesta):
             xyz = geom.xyz * conv
             if fmt[0] == '.':
                 # Correct for a "same" length of all coordinates
-                c_max = len(str(('{{:{0}}}'.format(fmt)).format(xyz.max())))
-                c_min = len(str(('{{:{0}}}'.format(fmt)).format(xyz.min())))
+                c_max = len(str((f'{{:{fmt}}}').format(xyz.max())))
+                c_min = len(str((f'{{:{fmt}}}').format(xyz.min())))
                 fmt = str(max(c_min, c_max)) + fmt
         fmt_str = ' {{3:{0}}} {{4:{0}}} {{5:{0}}} {{0}} # {{1:{1}d}}: {{2}}\n'.format(fmt, len(str(len(geom))))
 
@@ -514,7 +514,7 @@ class fdfSileSiesta(SileSiesta):
 
         # Write out species
         # First swap key and value
-        self._write('NumberOfSpecies {}\n'.format(n_species))
+        self._write(f'NumberOfSpecies {n_species}\n')
         self._write('%block ChemicalSpeciesLabel\n')
         for i, a in enumerate(geom.atom.atom):
             self._write(' {} {} {}\n'.format(i + 1, a.Z, a.tag))
@@ -525,7 +525,7 @@ class fdfSileSiesta(SileSiesta):
             if write_block:
                 self._write('\n# Constraints\n%block Geometry.Constraints\n')
                 write_block = False
-            self._write(' atom [{}]{}\n'.format(atoms, append))
+            self._write(f' atom [{atoms}]{append}\n')
             return write_block
 
         for d in range(4):
@@ -534,7 +534,7 @@ class fdfSileSiesta(SileSiesta):
             if n in geom.names:
                 idx = list2str(geom.names[n] + 1).replace('-', ' -- ')
                 if len(idx) > 200:
-                    info(str(self) + '.write_geometry will not write the constraints for {} (too long line).'.format(n))
+                    info(str(self) + f'.write_geometry will not write the constraints for {n} (too long line).')
                 else:
                     _write_block = write_block(idx, append, _write_block)
 
@@ -774,7 +774,7 @@ class fdfSileSiesta(SileSiesta):
             fc_first = self.get('MD.FCFirst', default=0)
             fc_last = self.get('MD.FCLast', default=0)
             if 0 in [fc_first, fc_last]:
-                raise SislError(str(self) + '.read_force_constant(FC) requires FCFirst({})/FCLast({}) to be set correctly.'.format(fc_first, fc_last))
+                raise SislError(str(self) + f'.read_force_constant(FC) requires FCFirst({fc_first})/FCLast({fc_last}) to be set correctly.')
             if fc_last - fc_first + 1 != fc.shape[0]:
                 raise SislError(str(self) + '.read_force_constant(FC) expected {} displaced atoms, '
                                 'only found {} displaced atoms!'.format(fc_last - fc_first + 1, fc.shape[0]))
@@ -1454,7 +1454,7 @@ class fdfSileSiesta(SileSiesta):
     def _r_basis_orb_indx(self):
         f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.ORB_INDX'
         if isfile(f):
-            info(SileInfo('Siesta basis information is read from {}, the radial functions are in accessible.'.format(f)))
+            info(SileInfo(f'Siesta basis information is read from {f}, the radial functions are in accessible.'))
             return orbindxSileSiesta(f).read_basis(atoms=self._r_basis_fdf())
         return None
 
@@ -1487,7 +1487,7 @@ class fdfSileSiesta(SileSiesta):
             else:
                 raise ValueError
         except:
-            warn(str(self) + ' could not succesfully read the overlap matrix in {}.'.format(parent_call))
+            warn(str(self) + f' could not succesfully read the overlap matrix in {parent_call}.')
 
     def read_density_matrix(self, *args, **kwargs):
         """ Try and read density matrix by reading the <>.nc, <>.TSDE files, <>.DM (in that order)

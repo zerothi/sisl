@@ -212,7 +212,7 @@ class _SparseGeometry:
 
     def __str__(self):
         """ Representation of the sparse model """
-        s = self.__class__.__name__ + '{{dim: {0}, non-zero: {1}, kind={2}\n '.format(self.dim, self.nnz, self.dkind)
+        s = self.__class__.__name__ + f'{{dim: {self.dim}, non-zero: {self.nnz}, kind={self.dkind}\n '
         s += str(self.geometry).replace('\n', '\n ')
         return s + '\n}'
 
@@ -2081,7 +2081,7 @@ class SparseOrbital(_SparseGeometry):
         """
         # Check that the sparse matrices are compatible
         if not (type(self) is type(other)):
-            raise ValueError(self.__class__.__name__ + '.add requires other to be of same type: {}'.format(other.__class__.__name__))
+            raise ValueError(self.__class__.__name__ + f'.add requires other to be of same type: {other.__class__.__name__}')
 
         if self.dtype != other.dtype:
             raise ValueError(self.__class__.__name__ + '.add requires the same datatypes in the two matrices.')
@@ -2268,7 +2268,7 @@ class SparseOrbital(_SparseGeometry):
             a new instance with two sparse matrices joined and appended together
         """
         if not (type(self) is type(other)):
-            raise ValueError(self.__class__.__name__ + '.append requires other to be of same type: {}'.format(other.__class__.__name__))
+            raise ValueError(self.__class__.__name__ + f'.append requires other to be of same type: {other.__class__.__name__}')
 
         if self.geometry.nsc[axis] > 3 or other.geometry.nsc[axis] > 3:
             raise ValueError(self.__class__.__name__ + '.append requires sparse-geometries to maximally '

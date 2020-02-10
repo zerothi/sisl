@@ -100,15 +100,15 @@ class refSileScaleUp(SileScaleUp):
         s = ''
         for a in geom.atom.atom:
             # Append the species label
-            s += '{:<10}'.format(a.tag)
+            s += f'{a.tag:<10}'
         self._write(s + '\n')
 
-        fmt_str = '{{:{0}}} '.format(fmt) * 9 + '\n'
+        fmt_str = f'{{:{fmt}}} ' * 9 + '\n'
         self._write(fmt_str.format(*(geom.cell*Ang2Bohr).reshape(-1)))
 
         # Create line
         #   ix  iy  iz  ia  is   x  y  z
-        line = '{:5d}{:5d}{:5d}{:5d}{:5d}' + '{{:{0}}}'.format(fmt) * 3 + '\n'
+        line = '{:5d}{:5d}{:5d}{:5d}{:5d}' + f'{{:{fmt}}}' * 3 + '\n'
 
         args = [None] * 8
         for _, isc in geom.sc:

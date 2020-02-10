@@ -70,7 +70,7 @@ class omxSileOpenMX(SileOpenMX):
             self._parent_fh.append(self.fh)
             self.fh = open(self.dir_file(f), self._mode)
         else:
-            warn(str(self) + ' is trying to include file: {} but the file seems not to exist? Will disregard file!'.format(f))
+            warn(str(self) + f' is trying to include file: {f} but the file seems not to exist? Will disregard file!')
 
     def _popfile(self):
         if len(self._parent_fh) > 0:
@@ -434,7 +434,7 @@ class omxSileOpenMX(SileOpenMX):
             for atom in atoms:
                 if atom.tag == tag:
                     return atom
-            raise SislError('Error when reading the basis for atomic tag: {}.'.format(tag))
+            raise SislError(f'Error when reading the basis for atomic tag: {tag}.')
 
         xyz = []
         atom = []

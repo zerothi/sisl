@@ -186,10 +186,10 @@ class _ncSileTBtrans(SileCDFTBtrans):
         ret_E = self.E[idxE]
         if abs(ret_E - E) > 5e-3:
             warn(self.__class__.__name__ + " requesting energy " +
-                 "{:.5f} eV, found {:.5f} eV as the closest energy!".format(E, ret_E))
+                 f"{E:.5f} eV, found {ret_E:.5f} eV as the closest energy!")
         elif abs(ret_E - E) > 1e-3:
             info(self.__class__.__name__ + " requesting energy " +
-                 "{:.5f} eV, found {:.5f} eV as the closest energy!".format(E, ret_E))
+                 f"{E:.5f} eV, found {ret_E:.5f} eV as the closest energy!")
         return idxE
 
     def kindex(self, k):

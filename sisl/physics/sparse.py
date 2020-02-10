@@ -100,7 +100,7 @@ class SparseOrbitalBZ(SparseOrbital):
 
     def __str__(self):
         r""" Representation of the model """
-        s = self.__class__.__name__ + '{{dim: {0}, non-zero: {1}, orthogonal: {2}\n '.format(self.dim, self.nnz, self.orthogonal)
+        s = self.__class__.__name__ + f'{{dim: {self.dim}, non-zero: {self.nnz}, orthogonal: {self.orthogonal}\n '
         s += str(self.geometry).replace('\n', '\n ')
         return s + '\n}'
 
@@ -667,7 +667,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
     def __str__(self):
         r""" Representation of the model """
-        s = self.__class__.__name__ + '{{non-zero: {0}, orthogonal: {1},\n '.format(self.nnz, self.orthogonal)
+        s = self.__class__.__name__ + f'{{non-zero: {self.nnz}, orthogonal: {self.orthogonal},\n '
         s += str(self.spin).replace('\n', '\n ') + ',\n '
         s += str(self.geometry).replace('\n', '\n ')
         return s + '\n}'

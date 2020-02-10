@@ -34,7 +34,7 @@ class pdbSile(Sile):
     def _w_model(self, start):
         """ Writes the start of the next model """
         if start:
-            self._write('MODEL {}\n'.format(self._model))
+            self._write(f'MODEL {self._model}\n')
             self._model += 1
             # Serial counter
             self._serial = 1
@@ -185,7 +185,7 @@ class pdbSile(Sile):
         #61 - 66        Real(6.2)     tempFactor   Temperature  factor.
         #77 - 78        LString(2)    element      Element symbol, right-justified.
         #79 - 80        LString(2)    charge       Charge  on the atom.
-        fmt = '{:<6s}'.format(atom) + '{:5d} {:<4s}{:1s}{:<3s} {:1s}{:4d}{:1s}   ' + '{:8.3f}' * 3 + '{:6.2f}' * 2 + ' ' * 10 + '{:2s}' * 2 + '\n'
+        fmt = f'{atom:<6s}' + '{:5d} {:<4s}{:1s}{:<3s} {:1s}{:4d}{:1s}   ' + '{:8.3f}' * 3 + '{:6.2f}' * 2 + ' ' * 10 + '{:2s}' * 2 + '\n'
         xyz = geometry.xyz
         # Current U is used for "UNKNOWN" input. Possibly the user can specify this later.
         for ia in geometry:
