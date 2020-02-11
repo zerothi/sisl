@@ -68,7 +68,10 @@ class TestObject:
         if fp.exists():
             os.remove(str(fp))
         for Sile in get_siles():
-            sile = Sile(fp, _open=False)
+            if issubclass(Sile, SileCDF):
+                sile = Sile(fp, _open=False)
+            else:
+                sile = Sile(fp)
             assert isinstance(sile, Sile)
             assert not fp.exists()
 
@@ -77,7 +80,10 @@ class TestObject:
         if os.path.exists(fp):
             os.remove(fp)
         for Sile in get_siles():
-            sile = Sile(fp, _open=False)
+            if issubclass(Sile, SileCDF):
+                sile = Sile(fp, _open=False)
+            else:
+                sile = Sile(fp)
             assert isinstance(sile, Sile)
             assert not os.path.exists(fp)
 

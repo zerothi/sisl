@@ -377,9 +377,9 @@ class axsfSile(xsfSile):
 
     def _setup(self, *args, **kwargs):
         # Correct number of steps
-        if self._md_steps is None:
-            self._md_steps = 1
         super()._setup(*args, **kwargs)
+        if not hasattr(self, '_md_steps'):
+            self._md_steps = 1
 
     write_grid = None
 

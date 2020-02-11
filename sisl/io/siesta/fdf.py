@@ -808,25 +808,25 @@ class fdfSileSiesta(SileSiesta):
         return None
 
     def _r_fermi_level_nc(self):
-        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.nc'
+        f = self.dir_file(self.get('SystemLabel', default='siesta') + '.nc')
         if isfile(f):
             return ncSileSiesta(f).read_fermi_level()
         return None
 
     def _r_fermi_level_tsde(self):
-        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.TSDE'
+        f = self.dir_file(self.get('SystemLabel', default='siesta') + '.TSDE')
         if isfile(f):
             return tsdeSileSiesta(f).read_fermi_level()
         return None
 
     def _r_fermi_level_tshs(self):
-        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.TSHS'
+        f = self.dir_file(self.get('SystemLabel', default='siesta') + '.TSHS')
         if isfile(f):
             return tshsSileSiesta(f).read_fermi_level()
         return None
 
     def _r_fermi_level_eig(self):
-        f = self.dir_file(self.get('SystemLabel', default='siesta')) + '.EIG'
+        f = self.dir_file(self.get('SystemLabel', default='siesta') + '.EIG')
         if isfile(f):
             return eigSileSiesta(f).read_fermi_level()
         return None
