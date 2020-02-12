@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 from numbers import Integral
 from scipy.sparse import csr_matrix, triu, tril
 from scipy.sparse import hstack as ss_hstack
@@ -13,7 +11,6 @@ import sisl._array as _a
 from sisl._indices import indices_le, indices_fabs_le
 from sisl._math_small import xyz_to_spherical_cos_phi
 from sisl.messages import warn, tqdm_eta
-from sisl._help import _zip as zip, _range as range
 from sisl.utils.ranges import array_arange
 from .spin import Spin
 from sisl.sparse import SparseCSR
@@ -387,7 +384,7 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
             # Extract maximum R
             R = ia_atom.maxR()
             if R <= 0.:
-                warn("Atom '{}' does not have a wave-function, skipping atom.".format(ia_atom))
+                warn(f"Atom '{ia_atom}' does not have a wave-function, skipping atom.")
                 eta.update()
                 continue
 
@@ -572,11 +569,11 @@ class DensityMatrix(_realspace_DensityMatrix):
 
     def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
         """ Initialize density matrix """
-        super(DensityMatrix, self).__init__(geometry, dim, dtype, nnzpr, **kwargs)
+        super().__init__(geometry, dim, dtype, nnzpr, **kwargs)
         self._reset()
 
     def _reset(self):
-        super(DensityMatrix, self)._reset()
+        super()._reset()
         self.Dk = self.Pk
         self.dDk = self.dPk
         self.ddDk = self.ddPk

@@ -2,7 +2,6 @@
 
 This class is the basis of many different objects.
 """
-from __future__ import print_function, division
 
 import math
 from numbers import Integral
@@ -21,7 +20,7 @@ from ._supercell import cell_invert, cell_reciprocal
 __all__ = ['SuperCell', 'SuperCellChild']
 
 
-class SuperCell(object):
+class SuperCell:
     r""" A cell class to retain lattice vectors and a supercell structure
 
     The supercell structure is comprising the *primary* unit-cell and neighbouring
@@ -289,8 +288,7 @@ class SuperCell(object):
 
     def __iter__(self):
         """ Iterate the supercells and the indices of the supercells """
-        for i, sc in enumerate(self.sc_off):
-            yield i, sc
+        yield from enumerate(self.sc_off)
 
     def copy(self, cell=None, origo=None):
         """ A deepcopy of the object
@@ -357,8 +355,8 @@ class SuperCell(object):
         dist = np.sqrt((dot(cell.T, (x - ix).T) ** 2).sum(0))
         idx = (dist <= tol).nonzero()[0]
         if len(idx) == 0:
-            raise ValueError(('Could not fit the cell parameters to the coordinates '
-                              'due to insufficient accuracy (try increase the tolerance)'))
+            raise ValueError('Could not fit the cell parameters to the coordinates '
+                              'due to insufficient accuracy (try increase the tolerance)')
 
         # Reduce problem to allowed values below the tolerance
         x = x[idx, :]
@@ -1004,7 +1002,7 @@ class SuperCell(object):
         return axes
 
 
-class SuperCellChild(object):
+class SuperCellChild:
     """ Class to be inherited by using the ``self.sc`` as a `SuperCell` object
 
     Initialize by a `SuperCell` object and get access to several different

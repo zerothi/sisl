@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 from .sile import SileSiesta
 from ..sile import add_sile, sile_fh_open
 

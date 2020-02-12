@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import pytest
 
 import math as m
@@ -63,7 +61,7 @@ def setup():
 
 @pytest.mark.density_matrix
 @pytest.mark.energydensity_matrix
-class TestEnergyDensityMatrix(object):
+class TestEnergyDensityMatrix:
 
     def test_objects(self, setup):
         assert len(setup.E.xyz) == 2

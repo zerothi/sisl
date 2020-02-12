@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import os.path as osp
 import numpy as np
 
@@ -51,7 +49,7 @@ class xsfSile(Sile):
 
         # Print out the number of ANIMSTEPS (if required)
         if not self._md_steps is None:
-            self._write('ANIMSTEPS {}\n'.format(self._md_steps))
+            self._write(f'ANIMSTEPS {self._md_steps}\n')
 
         self._write('CRYSTAL\n#\n')
 
@@ -60,9 +58,9 @@ class xsfSile(Sile):
         if self._md_steps is None:
             self._write('PRIMVEC\n')
         else:
-            self._write('PRIMVEC {}\n'.format(self._md_index))
+            self._write(f'PRIMVEC {self._md_index}\n')
         # We write the cell coordinates as the cell coordinates
-        fmt_str = '{{:{0}}} '.format(fmt) * 3 + '\n'
+        fmt_str = f'{{:{fmt}}} ' * 3 + '\n'
         for i in [0, 1, 2]:
             self._write(fmt_str.format(*sc.cell[i, :]))
 
@@ -74,7 +72,7 @@ class xsfSile(Sile):
         if self._md_steps is None:
             self._write('CONVVEC\n')
         else:
-            self._write('CONVVEC {}\n'.format(self._md_index))
+            self._write(f'CONVVEC {self._md_index}\n')
         convcell = sc.toCuboid(True)._v
         for i in [0, 1, 2]:
             self._write(fmt_str.format(*convcell[i, :]))
@@ -108,7 +106,7 @@ class xsfSile(Sile):
         if self._md_steps is None:
             self._write('PRIMCOORD\n')
         else:
-            self._write('PRIMCOORD {}\n'.format(self._md_index))
+            self._write(f'PRIMCOORD {self._md_index}\n')
         self._write('{} {}\n'.format(len(geometry), 1))
 
         non_valid_Z = (geometry.atoms.Z <= 0).nonzero()[0]
@@ -244,9 +242,9 @@ class xsfSile(Sile):
 
             name = kwargs.get('grid' + str(i), str(i))
             if is_complex:
-                self._write(' BEGIN_DATAGRID_3D_real_{}\n'.format(name))
+                self._write(f' BEGIN_DATAGRID_3D_real_{name}\n')
             else:
-                self._write(' BEGIN_DATAGRID_3D_{}\n'.format(name))
+                self._write(f' BEGIN_DATAGRID_3D_{name}\n')
 
             write_cell(grid)
 
@@ -264,7 +262,7 @@ class xsfSile(Sile):
             # Skip if not complex
             if not is_complex:
                 continue
-            self._write(' BEGIN_DATAGRID_3D_imag_{}\n'.format(name))
+            self._write(f' BEGIN_DATAGRID_3D_imag_{name}\n')
             write_cell(grid)
             for x in np.nditer(np.asarray(grid.grid.imag.T, order='C').reshape(-1), flags=['external_loop', 'buffered'],
                                op_flags=[['readonly']], order='C', buffersize=buffersize):
@@ -332,8 +330,8 @@ class xsfSile(Sile):
                 input_sile = get_sile(input_file, mode='r')
 
                 vector = None
-                if hasattr(input_sile, 'read_{}'.format(routine)):
-                    vector = getattr(input_sile, 'read_{}'.format(routine))(*values)
+                if hasattr(input_sile, f'read_{routine}'):
+                    vector = getattr(input_sile, f'read_{routine}')(*values)
 
                 if vector is None:
                     # Try the read_data function
@@ -348,12 +346,12 @@ class xsfSile(Sile):
                     raise ValueError('{} could not be read from file: {}.'.format(routine.title(), input_file))
 
                 if len(vector) != len(ns._geometry):
-                    raise ValueError('read_{} could read from file: {}, sizes does not conform to geometry.'.format(routine, input_file))
+                    raise ValueError(f'read_{routine} could read from file: {input_file}, sizes does not conform to geometry.')
                 setattr(ns, '_vector', vector)
         p.add_argument('--vector', '-v', metavar=('DATA', '*ARGS, FILE'), nargs='+',
                        action=Vectors,
                        help='''Adds vector arrows for each atom, first argument is type (force, moment, ...).
-If the current input file contains the vectors no second argument is necessary, else 
+If the current input file contains the vectors no second argument is necessary, else
 the file containing the data is required as the last input.
 
 Any arguments inbetween are passed to the `read_data` function (in order).
@@ -378,9 +376,9 @@ class axsfSile(xsfSile):
     """
 
     def _setup(self, *args, **kwargs):
-        super(axsfSile, self)._setup(*args, **kwargs)
         # Correct number of steps
-        if self._md_steps is None:
+        super()._setup(*args, **kwargs)
+        if not hasattr(self, '_md_steps'):
             self._md_steps = 1
 
     write_grid = None

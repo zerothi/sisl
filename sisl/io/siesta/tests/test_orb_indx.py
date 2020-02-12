@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import pytest
 import os.path as osp
 from sisl.io.siesta.orb_indx import *

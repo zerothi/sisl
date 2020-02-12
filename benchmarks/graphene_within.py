@@ -28,7 +28,7 @@ if len(sys.argv) > 1:
     N = int(sys.argv[1])
 else:
     N = 200
-print("N = {}".format(N))
+print(f"N = {N}")
 
 gr = sisl.geom.graphene(orthogonal=True).tile(N, 0).tile(N, 1)
 H = sisl.Hamiltonian(gr)

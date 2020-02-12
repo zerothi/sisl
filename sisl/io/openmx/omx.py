@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import os.path as osp
 import numpy as np
 
@@ -51,9 +49,6 @@ class omxSileOpenMX(SileOpenMX):
     which forces the use of the omx file.
     """
 
-    def __init__(self, filename, mode='r', base=None):
-        super(omxSileOpenMX, self).__init__(filename, mode=mode, base=base)
-
     @property
     def file(self):
         """ Return the current file name (without the directory prefix) """
@@ -68,11 +63,11 @@ class omxSileOpenMX(SileOpenMX):
         self._parent_fh = []
 
     def _pushfile(self, f):
-        if osp.isfile(self.dir_file(f)):
+        if self.dir_file(f).is_file():
             self._parent_fh.append(self.fh)
-            self.fh = open(self.dir_file(f), self._mode)
+            self.fh = self.dir_file(f).open(self._mode)
         else:
-            warn(str(self) + ' is trying to include file: {} but the file seems not to exist? Will disregard file!'.format(f))
+            warn(str(self) + f' is trying to include file: {f} but the file seems not to exist? Will disregard file!')
 
     def _popfile(self):
         if len(self._parent_fh) > 0:
@@ -436,7 +431,7 @@ class omxSileOpenMX(SileOpenMX):
             for atom in atoms:
                 if atom.tag == tag:
                     return atom
-            raise SislError('Error when reading the basis for atomic tag: {}.'.format(tag))
+            raise SislError(f'Error when reading the basis for atomic tag: {tag}.')
 
         xyz = []
         atom = []

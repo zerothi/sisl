@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import warnings
 import functools as ftool
 from numbers import Integral
@@ -16,14 +14,14 @@ from .geometry import Geometry
 from .messages import warn, SislError, SislWarning, tqdm_eta
 from ._indices import indices_only
 from ._help import get_dtype
-from ._help import _zip as zip, _range as range, _map as map
 from .utils.ranges import array_arange, list2str
 from .sparse import SparseCSR, isspmatrix
+
 
 __all__ = ['SparseAtom', 'SparseOrbital']
 
 
-class _SparseGeometry(object):
+class _SparseGeometry:
     """ Sparse object containing sparse elements for a given geometry.
 
     This is a base class intended to be sub-classed because the sparsity information
@@ -214,7 +212,7 @@ class _SparseGeometry(object):
 
     def __str__(self):
         """ Representation of the sparse model """
-        s = self.__class__.__name__ + '{{dim: {0}, non-zero: {1}, kind={2}\n '.format(self.dim, self.nnz, self.dkind)
+        s = self.__class__.__name__ + f'{{dim: {self.dim}, non-zero: {self.nnz}, kind={self.dkind}\n '
         s += str(self.geometry).replace('\n', '\n ')
         return s + '\n}'
 
@@ -452,8 +450,7 @@ class _SparseGeometry(object):
         >>> for i, j in self.iter_nnz():
         ...    self[i, j] # is then the non-zero value
         """
-        for i, j in self._csr:
-            yield i, j
+        yield from self._csr
 
     __iter__ = iter_nnz
 
@@ -936,12 +933,10 @@ class SparseAtom(_SparseGeometry):
             only loop on the non-zero elements coinciding with the atoms
         """
         if atom is None:
-            for i, j in self._csr:
-                yield i, j
+            yield from self._csr
         else:
             atom = _a.asarrayi(atom).ravel()
-            for i, j in self._csr.iter_nnz(atom):
-                yield i, j
+            yield from self._csr.iter_nnz(atom)
 
     def set_nsc(self, *args, **kwargs):
         """ Reset the number of allowed supercells in the sparse atom
@@ -955,7 +950,7 @@ class SparseAtom(_SparseGeometry):
         --------
         SuperCell.set_nsc : the underlying called method
         """
-        super(SparseAtom, self).set_nsc(self.na, *args, **kwargs)
+        super().set_nsc(self.na, *args, **kwargs)
 
     def cut(self, seps, axis, *args, **kwargs):
         """ Cuts the sparse atom model into different parts.
@@ -1030,7 +1025,7 @@ class SparseAtom(_SparseGeometry):
             nsc[axis] = isc[axis] * seps + i
 
             if out:
-                warn('Cut the connection at nsc={0} in direction {1}.'.format(nsc[axis], axis))
+                warn('Cut the connection at nsc={} in direction {}.'.format(nsc[axis], axis))
 
         # Update number of super-cells
         nsc[:] = nsc[:] * 2 + 1
@@ -1450,11 +1445,9 @@ class SparseOrbital(_SparseGeometry):
         elif not orbital is None:
             orbital = _a.asarrayi(orbital)
         if orbital is None:
-            for i, j in self._csr:
-                yield i, j
+            yield from self._csr
         else:
-            for i, j in self._csr.iter_nnz(orbital):
-                yield i, j
+            yield from self._csr.iter_nnz(orbital)
 
     def set_nsc(self, *args, **kwargs):
         """ Reset the number of allowed supercells in the sparse orbital
@@ -1468,7 +1461,7 @@ class SparseOrbital(_SparseGeometry):
         --------
         SuperCell.set_nsc : the underlying called method
         """
-        super(SparseOrbital, self).set_nsc(self.no, *args, **kwargs)
+        super().set_nsc(self.no, *args, **kwargs)
 
     def cut(self, seps, axis, *args, **kwargs):
         """ Cuts the sparse orbital model into different parts.
@@ -1543,7 +1536,7 @@ class SparseOrbital(_SparseGeometry):
             nsc[axis] = isc[axis] * seps + i
 
             if out:
-                warn('Cut the connection at nsc={0} in direction {1}.'.format(nsc[axis], axis))
+                warn('Cut the connection at nsc={} in direction {}.'.format(nsc[axis], axis))
 
         # Update number of super-cells
         nsc[:] = nsc[:] * 2 + 1
@@ -1601,7 +1594,7 @@ class SparseOrbital(_SparseGeometry):
             atom = self.geometry.atoms.index(atom)
             atom = (self.geometry.atoms.specie == atom).nonzero()[0]
         # This will digress to call .sub
-        return super(SparseOrbital, self).remove(atom)
+        return super().remove(atom)
 
     def remove_orbital(self, atom, orbital):
         """ Remove a subset of orbitals on `atom` according to `orbital`
@@ -2088,7 +2081,7 @@ class SparseOrbital(_SparseGeometry):
         """
         # Check that the sparse matrices are compatible
         if not (type(self) is type(other)):
-            raise ValueError(self.__class__.__name__ + '.add requires other to be of same type: {}'.format(other.__class__.__name__))
+            raise ValueError(self.__class__.__name__ + f'.add requires other to be of same type: {other.__class__.__name__}')
 
         if self.dtype != other.dtype:
             raise ValueError(self.__class__.__name__ + '.add requires the same datatypes in the two matrices.')
@@ -2275,7 +2268,7 @@ class SparseOrbital(_SparseGeometry):
             a new instance with two sparse matrices joined and appended together
         """
         if not (type(self) is type(other)):
-            raise ValueError(self.__class__.__name__ + '.append requires other to be of same type: {}'.format(other.__class__.__name__))
+            raise ValueError(self.__class__.__name__ + f'.append requires other to be of same type: {other.__class__.__name__}')
 
         if self.geometry.nsc[axis] > 3 or other.geometry.nsc[axis] > 3:
             raise ValueError(self.__class__.__name__ + '.append requires sparse-geometries to maximally '

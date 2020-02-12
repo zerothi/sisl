@@ -25,23 +25,18 @@ notifications:
 matrix:
   include:
   - env:
-    - CONDA_ENV=py27
-  - env:
-    - CONDA_ENV=py27-opt
-    - OPTIONAL_DEPENDENCIES=true
-  - env:
     - CONDA_ENV=py36
   - env:
     - CONDA_ENV=py36-opt
     - OPTIONAL_DEPENDENCIES=true
+  - env:
+    - CONDA_ENV=py38
+  - env:
+    - CONDA_ENV=py38-opt
+    - OPTIONAL_DEPENDENCIES=true
 
 before_install:
-- |
-  if [[ "$TRAVIS_PYTHON_VERSION" == "2.7" ]]; then
-      wget https://repo.anaconda.com/miniconda/Miniconda2-latest-Linux-x86_64.sh -O miniconda.sh ;
-  else
-      wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh ;
-  fi
+- wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh ;
 - bash miniconda.sh -b -p $HOME/miniconda
 - export PATH=$HOME/miniconda/bin:$PATH
 - hash -r

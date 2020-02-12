@@ -9,8 +9,7 @@ sisl is easy to install using any of your preferred methods.
 Required dependencies
 ---------------------
 
-- `Python`_ 2.7, 3.4 or above
-- `six`_
+- `Python`_ 3.5 or above
 - `setuptools`_
 - `numpy`_ (1.13 or later)
 - `scipy`_ (0.18 or later)

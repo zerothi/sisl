@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import pytest
 
 import math as m
@@ -49,7 +47,7 @@ def setup():
 
 
 @pytest.mark.sgrid
-class TestsGrid(object):
+class TestsGrid:
 
     def test_help(self):
         with pytest.raises(SystemExit):

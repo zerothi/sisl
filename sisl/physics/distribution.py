@@ -35,7 +35,6 @@ Various distributions using different smearing techniques.
    :noindex:
 
 """
-from __future__ import print_function, division
 
 from functools import partial
 
@@ -84,7 +83,7 @@ def get_distribution(method, smearing=0.1, x0=0.):
         return partial(step_function, x0=x0)
     elif m in ['heavi', 'heavy', 'heaviside']:
         return partial(heaviside, x0=x0)
-    raise ValueError("get_distribution does not implement the {} distribution function, have you mispelled?".format(method))
+    raise ValueError(f"get_distribution does not implement the {method} distribution function, have you mispelled?")
 
 
 def gaussian(x, sigma=0.1, x0=0.):

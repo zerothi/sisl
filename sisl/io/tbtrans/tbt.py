@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 from numbers import Integral
 try:
     from StringIO import StringIO
@@ -24,7 +22,6 @@ import sisl._array as _a
 from sisl import Geometry, Atoms
 from sisl import units, constant
 from sisl.messages import warn, info, SislError
-from sisl._help import _range as range
 from sisl._help import wrap_filterwarnings
 from sisl.unit.siesta import unit_convert
 from sisl.physics.distribution import fermi_dirac
@@ -82,7 +79,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         file : str
             output filename
         """
-        f = self._file.replace('.nc', '.AV.nc')
+        f = self._file.with_suffix('.AV.nc')
         if len(args) > 0:
             f = args[0]
         f = kwargs.get('file', f)
@@ -107,8 +104,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             elif not tree is None:
                 group = tree
             if not group is None:
-                raise KeyError(self.__class__.__name__ + ' could not retrieve key "{}.{}" due to missing flags in the input file.'.format(group, name))
-            raise KeyError(self.__class__.__name__ + ' could not retrieve key "{}" due to missing flags in the input file.'.format(name))
+                raise KeyError(self.__class__.__name__ + f' could not retrieve key "{group}.{name}" due to missing flags in the input file.')
+            raise KeyError(self.__class__.__name__ + f' could not retrieve key "{name}" due to missing flags in the input file.')
 
         if self._k_avg:
             return v[:]
@@ -155,8 +152,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             elif not tree is None:
                 group = tree
             if not group is None:
-                raise KeyError(self.__class__.__name__ + ' could not retrieve key "{}.{}" due to missing flags in the input file.'.format(group, name))
-            raise KeyError(self.__class__.__name__ + ' could not retrieve key "{}" due to missing flags in the input file.'.format(name))
+                raise KeyError(self.__class__.__name__ + f' could not retrieve key "{group}.{name}" due to missing flags in the input file.')
+            raise KeyError(self.__class__.__name__ + f' could not retrieve key "{name}" due to missing flags in the input file.')
         if self._k_avg:
             return v[iE, ...]
 
@@ -413,8 +410,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             If `atom` or `orbital` is specified they are returned in that order.
         """
         if not atom is None and not orbital is None:
-            raise ValueError(('Both atom and orbital keyword in DOS request '
-                              'cannot be specified, only one at a time.'))
+            raise ValueError('Both atom and orbital keyword in DOS request '
+                              'cannot be specified, only one at a time.')
         # Cast to lower
         norm = norm.lower()
         if norm == 'none':
@@ -1629,7 +1626,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Examples
         --------
-        >>> COOP = tbt.orbital_COOP(-1.0) # COOP @ E = -1 eV 
+        >>> COOP = tbt.orbital_COOP(-1.0) # COOP @ E = -1 eV
         >>> COOP[10, 11] # COOP value between the 11th and 12th orbital
         >>> COOP.sum(1).A[tbt.o_dev, 0] == tbt.DOS(sum=False)[tbt.Eindex(-1.0)]
         >>> D = COOP.diagonal().sum()
@@ -1837,7 +1834,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Examples
         --------
-        >>> COHP = tbt.orbital_COHP(-1.0) # COHP @ E = -1 eV 
+        >>> COHP = tbt.orbital_COHP(-1.0) # COHP @ E = -1 eV
         >>> COHP[10, 11] # COHP value between the 11th and 12th orbital
 
         See Also
@@ -2074,9 +2071,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         dE = np.diff(E)
         dEm, dEM = np.amin(dE) * 1000, np.amax(dE) * 1000 # convert to meV
         if (dEM - dEm) < 1e-3: # 0.001 meV
-            prnt("     {:.5f} -- {:.5f} eV  [{:.3f} meV]".format(Em, EM, dEm))
+            prnt(f"     {Em:.5f} -- {EM:.5f} eV  [{dEm:.3f} meV]")
         else:
-            prnt("     {:.5f} -- {:.5f} eV  [{:.3f} -- {:.3f} meV]".format(Em, EM, dEm, dEM))
+            prnt(f"     {Em:.5f} -- {EM:.5f} eV  [{dEm:.3f} -- {dEM:.3f} meV]")
         prnt("  - imaginary part (eta): {:.4f} meV".format(self.eta() * 1e3))
         prnt("  - atoms with DOS (fortran indices):")
         prnt("     " + list2str(self.a_dev + 1))
@@ -2105,8 +2102,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             except:
                 n_btd = 'unknown'
             prnt()
-            prnt("Electrode: {}".format(elec))
-            prnt("  - number of BTD blocks: {}".format(n_btd))
+            prnt(f"Electrode: {elec}")
+            prnt(f"  - number of BTD blocks: {n_btd}")
             prnt("  - Bloch: [{}, {}, {}]".format(*bloch))
             gelec = self.groups[elec]
             if 'TBT' in self._trans_type:
@@ -2360,7 +2357,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 data = ns._tbt.transmission(e1, e2, kavg=ns._krng)[ns._Erng]
                 data.shape = (-1,)
                 ns._data.append(data)
-                ns._data_header.append('T[G0]:{}-{}'.format(e1, e2))
+                ns._data_header.append(f'T[G0]:{e1}-{e2}')
                 ns._data_description.append('Column {} is transmission from {} to {}'.format(len(ns._data), e1, e2))
         p.add_argument('-T', '--transmission', nargs=2, metavar=('ELEC1', 'ELEC2'),
                        action=DataT,
@@ -2386,7 +2383,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 data = ns._tbt.transmission_bulk(e, kavg=ns._krng)[ns._Erng]
                 data.shape = (-1,)
                 ns._data.append(data)
-                ns._data_header.append('BT[G0]:{}'.format(e))
+                ns._data_header.append(f'BT[G0]:{e}')
                 ns._data_description.append('Column {} is bulk-transmission'.format(len(ns._data)))
         p.add_argument('-BT', '--transmission-bulk', nargs=1, metavar='ELEC',
                        action=DataBT,
@@ -2403,7 +2400,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                     if e not in ns._tbt.elecs:
                         raise ValueError('Electrode: "'+e+'" cannot be found in the specified file.')
                     data = ns._tbt.ADOS(e, kavg=ns._krng, orbital=ns._Orng, norm=ns._norm)
-                    ns._data_header.append('ADOS[1/eV]:{}'.format(e))
+                    ns._data_header.append(f'ADOS[1/eV]:{e}')
                 else:
                     data = ns._tbt.DOS(kavg=ns._krng, orbital=ns._Orng, norm=ns._norm)
                     ns._data_header.append('DOS[1/eV]')
@@ -2436,7 +2433,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                     raise ValueError('Electrode: "'+e+'" cannot be found in the specified file.')
                 # Grab the information
                 data = ns._tbt.BDOS(e, kavg=ns._krng, sum=False)
-                ns._data_header.append('BDOS[1/eV]:{}'.format(e))
+                ns._data_header.append(f'BDOS[1/eV]:{e}')
                 # Select the energies, even if _Erng is None, this will work!
                 no = data.shape[-1]
                 data = np.mean(data[ns._Erng, ...], axis=-1).flatten()
@@ -2537,7 +2534,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 else:
                     ns._tbt.write_tbtav(value)
         p.add_argument('--tbt-av', action=AVOut, nargs='?', default=None,
-                       help='Create "{0}" with the k-averaged quantities of this file.'.format(self.file.replace('TBT.nc', 'TBT.AV.nc')))
+                       help='Create "{}" with the k-averaged quantities of this file.'.format(str(self.file).replace('TBT.nc', 'TBT.AV.nc')))
 
         class Plot(argparse.Action):
 
@@ -2742,7 +2739,7 @@ class tbtavncSileTBtrans(tbtncSileTBtrans):
                 v[:] = dvg[:]
 
         # Update the source attribute to signal the originating file
-        self.setncattr('source', 'k-average of: ' + tbt._file)
+        self.setncattr('source', 'k-average of: ' + str(tbt._file))
         self.sync()
 
     # Denote default writing routine

@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 from numbers import Integral
 
 # To speed up the extension algorithm we limit
@@ -27,7 +25,6 @@ from ._array import asarrayi, arrayi, fulli
 from ._indices import indices, indices_only, sorted_unique
 from .messages import warn, SislError
 from ._help import array_fill_repeat, get_dtype, isiterable
-from ._help import _range as range, _zip as zip, _map as map
 from .utils.ranges import array_arange
 
 # Although this re-implements the CSR in scipy.sparse.csr_matrix
@@ -36,7 +33,7 @@ from .utils.ranges import array_arange
 __all__ = ['SparseCSR', 'ispmatrix', 'ispmatrixd']
 
 
-class SparseCSR(object):
+class SparseCSR:
     """
     A compressed sparse row matrix, slightly different than :class:`~scipy.sparse.csr_matrix`.
 
@@ -202,7 +199,7 @@ class SparseCSR(object):
         # unpack size and check the sizes are "physical"
         M, N, K = arg1
         if M <= 0 or N <= 0 or K <= 0:
-            raise ValueError(self.__class__.__name__ + " invalid size of sparse matrix, one of the dimensions is zero: M={}, N={}, K={}".format(M, N, K))
+            raise ValueError(self.__class__.__name__ + f" invalid size of sparse matrix, one of the dimensions is zero: M={M}, N={N}, K={K}")
 
         # Store shape
         self._shape = (M, N, K)
@@ -390,7 +387,7 @@ class SparseCSR(object):
                 ccol[:] = ccol[idx]
                 if not sorted_unique(ccol):
                     raise SislError('You cannot have two elements between the same ' +
-                                    'i,j index (i={}), something has went terribly wrong.'.format(r))
+                                    f'i,j index (i={r}), something has went terribly wrong.')
                 DD[:, :] = DD[idx, :]
 
         else:
@@ -399,7 +396,7 @@ class SparseCSR(object):
                 ptr2 = ptr[r+1]
                 if unique(col[ptr1:ptr2]).shape[0] != ptr2 - ptr1:
                     raise SislError('You cannot have two elements between the same ' +
-                                    'i,j index (i={}), something has went terribly wrong.'.format(r))
+                                    f'i,j index (i={r}), something has went terribly wrong.')
 
         if len(col) != self.nnz:
             raise SislError('Final size in the sparse matrix finalization went wrong.') # pragma: no cover
@@ -1769,8 +1766,7 @@ def ispmatrix(matrix, map_row=None, map_col=None):
 
     if map_row is None and map_col is None:
         # Skip unique checks
-        for r, c in _ispmatrix_all(matrix):
-            yield r, c
+        yield from _ispmatrix_all(matrix)
         return
 
     if map_row is None:
@@ -1866,8 +1862,7 @@ def _ispmatrix_all(matrix):
                 yield r, c
 
     elif isspmatrix_coo(matrix):
-        for r, c in zip(matrix.row, matrix.col):
-            yield r, c
+        yield from zip(matrix.row, matrix.col)
 
     elif isspmatrix_csc(matrix):
         for c in range(matrix.shape[1]):
@@ -1926,8 +1921,7 @@ def ispmatrixd(matrix, map_row=None, map_col=None):
                 yield rr, c, m
 
     elif isspmatrix_coo(matrix):
-        for r, c, m in zip(map_row(matrix.row), map_col(matrix.col), matrix.data):
-            yield r, c, m
+        yield from zip(map_row(matrix.row), map_col(matrix.col), matrix.data)
 
     elif isspmatrix_csc(matrix):
         for c in range(matrix.shape[1]):

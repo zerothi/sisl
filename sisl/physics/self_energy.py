@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import numpy as np
 from numpy import dot, conjugate
 from numpy import subtract
@@ -24,7 +22,7 @@ __all__ += ['RecursiveSI']
 __all__ += ['RealSpaceSE', 'RealSpaceSI']
 
 
-class SelfEnergy(object):
+class SelfEnergy:
     r""" Self-energy object able to calculate the dense self-energy for a given sparse matrix
 
     The self-energy object contains a `SparseGeometry` object which, in it-self
@@ -626,7 +624,7 @@ class RealSpaceSE(SelfEnergy):
         """ String representation of RealSpaceSE """
         d = {'class': self.__class__.__name__}
         for i in range(3):
-            d['u{}'.format(i)] = self._unfold[i]
+            d[f'u{i}'] = self._unfold[i]
         d['semi'] = self._semi_axis
         d['k'] = str(list(self._k_axes))
         d['parent'] = str(self.parent).replace('\n', '\n ')
@@ -895,9 +893,9 @@ class RealSpaceSE(SelfEnergy):
         if is_k:
             axes = [s_ax] + k_ax.tolist()
             if np.any(k[axes] != 0.):
-                raise ValueError('{}.green requires the k-point to be zero along the integrated axes.'.format(self.__class__.__name__))
+                raise ValueError(f'{self.__class__.__name__}.green requires the k-point to be zero along the integrated axes.')
             if trs:
-                raise ValueError('{}.green requires a k-point sampled Green function to not use time reversal symmetry.'.format(self.__class__.__name__))
+                raise ValueError(f'{self.__class__.__name__}.green requires a k-point sampled Green function to not use time reversal symmetry.')
             # Shift k-points to get the correct k-point in the larger one.
             bz._k += k.reshape(1, 3)
 
@@ -1183,7 +1181,7 @@ class RealSpaceSI(SelfEnergy):
         """ String representation of RealSpaceSI """
         d = {'class': self.__class__.__name__}
         for i in range(3):
-            d['u{}'.format(i)] = self._unfold[i]
+            d[f'u{i}'] = self._unfold[i]
         d['k'] = str(list(self._k_axes))
         d['semi'] = str(self.semi).replace('\n', '\n  ')
         d['surface'] = str(self.surface).replace('\n', '\n  ')
@@ -1477,9 +1475,9 @@ class RealSpaceSI(SelfEnergy):
         if is_k:
             axes = [self.semi.semi_inf] + k_ax.tolist()
             if np.any(k[axes] != 0.):
-                raise ValueError('{}.green requires k-point to be zero along the integrated axes.'.format(self.__class__.__name__))
+                raise ValueError(f'{self.__class__.__name__}.green requires k-point to be zero along the integrated axes.')
             if trs:
-                raise ValueError('{}.green requires a k-point sampled Green function to not use time reversal symmetry.'.format(self.__class__.__name__))
+                raise ValueError(f'{self.__class__.__name__}.green requires a k-point sampled Green function to not use time reversal symmetry.')
             # Shift k-points to get the correct k-point in the larger one.
             bz._k += k.reshape(1, 3)
 

@@ -1,8 +1,5 @@
-from __future__ import print_function, division
-
 # To check for integers
 from numbers import Integral, Real
-from six import string_types
 from math import acos
 from itertools import product
 
@@ -17,8 +14,6 @@ from ._math_small import is_ascending
 from ._indices import indices_in_sphere_with_dist, indices_le, indices_gt_le
 from ._indices import list_index_le
 from .messages import info, warn, SislError
-from ._help import _str
-from ._help import _range as range
 from ._help import isndarray
 from .utils import default_ArgumentParser, default_namespace, cmd, str_spec
 from .utils import angle, direction
@@ -259,14 +254,14 @@ class Geometry(SuperCellChild):
 
     def __setitem__(self, atom, value):
         """ Specify geometry coordinates """
-        if isinstance(atom, _str):
+        if isinstance(atom, str):
             self.names.add_name(atom, value)
-        elif isinstance(value, _str):
+        elif isinstance(value, str):
             self.names.add_name(value, atom)
 
     def __getitem__(self, atom):
         """ Geometry coordinates (allows supercell indices) """
-        if isinstance(atom, (Integral, _str)):
+        if isinstance(atom, (Integral, str)):
             return self.axyz(atom)
 
         elif isinstance(atom, slice):
@@ -577,7 +572,7 @@ class Geometry(SuperCellChild):
 
     def __str__(self):
         """ str of the object """
-        s = self.__class__.__name__ + '{{na: {0}, no: {1},\n '.format(self.na, self.no)
+        s = self.__class__.__name__ + f'{{na: {self.na}, no: {self.no},\n '
         s += str(self.atom).replace('\n', '\n ')
         if len(self.names) > 0:
             s += ',\n ' + str(self.names).replace('\n', '\n ')
@@ -601,8 +596,7 @@ class Geometry(SuperCellChild):
         iter_species : iterate across indices and atomic species
         iter_orbitals : iterate across atomic indices and orbital indices
         """
-        for ia in range(len(self)):
-            yield ia
+        yield from range(len(self))
 
     __iter__ = iter
 
@@ -951,8 +945,7 @@ class Geometry(SuperCellChild):
 
         method = method.lower()
         if method == 'rand' or method == 'random':
-            for ias, idxs in self.iter_block_rand(iR, R, atom):
-                yield ias, idxs
+            yield from self.iter_block_rand(iR, R, atom)
         else:
             if R is None:
                 R = self.maxR()
@@ -965,8 +958,7 @@ class Geometry(SuperCellChild):
                 dS = (Cube(R * (2 * iR - 0.975)),
                       Cube(R * (2 * iR + 0.025)))
 
-            for ias, idxs in self.iter_block_shape(dS):
-                yield ias, idxs
+            yield from self.iter_block_shape(dS)
 
     def copy(self):
         """ A copy of the object. """
@@ -1046,7 +1038,7 @@ class Geometry(SuperCellChild):
             sorted geometry
         """
         axes = _a.arrayi(axes).ravel()
-        idx = np.lexsort(tuple((self.xyz[:, i] for i in axes)))
+        idx = np.lexsort(tuple(self.xyz[:, i] for i in axes))
         return self.sub(idx)
 
     def optimize_nsc(self, axis=None, R=None):
@@ -1187,7 +1179,7 @@ class Geometry(SuperCellChild):
         """
         if self.na % seps != 0:
             raise ValueError(self.__class__.__name__ + '.cut '
-                             'cannot be cut into {0} different '.format(seps) +
+                             'cannot be cut into {} different '.format(seps) +
                              'pieces. Please check your geometry and input.')
         # Truncate to the correct segments
         lseg = seg % seps
@@ -1417,7 +1409,7 @@ class Geometry(SuperCellChild):
             # either
             #  (r, axis)
             #  ((...), method
-            if isinstance(m[1], _str):
+            if isinstance(m[1], str):
                 method = method_tbl[m[1]]
                 m = m[0]
 
@@ -1469,7 +1461,7 @@ class Geometry(SuperCellChild):
            whether the returned value is in radians
         """
         xi = self.axyz(atom)
-        if isinstance(dir, (_str, Integral)):
+        if isinstance(dir, (str, Integral)):
             dir = self.cell[direction(dir), :]
         else:
             dir = _a.asarrayd(dir)
@@ -1728,7 +1720,7 @@ class Geometry(SuperCellChild):
         attach : attach a geometry
         insert : insert a geometry
         """
-        if isinstance(offset, _str):
+        if isinstance(offset, str):
             offset = offset.lower()
             if offset == 'none':
                 offset = self.cell[axis, :].reshape(1, 3)
@@ -1796,7 +1788,7 @@ class Geometry(SuperCellChild):
         attach : attach a geometry
         insert : insert a geometry
         """
-        if isinstance(offset, _str):
+        if isinstance(offset, str):
             offset = offset.lower()
             if offset == 'none':
                 offset = other.cell[axis, :].reshape(1, 3)
@@ -1979,7 +1971,7 @@ class Geometry(SuperCellChild):
             v = self.cell[axis, :]
             v = v / (v[0]**2 + v[1]**2 + v[2]**2) ** .5 * dist
 
-        elif isinstance(dist, string_types):
+        elif isinstance(dist, str):
             # We have a single rational number
             if axis is None:
                 raise ValueError(self.__class__.__name__ + ".attach, `axis` has not been specified, please specify the axis when using a distance")
@@ -3319,10 +3311,10 @@ class Geometry(SuperCellChild):
         if R is None:
             R = self.maxR()
             if R < 0:
-                raise ValueError((self.__class__.__name__ +
+                raise ValueError(self.__class__.__name__ +
                                   ".distance cannot determine the `R` parameter. "
                                   "The internal `maxR()` is negative and thus not set. "
-                                  "Set an explicit value for `R`."))
+                                  "Set an explicit value for `R`.")
         elif np.any(self.nsc > 1):
             maxR = fnorm(self.cell).max()
             # These loops could be leveraged if we look at angles...
@@ -3379,7 +3371,7 @@ class Geometry(SuperCellChild):
 
         # Now parse all of the shells with the correct routine
         # First we grap the routine:
-        if isinstance(method, _str):
+        if isinstance(method, str):
             if method == 'median':
                 def func(lst):
                     return np.median(lst, overwrite_input=True)
@@ -3847,7 +3839,7 @@ class Geometry(SuperCellChild):
                     if isinstance(vs, bool):
                         if vs:
                             vs = 1. / np.max(sqrt(square(v).sum(1)))
-                            info('Scaling vector by: {}'.format(vs))
+                            info(f'Scaling vector by: {vs}')
                         else:
                             vs = 1.
 
@@ -3958,7 +3950,7 @@ lattice vector.
                 geometry = get_sile(input_file).read_geometry()
             else:
                 from .messages import info
-                info("Cannot find file '{}'!".format(input_file))
+                info(f"Cannot find file '{input_file}'!")
                 geometry = Geometry
                 stdout_geom = False
 
@@ -3997,9 +3989,9 @@ lattice vector.
         # This is merely for testing purposes and may not be used for anything.
         print('Cell:')
         for i in (0, 1, 2):
-            print('  {0:10.6f} {1:10.6f} {2:10.6f}'.format(*g.cell[i, :]))
+            print('  {:10.6f} {:10.6f} {:10.6f}'.format(*g.cell[i, :]))
         print('SuperCell:')
-        print('  {0:d} {1:d} {2:d}'.format(*g.nsc))
+        print('  {:d} {:d} {:d}'.format(*g.nsc))
         print(' {:>10s} {:>10s} {:>10s}  {:>3s}'.format('x', 'y', 'z', 'Z'))
         for ia in g:
             print(' {1:10.6f} {2:10.6f} {3:10.6f}  {0:3d}'.format(g.atoms[ia].Z,

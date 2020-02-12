@@ -1,11 +1,8 @@
-from __future__ import print_function, division
-
 import os
 import numpy as np
 
 from .sile import SileSiesta
 from ..sile import *
-from sisl.io._help import *
 
 from sisl import Geometry, Atom, SuperCell
 from sisl.utils.cmd import *
@@ -32,7 +29,7 @@ class outSileSiesta(SileSiesta):
     _job_completed = False
 
     def readline(self):
-        line = super(outSileSiesta, self).readline()
+        line = super().readline()
         if 'Job completed' in line:
             self._job_completed = True
         return line

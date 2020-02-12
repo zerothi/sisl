@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 from numpy import dot, sqrt, square
 from numpy import cos, sin, arctan2, arccos
 from numpy import asarray, take, delete, empty
@@ -89,7 +87,7 @@ def orthogonalize(ref, vector):
     vector = asarray(vector).ravel()
     d = dot(ref, vector) / nr
     if abs(1. - abs(d) / fnorm(vector)) < 1e-7:
-        raise ValueError("orthogonalize: requires non-parallel vectors to perform an orthogonalization: ref.vector = {}".format(d))
+        raise ValueError(f"orthogonalize: requires non-parallel vectors to perform an orthogonalization: ref.vector = {d}")
     return vector - ref * d / nr
 
 

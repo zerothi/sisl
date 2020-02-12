@@ -8,7 +8,6 @@ dependencies:
   - libgfortran-ng
   - python=3.6
   - pip
-  - six
   - setuptools
   - pyparsing>=1.5.7
   - numpy>=1.13

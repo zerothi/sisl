@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import pytest
 
 from itertools import product
@@ -23,7 +21,7 @@ def setup():
 
 @pytest.mark.brillouinzone
 @pytest.mark.bz
-class TestBrillouinZone(object):
+class TestBrillouinZone:
 
     def setUp(self, setup):
         setup.s1 = SuperCell(1, nsc=[3, 3, 1])

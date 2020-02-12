@@ -1,7 +1,6 @@
 """
 Sile object for reading/writing GULP in/output
 """
-from __future__ import print_function, division
 
 import os.path as osp
 import numpy as np
@@ -73,10 +72,10 @@ class gotSileGULP(SileGULP):
         f, _ = self.step_to(self._keys['sc'])
         if not f:
             raise ValueError(
-                ('SileGULP tries to lookup the SuperCell vectors '
+                'SileGULP tries to lookup the SuperCell vectors '
                  'using key "' + self._keys['sc'] + '". \n'
                  'Use ".set_supercell_key(...)" to search for different name.\n'
-                 'This could not be found found in file: "' + self.file + '".'))
+                 'This could not be found found in file: "' + self.file + '".')
 
         # skip 1 line
         self.readline()
@@ -267,7 +266,7 @@ class gotSileGULP(SileGULP):
         # The output of the force constant in the file does not contain the mass-scaling
         # nor the unit conversion
         f = self.dir_file('FORCE_CONSTANTS_2ND')
-        if not osp.isfile(f):
+        if not f.is_file():
             return None
 
         fc = fcSileGULP(f, 'r').read_force_constant(**kwargs)

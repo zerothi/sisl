@@ -14,7 +14,6 @@ the periodicity of a given direction to describe the complete system.
    Bloch
 
 """
-from __future__ import print_function, division
 
 import numpy as np
 from numpy import zeros, empty
@@ -30,7 +29,7 @@ from ._bloch import bloch_unfold
 __all__ = ['Bloch']
 
 
-class Bloch(object):
+class Bloch:
     r""" Bloch's theorem object containing unfolding factors and unfolding algorithms
 
     This class is a wrapper for expanding *any* matrix from a smaller matrix cell into

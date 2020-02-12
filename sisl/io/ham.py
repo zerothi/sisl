@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import numpy as np
 from scipy.sparse import lil_matrix
 from scipy.sparse import triu
@@ -13,7 +11,6 @@ from sisl.messages import warn
 from sisl import Geometry, Atom, SuperCell
 from sisl.sparse import ispmatrix, ispmatrixd
 from sisl.physics import Hamiltonian
-from sisl._help import _range as range
 from sisl._help import wrap_filterwarnings
 from sisl import _array as _a
 
@@ -176,7 +173,7 @@ class hamiltonianSile(Sile):
         self._write('end cell\n')
 
         # Write number of super cells in each direction
-        self._write('\nsupercell {0:d} {1:d} {2:d}\n'.format(*geom.nsc))
+        self._write('\nsupercell {:d} {:d} {:d}\n'.format(*geom.nsc))
 
         # Write all atomic positions along with the specie type
         self._write('\nbegin atom\n')
@@ -232,7 +229,7 @@ class hamiltonianSile(Sile):
             fmt2_str = ' {{0:d}}[{{1:d}}] {{2:d}}[{{3:d}}] {{4:{0}}} {{5:{0}}}\n'.format(
                 fmt)
         else:
-            fmt1_str = ' {{0:d}} {{1:d}} {{2:{0}}}\n'.format(fmt)
+            fmt1_str = f' {{0:d}} {{1:d}} {{2:{fmt}}}\n'
             fmt2_str = ' {{0:d}} {{1:d}} {{2:{0}}} {{3:{0}}}\n'.format(fmt)
 
         # We currently force the model to be finalized
@@ -257,7 +254,7 @@ class hamiltonianSile(Sile):
                 if np.any(np.abs(diff.data) > herm_acc):
                     amax = np.amax(np.abs(diff.data))
                     warn(SileWarning('The model could not be asserted to be Hermitian '
-                                     'within the accuracy required ({0}).'.format(amax)))
+                                     'within the accuracy required ({}).'.format(amax)))
                     hermitian = False
                 del diff
 
@@ -309,7 +306,7 @@ class hamiltonianSile(Sile):
             if Hsub.getnnz() == 0:
                 continue
             # We have a contribution, write out the information
-            self._write('\nbegin matrix {0:d} {1:d} {2:d}\n'.format(*isc))
+            self._write('\nbegin matrix {:d} {:d} {:d}\n'.format(*isc))
             if advanced:
                 for jo, io, h in ispmatrixd(Hsub):
                     o = np.array([jo, io], np.int32)
@@ -339,7 +336,7 @@ class hamiltonianSile(Sile):
                         self._write(fmt1_str.format(jo, io, h))
                     else:
                         self._write(fmt2_str.format(jo, io, h, s))
-            self._write('end matrix {0:d} {1:d} {2:d}\n'.format(*isc))
+            self._write('end matrix {:d} {:d} {:d}\n'.format(*isc))
 
 
 add_sile('ham', hamiltonianSile, case=False, gzip=True)

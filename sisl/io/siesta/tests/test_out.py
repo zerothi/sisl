@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import sys
 import pytest
 import os.path as osp

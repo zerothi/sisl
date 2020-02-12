@@ -9,12 +9,11 @@ from numpy import ndarray, bool_
 
 from ._indices import indices_only
 from ._array import arrayi
-from ._help import _str
 from .messages import SislError
 from .utils.ranges import list2str
 
 
-class NamedIndex(object):
+class NamedIndex:
     __slots__ = ('_name', '_index')
 
     def __init__(self, name=None, index=None):
@@ -27,7 +26,7 @@ class NamedIndex(object):
         self._name = []
         self._index = []
 
-        if isinstance(name, _str):
+        if isinstance(name, str):
             self.add_name(name, index)
         elif not name is None:
             for n, i in zip(name, index):
@@ -45,8 +44,7 @@ class NamedIndex(object):
 
     def __iter__(self):
         """ Iterate names in the group """
-        for name in self._name:
-            yield name
+        yield from self._name
 
     def __len__(self):
         """ Number of uniquely defined names """
@@ -67,7 +65,7 @@ class NamedIndex(object):
            the indices that has a name associated
         """
         if name in self._name:
-            raise SislError(self.__class__.__name__ + '.add_name already contains name {}, please delete group name before adding.'.format(name))
+            raise SislError(self.__class__.__name__ + f'.add_name already contains name {name}, please delete group name before adding.')
         self._name.append(name)
         if isinstance(index, ndarray) and index.dtype == bool_:
             index = np.flatnonzero(index)
@@ -90,14 +88,14 @@ class NamedIndex(object):
         N = len(self)
         if N == 0:
             return self.__class__.__name__ + '{}'
-        s = self.__class__.__name__ + '{{groups: {0}'.format(N)
+        s = self.__class__.__name__ + f'{{groups: {N}'
         for name, idx in zip(self._name, self._index):
-            s += ',\n {0}: [{1}]'.format(name, list2str(idx))
+            s += ',\n {}: [{}]'.format(name, list2str(idx))
         return s + '\n}'
 
     def __setitem__(self, name, index):
         """ Equivalent to `add_name` """
-        if isinstance(name, _str):
+        if isinstance(name, str):
             self.add_name(name, index)
         else:
             self.add_name(index, name)
@@ -108,7 +106,7 @@ class NamedIndex(object):
             i = self._name.index(name)
             return self._index[i]
         except:
-            if isinstance(name, _str):
+            if isinstance(name, str):
                 return None
             return name
 
@@ -188,7 +186,7 @@ class NamedIndex(object):
                 del new[name]
 
         else:
-            raise ValueError("{}.merge wrong argument: duplicate.".format(self.__class__.__name__))
+            raise ValueError(f"{self.__class__.__name__}.merge wrong argument: duplicate.")
 
         return new
 
@@ -205,7 +203,7 @@ class NamedIndex(object):
         """
         if name is None:
             name = self._name
-        elif isinstance(name, _str):
+        elif isinstance(name, str):
             name = [name]
 
         new_index = []
@@ -225,12 +223,12 @@ class NamedIndex(object):
         names : str or iterable of str
             The name(s) which the new object contain.
         """
-        if isinstance(names, _str):
+        if isinstance(names, str):
             names = [names]
 
         for name in names:
             if name not in self._name:
-                raise ValueError("{}.sub_name specified name ({}) is not in object.".format(self.__class__.__name__, name))
+                raise ValueError(f"{self.__class__.__name__}.sub_name specified name ({name}) is not in object.")
 
         new_index = []
         for name in self:

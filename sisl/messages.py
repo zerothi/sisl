@@ -138,7 +138,7 @@ except ImportError:
     from time import time as _time
     from sys import stdout as _stdout
 
-    class _tqdm(object):
+    class _tqdm:
         """ Fake tqdm progress-bar. I should update this to also work in regular instances """
         __slots__ = ["total", "desc", "t0", "n", "l"]
 
@@ -156,13 +156,13 @@ except ImportError:
             self.l -= n
             m, s = divmod((_time() - self.t0) / self.n * self.l, 60)
             h, m = divmod(m, 60)
-            _stdout.write("{0}  ETA = {1:5d}h {2:2d}m {3:4.1f}s\r".format(self.desc, int(h), int(m), s))
+            _stdout.write("{}  ETA = {:5d}h {:2d}m {:4.1f}s\r".format(self.desc, int(h), int(m), s))
             _stdout.flush()
 
         def close(self):
             m, s = divmod(_time() - self.t0, 60)
             h, m = divmod(m, 60)
-            _stdout.write("{0} finished after {1:d}h {2:d}m {3:.1f}s\n".format(self.desc, int(h), int(m), s))
+            _stdout.write("{} finished after {:d}h {:d}m {:.1f}s\n".format(self.desc, int(h), int(m), s))
             _stdout.flush()
 
 
@@ -190,7 +190,7 @@ def tqdm_eta(count, desc, unit, eta):
     else:
         # Since the eta bar is not needed we simply create a fake object which
         # has the required 2 methods, update and close.
-        class Fake(object):
+        class Fake:
             __slots__ = []
             def update(self, n=1):
                 pass

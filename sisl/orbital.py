@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 # To check for integers
 from functools import partial
 from numbers import Integral
@@ -16,7 +14,6 @@ from scipy.interpolate import UnivariateSpline
 
 from . import _plot as plt
 from . import _array as _a
-from ._help import _str
 from .shape import Sphere
 from sisl.utils.mathematics import cart2spher
 
@@ -80,7 +77,7 @@ def _rspherical_harm(m, l, theta, cos_phi):
     return _rspher_harm_fact[l][m] * (lpmv(m, l, cos_phi) * cos(m*theta))
 
 
-class Orbital(object):
+class Orbital:
     """ Base class for orbital information.
 
     The orbital class is still in an experimental stage and will probably evolve over some time.
@@ -127,8 +124,8 @@ class Orbital(object):
     def __str__(self):
         """ A string representation of the object """
         if len(self.tag) > 0:
-            return self.__class__.__name__ + '{{R: {0:.5f}, q0: {1}, tag: {2}}}'.format(self.R, self.q0, self.tag)
-        return self.__class__.__name__ + '{{R: {0:.5f}, q0: {1}}}'.format(self.R, self.q0)
+            return self.__class__.__name__ + f'{{R: {self.R:.5f}, q0: {self.q0}, tag: {self.tag}}}'
+        return self.__class__.__name__ + f'{{R: {self.R:.5f}, q0: {self.q0}}}'
 
     def name(self, tex=False):
         """ Return a named specification of the orbital (`tag`) """
@@ -365,7 +362,7 @@ class SphericalOrbital(Orbital):
         # Initialize R and tag through the parent
         # Note that the maximum range of the orbital will be the
         # maximum value in r.
-        super(SphericalOrbital, self).__init__(self.R, q0, tag)
+        super().__init__(self.R, q0, tag)
 
     def copy(self):
         """ Create an exact copy of this object """
@@ -383,7 +380,7 @@ class SphericalOrbital(Orbital):
         radial : bool, optional
            also compare that the radial parts are the same
         """
-        same = super(SphericalOrbital, self).equal(other, psi, radial)
+        same = super().equal(other, psi, radial)
         if not same:
             return False
         if isinstance(other, SphericalOrbital):
@@ -511,8 +508,8 @@ class SphericalOrbital(Orbital):
     def __str__(self):
         """ A string representation of the object """
         if len(self.tag) > 0:
-            return self.__class__.__name__ + '{{l: {0}, R: {1}, q0: {2}, tag: {3}}}'.format(self.l, self.R, self.q0, self.tag)
-        return self.__class__.__name__ + '{{l: {0}, R: {1}, q0: {2}}}'.format(self.l, self.R, self.q0)
+            return self.__class__.__name__ + f'{{l: {self.l}, R: {self.R}, q0: {self.q0}, tag: {self.tag}}}'
+        return self.__class__.__name__ + f'{{l: {self.l}, R: {self.R}, q0: {self.q0}}}'
 
     def radial(self, r, is_radius=True):
         r""" Calculate the radial part of the wavefunction :math:`f(\mathbf R)`
@@ -741,7 +738,7 @@ class AtomicOrbital(Orbital):
 
     def __init__(self, *args, **kwargs):
         """ Initialize atomic orbital object """
-        super(AtomicOrbital, self).__init__(kwargs.get('R', 0.), q0=kwargs.get('q0', 0.), tag=kwargs.get('tag', ''))
+        super().__init__(kwargs.get('R', 0.), q0=kwargs.get('q0', 0.), tag=kwargs.get('tag', ''))
 
         # Ensure args is a list (to be able to pop)
         args = list(args)
@@ -755,7 +752,7 @@ class AtomicOrbital(Orbital):
         P = kwargs.get('P', False)
 
         if len(args) > 0:
-            if isinstance(args[0], _str):
+            if isinstance(args[0], str):
                 # String specification of the atomic orbital
                 s = args.pop(0)
 
@@ -921,7 +918,7 @@ class AtomicOrbital(Orbital):
     def name(self, tex=False):
         """ Return named specification of the atomic orbital """
         if tex:
-            name = '{0}{1}'.format(self.n, {0: 's', 1: 'p', 2: 'd', 3: 'f', 4: 'g'}.get(self.l))
+            name = '{}{}'.format(self.n, {0: 's', 1: 'p', 2: 'd', 3: 'f', 4: 'g'}.get(self.l))
             if self.l == 1:
                 name += {0: '_z', 1: '_x', -1: '_y'}.get(self.m)
             elif self.l == 2:
@@ -933,9 +930,9 @@ class AtomicOrbital(Orbital):
                 name += {-4: '_{_{xy(x^2-y^2)}}', -3: '_{zy(3x^2-y^2)}', -2: '_{z^2xy}', -1: '_{z^3y}', 0: '_{z^4}',
                          1: '_{z^3x}', 2: '_{z^2(x^2-y^2)}', 3: '_{zx(x^2-3y^2)}', 4: '_{x^4+y^4}'}.get(self.m)
             if self.P:
-                return name + r'\zeta^{}\mathrm{{P}}'.format(self.Z)
-            return name + r'\zeta^{}'.format(self.Z)
-        name = '{0}{1}'.format(self.n, {0: 's', 1: 'p', 2: 'd', 3: 'f', 4: 'g'}.get(self.l))
+                return name + fr'\zeta^{self.Z}\mathrm{{P}}'
+            return name + fr'\zeta^{self.Z}'
+        name = '{}{}'.format(self.n, {0: 's', 1: 'p', 2: 'd', 3: 'f', 4: 'g'}.get(self.l))
         if self.l == 1:
             name += {0: 'z', 1: 'x', -1: 'y'}.get(self.m)
         elif self.l == 2:
@@ -947,8 +944,8 @@ class AtomicOrbital(Orbital):
             name += {-4: 'xy(x2-y2)', -3: 'zy(3x2-y2)', -2: 'z2xy', -1: 'z3y', 0: 'z4',
                      1: 'z3x', 2: 'z2(x2-y2)', 3: 'zx(x2-3y2)', 4: 'x4+y4'}.get(self.m)
         if self.P:
-            return name + 'Z{}P'.format(self.Z)
-        return name + 'Z{}'.format(self.Z)
+            return name + f'Z{self.Z}P'
+        return name + f'Z{self.Z}'
 
     def __str__(self):
         """ A string representation of the object """

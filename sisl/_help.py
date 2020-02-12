@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import sys
 import functools
 import warnings
@@ -13,27 +11,11 @@ __all__ += ['dtype_complex_to_real', 'dtype_real_to_complex']
 __all__ += ['wrap_filterwarnings']
 
 # Wrappers typically used
-__all__ += ['_str', '_range', '_zip', '_map']
-__all__ += ['is_python2', 'is_python3']
 __all__ += ['xml_parse']
 
 
 # Base-class for string object checks
-is_python3 = sys.version_info >= (3, 0)
-is_python2 = not is_python3
-if is_python3:
-    import collections.abc as collections_abc
-    _str = str
-    _range = range
-    _zip = zip
-    _map = map
-else:
-    import collections as collections_abc
-    from itertools import izip as _zip
-    from itertools import imap as _map
-    _str = basestring
-    _range = xrange
-
+import collections.abc as collections_abc
 
 # Load the correct xml-parser
 try:
@@ -204,7 +186,6 @@ def dtype_real_to_complex(dtype):
     return dtype
 
 
-# TODO Py3 *replace, *, other=None)
 def array_replace(array, *replace, **kwargs):
     """ Replace values in `array` using `replace`
 

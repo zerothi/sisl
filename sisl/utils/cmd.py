@@ -41,7 +41,7 @@ def default_namespace(**kwargs):
     **kwargs : dict
        the dictionary keys added to the namespace object.
     """
-    class CustomNamespace(object):
+    class CustomNamespace:
         pass
     namespace = CustomNamespace()
     namespace._actions_run = False
@@ -102,13 +102,13 @@ def add_sisl_version_cite_arg(parser):
 
     class PrintVersion(argparse.Action):
         def __call__(self, parser, ns, values, option_string=None):
-            print("sisl: {}\ngit-hash: {}".format(version, git_count, git_revision))
+            print(f"sisl: {version}\ngit-hash: {git_count}")
     parser.add_argument('--version', nargs=0, action=PrintVersion,
-                        help='Show detailed sisl version information (v{})'.format(version))
+                        help=f'Show detailed sisl version information (v{version})')
 
     class PrintCite(argparse.Action):
         def __call__(self, parser, ns, values, option_string=None):
-            print("BibTeX:\n{}".format(bibtex))
+            print(f"BibTeX:\n{bibtex}")
     parser.add_argument('--cite', nargs=0, action=PrintCite,
                         help='Show the citation required when using sisl')
 

@@ -6,9 +6,8 @@ dependencies:
   - gfortran_linux-64
   - libgcc-ng
   - libgfortran-ng
-  - python=2.7
+  - python=3.8
   - pip
-  - six
   - setuptools
   - pyparsing>=1.5.7
   - numpy>=1.13

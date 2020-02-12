@@ -1,6 +1,5 @@
 mock
 # For running
-six
 setuptools
 numpy>=1.13
 scipy>=0.18

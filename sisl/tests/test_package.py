@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import pytest
 
 import math as m
@@ -9,7 +7,7 @@ import sisl
 
 
 @pytest.mark.version
-class TestVersion(object):
+class TestVersion:
 
     def test_version(self):
         sisl.__bibtex__

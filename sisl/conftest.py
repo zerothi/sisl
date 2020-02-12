@@ -1,5 +1,4 @@
 """ Global sisl fixtures """
-from __future__ import print_function
 
 import contextlib
 import os
@@ -20,7 +19,7 @@ def pytest_collection_modifyitems(config, items):
     if os.path.isdir(sisl_files_tests):
         if os.path.isdir(os.path.join(sisl_files_tests, 'sisl')):
             return
-        print('pytest-sisl: Could not locate sisl directory in: {}'.format(sisl_files_tests))
+        print(f'pytest-sisl: Could not locate sisl directory in: {sisl_files_tests}')
 
     skip_sisl_files = pytest.mark.skip(reason="requires env(SISL_FILES_TESTS) pointing to clone of: https://github.com/zerothi/sisl-files")
     for item in items:
@@ -41,7 +40,7 @@ def sisl_tmp(request, tmpdir_factory):
     The scope of the `sisl_tmp` fixture is at a function level to
     clean up after each function.
     """
-    class FileFactory(object):
+    class FileFactory:
         def __init__(self):
             self.base = tmpdir_factory.getbasetemp()
             self.dirs = []
@@ -120,7 +119,7 @@ def sisl_files():
 @pytest.fixture(scope='session')
 def sisl_system():
     """ A preset list of geometries/Hamiltonians. """
-    class System(object):
+    class System:
         pass
 
     d = System()
@@ -167,5 +166,5 @@ def pytest_configure(config):
                  'siesta', 'tbtrans', 'ham', 'vasp', 'w90', 'wannier90', 'gulp', 'fdf',
                  'table', 'cube', 'slow', 'selector']:
         config.addinivalue_line(
-            "markers", "{}: mark test to run only on named environment".format(mark)
+            "markers", f"{mark}: mark test to run only on named environment"
         )

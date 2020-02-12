@@ -5,7 +5,6 @@ list extensions.
 
 This sub-module implements a list which allows to make operations with it-self or with scalars.
 """
-from __future__ import print_function, division
 
 from functools import wraps
 

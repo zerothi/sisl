@@ -83,7 +83,6 @@ Which does mathematical operations (averaging/summing) using `~sisl.oplist`.
    BandStructure
 
 """
-from __future__ import print_function, division
 
 import types
 from numbers import Integral, Real
@@ -106,7 +105,7 @@ from sisl.grid import Grid
 __all__ = ['BrillouinZone', 'MonkhorstPack', 'BandStructure']
 
 
-class BrillouinZone(object):
+class BrillouinZone:
     """ A class to construct Brillouin zone related quantities
 
     It takes any object (which has access to cell-vectors) as an argument
@@ -858,8 +857,7 @@ class BrillouinZone(object):
             for i in range(len(self)):
                 yield self.k[i], self.weight[i]
         else:
-            for k in self.k:
-                yield k
+            yield from self.k
 
     __iter__ = iter
 
@@ -914,7 +912,7 @@ class MonkhorstPack(BrillouinZone):
     """
 
     def __init__(self, parent, nkpt, displacement=None, size=None, centered=True, trs=True):
-        super(MonkhorstPack, self).__init__(parent)
+        super().__init__(parent)
 
         if isinstance(nkpt, Integral):
             nkpt = np.diag([nkpt] * 3)
@@ -1049,7 +1047,7 @@ class MonkhorstPack(BrillouinZone):
 
     def __getstate__(self):
         """ Return dictionary with the current state """
-        state = super(MonkhorstPack, self).__getstate__()
+        state = super().__getstate__()
         state['diag'] = self._diag
         state['displ'] = self._displ
         state['size'] = self._size
@@ -1059,7 +1057,7 @@ class MonkhorstPack(BrillouinZone):
 
     def __setstate__(self, state):
         """ Reset state of the object """
-        super(MonkhorstPack, self).__setstate__(state)
+        super().__setstate__(state)
         self._diag = state['diag']
         self._displ = state['displ']
         self._size = state['size']
@@ -1127,7 +1125,7 @@ class MonkhorstPack(BrillouinZone):
             # define the Grid size, etc.
             diag = self._diag.copy()
             if not np.all(self._displ == 0):
-                raise SislError(self.__class__.__name__ + '.{} requires the displacement to be 0 for all k-points.'.format(self._bz_attr))
+                raise SislError(self.__class__.__name__ + f'.{self._bz_attr} requires the displacement to be 0 for all k-points.')
             displ = self._displ.copy()
             size = self._size.copy()
             steps = size / diag
@@ -1168,7 +1166,7 @@ class MonkhorstPack(BrillouinZone):
 
             if data_axis is None:
                 if v.size != 1:
-                    raise SislError(self.__class__.__name__ + '.{} requires one value per-kpoint because of the 3D grid values'.format(self._bz_attr))
+                    raise SislError(self.__class__.__name__ + f'.{self._bz_attr} requires one value per-kpoint because of the 3D grid values')
 
             else:
 
@@ -1451,7 +1449,7 @@ class BandStructure(BrillouinZone):
     """
 
     def __init__(self, parent, point, division, name=None):
-        super(BandStructure, self).__init__(parent)
+        super().__init__(parent)
 
         # Copy over points
         self.point = _a.arrayd(point)
@@ -1509,7 +1507,7 @@ class BandStructure(BrillouinZone):
 
     def __getstate__(self):
         """ Return dictionary with the current state """
-        state = super(BandStructure, self).__getstate__()
+        state = super().__getstate__()
         state['point'] = self.point.copy()
         state['division'] = self.division.copy()
         state['name'] = list(self.name)
@@ -1517,7 +1515,7 @@ class BandStructure(BrillouinZone):
 
     def __setstate__(self, state):
         """ Reset state of the object """
-        super(BandStructure, self).__setstate__(state)
+        super().__setstate__(state)
         self.point = state['point']
         self.division = state['division']
         self.name = state['name']

@@ -3,8 +3,6 @@
 Library to create/handle geometries and tight-binding parameters in Python. Made with DFT in mind.
 """
 
-from __future__ import print_function
-
 if __doc__ is None:
     __doc__ = """sisl: Generic library for manipulating DFT output, geometries and tight-binding parameter sets"""
 
@@ -20,8 +18,6 @@ Development Status :: 5 - Production/Stable
 Intended Audience :: Science/Research
 Intended Audience :: Developers
 License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)
-Programming Language :: Python :: 2.7
-Programming Language :: Python :: 3.5
 Programming Language :: Python :: 3.6
 Programming Language :: Python :: 3.7
 Programming Language :: Python :: 3.8
@@ -50,7 +46,6 @@ if osp.exists('MANIFEST'):
 # The install_requires should also be the
 # requirements for the actual running of sisl
 install_requires = [
-    'six',
     'setuptools',
     'numpy>=1.13',
     'scipy>=0.18',

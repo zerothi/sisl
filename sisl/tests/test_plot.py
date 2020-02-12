@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import pytest
 
 import numpy as np
@@ -83,7 +81,7 @@ def test_orbital_harmonics():
 
 @pytest.mark.xfail(raises=NotImplementedError)
 def test_not_implemented():
-    class Test(object):
+    class Test:
         pass
     t = Test()
     sisl.plot(t)

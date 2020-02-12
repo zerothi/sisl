@@ -1,13 +1,7 @@
-from __future__ import print_function, division
-
 from functools import wraps
 from os.path import splitext, isfile, dirname, join, abspath, basename
 import gzip
-try:
-    from pathlib import Path
-except ImportError:  # Ancient Python
-    class Path:
-        pass
+from pathlib import Path
 
 import numpy as np
 
@@ -53,7 +47,7 @@ __sile_rules = []
 __siles = []
 
 
-class _sile_rule(object):
+class _sile_rule:
     """ Internal data-structure to check whether a file is the same as this sile """
 
     __slots__ = ('cls', 'case', 'suffix', 'gzip', 'bases', 'base_names')
@@ -73,7 +67,7 @@ class _sile_rule(object):
         s = '{cls}{{case={case}, suffix={suffix}, gzip={gzip},\n '.format(cls=self.cls.__name__, case=self.case,
                                                                           suffix=self.suffix, gzip=self.gzip)
         for b in self.bases:
-            s += ' {},\n '.format(b.__name__)
+            s += f' {b.__name__},\n '
         return s[:-3] + '\n}'
 
     def build_bases(self):
@@ -203,7 +197,7 @@ def get_sile_class(filename, *args, **kwargs):
 
     # Split filename into proper file name and
     # the Specification of the type
-    tmp_file, fcls = str_spec(filename)
+    tmp_file, fcls = str_spec(str(filename))
 
     if cls is None and not fcls is None:
         # cls has not been set, and fcls is found
@@ -290,10 +284,8 @@ def get_sile(file, *args, **kwargs):
        function returns a random one.
     """
     cls = kwargs.pop('cls', None)
-    if isinstance(file, Path):
-        file = str(file)
     sile = get_sile_class(file, *args, cls=cls, **kwargs)
-    return sile(str_spec(file)[0], *args, **kwargs)
+    return sile(Path(str_spec(str(file))[0]), *args, **kwargs)
 
 
 def get_siles(attrs=None):
@@ -323,7 +315,7 @@ def get_siles(attrs=None):
     return siles
 
 
-class BaseSile(object):
+class BaseSile:
     """ Base class for all sisl files """
 
     @property
@@ -339,8 +331,8 @@ class BaseSile(object):
     def dir_file(self, filename=None):
         """ File of the current `Sile` """
         if filename is None:
-            filename = basename(self._file)
-        return join(self._directory, filename)
+            filename = Path(self._file).name
+        return Path(self._directory) / filename
 
     def exist(self):
         """ Query whether the file exists """
@@ -410,12 +402,12 @@ class BaseSile(object):
         base = kwargs.get('base', None)
         if base is None:
             # Extract from filename
-            self._directory = dirname(self._file)
+            self._directory = Path(self._file).parent
         else:
             self._directory = base
-        if len(self._directory) == 0:
+        if not str(self._directory):
             self._directory = '.'
-        self._directory = abspath(self._directory)
+        self._directory = Path(self._directory).resolve()
 
         self._setup(*args, **kwargs)
 
@@ -426,7 +418,7 @@ class BaseSile(object):
     def __getattr__(self, name):
         """ Override to check the handle """
         if name == 'fh':
-            raise AttributeError("The filehandle for {} has not been opened yet...".format(self.file))
+            raise AttributeError(f"The filehandle for {self.file} has not been opened yet...")
         return getattr(self.fh, name)
 
     @classmethod
@@ -457,7 +449,7 @@ class BaseSile(object):
 
     def __str__(self):
         """ Return a representation of the `Sile` """
-        return ''.join([self.__class__.__name__, '(', self.base_file, ', base=', self._directory, ')'])
+        return "{0}({1!s}, base={2!s})".format(self.__class__.__name__, self.base_file, self._directory)
 
 
 def sile_fh_open(from_closed=False):
@@ -499,7 +491,7 @@ class Sile(BaseSile):
     """
 
     def __init__(self, filename, mode='r', comment=None, *args, **kwargs):
-        self._file = filename
+        self._file = Path(filename)
         self._mode = mode
         if isinstance(comment, (list, tuple)):
             self._comment = list(comment)
@@ -513,10 +505,10 @@ class Sile(BaseSile):
         self._base_setup(*args, **kwargs)
 
     def _open(self):
-        if self.file.endswith('gz'):
-            self.fh = gzip.open(self.file)
+        if self.file.suffix == ".gz":
+            self.fh = gzip.open(str(self.file))
         else:
-            self.fh = open(self.file, self._mode)
+            self.fh = self.file.open(self._mode)
         self._line = 0
 
     def __enter__(self):
@@ -682,7 +674,7 @@ class SileCDF(BaseSile):
     """
 
     def __init__(self, filename, mode='r', lvl=0, access=1, *args, **kwargs):
-        self._file = filename
+        self._file = Path(filename)
         # Open mode
         self._mode = mode
         # Save compression internally
@@ -699,7 +691,7 @@ class SileCDF(BaseSile):
             # The CDF file can easily open the file
         if kwargs.pop('_open', True):
             _import_netCDF4()
-            self.__dict__['fh'] = _netCDF4.Dataset(self.file, self._mode,
+            self.__dict__['fh'] = _netCDF4.Dataset(str(self.file), self._mode,
                                                    format='NETCDF4')
 
         # Must call setup-methods
@@ -718,7 +710,7 @@ class SileCDF(BaseSile):
         # We do the import here
         if 'fh' not in self.__dict__:
             _import_netCDF4()
-            self.__dict__['fh'] = _netCDF4.Dataset(self.file, self._mode, format='NETCDF4')
+            self.__dict__['fh'] = _netCDF4.Dataset(str(self.file), self._mode, format='NETCDF4')
         return self
 
     def __exit__(self, type, value, traceback):
@@ -899,20 +891,17 @@ class SileCDF(BaseSile):
             yield head
 
         if dimension:
-            for dim in head.dimensions.values():
-                yield dim
+            yield from head.dimensions.values()
         if variable:
-            for var in head.variables.values():
-                yield var
+            yield from head.variables.values()
 
         if levels == 0:
             # Stop the iterator
             return
 
         for grp in head.groups.values():
-            for dvg in self.iter(group, dimension, variable,
-                                 levels=levels-1, root=grp.path):
-                yield dvg
+            yield from self.iter(group, dimension, variable,
+                                 levels=levels-1, root=grp.path)
 
     __iter__ = iter
 
@@ -925,7 +914,7 @@ class SileBin(BaseSile):
     """
 
     def __init__(self, filename, mode='r', *args, **kwargs):
-        self._file = filename
+        self._file = Path(filename)
         # Open mode
         self._mode = mode.replace('b', '') + 'b'
 
@@ -960,7 +949,7 @@ def sile_raise_write(self, ok=('w', 'a')):
         is_ok = is_ok or (O in self._mode)
     if not is_ok:
         raise SileError(('Writing to file not possible; allowed '
-                         'modes={0}, used mode={1}'.format(ok, self._mode)), self)
+                         'modes={}, used mode={}'.format(ok, self._mode)), self)
 
 
 def sile_raise_read(self, ok=('r', 'a')):
@@ -969,7 +958,7 @@ def sile_raise_read(self, ok=('r', 'a')):
         is_ok = is_ok or (O in self._mode)
     if not is_ok:
         raise SileError('Reading file not possible; allowed '
-                        'modes={0}, used mode={1}'.format(
+                        'modes={}, used mode={}'.format(
                             ok, self._mode), self)
 
 

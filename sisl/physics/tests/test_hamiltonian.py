@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import pytest
 
 import warnings
@@ -48,7 +46,7 @@ def _to_voight(m):
 
 
 @pytest.mark.hamiltonian
-class TestHamiltonian(object):
+class TestHamiltonian:
 
     def test_objects(self, setup):
         assert len(setup.H.xyz) == 2
@@ -380,7 +378,7 @@ class TestHamiltonian(object):
             H[0, j] = i
 
         for op in ['add', 'sub', 'mul', 'pow']:
-            func = getattr(H, '__{}__'.format(op))
+            func = getattr(H, f'__{op}__')
             h = func(1)
             assert h.dtype == np.int32
             h = func(1.)
@@ -391,7 +389,7 @@ class TestHamiltonian(object):
 
         H = H.copy(dtype=np.float64)
         for op in ['add', 'sub', 'mul', 'pow']:
-            func = getattr(H, '__{}__'.format(op))
+            func = getattr(H, f'__{op}__')
             h = func(1)
             assert h.dtype == np.float64
             h = func(1.)
@@ -402,7 +400,7 @@ class TestHamiltonian(object):
 
         H = H.copy(dtype=np.complex128)
         for op in ['add', 'sub', 'mul', 'pow']:
-            func = getattr(H, '__{}__'.format(op))
+            func = getattr(H, f'__{op}__')
             h = func(1)
             assert h.dtype == np.complex128
             h = func(1.)

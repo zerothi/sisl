@@ -1,9 +1,6 @@
-from __future__ import print_function, division
-
 import numpy as np
 from scipy.interpolate import CubicSpline
 
-from sisl._help import _range as range
 import sisl._array as _a
 from .distribution import get_distribution
 from .electron import EigenvalueElectron, EigenstateElectron, spin_squared
@@ -46,11 +43,11 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
     def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
         """ Initialize Hamiltonian """
-        super(Hamiltonian, self).__init__(geometry, dim, dtype, nnzpr, **kwargs)
+        super().__init__(geometry, dim, dtype, nnzpr, **kwargs)
         self._reset()
 
     def _reset(self):
-        super(Hamiltonian, self)._reset()
+        super()._reset()
         self.Hk = self.Pk
         self.dHk = self.dPk
         self.ddHk = self.ddPk

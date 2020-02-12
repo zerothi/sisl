@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import re
 from itertools import groupby
 
@@ -72,7 +70,7 @@ def strmap(func, s, start=None, end=None, sep='b'):
     # Check the last input...
     i = len(commas) - 1
     if commas[i].count(sep1) != commas[i].count(sep2):
-        raise ValueError("Unbalanced string: not enough {} and {}".format(sep1, sep2))
+        raise ValueError(f"Unbalanced string: not enough {sep1} and {sep2}")
 
     # Now we have a comma-separated list
     # with collected brackets.

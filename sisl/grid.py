@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 from functools import partial
 from numbers import Integral, Real
 from math import pi
@@ -1483,7 +1481,7 @@ This may be unexpected but enables one to do advanced manipulations.
 
             elif not isfile(input_file):
                 from .messages import info
-                info("Cannot find file '{}'!".format(input_file))
+                info(f"Cannot find file '{input_file}'!")
 
     elif isinstance(grid, BaseSile):
         # Store the input file...

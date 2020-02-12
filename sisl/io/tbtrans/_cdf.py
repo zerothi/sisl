@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 from numbers import Integral
 
 import numpy as np
@@ -16,7 +14,6 @@ from sisl._indices import indices
 
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
-from sisl._help import _str
 from sisl.unit.siesta import unit_convert
 
 __all__ = ['_ncSileTBtrans', '_devncSileTBtrans']
@@ -189,10 +186,10 @@ class _ncSileTBtrans(SileCDFTBtrans):
         ret_E = self.E[idxE]
         if abs(ret_E - E) > 5e-3:
             warn(self.__class__.__name__ + " requesting energy " +
-                 "{0:.5f} eV, found {1:.5f} eV as the closest energy!".format(E, ret_E))
+                 f"{E:.5f} eV, found {ret_E:.5f} eV as the closest energy!")
         elif abs(ret_E - E) > 1e-3:
             info(self.__class__.__name__ + " requesting energy " +
-                 "{0:.5f} eV, found {1:.5f} eV as the closest energy!".format(E, ret_E))
+                 f"{E:.5f} eV, found {ret_E:.5f} eV as the closest energy!")
         return idxE
 
     def kindex(self, k):
@@ -210,9 +207,9 @@ class _ncSileTBtrans(SileCDFTBtrans):
         ret_k = self.k[ik, :]
         if not np.allclose(ret_k, k, atol=0.0001):
             warn(SileWarning(self.__class__.__name__ + " requesting k-point " +
-                             "[{0:.3f}, {1:.3f}, {2:.3f}]".format(*k) +
+                             "[{:.3f}, {:.3f}, {:.3f}]".format(*k) +
                              " found " +
-                             "[{0:.3f}, {1:.3f}, {2:.3f}]".format(*ret_k)))
+                             "[{:.3f}, {:.3f}, {:.3f}]".format(*ret_k)))
         return ik
 
 
@@ -224,7 +221,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
 
     def _setup(self, *args, **kwargs):
         """ Setup the special object for data containing """
-        super(_devncSileTBtrans, self)._setup(*args, **kwargs)
+        super()._setup(*args, **kwargs)
 
         if self._access > 0:
 
@@ -242,7 +239,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
             self._access = access
 
     def read_geometry(self, *args, **kwargs):
-        g = super(_devncSileTBtrans, self).read_geometry(*args, **kwargs)
+        g = super().read_geometry(*args, **kwargs)
         try:
             g['Buffer'] = self.a_buf[:]
         except:

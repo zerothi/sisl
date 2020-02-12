@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import numpy as np
 
 from ..sile import add_sile, sile_fh_open, sile_raise_write
@@ -62,7 +60,7 @@ class kpSileSiesta(SileSiesta):
         sile_raise_write(self)
 
         nk = len(k)
-        self._write('{}\n'.format(nk))
+        self._write(f'{nk}\n')
         _fmt = ('{:d}' + (' {:' + fmt + '}') * 4) + '\n'
 
         for i, (kk, w) in enumerate(zip(np.atleast_2d(k), weight)):

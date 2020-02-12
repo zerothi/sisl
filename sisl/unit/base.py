@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import pyparsing as pp
 
 
@@ -179,7 +177,7 @@ def unit_convert(fr, to, opts=None, tbl=None):
 # doing complex unit-specifications (i.e. eV/Ang etc.)
 
 
-class UnitParser(object):
+class UnitParser:
     """ Object for converting between units for a set of unit-tables.
 
     Parameters
@@ -199,7 +197,7 @@ class UnitParser(object):
                     if to in tbl[k]:
                         return tbl[k][fr] / tbl[k][to]
                     break
-            raise ValueError('The unit conversion is not from the same group: {} to {}!'.format(fr, to))
+            raise ValueError(f'The unit conversion is not from the same group: {fr} to {to}!')
 
         def group(unit):
             tbl = self._table
@@ -212,7 +210,7 @@ class UnitParser(object):
             tbl = self._table
             k = tbl.get(group, None)
             if k is None:
-                raise ValueError('The unit-group {} does not exist!'.format(group))
+                raise ValueError(f'The unit-group {group} does not exist!')
             return k['DEFAULT']
 
         self._left = []
@@ -354,7 +352,7 @@ class UnitParser(object):
             right = list(self._right)
             self._empty_list(self._left)
             self._empty_list(self._right)
-            raise ValueError('The unit conversion is not from the same group: {} to {}!'.format(left, right))
+            raise ValueError(f'The unit conversion is not from the same group: {left} to {right}!')
         self._empty_list(self._left)
         self._empty_list(self._right)
         return conv_A / conv_B

@@ -47,7 +47,6 @@ For the above same functions we may do::
   >>> selector()
   Func - 1
 """
-from __future__ import print_function, division
 
 import time
 
@@ -57,7 +56,7 @@ from .messages import warn
 __all__ = ['Selector', 'TimeSelector']
 
 
-class Selector(object):
+class Selector:
     """ Base class for implementing a selector of class routines
 
     This class should contain a list of routines and may then be used
@@ -123,9 +122,9 @@ class Selector(object):
         s = self.__class__.__name__ + '{{n={0}, \n'.format(len(self))
         for r, p in zip(self.routines, self.performances):
             if p is None:
-                s += '  {{{0}: <not tried>}},\n'.format(r.__name__)
+                s += f'  {{{r.__name__}: <not tried>}},\n'
             else:
-                s += '  {{{0}: {1}}},\n'.format(r.__name__, p)
+                s += f'  {{{r.__name__}: {p}}},\n'
         return s + '}'
 
     def prepend(self, routine):

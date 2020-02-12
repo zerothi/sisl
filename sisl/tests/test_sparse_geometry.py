@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import pytest
 
 import math as m
@@ -23,7 +21,7 @@ def setup():
 
 @pytest.mark.sparse
 @pytest.mark.sparse_geometry
-class TestSparseAtom(object):
+class TestSparseAtom:
 
     @pytest.mark.xfail(raises=ValueError)
     def test_fail_align1(self, setup):
