@@ -21,6 +21,7 @@ License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)
 Programming Language :: Python :: 3.6
 Programming Language :: Python :: 3.7
 Programming Language :: Python :: 3.8
+Programming Language :: Python :: 3.9
 Topic :: Software Development
 Topic :: Scientific/Engineering
 Topic :: Scientific/Engineering :: Physics
@@ -52,6 +53,15 @@ install_requires = [
     'netCDF4',
     'pyparsing>=1.5.7',
 ]
+
+setup_requires = []
+
+# If pytest is installed, add it to setup_requires
+try:
+    import pytest
+    setup_requires.append('pytest-runner')
+except:
+    pass
 
 # Create list of all sub-directories with
 #   __init__.py files...
@@ -88,7 +98,9 @@ metadata = dict(
     },
     classifiers=[_f.strip() for _f in CLASSIFIERS.split('\n') if _f],
     platforms=['Unix', 'Linux', 'Mac OS-X', 'Windows'],
+    python_requires='>=3.6',
     install_requires=install_requires,
+    setup_requires=setup_requires,
     tests_require=['pytest'],
     zip_safe=False,
     extras_require={
@@ -97,13 +109,6 @@ metadata = dict(
         'analysis': ['xarray>=0.10.0', 'tqdm'],
     },
 )
-
-# If pytest is installed, add it to setup_requires
-try:
-    import pytest
-    metadata['setup_requires'] = ['pytest-runner']
-except:
-    pass
 
 cwd = osp.abspath(osp.dirname(__file__))
 if not osp.exists(osp.join(cwd, 'PKG-INFO')):
@@ -261,10 +266,6 @@ if __name__ == '__main__':
             metadata['version'] = VERSION
         else:
             metadata['version'] = VERSION + '-dev'
-
-    if 'sdist' in sys.argv:
-        from distutils.command.sdist import sdist
-        metadata['cmdclass'] = {'sdist': sdist}
 
     # Main setup of python modules
     setup(**metadata)
