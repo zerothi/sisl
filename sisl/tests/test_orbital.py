@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import pytest
 
 import math as m
@@ -31,7 +29,7 @@ def test_spherical():
 
 
 @pytest.mark.orbital
-class Test_orbital(object):
+class Test_orbital:
 
     def test_init1(self):
         assert Orbital(1.) == Orbital(1.)
@@ -78,7 +76,7 @@ class Test_orbital(object):
 
 
 @pytest.mark.orbital
-class Test_sphericalorbital(object):
+class Test_sphericalorbital:
 
     def test_init1(self):
         n = 6
@@ -267,7 +265,7 @@ class Test_sphericalorbital(object):
 
 
 @pytest.mark.orbital
-class Test_atomicorbital(object):
+class Test_atomicorbital:
 
     def test_init1(self):
         rf = r_f(6)

@@ -1,13 +1,11 @@
-from __future__ import print_function, division
-
 import pytest
-
+import os.path as osp
 from sisl.io.siesta.orb_indx import *
-
 import numpy as np
 
+
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = 'sisl/io/siesta'
+_dir = osp.join('sisl', 'io', 'siesta')
 
 
 def test_si_pdos_kgrid_orb_indx(sisl_files):

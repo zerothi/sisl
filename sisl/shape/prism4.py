@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import numpy as np
 from numpy import dot
 
@@ -38,7 +36,7 @@ class Cuboid(PureShape):
     __slots__ = ('_v', '_iv')
 
     def __init__(self, v, center=None):
-        super(Cuboid, self).__init__(center)
+        super().__init__(center)
         v = _a.asarrayd(v)
         if v.size == 1:
             self._v = np.identity(3) * v # a "Euclidean" cube
@@ -64,7 +62,7 @@ class Cuboid(PureShape):
 
     def set_center(self, center):
         """ Re-setting the center can sometimes be necessary """
-        super(Cuboid, self).__init__(center)
+        super().__init__(center)
 
     def scale(self, scale):
         """ Scale the cuboid box size (center is retained)
@@ -144,7 +142,7 @@ class Cuboid(PureShape):
 
     def set_origo(self, origo):
         """ Re-setting the origo can sometimes be necessary """
-        super(Cuboid, self).__init__(origo + (self._v * 0.5).sum(0))
+        super().__init__(origo + (self._v * 0.5).sum(0))
 
     @property
     def edge_length(self):
@@ -165,4 +163,4 @@ class Cube(Cuboid):
 
     def __init__(self, side, center=None):
         side = _a.asarrayd(side).ravel()[0]
-        super(Cube, self).__init__(side, center)
+        super().__init__(side, center)

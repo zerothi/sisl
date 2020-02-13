@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import pytest
 
 import math as m
@@ -22,7 +20,7 @@ def setup():
 
 
 @pytest.mark.quaternion
-class TestQuaternion(object):
+class TestQuaternion:
 
     def test_copy(self, setup):
         qx = setup.qx.copy()

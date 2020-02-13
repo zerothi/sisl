@@ -1,11 +1,8 @@
-from __future__ import print_function, division
-
 import os
 import numpy as np
 
 from .sile import SileSiesta
 from ..sile import *
-from sisl.io._help import *
 
 from sisl import Geometry, Atom, SuperCell
 from sisl.utils.cmd import *
@@ -25,14 +22,14 @@ def _ensure_species(species):
 
 
 class outSileSiesta(SileSiesta):
-    """ Output file
+    """ Output file from Siesta
 
     This enables reading the output quantities from the Siesta output.
     """
     _job_completed = False
 
     def readline(self):
-        line = super(outSileSiesta, self).readline()
+        line = super().readline()
         if 'Job completed' in line:
             self._job_completed = True
         return line
@@ -108,17 +105,11 @@ class outSileSiesta(SileSiesta):
         # Read in data
         xyz = []
         spec = []
-        atom = []
         line = self.readline()
         while len(line.strip()) > 0:
             line = line.split()
             xyz.append([float(x) for x in line[:3]])
-            spec.append(line[3])
-            try:
-                atom.append(line[5])
-            except Exception:
-                # Allowed pass due to pythonic reading
-                pass
+            spec.append(int(line[3]))
             line = self.readline()
 
         # in outcoor we know it is always just after
@@ -136,10 +127,8 @@ class outSileSiesta(SileSiesta):
         elif not Ang:
             xyz *= Bohr2Ang
 
-        try:
-            geom = Geometry(xyz, atom, sc=cell)
-        except:
-            geom = Geometry(xyz, [species[int(i)-1] for i in spec], sc=cell)
+        # Assign the correct species
+        geom = Geometry(xyz, [species[ia - 1] for ia in spec], sc=cell)
 
         return geom
 
@@ -219,9 +208,9 @@ class outSileSiesta(SileSiesta):
                 coord = type_coord(line)
 
             if coord == 1:
-                return coord, self._read_geometry_outcoor(line, species)
+                return 1, self._read_geometry_outcoor(line, species)
             elif coord == 2:
-                return coord, self._read_geometry_atomic(line, species)
+                return 2, self._read_geometry_atomic(line, species)
 
         # Read until a coordinate block is found
         geom0 = None
@@ -385,26 +374,25 @@ class outSileSiesta(SileSiesta):
         """
 
         # Read until outcoor is found
-        line = self.readline()
-        while not 'moments: Atomic' in line:
-            line = self.readline()
-            if line == '':
+        itt = iter(self)
+        while not 'moments: Atomic' in next(itt):
+            if next(itt) == '':
                 return None
 
         # The moments are printed in SPECIES list
-        self.readline() # empty
+        next(itt) # empty
+        next(itt) # empty
 
         na = 0
         # Loop the species
         tbl = []
         # Read the species label
-        self.readline() # currently discarded
         while True:
-            self.readline() # ""
-            self.readline() # Atom    Orb ...
+            next(itt) # ""
+            next(itt) # Atom    Orb ...
             # Loop atoms in this species list
             while True:
-                line = self.readline()
+                line = next(itt)
                 if line.startswith('Species') or \
                    line.startswith('--'):
                     break
@@ -412,7 +400,7 @@ class outSileSiesta(SileSiesta):
                 atom = []
                 ia = 0
                 while not line.startswith('--'):
-                    line = self.readline().split()
+                    line = next(itt).split()
                     if ia == 0:
                         ia = int(line[0])
                     elif ia != int(line[0]):
@@ -423,7 +411,7 @@ class outSileSiesta(SileSiesta):
                         atom.append([float(x) for x in line[4:7]])
                     elif quantity == 'L':
                         atom.append([float(x) for x in line[7:10]])
-                line = self.readline().split() # Total ...
+                line = next(itt).split() # Total ...
                 if not orbital:
                     ia = int(line[0])
                     if quantity == 'S':
@@ -460,33 +448,154 @@ class outSileSiesta(SileSiesta):
 
         Parameters
         ----------
-        geometry: bool
-           return the last geometry in the `outSileSiesta`
-        force: bool
-           return the last force in the `outSileSiesta`
-        moment: bool
-           return the last moments in the `outSileSiesta` (only for spin-orbit coupling calculations)
+        geometry: bool, optional
+           read geometry, args are passed to `read_geometry`
+        force: bool, optional
+           read force, args are passed to `read_force`
+        stress: bool, optional
+           read stress, args are passed to `read_stress`
+        moment: bool, optional
+           read moment, args are passed to `read_moment` (only for spin-orbit calculations)
         """
+        run = []
+        # This loops ensures that we preserve the order of arguments
+        # From Py3.6 and onwards the **kwargs is an OrderedDictionary
+        for kw in kwargs.keys():
+            if kw in ['geometry', 'force', 'moment', 'stress']:
+                if kwargs[kw]:
+                    run.append(kw)
+
+        # Clean running names
+        for name in run:
+            kwargs.pop(name)
+
         val = []
-        for kw in kwargs:
-
-            if kw == 'geometry':
-                if kwargs[kw]:
-                    val.append(self.read_geometry())
-
-            if kw == 'force':
-                if kwargs[kw]:
-                    val.append(self.read_force())
-
-            if kw == 'moment':
-                if kwargs[kw]:
-                    val.append(self.read_moment())
+        for name in run:
+            val.append(getattr(self, 'read_{}'.format(name.lower()))(*args, **kwargs))
 
         if len(val) == 0:
             return None
         elif len(val) == 1:
             val = val[0]
         return val
+
+    @sile_fh_open()
+    def read_scf(self, key='scf', iscf=-1, imd=None):
+        r""" Parse SCF information and return a table of SCF information depending on what is requested
+
+        Parameters
+        ----------
+        key : {'scf', 'ts-scf'}
+            parse SCF information from Siesta SCF or TranSiesta SCF
+        iscf : int, optional
+            which SCF cycle should be stored. If ``-1`` only the final SCF step is stored,
+            for None *all* SCF cycles are returned. When `iscf` values queried are not found they
+            will be truncated to the nearest SCF step.
+        imd: int or None, optional
+            whether only a particular MD step is queried, if None, all MD steps are
+            parsed and returned. A negative number wraps for the last MD steps.
+        """
+        def reset_d(d, line):
+            if line.startswith('SCF cycle converged'):
+                d['_final_iscf'] = len(d['data']) > 0
+
+        if key.lower() == 'scf':
+            def parse_next(line, d):
+                line = line.strip().replace('*', '0')
+                reset_d(d, line)
+                if line.startswith('ts-Vha:'):
+                    d['ts-Vha'] = float(line.split()[1])
+                elif line.startswith('scf:'):
+                    d['_found_iscf'] = True
+                    if len(line) == 97:
+                        data = [int(line[5:9]), float(line[9:25]), float(line[25:41]),
+                                float(line[41:57]), float(line[57:67]), float(line[67:77]),
+                                float(line[77:87]), float(line[87:97])]
+                    elif len(line) == 87:
+                        data = [int(line[5:9]), float(line[9:25]), float(line[25:41]),
+                                float(line[41:57]), float(line[57:67]), float(line[67:77]),
+                                float(line[77:87])]
+                    else:
+                        # Populate DATA
+                        data = line.split()
+                        data =  [int(data[1])] + list(map(float, data[2:]))
+                    d['data'] = data
+
+        elif key.lower() == 'ts-scf':
+            def parse_next(line, d):
+                line = line.strip().replace('*', '0')
+                reset_d(d, line)
+                if line.startswith('ts-Vha:'):
+                    d['ts-Vha'] = float(line.split()[1])
+                elif line.startswith('ts-q:'):
+                    data = line.split()
+                    try:
+                        d['ts-q'] = list(map(float, data[1:]))
+                    except:
+                        # We are probably reading a device list
+                        pass
+                elif line.startswith('ts-scf:'):
+                    d['_found_iscf'] = True
+                    if len(line) == 100:
+                        data = [int(line[8:12]), float(line[12:28]), float(line[28:44]),
+                                float(line[44:60]), float(line[60:70]), float(line[70:80]),
+                                float(line[80:90]), float(line[90:100]), d['ts-Vha']] + d['ts-q']
+                    elif len(line) == 90:
+                        data = [int(line[8:12]), float(line[12:28]), float(line[28:44]),
+                                float(line[44:60]), float(line[60:70]), float(line[70:80]),
+                                float(line[80:90]), d['ts-Vha']] + d['ts-q']
+                    else:
+                        # Populate DATA
+                        data = line.split()
+                        data =  [int(data[1])] + list(map(float, data[2:])) + [d['ts-Vha']] + d['ts-q']
+                    d['data'] = data
+
+        # A temporary dictionary to hold information while reading the output file
+        d = {
+            '_found_iscf': False,
+            '_final_iscf': False,
+            'data': [],
+        }
+        md = []
+        scf = []
+        for line in self:
+            parse_next(line, d)
+            if d['_found_iscf']:
+                data = d['data']
+
+                if iscf is None or iscf < 0:
+                    scf.append(data)
+                elif data.iscf == iscf:
+                    scf = data
+
+            if d['_final_iscf']:
+                if len(d['data']) == 0:
+                    continue
+
+                # First figure out which iscf we should store
+                if iscf is None or iscf > 0:
+                    # scf is correct
+                    pass
+                elif iscf < 0:
+                    # truncate to 0
+                    scf = scf[max(len(scf) + iscf, 0)]
+
+                # Now we know scf is correct
+
+                # Populate md
+                md.append(scf)
+                # Reset SCF data
+                scf = []
+
+                if imd == len(md):
+                    return np.array(md[-1])
+
+                d['_final_iscf'] = False
+
+        # Now we know how many MD steps there are
+        if imd is None:
+            return np.array(md)
+        return np.array(md[max(len(md) + imd, 0)])
 
 
 add_sile('out', outSileSiesta, case=False, gzip=True)

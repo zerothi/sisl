@@ -5,7 +5,6 @@ with automatic unit conversion.
 The conversion factors are taken directly from Siesta
 which means these unit conversions should be used for Siesta "stuff".
 """
-from __future__ import print_function, division
 
 from .base import UnitParser
 from .base import unit_table

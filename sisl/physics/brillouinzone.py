@@ -83,14 +83,13 @@ Which does mathematical operations (averaging/summing) using `~sisl.oplist`.
    BandStructure
 
 """
-from __future__ import print_function, division
 
 import types
 from numbers import Integral, Real
 
 from numpy import pi
 import numpy as np
-from numpy import sum, dot, cross
+from numpy import sum, dot, cross, argsort
 
 from sisl.oplist import oplist
 from sisl.unit import units
@@ -106,7 +105,7 @@ from sisl.grid import Grid
 __all__ = ['BrillouinZone', 'MonkhorstPack', 'BandStructure']
 
 
-class BrillouinZone(object):
+class BrillouinZone:
     """ A class to construct Brillouin zone related quantities
 
     It takes any object (which has access to cell-vectors) as an argument
@@ -858,8 +857,7 @@ class BrillouinZone(object):
             for i in range(len(self)):
                 yield self.k[i], self.weight[i]
         else:
-            for k in self.k:
-                yield k
+            yield from self.k
 
     __iter__ = iter
 
@@ -914,7 +912,7 @@ class MonkhorstPack(BrillouinZone):
     """
 
     def __init__(self, parent, nkpt, displacement=None, size=None, centered=True, trs=True):
-        super(MonkhorstPack, self).__init__(parent)
+        super().__init__(parent)
 
         if isinstance(nkpt, Integral):
             nkpt = np.diag([nkpt] * 3)
@@ -961,6 +959,41 @@ class MonkhorstPack(BrillouinZone):
         # Calculate k-points and weights along all directions
         kw = [self.grid(Dn[i], displacement[i], size[i], centered, i == i_trs) for i in (0, 1, 2)]
 
+        # Now figure out if we have a 0 point along the TRS direction
+        if trs:
+            # Figure out if the first value is zero
+            if abs(kw[i_trs][0][0]) < 1e-10:
+                # Find indices we want to delete
+                ik1, ik2 = (i_trs + 1) % 3, (i_trs + 2) % 3
+                k1, k2 = kw[ik1][0], kw[ik2][0]
+                k_dup = _a.emptyd([k1.size, k2.size, 2])
+                k_dup[:, :, 0] = k1.reshape(-1, 1)
+                k_dup[:, :, 1] = k2.reshape(1, -1)
+                # Figure out the duplicate values
+                # To do this we calculate the norm matrix
+                # Note for a 100 x 100 k-point sampling this will produce
+                # a 100 ^ 4 matrix ~ 93 MB
+                # For larger k-point samplings this is probably not so good (300x300 -> 7.5 GB)
+                k_dup = k_dup.reshape(k1.size, k2.size, 1, 1, 2) + k_dup.reshape(1, 1, k1.size, k2.size, 2)
+                k_dup = ((k_dup[..., 0] ** 2 + k_dup[..., 1] ** 2) ** 0.5 < 1e-10).nonzero()
+                # At this point we have found all duplicate points, to only take one
+                # half of the points we only take the lower half
+                # Also, the Gamma point is *always* zero, so we shouldn't do <=!
+                # Now check the case where one of the directions is (only) the Gamma-point
+                if kw[ik1][0].size == 1 and kw[ik1][0][0] == 0.:
+                    # We keep all indices for the ik1 direction (since it is the Gamma-point!
+                    rel = (k_dup[1] > k_dup[3]).nonzero()[0]
+                elif kw[ik2][0].size == 1 and kw[ik2][0][0] == 0.:
+                    # We keep all indices for the ik2 direction (since it is the Gamma-point!
+                    rel = (k_dup[0] > k_dup[2]).nonzero()[0]
+                else:
+                    rel = np.logical_and(k_dup[0] > k_dup[2], k_dup[1] > k_dup[3])
+                k_dup = (k_dup[0][rel], k_dup[1][rel], k_dup[2][rel], k_dup[3][rel])
+                del rel, k1, k2
+            else:
+                # To signal we can't do this
+                k_dup = None
+
         self._k = _a.emptyd((kw[0][0].size, kw[1][0].size, kw[2][0].size, 3))
         self._w = _a.onesd(self._k.shape[:-1])
         for i in (0, 1, 2):
@@ -970,9 +1003,26 @@ class MonkhorstPack(BrillouinZone):
             self._w[...] *= np.rollaxis(w, 0, i + 1)
 
         del kw
+        # Now clean up a few of the points
+        if trs and k_dup is not None:
+            # Create the correct indices in the ravelled indices
+            k = [0] * 3
+            k[ik1] = k_dup[2]
+            k[ik2] = k_dup[3]
+            k_del = np.ravel_multi_index(tuple(k), self._k.shape[:-1])
+            k[ik1] = k_dup[0]
+            k[ik2] = k_dup[1]
+            k_dup = np.ravel_multi_index(tuple(k), self._k.shape[:-1])
+            del k
+
         self._k.shape = (-1, 3)
-        self._k = np.where(self._k > .5, self._k - 1, self._k)
         self._w.shape = (-1,)
+
+        if trs and k_dup is not None:
+            self._k = np.delete(self._k, k_del, 0)
+            self._w[k_dup] += self._w[k_del]
+            self._w = np.delete(self._w, k_del)
+            del k_dup, k_del
 
         # Store information regarding size and diagonal elements
         # This information is basically only necessary when
@@ -997,7 +1047,7 @@ class MonkhorstPack(BrillouinZone):
 
     def __getstate__(self):
         """ Return dictionary with the current state """
-        state = super(MonkhorstPack, self).__getstate__()
+        state = super().__getstate__()
         state['diag'] = self._diag
         state['displ'] = self._displ
         state['size'] = self._size
@@ -1007,7 +1057,7 @@ class MonkhorstPack(BrillouinZone):
 
     def __setstate__(self, state):
         """ Reset state of the object """
-        super(MonkhorstPack, self).__setstate__(state)
+        super().__setstate__(state)
         self._diag = state['diag']
         self._displ = state['displ']
         self._size = state['size']
@@ -1075,7 +1125,7 @@ class MonkhorstPack(BrillouinZone):
             # define the Grid size, etc.
             diag = self._diag.copy()
             if not np.all(self._displ == 0):
-                raise SislError(self.__class__.__name__ + '.{} requires the displacement to be 0 for all k-points.'.format(self._bz_attr))
+                raise SislError(self.__class__.__name__ + f'.{self._bz_attr} requires the displacement to be 0 for all k-points.')
             displ = self._displ.copy()
             size = self._size.copy()
             steps = size / diag
@@ -1116,7 +1166,7 @@ class MonkhorstPack(BrillouinZone):
 
             if data_axis is None:
                 if v.size != 1:
-                    raise SislError(self.__class__.__name__ + '.{} requires one value per-kpoint because of the 3D grid values'.format(self._bz_attr))
+                    raise SislError(self.__class__.__name__ + f'.{self._bz_attr} requires one value per-kpoint because of the 3D grid values')
 
             else:
 
@@ -1156,7 +1206,7 @@ class MonkhorstPack(BrillouinZone):
                 idx = k2idx(k[0]).tolist()
                 weight = weights[idx[data_axis]]
                 idx[data_axis] = slice(None)
-                grid[idx] = v * weight
+                grid[tuple(idx)] = v * weight
 
             del v
 
@@ -1172,8 +1222,8 @@ class MonkhorstPack(BrillouinZone):
                     idx = k2idx(k[i]).tolist()
                     weight = weights[idx[data_axis]]
                     idx[data_axis] = slice(None)
-                    grid[idx] = wrap(func(*args, k=k[i], **kwargs),
-                                     parent=parent, k=k[i], weight=w[i]) * weight
+                    grid[tuple(idx)] = wrap(func(*args, k=k[i], **kwargs),
+                                            parent=parent, k=k[i], weight=w[i]) * weight
                     eta.update()
             eta.close()
             return grid
@@ -1241,7 +1291,7 @@ class MonkhorstPack(BrillouinZone):
             k_pos = np.abs(k)
 
             # Sort k-points and weights
-            idx = np.argsort(k_pos)
+            idx = argsort(k_pos)
 
             # Re-arange according to k value
             k_pos = k_pos[idx]
@@ -1260,7 +1310,7 @@ class MonkhorstPack(BrillouinZone):
             w = np.delete(w, idx_same)
         else:
             # Sort them, because it makes more visual sense
-            idx = np.argsort(k)
+            idx = argsort(k)
             k = k[idx]
             w = w[idx]
 
@@ -1399,7 +1449,7 @@ class BandStructure(BrillouinZone):
     """
 
     def __init__(self, parent, point, division, name=None):
-        super(BandStructure, self).__init__(parent)
+        super().__init__(parent)
 
         # Copy over points
         self.point = _a.arrayd(point)
@@ -1457,7 +1507,7 @@ class BandStructure(BrillouinZone):
 
     def __getstate__(self):
         """ Return dictionary with the current state """
-        state = super(BandStructure, self).__getstate__()
+        state = super().__getstate__()
         state['point'] = self.point.copy()
         state['division'] = self.division.copy()
         state['name'] = list(self.name)
@@ -1465,7 +1515,7 @@ class BandStructure(BrillouinZone):
 
     def __setstate__(self, state):
         """ Reset state of the object """
-        super(BandStructure, self).__setstate__(state)
+        super().__setstate__(state)
         self.point = state['point']
         self.division = state['division']
         self.name = state['name']

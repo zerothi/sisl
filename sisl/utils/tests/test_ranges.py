@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import pytest
 
 import math as m
@@ -12,7 +10,7 @@ pytestmark = pytest.mark.utils
 
 
 @pytest.mark.ranges
-class TestRanges(object):
+class TestRanges:
 
     @pytest.mark.parametrize("sep", ['-', ':'])
     def test_strseq(self, sep):

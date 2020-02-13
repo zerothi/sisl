@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import os.path as osp
 from numbers import Integral
 import numpy as np
@@ -61,7 +59,11 @@ class gridncSileSiesta(SileCDFSiesta):
         # File names are made up of
         #  ElectrostaticPotential.grid.nc
         # So the first one should be ElectrostaticPotential
-        base = f.split('.')[0]
+        try:
+            # <>.grid.nc
+            base = f.split('.')[-3]
+        except:
+            base = 'None'
 
         # Unit-conversion
         BohrC2AngC = Bohr2Ang ** 3

@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import numpy as np
 
 from .sile import SileSiesta
@@ -47,7 +45,7 @@ class xvSileSiesta(SileSiesta):
         for i in range(3):
             tmp[0:3] = geom.cell[i, :] / Bohr2Ang
             self._write(fmt_str.format(*tmp))
-        self._write('{:12d}\n'.format(geom.na))
+        self._write(f'{geom.na:12d}\n')
 
         # Create format string for the atomic coordinates
         fmt_str = '{:3d}{:6d} '

@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import pytest
 
 import time
@@ -9,7 +7,7 @@ from sisl import TimeSelector
 
 
 @pytest.mark.selector
-class TestSelector(object):
+class TestSelector:
 
     def sleep(self, *args):
         if len(args) == 1:

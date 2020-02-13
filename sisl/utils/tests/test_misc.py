@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import pytest
 
 import math as m
@@ -10,7 +8,7 @@ from sisl.utils.misc import *
 pytestmark = pytest.mark.utils
 
 
-class TestMisc(object):
+class TestMisc:
 
     def test_direction_int(self):
         assert direction(0) == 0
@@ -92,16 +90,16 @@ class TestMisc(object):
         assert a[1] == 'bar'
 
     def test_merge_instances1(self):
-        class A(object):
+        class A:
             pass
         a = A()
         a.hello = 1
-        class B(object):
+        class B:
             pass
         b = B()
         b.hello = 2
         b.foo = 2
-        class C(object):
+        class C:
             pass
         c = C()
         c.bar = 3

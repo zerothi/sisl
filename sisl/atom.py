@@ -1,8 +1,3 @@
-from __future__ import print_function, division
-
-# We need this for python3 support PY3
-from six import add_metaclass
-
 from numbers import Integral, Real
 
 import numpy as np
@@ -10,14 +5,14 @@ import numpy as np
 from .messages import info
 from . import _array as _a
 from ._indices import list_index_le
-from ._help import array_fill_repeat, _str
+from ._help import array_fill_repeat
 from .shape import Sphere
 from .orbital import Orbital
 
 __all__ = ['PeriodicTable', 'Atom', 'Atoms']
 
 
-class PeriodicTable(object):
+class PeriodicTable:
     r""" Periodic table for creating an `Atom`, or retrieval of atomic information via atomic numbers
 
     Enables *lookup* of atomic numbers/names/labels to get
@@ -939,8 +934,7 @@ class AtomMeta(type):
 # The designation of metaclass in python3 is actually:
 #   class ...(..., metaclass=MetaClass)
 # This below construct handles both python2 and python3 cases
-@add_metaclass(AtomMeta)
-class Atom(object):
+class Atom(metaclass=AtomMeta):
     """ Atomic information, mass, name number of orbitals and ranges
 
     Object to handle atomic mass, name, number of orbitals and
@@ -1135,8 +1129,7 @@ class Atom(object):
 
     def __iter__(self):
         """ Loop on all orbitals in this atom """
-        for o in self.orbital:
-            yield o
+        yield from self.orbital
 
     def iter(self, group=False):
         """ Loop on all orbitals in this atom
@@ -1167,8 +1160,7 @@ class Atom(object):
                 yield self.orbital[i:j]
                 i = j
             return
-        for o in self.orbital:
-            yield o
+        yield from self.orbital
 
     def __str__(self):
         # Create orbitals output
@@ -1229,7 +1221,7 @@ class Atom(object):
         self.__init__(d['Z'], d['orbital'], d['mass'], d['tag'])
 
 
-class Atoms(object):
+class Atoms:
     """ A list-like object to contain a list of different atoms with minimum
     data duplication.
 
@@ -1294,7 +1286,7 @@ class Atoms(object):
                         uatom.append(a)
                     specie[i] = s
 
-            elif isinstance(atom[0], (_str, Integral)):
+            elif isinstance(atom[0], (str, Integral)):
                 for i, a in enumerate(atom):
                     a = Atom(a)
                     try:
@@ -1309,7 +1301,7 @@ class Atoms(object):
             else:
                 raise ValueError('atom keyword was wrong input')
 
-        elif isinstance(atom, (_str, Integral)):
+        elif isinstance(atom, (str, Integral)):
             uatom = [Atom(atom)]
             specie = [0]
 
@@ -1471,7 +1463,7 @@ class Atoms(object):
         # This will give the indices of the species
         # in the ascending order
         isort = np.argsort(smin)
-        if np.all(np.diff(isort) == 0):
+        if np.allclose(np.diff(isort), 0):
             # No swaps required
             return self.copy()
 
@@ -1674,8 +1666,7 @@ class Atoms(object):
 
     def __iter__(self):
         """ Loop on all atoms with the same specie in order of atoms """
-        for atom in self.iter():
-            yield atom
+        yield from self.iter()
 
     def __contains__(self, key):
         """ Determine whether the `key` is in the unique atoms list """
@@ -1748,7 +1739,7 @@ class Atoms(object):
             if a.no != atom.no:
                 a1 = '  ' + str(a).replace('\n', '\n  ')
                 a2 = '  ' + str(atom).replace('\n', '\n  ')
-                info('Substituting atom\n{}\n->\n{}\nwith a different number of orbitals!'.format(a1, a2))
+                info(f'Substituting atom\n{a1}\n->\n{a2}\nwith a different number of orbitals!')
         self._specie[index] = specie
         # Update orbital counts...
         self._update_orbitals()
@@ -1787,7 +1778,7 @@ class Atoms(object):
                 if atom.no != atom_to.no:
                     a1 = '  ' + str(atom).replace('\n', '\n  ')
                     a2 = '  ' + str(atom_to).replace('\n', '\n  ')
-                    info('Replacing atom\n{}\n->\n{}\nwith a different number of orbitals!'.format(a1, a2))
+                    info(f'Replacing atom\n{a1}\n->\n{a2}\nwith a different number of orbitals!')
                     update_orbitals = True
                 self._atom[i] = atom_to
 

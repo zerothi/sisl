@@ -2,7 +2,6 @@
 
 This class is the basis of many different objects.
 """
-from __future__ import print_function, division
 
 import math
 from numbers import Integral
@@ -21,7 +20,7 @@ from ._supercell import cell_invert, cell_reciprocal
 __all__ = ['SuperCell', 'SuperCellChild']
 
 
-class SuperCell(object):
+class SuperCell:
     r""" A cell class to retain lattice vectors and a supercell structure
 
     The supercell structure is comprising the *primary* unit-cell and neighbouring
@@ -289,8 +288,7 @@ class SuperCell(object):
 
     def __iter__(self):
         """ Iterate the supercells and the indices of the supercells """
-        for i, sc in enumerate(self.sc_off):
-            yield i, sc
+        yield from enumerate(self.sc_off)
 
     def copy(self, cell=None, origo=None):
         """ A deepcopy of the object
@@ -309,7 +307,7 @@ class SuperCell(object):
         else:
             copy = self.__class__(np.copy(cell), nsc=np.copy(self.nsc), origo=origo)
         # Ensure that the correct super-cell information gets carried through
-        if not np.all(copy.sc_off == self.sc_off):
+        if not np.allclose(copy.sc_off, self.sc_off):
             copy.sc_off = self.sc_off
         return copy
 
@@ -357,8 +355,8 @@ class SuperCell(object):
         dist = np.sqrt((dot(cell.T, (x - ix).T) ** 2).sum(0))
         idx = (dist <= tol).nonzero()[0]
         if len(idx) == 0:
-            raise ValueError(('Could not fit the cell parameters to the coordinates '
-                              'due to insufficient accuracy (try increase the tolerance)'))
+            raise ValueError('Could not fit the cell parameters to the coordinates '
+                              'due to insufficient accuracy (try increase the tolerance)')
 
         # Reduce problem to allowed values below the tolerance
         x = x[idx, :]
@@ -610,10 +608,16 @@ class SuperCell(object):
     def sc_index(self, sc_off):
         """ Returns the integer index in the sc_off list that corresponds to `sc_off`
 
-        Returns the integer for the supercell
+        Returns the index for the supercell in the global offset.
+
+        Parameters
+        ----------
+        sc_off : (3,) or list of (3,)
+            super cell specification. For each axis having value ``None`` all supercells
+            along that axis is returned.
         """
         def _assert(m, v):
-            if np.all(np.abs(v) > m):
+            if np.any(np.abs(v) > m):
                 raise ValueError("Requesting a non-existing supercell index")
         hsc = self.nsc // 2
 
@@ -909,7 +913,7 @@ class SuperCell(object):
             return False
         for tol in [1e-2, 1e-3, 1e-4]:
             same = np.allclose(self.cell, other.cell, atol=tol)
-        same = same and np.all(self.nsc == other.nsc)
+        same = same and np.allclose(self.nsc, other.nsc)
         same = same and np.allclose(self.origo, other.origo, atol=tol)
         return same
 
@@ -998,7 +1002,7 @@ class SuperCell(object):
         return axes
 
 
-class SuperCellChild(object):
+class SuperCellChild:
     """ Class to be inherited by using the ``self.sc`` as a `SuperCell` object
 
     Initialize by a `SuperCell` object and get access to several different

@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 from itertools import product
 import pytest
 import numpy as np

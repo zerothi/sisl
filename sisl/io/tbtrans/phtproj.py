@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 from ..sile import add_sile
 from .tbt import Ry2eV
 from .tbtproj import tbtprojncSileTBtrans

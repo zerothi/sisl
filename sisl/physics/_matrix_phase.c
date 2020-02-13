@@ -1,4 +1,3 @@
-# 16 "sisl/physics/_matrix_phase.c"
 #define PY_SSIZE_T_CLEAN 
 #include "Python.h"
 #ifndef Py_PYTHON_H
@@ -936,47 +935,26 @@ typedef volatile __pyx_atomic_int_type __pyx_atomic_int;
 #define __Pyx_FastGIL_Remember() 
 #define __Pyx_FastGIL_Forget() 
 #define __Pyx_FastGilFuncInit() 
-# 962 "sisl/physics/_matrix_phase.c"
 typedef npy_int8 __pyx_t_5numpy_int8_t;
-# 971 "sisl/physics/_matrix_phase.c"
 typedef npy_int16 __pyx_t_5numpy_int16_t;
-# 980 "sisl/physics/_matrix_phase.c"
 typedef npy_int32 __pyx_t_5numpy_int32_t;
-# 989 "sisl/physics/_matrix_phase.c"
 typedef npy_int64 __pyx_t_5numpy_int64_t;
-# 998 "sisl/physics/_matrix_phase.c"
 typedef npy_uint8 __pyx_t_5numpy_uint8_t;
-# 1007 "sisl/physics/_matrix_phase.c"
 typedef npy_uint16 __pyx_t_5numpy_uint16_t;
-# 1016 "sisl/physics/_matrix_phase.c"
 typedef npy_uint32 __pyx_t_5numpy_uint32_t;
-# 1025 "sisl/physics/_matrix_phase.c"
 typedef npy_uint64 __pyx_t_5numpy_uint64_t;
-# 1034 "sisl/physics/_matrix_phase.c"
 typedef npy_float32 __pyx_t_5numpy_float32_t;
-# 1043 "sisl/physics/_matrix_phase.c"
 typedef npy_float64 __pyx_t_5numpy_float64_t;
-# 1052 "sisl/physics/_matrix_phase.c"
 typedef npy_long __pyx_t_5numpy_int_t;
-# 1061 "sisl/physics/_matrix_phase.c"
 typedef npy_longlong __pyx_t_5numpy_long_t;
-# 1070 "sisl/physics/_matrix_phase.c"
 typedef npy_longlong __pyx_t_5numpy_longlong_t;
-# 1079 "sisl/physics/_matrix_phase.c"
 typedef npy_ulong __pyx_t_5numpy_uint_t;
-# 1088 "sisl/physics/_matrix_phase.c"
 typedef npy_ulonglong __pyx_t_5numpy_ulong_t;
-# 1097 "sisl/physics/_matrix_phase.c"
 typedef npy_ulonglong __pyx_t_5numpy_ulonglong_t;
-# 1106 "sisl/physics/_matrix_phase.c"
 typedef npy_intp __pyx_t_5numpy_intp_t;
-# 1115 "sisl/physics/_matrix_phase.c"
 typedef npy_uintp __pyx_t_5numpy_uintp_t;
-# 1124 "sisl/physics/_matrix_phase.c"
 typedef npy_double __pyx_t_5numpy_float_t;
-# 1133 "sisl/physics/_matrix_phase.c"
 typedef npy_double __pyx_t_5numpy_double_t;
-# 1142 "sisl/physics/_matrix_phase.c"
 typedef npy_longdouble __pyx_t_5numpy_longdouble_t;
 
 #if CYTHON_CCOMPLEX
@@ -1008,15 +986,10 @@ struct __pyx_array_obj;
 struct __pyx_MemviewEnum_obj;
 struct __pyx_memoryview_obj;
 struct __pyx_memoryviewslice_obj;
-# 1181 "sisl/physics/_matrix_phase.c"
 typedef npy_cfloat __pyx_t_5numpy_cfloat_t;
-# 1190 "sisl/physics/_matrix_phase.c"
 typedef npy_cdouble __pyx_t_5numpy_cdouble_t;
-# 1199 "sisl/physics/_matrix_phase.c"
 typedef npy_clongdouble __pyx_t_5numpy_clongdouble_t;
-# 1208 "sisl/physics/_matrix_phase.c"
 typedef npy_cdouble __pyx_t_5numpy_complex_t;
-# 1217 "sisl/physics/_matrix_phase.c"
 struct __pyx_array_obj {
   PyObject_HEAD
   struct __pyx_vtabstruct_array *__pyx_vtab;
@@ -1033,12 +1006,10 @@ struct __pyx_array_obj {
   int free_data;
   int dtype_is_object;
 };
-# 1242 "sisl/physics/_matrix_phase.c"
 struct __pyx_MemviewEnum_obj {
   PyObject_HEAD
   PyObject *name;
 };
-# 1255 "sisl/physics/_matrix_phase.c"
 struct __pyx_memoryview_obj {
   PyObject_HEAD
   struct __pyx_vtabstruct_memoryview *__pyx_vtab;
@@ -1053,7 +1024,6 @@ struct __pyx_memoryview_obj {
   int dtype_is_object;
   __Pyx_TypeInfo *typeinfo;
 };
-# 1278 "sisl/physics/_matrix_phase.c"
 struct __pyx_memoryviewslice_obj {
   struct __pyx_memoryview_obj __pyx_base;
   __Pyx_memviewslice from_slice;
@@ -1061,12 +1031,10 @@ struct __pyx_memoryviewslice_obj {
   PyObject *(*to_object_func)(char *);
   int (*to_dtype_func)(char *, PyObject *);
 };
-# 1296 "sisl/physics/_matrix_phase.c"
 struct __pyx_vtabstruct_array {
   PyObject *(*get_memview)(struct __pyx_array_obj *);
 };
 static struct __pyx_vtabstruct_array *__pyx_vtabptr_array;
-# 1310 "sisl/physics/_matrix_phase.c"
 struct __pyx_vtabstruct_memoryview {
   char *(*get_item_pointer)(struct __pyx_memoryview_obj *, PyObject *);
   PyObject *(*is_slice)(struct __pyx_memoryview_obj *, PyObject *);
@@ -1077,7 +1045,6 @@ struct __pyx_vtabstruct_memoryview {
   PyObject *(*assign_item_from_object)(struct __pyx_memoryview_obj *, char *, PyObject *);
 };
 static struct __pyx_vtabstruct_memoryview *__pyx_vtabptr_memoryview;
-# 1330 "sisl/physics/_matrix_phase.c"
 struct __pyx_vtabstruct__memoryviewslice {
   struct __pyx_vtabstruct_memoryview __pyx_base;
 };
@@ -2019,9 +1986,7 @@ static PyObject *__pyx_memoryview_convert_item_to_object(struct __pyx_memoryview
 static PyObject *__pyx_memoryview_assign_item_from_object(struct __pyx_memoryview_obj *__pyx_v_self, char *__pyx_v_itemp, PyObject *__pyx_v_value);
 static PyObject *__pyx_memoryviewslice_convert_item_to_object(struct __pyx_memoryviewslice_obj *__pyx_v_self, char *__pyx_v_itemp);
 static PyObject *__pyx_memoryviewslice_assign_item_from_object(struct __pyx_memoryviewslice_obj *__pyx_v_self, char *__pyx_v_itemp, PyObject *__pyx_v_value);
-# 2285 "sisl/physics/_matrix_phase.c"
 static PyTypeObject *__pyx_ptype_7cpython_4type_type = 0;
-# 2298 "sisl/physics/_matrix_phase.c"
 static PyTypeObject *__pyx_ptype_5numpy_dtype = 0;
 static PyTypeObject *__pyx_ptype_5numpy_flatiter = 0;
 static PyTypeObject *__pyx_ptype_5numpy_broadcast = 0;
@@ -2573,7 +2538,6 @@ static PyObject *__pyx_codeobj__41;
 static PyObject *__pyx_codeobj__43;
 static PyObject *__pyx_codeobj__45;
 static PyObject *__pyx_codeobj__52;
-# 2860 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw_4sisl_7physics_13_matrix_phase_1_csr_f32(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds);
 static PyMethodDef __pyx_mdef_4sisl_7physics_13_matrix_phase_1_csr_f32 = {"_csr_f32", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_4sisl_7physics_13_matrix_phase_1_csr_f32, METH_VARARGS|METH_KEYWORDS, 0};
 static PyObject *__pyx_pw_4sisl_7physics_13_matrix_phase_1_csr_f32(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
@@ -3380,22 +3344,18 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_16_csr_f32(CYTHON_UNUSE
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 35, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
-# 3674 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 41, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 3686 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 42, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 3698 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 43, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 3710 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_fold_csr_matrix); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
@@ -3505,24 +3465,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_16_csr_f32(CYTHON_UNUSE
   __pyx_t_6 = 0;
   __pyx_v_V_COL = __pyx_t_4;
   __pyx_t_4 = 0;
-# 3827 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 47, __pyx_L1_error)
   __pyx_v_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 3839 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 48, __pyx_L1_error)
   __pyx_v_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 3851 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 49, __pyx_L1_error)
   __pyx_v_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 3863 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_v_ncol.shape[0]);
-# 3872 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 52, __pyx_L1_error)
@@ -3567,17 +3522,14 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_16_csr_f32(CYTHON_UNUSE
   __pyx_t_9 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
-# 3924 "sisl/physics/_matrix_phase.c"
   __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_dc_float(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 53, __pyx_L1_error)
   __pyx_v_v = __pyx_t_10;
   __pyx_t_10.memview = NULL;
   __pyx_t_10.data = NULL;
-# 3936 "sisl/physics/_matrix_phase.c"
   __pyx_t_5 = __pyx_v_nr;
   __pyx_t_11 = __pyx_t_5;
   for (__pyx_t_12 = 0; __pyx_t_12 < __pyx_t_11; __pyx_t_12+=1) {
     __pyx_v_r = __pyx_t_12;
-# 3948 "sisl/physics/_matrix_phase.c"
     __pyx_t_13 = __pyx_v_r;
     __pyx_t_14 = __pyx_v_r;
     __pyx_t_15 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_13)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_14)) ))));
@@ -3585,10 +3537,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_16_csr_f32(CYTHON_UNUSE
     __pyx_t_17 = __pyx_t_15;
     for (__pyx_t_18 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_16)) ))); __pyx_t_18 < __pyx_t_17; __pyx_t_18+=1) {
       __pyx_v_ind = __pyx_t_18;
-# 3963 "sisl/physics/_matrix_phase.c"
       __pyx_t_19 = __pyx_v_ind;
       __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_19)) ))) % __pyx_v_nr);
-# 3973 "sisl/physics/_matrix_phase.c"
       __pyx_t_20 = __pyx_v_r;
       __pyx_t_21 = __pyx_v_r;
       __pyx_t_22 = __pyx_v_r;
@@ -3617,7 +3567,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
-# 4009 "sisl/physics/_matrix_phase.c"
       __pyx_t_24 = __pyx_v_ind;
       __pyx_t_25 = __pyx_v_idx;
       __pyx_t_26 = __pyx_v_r;
@@ -3625,7 +3574,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       *((float *) ( ((char *) (((float *) __pyx_v_v.data) + __pyx_t_27)) )) += ((float)(*((int *) ( ((char *) (((int *) ( (__pyx_v_D.data + __pyx_t_24 * __pyx_v_D.strides[0]) )) + __pyx_t_25)) ))));
     }
   }
-# 4024 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 62, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
@@ -3669,7 +3617,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __pyx_r = __pyx_t_28;
   __pyx_t_28 = 0;
   goto __pyx_L0;
-# 4077 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -3903,22 +3850,18 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_18_csr_f32(CYTHON_UNUSE
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 35, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
-# 4318 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 41, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 4330 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 42, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 4342 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 43, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 4354 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_fold_csr_matrix); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
@@ -4028,24 +3971,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_18_csr_f32(CYTHON_UNUSE
   __pyx_t_6 = 0;
   __pyx_v_V_COL = __pyx_t_4;
   __pyx_t_4 = 0;
-# 4471 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 47, __pyx_L1_error)
   __pyx_v_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 4483 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 48, __pyx_L1_error)
   __pyx_v_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 4495 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 49, __pyx_L1_error)
   __pyx_v_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 4507 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_v_ncol.shape[0]);
-# 4516 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 52, __pyx_L1_error)
@@ -4090,17 +4028,14 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_18_csr_f32(CYTHON_UNUSE
   __pyx_t_9 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
-# 4568 "sisl/physics/_matrix_phase.c"
   __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_dc_float(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 53, __pyx_L1_error)
   __pyx_v_v = __pyx_t_10;
   __pyx_t_10.memview = NULL;
   __pyx_t_10.data = NULL;
-# 4580 "sisl/physics/_matrix_phase.c"
   __pyx_t_5 = __pyx_v_nr;
   __pyx_t_11 = __pyx_t_5;
   for (__pyx_t_12 = 0; __pyx_t_12 < __pyx_t_11; __pyx_t_12+=1) {
     __pyx_v_r = __pyx_t_12;
-# 4592 "sisl/physics/_matrix_phase.c"
     __pyx_t_13 = __pyx_v_r;
     __pyx_t_14 = __pyx_v_r;
     __pyx_t_15 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_13)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_14)) ))));
@@ -4108,10 +4043,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_18_csr_f32(CYTHON_UNUSE
     __pyx_t_17 = __pyx_t_15;
     for (__pyx_t_18 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_16)) ))); __pyx_t_18 < __pyx_t_17; __pyx_t_18+=1) {
       __pyx_v_ind = __pyx_t_18;
-# 4607 "sisl/physics/_matrix_phase.c"
       __pyx_t_19 = __pyx_v_ind;
       __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_19)) ))) % __pyx_v_nr);
-# 4617 "sisl/physics/_matrix_phase.c"
       __pyx_t_20 = __pyx_v_r;
       __pyx_t_21 = __pyx_v_r;
       __pyx_t_22 = __pyx_v_r;
@@ -4140,7 +4073,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
-# 4653 "sisl/physics/_matrix_phase.c"
       __pyx_t_24 = __pyx_v_ind;
       __pyx_t_25 = __pyx_v_idx;
       __pyx_t_26 = __pyx_v_r;
@@ -4148,7 +4080,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       *((float *) ( ((char *) (((float *) __pyx_v_v.data) + __pyx_t_27)) )) += ((float)(*((long *) ( ((char *) (((long *) ( (__pyx_v_D.data + __pyx_t_24 * __pyx_v_D.strides[0]) )) + __pyx_t_25)) ))));
     }
   }
-# 4668 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 62, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
@@ -4192,7 +4123,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __pyx_r = __pyx_t_28;
   __pyx_t_28 = 0;
   goto __pyx_L0;
-# 4721 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -4426,22 +4356,18 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_20_csr_f32(CYTHON_UNUSE
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 35, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
-# 4962 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 41, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 4974 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 42, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 4986 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 43, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 4998 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_fold_csr_matrix); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
@@ -4551,24 +4477,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_20_csr_f32(CYTHON_UNUSE
   __pyx_t_6 = 0;
   __pyx_v_V_COL = __pyx_t_4;
   __pyx_t_4 = 0;
-# 5115 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 47, __pyx_L1_error)
   __pyx_v_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 5127 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 48, __pyx_L1_error)
   __pyx_v_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 5139 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 49, __pyx_L1_error)
   __pyx_v_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 5151 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_v_ncol.shape[0]);
-# 5160 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 52, __pyx_L1_error)
@@ -4613,17 +4534,14 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_20_csr_f32(CYTHON_UNUSE
   __pyx_t_9 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
-# 5212 "sisl/physics/_matrix_phase.c"
   __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_dc_float(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 53, __pyx_L1_error)
   __pyx_v_v = __pyx_t_10;
   __pyx_t_10.memview = NULL;
   __pyx_t_10.data = NULL;
-# 5224 "sisl/physics/_matrix_phase.c"
   __pyx_t_5 = __pyx_v_nr;
   __pyx_t_11 = __pyx_t_5;
   for (__pyx_t_12 = 0; __pyx_t_12 < __pyx_t_11; __pyx_t_12+=1) {
     __pyx_v_r = __pyx_t_12;
-# 5236 "sisl/physics/_matrix_phase.c"
     __pyx_t_13 = __pyx_v_r;
     __pyx_t_14 = __pyx_v_r;
     __pyx_t_15 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_13)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_14)) ))));
@@ -4631,10 +4549,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_20_csr_f32(CYTHON_UNUSE
     __pyx_t_17 = __pyx_t_15;
     for (__pyx_t_18 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_16)) ))); __pyx_t_18 < __pyx_t_17; __pyx_t_18+=1) {
       __pyx_v_ind = __pyx_t_18;
-# 5251 "sisl/physics/_matrix_phase.c"
       __pyx_t_19 = __pyx_v_ind;
       __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_19)) ))) % __pyx_v_nr);
-# 5261 "sisl/physics/_matrix_phase.c"
       __pyx_t_20 = __pyx_v_r;
       __pyx_t_21 = __pyx_v_r;
       __pyx_t_22 = __pyx_v_r;
@@ -4663,7 +4579,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
-# 5297 "sisl/physics/_matrix_phase.c"
       __pyx_t_24 = __pyx_v_ind;
       __pyx_t_25 = __pyx_v_idx;
       __pyx_t_26 = __pyx_v_r;
@@ -4671,7 +4586,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       *((float *) ( ((char *) (((float *) __pyx_v_v.data) + __pyx_t_27)) )) += ((float)(*((float *) ( ((char *) (((float *) ( (__pyx_v_D.data + __pyx_t_24 * __pyx_v_D.strides[0]) )) + __pyx_t_25)) ))));
     }
   }
-# 5312 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 62, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
@@ -4715,7 +4629,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __pyx_r = __pyx_t_28;
   __pyx_t_28 = 0;
   goto __pyx_L0;
-# 5365 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -4949,22 +4862,18 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_22_csr_f32(CYTHON_UNUSE
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 35, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
-# 5606 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 41, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 5618 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 42, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 5630 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 43, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 5642 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_fold_csr_matrix); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 46, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
@@ -5074,24 +4983,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_22_csr_f32(CYTHON_UNUSE
   __pyx_t_6 = 0;
   __pyx_v_V_COL = __pyx_t_4;
   __pyx_t_4 = 0;
-# 5759 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 47, __pyx_L1_error)
   __pyx_v_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 5771 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 48, __pyx_L1_error)
   __pyx_v_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 5783 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 49, __pyx_L1_error)
   __pyx_v_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 5795 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_v_ncol.shape[0]);
-# 5804 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 52, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 52, __pyx_L1_error)
@@ -5136,17 +5040,14 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_22_csr_f32(CYTHON_UNUSE
   __pyx_t_9 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
-# 5856 "sisl/physics/_matrix_phase.c"
   __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_dc_float(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 53, __pyx_L1_error)
   __pyx_v_v = __pyx_t_10;
   __pyx_t_10.memview = NULL;
   __pyx_t_10.data = NULL;
-# 5868 "sisl/physics/_matrix_phase.c"
   __pyx_t_5 = __pyx_v_nr;
   __pyx_t_11 = __pyx_t_5;
   for (__pyx_t_12 = 0; __pyx_t_12 < __pyx_t_11; __pyx_t_12+=1) {
     __pyx_v_r = __pyx_t_12;
-# 5880 "sisl/physics/_matrix_phase.c"
     __pyx_t_13 = __pyx_v_r;
     __pyx_t_14 = __pyx_v_r;
     __pyx_t_15 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_13)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_14)) ))));
@@ -5154,10 +5055,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_22_csr_f32(CYTHON_UNUSE
     __pyx_t_17 = __pyx_t_15;
     for (__pyx_t_18 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_16)) ))); __pyx_t_18 < __pyx_t_17; __pyx_t_18+=1) {
       __pyx_v_ind = __pyx_t_18;
-# 5895 "sisl/physics/_matrix_phase.c"
       __pyx_t_19 = __pyx_v_ind;
       __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_19)) ))) % __pyx_v_nr);
-# 5905 "sisl/physics/_matrix_phase.c"
       __pyx_t_20 = __pyx_v_r;
       __pyx_t_21 = __pyx_v_r;
       __pyx_t_22 = __pyx_v_r;
@@ -5186,7 +5085,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
-# 5941 "sisl/physics/_matrix_phase.c"
       __pyx_t_24 = __pyx_v_ind;
       __pyx_t_25 = __pyx_v_idx;
       __pyx_t_26 = __pyx_v_r;
@@ -5194,7 +5092,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       *((float *) ( ((char *) (((float *) __pyx_v_v.data) + __pyx_t_27)) )) += ((float)(*((double *) ( ((char *) (((double *) ( (__pyx_v_D.data + __pyx_t_24 * __pyx_v_D.strides[0]) )) + __pyx_t_25)) ))));
     }
   }
-# 5956 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 62, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
@@ -5238,7 +5135,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __pyx_r = __pyx_t_28;
   __pyx_t_28 = 0;
   goto __pyx_L0;
-# 6009 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -5282,7 +5178,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 6062 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw_4sisl_7physics_13_matrix_phase_3_csr_f64(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds);
 static PyMethodDef __pyx_mdef_4sisl_7physics_13_matrix_phase_3_csr_f64 = {"_csr_f64", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_4sisl_7physics_13_matrix_phase_3_csr_f64, METH_VARARGS|METH_KEYWORDS, 0};
 static PyObject *__pyx_pw_4sisl_7physics_13_matrix_phase_3_csr_f64(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
@@ -6089,22 +5984,18 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_26_csr_f64(CYTHON_UNUSE
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 69, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
-# 6876 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 75, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 6888 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 76, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 6900 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 77, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 6912 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_fold_csr_matrix); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 80, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
@@ -6214,24 +6105,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_26_csr_f64(CYTHON_UNUSE
   __pyx_t_6 = 0;
   __pyx_v_V_COL = __pyx_t_4;
   __pyx_t_4 = 0;
-# 7029 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 81, __pyx_L1_error)
   __pyx_v_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 7041 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 82, __pyx_L1_error)
   __pyx_v_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 7053 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 83, __pyx_L1_error)
   __pyx_v_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 7065 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_v_ncol.shape[0]);
-# 7074 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 86, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 86, __pyx_L1_error)
@@ -6276,17 +6162,14 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_26_csr_f64(CYTHON_UNUSE
   __pyx_t_9 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
-# 7126 "sisl/physics/_matrix_phase.c"
   __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_dc_double(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 87, __pyx_L1_error)
   __pyx_v_v = __pyx_t_10;
   __pyx_t_10.memview = NULL;
   __pyx_t_10.data = NULL;
-# 7138 "sisl/physics/_matrix_phase.c"
   __pyx_t_5 = __pyx_v_nr;
   __pyx_t_11 = __pyx_t_5;
   for (__pyx_t_12 = 0; __pyx_t_12 < __pyx_t_11; __pyx_t_12+=1) {
     __pyx_v_r = __pyx_t_12;
-# 7150 "sisl/physics/_matrix_phase.c"
     __pyx_t_13 = __pyx_v_r;
     __pyx_t_14 = __pyx_v_r;
     __pyx_t_15 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_13)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_14)) ))));
@@ -6294,10 +6177,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_26_csr_f64(CYTHON_UNUSE
     __pyx_t_17 = __pyx_t_15;
     for (__pyx_t_18 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_16)) ))); __pyx_t_18 < __pyx_t_17; __pyx_t_18+=1) {
       __pyx_v_ind = __pyx_t_18;
-# 7165 "sisl/physics/_matrix_phase.c"
       __pyx_t_19 = __pyx_v_ind;
       __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_19)) ))) % __pyx_v_nr);
-# 7175 "sisl/physics/_matrix_phase.c"
       __pyx_t_20 = __pyx_v_r;
       __pyx_t_21 = __pyx_v_r;
       __pyx_t_22 = __pyx_v_r;
@@ -6326,7 +6207,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
-# 7211 "sisl/physics/_matrix_phase.c"
       __pyx_t_24 = __pyx_v_ind;
       __pyx_t_25 = __pyx_v_idx;
       __pyx_t_26 = __pyx_v_r;
@@ -6334,7 +6214,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       *((double *) ( ((char *) (((double *) __pyx_v_v.data) + __pyx_t_27)) )) += ((double)(*((int *) ( ((char *) (((int *) ( (__pyx_v_D.data + __pyx_t_24 * __pyx_v_D.strides[0]) )) + __pyx_t_25)) ))));
     }
   }
-# 7226 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 96, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
@@ -6378,7 +6257,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __pyx_r = __pyx_t_28;
   __pyx_t_28 = 0;
   goto __pyx_L0;
-# 7279 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -6612,22 +6490,18 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_28_csr_f64(CYTHON_UNUSE
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 69, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
-# 7520 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 75, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 7532 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 76, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 7544 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 77, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 7556 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_fold_csr_matrix); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 80, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
@@ -6737,24 +6611,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_28_csr_f64(CYTHON_UNUSE
   __pyx_t_6 = 0;
   __pyx_v_V_COL = __pyx_t_4;
   __pyx_t_4 = 0;
-# 7673 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 81, __pyx_L1_error)
   __pyx_v_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 7685 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 82, __pyx_L1_error)
   __pyx_v_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 7697 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 83, __pyx_L1_error)
   __pyx_v_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 7709 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_v_ncol.shape[0]);
-# 7718 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 86, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 86, __pyx_L1_error)
@@ -6799,17 +6668,14 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_28_csr_f64(CYTHON_UNUSE
   __pyx_t_9 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
-# 7770 "sisl/physics/_matrix_phase.c"
   __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_dc_double(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 87, __pyx_L1_error)
   __pyx_v_v = __pyx_t_10;
   __pyx_t_10.memview = NULL;
   __pyx_t_10.data = NULL;
-# 7782 "sisl/physics/_matrix_phase.c"
   __pyx_t_5 = __pyx_v_nr;
   __pyx_t_11 = __pyx_t_5;
   for (__pyx_t_12 = 0; __pyx_t_12 < __pyx_t_11; __pyx_t_12+=1) {
     __pyx_v_r = __pyx_t_12;
-# 7794 "sisl/physics/_matrix_phase.c"
     __pyx_t_13 = __pyx_v_r;
     __pyx_t_14 = __pyx_v_r;
     __pyx_t_15 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_13)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_14)) ))));
@@ -6817,10 +6683,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_28_csr_f64(CYTHON_UNUSE
     __pyx_t_17 = __pyx_t_15;
     for (__pyx_t_18 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_16)) ))); __pyx_t_18 < __pyx_t_17; __pyx_t_18+=1) {
       __pyx_v_ind = __pyx_t_18;
-# 7809 "sisl/physics/_matrix_phase.c"
       __pyx_t_19 = __pyx_v_ind;
       __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_19)) ))) % __pyx_v_nr);
-# 7819 "sisl/physics/_matrix_phase.c"
       __pyx_t_20 = __pyx_v_r;
       __pyx_t_21 = __pyx_v_r;
       __pyx_t_22 = __pyx_v_r;
@@ -6849,7 +6713,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
-# 7855 "sisl/physics/_matrix_phase.c"
       __pyx_t_24 = __pyx_v_ind;
       __pyx_t_25 = __pyx_v_idx;
       __pyx_t_26 = __pyx_v_r;
@@ -6857,7 +6720,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       *((double *) ( ((char *) (((double *) __pyx_v_v.data) + __pyx_t_27)) )) += ((double)(*((long *) ( ((char *) (((long *) ( (__pyx_v_D.data + __pyx_t_24 * __pyx_v_D.strides[0]) )) + __pyx_t_25)) ))));
     }
   }
-# 7870 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 96, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
@@ -6901,7 +6763,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __pyx_r = __pyx_t_28;
   __pyx_t_28 = 0;
   goto __pyx_L0;
-# 7923 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -7135,22 +6996,18 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_30_csr_f64(CYTHON_UNUSE
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 69, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
-# 8164 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 75, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 8176 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 76, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 8188 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 77, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 8200 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_fold_csr_matrix); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 80, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
@@ -7260,24 +7117,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_30_csr_f64(CYTHON_UNUSE
   __pyx_t_6 = 0;
   __pyx_v_V_COL = __pyx_t_4;
   __pyx_t_4 = 0;
-# 8317 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 81, __pyx_L1_error)
   __pyx_v_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 8329 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 82, __pyx_L1_error)
   __pyx_v_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 8341 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 83, __pyx_L1_error)
   __pyx_v_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 8353 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_v_ncol.shape[0]);
-# 8362 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 86, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 86, __pyx_L1_error)
@@ -7322,17 +7174,14 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_30_csr_f64(CYTHON_UNUSE
   __pyx_t_9 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
-# 8414 "sisl/physics/_matrix_phase.c"
   __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_dc_double(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 87, __pyx_L1_error)
   __pyx_v_v = __pyx_t_10;
   __pyx_t_10.memview = NULL;
   __pyx_t_10.data = NULL;
-# 8426 "sisl/physics/_matrix_phase.c"
   __pyx_t_5 = __pyx_v_nr;
   __pyx_t_11 = __pyx_t_5;
   for (__pyx_t_12 = 0; __pyx_t_12 < __pyx_t_11; __pyx_t_12+=1) {
     __pyx_v_r = __pyx_t_12;
-# 8438 "sisl/physics/_matrix_phase.c"
     __pyx_t_13 = __pyx_v_r;
     __pyx_t_14 = __pyx_v_r;
     __pyx_t_15 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_13)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_14)) ))));
@@ -7340,10 +7189,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_30_csr_f64(CYTHON_UNUSE
     __pyx_t_17 = __pyx_t_15;
     for (__pyx_t_18 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_16)) ))); __pyx_t_18 < __pyx_t_17; __pyx_t_18+=1) {
       __pyx_v_ind = __pyx_t_18;
-# 8453 "sisl/physics/_matrix_phase.c"
       __pyx_t_19 = __pyx_v_ind;
       __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_19)) ))) % __pyx_v_nr);
-# 8463 "sisl/physics/_matrix_phase.c"
       __pyx_t_20 = __pyx_v_r;
       __pyx_t_21 = __pyx_v_r;
       __pyx_t_22 = __pyx_v_r;
@@ -7372,7 +7219,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
-# 8499 "sisl/physics/_matrix_phase.c"
       __pyx_t_24 = __pyx_v_ind;
       __pyx_t_25 = __pyx_v_idx;
       __pyx_t_26 = __pyx_v_r;
@@ -7380,7 +7226,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       *((double *) ( ((char *) (((double *) __pyx_v_v.data) + __pyx_t_27)) )) += ((double)(*((float *) ( ((char *) (((float *) ( (__pyx_v_D.data + __pyx_t_24 * __pyx_v_D.strides[0]) )) + __pyx_t_25)) ))));
     }
   }
-# 8514 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 96, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
@@ -7424,7 +7269,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __pyx_r = __pyx_t_28;
   __pyx_t_28 = 0;
   goto __pyx_L0;
-# 8567 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -7658,22 +7502,18 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_32_csr_f64(CYTHON_UNUSE
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 69, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
-# 8808 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 75, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 8820 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 76, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 8832 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 77, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 8844 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_fold_csr_matrix); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 80, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = NULL;
@@ -7783,24 +7623,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_32_csr_f64(CYTHON_UNUSE
   __pyx_t_6 = 0;
   __pyx_v_V_COL = __pyx_t_4;
   __pyx_t_4 = 0;
-# 8961 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 81, __pyx_L1_error)
   __pyx_v_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 8973 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 82, __pyx_L1_error)
   __pyx_v_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 8985 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 83, __pyx_L1_error)
   __pyx_v_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 8997 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_v_ncol.shape[0]);
-# 9006 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 86, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 86, __pyx_L1_error)
@@ -7845,17 +7680,14 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_32_csr_f64(CYTHON_UNUSE
   __pyx_t_9 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
-# 9058 "sisl/physics/_matrix_phase.c"
   __pyx_t_10 = __Pyx_PyObject_to_MemoryviewSlice_dc_double(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_10.memview)) __PYX_ERR(0, 87, __pyx_L1_error)
   __pyx_v_v = __pyx_t_10;
   __pyx_t_10.memview = NULL;
   __pyx_t_10.data = NULL;
-# 9070 "sisl/physics/_matrix_phase.c"
   __pyx_t_5 = __pyx_v_nr;
   __pyx_t_11 = __pyx_t_5;
   for (__pyx_t_12 = 0; __pyx_t_12 < __pyx_t_11; __pyx_t_12+=1) {
     __pyx_v_r = __pyx_t_12;
-# 9082 "sisl/physics/_matrix_phase.c"
     __pyx_t_13 = __pyx_v_r;
     __pyx_t_14 = __pyx_v_r;
     __pyx_t_15 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_13)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_14)) ))));
@@ -7863,10 +7695,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_32_csr_f64(CYTHON_UNUSE
     __pyx_t_17 = __pyx_t_15;
     for (__pyx_t_18 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_16)) ))); __pyx_t_18 < __pyx_t_17; __pyx_t_18+=1) {
       __pyx_v_ind = __pyx_t_18;
-# 9097 "sisl/physics/_matrix_phase.c"
       __pyx_t_19 = __pyx_v_ind;
       __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_19)) ))) % __pyx_v_nr);
-# 9107 "sisl/physics/_matrix_phase.c"
       __pyx_t_20 = __pyx_v_r;
       __pyx_t_21 = __pyx_v_r;
       __pyx_t_22 = __pyx_v_r;
@@ -7895,7 +7725,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
       __pyx_t_1.memview = NULL;
       __pyx_t_1.data = NULL;
-# 9143 "sisl/physics/_matrix_phase.c"
       __pyx_t_24 = __pyx_v_ind;
       __pyx_t_25 = __pyx_v_idx;
       __pyx_t_26 = __pyx_v_r;
@@ -7903,7 +7732,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       *((double *) ( ((char *) (((double *) __pyx_v_v.data) + __pyx_t_27)) )) += ((double)(*((double *) ( ((char *) (((double *) ( (__pyx_v_D.data + __pyx_t_24 * __pyx_v_D.strides[0]) )) + __pyx_t_25)) ))));
     }
   }
-# 9158 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_GetModuleGlobalName(__pyx_t_7, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 96, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
@@ -7947,7 +7775,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __pyx_r = __pyx_t_28;
   __pyx_t_28 = 0;
   goto __pyx_L0;
-# 9211 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -7991,7 +7818,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 9264 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw_4sisl_7physics_13_matrix_phase_5_phase_csr_c64(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds);
 static PyMethodDef __pyx_mdef_4sisl_7physics_13_matrix_phase_5_phase_csr_c64 = {"_phase_csr_c64", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_4sisl_7physics_13_matrix_phase_5_phase_csr_c64, METH_VARARGS|METH_KEYWORDS, 0};
 static PyObject *__pyx_pw_4sisl_7physics_13_matrix_phase_5_phase_csr_c64(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
@@ -8931,27 +8757,22 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_36_phase_csr_c64(CYTHON
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 103, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
-# 10211 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 110, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 10223 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 111, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 10235 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 112, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 10247 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 113, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 10259 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_fold_csr_matrix); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 116, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
@@ -9061,24 +8882,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_36_phase_csr_c64(CYTHON
   __pyx_t_7 = 0;
   __pyx_v_V_COL = __pyx_t_5;
   __pyx_t_5 = 0;
-# 10376 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 117, __pyx_L1_error)
   __pyx_v_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 10388 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 118, __pyx_L1_error)
   __pyx_v_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 10400 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 119, __pyx_L1_error)
   __pyx_v_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 10412 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_v_ncol.shape[0]);
-# 10421 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 122, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 122, __pyx_L1_error)
@@ -9123,20 +8939,16 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_36_phase_csr_c64(CYTHON
   __pyx_t_10 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_8);
   __pyx_t_8 = 0;
-# 10473 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 123, __pyx_L1_error)
   __pyx_v_v = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 10485 "sisl/physics/_matrix_phase.c"
   __pyx_t_11 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_11) {
-# 10495 "sisl/physics/_matrix_phase.c"
     __pyx_t_6 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_6;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 10507 "sisl/physics/_matrix_phase.c"
       __pyx_t_14 = __pyx_v_r;
       __pyx_t_15 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_14)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_15)) ))));
@@ -9144,10 +8956,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_36_phase_csr_c64(CYTHON
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 10522 "sisl/physics/_matrix_phase.c"
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr);
-# 10532 "sisl/physics/_matrix_phase.c"
         __pyx_t_21 = __pyx_v_r;
         __pyx_t_22 = __pyx_v_r;
         __pyx_t_23 = __pyx_v_r;
@@ -9176,7 +8986,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
-# 10568 "sisl/physics/_matrix_phase.c"
         __pyx_t_25 = __pyx_v_r;
         __pyx_t_26 = ((*((int *) ( ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_25)) ))) + __pyx_v_s_idx);
         __pyx_t_27 = __pyx_v_ind;
@@ -9188,16 +8997,13 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         *((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) __pyx_v_v.data) + __pyx_t_32)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) __pyx_v_v.data) + __pyx_t_26)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_30)), ((float)__Pyx_CIMAG(__pyx_t_30))));
       }
     }
-# 10587 "sisl/physics/_matrix_phase.c"
     goto __pyx_L5;
   }
-# 10597 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_6 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_6;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 10610 "sisl/physics/_matrix_phase.c"
       __pyx_t_33 = __pyx_v_r;
       __pyx_t_34 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_33)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_34)) ))));
@@ -9205,10 +9011,8 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_35)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 10625 "sisl/physics/_matrix_phase.c"
         __pyx_t_36 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_36)) ))) % __pyx_v_nr);
-# 10635 "sisl/physics/_matrix_phase.c"
         __pyx_t_37 = __pyx_v_r;
         __pyx_t_38 = __pyx_v_r;
         __pyx_t_39 = __pyx_v_r;
@@ -9237,7 +9041,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
-# 10671 "sisl/physics/_matrix_phase.c"
         __pyx_t_40 = __pyx_v_r;
         __pyx_t_41 = ((*((int *) ( ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_40)) ))) + __pyx_v_s_idx);
         __pyx_t_42 = __pyx_v_ind;
@@ -9252,7 +9055,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     }
   }
   __pyx_L5:;
-# 10693 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
@@ -9296,7 +9098,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __pyx_r = __pyx_t_48;
   __pyx_t_48 = 0;
   goto __pyx_L0;
-# 10746 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
@@ -9588,27 +9389,22 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_38_phase_csr_c64(CYTHON
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 103, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
-# 11045 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 110, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 11057 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 111, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 11069 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 112, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 11081 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 113, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 11093 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_fold_csr_matrix); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 116, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
@@ -9718,24 +9514,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_38_phase_csr_c64(CYTHON
   __pyx_t_7 = 0;
   __pyx_v_V_COL = __pyx_t_5;
   __pyx_t_5 = 0;
-# 11210 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 117, __pyx_L1_error)
   __pyx_v_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 11222 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 118, __pyx_L1_error)
   __pyx_v_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 11234 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 119, __pyx_L1_error)
   __pyx_v_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 11246 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_v_ncol.shape[0]);
-# 11255 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 122, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 122, __pyx_L1_error)
@@ -9780,20 +9571,16 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_38_phase_csr_c64(CYTHON
   __pyx_t_10 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_8);
   __pyx_t_8 = 0;
-# 11307 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 123, __pyx_L1_error)
   __pyx_v_v = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 11319 "sisl/physics/_matrix_phase.c"
   __pyx_t_11 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_11) {
-# 11329 "sisl/physics/_matrix_phase.c"
     __pyx_t_6 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_6;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 11341 "sisl/physics/_matrix_phase.c"
       __pyx_t_14 = __pyx_v_r;
       __pyx_t_15 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_14)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_15)) ))));
@@ -9801,10 +9588,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_38_phase_csr_c64(CYTHON
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 11356 "sisl/physics/_matrix_phase.c"
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr);
-# 11366 "sisl/physics/_matrix_phase.c"
         __pyx_t_21 = __pyx_v_r;
         __pyx_t_22 = __pyx_v_r;
         __pyx_t_23 = __pyx_v_r;
@@ -9833,7 +9618,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
-# 11402 "sisl/physics/_matrix_phase.c"
         __pyx_t_25 = __pyx_v_r;
         __pyx_t_26 = ((*((int *) ( ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_25)) ))) + __pyx_v_s_idx);
         __pyx_t_27 = __pyx_v_ind;
@@ -9845,16 +9629,13 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         *((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) __pyx_v_v.data) + __pyx_t_32)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) __pyx_v_v.data) + __pyx_t_26)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_30)), ((float)__Pyx_CIMAG(__pyx_t_30))));
       }
     }
-# 11421 "sisl/physics/_matrix_phase.c"
     goto __pyx_L5;
   }
-# 11431 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_6 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_6;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 11444 "sisl/physics/_matrix_phase.c"
       __pyx_t_33 = __pyx_v_r;
       __pyx_t_34 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_33)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_34)) ))));
@@ -9862,10 +9643,8 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_35)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 11459 "sisl/physics/_matrix_phase.c"
         __pyx_t_36 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_36)) ))) % __pyx_v_nr);
-# 11469 "sisl/physics/_matrix_phase.c"
         __pyx_t_37 = __pyx_v_r;
         __pyx_t_38 = __pyx_v_r;
         __pyx_t_39 = __pyx_v_r;
@@ -9894,7 +9673,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
-# 11505 "sisl/physics/_matrix_phase.c"
         __pyx_t_40 = __pyx_v_r;
         __pyx_t_41 = ((*((int *) ( ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_40)) ))) + __pyx_v_s_idx);
         __pyx_t_42 = __pyx_v_ind;
@@ -9909,7 +9687,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     }
   }
   __pyx_L5:;
-# 11527 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
@@ -9953,7 +9730,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __pyx_r = __pyx_t_48;
   __pyx_t_48 = 0;
   goto __pyx_L0;
-# 11580 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
@@ -10245,27 +10021,22 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_40_phase_csr_c64(CYTHON
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 103, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
-# 11879 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 110, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 11891 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 111, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 11903 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 112, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 11915 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 113, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 11927 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_fold_csr_matrix); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 116, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
@@ -10375,24 +10146,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_40_phase_csr_c64(CYTHON
   __pyx_t_7 = 0;
   __pyx_v_V_COL = __pyx_t_5;
   __pyx_t_5 = 0;
-# 12044 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 117, __pyx_L1_error)
   __pyx_v_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 12056 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 118, __pyx_L1_error)
   __pyx_v_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 12068 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 119, __pyx_L1_error)
   __pyx_v_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 12080 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_v_ncol.shape[0]);
-# 12089 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 122, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 122, __pyx_L1_error)
@@ -10437,20 +10203,16 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_40_phase_csr_c64(CYTHON
   __pyx_t_10 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_8);
   __pyx_t_8 = 0;
-# 12141 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 123, __pyx_L1_error)
   __pyx_v_v = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 12153 "sisl/physics/_matrix_phase.c"
   __pyx_t_11 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_11) {
-# 12163 "sisl/physics/_matrix_phase.c"
     __pyx_t_6 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_6;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 12175 "sisl/physics/_matrix_phase.c"
       __pyx_t_14 = __pyx_v_r;
       __pyx_t_15 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_14)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_15)) ))));
@@ -10458,10 +10220,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_40_phase_csr_c64(CYTHON
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 12190 "sisl/physics/_matrix_phase.c"
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr);
-# 12200 "sisl/physics/_matrix_phase.c"
         __pyx_t_21 = __pyx_v_r;
         __pyx_t_22 = __pyx_v_r;
         __pyx_t_23 = __pyx_v_r;
@@ -10490,7 +10250,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
-# 12236 "sisl/physics/_matrix_phase.c"
         __pyx_t_25 = __pyx_v_r;
         __pyx_t_26 = ((*((int *) ( ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_25)) ))) + __pyx_v_s_idx);
         __pyx_t_27 = __pyx_v_ind;
@@ -10502,16 +10261,13 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         *((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) __pyx_v_v.data) + __pyx_t_32)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) __pyx_v_v.data) + __pyx_t_26)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_30)), ((float)__Pyx_CIMAG(__pyx_t_30))));
       }
     }
-# 12255 "sisl/physics/_matrix_phase.c"
     goto __pyx_L5;
   }
-# 12265 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_6 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_6;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 12278 "sisl/physics/_matrix_phase.c"
       __pyx_t_33 = __pyx_v_r;
       __pyx_t_34 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_33)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_34)) ))));
@@ -10519,10 +10275,8 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_35)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 12293 "sisl/physics/_matrix_phase.c"
         __pyx_t_36 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_36)) ))) % __pyx_v_nr);
-# 12303 "sisl/physics/_matrix_phase.c"
         __pyx_t_37 = __pyx_v_r;
         __pyx_t_38 = __pyx_v_r;
         __pyx_t_39 = __pyx_v_r;
@@ -10551,7 +10305,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
-# 12339 "sisl/physics/_matrix_phase.c"
         __pyx_t_40 = __pyx_v_r;
         __pyx_t_41 = ((*((int *) ( ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_40)) ))) + __pyx_v_s_idx);
         __pyx_t_42 = __pyx_v_ind;
@@ -10566,7 +10319,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     }
   }
   __pyx_L5:;
-# 12361 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
@@ -10610,7 +10362,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __pyx_r = __pyx_t_48;
   __pyx_t_48 = 0;
   goto __pyx_L0;
-# 12414 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
@@ -10903,27 +10654,22 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_42_phase_csr_c64(CYTHON
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 103, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
-# 12714 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 110, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 12726 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 111, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 12738 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 112, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 12750 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 113, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 12762 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_fold_csr_matrix); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 116, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
@@ -11033,24 +10779,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_42_phase_csr_c64(CYTHON
   __pyx_t_7 = 0;
   __pyx_v_V_COL = __pyx_t_5;
   __pyx_t_5 = 0;
-# 12879 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 117, __pyx_L1_error)
   __pyx_v_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 12891 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 118, __pyx_L1_error)
   __pyx_v_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 12903 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 119, __pyx_L1_error)
   __pyx_v_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 12915 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_v_ncol.shape[0]);
-# 12924 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 122, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 122, __pyx_L1_error)
@@ -11095,20 +10836,16 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_42_phase_csr_c64(CYTHON
   __pyx_t_10 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_8);
   __pyx_t_8 = 0;
-# 12976 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 123, __pyx_L1_error)
   __pyx_v_v = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 12988 "sisl/physics/_matrix_phase.c"
   __pyx_t_11 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_11) {
-# 12998 "sisl/physics/_matrix_phase.c"
     __pyx_t_6 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_6;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 13010 "sisl/physics/_matrix_phase.c"
       __pyx_t_14 = __pyx_v_r;
       __pyx_t_15 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_14)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_15)) ))));
@@ -11116,10 +10853,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_42_phase_csr_c64(CYTHON
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 13025 "sisl/physics/_matrix_phase.c"
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr);
-# 13035 "sisl/physics/_matrix_phase.c"
         __pyx_t_21 = __pyx_v_r;
         __pyx_t_22 = __pyx_v_r;
         __pyx_t_23 = __pyx_v_r;
@@ -11148,7 +10883,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
-# 13071 "sisl/physics/_matrix_phase.c"
         __pyx_t_25 = __pyx_v_r;
         __pyx_t_26 = ((*((int *) ( ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_25)) ))) + __pyx_v_s_idx);
         __pyx_t_27 = __pyx_v_ind;
@@ -11161,16 +10895,13 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         *((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) __pyx_v_v.data) + __pyx_t_33)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) __pyx_v_v.data) + __pyx_t_26)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_31)), ((float)__Pyx_CIMAG(__pyx_t_31))));
       }
     }
-# 13091 "sisl/physics/_matrix_phase.c"
     goto __pyx_L5;
   }
-# 13101 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_6 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_6;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 13114 "sisl/physics/_matrix_phase.c"
       __pyx_t_34 = __pyx_v_r;
       __pyx_t_35 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_34)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_35)) ))));
@@ -11178,10 +10909,8 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_36)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 13129 "sisl/physics/_matrix_phase.c"
         __pyx_t_37 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_37)) ))) % __pyx_v_nr);
-# 13139 "sisl/physics/_matrix_phase.c"
         __pyx_t_38 = __pyx_v_r;
         __pyx_t_39 = __pyx_v_r;
         __pyx_t_40 = __pyx_v_r;
@@ -11210,7 +10939,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
-# 13175 "sisl/physics/_matrix_phase.c"
         __pyx_t_41 = __pyx_v_r;
         __pyx_t_42 = ((*((int *) ( ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_41)) ))) + __pyx_v_s_idx);
         __pyx_t_43 = __pyx_v_ind;
@@ -11226,7 +10954,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     }
   }
   __pyx_L5:;
-# 13198 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
@@ -11270,7 +10997,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __pyx_r = __pyx_t_49;
   __pyx_t_49 = 0;
   goto __pyx_L0;
-# 13251 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
@@ -11562,27 +11288,22 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_44_phase_csr_c64(CYTHON
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 103, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
-# 13550 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 110, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 13562 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 111, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 13574 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 112, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 13586 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 113, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 13598 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_fold_csr_matrix); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 116, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
@@ -11692,24 +11413,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_44_phase_csr_c64(CYTHON
   __pyx_t_7 = 0;
   __pyx_v_V_COL = __pyx_t_5;
   __pyx_t_5 = 0;
-# 13715 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 117, __pyx_L1_error)
   __pyx_v_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 13727 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 118, __pyx_L1_error)
   __pyx_v_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 13739 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 119, __pyx_L1_error)
   __pyx_v_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 13751 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_v_ncol.shape[0]);
-# 13760 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 122, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 122, __pyx_L1_error)
@@ -11754,20 +11470,16 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_44_phase_csr_c64(CYTHON
   __pyx_t_10 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_8);
   __pyx_t_8 = 0;
-# 13812 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 123, __pyx_L1_error)
   __pyx_v_v = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 13824 "sisl/physics/_matrix_phase.c"
   __pyx_t_11 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_11) {
-# 13834 "sisl/physics/_matrix_phase.c"
     __pyx_t_6 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_6;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 13846 "sisl/physics/_matrix_phase.c"
       __pyx_t_14 = __pyx_v_r;
       __pyx_t_15 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_14)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_15)) ))));
@@ -11775,10 +11487,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_44_phase_csr_c64(CYTHON
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 13861 "sisl/physics/_matrix_phase.c"
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr);
-# 13871 "sisl/physics/_matrix_phase.c"
         __pyx_t_21 = __pyx_v_r;
         __pyx_t_22 = __pyx_v_r;
         __pyx_t_23 = __pyx_v_r;
@@ -11807,7 +11517,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
-# 13907 "sisl/physics/_matrix_phase.c"
         __pyx_t_25 = __pyx_v_r;
         __pyx_t_26 = ((*((int *) ( ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_25)) ))) + __pyx_v_s_idx);
         __pyx_t_27 = __pyx_v_ind;
@@ -11819,16 +11528,13 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         *((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) __pyx_v_v.data) + __pyx_t_32)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) __pyx_v_v.data) + __pyx_t_26)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_30)), ((float)__Pyx_CIMAG(__pyx_t_30))));
       }
     }
-# 13926 "sisl/physics/_matrix_phase.c"
     goto __pyx_L5;
   }
-# 13936 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_6 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_6;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 13949 "sisl/physics/_matrix_phase.c"
       __pyx_t_33 = __pyx_v_r;
       __pyx_t_34 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_33)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_34)) ))));
@@ -11836,10 +11542,8 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_35)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 13964 "sisl/physics/_matrix_phase.c"
         __pyx_t_36 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_36)) ))) % __pyx_v_nr);
-# 13974 "sisl/physics/_matrix_phase.c"
         __pyx_t_37 = __pyx_v_r;
         __pyx_t_38 = __pyx_v_r;
         __pyx_t_39 = __pyx_v_r;
@@ -11868,7 +11572,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
-# 14010 "sisl/physics/_matrix_phase.c"
         __pyx_t_40 = __pyx_v_r;
         __pyx_t_41 = ((*((int *) ( ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_40)) ))) + __pyx_v_s_idx);
         __pyx_t_42 = __pyx_v_ind;
@@ -11883,7 +11586,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     }
   }
   __pyx_L5:;
-# 14032 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
@@ -11927,7 +11629,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __pyx_r = __pyx_t_48;
   __pyx_t_48 = 0;
   goto __pyx_L0;
-# 14085 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
@@ -12220,27 +11921,22 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_46_phase_csr_c64(CYTHON
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 103, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
-# 14385 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 110, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 14397 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 111, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 14409 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 112, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 14421 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 113, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 14433 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_fold_csr_matrix); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 116, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
@@ -12350,24 +12046,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_46_phase_csr_c64(CYTHON
   __pyx_t_7 = 0;
   __pyx_v_V_COL = __pyx_t_5;
   __pyx_t_5 = 0;
-# 14550 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 117, __pyx_L1_error)
   __pyx_v_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 14562 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 118, __pyx_L1_error)
   __pyx_v_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 14574 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 119, __pyx_L1_error)
   __pyx_v_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 14586 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_v_ncol.shape[0]);
-# 14595 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 122, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 122, __pyx_L1_error)
@@ -12412,20 +12103,16 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_46_phase_csr_c64(CYTHON
   __pyx_t_10 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_8);
   __pyx_t_8 = 0;
-# 14647 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 123, __pyx_L1_error)
   __pyx_v_v = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 14659 "sisl/physics/_matrix_phase.c"
   __pyx_t_11 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_11) {
-# 14669 "sisl/physics/_matrix_phase.c"
     __pyx_t_6 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_6;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 14681 "sisl/physics/_matrix_phase.c"
       __pyx_t_14 = __pyx_v_r;
       __pyx_t_15 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_14)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_15)) ))));
@@ -12433,10 +12120,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_46_phase_csr_c64(CYTHON
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 14696 "sisl/physics/_matrix_phase.c"
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr);
-# 14706 "sisl/physics/_matrix_phase.c"
         __pyx_t_21 = __pyx_v_r;
         __pyx_t_22 = __pyx_v_r;
         __pyx_t_23 = __pyx_v_r;
@@ -12465,7 +12150,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
-# 14742 "sisl/physics/_matrix_phase.c"
         __pyx_t_25 = __pyx_v_r;
         __pyx_t_26 = ((*((int *) ( ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_25)) ))) + __pyx_v_s_idx);
         __pyx_t_27 = __pyx_v_ind;
@@ -12478,16 +12162,13 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         *((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) __pyx_v_v.data) + __pyx_t_33)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) __pyx_v_v.data) + __pyx_t_26)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_31)), ((float)__Pyx_CIMAG(__pyx_t_31))));
       }
     }
-# 14762 "sisl/physics/_matrix_phase.c"
     goto __pyx_L5;
   }
-# 14772 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_6 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_6;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 14785 "sisl/physics/_matrix_phase.c"
       __pyx_t_34 = __pyx_v_r;
       __pyx_t_35 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_34)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_35)) ))));
@@ -12495,10 +12176,8 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_36)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 14800 "sisl/physics/_matrix_phase.c"
         __pyx_t_37 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_37)) ))) % __pyx_v_nr);
-# 14810 "sisl/physics/_matrix_phase.c"
         __pyx_t_38 = __pyx_v_r;
         __pyx_t_39 = __pyx_v_r;
         __pyx_t_40 = __pyx_v_r;
@@ -12527,7 +12206,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
-# 14846 "sisl/physics/_matrix_phase.c"
         __pyx_t_41 = __pyx_v_r;
         __pyx_t_42 = ((*((int *) ( ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_41)) ))) + __pyx_v_s_idx);
         __pyx_t_43 = __pyx_v_ind;
@@ -12543,7 +12221,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     }
   }
   __pyx_L5:;
-# 14869 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 139, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
@@ -12587,7 +12264,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __pyx_r = __pyx_t_49;
   __pyx_t_49 = 0;
   goto __pyx_L0;
-# 14922 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
@@ -12634,7 +12310,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 14978 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw_4sisl_7physics_13_matrix_phase_7_phase_csr_c128(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds);
 static PyMethodDef __pyx_mdef_4sisl_7physics_13_matrix_phase_7_phase_csr_c128 = {"_phase_csr_c128", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_4sisl_7physics_13_matrix_phase_7_phase_csr_c128, METH_VARARGS|METH_KEYWORDS, 0};
 static PyObject *__pyx_pw_4sisl_7physics_13_matrix_phase_7_phase_csr_c128(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
@@ -13574,27 +13249,22 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_50_phase_csr_c128(CYTHO
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 146, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
-# 15925 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 153, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 15937 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 154, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 15949 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 155, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 15961 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 15973 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_fold_csr_matrix); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 159, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
@@ -13704,24 +13374,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_50_phase_csr_c128(CYTHO
   __pyx_t_7 = 0;
   __pyx_v_V_COL = __pyx_t_5;
   __pyx_t_5 = 0;
-# 16090 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 160, __pyx_L1_error)
   __pyx_v_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 16102 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 161, __pyx_L1_error)
   __pyx_v_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 16114 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 162, __pyx_L1_error)
   __pyx_v_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 16126 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_v_ncol.shape[0]);
-# 16135 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 165, __pyx_L1_error)
@@ -13766,20 +13431,16 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_50_phase_csr_c128(CYTHO
   __pyx_t_10 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_8);
   __pyx_t_8 = 0;
-# 16187 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 166, __pyx_L1_error)
   __pyx_v_v = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 16199 "sisl/physics/_matrix_phase.c"
   __pyx_t_11 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_11) {
-# 16209 "sisl/physics/_matrix_phase.c"
     __pyx_t_6 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_6;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 16221 "sisl/physics/_matrix_phase.c"
       __pyx_t_14 = __pyx_v_r;
       __pyx_t_15 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_14)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_15)) ))));
@@ -13787,10 +13448,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_50_phase_csr_c128(CYTHO
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 16236 "sisl/physics/_matrix_phase.c"
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr);
-# 16246 "sisl/physics/_matrix_phase.c"
         __pyx_t_21 = __pyx_v_r;
         __pyx_t_22 = __pyx_v_r;
         __pyx_t_23 = __pyx_v_r;
@@ -13819,7 +13478,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
-# 16282 "sisl/physics/_matrix_phase.c"
         __pyx_t_25 = __pyx_v_r;
         __pyx_t_26 = ((*((int *) ( ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_25)) ))) + __pyx_v_s_idx);
         __pyx_t_27 = __pyx_v_ind;
@@ -13831,16 +13489,13 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         *((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_32)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_26)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_30)), ((double)__Pyx_CIMAG(__pyx_t_30))));
       }
     }
-# 16301 "sisl/physics/_matrix_phase.c"
     goto __pyx_L5;
   }
-# 16311 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_6 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_6;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 16324 "sisl/physics/_matrix_phase.c"
       __pyx_t_33 = __pyx_v_r;
       __pyx_t_34 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_33)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_34)) ))));
@@ -13848,10 +13503,8 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_35)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 16339 "sisl/physics/_matrix_phase.c"
         __pyx_t_36 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_36)) ))) % __pyx_v_nr);
-# 16349 "sisl/physics/_matrix_phase.c"
         __pyx_t_37 = __pyx_v_r;
         __pyx_t_38 = __pyx_v_r;
         __pyx_t_39 = __pyx_v_r;
@@ -13880,7 +13533,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
-# 16385 "sisl/physics/_matrix_phase.c"
         __pyx_t_40 = __pyx_v_r;
         __pyx_t_41 = ((*((int *) ( ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_40)) ))) + __pyx_v_s_idx);
         __pyx_t_42 = __pyx_v_ind;
@@ -13895,7 +13547,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     }
   }
   __pyx_L5:;
-# 16407 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 182, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
@@ -13939,7 +13590,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __pyx_r = __pyx_t_48;
   __pyx_t_48 = 0;
   goto __pyx_L0;
-# 16460 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
@@ -14231,27 +13881,22 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_52_phase_csr_c128(CYTHO
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 146, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
-# 16759 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 153, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 16771 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 154, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 16783 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 155, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 16795 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 16807 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_fold_csr_matrix); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 159, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
@@ -14361,24 +14006,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_52_phase_csr_c128(CYTHO
   __pyx_t_7 = 0;
   __pyx_v_V_COL = __pyx_t_5;
   __pyx_t_5 = 0;
-# 16924 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 160, __pyx_L1_error)
   __pyx_v_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 16936 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 161, __pyx_L1_error)
   __pyx_v_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 16948 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 162, __pyx_L1_error)
   __pyx_v_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 16960 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_v_ncol.shape[0]);
-# 16969 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 165, __pyx_L1_error)
@@ -14423,20 +14063,16 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_52_phase_csr_c128(CYTHO
   __pyx_t_10 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_8);
   __pyx_t_8 = 0;
-# 17021 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 166, __pyx_L1_error)
   __pyx_v_v = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 17033 "sisl/physics/_matrix_phase.c"
   __pyx_t_11 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_11) {
-# 17043 "sisl/physics/_matrix_phase.c"
     __pyx_t_6 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_6;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 17055 "sisl/physics/_matrix_phase.c"
       __pyx_t_14 = __pyx_v_r;
       __pyx_t_15 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_14)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_15)) ))));
@@ -14444,10 +14080,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_52_phase_csr_c128(CYTHO
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 17070 "sisl/physics/_matrix_phase.c"
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr);
-# 17080 "sisl/physics/_matrix_phase.c"
         __pyx_t_21 = __pyx_v_r;
         __pyx_t_22 = __pyx_v_r;
         __pyx_t_23 = __pyx_v_r;
@@ -14476,7 +14110,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
-# 17116 "sisl/physics/_matrix_phase.c"
         __pyx_t_25 = __pyx_v_r;
         __pyx_t_26 = ((*((int *) ( ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_25)) ))) + __pyx_v_s_idx);
         __pyx_t_27 = __pyx_v_ind;
@@ -14488,16 +14121,13 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         *((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_32)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_26)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_30)), ((double)__Pyx_CIMAG(__pyx_t_30))));
       }
     }
-# 17135 "sisl/physics/_matrix_phase.c"
     goto __pyx_L5;
   }
-# 17145 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_6 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_6;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 17158 "sisl/physics/_matrix_phase.c"
       __pyx_t_33 = __pyx_v_r;
       __pyx_t_34 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_33)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_34)) ))));
@@ -14505,10 +14135,8 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_35)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 17173 "sisl/physics/_matrix_phase.c"
         __pyx_t_36 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_36)) ))) % __pyx_v_nr);
-# 17183 "sisl/physics/_matrix_phase.c"
         __pyx_t_37 = __pyx_v_r;
         __pyx_t_38 = __pyx_v_r;
         __pyx_t_39 = __pyx_v_r;
@@ -14537,7 +14165,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
-# 17219 "sisl/physics/_matrix_phase.c"
         __pyx_t_40 = __pyx_v_r;
         __pyx_t_41 = ((*((int *) ( ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_40)) ))) + __pyx_v_s_idx);
         __pyx_t_42 = __pyx_v_ind;
@@ -14552,7 +14179,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     }
   }
   __pyx_L5:;
-# 17241 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 182, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
@@ -14596,7 +14222,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __pyx_r = __pyx_t_48;
   __pyx_t_48 = 0;
   goto __pyx_L0;
-# 17294 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
@@ -14888,27 +14513,22 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_54_phase_csr_c128(CYTHO
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 146, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
-# 17593 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 153, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 17605 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 154, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 17617 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 155, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 17629 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 17641 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_fold_csr_matrix); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 159, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
@@ -15018,24 +14638,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_54_phase_csr_c128(CYTHO
   __pyx_t_7 = 0;
   __pyx_v_V_COL = __pyx_t_5;
   __pyx_t_5 = 0;
-# 17758 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 160, __pyx_L1_error)
   __pyx_v_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 17770 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 161, __pyx_L1_error)
   __pyx_v_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 17782 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 162, __pyx_L1_error)
   __pyx_v_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 17794 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_v_ncol.shape[0]);
-# 17803 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 165, __pyx_L1_error)
@@ -15080,20 +14695,16 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_54_phase_csr_c128(CYTHO
   __pyx_t_10 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_8);
   __pyx_t_8 = 0;
-# 17855 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 166, __pyx_L1_error)
   __pyx_v_v = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 17867 "sisl/physics/_matrix_phase.c"
   __pyx_t_11 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_11) {
-# 17877 "sisl/physics/_matrix_phase.c"
     __pyx_t_6 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_6;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 17889 "sisl/physics/_matrix_phase.c"
       __pyx_t_14 = __pyx_v_r;
       __pyx_t_15 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_14)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_15)) ))));
@@ -15101,10 +14712,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_54_phase_csr_c128(CYTHO
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 17904 "sisl/physics/_matrix_phase.c"
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr);
-# 17914 "sisl/physics/_matrix_phase.c"
         __pyx_t_21 = __pyx_v_r;
         __pyx_t_22 = __pyx_v_r;
         __pyx_t_23 = __pyx_v_r;
@@ -15133,7 +14742,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
-# 17950 "sisl/physics/_matrix_phase.c"
         __pyx_t_25 = __pyx_v_r;
         __pyx_t_26 = ((*((int *) ( ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_25)) ))) + __pyx_v_s_idx);
         __pyx_t_27 = __pyx_v_ind;
@@ -15145,16 +14753,13 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         *((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_32)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_26)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_30)), ((double)__Pyx_CIMAG(__pyx_t_30))));
       }
     }
-# 17969 "sisl/physics/_matrix_phase.c"
     goto __pyx_L5;
   }
-# 17979 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_6 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_6;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 17992 "sisl/physics/_matrix_phase.c"
       __pyx_t_33 = __pyx_v_r;
       __pyx_t_34 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_33)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_34)) ))));
@@ -15162,10 +14767,8 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_35)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 18007 "sisl/physics/_matrix_phase.c"
         __pyx_t_36 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_36)) ))) % __pyx_v_nr);
-# 18017 "sisl/physics/_matrix_phase.c"
         __pyx_t_37 = __pyx_v_r;
         __pyx_t_38 = __pyx_v_r;
         __pyx_t_39 = __pyx_v_r;
@@ -15194,7 +14797,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
-# 18053 "sisl/physics/_matrix_phase.c"
         __pyx_t_40 = __pyx_v_r;
         __pyx_t_41 = ((*((int *) ( ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_40)) ))) + __pyx_v_s_idx);
         __pyx_t_42 = __pyx_v_ind;
@@ -15209,7 +14811,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     }
   }
   __pyx_L5:;
-# 18075 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 182, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
@@ -15253,7 +14854,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __pyx_r = __pyx_t_48;
   __pyx_t_48 = 0;
   goto __pyx_L0;
-# 18128 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
@@ -15545,27 +15145,22 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_56_phase_csr_c128(CYTHO
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 146, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
-# 18427 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 153, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 18439 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 154, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 18451 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 155, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 18463 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 18475 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_fold_csr_matrix); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 159, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
@@ -15675,24 +15270,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_56_phase_csr_c128(CYTHO
   __pyx_t_7 = 0;
   __pyx_v_V_COL = __pyx_t_5;
   __pyx_t_5 = 0;
-# 18592 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 160, __pyx_L1_error)
   __pyx_v_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 18604 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 161, __pyx_L1_error)
   __pyx_v_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 18616 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 162, __pyx_L1_error)
   __pyx_v_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 18628 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_v_ncol.shape[0]);
-# 18637 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 165, __pyx_L1_error)
@@ -15737,20 +15327,16 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_56_phase_csr_c128(CYTHO
   __pyx_t_10 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_8);
   __pyx_t_8 = 0;
-# 18689 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 166, __pyx_L1_error)
   __pyx_v_v = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 18701 "sisl/physics/_matrix_phase.c"
   __pyx_t_11 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_11) {
-# 18711 "sisl/physics/_matrix_phase.c"
     __pyx_t_6 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_6;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 18723 "sisl/physics/_matrix_phase.c"
       __pyx_t_14 = __pyx_v_r;
       __pyx_t_15 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_14)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_15)) ))));
@@ -15758,10 +15344,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_56_phase_csr_c128(CYTHO
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 18738 "sisl/physics/_matrix_phase.c"
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr);
-# 18748 "sisl/physics/_matrix_phase.c"
         __pyx_t_21 = __pyx_v_r;
         __pyx_t_22 = __pyx_v_r;
         __pyx_t_23 = __pyx_v_r;
@@ -15790,7 +15374,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
-# 18784 "sisl/physics/_matrix_phase.c"
         __pyx_t_25 = __pyx_v_r;
         __pyx_t_26 = ((*((int *) ( ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_25)) ))) + __pyx_v_s_idx);
         __pyx_t_27 = __pyx_v_ind;
@@ -15802,16 +15385,13 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         *((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_32)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_26)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_30)), ((double)__Pyx_CIMAG(__pyx_t_30))));
       }
     }
-# 18803 "sisl/physics/_matrix_phase.c"
     goto __pyx_L5;
   }
-# 18813 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_6 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_6;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 18826 "sisl/physics/_matrix_phase.c"
       __pyx_t_33 = __pyx_v_r;
       __pyx_t_34 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_33)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_34)) ))));
@@ -15819,10 +15399,8 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_35)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 18841 "sisl/physics/_matrix_phase.c"
         __pyx_t_36 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_36)) ))) % __pyx_v_nr);
-# 18851 "sisl/physics/_matrix_phase.c"
         __pyx_t_37 = __pyx_v_r;
         __pyx_t_38 = __pyx_v_r;
         __pyx_t_39 = __pyx_v_r;
@@ -15851,7 +15429,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
-# 18887 "sisl/physics/_matrix_phase.c"
         __pyx_t_40 = __pyx_v_r;
         __pyx_t_41 = ((*((int *) ( ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_40)) ))) + __pyx_v_s_idx);
         __pyx_t_42 = __pyx_v_ind;
@@ -15866,7 +15443,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     }
   }
   __pyx_L5:;
-# 18909 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 182, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
@@ -15910,7 +15486,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __pyx_r = __pyx_t_48;
   __pyx_t_48 = 0;
   goto __pyx_L0;
-# 18962 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
@@ -16203,27 +15778,22 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_58_phase_csr_c128(CYTHO
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 146, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
-# 19262 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 153, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 19274 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 154, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 19286 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 155, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 19298 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 19310 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_fold_csr_matrix); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 159, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
@@ -16333,24 +15903,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_58_phase_csr_c128(CYTHO
   __pyx_t_7 = 0;
   __pyx_v_V_COL = __pyx_t_5;
   __pyx_t_5 = 0;
-# 19427 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 160, __pyx_L1_error)
   __pyx_v_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 19439 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 161, __pyx_L1_error)
   __pyx_v_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 19451 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 162, __pyx_L1_error)
   __pyx_v_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 19463 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_v_ncol.shape[0]);
-# 19472 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 165, __pyx_L1_error)
@@ -16395,20 +15960,16 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_58_phase_csr_c128(CYTHO
   __pyx_t_10 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_8);
   __pyx_t_8 = 0;
-# 19524 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 166, __pyx_L1_error)
   __pyx_v_v = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 19536 "sisl/physics/_matrix_phase.c"
   __pyx_t_11 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_11) {
-# 19546 "sisl/physics/_matrix_phase.c"
     __pyx_t_6 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_6;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 19558 "sisl/physics/_matrix_phase.c"
       __pyx_t_14 = __pyx_v_r;
       __pyx_t_15 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_14)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_15)) ))));
@@ -16416,10 +15977,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_58_phase_csr_c128(CYTHO
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 19573 "sisl/physics/_matrix_phase.c"
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr);
-# 19583 "sisl/physics/_matrix_phase.c"
         __pyx_t_21 = __pyx_v_r;
         __pyx_t_22 = __pyx_v_r;
         __pyx_t_23 = __pyx_v_r;
@@ -16448,7 +16007,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
-# 19619 "sisl/physics/_matrix_phase.c"
         __pyx_t_25 = __pyx_v_r;
         __pyx_t_26 = ((*((int *) ( ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_25)) ))) + __pyx_v_s_idx);
         __pyx_t_27 = __pyx_v_ind;
@@ -16461,16 +16019,13 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         *((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_33)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_26)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_31)), ((double)__Pyx_CIMAG(__pyx_t_31))));
       }
     }
-# 19639 "sisl/physics/_matrix_phase.c"
     goto __pyx_L5;
   }
-# 19649 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_6 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_6;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 19662 "sisl/physics/_matrix_phase.c"
       __pyx_t_34 = __pyx_v_r;
       __pyx_t_35 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_34)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_35)) ))));
@@ -16478,10 +16033,8 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_36)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 19677 "sisl/physics/_matrix_phase.c"
         __pyx_t_37 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_37)) ))) % __pyx_v_nr);
-# 19687 "sisl/physics/_matrix_phase.c"
         __pyx_t_38 = __pyx_v_r;
         __pyx_t_39 = __pyx_v_r;
         __pyx_t_40 = __pyx_v_r;
@@ -16510,7 +16063,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
-# 19723 "sisl/physics/_matrix_phase.c"
         __pyx_t_41 = __pyx_v_r;
         __pyx_t_42 = ((*((int *) ( ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_41)) ))) + __pyx_v_s_idx);
         __pyx_t_43 = __pyx_v_ind;
@@ -16526,7 +16078,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     }
   }
   __pyx_L5:;
-# 19746 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 182, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
@@ -16570,7 +16121,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __pyx_r = __pyx_t_49;
   __pyx_t_49 = 0;
   goto __pyx_L0;
-# 19799 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
@@ -16862,27 +16412,22 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_60_phase_csr_c128(CYTHO
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 146, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
-# 20098 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 153, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 20110 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 154, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 20122 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 155, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 20134 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 156, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 20146 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_fold_csr_matrix); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 159, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_4);
   __pyx_t_5 = NULL;
@@ -16992,24 +16537,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_60_phase_csr_c128(CYTHO
   __pyx_t_7 = 0;
   __pyx_v_V_COL = __pyx_t_5;
   __pyx_t_5 = 0;
-# 20263 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_PTR, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 160, __pyx_L1_error)
   __pyx_v_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 20275 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_NCOL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 161, __pyx_L1_error)
   __pyx_v_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 20287 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(__pyx_v_V_COL, PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 162, __pyx_L1_error)
   __pyx_v_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 20299 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_v_ncol.shape[0]);
-# 20308 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 165, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 165, __pyx_L1_error)
@@ -17054,20 +16594,16 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_60_phase_csr_c128(CYTHO
   __pyx_t_10 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_8);
   __pyx_t_8 = 0;
-# 20360 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 166, __pyx_L1_error)
   __pyx_v_v = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 20372 "sisl/physics/_matrix_phase.c"
   __pyx_t_11 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_11) {
-# 20382 "sisl/physics/_matrix_phase.c"
     __pyx_t_6 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_6;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 20394 "sisl/physics/_matrix_phase.c"
       __pyx_t_14 = __pyx_v_r;
       __pyx_t_15 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_14)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_15)) ))));
@@ -17075,10 +16611,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_60_phase_csr_c128(CYTHO
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 20409 "sisl/physics/_matrix_phase.c"
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr);
-# 20419 "sisl/physics/_matrix_phase.c"
         __pyx_t_21 = __pyx_v_r;
         __pyx_t_22 = __pyx_v_r;
         __pyx_t_23 = __pyx_v_r;
@@ -17107,7 +16641,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
-# 20455 "sisl/physics/_matrix_phase.c"
         __pyx_t_25 = __pyx_v_r;
         __pyx_t_26 = ((*((int *) ( ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_25)) ))) + __pyx_v_s_idx);
         __pyx_t_27 = __pyx_v_ind;
@@ -17119,16 +16652,13 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         *((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_32)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) __pyx_v_v.data) + __pyx_t_26)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_30)), ((double)__Pyx_CIMAG(__pyx_t_30))));
       }
     }
-# 20474 "sisl/physics/_matrix_phase.c"
     goto __pyx_L5;
   }
-# 20484 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_6 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_6;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 20497 "sisl/physics/_matrix_phase.c"
       __pyx_t_33 = __pyx_v_r;
       __pyx_t_34 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_33)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_34)) ))));
@@ -17136,10 +16666,8 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_35)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 20512 "sisl/physics/_matrix_phase.c"
         __pyx_t_36 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_36)) ))) % __pyx_v_nr);
-# 20522 "sisl/physics/_matrix_phase.c"
         __pyx_t_37 = __pyx_v_r;
         __pyx_t_38 = __pyx_v_r;
         __pyx_t_39 = __pyx_v_r;
@@ -17168,7 +16696,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
         __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
         __pyx_t_1.memview = NULL;
         __pyx_t_1.data = NULL;
-# 20558 "sisl/physics/_matrix_phase.c"
         __pyx_t_40 = __pyx_v_r;
         __pyx_t_41 = ((*((int *) ( ((char *) (((int *) __pyx_v_v_ptr.data) + __pyx_t_40)) ))) + __pyx_v_s_idx);
         __pyx_t_42 = __pyx_v_ind;
@@ -17183,7 +16710,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
     }
   }
   __pyx_L5:;
-# 20580 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_GetModuleGlobalName(__pyx_t_8, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 182, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_8);
@@ -17227,7 +16753,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __pyx_r = __pyx_t_48;
   __pyx_t_48 = 0;
   goto __pyx_L0;
-# 20633 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
@@ -17274,7 +16799,6 @@ __pyx_v_s_idx = __pyx_f_4sisl_8_indices__index_sorted(__pyx_t_1, __pyx_v_c);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 20689 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw_4sisl_7physics_13_matrix_phase_9_array_f32(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds);
 static PyMethodDef __pyx_mdef_4sisl_7physics_13_matrix_phase_9_array_f32 = {"_array_f32", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_4sisl_7physics_13_matrix_phase_9_array_f32, METH_VARARGS|METH_KEYWORDS, 0};
 static PyObject *__pyx_pw_4sisl_7physics_13_matrix_phase_9_array_f32(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
@@ -18067,24 +17591,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_64_array_f32(CYTHON_UNU
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 189, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
-# 21489 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 195, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 21501 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 196, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 21513 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 197, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 21525 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
-# 21534 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 200, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zeros); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 200, __pyx_L1_error)
@@ -18134,17 +17653,14 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_64_array_f32(CYTHON_UNU
   __pyx_t_7 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_6);
   __pyx_t_6 = 0;
-# 21591 "sisl/physics/_matrix_phase.c"
   __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_float(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 201, __pyx_L1_error)
   __pyx_v_v = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
-# 21603 "sisl/physics/_matrix_phase.c"
   __pyx_t_9 = __pyx_v_nr;
   __pyx_t_10 = __pyx_t_9;
   for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
     __pyx_v_r = __pyx_t_11;
-# 21615 "sisl/physics/_matrix_phase.c"
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
     __pyx_t_14 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_12)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_13)) ))));
@@ -18152,7 +17668,6 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_64_array_f32(CYTHON_UNU
     __pyx_t_16 = __pyx_t_14;
     for (__pyx_t_17 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_15)) ))); __pyx_t_17 < __pyx_t_16; __pyx_t_17+=1) {
       __pyx_v_ind = __pyx_t_17;
-# 21630 "sisl/physics/_matrix_phase.c"
       __pyx_t_18 = __pyx_v_ind;
       __pyx_t_19 = __pyx_v_idx;
       __pyx_t_20 = __pyx_v_ind;
@@ -18161,12 +17676,10 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_64_array_f32(CYTHON_UNU
       *((float *) ( ((char *) (((float *) ( (__pyx_v_v.data + __pyx_t_21 * __pyx_v_v.strides[0]) )) + __pyx_t_22)) )) += ((float)(*((int *) ( ((char *) (((int *) ( (__pyx_v_D.data + __pyx_t_18 * __pyx_v_D.strides[0]) )) + __pyx_t_19)) ))));
     }
   }
-# 21646 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
-# 21660 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -18379,24 +17892,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_66_array_f32(CYTHON_UNU
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 189, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
-# 21880 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 195, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 21892 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 196, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 21904 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 197, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 21916 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
-# 21925 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 200, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zeros); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 200, __pyx_L1_error)
@@ -18446,17 +17954,14 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_66_array_f32(CYTHON_UNU
   __pyx_t_7 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_6);
   __pyx_t_6 = 0;
-# 21982 "sisl/physics/_matrix_phase.c"
   __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_float(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 201, __pyx_L1_error)
   __pyx_v_v = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
-# 21994 "sisl/physics/_matrix_phase.c"
   __pyx_t_9 = __pyx_v_nr;
   __pyx_t_10 = __pyx_t_9;
   for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
     __pyx_v_r = __pyx_t_11;
-# 22006 "sisl/physics/_matrix_phase.c"
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
     __pyx_t_14 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_12)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_13)) ))));
@@ -18464,7 +17969,6 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_66_array_f32(CYTHON_UNU
     __pyx_t_16 = __pyx_t_14;
     for (__pyx_t_17 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_15)) ))); __pyx_t_17 < __pyx_t_16; __pyx_t_17+=1) {
       __pyx_v_ind = __pyx_t_17;
-# 22021 "sisl/physics/_matrix_phase.c"
       __pyx_t_18 = __pyx_v_ind;
       __pyx_t_19 = __pyx_v_idx;
       __pyx_t_20 = __pyx_v_ind;
@@ -18473,12 +17977,10 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_66_array_f32(CYTHON_UNU
       *((float *) ( ((char *) (((float *) ( (__pyx_v_v.data + __pyx_t_21 * __pyx_v_v.strides[0]) )) + __pyx_t_22)) )) += ((float)(*((long *) ( ((char *) (((long *) ( (__pyx_v_D.data + __pyx_t_18 * __pyx_v_D.strides[0]) )) + __pyx_t_19)) ))));
     }
   }
-# 22037 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
-# 22051 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -18691,24 +18193,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_68_array_f32(CYTHON_UNU
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 189, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
-# 22271 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 195, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 22283 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 196, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 22295 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 197, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 22307 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
-# 22316 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 200, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zeros); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 200, __pyx_L1_error)
@@ -18758,17 +18255,14 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_68_array_f32(CYTHON_UNU
   __pyx_t_7 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_6);
   __pyx_t_6 = 0;
-# 22373 "sisl/physics/_matrix_phase.c"
   __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_float(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 201, __pyx_L1_error)
   __pyx_v_v = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
-# 22385 "sisl/physics/_matrix_phase.c"
   __pyx_t_9 = __pyx_v_nr;
   __pyx_t_10 = __pyx_t_9;
   for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
     __pyx_v_r = __pyx_t_11;
-# 22397 "sisl/physics/_matrix_phase.c"
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
     __pyx_t_14 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_12)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_13)) ))));
@@ -18776,7 +18270,6 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_68_array_f32(CYTHON_UNU
     __pyx_t_16 = __pyx_t_14;
     for (__pyx_t_17 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_15)) ))); __pyx_t_17 < __pyx_t_16; __pyx_t_17+=1) {
       __pyx_v_ind = __pyx_t_17;
-# 22412 "sisl/physics/_matrix_phase.c"
       __pyx_t_18 = __pyx_v_ind;
       __pyx_t_19 = __pyx_v_idx;
       __pyx_t_20 = __pyx_v_ind;
@@ -18785,12 +18278,10 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_68_array_f32(CYTHON_UNU
       *((float *) ( ((char *) (((float *) ( (__pyx_v_v.data + __pyx_t_21 * __pyx_v_v.strides[0]) )) + __pyx_t_22)) )) += ((float)(*((float *) ( ((char *) (((float *) ( (__pyx_v_D.data + __pyx_t_18 * __pyx_v_D.strides[0]) )) + __pyx_t_19)) ))));
     }
   }
-# 22428 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
-# 22442 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -19003,24 +18494,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_70_array_f32(CYTHON_UNU
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 189, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
-# 22662 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 195, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 22674 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 196, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 22686 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 197, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 22698 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
-# 22707 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 200, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zeros); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 200, __pyx_L1_error)
@@ -19070,17 +18556,14 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_70_array_f32(CYTHON_UNU
   __pyx_t_7 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_6);
   __pyx_t_6 = 0;
-# 22764 "sisl/physics/_matrix_phase.c"
   __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_float(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 201, __pyx_L1_error)
   __pyx_v_v = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
-# 22776 "sisl/physics/_matrix_phase.c"
   __pyx_t_9 = __pyx_v_nr;
   __pyx_t_10 = __pyx_t_9;
   for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
     __pyx_v_r = __pyx_t_11;
-# 22788 "sisl/physics/_matrix_phase.c"
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
     __pyx_t_14 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_12)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_13)) ))));
@@ -19088,7 +18571,6 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_70_array_f32(CYTHON_UNU
     __pyx_t_16 = __pyx_t_14;
     for (__pyx_t_17 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_15)) ))); __pyx_t_17 < __pyx_t_16; __pyx_t_17+=1) {
       __pyx_v_ind = __pyx_t_17;
-# 22803 "sisl/physics/_matrix_phase.c"
       __pyx_t_18 = __pyx_v_ind;
       __pyx_t_19 = __pyx_v_idx;
       __pyx_t_20 = __pyx_v_ind;
@@ -19097,12 +18579,10 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_70_array_f32(CYTHON_UNU
       *((float *) ( ((char *) (((float *) ( (__pyx_v_v.data + __pyx_t_21 * __pyx_v_v.strides[0]) )) + __pyx_t_22)) )) += ((float)(*((double *) ( ((char *) (((double *) ( (__pyx_v_D.data + __pyx_t_18 * __pyx_v_D.strides[0]) )) + __pyx_t_19)) ))));
     }
   }
-# 22819 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
-# 22833 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -19139,7 +18619,6 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_70_array_f32(CYTHON_UNU
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 22879 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw_4sisl_7physics_13_matrix_phase_11_array_f64(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds);
 static PyMethodDef __pyx_mdef_4sisl_7physics_13_matrix_phase_11_array_f64 = {"_array_f64", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_4sisl_7physics_13_matrix_phase_11_array_f64, METH_VARARGS|METH_KEYWORDS, 0};
 static PyObject *__pyx_pw_4sisl_7physics_13_matrix_phase_11_array_f64(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
@@ -19932,24 +19411,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_74_array_f64(CYTHON_UNU
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 215, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
-# 23679 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 221, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 23691 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 222, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 23703 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 223, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 23715 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
-# 23724 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 226, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zeros); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 226, __pyx_L1_error)
@@ -19999,17 +19473,14 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_74_array_f64(CYTHON_UNU
   __pyx_t_7 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_6);
   __pyx_t_6 = 0;
-# 23781 "sisl/physics/_matrix_phase.c"
   __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_double(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 227, __pyx_L1_error)
   __pyx_v_v = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
-# 23793 "sisl/physics/_matrix_phase.c"
   __pyx_t_9 = __pyx_v_nr;
   __pyx_t_10 = __pyx_t_9;
   for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
     __pyx_v_r = __pyx_t_11;
-# 23805 "sisl/physics/_matrix_phase.c"
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
     __pyx_t_14 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_12)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_13)) ))));
@@ -20017,7 +19488,6 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_74_array_f64(CYTHON_UNU
     __pyx_t_16 = __pyx_t_14;
     for (__pyx_t_17 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_15)) ))); __pyx_t_17 < __pyx_t_16; __pyx_t_17+=1) {
       __pyx_v_ind = __pyx_t_17;
-# 23820 "sisl/physics/_matrix_phase.c"
       __pyx_t_18 = __pyx_v_ind;
       __pyx_t_19 = __pyx_v_idx;
       __pyx_t_20 = __pyx_v_ind;
@@ -20026,12 +19496,10 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_74_array_f64(CYTHON_UNU
       *((double *) ( ((char *) (((double *) ( (__pyx_v_v.data + __pyx_t_21 * __pyx_v_v.strides[0]) )) + __pyx_t_22)) )) += ((double)(*((int *) ( ((char *) (((int *) ( (__pyx_v_D.data + __pyx_t_18 * __pyx_v_D.strides[0]) )) + __pyx_t_19)) ))));
     }
   }
-# 23836 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
-# 23850 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -20244,24 +19712,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_76_array_f64(CYTHON_UNU
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 215, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
-# 24070 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 221, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 24082 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 222, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 24094 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 223, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 24106 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
-# 24115 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 226, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zeros); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 226, __pyx_L1_error)
@@ -20311,17 +19774,14 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_76_array_f64(CYTHON_UNU
   __pyx_t_7 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_6);
   __pyx_t_6 = 0;
-# 24172 "sisl/physics/_matrix_phase.c"
   __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_double(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 227, __pyx_L1_error)
   __pyx_v_v = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
-# 24184 "sisl/physics/_matrix_phase.c"
   __pyx_t_9 = __pyx_v_nr;
   __pyx_t_10 = __pyx_t_9;
   for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
     __pyx_v_r = __pyx_t_11;
-# 24196 "sisl/physics/_matrix_phase.c"
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
     __pyx_t_14 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_12)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_13)) ))));
@@ -20329,7 +19789,6 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_76_array_f64(CYTHON_UNU
     __pyx_t_16 = __pyx_t_14;
     for (__pyx_t_17 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_15)) ))); __pyx_t_17 < __pyx_t_16; __pyx_t_17+=1) {
       __pyx_v_ind = __pyx_t_17;
-# 24211 "sisl/physics/_matrix_phase.c"
       __pyx_t_18 = __pyx_v_ind;
       __pyx_t_19 = __pyx_v_idx;
       __pyx_t_20 = __pyx_v_ind;
@@ -20338,12 +19797,10 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_76_array_f64(CYTHON_UNU
       *((double *) ( ((char *) (((double *) ( (__pyx_v_v.data + __pyx_t_21 * __pyx_v_v.strides[0]) )) + __pyx_t_22)) )) += ((double)(*((long *) ( ((char *) (((long *) ( (__pyx_v_D.data + __pyx_t_18 * __pyx_v_D.strides[0]) )) + __pyx_t_19)) ))));
     }
   }
-# 24227 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
-# 24241 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -20556,24 +20013,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_78_array_f64(CYTHON_UNU
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 215, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
-# 24461 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 221, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 24473 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 222, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 24485 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 223, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 24497 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
-# 24506 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 226, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zeros); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 226, __pyx_L1_error)
@@ -20623,17 +20075,14 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_78_array_f64(CYTHON_UNU
   __pyx_t_7 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_6);
   __pyx_t_6 = 0;
-# 24563 "sisl/physics/_matrix_phase.c"
   __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_double(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 227, __pyx_L1_error)
   __pyx_v_v = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
-# 24575 "sisl/physics/_matrix_phase.c"
   __pyx_t_9 = __pyx_v_nr;
   __pyx_t_10 = __pyx_t_9;
   for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
     __pyx_v_r = __pyx_t_11;
-# 24587 "sisl/physics/_matrix_phase.c"
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
     __pyx_t_14 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_12)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_13)) ))));
@@ -20641,7 +20090,6 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_78_array_f64(CYTHON_UNU
     __pyx_t_16 = __pyx_t_14;
     for (__pyx_t_17 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_15)) ))); __pyx_t_17 < __pyx_t_16; __pyx_t_17+=1) {
       __pyx_v_ind = __pyx_t_17;
-# 24602 "sisl/physics/_matrix_phase.c"
       __pyx_t_18 = __pyx_v_ind;
       __pyx_t_19 = __pyx_v_idx;
       __pyx_t_20 = __pyx_v_ind;
@@ -20650,12 +20098,10 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_78_array_f64(CYTHON_UNU
       *((double *) ( ((char *) (((double *) ( (__pyx_v_v.data + __pyx_t_21 * __pyx_v_v.strides[0]) )) + __pyx_t_22)) )) += ((double)(*((float *) ( ((char *) (((float *) ( (__pyx_v_D.data + __pyx_t_18 * __pyx_v_D.strides[0]) )) + __pyx_t_19)) ))));
     }
   }
-# 24618 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
-# 24632 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -20868,24 +20314,19 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_80_array_f64(CYTHON_UNU
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_COL.rcbuffer->pybuffer, (PyObject*)__pyx_v_COL, &__Pyx_TypeInfo_nn___pyx_t_5numpy_int32_t, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 215, __pyx_L1_error)
   }
   __pyx_pybuffernd_COL.diminfo[0].strides = __pyx_pybuffernd_COL.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_COL.diminfo[0].shape = __pyx_pybuffernd_COL.rcbuffer->pybuffer.shape[0];
-# 24852 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 221, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 24864 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 222, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 24876 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 223, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 24888 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
-# 24897 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_2, __pyx_n_s_np); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 226, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_zeros); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 226, __pyx_L1_error)
@@ -20935,17 +20376,14 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_80_array_f64(CYTHON_UNU
   __pyx_t_7 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_6);
   __pyx_t_6 = 0;
-# 24954 "sisl/physics/_matrix_phase.c"
   __pyx_t_8 = __Pyx_PyObject_to_MemoryviewSlice_d_dc_double(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_8.memview)) __PYX_ERR(0, 227, __pyx_L1_error)
   __pyx_v_v = __pyx_t_8;
   __pyx_t_8.memview = NULL;
   __pyx_t_8.data = NULL;
-# 24966 "sisl/physics/_matrix_phase.c"
   __pyx_t_9 = __pyx_v_nr;
   __pyx_t_10 = __pyx_t_9;
   for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_10; __pyx_t_11+=1) {
     __pyx_v_r = __pyx_t_11;
-# 24978 "sisl/physics/_matrix_phase.c"
     __pyx_t_12 = __pyx_v_r;
     __pyx_t_13 = __pyx_v_r;
     __pyx_t_14 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_12)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_13)) ))));
@@ -20953,7 +20391,6 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_80_array_f64(CYTHON_UNU
     __pyx_t_16 = __pyx_t_14;
     for (__pyx_t_17 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_15)) ))); __pyx_t_17 < __pyx_t_16; __pyx_t_17+=1) {
       __pyx_v_ind = __pyx_t_17;
-# 24993 "sisl/physics/_matrix_phase.c"
       __pyx_t_18 = __pyx_v_ind;
       __pyx_t_19 = __pyx_v_idx;
       __pyx_t_20 = __pyx_v_ind;
@@ -20962,12 +20399,10 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_80_array_f64(CYTHON_UNU
       *((double *) ( ((char *) (((double *) ( (__pyx_v_v.data + __pyx_t_21 * __pyx_v_v.strides[0]) )) + __pyx_t_22)) )) += ((double)(*((double *) ( ((char *) (((double *) ( (__pyx_v_D.data + __pyx_t_18 * __pyx_v_D.strides[0]) )) + __pyx_t_19)) ))));
     }
   }
-# 25009 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
-# 25023 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -21004,7 +20439,6 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_80_array_f64(CYTHON_UNU
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 25069 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw_4sisl_7physics_13_matrix_phase_13_phase_array_c64(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds);
 static PyMethodDef __pyx_mdef_4sisl_7physics_13_matrix_phase_13_phase_array_c64 = {"_phase_array_c64", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_4sisl_7physics_13_matrix_phase_13_phase_array_c64, METH_VARARGS|METH_KEYWORDS, 0};
 static PyObject *__pyx_pw_4sisl_7physics_13_matrix_phase_13_phase_array_c64(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
@@ -21929,29 +21363,23 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_84_phase_array_c64(CYTH
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 241, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
-# 26001 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 248, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 26013 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 249, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 26025 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 250, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 26037 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 251, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 26049 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
-# 26058 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 254, __pyx_L1_error)
@@ -22001,20 +21429,16 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_84_phase_array_c64(CYTH
   __pyx_t_8 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
-# 26115 "sisl/physics/_matrix_phase.c"
   __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_float_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 255, __pyx_L1_error)
   __pyx_v_v = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
-# 26127 "sisl/physics/_matrix_phase.c"
   __pyx_t_10 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_10) {
-# 26137 "sisl/physics/_matrix_phase.c"
     __pyx_t_11 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_11;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 26149 "sisl/physics/_matrix_phase.c"
       __pyx_t_14 = __pyx_v_r;
       __pyx_t_15 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_14)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_15)) ))));
@@ -22022,10 +21446,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_84_phase_array_c64(CYTH
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 26164 "sisl/physics/_matrix_phase.c"
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr);
-# 26174 "sisl/physics/_matrix_phase.c"
         __pyx_t_21 = __pyx_v_r;
         __pyx_t_22 = __pyx_v_c;
         __pyx_t_23 = __pyx_v_ind;
@@ -22037,16 +21459,13 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_84_phase_array_c64(CYTH
         *((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) ( (__pyx_v_v.data + __pyx_t_27 * __pyx_v_v.strides[0]) )) + __pyx_t_28)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) ( (__pyx_v_v.data + __pyx_t_21 * __pyx_v_v.strides[0]) )) + __pyx_t_22)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26))));
       }
     }
-# 26193 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 26203 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_11 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_11;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 26216 "sisl/physics/_matrix_phase.c"
       __pyx_t_29 = __pyx_v_r;
       __pyx_t_30 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_29)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_30)) ))));
@@ -22054,10 +21473,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_84_phase_array_c64(CYTH
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_31)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 26231 "sisl/physics/_matrix_phase.c"
         __pyx_t_32 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_32)) ))) % __pyx_v_nr);
-# 26241 "sisl/physics/_matrix_phase.c"
         __pyx_t_33 = __pyx_v_r;
         __pyx_t_34 = __pyx_v_c;
         __pyx_t_35 = __pyx_v_ind;
@@ -22072,12 +21489,10 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_84_phase_array_c64(CYTH
     }
   }
   __pyx_L3:;
-# 26263 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
-# 26277 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
@@ -22348,29 +21763,23 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_86_phase_array_c64(CYTH
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 241, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
-# 26555 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 248, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 26567 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 249, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 26579 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 250, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 26591 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 251, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 26603 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
-# 26612 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 254, __pyx_L1_error)
@@ -22420,20 +21829,16 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_86_phase_array_c64(CYTH
   __pyx_t_8 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
-# 26669 "sisl/physics/_matrix_phase.c"
   __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_float_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 255, __pyx_L1_error)
   __pyx_v_v = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
-# 26681 "sisl/physics/_matrix_phase.c"
   __pyx_t_10 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_10) {
-# 26691 "sisl/physics/_matrix_phase.c"
     __pyx_t_11 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_11;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 26703 "sisl/physics/_matrix_phase.c"
       __pyx_t_14 = __pyx_v_r;
       __pyx_t_15 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_14)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_15)) ))));
@@ -22441,10 +21846,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_86_phase_array_c64(CYTH
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 26718 "sisl/physics/_matrix_phase.c"
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr);
-# 26728 "sisl/physics/_matrix_phase.c"
         __pyx_t_21 = __pyx_v_r;
         __pyx_t_22 = __pyx_v_c;
         __pyx_t_23 = __pyx_v_ind;
@@ -22456,16 +21859,13 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_86_phase_array_c64(CYTH
         *((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) ( (__pyx_v_v.data + __pyx_t_27 * __pyx_v_v.strides[0]) )) + __pyx_t_28)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) ( (__pyx_v_v.data + __pyx_t_21 * __pyx_v_v.strides[0]) )) + __pyx_t_22)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26))));
       }
     }
-# 26747 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 26757 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_11 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_11;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 26770 "sisl/physics/_matrix_phase.c"
       __pyx_t_29 = __pyx_v_r;
       __pyx_t_30 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_29)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_30)) ))));
@@ -22473,10 +21873,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_86_phase_array_c64(CYTH
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_31)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 26785 "sisl/physics/_matrix_phase.c"
         __pyx_t_32 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_32)) ))) % __pyx_v_nr);
-# 26795 "sisl/physics/_matrix_phase.c"
         __pyx_t_33 = __pyx_v_r;
         __pyx_t_34 = __pyx_v_c;
         __pyx_t_35 = __pyx_v_ind;
@@ -22491,12 +21889,10 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_86_phase_array_c64(CYTH
     }
   }
   __pyx_L3:;
-# 26817 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
-# 26831 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
@@ -22767,29 +22163,23 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_88_phase_array_c64(CYTH
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 241, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
-# 27109 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 248, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 27121 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 249, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 27133 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 250, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 27145 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 251, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 27157 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
-# 27166 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 254, __pyx_L1_error)
@@ -22839,20 +22229,16 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_88_phase_array_c64(CYTH
   __pyx_t_8 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
-# 27223 "sisl/physics/_matrix_phase.c"
   __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_float_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 255, __pyx_L1_error)
   __pyx_v_v = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
-# 27235 "sisl/physics/_matrix_phase.c"
   __pyx_t_10 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_10) {
-# 27245 "sisl/physics/_matrix_phase.c"
     __pyx_t_11 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_11;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 27257 "sisl/physics/_matrix_phase.c"
       __pyx_t_14 = __pyx_v_r;
       __pyx_t_15 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_14)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_15)) ))));
@@ -22860,10 +22246,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_88_phase_array_c64(CYTH
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 27272 "sisl/physics/_matrix_phase.c"
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr);
-# 27282 "sisl/physics/_matrix_phase.c"
         __pyx_t_21 = __pyx_v_r;
         __pyx_t_22 = __pyx_v_c;
         __pyx_t_23 = __pyx_v_ind;
@@ -22875,16 +22259,13 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_88_phase_array_c64(CYTH
         *((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) ( (__pyx_v_v.data + __pyx_t_27 * __pyx_v_v.strides[0]) )) + __pyx_t_28)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) ( (__pyx_v_v.data + __pyx_t_21 * __pyx_v_v.strides[0]) )) + __pyx_t_22)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26))));
       }
     }
-# 27301 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 27311 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_11 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_11;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 27324 "sisl/physics/_matrix_phase.c"
       __pyx_t_29 = __pyx_v_r;
       __pyx_t_30 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_29)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_30)) ))));
@@ -22892,10 +22273,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_88_phase_array_c64(CYTH
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_31)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 27339 "sisl/physics/_matrix_phase.c"
         __pyx_t_32 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_32)) ))) % __pyx_v_nr);
-# 27349 "sisl/physics/_matrix_phase.c"
         __pyx_t_33 = __pyx_v_r;
         __pyx_t_34 = __pyx_v_c;
         __pyx_t_35 = __pyx_v_ind;
@@ -22910,12 +22289,10 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_88_phase_array_c64(CYTH
     }
   }
   __pyx_L3:;
-# 27371 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
-# 27385 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
@@ -23187,29 +22564,23 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_90_phase_array_c64(CYTH
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 241, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
-# 27664 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 248, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 27676 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 249, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 27688 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 250, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 27700 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 251, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 27712 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
-# 27721 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 254, __pyx_L1_error)
@@ -23259,20 +22630,16 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_90_phase_array_c64(CYTH
   __pyx_t_8 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
-# 27778 "sisl/physics/_matrix_phase.c"
   __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_float_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 255, __pyx_L1_error)
   __pyx_v_v = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
-# 27790 "sisl/physics/_matrix_phase.c"
   __pyx_t_10 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_10) {
-# 27800 "sisl/physics/_matrix_phase.c"
     __pyx_t_11 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_11;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 27812 "sisl/physics/_matrix_phase.c"
       __pyx_t_14 = __pyx_v_r;
       __pyx_t_15 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_14)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_15)) ))));
@@ -23280,10 +22647,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_90_phase_array_c64(CYTH
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 27827 "sisl/physics/_matrix_phase.c"
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr);
-# 27837 "sisl/physics/_matrix_phase.c"
         __pyx_t_21 = __pyx_v_r;
         __pyx_t_22 = __pyx_v_c;
         __pyx_t_23 = __pyx_v_ind;
@@ -23296,16 +22661,13 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_90_phase_array_c64(CYTH
         *((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) ( (__pyx_v_v.data + __pyx_t_28 * __pyx_v_v.strides[0]) )) + __pyx_t_29)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) ( (__pyx_v_v.data + __pyx_t_21 * __pyx_v_v.strides[0]) )) + __pyx_t_22)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_27)), ((float)__Pyx_CIMAG(__pyx_t_27))));
       }
     }
-# 27857 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 27867 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_11 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_11;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 27880 "sisl/physics/_matrix_phase.c"
       __pyx_t_30 = __pyx_v_r;
       __pyx_t_31 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_30)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_31)) ))));
@@ -23313,10 +22675,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_90_phase_array_c64(CYTH
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_32)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 27895 "sisl/physics/_matrix_phase.c"
         __pyx_t_33 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_33)) ))) % __pyx_v_nr);
-# 27905 "sisl/physics/_matrix_phase.c"
         __pyx_t_34 = __pyx_v_r;
         __pyx_t_35 = __pyx_v_c;
         __pyx_t_36 = __pyx_v_ind;
@@ -23332,12 +22692,10 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_90_phase_array_c64(CYTH
     }
   }
   __pyx_L3:;
-# 27928 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
-# 27942 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
@@ -23608,29 +22966,23 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_92_phase_array_c64(CYTH
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 241, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
-# 28220 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 248, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 28232 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 249, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 28244 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 250, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 28256 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 251, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 28268 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
-# 28277 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 254, __pyx_L1_error)
@@ -23680,20 +23032,16 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_92_phase_array_c64(CYTH
   __pyx_t_8 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
-# 28334 "sisl/physics/_matrix_phase.c"
   __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_float_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 255, __pyx_L1_error)
   __pyx_v_v = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
-# 28346 "sisl/physics/_matrix_phase.c"
   __pyx_t_10 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_10) {
-# 28356 "sisl/physics/_matrix_phase.c"
     __pyx_t_11 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_11;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 28368 "sisl/physics/_matrix_phase.c"
       __pyx_t_14 = __pyx_v_r;
       __pyx_t_15 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_14)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_15)) ))));
@@ -23701,10 +23049,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_92_phase_array_c64(CYTH
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 28383 "sisl/physics/_matrix_phase.c"
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr);
-# 28393 "sisl/physics/_matrix_phase.c"
         __pyx_t_21 = __pyx_v_r;
         __pyx_t_22 = __pyx_v_c;
         __pyx_t_23 = __pyx_v_ind;
@@ -23716,16 +23062,13 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_92_phase_array_c64(CYTH
         *((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) ( (__pyx_v_v.data + __pyx_t_27 * __pyx_v_v.strides[0]) )) + __pyx_t_28)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) ( (__pyx_v_v.data + __pyx_t_21 * __pyx_v_v.strides[0]) )) + __pyx_t_22)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_26)), ((float)__Pyx_CIMAG(__pyx_t_26))));
       }
     }
-# 28412 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 28422 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_11 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_11;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 28435 "sisl/physics/_matrix_phase.c"
       __pyx_t_29 = __pyx_v_r;
       __pyx_t_30 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_29)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_30)) ))));
@@ -23733,10 +23076,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_92_phase_array_c64(CYTH
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_31)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 28450 "sisl/physics/_matrix_phase.c"
         __pyx_t_32 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_32)) ))) % __pyx_v_nr);
-# 28460 "sisl/physics/_matrix_phase.c"
         __pyx_t_33 = __pyx_v_r;
         __pyx_t_34 = __pyx_v_c;
         __pyx_t_35 = __pyx_v_ind;
@@ -23751,12 +23092,10 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_92_phase_array_c64(CYTH
     }
   }
   __pyx_L3:;
-# 28482 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
-# 28496 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
@@ -24028,29 +23367,23 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_94_phase_array_c64(CYTH
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_float_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 241, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
-# 28775 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 248, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 28787 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 249, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 28799 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 250, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 28811 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_float_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 251, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 28823 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
-# 28832 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 254, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 254, __pyx_L1_error)
@@ -24100,20 +23433,16 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_94_phase_array_c64(CYTH
   __pyx_t_8 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
-# 28889 "sisl/physics/_matrix_phase.c"
   __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_float_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 255, __pyx_L1_error)
   __pyx_v_v = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
-# 28901 "sisl/physics/_matrix_phase.c"
   __pyx_t_10 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_10) {
-# 28911 "sisl/physics/_matrix_phase.c"
     __pyx_t_11 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_11;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 28923 "sisl/physics/_matrix_phase.c"
       __pyx_t_14 = __pyx_v_r;
       __pyx_t_15 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_14)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_15)) ))));
@@ -24121,10 +23450,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_94_phase_array_c64(CYTH
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 28938 "sisl/physics/_matrix_phase.c"
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr);
-# 28948 "sisl/physics/_matrix_phase.c"
         __pyx_t_21 = __pyx_v_r;
         __pyx_t_22 = __pyx_v_c;
         __pyx_t_23 = __pyx_v_ind;
@@ -24137,16 +23464,13 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_94_phase_array_c64(CYTH
         *((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) ( (__pyx_v_v.data + __pyx_t_28 * __pyx_v_v.strides[0]) )) + __pyx_t_29)) )) = __Pyx_c_sum_float((*((__pyx_t_float_complex *) ( ((char *) (((__pyx_t_float_complex *) ( (__pyx_v_v.data + __pyx_t_21 * __pyx_v_v.strides[0]) )) + __pyx_t_22)) ))), __pyx_t_float_complex_from_parts(((float)__Pyx_CREAL(__pyx_t_27)), ((float)__Pyx_CIMAG(__pyx_t_27))));
       }
     }
-# 28968 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 28978 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_11 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_11;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 28991 "sisl/physics/_matrix_phase.c"
       __pyx_t_30 = __pyx_v_r;
       __pyx_t_31 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_30)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_31)) ))));
@@ -24154,10 +23478,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_94_phase_array_c64(CYTH
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_32)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 29006 "sisl/physics/_matrix_phase.c"
         __pyx_t_33 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_33)) ))) % __pyx_v_nr);
-# 29016 "sisl/physics/_matrix_phase.c"
         __pyx_t_34 = __pyx_v_r;
         __pyx_t_35 = __pyx_v_c;
         __pyx_t_36 = __pyx_v_ind;
@@ -24173,12 +23495,10 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_94_phase_array_c64(CYTH
     }
   }
   __pyx_L3:;
-# 29039 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
-# 29053 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
@@ -24219,7 +23539,6 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_94_phase_array_c64(CYTH
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 29103 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw_4sisl_7physics_13_matrix_phase_15_phase_array_c128(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds);
 static PyMethodDef __pyx_mdef_4sisl_7physics_13_matrix_phase_15_phase_array_c128 = {"_phase_array_c128", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_4sisl_7physics_13_matrix_phase_15_phase_array_c128, METH_VARARGS|METH_KEYWORDS, 0};
 static PyObject *__pyx_pw_4sisl_7physics_13_matrix_phase_15_phase_array_c128(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
@@ -25144,29 +24463,23 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_98_phase_array_c128(CYT
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 277, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
-# 30035 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 284, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 30047 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 285, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 30059 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 286, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 30071 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 287, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 30083 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
-# 30092 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 290, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 290, __pyx_L1_error)
@@ -25216,20 +24529,16 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_98_phase_array_c128(CYT
   __pyx_t_8 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
-# 30149 "sisl/physics/_matrix_phase.c"
   __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 291, __pyx_L1_error)
   __pyx_v_v = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
-# 30161 "sisl/physics/_matrix_phase.c"
   __pyx_t_10 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_10) {
-# 30171 "sisl/physics/_matrix_phase.c"
     __pyx_t_11 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_11;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 30183 "sisl/physics/_matrix_phase.c"
       __pyx_t_14 = __pyx_v_r;
       __pyx_t_15 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_14)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_15)) ))));
@@ -25237,10 +24546,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_98_phase_array_c128(CYT
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 30198 "sisl/physics/_matrix_phase.c"
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr);
-# 30208 "sisl/physics/_matrix_phase.c"
         __pyx_t_21 = __pyx_v_r;
         __pyx_t_22 = __pyx_v_c;
         __pyx_t_23 = __pyx_v_ind;
@@ -25252,16 +24559,13 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_98_phase_array_c128(CYT
         *((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) ( (__pyx_v_v.data + __pyx_t_27 * __pyx_v_v.strides[0]) )) + __pyx_t_28)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) ( (__pyx_v_v.data + __pyx_t_21 * __pyx_v_v.strides[0]) )) + __pyx_t_22)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26))));
       }
     }
-# 30227 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 30237 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_11 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_11;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 30250 "sisl/physics/_matrix_phase.c"
       __pyx_t_29 = __pyx_v_r;
       __pyx_t_30 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_29)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_30)) ))));
@@ -25269,10 +24573,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_98_phase_array_c128(CYT
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_31)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 30265 "sisl/physics/_matrix_phase.c"
         __pyx_t_32 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_32)) ))) % __pyx_v_nr);
-# 30275 "sisl/physics/_matrix_phase.c"
         __pyx_t_33 = __pyx_v_r;
         __pyx_t_34 = __pyx_v_c;
         __pyx_t_35 = __pyx_v_ind;
@@ -25297,7 +24599,6 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_98_phase_array_c128(CYT
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
-# 30309 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
@@ -25568,29 +24869,23 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_100_phase_array_c128(CY
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 277, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
-# 30587 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 284, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 30599 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 285, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 30611 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 286, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 30623 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 287, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 30635 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
-# 30644 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 290, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 290, __pyx_L1_error)
@@ -25640,20 +24935,16 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_100_phase_array_c128(CY
   __pyx_t_8 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
-# 30701 "sisl/physics/_matrix_phase.c"
   __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 291, __pyx_L1_error)
   __pyx_v_v = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
-# 30713 "sisl/physics/_matrix_phase.c"
   __pyx_t_10 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_10) {
-# 30723 "sisl/physics/_matrix_phase.c"
     __pyx_t_11 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_11;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 30735 "sisl/physics/_matrix_phase.c"
       __pyx_t_14 = __pyx_v_r;
       __pyx_t_15 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_14)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_15)) ))));
@@ -25661,10 +24952,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_100_phase_array_c128(CY
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 30750 "sisl/physics/_matrix_phase.c"
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr);
-# 30760 "sisl/physics/_matrix_phase.c"
         __pyx_t_21 = __pyx_v_r;
         __pyx_t_22 = __pyx_v_c;
         __pyx_t_23 = __pyx_v_ind;
@@ -25676,16 +24965,13 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_100_phase_array_c128(CY
         *((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) ( (__pyx_v_v.data + __pyx_t_27 * __pyx_v_v.strides[0]) )) + __pyx_t_28)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) ( (__pyx_v_v.data + __pyx_t_21 * __pyx_v_v.strides[0]) )) + __pyx_t_22)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26))));
       }
     }
-# 30779 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 30789 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_11 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_11;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 30802 "sisl/physics/_matrix_phase.c"
       __pyx_t_29 = __pyx_v_r;
       __pyx_t_30 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_29)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_30)) ))));
@@ -25693,10 +24979,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_100_phase_array_c128(CY
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_31)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 30817 "sisl/physics/_matrix_phase.c"
         __pyx_t_32 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_32)) ))) % __pyx_v_nr);
-# 30827 "sisl/physics/_matrix_phase.c"
         __pyx_t_33 = __pyx_v_r;
         __pyx_t_34 = __pyx_v_c;
         __pyx_t_35 = __pyx_v_ind;
@@ -25721,7 +25005,6 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_100_phase_array_c128(CY
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
-# 30861 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
@@ -25992,29 +25275,23 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_102_phase_array_c128(CY
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 277, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
-# 31139 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 284, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 31151 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 285, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 31163 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 286, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 31175 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 287, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 31187 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
-# 31196 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 290, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 290, __pyx_L1_error)
@@ -26064,20 +25341,16 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_102_phase_array_c128(CY
   __pyx_t_8 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
-# 31253 "sisl/physics/_matrix_phase.c"
   __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 291, __pyx_L1_error)
   __pyx_v_v = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
-# 31265 "sisl/physics/_matrix_phase.c"
   __pyx_t_10 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_10) {
-# 31275 "sisl/physics/_matrix_phase.c"
     __pyx_t_11 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_11;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 31287 "sisl/physics/_matrix_phase.c"
       __pyx_t_14 = __pyx_v_r;
       __pyx_t_15 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_14)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_15)) ))));
@@ -26085,10 +25358,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_102_phase_array_c128(CY
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 31302 "sisl/physics/_matrix_phase.c"
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr);
-# 31312 "sisl/physics/_matrix_phase.c"
         __pyx_t_21 = __pyx_v_r;
         __pyx_t_22 = __pyx_v_c;
         __pyx_t_23 = __pyx_v_ind;
@@ -26100,16 +25371,13 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_102_phase_array_c128(CY
         *((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) ( (__pyx_v_v.data + __pyx_t_27 * __pyx_v_v.strides[0]) )) + __pyx_t_28)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) ( (__pyx_v_v.data + __pyx_t_21 * __pyx_v_v.strides[0]) )) + __pyx_t_22)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26))));
       }
     }
-# 31331 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 31341 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_11 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_11;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 31354 "sisl/physics/_matrix_phase.c"
       __pyx_t_29 = __pyx_v_r;
       __pyx_t_30 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_29)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_30)) ))));
@@ -26117,10 +25385,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_102_phase_array_c128(CY
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_31)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 31369 "sisl/physics/_matrix_phase.c"
         __pyx_t_32 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_32)) ))) % __pyx_v_nr);
-# 31379 "sisl/physics/_matrix_phase.c"
         __pyx_t_33 = __pyx_v_r;
         __pyx_t_34 = __pyx_v_c;
         __pyx_t_35 = __pyx_v_ind;
@@ -26145,7 +25411,6 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_102_phase_array_c128(CY
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
-# 31413 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
@@ -26416,29 +25681,23 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_104_phase_array_c128(CY
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 277, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
-# 31691 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 284, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 31703 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 285, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 31715 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 286, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 31727 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 287, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 31739 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
-# 31748 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 290, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 290, __pyx_L1_error)
@@ -26488,20 +25747,16 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_104_phase_array_c128(CY
   __pyx_t_8 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
-# 31805 "sisl/physics/_matrix_phase.c"
   __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 291, __pyx_L1_error)
   __pyx_v_v = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
-# 31817 "sisl/physics/_matrix_phase.c"
   __pyx_t_10 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_10) {
-# 31827 "sisl/physics/_matrix_phase.c"
     __pyx_t_11 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_11;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 31839 "sisl/physics/_matrix_phase.c"
       __pyx_t_14 = __pyx_v_r;
       __pyx_t_15 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_14)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_15)) ))));
@@ -26509,10 +25764,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_104_phase_array_c128(CY
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 31854 "sisl/physics/_matrix_phase.c"
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr);
-# 31864 "sisl/physics/_matrix_phase.c"
         __pyx_t_21 = __pyx_v_r;
         __pyx_t_22 = __pyx_v_c;
         __pyx_t_23 = __pyx_v_ind;
@@ -26524,16 +25777,13 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_104_phase_array_c128(CY
         *((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) ( (__pyx_v_v.data + __pyx_t_27 * __pyx_v_v.strides[0]) )) + __pyx_t_28)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) ( (__pyx_v_v.data + __pyx_t_21 * __pyx_v_v.strides[0]) )) + __pyx_t_22)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26))));
       }
     }
-# 31883 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 31893 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_11 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_11;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 31906 "sisl/physics/_matrix_phase.c"
       __pyx_t_29 = __pyx_v_r;
       __pyx_t_30 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_29)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_30)) ))));
@@ -26541,10 +25791,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_104_phase_array_c128(CY
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_31)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 31921 "sisl/physics/_matrix_phase.c"
         __pyx_t_32 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_32)) ))) % __pyx_v_nr);
-# 31931 "sisl/physics/_matrix_phase.c"
         __pyx_t_33 = __pyx_v_r;
         __pyx_t_34 = __pyx_v_c;
         __pyx_t_35 = __pyx_v_ind;
@@ -26569,7 +25817,6 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_104_phase_array_c128(CY
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
-# 31965 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
@@ -26841,29 +26088,23 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_106_phase_array_c128(CY
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 277, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
-# 32244 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 284, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 32256 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 285, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 32268 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 286, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 32280 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 287, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 32292 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
-# 32301 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 290, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 290, __pyx_L1_error)
@@ -26913,20 +26154,16 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_106_phase_array_c128(CY
   __pyx_t_8 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
-# 32358 "sisl/physics/_matrix_phase.c"
   __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 291, __pyx_L1_error)
   __pyx_v_v = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
-# 32370 "sisl/physics/_matrix_phase.c"
   __pyx_t_10 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_10) {
-# 32380 "sisl/physics/_matrix_phase.c"
     __pyx_t_11 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_11;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 32392 "sisl/physics/_matrix_phase.c"
       __pyx_t_14 = __pyx_v_r;
       __pyx_t_15 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_14)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_15)) ))));
@@ -26934,10 +26171,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_106_phase_array_c128(CY
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 32407 "sisl/physics/_matrix_phase.c"
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr);
-# 32417 "sisl/physics/_matrix_phase.c"
         __pyx_t_21 = __pyx_v_r;
         __pyx_t_22 = __pyx_v_c;
         __pyx_t_23 = __pyx_v_ind;
@@ -26950,16 +26185,13 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_106_phase_array_c128(CY
         *((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) ( (__pyx_v_v.data + __pyx_t_28 * __pyx_v_v.strides[0]) )) + __pyx_t_29)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) ( (__pyx_v_v.data + __pyx_t_21 * __pyx_v_v.strides[0]) )) + __pyx_t_22)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_27)), ((double)__Pyx_CIMAG(__pyx_t_27))));
       }
     }
-# 32437 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 32447 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_11 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_11;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 32460 "sisl/physics/_matrix_phase.c"
       __pyx_t_30 = __pyx_v_r;
       __pyx_t_31 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_30)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_31)) ))));
@@ -26967,10 +26199,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_106_phase_array_c128(CY
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_32)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 32475 "sisl/physics/_matrix_phase.c"
         __pyx_t_33 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_33)) ))) % __pyx_v_nr);
-# 32485 "sisl/physics/_matrix_phase.c"
         __pyx_t_34 = __pyx_v_r;
         __pyx_t_35 = __pyx_v_c;
         __pyx_t_36 = __pyx_v_ind;
@@ -26996,7 +26226,6 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_106_phase_array_c128(CY
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
-# 32520 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
@@ -27267,29 +26496,23 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_108_phase_array_c128(CY
     if (unlikely(__Pyx_GetBufferAndValidate(&__pyx_pybuffernd_PHASES.rcbuffer->pybuffer, (PyObject*)__pyx_v_PHASES, &__Pyx_TypeInfo___pyx_t_double_complex, PyBUF_FORMAT| PyBUF_C_CONTIGUOUS, 1, 0, __pyx_stack) == -1)) __PYX_ERR(0, 277, __pyx_L1_error)
   }
   __pyx_pybuffernd_PHASES.diminfo[0].strides = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.strides[0]; __pyx_pybuffernd_PHASES.diminfo[0].shape = __pyx_pybuffernd_PHASES.rcbuffer->pybuffer.shape[0];
-# 32798 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_PTR), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 284, __pyx_L1_error)
   __pyx_v_ptr = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 32810 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_NCOL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 285, __pyx_L1_error)
   __pyx_v_ncol = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 32822 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_to_MemoryviewSlice_dc_int(((PyObject *)__pyx_v_COL), PyBUF_WRITABLE); if (unlikely(!__pyx_t_1.memview)) __PYX_ERR(0, 286, __pyx_L1_error)
   __pyx_v_col = __pyx_t_1;
   __pyx_t_1.memview = NULL;
   __pyx_t_1.data = NULL;
-# 32834 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_to_MemoryviewSlice_dc___pyx_t_double_complex(((PyObject *)__pyx_v_PHASES), PyBUF_WRITABLE); if (unlikely(!__pyx_t_2.memview)) __PYX_ERR(0, 287, __pyx_L1_error)
   __pyx_v_phases = __pyx_t_2;
   __pyx_t_2.memview = NULL;
   __pyx_t_2.data = NULL;
-# 32846 "sisl/physics/_matrix_phase.c"
   __pyx_v_nr = (__pyx_v_ncol.shape[0]);
-# 32855 "sisl/physics/_matrix_phase.c"
   __Pyx_GetModuleGlobalName(__pyx_t_3, __pyx_n_s_np); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 290, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = __Pyx_PyObject_GetAttrStr(__pyx_t_3, __pyx_n_s_zeros); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 290, __pyx_L1_error)
@@ -27339,20 +26562,16 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_108_phase_array_c128(CY
   __pyx_t_8 = 0;
   __pyx_v_V = ((PyArrayObject *)__pyx_t_7);
   __pyx_t_7 = 0;
-# 32912 "sisl/physics/_matrix_phase.c"
   __pyx_t_9 = __Pyx_PyObject_to_MemoryviewSlice_d_dc___pyx_t_double_complex(((PyObject *)__pyx_v_V), PyBUF_WRITABLE); if (unlikely(!__pyx_t_9.memview)) __PYX_ERR(0, 291, __pyx_L1_error)
   __pyx_v_v = __pyx_t_9;
   __pyx_t_9.memview = NULL;
   __pyx_t_9.data = NULL;
-# 32924 "sisl/physics/_matrix_phase.c"
   __pyx_t_10 = ((__pyx_v_p_opt == 0) != 0);
   if (__pyx_t_10) {
-# 32934 "sisl/physics/_matrix_phase.c"
     __pyx_t_11 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_11;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 32946 "sisl/physics/_matrix_phase.c"
       __pyx_t_14 = __pyx_v_r;
       __pyx_t_15 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_14)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_15)) ))));
@@ -27360,10 +26579,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_108_phase_array_c128(CY
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_17)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 32961 "sisl/physics/_matrix_phase.c"
         __pyx_t_20 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_20)) ))) % __pyx_v_nr);
-# 32971 "sisl/physics/_matrix_phase.c"
         __pyx_t_21 = __pyx_v_r;
         __pyx_t_22 = __pyx_v_c;
         __pyx_t_23 = __pyx_v_ind;
@@ -27375,16 +26592,13 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_108_phase_array_c128(CY
         *((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) ( (__pyx_v_v.data + __pyx_t_27 * __pyx_v_v.strides[0]) )) + __pyx_t_28)) )) = __Pyx_c_sum_double((*((__pyx_t_double_complex *) ( ((char *) (((__pyx_t_double_complex *) ( (__pyx_v_v.data + __pyx_t_21 * __pyx_v_v.strides[0]) )) + __pyx_t_22)) ))), __pyx_t_double_complex_from_parts(((double)__Pyx_CREAL(__pyx_t_26)), ((double)__Pyx_CIMAG(__pyx_t_26))));
       }
     }
-# 32990 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 33000 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_11 = __pyx_v_nr;
     __pyx_t_12 = __pyx_t_11;
     for (__pyx_t_13 = 0; __pyx_t_13 < __pyx_t_12; __pyx_t_13+=1) {
       __pyx_v_r = __pyx_t_13;
-# 33013 "sisl/physics/_matrix_phase.c"
       __pyx_t_29 = __pyx_v_r;
       __pyx_t_30 = __pyx_v_r;
       __pyx_t_16 = ((*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_29)) ))) + (*((int *) ( ((char *) (((int *) __pyx_v_ncol.data) + __pyx_t_30)) ))));
@@ -27392,10 +26606,8 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_108_phase_array_c128(CY
       __pyx_t_18 = __pyx_t_16;
       for (__pyx_t_19 = (*((int *) ( ((char *) (((int *) __pyx_v_ptr.data) + __pyx_t_31)) ))); __pyx_t_19 < __pyx_t_18; __pyx_t_19+=1) {
         __pyx_v_ind = __pyx_t_19;
-# 33028 "sisl/physics/_matrix_phase.c"
         __pyx_t_32 = __pyx_v_ind;
         __pyx_v_c = ((*((int *) ( ((char *) (((int *) __pyx_v_col.data) + __pyx_t_32)) ))) % __pyx_v_nr);
-# 33038 "sisl/physics/_matrix_phase.c"
         __pyx_t_33 = __pyx_v_r;
         __pyx_t_34 = __pyx_v_c;
         __pyx_t_35 = __pyx_v_ind;
@@ -27420,7 +26632,6 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_108_phase_array_c128(CY
   __Pyx_INCREF(((PyObject *)__pyx_v_V));
   __pyx_r = ((PyObject *)__pyx_v_V);
   goto __pyx_L0;
-# 33072 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __PYX_XDEC_MEMVIEW(&__pyx_t_1, 1);
   __PYX_XDEC_MEMVIEW(&__pyx_t_2, 1);
@@ -27461,7 +26672,6 @@ static PyObject *__pyx_pf_4sisl_7physics_13_matrix_phase_108_phase_array_c128(CY
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 33122 "sisl/physics/_matrix_phase.c"
 static CYTHON_UNUSED int __pyx_pw_5numpy_7ndarray_1__getbuffer__(PyObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags);
 static CYTHON_UNUSED int __pyx_pw_5numpy_7ndarray_1__getbuffer__(PyObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags) {
   int __pyx_r;
@@ -27501,112 +26711,79 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   __Pyx_RefNannySetupContext("__getbuffer__", 0);
   __pyx_v_info->obj = Py_None; __Pyx_INCREF(Py_None);
   __Pyx_GIVEREF(__pyx_v_info->obj);
-# 33169 "sisl/physics/_matrix_phase.c"
   __pyx_v_endian_detector = 1;
-# 33178 "sisl/physics/_matrix_phase.c"
   __pyx_v_little_endian = ((((char *)(&__pyx_v_endian_detector))[0]) != 0);
-# 33187 "sisl/physics/_matrix_phase.c"
   __pyx_v_ndim = PyArray_NDIM(__pyx_v_self);
-# 33196 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = (((__pyx_v_flags & PyBUF_C_CONTIGUOUS) == PyBUF_C_CONTIGUOUS) != 0);
   if (__pyx_t_2) {
   } else {
     __pyx_t_1 = __pyx_t_2;
     goto __pyx_L4_bool_binop_done;
   }
-# 33210 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = ((!(PyArray_CHKFLAGS(__pyx_v_self, NPY_ARRAY_C_CONTIGUOUS) != 0)) != 0);
   __pyx_t_1 = __pyx_t_2;
   __pyx_L4_bool_binop_done:;
-# 33221 "sisl/physics/_matrix_phase.c"
   if (unlikely(__pyx_t_1)) {
-# 33230 "sisl/physics/_matrix_phase.c"
     __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__5, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 272, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __PYX_ERR(1, 272, __pyx_L1_error)
-# 33243 "sisl/physics/_matrix_phase.c"
   }
-# 33252 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = (((__pyx_v_flags & PyBUF_F_CONTIGUOUS) == PyBUF_F_CONTIGUOUS) != 0);
   if (__pyx_t_2) {
   } else {
     __pyx_t_1 = __pyx_t_2;
     goto __pyx_L7_bool_binop_done;
   }
-# 33266 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = ((!(PyArray_CHKFLAGS(__pyx_v_self, NPY_ARRAY_F_CONTIGUOUS) != 0)) != 0);
   __pyx_t_1 = __pyx_t_2;
   __pyx_L7_bool_binop_done:;
-# 33277 "sisl/physics/_matrix_phase.c"
   if (unlikely(__pyx_t_1)) {
-# 33286 "sisl/physics/_matrix_phase.c"
     __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__6, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 276, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __PYX_ERR(1, 276, __pyx_L1_error)
-# 33299 "sisl/physics/_matrix_phase.c"
   }
-# 33308 "sisl/physics/_matrix_phase.c"
   __pyx_v_info->buf = PyArray_DATA(__pyx_v_self);
-# 33317 "sisl/physics/_matrix_phase.c"
   __pyx_v_info->ndim = __pyx_v_ndim;
-# 33326 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = (((sizeof(npy_intp)) != (sizeof(Py_ssize_t))) != 0);
   if (__pyx_t_1) {
-# 33336 "sisl/physics/_matrix_phase.c"
     __pyx_v_info->strides = ((Py_ssize_t *)PyObject_Malloc((((sizeof(Py_ssize_t)) * 2) * ((size_t)__pyx_v_ndim))));
-# 33345 "sisl/physics/_matrix_phase.c"
     __pyx_v_info->shape = (__pyx_v_info->strides + __pyx_v_ndim);
-# 33354 "sisl/physics/_matrix_phase.c"
     __pyx_t_4 = __pyx_v_ndim;
     __pyx_t_5 = __pyx_t_4;
     for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
       __pyx_v_i = __pyx_t_6;
-# 33366 "sisl/physics/_matrix_phase.c"
       (__pyx_v_info->strides[__pyx_v_i]) = (PyArray_STRIDES(__pyx_v_self)[__pyx_v_i]);
-# 33375 "sisl/physics/_matrix_phase.c"
       (__pyx_v_info->shape[__pyx_v_i]) = (PyArray_DIMS(__pyx_v_self)[__pyx_v_i]);
     }
-# 33385 "sisl/physics/_matrix_phase.c"
     goto __pyx_L9;
   }
-# 33395 "sisl/physics/_matrix_phase.c"
            {
     __pyx_v_info->strides = ((Py_ssize_t *)PyArray_STRIDES(__pyx_v_self));
-# 33405 "sisl/physics/_matrix_phase.c"
     __pyx_v_info->shape = ((Py_ssize_t *)PyArray_DIMS(__pyx_v_self));
   }
   __pyx_L9:;
-# 33416 "sisl/physics/_matrix_phase.c"
   __pyx_v_info->suboffsets = NULL;
-# 33425 "sisl/physics/_matrix_phase.c"
   __pyx_v_info->itemsize = PyArray_ITEMSIZE(__pyx_v_self);
-# 33434 "sisl/physics/_matrix_phase.c"
   __pyx_v_info->readonly = (!(PyArray_ISWRITEABLE(__pyx_v_self) != 0));
-# 33443 "sisl/physics/_matrix_phase.c"
   __pyx_v_f = NULL;
-# 33452 "sisl/physics/_matrix_phase.c"
   __pyx_t_7 = PyArray_DESCR(__pyx_v_self);
   __pyx_t_3 = ((PyObject *)__pyx_t_7);
   __Pyx_INCREF(__pyx_t_3);
   __pyx_v_descr = ((PyArray_Descr *)__pyx_t_3);
   __pyx_t_3 = 0;
-# 33465 "sisl/physics/_matrix_phase.c"
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   __Pyx_GOTREF(__pyx_v_info->obj);
   __Pyx_DECREF(__pyx_v_info->obj);
   __pyx_v_info->obj = ((PyObject *)__pyx_v_self);
-# 33478 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((!(PyDataType_HASFIELDS(__pyx_v_descr) != 0)) != 0);
   if (__pyx_t_1) {
-# 33488 "sisl/physics/_matrix_phase.c"
     __pyx_t_4 = __pyx_v_descr->type_num;
     __pyx_v_t = __pyx_t_4;
-# 33498 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = ((__pyx_v_descr->byteorder == '>') != 0);
     if (!__pyx_t_2) {
       goto __pyx_L15_next_or;
@@ -27619,7 +26796,6 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       goto __pyx_L14_bool_binop_done;
     }
     __pyx_L15_next_or:;
-# 33518 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = ((__pyx_v_descr->byteorder == '<') != 0);
     if (__pyx_t_2) {
     } else {
@@ -27629,87 +26805,66 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
     __pyx_t_2 = ((!(__pyx_v_little_endian != 0)) != 0);
     __pyx_t_1 = __pyx_t_2;
     __pyx_L14_bool_binop_done:;
-# 33535 "sisl/physics/_matrix_phase.c"
     if (unlikely(__pyx_t_1)) {
-# 33544 "sisl/physics/_matrix_phase.c"
       __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 306, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_Raise(__pyx_t_3, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __PYX_ERR(1, 306, __pyx_L1_error)
-# 33557 "sisl/physics/_matrix_phase.c"
     }
-# 33566 "sisl/physics/_matrix_phase.c"
     switch (__pyx_v_t) {
       case NPY_BYTE:
       __pyx_v_f = ((char *)"b");
       break;
       case NPY_UBYTE:
-# 33579 "sisl/physics/_matrix_phase.c"
       __pyx_v_f = ((char *)"B");
       break;
       case NPY_SHORT:
-# 33590 "sisl/physics/_matrix_phase.c"
       __pyx_v_f = ((char *)"h");
       break;
       case NPY_USHORT:
-# 33601 "sisl/physics/_matrix_phase.c"
       __pyx_v_f = ((char *)"H");
       break;
       case NPY_INT:
-# 33612 "sisl/physics/_matrix_phase.c"
       __pyx_v_f = ((char *)"i");
       break;
       case NPY_UINT:
-# 33623 "sisl/physics/_matrix_phase.c"
       __pyx_v_f = ((char *)"I");
       break;
       case NPY_LONG:
-# 33634 "sisl/physics/_matrix_phase.c"
       __pyx_v_f = ((char *)"l");
       break;
       case NPY_ULONG:
-# 33645 "sisl/physics/_matrix_phase.c"
       __pyx_v_f = ((char *)"L");
       break;
       case NPY_LONGLONG:
-# 33656 "sisl/physics/_matrix_phase.c"
       __pyx_v_f = ((char *)"q");
       break;
       case NPY_ULONGLONG:
-# 33667 "sisl/physics/_matrix_phase.c"
       __pyx_v_f = ((char *)"Q");
       break;
       case NPY_FLOAT:
-# 33678 "sisl/physics/_matrix_phase.c"
       __pyx_v_f = ((char *)"f");
       break;
       case NPY_DOUBLE:
-# 33689 "sisl/physics/_matrix_phase.c"
       __pyx_v_f = ((char *)"d");
       break;
       case NPY_LONGDOUBLE:
-# 33700 "sisl/physics/_matrix_phase.c"
       __pyx_v_f = ((char *)"g");
       break;
       case NPY_CFLOAT:
-# 33711 "sisl/physics/_matrix_phase.c"
       __pyx_v_f = ((char *)"Zf");
       break;
       case NPY_CDOUBLE:
-# 33722 "sisl/physics/_matrix_phase.c"
       __pyx_v_f = ((char *)"Zd");
       break;
       case NPY_CLONGDOUBLE:
-# 33733 "sisl/physics/_matrix_phase.c"
       __pyx_v_f = ((char *)"Zg");
       break;
       case NPY_OBJECT:
-# 33744 "sisl/physics/_matrix_phase.c"
       __pyx_v_f = ((char *)"O");
       break;
       default:
-# 33755 "sisl/physics/_matrix_phase.c"
       __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_t); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 325, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_8 = PyUnicode_Format(__pyx_kp_u_unknown_dtype_code_in_numpy_pxd, __pyx_t_3); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 325, __pyx_L1_error)
@@ -27723,27 +26878,18 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
       __PYX_ERR(1, 325, __pyx_L1_error)
       break;
     }
-# 33776 "sisl/physics/_matrix_phase.c"
     __pyx_v_info->format = __pyx_v_f;
-# 33785 "sisl/physics/_matrix_phase.c"
     __pyx_r = 0;
     goto __pyx_L0;
-# 33795 "sisl/physics/_matrix_phase.c"
   }
-# 33804 "sisl/physics/_matrix_phase.c"
            {
     __pyx_v_info->format = ((char *)PyObject_Malloc(0xFF));
-# 33814 "sisl/physics/_matrix_phase.c"
     (__pyx_v_info->format[0]) = '^';
-# 33823 "sisl/physics/_matrix_phase.c"
     __pyx_v_offset = 0;
-# 33832 "sisl/physics/_matrix_phase.c"
     __pyx_t_9 = __pyx_f_5numpy__util_dtypestring(__pyx_v_descr, (__pyx_v_info->format + 1), (__pyx_v_info->format + 0xFF), (&__pyx_v_offset)); if (unlikely(__pyx_t_9 == ((char *)NULL))) __PYX_ERR(1, 332, __pyx_L1_error)
     __pyx_v_f = __pyx_t_9;
-# 33842 "sisl/physics/_matrix_phase.c"
     (__pyx_v_f[0]) = '\x00';
   }
-# 33854 "sisl/physics/_matrix_phase.c"
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -27766,7 +26912,6 @@ static int __pyx_pf_5numpy_7ndarray___getbuffer__(PyArrayObject *__pyx_v_self, P
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 33886 "sisl/physics/_matrix_phase.c"
 static CYTHON_UNUSED void __pyx_pw_5numpy_7ndarray_3__releasebuffer__(PyObject *__pyx_v_self, Py_buffer *__pyx_v_info);
 static CYTHON_UNUSED void __pyx_pw_5numpy_7ndarray_3__releasebuffer__(PyObject *__pyx_v_self, Py_buffer *__pyx_v_info) {
   __Pyx_RefNannyDeclarations
@@ -27781,37 +26926,27 @@ static void __pyx_pf_5numpy_7ndarray_2__releasebuffer__(PyArrayObject *__pyx_v_s
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("__releasebuffer__", 0);
-# 33908 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = (PyArray_HASFIELDS(__pyx_v_self) != 0);
   if (__pyx_t_1) {
-# 33918 "sisl/physics/_matrix_phase.c"
     PyObject_Free(__pyx_v_info->format);
-# 33927 "sisl/physics/_matrix_phase.c"
   }
-# 33936 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = (((sizeof(npy_intp)) != (sizeof(Py_ssize_t))) != 0);
   if (__pyx_t_1) {
-# 33946 "sisl/physics/_matrix_phase.c"
     PyObject_Free(__pyx_v_info->strides);
-# 33955 "sisl/physics/_matrix_phase.c"
   }
-# 33966 "sisl/physics/_matrix_phase.c"
   __Pyx_RefNannyFinishContext();
 }
-# 33977 "sisl/physics/_matrix_phase.c"
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew1(PyObject *__pyx_v_a) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew1", 0);
-# 33990 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyArray_MultiIterNew(1, ((void *)__pyx_v_a)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 822, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 34006 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("numpy.PyArray_MultiIterNew1", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -27821,20 +26956,17 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew1(PyObject *__
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 34024 "sisl/physics/_matrix_phase.c"
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew2(PyObject *__pyx_v_a, PyObject *__pyx_v_b) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew2", 0);
-# 34037 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyArray_MultiIterNew(2, ((void *)__pyx_v_a), ((void *)__pyx_v_b)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 825, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 34053 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("numpy.PyArray_MultiIterNew2", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -27844,20 +26976,17 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew2(PyObject *__
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 34071 "sisl/physics/_matrix_phase.c"
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew3(PyObject *__pyx_v_a, PyObject *__pyx_v_b, PyObject *__pyx_v_c) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew3", 0);
-# 34084 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyArray_MultiIterNew(3, ((void *)__pyx_v_a), ((void *)__pyx_v_b), ((void *)__pyx_v_c)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 828, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 34100 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("numpy.PyArray_MultiIterNew3", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -27867,20 +26996,17 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew3(PyObject *__
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 34118 "sisl/physics/_matrix_phase.c"
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew4(PyObject *__pyx_v_a, PyObject *__pyx_v_b, PyObject *__pyx_v_c, PyObject *__pyx_v_d) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew4", 0);
-# 34131 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyArray_MultiIterNew(4, ((void *)__pyx_v_a), ((void *)__pyx_v_b), ((void *)__pyx_v_c), ((void *)__pyx_v_d)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 831, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 34147 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("numpy.PyArray_MultiIterNew4", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -27890,20 +27016,17 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew4(PyObject *__
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 34165 "sisl/physics/_matrix_phase.c"
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew5(PyObject *__pyx_v_a, PyObject *__pyx_v_b, PyObject *__pyx_v_c, PyObject *__pyx_v_d, PyObject *__pyx_v_e) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("PyArray_MultiIterNew5", 0);
-# 34178 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyArray_MultiIterNew(5, ((void *)__pyx_v_a), ((void *)__pyx_v_b), ((void *)__pyx_v_c), ((void *)__pyx_v_d), ((void *)__pyx_v_e)); if (unlikely(!__pyx_t_1)) __PYX_ERR(1, 834, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 34194 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("numpy.PyArray_MultiIterNew5", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -27913,36 +27036,29 @@ static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyArray_MultiIterNew5(PyObject *__
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 34212 "sisl/physics/_matrix_phase.c"
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_PyDataType_SHAPE(PyArray_Descr *__pyx_v_d) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("PyDataType_SHAPE", 0);
-# 34225 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = (PyDataType_HASSUBARRAY(__pyx_v_d) != 0);
   if (__pyx_t_1) {
-# 34235 "sisl/physics/_matrix_phase.c"
     __Pyx_XDECREF(__pyx_r);
     __Pyx_INCREF(((PyObject*)__pyx_v_d->subarray->shape));
     __pyx_r = ((PyObject*)__pyx_v_d->subarray->shape);
     goto __pyx_L0;
-# 34247 "sisl/physics/_matrix_phase.c"
   }
-# 34256 "sisl/physics/_matrix_phase.c"
            {
     __Pyx_XDECREF(__pyx_r);
     __Pyx_INCREF(__pyx_empty_tuple);
     __pyx_r = __pyx_empty_tuple;
     goto __pyx_L0;
   }
-# 34272 "sisl/physics/_matrix_phase.c"
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 34286 "sisl/physics/_matrix_phase.c"
 static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx_v_descr, char *__pyx_v_f, char *__pyx_v_end, int *__pyx_v_offset) {
   PyArray_Descr *__pyx_v_child = 0;
   int __pyx_v_endian_detector;
@@ -27963,11 +27079,8 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
   long __pyx_t_8;
   char *__pyx_t_9;
   __Pyx_RefNannySetupContext("_util_dtypestring", 0);
-# 34314 "sisl/physics/_matrix_phase.c"
   __pyx_v_endian_detector = 1;
-# 34323 "sisl/physics/_matrix_phase.c"
   __pyx_v_little_endian = ((((char *)(&__pyx_v_endian_detector))[0]) != 0);
-# 34332 "sisl/physics/_matrix_phase.c"
   if (unlikely(__pyx_v_descr->names == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not iterable");
     __PYX_ERR(1, 851, __pyx_L1_error)
@@ -27983,7 +27096,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     #endif
     __Pyx_XDECREF_SET(__pyx_v_childname, __pyx_t_3);
     __pyx_t_3 = 0;
-# 34355 "sisl/physics/_matrix_phase.c"
     if (unlikely(__pyx_v_descr->fields == Py_None)) {
       PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
       __PYX_ERR(1, 852, __pyx_L1_error)
@@ -27993,7 +27105,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     if (!(likely(PyTuple_CheckExact(__pyx_t_3))||((__pyx_t_3) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_t_3)->tp_name), 0))) __PYX_ERR(1, 852, __pyx_L1_error)
     __Pyx_XDECREF_SET(__pyx_v_fields, ((PyObject*)__pyx_t_3));
     __pyx_t_3 = 0;
-# 34372 "sisl/physics/_matrix_phase.c"
     if (likely(__pyx_v_fields != Py_None)) {
       PyObject* sequence = __pyx_v_fields;
       Py_ssize_t size = __Pyx_PySequence_SIZE(sequence);
@@ -28021,7 +27132,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     __pyx_t_3 = 0;
     __Pyx_XDECREF_SET(__pyx_v_new_offset, __pyx_t_4);
     __pyx_t_4 = 0;
-# 34407 "sisl/physics/_matrix_phase.c"
     __pyx_t_4 = __Pyx_PyInt_From_int((__pyx_v_offset[0])); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 855, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
     __pyx_t_3 = PyNumber_Subtract(__pyx_v_new_offset, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 855, __pyx_L1_error)
@@ -28031,15 +27141,12 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_t_6 = ((((__pyx_v_end - __pyx_v_f) - ((int)__pyx_t_5)) < 15) != 0);
     if (unlikely(__pyx_t_6)) {
-# 34424 "sisl/physics/_matrix_phase.c"
       __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__8, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 856, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_Raise(__pyx_t_3, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __PYX_ERR(1, 856, __pyx_L1_error)
-# 34437 "sisl/physics/_matrix_phase.c"
     }
-# 34446 "sisl/physics/_matrix_phase.c"
     __pyx_t_7 = ((__pyx_v_child->byteorder == '>') != 0);
     if (!__pyx_t_7) {
       goto __pyx_L8_next_or;
@@ -28052,7 +27159,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
       goto __pyx_L7_bool_binop_done;
     }
     __pyx_L8_next_or:;
-# 34466 "sisl/physics/_matrix_phase.c"
     __pyx_t_7 = ((__pyx_v_child->byteorder == '<') != 0);
     if (__pyx_t_7) {
     } else {
@@ -28062,17 +27168,13 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
     __pyx_t_7 = ((!(__pyx_v_little_endian != 0)) != 0);
     __pyx_t_6 = __pyx_t_7;
     __pyx_L7_bool_binop_done:;
-# 34483 "sisl/physics/_matrix_phase.c"
     if (unlikely(__pyx_t_6)) {
-# 34492 "sisl/physics/_matrix_phase.c"
       __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__7, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 860, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __Pyx_Raise(__pyx_t_3, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __PYX_ERR(1, 860, __pyx_L1_error)
-# 34505 "sisl/physics/_matrix_phase.c"
     }
-# 34514 "sisl/physics/_matrix_phase.c"
     while (1) {
       __pyx_t_3 = __Pyx_PyInt_From_int((__pyx_v_offset[0])); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 870, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
@@ -28081,37 +27183,27 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
       __pyx_t_6 = __Pyx_PyObject_IsTrue(__pyx_t_4); if (unlikely(__pyx_t_6 < 0)) __PYX_ERR(1, 870, __pyx_L1_error)
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
       if (!__pyx_t_6) break;
-# 34530 "sisl/physics/_matrix_phase.c"
       (__pyx_v_f[0]) = 0x78;
-# 34539 "sisl/physics/_matrix_phase.c"
       __pyx_v_f = (__pyx_v_f + 1);
-# 34548 "sisl/physics/_matrix_phase.c"
       __pyx_t_8 = 0;
       (__pyx_v_offset[__pyx_t_8]) = ((__pyx_v_offset[__pyx_t_8]) + 1);
     }
-# 34559 "sisl/physics/_matrix_phase.c"
     __pyx_t_8 = 0;
     (__pyx_v_offset[__pyx_t_8]) = ((__pyx_v_offset[__pyx_t_8]) + __pyx_v_child->elsize);
-# 34569 "sisl/physics/_matrix_phase.c"
     __pyx_t_6 = ((!(PyDataType_HASFIELDS(__pyx_v_child) != 0)) != 0);
     if (__pyx_t_6) {
-# 34579 "sisl/physics/_matrix_phase.c"
       __pyx_t_4 = __Pyx_PyInt_From_int(__pyx_v_child->type_num); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 878, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_XDECREF_SET(__pyx_v_t, __pyx_t_4);
       __pyx_t_4 = 0;
-# 34591 "sisl/physics/_matrix_phase.c"
       __pyx_t_6 = (((__pyx_v_end - __pyx_v_f) < 5) != 0);
       if (unlikely(__pyx_t_6)) {
-# 34601 "sisl/physics/_matrix_phase.c"
         __pyx_t_4 = __Pyx_PyObject_Call(__pyx_builtin_RuntimeError, __pyx_tuple__9, NULL); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 880, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_4);
         __Pyx_Raise(__pyx_t_4, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
         __PYX_ERR(1, 880, __pyx_L1_error)
-# 34614 "sisl/physics/_matrix_phase.c"
       }
-# 34623 "sisl/physics/_matrix_phase.c"
       __pyx_t_4 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_BYTE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 883, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = PyObject_RichCompare(__pyx_v_t, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 883, __pyx_L1_error)
@@ -28122,7 +27214,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 98;
         goto __pyx_L15;
       }
-# 34641 "sisl/physics/_matrix_phase.c"
       __pyx_t_3 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_UBYTE); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 884, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = PyObject_RichCompare(__pyx_v_t, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 884, __pyx_L1_error)
@@ -28133,7 +27224,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 66;
         goto __pyx_L15;
       }
-# 34659 "sisl/physics/_matrix_phase.c"
       __pyx_t_4 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_SHORT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 885, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = PyObject_RichCompare(__pyx_v_t, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 885, __pyx_L1_error)
@@ -28144,7 +27234,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 0x68;
         goto __pyx_L15;
       }
-# 34677 "sisl/physics/_matrix_phase.c"
       __pyx_t_3 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_USHORT); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 886, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = PyObject_RichCompare(__pyx_v_t, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 886, __pyx_L1_error)
@@ -28155,7 +27244,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 72;
         goto __pyx_L15;
       }
-# 34695 "sisl/physics/_matrix_phase.c"
       __pyx_t_4 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_INT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 887, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = PyObject_RichCompare(__pyx_v_t, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 887, __pyx_L1_error)
@@ -28166,7 +27254,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 0x69;
         goto __pyx_L15;
       }
-# 34713 "sisl/physics/_matrix_phase.c"
       __pyx_t_3 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_UINT); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 888, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = PyObject_RichCompare(__pyx_v_t, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 888, __pyx_L1_error)
@@ -28177,7 +27264,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 73;
         goto __pyx_L15;
       }
-# 34731 "sisl/physics/_matrix_phase.c"
       __pyx_t_4 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_LONG); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 889, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = PyObject_RichCompare(__pyx_v_t, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 889, __pyx_L1_error)
@@ -28188,7 +27274,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 0x6C;
         goto __pyx_L15;
       }
-# 34749 "sisl/physics/_matrix_phase.c"
       __pyx_t_3 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_ULONG); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 890, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = PyObject_RichCompare(__pyx_v_t, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 890, __pyx_L1_error)
@@ -28199,7 +27284,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 76;
         goto __pyx_L15;
       }
-# 34767 "sisl/physics/_matrix_phase.c"
       __pyx_t_4 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_LONGLONG); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 891, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = PyObject_RichCompare(__pyx_v_t, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 891, __pyx_L1_error)
@@ -28210,7 +27294,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 0x71;
         goto __pyx_L15;
       }
-# 34785 "sisl/physics/_matrix_phase.c"
       __pyx_t_3 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_ULONGLONG); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 892, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = PyObject_RichCompare(__pyx_v_t, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 892, __pyx_L1_error)
@@ -28221,7 +27304,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 81;
         goto __pyx_L15;
       }
-# 34803 "sisl/physics/_matrix_phase.c"
       __pyx_t_4 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_FLOAT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 893, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = PyObject_RichCompare(__pyx_v_t, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 893, __pyx_L1_error)
@@ -28232,7 +27314,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 0x66;
         goto __pyx_L15;
       }
-# 34821 "sisl/physics/_matrix_phase.c"
       __pyx_t_3 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_DOUBLE); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 894, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = PyObject_RichCompare(__pyx_v_t, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 894, __pyx_L1_error)
@@ -28243,7 +27324,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 0x64;
         goto __pyx_L15;
       }
-# 34839 "sisl/physics/_matrix_phase.c"
       __pyx_t_4 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_LONGDOUBLE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 895, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = PyObject_RichCompare(__pyx_v_t, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 895, __pyx_L1_error)
@@ -28254,7 +27334,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 0x67;
         goto __pyx_L15;
       }
-# 34857 "sisl/physics/_matrix_phase.c"
       __pyx_t_3 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_CFLOAT); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 896, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = PyObject_RichCompare(__pyx_v_t, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 896, __pyx_L1_error)
@@ -28267,7 +27346,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         __pyx_v_f = (__pyx_v_f + 1);
         goto __pyx_L15;
       }
-# 34877 "sisl/physics/_matrix_phase.c"
       __pyx_t_4 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_CDOUBLE); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 897, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = PyObject_RichCompare(__pyx_v_t, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 897, __pyx_L1_error)
@@ -28280,7 +27358,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         __pyx_v_f = (__pyx_v_f + 1);
         goto __pyx_L15;
       }
-# 34897 "sisl/physics/_matrix_phase.c"
       __pyx_t_3 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_CLONGDOUBLE); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 898, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = PyObject_RichCompare(__pyx_v_t, __pyx_t_3, Py_EQ); __Pyx_XGOTREF(__pyx_t_4); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 898, __pyx_L1_error)
@@ -28293,7 +27370,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         __pyx_v_f = (__pyx_v_f + 1);
         goto __pyx_L15;
       }
-# 34917 "sisl/physics/_matrix_phase.c"
       __pyx_t_4 = __Pyx_PyInt_From_enum__NPY_TYPES(NPY_OBJECT); if (unlikely(!__pyx_t_4)) __PYX_ERR(1, 899, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __pyx_t_3 = PyObject_RichCompare(__pyx_v_t, __pyx_t_4, Py_EQ); __Pyx_XGOTREF(__pyx_t_3); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 899, __pyx_L1_error)
@@ -28304,7 +27380,6 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         (__pyx_v_f[0]) = 79;
         goto __pyx_L15;
       }
-# 34935 "sisl/physics/_matrix_phase.c"
                {
         __pyx_t_3 = __Pyx_PyUnicode_FormatSafe(__pyx_kp_u_unknown_dtype_code_in_numpy_pxd, __pyx_v_t); if (unlikely(!__pyx_t_3)) __PYX_ERR(1, 901, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_3);
@@ -28316,24 +27391,18 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
         __PYX_ERR(1, 901, __pyx_L1_error)
       }
       __pyx_L15:;
-# 34954 "sisl/physics/_matrix_phase.c"
       __pyx_v_f = (__pyx_v_f + 1);
-# 34963 "sisl/physics/_matrix_phase.c"
       goto __pyx_L13;
     }
-# 34973 "sisl/physics/_matrix_phase.c"
              {
       __pyx_t_9 = __pyx_f_5numpy__util_dtypestring(__pyx_v_child, __pyx_v_f, __pyx_v_end, __pyx_v_offset); if (unlikely(__pyx_t_9 == ((char *)NULL))) __PYX_ERR(1, 906, __pyx_L1_error)
       __pyx_v_f = __pyx_t_9;
     }
     __pyx_L13:;
-# 34986 "sisl/physics/_matrix_phase.c"
   }
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 34996 "sisl/physics/_matrix_phase.c"
   __pyx_r = __pyx_v_f;
   goto __pyx_L0;
-# 35008 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_3);
@@ -28349,47 +27418,35 @@ static CYTHON_INLINE char *__pyx_f_5numpy__util_dtypestring(PyArray_Descr *__pyx
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 35032 "sisl/physics/_matrix_phase.c"
 static CYTHON_INLINE void __pyx_f_5numpy_set_array_base(PyArrayObject *__pyx_v_arr, PyObject *__pyx_v_base) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("set_array_base", 0);
-# 35043 "sisl/physics/_matrix_phase.c"
   Py_INCREF(__pyx_v_base);
-# 35052 "sisl/physics/_matrix_phase.c"
   (void)(PyArray_SetBaseObject(__pyx_v_arr, __pyx_v_base));
-# 35063 "sisl/physics/_matrix_phase.c"
   __Pyx_RefNannyFinishContext();
 }
-# 35074 "sisl/physics/_matrix_phase.c"
 static CYTHON_INLINE PyObject *__pyx_f_5numpy_get_array_base(PyArrayObject *__pyx_v_arr) {
   PyObject *__pyx_v_base;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("get_array_base", 0);
-# 35088 "sisl/physics/_matrix_phase.c"
   __pyx_v_base = PyArray_BASE(__pyx_v_arr);
-# 35097 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((__pyx_v_base == NULL) != 0);
   if (__pyx_t_1) {
-# 35107 "sisl/physics/_matrix_phase.c"
     __Pyx_XDECREF(__pyx_r);
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
-# 35118 "sisl/physics/_matrix_phase.c"
   }
-# 35127 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_base));
   __pyx_r = ((PyObject *)__pyx_v_base);
   goto __pyx_L0;
-# 35141 "sisl/physics/_matrix_phase.c"
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 35155 "sisl/physics/_matrix_phase.c"
 static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -28402,7 +27459,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
   PyObject *__pyx_t_7 = NULL;
   PyObject *__pyx_t_8 = NULL;
   __Pyx_RefNannySetupContext("import_array", 0);
-# 35175 "sisl/physics/_matrix_phase.c"
   {
     __Pyx_PyThreadState_declare
     __Pyx_PyThreadState_assign
@@ -28411,16 +27467,13 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
     __Pyx_XGOTREF(__pyx_t_2);
     __Pyx_XGOTREF(__pyx_t_3);
              {
-# 35191 "sisl/physics/_matrix_phase.c"
       __pyx_t_4 = _import_array(); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(1, 1036, __pyx_L3_error)
-# 35200 "sisl/physics/_matrix_phase.c"
     }
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     goto __pyx_L8_try_end;
     __pyx_L3_error:;
-# 35214 "sisl/physics/_matrix_phase.c"
     __pyx_t_4 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
     if (__pyx_t_4) {
       __Pyx_AddTraceback("numpy.import_array", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -28428,7 +27481,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GOTREF(__pyx_t_7);
-# 35229 "sisl/physics/_matrix_phase.c"
       __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__10, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 1038, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_Raise(__pyx_t_8, 0, 0, 0);
@@ -28437,7 +27489,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
     }
     goto __pyx_L5_except_error;
     __pyx_L5_except_error:;
-# 35245 "sisl/physics/_matrix_phase.c"
     __Pyx_XGIVEREF(__pyx_t_1);
     __Pyx_XGIVEREF(__pyx_t_2);
     __Pyx_XGIVEREF(__pyx_t_3);
@@ -28445,7 +27496,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
     goto __pyx_L1_error;
     __pyx_L8_try_end:;
   }
-# 35262 "sisl/physics/_matrix_phase.c"
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -28459,7 +27509,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_array(void) {
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 35284 "sisl/physics/_matrix_phase.c"
 static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -28472,7 +27521,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
   PyObject *__pyx_t_7 = NULL;
   PyObject *__pyx_t_8 = NULL;
   __Pyx_RefNannySetupContext("import_umath", 0);
-# 35304 "sisl/physics/_matrix_phase.c"
   {
     __Pyx_PyThreadState_declare
     __Pyx_PyThreadState_assign
@@ -28481,16 +27529,13 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
     __Pyx_XGOTREF(__pyx_t_2);
     __Pyx_XGOTREF(__pyx_t_3);
              {
-# 35320 "sisl/physics/_matrix_phase.c"
       __pyx_t_4 = _import_umath(); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(1, 1042, __pyx_L3_error)
-# 35329 "sisl/physics/_matrix_phase.c"
     }
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
     goto __pyx_L8_try_end;
     __pyx_L3_error:;
-# 35343 "sisl/physics/_matrix_phase.c"
     __pyx_t_4 = __Pyx_PyErr_ExceptionMatches(((PyObject *)(&((PyTypeObject*)PyExc_Exception)[0])));
     if (__pyx_t_4) {
       __Pyx_AddTraceback("numpy.import_umath", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -28498,7 +27543,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_GOTREF(__pyx_t_7);
-# 35358 "sisl/physics/_matrix_phase.c"
       __pyx_t_8 = __Pyx_PyObject_Call(__pyx_builtin_ImportError, __pyx_tuple__11, NULL); if (unlikely(!__pyx_t_8)) __PYX_ERR(1, 1044, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_8);
       __Pyx_Raise(__pyx_t_8, 0, 0, 0);
@@ -28507,7 +27551,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
     }
     goto __pyx_L5_except_error;
     __pyx_L5_except_error:;
-# 35374 "sisl/physics/_matrix_phase.c"
     __Pyx_XGIVEREF(__pyx_t_1);
     __Pyx_XGIVEREF(__pyx_t_2);
     __Pyx_XGIVEREF(__pyx_t_3);
@@ -28515,7 +27558,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
     goto __pyx_L1_error;
     __pyx_L8_try_end:;
   }
-# 35391 "sisl/physics/_matrix_phase.c"
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -28529,7 +27571,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_umath(void) {
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 35413 "sisl/physics/_matrix_phase.c"
 static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -28542,7 +27583,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
   PyObject *__pyx_t_7 = NULL;
   PyObject *__pyx_t_8 = NULL;
   __Pyx_RefNannySetupContext("import_ufunc", 0);
-# 35433 "sisl/physics/_matrix_phase.c"
   {
     __Pyx_PyThreadState_declare
     __Pyx_PyThreadState_assign
@@ -28551,9 +27591,7 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
     __Pyx_XGOTREF(__pyx_t_2);
     __Pyx_XGOTREF(__pyx_t_3);
              {
-# 35449 "sisl/physics/_matrix_phase.c"
       __pyx_t_4 = _import_umath(); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(1, 1048, __pyx_L3_error)
-# 35458 "sisl/physics/_matrix_phase.c"
     }
     __Pyx_XDECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_XDECREF(__pyx_t_2); __pyx_t_2 = 0;
@@ -28588,7 +27626,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
     }
     goto __pyx_L5_except_error;
     __pyx_L5_except_error:;
-# 35500 "sisl/physics/_matrix_phase.c"
     __Pyx_XGIVEREF(__pyx_t_1);
     __Pyx_XGIVEREF(__pyx_t_2);
     __Pyx_XGIVEREF(__pyx_t_3);
@@ -28596,7 +27633,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
     goto __pyx_L1_error;
     __pyx_L8_try_end:;
   }
-# 35517 "sisl/physics/_matrix_phase.c"
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -28610,7 +27646,6 @@ static CYTHON_INLINE int __pyx_f_5numpy_import_ufunc(void) {
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 35540 "sisl/physics/_matrix_phase.c"
 static int __pyx_array___cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds);
 static int __pyx_array___cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_shape = 0;
@@ -28695,7 +27730,6 @@ static int __pyx_array___cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, P
     if (values[4]) {
       __pyx_v_allocate_buffer = __Pyx_PyObject_IsTrue(values[4]); if (unlikely((__pyx_v_allocate_buffer == (int)-1) && PyErr_Occurred())) __PYX_ERR(2, 123, __pyx_L3_error)
     } else {
-# 35632 "sisl/physics/_matrix_phase.c"
       __pyx_v_allocate_buffer = ((int)1);
     }
   }
@@ -28712,7 +27746,6 @@ static int __pyx_array___cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, P
     PyErr_Format(PyExc_TypeError, "Argument '%.200s' must not be None", "format"); __PYX_ERR(2, 122, __pyx_L1_error)
   }
   __pyx_r = __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(((struct __pyx_array_obj *)__pyx_v_self), __pyx_v_shape, __pyx_v_itemsize, __pyx_v_format, __pyx_v_mode, __pyx_v_allocate_buffer);
-# 35658 "sisl/physics/_matrix_phase.c"
   goto __pyx_L0;
   __pyx_L1_error:;
   __pyx_r = -1;
@@ -28742,42 +27775,32 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
   Py_ssize_t __pyx_t_11;
   __Pyx_RefNannySetupContext("__cinit__", 0);
   __Pyx_INCREF(__pyx_v_format);
-# 35695 "sisl/physics/_matrix_phase.c"
   if (unlikely(__pyx_v_shape == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "object of type 'NoneType' has no len()");
     __PYX_ERR(2, 129, __pyx_L1_error)
   }
   __pyx_t_1 = PyTuple_GET_SIZE(__pyx_v_shape); if (unlikely(__pyx_t_1 == ((Py_ssize_t)-1))) __PYX_ERR(2, 129, __pyx_L1_error)
   __pyx_v_self->ndim = ((int)__pyx_t_1);
-# 35709 "sisl/physics/_matrix_phase.c"
   __pyx_v_self->itemsize = __pyx_v_itemsize;
-# 35718 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = ((!(__pyx_v_self->ndim != 0)) != 0);
   if (unlikely(__pyx_t_2)) {
-# 35728 "sisl/physics/_matrix_phase.c"
     __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__12, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 133, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __PYX_ERR(2, 133, __pyx_L1_error)
-# 35741 "sisl/physics/_matrix_phase.c"
   }
-# 35750 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = ((__pyx_v_itemsize <= 0) != 0);
   if (unlikely(__pyx_t_2)) {
-# 35760 "sisl/physics/_matrix_phase.c"
     __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__13, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 136, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __PYX_ERR(2, 136, __pyx_L1_error)
-# 35773 "sisl/physics/_matrix_phase.c"
   }
-# 35782 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = PyBytes_Check(__pyx_v_format);
   __pyx_t_4 = ((!(__pyx_t_2 != 0)) != 0);
   if (__pyx_t_4) {
-# 35793 "sisl/physics/_matrix_phase.c"
     __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_format, __pyx_n_s_encode); if (unlikely(!__pyx_t_5)) __PYX_ERR(2, 139, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __pyx_t_6 = NULL;
@@ -28797,9 +27820,7 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __Pyx_DECREF_SET(__pyx_v_format, __pyx_t_3);
     __pyx_t_3 = 0;
-# 35820 "sisl/physics/_matrix_phase.c"
   }
-# 35829 "sisl/physics/_matrix_phase.c"
   if (!(likely(PyBytes_CheckExact(__pyx_v_format))||((__pyx_v_format) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "bytes", Py_TYPE(__pyx_v_format)->tp_name), 0))) __PYX_ERR(2, 140, __pyx_L1_error)
   __pyx_t_3 = __pyx_v_format;
   __Pyx_INCREF(__pyx_t_3);
@@ -28808,29 +27829,22 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
   __Pyx_DECREF(__pyx_v_self->_format);
   __pyx_v_self->_format = ((PyObject*)__pyx_t_3);
   __pyx_t_3 = 0;
-# 35845 "sisl/physics/_matrix_phase.c"
   if (unlikely(__pyx_v_self->_format == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "expected bytes, NoneType found");
     __PYX_ERR(2, 141, __pyx_L1_error)
   }
   __pyx_t_7 = __Pyx_PyBytes_AsWritableString(__pyx_v_self->_format); if (unlikely((!__pyx_t_7) && PyErr_Occurred())) __PYX_ERR(2, 141, __pyx_L1_error)
   __pyx_v_self->format = __pyx_t_7;
-# 35859 "sisl/physics/_matrix_phase.c"
   __pyx_v_self->_shape = ((Py_ssize_t *)PyObject_Malloc((((sizeof(Py_ssize_t)) * __pyx_v_self->ndim) * 2)));
-# 35868 "sisl/physics/_matrix_phase.c"
   __pyx_v_self->_strides = (__pyx_v_self->_shape + __pyx_v_self->ndim);
-# 35877 "sisl/physics/_matrix_phase.c"
   __pyx_t_4 = ((!(__pyx_v_self->_shape != 0)) != 0);
   if (unlikely(__pyx_t_4)) {
-# 35887 "sisl/physics/_matrix_phase.c"
     __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__14, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 148, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __PYX_ERR(2, 148, __pyx_L1_error)
-# 35900 "sisl/physics/_matrix_phase.c"
   }
-# 35909 "sisl/physics/_matrix_phase.c"
   __pyx_t_8 = 0;
   __pyx_t_3 = __pyx_v_shape; __Pyx_INCREF(__pyx_t_3); __pyx_t_1 = 0;
   for (;;) {
@@ -28846,10 +27860,8 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
     __pyx_v_dim = __pyx_t_9;
     __pyx_v_idx = __pyx_t_8;
     __pyx_t_8 = (__pyx_t_8 + 1);
-# 35932 "sisl/physics/_matrix_phase.c"
     __pyx_t_4 = ((__pyx_v_dim <= 0) != 0);
     if (unlikely(__pyx_t_4)) {
-# 35942 "sisl/physics/_matrix_phase.c"
       __pyx_t_5 = __Pyx_PyInt_From_int(__pyx_v_idx); if (unlikely(!__pyx_t_5)) __PYX_ERR(2, 153, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __pyx_t_6 = PyInt_FromSsize_t(__pyx_v_dim); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 153, __pyx_L1_error)
@@ -28871,42 +27883,30 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
       __Pyx_Raise(__pyx_t_10, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       __PYX_ERR(2, 153, __pyx_L1_error)
-# 35971 "sisl/physics/_matrix_phase.c"
     }
-# 35980 "sisl/physics/_matrix_phase.c"
     (__pyx_v_self->_shape[__pyx_v_idx]) = __pyx_v_dim;
-# 35989 "sisl/physics/_matrix_phase.c"
   }
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-# 35999 "sisl/physics/_matrix_phase.c"
   __pyx_t_4 = (__Pyx_PyString_Equals(__pyx_v_mode, __pyx_n_s_fortran, Py_EQ)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(2, 157, __pyx_L1_error)
   if (__pyx_t_4) {
-# 36009 "sisl/physics/_matrix_phase.c"
     __pyx_v_order = 'F';
-# 36018 "sisl/physics/_matrix_phase.c"
     __Pyx_INCREF(__pyx_n_u_fortran);
     __Pyx_GIVEREF(__pyx_n_u_fortran);
     __Pyx_GOTREF(__pyx_v_self->mode);
     __Pyx_DECREF(__pyx_v_self->mode);
     __pyx_v_self->mode = __pyx_n_u_fortran;
-# 36031 "sisl/physics/_matrix_phase.c"
     goto __pyx_L10;
   }
-# 36041 "sisl/physics/_matrix_phase.c"
   __pyx_t_4 = (__Pyx_PyString_Equals(__pyx_v_mode, __pyx_n_s_c, Py_EQ)); if (unlikely(__pyx_t_4 < 0)) __PYX_ERR(2, 160, __pyx_L1_error)
   if (likely(__pyx_t_4)) {
-# 36051 "sisl/physics/_matrix_phase.c"
     __pyx_v_order = 'C';
-# 36060 "sisl/physics/_matrix_phase.c"
     __Pyx_INCREF(__pyx_n_u_c);
     __Pyx_GIVEREF(__pyx_n_u_c);
     __Pyx_GOTREF(__pyx_v_self->mode);
     __Pyx_DECREF(__pyx_v_self->mode);
     __pyx_v_self->mode = __pyx_n_u_c;
-# 36073 "sisl/physics/_matrix_phase.c"
     goto __pyx_L10;
   }
-# 36083 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_3 = __Pyx_PyString_FormatSafe(__pyx_kp_s_Invalid_mode_expected_c_or_fortr, __pyx_v_mode); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 164, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
@@ -28918,37 +27918,26 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
     __PYX_ERR(2, 164, __pyx_L1_error)
   }
   __pyx_L10:;
-# 36102 "sisl/physics/_matrix_phase.c"
   __pyx_v_self->len = __pyx_fill_contig_strides_array(__pyx_v_self->_shape, __pyx_v_self->_strides, __pyx_v_itemsize, __pyx_v_self->ndim, __pyx_v_order);
-# 36111 "sisl/physics/_matrix_phase.c"
   __pyx_v_self->free_data = __pyx_v_allocate_buffer;
-# 36120 "sisl/physics/_matrix_phase.c"
   __pyx_t_10 = PyObject_RichCompare(__pyx_v_format, __pyx_n_b_O, Py_EQ); __Pyx_XGOTREF(__pyx_t_10); if (unlikely(!__pyx_t_10)) __PYX_ERR(2, 170, __pyx_L1_error)
   __pyx_t_4 = __Pyx_PyObject_IsTrue(__pyx_t_10); if (unlikely((__pyx_t_4 == (int)-1) && PyErr_Occurred())) __PYX_ERR(2, 170, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
   __pyx_v_self->dtype_is_object = __pyx_t_4;
-# 36132 "sisl/physics/_matrix_phase.c"
   __pyx_t_4 = (__pyx_v_allocate_buffer != 0);
   if (__pyx_t_4) {
-# 36142 "sisl/physics/_matrix_phase.c"
     __pyx_v_self->data = ((char *)malloc(__pyx_v_self->len));
-# 36151 "sisl/physics/_matrix_phase.c"
     __pyx_t_4 = ((!(__pyx_v_self->data != 0)) != 0);
     if (unlikely(__pyx_t_4)) {
-# 36161 "sisl/physics/_matrix_phase.c"
       __pyx_t_10 = __Pyx_PyObject_Call(__pyx_builtin_MemoryError, __pyx_tuple__15, NULL); if (unlikely(!__pyx_t_10)) __PYX_ERR(2, 176, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_10);
       __Pyx_Raise(__pyx_t_10, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
       __PYX_ERR(2, 176, __pyx_L1_error)
-# 36174 "sisl/physics/_matrix_phase.c"
     }
-# 36183 "sisl/physics/_matrix_phase.c"
     __pyx_t_4 = (__pyx_v_self->dtype_is_object != 0);
     if (__pyx_t_4) {
-# 36193 "sisl/physics/_matrix_phase.c"
       __pyx_v_p = ((PyObject **)__pyx_v_self->data);
-# 36202 "sisl/physics/_matrix_phase.c"
       if (unlikely(__pyx_v_itemsize == 0)) {
         PyErr_SetString(PyExc_ZeroDivisionError, "integer division or modulo by zero");
         __PYX_ERR(2, 180, __pyx_L1_error)
@@ -28961,16 +27950,11 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
       __pyx_t_9 = __pyx_t_1;
       for (__pyx_t_11 = 0; __pyx_t_11 < __pyx_t_9; __pyx_t_11+=1) {
         __pyx_v_i = __pyx_t_11;
-# 36222 "sisl/physics/_matrix_phase.c"
         (__pyx_v_p[__pyx_v_i]) = Py_None;
-# 36231 "sisl/physics/_matrix_phase.c"
         Py_INCREF(Py_None);
       }
-# 36241 "sisl/physics/_matrix_phase.c"
     }
-# 36250 "sisl/physics/_matrix_phase.c"
   }
-# 36261 "sisl/physics/_matrix_phase.c"
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -28985,7 +27969,6 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array___cinit__(struct __
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 36285 "sisl/physics/_matrix_phase.c"
 static CYTHON_UNUSED int __pyx_array_getbuffer(PyObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags);
 static CYTHON_UNUSED int __pyx_array_getbuffer(PyObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags) {
   int __pyx_r;
@@ -29016,80 +27999,56 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array_2__getbuffer__(stru
   __Pyx_RefNannySetupContext("__getbuffer__", 0);
   __pyx_v_info->obj = Py_None; __Pyx_INCREF(Py_None);
   __Pyx_GIVEREF(__pyx_v_info->obj);
-# 36323 "sisl/physics/_matrix_phase.c"
   __pyx_v_bufmode = -1;
-# 36332 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = (__Pyx_PyUnicode_Equals(__pyx_v_self->mode, __pyx_n_u_c, Py_EQ)); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(2, 187, __pyx_L1_error)
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
-# 36343 "sisl/physics/_matrix_phase.c"
     __pyx_v_bufmode = (PyBUF_C_CONTIGUOUS | PyBUF_ANY_CONTIGUOUS);
-# 36352 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 36362 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = (__Pyx_PyUnicode_Equals(__pyx_v_self->mode, __pyx_n_u_fortran, Py_EQ)); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(2, 189, __pyx_L1_error)
   __pyx_t_1 = (__pyx_t_2 != 0);
   if (__pyx_t_1) {
-# 36373 "sisl/physics/_matrix_phase.c"
     __pyx_v_bufmode = (PyBUF_F_CONTIGUOUS | PyBUF_ANY_CONTIGUOUS);
-# 36382 "sisl/physics/_matrix_phase.c"
   }
   __pyx_L3:;
-# 36392 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((!((__pyx_v_flags & __pyx_v_bufmode) != 0)) != 0);
   if (unlikely(__pyx_t_1)) {
-# 36402 "sisl/physics/_matrix_phase.c"
     __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__16, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 192, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __PYX_ERR(2, 192, __pyx_L1_error)
-# 36415 "sisl/physics/_matrix_phase.c"
   }
-# 36424 "sisl/physics/_matrix_phase.c"
   __pyx_t_4 = __pyx_v_self->data;
   __pyx_v_info->buf = __pyx_t_4;
-# 36434 "sisl/physics/_matrix_phase.c"
   __pyx_t_5 = __pyx_v_self->len;
   __pyx_v_info->len = __pyx_t_5;
-# 36444 "sisl/physics/_matrix_phase.c"
   __pyx_t_6 = __pyx_v_self->ndim;
   __pyx_v_info->ndim = __pyx_t_6;
-# 36454 "sisl/physics/_matrix_phase.c"
   __pyx_t_7 = __pyx_v_self->_shape;
   __pyx_v_info->shape = __pyx_t_7;
-# 36464 "sisl/physics/_matrix_phase.c"
   __pyx_t_7 = __pyx_v_self->_strides;
   __pyx_v_info->strides = __pyx_t_7;
-# 36474 "sisl/physics/_matrix_phase.c"
   __pyx_v_info->suboffsets = NULL;
-# 36483 "sisl/physics/_matrix_phase.c"
   __pyx_t_5 = __pyx_v_self->itemsize;
   __pyx_v_info->itemsize = __pyx_t_5;
-# 36493 "sisl/physics/_matrix_phase.c"
   __pyx_v_info->readonly = 0;
-# 36502 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((__pyx_v_flags & PyBUF_FORMAT) != 0);
   if (__pyx_t_1) {
-# 36512 "sisl/physics/_matrix_phase.c"
     __pyx_t_4 = __pyx_v_self->format;
     __pyx_v_info->format = __pyx_t_4;
-# 36522 "sisl/physics/_matrix_phase.c"
     goto __pyx_L5;
   }
-# 36532 "sisl/physics/_matrix_phase.c"
            {
     __pyx_v_info->format = NULL;
   }
   __pyx_L5:;
-# 36544 "sisl/physics/_matrix_phase.c"
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   __Pyx_GOTREF(__pyx_v_info->obj);
   __Pyx_DECREF(__pyx_v_info->obj);
   __pyx_v_info->obj = ((PyObject *)__pyx_v_self);
-# 36559 "sisl/physics/_matrix_phase.c"
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -29110,7 +28069,6 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array_2__getbuffer__(stru
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 36589 "sisl/physics/_matrix_phase.c"
 static void __pyx_array___dealloc__(PyObject *__pyx_v_self);
 static void __pyx_array___dealloc__(PyObject *__pyx_v_self) {
   __Pyx_RefNannyDeclarations
@@ -29125,35 +28083,23 @@ static void __pyx_array___pyx_pf_15View_dot_MemoryView_5array_4__dealloc__(struc
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("__dealloc__", 0);
-# 36611 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((__pyx_v_self->callback_free_data != NULL) != 0);
   if (__pyx_t_1) {
-# 36621 "sisl/physics/_matrix_phase.c"
     __pyx_v_self->callback_free_data(__pyx_v_self->data);
-# 36630 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 36640 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = (__pyx_v_self->free_data != 0);
   if (__pyx_t_1) {
-# 36650 "sisl/physics/_matrix_phase.c"
     __pyx_t_1 = (__pyx_v_self->dtype_is_object != 0);
     if (__pyx_t_1) {
-# 36660 "sisl/physics/_matrix_phase.c"
       __pyx_memoryview_refcount_objects_in_slice(__pyx_v_self->data, __pyx_v_self->_shape, __pyx_v_self->_strides, __pyx_v_self->ndim, 0);
-# 36669 "sisl/physics/_matrix_phase.c"
     }
-# 36678 "sisl/physics/_matrix_phase.c"
     free(__pyx_v_self->data);
-# 36687 "sisl/physics/_matrix_phase.c"
   }
   __pyx_L3:;
-# 36697 "sisl/physics/_matrix_phase.c"
   PyObject_Free(__pyx_v_self->_shape);
-# 36708 "sisl/physics/_matrix_phase.c"
   __Pyx_RefNannyFinishContext();
 }
-# 36720 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw_15View_dot_MemoryView_5array_7memview_1__get__(PyObject *__pyx_v_self);
 static PyObject *__pyx_pw_15View_dot_MemoryView_5array_7memview_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -29171,14 +28117,12 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_5array_7memview___get__(struct _
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
-# 36745 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = ((struct __pyx_vtabstruct_array *)__pyx_v_self->__pyx_vtab)->get_memview(__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 223, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 36761 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("View.MemoryView.array.memview.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -29188,7 +28132,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_5array_7memview___get__(struct _
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 36779 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_array_get_memview(struct __pyx_array_obj *__pyx_v_self) {
   int __pyx_v_flags;
   PyObject *__pyx_r = NULL;
@@ -29197,9 +28140,7 @@ static PyObject *__pyx_array_get_memview(struct __pyx_array_obj *__pyx_v_self) {
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("get_memview", 0);
-# 36795 "sisl/physics/_matrix_phase.c"
   __pyx_v_flags = ((PyBUF_ANY_CONTIGUOUS | PyBUF_FORMAT) | PyBUF_WRITABLE);
-# 36804 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_flags); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 228, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -29222,7 +28163,6 @@ static PyObject *__pyx_array_get_memview(struct __pyx_array_obj *__pyx_v_self) {
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
-# 36836 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -29234,7 +28174,6 @@ static PyObject *__pyx_array_get_memview(struct __pyx_array_obj *__pyx_v_self) {
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 36857 "sisl/physics/_matrix_phase.c"
 static Py_ssize_t __pyx_array___len__(PyObject *__pyx_v_self);
 static Py_ssize_t __pyx_array___len__(PyObject *__pyx_v_self) {
   Py_ssize_t __pyx_r;
@@ -29251,15 +28190,12 @@ static Py_ssize_t __pyx_array___pyx_pf_15View_dot_MemoryView_5array_6__len__(str
   Py_ssize_t __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__len__", 0);
-# 36881 "sisl/physics/_matrix_phase.c"
   __pyx_r = (__pyx_v_self->_shape[0]);
   goto __pyx_L0;
-# 36893 "sisl/physics/_matrix_phase.c"
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 36907 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_array___getattr__(PyObject *__pyx_v_self, PyObject *__pyx_v_attr);
 static PyObject *__pyx_array___getattr__(PyObject *__pyx_v_self, PyObject *__pyx_v_attr) {
   PyObject *__pyx_r = 0;
@@ -29278,7 +28214,6 @@ static PyObject *__pyx_array___pyx_pf_15View_dot_MemoryView_5array_8__getattr__(
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__getattr__", 0);
-# 36933 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_memview); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 234, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -29288,7 +28223,6 @@ static PyObject *__pyx_array___pyx_pf_15View_dot_MemoryView_5array_8__getattr__(
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
-# 36952 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -29299,7 +28233,6 @@ static PyObject *__pyx_array___pyx_pf_15View_dot_MemoryView_5array_8__getattr__(
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 36972 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_array___getitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_item);
 static PyObject *__pyx_array___getitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_item) {
   PyObject *__pyx_r = 0;
@@ -29318,7 +28251,6 @@ static PyObject *__pyx_array___pyx_pf_15View_dot_MemoryView_5array_10__getitem__
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__getitem__", 0);
-# 36998 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_memview); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 237, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -29328,7 +28260,6 @@ static PyObject *__pyx_array___pyx_pf_15View_dot_MemoryView_5array_10__getitem__
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
-# 37017 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -29339,7 +28270,6 @@ static PyObject *__pyx_array___pyx_pf_15View_dot_MemoryView_5array_10__getitem__
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 37037 "sisl/physics/_matrix_phase.c"
 static int __pyx_array___setitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_item, PyObject *__pyx_v_value);
 static int __pyx_array___setitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_item, PyObject *__pyx_v_value) {
   int __pyx_r;
@@ -29357,12 +28287,10 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array_12__setitem__(struc
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__setitem__", 0);
-# 37062 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_memview); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 240, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (unlikely(PyObject_SetItem(__pyx_t_1, __pyx_v_item, __pyx_v_value) < 0)) __PYX_ERR(2, 240, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 37076 "sisl/physics/_matrix_phase.c"
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -29373,7 +28301,6 @@ static int __pyx_array___pyx_pf_15View_dot_MemoryView_5array_12__setitem__(struc
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 37094 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw___pyx_array_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused);
 static PyObject *__pyx_pw___pyx_array_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
@@ -29403,7 +28330,6 @@ static PyObject *__pyx_pf___pyx_array___reduce_cython__(CYTHON_UNUSED struct __p
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(2, 2, __pyx_L1_error)
-# 37131 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("View.MemoryView.array.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -29412,7 +28338,6 @@ static PyObject *__pyx_pf___pyx_array___reduce_cython__(CYTHON_UNUSED struct __p
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 37148 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw___pyx_array_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state);
 static PyObject *__pyx_pw___pyx_array_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
@@ -29441,7 +28366,6 @@ static PyObject *__pyx_pf___pyx_array_2__setstate_cython__(CYTHON_UNUSED struct 
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(2, 4, __pyx_L1_error)
-# 37185 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("View.MemoryView.array.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -29450,7 +28374,6 @@ static PyObject *__pyx_pf___pyx_array_2__setstate_cython__(CYTHON_UNUSED struct 
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 37202 "sisl/physics/_matrix_phase.c"
 static struct __pyx_array_obj *__pyx_array_new(PyObject *__pyx_v_shape, Py_ssize_t __pyx_v_itemsize, char *__pyx_v_format, char *__pyx_v_mode, char *__pyx_v_buf) {
   struct __pyx_array_obj *__pyx_v_result = 0;
   struct __pyx_array_obj *__pyx_r = NULL;
@@ -29461,10 +28384,8 @@ static struct __pyx_array_obj *__pyx_array_new(PyObject *__pyx_v_shape, Py_ssize
   PyObject *__pyx_t_4 = NULL;
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("array_cwrapper", 0);
-# 37220 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((__pyx_v_buf == NULL) != 0);
   if (__pyx_t_1) {
-# 37230 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = PyInt_FromSsize_t(__pyx_v_itemsize); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 249, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_3 = __Pyx_PyBytes_FromString(__pyx_v_format); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 249, __pyx_L1_error)
@@ -29490,10 +28411,8 @@ static struct __pyx_array_obj *__pyx_array_new(PyObject *__pyx_v_shape, Py_ssize
     __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
     __pyx_v_result = ((struct __pyx_array_obj *)__pyx_t_4);
     __pyx_t_4 = 0;
-# 37263 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 37273 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_4 = PyInt_FromSsize_t(__pyx_v_itemsize); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 251, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
@@ -29515,27 +28434,22 @@ static struct __pyx_array_obj *__pyx_array_new(PyObject *__pyx_v_shape, Py_ssize
     __pyx_t_4 = 0;
     __pyx_t_5 = 0;
     __pyx_t_3 = 0;
-# 37302 "sisl/physics/_matrix_phase.c"
     __pyx_t_3 = __Pyx_PyDict_NewPresized(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 252, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     if (PyDict_SetItem(__pyx_t_3, __pyx_n_s_allocate_buffer, Py_False) < 0) __PYX_ERR(2, 252, __pyx_L1_error)
-# 37313 "sisl/physics/_matrix_phase.c"
     __pyx_t_5 = __Pyx_PyObject_Call(((PyObject *)__pyx_array_type), __pyx_t_2, __pyx_t_3); if (unlikely(!__pyx_t_5)) __PYX_ERR(2, 251, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_5);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_v_result = ((struct __pyx_array_obj *)__pyx_t_5);
     __pyx_t_5 = 0;
-# 37327 "sisl/physics/_matrix_phase.c"
     __pyx_v_result->data = __pyx_v_buf;
   }
   __pyx_L3:;
-# 37338 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(((PyObject *)__pyx_r));
   __Pyx_INCREF(((PyObject *)__pyx_v_result));
   __pyx_r = __pyx_v_result;
   goto __pyx_L0;
-# 37352 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
@@ -29549,7 +28463,6 @@ static struct __pyx_array_obj *__pyx_array_new(PyObject *__pyx_v_shape, Py_ssize
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 37375 "sisl/physics/_matrix_phase.c"
 static int __pyx_MemviewEnum___init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds);
 static int __pyx_MemviewEnum___init__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_name = 0;
@@ -29603,18 +28516,15 @@ static int __pyx_MemviewEnum___pyx_pf_15View_dot_MemoryView_4Enum___init__(struc
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__init__", 0);
-# 37436 "sisl/physics/_matrix_phase.c"
   __Pyx_INCREF(__pyx_v_name);
   __Pyx_GIVEREF(__pyx_v_name);
   __Pyx_GOTREF(__pyx_v_self->name);
   __Pyx_DECREF(__pyx_v_self->name);
   __pyx_v_self->name = __pyx_v_name;
-# 37451 "sisl/physics/_matrix_phase.c"
   __pyx_r = 0;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 37465 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_MemviewEnum___repr__(PyObject *__pyx_v_self);
 static PyObject *__pyx_MemviewEnum___repr__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -29631,18 +28541,15 @@ static PyObject *__pyx_MemviewEnum___pyx_pf_15View_dot_MemoryView_4Enum_2__repr_
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__repr__", 0);
-# 37489 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_self->name);
   __pyx_r = __pyx_v_self->name;
   goto __pyx_L0;
-# 37503 "sisl/physics/_matrix_phase.c"
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 37516 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw___pyx_MemviewEnum_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused);
 static PyObject *__pyx_pw___pyx_MemviewEnum_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
@@ -29667,7 +28574,6 @@ static PyObject *__pyx_pf___pyx_MemviewEnum___reduce_cython__(struct __pyx_Memvi
   PyObject *__pyx_t_4 = NULL;
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("__reduce_cython__", 0);
-# 37548 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_v_self->name);
@@ -29675,16 +28581,13 @@ static PyObject *__pyx_pf___pyx_MemviewEnum___reduce_cython__(struct __pyx_Memvi
   PyTuple_SET_ITEM(__pyx_t_1, 0, __pyx_v_self->name);
   __pyx_v_state = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
-# 37563 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_GetAttr3(((PyObject *)__pyx_v_self), __pyx_n_s_dict, Py_None); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 6, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v__dict = __pyx_t_1;
   __pyx_t_1 = 0;
-# 37575 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = (__pyx_v__dict != Py_None);
   __pyx_t_3 = (__pyx_t_2 != 0);
   if (__pyx_t_3) {
-# 37586 "sisl/physics/_matrix_phase.c"
     __pyx_t_1 = PyTuple_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 8, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __Pyx_INCREF(__pyx_v__dict);
@@ -29695,21 +28598,16 @@ static PyObject *__pyx_pf___pyx_MemviewEnum___reduce_cython__(struct __pyx_Memvi
     __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
     __Pyx_DECREF_SET(__pyx_v_state, ((PyObject*)__pyx_t_4));
     __pyx_t_4 = 0;
-# 37604 "sisl/physics/_matrix_phase.c"
     __pyx_v_use_setstate = 1;
-# 37613 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 37623 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_3 = (__pyx_v_self->name != Py_None);
     __pyx_v_use_setstate = __pyx_t_3;
   }
   __pyx_L3:;
-# 37636 "sisl/physics/_matrix_phase.c"
   __pyx_t_3 = (__pyx_v_use_setstate != 0);
   if (__pyx_t_3) {
-# 37646 "sisl/physics/_matrix_phase.c"
     __Pyx_XDECREF(__pyx_r);
     __Pyx_GetModuleGlobalName(__pyx_t_4, __pyx_n_s_pyx_unpickle_Enum); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 13, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_4);
@@ -29738,9 +28636,7 @@ static PyObject *__pyx_pf___pyx_MemviewEnum___reduce_cython__(struct __pyx_Memvi
     __pyx_r = __pyx_t_5;
     __pyx_t_5 = 0;
     goto __pyx_L0;
-# 37682 "sisl/physics/_matrix_phase.c"
   }
-# 37691 "sisl/physics/_matrix_phase.c"
            {
     __Pyx_XDECREF(__pyx_r);
     __Pyx_GetModuleGlobalName(__pyx_t_5, __pyx_n_s_pyx_unpickle_Enum); if (unlikely(!__pyx_t_5)) __PYX_ERR(2, 15, __pyx_L1_error)
@@ -29768,7 +28664,6 @@ static PyObject *__pyx_pf___pyx_MemviewEnum___reduce_cython__(struct __pyx_Memvi
     __pyx_t_4 = 0;
     goto __pyx_L0;
   }
-# 37726 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_4);
@@ -29782,7 +28677,6 @@ static PyObject *__pyx_pf___pyx_MemviewEnum___reduce_cython__(struct __pyx_Memvi
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 37748 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw___pyx_MemviewEnum_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state);
 static PyObject *__pyx_pw___pyx_MemviewEnum_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
@@ -29810,7 +28704,6 @@ static PyObject *__pyx_pf___pyx_MemviewEnum_2__setstate_cython__(struct __pyx_Me
   __pyx_t_1 = __pyx_unpickle_Enum__set_state(__pyx_v_self, ((PyObject*)__pyx_v___pyx_state)); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 17, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 37784 "sisl/physics/_matrix_phase.c"
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -29822,31 +28715,22 @@ static PyObject *__pyx_pf___pyx_MemviewEnum_2__setstate_cython__(struct __pyx_Me
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 37804 "sisl/physics/_matrix_phase.c"
 static void *__pyx_align_pointer(void *__pyx_v_memory, size_t __pyx_v_alignment) {
   Py_intptr_t __pyx_v_aligned_p;
   size_t __pyx_v_offset;
   void *__pyx_r;
   int __pyx_t_1;
-# 37817 "sisl/physics/_matrix_phase.c"
   __pyx_v_aligned_p = ((Py_intptr_t)__pyx_v_memory);
-# 37826 "sisl/physics/_matrix_phase.c"
   __pyx_v_offset = (__pyx_v_aligned_p % __pyx_v_alignment);
-# 37835 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((__pyx_v_offset > 0) != 0);
   if (__pyx_t_1) {
-# 37845 "sisl/physics/_matrix_phase.c"
     __pyx_v_aligned_p = (__pyx_v_aligned_p + (__pyx_v_alignment - __pyx_v_offset));
-# 37854 "sisl/physics/_matrix_phase.c"
   }
-# 37863 "sisl/physics/_matrix_phase.c"
   __pyx_r = ((void *)__pyx_v_aligned_p);
   goto __pyx_L0;
-# 37875 "sisl/physics/_matrix_phase.c"
   __pyx_L0:;
   return __pyx_r;
 }
-# 37888 "sisl/physics/_matrix_phase.c"
 static int __pyx_memoryview___cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds);
 static int __pyx_memoryview___cinit__(PyObject *__pyx_v_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
   PyObject *__pyx_v_obj = 0;
@@ -29933,15 +28817,12 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview___cinit_
   int __pyx_t_3;
   int __pyx_t_4;
   __Pyx_RefNannySetupContext("__cinit__", 0);
-# 37982 "sisl/physics/_matrix_phase.c"
   __Pyx_INCREF(__pyx_v_obj);
   __Pyx_GIVEREF(__pyx_v_obj);
   __Pyx_GOTREF(__pyx_v_self->obj);
   __Pyx_DECREF(__pyx_v_self->obj);
   __pyx_v_self->obj = __pyx_v_obj;
-# 37995 "sisl/physics/_matrix_phase.c"
   __pyx_v_self->flags = __pyx_v_flags;
-# 38004 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = (((PyObject *)Py_TYPE(((PyObject *)__pyx_v_self))) == ((PyObject *)__pyx_memoryview_type));
   __pyx_t_3 = (__pyx_t_2 != 0);
   if (!__pyx_t_3) {
@@ -29954,46 +28835,28 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview___cinit_
   __pyx_t_1 = __pyx_t_2;
   __pyx_L4_bool_binop_done:;
   if (__pyx_t_1) {
-# 38024 "sisl/physics/_matrix_phase.c"
     __pyx_t_4 = __Pyx_GetBuffer(__pyx_v_obj, (&__pyx_v_self->view), __pyx_v_flags); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(2, 349, __pyx_L1_error)
-# 38033 "sisl/physics/_matrix_phase.c"
     __pyx_t_1 = ((((PyObject *)__pyx_v_self->view.obj) == NULL) != 0);
     if (__pyx_t_1) {
-# 38043 "sisl/physics/_matrix_phase.c"
       ((Py_buffer *)(&__pyx_v_self->view))->obj = Py_None;
-# 38052 "sisl/physics/_matrix_phase.c"
       Py_INCREF(Py_None);
-# 38061 "sisl/physics/_matrix_phase.c"
     }
-# 38070 "sisl/physics/_matrix_phase.c"
   }
-# 38079 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((__pyx_memoryview_thread_locks_used < 8) != 0);
   if (__pyx_t_1) {
-# 38089 "sisl/physics/_matrix_phase.c"
     __pyx_v_self->lock = (__pyx_memoryview_thread_locks[__pyx_memoryview_thread_locks_used]);
-# 38098 "sisl/physics/_matrix_phase.c"
     __pyx_memoryview_thread_locks_used = (__pyx_memoryview_thread_locks_used + 1);
-# 38107 "sisl/physics/_matrix_phase.c"
   }
-# 38116 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((__pyx_v_self->lock == NULL) != 0);
   if (__pyx_t_1) {
-# 38126 "sisl/physics/_matrix_phase.c"
     __pyx_v_self->lock = PyThread_allocate_lock();
-# 38135 "sisl/physics/_matrix_phase.c"
     __pyx_t_1 = ((__pyx_v_self->lock == NULL) != 0);
     if (unlikely(__pyx_t_1)) {
-# 38145 "sisl/physics/_matrix_phase.c"
       PyErr_NoMemory(); __PYX_ERR(2, 361, __pyx_L1_error)
-# 38154 "sisl/physics/_matrix_phase.c"
     }
-# 38163 "sisl/physics/_matrix_phase.c"
   }
-# 38172 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((__pyx_v_flags & PyBUF_FORMAT) != 0);
   if (__pyx_t_1) {
-# 38182 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = (((__pyx_v_self->view.format[0]) == 'O') != 0);
     if (__pyx_t_2) {
     } else {
@@ -30004,19 +28867,14 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview___cinit_
     __pyx_t_1 = __pyx_t_2;
     __pyx_L11_bool_binop_done:;
     __pyx_v_self->dtype_is_object = __pyx_t_1;
-# 38200 "sisl/physics/_matrix_phase.c"
     goto __pyx_L10;
   }
-# 38210 "sisl/physics/_matrix_phase.c"
            {
     __pyx_v_self->dtype_is_object = __pyx_v_dtype_is_object;
   }
   __pyx_L10:;
-# 38222 "sisl/physics/_matrix_phase.c"
   __pyx_v_self->acquisition_count_aligned_p = ((__pyx_atomic_int *)__pyx_align_pointer(((void *)(&(__pyx_v_self->acquisition_count[0]))), (sizeof(__pyx_atomic_int))));
-# 38231 "sisl/physics/_matrix_phase.c"
   __pyx_v_self->typeinfo = NULL;
-# 38242 "sisl/physics/_matrix_phase.c"
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -30026,7 +28884,6 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview___cinit_
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 38261 "sisl/physics/_matrix_phase.c"
 static void __pyx_memoryview___dealloc__(PyObject *__pyx_v_self);
 static void __pyx_memoryview___dealloc__(PyObject *__pyx_v_self) {
   __Pyx_RefNannyDeclarations
@@ -30048,54 +28905,37 @@ static void __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_2__deal
   PyThread_type_lock __pyx_t_6;
   PyThread_type_lock __pyx_t_7;
   __Pyx_RefNannySetupContext("__dealloc__", 0);
-# 38290 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = (__pyx_v_self->obj != Py_None);
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
-# 38301 "sisl/physics/_matrix_phase.c"
     __Pyx_ReleaseBuffer((&__pyx_v_self->view));
-# 38310 "sisl/physics/_matrix_phase.c"
   }
-# 38319 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = ((__pyx_v_self->lock != NULL) != 0);
   if (__pyx_t_2) {
-# 38329 "sisl/physics/_matrix_phase.c"
     __pyx_t_3 = __pyx_memoryview_thread_locks_used;
     __pyx_t_4 = __pyx_t_3;
     for (__pyx_t_5 = 0; __pyx_t_5 < __pyx_t_4; __pyx_t_5+=1) {
       __pyx_v_i = __pyx_t_5;
-# 38341 "sisl/physics/_matrix_phase.c"
       __pyx_t_2 = (((__pyx_memoryview_thread_locks[__pyx_v_i]) == __pyx_v_self->lock) != 0);
       if (__pyx_t_2) {
-# 38351 "sisl/physics/_matrix_phase.c"
         __pyx_memoryview_thread_locks_used = (__pyx_memoryview_thread_locks_used - 1);
-# 38360 "sisl/physics/_matrix_phase.c"
         __pyx_t_2 = ((__pyx_v_i != __pyx_memoryview_thread_locks_used) != 0);
         if (__pyx_t_2) {
-# 38370 "sisl/physics/_matrix_phase.c"
           __pyx_t_6 = (__pyx_memoryview_thread_locks[__pyx_memoryview_thread_locks_used]);
           __pyx_t_7 = (__pyx_memoryview_thread_locks[__pyx_v_i]);
-# 38380 "sisl/physics/_matrix_phase.c"
           (__pyx_memoryview_thread_locks[__pyx_v_i]) = __pyx_t_6;
           (__pyx_memoryview_thread_locks[__pyx_memoryview_thread_locks_used]) = __pyx_t_7;
-# 38390 "sisl/physics/_matrix_phase.c"
         }
-# 38399 "sisl/physics/_matrix_phase.c"
         goto __pyx_L6_break;
-# 38408 "sisl/physics/_matrix_phase.c"
       }
     }
              {
-# 38419 "sisl/physics/_matrix_phase.c"
       PyThread_free_lock(__pyx_v_self->lock);
     }
     __pyx_L6_break:;
-# 38430 "sisl/physics/_matrix_phase.c"
   }
-# 38441 "sisl/physics/_matrix_phase.c"
   __Pyx_RefNannyFinishContext();
 }
-# 38452 "sisl/physics/_matrix_phase.c"
 static char *__pyx_memoryview_get_item_pointer(struct __pyx_memoryview_obj *__pyx_v_self, PyObject *__pyx_v_index) {
   Py_ssize_t __pyx_v_dim;
   char *__pyx_v_itemp;
@@ -30110,9 +28950,7 @@ static char *__pyx_memoryview_get_item_pointer(struct __pyx_memoryview_obj *__py
   Py_ssize_t __pyx_t_6;
   char *__pyx_t_7;
   __Pyx_RefNannySetupContext("get_item_pointer", 0);
-# 38474 "sisl/physics/_matrix_phase.c"
   __pyx_v_itemp = ((char *)__pyx_v_self->view.buf);
-# 38483 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = 0;
   if (likely(PyList_CheckExact(__pyx_v_index)) || PyTuple_CheckExact(__pyx_v_index)) {
     __pyx_t_2 = __pyx_v_index; __Pyx_INCREF(__pyx_t_2); __pyx_t_3 = 0;
@@ -30157,17 +28995,13 @@ static char *__pyx_memoryview_get_item_pointer(struct __pyx_memoryview_obj *__py
     __pyx_t_5 = 0;
     __pyx_v_dim = __pyx_t_1;
     __pyx_t_1 = (__pyx_t_1 + 1);
-# 38535 "sisl/physics/_matrix_phase.c"
     __pyx_t_6 = __Pyx_PyIndex_AsSsize_t(__pyx_v_idx); if (unlikely((__pyx_t_6 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(2, 394, __pyx_L1_error)
     __pyx_t_7 = __pyx_pybuffer_index((&__pyx_v_self->view), __pyx_v_itemp, __pyx_t_6, __pyx_v_dim); if (unlikely(__pyx_t_7 == ((char *)NULL))) __PYX_ERR(2, 394, __pyx_L1_error)
     __pyx_v_itemp = __pyx_t_7;
-# 38546 "sisl/physics/_matrix_phase.c"
   }
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-# 38556 "sisl/physics/_matrix_phase.c"
   __pyx_r = __pyx_v_itemp;
   goto __pyx_L0;
-# 38568 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_5);
@@ -30178,7 +29012,6 @@ static char *__pyx_memoryview_get_item_pointer(struct __pyx_memoryview_obj *__py
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 38588 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_memoryview___getitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_index);
 static PyObject *__pyx_memoryview___getitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_index) {
   PyObject *__pyx_r = 0;
@@ -30204,18 +29037,14 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_4_
   PyObject *__pyx_t_5 = NULL;
   char *__pyx_t_6;
   __Pyx_RefNannySetupContext("__getitem__", 0);
-# 38621 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = (__pyx_v_index == __pyx_builtin_Ellipsis);
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
-# 38632 "sisl/physics/_matrix_phase.c"
     __Pyx_XDECREF(__pyx_r);
     __Pyx_INCREF(((PyObject *)__pyx_v_self));
     __pyx_r = ((PyObject *)__pyx_v_self);
     goto __pyx_L0;
-# 38644 "sisl/physics/_matrix_phase.c"
   }
-# 38653 "sisl/physics/_matrix_phase.c"
   __pyx_t_3 = _unellipsify(__pyx_v_index, __pyx_v_self->view.ndim); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 403, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   if (likely(__pyx_t_3 != Py_None)) {
@@ -30245,23 +29074,18 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_4_
   __pyx_t_4 = 0;
   __pyx_v_indices = __pyx_t_5;
   __pyx_t_5 = 0;
-# 38690 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_IsTrue(__pyx_v_have_slices); if (unlikely(__pyx_t_2 < 0)) __PYX_ERR(2, 406, __pyx_L1_error)
   if (__pyx_t_2) {
-# 38700 "sisl/physics/_matrix_phase.c"
     __Pyx_XDECREF(__pyx_r);
     __pyx_t_3 = ((PyObject *)__pyx_memview_slice(__pyx_v_self, __pyx_v_indices)); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 407, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
-# 38714 "sisl/physics/_matrix_phase.c"
   }
-# 38723 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_6 = ((struct __pyx_vtabstruct_memoryview *)__pyx_v_self->__pyx_vtab)->get_item_pointer(__pyx_v_self, __pyx_v_indices); if (unlikely(__pyx_t_6 == ((char *)NULL))) __PYX_ERR(2, 409, __pyx_L1_error)
     __pyx_v_itemp = __pyx_t_6;
-# 38734 "sisl/physics/_matrix_phase.c"
     __Pyx_XDECREF(__pyx_r);
     __pyx_t_3 = ((struct __pyx_vtabstruct_memoryview *)__pyx_v_self->__pyx_vtab)->convert_item_to_object(__pyx_v_self, __pyx_v_itemp); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 410, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
@@ -30269,7 +29093,6 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_4_
     __pyx_t_3 = 0;
     goto __pyx_L0;
   }
-# 38751 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
@@ -30283,7 +29106,6 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_4_
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 38774 "sisl/physics/_matrix_phase.c"
 static int __pyx_memoryview___setitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_index, PyObject *__pyx_v_value);
 static int __pyx_memoryview___setitem__(PyObject *__pyx_v_self, PyObject *__pyx_v_index, PyObject *__pyx_v_value) {
   int __pyx_r;
@@ -30307,18 +29129,14 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_6__setit
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("__setitem__", 0);
   __Pyx_INCREF(__pyx_v_index);
-# 38805 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = (__pyx_v_self->view.readonly != 0);
   if (unlikely(__pyx_t_1)) {
-# 38815 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_TypeError, __pyx_tuple__19, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 414, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __PYX_ERR(2, 414, __pyx_L1_error)
-# 38828 "sisl/physics/_matrix_phase.c"
   }
-# 38837 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = _unellipsify(__pyx_v_index, __pyx_v_self->view.ndim); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 416, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   if (likely(__pyx_t_2 != Py_None)) {
@@ -30348,28 +29166,22 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_6__setit
   __pyx_t_3 = 0;
   __Pyx_DECREF_SET(__pyx_v_index, __pyx_t_4);
   __pyx_t_4 = 0;
-# 38874 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_have_slices); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(2, 418, __pyx_L1_error)
   if (__pyx_t_1) {
-# 38884 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = ((struct __pyx_vtabstruct_memoryview *)__pyx_v_self->__pyx_vtab)->is_slice(__pyx_v_self, __pyx_v_value); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 419, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_v_obj = __pyx_t_2;
     __pyx_t_2 = 0;
-# 38896 "sisl/physics/_matrix_phase.c"
     __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_v_obj); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(2, 420, __pyx_L1_error)
     if (__pyx_t_1) {
-# 38906 "sisl/physics/_matrix_phase.c"
       __pyx_t_2 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_self), __pyx_v_index); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 421, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_2);
       __pyx_t_4 = ((struct __pyx_vtabstruct_memoryview *)__pyx_v_self->__pyx_vtab)->setitem_slice_assignment(__pyx_v_self, __pyx_t_2, __pyx_v_obj); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 421, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
       __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-# 38920 "sisl/physics/_matrix_phase.c"
       goto __pyx_L5;
     }
-# 38930 "sisl/physics/_matrix_phase.c"
              {
       __pyx_t_4 = __Pyx_PyObject_GetItem(((PyObject *)__pyx_v_self), __pyx_v_index); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 423, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_4);
@@ -30380,17 +29192,14 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_6__setit
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     }
     __pyx_L5:;
-# 38948 "sisl/physics/_matrix_phase.c"
     goto __pyx_L4;
   }
-# 38958 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_2 = ((struct __pyx_vtabstruct_memoryview *)__pyx_v_self->__pyx_vtab)->setitem_indexed(__pyx_v_self, __pyx_v_index, __pyx_v_value); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 425, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   }
   __pyx_L4:;
-# 38974 "sisl/physics/_matrix_phase.c"
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -30406,7 +29215,6 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_6__setit
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 38998 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_memoryview_is_slice(struct __pyx_memoryview_obj *__pyx_v_self, PyObject *__pyx_v_obj) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -30421,11 +29229,9 @@ static PyObject *__pyx_memoryview_is_slice(struct __pyx_memoryview_obj *__pyx_v_
   int __pyx_t_9;
   __Pyx_RefNannySetupContext("is_slice", 0);
   __Pyx_INCREF(__pyx_v_obj);
-# 39020 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_TypeCheck(__pyx_v_obj, __pyx_memoryview_type);
   __pyx_t_2 = ((!(__pyx_t_1 != 0)) != 0);
   if (__pyx_t_2) {
-# 39031 "sisl/physics/_matrix_phase.c"
     {
       __Pyx_PyThreadState_declare
       __Pyx_PyThreadState_assign
@@ -30434,13 +29240,10 @@ static PyObject *__pyx_memoryview_is_slice(struct __pyx_memoryview_obj *__pyx_v_
       __Pyx_XGOTREF(__pyx_t_4);
       __Pyx_XGOTREF(__pyx_t_5);
                {
-# 39047 "sisl/physics/_matrix_phase.c"
         __pyx_t_6 = __Pyx_PyInt_From_int(((__pyx_v_self->flags & (~PyBUF_WRITABLE)) | PyBUF_ANY_CONTIGUOUS)); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 430, __pyx_L4_error)
         __Pyx_GOTREF(__pyx_t_6);
-# 39057 "sisl/physics/_matrix_phase.c"
         __pyx_t_7 = __Pyx_PyBool_FromLong(__pyx_v_self->dtype_is_object); if (unlikely(!__pyx_t_7)) __PYX_ERR(2, 431, __pyx_L4_error)
         __Pyx_GOTREF(__pyx_t_7);
-# 39067 "sisl/physics/_matrix_phase.c"
         __pyx_t_8 = PyTuple_New(3); if (unlikely(!__pyx_t_8)) __PYX_ERR(2, 430, __pyx_L4_error)
         __Pyx_GOTREF(__pyx_t_8);
         __Pyx_INCREF(__pyx_v_obj);
@@ -30457,7 +29260,6 @@ static PyObject *__pyx_memoryview_is_slice(struct __pyx_memoryview_obj *__pyx_v_
         __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
         __Pyx_DECREF_SET(__pyx_v_obj, __pyx_t_7);
         __pyx_t_7 = 0;
-# 39091 "sisl/physics/_matrix_phase.c"
       }
       __Pyx_XDECREF(__pyx_t_3); __pyx_t_3 = 0;
       __Pyx_XDECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -30467,7 +29269,6 @@ static PyObject *__pyx_memoryview_is_slice(struct __pyx_memoryview_obj *__pyx_v_
       __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
       __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
       __Pyx_XDECREF(__pyx_t_8); __pyx_t_8 = 0;
-# 39108 "sisl/physics/_matrix_phase.c"
       __pyx_t_9 = __Pyx_PyErr_ExceptionMatches(__pyx_builtin_TypeError);
       if (__pyx_t_9) {
         __Pyx_AddTraceback("View.MemoryView.memoryview.is_slice", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -30475,7 +29276,6 @@ static PyObject *__pyx_memoryview_is_slice(struct __pyx_memoryview_obj *__pyx_v_
         __Pyx_GOTREF(__pyx_t_7);
         __Pyx_GOTREF(__pyx_t_8);
         __Pyx_GOTREF(__pyx_t_6);
-# 39123 "sisl/physics/_matrix_phase.c"
         __Pyx_XDECREF(__pyx_r);
         __pyx_r = Py_None; __Pyx_INCREF(Py_None);
         __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
@@ -30485,7 +29285,6 @@ static PyObject *__pyx_memoryview_is_slice(struct __pyx_memoryview_obj *__pyx_v_
       }
       goto __pyx_L6_except_error;
       __pyx_L6_except_error:;
-# 39140 "sisl/physics/_matrix_phase.c"
       __Pyx_XGIVEREF(__pyx_t_3);
       __Pyx_XGIVEREF(__pyx_t_4);
       __Pyx_XGIVEREF(__pyx_t_5);
@@ -30499,14 +29298,11 @@ static PyObject *__pyx_memoryview_is_slice(struct __pyx_memoryview_obj *__pyx_v_
       goto __pyx_L0;
       __pyx_L9_try_end:;
     }
-# 39161 "sisl/physics/_matrix_phase.c"
   }
-# 39170 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_obj);
   __pyx_r = __pyx_v_obj;
   goto __pyx_L0;
-# 39184 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_XDECREF(__pyx_t_7);
@@ -30519,7 +29315,6 @@ static PyObject *__pyx_memoryview_is_slice(struct __pyx_memoryview_obj *__pyx_v_
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 39205 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_memoryview_setitem_slice_assignment(struct __pyx_memoryview_obj *__pyx_v_self, PyObject *__pyx_v_dst, PyObject *__pyx_v_src) {
   __Pyx_memviewslice __pyx_v_dst_slice;
   __Pyx_memviewslice __pyx_v_src_slice;
@@ -30530,11 +29325,8 @@ static PyObject *__pyx_memoryview_setitem_slice_assignment(struct __pyx_memoryvi
   int __pyx_t_3;
   int __pyx_t_4;
   __Pyx_RefNannySetupContext("setitem_slice_assignment", 0);
-# 39223 "sisl/physics/_matrix_phase.c"
   if (!(likely(((__pyx_v_src) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_src, __pyx_memoryview_type))))) __PYX_ERR(2, 441, __pyx_L1_error)
-# 39232 "sisl/physics/_matrix_phase.c"
   if (!(likely(((__pyx_v_dst) == Py_None) || likely(__Pyx_TypeTest(__pyx_v_dst, __pyx_memoryview_type))))) __PYX_ERR(2, 442, __pyx_L1_error)
-# 39241 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_src, __pyx_n_s_ndim); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 443, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_2 == (int)-1) && PyErr_Occurred())) __PYX_ERR(2, 443, __pyx_L1_error)
@@ -30543,9 +29335,7 @@ static PyObject *__pyx_memoryview_setitem_slice_assignment(struct __pyx_memoryvi
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_3 = __Pyx_PyInt_As_int(__pyx_t_1); if (unlikely((__pyx_t_3 == (int)-1) && PyErr_Occurred())) __PYX_ERR(2, 443, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 39257 "sisl/physics/_matrix_phase.c"
   __pyx_t_4 = __pyx_memoryview_copy_contents((__pyx_memoryview_get_slice_from_memoryview(((struct __pyx_memoryview_obj *)__pyx_v_src), (&__pyx_v_src_slice))[0]), (__pyx_memoryview_get_slice_from_memoryview(((struct __pyx_memoryview_obj *)__pyx_v_dst), (&__pyx_v_dst_slice))[0]), __pyx_t_2, __pyx_t_3, __pyx_v_self->dtype_is_object); if (unlikely(__pyx_t_4 == ((int)-1))) __PYX_ERR(2, 441, __pyx_L1_error)
-# 39268 "sisl/physics/_matrix_phase.c"
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -30557,7 +29347,6 @@ static PyObject *__pyx_memoryview_setitem_slice_assignment(struct __pyx_memoryvi
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 39288 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_memoryview_setitem_slice_assign_scalar(struct __pyx_memoryview_obj *__pyx_v_self, struct __pyx_memoryview_obj *__pyx_v_dst, PyObject *__pyx_v_value) {
   int __pyx_v_array[0x80];
   void *__pyx_v_tmp;
@@ -30578,62 +29367,42 @@ static PyObject *__pyx_memoryview_setitem_slice_assign_scalar(struct __pyx_memor
   PyObject *__pyx_t_10 = NULL;
   PyObject *__pyx_t_11 = NULL;
   __Pyx_RefNannySetupContext("setitem_slice_assign_scalar", 0);
-# 39316 "sisl/physics/_matrix_phase.c"
   __pyx_v_tmp = NULL;
-# 39325 "sisl/physics/_matrix_phase.c"
   __pyx_v_dst_slice = __pyx_memoryview_get_slice_from_memoryview(__pyx_v_dst, (&__pyx_v_tmp_slice));
-# 39334 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((((size_t)__pyx_v_self->view.itemsize) > (sizeof(__pyx_v_array))) != 0);
   if (__pyx_t_1) {
-# 39344 "sisl/physics/_matrix_phase.c"
     __pyx_v_tmp = PyMem_Malloc(__pyx_v_self->view.itemsize);
-# 39353 "sisl/physics/_matrix_phase.c"
     __pyx_t_1 = ((__pyx_v_tmp == NULL) != 0);
     if (unlikely(__pyx_t_1)) {
-# 39363 "sisl/physics/_matrix_phase.c"
       PyErr_NoMemory(); __PYX_ERR(2, 457, __pyx_L1_error)
-# 39372 "sisl/physics/_matrix_phase.c"
     }
-# 39381 "sisl/physics/_matrix_phase.c"
     __pyx_v_item = __pyx_v_tmp;
-# 39390 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 39400 "sisl/physics/_matrix_phase.c"
            {
     __pyx_v_item = ((void *)__pyx_v_array);
   }
   __pyx_L3:;
-# 39412 "sisl/physics/_matrix_phase.c"
            {
-# 39421 "sisl/physics/_matrix_phase.c"
     __pyx_t_1 = (__pyx_v_self->dtype_is_object != 0);
     if (__pyx_t_1) {
-# 39431 "sisl/physics/_matrix_phase.c"
       (((PyObject **)__pyx_v_item)[0]) = ((PyObject *)__pyx_v_value);
-# 39440 "sisl/physics/_matrix_phase.c"
       goto __pyx_L8;
     }
-# 39450 "sisl/physics/_matrix_phase.c"
              {
       __pyx_t_2 = ((struct __pyx_vtabstruct_memoryview *)__pyx_v_self->__pyx_vtab)->assign_item_from_object(__pyx_v_self, ((char *)__pyx_v_item), __pyx_v_value); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 466, __pyx_L6_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     }
     __pyx_L8:;
-# 39464 "sisl/physics/_matrix_phase.c"
     __pyx_t_1 = ((__pyx_v_self->view.suboffsets != NULL) != 0);
     if (__pyx_t_1) {
-# 39474 "sisl/physics/_matrix_phase.c"
       __pyx_t_2 = assert_direct_dimensions(__pyx_v_self->view.suboffsets, __pyx_v_self->view.ndim); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 471, __pyx_L6_error)
       __Pyx_GOTREF(__pyx_t_2);
       __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-# 39485 "sisl/physics/_matrix_phase.c"
     }
-# 39494 "sisl/physics/_matrix_phase.c"
     __pyx_memoryview_slice_assign_scalar(__pyx_v_dst_slice, __pyx_v_dst->view.ndim, __pyx_v_self->view.itemsize, __pyx_v_item, __pyx_v_self->dtype_is_object);
   }
-# 39504 "sisl/physics/_matrix_phase.c"
                {
                     {
       PyMem_Free(__pyx_v_tmp);
@@ -30673,7 +29442,6 @@ static PyObject *__pyx_memoryview_setitem_slice_assign_scalar(struct __pyx_memor
     }
     __pyx_L7:;
   }
-# 39553 "sisl/physics/_matrix_phase.c"
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -30685,7 +29453,6 @@ static PyObject *__pyx_memoryview_setitem_slice_assign_scalar(struct __pyx_memor
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 39573 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_memoryview_setitem_indexed(struct __pyx_memoryview_obj *__pyx_v_self, PyObject *__pyx_v_index, PyObject *__pyx_v_value) {
   char *__pyx_v_itemp;
   PyObject *__pyx_r = NULL;
@@ -30693,14 +29460,11 @@ static PyObject *__pyx_memoryview_setitem_indexed(struct __pyx_memoryview_obj *_
   char *__pyx_t_1;
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("setitem_indexed", 0);
-# 39588 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((struct __pyx_vtabstruct_memoryview *)__pyx_v_self->__pyx_vtab)->get_item_pointer(__pyx_v_self, __pyx_v_index); if (unlikely(__pyx_t_1 == ((char *)NULL))) __PYX_ERR(2, 478, __pyx_L1_error)
   __pyx_v_itemp = __pyx_t_1;
-# 39598 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = ((struct __pyx_vtabstruct_memoryview *)__pyx_v_self->__pyx_vtab)->assign_item_from_object(__pyx_v_self, __pyx_v_itemp, __pyx_v_value); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 479, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-# 39611 "sisl/physics/_matrix_phase.c"
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -30712,7 +29476,6 @@ static PyObject *__pyx_memoryview_setitem_indexed(struct __pyx_memoryview_obj *_
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 39631 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_memoryview_convert_item_to_object(struct __pyx_memoryview_obj *__pyx_v_self, char *__pyx_v_itemp) {
   PyObject *__pyx_v_struct = NULL;
   PyObject *__pyx_v_bytesitem = 0;
@@ -30731,17 +29494,14 @@ static PyObject *__pyx_memoryview_convert_item_to_object(struct __pyx_memoryview
   size_t __pyx_t_10;
   int __pyx_t_11;
   __Pyx_RefNannySetupContext("convert_item_to_object", 0);
-# 39657 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_Import(__pyx_n_s_struct, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 484, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_struct = __pyx_t_1;
   __pyx_t_1 = 0;
-# 39669 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyBytes_FromStringAndSize(__pyx_v_itemp + 0, __pyx_v_self->view.itemsize - 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 487, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_bytesitem = ((PyObject*)__pyx_t_1);
   __pyx_t_1 = 0;
-# 39681 "sisl/physics/_matrix_phase.c"
   {
     __Pyx_PyThreadState_declare
     __Pyx_PyThreadState_assign
@@ -30750,7 +29510,6 @@ static PyObject *__pyx_memoryview_convert_item_to_object(struct __pyx_memoryview
     __Pyx_XGOTREF(__pyx_t_3);
     __Pyx_XGOTREF(__pyx_t_4);
              {
-# 39697 "sisl/physics/_matrix_phase.c"
       __pyx_t_5 = __Pyx_PyObject_GetAttrStr(__pyx_v_struct, __pyx_n_s_unpack); if (unlikely(!__pyx_t_5)) __PYX_ERR(2, 489, __pyx_L3_error)
       __Pyx_GOTREF(__pyx_t_5);
       __pyx_t_6 = __Pyx_PyBytes_FromString(__pyx_v_self->view.format); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 489, __pyx_L3_error)
@@ -30804,23 +29563,18 @@ static PyObject *__pyx_memoryview_convert_item_to_object(struct __pyx_memoryview
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __pyx_v_result = __pyx_t_1;
       __pyx_t_1 = 0;
-# 39758 "sisl/physics/_matrix_phase.c"
     }
-# 39767 "sisl/physics/_matrix_phase.c"
               {
       __pyx_t_10 = strlen(__pyx_v_self->view.format);
       __pyx_t_11 = ((__pyx_t_10 == 1) != 0);
       if (__pyx_t_11) {
-# 39779 "sisl/physics/_matrix_phase.c"
         __Pyx_XDECREF(__pyx_r);
         __pyx_t_1 = __Pyx_GetItemInt(__pyx_v_result, 0, long, 1, __Pyx_PyInt_From_long, 0, 0, 1); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 494, __pyx_L5_except_error)
         __Pyx_GOTREF(__pyx_t_1);
         __pyx_r = __pyx_t_1;
         __pyx_t_1 = 0;
         goto __pyx_L6_except_return;
-# 39793 "sisl/physics/_matrix_phase.c"
       }
-# 39802 "sisl/physics/_matrix_phase.c"
       __Pyx_XDECREF(__pyx_r);
       __Pyx_INCREF(__pyx_v_result);
       __pyx_r = __pyx_v_result;
@@ -30832,7 +29586,6 @@ static PyObject *__pyx_memoryview_convert_item_to_object(struct __pyx_memoryview
     __Pyx_XDECREF(__pyx_t_6); __pyx_t_6 = 0;
     __Pyx_XDECREF(__pyx_t_7); __pyx_t_7 = 0;
     __Pyx_XDECREF(__pyx_t_9); __pyx_t_9 = 0;
-# 39821 "sisl/physics/_matrix_phase.c"
     __Pyx_ErrFetch(&__pyx_t_1, &__pyx_t_5, &__pyx_t_9);
     __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_struct, __pyx_n_s_error); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 490, __pyx_L5_except_error)
     __Pyx_GOTREF(__pyx_t_6);
@@ -30846,7 +29599,6 @@ static PyObject *__pyx_memoryview_convert_item_to_object(struct __pyx_memoryview
       __Pyx_GOTREF(__pyx_t_9);
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_GOTREF(__pyx_t_1);
-# 39842 "sisl/physics/_matrix_phase.c"
       __pyx_t_6 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__20, NULL); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 491, __pyx_L5_except_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_Raise(__pyx_t_6, 0, 0, 0);
@@ -30855,7 +29607,6 @@ static PyObject *__pyx_memoryview_convert_item_to_object(struct __pyx_memoryview
     }
     goto __pyx_L5_except_error;
     __pyx_L5_except_error:;
-# 39858 "sisl/physics/_matrix_phase.c"
     __Pyx_XGIVEREF(__pyx_t_2);
     __Pyx_XGIVEREF(__pyx_t_3);
     __Pyx_XGIVEREF(__pyx_t_4);
@@ -30868,7 +29619,6 @@ static PyObject *__pyx_memoryview_convert_item_to_object(struct __pyx_memoryview
     __Pyx_ExceptionReset(__pyx_t_2, __pyx_t_3, __pyx_t_4);
     goto __pyx_L0;
   }
-# 39880 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_5);
@@ -30885,7 +29635,6 @@ static PyObject *__pyx_memoryview_convert_item_to_object(struct __pyx_memoryview
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 39905 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_memoryview_assign_item_from_object(struct __pyx_memoryview_obj *__pyx_v_self, char *__pyx_v_itemp, PyObject *__pyx_v_value) {
   PyObject *__pyx_v_struct = NULL;
   char __pyx_v_c;
@@ -30908,16 +29657,13 @@ static PyObject *__pyx_memoryview_assign_item_from_object(struct __pyx_memoryvie
   char *__pyx_t_13;
   char *__pyx_t_14;
   __Pyx_RefNannySetupContext("assign_item_from_object", 0);
-# 39935 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_Import(__pyx_n_s_struct, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 500, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_v_struct = __pyx_t_1;
   __pyx_t_1 = 0;
-# 39947 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = PyTuple_Check(__pyx_v_value);
   __pyx_t_3 = (__pyx_t_2 != 0);
   if (__pyx_t_3) {
-# 39958 "sisl/physics/_matrix_phase.c"
     __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_v_struct, __pyx_n_s_pack); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 506, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_1);
     __pyx_t_4 = __Pyx_PyBytes_FromString(__pyx_v_self->view.format); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 506, __pyx_L1_error)
@@ -30940,10 +29686,8 @@ static PyObject *__pyx_memoryview_assign_item_from_object(struct __pyx_memoryvie
     if (!(likely(PyBytes_CheckExact(__pyx_t_4))||((__pyx_t_4) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "bytes", Py_TYPE(__pyx_t_4)->tp_name), 0))) __PYX_ERR(2, 506, __pyx_L1_error)
     __pyx_v_bytesvalue = ((PyObject*)__pyx_t_4);
     __pyx_t_4 = 0;
-# 39988 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 39998 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_6 = __Pyx_PyObject_GetAttrStr(__pyx_v_struct, __pyx_n_s_pack); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 508, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_6);
@@ -31001,7 +29745,6 @@ static PyObject *__pyx_memoryview_assign_item_from_object(struct __pyx_memoryvie
     __pyx_t_4 = 0;
   }
   __pyx_L3:;
-# 40063 "sisl/physics/_matrix_phase.c"
   __pyx_t_9 = 0;
   if (unlikely(__pyx_v_bytesvalue == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' is not iterable");
@@ -31014,15 +29757,11 @@ static PyObject *__pyx_memoryview_assign_item_from_object(struct __pyx_memoryvie
   for (__pyx_t_14 = __pyx_t_12; __pyx_t_14 < __pyx_t_13; __pyx_t_14++) {
     __pyx_t_11 = __pyx_t_14;
     __pyx_v_c = (__pyx_t_11[0]);
-# 40083 "sisl/physics/_matrix_phase.c"
     __pyx_v_i = __pyx_t_9;
-# 40092 "sisl/physics/_matrix_phase.c"
     __pyx_t_9 = (__pyx_t_9 + 1);
-# 40101 "sisl/physics/_matrix_phase.c"
     (__pyx_v_itemp[__pyx_v_i]) = __pyx_v_c;
   }
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-# 40114 "sisl/physics/_matrix_phase.c"
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -31041,7 +29780,6 @@ static PyObject *__pyx_memoryview_assign_item_from_object(struct __pyx_memoryvie
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 40142 "sisl/physics/_matrix_phase.c"
 static CYTHON_UNUSED int __pyx_memoryview_getbuffer(PyObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags);
 static CYTHON_UNUSED int __pyx_memoryview_getbuffer(PyObject *__pyx_v_self, Py_buffer *__pyx_v_info, int __pyx_v_flags) {
   int __pyx_r;
@@ -31072,7 +29810,6 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_8__getbu
   __Pyx_RefNannySetupContext("__getbuffer__", 0);
   __pyx_v_info->obj = Py_None; __Pyx_INCREF(Py_None);
   __Pyx_GIVEREF(__pyx_v_info->obj);
-# 40180 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = ((__pyx_v_flags & PyBUF_WRITABLE) != 0);
   if (__pyx_t_2) {
   } else {
@@ -31083,92 +29820,67 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_8__getbu
   __pyx_t_1 = __pyx_t_2;
   __pyx_L4_bool_binop_done:;
   if (unlikely(__pyx_t_1)) {
-# 40198 "sisl/physics/_matrix_phase.c"
     __pyx_t_3 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__21, NULL); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 516, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __PYX_ERR(2, 516, __pyx_L1_error)
-# 40211 "sisl/physics/_matrix_phase.c"
   }
-# 40220 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((__pyx_v_flags & PyBUF_ND) != 0);
   if (__pyx_t_1) {
-# 40230 "sisl/physics/_matrix_phase.c"
     __pyx_t_4 = __pyx_v_self->view.shape;
     __pyx_v_info->shape = __pyx_t_4;
-# 40240 "sisl/physics/_matrix_phase.c"
     goto __pyx_L6;
   }
-# 40250 "sisl/physics/_matrix_phase.c"
            {
     __pyx_v_info->shape = NULL;
   }
   __pyx_L6:;
-# 40262 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((__pyx_v_flags & PyBUF_STRIDES) != 0);
   if (__pyx_t_1) {
-# 40272 "sisl/physics/_matrix_phase.c"
     __pyx_t_4 = __pyx_v_self->view.strides;
     __pyx_v_info->strides = __pyx_t_4;
-# 40282 "sisl/physics/_matrix_phase.c"
     goto __pyx_L7;
   }
-# 40292 "sisl/physics/_matrix_phase.c"
            {
     __pyx_v_info->strides = NULL;
   }
   __pyx_L7:;
-# 40304 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((__pyx_v_flags & PyBUF_INDIRECT) != 0);
   if (__pyx_t_1) {
-# 40314 "sisl/physics/_matrix_phase.c"
     __pyx_t_4 = __pyx_v_self->view.suboffsets;
     __pyx_v_info->suboffsets = __pyx_t_4;
-# 40324 "sisl/physics/_matrix_phase.c"
     goto __pyx_L8;
   }
-# 40334 "sisl/physics/_matrix_phase.c"
            {
     __pyx_v_info->suboffsets = NULL;
   }
   __pyx_L8:;
-# 40346 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((__pyx_v_flags & PyBUF_FORMAT) != 0);
   if (__pyx_t_1) {
-# 40356 "sisl/physics/_matrix_phase.c"
     __pyx_t_5 = __pyx_v_self->view.format;
     __pyx_v_info->format = __pyx_t_5;
-# 40366 "sisl/physics/_matrix_phase.c"
     goto __pyx_L9;
   }
-# 40376 "sisl/physics/_matrix_phase.c"
            {
     __pyx_v_info->format = NULL;
   }
   __pyx_L9:;
-# 40388 "sisl/physics/_matrix_phase.c"
   __pyx_t_6 = __pyx_v_self->view.buf;
   __pyx_v_info->buf = __pyx_t_6;
-# 40398 "sisl/physics/_matrix_phase.c"
   __pyx_t_7 = __pyx_v_self->view.ndim;
   __pyx_v_info->ndim = __pyx_t_7;
-# 40408 "sisl/physics/_matrix_phase.c"
   __pyx_t_8 = __pyx_v_self->view.itemsize;
   __pyx_v_info->itemsize = __pyx_t_8;
-# 40418 "sisl/physics/_matrix_phase.c"
   __pyx_t_8 = __pyx_v_self->view.len;
   __pyx_v_info->len = __pyx_t_8;
-# 40428 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __pyx_v_self->view.readonly;
   __pyx_v_info->readonly = __pyx_t_1;
-# 40438 "sisl/physics/_matrix_phase.c"
   __Pyx_INCREF(((PyObject *)__pyx_v_self));
   __Pyx_GIVEREF(((PyObject *)__pyx_v_self));
   __Pyx_GOTREF(__pyx_v_info->obj);
   __Pyx_DECREF(__pyx_v_info->obj);
   __pyx_v_info->obj = ((PyObject *)__pyx_v_self);
-# 40453 "sisl/physics/_matrix_phase.c"
   __pyx_r = 0;
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -31189,7 +29901,6 @@ static int __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_8__getbu
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 40483 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_1T_1__get__(PyObject *__pyx_v_self);
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_1T_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -31209,20 +29920,16 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_1T___get__(struct _
   PyObject *__pyx_t_1 = NULL;
   int __pyx_t_2;
   __Pyx_RefNannySetupContext("__get__", 0);
-# 40510 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __pyx_memoryview_copy_object(__pyx_v_self); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 550, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (!(likely(((__pyx_t_1) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_1, __pyx_memoryviewslice_type))))) __PYX_ERR(2, 550, __pyx_L1_error)
   __pyx_v_result = ((struct __pyx_memoryviewslice_obj *)__pyx_t_1);
   __pyx_t_1 = 0;
-# 40523 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __pyx_memslice_transpose((&__pyx_v_result->from_slice)); if (unlikely(__pyx_t_2 == ((int)0))) __PYX_ERR(2, 551, __pyx_L1_error)
-# 40532 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_result));
   __pyx_r = ((PyObject *)__pyx_v_result);
   goto __pyx_L0;
-# 40546 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("View.MemoryView.memoryview.T.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -31233,7 +29940,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_1T___get__(struct _
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 40566 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_4base_1__get__(PyObject *__pyx_v_self);
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_4base_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -31250,18 +29956,15 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_4base___get__(struc
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
-# 40590 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_self->obj);
   __pyx_r = __pyx_v_self->obj;
   goto __pyx_L0;
-# 40604 "sisl/physics/_matrix_phase.c"
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 40619 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_5shape_1__get__(PyObject *__pyx_v_self);
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_5shape_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -31284,7 +29987,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_5shape___get__(stru
   Py_ssize_t *__pyx_t_4;
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
-# 40649 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyList_New(0); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 560, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -31303,7 +30005,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_5shape___get__(stru
   __pyx_r = __pyx_t_5;
   __pyx_t_5 = 0;
   goto __pyx_L0;
-# 40677 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_5);
@@ -31314,7 +30015,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_5shape___get__(stru
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 40697 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_7strides_1__get__(PyObject *__pyx_v_self);
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_7strides_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -31338,18 +30038,14 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_7strides___get__(st
   Py_ssize_t *__pyx_t_5;
   PyObject *__pyx_t_6 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
-# 40728 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((__pyx_v_self->view.strides == NULL) != 0);
   if (unlikely(__pyx_t_1)) {
-# 40738 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__22, NULL); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 566, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __PYX_ERR(2, 566, __pyx_L1_error)
-# 40751 "sisl/physics/_matrix_phase.c"
   }
-# 40760 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_2 = PyList_New(0); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 568, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
@@ -31368,7 +30064,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_7strides___get__(st
   __pyx_r = __pyx_t_6;
   __pyx_t_6 = 0;
   goto __pyx_L0;
-# 40788 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_6);
@@ -31379,7 +30074,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_7strides___get__(st
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 40808 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_10suboffsets_1__get__(PyObject *__pyx_v_self);
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_10suboffsets_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -31403,10 +30097,8 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_10suboffsets___get_
   Py_ssize_t *__pyx_t_5;
   Py_ssize_t *__pyx_t_6;
   __Pyx_RefNannySetupContext("__get__", 0);
-# 40839 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((__pyx_v_self->view.suboffsets == NULL) != 0);
   if (__pyx_t_1) {
-# 40849 "sisl/physics/_matrix_phase.c"
     __Pyx_XDECREF(__pyx_r);
     __pyx_t_2 = __Pyx_PyInt_From_int(__pyx_v_self->view.ndim); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 573, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
@@ -31416,9 +30108,7 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_10suboffsets___get_
     __pyx_r = __pyx_t_3;
     __pyx_t_3 = 0;
     goto __pyx_L0;
-# 40866 "sisl/physics/_matrix_phase.c"
   }
-# 40875 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 575, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
@@ -31437,7 +30127,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_10suboffsets___get_
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
-# 40903 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
@@ -31448,7 +30137,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_10suboffsets___get_
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 40923 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_4ndim_1__get__(PyObject *__pyx_v_self);
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_4ndim_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -31466,14 +30154,12 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_4ndim___get__(struc
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
-# 40948 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_self->view.ndim); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 579, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 40964 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("View.MemoryView.memoryview.ndim.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -31483,7 +30169,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_4ndim___get__(struc
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 40983 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_8itemsize_1__get__(PyObject *__pyx_v_self);
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_8itemsize_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -31501,14 +30186,12 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_8itemsize___get__(s
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
-# 41008 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = PyInt_FromSsize_t(__pyx_v_self->view.itemsize); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 583, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 41024 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("View.MemoryView.memoryview.itemsize.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -31518,7 +30201,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_8itemsize___get__(s
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 41043 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_6nbytes_1__get__(PyObject *__pyx_v_self);
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_6nbytes_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -31538,7 +30220,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_6nbytes___get__(str
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
-# 41070 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_size); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 587, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -31551,7 +30232,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_6nbytes___get__(str
   __pyx_r = __pyx_t_3;
   __pyx_t_3 = 0;
   goto __pyx_L0;
-# 41092 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -31563,7 +30243,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_6nbytes___get__(str
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 41113 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_4size_1__get__(PyObject *__pyx_v_self);
 static PyObject *__pyx_pw_15View_dot_MemoryView_10memoryview_4size_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -31588,14 +30267,11 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_4size___get__(struc
   Py_ssize_t *__pyx_t_5;
   PyObject *__pyx_t_6 = NULL;
   __Pyx_RefNannySetupContext("__get__", 0);
-# 41145 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = (__pyx_v_self->_size == Py_None);
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
-# 41156 "sisl/physics/_matrix_phase.c"
     __Pyx_INCREF(__pyx_int_1);
     __pyx_v_result = __pyx_int_1;
-# 41166 "sisl/physics/_matrix_phase.c"
     __pyx_t_4 = (__pyx_v_self->view.shape + __pyx_v_self->view.ndim);
     for (__pyx_t_5 = __pyx_v_self->view.shape; __pyx_t_5 < __pyx_t_4; __pyx_t_5++) {
       __pyx_t_3 = __pyx_t_5;
@@ -31603,26 +30279,21 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_4size___get__(struc
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_XDECREF_SET(__pyx_v_length, __pyx_t_6);
       __pyx_t_6 = 0;
-# 41181 "sisl/physics/_matrix_phase.c"
       __pyx_t_6 = PyNumber_InPlaceMultiply(__pyx_v_result, __pyx_v_length); if (unlikely(!__pyx_t_6)) __PYX_ERR(2, 595, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_6);
       __Pyx_DECREF_SET(__pyx_v_result, __pyx_t_6);
       __pyx_t_6 = 0;
     }
-# 41194 "sisl/physics/_matrix_phase.c"
     __Pyx_INCREF(__pyx_v_result);
     __Pyx_GIVEREF(__pyx_v_result);
     __Pyx_GOTREF(__pyx_v_self->_size);
     __Pyx_DECREF(__pyx_v_self->_size);
     __pyx_v_self->_size = __pyx_v_result;
-# 41207 "sisl/physics/_matrix_phase.c"
   }
-# 41216 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_self->_size);
   __pyx_r = __pyx_v_self->_size;
   goto __pyx_L0;
-# 41230 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_6);
   __Pyx_AddTraceback("View.MemoryView.memoryview.size.__get__", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -31634,7 +30305,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_10memoryview_4size___get__(struc
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 41251 "sisl/physics/_matrix_phase.c"
 static Py_ssize_t __pyx_memoryview___len__(PyObject *__pyx_v_self);
 static Py_ssize_t __pyx_memoryview___len__(PyObject *__pyx_v_self) {
   Py_ssize_t __pyx_r;
@@ -31652,23 +30322,17 @@ static Py_ssize_t __pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_1
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("__len__", 0);
-# 41276 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((__pyx_v_self->view.ndim >= 1) != 0);
   if (__pyx_t_1) {
-# 41286 "sisl/physics/_matrix_phase.c"
     __pyx_r = (__pyx_v_self->view.shape[0]);
     goto __pyx_L0;
-# 41296 "sisl/physics/_matrix_phase.c"
   }
-# 41305 "sisl/physics/_matrix_phase.c"
   __pyx_r = 0;
   goto __pyx_L0;
-# 41317 "sisl/physics/_matrix_phase.c"
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 41331 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_memoryview___repr__(PyObject *__pyx_v_self);
 static PyObject *__pyx_memoryview___repr__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -31688,7 +30352,6 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_12
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("__repr__", 0);
-# 41358 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_base); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 608, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -31698,10 +30361,8 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_12
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(__pyx_t_2, __pyx_n_s_name_2); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 608, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-# 41375 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_CallOneArg(__pyx_builtin_id, ((PyObject *)__pyx_v_self)); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 609, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
-# 41385 "sisl/physics/_matrix_phase.c"
   __pyx_t_3 = PyTuple_New(2); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 608, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_GIVEREF(__pyx_t_1);
@@ -31716,7 +30377,6 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_12
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
-# 41409 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -31728,7 +30388,6 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_12
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 41430 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_memoryview___str__(PyObject *__pyx_v_self);
 static PyObject *__pyx_memoryview___str__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -31747,7 +30406,6 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_14
   PyObject *__pyx_t_1 = NULL;
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("__str__", 0);
-# 41456 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_self), __pyx_n_s_base); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 612, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
@@ -31768,7 +30426,6 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_14
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 41486 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -31779,7 +30436,6 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_14
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 41506 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_memoryview_is_c_contig(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused);
 static PyObject *__pyx_memoryview_is_c_contig(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
@@ -31799,16 +30455,13 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_16
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("is_c_contig", 0);
-# 41533 "sisl/physics/_matrix_phase.c"
   __pyx_v_mslice = __pyx_memoryview_get_slice_from_memoryview(__pyx_v_self, (&__pyx_v_tmp));
-# 41542 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_memviewslice_is_contig((__pyx_v_mslice[0]), 'C', __pyx_v_self->view.ndim)); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 619, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 41558 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("View.MemoryView.memoryview.is_c_contig", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -31818,7 +30471,6 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_16
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 41577 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_memoryview_is_f_contig(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused);
 static PyObject *__pyx_memoryview_is_f_contig(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
@@ -31838,16 +30490,13 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_18
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("is_f_contig", 0);
-# 41604 "sisl/physics/_matrix_phase.c"
   __pyx_v_mslice = __pyx_memoryview_get_slice_from_memoryview(__pyx_v_self, (&__pyx_v_tmp));
-# 41613 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __Pyx_PyBool_FromLong(__pyx_memviewslice_is_contig((__pyx_v_mslice[0]), 'F', __pyx_v_self->view.ndim)); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 625, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 41629 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("View.MemoryView.memoryview.is_f_contig", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -31857,7 +30506,6 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_18
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 41648 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_memoryview_copy(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused);
 static PyObject *__pyx_memoryview_copy(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
@@ -31878,21 +30526,16 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_20
   __Pyx_memviewslice __pyx_t_1;
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("copy", 0);
-# 41676 "sisl/physics/_matrix_phase.c"
   __pyx_v_flags = (__pyx_v_self->flags & (~PyBUF_F_CONTIGUOUS));
-# 41685 "sisl/physics/_matrix_phase.c"
   __pyx_memoryview_slice_copy(__pyx_v_self, (&__pyx_v_mslice));
-# 41694 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __pyx_memoryview_copy_new_contig((&__pyx_v_mslice), ((char *)"c"), __pyx_v_self->view.ndim, __pyx_v_self->view.itemsize, (__pyx_v_flags | PyBUF_C_CONTIGUOUS), __pyx_v_self->dtype_is_object); if (unlikely(PyErr_Occurred())) __PYX_ERR(2, 632, __pyx_L1_error)
   __pyx_v_mslice = __pyx_t_1;
-# 41704 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_2 = __pyx_memoryview_copy_object_from_slice(__pyx_v_self, (&__pyx_v_mslice)); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 637, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
-# 41720 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_AddTraceback("View.MemoryView.memoryview.copy", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -31902,7 +30545,6 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_20
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 41739 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_memoryview_copy_fortran(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused);
 static PyObject *__pyx_memoryview_copy_fortran(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
@@ -31924,21 +30566,16 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_22
   __Pyx_memviewslice __pyx_t_1;
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("copy_fortran", 0);
-# 41768 "sisl/physics/_matrix_phase.c"
   __pyx_v_flags = (__pyx_v_self->flags & (~PyBUF_C_CONTIGUOUS));
-# 41777 "sisl/physics/_matrix_phase.c"
   __pyx_memoryview_slice_copy(__pyx_v_self, (&__pyx_v_src));
-# 41786 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __pyx_memoryview_copy_new_contig((&__pyx_v_src), ((char *)"fortran"), __pyx_v_self->view.ndim, __pyx_v_self->view.itemsize, (__pyx_v_flags | PyBUF_F_CONTIGUOUS), __pyx_v_self->dtype_is_object); if (unlikely(PyErr_Occurred())) __PYX_ERR(2, 644, __pyx_L1_error)
   __pyx_v_dst = __pyx_t_1;
-# 41796 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_2 = __pyx_memoryview_copy_object_from_slice(__pyx_v_self, (&__pyx_v_dst)); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 649, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_r = __pyx_t_2;
   __pyx_t_2 = 0;
   goto __pyx_L0;
-# 41812 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_AddTraceback("View.MemoryView.memoryview.copy_fortran", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -31948,7 +30585,6 @@ static PyObject *__pyx_memoryview___pyx_pf_15View_dot_MemoryView_10memoryview_22
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 41829 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw___pyx_memoryview_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused);
 static PyObject *__pyx_pw___pyx_memoryview_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
@@ -31978,7 +30614,6 @@ static PyObject *__pyx_pf___pyx_memoryview___reduce_cython__(CYTHON_UNUSED struc
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(2, 2, __pyx_L1_error)
-# 41866 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("View.MemoryView.memoryview.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -31987,7 +30622,6 @@ static PyObject *__pyx_pf___pyx_memoryview___reduce_cython__(CYTHON_UNUSED struc
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 41883 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw___pyx_memoryview_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state);
 static PyObject *__pyx_pw___pyx_memoryview_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
@@ -32016,7 +30650,6 @@ static PyObject *__pyx_pf___pyx_memoryview_2__setstate_cython__(CYTHON_UNUSED st
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(2, 4, __pyx_L1_error)
-# 41920 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("View.MemoryView.memoryview.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -32025,7 +30658,6 @@ static PyObject *__pyx_pf___pyx_memoryview_2__setstate_cython__(CYTHON_UNUSED st
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 41937 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_memoryview_new(PyObject *__pyx_v_o, int __pyx_v_flags, int __pyx_v_dtype_is_object, __Pyx_TypeInfo *__pyx_v_typeinfo) {
   struct __pyx_memoryview_obj *__pyx_v_result = 0;
   PyObject *__pyx_r = NULL;
@@ -32034,7 +30666,6 @@ static PyObject *__pyx_memoryview_new(PyObject *__pyx_v_o, int __pyx_v_flags, in
   PyObject *__pyx_t_2 = NULL;
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("memoryview_cwrapper", 0);
-# 41953 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_flags); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 654, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = __Pyx_PyBool_FromLong(__pyx_v_dtype_is_object); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 654, __pyx_L1_error)
@@ -32055,14 +30686,11 @@ static PyObject *__pyx_memoryview_new(PyObject *__pyx_v_o, int __pyx_v_flags, in
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_result = ((struct __pyx_memoryview_obj *)__pyx_t_2);
   __pyx_t_2 = 0;
-# 41981 "sisl/physics/_matrix_phase.c"
   __pyx_v_result->typeinfo = __pyx_v_typeinfo;
-# 41990 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_result));
   __pyx_r = ((PyObject *)__pyx_v_result);
   goto __pyx_L0;
-# 42004 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -32075,22 +30703,18 @@ static PyObject *__pyx_memoryview_new(PyObject *__pyx_v_o, int __pyx_v_flags, in
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 42025 "sisl/physics/_matrix_phase.c"
 static CYTHON_INLINE int __pyx_memoryview_check(PyObject *__pyx_v_o) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   __Pyx_RefNannySetupContext("memoryview_check", 0);
-# 42038 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_TypeCheck(__pyx_v_o, __pyx_memoryview_type);
   __pyx_r = __pyx_t_1;
   goto __pyx_L0;
-# 42051 "sisl/physics/_matrix_phase.c"
   __pyx_L0:;
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 42064 "sisl/physics/_matrix_phase.c"
 static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
   PyObject *__pyx_v_tup = NULL;
   PyObject *__pyx_v_result = NULL;
@@ -32113,11 +30737,9 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
   int __pyx_t_10;
   PyObject *__pyx_t_11 = NULL;
   __Pyx_RefNannySetupContext("_unellipsify", 0);
-# 42094 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = PyTuple_Check(__pyx_v_index);
   __pyx_t_2 = ((!(__pyx_t_1 != 0)) != 0);
   if (__pyx_t_2) {
-# 42105 "sisl/physics/_matrix_phase.c"
     __pyx_t_3 = PyTuple_New(1); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 668, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_INCREF(__pyx_v_index);
@@ -32125,25 +30747,19 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
     PyTuple_SET_ITEM(__pyx_t_3, 0, __pyx_v_index);
     __pyx_v_tup = __pyx_t_3;
     __pyx_t_3 = 0;
-# 42120 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 42130 "sisl/physics/_matrix_phase.c"
            {
     __Pyx_INCREF(__pyx_v_index);
     __pyx_v_tup = __pyx_v_index;
   }
   __pyx_L3:;
-# 42143 "sisl/physics/_matrix_phase.c"
   __pyx_t_3 = PyList_New(0); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 672, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_v_result = ((PyObject*)__pyx_t_3);
   __pyx_t_3 = 0;
-# 42155 "sisl/physics/_matrix_phase.c"
   __pyx_v_have_slices = 0;
-# 42164 "sisl/physics/_matrix_phase.c"
   __pyx_v_seen_ellipsis = 0;
-# 42173 "sisl/physics/_matrix_phase.c"
   __Pyx_INCREF(__pyx_int_0);
   __pyx_t_3 = __pyx_int_0;
   if (likely(PyList_CheckExact(__pyx_v_tup)) || PyTuple_CheckExact(__pyx_v_tup)) {
@@ -32194,14 +30810,11 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
     __Pyx_DECREF(__pyx_t_3);
     __pyx_t_3 = __pyx_t_7;
     __pyx_t_7 = 0;
-# 42231 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = (__pyx_v_item == __pyx_builtin_Ellipsis);
     __pyx_t_1 = (__pyx_t_2 != 0);
     if (__pyx_t_1) {
-# 42242 "sisl/physics/_matrix_phase.c"
       __pyx_t_1 = ((!(__pyx_v_seen_ellipsis != 0)) != 0);
       if (__pyx_t_1) {
-# 42252 "sisl/physics/_matrix_phase.c"
         __pyx_t_8 = PyObject_Length(__pyx_v_tup); if (unlikely(__pyx_t_8 == ((Py_ssize_t)-1))) __PYX_ERR(2, 678, __pyx_L1_error)
         __pyx_t_7 = PyList_New(1 * ((((__pyx_v_ndim - __pyx_t_8) + 1)<0) ? 0:((__pyx_v_ndim - __pyx_t_8) + 1))); if (unlikely(!__pyx_t_7)) __PYX_ERR(2, 678, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
@@ -32214,22 +30827,16 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
         }
         __pyx_t_9 = __Pyx_PyList_Extend(__pyx_v_result, __pyx_t_7); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(2, 678, __pyx_L1_error)
         __Pyx_DECREF(__pyx_t_7); __pyx_t_7 = 0;
-# 42272 "sisl/physics/_matrix_phase.c"
         __pyx_v_seen_ellipsis = 1;
-# 42281 "sisl/physics/_matrix_phase.c"
         goto __pyx_L7;
       }
-# 42291 "sisl/physics/_matrix_phase.c"
                {
         __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_result, __pyx_slice__26); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(2, 681, __pyx_L1_error)
       }
       __pyx_L7:;
-# 42303 "sisl/physics/_matrix_phase.c"
       __pyx_v_have_slices = 1;
-# 42312 "sisl/physics/_matrix_phase.c"
       goto __pyx_L6;
     }
-# 42322 "sisl/physics/_matrix_phase.c"
              {
       __pyx_t_2 = PySlice_Check(__pyx_v_item);
       __pyx_t_10 = ((!(__pyx_t_2 != 0)) != 0);
@@ -32242,7 +30849,6 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
       __pyx_t_1 = __pyx_t_10;
       __pyx_L9_bool_binop_done:;
       if (unlikely(__pyx_t_1)) {
-# 42342 "sisl/physics/_matrix_phase.c"
         __pyx_t_7 = __Pyx_PyString_FormatSafe(__pyx_kp_s_Cannot_index_with_type_s, ((PyObject *)Py_TYPE(__pyx_v_item))); if (unlikely(!__pyx_t_7)) __PYX_ERR(2, 685, __pyx_L1_error)
         __Pyx_GOTREF(__pyx_t_7);
         __pyx_t_11 = __Pyx_PyObject_CallOneArg(__pyx_builtin_TypeError, __pyx_t_7); if (unlikely(!__pyx_t_11)) __PYX_ERR(2, 685, __pyx_L1_error)
@@ -32251,9 +30857,7 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
         __Pyx_Raise(__pyx_t_11, 0, 0, 0);
         __Pyx_DECREF(__pyx_t_11); __pyx_t_11 = 0;
         __PYX_ERR(2, 685, __pyx_L1_error)
-# 42358 "sisl/physics/_matrix_phase.c"
       }
-# 42367 "sisl/physics/_matrix_phase.c"
       __pyx_t_10 = (__pyx_v_have_slices != 0);
       if (!__pyx_t_10) {
       } else {
@@ -32265,21 +30869,16 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
       __pyx_t_1 = __pyx_t_2;
       __pyx_L11_bool_binop_done:;
       __pyx_v_have_slices = __pyx_t_1;
-# 42386 "sisl/physics/_matrix_phase.c"
       __pyx_t_9 = __Pyx_PyList_Append(__pyx_v_result, __pyx_v_item); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(2, 688, __pyx_L1_error)
     }
     __pyx_L6:;
-# 42397 "sisl/physics/_matrix_phase.c"
   }
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-# 42408 "sisl/physics/_matrix_phase.c"
   __pyx_t_5 = PyList_GET_SIZE(__pyx_v_result); if (unlikely(__pyx_t_5 == ((Py_ssize_t)-1))) __PYX_ERR(2, 690, __pyx_L1_error)
   __pyx_v_nslices = (__pyx_v_ndim - __pyx_t_5);
-# 42418 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = (__pyx_v_nslices != 0);
   if (__pyx_t_1) {
-# 42428 "sisl/physics/_matrix_phase.c"
     __pyx_t_3 = PyList_New(1 * ((__pyx_v_nslices<0) ? 0:__pyx_v_nslices)); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 692, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     { Py_ssize_t __pyx_temp;
@@ -32291,9 +30890,7 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
     }
     __pyx_t_9 = __Pyx_PyList_Extend(__pyx_v_result, __pyx_t_3); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(2, 692, __pyx_L1_error)
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-# 42447 "sisl/physics/_matrix_phase.c"
   }
-# 42456 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   if (!__pyx_v_have_slices) {
   } else {
@@ -32321,7 +30918,6 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
   __pyx_r = ((PyObject*)__pyx_t_11);
   __pyx_t_11 = 0;
   goto __pyx_L0;
-# 42493 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
@@ -32338,7 +30934,6 @@ static PyObject *_unellipsify(PyObject *__pyx_v_index, int __pyx_v_ndim) {
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 42518 "sisl/physics/_matrix_phase.c"
 static PyObject *assert_direct_dimensions(Py_ssize_t *__pyx_v_suboffsets, int __pyx_v_ndim) {
   Py_ssize_t __pyx_v_suboffset;
   PyObject *__pyx_r = NULL;
@@ -32349,24 +30944,19 @@ static PyObject *assert_direct_dimensions(Py_ssize_t *__pyx_v_suboffsets, int __
   int __pyx_t_4;
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("assert_direct_dimensions", 0);
-# 42536 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = (__pyx_v_suboffsets + __pyx_v_ndim);
   for (__pyx_t_3 = __pyx_v_suboffsets; __pyx_t_3 < __pyx_t_2; __pyx_t_3++) {
     __pyx_t_1 = __pyx_t_3;
     __pyx_v_suboffset = (__pyx_t_1[0]);
-# 42548 "sisl/physics/_matrix_phase.c"
     __pyx_t_4 = ((__pyx_v_suboffset >= 0) != 0);
     if (unlikely(__pyx_t_4)) {
-# 42558 "sisl/physics/_matrix_phase.c"
       __pyx_t_5 = __Pyx_PyObject_Call(__pyx_builtin_ValueError, __pyx_tuple__27, NULL); if (unlikely(!__pyx_t_5)) __PYX_ERR(2, 699, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_5);
       __Pyx_Raise(__pyx_t_5, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_5); __pyx_t_5 = 0;
       __PYX_ERR(2, 699, __pyx_L1_error)
-# 42571 "sisl/physics/_matrix_phase.c"
     }
   }
-# 42583 "sisl/physics/_matrix_phase.c"
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -32378,7 +30968,6 @@ static PyObject *assert_direct_dimensions(Py_ssize_t *__pyx_v_suboffsets, int __
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 42603 "sisl/physics/_matrix_phase.c"
 static struct __pyx_memoryview_obj *__pyx_memview_slice(struct __pyx_memoryview_obj *__pyx_v_memview, PyObject *__pyx_v_indices) {
   int __pyx_v_new_ndim;
   int __pyx_v_suboffset_dim;
@@ -32411,12 +31000,9 @@ static struct __pyx_memoryview_obj *__pyx_memview_slice(struct __pyx_memoryview_
   int __pyx_t_11;
   Py_ssize_t __pyx_t_12;
   __Pyx_RefNannySetupContext("memview_slice", 0);
-# 42643 "sisl/physics/_matrix_phase.c"
   __pyx_v_new_ndim = 0;
   __pyx_v_suboffset_dim = -1;
-# 42653 "sisl/physics/_matrix_phase.c"
   (void)(memset((&__pyx_v_dst), 0, (sizeof(__pyx_v_dst))));
-# 42662 "sisl/physics/_matrix_phase.c"
   #ifndef CYTHON_WITHOUT_ASSERTIONS
   if (unlikely(!Py_OptimizeFlag)) {
     if (unlikely(!((__pyx_v_memview->view.ndim > 0) != 0))) {
@@ -32425,39 +31011,28 @@ static struct __pyx_memoryview_obj *__pyx_memview_slice(struct __pyx_memoryview_
     }
   }
   #endif
-# 42678 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_TypeCheck(((PyObject *)__pyx_v_memview), __pyx_memoryviewslice_type);
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
-# 42689 "sisl/physics/_matrix_phase.c"
     if (!(likely(((((PyObject *)__pyx_v_memview)) == Py_None) || likely(__Pyx_TypeTest(((PyObject *)__pyx_v_memview), __pyx_memoryviewslice_type))))) __PYX_ERR(2, 721, __pyx_L1_error)
     __pyx_t_3 = ((PyObject *)__pyx_v_memview);
     __Pyx_INCREF(__pyx_t_3);
     __pyx_v_memviewsliceobj = ((struct __pyx_memoryviewslice_obj *)__pyx_t_3);
     __pyx_t_3 = 0;
-# 42702 "sisl/physics/_matrix_phase.c"
     __pyx_v_p_src = (&__pyx_v_memviewsliceobj->from_slice);
-# 42711 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 42721 "sisl/physics/_matrix_phase.c"
            {
     __pyx_memoryview_slice_copy(__pyx_v_memview, (&__pyx_v_src));
-# 42731 "sisl/physics/_matrix_phase.c"
     __pyx_v_p_src = (&__pyx_v_src);
   }
   __pyx_L3:;
-# 42742 "sisl/physics/_matrix_phase.c"
   __pyx_t_4 = __pyx_v_p_src->memview;
   __pyx_v_dst.memview = __pyx_t_4;
-# 42752 "sisl/physics/_matrix_phase.c"
   __pyx_t_5 = __pyx_v_p_src->data;
   __pyx_v_dst.data = __pyx_t_5;
-# 42762 "sisl/physics/_matrix_phase.c"
   __pyx_v_p_dst = (&__pyx_v_dst);
-# 42771 "sisl/physics/_matrix_phase.c"
   __pyx_v_p_suboffset_dim = (&__pyx_v_suboffset_dim);
-# 42780 "sisl/physics/_matrix_phase.c"
   __pyx_t_6 = 0;
   if (likely(PyList_CheckExact(__pyx_v_indices)) || PyTuple_CheckExact(__pyx_v_indices)) {
     __pyx_t_3 = __pyx_v_indices; __Pyx_INCREF(__pyx_t_3); __pyx_t_7 = 0;
@@ -32502,32 +31077,21 @@ static struct __pyx_memoryview_obj *__pyx_memview_slice(struct __pyx_memoryview_
     __pyx_t_9 = 0;
     __pyx_v_dim = __pyx_t_6;
     __pyx_t_6 = (__pyx_t_6 + 1);
-# 42832 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = (PyIndex_Check(__pyx_v_index) != 0);
     if (__pyx_t_2) {
-# 42842 "sisl/physics/_matrix_phase.c"
       __pyx_t_10 = __Pyx_PyIndex_AsSsize_t(__pyx_v_index); if (unlikely((__pyx_t_10 == (Py_ssize_t)-1) && PyErr_Occurred())) __PYX_ERR(2, 747, __pyx_L1_error)
-# 42851 "sisl/physics/_matrix_phase.c"
       __pyx_t_11 = __pyx_memoryview_slice_memviewslice(__pyx_v_p_dst, (__pyx_v_p_src->shape[__pyx_v_dim]), (__pyx_v_p_src->strides[__pyx_v_dim]), (__pyx_v_p_src->suboffsets[__pyx_v_dim]), __pyx_v_dim, __pyx_v_new_ndim, __pyx_v_p_suboffset_dim, __pyx_t_10, 0, 0, 0, 0, 0, 0); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(2, 744, __pyx_L1_error)
-# 42860 "sisl/physics/_matrix_phase.c"
       goto __pyx_L6;
     }
-# 42870 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = (__pyx_v_index == Py_None);
     __pyx_t_1 = (__pyx_t_2 != 0);
     if (__pyx_t_1) {
-# 42881 "sisl/physics/_matrix_phase.c"
       (__pyx_v_p_dst->shape[__pyx_v_new_ndim]) = 1;
-# 42890 "sisl/physics/_matrix_phase.c"
       (__pyx_v_p_dst->strides[__pyx_v_new_ndim]) = 0;
-# 42899 "sisl/physics/_matrix_phase.c"
       (__pyx_v_p_dst->suboffsets[__pyx_v_new_ndim]) = -1L;
-# 42908 "sisl/physics/_matrix_phase.c"
       __pyx_v_new_ndim = (__pyx_v_new_ndim + 1);
-# 42917 "sisl/physics/_matrix_phase.c"
       goto __pyx_L6;
     }
-# 42927 "sisl/physics/_matrix_phase.c"
              {
       __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_index, __pyx_n_s_start); if (unlikely(!__pyx_t_9)) __PYX_ERR(2, 756, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
@@ -32543,7 +31107,6 @@ static struct __pyx_memoryview_obj *__pyx_memview_slice(struct __pyx_memoryview_
       __pyx_t_10 = 0;
       __pyx_L7_bool_binop_done:;
       __pyx_v_start = __pyx_t_10;
-# 42950 "sisl/physics/_matrix_phase.c"
       __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_index, __pyx_n_s_stop); if (unlikely(!__pyx_t_9)) __PYX_ERR(2, 757, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(2, 757, __pyx_L1_error)
@@ -32558,7 +31121,6 @@ static struct __pyx_memoryview_obj *__pyx_memview_slice(struct __pyx_memoryview_
       __pyx_t_10 = 0;
       __pyx_L9_bool_binop_done:;
       __pyx_v_stop = __pyx_t_10;
-# 42972 "sisl/physics/_matrix_phase.c"
       __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_index, __pyx_n_s_step); if (unlikely(!__pyx_t_9)) __PYX_ERR(2, 758, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       __pyx_t_1 = __Pyx_PyObject_IsTrue(__pyx_t_9); if (unlikely(__pyx_t_1 < 0)) __PYX_ERR(2, 758, __pyx_L1_error)
@@ -32573,65 +31135,49 @@ static struct __pyx_memoryview_obj *__pyx_memview_slice(struct __pyx_memoryview_
       __pyx_t_10 = 0;
       __pyx_L11_bool_binop_done:;
       __pyx_v_step = __pyx_t_10;
-# 42994 "sisl/physics/_matrix_phase.c"
       __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_index, __pyx_n_s_start); if (unlikely(!__pyx_t_9)) __PYX_ERR(2, 760, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       __pyx_t_1 = (__pyx_t_9 != Py_None);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __pyx_v_have_start = __pyx_t_1;
-# 43007 "sisl/physics/_matrix_phase.c"
       __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_index, __pyx_n_s_stop); if (unlikely(!__pyx_t_9)) __PYX_ERR(2, 761, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       __pyx_t_1 = (__pyx_t_9 != Py_None);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __pyx_v_have_stop = __pyx_t_1;
-# 43020 "sisl/physics/_matrix_phase.c"
       __pyx_t_9 = __Pyx_PyObject_GetAttrStr(__pyx_v_index, __pyx_n_s_step); if (unlikely(!__pyx_t_9)) __PYX_ERR(2, 762, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_9);
       __pyx_t_1 = (__pyx_t_9 != Py_None);
       __Pyx_DECREF(__pyx_t_9); __pyx_t_9 = 0;
       __pyx_v_have_step = __pyx_t_1;
-# 43033 "sisl/physics/_matrix_phase.c"
       __pyx_t_11 = __pyx_memoryview_slice_memviewslice(__pyx_v_p_dst, (__pyx_v_p_src->shape[__pyx_v_dim]), (__pyx_v_p_src->strides[__pyx_v_dim]), (__pyx_v_p_src->suboffsets[__pyx_v_dim]), __pyx_v_dim, __pyx_v_new_ndim, __pyx_v_p_suboffset_dim, __pyx_v_start, __pyx_v_stop, __pyx_v_step, __pyx_v_have_start, __pyx_v_have_stop, __pyx_v_have_step, 1); if (unlikely(__pyx_t_11 == ((int)-1))) __PYX_ERR(2, 764, __pyx_L1_error)
-# 43042 "sisl/physics/_matrix_phase.c"
       __pyx_v_new_ndim = (__pyx_v_new_ndim + 1);
     }
     __pyx_L6:;
-# 43053 "sisl/physics/_matrix_phase.c"
   }
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-# 43063 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_TypeCheck(((PyObject *)__pyx_v_memview), __pyx_memoryviewslice_type);
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
-# 43074 "sisl/physics/_matrix_phase.c"
     __Pyx_XDECREF(((PyObject *)__pyx_r));
-# 43083 "sisl/physics/_matrix_phase.c"
     if (unlikely(!__pyx_v_memviewsliceobj)) { __Pyx_RaiseUnboundLocalError("memviewsliceobj"); __PYX_ERR(2, 774, __pyx_L1_error) }
-# 43092 "sisl/physics/_matrix_phase.c"
     if (unlikely(!__pyx_v_memviewsliceobj)) { __Pyx_RaiseUnboundLocalError("memviewsliceobj"); __PYX_ERR(2, 775, __pyx_L1_error) }
-# 43101 "sisl/physics/_matrix_phase.c"
     __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_v_dst, __pyx_v_new_ndim, __pyx_v_memviewsliceobj->to_object_func, __pyx_v_memviewsliceobj->to_dtype_func, __pyx_v_memview->dtype_is_object); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 773, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     if (!(likely(((__pyx_t_3) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_3, __pyx_memoryview_type))))) __PYX_ERR(2, 773, __pyx_L1_error)
     __pyx_r = ((struct __pyx_memoryview_obj *)__pyx_t_3);
     __pyx_t_3 = 0;
     goto __pyx_L0;
-# 43115 "sisl/physics/_matrix_phase.c"
   }
-# 43124 "sisl/physics/_matrix_phase.c"
            {
     __Pyx_XDECREF(((PyObject *)__pyx_r));
-# 43134 "sisl/physics/_matrix_phase.c"
     __pyx_t_3 = __pyx_memoryview_fromslice(__pyx_v_dst, __pyx_v_new_ndim, NULL, NULL, __pyx_v_memview->dtype_is_object); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 778, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
-# 43144 "sisl/physics/_matrix_phase.c"
     if (!(likely(((__pyx_t_3) == Py_None) || likely(__Pyx_TypeTest(__pyx_t_3, __pyx_memoryview_type))))) __PYX_ERR(2, 778, __pyx_L1_error)
     __pyx_r = ((struct __pyx_memoryview_obj *)__pyx_t_3);
     __pyx_t_3 = 0;
     goto __pyx_L0;
   }
-# 43159 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_9);
@@ -32644,7 +31190,6 @@ static struct __pyx_memoryview_obj *__pyx_memview_slice(struct __pyx_memoryview_
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 43180 "sisl/physics/_matrix_phase.c"
 static int __pyx_memoryview_slice_memviewslice(__Pyx_memviewslice *__pyx_v_dst, Py_ssize_t __pyx_v_shape, Py_ssize_t __pyx_v_stride, Py_ssize_t __pyx_v_suboffset, int __pyx_v_dim, int __pyx_v_new_ndim, int *__pyx_v_suboffset_dim, Py_ssize_t __pyx_v_start, Py_ssize_t __pyx_v_stop, Py_ssize_t __pyx_v_step, int __pyx_v_have_start, int __pyx_v_have_stop, int __pyx_v_have_step, int __pyx_v_is_slice) {
   Py_ssize_t __pyx_v_new_shape;
   int __pyx_v_negative_step;
@@ -32652,31 +31197,22 @@ static int __pyx_memoryview_slice_memviewslice(__Pyx_memviewslice *__pyx_v_dst, 
   int __pyx_t_1;
   int __pyx_t_2;
   int __pyx_t_3;
-# 43195 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((!(__pyx_v_is_slice != 0)) != 0);
   if (__pyx_t_1) {
-# 43205 "sisl/physics/_matrix_phase.c"
     __pyx_t_1 = ((__pyx_v_start < 0) != 0);
     if (__pyx_t_1) {
-# 43215 "sisl/physics/_matrix_phase.c"
       __pyx_v_start = (__pyx_v_start + __pyx_v_shape);
-# 43224 "sisl/physics/_matrix_phase.c"
     }
-# 43233 "sisl/physics/_matrix_phase.c"
     __pyx_t_1 = (0 <= __pyx_v_start);
     if (__pyx_t_1) {
       __pyx_t_1 = (__pyx_v_start < __pyx_v_shape);
     }
     __pyx_t_2 = ((!(__pyx_t_1 != 0)) != 0);
     if (__pyx_t_2) {
-# 43247 "sisl/physics/_matrix_phase.c"
       __pyx_t_3 = __pyx_memoryview_err_dim(__pyx_builtin_IndexError, ((char *)"Index out of bounds (axis %d)"), __pyx_v_dim); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(2, 828, __pyx_L1_error)
-# 43256 "sisl/physics/_matrix_phase.c"
     }
-# 43265 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 43275 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_1 = ((__pyx_v_have_step != 0) != 0);
     if (__pyx_t_1) {
@@ -32688,7 +31224,6 @@ static int __pyx_memoryview_slice_memviewslice(__Pyx_memviewslice *__pyx_v_dst, 
     __pyx_t_2 = __pyx_t_1;
     __pyx_L6_bool_binop_done:;
     __pyx_v_negative_step = __pyx_t_2;
-# 43294 "sisl/physics/_matrix_phase.c"
     __pyx_t_1 = (__pyx_v_have_step != 0);
     if (__pyx_t_1) {
     } else {
@@ -32699,190 +31234,126 @@ static int __pyx_memoryview_slice_memviewslice(__Pyx_memviewslice *__pyx_v_dst, 
     __pyx_t_2 = __pyx_t_1;
     __pyx_L9_bool_binop_done:;
     if (__pyx_t_2) {
-# 43312 "sisl/physics/_matrix_phase.c"
       __pyx_t_3 = __pyx_memoryview_err_dim(__pyx_builtin_ValueError, ((char *)"Step may not be zero (axis %d)"), __pyx_v_dim); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(2, 834, __pyx_L1_error)
-# 43321 "sisl/physics/_matrix_phase.c"
     }
-# 43330 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = (__pyx_v_have_start != 0);
     if (__pyx_t_2) {
-# 43340 "sisl/physics/_matrix_phase.c"
       __pyx_t_2 = ((__pyx_v_start < 0) != 0);
       if (__pyx_t_2) {
-# 43350 "sisl/physics/_matrix_phase.c"
         __pyx_v_start = (__pyx_v_start + __pyx_v_shape);
-# 43359 "sisl/physics/_matrix_phase.c"
         __pyx_t_2 = ((__pyx_v_start < 0) != 0);
         if (__pyx_t_2) {
-# 43369 "sisl/physics/_matrix_phase.c"
           __pyx_v_start = 0;
-# 43378 "sisl/physics/_matrix_phase.c"
         }
-# 43387 "sisl/physics/_matrix_phase.c"
         goto __pyx_L12;
       }
-# 43397 "sisl/physics/_matrix_phase.c"
       __pyx_t_2 = ((__pyx_v_start >= __pyx_v_shape) != 0);
       if (__pyx_t_2) {
-# 43407 "sisl/physics/_matrix_phase.c"
         __pyx_t_2 = (__pyx_v_negative_step != 0);
         if (__pyx_t_2) {
-# 43417 "sisl/physics/_matrix_phase.c"
           __pyx_v_start = (__pyx_v_shape - 1);
-# 43426 "sisl/physics/_matrix_phase.c"
           goto __pyx_L14;
         }
-# 43436 "sisl/physics/_matrix_phase.c"
                  {
           __pyx_v_start = __pyx_v_shape;
         }
         __pyx_L14:;
-# 43448 "sisl/physics/_matrix_phase.c"
       }
       __pyx_L12:;
-# 43458 "sisl/physics/_matrix_phase.c"
       goto __pyx_L11;
     }
-# 43468 "sisl/physics/_matrix_phase.c"
              {
       __pyx_t_2 = (__pyx_v_negative_step != 0);
       if (__pyx_t_2) {
-# 43479 "sisl/physics/_matrix_phase.c"
         __pyx_v_start = (__pyx_v_shape - 1);
-# 43488 "sisl/physics/_matrix_phase.c"
         goto __pyx_L15;
       }
-# 43498 "sisl/physics/_matrix_phase.c"
                {
         __pyx_v_start = 0;
       }
       __pyx_L15:;
     }
     __pyx_L11:;
-# 43512 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = (__pyx_v_have_stop != 0);
     if (__pyx_t_2) {
-# 43522 "sisl/physics/_matrix_phase.c"
       __pyx_t_2 = ((__pyx_v_stop < 0) != 0);
       if (__pyx_t_2) {
-# 43532 "sisl/physics/_matrix_phase.c"
         __pyx_v_stop = (__pyx_v_stop + __pyx_v_shape);
-# 43541 "sisl/physics/_matrix_phase.c"
         __pyx_t_2 = ((__pyx_v_stop < 0) != 0);
         if (__pyx_t_2) {
-# 43551 "sisl/physics/_matrix_phase.c"
           __pyx_v_stop = 0;
-# 43560 "sisl/physics/_matrix_phase.c"
         }
-# 43569 "sisl/physics/_matrix_phase.c"
         goto __pyx_L17;
       }
-# 43579 "sisl/physics/_matrix_phase.c"
       __pyx_t_2 = ((__pyx_v_stop > __pyx_v_shape) != 0);
       if (__pyx_t_2) {
-# 43589 "sisl/physics/_matrix_phase.c"
         __pyx_v_stop = __pyx_v_shape;
-# 43598 "sisl/physics/_matrix_phase.c"
       }
       __pyx_L17:;
-# 43608 "sisl/physics/_matrix_phase.c"
       goto __pyx_L16;
     }
-# 43618 "sisl/physics/_matrix_phase.c"
              {
       __pyx_t_2 = (__pyx_v_negative_step != 0);
       if (__pyx_t_2) {
-# 43629 "sisl/physics/_matrix_phase.c"
         __pyx_v_stop = -1L;
-# 43638 "sisl/physics/_matrix_phase.c"
         goto __pyx_L19;
       }
-# 43648 "sisl/physics/_matrix_phase.c"
                {
         __pyx_v_stop = __pyx_v_shape;
       }
       __pyx_L19:;
     }
     __pyx_L16:;
-# 43662 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = ((!(__pyx_v_have_step != 0)) != 0);
     if (__pyx_t_2) {
-# 43672 "sisl/physics/_matrix_phase.c"
       __pyx_v_step = 1;
-# 43681 "sisl/physics/_matrix_phase.c"
     }
-# 43690 "sisl/physics/_matrix_phase.c"
     __pyx_v_new_shape = ((__pyx_v_stop - __pyx_v_start) / __pyx_v_step);
-# 43699 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = (((__pyx_v_stop - __pyx_v_start) - (__pyx_v_step * __pyx_v_new_shape)) != 0);
     if (__pyx_t_2) {
-# 43709 "sisl/physics/_matrix_phase.c"
       __pyx_v_new_shape = (__pyx_v_new_shape + 1);
-# 43718 "sisl/physics/_matrix_phase.c"
     }
-# 43727 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = ((__pyx_v_new_shape < 0) != 0);
     if (__pyx_t_2) {
-# 43737 "sisl/physics/_matrix_phase.c"
       __pyx_v_new_shape = 0;
-# 43746 "sisl/physics/_matrix_phase.c"
     }
-# 43755 "sisl/physics/_matrix_phase.c"
     (__pyx_v_dst->strides[__pyx_v_new_ndim]) = (__pyx_v_stride * __pyx_v_step);
-# 43764 "sisl/physics/_matrix_phase.c"
     (__pyx_v_dst->shape[__pyx_v_new_ndim]) = __pyx_v_new_shape;
-# 43773 "sisl/physics/_matrix_phase.c"
     (__pyx_v_dst->suboffsets[__pyx_v_new_ndim]) = __pyx_v_suboffset;
   }
   __pyx_L3:;
-# 43784 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = (((__pyx_v_suboffset_dim[0]) < 0) != 0);
   if (__pyx_t_2) {
-# 43794 "sisl/physics/_matrix_phase.c"
     __pyx_v_dst->data = (__pyx_v_dst->data + (__pyx_v_start * __pyx_v_stride));
-# 43803 "sisl/physics/_matrix_phase.c"
     goto __pyx_L23;
   }
-# 43813 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_3 = (__pyx_v_suboffset_dim[0]);
     (__pyx_v_dst->suboffsets[__pyx_t_3]) = ((__pyx_v_dst->suboffsets[__pyx_t_3]) + (__pyx_v_start * __pyx_v_stride));
   }
   __pyx_L23:;
-# 43826 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = ((__pyx_v_suboffset >= 0) != 0);
   if (__pyx_t_2) {
-# 43836 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = ((!(__pyx_v_is_slice != 0)) != 0);
     if (__pyx_t_2) {
-# 43846 "sisl/physics/_matrix_phase.c"
       __pyx_t_2 = ((__pyx_v_new_ndim == 0) != 0);
       if (__pyx_t_2) {
-# 43856 "sisl/physics/_matrix_phase.c"
         __pyx_v_dst->data = ((((char **)__pyx_v_dst->data)[0]) + __pyx_v_suboffset);
-# 43865 "sisl/physics/_matrix_phase.c"
         goto __pyx_L26;
       }
-# 43875 "sisl/physics/_matrix_phase.c"
                {
-# 43884 "sisl/physics/_matrix_phase.c"
         __pyx_t_3 = __pyx_memoryview_err_dim(__pyx_builtin_IndexError, ((char *)"All dimensions preceding dimension %d must be indexed and not sliced"), __pyx_v_dim); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(2, 895, __pyx_L1_error)
       }
       __pyx_L26:;
-# 43895 "sisl/physics/_matrix_phase.c"
       goto __pyx_L25;
     }
-# 43905 "sisl/physics/_matrix_phase.c"
              {
       (__pyx_v_suboffset_dim[0]) = __pyx_v_new_ndim;
     }
     __pyx_L25:;
-# 43917 "sisl/physics/_matrix_phase.c"
   }
-# 43926 "sisl/physics/_matrix_phase.c"
   __pyx_r = 0;
   goto __pyx_L0;
-# 43938 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   {
     #ifdef WITH_THREAD
@@ -32897,7 +31368,6 @@ static int __pyx_memoryview_slice_memviewslice(__Pyx_memviewslice *__pyx_v_dst, 
   __pyx_L0:;
   return __pyx_r;
 }
-# 43961 "sisl/physics/_matrix_phase.c"
 static char *__pyx_pybuffer_index(Py_buffer *__pyx_v_view, char *__pyx_v_bufp, Py_ssize_t __pyx_v_index, Py_ssize_t __pyx_v_dim) {
   Py_ssize_t __pyx_v_shape;
   Py_ssize_t __pyx_v_stride;
@@ -32911,15 +31381,11 @@ static char *__pyx_pybuffer_index(Py_buffer *__pyx_v_view, char *__pyx_v_bufp, P
   PyObject *__pyx_t_3 = NULL;
   PyObject *__pyx_t_4 = NULL;
   __Pyx_RefNannySetupContext("pybuffer_index", 0);
-# 43982 "sisl/physics/_matrix_phase.c"
   __pyx_v_suboffset = -1L;
-# 43991 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __pyx_v_view->itemsize;
   __pyx_v_itemsize = __pyx_t_1;
-# 44001 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = ((__pyx_v_view->ndim == 0) != 0);
   if (__pyx_t_2) {
-# 44011 "sisl/physics/_matrix_phase.c"
     if (unlikely(__pyx_v_itemsize == 0)) {
       PyErr_SetString(PyExc_ZeroDivisionError, "integer division or modulo by zero");
       __PYX_ERR(2, 913, __pyx_L1_error)
@@ -32929,34 +31395,23 @@ static char *__pyx_pybuffer_index(Py_buffer *__pyx_v_view, char *__pyx_v_bufp, P
       __PYX_ERR(2, 913, __pyx_L1_error)
     }
     __pyx_v_shape = __Pyx_div_Py_ssize_t(__pyx_v_view->len, __pyx_v_itemsize);
-# 44028 "sisl/physics/_matrix_phase.c"
     __pyx_v_stride = __pyx_v_itemsize;
-# 44037 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 44047 "sisl/physics/_matrix_phase.c"
            {
     __pyx_v_shape = (__pyx_v_view->shape[__pyx_v_dim]);
-# 44057 "sisl/physics/_matrix_phase.c"
     __pyx_v_stride = (__pyx_v_view->strides[__pyx_v_dim]);
-# 44066 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = ((__pyx_v_view->suboffsets != NULL) != 0);
     if (__pyx_t_2) {
-# 44076 "sisl/physics/_matrix_phase.c"
       __pyx_v_suboffset = (__pyx_v_view->suboffsets[__pyx_v_dim]);
-# 44085 "sisl/physics/_matrix_phase.c"
     }
   }
   __pyx_L3:;
-# 44096 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = ((__pyx_v_index < 0) != 0);
   if (__pyx_t_2) {
-# 44106 "sisl/physics/_matrix_phase.c"
     __pyx_v_index = (__pyx_v_index + (__pyx_v_view->shape[__pyx_v_dim]));
-# 44115 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = ((__pyx_v_index < 0) != 0);
     if (unlikely(__pyx_t_2)) {
-# 44125 "sisl/physics/_matrix_phase.c"
       __pyx_t_3 = PyInt_FromSsize_t(__pyx_v_dim); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 924, __pyx_L1_error)
       __Pyx_GOTREF(__pyx_t_3);
       __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_Out_of_bounds_on_buffer_access_a, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 924, __pyx_L1_error)
@@ -32968,14 +31423,10 @@ static char *__pyx_pybuffer_index(Py_buffer *__pyx_v_view, char *__pyx_v_bufp, P
       __Pyx_Raise(__pyx_t_3, 0, 0, 0);
       __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
       __PYX_ERR(2, 924, __pyx_L1_error)
-# 44144 "sisl/physics/_matrix_phase.c"
     }
-# 44153 "sisl/physics/_matrix_phase.c"
   }
-# 44162 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = ((__pyx_v_index >= __pyx_v_shape) != 0);
   if (unlikely(__pyx_t_2)) {
-# 44172 "sisl/physics/_matrix_phase.c"
     __pyx_t_3 = PyInt_FromSsize_t(__pyx_v_dim); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 927, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_Out_of_bounds_on_buffer_access_a, __pyx_t_3); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 927, __pyx_L1_error)
@@ -32987,21 +31438,14 @@ static char *__pyx_pybuffer_index(Py_buffer *__pyx_v_view, char *__pyx_v_bufp, P
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __PYX_ERR(2, 927, __pyx_L1_error)
-# 44191 "sisl/physics/_matrix_phase.c"
   }
-# 44200 "sisl/physics/_matrix_phase.c"
   __pyx_v_resultp = (__pyx_v_bufp + (__pyx_v_index * __pyx_v_stride));
-# 44209 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = ((__pyx_v_suboffset >= 0) != 0);
   if (__pyx_t_2) {
-# 44219 "sisl/physics/_matrix_phase.c"
     __pyx_v_resultp = ((((char **)__pyx_v_resultp)[0]) + __pyx_v_suboffset);
-# 44228 "sisl/physics/_matrix_phase.c"
   }
-# 44237 "sisl/physics/_matrix_phase.c"
   __pyx_r = __pyx_v_resultp;
   goto __pyx_L0;
-# 44249 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_XDECREF(__pyx_t_4);
@@ -33011,7 +31455,6 @@ static char *__pyx_pybuffer_index(Py_buffer *__pyx_v_view, char *__pyx_v_bufp, P
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 44267 "sisl/physics/_matrix_phase.c"
 static int __pyx_memslice_transpose(__Pyx_memviewslice *__pyx_v_memslice) {
   int __pyx_v_ndim;
   Py_ssize_t *__pyx_v_shape;
@@ -33028,33 +31471,25 @@ static int __pyx_memslice_transpose(__Pyx_memviewslice *__pyx_v_memslice) {
   int __pyx_t_7;
   int __pyx_t_8;
   int __pyx_t_9;
-# 44291 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __pyx_v_memslice->memview->view.ndim;
   __pyx_v_ndim = __pyx_t_1;
-# 44301 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __pyx_v_memslice->shape;
   __pyx_v_shape = __pyx_t_2;
-# 44311 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __pyx_v_memslice->strides;
   __pyx_v_strides = __pyx_t_2;
-# 44321 "sisl/physics/_matrix_phase.c"
   __pyx_t_3 = __Pyx_div_long(__pyx_v_ndim, 2);
   __pyx_t_4 = __pyx_t_3;
   for (__pyx_t_1 = 0; __pyx_t_1 < __pyx_t_4; __pyx_t_1+=1) {
     __pyx_v_i = __pyx_t_1;
-# 44333 "sisl/physics/_matrix_phase.c"
     __pyx_v_j = ((__pyx_v_ndim - 1) - __pyx_v_i);
-# 44342 "sisl/physics/_matrix_phase.c"
     __pyx_t_5 = (__pyx_v_strides[__pyx_v_j]);
     __pyx_t_6 = (__pyx_v_strides[__pyx_v_i]);
     (__pyx_v_strides[__pyx_v_i]) = __pyx_t_5;
     (__pyx_v_strides[__pyx_v_j]) = __pyx_t_6;
-# 44354 "sisl/physics/_matrix_phase.c"
     __pyx_t_6 = (__pyx_v_shape[__pyx_v_j]);
     __pyx_t_5 = (__pyx_v_shape[__pyx_v_i]);
     (__pyx_v_shape[__pyx_v_i]) = __pyx_t_6;
     (__pyx_v_shape[__pyx_v_j]) = __pyx_t_5;
-# 44366 "sisl/physics/_matrix_phase.c"
     __pyx_t_8 = (((__pyx_v_memslice->suboffsets[__pyx_v_i]) >= 0) != 0);
     if (!__pyx_t_8) {
     } else {
@@ -33065,15 +31500,11 @@ static int __pyx_memslice_transpose(__Pyx_memviewslice *__pyx_v_memslice) {
     __pyx_t_7 = __pyx_t_8;
     __pyx_L6_bool_binop_done:;
     if (__pyx_t_7) {
-# 44384 "sisl/physics/_matrix_phase.c"
       __pyx_t_9 = __pyx_memoryview_err(__pyx_builtin_ValueError, ((char *)"Cannot transpose memoryview with indirect dimensions")); if (unlikely(__pyx_t_9 == ((int)-1))) __PYX_ERR(2, 953, __pyx_L1_error)
-# 44393 "sisl/physics/_matrix_phase.c"
     }
   }
-# 44403 "sisl/physics/_matrix_phase.c"
   __pyx_r = 1;
   goto __pyx_L0;
-# 44415 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   {
     #ifdef WITH_THREAD
@@ -33088,7 +31519,6 @@ static int __pyx_memslice_transpose(__Pyx_memviewslice *__pyx_v_memslice) {
   __pyx_L0:;
   return __pyx_r;
 }
-# 44439 "sisl/physics/_matrix_phase.c"
 static void __pyx_memoryviewslice___dealloc__(PyObject *__pyx_v_self);
 static void __pyx_memoryviewslice___dealloc__(PyObject *__pyx_v_self) {
   __Pyx_RefNannyDeclarations
@@ -33102,31 +31532,24 @@ static void __pyx_memoryviewslice___dealloc__(PyObject *__pyx_v_self) {
 static void __pyx_memoryviewslice___pyx_pf_15View_dot_MemoryView_16_memoryviewslice___dealloc__(struct __pyx_memoryviewslice_obj *__pyx_v_self) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__dealloc__", 0);
-# 44460 "sisl/physics/_matrix_phase.c"
   __PYX_XDEC_MEMVIEW((&__pyx_v_self->from_slice), 1);
-# 44471 "sisl/physics/_matrix_phase.c"
   __Pyx_RefNannyFinishContext();
 }
-# 44482 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_memoryviewslice_convert_item_to_object(struct __pyx_memoryviewslice_obj *__pyx_v_self, char *__pyx_v_itemp) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   int __pyx_t_1;
   PyObject *__pyx_t_2 = NULL;
   __Pyx_RefNannySetupContext("convert_item_to_object", 0);
-# 44496 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((__pyx_v_self->to_object_func != NULL) != 0);
   if (__pyx_t_1) {
-# 44506 "sisl/physics/_matrix_phase.c"
     __Pyx_XDECREF(__pyx_r);
     __pyx_t_2 = __pyx_v_self->to_object_func(__pyx_v_itemp); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 977, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_r = __pyx_t_2;
     __pyx_t_2 = 0;
     goto __pyx_L0;
-# 44520 "sisl/physics/_matrix_phase.c"
   }
-# 44529 "sisl/physics/_matrix_phase.c"
            {
     __Pyx_XDECREF(__pyx_r);
     __pyx_t_2 = __pyx_memoryview_convert_item_to_object(((struct __pyx_memoryview_obj *)__pyx_v_self), __pyx_v_itemp); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 979, __pyx_L1_error)
@@ -33135,7 +31558,6 @@ static PyObject *__pyx_memoryviewslice_convert_item_to_object(struct __pyx_memor
     __pyx_t_2 = 0;
     goto __pyx_L0;
   }
-# 44547 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_AddTraceback("View.MemoryView._memoryviewslice.convert_item_to_object", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -33145,7 +31567,6 @@ static PyObject *__pyx_memoryviewslice_convert_item_to_object(struct __pyx_memor
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 44565 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_memoryviewslice_assign_item_from_object(struct __pyx_memoryviewslice_obj *__pyx_v_self, char *__pyx_v_itemp, PyObject *__pyx_v_value) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -33153,22 +31574,17 @@ static PyObject *__pyx_memoryviewslice_assign_item_from_object(struct __pyx_memo
   int __pyx_t_2;
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("assign_item_from_object", 0);
-# 44580 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((__pyx_v_self->to_dtype_func != NULL) != 0);
   if (__pyx_t_1) {
-# 44590 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = __pyx_v_self->to_dtype_func(__pyx_v_itemp, __pyx_v_value); if (unlikely(__pyx_t_2 == ((int)0))) __PYX_ERR(2, 983, __pyx_L1_error)
-# 44599 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 44609 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_3 = __pyx_memoryview_assign_item_from_object(((struct __pyx_memoryview_obj *)__pyx_v_self), __pyx_v_itemp, __pyx_v_value); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 985, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   }
   __pyx_L3:;
-# 44625 "sisl/physics/_matrix_phase.c"
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -33180,7 +31596,6 @@ static PyObject *__pyx_memoryviewslice_assign_item_from_object(struct __pyx_memo
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 44646 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw_15View_dot_MemoryView_16_memoryviewslice_4base_1__get__(PyObject *__pyx_v_self);
 static PyObject *__pyx_pw_15View_dot_MemoryView_16_memoryviewslice_4base_1__get__(PyObject *__pyx_v_self) {
   PyObject *__pyx_r = 0;
@@ -33197,18 +31612,15 @@ static PyObject *__pyx_pf_15View_dot_MemoryView_16_memoryviewslice_4base___get__
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__get__", 0);
-# 44670 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v_self->from_object);
   __pyx_r = __pyx_v_self->from_object;
   goto __pyx_L0;
-# 44684 "sisl/physics/_matrix_phase.c"
   __pyx_L0:;
   __Pyx_XGIVEREF(__pyx_r);
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 44697 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw___pyx_memoryviewslice_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused);
 static PyObject *__pyx_pw___pyx_memoryviewslice_1__reduce_cython__(PyObject *__pyx_v_self, CYTHON_UNUSED PyObject *unused) {
   PyObject *__pyx_r = 0;
@@ -33238,7 +31650,6 @@ static PyObject *__pyx_pf___pyx_memoryviewslice___reduce_cython__(CYTHON_UNUSED 
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(2, 2, __pyx_L1_error)
-# 44734 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("View.MemoryView._memoryviewslice.__reduce_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -33247,7 +31658,6 @@ static PyObject *__pyx_pf___pyx_memoryviewslice___reduce_cython__(CYTHON_UNUSED 
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 44751 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw___pyx_memoryviewslice_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state);
 static PyObject *__pyx_pw___pyx_memoryviewslice_3__setstate_cython__(PyObject *__pyx_v_self, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = 0;
@@ -33276,7 +31686,6 @@ static PyObject *__pyx_pf___pyx_memoryviewslice_2__setstate_cython__(CYTHON_UNUS
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(2, 4, __pyx_L1_error)
-# 44788 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("View.MemoryView._memoryviewslice.__setstate_cython__", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -33285,7 +31694,6 @@ static PyObject *__pyx_pf___pyx_memoryviewslice_2__setstate_cython__(CYTHON_UNUS
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 44805 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_memoryview_fromslice(__Pyx_memviewslice __pyx_v_memviewslice, int __pyx_v_ndim, PyObject *(*__pyx_v_to_object_func)(char *), int (*__pyx_v_to_dtype_func)(char *, PyObject *), int __pyx_v_dtype_is_object) {
   struct __pyx_memoryviewslice_obj *__pyx_v_result = 0;
   Py_ssize_t __pyx_v_suboffset;
@@ -33302,16 +31710,12 @@ static PyObject *__pyx_memoryview_fromslice(__Pyx_memviewslice __pyx_v_memviewsl
   Py_ssize_t *__pyx_t_8;
   Py_ssize_t __pyx_t_9;
   __Pyx_RefNannySetupContext("memoryview_fromslice", 0);
-# 44829 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((((PyObject *)__pyx_v_memviewslice.memview) == Py_None) != 0);
   if (__pyx_t_1) {
-# 44839 "sisl/physics/_matrix_phase.c"
     __Pyx_XDECREF(__pyx_r);
     __pyx_r = Py_None; __Pyx_INCREF(Py_None);
     goto __pyx_L0;
-# 44850 "sisl/physics/_matrix_phase.c"
   }
-# 44859 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyBool_FromLong(__pyx_v_dtype_is_object); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 1009, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = PyTuple_New(3); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 1009, __pyx_L1_error)
@@ -33330,11 +31734,8 @@ static PyObject *__pyx_memoryview_fromslice(__Pyx_memviewslice __pyx_v_memviewsl
   __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
   __pyx_v_result = ((struct __pyx_memoryviewslice_obj *)__pyx_t_2);
   __pyx_t_2 = 0;
-# 44885 "sisl/physics/_matrix_phase.c"
   __pyx_v_result->from_slice = __pyx_v_memviewslice;
-# 44894 "sisl/physics/_matrix_phase.c"
   __PYX_INC_MEMVIEW((&__pyx_v_memviewslice), 1);
-# 44903 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_v_memviewslice.memview), __pyx_n_s_base); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 1014, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_GIVEREF(__pyx_t_2);
@@ -33342,59 +31743,39 @@ static PyObject *__pyx_memoryview_fromslice(__Pyx_memviewslice __pyx_v_memviewsl
   __Pyx_DECREF(__pyx_v_result->from_object);
   __pyx_v_result->from_object = __pyx_t_2;
   __pyx_t_2 = 0;
-# 44918 "sisl/physics/_matrix_phase.c"
   __pyx_t_4 = __pyx_v_memviewslice.memview->typeinfo;
   __pyx_v_result->__pyx_base.typeinfo = __pyx_t_4;
-# 44928 "sisl/physics/_matrix_phase.c"
   __pyx_t_5 = __pyx_v_memviewslice.memview->view;
   __pyx_v_result->__pyx_base.view = __pyx_t_5;
-# 44938 "sisl/physics/_matrix_phase.c"
   __pyx_v_result->__pyx_base.view.buf = ((void *)__pyx_v_memviewslice.data);
-# 44947 "sisl/physics/_matrix_phase.c"
   __pyx_v_result->__pyx_base.view.ndim = __pyx_v_ndim;
-# 44956 "sisl/physics/_matrix_phase.c"
   ((Py_buffer *)(&__pyx_v_result->__pyx_base.view))->obj = Py_None;
-# 44965 "sisl/physics/_matrix_phase.c"
   Py_INCREF(Py_None);
-# 44974 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((((struct __pyx_memoryview_obj *)__pyx_v_memviewslice.memview)->flags & PyBUF_WRITABLE) != 0);
   if (__pyx_t_1) {
-# 44984 "sisl/physics/_matrix_phase.c"
     __pyx_v_result->__pyx_base.flags = PyBUF_RECORDS;
-# 44993 "sisl/physics/_matrix_phase.c"
     goto __pyx_L4;
   }
-# 45003 "sisl/physics/_matrix_phase.c"
            {
     __pyx_v_result->__pyx_base.flags = PyBUF_RECORDS_RO;
   }
   __pyx_L4:;
-# 45015 "sisl/physics/_matrix_phase.c"
   __pyx_v_result->__pyx_base.view.shape = ((Py_ssize_t *)__pyx_v_result->from_slice.shape);
-# 45024 "sisl/physics/_matrix_phase.c"
   __pyx_v_result->__pyx_base.view.strides = ((Py_ssize_t *)__pyx_v_result->from_slice.strides);
-# 45033 "sisl/physics/_matrix_phase.c"
   __pyx_v_result->__pyx_base.view.suboffsets = NULL;
-# 45042 "sisl/physics/_matrix_phase.c"
   __pyx_t_7 = (__pyx_v_result->from_slice.suboffsets + __pyx_v_ndim);
   for (__pyx_t_8 = __pyx_v_result->from_slice.suboffsets; __pyx_t_8 < __pyx_t_7; __pyx_t_8++) {
     __pyx_t_6 = __pyx_t_8;
     __pyx_v_suboffset = (__pyx_t_6[0]);
-# 45054 "sisl/physics/_matrix_phase.c"
     __pyx_t_1 = ((__pyx_v_suboffset >= 0) != 0);
     if (__pyx_t_1) {
-# 45064 "sisl/physics/_matrix_phase.c"
       __pyx_v_result->__pyx_base.view.suboffsets = ((Py_ssize_t *)__pyx_v_result->from_slice.suboffsets);
-# 45073 "sisl/physics/_matrix_phase.c"
       goto __pyx_L6_break;
-# 45082 "sisl/physics/_matrix_phase.c"
     }
   }
   __pyx_L6_break:;
-# 45093 "sisl/physics/_matrix_phase.c"
   __pyx_t_9 = __pyx_v_result->__pyx_base.view.itemsize;
   __pyx_v_result->__pyx_base.view.len = __pyx_t_9;
-# 45103 "sisl/physics/_matrix_phase.c"
   __pyx_t_7 = (__pyx_v_result->__pyx_base.view.shape + __pyx_v_ndim);
   for (__pyx_t_8 = __pyx_v_result->__pyx_base.view.shape; __pyx_t_8 < __pyx_t_7; __pyx_t_8++) {
     __pyx_t_6 = __pyx_t_8;
@@ -33402,7 +31783,6 @@ static PyObject *__pyx_memoryview_fromslice(__Pyx_memviewslice __pyx_v_memviewsl
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_XDECREF_SET(__pyx_v_length, __pyx_t_2);
     __pyx_t_2 = 0;
-# 45118 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = PyInt_FromSsize_t(__pyx_v_result->__pyx_base.view.len); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 1040, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_3 = PyNumber_InPlaceMultiply(__pyx_t_2, __pyx_v_length); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 1040, __pyx_L1_error)
@@ -33412,16 +31792,12 @@ static PyObject *__pyx_memoryview_fromslice(__Pyx_memviewslice __pyx_v_memviewsl
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __pyx_v_result->__pyx_base.view.len = __pyx_t_9;
   }
-# 45135 "sisl/physics/_matrix_phase.c"
   __pyx_v_result->to_object_func = __pyx_v_to_object_func;
-# 45144 "sisl/physics/_matrix_phase.c"
   __pyx_v_result->to_dtype_func = __pyx_v_to_dtype_func;
-# 45153 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(((PyObject *)__pyx_v_result));
   __pyx_r = ((PyObject *)__pyx_v_result);
   goto __pyx_L0;
-# 45167 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
@@ -33434,7 +31810,6 @@ static PyObject *__pyx_memoryview_fromslice(__Pyx_memviewslice __pyx_v_memviewsl
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 45188 "sisl/physics/_matrix_phase.c"
 static __Pyx_memviewslice *__pyx_memoryview_get_slice_from_memoryview(struct __pyx_memoryview_obj *__pyx_v_memview, __Pyx_memviewslice *__pyx_v_mslice) {
   struct __pyx_memoryviewslice_obj *__pyx_v_obj = 0;
   __Pyx_memviewslice *__pyx_r;
@@ -33443,29 +31818,22 @@ static __Pyx_memviewslice *__pyx_memoryview_get_slice_from_memoryview(struct __p
   int __pyx_t_2;
   PyObject *__pyx_t_3 = NULL;
   __Pyx_RefNannySetupContext("get_slice_from_memview", 0);
-# 45204 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_TypeCheck(((PyObject *)__pyx_v_memview), __pyx_memoryviewslice_type);
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
-# 45215 "sisl/physics/_matrix_phase.c"
     if (!(likely(((((PyObject *)__pyx_v_memview)) == Py_None) || likely(__Pyx_TypeTest(((PyObject *)__pyx_v_memview), __pyx_memoryviewslice_type))))) __PYX_ERR(2, 1052, __pyx_L1_error)
     __pyx_t_3 = ((PyObject *)__pyx_v_memview);
     __Pyx_INCREF(__pyx_t_3);
     __pyx_v_obj = ((struct __pyx_memoryviewslice_obj *)__pyx_t_3);
     __pyx_t_3 = 0;
-# 45228 "sisl/physics/_matrix_phase.c"
     __pyx_r = (&__pyx_v_obj->from_slice);
     goto __pyx_L0;
-# 45238 "sisl/physics/_matrix_phase.c"
   }
-# 45247 "sisl/physics/_matrix_phase.c"
            {
     __pyx_memoryview_slice_copy(__pyx_v_memview, __pyx_v_mslice);
-# 45257 "sisl/physics/_matrix_phase.c"
     __pyx_r = __pyx_v_mslice;
     goto __pyx_L0;
   }
-# 45270 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_3);
   __Pyx_WriteUnraisable("View.MemoryView.get_slice_from_memview", __pyx_clineno, __pyx_lineno, __pyx_filename, 1, 0);
@@ -33475,7 +31843,6 @@ static __Pyx_memviewslice *__pyx_memoryview_get_slice_from_memoryview(struct __p
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 45288 "sisl/physics/_matrix_phase.c"
 static void __pyx_memoryview_slice_copy(struct __pyx_memoryview_obj *__pyx_v_memview, __Pyx_memviewslice *__pyx_v_dst) {
   int __pyx_v_dim;
   Py_ssize_t *__pyx_v_shape;
@@ -33488,29 +31855,20 @@ static void __pyx_memoryview_slice_copy(struct __pyx_memoryview_obj *__pyx_v_mem
   int __pyx_t_4;
   Py_ssize_t __pyx_t_5;
   __Pyx_RefNannySetupContext("slice_copy", 0);
-# 45308 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __pyx_v_memview->view.shape;
   __pyx_v_shape = __pyx_t_1;
-# 45318 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __pyx_v_memview->view.strides;
   __pyx_v_strides = __pyx_t_1;
-# 45328 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __pyx_v_memview->view.suboffsets;
   __pyx_v_suboffsets = __pyx_t_1;
-# 45338 "sisl/physics/_matrix_phase.c"
   __pyx_v_dst->memview = ((struct __pyx_memoryview_obj *)__pyx_v_memview);
-# 45347 "sisl/physics/_matrix_phase.c"
   __pyx_v_dst->data = ((char *)__pyx_v_memview->view.buf);
-# 45356 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __pyx_v_memview->view.ndim;
   __pyx_t_3 = __pyx_t_2;
   for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
     __pyx_v_dim = __pyx_t_4;
-# 45368 "sisl/physics/_matrix_phase.c"
     (__pyx_v_dst->shape[__pyx_v_dim]) = (__pyx_v_shape[__pyx_v_dim]);
-# 45377 "sisl/physics/_matrix_phase.c"
     (__pyx_v_dst->strides[__pyx_v_dim]) = (__pyx_v_strides[__pyx_v_dim]);
-# 45386 "sisl/physics/_matrix_phase.c"
     if ((__pyx_v_suboffsets != 0)) {
       __pyx_t_5 = (__pyx_v_suboffsets[__pyx_v_dim]);
     } else {
@@ -33518,26 +31876,21 @@ static void __pyx_memoryview_slice_copy(struct __pyx_memoryview_obj *__pyx_v_mem
     }
     (__pyx_v_dst->suboffsets[__pyx_v_dim]) = __pyx_t_5;
   }
-# 45403 "sisl/physics/_matrix_phase.c"
   __Pyx_RefNannyFinishContext();
 }
-# 45414 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_memoryview_copy_object(struct __pyx_memoryview_obj *__pyx_v_memview) {
   __Pyx_memviewslice __pyx_v_memviewslice;
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
   PyObject *__pyx_t_1 = NULL;
   __Pyx_RefNannySetupContext("memoryview_copy", 0);
-# 45428 "sisl/physics/_matrix_phase.c"
   __pyx_memoryview_slice_copy(__pyx_v_memview, (&__pyx_v_memviewslice));
-# 45437 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __pyx_t_1 = __pyx_memoryview_copy_object_from_slice(__pyx_v_memview, (&__pyx_v_memviewslice)); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 1080, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_r = __pyx_t_1;
   __pyx_t_1 = 0;
   goto __pyx_L0;
-# 45453 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_AddTraceback("View.MemoryView.memoryview_copy", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -33547,7 +31900,6 @@ static PyObject *__pyx_memoryview_copy_object(struct __pyx_memoryview_obj *__pyx
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 45471 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_memoryview_copy_object_from_slice(struct __pyx_memoryview_obj *__pyx_v_memview, __Pyx_memviewslice *__pyx_v_memviewslice) {
   PyObject *(*__pyx_v_to_object_func)(char *);
   int (*__pyx_v_to_dtype_func)(char *, PyObject *);
@@ -33559,35 +31911,26 @@ static PyObject *__pyx_memoryview_copy_object_from_slice(struct __pyx_memoryview
   int (*__pyx_t_4)(char *, PyObject *);
   PyObject *__pyx_t_5 = NULL;
   __Pyx_RefNannySetupContext("memoryview_copy_from_slice", 0);
-# 45490 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_TypeCheck(((PyObject *)__pyx_v_memview), __pyx_memoryviewslice_type);
   __pyx_t_2 = (__pyx_t_1 != 0);
   if (__pyx_t_2) {
-# 45501 "sisl/physics/_matrix_phase.c"
     __pyx_t_3 = ((struct __pyx_memoryviewslice_obj *)__pyx_v_memview)->to_object_func;
     __pyx_v_to_object_func = __pyx_t_3;
-# 45511 "sisl/physics/_matrix_phase.c"
     __pyx_t_4 = ((struct __pyx_memoryviewslice_obj *)__pyx_v_memview)->to_dtype_func;
     __pyx_v_to_dtype_func = __pyx_t_4;
-# 45521 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 45531 "sisl/physics/_matrix_phase.c"
            {
     __pyx_v_to_object_func = NULL;
-# 45541 "sisl/physics/_matrix_phase.c"
     __pyx_v_to_dtype_func = NULL;
   }
   __pyx_L3:;
-# 45552 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
-# 45561 "sisl/physics/_matrix_phase.c"
   __pyx_t_5 = __pyx_memoryview_fromslice((__pyx_v_memviewslice[0]), __pyx_v_memview->view.ndim, __pyx_v_to_object_func, __pyx_v_to_dtype_func, __pyx_v_memview->dtype_is_object); if (unlikely(!__pyx_t_5)) __PYX_ERR(2, 1097, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_r = __pyx_t_5;
   __pyx_t_5 = 0;
   goto __pyx_L0;
-# 45576 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_5);
   __Pyx_AddTraceback("View.MemoryView.memoryview_copy_from_slice", __pyx_clineno, __pyx_lineno, __pyx_filename);
@@ -33597,28 +31940,21 @@ static PyObject *__pyx_memoryview_copy_object_from_slice(struct __pyx_memoryview
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 45594 "sisl/physics/_matrix_phase.c"
 static Py_ssize_t abs_py_ssize_t(Py_ssize_t __pyx_v_arg) {
   Py_ssize_t __pyx_r;
   int __pyx_t_1;
-# 45605 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((__pyx_v_arg < 0) != 0);
   if (__pyx_t_1) {
-# 45615 "sisl/physics/_matrix_phase.c"
     __pyx_r = (-__pyx_v_arg);
     goto __pyx_L0;
-# 45625 "sisl/physics/_matrix_phase.c"
   }
-# 45634 "sisl/physics/_matrix_phase.c"
            {
     __pyx_r = __pyx_v_arg;
     goto __pyx_L0;
   }
-# 45648 "sisl/physics/_matrix_phase.c"
   __pyx_L0:;
   return __pyx_r;
 }
-# 45660 "sisl/physics/_matrix_phase.c"
 static char __pyx_get_best_slice_order(__Pyx_memviewslice *__pyx_v_mslice, int __pyx_v_ndim) {
   int __pyx_v_i;
   Py_ssize_t __pyx_v_c_stride;
@@ -33628,58 +31964,40 @@ static char __pyx_get_best_slice_order(__Pyx_memviewslice *__pyx_v_mslice, int _
   int __pyx_t_2;
   int __pyx_t_3;
   int __pyx_t_4;
-# 45677 "sisl/physics/_matrix_phase.c"
   __pyx_v_c_stride = 0;
-# 45686 "sisl/physics/_matrix_phase.c"
   __pyx_v_f_stride = 0;
-# 45695 "sisl/physics/_matrix_phase.c"
   for (__pyx_t_1 = (__pyx_v_ndim - 1); __pyx_t_1 > -1; __pyx_t_1-=1) {
     __pyx_v_i = __pyx_t_1;
-# 45705 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = (((__pyx_v_mslice->shape[__pyx_v_i]) > 1) != 0);
     if (__pyx_t_2) {
-# 45715 "sisl/physics/_matrix_phase.c"
       __pyx_v_c_stride = (__pyx_v_mslice->strides[__pyx_v_i]);
-# 45724 "sisl/physics/_matrix_phase.c"
       goto __pyx_L4_break;
-# 45733 "sisl/physics/_matrix_phase.c"
     }
   }
   __pyx_L4_break:;
-# 45744 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __pyx_v_ndim;
   __pyx_t_3 = __pyx_t_1;
   for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
     __pyx_v_i = __pyx_t_4;
-# 45756 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = (((__pyx_v_mslice->shape[__pyx_v_i]) > 1) != 0);
     if (__pyx_t_2) {
-# 45766 "sisl/physics/_matrix_phase.c"
       __pyx_v_f_stride = (__pyx_v_mslice->strides[__pyx_v_i]);
-# 45775 "sisl/physics/_matrix_phase.c"
       goto __pyx_L7_break;
-# 45784 "sisl/physics/_matrix_phase.c"
     }
   }
   __pyx_L7_break:;
-# 45795 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = ((abs_py_ssize_t(__pyx_v_c_stride) <= abs_py_ssize_t(__pyx_v_f_stride)) != 0);
   if (__pyx_t_2) {
-# 45805 "sisl/physics/_matrix_phase.c"
     __pyx_r = 'C';
     goto __pyx_L0;
-# 45815 "sisl/physics/_matrix_phase.c"
   }
-# 45824 "sisl/physics/_matrix_phase.c"
            {
     __pyx_r = 'F';
     goto __pyx_L0;
   }
-# 45838 "sisl/physics/_matrix_phase.c"
   __pyx_L0:;
   return __pyx_r;
 }
-# 45850 "sisl/physics/_matrix_phase.c"
 static void _copy_strided_to_strided(char *__pyx_v_src_data, Py_ssize_t *__pyx_v_src_strides, char *__pyx_v_dst_data, Py_ssize_t *__pyx_v_dst_strides, Py_ssize_t *__pyx_v_src_shape, Py_ssize_t *__pyx_v_dst_shape, int __pyx_v_ndim, size_t __pyx_v_itemsize) {
   CYTHON_UNUSED Py_ssize_t __pyx_v_i;
   CYTHON_UNUSED Py_ssize_t __pyx_v_src_extent;
@@ -33692,18 +32010,12 @@ static void _copy_strided_to_strided(char *__pyx_v_src_data, Py_ssize_t *__pyx_v
   Py_ssize_t __pyx_t_4;
   Py_ssize_t __pyx_t_5;
   Py_ssize_t __pyx_t_6;
-# 45870 "sisl/physics/_matrix_phase.c"
   __pyx_v_src_extent = (__pyx_v_src_shape[0]);
-# 45879 "sisl/physics/_matrix_phase.c"
   __pyx_v_dst_extent = (__pyx_v_dst_shape[0]);
-# 45888 "sisl/physics/_matrix_phase.c"
   __pyx_v_src_stride = (__pyx_v_src_strides[0]);
-# 45897 "sisl/physics/_matrix_phase.c"
   __pyx_v_dst_stride = (__pyx_v_dst_strides[0]);
-# 45906 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((__pyx_v_ndim == 1) != 0);
   if (__pyx_t_1) {
-# 45916 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = ((__pyx_v_src_stride > 0) != 0);
     if (__pyx_t_2) {
     } else {
@@ -33716,7 +32028,6 @@ static void _copy_strided_to_strided(char *__pyx_v_src_data, Py_ssize_t *__pyx_v
       __pyx_t_1 = __pyx_t_2;
       goto __pyx_L5_bool_binop_done;
     }
-# 45936 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = (((size_t)__pyx_v_src_stride) == __pyx_v_itemsize);
     if (__pyx_t_2) {
       __pyx_t_2 = (__pyx_v_itemsize == ((size_t)__pyx_v_dst_stride));
@@ -33724,55 +32035,38 @@ static void _copy_strided_to_strided(char *__pyx_v_src_data, Py_ssize_t *__pyx_v
     __pyx_t_3 = (__pyx_t_2 != 0);
     __pyx_t_1 = __pyx_t_3;
     __pyx_L5_bool_binop_done:;
-# 45951 "sisl/physics/_matrix_phase.c"
     if (__pyx_t_1) {
-# 45960 "sisl/physics/_matrix_phase.c"
       (void)(memcpy(__pyx_v_dst_data, __pyx_v_src_data, (__pyx_v_itemsize * __pyx_v_dst_extent)));
-# 45969 "sisl/physics/_matrix_phase.c"
       goto __pyx_L4;
     }
-# 45979 "sisl/physics/_matrix_phase.c"
              {
       __pyx_t_4 = __pyx_v_dst_extent;
       __pyx_t_5 = __pyx_t_4;
       for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
         __pyx_v_i = __pyx_t_6;
-# 45992 "sisl/physics/_matrix_phase.c"
         (void)(memcpy(__pyx_v_dst_data, __pyx_v_src_data, __pyx_v_itemsize));
-# 46001 "sisl/physics/_matrix_phase.c"
         __pyx_v_src_data = (__pyx_v_src_data + __pyx_v_src_stride);
-# 46010 "sisl/physics/_matrix_phase.c"
         __pyx_v_dst_data = (__pyx_v_dst_data + __pyx_v_dst_stride);
       }
     }
     __pyx_L4:;
-# 46022 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 46032 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_4 = __pyx_v_dst_extent;
     __pyx_t_5 = __pyx_t_4;
     for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
       __pyx_v_i = __pyx_t_6;
-# 46045 "sisl/physics/_matrix_phase.c"
       _copy_strided_to_strided(__pyx_v_src_data, (__pyx_v_src_strides + 1), __pyx_v_dst_data, (__pyx_v_dst_strides + 1), (__pyx_v_src_shape + 1), (__pyx_v_dst_shape + 1), (__pyx_v_ndim - 1), __pyx_v_itemsize);
-# 46054 "sisl/physics/_matrix_phase.c"
       __pyx_v_src_data = (__pyx_v_src_data + __pyx_v_src_stride);
-# 46063 "sisl/physics/_matrix_phase.c"
       __pyx_v_dst_data = (__pyx_v_dst_data + __pyx_v_dst_stride);
     }
   }
   __pyx_L3:;
-# 46077 "sisl/physics/_matrix_phase.c"
 }
-# 46087 "sisl/physics/_matrix_phase.c"
 static void copy_strided_to_strided(__Pyx_memviewslice *__pyx_v_src, __Pyx_memviewslice *__pyx_v_dst, int __pyx_v_ndim, size_t __pyx_v_itemsize) {
-# 46096 "sisl/physics/_matrix_phase.c"
   _copy_strided_to_strided(__pyx_v_src->data, __pyx_v_src->strides, __pyx_v_dst->data, __pyx_v_dst->strides, __pyx_v_src->shape, __pyx_v_dst->shape, __pyx_v_ndim, __pyx_v_itemsize);
-# 46107 "sisl/physics/_matrix_phase.c"
 }
-# 46117 "sisl/physics/_matrix_phase.c"
 static Py_ssize_t __pyx_memoryview_slice_get_size(__Pyx_memviewslice *__pyx_v_src, int __pyx_v_ndim) {
   int __pyx_v_i;
   Py_ssize_t __pyx_v_size;
@@ -33781,25 +32075,19 @@ static Py_ssize_t __pyx_memoryview_slice_get_size(__Pyx_memviewslice *__pyx_v_sr
   int __pyx_t_2;
   int __pyx_t_3;
   int __pyx_t_4;
-# 46133 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __pyx_v_src->memview->view.itemsize;
   __pyx_v_size = __pyx_t_1;
-# 46143 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __pyx_v_ndim;
   __pyx_t_3 = __pyx_t_2;
   for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
     __pyx_v_i = __pyx_t_4;
-# 46155 "sisl/physics/_matrix_phase.c"
     __pyx_v_size = (__pyx_v_size * (__pyx_v_src->shape[__pyx_v_i]));
   }
-# 46165 "sisl/physics/_matrix_phase.c"
   __pyx_r = __pyx_v_size;
   goto __pyx_L0;
-# 46177 "sisl/physics/_matrix_phase.c"
   __pyx_L0:;
   return __pyx_r;
 }
-# 46189 "sisl/physics/_matrix_phase.c"
 static Py_ssize_t __pyx_fill_contig_strides_array(Py_ssize_t *__pyx_v_shape, Py_ssize_t *__pyx_v_strides, Py_ssize_t __pyx_v_stride, int __pyx_v_ndim, char __pyx_v_order) {
   int __pyx_v_idx;
   Py_ssize_t __pyx_r;
@@ -33807,41 +32095,30 @@ static Py_ssize_t __pyx_fill_contig_strides_array(Py_ssize_t *__pyx_v_shape, Py_
   int __pyx_t_2;
   int __pyx_t_3;
   int __pyx_t_4;
-# 46204 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((__pyx_v_order == 'F') != 0);
   if (__pyx_t_1) {
-# 46214 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = __pyx_v_ndim;
     __pyx_t_3 = __pyx_t_2;
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_idx = __pyx_t_4;
-# 46226 "sisl/physics/_matrix_phase.c"
       (__pyx_v_strides[__pyx_v_idx]) = __pyx_v_stride;
-# 46235 "sisl/physics/_matrix_phase.c"
       __pyx_v_stride = (__pyx_v_stride * (__pyx_v_shape[__pyx_v_idx]));
     }
-# 46245 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 46255 "sisl/physics/_matrix_phase.c"
            {
     for (__pyx_t_2 = (__pyx_v_ndim - 1); __pyx_t_2 > -1; __pyx_t_2-=1) {
       __pyx_v_idx = __pyx_t_2;
-# 46266 "sisl/physics/_matrix_phase.c"
       (__pyx_v_strides[__pyx_v_idx]) = __pyx_v_stride;
-# 46275 "sisl/physics/_matrix_phase.c"
       __pyx_v_stride = (__pyx_v_stride * (__pyx_v_shape[__pyx_v_idx]));
     }
   }
   __pyx_L3:;
-# 46287 "sisl/physics/_matrix_phase.c"
   __pyx_r = __pyx_v_stride;
   goto __pyx_L0;
-# 46299 "sisl/physics/_matrix_phase.c"
   __pyx_L0:;
   return __pyx_r;
 }
-# 46311 "sisl/physics/_matrix_phase.c"
 static void *__pyx_memoryview_copy_data_to_temp(__Pyx_memviewslice *__pyx_v_src, __Pyx_memviewslice *__pyx_v_tmpslice, char __pyx_v_order, int __pyx_v_ndim) {
   int __pyx_v_i;
   void *__pyx_v_result;
@@ -33854,67 +32131,45 @@ static void *__pyx_memoryview_copy_data_to_temp(__Pyx_memviewslice *__pyx_v_src,
   struct __pyx_memoryview_obj *__pyx_t_4;
   int __pyx_t_5;
   int __pyx_t_6;
-# 46331 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __pyx_v_src->memview->view.itemsize;
   __pyx_v_itemsize = __pyx_t_1;
-# 46341 "sisl/physics/_matrix_phase.c"
   __pyx_v_size = __pyx_memoryview_slice_get_size(__pyx_v_src, __pyx_v_ndim);
-# 46350 "sisl/physics/_matrix_phase.c"
   __pyx_v_result = malloc(__pyx_v_size);
-# 46359 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = ((!(__pyx_v_result != 0)) != 0);
   if (__pyx_t_2) {
-# 46369 "sisl/physics/_matrix_phase.c"
     __pyx_t_3 = __pyx_memoryview_err(__pyx_builtin_MemoryError, NULL); if (unlikely(__pyx_t_3 == ((int)-1))) __PYX_ERR(2, 1221, __pyx_L1_error)
-# 46378 "sisl/physics/_matrix_phase.c"
   }
-# 46387 "sisl/physics/_matrix_phase.c"
   __pyx_v_tmpslice->data = ((char *)__pyx_v_result);
-# 46396 "sisl/physics/_matrix_phase.c"
   __pyx_t_4 = __pyx_v_src->memview;
   __pyx_v_tmpslice->memview = __pyx_t_4;
-# 46406 "sisl/physics/_matrix_phase.c"
   __pyx_t_3 = __pyx_v_ndim;
   __pyx_t_5 = __pyx_t_3;
   for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
     __pyx_v_i = __pyx_t_6;
-# 46418 "sisl/physics/_matrix_phase.c"
     (__pyx_v_tmpslice->shape[__pyx_v_i]) = (__pyx_v_src->shape[__pyx_v_i]);
-# 46427 "sisl/physics/_matrix_phase.c"
     (__pyx_v_tmpslice->suboffsets[__pyx_v_i]) = -1L;
   }
-# 46437 "sisl/physics/_matrix_phase.c"
   (void)(__pyx_fill_contig_strides_array((&(__pyx_v_tmpslice->shape[0])), (&(__pyx_v_tmpslice->strides[0])), __pyx_v_itemsize, __pyx_v_ndim, __pyx_v_order));
-# 46446 "sisl/physics/_matrix_phase.c"
   __pyx_t_3 = __pyx_v_ndim;
   __pyx_t_5 = __pyx_t_3;
   for (__pyx_t_6 = 0; __pyx_t_6 < __pyx_t_5; __pyx_t_6+=1) {
     __pyx_v_i = __pyx_t_6;
-# 46458 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = (((__pyx_v_tmpslice->shape[__pyx_v_i]) == 1) != 0);
     if (__pyx_t_2) {
-# 46468 "sisl/physics/_matrix_phase.c"
       (__pyx_v_tmpslice->strides[__pyx_v_i]) = 0;
-# 46477 "sisl/physics/_matrix_phase.c"
     }
   }
-# 46487 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = (__pyx_memviewslice_is_contig((__pyx_v_src[0]), __pyx_v_order, __pyx_v_ndim) != 0);
   if (__pyx_t_2) {
-# 46497 "sisl/physics/_matrix_phase.c"
     (void)(memcpy(__pyx_v_result, __pyx_v_src->data, __pyx_v_size));
-# 46506 "sisl/physics/_matrix_phase.c"
     goto __pyx_L9;
   }
-# 46516 "sisl/physics/_matrix_phase.c"
            {
     copy_strided_to_strided(__pyx_v_src, __pyx_v_tmpslice, __pyx_v_ndim, __pyx_v_itemsize);
   }
   __pyx_L9:;
-# 46528 "sisl/physics/_matrix_phase.c"
   __pyx_r = __pyx_v_result;
   goto __pyx_L0;
-# 46540 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   {
     #ifdef WITH_THREAD
@@ -33929,7 +32184,6 @@ static void *__pyx_memoryview_copy_data_to_temp(__Pyx_memviewslice *__pyx_v_src,
   __pyx_L0:;
   return __pyx_r;
 }
-# 46563 "sisl/physics/_matrix_phase.c"
 static int __pyx_memoryview_err_extents(int __pyx_v_i, Py_ssize_t __pyx_v_extent1, Py_ssize_t __pyx_v_extent2) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -33941,7 +32195,6 @@ static int __pyx_memoryview_err_extents(int __pyx_v_i, Py_ssize_t __pyx_v_extent
   PyGILState_STATE __pyx_gilstate_save = __Pyx_PyGILState_Ensure();
   #endif
   __Pyx_RefNannySetupContext("_err_extents", 0);
-# 46582 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyInt_From_int(__pyx_v_i); if (unlikely(!__pyx_t_1)) __PYX_ERR(2, 1251, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = PyInt_FromSsize_t(__pyx_v_extent1); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 1251, __pyx_L1_error)
@@ -33959,7 +32212,6 @@ static int __pyx_memoryview_err_extents(int __pyx_v_i, Py_ssize_t __pyx_v_extent
   __pyx_t_1 = 0;
   __pyx_t_2 = 0;
   __pyx_t_3 = 0;
-# 46607 "sisl/physics/_matrix_phase.c"
   __pyx_t_3 = __Pyx_PyString_Format(__pyx_kp_s_got_differing_extents_in_dimensi, __pyx_t_4); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 1250, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
@@ -33969,7 +32221,6 @@ static int __pyx_memoryview_err_extents(int __pyx_v_i, Py_ssize_t __pyx_v_extent
   __Pyx_Raise(__pyx_t_4, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
   __PYX_ERR(2, 1250, __pyx_L1_error)
-# 46626 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -33983,7 +32234,6 @@ static int __pyx_memoryview_err_extents(int __pyx_v_i, Py_ssize_t __pyx_v_extent
   #endif
   return __pyx_r;
 }
-# 46648 "sisl/physics/_matrix_phase.c"
 static int __pyx_memoryview_err_dim(PyObject *__pyx_v_error, char *__pyx_v_msg, int __pyx_v_dim) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -33996,7 +32246,6 @@ static int __pyx_memoryview_err_dim(PyObject *__pyx_v_error, char *__pyx_v_msg, 
   #endif
   __Pyx_RefNannySetupContext("_err_dim", 0);
   __Pyx_INCREF(__pyx_v_error);
-# 46668 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_decode_c_string(__pyx_v_msg, 0, strlen(__pyx_v_msg), NULL, NULL, PyUnicode_DecodeASCII); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 1255, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_3 = __Pyx_PyInt_From_int(__pyx_v_dim); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 1255, __pyx_L1_error)
@@ -34025,7 +32274,6 @@ static int __pyx_memoryview_err_dim(PyObject *__pyx_v_error, char *__pyx_v_msg, 
   __Pyx_Raise(__pyx_t_1, 0, 0, 0);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __PYX_ERR(2, 1255, __pyx_L1_error)
-# 46706 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);
   __Pyx_XDECREF(__pyx_t_2);
@@ -34040,7 +32288,6 @@ static int __pyx_memoryview_err_dim(PyObject *__pyx_v_error, char *__pyx_v_msg, 
   #endif
   return __pyx_r;
 }
-# 46729 "sisl/physics/_matrix_phase.c"
 static int __pyx_memoryview_err(PyObject *__pyx_v_error, char *__pyx_v_msg) {
   int __pyx_r;
   __Pyx_RefNannyDeclarations
@@ -34054,10 +32301,8 @@ static int __pyx_memoryview_err(PyObject *__pyx_v_error, char *__pyx_v_msg) {
   #endif
   __Pyx_RefNannySetupContext("_err", 0);
   __Pyx_INCREF(__pyx_v_error);
-# 46750 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((__pyx_v_msg != NULL) != 0);
   if (unlikely(__pyx_t_1)) {
-# 46760 "sisl/physics/_matrix_phase.c"
     __pyx_t_3 = __Pyx_decode_c_string(__pyx_v_msg, 0, strlen(__pyx_v_msg), NULL, NULL, PyUnicode_DecodeASCII); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 1260, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_INCREF(__pyx_v_error);
@@ -34080,14 +32325,11 @@ static int __pyx_memoryview_err(PyObject *__pyx_v_error, char *__pyx_v_msg) {
     __Pyx_Raise(__pyx_t_2, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __PYX_ERR(2, 1260, __pyx_L1_error)
-# 46790 "sisl/physics/_matrix_phase.c"
   }
-# 46799 "sisl/physics/_matrix_phase.c"
            {
     __Pyx_Raise(__pyx_v_error, 0, 0, 0);
     __PYX_ERR(2, 1262, __pyx_L1_error)
   }
-# 46813 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
@@ -34102,7 +32344,6 @@ static int __pyx_memoryview_err(PyObject *__pyx_v_error, char *__pyx_v_msg) {
   #endif
   return __pyx_r;
 }
-# 46836 "sisl/physics/_matrix_phase.c"
 static int __pyx_memoryview_copy_contents(__Pyx_memviewslice __pyx_v_src, __Pyx_memviewslice __pyx_v_dst, int __pyx_v_src_ndim, int __pyx_v_dst_ndim, int __pyx_v_dtype_is_object) {
   void *__pyx_v_tmpdata;
   size_t __pyx_v_itemsize;
@@ -34121,34 +32362,22 @@ static int __pyx_memoryview_copy_contents(__Pyx_memviewslice __pyx_v_src, __Pyx_
   int __pyx_t_6;
   void *__pyx_t_7;
   int __pyx_t_8;
-# 46862 "sisl/physics/_matrix_phase.c"
   __pyx_v_tmpdata = NULL;
-# 46871 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __pyx_v_src.memview->view.itemsize;
   __pyx_v_itemsize = __pyx_t_1;
-# 46881 "sisl/physics/_matrix_phase.c"
   __pyx_v_order = __pyx_get_best_slice_order((&__pyx_v_src), __pyx_v_src_ndim);
-# 46890 "sisl/physics/_matrix_phase.c"
   __pyx_v_broadcasting = 0;
-# 46899 "sisl/physics/_matrix_phase.c"
   __pyx_v_direct_copy = 0;
-# 46908 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = ((__pyx_v_src_ndim < __pyx_v_dst_ndim) != 0);
   if (__pyx_t_2) {
-# 46918 "sisl/physics/_matrix_phase.c"
     __pyx_memoryview_broadcast_leading((&__pyx_v_src), __pyx_v_src_ndim, __pyx_v_dst_ndim);
-# 46927 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 46937 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = ((__pyx_v_dst_ndim < __pyx_v_src_ndim) != 0);
   if (__pyx_t_2) {
-# 46947 "sisl/physics/_matrix_phase.c"
     __pyx_memoryview_broadcast_leading((&__pyx_v_dst), __pyx_v_dst_ndim, __pyx_v_src_ndim);
-# 46956 "sisl/physics/_matrix_phase.c"
   }
   __pyx_L3:;
-# 46966 "sisl/physics/_matrix_phase.c"
   __pyx_t_3 = __pyx_v_dst_ndim;
   __pyx_t_4 = __pyx_v_src_ndim;
   if (((__pyx_t_3 > __pyx_t_4) != 0)) {
@@ -34157,118 +32386,75 @@ static int __pyx_memoryview_copy_contents(__Pyx_memviewslice __pyx_v_src, __Pyx_
     __pyx_t_5 = __pyx_t_4;
   }
   __pyx_v_ndim = __pyx_t_5;
-# 46982 "sisl/physics/_matrix_phase.c"
   __pyx_t_5 = __pyx_v_ndim;
   __pyx_t_3 = __pyx_t_5;
   for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
     __pyx_v_i = __pyx_t_4;
-# 46994 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = (((__pyx_v_src.shape[__pyx_v_i]) != (__pyx_v_dst.shape[__pyx_v_i])) != 0);
     if (__pyx_t_2) {
-# 47004 "sisl/physics/_matrix_phase.c"
       __pyx_t_2 = (((__pyx_v_src.shape[__pyx_v_i]) == 1) != 0);
       if (__pyx_t_2) {
-# 47014 "sisl/physics/_matrix_phase.c"
         __pyx_v_broadcasting = 1;
-# 47023 "sisl/physics/_matrix_phase.c"
         (__pyx_v_src.strides[__pyx_v_i]) = 0;
-# 47032 "sisl/physics/_matrix_phase.c"
         goto __pyx_L7;
       }
-# 47042 "sisl/physics/_matrix_phase.c"
                {
         __pyx_t_6 = __pyx_memoryview_err_extents(__pyx_v_i, (__pyx_v_dst.shape[__pyx_v_i]), (__pyx_v_src.shape[__pyx_v_i])); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(2, 1294, __pyx_L1_error)
       }
       __pyx_L7:;
-# 47054 "sisl/physics/_matrix_phase.c"
     }
-# 47063 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = (((__pyx_v_src.suboffsets[__pyx_v_i]) >= 0) != 0);
     if (__pyx_t_2) {
-# 47073 "sisl/physics/_matrix_phase.c"
       __pyx_t_6 = __pyx_memoryview_err_dim(__pyx_builtin_ValueError, ((char *)"Dimension %d is not direct"), __pyx_v_i); if (unlikely(__pyx_t_6 == ((int)-1))) __PYX_ERR(2, 1297, __pyx_L1_error)
-# 47082 "sisl/physics/_matrix_phase.c"
     }
   }
-# 47092 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = (__pyx_slices_overlap((&__pyx_v_src), (&__pyx_v_dst), __pyx_v_ndim, __pyx_v_itemsize) != 0);
   if (__pyx_t_2) {
-# 47102 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = ((!(__pyx_memviewslice_is_contig(__pyx_v_src, __pyx_v_order, __pyx_v_ndim) != 0)) != 0);
     if (__pyx_t_2) {
-# 47112 "sisl/physics/_matrix_phase.c"
       __pyx_v_order = __pyx_get_best_slice_order((&__pyx_v_dst), __pyx_v_ndim);
-# 47121 "sisl/physics/_matrix_phase.c"
     }
-# 47130 "sisl/physics/_matrix_phase.c"
     __pyx_t_7 = __pyx_memoryview_copy_data_to_temp((&__pyx_v_src), (&__pyx_v_tmp), __pyx_v_order, __pyx_v_ndim); if (unlikely(__pyx_t_7 == ((void *)NULL))) __PYX_ERR(2, 1304, __pyx_L1_error)
     __pyx_v_tmpdata = __pyx_t_7;
-# 47140 "sisl/physics/_matrix_phase.c"
     __pyx_v_src = __pyx_v_tmp;
-# 47149 "sisl/physics/_matrix_phase.c"
   }
-# 47158 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = ((!(__pyx_v_broadcasting != 0)) != 0);
   if (__pyx_t_2) {
-# 47168 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = (__pyx_memviewslice_is_contig(__pyx_v_src, 'C', __pyx_v_ndim) != 0);
     if (__pyx_t_2) {
-# 47178 "sisl/physics/_matrix_phase.c"
       __pyx_v_direct_copy = __pyx_memviewslice_is_contig(__pyx_v_dst, 'C', __pyx_v_ndim);
-# 47187 "sisl/physics/_matrix_phase.c"
       goto __pyx_L12;
     }
-# 47197 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = (__pyx_memviewslice_is_contig(__pyx_v_src, 'F', __pyx_v_ndim) != 0);
     if (__pyx_t_2) {
-# 47207 "sisl/physics/_matrix_phase.c"
       __pyx_v_direct_copy = __pyx_memviewslice_is_contig(__pyx_v_dst, 'F', __pyx_v_ndim);
-# 47216 "sisl/physics/_matrix_phase.c"
     }
     __pyx_L12:;
-# 47226 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = (__pyx_v_direct_copy != 0);
     if (__pyx_t_2) {
-# 47236 "sisl/physics/_matrix_phase.c"
       __pyx_memoryview_refcount_copying((&__pyx_v_dst), __pyx_v_dtype_is_object, __pyx_v_ndim, 0);
-# 47245 "sisl/physics/_matrix_phase.c"
       (void)(memcpy(__pyx_v_dst.data, __pyx_v_src.data, __pyx_memoryview_slice_get_size((&__pyx_v_src), __pyx_v_ndim)));
-# 47254 "sisl/physics/_matrix_phase.c"
       __pyx_memoryview_refcount_copying((&__pyx_v_dst), __pyx_v_dtype_is_object, __pyx_v_ndim, 1);
-# 47263 "sisl/physics/_matrix_phase.c"
       free(__pyx_v_tmpdata);
-# 47272 "sisl/physics/_matrix_phase.c"
       __pyx_r = 0;
       goto __pyx_L0;
-# 47282 "sisl/physics/_matrix_phase.c"
     }
-# 47291 "sisl/physics/_matrix_phase.c"
   }
-# 47300 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = (__pyx_v_order == 'F');
   if (__pyx_t_2) {
     __pyx_t_2 = ('F' == __pyx_get_best_slice_order((&__pyx_v_dst), __pyx_v_ndim));
   }
   __pyx_t_8 = (__pyx_t_2 != 0);
   if (__pyx_t_8) {
-# 47314 "sisl/physics/_matrix_phase.c"
     __pyx_t_5 = __pyx_memslice_transpose((&__pyx_v_src)); if (unlikely(__pyx_t_5 == ((int)0))) __PYX_ERR(2, 1326, __pyx_L1_error)
-# 47323 "sisl/physics/_matrix_phase.c"
     __pyx_t_5 = __pyx_memslice_transpose((&__pyx_v_dst)); if (unlikely(__pyx_t_5 == ((int)0))) __PYX_ERR(2, 1327, __pyx_L1_error)
-# 47332 "sisl/physics/_matrix_phase.c"
   }
-# 47341 "sisl/physics/_matrix_phase.c"
   __pyx_memoryview_refcount_copying((&__pyx_v_dst), __pyx_v_dtype_is_object, __pyx_v_ndim, 0);
-# 47350 "sisl/physics/_matrix_phase.c"
   copy_strided_to_strided((&__pyx_v_src), (&__pyx_v_dst), __pyx_v_ndim, __pyx_v_itemsize);
-# 47359 "sisl/physics/_matrix_phase.c"
   __pyx_memoryview_refcount_copying((&__pyx_v_dst), __pyx_v_dtype_is_object, __pyx_v_ndim, 1);
-# 47368 "sisl/physics/_matrix_phase.c"
   free(__pyx_v_tmpdata);
-# 47377 "sisl/physics/_matrix_phase.c"
   __pyx_r = 0;
   goto __pyx_L0;
-# 47389 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   {
     #ifdef WITH_THREAD
@@ -34283,67 +32469,47 @@ static int __pyx_memoryview_copy_contents(__Pyx_memviewslice __pyx_v_src, __Pyx_
   __pyx_L0:;
   return __pyx_r;
 }
-# 47412 "sisl/physics/_matrix_phase.c"
 static void __pyx_memoryview_broadcast_leading(__Pyx_memviewslice *__pyx_v_mslice, int __pyx_v_ndim, int __pyx_v_ndim_other) {
   int __pyx_v_i;
   int __pyx_v_offset;
   int __pyx_t_1;
   int __pyx_t_2;
   int __pyx_t_3;
-# 47426 "sisl/physics/_matrix_phase.c"
   __pyx_v_offset = (__pyx_v_ndim_other - __pyx_v_ndim);
-# 47435 "sisl/physics/_matrix_phase.c"
   for (__pyx_t_1 = (__pyx_v_ndim - 1); __pyx_t_1 > -1; __pyx_t_1-=1) {
     __pyx_v_i = __pyx_t_1;
-# 47445 "sisl/physics/_matrix_phase.c"
     (__pyx_v_mslice->shape[(__pyx_v_i + __pyx_v_offset)]) = (__pyx_v_mslice->shape[__pyx_v_i]);
-# 47454 "sisl/physics/_matrix_phase.c"
     (__pyx_v_mslice->strides[(__pyx_v_i + __pyx_v_offset)]) = (__pyx_v_mslice->strides[__pyx_v_i]);
-# 47463 "sisl/physics/_matrix_phase.c"
     (__pyx_v_mslice->suboffsets[(__pyx_v_i + __pyx_v_offset)]) = (__pyx_v_mslice->suboffsets[__pyx_v_i]);
   }
-# 47473 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __pyx_v_offset;
   __pyx_t_2 = __pyx_t_1;
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
-# 47485 "sisl/physics/_matrix_phase.c"
     (__pyx_v_mslice->shape[__pyx_v_i]) = 1;
-# 47494 "sisl/physics/_matrix_phase.c"
     (__pyx_v_mslice->strides[__pyx_v_i]) = (__pyx_v_mslice->strides[0]);
-# 47503 "sisl/physics/_matrix_phase.c"
     (__pyx_v_mslice->suboffsets[__pyx_v_i]) = -1L;
   }
-# 47515 "sisl/physics/_matrix_phase.c"
 }
-# 47525 "sisl/physics/_matrix_phase.c"
 static void __pyx_memoryview_refcount_copying(__Pyx_memviewslice *__pyx_v_dst, int __pyx_v_dtype_is_object, int __pyx_v_ndim, int __pyx_v_inc) {
   int __pyx_t_1;
-# 47535 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = (__pyx_v_dtype_is_object != 0);
   if (__pyx_t_1) {
-# 47545 "sisl/physics/_matrix_phase.c"
     __pyx_memoryview_refcount_objects_in_slice_with_gil(__pyx_v_dst->data, __pyx_v_dst->shape, __pyx_v_dst->strides, __pyx_v_ndim, __pyx_v_inc);
-# 47554 "sisl/physics/_matrix_phase.c"
   }
-# 47565 "sisl/physics/_matrix_phase.c"
 }
-# 47575 "sisl/physics/_matrix_phase.c"
 static void __pyx_memoryview_refcount_objects_in_slice_with_gil(char *__pyx_v_data, Py_ssize_t *__pyx_v_shape, Py_ssize_t *__pyx_v_strides, int __pyx_v_ndim, int __pyx_v_inc) {
   __Pyx_RefNannyDeclarations
   #ifdef WITH_THREAD
   PyGILState_STATE __pyx_gilstate_save = __Pyx_PyGILState_Ensure();
   #endif
   __Pyx_RefNannySetupContext("refcount_objects_in_slice_with_gil", 0);
-# 47589 "sisl/physics/_matrix_phase.c"
   __pyx_memoryview_refcount_objects_in_slice(__pyx_v_data, __pyx_v_shape, __pyx_v_strides, __pyx_v_ndim, __pyx_v_inc);
-# 47600 "sisl/physics/_matrix_phase.c"
   __Pyx_RefNannyFinishContext();
   #ifdef WITH_THREAD
   __Pyx_PyGILState_Release(__pyx_gilstate_save);
   #endif
 }
-# 47614 "sisl/physics/_matrix_phase.c"
 static void __pyx_memoryview_refcount_objects_in_slice(char *__pyx_v_data, Py_ssize_t *__pyx_v_shape, Py_ssize_t *__pyx_v_strides, int __pyx_v_ndim, int __pyx_v_inc) {
   CYTHON_UNUSED Py_ssize_t __pyx_v_i;
   __Pyx_RefNannyDeclarations
@@ -34352,53 +32518,36 @@ static void __pyx_memoryview_refcount_objects_in_slice(char *__pyx_v_data, Py_ss
   Py_ssize_t __pyx_t_3;
   int __pyx_t_4;
   __Pyx_RefNannySetupContext("refcount_objects_in_slice", 0);
-# 47630 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = (__pyx_v_shape[0]);
   __pyx_t_2 = __pyx_t_1;
   for (__pyx_t_3 = 0; __pyx_t_3 < __pyx_t_2; __pyx_t_3+=1) {
     __pyx_v_i = __pyx_t_3;
-# 47642 "sisl/physics/_matrix_phase.c"
     __pyx_t_4 = ((__pyx_v_ndim == 1) != 0);
     if (__pyx_t_4) {
-# 47652 "sisl/physics/_matrix_phase.c"
       __pyx_t_4 = (__pyx_v_inc != 0);
       if (__pyx_t_4) {
-# 47662 "sisl/physics/_matrix_phase.c"
         Py_INCREF((((PyObject **)__pyx_v_data)[0]));
-# 47671 "sisl/physics/_matrix_phase.c"
         goto __pyx_L6;
       }
-# 47681 "sisl/physics/_matrix_phase.c"
                {
         Py_DECREF((((PyObject **)__pyx_v_data)[0]));
       }
       __pyx_L6:;
-# 47693 "sisl/physics/_matrix_phase.c"
       goto __pyx_L5;
     }
-# 47703 "sisl/physics/_matrix_phase.c"
              {
-# 47712 "sisl/physics/_matrix_phase.c"
       __pyx_memoryview_refcount_objects_in_slice(__pyx_v_data, (__pyx_v_shape + 1), (__pyx_v_strides + 1), (__pyx_v_ndim - 1), __pyx_v_inc);
     }
     __pyx_L5:;
-# 47723 "sisl/physics/_matrix_phase.c"
     __pyx_v_data = (__pyx_v_data + (__pyx_v_strides[0]));
   }
-# 47735 "sisl/physics/_matrix_phase.c"
   __Pyx_RefNannyFinishContext();
 }
-# 47746 "sisl/physics/_matrix_phase.c"
 static void __pyx_memoryview_slice_assign_scalar(__Pyx_memviewslice *__pyx_v_dst, int __pyx_v_ndim, size_t __pyx_v_itemsize, void *__pyx_v_item, int __pyx_v_dtype_is_object) {
-# 47755 "sisl/physics/_matrix_phase.c"
   __pyx_memoryview_refcount_copying(__pyx_v_dst, __pyx_v_dtype_is_object, __pyx_v_ndim, 0);
-# 47764 "sisl/physics/_matrix_phase.c"
   __pyx_memoryview__slice_assign_scalar(__pyx_v_dst->data, __pyx_v_dst->shape, __pyx_v_dst->strides, __pyx_v_ndim, __pyx_v_itemsize, __pyx_v_item);
-# 47773 "sisl/physics/_matrix_phase.c"
   __pyx_memoryview_refcount_copying(__pyx_v_dst, __pyx_v_dtype_is_object, __pyx_v_ndim, 1);
-# 47784 "sisl/physics/_matrix_phase.c"
 }
-# 47794 "sisl/physics/_matrix_phase.c"
 static void __pyx_memoryview__slice_assign_scalar(char *__pyx_v_data, Py_ssize_t *__pyx_v_shape, Py_ssize_t *__pyx_v_strides, int __pyx_v_ndim, size_t __pyx_v_itemsize, void *__pyx_v_item) {
   CYTHON_UNUSED Py_ssize_t __pyx_v_i;
   Py_ssize_t __pyx_v_stride;
@@ -34407,42 +32556,30 @@ static void __pyx_memoryview__slice_assign_scalar(char *__pyx_v_data, Py_ssize_t
   Py_ssize_t __pyx_t_2;
   Py_ssize_t __pyx_t_3;
   Py_ssize_t __pyx_t_4;
-# 47810 "sisl/physics/_matrix_phase.c"
   __pyx_v_stride = (__pyx_v_strides[0]);
-# 47819 "sisl/physics/_matrix_phase.c"
   __pyx_v_extent = (__pyx_v_shape[0]);
-# 47828 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((__pyx_v_ndim == 1) != 0);
   if (__pyx_t_1) {
-# 47838 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = __pyx_v_extent;
     __pyx_t_3 = __pyx_t_2;
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_i = __pyx_t_4;
-# 47850 "sisl/physics/_matrix_phase.c"
       (void)(memcpy(__pyx_v_data, __pyx_v_item, __pyx_v_itemsize));
-# 47859 "sisl/physics/_matrix_phase.c"
       __pyx_v_data = (__pyx_v_data + __pyx_v_stride);
     }
-# 47869 "sisl/physics/_matrix_phase.c"
     goto __pyx_L3;
   }
-# 47879 "sisl/physics/_matrix_phase.c"
            {
     __pyx_t_2 = __pyx_v_extent;
     __pyx_t_3 = __pyx_t_2;
     for (__pyx_t_4 = 0; __pyx_t_4 < __pyx_t_3; __pyx_t_4+=1) {
       __pyx_v_i = __pyx_t_4;
-# 47892 "sisl/physics/_matrix_phase.c"
       __pyx_memoryview__slice_assign_scalar(__pyx_v_data, (__pyx_v_shape + 1), (__pyx_v_strides + 1), (__pyx_v_ndim - 1), __pyx_v_itemsize, __pyx_v_item);
-# 47901 "sisl/physics/_matrix_phase.c"
       __pyx_v_data = (__pyx_v_data + __pyx_v_stride);
     }
   }
   __pyx_L3:;
-# 47915 "sisl/physics/_matrix_phase.c"
 }
-# 47924 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_pw_15View_dot_MemoryView_1__pyx_unpickle_Enum(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds);
 static PyMethodDef __pyx_mdef_15View_dot_MemoryView_1__pyx_unpickle_Enum = {"__pyx_unpickle_Enum", (PyCFunction)(void*)(PyCFunctionWithKeywords)__pyx_pw_15View_dot_MemoryView_1__pyx_unpickle_Enum, METH_VARARGS|METH_KEYWORDS, 0};
 static PyObject *__pyx_pw_15View_dot_MemoryView_1__pyx_unpickle_Enum(PyObject *__pyx_self, PyObject *__pyx_args, PyObject *__pyx_kwds) {
@@ -34527,10 +32664,8 @@ static PyObject *__pyx_pf_15View_dot_MemoryView___pyx_unpickle_Enum(CYTHON_UNUSE
   PyObject *__pyx_t_5 = NULL;
   int __pyx_t_6;
   __Pyx_RefNannySetupContext("__pyx_unpickle_Enum", 0);
-# 48016 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = ((__pyx_v___pyx_checksum != 0xb068931) != 0);
   if (__pyx_t_1) {
-# 48026 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 5, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __Pyx_INCREF(__pyx_n_s_PickleError);
@@ -34545,7 +32680,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView___pyx_unpickle_Enum(CYTHON_UNUSE
     __pyx_v___pyx_PickleError = __pyx_t_2;
     __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-# 48048 "sisl/physics/_matrix_phase.c"
     __pyx_t_2 = __Pyx_PyInt_From_long(__pyx_v___pyx_checksum); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 6, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_2);
     __pyx_t_4 = __Pyx_PyString_Format(__pyx_kp_s_Incompatible_checksums_s_vs_0xb0, __pyx_t_2); if (unlikely(!__pyx_t_4)) __PYX_ERR(2, 6, __pyx_L1_error)
@@ -34571,9 +32705,7 @@ static PyObject *__pyx_pf_15View_dot_MemoryView___pyx_unpickle_Enum(CYTHON_UNUSE
     __Pyx_Raise(__pyx_t_3, 0, 0, 0);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
     __PYX_ERR(2, 6, __pyx_L1_error)
-# 48081 "sisl/physics/_matrix_phase.c"
   }
-# 48090 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = __Pyx_PyObject_GetAttrStr(((PyObject *)__pyx_MemviewEnum_type), __pyx_n_s_new); if (unlikely(!__pyx_t_2)) __PYX_ERR(2, 7, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __pyx_t_4 = NULL;
@@ -34593,23 +32725,18 @@ static PyObject *__pyx_pf_15View_dot_MemoryView___pyx_unpickle_Enum(CYTHON_UNUSE
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_v___pyx_result = __pyx_t_3;
   __pyx_t_3 = 0;
-# 48117 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = (__pyx_v___pyx_state != Py_None);
   __pyx_t_6 = (__pyx_t_1 != 0);
   if (__pyx_t_6) {
-# 48128 "sisl/physics/_matrix_phase.c"
     if (!(likely(PyTuple_CheckExact(__pyx_v___pyx_state))||((__pyx_v___pyx_state) == Py_None)||(PyErr_Format(PyExc_TypeError, "Expected %.16s, got %.200s", "tuple", Py_TYPE(__pyx_v___pyx_state)->tp_name), 0))) __PYX_ERR(2, 9, __pyx_L1_error)
     __pyx_t_3 = __pyx_unpickle_Enum__set_state(((struct __pyx_MemviewEnum_obj *)__pyx_v___pyx_result), ((PyObject*)__pyx_v___pyx_state)); if (unlikely(!__pyx_t_3)) __PYX_ERR(2, 9, __pyx_L1_error)
     __Pyx_GOTREF(__pyx_t_3);
     __Pyx_DECREF(__pyx_t_3); __pyx_t_3 = 0;
-# 48140 "sisl/physics/_matrix_phase.c"
   }
-# 48149 "sisl/physics/_matrix_phase.c"
   __Pyx_XDECREF(__pyx_r);
   __Pyx_INCREF(__pyx_v___pyx_result);
   __pyx_r = __pyx_v___pyx_result;
   goto __pyx_L0;
-# 48161 "sisl/physics/_matrix_phase.c"
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_2);
   __Pyx_XDECREF(__pyx_t_3);
@@ -34624,7 +32751,6 @@ static PyObject *__pyx_pf_15View_dot_MemoryView___pyx_unpickle_Enum(CYTHON_UNUSE
   __Pyx_RefNannyFinishContext();
   return __pyx_r;
 }
-# 48184 "sisl/physics/_matrix_phase.c"
 static PyObject *__pyx_unpickle_Enum__set_state(struct __pyx_MemviewEnum_obj *__pyx_v___pyx_result, PyObject *__pyx_v___pyx_state) {
   PyObject *__pyx_r = NULL;
   __Pyx_RefNannyDeclarations
@@ -34637,7 +32763,6 @@ static PyObject *__pyx_unpickle_Enum__set_state(struct __pyx_MemviewEnum_obj *__
   PyObject *__pyx_t_7 = NULL;
   PyObject *__pyx_t_8 = NULL;
   __Pyx_RefNannySetupContext("__pyx_unpickle_Enum__set_state", 0);
-# 48204 "sisl/physics/_matrix_phase.c"
   if (unlikely(__pyx_v___pyx_state == Py_None)) {
     PyErr_SetString(PyExc_TypeError, "'NoneType' object is not subscriptable");
     __PYX_ERR(2, 12, __pyx_L1_error)
@@ -34714,7 +32839,6 @@ static PyObject *__pyx_unpickle_Enum__set_state(struct __pyx_MemviewEnum_obj *__
 
 
   }
-# 48290 "sisl/physics/_matrix_phase.c"
   __pyx_r = Py_None; __Pyx_INCREF(Py_None);
   goto __pyx_L0;
   __pyx_L1_error:;
@@ -35629,58 +33753,45 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedBuiltins(void) {
 static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __Pyx_RefNannyDeclarations
   __Pyx_RefNannySetupContext("__Pyx_InitCachedConstants", 0);
-# 49212 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__3 = PyTuple_Pack(1, __pyx_kp_s_No_matching_signature_found); if (unlikely(!__pyx_tuple__3)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__3);
   __Pyx_GIVEREF(__pyx_tuple__3);
   __pyx_tuple__4 = PyTuple_Pack(1, __pyx_kp_s_Function_call_with_ambiguous_arg); if (unlikely(!__pyx_tuple__4)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__4);
   __Pyx_GIVEREF(__pyx_tuple__4);
-# 49226 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__5 = PyTuple_Pack(1, __pyx_kp_u_ndarray_is_not_C_contiguous); if (unlikely(!__pyx_tuple__5)) __PYX_ERR(1, 272, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__5);
   __Pyx_GIVEREF(__pyx_tuple__5);
-# 49237 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__6 = PyTuple_Pack(1, __pyx_kp_u_ndarray_is_not_Fortran_contiguou); if (unlikely(!__pyx_tuple__6)) __PYX_ERR(1, 276, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__6);
   __Pyx_GIVEREF(__pyx_tuple__6);
-# 49248 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__7 = PyTuple_Pack(1, __pyx_kp_u_Non_native_byte_order_not_suppor); if (unlikely(!__pyx_tuple__7)) __PYX_ERR(1, 306, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__7);
   __Pyx_GIVEREF(__pyx_tuple__7);
-# 49259 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__8 = PyTuple_Pack(1, __pyx_kp_u_Format_string_allocated_too_shor); if (unlikely(!__pyx_tuple__8)) __PYX_ERR(1, 856, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__8);
   __Pyx_GIVEREF(__pyx_tuple__8);
-# 49270 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__9 = PyTuple_Pack(1, __pyx_kp_u_Format_string_allocated_too_shor_2); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(1, 880, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__9);
   __Pyx_GIVEREF(__pyx_tuple__9);
-# 49281 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__10 = PyTuple_Pack(1, __pyx_kp_s_numpy_core_multiarray_failed_to); if (unlikely(!__pyx_tuple__10)) __PYX_ERR(1, 1038, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__10);
   __Pyx_GIVEREF(__pyx_tuple__10);
-# 49292 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__11 = PyTuple_Pack(1, __pyx_kp_s_numpy_core_umath_failed_to_impor); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(1, 1044, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
-# 49303 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__12 = PyTuple_Pack(1, __pyx_kp_s_Empty_shape_tuple_for_cython_arr); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(2, 133, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__12);
   __Pyx_GIVEREF(__pyx_tuple__12);
-# 49314 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__13 = PyTuple_Pack(1, __pyx_kp_s_itemsize_0_for_cython_array); if (unlikely(!__pyx_tuple__13)) __PYX_ERR(2, 136, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__13);
   __Pyx_GIVEREF(__pyx_tuple__13);
-# 49325 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__14 = PyTuple_Pack(1, __pyx_kp_s_unable_to_allocate_shape_and_str); if (unlikely(!__pyx_tuple__14)) __PYX_ERR(2, 148, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__14);
   __Pyx_GIVEREF(__pyx_tuple__14);
-# 49336 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__15 = PyTuple_Pack(1, __pyx_kp_s_unable_to_allocate_array_data); if (unlikely(!__pyx_tuple__15)) __PYX_ERR(2, 176, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__15);
   __Pyx_GIVEREF(__pyx_tuple__15);
-# 49347 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__16 = PyTuple_Pack(1, __pyx_kp_s_Can_only_create_a_buffer_that_is); if (unlikely(!__pyx_tuple__16)) __PYX_ERR(2, 192, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__16);
   __Pyx_GIVEREF(__pyx_tuple__16);
@@ -35703,23 +33814,18 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__18 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__18)) __PYX_ERR(2, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__18);
   __Pyx_GIVEREF(__pyx_tuple__18);
-# 49377 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__19 = PyTuple_Pack(1, __pyx_kp_s_Cannot_assign_to_read_only_memor); if (unlikely(!__pyx_tuple__19)) __PYX_ERR(2, 414, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__19);
   __Pyx_GIVEREF(__pyx_tuple__19);
-# 49388 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__20 = PyTuple_Pack(1, __pyx_kp_s_Unable_to_convert_item_to_object); if (unlikely(!__pyx_tuple__20)) __PYX_ERR(2, 491, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__20);
   __Pyx_GIVEREF(__pyx_tuple__20);
-# 49399 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__21 = PyTuple_Pack(1, __pyx_kp_s_Cannot_create_writable_memory_vi); if (unlikely(!__pyx_tuple__21)) __PYX_ERR(2, 516, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__21);
   __Pyx_GIVEREF(__pyx_tuple__21);
-# 49410 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__22 = PyTuple_Pack(1, __pyx_kp_s_Buffer_view_does_not_expose_stri); if (unlikely(!__pyx_tuple__22)) __PYX_ERR(2, 566, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__22);
   __Pyx_GIVEREF(__pyx_tuple__22);
-# 49421 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__23 = PyTuple_New(1); if (unlikely(!__pyx_tuple__23)) __PYX_ERR(2, 573, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__23);
   __Pyx_INCREF(__pyx_int_neg_1);
@@ -35745,11 +33851,9 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__25 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__25)) __PYX_ERR(2, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__25);
   __Pyx_GIVEREF(__pyx_tuple__25);
-# 49454 "sisl/physics/_matrix_phase.c"
   __pyx_slice__26 = PySlice_New(Py_None, Py_None, Py_None); if (unlikely(!__pyx_slice__26)) __PYX_ERR(2, 678, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_slice__26);
   __Pyx_GIVEREF(__pyx_slice__26);
-# 49465 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__27 = PyTuple_Pack(1, __pyx_kp_s_Indirect_dimensions_not_supporte); if (unlikely(!__pyx_tuple__27)) __PYX_ERR(2, 699, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__27);
   __Pyx_GIVEREF(__pyx_tuple__27);
@@ -35772,63 +33876,50 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__29 = PyTuple_Pack(1, __pyx_kp_s_no_default___reduce___due_to_non); if (unlikely(!__pyx_tuple__29)) __PYX_ERR(2, 4, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__29);
   __Pyx_GIVEREF(__pyx_tuple__29);
-# 49495 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__30 = PyTuple_Pack(21, __pyx_n_s_PTR, __pyx_n_s_NCOL, __pyx_n_s_COL, __pyx_n_s_D, __pyx_n_s_idx, __pyx_n_s_ptr, __pyx_n_s_ncol, __pyx_n_s_col, __pyx_n_s_V_PTR, __pyx_n_s_V_NCOL, __pyx_n_s_V_COL, __pyx_n_s_v_ptr, __pyx_n_s_v_ncol, __pyx_n_s_v_col, __pyx_n_s_nr, __pyx_n_s_V, __pyx_n_s_v, __pyx_n_s_r, __pyx_n_s_ind, __pyx_n_s_c, __pyx_n_s_s_idx); if (unlikely(!__pyx_tuple__30)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__30);
   __Pyx_GIVEREF(__pyx_tuple__30);
   __pyx_codeobj__31 = (PyObject*)__Pyx_PyCode_New(5, 0, 21, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__30, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sisl_physics__matrix_phase_pyx, __pyx_n_s_csr_f32, 35, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__31)) __PYX_ERR(0, 35, __pyx_L1_error)
-# 49507 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__32 = PyTuple_Pack(21, __pyx_n_s_PTR, __pyx_n_s_NCOL, __pyx_n_s_COL, __pyx_n_s_D, __pyx_n_s_idx, __pyx_n_s_ptr, __pyx_n_s_ncol, __pyx_n_s_col, __pyx_n_s_V_PTR, __pyx_n_s_V_NCOL, __pyx_n_s_V_COL, __pyx_n_s_v_ptr, __pyx_n_s_v_ncol, __pyx_n_s_v_col, __pyx_n_s_nr, __pyx_n_s_V, __pyx_n_s_v, __pyx_n_s_r, __pyx_n_s_ind, __pyx_n_s_c, __pyx_n_s_s_idx); if (unlikely(!__pyx_tuple__32)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__32);
   __Pyx_GIVEREF(__pyx_tuple__32);
   __pyx_codeobj__33 = (PyObject*)__Pyx_PyCode_New(5, 0, 21, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__32, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sisl_physics__matrix_phase_pyx, __pyx_n_s_csr_f64, 69, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__33)) __PYX_ERR(0, 69, __pyx_L1_error)
-# 49519 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__34 = PyTuple_Pack(24, __pyx_n_s_PTR, __pyx_n_s_NCOL, __pyx_n_s_COL, __pyx_n_s_D, __pyx_n_s_idx, __pyx_n_s_PHASES, __pyx_n_s_p_opt, __pyx_n_s_ptr, __pyx_n_s_ncol, __pyx_n_s_col, __pyx_n_s_phases, __pyx_n_s_V_PTR, __pyx_n_s_V_NCOL, __pyx_n_s_V_COL, __pyx_n_s_v_ptr, __pyx_n_s_v_ncol, __pyx_n_s_v_col, __pyx_n_s_nr, __pyx_n_s_V, __pyx_n_s_v, __pyx_n_s_r, __pyx_n_s_ind, __pyx_n_s_c, __pyx_n_s_s_idx); if (unlikely(!__pyx_tuple__34)) __PYX_ERR(0, 103, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__34);
   __Pyx_GIVEREF(__pyx_tuple__34);
   __pyx_codeobj__35 = (PyObject*)__Pyx_PyCode_New(7, 0, 24, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__34, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sisl_physics__matrix_phase_pyx, __pyx_n_s_phase_csr_c64, 103, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__35)) __PYX_ERR(0, 103, __pyx_L1_error)
-# 49531 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__36 = PyTuple_Pack(24, __pyx_n_s_PTR, __pyx_n_s_NCOL, __pyx_n_s_COL, __pyx_n_s_D, __pyx_n_s_idx, __pyx_n_s_PHASES, __pyx_n_s_p_opt, __pyx_n_s_ptr, __pyx_n_s_ncol, __pyx_n_s_col, __pyx_n_s_phases, __pyx_n_s_V_PTR, __pyx_n_s_V_NCOL, __pyx_n_s_V_COL, __pyx_n_s_v_ptr, __pyx_n_s_v_ncol, __pyx_n_s_v_col, __pyx_n_s_nr, __pyx_n_s_V, __pyx_n_s_v, __pyx_n_s_r, __pyx_n_s_ind, __pyx_n_s_c, __pyx_n_s_s_idx); if (unlikely(!__pyx_tuple__36)) __PYX_ERR(0, 146, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__36);
   __Pyx_GIVEREF(__pyx_tuple__36);
   __pyx_codeobj__37 = (PyObject*)__Pyx_PyCode_New(7, 0, 24, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__36, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sisl_physics__matrix_phase_pyx, __pyx_n_s_phase_csr_c128, 146, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__37)) __PYX_ERR(0, 146, __pyx_L1_error)
-# 49543 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__38 = PyTuple_Pack(13, __pyx_n_s_PTR, __pyx_n_s_NCOL, __pyx_n_s_COL, __pyx_n_s_D, __pyx_n_s_idx, __pyx_n_s_ptr, __pyx_n_s_ncol, __pyx_n_s_col, __pyx_n_s_nr, __pyx_n_s_V, __pyx_n_s_v, __pyx_n_s_r, __pyx_n_s_ind); if (unlikely(!__pyx_tuple__38)) __PYX_ERR(0, 189, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__38);
   __Pyx_GIVEREF(__pyx_tuple__38);
   __pyx_codeobj__39 = (PyObject*)__Pyx_PyCode_New(5, 0, 13, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__38, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sisl_physics__matrix_phase_pyx, __pyx_n_s_array_f32, 189, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__39)) __PYX_ERR(0, 189, __pyx_L1_error)
-# 49555 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__40 = PyTuple_Pack(13, __pyx_n_s_PTR, __pyx_n_s_NCOL, __pyx_n_s_COL, __pyx_n_s_D, __pyx_n_s_idx, __pyx_n_s_ptr, __pyx_n_s_ncol, __pyx_n_s_col, __pyx_n_s_nr, __pyx_n_s_V, __pyx_n_s_v, __pyx_n_s_r, __pyx_n_s_ind); if (unlikely(!__pyx_tuple__40)) __PYX_ERR(0, 215, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__40);
   __Pyx_GIVEREF(__pyx_tuple__40);
   __pyx_codeobj__41 = (PyObject*)__Pyx_PyCode_New(5, 0, 13, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__40, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sisl_physics__matrix_phase_pyx, __pyx_n_s_array_f64, 215, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__41)) __PYX_ERR(0, 215, __pyx_L1_error)
-# 49567 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__42 = PyTuple_Pack(17, __pyx_n_s_PTR, __pyx_n_s_NCOL, __pyx_n_s_COL, __pyx_n_s_D, __pyx_n_s_idx, __pyx_n_s_PHASES, __pyx_n_s_p_opt, __pyx_n_s_ptr, __pyx_n_s_ncol, __pyx_n_s_col, __pyx_n_s_phases, __pyx_n_s_nr, __pyx_n_s_V, __pyx_n_s_v, __pyx_n_s_r, __pyx_n_s_ind, __pyx_n_s_c); if (unlikely(!__pyx_tuple__42)) __PYX_ERR(0, 241, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__42);
   __Pyx_GIVEREF(__pyx_tuple__42);
   __pyx_codeobj__43 = (PyObject*)__Pyx_PyCode_New(7, 0, 17, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__42, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sisl_physics__matrix_phase_pyx, __pyx_n_s_phase_array_c64, 241, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__43)) __PYX_ERR(0, 241, __pyx_L1_error)
-# 49579 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__44 = PyTuple_Pack(17, __pyx_n_s_PTR, __pyx_n_s_NCOL, __pyx_n_s_COL, __pyx_n_s_D, __pyx_n_s_idx, __pyx_n_s_PHASES, __pyx_n_s_p_opt, __pyx_n_s_ptr, __pyx_n_s_ncol, __pyx_n_s_col, __pyx_n_s_phases, __pyx_n_s_nr, __pyx_n_s_V, __pyx_n_s_v, __pyx_n_s_r, __pyx_n_s_ind, __pyx_n_s_c); if (unlikely(!__pyx_tuple__44)) __PYX_ERR(0, 277, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__44);
   __Pyx_GIVEREF(__pyx_tuple__44);
   __pyx_codeobj__45 = (PyObject*)__Pyx_PyCode_New(7, 0, 17, 0, CO_OPTIMIZED|CO_NEWLOCALS, __pyx_empty_bytes, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_tuple__44, __pyx_empty_tuple, __pyx_empty_tuple, __pyx_kp_s_sisl_physics__matrix_phase_pyx, __pyx_n_s_phase_array_c128, 277, __pyx_empty_bytes); if (unlikely(!__pyx_codeobj__45)) __PYX_ERR(0, 277, __pyx_L1_error)
-# 49591 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__46 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct_or_indirect); if (unlikely(!__pyx_tuple__46)) __PYX_ERR(2, 286, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__46);
   __Pyx_GIVEREF(__pyx_tuple__46);
-# 49602 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__47 = PyTuple_Pack(1, __pyx_kp_s_strided_and_direct); if (unlikely(!__pyx_tuple__47)) __PYX_ERR(2, 287, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__47);
   __Pyx_GIVEREF(__pyx_tuple__47);
-# 49613 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__48 = PyTuple_Pack(1, __pyx_kp_s_strided_and_indirect); if (unlikely(!__pyx_tuple__48)) __PYX_ERR(2, 288, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__48);
   __Pyx_GIVEREF(__pyx_tuple__48);
-# 49624 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__49 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_direct); if (unlikely(!__pyx_tuple__49)) __PYX_ERR(2, 291, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__49);
   __Pyx_GIVEREF(__pyx_tuple__49);
-# 49635 "sisl/physics/_matrix_phase.c"
   __pyx_tuple__50 = PyTuple_Pack(1, __pyx_kp_s_contiguous_and_indirect); if (unlikely(!__pyx_tuple__50)) __PYX_ERR(2, 292, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__50);
   __Pyx_GIVEREF(__pyx_tuple__50);
@@ -36227,12 +34318,10 @@ if (!__Pyx_RefNanny) {
   #if defined(__Pyx_Generator_USED) || defined(__Pyx_Coroutine_USED)
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
-# 50041 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_Import(__pyx_n_s_numpy, 0, -1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) __PYX_ERR(0, 5, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 50053 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = PyList_New(1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 7, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_csr_matrix);
@@ -36246,7 +34335,6 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_csr_matrix, __pyx_t_1) < 0) __PYX_ERR(0, 7, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-# 50074 "sisl/physics/_matrix_phase.c"
   __pyx_t_2 = PyList_New(1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 10, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_INCREF(__pyx_n_s_fold_csr_matrix);
@@ -36260,7 +34348,6 @@ if (!__Pyx_RefNanny) {
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_fold_csr_matrix, __pyx_t_2) < 0) __PYX_ERR(0, 10, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 50095 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = PyList_New(8); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_INCREF(__pyx_n_s_csr_f32);
@@ -36289,7 +34376,6 @@ if (!__Pyx_RefNanny) {
   PyList_SET_ITEM(__pyx_t_1, 7, __pyx_n_s_phase_array_c128);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_all, __pyx_t_1) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
-# 50131 "sisl/physics/_matrix_phase.c"
   __pyx_t_1 = __Pyx_PyDict_NewPresized(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __pyx_t_2 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0__pyx_mdef_4sisl_7physics_13_matrix_phase_17_csr_f32, 0, __pyx_n_s_csr_f32, NULL, __pyx_n_s_sisl_physics__matrix_phase, __pyx_d, ((PyObject *)__pyx_codeobj__31)); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 35, __pyx_L1_error)
@@ -36319,7 +34405,6 @@ if (!__Pyx_RefNanny) {
   __Pyx_GIVEREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_csr_f32, __pyx_t_2) < 0) __PYX_ERR(0, 35, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
-# 50168 "sisl/physics/_matrix_phase.c"
   __pyx_t_3 = __Pyx_PyDict_NewPresized(4); if (unlikely(!__pyx_t_3)) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_3);
   __pyx_t_4 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0__pyx_mdef_4sisl_7physics_13_matrix_phase_27_csr_f64, 0, __pyx_n_s_csr_f64, NULL, __pyx_n_s_sisl_physics__matrix_phase, __pyx_d, ((PyObject *)__pyx_codeobj__33)); if (unlikely(!__pyx_t_4)) __PYX_ERR(0, 69, __pyx_L1_error)
@@ -36349,7 +34434,6 @@ if (!__Pyx_RefNanny) {
   __Pyx_GIVEREF(__pyx_t_3);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_csr_f64, __pyx_t_4) < 0) __PYX_ERR(0, 69, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_4); __pyx_t_4 = 0;
-# 50205 "sisl/physics/_matrix_phase.c"
   __pyx_t_5 = __Pyx_PyDict_NewPresized(6); if (unlikely(!__pyx_t_5)) __PYX_ERR(0, 103, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_5);
   __pyx_t_6 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0__pyx_mdef_4sisl_7physics_13_matrix_phase_37_phase_csr_c64, 0, __pyx_n_s_phase_csr_c64, NULL, __pyx_n_s_sisl_physics__matrix_phase, __pyx_d, ((PyObject *)__pyx_codeobj__35)); if (unlikely(!__pyx_t_6)) __PYX_ERR(0, 103, __pyx_L1_error)
@@ -36389,7 +34473,6 @@ if (!__Pyx_RefNanny) {
   __Pyx_GIVEREF(__pyx_t_5);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_phase_csr_c64, __pyx_t_6) < 0) __PYX_ERR(0, 103, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_6); __pyx_t_6 = 0;
-# 50252 "sisl/physics/_matrix_phase.c"
   __pyx_t_7 = __Pyx_PyDict_NewPresized(6); if (unlikely(!__pyx_t_7)) __PYX_ERR(0, 146, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_7);
   __pyx_t_8 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0__pyx_mdef_4sisl_7physics_13_matrix_phase_51_phase_csr_c128, 0, __pyx_n_s_phase_csr_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase, __pyx_d, ((PyObject *)__pyx_codeobj__37)); if (unlikely(!__pyx_t_8)) __PYX_ERR(0, 146, __pyx_L1_error)
@@ -36429,7 +34512,6 @@ if (!__Pyx_RefNanny) {
   __Pyx_GIVEREF(__pyx_t_7);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_phase_csr_c128, __pyx_t_8) < 0) __PYX_ERR(0, 146, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_8); __pyx_t_8 = 0;
-# 50299 "sisl/physics/_matrix_phase.c"
   __pyx_t_9 = __Pyx_PyDict_NewPresized(4); if (unlikely(!__pyx_t_9)) __PYX_ERR(0, 189, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_9);
   __pyx_t_10 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0__pyx_mdef_4sisl_7physics_13_matrix_phase_65_array_f32, 0, __pyx_n_s_array_f32, NULL, __pyx_n_s_sisl_physics__matrix_phase, __pyx_d, ((PyObject *)__pyx_codeobj__39)); if (unlikely(!__pyx_t_10)) __PYX_ERR(0, 189, __pyx_L1_error)
@@ -36459,7 +34541,6 @@ if (!__Pyx_RefNanny) {
   __Pyx_GIVEREF(__pyx_t_9);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_array_f32, __pyx_t_10) < 0) __PYX_ERR(0, 189, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_10); __pyx_t_10 = 0;
-# 50336 "sisl/physics/_matrix_phase.c"
   __pyx_t_11 = __Pyx_PyDict_NewPresized(4); if (unlikely(!__pyx_t_11)) __PYX_ERR(0, 215, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_11);
   __pyx_t_12 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0__pyx_mdef_4sisl_7physics_13_matrix_phase_75_array_f64, 0, __pyx_n_s_array_f64, NULL, __pyx_n_s_sisl_physics__matrix_phase, __pyx_d, ((PyObject *)__pyx_codeobj__41)); if (unlikely(!__pyx_t_12)) __PYX_ERR(0, 215, __pyx_L1_error)
@@ -36489,7 +34570,6 @@ if (!__Pyx_RefNanny) {
   __Pyx_GIVEREF(__pyx_t_11);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_array_f64, __pyx_t_12) < 0) __PYX_ERR(0, 215, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_12); __pyx_t_12 = 0;
-# 50373 "sisl/physics/_matrix_phase.c"
   __pyx_t_13 = __Pyx_PyDict_NewPresized(6); if (unlikely(!__pyx_t_13)) __PYX_ERR(0, 241, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_13);
   __pyx_t_14 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0__pyx_mdef_4sisl_7physics_13_matrix_phase_85_phase_array_c64, 0, __pyx_n_s_phase_array_c64, NULL, __pyx_n_s_sisl_physics__matrix_phase, __pyx_d, ((PyObject *)__pyx_codeobj__43)); if (unlikely(!__pyx_t_14)) __PYX_ERR(0, 241, __pyx_L1_error)
@@ -36529,7 +34609,6 @@ if (!__Pyx_RefNanny) {
   __Pyx_GIVEREF(__pyx_t_13);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_phase_array_c64, __pyx_t_14) < 0) __PYX_ERR(0, 241, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_14); __pyx_t_14 = 0;
-# 50420 "sisl/physics/_matrix_phase.c"
   __pyx_t_15 = __Pyx_PyDict_NewPresized(6); if (unlikely(!__pyx_t_15)) __PYX_ERR(0, 277, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_15);
   __pyx_t_16 = __pyx_FusedFunction_NewEx(&__pyx_fuse_0__pyx_mdef_4sisl_7physics_13_matrix_phase_99_phase_array_c128, 0, __pyx_n_s_phase_array_c128, NULL, __pyx_n_s_sisl_physics__matrix_phase, __pyx_d, ((PyObject *)__pyx_codeobj__45)); if (unlikely(!__pyx_t_16)) __PYX_ERR(0, 277, __pyx_L1_error)
@@ -36579,50 +34658,42 @@ if (!__Pyx_RefNanny) {
   __Pyx_GOTREF(__pyx_t_17);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_test, __pyx_t_17) < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-# 50477 "sisl/physics/_matrix_phase.c"
   __pyx_t_17 = __pyx_capsule_create(((void *)(&__pyx_array_getbuffer)), ((char *)"getbuffer(obj, view, flags)")); if (unlikely(!__pyx_t_17)) __PYX_ERR(2, 209, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
   if (PyDict_SetItem((PyObject *)__pyx_array_type->tp_dict, __pyx_n_s_pyx_getbuffer, __pyx_t_17) < 0) __PYX_ERR(2, 209, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
   PyType_Modified(__pyx_array_type);
-# 50490 "sisl/physics/_matrix_phase.c"
   __pyx_t_17 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__46, NULL); if (unlikely(!__pyx_t_17)) __PYX_ERR(2, 286, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
   __Pyx_XGOTREF(generic);
   __Pyx_DECREF_SET(generic, __pyx_t_17);
   __Pyx_GIVEREF(__pyx_t_17);
   __pyx_t_17 = 0;
-# 50504 "sisl/physics/_matrix_phase.c"
   __pyx_t_17 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__47, NULL); if (unlikely(!__pyx_t_17)) __PYX_ERR(2, 287, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
   __Pyx_XGOTREF(strided);
   __Pyx_DECREF_SET(strided, __pyx_t_17);
   __Pyx_GIVEREF(__pyx_t_17);
   __pyx_t_17 = 0;
-# 50518 "sisl/physics/_matrix_phase.c"
   __pyx_t_17 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__48, NULL); if (unlikely(!__pyx_t_17)) __PYX_ERR(2, 288, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
   __Pyx_XGOTREF(indirect);
   __Pyx_DECREF_SET(indirect, __pyx_t_17);
   __Pyx_GIVEREF(__pyx_t_17);
   __pyx_t_17 = 0;
-# 50532 "sisl/physics/_matrix_phase.c"
   __pyx_t_17 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__49, NULL); if (unlikely(!__pyx_t_17)) __PYX_ERR(2, 291, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
   __Pyx_XGOTREF(contiguous);
   __Pyx_DECREF_SET(contiguous, __pyx_t_17);
   __Pyx_GIVEREF(__pyx_t_17);
   __pyx_t_17 = 0;
-# 50546 "sisl/physics/_matrix_phase.c"
   __pyx_t_17 = __Pyx_PyObject_Call(((PyObject *)__pyx_MemviewEnum_type), __pyx_tuple__50, NULL); if (unlikely(!__pyx_t_17)) __PYX_ERR(2, 292, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
   __Pyx_XGOTREF(indirect_contiguous);
   __Pyx_DECREF_SET(indirect_contiguous, __pyx_t_17);
   __Pyx_GIVEREF(__pyx_t_17);
   __pyx_t_17 = 0;
-# 50560 "sisl/physics/_matrix_phase.c"
   __pyx_memoryview_thread_locks_used = 0;
-# 50569 "sisl/physics/_matrix_phase.c"
   __pyx_t_18[0] = PyThread_allocate_lock();
   __pyx_t_18[1] = PyThread_allocate_lock();
   __pyx_t_18[2] = PyThread_allocate_lock();
@@ -36632,13 +34703,11 @@ if (!__Pyx_RefNanny) {
   __pyx_t_18[6] = PyThread_allocate_lock();
   __pyx_t_18[7] = PyThread_allocate_lock();
   memcpy(&(__pyx_memoryview_thread_locks[0]), __pyx_t_18, sizeof(__pyx_memoryview_thread_locks[0]) * (8));
-# 50586 "sisl/physics/_matrix_phase.c"
   __pyx_t_17 = __pyx_capsule_create(((void *)(&__pyx_memoryview_getbuffer)), ((char *)"getbuffer(obj, view, flags)")); if (unlikely(!__pyx_t_17)) __PYX_ERR(2, 545, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
   if (PyDict_SetItem((PyObject *)__pyx_memoryview_type->tp_dict, __pyx_n_s_pyx_getbuffer, __pyx_t_17) < 0) __PYX_ERR(2, 545, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
   PyType_Modified(__pyx_memoryview_type);
-# 50599 "sisl/physics/_matrix_phase.c"
   __pyx_t_17 = __pyx_capsule_create(((void *)(&__pyx_memoryview_getbuffer)), ((char *)"getbuffer(obj, view, flags)")); if (unlikely(!__pyx_t_17)) __PYX_ERR(2, 991, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_17);
   if (PyDict_SetItem((PyObject *)__pyx_memoryviewslice_type->tp_dict, __pyx_n_s_pyx_getbuffer, __pyx_t_17) < 0) __PYX_ERR(2, 991, __pyx_L1_error)
@@ -36654,7 +34723,6 @@ if (!__Pyx_RefNanny) {
   __Pyx_GOTREF(__pyx_t_17);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_pyx_unpickle_Enum, __pyx_t_17) < 0) __PYX_ERR(2, 1, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_17); __pyx_t_17 = 0;
-# 50625 "sisl/physics/_matrix_phase.c"
   goto __pyx_L0;
   __pyx_L1_error:;
   __Pyx_XDECREF(__pyx_t_1);

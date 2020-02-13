@@ -1,15 +1,12 @@
-from __future__ import print_function, division
-
 import pytest
-
+import os.path as osp
 from sisl import units
 from sisl.io.wannier90 import *
-
 import numpy as np
 
 
 pytestmark = [pytest.mark.io, pytest.mark.wannier90, pytest.mark.w90]
-_dir = 'sisl/io/wannier90'
+_dir = osp.join('sisl', 'io', 'wannier90')
 
 
 @pytest.mark.parametrize("unit", ['', 'Ang\n', 'ang\n', 'bohr\n'])

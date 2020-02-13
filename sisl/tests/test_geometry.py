@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import pytest
 
 import itertools
@@ -32,7 +30,7 @@ def setup():
 
 @pytest.mark.geom
 @pytest.mark.geometry
-class TestGeometry(object):
+class TestGeometry:
 
     def test_objects(self, setup):
         str(setup.g)
@@ -245,6 +243,8 @@ class TestGeometry(object):
         isc = setup.g.a2isc(2)
         off = setup.g.sc.offset(isc)
         assert np.allclose(setup.g.xyz[0] + off, setup.g.axyz(2))
+        assert np.allclose(setup.g.xyz[0] + off, setup.g.axyz(0, isc))
+        assert np.allclose(setup.g.xyz[0] + off, setup.g.axyz(isc=isc)[0])
 
     def test_atranspose_indices(self, setup):
         g = setup.g
@@ -517,26 +517,26 @@ class TestGeometry(object):
 
     @pytest.mark.xfail(raises=ValueError)
     def test_append_xfail(self, setup):
-        s = setup.g.append(setup.g, 0, align='not')
+        s = setup.g.append(setup.g, 0, offset='not')
 
     @pytest.mark.xfail(raises=ValueError)
     def test_prepend_xfail(self, setup):
-        s = setup.g.prepend(setup.g, 0, align='not')
+        s = setup.g.prepend(setup.g, 0, offset='not')
 
-    def test_append_prepend_align(self, setup):
+    def test_append_prepend_offset(self, setup):
         for axis in [0, 1, 2]:
             t = setup.g.sc.cell[axis, :].copy()
             t *= 10. / (t ** 2).sum() ** 0.5
             s1 = setup.g.copy()
             s2 = setup.g.translate(t)
 
-            S = s1.append(s2, axis, align='min')
+            S = s1.append(s2, axis, offset='min')
             s = setup.g.append(setup.g, axis)
 
             assert np.allclose(s.cell[axis, :], S.cell[axis, :])
             assert np.allclose(s.xyz, S.xyz)
 
-            P = s2.prepend(s1, axis, align='min')
+            P = s2.prepend(s1, axis, offset='min')
             p = setup.g.prepend(setup.g, axis)
 
             assert np.allclose(p.cell[axis, :], P.cell[axis, :])
@@ -1182,7 +1182,7 @@ class TestGeometry(object):
         assert len(g.names) == 0
         g['A'] = 1
         assert len(g.names) == 1
-        g['B'] = [1, 2]
+        g[[1, 2]] = 'B'
         assert len(g.names) == 2
         g.names.delete_name('B')
         assert len(g.names) == 1
@@ -1206,6 +1206,26 @@ class TestGeometry(object):
         g = sisl_geom.graphene()
         g['A'] = 1
         g['A'] = [1, 2]
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_geometry_sanitize_raise(self):
+        g = sisl_geom.graphene()
+        xyz = g.axyz([[[0, 1]]])
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_geometry_as_primary_raise_nondivisable(self):
+        g = sisl_geom.graphene()
+        g.as_primary(3)
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_geometry_cut_raise_nondivisable(self):
+        g = sisl_geom.graphene()
+        g.cut(3, 0)
+
+    @pytest.mark.xfail(raises=ValueError)
+    def test_geometry_iR_negative_R(self):
+        g = sisl_geom.graphene()
+        g.iR(-1.)
 
     @pytest.mark.parametrize("geometry", [sisl_geom.graphene(),
                                           sisl_geom.diamond(),
@@ -1255,3 +1275,15 @@ class TestGeometry(object):
         assert np.allclose(gr.xyz, from_ase.xyz)
         assert np.allclose(gr.cell, from_ase.cell)
         assert np.allclose(gr.atoms.Z, from_ase.atoms.Z)
+
+    def test_geometry_overlapping_atoms(self):
+        gr22 = sisl_geom.graphene().tile(2, 0).tile(2, 1)
+        gr44 = gr22.tile(2, 0).tile(2, 1)
+        offset = np.array([0.2, 0.4, 0.4])
+        gr22 = gr22.translate(offset)
+        idx = np.arange(gr22.na)
+        np.random.shuffle(idx)
+        gr22 = gr22.sub(idx)
+        idx22, idx44 = gr22.overlap(gr44, offset=-offset)
+        assert np.allclose(idx22, np.arange(gr22.na))
+        assert np.allclose(idx44, idx)

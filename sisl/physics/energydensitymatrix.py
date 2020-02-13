@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import numpy as np
 import sisl._array as _a
 from sisl.messages import SislError
@@ -41,14 +39,20 @@ class EnergyDensityMatrix(_realspace_DensityMatrix):
     """
 
     def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
-        super(EnergyDensityMatrix, self).__init__(geometry, dim, dtype, nnzpr, **kwargs)
+        super().__init__(geometry, dim, dtype, nnzpr, **kwargs)
         self._reset()
 
     def _reset(self):
-        super(EnergyDensityMatrix, self)._reset()
+        super()._reset()
         self.Ek = self.Pk
         self.dEk = self.dPk
         self.ddEk = self.ddPk
+
+    @property
+    def E(self):
+        r""" Access the energy density matrix elements """
+        self._def_dim = self.UP
+        return self
 
     def Ek(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
         r""" Setup the energy density matrix for a given k-point
@@ -210,17 +214,6 @@ class EnergyDensityMatrix(_realspace_DensityMatrix):
         tuple of tuples : for each of the Cartesian directions
         """
         pass
-
-    def _get_E(self):
-        self._def_dim = self.UP
-        return self
-
-    def _set_E(self, key, value):
-        if len(key) == 2:
-            self._def_dim = self.UP
-        self[key] = value
-
-    E = property(_get_E, _set_E, doc="Access elements to the sparse energy density matrix")
 
     def shift(self, E, DM):
         r""" Shift the energy density matrix to a common energy by using a reference density matrix

@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import numpy as np
 
 # Import sile objects
@@ -12,7 +10,6 @@ import sisl._array as _a
 from sisl import Geometry, Atom, SuperCell
 from sisl import SparseOrbitalBZSpin
 from sisl.messages import warn
-from sisl._help import _range as range
 from sisl.unit.siesta import unit_convert
 from ..siesta._help import _mat_spin_convert
 
@@ -160,7 +157,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
             if a.tag in bs.groups:
                 # Assert the file sizes
                 if bs.groups[a.tag].Number_of_orbitals != a.no:
-                    raise ValueError(('File {0}'
+                    raise ValueError(('File {}'
                                       ' has erroneous data in regards of '
                                       'of the alreay stored dimensions.').format(self.file))
             else:
@@ -228,7 +225,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
         slvl = 'LEVEL-'+str(ilvl)
         if slvl in self.groups:
             return self._crt_grp(self, slvl)
-        raise ValueError("Level {0} does not exist in {1}.".format(ilvl, self.file))
+        raise ValueError(f"Level {ilvl} does not exist in {self.file}.")
 
     def _add_lvl(self, ilvl):
         """ Simply adds and returns a group if it does not exist it will be created """
@@ -334,11 +331,11 @@ class deltancSileTBtrans(SileCDFTBtrans):
             # point, this warning will proceed...
             # I.e. even though the variable has not been set, it will WARN
             # Hence we out-comment this for now...
-            warn(SileWarning('Overwriting k-point {0} and energy point {1} correction.'.format(ik, iE)))
+            warn(SileWarning(f'Overwriting k-point {ik} and energy point {iE} correction.'))
         elif ilvl == 3 and warn_E:
-            warn(SileWarning('Overwriting energy point {0} correction.'.format(iE)))
+            warn(SileWarning(f'Overwriting energy point {iE} correction.'))
         elif ilvl == 2 and warn_k:
-            warn(SileWarning('Overwriting k-point {0} correction.'.format(ik)))
+            warn(SileWarning(f'Overwriting k-point {ik} correction.'))
 
         if ilvl == 1:
             dim = ('spin', 'nnzs')
@@ -405,7 +402,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
         lvl = self._get_lvl(ilvl)
 
         if iE < 0 and ilvl in [3, 4]:
-            raise ValueError("Energy {0} eV does not exist in the file.".format(E))
+            raise ValueError(f"Energy {E} eV does not exist in the file.")
         if ik < 0 and ilvl in [2, 4]:
             raise ValueError("k-point requested does not exist in the file.")
 

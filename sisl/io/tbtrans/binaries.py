@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 from ..sile import add_sile
 
 from sisl.io.siesta.binaries import _gfSileSiesta

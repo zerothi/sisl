@@ -1,13 +1,12 @@
 """ pytest test configures """
-from __future__ import print_function
 
 import pytest
-
+import os.path as osp
 import sisl
 
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = 'sisl/io/siesta'
+_dir = osp.join('sisl', 'io', 'siesta')
 
 
 def test_fe(sisl_files):

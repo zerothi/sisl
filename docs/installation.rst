@@ -9,8 +9,7 @@ sisl is easy to install using any of your preferred methods.
 Required dependencies
 ---------------------
 
-- `Python`_ 2.7, 3.4 or above
-- `six`_
+- `Python`_ 3.5 or above
 - `setuptools`_
 - `numpy`_ (1.13 or later)
 - `scipy`_ (0.18 or later)
@@ -32,29 +31,29 @@ Cython version. Note that this is not a necessary step and should typically only
 be considered by developers of Cython modules.
 
 
-pip
----
+pip3
+----
 
 Installing sisl using PyPi can be done using
 
 .. code-block:: bash
 
-   pip install sisl
+   pip3 install sisl
    # or
-   pip install sisl[analysis]
+   pip3 install sisl[analysis]
 
-:code:`pip` will automatically install the required dependencies. The optional dependencies
+:code:`pip3` will automatically install the required dependencies. The optional dependencies
 will be used if later installed.
 
 The latter installation call also installs :code:`tqdm` and :code:`xarray` which are part of
 extended analysis methods. These are not required and may be installed later if their usage
 is desired.
 
-When wanting to pass options to :code:`pip` simply use the following
+When wanting to pass options to :code:`pip3` simply use the following
 
 .. code-block:: bash
 
-   pip install --install-option="--compiler=intelem" --install-option="--fcompiler-intelem" sisl
+   pip3 install --install-option="--compiler=intelem" --install-option="--fcompiler-intelem" sisl
 
 note that options are accummulated.
 
@@ -79,11 +78,11 @@ Manual installation
 sisl may be installed using the regular `setup.py` script.
 Ensure the required dependencies are installed before proceeding with the
 manual installation (without `numpy`_ installed a spurious error message will
-appear). The dependencies may be installed using this :code:`pip` command:
+appear). The dependencies may be installed using this :code:`pip3` command:
 
 .. code-block:: bash
 
-   pip install -r requirements.txt
+   pip3 install -r requirements.txt
 
 
 Simply download the release tar from `this page <gh-releases_>`_, or clone
@@ -91,7 +90,7 @@ the `git repository <sisl-git_>`_ for the latest developments
 
 .. code-block:: bash
 
-   python setup.py install --prefix=<prefix>
+   python3 setup.py install --prefix=<prefix>
 
 
 Testing your installation
@@ -111,11 +110,11 @@ Testing the installation may be done by:
 Development version
 -------------------
 
-To install the development version using :code:`pip` you may use the URL command:
+To install the development version using :code:`pip3` you may use the URL command:
 
 .. code-block:: bash
 
-   pip install git+https://github.com/zerothi/sisl.git
+   pip3 install git+https://github.com/zerothi/sisl.git
 
 Otherwise follow the manual installation by cloning the `git repository <sisl-git_>`_.
 Remark that the :code:`git+https` protocol is buggy (as of pip v19.0.3) because you cannot pass compiler
@@ -126,6 +125,6 @@ the Intel compilers you should do:
 
    git clone git+https://github.com/zerothi/sisl.git
    cd sisl
-   pip install --global-option="build" --global-option="--compiler=intelem" --global-option="--fcompiler=intelem" .
+   pip3 install --global-option="build" --global-option="--compiler=intelem" --global-option="--fcompiler=intelem" .
 
 which will pass the correct options to the build system.

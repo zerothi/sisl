@@ -61,15 +61,14 @@ which may be analysed using VMD, XCrySDen or other tools.
 
 Installing sisl using PyPi or Conda is the easiest:
 
-    pip install sisl
-    pip install sisl[analysis] # also installs tqdm and xarray
+    pip3 install sisl
+    pip3 install sisl[analysis] # also installs tqdm and xarray
     # or
     conda install -c conda-forge sisl
 
 If performing a manual installation, these packages are required:
 
    - A C- and fortran-compiler
-   - __six__
    - __numpy__ (1.13 or later)
    - __scipy__ (0.18 or later)
    - __netCDF4__
@@ -82,11 +81,11 @@ If performing a manual installation, these packages are required:
 
 Subsequently manual installation may be done using this command:
 
-    python setup.py install --prefix=<prefix>
+    python3 setup.py install --prefix=<prefix>
 
 If trying to install without root access, you may be required to use this command:
 
-    python setup.py install --user --prefix=<prefix>
+    python3 setup.py install --user --prefix=<prefix>
 
 
 Once installed, the installation can be tested by executing the following:
@@ -107,11 +106,11 @@ If sisl was used to produce scientific contributions, please use this [DOI][doi]
 We recommend to specify the version of sisl in combination of this citation:
 
     @misc{zerothi_sisl,
-      author       = {Papior, Nick},
-      title        = {sisl: v<fill-version>},
-      year         = {2018},
-      doi          = {10.5281/zenodo.597181},
-      url          = {https://doi.org/10.5281/zenodo.597181}
+      author = {Papior, Nick},
+      title  = {sisl: v<fill-version>},
+      year   = {2020},
+      doi    = {10.5281/zenodo.597181},
+      url    = {https://doi.org/10.5281/zenodo.597181}
     }
 
 To get the BibTeX entry easily you may issue the following command:

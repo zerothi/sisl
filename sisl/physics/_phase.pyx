@@ -28,24 +28,28 @@ cdef inline int is_gamma(const double[::1] k) nogil:
     return 1
 
 
-def phase_dtype(ndarray[float64_t, ndim=1, mode='c'] k, dtype, force_complex=False):
-    if is_gamma(k):
-        if dtype is None:
-            dtype = float64
-        if force_complex:
-            if dtype == float32:
-                dtype = complex64
-            elif dtype == float64:
-                dtype = complex128
+def phase_dtype(ndarray[float64_t, ndim=1, mode='c'] k, M_dtype, R_dtype, force_complex=False):
+    if is_gamma(k) and not force_complex:
+        if R_dtype is None:
+            return M_dtype
+        elif R_dtype == complex64 or R_dtype == complex128:
+            return R_dtype
+        elif M_dtype == complex64 or M_dtype == complex128:
+            return M_dtype
     else:
-        if dtype == float32:
-            dtype = complex64
-        elif dtype == float64:
-            dtype = complex128
-        elif dtype is None:
-            dtype = complex128
-
-    return dtype
+        if R_dtype is None:
+            if M_dtype == float32:
+                return complex64
+            elif M_dtype == float64:
+                return complex128
+            else:
+                # M *must* be complex
+                return M_dtype
+        elif R_dtype == float32:
+            return complex64
+        elif R_dtype == float64:
+            return complex128
+    return R_dtype
 
 
 def phase_rsc(sc, ndarray[float64_t, ndim=1, mode='c'] k, dtype):

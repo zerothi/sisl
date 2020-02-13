@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 from math import sqrt as msqrt
 
 import numpy as np
@@ -11,7 +10,7 @@ from sisl.utils.mathematics import fnorm
 __all__ = ['Shape', 'CompositeShape', 'PureShape', 'NullShape']
 
 
-class Shape(object):
+class Shape:
     """ Baseclass for all shapes. Logical operations are implemented on this class.
 
     **This class must be sub classed.**
@@ -258,7 +257,7 @@ class CompositeShape(Shape):
         A = str(self.A).replace('\n', '\n ')
         B = str(self.B).replace('\n', '\n ')
         op = {self._OR: 'OR', self._AND: 'AND', self._SUB: 'SUB', self._XOR: 'XOR'}.get(self.op)
-        return '{0}{{{1},\n {2},\n {3}\n}}'.format(self.__class__.__name__, op, A, B)
+        return f'{self.__class__.__name__}{{{op},\n {A},\n {B}\n}}'
 
     def scale(self, scale):
         return self.__class__(self.A.scale(scale), self.B.scale(scale), self.op)

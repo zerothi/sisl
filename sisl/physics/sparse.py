@@ -1,12 +1,9 @@
-from __future__ import print_function, division
-
 import warnings
 
 import numpy as np
 from scipy.sparse import csr_matrix, SparseEfficiencyWarning
 
 import sisl.linalg as lin
-from sisl._help import _range as range
 from sisl.sparse import isspmatrix
 from sisl.sparse_geometry import SparseOrbital
 from .spin import Spin
@@ -103,53 +100,66 @@ class SparseOrbitalBZ(SparseOrbital):
 
     def __str__(self):
         r""" Representation of the model """
-        s = self.__class__.__name__ + '{{dim: {0}, non-zero: {1}, orthogonal: {2}\n '.format(self.dim, self.nnz, self.orthogonal)
+        s = self.__class__.__name__ + f'{{dim: {self.dim}, non-zero: {self.nnz}, orthogonal: {self.orthogonal}\n '
         s += str(self.geometry).replace('\n', '\n ')
         return s + '\n}'
 
-    def _get_S(self):
+    @property
+    def S(self):
+        r""" Access the overlap elements associated with the sparse matrix """
         if self.orthogonal:
             return None
         self._def_dim = self.S_idx
         return self
 
-    def _set_S(self, key, value):
-        if self.orthogonal:
-            return
-        self._def_dim = self.S_idx
-        self[key] = value
-
-    S = property(_get_S, _set_S, doc="Access elements to the sparse overlap")
-
     @classmethod
-    def fromsp(cls, geometry, P, S=None):
-        r""" Read and return the object with possible overlap """
-        # Calculate maximum number of connections per row
-        nc = 0
+    def fromsp(cls, geometry, P, S=None, **kwargs):
+        r""" Create a sparse model from a preset `Geometry` and a list of sparse matrices
 
+        The passed sparse matrices are in one of `scipy.sparse` formats.
+
+        Parameters
+        ----------
+        geometry : Geometry
+           geometry to describe the new sparse geometry
+        P : list of scipy.sparse or scipy.sparse
+           the new sparse matrices that are to be populated in the sparse
+           matrix
+        S : scipy.sparse, optional
+           if provided this refers to the overlap matrix and will force the
+           returned sparse matrix to be non-orthogonal
+        **kwargs : optional
+           any arguments that are directly passed to the ``__init__`` method
+           of the class.
+
+        Returns
+        -------
+        SparseGeometry
+             a new sparse matrix that holds the passed geometry and the elements of `P` and optionally being non-orthogonal if `S` is not none
+        """
         # Ensure list of csr format (to get dimensions)
         if isspmatrix(P):
             P = [P]
+        if isinstance(P, tuple):
+            P = list(P)
 
         # Number of dimensions
         dim = len(P)
+        nnzpr = 1
         # Sort all indices for the passed sparse matrices
         for i in range(dim):
             P[i] = P[i].tocsr()
             P[i].sort_indices()
             P[i].sum_duplicates()
 
-        # Figure out the maximum connections per
-        # row to reduce number of re-allocations to 0
-        for i in range(P[0].shape[0]):
-            nc = max(nc, P[0][i, :].getnnz())
+            nnzpr = max(nnzpr, P[i].nnz // P[i].shape[0])
 
         # Create the sparse object
-        p = cls(geometry, dim, P[0].dtype, nc, orthogonal=S is None)
+        p = cls(geometry, dim, P[0].dtype, nnzpr, orthogonal=S is None, **kwargs)
 
         if p._size != P[0].shape[0]:
             raise ValueError(cls.__name__ + '.fromsp cannot create a new class, the geometry ' + \
-                             'and sparse matrices does not have coinciding dimensions size != sp.shape[0]')
+                             'and sparse matrices does not have coinciding dimensions size != P[0].shape[0]')
 
         for i in range(dim):
             ptr = P[i].indptr
@@ -176,14 +186,13 @@ class SparseOrbitalBZ(SparseOrbital):
 
         return p
 
-    # Create iterations on entire set of orbitals
-    def iter(self, local=False):
+    def iter_orbitals(self, atom=None, local=False):
         r""" Iterations of the orbital space in the geometry, two indices from loop
 
         An iterator returning the current atomic index and the corresponding
         orbital index.
 
-        >>> for ia, io in self:
+        >>> for ia, io in self.iter_orbitals():
 
         In the above case `io` always belongs to atom `ia` and `ia` may be
         repeated according to the number of orbitals associated with
@@ -191,14 +200,24 @@ class SparseOrbitalBZ(SparseOrbital):
 
         Parameters
         ----------
+        atom : int or array_like, optional
+           only loop on the given atoms, default to all atoms
         local : bool, optional
            whether the orbital index is the global index, or the local index relative to
            the atom it resides on.
-        """
-        for ia, io in self.geometry.iter_orbitals(local=local):
-            yield ia, io
 
-    __iter__ = iter
+        Yields
+        ------
+        ia
+           atomic index
+        io
+           orbital index
+
+        See Also
+        --------
+        Geometry.iter_orbitals : method used to iterate orbitals
+        """
+        yield from self.geometry.iter_orbitals(local=local)
 
     def _Pk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', _dim=0):
         r""" Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a polarized system
@@ -508,13 +527,13 @@ class SparseOrbitalBZ(SparseOrbital):
 
     def __getstate__(self):
         return {
-            'sparseorbitalbz': super(SparseOrbitalBZ, self).__getstate__(),
+            'sparseorbitalbz': super().__getstate__(),
             'orthogonal': self._orthogonal
         }
 
     def __setstate__(self, state):
         self._orthogonal = state['orthogonal']
-        super(SparseOrbitalBZ, self).__setstate__(state['sparseorbitalbz'])
+        super().__setstate__(state['sparseorbitalbz'])
         self._reset()
 
 
@@ -567,12 +586,12 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             spin = kwargs.pop('spin')
         self._spin = Spin(spin, dtype)
 
-        super(SparseOrbitalBZSpin, self).__init__(geometry, len(self.spin), self.spin.dtype, nnzpr, **kwargs)
+        super().__init__(geometry, len(self.spin), self.spin.dtype, nnzpr, **kwargs)
         self._reset()
 
     def _reset(self):
         r""" Reset object according to the options, please refer to `SparseOrbital.reset` for details """
-        super(SparseOrbitalBZSpin, self)._reset()
+        super()._reset()
 
         if self.spin.is_unpolarized:
             self.UP = 0
@@ -648,7 +667,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
     def __str__(self):
         r""" Representation of the model """
-        s = self.__class__.__name__ + '{{non-zero: {0}, orthogonal: {1},\n '.format(self.nnz, self.orthogonal)
+        s = self.__class__.__name__ + f'{{non-zero: {self.nnz}, orthogonal: {self.orthogonal},\n '
         s += str(self.spin).replace('\n', '\n ') + ',\n '
         s += str(self.geometry).replace('\n', '\n ')
         return s + '\n}'
@@ -869,7 +888,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
            if true, also emply a spin-box Hermitian operator to ensure TRS, otherwise
            only return the transpose values.
         """
-        new = super(SparseOrbitalBZSpin, self).transpose()
+        new = super().transpose()
         sp = self.spin
         D = new._csr._D
 
@@ -908,9 +927,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         .. math::
 
-            2M = M + \boldsymbol\sigma_y K M \boldsymbol\sigma_y
+            2\mathbf M^{\mathrm{TRS}} = \mathbf M + \boldsymbol\sigma_y \mathbf M^* \boldsymbol\sigma_y
 
-        where :math:`K` is the conjugation operator.
+        where :math:`*` is the conjugation operator.
         """
         new = self.copy()
         sp = self.spin
@@ -939,7 +958,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
     def __getstate__(self):
         return {
-            'sparseorbitalbzspin': super(SparseOrbitalBZSpin, self).__getstate__(),
+            'sparseorbitalbzspin': super().__getstate__(),
             'spin': self._spin.__getstate__(),
             'orthogonal': self._orthogonal,
         }
@@ -949,4 +968,4 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         spin = Spin()
         spin.__setstate__(state['spin'])
         self._spin = spin
-        super(SparseOrbitalBZSpin, self).__setstate__(state['sparseorbitalbzspin'])
+        super().__setstate__(state['sparseorbitalbzspin'])

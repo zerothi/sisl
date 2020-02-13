@@ -17,7 +17,7 @@ __all__ = ['matrix_ddk']
 
 def matrix_ddk(gauge, M, const int idx, sc,
                np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
-    dtype = phase_dtype(k, dtype)
+    dtype = phase_dtype(k, M.dtype, dtype)
     # This is the double differentiated matrix with respect to k
     #  - i R (- i R) == - R ** 2
     if gauge == 'R':

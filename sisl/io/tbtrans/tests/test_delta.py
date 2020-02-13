@@ -1,14 +1,12 @@
-from __future__ import print_function, division
-
 import pytest
-
+import os.path as osp
 from sisl import Hamiltonian
 from sisl.io.tbtrans import *
-
 import numpy as np
 
+
 pytestmark = [pytest.mark.io, pytest.mark.tbtrans]
-_dir = 'sisl/io/tbtrans'
+_dir = osp.join('sisl', 'io', 'tbtrans')
 
 
 def test_tbt_delta1(sisl_tmp, sisl_system):

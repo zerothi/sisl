@@ -32,7 +32,7 @@ def _plot(obj, *args, **kwargs):
     try:
         a = getattr(obj, '__plot__')
     except AttributeError:
-        raise NotImplementedError("{} does not implement the __plot__ method.".format(obj.__class__.__name__))
+        raise NotImplementedError(f"{obj.__class__.__name__} does not implement the __plot__ method.")
     return a(*args, **kwargs)
 
 if has_matplotlib:

@@ -1,12 +1,9 @@
-from __future__ import print_function, division
-
 try:
     from StringIO import StringIO
 except Exception:
     from io import StringIO
 import numpy as np
 
-from sisl._help import _str
 from sisl.utils import *
 from sisl.unit.siesta import unit_convert
 
@@ -35,7 +32,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         elec_mol_proj : str or tuple
            electrode-molecule-projection
         """
-        if isinstance(elec_mol_proj, _str):
+        if isinstance(elec_mol_proj, str):
             elec_mol_proj = elec_mol_proj.split('.')
         if len(elec_mol_proj) == 1:
             return elec_mol_proj
@@ -130,7 +127,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         transmission_eig : projected transmission decomposed in eigenchannels
         """
         mol_proj_elec = self._mol_proj_elec(elec_mol_proj_from)
-        if not isinstance(elec_mol_proj_to, _str):
+        if not isinstance(elec_mol_proj_to, str):
             elec_mol_proj_to = '.'.join(elec_mol_proj_to)
         return self._value_avg(elec_mol_proj_to + '.T', mol_proj_elec, kavg=kavg)
 
@@ -152,7 +149,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         transmission : projected transmission
         """
         mol_proj_elec = self._mol_proj_elec(elec_mol_proj_from)
-        if not isinstance(elec_mol_proj_to, _str):
+        if not isinstance(elec_mol_proj_to, str):
             elec_mol_proj_to = '.'.join(elec_mol_proj_to)
         return self._value_avg(elec_mol_proj_to + '.T.Eig', mol_proj_elec, kavg=kavg)
 
@@ -316,7 +313,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
     @default_ArgumentParser(description="Extract data from a TBT.Proj.nc file")
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
-        p, namespace = super(tbtprojncSileTBtrans, self).ArgumentParser(p, *args, **kwargs)
+        p, namespace = super().ArgumentParser(p, *args, **kwargs)
 
         # We limit the import to occur here
         import argparse
@@ -353,7 +350,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
             @ensure_E
             def __call__(self, parser, ns, value, option_string=None):
                 data = ns._tbt.ADOS(value, kavg=ns._krng, orbital=ns._Orng, norm=ns._norm)
-                ns._data_header.append('ADOS[1/eV]:{}'.format(value))
+                ns._data_header.append(f'ADOS[1/eV]:{value}')
                 NORM = int(ns._tbt.norm(orbital=ns._Orng, norm=ns._norm))
 
                 # The flatten is because when ns._Erng is None, then a new
@@ -379,7 +376,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
                 data = ns._tbt.transmission(elec_mol_proj1, elec_mol_proj2, kavg=ns._krng)[ns._Erng]
                 data.shape = (-1,)
                 ns._data.append(data)
-                ns._data_header.append('T[G0]:{}-{}'.format(elec_mol_proj1, elec_mol_proj2))
+                ns._data_header.append(f'T[G0]:{elec_mol_proj1}-{elec_mol_proj2}')
                 ns._data_description.append('Column {} is transmission from {} to {}'.format(len(ns._data), elec_mol_proj1, elec_mol_proj2))
         p.add_argument('-T', '--transmission', nargs=2, metavar=('E.M.P1', 'E.M.P2'),
                        action=DataT,
@@ -454,9 +451,9 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         dE = np.diff(E)
         dEm, dEM = np.amin(dE) * 1000, np.amax(dE) * 1000 # convert to meV
         if (dEM - dEm) < 1e-3: # 0.001 meV
-            prnt("     {:.5f} -- {:.5f} eV  [{:.3f} meV]".format(Em, EM, dEm))
+            prnt(f"     {Em:.5f} -- {EM:.5f} eV  [{dEm:.3f} meV]")
         else:
-            prnt("     {:.5f} -- {:.5f} eV  [{:.3f} -- {:.3f} meV]".format(Em, EM, dEm, dEM))
+            prnt(f"     {Em:.5f} -- {EM:.5f} eV  [{dEm:.3f} -- {dEM:.3f} meV]")
         prnt("  - imaginary part (eta): {:.4f} meV".format(self.eta() * 1e3))
         prnt("  - atoms with DOS (fortran indices):")
         prnt("     " + list2str(self.a_dev + 1))
@@ -484,7 +481,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
                 prnt(" " * ns + "-> {elec}".format(elec=elec_mol_proj[0]))
             elif len(elec_mol_proj) == 3:
                 elec2, mol2, proj2 = elec_mol_proj
-                prnt(" " * ns + "-> {elec}|{mol}|{proj}".format(elec=elec2, mol=mol2, proj=proj2))
+                prnt(" " * ns + f"-> {elec2}|{mol2}|{proj2}")
 
         def _print_to_full(s, vars):
             if len(vars) == 0:
@@ -499,7 +496,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
             opt = {'mol1': mol}
             gmol = self.groups[mol]
             prnt()
-            prnt("Molecule: {}".format(mol))
+            prnt(f"Molecule: {mol}")
             prnt("  - molecule atoms (fortran indices):")
             prnt("     " + list2str(gmol.variables['atom'][:]))
 
@@ -561,8 +558,8 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
             except:
                 n_btd = 'unknown'
             prnt()
-            prnt("Electrode: {}".format(elec))
-            prnt("  - number of BTD blocks: {}".format(n_btd))
+            prnt(f"Electrode: {elec}")
+            prnt(f"  - number of BTD blocks: {n_btd}")
             prnt("  - Bloch: [{}, {}, {}]".format(*bloch))
             gelec = self.groups[elec]
             if 'TBT' in self._trans_type:

@@ -3,8 +3,6 @@
 Library to create/handle geometries and tight-binding parameters in Python. Made with DFT in mind.
 """
 
-from __future__ import print_function
-
 if __doc__ is None:
     __doc__ = """sisl: Generic library for manipulating DFT output, geometries and tight-binding parameter sets"""
 
@@ -20,11 +18,10 @@ Development Status :: 5 - Production/Stable
 Intended Audience :: Science/Research
 Intended Audience :: Developers
 License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)
-Programming Language :: Python :: 2.7
-Programming Language :: Python :: 3.5
 Programming Language :: Python :: 3.6
 Programming Language :: Python :: 3.7
 Programming Language :: Python :: 3.8
+Programming Language :: Python :: 3.9
 Topic :: Software Development
 Topic :: Scientific/Engineering
 Topic :: Scientific/Engineering :: Physics
@@ -33,11 +30,11 @@ Topic :: Utilities
 
 MAJOR = 0
 MINOR = 9
-MICRO = 6
-ISRELEASED = False
+MICRO = 8
+ISRELEASED = True
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
-GIT_REVISION = "cc0e705432a2c2d496cea86bb068147b0cb64763"
-REVISION_YEAR = 2019
+GIT_REVISION = "13a327bd8e27d689f119bafdf38519bab7f6e0f6"
+REVISION_YEAR = 2020
 
 
 # The MANIFEST should be updated (which it only is
@@ -50,13 +47,21 @@ if osp.exists('MANIFEST'):
 # The install_requires should also be the
 # requirements for the actual running of sisl
 install_requires = [
-    'six',
     'setuptools',
     'numpy>=1.13',
     'scipy>=0.18',
     'netCDF4',
     'pyparsing>=1.5.7',
 ]
+
+setup_requires = []
+
+# If pytest is installed, add it to setup_requires
+try:
+    import pytest
+    setup_requires.append('pytest-runner')
+except:
+    pass
 
 # Create list of all sub-directories with
 #   __init__.py files...
@@ -93,7 +98,9 @@ metadata = dict(
     },
     classifiers=[_f.strip() for _f in CLASSIFIERS.split('\n') if _f],
     platforms=['Unix', 'Linux', 'Mac OS-X', 'Windows'],
+    python_requires='>=3.6',
     install_requires=install_requires,
+    setup_requires=setup_requires,
     tests_require=['pytest'],
     zip_safe=False,
     extras_require={
@@ -102,13 +109,6 @@ metadata = dict(
         'analysis': ['xarray>=0.10.0', 'tqdm'],
     },
 )
-
-# If pytest is installed, add it to setup_requires
-try:
-    import pytest
-    metadata['setup_requires'] = ['pytest-runner']
-except:
-    pass
 
 cwd = osp.abspath(osp.dirname(__file__))
 if not osp.exists(osp.join(cwd, 'PKG-INFO')):
@@ -266,10 +266,6 @@ if __name__ == '__main__':
             metadata['version'] = VERSION
         else:
             metadata['version'] = VERSION + '-dev'
-
-    if 'sdist' in sys.argv:
-        from distutils.command.sdist import sdist
-        metadata['cmdclass'] = {'sdist': sdist}
 
     # Main setup of python modules
     setup(**metadata)

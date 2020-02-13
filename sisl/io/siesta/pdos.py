@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import numpy as np
 
 from sisl._help import xml_parse

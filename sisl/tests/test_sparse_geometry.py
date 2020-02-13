@@ -1,12 +1,10 @@
-from __future__ import print_function, division
-
 import pytest
 
 import math as m
 import numpy as np
 import scipy as sc
 
-from sisl import Geometry, Atom
+from sisl import Geometry, Atom, SuperCell
 from sisl.geom import fcc, graphene
 from sisl.sparse_geometry import *
 
@@ -23,7 +21,7 @@ def setup():
 
 @pytest.mark.sparse
 @pytest.mark.sparse_geometry
-class TestSparseAtom(object):
+class TestSparseAtom:
 
     @pytest.mark.xfail(raises=ValueError)
     def test_fail_align1(self, setup):
@@ -303,12 +301,36 @@ class TestSparseAtom(object):
         assert s.nnz == 4
         assert s[0, 0] == 1
 
+    def test_set_nsc3(self, setup):
+        g = graphene(atom=Atom(6, R=1.43))
+        s = SparseAtom(g)
+
+        s.set_nsc((3, 3, 1))
+        s.construct([[0.1, 1.43], [1, 2]])
+
+        s55 = s.copy()
+        s55.set_nsc((5, 5, 1))
+        s77 = s55.copy()
+        s77.set_nsc((7, 7, 1))
+        s59 = s77.copy()
+        s59.set_nsc((5, 9, 1))
+        assert s.nnz == s55.nnz
+        assert s.nnz == s77.nnz
+        assert s.nnz == s59.nnz
+
+        s55.set_nsc((3, 3, 1))
+        s77.set_nsc((3, 3, 1))
+        s59.set_nsc((3, 3, 1))
+        assert s.nnz == s55.nnz
+        assert s.nnz == s77.nnz
+        assert s.nnz == s59.nnz
+
     def test_edges1(self, setup):
         g = graphene(atom=Atom(6, R=1.43))
         s = SparseAtom(g)
         s.construct([[0.1, 1.43], [1, 2]])
-        assert len(s.edges(0)) == 3
-        assert len(s.edges(0, exclude=[])) == 4
+        assert len(s.edges(0)) == 4
+        assert len(s.edges(0, exclude=[0])) == 3
 
     def test_op_numpy_scalar(self, setup):
         g = graphene(atom=Atom(6, R=1.43))
@@ -392,28 +414,6 @@ class TestSparseAtom(object):
         assert np.allclose(s1[1, [1, 2, 4], 0], np.zeros([3], np.int32))
         assert np.allclose(s1[1, [1, 2, 4], 1], np.ones([3], np.int32)*2)
 
-        s2 = SparseAtom.fromsp(g, lil1, lil2)
-        assert s2.nnz == 6
-        assert np.allclose(s2.shape, [g.na, g.na_s, 2])
-
-        assert np.allclose(s2[0, [1, 2, 3], 0], np.ones([3], np.int32))
-        assert np.allclose(s2[0, [1, 2, 3], 1], np.zeros([3], np.int32))
-        assert np.allclose(s2[1, [1, 2, 4], 0], np.zeros([3], np.int32))
-        assert np.allclose(s2[1, [1, 2, 4], 1], np.ones([3], np.int32)*2)
-
-        assert s1.spsame(s2)
-
-    @pytest.mark.xfail(raises=ValueError)
-    def test_fromsp3(self, setup):
-        g = setup.g.repeat(2, 0).tile(2, 1)
-        lil1 = sc.sparse.lil_matrix((g.na, g.na_s), dtype=np.int32)
-        lil2 = sc.sparse.lil_matrix((g.na, g.na_s), dtype=np.int32)
-        lil1[0, [1, 2, 3]] = 1
-        lil2[1, [2, 4, 1]] = 2
-
-        # Ensure that one does not mix everything.
-        SparseAtom.fromsp(g, [lil1], lil2)
-
     @pytest.mark.xfail(raises=ValueError)
     def test_fromsp4(self, setup):
         g = setup.g.repeat(2, 0).tile(2, 1)
@@ -449,7 +449,7 @@ def test_sparse_atom_symmetric(n0, n1, n2):
     s = s.tile(n0, 0).tile(n1, 1).tile(n2, 2)
     na = s.geometry.na
 
-    nnz = na
+    nnz = 0
     for ia in range(na):
         # orbitals connecting to ia
         edges = s.edges(ia)
@@ -464,3 +464,24 @@ def test_sparse_atom_symmetric(n0, n1, n2):
 
     # Check that we have counted all nnz
     assert s.nnz == nnz
+
+
+def test_sparse_orbital_add_axis(setup):
+    g = setup.g.copy()
+    s = SparseOrbital(g)
+    s.construct([[0.1, 1.5], [1, 2]])
+    s1 = s.add(s, axis=2)
+    s2 = SparseOrbital(g.append(SuperCell([0, 0, 10]), 2).add(g, offset=[0, 0, 5]))
+    s2.construct([[0.1, 1.5], [1, 2]])
+    assert s1.spsame(s2)
+
+
+def test_sparse_orbital_add_no_axis():
+    from sisl.geom import sc
+    g = (sc(1., Atom(1, R=1.5)) * 2).add(SuperCell([0, 0, 5]))
+    s = SparseOrbital(g)
+    s.construct([[0.1, 1.5], [1, 2]])
+    s1 = s.add(s, offset=[0, 0, 3])
+    s2 = SparseOrbital(g.add(g, offset=[0, 0, 3]))
+    s2.construct([[0.1, 1.5], [1, 2]])
+    assert s1.spsame(s2)

@@ -1,9 +1,6 @@
-from __future__ import print_function, division
-
 import numpy as np
 from scipy.interpolate import CubicSpline
 
-from sisl._help import _range as range
 import sisl._array as _a
 from .distribution import get_distribution
 from .electron import EigenvalueElectron, EigenstateElectron, spin_squared
@@ -46,14 +43,20 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
     def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
         """ Initialize Hamiltonian """
-        super(Hamiltonian, self).__init__(geometry, dim, dtype, nnzpr, **kwargs)
+        super().__init__(geometry, dim, dtype, nnzpr, **kwargs)
         self._reset()
 
     def _reset(self):
-        super(Hamiltonian, self)._reset()
+        super()._reset()
         self.Hk = self.Pk
         self.dHk = self.dPk
         self.ddHk = self.ddPk
+
+    @property
+    def H(self):
+        r""" Access the Hamiltonian elements """
+        self._def_dim = self.UP
+        return self
 
     def Hk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', *args, **kwargs):
         r""" Setup the Hamiltonian for a given k-point
@@ -215,17 +218,6 @@ class Hamiltonian(SparseOrbitalBZSpin):
         tuple of tuples : for each of the Cartesian directions
         """
         pass
-
-    def _get_H(self):
-        self._def_dim = self.UP
-        return self
-
-    def _set_H(self, key, value):
-        if len(key) == 2:
-            self._def_dim = self.UP
-        self[key] = value
-
-    H = property(_get_H, _set_H, doc="Access elements to the sparse Hamiltonian")
 
     def shift(self, E):
         r""" Shift the electronic structure by a constant energy
@@ -470,7 +462,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         """
         return self.eigenstate(k, **kwargs).PDOS(E, distribution)
 
-    def fermi_level(self, bz=None, q=None, distribution='fermi_dirac', q_tol=1e-12):
+    def fermi_level(self, bz=None, q=None, distribution='fermi_dirac', q_tol=1e-10):
         """ Calculate the Fermi-level using a Brillouinzone sampling and a target charge
 
         The Fermi-level will be calculated using an iterative approach by first calculating all eigenvalues
@@ -505,9 +497,12 @@ class Hamiltonian(SparseOrbitalBZSpin):
         bz.asarray()
 
         if q is None:
-            q = self.geometry.q0
+            if self.spin.is_unpolarized:
+                q = self.geometry.q0 * 0.5
+            else:
+                q = self.geometry.q0
         # Ensure we have an "array" in case of spin-polarized calculations
-        q = np.asarray(q)
+        q = np.asarray(q, dtype=np.float64)
 
         if isinstance(distribution, str):
             distribution = get_distribution(distribution)
@@ -520,37 +515,21 @@ class Hamiltonian(SparseOrbitalBZSpin):
             # We could reduce it depending on the temperature,
             # however the distribution does not have the kT
             # parameter available.
-            Ef = np.average(eig[:, int(q)])
+            min_Ef, max_Ef = eig.min(), eig.max()
 
-            l_Ef = []
-            l_q = []
-            def list_append(q, Ef):
-                l_q.append(q)
-                l_Ef.append(Ef)
+            while True:
+                Ef = (min_Ef + max_Ef) * 0.5
 
-            # Calculate guessed charge
-            qt = (distribution(eig, mu=Ef) * w).sum()
-
-            while abs(qt - q) > q_tol:
-                # Add to cubic-spline
-                list_append(qt, Ef)
-
-                # Estimate new Fermi-level
-                if len(l_q) > 1:
-                    # We can do a spline interpolation
-                    lq = np.array(l_q)
-                    idx = np.argsort(lq)
-                    lEf = np.array(l_Ef)
-                    Ef = CubicSpline(lq[idx], lEf[idx], extrapolate=True)(q)
-                else:
-                    # Update limits
-                    if qt > q:
-                        Ef = Ef - 0.5
-                    elif qt < q:
-                        Ef = Ef + 0.5
-
-                # Calculate new guessed charge
+                # Calculate guessed charge
                 qt = (distribution(eig, mu=Ef) * w).sum()
+
+                if abs(qt - q) < q_tol:
+                    return Ef
+
+                if qt >= q:
+                    max_Ef = Ef
+                elif qt <= q:
+                    min_Ef = Ef
 
             return Ef
 

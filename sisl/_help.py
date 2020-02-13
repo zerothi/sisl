@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import sys
 import functools
 import warnings
@@ -7,33 +5,17 @@ import warnings
 import numpy as np
 
 __all__ = ['array_fill_repeat']
-__all__ += ['isndarray', 'isiterable']
+__all__ += ['isndarray', 'isiterable', 'voigt_matrix']
 __all__ += ['get_dtype']
 __all__ += ['dtype_complex_to_real', 'dtype_real_to_complex']
 __all__ += ['wrap_filterwarnings']
 
 # Wrappers typically used
-__all__ += ['_str', '_range', '_zip', '_map']
-__all__ += ['is_python2', 'is_python3']
 __all__ += ['xml_parse']
 
 
 # Base-class for string object checks
-is_python3 = sys.version_info >= (3, 0)
-is_python2 = not is_python3
-if is_python3:
-    import collections.abc as collections_abc
-    _str = str
-    _range = range
-    _zip = zip
-    _map = map
-else:
-    import collections as collections_abc
-    from itertools import izip as _zip
-    from itertools import imap as _map
-    _str = basestring
-    _range = xrange
-
+import collections.abc as collections_abc
 
 # Load the correct xml-parser
 try:
@@ -75,6 +57,39 @@ def array_fill_repeat(array, size, cls=None):
             return np.tile(np.array(array, dtype=cls), reps)
         return np.array(array, dtype=cls)
 
+
+def voigt_matrix(M, to_voigt):
+    r""" Convert a matrix from Voigt representation to dense, or from matrix to Voigt
+
+    Parameters
+    ----------
+    M : array_like
+       matrix with last dimension having the Voigt representation or the last 2 dimensions
+       having the symmetric matrix
+    to_voigt : logical
+       if True, the input matrix is assumed *not* to be in Voigt representation and will
+       be returned in Voigt notation. Otherwise, the opposite will happen
+    """
+    if to_voigt:
+        m = np.empty(M.shape[:-2] + (6,), dtype=M.dtype)
+        m[..., 0] = M[..., 0, 0] # xx
+        m[..., 1] = M[..., 1, 1] # yy
+        m[..., 2] = M[..., 2, 2] # zz
+        m[..., 3] = (M[..., 2, 1] + M[..., 1, 2]) * 0.5 # zy
+        m[..., 4] = (M[..., 2, 0] + M[..., 0, 2]) * 0.5 # zx
+        m[..., 5] = (M[..., 1, 0] + M[..., 0, 1]) * 0.5 # xy
+    else:
+        m = np.empty(M.shape[:-1] + (3, 3), dtype=M.dtype)
+        m[..., 0, 0] = M[..., 0] # xx
+        m[..., 1, 1] = M[..., 1] # yy
+        m[..., 2, 2] = M[..., 2] # zz
+        m[..., 0, 1] = M[..., 5] # xy
+        m[..., 1, 0] = M[..., 5] # xy
+        m[..., 0, 2] = M[..., 4] # xz
+        m[..., 2, 0] = M[..., 4] # xz
+        m[..., 1, 2] = M[..., 3] # zy
+        m[..., 2, 1] = M[..., 3] # zy
+    return m
 
 _Iterable = collections_abc.Iterable
 
@@ -171,7 +186,6 @@ def dtype_real_to_complex(dtype):
     return dtype
 
 
-# TODO Py3 *replace, *, other=None)
 def array_replace(array, *replace, **kwargs):
     """ Replace values in `array` using `replace`
 

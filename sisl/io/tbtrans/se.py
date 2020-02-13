@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 try:
     from StringIO import StringIO
 except Exception:
@@ -45,19 +43,22 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
     >>> se_unsorted = se.self_energy('Left', 0.1, [0, 0, 0])
     >>> # Return the self-energy for the left electrode (sorted)
     >>> se_sorted = se.self_energy('Left', 0.1, [0, 0, 0], sort=True)
-    >>> #
     >>> # Query the indices in the full Hamiltonian
     >>> pvt_unsorted = se.pivot('Left').reshape(-1, 1)
     >>> pvt_sorted = se.pivot('Left', sort=True).reshape(-1, 1)
     >>> # The following two lines are equivalent
-    >>> Hfull[pvt_unsorted, pvt_unsorted.T] -= se_unsorted[:, :]
-    >>> Hfull[pvt_sorted, pvt_sorted.T] -= se_sorted[:, :]
+    >>> Hfull1[pvt_unsorted, pvt_unsorted.T] -= se_unsorted[:, :]
+    >>> Hfull2[pvt_sorted, pvt_sorted.T] -= se_sorted[:, :]
+    >>> np.allclose(Hfull1, Hfull2)
+    True
     >>> # Query the indices in the device Hamiltonian
-    >>> dpvt_unsorted = se.pivot('Left', in_device=True).reshape(-1, 1)
-    >>> dpvt_sorted = se.pivot('Left', in_device=True, sort=True).reshape(-1, 1)
-    >>> # Following inserts are equivalent
-    >>> Hdev[dpvt_unsorted, dpvt_unsorted.T] -= se_unsorted[:, :]
+    >>> dev_pvt = se.pivot('Left', in_device=True).reshape(-1, 1)
+    >>> dev_unpvt = se.pivot('Left', in_device=True, sort=True).reshape(-1, 1)
+    >>> Hdev_pvt[dev_pvt, dev_pvt.T] -= se_unsorted[:, :]
     >>> Hdev[dpvt_sorted, dpvt_sorted.T] -= se_sorted[:, :]
+    >>> pvt_dev = se.pivot(in_device=True).reshape(-1, 1)
+    >>> np.allclose(Hdev_pvt, Hdev[pvt_dev, pvt_dev.T])
+    True
     """
     _trans_type = 'TBT'
     _E2eV = Ry2eV
@@ -76,7 +77,9 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         k : array_like or int
            k-point to retrieve, if an integer it is the k-index in the file
         sort : bool, optional
-           if ``True`` the returned self-energy will be sorted (equivalent to pivoting the self-energy)
+           if ``True`` the returned self-energy will be sorted according to the order of
+           the orbitals in the non-pivoted geometry, otherwise the self-energy will
+           be returned according to the pivoted orbitals in the device region.
         """
         tree = self._elec(elec)
         ik = self.kindex(k)
@@ -85,15 +88,15 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         re = self._variable('ReSelfEnergy', tree=tree)
         im = self._variable('ImSelfEnergy', tree=tree)
 
-        SE = (re[ik, iE, :, :] + 1j * im[ik, iE, :, :])
+        SE = self._E2eV * re[ik, iE, :, :] + (1j * self._E2eV) * im[ik, iE, :, :]
         if sort:
             pvt = self.pivot(elec)
             idx = argsort(pvt).reshape(-1, 1)
 
             # pivot for sorted device region
-            return SE[idx, idx.T] * self._E2eV
+            return SE[idx, idx.T]
 
-        return SE * self._E2eV
+        return SE
 
     def scattering_matrix(self, elec, E, k=0, sort=False):
         r""" Return the scattering matrix from the electrode `elec`
@@ -114,7 +117,9 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         k : array_like or int
            k-point to retrieve, if an integer it is the k-index in the file
         sort : bool, optional
-           if ``True`` the returned scattering matrix will be sorted (equivalent to pivoting the scattering matrix)
+           if ``True`` the returned scattering matrix will be sorted according to the order of
+           the orbitals in the non-pivoted geometry, otherwise the scattering matrix will
+           be returned according to the pivoted orbitals in the device region.
         """
         tree = self._elec(elec)
         ik = self.kindex(k)
@@ -123,16 +128,16 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         re = self._variable('ReSelfEnergy', tree=tree)[ik, iE, :, :]
         im = self._variable('ImSelfEnergy', tree=tree)[ik, iE, :, :]
 
-        G = - (im + im.T) + 1j * (re - re.T)
+        G = - self._E2eV * (im + im.T) + (1j * self._E2eV) * (re - re.T)
         if sort:
             pvt = self.pivot(elec)
             idx = argsort(pvt)
             idx.shape = (-1, 1)
 
             # pivot for sorted device region
-            return G[idx, idx.T] * self._E2eV
+            return G[idx, idx.T]
 
-        return G * self._E2eV
+        return G
 
     def self_energy_average(self, elec, E, sort=False):
         """ Return the k-averaged average self-energy from the electrode `elec`
@@ -146,8 +151,9 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
            energy value will be found and returned, if an integer it will correspond
            to the exact index
         sort : bool, optional
-           if ``True`` the returned self-energy will be sorted but not necessarily consecutive
-           in the device region.
+           if ``True`` the returned self-energy will be sorted according to the order of
+           the orbitals in the non-pivoted geometry, otherwise the self-energy will
+           be returned according to the pivoted orbitals in the device region.
         """
         tree = self._elec(elec)
         iE = self.Eindex(E)
@@ -155,16 +161,16 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         re = self._variable('ReSelfEnergyMean', tree=tree)
         im = self._variable('ImSelfEnergyMean', tree=tree)
 
-        SE = (re[ik, iE, :, :] + 1j * im[ik, iE, :, :])
+        SE = self._E2eV * re[ik, iE, :, :] + (1j * self._E2eV) * im[ik, iE, :, :]
         if sort:
             pvt = self.pivot(elec)
             idx = argsort(pvt)
             idx.shape = (-1, 1)
 
             # pivot for sorted device region
-            return SE[idx, idx.T] * self._E2eV
+            return SE[idx, idx.T]
 
-        return SE * self._E2eV
+        return SE
 
     def info(self, elec=None):
         """ Information about the self-energy file available for extracting in this file
@@ -211,9 +217,9 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
         dE = np.diff(E)
         dEm, dEM = np.amin(dE) * 1000, np.amax(dE) * 1000 # convert to meV
         if (dEM - dEm) < 1e-3: # 0.001 meV
-            prnt("     {:.5f} -- {:.5f} eV  [{:.3f} meV]".format(Em, EM, dEm))
+            prnt(f"     {Em:.5f} -- {EM:.5f} eV  [{dEm:.3f} meV]")
         else:
-            prnt("     {:.5f} -- {:.5f} eV  [{:.3f} -- {:.3f} meV]".format(Em, EM, dEm, dEM))
+            prnt(f"     {Em:.5f} -- {EM:.5f} eV  [{dEm:.3f} -- {dEM:.3f} meV]")
         prnt("  - imaginary part (eta): {:.4f} meV".format(self.eta() * 1e3))
         prnt("  - atoms with DOS (fortran indices):")
         prnt("     " + list2str(self.a_dev + 1))
@@ -238,8 +244,8 @@ class tbtsencSileTBtrans(_devncSileTBtrans):
             except:
                 n_btd = 'unknown'
             prnt()
-            prnt("Electrode: {}".format(elec))
-            prnt("  - number of BTD blocks: {}".format(n_btd))
+            prnt(f"Electrode: {elec}")
+            prnt(f"  - number of BTD blocks: {n_btd}")
             prnt("  - Bloch: [{}, {}, {}]".format(*bloch))
             gelec = self.groups[elec]
             if 'TBT' in self._trans_type:

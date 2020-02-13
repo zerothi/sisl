@@ -1,14 +1,13 @@
 """ pytest test configures """
-from __future__ import print_function
 
 import pytest
+import os.path as osp
 import numpy as np
-
 import sisl
 
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = 'sisl/io/siesta'
+_dir = osp.join('sisl', 'io', 'siesta')
 
 
 def test_si_pdos_kgrid_tsde_dm(sisl_files):
@@ -18,6 +17,11 @@ def test_si_pdos_kgrid_tsde_dm(sisl_files):
 
     DM1 = si.read_density_matrix(geometry=fdf.read_geometry())
     DM2 = fdf.read_density_matrix(order=['TSDE'])
+
+    Ef1 = si.read_fermi_level()
+    Ef2 = fdf.read_fermi_level()
+
+    assert Ef1 == Ef2
 
     assert DM1._csr.spsame(DM2._csr)
     assert np.allclose(DM1._csr._D[:, :-1], DM2._csr._D[:, :-1])

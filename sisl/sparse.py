@@ -1,15 +1,13 @@
-from __future__ import print_function, division
-
 from numbers import Integral
 
 # To speed up the extension algorithm we limit
 # the lookup table
 import numpy as np
 from numpy import ndarray, int32
-from numpy import empty, zeros, asarray, arange
+from numpy import empty, zeros, full, asarray, arange
 from numpy import insert, take, delete, copyto, split
 from numpy import intersect1d, setdiff1d, unique, in1d
-from numpy import diff, count_nonzero
+from numpy import diff, count_nonzero, allclose
 from numpy import any as np_any
 from numpy import all as np_all
 from numpy import atleast_1d
@@ -23,11 +21,10 @@ from scipy.sparse import isspmatrix_csc
 from scipy.sparse import isspmatrix_lil
 
 from . import _array as _a
-from ._array import asarrayi, arrayi
+from ._array import asarrayi, arrayi, fulli
 from ._indices import indices, indices_only, sorted_unique
 from .messages import warn, SislError
 from ._help import array_fill_repeat, get_dtype, isiterable
-from ._help import _range as range, _zip as zip, _map as map
 from .utils.ranges import array_arange
 
 # Although this re-implements the CSR in scipy.sparse.csr_matrix
@@ -36,7 +33,7 @@ from .utils.ranges import array_arange
 __all__ = ['SparseCSR', 'ispmatrix', 'ispmatrixd']
 
 
-class SparseCSR(object):
+class SparseCSR:
     """
     A compressed sparse row matrix, slightly different than :class:`~scipy.sparse.csr_matrix`.
 
@@ -202,7 +199,7 @@ class SparseCSR(object):
         # unpack size and check the sizes are "physical"
         M, N, K = arg1
         if M <= 0 or N <= 0 or K <= 0:
-            raise ValueError(self.__class__.__name__ + " invalid size of sparse matrix, one of the dimensions is zero: M={}, N={}, K={}".format(M, N, K))
+            raise ValueError(self.__class__.__name__ + f" invalid size of sparse matrix, one of the dimensions is zero: M={M}, N={N}, K={K}")
 
         # Store shape
         self._shape = (M, N, K)
@@ -228,9 +225,9 @@ class SparseCSR(object):
         # in the sparsity pattern
         self.ncol = _a.zerosi([M])
         # Create pointer array
-        self.ptr = _a.cumsumi(arrayi([nnzpr] * (M+1))) - nnzpr
+        self.ptr = _a.cumsumi(fulli(M + 1, nnzpr)) - nnzpr
         # Create column array
-        self.col = _a.zerosi(nnz)
+        self.col = _a.fulli(nnz, -1)
         # Store current number of non-zero elements
         self._nnz = 0
 
@@ -241,6 +238,10 @@ class SparseCSR(object):
 
         # Denote that this sparsity pattern hasn't been finalized
         self._finalized = False
+
+    def diagonal(self):
+        r""" Return the diagonal elements from the matrix """
+        return np.array([self[i, i] for i in range(self.shape[0])], dtype=self.dtype)
 
     def diags(self, diagonals, offsets=0, dim=None, dtype=None):
         """ Create a `SparseCSR` with diagonal elements with the same shape as the routine
@@ -386,7 +387,7 @@ class SparseCSR(object):
                 ccol[:] = ccol[idx]
                 if not sorted_unique(ccol):
                     raise SislError('You cannot have two elements between the same ' +
-                                    'i,j index (i={}), something has went terribly wrong.'.format(r))
+                                    f'i,j index (i={r}), something has went terribly wrong.')
                 DD[:, :] = DD[idx, :]
 
         else:
@@ -395,7 +396,7 @@ class SparseCSR(object):
                 ptr2 = ptr[r+1]
                 if unique(col[ptr1:ptr2]).shape[0] != ptr2 - ptr1:
                     raise SislError('You cannot have two elements between the same ' +
-                                    'i,j index (i={}), something has went terribly wrong.'.format(r))
+                                    f'i,j index (i={r}), something has went terribly wrong.')
 
         if len(col) != self.nnz:
             raise SislError('Final size in the sparse matrix finalization went wrong.') # pragma: no cover
@@ -419,11 +420,10 @@ class SparseCSR(object):
             the edges are returned only for the given row
         exclude : int or list of int, optional
            remove edges which are in the `exclude` list.
-           Default to `row`.
         """
         row = unique(_a.asarrayi(row))
         if exclude is None:
-            exclude = row
+            exclude = []
         else:
             exclude = unique(_a.asarrayi(exclude))
 
@@ -576,7 +576,7 @@ class SparseCSR(object):
             raise ValueError(self.__class__.__name__+".translate_columns requires input and output columns with "
                              "equal length")
 
-        if np_all(old == new):
+        if allclose(old, new):
             # No need to translate anything...
             return
 
@@ -598,6 +598,36 @@ class SparseCSR(object):
         if clean:
             if np_any(new >= self.shape[1]):
                 self._clean_columns()
+
+    def scale_columns(self, col, scale):
+        r""" Scale all values with certain column values with a number
+
+        This will multiply all values with certain column values with `scale`
+
+        .. math::
+            M[:, cols] *= scale
+
+        This is an in-place operation.
+
+        Parameters
+        ----------
+        col : int or array_like
+           column indices
+        scale : float or array_like
+           scale value for each value (if array-like it has to have the same
+           dimension as the sparsity dimension)
+        """
+        col = _a.asarrayi(col)
+
+        if np_any(col >= self.shape[1]):
+            raise ValueError(self.__class__.__name__+".scale_columns has non-existing old column values")
+
+        # Find indices
+        idx = array_arange(self.ptr[:-1], n=self.ncol)
+        scale_idx = np.isin(self.col[idx], col).nonzero()[0]
+
+        # Scale values where columns coincide with scaling factor
+        self._D[idx[scale_idx]] *= scale
 
     def spsame(self, other):
         """ Check whether two sparse matrices have the same non-zero elements
@@ -659,15 +689,19 @@ class SparseCSR(object):
         ocol = other.col
         for r in range(self.shape[0]):
             # pointers
-            sp = sptr[r]
             sn = sncol[r]
             op = optr[r]
             on = oncol[r]
 
+            if sn == 0:
+                self._extend(r, ocol[op:op+on], False)
+                continue
+
+            sp = sptr[r]
             adds = lsetdiff1d(ocol[op:op+on], scol[sp:sp+sn])
             if len(adds) > 0:
                 # simply extend the elements
-                self._extend(r, adds)
+                self._extend(r, adds, False)
 
     def iter_nnz(self, row=None):
         """ Iterations of the non-zero elements, returns a tuple of row and column with non-zero elements
@@ -715,7 +749,7 @@ class SparseCSR(object):
         idx = slc.indices(N)
         return range(idx[0], idx[1], idx[2])
 
-    def _extend(self, i, j):
+    def _extend(self, i, j, ret_indices=True):
         """ Extends the sparsity pattern to retain elements `j` in row `i`
 
         Parameters
@@ -724,11 +758,13 @@ class SparseCSR(object):
            the row of the matrix
         j : int or array_like
            columns belonging to row `i` where a non-zero element is stored.
+        ret_indices : bool, optional
+           also return indices (otherwise, return nothing)
 
         Returns
         -------
         numpy.ndarray
-           indices of existing/added elements
+           indices of existing/added elements (only for `ret_indices` true)
 
         Raises
         ------
@@ -736,7 +772,7 @@ class SparseCSR(object):
         """
         if asarray(i).size == 0:
             return arrayi([])
-        if i < 0:
+        if i < 0 or i >= self.shape[0]:
             raise IndexError('row index is out-of-bounds')
         i1 = int(i) + 1
         # We skip this check and let sisl die if wrong input is given...
@@ -799,7 +835,7 @@ class SparseCSR(object):
 
             # Insert new empty elements in the column index
             # after the column
-            self.col = insert(self.col, ncol_ptr_i, zeros(ns, col.dtype))
+            self.col = insert(self.col, ncol_ptr_i, full(ns, -1, col.dtype))
 
             # update reference
             col = self.col
@@ -820,7 +856,7 @@ class SparseCSR(object):
             # assign the column indices for the new entries
             # NOTE that this may not assign them in the order
             # of entry as new_j is sorted and thus new_j != j
-            col[ncol_ptr_i:ncol_ptr_i+new_n] = new_j[:]
+            col[ncol_ptr_i:ncol_ptr_i+new_n] = new_j
 
             # Step the size of the stored non-zero elements
             self.ncol[i] += int32(new_n)
@@ -834,7 +870,49 @@ class SparseCSR(object):
         # information that is required...
 
         # ... retrieve the indices and return
-        return indices(col[ptr_i:ncol_ptr_i], j, ptr_i)
+        if ret_indices:
+            return indices(col[ptr_i:ncol_ptr_i], j, ptr_i)
+
+    def _extend_empty(self, i, n):
+        """ Extends the sparsity pattern to retain elements `j` in row `i`
+
+        Parameters
+        ----------
+        i : int
+           the row of the matrix
+        n : int
+           number of elements to add in the space for row `i`
+
+        Raises
+        ------
+        IndexError for indices out of bounds
+        """
+        if i < 0 or i >= self.shape[0]:
+            raise IndexError('row index is out-of-bounds')
+
+        # fast reference
+        i1 = int(i) + 1
+
+        # Ensure that it is not-set as finalized
+        # There is no need to set it all the time.
+        # Simply because the first call to finalize
+        # will reduce the sparsity pattern, which
+        # on first expansion calls this part.
+        self._finalized = False
+
+        # Insert new empty elements in the column index
+        # after the column
+        self.col = insert(self.col, self.ptr[i] + self.ncol[i], full(n, -1, self.col.dtype))
+
+        # Insert zero data in the data array
+        # We use `zeros` as then one may set each dimension
+        # individually...
+        self._D = insert(self._D, self.ptr[i1],
+                         zeros([n, self.shape[2]], self._D.dtype), axis=0)
+
+        # Lastly, shift all pointers above this row to account for the
+        # new non-zero elements
+        self.ptr[i1:] += int32(n)
 
     def _get(self, i, j):
         """ Retrieves the data pointer arrays of the elements, if it is non-existing, it will return ``-1``
@@ -852,11 +930,13 @@ class SparseCSR(object):
             indices of the existing elements
         """
         # Ensure flattened array...
-        j = asarrayi(j).ravel()
+        j = asarrayi(j)
 
         # Make it a little easier
         ptr = self.ptr[i]
 
+        if j.ndim == 0:
+            return indices(self.col[ptr:ptr+self.ncol[i]], j.ravel(), ptr)[0]
         return indices(self.col[ptr:ptr+self.ncol[i]], j, ptr)
 
     def _get_only(self, i, j):
@@ -928,8 +1008,6 @@ class SparseCSR(object):
         self.col[sl] = oC[keep]
         self._D[sl, :] = oD[keep, :]
 
-        # Once we remove some things, it is NOT
-        # finalized...
         self._finalized = False
         self._nnz -= n_index
 
@@ -938,12 +1016,16 @@ class SparseCSR(object):
 
         # Get indices of sparse data (-1 if non-existing)
         get_idx = self._get(key[0], key[1])
-        n = len(get_idx)
+        dim0 = get_idx.ndim == 0
+        if dim0:
+            n = 1
+        else:
+            n = len(get_idx)
 
         # Indices of existing values in return array
         ret_idx = (get_idx >= 0).nonzero()[0]
         # Indices of existing values in get array
-        get_idx = get_idx[ret_idx]
+        get_idx = get_idx.ravel()[ret_idx]
 
         # Check which data to retrieve
         if len(key) > 2:
@@ -965,6 +1047,10 @@ class SparseCSR(object):
                 r = zeros([n, s], dtype=self._D.dtype)
                 r[ret_idx, :] = self._D[get_idx, :]
 
+        if dim0:
+            if r.size == 1:
+                return r.ravel()[0]
+            return np.squeeze(r, axis=-2)
         return r
 
     def __setitem__(self, key, data):
@@ -1120,7 +1206,7 @@ class SparseCSR(object):
             return self.col[idx]
         return rows, self.col[idx]
 
-    def eliminate_zeros(self, atol=0.):
+    def eliminate_zeros(self, atol=1e-16):
         """ Remove all zero elememts from the sparse matrix
 
         This is an *in-place* operation
@@ -1147,10 +1233,10 @@ class SparseCSR(object):
         if (nsum(nabs(D[idx, :]) <= atol, axis=1) == shape2).nonzero()[0].sum() == 0:
             return
 
-        for i in range(self.shape[0]):
+        for r in range(self.shape[0]):
 
             # Create short-hand slice
-            idx = arangei(ptr[i], ptr[i] + ncol[i])
+            idx = arangei(ptr[r], ptr[r] + ncol[r])
 
             # Retrieve columns with zero values (summed over all elements)
             C0 = (nsum(nabs(D[idx, :]) <= atol, axis=1) == shape2).nonzero()[0]
@@ -1158,13 +1244,7 @@ class SparseCSR(object):
                 continue
 
             # Remove all entries with 0 values
-            del self[i, col[idx[C0]]]
-
-            # Since some elements may be deleted we need to ensure we have them all
-            ptr = self.ptr
-            ncol = self.ncol
-            col = self.col
-            D = self._D
+            del self[r, col[idx[C0]]]
 
     def copy(self, dims=None, dtype=None):
         """ A deepcopy of the sparse matrix
@@ -1394,8 +1474,6 @@ class SparseCSR(object):
         if isinstance(other, SparseCSR):
             if self.shape != other.shape:
                 raise ValueError('Adding two sparse matrices requires the same shape')
-            # Ensure that a is aligned with b
-            self.align(other)
 
             # loop and add elements
             for r in range(self.shape[0]):
@@ -1405,7 +1483,7 @@ class SparseCSR(object):
                 sl = slice(bptr, bptr+bn, None)
 
                 # Get positions of b-elements in a:
-                in_a = self._get(r, other.col[sl])
+                in_a = self._extend(r, other.col[sl])
                 self._D[in_a, :] += other._D[sl, :]
 
         elif isspmatrix(other):
@@ -1433,8 +1511,6 @@ class SparseCSR(object):
         if isinstance(other, SparseCSR):
             if self.shape != other.shape:
                 raise ValueError('Subtracting two sparse matrices requires the same shape')
-            # Ensure that a is aligned with b
-            self.align(other)
 
             # loop and add elements
             for r in range(self.shape[0]):
@@ -1444,7 +1520,7 @@ class SparseCSR(object):
                 sl = slice(bptr, bptr+bn, None)
 
                 # Get positions of b-elements in a:
-                in_a = self._get(r, other.col[sl])
+                in_a = self._extend(r, other.col[sl])
                 self._D[in_a, :] -= other._D[sl, :]
 
         elif isspmatrix(other):
@@ -1514,18 +1590,16 @@ class SparseCSR(object):
             if self.shape != other.shape:
                 raise ValueError('Division of two sparse matrices requires the same shape')
 
-            # Ensure that a is aligned with b
-            self.align(other)
-
             # loop and add elements
             for r in range(self.shape[0]):
                 # pointers
                 bptr = other.ptr[r]
                 bn = other.ncol[r]
+                sl = slice(bptr, bptr+bn, None)
 
                 # Get positions of b-elements in a:
-                in_a = self._get(r, other.col[bptr:bptr+bn])
-                self._D[in_a, :] /= other._D[bptr:bptr+bn, :]
+                in_a = self._extend(r, other.col[sl])
+                self._D[in_a, :] /= other._D[sl, :]
 
         elif isspmatrix(other):
             tmp = SparseCSR(other, shape=self.shape[:2])
@@ -1544,18 +1618,17 @@ class SparseCSR(object):
         if isinstance(other, SparseCSR):
             if self.shape != other.shape:
                 raise ValueError('Floor-division of two sparse matrices requires the same shape')
-            # Ensure that a is aligned with b
-            self.align(other)
 
             # loop and add elements
             for r in range(self.shape[0]):
                 # pointers
                 bptr = other.ptr[r]
                 bn = other.ncol[r]
+                sl = slice(bptr, bptr+bn, None)
 
                 # Get positions of b-elements in a:
-                in_a = self._get(r, other.col[bptr:bptr+bn])
-                self._D[in_a, :] //= other._D[bptr:bptr+bn, :]
+                in_a = self._extend(r, other.col[sl])
+                self._D[in_a, :] //= other._D[sl, :]
 
         elif isspmatrix(other):
             tmp = SparseCSR(other, shape=self.shape[:2])
@@ -1574,18 +1647,17 @@ class SparseCSR(object):
         if isinstance(other, SparseCSR):
             if self.shape != other.shape:
                 raise ValueError('True-division of two sparse matrices requires the same shape')
-            # Ensure that a is aligned with b
-            self.align(other)
 
             # loop and add elements
             for r in range(self.shape[0]):
                 # pointers
                 bptr = other.ptr[r]
                 bn = other.ncol[r]
+                sl = slice(bptr, bptr+bn, None)
 
                 # Get positions of b-elements in a:
-                in_a = self._get(r, other.col[bptr:bptr+bn])
-                self._D[in_a, :].__itruediv__(other._D[bptr:bptr+bn, :])
+                in_a = self._get(r, other.col[sl])
+                self._D[in_a, :].__itruediv__(other._D[sl, :])
 
         elif isspmatrix(other):
             tmp = SparseCSR(other, shape=self.shape[:2])
@@ -1613,7 +1685,6 @@ class SparseCSR(object):
                 raise ValueError('True-division of two sparse matrices requires the same shape')
             # Ensure that a is aligned with b
             # 0 ** float == 1.
-            self.align(other)
 
             # loop and add elements
             for r in range(self.shape[0]):
@@ -1627,7 +1698,7 @@ class SparseCSR(object):
                 bcol = other.col[bptr:bptr+bn]
 
                 # Get positions of b-elements in a:
-                in_a = self._get(r, bcol)
+                in_a = self._extend(r, bcol)
                 self._D[in_a, :] **= other._D[bptr:bptr+bn, :]
 
                 # Now set everything *not* in b but in a, to 1
@@ -1644,24 +1715,30 @@ class SparseCSR(object):
         return self
 
     def __getstate__(self):
-        """ Return dictionary with the current state """
-        d = {}
-        # Reduce array sizes
-        self.finalize()
-        return {
+        """ Return dictionary with the current state (finalizing the object may reduce memory footprint) """
+        d = {
             'shape': self._shape[:],
             'ncol': self.ncol.copy(),
             'col': self.col.copy(),
-            'D': self._D.copy()
+            'D': self._D.copy(),
+            'finalized': self._finalized
         }
+        if not self.finalized:
+            d['ptr'] = self.ptr.copy()
+        return d
 
     def __setstate__(self, state):
         """ Reset state of the object """
         self._shape = tuple(state['shape'][:])
         self.ncol = state['ncol']
-        self.ptr = insert(_a.cumsumi(self.ncol), 0, 0)
         self.col = state['col']
         self._D = state['D']
+        self._nnz = self.ncol.sum()
+        self._finalized = state['finalized']
+        if self.finalized:
+            self.ptr = insert(_a.cumsumi(self.ncol), 0, 0)
+        else:
+            self.ptr = state['ptr']
 
 
 def ispmatrix(matrix, map_row=None, map_col=None):
@@ -1689,8 +1766,7 @@ def ispmatrix(matrix, map_row=None, map_col=None):
 
     if map_row is None and map_col is None:
         # Skip unique checks
-        for r, c in _ispmatrix_all(matrix):
-            yield r, c
+        yield from _ispmatrix_all(matrix)
         return
 
     if map_row is None:
@@ -1786,8 +1862,7 @@ def _ispmatrix_all(matrix):
                 yield r, c
 
     elif isspmatrix_coo(matrix):
-        for r, c in zip(matrix.row, matrix.col):
-            yield r, c
+        yield from zip(matrix.row, matrix.col)
 
     elif isspmatrix_csc(matrix):
         for c in range(matrix.shape[1]):
@@ -1846,8 +1921,7 @@ def ispmatrixd(matrix, map_row=None, map_col=None):
                 yield rr, c, m
 
     elif isspmatrix_coo(matrix):
-        for r, c, m in zip(map_row(matrix.row), map_col(matrix.col), matrix.data):
-            yield r, c, m
+        yield from zip(map_row(matrix.row), map_col(matrix.col), matrix.data)
 
     elif isspmatrix_csc(matrix):
         for c in range(matrix.shape[1]):

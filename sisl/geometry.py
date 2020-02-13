@@ -1,8 +1,5 @@
-from __future__ import print_function, division
-
 # To check for integers
 from numbers import Integral, Real
-from six import string_types
 from math import acos
 from itertools import product
 
@@ -17,8 +14,6 @@ from ._math_small import is_ascending
 from ._indices import indices_in_sphere_with_dist, indices_le, indices_gt_le
 from ._indices import list_index_le
 from .messages import info, warn, SislError
-from ._help import _str
-from ._help import _range as range
 from ._help import isndarray
 from .utils import default_ArgumentParser, default_namespace, cmd, str_spec
 from .utils import angle, direction
@@ -259,14 +254,14 @@ class Geometry(SuperCellChild):
 
     def __setitem__(self, atom, value):
         """ Specify geometry coordinates """
-        if isinstance(atom, _str):
+        if isinstance(atom, str):
             self.names.add_name(atom, value)
-        elif isinstance(value, _str):
+        elif isinstance(value, str):
             self.names.add_name(value, atom)
 
     def __getitem__(self, atom):
         """ Geometry coordinates (allows supercell indices) """
-        if isinstance(atom, (Integral, _str)):
+        if isinstance(atom, (Integral, str)):
             return self.axyz(atom)
 
         elif isinstance(atom, slice):
@@ -298,7 +293,10 @@ class Geometry(SuperCellChild):
             return np.flatnonzero(atom)
         # We shouldn't .ravel() since the calling routine may expect
         # a 0D vector.
-        return _a.asarrayi(atom)
+        atom = _a.asarrayi(atom)
+        if atom.ndim > 1:
+            raise ValueError('Indexing geometries with a multi-dimensional array is not supported, ensure 0D or 1D arrays.')
+        return atom
 
     def _sanitize_orb(self, orbital):
         """ Converts an `orbital` to index under given inputs
@@ -311,7 +309,10 @@ class Geometry(SuperCellChild):
             return np.flatnonzero(orbital)
         # We shouldn't .ravel() since the calling routine may expect
         # a 0D vector.
-        return _a.asarrayi(orbital)
+        orbital = _a.asarrayi(orbital)
+        if orbital.ndim > 1:
+            raise ValueError('Indexing geometries with a multi-dimensional array is not supported, ensure 0D or 1D arrays.')
+        return orbital
 
     def as_primary(self, na_primary, ret_super=False):
         """ Try and reduce the geometry to the primary unit-cell comprising `na_primary` atoms
@@ -346,6 +347,8 @@ class Geometry(SuperCellChild):
         n_supercells = len(self) // na_primary
         if n_supercells == 1:
             # Return a copy of self
+            if ret_super:
+                return self.copy(), self.nsc.copy()
             return self.copy()
 
         # Now figure out the repetitions along each direction
@@ -480,7 +483,7 @@ class Geometry(SuperCellChild):
 
         if isinstance(ja, Integral):
             return xj[:] - xi[:]
-        elif np.all(xi.shape == xj.shape):
+        elif np.allclose(xi.shape, xj.shape):
             return xj - xi
 
         return xj - xi[None, :]
@@ -569,7 +572,7 @@ class Geometry(SuperCellChild):
 
     def __str__(self):
         """ str of the object """
-        s = self.__class__.__name__ + '{{na: {0}, no: {1},\n '.format(self.na, self.no)
+        s = self.__class__.__name__ + f'{{na: {self.na}, no: {self.no},\n '
         s += str(self.atom).replace('\n', '\n ')
         if len(self.names) > 0:
             s += ',\n ' + str(self.names).replace('\n', '\n ')
@@ -593,8 +596,7 @@ class Geometry(SuperCellChild):
         iter_species : iterate across indices and atomic species
         iter_orbitals : iterate across atomic indices and orbital indices
         """
-        for ia in range(len(self)):
-            yield ia
+        yield from range(len(self))
 
     __iter__ = iter
 
@@ -627,7 +629,7 @@ class Geometry(SuperCellChild):
                 yield ia, self.atoms[ia], self.atoms.specie[ia]
 
     def iter_orbitals(self, atom=None, local=True):
-        """
+        r"""
         Returns an iterator over all atoms and their associated orbitals
 
         >>> for ia, io in self.iter_orbitals():
@@ -642,6 +644,13 @@ class Geometry(SuperCellChild):
         local : bool, optional
            whether the orbital index is the global index, or the local index relative to
            the atom it resides on.
+
+        Yields
+        ------
+        ia
+           atomic index
+        io
+           orbital index
 
         See Also
         --------
@@ -936,8 +945,7 @@ class Geometry(SuperCellChild):
 
         method = method.lower()
         if method == 'rand' or method == 'random':
-            for ias, idxs in self.iter_block_rand(iR, R, atom):
-                yield ias, idxs
+            yield from self.iter_block_rand(iR, R, atom)
         else:
             if R is None:
                 R = self.maxR()
@@ -950,8 +958,7 @@ class Geometry(SuperCellChild):
                 dS = (Cube(R * (2 * iR - 0.975)),
                       Cube(R * (2 * iR + 0.025)))
 
-            for ias, idxs in self.iter_block_shape(dS):
-                yield ias, idxs
+            yield from self.iter_block_shape(dS)
 
     def copy(self):
         """ A copy of the object. """
@@ -959,12 +966,65 @@ class Geometry(SuperCellChild):
         g._names = self.names.copy()
         return g
 
-    def sort(self, axes=(2, 1, 0)):
-        """ Return an equivalent geometry by sorting the coordinates according to the axis orders
+    def overlap(self, other, eps=0.1, offset=(0., 0., 0.), offset_other=(0., 0., 0.)):
+        """ Calculate the overlapping indices between two geometries
+
+        Find equivalent atoms (in the primary unit-cell only) in two geometries.
+        This routine finds which atoms have the same atomic positions in `self` and `other`.
+
+        Note that this will return duplicate overlapping atoms if one atoms lies within `eps`
+        of more than 1 atom in `other`.
+
+        Parameters
+        ----------
+        other : Geometry
+           Geometry to compare with `self`
+        eps : float, optional
+           atoms within this distance will be considered *equivalent*
+        offset : list of float, optional
+           offset for `self.xyz` before comparing
+        offset_other : list of float, optional
+           offset for `other.xyz` before comparing
 
         Examples
         --------
-        >>> idx = np.lexsort((self.xyz[:, i] for i in axis))
+        >>> gr22 = sisl.geom.graphene().tile(2, 0).tile(2, 1)
+        >>> gr44 = gr22.tile(2, 0).tile(2, 1)
+        >>> offset = np.array([0.2, 0.4, 0.4])
+        >>> gr22 = gr22.translate(offset)
+        >>> idx = np.arange(len(gr22))
+        >>> np.random.shuffle(idx)
+        >>> gr22 = gr22.sub(idx)
+        >>> idx22, idx44 = gr22.overlap(gr44, offset=-offset)
+        >>> assert idx22 == np.arange(len(gr22))
+        >>> assert idx44 == idx
+
+        Returns
+        -------
+        idx_self : numpy.ndarray of int
+             indices in `self` that are equivalent with `idx_other`
+        idx_other : numpy.ndarray of int
+             indices in `other` that are equivalent with `idx_self`
+        """
+        s_xyz = self.xyz + (_a.arrayd(offset) - _a.arrayd(offset_other)).reshape(1, 3)
+        idx_self = []
+        self_append = idx_self.append
+        idx_other = []
+        other_append = idx_other.append
+
+        for ia, xyz in enumerate(s_xyz):
+            idx = other.close_sc(xyz, R=(eps,))
+            for ja in idx:
+                self_append(ia)
+                other_append(ja)
+        return _a.arrayi(idx_self), _a.arrayi(idx_other)
+
+    def sort(self, axes=(2, 1, 0)):
+        """ Return an equivalent geometry by sorting the coordinates according to the order of axis
+
+        Examples
+        --------
+        >>> idx = np.lexsort((self.xyz[:, i] for i in axes))
         >>> new = self.sub(idx)
 
         Parameters
@@ -978,7 +1038,7 @@ class Geometry(SuperCellChild):
             sorted geometry
         """
         axes = _a.arrayi(axes).ravel()
-        idx = np.lexsort(tuple((self.xyz[:, i] for i in axes)))
+        idx = np.lexsort(tuple(self.xyz[:, i] for i in axes))
         return self.sub(idx)
 
     def optimize_nsc(self, axis=None, R=None):
@@ -1119,7 +1179,7 @@ class Geometry(SuperCellChild):
         """
         if self.na % seps != 0:
             raise ValueError(self.__class__.__name__ + '.cut '
-                             'cannot be cut into {0} different '.format(seps) +
+                             'cannot be cut into {} different '.format(seps) +
                              'pieces. Please check your geometry and input.')
         # Truncate to the correct segments
         lseg = seg % seps
@@ -1151,11 +1211,7 @@ class Geometry(SuperCellChild):
         --------
         sub : the negative of this routine, i.e. retain a subset of atoms
         """
-        if isinstance(atom, ndarray) and atom.dtype == bool_:
-            atom = np.flatnonzero(atom)
-        elif isinstance(atom, str):
-            atom = self.names[atom]
-        atom = self.sc2uc(atom)
+        atom = self.sc2uc(self._sanitize_atom(atom))
         atom = np.delete(_a.arangei(self.na), atom)
         return self.sub(atom)
 
@@ -1353,7 +1409,7 @@ class Geometry(SuperCellChild):
             # either
             #  (r, axis)
             #  ((...), method
-            if isinstance(m[1], _str):
+            if isinstance(m[1], str):
                 method = method_tbl[m[1]]
                 m = m[0]
 
@@ -1405,7 +1461,7 @@ class Geometry(SuperCellChild):
            whether the returned value is in radians
         """
         xi = self.axyz(atom)
-        if isinstance(dir, (_str, Integral)):
+        if isinstance(dir, (str, Integral)):
             dir = self.cell[direction(dir), :]
         else:
             dir = _a.asarrayd(dir)
@@ -1625,7 +1681,7 @@ class Geometry(SuperCellChild):
                 'Unknown what, not one of [xyz,position,mass,cell]')
         return np.mean(g.xyz, axis=0)
 
-    def append(self, other, axis, align='none'):
+    def append(self, other, axis, offset='none'):
         """ Appends two structures along `axis`
 
         This will automatically add the ``self.cell[axis,:]`` to all atomic
@@ -1649,11 +1705,13 @@ class Geometry(SuperCellChild):
         axis : int
             Cell direction to which the `other` geometry should be
             appended.
-        align : {'none', 'min'}
+        offset : {'none', 'min', (3,)}
             By default appending two structures will simply use the coordinates,
             as is.
             With 'min', the routine will shift both the structures along the cell
-            axis of `self` such that they coincide at the first atom.
+            axis of `self` such that they coincide at the first atom, lastly one
+            may use a specified offset to manually select how `other` is displaced.
+            NOTE: That `self.cell[axis, :]` will be added to `offset` always.
 
         See Also
         --------
@@ -1662,7 +1720,20 @@ class Geometry(SuperCellChild):
         attach : attach a geometry
         insert : insert a geometry
         """
-        align = align.lower()
+        if isinstance(offset, str):
+            offset = offset.lower()
+            if offset == 'none':
+                offset = self.cell[axis, :].reshape(1, 3)
+            elif offset == 'min':
+                # We want to align at the minimum position along the `axis`
+                min_f = self.fxyz[:, axis].min()
+                min_other_f = dot(other.xyz, self.icell.T)[:, axis].min()
+                offset = self.cell[axis, :] * (1 + min_f - min_other_f)
+            else:
+                raise ValueError(self.__class__.__name__ + '.append requires align keyword to be one of [none, min, (3,)]')
+        else:
+            offset = (self.cell[axis, :] + _a.arrayd(offset)).reshape(1, 3)
+
         if isinstance(other, SuperCell):
             # Only extend the supercell.
             xyz = np.copy(self.xyz)
@@ -1671,23 +1742,14 @@ class Geometry(SuperCellChild):
             names = self._names.copy()
 
         else:
-            if align == 'none':
-                xyz = np.append(self.xyz, self.cell[axis, :][None, :] + other.xyz, axis=0)
-            elif align == 'min':
-                # We want to align at the minimum position along the `axis`
-                min_f = self.fxyz[:, axis].min()
-                min_other_f = dot(other.xyz, self.icell.T)[:, axis].min()
-                displ = self.cell[axis, :] * (1 + min_f - min_other_f)
-                xyz = np.append(self.xyz, displ[None, :] + other.xyz, axis=0)
-            else:
-                raise ValueError(self.__class__.__name__ + '.append requires align keyword to be one of [none, min]')
+            xyz = np.append(self.xyz, offset + other.xyz, axis=0)
             atom = self.atoms.append(other.atom)
             sc = self.sc.append(other.sc, axis)
             names = self._names.merge(other._names, offset=len(self))
 
         return self.__class__(xyz, atom=atom, sc=sc, names=names)
 
-    def prepend(self, other, axis, align='none'):
+    def prepend(self, other, axis, offset='none'):
         """ Prepend two structures along `axis`
 
         This will automatically add the ``self.cell[axis,:]`` to all atomic
@@ -1711,11 +1773,13 @@ class Geometry(SuperCellChild):
         axis : int
             Cell direction to which the `other` geometry should be
             prepended
-        align : {'none', 'min'}
-            By default prepending two structures will simply use the coordinates,
+        offset : {'none', 'min', (3,)}
+            By default appending two structures will simply use the coordinates,
             as is.
             With 'min', the routine will shift both the structures along the cell
-            axis of `other` such that they coincide at the first atom.
+            axis of `other` such that they coincide at the first atom, lastly one
+            may use a specified offset to manually select how `self` is displaced.
+            NOTE: That `other.cell[axis, :]` will be added to `offset` always.
 
         See Also
         --------
@@ -1724,7 +1788,19 @@ class Geometry(SuperCellChild):
         attach : attach a geometry
         insert : insert a geometry
         """
-        align = align.lower()
+        if isinstance(offset, str):
+            offset = offset.lower()
+            if offset == 'none':
+                offset = other.cell[axis, :].reshape(1, 3)
+            elif offset == 'min':
+                # We want to align at the minimum position along the `axis`
+                min_f = other.fxyz[:, axis].min()
+                min_other_f = dot(self.xyz, other.icell.T)[:, axis].min()
+                offset = other.cell[axis, :] * (1 + min_f - min_other_f)
+            else:
+                raise ValueError(self.__class__.__name__ + '.prepend requires align keyword to be one of [none, min, (3,)]')
+        else:
+            offset = (other.cell[axis, :] + _a.arrayd(offset)).reshape(1, 3)
         if isinstance(other, SuperCell):
             # Only extend the supercell.
             xyz = np.copy(self.xyz)
@@ -1733,23 +1809,14 @@ class Geometry(SuperCellChild):
             names = self._names.copy()
 
         else:
-            if align == 'none':
-                xyz = np.append(other.xyz, other.cell[axis, :][None, :] + self.xyz, axis=0)
-            elif align == 'min':
-                # We want to align at the minimum position along the `axis`
-                min_f = other.fxyz[:, axis].min()
-                min_other_f = dot(self.xyz, other.icell.T)[:, axis].min()
-                displ = other.cell[axis, :] * (1 + min_f - min_other_f)
-                xyz = np.append(other.xyz, displ[None, :] + self.xyz, axis=0)
-            else:
-                raise ValueError(self.__class__.__name__ + '.prepend requires align keyword to be one of [none, min]')
+            xyz = np.append(other.xyz, offset + self.xyz, axis=0)
             atom = self.atoms.prepend(other.atom)
-            sc = self.sc.append(other.sc, axis)
+            sc = self.sc.prepend(other.sc, axis)
             names = other._names.merge(self._names, offset=len(other))
 
         return self.__class__(xyz, atom=atom, sc=sc, names=names)
 
-    def add(self, other):
+    def add(self, other, offset=(0, 0, 0)):
         """ Merge two geometries (or a Geometry and SuperCell) by adding the two atoms together
 
         If `other` is a Geometry only the atoms gets added, to also add the supercell vectors
@@ -1759,6 +1826,9 @@ class Geometry(SuperCellChild):
         ----------
         other : Geometry or SuperCell
             Other geometry class which is added
+        offset : (3,), optional
+            offset in geometry of `other` when adding the atoms. Only if `other` is
+            of instance `Geometry`.
 
         See Also
         --------
@@ -1773,7 +1843,7 @@ class Geometry(SuperCellChild):
             atom = self.atoms.copy()
             names = self._names.copy()
         else:
-            xyz = np.append(self.xyz, other.xyz, axis=0)
+            xyz = np.append(self.xyz, other.xyz + _a.arrayd(offset).reshape(1, 3), axis=0)
             sc = self.sc.copy()
             atom = self.atoms.add(other.atom)
             names = self._names.merge(other._names, offset=len(self))
@@ -1901,7 +1971,7 @@ class Geometry(SuperCellChild):
             v = self.cell[axis, :]
             v = v / (v[0]**2 + v[1]**2 + v[2]**2) ** .5 * dist
 
-        elif isinstance(dist, string_types):
+        elif isinstance(dist, str):
             # We have a single rational number
             if axis is None:
                 raise ValueError(self.__class__.__name__ + ".attach, `axis` has not been specified, please specify the axis when using a distance")
@@ -3241,10 +3311,10 @@ class Geometry(SuperCellChild):
         if R is None:
             R = self.maxR()
             if R < 0:
-                raise ValueError((self.__class__.__name__ +
+                raise ValueError(self.__class__.__name__ +
                                   ".distance cannot determine the `R` parameter. "
                                   "The internal `maxR()` is negative and thus not set. "
-                                  "Set an explicit value for `R`."))
+                                  "Set an explicit value for `R`.")
         elif np.any(self.nsc > 1):
             maxR = fnorm(self.cell).max()
             # These loops could be leveraged if we look at angles...
@@ -3301,7 +3371,7 @@ class Geometry(SuperCellChild):
 
         # Now parse all of the shells with the correct routine
         # First we grap the routine:
-        if isinstance(method, _str):
+        if isinstance(method, str):
             if method == 'median':
                 def func(lst):
                     return np.median(lst, overwrite_input=True)
@@ -3554,7 +3624,6 @@ class Geometry(SuperCellChild):
                     g = ns._geometry
                     # Change all coordinates using the reciprocal cell and move to unit-cell (% 1.)
                     fxyz = g.fxyz % 1.
-                    fxyz -= np.amin(fxyz, axis=0)
                     ns._geometry.xyz[:, :] = dot(fxyz, g.cell)
         p.add_argument(*opts('--unit-cell', '-uc'), choices=['translate', 'tr', 't', 'mod'],
                        action=MoveUnitCell,
@@ -3770,7 +3839,7 @@ class Geometry(SuperCellChild):
                     if isinstance(vs, bool):
                         if vs:
                             vs = 1. / np.max(sqrt(square(v).sum(1)))
-                            info('Scaling vector by: {}'.format(vs))
+                            info(f'Scaling vector by: {vs}')
                         else:
                             vs = 1.
 
@@ -3881,7 +3950,7 @@ lattice vector.
                 geometry = get_sile(input_file).read_geometry()
             else:
                 from .messages import info
-                info("Cannot find file '{}'!".format(input_file))
+                info(f"Cannot find file '{input_file}'!")
                 geometry = Geometry
                 stdout_geom = False
 
@@ -3920,9 +3989,9 @@ lattice vector.
         # This is merely for testing purposes and may not be used for anything.
         print('Cell:')
         for i in (0, 1, 2):
-            print('  {0:10.6f} {1:10.6f} {2:10.6f}'.format(*g.cell[i, :]))
+            print('  {:10.6f} {:10.6f} {:10.6f}'.format(*g.cell[i, :]))
         print('SuperCell:')
-        print('  {0:d} {1:d} {2:d}'.format(*g.nsc))
+        print('  {:d} {:d} {:d}'.format(*g.nsc))
         print(' {:>10s} {:>10s} {:>10s}  {:>3s}'.format('x', 'y', 'z', 'Z'))
         for ia in g:
             print(' {1:10.6f} {2:10.6f} {3:10.6f}  {0:3d}'.format(g.atoms[ia].Z,

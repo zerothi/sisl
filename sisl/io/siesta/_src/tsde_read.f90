@@ -107,6 +107,65 @@ subroutine read_tsde_dm(fname, nspin, no_u, nsc, nnz, &
 
 end subroutine read_tsde_dm
 
+subroutine read_tsde_ef(fname, Ef)
+  use io_m, only: open_file
+  use io_m, only: iostat_update
+
+  implicit none
+
+  ! Precision
+  integer, parameter :: sp = selected_real_kind(p=6)
+  integer, parameter :: dp = selected_real_kind(p=15)
+  real(dp), parameter :: eV = 13.60580_dp
+
+  ! Input parameters
+  character(len=*), intent(in) :: fname
+  real(dp), intent(out) :: Ef
+
+! Define f2py intents
+!f2py intent(in)  :: fname
+!f2py intent(out) :: Ef
+
+! Internal variables and arrays
+  integer :: iu, ierr
+  integer :: is, io
+
+  ! Local readables
+  integer :: lno_u, lnspin
+
+  call open_file(fname, 'read', 'old', 'unformatted', iu)
+
+  ! First try and see if nsc is present
+  read(iu,iostat=ierr) lno_u, lnspin
+  call iostat_update(ierr)
+
+  ! Skip ncol
+  read(iu, iostat=ierr) ! ncol
+  call iostat_update(ierr)
+
+  ! Skip list_col
+  do io = 1 , lno_u
+    read(iu, iostat=ierr) ! list_col(n+1:n+ncol(io))
+    call iostat_update(ierr)
+  end do
+
+  ! Skip density matrix and energy density matrix
+  do is = 1 , lnspin * 2
+    do io = 1 , lno_u
+      read(iu, iostat=ierr) ! DM(n+1:n+ncol(io), is)
+      call iostat_update(ierr)
+    end do
+  end do
+
+  read(iu, iostat=ierr) Ef
+  call iostat_update(ierr)
+
+  close(iu)
+
+  Ef = Ef * eV
+
+end subroutine read_tsde_ef
+
 subroutine read_tsde_edm(fname, nspin, no_u, nsc, nnz, &
     ncol, list_col, EDM)
   use io_m, only: open_file

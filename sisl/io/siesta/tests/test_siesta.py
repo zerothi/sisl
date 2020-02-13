@@ -1,8 +1,6 @@
-from __future__ import print_function, division
-
 import pytest
 import numpy as np
-
+import os.path as osp
 import sisl
 from sisl import Hamiltonian, DynamicalMatrix, DensityMatrix
 from sisl import EnergyDensityMatrix
@@ -10,7 +8,7 @@ from sisl.io.siesta import *
 
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = 'sisl/io/siesta'
+_dir = osp.join('sisl', 'io', 'siesta')
 
 
 def test_nc1(sisl_tmp, sisl_system):
@@ -25,7 +23,6 @@ def test_nc1(sisl_tmp, sisl_system):
     assert np.allclose(tb.cell, ntb.cell)
     assert np.allclose(tb.xyz, ntb.xyz)
     tb.finalize()
-    ntb.finalize()
     assert np.allclose(tb._csr._D[:, 0], ntb._csr._D[:, 0])
     assert sisl_system.g.atom.equal(ntb.atom, R=False)
 
@@ -42,7 +39,6 @@ def test_nc2(sisl_tmp, sisl_system):
     assert np.allclose(tb.cell, ntb.cell)
     assert np.allclose(tb.xyz, ntb.xyz)
     tb.finalize()
-    ntb.finalize()
     assert np.allclose(tb._csr._D[:, 0], ntb._csr._D[:, 0])
     assert sisl_system.g.atom.equal(ntb.atom, R=False)
 
@@ -56,14 +52,20 @@ def test_nc_overlap(sisl_tmp, sisl_system):
     S = ncSileSiesta(f).read_overlap()
 
     # Ensure no empty data-points
-    S.finalize()
     assert np.allclose(S._csr._D.sum(), tb.no)
+
+    # Write test
+    f = sisl_tmp('s.nc', _dir)
+    S.write(ncSileSiesta(f, "w"))
+    S2 = ncSileSiesta(f).read_overlap()
+    assert S._csr.spsame(S2._csr)
+    assert np.allclose(S._csr._D, S2._csr._D)
 
 
 def test_nc_dynamical_matrix(sisl_tmp, sisl_system):
     f = sisl_tmp('grdyn.nc', _dir)
     dm = DynamicalMatrix(sisl_system.gtb)
-    for _, ix in dm:
+    for _, ix in dm.iter_orbitals():
         dm[ix, ix] = ix / 2.
     dm.write(ncSileSiesta(f, 'w'))
 
@@ -73,7 +75,6 @@ def test_nc_dynamical_matrix(sisl_tmp, sisl_system):
     assert np.allclose(dm.cell, ndm.cell)
     assert np.allclose(dm.xyz, ndm.xyz)
     dm.finalize()
-    ndm.finalize()
     assert np.allclose(dm._csr._D[:, 0], ndm._csr._D[:, 0])
     assert sisl_system.g.atom.equal(ndm.atom, R=False)
 
@@ -81,7 +82,7 @@ def test_nc_dynamical_matrix(sisl_tmp, sisl_system):
 def test_nc_density_matrix(sisl_tmp, sisl_system):
     f = sisl_tmp('grDM.nc', _dir)
     dm = DensityMatrix(sisl_system.gtb)
-    for _, ix in dm:
+    for _, ix in dm.iter_orbitals():
         dm[ix, ix] = ix / 2.
     dm.write(ncSileSiesta(f, 'w'))
 
@@ -91,7 +92,6 @@ def test_nc_density_matrix(sisl_tmp, sisl_system):
     assert np.allclose(dm.cell, ndm.cell)
     assert np.allclose(dm.xyz, ndm.xyz)
     dm.finalize()
-    ndm.finalize()
     assert np.allclose(dm._csr._D[:, 0], ndm._csr._D[:, 0])
     assert sisl_system.g.atom.equal(ndm.atom, R=False)
 

@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import pytest
 from pytest import approx
 
@@ -26,7 +24,7 @@ def setup():
     return t()
 
 
-class TestSuperCell(object):
+class TestSuperCell:
 
     def test_str(self, setup):
         str(setup.sc)

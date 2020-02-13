@@ -1,7 +1,6 @@
 """
 Sile object for reading/writing XYZ files
 """
-from __future__ import print_function
 
 from re import compile as re_compile
 import numpy as np
@@ -60,7 +59,7 @@ class xyzSile(Sile):
         # Write out the cell information in the comment field
         # This contains the cell vectors in a single vector (3 + 3 + 3)
         # quantities, plus the number of supercells (3 ints)
-        fmt_str = 'sisl-version=1 cell= ' + '{{:{0}}} '.format(fmt) * 9 + ' nsc= {} {} {}\n'.format(*geom.nsc[:])
+        fmt_str = 'sisl-version=1 cell= ' + f'{{:{fmt}}} ' * 9 + ' nsc= {} {} {}\n'.format(*geom.nsc[:])
         self._write(fmt_str.format(*geom.cell.flatten()))
 
         fmt_str = '{{0:2s}}  {{1:{0}}}  {{2:{0}}}  {{3:{0}}}\n'.format(fmt)

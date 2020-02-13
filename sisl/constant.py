@@ -54,7 +54,6 @@ while one can just as easily convert the units (which ensures thay stay like ano
 2997924.58 Ang/ps
 
 """
-from __future__ import print_function, division
 
 from sisl.unit.base import units
 

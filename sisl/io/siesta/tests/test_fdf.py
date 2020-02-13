@@ -1,17 +1,15 @@
-from __future__ import print_function, division
-
+from pathlib import Path
 import pytest
-
+import os.path as osp
 from sisl import geom
 from sisl import Geometry, Atom
 from sisl.io import fdfSileSiesta, SileError
 from sisl.unit.siesta import unit_convert
-
 import numpy as np
 
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta, pytest.mark.fdf]
-_dir = 'sisl/io/siesta'
+_dir = osp.join('sisl', 'io', 'siesta')
 
 
 def test_fdf1(sisl_tmp, sisl_system):
@@ -234,7 +232,7 @@ def test_include(sisl_tmp):
         fh.write('MyList [1 , 2 , 3]\n')
 
     fdf = fdfSileSiesta(f, base=sisl_tmp.getbase())
-    assert fdf.includes() == [hello, file2, file3]
+    assert fdf.includes() == [Path(hello), Path(file2), Path(file3)]
     assert fdf.get('Flag1') == 'date'
     assert fdf.get('Flag2') == 'date2'
     assert fdf.get('Flag3') == 'test'

@@ -5,7 +5,6 @@ list extensions.
 
 This sub-module implements a list which allows to make operations with it-self or with scalars.
 """
-from __future__ import print_function, division
 
 from functools import wraps
 
@@ -16,7 +15,7 @@ __all__ = ['oplist']
 
 
 class oplist(list):
-    """ list with inter-operations
+    """ list with element-wise operations
 
     List-inherited class implementing direct element operations instead of list-extensions/compressions.
     When having multiple lists and one wishes to create a sum of individual elements, thus

@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import numpy as np
 from numpy import dot, conjugate
 from numpy import subtract
@@ -24,7 +22,7 @@ __all__ += ['RecursiveSI']
 __all__ += ['RealSpaceSE', 'RealSpaceSI']
 
 
-class SelfEnergy(object):
+class SelfEnergy:
     r""" Self-energy object able to calculate the dense self-energy for a given sparse matrix
 
     The self-energy object contains a `SparseGeometry` object which, in it-self
@@ -34,11 +32,25 @@ class SelfEnergy(object):
     """
 
     def __init__(self, *args, **kwargs):
-        """ Self-energy class for constructing a self-energy. """
+        r""" Self-energy class for constructing a self-energy. """
         pass
+
+    def __len__(self):
+        r"""Dimension of the self-energy"""
+        raise NotImplementedError
 
     @staticmethod
     def se2scat(SE):
+        r""" Calculate the scattering matrix from the self-energy
+
+        .. math::
+            \boldsymbol\Gamma = i(\boldsymbol\Sigma - \boldsymbol \Sigma ^\dagger)
+
+        Parameters
+        ----------
+        SE : matrix
+            self-energy matrix
+        """
         return 1j * (SE - conjugate(SE.T))
 
     def _setup(self, *args, **kwargs):
@@ -58,7 +70,7 @@ class SelfEnergy(object):
         This corresponds to:
 
         .. math::
-            \boldsymbol Gamma = i(\boldsymbol\Sigma - \boldsymbol \Sigma ^\dagger)
+            \boldsymbol\Gamma = i(\boldsymbol\Sigma - \boldsymbol \Sigma ^\dagger)
 
         Examples
         --------
@@ -189,6 +201,10 @@ class RecursiveSI(SemiInfinite):
         cols = array_arange(idx, idx + n)
         # Delete all values in columns, but keep them to retain the supercell information
         self.spgeom1._csr.delete_columns(cols, keep_shape=True)
+
+    def __len__(self):
+        r"""Dimension of the self-energy"""
+        return len(self.spgeom0)
 
     def green(self, E, k=(0, 0, 0), dtype=None, eps=1e-14, **kwargs):
         r""" Return a dense matrix with the bulk Green function at energy `E` and k-point `k` (default Gamma).
@@ -508,7 +524,7 @@ class RealSpaceSE(SelfEnergy):
 
     .. math::
         \boldsymbol\Sigma^\mathcal{R}(E) = \mathbf S^\mathcal{R} (E+i\eta) - \mathbf H^\mathcal{R}
-             - \sum_{\mathbf k} \mathbf G_{\mathbf k}(E)
+             - \Big[\sum_{\mathbf k} \mathbf G_{\mathbf k}(E)\Big]^{-1}
 
     The method actually used is relying on `RecursiveSI` and `~sisl.physics.Bloch` objects.
 
@@ -600,11 +616,15 @@ class RealSpaceSE(SelfEnergy):
         self.set_options(**options)
         self.initialize()
 
+    def __len__(self):
+        r"""Dimension of the self-energy"""
+        return len(self.parent) * np.prod(self._unfold)
+
     def __str__(self):
         """ String representation of RealSpaceSE """
         d = {'class': self.__class__.__name__}
         for i in range(3):
-            d['u{}'.format(i)] = self._unfold[i]
+            d[f'u{i}'] = self._unfold[i]
         d['semi'] = self._semi_axis
         d['k'] = str(list(self._k_axes))
         d['parent'] = str(self.parent).replace('\n', '\n ')
@@ -771,7 +791,7 @@ class RealSpaceSE(SelfEnergy):
 
         .. math::
             \boldsymbol\Sigma^{\mathcal{R}}(E) = \mathbf S^{\mathcal{R}} E - \mathbf H^{\mathcal{R}}
-               - \sum_{\mathbf k} \mathbf G_{\mathbf k}(E)
+               - \Big[\sum_{\mathbf k} \mathbf G_{\mathbf k}(E)\Big]^{-1}
 
         Parameters
         ----------
@@ -873,9 +893,9 @@ class RealSpaceSE(SelfEnergy):
         if is_k:
             axes = [s_ax] + k_ax.tolist()
             if np.any(k[axes] != 0.):
-                raise ValueError('{}.green requires the k-point to be zero along the integrated axes.'.format(self.__class__.__name__))
+                raise ValueError(f'{self.__class__.__name__}.green requires the k-point to be zero along the integrated axes.')
             if trs:
-                raise ValueError('{}.green requires a k-point sampled Green function to not use time reversal symmetry.'.format(self.__class__.__name__))
+                raise ValueError(f'{self.__class__.__name__}.green requires a k-point sampled Green function to not use time reversal symmetry.')
             # Shift k-points to get the correct k-point in the larger one.
             bz._k += k.reshape(1, 3)
 
@@ -1015,7 +1035,7 @@ class RealSpaceSI(SelfEnergy):
 
     .. math::
         \boldsymbol\Sigma^\mathcal{R}(E) = \mathbf S^\mathcal{R} (E+i\eta) - \mathbf H^\mathcal{R}
-             - \sum_{\mathbf k} \mathbf G_{\mathbf k}(E)
+             - \Big[\sum_{\mathbf k} \mathbf G_{\mathbf k}(E)\Big]^{-1}
 
     The method actually used is relying on `RecursiveSI` and `~sisl.physics.Bloch` objects.
 
@@ -1161,7 +1181,7 @@ class RealSpaceSI(SelfEnergy):
         """ String representation of RealSpaceSI """
         d = {'class': self.__class__.__name__}
         for i in range(3):
-            d['u{}'.format(i)] = self._unfold[i]
+            d[f'u{i}'] = self._unfold[i]
         d['k'] = str(list(self._k_axes))
         d['semi'] = str(self.semi).replace('\n', '\n  ')
         d['surface'] = str(self.surface).replace('\n', '\n  ')
@@ -1288,7 +1308,7 @@ class RealSpaceSI(SelfEnergy):
         # semi-infinite direction
         atom_semi = []
         for atom in PC_semi.geometry:
-            if len(PC_semi.edges(atom, exclude=[])) > 0:
+            if len(PC_semi.edges(atom)) > 0:
                 atom_semi.append(atom)
         atom_semi = _a.arrayi(atom_semi)
         expand(atom_semi, n_unfold, self.semi.spgeom1.geometry.na, self.surface.geometry.na)
@@ -1354,7 +1374,7 @@ class RealSpaceSI(SelfEnergy):
         The real space self-energy is calculated via:
         .. math::
             \boldsymbol\Sigma^{\mathcal{R}}(E) = \mathbf S^{\mathcal{R}} E - \mathbf H^{\mathcal{R}}
-               - \sum_{\mathbf k} \mathbf G_{\mathbf k}(E)
+               - \Big[\sum_{\mathbf k} \mathbf G_{\mathbf k}(E)\Big]^{-1}
 
         Parameters
         ----------
@@ -1455,9 +1475,9 @@ class RealSpaceSI(SelfEnergy):
         if is_k:
             axes = [self.semi.semi_inf] + k_ax.tolist()
             if np.any(k[axes] != 0.):
-                raise ValueError('{}.green requires k-point to be zero along the integrated axes.'.format(self.__class__.__name__))
+                raise ValueError(f'{self.__class__.__name__}.green requires k-point to be zero along the integrated axes.')
             if trs:
-                raise ValueError('{}.green requires a k-point sampled Green function to not use time reversal symmetry.'.format(self.__class__.__name__))
+                raise ValueError(f'{self.__class__.__name__}.green requires a k-point sampled Green function to not use time reversal symmetry.')
             # Shift k-points to get the correct k-point in the larger one.
             bz._k += k.reshape(1, 3)
 

@@ -1,5 +1,3 @@
-from __future__ import print_function
-
 import numpy as np
 
 from ..sile import add_sile, sile_fh_open, sile_raise_write
@@ -35,7 +33,7 @@ class faSileSiesta(SileSiesta):
         """
         sile_raise_write(self)
         na = len(f)
-        self._write('{}\n'.format(na))
+        self._write(f'{na}\n')
         _fmt = ('{:d}' + (' {:' + fmt + '}') * 3) + '\n'
 
         for ia in range(na):

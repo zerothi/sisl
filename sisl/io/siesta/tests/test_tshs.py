@@ -1,13 +1,13 @@
 """ pytest test configures """
-from __future__ import print_function
 
 import pytest
+import os.path as osp
 import numpy as np
 import sisl
 
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta]
-_dir = 'sisl/io/siesta'
+_dir = osp.join('sisl', 'io', 'siesta')
 
 
 def test_tshs_si_pdos_kgrid(sisl_files, sisl_tmp):
@@ -21,6 +21,24 @@ def test_tshs_si_pdos_kgrid(sisl_files, sisl_tmp):
     HS1.finalize()
     HS2.finalize()
     assert np.allclose(HS1._csr._D, HS2._csr._D)
+
+
+def test_tshs_si_pdos_kgrid_repeat_tile(sisl_files, sisl_tmp):
+    si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.TSHS'))
+    HS = si.read_hamiltonian()
+    HSr = HS.repeat(3, 2).repeat(3, 0).repeat(3, 1)
+    HSt = HS.tile(3, 2).tile(3, 0).tile(3, 1)
+    assert np.allclose(HSr.eigh(), HSt.eigh())
+
+
+def test_tshs_si_pdos_kgrid_repeat_tile_not_used(sisl_files, sisl_tmp):
+    si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.TSHS'))
+    HS = si.read_hamiltonian()
+    for i in range(HS.no):
+        HS._csr._extend_empty(i, 3 + i % 3)
+    HSt = HS.tile(3, 2).tile(3, 0).tile(3, 1)
+    HSr = HS.repeat(3, 2).repeat(3, 0).repeat(3, 1)
+    assert np.allclose(HSr.eigh(), HSt.eigh())
 
 
 def test_tshs_soc_pt2_xx(sisl_files, sisl_tmp):
@@ -39,7 +57,7 @@ def test_tshs_soc_pt2_xx(sisl_files, sisl_tmp):
 def test_tshs_soc_pt2_xx_pdos(sisl_files):
     fdf = sisl.get_sile(sisl_files(_dir, 'SOC_Pt2_xx.fdf'), base=sisl_files(_dir))
     HS = fdf.read_hamiltonian()
-    HS.eigenstate().PDOS(np.linspace(-2, 2, 0.01))
+    HS.eigenstate().PDOS(np.linspace(-2, 2, 400))
 
 
 def test_tshs_warn(sisl_files):

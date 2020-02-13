@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 from numbers import Integral
 from scipy.sparse import csr_matrix, triu, tril
 from scipy.sparse import hstack as ss_hstack
@@ -13,7 +11,6 @@ import sisl._array as _a
 from sisl._indices import indices_le, indices_fabs_le
 from sisl._math_small import xyz_to_spherical_cos_phi
 from sisl.messages import warn, tqdm_eta
-from sisl._help import _zip as zip, _range as range
 from sisl.utils.ranges import array_arange
 from .spin import Spin
 from sisl.sparse import SparseCSR
@@ -37,7 +34,9 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
         (for each spin-channel)
 
         .. math::
+
              M_{\nu} &= \sum_mu [\boldsymbol\rho \mathbf S]_{\nu\mu}
+             \\
              M_{\alpha} &= \sum_{\nu\in\alpha} M_{\nu}
 
         For non-colinear calculations (including spin-orbit) they are calculated
@@ -45,10 +44,13 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
 
         .. math::
              M_{\nu} &= \sum_\sigma\sum_mu [\boldsymbol\rho \mathbf S]_{\nu\mu,\sigma\sigma}
+             \\
              S_{\nu}^x &= \sum_mu \Re [\boldsymbol\rho \mathbf S]_{\nu\mu,\uparrow\downarrow} +
                           \Re [\boldsymbol\rho \mathbf S]_{\nu\mu,\downarrow\uparrow}
+             \\
              S_{\nu}^y &= \sum_mu \Im [\boldsymbol\rho \mathbf S]_{\nu\mu,\uparrow\downarrow} -
                           \Im [\boldsymbol\rho \mathbf S]_{\nu\mu,\downarrow\uparrow}
+             \\
              S_{\nu}^z &= \sum_mu \Re [\boldsymbol\rho \mathbf S]_{\nu\mu,\uparrow\uparrow} -
                           \Re [\boldsymbol\rho \mathbf S]_{\nu\mu,\downarrow\downarrow}
 
@@ -382,7 +384,7 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
             # Extract maximum R
             R = ia_atom.maxR()
             if R <= 0.:
-                warn("Atom '{}' does not have a wave-function, skipping atom.".format(ia_atom))
+                warn(f"Atom '{ia_atom}' does not have a wave-function, skipping atom.")
                 eta.update()
                 continue
 
@@ -567,14 +569,20 @@ class DensityMatrix(_realspace_DensityMatrix):
 
     def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
         """ Initialize density matrix """
-        super(DensityMatrix, self).__init__(geometry, dim, dtype, nnzpr, **kwargs)
+        super().__init__(geometry, dim, dtype, nnzpr, **kwargs)
         self._reset()
 
     def _reset(self):
-        super(DensityMatrix, self)._reset()
+        super()._reset()
         self.Dk = self.Pk
         self.dDk = self.dPk
         self.ddDk = self.ddPk
+
+    @property
+    def D(self):
+        r""" Access the density matrix elements """
+        self._def_dim = self.UP
+        return self
 
     def orbital_momentum(self, projection='orbital', method='onsite'):
         r""" Calculate orbital angular momentum on either atoms or orbitals
@@ -953,17 +961,6 @@ class DensityMatrix(_realspace_DensityMatrix):
         tuple of tuples : for each of the Cartesian directions
         """
         pass
-
-    def _get_D(self):
-        self._def_dim = self.UP
-        return self
-
-    def _set_D(self, key, value):
-        if len(key) == 2:
-            self._def_dim = self.UP
-        self[key] = value
-
-    D = property(_get_D, _set_D, doc="Access elements to the sparse density matrix")
 
     @staticmethod
     def read(sile, *args, **kwargs):

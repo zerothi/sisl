@@ -1,5 +1,3 @@
-from __future__ import print_function, division
-
 import pytest
 
 import math as m
@@ -83,7 +81,7 @@ def test_init1(setup):
     assert np.allclose(setup.s2.data, setup.s2.data)
 
 
-def test_init2(setup):
+def test_init2():
     SparseCSR((10, 100))
     for d in [np.int32, np.float64, np.complex128]:
         s = SparseCSR((10, 100), dtype=d)
@@ -102,7 +100,7 @@ def test_init2(setup):
             assert s.dim == 3
 
 
-def test_init3(setup):
+def test_init3():
     lil = sc.sparse.lil_matrix((10, 10), dtype=np.int32)
     lil[0, 1] = 1
     lil[0, 2] = 2
@@ -120,7 +118,7 @@ def test_init3(setup):
     assert sp[0, 2] == 2
 
 
-def test_init4(setup):
+def test_init4():
     lil = sc.sparse.lil_matrix((10, 10), dtype=np.int32)
     lil[0, 1] = 1
     lil[0, 2] = 2
@@ -139,7 +137,28 @@ def test_init4(setup):
     assert sp[0, 2] == 2
 
 
-def test_extend1(setup):
+def test_diagonal_1d():
+    s = SparseCSR((10, 100), dtype=np.int32)
+    for i in range(s.shape[0]):
+        s[i, i] = i
+    d = s.diagonal()
+    assert np.allclose(d, np.arange(s.shape[0]))
+
+
+def test_diagonal_2d():
+    s = SparseCSR((10, 100, 2), dtype=np.int32)
+    d1 = np.arange(s.shape[0])
+    d2 = np.arange(s.shape[0]) + 4
+
+    for i in range(s.shape[0]):
+        s[i, i] = (d1[i], d2[i])
+    d = s.diagonal()
+
+    assert np.allclose(d[:, 0], d1)
+    assert np.allclose(d[:, 1], d2)
+
+
+def test_extend1():
     csr = SparseCSR((10, 10), nnzpr=1, dtype=np.int32)
     csr[1, 1] = 3
     csr[2, 2] = 4
@@ -154,7 +173,7 @@ def test_extend1(setup):
     assert np.allclose(csr[0, [0, 1, 2]], [0, 1, 2])
 
 
-def test_diag1(setup):
+def test_diag1():
     csr = SparseCSR((10, 10), nnzpr=1, dtype=np.int32)
     csr1 = csr.diags(10)
     assert csr1.shape[0] == 10
@@ -166,7 +185,7 @@ def test_diag1(setup):
     assert csr2.spsame(csr3)
 
 
-def test_diag2(setup):
+def test_diag2():
     csr = SparseCSR((10, 10), dim=3, nnzpr=1, dtype=np.int32)
     csr1 = csr.diags(10, dim=1)
     csr2 = csr.diags(10, dim=2)
@@ -177,7 +196,7 @@ def test_diag2(setup):
     assert csr1.spsame(csr2)
 
 
-def test_diag3(setup):
+def test_diag3():
     csr = SparseCSR((10, 10), dim=3, nnzpr=1, dtype=np.int32)
     csr1 = csr.diags(10, dim=1, dtype=np.int16)
     csr2 = csr.diags(10, dim=2, dtype=np.float64)
@@ -780,7 +799,7 @@ def test_edges1(setup):
     s1[1, 2] = 2
     s1[1, 3] = 3
     assert np.all(s1.edges(1, exclude=[]) == [1, 2, 3])
-    assert np.all(s1.edges(1) == [2, 3])
+    assert np.all(s1.edges(1, exclude=[1]) == [2, 3])
     assert np.all(s1.edges(1, exclude=2) == [1, 3])
     assert len(s1.edges(2)) == 0
 
@@ -967,7 +986,7 @@ def test_op3(setup):
         S[0, j] = i
 
     for op in ['add', 'sub', 'mul', 'pow']:
-        func = getattr(S, '__{}__'.format(op))
+        func = getattr(S, f'__{op}__')
         s = func(1)
         assert s.dtype == np.int32
         s = func(1.)
@@ -978,7 +997,7 @@ def test_op3(setup):
 
     S = S.copy(dtype=np.float64)
     for op in ['add', 'sub', 'mul', 'pow']:
-        func = getattr(S, '__{}__'.format(op))
+        func = getattr(S, f'__{op}__')
         s = func(1)
         assert s.dtype == np.float64
         s = func(1.)
@@ -989,7 +1008,7 @@ def test_op3(setup):
 
     S = S.copy(dtype=np.complex128)
     for op in ['add', 'sub', 'mul', 'pow']:
-        func = getattr(S, '__{}__'.format(op))
+        func = getattr(S, f'__{op}__')
         s = func(1)
         assert s.dtype == np.complex128
         s = func(1.)

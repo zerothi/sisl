@@ -1,4 +1,3 @@
-from __future__ import print_function, division
 import numpy as np
 from fractions import gcd
 import sisl as si
