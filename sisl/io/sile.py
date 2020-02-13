@@ -560,8 +560,12 @@ class Sile(BaseSile):
                 found |= l.find(key.lower()) >= 0
         return found
 
+    def __iter__(self):
+        r""" Iterator for file """
+        yield from self.fh
+
     def readline(self, comment=False):
-        """ Reads the next line of the file """
+        r""" Reads the next line of the file """
         l = self.fh.readline()
         self._line += 1
         if comment:
@@ -572,7 +576,7 @@ class Sile(BaseSile):
         return l
 
     def step_to(self, keywords, case=True, reread=True):
-        """ Steps the file-handle until the keyword is found in the input """
+        r""" Steps the file-handle until the keyword is found in the input """
         # If keyword is a list, it just matches one of the inputs
         found = False
         # The previously read line...
