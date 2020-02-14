@@ -301,7 +301,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
             if ``True``, `eigsh` will be called, else `eigh` will be
             called (default).
         **kwargs : dict, optional
-            passed arguments to the `eigh` routine
+            passed arguments to the `eigh`/`eighs` routine
 
         See Also
         --------
