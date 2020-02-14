@@ -259,10 +259,13 @@ class Grid(SuperCellChild):
             d['geometry'] = self.geometry.copy()
         return d
 
-    def copy(self):
-        """ Copy the object """
+    def copy(self, dtype=None):
+        r""" Copy the object, possibly changing the data-type """
         d = self.__sc_geometry_dict()
-        d['dtype'] = self.dtype
+        if dtype is None:
+            d['dtype'] = self.dtype
+        else:
+            d['dtype'] = dtype
         grid = self.__class__([1] * 3, bc=np.copy(self.bc), **d)
         # This also ensures the shape is copied!
         grid.grid = self.grid.copy()

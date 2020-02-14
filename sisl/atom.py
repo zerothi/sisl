@@ -1388,11 +1388,15 @@ class Atoms:
 
     def orbital(self, io):
         """ Return an array of orbital of the contained objects """
-        io = _a.asarrayi(io).ravel() % self.no
+        io = _a.asarrayi(io)
+        ndim = io.ndim
+        io = io.ravel() % self.no
         a = list_index_le(io, self.lasto)
         io = io - self.firsto[a]
         a = self.specie[a]
         # Now extract the list of orbitals
+        if ndim == 0:
+            return self.atom[a[0]].orbital[io[0]]
         return [self.atom[ia].orbital[o] for ia, o in zip(a, io)]
 
     def maxR(self, all=False):
