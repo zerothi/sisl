@@ -495,6 +495,12 @@ class outSileSiesta(SileSiesta):
             whether only a particular MD step is queried, if None, all MD steps are
             parsed and returned. A negative number wraps for the last MD steps.
         """
+        if not iscf is None:
+            if iscf == 0:
+                raise ValueError(f"{self.__class__.__name__}.read_scf: requires iscf argument to *not* be 0!")
+        if not imd is None:
+            if imd == 0:
+                raise ValueError(f"{self.__class__.__name__}.read_scf: requires imd argument to *not* be 0!")
         def reset_d(d, line):
             if line.startswith('SCF cycle converged'):
                 d['_final_iscf'] = len(d['data']) > 0
@@ -516,7 +522,7 @@ class outSileSiesta(SileSiesta):
                                 float(line[41:57]), float(line[57:67]), float(line[67:77]),
                                 float(line[77:87])]
                     else:
-                        # Populate DATA
+                        # Populate DATA by splitting
                         data = line.split()
                         data =  [int(data[1])] + list(map(float, data[2:]))
                     d['data'] = data
@@ -545,7 +551,7 @@ class outSileSiesta(SileSiesta):
                                 float(line[44:60]), float(line[60:70]), float(line[70:80]),
                                 float(line[80:90]), d['ts-Vha']] + d['ts-q']
                     else:
-                        # Populate DATA
+                        # Populate DATA by splitting
                         data = line.split()
                         data =  [int(data[1])] + list(map(float, data[2:])) + [d['ts-Vha']] + d['ts-q']
                     d['data'] = data
@@ -561,15 +567,26 @@ class outSileSiesta(SileSiesta):
         for line in self:
             parse_next(line, d)
             if d['_found_iscf']:
+                d['_found_iscf'] = False
                 data = d['data']
+                if len(data) == 0:
+                    continue
 
                 if iscf is None or iscf < 0:
                     scf.append(data)
-                elif data.iscf == iscf:
+                elif data[0] <= iscf:
+                    # this ensures we will retain the latest iscf in
+                    # case the requested iscf is too big
                     scf = data
 
             if d['_final_iscf']:
-                if len(d['data']) == 0:
+                d['_final_iscf'] = False
+                data = d['data']
+                if len(data) == 0:
+                    # this traps the case where we read ts-scf
+                    # but find the final scf iteration.
+                    # In that case we don't have any data.
+                    scf = []
                     continue
 
                 # First figure out which iscf we should store
@@ -580,21 +597,25 @@ class outSileSiesta(SileSiesta):
                     # truncate to 0
                     scf = scf[max(len(scf) + iscf, 0)]
 
-                # Now we know scf is correct
-
                 # Populate md
-                md.append(scf)
+                md.append(np.array(scf))
                 # Reset SCF data
                 scf = []
 
-                if imd == len(md):
-                    return np.array(md[-1])
-
-                d['_final_iscf'] = False
+                if imd is None:
+                    pass
+                elif imd == len(md):
+                    return md[-1]
 
         # Now we know how many MD steps there are
         if imd is None:
+            if iscf is None:
+                # since each MD step may be a different number of SCF steps
+                # we cannot convert to a dense array
+                return md
             return np.array(md)
+        elif imd > len(md):
+            raise ValueError(f"{self.__class__.__name__}.read_scf: could not find requested MD step ({imd}).")
         return np.array(md[max(len(md) + imd, 0)])
 
 

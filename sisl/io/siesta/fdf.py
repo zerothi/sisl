@@ -361,8 +361,8 @@ class fdfSileSiesta(SileSiesta):
                 default = unit_default(unit_group(value[1]))
             else:
                 if unit_group(value[1]) != unit_group(unit):
-                    raise ValueError("Requested unit for {} is not the same type. "
-                                     "Found/Requested {}/{}'".format(label, value[1], unit))
+                    raise ValueError(f"Requested unit for {label} is not the same type. "
+                                     "Found/Requested {value[1]}/{unit}'")
                 default = unit
             return float(value[0]) * unit_convert(value[1], default)
 
@@ -1454,7 +1454,7 @@ class fdfSileSiesta(SileSiesta):
     def _r_basis_orb_indx(self):
         f = self.dir_file(self.get('SystemLabel', default='siesta') + '.ORB_INDX')
         if f.is_file():
-            info(SileInfo('Siesta basis information is read from {}, the radial functions are in accessible.'.format(f)))
+            info(SileInfo(f'Siesta basis information is read from {f}, the radial functions are in accessible.'))
             return orbindxSileSiesta(f).read_basis(atoms=self._r_basis_fdf())
         return None
 
@@ -1742,7 +1742,7 @@ class fdfSileSiesta(SileSiesta):
                 # Currently, we write out the unit "as-is"
                 val = ns._fdf.get(value[0], with_unit=True)
                 if val is None:
-                    print('# {} is currently not in the FDF file '.format(value[0]))
+                    print(f'# {value[0]} is currently not in the FDF file ')
                     return
 
                 if isinstance(val, tuple):
