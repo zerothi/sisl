@@ -50,7 +50,6 @@ def test_md_nose_out(sisl_files):
         assert not np.allclose(S, T)
         assert np.allclose(D, T)
 
-
     # Ensure SCF reads are consistent
     scf_last = out.read_scf()
     scf = out.read_scf(imd=-1)
