@@ -76,7 +76,7 @@ subroutine read_wfsx_index_info(fname, ispin, ik, k, kw, nw)
 
 end subroutine read_wfsx_index_info
 
-subroutine skip_wfsx_index(iu, ispin, ik, nspin)
+subroutine skip_wfsx_index(iu, ispin, ik)
   use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
@@ -88,7 +88,6 @@ subroutine skip_wfsx_index(iu, ispin, ik, nspin)
   ! Input parameters
   integer, intent(in) :: iu
   integer, intent(in) :: ispin, ik
-  integer, intent(in) :: nspin
 
 ! Define f2py intents
 !f2py intent(in) :: iu
