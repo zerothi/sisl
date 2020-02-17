@@ -1,5 +1,5 @@
 subroutine write_dm(fname, nspin, no_u, nsc, nnz, ncol, list_col, DM)
-  use io_m, only: open_file
+  use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
   implicit none
@@ -46,7 +46,7 @@ subroutine write_dm(fname, nspin, no_u, nsc, nnz, ncol, list_col, DM)
     end do
   end do
 
-  close(iu)
+  call close_file(iu)
 
 end subroutine write_dm
 

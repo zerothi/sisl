@@ -1,5 +1,5 @@
 subroutine write_grid(fname, nspin, mesh1, mesh2, mesh3, cell, grid)
-  use io_m, only: open_file
+  use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
   implicit none
@@ -44,7 +44,7 @@ subroutine write_grid(fname, nspin, mesh1, mesh2, mesh3, cell, grid)
 
   end do
 
-  close(iu)
+  call close_file(iu)
 
 end subroutine write_grid
 

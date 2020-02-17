@@ -3,7 +3,7 @@ subroutine write_tshs_hs(fname, &
     nsc1, nsc2, nsc3, &
     cell, xa, lasto, &
     ncol, list_col, H, S, isc)
-  use io_m, only: open_file
+  use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
   implicit none
@@ -94,7 +94,7 @@ subroutine write_tshs_hs(fname, &
   write(iu, iostat=ierr) isc
   call iostat_update(ierr)
 
-  close(iu)
+  call close_file(iu)
 
 end subroutine write_tshs_hs
 

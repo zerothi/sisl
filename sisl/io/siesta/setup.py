@@ -13,7 +13,7 @@ def configuration(parent_package='', top_path=None):
     ]
     for f in ['hsx', 'dm', 'tshs', 'grid', 'gf', 'tsde']:
         sources.extend([f + '_read.f90', f + '_write.f90'])
-    for f in ['hs']:
+    for f in ['hs', 'wfsx']:
         sources.append(f + '_read.f90')
 
     # Only install the extension if not on READTHEDOCS

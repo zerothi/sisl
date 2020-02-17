@@ -1,5 +1,5 @@
 subroutine read_tsde_sizes(fname, nspin, no_u, nsc, nnz)
-  use io_m, only: open_file
+  use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
   implicit none
@@ -33,13 +33,13 @@ subroutine read_tsde_sizes(fname, nspin, no_u, nsc, nnz)
   nnz = sum(num_col)
   deallocate(num_col)
 
-  close(iu)
+  call close_file(iu)
 
 end subroutine read_tsde_sizes
 
 subroutine read_tsde_dm(fname, nspin, no_u, nsc, nnz, &
     ncol, list_col, DM)
-  use io_m, only: open_file
+  use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
   implicit none
@@ -103,12 +103,12 @@ subroutine read_tsde_dm(fname, nspin, no_u, nsc, nnz, &
     end do
   end do
 
-  close(iu)
+  call close_file(iu)
 
 end subroutine read_tsde_dm
 
 subroutine read_tsde_ef(fname, Ef)
-  use io_m, only: open_file
+  use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
   implicit none
@@ -160,7 +160,7 @@ subroutine read_tsde_ef(fname, Ef)
   read(iu, iostat=ierr) Ef
   call iostat_update(ierr)
 
-  close(iu)
+  call close_file(iu)
 
   Ef = Ef * eV
 
@@ -168,7 +168,7 @@ end subroutine read_tsde_ef
 
 subroutine read_tsde_edm(fname, nspin, no_u, nsc, nnz, &
     ncol, list_col, EDM)
-  use io_m, only: open_file
+  use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
   implicit none
@@ -263,6 +263,6 @@ subroutine read_tsde_edm(fname, nspin, no_u, nsc, nnz, &
   ! Clean-up
   deallocate(DM)
 
-  close(iu)
+  call close_file(iu)
 
 end subroutine read_tsde_edm

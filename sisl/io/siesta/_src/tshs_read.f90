@@ -1,5 +1,5 @@
 subroutine read_tshs_version(fname, version)
-  use io_m, only: open_file
+  use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
   implicit none
@@ -27,12 +27,12 @@ subroutine read_tshs_version(fname, version)
   end if
   call iostat_update(ierr)
 
-  close(iu)
+  call close_file(iu)
 
 end subroutine read_tshs_version
 
 subroutine read_tshs_sizes(fname, nspin, na_u, no_u, n_s, nnz)
-  use io_m, only: open_file
+  use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
   implicit none
@@ -79,12 +79,12 @@ subroutine read_tshs_sizes(fname, nspin, na_u, no_u, n_s, nnz)
   n_s = tmp(3) / tmp(2)
   nnz = tmp(5)
 
-  close(iu)
+  call close_file(iu)
 
 end subroutine read_tshs_sizes
 
 subroutine read_tshs_ef(fname, Ef)
-  use io_m, only: open_file
+  use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
   implicit none
@@ -121,12 +121,12 @@ subroutine read_tshs_ef(fname, Ef)
   call iostat_update(ierr)
   Ef = Ef * eV
 
-  close(iu)
+  call close_file(iu)
 
 end subroutine read_tshs_ef
 
 subroutine read_tshs_cell(fname, n_s, nsc, cell, isc)
-  use io_m, only: open_file
+  use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
   implicit none
@@ -216,12 +216,12 @@ subroutine read_tshs_cell(fname, n_s, nsc, cell, isc)
     call iostat_update(ierr)
   end if
 
-  close(iu)
+  call close_file(iu)
 
 end subroutine read_tshs_cell
 
 subroutine read_tshs_geom(fname, na_u, xa, lasto)
-  use io_m, only: open_file
+  use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
   implicit none
@@ -284,12 +284,12 @@ subroutine read_tshs_geom(fname, na_u, xa, lasto)
   read(iu, iostat=ierr) lasto(0:na_u)
   call iostat_update(ierr)
 
-  close(iu)
+  call close_file(iu)
 
 end subroutine read_tshs_geom
 
 subroutine read_tshs_hs(fname, nspin, no_u, nnz, ncol, list_col, H, S)
-  use io_m, only: open_file
+  use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
   implicit none
@@ -390,12 +390,12 @@ subroutine read_tshs_hs(fname, nspin, no_u, nnz, ncol, list_col, H, S)
     end do
   end if
 
-  close(iu)
+  call close_file(iu)
 
 end subroutine read_tshs_hs
 
 subroutine read_tshs_s(fname, no_u, nnz, ncol, list_col, S)
-  use io_m, only: open_file
+  use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
   implicit none
@@ -474,7 +474,7 @@ subroutine read_tshs_s(fname, no_u, nnz, ncol, list_col, S)
     idx = idx + ncol(i)
   end do
 
-  close(iu)
+  call close_file(iu)
 
 end subroutine read_tshs_s
 

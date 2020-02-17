@@ -1,21 +1,3 @@
-subroutine write_open_gf(fname, iu)
-  use io_m, only: open_file
-
-  implicit none
-
-  ! Input parameters
-  character(len=*), intent(in) :: fname
-  integer, intent(out) :: iu
-
-  ! Define f2py intents
-!f2py intent(in) :: fname
-!f2py intent(out) :: iu
-
-  ! Open file (ensure we start from a clean slate)!
-  call open_file(fname, 'write', 'unknown', 'unformatted', iu)
-
-end subroutine write_open_gf
-
 subroutine write_gf_header( iu, nspin, cell, na_u, no_u, na_used, no_used, &
     xa_used, lasto_used, Bloch, pre_expand, mu, nkpt, kpt, kw, NE, E)
   use io_m, only: iostat_update
@@ -147,18 +129,3 @@ subroutine write_gf_se(iu, ik, iE, E, no_u, SE)
   call iostat_update(ierr)
 
 end subroutine write_gf_se
-
-subroutine close_gf(iu)
-
-  implicit none
-
-  ! Input parameters
-  integer, intent(in) :: iu
-
-  ! Define f2py intents
-!f2py intent(in) :: iu
-
-  ! Open file
-  close(iu)
-
-end subroutine close_gf

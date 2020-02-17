@@ -1,5 +1,5 @@
 subroutine read_grid_sizes(fname, nspin, mesh)
-  use io_m, only: open_file
+  use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
   implicit none
@@ -31,12 +31,12 @@ subroutine read_grid_sizes(fname, nspin, mesh)
   read(iu, iostat=ierr) mesh, nspin
   call iostat_update(ierr)
 
-  close(iu)
+  call close_file(iu)
 
 end subroutine read_grid_sizes
 
 subroutine read_grid_cell(fname, cell)
-  use io_m, only: open_file
+  use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
   implicit none
@@ -64,12 +64,12 @@ subroutine read_grid_cell(fname, cell)
   call iostat_update(ierr)
   cell(:,:) = cell(:,:) * Ang
 
-  close(iu)
+  call close_file(iu)
 
 end subroutine read_grid_cell
 
 subroutine read_grid(fname, nspin, mesh1, mesh2, mesh3, grid)
-  use io_m, only: open_file
+  use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
   implicit none
@@ -119,7 +119,7 @@ subroutine read_grid(fname, nspin, mesh1, mesh2, mesh3, grid)
 
   end do
 
-  close(iu)
+  call close_file(iu)
 
 end subroutine read_grid
 

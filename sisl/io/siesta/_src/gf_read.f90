@@ -1,21 +1,3 @@
-subroutine read_open_gf(fname, iu )
-  use io_m, only: open_file
-
-  implicit none
-
-  ! Input parameters
-  character(len=*), intent(in) :: fname
-  integer, intent(out) :: iu
-
-  ! Define f2py intents
-!f2py intent(in) :: fname
-!f2py intent(out) :: iu
-
-  ! Open file
-  call open_file(fname, 'read', 'old', 'unformatted', iu)
-
-end subroutine read_open_gf
-
 subroutine read_gf_sizes(iu, nspin, no_u, nkpt, NE)
   use io_m, only: iostat_update
 

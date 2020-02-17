@@ -18,9 +18,12 @@ from sisl.unit.siesta import unit_convert
 from sisl.physics.sparse import SparseOrbitalBZ
 from sisl.physics import Hamiltonian, DensityMatrix, EnergyDensityMatrix
 from sisl.physics.overlap import Overlap
+from sisl.physics.electron import EigenstateElectron
+
 
 __all__ = ['tshsSileSiesta', 'onlysSileSiesta', 'tsdeSileSiesta']
 __all__ += ['hsxSileSiesta', 'dmSileSiesta']
+#__all__ += ['wfsxSileSiesta']
 __all__ += ['gridSileSiesta']
 __all__ += ['tsgfSileSiesta']
 
@@ -614,8 +617,22 @@ class hsxSileSiesta(SileBinSiesta):
         return S
 
 
+class wfsxSileSiesta(SileBinSiesta):
+    r""" Binary WFSX file reader for Siesta """
+
+    def read_state(self):
+        r""" Reads states from the WFSX file
+
+        Returns
+        -------
+        state: EigenstateElectron
+        """
+        # First query information
+        nspin, no, nk, Gamma = _siesta.read_wfsx_sizes(self.file)
+
+
 class _gridSileSiesta(SileBinSiesta):
-    """ Binary real-space grid file
+    r""" Binary real-space grid file
 
     The Siesta binary grid sile will automatically convert the units from Siesta
     units (Bohr, Ry) to sisl units (Ang, eV) provided the correct extension is present.
@@ -732,9 +749,9 @@ class _gfSileSiesta(SileBinSiesta):
                 return
         else:
             if mode == 'r':
-                self._iu = _siesta.read_open_gf(self.file)
+                self._iu = _siesta.io_m.open_file_read(self.file)
             elif mode == 'w':
-                self._iu = _siesta.write_open_gf(self.file)
+                self._iu = _siesta.io_m.open_file_write(self.file)
         _bin_check(self, '_open_gf', 'could not open for {}.'.format({'r': 'reading', 'w': 'writing'}[mode]))
 
         # They will at any given time
@@ -763,7 +780,7 @@ class _gfSileSiesta(SileBinSiesta):
         if not self._is_open():
             return
         # Close it
-        _siesta.close_gf(self._iu)
+        _siesta.io_m.close_file(self._iu)
         self._iu = -1
 
         # Clean variables

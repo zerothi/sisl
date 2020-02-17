@@ -1,5 +1,5 @@
 subroutine read_dm_sizes(fname, nspin, no_u, nsc, nnz)
-  use io_m, only: open_file
+  use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
   implicit none
@@ -32,12 +32,12 @@ subroutine read_dm_sizes(fname, nspin, no_u, nsc, nnz)
   nnz = sum(num_col)
   deallocate(num_col)
 
-  close(iu)
+  call close_file(iu)
 
 end subroutine read_dm_sizes
 
 subroutine read_dm(fname, nspin, no_u, nsc, nnz, ncol, list_col, DM)
-  use io_m, only: open_file
+  use io_m, only: open_file, close_file
   use io_m, only: iostat_reset, iostat_update
 
   implicit none
@@ -101,6 +101,6 @@ subroutine read_dm(fname, nspin, no_u, nsc, nnz, ncol, list_col, DM)
     end do
   end do
 
-  close(iu)
+  call close_file(iu)
 
 end subroutine read_dm

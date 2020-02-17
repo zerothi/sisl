@@ -1,5 +1,5 @@
 subroutine read_hsx_sizes(fname, Gamma, nspin, no_u, no_s, maxnh)
-  use io_m, only: open_file
+  use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
   implicit none
@@ -26,13 +26,13 @@ subroutine read_hsx_sizes(fname, Gamma, nspin, no_u, no_s, maxnh)
   read(iu, iostat=ierr) Gamma
   call iostat_update(ierr)
 
-  close(iu)
+  call close_file(iu)
 
 end subroutine read_hsx_sizes
 
 subroutine read_hsx_hsx(fname, Gamma, nspin, no_u, no_s, maxnh, &
     numh, listh, H, S, xij)
-  use io_m, only: open_file
+  use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
   implicit none
@@ -139,13 +139,13 @@ subroutine read_hsx_hsx(fname, Gamma, nspin, no_u, no_s, maxnh, &
 
   deallocate(buf)
 
-  close(iu)
+  call close_file(iu)
 
 end subroutine read_hsx_hsx
 
 subroutine read_hsx_s(fname, Gamma, nspin, no_u, no_s, maxnh, &
     numh, listh, S)
-  use io_m, only: open_file
+  use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
   implicit none
@@ -235,6 +235,6 @@ subroutine read_hsx_s(fname, Gamma, nspin, no_u, no_s, maxnh, &
 
   deallocate(buf)
 
-  close(iu)
+  call close_file(iu)
 
 end subroutine read_hsx_s

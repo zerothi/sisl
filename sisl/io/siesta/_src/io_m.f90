@@ -4,6 +4,8 @@ module io_m
   implicit none
 
   public :: open_file
+  public :: open_file_read
+  public :: open_file_write
   public :: rewind_file
   public :: iostat_reset
   public :: iostat_update
@@ -41,7 +43,7 @@ contains
 
       case ( 'w', 'W', 'write', 'WRITE' )
 
-        close(unit)
+        call close_file(unit)
 
       end select
 
@@ -65,10 +67,51 @@ contains
 
   end subroutine open_file
 
+  !< Close file from a unit
+  subroutine close_file(iu)
+    integer, intent(in) :: iu
+    integer :: ierr
+
+    ! Define f2py intents
+!f2py intent(in) :: iu
+
+    ! Open file
+    close(iu, iostat=ierr)
+
+    call iostat_update(ierr)
+
+  end subroutine close_file
+
+  !< Open file for read-mode
+  subroutine open_file_read(fname, iu)
+    ! Input parameters
+    character(len=*), intent(in) :: fname
+    integer, intent(out) :: iu
+
+    ! Define f2py intents
+!f2py intent(in) :: fname
+!f2py intent(out) :: iu
+
+    call open_file(fname, 'read', 'old', 'unformatted', iu)
+
+  end subroutine open_file_read
+
+  !< Open file for write-mode
+  subroutine open_file_write(fname, iu)
+    ! Input parameters
+    character(len=*), intent(in) :: fname
+    integer, intent(out) :: iu
+
+    ! Define f2py intents
+!f2py intent(in) :: fname
+!f2py intent(out) :: iu
+
+    call open_file(fname, 'write', 'unknown', 'unformatted', iu)
+
+  end subroutine open_file_write
+
   !< Rewind file to read from beginning
   subroutine rewind_file( iu )
-
-    implicit none
 
     ! Input parameters
     integer, intent(in) :: iu

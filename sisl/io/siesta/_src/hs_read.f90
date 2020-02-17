@@ -1,5 +1,5 @@
 subroutine read_hs_header(fname, Gamma, nspin, no_u, no_s, maxnh)
-  use io_m, only: open_file
+  use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
   implicit none
@@ -24,13 +24,13 @@ subroutine read_hs_header(fname, Gamma, nspin, no_u, no_s, maxnh)
   read(iu, iostat=ierr) Gamma
   call iostat_update(ierr)
 
-  close(iu)
+  call close_file(iu)
 
 end subroutine read_hs_header
 
 subroutine read_hs(fname, Gamma, nspin, no_u,no_s,maxnh, &
     numh,listhptr,listh,H,S,xij)
-  use io_m, only: open_file
+  use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
   implicit none
@@ -135,6 +135,6 @@ subroutine read_hs(fname, Gamma, nspin, no_u,no_s,maxnh, &
     end do
   end if
 
-  close(iu)
+  call close_file(iu)
 
 end subroutine read_hs
