@@ -627,6 +627,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         elif self.spin.is_spinorbit:
             if self.spin.dkind == 'f':
+                self.SX = np.array([0, 0, 1, 0, 0, 0, 1, 0], self.dtype)
+                self.SY = np.array([0, 0, 0,-1, 0, 0, 0, 1], self.dtype)
+                self.SZ = np.array([1,-1, 0, 0, 0, 0, 0, 0], self.dtype)
                 self.M11r = 0
                 self.M22r = 1
                 self.M12r = 2
