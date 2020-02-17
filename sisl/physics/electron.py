@@ -1269,7 +1269,6 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     """
     if geometry is None:
         geometry = grid.geometry
-        warn('wavefunction was not passed a geometry associated, will use the geometry associated with the Grid.')
     if geometry is None:
         raise SislError('wavefunction: did not find a usable Geometry through keywords or the Grid!')
 

@@ -1,4 +1,5 @@
 import numpy as np
+from numpy import einsum
 
 import sisl._array as _a
 from sisl.messages import warn
@@ -18,24 +19,8 @@ _pi = np.pi
 _pi2 = np.pi * 2
 
 
-def _outer1(v):
-    return _outer_(v, _conj(v))
-
-
-def _outer(v1, v2):
-    return _outer_(v1, _conj(v2))
-
-
-def _inner1(v):
-    return _dot(_conj(v), v)
-
-
 def _inner(v1, v2):
     return _dot(_conj(v1), v2)
-
-
-def _couter1(c, v):
-    return _outer_(v * c, _conj(v))
 
 
 class ParentContainer:
@@ -394,19 +379,13 @@ class State(ParentContainer):
             a matrix with the sum of outer state products
         """
         if right is None:
-            m = _outer1(self.state[0, :])
-            for i in range(1, len(self)):
-                m += _outer1(self.state[i, :])
-        else:
-            if not np.array_equal(self.shape, right.shape):
-                raise ValueError(self.__class__.__name__ + '.outer requires the objects to have the same shape')
-            if align:
-                # Align the states
-                right = self.align_phase(right, copy=False)
-            m = _outer(self.state[0, :], right.state[0, :])
-            for i in range(1, len(self)):
-                m += _outer(self.state[i, :], right.state[i, :])
-        return m
+            return einsum('ki,kj->ij', self.state, _conj(self.state))
+        if not np.array_equal(self.shape, right.shape):
+            raise ValueError(self.__class__.__name__ + '.outer requires the objects to have the same shape')
+        if align:
+            # Align the states
+            right = self.align_phase(right, copy=False)
+        return einsum('ki,kj->ij', self.state, _conj(right.state))
 
     def inner(self, right=None, diagonal=True, align=False):
         r""" Return the inner product as :math:`\mathbf M_{ij} = \langle\psi_i|\psi'_j\rangle`
@@ -432,7 +411,7 @@ class State(ParentContainer):
         """
         if right is None:
             if diagonal:
-                return (_conj(self.state) * self.state).sum(1).real
+                return einsum('ij,ij->i', _conj(self.state), self.state).real
             return _inner(self.state, self.state.T)
 
         # They *must* have same number of basis points per state
@@ -446,10 +425,12 @@ class State(ParentContainer):
             right = self.align_phase(right, copy=False)
 
         if diagonal:
-            if self.shape[0] != right.shape[0]:
-                return np.diag(_inner(self.state, right.state.T))
-            return (_conj(self.state) * right.state).sum(1)
-        return _inner(self.state, right.state.T)
+            if self.shape[0] < right.shape[0]:
+                return einsum('ij,kj->i', _conj(self.state), right.state)
+            elif self.shape[0] > right.shape[0]:
+                return einsum('ij,kj->k', _conj(self.state), right.state)
+            return einsum('ij,ij->i', _conj(self.state), right.state)
+        return _conj(self.state).dot(right.state.T)
 
     def phase(self, method='max', return_indices=False):
         r""" Calculate the Euler angle (phase) for the elements of the state, in the range :math:`]-\pi;\pi]`
@@ -546,7 +527,8 @@ class State(ParentContainer):
         idx = _a.fulli(len(other), -1)
         idxr = _a.emptyi(len(other))
         for i in range(len(other)):
-            R = ((snorm - onorm[i, :].reshape(1, -1)) ** 2).sum(1)
+            R = snorm - onorm[i, :].reshape(1, -1)
+            R = einsum('ij,ij->i', R, R)
 
             # Figure out which band it should correspond to
             # find closest largest one
@@ -722,15 +704,9 @@ class StateC(State):
         numpy.ndarray : a matrix with the sum of outer state products
         """
         if idx is None:
-            m = _couter1(self.c[0], self.state[0].ravel())
-            for i in range(1, len(self)):
-                m += _couter1(self.c[i], self.state[i].ravel())
-            return m
-        idx = _a.asarrayi(idx).ravel()
-        m = _couter1(self.c[idx[0]], self.state[idx[0]].ravel())
-        for i in idx[1:]:
-            m += _couter1(self.c[i], self.state[i].ravel())
-        return m
+            return einsum('k,ki,kj->ij', self.c, self.state, _conj(self.state))
+        idx = np.asarray(idx).ravel()
+        return einsum('k,ki,kj->ij', self.c[idx], self.state[idx], _conj(self.state[idx]))
 
     def sort(self, ascending=True):
         """ Sort and return a new `StateC` by sorting the coefficients (default to ascending)
