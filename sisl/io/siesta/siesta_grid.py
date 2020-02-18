@@ -53,6 +53,8 @@ class gridncSileSiesta(SileCDFSiesta):
         name : str, optional
             the name for the grid-function (do not supply for standard Siesta output)
         """
+        # Default to *index* variable
+        spin = kwargs.get('index', spin)
         # Determine the name of this file
         f = osp.basename(self.file)
 
@@ -122,9 +124,11 @@ class gridncSileSiesta(SileCDFSiesta):
         # looping direction, hence x,y,z == 0,1,2
         return grid.swapaxes(0, 2)
 
-    def write_grid(self, grid, spin=0, nspin=None):
+    def write_grid(self, grid, spin=0, nspin=None, **kwargs):
         """ Write a grid to the grid.nc file """
         sile_raise_write(self)
+        # Default to *index* variable
+        spin = kwargs.get('index', spin)
 
         self.write_supercell(grid.sc)
 

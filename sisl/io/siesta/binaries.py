@@ -675,6 +675,7 @@ class _gridSileSiesta(SileBinSiesta):
         dtype : numpy.float64, optional
            default data-type precision
         """
+        index = kwargs.get('spin', index)
         # Read the sizes and cell
         nspin, mesh = self.read_grid_size()
         cell = _siesta.read_grid_cell(self.file)

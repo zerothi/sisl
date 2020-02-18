@@ -319,7 +319,7 @@ class ncSileSiesta(SileCDFSiesta):
 
         return grids
 
-    def read_grid(self, name, spin=0):
+    def read_grid(self, name, spin=0, **kwargs):
         """ Reads a grid in the current Siesta.nc file
 
         Enables the reading and processing of the grids created by Siesta
@@ -334,6 +334,7 @@ class ncSileSiesta(SileCDFSiesta):
            ``[0.5, 0.5]`` will return sum of half the first two components.
            Default to the first component.
         """
+        spin = kwargs.get('index', spin)
         geom = self.read_geometry()
 
         # Shorthand
