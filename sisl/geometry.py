@@ -3600,7 +3600,8 @@ class Geometry(SuperCellChild):
         class MoveOrigin(argparse.Action):
 
             def __call__(self, parser, ns, no_value, option_string=None):
-                ns._geometry.xyz[:, :] -= np.amin(ns._geometry.xyz, axis=0)[None, :]
+                idx = np.argmin(np.linalg.norm(ns._geometry.xyz, axis=1))
+                ns._geometry.xyz[:, :] -= ns._geometry[idx,:]
         p.add_argument(*opts('--origin', '-O'), action=MoveOrigin, nargs=0,
                    help='Move all atoms such that one atom will be at the origin.')
 
