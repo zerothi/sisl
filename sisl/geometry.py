@@ -3602,7 +3602,7 @@ class Geometry(SuperCellChild):
             def __call__(self, parser, ns, no_value, option_string=None):
                 ns._geometry.xyz[:, :] -= np.amin(ns._geometry.xyz, axis=0)[None, :]
         p.add_argument(*opts('--origin', '-O'), action=MoveOrigin, nargs=0,
-                   help='Move all atoms such that one atom will be at the origin.')
+                   help='Move all atoms such that the smallest value along each Cartesian direction will be at the origin.')
 
         class MoveCenterOf(argparse.Action):
 
