@@ -1,7 +1,7 @@
 # To check for integers
 from numbers import Integral, Real
 from math import acos
-from itertools import product
+from itertools import product, repeat
 
 import numpy as np
 from numpy import ndarray, int32, bool_
@@ -25,8 +25,7 @@ from .atom import Atom, Atoms
 from .shape import Shape, Sphere, Cube
 from ._namedindex import NamedIndex
 
-__all__ = ['Geometry', 'sgeom']
-
+__all__ = ['Geometry', 'GeometryCollection', 'sgeom']
 
 class Geometry(SuperCellChild):
     """ Holds atomic information, coordinates, species, lattice vectors
@@ -1258,6 +1257,7 @@ class Geometry(SuperCellChild):
         repeat : equivalent but different ordering of final structure
         cut : opposite method of this
         """
+
         if reps < 1:
             raise ValueError(self.__class__.__name__ + '.tile() requires a repetition above 0')
 
@@ -3877,9 +3877,34 @@ class GeometryCollection:
                 sc = repeat(sc)
 
             self.geometries = [
-                Geometry(xyzs, atom=atom, sc=sc, names=names)
-                for xyz, sc in zip(xyz, sc)
+                Geometry(xyz, atom=atom, sc=sc, names=names)
+                for xyz, sc in zip(xyzs, sc)
             ]
+    
+    def __getitem__(self, i):
+        return self.geometries[i]
+    
+    def __setitem__(self, i, value):
+
+        self.geometries[i] = value
+
+        return self
+
+    def _run_on_multiple_geoms(self, method_name, *args, geom_indices = [], **kwargs):
+        '''
+        Runs a method of the geometry clas
+        '''
+
+        if len(geom_indices) == 0:
+            self.geometries = [ getattr(geom, method_name)(*args, **kwargs) for geom in self.geometries]
+        else:
+            self.geometries = [ getattr(geom, method_name)(*args, **kwargs) if geom_i in geom_indices else geom for geom_i, geom in enumerate(self.geometries)]
+    
+    def tile(self, *args, **kwargs):
+
+        self._run_on_multiple_geoms('tile', *args, **kwargs)
+
+        return self
 
 def sgeom(geometry=None, argv=None, ret_geometry=False):
     """ Main script for sgeom.

@@ -8,7 +8,7 @@ import numpy as np
 # Import sile objects
 from .sile import *
 
-from sisl import Geometry, SuperCell
+from sisl import Geometry, SuperCell, GeometryCollection
 from sisl.messages import warn
 import sisl._array as _a
 
