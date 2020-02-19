@@ -3879,6 +3879,7 @@ class GeometryCollection:
             self.geometries = [
                 Geometry(xyzs, atom=atom, sc=sc, names=names)
                 for xyz, sc in zip(xyz, sc)
+            ]
 
 def sgeom(geometry=None, argv=None, ret_geometry=False):
     """ Main script for sgeom.
