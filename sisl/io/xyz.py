@@ -104,10 +104,13 @@ class xyzSile(Sile):
                     return False
             return True   
 
+        #Initialize the list where geometries will be stored
         geoms = []
 
         # Read number of atoms
         na = int(self.readline())
+
+        #Go on to read as much geometries as the file contains
         while True:
 
             # Read header, and try and convert to dictionary
@@ -122,16 +125,17 @@ class xyzSile(Sile):
                 sp[ia] = l.pop(0)
                 xyz[ia, :] = [float(k) for k in l[:3]]
             
-            #Append the geometry to the list of geometries read
-
+            #Get the geometry
             if _has_keys(kv, "cell", "nsc"):
                 geom = self._r_geometry_sisl(na, kv, sp, xyz)
             elif _has_keys(kv, "Properties", "Lattice", "pbc"):
                 geom = self._r_geometry_ase(na, kv, sp, xyz)
             else:
                 geom = self._r_geometry(na, sp, xyz)
-
+            
+            #Append the geometry to the list of geometries
             geoms.append(geom)
+
             try:
                 na = int(self.readline())
                 
