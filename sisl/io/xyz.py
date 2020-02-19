@@ -96,33 +96,48 @@ class xyzSile(Sile):
 
     @sile_fh_open()
     def read_geometry(self):
-        """ Returns Geometry object from the XYZ file """
-        # Read number of atoms
-        na = int(self.readline())
-
-        # Read header, and try and convert to dictionary
-        header = self.readline()
-        kv = _header_to_dict(header)
-
-        # Read atoms and coordinates
-        sp = [None] * na
-        xyz = np.empty([na, 3], np.float64)
-        for ia in range(na):
-            l = self.readline().split()
-            sp[ia] = l.pop(0)
-            xyz[ia, :] = [float(k) for k in l[:3]]
+        """ Returns Geometry object from the XYZ file, or GeometryCollection if there are multiple geometries. """
 
         def _has_keys(d, *keys):
             for key in keys:
                 if not key in d:
                     return False
-            return True
+            return True   
 
-        if _has_keys(kv, "cell", "nsc"):
-            return self._r_geometry_sisl(na, kv, sp, xyz)
-        elif _has_keys(kv, "Properties", "Lattice", "pbc"):
-            return self._r_geometry_ase(na, kv, sp, xyz)
-        return self._r_geometry(na, sp, xyz)
+        geoms = []
+
+        # Read number of atoms
+        na = int(self.readline())
+        while True:
+
+            # Read header, and try and convert to dictionary
+            header = self.readline()
+            kv = _header_to_dict(header)
+
+            # Read atoms and coordinates
+            sp = [None] * na
+            xyz = np.empty([na, 3], np.float64)
+            for ia in range(na):
+                l = self.readline().split()
+                sp[ia] = l.pop(0)
+                xyz[ia, :] = [float(k) for k in l[:3]]
+            
+            #Append the geometry to the list of geometries read
+
+            if _has_keys(kv, "cell", "nsc"):
+                geom = self._r_geometry_sisl(na, kv, sp, xyz)
+            elif _has_keys(kv, "Properties", "Lattice", "pbc"):
+                geom = self._r_geometry_ase(na, kv, sp, xyz)
+            else:
+                geom = self._r_geometry(na, sp, xyz)
+
+            geoms.append(geom)
+            try:
+                na = int(self.readline())
+                
+            except ValueError:
+                #Return a Geometry or a GeometryCollection
+                return GeometryCollection(geoms=geoms) if len(geoms) > 1 else geoms[0]
 
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """

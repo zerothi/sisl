@@ -3859,6 +3859,26 @@ class Geometry(SuperCellChild):
         # We have now created all arguments
         return p, namespace
 
+class GeometryCollection:
+
+    '''
+    Contains multiple geometries and supports operations on them.
+
+    '''
+
+    def __init__(self, xyzs = None, atom=None, sc=None, names=None, geoms = None):
+
+        if geoms != None:
+
+            self.geometries = geoms
+        else:
+
+            if sc == None or isinstance(sc, SuperCell):
+                sc = repeat(sc)
+
+            self.geometries = [
+                Geometry(xyzs, atom=atom, sc=sc, names=names)
+                for xyz, sc in zip(xyz, sc)
 
 def sgeom(geometry=None, argv=None, ret_geometry=False):
     """ Main script for sgeom.
