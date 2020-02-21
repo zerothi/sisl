@@ -407,3 +407,9 @@ def test_tocuboid_complex():
     assert np.allclose(sc.cell, c1._v)
     c2 = sc.toCuboid(True)
     assert not np.allclose(np.diagonal(c1._v), np.diagonal(c2._v))
+
+
+def test_sc_indices():
+    sc = SuperCell([1] * 3, nsc=[3, 5, 7])
+    for i in range(sc.n_s):
+        assert i == sc.sc_index(sc.sc_off[i])
