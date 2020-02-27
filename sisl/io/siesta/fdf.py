@@ -24,7 +24,7 @@ from .siesta_nc import ncSileSiesta
 from .basis import ionxmlSileSiesta, ionncSileSiesta
 from .orb_indx import orbindxSileSiesta
 from .xv import xvSileSiesta
-from sisl import Geometry, Orbital, Atom, SuperCell, DynamicalMatrix
+from sisl import Geometry, Orbital, Atom, Atoms, SuperCell, DynamicalMatrix
 
 from sisl.utils.cmd import default_ArgumentParser, default_namespace
 from sisl.utils.misc import merge_instances
@@ -1236,7 +1236,10 @@ class fdfSileSiesta(SileSiesta):
         lor = self.get('AtomicCoordinatesOrigin')
         if lor:
             if kwargs.get('origin', True):
-                origo = _a.asarrayd(list(map(float, lor[0].split()[:3]))) * s
+                if isinstance(lor, str):
+                    origo = lor.lower()
+                else:
+                    origo = _a.asarrayd(list(map(float, lor[0].split()[:3]))) * s
         # Origo cannot be interpreted with fractional coordinates
         # hence, it is not transformed.
 
@@ -1269,7 +1272,6 @@ class fdfSileSiesta(SileSiesta):
         if is_frac:
             xyz = np.dot(xyz, sc.cell)
         xyz *= s
-        xyz += origo
 
         # Read the block (not strictly needed, if so we simply set all atoms to H)
         atom = self.read_basis()
@@ -1280,6 +1282,35 @@ class fdfSileSiesta(SileSiesta):
             atom = Atom(1)
         else:
             atom = [atom[i] for i in species]
+        atom = Atoms(atom, na=len(xyz))
+
+        if isinstance(origo, str):
+            opt = origo
+            if opt.startswith('cop'):
+                origo = sc.cell.sum(0) * 0.5 - np.average(xyz, 0)
+            elif opt.startswith('com'):
+                # TODO for ghost atoms its mass should not be used
+                w = atom.mass
+                w /= w.sum()
+                origo = sc.cell.sum(0) * 0.5 - np.average(xyz, 0, weights=w)
+            elif opt.startswith('min'):
+                origo = - np.amin(xyz, 0)
+            if len(opt) > 4:
+                opt = opt[4:]
+                if opt == 'x':
+                    origo[1:] = 0.
+                elif opt == 'y':
+                    origo[[0, 2]] = 0.
+                elif opt == 'z':
+                    origo[:2] = 0.
+                elif opt == 'xy' or opt == 'yx':
+                    origo[2] = 0.
+                elif opt == 'xz' or opt == 'zx':
+                    origo[1] = 0.
+                elif opt == 'yz' or opt == 'zy':
+                    origo[0] = 0.
+
+        xyz += origo
 
         # Create and return geometry object
         return Geometry(xyz, atom=atom, sc=sc)
