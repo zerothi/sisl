@@ -1570,7 +1570,7 @@ class Geometry(SuperCellChild):
 
         # Now rotate the angle between them
         a = acos(np.sum(lm * lv))
-        return self.rotate(a, cp)
+        return self.rotate(a, cp, rad = True)
 
     def move(self, v, atom=None, cell=False):
         """ Translates the geometry by `v`
