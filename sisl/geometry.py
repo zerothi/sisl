@@ -3859,26 +3859,31 @@ class Geometry(SuperCellChild):
         # We have now created all arguments
         return p, namespace
 
-    def draw_blender(self):
+    def __blender__(self, scene):
 
         import os
 
-        from .drawBlender import draw_structure, lighting, camera, render
+        #Enable the atomic blender add-on, just in case it wasn't enabled
+        scene.atomic_blender()
 
-        temp_filename = "__TEMPGEOM__.xyz"
+        #Create a temporal file so that we can import the structure in blender
+        temp_filename = False; 
+        i = -1
+        while not temp_filename or os.path.exists(temp_filename):
+            i += 1
+            temp_filename = f"__TEMPGEOM{i}__.xyz"
 
         self.write(temp_filename)
 
-        draw_structure(temp_filename)
-
-        center = self.center()
-        coord_lims = np.array([np.min(self.xyz, axis = 0) - center, np.max(self.xyz, axis = 0) - center]).T
-
-        lighting(coord_lims)
-        camera(coord_lims)
-        render()
+        #Import the geometry
+        scene.ops.import_mesh.xyz(filepath=temp_filename, use_camera=False, use_lamp=False )
 
         os.remove(temp_filename)
+
+        center = self.center()
+
+        return np.array([np.min(self.xyz, axis = 0) - center, np.max(self.xyz, axis = 0) - center]).T
+        
 
 
 def sgeom(geometry=None, argv=None, ret_geometry=False):
