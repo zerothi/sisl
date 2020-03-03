@@ -1715,6 +1715,11 @@ class fdfSileSiesta(SileSiesta):
                 # to ensure we get the correct orbital count
                 kwargs['geometry'] = self.read_geometry(True, order=['nc', 'TSHS', 'fdf'])
             H = hsxSileSiesta(f).read_hamiltonian(*args, **kwargs)
+            Ef = self.read_fermi_level()
+            if Ef is None:
+                info(str(self) + '.read_hamiltonian from HSX file failed shifting to the Fermi-level.')
+            else:
+                H.shift(-Ef)
         return H
 
     @default_ArgumentParser(description="Manipulate a FDF file.")
