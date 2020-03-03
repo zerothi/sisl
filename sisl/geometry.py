@@ -3859,6 +3859,27 @@ class Geometry(SuperCellChild):
         # We have now created all arguments
         return p, namespace
 
+    def draw_blender(self):
+
+        import os
+
+        from .drawBlender import draw_structure, lighting, camera, render
+
+        temp_filename = "__TEMPGEOM__.xyz"
+
+        self.write(temp_filename)
+
+        draw_structure(temp_filename)
+
+        center = self.center()
+        coord_lims = np.array([np.min(self.xyz, axis = 0) - center, np.max(self.xyz, axis = 0) - center]).T
+
+        lighting(coord_lims)
+        camera(coord_lims)
+        render()
+
+        os.remove(temp_filename)
+
 
 def sgeom(geometry=None, argv=None, ret_geometry=False):
     """ Main script for sgeom.
