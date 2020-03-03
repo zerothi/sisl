@@ -72,6 +72,9 @@ from .oplist import oplist
 # Import plot routine
 from ._plot import plot as plot
 
+# Import blender related classes and functions
+from ._blender import BlenderScene, blender
+
 # Import warning classes
 # We currently do not import warn and info
 # as they are too generic names in case one does from sisl import *
