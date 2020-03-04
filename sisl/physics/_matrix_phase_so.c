@@ -7,7 +7,7 @@
 #else
 #define CYTHON_ABI "0_29_7"
 #define CYTHON_HEX_VERSION 0x001D07F0
-#define CYTHON_FUTURE_DIVISION 0
+#define CYTHON_FUTURE_DIVISION 1
 #include <stddef.h>
 #ifndef offsetof
   #define offsetof(type, member) ( (size_t) & ((type*)0) -> member )
@@ -2310,16 +2310,20 @@ static PyObject *__pyx_kp_s_no_default___reduce___due_to_non;
 static PyObject *__pyx_n_s_np;
 static PyObject *__pyx_n_s_nr;
 static PyObject *__pyx_n_s_numpy;
-static PyObject *__pyx_kp_s_numpy_core_multiarray_failed_to;
-static PyObject *__pyx_kp_s_numpy_core_umath_failed_to_impor;
+static PyObject *__pyx_kp_u_numpy_core_multiarray_failed_to;
+static PyObject *__pyx_kp_u_numpy_core_umath_failed_to_impor;
 static PyObject *__pyx_n_s_obj;
 static PyObject *__pyx_n_s_p_opt;
 static PyObject *__pyx_n_s_pack;
 static PyObject *__pyx_n_s_ph;
 static PyObject *__pyx_n_s_phase_so_array_c128;
+static PyObject *__pyx_n_u_phase_so_array_c128;
 static PyObject *__pyx_n_s_phase_so_array_c64;
+static PyObject *__pyx_n_u_phase_so_array_c64;
 static PyObject *__pyx_n_s_phase_so_csr_c128;
+static PyObject *__pyx_n_u_phase_so_csr_c128;
 static PyObject *__pyx_n_s_phase_so_csr_c64;
+static PyObject *__pyx_n_u_phase_so_csr_c64;
 static PyObject *__pyx_n_s_phases;
 static PyObject *__pyx_n_s_pickle;
 static PyObject *__pyx_n_s_ptr;
@@ -27637,16 +27641,20 @@ static __Pyx_StringTabEntry __pyx_string_tab[] = {
   {&__pyx_n_s_np, __pyx_k_np, sizeof(__pyx_k_np), 0, 0, 1, 1},
   {&__pyx_n_s_nr, __pyx_k_nr, sizeof(__pyx_k_nr), 0, 0, 1, 1},
   {&__pyx_n_s_numpy, __pyx_k_numpy, sizeof(__pyx_k_numpy), 0, 0, 1, 1},
-  {&__pyx_kp_s_numpy_core_multiarray_failed_to, __pyx_k_numpy_core_multiarray_failed_to, sizeof(__pyx_k_numpy_core_multiarray_failed_to), 0, 0, 1, 0},
-  {&__pyx_kp_s_numpy_core_umath_failed_to_impor, __pyx_k_numpy_core_umath_failed_to_impor, sizeof(__pyx_k_numpy_core_umath_failed_to_impor), 0, 0, 1, 0},
+  {&__pyx_kp_u_numpy_core_multiarray_failed_to, __pyx_k_numpy_core_multiarray_failed_to, sizeof(__pyx_k_numpy_core_multiarray_failed_to), 0, 1, 0, 0},
+  {&__pyx_kp_u_numpy_core_umath_failed_to_impor, __pyx_k_numpy_core_umath_failed_to_impor, sizeof(__pyx_k_numpy_core_umath_failed_to_impor), 0, 1, 0, 0},
   {&__pyx_n_s_obj, __pyx_k_obj, sizeof(__pyx_k_obj), 0, 0, 1, 1},
   {&__pyx_n_s_p_opt, __pyx_k_p_opt, sizeof(__pyx_k_p_opt), 0, 0, 1, 1},
   {&__pyx_n_s_pack, __pyx_k_pack, sizeof(__pyx_k_pack), 0, 0, 1, 1},
   {&__pyx_n_s_ph, __pyx_k_ph, sizeof(__pyx_k_ph), 0, 0, 1, 1},
   {&__pyx_n_s_phase_so_array_c128, __pyx_k_phase_so_array_c128, sizeof(__pyx_k_phase_so_array_c128), 0, 0, 1, 1},
+  {&__pyx_n_u_phase_so_array_c128, __pyx_k_phase_so_array_c128, sizeof(__pyx_k_phase_so_array_c128), 0, 1, 0, 1},
   {&__pyx_n_s_phase_so_array_c64, __pyx_k_phase_so_array_c64, sizeof(__pyx_k_phase_so_array_c64), 0, 0, 1, 1},
+  {&__pyx_n_u_phase_so_array_c64, __pyx_k_phase_so_array_c64, sizeof(__pyx_k_phase_so_array_c64), 0, 1, 0, 1},
   {&__pyx_n_s_phase_so_csr_c128, __pyx_k_phase_so_csr_c128, sizeof(__pyx_k_phase_so_csr_c128), 0, 0, 1, 1},
+  {&__pyx_n_u_phase_so_csr_c128, __pyx_k_phase_so_csr_c128, sizeof(__pyx_k_phase_so_csr_c128), 0, 1, 0, 1},
   {&__pyx_n_s_phase_so_csr_c64, __pyx_k_phase_so_csr_c64, sizeof(__pyx_k_phase_so_csr_c64), 0, 0, 1, 1},
+  {&__pyx_n_u_phase_so_csr_c64, __pyx_k_phase_so_csr_c64, sizeof(__pyx_k_phase_so_csr_c64), 0, 1, 0, 1},
   {&__pyx_n_s_phases, __pyx_k_phases, sizeof(__pyx_k_phases), 0, 0, 1, 1},
   {&__pyx_n_s_pickle, __pyx_k_pickle, sizeof(__pyx_k_pickle), 0, 0, 1, 1},
   {&__pyx_n_s_ptr, __pyx_k_ptr, sizeof(__pyx_k_ptr), 0, 0, 1, 1},
@@ -27739,10 +27747,10 @@ static CYTHON_SMALL_CODE int __Pyx_InitCachedConstants(void) {
   __pyx_tuple__9 = PyTuple_Pack(1, __pyx_kp_u_Format_string_allocated_too_shor_2); if (unlikely(!__pyx_tuple__9)) __PYX_ERR(1, 880, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__9);
   __Pyx_GIVEREF(__pyx_tuple__9);
-  __pyx_tuple__10 = PyTuple_Pack(1, __pyx_kp_s_numpy_core_multiarray_failed_to); if (unlikely(!__pyx_tuple__10)) __PYX_ERR(1, 1038, __pyx_L1_error)
+  __pyx_tuple__10 = PyTuple_Pack(1, __pyx_kp_u_numpy_core_multiarray_failed_to); if (unlikely(!__pyx_tuple__10)) __PYX_ERR(1, 1038, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__10);
   __Pyx_GIVEREF(__pyx_tuple__10);
-  __pyx_tuple__11 = PyTuple_Pack(1, __pyx_kp_s_numpy_core_umath_failed_to_impor); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(1, 1044, __pyx_L1_error)
+  __pyx_tuple__11 = PyTuple_Pack(1, __pyx_kp_u_numpy_core_umath_failed_to_impor); if (unlikely(!__pyx_tuple__11)) __PYX_ERR(1, 1044, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_tuple__11);
   __Pyx_GIVEREF(__pyx_tuple__11);
   __pyx_tuple__12 = PyTuple_Pack(1, __pyx_kp_s_Empty_shape_tuple_for_cython_arr); if (unlikely(!__pyx_tuple__12)) __PYX_ERR(2, 133, __pyx_L1_error)
@@ -28258,7 +28266,7 @@ if (!__Pyx_RefNanny) {
   #if defined(__Pyx_Generator_USED) || defined(__Pyx_Coroutine_USED)
   if (__Pyx_patch_abc() < 0) __PYX_ERR(0, 1, __pyx_L1_error)
   #endif
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_numpy, 0, -1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 5, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_numpy, 0, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 5, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_np, __pyx_t_1) < 0) __PYX_ERR(0, 5, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
@@ -28267,7 +28275,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_INCREF(__pyx_n_s_csr_matrix);
   __Pyx_GIVEREF(__pyx_n_s_csr_matrix);
   PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_csr_matrix);
-  __pyx_t_2 = __Pyx_Import(__pyx_n_s_scipy_sparse, __pyx_t_1, -1); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 7, __pyx_L1_error)
+  __pyx_t_2 = __Pyx_Import(__pyx_n_s_scipy_sparse, __pyx_t_1, 0); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 7, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_2);
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = __Pyx_ImportFrom(__pyx_t_2, __pyx_n_s_csr_matrix); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 7, __pyx_L1_error)
@@ -28280,7 +28288,7 @@ if (!__Pyx_RefNanny) {
   __Pyx_INCREF(__pyx_n_s_fold_csr_matrix_nc);
   __Pyx_GIVEREF(__pyx_n_s_fold_csr_matrix_nc);
   PyList_SET_ITEM(__pyx_t_2, 0, __pyx_n_s_fold_csr_matrix_nc);
-  __pyx_t_1 = __Pyx_Import(__pyx_n_s_sisl__sparse, __pyx_t_2, -1); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 10, __pyx_L1_error)
+  __pyx_t_1 = __Pyx_Import(__pyx_n_s_sisl__sparse, __pyx_t_2, 0); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 10, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
   __Pyx_DECREF(__pyx_t_2); __pyx_t_2 = 0;
   __pyx_t_2 = __Pyx_ImportFrom(__pyx_t_1, __pyx_n_s_fold_csr_matrix_nc); if (unlikely(!__pyx_t_2)) __PYX_ERR(0, 10, __pyx_L1_error)
@@ -28290,18 +28298,18 @@ if (!__Pyx_RefNanny) {
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = PyList_New(4); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_GOTREF(__pyx_t_1);
-  __Pyx_INCREF(__pyx_n_s_phase_so_csr_c64);
-  __Pyx_GIVEREF(__pyx_n_s_phase_so_csr_c64);
-  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_s_phase_so_csr_c64);
-  __Pyx_INCREF(__pyx_n_s_phase_so_csr_c128);
-  __Pyx_GIVEREF(__pyx_n_s_phase_so_csr_c128);
-  PyList_SET_ITEM(__pyx_t_1, 1, __pyx_n_s_phase_so_csr_c128);
-  __Pyx_INCREF(__pyx_n_s_phase_so_array_c64);
-  __Pyx_GIVEREF(__pyx_n_s_phase_so_array_c64);
-  PyList_SET_ITEM(__pyx_t_1, 2, __pyx_n_s_phase_so_array_c64);
-  __Pyx_INCREF(__pyx_n_s_phase_so_array_c128);
-  __Pyx_GIVEREF(__pyx_n_s_phase_so_array_c128);
-  PyList_SET_ITEM(__pyx_t_1, 3, __pyx_n_s_phase_so_array_c128);
+  __Pyx_INCREF(__pyx_n_u_phase_so_csr_c64);
+  __Pyx_GIVEREF(__pyx_n_u_phase_so_csr_c64);
+  PyList_SET_ITEM(__pyx_t_1, 0, __pyx_n_u_phase_so_csr_c64);
+  __Pyx_INCREF(__pyx_n_u_phase_so_csr_c128);
+  __Pyx_GIVEREF(__pyx_n_u_phase_so_csr_c128);
+  PyList_SET_ITEM(__pyx_t_1, 1, __pyx_n_u_phase_so_csr_c128);
+  __Pyx_INCREF(__pyx_n_u_phase_so_array_c64);
+  __Pyx_GIVEREF(__pyx_n_u_phase_so_array_c64);
+  PyList_SET_ITEM(__pyx_t_1, 2, __pyx_n_u_phase_so_array_c64);
+  __Pyx_INCREF(__pyx_n_u_phase_so_array_c128);
+  __Pyx_GIVEREF(__pyx_n_u_phase_so_array_c128);
+  PyList_SET_ITEM(__pyx_t_1, 3, __pyx_n_u_phase_so_array_c128);
   if (PyDict_SetItem(__pyx_d, __pyx_n_s_all, __pyx_t_1) < 0) __PYX_ERR(0, 12, __pyx_L1_error)
   __Pyx_DECREF(__pyx_t_1); __pyx_t_1 = 0;
   __pyx_t_1 = __Pyx_PyDict_NewPresized(6); if (unlikely(!__pyx_t_1)) __PYX_ERR(0, 29, __pyx_L1_error)
