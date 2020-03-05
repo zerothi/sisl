@@ -28,6 +28,68 @@ __all__ = ['BlenderScene', 'blender']
 
 class BlenderScene:
 
+    """ Serves as an interface between sisl and blender.
+    
+    The `BlenderScene` class aims to help displaying sisl's
+    scientifically meaningful classes in Blender (https://www.blender.org/)
+
+    Any sisl class with a `__blender__()` method can be added to a
+    scene by using the `àdd()` method.
+
+    You can use this class directly or use the `sisl.blender` function,
+    which will create an instance of this class.
+
+    **IMPORTANT:** This class needs to import blender modules, therefore you
+    need to be either running the script inside blender with sisl installed or
+    have blender as a python module in your environment. See https://github.com/zerothi/sisl/pull/171
+    for more info on how to achieve this.
+
+    ~/myBlenderScript.py:
+    .. code:: python
+       import sisl
+       geom = sisl.geom.fcc(3, "C")
+       blender(square, camera_settings={}, lighting_settings={}, render_settings={})
+
+    ```
+    blender -P ~/myBlenderScript.py
+    ```
+
+    Attributes
+    ----------
+    ops: bpy.ops
+    context: bpy.context
+    data: bpy.data
+    filepath: str
+        the path where output files are saved by default.
+    bounding_box: np.ndarray of shape (2,3)
+        the limits of a box surrounding all objects in the scene.
+        [[xmin, xmax], [ymin,ymax], [zmin,zmax]]
+    objs: list
+        contains all the objects in the scene.
+    lights: list
+        contains all the lights that are present in the scene.
+    xmin
+    xmax
+    ymin
+    ymax
+    zmin
+    zmax
+
+    Parameters
+    ----------
+    objs : array_like, optional
+        the objects that should be added to the scene on initialization.
+        This is equivalent to adding them with the `add()` method
+    filepath : str, optional
+        the path that will be used as default to save files, without extension.
+
+        If not provided, it is set to ~/sislImage.
+
+        Note that if a filepath is provided in the render method it will 
+        take preference over the value provided here.
+
+    """
+
     _POVs = {
         '+z': (0,0,1),
         '-z': (0,0,-1),
@@ -45,7 +107,7 @@ class BlenderScene:
         self.data = bpy.data
         self.atomic_blender = lambda: addon_utils.enable("io_mesh_atomic")
 
-        self.filepath = filepath or os.path.join(os.path.expanduser("~"), "image")
+        self.filepath = filepath or os.path.join(os.path.expanduser("~"), "sislImage")
 
         #Clean the scene of any objects that were there (e.g. the default cube)
         self.clean()
@@ -56,34 +118,21 @@ class BlenderScene:
         #If objects were provided on initialization, add them to the scene
         for obj in objs:
             self.add(obj)
-
-    def update_bounding_box(self):
-        '''
-        Updates the bounding box of the model so that lights and cameras can be placed correctly.
-        '''
-        self.bounding_box = np.array([
-            np.min([np.min(obj.bound_box, axis=0 ) for obj in self.data.objects], axis = 0),
-            np.max([np.max(obj.bound_box, axis=0 ) for obj in self.data.objects], axis = 0),
-        ]).T
-
-        return self
-
-    def lim(self, min_max = None, axis = None):
-
-        first_dim = [0,1] if axis is None else axis
-
-        second_dim = 0 if min_max == "min" else (1 if min_max == "max" else [0,1])
-
-        return self.bounding_box[first_dim, second_dim]
-
-    def min(self, axis = None):
-        return self.lim('min', axis)
-
-    def max(self, axis = None):
-        return self.lim('max', axis)
     
-    # Rotate an object.
     def rotate_object(self, rot_mat, obj):
+        '''
+        Rotates an object according to a given rotation matrix.
+
+        This code is taken directly from the atomic blender add-on 
+        (https://github.com/blender/blender-addons/blob/master/io_mesh_atomic/xyz_import.py)
+
+        Parameters
+        ------
+        rot_max: mathutils.Matrix.Rotation
+            the rotation matrix
+        obj: blender object
+            the object that we want to rotate
+        '''
 
         self.ops.object.select_all(action='DESELECT')
         obj.select_set(True)
@@ -99,6 +148,49 @@ class BlenderScene:
 
         # Assemble the new matrix.
         obj.matrix_world = orig_loc_mat @ rot_mat @ orig_rot_mat @ orig_scale_mat
+
+    def update_bounding_box(self):
+        '''
+        Updates the bounding box of the model so that lights and cameras can be placed correctly.
+        '''
+        self.bounding_box = np.array([
+            np.min([np.min(obj.bound_box, axis=0 ) for obj in self.data.objects], axis = 0),
+            np.max([np.max(obj.bound_box, axis=0 ) for obj in self.data.objects], axis = 0),
+        ]).T
+
+        return self
+
+    def get_limits(self, min_max = None, axis = [0,1,2]):
+
+        '''
+        Gets the limit in a given axis of the bounding box that surrounds the whole scene.
+
+        It does not take into account lights and cameras.
+
+        Parameters
+        ---------
+        min_max: {'min', 'max'}, optional
+            specify which limit should be returned. Leave empty for both.
+        axis: int or array-like, optional
+            the axis, or axes, for which we want the limits
+
+        Returns
+        ---------
+        float or numpy.ndarray:
+            If only a single value is requested, a float is returned.
+            If more than one value is requested an array is returned with the first dimension being
+            the axis and the second one "min_max".
+        ''' 
+
+        second_dim = 0 if min_max == "min" else (1 if min_max == "max" else [0,1])
+
+        return self.bounding_box[axis, second_dim]
+
+    def min(self, axis = None):
+        return self.get_limits('min', axis)
+
+    def max(self, axis = None):
+        return self.get_limits('max', axis)
 
     @property
     def xmin(self):
@@ -127,6 +219,12 @@ class BlenderScene:
     def bound_box_intersection(self, vec):
         '''
         Gets the point where a semi infinte vector in the direction of vec intersects with the bounding box
+
+        Parameters
+        -------
+        vec: array-like of shape (3,)
+            the direction along we want the limit of the cube. 
+            A semi infinite vector in this direction and starting at (0,0,0) will be considered.
         '''
         vec = np.array(self._POVs[vec]) if isinstance(vec, str) else np.array(vec)
 
@@ -134,12 +232,12 @@ class BlenderScene:
         main_axis = np.argmax(abs(vec))
 
         #Get the value that defines the face of the cube that the vector is going to intersect
-        lim = self.lim('min' if vec[main_axis] < 0 else 'max', main_axis)
+        get_limits = self.get_limits('min' if vec[main_axis] < 0 else 'max', main_axis)
 
         #Get the value of lambda in the 3D line parametric equation (Origin = (0,0,0))
-        lambda_val = lim / vec[main_axis]
+        lambda_val = get_limits / vec[main_axis]
 
-        return np.array([lim if axis == main_axis else comp*lambda_val for axis, comp in enumerate(vec)])
+        return np.array([get_limits if axis == main_axis else comp*lambda_val for axis, comp in enumerate(vec)])
 
     def POV(self, POV, opposite=False):
         '''
@@ -148,6 +246,8 @@ class BlenderScene:
         Parameters
         ------
         POV: {'+z', '-z', '-y', '+y', '-x', '+x'} or array-like
+        opposite: boolean, optional
+            set this to true if you want just the opposite point of view from the one you provided.
         '''
 
         loc_vec = np.array(self._POVs[POV]) if isinstance(POV, str) else np.array(POV)
@@ -173,17 +273,17 @@ class BlenderScene:
             "horizontal": Rotation.from_euler("xyz", euler_rot).apply([1,0,0]) #This is the vector that ends up in the horizontal side
         }
 
-    def clear(self):
-
-        self.objs = []
-
-        return self.clean()
-
     def clean(self):
+        '''
+        Cleans the scene by removing all objects from the 3d viewport.
+
+        It does not delete the objects from the BlenderScene instance.
+        For that, use the reset_*() method
+        '''
 
         #Remove everything (there will probably be the default cube in the initial file)
-        bpy.ops.object.select_all(action='SELECT')
-        bpy.ops.object.delete(use_global=False, confirm=False)
+        self.ops.object.select_all(action='SELECT')
+        self.ops.object.delete(use_global=False, confirm=False)
 
         return self
 
@@ -466,6 +566,10 @@ if BLENDER_AVAIL:
 
             See the `BlenderScene.render` method to know what can be tuned.
         
+        Returns
+        --------
+        BlenderScene:
+            the BlenderScene object that has been created.
         
         '''
         if scene is None: 
@@ -491,11 +595,3 @@ else:
 del BLENDER_AVAIL
 del INSIDE_BLENDER
 del BLENDER_ASPACKAGE
-
-if __name__ == "__main__":
-    
-    v = BlenderScene()
-    v.draw_structure("/home/pfebrer/Simulations/water.xyz")
-    v.lighting()
-    v.camera()
-    v.render()
