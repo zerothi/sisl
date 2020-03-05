@@ -3879,10 +3879,6 @@ class Geometry(SuperCellChild):
         scene.ops.import_mesh.xyz(filepath=temp_filename, use_camera=False, use_lamp=False )
 
         os.remove(temp_filename)
-
-        center = self.center()
-
-        return np.array([np.min(self.xyz, axis = 0) - center, np.max(self.xyz, axis = 0) - center]).T
         
 
 
