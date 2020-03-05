@@ -13,3 +13,4 @@ sisl.egg-info
 sisl/info.py
 sisl/io/siesta/_siesta.so
 sisl/**/*.html
+.vscode/
