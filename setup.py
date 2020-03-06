@@ -163,7 +163,6 @@ _pyxfiles = [
     "sisl/physics/_matrix_phase.pyx",
     "sisl/physics/_matrix_phase_so.pyx",
     "sisl/physics/_phase.pyx",
-    "sisl/physics/_phase.pyx",
     "sisl/_sparse.pyx",
     "sisl/_supercell.pyx",
 ]
@@ -537,18 +536,10 @@ if __name__ == "__main__":
 
     # First figure out if we should define the
     # version file
-    try:
-        only_idx = sys.argv.index("only-version")
-    except:
-        only_idx = 0
-    if only_idx > 0:
+    if "only-version" in sys.argv:
         # Figure out if we should write a specific file
         print("Only creating the version file")
-        if len(sys.argv) > only_idx + 1:
-            vF = sys.argv[only_idx+1]
-            write_version(vF)
-        else:
-            write_version()
+        write_version()
         sys.exit(0)
 
     try:

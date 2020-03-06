@@ -1,6 +1,6 @@
-mock
 # For running
 setuptools
+cython
 numpy>=1.13
 scipy>=0.18
 netCDF4

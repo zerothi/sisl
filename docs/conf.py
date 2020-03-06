@@ -13,16 +13,20 @@
 
 import sys
 import os
+import pathlib
 import shlex
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-_this_dir = os.path.dirname(__file__)
+# make sure the source version is preferred (#3567)
+_root = pathlib.Path(__file__).absolute().parent.parent
+os.environ["PYTHONPATH"] = str(_root)
+sys.path.insert(0, str(_root))
 
-# Add the top-level directory
-sys.path.insert(0, os.path.basename(_this_dir))
-
+# Print standard information about executable and path...
+print("python exec:", sys.executable)
+print("sys.path:", sys.path)
 
 try:
     import sisl
@@ -35,10 +39,7 @@ except Exception as e:
     print()
 
     # We will import locally
-    if tuple(sys.version_info[:2]) >= (3, 3):
-        from unittest.mock import MagicMock
-    else:
-        from mock import Mock as MagicMock
+    from unittest.mock import MagicMock
 
     class Mock(MagicMock):
         @classmethod
@@ -50,9 +51,11 @@ except Exception as e:
     MOCK_MODULES.extend([f'sisl._{a}'
                          for a in ['indices', 'math_small', 'sparse', 'supercell']])
     MOCK_MODULES.extend([f'sisl.physics._matrix_{a}'
-                         for a in ['ddk', 'diag_k_nc_dtype',
-                                   'dk', 'k_dtype', 'k_factor_dtype',
-                                   'k_nc_dtype', 'k', 'k_so_dtype']])
+                         for a in ['ddk', 'dk', 'k',
+                                   'phase3_nc', 'phase3', 'phase3_so',
+                                   'phase_nc_diag', 'phase_nc', 'phase', 'phase_so']])
+    MOCK_MODULES.extend([f'sisl.physics._{a}'
+                         for a in ['bloch', 'phase']])
     sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
     nbsphinx_allow_errors = True
@@ -69,13 +72,11 @@ except Exception as e:
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
-    'sphinx.ext.doctest',
+    'sphinx.ext.intersphinx',
+    'sphinx.ext.extlinks',
+    'sphinx.ext.mathjax',
     'sphinx.ext.napoleon',
     'sphinx.ext.todo',
-    'sphinx.ext.extlinks',
-    'sphinx.ext.intersphinx',
-    'sphinx.ext.coverage',
-    'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
     #'sphinx.ext.inheritance_diagram',
 ]
@@ -91,9 +92,9 @@ else:
     extensions += [
         'matplotlib.sphinxext.only_directives',
         'matplotlib.sphinxext.plot_directive',
-        #    'nbsphinx',
-        #    'IPython.sphinxext.ipython_directive',
-        #    'IPython.sphinxext.ipython_console_highlighting',
+        #'nbsphinx',
+        #'IPython.sphinxext.ipython_directive',
+        #'IPython.sphinxext.ipython_console_highlighting',
     ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -408,7 +409,7 @@ numpydoc_show_class_members = False
 # Python, numpy, scipy and matplotlib specify https as the default objects.inv
 # directory. So please retain these links.
 intersphinx_mapping = {
-    'python': ('https://docs.python.org/dev', None),
+    'python': ('https://docs.python.org/3', None),
     'numpy': ('https://docs.scipy.org/doc/numpy', None),
     'scipy': ('https://docs.scipy.org/doc/scipy/reference', None),
     'matplotlib': ('https://matplotlib.org', None),
@@ -416,7 +417,7 @@ intersphinx_mapping = {
 }
 
 # Tell nbsphinx to wait, at least X seconds for each cell
-nbsphinx_timeout = 120
+nbsphinx_timeout = 600
 
 # Insert a link to download the IPython notebook
 nbsphinx_prolog = r"""

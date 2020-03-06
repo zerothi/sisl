@@ -1,14 +1,22 @@
-requirements_file: docs/requirements.txt
+version: 2
+
+sphinx:
+  configuration: docs/conf.py
+  fail_on_warning: false
 
 build:
-   image: latest
-
-python:
-   setup_py_install: true
-   version: 3.6
-
-formats:
-   - none
+  image: latest
 
 conda:
-    file: docs/conda.yml
+  environment: docs/conda.yml
+
+python:
+  version: 3.7
+  system_packages: true
+  #install:
+  #  - requirements: docs/requirements.txt
+  #  - method: setuptools
+  #    path: .
+
+formats:
+  - htmlzip

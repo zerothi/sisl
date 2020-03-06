@@ -4,9 +4,11 @@ channels:
   - conda-forge
 
 dependencies:
-  - python=3.7
-  - pyparsing
+  - python
+  - setuptools
+  - pyparsing>=1.5.7
   - numpy
+  - cython
   - scipy
   - netCDF4
   - matplotlib
@@ -16,7 +18,7 @@ dependencies:
 #  - tornado
 #  - nbformat
 #  - jupyter_client
-#  - ipykernel
+  - ipykernel
   - sphinx
-#  - pip:
-#    - nbsphinx
+  - pip:
+    - nbsphinx
