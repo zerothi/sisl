@@ -134,6 +134,7 @@ which fills in the version number.
    tutorials.rst
    examples.rst
    scripts/scripts
+   visualization/visualization
    rst/files
 
 .. toctree::
