@@ -1683,17 +1683,23 @@ class Atoms:
             return [self.atom[self._specie[s]] for s in range(sl[0], sl[1], sl[2])]
         elif isinstance(key, Integral):
             return self.atom[self._specie[key]]
+        elif isinstance(key, str):
+            return [at for at in self.atom if at.tag == key][0]
         return [self.atom[i] for i in self._specie[_a.asarrayi(key).ravel()]]
 
     def __setitem__(self, key, value):
         """ Overwrite an `Atom` object corresponding to the key(s) """
+        #If key is a string, we replace the atom that matches 'key'
+        if isinstance(key, str):
+            return self.replace_atom(self[key], value)
+
         # Convert to array
         if isinstance(key, slice):
             sl = key.indices(len(self))
             key = _a.arangei(sl[0], sl[1], sl[2])
         else:
             key = _a.asarrayi(key).ravel()
-
+        
         if len(key) == 0:
             if value not in self:
                 self._atom.append(value)

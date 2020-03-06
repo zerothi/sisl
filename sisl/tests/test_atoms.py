@@ -57,8 +57,10 @@ def test_len(setup):
 def test_get1():
     atoms = Atoms(['C', 'C', 'Au'])
     assert atoms[2] == Atom('Au')
+    assert atoms['Au'] == Atom('Au')
     assert atoms[0] == Atom('C')
     assert atoms[1] == Atom('C')
+    assert atoms['C'] == Atom('C')
     assert atoms[0:2] == [Atom('C')]*2
     assert atoms[1:] == [Atom('C'), Atom('Au')]
 
@@ -70,6 +72,9 @@ def test_set1():
     assert atom[1] == Atom('C')
     atom[1] = Atom('Au')
     assert atom[0] == Atom('C')
+    assert atom[1] == Atom('Au')
+    atom['C'] = Atom('Au')
+    assert atom[0] == Atom('Au')
     assert atom[1] == Atom('Au')
 
 
@@ -84,6 +89,12 @@ def test_set2():
     assert atom[1] != Atom('Au')
     assert atom[1] == Atom('Au', [-1] * 2)
     assert len(atom.atom) == 2
+    atom['C'] = Atom('Au', [-1] * 2)
+    assert atom[0] != Atom('Au')
+    assert atom[0] == Atom('Au', [-1] * 2)
+    assert atom[1] != Atom('Au')
+    assert atom[1] == Atom('Au', [-1] * 2)
+    assert len(atom.atom) == 1
 
 
 def test_set3():
