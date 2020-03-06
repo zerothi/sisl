@@ -1106,6 +1106,9 @@ class Atom(metaclass=AtomMeta):
             return [self.orbital[o] for o in range(ol[0], ol[1], ol[2])]
         elif isinstance(key, Integral):
             return self.orbital[key]
+        elif isinstance(key, str):
+            orbs = [orb for orb in self.orbital if key.lower() in orb.name().lower()]
+            return orbs if len(orbs) != 1 else orbs[0]
         return [self.orbital[o] for o in np.asarray(key).ravel()]
 
     def maxR(self):
