@@ -32,7 +32,7 @@ to automatically call the fastest of 3 routines::
   Func - 1
 
 In certain cases one may wish to limit the search for a selected routine
-by only searching until the performance of the *next* called routine drops.
+by only searching until the metric of the *next* called routine drops.
 This is called an *ordered* selector because it tries them in order, and
 once one is slower than the former tested ones, it will not test any further.
 For the above same functions we may do::
@@ -57,10 +57,14 @@ __all__ = ['Selector', 'TimeSelector']
 
 
 class Selector:
-    """ Base class for implementing a selector of class routines
+    r""" Base class for implementing a selector of class routines
 
     This class should contain a list of routines and may then be used
-    to always return the best performant routine.
+    to always return the best performant routine. The *performance*
+    of a method is based on a pre-selected metric (time, memory, etc.).
+
+    The chosen method will be based on the routine which has the highest
+    metric. E.g. for time the metric could be :math:`1/(stop - start)`.
 
     This is done on a per-class basis where this class should initially
     determine which routine is the best performing one and then always return
@@ -73,11 +77,11 @@ class Selector:
     ordered : bool
       If False a simple selection of the most performant one will be chosen.
       If True, it will check the routines in order and once *one* of the
-      routines is less performant it will choose from the setof runned
-      routines.
+      routines is less performant it will choose from the setof currently
+      runned routines.
     """
 
-    __slots__ = ['_routines', '_performances', '_best', '_ordered']
+    __slots__ = ['_routines', '_metric', '_best', '_ordered']
 
     def __init__(self, routines=None, ordered=False):
 
@@ -89,8 +93,8 @@ class Selector:
 
         self._ordered = ordered
 
-        # Create a list of performance identifiers
-        self._performances = [None] * len(self.routines)
+        # Create a list of metric identifiers
+        self._metric = [None] * len(self.routines)
 
         # Initialize no best routine
         self._best = None
@@ -100,13 +104,11 @@ class Selector:
         return self._routines
 
     @property
-    def performances(self):
-        return self._performances
+    def metric(self):
+        return self._metric
 
     @property
     def best(self):
-        if self._best is None:
-            return None
         return self._best
 
     @property
@@ -120,7 +122,7 @@ class Selector:
     def __str__(self):
         """ A representation of the current selector state """
         s = self.__class__.__name__ + '{{n={0}, \n'.format(len(self))
-        for r, p in zip(self.routines, self.performances):
+        for r, p in zip(self.routines, self.metric):
             if p is None:
                 s += f'  {{{r.__name__}: <not tried>}},\n'
             else:
@@ -136,7 +138,7 @@ class Selector:
            the new routine to be tested in the selector
         """
         self._routines.insert(0, routine)
-        self._performances.insert(0, None)
+        self._metric.insert(0, None)
         # Ensure that the best routine has not been chosen
         self._best = None
 
@@ -149,10 +151,10 @@ class Selector:
            the new routine to be tested in the selector
         """
         self._routines.append(routine)
-        self._performances.append(None)
+        self._metric.append(None)
         # Ensure that the best routine has not been chosen
         if self.ordered:
-            if not self.performances[-1] is None:
+            if not self.metric[-1] is None:
                 # Reset the best chosen routine.
                 # This is because if the last routine has been checked it means
                 # that we may possibly use the new routine.
@@ -163,8 +165,8 @@ class Selector:
             self._best = None
 
     def reset(self):
-        """ Reset the performance table to redo the performance checks """
-        self._performances = [None] * len(self._performances)
+        """ Reset the metric table to redo the performance checks """
+        self._metric = [None] * len(self._metric)
         self._best = None
 
     def select_best(self, routine=None):
@@ -181,8 +183,8 @@ class Selector:
         ----------
         routine : func or str
            If `None` is passed (the default) it will select the best
-           default routine based on the stored performances.
-           If, however, not all performance values has been created
+           default routine based on the stored metrics.
+           If, however, not all metric values has been created
            no routine will be selected.
 
            If passing a `func` that function will be chosen as the
@@ -191,20 +193,20 @@ class Selector:
         if routine is None:
 
             # Try and select the routine based on the internal runned
-            # performance specifiers
-            selected, perf = -1, 0.
-            for i, v in enumerate(self.performances):
+            # metric specifiers
+            selected, metric = -1, 0.
+            for i, v in enumerate(self.metric):
                 if v is None:
                     # Quick return if we are not done
                     return
 
-                if v > perf:
-                    perf = v
+                if v > metric:
+                    metric = v
                     selected = i
 
                 elif self.ordered and selected >= 0:
                     # We have an ordered selector
-                    # I.e. if the performance is decreasing,
+                    # I.e. if the metric is decreasing,
                     # we simply choose the last one.
                     break
 
@@ -228,7 +230,7 @@ class Selector:
             self._best = routine
 
     def next(self):
-        """ Choose the next routine that requires performance analysis
+        """ Choose the next routine that requires metric analysis
 
         Returns
         -------
@@ -238,7 +240,7 @@ class Selector:
            `func` is the routine that is to be runned next (or if index is negative, then
            it refers to the most optimal routine
         """
-        for i, v in enumerate(self.performances):
+        for i, v in enumerate(self.metric):
             if v is None:
                 # Quick return the routine to test next time
                 return i, self.routines[i]
@@ -251,24 +253,22 @@ class Selector:
         The first argument *must* be an object (`self`) while all remaining
         arguments are transferred to the routine calls
         """
+        if not self.best is None:
+            return self.best(*args, **kwargs)
 
-        best = self.best
-        if not best is None:
-            return best(*args, **kwargs)
-
-        # Figure out if we have the performance for all the routines
+        # Figure out if we have the metric for all the routines
         idx, routine = self.next()
         if idx < 0:
             return routine(*args, **kwargs)
 
-        # Start the performance profile
+        # Start the metric profile
         start = self.start()
 
         # Run the routine
         returns = routine(*args, **kwargs)
 
-        # Update the internal data in the performance list
-        self._performances[idx] = self.stop(start)
+        # Update the internal data in the metric list
+        self._metric[idx] = self.stop(start)
 
         # Update the best method, if possible
         self.select_best()
@@ -276,43 +276,48 @@ class Selector:
         return returns
 
     def start(self):
-        """ Start the performance profiler
+        """ Start the metric profiler
 
         This routine should return an initial state value.
         The difference between `stop() - start()` should yield a
-        performance identifier which may be used to control the
+        metric identifier which may be used to control the
         used algorithm.
 
-        A large performance identifier results in the use of the routine.
+        The *best* method
+        A large metric identifier results in the use of the routine.
         """
         raise NotImplementedError
 
     def stop(self, start):
-        """ Stop the performance profiler
+        """ Stop the metric profiler
 
-        This routine should return an initial state value.
-        The difference between `stop() - start()` should yield a
-        performance identifier which may be used to control the
-        used algorithm.
+        This routine returns the actual metric for the method.
+        Its input is what `start` returns and it may be of any
+        value.
 
-        A large performance identifier results in the use of the routine.
+        A large metric identifier results in the use of the routine.
 
         Parameters
         ----------
-        start : float
-            the output of the `start()` routine to convert to actual performance
+        start : obj
+            the output of the `start()` routine to convert to actual metric
             identifier
         """
         raise NotImplementedError
 
 
 class TimeSelector(Selector):
-    """ Routine performance selector based on timings for the routines """
+    """ Routine metric selector based on timings for the routines """
 
     def start(self):
         """ Start the timing routine """
         return time.time()
 
     def stop(self, start):
-        """ Stop the timing routine """
+        """ Stop the timing routine
+
+        Returns
+        -------
+        inv_time : metric for time
+        """
         return 1. / (time.time() - start)

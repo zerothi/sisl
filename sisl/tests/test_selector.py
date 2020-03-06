@@ -58,7 +58,7 @@ class TestSelector:
             i += 1
         assert i == 2
         assert sel.best.__name__ == "1"
-        assert sel.performances[-1] is None
+        assert sel.metric[-1] is None
 
     def test_ordered2(self):
         sel = TimeSelector(self.sleep(1, 2, 3), True)
@@ -69,7 +69,7 @@ class TestSelector:
             i += 1
         assert i == 2
         assert sel.best.__name__ == "1"
-        assert sel.performances[-1] is None
+        assert sel.metric[-1] is None
 
         sel.prepend(self.sleep(2))
 
@@ -79,7 +79,7 @@ class TestSelector:
             i += 1
         assert i == 1
         assert sel.best.__name__ == "1"
-        assert sel.performances[-1] is None
+        assert sel.metric[-1] is None
 
         sel.reset()
         i = 0
@@ -88,7 +88,7 @@ class TestSelector:
             i += 1
         assert i == 3
         assert sel.best.__name__ == "1"
-        assert sel.performances[-1] is None
+        assert sel.metric[-1] is None
 
     def test_select1(self):
         sel = TimeSelector(self.sleep(1, 2, 3))
