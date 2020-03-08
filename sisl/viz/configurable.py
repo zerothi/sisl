@@ -356,6 +356,13 @@ class Configurable:
         '''
 
         return self.settings[settingKey] == self.getParam(settingKey)["default"]
+    
+    def did_setting_update(self, setting_key):
+        '''
+        Returns if a given setting did update in the last settings update
+        '''
+
+        return setting_key in self.settingsUpdatesLog(frame=-1)
 
 #DECORATORS TO USE WHEN DEFINING METHODS IN CLASSES THAT INHERIT FROM Configurable
 #Run the method after having initialized the settings

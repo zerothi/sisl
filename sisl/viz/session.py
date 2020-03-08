@@ -110,7 +110,10 @@ class Session(Configurable):
     #-----------------------------------------
     #            PLOT MANAGEMENT
     #-----------------------------------------
-
+    @property
+    def tabs(self):
+        return self.warehouse["tabs"]
+        
     def getPlotClasses(self):
         '''
         This method provides all the plot subclasses, even the nested ones
@@ -130,6 +133,29 @@ class Session(Configurable):
             return all_subclasses
         
         return sorted(get_all_subclasses(sisl.viz.Plot), key = lambda clss: clss._plotType) 
+    
+    def addPlot(self, plot, tabID = None, noTab = False): 
+        '''
+        Adds an already initialized plot object to the session
+
+        Parameters
+        -----
+        plot: Plot()
+            the plot object that we want to add to the session
+        tabID: str, optional
+            the ID of the tab where we want to add the plot. If not provided,
+            it will be appended to the first tab
+        noTab: boolean, optional
+            if set to true, prevents the plot from being added to a tab
+        '''
+
+        self.warehouse["plots"][plot.id] = plot
+
+        if not noTab:
+            tabID = tabID if tabID is not None else self.tabs[0]["id"]
+            self.addPlotToTab(plot.id, tabID)
+        
+        return self
 
     def newPlot(self, plotClass, tabID = None, structID = None, animation = False ,**kwargs):
         '''
@@ -172,10 +198,7 @@ class Session(Configurable):
         else:
             newPlot = ReqPlotClass(**kwargs)
 
-        self.warehouse["plots"][newPlot.id] = newPlot
-
-        if tabID:
-            self.addPlotToTab(newPlot.id, tabID)
+        self.addPlot(newPlot, tabID)
 
         return newPlot
     
@@ -298,7 +321,7 @@ class Session(Configurable):
 
     def addPlotToTab(self, plotID, tabID):
         '''
-        Adds a plot to the requested tab
+        Adds a plot that is already in the session to the requested tab
         '''
 
         for tab in self.warehouse["tabs"]:
