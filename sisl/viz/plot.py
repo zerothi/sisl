@@ -919,6 +919,15 @@ class Plot(Configurable):
 
 class MultiplePlot(Plot):
 
+    def __init__(self, *args, plots=None, **kwargs):
+
+        # Take the plots if they have already been created and are provided by the user
+        self.PLOTS_PROVIDED = plots is not None
+        if self.PLOTS_PROVIDED:
+            self.childPlots = plots
+        
+        super().__init__(*args, **kwargs)
+
     def initAllPlots(self, updateFig = True):
 
         try:
@@ -926,13 +935,13 @@ class MultiplePlot(Plot):
         except Exception:
             pass
 
-        
+        if not self.PLOTS_PROVIDED:
 
-        #Init all the plots that compose this multiple plot.
-        self.childPlots = initMultiplePlots(self._plotClasses, kwargsList = [ {**kwargs, "isChildPlot":True} for kwargs in self._getInitKwargsList()])
+            #Init all the plots that compose this multiple plot.
+            self.childPlots = initMultiplePlots(self._plotClasses, kwargsList = [ {**kwargs, "isChildPlot": True} for kwargs in self._getInitKwargsList()])
 
-        if callable( getattr(self, "_afterChildsUpdated", None )):
-            self._afterChildsUpdated()
+            if callable( getattr(self, "_afterChildsUpdated", None )):
+                self._afterChildsUpdated()
 
         if updateFig:
             self.getFigure()
@@ -989,3 +998,11 @@ class Animation(MultiplePlot):
         ),
 
     )
+
+    def __init__(self, *args, frameNames=None, **kwargs):
+        
+        plugins = {}
+        if frameNames is not None:
+            plugins ["_getFrameNames"] = frameNames if callable(frameNames) else lambda self: frameNames
+        
+        super().__init__(*args, **kwargs, _plugins=plugins)
