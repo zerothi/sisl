@@ -369,7 +369,7 @@ class PdosPlot(Plot):
 
     def _readfromH(self):
 
-        if not hasattr(self, "H"):
+        if not hasattr(self, "H") or self.PROVIDED_H:
             self.setupHamiltonian()
 
         #Calculate the pdos with sisl using the last geometry and the hamiltonian
@@ -378,7 +378,7 @@ class PdosPlot(Plot):
         self.E = np.linspace( Erange[0], Erange[-1], 1000) 
 
         mp = sisl.MonkhorstPack(self.H, self.monkhorstPackGrid)
-        self.PDOSinfo = mp.asaverage().PDOS(self.E + self.fermi , eta=True)
+        self.PDOSinfo = mp.asaverage().PDOS(self.E, eta=True)
 
     def _readSiesOut(self):
 

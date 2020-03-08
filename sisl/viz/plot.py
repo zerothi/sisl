@@ -420,7 +420,17 @@ class Plot(Configurable):
         })
 
     @afterSettingsInit
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, H = None,**kwargs):
+
+        # Check if the user has provided a hamiltonian (which can contain a geometry)
+        # This is not meant to be used by the GUI (in principle), just programatically
+        self.PROVIDED_H = False
+        self.PROVIDED_GEOM = False
+        if H is not None:
+            self.PROVIDED_H = True
+            self.H = H
+            self.geom = getattr(H, "geom", None)
+            self.PROVIDED_GEOM = self.geom is not None
 
         #Set the isChildPlot attribute to let the plot know if it is part of a bigger picture (e.g. Animation)
         self.isChildPlot = kwargs.get("isChildPlot", False)
@@ -562,16 +572,20 @@ class Plot(Configurable):
         '''
         Sets up the hamiltonian for calculations with sisl.
         '''
-        
-        self.geom = self.fdfSile.read_geometry(output = True)
 
-        #Try to read the hamiltonian in two different ways
-        try:
-            #This one is favoured because it may read from TSHS file, which contains all the information of the geometry and basis already
-            self.H = self.fdfSile.read_hamiltonian()
-        except Exception:
-            Hsile = sisl.get_sile(os.path.join(self.rootDir, self.struct + ".HSX"))
-            self.H = Hsile.read_hamiltonian(geom = self.geom)
+        NEW_FDF = self.did_setting_update("rootFdf")
+        
+        if not self.PROVIDED_GEOM and NEW_FDF:
+            self.geom = self.fdfSile.read_geometry(output = True)
+        
+        if not self.PROVIDED_H and NEW_FDF:
+            #Try to read the hamiltonian in two different ways
+            try:
+                #This one is favoured because it may read from TSHS file, which contains all the information of the geometry and basis already
+                self.H = self.fdfSile.read_hamiltonian()
+            except Exception:
+                Hsile = sisl.get_sile(os.path.join(self.rootDir, self.struct + ".HSX"))
+                self.H = Hsile.read_hamiltonian(geom = self.geom)
 
         self.fermi = self.H.fermi_level()
 
