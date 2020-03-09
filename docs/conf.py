@@ -494,12 +494,12 @@ def setup(app):
     app.connect('autodoc-skip-member', sisl_skip)
 
     import subprocess as sp
-    if os.path.isfile('../run_pre.sh'):
-        print("# Running ../run_pre.sh")
-        sp.call(['bash', '../run_pre.sh'])
-        print("\n# Done running ../run_pre.sh")
-    elif os.path.isfile('run_pre.sh'):
-        print("# Running run_pre.sh")
-        sp.call(['bash', 'run_pre.sh'])
-        print("\n# Done running run_pre.sh")
+    if os.path.isfile('../conf_prepare.sh'):
+        print("# Running ../conf_prepare.sh")
+        sp.call(['bash', '../conf_prepare.sh'])
+        print("\n# Done running ../conf_prepare.sh")
+    elif os.path.isfile('conf_prepare.sh'):
+        print("# Running conf_prepare.sh")
+        sp.call(['bash', 'conf_prepare.sh'])
+        print("\n# Done running conf_prepare.sh")
     print("")
