@@ -999,10 +999,9 @@ class Animation(MultiplePlot):
 
     )
 
-    def __init__(self, *args, frameNames=None, **kwargs):
+    def __init__(self, *args, frameNames=None, _plugins={}, **kwargs):
         
-        plugins = {}
         if frameNames is not None:
-            plugins ["_getFrameNames"] = frameNames if callable(frameNames) else lambda self: frameNames
+            _plugins["_getFrameNames"] = frameNames if callable(frameNames) else lambda self: frameNames
         
-        super().__init__(*args, **kwargs, _plugins=plugins)
+        super().__init__(*args, **kwargs, _plugins=_plugins)
