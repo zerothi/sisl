@@ -84,6 +84,9 @@ QUERIES_INPUT = {
     ]
 }
 
+PROGRAMATIC_INPUT = {}
+
+
 allInputs = {
     "text": TEXT_INPUT,
     "switch": SWITCH,
@@ -92,7 +95,8 @@ allInputs = {
     "integer": INTEGER_INPUT,
     "float": FLOAT_INPUT,
     "rangeslider": RANGE_SLIDER,
-    "queries": QUERIES_INPUT
+    "queries": QUERIES_INPUT,
+    "programatic": PROGRAMATIC_INPUT,
 }
 
 allowedTypes = allInputs.keys()
@@ -172,7 +176,7 @@ class InputField:
     
     '''
 
-    def __init__(self, key, name, default = None, inputType = False, params = {}, style = {}, width = "", inputFieldAttrs = {}, group = None, subGroup = None, **kwargs):
+    def __init__(self, key, name, default=None, inputType=False, params={}, style={}, width="", inputFieldAttrs={}, group=None, subGroup=None, **kwargs):
 
         setattr(self, "key", key)
         setattr(self, "name", name)
@@ -302,6 +306,14 @@ class InputField:
         return json.loads(
             json.dumps(self, default=lambda o: getattr(o, '__dict__', str(o)))
         )
+
+class ProgramaticInput(InputField):
+
+    def __init__(self, *args, help="", **kwargs):
+
+        help = f"only meant to be provided prograpatically. {help}"
+
+        super().__init__(*args, help=help, **kwargs, inputType="programatic")
 
 class TextInput(InputField):
 
