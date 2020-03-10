@@ -15,7 +15,7 @@ import shutil
 import sisl
 from .plot import Plot, MultiplePlot, Animation, PLOTS_CONSTANTS
 from .plotutils import sortOrbitals, initMultiplePlots, copyParams, findFiles, runMultiple, calculateGap
-from .inputFields import InputField, TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput
+from .inputFields import InputField, TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
 
 class BandsPlot(Plot):
 
@@ -40,6 +40,11 @@ class BandsPlot(Plot):
                 "placeholder": "Write the path to your bands file here...",
             },
             help = '''This parameter explicitly sets a .bands file. Otherwise, the bands file is attempted to read from the fdf file '''
+        ),
+
+        ProgramaticInput(
+            key = "bandStructure", name = "Band structure object",
+            help = "The band structure object to be used."
         ),
 
         RangeSlider(
@@ -116,20 +121,24 @@ class BandsPlot(Plot):
 
         if not hasattr(self, "H"):
             self.setupHamiltonian()
-        
-        #Get the path requested
-        self.path = self.setting("path")
-        bandPoints, divisions = [], []
-        for item in self.path.split("/"):
-            splittedItem = item.split(",")
-            if splittedItem == [item]:
-                divisions.append(item)
-            elif len(splittedItem) == 3:
-                bandPoints.append(splittedItem)
-        bandPoints, divisions = np.array(bandPoints, dtype = float), np.array(divisions, dtype = int)
 
-        band = sisl.BandStructure(self.geom, bandPoints , divisions )
-        band.set_parent(self.H)
+        band = self.setting("bandStructure")
+        #If no band structure is provided, then build it ourselves
+        if band is None:
+
+            #Get the requested path
+            self.path = self.setting("path")
+            bandPoints, divisions = [], []
+            for item in self.path.split("/"):
+                splittedItem = item.split(",")
+                if splittedItem == [item]:
+                    divisions.append(item)
+                elif len(splittedItem) == 3:
+                    bandPoints.append(splittedItem)
+            bandPoints, divisions = np.array(bandPoints, dtype=float), np.array(divisions, dtype=int)
+
+            band = sisl.BandStructure(self.geom, bandPoints, divisions)
+            band.set_parent(self.H)
 
         self.ticks = band.lineartick()
         self.Ks = band.lineark()
