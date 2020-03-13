@@ -378,7 +378,7 @@ class PdosPlot(Plot):
 
     def _readfromH(self):
 
-        if not hasattr(self, "H") or self.PROVIDED_H:
+        if not hasattr(self, "H"):
             self.setupHamiltonian()
 
         #Calculate the pdos with sisl using the last geometry and the hamiltonian
@@ -464,7 +464,7 @@ class PdosPlot(Plot):
                 orbProperties["Atom Z"].append(atom.Z)
                 orbProperties["Spin"].append(iSpin)
                 orbProperties["Orbital name"].append(orb.name())
-                orbProperties["Z shell"].append(orb.Z)
+                orbProperties["Z shell"].append(getattr(orb, "Z", 1))
                 orbProperties["n"].append(orb.n)
                 orbProperties["l"].append(orb.l)
                 orbProperties["m"].append(orb.m)
