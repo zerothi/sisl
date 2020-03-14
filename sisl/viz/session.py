@@ -360,7 +360,9 @@ class Session(Configurable):
             Keep in mind that the plots with these ids must be present in self.plots.
         '''
 
-        newTab = {"id": str(uuid.uuid4()), "name": tabName, "plots": plots}
+        newTab = {"id": str(uuid.uuid4()), "name": tabName, "plots": deepcopy(plots)}
+
+        print("WITH THIS PLOTS:", plots)
 
         self.warehouse["tabs"].append(newTab)
 
@@ -397,7 +399,7 @@ class Session(Configurable):
 
         for tab in self.warehouse["tabs"]:
             if tab["id"] == tabID:
-                tab["plots"].append(plotID)
+                tab["plots"] = [*tab["plots"], plotID]
                 break
         
         return self
