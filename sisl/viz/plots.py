@@ -150,7 +150,7 @@ class BandsPlot(Plot):
 
         bands = bandStruct.eigh()
 
-        return self._bandsToDfs(np.array([bands])) 
+        self._bandsToDfs(np.array([bands]))
 
     def _readSiesOut(self):
         
@@ -161,11 +161,11 @@ class BandsPlot(Plot):
         self.ticks, self.Ks, bands = sisl.get_sile(bandsFile).read_data()
         self.fermi = 0.0 #Energies are already shifted
 
-        #Inform that the bandsFile has been read so that it can be followed if the user wants
-        self._followFiles([bandsFile])
-
         #Axes are switched so that the returned array is a list like [spinUpBands, spinDownBands]
-        return self._bandsToDfs(np.rollaxis(bands, 1))
+        self._bandsToDfs(np.rollaxis(bands, 1))
+
+        #Inform that the bandsFile has been read so that it can be followed if the user wants
+        return [bandsFile]
     
     def _bandsToDfs(self, bands):
         '''
@@ -402,7 +402,9 @@ class PdosPlot(Plot):
         #Get the info from the .PDOS file
         self.geom, self.E, self.PDOSinfo = sisl.get_sile(PDOSFile).read_data()
 
-        self.fermi = 0    
+        self.fermi = 0
+
+        return [PDOSFile] 
 
     def _afterRead(self):
 
@@ -932,6 +934,9 @@ class LDOSmap(Plot):
         
         #Update the values for the limits so that they are automatically set
         self.updateSettings(updateFig = False, cmin = 0, cmax = 0)
+
+        #Inform that the WFSX file is used so that changes in it can be followed 
+        return [os.path.join(self.rootDir, '{}.WFSX'.format(self.struct) )]
     
     def _getPath(self):
 
@@ -1199,9 +1204,11 @@ class BondLengthMap(Plot):
     def _readSiesOut(self):
         
         if self.setting("geomFile"):
-            self.geom = sisl.get_sile(self.setting("geomFile")).read_geometry()
+            geomFile = self.setting("geomFile")
+            self.geom = sisl.get_sile(geomFile).read_geometry()
         else:
-            self.geom = sisl.get_sile(self.setting("rootFdf")).read_geometry(output = self.setting("geomFromOutput"))
+            geomFile = self.setting("rootFdf")
+            self.geom = sisl.get_sile(geomFile).read_geometry(output = self.setting("geomFromOutput"))
         
         self.isStrain = False
         if self.setting("strainRef"):
@@ -1252,9 +1259,9 @@ class BondLengthMap(Plot):
                 bondsDict["finalY"].append(self.geom[neigh][1])
                 bondsDict["finalZ"].append(self.geom[neigh][2])
 
-        
-
         self.df = pd.DataFrame(bondsDict)
+
+        return [ geomFile, self.setting("strainRef")]
     
     def _setData(self):
         

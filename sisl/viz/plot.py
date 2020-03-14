@@ -501,6 +501,10 @@ class Plot(Configurable):
             whether data has been read succesfully or not
         '''
 
+        # Restart the filesToFollow variable so that we can start to fill it with the new files
+        # Apart from the explicit call in this method, setFiles and setUpHamiltonian also add files to follow
+        self._filesToFollow = []
+
         if callable( getattr(self, "_beforeRead", None )):
             self._beforeRead()
         
@@ -510,7 +514,10 @@ class Plot(Configurable):
             pass
         
         #We try to read from the different sources using the _readFromSources method of the parent Plot class.
-        self._readFromSources()
+        filesToFollow = self._readFromSources()
+
+        #Follow the files that are returned by the method that succesfully read the plot's data
+        self._followFiles(filesToFollow, unfollow=False)
 
         # We don't update the last dataread here in case there has been a succesful data read because we want to
         # wait for the afterRead() function to be succesful
@@ -519,7 +526,7 @@ class Plot(Configurable):
 
         if callable( getattr(self, "_afterRead", None )):
             self._afterRead()
-        
+
         if self.source is not None:
             self.last_dataread = time.time()
 
@@ -542,9 +549,9 @@ class Plot(Configurable):
                 #Get the reading function
                 readingFunc = PLOTS_CONSTANTS["readFuncs"][source](self)
                 #Execute it
-                data = readingFunc()
+                filesToFollow = readingFunc()
                 self.source = source
-                return data
+                return filesToFollow
             except Exception as e:
                 errors.append("\t- {}: {}.{}".format(source, type(e).__name__, e))
                 
@@ -568,7 +575,7 @@ class Plot(Configurable):
             whether the previous files should be unfollowed. If set to False, we are just adding more files.
         '''
 
-        newFilesToFollow = [os.path.abspath(filePath) if to_abs else filePath for filePath in files]
+        newFilesToFollow = [os.path.abspath(filePath) if to_abs else filePath for filePath in files or []]
 
         self._filesToFollow = newFilesToFollow if unfollow else [*self._filesToFollow, *newFilesToFollow]
 
@@ -576,8 +583,12 @@ class Plot(Configurable):
         '''
         This function checks whether the read files have changed.
 
-        For it to work properly, one should specify the files that are going to be read in each 
-        of their _read*() methods.
+        For it to work properly, one should specify the files that have been read by
+        their _read*() methods. This is done by returning a list of the files (see example).
+
+        Note that the `setFiles` and `setUpHamiltonian` methods are already responsible for
+        informing about the files they read, so you only need to specify those that you are
+        "explicitly" reading in your method.
 
         Examples
         -------
@@ -589,7 +600,7 @@ class Plot(Configurable):
 
             ...Do all the stuff
 
-            self._followFiles(["structure.bands"])
+            return ["structure.bands"]
         ```
         '''
 
@@ -641,7 +652,7 @@ class Plot(Configurable):
         rootFdf = self.setting("rootFdf")
         self.rootDir, fdfFile = os.path.split( rootFdf )
         self.rootDir = "." if self.rootDir == "" else self.rootDir
-        print(self.setting("resultsPath"))
+        
         self.wdir = os.path.join(self.rootDir, self.setting("resultsPath"))
         self.fdfSile = sisl.get_sile(rootFdf)
         self.struct = self.fdfSile.get("SystemLabel", "")
@@ -656,6 +667,9 @@ class Plot(Configurable):
             self.requiredFiles = [ os.path.join( self.rootDir, self.setting("resultsPath"), req.replace("$struct$", self.struct) ) for req in self.__class__._requirements["siesOut"]["files"] ]
         #else:
             #raise Exception("The required files were not found, please check your file system.")
+
+        #Inform that we have read the fdf file
+        self._followFiles([rootFdf], unfollow=False)
 
         return self
     
@@ -675,9 +689,18 @@ class Plot(Configurable):
             try:
                 #This one is favoured because it may read from TSHS file, which contains all the information of the geometry and basis already
                 self.H = self.fdfSile.read_hamiltonian()
+
+                # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                # WE SHOULD FOLLOW THE FILES HERE SOMEHOW
+                # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             except Exception:
-                Hsile = sisl.get_sile(os.path.join(self.rootDir, self.struct + ".HSX"))
+
+                HSXfile = os.path.join(self.rootDir, self.struct + ".HSX")
+                Hsile = sisl.get_sile(HSXfile)
                 self.H = Hsile.read_hamiltonian(geom = self.geom)
+
+                #Inform that we have read the hamiltonian from the HSX file
+                self._followFiles([HSXfile], unfollow=False)
 
         self.fermi = self.H.fermi_level()
 
