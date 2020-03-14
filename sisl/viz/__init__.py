@@ -16,6 +16,7 @@ Miscellaneous routines
 
 """
 
+from .plot import Plot
 from .plots import *
 from .configurable import *
 from .session import Session

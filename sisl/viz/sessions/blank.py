@@ -2,9 +2,9 @@ import os
 
 from .session import Session
 
-class BasicSession(Session):
+class BlankSession(Session):
 
-    _sessionName = "Basic session"
+    _sessionName = "Blank session"
 
     _description = "The most basic session one could have, really."
 
