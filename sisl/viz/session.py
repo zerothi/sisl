@@ -85,7 +85,29 @@ class Session(Configurable):
                 "onLabel": "Yes"
             },
             help = "Tooltips help you understand how something works or what something will do.<br>If you are already familiar with the interface, you can turn this off."
+        ),
+
+        SwitchInput(
+            key = "listenForUpdates", name = "Listen for updates",
+            group = "gui",
+            default = True,
+            params = {
+                "offLabel": "No",
+                "onLabel": "Yes"
+            },
+            help = "Determines whether the session updates plots when files change <br> This is very useful to track progress. It is only meaningful in the GUI."
+        ),
+
+        IntegerInput(
+            key="updateInterval", name="Update time interval",
+            group="gui",
+            default=2000,
+            params={
+                "min": 0
+            },
+            help="The time in ms between consecutive checks for updates."
         )
+
 
     )
 
@@ -113,7 +135,11 @@ class Session(Configurable):
     @property
     def tabs(self):
         return self.warehouse["tabs"]
-        
+
+    @property
+    def plots(self):
+        return self.warehouse["plots"]
+
     def getPlotClasses(self):
         '''
         This method provides all the plot subclasses, even the nested ones
@@ -266,6 +292,51 @@ class Session(Configurable):
 
         return self
 
+    def updates_available(self):
+        '''
+        Checks if the session's plots have pending updates due to changes in files.
+        '''
+
+        updates_avail = [plotID for plotID, plot in self.plots.items() if plot.updates_available()]
+
+        return updates_avail
+    
+    def commit_updates(self):
+        '''
+        Updates the plots that can be updated according to `updates_available`.
+
+        Note that this method can be safely called since it has no effect when no updates are available.
+        '''
+
+        for plotID in self.updates_available():
+            self.plots[plotID].readData(updateFig=True)
+        
+        return self
+
+    def listen(self, forever=False):
+        '''
+        Listens for updates in the followed files (see the `updates_available` method)
+
+        Parameters
+        ---------
+        forever: boolean, optional
+            whether to keep listening after the first plot updates.
+        '''
+
+        while True:
+            
+            time.sleep(1)
+
+            updates_avail = self.updates_available()
+            
+            if len(updates_avail) != 0:
+                
+                for plotID in updates_avail:
+                    self.plots[plotID].readData(updateFig=True)
+                
+                if not forever:
+                    break
+    
     #-----------------------------------------
     #            TABS MANAGEMENT
     #-----------------------------------------
@@ -382,7 +453,8 @@ class Session(Configurable):
             "tabs": self.warehouse["tabs"],
             "settings": self.settings,
             "params": self.params,
-            "paramGroups": self._paramGroups
+            "paramGroups": self._paramGroups,
+            "updatesAvailable": self.updates_available()
         }
 
         return infoDict

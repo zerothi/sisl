@@ -43,8 +43,9 @@ class BandsPlot(Plot):
         ),
 
         ProgramaticInput(
-            key = "bandStructure", name = "Band structure object",
-            help = "The band structure object to be used."
+            key = "bandStructure", name = "bandStruct structure object",
+            default=None,
+            help = "The bandStruct structure object to be used."
         ),
 
         RangeSlider(
@@ -83,7 +84,7 @@ class BandsPlot(Plot):
         ),
 
         FloatInput(
-            key = "bandsWidth", name = "Band lines width",
+            key = "bandsWidth", name = "bandStruct lines width",
             default = 1,
             help = "Width of the lines that represent the bands"
         ),
@@ -119,12 +120,13 @@ class BandsPlot(Plot):
 
     def _readfromH(self):
 
-        if not hasattr(self, "H"):
-            self.setupHamiltonian()
+        bandStruct = self.setting("bandStructure")
+        
+        #If no bandStruct structure is provided, then build it ourselves
+        if bandStruct is None:
 
-        band = self.setting("bandStructure")
-        #If no band structure is provided, then build it ourselves
-        if band is None:
+            if not hasattr(self, "H"):
+                self.setupHamiltonian()
 
             #Get the requested path
             self.path = self.setting("path")
@@ -137,16 +139,18 @@ class BandsPlot(Plot):
                     bandPoints.append(splittedItem)
             bandPoints, divisions = np.array(bandPoints, dtype=float), np.array(divisions, dtype=int)
 
-            band = sisl.BandStructure(self.geom, bandPoints, divisions)
-            band.set_parent(self.H)
+            bandStruct = sisl.BandStructure(self.geom, bandPoints, divisions)
+            bandStruct.set_parent(self.H)
+        else:
+            self.fermi = 0
 
-        self.ticks = band.lineartick()
-        self.Ks = band.lineark()
-        self.kPath = band._k
+        self.ticks = bandStruct.lineartick()
+        self.Ks = bandStruct.lineark()
+        self.kPath = bandStruct._k
 
-        bands = band.eigh()
+        bands = bandStruct.eigh()
 
-        return self._bandsToDfs([bands]) 
+        return self._bandsToDfs(np.array([bands])) 
 
     def _readSiesOut(self):
         
@@ -156,6 +160,9 @@ class BandsPlot(Plot):
         bandsFile = self.setting("bandsFile") or self.requiredFiles[0]
         self.ticks, self.Ks, bands = sisl.get_sile(bandsFile).read_data()
         self.fermi = 0.0 #Energies are already shifted
+
+        #Inform that the bandsFile has been read so that it can be followed if the user wants
+        self._followFiles([bandsFile])
 
         #Axes are switched so that the returned array is a list like [spinUpBands, spinDownBands]
         return self._bandsToDfs(np.rollaxis(bands, 1))
@@ -195,10 +202,10 @@ class BandsPlot(Plot):
         Returns
         ---------
         self.data: list of dicts
-            contains a dictionary for each band with all its information.
+            contains a dictionary for each bandStruct with all its information.
         '''
 
-        #If the path has changed we need to produce the band structure again
+        #If the path has changed we need to produce the bandStruct structure again
         if self.path != self.setting("path"):
             self.order = ["fromH"]
             self.readData()
@@ -214,13 +221,13 @@ class BandsPlot(Plot):
         self.data = [ *self.data, *[{
                         'type': 'scatter',
                         'x': self.Ks,
-                        'y': band.loc[self.Ks] - self.fermi,
+                        'y': bandStruct.loc[self.Ks] - self.fermi,
                         'mode': 'lines', 
-                        'name': "{} spin {}".format( band["iBand"], PLOTS_CONSTANTS["spins"][int(band["iSpin"])]) if self.isSpinPolarized else str(int(band["iBand"])) , 
-                        'line': {"color": [self.setting("spinUpColor"),self.setting("spinDownColor")][int(band["iSpin"])], 'width' : self.setting("bandsWidth")},
+                        'name': "{} spin {}".format( bandStruct["iBand"], PLOTS_CONSTANTS["spins"][int(bandStruct["iSpin"])]) if self.isSpinPolarized else str(int(bandStruct["iBand"])) , 
+                        'line': {"color": [self.setting("spinUpColor"),self.setting("spinDownColor")][int(bandStruct["iSpin"])], 'width' : self.setting("bandsWidth")},
                         'hoverinfo':'name',
                         "hovertemplate": '%{y:.2f} eV',
-                    } for i, band in self.plotDF.sort_values("iBand").iterrows() ] ]
+                    } for i, bandStruct in self.plotDF.sort_values("iBand").iterrows() ] ]
 
     def _afterGetFigure(self):
 
@@ -512,7 +519,7 @@ class PdosPlot(Plot):
         Returns
         ---------
         self.data: list of dicts
-            contains a dictionary for each band with all its information.
+            contains a dictionary for each bandStruct with all its information.
 
         '''
 

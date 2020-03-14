@@ -438,6 +438,10 @@ class Plot(Configurable):
         #Give an ID to the plot
         self.id = str(uuid.uuid4())
 
+        #Initialize the variable to store when has been the last data read (0 means never basically)
+        self.last_dataread = 0
+        self._filesToFollow = []
+
         #If plugins have been provided, then add them.
         #Plugins are an easy way of extending a plot. They can be methods, variables...
         #They are added to the object instance, not the whole class.
@@ -508,8 +512,16 @@ class Plot(Configurable):
         #We try to read from the different sources using the _readFromSources method of the parent Plot class.
         self._readFromSources()
 
+        # We don't update the last dataread here in case there has been a succesful data read because we want to
+        # wait for the afterRead() function to be succesful
+        if self.source is None:
+            self.last_dataread = 0
+
         if callable( getattr(self, "_afterRead", None )):
             self._afterRead()
+        
+        if self.source is not None:
+            self.last_dataread = time.time()
 
         if updateFig:
             self.setData(updateFig = updateFig)
@@ -537,8 +549,88 @@ class Plot(Configurable):
                 errors.append("\t- {}: {}.{}".format(source, type(e).__name__, e))
                 
         else:
+            self.source = None
             raise Exception("Could not read or generate data for {} from any of the possible sources.\n\n Here are the errors for each source:\n\n {}  "
                             .format(self.__class__.__name__, "\n".join(errors)) )
+    
+    def _followFiles(self, files, to_abs=True, unfollow=True):
+        '''
+        Makes sure that the object knows which files to follow in order to trigger updates.
+
+        Parameters
+        ----------
+        files: array-like of str
+            a list of strings that represent the paths to the files that need to be followed.
+        toabs: boolean, optional
+            whether the paths should be converted to absolute paths to make file following procedures
+            more robust. It is better to leave it as True unless you have a good reason to change it.
+        unfollow: boolean, optional
+            whether the previous files should be unfollowed. If set to False, we are just adding more files.
+        '''
+
+        newFilesToFollow = [os.path.abspath(filePath) if to_abs else filePath for filePath in files]
+
+        self._filesToFollow = newFilesToFollow if unfollow else [*self._filesToFollow, *newFilesToFollow]
+
+    def updates_available(self):
+        '''
+        This function checks whether the read files have changed.
+
+        For it to work properly, one should specify the files that are going to be read in each 
+        of their _read*() methods.
+
+        Examples
+        -------
+        If I'm developing a class with a `_readSiesOut` method that reads the "structure.bands" file and I want it to
+        be reactive to file changes, it should look something like this:
+
+        ```python
+        def _readSiesOut(self):
+
+            ...Do all the stuff
+
+            self._followFiles(["structure.bands"])
+        ```
+        '''
+
+        filesModified = np.array([ os.path.getmtime(filePath) > self.last_dataread for filePath in self._filesToFollow])
+
+        return filesModified.any()
+    
+    def listen(self, forever=True, show=True, clearPrevious=True):
+        '''
+        Listens for updates in the followed files (see the `updates_available` method)
+
+        Parameters
+        ---------
+        forever: boolean, optional
+            whether to keep listening after the first plot update
+        show: boolean, optional
+            whether to show the plot at the beggining and update the layout when the plot is updated.
+        clearPrevious:
+            in case we are show is True, whether the previous version of the plot should be hidden or kept in display. 
+        '''
+        from IPython.display import clear_output
+
+        if show:
+            self.show()
+
+        while True:
+            
+            time.sleep(1)
+            
+            if self.updates_available():
+                
+                self.readData(updateFig=True)
+
+                if clearPrevious:
+                    clear_output()
+
+                if show:
+                    self.show()
+                
+                if not forever:
+                    break
     
     @afterSettingsUpdate
     def setFiles(self, **kwargs):
