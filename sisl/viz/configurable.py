@@ -51,7 +51,11 @@ class Configurable:
             if not exFromDecorator and hasattr(self, "_onSettingsUpdate") and updateFig:
                 
                 #Get the unique names of the functions that should be executed
-                funcNames = set([self.whatToRunOnUpdate[settingKey] for settingKey in updated])
+                noInfoKeys = [settingKey for settingKey in updated if settingKey in self.whatToRunOnUpdate]
+                if len(noInfoKeys) > 0 and len(noInfoKeys) == len(updated):
+                    print("We don't know (yet) what to do when the following settings are updated: {noInfoKeys}. Please run the corresponding methods yourself in order to update the plot")
+
+                funcNames = set([self.whatToRunOnUpdate.get(settingKey, None) for settingKey in updated])
 
                 for fName in self._onSettingsUpdate["functions"]:
                     if fName in funcNames:
@@ -240,7 +244,7 @@ class Configurable:
 
         return self
     
-    def getSetting(self, settingKey):
+    def getSetting(self, settingKey, copy=True):
 
         '''
         Gets the value for a given setting .
@@ -250,7 +254,7 @@ class Configurable:
         #if callable( self.settings[settingKey] ):
         #    return self.settings[settingKey](self)
 
-        return deepcopy(self.settings[settingKey])
+        return deepcopy(self.settings[settingKey]) if copy else self.settings[settingKey]
     
     def setting(self, settingKey):
 
@@ -277,7 +281,7 @@ class Configurable:
             
             frame = frame.f_back
         
-        return self.getSetting(settingKey)
+        return self.getSetting(settingKey, copy=False)
 
     def getSettingHistory(self, settingKey):
         
