@@ -272,6 +272,9 @@ class outSileSiesta(SileSiesta):
                 - atomic (default): (nMDsteps, nAtoms, 3)
                 - total: (nMDsteps, 3)
                 - maxF: (nMDsteps, )
+            
+            If `all` is `False`, the first dimension does not exist. In the case of maxF, the returned value
+            will therefore be just a float, not an array.
         """
         if all:
             last = False
