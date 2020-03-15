@@ -325,7 +325,7 @@ class outSileSiesta(SileSiesta):
                 Fs.append(F)
 
             if last:
-                return Fs[-1]
+                return Fs[-1] if not maxF else Fs[-2]
             if self.job_completed:
                 return np.array(Fs[:-1])
             return np.array(Fs)
