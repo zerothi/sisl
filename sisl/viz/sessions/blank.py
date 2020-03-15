@@ -1,6 +1,6 @@
 import os
 
-from .session import Session
+from ..session import Session
 
 class BlankSession(Session):
 
