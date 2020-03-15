@@ -269,7 +269,10 @@ class outSileSiesta(SileSiesta):
 
             # Now read data
             F = []
-            line = self.readline()
+            line = self.readline() # This line may be the first separator
+            if '---' in line:
+                line = self.readline()
+
             while '---' not in line:
                 line = line.split()
                 F.append([float(x) for x in line[-3:]])
