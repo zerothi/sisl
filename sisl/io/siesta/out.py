@@ -249,19 +249,29 @@ class outSileSiesta(SileSiesta):
         all: bool, optional
            return a list of all forces (like an MD)
            If `True` `last` is ignored
+        total: bool, optional
+            return the total forces instead of the atomic forces.
         maxF: bool, optional
             whether only the maximum atomic force should be returned for each step.
-            Note that this is not the same as doing `max(outSile.read_force(total=True))` since
-            the forces returned in that case are averages on each axis.
+            If `True`, `total` is ignored.
 
             Setting it to `True` is equivalent to `max(outSile.read_force())` in case atomic forces
             are written in the output file (`WriteForces .true.` in the fdf file)
 
+            Note that this is not the same as doing `max(outSile.read_force(total=True))` since
+            the forces returned in that case are averages on each axis.
+
+            
         Returns
         -------
         numpy.ndarray or None
             returns ``None`` if the forces are not found in the
             output, otherwise forces will be returned
+
+            The shape of the array will be different depending on the type of forces requested:
+                - atomic (default): (nMDsteps, nAtoms, 3)
+                - total: (nMDsteps, 3)
+                - maxF: (nMDsteps, )
         """
         if all:
             last = False
