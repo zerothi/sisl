@@ -239,7 +239,7 @@ class outSileSiesta(SileSiesta):
         return next_geom()[1]
 
     @sile_fh_open()
-    def read_force(self, last=True, all=False):
+    def read_force(self, last=True, all=False, total=False, maxF=False):
         """ Reads the forces from the Siesta output file
 
         Parameters
@@ -249,6 +249,13 @@ class outSileSiesta(SileSiesta):
         all: bool, optional
            return a list of all forces (like an MD)
            If `True` `last` is ignored
+        maxF: bool, optional
+            whether only the maximum atomic force should be returned for each step.
+            Note that this is not the same as doing `max(outSile.read_force(total=True))` since
+            the forces returned in that case are averages on each axis.
+
+            Setting it to `True` is equivalent to `max(outSile.read_force())` in case atomic forces
+            are written in the output file (`WriteForces .true.` in the fdf file)
 
         Returns
         -------
@@ -261,6 +268,7 @@ class outSileSiesta(SileSiesta):
 
         # Read until forces are found
         def next_force():
+
             line = self.readline()
             while not 'siesta: Atomic forces' in line:
                 line = self.readline()
@@ -269,18 +277,29 @@ class outSileSiesta(SileSiesta):
 
             # Now read data
             F = []
-            line = self.readline() # This line may be the first separator
-            if '---' in line:
-                line = self.readline()
+            line = self.readline()
 
+            # First, we encounter the atomic forces
             while '---' not in line:
                 line = line.split()
-                F.append([float(x) for x in line[-3:]])
+                if not total or maxF:
+                    F.append([float(x) for x in line[-3:]])
                 line = self.readline()
                 if line == '':
                     break
+            
+            line = self.readline()
+            # Then, the total forces
+            if total:
+                F = [float(x) for x in line.split()[-3:]]
+                
+            line = self.readline()
+            #And after that we can read the max force
+            if maxF and len(line.split()) != 0:
+                line = self.readline()
+                F = float(line.split()[1])
 
-            return np.array(F)
+            return F if maxF else np.array(F)
 
         # list of all forces
         Fs = []
