@@ -296,7 +296,7 @@ class outSileSiesta(SileSiesta):
                 return Fs[-1]
             if self.job_completed:
                 return Fs[:-1]
-            return Fs
+            return np.array(Fs)
 
         return next_force()
 
