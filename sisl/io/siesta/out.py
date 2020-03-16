@@ -328,6 +328,7 @@ class outSileSiesta(SileSiesta):
             if max and total:
                 return (Fs[..., :-1], Fs[..., -1])
             elif max and not all:
+                # This will return a float (or actually a numpy.dtype)
                 return Fs[0]
             return Fs
 
