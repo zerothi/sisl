@@ -309,7 +309,10 @@ class Session(Configurable):
         '''
 
         for plotID in self.updates_available():
-            self.plots[plotID].readData(updateFig=True)
+            try:
+                self.plots[plotID].readData(updateFig=True)
+            except Exception as e:
+                print(f"Could not update plot {plotID}. \n Error: {e}")
         
         return self
 
@@ -438,7 +441,7 @@ class Session(Configurable):
         }
 
         #Avoid passing unnecessary info to the browser.
-        return {structID: {k: struct[k] for k in ["name"]} for structID, struct in deepcopy(self.warehouse["structs"]).items() }
+        return {structID: {"id": structID, **{k: struct[k] for k in ["name"]}} for structID, struct in deepcopy(self.warehouse["structs"]).items() }
     
     #-----------------------------------------
     #      NOTIFY CURRENT STATE TO GUI

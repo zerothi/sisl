@@ -628,7 +628,10 @@ class Plot(Configurable):
 
         while True:
             
-            time.sleep(1)
+            try:
+                time.sleep(1)
+            except KeyboardInterrupt:
+                break
             
             if self.updates_available():
                 
