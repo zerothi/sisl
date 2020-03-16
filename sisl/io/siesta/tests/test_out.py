@@ -29,14 +29,27 @@ def test_md_nose_out(sisl_files):
 
     # try and read all outputs
     # there are 5 outputs in this output file.
-    assert len(out.read_geometry(all=True)) == 5
-    assert len(out.read_force(all=True)) == 5
-    assert len(out.read_stress(all=True)) == 5
+    nOutputs = 5
+    assert len(out.read_geometry(all=True)) == nOutputs
+    assert len(out.read_force(all=True)) == nOutputs
+    assert len(out.read_stress(all=True)) == nOutputs
     f0 = out.read_force(last=False)
     f = out.read_force()
     f1 = out.read_data(force=True)
     assert not np.allclose(f0, f)
     assert np.allclose(f1, f)
+
+    #Check that we can read the different types of forces
+    nAtoms = 10
+    atomicF = out.read_force(all=True)
+    totalF = out.read_force(total=True)
+    maxF = out.read_force(max=True)
+    assert atomicF.shape == (nOutputs, nAtoms, 3 )
+    assert totalF.shape == (nOutputs, 3)
+    assert maxF.shape == (nOutputs, )
+    totalF, maxF = out.read_force(total=True, max=True)
+    assert totalF.shape == (nOutputs, 3)
+    assert maxF.shape == (nOutputs, )
 
     s0 = out.read_stress(last=False)
     s = out.read_stress()
