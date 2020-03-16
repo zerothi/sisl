@@ -260,7 +260,7 @@ class outSileSiesta(SileSiesta):
             Note that this is not the same as doing `max(outSile.read_force(total=True))` since
             the forces returned in that case are averages on each axis.
 
-            
+
         Returns
         -------
         numpy.ndarray or None
@@ -271,7 +271,7 @@ class outSileSiesta(SileSiesta):
                 - atomic (default): (nMDsteps, nAtoms, 3)
                 - total: (nMDsteps, 3)
                 - max: (nMDsteps, )
-            
+
             If `all` is `False`, the first dimension does not exist. In the case of max, the returned value
             will therefore be just a float, not an array.
 
@@ -301,12 +301,12 @@ class outSileSiesta(SileSiesta):
                 line = self.readline()
                 if line == '':
                     break
-            
+
             line = self.readline()
             # Then, the total forces
             if total:
                 F = [float(x) for x in line.split()[-3:]]
-                
+
             line = self.readline()
             #And after that we can read the max force
             if max and len(line.split()) != 0:
@@ -318,7 +318,7 @@ class outSileSiesta(SileSiesta):
                 F = maxF if not total else [*F, maxF]
 
             return F if max and not total else np.array(F)
-        
+
         def return_forces(Fs):
 
             if Fs.ndim == 1:
@@ -347,7 +347,7 @@ class outSileSiesta(SileSiesta):
             if self.job_completed:
                 return return_forces(Fs[:-1])
             return return_forces(Fs)
-        
+
         Fs = next_force()
         return return_forces(Fs)
 
