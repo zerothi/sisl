@@ -4,6 +4,7 @@ import contextlib
 import os
 import numpy as np
 
+from pathlib import Path
 import pytest
 from sisl import Atom, Geometry, SuperCell, Hamiltonian
 
@@ -42,35 +43,37 @@ def sisl_tmp(request, tmpdir_factory):
     """
     class FileFactory:
         def __init__(self):
-            self.base = tmpdir_factory.getbasetemp()
+            # Force use of Path
+            self.base = Path(tmpdir_factory.getbasetemp())
             self.dirs = []
             self.files = []
 
         def dir(self, name='sisl'):
-            D = ''
-            for d in name.split(os.path.sep):
+            # Make name a path
+            name = Path(name)
+            D = self.base
+            for d in name.parts:
                 # Collect tree...
-                D = os.path.join(D, d)
-                baseD = self.base.join(D)
-                if baseD not in self.dirs:
-                    if os.path.isdir(str(baseD)):
-                        self.dirs.append(baseD)
-                    else:
-                        self.dirs.append(tmpdir_factory.mktemp(D, numbered=False))
+                D /= d
+                if D not in self.dirs:
+                    if not D.is_dir():
+                        tmpdir_factory.mktemp(str(D), numbered=False)
+                    self.dirs.append(D)
             return self.dirs[-1]
 
         def file(self, name, dir_name='sisl'):
-            D = self.base.join(dir_name)
+            # self.base *is* a pathlib
+            D = self.base / dir_name
             if D in self.dirs:
                 i = self.dirs.index(D)
             else:
                 self.dir(dir_name)
                 i = -1
-            self.files.append(self.dirs[i].join(name))
-            return str(self.files[-1])
+            self.files.append(self.dirs[i] / name)
+            return self.files[-1]
 
         def getbase(self):
-            return str(self.dirs[-1])
+            return self.dirs[-1]
 
         def __call__(self, name, dir_name='sisl'):
             """ Shorthand for self.file """
@@ -79,18 +82,18 @@ def sisl_tmp(request, tmpdir_factory):
         def teardown(self):
             while len(self.files) > 0:
                 # Do each removal separately
-                f = str(self.files.pop())
-                if os.path.isfile(f):
+                f = self.files.pop()
+                if f.is_file():
                     try:
-                        os.remove(f)
+                        f.unlink()
                     except:
                         pass
             while len(self.dirs) > 0:
                 # Do each removal separately (from back of directory)
-                d = str(self.dirs.pop())
-                if os.path.isdir(d):
+                d = self.dirs.pop()
+                if d.is_dir():
                     try:
-                        os.rmdir(d)
+                        d.rmdir()
                     except:
                         pass
     ff = FileFactory()
