@@ -684,10 +684,10 @@ class Plot(Configurable):
 
         NEW_FDF = self.did_setting_update("rootFdf")
         
-        if not self.PROVIDED_GEOM and NEW_FDF:
+        if not self.PROVIDED_GEOM and (not hasattr(self, "geom") or NEW_FDF):
             self.geom = self.fdfSile.read_geometry(output = True)
         
-        if not self.PROVIDED_H and NEW_FDF:
+        if not self.PROVIDED_H and (not hasattr(self, "H") or NEW_FDF):
             #Try to read the hamiltonian in two different ways
             try:
                 #This one is favoured because it may read from TSHS file, which contains all the information of the geometry and basis already
@@ -705,7 +705,9 @@ class Plot(Configurable):
                 #Inform that we have read the hamiltonian from the HSX file
                 self._followFiles([HSXfile], unfollow=False)
 
-        self.fermi = self.H.fermi_level()
+        # Sisl is hanging on this step, so for now we are not going to calculate the fermi level
+        # self.fermi = self.H.fermi_level()
+        self.fermi = 0
 
         return self
     
@@ -970,6 +972,8 @@ class Plot(Configurable):
 
         infoDict = {
             "id": self.id,
+            "plotClass": self.__class__.__name__,
+            "struct": getattr(self, "struct", None),
             "figure": figure,
             "settings": self.settings,
             "params": self.params,

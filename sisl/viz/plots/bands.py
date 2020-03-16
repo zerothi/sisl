@@ -13,6 +13,9 @@ from ..plot import Plot, MultiplePlot, Animation, PLOTS_CONSTANTS
 from ..plotutils import sortOrbitals, initMultiplePlots, copyParams, findFiles, runMultiple, calculateGap
 from ..inputFields import InputField, TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
 
+PREDEFINED_KPOINTS = {
+
+}
 class BandsPlot(Plot):
 
     '''
@@ -58,29 +61,65 @@ class BandsPlot(Plot):
             help = "Energy range where the bands are displayed."
         ),
 
-        TextInput(
+        QueriesInput(
             key = "path", name = "Bands path",
-            default = "0,0,0/100/0.5,0,0",
-            width = "s100% m50% l33%",
-            params = {
-                "placeholder": "Write your path here..."
-            },
-            help = '''Path along which bands are drawn in format:
-                            <br>p1x,p1y,p1z/<number of points from P1 to P2>/p2x,p2y,p2z/...'''
-        ),
+            default = [],
+            help='''Path along which bands are drawn in units of reciprocal lattice vectors.<br>
+            Note that if you want to provide a path programatically you can do it more easily with the `bandStructure` setting''',
+            queryForm=[
 
-        TextInput(
-            key = "ticks", name = "K ticks",
-            default = "A,B",
-            width = "s100% m50%",
-            params = {
-                "placeholder": "Write your ticks..."
-            },
-            help = "Ticks that should be displayed at the corners of the path (separated by commas)."
+                FloatInput(
+                    key="x", name="X",
+                    width = "s50% m20% l10%",
+                    default=0,
+                    params={
+                        "step": 0.01
+                    }
+                ),
+
+                FloatInput(
+                    key="y", name="Y",
+                    width = "s50% m20% l10%",
+                    default=0,
+                    params={
+                        "step": 0.01
+                    }
+                ),
+
+                FloatInput(
+                    key="z", name="Z",
+                    width="s50% m20% l10%",
+                    default=0,
+                    params={
+                        "step": 0.01
+                    }
+                ),
+
+                IntegerInput(
+                    key="divisions", name="Divisions",
+                    width="s50% m20% l10%",
+                    default=50,
+                    params={
+                        "min": 0,
+                        "step": 10
+                    }
+                ),
+
+                TextInput(
+                    key="tick", name="Tick",
+                    width = "s50% m20% l10%",
+                    default=None,
+                    params = {
+                        "placeholder": "Tick..."
+                    },
+                    help = "Tick that should be displayed at this corner of the path."
+                )
+
+            ]
         ),
 
         FloatInput(
-            key = "bandsWidth", name = "bandStruct lines width",
+            key = "bandsWidth", name = "Band lines width",
             default = 1,
             help = "Width of the lines that represent the bands"
         ),
@@ -125,21 +164,21 @@ class BandsPlot(Plot):
                 self.setupHamiltonian()
 
             #Get the requested path
-            self.path = self.setting("path")
-            bandPoints, divisions = [], []
-            for item in self.path.split("/"):
-                splittedItem = item.split(",")
-                if splittedItem == [item]:
-                    divisions.append(item)
-                elif len(splittedItem) == 3:
-                    bandPoints.append(splittedItem)
-            bandPoints, divisions = np.array(bandPoints, dtype=float), np.array(divisions, dtype=int)
+            self.path = [point for point in self.setting("path") if point["active"]]
 
-            bandStruct = sisl.BandStructure(self.geom, bandPoints, divisions)
-            bandStruct.set_parent(self.H)
+            bandStruct = sisl.BandStructure(
+                self.H,
+                point=np.array([[point["x"] or 0, point["y"] or 0, point["z"] or 0] for point in self.path], dtype=float),
+                division=np.array([point["divisions"] for point in self.path][1:], dtype=int) ,
+                name=np.array([point["tick"] for point in self.path])
+            )
         else:
             self.fermi = 0
 
+            if not hasattr(bandStruct, "H"):
+                self.setupHamiltonian()
+                bandStruct.set_parent(self.H)
+            
         self.ticks = bandStruct.lineartick()
         self.Ks = bandStruct.lineark()
         self.kPath = bandStruct._k
@@ -151,11 +190,33 @@ class BandsPlot(Plot):
     def _readSiesOut(self):
         
         #Get the info from the bands file
-        self.path = self.setting("path") #This should be modified at some point, it's just so that setData works correctly
+        self.path = self.setting("path")
+        if self.path and self.path != getattr(self, "siestaPath", None) or self.setting("bandStructure"):
+            raise Exception("A path was provided, therefore we can not use the .bands file even if there is one")
 
         bandsFile = self.setting("bandsFile") or self.requiredFiles[0]
         self.ticks, self.Ks, bands = sisl.get_sile(bandsFile).read_data()
         self.fermi = 0.0 #Energies are already shifted
+
+        # Inform of the path that it's being used if we can
+        # THIS IS ONLY WORKING PROPERLY FOR FRACTIONAL UNITS OF THE BAND POINTS RN
+        if self.fdfSile and self.fdfSile.get("BandLines"):
+
+            try:
+                self.siestaPath = []
+                points = self.fdfSile.get("BandLines")
+
+                for i, point in enumerate(points):
+
+                    divisions, x, y, z, *others = point.split()
+                    divisions = int(divisions) - int(points[i-1].split()[0]) if i > 0 else None
+                    tick = others[0] if len(others) > 0 else None
+
+                    self.siestaPath.append({"active": True, "x": float(x), "y": float(y), "z": float(z), "divisions": divisions, "tick": tick})
+                    
+                    self.updateSettings(path=self.siestaPath, updateFig=False)
+            except Exception as e:
+                print(f"Could not correctly read the bands path from siesta.\n Error {e}")
 
         #Axes are switched so that the returned array is a list like [spinUpBands, spinDownBands]
         self._bandsToDfs(np.rollaxis(bands, 1))
@@ -200,11 +261,6 @@ class BandsPlot(Plot):
         self.data: list of dicts
             contains a dictionary for each bandStruct with all its information.
         '''
-
-        #If the path has changed we need to produce the bandStruct structure again
-        if self.path != self.setting("path"):
-            self.order = ["fromH"]
-            self.readData()
 
         self.data = []
 
