@@ -43,8 +43,11 @@ def test_md_nose_out(sisl_files):
     nAtoms = 10
     atomicF = out.read_force(all=True)
     totalF = out.read_force(total=True)
-    maxF = out.read_force(maxF=True)
+    maxF = out.read_force(max=True)
     assert atomicF.shape == (nOutputs, nAtoms, 3 )
+    assert totalF.shape == (nOutputs, 3)
+    assert maxF.shape == (nOutputs, )
+    totalF, maxF = out.read_force(total=True, max=True)
     assert totalF.shape == (nOutputs, 3)
     assert maxF.shape == (nOutputs, )
 
