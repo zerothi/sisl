@@ -753,7 +753,7 @@ class Plot(Configurable):
             if getattr(self, "_isAnimation", False):
 
                 self.data = self.childPlots[0].data
-                frameNames = self._getFrameNames() if hasattr(self, "_getFrameNames") else itertools.repeat(None)
+                frameNames = self._getFrameNames() if hasattr(self, "_getFrameNames") else (f"Frame {i}" for i, plot in enumerate(self.childPlots))
                 
                 maxN = np.max([[len(plot.data) for plot in self.childPlots]])
                 
