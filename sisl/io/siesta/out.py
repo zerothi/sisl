@@ -260,7 +260,6 @@ class outSileSiesta(SileSiesta):
             Note that this is not the same as doing `max(outSile.read_force(total=True))` since
             the forces returned in that case are averages on each axis.
 
-
         Returns
         -------
         numpy.ndarray or None
@@ -275,7 +274,7 @@ class outSileSiesta(SileSiesta):
             If `all` is `False`, the first dimension does not exist. In the case of max, the returned value
             will therefore be just a float, not an array.
 
-            If `total` and `max` are both `True`, they are returned separately as a tuple: (total, max)
+            If `total` and `max` are both `True`, they are returned separately as a tuple: ``(total, max)``
         """
         if all:
             last = False
@@ -315,30 +314,31 @@ class outSileSiesta(SileSiesta):
 
                 # In case total is also requested, we are going to store it all in the same variable
                 # It will be separated later
-                F = maxF if not total else [*F, maxF]
+                if total:
+                    F = (*F, maxF)
+                else:
+                    F = maxF
 
-            return F if max and not total else np.array(F)
+            return np.array(F)
 
         def return_forces(Fs):
-
-            if Fs.ndim == 1:
-                return (Fs[:-1], Fs[-1]) if max and total else Fs
-            else:
-                return (Fs[:, :-1], Fs[:, -1]) if max and total else Fs
-
-        # list of all forces
-        Fs = []
+            # Handle cases where we can't now if they are found
+            if Fs is None: return None
+            Fs = np.array(Fs)
+            if max and total:
+                return (Fs[..., :-1], Fs[..., -1])
+            elif max and not all:
+                return Fs[0]
+            return Fs
 
         if all or last:
+            # list of all forces
+            Fs = []
             while True:
                 F = next_force()
                 if F is None:
                     break
                 Fs.append(F)
-
-            if not (last and max and not total):
-                # If last and max and not total, Fs is just a float :)
-                Fs = np.array(Fs)
 
             if last:
                 return return_forces(Fs[-2])
@@ -348,8 +348,7 @@ class outSileSiesta(SileSiesta):
                 return return_forces(Fs[:-1])
             return return_forces(Fs)
 
-        Fs = next_force()
-        return return_forces(Fs)
+        return return_forces(next_force())
 
     @sile_fh_open()
     def read_stress(self, key='static', last=True, all=False):
