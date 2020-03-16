@@ -51,9 +51,9 @@ class Configurable:
             if not exFromDecorator and hasattr(self, "_onSettingsUpdate") and updateFig:
                 
                 #Get the unique names of the functions that should be executed
-                noInfoKeys = [settingKey for settingKey in updated if settingKey in self.whatToRunOnUpdate]
+                noInfoKeys = [settingKey for settingKey in updated if settingKey not in self.whatToRunOnUpdate]
                 if len(noInfoKeys) > 0 and len(noInfoKeys) == len(updated):
-                    print("We don't know (yet) what to do when the following settings are updated: {noInfoKeys}. Please run the corresponding methods yourself in order to update the plot")
+                    print(f"We don't know (yet) what to do when the following settings are updated: {noInfoKeys}. Please run the corresponding methods yourself in order to update the plot")
 
                 funcNames = set([self.whatToRunOnUpdate.get(settingKey, None) for settingKey in updated])
 
