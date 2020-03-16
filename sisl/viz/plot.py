@@ -462,10 +462,12 @@ class Plot(Configurable):
         
         #Try to generate the figure (if the settings required are still not there, it won't be generated)
         try:
-
             if MultiplePlot in type.mro(self.__class__):
                 #If its a multiple plot try to inititialize all its child plots
-                self.initAllPlots()
+                if self.PLOTS_PROVIDED:
+                    self.getFigure()
+                else:
+                    self.initAllPlots()
             else:
                 self.readData()
                 
@@ -884,34 +886,39 @@ class Plot(Configurable):
         
         return self.figure.show(*args, **kwargs)
     
-    def merge(self, plotsToMerge, inplace = False, asAnimation = False, **kwargs):
+    def merge(self, others, asAnimation = False, frameNames=None, **kwargs):
         '''
-        Merges this plot's instance with the list of plots provided (EXPERIMENTAL)
+        Merges this plot's instance with the list of plots provided
+
+        Parameters
+        -------
+        others: array-like of Plot() or Plot()
+            the plots that we want to merge with this plot instance.
+        asAnimation: boolean, optional
+            whether you want to merge them as an animation.
+            If `False` the plots are all merged into a single plot
+        kwargs:
+            extra arguments that are directly passed to `Animation` or `MultiplePlot`
+            initialization.
+
+        Returns
+        -------
+        Animation() or MultiplePlot():
+            depending on the value of `asAnimation`.
         '''
         
         #Make sure we deal with a list (user can provide a single plot)
-        if not isinstance(plotsToMerge, list):
-            plotsToMerge = [plotsToMerge]
-            
-        if inplace:
-            merged = self
+        if not isinstance(others, (list, tuple, np.ndarray)):
+            others = [others]
+
+        childPlots = [self, *others]
+
+        if asAnimation:
+            newPlot = Animation(plots=childPlots, **kwargs)
         else:
-            merged = Plot()
-            merged.data = self.data
-
-        if asAnimation and not hasattr(merged, 'frames'):
-            merged.frames = [{'name': 'Start', 'data': self.data}]
-
-        for i, plot in enumerate(plotsToMerge):
-
-            if asAnimation:
-                merged.frames = [ *merged.frames, {'name': 'Frame {}'.format(i+1), 'data': plot.data }]
-            else:
-                merged.data = [*merged.data, *plot.data]
-    
-        merged.getFigure()
+            newPlot = MultiplePlot(plots=childPlots, **kwargs)
         
-        return merged
+        return newPlot
     
     def normalize(self, axis = "y"):
         '''
