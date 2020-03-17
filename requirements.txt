@@ -4,3 +4,10 @@ numpy>=1.13
 scipy>=0.18
 netCDF4
 pyparsing>=1.5.7
+tqdm
+matplotlib
+plotly 
+pandas 
+pathos 
+xarray
+dill
