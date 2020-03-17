@@ -18,7 +18,7 @@ import plotly.graph_objects as go
 import sisl
 
 from .configurable import *
-from .plotutils import applyMethodOnMultipleObjs, initMultiplePlots, repeatIfChilds, dictOfLists2listOfDicts
+from .plotutils import applyMethodOnMultipleObjs, initMultiplePlots, repeatIfChilds, dictOfLists2listOfDicts, trigger_notification, spoken_message
 from .inputFields import InputField, TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput
 
 PLOTS_CONSTANTS = {
@@ -384,7 +384,7 @@ class Plot(Configurable):
 
             def _getInitKwargsList(self):
 
-                nFrames = len(args[0].values()[0])
+                nFrames = len(list(args[0].values())[0])
 
                 #Adding the fixed values to the list
                 vals = { 
@@ -610,7 +610,7 @@ class Plot(Configurable):
 
         return filesModified.any()
     
-    def listen(self, forever=True, show=True, clearPrevious=True):
+    def listen(self, forever=True, show=True, clearPrevious=True, notify=False, speak=False, notify_title=None, notify_message=None, speak_message=None):
         '''
         Listens for updates in the followed files (see the `updates_available` method)
 
@@ -620,13 +620,28 @@ class Plot(Configurable):
             whether to keep listening after the first plot update
         show: boolean, optional
             whether to show the plot at the beggining and update the layout when the plot is updated.
-        clearPrevious:
-            in case we are show is True, whether the previous version of the plot should be hidden or kept in display. 
+        clearPrevious: boolean, optional
+            in case we are show is True, whether the previous version of the plot should be hidden or kept in display.
+        notify: boolean, optional
+            trigger a notification everytime the plot updates.
+        speak: boolean, optional
+            trigger a spoken message everytime the plot updates.
+        notify_title: str, optional
+            the title of the notification.
+        notify_message: str, optional
+            the message of the notification.
+        speak_message: str, optional
+            the spoken message. Feel free to get creative here!
         '''
         from IPython.display import clear_output
 
         if show:
             self.show()
+
+        if notify:
+            trigger_notification("SISL", "Notifications will appear here")
+        if speak:
+            spoken_message("I will speak when there is an update.")
 
         while True:
             
@@ -647,6 +662,13 @@ class Plot(Configurable):
                 
                 if not forever:
                     break
+
+                if notify:
+                    title = notify_title or "SISL PLOT UPDATE"
+                    message = notify_message or f"{getattr(self, 'struct', '')} {self.__class__.__name__} updated"
+                    trigger_notification(title, message )
+                if speak:
+                    spoken_message(speak_message or f"Your {self.__class__.__name__} is updated. Check it out")
     
     @afterSettingsUpdate
     def setFiles(self, **kwargs):
@@ -886,7 +908,7 @@ class Plot(Configurable):
         
         return self.figure.show(*args, **kwargs)
     
-    def merge(self, others, asAnimation = False, frameNames=None, **kwargs):
+    def merge(self, others, asAnimation = False, **kwargs):
         '''
         Merges this plot's instance with the list of plots provided
 
