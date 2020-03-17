@@ -368,7 +368,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             if norm == 'orbital':
                 NORM = float(len(self.o2p(orbital)))
             elif norm == 'atom':
-                geom = self.geom
+                geom = self.geometry
                 a = np.unique(geom.o2a(orbital))
                 # Now sum the orbitals per atom
                 NORM = float(_a.sumi(geom.firsto[a+1] - geom.firsto[a]))
@@ -409,6 +409,11 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             in order of the geometry orbitals (i.e. pivoted back to the device region).
             If `atom` or `orbital` is specified they are returned in that order.
         """
+        # Force False equivalent as None.
+        if isinstance(atom, bool):
+            if not atom: atom = None
+        if isinstance(orbital, bool):
+            if not orbital: orbital = None
         if not atom is None and not orbital is None:
             raise ValueError('Both atom and orbital keyword in DOS request '
                               'cannot be specified, only one at a time.')
@@ -421,6 +426,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         else:
             raise ValueError('Error on norm keyword in DOS request')
 
+        geom = self.geometry
+
         if atom is None and orbital is None:
             # We simply return *everything*
             if sum:
@@ -432,13 +439,17 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # Now figure out what to do
         if atom is None:
             # orbital *must* be specified
+            if isinstance(orbital, bool):
+                # Request all orbitals of the device
+                orbital = geom.a2o('Device', all=True)
+            elif isinstance(orbital, str):
+                orbital = geom.a2o(orbital, all=True)
 
             # Get pivoting indices to average over
             p = self.o2p(orbital)
             if norm == 'orbital':
                 NORM = float(len(p))
             elif norm == 'atom':
-                geom = self.geom
                 a = np.unique(geom.o2a(orbital))
                 # Now sum the orbitals per atom
                 NORM = float(_a.sumi(geom.firsto[a+1] - geom.firsto[a]))
@@ -447,6 +458,13 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 return DOS[..., p].sum(-1) / NORM
             # Else, we have to return the full subset
             return DOS[..., p] / NORM
+
+        # Check if user requests all atoms/orbitals
+        if isinstance(atom, bool):
+            # Request all atoms of the device
+            atom = geom.names['Device']
+        elif isinstance(atom, str):
+            atom = geom.names[atom]
 
         # atom is specified
         # Return the pivoting orbitals for the atom
@@ -471,7 +489,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         nDOS = np.empty(shp + [len(atom)], DOS.dtype)
 
         # Quicker than re-creating the geometry on every instance
-        geom = self.geom
+        geom = self.geometry
 
         # Sum for new return stuff
         for i, a in enumerate(atom):
@@ -504,10 +522,12 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            is returned
         atom : array_like of int or bool, optional
            only return for a given set of atoms (default to all).
-           *NOT* allowed with `orbital` keyword
+           *NOT* allowed with `orbital` keyword. If `True` it will use all atoms in the device.
+           False is equivalent to None.
         orbital : array_like of int or bool, optional
            only return for a given set of orbitals (default to all)
-           *NOT* allowed with `atom` keyword
+           *NOT* allowed with `atom` keyword. If `True` it will use all orbitals in the device.
+           False is equivalent to None.
         sum : bool, optional
            whether the returned quantities are summed or returned *as is*, i.e. resolved per atom/orbital.
         norm : {'none', 'atom', 'orbital', 'all'}
@@ -542,10 +562,12 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            is returned
         atom : array_like of int or bool, optional
            only return for a given set of atoms (default to all).
-           *NOT* allowed with `orbital` keyword
+           *NOT* allowed with `orbital` keyword. If `True` it will use all atoms in the device.
+           False is equivalent to None.
         orbital : array_like of int or bool, optional
            only return for a given set of orbitals (default to all)
-           *NOT* allowed with `atom` keyword
+           *NOT* allowed with `atom` keyword. If `True` it will use all orbitals in the device.
+           False is equivalent to None.
         sum : bool, optional
            whether the returned quantities are summed or returned *as is*, i.e. resolved per atom/orbital.
         norm : {'none', 'atom', 'orbital', 'all'}
@@ -594,13 +616,13 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         elec = self._elec(elec)
         if norm in ['atom', 'orbital', 'all']:
             # This is normalized per non-expanded unit-cell, so no need to do Bloch
-            N = 1. / len(self._dimension('no_u', elec))
+            fact = eV2Ry / len(self._dimension('no_u', elec))
         else:
-            N = 1.
+            fact = eV2Ry
         if sum:
-            return self._value_E('DOS', elec, kavg=kavg, E=E).sum(-1) * eV2Ry * N
+            return self._value_E('DOS', elec, kavg=kavg, E=E).sum(-1) * fact
         else:
-            return self._value_E('DOS', elec, kavg=kavg, E=E) * eV2Ry * N
+            return self._value_E('DOS', elec, kavg=kavg, E=E) * fact
 
     def _E_T_sorted(self, elec_from, elec_to, kavg=True):
         """ Internal routine for returning energies and transmission in a sorted array """
@@ -959,7 +981,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         if elec is not None:
             elec = self._elec(elec)
 
-        geom = self.geom
+        geom = self.geometry
 
         # These are the row-pointers...
         rptr = np.insert(_a.cumsumi(self._value('n_col')), 0, 0)
@@ -1048,7 +1070,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            else, it will return a sparse matrix of ``shape = (self.na, self.na * self.n_s)``.
            One may figure out the connections via `~sisl.geometry.Geometry.sc_index`.
         """
-        geom = self.geom
+        geom = self.geometry
         na = geom.na
         o2a = geom.o2a
 
@@ -1401,7 +1423,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         bond_current : the bond current (orbital current summed over orbitals)
         atom_current : the atomic current for each atom (scalar representation of bond-currents)
         """
-        geom = self.geom
+        geom = self.geometry
 
         na = geom.na
         # vector currents
@@ -2141,7 +2163,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         import argparse
 
         namespace = default_namespace(_tbt=self,
-                                      _geometry=self.geom,
+                                      _geometry=self.geometry,
                                       _data=[], _data_description=[], _data_header=[],
                                       _norm='none',
                                       _Ovalue='', _Orng=None, _Erng=None,

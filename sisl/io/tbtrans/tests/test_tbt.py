@@ -12,6 +12,7 @@ _dir = osp.join('sisl', 'io', 'tbtrans')
 
 
 @pytest.mark.slow
+@pytest.mark.filterwarnings("ignore:.*.o2p")
 def test_1_graphene_all_content(sisl_files):
     """ This tests manifolds itself as:
 
@@ -210,6 +211,13 @@ def test_1_graphene_all_content(sisl_files):
     DOS = tbt.DOS
     ADOS = tbt.ADOS
 
+    assert DOS(2, atom=True, sum=False).size == geom.names['Device'].size
+    assert np.allclose(DOS(2, atom='Device', sum=False), DOS(2, atom=True, sum=False))
+    assert DOS(2, orbital=True, sum=False).size == geom.a2o('Device', all=True).size
+    assert ADOS(left, 2, atom=True, sum=False).size == geom.names['Device'].size
+    assert ADOS(left, 2, orbital=True, sum=False).size == geom.a2o('Device', all=True).size
+    assert np.allclose(ADOS(left, 2, atom='Device', sum=False), ADOS(left, 2, atom=True, sum=False))
+
     atom = range(8, 40) # some in device, some not in device
     for o in ['atom', 'orbital']:
         opt = {o: atom}
@@ -355,6 +363,7 @@ def test_1_graphene_all_fail_kavg(sisl_files, sisl_tmp):
 
 
 @pytest.mark.xfail(raises=ValueError)
+@pytest.mark.filterwarnings("ignore:.*requesting energy")
 def test_1_graphene_all_fail_kavg_E(sisl_files, sisl_tmp):
     tbt = sisl.get_sile(sisl_files(_dir, '1_graphene_all.TBT.nc'))
     tbt.orbital_COOP(kavg=[0, 1], E=0.1)
