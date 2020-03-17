@@ -1592,9 +1592,10 @@ class _electron_State:
         return __FakeSk
 
     def norm2(self, sum=True):
-        r""" Return a vector with the norm of each state :math:`\langle\psi|\psi\rangle`
+        r""" Return a vector with the norm of each state :math:`\langle\psi|\mathbf S|\psi\rangle`
 
-        This will take into account any overlap matrix if present.
+        :math:`\mathbf S` is the overlap matrix (or basis), for orthogonal basis
+        :math:`\mathbf S \equiv \mathbf I`.
 
         Parameters
         ----------
