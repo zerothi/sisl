@@ -106,11 +106,12 @@ class pdosSileSiesta(SileSiesta):
                 return xr.DataArray(data=process(DOS).reshape(shape),
                                     dims=dims, coords=coords, name='PDOS')
 
+            D = xr.DataArray()
         else:
             def to(o, DOS):
                 return process(DOS)
+            D = []
 
-        D = []
         for orb in root.findall('orbital'):
 
             # Short-hand function to retrieve integers for the attributes
@@ -154,10 +155,7 @@ class pdosSileSiesta(SileSiesta):
             DOS = arrayd(list(map(float, orb.find('data').text.split()))).reshape(-1, nspin)
 
             if as_dataarray:
-                if len(D) == 0:
-                    D = to(O, DOS)
-                else:
-                    D = D.combine_first(to(O, DOS))
+                D = D.combine_first(to(O, DOS))
             else:
                 D.append(process(DOS))
 
