@@ -3,6 +3,7 @@ from numbers import Integral
 import numpy as np
 from numpy import in1d
 from numpy import sort as npsort
+from functools import lru_cache
 
 # Import sile objects
 from ..sile import SileWarning
@@ -30,39 +31,7 @@ class _ncSileTBtrans(SileCDFTBtrans):
 
     This enables easy read of the Geometry and SuperCells etc.
     """
-
-    def _setup(self, *args, **kwargs):
-        """ Setup the special object for data containing """
-        self._data = dict()
-
-        if self._access > 0:
-
-            # Fake double calls
-            access = self._access
-            self._access = 0
-
-            # There are certain elements which should
-            # be minimal on memory but allow for
-            # fast access by the object.
-            for d in ['cell', 'xa', 'lasto', 'E']:
-                self._data[d] = self._value(d)
-            # tbtrans does not store the k-points and weights
-            # if the Gamma-point is used.
-            try:
-                self._data['kpt'] = self._value('kpt')
-            except:
-                self._data['kpt'] = _a.zerosd([3])
-            try:
-                self._data['wkpt'] = self._value('wkpt')
-            except:
-                self._data['wkpt'] = _a.onesd([1])
-
-            # Create the geometry in the data file
-            self._data['_geom'] = self.read_geometry()
-
-            # Reset the access pattern
-            self._access = access
-
+    @lru_cache(maxsize=1)
     def read_supercell(self):
         """ Returns `SuperCell` object from this file """
         cell = _a.arrayd(np.copy(self.cell))
@@ -109,63 +78,74 @@ class _ncSileTBtrans(SileCDFTBtrans):
     # file.
 
     @property
+    @lru_cache(maxsize=1)
     def geometry(self):
         """ The associated geometry from this file """
         return self.read_geometry()
     geom = geometry
 
     @property
+    @lru_cache(maxsize=1)
     def cell(self):
         """ Unit cell in file """
         return self._value('cell') * Bohr2Ang
 
     @property
+    @lru_cache(maxsize=1)
     def na(self):
         """ Returns number of atoms in the cell """
         return len(self._dimension('na_u'))
     na_u = na
 
     @property
+    @lru_cache(maxsize=1)
     def no(self):
         """ Returns number of orbitals in the cell """
         return len(self._dimension('no_u'))
     no_u = no
 
     @property
+    @lru_cache(maxsize=1)
     def xyz(self):
         """ Atomic coordinates in file """
         return self._value('xa') * Bohr2Ang
     xa = xyz
 
     @property
+    @lru_cache(maxsize=1)
     def lasto(self):
         """ Last orbital of corresponding atom """
         return self._value('lasto') - 1
 
     @property
+    @lru_cache(maxsize=1)
     def k(self):
         """ Sampled k-points in file """
         return self._value('kpt')
     kpt = k
 
     @property
+    @lru_cache(maxsize=1)
     def wk(self):
         """ Weights of k-points in file """
         return self._value('wkpt')
     wkpt = wk
 
     @property
+    @lru_cache(maxsize=1)
     def nk(self):
         """ Number of k-points in file """
         return len(self.dimensions['nkpt'])
     nkpt = nk
 
     @property
+    @lru_cache(maxsize=1)
     def E(self):
         """ Sampled energy-points in file """
         return self._value('E') * Ry2eV
 
     @property
+    @lru_cache(maxsize=1)
     def ne(self):
         """ Number of energy-points in file """
         return len(self._dimension('ne'))
@@ -219,26 +199,8 @@ class _devncSileTBtrans(_ncSileTBtrans):
     This one also enables device region atoms and pivoting tables.
     """
 
-    def _setup(self, *args, **kwargs):
-        """ Setup the special object for data containing """
-        super()._setup(*args, **kwargs)
-
-        if self._access > 0:
-
-            # Fake double calls
-            access = self._access
-            self._access = 0
-
-            # There are certain elements which should
-            # be minimal on memory but allow for
-            # fast access by the object.
-            for d in ['a_dev', 'pivot']:
-                self._data[d] = self._value(d)
-
-            # Reset the access pattern
-            self._access = access
-
     def read_geometry(self, *args, **kwargs):
+        """ Returns `Geometry` object from this file """
         g = super().read_geometry(*args, **kwargs)
         try:
             g['Buffer'] = self.a_buf[:]
@@ -255,28 +217,33 @@ class _devncSileTBtrans(_ncSileTBtrans):
         return g
 
     @property
+    @lru_cache(maxsize=1)
     def na_b(self):
         """ Number of atoms in the buffer region """
         return len(self._dimension('na_b'))
     na_buffer = na_b
 
     @property
+    @lru_cache(maxsize=1)
     def a_buf(self):
         """ Atomic indices (0-based) of device atoms """
         return self._value('a_buf') - 1
 
     # Device atoms and other quantities
     @property
+    @lru_cache(maxsize=1)
     def na_d(self):
         """ Number of atoms in the device region """
         return len(self._dimension('na_d'))
     na_dev = na_d
 
     @property
+    @lru_cache(maxsize=1)
     def a_dev(self):
         """ Atomic indices (0-based) of device atoms (sorted) """
         return self._value('a_dev') - 1
 
+    @lru_cache(maxsize=16)
     def a_elec(self, elec):
         """ Electrode atomic indices for the full geometry (sorted)
 
@@ -303,6 +270,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
         return  self._value('a_down', self._elec(elec)) - 1
 
     @property
+    @lru_cache(maxsize=1)
     def o_dev(self):
         """ Orbital indices (0-based) of device orbitals (sorted)
 
@@ -313,6 +281,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
         return self.pivot(sort=True)
 
     @property
+    @lru_cache(maxsize=1)
     def no_d(self):
         """ Number of orbitals in the device region """
         return len(self.dimensions['no_d'])
@@ -338,15 +307,18 @@ class _devncSileTBtrans(_ncSileTBtrans):
             return elec
 
     @property
+    @lru_cache(maxsize=1)
     def elecs(self):
         """ List of electrodes """
         return list(self.groups.keys())
 
+    @lru_cache(maxsize=16)
     def chemical_potential(self, elec):
         """ Return the chemical potential associated with the electrode `elec` """
         return self._value('mu', self._elec(elec))[0] * Ry2eV
     mu = chemical_potential
 
+    @lru_cache(maxsize=16)
     def eta(self, elec=None):
         """ The imaginary part used when calculating the self-energies in eV (or for the device
 
@@ -361,6 +333,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
         except:
             return 0. # unknown!
 
+    @lru_cache(maxsize=16)
     def electron_temperature(self, elec):
         """ Electron bath temperature [Kelvin]
 
@@ -375,6 +348,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
         """
         return self._value('kT', self._elec(elec))[0] * Ry2K
 
+    @lru_cache(maxsize=16)
     def kT(self, elec):
         """ Electron bath temperature [eV]
 
@@ -389,6 +363,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
         """
         return self._value('kT', self._elec(elec))[0] * Ry2eV
 
+    @lru_cache(maxsize=16)
     def bloch(self, elec):
         """ Bloch-expansion coefficients for an electrode
 
@@ -399,6 +374,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
         """
         return self._value('bloch', self._elec(elec))
 
+    @lru_cache(maxsize=16)
     def n_btd(self, elec=None):
         """ Number of blocks in the BTD partioning
 
@@ -410,6 +386,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
         """
         return len(self._dimension('n_btd', self._elec(elec)))
 
+    @lru_cache(maxsize=16)
     def btd(self, elec=None):
         """ Block-sizes for the BTD method in the device/electrode region
 
@@ -421,6 +398,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
         """
         return self._value('btd', self._elec(elec))
 
+    @lru_cache(maxsize=16)
     def no_down(self, elec):
         """ Number of orbitals in the downfolding region (plus device downfolded region)
 
@@ -431,6 +409,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
         """
         return len(self._dimension('no_down', self._elec(elec)))
 
+    @lru_cache(maxsize=16)
     def pivot_down(self, elec):
         """ Pivoting orbitals for the downfolding region of a given electrode
 
@@ -441,6 +420,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
         """
         return self._value('pivot_down', self._elec(elec)) - 1
 
+    @lru_cache(maxsize=32)
     def pivot(self, elec=None, in_device=False, sort=False):
         """ Return the pivoting indices for a specific electrode (in the device region) or the device
 

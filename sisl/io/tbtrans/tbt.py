@@ -450,7 +450,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             if norm == 'orbital':
                 NORM = float(len(p))
             elif norm == 'atom':
-                a = np.unique(geom.o2a(orbital))
+                a = geom.o2a(orbital, unique=True)
                 # Now sum the orbitals per atom
                 NORM = float(_a.sumi(geom.firsto[a+1] - geom.firsto[a]))
 
@@ -494,10 +494,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         # Sum for new return stuff
         for i, a in enumerate(atom):
             pvt = self.a2p(a)
-            if len(pvt) == 0:
-                nDOS[..., i] = 0.
-            else:
-                nDOS[..., i] = DOS[..., pvt].sum(-1) / NORM
+            nDOS[..., i] = DOS[..., pvt].sum(-1) / NORM
 
         return nDOS
 
@@ -1595,7 +1592,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         """
         dm = self._sparse_data('DM', elec, E, kavg, isc) * eV2Ry
         # Now create the density matrix object
-        geom = self.read_geometry()
+        geom = self.geometry
         if geometry is None:
             DM = DensityMatrix.fromsp(geom, dm)
         else:
@@ -2027,7 +2024,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
             if kw in ['geom', 'geometry']:
                 if kwargs[kw]:
-                    val.append(self.read_geometry())
+                    val.append(self.geometry)
 
             elif kw == 'atom_current':
                 if kwargs[kw]:
