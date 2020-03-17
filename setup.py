@@ -52,6 +52,13 @@ install_requires = [
     'scipy>=0.18',
     'netCDF4',
     'pyparsing>=1.5.7',
+    'tqdm',
+    'matplotlib',
+    'plotly',
+    'pandas',
+    'pathos',
+    'dill',
+    'xarray',
 ]
 
 setup_requires = []
