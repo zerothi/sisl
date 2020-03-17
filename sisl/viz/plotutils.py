@@ -499,6 +499,8 @@ def repeatIfChilds(method):
             kwargsList = kwargs.get("kwargsList", kwargs)
             
             obj.childPlots = applyMethodOnMultipleObjs(method, obj.childPlots, kwargsList = kwargsList)
+
+            print("HERE")
                 
             obj.updateSettings(onlyOnParent = True, updateFig = False, **kwargs).getFigure()
         
@@ -506,4 +508,39 @@ def repeatIfChilds(method):
         
             return method(obj, *args, **kwargs)
     
-    return applyToAllPlots    
+    return applyToAllPlots
+
+#-------------------------------------
+#             Fun stuff
+#-------------------------------------
+
+def trigger_notification(title, message, sound="Submarine"):
+    '''
+    Triggers a notification.
+
+    Will not do anything in Windows (oops!)
+    '''
+    import sys
+    
+    if sys.platform == 'linux':
+        os.system(f'''notify-send "{title}" "{message}" ''')
+    elif sys.platform == 'darwin':
+        sound_string = f'sound name "{sound}"' if sound else ''
+        os.system(f'''osascript -e 'display notification "{message}" with title "{title}" {sound_string}' ''')
+
+def spoken_message(message):
+    '''
+    Trigger a spoken message.
+
+    In linux espeak must be installed (sudo apt-get install espeak)
+
+    Will not do anything in Windows (oops!)
+    '''
+
+    import sys
+    
+    if sys.platform == 'linux':
+        os.system(f'''espeak -s 150 "{message}" 2>/dev/null''')
+    elif sys.platform == 'darwin':
+        os.system(f'''osascript -e 'say "{message}"''')
+

@@ -28,6 +28,8 @@ class MaxForcePlot(Plot):
 
         if outSile.job_completed:
             self.updateSettings(paper_bgcolor="lightgreen", plot_bgcolor="lightgreen" ,updateFig=False)
+        else:
+            self.updateSettings(paper_bgcolor="white", plot_bgcolor="white" ,updateFig=False)
 
         return [outFile]
 
