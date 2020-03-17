@@ -542,5 +542,5 @@ def spoken_message(message):
     if sys.platform == 'linux':
         os.system(f'''espeak -s 150 "{message}" 2>/dev/null''')
     elif sys.platform == 'darwin':
-        os.system(f'''osascript -e 'say "{message}"''')
+        os.system(f'''osascript -e 'say "{message}"' ''')
 
