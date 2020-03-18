@@ -1,5 +1,6 @@
 from numbers import Integral
 import numpy as np
+from functools import lru_cache
 
 from .sile import SileCDFSiesta
 from ..sile import *
@@ -28,10 +29,12 @@ Ry2eV = unit_convert('Ry', 'eV')
 class ncSileSiesta(SileCDFSiesta):
     """ Generic NetCDF output file containing a large variety of information """
 
+    @lru_cache(maxsize=1)
     def read_supercell_nsc(self):
         """ Returns number of supercell connections """
         return np.array(self._value('nsc'), np.int32)
 
+    @lru_cache(maxsize=1)
     def read_supercell(self):
         """ Returns a SuperCell object from a Siesta.nc file """
         cell = np.array(self._value('cell'), np.float64)
@@ -43,6 +46,7 @@ class ncSileSiesta(SileCDFSiesta):
 
         return SuperCell(cell, nsc=nsc)
 
+    @lru_cache(maxsize=1)
     def read_basis(self):
         """ Returns a set of atoms corresponding to the basis-sets in the nc file """
         if 'BASIS' not in self.groups:
@@ -120,6 +124,7 @@ class ncSileSiesta(SileCDFSiesta):
             atom[i] = Atom(Z, orbital, mass=mass, tag=label)
         return atom
 
+    @lru_cache(maxsize=1)
     def read_geometry(self):
         """ Returns Geometry object from a Siesta.nc file """
 
@@ -142,10 +147,12 @@ class ncSileSiesta(SileCDFSiesta):
         geom = Geometry(xyz, atom, sc=sc)
         return geom
 
+    @lru_cache(maxsize=1)
     def read_force(self):
         """ Returns a vector with final forces contained. """
         return _a.arrayd(self._value('fa')) * Ry2eV / Bohr2Ang
 
+    @lru_cache(maxsize=1)
     def read_fermi_level(self):
         """ Returns the fermi-level """
         return self._value('Ef')[:] * Ry2eV
@@ -310,14 +317,12 @@ class ncSileSiesta(SileCDFSiesta):
         fc[:, :, 1, :, :] *= -1
         return fc * Ry2eV / Bohr2Ang
 
+    @property
+    @lru_cache(maxsize=1)
     def grids(self):
         """ Return a list of available grids in this file. """
 
-        grids = []
-        for g in self.groups['GRID'].variables:
-            grids.expand(g)
-
-        return grids
+        return list(self.groups['GRID'].variables)
 
     def read_grid(self, name, spin=0, **kwargs):
         """ Reads a grid in the current Siesta.nc file
