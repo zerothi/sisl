@@ -309,11 +309,11 @@ def get_siles(attrs=None, rules=False):
 
     siles = []
     objs = __sile_rules if rules else __siles
-    for obj in iterable:
+    for obj in objs:
         for attr in attrs:
-            cls = obj.cls if rules else obj
+            sile = obj.cls if rules else obj
             if hasattr(sile, attr):
-                siles.append(sile)
+                siles.append(obj)
                 break
 
     return siles

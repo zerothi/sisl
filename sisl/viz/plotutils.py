@@ -9,6 +9,8 @@ import dill as pickle
 #import pickle
 from copy import deepcopy
 
+from sisl.io.sile import get_siles
+
 #-------------------------------------
 #            Informative
 #-------------------------------------
@@ -17,6 +19,9 @@ def getPlotClasses():
     from .session import Session
 
     return Session.getPlotClasses(None)
+
+def get_plotable_sile_rules():
+    return get_siles(["__plot__"], rules=True)
 
 #-------------------------------------
 #           Python helpers
