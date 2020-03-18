@@ -69,7 +69,7 @@ def sisl_tmp(request, tmpdir_factory):
                 self.dir(dir_name)
                 i = -1
             self.files.append(self.dirs[i] / name)
-            return self.files[-1]
+            return str(self.files[-1])
 
         def getbase(self):
             return self.dirs[-1]
