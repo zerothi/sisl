@@ -11,6 +11,7 @@ def configuration(parent_package='', top_path=None):
 
     config.add_subpackage('geom')
     config.add_subpackage('io')
+    config.add_subpackage('mixing')
     config.add_subpackage('physics')
     config.add_subpackage('linalg')
     config.add_subpackage('shape')

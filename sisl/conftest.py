@@ -166,7 +166,7 @@ def pytest_configure(config):
                  'version', 'bz', 'brillouinzone', 'inv', 'eig', 'linalg',
                  'density_matrix', 'dynamicalmatrix', 'energydensity_matrix',
                  'siesta', 'tbtrans', 'ham', 'vasp', 'w90', 'wannier90', 'gulp', 'fdf',
-                 'table', 'cube', 'slow', 'selector']:
+                 'table', 'cube', 'slow', 'selector', 'overlap', 'mixing']:
         config.addinivalue_line(
             "markers", f"{mark}: mark test to run only on named environment"
         )
