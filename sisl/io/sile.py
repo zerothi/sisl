@@ -288,7 +288,7 @@ def get_sile(file, *args, **kwargs):
     return sile(Path(str_spec(str(file))[0]), *args, **kwargs)
 
 
-def get_siles(attrs=None):
+def get_siles(attrs=None, rules=False):
     """ Retrieve all files with specific attributes or methods
 
     Parameters
@@ -296,6 +296,8 @@ def get_siles(attrs=None):
     attrs : list of attribute names
        limits the returned objects to those that have
        the given attributes ``hasattr(sile, attrs)``, default ``[None]``
+    rules: boolean, optional
+        returns the rules instead of the siles
     """
     global __siles
 
@@ -306,8 +308,10 @@ def get_siles(attrs=None):
         return list(__siles)
 
     siles = []
-    for sile in __siles:
+    objs = __sile_rules if rules else __siles
+    for obj in iterable:
         for attr in attrs:
+            cls = obj.cls if rules else obj
             if hasattr(sile, attr):
                 siles.append(sile)
                 break
