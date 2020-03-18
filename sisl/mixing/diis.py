@@ -51,7 +51,11 @@ class DIISMixer(History, Metric, LinearMixer):
         RHS = _a.zerosd(n_h + 1)
         RHS[-1] = 1
 
-        c = solve(B, RHS)
+        try:
+            c = solve(B, RHS)
+        except:
+            # We have a LinalgError
+            return _a.arrayd([self.weight])
 
         # -c[-1] == Lagrange multiplier (currently not used for anything)
         lagrange = -c[-1]
@@ -71,7 +75,7 @@ class DIISMixer(History, Metric, LinearMixer):
         coeff : numpy.ndarray
            coefficients used for extrapolation
         """
-        if self.history == 1:
+        if len(coeff) == 1:
             w = coeff[0]
             return self._hist[0][0] * (1 - w) + self._hist[1][0] * w
         return reduce(add, map(mul, coeff, self._hist[0]))
