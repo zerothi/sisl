@@ -419,8 +419,46 @@ class Plot(Configurable):
             "_plotClasses": cls
         })
 
+    def __new__(cls, filename=None, **kwargs):
+        '''
+        This method decides what to return when the plot class is instantiated.
+
+        It is supposed to help the users by making the plot class very functional
+        without the need for the users to use extra methods.
+        '''
+
+        #If a filename is recieved, we will try to find a plot for it
+        if isinstance(filename, str):
+            SileClass = sisl.get_sile_class(filename)
+
+            if SileClass == sisl.io.siesta.fdfSileSiesta:
+                kwargs["rootFdf"] = filename
+                plot = cls(**kwargs)
+            else:
+                if hasattr(SileClass, "__plot__"):
+                    plot = SileClass.__plot__(**kwargs)
+                elif hasattr(SileClass, "_plot"):
+                    PlotClass, kwarg_key = SileClass._plot
+                    plot = PlotClass(**{kwarg_key: filename})
+            
+            # Inform that we don't want to run the __init__ method anymore
+            # See the beggining of __init__()
+            plot.INIT_ON_NEW = True
+
+            return plot
+
+        return object.__new__(cls)
+
     @afterSettingsInit
     def __init__(self, *args, H = None,**kwargs):
+
+        if getattr(self, "INIT_ON_NEW", False):
+            delattr(self, "INIT_ON_NEW")
+            return
+
+        #Give the user the possibility to do things before initialization (IDK whyy)
+        if callable( getattr(self, "_beforeInit", None )):
+            self._beforeInit()
 
         # Check if the user has provided a hamiltonian (which can contain a geometry)
         # This is not meant to be used by the GUI (in principle), just programatically

@@ -20,8 +20,8 @@ def getPlotClasses():
 
     return Session.getPlotClasses(None)
 
-def get_plotable_sile_rules():
-    return get_siles(["__plot__"], rules=True)
+def get_plotable_siles(rules=False):
+    return get_siles(["_plot", "__plot__"], rules=rules)
 
 #-------------------------------------
 #           Python helpers
