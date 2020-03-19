@@ -90,13 +90,17 @@ class ForcesPlot(Plot):
         if forces_type == 'total':
             self.data = [{
                 'type': 'scatter',
+                'mode': 'lines+markers',
                 'y': axis_forces,
-            } for axis_forces in self.total_forces.T]
+                'name': f'{axis_name} axis',
+            } for axis_forces, axis_name in zip(self.total_forces.T, ("X", "Y", "Z"))]
 
         elif forces_type == 'max':
             self.data = [{
                 'type': 'scatter',
-                'y': [ np.max(abs(MDstep)) for MDstep in self.forces],
+                'mode': 'lines+markers',
+                'y': self.max_forces,
                 'marker': {'color': self.setting("linecolor")},
-                'line': {"color": self.setting("linecolor") }
+                'line': {"color": self.setting("linecolor")},
+                'name': 'Max force'
             }]

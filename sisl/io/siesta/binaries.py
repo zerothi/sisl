@@ -19,6 +19,7 @@ from sisl.physics.sparse import SparseOrbitalBZ
 from sisl.physics import Hamiltonian, DensityMatrix, EnergyDensityMatrix
 from sisl.physics.overlap import Overlap
 from sisl.physics.electron import EigenstateElectron
+from sisl.viz import GridPlot
 
 
 __all__ = ['tshsSileSiesta', 'onlysSileSiesta', 'tsdeSileSiesta']
@@ -637,6 +638,8 @@ class _gridSileSiesta(SileBinSiesta):
     The Siesta binary grid sile will automatically convert the units from Siesta
     units (Bohr, Ry) to sisl units (Ang, eV) provided the correct extension is present.
     """
+
+    _plot = (GridPlot, 'gridFile')
 
     def read_supercell(self, *args, **kwargs):
         r""" Return the cell contained in the file """
