@@ -34,7 +34,7 @@ class LinearMixer(Mixer):
 
     def __call__(self, f, df):
         r""" Calculate a new variable :math:`f'` using input and output of the functional
-        
+
         Parameters
         ----------
         f : object

@@ -24,6 +24,7 @@ class Metric:
 
     where generally the metric :math:`\mathbf M = 1`.
     """
+
     def __init__(self, metric=None):
         if metric is None:
             class _dummy_dot:
@@ -45,10 +46,12 @@ class Metric:
         except:
             return (a * self._metric(b)).sum()
 
+    __call__ = inner
+
 
 class History:
     r""" A history class for retaining a set of history elements
-    
+
     A history class may contain several different variables in a `collections.deque`
     list allowing easy managing of the length of the history.
 
@@ -66,6 +69,7 @@ class History:
     variables : int, optional
        number of different variables stored as a history.
     """
+
     def __init__(self, history=2, variables=2):
         # Create a list of queues
         self._hist = [deque(maxlen=history) for i in range(variables)]
@@ -75,7 +79,7 @@ class History:
     def variables(self):
         r""" Number of different variables that can be contained """
         return len(self._hist)
-        
+
     @property
     @lru_cache(maxsize=1)
     def history_max(self):

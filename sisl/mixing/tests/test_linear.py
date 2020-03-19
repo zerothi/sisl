@@ -13,7 +13,7 @@ def test_linear_mixer():
     def scf(f):
         return np.cos(f)
 
-    f = np.zeros(1000)
+    f = np.linspace(0, 7, 1000)
     mix = LinearMixer()
 
     dmax = 1
