@@ -96,6 +96,9 @@ from . import linalg
 # Utilities
 from . import utils
 
+# Mixing
+from . import mixing
+
 # Below are sisl-specific imports
 from .quaternion import *
 from .shape import *

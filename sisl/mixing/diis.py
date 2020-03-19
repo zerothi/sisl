@@ -11,14 +11,14 @@ from .linear import LinearMixer
 __all__ = ['DIISMixer', 'PulayMixer']
 
 
-class DIISMixer(History, Metric, LinearMixer):
+class DIISMixer(History, LinearMixer, Metric):
     r""" DIIS mixer """
 
     def __init__(self, weight=0.1, history=2, metric=None, **kwargs):
         # This will call History.__init__
         super().__init__(history, 2)
-        Metric.__init__(self, metric)
         LinearMixer.__init__(self, weight)
+        Metric.__init__(self, metric)
 
     def coefficients(self):
         r""" Calculate the coefficients according to Pulay's method """
@@ -52,6 +52,9 @@ class DIISMixer(History, Metric, LinearMixer):
         RHS[-1] = 1
 
         try:
+            # Apparently we cannot use assume_a='sym'
+            # Is this because sym also implies positive definitiness?
+            # However, these are matrices of order ~30, so we don't care
             c = solve(B, RHS)
         except:
             # We have a LinalgError
@@ -61,9 +64,9 @@ class DIISMixer(History, Metric, LinearMixer):
         lagrange = -c[-1]
         return c[:-1]
 
-    def __call__(self, f_in, f_out):
+    def __call__(self, f, df):
         # Add to history
-        self.append(f_in, f_out - f_in)
+        self.append(f, df)
         # Calculate new mixing quantity
         return self.mix(self.coefficients())
 
@@ -76,8 +79,9 @@ class DIISMixer(History, Metric, LinearMixer):
            coefficients used for extrapolation
         """
         if len(coeff) == 1:
-            w = coeff[0]
-            return self._hist[0][0] * (1 - w) + self._hist[1][0] * w
-        return reduce(add, map(mul, coeff, self._hist[0]))
+            return self._hist[0][0] + self._hist[1][0] * coeff[0]
+        return reduce(add, map(mul, coeff, self._hist[0])) + \
+            reduce(add, map(mul, coeff * self.weight, self._hist[1]))
+
 
 PulayMixer = DIISMixer

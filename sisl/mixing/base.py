@@ -7,7 +7,10 @@ __all__ = ['Mixer', 'History', 'Metric']
 
 class Mixer:
     r""" Base class mixer """
-    pass
+
+    def clear(self):
+        r""" Dummy for history mixers such that all mixers can call `clear` """
+        pass
 
 
 class Metric:
@@ -108,18 +111,27 @@ class History:
         for i, arg in zip(variables, args):
             self._hist[i].append(arg)
 
-    def clear(self, variables=None):
+    def clear(self, index=None, variables=None):
         r""" Clear variables to the history
 
         Parameters
         ----------
-        variables : int or listlike of int
+        index : int or array_like of int
+            which indices of the history we should clear
+        variables : int or array_like of int
             specify which variables should be cleared
         """
         if variables is None:
             variables = range(self.variables)
-
         variables = list(variables)
 
-        for i in variables:
-            self._hist[i].clear()
+        if index is None:
+            for v in variables:
+                self._hist[v].clear()
+        else:
+            index = list(index)
+            # We need to ensure we delete in the correct order
+            index.sort(reverse=True)
+            for v in variables:
+                for i in index:
+                    del self._hist[v][i]

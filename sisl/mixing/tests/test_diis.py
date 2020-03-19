@@ -22,6 +22,6 @@ def test_diis_mixer(history):
     i = 0
     while dmax > 1e-6:
         i += 1
-        f_out = scf(f)
-        dmax = np.fabs(f_out - f).max()
-        f = mix(f, f_out)
+        df = scf(f) - f
+        dmax = np.fabs(df).max()
+        f = mix(f, df)

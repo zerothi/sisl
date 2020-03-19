@@ -20,6 +20,6 @@ def test_linear_mixer():
     i = 0
     while dmax > 1e-7:
         i += 1
-        f_out = scf(f)
-        dmax = np.fabs(f_out - f).max()
-        f = mix(f, f_out)
+        df = scf(f) - f
+        dmax = np.fabs(df).max()
+        f = mix(f, df)

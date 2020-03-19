@@ -179,5 +179,3 @@ from .hamiltonian import *
 from .dynamicalmatrix import *
 from .overlap import *
 from .self_energy import *
-
-__all__ = [s for s in dir() if not s.startswith('_')]
