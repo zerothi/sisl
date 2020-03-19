@@ -437,7 +437,7 @@ class Session(Configurable):
 
         #Get the structures
         self.warehouse["structs"] = {
-            str(uuid.uuid4()): {"name": os.path.basename(path), "path": path } for path in findFiles(self.setting("rootDir"), "*fdf", self.setting("searchDepth"))
+            str(uuid.uuid4()): {"name": os.path.basename(path), "path": path} for path in findFiles(self.setting("rootDir"), "*fdf", self.setting("searchDepth"))
         }
 
         #Avoid passing unnecessary info to the browser.
