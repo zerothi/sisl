@@ -441,7 +441,7 @@ class Session(Configurable):
         }
 
         #Avoid passing unnecessary info to the browser.
-        return {structID: {"id": structID, **{k: struct[k] for k in ["name"]}} for structID, struct in deepcopy(self.warehouse["structs"]).items() }
+        return {structID: {"id": structID, **{k: struct[k] for k in ["name", "path"]}} for structID, struct in deepcopy(self.warehouse["structs"]).items() }
     
     #-----------------------------------------
     #      NOTIFY CURRENT STATE TO GUI
