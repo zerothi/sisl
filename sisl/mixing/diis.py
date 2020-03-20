@@ -107,7 +107,7 @@ class AdaptiveDIISMixer(DIISMixer):
         self._weight_min = weight[0]
         self._weight_delta = weight[1] - weight[0]
 
-    def adjust_weight(self, lagrange, offset=10.):
+    def adjust_weight(self, lagrange, offset=3):
         r""" Adjust the weight according to the input Lagrange multiplier.
 
         Once close to convergence the Lagrangian will be close to 0, otherwise it will go
@@ -115,7 +115,7 @@ class AdaptiveDIISMixer(DIISMixer):
         We here adjust using the Fermi-function to hit the minimum/maximum weight with a
         suitable spread
         """
-        exp_lag_log = np.exp((np.log(lagrange) + offset) / 12)
+        exp_lag_log = np.exp((np.log(lagrange ** 0.5) + offset) / 2)
         self._weight = self._weight_delta / (exp_lag_log + 1) + self._weight_min
 
     def coefficients(self):
