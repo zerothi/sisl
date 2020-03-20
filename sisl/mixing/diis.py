@@ -23,7 +23,7 @@ class DIISMixer(History, LinearMixer, Metric):
 
     def solve_lagrange(self):
         r""" Calculate the coefficients according to Pulay's method, return everything + Lagrange multiplier """
-        n_h = self.history
+        n_h = len(self._hist[1])
         if n_h == 1:
             return _a.arrayd([self.weight]), 1000.
 

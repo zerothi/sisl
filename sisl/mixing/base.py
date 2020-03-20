@@ -93,26 +93,26 @@ class History:
 
     __len__ = history
 
-    def append(self, *args, variables=None):
+    def append(self, *args, variable=None):
         r""" Add variables to the history
 
         Parameters
         ----------
         *args : tuple of object
             each variable will be added to the history of the mixer
-        variables : int or listlike of int
+        variable : int or listlike of int
             specify which variables the history should be added to, note:
-            ``len(args) == len(variables)``
+            ``len(args) == len(variable)``
         """
-        if variables is None:
-            variables = range(self.variables)
+        if variable is None:
+            variable = range(self.variables)
 
         # Clarify a few things
-        variables = list(variables)
-        if len(args) != len(variables):
+        variable = list(variable)
+        if len(args) != len(variable):
             raise ValueError(f"{self.__class__.__name__}.append requires same length input")
 
-        for i, arg in zip(variables, args):
+        for i, arg in zip(variable, args):
             self._hist[i].append(arg)
 
     def clear(self, index=None, variables=None):
