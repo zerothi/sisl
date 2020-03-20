@@ -30,10 +30,12 @@ class DIISMixer(History, LinearMixer, Metric):
     def solve_lagrange(self):
         r""" Calculate the coefficients according to Pulay's method, return everything + Lagrange multiplier """
         n_h = len(self._hist[1])
-        if n_h <= 1:
+        if n_h == 0:
             # Externally the coefficients should reflect the weight per previous iteration.
             # The mixing weight is an additional parameter
             return _a.arrayd([1.]), 100.
+        elif n_h == 1:
+            return _a.arrayd([1.]), self.inner(self._hist[1][0], self._hist[1][0])
 
         # Initialize the matrix to be solved against
         B = _a.emptyd([n_h + 1, n_h + 1])
@@ -67,7 +69,7 @@ class DIISMixer(History, LinearMixer, Metric):
             return c[:-1], -c[-1]
         except np.linalg.LinAlgError:
             # We have a LinalgError
-            return _a.arrayd([1.]), 100.
+            return _a.arrayd([1.]), self.inner(self._hist[1][-1], self._hist[1][-1])
 
     def coefficients(self):
         r""" Calculate coefficients of the Lagrangian """
@@ -116,7 +118,7 @@ class AdaptiveDIISMixer(DIISMixer):
         self._weight_min = weight[0]
         self._weight_delta = weight[1] - weight[0]
 
-    def adjust_weight(self, lagrange, offset=3, spread=2):
+    def adjust_weight(self, lagrange, offset=13, spread=7):
         r""" Adjust the weight according to the Lagrange multiplier.
 
         Once close to convergence the Lagrange multiplier will be close to 0, otherwise it will go
@@ -124,7 +126,7 @@ class AdaptiveDIISMixer(DIISMixer):
         We here adjust using the Fermi-function to hit the minimum/maximum weight with a
         suitable spread
         """
-        exp_lag_log = np.exp((np.log(lagrange ** 0.5) + offset) / spread)
+        exp_lag_log = np.exp((np.log(lagrange) + offset) / spread)
         self._weight = self._weight_min + self._weight_delta / (exp_lag_log + 1)
 
     def coefficients(self):
