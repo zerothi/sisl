@@ -27,6 +27,10 @@ class LinearMixer(Mixer):
         assert weight > 0
         self._weight = weight
 
+    def __str__(self):
+        r""" String representation """
+        return self.__class__.__name__ + f"{{weight: {self.weight:.4f}}}"
+
     @property
     def weight(self):
         r""" Weight used for the linear mixing """

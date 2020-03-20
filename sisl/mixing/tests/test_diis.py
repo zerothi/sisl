@@ -17,6 +17,7 @@ def test_diis_mixer(history):
 
     f = np.linspace(0, 7, 1000)
     mix = DIISMixer(history=history)
+    s = str(mix)
 
     dmax = 1
     i = 0
@@ -28,13 +29,14 @@ def test_diis_mixer(history):
 
 
 @pytest.mark.parametrize("history", [2, 10])
-def test_adiis_mixer(history):
+@pytest.mark.parametrize("weight", [0.5, (0.3, 0.7)])
+def test_adiis_mixer(weight, history):
     # test for different history lengths
     def scf(f):
         return np.cos(f)
 
     f = np.linspace(0, 7, 1000)
-    mix = AdaptiveDIISMixer(history=history)
+    mix = AdaptiveDIISMixer(weight, history=history)
 
     dmax = 1
     i = 0

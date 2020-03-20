@@ -15,6 +15,7 @@ def test_linear_mixer():
 
     f = np.linspace(0, 7, 1000)
     mix = LinearMixer()
+    s = str(mix)
 
     dmax = 1
     i = 0

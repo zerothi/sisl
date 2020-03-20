@@ -1,5 +1,6 @@
 from functools import reduce
 from operator import add, mul
+from numbers import Real
 import numpy as np
 
 import sisl._array as _a
@@ -20,6 +21,11 @@ class DIISMixer(History, LinearMixer, Metric):
         super().__init__(history, 2)
         LinearMixer.__init__(self, weight)
         Metric.__init__(self, metric)
+
+    def __str__(self):
+        r""" String representation """
+        hist = History.__str__(self).replace(self.__class__.__name__, History.__name__)
+        return self.__class__.__name__ + f"{{weight: {self.weight:.4f},\n  {hist}\n}}"
 
     def solve_lagrange(self):
         r""" Calculate the coefficients according to Pulay's method, return everything + Lagrange multiplier """
@@ -86,7 +92,7 @@ class DIISMixer(History, LinearMixer, Metric):
             reduce(add, map(mul, coeff * self.weight, self._hist[1]))
 
 
-PulayMixer = DIISMixer
+PulayMixer = type("PulayMixer", (DIISMixer, ), {})
 
 
 class AdaptiveDIISMixer(DIISMixer):
@@ -104,6 +110,8 @@ class AdaptiveDIISMixer(DIISMixer):
     """
 
     def __init__(self, weight=(0.03, 0.5), history=2, metric=None):
+        if isinstance(weight, Real):
+            weight = (max(0.001, weight - 0.1), min(1., weight + 0.1))
         super().__init__(weight[0], history, metric)
         self._weight_min = weight[0]
         self._weight_delta = weight[1] - weight[0]
@@ -126,4 +134,4 @@ class AdaptiveDIISMixer(DIISMixer):
         return c
 
 
-AdaptivePulayMixer = AdaptiveDIISMixer
+AdaptivePulayMixer = type("AdaptivePulayMixer", (AdaptiveDIISMixer, ), {})

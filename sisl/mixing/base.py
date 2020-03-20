@@ -74,6 +74,10 @@ class History:
         # Create a list of queues
         self._hist = [deque(maxlen=history) for i in range(variables)]
 
+    def __str__(self):
+        """ str of the object """
+        return self.__class__.__name__ + f"{{history: {self.history}/{self.history_max}, variables={self.variables}}}"
+
     @property
     @lru_cache(maxsize=1)
     def variables(self):
