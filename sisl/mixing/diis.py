@@ -24,8 +24,10 @@ class DIISMixer(History, LinearMixer, Metric):
     def solve_lagrange(self):
         r""" Calculate the coefficients according to Pulay's method, return everything + Lagrange multiplier """
         n_h = len(self._hist[1])
-        if n_h == 1:
-            return _a.arrayd([self.weight]), 1000.
+        if n_h <= 1:
+            # Externally the coefficients should reflect the weight per previous iteration.
+            # The mixing weight is an additional parameter
+            return _a.arrayd([1.]), 100.
 
         # Initialize the matrix to be solved against
         B = _a.emptyd([n_h + 1, n_h + 1])
@@ -59,11 +61,12 @@ class DIISMixer(History, LinearMixer, Metric):
             return c[:-1], -c[-1]
         except np.linalg.LinAlgError:
             # We have a LinalgError
-            return _a.arrayd([self.weight]), 1000.
+            return _a.arrayd([1.]), 100.
 
     def coefficients(self):
         r""" Calculate coefficients of the Lagrangian """
-        return self.solve_lagrange()[0]
+        c, lagrange = self.solve_lagrange()
+        return c
 
     def __call__(self, f, df):
         # Add to history
@@ -79,8 +82,6 @@ class DIISMixer(History, LinearMixer, Metric):
         coeff : numpy.ndarray
            coefficients used for extrapolation
         """
-        if len(coeff) == 1:
-            return self._hist[0][0] + self._hist[1][0] * coeff[0]
         return reduce(add, map(mul, coeff, self._hist[0])) + \
             reduce(add, map(mul, coeff * self.weight, self._hist[1]))
 
@@ -107,16 +108,16 @@ class AdaptiveDIISMixer(DIISMixer):
         self._weight_min = weight[0]
         self._weight_delta = weight[1] - weight[0]
 
-    def adjust_weight(self, lagrange, offset=3):
-        r""" Adjust the weight according to the input Lagrange multiplier.
+    def adjust_weight(self, lagrange, offset=3, spread=2):
+        r""" Adjust the weight according to the Lagrange multiplier.
 
-        Once close to convergence the Lagrangian will be close to 0, otherwise it will go
-        to infinity.
+        Once close to convergence the Lagrange multiplier will be close to 0, otherwise it will go
+        towards infinity.
         We here adjust using the Fermi-function to hit the minimum/maximum weight with a
         suitable spread
         """
-        exp_lag_log = np.exp((np.log(lagrange ** 0.5) + offset) / 2)
-        self._weight = self._weight_delta / (exp_lag_log + 1) + self._weight_min
+        exp_lag_log = np.exp((np.log(lagrange ** 0.5) + offset) / spread)
+        self._weight = self._weight_min + self._weight_delta / (exp_lag_log + 1)
 
     def coefficients(self):
         r""" Calculate coefficients and adjust weights according to a Lagrange multiplier """
