@@ -443,11 +443,12 @@ class Plot(Configurable):
                 kwargs["rootFdf"] = filename
                 plot = cls(**kwargs)
             else:
+
                 if hasattr(SileClass, "__plot__"):
                     plot = SileClass.__plot__(**kwargs)
                 elif hasattr(SileClass, "_plot"):
                     PlotClass, kwarg_key = SileClass._plot
-                    plot = PlotClass(**{kwarg_key: filename})
+                    plot = PlotClass(**{kwarg_key: filename}, title=os.path.basename(filename))
             
             # Inform that we don't want to run the __init__ method anymore
             # See the beggining of __init__()
@@ -560,6 +561,10 @@ class Plot(Configurable):
             self.setFiles()
         except Exception:
             pass
+
+        #Update the title of the plot if there is none
+        if not self.setting("title"):
+            self.updateSettings(updateFig = False, title = '{} {}'.format(getattr(self, "struct", ""), self.plotType) )
         
         #We try to read from the different sources using the _readFromSources method of the parent Plot class.
         filesToFollow = self._readFromSources()
@@ -729,9 +734,6 @@ class Plot(Configurable):
         self.wdir = os.path.join(self.rootDir, self.setting("resultsPath"))
         self.fdfSile = sisl.get_sile(rootFdf)
         self.struct = self.fdfSile.get("SystemLabel", "")
-
-        #Update the title
-        self.updateSettings(updateFig = False, title = '{} {}'.format(self.struct, self._plotType) )
             
         #Check that the required files are there
         #if RequirementsFilter().check(self.rootFdf, self.__class__.__name__ ):
