@@ -291,6 +291,14 @@ class Plot(Configurable):
     )
 
     @classmethod
+    def plotName(cls):
+        return getattr(cls, "_plotType", cls.__name__)
+
+    @property
+    def plotType(self):
+        return self.__class__.plotName()
+
+    @classmethod
     def animated(cls, *args, fixed = {}, frameNames = None, **kwargs):
         '''Creates an animation out of a class.
 

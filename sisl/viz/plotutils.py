@@ -249,7 +249,11 @@ def load(path):
     
     return loadedObj
 
-def findFiles(rootDir = ".", searchString = "*", depth = [0,0], sort = True, sortFn = None):
+import fnmatch
+import os
+import re
+
+def findFiles(rootDir = ".", searchString = "*", depth = [0,0], sort = True, sortFn = None, case_insensitive=False):
     '''
     Function that finds files (or directories) according to some conditions.
 
@@ -274,6 +278,8 @@ def findFiles(rootDir = ".", searchString = "*", depth = [0,0], sort = True, sor
         Whether the returned list of paths should be sorted.
     sortFn: optional, function
         The function that has to be used for sorting the paths. Only meaningful if sort is True.
+    case_insensitive: boolean, optional
+        whether the search should be case insensitive
 
     Returns
     -----------
@@ -283,6 +289,9 @@ def findFiles(rootDir = ".", searchString = "*", depth = [0,0], sort = True, sor
     #Normalize the depth parameter
     if isinstance(depth, int):
         depth = [depth]*2
+    
+    if case_insensitive:
+        searchString = ''.join([f'[{char.upper()}{char.lower()}]' if char.isalpha() else char for char in searchString])
 
     files = []
     for depth in range(depth[0],depth[1] + 1):

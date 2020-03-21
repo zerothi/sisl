@@ -9,7 +9,7 @@ from copy import deepcopy
 import sisl
 from .plot import Plot, MultiplePlot, Animation
 from .configurable import Configurable, afterSettingsInit
-from .plotutils import findFiles
+from .plotutils import findFiles, get_plotable_siles
 
 from .inputFields import InputField, TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput
 
@@ -126,6 +126,7 @@ class Session(Configurable):
         self.warehouse = {
             "plots": {},
             "structs": {},
+            "plotables": {},
             "tabs": [],
         }
 
@@ -183,18 +184,23 @@ class Session(Configurable):
         
         return self
 
-    def newPlot(self, plotClass, tabID = None, structID = None, animation = False ,**kwargs):
+    def newPlot(self, plotClass=None, tabID = None, structID = None, plotableID=None, animation = False ,**kwargs):
         '''
         Get a new plot from the specified class
 
         Arguments
         -----------
-        plotClass: str
-            The name of the desired class
-        tabID: str
+        plotClass: str, optional
+            The name of the desired class.
+            If not provided, the session will try to initialize from the `Plot` parent class. 
+            This may be useful if the keyword argument filename is provided, for example, to let
+            `Plot` guess which type of plot to use. 
+        tabID: str, optional
             Tab where the plot should be stored
         structID: str, optional
-            The ID of the structure for which we want the plot
+            The ID of the structure for which we want the plot.
+        plotableID: str, optional
+            The ID of the plotable file that we want to plot.
         animation: bool, optional
             Whether the initialized plot should be an animation.
             
@@ -208,13 +214,18 @@ class Session(Configurable):
             The initialized new plot
         '''
 
-        for PlotClass in self.getPlotClasses():
-            if PlotClass.__name__ == plotClass:
-                ReqPlotClass = PlotClass
-                break
+        if plotClass is None:
+            ReqPlotClass = Plot
         else:
-            raise Exception("Didn't find the desired plot class: {}".format(plotClass))
+            for PlotClass in self.getPlotClasses():
+                if PlotClass.__name__ == plotClass:
+                    ReqPlotClass = PlotClass
+                    break
+            else:
+                raise Exception("Didn't find the desired plot class: {}".format(plotClass))
 
+        if plotableID is not None:
+            kwargs = {**kwargs, "filename": self.warehouse["plotables"][plotableID]["path"] }
         if structID:
             kwargs = {**kwargs, "rootFdf": self.warehouse["structs"][structID]["path"] }
 
@@ -433,7 +444,9 @@ class Session(Configurable):
     #         STRUCTURES MANAGEMENT
     #-----------------------------------------
 
-    def getStructures(self):
+    def getStructures(self, path=None):
+
+        path = path or self.setting("rootDir")
 
         #Get the structures
         self.warehouse["structs"] = {
@@ -443,6 +456,25 @@ class Session(Configurable):
         #Avoid passing unnecessary info to the browser.
         return {structID: {"id": structID, **{k: struct[k] for k in ["name", "path"]}} for structID, struct in deepcopy(self.warehouse["structs"]).items() }
     
+    def getPlotables(self, path=None):
+
+        # Empty the plotables dictionary
+        self.warehouse["plotables"] = {}
+        path = path or self.setting("rootDir")
+
+        # Start filling it
+        for rule in get_plotable_siles(rules=True):
+            searchString = f"*.{rule.suffix}"
+            plotType = rule.cls._plot[0].plotName()
+
+            # Extend the plotables dict with the files that we find that belong to this sile
+            self.warehouse["plotables"] = { **self.warehouse["plotables"], **{
+                str(uuid.uuid4()): {"name": os.path.basename(path), "path": path, "plot": plotType} for path in findFiles(path, searchString, self.setting("searchDepth"), case_insensitive=True)
+            }}
+
+        #Avoid passing unnecessary info to the browser.
+        return {id: {"id": id, **{k: struct[k] for k in ["name", "path", "plot"]}} for id, struct in deepcopy(self.warehouse["plotables"]).items() }
+
     #-----------------------------------------
     #      NOTIFY CURRENT STATE TO GUI
     #-----------------------------------------
