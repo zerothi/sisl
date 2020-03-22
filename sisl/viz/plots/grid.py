@@ -51,23 +51,42 @@ class GridPlot(Plot):
             help = '''The axis along you want to see the grid, it will be averaged along the other ones '''
         ),
 
+        DropdownInput(
+            key = "zsmooth", name="2D heatmap smoothing method",
+            default='fast',
+            width = "s100% m50% l90%",
+            params={
+                'options': [
+                    {'label': 'best', 'value': 'best'},
+                    {'label': 'fast', 'value': 'fast'},
+                    {'label': 'False', 'value': False},
+                ],
+                'isSearchable': True,
+                'isClearable': False
+            },
+            help = '''Parameter that smoothens how data looks in a heatmap.<br>
+            'best' interpolates data, 'fast' interpolates pixels, 'False' displays the data as is.'''
+        ),
+
         IntegerInput(
             key="interpX", name="X axis interpolation",
             default=1,
-            help="Interpolation factor to make the grid finer on the X axis"
+            help="Interpolation factor to make the grid finer on the X axis.<br>See the zsmooth setting for faster smoothing of 2D heatmap."
         ),
 
         IntegerInput(
             key="interpY", name="Y axis interpolation",
             default=1,
-            help="Interpolation factor to make the grid finer on the Y axis"
+            help="Interpolation factor to make the grid finer on the Y axis<br>See the zsmooth setting for faster smoothing of 2D heatmap."
         ),
 
         IntegerInput(
             key="interpZ", name="Z axis interpolation",
             default=1,
-            help="Interpolation factor to make the grid finer on the Z axis"
-        )
+            help="Interpolation factor to make the grid finer on the Z axis<br>See the zsmooth setting for faster smoothing of 2D heatmap."
+        ),
+
+
 
     )
     
@@ -88,13 +107,23 @@ class GridPlot(Plot):
         display_axes = self.setting('axes')
 
         interpFactors = np.array([ self.setting(key) if ax in display_axes else 1 for ax, key in enumerate(["interpX", "interpY", "interpZ"])], dtype=int)
-        
-        if (interpFactors != 1).any():
-            grid = grid.interp(tuple([int(factor) for factor in grid.shape*interpFactors]))
+
+        interpolate = (interpFactors != 1).any()
 
         for ax in [0,1,2]:
             if ax not in display_axes:
                 grid = grid.average(ax)
+
+                if interpolate:
+                    #Duplicate this axis so that interpolate can work
+                    grid.grid = np.concatenate((grid.grid, grid.grid), axis=2)
+        
+        if interpolate:
+            grid = grid.interp([factor for factor in grid.shape*interpFactors])
+        
+            for ax in [0,1,2]:
+                if ax not in display_axes:
+                    grid = grid.average(ax)
 
         #Remove the leftover dimensions
         values = np.squeeze(grid.grid)
@@ -121,6 +150,7 @@ class GridPlot(Plot):
                 'z': values,
                 'x': np.arange(0, grid.cell[xaxis, xaxis], grid.dcell[xaxis, xaxis]) ,
                 'y': np.arange(0, grid.cell[yaxis, yaxis], grid.dcell[yaxis, yaxis]),
+                'zsmooth': self.setting('zsmooth')
             }]
 
             axesTitles = {'xaxis_title': f'{("X","Y", "Z")[xaxis]} axis', 'yaxis_title': f'{("X","Y", "Z")[yaxis]} axis'}
