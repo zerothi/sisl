@@ -949,7 +949,19 @@ class Plot(Configurable):
     #       PLOT MANIPULATION METHODS
     #-------------------------------------------
 
-    def show(self, *args, **kwargs):
+    def show(self, *args, listen=False, **kwargs):
+        '''
+        Shows the plot.
+
+        Parameters
+        ------
+        listen: boolean, optional
+            after showing, keeps listening for file changes to update the plot.
+            This is nice for monitoring.
+        '''
+
+        if listen:
+            self.listen(show=True, **kwargs)
 
         if not hasattr(self, "figure"):
             self.getFigure()
