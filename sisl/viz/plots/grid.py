@@ -37,7 +37,7 @@ class GridPlot(Plot):
         DropdownInput(
             key = "axes", name="Axes to display",
             default=[2],
-            width = "s100% m50% l33%",
+            width = "s100% m50% l90%",
             params={
                 'options': [
                     {'label': 'X', 'value': 0},
@@ -49,6 +49,24 @@ class GridPlot(Plot):
                 'isClearable': False
             },
             help = '''The axis along you want to see the grid, it will be averaged along the other ones '''
+        ),
+
+        IntegerInput(
+            key="interpX", name="X axis interpolation",
+            default=1,
+            help="Interpolation factor to make the grid finer on the X axis"
+        ),
+
+        IntegerInput(
+            key="interpY", name="Y axis interpolation",
+            default=1,
+            help="Interpolation factor to make the grid finer on the Y axis"
+        ),
+
+        IntegerInput(
+            key="interpZ", name="Z axis interpolation",
+            default=1,
+            help="Interpolation factor to make the grid finer on the Z axis"
         )
 
     )
@@ -66,15 +84,20 @@ class GridPlot(Plot):
     
     def _setData(self):
 
-        values = self.grid
+        grid = self.grid
         display_axes = self.setting('axes')
+
+        interpFactors = np.array([ self.setting(key) if ax in display_axes else 1 for ax, key in enumerate(["interpX", "interpY", "interpZ"])], dtype=int)
+        
+        if (interpFactors != 1).any():
+            grid = grid.interp(tuple([int(factor) for factor in grid.shape*interpFactors]))
 
         for ax in [0,1,2]:
             if ax not in display_axes:
-                values = values.average(ax)
-        
+                grid = grid.average(ax)
+
         #Remove the leftover dimensions
-        values = np.squeeze(values.grid)
+        values = np.squeeze(grid.grid)
 
         if values.ndim == 1:
             ax = display_axes[0]
@@ -83,7 +106,7 @@ class GridPlot(Plot):
                 'type': 'scatter',
                 'mode': 'lines',
                 'y': values,
-                'x': np.arange(0, self.grid.cell[ax,ax], self.grid.dcell[ax,ax]),
+                'x': np.arange(0, grid.cell[ax,ax], grid.dcell[ax,ax]),
             }]
 
             axesTitles = {'xaxis_title': f'{("X","Y", "Z")[ax]} axis', 'yaxis_title': 'Values' }
@@ -96,8 +119,8 @@ class GridPlot(Plot):
             self.data = [{
                 'type': 'heatmap',
                 'z': values,
-                'x': np.arange(0, self.grid.cell[xaxis, xaxis], self.grid.dcell[xaxis, xaxis]) ,
-                'y': np.arange(0, self.grid.cell[yaxis, yaxis], self.grid.dcell[yaxis, yaxis]),
+                'x': np.arange(0, grid.cell[xaxis, xaxis], grid.dcell[xaxis, xaxis]) ,
+                'y': np.arange(0, grid.cell[yaxis, yaxis], grid.dcell[yaxis, yaxis]),
             }]
 
             axesTitles = {'xaxis_title': f'{("X","Y", "Z")[xaxis]} axis', 'yaxis_title': f'{("X","Y", "Z")[yaxis]} axis'}
@@ -105,9 +128,9 @@ class GridPlot(Plot):
 
             self.data = [{
                 'type': 'isosurface',
-                'x': np.arange(0, self.grid.cell[0,0], self.grid.dcell[0,0]),
-                'y': np.arange(0, self.grid.cell[1,1], self.grid.dcell[1,1]),
-                'z': np.arange(0, self.grid.cell[2,2], self.grid.dcell[2,2]),
+                'x': np.arange(0, grid.cell[0,0], grid.dcell[0,0]),
+                'y': np.arange(0, grid.cell[1,1], grid.dcell[1,1]),
+                'z': np.arange(0, grid.cell[2,2], grid.dcell[2,2]),
                 'value': values.flatten(),
             }]
 
