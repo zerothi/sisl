@@ -4,6 +4,10 @@ import sys
 class Configurable:
     
     def initSettings(self, **kwargs):
+
+        if getattr(self, "AVOID_SETTINGS_INIT", False):
+            delattr(self, "AVOID_SETTINGS_INIT")
+            return
         
         self.settingsHistory = []
         
@@ -273,7 +277,7 @@ class Configurable:
 
             #Get the function name
             funcName = frame.f_code.co_name
-            
+
             #If it is in the list of functions provided on class definition (e.g. on Plot class) store it
             if funcName in self._onSettingsUpdate["functions"]:
                 self.whatToRunOnUpdate[settingKey] = funcName

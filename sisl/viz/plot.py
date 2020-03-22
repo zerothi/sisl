@@ -453,6 +453,7 @@ class Plot(Configurable):
             # Inform that we don't want to run the __init__ method anymore
             # See the beggining of __init__()
             plot.INIT_ON_NEW = True
+            plot.AVOID_SETTINGS_INIT = True
 
             return plot
 
