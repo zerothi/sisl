@@ -86,8 +86,6 @@ class GridPlot(Plot):
             help="Interpolation factor to make the grid finer on the Z axis<br>See the zsmooth setting for faster smoothing of 2D heatmap."
         ),
 
-
-
     )
     
     def _readNoSource(self):
@@ -136,6 +134,7 @@ class GridPlot(Plot):
                 'mode': 'lines',
                 'y': values,
                 'x': np.arange(0, grid.cell[ax,ax], grid.dcell[ax,ax]),
+                'name': os.path.basename(self.setting("gridFile"))
             }]
 
             axesTitles = {'xaxis_title': f'{("X","Y", "Z")[ax]} axis', 'yaxis_title': 'Values' }
