@@ -13,8 +13,16 @@ class bandsSileSiesta(SileSiesta):
     """ Bandstructure information """
 
     @sile_fh_open()
-    def read_data(self):
-        """ Returns data associated with the bands file """
+    def read_data(self, as_dataarray=False):
+        """ Returns data associated with the bands file
+        
+        Parameters
+        --------
+        as_dataarray: boolean, optional
+            if `True`, the information is returned as an `xarray.DataArray`
+            Ticks (if read) are stored as an attribute of the DataArray 
+            (under `array.tick_vals` and `array.tick_labels`)
+        """
         band_lines = False
 
         # Luckily the data is in eV
@@ -75,6 +83,41 @@ class bandsSileSiesta(SileSiesta):
                 l.shape = (ns, no)
                 b[ik, :, :] = l[:, :] - Ef
             vals = k, b
+        
+        if as_dataarray:
+            from xarray import DataArray
+
+            ticks = {"tick_vals": xlabels, "tick_labels": labels} if band_lines else {}
+            
+            arr = DataArray(
+                name="Energy",
+                data=b,
+                coords=[
+                    ("K", k),
+                    ("spin", np.arange(0,b.shape[1])),
+                    ("iBand", np.arange(0,b.shape[2]) + 1)
+                ],
+                attrs= {**ticks}
+            )
+
+            # Calculate the band gap to store it
+            above_fermi = arr.where(arr > 0)
+            below_fermi = arr.where(arr < 0)
+            CBbot = above_fermi.min()
+            VBtop = below_fermi.max()
+
+            CB = above_fermi.where(above_fermi==CBbot, drop=True).squeeze()
+            VB = below_fermi.where(below_fermi==VBtop, drop=True).squeeze()
+
+            arr.attrs['gap'] = float(CBbot - VBtop)
+            arr.attrs['gap_info'] = {
+                'k': (VB["K"].values, CB['K'].values),
+                'bands': (int(VB["iBand"]), int(CB["iBand"])),
+                'spin': (int(VB["spin"]), int(CB["spin"]))
+            }
+
+            return arr
+
         return vals
 
     @default_ArgumentParser(description="Manipulate bands file in sisl.")
