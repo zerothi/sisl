@@ -15,6 +15,12 @@ def test_fe(sisl_files):
     assert k.shape == (131, )
     assert eig.shape == (131, 2, 15)
     assert len(labels[0]) == 5
+    #Test the dataarray implementation
+    bands = si.read_data(as_dataarray=True)
+    assert bands['K'].shape == (131,)
+    assert bands['spin'].shape == (2,)
+    assert bands['iBand'].shape == (15,)
+    assert len(bands.tick_vals) == len(bands.tick_labels) == 5
 
 
 def test_fe_ArgumentParser(sisl_files, sisl_tmp):
