@@ -490,6 +490,9 @@ class Plot(Configurable):
         self.last_dataread = 0
         self._filesToFollow = []
 
+        # Initialize the figure
+        self.figure = go.Figure()
+
         #If plugins have been provided, then add them.
         #Plugins are an easy way of extending a plot. They can be methods, variables...
         #They are added to the object instance, not the whole class.
@@ -539,6 +542,24 @@ class Plot(Configurable):
         
         return string
     
+    def __getattr__(self, key):
+        '''
+        This method is executed only after python has found that there is no such attribute in the instance
+
+        So let's try to find it in the figure
+        '''
+        if key == "figure":
+            raise AttributeError
+
+        return getattr(self.figure, key)
+
+    def __setattr__(self, key, val):
+
+        if key in ["data", "layout", "frames"]:
+            self.figure.update(**{key: val})
+        else:
+            self.__dict__[key] = val
+
     @repeatIfChilds
     @afterSettingsUpdate
     def readData(self, updateFig = True, **kwargs):
@@ -792,13 +813,20 @@ class Plot(Configurable):
         Method to process the data that has been read beforehand by readData() and prepare the figure.
         '''
 
-        self.data = []
+        self.clear()
+
+        # This is used to know how many traces have been added, so that the user can clear only
+        # the traces written by the plot methods and keep traces that they have added later, if they want
+        self._starting_traces = len(self.data)
 
         self._setData()
 
         if updateFig:
             self.getFigure()
         
+        # The explanation for this is above (in the definition of _starting_traces)
+        self._own_traces_slice = slice(self._starting_traces, len(self.data))
+
         return self
     
     @afterSettingsUpdate
@@ -934,17 +962,11 @@ class Plot(Configurable):
             **self.settingsGroup("layout"),
             **framesLayout
         }
-            
-        self.figure = go.Figure({
-            'data': getattr(self, 'data', []),
-            'layout': self.layout,
-            'frames': getattr(self, 'frames', []),
-        })
 
         if callable( getattr(self, "_afterGetFigure", None )):
             self._afterGetFigure()
 
-        return self.figure
+        return self
     
     #-------------------------------------------
     #       PLOT MANIPULATION METHODS
@@ -1003,6 +1025,29 @@ class Plot(Configurable):
         
         return newPlot
     
+    def clear(self, plot_traces=True, added_traces=True):
+        '''
+        Clears the plot canvas so that data can be reset
+
+        Parameters
+        --------
+        plot_traces: boolean, optional
+            whether traces added by the plot's code should be cleared.
+        added_traces: boolean, optional
+            whether traces added externally (by the user) should be cleared.
+        '''
+
+        own_slice = getattr(self, '_own_traces_slice', slice(0,0))
+
+        if not plot_traces and added_traces:
+            self.figure.data = self.figure.data[own_slice]
+        elif not added_traces and plot_traces:
+            self.figure.data = [ trace for i, trace in enumerate(self.data) if i < own_slice.start or i >= own_slice.stop ]
+        else:
+            self.figure.data = []
+        
+        return self
+
     def normalize(self, axis = "y"):
         '''
         Normalizes all data between 0 and 1 along the requested axis
@@ -1048,17 +1093,8 @@ class Plot(Configurable):
         This method is thought mainly to prepare data to be sent through the API to the GUI.
         Data has to be sent as JSON, so this method can only return JSONifiable objects. (no numpy arrays, no NaN,...)
         '''
-
-        if hasattr(self, "figure"):
-
-            #This will take care of converting to JSON wierd datatypes such as np arrays and np.nan 
-            figure = json.dumps(self.figure, cls=plotly.utils.PlotlyJSONEncoder)
-
-        else:
-            figure = json.dumps({
-                "data": [],
-                "layout": {},
-            }, cls=plotly.utils.PlotlyJSONEncoder )
+        
+        figure = json.dumps(self.figure, cls=plotly.utils.PlotlyJSONEncoder)
 
         infoDict = {
             "id": self.id,

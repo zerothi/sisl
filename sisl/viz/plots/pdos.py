@@ -302,9 +302,6 @@ class PdosPlot(Plot):
 
         '''
 
-        #Initialize the data object for the plotly graph
-        self.data = []
-
         #Get only the energies we are interested in 
         Emin, Emax = np.array(self.setting("Erange"))
         plotEvals = [Evalue for Evalue in self.E if Emin < Evalue < Emax]
@@ -353,7 +350,7 @@ class PdosPlot(Plot):
                 else:
                     PDOS = PDOS.sum(axis = 0)   
             
-            self.data.append({
+            self.add_trace({
                 'type': 'scatter',
                 'x': PDOS,
                 'y': plotEvals ,
