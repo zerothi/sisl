@@ -149,6 +149,39 @@ class TestGrid:
         # grid... Perhaps this is ok, but not good... :(
         assert np.allclose(setup.g.grid, g1.grid)
 
+    def test_interp_2d(self, setup):
+        shape = np.array(setup.g.shape, np.int32)
+        g = setup.g.sum(2)
+        g = g.interp([g.shape[0] * 2, g.shape[1] * 2, 1])
+        g1 = g.interp([shape[0], shape[1], 1])
+        # Sadly the interpolation does not work as it really
+        # should...
+        # One cannot interp down/up and retrieve the same
+        # grid... Perhaps this is ok, but not good... :(
+        assert np.allclose(setup.g.sum(2).grid, g1.grid)
+
+    def test_interp_1d(self, setup):
+        shape = np.array(setup.g.shape, np.int32)
+        g = setup.g.sum(2).sum(0)
+        g = g.interp([1, g.shape[1] * 2, 1])
+        g1 = g.interp([1, shape[1], 1])
+        # Sadly the interpolation does not work as it really
+        # should...
+        # One cannot interp down/up and retrieve the same
+        # grid... Perhaps this is ok, but not good... :(
+        assert np.allclose(setup.g.sum(2).sum(0).grid, g1.grid)
+
+    def test_interp_extrap(self, setup):
+        shape = np.array(setup.g.shape, np.int32)
+        g = setup.g.sum(2)
+        g = g.interp([g.shape[0] * 2, g.shape[1] * 2, 10])
+        g1 = g.interp([shape[0], shape[1], 1])
+        # Sadly the interpolation does not work as it really
+        # should...
+        # One cannot interp down/up and retrieve the same
+        # grid... Perhaps this is ok, but not good... :(
+        assert np.allclose(setup.g.sum(2).grid, g1.grid)
+
     def test_index_ndim1(self, setup):
         mid = np.array(setup.g.shape, np.int32) // 2 - 1
         v = [0.001, 0., 0.001]
