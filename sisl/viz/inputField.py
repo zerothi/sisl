@@ -2,6 +2,7 @@
 
 from copy import deepcopy, copy
 import json
+import numpy as np
 
 from .plotutils import modifyNestedDict 
 
@@ -94,7 +95,7 @@ class InputField:
         default_input = deepcopy(getattr(self, "_default", {}))
 
         setattr(self, "inputField", {
-            'type': copy(getattr(self, '_type', None))
+            'type': copy(getattr(self, '_type', None)),
             **default_input,
             "params": {
                 **default_input.get("params", {}),
@@ -209,12 +210,20 @@ class InputField:
         return self
 
     def to_json(self):
+
+        def default(obj):
+
+            if isinstance(obj, np.integer):
+                return int(obj)
+            elif isinstance(obj, np.floating):
+                return float(obj)
+            elif isinstance(obj, np.ndarray):
+                return obj.tolist()
+            elif isinstance(obj, np.generic): 
+                return obj.item()
+            else:
+                return getattr(obj, '__dict__', str(obj)) 
+
         return json.loads(
-            json.dumps(self, default=lambda o: getattr(o, '__dict__', str(o)))
+            json.dumps(self, default=default)
         )
-
-
-
-    def __init__(self, *args, **kwargs):
-
-        super().__init__(*args, **kwargs, inputType = "switch")

@@ -11,7 +11,7 @@ import shutil
 import sisl
 from ..plot import Plot, MultiplePlot, Animation, PLOTS_CONSTANTS
 from ..plotutils import sortOrbitals, initMultiplePlots, copyParams, findFiles, runMultiple, calculateGap
-from ..inputFields import InputField, TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
+from ..inputFields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
 
 class LDOSmap(Plot):
     '''
@@ -81,7 +81,7 @@ class LDOSmap(Plot):
             help = "The step in distance between one point and the next one in the path."
         ),
 
-        InputField(
+        ProgramaticInput(
             key = "trajectory", name = "Trajectory",
             default = [],
             help = '''You can directly provide a trajectory instead of the corner points.<br>
@@ -89,7 +89,7 @@ class LDOSmap(Plot):
                     It is useful if you want a non-straight trajectory.'''
         ),
 
-        InputField(
+        ProgramaticInput(
             key = "widenFunc", name = "Widen function",
             default = None,
             help = '''You can widen the path with this parameter. 

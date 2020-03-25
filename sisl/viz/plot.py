@@ -19,7 +19,7 @@ import sisl
 
 from .configurable import *
 from .plotutils import applyMethodOnMultipleObjs, initMultiplePlots, repeatIfChilds, dictOfLists2listOfDicts, trigger_notification, spoken_message
-from .inputFields import InputField, TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput
+from .inputFields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
 
 PLOTS_CONSTANTS = {
     "spins": ["up", "down"],
@@ -89,7 +89,7 @@ class Plot(Configurable):
     
     _parameters = (
 
-        InputField(
+        ProgramaticInput(
             key = "readingOrder", name = "Output reading/generating order",
             group = "dataread",
             default = ("guiOut", "siesOut", "fromH", "noSource"),

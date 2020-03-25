@@ -24,7 +24,7 @@ class QueriesInput(InputField):
             "queryForm": queryForm 
         }
 
-        super().__init__(*args, **kwargs, inputType = "queries", inputFieldAttrs = inputFieldAttrs)
+        super().__init__(*args, **kwargs, inputFieldAttrs = inputFieldAttrs)
     
     def getQueryParam(self, key, **kwargs):
 

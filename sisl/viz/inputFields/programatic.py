@@ -8,4 +8,4 @@ class ProgramaticInput(InputField):
 
         help = f"only meant to be provided programatically. {help}"
 
-        super().__init__(*args, help=help, **kwargs, inputType="programatic")
+        super().__init__(*args, help=help, **kwargs)

@@ -11,7 +11,7 @@ import shutil
 import sisl
 from ..plot import Plot, PLOTS_CONSTANTS
 from ..plotutils import sortOrbitals, copyParams, findFiles, runMultiple, calculateGap
-from ..inputFields import InputField, TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, Range, RangeSlider, QueriesInput, ProgramaticInput
+from ..inputFields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, RangeSlider, QueriesInput, ProgramaticInput
 
 class BandsPlot(Plot):
 
@@ -45,7 +45,7 @@ class BandsPlot(Plot):
             help = "The bandStruct structure object to be used."
         ),
 
-        Range(
+        RangeSlider(
             key = "Erange", name = "Energy range",
             default = [-2,4],
             width = "s90%",
@@ -197,6 +197,8 @@ class BandsPlot(Plot):
 
         self._bandsToDfs(np.array([bands]))
 
+        self._bandsToXArray(bands.expand_dims(axis=1) if bands.ndim == 2 else bands)
+
     def _readSiesOut(self):
         
         #Get the info from the bands file
@@ -231,9 +233,25 @@ class BandsPlot(Plot):
         #Axes are switched so that the returned array is a list like [spinUpBands, spinDownBands]
         self._bandsToDfs(np.rollaxis(bands, 1))
 
+        self._bandsToXArray(bands)
+
         #Inform that the bandsFile has been read so that it can be followed if the user wants
         return [bandsFile]
     
+    def _bandsToXArray(self, bands):
+
+        ticks = {"tick_vals": self.ticks[0], "tick_labels": self.ticks[1]}
+        self.arr = xr.DataArray(
+            name="Energy",
+            data=bands,
+            coords=[
+                ("K", self.Ks),
+                ("spin", np.arange(0,bands.shape[1])),
+                ("iBand", np.arange(0,bands.shape[2]) + 1)
+            ],
+            attrs= {**ticks}
+        )
+
     def _bandsToDfs(self, bands):
         '''
         Gets the bands read and stores them in a convenient way into self.df
@@ -262,16 +280,15 @@ class BandsPlot(Plot):
     def _afterRead(self):
 
         # Make sure that the iBands control knows which bands are available
+        iBands = self.arr.iBand.values
 
-        iBands = self.df["iBand"].unique()
-
-        # self.modifyParam('iBands', 'inputField.params', {
-        #     **self.getParam('iBands')["inputField"]["params"],
-        #     "min": min(iBands),
-        #     "max": max(iBands),
-        #     "allowCross": False,
-        #     "marks": { int(i): str(i) for i in iBands },
-        # })
+        self.modifyParam('iBands', 'inputField.params', {
+            **self.getParam('iBands')["inputField"]["params"],
+            "min": min(iBands),
+            "max": max(iBands),
+            "allowCross": False,
+            "marks": { int(i): str(i) for i in iBands },
+        })
     
     def _setData(self):
         

@@ -1,6 +1,6 @@
 from ..inputField import InputField
 
-class NumericInput(Input):
+class NumericInput(InputField):
 
     _type = 'number'
 
