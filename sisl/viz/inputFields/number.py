@@ -1,0 +1,33 @@
+from ..inputField import InputField
+
+class NumericInput(Input):
+
+    _type = 'number'
+
+    _default = {
+        "width": "s50% m30% l30%",
+        "default": 0,
+        "params": {
+            "min": 0,
+        }
+    }
+
+class IntegerInput(NumericInput):
+
+    _default = {
+        **NumericInput._default,
+        "params": {
+            **NumericInput._default["params"],
+            "step": 1
+        }
+    }
+
+class FloatInput(NumericInput):
+
+    _default = {
+        **NumericInput._default,
+        "params": {
+            **NumericInput._default["params"],
+            "step": 0.1
+        }
+    }

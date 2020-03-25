@@ -10,6 +10,12 @@ class Configurable:
             return
         
         self.settingsHistory = []
+
+        # If the class needs to overwrite some defaults of settings that has inherited, do it
+        overwrite_defaults = getattr(self, "_overwrite_defaults", {})
+        for key, val in overwrite_defaults.items():
+            if key not in kwargs:
+                kwargs[key] = val
         
         #Get the parameters of all the classes the object belongs to
         self.params = []; self.paramGroups = []

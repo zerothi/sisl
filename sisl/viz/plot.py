@@ -219,7 +219,7 @@ class Plot(Configurable):
             SwitchInput(
                 key = "{}_showline".format(axis), name = "Show axis line",
                 group = "layout", subGroup = axis,
-                default = False,
+                default = True,
                 params = {
                     "offLabel": "No",
                     "onLabel": "Yes"

@@ -165,9 +165,10 @@ class LDOSmap(Plot):
     
     )
 
-    def _afterInit(self):
-
-        self.updateSettings(updateFig = False, xaxis_title = "Path coordinate", yaxis_title = "E-Ef (eV)")
+    _overwrite_defaults = {
+        'xaxis_title': "Path coordinate", 
+        'yaxis_title': "E-Ef (eV)"
+    }
 
     def _getdencharSTSfdf(self, stsPosition):
         

@@ -1,105 +1,9 @@
 #This file defines all the currently available input fields so that it is easier to develop plots
 
-from copy import deepcopy
+from copy import deepcopy, copy
 import json
 
-from .configurable import Configurable
-from .plotutils import modifyNestedDict
-
-TEXT_INPUT = {
-    "type": "textinput",
-    "width": "s100%",
-    "params": {
-        "placeholder": "Write your value here...",
-    }
-}
-
-SWITCH = {
-    "type": "switch",
-    "width": "s50% m30% l15%",
-    "params": {
-        "offLabel": "Off",
-        "onLabel": "On"
-    }
-}
-
-COLOR_PICKER = {
-    "type": "color",
-    "width": "s50% m30% l15%",
-}
-
-DROPDOWN = {
-    "type": "dropdown",
-    "width": "s100% m50% l33%",
-    "params": {
-        "placeholder": "Choose an option...",
-        "options": [
-        ],
-        "isMulti": False,
-        "isClearable": True,
-        "isSearchable": True,
-    }
-}
-
-NUMBER_INPUT = {
-    "type": "number",
-    "width": "s50% m30% l30%",
-    "default": 0,
-    "params": {
-        "min": 0,
-    }
-}
-
-INTEGER_INPUT = {
-    **NUMBER_INPUT,
-    "params": {
-        **NUMBER_INPUT["params"],
-        "step": 1
-    }
-}
-
-FLOAT_INPUT = {
-    **NUMBER_INPUT,
-    "params": {
-        **NUMBER_INPUT["params"],
-        "step": 0.1
-    }
-}
-
-RANGE_SLIDER = {
-    "type": "rangeslider",
-    "width": "s100%",
-    "params": {
-        "min": -10,
-        "max": 10,
-        "step": 0.1,
-        "marks": { i: str(i) for i in range(-10,11) },
-    }
-}
-
-QUERIES_INPUT = {
-    "type": "queries",
-    "width": "s100%",
-    "queryForm": [
-    ]
-}
-
-PROGRAMATIC_INPUT = {}
-
-
-allInputs = {
-    "text": TEXT_INPUT,
-    "switch": SWITCH,
-    "color": COLOR_PICKER,
-    "dropdown": DROPDOWN,
-    "integer": INTEGER_INPUT,
-    "float": FLOAT_INPUT,
-    "rangeslider": RANGE_SLIDER,
-    "queries": QUERIES_INPUT,
-    "programatic": PROGRAMATIC_INPUT,
-}
-
-allowedTypes = allInputs.keys()
+from .plotutils import modifyNestedDict 
 
 class InputField:
 
@@ -116,6 +20,9 @@ class InputField:
     default: optional (None)
         The default value for the setting. If it is not provided it will be None.
     inputType: str, optional {'text', 'switch', 'color', 'dropdown'}
+
+        NOT DOING ANYTHING CURRENTLY!!!
+
         The type of input you want to retrieve. If you don't specify a type or it is an inexistent one,
         sisl will attempt to give it one according to the type of data of the default value
         If it doesn't succeed, no type will be asigned. Your parameter will still work but won't be showed in the GUI.
@@ -176,7 +83,7 @@ class InputField:
     
     '''
 
-    def __init__(self, key, name, default=None, inputType=False, params={}, style={}, width="", inputFieldAttrs={}, group=None, subGroup=None, **kwargs):
+    def __init__(self, key, name, default=None, params={}, style={}, width="", inputFieldAttrs={}, group=None, subGroup=None, **kwargs):
 
         setattr(self, "key", key)
         setattr(self, "name", name)
@@ -184,23 +91,22 @@ class InputField:
         setattr(self, "group", group)
         setattr(self, "subGroup", subGroup)
 
-        if inputType:
+        default_input = deepcopy(getattr(self, "_default", {}))
 
-            defaultInp = deepcopy(allInputs.get(inputType, False))
-
-            setattr(self, "inputField", {
-                **defaultInp,
-                "params": {
-                    **defaultInp.get("params", {}),
-                    **params
-                },
-                "style": {
-                    **defaultInp.get("style", {}),
-                    **style
-                },
-                "width": width or defaultInp.get("width"),
-                **inputFieldAttrs
-            })
+        setattr(self, "inputField", {
+            'type': copy(getattr(self, '_type', None))
+            **default_input,
+            "params": {
+                **default_input.get("params", {}),
+                **params
+            },
+            "style": {
+                **default_input.get("style", {}),
+                **style
+            },
+            "width": width or default_input.get("width"),
+            **inputFieldAttrs
+        })
         
         for key, value in kwargs.items():
 
@@ -307,95 +213,8 @@ class InputField:
             json.dumps(self, default=lambda o: getattr(o, '__dict__', str(o)))
         )
 
-class ProgramaticInput(InputField):
 
-    def __init__(self, *args, help="", **kwargs):
-
-        help = f"only meant to be provided prograpatically. {help}"
-
-        super().__init__(*args, help=help, **kwargs, inputType="programatic")
-
-class TextInput(InputField):
-
-    def __init__(self, *args, **kwargs):
-
-        super().__init__(*args, **kwargs, inputType = "text")
-
-class SwitchInput(InputField):
 
     def __init__(self, *args, **kwargs):
 
         super().__init__(*args, **kwargs, inputType = "switch")
-
-class ColorPicker(InputField):
-
-    def __init__(self, *args, **kwargs):
-
-        super().__init__(*args, **kwargs, inputType = "color")
-
-class DropdownInput(InputField):
-
-    def __init__(self, *args, **kwargs):
-
-        super().__init__(*args, **kwargs, inputType = "dropdown")
-
-class IntegerInput(InputField):
-
-    def __init__(self, *args, **kwargs):
-
-        super().__init__(*args, **kwargs, inputType = "integer")
-
-class FloatInput(InputField):
-
-    def __init__(self, *args, **kwargs):
-
-        super().__init__(*args, **kwargs, inputType = "float")
-
-class RangeSlider(InputField):
-
-    def __init__(self, *args, **kwargs):
-
-        super().__init__(*args, **kwargs, inputType = "rangeslider")
-
-class QueriesInput(InputField):
-
-    '''
-    Parameters
-    ----------
-    queryForm: list of InputField
-        The list of input fields that conform a query.
-    '''
-
-    def __init__(self, queryForm = [], *args, **kwargs):
-
-        inputFieldAttrs = {
-            **kwargs.get("inputFieldAttrs", {}),
-            "queryForm": queryForm 
-        }
-
-        super().__init__(*args, **kwargs, inputType = "queries", inputFieldAttrs = inputFieldAttrs)
-    
-    def getQueryParam(self, key, **kwargs):
-
-        '''
-        Gets the parameter info for a given key. It uses the Configurable.getParam method.
-        '''
-
-        return Configurable.getParam(self, key, paramsExtractor = lambda obj: obj.inputField["queryForm"], **kwargs)
-    
-    def getParam(self, *args, **kwargs):
-        '''
-        Just a clone of getQueryParam.
-
-        Because Configurable looks for this method when modifying parameters, but the other name is clearer.
-        '''
-
-        return self.getQueryParam(*args, **kwargs)
-
-    def modifyQueryParam(self, key, *args, **kwargs):
-
-        '''
-        Uses Configurable.modifyParam to modify a parameter inside QueryForm
-        '''
-
-        return Configurable.modifyParam(self, key, *args, **kwargs)

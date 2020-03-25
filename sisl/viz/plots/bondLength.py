@@ -185,6 +185,12 @@ class BondLengthMap(Plot):
         )
     
     )
+
+    _overwrite_defaults = {
+        'xaxis_title': 'X (Ang)', 
+        'yaxis_title': "Y (Ang)",
+        'yaxis_zeroline': False
+    }
     
     @classmethod
     def _defaultAnimation(self, wdir = None, frameNames = None, **kwargs):
@@ -196,11 +202,6 @@ class BondLengthMap(Plot):
             #return [os.path.basename( childPlot.setting("bandsFile")) for childPlot in self.childPlots]
 
         return BondLengthMap.animated("geomFile", geomsFiles, wdir = wdir, **kwargs)
-
-    def _afterInit(self):
-
-        self.updateSettings(updateFig = False, xaxis_title = 'X (Ang)', yaxis_title = "Y (Ang)", yaxis_zeroline = False)
-        pass
 
     def _readSiesOut(self):
         

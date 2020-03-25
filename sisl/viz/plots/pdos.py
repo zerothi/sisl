@@ -144,6 +144,11 @@ class PdosPlot(Plot):
         )
 
     )
+
+    _overwrite_defaults = {
+        'xaxis_title': 'Density of states (1/eV)',
+        'yaxis_title': 'Energy (eV)'
+    }
     
     @classmethod
     def _defaultAnimation(self, wdir = None, frameNames = None, **kwargs):
@@ -155,10 +160,6 @@ class PdosPlot(Plot):
             return [os.path.basename( childPlot.setting("PDOSFile")) for childPlot in self.childPlots]
 
         return PdosPlot.animated("PDOSFile", bandsFiles, frameNames = _getFrameNames, wdir = wdir, **kwargs)
-
-    def _afterInit(self):
-
-        self.updateSettings(updateFig = False, xaxis_title = 'Density of states (1/eV)', yaxis_title = "Energy (eV)")
 
     def _readfromH(self):
 

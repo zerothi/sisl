@@ -9,13 +9,10 @@ import os
 import shutil
 
 import sisl
-from ..plot import Plot, MultiplePlot, Animation, PLOTS_CONSTANTS
-from ..plotutils import sortOrbitals, initMultiplePlots, copyParams, findFiles, runMultiple, calculateGap
-from ..inputFields import InputField, TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
+from ..plot import Plot, PLOTS_CONSTANTS
+from ..plotutils import sortOrbitals, copyParams, findFiles, runMultiple, calculateGap
+from ..inputFields import InputField, TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, Range, RangeSlider, QueriesInput, ProgramaticInput
 
-PREDEFINED_KPOINTS = {
-
-}
 class BandsPlot(Plot):
 
     '''
@@ -35,6 +32,7 @@ class BandsPlot(Plot):
         TextInput(
             key = "bandsFile", name = "Path to bands file",
             width = "s100% m50% l33%",
+            group="readdata",
             params = {
                 "placeholder": "Write the path to your bands file here...",
             },
@@ -47,7 +45,7 @@ class BandsPlot(Plot):
             help = "The bandStruct structure object to be used."
         ),
 
-        RangeSlider(
+        Range(
             key = "Erange", name = "Energy range",
             default = [-2,4],
             width = "s90%",
@@ -59,6 +57,16 @@ class BandsPlot(Plot):
                 "marks": { **{ i: str(i) for i in range(-10,11) }, 0: "Ef",},
             },
             help = "Energy range where the bands are displayed."
+        ),
+
+        RangeSlider(
+            key = "iBands", name = "Bands to display",
+            default = [1, 10**6],
+            width = "s90%",
+            params = {
+                'step': 1,
+            },
+            help = "The bands that should be displayed"
         ),
 
         QueriesInput(
@@ -138,6 +146,12 @@ class BandsPlot(Plot):
 
     )
 
+    _overwrite_defaults = {
+        'xaxis_title': 'K',
+        'xaxis_showgrid': True,
+        'yaxis_title': 'Energy (eV)'
+    }
+
     @classmethod
     def _defaultAnimation(self, wdir = None, frameNames = None, **kwargs):
         
@@ -148,10 +162,6 @@ class BandsPlot(Plot):
             return [os.path.basename( childPlot.setting("bandsFile")) for childPlot in self.childPlots]
 
         return BandsPlot.animated("bandsFile", bandsFiles, frameNames = _getFrameNames, wdir = wdir, **kwargs)
-
-    def _afterInit(self):
-
-        self.updateSettings(updateFig = False, xaxis_title = 'K', yaxis_title = "Energy (eV)")
 
     def _readfromH(self):
 
@@ -249,6 +259,20 @@ class BandsPlot(Plot):
         
         return self
     
+    def _afterRead(self):
+
+        # Make sure that the iBands control knows which bands are available
+
+        iBands = self.df["iBand"].unique()
+
+        # self.modifyParam('iBands', 'inputField.params', {
+        #     **self.getParam('iBands')["inputField"]["params"],
+        #     "min": min(iBands),
+        #     "max": max(iBands),
+        #     "allowCross": False,
+        #     "marks": { int(i): str(i) for i in iBands },
+        # })
+    
     def _setData(self):
         
         '''
@@ -265,6 +289,7 @@ class BandsPlot(Plot):
         self.data = []
 
         Erange = np.array(self.setting("Erange")) + self.fermi
+        iBands = self.setting("iBands")
 
         #Get the bands that matter for the plot
         self.plotDF = self.df[ (self.df["Emin"] <= Erange[1]) & (self.df["Emax"] >= Erange[0]) ].dropna(axis = 0, how = "all")
