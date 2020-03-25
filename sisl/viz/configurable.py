@@ -286,6 +286,7 @@ class Configurable:
 
                 if prevFunc is None or functions_list.index(funcName) < functions_list.index(prevFunc):
                     self.whatToRunOnUpdate[settingKey] = funcName
+                    break
             
             frame = frame.f_back
         
