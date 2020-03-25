@@ -279,9 +279,13 @@ class Configurable:
             funcName = frame.f_code.co_name
 
             #If it is in the list of functions provided on class definition (e.g. on Plot class) store it
-            if funcName in self._onSettingsUpdate["functions"]:
-                self.whatToRunOnUpdate[settingKey] = funcName
-                break
+            functions_list = self._onSettingsUpdate["functions"]
+            if funcName in functions_list:
+
+                prevFunc = self.whatToRunOnUpdate.get(settingKey, None)
+
+                if prevFunc is None or functions_list.index(funcName) < functions_list.index(prevFunc):
+                    self.whatToRunOnUpdate[settingKey] = funcName
             
             frame = frame.f_back
         
