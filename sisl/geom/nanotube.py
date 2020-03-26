@@ -20,7 +20,7 @@ def nanotube(bond, atom=None, chirality=(1, 1)):
        chirality of nanotube (n, m)
     """
     if atom is None:
-        atom = Atom[6]
+        atom = Atom(Z=6, R=bond * 1.01)
 
     # Correct the input...
     n, m = chirality
