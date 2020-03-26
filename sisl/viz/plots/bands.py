@@ -293,6 +293,9 @@ class BandsPlot(Plot):
         # Make sure that the iBands control knows which bands are available
         iBands = self.arr.iBand.values
 
+        if len(iBands) > 30:
+            iBands = iBands[np.linspace(0, len(iBands)-1, 20, dtype=int)]
+
         self.modifyParam('bandsRange', 'inputField.params', {
             **self.getParam('bandsRange')["inputField"]["params"],
             "min": min(iBands),
@@ -323,6 +326,7 @@ class BandsPlot(Plot):
         else:
             Erange = np.array(self.setting("Erange")) + self.fermi
             filtered_bands = self.arr.where( (self.arr <= Erange[1]) & (self.arr >= Erange[0])).dropna("iBand", "all")
+            self.updateSettings(updateFig=False, bandsRange=[int(filtered_bands['iBand'].min()), int(filtered_bands['iBand'].max())])
 
         #Define the data of the plot as a list of dictionaries {x, y, 'type', 'name'}
         self.data = np.ravel([[{
