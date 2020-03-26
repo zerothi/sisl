@@ -19,7 +19,7 @@ def bilayer(bond, atom=None, twist=(5, 6), separation=3.35, return_angle=False, 
     atom : Atom(6)
        bilayer atoms
     twist : (int, int)
-       coordinates (n, m) defining the twist angle (theta)
+       coordinates (m, n) defining the twist angle (theta)
     separation : float
        distance between the two layers
     return_angle : bool
@@ -32,7 +32,7 @@ def bilayer(bond, atom=None, twist=(5, 6), separation=3.35, return_angle=False, 
 
     # Compute twist angle
     m, n = twist
-    if m < n:
+    if m > n:
         m, n = n, m
 
     if not (isinstance(n, int) and isinstance(m, int)):
