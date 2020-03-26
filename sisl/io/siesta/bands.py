@@ -111,9 +111,10 @@ class bandsSileSiesta(SileSiesta):
 
             arr.attrs['gap'] = float(CBbot - VBtop)
             arr.attrs['gap_info'] = {
-                'k': (VB["K"].values, CB['K'].values),
-                'bands': (int(VB["iBand"]), int(CB["iBand"])),
-                'spin': (int(VB["spin"]), int(CB["spin"]))
+                'k': (np.atleast_1d(VB["K"].values), np.atleast_1d(CB['K'].values)),
+                'bands': (np.atleast_1d(VB["iBand"].values), np.atleast_1d(CB["iBand"].values)),
+                'spin': (np.atleast_1d(VB["spin"].values), np.atleast_1d(CB["spin"].values)),
+                'Es': (float(VBtop), float(CBbot))
             }
 
             return arr
