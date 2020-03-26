@@ -44,6 +44,8 @@ Basic
    :noindex:
 .. autofunction:: graphene
    :noindex:
+.. autofunction:: bilayer
+   :noindex:
 
 
 Nanotube
@@ -64,5 +66,6 @@ from .basic import *
 from .flat import *
 from .nanotube import *
 from .special import *
+from .bilayer import *
 
 __all__ = [s for s in dir() if not s.startswith('_')]

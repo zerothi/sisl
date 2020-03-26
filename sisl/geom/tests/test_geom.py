@@ -30,3 +30,9 @@ class Test:
 
     def test_diamond(self):
         a = diamond()
+
+    def test_bilayer(self):
+        a = bilayer(1.42, twist=(6, 7))
+        a = bilayer(1.42, twist=(6, 7), layer='bottom')
+        a = bilayer(1.42, twist=(6, 7), layer='TOP')
+        a, th = bilayer(1.42, twist=(6, 7), return_angle=True)
