@@ -11,7 +11,7 @@ import shutil
 import sisl
 from ..plot import Plot, PLOTS_CONSTANTS
 from ..plotutils import sortOrbitals, copyParams, findFiles, runMultiple, calculateGap
-from ..inputFields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, RangeSlider, QueriesInput, ProgramaticInput
+from ..inputFields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput
 
 class BandsPlot(Plot):
 
@@ -45,28 +45,37 @@ class BandsPlot(Plot):
             help = "The bandStruct structure object to be used."
         ),
 
-        RangeSlider(
+        RangeInput(
             key = "Erange", name = "Energy range",
-            default = [-2,4],
-            width = "s90%",
+            default = [-20,20],
             params = {
-                "min": -10,
-                "max": 10,
-                "allowCross": False,
-                "step": 0.1,
-                "marks": { **{ i: str(i) for i in range(-10,11) }, 0: "Ef",},
+                "step": 1,
             },
             help = "Energy range where the bands are displayed."
         ),
 
+        DropdownInput(
+            key="usedRange", name = "Range to use",
+            default="E",
+            params={
+                'options': [
+                    {'label': 'Energy', 'value': 'E'},
+                    {'label': 'Bands', 'value': 'bands'}
+                ],
+                'isSearchable': True,
+                'isMulti': False,
+                'isClearable': False
+            }
+        ),
+
         RangeSlider(
-            key = "iBands", name = "Bands to display",
-            default = [1, 10**6],
+            key = "bandsRange", name = "Bands range",
+            default = [1, 10**4],
             width = "s90%",
             params = {
                 'step': 1,
             },
-            help = "The bands that should be displayed"
+            help = "The bands that should be displayed."
         ),
 
         QueriesInput(
@@ -126,6 +135,16 @@ class BandsPlot(Plot):
             ]
         ),
 
+        SwitchInput(
+            key="showGap", name="Show gap",
+            default=False,
+            params={
+                'onLabel': 'Yes',
+                'offLabel': 'No'
+            },
+            help="Whether the gap should be displayed in the plot"
+        ),
+
         FloatInput(
             key = "bandsWidth", name = "Band lines width",
             default = 1,
@@ -148,6 +167,8 @@ class BandsPlot(Plot):
 
     _overwrite_defaults = {
         'xaxis_title': 'K',
+        'xaxis_mirror': True,
+        'yaxis_mirror': True,
         'xaxis_showgrid': True,
         'yaxis_title': 'Energy (eV)'
     }
@@ -195,8 +216,6 @@ class BandsPlot(Plot):
 
         bands = bandStruct.eigh()
 
-        self._bandsToDfs(np.array([bands]))
-
         self._bandsToXArray(bands.expand_dims(axis=1) if bands.ndim == 2 else bands)
 
     def _readSiesOut(self):
@@ -230,9 +249,6 @@ class BandsPlot(Plot):
             except Exception as e:
                 print(f"Could not correctly read the bands path from siesta.\n Error {e}")
 
-        #Axes are switched so that the returned array is a list like [spinUpBands, spinDownBands]
-        self._bandsToDfs(np.rollaxis(bands, 1))
-
         self._bandsToXArray(bands)
 
         #Inform that the bandsFile has been read so that it can be followed if the user wants
@@ -252,38 +268,33 @@ class BandsPlot(Plot):
             attrs= {**ticks}
         )
 
-    def _bandsToDfs(self, bands):
-        '''
-        Gets the bands read and stores them in a convenient way into self.df
-        '''
+        self.isSpinPolarized = len(self.arr.spin.values) == 2
 
-        self.isSpinPolarized = bands.shape[0] == 2
-        self.df = pd.DataFrame()
+        # Calculate the band gap to store it
+        above_fermi = self.arr.where(self.arr > 0)
+        below_fermi = self.arr.where(self.arr < 0)
+        CBbot = above_fermi.min()
+        VBtop = below_fermi.max()
 
-        for iSpin, spinComponentBands in enumerate(bands):
-            
-            df = pd.DataFrame(spinComponentBands.T)
-            df.columns = self.Ks
-            #We insert these columns at the beggining so that the user can see them if it prints the dataframe
-            df.insert(0, "iBand", range(1, spinComponentBands.shape[1] + 1))
-            df.insert(1, "iSpin", iSpin)
-            df.insert(2, "Emin", np.min(spinComponentBands, axis = 0))
-            df.insert(3, "Emax", np.max(spinComponentBands, axis = 0))
+        CB = above_fermi.where(above_fermi==CBbot, drop=True).squeeze()
+        VB = below_fermi.where(below_fermi==VBtop, drop=True).squeeze()
 
-            #Append the dataframe to the main dataframe
-            self.df = self.df.append(df, ignore_index = True)
+        self.gap = float(CBbot - VBtop)
         
-            self.gap = calculateGap(spinComponentBands)
-        
-        return self
+        self.gap_info = {
+            'k': (VB["K"].values, CB['K'].values),
+            'bands': (VB["iBand"].values, CB["iBand"].values),
+            'spin': (VB["spin"].values, CB["spin"].values),
+            'Es': [float(VBtop), float(CBbot)]
+        }
     
     def _afterRead(self):
 
         # Make sure that the iBands control knows which bands are available
         iBands = self.arr.iBand.values
 
-        self.modifyParam('iBands', 'inputField.params', {
-            **self.getParam('iBands')["inputField"]["params"],
+        self.modifyParam('bandsRange', 'inputField.params', {
+            **self.getParam('bandsRange')["inputField"]["params"],
             "min": min(iBands),
             "max": max(iBands),
             "allowCross": False,
@@ -303,25 +314,41 @@ class BandsPlot(Plot):
             contains a dictionary for each bandStruct with all its information.
         '''
 
-        self.data = []
-
-        Erange = np.array(self.setting("Erange")) + self.fermi
-        iBands = self.setting("iBands")
-
         #Get the bands that matter for the plot
-        self.plotDF = self.df[ (self.df["Emin"] <= Erange[1]) & (self.df["Emax"] >= Erange[0]) ].dropna(axis = 0, how = "all")
+        #self.plotDF = self.df[ (self.df["Emin"] <= Erange[1]) & (self.df["Emax"] >= Erange[0]) ].dropna(axis = 0, how = "all")
+        if self.setting("usedRange") == 'bands':
+            iBands = np.arange(*self.setting("bandsRange"))
+            filtered_bands = self.arr.where(self.arr.iBand.isin(iBands), drop=True)
+            self.updateSettings(updateFig=False, Erange=[float(f'{val:.3f}') for val in [float(filtered_bands.min()), float(filtered_bands.max())]])
+        else:
+            Erange = np.array(self.setting("Erange")) + self.fermi
+            filtered_bands = self.arr.where( (self.arr <= Erange[1]) & (self.arr >= Erange[0])).dropna("iBand", "all")
 
         #Define the data of the plot as a list of dictionaries {x, y, 'type', 'name'}
-        self.data = [ *self.data, *[{
+        self.data = np.ravel([[{
                         'type': 'scatter',
                         'x': self.Ks,
-                        'y': bandStruct.loc[self.Ks] - self.fermi,
+                        'y': (band - self.fermi).values,
                         'mode': 'lines', 
-                        'name': "{} spin {}".format( bandStruct["iBand"], PLOTS_CONSTANTS["spins"][int(bandStruct["iSpin"])]) if self.isSpinPolarized else str(int(bandStruct["iBand"])) , 
-                        'line': {"color": [self.setting("spinUpColor"),self.setting("spinDownColor")][int(bandStruct["iSpin"])], 'width' : self.setting("bandsWidth")},
+                        'name': "{} spin {}".format( band.iBand.values, PLOTS_CONSTANTS["spins"][band.spin.values]) if self.isSpinPolarized else str(band.iBand.values) , 
+                        'line': {"color": [self.setting("spinUpColor"),self.setting("spinDownColor")][band.spin.values], 'width' : self.setting("bandsWidth")},
                         'hoverinfo':'name',
                         "hovertemplate": '%{y:.2f} eV',
-                    } for i, bandStruct in self.plotDF.sort_values("iBand").iterrows() ] ]
+                    } for band in spin_bands] for spin_bands in filtered_bands.transpose()]).tolist()
+        
+        if self.setting("showGap"):
+
+            all_gapKs = itertools.product(*[np.atleast_1d(k) for k in self.gap_info['k']] )
+
+            for gapKs in all_gapKs:
+                self.add_trace({
+                    'type': 'scatter',
+                    'mode': 'lines+markers+text',
+                    'x': gapKs,
+                    'y': self.gap_info["Es"],
+                    'text': [f'Gap: {self.gap:.3f} eV', ''],
+                    'textposition': 'top right',
+                })
 
     def _afterGetFigure(self):
 

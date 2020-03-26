@@ -1,4 +1,5 @@
 from copy import deepcopy
+import numpy as np
 import sys
 
 class Configurable:
@@ -376,12 +377,25 @@ class Configurable:
 
         return self.settings[settingKey] == self.getParam(settingKey)["default"]
     
-    def did_setting_update(self, setting_key):
+    def did_setting_update(self, setting_key, all_updates=False):
         '''
         Returns if a given setting did update in the last settings update
+
+        Parameters
+        --------
+        all_updates: boolean, optional
+            whether to return a list stating if the setting did update in each frame.
         '''
 
-        return setting_key in self.settingsUpdatesLog(frame=-1)
+        if all_updates:
+            history = self.getSettingHistory(setting_key)
+            return np.array([
+                history[0] != self.getParam(setting_key)["default"], # Did the setting change on initialization
+                *[value != history[iPrev] for iPrev, value in enumerate(history[1:])] # Was the setting updated (for each step)
+            ])
+        else:
+            return setting_key in self.settingsUpdatesLog(frame=-1)
+
 
 #DECORATORS TO USE WHEN DEFINING METHODS IN CLASSES THAT INHERIT FROM Configurable
 #Run the method after having initialized the settings

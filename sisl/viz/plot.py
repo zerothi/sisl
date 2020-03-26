@@ -284,7 +284,18 @@ class Plot(Configurable):
                 group = "layout", subGroup = axis,
                 default = 5,
                 width = "s50% m30% l15%"
-            )]
+            ),
+            
+            SwitchInput(
+                key = "{}_mirror".format(axis), name = "Mirror",
+                group = "layout", subGroup = axis,
+                default = False,
+                params = {
+                    "offLabel": "False",
+                    "onLabel": "True"
+                },
+                width = "s50% m50% l25%"
+            ),]
             
         ]
         

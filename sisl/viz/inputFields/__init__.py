@@ -3,6 +3,7 @@ from .dropdown import DropdownInput
 from .number import IntegerInput, FloatInput
 from .programatic import ProgramaticInput
 from .queries import QueriesInput
+from .range import RangeInput
 from .rangeslider import RangeSlider
 from .switch import SwitchInput
 from .text import TextInput
