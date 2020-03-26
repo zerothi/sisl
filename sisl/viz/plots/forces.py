@@ -70,6 +70,7 @@ class ForcesPlot(Plot):
         
         self.atomic_forces = outSile.read_force(all=True)
 
+        print(self.atomic_forces)
         if len(self.atomic_forces[0]) == 0:
             self.total_forces, self.max_forces = outSile.read_force(all=True, total=True, max=True)
         else:

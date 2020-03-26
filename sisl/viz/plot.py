@@ -460,6 +460,8 @@ class Plot(Configurable):
                 elif hasattr(SileClass, "_plot"):
                     PlotClass, kwarg_key = SileClass._plot
                     plot = PlotClass(**{kwarg_key: filename}, title=os.path.basename(filename))
+                else:
+                    raise NotImplementedError(f'There is no plot implementation for {os.path.splitext(filename)[-1]} extensions yet.')
             
             # Inform that we don't want to run the __init__ method anymore
             # See the beggining of __init__()
