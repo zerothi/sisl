@@ -89,7 +89,7 @@ class bandsSileSiesta(SileSiesta):
 
             ticks = {"tick_vals": xlabels, "tick_labels": labels} if band_lines else {}
             
-            arr = DataArray(
+            return DataArray(
                 name="Energy",
                 data=b,
                 coords=[
@@ -99,8 +99,6 @@ class bandsSileSiesta(SileSiesta):
                 ],
                 attrs= {**ticks}
             )
-
-            return arr
 
         return vals
 
