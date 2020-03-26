@@ -295,7 +295,7 @@ class outSileSiesta(SileSiesta):
             # First, we encounter the atomic forces
             while '---' not in line:
                 line = line.split()
-                if not total or max:
+                if not (total or max):
                     F.append([float(x) for x in line[-3:]])
                 line = self.readline()
                 if line == '':
