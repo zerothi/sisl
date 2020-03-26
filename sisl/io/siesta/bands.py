@@ -100,23 +100,6 @@ class bandsSileSiesta(SileSiesta):
                 attrs= {**ticks}
             )
 
-            # Calculate the band gap to store it
-            above_fermi = arr.where(arr > 0)
-            below_fermi = arr.where(arr < 0)
-            CBbot = above_fermi.min()
-            VBtop = below_fermi.max()
-
-            CB = above_fermi.where(above_fermi==CBbot, drop=True).squeeze()
-            VB = below_fermi.where(below_fermi==VBtop, drop=True).squeeze()
-
-            arr.attrs['gap'] = float(CBbot - VBtop)
-            arr.attrs['gap_info'] = {
-                'k': (np.atleast_1d(VB["K"].values), np.atleast_1d(CB['K'].values)),
-                'bands': (np.atleast_1d(VB["iBand"].values), np.atleast_1d(CB["iBand"].values)),
-                'spin': (np.atleast_1d(VB["spin"].values), np.atleast_1d(CB["spin"].values)),
-                'Es': (float(VBtop), float(CBbot))
-            }
-
             return arr
 
         return vals
