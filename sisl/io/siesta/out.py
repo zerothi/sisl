@@ -332,8 +332,7 @@ class outSileSiesta(SileSiesta):
             if max and total:
                 return (Fs[..., :-1], Fs[..., -1])
             elif max and not all:
-                # This will return a float
-                return np.atleast_1d(Fs)[0]
+                return Fs.ravel()[0]
             return Fs
 
         if all or last:
