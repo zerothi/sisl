@@ -39,6 +39,8 @@ def bilayer(bond=1.42, bottom_atom=None, top_atom=None, stacking='AB',
     .. [1] G. Trambly de Laissardiere, D. Mayou, L. Magaud, "Localization of Dirac Electrons in Rotated Graphene Bilayers", Nano Letts. 10, 804-808 (2010)
     """
     if bottom_atom is None:
+        bottom_atom = top_atom
+    if bottom_atom is None:
         bottom_atom = Atom(Z=6, R=bond * 1.01)
     if top_atom is None:
         top_atom = bottom_atom
