@@ -1,5 +1,6 @@
 import numpy as np
 
+import sisl._array as _a
 from sisl.utils import strmap
 from sisl.utils.cmd import default_ArgumentParser, default_namespace
 from ..sile import add_sile, sile_fh_open
@@ -21,7 +22,7 @@ class bandsSileSiesta(SileSiesta):
         as_dataarray: boolean, optional
             if `True`, the information is returned as an `xarray.DataArray`
             Ticks (if read) are stored as an attribute of the DataArray 
-            (under `array.tick_vals` and `array.tick_labels`)
+            (under `array.ticks` and `array.ticklabels`)
         """
         band_lines = False
 
@@ -43,11 +44,11 @@ class bandsSileSiesta(SileSiesta):
         no, ns, nk = map(int, l.split())
 
         # Create the data to contain all band points
-        b = np.empty([nk, ns, no], np.float64)
+        b = _a.emptyd([nk, ns, no])
 
         # for band-lines
         if band_lines:
-            k = np.empty([nk], np.float64)
+            k = _a.emptyd([nk])
             for ik in range(nk):
                 l = [float(x) for x in self.readline().split()]
                 k[ik] = l[0]
@@ -55,7 +56,7 @@ class bandsSileSiesta(SileSiesta):
                 # Now populate the eigenvalues
                 while len(l) < ns * no:
                     l.extend([float(x) for x in self.readline().split()])
-                l = np.array(l, np.float64)
+                l = _a.arrayd(l)
                 l.shape = (ns, no)
                 b[ik, :, :] = l[:, :] - Ef
             # Now we need to read the labels for the points
@@ -69,7 +70,7 @@ class bandsSileSiesta(SileSiesta):
             vals = (xlabels, labels), k, b
 
         else:
-            k = np.empty([nk, 3], np.float64)
+            k = _a.emptyd([nk, 3])
             for ik in range(nk):
                 l = [float(x) for x in self.readline().split()]
                 k[ik, :] = l[0:3]
@@ -79,7 +80,7 @@ class bandsSileSiesta(SileSiesta):
                 # Now populate the eigenvalues
                 while len(l) < ns * no:
                     l.extend([float(x) for x in self.readline().split()])
-                l = np.array(l, np.float64)
+                l = _a.arrayd(l)
                 l.shape = (ns, no)
                 b[ik, :, :] = l[:, :] - Ef
             vals = k, b
@@ -87,18 +88,12 @@ class bandsSileSiesta(SileSiesta):
         if as_dataarray:
             from xarray import DataArray
 
-            ticks = {"tick_vals": xlabels, "tick_labels": labels} if band_lines else {}
+            ticks = {"ticks": xlabels, "ticklabels": labels} if band_lines else {}
             
-            return DataArray(
-                name="Energy",
-                data=b,
-                coords=[
-                    ("K", k),
-                    ("spin", np.arange(0,b.shape[1])),
-                    ("iBand", np.arange(0,b.shape[2]) + 1)
-                ],
-                attrs= {**ticks}
-            )
+            return DataArray(b, name="Energy", attrs=ticks,
+                             coords=[("k", k),
+                                     ("spin", _a.arangei(0, b.shape[1])),
+                                     ("band", _a.arangei(0, b.shape[2]))])
 
         return vals
 
