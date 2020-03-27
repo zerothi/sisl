@@ -113,9 +113,6 @@ def bilayer(bond=1.42, bottom_atom=None, top_atom=None, stacking='AB',
         vec_costh = vec[0] / vec.dot(vec) ** 0.5
         vec_th = np.arccos(vec_costh) * 180 / np.pi
         bilayer = bilayer.rotate(vec_th, [0, 0, 1])
-    else:
-        # Shift back
-        bilayer = bilayer.move(tvec)
 
     # Sanity check
     assert len(bilayer) == natoms
