@@ -248,6 +248,30 @@ class TestBrillouinZone:
         assert np.allclose((asarray / len(bz)).sum(0), asaverage)
         bz.asnone().eigh()
 
+    def test_as_dataarray(self):
+        try:
+            import xarray
+        except ImportError:
+            pytest.skip('xarray not available')
+
+        from sisl import geom, Hamiltonian
+        g = geom.graphene()
+        H = Hamiltonian(g)
+        H.construct([[0.1, 1.44], [0, -2.7]])
+
+        bz = MonkhorstPack(H, [2, 2, 2], trs=False)
+
+        # Assert that as* all does the same
+        asarray = bz.asarray().eigh()
+        asdarray = bz.asdataarray().eigh()
+        assert np.allclose(asarray, asdarray.values)
+        assert isinstance(asdarray.bz, MonkhorstPack)
+        assert isinstance(asdarray.parent, Hamiltonian)
+        assert asdarray.dims == ('k', 'v1')
+
+        asdarray = bz.asdataarray().eigh(coords=['orb'])
+        assert asdarray.dims == ('k', 'orb')
+
     def test_as_single(self):
         from sisl import geom, Hamiltonian
         g = geom.graphene()

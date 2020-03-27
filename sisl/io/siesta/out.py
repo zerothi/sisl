@@ -346,7 +346,7 @@ class outSileSiesta(SileSiesta):
 
             if last:
                 return return_forces(Fs[-1])
- 
+
             return return_forces(Fs)
 
         return return_forces(next_force())
