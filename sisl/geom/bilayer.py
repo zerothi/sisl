@@ -53,9 +53,9 @@ def bilayer(bond=1.42, bottom_atom=None, top_atom=None, stacking='AB',
     if stacking.lower() == 'aa':
         top = top.move([0, 0, separation])
     elif stacking.lower() == 'ab':
-        top = top.move([bond, 0, separation])
-    elif stacking.lower() == 'ba':
         top = top.move([-bond, 0, separation])
+    elif stacking.lower() == 'ba':
+        top = top.move([bond, 0, separation])
 
     # Compute twist angle
     m, n = twist
