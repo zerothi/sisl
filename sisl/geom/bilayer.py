@@ -104,7 +104,7 @@ def bilayer(bond=1.42, bottom_atom=None, top_atom=None, stacking='AB',
     if rep > 1:
         # Remove atoms outside cell
         cell_box = Cuboid(bilayer.cell)
-        cell_box.set_origo([-0.0001] * 3)
+        cell_box.set_center([-0.0001] * 3)
         inside_idx = cell_box.within_index(bilayer.xyz)
         bilayer = bilayer.sub(inside_idx)
 
