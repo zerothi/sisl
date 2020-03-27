@@ -32,7 +32,12 @@ class Test:
         a = diamond()
 
     def test_bilayer(self):
-        a = bilayer(1.42, twist=(6, 7))
+        a = bilayer(1.42)
+        a = bilayer(1.42, stacking='AA')
+        for m in range(7):
+            a = bilayer(1.42, twist=(m, m + 1))
         a = bilayer(1.42, twist=(6, 7), layer='bottom')
         a = bilayer(1.42, twist=(6, 7), layer='TOP')
-        a, th = bilayer(1.42, twist=(6, 7), return_angle=True)
+        a = bilayer(1.42, bottom_atom=(Atom['B'], Atom['N']), twist=(6, 7))
+        a = bilayer(1.42, top_atom=(Atom(5), Atom(7)), twist=(6, 7))
+        a, th = bilayer(1.42, twist=(6, 7), ret_angle=True)
