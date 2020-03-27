@@ -106,7 +106,7 @@ class pdosSileSiesta(SileSiesta):
                 return xr.DataArray(data=process(DOS).reshape(shape),
                                     dims=dims, coords=coords, name='PDOS')
 
-            D = xr.DataArray()
+            D = xr.DataArray([])
         else:
             def to(o, DOS):
                 return process(DOS)

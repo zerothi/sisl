@@ -1,5 +1,6 @@
 import numpy as np
 
+import sisl._array as _a
 from sisl.utils import strmap
 from sisl.utils.cmd import default_ArgumentParser, default_namespace
 from ..sile import add_sile, sile_fh_open
@@ -13,8 +14,16 @@ class bandsSileSiesta(SileSiesta):
     """ Bandstructure information """
 
     @sile_fh_open()
-    def read_data(self):
-        """ Returns data associated with the bands file """
+    def read_data(self, as_dataarray=False):
+        """ Returns data associated with the bands file
+        
+        Parameters
+        --------
+        as_dataarray: boolean, optional
+            if `True`, the information is returned as an `xarray.DataArray`
+            Ticks (if read) are stored as an attribute of the DataArray 
+            (under `array.ticks` and `array.ticklabels`)
+        """
         band_lines = False
 
         # Luckily the data is in eV
@@ -35,11 +44,11 @@ class bandsSileSiesta(SileSiesta):
         no, ns, nk = map(int, l.split())
 
         # Create the data to contain all band points
-        b = np.empty([nk, ns, no], np.float64)
+        b = _a.emptyd([nk, ns, no])
 
         # for band-lines
         if band_lines:
-            k = np.empty([nk], np.float64)
+            k = _a.emptyd([nk])
             for ik in range(nk):
                 l = [float(x) for x in self.readline().split()]
                 k[ik] = l[0]
@@ -47,7 +56,7 @@ class bandsSileSiesta(SileSiesta):
                 # Now populate the eigenvalues
                 while len(l) < ns * no:
                     l.extend([float(x) for x in self.readline().split()])
-                l = np.array(l, np.float64)
+                l = _a.arrayd(l)
                 l.shape = (ns, no)
                 b[ik, :, :] = l[:, :] - Ef
             # Now we need to read the labels for the points
@@ -61,7 +70,7 @@ class bandsSileSiesta(SileSiesta):
             vals = (xlabels, labels), k, b
 
         else:
-            k = np.empty([nk, 3], np.float64)
+            k = _a.emptyd([nk, 3])
             for ik in range(nk):
                 l = [float(x) for x in self.readline().split()]
                 k[ik, :] = l[0:3]
@@ -71,10 +80,21 @@ class bandsSileSiesta(SileSiesta):
                 # Now populate the eigenvalues
                 while len(l) < ns * no:
                     l.extend([float(x) for x in self.readline().split()])
-                l = np.array(l, np.float64)
+                l = _a.arrayd(l)
                 l.shape = (ns, no)
                 b[ik, :, :] = l[:, :] - Ef
             vals = k, b
+        
+        if as_dataarray:
+            from xarray import DataArray
+
+            ticks = {"ticks": xlabels, "ticklabels": labels} if band_lines else {}
+            
+            return DataArray(b, name="Energy", attrs=ticks,
+                             coords=[("k", k),
+                                     ("spin", _a.arangei(0, b.shape[1])),
+                                     ("band", _a.arangei(0, b.shape[2]))])
+
         return vals
 
     @default_ArgumentParser(description="Manipulate bands file in sisl.")
