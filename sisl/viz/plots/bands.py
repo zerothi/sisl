@@ -236,7 +236,7 @@ class BandsPlot(Plot):
             raise Exception("A path was provided, therefore we can not use the .bands file even if there is one")
 
         bandsFile = self.setting("bandsFile") or self.requiredFiles[0]
-        self.ticks, self.Ks, bands = sisl.get_sile(bandsFile).read_data()
+        self.arr = sisl.get_sile(bandsFile).read_data(as_dataarray=True)
         self.fermi = 0.0 #Energies are already shifted
 
         # Inform of the path that it's being used if we can
@@ -259,49 +259,30 @@ class BandsPlot(Plot):
             except Exception as e:
                 print(f"Could not correctly read the bands path from siesta.\n Error {e}")
 
-        self._bandsToXArray(bands)
-
         #Inform that the bandsFile has been read so that it can be followed if the user wants
         return [bandsFile]
     
     def _bandsToXArray(self, bands):
 
-        ticks = {"tick_vals": self.ticks[0], "tick_labels": self.ticks[1]}
+        ticks = {"ticks": self.ticks[0], "ticklabels": self.ticks[1]}
         self.arr = xr.DataArray(
             name="Energy",
             data=bands,
             coords=[
-                ("K", self.Ks),
+                ("k", self.Ks),
                 ("spin", np.arange(0,bands.shape[1])),
-                ("iBand", np.arange(0,bands.shape[2]) + 1)
+                ("band", np.arange(0,bands.shape[2]) + 1)
             ],
-            attrs= {**ticks}
+            attrs={**ticks}
         )
-
-        self.isSpinPolarized = len(self.arr.spin.values) == 2
-
-        # Calculate the band gap to store it
-        above_fermi = self.arr.where(self.arr > 0)
-        below_fermi = self.arr.where(self.arr < 0)
-        CBbot = above_fermi.min()
-        VBtop = below_fermi.max()
-
-        CB = above_fermi.where(above_fermi==CBbot, drop=True).squeeze()
-        VB = below_fermi.where(below_fermi==VBtop, drop=True).squeeze()
-
-        self.gap = float(CBbot - VBtop)
-        
-        self.gap_info = {
-            'k': (VB["K"].values, CB['K'].values),
-            'bands': (VB["iBand"].values, CB["iBand"].values),
-            'spin': (VB["spin"].values, CB["spin"].values),
-            'Es': [float(VBtop), float(CBbot)]
-        }
     
     def _afterRead(self):
 
-        # Make sure that the iBands control knows which bands are available
-        iBands = self.arr.iBand.values
+        self._calculateGaps()
+        self.isSpinPolarized = len(self.arr.spin.values) == 2
+
+        # Make sure that the bandsRange control knows which bands are available
+        iBands = self.arr.band.values
 
         if len(iBands) > 30:
             iBands = iBands[np.linspace(0, len(iBands)-1, 20, dtype=int)]
@@ -334,24 +315,24 @@ class BandsPlot(Plot):
 
             if bandsRange is None:
                 # If neither E range or bandsRange was provided, we will just plot the 15 bands below and above the fermi level
-                CB = int(self.arr.where(self.arr <= 0).argmax('iBand').max())
-                bandsRange = [int(max(self.arr["iBand"].min(), CB - 15)), int(min(self.arr["iBand"].max(), CB + 16))]
+                CB = int(self.arr.where(self.arr <= 0).argmax('band').max())
+                bandsRange = [int(max(self.arr["band"].min(), CB - 15)), int(min(self.arr["band"].max(), CB + 16))]
 
             iBands = np.arange(*bandsRange)
-            filtered_bands = self.arr.where(self.arr.iBand.isin(iBands), drop=True)
+            filtered_bands = self.arr.where(self.arr.band.isin(iBands), drop=True)
             self.updateSettings(updateFig=False, Erange=[float(f'{val:.3f}') for val in [float(filtered_bands.min()), float(filtered_bands.max())]], bandsRange=bandsRange)
         else:
             Erange = np.array(Erange) + self.fermi
-            filtered_bands = self.arr.where( (self.arr <= Erange[1]) & (self.arr >= Erange[0])).dropna("iBand", "all")
-            self.updateSettings(updateFig=False, bandsRange=[int(filtered_bands['iBand'].min()), int(filtered_bands['iBand'].max())])
+            filtered_bands = self.arr.where( (self.arr <= Erange[1]) & (self.arr >= Erange[0])).dropna("band", "all")
+            self.updateSettings(updateFig=False, bandsRange=[int(filtered_bands['band'].min()), int(filtered_bands['band'].max())])
 
         #Define the data of the plot as a list of dictionaries {x, y, 'type', 'name'}
         self.data = np.ravel([[{
                         'type': 'scatter',
-                        'x': self.Ks,
+                        'x': band.k.values,
                         'y': (band - self.fermi).values,
                         'mode': 'lines', 
-                        'name': "{} spin {}".format( band.iBand.values, PLOTS_CONSTANTS["spins"][band.spin.values]) if self.isSpinPolarized else str(band.iBand.values) , 
+                        'name': "{} spin {}".format( band.band.values, PLOTS_CONSTANTS["spins"][band.spin.values]) if self.isSpinPolarized else str(band.band.values) , 
                         'line': {"color": [self.setting("spinUpColor"),self.setting("spinDownColor")][band.spin.values], 'width' : self.setting("bandsWidth")},
                         'hoverinfo':'name',
                         "hovertemplate": '%{y:.2f} eV',
@@ -362,10 +343,30 @@ class BandsPlot(Plot):
     def _afterGetFigure(self):
 
         #Add the ticks
-        self.figure.layout.xaxis.tickvals = self.ticks[0]
-        self.figure.layout.xaxis.ticktext = self.ticks[1]
+        self.figure.layout.xaxis.tickvals = getattr(self.arr, "ticks", None)
+        self.figure.layout.xaxis.ticktext = getattr(self.arr, "ticklabels", None)
         self.figure.layout.yaxis.range = np.array(self.setting("Erange")) + self.fermi
     
+    def _calculateGaps(self):
+
+        # Calculate the band gap to store it
+        above_fermi = self.arr.where(self.arr > 0)
+        below_fermi = self.arr.where(self.arr < 0)
+        CBbot = above_fermi.min()
+        VBtop = below_fermi.max()
+
+        CB = above_fermi.where(above_fermi==CBbot, drop=True).squeeze()
+        VB = below_fermi.where(below_fermi==VBtop, drop=True).squeeze()
+
+        self.gap = float(CBbot - VBtop)
+        
+        self.gap_info = {
+            'k': (VB["k"].values, CB['k'].values),
+            'bands': (VB["band"].values, CB["band"].values),
+            'spin': (VB["spin"].values, CB["spin"].values),
+            'Es': [float(VBtop), float(CBbot)]
+        }
+
     def _drawGaps(self):
 
         # Draw gaps

@@ -295,6 +295,21 @@ class Plot(Configurable):
                     "onLabel": "True"
                 },
                 width = "s50% m50% l25%"
+            ),
+            
+            TextInput(
+                key = "{}_scaleanchor".format(axis), name = "Scale anchor",
+                group = "layout", subGroup = axis,
+                default=None,
+                width ="s100% m50%",
+                help="Axis to which the scale of this axis should be proportional. The ratio is set by scaleratio"
+            ),
+            
+            FloatInput(
+                key = "{}_scaleratio".format(axis), name = "Scale ratio",
+                group = "layout", subGroup = axis,
+                default = 1,
+                width = "s50% m30% l15%"
             ),]
             
         ]
@@ -459,7 +474,8 @@ class Plot(Configurable):
                     plot = SileClass.__plot__(**kwargs)
                 elif hasattr(SileClass, "_plot"):
                     PlotClass, kwarg_key = SileClass._plot
-                    plot = PlotClass(**{kwarg_key: filename}, title=os.path.basename(filename))
+                    kwargs[kwarg_key] = filename
+                    plot = PlotClass(**kwargs, title=os.path.basename(filename))
                 else:
                     raise NotImplementedError(f'There is no plot implementation for {os.path.splitext(filename)[-1]} extensions yet.')
             

@@ -1,13 +1,10 @@
-import numpy as np
-import itertools
-
 import os
-import shutil
+
+import numpy as np
 
 import sisl
-from ..plot import Plot, MultiplePlot, Animation, PLOTS_CONSTANTS
-from ..plotutils import sortOrbitals, initMultiplePlots, copyParams, findFiles, runMultiple, calculateGap
-from ..inputFields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
+from ..plot import Plot
+from ..inputFields import TextInput, Array1dInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
 
 class GridPlot(Plot):
 
@@ -53,7 +50,7 @@ class GridPlot(Plot):
 
         DropdownInput(
             key = "zsmooth", name="2D heatmap smoothing method",
-            default='fast',
+            default=False,
             width = "s100% m50% l90%",
             params={
                 'options': [
@@ -68,23 +65,32 @@ class GridPlot(Plot):
             'best' interpolates data, 'fast' interpolates pixels, 'False' displays the data as is.'''
         ),
 
-        IntegerInput(
-            key="interpX", name="X axis interpolation",
-            default=1,
-            help="Interpolation factor to make the grid finer on the X axis.<br>See the zsmooth setting for faster smoothing of 2D heatmap."
+        Array1dInput(
+            key="interp", name="Interpolation",
+            default=[1,1,1],
+            params={
+                'inputType': 'number',
+                'shape': (3,),
+                'extendable': False,
+            },
+            help="Interpolation factors to make the grid finer on each axis.<br>See the zsmooth setting for faster smoothing of 2D heatmap."
         ),
 
-        IntegerInput(
-            key="interpY", name="Y axis interpolation",
-            default=1,
-            help="Interpolation factor to make the grid finer on the Y axis<br>See the zsmooth setting for faster smoothing of 2D heatmap."
+        Array1dInput(
+            key="sc", name="Supercell",
+            default=[1,1,1],
+            params={
+                'inputType': 'number',
+                'shape': (3,),
+                'extendable': False,
+            },
         ),
 
-        IntegerInput(
-            key="interpZ", name="Z axis interpolation",
-            default=1,
-            help="Interpolation factor to make the grid finer on the Z axis<br>See the zsmooth setting for faster smoothing of 2D heatmap."
-        ),
+        SwitchInput(
+            key="forceRatio", name="Force 1:1 ratio",
+            default=True,
+            help="Whether the 1:1 ratio should be forced in 2D heat maps. This will overwrite the scaleanchor and scaleratio properties of the yaxis."
+        )
 
     )
     
@@ -103,8 +109,9 @@ class GridPlot(Plot):
 
         grid = self.grid
         display_axes = self.setting('axes')
+        sc = self.setting("sc")
 
-        interpFactors = np.array([ self.setting(key) if ax in display_axes else 1 for ax, key in enumerate(["interpX", "interpY", "interpZ"])], dtype=int)
+        interpFactors = np.array([ factor if ax in display_axes else 1 for ax, factor in enumerate(self.setting("interp"))], dtype=int)
 
         interpolate = (interpFactors != 1).any()
 
@@ -129,41 +136,54 @@ class GridPlot(Plot):
         if values.ndim == 1:
             ax = display_axes[0]
 
+            if sc[ax] > 1:
+                values = np.tile(values, sc[ax])
+
             self.data = [{
                 'type': 'scatter',
                 'mode': 'lines',
                 'y': values,
-                'x': np.arange(0, grid.cell[ax,ax], grid.dcell[ax,ax]),
+                'x': np.arange(0, sc[ax]*grid.cell[ax,ax], grid.dcell[ax,ax]),
                 'name': os.path.basename(self.setting("gridFile"))
             }]
 
-            axesTitles = {'xaxis_title': f'{("X","Y", "Z")[ax]} axis', 'yaxis_title': 'Values' }
+            axesTitles = {'xaxis_title': f'{("X","Y", "Z")[ax]} axis (Ang)', 'yaxis_title': 'Values' }
 
         elif values.ndim == 2:
 
-            xaxis = display_axes[1]
-            yaxis = display_axes[0]
+            xaxis = display_axes[0]
+            yaxis = display_axes[1]
+
+            if xaxis < yaxis:
+                values = values.T
+            
+            values = np.tile(values, (sc[yaxis], sc[xaxis]) )
 
             self.data = [{
                 'type': 'heatmap',
                 'z': values,
-                'x': np.arange(0, grid.cell[xaxis, xaxis], grid.dcell[xaxis, xaxis]) ,
-                'y': np.arange(0, grid.cell[yaxis, yaxis], grid.dcell[yaxis, yaxis]),
+                'x': np.arange(0, sc[xaxis]*grid.cell[xaxis, xaxis], grid.dcell[xaxis, xaxis]),
+                'y': np.arange(0, sc[yaxis]*grid.cell[yaxis, yaxis], grid.dcell[yaxis, yaxis]),
                 'zsmooth': self.setting('zsmooth')
             }]
 
-            axesTitles = {'xaxis_title': f'{("X","Y", "Z")[xaxis]} axis', 'yaxis_title': f'{("X","Y", "Z")[yaxis]} axis'}
+            axesTitles = {'xaxis_title': f'{("X","Y", "Z")[xaxis]} axis (Ang)', 'yaxis_title': f'{("X","Y", "Z")[yaxis]} axis (Ang)'}
+
+            if self.setting("forceRatio"):
+                self.updateSettings(updateFig=True, yaxis_scaleanchor="x", yaxis_scaleratio=1)
+            elif self.did_setting_update("forceRatio"):
+                self.updateSettings(updateFig=True, yaxis_scaleanchor=None)
+
         elif values.ndim == 3:
 
             self.data = [{
                 'type': 'isosurface',
-                'x': np.arange(0, grid.cell[0,0], grid.dcell[0,0]),
-                'y': np.arange(0, grid.cell[1,1], grid.dcell[1,1]),
-                'z': np.arange(0, grid.cell[2,2], grid.dcell[2,2]),
+                'x': np.arange(0, sc[0]*grid.cell[0,0], grid.dcell[0,0]),
+                'y': np.arange(0, sc[1]*grid.cell[1,1], grid.dcell[1,1]),
+                'z': np.arange(0, sc[2]*grid.cell[2,2], grid.dcell[2,2]),
                 'value': values.flatten(),
             }]
 
             axesTitles = {}
 
-        
         self.updateSettings(updateFig=False, **axesTitles)
