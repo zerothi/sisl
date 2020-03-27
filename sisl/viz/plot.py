@@ -1075,11 +1075,9 @@ class Plot(Configurable):
     
     def swapAxes(self):
 
-        self.data = [{**lineData, 
+        self.data = [{**lineData.to_plotly_json(), 
             "x": lineData["y"], "y": lineData["x"]
         } for lineData in self.data]
-
-        self.getFigure()
 
         return self
     
