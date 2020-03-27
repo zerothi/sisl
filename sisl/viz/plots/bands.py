@@ -12,6 +12,7 @@ import sisl
 from ..plot import Plot, PLOTS_CONSTANTS
 from ..plotutils import sortOrbitals, copyParams, findFiles, runMultiple, calculateGap
 from ..inputFields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput
+from ..inputFields.range import ErangeInput
 
 class BandsPlot(Plot):
 
@@ -41,41 +42,23 @@ class BandsPlot(Plot):
 
         ProgramaticInput(
             key = "bandStructure", name = "bandStruct structure object",
-            default=None,
+            default= None,
             help = "The bandStruct structure object to be used."
         ),
 
-        RangeInput(
-            key = "Erange", name = "Energy range",
-            default = [-20,20],
-            params = {
-                "step": 1,
-            },
+        ErangeInput(
+            key="Erange",
             help = "Energy range where the bands are displayed."
-        ),
-
-        DropdownInput(
-            key="usedRange", name = "Range to use",
-            default="E",
-            params={
-                'options': [
-                    {'label': 'Energy', 'value': 'E'},
-                    {'label': 'Bands', 'value': 'bands'}
-                ],
-                'isSearchable': True,
-                'isMulti': False,
-                'isClearable': False
-            }
         ),
 
         RangeSlider(
             key = "bandsRange", name = "Bands range",
-            default = [1, 10**4],
+            default = None,
             width = "s90%",
             params = {
                 'step': 1,
             },
-            help = "The bands that should be displayed."
+            help = "The bands that should be displayed. Only relevant if Erange is None."
         ),
 
         QueriesInput(
@@ -143,6 +126,33 @@ class BandsPlot(Plot):
                 'offLabel': 'No'
             },
             help="Whether the gap should be displayed in the plot"
+        ),
+
+        SwitchInput(
+            key="directGapsOnly", name="Only direct gaps",
+            default=False,
+            params={
+                'onLabel': 'Yes',
+                'offLabel': 'No'
+            },
+            help="Whether to show only gaps that are direct, according to the gap tolerance"
+        ),
+
+        FloatInput(
+            key="gapTol", name="Gap tolerance",
+            default=0.01,
+            params={
+                'step': 0.001
+            },
+            help='''The difference in k that must exist to consider to gaps different.<br>
+            If two gaps' positions differ in less than this, only one gap will be drawn.<br>
+            Useful in cases where there are degenerated bands with exactly the same values.'''
+        ),
+
+        ColorPicker(
+            key = "gapColor", name = "Gap color",
+            default = None,
+            help = "Color to display the gap"
         ),
 
         FloatInput(
@@ -216,7 +226,7 @@ class BandsPlot(Plot):
 
         bands = bandStruct.eigh()
 
-        self._bandsToXArray(bands.expand_dims(axis=1) if bands.ndim == 2 else bands)
+        self._bandsToXArray(np.expand_dims(bands, axis=1) if bands.ndim == 2 else bands)
 
     def _readSiesOut(self):
         
@@ -317,14 +327,21 @@ class BandsPlot(Plot):
             contains a dictionary for each bandStruct with all its information.
         '''
 
-        #Get the bands that matter for the plot
-        #self.plotDF = self.df[ (self.df["Emin"] <= Erange[1]) & (self.df["Emax"] >= Erange[0]) ].dropna(axis = 0, how = "all")
-        if self.setting("usedRange") == 'bands':
-            iBands = np.arange(*self.setting("bandsRange"))
+        Erange = self.setting('Erange')
+        # Get the bands that matter for the plot
+        if Erange is None:
+            bandsRange = self.setting("bandsRange")
+
+            if bandsRange is None:
+                # If neither E range or bandsRange was provided, we will just plot the 15 bands below and above the fermi level
+                CB = int(self.arr.where(self.arr <= 0).argmax('iBand').max())
+                bandsRange = [int(max(self.arr["iBand"].min(), CB - 15)), int(min(self.arr["iBand"].max(), CB + 16))]
+
+            iBands = np.arange(*bandsRange)
             filtered_bands = self.arr.where(self.arr.iBand.isin(iBands), drop=True)
-            self.updateSettings(updateFig=False, Erange=[float(f'{val:.3f}') for val in [float(filtered_bands.min()), float(filtered_bands.max())]])
+            self.updateSettings(updateFig=False, Erange=[float(f'{val:.3f}') for val in [float(filtered_bands.min()), float(filtered_bands.max())]], bandsRange=bandsRange)
         else:
-            Erange = np.array(self.setting("Erange")) + self.fermi
+            Erange = np.array(Erange) + self.fermi
             filtered_bands = self.arr.where( (self.arr <= Erange[1]) & (self.arr >= Erange[0])).dropna("iBand", "all")
             self.updateSettings(updateFig=False, bandsRange=[int(filtered_bands['iBand'].min()), int(filtered_bands['iBand'].max())])
 
@@ -340,19 +357,7 @@ class BandsPlot(Plot):
                         "hovertemplate": '%{y:.2f} eV',
                     } for band in spin_bands] for spin_bands in filtered_bands.transpose()]).tolist()
         
-        if self.setting("showGap"):
-
-            all_gapKs = itertools.product(*[np.atleast_1d(k) for k in self.gap_info['k']] )
-
-            for gapKs in all_gapKs:
-                self.add_trace({
-                    'type': 'scatter',
-                    'mode': 'lines+markers+text',
-                    'x': gapKs,
-                    'y': self.gap_info["Es"],
-                    'text': [f'Gap: {self.gap:.3f} eV', ''],
-                    'textposition': 'top right',
-                })
+        self._drawGaps()
 
     def _afterGetFigure(self):
 
@@ -360,3 +365,46 @@ class BandsPlot(Plot):
         self.figure.layout.xaxis.tickvals = self.ticks[0]
         self.figure.layout.xaxis.ticktext = self.ticks[1]
         self.figure.layout.yaxis.range = np.array(self.setting("Erange")) + self.fermi
+    
+    def _drawGaps(self):
+
+        # Draw gaps
+        if self.setting("showGap"):
+
+            gap_tolerance = self.setting('gapTol')
+            gap_color = self.setting('gapColor')
+            only_direct = self.setting('directGapsOnly')
+
+            gapKs = [np.atleast_1d(k) for k in self.gap_info['k']]
+
+            # Remove "equivalent" gaps
+            def clear_equivalent(ks):
+                print(ks)
+                if len(ks) == 1:
+                    return ks
+
+                uniq = [ks[0]]
+                for k in ks[1:]:
+                    print(min(np.array(uniq) - k))
+                    print(abs(min(np.array(uniq) - k)))
+                    if abs(min(np.array(uniq) - k)) > gap_tolerance:
+                        uniq.append(k)
+                return uniq
+
+            all_gapKs = itertools.product(*[clear_equivalent(ks) for ks in gapKs])
+
+            for gapKs in all_gapKs:
+
+                if only_direct and abs(gapKs[1] - gapKs[0]) > gap_tolerance:
+                    continue
+
+                self.add_trace({
+                    'type': 'scatter',
+                    'mode': 'lines+markers+text',
+                    'x': gapKs,
+                    'y': self.gap_info["Es"],
+                    'text': [f'Gap: {self.gap:.3f} eV', ''],
+                    'marker':{'color': gap_color },
+                    'line': {'color': gap_color},
+                    'textposition': 'top right',
+                })

@@ -860,7 +860,7 @@ class Plot(Configurable):
         if getattr(self, "childPlots", None):
             #Then it is a multiple plot and we need to create the figure from the child plots
 
-            self.data = []; self.frames = []
+            self.clear(); self.frames = []
 
             if getattr(self, "_isAnimation", False):
 
@@ -880,12 +880,13 @@ class Plot(Configurable):
                     self.frames = [*self.frames, {'name': frameName, 'data': data, "layout": plot.settingsGroup("layout")}]
                     #self.data = [*self.data, *plot.data]
 
-            
             else:
 
+                data = []
                 for plot in self.childPlots:
-
-                    self.data = [*self.data, *plot.data]
+                    data = [*data, *plot.data]
+                
+                self.data = data
             
         framesLayout = {}
 
@@ -1066,11 +1067,9 @@ class Plot(Configurable):
         Normalizes all data between 0 and 1 along the requested axis
         '''
         
-        self.data = [{**lineData, 
+        self.data = [{**lineData.to_plotly_json(), 
             axis: (np.array(lineData[axis]) - np.min(lineData[axis]))/(np.max(lineData[axis]) - np.min(lineData[axis]))
         } for lineData in self.data]
-
-        self.getFigure()
 
         return self
     

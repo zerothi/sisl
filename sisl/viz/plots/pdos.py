@@ -11,7 +11,8 @@ import shutil
 import sisl
 from ..plot import Plot, MultiplePlot, Animation, PLOTS_CONSTANTS
 from ..plotutils import sortOrbitals, initMultiplePlots, copyParams, findFiles, runMultiple, calculateGap
-from ..inputFields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
+from ..inputFields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput
+from ..inputFields.range import ErangeInput
 
 class PdosPlot(Plot):
 
@@ -39,17 +40,9 @@ class PdosPlot(Plot):
             help = '''This parameter explicitly sets a .PDOS file. Otherwise, the PDOS file is attempted to read from the fdf file '''
         ),
 
-        RangeSlider(
-            key = "Erange", name = "Energy range",
-            default = [-2,4],
-            width = "s100%",
-            params = {
-                "min": -10,
-                "max": 10,
-                "step": 0.1,
-                "marks": { **{ i: str(i) for i in range(-10,11) }, 0: "Ef",}
-            },
-            help = "Energy range where the PDOS is displayed."
+        ErangeInput(
+            key="Erange",
+            help = "Energy range where PDOS is displayed."
         ),
 
         QueriesInput(
@@ -147,6 +140,8 @@ class PdosPlot(Plot):
 
     _overwrite_defaults = {
         'xaxis_title': 'Density of states (1/eV)',
+        'xaxis_mirror': True,
+        'yaxis_mirror': True,
         'yaxis_title': 'Energy (eV)'
     }
     
@@ -169,6 +164,10 @@ class PdosPlot(Plot):
         #Calculate the pdos with sisl using the last geometry and the hamiltonian
         self.monkhorstPackGrid = [15, 1, 1]
         Erange = self.setting("Erange")
+
+        if Erange is None:
+            raise Exception('You need to provide an energy range to calculate the PDOS from the Hamiltonian')
+
         self.E = np.linspace( Erange[0], Erange[-1], 1000) 
 
         mp = sisl.MonkhorstPack(self.H, self.monkhorstPackGrid)
@@ -304,8 +303,10 @@ class PdosPlot(Plot):
         '''
 
         #Get only the energies we are interested in 
-        Emin, Emax = np.array(self.setting("Erange"))
+        Emin, Emax = self.setting("Erange") or [min(self.E), max(self.E)]
         plotEvals = [Evalue for Evalue in self.E if Emin < Evalue < Emax]
+
+        self.figure.layout.yaxis.range = [Emin, Emax]
 
         #Inform and abort if there is no data
         if len(plotEvals) == 0:
