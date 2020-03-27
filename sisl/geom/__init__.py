@@ -22,6 +22,7 @@ A variety of default geometries.
    honeycomb
    nanotube
    diamond
+   bilayer
 
 
 Basic
