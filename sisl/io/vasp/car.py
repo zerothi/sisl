@@ -67,9 +67,10 @@ class carSileVASP(SileVASP):
         self._write(fmt.format(*s))
         fmt = ' {:d}' * len(d) + '\n'
         self._write(fmt.format(*d))
+        self._write('Selective dynamics\n')
         self._write('Cartesian\n')
 
-        fmt = '{:18.9f}' * 3 + '\n'
+        fmt = '{:18.9f}' * 3 + ' F F F\n'
         for ia in geometry:
             self._write(fmt.format(*geometry.xyz[ia, :]))
 
