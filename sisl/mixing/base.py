@@ -7,7 +7,10 @@ __all__ = ['Mixer', 'History', 'Metric']
 
 class Mixer:
     r""" Base class mixer """
-    pass
+
+    def clear(self):
+        r""" Dummy for history mixers such that all mixers can call `clear` """
+        pass
 
 
 class Metric:
@@ -21,6 +24,7 @@ class Metric:
 
     where generally the metric :math:`\mathbf M = 1`.
     """
+
     def __init__(self, metric=None):
         if metric is None:
             class _dummy_dot:
@@ -42,10 +46,12 @@ class Metric:
         except:
             return (a * self._metric(b)).sum()
 
+    __call__ = inner
+
 
 class History:
     r""" A history class for retaining a set of history elements
-    
+
     A history class may contain several different variables in a `collections.deque`
     list allowing easy managing of the length of the history.
 
@@ -63,16 +69,21 @@ class History:
     variables : int, optional
        number of different variables stored as a history.
     """
+
     def __init__(self, history=2, variables=2):
         # Create a list of queues
         self._hist = [deque(maxlen=history) for i in range(variables)]
+
+    def __str__(self):
+        """ str of the object """
+        return self.__class__.__name__ + f"{{history: {self.history}/{self.history_max}, variables={self.variables}}}"
 
     @property
     @lru_cache(maxsize=1)
     def variables(self):
         r""" Number of different variables that can be contained """
         return len(self._hist)
-        
+
     @property
     @lru_cache(maxsize=1)
     def history_max(self):
@@ -86,40 +97,49 @@ class History:
 
     __len__ = history
 
-    def append(self, *args, variables=None):
+    def append(self, *args, variable=None):
         r""" Add variables to the history
 
         Parameters
         ----------
         *args : tuple of object
             each variable will be added to the history of the mixer
-        variables : int or listlike of int
+        variable : int or listlike of int
             specify which variables the history should be added to, note:
-            ``len(args) == len(variables)``
+            ``len(args) == len(variable)``
         """
-        if variables is None:
-            variables = range(self.variables)
+        if variable is None:
+            variable = range(self.variables)
 
         # Clarify a few things
-        variables = list(variables)
-        if len(args) != len(variables):
+        variable = list(variable)
+        if len(args) != len(variable):
             raise ValueError(f"{self.__class__.__name__}.append requires same length input")
 
-        for i, arg in zip(variables, args):
+        for i, arg in zip(variable, args):
             self._hist[i].append(arg)
 
-    def clear(self, variables=None):
+    def clear(self, index=None, variables=None):
         r""" Clear variables to the history
 
         Parameters
         ----------
-        variables : int or listlike of int
+        index : int or array_like of int
+            which indices of the history we should clear
+        variables : int or array_like of int
             specify which variables should be cleared
         """
         if variables is None:
             variables = range(self.variables)
-
         variables = list(variables)
 
-        for i in variables:
-            self._hist[i].clear()
+        if index is None:
+            for v in variables:
+                self._hist[v].clear()
+        else:
+            index = list(index)
+            # We need to ensure we delete in the correct order
+            index.sort(reverse=True)
+            for v in variables:
+                for i in index:
+                    del self._hist[v][i]

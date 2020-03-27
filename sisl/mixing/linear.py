@@ -13,7 +13,7 @@ class LinearMixer(Mixer):
 
     .. math::
 
-        f_{\mathrm{in}}^{i+1} = (1 - w) f_{\mathrm{in}}^i + w f_{\mathrm{out}}^i
+        f^{i+1} = f^i + w \delta f^i
 
     Parameters
     ----------
@@ -24,21 +24,26 @@ class LinearMixer(Mixer):
     def __init__(self, weight=0.1):
         # No parameters passed
         super().__init__()
+        assert weight > 0
         self._weight = weight
+
+    def __str__(self):
+        r""" String representation """
+        return self.__class__.__name__ + f"{{weight: {self.weight:.4f}}}"
 
     @property
     def weight(self):
-        r""" Weight used for the linear mixing weights """
+        r""" Weight used for the linear mixing """
         return self._weight
 
-    def __call__(self, f_in, f_out):
+    def __call__(self, f, df):
         r""" Calculate a new variable :math:`f'` using input and output of the functional
-        
+
         Parameters
         ----------
-        f_in : object
+        f : object
            input variable for the functional
-        f_out : object
-           output variable of the functional
+        df : object
+           derivative of the functional
         """
-        return (1 - self.weight) * f_in + self.weight * f_out
+        return f + self.weight * df

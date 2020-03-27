@@ -16,7 +16,6 @@ def test_fe(sisl_files):
     assert eig.shape == (131, 2, 15)
     assert len(labels[0]) == 5
 
-
 def test_fe_ArgumentParser(sisl_files, sisl_tmp):
     try:
         import matplotlib
@@ -28,3 +27,17 @@ def test_fe_ArgumentParser(sisl_files, sisl_tmp):
     p.parse_args([], namespace=ns)
     p.parse_args(['--energy', ' -2:2'], namespace=ns)
     p.parse_args(['--energy', ' -2:2', '--plot', png], namespace=ns)
+
+
+def test_fe_xarray(sisl_files, sisl_tmp):
+    try:
+        import xarray
+    except ImportError:
+        pytest.skip('xarray not available')
+    si = sisl.get_sile(sisl_files(_dir, 'fe.bands'))
+
+    bands = si.read_data(as_dataarray=True)
+    assert len(bands['k']) == 131
+    assert len(bands['spin']) == 2
+    assert len(bands['band']) == 15
+    assert len(bands.ticks) == len(bands.ticklabels) == 5

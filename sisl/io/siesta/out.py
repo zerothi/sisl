@@ -291,11 +291,15 @@ class outSileSiesta(SileSiesta):
             # Now read data
             F = []
             line = self.readline()
+            if 'siesta:' in line:
+                # This is the final summary, we don't need to read it as it does not contain new information
+                # and also it make break things since max forces are not written there
+                return None
 
             # First, we encounter the atomic forces
             while '---' not in line:
                 line = line.split()
-                if not total or max:
+                if not (total or max):
                     F.append([float(x) for x in line[-3:]])
                 line = self.readline()
                 if line == '':
@@ -328,8 +332,7 @@ class outSileSiesta(SileSiesta):
             if max and total:
                 return (Fs[..., :-1], Fs[..., -1])
             elif max and not all:
-                # This will return a float (or actually a numpy.dtype)
-                return Fs[0]
+                return Fs.ravel()[0]
             return Fs
 
         if all or last:
@@ -342,11 +345,8 @@ class outSileSiesta(SileSiesta):
                 Fs.append(F)
 
             if last:
-                return return_forces(Fs[-2])
-                # F[-2] is really the same as F[-1], the last forces are stated twice
-                # However, the maxForce is not stated in the final summary, that's why we use F[-2]
-            if self.job_completed:
-                return return_forces(Fs[:-1])
+                return return_forces(Fs[-1])
+ 
             return return_forces(Fs)
 
         return return_forces(next_force())

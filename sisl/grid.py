@@ -148,32 +148,40 @@ class Grid(SuperCellChild):
         # Interpolate function
         from scipy.interpolate import RegularGridInterpolator
 
+        # Current dimensions of size 1
+        idx = tuple(i for i in range(3) if self.shape[i] > 1)
+        idx_1 = tuple(i for i in range(3) if not i in idx)
+
         # Get current grid spacing
-        dold = (
-            _a.linspacef(0, 1, self.shape[0]),
-            _a.linspacef(0, 1, self.shape[1]),
-            _a.linspacef(0, 1, self.shape[2])
-        )
+        dold = tuple(_a.linspacef(0, 1, self.shape[i]) for i in idx)
 
         # Create new grid and clean-up to reduce memory
         grid = self.copy()
         del grid.grid
 
         # Create the interpolator!
-        f = RegularGridInterpolator(dold, self.grid, method=method)
+        # And remove 1 dimensions
+        f = RegularGridInterpolator(dold, np.squeeze(self.grid), method=method)
         del dold
 
         # Create new interpolation points
-        dnew = (
-            _a.linspacef(0, 1, shape[0]),
-            _a.linspacef(0, 1, shape[1]),
-            _a.linspacef(0, 1, shape[2])
-        )
+        dnew = tuple(_a.linspacef(0, 1, shape[i]) for i in idx)
 
         grid.grid = np.empty(shape, dtype=self.dtype)
-        for iz, dz in enumerate(dnew[2]):
-            dnew = np.mgrid[0:1:shape[0] * 1j, 0:1:shape[1] * 1j, dz:dz*1.0001:1j].reshape(3, -1).T
-            grid.grid[:, :, iz] = f(dnew).reshape((shape[0], shape[1]))
+
+        # Special case where grid has different dimensionality
+        if len(dnew) == 0:
+            # all is copied
+            grid.grid[...] = self.grid.ravel()
+        elif len(dnew) < 3:
+            reshape = tuple(shape[i] if i in idx else 1 for i in range(3))
+            sl = tuple(slice(0, 1, shape[i] * 1j) for i in idx)
+            dnew = np.mgrid[sl].reshape(len(sl), -1).T
+            grid.grid[:, :, :] = f(dnew).reshape(reshape)
+        else:
+            for iz, dz in enumerate(dnew[2]):
+                dnew = np.mgrid[0:1:shape[0] * 1j, 0:1:shape[1] * 1j, dz:dz+0.1:1j].reshape(3, -1).T
+                grid.grid[:, :, iz] = f(dnew).reshape((shape[0], shape[1]))
 
         del dnew
 
