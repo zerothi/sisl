@@ -622,8 +622,10 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                 raise ValueError('Currently not implemented')
             self.Pk = self._Pk_non_colinear
             self.Sk = self._Sk_non_colinear
-            self.dPk = None
-            self.dSk = None
+            self.dPk = NotImplemented
+            self.dSk = NotImplemented
+            self.ddPk = NotImplemented
+            self.ddSk = NotImplemented
 
         elif self.spin.is_spinorbit:
             if self.spin.dkind == 'f':
@@ -647,8 +649,10 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             # The overlap is the same as non-collinear
             self.Pk = self._Pk_spin_orbit
             self.Sk = self._Sk_non_colinear
-            self.dPk = None
-            self.dSk = None
+            self.dPk = NotImplemented
+            self.dSk = NotImplemented
+            self.ddPk = NotImplemented
+            self.ddSk = NotImplemented
 
         if self.orthogonal:
             self.Sk = self._Sk_diagonal
