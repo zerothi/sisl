@@ -1576,13 +1576,13 @@ class BandStructure(BrillouinZone):
         ticks : bool, optional
            if `True` the ticks for the points are also returned
 
-           lk, xticks, label_ticks, lk = BandStructure.lineark(True)
+           lk, ticks, ticklabels = BandStructure.lineark(True)
 
         Returns
         -------
         linear_k : The positions in reciprocal space determined by the distance between points
-        k_tick : Linear k-positions of the points, only returned if `ticks` is ``True``
-        k_label : Labels at `k_tick`, only returned if `ticks` is ``True``
+        ticks : Linear k-positions of the points, only returned if `ticks` is ``True``
+        ticklabels : Labels at `k_tick`, only returned if `ticks` is ``True``
         """
         # Calculate points
         k = [self.tocartesian(pnt) for pnt in self.point]
