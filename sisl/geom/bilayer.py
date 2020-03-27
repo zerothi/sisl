@@ -23,8 +23,8 @@ def bilayer(bond=1.42, bottom_atom=None, top_atom=None, stacking='AB',
        atom (or atoms) in the bottom layer. Defaults to ``Atom(6)``
     top_atom : Atom, optional
        atom (or atoms) in the top layer, defaults to `bottom_atom`
-    stacking : {'AB', 'AA'}
-       stacking sequence of the bilayer
+    stacking : {'AB', 'AA', 'BA'}
+       stacking sequence of the bilayer, where XY means that site X in bottom layer coincides with site Y in top layer
     twist : tuple of int, optional
        integer coordinates (m, n) defining a commensurate twist angle
     separation : float, optional
@@ -54,6 +54,8 @@ def bilayer(bond=1.42, bottom_atom=None, top_atom=None, stacking='AB',
         top = top.move([0, 0, separation])
     elif stacking.lower() == 'ab':
         top = top.move([bond, 0, separation])
+    elif stacking.lower() == 'ba':
+        top = top.move([-bond, 0, separation])
 
     # Compute twist angle
     m, n = twist
