@@ -115,7 +115,7 @@ class Cuboid(PureShape):
         """ Return a copy of itself """
         return self.copy()
 
-    def within_index(self, other, tol=1.e-12):
+    def within_index(self, other, tol=1.e-8):
         """ Return indices of the `other` object which are contained in the shape
 
         Parameters

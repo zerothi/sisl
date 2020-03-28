@@ -123,7 +123,7 @@ class Ellipsoid(PureShape):
         """ Change the center of the object """
         super().__init__(center)
 
-    def within_index(self, other, tol=1.e-12):
+    def within_index(self, other, tol=1.e-8):
         r""" Return indices of the points that are within the shape
 
         Parameters
