@@ -5,6 +5,7 @@ from .sile import SileVASP
 from ..sile import *
 
 # Import the geometry object
+import sisl._array as _a
 from sisl.messages import warn
 from sisl import Geometry, PeriodicTable, Atom, SuperCell
 
@@ -22,13 +23,22 @@ class carSileVASP(SileVASP):
         self._scale = 1.
 
     @sile_fh_open()
-    def write_geometry(self, geometry):
-        """ Writes the geometry to the contained file
+    def write_geometry(self, geometry, fixed=False):
+        r""" Writes the geometry to the contained file
 
         Parameters
         ----------
         geometry : Geometry
            geometry to be written to the file
+        fixed : bool or list, optional
+           define which atoms to be fixed in the VASP run
+
+        Examples
+        --------
+        >>> car = carSileVASP('POSCAR', 'w')
+        >>> geom = geom.graphene()
+        >>> geom.write(car, fixed=False) # fix none
+        >>> geom.write(car, fixed=[True, (False, True, False)]) # fix 1st and y coordinate of 2nd
         """
         # Check that we can write to the file
         sile_raise_write(self)
@@ -67,11 +77,21 @@ class carSileVASP(SileVASP):
         self._write(fmt.format(*s))
         fmt = ' {:d}' * len(d) + '\n'
         self._write(fmt.format(*d))
+        self._write('Selective dynamics\n')
         self._write('Cartesian\n')
 
-        fmt = '{:18.9f}' * 3 + '\n'
+        if isinstance(fixed, bool):
+            fixed = [fixed] * len(geometry)
+
+        b2s = {True: 'T', False: 'F'}
+        def todyn(fix):
+            if isinstance(fix, bool):
+                return '{0} {0} {0}\n'.format(b2s[fix])
+            return '{} {} {}\n'.format(b2s[fix[0]], b2s[fix[1]], b2s[fix[2]])
+
+        fmt = '{:18.9f} ' * 3
         for ia in geometry:
-            self._write(fmt.format(*geometry.xyz[ia, :]))
+            self._write(fmt.format(*geometry.xyz[ia, :]) + todyn(fixed[ia]))
 
     @sile_fh_open(True)
     def read_supercell(self):
@@ -91,8 +111,15 @@ class carSileVASP(SileVASP):
         return SuperCell(cell)
 
     @sile_fh_open()
-    def read_geometry(self):
-        """ Returns Geometry object from the CONTCAR/POSCAR file
+    def read_geometry(self, ret_fixed=False):
+        r""" Returns Geometry object from the CONTCAR/POSCAR file
+
+        Possibly also return the dynamics (if present)
+
+        Parameters
+        ----------
+        ret_fixed : bool, optional
+           also read selective dynamics (if present), if not, a list of False will be returned
         """
         sc = self.read_supercell()
 
@@ -123,9 +150,9 @@ class carSileVASP(SileVASP):
         # Read whether this is selective or direct
         # Currently direct is not used
         opt = self.readline()
-        #direct = True
+        dynamics = False
         if opt[0] in 'Ss':
-            #direct = False
+            dynamics = True
             opt = self.readline()
 
         # Check whether this is in fractional or direct
@@ -136,18 +163,27 @@ class carSileVASP(SileVASP):
 
         # Number of atoms
         na = len(atom)
+        # pre-create the fixed list
+        fixed = [[False] * 3] * na
 
-        xyz = np.empty([na, 3], np.float64)
+        xyz = _a.emptyd([na, 3])
         for ia in range(na):
-            xyz[ia, :] = list(map(float, self.readline().split()[:3]))
+            line = self.readline().split()
+            xyz[ia, :] = list(map(float, line[:3]))
+            if dynamics:
+                fixed[ia] = list(map(lambda x: x.lower() == 't', line[3:6]))
+
         if cart:
             # The unit of the coordinates are cartesian
             xyz *= self._scale
         else:
-            xyz = np.dot(xyz, sc.cell)
+            xyz = xyz.dot(sc.cell)
 
         # The POT/CONT-CAR does not contain information on the atomic species
-        return Geometry(xyz=xyz, atom=atom, sc=sc)
+        geom = Geometry(xyz=xyz, atom=atom, sc=sc)
+        if ret_fixed:
+            return geom, np.array(fixed, dtype=np.bool_)
+        return geom
 
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
