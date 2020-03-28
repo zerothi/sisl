@@ -35,6 +35,11 @@ def bilayer(bond=1.42, bottom_atom=None, top_atom=None, stacking='AB',
     layer : {'both', 'bottom', 'top'}
        control which layer(s) to return
 
+    See Also
+    --------
+    honeycomb: honeycomb lattices
+    graphene: graphene geometry
+
     References
     ----------
     .. [1] G. Trambly de Laissardiere, D. Mayou, L. Magaud, "Localization of Dirac Electrons in Rotated Graphene Bilayers", Nano Letts. 10, 804-808 (2010)

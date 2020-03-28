@@ -97,10 +97,12 @@ def hcp(a, atom, coa=1.63333, orthogonal=False):
 
     Parameters
     ----------
-    alat : float
-        lattice parameter
+    a : float
+        lattice parameter for 1st and 2nd lattice vectors
     atom : Atom
         the atom in the HCP lattice
+    coa : float, optional
+        c over a parameter where c is the 3rd lattice vector length
     orthogonal : bool, optional
         whether the lattice is orthogonal (4 atoms)
     """

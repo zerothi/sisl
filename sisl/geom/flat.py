@@ -22,6 +22,7 @@ def honeycomb(bond, atom, orthogonal=False):
     See Also
     --------
     graphene: the equivalent of this, but with default of Carbon atoms
+    bilayer: create bilayer honeycomb lattices
     """
     sq3h = 3.**.5 * 0.5
     if orthogonal:
@@ -59,6 +60,7 @@ def graphene(bond=1.42, atom=None, orthogonal=False):
     See Also
     --------
     honeycomb: the equivalent of this, but with non-default atoms
+    bilayer: create bilayer honeycomb lattices
     """
     if atom is None:
         return honeycomb(bond, Atom(Z=6, R=bond * 1.01), orthogonal)
