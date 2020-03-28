@@ -1,5 +1,6 @@
 import numpy as np
 
+from math import acos, pi
 from sisl import geom, Atom, Cuboid
 
 __all__ = ['bilayer']
@@ -28,7 +29,7 @@ def bilayer(bond=1.42, bottom_atom=None, top_atom=None, stacking='AB',
     twist : tuple of int, optional
        integer coordinates (m, n) defining a commensurate twist angle
     separation : float, optional
-       distance between the two layers (in Angstrom)
+       distance between the two layers
     ret_angle : bool, optional
        return the twist angle (in degrees) in addition to the geometry instance
     layer : {'both', 'bottom', 'top'}
@@ -50,12 +51,15 @@ def bilayer(bond=1.42, bottom_atom=None, top_atom=None, stacking='AB',
     top = geom.honeycomb(bond, top_atom)
     ref_cell = bottom.cell.copy()
 
-    if stacking.lower() == 'aa':
+    stacking = stacking.lower()
+    if stacking == 'aa':
         top = top.move([0, 0, separation])
-    elif stacking.lower() == 'ab':
+    elif stacking == 'ab':
         top = top.move([-bond, 0, separation])
-    elif stacking.lower() == 'ba':
+    elif stacking == 'ba':
         top = top.move([bond, 0, separation])
+    else:
+        raise ValueError("bilayer: stacking must be one of {AA, AB, BA}")
 
     # Compute twist angle
     m, n = twist
@@ -75,48 +79,69 @@ def bilayer(bond=1.42, bottom_atom=None, top_atom=None, stacking='AB',
     else:
         # Twisting
         cos_theta = (n ** 2 + 4 * n * m + m ** 2) / (2 * (n ** 2 + n * m + m ** 2))
-        theta = np.arccos(cos_theta) * 180 / np.pi
+        theta = acos(cos_theta) * 180 / pi
         rep = 4 * (n + m)
         natoms = 2 * (n ** 2 + n * m + m ** 2)
 
     if rep > 1:
         # Set origo through an A atom near the middle of the geometry
-        bottom = bottom.tile(rep, axis=0).tile(rep, axis=1)
-        top = top.tile(rep, axis=0).tile(rep, axis=1)
-        tvec = rep * (ref_cell[0] + ref_cell[1]) / 2
-        bottom = bottom.move(-tvec)
-        top = top.move(-tvec)
+        align_vec = - rep * (ref_cell[0] + ref_cell[1]) / 2
+
+        bottom = (bottom
+                  .tile(rep, axis=0)
+                  .tile(rep, axis=1)
+                  .move(align_vec))
 
         # Set new lattice vectors
         bottom.cell[0] = n * ref_cell[0] + m * ref_cell[1]
         bottom.cell[1] = -m * ref_cell[0] + (n + m) * ref_cell[1]
 
-        # Rotate top layer around A atom in bottom layer
-        top = top.rotate(theta, [0, 0, 1])
+        # Remove atoms outside cell
+        cell_box = Cuboid(bottom.cell, center=[- bond * 1e-4] * 3)
 
+        # Reduce atoms in bottom
+        inside_idx = cell_box.within_index(bottom.xyz)
+        bottom = bottom.sub(inside_idx)
+
+        # Rotate top layer around A atom in bottom layer
+        top = (top
+               .tile(rep, axis=0)
+               .tile(rep, axis=1)
+               .move(align_vec)
+               .rotate(theta, [0, 0, 1]))
+
+        inside_idx = cell_box.within_index(top.xyz)
+        top = top.sub(inside_idx)
+
+        # Ensure the cells are commensurate
         top.cell[:] = bottom.cell[:]
 
     # Which layers to be returned
-    if layer.lower() == 'bottom':
+    layer = layer.lower()
+    if layer == 'bottom':
         bilayer = bottom
-    elif layer.lower() == 'top':
+    elif layer == 'top':
         bilayer = top
-    else:
+    elif layer == 'both':
         bilayer = bottom.add(top)
         natoms *= 2
+    else:
+        raise ValueError("bilayer: layer must be one of {both, bottom, top}")
 
     if rep > 1:
-        # Remove atoms outside cell
-        cell_box = Cuboid(bilayer.cell)
-        cell_box.set_center([-0.0001] * 3)
-        inside_idx = cell_box.within_index(bilayer.xyz)
-        bilayer = bilayer.sub(inside_idx)
-
-        # Rotate whole cell
+        # Rotate and shift unit cell back
+        fxyz_min = bilayer.fxyz.min(axis=0)
+        fxyz_min[2] = 0.
+        # This is a small hack since rotate is not numerically
+        # precise.
+        # TODO We could consider using mpfmath in Quaternion for increased
+        # precision...
+        fxyz_min[np.fabs(fxyz_min) > 1.e-7] *= 0.49
+        offset = fxyz_min.dot(bilayer.cell)
         vec = bilayer.cell[0] + bilayer.cell[1]
         vec_costh = vec[0] / vec.dot(vec) ** 0.5
-        vec_th = np.arccos(vec_costh) * 180 / np.pi
-        bilayer = bilayer.rotate(vec_th, [0, 0, 1])
+        vec_th = acos(vec_costh) * 180 / pi
+        bilayer = bilayer.move(-offset).rotate(vec_th, [0, 0, 1])
 
     # Sanity check
     assert len(bilayer) == natoms

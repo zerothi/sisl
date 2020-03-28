@@ -36,6 +36,8 @@ def test_diamond():
 def test_bilayer():
     a = bilayer(1.42)
     a = bilayer(1.42, stacking='AA')
+    a = bilayer(1.42, stacking='BA')
+    a = bilayer(1.42, stacking='AB')
     for m in range(7):
         a = bilayer(1.42, twist=(m, m + 1))
     a = bilayer(1.42, twist=(6, 7), layer='bottom')
