@@ -1533,7 +1533,7 @@ class Geometry(SuperCellChild):
         vn /= fnorm(vn)
 
         # Rotate by direct call
-        if 'abc' in only:
+        if 'a' in only or 'b' in only or 'c' in only:
             sc = self.sc.rotate(angle, vn, rad=rad, only=only)
         else:
             sc = self.sc.copy()
