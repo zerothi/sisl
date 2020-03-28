@@ -1,6 +1,8 @@
 0.9.9
 =====
 
+- Enabled VASP *CAR files to write/read dynamic specifications
+
 - Enabled xarray.DataArray returning from BrillouinZone objects #182
 
 - Several improvements to outSileSiesta.read_scf (thanks to Pol Febrer)
