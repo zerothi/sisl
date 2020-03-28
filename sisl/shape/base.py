@@ -83,7 +83,7 @@ class Shape:
         """ Create a cuboid which is surely encompassing the *full* shape """
         return self.toEllipsoid().toCuboid()
 
-    def within(self, other):
+    def within(self, other, *args, **kwargs):
         """ Return ``True`` if `other` is fully within `self`
 
         If `other` is an array, an array will be returned for each of these.
@@ -92,12 +92,16 @@ class Shape:
         ----------
         other : array_like
            the array/object that is checked for containment
+        *args :
+           passed directly to `within_index`
+        **kwargs :
+           passed directly to `within_index`
         """
         other = _a.asarrayd(other)
         ndim = other.ndim
         other.shape = (-1, 3)
 
-        idx = self.within_index(other)
+        idx = self.within_index(other, *args, **kwargs)
         # Initialize a boolean array with all false
         within = np.zeros(len(other), dtype=bool)
         within[idx] = True
@@ -105,7 +109,7 @@ class Shape:
             return within[0]
         return within
 
-    def within_index(self, other):
+    def within_index(self, other, *args, **kwargs):
         """ Return indices of the elements of `other` that are within the shape """
         raise NotImplementedError('within_index has not been implemented in: '+self.__class__.__name__)
 
@@ -303,7 +307,7 @@ class NullShape(PureShape):
         M = np.finfo(np.float64).max / 100
         self._center = np.array([M, M, M], np.float64)
 
-    def within_index(self, other):
+    def within_index(self, other), *args, **kwargs:
         """ Always returns a zero length array """
         return np.empty(0, dtype=np.int32)
 
