@@ -534,7 +534,7 @@ class outSileSiesta(SileSiesta):
         return val
 
     @sile_fh_open()
-    def read_scf(self, key='scf', iscf=-1, imd=None, as_dataset=False):
+    def read_scf(self, key='scf', iscf=-1, imd=None, as_dataframe=False):
         r""" Parse SCF information and return a table of SCF information depending on what is requested
 
         Parameters
@@ -548,14 +548,10 @@ class outSileSiesta(SileSiesta):
         imd: int or None, optional
             whether only a particular MD step is queried, if None, all MD steps are
             parsed and returned. A negative number wraps for the last MD steps.
-        as_dataset: boolean, optional
-            whether the information should be returned as an `xarray.Dataset`. The advantage of this
+        as_dataframe: boolean, optional
+            whether the information should be returned as a `pandas.DataFrame`. The advantage of this
             format is that everything is indexed and therefore you know what each value means.You can also
-            perform operations very easily on a dataset. 
-
-            If you are familiar with pandas, xarray is the multidimensional equivalent. `xarray.Dataset` is equivalent
-            to `pandas.Dataframe` but it handles multiple independent variables (In this case, the MD step and the scf step).
-            Therefore, you can perform almost the same operations that you are used to in pandas.
+            perform operations very easily on a dataframe. 
         """
 
         #These are the properties that are written in SIESTA scf
@@ -674,57 +670,45 @@ class outSileSiesta(SileSiesta):
                     break
         
         # Define the function that is going to convert the information of a MDstep to a Dataset
-        if as_dataset:
-            from xarray import Dataset
+        if as_dataframe:
+            import pandas as pd
 
-            if not (imd is None and iscf is not None): #In this case we will build it differently (see below)
+            def MDstep_dataframe(scf):
 
-                def MDstep_dataset(scf, MDstep):
+                return pd.DataFrame(
+                    np.atleast_2d(scf[...,1:]), 
+                    index=pd.Index(np.ravel(scf[...,0]).astype(int), name="iscf"),
+                    columns=props[1:]
+                )
+            
+            def MD_dataframe(md):
 
-                    # Check if there is only one iscf, because then we will take into account that
-                    # one dimension is missing
-                    single_iscf = scf.ndim == 1
-
-                    coords = {
-                        'MDstep': [MDstep],
-                        'iscf': [int(scf[0])] if single_iscf else scf[:,0].astype(int)
-                    }
-
-                    return Dataset(
-                        {
-                            prop: ( ('MDstep', 'iscf'), [[propValues]] if single_iscf else [propValues] )
-
-                            for prop, propValues in zip(props[1:], scf.T[1:] )
-                        },
-                        coords
-                    )
+                return pd.concat([MDstep_dataframe(scf) for scf in md], keys=np.arange(1, len(md) + 1), names=["MD step"])
 
         # Now we know how many MD steps there are
         if imd is None:
             if iscf is None:
                 # since each MD step may be a different number of SCF steps
                 # we cannot convert to a dense array
-                if as_dataset:
-                    from xarray import merge
-                    return merge([MDstep_dataset(scf, i) for i, scf in enumerate(md) ])
+                if as_dataframe:
+                    return MD_dataframe(md)
                 else:
                     return md
             
             md = np.array(md)
-            if as_dataset:
-
-                # We generate a dataset, but in this case iscf is a dependent variable
-                # Because it is the number of iterations that has taken the MDstep to converge
-                return Dataset(
-                    data_vars = {
-                        prop: ( ["MDstep"], propValues.astype(int) if prop == "iscf" else propValues)
-                        
-                        for prop, propValues in zip(props, md.T)
-                    },
-                    coords = {
-                        'MDstep': np.arange(md.shape[0])
-                    }
-                )
+            if as_dataframe:
+                if len(np.unique(md[:,0])) == 1:
+                    # This means that there is only one value for iscf, so we can use it as an index
+                    # In fact it will be the top level of the index hierarchy (hence the swaplevel)
+                    return MD_dataframe(md).swaplevel(0,1)
+                else:
+                    # We generate a dataframe, but in this case iscf is a dependent variable
+                    # Because iscf is different for each MD step
+                    return pd.DataFrame(
+                        md,
+                        index=pd.Index(np.arange(1, md.shape[0] + 1), name="MD step"),
+                        columns=props
+                    )
             else:
                 return md
         elif imd > len(md):
@@ -734,7 +718,7 @@ class outSileSiesta(SileSiesta):
         # Remember that if imd is positive, we stopped reading at the moment we reached it
         imd =  min( len(md) - 1, max(len(md) + imd, 0)) 
         scf = np.array(md[imd])
-        return MDstep_dataset(scf, imd + 1) if as_dataset else scf
+        return MDstep_dataframe(scf) if as_dataframe else scf
 
 
 add_sile('out', outSileSiesta, case=False, gzip=True)
