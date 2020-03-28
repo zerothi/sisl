@@ -307,7 +307,7 @@ class NullShape(PureShape):
         M = np.finfo(np.float64).max / 100
         self._center = np.array([M, M, M], np.float64)
 
-    def within_index(self, other), *args, **kwargs:
+    def within_index(self, other, *args, **kwargs:
         """ Always returns a zero length array """
         return np.empty(0, dtype=np.int32)
 
