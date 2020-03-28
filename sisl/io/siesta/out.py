@@ -704,11 +704,15 @@ class outSileSiesta(SileSiesta):
                 else:
                     # We generate a dataframe, but in this case iscf is a dependent variable
                     # Because iscf is different for each MD step
-                    return pd.DataFrame(
+
+                    df = pd.DataFrame(
                         md,
                         index=pd.Index(np.arange(1, md.shape[0] + 1), name="MD step"),
                         columns=props
                     )
+
+                    df['iscf'] = df['iscf'].astype(int)
+                    return df 
             else:
                 return md
         elif imd > len(md):
