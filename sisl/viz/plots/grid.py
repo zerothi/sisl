@@ -90,8 +90,34 @@ class GridPlot(Plot):
             key="forceRatio", name="Force 1:1 ratio",
             default=True,
             help="Whether the 1:1 ratio should be forced in 2D heat maps. This will overwrite the scaleanchor and scaleratio properties of the yaxis."
-        )
+        ),
 
+        RangeSlider(
+            key="xRange", name="X range",
+            default=None,
+            params={
+                "min": 0
+            },
+            help="Range where the X is displayed. Should be inside the unit cell, otherwise it will fail.",
+        ),
+
+        RangeSlider(
+            key="yRange", name="Y range",
+            default=None,
+            params={
+                "min": 0
+            },
+            help="Range where the Y is displayed. Should be inside the unit cell, otherwise it will fail.",
+        ),
+
+        RangeSlider(
+            key="zRange", name="Z range",
+            default=None,
+            params={
+                "min": 0
+            },
+            help="Range where the Z is displayed. Should be inside the unit cell, otherwise it will fail.",
+        )
     )
     
     def _readNoSource(self):
@@ -105,11 +131,36 @@ class GridPlot(Plot):
 
         return [gridFile]
     
+    def _afterRead(self):
+
+        #Inform of the new available ranges
+        range_keys = ("xRange", "yRange", "zRange")
+
+        for ax, key in enumerate(range_keys):
+            self.modifyParam(key, "inputField.params.max", self.grid.cell[ax,ax] )
+            self.getParam(key, justDict=False).update_marks()
+
     def _setData(self):
 
         grid = self.grid
         display_axes = self.setting('axes')
         sc = self.setting("sc")
+
+        # Get only the part of the grid that we need
+        range_keys = ("xRange", "yRange", "zRange")
+        ax_ranges = [self.setting(key) for ax, key in enumerate(range_keys)]
+
+        for ax, ax_range in enumerate(ax_ranges):
+            if ax_range is not None:
+                #Build an array with the limits
+                lims = np.zeros((2,3))
+                lims[:, ax] = ax_range
+                
+                #Get the indices of those points
+                indices = np.array([grid.index(lim) for lim in lims], dtype=int)
+
+                #And finally get the subpart of the grid
+                grid = grid.sub(np.arange(indices[0,ax], indices[1,ax] + 1), ax)
 
         interpFactors = np.array([ factor if ax in display_axes else 1 for ax, factor in enumerate(self.setting("interp"))], dtype=int)
 
@@ -170,9 +221,9 @@ class GridPlot(Plot):
             axesTitles = {'xaxis_title': f'{("X","Y", "Z")[xaxis]} axis (Ang)', 'yaxis_title': f'{("X","Y", "Z")[yaxis]} axis (Ang)'}
 
             if self.setting("forceRatio"):
-                self.updateSettings(updateFig=True, yaxis_scaleanchor="x", yaxis_scaleratio=1)
+                self.updateSettings(updateFig=False, yaxis_scaleanchor="x", yaxis_scaleratio=1)
             elif self.did_setting_update("forceRatio"):
-                self.updateSettings(updateFig=True, yaxis_scaleanchor=None)
+                self.updateSettings(updateFig=False, yaxis_scaleanchor=None)
 
         elif values.ndim == 3:
 

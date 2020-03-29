@@ -401,37 +401,26 @@ class Plot(Configurable):
 
             return cls._defaultAnimation(fixed = fixed, frameNames = frameNames, **kwargs) if hasattr(cls, "_defaultAnimation" ) else None
 
-        #Define how the getInitkwargsList will look like
-        elif len(args) == 2:
-           
-            def _getInitKwargsList(self):
-
-                #Adding the fixed values to the list
-                vals = { 
-                    **{key: itertools.repeat(val) for key, val in fixed.items()},
-                    args[0]: args[1]
-                }
-
-                return dictOfLists2listOfDicts(vals)
-
-        elif isinstance(args[0], dict):
-
-            def _getInitKwargsList(self):
-
-                nFrames = len(list(args[0].values())[0])
-
-                #Adding the fixed values to the list
-                vals = { 
-                    **{key: itertools.repeat(val) for key, val in fixed.items()},
-                    **args[0]
-                }
-
-                return dictOfLists2listOfDicts(vals)
-
-        elif callable(args[0]):
-
+        #Define how the getInitkwargsList method will look like
+        if callable(args[0]):
             _getInitKwargsList = args[0]
+        else:
+            if len(args) == 2:
+                animated_settings = {args[0]: args[1]}
+            elif isinstance(args[0], dict):
+                animated_settings = args[0]
+
+            def _getInitKwargsList(self):
+
+                #Adding the fixed values to the list
+                vals = { 
+                    **{key: itertools.repeat(val) for key, val in fixed.items()},
+                    **animated_settings
+                }
+
+                return dictOfLists2listOfDicts(vals)
         
+        _getFrameNames = None
         #Define how to get the framenames
         if frameNames:
 
@@ -439,12 +428,7 @@ class Plot(Configurable):
                 _getFrameNames = frameNames
             else:
                 def _getFrameNames(self):
-
                     return frameNames
-        else:
-            def _getFrameNames(self):
-
-                return ["Frame {}".format(i+1) for i in range(len(self.childPlots))]
         
         #Return the initialized animation
         return Animation( _plugins = {
@@ -489,15 +473,22 @@ class Plot(Configurable):
         return object.__new__(cls)
 
     @afterSettingsInit
-    def __init__(self, *args, H = None,**kwargs):
+    def __init__(self, *args, H = None, attrs_for_plot={}, only_init=False,**kwargs):
 
         if getattr(self, "INIT_ON_NEW", False):
             delattr(self, "INIT_ON_NEW")
             return
+        
+        #Give an ID to the plot
+        self.id = str(uuid.uuid4())
 
-        #Give the user the possibility to do things before initialization (IDK whyy)
+        #Give the user the possibility to do things before initialization (IDK why)
         if callable( getattr(self, "_beforeInit", None )):
             self._beforeInit()
+
+        # Set all the attributes that have been passed
+        for key, val in attrs_for_plot.items():
+            setattr(self, key, val)
 
         # Check if the user has provided a hamiltonian (which can contain a geometry)
         # This is not meant to be used by the GUI (in principle), just programatically
@@ -512,9 +503,6 @@ class Plot(Configurable):
         #Set the isChildPlot attribute to let the plot know if it is part of a bigger picture (e.g. Animation)
         self.isChildPlot = kwargs.get("isChildPlot", False)
         
-        #Give an ID to the plot
-        self.id = str(uuid.uuid4())
-
         #Initialize the variable to store when has been the last data read (0 means never basically)
         self.last_dataread = 0
         self._filesToFollow = []
@@ -531,15 +519,14 @@ class Plot(Configurable):
                     plugin = MethodType(plugin, self)
                 setattr(self, name, plugin)
 
-        #Check if we need to convert this plot to an animation
-        if kwargs.get("animation"):
-            self.__class__ = Animation
-
-
         #Give the user the possibility to overwrite default settings
         if callable( getattr(self, "_afterInit", None )):
             self._afterInit()
         
+        # If we were supposed to only initialize the plot, stop here
+        if only_init:
+            return
+
         #Try to generate the figure (if the settings required are still not there, it won't be generated)
         try:
             if MultiplePlot in type.mro(self.__class__):
@@ -575,17 +562,40 @@ class Plot(Configurable):
         '''
         This method is executed only after python has found that there is no such attribute in the instance
 
-        So let's try to find it in the figure
+        So let's try to find elsewhere. There are two options:
+            - The attribute is in the figure object (self.figure)
+            - The attribute is currently being shared with other plots (only possible if it's a childplot)
         '''
-        if key == "figure":
-            raise AttributeError
 
-        return getattr(self.figure, key)
+        if key in ["figure", "shared_attr"]:
+            pass
+        elif hasattr(self.figure, key):
+            return getattr(self.figure, key)
+        else:
+            #If it is a childPlot, maybe the attribute is in the shared storage to save memory and time
+            try:
+                return self.shared_attr(key)
+            except (KeyError, AttributeError):
+                pass
+
+        raise AttributeError("The attribute was not found either in the plot, its figure, or in shared attributes.")
 
     def __setattr__(self, key, val):
+        '''
+        If the attribute is one of ["data", "layout", "frames"] we are going to store it directly in `self.figure` for convenience
+        and in order to save memory.
+
+        If is a childplot and it has the attribute `_SHOULD_SHARE_WITH_SIBLINGS` set to True, we will submit the attribute to the shared store.
+        This happens in animations/multiple plots. There's a "leading plot" that reads the data and then shares it with the rest
+        so that they don't need to read it again, in a collective effort to save memory and time.
+
+        Otherwise
+        '''
 
         if key in ["data", "layout", "frames"]:
             self.figure.update(**{key: val})
+        elif key != '_SHOULD_SHARE_WITH_SIBLINGS' and getattr(self, '_SHOULD_SHARE_WITH_SIBLINGS', False):
+            self.share_attr(key, val)
         else:
             self.__dict__[key] = val
 
@@ -614,7 +624,7 @@ class Plot(Configurable):
             pass
 
         #Update the title of the plot if there is none
-        if not self.setting("title"):
+        if not self.getSetting("title"):
             self.updateSettings(updateFig = False, title = '{} {}'.format(getattr(self, "struct", ""), self.plotType) )
         
         #We try to read from the different sources using the _readFromSources method of the parent Plot class.
@@ -876,12 +886,12 @@ class Plot(Configurable):
         if getattr(self, "childPlots", None):
             #Then it is a multiple plot and we need to create the figure from the child plots
 
-            self.clear(); self.frames = []
+            self.clear(); frames = []
 
             if getattr(self, "_isAnimation", False):
 
                 self.data = self.childPlots[0].data
-                frameNames = self._getFrameNames() if hasattr(self, "_getFrameNames") else (f"Frame {i}" for i, plot in enumerate(self.childPlots))
+                frameNames = self._getFrameNames() if callable(getattr(self, "_getFrameNames", None)) else (f"Frame {i+1}" for i, plot in enumerate(self.childPlots))
                 
                 maxN = np.max([[len(plot.data) for plot in self.childPlots]])
                 
@@ -893,8 +903,9 @@ class Plot(Configurable):
                         nAddTraces = maxN - nTraces
                         data = [*data, *np.full(nAddTraces, {"type": "scatter", "x":  [0], "y": [0], "visible": False})]
 
-                    self.frames = [*self.frames, {'name': frameName, 'data': data, "layout": plot.settingsGroup("layout")}]
-                    #self.data = [*self.data, *plot.data]
+                    frames = [*frames, {'name': frameName, 'data': data, "layout": plot.settingsGroup("layout")}]
+                
+                self.frames = frames
 
             else:
 
@@ -907,7 +918,7 @@ class Plot(Configurable):
         framesLayout = {}
 
         #If it is an animation, extra work needs to be done.
-        if getattr(self, 'frames', []):
+        if getattr(self, 'frames', False):
 
             #This will create the buttons needed no control the animation
 
@@ -1103,8 +1114,6 @@ class Plot(Configurable):
         '''
 
         yrange = self.figure.layout.yaxis.range or [0, 7000]
-
-        print(yrange)
     
         self.figure.add_scatter(mode = "lines", x = [x,x], y = yrange, hoverinfo = 'none', showlegend = False)
 
@@ -1187,6 +1196,7 @@ class Plot(Configurable):
         '''
 
         return self.save(path, html = True)
+
 #------------------------------------------------
 #               ANIMATION CLASS
 #------------------------------------------------
@@ -1195,14 +1205,32 @@ class MultiplePlot(Plot):
 
     def __init__(self, *args, plots=None, **kwargs):
 
+        self.shared = {}
+
         # Take the plots if they have already been created and are provided by the user
         self.PLOTS_PROVIDED = plots is not None
         if self.PLOTS_PROVIDED:
-            self.childPlots = plots
+            self.set_child_plots(plots)
         
         super().__init__(*args, **kwargs)
+    
+    def __getitem__(self, i):
 
-    def initAllPlots(self, updateFig = True):
+        return self.childPlots[i]
+    
+    @property
+    def _attrs_for_childplots(self):
+        '''
+        Returns all the attributes that its childplots should have
+        '''
+
+        return {
+            'isChildPlot': True,
+            'shared_attr': lambda key: self.shared_attr(key),
+            'share_attr': lambda key, val: self.set_shared_attr(key, val)
+        }
+
+    def initAllPlots(self, updateFig = True, try_sharing=True):
 
         try:
             self.setFiles()
@@ -1211,9 +1239,42 @@ class MultiplePlot(Plot):
 
         if not self.PLOTS_PROVIDED:
 
-            #Init all the plots that compose this multiple plot.
-            self.childPlots = initMultiplePlots(self._plotClasses, kwargsList = [ {**kwargs, "isChildPlot": True} for kwargs in self._getInitKwargsList()])
+            SINGLE_CLASS = isinstance(self._plotClasses, type)
 
+            # Initialize all the plots
+            # In case there is only one class only initialize them, avoid reading data
+            # In this case, it is extremely important to initialize them all in serial mode, because
+            # with multiprocessing they won't know that the current instance is their parent
+            # (objects get copied in multiprocessing) and they won't be able to share data
+            plots = initMultiplePlots(
+                self._plotClasses, 
+                kwargsList = [
+                    {**kwargs, "attrs_for_plot": self._attrs_for_childplots, "only_init": SINGLE_CLASS and try_sharing} 
+                    for kwargs in self._getInitKwargsList()
+                ],
+                serial=SINGLE_CLASS and try_sharing
+            )
+
+            if SINGLE_CLASS:
+
+                # Then, we read the data of a leading plot
+                # This leading plot will share attributes with the rest in case it is needed
+                plots[0]._SHOULD_SHARE_WITH_SIBLINGS = True
+                plots[0].readData(updateFig=False)
+                plots[0]._SHOULD_SHARE_WITH_SIBLINGS = False
+
+                # Now, we get the settings of the first plot
+                read_data_settings = {key: plots[0].getSetting(key) for key, func in plots[0].whatToRunOnUpdate.items() if func == "readData"}
+
+                for i, plot in enumerate(plots):
+                    if not plot.has_this_settings(read_data_settings):
+                        self.initAllPlots(try_sharing=False)
+                else:
+                    # In case there is no plot that has different settings
+                    self.set_child_plots(plots)
+
+                    self.setData()
+                
             if callable( getattr(self, "_afterChildsUpdated", None )):
                 self._afterChildsUpdated()
 
@@ -1243,7 +1304,27 @@ class MultiplePlot(Plot):
                 self._afterChildsUpdated()
 
             return self
+
+    def set_child_plots(self, plots):
+
+        for plot in plots:
+            for key, val in self._attrs_for_childplots.items():
+                setattr(plot, key, val)
+
+        self.childPlots = plots
+
+        return self
+    
+    def shared_attr(self, key):
+
+        return self.shared[key]
+    
+    def set_shared_attr(self, key, val):
         
+        self.shared[key] = val
+
+        return self
+
 class Animation(MultiplePlot):
 
     _isAnimation = True

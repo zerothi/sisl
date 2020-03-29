@@ -396,6 +396,32 @@ class Configurable:
         else:
             return setting_key in self.settingsUpdatesLog(frame=-1)
 
+    def has_this_settings(self, settings={}, **kwargs):
+        '''
+        Checks if the object settings match the provided settings.
+
+        Parameters
+        -----------
+        settings: dict
+            dictionary containing the settings keys and values
+        **kwargs:
+            setting keys and values can also be passed as keyword arguments.
+
+        You can use settings and **kwargs at the same time, they will be merged.
+        '''
+
+        settings = {**settings, **kwargs}
+
+        for key, val in settings.items():
+            if self.getSetting(key) != val:
+                print(self.getSetting(key), val, key)
+                return False
+        else:
+            return True
+
+
+
+
 
 #DECORATORS TO USE WHEN DEFINING METHODS IN CLASSES THAT INHERIT FROM Configurable
 #Run the method after having initialized the settings

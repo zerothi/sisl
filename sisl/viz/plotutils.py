@@ -457,7 +457,7 @@ def initMultiplePlots(PlotClass, argsList = None, kwargsList = None, **kwargs):
 
     return runMultiple(_initSinglePlot, PlotClass, argsList = argsList, kwargsList = kwargsList, **kwargs)
 
-def applyMethodOnMultipleObjs(method, objs, argsList = None, kwargsList = None):
+def applyMethodOnMultipleObjs(method, objs, argsList = None, kwargsList = None, **kwargs):
     
     '''
     Applies a given method to the objects provided on multiple processes simultanously making use of the runMultiple() function.
@@ -499,7 +499,7 @@ def applyMethodOnMultipleObjs(method, objs, argsList = None, kwargsList = None):
         This list is ordered, so plots[0] is the plot initialized with argsList[0] and kwargsList[0].  
     '''
 
-    return runMultiple(_applyMethod, method, objs, argsList = argsList, kwargsList = kwargsList)
+    return runMultiple(_applyMethod, method, objs, argsList = argsList, kwargsList = kwargsList, **kwargs)
 
 def repeatIfChilds(method):
     '''
@@ -512,9 +512,7 @@ def repeatIfChilds(method):
 
             kwargsList = kwargs.get("kwargsList", kwargs)
             
-            obj.childPlots = applyMethodOnMultipleObjs(method, obj.childPlots, kwargsList = kwargsList)
-
-            print("HERE")
+            obj.childPlots = applyMethodOnMultipleObjs(method, obj.childPlots, kwargsList = kwargsList, serial=True)
                 
             obj.updateSettings(onlyOnParent = True, updateFig = False, **kwargs).getFigure()
         
