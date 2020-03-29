@@ -39,18 +39,6 @@ def test_geometry_car_allsame(sisl_tmp):
     assert carSileVASP(f).read_geometry() == geom
 
 
-def test_geometry_car_allsame(sisl_tmp):
-    f = sisl_tmp('test_read_write.POSCAR', _dir)
-
-    atoms = Atom[1]
-    xyz = np.random.rand(10, 3)
-    geom = Geometry(xyz, atoms, 100)
-
-    geom.write(carSileVASP(f, 'w'))
-
-    assert carSileVASP(f).read_geometry() == geom
-
-
 def test_geometry_car_dynamic(sisl_tmp):
     f = sisl_tmp('test_dynamic.POSCAR', _dir)
 
@@ -60,13 +48,18 @@ def test_geometry_car_dynamic(sisl_tmp):
 
     read = carSileVASP(f)
 
+    # no dynamic (direct geometry)
     geom.write(carSileVASP(f, 'w'))
     g, dyn = read.read_geometry(ret_dynamic=True)
-    assert np.all(dyn)
+    assert dyn is None
 
     geom.write(carSileVASP(f, 'w'), dynamic=False)
     g, dyn = read.read_geometry(ret_dynamic=True)
     assert not np.any(dyn)
+
+    geom.write(carSileVASP(f, 'w'), dynamic=True)
+    g, dyn = read.read_geometry(ret_dynamic=True)
+    assert np.all(dyn)
 
     dynamic = [False] * len(geom)
     dynamic[0] = [True, False, True]
