@@ -23,22 +23,23 @@ class carSileVASP(SileVASP):
         self._scale = 1.
 
     @sile_fh_open()
-    def write_geometry(self, geometry, fixed=False):
+    def write_geometry(self, geometry, dynamic=True):
         r""" Writes the geometry to the contained file
 
         Parameters
         ----------
         geometry : Geometry
            geometry to be written to the file
-        fixed : bool or list, optional
-           define which atoms to be fixed in the VASP run
+        dynamic : bool or list, optional
+           define which atoms are dynamic in the VASP run (default is True,
+           which means all atoms are dynamic)
 
         Examples
         --------
         >>> car = carSileVASP('POSCAR', 'w')
         >>> geom = geom.graphene()
-        >>> geom.write(car, fixed=False) # fix none
-        >>> geom.write(car, fixed=[True, (False, True, False)]) # fix 1st and y coordinate of 2nd
+        >>> geom.write(car, dynamic=False) # fix all atoms
+        >>> geom.write(car, dynamic=[False, (True, False, True)]) # fix 1st and y coordinate of 2nd
         """
         # Check that we can write to the file
         sile_raise_write(self)
@@ -80,8 +81,8 @@ class carSileVASP(SileVASP):
         self._write('Selective dynamics\n')
         self._write('Cartesian\n')
 
-        if isinstance(fixed, bool):
-            fixed = [fixed] * len(geometry)
+        if isinstance(dynamic, bool):
+            dynamic = [dynamic] * len(geometry)
 
         b2s = {True: 'T', False: 'F'}
         def todyn(fix):
@@ -91,7 +92,7 @@ class carSileVASP(SileVASP):
 
         fmt = '{:18.9f} ' * 3
         for ia in geometry:
-            self._write(fmt.format(*geometry.xyz[ia, :]) + todyn(fixed[ia]))
+            self._write(fmt.format(*geometry.xyz[ia, :]) + todyn(dynamic[ia]))
 
     @sile_fh_open(True)
     def read_supercell(self):
@@ -111,15 +112,15 @@ class carSileVASP(SileVASP):
         return SuperCell(cell)
 
     @sile_fh_open()
-    def read_geometry(self, ret_fixed=False):
+    def read_geometry(self, ret_dynamic=False):
         r""" Returns Geometry object from the CONTCAR/POSCAR file
 
         Possibly also return the dynamics (if present)
 
         Parameters
         ----------
-        ret_fixed : bool, optional
-           also read selective dynamics (if present), if not, a list of False will be returned
+        ret_dynamic : bool, optional
+           also read selective dynamics (if present), if not, a list of True will be returned
         """
         sc = self.read_supercell()
 
@@ -163,15 +164,15 @@ class carSileVASP(SileVASP):
 
         # Number of atoms
         na = len(atom)
-        # pre-create the fixed list
-        fixed = [[False] * 3] * na
+        # pre-create the dynamic list
+        dynamic = [[False] * 3] * na
 
         xyz = _a.emptyd([na, 3])
         for ia in range(na):
             line = self.readline().split()
             xyz[ia, :] = list(map(float, line[:3]))
             if dynamics:
-                fixed[ia] = list(map(lambda x: x.lower() == 't', line[3:6]))
+                dynamic[ia] = list(map(lambda x: x.lower() == 't', line[3:6]))
 
         if cart:
             # The unit of the coordinates are cartesian
@@ -181,8 +182,8 @@ class carSileVASP(SileVASP):
 
         # The POT/CONT-CAR does not contain information on the atomic species
         geom = Geometry(xyz=xyz, atom=atom, sc=sc)
-        if ret_fixed:
-            return geom, np.array(fixed, dtype=np.bool_)
+        if ret_dynamic:
+            return geom, np.array(dynamic, dtype=np.bool_)
         return geom
 
     def ArgumentParser(self, p=None, *args, **kwargs):

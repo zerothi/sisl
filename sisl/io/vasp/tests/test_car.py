@@ -51,8 +51,8 @@ def test_geometry_car_allsame(sisl_tmp):
     assert carSileVASP(f).read_geometry() == geom
 
 
-def test_geometry_car_fixed(sisl_tmp):
-    f = sisl_tmp('test_fixed.POSCAR', _dir)
+def test_geometry_car_dynamic(sisl_tmp):
+    f = sisl_tmp('test_dynamic.POSCAR', _dir)
 
     atoms = Atom[1]
     xyz = np.random.rand(10, 3)
@@ -61,16 +61,16 @@ def test_geometry_car_fixed(sisl_tmp):
     read = carSileVASP(f)
 
     geom.write(carSileVASP(f, 'w'))
-    g, fix = read.read_geometry(ret_fixed=True)
-    assert not np.any(fix)
+    g, dyn = read.read_geometry(ret_dynamic=True)
+    assert np.all(dyn)
 
-    geom.write(carSileVASP(f, 'w'), fixed=True)
-    g, fix = read.read_geometry(ret_fixed=True)
-    assert np.all(fix)
+    geom.write(carSileVASP(f, 'w'), dynamic=False)
+    g, dyn = read.read_geometry(ret_dynamic=True)
+    assert not np.any(dyn)
 
-    fixed = [False] * len(geom)
-    fixed[0] = [True, False, True]
-    geom.write(carSileVASP(f, 'w'), fixed=fixed)
-    g, fix = read.read_geometry(ret_fixed=True)
-    assert np.array_equal(fixed[0], fix[0])
-    assert not np.any(fix[1:])
+    dynamic = [False] * len(geom)
+    dynamic[0] = [True, False, True]
+    geom.write(carSileVASP(f, 'w'), dynamic=dynamic)
+    g, dyn = read.read_geometry(ret_dynamic=True)
+    assert np.array_equal(dynamic[0], dyn[0])
+    assert not np.any(dyn[1:])
