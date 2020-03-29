@@ -11,7 +11,7 @@ from .plot import Plot, MultiplePlot, Animation
 from .configurable import Configurable, afterSettingsInit
 from .plotutils import findFiles, get_plotable_siles
 
-from .inputFields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput
+from .inputFields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, Array1dInput
 
 class Session(Configurable):
 
@@ -106,8 +106,14 @@ class Session(Configurable):
                 "min": 0
             },
             help="The time in ms between consecutive checks for updates."
-        )
+        ),
 
+        Array1dInput(
+            key="plotDims", name="Initial plot dimensions",
+            default=[4, 30],
+            group="gui",
+            help='''The initial width and height of a new plot. <br> Width is in columns (out of a total of 12). For height, you really should try what works best for you'''
+        )
 
     )
 
@@ -156,7 +162,12 @@ class Session(Configurable):
             The instance of the desired plot
         '''
 
-        return self.plots[plotID]
+        plot = self.plots[plotID]
+
+        if not hasattr(plot, "grid_dims"):
+            plot.grid_dims = self.setting('plotDims')
+
+        return plot
 
     def getPlotClasses(self):
         '''
@@ -262,7 +273,7 @@ class Session(Configurable):
 
         self.addPlot(newPlot, tabID)
 
-        return newPlot
+        return self.plot(newPlot.id)
     
     def updatePlot(self, plotID, newSettings):
         '''
@@ -392,7 +403,6 @@ class Session(Configurable):
             self.addTab(tab_str)
             return self.tab(tab_str)
 
-    
     def addTab(self, name = "New tab", plots = []):
         '''
         Adds a new tab to the session
@@ -406,7 +416,7 @@ class Session(Configurable):
             Keep in mind that the plots with these ids must be present in self.plots.
         '''
 
-        newTab = {"id": str(uuid.uuid4()), "name": name, "plots": deepcopy(plots)}
+        newTab = {"id": str(uuid.uuid4()), "name": name, "plots": deepcopy(plots), "layouts": {"lg":[]}}
 
         self.warehouse["tabs"].append(newTab)
 
@@ -517,7 +527,6 @@ class Session(Configurable):
             return tab_id_or_name
         except Exception:
             return self.tab_id(tab_id_or_name)
-
 
     #-----------------------------------------
     #         STRUCTURES MANAGEMENT

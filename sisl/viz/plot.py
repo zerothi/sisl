@@ -1138,7 +1138,8 @@ class Plot(Configurable):
             "figure": figure,
             "settings": self.settings,
             "params": self.params,
-            "paramGroups": self.paramGroups
+            "paramGroups": self.paramGroups,
+            "grid_dims": getattr(self, "grid_dims", None)
         }
 
         return infoDict
