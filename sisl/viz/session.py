@@ -141,6 +141,23 @@ class Session(Configurable):
     def plots(self):
         return self.warehouse["plots"]
 
+    def plot(self, plotID):
+        '''
+        Method to get a plot that is already in the session's warehouse
+
+        Arguments
+        -----------
+        plotID: str
+            The ID of the desired plot
+        
+        Returns
+        ---------
+        plot: sisl.viz.Plot()
+            The instance of the desired plot
+        '''
+
+        return self.plots[plotID]
+
     def getPlotClasses(self):
         '''
         This method provides all the plot subclasses, even the nested ones
@@ -161,7 +178,7 @@ class Session(Configurable):
         
         return sorted(get_all_subclasses(sisl.viz.Plot), key = lambda clss: clss._plotType) 
     
-    def addPlot(self, plot, tabID = None, noTab = False): 
+    def addPlot(self, plot, tab=None, tabID = None, noTab = False): 
         '''
         Adds an already initialized plot object to the session
 
@@ -169,9 +186,15 @@ class Session(Configurable):
         -----
         plot: Plot()
             the plot object that we want to add to the session
+        tab: str, optional
+            the name of the tab where we want to add the plot.
+
+            If neither tab or tabID are provided, it will be appended to the first tab
         tabID: str, optional
-            the ID of the tab where we want to add the plot. If not provided,
-            it will be appended to the first tab
+            the ID of the tab where we want to add the plot.
+            It takes preference over the value of tab
+            
+            If neither tab or tabID are provided, it will be appended to the first tab
         noTab: boolean, optional
             if set to true, prevents the plot from being added to a tab
         '''
@@ -179,7 +202,9 @@ class Session(Configurable):
         self.warehouse["plots"][plot.id] = plot
 
         if not noTab:
-            tabID = tabID if tabID is not None else self.tabs[0]["id"]
+            tabID = tabID or tab
+            tabID = self._tab_id(tabID) if tabID is not None else self.tabs[0]["id"]
+
             self.addPlotToTab(plot.id, tabID)
         
         return self
@@ -239,23 +264,6 @@ class Session(Configurable):
 
         return newPlot
     
-    def getPlot(self, plotID):
-        '''
-        Method to get a plot that is already in the session's warehouse
-
-        Arguments
-        -----------
-        plotID: str
-            The ID of the desired plot
-        
-        Returns
-        ---------
-        plot: sisl.viz.Plot()
-            The instance of the desired plot
-        '''
-
-        return self.warehouse["plots"][plotID]
-    
     def updatePlot(self, plotID, newSettings):
         '''
         Method to update the settings of a plot that is in the session's warehouse
@@ -273,7 +281,7 @@ class Session(Configurable):
             The instance of the updated plot
         '''
 
-        return self.getPlot(plotID).updateSettings(**newSettings)
+        return self.plot(plotID).updateSettings(**newSettings)
     
     def undoPlotSettings(self, plotID):
         '''
@@ -361,22 +369,44 @@ class Session(Configurable):
 
         return self.warehouse["tabs"]
     
-    def addTab(self, tabName = "New tab", plots = []):
+    def tab(self, tab):
+        '''
+        Get a tab by its name or ID. 
+        
+        If it does not exist, it will be created (this acts as a shortcut for addTab in that case)
+
+        Parameters
+        --------
+        tab: str
+            The name or ID of the tab you want to get
+        '''
+
+        tab_str = tab
+
+        tabID = self._tab_id(tab_str)
+
+        for tab in self.tabs:
+            if tab["id"] == tabID:
+                return tab
+        else:
+            self.addTab(tab_str)
+            return self.tab(tab_str)
+
+    
+    def addTab(self, name = "New tab", plots = []):
         '''
         Adds a new tab to the session
 
         Arguments
         ----------
-        tabName: optional, str ("New tab")
+        name: optional, str ("New tab")
             The name of the new tab
         plots: optional, array-like
             Array of ids (as strings) that identify the plots that you want to put inside your tab.
             Keep in mind that the plots with these ids must be present in self.plots.
         '''
 
-        newTab = {"id": str(uuid.uuid4()), "name": tabName, "plots": deepcopy(plots)}
-
-        print("WITH THIS PLOTS:", plots)
+        newTab = {"id": str(uuid.uuid4()), "name": name, "plots": deepcopy(plots)}
 
         self.warehouse["tabs"].append(newTab)
 
@@ -387,10 +417,10 @@ class Session(Configurable):
         Method to update the parameters of a given tab
         '''
 
-        for iTab, tab in enumerate(self.warehouse["tabs"]):
-            if tab["id"] == tabID:
-                self.warehouse["tabs"][iTab] = {**tab, **newParams}
-                break
+        tab = self.tab(tabID)
+
+        for key, val in newParams.items():
+            tab[key] = val
 
         return self
 
@@ -399,6 +429,8 @@ class Session(Configurable):
         Removes a tab from the current session
         '''
 
+        tabID = self._tab_id(tabID)
+
         for iTab, tab in enumerate(self.warehouse["tabs"]):
             if tab["id"] == tabID:
                 del self.warehouse["tabs"][iTab]
@@ -406,15 +438,30 @@ class Session(Configurable):
 
         return self
 
-    def addPlotToTab(self, plotID, tabID):
+    def addPlotToTab(self, plot, tab):
         '''
-        Adds a plot that is already in the session to the requested tab
+        Adds a plot to the requested tab.
+
+        If the plot is not part of the session already, it will be added.
+
+        Parameters
+        ----------
+        plot: str or sisl.viz.Plot
+            the plot's ID or the plot's instance
+        tab: str
+            the tab's id or the tab's name.
         '''
 
-        for tab in self.warehouse["tabs"]:
-            if tab["id"] == tabID:
-                tab["plots"] = [*tab["plots"], plotID]
-                break
+        if isinstance(plot, Plot):
+            plotID = plot.id
+            if plotID not in self.plots:
+                self.addPlot(plot, tab)
+        else:
+            plotID = plot
+
+        tab = self.tab(tab)
+
+        tab["plots"] = [*tab["plots"], plotID]
         
         return self
     
@@ -429,16 +476,48 @@ class Session(Configurable):
         
         return self
 
-    def getTabPlots(self, tabID):
+    def getTabPlots(self, tab):
         '''
         Returns all the plots of a given tab
         '''
 
-        for tab in self.warehouse["tabs"]:
-            if tab["id"] == tabID:
-                return [self.getPlot(plotID) for plotID in tab["plots"]]
-        
-        return []
+        tab = self.tab(tab)
+
+        return [self.plot(plotID) for plotID in tab["plots"]] if tab else None
+
+    def set_tab_plots(self, tab, plots):
+        '''
+        Sets the plots list of a tab
+
+        Parameters
+        --------
+        tab: str
+            tab's id or name
+        plots: array-like of str or sisl.viz.Plot (or combination of the two)
+            plots ids or plot instances.
+        '''
+
+        tab = self.tab(tab)
+
+        tab["plots"] = []
+
+        for plot in plots:
+            self.addPlotToTab(plot, tab)
+    
+    def tab_id(self, tab_name):
+
+        for tab in self.tabs:
+            if tab["name"] == tab_name:
+                return tab["id"]
+    
+    def _tab_id(self, tab_id_or_name):
+
+        try:
+            uuid.UUID(str(tab_id_or_name))
+            return tab_id_or_name
+        except Exception:
+            return self.tab_id(tab_id_or_name)
+
 
     #-----------------------------------------
     #         STRUCTURES MANAGEMENT
