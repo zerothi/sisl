@@ -27,7 +27,7 @@ def test_geometry_car_mixed(sisl_tmp):
     assert carSileVASP(f).read_geometry() == geom
 
 
-def test_geometry_car_sort(sisl_tmp):
+def test_geometry_car_group(sisl_tmp):
     f = sisl_tmp('test_sort.POSCAR', _dir)
 
     atoms = [Atom[1],
@@ -40,10 +40,10 @@ def test_geometry_car_sort(sisl_tmp):
     xyz = np.random.rand(len(atoms), 3)
     geom = Geometry(xyz, atoms, 100)
 
-    geom.write(carSileVASP(f, 'w'), sort=True)
+    geom.write(carSileVASP(f, 'w'), group_species=True)
 
     assert carSileVASP(f).read_geometry() != geom
-    geom = carSileVASP(f).geometry_sort(geom)
+    geom = carSileVASP(f).geometry_group(geom)
     assert carSileVASP(f).read_geometry() == geom
 
 
@@ -69,7 +69,7 @@ def test_geometry_car_dynamic(sisl_tmp):
     read = carSileVASP(f)
 
     # no dynamic (direct geometry)
-    geom.write(carSileVASP(f, 'w'))
+    geom.write(carSileVASP(f, 'w'), dynamic=None)
     g, dyn = read.read_geometry(ret_dynamic=True)
     assert dyn is None
 

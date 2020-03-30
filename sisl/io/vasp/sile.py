@@ -8,7 +8,7 @@ from ..sile import Sile, SileCDF, SileBin
 __all__ = ['SileVASP', 'SileCDFVASP', 'SileBinVASP']
 
 
-def _geometry_sort(geometry, ret_index=False):
+def _geometry_group(geometry, ret_index=False):
     r""" Order atoms in geometry according to species such that all of one specie is consecutive
 
     When creating VASP input files (`poscarSileVASP` for instance) the equivalent
@@ -51,12 +51,12 @@ def _geometry_sort(geometry, ret_index=False):
 
 
 class SileVASP(Sile):
-    geometry_sort = staticmethod(_geometry_sort)
+    geometry_group = staticmethod(_geometry_group)
 
 
 class SileCDFVASP(SileCDF):
-    geometry_sort = staticmethod(_geometry_sort)
+    geometry_group = staticmethod(_geometry_group)
 
 
 class SileBinVASP(SileBin):
-    geometry_sort = staticmethod(_geometry_sort)
+    geometry_group = staticmethod(_geometry_group)

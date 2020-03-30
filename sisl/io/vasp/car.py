@@ -23,7 +23,7 @@ class carSileVASP(SileVASP):
         self._scale = 1.
 
     @sile_fh_open()
-    def write_geometry(self, geometry, dynamic=None, sort=False):
+    def write_geometry(self, geometry, dynamic=True, group_species=False):
         r""" Writes the geometry to the contained file
 
         Parameters
@@ -34,9 +34,9 @@ class carSileVASP(SileVASP):
            define which atoms are dynamic in the VASP run (default is True,
            which means all atoms are dynamic).
            If None, the resulting file will not contain any dynamic flags
-        sort : bool, optional
+        group_species: bool, optional
            before writing `geometry` first re-order species to
-           have species in consecutive blocks (see `geometry_sort`)
+           have species in consecutive blocks (see `geometry_group`)
 
         Examples
         --------
@@ -48,13 +48,13 @@ class carSileVASP(SileVASP):
 
         See Also
         --------
-        geometry_sort: method used to sort atoms in geometry
+        geometry_group: method used to group atoms together according to their species
         """
         # Check that we can write to the file
         sile_raise_write(self)
 
-        if sort:
-            geometry, idx = self.geometry_sort(geometry, ret_index=True)
+        if group_species:
+            geometry, idx = self.geometry_group(geometry, ret_index=True)
         else:
             # small hack to allow dynamic
             idx = _a.arangei(len(geometry))
