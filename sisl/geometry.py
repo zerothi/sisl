@@ -1259,7 +1259,7 @@ class Geometry(SuperCellChild):
         cut : opposite method of this
         """
         if reps < 1:
-            raise ValueError(self.__class__.__name__ + '.tile() requires a repetition above 0')
+            raise ValueError(self.__class__.__name__ + '.tile requires a repetition above 0')
 
         sc = self.sc.tile(reps, axis)
 
@@ -1334,7 +1334,7 @@ class Geometry(SuperCellChild):
         tile : equivalent but different ordering of final structure
         """
         if reps < 1:
-            raise ValueError(self.__class__.__name__ + '.repeat() requires a repetition above 0')
+            raise ValueError(self.__class__.__name__ + '.repeat requires a repetition above 0')
 
         sc = self.sc.repeat(reps, axis)
 
