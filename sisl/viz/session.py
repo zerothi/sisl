@@ -309,7 +309,7 @@ class Session(Configurable):
             The instance of the plot with the settings rolled back.
         '''
 
-        return self.getPlot(plotID).undoSettings()
+        return self.plot(plotID).undoSettings()
     
     def removePlot(self, plotID):
         '''
