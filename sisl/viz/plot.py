@@ -317,6 +317,17 @@ class Plot(Configurable):
     )
 
     @classmethod
+    def from_plotly(cls, plotly_fig):
+        '''
+        Converts a plotly plot to a Plot object
+        '''
+
+        plot = cls(only_init=True)
+        plot.figure = plotly_fig
+
+        return plot
+
+    @classmethod
     def plotName(cls):
         return getattr(cls, "_plotType", cls.__name__)
 
@@ -1197,7 +1208,16 @@ class Plot(Configurable):
         '''
 
         return self.save(path, html = True)
+    
+    def to_chart_studio(self, *args, **kwargs):
+        '''
+        Sends the plot to chart studio if it is possible.
 
+        For it to work, the user should have their credentials correctly set up.
+        '''
+        import chart_studio.plotly as py
+
+        return py.plot(self.figure, *args, **kwargs)
 #------------------------------------------------
 #               ANIMATION CLASS
 #------------------------------------------------
@@ -1211,6 +1231,7 @@ class MultiplePlot(Plot):
         # Take the plots if they have already been created and are provided by the user
         self.PLOTS_PROVIDED = plots is not None
         if self.PLOTS_PROVIDED:
+
             self.set_child_plots(plots)
         
         super().__init__(*args, **kwargs)
@@ -1308,7 +1329,11 @@ class MultiplePlot(Plot):
 
     def set_child_plots(self, plots):
 
+        # Maybe one of the plots is a plotly figure, normalize all to the plot class
+        plots = [Plot.from_plotly(plot) if isinstance(plot, go.Figure) else plot for plot in plots]
+
         for plot in plots:
+
             for key, val in self._attrs_for_childplots.items():
                 setattr(plot, key, val)
 
