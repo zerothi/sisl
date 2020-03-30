@@ -27,6 +27,26 @@ def test_geometry_car_mixed(sisl_tmp):
     assert carSileVASP(f).read_geometry() == geom
 
 
+def test_geometry_car_sort(sisl_tmp):
+    f = sisl_tmp('test_sort.POSCAR', _dir)
+
+    atoms = [Atom[1],
+             Atom[2],
+             Atom[2],
+             Atom[1],
+             Atom[1],
+             Atom[2],
+             Atom[3]]
+    xyz = np.random.rand(len(atoms), 3)
+    geom = Geometry(xyz, atoms, 100)
+
+    geom.write(carSileVASP(f, 'w'), sort=True)
+
+    assert carSileVASP(f).read_geometry() != geom
+    geom = carSileVASP(f).geometry_sort(geom)
+    assert carSileVASP(f).read_geometry() == geom
+
+
 def test_geometry_car_allsame(sisl_tmp):
     f = sisl_tmp('test_read_write.POSCAR', _dir)
 
