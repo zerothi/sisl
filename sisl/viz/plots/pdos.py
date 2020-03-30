@@ -47,13 +47,13 @@ class PdosPlot(Plot):
 
         QueriesInput(
             key = "requests", name = "PDOS queries",
-            default = [{"active": True, "linename": "DOS", "species": None, "atoms": None, "orbitals": None, "spin": None, "normalize": False, "color": "black", "linewidth": 1}],
+            default = [{"active": True, "name": "DOS", "species": None, "atoms": None, "orbitals": None, "spin": None, "normalize": False, "color": "black", "linewidth": 1}],
             help = '''Here you can ask for the specific PDOS that you need. 
                     <br>TIP: Queries can be activated and deactivated.''',
             queryForm = [
 
                 TextInput(
-                    key = "linename", name = "Name",
+                    key = "name", name = "Name",
                     default = "DOS",
                     width = "s100% m50% l20%",
                     params = {
@@ -342,8 +342,9 @@ class PdosPlot(Plot):
 
 
             if reqDf.empty:
-                print("PDOS Plot warning: No PDOS for the following request: {}".format(request.params))
-                PDOS = []
+                # print("PDOS Plot warning: No PDOS for the following request: {}".format(request.params))
+                # PDOS = []
+                continue
             else:
                 PDOS = reqDf[plotEvals].values
 
@@ -357,25 +358,286 @@ class PdosPlot(Plot):
                 'x': PDOS,
                 'y': plotEvals ,
                 'mode': 'lines', 
-                'name': request["linename"], 
+                'name': request["name"], 
                 'line': {'width' : request["linewidth"], "color": request["color"]},
                 "hoverinfo": "name",
             })
         
         return self.data
 
-    def addRequest(self, newReq = {}, **kwargs):
+    # ----------------------------------
+    #        CONVENIENCE METHODS
+    # ----------------------------------
+
+    def _matches_request(self, request, query, iReq=None):
+        '''
+        Checks if a query matches a PDOS request
+        '''
+
+        if isinstance(query, (int, str)):
+            query = [query]
+
+        if len(query) == 0:
+            return True
+        
+        print(query, request, request["name"] in query, iReq in query )
+
+        return request["name"] in query or iReq in query
+    
+    def _new_request(self, **kwargs):
+
+        return {
+            "active": True,
+            **{ param.key: param.default for param in self.getParam("requests", justDict=False)["inputField.queryForm"]},
+            "name": str(len(self.settings["requests"])), "color": None, 
+            **kwargs
+        }
+
+    def requests(self, *i_or_names):
+        '''
+        Gets the requests that match your query
+
+        Parameters
+        ----------
+        *i_or_names: str, int
+            a string (to match the name) or an integer (to match the index),
+            You can pass as many as you want.
+
+            Note that if you have a list of them you can go like `remove_request(*mylist)`
+            to spread it and use all items in your list as args.
+
+            If no query is provided, all the requests will be matched
+        '''
+
+        return [req for i, req in enumerate(self.setting("requests")) if self._matches_request(req, i_or_names, i)]
+
+    def add_request(self, req = {}, clean=False, **kwargs):
         '''
         Adds a new PDOS request. The new request can be passed as a dict or as a list of keyword arguments.
         The keyword arguments will overwrite what has been passed as a dict if there is conflict.
+
+        Parameters
+        ---------
+        req: dict, optional
+            the new request as a dictionary
+        clean: boolean, optional
+            whether the plot should be cleaned before drawing the request.
+            If `False`, the request will be drawn on top of what is already there.
+        **kwargs:
+            parameters of the request can be passed as keyword arguments too.
+            They will overwrite the values in req
         '''
 
-        request = {"active": True, "linename": len(self.settings["requests"]), **newReq, **kwargs}
+        request = self._new_request(**{**req, **kwargs})
 
         try:
-            self.updateSettings(requests = [*self.settings["requests"], request ])
+            requests = [request] if clean else [*self.settings["requests"], request ]
+            self.updateSettings(requests=requests)
         except Exception as e:
             print("There was a problem with your new request ({}): \n\n {}".format(request, e))
             self.undoSettings()
 
         return self
+
+    def remove_requests(self, *i_or_names, all=False, updateFig=True):
+        '''
+        Removes requests from the PDOS plot
+
+        Parameters
+        ------
+        *i_or_names: str, int
+            a string (to match the name) or an integer (to match the index),
+            You can pass as many as you want.
+
+            Note that if you have a list of them you can go like `remove_requests(*mylist)`
+            to spread it and use all items in your list as args
+            
+            If no query is provided, all the requests will be matched
+        '''
+
+        if all:
+            requests = []
+        else:
+            requests = [ req for i, req in enumerate(self.setting("requests")) if not self._matches_request(req, i_or_names, i)]
+        
+        return self.updateSettings(updateFig=updateFig, requests=requests)
+
+    def update_requests(self, *i_or_names, **kwargs):
+        '''
+        Updates an existing request
+
+        Parameters
+        -------
+        i_or_names: str or int
+            a string (to match the name) or an integer (to match the index)
+            this will be used to find the request that you need to update.
+
+            Note that if you have a list of them you can go like `update_requests(*mylist)`
+            to spread it and use all items in your list as args
+            
+            If no query is provided, all the requests will be matched
+        **kwargs:
+            keyword arguments containing the values that you want to update
+
+        '''
+
+        requests = self.setting("requests")
+        for i, request in enumerate(requests):
+            if self._matches_request(request, i_or_names, i):
+                requests[i] = {**requests[i], **kwargs}
+
+        return self.updateSettings(requests=requests)
+
+    def merge_requests(self, *i_or_names, remove=True, clean=False, **kwargs):
+        '''
+        Merge multiple requests into one.
+
+        Parameters
+        ------
+        *i_or_names: str, int
+            a string (to match the name) or an integer (to match the index),
+            You can pass as many as you want.
+
+            Note that if you have a list of them you can go like `merge_requests(*mylist)`
+            to spread it and use all items in your list as args
+
+            If no query is provided, all the requests will be matched
+        remove: boolean, optional
+            whether the merged requests should be removed.
+            If False, they will be kept in the plot
+        clean: boolean, optional
+            whether all requests should be removed before drawing the merged request
+        **kwargs:
+            keyword arguments that go directly to the new request.
+            
+            You can use them to set other attributes to the request. For example:
+            `plot.merge_requests(on="orbitals", species=["C"])`
+            will split the PDOS on the different orbitals but will take
+            only those that belong to carbon atoms.
+        '''
+
+        keys = ["atoms", "orbitals", "species", "spin"]
+
+        # Merge all the requests (nice tree I built here, isn't it? :) )
+        new_request = {key: [] for key in keys}
+        for i, request in enumerate(self.setting("requests")):
+            if self._matches_request(request, i_or_names, i):
+                for key in keys:
+                    if request[key] is not None:
+                        new_request[key] = [*new_request[key], *request[key]]
+        
+        # Remove duplicate values for each key 
+        # and if it's an empty list set it to None (empty list returns no PDOS)
+        for key in keys:
+            new_request[key] = list(set(new_request[key])) or None
+        
+        # Remove the merged requests if desired
+        if remove:
+            self.remove_requests(*i_or_names, updateFig=False)
+        
+        return self.add_request(**new_request, **kwargs, clean=clean)
+
+    def split_requests(self, *i_or_names, on="species", only=None, exclude=None, remove=True, clean=False, **kwargs):
+        '''
+        Splits the desired requests into multiple requests
+
+        Parameters
+        --------
+        *i_or_names: str, int
+            a string (to match the name) or an integer (to match the index),
+            You can pass as many as you want.
+
+            Note that if you have a list of them you can go like `split_requests(*mylist)`
+            to spread it and use all items in your list as args
+
+            If no query is provided, all the requests will be matched
+        on: str, {"species", "atoms", "orbitals", "spin"}
+            the parameter to split along
+        only: array-like, optional
+            if desired, the only values that should be plotted out of
+            all of the values that come from the splitting.
+        exclude: array-like, optional
+            values of the splitting that should not be plotted
+        remove:
+            whether the splitted requests should be removed.
+        clean: boolean, optional
+            whether the plot should be cleaned before drawing.
+            If False, all the requests that come from the method will
+            be drawn on top of what is already there.
+        **kwargs:
+            keyword arguments that go directly to each request.
+            
+            This is useful to add extra filters. For example:
+            If you had a request called "C":
+            `plot.split_request("C", on="orbitals", spin=[0])`
+            will split the PDOS on the different orbitals but will take
+            only the contributions from spin up.
+        '''
+
+        if exclude is None:
+            exclude = []
+        
+        reqs = self.requests(*i_or_names)
+
+        requests = []
+        for req in reqs:
+            values = req[on]
+
+            #If it's none, it means that is getting all the possible values
+            if values is None:
+                options = self.getParam("requests", justDict=False).getParam(on, justDict=False)["inputField.params.options"]
+                values = [option["value"] for option in options]
+
+            requests = [*requests, *[
+                self._new_request(**{**req, on: [value], "name": f'{req["name"]}, {value}', **kwargs})
+                for value in values if value not in exclude and (only is None or value in only)
+            ]]
+
+        if remove:
+            self.remove_requests(*i_or_names, updateFig=False)
+
+        if not clean:
+            requests = [ *self.setting("requests"), *requests]
+
+        return self.updateSettings(requests=requests)
+
+    def split_DOS(self, on="species", only=None, exclude=None, clean=True, **kwargs):
+        '''
+        Splits the density of states to the different contributions.
+
+        Parameters
+        --------
+        on: str, {"species", "atoms", "orbitals", "spin"}
+            the parameter to split along
+        only: array-like, optional
+            if desired, the only values that should be plotted out of
+            all of the values that come from the splitting.
+        exclude: array-like, optional
+            values that should not be plotted
+        clean: boolean, optional
+            whether the plot should be cleaned before drawing.
+            If False, all the requests that come from the method will
+            be drawn on top of what is already there.
+        **kwargs:
+            keyword arguments that go directly to each request.
+            
+            This is useful to add extra filters. For example:
+            `plot.split_DOS(on="orbitals", species=["C"])`
+            will split the PDOS on the different orbitals but will take
+            only those that belong to carbon atoms.
+        '''
+
+        if exclude is None:
+            exclude = []
+
+        options = self.getParam("requests", justDict=False).getParam(on, justDict=False)["inputField.params.options"]
+
+        requests = [
+            self._new_request(**{on: [option["value"]], "name": option["label"], **kwargs})
+            for option in options if option["value"] not in exclude and (only is None or option["value"] in only)
+        ]
+
+        if not clean:
+            requests = [ *self.setting("requests"), *requests]
+
+        return self.updateSettings(requests=requests)

@@ -473,6 +473,10 @@ class Plot(Configurable):
                     plot = PlotClass(**kwargs, title=os.path.basename(filename))
                 else:
                     raise NotImplementedError(f'There is no plot implementation for {os.path.splitext(filename)[-1]} extensions yet.')
+
+                if cls != Plot and cls != plot.__class__:
+                    print(f'''You requested a {cls.__name__} and we got you a {plot.__class__.__name__} instead.\nWe hope you don't mind :)\n
+We did this because "{filename}" is a {SileClass.__name__}. If you are not happy with this, please specify the key of the setting where "{filename}" should go.''')
             
             # Inform that we don't want to run the __init__ method anymore
             # See the beggining of __init__()
@@ -589,7 +593,7 @@ class Plot(Configurable):
             except (KeyError, AttributeError):
                 pass
 
-        raise AttributeError("The attribute was not found either in the plot, its figure, or in shared attributes.")
+        raise AttributeError(f"The attribute '{key}' was not found either in the plot, its figure, or in shared attributes.")
 
     def __setattr__(self, key, val):
         '''
@@ -1214,6 +1218,9 @@ class Plot(Configurable):
         Sends the plot to chart studio if it is possible.
 
         For it to work, the user should have their credentials correctly set up.
+
+        It is a shortcut for chart_studio.plotly.plot(self.figure, ...etc) so you can pass any extra arguments as if
+        you were using `py.plot`
         '''
         import chart_studio.plotly as py
 

@@ -380,14 +380,11 @@ class BandsPlot(Plot):
 
             # Remove "equivalent" gaps
             def clear_equivalent(ks):
-                print(ks)
                 if len(ks) == 1:
                     return ks
 
                 uniq = [ks[0]]
                 for k in ks[1:]:
-                    print(min(np.array(uniq) - k))
-                    print(abs(min(np.array(uniq) - k)))
                     if abs(min(np.array(uniq) - k)) > gap_tolerance:
                         uniq.append(k)
                 return uniq

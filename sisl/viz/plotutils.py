@@ -26,6 +26,42 @@ def get_plotable_siles(rules=False):
 #-------------------------------------
 #           Python helpers
 #-------------------------------------
+def get_nested_key(obj, nestedKey, separator="."):
+    '''
+    Gets a nested key from a dictionary using a given separator.
+
+    Parameters
+    --------
+    obj: dict
+        The dictionary to search.
+    nestedKey: str
+        The key to get. See the separator argument for how it should look like.
+
+        The function will work too if this is a simple key, without any nesting
+    separator: str, optional (".")
+        It defines how hierarchy is indicated in the provided key.
+
+        For example:
+            if separator is "." and nestedKey is "xaxis.length"
+
+            {
+                "xaxis: {
+                    "aKey": whatever,
+                    "anotherKey": whatever,
+                    "length": ---This is the value that will be retrieved---
+                },
+                "moreKeys": whatever,
+                "notRelevant": whatever
+            }
+    '''
+
+    ref = obj
+    splitted = nestedKey.split(separator)
+    for key in splitted[:-1]:
+        ref = ref[key]
+    
+    return ref[splitted[-1]]
+
 def modifyNestedDict(obj, nestedKey, val, separator = "."):
     '''
     Use it to modify a nested dictionary with ease. 

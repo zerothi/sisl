@@ -4,7 +4,7 @@ from copy import deepcopy, copy
 import json
 import numpy as np
 
-from .plotutils import modifyNestedDict 
+from .plotutils import modifyNestedDict, get_nested_key
 
 class InputField:
 
@@ -112,6 +112,14 @@ class InputField:
         for key, value in kwargs.items():
 
             setattr(self, key, value)
+    
+    def __getitem__(self, key):
+
+        if isinstance(key, str):
+            return get_nested_key(self.__dict__, key)
+
+
+        return None
 
     def modify(self, *args):
         '''
