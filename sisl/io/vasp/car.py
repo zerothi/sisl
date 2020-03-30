@@ -50,11 +50,14 @@ class carSileVASP(SileVASP):
         --------
         geometry_sort: method used to sort atoms in geometry
         """
-        if sort:
-            geometry = self.geometry_sort(geometry)
-
         # Check that we can write to the file
         sile_raise_write(self)
+
+        if sort:
+            geometry, idx = self.geometry_sort(geometry, ret_index=True)
+        else:
+            # small hack to allow dynamic
+            idx = _a.arangei(len(geometry))
 
         # LABEL
         self._write('sisl output\n')
@@ -107,7 +110,7 @@ class carSileVASP(SileVASP):
 
         fmt = '{:18.9f}' * 3
         for ia in geometry:
-            self._write(fmt.format(*geometry.xyz[ia, :]) + todyn(dynamic[ia]))
+            self._write(fmt.format(*geometry.xyz[ia, :]) + todyn(dynamic[idx[ia]]))
 
     @sile_fh_open(True)
     def read_supercell(self):
