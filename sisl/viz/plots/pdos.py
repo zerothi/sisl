@@ -144,6 +144,10 @@ class PdosPlot(Plot):
         'yaxis_mirror': True,
         'yaxis_title': 'Energy (eV)'
     }
+
+    _shortcuts = {
+
+    }
     
     @classmethod
     def _defaultAnimation(self, wdir = None, frameNames = None, **kwargs):
@@ -155,6 +159,36 @@ class PdosPlot(Plot):
             return [os.path.basename( childPlot.setting("PDOSFile")) for childPlot in self.childPlots]
 
         return PdosPlot.animated("PDOSFile", bandsFiles, frameNames = _getFrameNames, wdir = wdir, **kwargs)
+    
+    def _afterInit(self):
+
+        self._add_shortcuts()
+    
+    def _add_shortcuts(self):
+
+        self.add_shortcut(
+            "o", "Split on orbitals",
+            self.split_DOS, on="orbitals",
+            _description="Split the total DOS along the different orbitals"
+        )
+
+        self.add_shortcut(
+            "s", "Split on species",
+            self.split_DOS, on="species",
+            _description="Split the total DOS along the different species"
+        )
+        
+        self.add_shortcut(
+            "a", "Split on atoms",
+            self.split_DOS, on="atoms",
+            _description="Split the total DOS along the different atoms"
+        )
+        
+        self.add_shortcut(
+            "p", "Split on spin",
+            self.split_DOS, on="spin",
+            _description="Split the total DOS along the different spin"
+        )
 
     def _readfromH(self):
 

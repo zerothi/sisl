@@ -66,6 +66,8 @@ class ForcesPlot(Plot):
 
         outFile = self.setting("outFile") or os.path.splitext(rootFdf)[0] + ".out"
 
+        self._followFiles([outFile], unfollow=False)
+
         outSile = sisl.get_sile(outFile) 
         
         self.atomic_forces = outSile.read_force(all=True)
@@ -76,8 +78,6 @@ class ForcesPlot(Plot):
             self.total_forces, self.max_forces = outSile.read_force(all=True, total=True, max=True)
             
         self.simulation_ended = outSile.job_completed
-
-        return [outFile]
     
     def _afterRead(self):
 

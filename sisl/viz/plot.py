@@ -11,6 +11,7 @@ import dill as pickle
 import time
 from types import MethodType, FunctionType
 import itertools
+from functools import partial
 
 import plotly
 import plotly.graph_objects as go
@@ -18,8 +19,9 @@ import plotly.graph_objects as go
 import sisl
 
 from .configurable import *
-from .plotutils import applyMethodOnMultipleObjs, initMultiplePlots, repeatIfChilds, dictOfLists2listOfDicts, trigger_notification, spoken_message
+from .plotutils import applyMethodOnMultipleObjs, initMultiplePlots, repeatIfChilds, dictOfLists2listOfDicts, trigger_notification, spoken_message, running_in_notebook
 from .inputFields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
+from ._shortcuts import ShortCutable
 
 PLOTS_CONSTANTS = {
     "spins": ["up", "down"],
@@ -48,7 +50,7 @@ def timeit(method):
 #------------------------------------------------
 #                 PLOT CLASS
 #------------------------------------------------    
-class Plot(Configurable):
+class Plot(ShortCutable, Configurable):
     
     _onSettingsUpdate = {
         "functions": ["readData", "setData", "getFigure"],
@@ -334,6 +336,10 @@ class Plot(Configurable):
     @property
     def plotType(self):
         return self.__class__.plotName()
+    
+    @property
+    def _innotebook(self):
+        return running_in_notebook()
 
     @classmethod
     def animated(cls, *args, fixed = {}, frameNames = None, **kwargs):
@@ -494,6 +500,9 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
             delattr(self, "INIT_ON_NEW")
             return
         
+        #Initialize shortcut management
+        ShortCutable.__init__(self)
+        
         #Give an ID to the plot
         self.id = str(uuid.uuid4())
 
@@ -649,7 +658,7 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
         self._followFiles(filesToFollow, unfollow=False)
 
         # We don't update the last dataread here in case there has been a succesful data read because we want to
-        # wait for the afterRead() function to be succesful
+        # wait for the afterRead() method to be succesful
         if self.source is None:
             self.last_dataread = 0
 
@@ -737,7 +746,7 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
 
         return filesModified.any()
     
-    def listen(self, forever=True, show=True, clearPrevious=True, notify=False, speak=False, notify_title=None, notify_message=None, speak_message=None):
+    def listen(self, forever=True, show=True, clearPrevious=True, notify=False, speak=False, notify_title=None, notify_message=None, speak_message=None, fig_widget=None):
         '''
         Listens for updates in the followed files (see the `updates_available` method)
 
@@ -748,7 +757,7 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
         show: boolean, optional
             whether to show the plot at the beggining and update the layout when the plot is updated.
         clearPrevious: boolean, optional
-            in case we are show is True, whether the previous version of the plot should be hidden or kept in display.
+            in case show is True, whether the previous version of the plot should be hidden or kept in display.
         notify: boolean, optional
             trigger a notification everytime the plot updates.
         speak: boolean, optional
@@ -761,42 +770,49 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
             the spoken message. Feel free to get creative here!
         '''
         from IPython.display import clear_output
+        import asyncio
 
-        if show:
+        if show and fig_widget is None:
             self.show()
-
+        
         if notify:
             trigger_notification("SISL", "Notifications will appear here")
         if speak:
             spoken_message("I will speak when there is an update.")
 
-        while True:
-            
-            try:
-                time.sleep(1)
-            except KeyboardInterrupt:
-                break
-            
-            if self.updates_available():
-                
-                self.readData(updateFig=True)
+        async def listen():
+            while True:
+                if self.updates_available():
+                    try:
 
-                if clearPrevious:
-                    clear_output()
+                        self.readData(updateFig=True)
 
-                if show:
-                    self.show()
-                
-                if not forever:
-                    break
+                        if clearPrevious and fig_widget is None:
+                            clear_output()
 
-                if notify:
-                    title = notify_title or "SISL PLOT UPDATE"
-                    message = notify_message or f"{getattr(self, 'struct', '')} {self.__class__.__name__} updated"
-                    trigger_notification(title, message )
-                if speak:
-                    spoken_message(speak_message or f"Your {self.__class__.__name__} is updated. Check it out")
-    
+                        if show and fig_widget is None:
+                            self.show()
+                        else:
+                            self._update_FigureWidget(fig_widget)
+
+                        if not forever:
+                            self._listening_task.cancel()
+
+                        if notify:
+                            title = notify_title or "SISL PLOT UPDATE"
+                            message = notify_message or f"{getattr(self, 'struct', '')} {self.__class__.__name__} updated"
+                            trigger_notification(title, message )
+                        if speak:
+                            spoken_message(speak_message if speak_message is not None else f"Your {self.__class__.__name__} is updated. Check it out")
+
+                    except Exception as e:
+                        pass
+                    
+                await asyncio.sleep(1)
+
+        loop = asyncio.get_event_loop()
+        self._listening_task = loop.create_task(listen())
+                    
     @afterSettingsUpdate
     def setFiles(self, **kwargs):
         '''
@@ -1039,14 +1055,109 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
             This is nice for monitoring.
         '''
 
-        if listen:
-            self.listen(show=True, **kwargs)
-
         if not hasattr(self, "figure"):
             self.getFigure()
+
+        if self._innotebook and len(args) == 0:
+            try:
+                return self._show_in_jupyternb(listen=listen, **kwargs)
+            except Exception:
+                pass
+        
+        if listen:
+            self.listen(show=True, **kwargs)
         
         return self.figure.show(*args, **kwargs)
     
+    def _show_in_jupyternb(self, listen=False, **kwargs):
+
+        try:
+            from IPython.display import display
+            import ipywidgets as widgets
+
+            f = go.FigureWidget(self.figure)
+
+            try:
+                # If ipyevents is available, show with shortcut support
+                self._show_jupnb_with_shortcuts(f, **kwargs)
+            except Exception as e:
+                # Else, show without shortcut support
+                display(f)
+
+            if listen:
+                self.listen(fig_widget=f, **kwargs)
+
+        except Exception:
+            self.figure.show(**kwargs)
+                                    
+    def _show_jupnb_with_shortcuts(self, fig_widget, **kwargs):
+
+        from ipyevents import Event
+        from ipywidgets import HTML, Output
+
+        h = HTML("") # This is to display help such as available shortcuts
+        messages = HTML("") # This is to inform about current status
+        styles = HTML( "<style>.ipyevents-watched:focus {outline: none}</style>")
+        d = Event(source=fig_widget, watched_events=['keydown', 'keyup'])
+       
+        def handle_dom_events(event, keys_down=[], last_timestamp=[0]):
+            # We will keep track of keydowns because then we will be able to support multiple keys shortcuts
+
+            try:
+                # Clear the list
+                timestamp = event.get("timeStamp")
+                duplicates = len(keys_down) != len(set(keys_down))
+                if timestamp - last_timestamp[0]> 2000 or duplicates:
+                    keys_down *= 0 #Clear the list
+                last_timestamp[0] = timestamp
+
+                # This means that the key has been held down for a long time
+                if event.get("repeat", False):
+                    return
+
+                key = event.get("key", "").lower()
+                key_code = event.get("code", "")
+
+                ev_type = event.get("type", None)
+
+                if ev_type == "keydown":
+                    if key == "control":
+                        key = "ctrl"
+                    # If it's a key down event, record it
+                    keys_down.append(key)
+                elif ev_type == "keyup" and key in keys_down:
+                    # If it's a key up event, anounce that the key is not down anymore
+                    keys_down.remove(key)
+                
+                shortcut_key = "+".join(keys_down)
+
+                # Get the help message
+                if shortcut_key == "shift+?":
+                    h.value = self.shortcuts_summary("html") if not h.value else ""
+                
+                shortcut = self.shortcut(shortcut_key)
+                if shortcut is not None:
+                    
+                    messages.value = f'Executing "{shortcut["name"]}" because you pressed "{shortcut_key}"...'
+                    self.call_shortcut(shortcut_key)
+                    messages.value = ""
+                    keys_down = []
+
+                    self._update_FigureWidget(fig_widget)
+
+            except Exception as e:
+                messages.value = f'<span style="color:darkred; font-weight: bold">{e}</span>'
+
+        d.on_dom_event(partial(handle_dom_events))
+
+        display(fig_widget, messages, h, styles, Output())
+
+    def _update_FigureWidget(self, fig_widget):
+
+        fig_widget.data = []
+        fig_widget.add_traces(self.data)
+        fig_widget.update(layout=self.layout, frames=self.frames)
+
     def merge(self, others, asAnimation = False, **kwargs):
         '''
         Merges this plot's instance with the list of plots provided

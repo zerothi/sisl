@@ -12,6 +12,15 @@ from copy import deepcopy
 from sisl.io.sile import get_siles
 
 #-------------------------------------
+#            I python
+#-------------------------------------
+def running_in_notebook():
+    try:
+        return get_ipython().__class__.__name__ == 'ZMQInteractiveShell'
+    except NameError:
+        return False
+
+#-------------------------------------
 #            Informative
 #-------------------------------------
 
