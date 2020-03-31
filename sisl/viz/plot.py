@@ -812,7 +812,21 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
 
         loop = asyncio.get_event_loop()
         self._listening_task = loop.create_task(listen())
-                    
+
+    def stop_listening(self):
+        '''
+        Makes the plot stop listening for updates.
+
+        Using this method only makes sense if you have previously made the plot listen
+        either through `Plot.listen()` or `Plot.show(listen=True)`
+        '''
+
+        task = getattr(self, "_listening_task", None)
+
+        if task is not None:
+            task.cancel()
+            self._listening_task = None
+
     @afterSettingsUpdate
     def setFiles(self, **kwargs):
         '''
