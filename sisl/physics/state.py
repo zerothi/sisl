@@ -1,5 +1,6 @@
 import numpy as np
 from numpy import einsum
+from numpy import ndarray, bool_
 
 import sisl._array as _a
 from sisl.messages import warn
@@ -30,6 +31,14 @@ class ParentContainer:
     def __init__(self, parent, **info):
         self.parent = parent
         self.info = info
+
+    def _sanitize_index(self, idx):
+        r""" Ensure indices are transferred to acceptable integers """
+        if isinstance(idx, ndarray) and idx.dtype == bool_:
+            return np.flatnonzero(idx)
+        elif isinstance(idx, (list, tuple)) and isinstance(idx[0], bool):
+            return np.flatnonzero(idx)
+        return _a.asarrayi(idx).ravel()
 
 
 class Coefficient(ParentContainer):
@@ -136,7 +145,7 @@ class Coefficient(ParentContainer):
         Coefficient
             a new coefficient only containing the requested elements
         """
-        idx = _a.asarrayi(idx).ravel() # this ensures that the first dimension is preserved
+        idx = self._sanitize_index(idx)
         sub = self.__class__(self.c[idx].copy(), self.parent)
         sub.info = self.info
         return sub
@@ -262,7 +271,7 @@ class State(ParentContainer):
         State
            a new state only containing the requested elements
         """
-        idx = _a.asarrayi(idx).ravel() # this ensures that the first dimension is preserved
+        idx = self._sanitize_index(idx)
         sub = self.__class__(self.state[idx].copy(), self.parent)
         sub.info = self.info
         return sub
@@ -705,7 +714,7 @@ class StateC(State):
         """
         if idx is None:
             return einsum('k,ki,kj->ij', self.c, self.state, _conj(self.state))
-        idx = np.asarray(idx).ravel()
+        idx = self._sanitize_index(idx)
         return einsum('k,ki,kj->ij', self.c[idx], self.state[idx], _conj(self.state[idx]))
 
     def sort(self, ascending=True):
@@ -763,7 +772,7 @@ class StateC(State):
         -------
         StateC : a new object with a subset of the states
         """
-        idx = _a.asarrayi(idx).ravel()
+        idx = self._sanitize_index(idx)
         sub = self.__class__(self.state[idx, ...], self.c[idx], self.parent)
         sub.info = self.info
         return sub
