@@ -1133,7 +1133,7 @@ class Geometry(SuperCellChild):
 
         >>> assert geom.sort() == geom.sort(axis=(0, 1, 2))
 
-        Sort along a user defined lattice vector ``[2, 1, 0]``
+        Sort along a user defined vector ``[2, 1, 0]``
 
         >>> geom.sort(vector=[2, 1, 0])
 
