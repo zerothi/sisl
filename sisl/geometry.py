@@ -1027,6 +1027,7 @@ class Geometry(SuperCellChild):
         There are many ways to sort a `Geometry`.
         - by Cartesian coordinates, `axis`
         - by lattice vectors, `lattice`
+        - by user defined vectors, `vector`
         - a combination of the above in arbitrary order
 
         Additionally one may sort ascending or descending.
@@ -1075,6 +1076,7 @@ class Geometry(SuperCellChild):
         All arguments may be suffixed with integers. This allows multiple keyword arguments
         to control sorting algorithms
         in different order. It also allows changing of sorting settings between different calls.
+        Note that the integers have no relevance to the order of execution!
         See examples.
 
         Returns
@@ -1136,6 +1138,11 @@ class Geometry(SuperCellChild):
         Sort along a user defined vector ``[2, 1, 0]``
 
         >>> geom.sort(vector=[2, 1, 0])
+
+        Integer specification has no influence on the order of operations.
+        It is _always_ the keyword argument order that determines the operation.
+
+        >>> assert geom.sort(axis2=1, axis0=0, axis1=2) == geom.sort(axis=(1, 0, 2))
 
         A too high `atol` may have unexpected side-effects. This is because of the way
         the sorting algorithm splits the sections for nested sorting.
