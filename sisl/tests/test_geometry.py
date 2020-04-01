@@ -1339,6 +1339,46 @@ def test_geometry_sort_int():
         assert np.all(np.diff(bi.fxyz[ix, 1] * bi.sc.length[i]) <= atol)
 
 
+def test_geometry_sort_atom():
+    bi = sisl_geom.bilayer().tile(2, 0).repeat(2, 1)
+
+    atom = [[2, 0], [3, 1]]
+    out = bi.sort(atom=atom)
+
+    atom = np.concatenate(atom)
+    all_atoms = np.arange(len(bi))
+    all_atoms[np.sort(atom)] = atom[:]
+    assert np.allclose(out.xyz, bi.sub(all_atoms).xyz)
+
+
+def test_geometry_sort_func():
+    bi = sisl_geom.bilayer().tile(2, 0).repeat(2, 1)
+
+    def reverse_sorting(geometry, atom, **kwargs):
+        l = []
+        for at in atom:
+            l.append(at[::-1])
+        return l
+    atom = [[2, 0], [3, 1]]
+    out = bi.sort(func=reverse_sorting, atom=atom)
+
+    all_atoms = np.arange(len(bi))
+    all_atoms[1] = 2
+    all_atoms[2] = 1
+
+    assert np.allclose(out.xyz, bi.sub(all_atoms).xyz)
+
+    # Ensure that they are swapped
+    atom = [2, 0]
+    out = bi.sort(func=reverse_sorting, atom=atom)
+
+    assert np.allclose(out.xyz, bi.xyz)
+
+    out = bi.sort(func=reverse_sorting)
+    all_atoms = np.arange(len(bi))[::-1]
+    assert np.allclose(out.xyz, bi.sub(all_atoms).xyz)
+
+
 @pytest.mark.xfail(raises=ValueError)
 def test_geometry_sort_fail_keyword():
     sisl_geom.bilayer().sort(not_found_keyword=True)

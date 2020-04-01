@@ -1028,6 +1028,8 @@ class Geometry(SuperCellChild):
         - by Cartesian coordinates, `axis`
         - by lattice vectors, `lattice`
         - by user defined vectors, `vector`
+        - by a user defined function, `func`
+
         - a combination of the above in arbitrary order
 
         Additionally one may sort ascending or descending.
@@ -1039,7 +1041,8 @@ class Geometry(SuperCellChild):
         atom : list or list of list, optional
            only perform sorting algorithm for subset of atoms. This is *NOT* a positional dependent
            argument. All sorting algorithms will _only_ be performed on these atoms.
-           If a list of indices only the given atoms will be sorted.
+           If a list of indices only the given atoms will be sorted, and all other atoms
+           will be kept in the final structure at their initial indices.
            If a list of list of indices, each list of indices will be sorted individually (see `ret_atom`).
            Default, all atoms will be sorted.
         ret_atom : bool, optional
@@ -1059,6 +1062,16 @@ class Geometry(SuperCellChild):
            sort along a user defined vector, similar to `lattice` but with a user defined
            direction. Note that `lattice` sorting and `vector` sorting are *only* equivalent
            when the lattice vector is orthogonal to the other lattice vectors.
+        func : callable, optional
+           pass a sorting function which should have an interface like ``func(geometry, atom, **kwargs)``.
+           The first argument is the geometry to sort. The 2nd argument is a list of indices in
+           the current group of sorted atoms. And ``**kwargs`` are any optional arguments
+           currently collected, i.e. `ascend`, `atol` etc.
+           The function should return either a list of atoms, or a list of list of atoms (in which
+           case the atomic indices have been split into several groups that will be sorted individually
+           for subsequent sorting methods).
+           In either case the returned indices must never hold any other indices but the ones passed
+           as ``atom``.
         ascend : bool, optional
             control ascending or descending sorting, default ``True``
         atol : float, optional
@@ -1083,7 +1096,7 @@ class Geometry(SuperCellChild):
         -------
         geometry : Geometry
             sorted geometry
-        index : list of list
+        index : list of list of indices
             indices that would sort the original structure to the output, only returned if `ret_atom` is True
 
         Examples
@@ -1119,8 +1132,9 @@ class Geometry(SuperCellChild):
 
         >>> geom.sort(axis=2, atom=[np.arange(1, 5), np.arange(5, 10)])
 
-        The returned sorting indices may be used for manual sorting, the following
-        sortings are equal
+        The returned sorting indices may be used for manual sorting. Note
+        however, that this requires one to perform a sorting for all atoms.
+        In such a case the following sortings are equal.
 
         >>> geom0, atom0 = geom.sort(axis=2, lattice=0, ret_atom=True)
         >>> _, atom1 = geom.sort(axis=2, ret_atom=True)
@@ -1254,6 +1268,23 @@ class Geometry(SuperCellChild):
             return _sort(self.xyz.dot(vector), atom, **kwargs)
         funcs["vector"] = _vector
 
+        def _func(func, atom, **kwargs):
+            """
+            User defined function
+            """
+            if len(atom) == 0:
+                # Nothing has been sorted...
+                atom = [_a.arangei(len(self))]
+            nl = NestedList()
+            for a in atom:
+                # TODO add check that
+                #  res = func(...) in a
+                # A user *may* remove an atom from the sorting here (but
+                # that negates all sorting of that atom)
+                nl.append(func(self, a, **kwargs))
+            return nl
+        funcs["func"] = _func
+
         def _group(*args, atom, **kwargs):
             """
             Group based sorting is based on a named identification.
@@ -1314,6 +1345,13 @@ class Geometry(SuperCellChild):
             atom = funcs[key](kwargs[key_int], atom, **func_kw)
 
         atom_flat = concatenate(atom.tolist()).ravel()
+
+        # Ensure that all atoms are present
+        if len(atom_flat) != len(self):
+            all_atoms = _a.arangei(len(self))
+            all_atoms[np.sort(atom_flat)] = atom_flat[:]
+            atom_flat = all_atoms
+
         if ret_atom:
             return self.sub(atom_flat), atom.tolist()
         return self.sub(atom_flat)
