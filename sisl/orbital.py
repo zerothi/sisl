@@ -446,7 +446,9 @@ class SphericalOrbital(Orbital):
         """
         if len(args) == 0:
             # Return immediately
-            return
+            def f0(R):
+                return R * 0.
+            self.set_radial(f0)
         elif len(args) == 1 and callable(args[0]):
             self.f = args[0]
             # Determine the maximum R
