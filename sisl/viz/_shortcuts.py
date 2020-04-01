@@ -18,7 +18,12 @@ class ShortCutable:
             "description": _description,
             "action": partial(func, *args, **kwargs)
         }
+    
+    def remove_shortcut(self, keys):
 
+        if keys in self.shortcuts:
+            del self.shortcuts[keys]
+            
     def call_shortcut(self, keys, *args, _callback=None, **kwargs):
 
         returns = self.shortcuts[keys]["action"](*args, **kwargs)

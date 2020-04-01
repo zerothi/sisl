@@ -12,13 +12,43 @@ from copy import deepcopy
 from sisl.io.sile import get_siles
 
 #-------------------------------------
-#            I python
+#            Ipython
 #-------------------------------------
 def running_in_notebook():
     try:
         return get_ipython().__class__.__name__ == 'ZMQInteractiveShell'
     except NameError:
         return False
+    
+def check_widgets():
+    import subprocess
+
+    widgets = {
+        'plotly_avail': False,
+        'plotly_error': False,
+        'events_avail': False,
+        'events_error': False
+    }
+
+    out, err = subprocess.Popen( ['jupyter', 'nbextension', 'list'], stdout=subprocess.PIPE, stderr=subprocess.PIPE ).communicate()
+    out = str(out)
+    err = str(err)
+        
+    if 'plotlywidget' in out:
+        widgets['plotly_avail'] = True
+    if 'plotlywidget' in err:
+        widgets['plotly_error'] = True       
+            
+    if 'ipyevents' in out:
+        widgets['events_avail'] = True
+    if 'ipyevents' in err:
+        widgets['events_error'] = True
+        
+    widgets['plotly'] = widgets['plotly_avail'] and not widgets['plotly_error']
+    widgets['events'] = widgets['events_avail'] and not widgets['events_error']
+
+    return widgets
+
 
 #-------------------------------------
 #            Informative

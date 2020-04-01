@@ -19,7 +19,7 @@ import plotly.graph_objects as go
 import sisl
 
 from .configurable import *
-from .plotutils import applyMethodOnMultipleObjs, initMultiplePlots, repeatIfChilds, dictOfLists2listOfDicts, trigger_notification, spoken_message, running_in_notebook
+from .plotutils import initMultiplePlots, repeatIfChilds, dictOfLists2listOfDicts, trigger_notification, spoken_message, running_in_notebook, check_widgets
 from .inputFields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
 from ._shortcuts import ShortCutable
 
@@ -340,6 +340,10 @@ class Plot(ShortCutable, Configurable):
     @property
     def _innotebook(self):
         return running_in_notebook()
+    
+    @property
+    def _widgets(self):
+        return check_widgets()
 
     @classmethod
     def animated(cls, *args, fixed = {}, frameNames = None, **kwargs):
@@ -543,6 +547,7 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
                     plugin = MethodType(plugin, self)
                 setattr(self, name, plugin)
 
+        self._general_plot_shortcuts()
         #Give the user the possibility to overwrite default settings
         if callable( getattr(self, "_afterInit", None )):
             self._afterInit()
@@ -622,6 +627,10 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
             self.share_attr(key, val)
         else:
             self.__dict__[key] = val
+
+    def _general_plot_shortcuts(self):
+
+        self._listening_shortcut()
 
     @repeatIfChilds
     @afterSettingsUpdate
@@ -772,8 +781,15 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
         from IPython.display import clear_output
         import asyncio
 
+        # This is a weird limitation, because multiple listeners could definitely
+        # be implemented, but I don't have time now, and I need to ensure that no listeners are left untracked
+        # If you need it, ask me! (Pol)
+        self.stop_listening()
+
         if show and fig_widget is None:
-            self.show()
+            fig = self.show(return_figWidget=True)
+            if isinstance(fig, go.FigureWidget):
+                fig_widget = fig
         
         if notify:
             trigger_notification("SISL", "Notifications will appear here")
@@ -813,7 +829,17 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
         loop = asyncio.get_event_loop()
         self._listening_task = loop.create_task(listen())
 
-    def stop_listening(self):
+        self.add_shortcut("ctrl+alt+l", "Stop listening", self.stop_listening, fig_widget=fig_widget, _description="Tell the plot to stop listening for updates")
+
+    def _listening_shortcut(self, fig_widget=None):
+
+        self.add_shortcut(
+            "ctrl+alt+l", "Listen for updates", 
+            self.listen, fig_widget=fig_widget,
+            _description="Make the plot listen for changes in the files that it reads"
+        )
+
+    def stop_listening(self, fig_widget=None):
         '''
         Makes the plot stop listening for updates.
 
@@ -826,6 +852,8 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
         if task is not None:
             task.cancel()
             self._listening_task = None
+        
+            self._listening_shortcut(fig_widget=fig_widget)
 
     @afterSettingsUpdate
     def setFiles(self, **kwargs):
@@ -1058,7 +1086,7 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
     #       PLOT MANIPULATION METHODS
     #-------------------------------------------
 
-    def show(self, *args, listen=False, **kwargs):
+    def show(self, *args, listen=False, return_figWidget=False, **kwargs):
         '''
         Shows the plot.
 
@@ -1069,39 +1097,42 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
             This is nice for monitoring.
         '''
 
+        if listen:
+            self.listen(show=True, **kwargs)
+
         if not hasattr(self, "figure"):
             self.getFigure()
 
         if self._innotebook and len(args) == 0:
             try:
-                return self._show_in_jupyternb(listen=listen, **kwargs)
+                return self._show_in_jupyternb(listen=listen, return_figWidget = return_figWidget, **kwargs)
             except Exception:
                 pass
         
-        if listen:
-            self.listen(show=True, **kwargs)
-        
         return self.figure.show(*args, **kwargs)
     
-    def _show_in_jupyternb(self, listen=False, **kwargs):
+    def _show_in_jupyternb(self, listen=False, return_figWidget=False, **kwargs):
 
-        try:
+        if self._widgets["plotly"]:
+
             from IPython.display import display
             import ipywidgets as widgets
 
             f = go.FigureWidget(self.figure)
 
-            try:
+            if self._widgets["events"]:
                 # If ipyevents is available, show with shortcut support
                 self._show_jupnb_with_shortcuts(f, **kwargs)
-            except Exception as e:
+            else:
                 # Else, show without shortcut support
                 display(f)
 
-            if listen:
-                self.listen(fig_widget=f, **kwargs)
+            self._listening_shortcut(fig_widget=f)
 
-        except Exception:
+            if return_figWidget:
+                return f
+
+        else:
             self.figure.show(**kwargs)
                                     
     def _show_jupnb_with_shortcuts(self, fig_widget, **kwargs):
