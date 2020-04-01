@@ -118,8 +118,15 @@ class InputField:
         if isinstance(key, str):
             return get_nested_key(self.__dict__, key)
 
-
         return None
+
+    def __str__(self):
+
+        return str(vars(self))
+
+    def __repr__(self):
+
+        return self.__str__()
 
     def modify(self, *args):
         '''

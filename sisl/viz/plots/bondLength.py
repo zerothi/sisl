@@ -205,20 +205,23 @@ class BondLengthMap(Plot):
 
     def _readSiesOut(self):
         
+        geom_keys = {}
         if self.setting("geomFile"):
             geomFile = self.setting("geomFile")
-            self.geom = sisl.get_sile(geomFile).read_geometry()
         else:
             geomFile = self.setting("rootFdf")
-            self.geom = sisl.get_sile(geomFile).read_geometry(output = self.setting("geomFromOutput"))
+            geom_keys = {"output": self.setting("geomFromOutput")}
+        
+        self.geom = self.get_sile(geomFile).read_geometry()
         
         self.isStrain = False
-        if self.setting("strainRef"):
-            self.relaxedGeom = sisl.get_sile(self.setting("strainRef")).read_geometry()
+        strainRef_file = self.setting("strainRef")
+        if strainRef_file:
+
+            self.relaxedGeom = self.get_sile(strainRef_file).read_geometry()
             self.isStrain = True
 
             self.relaxedGeom.set_nsc([3,3,3])
-
         
         #If there isn't a supercell in all directions define it
         self.geom.set_nsc([3,3,3])
@@ -262,8 +265,6 @@ class BondLengthMap(Plot):
                 bondsDict["finalZ"].append(self.geom[neigh][2])
 
         self.df = pd.DataFrame(bondsDict)
-
-        return [ geomFile, self.setting("strainRef")]
     
     def _setData(self):
         

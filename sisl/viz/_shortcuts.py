@@ -46,7 +46,7 @@ class ShortCutable:
 
             def get_shortcut_div(key, shortcut):
                 
-                key_span = f'<span style="background: #ccc; padding: 5px 7px; border-radius: 2px; margin-right: 10px">{key}</span>'
+                key_span = "".join([f'<span style="background: #ccc; padding: 5px 7px; border-radius: 2px; margin-right: 10px">{key}</span>' for key in key.split()])
                 
                 name_span = f'<span style="font-weight: bold">{shortcut["name"]}</span>'
                 

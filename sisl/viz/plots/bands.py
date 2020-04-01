@@ -232,11 +232,13 @@ class BandsPlot(Plot):
         
         #Get the info from the bands file
         self.path = self.setting("path")
+
         if self.path and self.path != getattr(self, "siestaPath", None) or self.setting("bandStructure"):
             raise Exception("A path was provided, therefore we can not use the .bands file even if there is one")
 
         bandsFile = self.setting("bandsFile") or self.requiredFiles[0]
-        self.arr = sisl.get_sile(bandsFile).read_data(as_dataarray=True)
+
+        self.arr = self.get_sile(bandsFile).read_data(as_dataarray=True)
         self.fermi = 0.0 #Energies are already shifted
 
         # Inform of the path that it's being used if we can
@@ -258,9 +260,6 @@ class BandsPlot(Plot):
                     self.updateSettings(path=self.siestaPath, updateFig=False)
             except Exception as e:
                 print(f"Could not correctly read the bands path from siesta.\n Error {e}")
-
-        #Inform that the bandsFile has been read so that it can be followed if the user wants
-        return [bandsFile]
     
     def _bandsToXArray(self, bands):
 

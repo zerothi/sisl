@@ -236,6 +236,9 @@ class LDOSmap(Plot):
         cwd = os.getcwd()
         os.chdir(self.rootDir)
 
+        #Inform that the WFSX file is used so that changes in it can be followed
+        self.follow(os.path.join(self.rootDir, '{}.WFSX'.format(self.struct) ))
+        
         def getSpectraForPath(argsTuple):
 
             path, nE, iPath, rootDir, struct, STSflags, args, kwargs = argsTuple
@@ -314,10 +317,7 @@ class LDOSmap(Plot):
         os.chdir(cwd)
         
         #Update the values for the limits so that they are automatically set
-        self.updateSettings(updateFig = False, cmin = 0, cmax = 0)
-
-        #Inform that the WFSX file is used so that changes in it can be followed 
-        return [os.path.join(self.rootDir, '{}.WFSX'.format(self.struct) )]
+        self.updateSettings(updateFig = False, cmin = 0, cmax = 0) 
     
     def _getPath(self):
 

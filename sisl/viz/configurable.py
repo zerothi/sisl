@@ -36,7 +36,7 @@ class Configurable:
         
         return self
     
-    def updateSettings(self, exFromDecorator = False, updateFig = True, **kwargs):
+    def updateSettings(self, exFromDecorator = False, updateFig = True, no_log=False ,**kwargs):
         
         #Initialize the settings in case there are none yet
         if "settings" not in vars(self):
@@ -55,8 +55,9 @@ class Configurable:
         #Do things after updating the settings
         if len(updated) > 0:
             
-            #Record rhe change in the settings history
-            self.settingsHistory.append(deepcopy(self.settings))
+            if not no_log:
+                #Record rhe change in the settings history
+                self.settingsHistory.append(deepcopy(self.settings))
         
             #Run the functions specified
             if not exFromDecorator and hasattr(self, "_onSettingsUpdate") and updateFig:
@@ -137,7 +138,7 @@ class Configurable:
             
             return self
     
-    def getParam(self, settingKey, justDict = True, paramsExtractor = False, param = False):
+    def getParam(self, settingKey, justDict = False, paramsExtractor = False):
         '''
         Gets the parameter for a given setting. 
         

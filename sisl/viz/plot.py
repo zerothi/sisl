@@ -346,7 +346,7 @@ class Plot(ShortCutable, Configurable):
         return check_widgets()
 
     @classmethod
-    def animated(cls, *args, fixed = {}, frameNames = None, **kwargs):
+    def animated(cls, *args, fixed = {}, frameNames = None, template_plot=None, **kwargs):
         '''Creates an animation out of a class.
 
         This class method returns an animation with frames belonging to a given plot class.
@@ -434,7 +434,7 @@ class Plot(ShortCutable, Configurable):
             def _getInitKwargsList(self):
 
                 #Adding the fixed values to the list
-                vals = { 
+                vals = {
                     **{key: itertools.repeat(val) for key, val in fixed.items()},
                     **animated_settings
                 }
@@ -456,7 +456,7 @@ class Plot(ShortCutable, Configurable):
             "_getInitKwargsList": _getInitKwargsList,
             "_getFrameNames": _getFrameNames,
             "_plotClasses": cls
-        })
+        }, template_plot=template_plot, **kwargs)
 
     def __new__(cls, filename=None, **kwargs):
         '''
@@ -627,6 +627,8 @@ class Plot(ShortCutable, Configurable):
 
         self._listening_shortcut()
 
+        self.add_shortcut("ctrl+z", "Undo settings", self.undoSettings, _description="Takes the settings of the plot one step back")
+
     @repeatIfChilds
     @afterSettingsUpdate
     def readData(self, updateFig = True, **kwargs):
@@ -656,10 +658,7 @@ class Plot(ShortCutable, Configurable):
             self.updateSettings(updateFig = False, title = '{} {}'.format(getattr(self, "struct", ""), self.plotType) )
         
         #We try to read from the different sources using the _readFromSources method of the parent Plot class.
-        filesToFollow = self._readFromSources()
-
-        #Follow the files that are returned by the method that succesfully read the plot's data
-        self.follow(*filesToFollow, unfollow=False)
+        self._readFromSources()
 
         # We don't update the last dataread here in case there has been a succesful data read because we want to
         # wait for the afterRead() method to be succesful
@@ -724,6 +723,37 @@ class Plot(ShortCutable, Configurable):
         newFilesToFollow = [os.path.abspath(filePath) if to_abs else filePath for filePath in files or []]
 
         self._filesToFollow = newFilesToFollow if unfollow else [*self._filesToFollow, *newFilesToFollow]
+    
+    def get_sile(self, path, *args, follow=True, follow_kwargs={}, **kwargs):
+        '''
+        A wrapper around get_sile so that the reading of the file is registered.
+
+        This is useful so that you don't neet to go always like:
+
+        ```
+        self.follow(file)
+        sisl.get_sile(file)
+        ```
+
+        It improves readability and avoids errors.
+
+        Parameters
+        ----------
+        path: str
+            the path to the file that you want to read
+        *args:
+            passed to sisl.get_sile
+        follow: boolean, optional
+            whether the path should be followed.
+        follow_kwargs: dict, optional
+            dictionary of keywords that are passed directly to the follow method.
+        **kwargs:
+            passet to sisl.get_sile
+        '''
+        if follow:
+            self.follow(path, **follow_kwargs)
+        
+        return sisl.get_sile(path, *args, **kwargs)
 
     def updates_available(self):
         '''
@@ -906,7 +936,7 @@ class Plot(ShortCutable, Configurable):
         self.rootDir = "." if self.rootDir == "" else self.rootDir
         
         self.wdir = os.path.join(self.rootDir, self.setting("resultsPath"))
-        self.fdfSile = sisl.get_sile(rootFdf)
+        self.fdfSile = self.get_sile(rootFdf)
         self.struct = self.fdfSile.get("SystemLabel", "")
             
         #Check that the required files are there
@@ -916,9 +946,6 @@ class Plot(ShortCutable, Configurable):
             self.requiredFiles = [ os.path.join( self.rootDir, self.setting("resultsPath"), req.replace("$struct$", self.struct) ) for req in self.__class__._requirements["siesOut"]["files"] ]
         #else:
             #raise Exception("The required files were not found, please check your file system.")
-
-        #Inform that we have read the fdf file
-        self.follow(rootFdf, unfollow=False)
 
         return self
     
@@ -1194,15 +1221,20 @@ class Plot(ShortCutable, Configurable):
         styles = HTML( "<style>.ipyevents-watched:focus {outline: none}</style>")
         d = Event(source=fig_widget, watched_events=['keydown', 'keyup'])
        
-        def handle_dom_events(event, keys_down=[], last_timestamp=[0]):
+        def handle_dom_events(event, keys_down=[], last_timestamp=[0], keys_up=[]):
             # We will keep track of keydowns because then we will be able to support multiple keys shortcuts
+            time_threshold = 500 #To remove key up events
 
             try:
                 # Clear the list
                 timestamp = event.get("timeStamp")
                 duplicates = len(keys_down) != len(set(keys_down))
-                if timestamp - last_timestamp[0]> 2000 or duplicates:
+                time_diff = timestamp - last_timestamp[0]
+                if time_diff > 2000 or duplicates:
                     keys_down *= 0 #Clear the list
+                if time_diff > time_threshold:
+                    keys_up *= 0
+                
                 last_timestamp[0] = timestamp
 
                 # This means that the key has been held down for a long time
@@ -1220,10 +1252,18 @@ class Plot(ShortCutable, Configurable):
                     # If it's a key down event, record it
                     keys_down.append(key)
                 elif ev_type == "keyup" and key in keys_down:
+                    if key == "control":
+                        key = "ctrl"
+                    if len(keys_down) == 1:
+                        keys_up.append(key)
                     # If it's a key up event, anounce that the key is not down anymore
                     keys_down.remove(key)
                 
-                shortcut_key = "+".join(keys_down)
+                only_down = "+".join(keys_down)
+                shortcut_key = f'{" ".join(keys_up)} {only_down}'.strip()
+
+                if shortcut_key:
+                    messages.value = f'<span style="border-radius: 3px; background: #ccc; padding: 5px 10px">{shortcut_key}</span>'
 
                 # Get the help message
                 if shortcut_key == "shift+?":
@@ -1231,11 +1271,13 @@ class Plot(ShortCutable, Configurable):
                 
                 shortcut = self.shortcut(shortcut_key)
                 if shortcut is not None:
-                    
+                    keys_down *= 0
+                    keys_up *= 0 
+
                     messages.value = f'Executing "{shortcut["name"]}" because you pressed "{shortcut_key}"...'
                     self.call_shortcut(shortcut_key)
                     messages.value = ""
-                    keys_down = []
+                    
 
                     self._update_FigureWidget(fig_widget)
 
@@ -1250,7 +1292,8 @@ class Plot(ShortCutable, Configurable):
 
         fig_widget.data = []
         fig_widget.add_traces(self.data)
-        fig_widget.update(layout=self.layout, frames=self.frames)
+        fig_widget.layout = self.layout
+        fig_widget.update(frames=self.frames)
 
     def merge(self, others, asAnimation = False, **kwargs):
         '''
@@ -1444,13 +1487,15 @@ class Plot(ShortCutable, Configurable):
         import chart_studio.plotly as py
 
         return py.plot(self.figure, *args, **kwargs)
+
+
 #------------------------------------------------
 #               ANIMATION CLASS
 #------------------------------------------------
 
 class MultiplePlot(Plot):
 
-    def __init__(self, *args, plots=None, **kwargs):
+    def __init__(self, *args, plots=None, template_plot=None, **kwargs):
 
         self.shared = {}
 
@@ -1459,6 +1504,11 @@ class MultiplePlot(Plot):
         if self.PLOTS_PROVIDED:
 
             self.set_child_plots(plots)
+        
+        self.has_template_plot = False
+        if isinstance(template_plot, Plot):
+            self.template_plot = template_plot
+            self.has_template_plot = True
         
         super().__init__(*args, **kwargs)
     
@@ -1487,6 +1537,12 @@ class MultiplePlot(Plot):
 
         if not self.PLOTS_PROVIDED:
 
+            # If there is a template plot, take its settings as the starting point
+            template_settings={}
+            if self.has_template_plot:
+                self._plotClasses = self.template_plot.__class__
+                template_settings = template_plot.settings
+                
             SINGLE_CLASS = isinstance(self._plotClasses, type)
 
             # Initialize all the plots
@@ -1497,31 +1553,44 @@ class MultiplePlot(Plot):
             plots = initMultiplePlots(
                 self._plotClasses, 
                 kwargsList = [
-                    {**kwargs, "attrs_for_plot": self._attrs_for_childplots, "only_init": SINGLE_CLASS and try_sharing} 
+                    {**template_settings, **kwargs, "attrs_for_plot": self._attrs_for_childplots, "only_init": SINGLE_CLASS and try_sharing} 
                     for kwargs in self._getInitKwargsList()
                 ],
                 serial=SINGLE_CLASS and try_sharing
             )
 
-            if SINGLE_CLASS:
+            if SINGLE_CLASS and try_sharing:
 
-                # Then, we read the data of a leading plot
-                # This leading plot will share attributes with the rest in case it is needed
-                plots[0]._SHOULD_SHARE_WITH_SIBLINGS = True
-                plots[0].readData(updateFig=False)
-                plots[0]._SHOULD_SHARE_WITH_SIBLINGS = False
+                if not self.has_template_plot:
+                    # Then, we read the data of a leading plot
+                    # This leading plot will share attributes with the rest in case it is needed
+                    leading_plot = plots[0]
+                    leading_plot._SHOULD_SHARE_WITH_SIBLINGS = True
+                    leading_plot.readData(updateFig=False)
+                    leading_plot._SHOULD_SHARE_WITH_SIBLINGS = False
+                else:
+                    leading_plot = self.template_plot
 
                 # Now, we get the settings of the first plot
-                read_data_settings = {key: plots[0].getSetting(key) for key, func in plots[0].whatToRunOnUpdate.items() if func == "readData"}
+                read_data_settings = {key: leading_plot.getSetting(key) for key, func in leading_plot.whatToRunOnUpdate.items() if func == "readData"}
 
                 for i, plot in enumerate(plots):
                     if not plot.has_this_settings(read_data_settings):
+                        # If there is a plot that needs to read different data, we will just
+                        # make each of them read their own data. (this could be optimized by grouping plots)
                         self.initAllPlots(try_sharing=False)
                 else:
-                    # In case there is no plot that has different settings
+                    # In case there is no plot that has different settings, we will
+                    # happily set the data, avoiding the read data step. Plots will take
+                    # their missing attributes from the shared store or from the plot
+                    # template
                     self.set_child_plots(plots)
 
                     self.setData()
+            
+            else:
+                # If we haven't tried sharing data, the plots are already prepared (with read data of their own)
+                self.set_child_plots(plots)
                 
             if callable( getattr(self, "_afterChildsUpdated", None )):
                 self._afterChildsUpdated()
@@ -1605,12 +1674,24 @@ class MultiplePlot(Plot):
            
     def shared_attr(self, key):
 
+        if self.has_template_plot:
+            return getattr(self.template_plot, key)
+
         return self.shared[key]
     
     def set_shared_attr(self, key, val):
         
         self.shared[key] = val
 
+        return self
+
+    def to_animation(self):
+        '''
+        Converts the multiple plot into an animation by splitting its plots into frames
+        '''
+
+        self._isAnimation = True
+        
         return self
 
 class Animation(MultiplePlot):
@@ -1648,3 +1729,14 @@ class Animation(MultiplePlot):
             _plugins["_getFrameNames"] = frameNames if callable(frameNames) else lambda self: frameNames
         
         super().__init__(*args, **kwargs, _plugins=_plugins)
+    
+    def merge_frames(self):
+        '''
+        Merges all frames of an animation into one.
+        '''
+
+        self._isAnimation = False
+
+        return self
+
+

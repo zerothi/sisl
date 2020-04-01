@@ -211,11 +211,9 @@ class PdosPlot(Plot):
 
         PDOSFile = self.setting("PDOSFile") or self.requiredFiles[0]
         #Get the info from the .PDOS file
-        self.geom, self.E, self.PDOSinfo = sisl.get_sile(PDOSFile).read_data()
+        self.geom, self.E, self.PDOSinfo = self.get_sile(PDOSFile).read_data()
 
         self.fermi = 0
-
-        return [PDOSFile] 
 
     def _afterRead(self):
 

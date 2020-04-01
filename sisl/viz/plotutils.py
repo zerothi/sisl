@@ -589,7 +589,7 @@ def repeatIfChilds(method):
             
             obj.childPlots = applyMethodOnMultipleObjs(method, obj.childPlots, kwargsList = kwargsList, serial=True)
                 
-            obj.updateSettings(onlyOnParent = True, updateFig = False, **kwargs).getFigure()
+            obj.updateSettings(onlyOnParent = True, **{**kwargs, 'updateFig': False}).getFigure()
         
         else:
         

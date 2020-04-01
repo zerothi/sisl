@@ -66,9 +66,7 @@ class ForcesPlot(Plot):
 
         outFile = self.setting("outFile") or os.path.splitext(rootFdf)[0] + ".out"
 
-        self._followFiles([outFile], unfollow=False)
-
-        outSile = sisl.get_sile(outFile) 
+        outSile = self.get_sile(outFile) 
         
         self.atomic_forces = outSile.read_force(all=True)
 

@@ -119,6 +119,10 @@ class GridPlot(Plot):
             help="Range where the Z is displayed. Should be inside the unit cell, otherwise it will fail.",
         )
     )
+
+    def _afterInit(self):
+
+        self._add_shortcuts()
     
     def _readNoSource(self):
 
@@ -127,9 +131,7 @@ class GridPlot(Plot):
         if self.grid is None:
             gridFile = self.setting("gridFile")
 
-            self.grid = sisl.get_sile(gridFile).read_grid()
-
-        return [gridFile]
+            self.grid = self.get_sile(gridFile).read_grid()
     
     def _afterRead(self):
 
@@ -220,11 +222,6 @@ class GridPlot(Plot):
 
             axesTitles = {'xaxis_title': f'{("X","Y", "Z")[xaxis]} axis (Ang)', 'yaxis_title': f'{("X","Y", "Z")[yaxis]} axis (Ang)'}
 
-            if self.setting("forceRatio"):
-                self.updateSettings(updateFig=False, yaxis_scaleanchor="x", yaxis_scaleratio=1)
-            elif self.did_setting_update("forceRatio"):
-                self.updateSettings(updateFig=False, yaxis_scaleanchor=None)
-
         elif values.ndim == 3:
 
             self.data = [{
@@ -237,4 +234,174 @@ class GridPlot(Plot):
 
             axesTitles = {}
 
-        self.updateSettings(updateFig=False, **axesTitles)
+        self.updateSettings(updateFig=False, **axesTitles, no_log=True )
+    
+    def _afterGetFigure(self):
+
+        if self.setting("forceRatio") and len(self.setting("axes")) == 2:
+            self.figure.layout.yaxis.scaleanchor = "x"
+            self.figure.layout.yaxis.scaleratio = 1
+ 
+    def _add_shortcuts(self):
+
+        axes = self.getParam("axes")["inputField.params.options"]
+
+        for ax in axes:
+
+            ax_name = ax["label"]
+            ax_val = ax["value"]
+
+            self.add_shortcut(f'{ax_name.lower()}+enter', f"Show {ax_name} axis", self.updateSettings, axes=[ax_val])
+
+            self.add_shortcut(f'{ax_name.lower()} {ax_name.lower()}', f"Duplicate {ax_name} axis", self.tile, 2, ax_val)
+
+            self.add_shortcut(f'{ax_name.lower()}+-', f"Substract a unit cell along {ax_name}", self.tighten, 1, ax_val)
+
+            self.add_shortcut(f'{ax_name.lower()}++', f"Add a unit cell along {ax_name}", self.tighten, -1, ax_val)
+        
+        for xaxis in axes:
+            xaxis_name = xaxis["label"]
+            for yaxis in [ax for ax in axes if ax != xaxis]:
+                yaxis_name = yaxis["label"]
+                self.add_shortcut(
+                    f'{xaxis_name.lower()}+{yaxis_name.lower()}', f"Show {xaxis_name} and {yaxis_name} axes",
+                    self.updateSettings, axes=[xaxis["value"], yaxis['value']]
+                )
+
+    def tighten(self, steps, ax):
+        '''
+        Makes the supercell tighter by a number of unit cells
+
+        Parameters
+        ---------
+        steps: int or array-like
+            Number of unit cells that you want to substract.
+            If there are not enough unit cells to substract, one unit cell will remain.
+
+            If you provide multiple steps, it needs to match the number of axes provided.
+        ax: int or array-like
+            Axis along which to tighten the supercell.
+
+            If you provide multiple axes, the number of different steps must match the number of axes or be a single int.
+        '''
+        
+        if isinstance(ax, int):
+            ax = [ax]
+        if isinstance(steps, int):
+            steps = [steps]*len(ax)
+        
+        sc = [*self.setting("sc")]
+
+        for a, step in zip(ax, steps):
+            sc[a] = max(1, sc[a]-step)
+
+        return self.updateSettings(sc=sc)
+
+    def tile(self, tiles, ax):
+        '''
+        Tile a given axis to display more unit cells in the plot
+
+        Parameters
+        ----------
+        tiles: int or array-like
+            factor by which the supercell will be multiplied along axes `ax`.
+            
+            If you provide multiple tiles, it needs to match the number of axes provided.
+        ax: int or array-like
+            axis that you want to tile.
+
+            If you provide multiple axes, the number of different tiles must match the number of axes or be a single int.
+        '''
+
+        if isinstance(ax, int):
+            ax = [ax]
+        if isinstance(tiles, int):
+            tiles = [tiles]*len(ax)
+        
+        sc = [*self.setting("sc")]
+
+        for a, tile in zip(ax, tiles):
+            sc[a] *= tile
+
+        return self.updateSettings(sc=sc)
+
+    def scan(self, along=None, start=None, stop=None, steps=None, **kwargs):
+        '''
+        Returns an animation containing multiple frames scaning along an axis.
+
+        Parameters
+        -----------
+        along: int
+            the axis along which the scan is performed. If not provided, it will scan along the axes that are not displayed.
+        start: float
+            the starting value for the scan (in Angstrom).
+            Make sure this value is inside the range of the unit cell, otherwise it will fail.
+        stop: float
+            the last value of the scan (in Angstrom).
+            Make sure this value is inside the range of the unit cell, otherwise it will fail.
+        steps: int or float
+            If it's an integer:
+                the number of steps that you want the scan to consist of.
+            If it's a float:
+                the division between steps in Angstrom.
+            
+            Note that the grid is only stored once, so having a big number of steps is not that big of a deal.
+        **kwargs:
+            the rest of settings that you want to apply to overwrite the existing ones.
+
+            Some recurrent ones here might be `xRange, yRange...` to set the range of the scan, or `axes` to choose
+            the axes that are displayed
+
+        Returns
+        ----------
+        scan: sisl Animation
+            An animation representation of the scan
+        '''
+
+        # If no axis is provided, let's get the first one that is not displayed
+        if along is None:
+            displayed = self.setting('axes')
+            along = [ax["value"] for ax in self.getParam('axes')['inputField.params.options'] if ax["value"] not in displayed][0]
+        
+        # If no steps is provided, we will do 1 Angstrom steps
+        if steps is None:
+            steps = 1.0
+        
+        # We get the key that needs to be animated (we will divide the full range in frames)
+        range_key = ["xRange", "yRange", "zRange"][along]
+
+        # Get the full range
+        if start is not None and stop is not None:
+            along_range = [start,stop]
+        else:
+            along_range = self.setting(range_key)
+            if along_range is None:
+                range_param = self.getParam(range_key)
+                along_range = [range_param[f"inputField.params.{lim}"] for lim in ["min", "max"]]
+            if start is not None:
+                along_range[0] = start
+            if stop is not None:
+                along_range[1] = stop
+        
+        # Divide it in steps
+        if isinstance(steps, int):
+            step = (along_range[1] - along_range[0])/steps
+        elif isinstance(steps, float):
+            step = steps
+            steps = (along_range[1] - along_range[0])/step
+        steps_range = np.linspace(*along_range, steps)[:-1]
+
+        # Generate the plot using self as a template so that plots don't need
+        # to read data, just process it and show it differently.
+        # (If each plot read the grid, the memory requirements would be HUGE)
+        scan = GridPlot.animated(
+            {
+                range_key: [[minVal, minVal + step] for minVal in steps_range]
+            },
+            plot_template=self,
+            fixed={key: val for key, val in self.settings.items() if key != range_key}
+        )
+
+        scan.layout = self.layout
+
+        return scan
