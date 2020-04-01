@@ -1177,7 +1177,7 @@ class Geometry(SuperCellChild):
 
         def _sort(val, nl, **kwargs):
             """ We do not sort according to lexsort """
-            if len(val) <= 0:
+            if len(val) <= 1:
                 # no values to sort
                 return nl
 
