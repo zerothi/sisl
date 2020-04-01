@@ -4104,7 +4104,7 @@ class Geometry(SuperCellChild):
                         val = lstranges(strmap(int, val))
                     # parse `val` to appropriate values
                     # we always add integers to allow users to use the same keywords on commandline
-                    kwargs[opt + str(i)] = val
+                    kwargs[opt.strip() + str(i)] = val
                 ns._geometry = ns._geometry.sort(**kwargs)
         p.add_argument(*opts('--sort'), nargs=1, metavar='SORT',
                        action=Sort,
