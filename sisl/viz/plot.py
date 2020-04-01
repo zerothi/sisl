@@ -485,8 +485,10 @@ class Plot(ShortCutable, Configurable):
                     raise NotImplementedError(f'There is no plot implementation for {os.path.splitext(filename)[-1]} extensions yet.')
 
                 if cls != Plot and cls != plot.__class__:
-                    print(f'''You requested a {cls.__name__} and we got you a {plot.__class__.__name__} instead.\nWe hope you don't mind :)\n
-We did this because "{filename}" is a {SileClass.__name__}. If you are not happy with this, please specify the key of the setting where "{filename}" should go.''')
+                    print((
+                        f"You requested a {cls.__name__} and we got you a {plot.__class__.__name__} instead.\nWe hope you don't mind :)\n\n"
+                        f'We did this because "{filename}" is a {SileClass.__name__}. If you are not happy with this, please specify the key of the setting where "{filename}" should go.'
+                    ))
             
             # Inform that we don't want to run the __init__ method anymore
             # See the beggining of __init__()
@@ -573,16 +575,9 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
     
     def __str__(self):
         
-        string = '''
-    Plot class: {}    Plot type: {}
-        
-    Settings: 
-    {}
-        
-        '''.format(
-            self.__class__.__name__,
-            getattr(self, "_plotType", None),
-            "\n".join([ "\t- {}: {}".format(key,value) for key, value in self.settings.items()])
+        string = (
+            f'Plot class: {self.plotType}    Plot type: {getattr(self, "_plotType", None)}\n\n'
+            'Settings:\n{}'.format("\n".join([ "\t- {}: {}".format(key,value) for key, value in self.settings.items()]))
         )
         
         return string
@@ -707,7 +702,7 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
             raise Exception("Could not read or generate data for {} from any of the possible sources.\n\n Here are the errors for each source:\n\n {}  "
                             .format(self.__class__.__name__, "\n".join(errors)) )
     
-    def follow(self, *files, to_abs=True, unfollow=True):
+    def follow(self, *files, to_abs=True, unfollow=False):
         '''
         Makes sure that the object knows which files to follow in order to trigger updates.
 
@@ -783,8 +778,13 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
             if as_animation is `True`, whether the animation should be returned.
             Important: see as_animation for an explanation on why this is the case
         return_figWidget: boolean, optional
-            it returns the figure widget that is in display in a jupyter notebook.
-            return_animation will have preference over this parameter.
+            it returns the figure widget that is in display in a jupyter notebook in case the plot has
+            succeeded to display it. Note that, even if you are in a jupyter notebook, you won't get a figure
+            widget if you don't have the plotly notebook extension enabled. Check `<your_plot>._widgets` to see
+            if you are missing witget support.
+
+            if return_animation is True, both the animation and the figure widget will be returned in a tuple.
+            Although right now, this does not make much sense because figure widgets don't support frames. You will get None.
         clearPrevious: boolean, optional
             in case show is True, whether the previous version of the plot should be hidden or kept in display.
         notify: boolean, optional
@@ -864,7 +864,10 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
         self.add_shortcut("ctrl+alt+l", "Stop listening", self.stop_listening, fig_widget=fig_widget, _description="Tell the plot to stop listening for updates")
 
         if as_animation and return_animation:
-            return pt
+            if return_figWidget:
+                return pt, fig_widget
+            else:
+                return pt
         elif return_figWidget:
             return fig_widget
 
@@ -1001,8 +1004,6 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
             if getattr(self, "_isAnimation", False):
 
                 self.data = self.childPlots[0].data
-
-                print(len(self.childPlots))
 
                 # Get the names for each frame
                 frameNames = []
