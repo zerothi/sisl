@@ -1046,7 +1046,7 @@ class AtomicOrbital(Orbital):
         # A function is not necessarily pickable, so we store interpolated
         # data which *should* ensure the correct pickable state (to close agreement)
         r = np.linspace(0, self.R, 1000)
-        f = self.orb.f(r) if hasattr(self.orb, "f") else None
+        f = self.orb.f(r)
         return {'name': self.name(), 'r': r, 'f': f, 'q0': self.q0, 'tag': self.tag}
 
     def __setstate__(self, d):
