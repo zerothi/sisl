@@ -12,4 +12,6 @@ sisl.egg-info
 sisl/info.py
 sisl/io/siesta/_siesta.so
 sisl/**/*.html
+!sisl/viz/GUI/build
 .vscode/
+.ipynb_checkpoints/
