@@ -404,6 +404,16 @@ class Plot(ShortCutable, Configurable):
             FRAME NAMES SHOULD BE UNIQUE, OTHERWISE THE ANIMATION WILL HAVE A WEIRD BEHAVIOR.
 
             If this is not provided, frame names will be generated automatically.
+        template_plot: sisl Plot, optional
+            If provided this plot will be used as a template.
+
+            It is important to know that it will not act only as the settings template,
+            but it also will PROVIDE DATA FOR THE OTHER PLOTS in case the data reading
+            settings are not animated.
+
+            This is extremely important to provide when possible, because in some cases the data
+            that a plot gathers can be very large and therefore it may not be even feasable to store
+            the repeated data in terms of memory/time. 
         **kwargs:
             Will be passed directly to animation initialization, so it can contain the settings for the animation, for example.
 
