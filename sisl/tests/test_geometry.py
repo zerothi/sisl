@@ -1287,3 +1287,58 @@ class TestGeometry:
         idx22, idx44 = gr22.overlap(gr44, offset=-offset)
         assert np.allclose(idx22, np.arange(gr22.na))
         assert np.allclose(idx44, idx)
+
+
+def test_geometry_sort_simple():
+    bi = sisl_geom.bilayer().tile(2, 0).repeat(3, 1)
+
+    # the default tolerance is 1e-9, and since we are sorting
+    # in each group, we may in the end find another ordering
+    atol = 1e-9
+
+    for i in [0, 1, 2]:
+        s = bi.sort(axis=i)
+        assert np.all(np.diff(s.xyz[:, i]) >= -atol)
+        s = bi.sort(lattice=i)
+        assert np.all(np.diff(s.fxyz[:, i] * bi.sc.length[i]) >= -atol)
+
+    s, idx = bi.sort(axis=0, lattice=1, ret_atom=True)
+    assert np.all(np.diff(s.xyz[:, 0]) >= -atol)
+    for ix in idx:
+        assert np.all(np.diff(bi.fxyz[ix, 1]) >= -atol)
+
+    s, idx = bi.sort(axis=0, ascending=False, lattice=1, ret_atom=True)
+    assert np.all(np.diff(s.xyz[:, 0]) >= -atol)
+    for ix in idx:
+        # idx is according to bi
+        assert np.all(np.diff(bi.fxyz[ix, 1] * bi.sc.length[i]) <= atol)
+
+
+def test_geometry_sort_int():
+    bi = sisl_geom.bilayer().tile(2, 0).repeat(3, 1)
+
+    # the default tolerance is 1e-9, and since we are sorting
+    # in each group, we may in the end find another ordering
+    atol = 1e-9
+
+    for i in [0, 1, 2]:
+        s = bi.sort(axis0=i)
+        assert np.all(np.diff(s.xyz[:, i]) >= -atol)
+        s = bi.sort(lattice3=i)
+        assert np.all(np.diff(s.fxyz[:, i] * bi.sc.length[i]) >= -atol)
+
+    s, idx = bi.sort(axis12314=0, lattice0=1, ret_atom=True)
+    assert np.all(np.diff(s.xyz[:, 0]) >= -atol)
+    for ix in idx:
+        assert np.all(np.diff(bi.fxyz[ix, 1]) >= -atol)
+
+    s, idx = bi.sort(ascending1=True, axis15=0, ascending0=False, lattice235=1, ret_atom=True)
+    assert np.all(np.diff(s.xyz[:, 0]) >= -atol)
+    for ix in idx:
+        # idx is according to bi
+        assert np.all(np.diff(bi.fxyz[ix, 1] * bi.sc.length[i]) <= atol)
+
+
+@pytest.mark.xfail(raises=ValueError)
+def test_geometry_sort_fail_keyword():
+    sisl_geom.bilayer().sort(not_found_keyword=True)

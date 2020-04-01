@@ -2,11 +2,13 @@
 from numbers import Integral, Real
 from math import acos
 from itertools import product
+from collections import OrderedDict
 
 import numpy as np
 from numpy import ndarray, int32, bool_
-from numpy import dot, square, sqrt
+from numpy import dot, square, sqrt, diff
 from numpy import floor, ceil
+from numpy import argsort, split, concatenate
 
 from . import _plot as plt
 from . import _array as _a
@@ -1019,27 +1021,268 @@ class Geometry(SuperCellChild):
                 other_append(ja)
         return _a.arrayi(idx_self), _a.arrayi(idx_other)
 
-    def sort(self, axes=(2, 1, 0)):
-        """ Return an equivalent geometry by sorting the coordinates according to the order of axis
+    def sort(self, **kwargs):
+        r""" Sort atoms in a nested fashion according to various criteria
 
-        Examples
-        --------
-        >>> idx = np.lexsort((self.xyz[:, i] for i in axes))
-        >>> new = self.sub(idx)
+        There are many ways to sort a `Geometry`.
+        - by Cartesian coordinates, `axis`
+        - by lattice vectors, `lattice`
+        - a combination of the above in arbitrary order
+
+        Additionally one may sort ascending or descending.
+
+        This method allows nested sorting based on keyword arguments.
 
         Parameters
         ----------
-        axes : tuple, optional
-           sorting axes (note the last element has highest precedence)
+        atom : list or list of list, optional
+           only perform sorting algorithm for subset of atoms. This is *NOT* a positional dependent
+           argument. All sorting algorithms will _only_ be performed on these atoms.
+           If a list of indices only the given atoms will be sorted.
+           If a list of list of indices, each list of indices will be sorted individually (see `ret_atom`).
+           Default, all atoms will be sorted.
+        ret_atom : bool, optional
+           return a list of list for the groups of atoms that have been sorted.
+        axis : int or tuple of int, optional
+           sort coordinates according to Cartesian coordinates, if a tuple of
+           ints is passed it will be equivalent to ``sort(axis0=axis[0], axis1=axis[1])``.
+           This is different behaviour than `numpy.lexsort`!
+        lattice : int or tuple of int, optional
+           sort coordinates according to lattice vectors, if a tuple of
+           ints is passed it will be equivalent to ``sort(lattice0=lattice[0], lattice1=lattice[1])``.
+           This is different behaviour than `numpy.lexsort`!
+           Note that before sorting we multiply the fractional coordinates by the length of the
+           lattice vector. This ensures that `atol` is meaningful for both `axis` and `lattice` since
+           they will be on the same order of magnitude.
+        ascend : bool, optional
+            control ascending or descending sorting, default ``True``
+        atol : float, optional
+            absolute tolerance when sorting numerical arrays. When a selection of sorted coordinates
+            are grouped via `atol`, we ensure such a group does not alter its indices. I.e. the group
+            is *always* ascending indices.
+            Note this may have unwanted side-effects if `atol` is very large.
+            Default ``1e-9``.
+
+        Notes
+        -----
+        The order of arguments is also the sorting order. ``sort(axis=0, lattice=0)`` is different
+        from ``sort(lattice=0, axis=0)``
+
+
+        All arguments may be suffixed with integers. This allows multiple keyword arguments
+        to control sorting algorithms
+        in different order. It also allows changing of sorting settings between different calls.
+        See examples.
 
         Returns
         -------
-        Geometry
+        geometry : Geometry
             sorted geometry
+        index : list of list
+            indices that would sort the original structure to the output, only returned if `ret_atom` is True
+
+        Examples
+        --------
+        >>> geom = sisl.geom.bilayer(top_atom=(sisl.Atom(5), sisl.Atom(7)), bottom_atom=sisl.Atom(6))
+        >>> geom = geom.tile(5, 0).repeat(7, 1)
+
+        Sort according to :math:`x` coordinate
+
+        >>> geom.sort(axis=0)
+
+        Sort according to :math:`z`, then :math:`x` for each group created from first sort
+
+        >>> geom.sort(axis=(2, 0))
+
+        Sort according to :math:`z`, then first lattice vector
+
+        >>> geom.sort(axis=2, lattice=0)
+
+        Sort according to :math:`z` (ascending), then first lattice vector (descending)
+
+        >>> geom.sort(axis=2, ascend=False, lattice=0)
+
+        Sort according to :math:`z` (descending), then first lattice vector (ascending)
+
+        >>> geom.sort(ascend0=False, axis=2, ascend1=True, lattice=0)
+
+        Sort only atoms ``range(1, 5)`` first by :math:`z`, then by first lattice vector
+
+        >>> geom.sort(axis=2, lattice=0, atom=np.arange(1, 5))
+
+        Sort two groups of atoms ``[range(1, 5), range(5, 10)]`` (individually) by :math:`z`
+
+        >>> geom.sort(axis=2, atom=[np.arange(1, 5), np.arange(5, 10)])
+
+        The returned sorting indices may be used for manual sorting, the following
+        sortings are equal
+
+        >>> geom0, atom0 = geom.sort(axis=2, lattice=0, ret_atom=True)
+        >>> _, atom1 = geom.sort(axis=2, ret_atom=True)
+        >>> geom1, atom1 = geom.sort(lattice=0, atom=atom1, ret_atom=True)
+        >>> geom2 = geom.sub(np.concatenate(atom0))
+        >>> geom3 = geom.sub(np.concatenate(atom1))
+        >>> assert geom0 == geom1
+        >>> assert geom0 == geom2
+        >>> assert geom0 == geom3
+
+        Default sorting is equivalent to ``axis=(0, 1, 2)``
+
+        >>> assert geom.sort() == geom.sort(axis=(0, 1, 2))
+
+        A too high `atol` may have unexpected side-effects. This is because of the way
+        the sorting algorithm splits the sections for nested sorting.
+        So for coordinates with a continuous displacement the sorting may break and group
+        a large range into 1 group.
+
+        >>> a = np.arange(5) * 0.1
+        >>> (np.diff(a) > 0.05).nonzero()[0]
+        [0, 1, 2, 3]
         """
-        axes = _a.arrayi(axes).ravel()
-        idx = np.lexsort(tuple(self.xyz[:, i] for i in axes))
-        return self.sub(idx)
+        # We need a way to easily handle nested lists
+        # This small class handles lists and allows appending nested lists
+        # while flattening them.
+        class NestedList:
+            __slots__ = ('_idx', )
+            def __init__(self, idx=None, sort=False):
+                self._idx = []
+                if not idx is None:
+                    self.append(idx, sort)
+            def append(self, idx, sort=False):
+                if isinstance(idx, (tuple, list)):
+                    if isinstance(idx[0], (tuple, list, ndarray)):
+                        for ix in idx:
+                            self.append(ix, sort)
+                        return
+                elif isinstance(idx, NestedList):
+                    idx = idx.tolist()
+                if len(idx) > 0:
+                    if sort:
+                        self._idx.append(np.sort(idx))
+                    else:
+                        self._idx.append(idx)
+            def __iter__(self):
+                yield from self._idx
+            def __len__(self):
+                return len(self._idx)
+            def tolist(self):
+                return self._idx
+
+        def _sort(vals, nl, **kwargs):
+            """ We do not sort according to lexsort """
+            if len(vals) <= 0:
+                # no values to sort
+                return nl
+            if len(vals[0]) <= 1:
+                # no need to sort a single value!
+                return nl
+
+            # control ascend vs descending
+            ascend = kwargs['ascend']
+            atol = kwargs['atol']
+
+            if len(nl) == 0:
+                # Loop reverse and digitize individually
+                jdx = argsort(vals[0])
+                if ascend:
+                    d = diff(vals[0][jdx]) > atol
+                else:
+                    jdx = jdx[::-1]
+                    d = diff(vals[0][jdx]) < -atol
+                new_nl = NestedList(split(jdx, d.nonzero()[0] + 1), sort=True)
+            else:
+                new_nl = NestedList()
+                for idx in nl:
+                    # Sort values
+                    jdx = idx[argsort(vals[0][idx])]
+                    if ascend:
+                        d = diff(vals[0][jdx]) > atol
+                    else:
+                        jdx = jdx[::-1]
+                        d = diff(vals[0][jdx]) < -atol
+                    new_nl.append(split(jdx, d.nonzero()[0] + 1), sort=True)
+            return _sort(vals[1:], new_nl, **kwargs)
+
+        funcs = dict()
+        def _axis(axis, atom, **kwargs):
+            """ Cartesian coordinate sort """
+            if isinstance(axis, int):
+                axis = (axis,)
+            return _sort(tuple(self.xyz[:, i] for i in axis), atom, **kwargs)
+        funcs["axis"] = _axis
+
+        def _lattice(lattice, atom, **kwargs):
+            """
+            We scale the fractional coordinates with the lattice vector length.
+            This ensures `atol` has a meaningful size for very large structures.
+            """
+            if isinstance(lattice, int):
+                lattice = (lattice,)
+            return _sort(tuple(self.fxyz[:, i] * self.sc.length[i] for i in lattice), atom, **kwargs)
+        funcs["lattice"] = _lattice
+
+        def _group(*args, atom, **kwargs):
+            """
+            Group based sorting is based on a named identification.
+            """
+            if not isinstance(atom, NestedList):
+                atom = NestedList(atom)
+            for arg in args:
+                pass
+
+        def stripint(s):
+            """ Remove integers from end of string -> Allow multiple arguments """
+            if s[-1] in '0123456789':
+                return stripint(s[:-1])
+            return s
+
+        # Now perform cumultative sort function
+        # Our point is that we would like to allow users to do consecutive sorting
+        # based on different keys
+
+        # We also allow specific keys for specific methods
+        func_kw = dict()
+        func_kw['ascend'] = True
+        func_kw['atol'] = 1e-9
+
+        def update_flag(kw, arg, val):
+            if arg in ['ascending', 'ascend']:
+                kw['ascend'] = val
+                return True
+            elif arg in ['descending', 'descend']:
+                kw['ascend'] = not val
+                return True
+            elif arg == 'atol':
+                kw['atol'] = val
+                return True
+            return False
+
+        atom = NestedList(kwargs.pop("atom", None))
+        if len(atom) > 0:
+            # Ensure the user has not supplied duplicate atomic indices
+            atoml = concatenate(atom.tolist())
+            if len(np.unique(atoml)) != len(atoml):
+                raise ValueError(f"{self.__class__.__name__}.sort requires 'atom' argument to not have duplicate values")
+            del atoml
+
+        ret_atom = kwargs.pop("ret_atom", False)
+
+        # In case the user just did geometry.sort, it will default to sort x, y, z
+        if len(kwargs) == 0:
+            kwargs['axis'] = (0, 1, 2)
+
+        for key_int in kwargs:
+            key = stripint(key_int)
+            if update_flag(func_kw, key, kwargs[key_int]):
+                continue
+            if not key in funcs:
+                raise ValueError(f"{self.__class__.__name__}.sort unrecognized keyword '{key}' ('{key_int}')")
+            atom = funcs[key](kwargs[key_int], atom, **func_kw)
+
+        atom_flat = concatenate(atom.tolist()).ravel()
+        if ret_atom:
+            return self.sub(atom_flat), atom.tolist()
+        return self.sub(atom_flat)
 
     def optimize_nsc(self, axis=None, R=None):
         """ Optimize the number of supercell connections based on ``self.maxR()``
@@ -1627,9 +1870,9 @@ class Geometry(SuperCellChild):
         Parameters
         ----------
         a : int
-           axes 1, swaps with `b`
+           axis 1, swaps with `b`
         b : int
-           axes 2, swaps with `a`
+           axis 2, swaps with `a`
         swap : {'cell+xyz', 'cell', 'xyz'}
            decide what to swap, if `'cell'` is in `swap` then
            the cell axis are swapped.
@@ -2757,7 +3000,6 @@ class Geometry(SuperCellChild):
 
         # Get global calls
         # Is faster for many loops
-        concat = np.concatenate
 
         ret = [[np.empty([0], np.int32)] * len(R)]
         i = 0
@@ -2788,19 +3030,19 @@ class Geometry(SuperCellChild):
             if isinstance(sret[0], list):
                 # we have a list of arrays (len(R) > 1)
                 for i, x in enumerate(sret[0]):
-                    ret[0][i] = concat((ret[0][i], x + na), axis=0)
+                    ret[0][i] = concatenate((ret[0][i], x + na), axis=0)
                     if ret_xyz:
-                        ret[c][i] = concat((ret[c][i], sret[c][i]), axis=0)
+                        ret[c][i] = concatenate((ret[c][i], sret[c][i]), axis=0)
                     if ret_rij:
-                        ret[d][i] = concat((ret[d][i], sret[d][i]), axis=0)
+                        ret[d][i] = concatenate((ret[d][i], sret[d][i]), axis=0)
             elif len(sret[0]) > 0:
                 # We can add it to the list (len(R) == 1)
                 # We add the atomic offset for the supercell index
-                ret[0][0] = concat((ret[0][0], sret[0] + na), axis=0)
+                ret[0][0] = concatenate((ret[0][0], sret[0] + na), axis=0)
                 if ret_xyz:
-                    ret[c][0] = concat((ret[c][0], sret[c]), axis=0)
+                    ret[c][0] = concatenate((ret[c][0], sret[c]), axis=0)
                 if ret_rij:
-                    ret[d][0] = concat((ret[d][0], sret[d]), axis=0)
+                    ret[d][0] = concatenate((ret[d][0], sret[d]), axis=0)
 
         if len(R) == 1:
             if ret_xyz and ret_rij:
@@ -3351,7 +3593,7 @@ class Geometry(SuperCellChild):
                 # Now finalize dR by ensuring all remaining segments are captured
                 t = tol[-1]
 
-                dR = np.concatenate((dR, _a.aranged(dR[-1] + t, R + t * .55, t)))
+                dR = concatenate((dR, _a.aranged(dR[-1] + t, R + t * .55, t)))
 
             # Reduce to the largest value above R
             # This ensures that R, truly is the largest considered element
@@ -3809,6 +4051,38 @@ class Geometry(SuperCellChild):
             p.add_argument(*opts('--tile-z', '-tz'), metavar='TIMES',
                            action=PeriodTileZ,
                            help='Tiles the geometry along the third cell vector.')
+
+        # Sort
+        class Sort(argparse.Action):
+            def __call__(self, parser, ns, values, option_string=None):
+                # call geometry.sort(...) using appropriate keywords (and ordered dict)
+                kwargs = OrderedDict()
+                opts = values[0].split(';')
+                for i, opt in enumerate(opts):
+                    # Split for equal
+                    opt = opt.split('=', 1)
+                    if len(opt) > 1:
+                        opt, val = opt
+                    else:
+                        opt = opt[0]
+                        val = "True"
+                    if val.lower() in ['t', 'true']:
+                        val = True
+                    elif val.lower() in ['f', 'false']:
+                        val = False
+                    elif opt in ['atol']:
+                        # float values
+                        val = float(val)
+                    else:
+                        # it must be a range/tuple
+                        val = lstranges(strmap(int, val))
+                    # parse `val` to appropriate values
+                    # we always add integers to allow users to use the same keywords on commandline
+                    kwargs[opt + str(i)] = val
+                ns._geometry = ns._geometry.sort(**kwargs)
+        p.add_argument(*opts('--sort'), nargs=1, metavar='SORT',
+                       action=Sort,
+                       help='Semi-colon separated options for sort [axis=0;descend;lattice=(1, 2)].')
 
         # Print some common information about the
         # geometry (to stdout)

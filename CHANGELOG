@@ -1,6 +1,10 @@
 0.9.9
 =====
 
+- Changed Geometry.sort to be more diverse (this may break old code)
+  This new way of sorting is way more flexible and allows very fine
+  control, partially fixes #191
+
 - Added a bilayer geometry which can create twisted bilayers #181, #186
 
 - Enabled VASP *CAR files to write/read dynamic specifications #185
