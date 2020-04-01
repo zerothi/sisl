@@ -4,6 +4,8 @@ numpy>=1.13
 scipy>=0.18
 netCDF4
 pyparsing>=1.5.7
+# NEED TO CHANGE THIS BELOW, IT IS JUST FOR CONVENIENCE
+# DURING DEVELOPMENT OF THE VIZ MODULE AND THE GUI
 tqdm
 matplotlib
 plotly 
@@ -11,3 +13,6 @@ pandas
 pathos 
 xarray
 dill
+flask 
+flask-restx 
+flask-cors

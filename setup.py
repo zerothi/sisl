@@ -52,6 +52,8 @@ install_requires = [
     'scipy>=0.18',
     'netCDF4',
     'pyparsing>=1.5.7',
+    # Everyting below is just for convenience while developing the GUI/viz module
+    # (very easy for people to test it)
     'tqdm',
     'matplotlib',
     'plotly',
@@ -59,6 +61,9 @@ install_requires = [
     'pathos',
     'dill',
     'xarray',
+    'flask',
+    'flask-restx',
+    'flask-cors'
 ]
 
 setup_requires = []
