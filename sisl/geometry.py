@@ -1175,13 +1175,10 @@ class Geometry(SuperCellChild):
             def tolist(self):
                 return self._idx
 
-        def _sort(vals, nl, **kwargs):
+        def _sort(val, nl, **kwargs):
             """ We do not sort according to lexsort """
-            if len(vals) <= 0:
+            if len(val) <= 0:
                 # no values to sort
-                return nl
-            if len(vals[0]) <= 1:
-                # no need to sort a single value!
                 return nl
 
             # control ascend vs descending
@@ -1190,32 +1187,34 @@ class Geometry(SuperCellChild):
 
             if len(nl) == 0:
                 # Loop reverse and digitize individually
-                jdx = argsort(vals[0])
+                jdx = argsort(val)
                 if ascend:
-                    d = diff(vals[0][jdx]) > atol
+                    d = diff(val[jdx]) > atol
                 else:
                     jdx = jdx[::-1]
-                    d = diff(vals[0][jdx]) < -atol
-                new_nl = NestedList(split(jdx, d.nonzero()[0] + 1), sort=True)
-            else:
-                new_nl = NestedList()
-                for idx in nl:
-                    # Sort values
-                    jdx = idx[argsort(vals[0][idx])]
-                    if ascend:
-                        d = diff(vals[0][jdx]) > atol
-                    else:
-                        jdx = jdx[::-1]
-                        d = diff(vals[0][jdx]) < -atol
-                    new_nl.append(split(jdx, d.nonzero()[0] + 1), sort=True)
-            return _sort(vals[1:], new_nl, **kwargs)
+                    d = diff(val[jdx]) < -atol
+                return NestedList(split(jdx, d.nonzero()[0] + 1), sort=True)
+
+            new_nl = NestedList()
+            for idx in nl:
+                # Sort values
+                jdx = idx[argsort(val[idx])]
+                if ascend:
+                    d = diff(val[jdx]) > atol
+                else:
+                    jdx = jdx[::-1]
+                    d = diff(val[jdx]) < -atol
+                new_nl.append(split(jdx, d.nonzero()[0] + 1), sort=True)
+            return new_nl
 
         funcs = dict()
         def _axis(axis, atom, **kwargs):
             """ Cartesian coordinate sort """
             if isinstance(axis, int):
                 axis = (axis,)
-            return _sort(tuple(self.xyz[:, i] for i in axis), atom, **kwargs)
+            for ax in axis:
+                atom = _sort(self.xyz[:, ax], atom, **kwargs)
+            return atom
         funcs["axis"] = _axis
 
         def _lattice(lattice, atom, **kwargs):
@@ -1226,7 +1225,9 @@ class Geometry(SuperCellChild):
             if isinstance(lattice, int):
                 lattice = (lattice,)
             fxyz = self.fxyz
-            return _sort(tuple(fxyz[:, i] * self.sc.length[i] for i in lattice), atom, **kwargs)
+            for ax in lattice:
+                atom = _sort(fxyz[:, ax] * self.sc.length[ax], atom, **kwargs)
+            return atom
         funcs["lattice"] = _lattice
 
         def _vector(vector, atom, **kwargs):
@@ -1243,7 +1244,7 @@ class Geometry(SuperCellChild):
             # normalize
             vector /= fnorm(vector)
             # Perform a . b^ == scalar projection
-            return _sort((self.xyz.dot(vector),), atom, **kwargs)
+            return _sort(self.xyz.dot(vector), atom, **kwargs)
         funcs["vector"] = _vector
 
         def _group(*args, atom, **kwargs):
