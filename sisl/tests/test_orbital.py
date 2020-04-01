@@ -106,6 +106,14 @@ class Test_sphericalorbital:
         o = SphericalOrbital(1, rf)
         o.set_radial(1.)
 
+    def test_set_radial_none(self):
+        rf = r_f(6)
+        o = SphericalOrbital(1, rf)
+        o.set_radial()
+        r = np.linspace(0, 6, 400)
+        r0 = o.radial(r)
+        assert np.allclose(r0, 0)
+
     def test_radial1(self):
         rf = r_f(6)
         orb0 = SphericalOrbital(0, rf)

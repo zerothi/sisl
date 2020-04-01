@@ -123,14 +123,21 @@ class Ellipsoid(PureShape):
         """ Change the center of the object """
         super().__init__(center)
 
-    def within_index(self, other):
-        """ Return indices of the points that are within the shape """
+    def within_index(self, other, tol=1.e-8):
+        r""" Return indices of the points that are within the shape
+
+        Parameters
+        ----------
+        other : array_like
+           the object that is checked for containment
+        tol : float, optional
+           absolute tolerance for boundaries
+        """
         other = _a.asarrayd(other)
         other.shape = (-1, 3)
 
         # First check
         tmp = dot(other - self.center[None, :], self._iv)
-        tol = 1.e-12
 
         # Get indices where we should do the more
         # expensive exact check of being inside shape

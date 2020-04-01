@@ -1,3 +1,28 @@
+0.9.9
+=====
+
+- Added a bilayer geometry which can create twisted bilayers #181, #186
+
+- Enabled VASP *CAR files to write/read dynamic specifications #185
+
+- Enabled xarray.DataArray returning from BrillouinZone objects #182
+
+- Several improvements to outSileSiesta.read_scf #174, #180
+
+- A huge performance increase for data extraction in tbtncSileTbtrans
+	(thanks to Gaetano Calogero for finding the bottleneck)
+
+- Added preliminary usage of Mixers, primarily intented for extending
+	sisl operations where SCF are used (may heavily change).
+
+- Now sisl is Python >=3.6 only, #162
+
+This release was helped by the following committers (THANKS):
+
+- Thomas Frederiksen
+- Pol Febrer
+- Jonas Lundholm Bertelsen
+
 0.9.8
 =====
 

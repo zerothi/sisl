@@ -549,8 +549,8 @@ class SuperCell:
         only : ('abc'), str, optional
              only rotate the designated cell vectors.
         """
-        # flatte => copy
-        vn = np.asarray(v, dtype=np.float64).flatten()
+        # flatten => copy
+        vn = _a.asarrayd(v).flatten()
         vn /= fnorm(vn)
         q = Quaternion(angle, vn, rad=rad)
         q /= q.norm()  # normalize the quaternion

@@ -16,6 +16,7 @@ def test_fe(sisl_files):
     assert eig.shape == (131, 2, 15)
     assert len(labels[0]) == 5
 
+
 def test_fe_ArgumentParser(sisl_files, sisl_tmp):
     try:
         import matplotlib

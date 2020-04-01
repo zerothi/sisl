@@ -18,7 +18,7 @@ class bandsSileSiesta(SileSiesta):
     @sile_fh_open()
     def read_data(self, as_dataarray=False):
         """ Returns data associated with the bands file
-        
+
         Parameters
         --------
         as_dataarray: boolean, optional
@@ -86,12 +86,12 @@ class bandsSileSiesta(SileSiesta):
                 l.shape = (ns, no)
                 b[ik, :, :] = l[:, :] - Ef
             vals = k, b
-        
+
         if as_dataarray:
             from xarray import DataArray
 
             ticks = {"ticks": xlabels, "ticklabels": labels} if band_lines else {}
-            
+
             return DataArray(b, name="Energy", attrs=ticks,
                              coords=[("k", k),
                                      ("spin", _a.arangei(0, b.shape[1])),

@@ -1259,7 +1259,7 @@ class Geometry(SuperCellChild):
         cut : opposite method of this
         """
         if reps < 1:
-            raise ValueError(self.__class__.__name__ + '.tile() requires a repetition above 0')
+            raise ValueError(self.__class__.__name__ + '.tile requires a repetition above 0')
 
         sc = self.sc.tile(reps, axis)
 
@@ -1334,7 +1334,7 @@ class Geometry(SuperCellChild):
         tile : equivalent but different ordering of final structure
         """
         if reps < 1:
-            raise ValueError(self.__class__.__name__ + '.repeat() requires a repetition above 0')
+            raise ValueError(self.__class__.__name__ + '.repeat requires a repetition above 0')
 
         sc = self.sc.repeat(reps, axis)
 
@@ -1533,7 +1533,7 @@ class Geometry(SuperCellChild):
         vn /= fnorm(vn)
 
         # Rotate by direct call
-        if 'abc' in only:
+        if 'a' in only or 'b' in only or 'c' in only:
             sc = self.sc.rotate(angle, vn, rad=rad, only=only)
         else:
             sc = self.sc.copy()

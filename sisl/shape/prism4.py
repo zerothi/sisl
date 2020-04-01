@@ -115,19 +115,20 @@ class Cuboid(PureShape):
         """ Return a copy of itself """
         return self.copy()
 
-    def within_index(self, other):
+    def within_index(self, other, tol=1.e-8):
         """ Return indices of the `other` object which are contained in the shape
 
         Parameters
         ----------
         other : array_like
            the object that is checked for containment
+        tol : float, optional
+           absolute tolerance for boundaries
         """
         other = _a.asarrayd(other).reshape(-1, 3)
 
         # Offset origo
         tmp = dot(other - self.origo[None, :], self._iv)
-        tol = 1.e-12
 
         # First reject those that are definitely not inside
         # The proximity is 1e-12 of the inverse cell.

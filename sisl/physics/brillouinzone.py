@@ -101,6 +101,12 @@ from sisl.messages import info, SislError, tqdm_eta
 from sisl.supercell import SuperCell
 from sisl.grid import Grid
 
+try:
+    import xarray
+    _has_xarray = True
+except ImportError:
+    _has_xarray = False
+
 
 __all__ = ['BrillouinZone', 'MonkhorstPack', 'BandStructure']
 
@@ -477,7 +483,7 @@ class BrillouinZone:
         ...    spin_moment = (es.spin_moment(E, distribution=dist) * occ.reshape(-1, 1)).sum(0)
         ...    return oplist([DOS, PDOS, spin_moment])
         >>> bz = BrillouinZone(hamiltonian)
-        >>> DOS, PDOS, spin_moment = bz.asaverage().eigenstate(wrap=wrap)
+        >>> DOS, PDOS, spin_moment = bz.asarray().eigenstate(wrap=wrap)
 
         See Also
         --------
@@ -566,6 +572,100 @@ class BrillouinZone:
         # Set instance __call__
         setattr(self, '_bz_call', types.MethodType(_call, self))
         return self
+
+    if _has_xarray:
+        def asdataarray(self):
+            r""" Return `self` with `xarray.DataArray` returned quantities
+
+            This forces the `__call__` routine to return a single `xarray.DataArray`.
+
+            Notes
+            -----
+            If you wrap the sub-method to return multiple data-sets, you should use `asdataset`
+            instead which returns a combination of data-arrays (so-called `xarray.Dataset`).
+
+            All invocations of sub-methods are added these keyword-only arguments:
+
+            eta : bool, optional
+                if true a progress-bar is created, default false.
+            wrap : callable, optional
+                a function that accepts the output of the given routine and post-process
+                it. Defaults to ``lambda x: x``.
+            coords : list of str or list of (str, array), optional
+                a list of coordinates used in ``xarray.DataArray(..., coords=coords)``.
+                By default the coordinates are named ``['k', 'v1', 'v2', ...]``
+                depending on the shape of the returned quantity.
+                These may optionally be a list of tuples (not a dictionary)!
+
+            Examples
+            --------
+            >>> obj = BrillouinZone(...)
+            >>> obj.asdataarray().eigh(eta=True)
+
+            See Also
+            --------
+            asyield : all output returned through an iterator
+            asaverage : take the average (with k-weights) of the Brillouin zone
+            assum : return the sum of values in the Brillouin zone
+            aslist : all output returned as a Python list
+            """
+
+            def _call(self, *args, **kwargs):
+                func = self._bz_get_func()
+
+                # xarray specific data (default to function name)
+                name = kwargs.pop('name', func.__name__)
+                coords = kwargs.pop('coords', None)
+
+                has_wrap = 'wrap' in kwargs
+                if has_wrap:
+                    wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap'))
+                eta = tqdm_eta(len(self), self.__class__.__name__ + '.asarray',
+                               'k', kwargs.pop('eta', False))
+                parent = self.parent
+                k = self.k
+                w = self.weight
+                if has_wrap:
+                    v = wrap(func(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])
+                else:
+                    v = func(*args, k=k[0], **kwargs)
+                if v.ndim == 0:
+                    a = np.empty([len(self)], dtype=v.dtype)
+                else:
+                    a = np.empty((len(self), ) + v.shape, dtype=v.dtype)
+                a[0] = v
+                del v
+                eta.update()
+                if has_wrap:
+                    for i in range(1, len(k)):
+                        a[i] = wrap(func(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
+                        eta.update()
+                else:
+                    for i in range(1, len(k)):
+                        a[i] = func(*args, k=k[i], **kwargs)
+                        eta.update()
+                eta.close()
+
+                # Create coords
+                if coords is None:
+                    coords = [('k', _a.arangei(len(self)))]
+                    for i, v in enumerate(a.shape[1:]):
+                        coords.append((f"v{i+1}", _a.arangei(v)))
+                else:
+                    coords = list(coords)
+                    coords.insert(0, ('k', _a.arangei(len(self))))
+                    for i in range(1, len(coords)):
+                        if isinstance(coords[i], str):
+                            coords[i] = (coords[i], _a.arangei(a.shape[i]))
+                attrs = {'bz': self,
+                         'parent': self.parent,
+                }
+
+                return xarray.DataArray(a, coords=coords, name=name, attrs=attrs)
+
+            # Set instance __bz_call
+            setattr(self, '_bz_call', types.MethodType(_call, self))
+            return self
 
     def aslist(self):
         """ Return `self` with `list` returned quantities
@@ -1576,13 +1676,11 @@ class BandStructure(BrillouinZone):
         ticks : bool, optional
            if `True` the ticks for the points are also returned
 
-           lk, xticks, label_ticks, lk = BandStructure.lineark(True)
-
         Returns
         -------
         linear_k : The positions in reciprocal space determined by the distance between points
-        k_tick : Linear k-positions of the points, only returned if `ticks` is ``True``
-        k_label : Labels at `k_tick`, only returned if `ticks` is ``True``
+        ticks : Linear k-positions of the points, only returned if `ticks` is ``True``
+        ticklabels : Labels at `ticks`, only returned if `ticks` is ``True``
         """
         # Calculate points
         k = [self.tocartesian(pnt) for pnt in self.point]

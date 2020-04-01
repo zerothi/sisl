@@ -5,6 +5,7 @@ from .sile import SileVASP
 from ..sile import *
 
 # Import the geometry object
+import sisl._array as _a
 from sisl.messages import warn
 from sisl import Geometry, PeriodicTable, Atom, SuperCell
 
@@ -22,16 +23,41 @@ class carSileVASP(SileVASP):
         self._scale = 1.
 
     @sile_fh_open()
-    def write_geometry(self, geometry):
-        """ Writes the geometry to the contained file
+    def write_geometry(self, geometry, dynamic=True, group_species=False):
+        r""" Writes the geometry to the contained file
 
         Parameters
         ----------
         geometry : Geometry
            geometry to be written to the file
+        dynamic : None, bool or list, optional
+           define which atoms are dynamic in the VASP run (default is True,
+           which means all atoms are dynamic).
+           If None, the resulting file will not contain any dynamic flags
+        group_species: bool, optional
+           before writing `geometry` first re-order species to
+           have species in consecutive blocks (see `geometry_group`)
+
+        Examples
+        --------
+        >>> car = carSileVASP('POSCAR', 'w')
+        >>> geom = geom.graphene()
+        >>> geom.write(car) # regular car without Selective Dynamics
+        >>> geom.write(car, dynamic=False) # fix all atoms
+        >>> geom.write(car, dynamic=[False, (True, False, True)]) # fix 1st and y coordinate of 2nd
+
+        See Also
+        --------
+        geometry_group: method used to group atoms together according to their species
         """
         # Check that we can write to the file
         sile_raise_write(self)
+
+        if group_species:
+            geometry, idx = self.geometry_group(geometry, ret_index=True)
+        else:
+            # small hack to allow dynamic
+            idx = _a.arangei(len(geometry))
 
         # LABEL
         self._write('sisl output\n')
@@ -41,10 +67,8 @@ class carSileVASP(SileVASP):
 
         # Write unit-cell
         fmt = ('   ' + '{:18.9f}' * 3) + '\n'
-        tmp = np.zeros([3], np.float64)
         for i in range(3):
-            tmp[:3] = geometry.cell[i, :]
-            self._write(fmt.format(*tmp))
+            self._write(fmt.format(*geometry.cell[i]))
 
         # Figure out how many species
         pt = PeriodicTable()
@@ -67,11 +91,26 @@ class carSileVASP(SileVASP):
         self._write(fmt.format(*s))
         fmt = ' {:d}' * len(d) + '\n'
         self._write(fmt.format(*d))
+        if dynamic is None:
+            # We write in direct mode
+            dynamic = [None] * len(geometry)
+            def todyn(fix):
+                return '\n'
+        else:
+            self._write('Selective dynamics\n')
+            b2s = {True: 'T', False: 'F'}
+            def todyn(fix):
+                if isinstance(fix, bool):
+                    return ' {0} {0} {0}\n'.format(b2s[fix])
+                return ' {} {} {}\n'.format(b2s[fix[0]], b2s[fix[1]], b2s[fix[2]])
         self._write('Cartesian\n')
 
-        fmt = '{:18.9f}' * 3 + '\n'
+        if isinstance(dynamic, bool):
+            dynamic = [dynamic] * len(geometry)
+
+        fmt = '{:18.9f}' * 3
         for ia in geometry:
-            self._write(fmt.format(*geometry.xyz[ia, :]))
+            self._write(fmt.format(*geometry.xyz[ia, :]) + todyn(dynamic[idx[ia]]))
 
     @sile_fh_open(True)
     def read_supercell(self):
@@ -91,8 +130,16 @@ class carSileVASP(SileVASP):
         return SuperCell(cell)
 
     @sile_fh_open()
-    def read_geometry(self):
-        """ Returns Geometry object from the CONTCAR/POSCAR file
+    def read_geometry(self, ret_dynamic=False):
+        r""" Returns Geometry object from the CONTCAR/POSCAR file
+
+        Possibly also return the dynamics (if present).
+
+        Parameters
+        ----------
+        ret_dynamic : bool, optional
+           also return selective dynamics (if present), if not, None will
+           be returned.
         """
         sc = self.read_supercell()
 
@@ -120,34 +167,44 @@ class carSileVASP(SileVASP):
                 for spec, nsp in zip(species, species_count)
                 for i in range(nsp)]
 
-        # Read whether this is selective or direct
-        # Currently direct is not used
+        # Number of atoms
+        na = len(atom)
+
+        # check whether this is Selective Dynamics
         opt = self.readline()
-        #direct = True
         if opt[0] in 'Ss':
-            #direct = False
+            dynamics = True
+            # pre-create the dynamic list
+            dynamic = np.empty([na, 3], dtype=np.bool_)
             opt = self.readline()
+        else:
+            dynamics = False
+            dynamic = None
 
         # Check whether this is in fractional or direct
-        # coordinates
+        # coordinates (Direct == fractional)
         cart = False
         if opt[0] in 'CcKk':
             cart = True
 
-        # Number of atoms
-        na = len(atom)
-
-        xyz = np.empty([na, 3], np.float64)
+        xyz = _a.emptyd([na, 3])
         for ia in range(na):
-            xyz[ia, :] = list(map(float, self.readline().split()[:3]))
+            line = self.readline().split()
+            xyz[ia, :] = list(map(float, line[:3]))
+            if dynamics:
+                dynamic[ia] = list(map(lambda x: x.lower() == 't', line[3:6]))
+
         if cart:
             # The unit of the coordinates are cartesian
             xyz *= self._scale
         else:
-            xyz = np.dot(xyz, sc.cell)
+            xyz = xyz.dot(sc.cell)
 
         # The POT/CONT-CAR does not contain information on the atomic species
-        return Geometry(xyz=xyz, atom=atom, sc=sc)
+        geom = Geometry(xyz=xyz, atom=atom, sc=sc)
+        if ret_dynamic:
+            return geom, dynamic
+        return geom
 
     def ArgumentParser(self, p=None, *args, **kwargs):
         """ Returns the arguments that is available for this Sile """
