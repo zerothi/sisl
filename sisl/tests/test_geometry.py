@@ -1307,7 +1307,7 @@ def test_geometry_sort_simple():
     for ix in idx:
         assert np.all(np.diff(bi.fxyz[ix, 1]) >= -atol)
 
-    s, idx = bi.sort(axis=0, ascending=False, lattice=1, ret_atom=True)
+    s, idx = bi.sort(axis=0, ascending=False, lattice=1, vector=[0, 0, 1], ret_atom=True)
     assert np.all(np.diff(s.xyz[:, 0]) >= -atol)
     for ix in idx:
         # idx is according to bi

@@ -1054,6 +1054,10 @@ class Geometry(SuperCellChild):
            Note that before sorting we multiply the fractional coordinates by the length of the
            lattice vector. This ensures that `atol` is meaningful for both `axis` and `lattice` since
            they will be on the same order of magnitude.
+        vector : (3, ), optional
+           sort along a user defined vector, similar to `lattice` but with a user defined
+           direction. Note that `lattice` sorting and `vector` sorting are *only* equivalent
+           when the lattice vector is orthogonal to the other lattice vectors.
         ascend : bool, optional
             control ascending or descending sorting, default ``True``
         atol : float, optional
@@ -1067,7 +1071,6 @@ class Geometry(SuperCellChild):
         -----
         The order of arguments is also the sorting order. ``sort(axis=0, lattice=0)`` is different
         from ``sort(lattice=0, axis=0)``
-
 
         All arguments may be suffixed with integers. This allows multiple keyword arguments
         to control sorting algorithms
@@ -1129,6 +1132,10 @@ class Geometry(SuperCellChild):
         Default sorting is equivalent to ``axis=(0, 1, 2)``
 
         >>> assert geom.sort() == geom.sort(axis=(0, 1, 2))
+
+        Sort along a user defined lattice vector ``[2, 1, 0]``
+
+        >>> geom.sort(vector=[2, 1, 0])
 
         A too high `atol` may have unexpected side-effects. This is because of the way
         the sorting algorithm splits the sections for nested sorting.
@@ -1218,8 +1225,26 @@ class Geometry(SuperCellChild):
             """
             if isinstance(lattice, int):
                 lattice = (lattice,)
-            return _sort(tuple(self.fxyz[:, i] * self.sc.length[i] for i in lattice), atom, **kwargs)
+            fxyz = self.fxyz
+            return _sort(tuple(fxyz[:, i] * self.sc.length[i] for i in lattice), atom, **kwargs)
         funcs["lattice"] = _lattice
+
+        def _vector(vector, atom, **kwargs):
+            """
+            Calculate fraction of positions along a vector and sort along it.
+            We first normalize the vector to ensure that `atol` is meaningful
+            for very large structures (ensures scale is on the order of Ang).
+
+            A vector projection will only be equivalent to lattice projection
+            when a lattice vector is orthogonal to the other lattice vectors.
+            """
+            # Ensure we are using a copied data array
+            vector = _a.asarrayd(vector).copy()
+            # normalize
+            vector /= fnorm(vector)
+            # Perform a . b^ == scalar projection
+            return _sort((self.xyz.dot(vector),), atom, **kwargs)
+        funcs["vector"] = _vector
 
         def _group(*args, atom, **kwargs):
             """
@@ -1277,6 +1302,7 @@ class Geometry(SuperCellChild):
                 continue
             if not key in funcs:
                 raise ValueError(f"{self.__class__.__name__}.sort unrecognized keyword '{key}' ('{key_int}')")
+            # call sorting algorithm and retrieve new grouped sorting
             atom = funcs[key](kwargs[key_int], atom, **func_kw)
 
         atom_flat = concatenate(atom.tolist()).ravel()
