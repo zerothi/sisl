@@ -448,8 +448,8 @@ class Plot(ShortCutable, Configurable):
             if callable(frameNames):
                 _getFrameNames = frameNames
             else:
-                def _getFrameNames(self):
-                    return frameNames
+                def _getFrameNames(self,i):
+                    return frameNames[i]
         
         #Return the initialized animation
         return Animation( _plugins = {
@@ -664,7 +664,7 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
         filesToFollow = self._readFromSources()
 
         #Follow the files that are returned by the method that succesfully read the plot's data
-        self._followFiles(filesToFollow, unfollow=False)
+        self.follow(*filesToFollow, unfollow=False)
 
         # We don't update the last dataread here in case there has been a succesful data read because we want to
         # wait for the afterRead() method to be succesful
@@ -707,15 +707,19 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
             raise Exception("Could not read or generate data for {} from any of the possible sources.\n\n Here are the errors for each source:\n\n {}  "
                             .format(self.__class__.__name__, "\n".join(errors)) )
     
-    def _followFiles(self, files, to_abs=True, unfollow=True):
+    def follow(self, *files, to_abs=True, unfollow=True):
         '''
         Makes sure that the object knows which files to follow in order to trigger updates.
 
         Parameters
         ----------
-        files: array-like of str
-            a list of strings that represent the paths to the files that need to be followed.
-        toabs: boolean, optional
+        *files: str
+            a string that represents the path to the file that needs to be followed.
+
+            You can pass as many as you want as separate arguments. Note that if you have a list of
+            files you can pass them separately by doing `follow(*my_list_of_files)`, you don't need to
+            (and you shouldn't) build a loop :)
+        to_abs: boolean, optional
             whether the paths should be converted to absolute paths to make file following procedures
             more robust. It is better to leave it as True unless you have a good reason to change it.
         unfollow: boolean, optional
@@ -755,7 +759,7 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
 
         return filesModified.any()
     
-    def listen(self, forever=True, show=True, clearPrevious=True, notify=False, speak=False, notify_title=None, notify_message=None, speak_message=None, fig_widget=None):
+    def listen(self, forever=True, show=True, as_animation=False, return_animation=True, return_figWidget=False, clearPrevious=True, notify=False, speak=False, notify_title=None, notify_message=None, speak_message=None, fig_widget=None):
         '''
         Listens for updates in the followed files (see the `updates_available` method)
 
@@ -765,6 +769,22 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
             whether to keep listening after the first plot update
         show: boolean, optional
             whether to show the plot at the beggining and update the layout when the plot is updated.
+        as_animation: boolean, optional
+            will add a new frame each time the plot is updated.
+
+            The resulting animation is returned unless return_animation is set to False. This is done because
+            the Plot object iself is not converted to an animation. Instead, a new animation is created and if you
+            don't save it in a variable it will be lost, you will have no way to access it later.
+
+            If you are seeing two figures at the beggining, it is because you are not storing the animation figure.
+            Set the return_animation parameter to False if you understand that you are going to "lose" the animation,
+            you will only be able to see a display of it while it is there.
+        return_animation: boolean, optional
+            if as_animation is `True`, whether the animation should be returned.
+            Important: see as_animation for an explanation on why this is the case
+        return_figWidget: boolean, optional
+            it returns the figure widget that is in display in a jupyter notebook.
+            return_animation will have preference over this parameter.
         clearPrevious: boolean, optional
             in case show is True, whether the previous version of the plot should be hidden or kept in display.
         notify: boolean, optional
@@ -786,8 +806,15 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
         # If you need it, ask me! (Pol)
         self.stop_listening()
 
+        pt = self
+
+        if as_animation:
+            pt = Animation(
+                plots = [self.clone()]
+            )
+
         if show and fig_widget is None:
-            fig = self.show(return_figWidget=True)
+            fig = pt.show(return_figWidget=True)
             if isinstance(fig, go.FigureWidget):
                 fig_widget = fig
         
@@ -803,13 +830,18 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
 
                         self.readData(updateFig=True)
 
+                        if as_animation:
+                            new_plot = self.clone()
+                            pt.add_childplots(new_plot)
+                            pt.getFigure()
+
                         if clearPrevious and fig_widget is None:
                             clear_output()
 
                         if show and fig_widget is None:
-                            self.show()
+                            pt.show()
                         else:
-                            self._update_FigureWidget(fig_widget)
+                            pt._update_FigureWidget(fig_widget)
 
                         if not forever:
                             self._listening_task.cancel()
@@ -830,6 +862,11 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
         self._listening_task = loop.create_task(listen())
 
         self.add_shortcut("ctrl+alt+l", "Stop listening", self.stop_listening, fig_widget=fig_widget, _description="Tell the plot to stop listening for updates")
+
+        if as_animation and return_animation:
+            return pt
+        elif return_figWidget:
+            return fig_widget
 
     def _listening_shortcut(self, fig_widget=None):
 
@@ -878,7 +915,7 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
             #raise Exception("The required files were not found, please check your file system.")
 
         #Inform that we have read the fdf file
-        self._followFiles([rootFdf], unfollow=False)
+        self.follow(rootFdf, unfollow=False)
 
         return self
     
@@ -964,7 +1001,17 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
             if getattr(self, "_isAnimation", False):
 
                 self.data = self.childPlots[0].data
-                frameNames = self._getFrameNames() if callable(getattr(self, "_getFrameNames", None)) else (f"Frame {i+1}" for i, plot in enumerate(self.childPlots))
+
+                print(len(self.childPlots))
+
+                # Get the names for each frame
+                frameNames = []
+                for i, plot in enumerate(self.childPlots):
+                    try:
+                        frame_name = self._getFrameNames(i)
+                    except Exception:
+                        frame_name = f"Frame {i+1}"
+                    frameNames.append(frame_name)
                 
                 maxN = np.max([[len(plot.data) for plot in self.childPlots]])
                 
@@ -1106,7 +1153,8 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
         if self._innotebook and len(args) == 0:
             try:
                 return self._show_in_jupyternb(listen=listen, return_figWidget = return_figWidget, **kwargs)
-            except Exception:
+            except Exception as e:
+                print(e)
                 pass
         
         return self.figure.show(*args, **kwargs)
@@ -1197,7 +1245,7 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
 
         display(fig_widget, messages, h, styles, Output())
 
-    def _update_FigureWidget(self, fig_widget):
+    def _update_FigureWidget(self, fig_widget, plot = None):
 
         fig_widget.data = []
         fig_widget.add_traces(self.data)
@@ -1237,7 +1285,7 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
         
         return newPlot
     
-    def clear(self, plot_traces=True, added_traces=True):
+    def clear(self, plot_traces=True, added_traces=True, frames=True):
         '''
         Clears the plot canvas so that data can be reset
 
@@ -1247,6 +1295,8 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
             whether traces added by the plot's code should be cleared.
         added_traces: boolean, optional
             whether traces added externally (by the user) should be cleared.
+        frames: boolean, optional
+            whether frames should also be deleted
         '''
 
         own_slice = getattr(self, '_own_traces_slice', slice(0,0))
@@ -1257,6 +1307,9 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
             self.figure.data = [ trace for i, trace in enumerate(self.data) if i < own_slice.start or i >= own_slice.stop ]
         else:
             self.figure.data = []
+        
+        if frames:
+            self.figure.frames = []
         
         return self
 
@@ -1289,6 +1342,15 @@ We did this because "{filename}" is a {SileClass.__name__}. If you are not happy
         self.figure.add_scatter(mode = "lines", x = [x,x], y = yrange, hoverinfo = 'none', showlegend = False)
 
         return self
+
+    def clone(self, *args, **kwargs):
+        '''
+        Gets you and exact clone of this plot
+
+        You can pass extra args that will overwrite the previous parameters though, if you don't want it to be that exact.
+        '''
+
+        return self.__class__(*args, **self.settings, **kwargs) 
 
     #-------------------------------------------
     #       DATA TRANSFER/STORAGE METHODS
@@ -1490,7 +1552,19 @@ class MultiplePlot(Plot):
 
             return self
 
-    def set_child_plots(self, plots):
+    def set_child_plots(self, plots, keep=False):
+        '''
+        Sets the childplots of a multiple plot
+
+        Parameters
+        --------
+        plots: array-like of sisl.viz.Plot or plotly Figure
+            the plots that should be set as childplots for the animation. 
+        keep: boolean, optional
+            whether the existing childplots should be kept.
+
+            If `True`, `plots` is added after them.
+        '''
 
         # Maybe one of the plots is a plotly figure, normalize all to the plot class
         plots = [Plot.from_plotly(plot) if isinstance(plot, go.Figure) else plot for plot in plots]
@@ -1500,10 +1574,34 @@ class MultiplePlot(Plot):
             for key, val in self._attrs_for_childplots.items():
                 setattr(plot, key, val)
 
-        self.childPlots = plots
+        self.childPlots = plots if not keep else [*self.childPlots, *plots]
 
         return self
     
+    def add_childplots(self, *plots):
+        '''
+        Append childplots to the existing ones
+        '''
+
+        self.set_child_plots(plots, keep=True)
+    
+    def insert_childplot(self, index, plot):
+        '''
+        Inserts a plot in a given position of the childplots list
+
+        Parameters
+        ----------
+        index: int
+            The position where the plot should be inserted
+        plot: sisl Plot or plotly Figure
+            The plot to insert in the list
+        '''
+
+        if isinstance(plot, go.Figure):
+            plot = Plot.from_plotly(plot)
+        
+        self.childPlots.insert(index, plot)
+           
     def shared_attr(self, key):
 
         return self.shared[key]
