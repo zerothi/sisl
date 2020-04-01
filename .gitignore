@@ -13,5 +13,6 @@ sisl/info.py
 sisl/io/siesta/_siesta.so
 sisl/**/*.html
 !sisl/viz/GUI/build
+!sisl/viz/GUI/build/index.html
 .vscode/
 .ipynb_checkpoints/
