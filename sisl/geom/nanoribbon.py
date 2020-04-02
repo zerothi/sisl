@@ -83,8 +83,9 @@ def nanoribbon(width, kind='armchair', bond=1.42, atom=None, sat_bond=1.09, sat_
                 p = -1 * (v1 + v2)
                 p /= p.dot(p) ** .5
                 edge_atoms.append(ribbon.xyz[ia, :] + sat_bond * p)
-        edge_atoms = Geometry(edge_atoms, atom=sat_atom)
-        ribbon = ribbon.add(edge_atoms)
+        if len(edge_atoms) > 0:
+            edge_atoms = Geometry(edge_atoms, atom=sat_atom)
+            ribbon = ribbon.add(edge_atoms)
 
     # Sort along x-axis
     ribbon = ribbon.sort()
