@@ -20,10 +20,10 @@ def nanoribbon(width, kind='armchair', bond=1.42, atom=None, sat_bond=1.09, sat_
     atom : Atom, optional
        atom (or atoms) in the honeycomb lattice. Defaults to ``Atom(6)``
     sat_bond : float, optional
-       bond length to the edge saturation atoms. A negative value will return a structure without edge decoration. Defaults to 1.09
+       bond length to the edge saturation atoms. A negative value will return 
+       a nanoribbon without edge decoration. Defaults to 1.09
     sat_atom : Atom, optional
-       atom (or atoms) for the edge saturation. If ``None`` no edge saturation is
-       applied. Defaults to ``Atom(1)``
+       atom (or atoms) for the edge decoration. Defaults to ``Atom(1)``
 
     See Also
     --------
