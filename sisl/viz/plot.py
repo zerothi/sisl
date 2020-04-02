@@ -1084,7 +1084,7 @@ class Plot(ShortCutable, Configurable):
             steps = [
                 {"args": [
                 [frame["name"]],
-                {"frame": {"duration": int(self.setting("frameDuration")), "redraw": True},
+                {"frame": {"duration": int(self.setting("frameDuration")), "redraw": self.setting("redraw")},
                 "mode": "immediate",
                 "transition": {"duration": 300}}
             ],
@@ -1339,7 +1339,7 @@ class Plot(ShortCutable, Configurable):
         
         return newPlot
     
-    def clear(self, plot_traces=True, added_traces=True, frames=True):
+    def clear(self, plot_traces=True, added_traces=True, frames=True, layout=True):
         '''
         Clears the plot canvas so that data can be reset
 
@@ -1364,6 +1364,9 @@ class Plot(ShortCutable, Configurable):
         
         if frames:
             self.figure.frames = []
+        
+        if layout:
+            self.figure.layout = {}
         
         return self
 
@@ -1701,6 +1704,8 @@ class MultiplePlot(Plot):
         '''
 
         self._isAnimation = True
+
+        self.clear().getFigure()
         
         return self
 
@@ -1731,6 +1736,15 @@ class Animation(MultiplePlot):
             help = "Time (in ms) that each frame will be displayed. <br> This is only meaningful if you have an animation"
         ),
 
+        SwitchInput(
+            key='redraw', name='Redraw each frame',
+            default=True,
+            group='animation',
+            help='''Whether each frame of the animation should be redrawn<br>
+            If False, the animation will try to interpolate between one frame and the other<br>
+            Set this to False if you are sure that the frames contain the same number of traces, otherwise new traces will not appear.'''
+        )
+
     )
 
     def __init__(self, *args, frameNames=None, _plugins={}, **kwargs):
@@ -1747,6 +1761,37 @@ class Animation(MultiplePlot):
 
         self._isAnimation = False
 
+        self.clear().getFigure()
+
         return self
+    
+    @staticmethod
+    def zip(*animations):
+        '''
+        Zips multiple animations together.
+
+        YOU NEED TO MAKE SURE THAT ALL THE ANIMATIONS HAVE THE SAME NUMBER OF FRAMES
+
+        Parameters
+        -----------
+        *animations: sisl Animation
+            the animations that you want to zip together.
+            YOU NEED TO MAKE SURE THAT ALL THE ANIMATIONS HAVE THE SAME NUMBER OF FRAMES
+        '''
+
+        frames = []
+        for (*old_frames,) in zip(*animations):
+            
+            new_frame = MultiplePlot(plots=old_frames)
+
+            frames.append(new_frame)
+
+        return Animation(
+            plots=frames
+        )
+    
+    def unzip(self):
+        pass
+        
 
 
