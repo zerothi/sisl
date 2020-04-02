@@ -641,15 +641,15 @@ class TestHamiltonian:
         bz = BrillouinZone(H, K)
         berry_phase(bz, method='unknown')
 
-    def test_berry_flux(self, setup):
+    def test_berry_curvature(self, setup):
         R, param = [0.1, 1.5], [1., 0.1]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g)
         H.construct((R, param))
 
         k = [0.1] * 3
-        ie1 = H.eigenstate(k, gauge='R').berry_flux()
-        ie2 = H.eigenstate(k, gauge='r').berry_flux()
+        ie1 = H.eigenstate(k, gauge='R').berry_curvature()
+        ie2 = H.eigenstate(k, gauge='r').berry_curvature()
         assert np.allclose(ie1, ie2)
 
     def test_conductivity(self, setup):

@@ -20,7 +20,7 @@ One may also plot real-space wavefunctions.
    velocity
    velocity_matrix
    berry_phase
-   berry_flux
+   berry_curvature
    conductivity
    wavefunction
    spin_moment
@@ -82,7 +82,7 @@ __all__ = ['DOS', 'PDOS']
 __all__ += ['velocity', 'velocity_matrix']
 __all__ += ['spin_moment', 'spin_orbital_moment', 'spin_squared']
 __all__ += ['inv_eff_mass_tensor']
-__all__ += ['berry_phase', 'berry_flux']
+__all__ += ['berry_phase', 'berry_curvature']
 __all__ += ['conductivity']
 __all__ += ['wavefunction']
 __all__ += ['CoefficientElectron', 'StateElectron', 'StateCElectron']
@@ -730,10 +730,11 @@ def _velocity_matrix_ortho(state, dHk, degenerate, dtype):
     return v * _velocity_const
 
 
-def berry_flux(state, energy, dHk, dSk=None, degenerate=None, complex=False):
+def berry_curvature(state, energy, dHk, dSk=None, degenerate=None, complex=False):
     r""" Calculate the Berry curvature matrix for a set of states (using Kubo)
 
-    The Berry curvature is calculated using the following expression (:math:`\alpha`, :math:`\beta` corresponding to Cartesian directions):
+    The Berry curvature is calculated using the following expression
+    (:math:`\alpha`, :math:`\beta` corresponding to Cartesian directions):
 
     .. math::
 
@@ -741,10 +742,10 @@ def berry_flux(state, energy, dHk, dSk=None, degenerate=None, complex=False):
                 \frac{v_{nm,\alpha} v_{mn,\beta}}
                      {[\epsilon_m - \epsilon_n]^2}
 
-    Note that one should take the imaginary part of the returned value to retrieve the actual
-    flux.
+    Note that this method optionally returns the complex valued equivalent of the above.
+    I.e. :math:`\Im` is not applied if `complex` is true.
 
-    For details see [1]_.
+    For details see Eq. (11) in [1]_ or Eq. (2.59) in [2]_.
 
     Parameters
     ----------
@@ -775,6 +776,7 @@ def berry_flux(state, energy, dHk, dSk=None, degenerate=None, complex=False):
     References
     ----------
     .. [1] X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, "Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation", PRB, *74*, 195118 (2006)
+    .. [2] J. K. Asboth, L. Oroslany, A. Palyi, "A Short Course on Topological Insulators", arXiv *1509.02295* (2015).
 
     Returns
     -------
@@ -782,7 +784,7 @@ def berry_flux(state, energy, dHk, dSk=None, degenerate=None, complex=False):
         Berry flux with final dimension ``(state.shape[0], 3, 3)`` (complex if `complex` is True).
     """
     if state.ndim == 1:
-        return berry_flux(state.reshape(1, -1), energy, dHk, dSk, degenerate, complex).ravel()
+        return berry_curvature(state.reshape(1, -1), energy, dHk, dSk, degenerate, complex).ravel()
 
     if degenerate is None:
         # Fix following routine
@@ -793,17 +795,17 @@ def berry_flux(state, energy, dHk, dSk=None, degenerate=None, complex=False):
         v_matrix = _velocity_matrix_ortho(state, dHk, degenerate, dtype)
     else:
         v_matrix = _velocity_matrix_non_ortho(state, dHk, energy, dSk, degenerate, dtype)
-        warn('berry_flux calculation for non-orthogonal basis sets are not tested! Do not expect this to be correct!')
+        warn('berry_curvature calculation for non-orthogonal basis sets are not tested! Do not expect this to be correct!')
     if complex:
-        return _berry_flux(v_matrix, energy, degenerate)
-    return _berry_flux(v_matrix, energy, degenerate).imag
+        return _berry_curvature(v_matrix, energy, degenerate)
+    return _berry_curvature(v_matrix, energy, degenerate).imag
 
 
 # This reverses the velocity unit (squared since Berry curvature is v.v)
-_berry_flux_const = constant.hbar('eV ps') ** 2
+_berry_curvature_const = 1 / _velocity_const ** 2
 
 
-def _berry_flux(v_M, energy, degenerate):
+def _berry_curvature(v_M, energy, degenerate):
     r""" Calculate Berry curvature for a given velocity matrix """
 
     # All matrix elements along the 3 directions
@@ -832,7 +834,7 @@ def _berry_flux(v_M, energy, degenerate):
         fac = - 2 / (energy[idx] - energy[n]) ** 2
         sigma[n, :, :] = einsum('i,ij,il->jl', fac, v_M[idx, n], v_M[n, idx])
 
-    return sigma * _berry_flux_const
+    return sigma * _berry_curvature_const
 
 
 def conductivity(bz, distribution='fermi-dirac', method='ahc', complex=False):
@@ -860,7 +862,7 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc', complex=False):
 
     See Also
     --------
-    berry_flux: method used to calculate the Berry-flux for calculating the conductivity
+    berry_curvature: method used to calculate the Berry-flux for calculating the conductivity
     """
     from .hamiltonian import Hamiltonian
     # Currently we require the conductivity calculation to *only* accept Hamiltonians
@@ -874,7 +876,7 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc', complex=False):
     if method == 'ahc':
         def _ahc(es):
             occ = distribution(es.eig)
-            bc = es.berry_flux(complex=complex)
+            bc = es.berry_curvature(complex=complex)
             return einsum('i,ijl->jl', occ, bc)
 
         cond = - bz.asaverage().eigenstate(wrap=_ahc) / constant.hbar('eV ps')
@@ -1884,16 +1886,16 @@ class StateCElectron(_electron_State, StateC):
             raise SislError(self.__class__.__name__ + '.velocity_matrix requires the parent to have a spin associated.')
         return velocity_matrix(self.state, self.parent.dHk(**opt), self.c, dSk, degenerate=deg)
 
-    def berry_flux(self, complex=False, eps=1e-4):
+    def berry_curvature(self, complex=False, eps=1e-4):
         r""" Calculate Berry curvature for the states
 
-        This routine calls `~sisl.physics.electron.berry_flux` with appropriate arguments
+        This routine calls `~sisl.physics.electron.berry_curvature` with appropriate arguments
         and returns the Berry curvature for the states.
 
         Note that the coefficients associated with the `StateCElectron` *must* correspond
         to the energies of the states.
 
-        See `~sisl.physics.electron.berry_flux` for details.
+        See `~sisl.physics.electron.berry_curvature` for details.
 
         Parameters
         ----------
@@ -1918,8 +1920,8 @@ class StateCElectron(_electron_State, StateC):
                 opt['spin'] = self.info.get('spin', None)
             deg = self.degenerate(eps)
         except:
-            raise SislError(self.__class__.__name__ + '.berry_flux requires the parent to have a spin associated.')
-        return berry_flux(self.state, self.c, self.parent.dHk(**opt), dSk, degenerate=deg, complex=complex)
+            raise SislError(self.__class__.__name__ + '.berry_curvature requires the parent to have a spin associated.')
+        return berry_curvature(self.state, self.c, self.parent.dHk(**opt), dSk, degenerate=deg, complex=complex)
 
     def inv_eff_mass_tensor(self, as_matrix=False, eps=1e-3):
         r""" Calculate inverse effective mass tensor for the states

@@ -64,7 +64,7 @@ Electrons (:mod:`~sisl.physics.electron`)
    ~electron.velocity
    ~electron.velocity_matrix
    ~electron.berry_phase
-   ~electron.berry_flux
+   ~electron.berry_curvature
    ~electron.conductivity
    ~electron.wavefunction
    ~electron.spin_moment
