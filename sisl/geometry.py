@@ -1072,12 +1072,13 @@ class Geometry(SuperCellChild):
            for subsequent sorting methods).
            In either case the returned indices must never hold any other indices but the ones passed
            as ``atom``.
-        ascend : bool, optional
-            control ascending or descending sorting, default ``True``
+        ascend, descend : bool, optional
+            control ascending or descending sorting for all subsequent sorting methods.
+            Default ``ascend=True``.
         atol : float, optional
-            absolute tolerance when sorting numerical arrays. When a selection of sorted coordinates
-            are grouped via `atol`, we ensure such a group does not alter its indices. I.e. the group
-            is *always* ascending indices.
+            absolute tolerance when sorting numerical arrays for subsequent sorting methods.
+            When a selection of sorted coordinates are grouped via `atol`, we ensure such
+            a group does not alter its indices. I.e. the group is *always* ascending indices.
             Note this may have unwanted side-effects if `atol` is very large.
             Default ``1e-9``.
 
@@ -1121,6 +1122,7 @@ class Geometry(SuperCellChild):
         >>> geom.sort(axis=2, ascend=False, lattice=0)
 
         Sort according to :math:`z` (descending), then first lattice vector (ascending)
+        Note how integer suffixes has no importance.
 
         >>> geom.sort(ascend0=False, axis=2, ascend1=True, lattice=0)
 
@@ -1161,11 +1163,23 @@ class Geometry(SuperCellChild):
         A too high `atol` may have unexpected side-effects. This is because of the way
         the sorting algorithm splits the sections for nested sorting.
         So for coordinates with a continuous displacement the sorting may break and group
-        a large range into 1 group.
+        a large range into 1 group. Consider the following array to be split in groups
+        while sorting.
 
-        >>> a = np.arange(5) * 0.1
-        >>> (np.diff(a) > 0.05).nonzero()[0]
+        >>> a = np.arange(5) * 0.01
+        >>> a[3:] += 0.1
+
+        For a high tolerance we have:
+
+        >>> (np.diff(a) > 0.02).nonzero()[0]
+        [2]
+
+        This would split the sorting into sections ``a[:3]`` and ``a[3:]``
+
+        >>> (np.diff(a) > 0.002).nonzero()[0]
         [0, 1, 2, 3]
+
+        This would split the sorting into sections ``a[:1]``, ``a[1:2]``, ``a[2:3]``, ``a[3:4]`` and ``a[4:5]``
         """
         # We need a way to easily handle nested lists
         # This small class handles lists and allows appending nested lists
@@ -4154,7 +4168,7 @@ class Geometry(SuperCellChild):
                 ns._geometry = ns._geometry.sort(**kwargs)
         p.add_argument(*opts('--sort'), nargs=1, metavar='SORT',
                        action=Sort,
-                       help='Semi-colon separated options for sort [axis=0;descend;lattice=(1, 2)].')
+                       help='Semi-colon separated options for sort, please always encapsulate in quotation ["axis=0;descend;lattice=(1, 2)"].')
 
         # Print some common information about the
         # geometry (to stdout)
