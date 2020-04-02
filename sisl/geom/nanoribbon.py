@@ -64,7 +64,7 @@ def nanoribbon(width, kind='armchair', bond=1.42, atom=None, sat_bond=1.09, sat_
         # Set lattice vectors strictly orthogonal
         ribbon.cell[:] = np.diag([ribbon.cell[1, 0], -ribbon.cell[0, 1], ribbon.cell[2, 2]])
     else:
-        raise ValueError("ribbon: kind must be armchair or zigzag")
+        raise ValueError("nanoribbon: kind must be armchair or zigzag")
 
     # Separate ribbons along y-axis
     ribbon.cell[1, 1] += 10.
