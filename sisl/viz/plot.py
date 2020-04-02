@@ -7,6 +7,7 @@ import sys
 import numpy as np
 import json
 import dill as pickle
+from copy import deepcopy
 #import pickle
 import time
 from types import MethodType, FunctionType
@@ -1103,13 +1104,13 @@ class Plot(ShortCutable, Configurable):
                     "args": [
                         {"x": [data["x"] for data in frame["data"]],
                         "y": [data["y"] for data in frame["data"]],
-                        "visible": [data.get("visible", True) for data in frame["data"]],
-                        "mode": [data.get("mode",None) for data in frame["data"]],
-                        "marker": [data.get("marker", {}) for data in frame["data"]],
-                        "line": [data.get("line", {}) for data in frame["data"]]},
+                        "visible": [data["visible"] for data in frame["data"]],
+                        "mode": [data["mode"] for data in frame["data"]],
+                        "marker": [data["marker"] for data in frame["data"]],
+                        "line": [data["line"] for data in frame["data"]]},
                     ]
-                }) """
-            
+                }) 
+             """
             framesLayout = {
 
                 "sliders": [
@@ -1339,6 +1340,154 @@ class Plot(ShortCutable, Configurable):
         
         return newPlot
     
+    def group_legend(self, by=None, names=None, show_all=False, extra_updates=None, **kwargs):
+        '''
+        Joins plot traces in groups in the legend.
+
+        As the result of this method, plot traces end up with a legendgroup attribute.
+        You can use that for selecting traces in further processing of your plot.
+
+        This also provides the ability to toggle the whole group from the legend, which is nice.
+
+        Parameters
+        ---------
+        by: str or function, optional
+            it defines what are the criteria to group the traces.
+
+            If it's a string:
+                It is the name of the trace attribute. Remember that plotly allows you to
+                lookup for nested attributes using underscores. E.g: "line_color" gets {line: {color: THIS VALUE}}
+            If it's a function:
+                It will recieve each trace and needs to decide which group to put it in by returning the group value.
+                Note that the value will also be used as the group name if `names` is not provided, so you can save yourself
+                some code and directly return the group's name.
+            If not provided:
+                All traces will be put in the same group
+        names: array-like, dict or function, optional
+            it defines what the names of the generated groups will be.
+
+            If it's an array:
+                When a new group is found, the name will be taken from this array (order can be very arbitrary)
+            If it's a dict:
+                When a new group is found, the value of the group will be used as a key to get the name from this dictionary.
+                If the key is not found, the name will just be the value.
+                E.g.: If grouping by `line_color` and `blue` is found, the name will be `names.get('blue', 'blue')`
+            If it's a function:
+                It will recieve the group value and the trace and needs to return the name of the TRACE.
+                NOTE: If `show_all` is set to `True` all traces will appear in the legend, so it would be nice
+                to give them different names. Otherwise, you can just return the group's name.
+                If you provided a grouping function and `show_all` is False you don't need this, as you can return
+                directly the group name from there.
+            If not provided:
+                the values will be used as names.
+        show_all: boolean, optional
+            whether all the items of the group should be displayed in the legend.
+            If `False`, only one item per group will be displayed.
+            If `True`, all the items of the group will be displayed.
+        extra_updates: dict, optional
+            A dict stating extra updates that you want to do for each group.
+
+            E.g.: `{"blue": {"line_width": 4}}`
+
+            would also convert the lines with a group VALUE (not name) of "blue" to a width of 4.
+
+            This is just for convenience so that you can run other methods after this one.
+            Note that you can always do something like this by doing
+
+            ```
+            plot.update_traces(
+                selector={"line_width": "blue"}, # Selects the traces that you will update
+                line_width=4,
+            ) 
+            ```
+
+            If you use a function to return the group values, there is probably no point on using this
+            argument. Since you recieve the trace, you can run `trace.update(...)` inside your function.
+        **kwargs:
+            like extra_updates but they are passed to all groups without distinction
+        '''
+    
+        unique_values = []
+        
+        # Normalize the "by" parameter to a function
+        if by is None:
+            if show_all:
+                name = names[0] if names is not None else "Group"
+                self.figure.update_traces(showlegend=True, legendgroup=name, name=name)
+                return self
+            else:
+                func = lambda trace: 0
+        if isinstance(by, str):
+            func = lambda trace: trace[by]
+        else:
+            func = by
+        
+        # Normalize also the names parameter to a function
+        if callable(names):
+            get_name = names
+        if isinstance(names, dict):
+            def get_name(val, trace): 
+                name = names.get(val,val)
+                return name if not show_all else f'{name}: {trace.name}'
+        else:
+            def get_name(val, trace):
+                name = names[len(unique_values) - 1]
+                return name if not show_all else f'{name}: {trace.name}'
+        
+        # And finally normalize the extra updates
+        if extra_updates is None:
+            get_extra_updates = lambda *args, **kwargs: {}
+        elif isinstance(extra_updates, dict):
+            get_extra_updates = lambda val, trace: extra_updates.get(val, {})
+        elif callable(extra_updates):
+            get_extra_updates = extra_updates
+        
+        # Build the function that will apply the change
+        def check_and_apply(trace):
+            
+            val = func(trace)
+            
+            if val in unique_values:
+                showlegend = show_all
+            else:
+                unique_values.append(val)
+                showlegend = True
+
+            customdata = trace.customdata if trace.customdata is not None else [{}]
+                
+            trace.update(
+                showlegend=showlegend,
+                legendgroup=val,
+                name=get_name(val, trace=trace),
+                customdata=[{**customdata[0], "name": trace.name}, *customdata[1:]],
+                **get_extra_updates(val, trace=trace),
+                **kwargs
+            )
+        
+        # And finally apply all the changes        
+        self.figure.for_each_trace(
+            lambda trace: check_and_apply(trace)
+        )
+        
+        return self
+    
+    def ungroup_legend(self):
+        '''
+        Ungroups traces if a legend contains groups
+
+        Maybe group_legend should store the name in customdata
+        '''
+
+        self.figure.for_each_trace(
+            lambda trace: trace.update(
+                legendgroup=None,
+                showlegend=True,
+                name=trace.customdata[0]["name"]
+            )    
+        )
+
+        return self
+
     def clear(self, plot_traces=True, added_traces=True, frames=True, layout=True):
         '''
         Clears the plot canvas so that data can be reset
@@ -1400,12 +1549,26 @@ class Plot(ShortCutable, Configurable):
 
         return self
 
+    def copy(self):
+        '''
+        Returns a copy of the plot.
+
+        If you want a plot with the exact plot configuration but newly initialized,
+        use `clone()` instead.
+        '''
+        return deepcopy(self)
+
     def clone(self, *args, **kwargs):
         '''
         Gets you and exact clone of this plot
 
         You can pass extra args that will overwrite the previous parameters though, if you don't want it to be that exact.
+
+        IMPORTANT: IT WILL INITIALIZE A NEW PLOT, THEREFORE IT WILL READ NEW DATA.
+        IF YOU JUST WANT A COPY, USE THE `copy()` method.
         '''
+
+        return deepcopy(self)
 
         return self.__class__(*args, **self.settings, **kwargs) 
 
@@ -1790,8 +1953,37 @@ class Animation(MultiplePlot):
             plots=frames
         )
     
+    def zip_with(self, *others):
+        '''
+        Zips the animation with the other provided animations
+
+        This method is just for convenience, all it does is to use `Animation.zip()`
+
+        Parameters
+        -----------
+        *others: sisl Animation
+            the animations that you want to zip with this one.
+            YOU NEED TO MAKE SURE THAT ALL THE ANIMATIONS HAVE THE SAME NUMBER OF FRAMES
+        '''
+
+        return Animation.zip(self, *others)
+
     def unzip(self):
-        pass
+        '''
+        Unzips the animation.
+
+        In order for this method to make sense, the animation needs to be previously zipped.
+        This basically means that each frame needs to be a multiple plot and all frames are made
+        of the same number of plots.
+        '''
+
+        # Basically we just need to get the plots for each frame and then transpose it
+        # so that we have the "frames for each plot"
+        new_animations = np.array([frame.childPlots for frame in self]).T
+
+        return [ Animation(plots=plots) for plots in new_animations ]
+
+            
         
 
 
