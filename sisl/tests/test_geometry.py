@@ -1343,24 +1343,22 @@ def test_geometry_sort_atom():
     bi = sisl_geom.bilayer().tile(2, 0).repeat(2, 1)
 
     atom = [[2, 0], [3, 1]]
-    out = bi.sort(atom=atom)
+    out, atom = bi.sort(atom=atom, ret_atom=True)
 
     atom = np.concatenate(atom)
     all_atoms = np.arange(len(bi))
     all_atoms[np.sort(atom)] = atom[:]
+
     assert np.allclose(out.xyz, bi.sub(all_atoms).xyz)
 
 
 def test_geometry_sort_func():
     bi = sisl_geom.bilayer().tile(2, 0).repeat(2, 1)
 
-    def reverse_sorting(geometry, atom, **kwargs):
-        l = []
-        for at in atom:
-            l.append(at[::-1])
-        return l
+    def reverse(geometry, atom, **kwargs):
+        return atom[::-1]
     atom = [[2, 0], [3, 1]]
-    out = bi.sort(func=reverse_sorting, atom=atom)
+    out = bi.sort(func=reverse, atom=atom)
 
     all_atoms = np.arange(len(bi))
     all_atoms[1] = 2
@@ -1370,13 +1368,39 @@ def test_geometry_sort_func():
 
     # Ensure that they are swapped
     atom = [2, 0]
-    out = bi.sort(func=reverse_sorting, atom=atom)
+    out = bi.sort(func=reverse, atom=atom)
 
     assert np.allclose(out.xyz, bi.xyz)
 
-    out = bi.sort(func=reverse_sorting)
+    out = bi.sort(func=reverse)
     all_atoms = np.arange(len(bi))[::-1]
     assert np.allclose(out.xyz, bi.sub(all_atoms).xyz)
+
+
+def test_geometry_sort_group():
+    bi = sisl_geom.bilayer(bottom_atom=Atom[6], top_atom=(Atom[5], Atom[7])).tile(2, 0).repeat(2, 1)
+
+    out = bi.sort(group='Z')
+
+    assert np.allclose(out.atoms.Z[:4], 5)
+    assert np.allclose(out.atoms.Z[4:12], 6)
+    assert np.allclose(out.atoms.Z[12:16], 7)
+
+    out = bi.sort(group=('symbol', 'C', None))
+
+    assert np.allclose(out.atoms.Z[:8], 6)
+
+    C = bi.sort(group=('symbol', 'C', None))
+    BN = bi.sort(group=('symbol', None, 'C'))
+    BN2 = bi.sort(group=('symbol', ['B', 'N'], 'C'))
+    # For these simple geometries symbol and tag are the same
+    BN3 = bi.sort(group=('tag', ['B', 'N'], 'C'))
+
+    # none of these atoms should be the same
+    assert not np.any(np.isclose(C.atoms.Z, BN.atoms.Z))
+    # All these sorting algorithms are the same
+    assert np.allclose(BN.atoms.Z, BN2.atoms.Z)
+    assert np.allclose(BN.atoms.Z, BN3.atoms.Z)
 
 
 @pytest.mark.xfail(raises=ValueError)

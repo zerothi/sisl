@@ -8,7 +8,7 @@ import numpy as np
 from numpy import ndarray, int32, bool_
 from numpy import dot, square, sqrt, diff
 from numpy import floor, ceil
-from numpy import argsort, split, concatenate
+from numpy import argsort, split, isin, concatenate
 
 from . import _plot as plt
 from . import _array as _a
@@ -1028,6 +1028,7 @@ class Geometry(SuperCellChild):
         - by Cartesian coordinates, `axis`
         - by lattice vectors, `lattice`
         - by user defined vectors, `vector`
+        - by grouping atoms, `group`
         - by a user defined function, `func`
 
         - a combination of the above in arbitrary order
@@ -1062,6 +1063,17 @@ class Geometry(SuperCellChild):
            sort along a user defined vector, similar to `lattice` but with a user defined
            direction. Note that `lattice` sorting and `vector` sorting are *only* equivalent
            when the lattice vector is orthogonal to the other lattice vectors.
+        group : {'Z', 'symbol', 'tag', 'species'} or (str, ...), optional
+           group together a set of atoms by various means.
+           `group` may be one of the listed strings.
+           For ``'Z'`` atoms will be grouped in atomic number
+           For ``'symbol'`` atoms will be grouped by their atomic symbol.
+           For ``'tag'`` atoms will be grouped by their atomic tag.
+           For ``'species'`` atoms will be sorted according to their specie index.
+           If a tuple/list is passed the first item is described. All subsequent items are a
+           list of groups, where each group comprises elements that should be sorted on an
+           equal footing. If one of the groups is None, that group will be replaced with all
+           non-mentioned elements. See examples.
         func : callable, optional
            pass a sorting function which should have an interface like ``func(geometry, atom, **kwargs)``.
            The first argument is the geometry to sort. The 2nd argument is a list of indices in
@@ -1180,6 +1192,18 @@ class Geometry(SuperCellChild):
         [0, 1, 2, 3]
 
         This would split the sorting into sections ``a[:1]``, ``a[1:2]``, ``a[2:3]``, ``a[3:4]`` and ``a[4:5]``
+
+        Sort by atomic numbers
+
+        >>> geom.sort(group='Z') # 5, 6, 7
+
+        One may group several elements together on an equal footing (``None`` means all non-mentioned elements)
+        The order of the groups are important (the first two are _not_ equal, the last three _are_ equal)
+
+        >>> geom.sort(group=('symbol', 'C', None)) # C, [B, N]
+        >>> geom.sort(group=('symbol', None, 'C')) # [B, N], C
+        >>> geom.sort(group=('symbol', ['N', 'B'], 'C')) # [B, N], C (B and N unaltered order)
+        >>> geom.sort(group=('symbol', ['B', 'N'], 'C')) # [B, N], C (B and N unaltered order)
         """
         # We need a way to easily handle nested lists
         # This small class handles lists and allows appending nested lists
@@ -1202,7 +1226,7 @@ class Geometry(SuperCellChild):
                     if sort:
                         self._idx.append(np.sort(idx))
                     else:
-                        self._idx.append(idx)
+                        self._idx.append(np.asarray(idx))
             def __iter__(self):
                 yield from self._idx
             def __len__(self):
@@ -1220,18 +1244,13 @@ class Geometry(SuperCellChild):
             ascend = kwargs['ascend']
             atol = kwargs['atol']
 
-            if len(nl) == 0:
-                # Loop reverse and digitize individually
-                jdx = argsort(val)
-                if ascend:
-                    d = diff(val[jdx]) > atol
-                else:
-                    jdx = jdx[::-1]
-                    d = diff(val[jdx]) < -atol
-                return NestedList(split(jdx, d.nonzero()[0] + 1), sort=True)
-
             new_nl = NestedList()
             for idx in nl:
+                if len(idx) <= 1:
+                    # no need for complexity
+                    new_nl.append(idx)
+                    continue
+
                 # Sort values
                 jdx = idx[argsort(val[idx])]
                 if ascend:
@@ -1286,9 +1305,6 @@ class Geometry(SuperCellChild):
             """
             User defined function
             """
-            if len(atom) == 0:
-                # Nothing has been sorted...
-                atom = [_a.arangei(len(self))]
             nl = NestedList()
             for a in atom:
                 # TODO add check that
@@ -1299,14 +1315,91 @@ class Geometry(SuperCellChild):
             return nl
         funcs["func"] = _func
 
-        def _group(*args, atom, **kwargs):
+        def _group_vals(vals, groups, atom, **kwargs):
+            """
+            vals should be of size len(self) and be parsable
+            by numpy
+            """
+            nl = NestedList()
+
+            # Create unique list of integers
+            uniq_vals = np.unique(vals)
+            if len(groups) == 0:
+                # fake the groups argument
+                groups = [[i] for i in uniq_vals]
+            else:
+                # Check if one of the elements of group is None
+                # In this case we replace it with the missing rest
+                # of the missing unique items
+                try:
+                    none_idx = groups.index(None)
+
+                    # we have a None (ensure we use a list, tuples are
+                    # immutable)
+                    groups = list(groups)
+                    groups[none_idx] = []
+
+                    uniq_groups = np.unique(concatenate(groups))
+                    # add a new group that is in uniq_vals, but not in uniq_groups
+                    rest = uniq_vals[isin(uniq_vals, uniq_groups, invert=True)]
+                    groups[none_idx] = rest
+                except ValueError:
+                    # there is no None in the list
+                    pass
+
+            for at in atom:
+                # reduce search
+                at_vals = vals[at]
+                # loop group values
+                for group in groups:
+                    # retain original indexing
+                    nl.append(at[isin(at_vals, group)])
+            return nl
+
+        def _group(method_group, atom, **kwargs):
             """
             Group based sorting is based on a named identification.
+
+            group: str or tuple of (str, list of lists)
+
+            symbol: order by symbol (most cases same as Z)
+            Z: order by atomic number
+            tag: order by atom tag (should be the same as specie)
+            specie/species: order by specie (in order of contained in the Geometry)
             """
-            if not isinstance(atom, NestedList):
-                atom = NestedList(atom)
-            for arg in args:
-                pass
+            # Create new list
+            nl = NestedList()
+            if isinstance(method_group, str):
+                method = method_group
+                groups = []
+            else:
+                method, *in_groups = method_group
+
+                # Ensure all groups are lists
+                groups = []
+                NoneType = type(None)
+                for group in in_groups:
+                    if isinstance(group, (tuple, list, ndarray, NoneType)):
+                        groups.append(group)
+                    else:
+                        groups.append([group])
+
+            method = method.lower()
+
+            if method == 'z':
+                return _group_vals(self.atoms.Z, groups, atom, **kwargs)
+            elif method in ['specie', 'species']:
+                return _group_vals(self.atoms.specie, groups, atom, **kwargs)
+            elif method == 'tag':
+                # create numpy array
+                strs = np.array(list(map(lambda a: a.tag, self.atoms)))
+                return _group_vals(strs, groups, atom, **kwargs)
+            elif method == 'symbol':
+                strs = np.array(list(map(lambda a: a.symbol, self.atoms)))
+                return _group_vals(strs, groups, atom, **kwargs)
+            else:
+                raise ValueError(f"{self.__class__.__name__}.sort group only supports ['Z','species','tag','symbol'] for sorting")
+        funcs["group"] = _group
 
         def stripint(s):
             """ Remove integers from end of string -> Allow multiple arguments """
@@ -1335,6 +1428,7 @@ class Geometry(SuperCellChild):
                 return True
             return False
 
+        # Default to all atoms
         atom = NestedList(kwargs.pop("atom", None))
         if len(atom) > 0:
             # Ensure the user has not supplied duplicate atomic indices
@@ -1342,6 +1436,9 @@ class Geometry(SuperCellChild):
             if len(np.unique(atoml)) != len(atoml):
                 raise ValueError(f"{self.__class__.__name__}.sort requires 'atom' argument to not have duplicate values")
             del atoml
+        else:
+            # Always ensure the first nested list has *something in it*
+            atom = NestedList(_a.arangei(len(self)))
 
         ret_atom = kwargs.pop("ret_atom", False)
 
@@ -4168,7 +4265,7 @@ class Geometry(SuperCellChild):
                 ns._geometry = ns._geometry.sort(**kwargs)
         p.add_argument(*opts('--sort'), nargs=1, metavar='SORT',
                        action=Sort,
-                       help='Semi-colon separated options for sort, please always encapsulate in quotation ["axis=0;descend;lattice=(1, 2)"].')
+                       help='Semi-colon separated options for sort, please always encapsulate in quotation ["axis=0;descend;lattice=(1, 2);group=Z"].')
 
         # Print some common information about the
         # geometry (to stdout)
