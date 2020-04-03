@@ -1091,7 +1091,8 @@ class Geometry(SuperCellChild):
             absolute tolerance when sorting numerical arrays for subsequent sorting methods.
             When a selection of sorted coordinates are grouped via `atol`, we ensure such
             a group does not alter its indices. I.e. the group is *always* ascending indices.
-            Note this may have unwanted side-effects if `atol` is very large.
+            Note this may have unwanted side-effects if `atol` is very large compared
+            to the difference between atomic coordinates.
             Default ``1e-9``.
 
         Notes
@@ -1172,27 +1173,6 @@ class Geometry(SuperCellChild):
 
         >>> assert geom.sort(axis2=1, axis0=0, axis1=2) == geom.sort(axis=(1, 0, 2))
 
-        A too high `atol` may have unexpected side-effects. This is because of the way
-        the sorting algorithm splits the sections for nested sorting.
-        So for coordinates with a continuous displacement the sorting may break and group
-        a large range into 1 group. Consider the following array to be split in groups
-        while sorting.
-
-        >>> a = np.arange(5) * 0.01
-        >>> a[3:] += 0.1
-
-        For a high tolerance we have:
-
-        >>> (np.diff(a) > 0.02).nonzero()[0]
-        [2]
-
-        This would split the sorting into sections ``a[:3]`` and ``a[3:]``
-
-        >>> (np.diff(a) > 0.002).nonzero()[0]
-        [0, 1, 2, 3]
-
-        This would split the sorting into sections ``a[:1]``, ``a[1:2]``, ``a[2:3]``, ``a[3:4]`` and ``a[4:5]``
-
         Sort by atomic numbers
 
         >>> geom.sort(group='Z') # 5, 6, 7
@@ -1204,6 +1184,33 @@ class Geometry(SuperCellChild):
         >>> geom.sort(group=('symbol', None, 'C')) # [B, N], C
         >>> geom.sort(group=('symbol', ['N', 'B'], 'C')) # [B, N], C (B and N unaltered order)
         >>> geom.sort(group=('symbol', ['B', 'N'], 'C')) # [B, N], C (B and N unaltered order)
+
+        A too high `atol` may have unexpected side-effects. This is because of the way
+        the sorting algorithm splits the sections for nested sorting.
+        So for coordinates with a continuous displacement the sorting may break and group
+        a large range into 1 group. Consider the following array to be split in groups
+        while sorting.
+
+        An example would be a linear chain with a middle point with a much shorter distance.
+
+        >>> x = np.arange(5) * 0.1
+        >>> x[3:] -= 0.095
+        y = z = np.zeros(5)
+        geom = si.Geometry(np.stack((x, y, z), axis=1))
+        >>> geom.xyz[:, 0]
+        [0.    0.1   0.2   0.205 0.305]
+
+        In this case a high tolerance (``atol>0.005`) would group atoms 2 and 3
+        together
+
+        >>> geom.sort(atol=0.01, axis=0, ret_atom=True)[1]
+        [[0], [1], [2, 3], [4]]
+
+        However, a very low tolerance will not find these two as atoms close
+        to each other.
+
+        >>> geom.sort(atol=0.001, axis=0, ret_atom=True)[1]
+        [[0], [1], [2], [3], [4]]
         """
         # We need a way to easily handle nested lists
         # This small class handles lists and allows appending nested lists
@@ -4256,10 +4263,12 @@ class Geometry(SuperCellChild):
                     elif opt in ['atol']:
                         # float values
                         val = float(val)
+                    elif opt == 'group':
+                        pass
                     else:
                         # it must be a range/tuple
                         val = lstranges(strmap(int, val))
-                    # parse `val` to appropriate values
+
                     # we always add integers to allow users to use the same keywords on commandline
                     kwargs[opt.strip() + str(i)] = val
                 ns._geometry = ns._geometry.sort(**kwargs)
