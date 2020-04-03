@@ -3,7 +3,7 @@
 
 - Changed Geometry.sort to be more diverse (this may break old code)
   This new way of sorting is way more flexible and allows very fine
-  control, partially fixes #191
+  control, fixes #191, #197
 
 - Added a bilayer geometry which can create twisted bilayers #181, #186
 
