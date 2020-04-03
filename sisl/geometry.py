@@ -23,7 +23,7 @@ from .utils import lstranges, strmap, array_arange
 from .utils.mathematics import fnorm
 from .quaternion import Quaternion
 from .supercell import SuperCell, SuperCellChild
-from .atom import Atom, Atoms
+from .atom import Atom, Atoms, PeriodicTable
 from .shape import Shape, Sphere, Cube
 from ._namedindex import NamedIndex
 
@@ -3065,6 +3065,68 @@ class Geometry(SuperCellChild):
         else:
             raise NotImplementedError(
                 'Changing bond-length dependent on several lacks implementation.')
+
+    def bond_completion(self, nbonds, atom=None, bond=None, idx=None):
+        """ Return a new geometry with additional atoms added to complete the number of bonds
+
+        This function may be useful to saturate dangling bonds at edges in sp2-carbon structures,
+        e.g., with H-atoms.
+
+        Parameters
+        ----------
+        nbonds : int
+            number of bonds requested
+        atom : `Atom`, optional
+            the kind of atom to be added, where missing. Defaults to atoms of the same type.
+        bond, float, optional
+            bond length to the extra atoms. Defaults to value from `PeriodicTable`
+        idx : array_like, optional
+            List of indices for atoms that are to be considered
+
+        Examples
+        --------
+        >>> g = geom.graphene(orthogonal=True).tile(3, 0).tile(4, 1)
+        >>> g.cell[0] *= 2
+        >>> g.bond_completion(3, atom=Atom(1), bond=1.09)
+        """
+
+        if idx is not None:
+            if not isndarray(idx):
+                selection = _a.asarrayi(idx).ravel()
+        else:
+            selection = range(len(self))
+
+        new_xyz = []
+        new_atom = []
+
+        PT = PeriodicTable()
+
+        for ia in selection:
+            iaZ = self.atoms[ia].Z
+            ria = PT.radius(iaZ)
+            idx = self.close(ia, R=(0.1, 0.1 + 2 * ria))[1]
+            if len(idx) == nbonds - 1:
+                # Add one bond
+                if atom is None:
+                    atom = Atom(iaZ, R=self.atoms[ia].R)
+                if bond is None:
+                    bond_length = ria + PT.radius(atom.Z)
+                else:
+                    bond_length = bond
+                # Compute bond vector
+                bvec = len(idx) * self.xyz[ia]
+                for jdx in idx:
+                    bvec -= self.axyz(jdx)
+                bnorm = bvec.dot(bvec) ** .5
+                if bnorm > 0.1:
+                    # only add to geometry if new position is away from ia-atom
+                    bvec *= bond_length / bnorm
+                    new_xyz.append(self.xyz[ia] + bvec)
+                    new_atom.append(atom)
+        if len(new_xyz) > 0:
+            return self.add(self.__class__(new_xyz, new_atom))
+        else:
+            return self.copy()
 
     def within(self, shapes,
             idx=None, idx_xyz=None,
