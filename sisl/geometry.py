@@ -3108,21 +3108,21 @@ class Geometry(SuperCellChild):
             # We just need second shell coordinates
             xyz = idx[1][1]
             if len(xyz) == nbonds - 1:
-                # Add one bond
-                if atom is None:
-                    atom = Atom(iaZ, R=self.atoms[ia].R)
-                if bond is None:
-                    bond_length = ria + PT.radius(atom.Z)
-                else:
-                    bond_length = bond
                 # Compute bond vector
                 bvec = len(xyz) * self.xyz[ia] - np.sum(xyz, axis=0)
                 bnorm = bvec.dot(bvec) ** .5
                 if bnorm > 0.1:
                     # only add to geometry if new position is away from ia-atom
+                    if bond is None:
+                        bond_length = ria + PT.radius(atom.Z)
+                    else:
+                        bond_length = bond
                     bvec *= bond_length / bnorm
                     new_xyz.append(self.xyz[ia] + bvec)
-                    new_atom.append(atom)
+                    if atom is None:
+                        new_atom.append(Atom(iaZ, R=self.atoms[ia].R))
+                    else:
+                        new_atom.append(atom)
         if len(new_xyz) > 0:
             return self.add(self.__class__(new_xyz, new_atom))
         else:
