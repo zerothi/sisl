@@ -20,6 +20,9 @@ A variety of default geometries.
    fcc
    hcp
    nanoribbon
+   graphene_nanoribbon
+   agnr
+   zgnr
    nanotube
    honeycomb
    bilayer
