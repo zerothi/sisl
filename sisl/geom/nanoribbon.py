@@ -61,7 +61,7 @@ def nanoribbon(bond, atom, width, kind='armchair'):
         # Set lattice vectors strictly orthogonal
         ribbon.cell[:] = np.diag([ribbon.cell[1, 0], -ribbon.cell[0, 1], ribbon.cell[2, 2]])
         # Sort along x-axis
-        ribbon = ribbon.sort()
+        ribbon = ribbon.sort(axis=(0, 1))
     else:
         raise ValueError("nanoribbon: kind must be armchair or zigzag")
 
