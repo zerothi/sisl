@@ -44,6 +44,12 @@ Basic
 
 .. autofunction:: nanoribbon
    :noindex:
+.. autofunction:: graphene_nanoribbon
+   :noindex:
+.. autofunction:: agnr
+   :noindex:
+.. autofunction:: zgnr
+   :noindex:
 .. autofunction:: nanotube
    :noindex:
 
