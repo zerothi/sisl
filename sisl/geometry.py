@@ -3104,8 +3104,10 @@ class Geometry(SuperCellChild):
         for ia in selection:
             iaZ = self.atoms[ia].Z
             ria = PT.radius(iaZ)
-            idx = self.close(ia, R=(0.1, 0.1 + 2 * ria))[1]
-            if len(idx) == nbonds - 1:
+            idx = self.close(ia, R=(0.1, 0.1 + 2 * ria), ret_xyz=True)
+            # We just need second shell coordinates
+            xyz = idx[1][1]
+            if len(xyz) == nbonds - 1:
                 # Add one bond
                 if atom is None:
                     atom = Atom(iaZ, R=self.atoms[ia].R)
@@ -3114,9 +3116,7 @@ class Geometry(SuperCellChild):
                 else:
                     bond_length = bond
                 # Compute bond vector
-                bvec = len(idx) * self.xyz[ia]
-                for jdx in idx:
-                    bvec -= self.axyz(jdx)
+                bvec = len(xyz) * self.xyz[ia] - np.sum(xyz, axis=0)
                 bnorm = bvec.dot(bvec) ** .5
                 if bnorm > 0.1:
                     # only add to geometry if new position is away from ia-atom
