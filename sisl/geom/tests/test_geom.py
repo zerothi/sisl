@@ -46,9 +46,22 @@ def test_bilayer():
     a = bilayer(1.42, top_atom=(Atom(5), Atom(7)), twist=(6, 7))
     a, th = bilayer(1.42, twist=(6, 7), ret_angle=True)
 
+
 def test_nanoribbon():
     for w in range(0, 5):
         a = nanoribbon(1.42, Atom(6), w, kind='armchair')
         a = nanoribbon(1.42, Atom(6), w, kind='zigzag')
         a = nanoribbon(1.42, (Atom(5), Atom(7)), w, kind='a')
         a = nanoribbon(1.42, (Atom(5), Atom(7)), w, kind='z')
+
+
+def test_graphene_nanoribbon():
+    a = graphene_nanoribbon(5)
+
+
+def test_agnr():
+    a = agnr(5)
+
+
+def test_zgnr():
+    a = zgnr(5)
