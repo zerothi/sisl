@@ -3113,16 +3113,17 @@ class Geometry(SuperCellChild):
                 bnorm = bvec.dot(bvec) ** .5
                 if bnorm > 0.1:
                     # only add to geometry if new position is away from ia-atom
+                    if atom is None:
+                        this_atom = Atom(iaZ, R=self.atoms[ia].R)
+                    else:
+                        this_atom = atom
                     if bond is None:
-                        bond_length = ria + PT.radius(atom.Z)
+                        bond_length = ria + PT.radius(this_atom.Z)
                     else:
                         bond_length = bond
                     bvec *= bond_length / bnorm
                     new_xyz.append(self.xyz[ia] + bvec)
-                    if atom is None:
-                        new_atom.append(Atom(iaZ, R=self.atoms[ia].R))
-                    else:
-                        new_atom.append(atom)
+                    new_atom.append(this_atom)
         if len(new_xyz) > 0:
             return self.add(self.__class__(new_xyz, new_atom))
         else:
