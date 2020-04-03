@@ -5,25 +5,25 @@ from sisl import geom, Atom, Geometry
 __all__ = ['nanoribbon']
 
 
-def nanoribbon(width, kind='armchair', bond=1.42, atom=None):
+def nanoribbon(bond, atom, width, kind='armchair'):
     r""" Construction of a nanoribbon unit cell of type armchair or zigzag.
     The geometry is oriented along the x-axis.
 
     Parameters
     ----------
+    bond : float
+       bond length between atoms in the honeycomb lattice. Defaults to 1.42
+    atom : Atom
+       atom (or atoms) in the honeycomb lattice
     width : int
        number of atoms in the transverse direction
     kind : {'armchair', 'zigzag'}
        type of ribbon
-    bond : float, optional
-       bond length between atoms in the honeycomb lattice. Defaults to 1.42
-    atom : Atom, optional
-       atom (or atoms) in the honeycomb lattice. Defaults to ``Atom(6)``
 
     See Also
     --------
-    honeycomb: honeycomb lattices
-    graphene: graphene geometry
+    honeycomb : honeycomb lattices
+    graphene : graphene geometry
     """
     if atom is None:
         atom = Atom(Z=6, R=bond * 1.01)

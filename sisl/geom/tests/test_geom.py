@@ -47,9 +47,8 @@ def test_bilayer():
     a, th = bilayer(1.42, twist=(6, 7), ret_angle=True)
 
 def test_nanoribbon():
-    for w in range(0, 7):
-        a = nanoribbon(w, kind='armchair')
-        a = nanoribbon(w, kind='zigzag')
-    a = nanoribbon(w, bond=2.0)
-    a = nanoribbon(w, kind='a', atom=(Atom(5), Atom(7)))
-    a = nanoribbon(w, kind='z', atom=(Atom(5), Atom(7)))
+    for w in range(0, 5):
+        a = nanoribbon(1.42, Atom(6), w, kind='armchair')
+        a = nanoribbon(1.42, Atom(6), w, kind='zigzag')
+        a = nanoribbon(1.42, (Atom(5), Atom(7)), w, kind='a')
+        a = nanoribbon(1.42, (Atom(5), Atom(7)), w, kind='z')
