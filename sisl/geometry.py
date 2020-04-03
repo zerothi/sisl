@@ -3066,7 +3066,7 @@ class Geometry(SuperCellChild):
             raise NotImplementedError(
                 'Changing bond-length dependent on several lacks implementation.')
 
-    def bond_completion(self, nbonds, atom=None, bond=None, idx=None):
+    def bond_completion(self, nbonds, bond=None, new_bond=None, atom=None, idx=None):
         """ Return a new geometry with additional atoms added to complete the number of bonds
 
         This function may be useful to saturate dangling bonds at edges in sp2-carbon structures,
@@ -3076,10 +3076,12 @@ class Geometry(SuperCellChild):
         ----------
         nbonds : int
             number of bonds requested
-        atom : `Atom`, optional
-            the kind of atom to be added, where missing. Defaults to atoms of the same type.
         bond, float, optional
-            bond length to the extra atoms. Defaults to value from `PeriodicTable`
+            distance between existing atoms to be considered a bond. Defaults to value from `PeriodicTable`
+        new_bond, float, optional
+            bond length to added atom. Defaults to value from `PeriodicTable`
+        atom : `Atom`, optional
+            kind of atom to be added, where missing. Defaults to atoms of the same type.
         idx : array_like, optional
             List of indices for atoms that are to be considered
 
@@ -3102,9 +3104,13 @@ class Geometry(SuperCellChild):
         PT = PeriodicTable()
 
         for ia in selection:
-            iaZ = self.atoms[ia].Z
-            ria = PT.radius(iaZ)
-            idx = self.close(ia, R=(0.1, 0.1 + 2 * ria), ret_xyz=True)
+            a = self.atoms[ia]
+            # Determine radius of sphere for bond search
+            if bond is None:
+                ria = 0.1 + 2 * PT.radius(a.Z)
+            else:
+                ria = 1e-4 + bond
+            idx = self.close(ia, R=(0.1, ria), ret_xyz=True)
             # We just need second shell coordinates
             xyz = idx[1][1]
             if len(xyz) == nbonds - 1:
@@ -3114,16 +3120,16 @@ class Geometry(SuperCellChild):
                 if bnorm > 0.1:
                     # only add to geometry if new position is away from ia-atom
                     if atom is None:
-                        this_atom = Atom(iaZ, R=self.atoms[ia].R)
+                        new_a = Atom(a.Z, R=a.R)
                     else:
-                        this_atom = atom
-                    if bond is None:
-                        bond_length = ria + PT.radius(this_atom.Z)
+                        new_a = atom
+                    if new_bond is None:
+                        bond_length = PT.radius(a.Z) + PT.radius(new_a.Z)
                     else:
-                        bond_length = bond
+                        bond_length = new_bond
                     bvec *= bond_length / bnorm
                     new_xyz.append(self.xyz[ia] + bvec)
-                    new_atom.append(this_atom)
+                    new_atom.append(new_a)
         if len(new_xyz) > 0:
             return self.add(self.__class__(new_xyz, new_atom))
         else:
