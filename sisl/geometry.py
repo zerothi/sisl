@@ -3089,7 +3089,7 @@ class Geometry(SuperCellChild):
         --------
         >>> g = geom.graphene(orthogonal=True).tile(3, 0).tile(4, 1)
         >>> g.cell[0] *= 2
-        >>> g.bond_completion(3, atom=Atom(1), bond=1.09)
+        >>> g.bond_completion(3, bond=1.42, new_bond=1.09, atom=Atom(1))
         """
 
         if idx is not None:
@@ -3111,7 +3111,7 @@ class Geometry(SuperCellChild):
             else:
                 ria = 1e-4 + bond
             idx = self.close(ia, R=(0.1, ria), ret_xyz=True)
-            # We just need second shell coordinates
+            # We just need second-shell coordinates
             xyz = idx[1][1]
             if len(xyz) == nbonds - 1:
                 # Compute bond vector
