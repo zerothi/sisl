@@ -28,12 +28,13 @@ def nanoribbon(bond, atom, width, kind='armchair'):
     agnr : armchair graphene nanoribbon
     zgnr : zigzag graphene nanoribbon
     """
-    if atom is None:
-        atom = Atom(Z=6, R=bond * 1.01)
-
-    # Width characterization
+    if not isinstance(bond, float):
+        raise ValueError("nanoribbon: bond needs to be a float!")
+    if not isinstance(atom, (Atom, list, tuple)):
+        raise ValueError("nanoribbon: atom needs to be an instance of Atom (or list of Atoms)!")
     if not isinstance(width, int):
         raise ValueError("nanoribbon: the width needs to be a postive integer!")
+    # Width characterization
     width = max(width, 1)
     n, m = width // 2, width % 2
 
@@ -82,8 +83,8 @@ def graphene_nanoribbon(width, bond=1.42, atom=None, kind='armchair'):
        number of atoms in the transverse direction
     bond : float, optional
        CC bond length. Defaults to 1.42
-    atom : Atom
-       atom (or atoms) in the honeycomb lattice
+    atom : Atom, optional
+       atom (or atoms) in the honeycomb lattice. Defaults to `Atom(6)`
     kind : {'armchair', 'zigzag'}
        type of ribbon
 
@@ -95,6 +96,8 @@ def graphene_nanoribbon(width, bond=1.42, atom=None, kind='armchair'):
     agnr : armchair graphene nanoribbon
     zgnr : zigzag graphene nanoribbon
     """
+    if atom is None:
+        atom = Atom(Z=6, R=bond * 1.01)
     return nanoribbon(bond, atom, width, kind=kind)
 
 
@@ -107,8 +110,8 @@ def agnr(width, bond=1.42, atom=None):
        number of atoms in the transverse direction
     bond : float, optional
        CC bond length. Defaults to 1.42
-    atom : Atom
-       atom (or atoms) in the honeycomb lattice
+    atom : Atom, optional
+       atom (or atoms) in the honeycomb lattice. Defaults to `Atom(6)`
 
     See Also
     --------
@@ -130,8 +133,8 @@ def zgnr(width, bond=1.42, atom=None):
        number of atoms in the transverse direction
     bond : float, optional
        CC bond length. Defaults to 1.42
-    atom : Atom
-       atom (or atoms) in the honeycomb lattice
+    atom : Atom, optional
+       atom (or atoms) in the honeycomb lattice. Defaults to `Atom(6)`
 
     See Also
     --------
