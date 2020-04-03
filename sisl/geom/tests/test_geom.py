@@ -51,8 +51,5 @@ def test_nanoribbon():
         a = nanoribbon(w, kind='armchair')
         a = nanoribbon(w, kind='zigzag')
     a = nanoribbon(w, bond=2.0)
-    a = nanoribbon(w, sat_bond=1.3, sat_atom=Atom(3))
-    a = nanoribbon(w, kind='Z', sat_bond=2.0)
-    a = nanoribbon(w, kind='Z', atom=Atom(5), sat_bond=-1.0)
     a = nanoribbon(w, kind='a', atom=(Atom(5), Atom(7)))
     a = nanoribbon(w, kind='z', atom=(Atom(5), Atom(7)))
