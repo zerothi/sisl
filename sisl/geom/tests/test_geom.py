@@ -51,8 +51,8 @@ def test_nanoribbon():
     for w in range(0, 5):
         a = nanoribbon(1.42, Atom(6), w, kind='armchair')
         a = nanoribbon(1.42, Atom(6), w, kind='zigzag')
-        a = nanoribbon(1.42, (Atom(5), Atom(7)), w, kind='a')
-        a = nanoribbon(1.42, (Atom(5), Atom(7)), w, kind='z')
+        a = nanoribbon(1.42, (Atom(5), Atom(7)), w, kind='armchair')
+        a = nanoribbon(1.42, (Atom(5), Atom(7)), w, kind='zigzag')
 
 
 def test_graphene_nanoribbon():
