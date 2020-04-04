@@ -1,3 +1,4 @@
+from numbers import Integral
 import numpy as np
 
 from sisl import geom, Atom, Geometry
@@ -7,7 +8,8 @@ __all__ = ['nanoribbon', 'graphene_nanoribbon', 'agnr', 'zgnr']
 
 def nanoribbon(bond, atom, width, kind='armchair'):
     r""" Construction of a nanoribbon unit cell of type armchair or zigzag.
-    The geometry is oriented along the x-axis.
+
+    The geometry is oriented along the :math:`x` axis.
 
     Parameters
     ----------
@@ -28,12 +30,9 @@ def nanoribbon(bond, atom, width, kind='armchair'):
     agnr : armchair graphene nanoribbon
     zgnr : zigzag graphene nanoribbon
     """
-    if not isinstance(bond, float):
-        raise ValueError("nanoribbon: bond needs to be a float!")
-    if not isinstance(atom, (Atom, list, tuple)):
-        raise ValueError("nanoribbon: atom needs to be an instance of Atom (or list of Atoms)!")
-    if not isinstance(width, int):
-        raise ValueError("nanoribbon: the width needs to be a postive integer!")
+    if not isinstance(width, Integral):
+        raise ValueError(f"nanoribbon: width needs to be a postive integer ({width})!")
+
     # Width characterization
     width = max(width, 1)
     n, m = width // 2, width % 2
@@ -41,14 +40,15 @@ def nanoribbon(bond, atom, width, kind='armchair'):
     ribbon = geom.honeycomb(bond, atom, orthogonal=True)
 
     kind = kind.lower()
-    if kind.startswith('a'):
+    if kind == "armchair":
         # Construct armchair GNR
         if m == 1:
             ribbon = ribbon.repeat(n + 1, 1)
             ribbon = ribbon.remove(3 * (n + 1)).remove(0)
         else:
             ribbon = ribbon.repeat(n, 1)
-    elif kind.startswith('z'):
+
+    elif kind == "zigzag":
         # Construct zigzag GNR
         ribbon = ribbon.rotate(90, [0, 0, -1])
         if m == 1:
@@ -59,19 +59,20 @@ def nanoribbon(bond, atom, width, kind='armchair'):
         # Invert y-coordinates
         ribbon.xyz[:, 1] *= -1
         # Set lattice vectors strictly orthogonal
-        ribbon.cell[:] = np.diag([ribbon.cell[1, 0], -ribbon.cell[0, 1], ribbon.cell[2, 2]])
-        # Sort along x-axis
+        ribbon.cell[:, :] = np.diag([ribbon.cell[1, 0], -ribbon.cell[0, 1], ribbon.cell[2, 2]])
+        # Sort along x, then y
         ribbon = ribbon.sort(axis=(0, 1))
+
     else:
-        raise ValueError("nanoribbon: kind must be armchair or zigzag")
+        raise ValueError(f"nanoribbon: kind must be armchair or zigzag ({kind})")
 
     # Separate ribbons along y-axis
-    ribbon.cell[1, 1] += 10.
+    ribbon.cell[1, 1] += 20.
 
-    # Movie inside unit cell
-    ribbon = ribbon.move([-np.min(ribbon.xyz[:, 0]), -np.min(ribbon.xyz[:, 1]), 0])
+    # Move inside unit cell
+    xyz = ribbon.xyz.min(axis=0) * [1, 1, 0]
 
-    return ribbon
+    return ribbon.move(-xyz + [0, 10, 0])
 
 
 def graphene_nanoribbon(width, bond=1.42, atom=None, kind='armchair'):
@@ -82,9 +83,9 @@ def graphene_nanoribbon(width, bond=1.42, atom=None, kind='armchair'):
     width : int
        number of atoms in the transverse direction
     bond : float, optional
-       CC bond length. Defaults to 1.42
+       C-C bond length. Defaults to 1.42
     atom : Atom, optional
-       atom (or atoms) in the honeycomb lattice. Defaults to `Atom(6)`
+       atom (or atoms) in the honeycomb lattice. Defaults to ``Atom(6)``
     kind : {'armchair', 'zigzag'}
        type of ribbon
 
@@ -92,7 +93,7 @@ def graphene_nanoribbon(width, bond=1.42, atom=None, kind='armchair'):
     --------
     honeycomb : honeycomb lattices
     graphene : graphene geometry
-    nanoribbon : honeycomb nanoribbon
+    nanoribbon : honeycomb nanoribbon (used for this method)
     agnr : armchair graphene nanoribbon
     zgnr : zigzag graphene nanoribbon
     """
@@ -109,9 +110,9 @@ def agnr(width, bond=1.42, atom=None):
     width : int
        number of atoms in the transverse direction
     bond : float, optional
-       CC bond length. Defaults to 1.42
+       C-C bond length. Defaults to 1.42
     atom : Atom, optional
-       atom (or atoms) in the honeycomb lattice. Defaults to `Atom(6)`
+       atom (or atoms) in the honeycomb lattice. Defaults to ``Atom(6)``
 
     See Also
     --------
@@ -132,9 +133,9 @@ def zgnr(width, bond=1.42, atom=None):
     width : int
        number of atoms in the transverse direction
     bond : float, optional
-       CC bond length. Defaults to 1.42
+       C-C bond length. Defaults to 1.42
     atom : Atom, optional
-       atom (or atoms) in the honeycomb lattice. Defaults to `Atom(6)`
+       atom (or atoms) in the honeycomb lattice. Defaults to ``Atom(6)``
 
     See Also
     --------
