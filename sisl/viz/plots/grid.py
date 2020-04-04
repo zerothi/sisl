@@ -4,7 +4,7 @@ import numpy as np
 
 import sisl
 from ..plot import Plot
-from ..inputFields import TextInput, Array1dInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
+from ..inputFields import TextInput, Array1dInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput
 
 class GridPlot(Plot):
 
@@ -117,6 +117,12 @@ class GridPlot(Plot):
                 "min": 0
             },
             help="Range where the Z is displayed. Should be inside the unit cell, otherwise it will fail.",
+        ),
+
+        RangeInput(
+            key="crange", name="Colorbar range",
+            default=[None, None],
+            help="The range of values that the colorbar must enclose. This controls saturation and hides below threshold values."
         )
     )
 
@@ -212,12 +218,19 @@ class GridPlot(Plot):
             
             values = np.tile(values, (sc[yaxis], sc[xaxis]) )
 
+            crange = self.setting('crange')
+            if crange is None:
+                crange = [None, None]
+            cmin, cmax = crange
+
             self.data = [{
                 'type': 'heatmap',
                 'z': values,
                 'x': np.arange(0, sc[xaxis]*grid.cell[xaxis, xaxis], grid.dcell[xaxis, xaxis]),
                 'y': np.arange(0, sc[yaxis]*grid.cell[yaxis, yaxis], grid.dcell[yaxis, yaxis]),
-                'zsmooth': self.setting('zsmooth')
+                'zsmooth': self.setting('zsmooth'),
+                'zmin': cmin,
+                'zmax': cmax
             }]
 
             axesTitles = {'xaxis_title': f'{("X","Y", "Z")[xaxis]} axis (Ang)', 'yaxis_title': f'{("X","Y", "Z")[yaxis]} axis (Ang)'}
@@ -349,8 +362,7 @@ class GridPlot(Plot):
         **kwargs:
             the rest of settings that you want to apply to overwrite the existing ones.
 
-            Some recurrent ones here might be `xRange, yRange...` to set the range of the scan, or `axes` to choose
-            the axes that are displayed
+            This settings apply to each plot and go directly to their initialization.
 
         Returns
         ----------
@@ -399,7 +411,8 @@ class GridPlot(Plot):
                 range_key: [[minVal, minVal + step] for minVal in steps_range]
             },
             plot_template=self,
-            fixed={key: val for key, val in self.settings.items() if key != range_key}
+            fixed={**{key: val for key, val in self.settings.items() if key != range_key}, **kwargs},
+            frameNames=[ f'{step:2f}' for step in steps_range]
         )
 
         scan.layout = self.layout

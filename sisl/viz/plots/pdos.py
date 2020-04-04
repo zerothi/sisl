@@ -134,6 +134,23 @@ class PdosPlot(Plot):
                     default = 1,
                 )
             ]
+        ),
+
+        DropdownInput(
+            key="add_customdata", name="Add customdata",
+            default=[],
+            params={
+                'options': [
+                    {"label": key, "value": key}
+                    for key in ("iAtom", "Species", "Orbital name", "Spin")
+                ],
+                'isMulti': True,
+                'isClearable': True,
+                'isSearchable': True
+            },
+            help='''Which info about the provenance of each trace should be added in their customdata attribute.
+            This is good for post-processing the plot (grouping, filtering...), but it can make the memory requirements
+            significantly larger, specially for large systems'''
         )
 
     )
@@ -393,6 +410,7 @@ class PdosPlot(Plot):
                 'name': request["name"], 
                 'line': {'width' : request["linewidth"], "color": request["color"]},
                 "hoverinfo": "name",
+                "customdata": [{ key: reqDf[key].unique() for key in self.setting("add_customdata")}]
             })
         
         return self.data

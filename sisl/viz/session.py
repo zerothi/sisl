@@ -189,7 +189,7 @@ class Session(Configurable):
         
         return sorted(get_all_subclasses(sisl.viz.Plot), key = lambda clss: clss._plotType) 
     
-    def addPlot(self, plot, tab=None, tabID = None, noTab = False): 
+    def addPlot(self, plot, tabID = None, noTab = False): 
         '''
         Adds an already initialized plot object to the session
 
@@ -198,13 +198,9 @@ class Session(Configurable):
         plot: Plot()
             the plot object that we want to add to the session
         tab: str, optional
-            the name of the tab where we want to add the plot.
-
-            If neither tab or tabID are provided, it will be appended to the first tab
-        tabID: str, optional
+            the name of the tab where we want to add the plot or
             the ID of the tab where we want to add the plot.
-            It takes preference over the value of tab
-            
+
             If neither tab or tabID are provided, it will be appended to the first tab
         noTab: boolean, optional
             if set to true, prevents the plot from being added to a tab
@@ -213,7 +209,6 @@ class Session(Configurable):
         self.warehouse["plots"][plot.id] = plot
 
         if not noTab:
-            tabID = tabID or tab
             tabID = self._tab_id(tabID) if tabID is not None else self.tabs[0]["id"]
 
             self.addPlotToTab(plot.id, tabID)
@@ -422,14 +417,14 @@ class Session(Configurable):
 
         return self
     
-    def updateTab(self, tabID, newParams = {}):
+    def updateTab(self, tabID, newParams = {}, **kwargs):
         '''
         Method to update the parameters of a given tab
         '''
 
         tab = self.tab(tabID)
 
-        for key, val in newParams.items():
+        for key, val in {**newParams, **kwargs}.items():
             tab[key] = val
 
         return self

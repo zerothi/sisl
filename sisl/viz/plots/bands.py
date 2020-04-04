@@ -119,7 +119,7 @@ class BandsPlot(Plot):
         ),
 
         SwitchInput(
-            key="showGap", name="Show gap",
+            key="gap", name="Show gap",
             default=False,
             params={
                 'onLabel': 'Yes',
@@ -257,7 +257,7 @@ class BandsPlot(Plot):
 
                     self.siestaPath.append({"active": True, "x": float(x), "y": float(y), "z": float(z), "divisions": divisions, "tick": tick})
                     
-                    self.updateSettings(path=self.siestaPath, updateFig=False)
+                    self.updateSettings(path=self.siestaPath, updateFig=False, no_log=True)
             except Exception as e:
                 print(f"Could not correctly read the bands path from siesta.\n Error {e}")
     
@@ -319,11 +319,11 @@ class BandsPlot(Plot):
 
             iBands = np.arange(*bandsRange)
             filtered_bands = self.arr.where(self.arr.band.isin(iBands), drop=True)
-            self.updateSettings(updateFig=False, Erange=[float(f'{val:.3f}') for val in [float(filtered_bands.min()), float(filtered_bands.max())]], bandsRange=bandsRange)
+            self.updateSettings(updateFig=False, Erange=[float(f'{val:.3f}') for val in [float(filtered_bands.min()), float(filtered_bands.max())]], bandsRange=bandsRange, no_log=True)
         else:
             Erange = np.array(Erange) + self.fermi
             filtered_bands = self.arr.where( (self.arr <= Erange[1]) & (self.arr >= Erange[0])).dropna("band", "all")
-            self.updateSettings(updateFig=False, bandsRange=[int(filtered_bands['band'].min()), int(filtered_bands['band'].max())])
+            self.updateSettings(updateFig=False, bandsRange=[int(filtered_bands['band'].min()), int(filtered_bands['band'].max())], no_log=True)
 
         #Define the data of the plot as a list of dictionaries {x, y, 'type', 'name'}
         self.data = np.ravel([[{
@@ -369,7 +369,7 @@ class BandsPlot(Plot):
     def _drawGaps(self):
 
         # Draw gaps
-        if self.setting("showGap"):
+        if self.setting("gap"):
 
             gap_tolerance = self.setting('gapTol')
             gap_color = self.setting('gapColor')

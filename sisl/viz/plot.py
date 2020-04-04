@@ -491,7 +491,8 @@ class Plot(ShortCutable, Configurable):
                 elif hasattr(SileClass, "_plot"):
                     PlotClass, kwarg_key = SileClass._plot
                     kwargs[kwarg_key] = filename
-                    plot = PlotClass(**kwargs, title=os.path.basename(filename))
+                    kwargs["title"] = kwargs.get("title", os.path.basename(filename))
+                    plot = PlotClass(**kwargs)
                 else:
                     raise NotImplementedError(f'There is no plot implementation for {os.path.splitext(filename)[-1]} extensions yet.')
 
@@ -634,6 +635,11 @@ class Plot(ShortCutable, Configurable):
         else:
             self.__dict__[key] = val
 
+    def __getitem__(self, key):
+
+        if isinstance(key, (int, slice)):
+            return self.data[key]
+
     def _general_plot_shortcuts(self):
 
         self._listening_shortcut()
@@ -771,27 +777,23 @@ class Plot(ShortCutable, Configurable):
         This function checks whether the read files have changed.
 
         For it to work properly, one should specify the files that have been read by
-        their _read*() methods. This is done by returning a list of the files (see example).
+        their _read*() methods. This is done by using the `follow()` method or by
+        reading files with `self.get_sile()` instead of `sisl.get_sile()`.
 
         Note that the `setFiles` and `setUpHamiltonian` methods are already responsible for
         informing about the files they read, so you only need to specify those that you are
         "explicitly" reading in your method.
 
-        Examples
-        -------
-        If I'm developing a class with a `_readSiesOut` method that reads the "structure.bands" file and I want it to
-        be reactive to file changes, it should look something like this:
-
-        ```python
-        def _readSiesOut(self):
-
-            ...Do all the stuff
-
-            return ["structure.bands"]
-        ```
         '''
 
-        filesModified = np.array([ os.path.getmtime(filePath) > self.last_dataread for filePath in self._filesToFollow])
+        def modified(filepath):
+
+            try:
+                return os.path.getmtime(filepath) > self.last_dataread
+            except FileNotFoundError:
+                return False  # This probably should implement better logic
+
+        filesModified = np.array([ modified(filePath) for filePath in self._filesToFollow])
 
         return filesModified.any()
     
@@ -1418,21 +1420,28 @@ class Plot(ShortCutable, Configurable):
             else:
                 func = lambda trace: 0
         if isinstance(by, str):
-            func = lambda trace: trace[by]
+            def func(trace):
+                try:
+                    return trace[by]
+                except Exception:
+                    return None
         else:
             func = by
         
         # Normalize also the names parameter to a function
-        if callable(names):
+        if names is None:
+            def get_name(val,trace):
+                return str(val) if not show_all else f'{val}: {trace.name}'
+        elif callable(names):
             get_name = names
-        if isinstance(names, dict):
+        elif isinstance(names, dict):
             def get_name(val, trace): 
                 name = names.get(val,val)
-                return name if not show_all else f'{name}: {trace.name}'
+                return str(name) if not show_all else f'{name}: {trace.name}'
         else:
             def get_name(val, trace):
                 name = names[len(unique_values) - 1]
-                return name if not show_all else f'{name}: {trace.name}'
+                return str(name) if not show_all else f'{name}: {trace.name}'
         
         # And finally normalize the extra updates
         if extra_updates is None:
@@ -1446,6 +1455,11 @@ class Plot(ShortCutable, Configurable):
         def check_and_apply(trace):
             
             val = func(trace)
+
+            if isinstance(val, np.ndarray):
+                val =  val.tolist()
+            if isinstance(val, list):
+                val = ", ".join([str(item) for item in val])
             
             if val in unique_values:
                 showlegend = show_all
@@ -1457,7 +1471,7 @@ class Plot(ShortCutable, Configurable):
                 
             trace.update(
                 showlegend=showlegend,
-                legendgroup=val,
+                legendgroup=str(val),
                 name=get_name(val, trace=trace),
                 customdata=[{**customdata[0], "name": trace.name}, *customdata[1:]],
                 **get_extra_updates(val, trace=trace),
@@ -1635,8 +1649,8 @@ class Plot(ShortCutable, Configurable):
 
         with open(path, 'wb') as handle:
             pickle.dump(self, handle, protocol=pickle.HIGHEST_PROTOCOL)
-
-        return self
+        
+        return True
     
     def html(self, path):
 
@@ -1738,6 +1752,7 @@ class MultiplePlot(Plot):
             if SINGLE_CLASS and try_sharing:
 
                 if not self.has_template_plot:
+
                     # Then, we read the data of a leading plot
                     # This leading plot will share attributes with the rest in case it is needed
                     leading_plot = plots[0]
