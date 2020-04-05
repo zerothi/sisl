@@ -107,7 +107,7 @@ metadata = dict(
         # We currently use xarray for additional data-analysis
         # And tqdm for progressbars
         'analysis': ['xarray>=0.10.0', 'tqdm'],
-        'viz': [
+        'visualization': [
             'tqdm',
             'plotly',
             'pandas',
