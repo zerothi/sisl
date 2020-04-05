@@ -1167,8 +1167,14 @@ class TestGeometry:
         g = setup.g.attach(0, setup.mol, 0, dist=[0, 0, 1.42])
 
     def test_mirror1(self, setup):
-        for plane in ['xy', 'xz', 'yz']:
-            setup.g.mirror(plane)
+        g = setup.g
+        for plane in ['xy', 'xz', 'yz', 'ab', 'bc', 'ac']:
+            g.mirror(plane)
+
+        assert g.mirror('xy') == g.mirror('z')
+        assert g.mirror('xy') == g.mirror([0, 0, 1])
+
+        assert g.mirror('xy', [0]) == g.mirror([0, 0, 1], [0])
 
     def test_pickle(self, setup):
         import pickle as p

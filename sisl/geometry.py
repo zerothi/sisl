@@ -12,7 +12,7 @@ from numpy import argsort, split, isin, concatenate
 
 from . import _plot as plt
 from . import _array as _a
-from ._math_small import is_ascending
+from ._math_small import is_ascending, cross3
 from ._indices import indices_in_sphere_with_dist, indices_le, indices_gt_le
 from ._indices import list_index_le
 from .messages import info, warn, SislError
@@ -2450,31 +2450,57 @@ class Geometry(SuperCellChild):
             xyz[atom, :] = self.xyz[atom[::-1], :]
         return self.__class__(xyz, atom=self.atoms.reverse(atom), sc=self.sc.copy())
 
-    def mirror(self, plane, atom=None):
-        """ Mirrors the atomic coordinates by multiplying by -1
+    def mirror(self, method, atom=None):
+        r""" Mirrors the atomic coordinates about the plane
 
         This will typically move the atomic coordinates outside of the unit-cell.
         This method should be used with care.
 
         Parameters
         ----------
-        plane : {'xy'/'ab', 'yz'/'bc', 'xz'/'ac'}
-           mirror the structure across the lattice vector plane
+        method : {'xy'/'z', ..., 'ab', ..., v}
+           mirror the structure about a Cartesian direction (``x``, ``y``, ``z``),
+           plane (``xy``, ``xz``, ``yz``) or about user defined vectors (``v``).
+           A vector may also be specified by ``'ab'`` which is the vector normal
+           to the plane spanned by the first and second lattice vector.
+           or user defined vector (`v`)
         atom : array_like, optional
            only mirror a subset of atoms
         """
-        if not atom is None:
-            atom = self._sanitize_atom(atom)
-        else:
+        if atom is None:
             atom = slice(None)
+        else:
+            atom = self._sanitize_atom(atom)
+
         g = self.copy()
-        lplane = ''.join(sorted(plane.lower()))
-        if lplane in ['xy', 'ab']:
-            g.xyz[atom, 2] *= -1
-        elif lplane in ['yz', 'bc']:
-            g.xyz[atom, 0] *= -1
-        elif lplane in ['xz', 'ac']:
-            g.xyz[atom, 1] *= -1
+        if isinstance(method, str):
+            method = ''.join(sorted(method.lower()))
+            if method in ['z', 'xy']:
+                g.xyz[atom, 2] *= -1
+            elif method in ['x', 'yz']:
+                g.xyz[atom, 0] *= -1
+            elif method in ['y', 'xz']:
+                g.xyz[atom, 1] *= -1
+            elif method == 'ab':
+                method = cross3(self.cell[0], self.cell[1])
+            elif method == 'ac':
+                method = cross3(self.cell[0], self.cell[2])
+            elif method == 'bc':
+                method = cross3(self.cell[1], self.cell[2])
+
+        if not isinstance(method, str):
+            # it has to be an array of length 3
+            # Mirror about a user defined vector
+            method = _a.asarrayd(method).copy()
+            method /= fnorm(method)
+
+            # project onto vector
+            vp = self.xyz[atom, :].dot(method) * 2
+
+            # convert coordinates
+            # first subtract the projection, then its mirror position
+            self.xyz[atom, :] -= vp.reshape(-1, 1) * method.reshape(1, 3)
+
         return self.__class__(g.xyz, atom=g.atom, sc=self.sc.copy())
 
     @property
