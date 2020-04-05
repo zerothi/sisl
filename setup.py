@@ -52,18 +52,6 @@ install_requires = [
     'scipy>=0.18',
     'netCDF4',
     'pyparsing>=1.5.7',
-    # Everyting below is just for convenience while developing the GUI/viz module
-    # (very easy for people to test it)
-    'tqdm',
-    'matplotlib',
-    'plotly',
-    'pandas',
-    'pathos',
-    'dill',
-    'xarray',
-    'flask',
-    'flask-restx',
-    'flask-cors'
 ]
 
 setup_requires = []
@@ -119,6 +107,17 @@ metadata = dict(
         # We currently use xarray for additional data-analysis
         # And tqdm for progressbars
         'analysis': ['xarray>=0.10.0', 'tqdm'],
+        'viz': [
+            'tqdm',
+            'plotly',
+            'pandas',
+            'pathos',
+            'dill',
+            'xarray',
+            'flask',
+            'flask-restx',
+            'flask-cors'
+        ]
     },
 )
 
