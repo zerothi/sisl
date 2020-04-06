@@ -2481,12 +2481,20 @@ class Geometry(SuperCellChild):
                 g.xyz[atom, 0] *= -1
             elif method in ['y', 'xz']:
                 g.xyz[atom, 1] *= -1
+            elif method == 'a':
+                method = self.cell[0]
+            elif method == 'b':
+                method = self.cell[1]
+            elif method == 'c':
+                method = self.cell[2]
             elif method == 'ab':
                 method = cross3(self.cell[0], self.cell[1])
             elif method == 'ac':
                 method = cross3(self.cell[0], self.cell[2])
             elif method == 'bc':
                 method = cross3(self.cell[1], self.cell[2])
+            else:
+                raise ValueError(f"{self.__class__.__name__}.mirror unrecognized 'method' value")
 
         if not isinstance(method, str):
             # it has to be an array of length 3
