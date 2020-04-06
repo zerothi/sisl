@@ -11,7 +11,7 @@ from .plot import Plot, MultiplePlot, Animation
 from .configurable import Configurable, afterSettingsInit
 from .plotutils import findFiles, get_plotable_siles
 
-from .inputFields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, Array1dInput
+from .input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, Array1dInput
 
 class Session(Configurable):
 
