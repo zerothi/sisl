@@ -9,7 +9,7 @@ import dill as pickle
 #import pickle
 from copy import deepcopy
 
-from sisl.io.sile import get_siles
+from sisl.io.sile import get_siles, get_sile_rules
 
 #-------------------------------------
 #            Ipython
@@ -60,7 +60,13 @@ def getPlotClasses():
     return Session.getPlotClasses(None)
 
 def get_plotable_siles(rules=False):
-    return get_siles(["_plot", "__plot__"], rules=rules)
+    
+    if rules:
+        sile_getter = get_sile_rules
+    else:
+        sile_getter = get_siles
+        
+    return sile_getter(["_plot", "__plot__"])
 
 #-------------------------------------
 #           Python helpers

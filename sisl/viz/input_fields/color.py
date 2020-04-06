@@ -1,4 +1,4 @@
-from ..inputField import InputField
+from .._input_field import InputField
 
 class ColorPicker(InputField):
     
@@ -7,3 +7,4 @@ class ColorPicker(InputField):
     _default = {
         "width": "s50% m30% l15%"
     }
+    

@@ -1,6 +1,6 @@
 import numpy as np
 
-from ..inputField import InputField
+from .._input_field import InputField
 
 class RangeSlider(InputField):
 

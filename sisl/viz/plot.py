@@ -21,7 +21,7 @@ import sisl
 
 from .configurable import *
 from .plotutils import initMultiplePlots, repeatIfChilds, dictOfLists2listOfDicts, trigger_notification, spoken_message, running_in_notebook, check_widgets
-from .inputFields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
+from .input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
 from ._shortcuts import ShortCutable
 
 PLOTS_CONSTANTS = {

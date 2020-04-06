@@ -288,16 +288,13 @@ def get_sile(file, *args, **kwargs):
     return sile(Path(str_spec(str(file))[0]), *args, **kwargs)
 
 
-def get_siles(attrs=None, rules=False):
+def get_siles(attrs=None):
     """ Retrieve all files with specific attributes or methods
-
     Parameters
     ----------
     attrs : list of attribute names
        limits the returned objects to those that have
        the given attributes ``hasattr(sile, attrs)``, default ``[None]``
-    rules: boolean, optional
-        returns the rules instead of the siles
     """
     global __siles
 
@@ -308,15 +305,42 @@ def get_siles(attrs=None, rules=False):
         return list(__siles)
 
     siles = []
-    objs = __sile_rules if rules else __siles
-    for obj in objs:
+    for sile in __siles:
         for attr in attrs:
-            sile = obj.cls if rules else obj
             if hasattr(sile, attr):
-                siles.append(obj)
+                siles.append(sile)
                 break
 
     return siles
+
+
+def get_sile_rules(attrs=None):
+    '''
+    Retrieve all sile rules of siles with specific attributes or methods
+
+    Parameters
+    ----------
+    attrs : list of attribute names
+       limits the returned objects to those that have
+       the given attributes ``hasattr(sile, attrs)``, default ``[None]``
+    '''
+    global __sile_rules
+
+    if attrs is None:
+        attrs = [None]
+
+    if len(attrs) == 1 and attrs[0] is None:
+        return list(__sile_rules)
+
+    sile_rules = []
+    for rule in __sile_rules:
+        sile = rule.cls
+        for attr in attrs:
+            if hasattr(sile, attr):
+                sile_rules.append(rule)
+                break
+
+    return sile_rules
 
 
 class BaseSile:

@@ -4,7 +4,7 @@ import numpy as np
 
 import sisl
 from ..plot import Plot
-from ..inputFields import TextInput, Array1dInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput
+from ..input_fields import TextInput, Array1dInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput
 
 class GridPlot(Plot):
 

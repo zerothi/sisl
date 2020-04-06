@@ -15,7 +15,7 @@ from sisl.viz.plotutils import load
 app = Flask("SISL GUI API")
 
 class CustomJSONEncoder(JSONEncoder):
-
+	
 	def default(self, obj):
 
 		if hasattr(obj, "to_json"):

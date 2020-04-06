@@ -1,4 +1,4 @@
-from ..inputField import InputField
+from .._input_field import InputField
 
 class ArrayInput(InputField):
     
@@ -15,3 +15,4 @@ class Array1dInput(ArrayInput):
 class Array2dInput(ArrayInput):
 
     _type = "matrix"
+    

@@ -1,4 +1,4 @@
-from ..inputField import InputField
+from .._input_field import InputField
 from ..configurable import Configurable
 
 class QueriesInput(InputField):
