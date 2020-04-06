@@ -1770,6 +1770,7 @@ class MultiplePlot(Plot):
                         # If there is a plot that needs to read different data, we will just
                         # make each of them read their own data. (this could be optimized by grouping plots)
                         self.initAllPlots(try_sharing=False)
+                        break
                 else:
                     # In case there is no plot that has different settings, we will
                     # happily set the data, avoiding the read data step. Plots will take

@@ -415,7 +415,6 @@ class Configurable:
 
         for key, val in settings.items():
             if self.getSetting(key) != val:
-                print(self.getSetting(key), val, key)
                 return False
         else:
             return True
