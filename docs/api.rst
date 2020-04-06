@@ -40,3 +40,4 @@ different routines for electronic structure calculations.
    sisl.shape
    sisl.unit
    sisl.utils
+   sisl.viz
