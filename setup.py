@@ -13,8 +13,10 @@ DOCLINES = __doc__.split("\n")
 
 import sys
 import subprocess
+import multiprocessing
 import os
 import os.path as osp
+import argparse
 
 # pkg_resources are part of setuptools
 import pkg_resources
@@ -25,6 +27,8 @@ min_version ={
     "numpy": "1.13",
 }
 
+# Macros for use when compiling stuff
+macros = []
 
 try:
     import Cython
@@ -34,28 +38,51 @@ try:
     from Cython.Build import cythonize
 
     # We currently do not have any restrictions on Cython (I think?)
+    # If so, simply put it here, and we will not use it
     _CYTHON_INSTALLED = True
 except ImportError:
     _CYTHON_VERSION = None
     _CYTHON_INSTALLED = False
     cythonize = lambda x, *args, **kwargs: x  # dummy func
 
-
-
 if _CYTHON_INSTALLED:
     # The import of Extension must be after the import of Cython, otherwise
     # we do not get the appropriately patched class.
     # See https://cython.readthedocs.io/en/latest/src/userguide/source_files_and_compilation.html
     # Now we can import cython distutils
-    from Cython.Distutils.old_build_ext import old_build_ext as build_ext
+    from Cython.Distutils.old_build_ext import old_build_ext as cython_build_ext
 
     cython = True
     from Cython import Tempita as tempita
 else:
-    # overload the old one
-    from distutils.command.build_ext import build_ext
-
     cython = False
+
+
+# Allow users to remove cython
+if "--no-cythonize" in sys.argv:
+    sys.argv.remove("--no-cythonize")
+    cython = False
+
+
+# Check if users requests coverage of Cython sources
+if "--with-cython-coverage" in sys.argv:
+    linetrace = True
+    sys.argv.remove("--with-cython-coverage")
+else:
+    linetrace = False
+
+
+# Define Cython directives
+# We shouldn't rely on sources having the headers filled
+# with directives.
+# Cleaner to have them here, and possibly on a per file
+# basis (if needed).
+# That could easily be added at ext_cython place
+directives = {"linetrace": False, "language_level": 3}
+if linetrace:
+    # https://pypkg.com/pypi/pytest-cython/f/tests/example-project/setup.py
+    directives["linetrace"] = True
+    macros = [("CYTHON_TRACE", "1"), ("CYTHON_TRACE_NOGIL", "1")]
 
 
 # We will *only* use setuptools
@@ -84,6 +111,7 @@ class CythonCommand(build_ext):
     C-compile method build_extension() with a no-op.
     """
     # note this is used from Pandas (a clever hack)
+
     def build_extension(self, ext):
         pass
 
@@ -96,7 +124,7 @@ else:
     suffix = ".c"
 
 
-# Retrieve the compiler information    
+# Retrieve the compiler information
 from numpy.distutils.system_info import get_info
 # use flags defined in numpy
 all_info = get_info('ALL')
@@ -104,7 +132,6 @@ all_info = get_info('ALL')
 # Define compilation flags
 extra_compile_args = ""
 extra_link_args = extra_compile_args
-macros = []
 
 # in numpy>=1.16.0, silence build warnings about deprecated API usage
 macros.append(("NPY_NO_DEPRECATED_API", "0"))
@@ -132,32 +159,31 @@ _pyxfiles = [
     "sisl/_supercell.pyx",
 ]
 
-# Prepopulate the ext_data to create extensions
+# Prepopulate the ext_cython to create extensions
 # Later, when we complicate things more, we
 # may need the dictionary to add include statements etc.
-# I.e. ext_data[...] = {pyxfile: ...,
+# I.e. ext_cython[...] = {pyxfile: ...,
 #                       include: ...,
 #                       depends: ...,
 #                       sources: ...}
 # All our extensions depend on numpy/core/include
 numpy_incl = pkg_resources.resource_filename("numpy", "core/include")
 
-ext_data = {}
+ext_cython = {}
 for pyx in _pyxfiles:
     # remove ".pyx"
     pyx_src = pyx[:-4]
     pyx_mod = pyx_src.replace("/", ".")
-    ext_data[pyx_mod] = {
+    ext_cython[pyx_mod] = {
         "pyxfile": pyx_src,
         "include": [numpy_incl]
     }
-    ext_data[pyx_mod] = {"pyxfile": pyx_src}
-
+    ext_cython[pyx_mod] = {"pyxfile": pyx_src}
 
 
 # List of extensions for setup(...)
 extensions = []
-for name, data in ext_data.items():
+for name, data in ext_cython.items():
     sources = [data["pyxfile"] + ".c"] + data.get("sources", [])
 
     # Get options for extensions
@@ -212,6 +238,30 @@ for name, data in ext_fortran.items():
     extensions.append(obj)
 
 
+class EnsureBuildExt(build_ext):
+    """
+    Override build-ext to check whether compilable sources are present
+    This merely pretty-prints a better error message.
+    """
+
+    def check_cython_extensions(self, extensions):
+        for ext in extensions:
+            for src in ext.sources:
+                if not os.path.exists(src):
+                    print(f"{ext.name}: -> [{ext.sources}]")
+                    raise Exception(
+                        f"""Cython-generated file '{src}' not found.
+                        Cython is required to compile sisl from a development branch.
+                        Please install Cython or download a release package of sisl.
+                        """)
+
+    def build_extensions(self):
+        self.check_cython_extensions(self.extensions)
+        build_ext.build_extensions(self)
+
+cmdclass["build_ext"] = EnsureBuildExt
+
+
 class InfoCommand(Command):
     """
     Custom distutils command to create the sisl/info.py file.
@@ -232,7 +282,43 @@ class InfoCommand(Command):
         print('info RUNNING')
 
 cmdclass["info.py"] = InfoCommand
-    
+
+
+# Run cythonizer
+def cythonizer(extensions, *args, **kwargs):
+    """
+    Skip cythonizer (regardless) when running
+
+    * clean
+    * sdist
+
+    Otherwise if `cython` is True, we will cythonize sources.
+    """
+    if "clean" in sys.argv or "sdist" in sys.argv:
+        # https://github.com/cython/cython/issues/1495
+        return extensions
+
+    elif not cython:
+        raise RuntimeError("Cannot cythonize without Cython installed.")
+
+    # Retrieve numpy include directories for headesr
+    numpy_incl = pkg_resources.resource_filename("numpy", "core/include")
+
+    # Allow parallel flags to be used while cythonizing
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-j", type=int, dest="parallel")
+    parser.add_argument("--parallel", type=int, dest="parallel")
+    parsed, _ = parser.parse_known_args()
+
+    if parsed.parallel:
+        kwargs["nthreads"] = max(0, parsed.parallel)
+
+    # Extract Cython extensions
+    cython_extensions = []
+    for ext in extensions:
+        if ext.name in ext_cython:
+            cython_extensions.append(ext)
+    return cythonize(cython_extensions, *args, **kwargs)
 
 
 MAJOR = 0
@@ -242,7 +328,6 @@ ISRELEASED = True
 VERSION = '%d.%d.%d' % (MAJOR, MINOR, MICRO)
 GIT_REVISION = "13a327bd8e27d689f119bafdf38519bab7f6e0f6"
 REVISION_YEAR = 2020
-
 
 
 DISTNAME = "sisl"
@@ -299,15 +384,6 @@ setuptools_kwargs = {
     "zip_safe": False,
 }
 
-# Create list of all sub-directories with
-#   __init__.py files...
-packages = ['sisl']
-for subdir, dirs, files in os.walk('sisl'):
-    if '__init__.py' in files:
-        packages.append(subdir.replace(os.sep, '.'))
-        if 'tests' in dirs:
-            packages.append(subdir.replace(os.sep, '.') + '.tests')
-
 
 def readme():
     if not osp.exists('README.md'):
@@ -324,7 +400,7 @@ metadata = dict(
     download_url=DOWNLOAD_URL,
     license=LICENSE,
     packages=find_packages(include=["sisl", "sisl.*"]),
-    ext_modules=extensions,
+    ext_modules=cythonizer(extensions),
     entry_points={
         'console_scripts':
         ['sgeom = sisl.geometry:sgeom',
@@ -334,7 +410,8 @@ metadata = dict(
     },
     classifiers=CLASSIFIERS,
     platforms="any",
-    project_urls = PROJECT_URLS,
+    project_urls=PROJECT_URLS,
+    cmdclass=cmdclass,
     **setuptools_kwargs
 )
 
@@ -343,6 +420,7 @@ if not osp.exists(osp.join(cwd, 'PKG-INFO')):
     # Generate Cython sources, unless building from source release
     # generate_cython()
     pass
+
 
 def git_version():
     global GIT_REVISION
