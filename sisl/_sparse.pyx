@@ -1,5 +1,3 @@
-#!python
-#cython: language_level=3
 cimport cython
 from libc.math cimport fabs
 
@@ -7,7 +5,7 @@ import numpy as np
 # This enables Cython enhanced compatibilities
 cimport numpy as np
 
-from _indices cimport in_1d
+from sisl._indices cimport in_1d
 
 
 @cython.boundscheck(False)

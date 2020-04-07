@@ -5,6 +5,7 @@ try:
     from . import _siesta
     found_module = True
 except Exception as e:
+    print(e)
     found_module = False
 
 from sisl.messages import warn, SislError

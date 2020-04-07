@@ -53,12 +53,14 @@ if _CYTHON_INSTALLED:
     from Cython.Distutils.old_build_ext import old_build_ext as cython_build_ext
 
     cython = True
-    from Cython import Tempita as tempita
 else:
+    # override (it does nothing anyways)
+    cython_build_ext = build_ext
     cython = False
 
 
-# Allow users to remove cython
+# Allow users to remove cython step (forcefully)
+# This may break compilation, but at least users should be aware
 if "--no-cythonize" in sys.argv:
     sys.argv.remove("--no-cythonize")
     cython = False
@@ -82,7 +84,7 @@ directives = {"linetrace": False, "language_level": 3}
 if linetrace:
     # https://pypkg.com/pypi/pytest-cython/f/tests/example-project/setup.py
     directives["linetrace"] = True
-    macros = [("CYTHON_TRACE", "1"), ("CYTHON_TRACE_NOGIL", "1")]
+    macros.extend([("CYTHON_TRACE", "1"), ("CYTHON_TRACE_NOGIL", "1")])
 
 
 # We will *only* use setuptools
@@ -94,9 +96,9 @@ from setuptools.command.sdist import sdist
 from setuptools import Command, Extension
 from setuptools import find_packages
 from setuptools import setup
-# Patch to allow fortran sources
-from numpy.distutils.core import setup
+# Patch to allow fortran sources in setup
 from numpy.distutils.core import Extension as FortranExtension
+from numpy.distutils.core import setup
 
 
 # Custom command classes
@@ -104,17 +106,14 @@ cmdclass = {}
 
 
 # Now create the build extensions
-class CythonCommand(build_ext):
+class CythonCommand(cython_build_ext):
     """
     Custom distutils command subclassed from Cython.Distutils.build_ext
     to compile pyx->c, and stop there. All this does is override the
     C-compile method build_extension() with a no-op.
     """
-    # note this is used from Pandas (a clever hack)
-
     def build_extension(self, ext):
         pass
-
 
 if cython:
     # we have cython and generate c codes directly
@@ -180,26 +179,28 @@ for pyx in _pyxfiles:
     }
     ext_cython[pyx_mod] = {"pyxfile": pyx_src}
 
+ext_cython["sisl._sparse"]["depends"] = ["sisl/_indices.pxd"]
+
 
 # List of extensions for setup(...)
 extensions = []
 for name, data in ext_cython.items():
-    sources = [data["pyxfile"] + ".c"] + data.get("sources", [])
+    sources = [data["pyxfile"] + suffix] + data.get("sources", [])
 
     # Get options for extensions
     include = data.get("include", None)
 
-    obj = Extension(name,
-                    sources=sources,
-                    depends=data.get("depends", []),
-                    include_dirs=include,
-                    language=data.get("language", "c"),
-                    define_macros=data.get("macros", macros),
-                    extra_compile_args=extra_compile_args,
-                    extra_link_args=extra_link_args,
+    ext = Extension(name,
+        sources=sources,
+        depends=data.get("depends", []),
+        include_dirs=include,
+        language=data.get("language", "c"),
+        define_macros=macros + data.get("macros", []),
+        extra_compile_args=extra_compile_args,
+        extra_link_args=extra_link_args,
     )
 
-    extensions.append(obj)
+    extensions.append(ext)
 
 
 # Specific Fortran extensions
@@ -226,16 +227,16 @@ for name, data in ext_fortran.items():
     # Get options for extensions
     include = data.get("include", None)
 
-    obj = FortranExtension(name,
+    ext = FortranExtension(name,
         sources=sources,
         depends=data.get("depends", []),
         include_dirs=include,
-        define_macros=data.get("macros", macros),
+        define_macros=macros + data.get("macros", []),
         extra_compile_args=extra_compile_args,
         extra_link_args=extra_link_args,
     )
 
-    extensions.append(obj)
+    extensions.append(ext)
 
 
 class EnsureBuildExt(build_ext):
@@ -248,7 +249,7 @@ class EnsureBuildExt(build_ext):
         for ext in extensions:
             for src in ext.sources:
                 if not os.path.exists(src):
-                    print(f"{ext.name}: -> [{ext.sources}]")
+                    print(f"{ext.name}: -> {ext.sources}")
                     raise Exception(
                         f"""Cython-generated file '{src}' not found.
                         Cython is required to compile sisl from a development branch.
@@ -259,6 +260,7 @@ class EnsureBuildExt(build_ext):
         self.check_cython_extensions(self.extensions)
         build_ext.build_extensions(self)
 
+# Override build_ext command (typically called by setuptools)
 cmdclass["build_ext"] = EnsureBuildExt
 
 
@@ -314,11 +316,16 @@ def cythonizer(extensions, *args, **kwargs):
         kwargs["nthreads"] = max(0, parsed.parallel)
 
     # Extract Cython extensions
+    # And also other extensions to store them
+    other_extensions = []
     cython_extensions = []
     for ext in extensions:
         if ext.name in ext_cython:
             cython_extensions.append(ext)
-    return cythonize(cython_extensions, *args, **kwargs)
+        else:
+            other_extensions.append(ext)
+
+    return other_extensions + cythonize(cython_extensions, *args, quiet=False, **kwargs)
 
 
 MAJOR = 0
@@ -400,7 +407,7 @@ metadata = dict(
     download_url=DOWNLOAD_URL,
     license=LICENSE,
     packages=find_packages(include=["sisl", "sisl.*"]),
-    ext_modules=cythonizer(extensions),
+    ext_modules=cythonizer(extensions, compiler_directives=directives),
     entry_points={
         'console_scripts':
         ['sgeom = sisl.geometry:sgeom',
@@ -544,5 +551,7 @@ if __name__ == '__main__':
     else:
         metadata['version'] = VERSION + '-dev'
 
+    # Freeze to support parallel compilation when using spawn instead of fork
+    #multiprocessing.freeze_support()
     # Main setup of python modules
     setup(**metadata)

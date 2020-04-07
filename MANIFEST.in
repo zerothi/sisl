@@ -11,7 +11,7 @@ graft sisl
 
 include sisl/info.py
 
-recursive-include toolbox
+recursive-include toolbox *.py *.md README
 
 exclude DEPLOY.md
 global-exclude *.sh
