@@ -34,6 +34,17 @@ class ShortCutable:
 
         return keys in self.shortcuts
     
+    @property
+    def shortcuts_for_json(self):
+        '''
+        Returns a jsonifiable object with information of the shortcuts
+
+        This is meant to be passed to the GUI, so that it knows which shortcuts are available.
+        '''
+
+        #Basically we are going to remove the action
+        return {key: {key:val for key,val in info.items() if key != 'action'} for key, info in self.shortcuts.items()}
+
     def shortcuts_summary(self, format="str"):
         '''
         Gets a formatted summary of the shortcuts.

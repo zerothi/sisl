@@ -1606,7 +1606,8 @@ class Plot(ShortCutable, Configurable):
             "settings": self.settings,
             "params": self.params,
             "paramGroups": self.paramGroups,
-            "grid_dims": getattr(self, "grid_dims", None)
+            "grid_dims": getattr(self, "grid_dims", None),
+            "shortcuts": self.shortcuts_for_json
         }
 
         return infoDict
@@ -1616,9 +1617,9 @@ class Plot(ShortCutable, Configurable):
         Removes from the instance the attributes that are not pickleable.
         '''
 
-        unpickleableAttrs = ['geom', 'fdfSile']
+        unpickleableAttrs = ['fdfSile']
 
-        for attr in ['geom', 'fdfSile']:
+        for attr in ['fdfSile']:
             if hasattr(self, attr):
                 delattr(self, attr)
 

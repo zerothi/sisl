@@ -178,6 +178,10 @@ class PlotManager(Resource):
 					plot = session.plot(plotID)
 					plot.show()
 
+				elif requestBody["action"] == "plotShortcut":
+					#Show the plot in full screen
+					plot = session.plot(plotID).call_shortcut(requestBody["sequence"])
+
 
 			else:
 				#Get a new plot following the request parameters
@@ -185,6 +189,7 @@ class PlotManager(Resource):
 
 				plot = session.newPlot( **requestBody )
 
+			print(plot._getDictForGUI()["shortcuts"])
 			response = jsonify({
 				"statusCode": 200,
 				"status": "Options delivered",
