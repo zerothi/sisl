@@ -1794,6 +1794,13 @@ class _electron_State:
         g = self.parent.geometry
         phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], dot(k, g.rcell))
 
+        try:
+            if self.parent.spin.has_noncolinear:
+                # for NC/SOC we have a 2x2 spin-box per orbital
+                phase = np.repeat(phase, 2)
+        except:
+            pass
+
         if gauge == 'r':
             self.state *= np.exp(1j * phase).reshape(1, -1)
         elif gauge == 'R':

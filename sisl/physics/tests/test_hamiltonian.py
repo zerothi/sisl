@@ -979,6 +979,10 @@ class TestHamiltonian:
         DOS = es.DOS(np.linspace(-1, 1, 100))
         assert np.allclose(PDOS.sum(1)[0, :], DOS)
 
+        # Ensure we can change gauge for NC stuff
+        es.change_gauge('R')
+        es.change_gauge('r')
+
     def test_non_colinear_non_orthogonal(self, setup):
         g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(100, nsc=[3, 3, 1]))
         H = Hamiltonian(g, dtype=np.float64, orthogonal=False, spin=Spin.NONCOLINEAR)
@@ -1080,6 +1084,10 @@ class TestHamiltonian:
         PDOS = es.PDOS(np.linspace(-1, 1, 100))
         DOS = es.DOS(np.linspace(-1, 1, 100))
         assert np.allclose(PDOS.sum(1)[0, :], DOS)
+
+        # Ensure we can change gauge for SO stuff
+        es.change_gauge('R')
+        es.change_gauge('r')
 
     def test_finalized(self, setup):
         assert not setup.H.finalized
