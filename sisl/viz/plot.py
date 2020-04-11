@@ -1952,7 +1952,7 @@ class Animation(MultiplePlot):
 
         frames = []
         
-        maxN = np.max([[len(plot.data) for plot in self.childPlots]])
+        maxN = np.max([len(plot.data) for plot in self.childPlots])
         for frame_name, plot in zip(frame_names, self.childPlots):
 
             data = plot.data

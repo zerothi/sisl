@@ -3,7 +3,7 @@ from xarray import DataArray
 
 import sisl
 from ..plot import Plot
-from ..input_fields import ProgramaticInput
+from ..input_fields import ProgramaticInput, RangeSlider
 from ..input_fields.range import ErangeInput
 
 class FatbandsPlot(Plot):
@@ -20,6 +20,16 @@ class FatbandsPlot(Plot):
         ErangeInput(
             key="Erange",
             help="Energy range where the bands are displayed."
+        ),
+
+        RangeSlider(
+            key="bandsRange", name="Bands range",
+            default=None,
+            width="s90%",
+            params={
+                'step': 1,
+            },
+            help="The bands that should be displayed. Only relevant if Erange is None."
         ),
     )
 
@@ -52,14 +62,51 @@ class FatbandsPlot(Plot):
             dims=('k', 'band')
         )
 
+    def _afterRead(self):
+
+        # Make sure that the bandsRange control knows which bands are available
+        iBands = self.eigvals.band.values
+
+        if len(iBands) > 30:
+            iBands = iBands[np.linspace(0, len(iBands)-1, 20, dtype=int)]
+
+        self.modifyParam('bandsRange', 'inputField.params', {
+            **self.getParam('bandsRange')["inputField"]["params"],
+            "min": min(iBands),
+            "max": max(iBands),
+            "allowCross": False,
+            "marks": {int(i): str(i) for i in iBands},
+        })
+
     def _setData(self):
 
-        groups = self.setting('groups')
         Erange = self.setting('Erange')
+        # Get the bands that matter for the plot
+        if Erange is None:
+            bandsRange = self.setting("bandsRange")
 
-        plot_eigvals = self.eigvals.where((self.eigvals > Erange[0]) & (self.eigvals < Erange[1]), drop=True)
+            if bandsRange is None:
+                # If neither E range or bandsRange was provided, we will just plot the 15 bands below and above the fermi level
+                CB = int(self.eigvals.where(self.eigvals <= 0).argmax('band').max())
+                bandsRange = [int(max(self.eigvals["band"].min(), CB - 15)),
+                              int(min(self.eigvals["band"].max(), CB + 16))]
+
+            iBands = np.arange(*bandsRange)
+            plot_eigvals = self.eigvals.where(
+                self.eigvals.band.isin(iBands), drop=True)
+            self.updateSettings(updateFig=False, Erange=[float(f'{val:.3f}') for val in [float(
+                plot_eigvals.min()), float(plot_eigvals.max())]], bandsRange=bandsRange, no_log=True)
+        else:
+            Erange = np.array(Erange)
+            plot_eigvals = self.eigvals.where((self.eigvals <= Erange[1]) & (
+                self.eigvals >= Erange[0])).dropna("band", "all")
+            self.updateSettings(updateFig=False, bandsRange=[int(
+                plot_eigvals['band'].min()), int(plot_eigvals['band'].max())], no_log=True)
+        
         plot_weights = self.weights.sel(band=plot_eigvals['band'])
 
+        groups = self.setting('groups')
+        
         self.data = []
 
         xs = self.bands_path.lineark()
