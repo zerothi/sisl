@@ -222,9 +222,12 @@ class BandsPlot(Plot):
         self.Ks = bandStruct.lineark()
         self.kPath = bandStruct._k
 
-        bands = bandStruct.eigh()
+        # THIS DOES NOT SUPPORT SPIN!!!!!!!!!!!!!!!! (I think)
+        self.arr = bandStruct.as_dataarray().eigh(
+            coords=('band',),
+        )
 
-        self._bandsToXArray(np.expand_dims(bands, axis=1) if bands.ndim == 2 else bands)
+        self.arr.attrs = {"ticks": self.ticks[0], "ticklabels": self.ticks[1]}
 
     def _readSiesOut(self):
         
@@ -258,20 +261,6 @@ class BandsPlot(Plot):
                     self.updateSettings(path=self.siestaPath, updateFig=False, no_log=True)
             except Exception as e:
                 print(f"Could not correctly read the bands path from siesta.\n Error {e}")
-    
-    def _bandsToXArray(self, bands):
-
-        ticks = {"ticks": self.ticks[0], "ticklabels": self.ticks[1]}
-        self.arr = xr.DataArray(
-            name="Energy",
-            data=bands,
-            coords=[
-                ("k", self.Ks),
-                ("spin", np.arange(0,bands.shape[1])),
-                ("band", np.arange(0,bands.shape[2]) + 1)
-            ],
-            attrs={**ticks}
-        )
     
     def _afterRead(self):
 

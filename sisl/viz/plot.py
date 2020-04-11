@@ -512,7 +512,7 @@ class Plot(ShortCutable, Configurable):
         return object.__new__(cls)
 
     @afterSettingsInit
-    def __init__(self, *args, H = None, attrs_for_plot={}, only_init=False,**kwargs):
+    def __init__(self, *args, H = None, attrs_for_plot={}, only_init=False, _debug=False,**kwargs):
 
         if getattr(self, "INIT_ON_NEW", False):
             delattr(self, "INIT_ON_NEW")
@@ -523,6 +523,9 @@ class Plot(ShortCutable, Configurable):
         
         #Give an ID to the plot
         self.id = str(uuid.uuid4())
+
+        # Inform whether the plot is in debug mode or not:
+        self._debug = _debug
 
         #Give the user the possibility to do things before initialization (IDK why)
         if callable( getattr(self, "_beforeInit", None )):
@@ -582,8 +585,10 @@ class Plot(ShortCutable, Configurable):
                 self.readData()
                 
         except Exception as e:
-            print("The plot has been initialized correctly, but the current settings were not enough to generate the figure.\n (Error: {})".format(e))
-            pass
+            if self._debug:
+                raise Exception
+            else:
+                print("The plot has been initialized correctly, but the current settings were not enough to generate the figure.\n (Error: {})".format(e))
     
     def __str__(self):
         
@@ -707,9 +712,9 @@ class Plot(ShortCutable, Configurable):
                 #Get the reading function
                 readingFunc = PLOTS_CONSTANTS["readFuncs"][source](self)
                 #Execute it
-                filesToFollow = readingFunc()
+                returns = readingFunc()
                 self.source = source
-                return filesToFollow
+                return returns
             except Exception as e:
                 errors.append("\t- {}: {}.{}".format(source, type(e).__name__, e))
                 

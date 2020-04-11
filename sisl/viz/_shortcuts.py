@@ -24,11 +24,11 @@ class ShortCutable:
         if keys in self.shortcuts:
             del self.shortcuts[keys]
             
-    def call_shortcut(self, keys, *args, _callback=None, **kwargs):
+    def call_shortcut(self, keys, *args, **kwargs):
 
-        returns = self.shortcuts[keys]["action"](*args, **kwargs)
+        self.shortcuts[keys]["action"](*args, **kwargs)
 
-        return returns if _callback is None else _callback(returns)
+        return self
     
     def has_shortcut(self, keys):
 

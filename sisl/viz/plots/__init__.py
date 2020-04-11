@@ -1,4 +1,5 @@
 from .bands import BandsPlot
+from .fatbands import FatbandsPlot
 from .pdos import PdosPlot
 from .ldos import LDOSmap
 from .bondLength import BondLengthMap

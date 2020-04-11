@@ -1,10 +1,10 @@
-import pickle
+import dill as pickle
 
 import uuid
 import os
 import glob
 
-from copy import deepcopy
+from copy import deepcopy, copy
 
 import sisl
 from .plot import Plot, MultiplePlot, Animation
@@ -365,6 +365,21 @@ class Session(Configurable):
                 if not forever:
                     break
     
+    def figures_only(self):
+        '''
+        Removes all plot data from this session's plots except the actual figure.
+
+        This is very useful to save just for display, since it can decrease the size of the session
+        DRAMATICALLY.
+        '''
+
+        for plotID, plot in self.plots.items():
+
+            plot = Plot.from_plotly(plot.figure)
+            plot.id = plotID
+
+            self.warehouse["plots"][plotID] = plot
+
     #-----------------------------------------
     #            TABS MANAGEMENT
     #-----------------------------------------
@@ -579,12 +594,26 @@ class Session(Configurable):
 
         return infoDict
     
-    def save(self, path):
+    def save(self, path, figs_only=False):
+        '''
+        Stores the session in disk.
 
-        for plotID, plot in self.warehouse["plots"].items():
+        Parameters
+        ----------
+        path: str
+            Path where the session should be saved.
+        figs_only: boolean, optional
+            Whether only figures should be saved, the rest of plot's data will be ignored.
+        '''
+
+        session = copy(self)
+        if figs_only:
+            session.figures_only()
+
+        for plotID, plot in session.plots.items():
             plot._getPickleable()
         
         with open(path, 'wb') as handle:
-            pickle.dump(self, handle, protocol=pickle.HIGHEST_PROTOCOL)
+            pickle.dump(session, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
         return self

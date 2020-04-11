@@ -23,12 +23,34 @@ class GridPlot(Plot):
             help="A sisl.Grid object. If provided, gridFile is ignored."
         ),
 
+        ProgramaticInput(
+            key="lims", name="Lims",
+            default=[0.2, 0.8],
+            help=""
+        ),
+
         TextInput(
             key="gridFile", name="Path to grid file",
             default=None,
             params={
                 "placeholder": "Write the path to your grid file here..."
             }
+        ),
+
+        DropdownInput(
+            key="represent", name="Representation of the grid",
+            default="real",
+            width="s100% m50% l90%",
+            params={
+                'options': [
+                    {'label': 'Real part', 'value': "real"},
+                    {'label': 'Imaginary part', 'value': 'imag'},
+                ],
+                'isMulti': False,
+                'isSearchable': True,
+                'isClearable': False
+            },
+            help='''The representation of the grid that should be displayed'''
         ),
         
         DropdownInput(
@@ -123,6 +145,70 @@ class GridPlot(Plot):
             key="crange", name="Colorbar range",
             default=[None, None],
             help="The range of values that the colorbar must enclose. This controls saturation and hides below threshold values."
+        ),
+
+        IntegerInput(
+            key="cmid", name="Colorbar center",
+            default=0
+        ),
+
+        TextInput(
+            key="colorscale", name="Color scale",
+            default=None
+        ),
+
+        RangeInput(
+            key="iso_vals", name="Min and max isosurfaces",
+            default=None
+        ),
+
+        IntegerInput(
+            key="surface_count", name="Number of surfaces",
+            default=2,
+        ),
+
+        DropdownInput(
+            key="type3D", name="Type of 3D representation",
+            default=None,
+            params={
+                'options': [
+                    {'label': 'Isosurface', 'value': 'isosurface'},
+                    {'label': 'Volume', 'value': 'volume'},
+                ],
+                'isSearchable': True,
+                'isClearable': True,
+                'isMulti': True
+            },
+            help='''This controls how the 3D data is displayed. 
+            'volume' displays different layers with different levels of opacity so that there is more sensation of depth.
+            'isosurface' displays only isosurfaces and nothing inbetween them. For plotting grids with positive and negative
+            values, you should use 'isosurface' or two different 'volume' plots. 
+            If not provided, the plot will decide for you based on the above mentioned fact'''
+        ),
+
+        DropdownInput(
+            key="opacityscale", name="Opacity scale for 3D volume",
+            default="uniform",
+            params={
+                'options': [
+                    {'label': 'Uniform', 'value': 'uniform'},
+                    {'label': 'Min', 'value': 'min'},
+                    {'label': 'Max', 'value': 'max'},
+                    {'label': 'Extremes', 'value': 'extremes'},
+                ],
+                'isSearchable': True,
+                'isClearable': False,
+                'isMulti': True
+            },
+            help='''Controls how the opacity changes through layers. 
+            See https://plotly.com/python/3d-volume-plots/ for a display of the different possibilities'''
+        ),
+
+        FloatInput(
+            key='surface_opacity', name="Surface opacity",
+            default=1,
+            params={'min': 0, 'max': 1, 'step': 0.1},
+            help='''The opacity of the isosurfaces drawn by 3d plots from 0 (transparent) to 1 (opaque).'''
         )
     )
 
@@ -189,8 +275,15 @@ class GridPlot(Plot):
                 if ax not in display_axes:
                     grid = grid.average(ax)
 
+        # Choose the representation of the grid that we want to display
+        representation = self.setting("represent")
+        if representation == 'real':
+            values = grid.grid.real
+        elif representation == 'imag':
+            values = grid.grid.imag
+
         #Remove the leftover dimensions
-        values = np.squeeze(grid.grid)
+        values = np.squeeze(values)
 
         if values.ndim == 1:
             ax = display_axes[0]
@@ -203,7 +296,7 @@ class GridPlot(Plot):
                 'mode': 'lines',
                 'y': values,
                 'x': np.arange(0, sc[ax]*grid.cell[ax,ax], grid.dcell[ax,ax]),
-                'name': os.path.basename(self.setting("gridFile"))
+                'name': os.path.basename(self.setting("gridFile") or "")
             }]
 
             axesTitles = {'xaxis_title': f'{("X","Y", "Z")[ax]} axis (Ang)', 'yaxis_title': 'Values' }
@@ -230,22 +323,83 @@ class GridPlot(Plot):
                 'y': np.arange(0, sc[yaxis]*grid.cell[yaxis, yaxis], grid.dcell[yaxis, yaxis]),
                 'zsmooth': self.setting('zsmooth'),
                 'zmin': cmin,
-                'zmax': cmax
+                'zmax': cmax,
+                'zmid': self.setting('cmid'),
+                'colorscale': self.setting('colorscale')
             }]
 
             axesTitles = {'xaxis_title': f'{("X","Y", "Z")[xaxis]} axis (Ang)', 'yaxis_title': f'{("X","Y", "Z")[yaxis]} axis (Ang)'}
+        
 
         elif values.ndim == 3:
 
-            self.data = [{
-                'type': 'isosurface',
-                'x': np.arange(0, sc[0]*grid.cell[0,0], grid.dcell[0,0]),
-                'y': np.arange(0, sc[1]*grid.cell[1,1], grid.dcell[1,1]),
-                'z': np.arange(0, sc[2]*grid.cell[2,2], grid.dcell[2,2]),
-                'value': values.flatten(),
-            }]
+            # The minimum and maximum values might be needed at some places
+            minval, maxval = np.min(values), np.max(values)
+
+            crange = self.setting('crange')
+            if crange is None:
+                crange = [None, None]
+            cmin, cmax = crange
+
+            isovals = self.setting('iso_vals')
+            if isovals is None:
+                isovals = [minval + (maxval-minval)*0.3,
+                           maxval - (maxval-minval)*0.3]
+            isomin, isomax = isovals
+
+            X, Y, Z = np.meshgrid(*[np.linspace(0, grid.cell[i, i], shape) for i, shape in enumerate(grid.shape)])
+            
+            type3D = self.setting('type3D')
+            if type3D is None:
+                if np.min(values)*np.max(values) < 0:
+                    # Then we have mixed positive and negative values, use isosurface
+                    type3D = 'isosurface'
+                else:
+                    type3D = 'volume'
+
+            if type3D == 'volume':
+
+                self.data = [{
+                    'type': 'volume',
+                    'x': X.ravel(),
+                    'y': Y.ravel(),
+                    'z': Z.ravel(),
+                    'value': np.rollaxis(values, 1).ravel(),
+                    'cmin': cmin,
+                    'cmid': self.setting('cmid'),
+                    'cmax': cmax,
+                    'isomin': isomin,
+                    'isomax': isomax,
+                    'surface_count': self.setting('surface_count'),
+                    'opacity': self.setting('surface_opacity'),
+                    'autocolorscale': False,
+                    'colorscale': self.setting('colorscale'),
+                    'opacityscale': self.setting('opacityscale'),
+                    'caps': {'x_show': False, 'y_show': False, 'z_show': False},
+                }]
+            
+            elif type3D == 'isosurface':
+
+                self.data = [{
+                    'type': 'isosurface',
+                    'x': X.ravel(),
+                    'y': Y.ravel(),
+                    'z': Z.ravel(),
+                    'value': np.rollaxis(values, 1).ravel(),
+                    'cmin': cmin,
+                    'cmid': self.setting('cmid'),
+                    'cmax': cmax,
+                    'isomin': isomin,
+                    'isomax': isomax,
+                    'opacity': self.setting('surface_opacity'),
+                    'surface_count': self.setting('surface_count'),
+                    'colorscale': self.setting('colorscale'),
+                    'caps': {'x_show': False, 'y_show': False, 'z_show': False},
+                }]
 
             axesTitles = {}
+
+            self.layout.scene = {'aspectmode': 'data'}
 
         self.updateSettings(updateFig=False, **axesTitles, no_log=True )
     
