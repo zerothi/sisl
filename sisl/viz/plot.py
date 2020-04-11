@@ -1041,127 +1041,17 @@ class Plot(ShortCutable, Configurable):
 
         '''
 
-        if getattr(self, "childPlots", None):
-            #Then it is a multiple plot and we need to create the figure from the child plots
-
-            self.clear(); frames = []
-
-            if getattr(self, "_isAnimation", False):
-
-                self.data = self.childPlots[0].data
-
-                # Get the names for each frame
-                frameNames = []
-                for i, plot in enumerate(self.childPlots):
-                    try:
-                        frame_name = self._getFrameNames(i)
-                    except Exception:
-                        frame_name = f"Frame {i+1}"
-                    frameNames.append(frame_name)
-                
-                maxN = np.max([[len(plot.data) for plot in self.childPlots]])
-                
-                for frameName , plot in zip(frameNames , self.childPlots):
-                    
-                    data = plot.data
-                    nTraces = len(data)
-                    if nTraces < maxN:
-                        nAddTraces = maxN - nTraces
-                        data = [*data, *np.full(nAddTraces, {"type": "scatter", "x":  [0], "y": [0], "visible": False})]
-
-                    frames = [*frames, {'name': frameName, 'data': data, "layout": plot.settingsGroup("layout")}]
-                
-                self.frames = frames
-
-            else:
-
-                data = []
-                for plot in self.childPlots:
-                    data = [*data, *plot.data]
-                
-                self.data = data
-            
         framesLayout = {}
 
-        #If it is an animation, extra work needs to be done.
-        if getattr(self, 'frames', False):
+        if getattr(self, "childPlots", None):
+            #Then it is a multiple plot and we need to create the figure from the child plots
+            self.clear();
 
-            #This will create the buttons needed no control the animation
+            if getattr(self, "_isAnimation", False):
+                framesLayout = Animation._build_frames(self)
 
-            #Animate method
-            steps = [
-                {"args": [
-                [frame["name"]],
-                {"frame": {"duration": int(self.setting("frameDuration")), "redraw": self.setting("redraw")},
-                "mode": "immediate",
-                "transition": {"duration": 300}}
-            ],
-                "label": frame["name"],
-                "method": "animate"} for frame in self.frames
-            ]
-
-            #Update method
-            """ steps = []
-            breakpoints = np.array([len(frame["data"]) for frame in self.frames]).cumsum()
-            for i, frame in enumerate(self.frames):
-                
-                steps.append({
-                    "label": frame["name"],
-                    "method": "restyle",
-                    "args": [
-                        {"x": [data["x"] for data in frame["data"]],
-                        "y": [data["y"] for data in frame["data"]],
-                        "visible": [data["visible"] for data in frame["data"]],
-                        "mode": [data["mode"] for data in frame["data"]],
-                        "marker": [data["marker"] for data in frame["data"]],
-                        "line": [data["line"] for data in frame["data"]]},
-                    ]
-                }) 
-             """
-            framesLayout = {
-
-                "sliders": [
-                    {
-                        "active": 0,
-                        "yanchor": "top",
-                        "xanchor": "left",
-                        "currentvalue": {
-                            "font": {"size": 20},
-                            #"prefix": "Bands file:",
-                            "visible": True,
-                            "xanchor": "right"
-                        },
-                        #"transition": {"duration": 300, "easing": "cubic-in-out"},
-                        "pad": {"b": 10, "t": 50},
-                        "len": 0.9,
-                        "x": 0.1,
-                        "y": 0,
-                        "steps": steps
-                    }
-                ],
-                
-                "updatemenus": [
-
-                    {'type': 'buttons',
-                    'buttons': [
-                        {
-                            'label': 'Play',
-                            'method': 'animate',
-                            'args': [None, {"frame": {"duration": int(self.setting("frameDuration")), "redraw": True},
-                                            "fromcurrent": True, "transition": {"duration": 100,
-                                                                                "easing": "quadratic-in-out"}}],
-                        },
-
-                        {
-                            'label': 'Pause',
-                            'method': 'animate',
-                            'args': [ [None], {"frame": {"duration": 0}, "redraw": True,
-                                            'mode': 'immediate',
-                                            "transition": {"duration": 0}}],
-                        }
-                    ]}
-                ]
-            }
+            else:
+                MultiplePlot._getFigure(self)
 
         self.layout = {
             'hovermode': 'closest',
@@ -1724,6 +1614,14 @@ class MultiplePlot(Plot):
             'share_attr': lambda key, val: self.set_shared_attr(key, val)
         }
 
+    def _getFigure(self):
+
+        data = []
+        for plot in self.childPlots:
+            data = [*data, *plot.data]
+
+        self.data = data
+
     def initAllPlots(self, updateFig = True, try_sharing=True):
 
         try:
@@ -1928,6 +1826,23 @@ class Animation(MultiplePlot):
             help='''Whether each frame of the animation should be redrawn<br>
             If False, the animation will try to interpolate between one frame and the other<br>
             Set this to False if you are sure that the frames contain the same number of traces, otherwise new traces will not appear.'''
+        ),
+
+        DropdownInput(
+            key='ani_method', name="Animation method",
+            default=None,
+            group='animation',
+            params={
+                "placeholder": "Choose the animation method...",
+                "options": [
+                    {"label": "Update", "value": "update"},
+                    {"label": "Animate", "value": "animate"},
+                ],
+                "isClearable": True,
+                "isSearchable": True,
+                "isMulti": False
+            },
+            help='''It determines how the animation is rendered. '''
         )
 
     )
@@ -1939,6 +1854,154 @@ class Animation(MultiplePlot):
         
         super().__init__(*args, **kwargs, _plugins=_plugins)
     
+    def _build_frames(self):
+
+        # Get the names for each frame
+        frameNames = []
+        for i, plot in enumerate(self.childPlots):
+            try:
+                frame_name = self._getFrameNames(i)
+            except Exception:
+                frame_name = f"Frame {i+1}"
+            frameNames.append(frame_name)
+        
+        ani_method = self.setting('ani_method')
+        if ani_method is None:
+            same_traces = np.unique(
+                [len(plot.data) for plot in self.childPlots]
+            ).shape[0] == 1
+            
+            ani_method = "animate" if same_traces else "update"
+        
+        # Choose the method that we need to run in order to get the figure
+        if ani_method == "animate":
+            figure_builder = self._figure_animate_method
+        elif ani_method == "update":
+            figure_builder = self._figure_update_method
+
+        steps, updatemenus = figure_builder(frameNames)
+
+        framesLayout = {
+
+            "sliders": [
+                {
+                    "active": 0,
+                    "yanchor": "top",
+                    "xanchor": "left",
+                    "currentvalue": {
+                        "font": {"size": 20},
+                        #"prefix": "Bands file:",
+                        "visible": True,
+                        "xanchor": "right"
+                    },
+                    #"transition": {"duration": 300, "easing": "cubic-in-out"},
+                    "pad": {"b": 10, "t": 50},
+                    "len": 0.9,
+                    "x": 0.1,
+                    "y": 0,
+                    "steps": steps
+                }
+            ],
+
+            "updatemenus": updatemenus
+        }
+
+        return framesLayout
+    
+    def _figure_update_method(self, frame_names):
+        '''
+        In the update method, we give all the traces to data, and we are just going to toggle
+        their visibility depending on which 'frame' needs to be displayed.
+        '''
+
+        # Add all the traces
+        for i, (frame_name, plot) in enumerate(zip(frame_names, self.childPlots)):
+
+            visible = i == 0
+
+            self.add_traces([{
+                **trace.to_plotly_json(),
+                'customdata': [{'frame': frame_name, "iFrame": i}],
+                'visible': visible
+            } for trace in plot.data])
+        
+        # Generate the steps
+        steps = []
+        for i, frame_name in enumerate(frame_names):
+
+            steps.append({
+                "label": frame_name,
+                "method": "restyle",
+                "args": [{"visible": [trace.customdata[0]["iFrame"] == i for trace in self.data]}]
+            })
+
+        # WE SHOULD DEFINE PLAY AND PAUSE BUTTONS TO BE RENDERED IN JUPYTER'S NOTEBOOK HERE
+        # IT IS IMPOSSIBLE TO PASS CONDITIONS TO DECIDE WHAT TO DISPLAY USING PLOTLY JSON
+        self.animate_widgets = []
+
+        return steps, []
+
+    def _figure_animate_method(self, frame_names):
+        '''
+        In the animate method, we explicitly define frames, And the transition from one to the other
+        will be animated
+        '''
+
+        # Data will actually only be the first frame
+        self.data = self.childPlots[0].data
+
+        frames = []
+        
+        maxN = np.max([[len(plot.data) for plot in self.childPlots]])
+        for frame_name, plot in zip(frame_names, self.childPlots):
+
+            data = plot.data
+            nTraces = len(data)
+            if nTraces < maxN:
+                nAddTraces = maxN - nTraces
+                data = [
+                    *data, *np.full(nAddTraces, {"type": "scatter", "x":  [0], "y": [0], "visible": False})]
+
+            frames = [
+                *frames, {'name': frame_name, 'data': data, "layout": plot.settingsGroup("layout")}]
+
+        self.frames = frames
+
+        steps = [
+            {"args": [
+            [frame["name"]],
+            {"frame": {"duration": int(self.setting("frameDuration")), "redraw": self.setting("redraw")},
+            "mode": "immediate",
+            "transition": {"duration": 300}}
+        ],
+            "label": frame["name"],
+            "method": "animate"} for frame in self.frames
+        ]
+
+        updatemenus = [
+
+            {'type': 'buttons',
+            'buttons': [
+                {
+                    'label': 'Play',
+                    'method': 'animate',
+                    'args': [None, {"frame": {"duration": int(self.setting("frameDuration")), "redraw": True},
+                                    "fromcurrent": True, "transition": {"duration": 100,
+                                                                        "easing": "quadratic-in-out"}}],
+                },
+
+                {
+                    'label': 'Pause',
+                    'method': 'animate',
+                    'args': [ [None], {"frame": {"duration": 0}, "redraw": True,
+                                    'mode': 'immediate',
+                                    "transition": {"duration": 0}}],
+                }
+            ]}
+        ]
+
+        return steps, updatemenus      
+
     def merge_frames(self):
         '''
         Merges all frames of an animation into one.

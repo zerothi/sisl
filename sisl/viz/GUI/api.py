@@ -189,7 +189,6 @@ class PlotManager(Resource):
 
 				plot = session.newPlot( **requestBody )
 
-			print(plot._getDictForGUI()["shortcuts"])
 			response = jsonify({
 				"statusCode": 200,
 				"status": "Options delivered",
