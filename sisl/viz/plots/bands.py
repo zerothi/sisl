@@ -415,5 +415,6 @@ class BandsPlot(Plot):
                     'text': [f'Gap: {self.gap:.3f} eV', ''],
                     'marker':{'color': gap_color },
                     'line': {'color': gap_color},
+                    'name': 'Gap',
                     'textposition': 'top right',
                 })
