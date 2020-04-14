@@ -3,10 +3,11 @@ from xarray import DataArray
 
 import sisl
 from ..plot import Plot
+from .bands import BandsPlot
 from ..input_fields import ProgramaticInput, RangeSlider
 from ..input_fields.range import ErangeInput
 
-class FatbandsPlot(Plot):
+class FatbandsPlot(BandsPlot):
 
     _plotType = 'Fatbands'
 
@@ -17,103 +18,71 @@ class FatbandsPlot(Plot):
             default=[]
         ),
 
-        ErangeInput(
-            key="Erange",
-            help="Energy range where the bands are displayed."
-        ),
-
-        RangeSlider(
-            key="bandsRange", name="Bands range",
-            default=None,
-            width="s90%",
-            params={
-                'step': 1,
-            },
-            help="The bands that should be displayed. Only relevant if Erange is None."
-        ),
     )
+
+    def _readSiesOut(self):
+        raise NotImplementedError
 
     def _readfromH(self):
 
-        self.bands_path = sisl.BandStructure(self.H, [[0, 0, 0], [0.5, 0, 0]], 10)
+        self.weights = []
 
-        # Inform that we will want results as datarrays
-        self.bands_path.asdataarray()
+        # Define the function that will "catch" each eigenstate and 
+        # build the weights array. See BandsPlot._readFromH to understand where
+        # this will go exactly
+        def _weights_from_eigenstate(eigenstate, plot):
+            plot.weights.append(eigenstate.norm2(sum=False))
 
-        eigvals = []
+        self.updateSettings(eigenstate_map=_weights_from_eigenstate, updateFig=False, _nolog=True)
 
-        def wrap_weights(eigenstate):
-            eigvals.append(eigenstate.eig)
-            return eigenstate.norm2(sum=False)
+        # We make bands plot read the bands, which will also populate the weights
+        # thanks to the above step
+        BandsPlot._readfromH(self)
 
-        self.weights = self.bands_path.eigenstate(
-            coords=('band', 'orb'),
-            wrap=wrap_weights
-        )
+        # Then we just convert the weights to a DataArray
+        self.weights = np.array(self.weights).astype(float)
 
-        eigvals = np.array(eigvals)
-
-        self.eigvals = DataArray(
-            eigvals,
+        self.weights = DataArray(
+            self.weights,
             coords={
-                'k': np.arange(0, eigvals.shape[0]),
-                'band': np.arange(0, eigvals.shape[1])
+                'k': self.bands.k,
+                'band': np.arange(0, self.weights.shape[1]),
+                'orb': np.arange(0, self.weights.shape[2]),
             },
-            dims=('k', 'band')
+            dims=('k', 'band', 'orb')
         )
-
-    def _afterRead(self):
-
-        # Make sure that the bandsRange control knows which bands are available
-        iBands = self.eigvals.band.values
-
-        if len(iBands) > 30:
-            iBands = iBands[np.linspace(0, len(iBands)-1, 20, dtype=int)]
-
-        self.modifyParam('bandsRange', 'inputField.params', {
-            **self.getParam('bandsRange')["inputField"]["params"],
-            "min": min(iBands),
-            "max": max(iBands),
-            "allowCross": False,
-            "marks": {int(i): str(i) for i in iBands},
-        })
 
     def _setData(self):
 
-        Erange = self.setting('Erange')
-        # Get the bands that matter for the plot
-        if Erange is None:
-            bandsRange = self.setting("bandsRange")
+        # Avoid bands being displayed in the legend individually (it would be a mess)
+        self.updateSettings(add_band_trace_data=lambda band, plot: {'showlegend': False}, updateFig=False, _nolog=True)
 
-            if bandsRange is None:
-                # If neither E range or bandsRange was provided, we will just plot the 15 bands below and above the fermi level
-                CB = int(self.eigvals.where(self.eigvals <= 0).argmax('band').max())
-                bandsRange = [int(max(self.eigvals["band"].min(), CB - 15)),
-                              int(min(self.eigvals["band"].max(), CB + 16))]
+        # We let the bands plot draw the bands
+        BandsPlot._setData(self, draw_before_bands=self._draw_fatbands)
+    
+    def _draw_fatbands(self):
 
-            iBands = np.arange(*bandsRange)
-            plot_eigvals = self.eigvals.where(
-                self.eigvals.band.isin(iBands), drop=True)
-            self.updateSettings(updateFig=False, Erange=[float(f'{val:.3f}') for val in [float(
-                plot_eigvals.min()), float(plot_eigvals.max())]], bandsRange=bandsRange, no_log=True)
-        else:
-            Erange = np.array(Erange)
-            plot_eigvals = self.eigvals.where((self.eigvals <= Erange[1]) & (
-                self.eigvals >= Erange[0])).dropna("band", "all")
-            self.updateSettings(updateFig=False, bandsRange=[int(
-                plot_eigvals['band'].min()), int(plot_eigvals['band'].max())], no_log=True)
+        # We get the bands range that is going to be plotted
+        # Remember that the BandsPlot will have updated this setting accordingly,
+        # so it's safe to use it directly
+        plotted_bands = self.setting("bandsRange")
         
-        plot_weights = self.weights.sel(band=plot_eigvals['band'])
+        #Get the bands that matter (spin polarization currently not implemented)
+        plot_eigvals = self.bands.sel(band=np.arange(*plotted_bands), spin=0) - self.fermi
+        # Get the weights that matter
+        plot_weights = self.weights.sel(band=np.arange(*plotted_bands))
 
+        # Get the groups of orbitals whose bands are requested
         groups = self.setting('groups')
-        
-        self.data = []
 
-        xs = self.bands_path.lineark()
+        # We are going to need a trace that goes forward and then back so that
+        # it is self-fillable
+        xs = self.bands.k.values
         area_xs = [*xs, *np.flip(xs)]
 
-        colors = {group["name"]: group["color"] for group in groups}
+        prev_traces = len(self.data)
 
+        # Let's plot each group of orbitals as an area that surrounds each band
         for group in groups:
 
             weights = plot_weights.sel(orb=group["orbitals"]).mean("orb")
@@ -129,13 +98,5 @@ class FatbandsPlot(Plot):
                 'legendgroup':group["name"],
                 'fill': 'toself'
             } for i, (band, band_weights) in enumerate(zip(plot_eigvals.T, weights.T))])
-
-        self.add_traces([{
-            'type': 'scatter',
-            'mode': 'lines',
-            'x': xs,
-            'y': band,
-            'line': {'color': 'black'},
-            'name': int(band['band']),
-            'showlegend': False,
-        } for band in plot_eigvals.T])
+        
+        #self.data = [*self.data[prev_traces:],*self.data[0:prev_traces]]

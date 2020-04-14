@@ -9,7 +9,7 @@ import shutil
 import sisl
 from ..plot import Plot, PLOTS_CONSTANTS
 from ..plotutils import sortOrbitals, copyParams, findFiles, runMultiple, calculateGap
-from ..input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput
+from ..input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput, FunctionInput
 from ..input_fields.range import ErangeInput
 
 class BandsPlot(Plot):
@@ -28,8 +28,7 @@ class BandsPlot(Plot):
     
     _parameters = (
 
-        TextInput(
-            key = "bandsFile", name = "Path to bands file",
+        TextInput(key = "bandsFile", name = "Path to bands file",
             width = "s100% m50% l33%",
             group="readdata",
             params = {
@@ -38,19 +37,32 @@ class BandsPlot(Plot):
             help = '''This parameter explicitly sets a .bands file. Otherwise, the bands file is attempted to read from the fdf file '''
         ),
 
-        ProgramaticInput(
-            key = "bandStructure", name = "bandStruct structure object",
+        ProgramaticInput(key = "bandStructure", name = "bandStruct structure object",
             default= None,
             help = "The bandStruct structure object to be used."
         ),
 
-        ErangeInput(
-            key="Erange",
+        FunctionInput(key="add_band_trace_data", name="Additional data for band traces",
+            default=None,
+            positional=["band", "plot"],
+            returns=[dict],
+            help='''A function that receives each band (as a DataArray) and adds data to the trace. It also recieves the plot object. 
+            The returned data may even overwrite the existing one, therefore it can be useful to fully customize your bands plot (individual style for each band if you want).'''
+        ),
+
+        FunctionInput(key="eigenstate_map", name="Eigenstate map function",
+            default=None,
+            positional=["eigenstate", "plot"],
+            returns=[],
+            help='''This function receives the eigenstate object for each k value when the bands are being extracted from a hamiltonian.
+            You can do whatever you want with it, the point of this function is to avoid running the diagonalization process twice.'''
+        ),
+
+        ErangeInput(key="Erange",
             help = "Energy range where the bands are displayed."
         ),
 
-        RangeSlider(
-            key = "bandsRange", name = "Bands range",
+        RangeSlider(key = "bandsRange", name = "Bands range",
             default = None,
             width = "s90%",
             params = {
@@ -59,8 +71,7 @@ class BandsPlot(Plot):
             help = "The bands that should be displayed. Only relevant if Erange is None."
         ),
 
-        QueriesInput(
-            key = "path", name = "Bands path",
+        QueriesInput(key = "path", name = "Bands path",
             default = [],
             help='''Path along which bands are drawn in units of reciprocal lattice vectors.<br>
             Note that if you want to provide a path programatically you can do it more easily with the `bandStructure` setting''',
@@ -116,8 +127,7 @@ class BandsPlot(Plot):
             ]
         ),
 
-        SwitchInput(
-            key="gap", name="Show gap",
+        SwitchInput(key="gap", name="Show gap",
             default=False,
             params={
                 'onLabel': 'Yes',
@@ -126,8 +136,7 @@ class BandsPlot(Plot):
             help="Whether the gap should be displayed in the plot"
         ),
 
-        SwitchInput(
-            key="directGapsOnly", name="Only direct gaps",
+        SwitchInput(key="directGapsOnly", name="Only direct gaps",
             default=False,
             params={
                 'onLabel': 'Yes',
@@ -136,8 +145,7 @@ class BandsPlot(Plot):
             help="Whether to show only gaps that are direct, according to the gap tolerance"
         ),
 
-        FloatInput(
-            key="gapTol", name="Gap tolerance",
+        FloatInput(key="gapTol", name="Gap tolerance",
             default=0.01,
             params={
                 'step': 0.001
@@ -147,26 +155,22 @@ class BandsPlot(Plot):
             Useful in cases where there are degenerated bands with exactly the same values.'''
         ),
 
-        ColorPicker(
-            key = "gapColor", name = "Gap color",
+        ColorPicker(key = "gapColor", name = "Gap color",
             default = None,
             help = "Color to display the gap"
         ),
 
-        FloatInput(
-            key = "bandsWidth", name = "Band lines width",
+        FloatInput(key = "bandsWidth", name = "Band lines width",
             default = 1,
             help = "Width of the lines that represent the bands"
         ),
 
-        ColorPicker(
-            key = "spinUpColor", name = "No spin/spin up line color",
+        ColorPicker(key = "spinUpColor", name = "No spin/spin up line color",
             default = "black",
             help = "Choose the color to display the bands. <br> This will be used for the spin up bands if the calculation is spin polarized"
         ),
 
-        ColorPicker(
-            key = "spinDownColor", name = "Spin down line color",
+        ColorPicker(key = "spinDownColor", name = "Spin down line color",
             default = "blue",
             help = "Choose the color for the spin down bands.<br>Only used if the calculation is spin polarized."
         ),
@@ -190,7 +194,7 @@ class BandsPlot(Plot):
 
             return [os.path.basename( childPlot.setting("bandsFile")) for childPlot in self.childPlots]
 
-        return BandsPlot.animated("bandsFile", bandsFiles, frameNames = _getFrameNames, wdir = wdir, **kwargs)
+        return self.__class__.animated("bandsFile", bandsFiles, frameNames = _getFrameNames, wdir = wdir, **kwargs)
 
     def _readfromH(self):
 
@@ -219,15 +223,27 @@ class BandsPlot(Plot):
                 bandStruct.set_parent(self.H)
             
         self.ticks = bandStruct.lineartick()
-        self.Ks = bandStruct.lineark()
         self.kPath = bandStruct._k
 
+        # We define a wrapper to get the values out of the eigenstates
+        # to give the possibility to the user to do something inbetween
+        # NOTE THAT THIS IS USED BY FAT BANDS TO GET THE WEIGHTS SIMULTANEOUSLY
+        eig_map = self.setting('eigenstate_map')
+        def bands_wrapper(eigenstate):
+            if callable(eig_map):
+                eig_map(eigenstate, self)
+            return eigenstate.eig
+
         # THIS DOES NOT SUPPORT SPIN!!!!!!!!!!!!!!!! (I think)
-        self.arr = bandStruct.as_dataarray().eigh(
+        self.bands = bandStruct.asdataarray().eigenstate(
+            wrap=bands_wrapper,
             coords=('band',),
         )
 
-        self.arr.attrs = {"ticks": self.ticks[0], "ticklabels": self.ticks[1]}
+        self.bands = self.bands.expand_dims('spin', axis=2)
+        self.bands['k'] = bandStruct.lineark()
+
+        self.bands.attrs = {"ticks": self.ticks[0], "ticklabels": self.ticks[1]}
 
     def _readSiesOut(self):
         
@@ -239,7 +255,7 @@ class BandsPlot(Plot):
 
         bandsFile = self.setting("bandsFile") or self.requiredFiles[0]
 
-        self.arr = self.get_sile(bandsFile).read_data(as_dataarray=True)
+        self.bands = self.get_sile(bandsFile).read_data(as_dataarray=True)
         self.fermi = 0.0 #Energies are already shifted
 
         # Inform of the path that it's being used if we can
@@ -264,11 +280,11 @@ class BandsPlot(Plot):
     
     def _afterRead(self):
 
+        self.isSpinPolarized = len(self.bands.spin.values) == 2
         self._calculateGaps()
-        self.isSpinPolarized = len(self.arr.spin.values) == 2
 
         # Make sure that the bandsRange control knows which bands are available
-        iBands = self.arr.band.values
+        iBands = self.bands.band.values
 
         if len(iBands) > 30:
             iBands = iBands[np.linspace(0, len(iBands)-1, 20, dtype=int)]
@@ -281,7 +297,7 @@ class BandsPlot(Plot):
             "marks": { int(i): str(i) for i in iBands },
         })
     
-    def _setData(self):
+    def _setData(self, draw_before_bands=None):
         
         '''
         Converts the bands dataframe into a data object for plotly.
@@ -301,43 +317,52 @@ class BandsPlot(Plot):
 
             if bandsRange is None:
                 # If neither E range or bandsRange was provided, we will just plot the 15 bands below and above the fermi level
-                CB = int(self.arr.where(self.arr <= 0).argmax('band').max())
-                bandsRange = [int(max(self.arr["band"].min(), CB - 15)), int(min(self.arr["band"].max(), CB + 16))]
+                CB = int(self.bands.where(self.bands <= 0).argmax('band').max())
+                bandsRange = [int(max(self.bands["band"].min(), CB - 15)), int(min(self.bands["band"].max(), CB + 16))]
 
             iBands = np.arange(*bandsRange)
-            filtered_bands = self.arr.where(self.arr.band.isin(iBands), drop=True)
+            filtered_bands = self.bands.where(self.bands.band.isin(iBands), drop=True)
             self.updateSettings(updateFig=False, Erange=[float(f'{val:.3f}') for val in [float(filtered_bands.min()), float(filtered_bands.max())]], bandsRange=bandsRange, no_log=True)
         else:
             Erange = np.array(Erange) + self.fermi
-            filtered_bands = self.arr.where( (self.arr <= Erange[1]) & (self.arr >= Erange[0])).dropna("band", "all")
+            filtered_bands = self.bands.where( (self.bands <= Erange[1]) & (self.bands >= Erange[0])).dropna("band", "all")
             self.updateSettings(updateFig=False, bandsRange=[int(filtered_bands['band'].min()), int(filtered_bands['band'].max())], no_log=True)
 
+        add_band_trace_data = self.setting("add_band_trace_data") 
+        if not callable(add_band_trace_data):
+            add_band_trace_data = lambda * args, **kwargs: {}
+        
+        # Give the oportunity to draw before bands are drawn (used by Fatbands)
+        if callable(draw_before_bands):
+            draw_before_bands()
+
         #Define the data of the plot as a list of dictionaries {x, y, 'type', 'name'}
-        self.data = np.ravel([[{
+        self.add_traces(np.ravel([[{
                         'type': 'scatter',
                         'x': band.k.values,
                         'y': (band - self.fermi).values,
                         'mode': 'lines', 
-                        'name': "{} spin {}".format( band.band.values, PLOTS_CONSTANTS["spins"][band.spin.values]) if self.isSpinPolarized else str(band.band.values) , 
-                        'line': {"color": [self.setting("spinUpColor"),self.setting("spinDownColor")][band.spin.values], 'width' : self.setting("bandsWidth")},
+                        'name': "{} spin {}".format( band.band.values, PLOTS_CONSTANTS["spins"][spin]) if self.isSpinPolarized else str(band.band.values) , 
+                        'line': {"color": [self.setting("spinUpColor"),self.setting("spinDownColor")][spin], 'width' : self.setting("bandsWidth")},
                         'hoverinfo':'name',
                         "hovertemplate": '%{y:.2f} eV',
-                    } for band in spin_bands] for spin_bands in filtered_bands.transpose()]).tolist()
+                        **add_band_trace_data(band, self)
+                    } for band in spin_bands] for spin_bands, spin in zip(filtered_bands.transpose(), filtered_bands.spin.values)]).tolist())
         
         self._drawGaps()
 
     def _afterGetFigure(self):
 
         #Add the ticks
-        self.figure.layout.xaxis.tickvals = getattr(self.arr, "ticks", None)
-        self.figure.layout.xaxis.ticktext = getattr(self.arr, "ticklabels", None)
+        self.figure.layout.xaxis.tickvals = getattr(self.bands, "ticks", None)
+        self.figure.layout.xaxis.ticktext = getattr(self.bands, "ticklabels", None)
         self.figure.layout.yaxis.range = np.array(self.setting("Erange")) + self.fermi
     
     def _calculateGaps(self):
 
         # Calculate the band gap to store it
-        above_fermi = self.arr.where(self.arr > 0)
-        below_fermi = self.arr.where(self.arr < 0)
+        above_fermi = self.bands.where(self.bands > 0)
+        below_fermi = self.bands.where(self.bands < 0)
         CBbot = above_fermi.min()
         VBtop = below_fermi.max()
 
@@ -349,7 +374,7 @@ class BandsPlot(Plot):
         self.gap_info = {
             'k': (VB["k"].values, CB['k'].values),
             'bands': (VB["band"].values, CB["band"].values),
-            'spin': (VB["spin"].values, CB["spin"].values),
+            'spin': (VB["spin"].values, CB["spin"].values) if self.isSpinPolarized else (0,0),
             'Es': [float(VBtop), float(CBbot)]
         }
 

@@ -1983,7 +1983,7 @@ class Animation(MultiplePlot):
             {'type': 'buttons',
             'buttons': [
                 {
-                    'label': 'Play',
+                    'label': '▶',
                     'method': 'animate',
                     'args': [None, {"frame": {"duration": int(self.setting("frameDuration")), "redraw": True},
                                     "fromcurrent": True, "transition": {"duration": 100,
@@ -1991,7 +1991,7 @@ class Animation(MultiplePlot):
                 },
 
                 {
-                    'label': 'Pause',
+                    'label': '⏸',
                     'method': 'animate',
                     'args': [ [None], {"frame": {"duration": 0}, "redraw": True,
                                     'mode': 'immediate',

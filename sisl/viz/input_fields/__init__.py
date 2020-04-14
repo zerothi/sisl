@@ -2,7 +2,7 @@ from .array import Array1dInput, Array2dInput
 from .color import ColorPicker
 from .dropdown import DropdownInput
 from .number import IntegerInput, FloatInput
-from .programatic import ProgramaticInput
+from .programatic import ProgramaticInput, FunctionInput
 from .queries import QueriesInput
 from .range import RangeInput
 from .rangeslider import RangeSlider
