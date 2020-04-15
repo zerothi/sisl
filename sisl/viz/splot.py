@@ -77,6 +77,8 @@ def splot(argv=None, sile=None):
     description = """
 This is a simple command to plot a file. It will get more complex, but at the moment it just plots with default settings
 and shows the plot.
+
+Well, you can also save it by providing a path in the second argument.
     """
 
     if argv is not None:
@@ -124,6 +126,9 @@ and shows the plot.
     plot = Plot(argv[0])
 
     plot.show()
+
+    if len(argv) > 1:
+        plot.save(argv[1])
 
     # We are good to go!!!
     #args = p.parse_args(argv, namespace=ns)
