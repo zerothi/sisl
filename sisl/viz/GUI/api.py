@@ -333,6 +333,17 @@ api.add_resource(TabManager, '/sislGUI/tab', '/sislGUI/tab/<string:tabID>' )
 api.add_resource(PlotManager, '/sislGUI/plot','/sislGUI/plot/<string:plotID>')
 
 def set_session(new_session):
+	'''
+	Sets a new session for the GUI.
+
+	WARNING: The previous session will be lost.
+	Save it first with `session.save()` if you want to keep it.
+
+	Parameters
+	----------
+	new_session: Session
+		The new session object to set as the GUI's session
+	'''
 	global session
 	session = new_session
 
