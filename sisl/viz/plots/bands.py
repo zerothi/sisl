@@ -207,7 +207,11 @@ class BandsPlot(Plot):
                 self.setupHamiltonian()
 
             #Get the requested path
-            self.path = [point for point in self.setting("path") if point["active"]]
+            self.path = self.setting('path')
+            if self.path and len(self.path > 1):
+                self.path = [point for point in self.setting("path") if point["active"]]
+            else:
+                raise Exception(f"You need to provide at least 2 points of the path to draw the bands. Please update the 'path' setting. The current path is: {self.path}")
 
             bandStruct = sisl.BandStructure(
                 self.H,
@@ -240,7 +244,7 @@ class BandsPlot(Plot):
             coords=('band',),
         )
 
-        self.bands = self.bands.expand_dims('spin', axis=2)
+        self.bands = self.bands.expand_dims('spin', axis=1)
         self.bands['k'] = bandStruct.lineark()
 
         self.bands.attrs = {"ticks": self.ticks[0], "ticklabels": self.ticks[1]}
@@ -347,7 +351,7 @@ class BandsPlot(Plot):
                         'hoverinfo':'name',
                         "hovertemplate": '%{y:.2f} eV',
                         **add_band_trace_data(band, self)
-                    } for band in spin_bands] for spin_bands, spin in zip(filtered_bands.transpose(), filtered_bands.spin.values)]).tolist())
+                        } for band in spin_bands] for spin_bands, spin in zip(filtered_bands.transpose('spin', 'band', 'k'), filtered_bands.spin.values)]).tolist())
         
         self._drawGaps()
 
