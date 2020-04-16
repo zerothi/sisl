@@ -9,6 +9,7 @@ dependencies:
   - python=3.6
   - pip
   - setuptools
+  - cython
   - pyparsing>=1.5.7
   - numpy>=1.13
   - scipy
