@@ -21,6 +21,9 @@ import argparse
 # pkg_resources are part of setuptools
 import pkg_resources
 
+# We should *always* import setuptools prior to Cython/distutils
+import setuptools
+
 
 # Define a list of minimum versions
 min_version ={
@@ -54,8 +57,6 @@ if _CYTHON_INSTALLED:
 
     cython = True
 else:
-    # override (it does nothing anyways)
-    cython_build_ext = build_ext
     cython = False
 
 
@@ -90,15 +91,17 @@ if linetrace:
 # We will *only* use setuptools
 # Although setuptools is not shipped with the standard library, I think
 # this is ok since it should get installed pretty easily.
-from distutils.command.build import build # just to have it before Cython
-from setuptools.command.build_ext import build_ext
-from setuptools.command.sdist import sdist
 from setuptools import Command, Extension
 from setuptools import find_packages
-from setuptools import setup
+
 # Patch to allow fortran sources in setup
+# build_ext requires numpy setup
+# Also for extending build schemes we require build_ext from numpy.distutils
+from numpy.distutils.command.build_ext import build_ext as numpy_build_ext
 from numpy.distutils.core import Extension as FortranExtension
 from numpy.distutils.core import setup
+if not cython:
+    cython_build_ext = numpy_build_ext
 
 
 # Custom command classes
@@ -239,10 +242,13 @@ for name, data in ext_fortran.items():
     extensions.append(ext)
 
 
-class EnsureBuildExt(build_ext):
+class EnsureBuildExt(numpy_build_ext):
     """
     Override build-ext to check whether compilable sources are present
     This merely pretty-prints a better error message.
+
+    Note we require build_ext to inherit from numpy.distutils since
+    we need fortran sources.
     """
 
     def check_cython_extensions(self, extensions):
@@ -258,7 +264,7 @@ class EnsureBuildExt(build_ext):
 
     def build_extensions(self):
         self.check_cython_extensions(self.extensions)
-        build_ext.build_extensions(self)
+        numpy_build_ext.build_extensions(self)
 
 # Override build_ext command (typically called by setuptools)
 cmdclass["build_ext"] = EnsureBuildExt
@@ -338,8 +344,8 @@ REVISION_YEAR = 2020
 
 
 DISTNAME = "sisl"
-LICENSE = 'LGPLv3',
-AUTHOR = "Nick Papior"
+LICENSE = "LGPLv3",
+AUTHOR = "sisl developers"
 URL = "https://github.com/zerothi/sisl",
 DOWNLOAD_URL = "https://github.com/zerothi/sisl/releases"
 PROJECT_URLS = {
@@ -393,9 +399,9 @@ setuptools_kwargs = {
 
 
 def readme():
-    if not osp.exists('README.md'):
+    if not osp.exists("README.md"):
         return ""
-    return open('README.md', 'r').read()
+    return open("README.md", "r").read()
 
 metadata = dict(
     name=DISTNAME,
@@ -409,11 +415,11 @@ metadata = dict(
     packages=find_packages(include=["sisl", "sisl.*"]),
     ext_modules=cythonizer(extensions, compiler_directives=directives),
     entry_points={
-        'console_scripts':
-        ['sgeom = sisl.geometry:sgeom',
-         'sgrid = sisl.grid:sgrid',
-         'sdata = sisl.utils.sdata:sdata',
-         'sisl = sisl.utils.sdata:sdata']
+        "console_scripts":
+        ["sgeom = sisl.geometry:sgeom",
+         "sgrid = sisl.grid:sgrid",
+         "sdata = sisl.utils.sdata:sdata",
+         "sisl = sisl.utils.sdata:sdata"]
     },
     classifiers=CLASSIFIERS,
     platforms="any",
@@ -423,7 +429,7 @@ metadata = dict(
 )
 
 cwd = osp.abspath(osp.dirname(__file__))
-if not osp.exists(osp.join(cwd, 'PKG-INFO')):
+if not osp.exists(osp.join(cwd, "PKG-INFO")):
     # Generate Cython sources, unless building from source release
     # generate_cython()
     pass
@@ -435,55 +441,55 @@ def git_version():
     def _minimal_ext_cmd(cmd):
         # construct minimal environment
         env = {}
-        for k in ['SYSTEMROOT', 'PATH']:
+        for k in ["SYSTEMROOT", "PATH"]:
             v = os.environ.get(k)
             if v is not None:
                 env[k] = v
         # LANGUAGE is used on win32
-        env['LANGUAGE'] = 'C'
-        env['LANG'] = 'C'
-        env['LC_ALL'] = 'C'
+        env["LANGUAGE"] = "C"
+        env["LANG"] = "C"
+        env["LC_ALL"] = "C"
         out = subprocess.Popen(cmd, stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE, env=env).communicate()[0]
-        return out.strip().decode('ascii')
+        return out.strip().decode("ascii")
 
     current_path = osp.dirname(osp.realpath(__file__))
 
     try:
         # Get top-level directory
-        git_dir = _minimal_ext_cmd(['git', 'rev-parse', '--show-toplevel'])
+        git_dir = _minimal_ext_cmd(["git", "rev-parse", "--show-toplevel"])
         # Assert that the git-directory is consistent with this setup.py script
         if git_dir != current_path:
-            raise ValueError('Not executing the top-setup.py script')
+            raise ValueError("Not executing the top-setup.py script")
 
         # Get latest revision tag
-        rev = _minimal_ext_cmd(['git', 'rev-parse', 'HEAD'])
+        rev = _minimal_ext_cmd(["git", "rev-parse", "HEAD"])
         # Get latest tag
-        tag = _minimal_ext_cmd(['git', 'describe', '--abbrev=0'])
+        tag = _minimal_ext_cmd(["git", "describe", "--abbrev=0"])
         # Get number of commits since tag
-        count = _minimal_ext_cmd(['git', 'rev-list', tag + '..', '--count'])
+        count = _minimal_ext_cmd(["git", "rev-list", tag + "..", "--count"])
         if len(count) == 0:
-            count = '1'
+            count = "1"
         # Get year
-        year = int(_minimal_ext_cmd(['git', 'show', '-s', '--format=%ci']).split('-')[0])
-        print('sisl-install: using git revision')
+        year = int(_minimal_ext_cmd(["git", "show", "-s", "--format=%ci"]).split("-")[0])
+        print("sisl-install: using git revision")
     except Exception as e:
-        print('sisl-install: using internal shipped revisions')
+        print("sisl-install: using internal shipped revisions")
         # Retain the revision name
         rev = GIT_REVISION
         # Assume it is on tag
-        count = '0'
+        count = "0"
         year = REVISION_YEAR
 
     return rev, int(count), year
 
 
-def write_version(filename='sisl/info.py'):
-    version_str = """# This file is automatically generated from sisl setup.py
+def write_version(filename="sisl/info.py"):
+    version_str = '''# This file is automatically generated from sisl setup.py
 released = {released}
 
 # Git information (specific commit, etc.)
-git_revision = '{git}'
+git_revision = "{git}"
 git_revision_short = git_revision[:7]
 git_count = {count}
 
@@ -491,41 +497,41 @@ git_count = {count}
 major   = {version[0]}
 minor   = {version[1]}
 micro   = {version[2]}
-version = '.'.join(map(str,[major, minor, micro]))
+version = ".".join(map(str,[major, minor, micro]))
 release = version
 
 if git_count > 2 and not released:
     # Add git-revision to the version string
-    version += '+' + str(git_count)
+    version += "+" + str(git_count)
 
 # BibTeX information if people wish to cite
-bibtex = '''@misc{{{{zerothi_sisl,
+bibtex = f"""@misc{{{{zerothi_sisl,
     author = {{{{Papior, Nick}}}},
-    title  = {{{{sisl: v{{0}}}}}},
+    title  = {{{{sisl: v{{version}}}}}},
     year   = {{{{{rev_year}}}}},
     doi    = {{{{10.5281/zenodo.597181}}}},
     url    = {{{{https://doi.org/10.5281/zenodo.597181}}}},
-}}}}'''.format(version)
+}}}}"""
 
 def cite():
     return bibtex
-"""
+'''
     # If we are in git we try and fetch the
     # git version as well
     GIT_REV, GIT_COUNT, REV_YEAR = git_version()
-    with open(filename, 'w') as fh:
+    with open(filename, "w") as fh:
         fh.write(version_str.format(version=[MAJOR, MINOR, MICRO],
                                     released=ISRELEASED,
                                     count=GIT_COUNT,
                                     rev_year=REV_YEAR, git=GIT_REV))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
 
     # First figure out if we should define the
     # version file
     try:
-        only_idx = sys.argv.index('only-version')
+        only_idx = sys.argv.index("only-version")
     except:
         only_idx = 0
     if only_idx > 0:
@@ -543,15 +549,15 @@ if __name__ == '__main__':
         # if allowed
         write_version()
     except Exception as e:
-        print('Could not write sisl/info.py:')
+        print("Could not write sisl/info.py:")
         print(str(e))
 
     if ISRELEASED:
-        metadata['version'] = VERSION
+        metadata["version"] = VERSION
     else:
-        metadata['version'] = VERSION + '-dev'
+        metadata["version"] = VERSION + "-dev"
 
     # Freeze to support parallel compilation when using spawn instead of fork
-    #multiprocessing.freeze_support()
+    multiprocessing.freeze_support()
     # Main setup of python modules
     setup(**metadata)
