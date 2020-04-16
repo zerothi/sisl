@@ -109,7 +109,7 @@ class SparseOrbitalBZ(SparseOrbital):
 
     def __repr__(self):
         g = self.geometry
-        return f"<sisl.{self.__class__.__name__} na={g.na}, no={g.no}, nsc={g.nsc}, dim={self.dim}, nnz={self.nnz}>"
+        return f"<{self.__module__}.{self.__class__.__name__} na={g.na}, no={g.no}, nsc={g.nsc}, dim={self.dim}, nnz={self.nnz}>"
 
     @property
     def S(self):
@@ -688,7 +688,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             Spin.NONCOLINEAR: "noncolinear",
             Spin.SPINORBIT: "spinorbit"
             }.get(self.spin._kind, f"unkown({self.spin._kind})")
-        return f"<sisl.{self.__class__.__name__} na={g.na}, no={g.no}, nsc={g.nsc}, dim={self.dim}, nnz={self.nnz}, spin={spin}>"
+        return f"<{self.__module__}.{self.__class__.__name__} na={g.na}, no={g.no}, nsc={g.nsc}, dim={self.dim}, nnz={self.nnz}, spin={spin}>"
 
     def _Pk_unpolarized(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr'):
         r""" Sparse matrix (``scipy.sparse.csr_matrix``) at `k`

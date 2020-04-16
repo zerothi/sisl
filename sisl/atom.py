@@ -1176,7 +1176,7 @@ class Atom(object):
         return self.__class__.__name__ + '{{{0}, Z: {1:d}, mass(au): {2:.5f}, maxR: {3:.5f},\n {4}\n}}'.format(self.tag, self.Z, self.mass, self.maxR(), orbs)
 
     def __repr__(self):
-        return f"<sisl.{self.__class__.__name__} {self.tag}, Z={self.Z}, M={self.mass}, maxR={self.maxR()}, no={len(self.orbital)}>"
+        return f"<{self.__module__}.{self.__class__.__name__} {self.tag}, Z={self.Z}, M={self.mass}, maxR={self.maxR()}, no={len(self.orbital)}>"
 
     def __len__(self):
         """ Return number of orbitals in this atom """
@@ -1648,7 +1648,7 @@ class Atoms(object):
         return s + '}'
 
     def __repr__(self):
-        return f"<sisl.{self.__class__.__name__} nspecies={len(self._atom)}, na={len(self)}, no={self.no}>"
+        return f"<{self.__module__}.{self.__class__.__name__} nspecies={len(self._atom)}, na={len(self)}, no={self.no}>"
 
     def __len__(self):
         """ Return number of atoms in the object """

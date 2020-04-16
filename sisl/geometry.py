@@ -585,7 +585,7 @@ class Geometry(SuperCellChild):
 
     def __repr__(self):
         """ A simple, short string representation. """
-        return f"<sisl.{self.__class__.__name__} na={self.na}, no={self.no}, nsc={self.nsc}>"
+        return f"<{self.__module__}.{self.__class__.__name__} na={self.na}, no={self.no}, nsc={self.nsc}>"
 
     def iter(self):
         """ An iterator over all atomic indices

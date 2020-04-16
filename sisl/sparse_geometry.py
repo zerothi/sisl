@@ -220,8 +220,7 @@ class _SparseGeometry(object):
 
     def __repr__(self):
         g = self.geometry
-        shape = 'x'.join(map(str, self._csr.shape[:-1]))
-        return f"<sisl.{self.__class__.__name__} shape={shape}, dim={self.dim}, nnz={self.nnz}, kind={self.dkind}>"
+        return f"<{self.__module__}.{self.__class__.__name__} shape={self._csr.shape[:-1]}, dim={self.dim}, nnz={self.nnz}, kind={self.dkind}>"
 
     def __getattr__(self, attr):
         """ Overload attributes from the hosting geometry
