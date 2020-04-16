@@ -1464,6 +1464,9 @@ class SparseCSR(object):
         ints = self.shape[:] + (self.nnz,)
         return self.__class__.__name__ + '{{dim={2}, kind={kind},\n  rows: {0}, columns: {1},\n  non-zero: {3}\n}}'.format(*ints, kind=self.dkind)
 
+    def __repr__(self):
+        return f"<sisl.{self.__class__.__name__} shape={self.shape}, kind={self.dkind}, nnz={self.nnz}>"
+
     ###############################
     # Overload of math operations #
     ###############################

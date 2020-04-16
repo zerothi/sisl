@@ -583,6 +583,10 @@ class Geometry(SuperCellChild):
             s += ',\n ' + str(self.names).replace('\n', '\n ')
         return (s + ',\n maxR: {0:.5f},\n {1}\n}}'.format(self.maxR(), str(self.sc).replace('\n', '\n '))).strip()
 
+    def __repr__(self):
+        """ A simple, short string representation. """
+        return f"<sisl.{self.__class__.__name__} na={self.na}, no={self.no}, nsc={self.nsc}>"
+
     def iter(self):
         """ An iterator over all atomic indices
 
