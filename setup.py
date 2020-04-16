@@ -27,7 +27,10 @@ import setuptools
 
 # Define a list of minimum versions
 min_version ={
+    "python": "3.6",
     "numpy": "1.13",
+    "pyparsing": "1.5.7",
+    "xarray": "0.10.0",
 }
 
 # Macros for use when compiling stuff
@@ -97,6 +100,7 @@ from setuptools import find_packages
 # Patch to allow fortran sources in setup
 # build_ext requires numpy setup
 # Also for extending build schemes we require build_ext from numpy.distutils
+from distutils.command.sdist import sdist
 from numpy.distutils.command.build_ext import build_ext as numpy_build_ext
 from numpy.distutils.core import Extension as FortranExtension
 from numpy.distutils.core import setup
@@ -105,7 +109,7 @@ if not cython:
 
 
 # Custom command classes
-cmdclass = {}
+cmdclass = {"sdist": sdist}
 
 
 # Now create the build extensions
@@ -375,13 +379,13 @@ CLASSIFIERS = [
 # The install_requires should also be the
 # requirements for the actual running of sisl
 setuptools_kwargs = {
-    "python_requires": ">= 3.6",
+    "python_requires": ">= " + min_version["python"],
     "install_requires": [
         "setuptools",
         "numpy >= " + min_version["numpy"],
         "scipy",
         "netCDF4",
-        "pyparsing >= 1.5.7",
+        "pyparsing >= " + min_version["pyparsing"],
     ],
     "setup_requires": [
         "numpy >= " + min_version["numpy"],
@@ -390,7 +394,7 @@ setuptools_kwargs = {
         # We currently use xarray for additional data-analysis
         # And tqdm for progressbars
         "analysis": [
-            "xarray >= 0.10.0",
+            "xarray >= " + min_version["xarray"],
             "tqdm",
         ],
     },

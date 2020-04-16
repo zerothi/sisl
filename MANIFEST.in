@@ -14,10 +14,15 @@ include sisl/info.py
 recursive-include toolbox *.py *.md README
 
 exclude DEPLOY.md
+global-exclude *.html
 global-exclude *.sh
 global-exclude .git*
 global-exclude *.so
+global-exclude *.pyc
 
 prune benchmarks
+prune deprecated
+prune developments
 prune ci
 prune files
+prune __pycache__
