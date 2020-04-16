@@ -40,7 +40,7 @@ class FatbandsPlot(BandsPlot):
         BandsPlot._readfromH(self)
 
         # Then we just convert the weights to a DataArray
-        self.weights = np.array(self.weights).astype(float)
+        self.weights = np.array(self.weights).real
 
         self.weights = DataArray(
             self.weights,
