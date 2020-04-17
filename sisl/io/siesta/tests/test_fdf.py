@@ -4,6 +4,7 @@ import os.path as osp
 from sisl import geom
 from sisl import Geometry, Atom
 from sisl.io import fdfSileSiesta, SileError
+from sisl.messages import SislWarning
 from sisl.unit.siesta import unit_convert
 import numpy as np
 
@@ -315,3 +316,36 @@ def test_geom_constraints(sisl_tmp):
     gfdf['CONSTRAIN-z'] = range(len(gfdf))
 
     gfdf.write(sisl_tmp('siesta.fdf', _dir))
+
+
+def test_dry_read(sisl_tmp):
+    # This test runs the read-functions. They aren't expected to actually read anything,
+    # it is only a dry-run.
+    file = sisl_tmp('siesta.fdf', _dir)
+    geom.graphene().write(file)
+    fdf = fdfSileSiesta(file)
+
+    read_methods = set(m for m in dir(fdf) if m.startswith("read_"))
+    output = dict(output=True)
+    kwargs = {
+        "supercell": output,
+        "geometry": output,
+        "grid": dict(name="rho"),
+    }
+
+    with pytest.warns(SislWarning):
+        assert np.allclose(fdf.read_supercell_nsc(), (1, 1, 1))
+    read_methods.remove("read_supercell_nsc")
+
+    geom_methods = set(f"read_{x}" for x in ("basis", "supercell", "geometry"))
+    read_methods -= geom_methods
+
+    for methodname in read_methods:
+        kwarg = kwargs.get(methodname[5:], dict())
+        assert getattr(fdf, methodname)(**kwarg) is None
+
+    for methodname in geom_methods:
+        # Also run these, but dont assert None due to the graphene values being present
+        # in the fdf. The read functions will still go dry-running through eg. nc-files.
+        kwarg = kwargs.get(methodname[5:], dict())
+        getattr(fdf, methodname)(**kwarg)

@@ -1409,7 +1409,7 @@ class fdfSileSiesta(SileSiesta):
                 'rhobader': '.BADER'
         }.get(name.lower())
 
-        f = self.dir_file(self.get('SystemLabel', default='siesta')) + name
+        f = self.dir_file(self.get('SystemLabel', default='siesta') + name)
         if f.is_file():
             grid = get_sile_class(f)(f).read_grid(*args, **kwargs)
             grid.set_geometry(self.read_geometry(True))
