@@ -155,6 +155,8 @@ _pyxfiles = [
     "sisl/physics/_matrix_dk.pyx",
     "sisl/physics/_matrix_k.pyx",
     "sisl/physics/_matrix_phase3.pyx",
+    "sisl/physics/_matrix_phase3_nc.pyx",
+    "sisl/physics/_matrix_phase3_so.pyx",
     "sisl/physics/_matrix_phase_nc_diag.pyx",
     "sisl/physics/_matrix_phase_nc.pyx",
     "sisl/physics/_matrix_phase.pyx",

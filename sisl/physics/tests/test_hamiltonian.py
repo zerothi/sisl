@@ -630,6 +630,7 @@ class TestHamiltonian:
 
     @pytest.mark.xfail(raises=SislError)
     def test_berry_phase_method_fail(self):
+        # wrong method keyword
         g = Geometry([[-.6, 0, 0], [0.6, 0, 0]], Atom(1, 1.001), sc=[2, 10, 10])
         g.set_nsc([3, 1, 1])
         H = Hamiltonian(g)
@@ -967,23 +968,26 @@ class TestHamiltonian:
         assert np.allclose(H1.eigh(dtype=np.complex128), eig1)
         assert np.allclose(H.eigh(), H1.eigh())
 
-        es = H1.eigenstate(dtype=np.complex128)
-        assert np.allclose(es.eig, eig1)
-        sm = es.spin_moment()
-        assert np.allclose(es.inner(), 1)
+        for dtype in [np.complex64, np.complex128]:
+            es = H1.eigenstate(dtype=dtype)
+            assert np.allclose(es.eig, eig1)
+            sm = es.spin_moment()
+            assert np.allclose(es.inner(), 1)
 
-        om = es.spin_orbital_moment()
-        assert np.allclose(sm, om.sum(1))
+            om = es.spin_orbital_moment()
+            assert np.allclose(sm, om.sum(1))
 
-        PDOS = es.PDOS(np.linspace(-1, 1, 100))
-        DOS = es.DOS(np.linspace(-1, 1, 100))
-        assert np.allclose(PDOS.sum(1)[0, :], DOS)
+            PDOS = es.PDOS(np.linspace(-1, 1, 100))
+            DOS = es.DOS(np.linspace(-1, 1, 100))
+            assert np.allclose(PDOS.sum(1)[0, :], DOS)
+            es.velocity_matrix()
+            es.inv_eff_mass_tensor()
 
         # Ensure we can change gauge for NC stuff
         es.change_gauge('R')
         es.change_gauge('r')
 
-    def test_non_colinear_non_orthogonal(self, setup):
+    def test_non_colinear_non_orthogonal(self):
         g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(100, nsc=[3, 3, 1]))
         H = Hamiltonian(g, dtype=np.float64, orthogonal=False, spin=Spin.NONCOLINEAR)
         for i in range(10):
@@ -1022,18 +1026,25 @@ class TestHamiltonian:
         assert np.allclose(H1.eigh(dtype=np.complex128), eig1)
         assert np.allclose(H.eigh(dtype=np.complex64), H1.eigh(dtype=np.complex128))
 
-        es = H1.eigenstate(dtype=np.complex128)
-        assert np.allclose(es.eig, eig1)
+        for dtype in [np.complex64, np.complex128]:
+            es = H1.eigenstate(dtype=dtype)
+            assert np.allclose(es.eig, eig1)
 
-        sm = es.spin_moment()
-        om = es.spin_orbital_moment()
-        assert np.allclose(sm, om.sum(1))
+            sm = es.spin_moment()
+            om = es.spin_orbital_moment()
+            assert np.allclose(sm, om.sum(1))
 
-        PDOS = es.PDOS(np.linspace(-1, 1, 100))
-        DOS = es.DOS(np.linspace(-1, 1, 100))
-        assert np.allclose(PDOS.sum(1)[0, :], DOS)
+            PDOS = es.PDOS(np.linspace(-1, 1, 100))
+            DOS = es.DOS(np.linspace(-1, 1, 100))
+            assert np.allclose(PDOS.sum(1)[0, :], DOS)
+            es.velocity_matrix()
+            es.inv_eff_mass_tensor()
 
-    def test_so1(self, setup):
+        # Ensure we can change gauge for NC stuff
+        es.change_gauge('R')
+        es.change_gauge('r')
+
+    def test_so1(self):
         g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(100, nsc=[3, 3, 1]))
         H = Hamiltonian(g, dtype=np.float64, spin=Spin.SPINORBIT)
         for i in range(10):
@@ -1074,16 +1085,19 @@ class TestHamiltonian:
         assert np.allclose(H1.eigh(dtype=np.complex128), eig1)
         assert np.allclose(H.eigh(dtype=np.complex64), H1.eigh(dtype=np.complex128))
 
-        es = H.eigenstate(dtype=np.complex128)
-        assert np.allclose(es.eig, eig1)
+        for dtype in [np.complex64, np.complex128]:
+            es = H.eigenstate(dtype=dtype)
+            assert np.allclose(es.eig, eig1)
 
-        sm = es.spin_moment()
-        om = es.spin_orbital_moment()
-        assert np.allclose(sm, om.sum(1))
+            sm = es.spin_moment()
+            om = es.spin_orbital_moment()
+            assert np.allclose(sm, om.sum(1))
 
-        PDOS = es.PDOS(np.linspace(-1, 1, 100))
-        DOS = es.DOS(np.linspace(-1, 1, 100))
-        assert np.allclose(PDOS.sum(1)[0, :], DOS)
+            PDOS = es.PDOS(np.linspace(-1, 1, 100))
+            DOS = es.DOS(np.linspace(-1, 1, 100))
+            assert np.allclose(PDOS.sum(1)[0, :], DOS)
+            es.velocity_matrix()
+            es.inv_eff_mass_tensor()
 
         # Ensure we can change gauge for SO stuff
         es.change_gauge('R')

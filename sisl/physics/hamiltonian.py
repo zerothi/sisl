@@ -282,10 +282,10 @@ class Hamiltonian(SparseOrbitalBZSpin):
             e = self.eigsh(k, gauge=gauge, eigvals_only=True, **kwargs)
         else:
             e = self.eigh(k, gauge, eigvals_only=True, **kwargs)
-        info = {'k': k,
-                'gauge': gauge}
-        if 'spin' in kwargs:
-            info['spin'] = kwargs['spin']
+        info = {'k': k, 'gauge': gauge}
+        for name in ["spin"]:
+            if name in kwargs:
+                info[name] = kwargs[name]
         return EigenvalueElectron(e, self, **info)
 
     def eigenstate(self, k=(0, 0, 0), gauge='R', **kwargs):
@@ -317,8 +317,9 @@ class Hamiltonian(SparseOrbitalBZSpin):
         else:
             e, v = self.eigh(k, gauge, eigvals_only=False, **kwargs)
         info = {'k': k, 'gauge': gauge}
-        if 'spin' in kwargs:
-            info['spin'] = kwargs['spin']
+        for name in ["spin"]:
+            if name in kwargs:
+                info[name] = kwargs[name]
         # Since eigh returns the eigenvectors [:, i] we have to transpose
         return EigenstateElectron(v.T, e, self, **info)
 

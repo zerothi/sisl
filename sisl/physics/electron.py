@@ -832,7 +832,7 @@ def _berry_curvature(v_M, energy, degenerate):
 
         # Note we do not use an epsilon for accuracy
         fac = - 2 / (energy[idx] - energy[n]) ** 2
-        sigma[n, :, :] = einsum('i,ij,il->jl', fac, v_M[idx, n], v_M[n, idx])
+        sigma[n, :, :] = einsum("i,ij,il->jl", fac, v_M[idx, n], v_M[n, idx])
 
     return sigma * _berry_curvature_const
 
@@ -1569,10 +1569,11 @@ class _electron_State:
             # Calculate the overlap matrix
             if not self.parent.orthogonal:
                 opt = {'k': self.info.get('k', (0, 0, 0)),
-                       'format': format}
+                       "dtype": self.dtype,
+                       "format": format}
                 gauge = self.info.get('gauge', None)
                 if not gauge is None:
-                    opt['gauge'] = gauge
+                    opt["gauge"] = gauge
                 return self.parent.Sk(**opt)
 
         if self.__is_nc():
@@ -1722,15 +1723,15 @@ class _electron_State:
 
         if diag:
             if ndim == 2:
-                a = einsum('ij,ji->i', s.conj(), A.dot(s.T))
+                a = einsum("ij,ji->i", s.conj(), A.dot(s.T))
             elif ndim == 1:
-                a = einsum('ij,j,ij->i', s.conj(), A, s)
+                a = einsum("ij,j,ij->i", s.conj(), A, s)
         elif ndim == 2:
             a = s.conj().dot(A.dot(s.T))
         elif ndim == 1:
-            a = einsum('ij,j,jk', s.conj(), A, s.T)
+            a = einsum("ij,j,jk", s.conj(), A, s.T)
         else:
-            raise ValueError('expectation: requires matrix A to be 1D or 2D')
+            raise ValueError("expectation: requires matrix A to be 1D or 2D")
         return a
 
     def wavefunction(self, grid, spinor=0, eta=False):
@@ -1779,12 +1780,12 @@ class _electron_State:
         """
         # These calls will fail if the gauge is not specified.
         # In that case it will not do anything
-        if self.info.get('gauge', gauge) == gauge:
+        if self.info.get("gauge", gauge) == gauge:
             # Quick return
             return
 
         # Update gauge value
-        self.info['gauge'] = gauge
+        self.info["gauge"] = gauge
 
         # Check that we can do a gauge transformation
         k = _a.asarrayd(self.info.get('k'))
@@ -1839,10 +1840,10 @@ class StateCElectron(_electron_State, StateC):
            precision used to find degenerate states.
         """
         try:
-            opt = {'k': self.info.get('k', (0, 0, 0))}
-            gauge = self.info.get('gauge', None)
+            opt = {'k': self.info.get('k', (0, 0, 0)), "dtype": self.dtype}
+            gauge = self.info.get("gauge", None)
             if not gauge is None:
-                opt['gauge'] = gauge
+                opt["gauge"] = gauge
 
             # Get dSk before spin
             if self.parent.orthogonal:
@@ -1850,8 +1851,8 @@ class StateCElectron(_electron_State, StateC):
             else:
                 dSk = self.parent.dSk(**opt)
 
-            if 'spin' in self.info:
-                opt['spin'] = self.info.get('spin', None)
+            if "spin" in self.info:
+                opt["spin"] = self.info.get("spin", None)
             deg = self.degenerate(eps)
         except:
             raise SislError(self.__class__.__name__ + '.velocity requires the parent to have a spin associated.')
@@ -1875,10 +1876,10 @@ class StateCElectron(_electron_State, StateC):
            precision used to find degenerate states.
         """
         try:
-            opt = {'k': self.info.get('k', (0, 0, 0))}
-            gauge = self.info.get('gauge', None)
+            opt = {'k': self.info.get('k', (0, 0, 0)), "dtype": self.dtype}
+            gauge = self.info.get("gauge", None)
             if not gauge is None:
-                opt['gauge'] = gauge
+                opt["gauge"] = gauge
 
             # Get dSk before spin
             if self.parent.orthogonal:
@@ -1886,11 +1887,11 @@ class StateCElectron(_electron_State, StateC):
             else:
                 dSk = self.parent.dSk(**opt)
 
-            if 'spin' in self.info:
-                opt['spin'] = self.info.get('spin', None)
+            if "spin" in self.info:
+                opt["spin"] = self.info.get("spin", None)
             deg = self.degenerate(eps)
         except:
-            raise SislError(self.__class__.__name__ + '.velocity_matrix requires the parent to have a spin associated.')
+            raise SislError(self.__class__.__name__ + ".velocity_matrix requires the parent to have a spin associated.")
         return velocity_matrix(self.state, self.parent.dHk(**opt), self.c, dSk, degenerate=deg)
 
     def berry_curvature(self, complex=False, eps=1e-4):
@@ -1912,10 +1913,10 @@ class StateCElectron(_electron_State, StateC):
            precision used to find degenerate states.
         """
         try:
-            opt = {'k': self.info.get('k', (0, 0, 0))}
-            gauge = self.info.get('gauge', None)
+            opt = {'k': self.info.get('k', (0, 0, 0)), "dtype": self.dtype}
+            gauge = self.info.get("gauge", None)
             if not gauge is None:
-                opt['gauge'] = gauge
+                opt["gauge"] = gauge
 
             # Get dSk before spin
             if self.parent.orthogonal:
@@ -1923,11 +1924,11 @@ class StateCElectron(_electron_State, StateC):
             else:
                 dSk = self.parent.dSk(**opt)
 
-            if 'spin' in self.info:
-                opt['spin'] = self.info.get('spin', None)
+            if "spin" in self.info:
+                opt["spin"] = self.info.get("spin", None)
             deg = self.degenerate(eps)
         except:
-            raise SislError(self.__class__.__name__ + '.berry_curvature requires the parent to have a spin associated.')
+            raise SislError(self.__class__.__name__ + ".berry_curvature requires the parent to have a spin associated.")
         return berry_curvature(self.state, self.c, self.parent.dHk(**opt), dSk, degenerate=deg, complex=complex)
 
     def inv_eff_mass_tensor(self, as_matrix=False, eps=1e-3):
@@ -1961,10 +1962,10 @@ class StateCElectron(_electron_State, StateC):
             # Ensure we are dealing with the r gauge
             self.change_gauge('r')
 
-            opt = {'k': self.info.get('k', (0, 0, 0))}
-            gauge = self.info.get('gauge', None)
+            opt = {'k': self.info.get('k', (0, 0, 0)), "dtype": self.dtype}
+            gauge = self.info.get("gauge", None)
             if not gauge is None:
-                opt['gauge'] = gauge
+                opt["gauge"] = gauge
 
             # Get dSk before spin
             if self.parent.orthogonal:
@@ -1972,11 +1973,11 @@ class StateCElectron(_electron_State, StateC):
             else:
                 ddSk = self.parent.ddSk(**opt)
 
-            if 'spin' in self.info:
-                opt['spin'] = self.info.get('spin', None)
+            if "spin" in self.info:
+                opt["spin"] = self.info.get("spin", None)
             degenerate = self.degenerate(eps)
         except:
-            raise SislError(self.__class__.__name__ + '.inv_eff_mass_tensor requires the parent to have a spin associated.')
+            raise SislError(self.__class__.__name__ + ".inv_eff_mass_tensor requires the parent to have a spin associated.")
         return inv_eff_mass_tensor(self.state, self.parent.ddHk(**opt), self.c, ddSk, degenerate, as_matrix)
 
 
@@ -1992,7 +1993,7 @@ class EigenvalueElectron(CoefficientElectron):
         """ Eigenvalues """
         return self.c
 
-    def occupation(self, distribution='fermi_dirac'):
+    def occupation(self, distribution="fermi_dirac"):
         r""" Calculate the occupations for the states according to a distribution function
 
         Parameters
@@ -2009,7 +2010,7 @@ class EigenvalueElectron(CoefficientElectron):
             distribution = get_distribution(distribution)
         return distribution(self.eig)
 
-    def DOS(self, E, distribution='gaussian'):
+    def DOS(self, E, distribution="gaussian"):
         r""" Calculate DOS for provided energies, `E`.
 
         This routine calls `sisl.physics.electron.DOS` with appropriate arguments
@@ -2041,7 +2042,7 @@ class EigenstateElectron(StateCElectron):
         r""" Eigenvalues for each state """
         return self.c
 
-    def occupation(self, distribution='fermi_dirac'):
+    def occupation(self, distribution="fermi_dirac"):
         r""" Calculate the occupations for the states according to a distribution function
 
         Parameters
@@ -2058,7 +2059,7 @@ class EigenstateElectron(StateCElectron):
             distribution = get_distribution(distribution)
         return distribution(self.eig)
 
-    def DOS(self, E, distribution='gaussian'):
+    def DOS(self, E, distribution="gaussian"):
         r""" Calculate DOS for provided energies, `E`.
 
         This routine calls `sisl.physics.electron.DOS` with appropriate arguments
@@ -2068,7 +2069,7 @@ class EigenstateElectron(StateCElectron):
         """
         return DOS(E, self.c, distribution)
 
-    def PDOS(self, E, distribution='gaussian'):
+    def PDOS(self, E, distribution="gaussian"):
         r""" Calculate PDOS for provided energies, `E`.
 
         This routine calls `~sisl.physics.electron.PDOS` with appropriate arguments
