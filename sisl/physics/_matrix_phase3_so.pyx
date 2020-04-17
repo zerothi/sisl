@@ -308,7 +308,6 @@ def _phase3_so_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 vv = <float complex> (D[ind, 1] + 1j * D[ind, 5])
                 vz[rr+1, c+1] = vz[rr+1, c+1] + ph * vv
 
-
     else:
         for r in range(nr):
             rr = r * 2

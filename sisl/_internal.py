@@ -1,6 +1,8 @@
 r""" Internal sisl-only methods that should not be used outside """
 
 # override module level, inspired by numpy
+
+
 def set_module(module):
     r"""Decorator for overriding __module__ on a function or class"""
     def deco(f_or_c):

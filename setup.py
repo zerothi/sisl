@@ -119,6 +119,7 @@ class CythonCommand(cython_build_ext):
     to compile pyx->c, and stop there. All this does is override the
     C-compile method build_extension() with a no-op.
     """
+
     def build_extension(self, ext):
         pass
 

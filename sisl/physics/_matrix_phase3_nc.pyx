@@ -263,7 +263,6 @@ def _phase3_nc_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 vz[rr+1, c] = vz[rr+1, c] + ph * v12
                 vz[rr+1, c+1] = vz[rr+1, c+1] + <float complex> (ph * D[ind, 1])
 
-
     else:
         for r in range(nr):
             rr = r * 2
@@ -347,7 +346,6 @@ def _phase3_nc_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 vz[rr, c+1] = vz[rr, c+1] + ph * v12.conjugate()
                 vz[rr+1, c] = vz[rr+1, c] + ph * v12
                 vz[rr+1, c+1] = vz[rr+1, c+1] + <double complex> (ph * D[ind, 1])
-
 
     else:
         for r in range(nr):
