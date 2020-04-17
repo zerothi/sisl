@@ -25,5 +25,3 @@ autopep8 --select "W291,W293" --in-place CHANGELOG
 sed -i -s -e 's/^[[:space:]]*$//g' **/*.f90
 # Remove trailing white-space
 sed -i -s -e 's/\([^[:space:]]\)[[:space:]]?$/\1/g' **/*.f90
-# Delete all comments in Cythonized sources
-sed -i -s -e '/^# [0-9].*\.c\"/d' sisl/**/*.c
