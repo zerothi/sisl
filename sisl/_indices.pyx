@@ -1,5 +1,3 @@
-#!python
-#cython: language_level=3
 cimport cython
 from libc.math cimport sqrt, fabs
 
@@ -526,7 +524,7 @@ cdef int _index_sorted(const int[::1] a, const int v) nogil:
         return -1
 
     while L < R:
-        i = (L + R) / 2
+        i = (L + R) // 2
         if a[i] < v:
             L = i + 1
         elif a[i] > v:

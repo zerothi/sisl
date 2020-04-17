@@ -1,11 +1,28 @@
-graft sisl
-recursive-include toolbox README *.py
+include MANIFEST.in
 include LICENSE
 include CHANGELOG
-include requirements.txt setup.cfg README.md
-exclude DEPLOY.md pep8.sh tag.sh
-prune .github
+include README.md
+include setup.py
+include pyproject.toml
+
+graft doc
+
+graft sisl
+
+include sisl/info.py
+
+recursive-include toolbox *.py *.md README
+
+exclude DEPLOY.md
+global-exclude *.html
+global-exclude *.sh
+global-exclude .git*
+global-exclude *.so
+global-exclude *.pyc
+
 prune benchmarks
+prune deprecated
+prune developments
 prune ci
 prune files
-exclude .codecov.yml .gitignore .gitmodules .readthedocs.yml .travis.yml
+prune __pycache__

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 A setup.py script to use setuptools, which gives egg goodness.
 """

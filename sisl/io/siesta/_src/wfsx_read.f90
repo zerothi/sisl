@@ -158,7 +158,7 @@ subroutine skip_wfsx_index(iu, ispin, ik)
 end subroutine skip_wfsx_index
 
 
-subroutine read_wfsx_index_1(fname, ispin, ik, no_u, nw, index, eig, state)
+subroutine read_wfsx_index_1(fname, ispin, ik, no_u, nw, idx, eig, state)
   use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
@@ -170,14 +170,14 @@ subroutine read_wfsx_index_1(fname, ispin, ik, no_u, nw, index, eig, state)
   ! Input parameters
   character(len=*), intent(in) :: fname
   integer, intent(in) :: ispin, ik, no_u, nw
-  integer, intent(out) :: index(nw)
+  integer, intent(out) :: idx(nw)
   real(dp), intent(out) :: eig(nw)
   real(sp), intent(out) :: state(no_u, nw)
 
 ! Define f2py intents
 !f2py intent(in) :: fname
 !f2py intent(in) :: ispin, ik, no_u, nw
-!f2py intent(out) :: index, eig, state
+!f2py intent(out) :: idx, eig, state
 
   integer :: k, nwf
 ! Internal variables and arrays
@@ -202,7 +202,7 @@ subroutine read_wfsx_index_1(fname, ispin, ik, no_u, nw, index, eig, state)
   end if
 
   do k = 1, nw
-    read(iu, iostat=ierr) index(k)
+    read(iu, iostat=ierr) idx(k)
     call iostat_update(ierr)
     read(iu, iostat=ierr) eig(k)
     call iostat_update(ierr)
@@ -214,7 +214,7 @@ subroutine read_wfsx_index_1(fname, ispin, ik, no_u, nw, index, eig, state)
 
 end subroutine read_wfsx_index_1
 
-subroutine read_wfsx_index_2(fname, ispin, ik, no_u, nw, index, eig, state)
+subroutine read_wfsx_index_2(fname, ispin, ik, no_u, nw, idx, eig, state)
   use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
@@ -226,14 +226,14 @@ subroutine read_wfsx_index_2(fname, ispin, ik, no_u, nw, index, eig, state)
   ! Input parameters
   character(len=*), intent(in) :: fname
   integer, intent(in) :: ispin, ik, no_u, nw
-  integer, intent(out) :: index(nw)
+  integer, intent(out) :: idx(nw)
   real(dp), intent(out) :: eig(nw)
   complex(sp), intent(out) :: state(no_u, nw)
 
 ! Define f2py intents
 !f2py intent(in) :: fname
 !f2py intent(in) :: ispin, ik, no_u, nw
-!f2py intent(out) :: index, eig, state
+!f2py intent(out) :: idx, eig, state
 
   integer :: k, nwf
 ! Internal variables and arrays
@@ -258,7 +258,7 @@ subroutine read_wfsx_index_2(fname, ispin, ik, no_u, nw, index, eig, state)
   end if
 
   do k = 1, nw
-    read(iu, iostat=ierr) index(k)
+    read(iu, iostat=ierr) idx(k)
     call iostat_update(ierr)
     read(iu, iostat=ierr) eig(k)
     call iostat_update(ierr)
@@ -270,7 +270,7 @@ subroutine read_wfsx_index_2(fname, ispin, ik, no_u, nw, index, eig, state)
 
 end subroutine read_wfsx_index_2
 
-subroutine read_wfsx_index_4(fname, ispin, ik, no_u, nw, index, eig, state)
+subroutine read_wfsx_index_4(fname, ispin, ik, no_u, nw, idx, eig, state)
   use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
@@ -282,14 +282,14 @@ subroutine read_wfsx_index_4(fname, ispin, ik, no_u, nw, index, eig, state)
   ! Input parameters
   character(len=*), intent(in) :: fname
   integer, intent(in) :: ispin, ik, no_u, nw
-  integer, intent(out) :: index(nw)
+  integer, intent(out) :: idx(nw)
   real(dp), intent(out) :: eig(nw)
   complex(sp), intent(out) :: state(2*no_u, nw)
 
 ! Define f2py intents
 !f2py intent(in) :: fname
 !f2py intent(in) :: ispin, ik, no_u, nw
-!f2py intent(out) :: index, eig, state
+!f2py intent(out) :: idx, eig, state
 
   integer :: k, nwf
 ! Internal variables and arrays
@@ -314,7 +314,7 @@ subroutine read_wfsx_index_4(fname, ispin, ik, no_u, nw, index, eig, state)
   end if
 
   do k = 1, nw
-    read(iu, iostat=ierr) index(k)
+    read(iu, iostat=ierr) idx(k)
     call iostat_update(ierr)
     read(iu, iostat=ierr) eig(k)
     call iostat_update(ierr)
