@@ -55,11 +55,13 @@ while one can just as easily convert the units (which ensures thay stay like ano
 
 """
 
-from sisl.unit.base import units
+from ._internal import set_module
+from .unit.base import units
 
 __all__ = ['PhysicalConstant']
 
 
+@set_module("sisl")
 class PhysicalConstant(float):
     """ Class to create a physical constant with unit-conversion capability, works exactly like a float.
 

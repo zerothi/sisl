@@ -7,12 +7,14 @@ This module implements the base-class which allows named indices
 import numpy as np
 from numpy import ndarray, bool_
 
+from ._internal import set_module
 from ._indices import indices_only
 from ._array import arrayi
 from .messages import SislError
 from .utils.ranges import list2str
 
 
+@set_module("sisl")
 class NamedIndex:
     __slots__ = ('_name', '_index')
 

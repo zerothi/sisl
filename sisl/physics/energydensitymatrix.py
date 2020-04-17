@@ -1,4 +1,6 @@
 import numpy as np
+
+from sisl._internal import set_module
 import sisl._array as _a
 from sisl.messages import SislError
 from .densitymatrix import _realspace_DensityMatrix
@@ -6,6 +8,7 @@ from .densitymatrix import _realspace_DensityMatrix
 __all__ = ['EnergyDensityMatrix']
 
 
+@set_module("sisl.physics")
 class EnergyDensityMatrix(_realspace_DensityMatrix):
     """ Sparse energy density matrix object
 

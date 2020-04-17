@@ -1,11 +1,13 @@
 from numbers import Integral
 import numpy as np
 
+from sisl._internal import set_module
 from sisl import geom, Atom, Geometry
 
 __all__ = ['nanoribbon', 'graphene_nanoribbon', 'agnr', 'zgnr']
 
 
+@set_module("sisl.geom")
 def nanoribbon(bond, atom, width, kind='armchair'):
     r""" Construction of a nanoribbon unit cell of type armchair or zigzag.
 
@@ -75,6 +77,7 @@ def nanoribbon(bond, atom, width, kind='armchair'):
     return ribbon.move(-xyz + [0, 10, 0])
 
 
+@set_module("sisl.geom")
 def graphene_nanoribbon(width, bond=1.42, atom=None, kind='armchair'):
     r""" Construction of a graphene nanoribbon
 
@@ -102,6 +105,7 @@ def graphene_nanoribbon(width, bond=1.42, atom=None, kind='armchair'):
     return nanoribbon(bond, atom, width, kind=kind)
 
 
+@set_module("sisl.geom")
 def agnr(width, bond=1.42, atom=None):
     r""" Construction of an armchair graphene nanoribbon
 
@@ -125,6 +129,7 @@ def agnr(width, bond=1.42, atom=None):
     return graphene_nanoribbon(width, bond, atom, kind='armchair')
 
 
+@set_module("sisl.geom")
 def zgnr(width, bond=1.42, atom=None):
     r""" Construction of a zigzag graphene nanoribbon
 

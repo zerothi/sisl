@@ -11,11 +11,11 @@ from numpy import take, sqrt, square
 from scipy.special import lpmv
 from scipy.interpolate import UnivariateSpline
 
-
+from ._internal import set_module
 from . import _plot as plt
 from . import _array as _a
 from .shape import Sphere
-from sisl.utils.mathematics import cart2spher
+from .utils.mathematics import cart2spher
 
 
 __all__ = ['Orbital', 'SphericalOrbital', 'AtomicOrbital']
@@ -77,6 +77,7 @@ def _rspherical_harm(m, l, theta, cos_phi):
     return _rspher_harm_fact[l][m] * (lpmv(m, l, cos_phi) * cos(m*theta))
 
 
+@set_module("sisl")
 class Orbital:
     """ Base class for orbital information.
 
@@ -296,6 +297,7 @@ class Orbital:
         self.__init__(d['R'], q0=d['q0'], tag=d['tag'])
 
 
+@set_module("sisl")
 class SphericalOrbital(Orbital):
     r""" An *arbitrary* orbital class where :math:`\phi(\mathbf r)=f(|\mathbf r|)Y_l^m(\theta,\varphi)`
 
@@ -681,6 +683,7 @@ class SphericalOrbital(Orbital):
         self.__init__(d['l'], (d['r'], d['f']), q0=d['q0'], tag=d['tag'])
 
 
+@set_module("sisl")
 class AtomicOrbital(Orbital):
     r""" A projected atomic orbital consisting of real harmonics
 

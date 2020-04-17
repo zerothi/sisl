@@ -50,12 +50,14 @@ For the above same functions we may do::
 
 import time
 
+from ._internal import set_module
 from .messages import warn
 
 
 __all__ = ['Selector', 'TimeSelector']
 
 
+@set_module("sisl")
 class Selector:
     r""" Base class for implementing a selector of class routines
 
@@ -306,6 +308,7 @@ class Selector:
         raise NotImplementedError
 
 
+@set_module("sisl")
 class TimeSelector(Selector):
     """ Routine metric selector based on timings for the routines """
 

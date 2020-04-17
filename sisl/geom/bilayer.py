@@ -1,11 +1,13 @@
 import numpy as np
 
 from math import acos, pi
+from sisl._internal import set_module
 from sisl import geom, Atom, Cuboid
 
 __all__ = ['bilayer']
 
 
+@set_module("sisl.geom")
 def bilayer(bond=1.42, bottom_atom=None, top_atom=None, stacking='AB',
             twist=(0, 0), separation=3.35, ret_angle=False, layer='both'):
     r""" Commensurate unit cell of a hexagonal bilayer structure, possibly with a twist angle.

@@ -8,10 +8,11 @@ from numbers import Integral
 import numpy as np
 from numpy import dot
 
+from ._internal import set_module
 from . import _plot as plt
 from . import _array as _a
-from sisl.utils.mathematics import fnorm
-from sisl.shape.prism4 import Cuboid
+from .utils.mathematics import fnorm
+from .shape.prism4 import Cuboid
 from .quaternion import Quaternion
 from ._math_small import cross3, dot3
 from ._supercell import cell_invert, cell_reciprocal
@@ -20,6 +21,7 @@ from ._supercell import cell_invert, cell_reciprocal
 __all__ = ['SuperCell', 'SuperCellChild']
 
 
+@set_module("sisl")
 class SuperCell:
     r""" A cell class to retain lattice vectors and a supercell structure
 

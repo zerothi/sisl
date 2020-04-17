@@ -8,12 +8,14 @@ This sub-module implements a list which allows to make operations with it-self o
 
 from functools import wraps
 
+from ._internal import set_module
 from ._help import isiterable
 
 
 __all__ = ['oplist']
 
 
+@set_module("sisl")
 class oplist(list):
     """ list with element-wise operations
 

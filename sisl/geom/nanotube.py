@@ -1,10 +1,12 @@
 import numpy as np
 
+from sisl._internal import set_module
 from sisl import Atom, Geometry, SuperCell
 
 __all__ = ['nanotube']
 
 
+@set_module("sisl.geom")
 def nanotube(bond, atom=None, chirality=(1, 1)):
     """ Nanotube with user-defined chirality.
 

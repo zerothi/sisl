@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.sparse import lil_matrix
 
+from sisl._internal import set_module
 from .sparse import SparseOrbitalBZ
 from .phonon import EigenvaluePhonon, EigenmodePhonon
 
@@ -16,6 +17,7 @@ def _correct_hw(hw):
     return HW
 
 
+@set_module("sisl.physics")
 class DynamicalMatrix(SparseOrbitalBZ):
     """ Dynamical matrix of a geometry """
 

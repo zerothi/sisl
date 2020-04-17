@@ -10,6 +10,7 @@ from numpy import dot, square, sqrt, diff
 from numpy import floor, ceil
 from numpy import argsort, split, isin, concatenate
 
+from ._internal import set_module
 from . import _plot as plt
 from . import _array as _a
 from ._math_small import is_ascending, cross3
@@ -30,6 +31,7 @@ from ._namedindex import NamedIndex
 __all__ = ['Geometry', 'sgeom']
 
 
+@set_module("sisl")
 class Geometry(SuperCellChild):
     """ Holds atomic information, coordinates, species, lattice vectors
 
@@ -4364,6 +4366,7 @@ class Geometry(SuperCellChild):
         return p, namespace
 
 
+@set_module("sisl")
 def sgeom(geometry=None, argv=None, ret_geometry=False):
     """ Main script for sgeom.
 

@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.interpolate import CubicSpline
 
+from sisl._internal import set_module
 import sisl._array as _a
 from .distribution import get_distribution
 from .electron import EigenvalueElectron, EigenstateElectron, spin_squared
@@ -9,6 +10,7 @@ from .sparse import SparseOrbitalBZSpin
 __all__ = ['Hamiltonian']
 
 
+@set_module("sisl.physics")
 class Hamiltonian(SparseOrbitalBZSpin):
     """ Sparse Hamiltonian matrix object
 

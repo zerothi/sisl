@@ -5,6 +5,7 @@ import numpy as np
 from numpy import repeat, logical_and
 from numpy import dot, unique, add, subtract
 
+from sisl._internal import set_module
 from sisl.geometry import Geometry
 from sisl.supercell import SuperCell
 import sisl._array as _a
@@ -535,6 +536,7 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
         np.seterr(**old_err)
 
 
+@set_module("sisl.physics")
 class DensityMatrix(_realspace_DensityMatrix):
     """ Sparse density matrix object
 

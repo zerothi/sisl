@@ -20,6 +20,7 @@ from scipy.sparse import csr_matrix, isspmatrix_csr
 from scipy.sparse import isspmatrix_csc
 from scipy.sparse import isspmatrix_lil
 
+from ._internal import set_module
 from . import _array as _a
 from ._array import asarrayi, arrayi, fulli
 from ._indices import indices, indices_only, sorted_unique
@@ -33,6 +34,7 @@ from .utils.ranges import array_arange
 __all__ = ['SparseCSR', 'ispmatrix', 'ispmatrixd']
 
 
+@set_module("sisl")
 class SparseCSR:
     """
     A compressed sparse row matrix, slightly different than :class:`~scipy.sparse.csr_matrix`.
@@ -1744,6 +1746,7 @@ class SparseCSR:
             self.ptr = state['ptr']
 
 
+@set_module("sisl")
 def ispmatrix(matrix, map_row=None, map_col=None):
     """ Iterator for iterating rows and columns for non-zero elements in a `scipy.sparse.*_matrix` (or `SparseCSR`)
 
@@ -1883,6 +1886,7 @@ def _ispmatrix_all(matrix):
         raise NotImplementedError("The iterator for this sparse matrix has not been implemented")
 
 
+@set_module("sisl")
 def ispmatrixd(matrix, map_row=None, map_col=None):
     """ Iterator for iterating rows, columns and data for non-zero elements in a ``scipy.sparse.*_matrix`` (or `SparseCSR`)
 

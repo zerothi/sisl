@@ -2,6 +2,7 @@ import numpy as np
 from numpy import einsum
 from numpy import ndarray, bool_
 
+from sisl._internal import set_module
 import sisl._array as _a
 from sisl.messages import warn
 
@@ -24,6 +25,7 @@ def _inner(v1, v2):
     return _dot(_conj(v1), v2)
 
 
+@set_module("sisl.physics")
 class ParentContainer:
     """ A container for parent and information """
     __slots__ = ['parent', 'info']
@@ -41,6 +43,7 @@ class ParentContainer:
         return _a.asarrayi(idx).ravel()
 
 
+@set_module("sisl.physics")
 class Coefficient(ParentContainer):
     """ An object holding coefficients for a parent with info
 
@@ -191,6 +194,7 @@ class Coefficient(ParentContainer):
     __iter__ = iter
 
 
+@set_module("sisl.physics")
 class State(ParentContainer):
     """ An object handling a set of vectors describing a given *state*
 
@@ -635,6 +639,7 @@ class State(ParentContainer):
 # Although the StateC could inherit from both Coefficient and State
 # there are problems with __slots__ and multiple inheritance schemes.
 # I.e. we are forced to do *one* inheritance, which we choose to be State.
+@set_module("sisl.physics")
 class StateC(State):
     """ An object handling a set of vectors describing a given *state* with associated coefficients `c`
 

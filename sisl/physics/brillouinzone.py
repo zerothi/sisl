@@ -91,6 +91,7 @@ from numpy import pi
 import numpy as np
 from numpy import sum, dot, cross, argsort
 
+from sisl._internal import set_module
 from sisl.oplist import oplist
 from sisl.unit import units
 from sisl.quaternion import Quaternion
@@ -111,6 +112,7 @@ except ImportError:
 __all__ = ['BrillouinZone', 'MonkhorstPack', 'BandStructure']
 
 
+@set_module("sisl.physics")
 class BrillouinZone:
     """ A class to construct Brillouin zone related quantities
 
@@ -978,6 +980,7 @@ class BrillouinZone:
                 fh.write_data(kw.T, *args, **kwargs)
 
 
+@set_module("sisl.physics")
 class MonkhorstPack(BrillouinZone):
     r""" Create a Monkhorst-Pack grid for the Brillouin zone
 
@@ -1521,6 +1524,7 @@ class MonkhorstPack(BrillouinZone):
         self._w = np.concatenate((self._w, mp._w * weight_factor))
 
 
+@set_module("sisl.physics")
 class BandStructure(BrillouinZone):
     """ Create a path in the Brillouin zone for plotting band-structures etc.
 

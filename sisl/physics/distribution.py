@@ -41,6 +41,9 @@ from functools import partial
 import numpy as np
 from numpy import exp, expm1
 from scipy.special import erf
+
+from sisl._internal import set_module
+
 _pi = np.pi
 _sqrt_2pi = (2 * _pi) ** 0.5
 
@@ -49,6 +52,7 @@ __all__ += ['fermi_dirac', 'bose_einstein', 'cold']
 __all__ += ['step_function', 'heaviside']
 
 
+@set_module("sisl.physics")
 def get_distribution(method, smearing=0.1, x0=0.):
     r""" Create a distribution function, Gaussian, Lorentzian etc.
 
@@ -86,6 +90,7 @@ def get_distribution(method, smearing=0.1, x0=0.):
     raise ValueError(f"get_distribution does not implement the {method} distribution function, have you mispelled?")
 
 
+@set_module("sisl.physics")
 def gaussian(x, sigma=0.1, x0=0.):
     r""" Gaussian distribution function
 
@@ -110,6 +115,7 @@ def gaussian(x, sigma=0.1, x0=0.):
     return exp(- dx * dx) / (_sqrt_2pi * sigma)
 
 
+@set_module("sisl.physics")
 def lorentzian(x, gamma=0.1, x0=0.):
     r""" Lorentzian distribution function
 
@@ -133,6 +139,7 @@ def lorentzian(x, gamma=0.1, x0=0.):
     return (gamma / _pi) / ((x - x0) ** 2 + gamma * gamma)
 
 
+@set_module("sisl.physics")
 def fermi_dirac(E, kT=0.1, mu=0.):
     r""" Fermi-Dirac distribution function
 
@@ -156,6 +163,7 @@ def fermi_dirac(E, kT=0.1, mu=0.):
     return 1. / (exp((E - mu) / kT) + 1.)
 
 
+@set_module("sisl.physics")
 def bose_einstein(E, kT=0.1, mu=0.):
     r""" Bose-Einstein distribution function
 
@@ -179,6 +187,7 @@ def bose_einstein(E, kT=0.1, mu=0.):
     return 1. / expm1((E - mu) / kT)
 
 
+@set_module("sisl.physics")
 def cold(E, kT=0.1, mu=0.):
     r""" Cold smearing function, Marzari-Vanderbilt, PRL 82, 16, 1999
 
@@ -205,6 +214,7 @@ def cold(E, kT=0.1, mu=0.):
     return 0.5 + 0.5 * erf(x) + exp(- x * x) / _sqrt_2pi
 
 
+@set_module("sisl.physics")
 def heaviside(x, x0=0.):
     r""" Heaviside step function
 
@@ -239,6 +249,7 @@ def heaviside(x, x0=0.):
     return H
 
 
+@set_module("sisl.physics")
 def step_function(x, x0=0.):
     r""" Step function, also known as :math:`1 - H(x)`
 

@@ -1,10 +1,13 @@
 from functools import reduce
+
+from sisl._internal import set_module
 from .base import Mixer
 
 
 __all__ = ['LinearMixer']
 
 
+@set_module("sisl.mixing")
 class LinearMixer(Mixer):
     r""" Linear mixing
 

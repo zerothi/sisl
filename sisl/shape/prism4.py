@@ -2,6 +2,7 @@ import numpy as np
 from numpy import dot
 
 import sisl._array as _a
+from sisl._internal import set_module
 from sisl.linalg import inv
 from sisl.utils.mathematics import fnorm, expand
 from sisl._math_small import dot3, cross3
@@ -14,6 +15,7 @@ from .base import PureShape
 __all__ = ['Cuboid', 'Cube']
 
 
+@set_module("sisl.shape")
 class Cuboid(PureShape):
     """ A cuboid/rectangular prism (P4)
 
@@ -151,6 +153,7 @@ class Cuboid(PureShape):
         return fnorm(self._v)
 
 
+@set_module("sisl.shape")
 class Cube(Cuboid):
     """ 3D Cube with equal sides
 

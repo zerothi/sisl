@@ -8,9 +8,10 @@ from scipy.linalg.blas import get_blas_funcs
 from scipy.linalg.lapack import get_lapack_funcs
 from scipy.linalg.misc import LinAlgError, _datacopied
 from scipy._lib._util import _asarray_validated
-
 import scipy.linalg as sl
 import scipy.sparse.linalg as ssl
+
+from sisl._internal import set_module
 
 
 __all__ = ['linalg_info']
@@ -35,6 +36,7 @@ for _, item in _linalg_info_dtype.items():
     _linalg_info_base[item] = {}
 
 
+@set_module("sisl.linalg")
 def linalg_info(method, dtype, method_dict=_linalg_info_base, dtype_dict=_linalg_info_dtype):
     """ Faster BLAS/LAPACK methods to be returned without too many lookups an array checks
 
@@ -103,6 +105,7 @@ def _compute_lwork(routine, *args, **kwargs):
     return lwork
 
 
+@set_module("sisl.linalg")
 def inv(a, overwrite_a=False):
     """
     Inverts a matrix
@@ -141,6 +144,7 @@ def inv(a, overwrite_a=False):
     return x
 
 
+@set_module("sisl.linalg")
 def solve(a, b, overwrite_a=False, overwrite_b=False):
     """
     Solve a linear system ``a x = b``
@@ -261,9 +265,9 @@ __all__ += _append('det', ['', '_destroy'])
 # Sparse linalg routines
 
 # Solve eigenvalue problem
-eigs = ssl.eigs
+eigs = set_module("sisl.linalg")(ssl.eigs)
 __all__ += ['eigs']
 
 # Solve symmetric/hermitian eigenvalue problem (generic == no overwrite)
-eigsh = ssl.eigsh
+eigsh = set_module("sisl.linalg")(ssl.eigsh)
 __all__ += ['eigsh']

@@ -4,6 +4,8 @@ import warnings
 
 import numpy as np
 
+from ._internal import set_module
+
 __all__ = ['array_fill_repeat']
 __all__ += ['isndarray', 'isiterable', 'voigt_matrix']
 __all__ += ['get_dtype']
@@ -58,6 +60,7 @@ def array_fill_repeat(array, size, cls=None):
         return np.array(array, dtype=cls)
 
 
+@set_module("sisl")
 def voigt_matrix(M, to_voigt):
     r""" Convert a matrix from Voigt representation to dense, or from matrix to Voigt
 

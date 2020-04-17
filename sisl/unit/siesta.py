@@ -6,6 +6,7 @@ The conversion factors are taken directly from Siesta
 which means these unit conversions should be used for Siesta "stuff".
 """
 
+from sisl._internal import set_module
 from .base import UnitParser
 from .base import unit_table
 from .base import unit_group as u_group
@@ -52,6 +53,7 @@ unit_table_siesta['force'].update({
 })
 
 
+@set_module("sisl.unit.siesta")
 def unit_group(unit, tbl=None):
     global unit_table_siesta
     if tbl is None:
@@ -59,6 +61,7 @@ def unit_group(unit, tbl=None):
     return u_group(unit, tbl)
 
 
+@set_module("sisl.unit.siesta")
 def unit_default(group, tbl=None):
     global unit_table_siesta
     if tbl is None:
@@ -66,6 +69,7 @@ def unit_default(group, tbl=None):
     return u_default(group, tbl)
 
 
+@set_module("sisl.unit.siesta")
 def unit_convert(fr, to, opts=None, tbl=None):
     global unit_table_siesta
     if tbl is None:

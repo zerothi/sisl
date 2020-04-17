@@ -3,6 +3,7 @@ import warnings
 import numpy as np
 from scipy.sparse import csr_matrix, SparseEfficiencyWarning
 
+from sisl._internal import set_module
 import sisl.linalg as lin
 import sisl._array as _a
 from sisl.sparse import isspmatrix
@@ -20,6 +21,7 @@ __all__ = ['SparseOrbitalBZ', 'SparseOrbitalBZSpin']
 warnings.filterwarnings("ignore", category=SparseEfficiencyWarning)
 
 
+@set_module("sisl.physics")
 class SparseOrbitalBZ(SparseOrbital):
     r""" Sparse object containing the orbital connections in a Brillouin zone
 
@@ -572,6 +574,7 @@ class SparseOrbitalBZ(SparseOrbital):
         self._reset()
 
 
+@set_module("sisl.physics")
 class SparseOrbitalBZSpin(SparseOrbitalBZ):
     r""" Sparse object containing the orbital connections in a Brillouin zone with possible spin-components
 

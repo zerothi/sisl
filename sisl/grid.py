@@ -9,6 +9,7 @@ from numpy import ogrid, take
 from scipy.sparse import diags as sp_diags
 from scipy.sparse import SparseEfficiencyWarning
 
+from ._internal import set_module
 from . import _array as _a
 from ._help import dtype_complex_to_real, wrap_filterwarnings
 from .shape import Shape
@@ -23,6 +24,7 @@ from .geometry import Geometry
 __all__ = ['Grid', 'sgrid']
 
 
+@set_module("sisl")
 class Grid(SuperCellChild):
     """ Real-space grid information with associated geometry.
 
@@ -1407,6 +1409,7 @@ class Grid(SuperCellChild):
         return p, namespace
 
 
+@set_module("sisl")
 def sgrid(grid=None, argv=None, ret_grid=False):
     """ Main script for sgrid.
 

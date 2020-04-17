@@ -2,6 +2,7 @@ from numbers import Integral, Real
 
 import numpy as np
 
+from ._internal import set_module
 from .messages import info
 from . import _array as _a
 from ._indices import list_index_le
@@ -12,6 +13,7 @@ from .orbital import Orbital
 __all__ = ['PeriodicTable', 'Atom', 'Atoms']
 
 
+@set_module("sisl")
 class PeriodicTable:
     r""" Periodic table for creating an `Atom`, or retrieval of atomic information via atomic numbers
 
@@ -934,6 +936,7 @@ class AtomMeta(type):
 # The designation of metaclass in python3 is actually:
 #   class ...(..., metaclass=MetaClass)
 # This below construct handles both python2 and python3 cases
+@set_module("sisl")
 class Atom(metaclass=AtomMeta):
     """ Atomic information, mass, name number of orbitals and ranges
 
@@ -1232,6 +1235,7 @@ class Atom(metaclass=AtomMeta):
         self.__init__(d['Z'], d['orbital'], d['mass'], d['tag'])
 
 
+@set_module("sisl")
 class Atoms:
     """ A list-like object to contain a list of different atoms with minimum
     data duplication.

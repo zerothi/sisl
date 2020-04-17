@@ -7,6 +7,7 @@ from numpy import insert, unique, take, delete, argsort
 from numpy import diff, allclose
 from numpy import tile, repeat, concatenate
 
+from ._internal import set_module
 from . import _array as _a
 from .atom import Atom
 from .orbital import Orbital
@@ -863,6 +864,7 @@ class _SparseGeometry:
         self._def_dim = -1
 
 
+@set_module("sisl")
 class SparseAtom(_SparseGeometry):
     """ Sparse object with number of rows equal to the total number of atoms in the `Geometry` """
 
@@ -1337,6 +1339,7 @@ class SparseAtom(_SparseGeometry):
         return R
 
 
+@set_module("sisl")
 class SparseOrbital(_SparseGeometry):
     """ Sparse object with number of rows equal to the total number of orbitals in the `Geometry` """
 

@@ -1,10 +1,12 @@
 import numpy as np
 
+from sisl._internal import set_module
 from sisl import Atom, Geometry, SuperCell
 
 __all__ = ['diamond']
 
 
+@set_module("sisl.geom")
 def diamond(alat=3.57, atom=None):
     """ Diamond lattice with 2 atoms in the unitcell
 
