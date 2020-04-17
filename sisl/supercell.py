@@ -923,6 +923,12 @@ class SuperCell:
         s = ',\n '.join(['ABC'[i] + '=[{:.3f}, {:.3f}, {:.3f}]'.format(*self.cell[i]) for i in (0, 1, 2)])
         return self.__class__.__name__ + ('{{nsc: [{:} {:} {:}],\n ' + s + ',\n}}').format(*self.nsc)
 
+    def __repr__(self):
+        r = lambda x: round(x, 3)  # rounding for display (shorter than fmt-string when numbers are already round)
+        a, b, c = map(r, np.linalg.norm(self.cell, axis=1))
+        alpha, beta, gamma = (r(self.angle(i, j)) for i, j in ((1, 2), (0, 2), (0, 1)))
+        return f"<{self.__module__}.{self.__class__.__name__} a={a}, b={b}, c={c}, α={alpha}, β={beta}, γ={gamma}, nsc={self.nsc}>"
+
     def __eq__(self, other):
         """ Equality check """
         return self.equal(other)

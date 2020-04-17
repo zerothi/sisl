@@ -127,6 +127,11 @@ class Orbital:
             return self.__class__.__name__ + f'{{R: {self.R:.5f}, q0: {self.q0}, tag: {self.tag}}}'
         return self.__class__.__name__ + f'{{R: {self.R:.5f}, q0: {self.q0}}}'
 
+    def __repr__(self):
+        if self.tag:
+            return f"<{self.__module__}.{self.__class__.__name__} R={self.R:.3f}, q0={self.q0}, tag={self.tag}>"
+        return f"<{self.__module__}.{self.__class__.__name__} R={self.R:.3f}, q0={self.q0}>"
+
     def name(self, tex=False):
         """ Return a named specification of the orbital (`tag`) """
         return self.tag
@@ -512,6 +517,11 @@ class SphericalOrbital(Orbital):
         if len(self.tag) > 0:
             return self.__class__.__name__ + f'{{l: {self.l}, R: {self.R}, q0: {self.q0}, tag: {self.tag}}}'
         return self.__class__.__name__ + f'{{l: {self.l}, R: {self.R}, q0: {self.q0}}}'
+
+    def __repr__(self):
+        if self.tag:
+            return f"<{self.__module__}.{self.__class__.__name__} l={self.l}, R={self.R:.3f}, q0={self.q0}, tag={self.tag}>"
+        return f"<{self.__module__}.{self.__class__.__name__} l={self.l}, R={self.R:.3f}, q0={self.q0}>"
 
     def radial(self, r, is_radius=True):
         r""" Calculate the radial part of the wavefunction :math:`f(\mathbf R)`
@@ -954,6 +964,11 @@ class AtomicOrbital(Orbital):
         if len(self.tag) > 0:
             return self.__class__.__name__ + '{{{0}, q0: {1}, tag: {2}, {3}}}'.format(self.name(), self.q0, self.tag, str(self.orb))
         return self.__class__.__name__ + '{{{0}, q0: {1}, {2}}}'.format(self.name(), self.q0, str(self.orb))
+
+    def __repr__(self):
+        if self.tag:
+            return f"<{self.__module__}.{self.__class__.__name__} {self.name()} q0={self.q0}, tag={self.tag}>"
+        return f"<{self.__module__}.{self.__class__.__name__} {self.name()} q0={self.q0}>"
 
     def set_radial(self, *args):
         r""" Update the internal radial function used as a :math:`f(|\mathbf r|)`
