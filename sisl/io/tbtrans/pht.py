@@ -1,10 +1,12 @@
 from ..sile import add_sile
+from sisl._internal import set_module
 from .tbt import tbtncSileTBtrans, tbtavncSileTBtrans, Ry2K, Ry2eV
 
 
 __all__ = ['phtncSilePHtrans', 'phtavncSilePHtrans']
 
 
+@set_module("sisl.io.phtrans")
 class phtncSilePHtrans(tbtncSileTBtrans):
     """ PHtrans file object """
     _trans_type = 'PHT'
@@ -19,6 +21,7 @@ class phtncSilePHtrans(tbtncSileTBtrans):
         return self._value('kT', self._elec(elec))[0] * Ry2eV
 
 
+@set_module("sisl.io.phtrans")
 class phtavncSilePHtrans(tbtavncSileTBtrans):
     """ PHtrans file object """
     _trans_type = 'PHT'

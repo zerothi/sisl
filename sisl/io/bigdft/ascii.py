@@ -2,12 +2,10 @@
 Sile object for reading/writing ascii files from BigDFT
 """
 
-
-# Import sile objects
 from .sile import SileBigDFT
 from ..sile import *
 
-# Import the geometry object
+from sisl._internal import set_module
 from sisl import Geometry, Atom, SuperCell
 from sisl.unit import unit_convert
 
@@ -18,6 +16,7 @@ __all__ = ['asciiSileBigDFT']
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 
 
+@set_module("sisl.io.bigdft")
 class asciiSileBigDFT(SileBigDFT):
     """ ASCII file object for BigDFT """
 

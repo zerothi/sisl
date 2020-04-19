@@ -1,7 +1,13 @@
 import warnings
 from datetime import datetime
 import numpy as np
+from os.path import isfile
 
+from ..sile import add_sile, sile_fh_open, sile_raise_write, SileError
+from .sile import SileSiesta
+from .._help import *
+
+from sisl._internal import set_module
 from sisl import constant
 from sisl.unit.siesta import units
 import sisl._array as _a
@@ -9,10 +15,6 @@ from sisl._indices import indices_only
 from sisl.utils.ranges import list2str
 from sisl.messages import SislError, info, warn
 from sisl.utils.mathematics import fnorm
-
-from .._help import *
-from ..sile import *
-from .sile import SileSiesta
 
 from .binaries import tshsSileSiesta, tsdeSileSiesta
 from .binaries import dmSileSiesta, hsxSileSiesta, onlysSileSiesta
@@ -28,7 +30,6 @@ from sisl import Geometry, Orbital, Atom, Atoms, SuperCell, DynamicalMatrix
 
 from sisl.utils.cmd import default_ArgumentParser, default_namespace
 from sisl.utils.misc import merge_instances
-
 from sisl.unit.siesta import unit_convert, unit_default, unit_group
 
 __all__ = ['fdfSileSiesta']
@@ -47,6 +48,7 @@ def _listify_str(arg):
     return arg
 
 
+@set_module("sisl.io.siesta")
 class fdfSileSiesta(SileSiesta):
     """ FDF-input file
 

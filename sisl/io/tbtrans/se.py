@@ -6,11 +6,11 @@ except Exception:
 import numpy as np
 from numpy import in1d, argsort
 
-# Import sile objects
+from ..sile import add_sile
+from sisl._internal import set_module
 from sisl._indices import indices
 from sisl.utils import *
 import sisl._array as _a
-from ..sile import add_sile
 from ._cdf import _devncSileTBtrans
 
 # Import the geometry object
@@ -24,6 +24,7 @@ Bohr2Ang = unit_convert('Bohr', 'Ang')
 Ry2eV = unit_convert('Ry', 'eV')
 
 
+@set_module("sisl.io.tbtrans")
 class tbtsencSileTBtrans(_devncSileTBtrans):
     r""" TBtrans self-energy file object with downfolded self-energies to the device region
 
@@ -291,9 +292,11 @@ add_sile('TBT_UP.SE.nc', tbtsencSileTBtrans)
 add_sile('TBT_DN.SE.nc', tbtsencSileTBtrans)
 
 
+@set_module("sisl.io.phtrans")
 class phtsencSilePHtrans(tbtsencSileTBtrans):
     """ PHtrans file object """
     _trans_type = 'PHT'
     _E2eV = Ry2eV ** 2
+
 
 add_sile('PHT.SE.nc', phtsencSilePHtrans)

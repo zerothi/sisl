@@ -1,13 +1,14 @@
 # Import sile objects
 from .sile import *
 
-# Import the geometry object
+from sisl._internal import set_module
 from sisl import Geometry
 
 
 __all__ = ['moldenSile']
 
 
+@set_module("sisl.io")
 class moldenSile(Sile):
     """ Molden file object """
 

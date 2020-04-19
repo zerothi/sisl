@@ -6,6 +6,7 @@ import numpy as np
 from numpy import abs as np_abs
 from scipy.sparse import lil_matrix
 
+from sisl._internal import set_module
 from .sile import SileGULP
 from ..sile import *
 
@@ -13,6 +14,7 @@ from ..sile import *
 __all__ = ['fcSileGULP']
 
 
+@set_module("sisl.io.gulp")
 class fcSileGULP(SileGULP):
     """ GULP output file object """
 

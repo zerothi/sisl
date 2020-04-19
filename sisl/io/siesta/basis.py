@@ -1,15 +1,18 @@
+from ..sile import add_sile
+from .sile import SileSiesta, SileCDFSiesta
+
+from sisl._internal import set_module
 from sisl._help import xml_parse
 from sisl.atom import Atom
 from sisl.orbital import SphericalOrbital
-from sisl.io import add_sile
 from sisl._array import arrayd, aranged
 from sisl.unit.siesta import unit_convert
-from .sile import SileSiesta, SileCDFSiesta
 
 
 __all__ = ['ionxmlSileSiesta', 'ionncSileSiesta']
 
 
+@set_module("sisl.io.siesta")
 class ionxmlSileSiesta(SileSiesta):
     """ Basis set information in xml format
 
@@ -76,6 +79,7 @@ class ionxmlSileSiesta(SileSiesta):
         return Atom(Z, orbital, mass=mass, tag=label)
 
 
+@set_module("sisl.io.siesta")
 class ionncSileSiesta(SileCDFSiesta):
     """ Basis set information in NetCDF files
 

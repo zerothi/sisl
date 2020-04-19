@@ -1,15 +1,18 @@
 import numpy as np
 
+from ..sile import add_sile, sile_fh_open
+from .sile import SileSiesta
+
+from sisl._internal import set_module
 import sisl._array as _a
 from sisl.utils import strmap
 from sisl.utils.cmd import default_ArgumentParser, default_namespace
-from ..sile import add_sile, sile_fh_open
-from .sile import *
 
 
 __all__ = ['bandsSileSiesta']
 
 
+@set_module("sisl.io.siesta")
 class bandsSileSiesta(SileSiesta):
     """ Bandstructure information """
 

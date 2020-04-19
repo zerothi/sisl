@@ -2,8 +2,9 @@ import os
 import numpy as np
 
 from .sile import SileSiesta
-from ..sile import *
+from ..sile import add_sile, sile_fh_open
 
+from sisl._internal import set_module
 from sisl import Geometry, Atom, SuperCell
 from sisl.utils.cmd import *
 from sisl.unit.siesta import unit_convert
@@ -21,6 +22,7 @@ def _ensure_species(species):
     return species
 
 
+@set_module("sisl.io.siesta")
 class outSileSiesta(SileSiesta):
     """ Output file from Siesta
 

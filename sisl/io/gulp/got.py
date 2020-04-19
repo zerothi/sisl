@@ -6,7 +6,7 @@ import os.path as osp
 import numpy as np
 from numpy import abs as np_abs
 
-
+from sisl._internal import set_module
 from sisl.messages import info, warn
 from .sile import SileGULP
 from .fc import fcSileGULP
@@ -19,6 +19,7 @@ from sisl.physics import DynamicalMatrix
 __all__ = ['gotSileGULP']
 
 
+@set_module("sisl.io.gulp")
 class gotSileGULP(SileGULP):
     """ GULP output file object
 

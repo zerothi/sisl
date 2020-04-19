@@ -2,16 +2,18 @@ import numpy as np
 
 # Import sile objects
 from .sile import SileVASP
-from ..sile import *
+from ..sile import add_sile, sile_fh_open, sile_raise_write
 
-# Import the geometry object
+from sisl._internal import set_module
 import sisl._array as _a
 from sisl.messages import warn
 from sisl import Geometry, PeriodicTable, Atom, SuperCell
 
+
 __all__ = ['carSileVASP']
 
 
+@set_module("sisl.io.vasp")
 class carSileVASP(SileVASP):
     """ *CAR VASP files for defining geomtries
 

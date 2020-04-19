@@ -8,6 +8,7 @@ import numpy as np
 # Import sile objects
 from .sile import *
 
+from sisl._internal import set_module
 from sisl import Geometry, SuperCell
 from sisl.messages import warn
 import sisl._array as _a
@@ -36,6 +37,7 @@ def _header_to_dict(header):
     return d
 
 
+@set_module("sisl.io")
 class xyzSile(Sile):
     """ XYZ file object """
 

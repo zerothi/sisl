@@ -17,6 +17,7 @@ from scipy.sparse import SparseEfficiencyWarning
 from ..sile import add_sile, sile_raise_write
 from ._cdf import _devncSileTBtrans
 from sisl.utils import *
+from sisl._internal import set_module
 import sisl._array as _a
 
 from sisl import Geometry, Atoms
@@ -36,6 +37,7 @@ Ry2K = unit_convert('Ry', 'K')
 eV2Ry = unit_convert('eV', 'Ry')
 
 
+@set_module("sisl.io.tbtrans")
 class tbtncSileTBtrans(_devncSileTBtrans):
     r""" TBtrans output file object
 
@@ -2616,6 +2618,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 # The average files
 # These are essentially equivalent to the TBT.nc files
 # with the exception that the k-points have been averaged out.
+@set_module("sisl.io.tbtrans")
 class tbtavncSileTBtrans(tbtncSileTBtrans):
     """ TBtrans average file object
 

@@ -1,13 +1,16 @@
 import numpy as np
 
 from ..sile import add_sile, sile_fh_open
-from .sile import *
+from .sile import SileSiesta
+
+from sisl._internal import set_module
 from sisl.unit.siesta import unit_convert
 
 
 __all__ = ['fcSileSiesta']
 
 
+@set_module("sisl.io.siesta")
 class fcSileSiesta(SileSiesta):
     """ Force constant file """
 

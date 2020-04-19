@@ -2,12 +2,15 @@ import numpy as np
 
 # Import sile objects
 from .sile import SileVASP
-from ..sile import *
+from ..sile import add_sile, sile_fh_open
+
+from sisl._internal import set_module
 
 
 __all__ = ['eigenvalSileVASP']
 
 
+@set_module("sisl.io.vasp")
 class eigenvalSileVASP(SileVASP):
     """ Kohn-Sham eigenvalues """
 

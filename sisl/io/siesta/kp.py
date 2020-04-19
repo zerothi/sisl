@@ -1,8 +1,9 @@
 import numpy as np
 
 from ..sile import add_sile, sile_fh_open, sile_raise_write
-from .sile import *
+from .sile import SileSiesta
 
+from sisl._internal import set_module
 from sisl.unit.siesta import unit_convert
 
 
@@ -11,6 +12,7 @@ __all__ = ['kpSileSiesta', 'rkpSileSiesta']
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 
 
+@set_module("sisl.io.siesta")
 class kpSileSiesta(SileSiesta):
     """ k-points file in 1/Bohr units """
 
@@ -103,6 +105,7 @@ class kpSileSiesta(SileSiesta):
         self.write_data(k, bz.weight, fmt)
 
 
+@set_module("sisl.io.siesta")
 class rkpSileSiesta(kpSileSiesta):
     """ Special k-point file with units in reciprocal lattice vectors
 
