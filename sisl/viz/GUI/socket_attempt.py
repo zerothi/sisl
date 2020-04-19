@@ -4,6 +4,7 @@ import traceback
 import plotly
 import numpy as np
 
+import flask
 from flask.json import JSONEncoder
 from flask import Flask, request, jsonify, make_response
 from flask_socketio import SocketIO, join_room, emit, send
@@ -39,19 +40,68 @@ app.json_encoder = CustomJSONEncoder
 #This is so that the GUI's javascript doesn't complain about permissions
 #CORS(app)
 
-socketio = SocketIO(app, cors_allowed_origins="*")
+socketio = SocketIO(app, cors_allowed_origins="*", json=flask.json)
 
 session = BlankSession()
 
-@socketio.on('create')
-def on_create(data):
-	"""Create a game lobby"""
-	print(data)
-	emit(
-		"newplot", 
-		{"plot":[1,2,3,4]}
-	)
+def emit_session(session_to_emit = None):
+	'''
+	Emits a session through the socket connection
 
+	Parameters
+	-----------
+	session_to_emit: Session, optional
+		The session you want to emit. If not provided, the current session will be used.
+	'''
+		
+	if session_to_emit is None:
+		session_to_emit = session
+	
+	return emit("current_session", session._getJsonifiableInfo())
+
+@socketio.on('request_session')
+def on_session_request(data = None):
+	emit_session()
+
+@socketio.on('apply_method_on_session')
+def apply_method(method_name, kwargs = {}, *args):
+
+	method = getattr(session, method_name, None)
+	
+	if method is None:
+		# Maybe answer with an error
+		return
+		
+	method(*args, **kwargs)
+
+	emit_session()
+
+	# elif action == "load":
+	# 	#Load a saved session
+	# new_session = load(os.path.join(session.settings["rootDir"], data["path"]))
+	# set_session(new_session)
+
+	# if action == "updateSettings":
+	# 	#Update this session's settings
+	# 	session.updateSettings(**data)
+
+	# elif action == "undoSettings":
+	# 	#Go back to previous settings
+	# 	session.undoSettings()
+
+	# elif action == "save":
+	# 	#Save the session
+	# 	session.save( os.path.join(session.settings["rootDir"], data["path"]) )
+
+
+	# elif action == "updatePlots":
+	# 	#Update this session's settings
+	# 	additionalParams = {"justUpdated" : session.updates_available()}
+	# 	session.commit_updates()
+
+
+#@socketio.on('')
+# 
 # class SessionManager(Resource):
 	
 # 	def get(self):
@@ -68,74 +118,6 @@ def on_create(data):
 # 			return jsonify({
 # 				"statusCode": 500,
 # 				"status": "Could not make prediction",
-# 				"error": str(error)
-# 			})
-
-# 	def post(self):
-		
-# 		try:
-
-# 			global session
-
-# 			requestBody = request.json
-# 			additionalParams = {}
-
-# 			if requestBody["action"] == "updateSettings":
-# 				#Update this session's settings
-# 				session.updateSettings(**requestBody["settings"])
-
-# 			elif requestBody["action"] == "undoSettings":
-# 				#Go back to previous settings
-# 				session.undoSettings()
-			
-# 			elif requestBody["action"] == "save":
-# 				#Save the session
-# 				session.save( os.path.join(session.settings["rootDir"], requestBody["path"]) )
-			
-# 			elif requestBody["action"] == "load":
-# 				#Load a saved session
-# 				new_session = load( os.path.join(session.settings["rootDir"], requestBody["path"]) )
-# 				set_session(new_session)
-			
-# 			elif requestBody["action"] == "updatePlots":
-# 				#Update this session's settings
-# 				additionalParams = {"justUpdated" : session.updates_available()}
-# 				session.commit_updates()
-
-# 			response = jsonify({
-# 				"statusCode": 200,
-# 				"status": "Options delivered",
-# 				"session": session._getJsonifiableInfo(),
-# 				**additionalParams
-# 			})
-
-# 			return response
-# 		except Exception as error:
-# 			print(traceback.format_exc())
-# 			return jsonify({
-# 				"statusCode": 500,
-# 				"status": "Could not make perform operation on the current session",
-# 				"error": str(error)
-# 			})
-
-# class PlotTypes(Resource):
-
-# 	def get(self):
-# 		try: 
-
-# 			options = [ {"value": subclass.__name__, "label": subclass._plotType} for subclass in session.getPlotClasses()]
-
-# 			response = jsonify({
-# 				"statusCode": 200,
-# 				"status": "Plot types delivered",
-# 				"plotOptions": options
-# 			})
-# 			return response
-# 		except Exception as error:
-# 			print(traceback.format_exc())
-# 			return jsonify({
-# 				"statusCode": 500,
-# 				"status": "Could not find plot types",
 # 				"error": str(error)
 # 			})
 	

@@ -380,6 +380,21 @@ class Session(Configurable):
 
             self.warehouse["plots"][plotID] = plot
 
+    def _run_plot_method(plotID, method_name, *args, **kwargs):
+        '''
+        Generic private method to run methods on plots that belong to this session.
+
+        Any public method that runs plot methods should use this private method under the hood.
+
+        In this way, the session will be able to consistently respond to plot updates. E.g. 
+        '''
+
+        plot = self.plot(plotID)
+
+        method = getattr(plot, method_name)
+
+        return method(*args, **kwargs)
+
     #-----------------------------------------
     #            TABS MANAGEMENT
     #-----------------------------------------
@@ -589,7 +604,13 @@ class Session(Configurable):
             "settings": self.settings,
             "params": self.params,
             "paramGroups": self._paramGroups,
-            "updatesAvailable": self.updates_available()
+            "updatesAvailable": self.updates_available(),
+            "plotOptions": [
+                {"value": subclass.__name__, "label": subclass._plotType} 
+                for subclass in self.getPlotClasses()
+            ],
+            "structures": self.getStructures(),
+            "plotables": self.getPlotables()
         }
 
         return infoDict
