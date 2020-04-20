@@ -110,6 +110,59 @@ except ImportError:
 
 
 __all__ = ['BrillouinZone', 'MonkhorstPack', 'BandStructure']
+__all__ += ['BrillouinZoneDispatcher']
+
+
+from sisl._dispatcher import ClassDispatcher, AbstractDispatcher
+from functools import wraps
+
+class BrillouinZoneDispatcher(AbstractDispatcher):
+
+    def __getattr__(self, key):
+        # We need to offload the dispatcher to retrieve
+        # methods from the parent object
+        # This dispatch will _never_ do anything to it-self
+        method = getattr(self._obj.parent, key)
+
+        return self.dispatch(method)
+
+
+class AverageDispatcher(BrillouinZoneDispatcher):
+
+    def dispatch(self, method):
+        """ Dispatch the method by averaging """
+        @wraps(method)
+        def func(*args, **kwargs):
+            # Retrieve BrillouinZone and parent
+            bz = self._obj
+            parent = bz.parent
+
+            # Check parameters
+            has_wrap = "wrap" in kwargs
+            if has_wrap:
+                wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop("wrap"))
+
+            eta = tqdm_eta(len(bz), bz.__class__.__name__ + '.average', 'k', kwargs.pop('eta', False))
+
+            # Do actual average
+            k = bz.k
+            w = bz.weight
+            if has_wrap:
+                v = wrap(method(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0]) * w[0]
+                eta.update()
+                for i in range(1, len(k)):
+                    v += wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i]) * w[i]
+                    eta.update()
+            else:
+                v = method(*args, k=k[0], **kwargs) * w[0]
+                eta.update()
+                for i in range(1, len(k)):
+                    v += method(*args, k=k[i], **kwargs) * w[i]
+                    eta.update()
+            eta.close()
+            return v
+
+        return func
 
 
 @set_module("sisl.physics")
@@ -139,6 +192,10 @@ class BrillouinZone:
     weight : array_like, optional
        weights for the k-points. Must have the same length as `k`.
     """
+    dispatch = ClassDispatcher()
+
+    # Register dispatched functions
+    dispatch.register(average=AverageDispatcher)
 
     def __init__(self, parent, k=None, weight=None):
         self.set_parent(parent)
