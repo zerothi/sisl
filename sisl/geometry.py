@@ -297,7 +297,7 @@ class Geometry(SuperCellChild):
         - `Atom` -> (self.atoms.index(atom) == self.atoms.specie).nonzero()[0]
         - range/list/ndarray -> ndarray
         """
-        return atom
+        return np.asarray(atom)
 
     @_sanitize_atom.register(str)
     def _(self, atom):
@@ -308,11 +308,6 @@ class Geometry(SuperCellChild):
         if atom.dtype == bool_:
             return np.flatnonzero(atom)
         return atom
-
-    @_sanitize_atom.register(range)
-    @_sanitize_atom.register(list)
-    def _(self, atom):
-        return np.asarray(atom)
 
     @_sanitize_atom.register(Atom)
     def _(self, atom):
