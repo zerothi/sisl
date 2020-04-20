@@ -1708,7 +1708,10 @@ class Atoms:
                 if at.tag == key:
                     return at
             return None
-        return [self.atom[i] for i in self._specie[_a.asarrayi(key).ravel()]]
+        key = np.asarray(key)
+        if key.ndim == 0:
+            return self.atom[self._specie[key]]
+        return [self.atom[i] for i in self._specie[key]]
 
     def __setitem__(self, key, value):
         """ Overwrite an `Atom` object corresponding to the key(s) """

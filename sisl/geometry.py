@@ -10,7 +10,7 @@ from numpy import dot, square, sqrt, diff
 from numpy import floor, ceil
 from numpy import argsort, split, isin, concatenate
 
-from ._internal import set_module
+from ._internal import set_module, singledispatchmethod
 from . import _plot as plt
 from . import _array as _a
 from ._math_small import is_ascending, cross3
@@ -27,6 +27,7 @@ from .supercell import SuperCell, SuperCellChild
 from .atom import Atom, Atoms
 from .shape import Shape, Sphere, Cube
 from ._namedindex import NamedIndex
+
 
 __all__ = ['Geometry', 'sgeom']
 
@@ -263,26 +264,29 @@ class Geometry(SuperCellChild):
         elif isinstance(value, str):
             self.names.add_name(value, atom)
 
+    @singledispatchmethod
     def __getitem__(self, atom):
         """ Geometry coordinates (allows supercell indices) """
-        if isinstance(atom, (Integral, str)):
-            return self.axyz(atom)
-
-        elif isinstance(atom, slice):
-            if atom.stop is None:
-                atom = atom.indices(self.na)
-            else:
-                atom = atom.indices(self.na_s)
-            return self.axyz(np.arange(atom[0], atom[1], atom[2], dtype=np.int32))
-
-        elif atom is None:
-            return self.axyz()
-
-        elif isinstance(atom, tuple):
-            return self[atom[0]][..., atom[1]]
-
         return self.axyz(atom)
 
+    @__getitem__.register(Integral)
+    @__getitem__.register(str)
+    def _(self, atom):
+        return self.axyz(atom)
+
+    @__getitem__.register(slice)
+    def _(self, atom):
+        if atom.stop is None:
+            atom = atom.indices(self.na)
+        else:
+            atom = atom.indices(self.na_s)
+        return self.axyz(_a.arangei(atom[0], atom[1], atom[2]))
+
+    @__getitem__.register(tuple)
+    def _(self, atom):
+        return self[atom[0]][..., atom[1]]
+
+    @singledispatchmethod
     def _sanitize_atom(self, atom):
         """ Converts an `atom` to index under given inputs
 
@@ -291,16 +295,21 @@ class Geometry(SuperCellChild):
         - boolean array -> nonzero()[0]
         - name -> self._names[name]
         """
-        if isinstance(atom, str):
-            return self.names[atom]
-        elif isinstance(atom, ndarray) and atom.dtype == bool_:
-            return np.flatnonzero(atom)
-        # We shouldn't .ravel() since the calling routine may expect
-        # a 0D vector.
-        atom = _a.asarrayi(atom)
-        if atom.ndim > 1:
-            raise ValueError('Indexing geometries with a multi-dimensional array is not supported, ensure 0D or 1D arrays.')
         return atom
+
+    @_sanitize_atom.register(str)
+    def _(self, atom):
+        return self.names[atom]
+
+    @_sanitize_atom.register(ndarray)
+    def _(self, atom):
+        if atom.dtype == bool_:
+            return np.flatnonzero(atom)
+        return atom
+
+    @_sanitize_atom.register(range)
+    def _(self, atom):
+        return np.asarray(atom)
 
     def _sanitize_orb(self, orbital):
         """ Converts an `orbital` to index under given inputs
@@ -2816,6 +2825,8 @@ class Geometry(SuperCellChild):
             off = self.xyz[xyz_ia, :]
         elif not isndarray(xyz_ia):
             off = _a.asarrayd(xyz_ia)
+        elif xyz_ia.ndim == 0:
+            off = self.xyz[xyz_ia, :]
         else:
             off = xyz_ia
 
