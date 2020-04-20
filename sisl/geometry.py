@@ -294,6 +294,8 @@ class Geometry(SuperCellChild):
 
         - boolean array -> nonzero()[0]
         - name -> self._names[name]
+        - `Atom` -> (self.atoms.index(atom) == self.atoms.specie).nonzero()[0]
+        - range/list/ndarray -> ndarray
         """
         return atom
 
@@ -308,8 +310,13 @@ class Geometry(SuperCellChild):
         return atom
 
     @_sanitize_atom.register(range)
+    @_sanitize_atom.register(list)
     def _(self, atom):
         return np.asarray(atom)
+
+    @_sanitize_atom.register(Atom)
+    def _(self, atom):
+        return (self.atoms.specie == self.atoms.index(atom)).nonzero()[0]
 
     def _sanitize_orb(self, orbital):
         """ Converts an `orbital` to index under given inputs

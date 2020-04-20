@@ -1412,3 +1412,13 @@ def test_geometry_sort_group():
 @pytest.mark.xfail(raises=ValueError)
 def test_geometry_sort_fail_keyword():
     sisl_geom.bilayer().sort(not_found_keyword=True)
+
+
+def test_geometry_sanitize_atom():
+    bi = sisl_geom.bilayer(bottom_atom=Atom[6], top_atom=(Atom[5], Atom[7])).tile(2, 0).repeat(2, 1)
+    C_idx = (bi.atoms.Z == 6).nonzero()[0]
+    check_C = bi.axyz(C_idx)
+    only_C = bi.axyz(Atom[6])
+    assert np.allclose(only_C, check_C)
+    only_C = bi.axyz(bi.atoms.Z == 6)
+    assert np.allclose(only_C, check_C)
