@@ -118,7 +118,7 @@ metadata = dict(
             'xarray',
             'flask',
             'flask-restx',
-            'flask-socketio'
+            'flask-socketio',
             'flask-cors'
         ]
     },
