@@ -37,27 +37,47 @@ class AbstractDispatch(metaclass=ABCMeta):
 class ObjectDispatcher:
     # We need to hide the methods and objects
     # since we are going to retrieve dispatchs from the object it-self
-    __slots__ = ("_dispatchs", "_obj")
+    __slots__ = ("_obj", "_dispatchs")
 
-    def __init__(self, dispatchs, obj):
-        self._dispatchs = dispatchs
+    def __init__(self, obj, dispatchs=None):
         self._obj = obj
+        if dispatchs is None:
+            dispatchs = dict()
+        self._dispatchs = dispatchs
 
     def __len__(self):
         return len(self._dispatchs)
 
     def __str__(self):
-        objs = str(self._obj).replace("\n", "\n ")
+        obj = str(self._obj).replace("\n", "\n ")
         dispatchs = ",\n ".join(
             map(lambda kv: f"{kv[0]} = " + str(kv[1](object())).replace("\n", "\n "),
                 self._dispatchs.items()
             )
         )
-        return f"{self.__class__.__name__}{{dispatchs: {len(self)},\n {objs},\n {dispatchs}\n}}"
+        return f"{self.__class__.__name__}{{dispatchs: {len(self)},\n {obj},\n {dispatchs}\n}}"
 
     ####
     # Only the following methods are necessary for the dispatch method to work
     ####
+
+    def register(self, key, dispatch):
+        """ Register a dispatch class to this object and to the object class instance (if existing)
+
+        Parameter
+        ---------
+        key : *any hashable*
+            key used in the dictionary look-up for the dispatch class
+        dispatch : AbstractDispatch
+            dispatch class to be registered
+        """
+        cls_dispatch = getattr(self._obj.__class__, "dispatch", None)
+        if cls_dispatch:
+            cls_dispatch.register(key, dispatch)
+        # Since this instance is already created, we have to add it here.
+        # This has the side-effect that already stored dispatch (of ObjectDispatcher)
+        # will not get these.
+        self._dispatchs[key] = dispatch
 
     def __getitem__(self, key):
         r""" Retrieve dispatched dispatchs by hash (allows functions to be dispatched) """
@@ -102,7 +122,7 @@ class ClassDispatcher:
         """
         if instance is None:
             return self
-        return ObjectDispatcher(self._dispatchs, instance)
+        return ObjectDispatcher(instance, self._dispatchs)
 
     def register(self, key, dispatch):
         """ Register a dispatch class
