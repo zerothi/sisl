@@ -10,6 +10,13 @@ class AbstractDispatch(metaclass=ABCMeta):
     def __init__(self, obj):
         self._obj = obj
 
+    def __str__(self):
+        return f"{self.__class__.__name__}"
+
+    ####
+    # Only the following methods are necessary for the dispatch method to work
+    ####
+
     @abstractmethod
     def dispatch(self, method):
         """ Create dispatched method with correctly wrapped documentation
@@ -23,9 +30,7 @@ class AbstractDispatch(metaclass=ABCMeta):
         return func
 
     def __getattr__(self, key):
-        # Retrieve method from object
         method = getattr(self._obj, key)
-
         return self.dispatch(method)
 
 
@@ -38,8 +43,24 @@ class ObjectDispatcher:
         self._dispatchs = dispatchs
         self._obj = obj
 
+    def __len__(self):
+        return len(self._dispatchs)
+
+    def __str__(self):
+        objs = str(self._obj).replace("\n", "\n ")
+        dispatchs = ",\n ".join(
+            map(lambda kv: f"{kv[0]} = " + str(kv[1](object())).replace("\n", "\n "),
+                self._dispatchs.items()
+            )
+        )
+        return f"{self.__class__.__name__}{{dispatchs: {len(self)},\n {objs},\n {dispatchs}\n}}"
+
+    ####
+    # Only the following methods are necessary for the dispatch method to work
+    ####
+
     def __getitem__(self, key):
-        """ Retrieve dispatched dispatchs by hash (allows functions to be dispatched) """
+        r""" Retrieve dispatched dispatchs by hash (allows functions to be dispatched) """
         return self._dispatchs[key](self._obj)
 
     def __getattr__(self, key):
@@ -52,6 +73,23 @@ class ClassDispatcher:
 
     def __init__(self):
         self._dispatchs = dict()
+
+    def __len__(self):
+        return len(self._dispatchs)
+
+    def __str__(self):
+        # We know how to create an object, passing 1 argument (an object)
+        # We will fake this to get a str representation.
+        dispatchs = ",\n ".join(
+            map(lambda kv: f"{kv[0]} = " + str(kv[1](object())).replace("\n", "\n "),
+                self._dispatchs.items()
+            )
+        )
+        return f"{self.__class__.__name__}{{dispatchs: {len(self)},\n {dispatchs}\n}}"
+
+    ####
+    # Only the following methods are necessary for the dispatch method to work
+    ####
 
     def __get__(self, instance, owner):
         """ Class dispatcher retrieval
@@ -66,17 +104,14 @@ class ClassDispatcher:
             return self
         return ObjectDispatcher(self._dispatchs, instance)
 
-    def register(self, dispatch, key=None):
+    def register(self, key, dispatch):
         """ Register a dispatch class
 
         Parameter
         ---------
+        key : *any hashable*
+            key used in the dictionary look-up for the dispatch class
         dispatch : AbstractDispatch
             dispatch class to be registered
-        key : *hashable*, optional
-            hashable key used in the dictionary look-up
-            Will default to ``dispatch.__name__.lower()``
         """
-        if key is None:
-            key = dispatch.__name__.lower()
         self._dispatchs[key] = dispatch
