@@ -29,6 +29,9 @@ class AbstractDispatch(metaclass=ABCMeta):
             return method(at_least_same_args_as_method)
         return func
 
+    def __call__(self, method, *args, **kwargs):
+        return self.dispatch(method)(*args, **kwargs)
+
     def __getattr__(self, key):
         method = getattr(self._obj, key)
         return self.dispatch(method)
