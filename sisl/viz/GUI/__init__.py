@@ -7,19 +7,16 @@ import logging
 import sys
 
 from .server import app as server
-from .api import app, session, set_session
+from .api import session, set_session, run as run_api
 
-__all__ = ['session', 'set_session', 'launch', 'SERVER_ADRESS']
+__all__ = ['session', 'set_session', 'run_api', 'launch', 'SERVER_ADRESS']
 
 # Disable all flask logging
-app.logger.disabled = True
+server.logger.disabled = True
 log = logging.getLogger('werkzeug')
 log.disabled = True
 cli = sys.modules['flask.cli']
 cli.show_server_banner = lambda *x: None
-
-def runapi():
-    app.run(debug=False, port = 4000)
 
 SERVER_HOST = "localhost"
 SERVER_PORT = 7001
@@ -32,9 +29,13 @@ def runserver():
     webbrowser.open(SERVER_ADRESS, new=2)
     server.run(host=host, debug=False, use_reloader=False, port=port, threaded=True)
 
-threads = [Thread(target=runapi), Thread(target=runserver)] 
+def launch(inconsole=False, only_api=False, api_kwargs=None):
+    global threads
 
-def launch(inconsole=False):
+    threads = [Thread(target=run_api, kwargs=api_kwargs), Thread(target=runserver)]
+
+    if only_api:
+        threads = [threads[0]]
 
     if inconsole:
         #To launch an interactive console (not needed from jupyter) 

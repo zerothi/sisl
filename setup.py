@@ -114,9 +114,11 @@ metadata = dict(
             'pandas',
             'pathos',
             'dill',
+            'simplejson', # Because built-in json parses nan and JS does not understand it
             'xarray',
             'flask',
             'flask-restx',
+            'flask-socketio'
             'flask-cors'
         ]
     },

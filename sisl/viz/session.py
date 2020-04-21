@@ -122,6 +122,10 @@ class Session(Configurable):
 
         self.id = str(uuid.uuid4())
 
+        self.before_plot_update = None
+        self.on_plot_change = None
+        self.on_plot_change_error = None
+
         self.initWarehouse( kwargs.get("firstTab", False) )
 
         if callable( getattr(self, "_afterInit", None )):
@@ -306,6 +310,15 @@ class Session(Configurable):
 
         return self.plot(plotID).undoSettings()
     
+    def removePlotFromTab(self, plotID, tabID):
+        '''
+        Method to remove a plot only from a given tab.
+        '''
+
+        tab = self.tab(tabID)
+
+        tab["plots"] = [plot for plot in tab["plots"] if plot != plotID]
+
     def removePlot(self, plotID):
         '''
         Method to remove a plot
@@ -380,7 +393,7 @@ class Session(Configurable):
 
             self.warehouse["plots"][plotID] = plot
 
-    def _run_plot_method(plotID, method_name, *args, **kwargs):
+    def _run_plot_method(self, plotID, method_name, *args, **kwargs):
         '''
         Generic private method to run methods on plots that belong to this session.
 
@@ -393,7 +406,21 @@ class Session(Configurable):
 
         method = getattr(plot, method_name)
 
-        return method(*args, **kwargs)
+        if self.before_plot_update is not None:
+            self.before_plot_update(plot)
+
+        try:
+            returns = method(*args, **kwargs)
+        except Exception as e:
+            if self.on_plot_change_error is not None:
+                self.on_plot_change_error(plot, e)
+            else:
+                raise e
+        finally:
+            if self.on_plot_change is not None:
+                self.on_plot_change(plot)
+
+        return returns
 
     #-----------------------------------------
     #            TABS MANAGEMENT
@@ -505,9 +532,8 @@ class Session(Configurable):
         Removes a given plot from all tabs where it is located
         '''
 
-        for iTab, tab in enumerate( self.warehouse["tabs"] ):
-
-            self.warehouse["tabs"][iTab] = {**tab, "plots": [plot for plot in tab["plots"] if plot != plotID]}
+        for tab in self.tabs:
+            self.removePlotFromTab(plotID, tab["id"])
         
         return self
 

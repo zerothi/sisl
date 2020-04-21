@@ -1490,14 +1490,12 @@ class Plot(ShortCutable, Configurable):
         This method is thought mainly to prepare data to be sent through the API to the GUI.
         Data has to be sent as JSON, so this method can only return JSONifiable objects. (no numpy arrays, no NaN,...)
         '''
-        
-        figure = json.dumps(self.figure, cls=plotly.utils.PlotlyJSONEncoder)
 
         infoDict = {
             "id": self.id,
             "plotClass": self.__class__.__name__,
             "struct": getattr(self, "struct", None),
-            "figure": figure,
+            "figure": self.figure,
             "settings": self.settings,
             "params": self.params,
             "paramGroups": self.paramGroups,
