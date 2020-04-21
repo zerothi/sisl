@@ -110,24 +110,29 @@ except ImportError:
 
 
 __all__ = ['BrillouinZone', 'MonkhorstPack', 'BandStructure']
-__all__ += ['BrillouinZoneDispatcher']
+__all__ += ["BrillouinZoneDispatch", "BrillouinZoneParentDispatch"]
 
 
-from sisl._dispatcher import ClassDispatcher, AbstractDispatcher
+from sisl._dispatcher import ClassDispatcher, AbstractDispatch
 from functools import wraps
 
-class BrillouinZoneDispatcher(AbstractDispatcher):
+
+class BrillouinZoneDispatch(AbstractDispatch):
+    # this dispatch function will do stuff on the BrillouinZone object
+    pass
+
+
+class BrillouinZoneParentDispatch(BrillouinZoneDispatch):
 
     def __getattr__(self, key):
         # We need to offload the dispatcher to retrieve
         # methods from the parent object
-        # This dispatch will _never_ do anything to it-self
+        # This dispatch will _never_ do anything to the BrillouinZone
         method = getattr(self._obj.parent, key)
-
         return self.dispatch(method)
 
 
-class AverageDispatcher(BrillouinZoneDispatcher):
+class AverageDispatch(BrillouinZoneParentDispatch):
 
     def dispatch(self, method):
         """ Dispatch the method by averaging """
@@ -195,7 +200,7 @@ class BrillouinZone:
     dispatch = ClassDispatcher()
 
     # Register dispatched functions
-    dispatch.register(average=AverageDispatcher)
+    dispatch.register(AverageDispatch, "average")
 
     def __init__(self, parent, k=None, weight=None):
         self.set_parent(parent)

@@ -1,11 +1,12 @@
 from abc import ABCMeta, abstractmethod
 from functools import wraps
 
-__all__ = ["AbstractDispatcher", "ObjectDispatcher", "ClassDispatcher"]
+__all__ = ["AbstractDispatch", "ObjectDispatcher", "ClassDispatcher"]
 
-class AbstractDispatcher(metaclass=ABCMeta):
+
+class AbstractDispatch(metaclass=ABCMeta):
     r""" Dispatcher class used for dispatching function calls """
-    
+
     def __init__(self, obj):
         self._obj = obj
 
@@ -26,54 +27,56 @@ class AbstractDispatcher(metaclass=ABCMeta):
         method = getattr(self._obj, key)
 
         return self.dispatch(method)
-    
+
 
 class ObjectDispatcher:
     # We need to hide the methods and objects
-    # since we are going to retrieve methods from the object it-self
-    __slots__ = ("_methods", "_obj")
+    # since we are going to retrieve dispatchs from the object it-self
+    __slots__ = ("_dispatchs", "_obj")
 
-    def __init__(self, methods, obj):
-        self._methods = methods
+    def __init__(self, dispatchs, obj):
+        self._dispatchs = dispatchs
         self._obj = obj
 
     def __getitem__(self, key):
-        """ Retrieve dispatched methods by hash (allows functions to be dispatched) """
-        return self._methods[key](self._obj)
-                
+        """ Retrieve dispatched dispatchs by hash (allows functions to be dispatched) """
+        return self._dispatchs[key](self._obj)
+
     def __getattr__(self, key):
         """ Retrieve dispatched method by name """
-        return self._methods[key](self._obj)
+        return self._dispatchs[key](self._obj)
 
 
 class ClassDispatcher:
-    __slots__ = ["_methods"]
-    
+    __slots__ = ["_dispatchs"]
+
     def __init__(self):
-        self._methods = dict()
+        self._dispatchs = dict()
 
     def __get__(self, instance, owner):
         """ Class dispatcher retrieval
 
         When directly retrieved from the class we return it-self to
         allow interaction with the dispatcher.
-       
+
         When retrieved from an object it returns an `ObjectDispatcher`
-        which contains the current methods allowed to be dispatched through.
+        which contains the current dispatchs allowed to be dispatched through.
         """
         if instance is None:
             return self
-        return ObjectDispatcher(self._methods, instance)
+        return ObjectDispatcher(self._dispatchs, instance)
 
-    def register(self, *args, **kwargs):
-        """ Register a dispatched method or class """
-        for arg in args:
-            if isinstance(arg, tuple):
-                self._methods[arg[0]] = arg[1]
-            else:
-                try:
-                    self._methods[arg.__name__] = arg
-                except:
-                    self._methods[arg] = arg
-        for key, arg in kwargs.items():
-            self._methods[key] = arg
+    def register(self, dispatch, key=None):
+        """ Register a dispatch class
+
+        Parameter
+        ---------
+        dispatch : AbstractDispatch
+            dispatch class to be registered
+        key : *hashable*, optional
+            hashable key used in the dictionary look-up
+            Will default to ``dispatch.__name__.lower()``
+        """
+        if key is None:
+            key = dispatch.__name__.lower()
+        self._dispatchs[key] = dispatch
