@@ -58,7 +58,7 @@ __all__ += ['CoefficientPhonon', 'ModePhonon', 'ModeCPhonon']
 __all__ += ['EigenvaluePhonon', 'EigenvectorPhonon', 'EigenmodePhonon']
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.phonon")
 def DOS(E, hw, distribution='gaussian'):
     r""" Calculate the density of modes (DOS) for a set of energies, `E`, with a distribution function
 
@@ -94,7 +94,7 @@ def DOS(E, hw, distribution='gaussian'):
     return electron_DOS(E, hw, distribution)
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.phonon")
 def PDOS(E, mode, hw, distribution='gaussian'):
     r""" Calculate the projected density of modes (PDOS) onto each each atom and direction for a set of energies, `E`, with a distribution function
 
@@ -135,7 +135,7 @@ def PDOS(E, mode, hw, distribution='gaussian'):
     return electron_PDOS(E, hw, mode, distribution=distribution)
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.phonon")
 def velocity(mode, hw, dDk, degenerate=None):
     r""" Calculate the velocity of a set of modes
 
@@ -209,7 +209,7 @@ def _velocity(mode, hw, dDk, degenerate):
     return v * _velocity_const / (2 * hw.reshape(-1, 1))
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.phonon")
 def displacement(mode, hw, mass):
     r""" Calculate real-space displacements for a given mode (in units of the characteristic length)
 
@@ -315,19 +315,19 @@ class _phonon_Mode:
             self.state *= exp(-1j * phase).reshape(1, -1)
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.phonon")
 class CoefficientPhonon(Coefficient):
     """ Coefficients describing some physical quantity related to phonons """
     __slots__ = []
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.phonon")
 class ModePhonon(_phonon_Mode, State):
     """ A mode describing a physical quantity related to phonons """
     __slots__ = []
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.phonon")
 class ModeCPhonon(_phonon_Mode, StateC):
     """ A mode describing a physical quantity related to phonons, with associated coefficients of the mode """
     __slots__ = []
@@ -363,7 +363,7 @@ class ModeCPhonon(_phonon_Mode, StateC):
         return velocity(self.mode, self.hw, self.parent.dDk(**opt), degenerate=deg)
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.phonon")
 class EigenvaluePhonon(CoefficientPhonon):
     """ Eigenvalues of phonon modes, no eigenmodes retained
 
@@ -404,13 +404,13 @@ class EigenvaluePhonon(CoefficientPhonon):
         return DOS(E, self.hw, distribution)
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.phonon")
 class EigenvectorPhonon(ModePhonon):
     """ Eigenvectors of phonon modes, no eigenvalues retained """
     __slots__ = []
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.phonon")
 class EigenmodePhonon(ModeCPhonon):
     """ Eigenmodes of phonons with eigenvectors and eigenvalues.
 

@@ -64,7 +64,7 @@ class ObjectDispatcher:
     # Only the following methods are necessary for the dispatch method to work
     ####
 
-    def register(self, key, dispatch):
+    def register(self, key, dispatch, to_class=True):
         """ Register a dispatch class to this object and to the object class instance (if existing)
 
         Parameter
@@ -73,10 +73,14 @@ class ObjectDispatcher:
             key used in the dictionary look-up for the dispatch class
         dispatch : AbstractDispatch
             dispatch class to be registered
+        to_class : bool, optional
+            whether the dispatch class will also be registered with the
+            contained object's class instance
         """
-        cls_dispatch = getattr(self._obj.__class__, "dispatch", None)
-        if cls_dispatch:
-            cls_dispatch.register(key, dispatch)
+        if to_class:
+            cls_dispatch = getattr(self._obj.__class__, "dispatch", None)
+            if cls_dispatch:
+                cls_dispatch.register(key, dispatch)
         # Since this instance is already created, we have to add it here.
         # This has the side-effect that already stored dispatch (of ObjectDispatcher)
         # will not get these.

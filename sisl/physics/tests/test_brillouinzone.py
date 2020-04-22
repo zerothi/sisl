@@ -70,9 +70,10 @@ class TestBrillouinZone:
             def eig(self, k, *args, **kwargs):
                 return np.arange(3) - 1
         bz = BrillouinZone(Test(setup.s1))
+        bz_arr = bz.dispatch.array
         str(bz)
-        assert np.allclose(bz.eigh(), np.arange(3))
-        assert np.allclose(bz.eig(), np.arange(3)-1)
+        assert np.allclose(bz_arr.eigh(), np.arange(3))
+        assert np.allclose(bz_arr.eig(), np.arange(3)-1)
 
     def test_class2(self, setup):
         class Test(SuperCellChild):
@@ -84,17 +85,16 @@ class TestBrillouinZone:
                 return np.arange(3) - 1
         bz = BrillouinZone(Test(setup.s1))
         # Try the list/yield method
-        bz.aslist()
-        for val in bz.eigh():
+        for val in bz.dispatch.list.eigh():
             assert np.allclose(val, np.arange(3))
-        bz.asyield()
-        for val in bz.eigh():
+        for val in bz.dispatch.yields.eigh():
             assert np.allclose(val, np.arange(3))
-        for val in bz.eig():
+        for val in bz.dispatch.yields.eig():
             assert np.allclose(val, np.arange(3) - 1)
         # Average
-        assert np.allclose(bz.asaverage().eigh(), np.arange(3))
-        assert np.allclose(bz.asaverage().eigh(eta=True), np.arange(3))
+        bz_average = bz.dispatch.average
+        assert np.allclose(bz_average.eigh(), np.arange(3))
+        assert np.allclose(bz_average.eigh(eta=True), np.arange(3))
 
     def test_class3(self, setup):
         class Test(SuperCellChild):
@@ -106,13 +106,13 @@ class TestBrillouinZone:
                 return np.arange(3) - 1
         bz = MonkhorstPack(Test(setup.s1), [2] * 3)
         # Try the yield method
-        bz.asyield()
-        for val in bz.eigh():
+        bz_yield = bz.dispatch.yields
+        for val in bz_yield.eigh():
             assert np.allclose(val, np.arange(3))
-        for val in bz.eig():
+        for val in bz_yield.eig():
             assert np.allclose(val, np.arange(3) - 1)
         # Average
-        assert np.allclose(bz.asaverage().eigh(), np.arange(3))
+        assert np.allclose(bz.dispatch.average.eigh(), np.arange(3))
 
     @pytest.mark.parametrize("N", [2, 3, 4, 5, 7])
     @pytest.mark.parametrize("centered", [True, False])
@@ -238,15 +238,16 @@ class TestBrillouinZone:
         assert len(bz) == 2 ** 3
 
         # Assert that as* all does the same
-        asarray = bz.asarray().eigh()
-        aslist = np.array(bz.aslist().eigh())
-        asyield = np.array([a for a in bz.asyield().eigh()])
-        asaverage = bz.asaverage().eigh()
+        dispatch = bz.dispatch
+        asarray = dispatch.array.eigh()
+        aslist = np.array(dispatch.list.eigh())
+        asyield = np.array([a for a in dispatch.yields.eigh()])
+        asaverage = dispatch.average.eigh()
         assert np.allclose(asarray, aslist)
         assert np.allclose(asarray, asyield)
         # Average needs to be performed
         assert np.allclose((asarray / len(bz)).sum(0), asaverage)
-        bz.asnone().eigh()
+        dispatch.none.eigh()
 
     def test_as_dataarray(self):
         try:
@@ -262,14 +263,15 @@ class TestBrillouinZone:
         bz = MonkhorstPack(H, [2, 2, 2], trs=False)
 
         # Assert that as* all does the same
-        asarray = bz.asarray().eigh()
-        asdarray = bz.asdataarray().eigh()
+        asarray = bz.dispatch.array.eigh()
+        bz_da = bz.dispatch.dataarray
+        asdarray = bz_da.eigh()
         assert np.allclose(asarray, asdarray.values)
         assert isinstance(asdarray.bz, MonkhorstPack)
         assert isinstance(asdarray.parent, Hamiltonian)
         assert asdarray.dims == ('k', 'v1')
 
-        asdarray = bz.asdataarray().eigh(coords=['orb'])
+        asdarray = bz_da.eigh(coords=['orb'])
         assert asdarray.dims == ('k', 'orb')
 
     def test_as_single(self):
@@ -285,9 +287,9 @@ class TestBrillouinZone:
         assert len(bz) == 2 ** 3
 
         # Assert that as* all does the same
-        asarray = bz.asarray().eigh(wrap=wrap)
-        aslist = np.array(bz.aslist().eigh(wrap=wrap))
-        asyield = np.array([a for a in bz.asyield().eigh(wrap=wrap)])
+        asarray = bz.dispatch.array.eigh(wrap=wrap)
+        aslist = np.array(bz.dispatch.list.eigh(wrap=wrap))
+        asyield = np.array([a for a in bz.dispatch.yields.eigh(wrap=wrap)])
         assert np.allclose(asarray, aslist)
         assert np.allclose(asarray, asyield)
 
@@ -301,20 +303,20 @@ class TestBrillouinZone:
         assert len(bz) == 2 ** 3
 
         # Check with a wrap function
-        def wrap_reverse(arg):
+        def wrap(arg):
             return arg[::-1]
 
-        asarray = bz.asarray().eigh(wrap=wrap_reverse)
-        aslist = np.array(bz.aslist().eigh(wrap=wrap_reverse))
-        asyield = np.array([a for a in bz.asyield().eigh(wrap=wrap_reverse)])
-        asaverage = bz.asaverage().eigh(wrap=wrap_reverse)
+        # Assert that as* all does the same
+        asarray = bz.dispatch.array.eigh(wrap=wrap)
+        aslist = np.array(bz.dispatch.list.eigh(wrap=wrap))
+        asyield = np.array([a for a in bz.dispatch.yields.eigh(wrap=wrap)])
+        asaverage = bz.dispatch.average.eigh(wrap=wrap)
         assert np.allclose(asarray, aslist)
         assert np.allclose(asarray, asyield)
-        # Average needs to be performed
         assert np.allclose((asarray / len(bz)).sum(0), asaverage)
 
         # Now we should check whether the reverse is doing its magic!
-        mylist = [wrap_reverse(H.eigh(k=k)) for k in bz]
+        mylist = [wrap(H.eigh(k=k)) for k in bz]
         assert np.allclose(aslist, mylist)
 
     def test_as_wrap_default_oplist(self):
@@ -323,7 +325,7 @@ class TestBrillouinZone:
         H = Hamiltonian(g)
         H.construct([[0.1, 1.44], [0, -2.7]])
 
-        bz = MonkhorstPack(H, [2, 2, 2], trs=False).asaverage()
+        bz = MonkhorstPack(H, [2, 2, 2], trs=False)
         assert len(bz) == 2 ** 3
 
         # Check with a wrap function
@@ -332,9 +334,10 @@ class TestBrillouinZone:
             PDOS = es.PDOS(E) * weight
             return PDOS.sum(0), PDOS
 
-        DOS, PDOS = bz.assum().eigenstate(wrap=wrap_sum)
-        assert np.allclose(bz.DOS(E), DOS)
-        assert np.allclose(bz.PDOS(E), PDOS)
+        DOS, PDOS = bz.dispatch.sum.eigenstate(wrap=wrap_sum)
+        bz_arr = bz.dispatch.array
+        assert np.allclose(bz_arr.DOS(E), DOS)
+        assert np.allclose(bz_arr.PDOS(E), PDOS)
 
     # Check with a wrap function and the weight argument
     def test_wrap_kwargs(arg):
@@ -352,14 +355,18 @@ class TestBrillouinZone:
             return arg * weight
 
         E = np.linspace(-2, 2, 100)
-        asarray1 = (bz.asarray().DOS(E, wrap=wrap_none) * bz.weight.reshape(-1, 1)).sum(0)
-        asarray2 = bz.asarray().DOS(E, wrap=wrap_kwargs).sum(0)
-        aslist1 = (np.array(bz.aslist().DOS(E, wrap=wrap_none)) * bz.weight.reshape(-1, 1)).sum(0)
-        aslist2 = np.array(bz.aslist().DOS(E, wrap=wrap_kwargs)).sum(0)
-        asyield1 = (np.array([a for a in bz.asyield().DOS(E, wrap=wrap_none)]) * bz.weight.reshape(-1, 1)).sum(0)
-        asyield2 = np.array([a for a in bz.asyield().DOS(E, wrap=wrap_kwargs)]).sum(0)
-        asaverage = bz.asaverage().DOS(E, wrap=wrap_none)
-        assum = bz.assum().DOS(E, wrap=wrap_kwargs)
+        bz_array = bz.dispatch.array
+        asarray1 = (bz_array.DOS(E, wrap=wrap_none) * bz.weight.reshape(-1, 1)).sum(0)
+        asarray2 = bz_array.DOS(E, wrap=wrap_kwargs).sum(0)
+        bz_list = bz.dispatch.list
+        aslist1 = (np.array(bz_list.DOS(E, wrap=wrap_none)) * bz.weight.reshape(-1, 1)).sum(0)
+        aslist2 = np.array(bz_list.DOS(E, wrap=wrap_kwargs)).sum(0)
+        bz_yield = bz.dispatch.yields
+        asyield1 = (np.array([a for a in bz_yield.DOS(E, wrap=wrap_none)]) * bz.weight.reshape(-1, 1)).sum(0)
+        asyield2 = np.array([a for a in bz_yield.DOS(E, wrap=wrap_kwargs)]).sum(0)
+
+        asaverage = bz.dispatch.average.DOS(E, wrap=wrap_none)
+        assum = bz.dispatch.sum.DOS(E, wrap=wrap_kwargs)
 
         assert np.allclose(asarray1, asaverage)
         assert np.allclose(asarray2, asaverage)
