@@ -8,26 +8,32 @@ The Brillouin zone objects are all special classes enabling easy manipulation
 of an underlying physical quantity.
 
 Quite often a physical quantity will be required to be averaged, or calculated individually
-over a number of k-points. In this regard can the Brillouin zone objects help.
+over a number of k-points. In this regard the Brillouin zone objects can help.
 
-A basic principle of the BrillouinZone objects is that *any* method called on a BrillouinZone
-object will defer to the attached parent to the class. Lets take an example.
+The BrillouinZone object allows direct looping of contained k-points while invoking
+particular methods from the contained object.
+This is best shown with an example:
 
 >>> H = Hamiltonian(...)
 >>> bz = BrillouinZone(H)
->>> bz.eigh()
+>>> bz.dispatch.array.eigh()
 
-This will actually calculate the eigenvalues for all k-points associated with the BrillouinZone.
+This will calculate eigenvalues for all k-points associated with the `BrillouinZone` and
+return everything as an array. The `~sisl.physics.BrillouinZone.dispatch` property of
+the `BrillouinZone` object has several use cases (here ``array`` is shown).
+
 This may be extremely convenient when calculating band-structures:
 
 >>> H = Hamiltonian(...)
 >>> bs = BandStructure(H, [[0, 0, 0], [0.5, 0, 0]], 100)
->>> bs_eig = bs.eigh().T
+>>> bs_eig = bs.dispatch.array.eigh().T
+>>> plt.plot(bs.lineark(), bs_eig)
 
-and then you have all eigenvalues for all the k-points.
+and then you have all eigenvalues for all the k-points along the path.
 
 Sometimes one may want to post-process the data for each k-point.
-As an example lets post-process the DOS on a per k-point basis.
+As an example lets post-process the DOS on a per k-point basis while
+calculating the average:
  
 >>> H = Hamiltonian(...)
 >>> mp = MonkhorstPack(H, [10, 10, 10])
@@ -39,12 +45,12 @@ As an example lets post-process the DOS on a per k-point basis.
 ...    v = eigenstate.velocity()
 ...    V = (v ** 2).sum(1)
 ...    return DOS.reshape(-1, 1) * v ** 2 / V.reshape(-1, 1)
->>> DOS = mp.asaverage().eigenstate(wrap=wrap_DOS, eta=True)
+>>> DOS = mp.dispatch.average.eigenstate(wrap=wrap_DOS, eta=True)
 
 This will, calculate the Monkhorst pack k-averaged DOS split into 3 Cartesian
 directions based on the eigenstates velocity direction. This method of manipulating
 the result can be extremely powerful to calculate many quantities while running an
-efficient BrillouinZone average. The `eta` flag will print, to stdout, a progress-bar.
+efficient `BrillouinZone` average. The `eta` flag will print, to stdout, a progress-bar.
 The usage of the ``wrap`` method are also passed optional arguments, ``parent`` which is
 ``H`` in the above example. ``k`` and ``weight`` are the current k-point and weight of the
 corresponding k-point. An example could be to manipulate the DOS depending on the k-point and
@@ -56,10 +62,10 @@ weight:
 >>> def wrap_DOS(eigenstate, k, weight):
 ...    # Calculate the DOS for the eigenstates and weight by k_x and weight
 ...    return eigenstate.DOS(E) * k[0] * weight
->>> DOS = mp.assum().eigenstate(wrap=wrap_DOS, eta=True)
+>>> DOS = mp.dispatch.sum.eigenstate(wrap=wrap_DOS, eta=True)
 
 When using wrap to calculate more than one quantity per eigenstate it may be advantageous
-to use `~sisl.oplist` to handle cases of `BrillouinZone.asaverage` and `BrillouinZone.assum`.
+to use `~sisl.oplist` to handle cases of `BrillouinZone.dispatch.average` and `BrillouinZone.dispatch.sum`.
 
 >>> H = Hamiltonian(...)
 >>> mp = MonkhorstPack(H, [10, 10, 10])
@@ -71,7 +77,7 @@ to use `~sisl.oplist` to handle cases of `BrillouinZone.asaverage` and `Brilloui
 ...    # Calculate velocity for the eigenstates
 ...    v = eigenstate.velocity()
 ...    return oplist([DOS, PDOS, v])
->>> DOS, PDOS, v = mp.asaverage().eigenstate(wrap=wrap_multiple, eta=True)
+>>> DOS, PDOS, v = mp.dispatch.average.eigenstate(wrap=wrap_multiple, eta=True)
 
 Which does mathematical operations (averaging/summing) using `~sisl.oplist`.
 
@@ -739,6 +745,9 @@ class BrillouinZone:
 
         Notes
         -----
+        Please use ``self.dispatch.array`` instead. This method will be deprecated
+        >0.9.9.
+
         All invocations of sub-methods are added these keyword-only arguments:
 
         eta : bool, optional
@@ -818,6 +827,9 @@ class BrillouinZone:
 
         Notes
         -----
+        Please use ``self.dispatch.none`` instead. This method will be deprecated
+        >0.9.9.
+
         All invocations of sub-methods are added these keyword-only arguments:
 
         eta : bool, optional
@@ -864,6 +876,9 @@ class BrillouinZone:
 
             Notes
             -----
+            Please use ``self.dispatch.dataarray`` instead. This method will be deprecated
+            >0.9.9.
+
             If you wrap the sub-method to return multiple data-sets, you should use `asdataset`
             instead which returns a combination of data-arrays (so-called `xarray.Dataset`).
 
@@ -958,6 +973,9 @@ class BrillouinZone:
 
         Notes
         -----
+        Please use ``self.dispatch.list`` instead. This method will be deprecated
+        >0.9.9.
+
         All invocations of sub-methods are added these keyword-only arguments:
 
         eta : bool, optional
@@ -1015,6 +1033,9 @@ class BrillouinZone:
 
         Notes
         -----
+        Please use ``self.dispatch.yields`` instead. This method will be deprecated
+        >0.9.9.
+
         All invocations of sub-methods are added these keyword-only arguments:
 
         eta : bool, optional
@@ -1067,6 +1088,9 @@ class BrillouinZone:
 
         Notes
         -----
+        Please use ``self.dispatch.average`` instead. This method will be deprecated
+        >0.9.9.
+
         All invocations of sub-methods are added these keyword-only arguments:
 
         eta : bool, optional
@@ -1136,6 +1160,9 @@ class BrillouinZone:
 
         Notes
         -----
+        Please use ``self.dispatch.sum`` instead. This method will be deprecated
+        >0.9.9.
+
         All invocations of sub-methods are added these keyword-only arguments:
 
         eta : bool, optional

@@ -25,8 +25,8 @@ class AbstractDispatch(metaclass=ABCMeta):
         in some way.
         """
         @wraps(method)
-        def func(at_least_same_args_as_method):
-            return method(at_least_same_args_as_method)
+        def func(*args, **kwargs):
+            return method(*args, **kwargs)
         return func
 
     def __call__(self, method, *args, **kwargs):
