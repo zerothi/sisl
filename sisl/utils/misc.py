@@ -279,6 +279,9 @@ def allow_kwargs(*args):
        required arguments in `func`, if already present nothing will be done.
     """
     def deco(func):
+        if func is None:
+            return None
+
         # Retrieve names
         if _ispy3:
             # Build list of arguments and keyword arguments

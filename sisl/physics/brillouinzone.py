@@ -141,15 +141,12 @@ class BrillouinZoneParentDispatch(BrillouinZoneDispatch):
 
     __str__ = _dispatch_str("parent dispatch k")
 
-    def _parse_kwargs(self, kwargs, eta_key):
+    def _parse_kwargs(self, wrap, eta, eta_key):
         """ Parse kwargs """
         bz = self._obj
         parent = bz.parent
-        wrap = "wrap" in kwargs
-        if wrap:
-            wrap = allow_kwargs("parent", "k", "weight")(kwargs.pop("wrap"))
-        eta = tqdm_eta(len(bz), f"{bz.__class__.__name__}.{eta_key}", "k", kwargs.pop("eta", False))
-
+        wrap = allow_kwargs("parent", "k", "weight")(wrap)
+        eta = tqdm_eta(len(bz), f"{bz.__class__.__name__}.{eta_key}", "k", eta)
         return bz, parent, wrap, eta
 
     def __getattr__(self, key):
@@ -167,8 +164,8 @@ class AverageDispatch(BrillouinZoneParentDispatch):
     def dispatch(self, method):
         """ Dispatch the method by averaging """
         @wraps(method)
-        def func(*args, **kwargs):
-            bz, parent, wrap, eta = self._parse_kwargs(kwargs, eta_key="average")
+        def func(*args, wrap=None, eta=False, **kwargs):
+            bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key="average")
             # Do actual average
             k = bz.k
             w = bz.weight
@@ -197,8 +194,8 @@ class SumDispatch(BrillouinZoneParentDispatch):
     def dispatch(self, method):
         """ Dispatch the method by summing """
         @wraps(method)
-        def func(*args, **kwargs):
-            bz, parent, wrap, eta = self._parse_kwargs(kwargs, eta_key="sum")
+        def func(*args, wrap=None, eta=False, **kwargs):
+            bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key="average")
             # Do sum
             k = bz.k
             w = bz.weight
@@ -227,8 +224,8 @@ class ArrayDispatch(BrillouinZoneParentDispatch):
     def dispatch(self, method):
         """ Dispatch the method by summing """
         @wraps(method)
-        def func(*args, **kwargs):
-            bz, parent, wrap, eta = self._parse_kwargs(kwargs, eta_key="array")
+        def func(*args, wrap=None, eta=False, **kwargs):
+            bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key="average")
             k = bz.k
             w = bz.weight
 
@@ -268,8 +265,8 @@ class NoneDispatch(BrillouinZoneParentDispatch):
     def dispatch(self, method):
         """ Dispatch the method by summing """
         @wraps(method)
-        def func(*args, **kwargs):
-            bz, parent, wrap, eta = self._parse_kwargs(kwargs, eta_key="none")
+        def func(*args, wrap=None, eta=False, **kwargs):
+            bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key="average")
             k = bz.k
 
             if wrap:
@@ -294,8 +291,8 @@ class YieldDispatch(BrillouinZoneParentDispatch):
     def dispatch(self, method):
         """ Dispatch the method by summing """
         @wraps(method)
-        def func(*args, **kwargs):
-            bz, parent, wrap, eta = self._parse_kwargs(kwargs, eta_key="yield")
+        def func(*args, wrap=None, eta=False, **kwargs):
+            bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key="average")
             k = bz.k
             if wrap:
                 w = bz.weight
@@ -318,8 +315,8 @@ class ListDispatch(BrillouinZoneParentDispatch):
     def dispatch(self, method):
         """ Dispatch the method by summing """
         @wraps(method)
-        def func(*args, **kwargs):
-            bz, parent, wrap, eta = self._parse_kwargs(kwargs, eta_key="list")
+        def func(*args, wrap=None, eta=False, **kwargs):
+            bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key="average")
             k = bz.k
             l = [None] * len(k)
             if wrap:
@@ -348,14 +345,14 @@ class DataArrayDispatch(ArrayDispatch):
         array_func = super().dispatch(method)
 
         @wraps(method)
-        def func(*args, **kwargs):
+        def func(*args, coords=None, name=None, wrap=None, eta=False, **kwargs):
             # xarray specific data (default to function name)
-            name = kwargs.pop('name', method.__name__)
-            coords = kwargs.pop('coords', None)
+            if name is None:
+                name = method.__name__
             bz = self._obj
 
-            # retrieve data
-            array = array_func(*args, **kwargs)
+            # retrieve ALL data
+            array = array_func(*args, wrap=wrap, eta=eta, **kwargs)
 
             # Create coords
             if coords is None:
