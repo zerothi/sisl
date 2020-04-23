@@ -252,11 +252,11 @@ class OpListDispatch(YieldDispatch):
 class ArrayDispatch(BrillouinZoneParentDispatch):
     __str__ = _dispatch_str("return numpy.ndarray")
 
-    def dispatch(self, method):
+    def dispatch(self, method, eta_key="array"):
         """ Dispatch the method by summing """
         @wraps(method)
         def func(*args, wrap=None, eta=False, **kwargs):
-            bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key="array")
+            bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key=eta_key)
             k = bz.k
             w = bz.weight
 
@@ -311,7 +311,7 @@ class DataArrayDispatch(ArrayDispatch):
     def dispatch(self, method):
         """ Dispatch the method by summing """
         # Get data as array
-        array_func = super().dispatch(method)
+        array_func = super().dispatch(method, eta_key="dataarray")
 
         @wraps(method)
         def func(*args, coords=None, name=None, **kwargs):
@@ -376,7 +376,7 @@ class BrillouinZone:
     dispatch.register("array", ArrayDispatch)
     dispatch.register("none", NoneDispatch)
     dispatch.register("yields", YieldDispatch)
-    dispatch.register("yield", YieldDispatch)
+    dispatch.register("yield", YieldDispatch) # .yield. won't work due to reserved word
     dispatch.register("list", ListDispatch)
     dispatch.register("oplist", OpListDispatch)
     if _has_xarray:
