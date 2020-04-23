@@ -419,10 +419,6 @@ class Configurable:
         else:
             return True
 
-
-
-
-
 #DECORATORS TO USE WHEN DEFINING METHODS IN CLASSES THAT INHERIT FROM Configurable
 #Run the method after having initialized the settings
 def afterSettingsInit(method):

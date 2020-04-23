@@ -13,6 +13,7 @@ from flask_socketio import SocketIO, join_room, emit, send
 
 from sisl.viz import BlankSession
 from sisl.viz.plotutils import load
+from sisl.viz.GUI.user_management import with_user_management, if_user_can, listen_to_users
 
 __DEBUG = True
 
@@ -36,8 +37,6 @@ class CustomJSONEncoder(JSONEncoder):
 # We need to use simplejson because built-in json happily parses nan to NaN
 # and then javascript does not understand it
 simplejson.dumps = partial(simplejson.dumps, ignore_nan=True, cls=CustomJSONEncoder)
-
-socketio = SocketIO(app, cors_allowed_origins="*", json=simplejson)
 
 def emit_session(session_to_emit = None, broadcast=True, **kwargs):
 	'''
@@ -91,26 +90,6 @@ def emit_error(err):
 
 	emit("error", str(err), broadcast=False)
 
-def with_error_handling(func):
-	def handle_errors(*args, **kwargs):
-		try:
-			func(*args, **kwargs)
-		except Exception as e:
-			emit_error(e)
-	return handle_errors
-
-def on(*args, **kwargs):
-	'''
-	Wraps socketio.on so that we have error handling.
-	(or other functionalities) by default
-	'''
-	def wrapper(message_handler):
-
-		mh = with_error_handling(message_handler)
-		return socketio.on(*args, **kwargs)(mh)
-	
-	return wrapper
-
 def patch_session(session):
 	'''
 	Makes the session trigger events when manipulating plots
@@ -121,19 +100,36 @@ def patch_session(session):
 
 	return session
 
+
+if False:
+	with_user_management(app)
+
+socketio = SocketIO(app, cors_allowed_origins="*",
+                    json=simplejson, manage_session=True)
+on = socketio.on
+
+if False:
+	listen_to_users(on, emit_session)
+
 session = BlankSession()
 patch_session(session)
 
+@socketio.on_error()
+def send_error(err):
+	emit_error(err)
+
 @on('request_session')
+@if_user_can('see')
 def send_session(path = None):
 	
 	session = None
 	if path is not None:
 		session = load(path)
-	
+
 	emit_session(session, broadcast = False)
 
 @on('apply_method_on_session')
+@if_user_can("edit")
 def apply_method(method_name, kwargs = {}, *args):
 
 	if __DEBUG:
@@ -158,6 +154,7 @@ def apply_method(method_name, kwargs = {}, *args):
 	emit_session()
 
 @on('get_plot')
+@if_user_can("see")
 def retrieve_plot(plotID):
 	if __DEBUG:
 		print(f"Asking for plot: {plotID}")
