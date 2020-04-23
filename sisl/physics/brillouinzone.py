@@ -314,10 +314,8 @@ class DataArrayDispatch(ArrayDispatch):
         array_func = super().dispatch(method, eta_key="dataarray")
 
         @wraps(method)
-        def func(*args, coords=None, name=None, **kwargs):
+        def func(*args, coords=None, name=method.__name__, **kwargs):
             # xarray specific data (default to function name)
-            if name is None:
-                name = method.__name__
             bz = self._obj
 
             # retrieve ALL data
