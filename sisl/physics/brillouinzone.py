@@ -1257,7 +1257,7 @@ class BrillouinZone:
 
 # Add apply functions
 # Since apply is a built-in, we cannot assign as a class variable. :(
-setattr(BrillouinZone, "apply", ClassDispatcher())
+setattr(BrillouinZone, "apply", ClassDispatcher(obj_getattr=lambda obj, key: getattr(obj.parent, key)))
 # Register dispatched functions
 BrillouinZone.apply.register("average", AverageApply)
 BrillouinZone.apply.register("sum", SumApply)

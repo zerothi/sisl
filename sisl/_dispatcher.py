@@ -38,34 +38,93 @@ class AbstractDispatch(metaclass=ABCMeta):
         return self.dispatch(method)
 
 
-class ObjectDispatcher:
-    # We need to hide the methods and objects
-    # since we are going to retrieve dispatchs from the object it-self
-    __slots__ = ("_obj", "_dispatchs", "_default")
+class Dispatcher:
+    __slots__ = ("_dispatchs", "_default", "__name__")
 
-    def __init__(self, obj, dispatchs=None, default=None):
-        self._obj = obj
+    def __init__(self, dispatchs=None, default=None):
         if dispatchs is None:
             dispatchs = dict()
         self._dispatchs = dispatchs
         self._default = default
+        self.__name__ = self.__class__.__name__
 
     def __len__(self):
         return len(self._dispatchs)
 
     def __str__(self):
-        obj = str(self._obj).replace("\n", "\n ")
         def toline(kv):
             k, v = kv
             if k == self._default:
                 return f"*{k} = " + str(v(object())).replace("\n", "\n ")
             return f" {k} = " + str(v(object())).replace("\n", "\n ")
         dispatchs = ",\n ".join(map(toline, self._dispatchs.items()))
-        return f"{self.__class__.__name__}{{dispatchs: {len(self)},\n {obj},\n {dispatchs}\n}}"
+        return f"{self.__name__}{{dispatchs: {len(self)},\n {dispatchs}\n}}"
 
-    ####
-    # Only the following methods are necessary for the dispatch method to work
-    ####
+    def register(self, key, dispatch, default=False):
+        """ Register a dispatch class to this container
+
+        Parameter
+        ---------
+        key : *any hashable*
+            key used in the dictionary look-up for the dispatch class
+        dispatch : AbstractDispatch
+            dispatch class to be registered
+        default : bool, optional
+            if true, `dispatch` will be the default when requesting it
+        """
+        self._dispatchs[key] = dispatch
+        if default:
+            self._default = key
+
+
+class MethodDispatcher(Dispatcher):
+    __slots__ = ("_method", "__name__", "_obj")
+
+    def __init__(self, method, dispatchs=None, default=None, obj=None):
+        super().__init__(dispatchs, default)
+        # This will probably fail for PYTHONOPTIMIZE=2
+        self._method = method
+
+        # In python3 a method *always* have the __self__ key
+        # In case the method is bound on a class.
+        if obj is None:
+            self._obj = getattr(method, "__self__", None)
+        else:
+            self._obj = obj
+
+        # Make function documentation local to __call__
+        self.__call__.__func__.__doc__ = method.__doc__
+        # Storing the name is required for help on functions
+        self.__name__ = method.__name__
+
+    def __call__(self, *args, **kwargs):
+        if self._default is None:
+            return self._method(*args, **kwargs)
+        return self._dispatchs[self._default](self._obj).dispatch(self._method)(*args, **kwargs)
+
+    def __getitem__(self, key):
+        r""" Get method using dispatch according to `key` """
+        return self._dispatchs[key](self._obj).dispatch(self._method)
+
+    __getattr__ = __getitem__
+
+
+class ObjectDispatcher(Dispatcher):
+    # We need to hide the methods and objects
+    # since we are going to retrieve dispatchs from the object it-self
+    __slots__ = ("_obj", "_obj_getattr")
+
+    def __init__(self, obj, dispatchs=None, default=None, obj_getattr=None):
+        super().__init__(dispatchs, default)
+        self._obj = obj
+        if obj_getattr is None:
+            def obj_getattr(obj, key):
+                return getattr(obj, key)
+        self._obj_getattr = obj_getattr
+
+    def __str__(self):
+        obj = str(self._obj).replace("\n", "\n ")
+        return super().__str__().replace(",\n", f",\n {obj},\n", 1)
 
     def register(self, key, dispatch, default=False, to_class=True):
         """ Register a dispatch class to this object and to the object class instance (if existing)
@@ -84,52 +143,38 @@ class ObjectDispatcher:
             whether the dispatch class will also be registered with the
             contained object's class instance
         """
+        super().register(key, dispatch, default)
         if to_class:
-            cls_dispatch = getattr(self._obj.__class__, "dispatch", None)
-            if cls_dispatch:
+            cls_dispatch = getattr(self._obj.__class__, "apply", None)
+            if isinstance(cls_dispatch, ClassDispatcher):
                 cls_dispatch.register(key, dispatch)
-        # Since this instance is already created, we have to add it here.
-        # This has the side-effect that already stored dispatch (of ObjectDispatcher)
-        # will not get these.
-        self._dispatchs[key] = dispatch
-        if default:
-            self._default = key
 
     def __getitem__(self, key):
         r""" Retrieve dispatched dispatchs by hash (allows functions to be dispatched) """
         return self._dispatchs[key](self._obj)
 
     def __getattr__(self, key):
-        """ Retrieve dispatched method by name """
+        """ Retrieve dispatched method by name, or if the name does not exist return a MethodDispatcher """
         if key in self._dispatchs:
             return self._dispatchs[key](self._obj)
-        return getattr(self._dispatchs[self._default](self._obj), key)
+
+        # This will also ensure that if the user calls immediately after it will use the default
+        return MethodDispatcher(self._obj_getattr(self._obj, key),
+                                dispatchs=self._dispatchs,
+                                default=self._default, obj=self._obj)
 
 
-class ClassDispatcher:
-    __slots__ = ("_dispatchs", "_default")
+class ClassDispatcher(Dispatcher):
+    __slots__ = ("_obj_getattr",)
 
-    def __init__(self):
-        self._dispatchs = dict()
-        self._default = None
-
-    def __len__(self):
-        return len(self._dispatchs)
-
-    def __str__(self):
-        # We know how to create an object, passing 1 argument (an object)
-        # We will fake this to get a str representation.
-        def toline(kv):
-            k, v = kv
-            if k == self._default:
-                return f"*{k} = " + str(v(object())).replace("\n", "\n ")
-            return f" {k} = " + str(v(object())).replace("\n", "\n ")
-        dispatchs = ",\n ".join(map(toline, self._dispatchs.items()))
-        return f"{self.__class__.__name__}{{dispatchs: {len(self)},\n {dispatchs}\n}}"
-
-    ####
-    # Only the following methods are necessary for the dispatch method to work
-    ####
+    def __init__(self, dispatchs=None, default=None, obj_getattr=None):
+        # obj_getattr is necessary for the ObjectDispatcher to create the correct
+        # MethodDispatcher
+        super().__init__(dispatchs, default)
+        if obj_getattr is None:
+            def obj_getattr(obj, key):
+                return getattr(obj, key)
+        self._obj_getattr = obj_getattr
 
     def __get__(self, instance, owner):
         """ Class dispatcher retrieval
@@ -142,21 +187,4 @@ class ClassDispatcher:
         """
         if instance is None:
             return self
-        return ObjectDispatcher(instance, self._dispatchs, default=self._default)
-
-    def register(self, key, dispatch, default=False):
-        """ Register a dispatch class
-
-        Parameter
-        ---------
-        key : *any hashable*
-            key used in the dictionary look-up for the dispatch class
-        dispatch : AbstractDispatch
-            dispatch class to be registered
-        default : bool, optional
-            if true, this `dispatch` will be the default in case the
-            `ObjectDispatcher` cannot find the requested object.
-        """
-        self._dispatchs[key] = dispatch
-        if default:
-            self._default = key
+        return ObjectDispatcher(instance, self._dispatchs, default=self._default, obj_getattr=self._obj_getattr)
