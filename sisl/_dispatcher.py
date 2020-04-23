@@ -78,7 +78,7 @@ class Dispatcher:
 
 
 class MethodDispatcher(Dispatcher):
-    __slots__ = ("_method", "__name__", "_obj")
+    __slots__ = ("_method", "_obj")
 
     def __init__(self, method, dispatchs=None, default=None, obj=None):
         super().__init__(dispatchs, default)
