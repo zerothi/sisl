@@ -151,7 +151,12 @@ class BrillouinZoneParentDispatch(BrillouinZoneDispatch):
         """ Parse kwargs """
         bz = self._obj
         parent = bz.parent
-        wrap = allow_kwargs("parent", "k", "weight")(wrap)
+        if wrap is None:
+            # we always return a wrap
+            def wrap(v, parent=None, k=None, weight=None):
+                return v
+        else:
+            wrap = allow_kwargs("parent", "k", "weight")(wrap)
         eta = tqdm_eta(len(bz), f"{bz.__class__.__name__}.{eta_key}", "k", eta)
         return bz, parent, wrap, eta
 
@@ -175,18 +180,11 @@ class AverageDispatch(BrillouinZoneParentDispatch):
             # Do actual average
             k = bz.k
             w = bz.weight
-            if wrap:
-                v = _asoplist(wrap(method(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])) * w[0]
+            v = _asoplist(wrap(method(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])) * w[0]
+            eta.update()
+            for i in range(1, len(k)):
+                v += _asoplist(wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])) * w[i]
                 eta.update()
-                for i in range(1, len(k)):
-                    v += _asoplist(wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])) * w[i]
-                    eta.update()
-            else:
-                v = _asoplist(method(*args, k=k[0], **kwargs)) * w[0]
-                eta.update()
-                for i in range(1, len(k)):
-                    v += _asoplist(method(*args, k=k[i], **kwargs)) * w[i]
-                    eta.update()
             eta.close()
             return v
 
@@ -205,18 +203,11 @@ class SumDispatch(BrillouinZoneParentDispatch):
             # Do sum
             k = bz.k
             w = bz.weight
-            if wrap:
-                v = _asoplist(wrap(method(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0]))
+            v = _asoplist(wrap(method(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0]))
+            eta.update()
+            for i in range(1, len(k)):
+                v += wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
                 eta.update()
-                for i in range(1, len(k)):
-                    v += wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
-                    eta.update()
-            else:
-                v = _asoplist(method(*args, k=k[0], **kwargs))
-                eta.update()
-                for i in range(1, len(k)):
-                    v += method(*args, k=k[i], **kwargs)
-                    eta.update()
             eta.close()
             return v
 
@@ -236,10 +227,7 @@ class ArrayDispatch(BrillouinZoneParentDispatch):
             w = bz.weight
 
             # Get first values
-            if wrap:
-                v = wrap(method(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])
-            else:
-                v = method(*args, k=k[0], **kwargs)
+            v = wrap(method(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])
             eta.update()
 
             # Create full array
@@ -250,14 +238,9 @@ class ArrayDispatch(BrillouinZoneParentDispatch):
             a[0] = v
             del v
 
-            if wrap:
-                for i in range(1, len(k)):
-                    a[i] = wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
-                    eta.update()
-            else:
-                for i in range(1, len(k)):
-                    a[i] = method(*args, k=k[i], **kwargs)
-                    eta.update()
+            for i in range(1, len(k)):
+                a[i] = wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
+                eta.update()
             eta.close()
 
             return a
@@ -275,15 +258,10 @@ class NoneDispatch(BrillouinZoneParentDispatch):
             bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key="average")
             k = bz.k
 
-            if wrap:
-                w = bz.weight
-                for i in range(len(k)):
-                    wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
-                    eta.update()
-            else:
-                for i in range(len(k)):
-                    method(*args, k=k[i], **kwargs)
-                    eta.update()
+            w = bz.weight
+            for i in range(len(k)):
+                wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
+                eta.update()
             eta.close()
 
             return None
@@ -300,15 +278,10 @@ class YieldDispatch(BrillouinZoneParentDispatch):
         def func(*args, wrap=None, eta=False, **kwargs):
             bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key="average")
             k = bz.k
-            if wrap:
-                w = bz.weight
-                for i in range(len(k)):
-                    yield wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
-                    eta.update()
-            else:
-                for i in range(len(k)):
-                    yield method(*args, k=k[i], **kwargs)
-                    eta.update()
+            w = bz.weight
+            for i in range(len(k)):
+                yield wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
+                eta.update()
             eta.close()
 
         return func
@@ -325,15 +298,10 @@ class ListDispatch(BrillouinZoneParentDispatch):
             bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key="average")
             k = bz.k
             l = [None] * len(k)
-            if wrap:
-                w = bz.weight
-                for i in range(len(k)):
-                    l[i] = wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
-                    eta.update()
-            else:
-                for i in range(len(k)):
-                    l[i] = method(*args, k=k[i], **kwargs)
-                    eta.update()
+            w = bz.weight
+            for i in range(len(k)):
+                l[i] = wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
+                eta.update()
             eta.close()
 
             return l
