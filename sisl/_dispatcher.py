@@ -1,6 +1,7 @@
 from abc import ABCMeta, abstractmethod
 from functools import wraps
 
+
 __all__ = ["AbstractDispatch", "ObjectDispatcher", "ClassDispatcher"]
 
 
@@ -76,7 +77,9 @@ class ObjectDispatcher:
         dispatch : AbstractDispatch
             dispatch class to be registered
         default : bool, optional
-            this dispatch class will be the default
+            this dispatch class will be the default on this object _only_.
+            To register a class as the default class-wide, do this on the class
+            variable.
         to_class : bool, optional
             whether the dispatch class will also be registered with the
             contained object's class instance
@@ -84,11 +87,13 @@ class ObjectDispatcher:
         if to_class:
             cls_dispatch = getattr(self._obj.__class__, "dispatch", None)
             if cls_dispatch:
-                cls_dispatch.register(key, dispatch, default=default)
+                cls_dispatch.register(key, dispatch)
         # Since this instance is already created, we have to add it here.
         # This has the side-effect that already stored dispatch (of ObjectDispatcher)
         # will not get these.
         self._dispatchs[key] = dispatch
+        if default:
+            self._default = key
 
     def __getitem__(self, key):
         r""" Retrieve dispatched dispatchs by hash (allows functions to be dispatched) """

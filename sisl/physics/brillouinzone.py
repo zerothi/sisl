@@ -309,7 +309,7 @@ class DataArrayApply(ArrayApply):
     __str__ = _apply_str("return xarray.DataArray")
 
     def dispatch(self, method):
-        """ Dispatch the method by summing """
+        """ Dispatch the method by returning a DataArray """
         # Get data as array
         array_func = super().dispatch(method, eta_key="dataarray")
 
