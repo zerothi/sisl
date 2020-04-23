@@ -536,7 +536,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
             return Ef
 
         # Retrieve dispatcher for averaging
-        eigh = bz.dispatch.array.eigh
+        eigh = bz.apply.array.eigh
 
         if self.spin.is_polarized and q.size == 2:
             # We need to do Fermi-level separately since the user requests

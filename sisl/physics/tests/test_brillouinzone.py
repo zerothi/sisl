@@ -70,7 +70,7 @@ class TestBrillouinZone:
             def eig(self, k, *args, **kwargs):
                 return np.arange(3) - 1
         bz = BrillouinZone(Test(setup.s1))
-        bz_arr = bz.dispatch.array
+        bz_arr = bz.apply.array
         str(bz)
         assert np.allclose(bz_arr.eigh(), np.arange(3))
         assert np.allclose(bz_arr.eig(), np.arange(3)-1)
@@ -85,16 +85,16 @@ class TestBrillouinZone:
                 return np.arange(3) - 1
         bz = BrillouinZone(Test(setup.s1))
         # Try the list/yield method
-        for val in bz.dispatch.list.eigh():
+        for val in bz.apply.list.eigh():
             assert np.allclose(val, np.arange(3))
-        for val in bz.dispatch.yields.eigh():
+        for val in bz.apply.iter.eigh():
             assert np.allclose(val, np.arange(3))
-        for val in bz.dispatch.yields.eig():
+        for val in bz.apply.iter.eig():
             assert np.allclose(val, np.arange(3) - 1)
-        for val in bz.dispatch.oplist.eigh():
+        for val in bz.apply.oplist.eigh():
             assert np.allclose(val, np.arange(3))
         # Average
-        bz_average = bz.dispatch.average
+        bz_average = bz.apply.average
         assert np.allclose(bz_average.eigh(), np.arange(3))
         assert np.allclose(bz_average.eigh(eta=True), np.arange(3))
 
@@ -108,13 +108,13 @@ class TestBrillouinZone:
                 return np.arange(3) - 1
         bz = MonkhorstPack(Test(setup.s1), [2] * 3)
         # Try the yield method
-        bz_yield = bz.dispatch.yields
+        bz_yield = bz.apply.iter
         for val in bz_yield.eigh():
             assert np.allclose(val, np.arange(3))
         for val in bz_yield.eig():
             assert np.allclose(val, np.arange(3) - 1)
         # Average
-        assert np.allclose(bz.dispatch.average.eigh(), np.arange(3))
+        assert np.allclose(bz.apply.average.eigh(), np.arange(3))
 
     @pytest.mark.parametrize("N", [2, 3, 4, 5, 7])
     @pytest.mark.parametrize("centered", [True, False])
@@ -240,16 +240,16 @@ class TestBrillouinZone:
         assert len(bz) == 2 ** 3
 
         # Assert that as* all does the same
-        dispatch = bz.dispatch
-        asarray = dispatch.array.eigh()
-        aslist = np.array(dispatch.list.eigh())
-        asyield = np.array([a for a in dispatch.yields.eigh()])
-        asaverage = dispatch.average.eigh()
+        apply = bz.apply
+        asarray = apply.array.eigh()
+        aslist = np.array(apply.list.eigh())
+        asyield = np.array([a for a in apply.iter.eigh()])
+        asaverage = apply.average.eigh()
         assert np.allclose(asarray, aslist)
         assert np.allclose(asarray, asyield)
         # Average needs to be performed
         assert np.allclose((asarray / len(bz)).sum(0), asaverage)
-        dispatch.none.eigh()
+        apply.none.eigh()
 
     def test_as_dataarray(self):
         try:
@@ -265,8 +265,8 @@ class TestBrillouinZone:
         bz = MonkhorstPack(H, [2, 2, 2], trs=False)
 
         # Assert that as* all does the same
-        asarray = bz.dispatch.array.eigh()
-        bz_da = bz.dispatch.dataarray
+        asarray = bz.apply.array.eigh()
+        bz_da = bz.apply.dataarray
         asdarray = bz_da.eigh()
         assert np.allclose(asarray, asdarray.values)
         assert isinstance(asdarray.bz, MonkhorstPack)
@@ -289,9 +289,9 @@ class TestBrillouinZone:
         assert len(bz) == 2 ** 3
 
         # Assert that as* all does the same
-        asarray = bz.dispatch.array.eigh(wrap=wrap)
-        aslist = np.array(bz.dispatch.list.eigh(wrap=wrap))
-        asyield = np.array([a for a in bz.dispatch.yields.eigh(wrap=wrap)])
+        asarray = bz.apply.array.eigh(wrap=wrap)
+        aslist = np.array(bz.apply.list.eigh(wrap=wrap))
+        asyield = np.array([a for a in bz.apply.iter.eigh(wrap=wrap)])
         assert np.allclose(asarray, aslist)
         assert np.allclose(asarray, asyield)
 
@@ -309,10 +309,10 @@ class TestBrillouinZone:
             return arg[::-1]
 
         # Assert that as* all does the same
-        asarray = bz.dispatch.array.eigh(wrap=wrap)
-        aslist = np.array(bz.dispatch.list.eigh(wrap=wrap))
-        asyield = np.array([a for a in bz.dispatch.yields.eigh(wrap=wrap)])
-        asaverage = bz.dispatch.average.eigh(wrap=wrap)
+        asarray = bz.apply.array.eigh(wrap=wrap)
+        aslist = np.array(bz.apply.list.eigh(wrap=wrap))
+        asyield = np.array([a for a in bz.apply.iter.eigh(wrap=wrap)])
+        asaverage = bz.apply.average.eigh(wrap=wrap)
         assert np.allclose(asarray, aslist)
         assert np.allclose(asarray, asyield)
         assert np.allclose((asarray / len(bz)).sum(0), asaverage)
@@ -336,8 +336,8 @@ class TestBrillouinZone:
             PDOS = es.PDOS(E) * weight
             return PDOS.sum(0), PDOS
 
-        DOS, PDOS = bz.dispatch.sum.eigenstate(wrap=wrap_sum)
-        bz_arr = bz.dispatch.array
+        DOS, PDOS = bz.apply.sum.eigenstate(wrap=wrap_sum)
+        bz_arr = bz.apply.array
         assert np.allclose(bz_arr.DOS(E), DOS)
         assert np.allclose(bz_arr.PDOS(E), PDOS)
 
@@ -357,18 +357,18 @@ class TestBrillouinZone:
             return arg * weight
 
         E = np.linspace(-2, 2, 100)
-        bz_array = bz.dispatch.array
+        bz_array = bz.apply.array
         asarray1 = (bz_array.DOS(E, wrap=wrap_none) * bz.weight.reshape(-1, 1)).sum(0)
         asarray2 = bz_array.DOS(E, wrap=wrap_kwargs).sum(0)
-        bz_list = bz.dispatch.list
+        bz_list = bz.apply.list
         aslist1 = (np.array(bz_list.DOS(E, wrap=wrap_none)) * bz.weight.reshape(-1, 1)).sum(0)
         aslist2 = np.array(bz_list.DOS(E, wrap=wrap_kwargs)).sum(0)
-        bz_yield = bz.dispatch.yields
+        bz_yield = bz.apply.iter
         asyield1 = (np.array([a for a in bz_yield.DOS(E, wrap=wrap_none)]) * bz.weight.reshape(-1, 1)).sum(0)
         asyield2 = np.array([a for a in bz_yield.DOS(E, wrap=wrap_kwargs)]).sum(0)
 
-        asaverage = bz.dispatch.average.DOS(E, wrap=wrap_none)
-        assum = bz.dispatch.sum.DOS(E, wrap=wrap_kwargs)
+        asaverage = bz.apply.average.DOS(E, wrap=wrap_none)
+        assum = bz.apply.sum.DOS(E, wrap=wrap_kwargs)
 
         assert np.allclose(asarray1, asaverage)
         assert np.allclose(asarray2, asaverage)

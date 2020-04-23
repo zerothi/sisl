@@ -16,7 +16,7 @@ This is best shown with an example:
 
 >>> H = Hamiltonian(...)
 >>> bz = BrillouinZone(H)
->>> bz.dispatch.array.eigh()
+>>> bz.apply.array.eigh()
 
 This will calculate eigenvalues for all k-points associated with the `BrillouinZone` and
 return everything as an array. The `~sisl.physics.BrillouinZone.dispatch` property of
@@ -26,7 +26,7 @@ This may be extremely convenient when calculating band-structures:
 
 >>> H = Hamiltonian(...)
 >>> bs = BandStructure(H, [[0, 0, 0], [0.5, 0, 0]], 100)
->>> bs_eig = bs.dispatch.array.eigh().T
+>>> bs_eig = bs.apply.array.eigh().T
 >>> plt.plot(bs.lineark(), bs_eig)
 
 and then you have all eigenvalues for all the k-points along the path.
@@ -45,7 +45,7 @@ calculating the average:
 ...    v = eigenstate.velocity()
 ...    V = (v ** 2).sum(1)
 ...    return DOS.reshape(-1, 1) * v ** 2 / V.reshape(-1, 1)
->>> DOS = mp.dispatch.average.eigenstate(wrap=wrap_DOS, eta=True)
+>>> DOS = mp.apply.average.eigenstate(wrap=wrap_DOS, eta=True)
 
 This will, calculate the Monkhorst pack k-averaged DOS split into 3 Cartesian
 directions based on the eigenstates velocity direction. This method of manipulating
@@ -62,10 +62,10 @@ weight:
 >>> def wrap_DOS(eigenstate, k, weight):
 ...    # Calculate the DOS for the eigenstates and weight by k_x and weight
 ...    return eigenstate.DOS(E) * k[0] * weight
->>> DOS = mp.dispatch.sum.eigenstate(wrap=wrap_DOS, eta=True)
+>>> DOS = mp.apply.sum.eigenstate(wrap=wrap_DOS, eta=True)
 
 When using wrap to calculate more than one quantity per eigenstate it may be advantageous
-to use `~sisl.oplist` to handle cases of `BrillouinZone.dispatch.average` and `BrillouinZone.dispatch.sum`.
+to use `~sisl.oplist` to handle cases of `BrillouinZone.apply.average` and `BrillouinZone.apply.sum`.
 
 >>> H = Hamiltonian(...)
 >>> mp = MonkhorstPack(H, [10, 10, 10])
@@ -77,7 +77,7 @@ to use `~sisl.oplist` to handle cases of `BrillouinZone.dispatch.average` and `B
 ...    # Calculate velocity for the eigenstates
 ...    v = eigenstate.velocity()
 ...    return oplist([DOS, PDOS, v])
->>> DOS, PDOS, v = mp.dispatch.average.eigenstate(wrap=wrap_multiple, eta=True)
+>>> DOS, PDOS, v = mp.apply.average.eigenstate(wrap=wrap_multiple, eta=True)
 
 Which does mathematical operations (averaging/summing) using `~sisl.oplist`.
 
@@ -120,7 +120,7 @@ except ImportError:
 
 
 __all__ = ['BrillouinZone', 'MonkhorstPack', 'BandStructure']
-__all__ += ["BrillouinZoneDispatch", "BrillouinZoneParentDispatch"]
+__all__ += ["BrillouinZoneApply", "BrillouinZoneParentApply"]
 
 
 def _asoplist(arg):
@@ -131,22 +131,22 @@ def _asoplist(arg):
     return arg
 
 
-def _dispatch_str(s):
+def _apply_str(s):
     def __str__(self):
-        return f"Dispatch{{{s}}}"
+        return f"Apply{{{s}}}"
     return __str__
 
 
 @set_module("sisl.physics")
-class BrillouinZoneDispatch(AbstractDispatch):
+class BrillouinZoneApply(AbstractDispatch):
     # this dispatch function will do stuff on the BrillouinZone object
     pass
 
 
 @set_module("sisl.physics")
-class BrillouinZoneParentDispatch(BrillouinZoneDispatch):
+class BrillouinZoneParentApply(BrillouinZoneApply):
 
-    __str__ = _dispatch_str("parent dispatch k")
+    __str__ = _apply_str("parent apply over k")
 
     def _parse_kwargs(self, wrap, eta, eta_key):
         """ Parse kwargs """
@@ -170,11 +170,11 @@ class BrillouinZoneParentDispatch(BrillouinZoneDispatch):
 
 
 @set_module("sisl.physics")
-class YieldDispatch(BrillouinZoneParentDispatch):
-    __str__ = _dispatch_str("yield")
+class IteratorApply(BrillouinZoneParentApply):
+    __str__ = _apply_str("iter")
 
-    def dispatch(self, method, eta_key="yield"):
-        """ Dispatch the method by yielding values """
+    def dispatch(self, method, eta_key="iter"):
+        """ Dispatch the method by iterating values """
         @wraps(method)
         def func(*args, wrap=None, eta=False, **kwargs):
             bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key=eta_key)
@@ -189,16 +189,16 @@ class YieldDispatch(BrillouinZoneParentDispatch):
 
 
 @set_module("sisl.physics")
-class SumDispatch(YieldDispatch):
-    __str__ = _dispatch_str("sum over k")
+class SumApply(IteratorApply):
+    __str__ = _apply_str("sum over k")
 
     def dispatch(self, method):
         """ Dispatch the method by summing """
-        yield_func = super().dispatch(method, eta_key="sum")
+        iter_func = super().dispatch(method, eta_key="sum")
 
         @wraps(method)
         def func(*args, **kwargs):
-            it = yield_func(*args, **kwargs)
+            it = iter_func(*args, **kwargs)
             # next will be called before anything else
             return reduce(op.add, it, _asoplist(next(it)))
 
@@ -206,16 +206,16 @@ class SumDispatch(YieldDispatch):
 
 
 @set_module("sisl.physics")
-class NoneDispatch(YieldDispatch):
-    __str__ = _dispatch_str("return None")
+class NoneApply(IteratorApply):
+    __str__ = _apply_str("return None")
 
     def dispatch(self, method):
         """ Dispatch the method by doing nothing (mostly useful if wrapped) """
-        yield_func = super().dispatch(method, eta_key="none")
+        iter_func = super().dispatch(method, eta_key="none")
 
         @wraps(method)
         def func(*args, **kwargs):
-            for _ in yield_func(*args, **kwargs):
+            for _ in iter_func(*args, **kwargs):
                 pass
             return None
 
@@ -223,37 +223,37 @@ class NoneDispatch(YieldDispatch):
 
 
 @set_module("sisl.physics")
-class ListDispatch(YieldDispatch):
-    __str__ = _dispatch_str("return list")
+class ListApply(IteratorApply):
+    __str__ = _apply_str("return list")
 
     def dispatch(self, method):
         """ Dispatch the method by returning list of values """
-        yield_func = super().dispatch(method, eta_key="list")
+        iter_func = super().dispatch(method, eta_key="list")
         @wraps(method)
         def func(*args, **kwargs):
-            return [v for v in yield_func(*args, **kwargs)]
+            return [v for v in iter_func(*args, **kwargs)]
         return func
 
 
 @set_module("sisl.physics")
-class OpListDispatch(YieldDispatch):
-    __str__ = _dispatch_str("return oplist")
+class OpListApply(IteratorApply):
+    __str__ = _apply_str("return oplist")
 
     def dispatch(self, method):
         """ Dispatch the method by returning oplist of values """
-        yield_func = super().dispatch(method, eta_key="oplist")
+        iter_func = super().dispatch(method, eta_key="oplist")
         @wraps(method)
         def func(*args, **kwargs):
-            return oplist(v for v in yield_func(*args, **kwargs))
+            return oplist(v for v in iter_func(*args, **kwargs))
         return func
 
 
 @set_module("sisl.physics")
-class ArrayDispatch(BrillouinZoneParentDispatch):
-    __str__ = _dispatch_str("return numpy.ndarray")
+class ArrayApply(BrillouinZoneParentApply):
+    __str__ = _apply_str("return numpy.ndarray")
 
     def dispatch(self, method, eta_key="array"):
-        """ Dispatch the method by summing """
+        """ Dispatch the method by one array """
         @wraps(method)
         def func(*args, wrap=None, eta=False, **kwargs):
             bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key=eta_key)
@@ -282,8 +282,8 @@ class ArrayDispatch(BrillouinZoneParentDispatch):
 
 
 @set_module("sisl.physics")
-class AverageDispatch(BrillouinZoneParentDispatch):
-    __str__ = _dispatch_str("return average")
+class AverageApply(BrillouinZoneParentApply):
+    __str__ = _apply_str("return average")
 
     def dispatch(self, method):
         """ Dispatch the method by averaging """
@@ -305,8 +305,8 @@ class AverageDispatch(BrillouinZoneParentDispatch):
 
 
 @set_module("sisl.physics")
-class DataArrayDispatch(ArrayDispatch):
-    __str__ = _dispatch_str("return xarray.DataArray")
+class DataArrayApply(ArrayApply):
+    __str__ = _apply_str("return xarray.DataArray")
 
     def dispatch(self, method):
         """ Dispatch the method by summing """
@@ -366,19 +366,6 @@ class BrillouinZone:
     weight : array_like, optional
        weights for the k-points. Must have the same length as `k`.
     """
-    dispatch = ClassDispatcher()
-
-    # Register dispatched functions
-    dispatch.register("average", AverageDispatch)
-    dispatch.register("sum", SumDispatch)
-    dispatch.register("array", ArrayDispatch)
-    dispatch.register("none", NoneDispatch)
-    dispatch.register("yields", YieldDispatch)
-    dispatch.register("yield", YieldDispatch) # .yield. won't work due to reserved word
-    dispatch.register("list", ListDispatch)
-    dispatch.register("oplist", OpListDispatch)
-    if _has_xarray:
-        dispatch.register("dataarray", DataArrayDispatch)
 
     def __init__(self, parent, k=None, weight=None):
         self.set_parent(parent)
@@ -699,7 +686,7 @@ class BrillouinZone:
         return self(*args, **kwargs)
 
     # Implement wrapper calls
-    @deprecate_method("BrillouinZone.asarray is deprecated (>0.9.9), use BrillouinZone.dispatch.average")
+    @deprecate_method("BrillouinZone.asarray is deprecated (>0.9.9), use BrillouinZone.apply.average")
     def asarray(self):
         """ Return `self` with `numpy.ndarray` returned quantities
 
@@ -707,7 +694,7 @@ class BrillouinZone:
 
         Notes
         -----
-        Please use ``self.dispatch.array`` instead. This method will be deprecated
+        Please use ``self.apply.array`` instead. This method will be deprecated
         >0.9.9.
 
         All invocations of sub-methods are added these keyword-only arguments:
@@ -780,7 +767,7 @@ class BrillouinZone:
         setattr(self, '_bz_call', types.MethodType(asarray, self))
         return self
 
-    @deprecate_method("BrillouinZone.asnone is deprecated (>0.9.9), use BrillouinZone.dispatch.none")
+    @deprecate_method("BrillouinZone.asnone is deprecated (>0.9.9), use BrillouinZone.apply.none")
     def asnone(self):
         """ Return `self` with None, this may be done for instance when wrapping the function calls.
 
@@ -789,7 +776,7 @@ class BrillouinZone:
 
         Notes
         -----
-        Please use ``self.dispatch.none`` instead. This method will be deprecated
+        Please use ``self.apply.none`` instead. This method will be deprecated
         >0.9.9.
 
         All invocations of sub-methods are added these keyword-only arguments:
@@ -830,7 +817,7 @@ class BrillouinZone:
         return self
 
     if _has_xarray:
-        @deprecate_method("BrillouinZone.asdataarray is deprecated (>0.9.9), use BrillouinZone.dispatch.dataarray")
+        @deprecate_method("BrillouinZone.asdataarray is deprecated (>0.9.9), use BrillouinZone.apply.dataarray")
         def asdataarray(self):
             r""" Return `self` with `xarray.DataArray` returned quantities
 
@@ -838,7 +825,7 @@ class BrillouinZone:
 
             Notes
             -----
-            Please use ``self.dispatch.dataarray`` instead. This method will be deprecated
+            Please use ``self.apply.dataarray`` instead. This method will be deprecated
             >0.9.9.
 
             If you wrap the sub-method to return multiple data-sets, you should use `asdataset`
@@ -927,7 +914,7 @@ class BrillouinZone:
             setattr(self, '_bz_call', types.MethodType(asdataarray, self))
             return self
 
-    @deprecate_method("BrillouinZone.aslist is deprecated (>0.9.9), use BrillouinZone.dispatch.list")
+    @deprecate_method("BrillouinZone.aslist is deprecated (>0.9.9), use BrillouinZone.apply.list")
     def aslist(self):
         """ Return `self` with `list` returned quantities
 
@@ -935,7 +922,7 @@ class BrillouinZone:
 
         Notes
         -----
-        Please use ``self.dispatch.list`` instead. This method will be deprecated
+        Please use ``self.apply.list`` instead. This method will be deprecated
         >0.9.9.
 
         All invocations of sub-methods are added these keyword-only arguments:
@@ -986,7 +973,7 @@ class BrillouinZone:
         setattr(self, '_bz_call', types.MethodType(aslist, self))
         return self
 
-    @deprecate_method("BrillouinZone.asyield is deprecated (>0.9.9), use BrillouinZone.dispatch.yields or BrillouinZone.dispatch['yield']")
+    @deprecate_method("BrillouinZone.asyield is deprecated (>0.9.9), use BrillouinZone.apply.iter")
     def asyield(self):
         """ Return `self` with yielded quantities
 
@@ -995,7 +982,7 @@ class BrillouinZone:
 
         Notes
         -----
-        Please use ``self.dispatch.yields`` instead. This method will be deprecated
+        Please use ``self.apply.iter`` instead. This method will be deprecated
         >0.9.9.
 
         All invocations of sub-methods are added these keyword-only arguments:
@@ -1042,7 +1029,7 @@ class BrillouinZone:
         setattr(self, '_bz_call', types.MethodType(asyield, self))
         return self
 
-    @deprecate_method("BrillouinZone.asaverage is deprecated (>0.9.9), use BrillouinZone.dispatch.average")
+    @deprecate_method("BrillouinZone.asaverage is deprecated (>0.9.9), use BrillouinZone.apply.average")
     def asaverage(self):
         """ Return `self` with k-averaged quantities
 
@@ -1050,7 +1037,7 @@ class BrillouinZone:
 
         Notes
         -----
-        Please use ``self.dispatch.average`` instead. This method will be deprecated
+        Please use ``self.apply.average`` instead. This method will be deprecated
         >0.9.9.
 
         All invocations of sub-methods are added these keyword-only arguments:
@@ -1114,7 +1101,7 @@ class BrillouinZone:
         setattr(self, '_bz_call', types.MethodType(asaverage, self))
         return self
 
-    @deprecate_method("BrillouinZone.assum is deprecated (>0.9.9), use BrillouinZone.dispatch.sum")
+    @deprecate_method("BrillouinZone.assum is deprecated (>0.9.9), use BrillouinZone.apply.sum")
     def assum(self):
         """ Return `self` with summed quantities
 
@@ -1122,7 +1109,7 @@ class BrillouinZone:
 
         Notes
         -----
-        Please use ``self.dispatch.sum`` instead. This method will be deprecated
+        Please use ``self.apply.sum`` instead. This method will be deprecated
         >0.9.9.
 
         All invocations of sub-methods are added these keyword-only arguments:
@@ -1226,7 +1213,7 @@ class BrillouinZone:
                 fmt["method2"] = fmt["method"][2:]
 
             deprecate("{cls}.{method}{func}(...) is deprecated (>0.9.9), "
-                      "please use {cls}.dispatch.{method2}{func}".format(**fmt))
+                      "please use {cls}.apply.{method2}{func}".format(**fmt))
         except Exception:
             raise NotImplementedError("Could not call the object it self")
         return call(*args, **kwargs)
@@ -1267,6 +1254,20 @@ class BrillouinZone:
         else:
             with tableSile(sile, 'w') as fh:
                 fh.write_data(kw.T, *args, **kwargs)
+
+# Add apply functions
+# Since apply is a built-in, we cannot assign as a class variable. :(
+setattr(BrillouinZone, "apply", ClassDispatcher())
+# Register dispatched functions
+BrillouinZone.apply.register("average", AverageApply)
+BrillouinZone.apply.register("sum", SumApply)
+BrillouinZone.apply.register("array", ArrayApply)
+BrillouinZone.apply.register("none", NoneApply)
+BrillouinZone.apply.register("iter", IteratorApply, default=True)
+BrillouinZone.apply.register("list", ListApply)
+BrillouinZone.apply.register("oplist", OpListApply)
+if _has_xarray:
+    BrillouinZone.apply.register("dataarray", DataArrayApply)
 
 
 @set_module("sisl.physics")

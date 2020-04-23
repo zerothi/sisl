@@ -889,7 +889,7 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc', complex=False):
             bc = es.berry_curvature(complex=complex)
             return einsum('i,ijl->jl', occ, bc)
 
-        cond = - bz.dispatch.average.eigenstate(wrap=_ahc) / constant.hbar('eV ps')
+        cond = - bz.apply.average.eigenstate(wrap=_ahc) / constant.hbar('eV ps')
     else:
         raise SislError('conductivity: requires the method to be [ahc]')
 
@@ -1199,7 +1199,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
             return prd
 
     # Do the actual calculation of the final matrix
-    d = _berry(contour.dispatch.yields.eigenstate())
+    d = _berry(contour.apply.iter.eigenstate())
 
     # Correct return values
     if eigvals:

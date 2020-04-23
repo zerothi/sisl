@@ -525,10 +525,10 @@ class TestHamiltonian:
     def test_eig3(self, setup):
         setup.HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
         BS = BandStructure(setup.HS, [[0, 0, 0], [0.5, 0.5, 0]], 10)
-        eigs = BS.dispatch.array.eigh()
+        eigs = BS.apply.array.eigh()
         assert len(BS) == eigs.shape[0]
         assert len(setup.HS) == eigs.shape[1]
-        eig2 = np.array([eig for eig in BS.dispatch.yields.eigh()])
+        eig2 = np.array([eig for eig in BS.apply.iter.eigh()])
         assert np.allclose(eigs, eig2)
         setup.HS.empty()
 
@@ -1417,7 +1417,7 @@ class TestHamiltonian:
             PDOS = es.PDOS(E, distribution=dist)
             vel = es.velocity() * es.occupation().reshape(-1, 1)
             return oplist([DOS, PDOS, vel])
-        bz_avg = bz.dispatch.average
+        bz_avg = bz.apply.average
         results = bz_avg.eigenstate(wrap=wrap)
         assert np.allclose(bz_avg.DOS(E, distribution=dist), results[0])
         assert np.allclose(bz_avg.PDOS(E, distribution=dist), results[1])

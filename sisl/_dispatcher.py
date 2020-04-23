@@ -29,8 +29,8 @@ class AbstractDispatch(metaclass=ABCMeta):
             return method(*args, **kwargs)
         return func
 
-    def __call__(self, method, *args, **kwargs):
-        return self.dispatch(method)(*args, **kwargs)
+    def __call__(self, method):
+        return self.dispatch(method)
 
     def __getattr__(self, key):
         method = getattr(self._obj, key)
@@ -40,31 +40,33 @@ class AbstractDispatch(metaclass=ABCMeta):
 class ObjectDispatcher:
     # We need to hide the methods and objects
     # since we are going to retrieve dispatchs from the object it-self
-    __slots__ = ("_obj", "_dispatchs")
+    __slots__ = ("_obj", "_dispatchs", "_default")
 
-    def __init__(self, obj, dispatchs=None):
+    def __init__(self, obj, dispatchs=None, default=None):
         self._obj = obj
         if dispatchs is None:
             dispatchs = dict()
         self._dispatchs = dispatchs
+        self._default = default
 
     def __len__(self):
         return len(self._dispatchs)
 
     def __str__(self):
         obj = str(self._obj).replace("\n", "\n ")
-        dispatchs = ",\n ".join(
-            map(lambda kv: f"{kv[0]} = " + str(kv[1](object())).replace("\n", "\n "),
-                self._dispatchs.items()
-            )
-        )
+        def toline(kv):
+            k, v = kv
+            if k == self._default:
+                return f"*{k} = " + str(v(object())).replace("\n", "\n ")
+            return f" {k} = " + str(v(object())).replace("\n", "\n ")
+        dispatchs = ",\n ".join(map(toline, self._dispatchs.items()))
         return f"{self.__class__.__name__}{{dispatchs: {len(self)},\n {obj},\n {dispatchs}\n}}"
 
     ####
     # Only the following methods are necessary for the dispatch method to work
     ####
 
-    def register(self, key, dispatch, to_class=True):
+    def register(self, key, dispatch, default=False, to_class=True):
         """ Register a dispatch class to this object and to the object class instance (if existing)
 
         Parameter
@@ -73,6 +75,8 @@ class ObjectDispatcher:
             key used in the dictionary look-up for the dispatch class
         dispatch : AbstractDispatch
             dispatch class to be registered
+        default : bool, optional
+            this dispatch class will be the default
         to_class : bool, optional
             whether the dispatch class will also be registered with the
             contained object's class instance
@@ -80,7 +84,7 @@ class ObjectDispatcher:
         if to_class:
             cls_dispatch = getattr(self._obj.__class__, "dispatch", None)
             if cls_dispatch:
-                cls_dispatch.register(key, dispatch)
+                cls_dispatch.register(key, dispatch, default=default)
         # Since this instance is already created, we have to add it here.
         # This has the side-effect that already stored dispatch (of ObjectDispatcher)
         # will not get these.
@@ -92,14 +96,17 @@ class ObjectDispatcher:
 
     def __getattr__(self, key):
         """ Retrieve dispatched method by name """
-        return self._dispatchs[key](self._obj)
+        if key in self._dispatchs:
+            return self._dispatchs[key](self._obj)
+        return getattr(self._dispatchs[self._default](self._obj), key)
 
 
 class ClassDispatcher:
-    __slots__ = ["_dispatchs"]
+    __slots__ = ("_dispatchs", "_default")
 
     def __init__(self):
         self._dispatchs = dict()
+        self._default = None
 
     def __len__(self):
         return len(self._dispatchs)
@@ -107,11 +114,12 @@ class ClassDispatcher:
     def __str__(self):
         # We know how to create an object, passing 1 argument (an object)
         # We will fake this to get a str representation.
-        dispatchs = ",\n ".join(
-            map(lambda kv: f"{kv[0]} = " + str(kv[1](object())).replace("\n", "\n "),
-                self._dispatchs.items()
-            )
-        )
+        def toline(kv):
+            k, v = kv
+            if k == self._default:
+                return f"*{k} = " + str(v(object())).replace("\n", "\n ")
+            return f" {k} = " + str(v(object())).replace("\n", "\n ")
+        dispatchs = ",\n ".join(map(toline, self._dispatchs.items()))
         return f"{self.__class__.__name__}{{dispatchs: {len(self)},\n {dispatchs}\n}}"
 
     ####
@@ -129,9 +137,9 @@ class ClassDispatcher:
         """
         if instance is None:
             return self
-        return ObjectDispatcher(instance, self._dispatchs)
+        return ObjectDispatcher(instance, self._dispatchs, default=self._default)
 
-    def register(self, key, dispatch):
+    def register(self, key, dispatch, default=False):
         """ Register a dispatch class
 
         Parameter
@@ -140,5 +148,10 @@ class ClassDispatcher:
             key used in the dictionary look-up for the dispatch class
         dispatch : AbstractDispatch
             dispatch class to be registered
+        default : bool, optional
+            if true, this `dispatch` will be the default in case the
+            `ObjectDispatcher` cannot find the requested object.
         """
         self._dispatchs[key] = dispatch
+        if default:
+            self._default = key
