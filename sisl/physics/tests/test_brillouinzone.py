@@ -91,6 +91,8 @@ class TestBrillouinZone:
             assert np.allclose(val, np.arange(3))
         for val in bz.dispatch.yields.eig():
             assert np.allclose(val, np.arange(3) - 1)
+        for val in bz.dispatch.oplist.eigh():
+            assert np.allclose(val, np.arange(3))
         # Average
         bz_average = bz.dispatch.average
         assert np.allclose(bz_average.eigh(), np.arange(3))

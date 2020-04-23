@@ -92,7 +92,8 @@ Which does mathematical operations (averaging/summing) using `~sisl.oplist`.
 
 import types
 from numbers import Integral, Real
-from functools import wraps
+from functools import wraps, reduce
+import operator as op
 import warnings
 
 from numpy import pi
@@ -169,48 +170,81 @@ class BrillouinZoneParentDispatch(BrillouinZoneDispatch):
 
 
 @set_module("sisl.physics")
-class AverageDispatch(BrillouinZoneParentDispatch):
-    __str__ = _dispatch_str("return average")
+class YieldDispatch(BrillouinZoneParentDispatch):
+    __str__ = _dispatch_str("yield")
 
-    def dispatch(self, method):
-        """ Dispatch the method by averaging """
+    def dispatch(self, method, eta_key="yield"):
+        """ Dispatch the method by yielding values """
         @wraps(method)
         def func(*args, wrap=None, eta=False, **kwargs):
-            bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key="average")
-            # Do actual average
+            bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key=eta_key)
             k = bz.k
             w = bz.weight
-            v = _asoplist(wrap(method(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])) * w[0]
-            eta.update()
-            for i in range(1, len(k)):
-                v += _asoplist(wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])) * w[i]
+            for i in range(len(k)):
+                yield wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
                 eta.update()
             eta.close()
-            return v
 
         return func
 
 
 @set_module("sisl.physics")
-class SumDispatch(BrillouinZoneParentDispatch):
+class SumDispatch(YieldDispatch):
     __str__ = _dispatch_str("sum over k")
 
     def dispatch(self, method):
         """ Dispatch the method by summing """
-        @wraps(method)
-        def func(*args, wrap=None, eta=False, **kwargs):
-            bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key="average")
-            # Do sum
-            k = bz.k
-            w = bz.weight
-            v = _asoplist(wrap(method(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0]))
-            eta.update()
-            for i in range(1, len(k)):
-                v += wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
-                eta.update()
-            eta.close()
-            return v
+        yield_func = super().dispatch(method, eta_key="sum")
 
+        @wraps(method)
+        def func(*args, **kwargs):
+            it = yield_func(*args, **kwargs)
+            # next will be called before anything else
+            return reduce(op.add, it, _asoplist(next(it)))
+
+        return func
+
+
+@set_module("sisl.physics")
+class NoneDispatch(YieldDispatch):
+    __str__ = _dispatch_str("return None")
+
+    def dispatch(self, method):
+        """ Dispatch the method by doing nothing (mostly useful if wrapped) """
+        yield_func = super().dispatch(method, eta_key="none")
+
+        @wraps(method)
+        def func(*args, **kwargs):
+            for _ in yield_func(*args, **kwargs):
+                pass
+            return None
+
+        return func
+
+
+@set_module("sisl.physics")
+class ListDispatch(YieldDispatch):
+    __str__ = _dispatch_str("return list")
+
+    def dispatch(self, method):
+        """ Dispatch the method by returning list of values """
+        yield_func = super().dispatch(method, eta_key="list")
+        @wraps(method)
+        def func(*args, **kwargs):
+            return [v for v in yield_func(*args, **kwargs)]
+        return func
+
+
+@set_module("sisl.physics")
+class OpListDispatch(YieldDispatch):
+    __str__ = _dispatch_str("return oplist")
+
+    def dispatch(self, method):
+        """ Dispatch the method by returning oplist of values """
+        yield_func = super().dispatch(method, eta_key="oplist")
+        @wraps(method)
+        def func(*args, **kwargs):
+            return oplist(v for v in yield_func(*args, **kwargs))
         return func
 
 
@@ -222,7 +256,7 @@ class ArrayDispatch(BrillouinZoneParentDispatch):
         """ Dispatch the method by summing """
         @wraps(method)
         def func(*args, wrap=None, eta=False, **kwargs):
-            bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key="average")
+            bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key="array")
             k = bz.k
             w = bz.weight
 
@@ -248,63 +282,24 @@ class ArrayDispatch(BrillouinZoneParentDispatch):
 
 
 @set_module("sisl.physics")
-class NoneDispatch(BrillouinZoneParentDispatch):
-    __str__ = _dispatch_str("return None")
+class AverageDispatch(BrillouinZoneParentDispatch):
+    __str__ = _dispatch_str("return average")
 
     def dispatch(self, method):
-        """ Dispatch the method by summing """
+        """ Dispatch the method by averaging """
         @wraps(method)
         def func(*args, wrap=None, eta=False, **kwargs):
             bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key="average")
-            k = bz.k
-
-            w = bz.weight
-            for i in range(len(k)):
-                wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
-                eta.update()
-            eta.close()
-
-            return None
-        return func
-
-
-@set_module("sisl.physics")
-class YieldDispatch(BrillouinZoneParentDispatch):
-    __str__ = _dispatch_str("yield")
-
-    def dispatch(self, method):
-        """ Dispatch the method by summing """
-        @wraps(method)
-        def func(*args, wrap=None, eta=False, **kwargs):
-            bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key="average")
+            # Do actual average
             k = bz.k
             w = bz.weight
-            for i in range(len(k)):
-                yield wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
+            v = _asoplist(wrap(method(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])) * w[0]
+            eta.update()
+            for i in range(1, len(k)):
+                v += _asoplist(wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])) * w[i]
                 eta.update()
             eta.close()
-
-        return func
-
-
-@set_module("sisl.physics")
-class ListDispatch(BrillouinZoneParentDispatch):
-    __str__ = _dispatch_str("return list")
-
-    def dispatch(self, method):
-        """ Dispatch the method by summing """
-        @wraps(method)
-        def func(*args, wrap=None, eta=False, **kwargs):
-            bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key="average")
-            k = bz.k
-            l = [None] * len(k)
-            w = bz.weight
-            for i in range(len(k)):
-                l[i] = wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
-                eta.update()
-            eta.close()
-
-            return l
+            return v
 
         return func
 
@@ -319,14 +314,14 @@ class DataArrayDispatch(ArrayDispatch):
         array_func = super().dispatch(method)
 
         @wraps(method)
-        def func(*args, coords=None, name=None, wrap=None, eta=False, **kwargs):
+        def func(*args, coords=None, name=None, **kwargs):
             # xarray specific data (default to function name)
             if name is None:
                 name = method.__name__
             bz = self._obj
 
             # retrieve ALL data
-            array = array_func(*args, wrap=wrap, eta=eta, **kwargs)
+            array = array_func(*args, **kwargs)
 
             # Create coords
             if coords is None:
@@ -383,6 +378,7 @@ class BrillouinZone:
     dispatch.register("yields", YieldDispatch)
     dispatch.register("yield", YieldDispatch)
     dispatch.register("list", ListDispatch)
+    dispatch.register("oplist", OpListDispatch)
     if _has_xarray:
         dispatch.register("dataarray", DataArrayDispatch)
 
