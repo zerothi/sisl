@@ -1457,7 +1457,7 @@ class Atoms:
     def index(self, atom):
         """ Return the species index of the atom object """
         if not isinstance(atom, Atom):
-            atom = self[atom]
+            atom = self.__class__[atom]
         for s, a in enumerate(self.atom):
             if a == atom:
                 return s
@@ -1804,16 +1804,18 @@ class Atoms:
         UserWarning : if the atoms does not have the same number of orbitals.
         """
         if not isinstance(atom_from, Atom):
-            raise ValueError(self.__class__.__name__ + '.replace_atom requires input arguments to '
+            raise ValueError(f'{self.__class__.__name__}.replace_atom requires input arguments to '
                              'be of the class Atom')
         if not isinstance(atom_to, Atom):
-            raise ValueError(self.__class__.__name__ + '.replace_atom requires input arguments to '
+            raise ValueError(f'{self.__class__.__name__}.replace_atom requires input arguments to '
                              'be of the class Atom')
 
         # Get index of `atom_from`
         idx_from = self.index(atom_from)
         try:
             idx_to = self.index(atom_to)
+            if idx_from == idx_to:
+                raise KeyError("")
 
             # Decrement indices of the atoms that are
             # changed to one already there

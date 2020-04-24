@@ -773,10 +773,8 @@ class fdfSileSiesta(SileSiesta):
             na = self.get('NumberOfAtoms', default=None)
             fc = fcSileSiesta(f).read_force_constant(na=na)
             # Figure out which atoms to correct
-            fc_first = self.get('MD.FCFirst', default=0)
-            fc_last = self.get('MD.FCLast', default=0)
-            if 0 in [fc_first, fc_last]:
-                raise SislError(str(self) + f'.read_force_constant(FC) requires FCFirst({fc_first})/FCLast({fc_last}) to be set correctly.')
+            fc_first = self.get('MD.FCFirst', default=1)
+            fc_last = self.get('MD.FCLast', default=na)
             if fc_last - fc_first + 1 != fc.shape[0]:
                 raise SislError(str(self) + '.read_force_constant(FC) expected {} displaced atoms, '
                                 'only found {} displaced atoms!'.format(fc_last - fc_first + 1, fc.shape[0]))
@@ -845,7 +843,7 @@ class fdfSileSiesta(SileSiesta):
             cutoff value for the distance of the force-constants (everything farther than
             `cutoff_dist` will be set to 0 Ang). Default, no cutoff.
         cutoff : float, optional
-            absolute values below the cutoff are considered 0. Defaults to 1e-4 eV/Ang**2.
+            absolute values below the cutoff are considered 0. Defaults to 0. eV/Ang**2.
         correct_fc : bool, optional
             correct the FC-matrix by forcing the force on the moved atom to be
             equal to the negative sum of all the others. Default to true.
@@ -872,7 +870,7 @@ class fdfSileSiesta(SileSiesta):
         if len(self.get('AtomicMass', default=[])) > 0:
             warn(str(self) + '.read_dynamical_matrix(FC) does not implement reading atomic masses from fdf file.')
         # Get list of FC atoms
-        FC_atoms = _a.arangei(self.get('MD.FCFirst', default=0) - 1, self.get('MD.FCLast', default=0))
+        FC_atoms = _a.arangei(self.get('MD.FCFirst', default=0) - 1, self.get('MD.FCLast', default=geom.na))
         return self._dynamical_matrix_from_fc(geom, FC, FC_atoms, *args, **kwargs)
 
     def _r_dynamical_matrix_nc(self, *args, **kwargs):
@@ -886,7 +884,7 @@ class fdfSileSiesta(SileSiesta):
             warn(str(self) + '.read_dynamical_matrix(nc) does not implement reading atomic masses from fdf file.')
         # Get list of FC atoms
         # TODO change to read in from the NetCDF file
-        FC_atoms = _a.arangei(self.get('MD.FCFirst', default=0) - 1, self.get('MD.FCLast', default=0))
+        FC_atoms = _a.arangei(self.get('MD.FCFirst', default=0) - 1, self.get('MD.FCLast', default=geom.na))
         return self._dynamical_matrix_from_fc(geom, FC, FC_atoms, *args, **kwargs)
 
     def _dynamical_matrix_from_fc(self, geom, FC, FC_atoms, *args, **kwargs):
@@ -901,7 +899,7 @@ class fdfSileSiesta(SileSiesta):
         periodic = geom.nsc > 1
 
         # Cut-off too small values
-        fc_cut = kwargs.get('cutoff', 1e-4)
+        fc_cut = kwargs.get('cutoff', 0.)
         FC = np.where(np.abs(FC) > fc_cut, FC, 0.)
 
         # Convert the force constant such that a diagonalization returns eV ^ 2
@@ -915,7 +913,7 @@ class fdfSileSiesta(SileSiesta):
         orbs = [Orbital(R / 2, tag=tag) for tag in 'xyz']
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            for atom in geom.atoms:
+            for atom, _ in geom.atoms.iter(True):
                 new_atom = Atom(atom.Z, orbs, tag=atom.tag)
                 geom.atoms.replace(atom, new_atom)
 

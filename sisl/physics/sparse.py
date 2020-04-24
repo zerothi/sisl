@@ -1010,7 +1010,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         return lin.eigsh(P, k=n, return_eigenvectors=not eigvals_only, **kwargs)
 
     def transpose(self, hermitian=False):
-        r""" A transpose copy of this object, possibly apply the Hermitian conjugate as well (default)
+        r""" A transpose copy of this object, possibly apply the Hermitian conjugate as well
 
         Parameters
         ----------
