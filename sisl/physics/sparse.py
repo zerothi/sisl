@@ -1023,13 +1023,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         D = new._csr._D
 
         if hermitian:
-            if sp.is_noncolinear:
-                # conjugate the imaginary value
-                if sp.dkind == 'f':
-                    D[:, 3] = -D[:, 3]
-                else:
-                    D[:, 2] = np.conj(D[:, 2])
-            elif sp.is_spinorbit:
+            if sp.is_spinorbit:
                 # conjugate the imaginary value and transpose spin-box
                 if sp.dkind == 'f':
                     # imaginary components (including transposing)
@@ -1040,6 +1034,19 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                 else:
                     D[:, [0, 1]] = np.conj(D[:, [0, 1]])
                     D[:, [2, 3]] = np.conj(D[:, [3, 2]])
+        elif sp.is_noncolinear:
+            # conjugate the imaginary value
+            # since for transposing D[:, 3] is the same
+            # value used for [--, ud]
+            #                [du, --]
+            #   ud = D[3] == - du
+            # So for transposing we should negate the sign
+            # to ensure we put the opposite value in the
+            # correct place.
+            if sp.dkind == 'f':
+                D[:, 3] = -D[:, 3]
+            else:
+                D[:, 2] = np.conj(D[:, 2])
         elif sp.is_spinorbit:
             # transpose spin-box
             if sp.dkind == 'f':
