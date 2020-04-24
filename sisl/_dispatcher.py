@@ -35,7 +35,9 @@ class AbstractDispatch(metaclass=ABCMeta):
 
     def __getattr__(self, key):
         method = getattr(self._obj, key)
-        return self.dispatch(method)
+        if callable(method):
+            return self.dispatch(method)
+        return method
 
 
 class Dispatcher:
@@ -158,10 +160,12 @@ class ObjectDispatcher(Dispatcher):
         if key in self._dispatchs:
             return self._dispatchs[key](self._obj)
 
-        # This will also ensure that if the user calls immediately after it will use the default
-        return MethodDispatcher(self._obj_getattr(self._obj, key),
-                                dispatchs=self._dispatchs,
-                                default=self._default, obj=self._obj)
+        attr = self._obj_getattr(self._obj, key)
+        if callable(attr):
+            # This will also ensure that if the user calls immediately after it will use the default
+            return MethodDispatcher(attr, dispatchs=self._dispatchs,
+                                    default=self._default, obj=self._obj)
+        return attr
 
 
 class ClassDispatcher(Dispatcher):
