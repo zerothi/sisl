@@ -9,11 +9,12 @@ from functools import partial
 
 import flask
 from flask import Flask, request, jsonify, make_response
-from flask_socketio import SocketIO, join_room, emit, send
+from flask_socketio import SocketIO, join_room
 
 from sisl.viz import BlankSession
 from sisl.viz.plotutils import load
-from sisl.viz.GUI.user_management import with_user_management, if_user_can, listen_to_users
+from sisl.viz.GUI.api_utils import with_user_management, if_user_can, listen_to_users
+from sisl.viz.GUI.api_utils.emiters import emit_plot, emit_session, emit_error, emit_loading_plot, emit_outside_flask, emit
 
 __DEBUG = True
 
@@ -38,58 +39,6 @@ class CustomJSONEncoder(JSONEncoder):
 # and then javascript does not understand it
 simplejson.dumps = partial(simplejson.dumps, ignore_nan=True, cls=CustomJSONEncoder)
 
-def emit_session(session_to_emit = None, broadcast=True, **kwargs):
-	'''
-	Emits a session through the socket connection
-
-	Parameters
-	-----------
-	session_to_emit: Session, optional
-		The session you want to emit. If not provided, the current session will be used.
-	'''
-		
-	if session_to_emit is None:
-		session_to_emit = session
-	
-	return emit("current_session", session._getJsonifiableInfo(), broadcast=broadcast, **kwargs)
-
-def emit_plot(plot, broadcast=True, **kwargs):
-	'''
-	Emits a plot through the socket connection
-
-	Parameters
-	-----------
-	plot: str or Plot
-		The plot that you want to send. 
-		
-		It can be either its ID, to search for the plot in the current session, or
-		an actual plot instance.
-	'''
-
-	if isinstance(plot, str):
-		plot = session.plot(plot)
-
-
-	emit("plot", plot._getDictForGUI(), broadcast=broadcast, **kwargs)
-
-def emit_loading_plot(plot, broadcast=True):
-	'''
-	Emits a message to inform that an action is being performed on this plot.
-
-	This is useful to make the client know that their request is on its way to be fulfilled.
-
-	Parameters
-	-----------
-	plot: str or Plot
-		It can be either a plot ID or an actual plot instance.
-	'''
-
-	return emit("loading_plot", {"plot_id": plot if isinstance(plot, str) else plot.id}, broadcast=broadcast)
-
-def emit_error(err):
-
-	emit("error", str(err), broadcast=False)
-
 def patch_session(session):
 	'''
 	Makes the session trigger events when manipulating plots
@@ -99,7 +48,6 @@ def patch_session(session):
 	session.on_plot_change_error = lambda plot, err: emit_error(err)
 
 	return session
-
 
 if False:
 	with_user_management(app)
@@ -111,22 +59,24 @@ on = socketio.on
 if False:
 	listen_to_users(on, emit_session)
 
+# This will be the global session
 session = BlankSession()
 patch_session(session)
 
 @socketio.on_error()
 def send_error(err):
-	emit_error(err)
+	emiters.emit_error(err)
 
 @on('request_session')
 @if_user_can('see')
 def send_session(path = None):
-	
+	global session
+
 	session = None
 	if path is not None:
 		session = load(path)
 
-	emit_session(session, broadcast = False)
+	emiters.emit_session(session, broadcast = False)
 
 @on('apply_method_on_session')
 @if_user_can("edit")
@@ -151,7 +101,7 @@ def apply_method(method_name, kwargs = {}, *args):
 		event_name = kwargs.get("returns_as", "call_returns")
 		emit(event_name, returns, {"method_name": method_name}, broadcast=False)
 
-	emit_session()
+	emiters.emit_session(session)
 
 @on('get_plot')
 @if_user_can("see")
@@ -159,7 +109,7 @@ def retrieve_plot(plotID):
 	if __DEBUG:
 		print(f"Asking for plot: {plotID}")
 
-	emit_plot(plotID, broadcast=False)
+	emiters.emit_plot(plotID, broadcast=False)
 
 def set_session(new_session):
 	global session
