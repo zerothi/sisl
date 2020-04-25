@@ -3,9 +3,11 @@ import numpy as np
 
 class ShortCutable:
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
 
         self.shortcuts = {}
+
+        super().__init__(*args, **kwargs)
     
     def shortcut(self, keys):
 

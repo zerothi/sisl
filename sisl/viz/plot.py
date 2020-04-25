@@ -18,9 +18,11 @@ import plotly
 import plotly.graph_objects as go
 
 import sisl
+from sisl.viz.GUI.api_utils.sync import Connected
 
 from .configurable import *
-from .plotutils import initMultiplePlots, repeatIfChilds, dictOfLists2listOfDicts, trigger_notification, spoken_message, running_in_notebook, check_widgets
+from .plotutils import initMultiplePlots, repeatIfChilds, dictOfLists2listOfDicts, trigger_notification, \
+     spoken_message, running_in_notebook, check_widgets, call_method_if_present
 from .input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
 from ._shortcuts import ShortCutable
 
@@ -51,7 +53,32 @@ def timeit(method):
 #------------------------------------------------
 #                 PLOT CLASS
 #------------------------------------------------    
-class Plot(ShortCutable, Configurable):
+class Plot(ShortCutable, Configurable, Connected):
+    '''
+    Parent class of all plot classes.
+
+    Implements general things needed by all plots such as settings and shortcut
+    management.
+
+    Parameters
+    ----------
+
+    Attributes
+    ----------
+    settings: dict
+        contains the values for each setting of the plot.
+    params: dict
+        for each setting, contains information about their input field.
+
+        This information might include valid values, for example.
+    paramGroups: tuple of dicts
+        contains the different setting groups present in the plot.
+
+        Each group is a dict like { "key": , "name": ,"icon": , "description": }
+
+    ...
+
+    '''
     
     _onSettingsUpdate = {
         "functions": ["readData", "setData", "getFigure"],
@@ -520,6 +547,7 @@ class Plot(ShortCutable, Configurable):
         
         #Initialize shortcut management
         ShortCutable.__init__(self)
+        Connected.__init__(self, socketio=kwargs.get("socketio", None))
         
         #Give an ID to the plot
         self.id = str(uuid.uuid4())
@@ -528,8 +556,7 @@ class Plot(ShortCutable, Configurable):
         self._debug = _debug
 
         #Give the user the possibility to do things before initialization (IDK why)
-        if callable( getattr(self, "_beforeInit", None )):
-            self._beforeInit()
+        call_method_if_present(self, "_beforeInit")
 
         # Set all the attributes that have been passed
         for key, val in attrs_for_plot.items():
@@ -554,6 +581,8 @@ class Plot(ShortCutable, Configurable):
 
         # Initialize the figure
         self.figure = go.Figure()
+        # on_figure_change is triggered after getFigure. It is used, for example
+        self.on_figure_change = None 
 
         #If plugins have been provided, then add them.
         #Plugins are an easy way of extending a plot. They can be methods, variables...
@@ -565,9 +594,9 @@ class Plot(ShortCutable, Configurable):
                 setattr(self, name, plugin)
 
         self._general_plot_shortcuts()
+
         #Give the user the possibility to overwrite default settings
-        if callable( getattr(self, "_afterInit", None )):
-            self._afterInit()
+        call_method_if_present(self, "_afterInit")
         
         # If we were supposed to only initialize the plot, stop here
         if only_init:
@@ -638,7 +667,7 @@ class Plot(ShortCutable, Configurable):
         elif key != '_SHOULD_SHARE_WITH_SIBLINGS' and getattr(self, '_SHOULD_SHARE_WITH_SIBLINGS', False):
             self.share_attr(key, val)
         else:
-            self.__dict__[key] = val
+            object.__setattr__(self, key, val)
 
     def __getitem__(self, key):
 
@@ -667,8 +696,7 @@ class Plot(ShortCutable, Configurable):
         # Apart from the explicit call in this method, setFiles and setUpHamiltonian also add files to follow
         self._filesToFollow = []
 
-        if callable( getattr(self, "_beforeRead", None )):
-            self._beforeRead()
+        call_method_if_present(self, "_beforeRead")
         
         try:    
             self.setFiles()
@@ -687,8 +715,7 @@ class Plot(ShortCutable, Configurable):
         if self.source is None:
             self.last_dataread = 0
 
-        if callable( getattr(self, "_afterRead", None )):
-            self._afterRead()
+        call_method_if_present(self, "_afterRead")
 
         if self.source is not None:
             self.last_dataread = time.time()
@@ -1060,8 +1087,9 @@ class Plot(ShortCutable, Configurable):
             **framesLayout
         }
 
-        if callable( getattr(self, "_afterGetFigure", None )):
-            self._afterGetFigure()
+        call_method_if_present(self, '_afterGetFigure')
+        
+        call_method_if_present(self, 'on_figure_change')
 
         return self
     
@@ -1572,7 +1600,10 @@ class Plot(ShortCutable, Configurable):
 
         return py.plot(self.figure, *args, **kwargs)
 
-
+    #-------------------------------------------
+    #      INTERACT WITH PARENT SESSIONS
+    #-------------------------------------------
+    
 #------------------------------------------------
 #               ANIMATION CLASS
 #------------------------------------------------
@@ -1685,9 +1716,8 @@ class MultiplePlot(Plot):
             else:
                 # If we haven't tried sharing data, the plots are already prepared (with read data of their own)
                 self.set_child_plots(plots)
-                
-            if callable( getattr(self, "_afterChildsUpdated", None )):
-                self._afterChildsUpdated()
+            
+            call_method_if_present(self, "_afterChildsUpdated")
 
         if updateFig:
             self.getFigure()
@@ -1711,8 +1741,7 @@ class MultiplePlot(Plot):
 
             repeatIfChilds(Configurable.updateSettings)(self, **kwargs)
 
-            if callable( getattr(self, "_afterChildsUpdated", None )):
-                self._afterChildsUpdated()
+            call_method_if_present(self, "_afterChildsUpdated")
 
             return self
 

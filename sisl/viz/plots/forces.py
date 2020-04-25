@@ -1,13 +1,9 @@
 import numpy as np
-import xarray as xr
-import itertools
 
 import os
-import shutil
 
 import sisl
-from ..plot import Plot, MultiplePlot, Animation, PLOTS_CONSTANTS
-from ..plotutils import sortOrbitals, initMultiplePlots, copyParams, findFiles, runMultiple, calculateGap
+from ..plot import Plot
 from ..input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
 
 class ForcesPlot(Plot):

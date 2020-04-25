@@ -168,71 +168,14 @@ def dictOfLists2listOfDicts(dictOfLists):
     '''
 
     return [dict(zip(dictOfLists,t)) for t in zip(*dictOfLists.values())]
+
+def call_method_if_present(obj, method_name, *args, **kwargs):
+
+    method = getattr(obj, method_name, None)
+    if callable(method):
+        return method(*args, **kwargs)
+
 #------------------------------------
-def calculateGap(bands):
-    '''
-    Calculates the gap of a set of bands
-    
-    Arguments
-    ----------
-    bands: 2d array
-        A 2 dimensional array containing the bands for which the gap needs to be calculated
-    
-    Returns
-    ----------
-    gap: float
-        The value of the gap in the same units that the bands array was in.
-    gapLimitsLoc: array of int
-        Contains the locations of the gap limits in the bands array provided.
-            - First row: highest occupied (bottom limit of gap)
-            - Second row: lowest unoccupied (top limit of gap)
-    '''
-    
-    #Initialize the gap limits array
-    gapLimits = np.array([-10**3, 10**3], dtype=float)
-    gapLimitsLoc = np.array([[0,0], [0,0]], dtype=int)
-    
-    #
-    isAboveFermi = bands > 0
-    
-    for i, cond in enumerate([~isAboveFermi, isAboveFermi]):
-        
-        gapLimitsLoc[i, :] = np.argwhere(abs(bands) == np.min(abs(bands[cond])) )[0]
-        
-        iK, iWF = gapLimitsLoc[i]
-
-        gapLimits[i] = bands[iK, iWF]
-    
-    gap = np.diff(gapLimits)[0]
-    
-    return gap, gapLimitsLoc
-
-def calculateSpinGaps(bands):
-    '''
-    Gets the gap for each spin separately making use of the calculateGap() function.
-
-    Arguments
-    -----------
-    bands: 3d array
-        A 3 dimensional array containing the bands for both spins. The first dimension should be the spin component.
-        Tip: You can use np.rollaxis() if they are not originally provided in this way.
-    
-    Returns
-    -----------
-    gaps: list of float
-        A list with the two gaps (one for each spin)
-    gapLimitsLocs: list
-        A list containing the two gapLimitsLoc returned by calculateGap().
-    '''
-    
-    gaps = [0,0]
-    gapLimitsLocs = [0,0]
-    
-    for i, spinBands in enumerate(bands):
-        
-        gaps[i], gapLimitsLocs[i] = calculateGap(spinBands)
-        
-    return gaps, gapLimitsLocs
 
 def sortOrbitals(orbitals):
     '''

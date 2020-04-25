@@ -7,16 +7,54 @@ import glob
 from copy import deepcopy, copy
 
 import sisl
+from sisl.viz.GUI.api_utils.sync import Connected
 from .plot import Plot, MultiplePlot, Animation
 from .configurable import Configurable, afterSettingsInit
-from .plotutils import findFiles, get_plotable_siles
+from .plotutils import findFiles, get_plotable_siles, call_method_if_present
 
 from .input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, Array1dInput
 
-class Session(Configurable):
+class Warehouse:
+    '''
+    Class to store everything related to a session.
+
+    A warehouse can be shared between multiple sessions.
+    THIS SHOULD ONLY CONTAIN PLOTS!!!! 
+    (The rest: tabs, structures and plotables should be session-specific)
+    '''
+
+    def __init__(self):
+
+        self._warehouse = {
+            "plots": {},
+            "structs": {},
+            "plotables": {},
+            "tabs": []
+        }
+
+    def __getitem__(self, item):
+        return self._warehouse[item]
+
+    def __setitem__(self, item, value):
+        self._warehouse[item] = value
+
+    
+class Session(Configurable, Connected):
+    '''
+    Represents a session of the graphical interface.
+
+    Plots are organized in different tabs and each tab has a layout
+    that defines how plots are displayed in the dashboard.
+
+    Contains different methods that help managing the session and that are
+    directly called by the front end of the graphical interface.
+    Therefore: IF A METHOD NAME IS CHANGED, THE SAME CHANGE MUST BE DONE
+    IN THE GUI FILE "apis/PythonApi".
+
+    '''
 
     _onSettingsUpdate = {
-        "functions": ["getStructures"],
+        "functions": ["get_structures"],
         "config":{
             "multipleFunc": False,
             "order": False,
@@ -118,7 +156,7 @@ class Session(Configurable):
     )
 
     @afterSettingsInit
-    def __init__(self, **kwargs):
+    def __init__(self, *args, **kwargs):
 
         self.id = str(uuid.uuid4())
 
@@ -126,26 +164,15 @@ class Session(Configurable):
         self.on_plot_change = None
         self.on_plot_change_error = None
 
-        self.initWarehouse( kwargs.get("firstTab", False) )
+        self.warehouse = Warehouse()
 
-        if callable( getattr(self, "_afterInit", None )):
-            self._afterInit()
+        call_method_if_present(self, "_after_init")
         
-    def initWarehouse(self, firstTab):
-
-        self.warehouse = {
-            "plots": {},
-            "structs": {},
-            "plotables": {},
-            "tabs": [],
-        }
+        super().__init__(*args, **kwargs)
 
     #-----------------------------------------
     #            PLOT MANAGEMENT
     #-----------------------------------------
-    @property
-    def tabs(self):
-        return self.warehouse["tabs"]
 
     @property
     def plots(self):
@@ -173,7 +200,7 @@ class Session(Configurable):
 
         return plot
 
-    def getPlotClasses(self):
+    def get_plot_classes(self):
         '''
         This method provides all the plot subclasses, even the nested ones
         '''
@@ -193,7 +220,7 @@ class Session(Configurable):
         
         return sorted(get_all_subclasses(sisl.viz.Plot), key = lambda clss: clss._plotType) 
     
-    def addPlot(self, plot, tabID = None, noTab = False): 
+    def add_plot(self, plot, tabID = None, noTab = False): 
         '''
         Adds an already initialized plot object to the session
 
@@ -210,16 +237,19 @@ class Session(Configurable):
             if set to true, prevents the plot from being added to a tab
         '''
 
+        # Make sure the plot is connected to the same socketio as the session
+        plot.socketio = self.socketio
+
         self.warehouse["plots"][plot.id] = plot
 
         if not noTab:
             tabID = self._tab_id(tabID) if tabID is not None else self.tabs[0]["id"]
 
-            self.addPlotToTab(plot.id, tabID)
+            self._add_plot_to_tab(plot.id, tabID)
         
         return self
-
-    def newPlot(self, plotClass=None, tabID = None, structID = None, plotableID=None, animation = False ,**kwargs):
+    
+    def new_plot(self, plotClass=None, tabID = None, structID = None, plotableID=None, animation = False ,**kwargs):
         '''
         Get a new plot from the specified class
 
@@ -245,14 +275,14 @@ class Session(Configurable):
 
         Returns
         -----------
-        newPlot: sisl.viz.Plot()
+        new_plot: sisl.viz.Plot()
             The initialized new plot
         '''
 
         if plotClass is None:
             ReqPlotClass = Plot
         else:
-            for PlotClass in self.getPlotClasses():
+            for PlotClass in self.get_plot_classes():
                 if PlotClass.__name__ == plotClass:
                     ReqPlotClass = PlotClass
                     break
@@ -266,15 +296,15 @@ class Session(Configurable):
 
         if animation:
             wdir = os.path.dirname(self.warehouse["structs"][structID]["path"]) if structID else self.setting("rootDir")
-            newPlot = ReqPlotClass.animated(wdir = wdir)
+            new_plot = ReqPlotClass.animated(wdir = wdir)
         else:
-            newPlot = ReqPlotClass(**kwargs)
+            new_plot = ReqPlotClass(**kwargs)
 
-        self.addPlot(newPlot, tabID)
+        self.add_plot(new_plot, tabID)
 
-        return self.plot(newPlot.id)
+        return self.plot(new_plot.id)
     
-    def updatePlot(self, plotID, newSettings):
+    def update_plot(self, plotID, newSettings):
         '''
         Method to update the settings of a plot that is in the session's warehouse
 
@@ -293,7 +323,7 @@ class Session(Configurable):
 
         return self.plot(plotID).updateSettings(**newSettings)
     
-    def undoPlotSettings(self, plotID):
+    def undo_plot_settings(self, plotID):
         '''
         Method undo the settings of a plot that is in the session's warehouse
 
@@ -310,7 +340,7 @@ class Session(Configurable):
 
         return self.plot(plotID).undoSettings()
     
-    def removePlotFromTab(self, plotID, tabID):
+    def remove_plot_from_tab(self, plotID, tabID):
         '''
         Method to remove a plot only from a given tab.
         '''
@@ -319,14 +349,18 @@ class Session(Configurable):
 
         tab["plots"] = [plot for plot in tab["plots"] if plot != plotID]
 
-    def removePlot(self, plotID):
+    def remove_plot(self, plotID):
         '''
         Method to remove a plot
         '''
 
-        del self.warehouse["plots"][plotID]
+        plot = self.plot(plotID)
 
-        self.removePlotFromAllTabs(plotID)
+        plot.socketio = None
+
+        self.warehouse["plots"] = { ID: plot for ID, plot in self.plots.items() if ID != plotID}
+
+        self.remove_plot_from_all_tabs(plotID)
 
         return self
 
@@ -404,39 +438,22 @@ class Session(Configurable):
 
         plot = self.plot(plotID)
 
-        method = getattr(plot, method_name)
+        method = getattr(plot.autosync, method_name)
 
-        if self.before_plot_update is not None:
-            self.before_plot_update(plot)
-
-        try:
-            returns = method(*args, **kwargs)
-        except Exception as e:
-            if self.on_plot_change_error is not None:
-                self.on_plot_change_error(plot, e)
-            else:
-                raise e
-        finally:
-            if self.on_plot_change is not None:
-                self.on_plot_change(plot)
-
-        return returns
+        return method(*args, **kwargs)
 
     #-----------------------------------------
     #            TABS MANAGEMENT
     #-----------------------------------------
-    def getTabs(self):
-        '''
-        Returns the list of current tabs
-        '''
-
+    @property
+    def tabs(self):
         return self.warehouse["tabs"]
     
     def tab(self, tab):
         '''
         Get a tab by its name or ID. 
         
-        If it does not exist, it will be created (this acts as a shortcut for addTab in that case)
+        If it does not exist, it will be created (this acts as a shortcut for add_tab in that case)
 
         Parameters
         --------
@@ -452,10 +469,10 @@ class Session(Configurable):
             if tab["id"] == tabID:
                 return tab
         else:
-            self.addTab(tab_str)
+            self.add_tab(tab_str)
             return self.tab(tab_str)
 
-    def addTab(self, name = "New tab", plots = []):
+    def add_tab(self, name = "New tab", plots = []):
         '''
         Adds a new tab to the session
 
@@ -470,11 +487,11 @@ class Session(Configurable):
 
         newTab = {"id": str(uuid.uuid4()), "name": name, "plots": deepcopy(plots), "layouts": {"lg":[]}}
 
-        self.warehouse["tabs"].append(newTab)
+        self.tabs.append(newTab)
 
         return self
     
-    def updateTab(self, tabID, newParams = {}, **kwargs):
+    def update_tab(self, tabID, newParams = {}, **kwargs):
         '''
         Method to update the parameters of a given tab
         '''
@@ -486,7 +503,7 @@ class Session(Configurable):
 
         return self
 
-    def removeTab(self, tabID):
+    def remove_tab(self, tabID):
         '''
         Removes a tab from the current session
         '''
@@ -500,7 +517,7 @@ class Session(Configurable):
 
         return self
 
-    def addPlotToTab(self, plot, tab):
+    def _add_plot_to_tab(self, plot, tab):
         '''
         Adds a plot to the requested tab.
 
@@ -517,7 +534,7 @@ class Session(Configurable):
         if isinstance(plot, Plot):
             plotID = plot.id
             if plotID not in self.plots:
-                self.addPlot(plot, tab)
+                self.add_plot(plot, tab)
         else:
             plotID = plot
 
@@ -527,17 +544,17 @@ class Session(Configurable):
         
         return self
     
-    def removePlotFromAllTabs(self, plotID):
+    def remove_plot_from_all_tabs(self, plotID):
         '''
         Removes a given plot from all tabs where it is located
         '''
 
         for tab in self.tabs:
-            self.removePlotFromTab(plotID, tab["id"])
+            self.remove_plot_from_tab(plotID, tab["id"])
         
         return self
 
-    def getTabPlots(self, tab):
+    def get_tab_plots(self, tab):
         '''
         Returns all the plots of a given tab
         '''
@@ -563,7 +580,7 @@ class Session(Configurable):
         tab["plots"] = []
 
         for plot in plots:
-            self.addPlotToTab(plot, tab)
+            self.add_plot(plot, tab)
     
     def tab_id(self, tab_name):
 
@@ -583,7 +600,7 @@ class Session(Configurable):
     #         STRUCTURES MANAGEMENT
     #-----------------------------------------
 
-    def getStructures(self, path=None):
+    def get_structures(self, path=None):
 
         path = path or self.setting("rootDir")
 
@@ -593,9 +610,9 @@ class Session(Configurable):
         }
 
         #Avoid passing unnecessary info to the browser.
-        return {structID: {"id": structID, **{k: struct[k] for k in ["name", "path"]}} for structID, struct in deepcopy(self.warehouse["structs"]).items() }
+        return {structID: {"id": structID, **{k: struct[k] for k in ["name", "path"]}} for structID, struct in self.warehouse["structs"].items() }
     
-    def getPlotables(self, path=None):
+    def get_plotables(self, path=None):
 
         # Empty the plotables dictionary
         self.warehouse["plotables"] = {}
@@ -606,19 +623,23 @@ class Session(Configurable):
             searchString = f"*.{rule.suffix}"
             plotType = rule.cls._plot[0].plotName()
 
-            # Extend the plotables dict with the files that we find that belong to this sile
-            self.warehouse["plotables"] = { **self.warehouse["plotables"], **{
-                str(uuid.uuid4()): {"name": os.path.basename(path), "path": path, "plot": plotType} for path in findFiles(path, searchString, self.setting("searchDepth"), case_insensitive=True)
-            }}
+            files = findFiles(path, searchString, self.setting(
+                "searchDepth"), case_insensitive=True)
+
+            if files:
+                # Extend the plotables dict with the files that we find that belong to this sile
+                self.warehouse["plotables"] = { **self.warehouse["plotables"], **{
+                    str(uuid.uuid4()): {"name": os.path.basename(path), "path": path, "plot": plotType} for path in files
+                }}
 
         #Avoid passing unnecessary info to the browser.
-        return {id: {"id": id, **{k: struct[k] for k in ["name", "path", "plot"]}} for id, struct in deepcopy(self.warehouse["plotables"]).items() }
+        return {id: {"id": id, **{k: struct[k] for k in ["name", "path", "plot"]}} for id, struct in self.warehouse["plotables"].items() }
 
     #-----------------------------------------
     #      NOTIFY CURRENT STATE TO GUI
     #-----------------------------------------
     
-    def _getJsonifiableInfo(self):
+    def _get_dict_for_GUI(self):
         '''
         This method is thought mainly to prepare data to be sent through the API to the GUI.
         Data has to be sent as JSON, so this method can only return JSONifiable objects. (no numpy arrays, no NaN,...)
@@ -626,21 +647,29 @@ class Session(Configurable):
 
         infoDict = {
             "id": self.id,
-            "tabs": self.warehouse["tabs"],
+            "tabs": self.tabs,
             "settings": self.settings,
             "params": self.params,
             "paramGroups": self._paramGroups,
             "updatesAvailable": self.updates_available(),
             "plotOptions": [
                 {"value": subclass.__name__, "label": subclass._plotType} 
-                for subclass in self.getPlotClasses()
+                for subclass in self.get_plot_classes()
             ],
-            "structures": self.getStructures(),
-            "plotables": self.getPlotables()
+            "structures": self.get_structures(),
+            "plotables": self.get_plotables()
         }
 
         return infoDict
     
+    def _on_socketio_change(self):
+        '''
+        Transmit the socketio change to all the plots
+        '''
+
+        for _, plot in self.plots.items():
+            plot.socketio = self.socketio
+
     def save(self, path, figs_only=False):
         '''
         Stores the session in disk.

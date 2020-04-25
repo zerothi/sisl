@@ -8,6 +8,6 @@ class BlankSession(Session):
 
     _description = "The most basic session one could have, really."
 
-    def _afterInit(self):
+    def _after_init(self):
         
-        self.addTab("First tab")
+        self.add_tab("First tab")

@@ -1,14 +1,12 @@
 import numpy as np
-import pandas as pd
 import xarray as xr
 import itertools
 
 import os
-import shutil
 
 import sisl
 from ..plot import Plot, PLOTS_CONSTANTS
-from ..plotutils import sortOrbitals, copyParams, findFiles, runMultiple, calculateGap
+from ..plotutils import findFiles
 from ..input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput, FunctionInput
 from ..input_fields.range import ErangeInput
 
@@ -332,7 +330,7 @@ class BandsPlot(Plot):
             filtered_bands = self.bands.where( (self.bands <= Erange[1]) & (self.bands >= Erange[0])).dropna("band", "all")
             self.updateSettings(updateFig=False, bandsRange=[int(filtered_bands['band'].min()), int(filtered_bands['band'].max())], no_log=True)
 
-        add_band_trace_data = self.setting("add_band_trace_data") 
+        add_band_trace_data = self.setting("add_band_trace_data")
         if not callable(add_band_trace_data):
             add_band_trace_data = lambda * args, **kwargs: {}
         

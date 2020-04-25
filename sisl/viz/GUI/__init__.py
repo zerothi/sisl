@@ -1,38 +1,22 @@
-from code import interact
 
-import webbrowser
-from threading import Thread, Semaphore
-
-import logging
-import sys
-
-from .server import app as server
-from .api import session, set_session, run as run_api
-
-__all__ = ['session', 'set_session', 'run_api', 'launch', 'SERVER_ADRESS']
-
-# Disable all flask logging
-server.logger.disabled = True
-log = logging.getLogger('werkzeug')
-log.disabled = True
-cli = sys.modules['flask.cli']
-cli.show_server_banner = lambda *x: None
-
-SERVER_HOST = "localhost"
-SERVER_PORT = 7001
-SERVER_ADRESS = f'http://{SERVER_HOST}:{SERVER_PORT}'
-
-def runserver():
-    host = "localhost"
-    port = 7001
-
-    webbrowser.open(SERVER_ADRESS, new=2)
-    server.run(host=host, debug=False, use_reloader=False, port=port, threaded=True)
+session = None
 
 def launch(inconsole=False, only_api=False, api_kwargs=None):
-    global threads
 
-    threads = [Thread(target=run_api, kwargs=api_kwargs), Thread(target=runserver)]
+    from code import interact
+    from threading import Thread, Semaphore
+
+    from .server import app as server, run as run_server
+    from .api import session as api_session, set_session as set_api_session, run as run_api, app as app
+    
+    global threads
+    global session
+    global set_session
+    
+    session = api_session
+    set_session = set_api_session
+
+    threads = [Thread(target=run_api, kwargs=api_kwargs), Thread(target=run_server)]
 
     if only_api:
         threads = [threads[0]]
