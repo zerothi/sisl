@@ -1457,7 +1457,7 @@ class Atoms:
     def index(self, atom):
         """ Return the species index of the atom object """
         if not isinstance(atom, Atom):
-            atom = self.__class__[atom]
+            atom = self[atom]
         for s, a in enumerate(self.atom):
             if a == atom:
                 return s
