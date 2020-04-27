@@ -5,3 +5,4 @@ from .ldos import LDOSmap
 from .bond_length import BondLengthMap
 from .forces import ForcesPlot
 from .grid import GridPlot
+from .geometry import GeometryPlot

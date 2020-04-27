@@ -496,39 +496,63 @@ class Plot(ShortCutable, Configurable, Connected):
             "_plotClasses": cls
         }, template_plot=template_plot, **kwargs)
 
-    def __new__(cls, filename=None, **kwargs):
+    def __new__(cls, *args, **kwargs):
         '''
         This method decides what to return when the plot class is instantiated.
 
         It is supposed to help the users by making the plot class very functional
         without the need for the users to use extra methods.
+
+        It will catch the first argument and initialize the corresponding plot
+        if the first argument is:
+            - A string, it will be assumed that it is a path to a file.
+            - A plotable object (has a _plot attribute)
+
+        Note that both cases are registered in the _plotables.py file, and you
+        can register new siles/plotables by using the register functions.
         '''
 
-        #If a filename is recieved, we will try to find a plot for it
-        if isinstance(filename, str):
-            SileClass = sisl.get_sile_class(filename)
+        if args:
 
-            if SileClass == sisl.io.siesta.fdfSileSiesta:
-                kwargs["root_fdf"] = filename
-                plot = cls(**kwargs)
+            # If a filename is recieved, we will try to find a plot for it
+            if isinstance(args[0], str):
+
+                filename = args[0]
+                SileClass = sisl.get_sile_class(filename)
+
+                if SileClass == sisl.io.siesta.fdfSileSiesta:
+                    kwargs["root_fdf"] = filename
+                    plot = cls(**kwargs)
+                else:
+
+                    if hasattr(SileClass, "__plot__"):
+                        plot = SileClass.__plot__(**kwargs)
+                    elif hasattr(SileClass, "_plot"):
+                        PlotClass, kwarg_key = SileClass._plot
+                        kwargs[kwarg_key] = filename
+                        kwargs["title"] = kwargs.get("title", os.path.basename(filename))
+                        plot = PlotClass(**kwargs)
+                    else:
+                        raise NotImplementedError(f'There is no plot implementation for {os.path.splitext(filename)[-1]} extensions yet.')
+
+                    if cls != Plot and cls != plot.__class__:
+                        print((
+                            f"You requested a {cls.__name__} and we got you a {plot.__class__.__name__} instead.\nWe hope you don't mind :)\n\n"
+                            f'We did this because "{filename}" is a {SileClass.__name__}. If you are not happy with this, please specify the key of the setting where "{filename}" should go.'
+                        ))
             else:
-
-                if hasattr(SileClass, "__plot__"):
-                    plot = SileClass.__plot__(**kwargs)
-                elif hasattr(SileClass, "_plot"):
-                    PlotClass, kwarg_key = SileClass._plot
-                    kwargs[kwarg_key] = filename
-                    kwargs["title"] = kwargs.get("title", os.path.basename(filename))
+                obj = args[0]
+                # Maybe the first argument is a plotable object (e.g. a geometry)
+                # __plot__ is currently implemented outside the viz package, we will not use it for the moment
+                # if hasattr(obj, "__plot__"):
+                #     plot = obj.__plot__(**kwargs)
+                if hasattr(obj, "_plot"):
+                    PlotClass, kwarg_key = obj._plot
+                    kwargs[kwarg_key] = obj
                     plot = PlotClass(**kwargs)
                 else:
-                    raise NotImplementedError(f'There is no plot implementation for {os.path.splitext(filename)[-1]} extensions yet.')
-
-                if cls != Plot and cls != plot.__class__:
-                    print((
-                        f"You requested a {cls.__name__} and we got you a {plot.__class__.__name__} instead.\nWe hope you don't mind :)\n\n"
-                        f'We did this because "{filename}" is a {SileClass.__name__}. If you are not happy with this, please specify the key of the setting where "{filename}" should go.'
-                    ))
-            
+                    return object.__new__(cls)
+        
             # Inform that we don't want to run the __init__ method anymore
             # See the beggining of __init__()
             plot.INIT_ON_NEW = True
@@ -1699,7 +1723,7 @@ class MultiplePlot(Plot):
                 read_data_settings = {key: leading_plot.get_setting(key) for key, func in leading_plot.whatToRunOnUpdate.items() if func == "read_data"}
 
                 for i, plot in enumerate(plots):
-                    if not plot.has_this_settings(read_data_settings):
+                    if not plot.has_these_settings(read_data_settings):
                         # If there is a plot that needs to read different data, we will just
                         # make each of them read their own data. (this could be optimized by grouping plots)
                         self.init_all_plots(try_sharing=False)

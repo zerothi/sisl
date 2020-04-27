@@ -397,7 +397,7 @@ class Configurable:
         else:
             return setting_key in self.settings_updates_log(frame=-1)
 
-    def has_this_settings(self, settings={}, **kwargs):
+    def has_these_settings(self, settings={}, **kwargs):
         '''
         Checks if the object settings match the provided settings.
 
