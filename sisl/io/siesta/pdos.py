@@ -9,7 +9,6 @@ from sisl.atom import PeriodicTable, Atom, Atoms
 from sisl.geometry import Geometry
 from sisl.orbital import AtomicOrbital
 from sisl.unit.siesta import unit_convert
-from sisl.viz import PdosPlot
 
 
 __all__ = ['pdosSileSiesta']
@@ -22,8 +21,6 @@ class pdosSileSiesta(SileSiesta):
 
     Data file containing the PDOS as calculated by Siesta.
     """
-
-    _plot = (PdosPlot, 'PDOSFile')
 
     def read_data(self, as_dataarray=False):
         r""" Returns data associated with the PDOS file

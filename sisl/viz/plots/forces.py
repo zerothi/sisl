@@ -8,12 +8,12 @@ from ..input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, I
 
 class ForcesPlot(Plot):
 
-    _plotType = "Forces"
+    _plot_type = "Forces"
 
     _parameters = (
 
         TextInput(
-            key="outFile", name="Output log file",
+            key="out_file", name="Output log file",
             default = None,
             group="readdata",
             params = {
@@ -56,13 +56,13 @@ class ForcesPlot(Plot):
 
     )
 
-    def _readSiesOut(self):
+    def _read_siesta_output(self):
 
-        rootFdf = self.setting("rootFdf")
+        root_fdf = self.setting("root_fdf")
 
-        outFile = self.setting("outFile") or os.path.splitext(rootFdf)[0] + ".out"
+        out_file = self.setting("out_file") or os.path.splitext(root_fdf)[0] + ".out"
 
-        outSile = self.get_sile(outFile) 
+        outSile = self.get_sile(out_file) 
         
         self.atomic_forces = outSile.read_force(all=True)
 
@@ -73,11 +73,11 @@ class ForcesPlot(Plot):
             
         self.simulation_ended = outSile.job_completed
     
-    def _afterRead(self):
+    def _after_read(self):
 
-        self.updateSettings(updateFig=False, xaxis_title="MD step", yaxis_title="Force (eV/Ang)")
+        self.update_settings(update_fig=False, xaxis_title="MD step", yaxis_title="Force (eV/Ang)")
 
-    def _setData(self):
+    def _set_data(self):
 
         forces_type = self.setting('type')
 

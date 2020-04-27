@@ -21,7 +21,7 @@ import sisl
 from sisl.viz.GUI.api_utils.sync import Connected
 
 from .configurable import *
-from .plotutils import initMultiplePlots, repeatIfChilds, dictOfLists2listOfDicts, trigger_notification, \
+from .plotutils import init_multiple_plots, repeat_if_childs, dictOfLists2listOfDicts, trigger_notification, \
      spoken_message, running_in_notebook, check_widgets, call_method_if_present
 from .input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
 from ._shortcuts import ShortCutable
@@ -29,9 +29,9 @@ from ._shortcuts import ShortCutable
 PLOTS_CONSTANTS = {
     "spins": ["up", "down"],
     "readFuncs": {
-        "fromH": lambda obj: obj._readfromH, 
-        "siesOut": lambda obj: obj._readSiesOut,
-        "noSource": lambda obj: obj._readNoSource
+        "from_H": lambda obj: obj._read_from_H, 
+        "siesta_output": lambda obj: obj._read_siesta_output,
+        "no_source": lambda obj: obj._read_nosource
     }
 }
 
@@ -81,7 +81,7 @@ class Plot(ShortCutable, Configurable, Connected):
     '''
     
     _onSettingsUpdate = {
-        "functions": ["readData", "setData", "getFigure"],
+        "functions": ["read_data", "set_data", "get_figure"],
         "config":{
             "multipleFunc": False,
             "order": True,
@@ -120,14 +120,14 @@ class Plot(ShortCutable, Configurable, Connected):
     _parameters = (
 
         ProgramaticInput(
-            key = "readingOrder", name = "Output reading/generating order",
+            key = "reading_order", name = "Output reading/generating order",
             group = "dataread",
-            default = ("guiOut", "siesOut", "fromH", "noSource"),
+            default = ("guiOut", "siesta_output", "from_H", "no_source"),
             help = "Order in which the plot tries to read the data it needs."
         ),
 
         TextInput(
-            key = "rootFdf", name = "Path to fdf file",
+            key = "root_fdf", name = "Path to fdf file",
             group = "dataread",
             help = "Path to the fdf file that is the 'parent' of the results.",
             params = {
@@ -136,7 +136,7 @@ class Plot(ShortCutable, Configurable, Connected):
         ),
 
         TextInput(
-            key = "resultsPath", name = "Path to your results",
+            key = "results_path", name = "Path to your results",
             group = "dataread",
             default = "",
             params = {
@@ -359,7 +359,7 @@ class Plot(ShortCutable, Configurable, Connected):
 
     @classmethod
     def plotName(cls):
-        return getattr(cls, "_plotType", cls.__name__)
+        return getattr(cls, "_plot_type", cls.__name__)
 
     @property
     def plotType(self):
@@ -393,8 +393,8 @@ class Plot(ShortCutable, Configurable, Connected):
                     Second: array-like
                         Values that you want the setting to have at each animation frame.
 
-                    Ex: BandsPlot.animated("bandsFile", ["file1", "file2", "file3"] )
-                    will produce an animation where each frame uses a different bandsFile.
+                    Ex: BandsPlot.animated("bands_file", ["file1", "file2", "file3"] )
+                    will produce an animation where each frame uses a different bands_file.
 
                 - One argument and it is a dictionary:
                     First: dict
@@ -415,7 +415,7 @@ class Plot(ShortCutable, Configurable, Connected):
                     It doesn't need to return the parameter, just modify it.
                     In this function, you can call predefined methods of the parameter, for example.
 
-                    Ex: obj.modifyParam("length", lambda param: param.incrementByOne() )
+                    Ex: obj.modify_param("length", lambda param: param.incrementByOne() )
 
                     given that you know that this type of parameter has this method.
         fixed: dict, optional
@@ -458,7 +458,7 @@ class Plot(ShortCutable, Configurable, Connected):
         #Try to retrieve the default animation if no arguments are provided
         if len(args) == 0:
 
-            return cls._defaultAnimation(fixed = fixed, frameNames = frameNames, **kwargs) if hasattr(cls, "_defaultAnimation" ) else None
+            return call_method_if_present(cls, "_default_animation", fixed = fixed, frameNames = frameNames, **kwargs)
 
         #Define how the getInitkwargsList method will look like
         if callable(args[0]):
@@ -509,7 +509,7 @@ class Plot(ShortCutable, Configurable, Connected):
             SileClass = sisl.get_sile_class(filename)
 
             if SileClass == sisl.io.siesta.fdfSileSiesta:
-                kwargs["rootFdf"] = filename
+                kwargs["root_fdf"] = filename
                 plot = cls(**kwargs)
             else:
 
@@ -538,7 +538,7 @@ class Plot(ShortCutable, Configurable, Connected):
 
         return object.__new__(cls)
 
-    @afterSettingsInit
+    @after_settings_init
     def __init__(self, *args, H = None, attrs_for_plot={}, only_init=False, _debug=False,**kwargs):
 
         if getattr(self, "INIT_ON_NEW", False):
@@ -556,7 +556,7 @@ class Plot(ShortCutable, Configurable, Connected):
         self._debug = _debug
 
         #Give the user the possibility to do things before initialization (IDK why)
-        call_method_if_present(self, "_beforeInit")
+        call_method_if_present(self, "_before_init")
 
         # Set all the attributes that have been passed
         for key, val in attrs_for_plot.items():
@@ -581,7 +581,7 @@ class Plot(ShortCutable, Configurable, Connected):
 
         # Initialize the figure
         self.figure = go.Figure()
-        # on_figure_change is triggered after getFigure. It is used, for example
+        # on_figure_change is triggered after get_figure. It is used, for example
         self.on_figure_change = None 
 
         #If plugins have been provided, then add them.
@@ -596,7 +596,7 @@ class Plot(ShortCutable, Configurable, Connected):
         self._general_plot_shortcuts()
 
         #Give the user the possibility to overwrite default settings
-        call_method_if_present(self, "_afterInit")
+        call_method_if_present(self, "_after_init")
         
         # If we were supposed to only initialize the plot, stop here
         if only_init:
@@ -607,22 +607,22 @@ class Plot(ShortCutable, Configurable, Connected):
             if MultiplePlot in type.mro(self.__class__):
                 #If its a multiple plot try to inititialize all its child plots
                 if self.PLOTS_PROVIDED:
-                    self.getFigure()
+                    self.get_figure()
                 else:
-                    self.initAllPlots()
+                    self.init_all_plots()
             else:
-                self.readData()
+                self.read_data()
                 
         except Exception as e:
             if self._debug:
-                raise Exception
+                raise e
             else:
                 print("The plot has been initialized correctly, but the current settings were not enough to generate the figure.\n (Error: {})".format(e))
     
     def __str__(self):
         
         string = (
-            f'Plot class: {self.plotType}    Plot type: {getattr(self, "_plotType", None)}\n\n'
+            f'Plot class: {self.plotType}    Plot type: {getattr(self, "_plot_type", None)}\n\n'
             'Settings:\n{}'.format("\n".join([ "\t- {}: {}".format(key,value) for key, value in self.settings.items()]))
         )
         
@@ -678,11 +678,11 @@ class Plot(ShortCutable, Configurable, Connected):
 
         self._listening_shortcut()
 
-        self.add_shortcut("ctrl+z", "Undo settings", self.undoSettings, _description="Takes the settings of the plot one step back")
+        self.add_shortcut("ctrl+z", "Undo settings", self.undo_settings, _description="Takes the settings of the plot one step back")
 
-    @repeatIfChilds
-    @afterSettingsUpdate
-    def readData(self, updateFig = True, **kwargs):
+    @repeat_if_childs
+    @after_settings_update
+    def read_data(self, update_fig = True, **kwargs):
         '''
         Gets the information for the bands plot and stores it into self.df
 
@@ -696,45 +696,45 @@ class Plot(ShortCutable, Configurable, Connected):
         # Apart from the explicit call in this method, setFiles and setUpHamiltonian also add files to follow
         self._filesToFollow = []
 
-        call_method_if_present(self, "_beforeRead")
+        call_method_if_present(self, "_before_read")
         
         try:    
-            self.setFiles()
+            self.set_files()
         except Exception:
             pass
 
         #Update the title of the plot if there is none
-        if not self.getSetting("title"):
-            self.updateSettings(updateFig = False, title = '{} {}'.format(getattr(self, "struct", ""), self.plotType) )
+        if not self.get_setting("title"):
+            self.update_settings(update_fig = False, title = '{} {}'.format(getattr(self, "struct", ""), self.plotType) )
         
         #We try to read from the different sources using the _readFromSources method of the parent Plot class.
-        self._readFromSources()
+        self._read_from_sources()
 
         # We don't update the last dataread here in case there has been a succesful data read because we want to
         # wait for the afterRead() method to be succesful
         if self.source is None:
             self.last_dataread = 0
 
-        call_method_if_present(self, "_afterRead")
+        call_method_if_present(self, "_after_read")
 
         if self.source is not None:
             self.last_dataread = time.time()
 
-        if updateFig:
-            self.setData(updateFig = updateFig)
+        if update_fig:
+            self.set_data(update_fig = update_fig)
         
         return self
     
-    def _readFromSources(self):
+    def _read_from_sources(self):
         
         '''
         Tries to read the data from the different possible sources in the order 
-        determined by self.settings["readingOrder"].
+        determined by self.settings["reading_order"].
         '''
         
         errors = []
         #Try to read in the order specified by the user
-        for source in self.setting("readingOrder"):
+        for source in self.setting("reading_order"):
             try:
                 #Get the reading function
                 readingFunc = PLOTS_CONSTANTS["readFuncs"][source](self)
@@ -903,12 +903,12 @@ class Plot(ShortCutable, Configurable, Connected):
                 if self.updates_available():
                     try:
 
-                        self.readData(updateFig=True)
+                        self.read_data(update_fig=True)
 
                         if as_animation:
                             new_plot = self.clone()
                             pt.add_childplots(new_plot)
-                            pt.getFigure()
+                            pt.get_figure()
 
                         if clearPrevious and fig_widget is None:
                             clear_output()
@@ -970,37 +970,37 @@ class Plot(ShortCutable, Configurable, Connected):
         
             self._listening_shortcut(fig_widget=fig_widget)
 
-    @afterSettingsUpdate
-    def setFiles(self, **kwargs):
+    @after_settings_update
+    def set_files(self, **kwargs):
         '''
         Checks if the required files are available and then builds a list with them
         '''
         #Set the fdfSile
-        rootFdf = self.setting("rootFdf")
-        self.rootDir, fdfFile = os.path.split( rootFdf )
+        root_fdf = self.setting("root_fdf")
+        self.rootDir, fdfFile = os.path.split( root_fdf )
         self.rootDir = "." if self.rootDir == "" else self.rootDir
         
-        self.wdir = os.path.join(self.rootDir, self.setting("resultsPath"))
-        self.fdfSile = self.get_sile(rootFdf)
+        self.wdir = os.path.join(self.rootDir, self.setting("results_path"))
+        self.fdfSile = self.get_sile(root_fdf)
         self.struct = self.fdfSile.get("SystemLabel", "")
             
         #Check that the required files are there
-        #if RequirementsFilter().check(self.rootFdf, self.__class__.__name__ ):
+        #if RequirementsFilter().check(self.root_fdf, self.__class__.__name__ ):
         if hasattr(self, "_requirements"):
             #If they are there, we can confidently build this list
-            self.requiredFiles = [ os.path.join( self.rootDir, self.setting("resultsPath"), req.replace("$struct$", self.struct) ) for req in self.__class__._requirements["siesOut"]["files"] ]
+            self.requiredFiles = [ os.path.join( self.rootDir, self.setting("results_path"), req.replace("$struct$", self.struct) ) for req in self.__class__._requirements["siesOut"]["files"] ]
         #else:
             #raise Exception("The required files were not found, please check your file system.")
 
         return self
     
-    @afterSettingsUpdate
-    def setupHamiltonian(self, **kwargs):
+    @after_settings_update
+    def setup_hamiltonian(self, **kwargs):
         '''
         Sets up the hamiltonian for calculations with sisl.
         '''
 
-        NEW_FDF = self.did_setting_update("rootFdf")
+        NEW_FDF = self.did_setting_update("root_fdf")
         
         if not self.PROVIDED_GEOM and (not hasattr(self, "geom") or NEW_FDF):
             self.geom = self.fdfSile.read_geometry(output = True)
@@ -1029,12 +1029,12 @@ class Plot(ShortCutable, Configurable, Connected):
 
         return self
     
-    @repeatIfChilds
-    @afterSettingsUpdate
-    def setData(self, updateFig = True, **kwargs):
+    @repeat_if_childs
+    @after_settings_update
+    def set_data(self, update_fig = True, **kwargs):
         
         '''
-        Method to process the data that has been read beforehand by readData() and prepare the figure.
+        Method to process the data that has been read beforehand by read_data() and prepare the figure.
         '''
 
         self.clear()
@@ -1043,18 +1043,18 @@ class Plot(ShortCutable, Configurable, Connected):
         # the traces written by the plot methods and keep traces that they have added later, if they want
         self._starting_traces = len(self.data)
 
-        self._setData()
+        self._set_data()
 
-        if updateFig:
-            self.getFigure()
+        if update_fig:
+            self.get_figure()
         
         # The explanation for this is above (in the definition of _starting_traces)
         self._own_traces_slice = slice(self._starting_traces, len(self.data))
 
         return self
     
-    @afterSettingsUpdate
-    def getFigure(self, **kwargs):
+    @after_settings_update
+    def get_figure(self, **kwargs):
 
         '''
         Define the plot object using the actual data. 
@@ -1078,16 +1078,16 @@ class Plot(ShortCutable, Configurable, Connected):
                 framesLayout = Animation._build_frames(self)
 
             else:
-                MultiplePlot._getFigure(self)
+                MultiplePlot._get_figure(self)
 
         self.layout = {
             'hovermode': 'closest',
             #Need to register this on whatToRunOnUpdate somehow
-            **self.settingsGroup("layout"),
+            **self.settings_group("layout"),
             **framesLayout
         }
 
-        call_method_if_present(self, '_afterGetFigure')
+        call_method_if_present(self, '_after_get_figure')
         
         call_method_if_present(self, 'on_figure_change')
 
@@ -1112,7 +1112,7 @@ class Plot(ShortCutable, Configurable, Connected):
             self.listen(show=True, **kwargs)
 
         if not hasattr(self, "figure"):
-            self.getFigure()
+            self.get_figure()
 
         if self._innotebook and len(args) == 0:
             try:
@@ -1467,7 +1467,7 @@ class Plot(ShortCutable, Configurable, Connected):
 
         return self
     
-    def swapAxes(self):
+    def swap_axes(self):
 
         self.data = [{**lineData.to_plotly_json(), 
             "x": lineData["y"], "y": lineData["x"]
@@ -1475,7 +1475,7 @@ class Plot(ShortCutable, Configurable, Connected):
 
         return self
     
-    def vLine(self, x):
+    def v_line(self, x):
         '''
         Draws a vertical line in the figure (NOT WORKING YET!)
         '''
@@ -1513,7 +1513,7 @@ class Plot(ShortCutable, Configurable, Connected):
     #       DATA TRANSFER/STORAGE METHODS
     #-------------------------------------------
 
-    def _getDictForGUI(self):
+    def _get_dict_for_GUI(self):
         '''
         This method is thought mainly to prepare data to be sent through the API to the GUI.
         Data has to be sent as JSON, so this method can only return JSONifiable objects. (no numpy arrays, no NaN,...)
@@ -1533,7 +1533,7 @@ class Plot(ShortCutable, Configurable, Connected):
 
         return infoDict
     
-    def _getPickleable(self):
+    def _get_pickleable(self):
         '''
         Removes from the instance the attributes that are not pickleable.
         '''
@@ -1567,7 +1567,7 @@ class Plot(ShortCutable, Configurable, Connected):
             return self
 
         #The following method actually modifies 'self', so there's no need to get the return
-        self._getPickleable()
+        self._get_pickleable()
 
         with open(path, 'wb') as handle:
             pickle.dump(self, handle, protocol=pickle.HIGHEST_PROTOCOL)
@@ -1643,7 +1643,7 @@ class MultiplePlot(Plot):
             'share_attr': lambda key, val: self.set_shared_attr(key, val)
         }
 
-    def _getFigure(self):
+    def _get_figure(self):
 
         data = []
         for plot in self.childPlots:
@@ -1651,10 +1651,10 @@ class MultiplePlot(Plot):
 
         self.data = data
 
-    def initAllPlots(self, updateFig = True, try_sharing=True):
+    def init_all_plots(self, update_fig = True, try_sharing=True):
 
         try:
-            self.setFiles()
+            self.set_files()
         except Exception:
             pass
 
@@ -1673,7 +1673,7 @@ class MultiplePlot(Plot):
             # In this case, it is extremely important to initialize them all in serial mode, because
             # with multiprocessing they won't know that the current instance is their parent
             # (objects get copied in multiprocessing) and they won't be able to share data
-            plots = initMultiplePlots(
+            plots = init_multiple_plots(
                 self._plotClasses, 
                 kwargsList = [
                     {**template_settings, **kwargs, "attrs_for_plot": self._attrs_for_childplots, "only_init": SINGLE_CLASS and try_sharing} 
@@ -1690,19 +1690,19 @@ class MultiplePlot(Plot):
                     # This leading plot will share attributes with the rest in case it is needed
                     leading_plot = plots[0]
                     leading_plot._SHOULD_SHARE_WITH_SIBLINGS = True
-                    leading_plot.readData(updateFig=False)
+                    leading_plot.read_data(update_fig=False)
                     leading_plot._SHOULD_SHARE_WITH_SIBLINGS = False
                 else:
                     leading_plot = self.template_plot
 
                 # Now, we get the settings of the first plot
-                read_data_settings = {key: leading_plot.getSetting(key) for key, func in leading_plot.whatToRunOnUpdate.items() if func == "readData"}
+                read_data_settings = {key: leading_plot.get_setting(key) for key, func in leading_plot.whatToRunOnUpdate.items() if func == "read_data"}
 
                 for i, plot in enumerate(plots):
                     if not plot.has_this_settings(read_data_settings):
                         # If there is a plot that needs to read different data, we will just
                         # make each of them read their own data. (this could be optimized by grouping plots)
-                        self.initAllPlots(try_sharing=False)
+                        self.init_all_plots(try_sharing=False)
                         break
                 else:
                     # In case there is no plot that has different settings, we will
@@ -1711,20 +1711,20 @@ class MultiplePlot(Plot):
                     # template
                     self.set_child_plots(plots)
 
-                    self.setData()
+                    self.set_data()
             
             else:
                 # If we haven't tried sharing data, the plots are already prepared (with read data of their own)
                 self.set_child_plots(plots)
             
-            call_method_if_present(self, "_afterChildsUpdated")
+            call_method_if_present(self, "_after_childs_updated")
 
-        if updateFig:
-            self.getFigure()
+        if update_fig:
+            self.get_figure()
 
         return self
     
-    def updateSettings(self, **kwargs):
+    def update_settings(self, **kwargs):
         '''
         This method takes into account that on plots that contain childs, one may want to update only the parent settings or all the child's settings.
 
@@ -1733,15 +1733,15 @@ class MultiplePlot(Plot):
         Call update settings
         '''
 
-        if kwargs.get("onlyOnParent", False) or kwargs.get("exFromDecorator", False):
+        if kwargs.get("onlyOnParent", False) or kwargs.get("from_decorator", False):
 
-            return super().updateSettings(**kwargs)
+            return super().update_settings(**kwargs)
         
         else:
 
-            repeatIfChilds(Configurable.updateSettings)(self, **kwargs)
+            repeat_if_childs(Configurable.update_settings)(self, **kwargs)
 
-            call_method_if_present(self, "_afterChildsUpdated")
+            call_method_if_present(self, "_after_childs_updated")
 
             return self
 
@@ -1815,7 +1815,7 @@ class MultiplePlot(Plot):
 
         self._isAnimation = True
 
-        self.clear().getFigure()
+        self.clear().get_figure()
         
         return self
 
@@ -1990,7 +1990,7 @@ class Animation(MultiplePlot):
                     *data, *np.full(nAddTraces, {"type": "scatter", "x":  [0], "y": [0], "visible": False})]
 
             frames = [
-                *frames, {'name': frame_name, 'data': data, "layout": plot.settingsGroup("layout")}]
+                *frames, {'name': frame_name, 'data': data, "layout": plot.settings_group("layout")}]
 
         self.frames = frames
 
@@ -2036,7 +2036,7 @@ class Animation(MultiplePlot):
 
         self._isAnimation = False
 
-        self.clear().getFigure()
+        self.clear().get_figure()
 
         return self
     

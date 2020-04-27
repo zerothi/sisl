@@ -13,24 +13,18 @@ class GridPlot(Plot):
     '''
 
     #Define all the class attributes
-    _plotType = "Grid"
+    _plot_type = "Grid"
 
     _parameters = (
 
         ProgramaticInput(
             key="grid", name="Grid",
             default=None,
-            help="A sisl.Grid object. If provided, gridFile is ignored."
-        ),
-
-        ProgramaticInput(
-            key="lims", name="Lims",
-            default=[0.2, 0.8],
-            help=""
+            help="A sisl.Grid object. If provided, grid_file is ignored."
         ),
 
         TextInput(
-            key="gridFile", name="Path to grid file",
+            key="grid_file", name="Path to grid file",
             default=None,
             params={
                 "placeholder": "Write the path to your grid file here..."
@@ -106,12 +100,6 @@ class GridPlot(Plot):
                 'shape': (3,),
                 'extendable': False,
             },
-        ),
-
-        SwitchInput(
-            key="forceRatio", name="Force 1:1 ratio",
-            default=True,
-            help="Whether the 1:1 ratio should be forced in 2D heat maps. This will overwrite the scaleanchor and scaleratio properties of the yaxis."
         ),
 
         RangeSlider(
@@ -212,29 +200,29 @@ class GridPlot(Plot):
         )
     )
 
-    def _afterInit(self):
+    def _after_init(self):
 
         self._add_shortcuts()
     
-    def _readNoSource(self):
+    def _read_nosource(self):
 
         self.grid = self.setting("grid")
         
         if self.grid is None:
-            gridFile = self.setting("gridFile")
+            grid_file = self.setting("grid_file")
 
-            self.grid = self.get_sile(gridFile).read_grid()
+            self.grid = self.get_sile(grid_file).read_grid()
     
-    def _afterRead(self):
+    def _after_read(self):
 
         #Inform of the new available ranges
         range_keys = ("xRange", "yRange", "zRange")
 
         for ax, key in enumerate(range_keys):
-            self.modifyParam(key, "inputField.params.max", self.grid.cell[ax,ax] )
-            self.getParam(key, justDict=False).update_marks()
+            self.modify_param(key, "inputField.params.max", self.grid.cell[ax,ax] )
+            self.get_param(key, justDict=False).update_marks()
 
-    def _setData(self):
+    def _set_data(self):
 
         grid = self.grid
         display_axes = self.setting('axes')
@@ -285,140 +273,159 @@ class GridPlot(Plot):
         #Remove the leftover dimensions
         values = np.squeeze(values)
 
+        # Choose which plotting function we need to use
         if values.ndim == 1:
-            ax = display_axes[0]
-
-            if sc[ax] > 1:
-                values = np.tile(values, sc[ax])
-
-            self.data = [{
-                'type': 'scatter',
-                'mode': 'lines',
-                'y': values,
-                'x': np.arange(0, sc[ax]*grid.cell[ax,ax], grid.dcell[ax,ax]),
-                'name': os.path.basename(self.setting("gridFile") or "")
-            }]
-
-            axesTitles = {'xaxis_title': f'{("X","Y", "Z")[ax]} axis (Ang)', 'yaxis_title': 'Values' }
-
+            plot_func = self._plot1D
         elif values.ndim == 2:
-
-            xaxis = display_axes[0]
-            yaxis = display_axes[1]
-
-            if xaxis < yaxis:
-                values = values.T
-            
-            values = np.tile(values, (sc[yaxis], sc[xaxis]) )
-
-            crange = self.setting('crange')
-            if crange is None:
-                crange = [None, None]
-            cmin, cmax = crange
-
-            self.data = [{
-                'type': 'heatmap',
-                'z': values,
-                'x': np.arange(0, sc[xaxis]*grid.cell[xaxis, xaxis], grid.dcell[xaxis, xaxis]),
-                'y': np.arange(0, sc[yaxis]*grid.cell[yaxis, yaxis], grid.dcell[yaxis, yaxis]),
-                'zsmooth': self.setting('zsmooth'),
-                'zmin': cmin,
-                'zmax': cmax,
-                'zmid': self.setting('cmid'),
-                'colorscale': self.setting('colorscale')
-            }]
-
-            axesTitles = {'xaxis_title': f'{("X","Y", "Z")[xaxis]} axis (Ang)', 'yaxis_title': f'{("X","Y", "Z")[yaxis]} axis (Ang)'}
-        
-
+            plot_func = self._plot2D
         elif values.ndim == 3:
+            plot_func == self._plot3D
+        
+        # Use it
+        plot_func(grid, values, display_axes, sc)
 
-            # The minimum and maximum values might be needed at some places
-            minval, maxval = np.min(values), np.max(values)
+    def _plot1D(self, grid, values, display_axes, sc):
 
-            crange = self.setting('crange')
-            if crange is None:
-                crange = [None, None]
-            cmin, cmax = crange
+        ax = display_axes[0]
 
-            isovals = self.setting('iso_vals')
-            if isovals is None:
-                isovals = [minval + (maxval-minval)*0.3,
-                           maxval - (maxval-minval)*0.3]
-            isomin, isomax = isovals
+        if sc[ax] > 1:
+            values = np.tile(values, sc[ax])
 
-            X, Y, Z = np.meshgrid(*[np.linspace(0, grid.cell[i, i], shape) for i, shape in enumerate(grid.shape)])
-            
-            type3D = self.setting('type3D')
-            if type3D is None:
-                if np.min(values)*np.max(values) < 0:
-                    # Then we have mixed positive and negative values, use isosurface
-                    type3D = 'isosurface'
-                else:
-                    type3D = 'volume'
+        self.data = [{
+            'type': 'scatter',
+            'mode': 'lines',
+            'y': values,
+            'x': np.arange(0, sc[ax]*grid.cell[ax,ax], grid.dcell[ax,ax]),
+            'name': os.path.basename(self.setting("grid_file") or "")
+        }]
 
-            if type3D == 'volume':
+        axes_titles = {'xaxis_title': f'{("X","Y", "Z")[ax]} axis (Ang)', 'yaxis_title': 'Values' }
 
-                self.data = [{
-                    'type': 'volume',
-                    'x': X.ravel(),
-                    'y': Y.ravel(),
-                    'z': Z.ravel(),
-                    'value': np.rollaxis(values, 1).ravel(),
-                    'cmin': cmin,
-                    'cmid': self.setting('cmid'),
-                    'cmax': cmax,
-                    'isomin': isomin,
-                    'isomax': isomax,
-                    'surface_count': self.setting('surface_count'),
-                    'opacity': self.setting('surface_opacity'),
-                    'autocolorscale': False,
-                    'colorscale': self.setting('colorscale'),
-                    'opacityscale': self.setting('opacityscale'),
-                    'caps': {'x_show': False, 'y_show': False, 'z_show': False},
-                }]
-            
-            elif type3D == 'isosurface':
-
-                self.data = [{
-                    'type': 'isosurface',
-                    'x': X.ravel(),
-                    'y': Y.ravel(),
-                    'z': Z.ravel(),
-                    'value': np.rollaxis(values, 1).ravel(),
-                    'cmin': cmin,
-                    'cmid': self.setting('cmid'),
-                    'cmax': cmax,
-                    'isomin': isomin,
-                    'isomax': isomax,
-                    'opacity': self.setting('surface_opacity'),
-                    'surface_count': self.setting('surface_count'),
-                    'colorscale': self.setting('colorscale'),
-                    'caps': {'x_show': False, 'y_show': False, 'z_show': False},
-                }]
-
-            axesTitles = {}
-
-            self.layout.scene = {'aspectmode': 'data'}
-
-        self.updateSettings(updateFig=False, **axesTitles, no_log=True )
+        self.update_settings(update_fig=False, **axes_titles, no_log=True)
     
-    def _afterGetFigure(self):
+    def _plot2D(self, grid, values, display_axes, sc):
 
-        if self.setting("forceRatio") and len(self.setting("axes")) == 2:
+        xaxis = display_axes[0]
+        yaxis = display_axes[1]
+
+        if xaxis < yaxis:
+            values = values.T
+        
+        values = np.tile(values, (sc[yaxis], sc[xaxis]) )
+
+        crange = self.setting('crange')
+        if crange is None:
+            crange = [None, None]
+        cmin, cmax = crange
+
+        self.data = [{
+            'type': 'heatmap',
+            'z': values,
+            'x': np.arange(0, sc[xaxis]*grid.cell[xaxis, xaxis], grid.dcell[xaxis, xaxis]),
+            'y': np.arange(0, sc[yaxis]*grid.cell[yaxis, yaxis], grid.dcell[yaxis, yaxis]),
+            'zsmooth': self.setting('zsmooth'),
+            'zmin': cmin,
+            'zmax': cmax,
+            'zmid': self.setting('cmid'),
+            'colorscale': self.setting('colorscale')
+        }]
+
+        axes_titles = {'xaxis_title': f'{("X","Y", "Z")[xaxis]} axis (Ang)', 'yaxis_title': f'{("X","Y", "Z")[yaxis]} axis (Ang)'}
+
+        self.update_settings(update_fig=False, **axes_titles, no_log=True)
+        
+    def _plot3D(self, grid, values, display_axes, sc):
+
+        # The minimum and maximum values might be needed at some places
+        minval, maxval = np.min(values), np.max(values)
+
+        crange = self.setting('crange')
+        if crange is None:
+            crange = [None, None]
+        cmin, cmax = crange
+
+        isovals = self.setting('iso_vals')
+        if isovals is None:
+            isovals = [minval + (maxval-minval)*0.3,
+                        maxval - (maxval-minval)*0.3]
+        isomin, isomax = isovals
+
+        X, Y, Z = np.meshgrid(*[np.linspace(0, grid.cell[i, i], shape) for i, shape in enumerate(grid.shape)])
+        
+        type3D = self.setting('type3D')
+        if type3D is None:
+            if np.min(values)*np.max(values) < 0:
+                # Then we have mixed positive and negative values, use isosurface
+                type3D = 'isosurface'
+            else:
+                type3D = 'volume'
+
+        if type3D == 'volume':
+            plot_func = self._plot3D_volume
+        elif type3D == 'isosurface':
+            plot_func = self._plot3D_isosurface
+        
+        plot_func(X, Y, Z, values, cmin, cmax, isomin, isomax)
+        
+        self.layout.scene = {'aspectmode': 'data'}
+
+    def _plot3D_volume(self, X, Y, Z, values, cmin, cmax, isomin, isomax):
+
+        self.data = [{
+            'type': 'volume',
+            'x': X.ravel(),
+            'y': Y.ravel(),
+            'z': Z.ravel(),
+            'value': np.rollaxis(values, 1).ravel(),
+            'cmin': cmin,
+            'cmid': self.setting('cmid'),
+            'cmax': cmax,
+            'isomin': isomin,
+            'isomax': isomax,
+            'surface_count': self.setting('surface_count'),
+            'opacity': self.setting('surface_opacity'),
+            'autocolorscale': False,
+            'colorscale': self.setting('colorscale'),
+            'opacityscale': self.setting('opacityscale'),
+            'caps': {'x_show': False, 'y_show': False, 'z_show': False},
+        }]
+    
+    def _plot3D_isosurface(self, X, Y, Z, values, cmin, cmax, isomin, isomax):
+
+        self.data = [{
+            'type': 'isosurface',
+            'x': X.ravel(),
+            'y': Y.ravel(),
+            'z': Z.ravel(),
+            'value': np.rollaxis(values, 1).ravel(),
+            'cmin': cmin,
+            'cmid': self.setting('cmid'),
+            'cmax': cmax,
+            'isomin': isomin,
+            'isomax': isomax,
+            'opacity': self.setting('surface_opacity'),
+            'surface_count': self.setting('surface_count'),
+            'colorscale': self.setting('colorscale'),
+            'caps': {'x_show': False, 'y_show': False, 'z_show': False},
+        }]
+
+    def _after_get_figure(self):
+
+        # If we are plotting the 2D version, use a 1:1 ratio
+        if len(self.setting("axes")) == 2:
             self.figure.layout.yaxis.scaleanchor = "x"
             self.figure.layout.yaxis.scaleratio = 1
  
     def _add_shortcuts(self):
 
-        axes = self.getParam("axes")["inputField.params.options"]
+        axes = self.get_param("axes")["inputField.params.options"]
 
         for ax in axes:
 
             ax_name = ax["label"]
             ax_val = ax["value"]
 
-            self.add_shortcut(f'{ax_name.lower()}+enter', f"Show {ax_name} axis", self.updateSettings, axes=[ax_val])
+            self.add_shortcut(f'{ax_name.lower()}+enter', f"Show {ax_name} axis", self.update_settings, axes=[ax_val])
 
             self.add_shortcut(f'{ax_name.lower()} {ax_name.lower()}', f"Duplicate {ax_name} axis", self.tile, 2, ax_val)
 
@@ -432,7 +439,7 @@ class GridPlot(Plot):
                 yaxis_name = yaxis["label"]
                 self.add_shortcut(
                     f'{xaxis_name.lower()}+{yaxis_name.lower()}', f"Show {xaxis_name} and {yaxis_name} axes",
-                    self.updateSettings, axes=[xaxis["value"], yaxis['value']]
+                    self.update_settings, axes=[xaxis["value"], yaxis['value']]
                 )
 
     def tighten(self, steps, ax):
@@ -462,7 +469,7 @@ class GridPlot(Plot):
         for a, step in zip(ax, steps):
             sc[a] = max(1, sc[a]-step)
 
-        return self.updateSettings(sc=sc)
+        return self.update_settings(sc=sc)
 
     def tile(self, tiles, ax):
         '''
@@ -490,9 +497,9 @@ class GridPlot(Plot):
         for a, tile in zip(ax, tiles):
             sc[a] *= tile
 
-        return self.updateSettings(sc=sc)
+        return self.update_settings(sc=sc)
 
-    def scan(self, along=None, start=None, stop=None, steps=None, **kwargs):
+    def scan(self, along=None, start=None, stop=None, steps=None, animation_kwargs=None, **kwargs):
         '''
         Returns an animation containing multiple frames scaning along an axis.
 
@@ -513,6 +520,9 @@ class GridPlot(Plot):
                 the division between steps in Angstrom.
             
             Note that the grid is only stored once, so having a big number of steps is not that big of a deal.
+        animation_kwargs: dict, optional
+            dictionary whose keys and values are directly passed to the animated method as kwargs and therefore
+            end up being passed to animation initialization.
         **kwargs:
             the rest of settings that you want to apply to overwrite the existing ones.
 
@@ -527,7 +537,7 @@ class GridPlot(Plot):
         # If no axis is provided, let's get the first one that is not displayed
         if along is None:
             displayed = self.setting('axes')
-            along = [ax["value"] for ax in self.getParam('axes')['inputField.params.options'] if ax["value"] not in displayed][0]
+            along = [ax["value"] for ax in self.get_param('axes')['inputField.params.options'] if ax["value"] not in displayed][0]
         
         # If no steps is provided, we will do 1 Angstrom steps
         if steps is None:
@@ -542,7 +552,7 @@ class GridPlot(Plot):
         else:
             along_range = self.setting(range_key)
             if along_range is None:
-                range_param = self.getParam(range_key)
+                range_param = self.get_param(range_key)
                 along_range = [range_param[f"inputField.params.{lim}"] for lim in ["min", "max"]]
             if start is not None:
                 along_range[0] = start
@@ -566,7 +576,8 @@ class GridPlot(Plot):
             },
             plot_template=self,
             fixed={**{key: val for key, val in self.settings.items() if key != range_key}, **kwargs},
-            frameNames=[ f'{step:2f}' for step in steps_range]
+            frameNames=[ f'{step:2f}' for step in steps_range],
+            **(animation_kwargs or {})
         )
 
         scan.layout = self.layout

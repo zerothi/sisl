@@ -5,15 +5,12 @@ from sisl.utils import strmap
 from sisl.utils.cmd import default_ArgumentParser, default_namespace
 from ..sile import add_sile, sile_fh_open
 from .sile import *
-from sisl.viz import BandsPlot
 
 __all__ = ['bandsSileSiesta']
 
 
 class bandsSileSiesta(SileSiesta):
     """ Bandstructure information """
-    
-    _plot = (BandsPlot, 'bandsFile')
 
     @sile_fh_open()
     def read_data(self, as_dataarray=False):

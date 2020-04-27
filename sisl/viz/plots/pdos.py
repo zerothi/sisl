@@ -5,7 +5,7 @@ import os
 
 import sisl
 from ..plot import Plot
-from ..plotutils import findFiles
+from ..plotutils import find_files
 from ..input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput
 from ..input_fields.range import ErangeInput
 
@@ -16,7 +16,7 @@ class PdosPlot(Plot):
     '''
 
     #Define all the class attributes
-    _plotType = "PDOS"
+    _plot_type = "PDOS"
 
     _requirements = {
         "siesOut": {
@@ -27,7 +27,7 @@ class PdosPlot(Plot):
     _parameters = (
         
         TextInput(
-            key = "PDOSFile", name = "Path to PDOS file",
+            key = "pdos_file", name = "Path to PDOS file",
             width = "s100% m50% l33%",
             params = {
                 "placeholder": "Write the path to your PDOS file here...",
@@ -162,17 +162,17 @@ class PdosPlot(Plot):
     }
     
     @classmethod
-    def _defaultAnimation(self, wdir = None, frameNames = None, **kwargs):
+    def _default_animation(self, wdir = None, frameNames = None, **kwargs):
         
-        PDOSfiles = findFiles(wdir, "*.PDOS", sort = True)
+        PDOSfiles = find_files(wdir, "*.PDOS", sort = True)
 
         def _getFrameNames(self):
 
-            return [os.path.basename( childPlot.setting("PDOSFile")) for childPlot in self.childPlots]
+            return [os.path.basename( childPlot.setting("pdos_file")) for childPlot in self.childPlots]
 
-        return PdosPlot.animated("PDOSFile", bandsFiles, frameNames = _getFrameNames, wdir = wdir, **kwargs)
+        return PdosPlot.animated("pdos_file", pdos_files, frameNames = _getFrameNames, wdir = wdir, **kwargs)
     
-    def _afterInit(self):
+    def _after_init(self):
 
         self._add_shortcuts()
     
@@ -202,10 +202,10 @@ class PdosPlot(Plot):
             _description="Split the total DOS along the different spin"
         )
 
-    def _readfromH(self):
+    def _read_from_H(self):
 
         if not hasattr(self, "H"):
-            self.setupHamiltonian()
+            self.setup_hamiltonian()
 
         #Calculate the pdos with sisl using the last geometry and the hamiltonian
         self.monkhorstPackGrid = [15, 1, 1]
@@ -219,15 +219,15 @@ class PdosPlot(Plot):
         mp = sisl.MonkhorstPack(self.H, self.monkhorstPackGrid)
         self.PDOSinfo = mp.asaverage().PDOS(self.E, eta=True)
 
-    def _readSiesOut(self):
+    def _read_siesta_output(self):
 
-        PDOSFile = self.setting("PDOSFile") or self.requiredFiles[0]
+        pdos_file = self.setting("pdos_file") or self.requiredFiles[0]
         #Get the info from the .PDOS file
-        self.geom, self.E, self.PDOSinfo = self.get_sile(PDOSFile).read_data()
+        self.geom, self.E, self.PDOSinfo = self.get_sile(pdos_file).read_data()
 
         self.fermi = 0
 
-    def _afterRead(self):
+    def _after_read(self):
 
         '''
 
@@ -317,15 +317,15 @@ class PdosPlot(Plot):
             }
 
             for key, val in options.items():
-                requestsInput.modifyQueryParam(key, "inputField.params.options", val)
+                requestsInput.modify_query_param(key, "inputField.params.options", val)
 
         #And then apply it
-        self.modifyParam("requests", modifier)
+        self.modify_param("requests", modifier)
 
-    def _setData(self):
+    def _set_data(self):
         '''
 
-        Uses the information processed by the self.readData() method and converts it into a data object for plotly.
+        Uses the information processed by the self.read_data() method and converts it into a data object for plotly.
 
         It stores the data under self.data, so that it can be accessed by posterior methods.
 
@@ -433,7 +433,7 @@ class PdosPlot(Plot):
 
         return {
             "active": True,
-            **{ param.key: param.default for param in self.getParam("requests", justDict=False)["inputField.queryForm"]},
+            **{ param.key: param.default for param in self.get_param("requests", justDict=False)["inputField.queryForm"]},
             "name": str(len(self.settings["requests"])), "color": None, 
             **kwargs
         }
@@ -477,14 +477,14 @@ class PdosPlot(Plot):
 
         try:
             requests = [request] if clean else [*self.settings["requests"], request ]
-            self.updateSettings(requests=requests)
+            self.update_settings(requests=requests)
         except Exception as e:
             print("There was a problem with your new request ({}): \n\n {}".format(request, e))
-            self.undoSettings()
+            self.undo_settings()
 
         return self
 
-    def remove_requests(self, *i_or_names, all=False, updateFig=True):
+    def remove_requests(self, *i_or_names, all=False, update_fig=True):
         '''
         Removes requests from the PDOS plot
 
@@ -505,7 +505,7 @@ class PdosPlot(Plot):
         else:
             requests = [ req for i, req in enumerate(self.setting("requests")) if not self._matches_request(req, i_or_names, i)]
         
-        return self.updateSettings(updateFig=updateFig, requests=requests)
+        return self.update_settings(update_fig=update_fig, requests=requests)
 
     def update_requests(self, *i_or_names, **kwargs):
         '''
@@ -531,7 +531,7 @@ class PdosPlot(Plot):
             if self._matches_request(request, i_or_names, i):
                 requests[i] = {**requests[i], **kwargs}
 
-        return self.updateSettings(requests=requests)
+        return self.update_settings(requests=requests)
 
     def merge_requests(self, *i_or_names, remove=True, clean=False, **kwargs):
         '''
@@ -578,7 +578,7 @@ class PdosPlot(Plot):
         
         # Remove the merged requests if desired
         if remove:
-            self.remove_requests(*i_or_names, updateFig=False)
+            self.remove_requests(*i_or_names, update_fig=False)
         
         return self.add_request(**new_request, **kwargs, clean=clean)
 
@@ -630,7 +630,7 @@ class PdosPlot(Plot):
 
             #If it's none, it means that is getting all the possible values
             if values is None:
-                options = self.getParam("requests", justDict=False).getParam(on, justDict=False)["inputField.params.options"]
+                options = self.get_param("requests", justDict=False).get_param(on, justDict=False)["inputField.params.options"]
                 values = [option["value"] for option in options]
 
             requests = [*requests, *[
@@ -639,12 +639,12 @@ class PdosPlot(Plot):
             ]]
 
         if remove:
-            self.remove_requests(*i_or_names, updateFig=False)
+            self.remove_requests(*i_or_names, update_fig=False)
 
         if not clean:
             requests = [ *self.setting("requests"), *requests]
 
-        return self.updateSettings(requests=requests)
+        return self.update_settings(requests=requests)
 
     def split_DOS(self, on="species", only=None, exclude=None, clean=True, **kwargs):
         '''
@@ -675,7 +675,7 @@ class PdosPlot(Plot):
         if exclude is None:
             exclude = []
 
-        options = self.getParam("requests", justDict=False).getParam(on, justDict=False)["inputField.params.options"]
+        options = self.get_param("requests", justDict=False).get_param(on, justDict=False)["inputField.params.options"]
 
         requests = [
             self._new_request(**{on: [option["value"]], "name": option["label"], **kwargs})
@@ -685,4 +685,4 @@ class PdosPlot(Plot):
         if not clean:
             requests = [ *self.setting("requests"), *requests]
 
-        return self.updateSettings(requests=requests)
+        return self.update_settings(requests=requests)

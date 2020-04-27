@@ -10,22 +10,29 @@ from .emiters import emit_object
 
 class AutoSync(AbstractDispatch):
     '''
-    Takes care of emiting all changes to the GUI.
+    Takes care of emiting all changes automatically to the GUI.
 
-    It works by wrapping all methods of the session, in a way that after
+    You probably don't need to use it directly. Inheriting from the `Connected`
+    class supercharges the object by providing an autosync attribute that returns
+    an instance of this class.
+
+    AutoSync works by wrapping all methods of the object, in a way that after
     their execution, the updated session is sent to the front end of the
-    graphical interface.
+    graphical interface. 
+    
+    For this purpose, the wrapped object needs to have an emit method, as this is
+    what AutoSync triggers after the method call. Again, the Connected class 
+    automatically provides an emit method that is suitable for Session and Plot
+    objects (but can be extended to others at any point).
 
-    Note that one can avoid this behavior in two different ways:
-        - Setting the autosync attribute to False.
+    Note that one can avoid the behavior of AutoSync in two different ways:
+        - Setting the autosync_enabled attribute to False. 
         - Passing emit=False to the executed method
 
     Parameters
     ----------
-    session: Session or AutoSyncSession
-        the session object that we want to track.
-    socketio:
-        the socket channel that is serving as a backend for the GUI.
+    obj: any
+        the object that we want to autosync by using its emit method.
 
     Example
     ----------
@@ -35,34 +42,37 @@ class AutoSync(AbstractDispatch):
     # Launch the graphical interface
     GUI.launch()
 
-    # Now, the GUI has an associated session that already uses AutoSyncSession
+    # Now, the GUI has an associated session
     session = GUI.session
+    # Since Session inherits from Connected you have an AutoSync object
+    # available on its 'autosync' attribute
+    session = session.autosync
 
     # So running any method on this session will update the GUI automatically
-    session.addTab("Tab that it's automatically seen by the GUI")
+    session.add_tab("Tab that it's automatically seen by the GUI")
 
     # However, if we want to try some things before sending them, we can do
-    session.autosync = False
+    session.autosync_enabled = False
     .
     .   Everything we do here will not be sent automatically to the GUI
     .
-    session.autosync = True # And back to auto-sync
+    session.autosync_enabled = True # And back to auto-sync
 
     # If you just want to avoid it for a single method, just pass emit=False
-    session.addTab("Not sent automatically", emit=False)
+    session.add_tab("Not sent automatically", emit=False)
 
     ```
     '''
     def __init__(self, obj):
 
-        self.autosync = True
+        self.autosync_enabled = True
 
         super().__init__(obj)
 
     def dispatch(self, method):
 
         # We won't act if it's a private method or autosync is turned off
-        if method.__name__[0] == "_" or not self.autosync:
+        if method.__name__[0] == "_" or not self.autosync_enabled:
             return method
 
         @wraps(method)
@@ -71,7 +81,7 @@ class AutoSync(AbstractDispatch):
             ret = method(*args, **kwargs)
 
             if emit:
-                emit_object(self._obj, socketio=self._obj.socketio)
+                self._obj.emit()
 
             return ret
         
@@ -105,8 +115,6 @@ class Connected:
     def __init__(self, *args, socketio=None, **kwargs):
 
         self._socketio = socketio
-
-        super().__init__(*args, **kwargs)
 
     def get_socketio(self):
         return self._socketio

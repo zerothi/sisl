@@ -4,7 +4,7 @@ from copy import deepcopy, copy
 import json
 import numpy as np
 
-from .plotutils import modifyNestedDict, get_nested_key
+from .plotutils import modify_nested_dict, get_nested_key
 
 class InputField:
 
@@ -145,7 +145,7 @@ class InputField:
             "default": whatever,
             .
             . (keys that affect, let's say, the programmatic functionality of the parameter,
-            . they can be modified with Configurable.modifyParam)
+            . they can be modified with Configurable.modify_param)
             .
             "inputField": {
                 "type": whatever,
@@ -168,20 +168,20 @@ class InputField:
                     the first argument will be interpreted as the attribute that you want to change,
                     and the second one as the value that you want to set.
 
-                    Ex: obj.modifyParam("length", "default", 3)
+                    Ex: obj.modify_param("length", "default", 3)
                     will set the default attribute of the parameter with key "length" to 3
 
                     Modifying nested keys is possible using dot notation.
 
-                    Ex: obj.modifyParam("length", "inputField.width", 3)
+                    Ex: obj.modify_param("length", "inputField.width", 3)
                     will modify the width key inside inputField on the schema above.
 
                     The last key, but only the last one, will be created if it does not exist.
                     
-                    Ex: obj.modifyParam("length", "inputField.width.inWinter.duringDay", 3)
+                    Ex: obj.modify_param("length", "inputField.width.inWinter.duringDay", 3)
                     will only work if all the path before duringDay exists and the value of inWinter is a dictionary.
 
-                    Otherwise you could go like this: obj.modifyParam("length", "inputField.width.inWinter", {"duringDay": 3})
+                    Otherwise you could go like this: obj.modify_param("length", "inputField.width.inWinter", {"duringDay": 3})
 
                 - One argument and it is a dictionary:
                     the keys will be interpreted as attributes that you want to change and the values
@@ -196,7 +196,7 @@ class InputField:
                     It doesn't need to return the parameter, just modify it.
                     In this function, you can call predefined methods of the parameter, for example.
 
-                    Ex: obj.modifyParam("length", lambda param: param.incrementByOne() )
+                    Ex: obj.modify_param("length", lambda param: param.incrementByOne() )
 
                     given that you know that this type of parameter has this method.
 
@@ -208,13 +208,13 @@ class InputField:
                 
         if len(args) == 2:
            
-            modFunction = lambda obj: modifyNestedDict( obj.__dict__, *args)
+            modFunction = lambda obj: modify_nested_dict( obj.__dict__, *args)
 
         elif isinstance(args[0], dict):
 
             def modFunction(obj):
                 for attr, val in args[0].items():
-                    modifyNestedDict( obj.__dict__, attr, val)
+                    modify_nested_dict( obj.__dict__, attr, val)
 
         elif callable(args[0]):
 

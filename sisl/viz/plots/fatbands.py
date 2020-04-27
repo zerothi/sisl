@@ -9,7 +9,7 @@ from ..input_fields.range import ErangeInput
 
 class FatbandsPlot(BandsPlot):
 
-    _plotType = 'Fatbands'
+    _plot_type = 'Fatbands'
 
     _parameters = (
 
@@ -20,24 +20,24 @@ class FatbandsPlot(BandsPlot):
 
     )
 
-    def _readSiesOut(self):
+    def _read_siesta_output(self):
         raise NotImplementedError
 
-    def _readfromH(self):
+    def _read_from_H(self):
 
         self.weights = []
 
         # Define the function that will "catch" each eigenstate and 
-        # build the weights array. See BandsPlot._readFromH to understand where
+        # build the weights array. See BandsPlot._read_from_H to understand where
         # this will go exactly
         def _weights_from_eigenstate(eigenstate, plot):
             plot.weights.append(eigenstate.norm2(sum=False))
 
-        self.updateSettings(eigenstate_map=_weights_from_eigenstate, updateFig=False, _nolog=True)
+        self.update_settings(eigenstate_map=_weights_from_eigenstate, update_fig=False, _nolog=True)
 
         # We make bands plot read the bands, which will also populate the weights
         # thanks to the above step
-        BandsPlot._readfromH(self)
+        BandsPlot._read_from_H(self)
 
         # Then we just convert the weights to a DataArray
         self.weights = np.array(self.weights).real
@@ -52,20 +52,21 @@ class FatbandsPlot(BandsPlot):
             dims=('k', 'band', 'orb')
         )
 
-    def _setData(self):
+    def _set_data(self):
 
         # Avoid bands being displayed in the legend individually (it would be a mess)
-        self.updateSettings(add_band_trace_data=lambda band, plot: {'showlegend': False}, updateFig=False, _nolog=True)
+        self.update_settings(add_band_trace_data=lambda band, plot: {'showlegend': False}, update_fig=False, _nolog=True)
 
         # We let the bands plot draw the bands
-        BandsPlot._setData(self, draw_before_bands=self._draw_fatbands)
+        BandsPlot._set_data(self, draw_before_bands=self._draw_fatbands)
     
     def _draw_fatbands(self):
 
         # We get the bands range that is going to be plotted
         # Remember that the BandsPlot will have updated this setting accordingly,
         # so it's safe to use it directly
-        plotted_bands = self.setting("bandsRange")
+        plotted_bands = self.setting("bands_range")
+        plotted_bands[-1] -= 1
         
         #Get the bands that matter (spin polarization currently not implemented)
         plot_eigvals = self.bands.sel(band=np.arange(*plotted_bands), spin=0) - self.fermi

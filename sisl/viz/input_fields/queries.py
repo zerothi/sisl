@@ -26,27 +26,27 @@ class QueriesInput(InputField):
 
         super().__init__(*args, **kwargs, inputFieldAttrs = inputFieldAttrs)
     
-    def getQueryParam(self, key, **kwargs):
+    def get_query_param(self, key, **kwargs):
 
         '''
-        Gets the parameter info for a given key. It uses the Configurable.getParam method.
+        Gets the parameter info for a given key. It uses the Configurable.get_param method.
         '''
 
-        return Configurable.getParam(self, key, paramsExtractor = lambda obj: obj.inputField["queryForm"], **kwargs)
+        return Configurable.get_param(self, key, paramsExtractor = lambda obj: obj.inputField["queryForm"], **kwargs)
     
-    def getParam(self, *args, **kwargs):
+    def get_param(self, *args, **kwargs):
         '''
         Just a clone of getQueryParam.
 
         Because Configurable looks for this method when modifying parameters, but the other name is clearer.
         '''
 
-        return self.getQueryParam(*args, **kwargs)
+        return self.get_query_param(*args, **kwargs)
 
-    def modifyQueryParam(self, key, *args, **kwargs):
+    def modify_query_param(self, key, *args, **kwargs):
 
         '''
-        Uses Configurable.modifyParam to modify a parameter inside QueryForm
+        Uses Configurable.modify_param to modify a parameter inside QueryForm
         '''
 
-        return Configurable.modifyParam(self, key, *args, **kwargs)
+        return Configurable.modify_param(self, key, *args, **kwargs)

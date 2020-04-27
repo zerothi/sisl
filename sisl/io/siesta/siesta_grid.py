@@ -9,8 +9,6 @@ from sisl.messages import info
 from sisl import SuperCell, Grid
 from sisl.unit.siesta import unit_convert
 
-from sisl.viz import GridPlot
-
 __all__ = ['gridncSileSiesta']
 
 Bohr2Ang = unit_convert('Bohr', 'Ang')
@@ -19,8 +17,6 @@ Ry2eV = unit_convert('Ry', 'eV')
 
 class gridncSileSiesta(SileCDFSiesta):
     """ NetCDF real-space grid file """
-
-    _plot=(GridPlot, "gridFile")
 
     def read_supercell(self):
         """ Returns a SuperCell object from a Siesta.grid.nc file

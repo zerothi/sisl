@@ -6,7 +6,7 @@ import shutil
 
 import sisl
 from ..plot import Plot
-from ..plotutils import runMultiple
+from ..plotutils import run_multiple
 from ..input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
 
 class LDOSmap(Plot):
@@ -15,7 +15,7 @@ class LDOSmap(Plot):
 
     '''
     
-    _plotType = "LDOS map"
+    _plot_type = "LDOS map"
     
     _requirements = {
         "siesOut": {
@@ -68,7 +68,7 @@ class LDOSmap(Plot):
         ),
 
         FloatInput(
-            key = "distStep", name = "Distance step (Ang)",
+            key = "dist_step", name = "Distance step (Ang)",
             default = 0.1,
             params = {
                 "min": 0,
@@ -86,7 +86,7 @@ class LDOSmap(Plot):
         ),
 
         ProgramaticInput(
-            key = "widenFunc", name = "Widen function",
+            key = "widen_func", name = "Widen function",
             default = None,
             help = '''You can widen the path with this parameter. 
                     This option has preference over 'widenX', 'widenY' and 'widenZ', but can't be used through the GUI.<br>
@@ -95,7 +95,7 @@ class LDOSmap(Plot):
         ),
 
         DropdownInput(
-            key = "widenMethod", name = "Widen method",
+            key = "widen_method", name = "Widen method",
             default = "sum",
             width = "s100% m50% l40%",
             params = {
@@ -184,16 +184,16 @@ class LDOSmap(Plot):
             Denchar.STSEta {} eV
             '''.format(*stsPosition, *(np.array(self.setting("Erange")) + self.fermi), self.setting("nE"), self.setting("STSEta"))
 
-    def _readSiesOut(self):
+    def _read_siesta_output(self):
         '''Function that uses denchar to get STSpecra along a path'''
 
         self.geom = self.fdfSile.read_geometry(output = True)
 
         #Find fermi level
         self.fermi = False
-        for outFileName in (self.struct, self.fdfSile.base_file.replace(".fdf", "")):
+        for out_fileName in (self.struct, self.fdfSile.base_file.replace(".fdf", "")):
             try:
-                for line in open(os.path.join(self.rootDir, "{}.out".format(outFileName)) ):
+                for line in open(os.path.join(self.rootDir, "{}.out".format(out_fileName)) ):
                     if "Fermi =" in line:
                         self.fermi = float(line.split()[-1])
                         print("\nFERMI LEVEL FOUND: {} eV\n Energies will be relative to this level (E-Ef)\n".format(self.fermi))
@@ -220,7 +220,7 @@ class LDOSmap(Plot):
             os.path.join(self.rootDir, '{}.WFSX'.format(self.struct) ) )
         
         #Get the fdf file and replace include paths so that they work
-        with open(self.setting("rootFdf"), "r") as f:
+        with open(self.setting("root_fdf"), "r") as f:
             self.fdfLines = f.readlines()
         
         for i, line in enumerate(self.fdfLines):
@@ -287,7 +287,7 @@ class LDOSmap(Plot):
 
             return spectra
 
-        self.spectra = runMultiple(
+        self.spectra = run_multiple(
             getSpectraForPath,
             self.path,
             self.setting("nE"),
@@ -295,7 +295,7 @@ class LDOSmap(Plot):
             self.rootDir, self.struct,
             #All the strings that need to be added to each file
             [ [self._getdencharSTSfdf(point) for point in points] for points in self.path ],
-            kwargsList = {"rootFdf" : self.setting("rootFdf"), "fdfLines": self.fdfLines },
+            kwargsList = {"root_fdf" : self.setting("root_fdf"), "fdfLines": self.fdfLines },
             messageFn = lambda nTasks, nodes: "Calculating {} simultaneous paths in {} nodes".format(nTasks, nodes),
             serial = self.isChildPlot
         )
@@ -313,7 +313,7 @@ class LDOSmap(Plot):
         os.chdir(cwd)
         
         #Update the values for the limits so that they are automatically set
-        self.updateSettings(updateFig = False, cmin = 0, cmax = 0) 
+        self.update_settings(update_fig = False, cmin = 0, cmax = 0) 
     
     def _getPath(self):
 
@@ -351,7 +351,7 @@ class LDOSmap(Plot):
                 prevPoint = points[i]
 
                 self.distances[i] = np.linalg.norm(point - prevPoint)
-                nSteps = int(round(self.distances[i]/self.setting("distStep"))) + 1
+                nSteps = int(round(self.distances[i]/self.setting("dist_step"))) + 1
 
                 #Add the trajectory from the previous point to this one to the path
                 self.path = [*self.path, *np.linspace(prevPoint, point, nSteps)]
@@ -361,8 +361,8 @@ class LDOSmap(Plot):
             self.path = np.array(self.path)
         
         #Then, let's widen the path if the user wants to do it (check also points that surround the path)
-        if callable(self.setting("widenFunc")):
-            self.path = self.setting("widenFunc")(self.path)
+        if callable(self.setting("widen_func")):
+            self.path = self.setting("widen_func")(self.path)
         else:
             #This is just to normalize path
             self.path = np.expand_dims(self.path, 0)
@@ -372,12 +372,12 @@ class LDOSmap(Plot):
         self.totalPoints = self.path.shape[0] * self.path.shape[1]
         self.iCorners = self.pointsByStage.cumsum()
 
-    def _setData(self):
+    def _set_data(self):
 
         #With xarray
-        if self.setting("widenMethod") == "sum":
+        if self.setting("widen_method") == "sum":
             spectraToPlot = self.xarr.sum(dim = "iPath")
-        elif self.setting("widenMethod") == "average":
+        elif self.setting("widen_method") == "average":
             spectraToPlot = self.xarr.mean(dim = "iPath")
         
         self.data = [{

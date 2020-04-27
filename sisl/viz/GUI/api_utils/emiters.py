@@ -40,7 +40,7 @@ def emit_plot(plot, session=None, broadcast=True, **kwargs):
 	if isinstance(plot, str):
 	    plot = session.plot(plot)
 
-	emit("plot", plot._getDictForGUI(), broadcast=broadcast, **kwargs)
+	emit("plot", plot._get_dict_for_GUI(), broadcast=broadcast, **kwargs)
 
 
 def emit_loading_plot(plot, broadcast=True, **kwargs):

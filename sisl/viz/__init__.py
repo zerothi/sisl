@@ -22,3 +22,4 @@ from .configurable import *
 from .session import Session
 from .sessions import *
 from .plotutils import load
+from ._plotables import register_plotable_sile

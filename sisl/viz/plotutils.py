@@ -1,12 +1,12 @@
+import os
+import glob
+import dill as pickle
+
 import numpy as np
 import itertools
 from pathos.pools import ProcessPool as Pool
 import tqdm
 
-import os
-import glob
-import dill as pickle
-#import pickle
 from copy import deepcopy
 
 from sisl.io.sile import get_siles, get_sile_rules
@@ -49,15 +49,14 @@ def check_widgets():
 
     return widgets
 
-
 #-------------------------------------
 #            Informative
 #-------------------------------------
 
-def getPlotClasses():
+def get_plot_classes():
     from .session import Session
 
-    return Session.getPlotClasses(None)
+    return Session.get_plot_classes(None)
 
 def get_plotable_siles(rules=False):
     
@@ -107,7 +106,7 @@ def get_nested_key(obj, nestedKey, separator="."):
     
     return ref[splitted[-1]]
 
-def modifyNestedDict(obj, nestedKey, val, separator = "."):
+def modify_nested_dict(obj, nestedKey, val, separator = "."):
     '''
     Use it to modify a nested dictionary with ease. 
     
@@ -199,7 +198,7 @@ def sortOrbitals(orbitals):
 
     return sorted(orbitals, key = sortKey)
 
-def copyParams(params, only = [], exclude = []):
+def copy_params(params, only = [], exclude = []):
     '''
     Function that returns a copy of the provided plot parameters.
 
@@ -224,7 +223,7 @@ def copyParams(params, only = [], exclude = []):
     else:
         return tuple( param for param in deepcopy(params) if param.key not in exclude)
 
-def copyDict(dictInst, only = [], exclude = []):
+def copy_dict(dictInst, only = [], exclude = []):
     '''
     Function that returns a copy of a dict. This function is thought to be used for the settings dictionary, for example.
 
@@ -273,11 +272,7 @@ def load(path):
     
     return loadedObj
 
-import fnmatch
-import os
-import re
-
-def findFiles(rootDir = ".", searchString = "*", depth = [0,0], sort = True, sortFn = None, case_insensitive=False):
+def find_files(rootDir = ".", searchString = "*", depth = [0,0], sort = True, sortFn = None, case_insensitive=False):
     '''
     Function that finds files (or directories) according to some conditions.
 
@@ -332,7 +327,7 @@ def findFiles(rootDir = ".", searchString = "*", depth = [0,0], sort = True, sor
 #         Multiprocessing
 #-------------------------------------
 
-def _applyMethod(argsTuple):
+def _apply_method(argsTuple):
     '''
     Apply a method to an object. This function is meant for multiprocessing.
     '''
@@ -344,18 +339,18 @@ def _applyMethod(argsTuple):
 
     method(obj, *args, **kwargs)
 
-    return obj._getPickleable()
+    return obj._get_pickleable()
 
-def _initSinglePlot(argsTuple):
+def _init_single_plot(argsTuple):
     '''
     Initialize a single plot. This function is meant to be used in multiprocessing, when multiple plots need to be initialized
     '''
 
     PlotClass, args, kwargs = argsTuple
 
-    return PlotClass(**kwargs)._getPickleable()
+    return PlotClass(**kwargs)._get_pickleable()
 
-def runMultiple(func, *args, argsList = None, kwargsList = None, messageFn = None, serial = False):
+def run_multiple(func, *args, argsList = None, kwargsList = None, messageFn = None, serial = False):
     '''
 
     Makes use of the pathos.multiprocessing module to run a function simultanously multiple times.
@@ -442,7 +437,7 @@ def runMultiple(func, *args, argsList = None, kwargsList = None, messageFn = Non
     
     return results
 
-def initMultiplePlots(PlotClass, argsList = None, kwargsList = None, **kwargs):
+def init_multiple_plots(PlotClass, argsList = None, kwargsList = None, **kwargs):
     '''
     Initializes a set of plots in multiple processes simultanously making use of runMultiple()
 
@@ -479,9 +474,9 @@ def initMultiplePlots(PlotClass, argsList = None, kwargsList = None, **kwargs):
         This list is ordered, so plots[0] is the plot initialized with argsList[0] and kwargsList[0].  
     '''
 
-    return runMultiple(_initSinglePlot, PlotClass, argsList = argsList, kwargsList = kwargsList, **kwargs)
+    return run_multiple(_init_single_plot, PlotClass, argsList = argsList, kwargsList = kwargsList, **kwargs)
 
-def applyMethodOnMultipleObjs(method, objs, argsList = None, kwargsList = None, **kwargs):
+def apply_method_on_multiple_objs(method, objs, argsList = None, kwargsList = None, **kwargs):
     
     '''
     Applies a given method to the objects provided on multiple processes simultanously making use of the runMultiple() function.
@@ -523,9 +518,9 @@ def applyMethodOnMultipleObjs(method, objs, argsList = None, kwargsList = None, 
         This list is ordered, so plots[0] is the plot initialized with argsList[0] and kwargsList[0].  
     '''
 
-    return runMultiple(_applyMethod, method, objs, argsList = argsList, kwargsList = kwargsList, **kwargs)
+    return run_multiple(_apply_method, method, objs, argsList = argsList, kwargsList = kwargsList, **kwargs)
 
-def repeatIfChilds(method):
+def repeat_if_childs(method):
     '''
     Decorator that will force a method to be run on all the plot's childPlots in case there are any.
     '''
@@ -536,9 +531,9 @@ def repeatIfChilds(method):
 
             kwargsList = kwargs.get("kwargsList", kwargs)
             
-            obj.childPlots = applyMethodOnMultipleObjs(method, obj.childPlots, kwargsList = kwargsList, serial=True)
+            obj.childPlots = apply_method_on_multiple_objs(method, obj.childPlots, kwargsList = kwargsList, serial=True)
                 
-            obj.updateSettings(onlyOnParent = True, **{**kwargs, 'updateFig': False}).getFigure()
+            obj.update_settings(onlyOnParent = True, update_fig=False, **kwargs).get_figure()
         
         else:
         

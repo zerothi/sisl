@@ -4,7 +4,7 @@ import sys
 
 class Configurable:
     
-    def initSettings(self, **kwargs):
+    def init_settings(self, **kwargs):
 
         if getattr(self, "AVOID_SETTINGS_INIT", False):
             delattr(self, "AVOID_SETTINGS_INIT")
@@ -36,11 +36,11 @@ class Configurable:
         
         return self
     
-    def updateSettings(self, exFromDecorator = False, updateFig = True, no_log=False ,**kwargs):
+    def update_settings(self, from_decorator = False, update_fig = True, no_log=False ,**kwargs):
         
         #Initialize the settings in case there are none yet
         if "settings" not in vars(self):
-            return self.initSettings(**kwargs)
+            return self.init_settings(**kwargs)
         
         #Otherwise, update them
         updated = []
@@ -60,7 +60,7 @@ class Configurable:
                 self.settingsHistory.append(deepcopy(self.settings))
         
             #Run the functions specified
-            if not exFromDecorator and hasattr(self, "_onSettingsUpdate") and updateFig:
+            if not from_decorator and hasattr(self, "_onSettingsUpdate") and update_fig:
                 
                 #Get the unique names of the functions that should be executed
                 noInfoKeys = [settingKey for settingKey in updated if settingKey not in self.whatToRunOnUpdate]
@@ -79,11 +79,11 @@ class Configurable:
             
         return self
     
-    def undoSettings(self, nsteps = 1):
+    def undo_settings(self, nsteps = 1, **kwargs):
         
         try:
             self.settingsHistory = self.settingsHistory[0:-nsteps]         
-            self.updateSettings( **deepcopy(self.settingsHistory[-1]) )
+            self.update_settings( **deepcopy(self.settingsHistory[-1]), **kwargs)
         except IndexError:
             print("This instance of {} does not contain earlier settings as requested ({} step{} back)"
                  .format(self.__class__.__name__, nsteps, "" if nsteps == 1 else "s"))
@@ -91,7 +91,7 @@ class Configurable:
             
         return self
     
-    def undoSetting(self, settingKey):
+    def undo_setting(self, settingKey):
         '''
         Undoes only a particular setting and lives the others unchanged.
 
@@ -100,20 +100,20 @@ class Configurable:
         '''
 
         #Get the actual settings for that group
-        actualSetting = self.getSetting(settingKey)
+        actualSetting = self.get_setting(settingKey)
 
         #Try to find any different values for the settings
-        for pastValue in reversed(self.getSettingHistory(settingKey)):
+        for pastValue in reversed(self.get_setting_history(settingKey)):
 
             if pastValue != actualSetting:
 
-                return self.updateSettings( **{settingKey: pastValue} )
+                return self.update_settings( **{settingKey: pastValue} )
         else:
             print("There is no registry of the setting '{}' having been changed. Sorry :(".format(settingKey))
             
             return self
 
-    def undoSettingsGroup(self, groupKey):
+    def undo_settings_group(self, groupKey):
 
         '''
         Takes the desired group of settings one step back, but the rest of the settings remain unchanged.
@@ -123,28 +123,28 @@ class Configurable:
         '''
 
         #Get the actual settings for that group
-        actualSettings = self.getSettingsGroup(groupKey)
+        actualSettings = self.get_settings_group(groupKey)
 
         #Try to find any different values for the settings
         for i in range(len(self.settingsHistory)):
 
-            previousSettings = self.getSettingsGroup(groupKey, stepsBack = i)
+            previousSettings = self.get_settings_group(groupKey, stepsBack = i)
 
             if previousSettings != actualSettings:
 
-                return self.updateSettings(previousSettings)
+                return self.update_settings(previousSettings)
         else:
             print("There is no registry of any setting of the group '{}' having been changed. Sorry :(".format(groupKey))
             
             return self
     
-    def getParam(self, settingKey, justDict = False, paramsExtractor = False):
+    def get_param(self, settingKey, justDict = False, paramsExtractor = False):
         '''
         Gets the parameter for a given setting. 
         
         By default it returns its dictionary, so that one can check the information that it contains.
         You can ask for the parameter itself by setting justDict to False. However, if you want to
-        modify the parameter you should use the modifyParam() method instead.
+        modify the parameter you should use the modify_param() method instead.
 
         Arguments
         ----------
@@ -170,7 +170,7 @@ class Configurable:
         else:
             return None
     
-    def modifyParam(self, settingKey, *args, **kwargs):
+    def modify_param(self, settingKey, *args, **kwargs):
         '''
         Modifies a given parameter.
         
@@ -187,7 +187,7 @@ class Configurable:
             "default": whatever,
             .
             . (keys that affect, let's say, the programmatic functionality of the parameter,
-            . they can be modified with Configurable.modifyParam)
+            . they can be modified with Configurable.modify_param)
             .
             "inputField": {
                 "type": whatever,
@@ -212,20 +212,20 @@ class Configurable:
                     the first argument will be interpreted as the attribute that you want to change,
                     and the second one as the value that you want to set.
 
-                    Ex: obj.modifyParam("length", "default", 3)
+                    Ex: obj.modify_param("length", "default", 3)
                     will set the default attribute of the parameter with key "length" to 3
 
                     Modifying nested keys is possible using dot notation.
 
-                    Ex: obj.modifyParam("length", "inputField.width", 3)
+                    Ex: obj.modify_param("length", "inputField.width", 3)
                     will modify the width key inside inputField on the schema above.
 
                     The last key, but only the last one, will be created if it does not exist.
                     
-                    Ex: obj.modifyParam("length", "inputField.width.inWinter.duringDay", 3)
+                    Ex: obj.modify_param("length", "inputField.width.inWinter.duringDay", 3)
                     will only work if all the path before duringDay exists and the value of inWinter is a dictionary.
 
-                    Otherwise you could go like this: obj.modifyParam("length", "inputField.width.inWinter", {"duringDay": 3})
+                    Otherwise you could go like this: obj.modify_param("length", "inputField.width.inWinter", {"duringDay": 3})
 
                 - One argument and it is a dictionary:
                     the keys will be interpreted as attributes that you want to change and the values
@@ -240,11 +240,11 @@ class Configurable:
                     It doesn't need to return the parameter, just modify it.
                     In this function, you can call predefined methods of the parameter, for example.
 
-                    Ex: obj.modifyParam("length", lambda param: param.incrementByOne() )
+                    Ex: obj.modify_param("length", lambda param: param.incrementByOne() )
 
                     given that you know that this type of parameter has this method.
         **kwargs: optional
-            They are passed directly to the Configurable.getParam method to retrieve the parameter.
+            They are passed directly to the Configurable.get_param method to retrieve the parameter.
 
         Returns
         --------
@@ -252,11 +252,11 @@ class Configurable:
             The configurable object.
         '''
 
-        self.getParam(settingKey, justDict = False, **kwargs).modify(*args)
+        self.get_param(settingKey, justDict = False, **kwargs).modify(*args)
 
         return self
     
-    def getSetting(self, settingKey, copy=True):
+    def get_setting(self, settingKey, copy=True):
 
         '''
         Gets the value for a given setting .
@@ -273,7 +273,7 @@ class Configurable:
         '''
         Gets the value for a given setting while logging where it has been required. 
         
-        THIS METHOD MUST BE USED IN DEVELOPEMENT! (And should not be used by users, use getSetting() instead)
+        THIS METHOD MUST BE USED IN DEVELOPEMENT! (And should not be used by users, use get_setting() instead)
         
         It stores where the setting has been demanded so that the plot can be efficiently updated when it is modified.
         '''
@@ -298,13 +298,13 @@ class Configurable:
             
             frame = frame.f_back
         
-        return self.getSetting(settingKey, copy=False)
+        return self.get_setting(settingKey, copy=False)
 
-    def getSettingHistory(self, settingKey):
+    def get_setting_history(self, settingKey):
         
         return deepcopy([step[settingKey] for step in self.settingsHistory])
     
-    def getSettingsGroup(self, groupKey, stepsBack = 0):
+    def get_settings_group(self, groupKey, stepsBack = 0):
         '''
         Gets the subset of the settings that corresponds to a given group
 
@@ -318,7 +318,7 @@ class Configurable:
 
         Returns
         -----------
-        settingsGroup: dict
+        settings_group: dict
             A subset of the settings with only those that belong to the asked group.
         '''
 
@@ -329,11 +329,11 @@ class Configurable:
 
         return deepcopy({ setting.key: settings[setting.key] for setting in self.params if getattr(setting, "group", None) == groupKey })
     
-    def settingsGroup(self, groupKey):
+    def settings_group(self, groupKey):
         '''
         Gets the subset of the settings that corresponds to a given group and logs its use
 
-        This method is to `getSettingsGroup` the same as `setting` is to `getSetting`.
+        This method is to `getSettingsGroup` the same as `setting` is to `get_setting`.
 
         That is, the return is exactly the same but the use of the settings is logged to update
         the plot properly.
@@ -341,7 +341,7 @@ class Configurable:
 
         return deepcopy({ setting.key: self.setting(setting.key) for setting in self.params if getattr(setting, "group", None) == groupKey })
 
-    def settingsUpdatesLog(self, frame = -1):
+    def settings_updates_log(self, frame = -1):
         '''
         Returns a dictionary with a log of a given update in the settings (by default, the last one).
 
@@ -368,7 +368,7 @@ class Configurable:
 
         return updatedDict
 
-    def isDefault(self, settingKey):
+    def is_default(self, settingKey):
 
         '''
         Checks if the current value for a setting is the default one.
@@ -376,7 +376,7 @@ class Configurable:
         DOESN'T WORK FOR VALUES THAT ARE FUNCTIONS!
         '''
 
-        return self.settings[settingKey] == self.getParam(settingKey)["default"]
+        return self.settings[settingKey] == self.get_param(settingKey)["default"]
     
     def did_setting_update(self, setting_key, all_updates=False):
         '''
@@ -389,13 +389,13 @@ class Configurable:
         '''
 
         if all_updates:
-            history = self.getSettingHistory(setting_key)
+            history = self.get_setting_history(setting_key)
             return np.array([
-                history[0] != self.getParam(setting_key)["default"], # Did the setting change on initialization
+                history[0] != self.get_param(setting_key)["default"], # Did the setting change on initialization
                 *[value != history[iPrev] for iPrev, value in enumerate(history[1:])] # Was the setting updated (for each step)
             ])
         else:
-            return setting_key in self.settingsUpdatesLog(frame=-1)
+            return setting_key in self.settings_updates_log(frame=-1)
 
     def has_this_settings(self, settings={}, **kwargs):
         '''
@@ -414,56 +414,56 @@ class Configurable:
         settings = {**settings, **kwargs}
 
         for key, val in settings.items():
-            if self.getSetting(key) != val:
+            if self.get_setting(key) != val:
                 return False
         else:
             return True
 
 #DECORATORS TO USE WHEN DEFINING METHODS IN CLASSES THAT INHERIT FROM Configurable
 #Run the method after having initialized the settings
-def afterSettingsInit(method):
+def after_settings_init(method):
     
-    def updateAndExecute(obj, *args, **kwargs):
+    def update_and_execute(obj, *args, **kwargs):
         
-        obj.initSettings(**kwargs)
+        obj.init_settings(**kwargs)
         
         return method(obj, *args, **kwargs)
     
-    return updateAndExecute
+    return update_and_execute
 
 #Run the method and then initialize the settings
-def beforeSettingsInit(method):
+def before_settings_init(method):
     
-    def updateAndExecute(obj, *args, **kwargs):
+    def update_and_execute(obj, *args, **kwargs):
         
         returns = method(obj, *args, **kwargs)
         
-        obj.initSettings(**kwargs)
+        obj.init_settings(**kwargs)
         
         return returns
     
-    return updateAndExecute
+    return update_and_execute
 
 #Run the method after having updated the settings
-def afterSettingsUpdate(method):
+def after_settings_update(method):
 
-    def updateAndExecute(obj, *args, **kwargs):
+    def update_and_execute(obj, *args, **kwargs):
         
-        obj.updateSettings(**kwargs, exFromDecorator = True)
+        obj.update_settings(**kwargs, from_decorator = True)
         
         return method(obj, *args, **kwargs)
     
-    return updateAndExecute
+    return update_and_execute
 
 #Run the method and then update the settings
-def beforeSettingsUpdate(method):
+def before_settings_update(method):
     
-    def updateAndExecute(obj, *args, **kwargs):
+    def execute_and_update(obj, *args, **kwargs):
         
         returns = method(obj, *args, **kwargs)
         
-        obj.updateSettings(**kwargs, exFromDecorator = True)
+        obj.update_settings(**kwargs, from_decorator = True)
         
         return returns
     
-    return updateAndExecute  
+    return execute_and_update 

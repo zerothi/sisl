@@ -9,8 +9,8 @@ from copy import deepcopy, copy
 import sisl
 from sisl.viz.GUI.api_utils.sync import Connected
 from .plot import Plot, MultiplePlot, Animation
-from .configurable import Configurable, afterSettingsInit
-from .plotutils import findFiles, get_plotable_siles, call_method_if_present
+from .configurable import Configurable, after_settings_init
+from .plotutils import find_files, get_plotable_siles, call_method_if_present
 
 from .input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, Array1dInput
 
@@ -155,7 +155,7 @@ class Session(Configurable, Connected):
 
     )
 
-    @afterSettingsInit
+    @after_settings_init
     def __init__(self, *args, **kwargs):
 
         self.id = str(uuid.uuid4())
@@ -218,7 +218,7 @@ class Session(Configurable, Connected):
 
             return all_subclasses
         
-        return sorted(get_all_subclasses(sisl.viz.Plot), key = lambda clss: clss._plotType) 
+        return sorted(get_all_subclasses(sisl.viz.Plot), key = lambda clss: clss._plot_type) 
     
     def add_plot(self, plot, tabID = None, noTab = False): 
         '''
@@ -292,7 +292,7 @@ class Session(Configurable, Connected):
         if plotableID is not None:
             kwargs = {**kwargs, "filename": self.warehouse["plotables"][plotableID]["path"] }
         if structID:
-            kwargs = {**kwargs, "rootFdf": self.warehouse["structs"][structID]["path"] }
+            kwargs = {**kwargs, "root_fdf": self.warehouse["structs"][structID]["path"] }
 
         if animation:
             wdir = os.path.dirname(self.warehouse["structs"][structID]["path"]) if structID else self.setting("rootDir")
@@ -321,7 +321,7 @@ class Session(Configurable, Connected):
             The instance of the updated plot
         '''
 
-        return self.plot(plotID).updateSettings(**newSettings)
+        return self.plot(plotID).update_settings(**newSettings)
     
     def undo_plot_settings(self, plotID):
         '''
@@ -338,7 +338,7 @@ class Session(Configurable, Connected):
             The instance of the plot with the settings rolled back.
         '''
 
-        return self.plot(plotID).undoSettings()
+        return self.plot(plotID).undo_settings()
     
     def remove_plot_from_tab(self, plotID, tabID):
         '''
@@ -382,7 +382,7 @@ class Session(Configurable, Connected):
 
         for plotID in self.updates_available():
             try:
-                self.plots[plotID].readData(updateFig=True)
+                self.plots[plotID].read_data(update_fig=True)
             except Exception as e:
                 print(f"Could not update plot {plotID}. \n Error: {e}")
         
@@ -407,7 +407,7 @@ class Session(Configurable, Connected):
             if len(updates_avail) != 0:
                 
                 for plotID in updates_avail:
-                    self.plots[plotID].readData(updateFig=True)
+                    self.plots[plotID].read_data(update_fig=True)
                 
                 if not forever:
                     break
@@ -606,7 +606,7 @@ class Session(Configurable, Connected):
 
         #Get the structures
         self.warehouse["structs"] = {
-            str(uuid.uuid4()): {"name": os.path.basename(path), "path": path} for path in findFiles(self.setting("rootDir"), "*fdf", self.setting("searchDepth"))
+            str(uuid.uuid4()): {"name": os.path.basename(path), "path": path} for path in find_files(self.setting("rootDir"), "*fdf", self.setting("searchDepth"))
         }
 
         #Avoid passing unnecessary info to the browser.
@@ -623,7 +623,7 @@ class Session(Configurable, Connected):
             searchString = f"*.{rule.suffix}"
             plotType = rule.cls._plot[0].plotName()
 
-            files = findFiles(path, searchString, self.setting(
+            files = find_files(path, searchString, self.setting(
                 "searchDepth"), case_insensitive=True)
 
             if files:
@@ -653,7 +653,7 @@ class Session(Configurable, Connected):
             "paramGroups": self._paramGroups,
             "updatesAvailable": self.updates_available(),
             "plotOptions": [
-                {"value": subclass.__name__, "label": subclass._plotType} 
+                {"value": subclass.__name__, "label": subclass._plot_type} 
                 for subclass in self.get_plot_classes()
             ],
             "structures": self.get_structures(),
@@ -687,7 +687,7 @@ class Session(Configurable, Connected):
             session.figures_only()
 
         for plotID, plot in session.plots.items():
-            plot._getPickleable()
+            plot._get_pickleable()
         
         with open(path, 'wb') as handle:
             pickle.dump(session, handle, protocol=pickle.HIGHEST_PROTOCOL)
