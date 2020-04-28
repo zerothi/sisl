@@ -78,6 +78,9 @@ class fdfSileSiesta(SileSiesta):
         # This is because fdf enables inclusion of other files
         self._parent_fh = []
 
+        # Public key for printing information about where stuff comes from
+        self.track = False
+
     def _pushfile(self, f):
         if self.dir_file(f).is_file():
             self._parent_fh.append(self.fh)
@@ -595,6 +598,8 @@ class fdfSileSiesta(SileSiesta):
         for f in order:
             v = getattr(self, '_r_supercell_nsc_{}'.format(f.lower()))(*args, **kwargs)
             if v is not None:
+                if self.track:
+                    info(f"{self.file}(read_supercell_nsc) found in file={f}")
                 return v
         warn('number of supercells could not be read from output files. Assuming molecule cell '
              '(no supercell connections)')
@@ -643,6 +648,8 @@ class fdfSileSiesta(SileSiesta):
         for f in order:
             v = getattr(self, '_r_supercell_{}'.format(f.lower()))(*args, **kwargs)
             if v is not None:
+                if self.track:
+                    info(f"{self.file}(read_supercell) found in file={f}")
                 return v
         return None
 
@@ -709,6 +716,8 @@ class fdfSileSiesta(SileSiesta):
         for f in order:
             v = getattr(self, '_r_force_{}'.format(f.lower()))(*args, **kwargs)
             if v is not None:
+                if self.track:
+                    info(f"{self.file}(read_force) found in file={f}")
                 return v
         return None
 
@@ -751,6 +760,8 @@ class fdfSileSiesta(SileSiesta):
         for f in order:
             v = getattr(self, '_r_force_constant_{}'.format(f.lower()))(*args, **kwargs)
             if v is not None:
+                if self.track:
+                    info(f"{self.file}(read_force_constant) found in file={f}")
                 return v
         return None
 
@@ -804,6 +815,8 @@ class fdfSileSiesta(SileSiesta):
         for f in order:
             v = getattr(self, '_r_fermi_level_{}'.format(f.lower()))(*args, **kwargs)
             if v is not None:
+                if self.track:
+                    info(f"{self.file}(read_fermi_level) found in file={f}")
                 return v
         return None
 
@@ -857,6 +870,8 @@ class fdfSileSiesta(SileSiesta):
         for f in order:
             v = getattr(self, '_r_dynamical_matrix_{}'.format(f.lower()))(*args, **kwargs)
             if v is not None:
+                if self.track:
+                    info(f"{self.file}(read_dynamical_matrix) found in file={f}")
                 return v
         return None
 
@@ -866,9 +881,6 @@ class fdfSileSiesta(SileSiesta):
             return None
         geom = self.read_geometry()
 
-        # Now create mass array
-        if len(self.get('AtomicMass', default=[])) > 0:
-            warn(str(self) + '.read_dynamical_matrix(FC) does not implement reading atomic masses from fdf file.')
         # Get list of FC atoms
         FC_atoms = _a.arangei(self.get('MD.FCFirst', default=0) - 1, self.get('MD.FCLast', default=geom.na))
         return self._dynamical_matrix_from_fc(geom, FC, FC_atoms, *args, **kwargs)
@@ -879,9 +891,6 @@ class fdfSileSiesta(SileSiesta):
             return None
         geom = self.read_geometry()
 
-        # Now create mass array
-        if len(self.get('AtomicMass', default=[])) > 0:
-            warn(str(self) + '.read_dynamical_matrix(nc) does not implement reading atomic masses from fdf file.')
         # Get list of FC atoms
         # TODO change to read in from the NetCDF file
         FC_atoms = _a.arangei(self.get('MD.FCFirst', default=0) - 1, self.get('MD.FCLast', default=geom.na))
@@ -893,7 +902,7 @@ class fdfSileSiesta(SileSiesta):
         #  FC(OLD) = (n_displ, 3, 2, na, 3)
         #  FC(NEW) = (n_displ, 3, na, 3)
         # In fact, after averaging this becomes the Hessian
-        FC = np.average(FC, axis=2)
+        FC = FC.sum(axis=2) * 0.5
 
         # Figure out the "original" periodic directions
         periodic = geom.nsc > 1
@@ -914,7 +923,7 @@ class fdfSileSiesta(SileSiesta):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             for atom, _ in geom.atoms.iter(True):
-                new_atom = Atom(atom.Z, orbs, tag=atom.tag)
+                new_atom = Atom(atom.Z, orbs, mass=atom.mass, tag=atom.tag)
                 geom.atoms.replace(atom, new_atom)
 
         # Remove ghost-atoms or atoms with 0 mass!
@@ -1168,6 +1177,8 @@ class fdfSileSiesta(SileSiesta):
         for f in order:
             v = getattr(self, '_r_geometry_{}'.format(f.lower()))(*args, **kwargs)
             if v is not None:
+                if self.track:
+                    info(f"{self.file}(read_geometry) found in file={f}")
                 return v
         return None
 
@@ -1337,6 +1348,8 @@ class fdfSileSiesta(SileSiesta):
         for f in order:
             v = getattr(self, '_r_grid_{}'.format(f.lower().replace('.', '_')))(name, *args, **kwargs)
             if v is not None:
+                if self.track:
+                    info(f"{self.file}(read_grid) found in file={f}")
                 return v
         return None
 
@@ -1434,6 +1447,8 @@ class fdfSileSiesta(SileSiesta):
         for f in order:
             v = getattr(self, '_r_basis_{}'.format(f.lower()))(*args, **kwargs)
             if v is not None:
+                if self.track:
+                    info(f"{self.file}(read_basis) found in file={f}")
                 return v
         return None
 
@@ -1485,7 +1500,7 @@ class fdfSileSiesta(SileSiesta):
     def _r_basis_orb_indx(self):
         f = self.dir_file(self.get('SystemLabel', default='siesta') + '.ORB_INDX')
         if f.is_file():
-            info(SileInfo(f'Siesta basis information is read from {f}, the radial functions are in accessible.'))
+            info(f"Siesta basis information is read from {f}, the radial functions are in accessible.")
             return orbindxSileSiesta(f).read_basis(atoms=self._r_basis_fdf())
         return None
 
@@ -1497,6 +1512,10 @@ class fdfSileSiesta(SileSiesta):
             # so return nothing
             return None
 
+        all_mass = self.get('AtomicMass', default=[])
+        # default mass
+        mass = None
+
         # Now spcs contains the block of the chemicalspecieslabel
         atom = [None] * len(spcs)
         for spc in spcs:
@@ -1505,7 +1524,16 @@ class fdfSileSiesta(SileSiesta):
             Z = int(Z)
             lbl = lbl.strip()
 
-            atom[idx] = Atom(Z=Z, tag=lbl)
+            if len(all_mass) > 0:
+                for mass_line in all_mass:
+                    s, mass = mass_line.split()
+                    if int(s) - 1 == idx:
+                        mass = float(mass)
+                        break
+                else:
+                    mass = None
+
+            atom[idx] = Atom(Z=Z, mass=mass, tag=lbl)
         return atom
 
     def _r_add_overlap(self, parent_call, M):
@@ -1536,6 +1564,8 @@ class fdfSileSiesta(SileSiesta):
         for f in order:
             DM = getattr(self, '_r_density_matrix_{}'.format(f.lower()))(*args, **kwargs)
             if DM is not None:
+                if self.track:
+                    info(f"{self.file}(read_density_matrix) found in file={f}")
                 return DM
         return None
 
@@ -1588,6 +1618,8 @@ class fdfSileSiesta(SileSiesta):
         for f in order:
             EDM = getattr(self, '_r_energy_density_matrix_{}'.format(f.lower()))(*args, **kwargs)
             if EDM is not None:
+                if self.track:
+                    info(f"{self.file}(read_energy_density_matrix) found in file={f}")
                 return EDM
         return None
 
@@ -1626,6 +1658,8 @@ class fdfSileSiesta(SileSiesta):
         for f in order:
             v = getattr(self, '_r_overlap_{}'.format(f.lower()))(*args, **kwargs)
             if v is not None:
+                if self.track:
+                    info(f"{self.file}(read_overlap) found in file={f}")
                 return v
         return None
 
@@ -1685,6 +1719,8 @@ class fdfSileSiesta(SileSiesta):
         for f in order:
             H = getattr(self, '_r_hamiltonian_{}'.format(f.lower()))(*args, **kwargs)
             if H is not None:
+                if self.track:
+                    info(f"{self.file}(read_hamiltonian) found in file={f}")
                 return H
         return None
 

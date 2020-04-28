@@ -4,6 +4,7 @@ from ..sile import add_sile, sile_fh_open
 from .sile import SileSiesta
 
 from sisl._internal import set_module
+from sisl.messages import warn
 from sisl.unit.siesta import unit_convert
 
 
@@ -36,13 +37,13 @@ class fcSileSiesta(SileSiesta):
            If prior Siesta versions are used and this is not supplied the 0.04 Bohr displacement
            will be assumed.
         na : int, optional
-           number of atoms (for returning correct number of atoms), since Siesta 4.1-b4 this value
-           is written in the FC file and hence not required.
+           number of atoms in geometry (for returning correct number of atoms), since Siesta 4.1-b4
+           this value is written in the FC file and hence not required.
            If prior Siesta versions are used then the file is expected to only contain 1-atom displacement.
 
         Returns
         -------
-        numpy.ndarray : (displacement, d[xyz], [-+], atoms, xyz)
+        numpy.ndarray : (displaced atoms, d[xyz], [-+], total atoms, xyz)
              force constant matrix times the displacement, see `read_force_constant` for details regarding
              data layout.
         """
@@ -52,6 +53,7 @@ class fcSileSiesta(SileSiesta):
             try:
                 displacement = float(line[-1])
             except:
+                warn(f"{self.__class__.__name__}.read_force assumes displacement=0.04 Bohr!")
                 displacement = 0.04 * unit_convert('Bohr', 'Ang')
 
         # Since the displacements changes sign (starting with a negative sign)
