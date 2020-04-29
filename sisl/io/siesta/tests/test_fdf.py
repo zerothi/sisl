@@ -318,6 +318,24 @@ def test_geom_constraints(sisl_tmp):
     gfdf.write(sisl_tmp('siesta.fdf', _dir))
 
 
+def test_h2_dynamical_matrix(sisl_files):
+    si = fdfSileSiesta(sisl_files(_dir, 'H2_dynamical_matrix.fdf'))
+
+    trans_inv = [True, False]
+    sum0 = trans_inv[:]
+    hermitian = trans_inv[:]
+
+    eV2cm = 8065.54429
+    hw_true = [-88.392650, -88.392650, -0.000038, -0.000001, 0.000025, 3797.431825]
+
+    from itertools import product
+    for ti, s0, herm in product(trans_inv, sum0, hermitian):
+        dyn = si.read_dynamical_matrix(trans_inv=ti, sum0=s0, hermitian=herm)
+        hw = dyn.eigenvalue().hw
+        if ti and s0 and herm:
+            assert np.allclose(hw * eV2cm, hw_true, atol=1e-4)
+
+
 def test_dry_read(sisl_tmp):
     # This test runs the read-functions. They aren't expected to actually read anything,
     # it is only a dry-run.
