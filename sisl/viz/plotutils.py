@@ -67,6 +67,41 @@ def get_plotable_siles(rules=False):
         
     return sile_getter(["_plot", "__plot__"])
 
+def get_plotable_variables(variables):
+    '''
+    Retrieves all plotable variables that are in the global scope.
+
+    Parameters
+    ----------
+    variables: dict
+        The variables dictionary of the namespace. Usually this will
+        be retrieved by doing `locals()` or `globals()`
+
+    Returns
+    --------
+    dict:
+        A dict that contains the variable names and objects of the
+        that are in the global variables scope and are plotables.
+
+    Usage
+    --------
+    get_plotable_variables(locals())
+    get_plotable_variables(globals())
+    '''
+    from types import ModuleType
+
+    plotables = {}
+    for vname, obj in list(variables.items()):
+
+        if vname[0] == "_":
+            continue
+
+        is_object = not isinstance(obj, (type, ModuleType))
+        is_plotable = isinstance(getattr(obj, "_plot", None), tuple)
+        if is_object and is_plotable:
+            plotables[vname] = obj
+    
+    return plotables
 #-------------------------------------
 #           Python helpers
 #-------------------------------------

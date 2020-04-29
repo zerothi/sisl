@@ -46,6 +46,8 @@ class BaseGeometryPlot(Plot):
     Warning: by now, make sure _after_read is triggered (i.e. if you overwrite it
     in your class, call this classes' one explicitly)
     '''
+
+    is_only_base = True
     
     _parameters = (
         ProgramaticInput(key="geom", name="Geometry",

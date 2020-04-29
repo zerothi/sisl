@@ -1534,6 +1534,13 @@ class Plot(ShortCutable, Configurable, Connected):
         return self.__class__(*args, **self.settings, **kwargs) 
 
     #-------------------------------------------
+    #          LISTENING TO EVENTS
+    #-------------------------------------------
+
+    def dispatch_event(self, event, *args, **kwargs):
+        print(event, args, kwargs)
+
+    #-------------------------------------------
     #       DATA TRANSFER/STORAGE METHODS
     #-------------------------------------------
 
@@ -1623,10 +1630,6 @@ class Plot(ShortCutable, Configurable, Connected):
         import chart_studio.plotly as py
 
         return py.plot(self.figure, *args, **kwargs)
-
-    #-------------------------------------------
-    #      INTERACT WITH PARENT SESSIONS
-    #-------------------------------------------
     
 #------------------------------------------------
 #               ANIMATION CLASS

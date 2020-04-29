@@ -209,12 +209,12 @@ class Session(Configurable, Connected):
 
             all_subclasses = []
 
-            for subclass in cls.__subclasses__():
+            for Subclass in cls.__subclasses__():
 
-                if subclass not in [MultiplePlot, Animation]:
-                    all_subclasses.append(subclass)
+                if Subclass not in [MultiplePlot, Animation] and not getattr(Subclass, 'is_only_base', False):
+                    all_subclasses.append(Subclass)
 
-                all_subclasses.extend(get_all_subclasses(subclass))
+                all_subclasses.extend(get_all_subclasses(Subclass))
 
             return all_subclasses
         
@@ -279,6 +279,8 @@ class Session(Configurable, Connected):
             The initialized new plot
         '''
 
+        args = []
+
         if plotClass is None:
             ReqPlotClass = Plot
         else:
@@ -290,7 +292,7 @@ class Session(Configurable, Connected):
                 raise Exception("Didn't find the desired plot class: {}".format(plotClass))
 
         if plotableID is not None:
-            kwargs = {**kwargs, "filename": self.warehouse["plotables"][plotableID]["path"] }
+            args = (self.warehouse["plotables"][plotableID]["path"],)
         if structID:
             kwargs = {**kwargs, "root_fdf": self.warehouse["structs"][structID]["path"] }
 
@@ -298,7 +300,7 @@ class Session(Configurable, Connected):
             wdir = os.path.dirname(self.warehouse["structs"][structID]["path"]) if structID else self.setting("rootDir")
             new_plot = ReqPlotClass.animated(wdir = wdir)
         else:
-            new_plot = ReqPlotClass(**kwargs)
+            new_plot = ReqPlotClass(*args, **kwargs)
 
         self.add_plot(new_plot, tabID)
 
