@@ -175,6 +175,8 @@ class gotSileGULP(SileGULP):
         ----------
         cutoff: float, optional
            absolute values below the cutoff are considered 0. Defaults to 0. eV/Ang**2.
+        hermitian : bool, optional
+           if true (default), the returned dynamical matrix will be hermitian
         dtype: np.dtype (np.float64)
            default data-type of the matrix
         order: list of str, optional
@@ -191,7 +193,11 @@ class gotSileGULP(SileGULP):
                 # Convert the dynamical matrix such that a diagonalization returns eV ^ 2
                 scale = constant.hbar / units('Ang', 'm') / units('eV amu', 'J kg') ** 0.5
                 v.data *= scale ** 2
-                return DynamicalMatrix.fromsp(geom, v)
+                v = DynamicalMatrix.fromsp(geom, v)
+                if kwargs.get("hermitian", True):
+                    v.finalize()
+                    v = (v + v.transpose()) * 0.5
+                return v
 
         return None
 

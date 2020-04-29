@@ -827,6 +827,12 @@ class fdfSileSiesta(SileSiesta):
     def read_dynamical_matrix(self, *args, **kwargs):
         """ Read dynamical matrix from output of the calculation
 
+        Generally the mass is stored in the basis information output,
+        but for dynamical matrices it makes sense to let the user control this,
+        e.g. through the fdf file.
+        By default the mass will be read from the AtomicMass key in the fdf file
+        and _not_ from the basis set information.
+
         Parameters
         ----------
         order: list of str, optional
@@ -838,12 +844,13 @@ class fdfSileSiesta(SileSiesta):
         cutoff : float, optional
             absolute values below the cutoff are considered 0. Defaults to 0. eV/Ang**2.
         trans_inv : bool, optional
-            if true, the force-constant matrix will be fixed so that translational invariance
-            will be enforced
+            if true (default), the force-constant matrix will be fixed so that translational
+            invariance will be enforced
         sum0 : bool, optional
-            if true, the sum of forces on atoms for each displacement will be forced to 0.
+            if true (default), the sum of forces on atoms for each displacement will be
+            forced to 0.
         hermitian: bool, optional
-            if true, the returned dynamical matrix will be hermitian
+            if true (default), the returned dynamical matrix will be hermitian
 
         Returns
         -------
@@ -860,10 +867,14 @@ class fdfSileSiesta(SileSiesta):
         return None
 
     def _r_dynamical_matrix_fc(self, *args, **kwargs):
-        FC = self.read_force_constant(*args, order=['FC'], **kwargs)
+        FC = self.read_force_constant(*args, order="FC", **kwargs)
         if FC is None:
             return None
         geom = self.read_geometry()
+
+        basis_fdf = self.read_basis(order="fdf")
+        for i, atom in enumerate(basis_fdf):
+            geom.atoms.replace(i, atom)
 
         # Get list of FC atoms
         FC_atoms = _a.arangei(self.get('MD.FCFirst', default=0) - 1, self.get('MD.FCLast', default=geom.na))
@@ -874,6 +885,10 @@ class fdfSileSiesta(SileSiesta):
         if FC is None:
             return None
         geom = self.read_geometry(order=['nc'])
+
+        basis_fdf = self.read_basis(order="fdf")
+        for i, atom in enumerate(basis_fdf):
+            geom.atoms.replace(i, atom)
 
         # Get list of FC atoms
         # TODO change to read in from the NetCDF file

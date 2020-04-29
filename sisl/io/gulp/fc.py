@@ -60,8 +60,7 @@ class fcSileGULP(SileGULP):
                 # Read 3x3 data
                 i = ia * 3
                 for o in [0, 1, 2]:
-                    lsplit = rl().split()
-                    fc[i+o, ja*3:(ja+1)*3] = map(float, lsplit[:3])
+                    fc[i+o, ja*3:(ja+1)*3] = list(map(float, rl().split()[:3]))
 
         # Convert to COO format
         fc = fc.tocoo()
