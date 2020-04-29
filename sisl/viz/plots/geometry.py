@@ -4,7 +4,7 @@ import numpy as np
 from sisl import Geometry
 from sisl.viz import Plot
 from sisl.viz.input_fields import ProgramaticInput, FloatInput, SwitchInput
-from sisl.viz.GUI.api_utils._dispatcher import AbstractDispatch, ClassDispatcher
+from sisl._dispatcher import AbstractDispatch, ClassDispatcher
 
 class BoundGeometry(AbstractDispatch):
     '''

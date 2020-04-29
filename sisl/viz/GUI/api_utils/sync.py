@@ -5,7 +5,7 @@ on it '''
 from functools import wraps
 
 from sisl.viz.plotutils import call_method_if_present
-from ._dispatcher import AbstractDispatch
+from sisl._dispatcher import AbstractDispatch
 from .emiters import emit_object
 
 class AutoSync(AbstractDispatch):
