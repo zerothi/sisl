@@ -23,7 +23,7 @@ from ._internal import set_module
 
 
 __all__ = ['SislDeprecation', 'SislInfo', 'SislWarning', 'SislException', 'SislError']
-__all__ += ['warn', 'info', 'deprecate']
+__all__ += ['warn', 'info', 'deprecate', "deprecate_method"]
 __all__ += ['tqdm_eta']
 
 # The local registry for warnings issued
@@ -69,6 +69,23 @@ def deprecate(message):
     message : str
     """
     warnings.warn_explicit(message, SislDeprecation, 'dep', 0, registry=_sisl_warn_registry)
+
+
+@set_module("sisl")
+def deprecate_method(msg):
+    """ Decorator for deprecating a method
+
+    Parameters
+    ----------
+    msg : str
+       message displayed
+    """
+    def install_deprecate(func):
+        def wrapped(*args, **kwargs):
+            deprecate(msg)
+            return func(*args, **kwargs)
+        return wrapped
+    return install_deprecate
 
 
 @set_module("sisl")

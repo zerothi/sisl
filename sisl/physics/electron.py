@@ -90,7 +90,7 @@ __all__ += ['CoefficientElectron', 'StateElectron', 'StateCElectron']
 __all__ += ['EigenvalueElectron', 'EigenvectorElectron', 'EigenstateElectron']
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.electron")
 def DOS(E, eig, distribution='gaussian'):
     r""" Calculate the density of states (DOS) for a set of energies, `E`, with a distribution function
 
@@ -131,7 +131,7 @@ def DOS(E, eig, distribution='gaussian'):
     return reduce(lambda DOS, eig: DOS + distribution(E - eig), eig, 0.)
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.electron")
 def PDOS(E, eig, state, S=None, distribution='gaussian', spin=None):
     r""" Calculate the projected density of states (PDOS) for a set of energies, `E`, with a distribution function
 
@@ -264,7 +264,7 @@ def PDOS(E, eig, state, S=None, distribution='gaussian', spin=None):
     return PDOS
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.electron")
 def spin_moment(state, S=None):
     r""" Calculate the spin magnetic moment (also known as spin texture)
 
@@ -343,7 +343,7 @@ def spin_moment(state, S=None):
     return s
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.electron")
 def spin_orbital_moment(state, S=None):
     r""" Calculate the spin magnetic moment per orbital site (equivalent to spin-moment per orbital)
 
@@ -419,7 +419,7 @@ def spin_orbital_moment(state, S=None):
     return s
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.electron")
 def spin_squared(state_alpha, state_beta, S=None):
     r""" Calculate the spin squared expectation value between two spin states
 
@@ -505,7 +505,7 @@ def spin_squared(state_alpha, state_beta, S=None):
     return oplist((Sa, Sb))
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.electron")
 def velocity(state, dHk, energy=None, dSk=None, degenerate=None):
     r""" Calculate the velocity of a set of states
 
@@ -618,7 +618,7 @@ def _velocity_ortho(state, dHk, degenerate):
     return v * _velocity_const
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.electron")
 def velocity_matrix(state, dHk, energy=None, dSk=None, degenerate=None):
     r""" Calculate the velocity matrix of a set of states
 
@@ -738,7 +738,7 @@ def _velocity_matrix_ortho(state, dHk, degenerate, dtype):
     return v * _velocity_const
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.electron")
 def berry_curvature(state, energy, dHk, dSk=None, degenerate=None, complex=False):
     r""" Calculate the Berry curvature matrix for a set of states (using Kubo)
 
@@ -846,7 +846,7 @@ def _berry_curvature(v_M, energy, degenerate):
     return sigma * _berry_curvature_const
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.electron")
 def conductivity(bz, distribution='fermi-dirac', method='ahc', complex=False):
     r""" Electronic conductivity for a given `BrillouinZone` integral
 
@@ -889,14 +889,14 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc', complex=False):
             bc = es.berry_curvature(complex=complex)
             return einsum('i,ijl->jl', occ, bc)
 
-        cond = - bz.asaverage().eigenstate(wrap=_ahc) / constant.hbar('eV ps')
+        cond = - bz.apply.average.eigenstate(wrap=_ahc) / constant.hbar('eV ps')
     else:
         raise SislError('conductivity: requires the method to be [ahc]')
 
     return cond
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.electron")
 def inv_eff_mass_tensor(state, ddHk, energy=None, ddSk=None, degenerate=None, as_matrix=False):
     r""" Calculate the effective mass tensor for a set of states (missing off-diagonal terms)
 
@@ -1055,7 +1055,7 @@ def _inv_eff_mass_tensor_ortho(state, ddHk, degenerate, as_matrix):
     return M * _inv_eff_mass_const
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.electron")
 def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
     r""" Calculate the Berry-phase on a loop using a predefined path
 
@@ -1199,7 +1199,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
             return prd
 
     # Do the actual calculation of the final matrix
-    d = _berry(contour.asyield().eigenstate())
+    d = _berry(contour.apply.iter.eigenstate())
 
     # Correct return values
     if eigvals:
@@ -1211,7 +1211,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
     return ret
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.electron")
 def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False):
     r""" Add the wave-function (`Orbital.psi`) component of each orbital to the grid
 
@@ -1821,19 +1821,19 @@ class _electron_State:
             self.state *= np.exp(-1j * phase).reshape(1, -1)
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.electron")
 class CoefficientElectron(Coefficient):
     r""" Coefficients describing some physical quantity related to electrons """
     __slots__ = []
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.electron")
 class StateElectron(_electron_State, State):
     r""" A state describing a physical quantity related to electrons """
     __slots__ = []
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.electron")
 class StateCElectron(_electron_State, StateC):
     r""" A state describing a physical quantity related to electrons, with associated coefficients of the state """
     __slots__ = []
@@ -1997,7 +1997,7 @@ class StateCElectron(_electron_State, StateC):
         return inv_eff_mass_tensor(self.state, self.parent.ddHk(**opt), self.c, ddSk, degenerate, as_matrix)
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.electron")
 class EigenvalueElectron(CoefficientElectron):
     r""" Eigenvalues of electronic states, no eigenvectors retained
 
@@ -2038,7 +2038,7 @@ class EigenvalueElectron(CoefficientElectron):
         return DOS(E, self.eig, distribution)
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.electron")
 class EigenvectorElectron(StateElectron):
     r""" Eigenvectors of electronic states, no eigenvalues retained
 
@@ -2047,7 +2047,7 @@ class EigenvectorElectron(StateElectron):
     __slots__ = []
 
 
-@set_module("sisl.physics")
+@set_module("sisl.physics.electron")
 class EigenstateElectron(StateCElectron):
     r""" Eigen states of electrons with eigenvectors and eigenvalues.
 

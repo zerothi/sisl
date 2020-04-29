@@ -1017,7 +1017,7 @@ class RealSpaceSE(SelfEnergy):
         no = len(self.parent)
 
         # calculate the Green function
-        G = bz.asaverage().call(_func_bloch, dtype=dtype, no=no, tile=tile, idx0=idx0)
+        G = bz.apply.average(_func_bloch)(dtype=dtype, no=no, tile=tile, idx0=idx0)
 
         if is_k:
             # Revert k-points
@@ -1542,9 +1542,9 @@ class RealSpaceSI(SelfEnergy):
             _func_bloch = _calc_green
 
         # calculate the Green function
-        G = bz.asaverage().call(_func_bloch, dtype=dtype,
-                                surf_orbs=self._surface_orbs,
-                                semi_bulk=opt['semi_bulk'])
+        G = bz.apply.average(_func_bloch)(dtype=dtype,
+                                          surf_orbs=self._surface_orbs,
+                                          semi_bulk=opt['semi_bulk'])
 
         if is_k:
             # Restore Brillouin zone k-points
