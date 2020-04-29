@@ -2,6 +2,7 @@ import pytest
 
 import warnings
 import numpy as np
+from scipy.linalg import block_diag
 
 from sisl import Geometry, Atom, SuperCell, Hamiltonian, Spin, BandStructure, MonkhorstPack, BrillouinZone
 from sisl import get_distribution
@@ -524,10 +525,10 @@ class TestHamiltonian:
     def test_eig3(self, setup):
         setup.HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
         BS = BandStructure(setup.HS, [[0, 0, 0], [0.5, 0.5, 0]], 10)
-        eigs = BS.asarray().eigh()
+        eigs = BS.apply.array.eigh()
         assert len(BS) == eigs.shape[0]
         assert len(setup.HS) == eigs.shape[1]
-        eig2 = np.array([eig for eig in BS.asyield().eigh()])
+        eig2 = np.array([eig for eig in BS.apply.iter.eigh()])
         assert np.allclose(eigs, eig2)
         setup.HS.empty()
 
@@ -630,6 +631,7 @@ class TestHamiltonian:
 
     @pytest.mark.xfail(raises=SislError)
     def test_berry_phase_method_fail(self):
+        # wrong method keyword
         g = Geometry([[-.6, 0, 0], [0.6, 0, 0]], Atom(1, 1.001), sc=[2, 10, 10])
         g.set_nsc([3, 1, 1])
         H = Hamiltonian(g)
@@ -641,15 +643,15 @@ class TestHamiltonian:
         bz = BrillouinZone(H, K)
         berry_phase(bz, method='unknown')
 
-    def test_berry_flux(self, setup):
+    def test_berry_curvature(self, setup):
         R, param = [0.1, 1.5], [1., 0.1]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g)
         H.construct((R, param))
 
         k = [0.1] * 3
-        ie1 = H.eigenstate(k, gauge='R').berry_flux()
-        ie2 = H.eigenstate(k, gauge='r').berry_flux()
+        ie1 = H.eigenstate(k, gauge='R').berry_curvature()
+        ie2 = H.eigenstate(k, gauge='r').berry_curvature()
         assert np.allclose(ie1, ie2)
 
     def test_conductivity(self, setup):
@@ -934,8 +936,8 @@ class TestHamiltonian:
         H = Hamiltonian(g, dtype=np.float64, spin=Spin.NONCOLINEAR)
         for i in range(10):
             j = range(i*2, i*2+3)
-            H[i, i, 0] = 0.
-            H[i, i, 1] = 0.
+            H[i, i, 0] = 0.05
+            H[i, i, 1] = 0.1
             H[i, i, 2] = 0.1
             H[i, i, 3] = 0.1
             if i > 0:
@@ -952,8 +954,8 @@ class TestHamiltonian:
         H1 = Hamiltonian(g, dtype=np.float64, spin=Spin('non-collinear'))
         for i in range(10):
             j = range(i*2, i*2+3)
-            H1[i, i, 0] = 0.
-            H1[i, i, 1] = 0.
+            H1[i, i, 0] = 0.05
+            H1[i, i, 1] = 0.1
             H1[i, i, 2] = 0.1
             H1[i, i, 3] = 0.1
             if i > 0:
@@ -967,25 +969,41 @@ class TestHamiltonian:
         assert np.allclose(H1.eigh(dtype=np.complex128), eig1)
         assert np.allclose(H.eigh(), H1.eigh())
 
-        es = H1.eigenstate(dtype=np.complex128)
-        assert np.allclose(es.eig, eig1)
-        sm = es.spin_moment()
-        assert np.allclose(es.inner(), 1)
+        # Create the block matrix for expectation
+        SZ = block_diag(*([H1.spin.Z] * H1.no))
 
-        om = es.spin_orbital_moment()
-        assert np.allclose(sm, om.sum(1))
+        for dtype in [np.complex64, np.complex128]:
+            es = H1.eigenstate(dtype=dtype)
+            assert np.allclose(es.eig, eig1)
+            assert np.allclose(es.inner(), 1)
 
-        PDOS = es.PDOS(np.linspace(-1, 1, 100))
-        DOS = es.DOS(np.linspace(-1, 1, 100))
-        assert np.allclose(PDOS.sum(1)[0, :], DOS)
+            # Perform spin-moment calculation
+            sm = es.spin_moment()
+            sm2 = es.expectation(SZ).real
+            sm3 = np.diag(np.dot(np.conj(es.state), SZ).dot(es.state.T)).real
+            assert np.allclose(sm[:, 2], sm2)
+            assert np.allclose(sm[:, 2], sm3)
 
-    def test_non_colinear_non_orthogonal(self, setup):
+            om = es.spin_orbital_moment()
+            assert np.allclose(sm, om.sum(1))
+
+            PDOS = es.PDOS(np.linspace(-1, 1, 100))
+            DOS = es.DOS(np.linspace(-1, 1, 100))
+            assert np.allclose(PDOS.sum(1)[0, :], DOS)
+            es.velocity_matrix()
+            es.inv_eff_mass_tensor()
+
+        # Ensure we can change gauge for NC stuff
+        es.change_gauge('R')
+        es.change_gauge('r')
+
+    def test_non_colinear_non_orthogonal(self):
         g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(100, nsc=[3, 3, 1]))
         H = Hamiltonian(g, dtype=np.float64, orthogonal=False, spin=Spin.NONCOLINEAR)
         for i in range(10):
             j = range(i*2, i*2+3)
-            H[i, i, 0] = 0.
-            H[i, i, 1] = 0.
+            H[i, i, 0] = 0.1
+            H[i, i, 1] = 0.05
             H[i, i, 2] = 0.1
             H[i, i, 3] = 0.1
             if i > 0:
@@ -1002,8 +1020,8 @@ class TestHamiltonian:
         H1 = Hamiltonian(g, dtype=np.float64, orthogonal=False, spin=Spin('non-collinear'))
         for i in range(10):
             j = range(i*2, i*2+3)
-            H1[i, i, 0] = 0.
-            H1[i, i, 1] = 0.
+            H1[i, i, 0] = 0.1
+            H1[i, i, 1] = 0.05
             H1[i, i, 2] = 0.1
             H1[i, i, 3] = 0.1
             if i > 0:
@@ -1018,24 +1036,32 @@ class TestHamiltonian:
         assert np.allclose(H1.eigh(dtype=np.complex128), eig1)
         assert np.allclose(H.eigh(dtype=np.complex64), H1.eigh(dtype=np.complex128))
 
-        es = H1.eigenstate(dtype=np.complex128)
-        assert np.allclose(es.eig, eig1)
+        for dtype in [np.complex64, np.complex128]:
+            es = H1.eigenstate(dtype=dtype)
+            assert np.allclose(es.eig, eig1)
 
-        sm = es.spin_moment()
-        om = es.spin_orbital_moment()
-        assert np.allclose(sm, om.sum(1))
+            sm = es.spin_moment()
 
-        PDOS = es.PDOS(np.linspace(-1, 1, 100))
-        DOS = es.DOS(np.linspace(-1, 1, 100))
-        assert np.allclose(PDOS.sum(1)[0, :], DOS)
+            om = es.spin_orbital_moment()
+            assert np.allclose(sm, om.sum(1))
 
-    def test_so1(self, setup):
+            PDOS = es.PDOS(np.linspace(-1, 1, 100))
+            DOS = es.DOS(np.linspace(-1, 1, 100))
+            assert np.allclose(PDOS.sum(1)[0, :], DOS)
+            es.velocity_matrix()
+            es.inv_eff_mass_tensor()
+
+        # Ensure we can change gauge for NC stuff
+        es.change_gauge('R')
+        es.change_gauge('r')
+
+    def test_so1(self):
         g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(100, nsc=[3, 3, 1]))
         H = Hamiltonian(g, dtype=np.float64, spin=Spin.SPINORBIT)
         for i in range(10):
             j = range(i*2, i*2+3)
-            H[i, i, 0] = 0.
-            H[i, i, 1] = 0.
+            H[i, i, 0] = 0.1
+            H[i, i, 1] = 0.05
             H[i, i, 2] = 0.1
             H[i, i, 3] = 0.1
             H[i, i, 4] = 0.1
@@ -1055,8 +1081,8 @@ class TestHamiltonian:
         H1 = Hamiltonian(g, dtype=np.float64, spin=Spin('spin-orbit'))
         for i in range(10):
             j = range(i*2, i*2+3)
-            H1[i, i, 0] = 0.
-            H1[i, i, 1] = 0.
+            H1[i, i, 0] = 0.1
+            H1[i, i, 1] = 0.05
             H1[i, i, 2] = 0.1
             H1[i, i, 3] = 0.1
             if i > 0:
@@ -1070,16 +1096,31 @@ class TestHamiltonian:
         assert np.allclose(H1.eigh(dtype=np.complex128), eig1)
         assert np.allclose(H.eigh(dtype=np.complex64), H1.eigh(dtype=np.complex128))
 
-        es = H.eigenstate(dtype=np.complex128)
-        assert np.allclose(es.eig, eig1)
+        # Create the block matrix for expectation
+        SZ = block_diag(*([H1.spin.Z] * H1.no))
 
-        sm = es.spin_moment()
-        om = es.spin_orbital_moment()
-        assert np.allclose(sm, om.sum(1))
+        for dtype in [np.complex64, np.complex128]:
+            es = H.eigenstate(dtype=dtype)
+            assert np.allclose(es.eig, eig1)
 
-        PDOS = es.PDOS(np.linspace(-1, 1, 100))
-        DOS = es.DOS(np.linspace(-1, 1, 100))
-        assert np.allclose(PDOS.sum(1)[0, :], DOS)
+            sm = es.spin_moment()
+            sm2 = es.expectation(SZ).real
+            sm3 = np.diag(np.dot(np.conj(es.state), SZ).dot(es.state.T)).real
+            assert np.allclose(sm[:, 2], sm2)
+            assert np.allclose(sm[:, 2], sm3)
+
+            om = es.spin_orbital_moment()
+            assert np.allclose(sm, om.sum(1))
+
+            PDOS = es.PDOS(np.linspace(-1, 1, 100))
+            DOS = es.DOS(np.linspace(-1, 1, 100))
+            assert np.allclose(PDOS.sum(1)[0, :], DOS)
+            es.velocity_matrix()
+            es.inv_eff_mass_tensor()
+
+        # Ensure we can change gauge for SO stuff
+        es.change_gauge('R')
+        es.change_gauge('r')
 
     def test_finalized(self, setup):
         assert not setup.H.finalized
@@ -1376,10 +1417,10 @@ class TestHamiltonian:
             PDOS = es.PDOS(E, distribution=dist)
             vel = es.velocity() * es.occupation().reshape(-1, 1)
             return oplist([DOS, PDOS, vel])
-        bz.asaverage()
-        results = bz.eigenstate(wrap=wrap)
-        assert np.allclose(bz.DOS(E, distribution=dist), results[0])
-        assert np.allclose(bz.PDOS(E, distribution=dist), results[1])
+        bz_avg = bz.apply.average
+        results = bz_avg.eigenstate(wrap=wrap)
+        assert np.allclose(bz_avg.DOS(E, distribution=dist), results[0])
+        assert np.allclose(bz_avg.PDOS(E, distribution=dist), results[1])
 
     def test_edges1(self, setup):
         R, param = [0.1, 1.5], [1., 0.1]

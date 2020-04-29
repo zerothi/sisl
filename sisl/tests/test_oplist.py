@@ -7,7 +7,7 @@ from sisl import _array as ar
 from sisl.oplist import oplist
 
 
-pytestmark = [pytest.mark.oplist]
+pytestmark = pytest.mark.oplist
 
 
 def test_oplist_creation():
@@ -45,7 +45,7 @@ def test_oplist_imath(op, key):
 
     l2 = d[key]
     try:
-        l1 = oplist([data * 2 for data in l2])
+        l1 = oplist(data * 2 for data in l2)
     except:
         l1 = oplist([ar.aranged(1, 10), ar.aranged(2, 3)])
     op(l1, l2)

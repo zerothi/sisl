@@ -1167,8 +1167,14 @@ class TestGeometry:
         g = setup.g.attach(0, setup.mol, 0, dist=[0, 0, 1.42])
 
     def test_mirror1(self, setup):
-        for plane in ['xy', 'xz', 'yz']:
-            setup.g.mirror(plane)
+        g = setup.g
+        for plane in ['xy', 'xz', 'yz', 'ab', 'bc', 'ac']:
+            g.mirror(plane)
+
+        assert g.mirror('xy') == g.mirror('z')
+        assert g.mirror('xy') == g.mirror([0, 0, 1])
+
+        assert g.mirror('xy', [0]) == g.mirror([0, 0, 1], [0])
 
     def test_pickle(self, setup):
         import pickle as p
@@ -1287,3 +1293,132 @@ class TestGeometry:
         idx22, idx44 = gr22.overlap(gr44, offset=-offset)
         assert np.allclose(idx22, np.arange(gr22.na))
         assert np.allclose(idx44, idx)
+
+
+def test_geometry_sort_simple():
+    bi = sisl_geom.bilayer().tile(2, 0).repeat(3, 1)
+
+    # the default tolerance is 1e-9, and since we are sorting
+    # in each group, we may in the end find another ordering
+    atol = 1e-9
+
+    for i in [0, 1, 2]:
+        s = bi.sort(axis=i)
+        assert np.all(np.diff(s.xyz[:, i]) >= -atol)
+        s = bi.sort(lattice=i)
+        assert np.all(np.diff(s.fxyz[:, i] * bi.sc.length[i]) >= -atol)
+
+    s, idx = bi.sort(axis=0, lattice=1, ret_atom=True)
+    assert np.all(np.diff(s.xyz[:, 0]) >= -atol)
+    for ix in idx:
+        assert np.all(np.diff(bi.fxyz[ix, 1]) >= -atol)
+
+    s, idx = bi.sort(axis=0, ascending=False, lattice=1, vector=[0, 0, 1], ret_atom=True)
+    assert np.all(np.diff(s.xyz[:, 0]) >= -atol)
+    for ix in idx:
+        # idx is according to bi
+        assert np.all(np.diff(bi.fxyz[ix, 1] * bi.sc.length[i]) <= atol)
+
+
+def test_geometry_sort_int():
+    bi = sisl_geom.bilayer().tile(2, 0).repeat(3, 1)
+
+    # the default tolerance is 1e-9, and since we are sorting
+    # in each group, we may in the end find another ordering
+    atol = 1e-9
+
+    for i in [0, 1, 2]:
+        s = bi.sort(axis0=i)
+        assert np.all(np.diff(s.xyz[:, i]) >= -atol)
+        s = bi.sort(lattice3=i)
+        assert np.all(np.diff(s.fxyz[:, i] * bi.sc.length[i]) >= -atol)
+
+    s, idx = bi.sort(axis12314=0, lattice0=1, ret_atom=True)
+    assert np.all(np.diff(s.xyz[:, 0]) >= -atol)
+    for ix in idx:
+        assert np.all(np.diff(bi.fxyz[ix, 1]) >= -atol)
+
+    s, idx = bi.sort(ascending1=True, axis15=0, ascending0=False, lattice235=1, ret_atom=True)
+    assert np.all(np.diff(s.xyz[:, 0]) >= -atol)
+    for ix in idx:
+        # idx is according to bi
+        assert np.all(np.diff(bi.fxyz[ix, 1] * bi.sc.length[i]) <= atol)
+
+
+def test_geometry_sort_atom():
+    bi = sisl_geom.bilayer().tile(2, 0).repeat(2, 1)
+
+    atom = [[2, 0], [3, 1]]
+    out, atom = bi.sort(atom=atom, ret_atom=True)
+
+    atom = np.concatenate(atom)
+    all_atoms = np.arange(len(bi))
+    all_atoms[np.sort(atom)] = atom[:]
+
+    assert np.allclose(out.xyz, bi.sub(all_atoms).xyz)
+
+
+def test_geometry_sort_func():
+    bi = sisl_geom.bilayer().tile(2, 0).repeat(2, 1)
+
+    def reverse(geometry, atom, **kwargs):
+        return atom[::-1]
+    atom = [[2, 0], [3, 1]]
+    out = bi.sort(func=reverse, atom=atom)
+
+    all_atoms = np.arange(len(bi))
+    all_atoms[1] = 2
+    all_atoms[2] = 1
+
+    assert np.allclose(out.xyz, bi.sub(all_atoms).xyz)
+
+    # Ensure that they are swapped
+    atom = [2, 0]
+    out = bi.sort(func=reverse, atom=atom)
+
+    assert np.allclose(out.xyz, bi.xyz)
+
+    out = bi.sort(func=reverse)
+    all_atoms = np.arange(len(bi))[::-1]
+    assert np.allclose(out.xyz, bi.sub(all_atoms).xyz)
+
+
+def test_geometry_sort_group():
+    bi = sisl_geom.bilayer(bottom_atom=Atom[6], top_atom=(Atom[5], Atom[7])).tile(2, 0).repeat(2, 1)
+
+    out = bi.sort(group='Z')
+
+    assert np.allclose(out.atoms.Z[:4], 5)
+    assert np.allclose(out.atoms.Z[4:12], 6)
+    assert np.allclose(out.atoms.Z[12:16], 7)
+
+    out = bi.sort(group=('symbol', 'C', None))
+
+    assert np.allclose(out.atoms.Z[:8], 6)
+
+    C = bi.sort(group=('symbol', 'C', None))
+    BN = bi.sort(group=('symbol', None, 'C'))
+    BN2 = bi.sort(group=('symbol', ['B', 'N'], 'C'))
+    # For these simple geometries symbol and tag are the same
+    BN3 = bi.sort(group=('tag', ['B', 'N'], 'C'))
+
+    # none of these atoms should be the same
+    assert not np.any(np.isclose(C.atoms.Z, BN.atoms.Z))
+    # All these sorting algorithms are the same
+    assert np.allclose(BN.atoms.Z, BN2.atoms.Z)
+    assert np.allclose(BN.atoms.Z, BN3.atoms.Z)
+
+
+@pytest.mark.xfail(raises=ValueError)
+def test_geometry_sort_fail_keyword():
+    sisl_geom.bilayer().sort(not_found_keyword=True)
+
+
+def test_geometry_sanitize_atom():
+    bi = sisl_geom.bilayer(bottom_atom=Atom[6], top_atom=(Atom[5], Atom[7])).tile(2, 0).repeat(2, 1)
+    C_idx = (bi.atoms.Z == 6).nonzero()[0]
+    check_C = bi.axyz(C_idx)
+    only_C = bi.axyz(Atom[6])
+    assert np.allclose(only_C, check_C)
+    only_C = bi.axyz(bi.atoms.Z == 6)
+    assert np.allclose(only_C, check_C)

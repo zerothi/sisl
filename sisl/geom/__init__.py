@@ -19,10 +19,14 @@ A variety of default geometries.
    bcc
    fcc
    hcp
-   honeycomb
+   nanoribbon
+   graphene_nanoribbon
+   agnr
+   zgnr
    nanotube
-   diamond
+   honeycomb
    bilayer
+   diamond
 
 
 Basic
@@ -38,6 +42,21 @@ Basic
    :noindex:
 
 
+1D materials
+============
+
+.. autofunction:: nanoribbon
+   :noindex:
+.. autofunction:: graphene_nanoribbon
+   :noindex:
+.. autofunction:: agnr
+   :noindex:
+.. autofunction:: zgnr
+   :noindex:
+.. autofunction:: nanotube
+   :noindex:
+
+
 2D materials
 ============
 
@@ -46,13 +65,6 @@ Basic
 .. autofunction:: graphene
    :noindex:
 .. autofunction:: bilayer
-   :noindex:
-
-
-Nanotube
-========
-
-.. autofunction:: nanotube
    :noindex:
 
 
@@ -65,6 +77,7 @@ Others
 """
 from .basic import *
 from .flat import *
+from .nanoribbon import *
 from .nanotube import *
 from .special import *
 from .bilayer import *

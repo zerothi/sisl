@@ -1,9 +1,12 @@
 import math as m
 import numpy as np
 
+from ._internal import set_module
+
 __all__ = ['Quaternion']
 
 
+@set_module("sisl")
 class Quaternion:
     """
     Quaternion object to enable easy rotational quantities.

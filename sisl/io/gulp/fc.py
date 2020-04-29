@@ -6,6 +6,7 @@ import numpy as np
 from numpy import abs as np_abs
 from scipy.sparse import lil_matrix
 
+from sisl._internal import set_module
 from .sile import SileGULP
 from ..sile import *
 
@@ -13,6 +14,7 @@ from ..sile import *
 __all__ = ['fcSileGULP']
 
 
+@set_module("sisl.io.gulp")
 class fcSileGULP(SileGULP):
     """ GULP output file object """
 
@@ -25,12 +27,16 @@ class fcSileGULP(SileGULP):
         Parameters
         ----------
         cutoff : float, optional
-            absolute values below the cutoff are considered 0. Defaults to 1e-4 eV/Ang**2.
+            absolute values below the cutoff are considered 0. Defaults to 0 eV/Ang**2.
         dtype: np.dtype (np.float64)
            default data-type of the matrix
+
+        Returns
+        -------
+        FC : force constant in `scipy.sparse.coo_matrix` format
         """
         # Default cutoff
-        cutoff = kwargs.get('cutoff', 1e-4)
+        cutoff = kwargs.get('cutoff', 0.)
         dtype = kwargs.get('dtype', np.float64)
 
         # Read number of atoms in the file...
@@ -42,9 +48,7 @@ class fcSileGULP(SileGULP):
         # Reduce overhead...
         rl = self.fh.readline
 
-        i = 0
         for ia in range(na):
-            j = 0
             for ja in range(na):
 
                 # read line that should contain:
@@ -54,14 +58,9 @@ class fcSileGULP(SileGULP):
                     raise ValueError("Inconsistent 2ND file data")
 
                 # Read 3x3 data
+                i = ia * 3
                 for o in [0, 1, 2]:
-                    ii = i + o
-                    lsplit = rl().split()
-                    for oo in [0, 1, 2]:
-                        fc[ii, j+oo] = float(lsplit[oo])
-
-                j += 3
-            i += 3
+                    fc[i+o, ja*3:(ja+1)*3] = list(map(float, rl().split()[:3]))
 
         # Convert to COO format
         fc = fc.tocoo()

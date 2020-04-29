@@ -3,6 +3,7 @@ from operator import add, mul
 from numbers import Real
 import numpy as np
 
+from sisl._internal import set_module
 import sisl._array as _a
 from sisl.linalg import solve
 from .base import History, Metric
@@ -13,6 +14,7 @@ __all__ = ['DIISMixer', 'PulayMixer']
 __all__ += ['AdaptiveDIISMixer', 'AdaptivePulayMixer']
 
 
+@set_module("sisl.mixing")
 class DIISMixer(History, LinearMixer, Metric):
     r""" DIIS mixer """
 
@@ -94,9 +96,10 @@ class DIISMixer(History, LinearMixer, Metric):
             reduce(add, map(mul, coeff * self.weight, self._hist[1]))
 
 
-PulayMixer = type("PulayMixer", (DIISMixer, ), {})
+PulayMixer = set_module("sisl.mixing")(type("PulayMixer", (DIISMixer, ), {}))
 
 
+@set_module("sisl.mixing")
 class AdaptiveDIISMixer(DIISMixer):
     r""" Adapt the mixing weight according to the Lagrange multiplier
 
@@ -136,4 +139,4 @@ class AdaptiveDIISMixer(DIISMixer):
         return c
 
 
-AdaptivePulayMixer = type("AdaptivePulayMixer", (AdaptiveDIISMixer, ), {})
+AdaptivePulayMixer = set_module("sisl.mixing")(type("AdaptivePulayMixer", (AdaptiveDIISMixer, ), {}))

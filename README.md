@@ -145,8 +145,8 @@ Links to external and internal sites.
 [sisl-gitter]: https://gitter.im/sisl-tool/Lobby
 [issue]: https://github.com/zerothi/sisl/issues
 [pr]: https://github.com/zerothi/sisl/pulls
-[siesta]: https://launchpad.net/siesta
-[tbtrans]: https://launchpad.net/siesta
+[siesta]: https://gitlab.com/siesta-project/siesta
+[tbtrans]: https://gitlab.com/siesta-project/siesta
 [workshop]: https://github.com/zerothi/ts-tbt-sisl-tutorial
 [doi]: http://dx.doi.org/10.5281/zenodo.597181
 [lgpl]: http://www.gnu.org/licenses/lgpl.html

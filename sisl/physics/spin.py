@@ -1,9 +1,11 @@
 import numpy as np
 
+from sisl._internal import set_module
 
 __all__ = ['Spin']
 
 
+@set_module("sisl.physics")
 class Spin:
     r""" Spin class to determine configurations and spin components.
 

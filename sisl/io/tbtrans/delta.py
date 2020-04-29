@@ -3,6 +3,7 @@ import numpy as np
 # Import sile objects
 from ..sile import add_sile, sile_raise_write, SileWarning
 from .sile import SileCDFTBtrans
+from sisl._internal import set_module
 from sisl.utils import *
 import sisl._array as _a
 
@@ -22,6 +23,7 @@ eV2Ry = unit_convert('eV', 'Ry')
 
 
 # The delta nc file
+@set_module("sisl.io.tbtrans")
 class deltancSileTBtrans(SileCDFTBtrans):
     r""" TBtrans :math:`\delta` file object
 
@@ -460,6 +462,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
     def read_delta(self, **kwargs):
         """ Reads a delta model from the file """
         return self._read_class(SparseOrbitalBZSpin, **kwargs)
+
 
 add_sile('delta.nc', deltancSileTBtrans)
 add_sile('dH.nc', deltancSileTBtrans)

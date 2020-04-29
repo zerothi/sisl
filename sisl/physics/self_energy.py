@@ -6,6 +6,7 @@ from numpy import zeros_like, empty_like
 from numpy import complex128
 from numpy import abs as _abs
 
+from sisl._internal import set_module
 from sisl.messages import warn, info
 from sisl.utils.mathematics import fnorm
 from sisl.utils.ranges import array_arange
@@ -22,6 +23,7 @@ __all__ += ['RecursiveSI']
 __all__ += ['RealSpaceSE', 'RealSpaceSI']
 
 
+@set_module("sisl.physics")
 class SelfEnergy:
     r""" Self-energy object able to calculate the dense self-energy for a given sparse matrix
 
@@ -104,6 +106,7 @@ class SelfEnergy:
         pass
 
 
+@set_module("sisl.physics")
 class SemiInfinite(SelfEnergy):
     r""" Self-energy object able to calculate the dense self-energy for a given `SparseGeometry` in a semi-infinite chain.
 
@@ -152,6 +155,7 @@ class SemiInfinite(SelfEnergy):
                                                   {0: 'A', 1: 'B', 2: 'C'}.get(self.semi_inf))
 
 
+@set_module("sisl.physics")
 class RecursiveSI(SemiInfinite):
     """ Self-energy object using the Lopez-Sancho Lopez-Sancho algorithm """
 
@@ -517,6 +521,7 @@ class RecursiveSI(SemiInfinite):
         raise ValueError(self.__class__.__name__+': could not converge self-energy (LR) calculation')
 
 
+@set_module("sisl.physics")
 class RealSpaceSE(SelfEnergy):
     r""" Bulk real-space self-energy (or Green function) for a given physical object with periodicity
 
@@ -1012,7 +1017,7 @@ class RealSpaceSE(SelfEnergy):
         no = len(self.parent)
 
         # calculate the Green function
-        G = bz.asaverage().call(_func_bloch, dtype=dtype, no=no, tile=tile, idx0=idx0)
+        G = bz.apply.average(_func_bloch)(dtype=dtype, no=no, tile=tile, idx0=idx0)
 
         if is_k:
             # Revert k-points
@@ -1028,6 +1033,7 @@ class RealSpaceSE(SelfEnergy):
         del self._calc
 
 
+@set_module("sisl.physics")
 class RealSpaceSI(SelfEnergy):
     r""" Surface real-space self-energy (or Green function) for a given physical object with limited periodicity
 
@@ -1536,9 +1542,9 @@ class RealSpaceSI(SelfEnergy):
             _func_bloch = _calc_green
 
         # calculate the Green function
-        G = bz.asaverage().call(_func_bloch, dtype=dtype,
-                                surf_orbs=self._surface_orbs,
-                                semi_bulk=opt['semi_bulk'])
+        G = bz.apply.average(_func_bloch)(dtype=dtype,
+                                          surf_orbs=self._surface_orbs,
+                                          semi_bulk=opt['semi_bulk'])
 
         if is_k:
             # Restore Brillouin zone k-points

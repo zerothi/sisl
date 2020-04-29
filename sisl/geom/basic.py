@@ -1,5 +1,6 @@
 import numpy as np
 
+from sisl._internal import set_module
 from sisl import Geometry, SuperCell
 
 __all__ = ['sc', 'bcc', 'fcc', 'hcp']
@@ -16,6 +17,7 @@ _t45 = 1.
 _t60 = 3 ** .5
 
 
+@set_module("sisl.geom")
 def sc(alat, atom):
     """ Simple cubic lattice with 1 atom
 
@@ -35,6 +37,7 @@ def sc(alat, atom):
     return g
 
 
+@set_module("sisl.geom")
 def bcc(alat, atom, orthogonal=False):
     """ Body centered cubic lattice with 1 (non-orthogonal) or 2 atoms (orthogonal)
 
@@ -63,6 +66,7 @@ def bcc(alat, atom, orthogonal=False):
     return g
 
 
+@set_module("sisl.geom")
 def fcc(alat, atom, orthogonal=False):
     """ Face centered cubic lattice with 1 (non-orthogonal) or 4 atoms (orthogonal)
 
@@ -92,6 +96,7 @@ def fcc(alat, atom, orthogonal=False):
     return g
 
 
+@set_module("sisl.geom")
 def hcp(a, atom, coa=1.63333, orthogonal=False):
     """ Hexagonal closed packed lattice with 2 (non-orthogonal) or 4 atoms (orthogonal)
 

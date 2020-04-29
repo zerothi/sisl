@@ -6,7 +6,7 @@ from scipy.sparse import SparseEfficiencyWarning
 # Import sile objects
 from .sile import *
 
-# Import the geometry object
+from sisl._internal import set_module
 from sisl.messages import warn
 from sisl import Geometry, Atom, SuperCell
 from sisl.sparse import ispmatrix, ispmatrixd
@@ -18,6 +18,7 @@ from sisl import _array as _a
 __all__ = ['hamiltonianSile']
 
 
+@set_module("sisl.io")
 class hamiltonianSile(Sile):
     """ Hamiltonian file object """
 

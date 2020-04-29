@@ -1,7 +1,7 @@
 import re
 import numpy as np
 
-# Import sile objects
+from sisl._internal import set_module
 import sisl._array as _a
 from .sile import Sile, add_sile, sile_fh_open, sile_raise_write
 
@@ -9,6 +9,7 @@ from .sile import Sile, add_sile, sile_fh_open, sile_raise_write
 __all__ = ['tableSile', 'TableSile']
 
 
+@set_module("sisl.io")
 class tableSile(Sile):
     """ ASCII tabular formatted data
 

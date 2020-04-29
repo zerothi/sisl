@@ -1,5 +1,3 @@
-#!python
-#cython: language_level=3
 cimport cython
 
 import numpy as np
@@ -70,7 +68,8 @@ def _phase_nc_diag_csr_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv
                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + vv
 
-    return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nr * 2))
+    nr = nr * 2
+    return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
 
 
 @cython.boundscheck(False)
@@ -121,7 +120,8 @@ def _phase_nc_diag_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + vv
                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + vv
 
-    return csr_matrix((V, V_COL, V_PTR), shape=(nr * 2, nr * 2))
+    nr = nr * 2
+    return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
 
 
 @cython.boundscheck(False)

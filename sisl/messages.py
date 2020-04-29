@@ -19,40 +19,48 @@ complex.
 """
 import warnings
 
+from ._internal import set_module
+
 
 __all__ = ['SislDeprecation', 'SislInfo', 'SislWarning', 'SislException', 'SislError']
-__all__ += ['warn', 'info', 'deprecate']
+__all__ += ['warn', 'info', 'deprecate', "deprecate_method"]
 __all__ += ['tqdm_eta']
 
 # The local registry for warnings issued
 _sisl_warn_registry = {}
 
 
+@set_module("sisl")
 class SislException(Exception):
     """ Sisl exception """
     pass
 
 
+@set_module("sisl")
 class SislError(SislException):
     """ Sisl error """
     pass
 
 
+@set_module("sisl")
 class SislWarning(SislException, UserWarning):
     """ Sisl warnings """
     pass
 
 
+@set_module("sisl")
 class SislDeprecation(SislWarning):
     """ Sisl deprecation informations """
     pass
 
 
+@set_module("sisl")
 class SislInfo(SislWarning):
     """ Sisl informations """
     pass
 
 
+@set_module("sisl")
 def deprecate(message):
     """ Issue sisl deprecation warnings
 
@@ -63,6 +71,24 @@ def deprecate(message):
     warnings.warn_explicit(message, SislDeprecation, 'dep', 0, registry=_sisl_warn_registry)
 
 
+@set_module("sisl")
+def deprecate_method(msg):
+    """ Decorator for deprecating a method
+
+    Parameters
+    ----------
+    msg : str
+       message displayed
+    """
+    def install_deprecate(func):
+        def wrapped(*args, **kwargs):
+            deprecate(msg)
+            return func(*args, **kwargs)
+        return wrapped
+    return install_deprecate
+
+
+@set_module("sisl")
 def warn(message, category=None, register=False):
     """ Show warnings in short context form with sisl
 
@@ -86,6 +112,7 @@ def warn(message, category=None, register=False):
         warnings.warn_explicit(message, category, 'warn', 0)
 
 
+@set_module("sisl")
 def info(message, category=None, register=False):
     """ Show info in short context form with sisl
 
@@ -166,6 +193,7 @@ except ImportError:
             _stdout.flush()
 
 
+@set_module("sisl")
 def tqdm_eta(count, desc, unit, eta):
     """ Create a TQDM eta progress bar in when it is requested. Otherwise returns a fake object
 

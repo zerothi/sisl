@@ -6,7 +6,7 @@ import os.path as osp
 import numpy as np
 from numpy import abs as np_abs
 
-
+from sisl._internal import set_module
 from sisl.messages import info, warn
 from .sile import SileGULP
 from .fc import fcSileGULP
@@ -19,6 +19,7 @@ from sisl.physics import DynamicalMatrix
 __all__ = ['gotSileGULP']
 
 
+@set_module("sisl.io.gulp")
 class gotSileGULP(SileGULP):
     """ GULP output file object
 
@@ -173,7 +174,9 @@ class gotSileGULP(SileGULP):
         Parameters
         ----------
         cutoff: float, optional
-           absolute values below the cutoff are considered 0. Defaults to 1e-4 eV/Ang**2.
+           absolute values below the cutoff are considered 0. Defaults to 0. eV/Ang**2.
+        hermitian : bool, optional
+           if true (default), the returned dynamical matrix will be hermitian
         dtype: np.dtype (np.float64)
            default data-type of the matrix
         order: list of str, optional
@@ -190,7 +193,11 @@ class gotSileGULP(SileGULP):
                 # Convert the dynamical matrix such that a diagonalization returns eV ^ 2
                 scale = constant.hbar / units('Ang', 'm') / units('eV amu', 'J kg') ** 0.5
                 v.data *= scale ** 2
-                return DynamicalMatrix.fromsp(geom, v)
+                v = DynamicalMatrix.fromsp(geom, v)
+                if kwargs.get("hermitian", True):
+                    v.finalize()
+                    v = (v + v.transpose()) * 0.5
+                return v
 
         return None
 
@@ -201,7 +208,7 @@ class gotSileGULP(SileGULP):
         from scipy.sparse import lil_matrix
 
         # Default cutoff eV / Ang ** 2
-        cutoff = kwargs.get('cutoff', 1.e-4)
+        cutoff = kwargs.get('cutoff', 0.)
         dtype = kwargs.get('dtype', np.float64)
 
         nxyz = geometry.no
@@ -209,10 +216,10 @@ class gotSileGULP(SileGULP):
 
         f, _ = self.step_to(self._keys['dyn'])
         if not f:
-            info(self.__class__.__name__ + ' tries to lookup the Dynamical matrix '
-                             'using key "' + self._keys['dyn'] + '". '
-                             'Use .set_dynamical_matrix_key(...) to search for different name.'
-                             'This could not be found found in file: "{}".'.format(self.file))
+            info(f"{self.__class__.__name__}.read_dynamical_matrix tries to lookup the Dynamical matrix "
+                 "using key '{self._keys['dyn']}'. "
+                 "Use .set_dynamical_matrix_key(...) to search for different name."
+                 "This could not be found found in file: {self.file}")
             return None
 
         # skip 1 line
@@ -251,7 +258,7 @@ class gotSileGULP(SileGULP):
         # Convert to COO matrix format
         dyn = dyn.tocoo()
 
-        # Construct mass ** (-.5), so we can check cutoff correctly
+        # Construct mass ** (-.5), so we can check cutoff correctly (in unit eV/Ang**2)
         mass_sqrt = geometry.atoms.mass.repeat(3) ** 0.5
         dyn.data[:] *= mass_sqrt[dyn.row] * mass_sqrt[dyn.col]
         dyn.data[np_abs(dyn.data) < cutoff] = 0.

@@ -13,6 +13,9 @@ select="E101,E20,E211,E231,E301,E302,E303,E304,E309,W291,W293,W391"
 select="$select,E711,E712"
 # Imports on single lines
 select="$select,E401"
+
+# pretty print command select running
+echo "autopep8 --select \"$select\""
 autopep8 -j -1 --select "$select" --in-place -r --exclude build,dist . **/*.pyx **/*.pxd
 
 # Non-Python files
@@ -22,5 +25,3 @@ autopep8 --select "W291,W293" --in-place CHANGELOG
 sed -i -s -e 's/^[[:space:]]*$//g' **/*.f90
 # Remove trailing white-space
 sed -i -s -e 's/\([^[:space:]]\)[[:space:]]?$/\1/g' **/*.f90
-# Delete all comments in Cythonized sources
-sed -i -s -e '/^# [0-9].*\.c\"/d' sisl/**/*.c

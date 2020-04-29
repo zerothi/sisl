@@ -20,7 +20,7 @@ One may also plot real-space wavefunctions.
    velocity
    velocity_matrix
    berry_phase
-   berry_flux
+   berry_curvature
    conductivity
    wavefunction
    spin_moment
@@ -61,6 +61,7 @@ from numpy import cos, sin, pi
 from numpy import int32, complex128
 from numpy import add, angle, sort
 
+from sisl._internal import set_module
 from sisl import units, constant
 from sisl.supercell import SuperCell
 from sisl.geometry import Geometry
@@ -82,13 +83,14 @@ __all__ = ['DOS', 'PDOS']
 __all__ += ['velocity', 'velocity_matrix']
 __all__ += ['spin_moment', 'spin_orbital_moment', 'spin_squared']
 __all__ += ['inv_eff_mass_tensor']
-__all__ += ['berry_phase', 'berry_flux']
+__all__ += ['berry_phase', 'berry_curvature']
 __all__ += ['conductivity']
 __all__ += ['wavefunction']
 __all__ += ['CoefficientElectron', 'StateElectron', 'StateCElectron']
 __all__ += ['EigenvalueElectron', 'EigenvectorElectron', 'EigenstateElectron']
 
 
+@set_module("sisl.physics.electron")
 def DOS(E, eig, distribution='gaussian'):
     r""" Calculate the density of states (DOS) for a set of energies, `E`, with a distribution function
 
@@ -129,6 +131,7 @@ def DOS(E, eig, distribution='gaussian'):
     return reduce(lambda DOS, eig: DOS + distribution(E - eig), eig, 0.)
 
 
+@set_module("sisl.physics.electron")
 def PDOS(E, eig, state, S=None, distribution='gaussian', spin=None):
     r""" Calculate the projected density of states (PDOS) for a set of energies, `E`, with a distribution function
 
@@ -261,6 +264,7 @@ def PDOS(E, eig, state, S=None, distribution='gaussian', spin=None):
     return PDOS
 
 
+@set_module("sisl.physics.electron")
 def spin_moment(state, S=None):
     r""" Calculate the spin magnetic moment (also known as spin texture)
 
@@ -330,8 +334,8 @@ def spin_moment(state, S=None):
     # TODO but also way more memory demanding!
     for i in range(len(state)):
         Sstate = S.dot(state[i].reshape(-1, 2))
-        D = (conj(state[i]) * Sstate.ravel()).real.reshape(-1, 2)
-        s[i, 2] = (D[:, 0] - D[:, 1]).sum()
+        D = (conj(state[i]) * Sstate.ravel()).real.reshape(-1, 2).sum(0)
+        s[i, 2] = D[0] - D[1]
         D = 2 * conj(state[i, 1::2]).dot(Sstate[:, 0])
         s[i, 0] = D.real
         s[i, 1] = D.imag
@@ -339,6 +343,7 @@ def spin_moment(state, S=None):
     return s
 
 
+@set_module("sisl.physics.electron")
 def spin_orbital_moment(state, S=None):
     r""" Calculate the spin magnetic moment per orbital site (equivalent to spin-moment per orbital)
 
@@ -414,6 +419,7 @@ def spin_orbital_moment(state, S=None):
     return s
 
 
+@set_module("sisl.physics.electron")
 def spin_squared(state_alpha, state_beta, S=None):
     r""" Calculate the spin squared expectation value between two spin states
 
@@ -499,6 +505,7 @@ def spin_squared(state_alpha, state_beta, S=None):
     return oplist((Sa, Sb))
 
 
+@set_module("sisl.physics.electron")
 def velocity(state, dHk, energy=None, dSk=None, degenerate=None):
     r""" Calculate the velocity of a set of states
 
@@ -611,6 +618,7 @@ def _velocity_ortho(state, dHk, degenerate):
     return v * _velocity_const
 
 
+@set_module("sisl.physics.electron")
 def velocity_matrix(state, dHk, energy=None, dSk=None, degenerate=None):
     r""" Calculate the velocity matrix of a set of states
 
@@ -730,10 +738,12 @@ def _velocity_matrix_ortho(state, dHk, degenerate, dtype):
     return v * _velocity_const
 
 
-def berry_flux(state, energy, dHk, dSk=None, degenerate=None, complex=False):
+@set_module("sisl.physics.electron")
+def berry_curvature(state, energy, dHk, dSk=None, degenerate=None, complex=False):
     r""" Calculate the Berry curvature matrix for a set of states (using Kubo)
 
-    The Berry curvature is calculated using the following expression (:math:`\alpha`, :math:`\beta` corresponding to Cartesian directions):
+    The Berry curvature is calculated using the following expression
+    (:math:`\alpha`, :math:`\beta` corresponding to Cartesian directions):
 
     .. math::
 
@@ -741,10 +751,10 @@ def berry_flux(state, energy, dHk, dSk=None, degenerate=None, complex=False):
                 \frac{v_{nm,\alpha} v_{mn,\beta}}
                      {[\epsilon_m - \epsilon_n]^2}
 
-    Note that one should take the imaginary part of the returned value to retrieve the actual
-    flux.
+    Note that this method optionally returns the complex valued equivalent of the above.
+    I.e. :math:`\Im` is not applied if `complex` is true.
 
-    For details see [1]_.
+    For details see Eq. (11) in [1]_ or Eq. (2.59) in [2]_.
 
     Parameters
     ----------
@@ -775,6 +785,7 @@ def berry_flux(state, energy, dHk, dSk=None, degenerate=None, complex=False):
     References
     ----------
     .. [1] X. Wang, J. R. Yates, I. Souza, D. Vanderbilt, "Ab initio calculation of the anomalous Hall conductivity by Wannier interpolation", PRB, *74*, 195118 (2006)
+    .. [2] J. K. Asboth, L. Oroslany, A. Palyi, "A Short Course on Topological Insulators", arXiv *1509.02295* (2015).
 
     Returns
     -------
@@ -782,7 +793,7 @@ def berry_flux(state, energy, dHk, dSk=None, degenerate=None, complex=False):
         Berry flux with final dimension ``(state.shape[0], 3, 3)`` (complex if `complex` is True).
     """
     if state.ndim == 1:
-        return berry_flux(state.reshape(1, -1), energy, dHk, dSk, degenerate, complex).ravel()
+        return berry_curvature(state.reshape(1, -1), energy, dHk, dSk, degenerate, complex).ravel()
 
     if degenerate is None:
         # Fix following routine
@@ -793,17 +804,17 @@ def berry_flux(state, energy, dHk, dSk=None, degenerate=None, complex=False):
         v_matrix = _velocity_matrix_ortho(state, dHk, degenerate, dtype)
     else:
         v_matrix = _velocity_matrix_non_ortho(state, dHk, energy, dSk, degenerate, dtype)
-        warn('berry_flux calculation for non-orthogonal basis sets are not tested! Do not expect this to be correct!')
+        warn('berry_curvature calculation for non-orthogonal basis sets are not tested! Do not expect this to be correct!')
     if complex:
-        return _berry_flux(v_matrix, energy, degenerate)
-    return _berry_flux(v_matrix, energy, degenerate).imag
+        return _berry_curvature(v_matrix, energy, degenerate)
+    return _berry_curvature(v_matrix, energy, degenerate).imag
 
 
 # This reverses the velocity unit (squared since Berry curvature is v.v)
-_berry_flux_const = constant.hbar('eV ps') ** 2
+_berry_curvature_const = 1 / _velocity_const ** 2
 
 
-def _berry_flux(v_M, energy, degenerate):
+def _berry_curvature(v_M, energy, degenerate):
     r""" Calculate Berry curvature for a given velocity matrix """
 
     # All matrix elements along the 3 directions
@@ -830,11 +841,12 @@ def _berry_flux(v_M, energy, degenerate):
 
         # Note we do not use an epsilon for accuracy
         fac = - 2 / (energy[idx] - energy[n]) ** 2
-        sigma[n, :, :] = einsum('i,ij,il->jl', fac, v_M[idx, n], v_M[n, idx])
+        sigma[n, :, :] = einsum("i,ij,il->jl", fac, v_M[idx, n], v_M[n, idx])
 
-    return sigma * _berry_flux_const
+    return sigma * _berry_curvature_const
 
 
+@set_module("sisl.physics.electron")
 def conductivity(bz, distribution='fermi-dirac', method='ahc', complex=False):
     r""" Electronic conductivity for a given `BrillouinZone` integral
 
@@ -860,7 +872,7 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc', complex=False):
 
     See Also
     --------
-    berry_flux: method used to calculate the Berry-flux for calculating the conductivity
+    berry_curvature: method used to calculate the Berry-flux for calculating the conductivity
     """
     from .hamiltonian import Hamiltonian
     # Currently we require the conductivity calculation to *only* accept Hamiltonians
@@ -874,16 +886,17 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc', complex=False):
     if method == 'ahc':
         def _ahc(es):
             occ = distribution(es.eig)
-            bc = es.berry_flux(complex=complex)
+            bc = es.berry_curvature(complex=complex)
             return einsum('i,ijl->jl', occ, bc)
 
-        cond = - bz.asaverage().eigenstate(wrap=_ahc) / constant.hbar('eV ps')
+        cond = - bz.apply.average.eigenstate(wrap=_ahc) / constant.hbar('eV ps')
     else:
         raise SislError('conductivity: requires the method to be [ahc]')
 
     return cond
 
 
+@set_module("sisl.physics.electron")
 def inv_eff_mass_tensor(state, ddHk, energy=None, ddSk=None, degenerate=None, as_matrix=False):
     r""" Calculate the effective mass tensor for a set of states (missing off-diagonal terms)
 
@@ -1042,6 +1055,7 @@ def _inv_eff_mass_tensor_ortho(state, ddHk, degenerate, as_matrix):
     return M * _inv_eff_mass_const
 
 
+@set_module("sisl.physics.electron")
 def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
     r""" Calculate the Berry-phase on a loop using a predefined path
 
@@ -1185,7 +1199,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
             return prd
 
     # Do the actual calculation of the final matrix
-    d = _berry(contour.asyield().eigenstate())
+    d = _berry(contour.apply.iter.eigenstate())
 
     # Correct return values
     if eigvals:
@@ -1197,6 +1211,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
     return ret
 
 
+@set_module("sisl.physics.electron")
 def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False):
     r""" Add the wave-function (`Orbital.psi`) component of each orbital to the grid
 
@@ -1567,10 +1582,11 @@ class _electron_State:
             # Calculate the overlap matrix
             if not self.parent.orthogonal:
                 opt = {'k': self.info.get('k', (0, 0, 0)),
-                       'format': format}
+                       "dtype": self.dtype,
+                       "format": format}
                 gauge = self.info.get('gauge', None)
                 if not gauge is None:
-                    opt['gauge'] = gauge
+                    opt["gauge"] = gauge
                 return self.parent.Sk(**opt)
 
         if self.__is_nc():
@@ -1720,15 +1736,15 @@ class _electron_State:
 
         if diag:
             if ndim == 2:
-                a = einsum('ij,ji->i', s.conj(), A.dot(s.T))
+                a = einsum("ij,ji->i", s.conj(), A.dot(s.T))
             elif ndim == 1:
-                a = einsum('ij,j,ij->i', s.conj(), A, s)
+                a = einsum("ij,j,ij->i", s.conj(), A, s)
         elif ndim == 2:
             a = s.conj().dot(A.dot(s.T))
         elif ndim == 1:
-            a = einsum('ij,j,jk', s.conj(), A, s.T)
+            a = einsum("ij,j,jk", s.conj(), A, s.T)
         else:
-            raise ValueError('expectation: requires matrix A to be 1D or 2D')
+            raise ValueError("expectation: requires matrix A to be 1D or 2D")
         return a
 
     def wavefunction(self, grid, spinor=0, eta=False):
@@ -1777,12 +1793,12 @@ class _electron_State:
         """
         # These calls will fail if the gauge is not specified.
         # In that case it will not do anything
-        if self.info.get('gauge', gauge) == gauge:
+        if self.info.get("gauge", gauge) == gauge:
             # Quick return
             return
 
         # Update gauge value
-        self.info['gauge'] = gauge
+        self.info["gauge"] = gauge
 
         # Check that we can do a gauge transformation
         k = _a.asarrayd(self.info.get('k'))
@@ -1792,22 +1808,32 @@ class _electron_State:
         g = self.parent.geometry
         phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], dot(k, g.rcell))
 
+        try:
+            if self.parent.spin.has_noncolinear:
+                # for NC/SOC we have a 2x2 spin-box per orbital
+                phase = np.repeat(phase, 2)
+        except:
+            pass
+
         if gauge == 'r':
             self.state *= np.exp(1j * phase).reshape(1, -1)
         elif gauge == 'R':
             self.state *= np.exp(-1j * phase).reshape(1, -1)
 
 
+@set_module("sisl.physics.electron")
 class CoefficientElectron(Coefficient):
     r""" Coefficients describing some physical quantity related to electrons """
     __slots__ = []
 
 
+@set_module("sisl.physics.electron")
 class StateElectron(_electron_State, State):
     r""" A state describing a physical quantity related to electrons """
     __slots__ = []
 
 
+@set_module("sisl.physics.electron")
 class StateCElectron(_electron_State, StateC):
     r""" A state describing a physical quantity related to electrons, with associated coefficients of the state """
     __slots__ = []
@@ -1830,10 +1856,10 @@ class StateCElectron(_electron_State, StateC):
            precision used to find degenerate states.
         """
         try:
-            opt = {'k': self.info.get('k', (0, 0, 0))}
-            gauge = self.info.get('gauge', None)
+            opt = {'k': self.info.get('k', (0, 0, 0)), "dtype": self.dtype}
+            gauge = self.info.get("gauge", None)
             if not gauge is None:
-                opt['gauge'] = gauge
+                opt["gauge"] = gauge
 
             # Get dSk before spin
             if self.parent.orthogonal:
@@ -1841,8 +1867,8 @@ class StateCElectron(_electron_State, StateC):
             else:
                 dSk = self.parent.dSk(**opt)
 
-            if 'spin' in self.info:
-                opt['spin'] = self.info.get('spin', None)
+            if "spin" in self.info:
+                opt["spin"] = self.info.get("spin", None)
             deg = self.degenerate(eps)
         except:
             raise SislError(self.__class__.__name__ + '.velocity requires the parent to have a spin associated.')
@@ -1866,10 +1892,10 @@ class StateCElectron(_electron_State, StateC):
            precision used to find degenerate states.
         """
         try:
-            opt = {'k': self.info.get('k', (0, 0, 0))}
-            gauge = self.info.get('gauge', None)
+            opt = {'k': self.info.get('k', (0, 0, 0)), "dtype": self.dtype}
+            gauge = self.info.get("gauge", None)
             if not gauge is None:
-                opt['gauge'] = gauge
+                opt["gauge"] = gauge
 
             # Get dSk before spin
             if self.parent.orthogonal:
@@ -1877,23 +1903,23 @@ class StateCElectron(_electron_State, StateC):
             else:
                 dSk = self.parent.dSk(**opt)
 
-            if 'spin' in self.info:
-                opt['spin'] = self.info.get('spin', None)
+            if "spin" in self.info:
+                opt["spin"] = self.info.get("spin", None)
             deg = self.degenerate(eps)
         except:
-            raise SislError(self.__class__.__name__ + '.velocity_matrix requires the parent to have a spin associated.')
+            raise SislError(self.__class__.__name__ + ".velocity_matrix requires the parent to have a spin associated.")
         return velocity_matrix(self.state, self.parent.dHk(**opt), self.c, dSk, degenerate=deg)
 
-    def berry_flux(self, complex=False, eps=1e-4):
+    def berry_curvature(self, complex=False, eps=1e-4):
         r""" Calculate Berry curvature for the states
 
-        This routine calls `~sisl.physics.electron.berry_flux` with appropriate arguments
+        This routine calls `~sisl.physics.electron.berry_curvature` with appropriate arguments
         and returns the Berry curvature for the states.
 
         Note that the coefficients associated with the `StateCElectron` *must* correspond
         to the energies of the states.
 
-        See `~sisl.physics.electron.berry_flux` for details.
+        See `~sisl.physics.electron.berry_curvature` for details.
 
         Parameters
         ----------
@@ -1903,10 +1929,10 @@ class StateCElectron(_electron_State, StateC):
            precision used to find degenerate states.
         """
         try:
-            opt = {'k': self.info.get('k', (0, 0, 0))}
-            gauge = self.info.get('gauge', None)
+            opt = {'k': self.info.get('k', (0, 0, 0)), "dtype": self.dtype}
+            gauge = self.info.get("gauge", None)
             if not gauge is None:
-                opt['gauge'] = gauge
+                opt["gauge"] = gauge
 
             # Get dSk before spin
             if self.parent.orthogonal:
@@ -1914,12 +1940,12 @@ class StateCElectron(_electron_State, StateC):
             else:
                 dSk = self.parent.dSk(**opt)
 
-            if 'spin' in self.info:
-                opt['spin'] = self.info.get('spin', None)
+            if "spin" in self.info:
+                opt["spin"] = self.info.get("spin", None)
             deg = self.degenerate(eps)
         except:
-            raise SislError(self.__class__.__name__ + '.berry_flux requires the parent to have a spin associated.')
-        return berry_flux(self.state, self.c, self.parent.dHk(**opt), dSk, degenerate=deg, complex=complex)
+            raise SislError(self.__class__.__name__ + ".berry_curvature requires the parent to have a spin associated.")
+        return berry_curvature(self.state, self.c, self.parent.dHk(**opt), dSk, degenerate=deg, complex=complex)
 
     def inv_eff_mass_tensor(self, as_matrix=False, eps=1e-3):
         r""" Calculate inverse effective mass tensor for the states
@@ -1952,10 +1978,10 @@ class StateCElectron(_electron_State, StateC):
             # Ensure we are dealing with the r gauge
             self.change_gauge('r')
 
-            opt = {'k': self.info.get('k', (0, 0, 0))}
-            gauge = self.info.get('gauge', None)
+            opt = {'k': self.info.get('k', (0, 0, 0)), "dtype": self.dtype}
+            gauge = self.info.get("gauge", None)
             if not gauge is None:
-                opt['gauge'] = gauge
+                opt["gauge"] = gauge
 
             # Get dSk before spin
             if self.parent.orthogonal:
@@ -1963,14 +1989,15 @@ class StateCElectron(_electron_State, StateC):
             else:
                 ddSk = self.parent.ddSk(**opt)
 
-            if 'spin' in self.info:
-                opt['spin'] = self.info.get('spin', None)
+            if "spin" in self.info:
+                opt["spin"] = self.info.get("spin", None)
             degenerate = self.degenerate(eps)
         except:
-            raise SislError(self.__class__.__name__ + '.inv_eff_mass_tensor requires the parent to have a spin associated.')
+            raise SislError(self.__class__.__name__ + ".inv_eff_mass_tensor requires the parent to have a spin associated.")
         return inv_eff_mass_tensor(self.state, self.parent.ddHk(**opt), self.c, ddSk, degenerate, as_matrix)
 
 
+@set_module("sisl.physics.electron")
 class EigenvalueElectron(CoefficientElectron):
     r""" Eigenvalues of electronic states, no eigenvectors retained
 
@@ -1983,7 +2010,7 @@ class EigenvalueElectron(CoefficientElectron):
         """ Eigenvalues """
         return self.c
 
-    def occupation(self, distribution='fermi_dirac'):
+    def occupation(self, distribution="fermi_dirac"):
         r""" Calculate the occupations for the states according to a distribution function
 
         Parameters
@@ -2000,7 +2027,7 @@ class EigenvalueElectron(CoefficientElectron):
             distribution = get_distribution(distribution)
         return distribution(self.eig)
 
-    def DOS(self, E, distribution='gaussian'):
+    def DOS(self, E, distribution="gaussian"):
         r""" Calculate DOS for provided energies, `E`.
 
         This routine calls `sisl.physics.electron.DOS` with appropriate arguments
@@ -2011,6 +2038,7 @@ class EigenvalueElectron(CoefficientElectron):
         return DOS(E, self.eig, distribution)
 
 
+@set_module("sisl.physics.electron")
 class EigenvectorElectron(StateElectron):
     r""" Eigenvectors of electronic states, no eigenvalues retained
 
@@ -2019,6 +2047,7 @@ class EigenvectorElectron(StateElectron):
     __slots__ = []
 
 
+@set_module("sisl.physics.electron")
 class EigenstateElectron(StateCElectron):
     r""" Eigen states of electrons with eigenvectors and eigenvalues.
 
@@ -2032,7 +2061,7 @@ class EigenstateElectron(StateCElectron):
         r""" Eigenvalues for each state """
         return self.c
 
-    def occupation(self, distribution='fermi_dirac'):
+    def occupation(self, distribution="fermi_dirac"):
         r""" Calculate the occupations for the states according to a distribution function
 
         Parameters
@@ -2049,7 +2078,7 @@ class EigenstateElectron(StateCElectron):
             distribution = get_distribution(distribution)
         return distribution(self.eig)
 
-    def DOS(self, E, distribution='gaussian'):
+    def DOS(self, E, distribution="gaussian"):
         r""" Calculate DOS for provided energies, `E`.
 
         This routine calls `sisl.physics.electron.DOS` with appropriate arguments
@@ -2059,7 +2088,7 @@ class EigenstateElectron(StateCElectron):
         """
         return DOS(E, self.c, distribution)
 
-    def PDOS(self, E, distribution='gaussian'):
+    def PDOS(self, E, distribution="gaussian"):
         r""" Calculate PDOS for provided energies, `E`.
 
         This routine calls `~sisl.physics.electron.PDOS` with appropriate arguments

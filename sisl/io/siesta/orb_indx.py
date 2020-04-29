@@ -1,16 +1,20 @@
 from .sile import SileSiesta
 from ..sile import add_sile, sile_fh_open
 
+from sisl._internal import set_module
 from sisl import Orbital, AtomicOrbital
 from sisl import PeriodicTable, Atom, Atoms
 from sisl._array import arrayi
 from sisl.unit.siesta import unit_convert
 
-Bohr2Ang = unit_convert('Bohr', 'Ang')
 
 __all__ = ['orbindxSileSiesta']
 
 
+Bohr2Ang = unit_convert('Bohr', 'Ang')
+
+
+@set_module("sisl.io.siesta")
 class orbindxSileSiesta(SileSiesta):
     """ Orbital information file """
 

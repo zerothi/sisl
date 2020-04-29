@@ -1,16 +1,19 @@
 import numpy as np
 
+from ..sile import add_sile, sile_fh_open, sile_raise_write
 from .sile import SileSiesta
-from ..sile import *
 
+from sisl._internal import set_module
 from sisl import Geometry, Atom, Atoms, SuperCell
 from sisl.unit.siesta import unit_convert
-
-Bohr2Ang = unit_convert('Bohr', 'Ang')
 
 __all__ = ['xvSileSiesta']
 
 
+Bohr2Ang = unit_convert('Bohr', 'Ang')
+
+
+@set_module("sisl.io.siesta")
 class xvSileSiesta(SileSiesta):
     """ Geometry file """
 

@@ -8,26 +8,32 @@ The Brillouin zone objects are all special classes enabling easy manipulation
 of an underlying physical quantity.
 
 Quite often a physical quantity will be required to be averaged, or calculated individually
-over a number of k-points. In this regard can the Brillouin zone objects help.
+over a number of k-points. In this regard the Brillouin zone objects can help.
 
-A basic principle of the BrillouinZone objects is that *any* method called on a BrillouinZone
-object will defer to the attached parent to the class. Lets take an example.
+The BrillouinZone object allows direct looping of contained k-points while invoking
+particular methods from the contained object.
+This is best shown with an example:
 
 >>> H = Hamiltonian(...)
 >>> bz = BrillouinZone(H)
->>> bz.eigh()
+>>> bz.apply.array.eigh()
 
-This will actually calculate the eigenvalues for all k-points associated with the BrillouinZone.
+This will calculate eigenvalues for all k-points associated with the `BrillouinZone` and
+return everything as an array. The `~sisl.physics.BrillouinZone.dispatch` property of
+the `BrillouinZone` object has several use cases (here ``array`` is shown).
+
 This may be extremely convenient when calculating band-structures:
 
 >>> H = Hamiltonian(...)
 >>> bs = BandStructure(H, [[0, 0, 0], [0.5, 0, 0]], 100)
->>> bs_eig = bs.eigh().T
+>>> bs_eig = bs.apply.array.eigh().T
+>>> plt.plot(bs.lineark(), bs_eig)
 
-and then you have all eigenvalues for all the k-points.
+and then you have all eigenvalues for all the k-points along the path.
 
 Sometimes one may want to post-process the data for each k-point.
-As an example lets post-process the DOS on a per k-point basis.
+As an example lets post-process the DOS on a per k-point basis while
+calculating the average:
  
 >>> H = Hamiltonian(...)
 >>> mp = MonkhorstPack(H, [10, 10, 10])
@@ -39,12 +45,12 @@ As an example lets post-process the DOS on a per k-point basis.
 ...    v = eigenstate.velocity()
 ...    V = (v ** 2).sum(1)
 ...    return DOS.reshape(-1, 1) * v ** 2 / V.reshape(-1, 1)
->>> DOS = mp.asaverage().eigenstate(wrap=wrap_DOS, eta=True)
+>>> DOS = mp.apply.average.eigenstate(wrap=wrap_DOS, eta=True)
 
 This will, calculate the Monkhorst pack k-averaged DOS split into 3 Cartesian
 directions based on the eigenstates velocity direction. This method of manipulating
 the result can be extremely powerful to calculate many quantities while running an
-efficient BrillouinZone average. The `eta` flag will print, to stdout, a progress-bar.
+efficient `BrillouinZone` average. The `eta` flag will print, to stdout, a progress-bar.
 The usage of the ``wrap`` method are also passed optional arguments, ``parent`` which is
 ``H`` in the above example. ``k`` and ``weight`` are the current k-point and weight of the
 corresponding k-point. An example could be to manipulate the DOS depending on the k-point and
@@ -56,10 +62,10 @@ weight:
 >>> def wrap_DOS(eigenstate, k, weight):
 ...    # Calculate the DOS for the eigenstates and weight by k_x and weight
 ...    return eigenstate.DOS(E) * k[0] * weight
->>> DOS = mp.assum().eigenstate(wrap=wrap_DOS, eta=True)
+>>> DOS = mp.apply.sum.eigenstate(wrap=wrap_DOS, eta=True)
 
 When using wrap to calculate more than one quantity per eigenstate it may be advantageous
-to use `~sisl.oplist` to handle cases of `BrillouinZone.asaverage` and `BrillouinZone.assum`.
+to use `~sisl.oplist` to handle cases of `BrillouinZone.apply.average` and `BrillouinZone.apply.sum`.
 
 >>> H = Hamiltonian(...)
 >>> mp = MonkhorstPack(H, [10, 10, 10])
@@ -71,7 +77,7 @@ to use `~sisl.oplist` to handle cases of `BrillouinZone.asaverage` and `Brilloui
 ...    # Calculate velocity for the eigenstates
 ...    v = eigenstate.velocity()
 ...    return oplist([DOS, PDOS, v])
->>> DOS, PDOS, v = mp.asaverage().eigenstate(wrap=wrap_multiple, eta=True)
+>>> DOS, PDOS, v = mp.apply.average.eigenstate(wrap=wrap_multiple, eta=True)
 
 Which does mathematical operations (averaging/summing) using `~sisl.oplist`.
 
@@ -86,18 +92,23 @@ Which does mathematical operations (averaging/summing) using `~sisl.oplist`.
 
 import types
 from numbers import Integral, Real
+from functools import wraps, reduce
+import operator as op
+import warnings
 
 from numpy import pi
 import numpy as np
 from numpy import sum, dot, cross, argsort
 
+from sisl._dispatcher import ClassDispatcher, AbstractDispatch
+from sisl._internal import set_module
 from sisl.oplist import oplist
 from sisl.unit import units
 from sisl.quaternion import Quaternion
 from sisl.utils.mathematics import cart2spher, fnorm
 from sisl.utils.misc import allow_kwargs
 import sisl._array as _a
-from sisl.messages import info, SislError, tqdm_eta
+from sisl.messages import info, SislError, tqdm_eta, deprecate_method, deprecate
 from sisl.supercell import SuperCell
 from sisl.grid import Grid
 
@@ -109,8 +120,24 @@ except ImportError:
 
 
 __all__ = ['BrillouinZone', 'MonkhorstPack', 'BandStructure']
+__all__ += ["BrillouinZoneApply", "BrillouinZoneParentApply"]
 
 
+def _asoplist(arg):
+    if isinstance(arg, tuple):
+        return oplist(arg)
+    elif isinstance(arg, list) and not isinstance(arg, oplist):
+        return oplist(arg)
+    return arg
+
+
+def _apply_str(s):
+    def __str__(self):
+        return f"Apply{{{s}}}"
+    return __str__
+
+
+@set_module("sisl.physics")
 class BrillouinZone:
     """ A class to construct Brillouin zone related quantities
 
@@ -156,7 +183,9 @@ class BrillouinZone:
             raise ValueError(self.__class__.__name__ + '.__init__ requires input k-points and weights to be of equal length.')
 
         # Instantiate the array call
-        self.asarray()
+        with warnings.catch_warnings():
+            warnings.filterwarnings('ignore')
+            self.asarray()
 
     def set_parent(self, parent):
         """ Update the parent associated to this object
@@ -407,8 +436,10 @@ class BrillouinZone:
 
         return k
 
+    #@deprecate_method TODO
     _bz_attr = None
 
+    #@deprecate_method TODO
     def __getattr__(self, attr):
         try:
             getattr(self.parent, attr)
@@ -418,12 +449,14 @@ class BrillouinZone:
             raise AttributeError("'{}' does not exist in class '{}'".format(
                 attr, self.parent.__class__.__name__))
 
+    #@deprecate_method TODO
     def _bz_get_func(self):
         """ Internal method to retrieve the actual function to be called """
         if callable(self._bz_attr):
             return self._bz_attr
         return getattr(self.parent, self._bz_attr)
 
+    @deprecate_method("BrillouinZone.call is deprecated (>0.9.9), register a BrillouinZoneParentDispatch to BrillouinZone.dispatch")
     def call(self, func, *args, **kwargs):
         """ Call the function `func` and run as though the function has been called
 
@@ -451,6 +484,7 @@ class BrillouinZone:
         return self(*args, **kwargs)
 
     # Implement wrapper calls
+    @deprecate_method("BrillouinZone.asarray is deprecated (>0.9.9), use BrillouinZone.apply.average")
     def asarray(self):
         """ Return `self` with `numpy.ndarray` returned quantities
 
@@ -458,6 +492,9 @@ class BrillouinZone:
 
         Notes
         -----
+        Please use ``self.apply.array`` instead. This method will be deprecated
+        >0.9.9.
+
         All invocations of sub-methods are added these keyword-only arguments:
 
         eta : bool, optional
@@ -493,7 +530,7 @@ class BrillouinZone:
         aslist : all output returned as a Python list
         """
 
-        def _call(self, *args, **kwargs):
+        def asarray(self, *args, **kwargs):
             func = self._bz_get_func()
             has_wrap = 'wrap' in kwargs
             if has_wrap:
@@ -525,9 +562,10 @@ class BrillouinZone:
             eta.close()
             return a
         # Set instance __bz_call
-        setattr(self, '_bz_call', types.MethodType(_call, self))
+        setattr(self, '_bz_call', types.MethodType(asarray, self))
         return self
 
+    @deprecate_method("BrillouinZone.asnone is deprecated (>0.9.9), use BrillouinZone.apply.none")
     def asnone(self):
         """ Return `self` with None, this may be done for instance when wrapping the function calls.
 
@@ -536,6 +574,9 @@ class BrillouinZone:
 
         Notes
         -----
+        Please use ``self.apply.none`` instead. This method will be deprecated
+        >0.9.9.
+
         All invocations of sub-methods are added these keyword-only arguments:
 
         eta : bool, optional
@@ -557,7 +598,7 @@ class BrillouinZone:
         aslist : all output returned as a Python list
         """
 
-        def _call(self, *args, **kwargs):
+        def asnone(self, *args, **kwargs):
             func = self._bz_get_func()
             wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', lambda x: x))
             eta = tqdm_eta(len(self), self.__class__.__name__ + '.asnone',
@@ -570,10 +611,11 @@ class BrillouinZone:
                 eta.update()
             eta.close()
         # Set instance __call__
-        setattr(self, '_bz_call', types.MethodType(_call, self))
+        setattr(self, '_bz_call', types.MethodType(asnone, self))
         return self
 
     if _has_xarray:
+        @deprecate_method("BrillouinZone.asdataarray is deprecated (>0.9.9), use BrillouinZone.apply.dataarray")
         def asdataarray(self):
             r""" Return `self` with `xarray.DataArray` returned quantities
 
@@ -581,6 +623,9 @@ class BrillouinZone:
 
             Notes
             -----
+            Please use ``self.apply.dataarray`` instead. This method will be deprecated
+            >0.9.9.
+
             If you wrap the sub-method to return multiple data-sets, you should use `asdataset`
             instead which returns a combination of data-arrays (so-called `xarray.Dataset`).
 
@@ -610,7 +655,7 @@ class BrillouinZone:
             aslist : all output returned as a Python list
             """
 
-            def _call(self, *args, **kwargs):
+            def asdataarray(self, *args, **kwargs):
                 func = self._bz_get_func()
 
                 # xarray specific data (default to function name)
@@ -664,9 +709,10 @@ class BrillouinZone:
                 return xarray.DataArray(a, coords=coords, name=name, attrs=attrs)
 
             # Set instance __bz_call
-            setattr(self, '_bz_call', types.MethodType(_call, self))
+            setattr(self, '_bz_call', types.MethodType(asdataarray, self))
             return self
 
+    @deprecate_method("BrillouinZone.aslist is deprecated (>0.9.9), use BrillouinZone.apply.list")
     def aslist(self):
         """ Return `self` with `list` returned quantities
 
@@ -674,6 +720,9 @@ class BrillouinZone:
 
         Notes
         -----
+        Please use ``self.apply.list`` instead. This method will be deprecated
+        >0.9.9.
+
         All invocations of sub-methods are added these keyword-only arguments:
 
         eta : bool, optional
@@ -697,7 +746,7 @@ class BrillouinZone:
         asaverage : take the average (with k-weights) of the Brillouin zone
         """
 
-        def _call(self, *args, **kwargs):
+        def aslist(self, *args, **kwargs):
             func = self._bz_get_func()
             has_wrap = 'wrap' in kwargs
             if has_wrap:
@@ -719,9 +768,10 @@ class BrillouinZone:
             eta.close()
             return a
         # Set instance __call__
-        setattr(self, '_bz_call', types.MethodType(_call, self))
+        setattr(self, '_bz_call', types.MethodType(aslist, self))
         return self
 
+    @deprecate_method("BrillouinZone.asyield is deprecated (>0.9.9), use BrillouinZone.apply.iter")
     def asyield(self):
         """ Return `self` with yielded quantities
 
@@ -730,6 +780,9 @@ class BrillouinZone:
 
         Notes
         -----
+        Please use ``self.apply.iter`` instead. This method will be deprecated
+        >0.9.9.
+
         All invocations of sub-methods are added these keyword-only arguments:
 
         eta : bool, optional
@@ -751,7 +804,7 @@ class BrillouinZone:
         aslist : all output returned as a Python list
         """
 
-        def _call(self, *args, **kwargs):
+        def asyield(self, *args, **kwargs):
             func = self._bz_get_func()
             has_wrap = 'wrap' in kwargs
             if has_wrap:
@@ -771,9 +824,10 @@ class BrillouinZone:
                     eta.update()
             eta.close()
         # Set instance __call__
-        setattr(self, '_bz_call', types.MethodType(_call, self))
+        setattr(self, '_bz_call', types.MethodType(asyield, self))
         return self
 
+    @deprecate_method("BrillouinZone.asaverage is deprecated (>0.9.9), use BrillouinZone.apply.average")
     def asaverage(self):
         """ Return `self` with k-averaged quantities
 
@@ -781,6 +835,9 @@ class BrillouinZone:
 
         Notes
         -----
+        Please use ``self.apply.average`` instead. This method will be deprecated
+        >0.9.9.
+
         All invocations of sub-methods are added these keyword-only arguments:
 
         eta : bool, optional
@@ -814,7 +871,7 @@ class BrillouinZone:
         aslist : all output returned as a Python list
         """
 
-        def _call(self, *args, **kwargs):
+        def asaverage(self, *args, **kwargs):
             func = self._bz_get_func()
             has_wrap = 'wrap' in kwargs
             if has_wrap:
@@ -839,9 +896,10 @@ class BrillouinZone:
             eta.close()
             return v
         # Set instance __call__
-        setattr(self, '_bz_call', types.MethodType(_call, self))
+        setattr(self, '_bz_call', types.MethodType(asaverage, self))
         return self
 
+    @deprecate_method("BrillouinZone.assum is deprecated (>0.9.9), use BrillouinZone.apply.sum")
     def assum(self):
         """ Return `self` with summed quantities
 
@@ -849,6 +907,9 @@ class BrillouinZone:
 
         Notes
         -----
+        Please use ``self.apply.sum`` instead. This method will be deprecated
+        >0.9.9.
+
         All invocations of sub-methods are added these keyword-only arguments:
 
         eta : bool, optional
@@ -886,7 +947,7 @@ class BrillouinZone:
         aslist : all output returned as a Python list
         """
 
-        def _call(self, *args, **kwargs):
+        def assum(self, *args, **kwargs):
             func = self._bz_get_func()
             has_wrap = 'wrap' in kwargs
             if has_wrap:
@@ -915,7 +976,7 @@ class BrillouinZone:
             eta.close()
             return v
         # Set instance __call__
-        setattr(self, '_bz_call', types.MethodType(_call, self))
+        setattr(self, '_bz_call', types.MethodType(assum, self))
         return self
 
     def __call__(self, *args, **kwargs):
@@ -935,7 +996,22 @@ class BrillouinZone:
         getattr(self, attr)(k, *args, **kwargs) : whatever this returns
         """
         try:
+            func = "." + self._bz_get_func().__name__
+        except:
+            func = ""
+        try:
             call = getattr(self, '_bz_call')
+            fmt = dict(
+                cls=self.__class__.__name__,
+                method=call.__name__,
+                method2="*",
+                func=func)
+
+            if fmt["method"].startswith("as"):
+                fmt["method2"] = fmt["method"][2:]
+
+            deprecate("{cls}.{method}{func}(...) is deprecated (>0.9.9), "
+                      "please use {cls}.apply.{method2}{func}".format(**fmt))
         except Exception:
             raise NotImplementedError("Could not call the object it self")
         return call(*args, **kwargs)
@@ -978,6 +1054,224 @@ class BrillouinZone:
                 fh.write_data(kw.T, *args, **kwargs)
 
 
+@set_module("sisl.physics")
+class BrillouinZoneApply(AbstractDispatch):
+    # this dispatch function will do stuff on the BrillouinZone object
+    pass
+
+
+@set_module("sisl.physics")
+class BrillouinZoneParentApply(BrillouinZoneApply):
+
+    __str__ = _apply_str("parent apply over k")
+
+    def _parse_kwargs(self, wrap, eta, eta_key):
+        """ Parse kwargs """
+        bz = self._obj
+        parent = bz.parent
+        if wrap is None:
+            # we always return a wrap
+            def wrap(v, parent=None, k=None, weight=None):
+                return v
+        else:
+            wrap = allow_kwargs("parent", "k", "weight")(wrap)
+        eta = tqdm_eta(len(bz), f"{bz.__class__.__name__}.{eta_key}", "k", eta)
+        return bz, parent, wrap, eta
+
+    def __getattr__(self, key):
+        # We need to offload the dispatcher to retrieve
+        # methods from the parent object
+        # This dispatch will _never_ do anything to the BrillouinZone
+        method = getattr(self._obj.parent, key)
+        return self.dispatch(method)
+
+
+@set_module("sisl.physics")
+class IteratorApply(BrillouinZoneParentApply):
+    __str__ = _apply_str("iter")
+
+    def dispatch(self, method, eta_key="iter"):
+        """ Dispatch the method by iterating values """
+        @wraps(method)
+        def func(*args, wrap=None, eta=False, **kwargs):
+            bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key=eta_key)
+            k = bz.k
+            w = bz.weight
+            for i in range(len(k)):
+                yield wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
+                eta.update()
+            eta.close()
+
+        return func
+
+
+@set_module("sisl.physics")
+class SumApply(IteratorApply):
+    __str__ = _apply_str("sum over k")
+
+    def dispatch(self, method):
+        """ Dispatch the method by summing """
+        iter_func = super().dispatch(method, eta_key="sum")
+
+        @wraps(method)
+        def func(*args, **kwargs):
+            it = iter_func(*args, **kwargs)
+            # next will be called before anything else
+            return reduce(op.add, it, _asoplist(next(it)))
+
+        return func
+
+
+@set_module("sisl.physics")
+class NoneApply(IteratorApply):
+    __str__ = _apply_str("return None")
+
+    def dispatch(self, method):
+        """ Dispatch the method by doing nothing (mostly useful if wrapped) """
+        iter_func = super().dispatch(method, eta_key="none")
+
+        @wraps(method)
+        def func(*args, **kwargs):
+            for _ in iter_func(*args, **kwargs):
+                pass
+            return None
+
+        return func
+
+
+@set_module("sisl.physics")
+class ListApply(IteratorApply):
+    __str__ = _apply_str("return list")
+
+    def dispatch(self, method):
+        """ Dispatch the method by returning list of values """
+        iter_func = super().dispatch(method, eta_key="list")
+        @wraps(method)
+        def func(*args, **kwargs):
+            return [v for v in iter_func(*args, **kwargs)]
+        return func
+
+
+@set_module("sisl.physics")
+class OpListApply(IteratorApply):
+    __str__ = _apply_str("return oplist")
+
+    def dispatch(self, method):
+        """ Dispatch the method by returning oplist of values """
+        iter_func = super().dispatch(method, eta_key="oplist")
+        @wraps(method)
+        def func(*args, **kwargs):
+            return oplist(v for v in iter_func(*args, **kwargs))
+        return func
+
+
+@set_module("sisl.physics")
+class ArrayApply(BrillouinZoneParentApply):
+    __str__ = _apply_str("return numpy.ndarray")
+
+    def dispatch(self, method, eta_key="array"):
+        """ Dispatch the method by one array """
+        @wraps(method)
+        def func(*args, wrap=None, eta=False, **kwargs):
+            bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key=eta_key)
+            k = bz.k
+            w = bz.weight
+
+            # Get first values
+            v = wrap(method(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])
+            eta.update()
+
+            # Create full array
+            if v.ndim == 0:
+                a = np.empty([len(k)], dtype=v.dtype)
+            else:
+                a = np.empty((len(k), ) + v.shape, dtype=v.dtype)
+            a[0] = v
+            del v
+
+            for i in range(1, len(k)):
+                a[i] = wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
+                eta.update()
+            eta.close()
+
+            return a
+        return func
+
+
+@set_module("sisl.physics")
+class AverageApply(BrillouinZoneParentApply):
+    __str__ = _apply_str("return average")
+
+    def dispatch(self, method):
+        """ Dispatch the method by averaging """
+        @wraps(method)
+        def func(*args, wrap=None, eta=False, **kwargs):
+            bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key="average")
+            # Do actual average
+            k = bz.k
+            w = bz.weight
+            v = _asoplist(wrap(method(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])) * w[0]
+            eta.update()
+            for i in range(1, len(k)):
+                v += _asoplist(wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])) * w[i]
+                eta.update()
+            eta.close()
+            return v
+
+        return func
+
+
+@set_module("sisl.physics")
+class DataArrayApply(ArrayApply):
+    __str__ = _apply_str("return xarray.DataArray")
+
+    def dispatch(self, method):
+        """ Dispatch the method by returning a DataArray """
+        # Get data as array
+        array_func = super().dispatch(method, eta_key="dataarray")
+
+        @wraps(method)
+        def func(*args, coords=None, name=method.__name__, **kwargs):
+            # xarray specific data (default to function name)
+            bz = self._obj
+
+            # retrieve ALL data
+            array = array_func(*args, **kwargs)
+
+            # Create coords
+            if coords is None:
+                coords = [('k', _a.arangei(len(bz)))]
+                for i, v in enumerate(array.shape[1:]):
+                    coords.append((f"v{i+1}", _a.arangei(v)))
+            else:
+                coords = list(coords)
+                coords.insert(0, ('k', _a.arangei(len(bz))))
+                for i in range(1, len(coords)):
+                    if isinstance(coords[i], str):
+                        coords[i] = (coords[i], _a.arangei(array.shape[i]))
+            attrs = {'bz': bz, 'parent': bz.parent}
+
+            return xarray.DataArray(array, coords=coords, name=name, attrs=attrs)
+
+        return func
+
+# Add apply functions
+# Since apply is a built-in, we cannot assign as a class variable. :(
+setattr(BrillouinZone, "apply", ClassDispatcher(attr_name="apply",
+                                                obj_getattr=lambda obj, key: getattr(obj.parent, key)))
+# Register dispatched functions
+BrillouinZone.apply.register("average", AverageApply)
+BrillouinZone.apply.register("sum", SumApply)
+BrillouinZone.apply.register("array", ArrayApply)
+BrillouinZone.apply.register("none", NoneApply)
+BrillouinZone.apply.register("iter", IteratorApply, default=True)
+BrillouinZone.apply.register("list", ListApply)
+BrillouinZone.apply.register("oplist", OpListApply)
+if _has_xarray:
+    BrillouinZone.apply.register("dataarray", DataArrayApply)
+
+
+@set_module("sisl.physics")
 class MonkhorstPack(BrillouinZone):
     r""" Create a Monkhorst-Pack grid for the Brillouin zone
 
@@ -1209,7 +1503,7 @@ class MonkhorstPack(BrillouinZone):
         aslist : all output returned as a Python list
         """
 
-        def _call(self, *args, **kwargs):
+        def asgrid(self, *args, **kwargs):
             data_axis = kwargs.pop('data_axis', None)
             grid_unit = kwargs.pop('grid_unit', 'b')
 
@@ -1329,7 +1623,7 @@ class MonkhorstPack(BrillouinZone):
             return grid
 
         # Set instance __call__
-        setattr(self, '_bz_call', types.MethodType(_call, self))
+        setattr(self, '_bz_call', types.MethodType(asgrid, self))
         return self
 
     @classmethod
@@ -1521,6 +1815,7 @@ class MonkhorstPack(BrillouinZone):
         self._w = np.concatenate((self._w, mp._w * weight_factor))
 
 
+@set_module("sisl.physics")
 class BandStructure(BrillouinZone):
     """ Create a path in the Brillouin zone for plotting band-structures etc.
 

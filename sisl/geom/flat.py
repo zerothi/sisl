@@ -1,10 +1,12 @@
 import numpy as np
 
+from sisl._internal import set_module
 from sisl import Atom, Geometry, SuperCell
 
 __all__ = ['honeycomb', 'graphene']
 
 
+@set_module("sisl.geom")
 def honeycomb(bond, atom, orthogonal=False):
     """ Honeycomb lattice with 2 or 4 atoms per unit-cell, latter orthogonal cell
 

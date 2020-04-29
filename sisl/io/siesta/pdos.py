@@ -1,8 +1,10 @@
 import numpy as np
 
-from sisl._help import xml_parse
 from ..sile import add_sile
 from .sile import SileSiesta
+
+from sisl._internal import set_module
+from sisl._help import xml_parse
 from sisl.messages import warn
 from sisl._array import arrayd, emptyd
 from sisl.atom import PeriodicTable, Atom, Atoms
@@ -16,6 +18,7 @@ __all__ = ['pdosSileSiesta']
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 
 
+@set_module("sisl.io.siesta")
 class pdosSileSiesta(SileSiesta):
     """ Projected DOS file with orbital information
 

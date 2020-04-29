@@ -1,18 +1,22 @@
 import numpy as np
 
 from .sile import SileCDFSiesta
-from ..sile import *
+from ..sile import add_sile, sile_fh_open, sile_raise_write
 
+from sisl._internal import set_module
 from sisl import Grid
 from .siesta_grid import gridncSileSiesta
 from sisl.unit.siesta import unit_convert
 
+
 __all__ = ['tsvncSileSiesta']
+
 
 _eV2Ry = unit_convert('eV', 'Ry')
 _Ry2eV = 1. / _eV2Ry
 
 
+@set_module("sisl.io.siesta")
 class tsvncSileSiesta(gridncSileSiesta):
     """ TranSiesta potential input Grid file object
 

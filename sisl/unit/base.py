@@ -1,5 +1,6 @@
 import pyparsing as pp
 
+from sisl._internal import set_module
 
 __all__ = ['unit_group', 'unit_convert', 'unit_default', 'units']
 
@@ -57,6 +58,7 @@ unit_table = {
 }
 
 
+@set_module("sisl.unit")
 def unit_group(unit, tbl=None):
     """ The group of units that `unit` belong to
 
@@ -84,6 +86,7 @@ def unit_group(unit, tbl=None):
     raise ValueError('The unit "' + str(unit) + '" could not be located in the table.')
 
 
+@set_module("sisl.unit")
 def unit_default(group, tbl=None):
     """ The default unit of the unit group `group`.
 
@@ -110,6 +113,7 @@ def unit_default(group, tbl=None):
     raise ValueError('The unit-group does not exist!')
 
 
+@set_module("sisl.unit")
 def unit_convert(fr, to, opts=None, tbl=None):
     """ Factor that takes 'fr' to the units of 'to'.
 
@@ -177,6 +181,7 @@ def unit_convert(fr, to, opts=None, tbl=None):
 # doing complex unit-specifications (i.e. eV/Ang etc.)
 
 
+@set_module("sisl.unit")
 class UnitParser:
     """ Object for converting between units for a set of unit-tables.
 

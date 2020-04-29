@@ -5,13 +5,15 @@ try:
     from . import _siesta
     found_module = True
 except Exception as e:
+    print(e)
     found_module = False
 
-from sisl.messages import warn, SislError
 from ..sile import add_sile, SileError
 from .sile import SileBinSiesta
-from ._help import *
+from sisl._internal import set_module
+from sisl.messages import warn, SislError
 
+from ._help import *
 import sisl._array as _a
 from sisl import Geometry, Atom, Atoms, SuperCell, Grid
 from sisl.unit.siesta import unit_convert
@@ -106,6 +108,7 @@ def _geometry_align(geom_b, geom_u, cls, method):
     return geom
 
 
+@set_module("sisl.io.siesta")
 class onlysSileSiesta(SileBinSiesta):
     """ Geometry and overlap matrix """
 
@@ -219,6 +222,7 @@ class onlysSileSiesta(SileBinSiesta):
         return Ef
 
 
+@set_module("sisl.io.siesta")
 class tshsSileSiesta(onlysSileSiesta):
     """ Geometry, Hamiltonian and overlap matrix file """
 
@@ -325,6 +329,7 @@ class tshsSileSiesta(onlysSileSiesta):
         _bin_check(self, 'write_hamiltonian', 'could not write Hamiltonian and overlap matrix.')
 
 
+@set_module("sisl.io.siesta")
 class dmSileSiesta(SileBinSiesta):
     """ Density matrix file """
 
@@ -408,6 +413,7 @@ class dmSileSiesta(SileBinSiesta):
         _bin_check(self, 'write_density_matrix', 'could not write density matrix.')
 
 
+@set_module("sisl.io.siesta")
 class tsdeSileSiesta(dmSileSiesta):
     """ Non-equilibrium density matrix and energy density matrix file """
 
@@ -529,6 +535,7 @@ class tsdeSileSiesta(dmSileSiesta):
         _bin_check(self, 'write_density_matrices', 'could not write DM + EDM matrices.')
 
 
+@set_module("sisl.io.siesta")
 class hsxSileSiesta(SileBinSiesta):
     """ Hamiltonian and overlap matrix file """
 
@@ -617,6 +624,7 @@ class hsxSileSiesta(SileBinSiesta):
         return S
 
 
+@set_module("sisl.io.siesta")
 class wfsxSileSiesta(SileBinSiesta):
     r""" Binary WFSX file reader for Siesta """
 
@@ -631,6 +639,7 @@ class wfsxSileSiesta(SileBinSiesta):
         nspin, no, nk, Gamma = _siesta.read_wfsx_sizes(self.file)
 
 
+@set_module("sisl.io.siesta")
 class _gridSileSiesta(SileBinSiesta):
     r""" Binary real-space grid file
 
@@ -707,6 +716,7 @@ class _gridSileSiesta(SileBinSiesta):
         return g
 
 
+@set_module("sisl.io.siesta")
 class _gfSileSiesta(SileBinSiesta):
     """ Surface Green function file containing, Hamiltonian, overlap matrix and self-energies
 

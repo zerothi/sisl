@@ -25,9 +25,8 @@
 
 .. DFT codes
 .. _Siesta: https://departments.icmab.es/leem/siesta
-.. _TranSiesta: https://launchpad.net/siesta
-.. _TBtrans: https://launchpad.net/siesta
-
+.. _TranSiesta: https://gitlab.com/siesta-project/siesta
+.. _TBtrans: https://gitlab.com/siesta-project/siesta
 .. _BigDFT: http://www.bigdft.org
 .. _OpenMX: http://www.openmx-square.org
 .. _VASP: https://www.vasp.at

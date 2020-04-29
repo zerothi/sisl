@@ -2,14 +2,16 @@ from numbers import Integral
 import numpy as np
 
 from .sile import SileVASP
-from ..sile import *
+from ..sile import add_sile, sile_fh_open
 from .car import carSileVASP
 
+from sisl._internal import set_module
 from sisl import Grid
 
 __all__ = ['chgSileVASP']
 
 
+@set_module("sisl.io.vasp")
 class chgSileVASP(carSileVASP):
     """ Charge density plus geometry
 

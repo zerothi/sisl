@@ -9,6 +9,10 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. T. Schmitt, S. Bourelle, N. Tye, G. Soavi, A.D. Bond, S. Feldmann, T. Boubacar, C. Katan, J. Even, S.E. Dutton, F. Deschler,
+   *Control of Crystal Symmetry Breaking with Halogen-Substituted Benzylammonium in Layered Hybrid Metal-Halide Perovskites*,
+   Journal of the American Chemical Society **142**, `11 (2020) <https://doi.org/10.1021/jacs.9b11809>`_
+
 #. J. Brand, S. Leitherer, N. Papior, N. Neel, Y. Lei, M. Brandbyge and J. Kroger,
    *Nonequilibrium Bond Forces in Single-Molecule Junctions*,
    Nano Letters `(2019) <https://doi.org/10.1021/acs.nanolett.9b02845>`_

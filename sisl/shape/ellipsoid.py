@@ -2,6 +2,7 @@ from math import pi
 import numpy as np
 from numpy import dot
 
+from sisl._internal import set_module
 from sisl.messages import warn
 import sisl._array as _a
 from sisl.utils.mathematics import orthogonalize, fnorm, fnorm2, expand
@@ -13,6 +14,7 @@ from .base import PureShape
 __all__ = ['Ellipsoid', 'Sphere']
 
 
+@set_module("sisl.shape")
 class Ellipsoid(PureShape):
     """ 3D Ellipsoid shape
 
@@ -150,6 +152,7 @@ class Ellipsoid(PureShape):
         return fnorm(self._v)
 
 
+@set_module("sisl.shape")
 class Sphere(Ellipsoid):
     """ 3D Sphere
 

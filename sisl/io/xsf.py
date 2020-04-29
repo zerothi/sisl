@@ -4,7 +4,7 @@ import numpy as np
 # Import sile objects
 from .sile import *
 
-# Import the geometry object
+from sisl._internal import set_module
 from sisl import Geometry, Atom, SuperCell
 from sisl.utils import str_spec
 
@@ -12,6 +12,7 @@ from sisl.utils import str_spec
 __all__ = ['xsfSile', 'axsfSile']
 
 
+@set_module("sisl.io")
 class xsfSile(Sile):
     """ XSF file for XCrySDen """
 
@@ -365,6 +366,7 @@ By default the vectors scaled by 1 / max(|V|) such that the longest vector has l
                        help='Store the geometry/grid (plus any vector fields) the out file.')
 
 
+@set_module("sisl.io")
 class axsfSile(xsfSile):
     """ AXSF file for XCrySDen
 

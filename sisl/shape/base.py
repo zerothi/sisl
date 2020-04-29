@@ -3,6 +3,7 @@ from math import sqrt as msqrt
 import numpy as np
 from numpy import union1d, intersect1d, setdiff1d, setxor1d
 
+from sisl._internal import set_module
 import sisl._array as _a
 from sisl.utils.mathematics import fnorm
 
@@ -10,6 +11,7 @@ from sisl.utils.mathematics import fnorm
 __all__ = ['Shape', 'CompositeShape', 'PureShape', 'NullShape']
 
 
+@set_module("sisl.shape")
 class Shape:
     """ Baseclass for all shapes. Logical operations are implemented on this class.
 
@@ -137,6 +139,7 @@ class Shape:
         return CompositeShape(self, other, CompositeShape._XOR)
 
 
+@set_module("sisl.shape")
 class CompositeShape(Shape):
     """ A composite shape consisting of two shapes
 
@@ -270,6 +273,7 @@ class CompositeShape(Shape):
         return self.__class__(self.A, self.B, self.op)
 
 
+@set_module("sisl.shape")
 class PureShape(Shape):
     """ Extension of the `Shape` class for additional well defined shapes
 
@@ -288,6 +292,7 @@ class PureShape(Shape):
         raise NotImplementedError('expand has not been implemented in: '+self.__class__.__name__)
 
 
+@set_module("sisl.shape")
 class NullShape(PureShape):
     """ A unique shape which has no well-defined spatial extend, volume or center
 

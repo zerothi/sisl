@@ -5,6 +5,7 @@ dist
 build
 *.pyc
 *.so
+*.c
 __config__.py
 docs/build
 docs/sisl

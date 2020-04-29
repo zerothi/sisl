@@ -2,6 +2,7 @@ from numbers import Integral, Real
 
 import numpy as np
 
+from ._internal import set_module
 from .messages import info
 from . import _array as _a
 from ._indices import list_index_le
@@ -12,6 +13,7 @@ from .orbital import Orbital
 __all__ = ['PeriodicTable', 'Atom', 'Atoms']
 
 
+@set_module("sisl")
 class PeriodicTable:
     r""" Periodic table for creating an `Atom`, or retrieval of atomic information via atomic numbers
 
@@ -934,6 +936,7 @@ class AtomMeta(type):
 # The designation of metaclass in python3 is actually:
 #   class ...(..., metaclass=MetaClass)
 # This below construct handles both python2 and python3 cases
+@set_module("sisl")
 class Atom(metaclass=AtomMeta):
     """ Atomic information, mass, name number of orbitals and ranges
 
@@ -1175,6 +1178,9 @@ class Atom(metaclass=AtomMeta):
         orbs = ',\n '.join([str(o) for o in self.orbital])
         return self.__class__.__name__ + '{{{0}, Z: {1:d}, mass(au): {2:.5f}, maxR: {3:.5f},\n {4}\n}}'.format(self.tag, self.Z, self.mass, self.maxR(), orbs)
 
+    def __repr__(self):
+        return f"<{self.__module__}.{self.__class__.__name__} {self.tag}, Z={self.Z}, M={self.mass}, maxR={self.maxR()}, no={len(self.orbital)}>"
+
     def __len__(self):
         """ Return number of orbitals in this atom """
         return self.no
@@ -1229,6 +1235,7 @@ class Atom(metaclass=AtomMeta):
         self.__init__(d['Z'], d['orbital'], d['mass'], d['tag'])
 
 
+@set_module("sisl")
 class Atoms:
     """ A list-like object to contain a list of different atoms with minimum
     data duplication.
@@ -1650,6 +1657,9 @@ class Atoms:
             s += ' {1}: {0},\n'.format(len(idx), str(a).replace('\n', '\n '))
         return s + '}'
 
+    def __repr__(self):
+        return f"<{self.__module__}.{self.__class__.__name__} nspecies={len(self._atom)}, na={len(self)}, no={self.no}>"
+
     def __len__(self):
         """ Return number of atoms in the object """
         return len(self._specie)
@@ -1698,7 +1708,10 @@ class Atoms:
                 if at.tag == key:
                     return at
             return None
-        return [self.atom[i] for i in self._specie[_a.asarrayi(key).ravel()]]
+        key = np.asarray(key)
+        if key.ndim == 0:
+            return self.atom[self._specie[key]]
+        return [self.atom[i] for i in self._specie[key]]
 
     def __setitem__(self, key, value):
         """ Overwrite an `Atom` object corresponding to the key(s) """
@@ -1791,16 +1804,18 @@ class Atoms:
         UserWarning : if the atoms does not have the same number of orbitals.
         """
         if not isinstance(atom_from, Atom):
-            raise ValueError(self.__class__.__name__ + '.replace_atom requires input arguments to '
+            raise ValueError(f'{self.__class__.__name__}.replace_atom requires input arguments to '
                              'be of the class Atom')
         if not isinstance(atom_to, Atom):
-            raise ValueError(self.__class__.__name__ + '.replace_atom requires input arguments to '
+            raise ValueError(f'{self.__class__.__name__}.replace_atom requires input arguments to '
                              'be of the class Atom')
 
         # Get index of `atom_from`
         idx_from = self.index(atom_from)
         try:
             idx_to = self.index(atom_to)
+            if idx_from == idx_to:
+                raise KeyError("")
 
             # Decrement indices of the atoms that are
             # changed to one already there

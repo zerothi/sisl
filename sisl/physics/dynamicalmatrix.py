@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.sparse import lil_matrix
 
+from sisl._internal import set_module
 from .sparse import SparseOrbitalBZ
 from .phonon import EigenvaluePhonon, EigenmodePhonon
 
@@ -16,6 +17,7 @@ def _correct_hw(hw):
     return HW
 
 
+@set_module("sisl.physics")
 class DynamicalMatrix(SparseOrbitalBZ):
     """ Dynamical matrix of a geometry """
 
@@ -270,7 +272,9 @@ class DynamicalMatrix(SparseOrbitalBZ):
         return EigenvaluePhonon(_correct_hw(hw), self, **info)
 
     def eigenmode(self, k=(0, 0, 0), gauge='R', **kwargs):
-        """ Calculate the eigenmodes at `k` and return an `EigenmodePhonon` object containing all eigenmodes
+        r""" Calculate the eigenmodes at `k` and return an `EigenmodePhonon` object containing all eigenmodes
+
+        Note that the phonon modes are _not_ mass-scaled.
 
         Parameters
         ----------
@@ -286,7 +290,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
 
         See Also
         --------
-        eigh : eigenvalue routine
+        eigh : eigenvalue routine (returns hw ** 2)
         eigsh : eigenvalue routine
 
         Returns

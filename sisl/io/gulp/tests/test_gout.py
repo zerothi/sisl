@@ -12,8 +12,8 @@ _dir = osp.join('sisl', 'io', 'gulp')
 
 def test_zz_dynamical_matrix(sisl_files):
     si = sisl.get_sile(sisl_files(_dir, 'zz.gout'))
-    D1 = si.read_dynamical_matrix(order=['got'])
-    D2 = si.read_dynamical_matrix(order=['FC'])
+    D1 = si.read_dynamical_matrix(order=['got'], cutoff=1.e-4)
+    D2 = si.read_dynamical_matrix(order=['FC'], cutoff=1.e-4)
 
     assert D1._csr.spsame(D2._csr)
     D1.finalize()

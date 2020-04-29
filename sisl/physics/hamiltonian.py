@@ -1,6 +1,7 @@
 import numpy as np
 from scipy.interpolate import CubicSpline
 
+from sisl._internal import set_module
 import sisl._array as _a
 from .distribution import get_distribution
 from .electron import EigenvalueElectron, EigenstateElectron, spin_squared
@@ -9,6 +10,7 @@ from .sparse import SparseOrbitalBZSpin
 __all__ = ['Hamiltonian']
 
 
+@set_module("sisl.physics")
 class Hamiltonian(SparseOrbitalBZSpin):
     """ Sparse Hamiltonian matrix object
 
@@ -282,10 +284,10 @@ class Hamiltonian(SparseOrbitalBZSpin):
             e = self.eigsh(k, gauge=gauge, eigvals_only=True, **kwargs)
         else:
             e = self.eigh(k, gauge, eigvals_only=True, **kwargs)
-        info = {'k': k,
-                'gauge': gauge}
-        if 'spin' in kwargs:
-            info['spin'] = kwargs['spin']
+        info = {'k': k, 'gauge': gauge}
+        for name in ["spin"]:
+            if name in kwargs:
+                info[name] = kwargs[name]
         return EigenvalueElectron(e, self, **info)
 
     def eigenstate(self, k=(0, 0, 0), gauge='R', **kwargs):
@@ -317,8 +319,9 @@ class Hamiltonian(SparseOrbitalBZSpin):
         else:
             e, v = self.eigh(k, gauge, eigvals_only=False, **kwargs)
         info = {'k': k, 'gauge': gauge}
-        if 'spin' in kwargs:
-            info['spin'] = kwargs['spin']
+        for name in ["spin"]:
+            if name in kwargs:
+                info[name] = kwargs[name]
         # Since eigh returns the eigenvectors [:, i] we have to transpose
         return EigenstateElectron(v.T, e, self, **info)
 
@@ -493,16 +496,15 @@ class Hamiltonian(SparseOrbitalBZSpin):
         else:
             # Overwrite the parent in bz
             bz.set_parent(self)
-        # Ensure we are using asarray
-        bz.asarray()
 
         if q is None:
             if self.spin.is_unpolarized:
                 q = self.geometry.q0 * 0.5
             else:
                 q = self.geometry.q0
+
         # Ensure we have an "array" in case of spin-polarized calculations
-        q = np.asarray(q, dtype=np.float64)
+        q = _a.asarrayd(q)
 
         if isinstance(distribution, str):
             distribution = get_distribution(distribution)
@@ -533,19 +535,22 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
             return Ef
 
+        # Retrieve dispatcher for averaging
+        eigh = bz.apply.array.eigh
+
         if self.spin.is_polarized and q.size == 2:
             # We need to do Fermi-level separately since the user requests
             # separate fillings
             Ef = _a.emptyd(2)
-            Ef[0] = _Ef(q[0], bz.eigh(spin=0))
-            Ef[1] = _Ef(q[1], bz.eigh(spin=1))
+            Ef[0] = _Ef(q[0], eigh(spin=0))
+            Ef[1] = _Ef(q[1], eigh(spin=1))
         else:
             # Ensure a single charge
             q = q.sum()
             if self.spin.is_polarized:
-                Ef = _Ef(q, np.concatenate([bz.eigh(spin=0),
-                                            bz.eigh(spin=1)], axis=1))
+                Ef = _Ef(q, np.concatenate([eigh(spin=0),
+                                            eigh(spin=1)], axis=1))
             else:
-                Ef = _Ef(q, bz.eigh())
+                Ef = _Ef(q, eigh())
 
         return Ef

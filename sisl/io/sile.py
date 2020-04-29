@@ -5,6 +5,7 @@ from pathlib import Path
 
 import numpy as np
 
+from sisl._internal import set_module
 from sisl.messages import SislWarning, SislInfo
 from sisl.utils.misc import str_spec
 from ._help import *
@@ -28,9 +29,7 @@ __all__ += [
     ]
 
 # Decorators or sile-specific functions
-__all__ += [
-    'isfile',
-    'sile_fh_open',
+__all__ += ['sile_fh_open',
     'sile_raise_write',
     'sile_raise_read']
 
@@ -135,6 +134,7 @@ class _sile_rule:
         return issubclass(self.cls, cls)
 
 
+@set_module("sisl.io")
 def add_sile(suffix, cls, case=True, gzip=False):
     """ Add files to the global lookup table
 
@@ -170,6 +170,7 @@ def add_sile(suffix, cls, case=True, gzip=False):
     __sile_rules.append(_sile_rule(cls, suffix, case=case, gzip=gzip))
 
 
+@set_module("sisl.io")
 def get_sile_class(filename, *args, **kwargs):
     """ Retrieve a class from the global lookup table via filename and the extension
 
@@ -264,6 +265,7 @@ def get_sile_class(filename, *args, **kwargs):
         raise e
 
 
+@set_module("sisl.io")
 def get_sile(file, *args, **kwargs):
     """ Retrieve an object from the global lookup table via filename and the extension
 
@@ -288,6 +290,7 @@ def get_sile(file, *args, **kwargs):
     return sile(Path(str_spec(str(file))[0]), *args, **kwargs)
 
 
+@set_module("sisl.io")
 def get_siles(attrs=None):
     """ Retrieve all files with specific attributes or methods
     Parameters
@@ -343,6 +346,7 @@ def get_sile_rules(attrs=None):
     return sile_rules
 
 
+@set_module("sisl.io")
 class BaseSile:
     """ Base class for all sisl files """
 
@@ -511,6 +515,7 @@ def sile_fh_open(from_closed=False):
     return _wrapper
 
 
+@set_module("sisl.io")
 class Sile(BaseSile):
     """ Base class for ASCII files
 
@@ -691,6 +696,7 @@ def _import_netCDF4():
         import netCDF4 as _netCDF4
 
 
+@set_module("sisl.io")
 class SileCDF(BaseSile):
     """ Creates/Opens a SileCDF
 
@@ -938,6 +944,7 @@ class SileCDF(BaseSile):
     __iter__ = iter
 
 
+@set_module("sisl.io")
 class SileBin(BaseSile):
     """ Creates/Opens a SileBin
 
@@ -961,6 +968,7 @@ class SileBin(BaseSile):
         return False
 
 
+@set_module("sisl.io")
 class SileError(IOError):
     """ Define an error object related to the Sile objects """
 
@@ -994,6 +1002,7 @@ def sile_raise_read(self, ok=('r', 'a')):
                             ok, self._mode), self)
 
 
+@set_module("sisl.io")
 class SileWarning(SislWarning):
     """ Warnings that informs users of things to be carefull about when using their retrieved data
 
@@ -1003,6 +1012,7 @@ class SileWarning(SislWarning):
     pass
 
 
+@set_module("sisl.io")
 class SileInfo(SislInfo):
     """ Information for the user, this is hidden in a warning, but is not as severe so as to issue a warning. """
     pass

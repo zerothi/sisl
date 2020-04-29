@@ -1,10 +1,12 @@
 from numbers import Integral
 import numpy as np
 from functools import lru_cache
+from os.path import isfile
 
 from .sile import SileCDFSiesta
-from ..sile import *
+from ..sile import add_sile, sile_fh_open, sile_raise_write
 
+from sisl._internal import set_module
 from sisl._array import aranged
 from sisl.unit.siesta import unit_convert
 from sisl import Geometry, Atom, Atoms, SuperCell, Grid, SphericalOrbital
@@ -26,6 +28,7 @@ Bohr2Ang = unit_convert('Bohr', 'Ang')
 Ry2eV = unit_convert('Ry', 'eV')
 
 
+@set_module("sisl.io.siesta")
 class ncSileSiesta(SileCDFSiesta):
     """ Generic NetCDF output file containing a large variety of information """
 

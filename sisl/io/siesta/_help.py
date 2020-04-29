@@ -10,7 +10,7 @@ except Exception as e:
 
 __all__ = ['_csr_from_siesta', '_csr_from_sc_off']
 __all__ += ['_csr_to_siesta', '_csr_to_sc_off']
-__all__ += ['_mat_spin_convert']
+__all__ += ['_mat_spin_convert', "_fc_correct"]
 
 
 def _csr_from_siesta(geom, csr):
@@ -97,3 +97,75 @@ def _mat_spin_convert(M, spin=None):
         M._D[:, 3] = -M._D[:, 3]
     elif spin.is_spinorbit:
         M._D[:, 3] = -M._D[:, 3]
+
+
+def _fc_correct(fc, trans_inv=True, sum0=True, hermitian=True):
+    r""" Correct a force-constant matrix to retain translational invariance and sum of forces == 0 on atoms
+
+    Parameters
+    ----------
+    fc : (*, 3, *nsc, *, 3)
+       force constant, dimensions like this:
+       1. atoms displaced
+       2. displacement directions (x, y, z)
+       3. number of supercells along x
+       4. number of supercells along y
+       5. number of supercells along z
+       6. number of atoms in unit-cell
+       7. Cartesian directions
+    trans_inv : bool, optional
+       if true, the total sum of forces will be forced to zero (translational invariance)
+    sum0 : bool, optional
+       if true, the sum of forces on atoms for each displacement will be forced to 0.
+    hermitian: bool, optional
+       whether hermiticity will be forced
+    """
+    if not (trans_inv or sum0 or hermitian):
+        return fc
+
+    # to not disturb the outside fc
+    fc = fc.copy()
+    shape = fc.shape
+
+    is_subset = shape[0] != shape[5]
+    if is_subset:
+        raise ValueError(f"fc_correct cannot figure out the displaced atoms in the unit-cell, please limit atoms to the displaced atoms.")
+
+    # NOTE:
+    # This is not exactly the same as Vibra does it.
+    # In Vibra this is done:
+    # fc *= 0.5
+    # fc += np.transpose(fc, (5, 6, 2, 3, 4, 0, 1))[:, :, ::-1, ::-1, ::-1, :, :]
+    # zero = fc.sum((2, 3, 4, 5)) / np.prod(shape[2:6])
+    # zeroo = zero.sum(0) / shape[0]
+    # zeroo = 0.5 * (zeroo + zeroo.T).reshape(1, 3, 1, 1, 1, 1, 3)
+    # zeroT = np.transpose(zero, (2, 0, 1)).reshape(1, 3, 1, 1, 1, -1, 3)
+    # fc += zeroo - zero.reshape(-1, 3, 1, 1, 1, 1, 3) - zeroT
+
+    if hermitian:
+        fc *= 0.5
+        fc += np.transpose(fc, (5, 6, 2, 3, 4, 0, 1))[:, :, ::-1, ::-1, ::-1, :, :]
+
+    if trans_inv:
+        fc_total = fc.sum((0, 2, 3, 4, 5)) / (shape[0] * np.prod(shape[2:6]))
+        if hermitian:
+            fc_total = (fc_total + fc_total.T) * 0.5
+        # It is unclear to me what happens for cases where
+        # the displacements are done on a sub-set of atoms
+        # but not in a supercell arangement.
+        # Say a molecule sandwiched between two electrodes.
+        # For now we will take N as total number of atoms
+        # in the cell.
+        fc -= fc_total.reshape(1, 3, 1, 1, 1, 1, 3)
+
+    if sum0:
+        fc_atom = (fc.sum((2, 3, 4, 5)) / np.prod(shape[2:6])).reshape(-1, 3, 1, 3)
+        if hermitian:
+            # this will fail if is_subset
+            # TODO add case for subset
+            fc_atom = 0.5 * (fc_atom + np.transpose(fc_atom, (2, 3, 0, 1)))
+            fc -= fc_atom.reshape(shape[0], 3, 1, 1, 1, shape[5], 3)
+        else:
+            fc -= fc_atom.reshape(shape[0], 3, 1, 1, 1, 1, 3)
+
+    return fc

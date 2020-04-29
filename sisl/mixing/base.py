@@ -1,10 +1,13 @@
 from collections import deque
 from functools import lru_cache
 
+from sisl._internal import set_module
+
 
 __all__ = ['Mixer', 'History', 'Metric']
 
 
+@set_module("sisl.mixing")
 class Mixer:
     r""" Base class mixer """
 
@@ -13,6 +16,7 @@ class Mixer:
         pass
 
 
+@set_module("sisl.mixing")
 class Metric:
     r""" Perform inner products using a metric
 
@@ -49,6 +53,7 @@ class Metric:
     __call__ = inner
 
 
+@set_module("sisl.mixing")
 class History:
     r""" A history class for retaining a set of history elements
 

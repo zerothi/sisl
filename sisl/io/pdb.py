@@ -7,15 +7,16 @@ import numpy as np
 # Import sile objects
 from .sile import *
 
-# Import the geometry object
+from sisl._internal import set_module
 from sisl import Geometry, SuperCell, Atoms, Atom
 
 
 __all__ = ['pdbSile']
 
 
+@set_module("sisl.io")
 class pdbSile(Sile):
-    """ PDB file object """
+    r""" PDB file object """
 
     def _setup(self, *args, **kwargs):
         """ Instantiate counters """

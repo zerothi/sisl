@@ -8,12 +8,14 @@ This sub-module implements a list which allows to make operations with it-self o
 
 from functools import wraps
 
+from ._internal import set_module
 from ._help import isiterable
 
 
 __all__ = ['oplist']
 
 
+@set_module("sisl")
 class oplist(list):
     """ list with element-wise operations
 
@@ -109,7 +111,9 @@ class oplist(list):
         @wraps(func)
         def wrap_func(*args, **kwargs):
             val = func(*args, **kwargs)
-            if isinstance(val, cls):
+            if isinstance(val, oplist):
+                return val
+            elif isinstance(val, cls):
                 return val
             elif isinstance(val, (tuple, list)):
                 # Currently we only capture these as converted
@@ -126,8 +130,8 @@ class oplist(list):
             n = len(self)
             if n != len(other):
                 raise ValueError('oplist requires other data to contain same number of elements.')
-            return oplist([self[i] + other[i] for i in range(n)])
-        return oplist([data + other for data in self])
+            return oplist(self[i] + other[i] for i in range(n))
+        return oplist(data + other for data in self)
 
     def __iadd__(self, other):
         n = len(self)
@@ -149,8 +153,8 @@ class oplist(list):
             n = len(self)
             if n != len(other):
                 raise ValueError('oplist requires other data to contain same number of elements.')
-            return oplist([self[i] - other[i] for i in range(n)])
-        return oplist([data - other for data in self])
+            return oplist(self[i] - other[i] for i in range(n))
+        return oplist(data - other for data in self)
 
     def __isub__(self, other):
         n = len(self)
@@ -169,16 +173,16 @@ class oplist(list):
             n = len(self)
             if n != len(other):
                 raise ValueError('oplist requires other data to contain same number of elements.')
-            return oplist([other[i] - self[i] for i in range(n)])
-        return oplist([other - data for data in self])
+            return oplist(other[i] - self[i] for i in range(n))
+        return oplist(other - data for data in self)
 
     def __mul__(self, other):
         if isiterable(other):
             n = len(self)
             if n != len(other):
                 raise ValueError('oplist requires other data to contain same number of elements.')
-            return oplist([self[i] * other[i] for i in range(n)])
-        return oplist([data * other for data in self])
+            return oplist(self[i] * other[i] for i in range(n))
+        return oplist(data * other for data in self)
 
     def __imul__(self, other):
         n = len(self)
@@ -200,8 +204,8 @@ class oplist(list):
             n = len(self)
             if n != len(other):
                 raise ValueError('oplist requires other data to contain same number of elements.')
-            return oplist([self[i] ** other[i] for i in range(n)])
-        return oplist([data ** other for data in self])
+            return oplist(self[i] ** other[i] for i in range(n))
+        return oplist(data ** other for data in self)
 
     def __ipow__(self, other):
         n = len(self)
@@ -220,16 +224,16 @@ class oplist(list):
             n = len(self)
             if n != len(other):
                 raise ValueError('oplist requires other data to contain same number of elements.')
-            return oplist([other[i] ** self[i] for i in range(n)])
-        return oplist([other ** data for data in self])
+            return oplist(other[i] ** self[i] for i in range(n))
+        return oplist(other ** data for data in self)
 
     def __truediv__(self, other):
         if isiterable(other):
             n = len(self)
             if n != len(other):
                 raise ValueError('oplist requires other data to contain same number of elements.')
-            return oplist([self[i] / other[i] for i in range(n)])
-        return oplist([data / other for data in self])
+            return oplist(self[i] / other[i] for i in range(n))
+        return oplist(data / other for data in self)
 
     def __itruediv__(self, other):
         n = len(self)
@@ -248,5 +252,5 @@ class oplist(list):
             n = len(self)
             if n != len(other):
                 raise ValueError('oplist requires other data to contain same number of elements.')
-            return oplist([other[i] / self[i] for i in range(n)])
-        return oplist([other / data for data in self])
+            return oplist(other[i] / self[i] for i in range(n))
+        return oplist(other / data for data in self)

@@ -3,7 +3,7 @@ import numpy as np
 # Import sile objects
 from sisl.io.sile import *
 
-# Import the geometry object
+from sisl._internal import set_module
 from sisl import Geometry, Atom, SuperCell, Grid, SislError
 from sisl.unit import unit_convert
 
@@ -12,6 +12,7 @@ __all__ = ['cubeSile']
 Ang2Bohr = unit_convert('Ang', 'Bohr')
 
 
+@set_module("sisl.io")
 class cubeSile(Sile):
     """ CUBE file object """
 

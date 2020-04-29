@@ -4,10 +4,12 @@ except Exception:
     from io import StringIO
 import numpy as np
 
+from ..sile import add_sile
+
+from sisl._internal import set_module
 from sisl.utils import *
 from sisl.unit.siesta import unit_convert
 
-from ..sile import add_sile
 from .tbt import tbtncSileTBtrans
 
 
@@ -19,6 +21,7 @@ Ry2K = unit_convert('Ry', 'K')
 eV2Ry = unit_convert('eV', 'Ry')
 
 
+@set_module("sisl.io.tbtrans")
 class tbtprojncSileTBtrans(tbtncSileTBtrans):
     """ TBtrans projection file object """
     _trans_type = 'TBT.Proj'

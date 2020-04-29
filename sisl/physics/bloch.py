@@ -20,6 +20,7 @@ from numpy import zeros, empty
 from numpy import add, multiply
 from numpy import exp
 
+from sisl._internal import set_module
 from sisl._help import dtype_real_to_complex
 import sisl._array as _a
 from sisl._array import aranged
@@ -29,6 +30,7 @@ from ._bloch import bloch_unfold
 __all__ = ['Bloch']
 
 
+@set_module("sisl.physics")
 class Bloch:
     r""" Bloch's theorem object containing unfolding factors and unfolding algorithms
 

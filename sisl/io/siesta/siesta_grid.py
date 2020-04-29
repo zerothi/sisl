@@ -3,18 +3,22 @@ from numbers import Integral
 import numpy as np
 
 from .sile import SileCDFSiesta
-from ..sile import *
+from ..sile import add_sile, sile_raise_write
 
+from sisl._internal import set_module
 from sisl.messages import info
 from sisl import SuperCell, Grid
 from sisl.unit.siesta import unit_convert
 
+
 __all__ = ['gridncSileSiesta']
+
 
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 Ry2eV = unit_convert('Ry', 'eV')
 
 
+@set_module("sisl.io.siesta")
 class gridncSileSiesta(SileCDFSiesta):
     """ NetCDF real-space grid file """
 

@@ -1,9 +1,12 @@
 import numpy as np
+
+from sisl._internal import set_module
 from .sparse import SparseOrbitalBZ
 
 __all__ = ['Overlap']
 
 
+@set_module("sisl.physics")
 class Overlap(SparseOrbitalBZ):
     r""" Sparse overlap matrix object
 
