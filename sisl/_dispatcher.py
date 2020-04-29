@@ -114,15 +114,16 @@ class MethodDispatcher(Dispatcher):
 class ObjectDispatcher(Dispatcher):
     # We need to hide the methods and objects
     # since we are going to retrieve dispatchs from the object it-self
-    __slots__ = ("_obj", "_obj_getattr")
+    __slots__ = ("_obj", "_obj_getattr", "_cls_attr_name")
 
-    def __init__(self, obj, dispatchs=None, default=None, obj_getattr=None):
+    def __init__(self, obj, dispatchs=None, default=None, cls_attr_name=None, obj_getattr=None):
         super().__init__(dispatchs, default)
         self._obj = obj
         if obj_getattr is None:
             def obj_getattr(obj, key):
                 return getattr(obj, key)
         self._obj_getattr = obj_getattr
+        self._cls_attr_name = cls_attr_name
 
     def __str__(self):
         obj = str(self._obj).replace("\n", "\n ")
@@ -147,7 +148,7 @@ class ObjectDispatcher(Dispatcher):
         """
         super().register(key, dispatch, default)
         if to_class:
-            cls_dispatch = getattr(self._obj.__class__, "apply", None)
+            cls_dispatch = getattr(self._obj.__class__, self._cls_attr_name, None)
             if isinstance(cls_dispatch, ClassDispatcher):
                 cls_dispatch.register(key, dispatch)
 
@@ -169,9 +170,9 @@ class ObjectDispatcher(Dispatcher):
 
 
 class ClassDispatcher(Dispatcher):
-    __slots__ = ("_obj_getattr",)
+    __slots__ = ("_obj_getattr", "_attr_name")
 
-    def __init__(self, dispatchs=None, default=None, obj_getattr=None):
+    def __init__(self, dispatchs=None, default=None, attr_name="dispatch", obj_getattr=None):
         # obj_getattr is necessary for the ObjectDispatcher to create the correct
         # MethodDispatcher
         super().__init__(dispatchs, default)
@@ -179,6 +180,8 @@ class ClassDispatcher(Dispatcher):
             def obj_getattr(obj, key):
                 return getattr(obj, key)
         self._obj_getattr = obj_getattr
+        # the name of the ClassDispatcher attribute in the class
+        self._attr_name = attr_name
 
     def __get__(self, instance, owner):
         """ Class dispatcher retrieval
@@ -191,4 +194,7 @@ class ClassDispatcher(Dispatcher):
         """
         if instance is None:
             return self
-        return ObjectDispatcher(instance, self._dispatchs, default=self._default, obj_getattr=self._obj_getattr)
+        return ObjectDispatcher(instance, self._dispatchs,
+                                default=self._default,
+                                cls_attr_name=self._attr_name,
+                                obj_getattr=self._obj_getattr)
