@@ -1208,7 +1208,7 @@ class SparseCSR:
             return self.col[idx]
         return rows, self.col[idx]
 
-    def eliminate_zeros(self, atol=1e-16):
+    def eliminate_zeros(self, atol=0.):
         """ Remove all zero elememts from the sparse matrix
 
         This is an *in-place* operation
