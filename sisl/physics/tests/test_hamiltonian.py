@@ -2,6 +2,7 @@ import pytest
 
 import warnings
 import numpy as np
+from scipy.linalg import block_diag
 
 from sisl import Geometry, Atom, SuperCell, Hamiltonian, Spin, BandStructure, MonkhorstPack, BrillouinZone
 from sisl import get_distribution
@@ -935,8 +936,8 @@ class TestHamiltonian:
         H = Hamiltonian(g, dtype=np.float64, spin=Spin.NONCOLINEAR)
         for i in range(10):
             j = range(i*2, i*2+3)
-            H[i, i, 0] = 0.
-            H[i, i, 1] = 0.
+            H[i, i, 0] = 0.05
+            H[i, i, 1] = 0.1
             H[i, i, 2] = 0.1
             H[i, i, 3] = 0.1
             if i > 0:
@@ -953,8 +954,8 @@ class TestHamiltonian:
         H1 = Hamiltonian(g, dtype=np.float64, spin=Spin('non-collinear'))
         for i in range(10):
             j = range(i*2, i*2+3)
-            H1[i, i, 0] = 0.
-            H1[i, i, 1] = 0.
+            H1[i, i, 0] = 0.05
+            H1[i, i, 1] = 0.1
             H1[i, i, 2] = 0.1
             H1[i, i, 3] = 0.1
             if i > 0:
@@ -968,11 +969,20 @@ class TestHamiltonian:
         assert np.allclose(H1.eigh(dtype=np.complex128), eig1)
         assert np.allclose(H.eigh(), H1.eigh())
 
+        # Create the block matrix for expectation
+        SZ = block_diag(*([H1.spin.Z] * H1.no))
+
         for dtype in [np.complex64, np.complex128]:
             es = H1.eigenstate(dtype=dtype)
             assert np.allclose(es.eig, eig1)
-            sm = es.spin_moment()
             assert np.allclose(es.inner(), 1)
+
+            # Perform spin-moment calculation
+            sm = es.spin_moment()
+            sm2 = es.expectation(SZ).real
+            sm3 = np.diag(np.dot(np.conj(es.state), SZ).dot(es.state.T)).real
+            assert np.allclose(sm[:, 2], sm2)
+            assert np.allclose(sm[:, 2], sm3)
 
             om = es.spin_orbital_moment()
             assert np.allclose(sm, om.sum(1))
@@ -992,8 +1002,8 @@ class TestHamiltonian:
         H = Hamiltonian(g, dtype=np.float64, orthogonal=False, spin=Spin.NONCOLINEAR)
         for i in range(10):
             j = range(i*2, i*2+3)
-            H[i, i, 0] = 0.
-            H[i, i, 1] = 0.
+            H[i, i, 0] = 0.1
+            H[i, i, 1] = 0.05
             H[i, i, 2] = 0.1
             H[i, i, 3] = 0.1
             if i > 0:
@@ -1010,8 +1020,8 @@ class TestHamiltonian:
         H1 = Hamiltonian(g, dtype=np.float64, orthogonal=False, spin=Spin('non-collinear'))
         for i in range(10):
             j = range(i*2, i*2+3)
-            H1[i, i, 0] = 0.
-            H1[i, i, 1] = 0.
+            H1[i, i, 0] = 0.1
+            H1[i, i, 1] = 0.05
             H1[i, i, 2] = 0.1
             H1[i, i, 3] = 0.1
             if i > 0:
@@ -1031,6 +1041,7 @@ class TestHamiltonian:
             assert np.allclose(es.eig, eig1)
 
             sm = es.spin_moment()
+
             om = es.spin_orbital_moment()
             assert np.allclose(sm, om.sum(1))
 
@@ -1049,8 +1060,8 @@ class TestHamiltonian:
         H = Hamiltonian(g, dtype=np.float64, spin=Spin.SPINORBIT)
         for i in range(10):
             j = range(i*2, i*2+3)
-            H[i, i, 0] = 0.
-            H[i, i, 1] = 0.
+            H[i, i, 0] = 0.1
+            H[i, i, 1] = 0.05
             H[i, i, 2] = 0.1
             H[i, i, 3] = 0.1
             H[i, i, 4] = 0.1
@@ -1070,8 +1081,8 @@ class TestHamiltonian:
         H1 = Hamiltonian(g, dtype=np.float64, spin=Spin('spin-orbit'))
         for i in range(10):
             j = range(i*2, i*2+3)
-            H1[i, i, 0] = 0.
-            H1[i, i, 1] = 0.
+            H1[i, i, 0] = 0.1
+            H1[i, i, 1] = 0.05
             H1[i, i, 2] = 0.1
             H1[i, i, 3] = 0.1
             if i > 0:
@@ -1085,11 +1096,19 @@ class TestHamiltonian:
         assert np.allclose(H1.eigh(dtype=np.complex128), eig1)
         assert np.allclose(H.eigh(dtype=np.complex64), H1.eigh(dtype=np.complex128))
 
+        # Create the block matrix for expectation
+        SZ = block_diag(*([H1.spin.Z] * H1.no))
+
         for dtype in [np.complex64, np.complex128]:
             es = H.eigenstate(dtype=dtype)
             assert np.allclose(es.eig, eig1)
 
             sm = es.spin_moment()
+            sm2 = es.expectation(SZ).real
+            sm3 = np.diag(np.dot(np.conj(es.state), SZ).dot(es.state.T)).real
+            assert np.allclose(sm[:, 2], sm2)
+            assert np.allclose(sm[:, 2], sm3)
+
             om = es.spin_orbital_moment()
             assert np.allclose(sm, om.sum(1))
 

@@ -334,8 +334,8 @@ def spin_moment(state, S=None):
     # TODO but also way more memory demanding!
     for i in range(len(state)):
         Sstate = S.dot(state[i].reshape(-1, 2))
-        D = (conj(state[i]) * Sstate.ravel()).real.reshape(-1, 2)
-        s[i, 2] = (D[:, 0] - D[:, 1]).sum()
+        D = (conj(state[i]) * Sstate.ravel()).real.reshape(-1, 2).sum(0)
+        s[i, 2] = D[0] - D[1]
         D = 2 * conj(state[i, 1::2]).dot(Sstate[:, 0])
         s[i, 0] = D.real
         s[i, 1] = D.imag
