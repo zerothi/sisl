@@ -172,7 +172,7 @@ class ObjectDispatcher(Dispatcher):
 class ClassDispatcher(Dispatcher):
     __slots__ = ("_obj_getattr", "_attr_name")
 
-    def __init__(self, dispatchs=None, default=None, attr_name="dispatch", obj_getattr=None):
+    def __init__(self, name, dispatchs=None, default=None, obj_getattr=None):
         # obj_getattr is necessary for the ObjectDispatcher to create the correct
         # MethodDispatcher
         super().__init__(dispatchs, default)
@@ -181,7 +181,7 @@ class ClassDispatcher(Dispatcher):
                 return getattr(obj, key)
         self._obj_getattr = obj_getattr
         # the name of the ClassDispatcher attribute in the class
-        self._attr_name = attr_name
+        self._attr_name = name
 
     def __get__(self, instance, owner):
         """ Class dispatcher retrieval
