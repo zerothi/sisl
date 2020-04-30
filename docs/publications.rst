@@ -9,6 +9,10 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. J. Li, S. Sanz, J. Castro-Esteban, M. Vilas-Varela, N. Friedrich, T. Frederiksen, D. Pena, J.I. Pascual,
+   *Uncovering the Triplet Ground State of Triangular Graphene Nanoflakes Engineeredwith Atomic Precision on a Metal Surface*,
+   Physical Review Letters **124**, `177201 (2020) <https://doi.org/10.1103/PhysRevLett.124.177201>`_
+
 #. T. Schmitt, S. Bourelle, N. Tye, G. Soavi, A.D. Bond, S. Feldmann, T. Boubacar, C. Katan, J. Even, S.E. Dutton, F. Deschler,
    *Control of Crystal Symmetry Breaking with Halogen-Substituted Benzylammonium in Layered Hybrid Metal-Halide Perovskites*,
    Journal of the American Chemical Society **142**, `11 (2020) <https://doi.org/10.1021/jacs.9b11809>`_
