@@ -97,6 +97,25 @@ class Session(Configurable, Connected):
             }
         ),
 
+        TextInput(
+            key="file_storage_dir", name="File storage directory",
+            group="filesystem",
+            default="__sisltmp",
+            width="s100% l50%",
+            params={
+                "placeholder": "Write the path here..."
+            },
+            help="Directory where files uploaded in the GUI will be stored"
+        ),
+
+        SwitchInput(
+            key="keep_uploaded", name="Keep uploaded files",
+            group="filesystem",
+            default=False,
+            width="s100% l50%",
+            help="Whether uploaded files should be kept in disk or directly removed after plotting them."
+        ),
+
         RangeSlider(
             key = "searchDepth", name = "Search depth",
             group = "filesystem",

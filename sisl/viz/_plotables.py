@@ -53,7 +53,8 @@ register_plotable_sile(siesta.bandsSileSiesta, BandsPlot, 'bands_file')
 register_plotable_sile(siesta.pdosSileSiesta, PdosPlot, 'pdos_file')
 
 for GridSile in get_siles(attrs=["read_grid"]):
-    register_plotable_sile(GridSile, GridPlot, 'grid_file')
+    if GridSile not in [siesta.fdfSileSiesta]:
+        register_plotable_sile(GridSile, GridPlot, 'grid_file')
 
 # -----------------------------------------------------
 #             Register plotable classes

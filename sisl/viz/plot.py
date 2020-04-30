@@ -1538,7 +1538,11 @@ class Plot(ShortCutable, Configurable, Connected):
     #-------------------------------------------
 
     def dispatch_event(self, event, *args, **kwargs):
+        '''
+        Not functional yet
+        '''
         print(event, args, kwargs)
+        # Of course this needs to be done
 
     #-------------------------------------------
     #       DATA TRANSFER/STORAGE METHODS

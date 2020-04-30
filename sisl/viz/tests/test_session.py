@@ -54,10 +54,10 @@ class BaseSessionTester:
         new_plot = Plot()
         session.add_tab('Test tab')
         session.add_plot(new_plot, 'Test tab')
-        assert new_plot.socketio == 2
+        assert new_plot.socketio == 2, f'Socketio not transfered from {session.__class__} to plot on add_plot'
         # Fake a disconnection of the session and see if the plot follows
         session.socketio = None
-        assert new_plot.socketio is None
+        assert new_plot.socketio is None, f'Socketio change in {session.__class__} not transmitted to plots'
 
 # ------------------------------------------------------------
 #           Actual tests on the Session parent class

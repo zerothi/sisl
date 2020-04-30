@@ -199,12 +199,14 @@ class BaseGeometryPlot(Plot):
     
     def _bond_trace2D(self, xyz1, xyz2, r=15, color="gray", name=None, group=None, showlegend=False, **kwargs):
         
-        return trace
+        return
         
     def _bond_trace3D(self, xyz1, xyz2, r=15, color="#ccc", name=None, group=None, showlegend=False, **kwargs):
         
-        # Drawing cylinders instead of bonds will be better, but rendering would be slower
+        # Drawing cylinders instead of lines would be better, but rendering would be slower
         # We need to give the possibility.
+        # Also, the fastest way to draw bonds would be a single scatter trace with just markers
+        # (bonds would be drawn as sequences of points, but rendering would be much faster)
 
         x, y, z = np.array([xyz1, xyz2]).T
             

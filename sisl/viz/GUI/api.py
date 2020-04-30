@@ -1,4 +1,5 @@
 import os
+import shutil
 import traceback
 
 from plotly.graph_objects import Figure
@@ -11,7 +12,7 @@ import flask
 from flask import Flask, request, jsonify, make_response
 from flask_socketio import SocketIO, join_room
 
-from sisl.viz import BlankSession
+from sisl.viz import BlankSession, Plot
 from sisl.viz.plotutils import load
 from sisl.viz.GUI.api_utils import with_user_management, if_user_can, listen_to_users, \
 	emit_plot, emit_session, emit_error, emit_loading_plot, emit
@@ -99,6 +100,24 @@ def retrieve_plot(plotID):
 		print(f"Asking for plot: {plotID}")
 
 	emit_plot(plotID, session, broadcast=False)
+
+@on("upload_file")
+@if_user_can("edit")
+def plot_uploaded_file(file_bytes, name):
+
+	dirname = session.setting("file_storage_dir")
+	if not os.path.exists(dirname):
+		os.mkdir(dirname)
+
+	file_name = os.path.join(dirname, name)
+	with open(file_name, "wb") as fh:
+		fh.write(file_bytes)
+
+	plot = Plot(file_name)
+	session.autosync.add_plot(plot, session.tabs[0]["id"])
+
+	if not session.setting("keep_uploaded"):
+		shutil.rmtree(dirname)
 
 def set_session(new_session):
 	'''

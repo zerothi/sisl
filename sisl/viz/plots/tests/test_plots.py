@@ -27,6 +27,7 @@ def get_basic_functionality_test(PlotSubClass):
 
             assert hasattr(self.PlotClass, '_plot_type')
             assert isinstance(self.PlotClass._plot_type, str)
+            
     return BasicSubClassTest 
 
 # ------------------------------------------------------------

@@ -184,7 +184,7 @@ class BandsPlot(Plot):
     }
 
     @classmethod
-    def _default_animation(self, wdir = None, frameNames = None, **kwargs):
+    def _default_animation(cls, wdir = None, frameNames = None, **kwargs):
         
         bands_files = find_files(wdir, "*.bands", sort = True)
 
@@ -192,7 +192,7 @@ class BandsPlot(Plot):
 
             return [os.path.basename( childPlot.setting("bands_file")) for childPlot in self.childPlots]
 
-        return self.__class__.animated("bands_file", bands_files, frameNames = _getFrameNames, wdir = wdir, **kwargs)
+        return cls.animated("bands_file", bands_files, frameNames = _getFrameNames, wdir = wdir, **kwargs)
 
     def _read_from_H(self):
 
@@ -237,7 +237,7 @@ class BandsPlot(Plot):
             return eigenstate.eig
 
         # THIS DOES NOT SUPPORT SPIN!!!!!!!!!!!!!!!! (I think)
-        self.bands = bandStruct.asdataarray().eigenstate(
+        self.bands = bandStruct.apply.dataarray.eigenstate(
             wrap=bands_wrapper,
             coords=('band',),
         )

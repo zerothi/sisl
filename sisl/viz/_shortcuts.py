@@ -28,7 +28,7 @@ class ShortCutable:
             
     def call_shortcut(self, keys, *args, **kwargs):
 
-        self.shortcuts[keys]["action"](self, *args, **kwargs)
+        self.shortcuts[keys]["action"](*args, **kwargs)
 
         return self
     

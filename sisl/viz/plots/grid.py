@@ -137,7 +137,7 @@ class GridPlot(Plot):
 
         IntegerInput(
             key="cmid", name="Colorbar center",
-            default=0
+            default=None
         ),
 
         TextInput(
@@ -284,6 +284,17 @@ class GridPlot(Plot):
         # Use it
         plot_func(grid, values, display_axes, sc)
 
+    def _get_ax_range(self, grid, ax, sc):
+
+        ax_range = self.setting(["xRange", "yRange", "zRange"][ax])
+
+        if ax_range is not None:
+            offset = ax_range[0]
+        else:
+            offset = 0
+
+        return np.arange(0, sc[ax]*grid.cell[ax, ax], grid.dcell[ax, ax]) + offset
+
     def _plot1D(self, grid, values, display_axes, sc):
 
         ax = display_axes[0]
@@ -295,7 +306,7 @@ class GridPlot(Plot):
             'type': 'scatter',
             'mode': 'lines',
             'y': values,
-            'x': np.arange(0, sc[ax]*grid.cell[ax,ax], grid.dcell[ax,ax]),
+            'x': self._get_ax_range(grid, ax, sc),
             'name': os.path.basename(self.setting("grid_file") or "")
         }]
 
@@ -321,8 +332,8 @@ class GridPlot(Plot):
         self.data = [{
             'type': 'heatmap',
             'z': values,
-            'x': np.arange(0, sc[xaxis]*grid.cell[xaxis, xaxis], grid.dcell[xaxis, xaxis]),
-            'y': np.arange(0, sc[yaxis]*grid.cell[yaxis, yaxis], grid.dcell[yaxis, yaxis]),
+            'x': self._get_ax_range(grid, xaxis, sc),
+            'y': self._get_ax_range(grid, yaxis, sc),
             'zsmooth': self.setting('zsmooth'),
             'zmin': cmin,
             'zmax': cmax,
@@ -350,7 +361,7 @@ class GridPlot(Plot):
                         maxval - (maxval-minval)*0.3]
         isomin, isomax = isovals
 
-        X, Y, Z = np.meshgrid(*[np.linspace(0, grid.cell[i, i], shape) for i, shape in enumerate(grid.shape)])
+        X, Y, Z = np.meshgrid(*[self._get_ax_range(grid, i, sc) for i, shape in enumerate(grid.shape)])
         
         type3D = self.setting('type3D')
         if type3D is None:

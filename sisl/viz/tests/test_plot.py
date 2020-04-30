@@ -47,17 +47,17 @@ class BasePlotTester:
         # Check that the plot has a socketio attribute and that it can be changed
         # Seems dumb, but socketio is really a property that uses functions to set the
         # real attribute, so they may be broken by something
-        assert hasattr(plot, 'socketio')
+        assert hasattr(plot, 'socketio'), f"Socketio connectivity is not initialized correctly in {plot.__class__}"
         assert plot.socketio is None
         plot.socketio = 2
-        assert plot.socketio == 2
+        assert plot.socketio == 2, f'Problems setting a new socketio for {plot.__class__}'
 
     def test_plot_shortcuts(self):
 
         plot = self.PlotClass()
         # Build a fake shortcut and test it.
-        def dumb_shortcut(self, a=2):
-            self.a_value = a
+        def dumb_shortcut(a=2):
+            plot.a_value = a
         # Add it without extra parameters
         plot.add_shortcut("ctrl+a", "Dumb shortcut", dumb_shortcut)
         # Call it without extra parameters
@@ -91,7 +91,7 @@ class TestPlot(BasePlotTester):
             plot = Plot(file_name)
 
             corresponding_class = sile_rule.cls._plot[0]
-            assert plot.__class__ == corresponding_class
+            assert plot.__class__ == corresponding_class, f"Plot('{file_name}') gives a {plot.__class__} and should give a {corresponding_class}"
 
 # ------------------------------------------------------------
 #            Tests for the MultiplePlot class
