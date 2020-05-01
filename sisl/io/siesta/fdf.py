@@ -877,7 +877,7 @@ class fdfSileSiesta(SileSiesta):
             geom.atoms.replace(i, atom)
 
         # Get list of FC atoms
-        FC_atoms = _a.arangei(self.get('MD.FCFirst', default=0) - 1, self.get('MD.FCLast', default=geom.na))
+        FC_atoms = _a.arangei(self.get('MD.FCFirst', default=1) - 1, self.get('MD.FCLast', default=geom.na))
         return self._dynamical_matrix_from_fc(geom, FC, FC_atoms, *args, **kwargs)
 
     def _r_dynamical_matrix_nc(self, *args, **kwargs):
@@ -892,7 +892,7 @@ class fdfSileSiesta(SileSiesta):
 
         # Get list of FC atoms
         # TODO change to read in from the NetCDF file
-        FC_atoms = _a.arangei(self.get('MD.FCFirst', default=0) - 1, self.get('MD.FCLast', default=geom.na))
+        FC_atoms = _a.arangei(self.get('MD.FCFirst', default=1) - 1, self.get('MD.FCLast', default=geom.na))
         return self._dynamical_matrix_from_fc(geom, FC, FC_atoms, *args, **kwargs)
 
     def _dynamical_matrix_from_fc(self, geom, FC, FC_atoms, *args, **kwargs):
@@ -940,9 +940,9 @@ class fdfSileSiesta(SileSiesta):
 
         # Reshape to supercell
         FC.shape = (FC.shape[0], 3, *supercell, -1, 3)
-        # assert that the resulting unit-cell atoms are consistent
-        # with the geometry!
-        assert FC.shape[5] == geom.na
+        na_fc = len(FC_atoms)
+        assert FC.shape[0] == len(FC_atoms)
+        assert FC.shape[5] == len(geom) // np.prod(supercell)
 
         # Now we are in a problem since the tiling of the geometry
         # is not necessarily in x, y, z order.
@@ -954,6 +954,29 @@ class fdfSileSiesta(SileSiesta):
             # Re-arange FC before we use _fc_correct
             # Now we need to figure out how the atoms are laid out.
             # It *MUST* either be repeated or tiled (preferentially tiled).
+
+            # We have an actual supercell. Lets try and fix it.
+            # First lets recreate the smallest geometry
+            sc = geom.sc.cell.copy()
+            sc[0, :] /= supercell[0]
+            sc[1, :] /= supercell[1]
+            sc[2, :] /= supercell[2]
+
+            # Ensure nsc is at least an odd number, later down we will symmetrize the FC matrix
+            nsc = supercell + (supercell + 1) % 2
+            if R > 0:
+                # Correct for the optional radius
+                sc_norm = fnorm(sc)
+                # R is already "twice" the "orbital" range
+                nsc_R = 1 + 2 * np.ceil(R / sc_norm).astype(np.int32)
+                for i in range(3):
+                    nsc[i] = min(nsc[i], nsc_R[i])
+                del nsc_R
+
+            # Construct the minimal unit-cell geometry
+            sc = SuperCell(sc, nsc=nsc)
+            # TODO check that the coordinates are in the cell
+            geom_small = Geometry(geom.xyz[FC_atoms], geom.atoms[FC_atoms], sc)
 
             # Convert the big geometry's coordinates to fractional coordinates of the small unit-cell.
             isc_xyz = (geom.xyz.dot(geom_small.sc.icell.T) -
@@ -1018,7 +1041,6 @@ class fdfSileSiesta(SileSiesta):
 
         # Now we can build the dynamical matrix (it will always be real)
         na = len(geom)
-        na_fc = len(FC_atoms)
 
         if np.all(supercell <= 1):
             # also catches supercell == 0
@@ -1043,29 +1065,7 @@ class fdfSileSiesta(SileSiesta):
                     D[ia*3:(ia+1)*3, ja*3:(ja+1)*3] = FC[ia, :, fja, :]
 
         else:
-
-            # We have an actual supercell. Lets try and fix it.
-            # First lets recreate the smallest geometry
-            sc = geom.sc.cell.copy()
-            sc[0, :] /= supercell[0]
-            sc[1, :] /= supercell[1]
-            sc[2, :] /= supercell[2]
-
-            # Ensure nsc is at least an odd number, later down we will symmetrize the FC matrix
-            nsc = supercell + (supercell + 1) % 2
-            if R > 0:
-                # Correct for the optional radius
-                sc_norm = fnorm(sc)
-                # R is already "twice" the "orbital" range
-                nsc_R = 1 + 2 * np.ceil(R / sc_norm).astype(np.int32)
-                for i in range(3):
-                    nsc[i] = min(nsc[i], nsc_R[i])
-                del nsc_R
-
-            # Construct the minimal unit-cell geometry
-            sc = SuperCell(sc, nsc=nsc)
-            # TODO check that the coordinates are in the cell
-            geom = Geometry(geom.xyz[FC_atoms], geom.atoms[FC_atoms], sc)
+            geom = geom_small
 
             if np.any(np.diff(FC_atoms) != 1):
                 raise SislError(f"{self}.read_dynamical_matrix(FC) requires the FC atoms to be consecutive!")
