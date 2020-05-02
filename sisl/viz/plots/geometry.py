@@ -1,7 +1,7 @@
 from functools import wraps
 import numpy as np
 
-from sisl import Geometry, PeriodicTable
+from sisl import Geometry, PeriodicTable, Atom
 from sisl.viz import Plot
 from sisl.viz.input_fields import ProgramaticInput, FloatInput, SwitchInput, DropdownInput, TextInput
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher
@@ -48,6 +48,20 @@ class BaseGeometryPlot(Plot):
     '''
 
     is_only_base = True
+
+    # Colors of the atoms following CPK rules
+    _atoms_colors = {
+        "H" :"#ccc", # Should be white but the default background is white
+        "O" :"Red",
+        "Cl" :"Green",
+        "N" : "blue",
+        "C" : "Grey",
+        "S" :"Yellow",
+        "P" :"Orange",
+        "else": "pink"
+    }
+
+    _pt = PeriodicTable()
     
     _parameters = (
         ProgramaticInput(key="geom", name="Geometry",
@@ -86,6 +100,13 @@ class BaseGeometryPlot(Plot):
         z = center[2] + r*np.cos(phi)
     
         return {'x': x,'y': y,'z': z}
+    
+    @classmethod
+    def atom_color(cls, atom):
+
+        symb = Atom(atom).symbol
+
+        return cls._atoms_colors.get(symb, cls._atoms_colors["else"])
     
     def _read_nosource(self):
         self.geom = self.setting("geom") or getattr(self, "geom", None)
@@ -185,31 +206,116 @@ class BaseGeometryPlot(Plot):
             points = np.unique(points, axis=0)
 
         return np.array([xyz(coeffs) for coeffs in points])
+    
+    #---------------------------------------------------
+    #                  1D plotting
+    #---------------------------------------------------
+
+    def _plot_geom1D(self, coords_axis="x", data_axis=None, wrap_atoms=None, **kwargs):
+        '''
+        Returns a 1D representation of the plot's geometry.
+
+        Parameters
+        -----------
+        coords_axis:  {0,1,2, "x", "y", "z", "a", "b", "c"} or array-like of shape 3, optional
+            the axis onto which all the atoms are projected.
+        data_axis: function, optional
+            function that takes the projected 1D coordinates and returns the coordinates for the other axis.
+            If not provided, the other axis will just be 0 for all points.
+        wrap_atoms: function, optional
+            function that takes the 2D positions of the atoms in the plot and returns a tuple of (args, kwargs),
+            that are passed to self._atoms_scatter_trace2D.
+            If not provided self._default_wrap_atoms is used.
+        **kwargs: 
+            passed directly to the atoms scatter trace
+        '''
+
+        wrap_atoms = wrap_atoms or self._default_wrap_atoms1D
+        traces = []
+
+        x = self._projected_1Dcoords(self.geom.xyz, axis=coords_axis)
+        if not callable(data_axis):
+            def data_axis(x): 
+                return np.zeros(x.shape[0])
+        y = np.array(data_axis(x))
+        xy = np.array([x, y])
+
+        atoms_args, atoms_kwargs = wrap_atoms(xy)
+        atoms_kwargs = {**atoms_kwargs, **kwargs}
+
+        traces.append(
+            self._atoms_scatter_trace2D(*atoms_args, **atoms_kwargs)
+        )
+
+        self.add_traces(traces)
+
+    def _default_wrap_atoms1D(self, xy):
+
+        return (xy, ), {
+            "text": [f'{self.geom[at]}<br>{at+1} ({self.geom.atom[at].tag})' for at in self.geom],
+            "name": "Atoms",
+            "color": [self.atom_color(atom.Z) for atom in self.geom.atoms],
+            "size": [self._pt.radius(atom.Z)*16 for atom in self.geom.atoms]
+        }
+
+    def _projected_1Dcoords(self, xyz=None, axis="x"):
+        '''
+        Moves the 3D positions of the atoms to a 2D supspace.
+
+        In this way, we can plot the structure from the "point of view" that we want.
+
+        Parameters
+        ------------
+        xyz: array-like of shape (natoms, 3), optional
+            the 3D coordinates that we want to project.
+            otherwise 
+        axis: {0,1,2, "x", "y", "z", "a", "b", "c"} or array-like of shape 3, optional
+            the direction to be displayed along the X axis. 
+            If it's an int, it will interpreted as the index of the cell axis.
+
+        Returns
+        ----------
+        np.ndarray of shape (natoms, )
+            the 2D coordinates of the geometry, with all positions projected into the plane
+            defined by xaxis and yaxis.
+        '''
+        if xyz is None:
+            xyz = self.geom.xyz
+
+        # Get the directions that these axes represent if the provided input
+        # is an axis index
+        axis = self._sanitize_axis(axis)
+
+        return xyz.dot(axis)/np.linalg.norm(axis)
 
     #---------------------------------------------------
     #                  2D plotting
     #---------------------------------------------------
 
-    def _plot_geom2D(self, xaxis="x", yaxis="y", bonds=True, cell='axes'):
+    def _plot_geom2D(self, xaxis="x", yaxis="y", bonds=True, cell='axes', wrap_atoms=None):
         '''
         Returns a 2D representation of the plot's geometry.
 
         Parameters
         -----------
-        ort_vec: array-like of length 3
-            A vector representing the direction orthogonal to the plot canvas.
-            The point of view, so to speak.
-        wrap_atom: function, optional
-            function that recieves the index of an atom and returns
-            the args (array-like) and kwargs (dict) that go into self._atom_trace3D()
+        xaxis: {0,1,2, "x", "y", "z", "a", "b", "c"} or array-like of shape 3, optional
+            the direction to be displayed along the X axis. 
+            If it's an int, it will interpreted as the index of the cell axis.
+        yaxis: {0,1,2, "x", "y", "z", "a", "b", "c"} or array-like of shape 3, optional
+            the direction to be displayed along the X axis. 
+            If it's an int, it will interpreted as the index of the cell axis.
+        bonds: boolean, optional
+            whether bonds should be plotted.
+        cell: {False, "box", "axes"}, optional
+            determines how the unit cell is represented.
+        wrap_atoms: function, optional
+            function that recieves the 2D coordinates and returns
+            the args (array-like) and kwargs (dict) that go into self._atoms_scatter_trace2D()
 
-            If not provided, self._default_wrap_atom2D will be used.
-        wrap_bond: function, optional
-            function that recieves "a bond" (list of 2 atom indices) and returns
-            the args (array-like) and kwargs (dict) that go into self._bond_trace3D()
-
-            If not provided, self._default_wrap_bond2D will be used.
+            If not provided, self._default_wrap_atoms2D will be used.
         '''
+
+        wrap_atoms = wrap_atoms or self._default_wrap_atoms2D
 
         xy = self._projected_2Dcoords(self.geom.xyz, xaxis=xaxis, yaxis=yaxis)
         traces = []
@@ -221,13 +327,14 @@ class BaseGeometryPlot(Plot):
                 trace = self._bond_trace2D(*xys.T)
                 traces.append(trace)
 
+        # Add atoms
+        atoms_args, atoms_kwargs = wrap_atoms(xy)
+
         traces.append(
-            self._atoms_scatter_trace2D(
-                xy, 
-                text=[f'{self.geom[at]}<br>{at+1} ({self.geom.atom[at].tag})' for at in self.geom], name="Atoms"
-            )
+            self._atoms_scatter_trace2D(*atoms_args, **atoms_kwargs)
         )
 
+        #Draw cell
         if cell == "box":
             traces.append(self._cell_trace2D(xaxis=xaxis, yaxis=yaxis))
         if cell == "axes":
@@ -353,6 +460,11 @@ class BaseGeometryPlot(Plot):
             'fill': 'toself' if filled else None,
             **kwargs
         }
+    
+    def _default_wrap_atoms2D(self, xy):
+
+        return self._default_wrap_atoms1D(xy)
+
     #---------------------------------------------------
     #                  3D plotting
     #---------------------------------------------------
@@ -393,7 +505,11 @@ class BaseGeometryPlot(Plot):
 
     def _default_wrap_atom3D(self, at):
 
-        return (self.geom[at], 0.3), {"name": f'{at+1} ({self.geom.atom[at].tag})'}
+        return (self.geom[at], ), {
+            "name": f'{at+1} ({self.geom.atom[at].tag})',
+            "color": self.atom_color(self.geom.atom[at].Z),
+            "r": self._pt.radius(self.geom.atom[at].Z)*0.6
+        }
 
     def _default_wrap_bond3D(self, bond):
 
@@ -447,7 +563,7 @@ class BaseGeometryPlot(Plot):
         
         return trace
         
-    def _bond_trace3D(self, xyz1, xyz2, r=15, color="#ccc", name=None, group=None, showlegend=False, **kwargs):
+    def _bond_trace3D(self, xyz1, xyz2, r=0.3, color="#ccc", name=None, group=None, showlegend=False, **kwargs):
         
         # Drawing cylinders instead of lines would be better, but rendering would be slower
         # We need to give the possibility.
@@ -527,8 +643,10 @@ class GeometryPlot(BaseGeometryPlot):
             yaxis = self.setting("yaxis")
             self._plot_geom2D(xaxis=xaxis, yaxis=yaxis, cell=cell_rendering)
             self.update_settings(update_fig=False, xaxis_title=f'Axis {xaxis} (Ang)', yaxis_title=f'Axis {yaxis} (Ang)', no_log=True)
-        else:
-            raise NotImplementedError
+        elif ndims == 1:
+            coords_axis = self.setting("xaxis")
+            data_axis = self.setting("yaxis")
+            self._plot_geom1D(coords_axis=coords_axis, data_axis=data_axis )
 
     def _after_get_figure(self):
 

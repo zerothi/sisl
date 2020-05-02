@@ -170,6 +170,11 @@ class Session(Configurable, Connected):
             default=[4, 30],
             group="gui",
             help='''The initial width and height of a new plot. <br> Width is in columns (out of a total of 12). For height, you really should try what works best for you'''
+        ),
+
+        TextInput(key="plot_preset", name="Plot presets",
+            default=None,
+            help="Preset that is passed directly to each plot initialization"
         )
 
     )
@@ -319,6 +324,9 @@ class Session(Configurable, Connected):
             wdir = os.path.dirname(self.warehouse["structs"][structID]["path"]) if structID else self.setting("rootDir")
             new_plot = ReqPlotClass.animated(wdir = wdir)
         else:
+            plot_preset = self.setting("plot_preset")
+            if plot_preset is not None:
+                kwargs["presets"] = [*[plot_preset], *kwargs.get("presets", [])]
             new_plot = ReqPlotClass(*args, **kwargs)
 
         self.add_plot(new_plot, tabID)
