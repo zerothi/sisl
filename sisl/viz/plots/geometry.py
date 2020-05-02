@@ -114,7 +114,7 @@ class BaseGeometryPlot(Plot):
             neighs = geom.close(at, R=[0.1, 3])[-1]
 
             for neigh in neighs:
-                if pt.radius([geom.atom[at].Z, geom.atom[neigh].Z]).sum() + 0.15 > np.linalg.norm(geom[neigh] - geom[at]):
+                if pt.radius([geom.atom[at].Z, geom.atom[neigh % geom.na].Z]).sum() + 0.15 > np.linalg.norm(geom[neigh] - geom[at]):
                     bonds.append(np.sort([at, neigh]))
 
         if bonds:
@@ -172,7 +172,7 @@ class BaseGeometryPlot(Plot):
             cell = self.geom.cell
 
         def xyz(coeffs):
-            return cell.dot(coeffs)
+            return np.dot(coeffs, cell)
 
         # Define the vertices of the cube
         points = [
@@ -190,7 +190,7 @@ class BaseGeometryPlot(Plot):
     #                  2D plotting
     #---------------------------------------------------
 
-    def _plot_geom2D(self, xaxis=0, yaxis=1, bonds=True, cell='axes'):
+    def _plot_geom2D(self, xaxis="x", yaxis="y", bonds=True, cell='axes'):
         '''
         Returns a 2D representation of the plot's geometry.
 
@@ -235,7 +235,7 @@ class BaseGeometryPlot(Plot):
 
         self.add_traces(traces)
 
-    def _projected_2Dcoords(self, xyz=None, xaxis=0 , yaxis=1):
+    def _projected_2Dcoords(self, xyz=None, xaxis="x" , yaxis="y"):
         '''
         Moves the 3D positions of the atoms to a 2D supspace.
 
@@ -273,7 +273,7 @@ class BaseGeometryPlot(Plot):
 
         raise NotImplementedError
 
-    def _atoms_scatter_trace2D(self, xyz=None, xaxis=0, yaxis=1, color="gray", size=10, name=None, text=None, group=None, showlegend=False, **kwargs):
+    def _atoms_scatter_trace2D(self, xyz=None, xaxis="x", yaxis="y", color="gray", size=10, name=None, text=None, group=None, showlegend=False, **kwargs):
 
         if xyz is None:
             xyz = self.geom.xyz
@@ -320,7 +320,7 @@ class BaseGeometryPlot(Plot):
 
         return trace
 
-    def _cell_axes_traces2D(self, cell=None, xaxis=0, yaxis=1):
+    def _cell_axes_traces2D(self, cell=None, xaxis="x", yaxis="y"):
 
         if cell is None:
             cell = self.geom.cell
@@ -335,7 +335,7 @@ class BaseGeometryPlot(Plot):
             'name': f'Axis {i}'
         } for i, vec in enumerate(cell_xy)]
 
-    def _cell_trace2D(self, cell=None, xaxis=0, yaxis=1, color=None, filled=False, **kwargs):
+    def _cell_trace2D(self, cell=None, xaxis="x", yaxis="y", color=None, filled=False, **kwargs):
 
         if cell is None:
             cell = self.geom.cell
@@ -510,8 +510,8 @@ class GeometryPlot(BaseGeometryPlot):
             (False: not rendered, 'axes': render axes only, 'box': render a bounding box)'''
         ),
 
-        ProgramaticInput(key="xaxis", name="X axis", default=0),
-        ProgramaticInput(key="yaxis", name="Y axis", default=1)
+        ProgramaticInput(key="xaxis", name="X axis", default="x"),
+        ProgramaticInput(key="yaxis", name="Y axis", default="y")
         
     )
 

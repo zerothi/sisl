@@ -2,9 +2,11 @@ from copy import deepcopy
 import numpy as np
 import sys
 
+from sisl.viz._presets import PRESETS
+
 class Configurable:
     
-    def init_settings(self, **kwargs):
+    def init_settings(self, presets=None, **kwargs):
 
         if getattr(self, "AVOID_SETTINGS_INIT", False):
             delattr(self, "AVOID_SETTINGS_INIT")
@@ -25,6 +27,14 @@ class Configurable:
                 self.params = [*self.params, *clss._parameters]
             if "_paramGroups" in vars(clss):
                 self.paramGroups = [*clss._paramGroups, *self.paramGroups]
+        
+        if presets is not None:
+            if isinstance(presets, str):
+                presets = [presets]
+                
+            for preset in presets:
+                preset_settings = PRESETS[preset]
+                kwargs = {**kwargs, **preset_settings}
 
         #Define the settings dictionary, taking the value of each parameter from kwargs if it is there or from the defaults otherwise.
         self.settings = { param.key: kwargs.get( param.key, deepcopy(param.default) ) for param in self.params}
