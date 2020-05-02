@@ -1,6 +1,7 @@
 import numpy as np
 import xarray as xr
 import itertools
+import plotly.express as px
 
 import os
 
@@ -193,6 +194,10 @@ class BandsPlot(Plot):
             return [os.path.basename( childPlot.setting("bands_file")) for childPlot in self.childPlots]
 
         return cls.animated("bands_file", bands_files, frameNames = _getFrameNames, wdir = wdir, **kwargs)
+
+    def _after_init(self):
+
+        self.add_shortcut("g", "Toggle gap", self.toggle_gap)
 
     def _read_from_H(self):
 
@@ -420,3 +425,79 @@ class BandsPlot(Plot):
                     'name': 'Gap',
                     'textposition': 'top right',
                 })
+
+    def toggle_gap(self):
+
+        self.update_settings(gap= not self.settings["gap"])
+    
+    def plot_Ediff(self, band1, band2):
+        '''
+        Plots the energy difference between two bands.
+
+        Parameters
+        ----------
+        band1, band2: int
+            the indices of the two bands you want to get the difference for.
+
+        Returns
+        ---------
+        Plot
+            a new plot with the plotted information.
+        '''
+
+        two_bands = self.bands.sel(band=[band1, band2]).squeeze().values
+
+        diff = two_bands[:, 1] - two_bands[:, 0]
+
+        fig = px.line(x=self.bands.k.values ,y=diff)
+
+        plt = Plot.from_plotly(fig)
+
+        plt.update_layout({ **self.layout.to_plotly_json(), "title": f"Energy difference between bands {band1} and {band2}", "yaxis_range": [np.min(diff), np.max(diff)]})
+
+        return plt
+
+    def _plot_Kdiff(self, band1, band2, E=None, offsetE=False):
+        '''
+        ONLY WORKING FOR A PAIR OF BANDS THAT ARE ALWAYS INCREASING OR ALWAYS DECREASING
+        
+        Plots the energy difference between two bands.
+
+        Parameters
+        -----------
+        band1, band2: int
+            the indices of the two bands you want to get the difference for.
+        E: array-like, optional
+            the energy values for which we want the K difference between the two bands
+        offsetE: boolean
+            whether the energy should be referenced to the minimum of the first band
+
+        Returns
+        ---------
+        Plot
+            a new plot with the plotted information.
+        '''
+
+        b1, b2 = self.bands.sel(band=[band1, band2]).squeeze().values.T
+        ks = self.bands.k.values
+
+        if E is None:
+            #Interpolate the values of K for band2 that correspond to band1's energies.
+            b2Ks_for_b1Es = np.interp(b1, b2, ks)
+
+            E = b1
+            diff = ks - b2Ks_for_b1Es
+
+        else:
+            diff = np.interp(E, b1, ks) - \
+                np.interp(E, b2, ks)
+
+        E += np.min(b1) if offsetE else 0
+
+        fig = px.line(x=diff, y=E)
+
+        plt = Plot.from_plotly(fig)
+
+        plt.update_layout({"title": f"Delta K between bands {band1} and {band2}"})
+
+        return plt

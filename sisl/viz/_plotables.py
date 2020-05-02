@@ -56,6 +56,9 @@ for GridSile in get_siles(attrs=["read_grid"]):
     if GridSile not in [siesta.fdfSileSiesta]:
         register_plotable_sile(GridSile, GridPlot, 'grid_file')
 
+for GeomSile in get_siles(attrs=["read_geometry"]):
+    register_plotable_sile(GeomSile, GeometryPlot, 'geom_file')
+
 # -----------------------------------------------------
 #             Register plotable classes
 # -----------------------------------------------------

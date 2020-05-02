@@ -60,7 +60,7 @@ def emit_loading_plot(plot, broadcast=True, **kwargs):
 
 def emit_error(err, **kwargs):
 
-	emit("error", str(err), broadcast=False, **kwargs)
+	emit("server_error", str(err), broadcast=False, **kwargs)
 
 def emit_object(obj, *args, **kwargs):
 	'''
