@@ -7,7 +7,7 @@ import numpy as np
 
 from sisl._dispatcher import AbstractDispatch
 from ._presets import PRESETS
-from .plotutils import get_configurable_docstring, get_configurable_kwargs
+from .plotutils import get_configurable_docstring, get_configurable_kwargs, get_configurable_kwargs_to_pass
 
 class FakeSettingsDispatch(AbstractDispatch):
     '''
@@ -129,16 +129,15 @@ class Configurable:
 
         # Update the docs of the update_settings method to truly reflect
         # the available kwargs for the object
-        # This is super ugly I know, but it is the only way I found it could work
-        scope = {"Configurable": Configurable, "self": self}
-        exec(f'''def update_settings(self, {get_configurable_kwargs(self)}, **kwargs): \n\treturn Configurable.update_settings(self, **kwargs)''', scope)
+        def update_settings(self, **kwargs):
+            return Configurable.update_settings(self, **kwargs)
 
-        scope["update_settings"].__doc__ = get_configurable_docstring(self)
-        self.update_settings = scope["update_settings"]
+        update_settings.__doc__ = get_configurable_docstring(self)
+        self.update_settings = MethodType(update_settings, self)
         
         return self
     
-    def update_settings(self, from_decorator = False, update_fig = True, no_log=False ,**kwargs):
+    def update_settings(self, from_decorator=False, update_fig=True, no_log=False , **kwargs):
         
         #Initialize the settings in case there are none yet
         if "settings" not in vars(self):

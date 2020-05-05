@@ -606,7 +606,7 @@ class Plot(ShortCutable, Configurable, Connected):
 
         # Initialize the figure
         self.figure = go.Figure()
-        # on_figure_change is triggered after get_figure. It is used, for example
+        # on_figure_change is triggered after get_figure.
         self.on_figure_change = None 
 
         #If plugins have been provided, then add them.
@@ -618,6 +618,7 @@ class Plot(ShortCutable, Configurable, Connected):
                     plugin = MethodType(plugin, self)
                 setattr(self, name, plugin)
 
+        # Add the general plot shortcuts
         self._general_plot_shortcuts()
 
         #Give the user the possibility to overwrite default settings

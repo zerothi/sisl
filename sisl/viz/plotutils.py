@@ -167,6 +167,32 @@ def get_configurable_kwargs(cls):
 
     return ", ".join([f'{param.key}={param.default if not isinstance(param.default, str) else param.default.__repr__()}' for param in params])
 
+def get_configurable_kwargs_to_pass(cls):
+    '''
+    Builds a string to help you pass all the kwargs that you got from
+    the function using `get_configurable_kwargs`.
+
+    E.g.: If `get_configurable_kwargs` gives you 'param1=None, param2="nothing"'
+    `get_configurable_kwargs_to_pass` will give you param1=param1, param2=param2
+
+    Parameters
+    ------------
+    cls:
+        the class you want the kwargs for
+
+    Returns
+    -----------
+    str:
+        the string containing the described kwargs.
+    '''
+
+    if isinstance(cls, type):
+        params = cls._parameters
+    else:
+        # It's really an instance, not the class
+        params = cls.params
+
+    return ", ".join([f'{param.key}={param.key}' for param in params])
 #-------------------------------------
 #           Python helpers
 #-------------------------------------
