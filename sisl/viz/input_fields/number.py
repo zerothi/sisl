@@ -26,7 +26,7 @@ class IntegerInput(NumericInput):
 
 class FloatInput(NumericInput):
 
-    dtype = (int, float)
+    dtype = float
 
     _default = {
         **NumericInput._default,

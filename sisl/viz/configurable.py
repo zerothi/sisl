@@ -6,7 +6,7 @@ import sys
 import numpy as np
 
 from sisl._dispatcher import AbstractDispatch
-from ._presets import PRESETS
+from ._presets import get_preset
 from .plotutils import get_configurable_docstring, get_configurable_kwargs, get_configurable_kwargs_to_pass
 
 class FakeSettingsDispatch(AbstractDispatch):
@@ -116,7 +116,7 @@ class Configurable:
                 presets = [presets]
                 
             for preset in presets:
-                preset_settings = PRESETS[preset]
+                preset_settings = get_preset(preset)
                 kwargs = {**kwargs, **preset_settings}
 
         #Define the settings dictionary, taking the value of each parameter from kwargs if it is there or from the defaults otherwise.

@@ -1583,7 +1583,7 @@ class Plot(ShortCutable, Configurable, Connected):
 
         return self
     
-    def save(self, path, html = False):
+    def save(self, path, html=False):
         '''
         Saves the plot so that it can be loaded in the future.
 
@@ -1599,7 +1599,7 @@ class Plot(ShortCutable, Configurable, Connected):
         self
         '''
 
-        if html or os.path.splitext(path)[-1] == "html":
+        if html or os.path.splitext(path)[-1] == ".html":
             self.figure.write_html('{}.html'.format(path.replace(".html", "")))
             return self
 

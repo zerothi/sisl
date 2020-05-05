@@ -1,4 +1,8 @@
 import itertools
+import os
+
+from ._user_customs import get_user_presets
+from .plotutils import get_file_vars
 
 PRESETS = {
     "Dark theme": {
@@ -21,3 +25,17 @@ PRESETS = {
         "bands_width": 2
     }
 }
+
+PRESETS = { **PRESETS, **get_user_presets()}
+
+def get_preset(name):
+    '''
+    Gets the asked preset.
+
+    Parameters
+    -----------
+    name: str
+        the name of the preset that you are looking for
+    '''
+
+    return PRESETS.get(name, None)

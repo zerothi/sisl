@@ -85,6 +85,8 @@ class InputField:
     
     '''
 
+    dtype = None
+
     def __init__(self, key, name, default=None, params={}, style={}, width="", inputFieldAttrs={}, group=None, subGroup=None, dtype=None, **kwargs):
 
         self.key = key
@@ -247,6 +249,28 @@ class InputField:
             json.dumps(self, default=default)
         )
 
+    def _parse(self, val):
+
+        dtypes = self.dtype
+
+        if dtypes is None:
+            return val
+
+        if not isinstance(dtypes, tuple):
+            dtypes = (dtypes, )
+
+        for dtype in dtypes:
+
+            try:
+                if dtype == bool and isinstance(val, str):
+                    val = val.lower() not in ('false', 'f', 'no', 'n')
+                else:
+                    val = dtype(val)
+            except:
+                continue
+
+        return val
+        
     def _get_docstring(self):
         import textwrap
 

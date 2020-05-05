@@ -193,6 +193,30 @@ def get_configurable_kwargs_to_pass(cls):
         params = cls.params
 
     return ", ".join([f'{param.key}={param.key}' for param in params])
+
+def get_session_classes():
+    '''
+    Returns the available session classes
+    '''
+    from .session import Session
+
+    return { sbcls.__name__: sbcls for sbcls in Session.__subclasses__() }
+
+def get_avail_presets():
+    '''
+    Gets the names of the currently available presets
+    '''
+    from ._presets import PRESETS
+
+    return list(PRESETS.keys())
+
+def get_file_vars(path):
+    from runpy import run_path
+
+    if os.path.exists(path) and os.path.splitext(path)[-1] == ".py":
+        return run_path(path)
+    else:
+        return {}
 #-------------------------------------
 #           Python helpers
 #-------------------------------------
