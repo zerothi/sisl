@@ -23,6 +23,14 @@ def general_arguments(parser):
     
     parser.add_argument('--no-show', dest='show', action='store_false',
                         help="Pass this flag if you don't want the plot to be displayed.")
+    
+    parser.add_argument('--shortcuts', '-sh', nargs="*",
+                        help="The shortcuts to apply to the plot after it has been built. " +
+                        "They should be passed as the sequence of keys that need to be pressed to trigger the shortcut"+
+                        "You can pass as many as you want."
+    )
+
+                    
 
 def splot():
 
@@ -80,6 +88,11 @@ def splot():
 
     print("Building plot...")
     plot = plot_class(*args.files, presets=args.presets, **settings)
+
+    if args.shortcuts:
+        print("Applying shortcuts...")
+        for shortcut in args.shortcuts:
+            plot.call_shortcut(shortcut)
 
     if args.save:
         print(f"Saving it to {args.save}...")
