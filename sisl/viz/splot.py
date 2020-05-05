@@ -27,7 +27,8 @@ def general_arguments(parser):
     parser.add_argument('--shortcuts', '-sh', nargs="*",
                         help="The shortcuts to apply to the plot after it has been built. " +
                         "They should be passed as the sequence of keys that need to be pressed to trigger the shortcut"+
-                        "You can pass as many as you want."
+                        "You can pass as many as you want. If the built plot is an animation, the shortcuts will be applied"+
+                        "to each plot separately"
     )
 
                     
@@ -46,7 +47,8 @@ def splot():
     cmd.add_sisl_version_cite_arg(parser)
 
     parser.add_argument('--files', "-f", type=str, nargs="*", default=[],
-                        help='The files that you want to plot. As many as you want.')
+                        help='The files that you want to plot. As many as you want.'
+    )
 
     general_arguments(parser)
             
@@ -68,8 +70,16 @@ def splot():
 
     for PlotClass in avail_plots:
         doc = PlotClass.__doc__ or ""
-        specific_parser = subparsers.add_parser(PlotClass.plotName(), help=doc.split(".")[0], conflict_handler="resolve")
+        specific_parser = subparsers.add_parser(PlotClass.plotName(), help=doc.split(".")[0])
+
+        if hasattr(PlotClass, "_default_animation"):
+            specific_parser.add_argument('--animated', '-ani', dest="animated", action="store_true", 
+                help=f"If this flag is present, the default animation for {PlotClass.__name__} will be build"+
+                " instead of a regular plot"
+            )
+
         general_arguments(specific_parser)
+
         for param in PlotClass._get_class_params()[0]:
             if param.dtype is not None and not isinstance(param.dtype, str):
                 specific_parser.add_argument(f'--{param.key}', type=param._parse, required=False, help=getattr(param, "help", ""))
@@ -86,13 +96,22 @@ def splot():
 
     settings = { param.key: getattr(args, param.key) for param in plot_class._get_class_params()[0] if getattr(args, param.key, None) is not None}
 
-    print("Building plot...")
-    plot = plot_class(*args.files, presets=args.presets, **settings)
+    if getattr(args, "animated", False):
+        print("Building animation...")
+        plot = plot_class.animated(fixed={"presets":args.presets, **settings})
+    else:
+        print("Building plot...")
+        plot = plot_class(*args.files, presets=args.presets, **settings)
 
     if args.shortcuts:
         print("Applying shortcuts...")
-        for shortcut in args.shortcuts:
-            plot.call_shortcut(shortcut)
+        if getattr(args, "animated", False):
+            plots = plot.childPlots
+        else:
+            plots = [plot]
+        for pt in plots:
+            for shortcut in args.shortcuts:
+                pt.call_shortcut(shortcut)
 
     if args.save:
         print(f"Saving it to {args.save}...")
