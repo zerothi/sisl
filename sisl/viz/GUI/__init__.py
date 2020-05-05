@@ -31,5 +31,10 @@ def launch(inconsole=False, only_api=False, api_kwargs=None):
     except Exception as e:
         print(e)
     
+def sgui():
+    '''
+    Command line interface for launching GUI related stuff
+    '''
 
+    launch(inconsole=True)
 
