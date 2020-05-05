@@ -242,7 +242,7 @@ class Session(Configurable, Connected):
 
             return all_subclasses
         
-        return sorted(get_all_subclasses(sisl.viz.Plot), key = lambda clss: clss._plot_type) 
+        return sorted(get_all_subclasses(sisl.viz.Plot), key = lambda clss: clss.plotName()) 
     
     def add_plot(self, plot, tabID = None, noTab = False): 
         '''
@@ -682,7 +682,7 @@ class Session(Configurable, Connected):
             "paramGroups": self._paramGroups,
             "updatesAvailable": self.updates_available(),
             "plotOptions": [
-                {"value": subclass.__name__, "label": subclass._plot_type} 
+                {"value": subclass.__name__, "label": subclass.plotName()} 
                 for subclass in self.get_plot_classes()
             ],
             "structures": self.get_structures(),

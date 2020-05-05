@@ -3,6 +3,9 @@ import os
 from ..session import Session
 
 class BlankSession(Session):
+    '''
+    The most basic session one could have, really.
+    '''
 
     _sessionName = "Blank session"
 

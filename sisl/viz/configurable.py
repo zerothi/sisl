@@ -104,12 +104,7 @@ class Configurable:
                 kwargs[key] = val
         
         #Get the parameters of all the classes the object belongs to
-        self.params = []; self.paramGroups = []
-        for clss in type.mro(self.__class__):
-            if "_parameters" in vars(clss):
-                self.params = [*self.params, *clss._parameters]
-            if "_paramGroups" in vars(clss):
-                self.paramGroups = [*clss._paramGroups, *self.paramGroups]
+        self.params, self.paramGroups = self._get_class_params()
         
         if presets is not None:
             if isinstance(presets, str):
@@ -117,7 +112,7 @@ class Configurable:
                 
             for preset in presets:
                 preset_settings = get_preset(preset)
-                kwargs = {**kwargs, **preset_settings}
+                kwargs = {**preset_settings, **kwargs}
 
         #Define the settings dictionary, taking the value of each parameter from kwargs if it is there or from the defaults otherwise.
         self.settings = { param.key: kwargs.get( param.key, deepcopy(param.default) ) for param in self.params}
@@ -137,6 +132,17 @@ class Configurable:
         
         return self
     
+    @classmethod
+    def _get_class_params(cls):
+
+        params = []; param_groups = []
+        for clss in type.mro(cls):
+            if "_parameters" in vars(clss):
+                params = [*params, *clss._parameters]
+            if "_paramGroups" in vars(clss):
+                param_groups = [*clss._paramGroups, *param_groups]
+        return params, param_groups
+
     def update_settings(self, from_decorator=False, update_fig=True, no_log=False , **kwargs):
         
         #Initialize the settings in case there are none yet

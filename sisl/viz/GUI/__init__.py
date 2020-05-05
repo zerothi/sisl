@@ -1,10 +1,21 @@
 import argparse
 import time
+import os
 from ..plotutils import load, get_session_classes
+from .._user_customs import SESSION_FILE, SESSION_VARIABLE
 
 session = None
 
-def launch(inconsole=False, only_api=False, api_kwargs=None, load_session=None, session_settings={}, session_cls=None):
+def launch(only_api=False, api_kwargs=None, load_session=None, session_settings={}, session_cls=None, interactive=False):
+    '''
+    Launches the graphical interface.
+
+    Parameters
+    -----------
+    interactive: bool, optional
+        whether an interactive console should be started. Probably you will never need to set this to true.
+        It is only meant to open a python console in the terminal and it is used by sgui.
+    '''
 
     from code import interact
     from threading import Thread, Semaphore
@@ -36,7 +47,7 @@ def launch(inconsole=False, only_api=False, api_kwargs=None, load_session=None, 
     if only_api:
         threads = [threads[0]]
 
-    if inconsole:
+    if interactive:
         #To launch an interactive console (not needed from jupyter) 
         threads.append(Thread(target=interact, kwargs={'local': globals()}))
     try:
@@ -46,12 +57,20 @@ def launch(inconsole=False, only_api=False, api_kwargs=None, load_session=None, 
     except Exception as e:
         print(e)
 
-    if inconsole:
+    if interactive:
         try:
             while 1:
                 time.sleep(.1)
         except KeyboardInterrupt:
             print("Please use Ctrl+D to kill the interactive console first")
+
+
+def general_arguments(parser):
+
+    parser.add_argument('--only-api', dest='only_api', action="store_true",
+        help="Pass this flag if all you want to do is initialize the API, but not the GUI. You can do this if you plan"+
+        "to access the graphical interface by some other means (e.g. https://sisl-siesta.xyz)"
+    )
     
 def sgui():
     '''
@@ -59,21 +78,42 @@ def sgui():
     '''
     from sisl.viz import Session
 
+    avail_session_classes = get_session_classes()
+
     parser = argparse.ArgumentParser(prog='sgui', 
-                                     description="Command line utility to launch sisl's graphical interface.") 
+                                     description="Command line utility to launch sisl's graphical interface.")
+
+    general_arguments(parser)
   
-    parser.add_argument('session', type=str, nargs="?", default=None,
-                        help='The session that you want to open in the GUI. If not provided, a fresh new session will be used.')
+    parser.add_argument('--load', '-l', type=str, nargs="?", default=None,
+                        help='The path to the session that you want to open in the GUI. If not provided, a fresh new session will be used.')
 
-    parser.add_argument('--session-cls', '-c', required=False,
-                        help='If a new session is started, the class that should be used.')
-
-    for param in Session._parameters:
+    for param in Session._get_class_params()[0]:
         if param.dtype is not None and not isinstance(param.dtype, str):
             parser.add_argument(f'--{param.key}', type=param._parse, required=False, help=getattr(param, "help", ""))
+
+    subparsers = parser.add_subparsers(
+        help="YOU DON'T NEED TO PASS A SESSION CLASS. You can provide a session file to load a saved session (see the --load flag)."+
+        " However, if you want to start a new session and the default one (BlankSession) is not good for you"+
+        " you can pass a session class. By doing so, you will also get access to session-specific settings. Try sgui BlankSession -h, for example." + 
+        " Note that you can also build your own sessions that will be automatically available here." +
+        f" Sisl is looking for your sessions under the '{SESSION_VARIABLE}' variable" +
+        f" defined in {SESSION_FILE}. It should be a list containing all your sessions.",
+        dest="session_class"
+    )
+
+    for name, SessionClass in avail_session_classes.items():
+        doc = SessionClass.__doc__ or ""
+        specific_parser = subparsers.add_parser(name, help=doc.split(".")[0])
+        general_arguments(specific_parser)
+        for param in SessionClass._get_class_params()[0]:
+            if param.dtype is not None and not isinstance(param.dtype, str):
+                specific_parser.add_argument(f'--{param.key}', type=param._parse, required=False, help=getattr(param, "help", ""))
+  
   
     args = parser.parse_args()
 
-    settings = { param.key: getattr(args, param.key) for param in Session._parameters if getattr(args, param.key, None) is not None}
+    # Note that it doesn't matter if we include invalid settings. Configurable will just ignore them
+    settings = { key: val for key, val in vars(args).items() if val is not None}
 
-    launch(inconsole=True, load_session=args.session, session_settings=settings, session_cls=args.session_cls)
+    launch(interactive=True, load_session=args.load, session_settings=settings, session_cls=args.session_class, only_api=args.only_api)

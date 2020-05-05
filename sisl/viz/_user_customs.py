@@ -34,5 +34,5 @@ SESSION_FILE = os.path.join(USER_CUSTOM_FOLDER, "sessions.py")
 # We will look for sessions under this variable
 SESSION_VARIABLE = "sessions"
 
-def get_user_session():
+def get_user_sessions():
     return get_file_vars(SESSION_FILE).get(SESSION_VARIABLE, {})
