@@ -2,6 +2,8 @@ from .._input_field import InputField
 
 class SwitchInput(InputField):
 
+    dtype = bool
+
     _type = 'switch'
 
     _default = {

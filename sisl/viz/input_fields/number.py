@@ -14,6 +14,8 @@ class NumericInput(InputField):
 
 class IntegerInput(NumericInput):
 
+    dtype = int
+
     _default = {
         **NumericInput._default,
         "params": {
@@ -23,6 +25,8 @@ class IntegerInput(NumericInput):
     }
 
 class FloatInput(NumericInput):
+
+    dtype = (int, float)
 
     _default = {
         **NumericInput._default,

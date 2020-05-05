@@ -1,6 +1,8 @@
 from .._input_field import InputField
 
 class ArrayInput(InputField):
+
+    dtype = "array-like"
     
     _type = 'array'
 

@@ -102,6 +102,71 @@ def get_plotable_variables(variables):
             plotables[vname] = obj
     
     return plotables
+
+def get_configurable_docstring(cls):
+    '''
+    Builds the docstring for a class that inherits from Configurable
+
+    Parameters
+    -----------
+    cls:
+        the class you want the docstring for
+
+    Returns
+    -----------
+    str:
+        the docs with the settings added.
+    '''
+    import re
+
+    if isinstance(cls, type):
+        params = cls._parameters
+        doc = cls.__doc__
+    else:
+        # It's really an instance, not the class
+        params = cls.params
+        doc = ""
+
+    configurable_settings = "\n".join([param._get_docstring() for param in params])
+
+    html_cleaner = re.compile('<.*?>')
+    configurable_settings = re.sub(html_cleaner, '', configurable_settings)
+
+    if "Parameters\n--" not in doc:
+        doc += f'\n\nParameters\n-----------\n{configurable_settings}'
+    else:
+        doc += f'\n{configurable_settings}'
+
+    return doc
+
+def get_configurable_kwargs(cls):
+    '''
+    Builds a string to help you define all the kwargs coming from the settings.
+
+    The main point is to avoid wasting time writing all the kwargs manually, and
+    at the same time makes it easy to keep it consistent with the defaults.
+
+    This may be useful, for example, for the __init__ method of plots.
+
+    Parameters
+    ------------
+    cls:
+        the class you want the kwargs for
+
+    Returns
+    -----------
+    str:
+        the string containing the described kwargs.
+    '''
+
+    if isinstance(cls, type):
+        params = cls._parameters
+    else:
+        # It's really an instance, not the class
+        params = cls.params
+
+    return ", ".join([f'{param.key}={param.default if not isinstance(param.default, str) else param.default.__repr__()}' for param in params])
+
 #-------------------------------------
 #           Python helpers
 #-------------------------------------

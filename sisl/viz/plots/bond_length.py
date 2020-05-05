@@ -4,10 +4,11 @@ import itertools
 
 import sisl
 from ..plot import Plot
+from .geometry import BaseGeometryPlot
 from ..plotutils import find_files
 from ..input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
 
-class BondLengthMap(Plot):
+class BondLengthMap(BaseGeometryPlot):
     
     '''
     Colorful representation of bond lengths.

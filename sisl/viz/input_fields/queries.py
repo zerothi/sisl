@@ -10,6 +10,8 @@ class QueriesInput(InputField):
         The list of input fields that conform a query.
     '''
 
+    dtype = "array-like of dict"
+    
     _type = 'queries'
 
     _default = {

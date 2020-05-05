@@ -4,6 +4,8 @@ from .._input_field import InputField
 
 class RangeSlider(InputField):
 
+    dtype = "array-like of shape (2,)"
+
     _type = 'rangeslider'
 
     _default = {

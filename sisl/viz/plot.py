@@ -569,8 +569,9 @@ class Plot(ShortCutable, Configurable, Connected):
             delattr(self, "INIT_ON_NEW")
             return
         
-        #Initialize shortcut management
+        # Initialize shortcut management
         ShortCutable.__init__(self)
+        # Initialize possibility to connect to a GUI
         Connected.__init__(self, socketio=kwargs.get("socketio", None))
         
         #Give an ID to the plot

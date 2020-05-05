@@ -1,11 +1,94 @@
 from copy import deepcopy
-import numpy as np
+from functools import wraps
+from types import MethodType
 import sys
 
-from sisl.viz._presets import PRESETS
+import numpy as np
+
+from sisl._dispatcher import AbstractDispatch
+from ._presets import PRESETS
+from .plotutils import get_configurable_docstring, get_configurable_kwargs
+
+class FakeSettingsDispatch(AbstractDispatch):
+    '''
+    Provides a dispatch that executes methods using "fake" settings.
+
+    This is mainly useful to use methods from other classes without having
+    the settings that are required.
+    '''
+
+    def __init__(self, obj, **settings):
+
+        self.fake_settings = settings
+
+        super().__init__(obj)
+    
+    def setting(self, *args, **kwargs):
+
+        kwargs["fake_settings"] = { **kwargs.get("fake_settings", {}), **self.fake_settings}
+        
+        return Configurable.setting(self._obj, *args, **kwargs)
+
+    def dispatch(self, method):
+
+        @wraps(method)
+        def run_with_fake_settings(*args, **kwargs):
+
+            self._obj.setting = self.setting
+
+            ret = method(*args, **kwargs)
+
+            self._obj.setting = MethodType(Configurable.setting, self._obj)
+
+            return ret
+            
+        return run_with_fake_settings
 
 class Configurable:
     
+    def with_settings(self, method=None, method_args=[], method_kwargs={}, **settings):
+        '''
+        Gives you the possibility to run the methods of an object AS IF the object
+        had certain settings.
+
+        NOTE: The settings of the object WILL NOT BE UPDATED, it will just use the
+        provided settings to run the methods that you want.
+
+        Parameters
+        ----------
+        method: method or str, optional
+            If provided, the method that will be run with those settings.
+            If not, a `FakeSettingsDispatch` is returned. See returns for more info.
+        method_args: array-like, optional
+            the arguments to pass to the method on call
+        method_kwargs: dict, optional
+            the keyword arguments to pass to the method on call.
+        **settings: 
+            The settings that you want to make the object believe it has.
+            Pass each setting as a keyword argument.
+
+            For example: `obj.with_settings(color="green")`
+
+            will provide the object with a fake "color" setting of value "green"
+            
+        Returns
+        ---------
+        any
+            if a method is provided the returns of the method will be returned.
+            If not, a `FakeSettingsDispatch` is returned. A `FakeSettingsDispatch`
+            acts exactly as the object itself, but any method that you run on it 
+            will use the fake settings.
+        '''
+
+        disp = FakeSettingsDispatch(self, **settings)
+
+        if method is not None:
+            if isinstance(method, str):
+                method = getattr(self, method)
+            return method(*method_args, **method_kwargs)
+        
+        return disp
+
     def init_settings(self, presets=None, **kwargs):
 
         if getattr(self, "AVOID_SETTINGS_INIT", False):
@@ -43,6 +126,15 @@ class Configurable:
 
         #Initialize the object where we are going to store what each setting needs to rerun when it is updated
         self.whatToRunOnUpdate = {}
+
+        # Update the docs of the update_settings method to truly reflect
+        # the available kwargs for the object
+        # This is super ugly I know, but it is the only way I found it could work
+        scope = {"Configurable": Configurable, "self": self}
+        exec(f'''def update_settings(self, {get_configurable_kwargs(self)}, **kwargs): \n\treturn Configurable.update_settings(self, **kwargs)''', scope)
+
+        scope["update_settings"].__doc__ = get_configurable_docstring(self)
+        self.update_settings = scope["update_settings"]
         
         return self
     
@@ -266,19 +358,32 @@ class Configurable:
 
         return self
     
-    def get_setting(self, settingKey, copy=True):
-
+    def get_setting(self, setting_key, copy=True, fake_settings=None):
         '''
-        Gets the value for a given setting .
+        Gets the value for a given setting.
+
+        Parameters
+        ------------
+        setting_key: str
+            The key of the setting we want to get
+        copy: boolean, optional
+            Whether you want a copy of the object or the actual object
+        fake_settings: dict, optional
+            These will be added to the real settings. It is intended to make it look
+            as if the object had these settings.
+            This is mainly to make it possible for classes to use other's classes methods even if
+            they don't have the necessary settings.
+            It is used by the `with_settings` method, which 
         '''
         
-        #A setting can be a function that returns the true value of the setting
-        #if callable( self.settings[settingKey] ):
-        #    return self.settings[settingKey](self)
+        settings = self.settings
+        if fake_settings is not None:
+            settings = {**settings, **fake_settings}
+        val = settings[setting_key]
 
-        return deepcopy(self.settings[settingKey]) if copy else self.settings[settingKey]
+        return deepcopy(val) if copy else val
     
-    def setting(self, settingKey):
+    def setting(self, settingKey, **kwargs):
 
         '''
         Gets the value for a given setting while logging where it has been required. 
@@ -308,7 +413,7 @@ class Configurable:
             
             frame = frame.f_back
         
-        return self.get_setting(settingKey, copy=False)
+        return self.get_setting(settingKey, copy=False, **kwargs)
 
     def get_setting_history(self, settingKey):
         

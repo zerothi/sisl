@@ -1,6 +1,7 @@
 #This file defines all the currently available input fields so that it is easier to develop plots
 
 from copy import deepcopy, copy
+
 import json
 import numpy as np
 
@@ -84,13 +85,16 @@ class InputField:
     
     '''
 
-    def __init__(self, key, name, default=None, params={}, style={}, width="", inputFieldAttrs={}, group=None, subGroup=None, **kwargs):
+    def __init__(self, key, name, default=None, params={}, style={}, width="", inputFieldAttrs={}, group=None, subGroup=None, dtype=None, **kwargs):
 
-        setattr(self, "key", key)
-        setattr(self, "name", name)
-        setattr(self, "default", default)
-        setattr(self, "group", group)
-        setattr(self, "subGroup", subGroup)
+        self.key = key
+        self.name = name
+        self.default = default
+        self.group = group
+        self.subGroup = subGroup
+
+        if dtype is not None:
+            self.dtype = dtype
 
         default_input = deepcopy(getattr(self, "_default", {}))
 
@@ -242,3 +246,28 @@ class InputField:
         return json.loads(
             json.dumps(self, default=default)
         )
+
+    def _get_docstring(self):
+        import textwrap
+
+        valid_vals = getattr(self, "valid_vals", None)
+
+        if valid_vals is None:
+
+            dtypes = getattr(self, "dtype", "")
+            if not isinstance(dtypes, tuple):
+                dtypes = (dtypes,)
+            
+            vals_help = " or ".join([ getattr(dtype, "__name__", str(dtype)) for dtype in dtypes])
+                
+        else:
+            vals_help = '{' + ', '.join(valid_vals) + '}'
+        
+            
+        help_message = getattr(self, "help", "")
+        tw = textwrap.TextWrapper(width=70, initial_indent="\t", subsequent_indent="\t")
+        help_message = tw.fill(help_message)
+
+        doc = f'{self.key}: {vals_help}{"," if vals_help else ""} optional\n{help_message}'
+
+        return doc
