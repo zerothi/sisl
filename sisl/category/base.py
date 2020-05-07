@@ -140,6 +140,9 @@ class Category(metaclass=ABCMeta):
     def __xor__(self, other):
         return XOrCategory(self, other)
 
+    def __invert__(self):
+        return NotCategory(self)
+
 
 @set_module("sisl.category")
 class NullCategory(Category):
@@ -165,6 +168,46 @@ class NullCategory(Category):
     @property
     def name(self):
         return "∅"
+
+
+@set_module("sisl.category")
+class NotCategory(Category):
+    """ A class returning the *opposite* of this class (NullCategory) if it is categorized as such """
+    __slots__ = ("_cat",)
+
+    def __init__(self, cat):
+        super().__init__()
+        if isinstance(cat, CompositeCategory):
+            self.set_name(f"~({cat})")
+        else:
+            self.set_name(f"~{cat}")
+        self._cat = cat
+
+    def categorize(self, *args, **kwargs):
+        r""" Base method for queriyng whether an object is a certain category """
+        cat = self._cat.categorize(*args, **kwargs)
+
+        def check(cat):
+            if isinstance(cat, NullCategory):
+                return self
+            return NullCategory()
+
+        if isinstance(cat, list):
+            return list(map(check, cat))
+        return check(cat)
+
+    @singledispatchmethod
+    def __eq__(self, other):
+        if isinstance(other, NotCategory):
+            return self._cat == other._cat
+        return False
+
+    @__eq__.register(list)
+    @__eq__.register(tuple)
+    @__eq__.register(np.ndarray)
+    def _(self, other):
+        # this will call the list approach
+        return super().__eq__(other)
 
 
 @set_module("sisl.category")
