@@ -269,11 +269,6 @@ class Geometry(SuperCellChild):
         """ Geometry coordinates (allows supercell indices) """
         return self.axyz(atom)
 
-    @__getitem__.register(Integral)
-    @__getitem__.register(str)
-    def _(self, atom):
-        return self.axyz(atom)
-
     @__getitem__.register(slice)
     def _(self, atom):
         if atom.stop is None:
