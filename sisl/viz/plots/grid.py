@@ -1,10 +1,11 @@
 import os
 
 import numpy as np
+import plotly.graph_objects as go
 
 import sisl
 from ..plot import Plot
-from ..input_fields import TextInput, Array1dInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput
+from ..input_fields import TextInput, FilePathInput, Array1dInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput
 
 class GridPlot(Plot):
 
@@ -23,7 +24,7 @@ class GridPlot(Plot):
             help="A sisl.Grid object. If provided, grid_file is ignored."
         ),
 
-        TextInput(
+        FilePathInput(
             key="grid_file", name="Path to grid file",
             default=None,
             params={
@@ -510,7 +511,58 @@ class GridPlot(Plot):
 
         return self.update_settings(sc=sc)
 
-    def scan(self, along=None, start=None, stop=None, steps=None, animation_kwargs=None, **kwargs):
+    def scan(self, along=None, start=None, stop=None, steps=None, mode="3D", animation_kwargs=None, **kwargs):
+        '''
+        Returns an animation containing multiple frames scaning along an axis.
+
+        Parameters
+        -----------
+        along: int
+            the axis along which the scan is performed. If not provided, it will scan along the axes that are not displayed.
+        start: float
+            the starting value for the scan (in Angstrom).
+            Make sure this value is inside the range of the unit cell, otherwise it will fail.
+        stop: float
+            the last value of the scan (in Angstrom).
+            Make sure this value is inside the range of the unit cell, otherwise it will fail.
+        steps: int or float
+            If it's an integer:
+                the number of steps that you want the scan to consist of.
+            If it's a float:
+                the division between steps in Angstrom.
+            
+            Note that the grid is only stored once, so having a big number of steps is not that big of a deal.
+        mode: {"3D", "flat"}
+            the type of scan you want to see.
+            "3D" renders a volumetric scan, where the slice moves through the grid.
+            "flat" renders each slice simply as an animation frame in the 2D canvas
+            (therefore "flat" supports also scanning a 1D representation of the grid, e.g. scan the x axis along z)
+        animation_kwargs: dict, optional
+            dictionary whose keys and values are directly passed to the animated method as kwargs and therefore
+            end up being passed to animation initialization.
+        **kwargs:
+            the rest of settings that you want to apply to overwrite the existing ones.
+
+            This settings apply to each plot and go directly to their initialization.
+
+        Returns
+        ----------
+        sisl.viz.Animation
+            An animation representation of the scan
+        '''
+
+        # If no axis is provided, let's get the first one that is not displayed
+        if along is None:
+            displayed = self.setting('axes')
+            along = [ax["value"] for ax in self.get_param('axes')['inputField.params.options'] if ax["value"] not in displayed][0]
+        
+        if mode == "3D":
+            return self._3D_scan(along=along)
+        elif mode == "flat":
+            return self._flat_scan(along=along, start=start, stop=stop, steps=steps, animation_kwargs=animation_kwargs, **kwargs)
+
+    def _flat_scan(self, along=None, start=None, stop=None, steps=None, animation_kwargs=None, **kwargs):
+
         '''
         Returns an animation containing multiple frames scaning along an axis.
 
@@ -544,11 +596,6 @@ class GridPlot(Plot):
         scan: sisl Animation
             An animation representation of the scan
         '''
-
-        # If no axis is provided, let's get the first one that is not displayed
-        if along is None:
-            displayed = self.setting('axes')
-            along = [ax["value"] for ax in self.get_param('axes')['inputField.params.options'] if ax["value"] not in displayed][0]
         
         # If no steps is provided, we will do 1 Angstrom steps
         if steps is None:
@@ -576,14 +623,17 @@ class GridPlot(Plot):
         elif isinstance(steps, float):
             step = steps
             steps = (along_range[1] - along_range[0])/step
-        steps_range = np.linspace(*along_range, steps)[:-1]
+
+        # np.linspace will use the last point as a step (and we don't want it)
+        # therefore we will add an extra step
+        steps_range = np.linspace(*along_range, steps + 1)[:-1]
 
         # Generate the plot using self as a template so that plots don't need
         # to read data, just process it and show it differently.
         # (If each plot read the grid, the memory requirements would be HUGE)
         scan = GridPlot.animated(
             {
-                range_key: [[minVal, minVal + step] for minVal in steps_range]
+                range_key: [[minVal, minVal + step - self.grid.dcell[along,along]] for minVal in steps_range]
             },
             plot_template=self,
             fixed={**{key: val for key, val in self.settings.items() if key != range_key}, **kwargs},
@@ -594,3 +644,129 @@ class GridPlot(Plot):
         scan.layout = self.layout
 
         return scan
+
+    def _3D_scan(self, along=None):
+
+        ax = along
+        displayed_axes = [ i for i in range(3) if i != ax]
+        shape = np.array(self.grid.shape)[displayed_axes]
+        cmin = np.min(self.grid.grid)
+        cmax = np.max(self.grid.grid)
+        x_ax , y_ax = displayed_axes
+        x = np.linspace(0, self.grid.cell[x_ax, x_ax], self.grid.shape[x_ax])
+        y = np.linspace(0, self.grid.cell[y_ax, y_ax], self.grid.shape[y_ax])
+
+        fig = go.Figure(frames=[go.Frame(data=go.Surface(
+            x=x, y=y,
+            z=self.grid.index2xyz([ i if i_ax == ax else 0 for i_ax in range(3)])[ax] * np.ones(shape),
+            surfacecolor=np.squeeze(self.grid.cross_section(i, ax).grid),
+            cmin=cmin, cmax=cmax,
+            ),
+            name=str(i) # you need to name the frame for the animation to behave properly
+            )
+            for i in range(self.grid.shape[ax])])
+
+        # Add data to be displayed before animation starts
+        fig.add_traces(fig.frames[0].data)
+
+        def frame_args(duration):
+            return {
+                    "frame": {"duration": duration},
+                    "mode": "immediate",
+                    "fromcurrent": True,
+                    "transition": {"duration": duration, "easing": "linear"},
+                }
+
+        sliders = [
+                    {
+                        "pad": {"b": 10, "t": 60},
+                        "len": 0.9,
+                        "x": 0.1,
+                        "y": 0,
+                        "steps": [
+                            {
+                                "args": [[f.name], frame_args(0)],
+                                "label": str(k),
+                                "method": "animate",
+                            }
+                            for k, f in enumerate(fig.frames)
+                        ],
+                    }
+                ]
+        
+        def ax_title(ax): return f'{["X", "Y", "Z"][ax]} axis (Ang)'
+
+        # Layout
+        fig.update_layout(
+                title='Slices in volumetric data',
+                width=600,
+                height=600,
+                scene=dict(
+                            xaxis=dict(title=ax_title(x_ax)),
+                            yaxis=dict(title=ax_title(y_ax)),
+                            zaxis=dict(range=[0, self.grid.cell[ax,ax]], autorange=False, title=ax_title(ax)),
+                            aspectratio=dict(x=1, y=1, z=1),
+                            ),
+                updatemenus = [
+                    {
+                        "buttons": [
+                            {
+                                "args": [None, frame_args(50)],
+                                "label": "&#9654;", # play symbol
+                                "method": "animate",
+                            },
+                            {
+                                "args": [[None], frame_args(0)],
+                                "label": "&#9724;", # pause symbol
+                                "method": "animate",
+                            },
+                        ],
+                        "direction": "left",
+                        "pad": {"r": 10, "t": 70},
+                        "type": "buttons",
+                        "x": 0.1,
+                        "y": 0,
+                    }
+                ],
+                sliders=sliders
+        )
+
+        return fig
+
+# class GridSlice(Plot):
+
+#     _parameters = (
+#         ProgramaticInput(key="grid_slice", name="Grid slice",
+#             default=None, 
+#         ),
+
+#         DropdownInput(
+#             key="ax", name="Axis",
+#             default=2,
+#             params={
+#                 "options":[{"label": ax, "value": ax} for ax in [0,1,2]]
+#             }   
+#         ),
+
+#         IntegerInput(
+#             key="index", name="Index",
+#             default=0,
+#         ),
+
+#         FloatInput(key="cmin", name="cmin",
+#             default=0
+#         ),
+
+#         FloatInput(key="cmax", name="cmax",
+#             default=None
+#         )
+#     )
+
+#     def _set_data(self):
+
+#         self.data = [{
+#             z=self.grid.index2xyz([0,0,i])[ax] * np.ones(shape),
+#             surfacecolor=self.grid.cross_section(i, ax).grid,
+#             cmin=cmin, cmax=cmax,
+#         }]
+

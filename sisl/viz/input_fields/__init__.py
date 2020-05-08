@@ -7,7 +7,7 @@ from .queries import QueriesInput
 from .range import RangeInput
 from .rangeslider import RangeSlider
 from .switch import SwitchInput
-from .text import TextInput
+from .text import TextInput, FilePathInput
 
 # ALL_INPUTS = {
 #     "text": TEXT_INPUT,

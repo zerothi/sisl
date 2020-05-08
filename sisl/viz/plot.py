@@ -3,6 +3,7 @@ This file contains the Plot class, which should be inherited by all plot classes
 '''
 import uuid
 import os
+from io import StringIO, BytesIO
 import sys
 import numpy as np
 import json
@@ -583,10 +584,6 @@ class Plot(ShortCutable, Configurable, Connected):
         #Give the user the possibility to do things before initialization (IDK why)
         call_method_if_present(self, "_before_init")
 
-        # Set all the attributes that have been passed
-        for key, val in attrs_for_plot.items():
-            setattr(self, key, val)
-
         # Check if the user has provided a hamiltonian (which can contain a geometry)
         # This is not meant to be used by the GUI (in principle), just programatically
         self.PROVIDED_H = False
@@ -607,7 +604,17 @@ class Plot(ShortCutable, Configurable, Connected):
         # Initialize the figure
         self.figure = go.Figure()
         # on_figure_change is triggered after get_figure.
-        self.on_figure_change = None 
+        self.on_figure_change = None
+
+        # This is a temporary storage place where file contents are stored
+        # See how self.get_sile makes use of it  
+        self._file_contents = {}
+
+        # Set all the attributes that have been passed
+        # It is important that this is here so that it can overwrite any of
+        # the already written attributes
+        for key, val in attrs_for_plot.items():
+            setattr(self, key, val)
 
         #If plugins have been provided, then add them.
         #Plugins are an easy way of extending a plot. They can be methods, variables...
@@ -799,7 +806,7 @@ class Plot(ShortCutable, Configurable, Connected):
 
         self._filesToFollow = newFilesToFollow if unfollow else [*self._filesToFollow, *newFilesToFollow]
     
-    def get_sile(self, path, *args, follow=True, follow_kwargs={}, **kwargs):
+    def get_sile(self, path, *args, follow=True, follow_kwargs={}, file_contents=None, **kwargs):
         '''
         A wrapper around get_sile so that the reading of the file is registered.
 
@@ -822,13 +829,30 @@ class Plot(ShortCutable, Configurable, Connected):
             whether the path should be followed.
         follow_kwargs: dict, optional
             dictionary of keywords that are passed directly to the follow method.
+        file_contents: bytes or str, optional
+            the actual content of the file, if you have it already in python. This is mainly
+            useful for the drag and drop functionality of the GUI.
         **kwargs:
-            passet to sisl.get_sile
+            passed to sisl.get_sile
         '''
-        if follow:
-            self.follow(path, **follow_kwargs)
-        
-        return sisl.get_sile(path, *args, **kwargs)
+
+        if file_contents is None:
+            file_contents = self._file_contents.get(path, None)
+
+        if file_contents is None:
+            if follow:
+                self.follow(path, **follow_kwargs)
+            
+            return sisl.get_sile(path, *args, **kwargs)
+
+        else:
+            from .GUI.api_utils.iosile import get_io_sile
+
+            SileClass = sisl.get_sile_class(path)
+
+            file_IO = BytesIO if isinstance(file_contents, bytes) else StringIO
+
+            return get_io_sile(SileClass)(path, ioobj=file_IO)
 
     def updates_available(self):
         '''

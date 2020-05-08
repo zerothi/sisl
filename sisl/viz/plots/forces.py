@@ -4,7 +4,7 @@ import os
 
 import sisl
 from ..plot import Plot
-from ..input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
+from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
 
 class ForcesPlot(Plot):
 
@@ -12,7 +12,7 @@ class ForcesPlot(Plot):
 
     _parameters = (
 
-        TextInput(
+        FilePathInput(
             key="out_file", name="Output log file",
             default = None,
             group="readdata",

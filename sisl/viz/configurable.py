@@ -138,9 +138,9 @@ class Configurable:
         params = []; param_groups = []
         for clss in type.mro(cls):
             if "_parameters" in vars(clss):
-                params = [*params, *clss._parameters]
+                params = [*params, *deepcopy(clss._parameters)]
             if "_paramGroups" in vars(clss):
-                param_groups = [*clss._paramGroups, *param_groups]
+                param_groups = [*deepcopy(clss._paramGroups), *param_groups]
         return params, param_groups
 
     def update_settings(self, from_decorator=False, update_fig=True, no_log=False , **kwargs):

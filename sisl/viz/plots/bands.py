@@ -8,7 +8,7 @@ import os
 import sisl
 from ..plot import Plot, PLOTS_CONSTANTS
 from ..plotutils import find_files
-from ..input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput, FunctionInput
+from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput, FunctionInput
 from ..input_fields.range import ErangeInput
 
 class BandsPlot(Plot):
@@ -27,7 +27,7 @@ class BandsPlot(Plot):
     
     _parameters = (
 
-        TextInput(key = "bands_file", name = "Path to bands file",
+        FilePathInput(key = "bands_file", name = "Path to bands file",
             width = "s100% m50% l33%",
             group="readdata",
             params = {

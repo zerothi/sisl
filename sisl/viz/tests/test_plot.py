@@ -12,6 +12,7 @@ from sisl.viz.plot import Plot, MultiplePlot, Animation
 
 from sisl.viz.plots import *
 from sisl.viz.plotutils import get_plotable_siles
+from sisl.viz._presets import PRESETS
 
 # ------------------------------------------------------------
 # Checks that will be available to be used on any plot class
@@ -71,6 +72,12 @@ class BasePlotTester:
         # And test that it works
         plot.call_shortcut("ctrl+alt+a")
         assert plot.a_value == 8
+
+    def test_presets(self):
+        
+        plot = self.PlotClass(presets="Dark theme")
+
+        assert np.all([ key not in plot.settings or plot.settings[key] == val for key, val in PRESETS["Dark theme"].items()])
 
 # ------------------------------------------------------------
 #          Actual tests on the Plot parent class

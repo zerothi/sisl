@@ -6,7 +6,7 @@ import os
 import sisl
 from ..plot import Plot
 from ..plotutils import find_files
-from ..input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput
+from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput, Array1dInput
 from ..input_fields.range import ErangeInput
 
 class PdosPlot(Plot):
@@ -26,7 +26,7 @@ class PdosPlot(Plot):
 
     _parameters = (
         
-        TextInput(
+        FilePathInput(
             key = "pdos_file", name = "Path to PDOS file",
             width = "s100% m50% l33%",
             params = {
@@ -37,7 +37,21 @@ class PdosPlot(Plot):
 
         ErangeInput(
             key="Erange",
+            default=[-2,2],
             help = "Energy range where PDOS is displayed."
+        ),
+
+        Array1dInput(key="kgrid", name="Monkhorst-Pack grid",
+            default=None,
+            help='''The number of kpoints in each reciprocal direction. 
+            A Monkhorst-Pack grid will be generated to calculate the PDOS.
+            If not provided, it will be set to 3 for the periodic directions
+            and 1 for the non-periodic ones.'''
+        ),
+
+        Array1dInput(key="kgrid_displ", name="Monkhorst-Pack grid displacement",
+            default=[0,0,0],
+            help='''Displacement of the Monkhorst-Pack grid'''
         ),
 
         QueriesInput(
@@ -207,8 +221,12 @@ class PdosPlot(Plot):
         if not hasattr(self, "H"):
             self.setup_hamiltonian()
 
-        #Calculate the pdos with sisl using the last geometry and the hamiltonian
-        self.monkhorstPackGrid = [15, 1, 1]
+        # Get the kgrid, or 
+        kgrid = self.setting('kgrid')
+        if kgrid is None:
+            kgrid = [ 3 if nsc > 1 else 1 for nsc in self.H.geom.nsc]
+        kgrid_displ = self.setting('kgrid_displ')
+
         Erange = self.setting("Erange")
 
         if Erange is None:
@@ -216,8 +234,8 @@ class PdosPlot(Plot):
 
         self.E = np.linspace( Erange[0], Erange[-1], 1000) 
 
-        mp = sisl.MonkhorstPack(self.H, self.monkhorstPackGrid)
-        self.PDOSinfo = mp.asaverage().PDOS(self.E, eta=True)
+        self.mp = sisl.MonkhorstPack(self.H, kgrid)
+        self.PDOSinfo = self.mp.apply.average.PDOS(self.E, eta=True)
 
     def _read_siesta_output(self):
 
@@ -295,11 +313,11 @@ class PdosPlot(Plot):
                 orbProperties["Spin"].append(iSpin)
                 orbProperties["Orbital name"].append(orb.name())
                 orbProperties["Z shell"].append(getattr(orb, "Z", 1))
-                orbProperties["n"].append(orb.n)
-                orbProperties["l"].append(orb.l)
-                orbProperties["m"].append(orb.m)
-                orbProperties["Polarized"].append(orb.P)
-                orbProperties["Initial charge"].append(orb.q0)
+                orbProperties["n"].append(getattr(orb, "n", None))
+                orbProperties["l"].append(getattr(orb, "l", None))
+                orbProperties["m"].append(getattr(orb, "m", None))
+                orbProperties["Polarized"].append(getattr(orb, "P", None))
+                orbProperties["Initial charge"].append(getattr(orb, "q0", None))
             
             #Append this part of the dataframe (a full spin component)
             self.df = self.df.append( pd.concat([pd.DataFrame(orbProperties), pd.DataFrame(spinComponentPDOS, columns = self.E)], axis=1, sort = False), ignore_index = True)
@@ -366,6 +384,8 @@ class PdosPlot(Plot):
         #Go request by request and plot the corresponding PDOS contribution
         for request in self.setting("requests"):
 
+            request = self._new_request(**request)
+
             #Use only the active requests
             if not request["active"]:
                 continue
@@ -424,8 +444,6 @@ class PdosPlot(Plot):
 
         if len(query) == 0:
             return True
-        
-        print(query, request, request["name"] in query, iReq in query )
 
         return request["name"] in query or iReq in query
     
@@ -675,13 +693,21 @@ class PdosPlot(Plot):
         if exclude is None:
             exclude = []
 
+        # First, we get all available values for the parameter we want to split
         options = self.get_param("requests", justDict=False).get_param(on, justDict=False)["inputField.params.options"]
 
+        # If the parameter is spin but the PDOS is not polarized we will not be providing
+        # options to the user, but in fact there is one option: 0
+        if on == "spin" and len(options) == 0:
+            options = [{"label": 0, "value": 0}]
+        
+        # Build all the requests that will be passed to the settings of the plot
         requests = [
             self._new_request(**{on: [option["value"]], "name": option["label"], **kwargs})
             for option in options if option["value"] not in exclude and (only is None or option["value"] in only)
         ]
 
+        # If the user doesn't want to clean the plot, we will just add the requests to the existing ones
         if not clean:
             requests = [ *self.setting("requests"), *requests]
 

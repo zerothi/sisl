@@ -3,7 +3,7 @@ import numpy as np
 
 from sisl import Geometry, PeriodicTable, Atom
 from sisl.viz import Plot
-from sisl.viz.input_fields import ProgramaticInput, FloatInput, SwitchInput, DropdownInput, TextInput
+from sisl.viz.input_fields import ProgramaticInput, FloatInput, SwitchInput, DropdownInput, FilePathInput
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher
 
 class BoundGeometry(AbstractDispatch):
@@ -68,7 +68,7 @@ class BaseGeometryPlot(Plot):
             default=None
         ),
 
-        TextInput(key="geom_file", name="Geometry file",
+        FilePathInput(key="geom_file", name="Geometry file",
             default=None
         ),
 
