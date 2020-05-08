@@ -280,7 +280,7 @@ class GridPlot(Plot):
         elif values.ndim == 2:
             plot_func = self._plot2D
         elif values.ndim == 3:
-            plot_func == self._plot3D
+            plot_func = self._plot3D
         
         # Use it
         plot_func(grid, values, display_axes, sc)
@@ -511,32 +511,35 @@ class GridPlot(Plot):
 
         return self.update_settings(sc=sc)
 
-    def scan(self, along=None, start=None, stop=None, steps=None, mode="3D", animation_kwargs=None, **kwargs):
+    def scan(self, along=None, start=None, stop=None, steps=None, breakpoints=None, mode="moving_slice", animation_kwargs=None, **kwargs):
         '''
         Returns an animation containing multiple frames scaning along an axis.
 
         Parameters
         -----------
-        along: int
+        along: int, optional
             the axis along which the scan is performed. If not provided, it will scan along the axes that are not displayed.
-        start: float
+        start: float, optional
             the starting value for the scan (in Angstrom).
             Make sure this value is inside the range of the unit cell, otherwise it will fail.
-        stop: float
+        stop: float, optional
             the last value of the scan (in Angstrom).
             Make sure this value is inside the range of the unit cell, otherwise it will fail.
-        steps: int or float
+        steps: int or float, optional
             If it's an integer:
                 the number of steps that you want the scan to consist of.
             If it's a float:
                 the division between steps in Angstrom.
             
             Note that the grid is only stored once, so having a big number of steps is not that big of a deal.
-        mode: {"3D", "flat"}
+        breakpoints: array-like, optional
+            the discrete points of the scan. To be used if you don't want regular steps.
+            If the last step is exactly the length of the cell, it will be moved one dcell back to avoid errors.
+        mode: {"moving_slice", "as_is"}, optional
             the type of scan you want to see.
-            "3D" renders a volumetric scan, where the slice moves through the grid.
-            "flat" renders each slice simply as an animation frame in the 2D canvas
-            (therefore "flat" supports also scanning a 1D representation of the grid, e.g. scan the x axis along z)
+            "moving_slice" renders a volumetric scan where a slice moves through the grid.
+            "as_is" renders each part of the scan as an animation frame.
+            (therefore, "as_is" SUPPORTS SCANNING 1D, 2D AND 3D REPRESENTATIONS OF THE GRID, e.g. display the volume data for different ranges of z)
         animation_kwargs: dict, optional
             dictionary whose keys and values are directly passed to the animated method as kwargs and therefore
             end up being passed to animation initialization.
@@ -554,53 +557,9 @@ class GridPlot(Plot):
         # If no axis is provided, let's get the first one that is not displayed
         if along is None:
             displayed = self.setting('axes')
-            along = [ax["value"] for ax in self.get_param('axes')['inputField.params.options'] if ax["value"] not in displayed][0]
-        
-        if mode == "3D":
-            return self._3D_scan(along=along)
-        elif mode == "flat":
-            return self._flat_scan(along=along, start=start, stop=stop, steps=steps, animation_kwargs=animation_kwargs, **kwargs)
+            not_displayed = [ax["value"] for ax in self.get_param('axes')['inputField.params.options'] if ax["value"] not in displayed]
+            along = not_displayed[0] if not_displayed else 2
 
-    def _flat_scan(self, along=None, start=None, stop=None, steps=None, animation_kwargs=None, **kwargs):
-
-        '''
-        Returns an animation containing multiple frames scaning along an axis.
-
-        Parameters
-        -----------
-        along: int
-            the axis along which the scan is performed. If not provided, it will scan along the axes that are not displayed.
-        start: float
-            the starting value for the scan (in Angstrom).
-            Make sure this value is inside the range of the unit cell, otherwise it will fail.
-        stop: float
-            the last value of the scan (in Angstrom).
-            Make sure this value is inside the range of the unit cell, otherwise it will fail.
-        steps: int or float
-            If it's an integer:
-                the number of steps that you want the scan to consist of.
-            If it's a float:
-                the division between steps in Angstrom.
-            
-            Note that the grid is only stored once, so having a big number of steps is not that big of a deal.
-        animation_kwargs: dict, optional
-            dictionary whose keys and values are directly passed to the animated method as kwargs and therefore
-            end up being passed to animation initialization.
-        **kwargs:
-            the rest of settings that you want to apply to overwrite the existing ones.
-
-            This settings apply to each plot and go directly to their initialization.
-
-        Returns
-        ----------
-        scan: sisl Animation
-            An animation representation of the scan
-        '''
-        
-        # If no steps is provided, we will do 1 Angstrom steps
-        if steps is None:
-            steps = 1.0
-        
         # We get the key that needs to be animated (we will divide the full range in frames)
         range_key = ["xRange", "yRange", "zRange"][along]
 
@@ -617,35 +576,87 @@ class GridPlot(Plot):
             if stop is not None:
                 along_range[1] = stop
         
-        # Divide it in steps
-        if isinstance(steps, int):
-            step = (along_range[1] - along_range[0])/steps
-        elif isinstance(steps, float):
-            step = steps
-            steps = (along_range[1] - along_range[0])/step
+        if breakpoints is None:
+            if steps is None:
+                steps = 1.0
+            # Divide it in steps
+            if isinstance(steps, int):
+                step = (along_range[1] - along_range[0])/steps
+            elif isinstance(steps, float):
+                step = steps
+                steps = (along_range[1] - along_range[0])/step
 
-        # np.linspace will use the last point as a step (and we don't want it)
-        # therefore we will add an extra step
-        steps_range = np.linspace(*along_range, steps + 1)[:-1]
+            # np.linspace will use the last point as a step (and we don't want it)
+            # therefore we will add an extra step
+            breakpoints = np.linspace(*along_range, steps + 1)
+        
+        if breakpoints[-1] == self.grid.cell[along, along]:
+            breakpoints[-1] = self.grid.cell[along, along] - self.grid.dcell[along, along]
+        
+        if mode == "moving_slice":
+            return self._moving_slice_scan(along, breakpoints)
+        elif mode == "as_is":
+            return self._asis_scan(range_key, breakpoints, animation_kwargs=animation_kwargs, **kwargs)
+
+    def _asis_scan(self, range_key, breakpoints, animation_kwargs=None, **kwargs):
+
+        '''
+        Returns an animation containing multiple frames scaning along an axis.
+
+        Parameters
+        -----------
+        range_key: {'xRange', 'yRange', 'zRange'}
+            the key of the setting that is to be animated through the scan.
+        breakpoints: array-like
+            the discrete points of the scan
+        animation_kwargs: dict, optional
+            dictionary whose keys and values are directly passed to the animated method as kwargs and therefore
+            end up being passed to animation initialization.
+        **kwargs:
+            the rest of settings that you want to apply to overwrite the existing ones.
+
+            This settings apply to each plot and go directly to their initialization.
+
+        Returns
+        ----------
+        scan: sisl Animation
+            An animation representation of the scan
+        '''
+
+        # To keep the same iso_vals along all the animation in case it is a scan of 3D frames
+        if getattr(self.data[0], "isomin", None):
+            isovals = [self.data[0].isomin, self.data[0].isomax]
+        else:
+            isovals = self.setting("iso_vals")
 
         # Generate the plot using self as a template so that plots don't need
         # to read data, just process it and show it differently.
         # (If each plot read the grid, the memory requirements would be HUGE)
         scan = GridPlot.animated(
             {
-                range_key: [[minVal, minVal + step - self.grid.dcell[along,along]] for minVal in steps_range]
+                range_key: [[bp, breakpoints[i+1]] for i, bp in enumerate(breakpoints[:-1])]
             },
             plot_template=self,
-            fixed={**{key: val for key, val in self.settings.items() if key != range_key}, **kwargs},
-            frameNames=[ f'{step:2f}' for step in steps_range],
+            fixed={**{key: val for key, val in self.settings.items() if key != range_key}, "iso_vals": isovals, **kwargs},
+            frameNames=[ f'{bp:2f}' for bp in breakpoints],
             **(animation_kwargs or {})
         )
+
+        # Set all frames to the same colorscale
+        cmin = 10**6; cmax = -10**6
+        for scan_im in scan:
+            c = getattr(scan_im.data[0], "value", scan_im.data[0].z)
+            cmin = min(cmin, np.min(c))
+            cmax = max(cmax, np.max(c))
+        for scan_im in scan:
+            scan_im.update_settings(crange=[cmin, cmax])
+        scan.get_figure()
 
         scan.layout = self.layout
 
         return scan
 
-    def _3D_scan(self, along=None):
+    def _moving_slice_scan(self, along, breakpoints):
 
         ax = along
         displayed_axes = [ i for i in range(3) if i != ax]
@@ -658,13 +669,13 @@ class GridPlot(Plot):
 
         fig = go.Figure(frames=[go.Frame(data=go.Surface(
             x=x, y=y,
-            z=self.grid.index2xyz([ i if i_ax == ax else 0 for i_ax in range(3)])[ax] * np.ones(shape),
-            surfacecolor=np.squeeze(self.grid.cross_section(i, ax).grid),
+            z=bp * np.ones(shape),
+            surfacecolor=np.squeeze(self.grid.cross_section(self.grid.index(bp, ax), ax).grid),
             cmin=cmin, cmax=cmax,
             ),
-            name=str(i) # you need to name the frame for the animation to behave properly
+            name=f'{bp:.2f}'
             )
-            for i in range(self.grid.shape[ax])])
+            for bp in breakpoints])
 
         # Add data to be displayed before animation starts
         fig.add_traces(fig.frames[0].data)
@@ -698,7 +709,7 @@ class GridPlot(Plot):
 
         # Layout
         fig.update_layout(
-                title='Slices in volumetric data',
+                title=f'Grid scan along {["X", "Y", "Z"][ax]} axis',
                 width=600,
                 height=600,
                 scene=dict(

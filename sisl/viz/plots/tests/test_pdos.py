@@ -8,6 +8,7 @@ Different inputs are tested (siesta .PDOS and sisl Hamiltonian).
 
 from pandas import DataFrame
 import numpy as np
+from sisl.viz.plots.tests.get_files import from_files
 
 import sisl
 from sisl.viz.plots import PdosPlot
@@ -91,7 +92,7 @@ class PdosPlotTester:
 #       Test the pdos plot reading from siesta .PDOS
 # ------------------------------------------------------------
 
-pdos_file = "/home/pfebrer/webDevelopement/sislGUI/sisl/sisl/viz/Tutorials/files/SrTiO3.PDOS"
+pdos_file = from_files("SrTiO3.PDOS")
 
 class TestPDOSSiestaOutput(PdosPlotTester):
 
