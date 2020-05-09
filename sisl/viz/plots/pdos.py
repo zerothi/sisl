@@ -6,7 +6,7 @@ import os
 import sisl
 from ..plot import Plot
 from ..plotutils import find_files
-from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput, Array1dInput
+from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput, Array1dInput, ListInput
 from ..input_fields.range import ErangeInput
 
 class PdosPlot(Plot):
@@ -24,11 +24,23 @@ class PdosPlot(Plot):
         }
     }
 
+    _param_groups = (
+
+        {
+            "key": "Hparams",
+            "name": "Hamiltonian related",
+            "icon": "apps",
+            "description": "This parameters are meaningful only if you are calculating the PDOS from a Hamiltonian"
+        },
+
+    )
+
     _parameters = (
         
         FilePathInput(
             key = "pdos_file", name = "Path to PDOS file",
             width = "s100% m50% l33%",
+            group="readdata",
             params = {
                 "placeholder": "Write the path to your PDOS file here...",
             },
@@ -43,6 +55,10 @@ class PdosPlot(Plot):
 
         Array1dInput(key="kgrid", name="Monkhorst-Pack grid",
             default=None,
+            group="Hparams",
+            params={
+                "shape": (3,)
+            },
             help='''The number of kpoints in each reciprocal direction. 
             A Monkhorst-Pack grid will be generated to calculate the PDOS.
             If not provided, it will be set to 3 for the periodic directions
@@ -51,9 +67,10 @@ class PdosPlot(Plot):
 
         Array1dInput(key="kgrid_displ", name="Monkhorst-Pack grid displacement",
             default=[0,0,0],
+            group="Hparams",
             help='''Displacement of the Monkhorst-Pack grid'''
         ),
-
+        
         QueriesInput(
             key = "requests", name = "PDOS queries",
             default = [{"active": True, "name": "DOS", "species": None, "atoms": None, "orbitals": None, "spin": None, "normalize": False, "color": "black", "linewidth": 1}],

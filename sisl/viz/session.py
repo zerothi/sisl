@@ -61,7 +61,7 @@ class Session(Configurable, Connected):
         },
     }
 
-    _paramGroups = (
+    _param_groups = (
 
         {
             "key": "gui",
@@ -679,7 +679,7 @@ class Session(Configurable, Connected):
             "tabs": self.tabs,
             "settings": self.settings,
             "params": self.params,
-            "paramGroups": self._paramGroups,
+            "paramGroups": self._param_groups,
             "updatesAvailable": self.updates_available(),
             "plotOptions": [
                 {"value": subclass.__name__, "label": subclass.plotName()} 

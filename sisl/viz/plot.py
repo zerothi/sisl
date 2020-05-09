@@ -89,7 +89,7 @@ class Plot(ShortCutable, Configurable, Connected):
         },
     }
 
-    _paramGroups = (
+    _param_groups = (
 
         {
             "key": "dataread",
@@ -110,12 +110,6 @@ class Plot(ShortCutable, Configurable, Connected):
             "description": "Data may loose its value if it is not well presented. Play with this parameters to <b>make your plot as beautiful and easy to understand as you can</b>."
         },
 
-        {
-            "key": None,
-            "name": "Other settings",
-            "icon": "settings",
-            "description": "Here are some unclassified settings. Even if they don't belong to any group, they might still be important :) They may be here just because the developer was too lazy to categorize them or forgot to do so. <b>If you are the developer</b> and it's the first case, <b>shame on you<b>."
-        }
     )
     
     _parameters = (
@@ -1587,7 +1581,7 @@ class Plot(ShortCutable, Configurable, Connected):
             "figure": self.figure,
             "settings": self.settings,
             "params": self.params,
-            "paramGroups": self.paramGroups,
+            "paramGroups": self.param_groups,
             "grid_dims": getattr(self, "grid_dims", None),
             "shortcuts": self.shortcuts_for_json
         }
@@ -1880,7 +1874,7 @@ class Animation(MultiplePlot):
 
     _isAnimation = True
 
-    _paramGroups = (
+    _param_groups = (
 
         {
             "key": "animation",

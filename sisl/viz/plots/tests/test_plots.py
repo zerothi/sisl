@@ -27,6 +27,14 @@ def get_basic_functionality_test(PlotSubClass):
 
             assert hasattr(self.PlotClass, '_plot_type')
             assert isinstance(self.PlotClass._plot_type, str)
+        
+        def test_param_groups(self):
+
+            plot = self.PlotClass()
+
+            for group in plot.param_groups:
+                for key in ("key", "name", "icon", "description"):
+                    assert key in group, f'{self.PlotClass} is missing {key} in parameters group {group}'
             
     return BasicSubClassTest 
 

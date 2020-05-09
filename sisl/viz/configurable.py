@@ -104,7 +104,7 @@ class Configurable:
                 kwargs[key] = val
         
         #Get the parameters of all the classes the object belongs to
-        self.params, self.paramGroups = self._get_class_params()
+        self.params, self.param_groups = self._get_class_params()
         
         if presets is not None:
             if isinstance(presets, str):
@@ -139,8 +139,17 @@ class Configurable:
         for clss in type.mro(cls):
             if "_parameters" in vars(clss):
                 params = [*params, *deepcopy(clss._parameters)]
-            if "_paramGroups" in vars(clss):
-                param_groups = [*deepcopy(clss._paramGroups), *param_groups]
+            if "_param_groups" in vars(clss):
+                param_groups = [*deepcopy(clss._param_groups), *param_groups]
+
+        # Build an extra group for unclassified settings
+        param_groups.append({
+            "key": None,
+            "name": "Other settings",
+            "icon": "settings",
+            "description": "Here are some unclassified settings. Even if they don't belong to any group, they might still be important :) They may be here just because the developer was too lazy to categorize them or forgot to do so. <b>If you are the developer</b> and it's the first case, <b>shame on you<b>."
+        })
+
         return params, param_groups
 
     def update_settings(self, from_decorator=False, update_fig=True, no_log=False , **kwargs):
