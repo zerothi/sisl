@@ -211,7 +211,7 @@ class BandsPlot(Plot):
 
             #Get the requested path
             self.path = self.setting('path')
-            if self.path and len(self.path > 1):
+            if self.path and len(self.path) > 1:
                 self.path = [point for point in self.setting("path") if point["active"]]
             else:
                 raise Exception(f"You need to provide at least 2 points of the path to draw the bands. Please update the 'path' setting. The current path is: {self.path}")
@@ -222,6 +222,7 @@ class BandsPlot(Plot):
                 division=np.array([point["divisions"] for point in self.path][1:], dtype=int) ,
                 name=np.array([point["tick"] for point in self.path])
             )
+            self.fermi = 0
         else:
             self.fermi = 0
 

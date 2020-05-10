@@ -1579,7 +1579,7 @@ class Plot(ShortCutable, Configurable, Connected):
             "plotClass": self.__class__.__name__,
             "struct": getattr(self, "struct", None),
             "figure": self.figure,
-            "settings": self.settings,
+            "settings": {param.key:self.settings[param.key] for param in self.params if not isinstance(param, ProgramaticInput)},
             "params": self.params,
             "paramGroups": self.param_groups,
             "grid_dims": getattr(self, "grid_dims", None),

@@ -423,10 +423,11 @@ class Configurable:
 
                 if prevFunc is None or functions_list.index(funcName) < functions_list.index(prevFunc):
                     self.whatToRunOnUpdate[settingKey] = funcName
-                    break
+                
+                break
             
             frame = frame.f_back
-        
+
         return self.get_setting(settingKey, copy=False, **kwargs)
 
     def get_setting_history(self, settingKey):

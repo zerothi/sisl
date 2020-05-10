@@ -1,6 +1,7 @@
 import numpy as np
 
 from .._input_field import InputField
+from .text import TextInput
 
 class ListInput(InputField):
 
@@ -10,5 +11,5 @@ class ListInput(InputField):
 
     _default = {
         "width": "s100% l50%",
-        "params": {"sortable": True}
+        "params": { "itemInput": TextInput("-", "-"),"sortable": True}
     }

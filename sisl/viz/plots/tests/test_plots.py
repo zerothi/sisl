@@ -7,8 +7,8 @@ ensure that at least they do not break basic plot functionality.
 '''
 
 from sisl.viz.tests.test_plot import BasePlotTester
-from sisl.viz import Plot, MultiplePlot, Animation
 from sisl.viz.plots import *
+from sisl.viz.plotutils import get_plot_classes
 
 # ------------------------------------------------------------
 # Factory that returns a basic functionality test for a class
@@ -42,9 +42,6 @@ def get_basic_functionality_test(PlotSubClass):
 #               Let's test all plot subclasses
 # ------------------------------------------------------------
 
-for PlotSubClass in Plot.__subclasses__():
-
-    if PlotSubClass in [MultiplePlot, Animation]:
-        continue
+for PlotSubClass in get_plot_classes():
 
     globals()[f'Test{PlotSubClass.__name__}'] = get_basic_functionality_test(PlotSubClass)

@@ -32,6 +32,24 @@ class FatbandsPlotTester(BandsPlotTester):
         assert isinstance(weights, DataArray)
         assert weights.dims == ('k', 'band', 'orb')
         assert weights.shape == self.weights_shape
+    
+    def test_groups(self):
+        '''
+        Check that we can request groups
+        '''
+
+        color = "green"
+        name = "Nice group"
+
+        self.plot.update_settings(groups=[{"atoms": [0], "color": color, "name": name}])
+
+        fatbands_traces = [ trace for trace in self.plot.data if trace.fill == 'toself']
+
+        assert len(fatbands_traces) > 0
+        assert fatbands_traces[0].line.color == color
+        assert fatbands_traces[0].name == name
+
+
 
 # ------------------------------------------------------------
 #    Test the fatbands plot reading from a sisl Hamiltonian

@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 
 import os
+from collections import defaultdict
 
 import sisl
 from ..plot import Plot
@@ -304,19 +305,7 @@ class PdosPlot(Plot):
         for iSpin, spinComponentPDOS in enumerate(self.PDOSinfo):
 
             #Initialize the dictionary with all the properties of the orbital
-            orbProperties = {
-                "iAtom": [],
-                "Species": [],
-                "Atom Z": [],
-                "Spin": [],
-                "Orbital name": [],
-                "Z shell": [],
-                "n": [],
-                "l": [],
-                "m": [],
-                "Polarized": [],
-                "Initial charge": [],
-            }     
+            orbProperties = defaultdict(list)     
 
             #Loop over all orbitals of the basis
             for iAt, iOrb in self.geom.iter_orbitals():
@@ -396,7 +385,8 @@ class PdosPlot(Plot):
             return self.data
 
         #If there is data, get it (drop the columns that we don't want)
-        self.reqDf = self.df.drop([Evalue for Evalue in self.E if Evalue not in plotEvals], axis = 1)
+        self.req_df = self.df.drop([Evalue for Evalue in self.E if Evalue not in plotEvals], axis = 1)
+        requests_param = self.get_param("requests")
 
         #Go request by request and plot the corresponding PDOS contribution
         for request in self.setting("requests"):
@@ -407,27 +397,23 @@ class PdosPlot(Plot):
             if not request["active"]:
                 continue
 
-            reqDf = self.reqDf.copy()
+            req_df = self.req_df.copy()
 
-            if request.get("atoms"):
-                reqDf = reqDf[reqDf["iAtom"].isin(request["atoms"])]
+            req_df = requests_param.filter_df(req_df, request,
+                [
+                    ("atoms", "iAtom"),
+                    ("species", "Species"),
+                    ("orbitals", "Orbital name"),
+                    ("spin", "Spin")
+                ]
+            )
 
-            if request.get("species"):
-                reqDf = reqDf[reqDf["Species"].isin(request["species"])]
-
-            if request.get("orbitals"):
-                reqDf = reqDf[reqDf["Orbital name"].isin(request["orbitals"])]
-
-            if request.get("spin") != None:
-                reqDf = reqDf[reqDf["Spin"].isin(request["spin"])]
-
-
-            if reqDf.empty:
+            if req_df.empty:
                 # print("PDOS Plot warning: No PDOS for the following request: {}".format(request.params))
                 # PDOS = []
                 continue
             else:
-                PDOS = reqDf[plotEvals].values
+                PDOS = req_df[plotEvals].values
 
                 if request.get("normalize"):
                     PDOS = PDOS.mean(axis = 0)
@@ -442,7 +428,7 @@ class PdosPlot(Plot):
                 'name': request["name"], 
                 'line': {'width' : request["linewidth"], "color": request["color"]},
                 "hoverinfo": "name",
-                "customdata": [{ key: reqDf[key].unique() for key in self.setting("add_customdata")}]
+                "customdata": [{ key: req_df[key].unique() for key in self.setting("add_customdata")}]
             })
         
         return self.data
@@ -466,12 +452,9 @@ class PdosPlot(Plot):
     
     def _new_request(self, **kwargs):
 
-        return {
-            "active": True,
-            **{ param.key: param.default for param in self.get_param("requests", justDict=False)["inputField.queryForm"]},
-            "name": str(len(self.settings["requests"])), "color": None, 
-            **kwargs
-        }
+        complete_req = self.get_param("requests").complete_query
+
+        return complete_req({"name": str(len(self.settings["requests"])), **kwargs})
 
     def requests(self, *i_or_names):
         '''

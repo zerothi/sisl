@@ -42,7 +42,7 @@ class BandsPlotTester:
     def test_bands_in_figure(self):
 
         # Check if all bands are plotted
-        self.plot.update_settings(bands_range=[0, self.bands_shape[-1] + 1], Erange=None)
+        self.plot.update_settings(bands_range=[0, self.bands_shape[-1]], Erange=None)
         assert len(self.plot.data) >= self.bands_shape[-1]
 
         # Now check if the ticks are correctly set
@@ -89,4 +89,11 @@ class TestBandsSislHamiltonian(BandsPlotTester):
     gap = 0
     ticktext = ["Gamma", "M", "K"]
     tickvals = [0., 1.70309799, 2.55464699]
-    
+
+path = [{"active": True, "x": x, "y": y, "z": z, "divisions": 3,
+            "tick": tick} for tick, (x, y, z) in zip(["Gamma", "M", "K"], [[0, 0, 0], [2/3, 1/3, 0], [1/2, 0, 0]])]
+            
+class TestBandsPathSislHamiltonian(TestBandsSislHamiltonian):
+
+    plot = BandsPlot(H=H, path=path)
+    bands_shape = (6, 1, 2)
