@@ -11,8 +11,6 @@ import sisl
 from sisl.viz.plots import FatbandsPlot
 from sisl.viz.plots.tests.test_bands import BandsPlotTester
 
-bands_file = "/home/pfebrer/webDevelopement/sislGUI/sisl/sisl/viz/Tutorials/files/SrTiO3.bands"
-
 # ------------------------------------------------------------
 #         Build a generic tester for the bands plot
 # ------------------------------------------------------------

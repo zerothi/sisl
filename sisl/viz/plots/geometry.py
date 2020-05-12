@@ -77,7 +77,7 @@ class BaseGeometryPlot(Plot):
         ),
     )
     
-    _overwrite_defaults = {
+    _layout_defaults = {
         'xaxis_showgrid': False,
         'xaxis_zeroline': False,
         'yaxis_showgrid': False,

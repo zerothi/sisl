@@ -5,6 +5,10 @@ from ._user_customs import get_user_presets
 from .plotutils import get_file_vars
 
 PRESETS = {
+    "siesta": {
+        
+    },
+
     "Dark theme": {
         "paper_bgcolor": "black",
         "plot_bgcolor": "black",

@@ -140,204 +140,6 @@ class Plot(ShortCutable, Configurable, Connected):
             width = "s100% m50% l33%",
             help = "Directory where the files with the simulations results are located.<br> This path has to be relative to the root fdf.",
         ),
-
-        TextInput(
-            key = "title", name = "Title",
-            group = "layout",
-            params = {
-                "placeholder": "Title of your plot..."
-            },
-            width = "s100% l40%",
-            help = "Think of a memorable title for your plot!",
-        ),
-
-        SwitchInput(
-            key = "showlegend", name = "Show Legend",
-            group = "layout",
-            default = True,
-            params = {
-                "offLabel": "No",
-                "onLabel": "Yes"
-            }
-        ),
-
-        ColorPicker(
-            key = "paper_bgcolor", name = "Figure color",
-            group = "layout",
-            default = "white",
-        ),
-
-        ColorPicker(
-            key = "plot_bgcolor", name = "Plot color",
-            group = "layout",
-            default = "white",
-        ),
-        
-        *[
-            param for iAxis, axis in enumerate(["xaxis", "yaxis"]) for param in [
-            
-            TextInput(
-                key = "{}_title".format(axis), name = "Title",
-                group = "layout", subGroup = axis,
-                params = {
-                    "placeholder": "Write the axis title..."
-                },
-                width = "s100% m50%"
-            ),
-
-            DropdownInput(
-                key = "{}_type".format(axis), name = "Type",
-                group = "layout", subGroup = axis,
-                default = "-",
-                params = {
-                    "placeholder": "Choose the axis scale...",
-                    "options": [
-                        {"label": "Automatic", "value": "-"},
-                        {"label": "Linear", "value": "linear"},
-                        {"label": "Logarithmic", "value": "log"},
-                        {"label": "Date", "value": "date"},
-                        {"label": "Category", "value": "category"},
-                        {"label": "Multicategory", "value": "multicategory"}
-                    ],
-                    "isClearable": False,
-                    "isSearchable": False,
-                },
-                width = "s100% m50%"
-            ),
-
-            SwitchInput(
-                key = "{}_visible".format(axis), name = "Visible",
-                group = "layout", subGroup = axis,
-                default = True,
-                params = {
-                    "offLabel": "No",
-                    "onLabel": "Yes"
-                },
-                width = "s50% m50% l25%"
-            ),
-
-            ColorPicker(
-                key = "{}_color".format(axis), name = "Color",
-                group = "layout", subGroup = axis,
-                default = "black",
-                width = "s50% m50% l25%"
-            ),
-
-            SwitchInput(
-                key = "{}_showgrid".format(axis), name = "Show grid",
-                group = "layout", subGroup = axis,
-                default = False,
-                params = {
-                    "offLabel": "No",
-                    "onLabel": "Yes"
-                },
-                width = "s50% m50% l25%"
-            ),
-
-            ColorPicker(
-                key = "{}_gridcolor".format(axis), name = "Grid color",
-                group = "layout", subGroup = axis,
-                default = "#ccc",
-                width = "s50% m50% l25%"
-            ),
-
-            SwitchInput(
-                key = "{}_showline".format(axis), name = "Show axis line",
-                group = "layout", subGroup = axis,
-                default = True,
-                params = {
-                    "offLabel": "No",
-                    "onLabel": "Yes"
-                },
-                width = "s50% m30% l30%",
-            ),
-
-            FloatInput(
-                key = "{}_linewidth".format(axis), name = "Axis line width",
-                group = "layout", subGroup = axis,
-                default = 1,
-            ),
-
-            ColorPicker(
-                key = "{}_linecolor".format(axis), name = "Axis line color",
-                group = "layout", subGroup = axis,
-                default = "black",
-                width = "s50% m30% l30%",
-            ),
-
-            SwitchInput(
-                key = "{}_zeroline".format(axis), name = "Zero line",
-                group = "layout", subGroup = axis,
-                default = [False, True][iAxis],
-                params = {
-                    "offLabel": "Hide",
-                    "onLabel": "Show"
-                }
-            ),
-
-            ColorPicker(
-                key = "{}_zerolinecolor".format(axis), name = "Zero line color",
-                group = "layout", subGroup = axis,
-                default = "#ccc",
-            ),
-
-            DropdownInput(
-                key = "{}_ticks".format(axis), name = "Ticks position",
-                group = "layout", subGroup = axis,
-                default = "outside",
-                params = {
-                    "placeholder": "Choose the ticks positions...",
-                    "options": [
-                        {"label": "Outside", "value": "outside"},
-                        {"label": "Inside", "value": "Inside"},
-                        {"label": "No ticks", "value": ""},
-                    ],
-                    "isClearable": False,
-                    "isSearchable": False,
-                },
-                width = "s100% m50% l33%"
-            ),
-
-            ColorPicker(
-                key = "{}_tickcolor".format(axis), name = "Tick color",
-                group = "layout", subGroup = axis,
-                default = "white",
-            ),
-
-            FloatInput(
-                key = "{}_ticklen".format(axis), name = "Tick length",
-                group = "layout", subGroup = axis,
-                default = 5,
-                width = "s50% m30% l15%"
-            ),
-            
-            SwitchInput(
-                key = "{}_mirror".format(axis), name = "Mirror",
-                group = "layout", subGroup = axis,
-                default = False,
-                params = {
-                    "offLabel": "False",
-                    "onLabel": "True"
-                },
-                width = "s50% m50% l25%"
-            ),
-            
-            TextInput(
-                key = "{}_scaleanchor".format(axis), name = "Scale anchor",
-                group = "layout", subGroup = axis,
-                default=None,
-                width ="s100% m50%",
-                help="Axis to which the scale of this axis should be proportional. The ratio is set by scaleratio"
-            ),
-            
-            FloatInput(
-                key = "{}_scaleratio".format(axis), name = "Scale ratio",
-                group = "layout", subGroup = axis,
-                default = 1,
-                width = "s50% m30% l15%"
-            ),]
-            
-        ]
         
     )
 
@@ -558,7 +360,7 @@ class Plot(ShortCutable, Configurable, Connected):
         return object.__new__(cls)
 
     @after_settings_init
-    def __init__(self, *args, H = None, attrs_for_plot={}, only_init=False, _debug=False,**kwargs):
+    def __init__(self, *args, H = None, attrs_for_plot={}, only_init=False, layout=None, _debug=False,**kwargs):
 
         if getattr(self, "INIT_ON_NEW", False):
             delattr(self, "INIT_ON_NEW")
@@ -597,6 +399,9 @@ class Plot(ShortCutable, Configurable, Connected):
 
         # Initialize the figure
         self.figure = go.Figure()
+        # Update its layout if a layout is provided
+        self.update_layout(**getattr(self.__class__, "_layout_defaults", {}), **(layout or {}) )
+
         # on_figure_change is triggered after get_figure.
         self.on_figure_change = None
 
@@ -1116,20 +921,13 @@ class Plot(ShortCutable, Configurable, Connected):
 
         if getattr(self, "childPlots", None):
             #Then it is a multiple plot and we need to create the figure from the child plots
-            self.clear();
+            self.clear()
 
             if getattr(self, "_isAnimation", False):
                 framesLayout = Animation._build_frames(self)
 
             else:
                 MultiplePlot._get_figure(self)
-
-        self.layout = {
-            'hovermode': 'closest',
-            #Need to register this on whatToRunOnUpdate somehow
-            **self.settings_group("layout"),
-            **framesLayout
-        }
 
         call_method_if_present(self, '_after_get_figure')
         
@@ -1469,7 +1267,7 @@ class Plot(ShortCutable, Configurable, Connected):
 
         return self
 
-    def clear(self, plot_traces=True, added_traces=True, frames=True, layout=True):
+    def clear(self, plot_traces=True, added_traces=True, frames=True, layout=False):
         '''
         Clears the plot canvas so that data can be reset
 
@@ -1563,6 +1361,7 @@ class Plot(ShortCutable, Configurable, Connected):
         '''
         print(event, args, kwargs)
         # Of course this needs to be done
+        raise NotImplementedError
 
     #-------------------------------------------
     #       DATA TRANSFER/STORAGE METHODS

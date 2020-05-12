@@ -161,7 +161,7 @@ class LDOSmap(Plot):
     
     )
 
-    _overwrite_defaults = {
+    _layout_defaults = {
         'xaxis_title': "Path coordinate", 
         'yaxis_title': "E-Ef (eV)"
     }

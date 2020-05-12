@@ -181,7 +181,7 @@ class BondLengthMap(BaseGeometryPlot):
     
     )
 
-    _overwrite_defaults = {
+    _layout_defaults = {
         'xaxis_title': 'X (Ang)', 
         'yaxis_title': "Y (Ang)",
         'yaxis_zeroline': False

@@ -24,3 +24,5 @@ from .sessions import *
 from .plotutils import load
 from ._plotables import register_plotable_sile
 from ._presets import get_preset
+
+import sisl.viz._templates

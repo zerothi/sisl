@@ -182,7 +182,7 @@ class PdosPlot(Plot):
 
     )
 
-    _overwrite_defaults = {
+    _layout_defaults = {
         'xaxis_title': 'Density of states (1/eV)',
         'xaxis_mirror': True,
         'yaxis_mirror': True,

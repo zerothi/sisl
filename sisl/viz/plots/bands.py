@@ -176,7 +176,7 @@ class BandsPlot(Plot):
 
     )
 
-    _overwrite_defaults = {
+    _layout_defaults = {
         'xaxis_title': 'K',
         'xaxis_mirror': True,
         'yaxis_mirror': True,
