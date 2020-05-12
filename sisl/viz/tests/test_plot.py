@@ -27,7 +27,7 @@ class BasePlotTester:
         # Check that all the parameters have been passed to the settings
         assert np.all([param.key in plot.settings for param in self.PlotClass._parameters])
         # Build some test settings
-        new_settings = {'title': 'Test', 'root_fdf': 'Another test'}
+        new_settings = {'root_fdf': 'Test'}
         # Update settings and check they have been succesfully updated
         old_settings = deepcopy(plot.settings)
         plot.update_settings(**new_settings, update_fig=False)

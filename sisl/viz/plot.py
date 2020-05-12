@@ -536,8 +536,8 @@ class Plot(ShortCutable, Configurable, Connected):
             pass
 
         #Update the title of the plot if there is none
-        if not self.get_setting("title"):
-            self.update_settings(update_fig = False, title = '{} {}'.format(getattr(self, "struct", ""), self.plotType) )
+        if not self.figure.layout["title"]:
+            self.update_layout(title = '{} {}'.format(getattr(self, "struct", ""), self.plotType) )
         
         #We try to read from the different sources using the _readFromSources method of the parent Plot class.
         self._read_from_sources()
