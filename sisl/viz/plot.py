@@ -17,6 +17,7 @@ from functools import partial
 
 import plotly
 import plotly.graph_objects as go
+from plotly.subplots import make_subplots
 
 import sisl
 from sisl.viz.GUI.api_utils.sync import Connected
@@ -917,18 +918,6 @@ class Plot(ShortCutable, Configurable, Connected):
 
         '''
 
-        framesLayout = {}
-
-        if getattr(self, "childPlots", None):
-            #Then it is a multiple plot and we need to create the figure from the child plots
-            self.clear()
-
-            if getattr(self, "_isAnimation", False):
-                framesLayout = Animation._build_frames(self)
-
-            else:
-                MultiplePlot._get_figure(self)
-
         call_method_if_present(self, '_after_get_figure')
         
         call_method_if_present(self, 'on_figure_change')
@@ -1073,7 +1062,7 @@ class Plot(ShortCutable, Configurable, Connected):
         fig_widget.layout = self.layout
         fig_widget.update(frames=self.frames)
 
-    def merge(self, others, asAnimation = False, **kwargs):
+    def merge(self, others, to="multiple", **kwargs):
         '''
         Merges this plot's instance with the list of plots provided
 
@@ -1081,17 +1070,21 @@ class Plot(ShortCutable, Configurable, Connected):
         -------
         others: array-like of Plot() or Plot()
             the plots that we want to merge with this plot instance.
-        asAnimation: boolean, optional
-            whether you want to merge them as an animation.
-            If `False` the plots are all merged into a single plot
+        to: {"multiple", "subplots", "animation"}, optional
+            the merge method. Each option results in a different way of putting all the plots
+            together:
+            - "multiple": All plots are shown in the same canvas at the same time. Useful for direct
+            comparison.
+            - "subplots": The layout is divided in different subplots.
+            - "animation": Each plot is converted into the frame of an animation.
         kwargs:
-            extra arguments that are directly passed to `Animation` or `MultiplePlot`
-            initialization.
+            extra arguments that are directly passed to `MultiplePlot`, `Subplots`
+            or `Animation` initialization.
 
         Returns
         -------
-        Animation() or MultiplePlot():
-            depending on the value of `asAnimation`.
+        MultiplePlot, Subplots or Animation
+            depending on the value of the `to` parameter.
         '''
         
         #Make sure we deal with a list (user can provide a single plot)
@@ -1100,12 +1093,13 @@ class Plot(ShortCutable, Configurable, Connected):
 
         childPlots = [self, *others]
 
-        if asAnimation:
-            newPlot = Animation(plots=childPlots, **kwargs)
-        else:
-            newPlot = MultiplePlot(plots=childPlots, **kwargs)
+        PlotClass = {
+            "multiple": MultiplePlot,
+            "subplots": SubPlots,
+            "animation": Animation
+        }[to]
         
-        return newPlot
+        return PlotClass(plots=childPlots, **kwargs)
     
     def group_legend(self, by=None, names=None, show_all=False, extra_updates=None, **kwargs):
         '''
@@ -1493,14 +1487,6 @@ class MultiplePlot(Plot):
             'share_attr': lambda key, val: self.set_shared_attr(key, val)
         }
 
-    def _get_figure(self):
-
-        data = []
-        for plot in self.childPlots:
-            data = [*data, *plot.data]
-
-        self.data = data
-
     def init_all_plots(self, update_fig = True, try_sharing=True):
 
         try:
@@ -1667,6 +1653,30 @@ class MultiplePlot(Plot):
 
         self.clear().get_figure()
         
+        return self
+
+    def get_figure(self):
+
+        #Then it is a multiple plot and we need to create the figure from the child plots
+        self.clear()
+
+        if getattr(self, "_isAnimation", False):
+            frames_layout = Animation._build_frames(self)
+            self.update_layout(**frames_layout)
+        elif getattr(self, "_is_subplots", False):
+            SubPlots._get_figure(self)
+
+        else:
+            data = []
+            for plot in self.childPlots:
+                data = [*data, *plot.data]
+
+            self.data = data
+
+        call_method_if_present(self, '_after_get_figure')
+
+        call_method_if_present(self, 'on_figure_change')
+
         return self
 
 class Animation(MultiplePlot):
@@ -1945,7 +1955,28 @@ class Animation(MultiplePlot):
 
         return [ Animation(plots=plots) for plots in new_animations ]
 
-            
+class SubPlots(MultiplePlot):
+
+    _is_subplots = True
+
+    def _get_figure(self, *args, **kwargs):
+
+        nplots = len(self.childPlots)
+
+        self.figure = make_subplots(*args, **{"rows": nplots, "cols": 1, **kwargs})
+
+        for i, plot in enumerate(self.childPlots):
+
+            ntraces = len(plot.data)
+
+            # This should not be hardcoded!!!!!!!
+            row = i+1
+            col = 1
+
+            self.add_traces(plot.data, rows=[row]*ntraces, cols=[col]*ntraces)
+
+            self.update_xaxes(plot.layout.xaxis, row=row, col=col)
+            self.update_yaxes(plot.layout.yaxis, row=row, col=col)
         
 
 

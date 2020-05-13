@@ -393,6 +393,53 @@ class Session(Configurable, Connected):
 
         return self
 
+    def merge_plots(self, plots, to="multiple", tab=None, remove=True, **kwargs):
+        '''
+        Merges two or more plots present in the session using `Plot.merge`.
+
+        Parameters
+        -----------
+        plots: array-like of (str and/or Plot)
+            A list with the ids of the plots (or the actual plots) that you want to merge.
+            Note that THE PLOTS PASSED HERE ARE NOT NECESSARILY IN THE SESSION beforehand.
+        to: {"multiple", "subplots", "animation"}, optional
+            the merge method. Each option results in a different way of putting all the plots
+            together:
+            - "multiple": All plots are shown in the same canvas at the same time. Useful for direct
+            comparison.
+            - "subplots": The layout is divided in different subplots.
+            - "animation": Each plot is converted into the frame of an animation.
+        tab: str, optional
+            the name or id of the tab where you want the new plot to go. 
+            If not provided it will go to the tab where the first plot belongs.
+        remove: boolean, optional
+            whether the plots used to do the merging should be removed from the session's layout.
+            Remember that you are always in time to split the merged plots into individual plots
+            again.
+        **kwargs: 
+            go directly extra arguments that are directly passed to `MultiplePlot`, `Subplots`
+            or `Animation` initialization. (see `Plot.merge`)
+        '''
+
+        # Get the plots if ids where passed. Note that we can accept plots that are not in the warehouse yet
+        plots = [self.plot(plot) if isinstance(plot, str) else plot for plot in plots]
+
+        merged = plots[0].merge(plots[1:], to=to, **kwargs)
+
+        if remove:
+            for plot in plots:
+                self.remove_plot(plot.id)
+
+        if tab is None:
+            for session_tab in self.tabs:
+                if plots[0].id in session_tab["plots"]:
+                    tab = tab.id
+                    break
+
+        self.add_plot(merged, tabID=tab)
+
+        return self
+
     def updates_available(self):
         '''
         Checks if the session's plots have pending updates due to changes in files.
