@@ -5,13 +5,15 @@ This file tests general Plot behavior.
 '''
 
 from copy import deepcopy
+import os
+import tempfile
 
 import numpy as np
 
 from sisl.viz.plot import Plot, MultiplePlot, Animation
 
 from sisl.viz.plots import *
-from sisl.viz.plotutils import get_plotable_siles
+from sisl.viz.plotutils import get_plotable_siles, load
 from sisl.viz._presets import PRESETS
 
 # ------------------------------------------------------------
@@ -79,6 +81,23 @@ class BasePlotTester:
 
         assert np.all([ key not in plot.settings or plot.settings[key] == val for key, val in PRESETS["Dark theme"].items()])
 
+    def test_save_and_load(self, obj=None):
+
+        file_name = "./__sislsaving_test"
+
+        if obj is None:
+            obj = self.PlotClass()
+
+        obj.save(file_name)
+
+        try:
+            plot = load(file_name)
+        except Exception as e:
+            os.remove(file_name)
+            raise e
+
+        os.remove(file_name)
+
 # ------------------------------------------------------------
 #          Actual tests on the Plot parent class
 # ------------------------------------------------------------
@@ -100,6 +119,7 @@ class TestPlot(BasePlotTester):
             corresponding_class = sile_rule.cls._plot[0]
             assert plot.__class__ == corresponding_class, f"Plot('{file_name}') gives a {plot.__class__} and should give a {corresponding_class}"
 
+    
 # ------------------------------------------------------------
 #            Tests for the MultiplePlot class
 # ------------------------------------------------------------

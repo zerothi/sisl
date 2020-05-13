@@ -642,7 +642,7 @@ class GeometryPlot(BaseGeometryPlot):
             xaxis = self.setting("xaxis")
             yaxis = self.setting("yaxis")
             self._plot_geom2D(xaxis=xaxis, yaxis=yaxis, cell=cell_rendering)
-            self.update_settings(update_fig=False, xaxis_title=f'Axis {xaxis} (Ang)', yaxis_title=f'Axis {yaxis} (Ang)', no_log=True)
+            self.update_layout(xaxis_title=f'Axis {xaxis} (Ang)', yaxis_title=f'Axis {yaxis} (Ang)')
         elif ndims == 1:
             coords_axis = self.setting("xaxis")
             data_axis = self.setting("yaxis")

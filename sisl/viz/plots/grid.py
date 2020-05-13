@@ -313,7 +313,7 @@ class GridPlot(Plot):
 
         axes_titles = {'xaxis_title': f'{("X","Y", "Z")[ax]} axis (Ang)', 'yaxis_title': 'Values' }
 
-        self.update_settings(update_fig=False, **axes_titles, no_log=True)
+        self.update_layout(**axes_titles)
     
     def _plot2D(self, grid, values, display_axes, sc):
 
@@ -344,7 +344,7 @@ class GridPlot(Plot):
 
         axes_titles = {'xaxis_title': f'{("X","Y", "Z")[xaxis]} axis (Ang)', 'yaxis_title': f'{("X","Y", "Z")[yaxis]} axis (Ang)'}
 
-        self.update_settings(update_fig=False, **axes_titles, no_log=True)
+        self.update_layout(**axes_titles)
         
     def _plot3D(self, grid, values, display_axes, sc):
 

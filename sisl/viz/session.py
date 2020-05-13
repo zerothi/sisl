@@ -8,7 +8,7 @@ from copy import deepcopy, copy
 
 import sisl
 from sisl.viz.GUI.api_utils.sync import Connected
-from .plot import Plot, MultiplePlot, Animation
+from .plot import Plot, MultiplePlot, Animation, SubPlots
 from .configurable import Configurable, after_settings_init
 from .plotutils import find_files, get_plotable_siles, call_method_if_present
 
@@ -235,7 +235,7 @@ class Session(Configurable, Connected):
 
             for Subclass in cls.__subclasses__():
 
-                if Subclass not in [MultiplePlot, Animation] and not getattr(Subclass, 'is_only_base', False):
+                if Subclass not in [MultiplePlot, Animation, SubPlots] and not getattr(Subclass, 'is_only_base', False):
                     all_subclasses.append(Subclass)
 
                 all_subclasses.extend(get_all_subclasses(Subclass))
@@ -758,14 +758,19 @@ class Session(Configurable, Connected):
             Whether only figures should be saved, the rest of plot's data will be ignored.
         '''
 
+        socket = self.socketio
+        self.socketio = None
         session = copy(self)
+
         if figs_only:
             session.figures_only()
 
         for plotID, plot in session.plots.items():
             plot._get_pickleable()
-        
+            
         with open(path, 'wb') as handle:
             pickle.dump(session, handle, protocol=pickle.HIGHEST_PROTOCOL)
+
+        self.socketio = socket
 
         return self

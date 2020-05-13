@@ -4,12 +4,16 @@ Easy conversion of data from different formats to other formats.
 
 import sys
 import argparse
+import ast
+
+import plotly
+
 import sisl
 from sisl.utils import cmd
 
 from .plot import Plot
 from .plotutils import get_avail_presets, get_plot_classes
-from ._user_customs import PRESETS_FILE, PRESETS_VARIABLE, PLOTS_FILE, PLOTS_VARIABLE
+from ._user_customs import PRESETS_FILE, PRESETS_VARIABLE, PLOTS_FILE
 
 __all__ = ['splot']
 
@@ -17,6 +21,13 @@ def general_arguments(parser):
 
     parser.add_argument('--presets', '-p', type=str, nargs="*", required=False,
                     help=f'The names of the stored presets that you want to use for the settings. Current available presets: {get_avail_presets()}')
+    
+    parser.add_argument('--template', '-t', type=str, required=False,
+                        help=f'''The plotly layout template that you want to use. It is equivalent as passing a template to --layout. 
+                        Available templates: {list(plotly.io.templates.keys())}. Default: {plotly.io.templates.default}''')
+
+    parser.add_argument('--layout', '-l', type=ast.literal_eval, required=False,
+                        help=f'A dict containing all the layout attributes that you want to pass to the plot.')
     
     parser.add_argument('--save', '-s', type=str, required=False,
                         help='The path where you want to save the plot. Note that you can add the extension .html to save to html.')
@@ -61,8 +72,7 @@ def splot():
         " However, if you want to avoid sisl automatic choice, you can use these subcommands to select a"+
         " plot class. By doing so, you will also get access to plot-specific settings. Try sgui BandsPlot -h, for example."+
         " Note that you can also build your own plots that will be automatically available here." +
-        f" Sisl is looking for your plots under the '{PLOTS_VARIABLE}' variable" +
-        f" defined in {PLOTS_FILE}. It should be a list containing all your plots.",
+        f" Sisl is looking to import plots defined in {PLOTS_FILE}",
         dest="plot_class"
     )
 
@@ -96,12 +106,18 @@ def splot():
 
     settings = { param.key: getattr(args, param.key) for param in plot_class._get_class_params()[0] if getattr(args, param.key, None) is not None}
 
+    layout = {} if args.layout is None else args.layout
+    if args.template:
+        layout["template"] = args.template
+
+    keyword_args = {**settings, "presets": args.presets, "layout": layout }
+
     if getattr(args, "animated", False):
         print("Building animation...")
-        plot = plot_class.animated(fixed={"presets":args.presets, **settings})
+        plot = plot_class.animated(fixed=keyword_args)
     else:
         print("Building plot...")
-        plot = plot_class(*args.files, presets=args.presets, **settings)
+        plot = plot_class(*args.files, **keyword_args)
 
     if args.shortcuts:
         print("Applying shortcuts...")

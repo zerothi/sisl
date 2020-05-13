@@ -316,6 +316,4 @@ class BondLengthMap(BaseGeometryPlot):
             "cmin": (self.setting("cmin") or self.df[colorColumn].min()) if self.setting("cmid") == None else None,
             "cmax": (self.setting("cmax") or self.df[colorColumn].max()) if self.setting("cmid") == None else None,
             "cmid": self.setting("cmid"),
-        })
-        
-        self.update_settings(update_fig = False, xaxis_title = 'X (Ang)', yaxis_title = "Y (Ang)")
+        }, xaxis_title='X (Ang)', yaxis_title="Y (Ang)")

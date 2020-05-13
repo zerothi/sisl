@@ -6,6 +6,7 @@ import numpy as np
 from sisl.viz import Session, Plot
 
 from sisl.viz.plots import *
+from sisl.viz.tests.test_plot import BasePlotTester
 
 # This file tests general session behavior
 
@@ -59,6 +60,11 @@ class BaseSessionTester:
         session.socketio = None
         assert new_plot.socketio is None, f'Socketio change in {session.__class__} not transmitted to plots'
 
+    def test_save_and_load(self):
+
+        BasePlotTester.test_save_and_load(self, obj=self.SessionClass())
+
+        
 # ------------------------------------------------------------
 #           Actual tests on the Session parent class
 # ------------------------------------------------------------

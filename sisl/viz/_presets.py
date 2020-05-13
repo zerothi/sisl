@@ -1,7 +1,6 @@
 import itertools
 import os
 
-from ._user_customs import get_user_presets
 from .plotutils import get_file_vars
 
 PRESETS = {
@@ -30,7 +29,19 @@ PRESETS = {
     }
 }
 
-PRESETS = { **PRESETS, **get_user_presets()}
+def add_presets(**presets):
+    '''
+    Registers new presets
+
+    Parameters
+    ----------
+    **presets:
+        as many as you want. Each preset is a dict.
+    '''
+
+    global PRESETS
+
+    PRESETS = {**PRESETS, **presets}
 
 def get_preset(name):
     '''

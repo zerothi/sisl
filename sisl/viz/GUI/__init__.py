@@ -2,7 +2,7 @@ import argparse
 import time
 import os
 from ..plotutils import load, get_session_classes
-from .._user_customs import SESSION_FILE, SESSION_VARIABLE
+from .._user_customs import SESSION_FILE
 
 session = None
 
@@ -97,8 +97,7 @@ def sgui():
         " However, if you want to start a new session and the default one (BlankSession) is not good for you"+
         " you can pass a session class. By doing so, you will also get access to session-specific settings. Try sgui BlankSession -h, for example." + 
         " Note that you can also build your own sessions that will be automatically available here." +
-        f" Sisl is looking for your sessions under the '{SESSION_VARIABLE}' variable" +
-        f" defined in {SESSION_FILE}. It should be a list containing all your sessions.",
+        f" Sisl is looking to import plots defined in {SESSION_FILE}",
         dest="session_class"
     )
 
