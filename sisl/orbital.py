@@ -456,6 +456,8 @@ class SphericalOrbital(Orbital):
             def f0(R):
                 return R * 0.
             self.set_radial(f0)
+            if 'R' in kwargs:
+                self.R = kwargs['R']
         elif len(args) == 1 and callable(args[0]):
             self.f = args[0]
             # Determine the maximum R
@@ -1065,10 +1067,19 @@ class AtomicOrbital(Orbital):
         """ Return the state of this object """
         # A function is not necessarily pickable, so we store interpolated
         # data which *should* ensure the correct pickable state (to close agreement)
-        r = np.linspace(0, self.R, 1000)
-        f = self.orb.f(r)
+        try:
+            # this will tricker the AttributeError
+            # before we create the data-array
+            f = self.orb.f
+            r = np.linspace(0, self.R, 1000)
+            f = f(r)
+        except AttributeError:
+            r, f = None, None
         return {'name': self.name(), 'r': r, 'f': f, 'q0': self.q0, 'tag': self.tag}
 
     def __setstate__(self, d):
         """ Re-create the state of this object """
-        self.__init__(d['name'], (d['r'], d['f']), q0=d['q0'], tag=d['tag'])
+        if d["r"] is None:
+            self.__init__(d['name'], q0=d['q0'], tag=d['tag'])
+        else:
+            self.__init__(d['name'], (d['r'], d['f']), q0=d['q0'], tag=d['tag'])

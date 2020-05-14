@@ -346,11 +346,16 @@ class Test_atomicorbital:
         rf = r_f(6)
         o0 = AtomicOrbital(2, 1, 0, 1, True, rf, tag='hello', q0=1.)
         o1 = AtomicOrbital(l=1, m=0, Z=1, P=False, spherical=rf)
+        o2 = AtomicOrbital(l=1, m=0, Z=1, P=False)
         p0 = p.dumps(o0)
         p1 = p.dumps(o1)
+        p2 = p.dumps(o2)
         l0 = p.loads(p0)
         l1 = p.loads(p1)
+        l2 = p.loads(p2)
         assert o0 == l0
         assert o1 == l1
+        assert o2 == l2
         assert o0 != l1
         assert o1 != l0
+        assert o2 != l0
