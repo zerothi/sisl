@@ -41,7 +41,7 @@ class PdosPlot(Plot):
         FilePathInput(
             key = "pdos_file", name = "Path to PDOS file",
             width = "s100% m50% l33%",
-            group="readdata",
+            group="dataread",
             params = {
                 "placeholder": "Write the path to your PDOS file here...",
             },

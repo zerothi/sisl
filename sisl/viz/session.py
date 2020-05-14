@@ -175,6 +175,11 @@ class Session(Configurable, Connected):
         TextInput(key="plot_preset", name="Plot presets",
             default=None,
             help="Preset that is passed directly to each plot initialization"
+        ),
+
+        TextInput(key="plotly_template", name="Plotly template",
+            default=None,
+            help="Plotly template that should be used as the default for this session"
         )
 
     )
@@ -327,6 +332,11 @@ class Session(Configurable, Connected):
             plot_preset = self.setting("plot_preset")
             if plot_preset is not None:
                 kwargs["presets"] = [*[plot_preset], *kwargs.get("presets", [])]
+            plotly_template = self.setting("plotly_template")
+            if plotly_template is not None:
+                layout = kwargs.get("layout", {})
+                template = layout.get("template", "")
+                kwargs["layout"] = {"template": f'{plotly_template}{"+" + template if template else ""}', **layout}
             new_plot = ReqPlotClass(*args, **kwargs)
 
         self.add_plot(new_plot, tabID)
@@ -426,15 +436,15 @@ class Session(Configurable, Connected):
 
         merged = plots[0].merge(plots[1:], to=to, **kwargs)
 
-        if remove:
-            for plot in plots:
-                self.remove_plot(plot.id)
-
         if tab is None:
             for session_tab in self.tabs:
                 if plots[0].id in session_tab["plots"]:
-                    tab = tab.id
+                    tab = session_tab["id"]
                     break
+
+        if remove:
+            for plot in plots:
+                self.remove_plot(plot.id)
 
         self.add_plot(merged, tabID=tab)
 
@@ -590,6 +600,34 @@ class Session(Configurable, Connected):
             if tab["id"] == tabID:
                 del self.warehouse["tabs"][iTab]
                 break
+
+        return self
+
+    def move_plot(self, plot, tab, keep=False):
+        '''
+        Moves a plot to a tab
+
+        Parameters
+        ----------
+        plot: str or sisl.viz.Plot
+            the plot's ID or the plot's instance
+        tab: str
+            the tab's id or the tab's name.
+        keep: boolean, optional
+            if True the plot is also kept in the previous tab.
+            This doesn't waste any additional memory,
+            since the tabs only hold references of the plots they have,
+            each plot is stored only once
+        '''
+
+        plotID = plot
+        if isinstance(plot, Plot):
+            plotID = plot.id
+
+        if not keep:
+            self.remove_plot_from_all_tabs(plotID)
+        
+        self._add_plot_to_tab(plotID, tab)
 
         return self
 

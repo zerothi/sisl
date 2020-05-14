@@ -25,7 +25,7 @@ class BondLengthMap(BaseGeometryPlot):
         SwitchInput(
             key = "geom_from_output", name = "Geometry from output",
             default = True,
-            group = "readdata",
+            group = "dataread",
             params = {
                 "offLabel": "No",
                 "onLabel": "Yes",
@@ -35,7 +35,7 @@ class BondLengthMap(BaseGeometryPlot):
         
         FilePathInput(
             key = "geom_file", name = "Path to the geometry file",
-            group = "readdata",
+            group = "dataread",
             width = "s100% m50% l33%",
             params = {
                 "placeholder": "Write the path to your geometry file here..."

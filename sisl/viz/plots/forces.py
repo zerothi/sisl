@@ -15,7 +15,7 @@ class ForcesPlot(Plot):
         FilePathInput(
             key="out_file", name="Output log file",
             default = None,
-            group="readdata",
+            group="dataread",
             params = {
                 "placeholder": "Write the path to your output file here..."
             },

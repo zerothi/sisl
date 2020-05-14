@@ -1062,7 +1062,7 @@ class Plot(ShortCutable, Configurable, Connected):
         fig_widget.layout = self.layout
         fig_widget.update(frames=self.frames)
 
-    def merge(self, others, to="multiple", **kwargs):
+    def merge(self, others, to="multiple", extend_multiples=True, **kwargs):
         '''
         Merges this plot's instance with the list of plots provided
 
@@ -1077,6 +1077,10 @@ class Plot(ShortCutable, Configurable, Connected):
             comparison.
             - "subplots": The layout is divided in different subplots.
             - "animation": Each plot is converted into the frame of an animation.
+        extend_multiples: boolean, optional
+            if True, if `MultiplePlot`s are passed, they are splitted into their childplots, so that the result
+            is the merge of its childplots with the rest.
+            If False, a `MultiplePlot` is treated as a solid unit.
         kwargs:
             extra arguments that are directly passed to `MultiplePlot`, `Subplots`
             or `Animation` initialization.
@@ -1092,6 +1096,10 @@ class Plot(ShortCutable, Configurable, Connected):
             others = [others]
 
         childPlots = [self, *others]
+        if extend_multiples:
+            childPlots = [[pt] if not isinstance(pt, MultiplePlot) else pt.childPlots for pt in childPlots]
+            # Flatten the list
+            childPlots = [pt for plots in childPlots for pt in plots]
 
         PlotClass = {
             "multiple": MultiplePlot,

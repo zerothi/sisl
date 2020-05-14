@@ -29,7 +29,7 @@ class BandsPlot(Plot):
 
         FilePathInput(key = "bands_file", name = "Path to bands file",
             width = "s100% m50% l33%",
-            group="readdata",
+            group="dataread",
             params = {
                 "placeholder": "Write the path to your bands file here...",
             },

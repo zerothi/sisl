@@ -69,6 +69,7 @@ class BaseGeometryPlot(Plot):
         ),
 
         FilePathInput(key="geom_file", name="Geometry file",
+            group="dataread",
             default=None
         ),
 
