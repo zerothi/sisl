@@ -32,10 +32,12 @@ class BasePlotTester:
         new_settings = {'root_fdf': 'Test'}
         # Update settings and check they have been succesfully updated
         old_settings = deepcopy(plot.settings)
-        plot.update_settings(**new_settings, update_fig=False)
+        plot.update_settings(**new_settings, run_updates=False)
         assert np.all([plot.settings[key] == val for key, val in new_settings.items()])
         # Undo settings and check if they go back to the previous ones
-        plot.undo_settings(update_fig=False)
+        plot.undo_settings(run_updates=False)
+        print(old_settings)
+        print(plot.settings)
         assert np.all([plot.settings[key] ==
                     val for key, val in old_settings.items()])
         

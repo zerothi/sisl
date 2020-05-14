@@ -7,6 +7,7 @@ from xarray import DataArray
 import sisl
 from ..plot import Plot
 from .bands import BandsPlot
+from ..plotutils import random_color
 from ..input_fields import QueriesInput, TextInput, DropdownInput, SwitchInput, ColorPicker, FloatInput
 from ..input_fields.range import ErangeInput
 
@@ -121,15 +122,13 @@ class FatbandsPlot(BandsPlot):
         def _weights_from_eigenstate(eigenstate, plot):
             plot.weights.append(eigenstate.norm2(sum=False))
 
-        self.update_settings(eigenstate_map=_weights_from_eigenstate, update_fig=False, _nolog=True)
-
         self.setup_hamiltonian()
 
         self._set_group_options()
 
         # We make bands plot read the bands, which will also populate the weights
         # thanks to the above step
-        BandsPlot._read_from_H(self)
+        BandsPlot._read_from_H(self, eigenstate_map=_weights_from_eigenstate)
 
         # Then we just convert the weights to a DataArray
         self.weights = np.array(self.weights).real
@@ -191,11 +190,12 @@ class FatbandsPlot(BandsPlot):
 
     def _set_data(self):
 
-        # Avoid bands being displayed in the legend individually (it would be a mess)
-        self.update_settings(add_band_trace_data=lambda band, plot: {'showlegend': False}, update_fig=False, _nolog=True)
-
         # We let the bands plot draw the bands
-        BandsPlot._set_data(self, draw_before_bands=self._draw_fatbands)
+        BandsPlot._set_data(
+            self, draw_before_bands=self._draw_fatbands,
+            # Avoid bands being displayed in the legend individually (it would be a mess)
+            add_band_trace_data=lambda band, plot: {'showlegend': False}
+        )
     
     def _draw_fatbands(self):
 
@@ -248,6 +248,9 @@ class FatbandsPlot(BandsPlot):
                 weights = weights.mean("orb")
             else:
                 weights = weights.sum("orb")
+
+            if group["color"] is None:
+                group["color"] = random_color()
 
             self.add_traces([{
                 'type': 'scatter',

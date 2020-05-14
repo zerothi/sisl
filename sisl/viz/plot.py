@@ -850,7 +850,8 @@ class Plot(ShortCutable, Configurable, Connected):
         Sets up the hamiltonian for calculations with sisl.
         '''
 
-        NEW_FDF = self.did_setting_update("root_fdf")
+        if len(self.settings_history) > 1:
+            NEW_FDF = self.settings_history.was_updated("root_fdf")
         
         if not self.PROVIDED_GEOM and (not hasattr(self, "geom") or NEW_FDF):
             self.geom = self.fdfSile.read_geometry(output = True)
@@ -1578,7 +1579,6 @@ class MultiplePlot(Plot):
         '''
 
         if kwargs.get("onlyOnParent", False) or kwargs.get("from_decorator", False):
-
             return super().update_settings(**kwargs)
         
         else:

@@ -313,7 +313,7 @@ class LDOSmap(Plot):
         os.chdir(cwd)
         
         #Update the values for the limits so that they are automatically set
-        self.update_settings(update_fig = False, cmin = 0, cmax = 0) 
+        self.update_settings(run_updates = False, cmin = 0, cmax = 0) 
     
     def _getPath(self):
 

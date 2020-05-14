@@ -199,7 +199,7 @@ class BandsPlot(Plot):
 
         self.add_shortcut("g", "Toggle gap", self.toggle_gap)
 
-    def _read_from_H(self):
+    def _read_from_H(self, eigenstate_map=None):
 
         bandStruct = self.setting("band_structure")
         
@@ -236,7 +236,7 @@ class BandsPlot(Plot):
         # We define a wrapper to get the values out of the eigenstates
         # to give the possibility to the user to do something inbetween
         # NOTE THAT THIS IS USED BY FAT BANDS TO GET THE WEIGHTS SIMULTANEOUSLY
-        eig_map = self.setting('eigenstate_map')
+        eig_map = eigenstate_map or self.setting('eigenstate_map')
         def bands_wrapper(eigenstate):
             if callable(eig_map):
                 eig_map(eigenstate, self)
@@ -282,7 +282,7 @@ class BandsPlot(Plot):
 
                     self.siestaPath.append({"active": True, "x": float(x), "y": float(y), "z": float(z), "divisions": divisions, "tick": tick})
                     
-                    self.update_settings(path=self.siestaPath, update_fig=False, no_log=True)
+                    self.update_settings(path=self.siestaPath, run_updates=False, no_log=True)
             except Exception as e:
                 print(f"Could not correctly read the bands path from siesta.\n Error {e}")
     
@@ -305,7 +305,7 @@ class BandsPlot(Plot):
             "marks": { int(i): str(i) for i in iBands },
         })
     
-    def _set_data(self, draw_before_bands=None):
+    def _set_data(self, draw_before_bands=None, add_band_trace_data=None):
         
         '''
         Converts the bands dataframe into a data object for plotly.
@@ -330,13 +330,13 @@ class BandsPlot(Plot):
 
             iBands = np.arange(*bands_range)
             filtered_bands = self.bands.where(self.bands.band.isin(iBands), drop=True)
-            self.update_settings(update_fig=False, Erange=[float(f'{val:.3f}') for val in [float(filtered_bands.min()), float(filtered_bands.max())]], bands_range=bands_range, no_log=True)
+            self.update_settings(run_updates=False, Erange=[float(f'{val:.3f}') for val in [float(filtered_bands.min()), float(filtered_bands.max())]], bands_range=bands_range, no_log=True)
         else:
             Erange = np.array(Erange) + self.fermi
             filtered_bands = self.bands.where( (self.bands <= Erange[1]) & (self.bands >= Erange[0])).dropna("band", "all")
-            self.update_settings(update_fig=False, bands_range=[int(filtered_bands['band'].min()), int(filtered_bands['band'].max())], no_log=True)
+            self.update_settings(run_updates=False, bands_range=[int(filtered_bands['band'].min()), int(filtered_bands['band'].max())], no_log=True)
 
-        add_band_trace_data = self.setting("add_band_trace_data")
+        add_band_trace_data = add_band_trace_data or self.setting("add_band_trace_data")
         if not callable(add_band_trace_data):
             add_band_trace_data = lambda * args, **kwargs: {}
         

@@ -39,7 +39,7 @@ class FatbandsPlotTester(BandsPlotTester):
         color = "green"
         name = "Nice group"
 
-        self.plot.update_settings(groups=[{"atoms": [0], "color": color, "name": name}])
+        self.plot.update_settings(groups=[{"atoms": [1], "color": color, "name": name}])
 
         fatbands_traces = [ trace for trace in self.plot.data if trace.fill == 'toself']
 

@@ -523,7 +523,7 @@ class PdosPlot(Plot):
         else:
             requests = [ req for i, req in enumerate(self.setting("requests")) if not self._matches_request(req, i_or_names, i)]
         
-        return self.update_settings(update_fig=update_fig, requests=requests)
+        return self.update_settings(run_updates=update_fig, requests=requests)
 
     def update_requests(self, *i_or_names, **kwargs):
         '''

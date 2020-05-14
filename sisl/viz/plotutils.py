@@ -324,6 +324,12 @@ def call_method_if_present(obj, method_name, *args, **kwargs):
     if callable(method):
         return method(*args, **kwargs)
 
+def random_color():
+    '''
+    Returns a random color in hex format
+    '''
+    import random
+    return "#"+"%06x" % random.randint(0, 0xFFFFFF)
 #------------------------------------
 
 def sortOrbitals(orbitals):
@@ -683,7 +689,7 @@ def repeat_if_childs(method):
             
             obj.childPlots = apply_method_on_multiple_objs(method, obj.childPlots, kwargsList = kwargsList, serial=True)
                 
-            obj.update_settings(onlyOnParent = True, update_fig=False, **kwargs).get_figure()
+            obj.update_settings(onlyOnParent = True, run_updates=False, **kwargs).get_figure()
         
         else:
         

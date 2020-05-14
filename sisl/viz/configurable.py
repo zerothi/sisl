@@ -1,6 +1,7 @@
 from copy import deepcopy
 from functools import wraps
 from types import MethodType
+from collections import deque, Iterable
 import sys
 
 import numpy as np
@@ -9,12 +10,241 @@ from sisl._dispatcher import AbstractDispatch
 from ._presets import get_preset
 from .plotutils import get_configurable_docstring, get_configurable_kwargs, get_configurable_kwargs_to_pass
 
+class NamedHistory:
+    r""" Useful for tracking and modifying the history of named parameters
+
+    This is useful to keep track of how a dict changes, for example.
+
+    Parameters
+    ----------
+    init_params: dict
+        The initial values for the parameters.
+
+        If defaults are not provided, this will be treated as "defaults" (only if keep_defaults is true!)
+    defaults: dict, optional
+       the default values for each parameter. In case some parameter is missing in `init_params`
+       it will be initialized with the default value.
+
+       This will also be used to restore settings to defaults.
+    history_len: int, optional
+        how much steps of history should be recorded
+    keep_defaults: boolean, optional
+        whether the defaults should be kept in case you want to restore them.
+
+    Attributes
+    ----------
+    current : dict
+       the current values for the parameters
+    """
+
+    def __init__(self, init_params, defaults=None, history_len=20, keep_defaults=True):
+
+        self._defaults_kept = keep_defaults
+
+        if defaults is not None:
+            if keep_defaults:
+                self._defaults = defaults
+        
+        # This makes it easier to restore the parameters
+        if hasattr(self, "_defaults"):
+            init_params = {**self._defaults, **init_params}
+        
+        # Vals will contain the unique values for each parameter
+        self._vals = {key: [val] for key, val in init_params.items()}
+        
+        # And _hist will just hold params
+        self._hist = {key: deque([0], maxlen=history_len) for key in init_params}
+        
+    def __str__(self):
+        """ str of the object """
+        return self.__class__.__name__ + f"{{history: {self._hist}, parameters={list(self._vals.keys())}}}"
+    
+    @property
+    def current(self):
+        return self.step(-1)
+    
+    def step(self, i):
+        return {key: self._vals[key][hist[i]] for key, hist in self._hist.items()}
+
+    def __len__(self):
+        for _, hist in self._hist.items():
+            return len(hist)
+
+    def __getitem__(self, item):
+
+        if isinstance(item, int):
+            return self.step(item)
+        elif isinstance(item, str):
+            return [self._vals[item][i] for i in self._hist[item]]
+        elif isinstance(item, Iterable):
+            try:
+                isinstance(item[0], str)
+                return {key: np.array(self._vals[key])[self._hist[key]] for key in item}
+            except:
+                return [self.__getitem__(i) for i in item]
+        elif isinstance(item, slice):
+            return {key: np.array(self._vals[key])[hist][item] for key, hist in self._hist.items()}
+    
+    def __contains__(self, item):
+        return item in self._vals
+    
+    def update(self, **new_settings):
+        
+        for key in self._vals:
+            
+            if key not in new_settings:
+                new_index = self._hist[key][-1]
+            
+            else:
+                # Check if we already have that value
+                val = new_settings[key]
+                if val in self._vals[key]:
+                    new_index = self._vals[key].index(val)
+                else:
+                    self._vals[key].append(val)
+                    new_index = len(self._vals[key]) - 1
+            
+            # Append the index to the history
+            self._hist[key].append(new_index)
+        
+        return self
+    
+    @property
+    def last_updated(self):
+        return self.updated_params(-1)
+
+    def last_update_for(self, key):
+        '''
+        Returns the index of the last update for a given parameter
+        '''   
+
+        current = self._vals[key][self._hist[key][-1]]
+        
+        for i, val in enumerate(reversed(self._hist[key])):
+            if val != current:
+                return len(self._hist[key]) - (i+1)
+
+    def updated_params(self, step):
+        return self.diff_keys(step, step - 1)
+    
+    def was_updated(self, key, step=-1):
+        '''
+        Checks whether the step updated the parameters value
+
+        Parameters
+        -----------
+        key: str
+            the parameter
+        step: int
+            the step we want to check
+        '''
+        
+        return self.is_different(key, step1=step, step2=step-1)
+
+    def is_different(self, key, step1, step2):
+
+        hist = self._hist[key]
+        
+        return hist[step1] != hist[step2]
+
+    def diff_keys(self, step1, step2):
+        '''
+        Gets the keys that are different between two steps of the history
+        '''
+
+        return [key for key in self._vals if self.is_different(key, step1, step2)]
+
+    def delta(self, step_after=-1, step_before=None):
+        '''
+        Gets a dictionary with the diferences between two steps
+        '''
+
+        if step_before is None:
+            step_before = step_after -1
+
+        keys = self.diff_keys(step_before, step_after)
+
+        return {
+            key: {
+                "before": self[step_before][key],
+                "after": self[step_after][key],
+            } for key in keys
+        }
+    
+    @property
+    def last_delta(self):
+        '''
+        A log with the last changes.
+        '''
+        return self.delta(-1, -2)
+
+    def undo(self, steps=1, keys=None):
+        
+        for key, hist in self._hist.items():
+            
+            for _ in range(steps):
+                hist.pop()
+        
+        # Clear the unused values (for the moment we are setting them to None
+        # so that we don't need to change the indices of the history)
+        for key in self._vals:
+            
+            if self._defaults_kept:
+                self._vals[key] = [ val if i in hist or i==0 else None for i, val in enumerate(self._vals[key]) ]
+            else:
+                self._vals[key] = [ val if i in hist else None for i, val in enumerate(self._vals[key]) ]
+        
+        return self
+    
+    def clear(self):
+        
+        self.__init__(init_settings={key: None for key in self._vals})
+        
+        return self
+    
+    def restore_initial(self):
+
+        self.__init__(init_settings=self.step(0))
+
+        return self
+
+    def restore_defaults(self):
+        
+        if self._defaults_kept:
+            if hasattr(self, "_defaults"):
+                self.__init__({})
+            else:
+                self.restore_initial()
+        else:
+            raise Exception("Defaults were not kept! You need to use keep_defaults=True on initialization")
+            
+        return self
+    
+    @property
+    def defaults(self):
+        if self._defaults_kept:
+            if hasattr(self, "_defaults"):
+                return self._defaults
+            else:
+                return self.step(0)
+        else:
+            raise Exception("Defaults were not kept! You need to use keep_defaults=True on initialization")
+            
+        return self
+    
+    def is_default(self, key):
+
+        return self[key][-1] == self.defaults[key]
+
 class FakeSettingsDispatch(AbstractDispatch):
     '''
     Provides a dispatch that executes methods using "fake" settings.
 
     This is mainly useful to use methods from other classes without having
     the settings that are required.
+
+    AT THE MOMENT ATTRIBUTES ARE NOT SET TO THE PLOT WHEN THE METHOD RUNS, SO YOU 
+    SHOULD PROBABLY NOT USE IT UNLESS YOU ARE AWARE OF THAT!
     '''
 
     def __init__(self, obj, **settings):
@@ -94,8 +324,6 @@ class Configurable:
         if getattr(self, "AVOID_SETTINGS_INIT", False):
             delattr(self, "AVOID_SETTINGS_INIT")
             return
-        
-        self.settingsHistory = []
 
         # If the class needs to overwrite some defaults of settings that has inherited, do it
         overwrite_defaults = getattr(self, "_overwrite_defaults", {})
@@ -114,10 +342,13 @@ class Configurable:
                 preset_settings = get_preset(preset)
                 kwargs = {**preset_settings, **kwargs}
 
-        #Define the settings dictionary, taking the value of each parameter from kwargs if it is there or from the defaults otherwise.
-        self.settings = { param.key: kwargs.get( param.key, deepcopy(param.default) ) for param in self.params}
-        
-        self.settingsHistory.append(deepcopy(self.settings))
+        # Define the settings dictionary, taking the value of each parameter from kwargs if it is there or from the defaults otherwise.
+        # And initialize the settings history
+        defaults = { param.key: deepcopy(param.default) for param in self.params}
+        self.settings_history = NamedHistory(
+            {key: kwargs.get(key, val) for key, val in defaults.items()},
+            defaults=defaults, history_len=20, keep_defaults=True
+        )
 
         #Initialize the object where we are going to store what each setting needs to rerun when it is updated
         self.whatToRunOnUpdate = {}
@@ -132,6 +363,10 @@ class Configurable:
         
         return self
     
+    @property
+    def settings(self):
+        return self.settings_history.current
+
     @classmethod
     def _get_class_params(cls):
 
@@ -152,82 +387,75 @@ class Configurable:
 
         return params, param_groups
 
-    def update_settings(self, from_decorator=False, update_fig=True, no_log=False , **kwargs):
+    def update_settings(self, run_updates=True, no_log=False , **kwargs):
         
         #Initialize the settings in case there are none yet
-        if "settings" not in vars(self):
+        if not hasattr(self, "settings_history"):
             return self.init_settings(**kwargs)
         
+        
         #Otherwise, update them
-        updated = []
-        for paramKey, paramValue in kwargs.items():
-            
-            #It is important to check this, because kwargs may contain other parameters that are not settings
-            if paramKey in self.settings.keys() and self.settings[paramKey] != paramValue:
-                
-                self.settings[paramKey] = paramValue
-                updated.append(paramKey)
-        
-        #Do things after updating the settings
-        if len(updated) > 0:
-            
-            if not no_log:
-                #Record rhe change in the settings history
-                self.settingsHistory.append(deepcopy(self.settings))
-        
-            #Run the functions specified
-            if not from_decorator and hasattr(self, "_onSettingsUpdate") and update_fig:
-                
-                #Get the unique names of the functions that should be executed
-                noInfoKeys = [settingKey for settingKey in updated if settingKey not in self.whatToRunOnUpdate]
-                if len(noInfoKeys) > 0 and len(noInfoKeys) == len(updated):
-                    print(f"We don't know (yet) what to do when the following settings are updated: {noInfoKeys}. Please run the corresponding methods yourself in order to update the plot")
+        updates = {key:val for key, val in kwargs.items() if key in self.settings_history}
+        if updates:
+            self.settings_history.update(**updates)
 
-                funcNames = set([self.whatToRunOnUpdate.get(settingKey, None) for settingKey in updated])
+            #Do things after updating the settings
+            if len(self.settings_history.last_updated) > 0 and run_updates:
+                self._run_updates(self.settings_history.last_updated)
+        
+        return self
+        
+    def _run_updates(self, for_keys):
 
-                for fName in self._onSettingsUpdate["functions"]:
-                    if fName in funcNames:
-                        getattr(self, fName)()
-                        
-                        #If we need to execute all the functions keep going thorugh the loop, else stop here
-                        if not self._onSettingsUpdate["config"].get("multipleFunc", False):
-                            break
+        #Run the functions specified
+        if hasattr(self, "_onSettingsUpdate"):
+            
+            #Get the unique names of the functions that should be executed
+            noInfoKeys = [settingKey for settingKey in for_keys if settingKey not in self.whatToRunOnUpdate]
+            if len(noInfoKeys) > 0 and len(noInfoKeys) == len(for_keys):
+                print(f"We don't know (yet) what to do when the following settings are updated: {noInfoKeys}. Please run the corresponding methods yourself in order to update the plot")
+
+            funcNames = set([self.whatToRunOnUpdate.get(settingKey, None) for settingKey in for_keys])
+
+            for fName in self._onSettingsUpdate["functions"]:
+                if fName in funcNames:
+                    getattr(self, fName)()
+                    
+                    #If we need to execute all the functions keep going thorugh the loop, else stop here
+                    if not self._onSettingsUpdate["config"].get("multipleFunc", False):
+                        break
             
         return self
     
-    def undo_settings(self, nsteps = 1, **kwargs):
+    def undo_settings(self, steps=1, run_updates=True):
         
         try:
-            self.settingsHistory = self.settingsHistory[0:-nsteps]         
-            self.update_settings( **deepcopy(self.settingsHistory[-1]), **kwargs)
+            diff = self.settings_history.diff_keys(-1, -steps-1)
+            self.settings_history.undo(steps=steps)
+            if run_updates:
+                self._run_updates(diff)
         except IndexError:
             print("This instance of {} does not contain earlier settings as requested ({} step{} back)"
-                 .format(self.__class__.__name__, nsteps, "" if nsteps == 1 else "s"))
+                 .format(self.__class__.__name__, steps, "" if steps == 1 else "s"))
             pass
             
         return self
     
-    def undo_setting(self, settingKey):
+    def undo_setting(self, key):
         '''
-        Undoes only a particular setting and lives the others unchanged.
+        Undoes only a particular setting and leaves the others unchanged.
 
         At the moment it is a 'fake' undo function, since it actually updates the settings.
-
         '''
 
-        #Get the actual settings for that group
-        actualSetting = self.get_setting(settingKey)
+        i = self.settings_history.last_update_for(key)
 
-        #Try to find any different values for the settings
-        for pastValue in reversed(self.get_setting_history(settingKey)):
+        if i is None:
+            print(f"There is no registry of the setting '{key}' having been changed. Sorry :(")
 
-            if pastValue != actualSetting:
+        self.update_settings(key=self.settings_history[key][i])
 
-                return self.update_settings( **{settingKey: pastValue} )
-        else:
-            print("There is no registry of the setting '{}' having been changed. Sorry :(".format(settingKey))
-            
-            return self
+        return self
 
     def undo_settings_group(self, groupKey):
 
@@ -235,14 +463,13 @@ class Configurable:
         Takes the desired group of settings one step back, but the rest of the settings remain unchanged.
 
         At the moment it is a 'fake' undo function, since it actually updates the settings.
-
         '''
 
         #Get the actual settings for that group
         actualSettings = self.get_settings_group(groupKey)
 
         #Try to find any different values for the settings
-        for i in range(len(self.settingsHistory)):
+        for i in range(len(self.settings_history)):
 
             previousSettings = self.get_settings_group(groupKey, stepsBack = i)
 
@@ -429,10 +656,6 @@ class Configurable:
             frame = frame.f_back
 
         return self.get_setting(settingKey, copy=False, **kwargs)
-
-    def get_setting_history(self, settingKey):
-        
-        return deepcopy([step[settingKey] for step in self.settingsHistory])
     
     def get_settings_group(self, groupKey, stepsBack = 0):
         '''
@@ -453,7 +676,7 @@ class Configurable:
         '''
 
         if stepsBack:
-            settings = self.settingsHistory[-stepsBack]
+            settings = self.settings_history[-stepsBack]
         else:
             settings = self.settings
 
@@ -470,62 +693,6 @@ class Configurable:
         '''
 
         return deepcopy({ setting.key: self.setting(setting.key) for setting in self.params if getattr(setting, "group", None) == groupKey })
-
-    def settings_updates_log(self, frame = -1):
-        '''
-        Returns a dictionary with a log of a given update in the settings (by default, the last one).
-
-        Each key contains a dictionary with 'before' and 'after' values.
-
-        Arguments
-        --------
-        frame: optional, int (-1)
-            This is the settings history step for which we want the updates. By default it returns the last update.
-        '''
-
-        try:
-            self.settingsHistory[frame]
-            self.settingsHistory[frame - 1]
-        except IndexError:
-            return {}
-
-        updatedDict = {
-            key: {
-                "before": self.settingsHistory[frame - 1][key],
-                "after": postValue ,
-            } for key, postValue in self.settingsHistory[frame].items() if self.settingsHistory[frame - 1][key] != postValue
-        }
-
-        return updatedDict
-
-    def is_default(self, settingKey):
-
-        '''
-        Checks if the current value for a setting is the default one.
-        
-        DOESN'T WORK FOR VALUES THAT ARE FUNCTIONS!
-        '''
-
-        return self.settings[settingKey] == self.get_param(settingKey)["default"]
-    
-    def did_setting_update(self, setting_key, all_updates=False):
-        '''
-        Returns if a given setting did update in the last settings update
-
-        Parameters
-        --------
-        all_updates: boolean, optional
-            whether to return a list stating if the setting did update in each frame.
-        '''
-
-        if all_updates:
-            history = self.get_setting_history(setting_key)
-            return np.array([
-                history[0] != self.get_param(setting_key)["default"], # Did the setting change on initialization
-                *[value != history[iPrev] for iPrev, value in enumerate(history[1:])] # Was the setting updated (for each step)
-            ])
-        else:
-            return setting_key in self.settings_updates_log(frame=-1)
 
     def has_these_settings(self, settings={}, **kwargs):
         '''
@@ -579,7 +746,7 @@ def after_settings_update(method):
 
     def update_and_execute(obj, *args, **kwargs):
         
-        obj.update_settings(**kwargs, from_decorator = True)
+        obj.update_settings(**kwargs, from_decorator=True, run_updates=False)
         
         return method(obj, *args, **kwargs)
     
@@ -592,7 +759,7 @@ def before_settings_update(method):
         
         returns = method(obj, *args, **kwargs)
         
-        obj.update_settings(**kwargs, from_decorator = True)
+        obj.update_settings(**kwargs, from_decorator=True, run_updates=False)
         
         return returns
     

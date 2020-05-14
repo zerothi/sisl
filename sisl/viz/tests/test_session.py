@@ -27,10 +27,10 @@ class BaseSessionTester:
         new_settings = {'rootDir': 'Test', 'searchDepth': [4,6]}
         # Update settings and check they have been succesfully updated
         old_settings = deepcopy(session.settings)
-        session.update_settings(**new_settings, update_fig=False)
+        session.update_settings(**new_settings, run_updates=False)
         assert np.all([session.settings[key] == val for key, val in new_settings.items()])
         # Undo settings and check if they go back to the previous ones
-        session.undo_settings(update_fig=False)
+        session.undo_settings(run_updates=False)
         assert np.all([session.settings[key] ==
                     val for key, val in old_settings.items()])
         
