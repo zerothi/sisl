@@ -333,11 +333,11 @@ class deltancSileTBtrans(SileCDFTBtrans):
             # point, this warning will proceed...
             # I.e. even though the variable has not been set, it will WARN
             # Hence we out-comment this for now...
-            warn(SileWarning(f'Overwriting k-point {ik} and energy point {iE} correction.'))
+            warn(f"Overwriting k-point {ik} and energy point {iE} correction.")
         elif ilvl == 3 and warn_E:
-            warn(SileWarning(f'Overwriting energy point {iE} correction.'))
+            warn(f"Overwriting energy point {iE} correction.")
         elif ilvl == 2 and warn_k:
-            warn(SileWarning(f'Overwriting k-point {ik} correction.'))
+            warn(f"Overwriting k-point {ik} correction.")
 
         if ilvl == 1:
             dim = ('spin', 'nnzs')
@@ -364,7 +364,8 @@ class deltancSileTBtrans(SileCDFTBtrans):
         csize[-1] = delta.nnz
 
         if delta.spin.kind > delta.spin.POLARIZED:
-            raise ValueError(self.__class__.__name__ + '.write_delta only allows spin-polarized delta values')
+            print(delta.spin)
+            raise ValueError(f"{self.__class__.__name__}.write_delta only allows spin-polarized delta values")
 
         if delta.dtype.kind == 'c':
             v1 = self._crt_var(lvl, 'Redelta', 'f8', dim,
