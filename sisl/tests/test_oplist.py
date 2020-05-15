@@ -21,7 +21,7 @@ def test_oplist_creation():
     assert l[1] == 2
 
 
-@pytest.mark.parametrize("op", [ops.add, ops.sub, ops.mul, ops.truediv, ops.pow])
+@pytest.mark.parametrize("op", [ops.add, ops.floordiv, ops.sub, ops.mul, ops.truediv, ops.pow])
 @pytest.mark.parametrize("key1", [1, 2])
 @pytest.mark.parametrize("key2", [1, 2])
 def test_oplist_math(op, key1, key2):
@@ -35,7 +35,13 @@ def test_oplist_math(op, key1, key2):
     op(l1, l2)
 
 
-@pytest.mark.parametrize("op", [ops.iadd, ops.isub, ops.imul, ops.itruediv, ops.ipow])
+@pytest.mark.parametrize("op", [ops.abs, ops.neg, ops.pos])
+def test_oplist_single(op):
+    d = oplist([ar.aranged(1, 10), ar.aranged(1, 10)])
+    op(d)
+
+
+@pytest.mark.parametrize("op", [ops.iadd, ops.ifloordiv, ops.isub, ops.imul, ops.itruediv, ops.ipow])
 @pytest.mark.parametrize("key", [1, 2])
 def test_oplist_imath(op, key):
     d = {
