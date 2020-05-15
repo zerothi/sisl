@@ -1,24 +1,21 @@
 import numpy as np
 import pandas as pd
 import itertools
+from functools import partial
 
 import sisl
 from ..plot import Plot
-from .geometry import BaseGeometryPlot
+from .geometry import GeometryPlot
 from ..plotutils import find_files
 from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
 
-class BondLengthMap(BaseGeometryPlot):
+class BondLengthMap(GeometryPlot):
     
     '''
     Colorful representation of bond lengths.
     '''
 
     _plot_type = "Bond length"
-    
-    _requirements = {
-        
-    }
     
     _parameters = (
         
@@ -32,21 +29,11 @@ class BondLengthMap(BaseGeometryPlot):
             },
             help = "In case the geometry is read from the fdf file, this will determine whether the input or the output geometry is taken.<br>This setting will be ignored if geom_file is passed"
         ),
-        
-        FilePathInput(
-            key = "geom_file", name = "Path to the geometry file",
-            group = "dataread",
-            width = "s100% m50% l33%",
-            params = {
-                "placeholder": "Write the path to your geometry file here..."
-            },
-            help = '''This parameter explicitly sets a geometry file. Otherwise, the geometry is attempted to read from the fdf file '''
-        ),
 
         FilePathInput(
             key = "strain_ref", name = "Strain reference geometry",
             default = None,
-            group = "readdata",
+            group = "dataread",
             width = "s100% m50% l33%",
             params = {
                 "placeholder": "Write the path to your strain reference file here..."
@@ -57,15 +44,13 @@ class BondLengthMap(BaseGeometryPlot):
         ),
 
         SwitchInput(
-            key = "show_strain", name = "Bond display mode",
+            key = "strain", name = "Display strain",
             default = True,
             params = {
-                "offLabel": "Length",
-                "onLabel": "Strain"
+                "offLabel": False,
+                "onLabel": True
             },
-            help = '''Determines whether, <b>IF POSSIBLE</b>, strain values should be displayed instead of lengths<br>
-            If this is set to show strain, but no strain reference is set, <b>it will be ignored</b>
-            '''
+            help = '''Determines whether strain values should be displayed instead of lengths'''
         ),
         
         FloatInput(
@@ -114,36 +99,6 @@ class BondLengthMap(BaseGeometryPlot):
                 "min": 1
             },
             help = "Number of unit cells to display along the third axis"
-        ),
-            
-        DropdownInput(
-            key = "xAxis", name = "Coordinate in X axis",
-            default = "X",
-            width = "s100% m50% l33%",
-            params = {
-                "placeholder": "Choose the coordinate of the X axis...",
-                "options": [
-                    {"label": ax, "value": ax} for ax in ("X", "Y", "Z")
-                ],
-                "isClearable": False,
-                "isSearchable": True,
-            },
-            help = "This is the coordinate that will be shown in the X axis of the plot "
-        ),
-
-        DropdownInput(
-            key = "yAxis", name = "Coordinate in Y axis",
-            default = "Y",
-            width = "s100% m50% l33%",
-            params = {
-                "placeholder": "Choose the coordinate of the Y axis...",
-                "options": [
-                    {"label": ax, "value": ax} for ax in ("X", "Y", "Z")
-                ],
-                "isClearable": False,
-                "isSearchable": True,
-            },
-            help = "This is the coordinate that will be shown in the Y axis of the plot "
         ),
         
         FloatInput(
@@ -196,124 +151,176 @@ class BondLengthMap(BaseGeometryPlot):
 
     def _read_siesta_output(self):
         
-        geom_keys = {}
-        if self.setting("geom_file"):
-            geom_file = self.setting("geom_file")
-        else:
-            geom_file = self.setting("root_fdf")
-            geom_keys = {"output": self.setting("geom_from_output")}
-        
-        self.geom = self.get_sile(geom_file).read_geometry()
-        
-        self.isStrain = False
+        GeometryPlot._read_siesta_output(self)
+
         strain_ref_file = self.setting("strain_ref")
         if strain_ref_file:
 
-            self.relaxedGeom = self.get_sile(strain_ref_file).read_geometry()
-            self.isStrain = True
-
-            self.relaxedGeom.set_nsc([3,3,3])
-        
-        #If there isn't a supercell in all directions define it
-        self.geom.set_nsc([3,3,3])
-        
-        #Build the dataframe with all the bonds info
-        dfKeys = ("From", "To", "From Species", "To Species", "Bond Length",
-            "initX", "initY", "initZ", "finalX", "finalY", "finalZ")
-        strainKeys = ("Relaxed Length", "Strain") if self.isStrain else ()
-
-        dfKeys = (*dfKeys, *strainKeys)
-        bondsDict = { key: [] for key in dfKeys}
-
-        for at in self.geom:
-
-            #If there is a strain reference we take the neighbors of each atom from it
-            if self.isStrain:
-                geom = self.relaxedGeom
-            else:
-                geom = self.geom
-            
-            _, neighs = geom.close(at, R = (0.1, self.setting("bond_thresh")))
-
-            for neigh in neighs:
-
-                bondsDict["From"].append(at)
-                bondsDict["To"].append(neigh)
-                bondsDict["From Species"].append(self.geom.atoms[at].symbol)
-                bondsDict["To Species"].append(self.geom.atom[neigh % self.geom.na].symbol)
-                bondsDict["Bond Length"].append(np.linalg.norm(self.geom[at] - self.geom[neigh]))
-
-                if self.isStrain:
-                    relLength = np.linalg.norm(self.relaxedGeom[at] - self.relaxedGeom[neigh])
-                    bondsDict["Relaxed Length"].append(relLength)
-                    bondsDict["Strain"].append( (bondsDict["Bond Length"][-1] - relLength)/relLength )
-
-                bondsDict["initX"].append(self.geom[at][0])
-                bondsDict["initY"].append(self.geom[at][1])
-                bondsDict["initZ"].append(self.geom[at][2])
-                bondsDict["finalX"].append(self.geom[neigh][0])
-                bondsDict["finalY"].append(self.geom[neigh][1])
-                bondsDict["finalZ"].append(self.geom[neigh][2])
-
-        self.df = pd.DataFrame(bondsDict)
+            self.relaxed_geom = self.get_sile(strain_ref_file).read_geometry()
     
+    def _after_read(self):
+
+        self.geom_bonds = self.find_all_bonds(self.geom)
+
+        if getattr(self, "relaxed_geom", None):
+            self.relaxed_bonds = self.find_all_bonds(self.relaxed_geom)
+    
+    def _wrap_bond3D(self, bond, strain=False):
+        '''
+        Receives a bond and sets its color to the bond length
+        '''
+
+        if strain:
+            color = self._bond_strain(self.relaxed_geom, self.geom, bond)
+        else:
+            color = self._bond_length(self.geom, bond)
+        
+        self.colors.append(color)
+
+        return (*self.geom[bond], 15), {"color": color}
+    
+    @staticmethod
+    def _bond_length(geom, bond):
+        return np.linalg.norm(geom[bond[1]] - geom[bond[0]])
+    
+    @staticmethod
+    def _bond_strain(relaxed_geom, geom, bond):
+
+        relaxed_bl = BondLengthMap._bond_length(relaxed_geom, bond)
+        bond_length = BondLengthMap._bond_length(geom, bond)
+
+        return (bond_length - relaxed_bl) / relaxed_bl
+
     def _set_data(self):
-        
-        """ #Define a colormap
-        cmap = plt.cm.get_cmap(self.setting("cmap"))
-        
-        #Get the normalizer
-        cmin = self.setting("cmin") or self.df["Bond Length"].min()
-        cmax = self.setting("cmax") or self.df["Bond Length"].max()
-        norm = matplotlib.colors.Normalize(cmin, cmax) """
-        
-        self.data = []
-        tileCombs = itertools.product(*[range(self.setting(tile)) for tile in ("tileX", "tileY", "tileZ")])
-        points_per_bond = self.setting("points_per_bond")
-        self.show_strain = self.isStrain and self.setting("show_strain")
-        colorColumn = "Strain" if self.show_strain else "Bond Length"
-        xAxis = self.setting("xAxis"); yAxis = self.setting("yAxis")
-        
-        for tiles in tileCombs :
-            
-            #Get the translation vector
-            translate = np.array(tiles).dot(self.geom.cell)
-        
-            #Draw bonds
-            self.data = [*self.data, *[{
-                            'type': 'scatter',
-                            'x': np.linspace(bond["init{}".format(xAxis)], bond["final{}".format(xAxis)], points_per_bond) + translate[["X","Y","Z"].index(xAxis)],
-                            'y': np.linspace(bond["init{}".format(yAxis)], bond["final{}".format(yAxis)], points_per_bond) + translate[["X","Y","Z"].index(yAxis)],
-                            'mode': 'markers', 
-                            'name': "{}{}-{}{}".format(bond["From Species"], bond["From"], bond["To Species"], bond["To"]), 
-                            #'line': {"color": "rgba{}".format(cmap(norm(bond["Bond Length"])) ), "width": 3},
-                            'marker': {
-                                "size": 3, 
-                                "color": [bond[colorColumn]]*points_per_bond, 
-                                "coloraxis": "coloraxis"
-                            },
-                            "showlegend": False,
-                            'hoverinfo': "name",
-                            'hovertemplate':'{:.2f} Ang{}'.format(bond["Bond Length"], ". Strain: {:.3f}".format(bond["Strain"]) if self.isStrain else "" ),
-                        } for i, bond in self.df.iterrows() ]]
 
-    def _after_get_figure(self):
-
-        #Add the ticks
-        self.figure.layout.yaxis.scaleratio = 1
-        self.figure.layout.yaxis.scaleanchor = "x"
+        ndims = self.setting("ndims")
+        cell_rendering = self.setting("cell")
         
-        colorColumn = "Strain" if self.show_strain else "Bond Length"
-        cmap = self.setting("cmap")
-        reverse = "_r" in cmap
-        cmap = cmap[:-2] if reverse else cmap
-        self.figure.update_layout(coloraxis = {
-            'colorbar': {
-                'title': "Strain" if self.show_strain else "Length (Ang)"
-            },
-            'colorscale': cmap,
-            'reversescale': reverse ,
-            "cmin": (self.setting("cmin") or self.df[colorColumn].min()) if self.setting("cmid") == None else None,
-            "cmax": (self.setting("cmax") or self.df[colorColumn].max()) if self.setting("cmid") == None else None,
-            "cmid": self.setting("cmid"),
-        }, xaxis_title='X (Ang)', yaxis_title="Y (Ang)")
+        # Set the bonds to the relaxed ones if there is a strain reference
+        show_strain = self.setting("show_strain")
+        if show_strain:
+            self.bonds = self.relaxed_bonds
+
+            self.geom.set_nsc(self.relaxed_geom.sc.nsc)
+        else:
+            self.bonds = self.geom_bonds
+
+        # We will initialize the colors list so that it is filled by
+        # the methods that generate them and we can at the end set the limits
+        # of the color scale
+        self.colors = []
+
+        if ndims == 3:
+            self._plot_geom3D(cell=cell_rendering, cheap_bonds=True,
+                wrap_bond=partial(self._wrap_bond3D, strain=show_strain))
+        elif ndims == 2:
+            xaxis = self.setting("xaxis")
+            yaxis = self.setting("yaxis")
+            self._plot_geom2D(xaxis=xaxis, yaxis=yaxis, cell=cell_rendering)
+            self.update_layout(
+                xaxis_title=f'Axis {xaxis} (Ang)', yaxis_title=f'Axis {yaxis} (Ang)')
+        elif ndims == 1:
+            coords_axis = self.setting("xaxis")
+            data_axis = self.setting("yaxis")
+            self._plot_geom1D(coords_axis=coords_axis, data_axis=data_axis)
+        
+        self.update_layout(coloraxis={"cmin": self.setting("cmin") or min(self.colors) ,
+                                      "cmax": self.setting("cmax") or max(self.colors),
+                                      "colorscale": self.setting("cmap")})
+        
+        #tileCombs = itertools.product(*[range(self.setting(tile)) for tile in ("tileX", "tileY", "tileZ")])
+
+
+
+# points_per_bond = self.setting("points_per_bond")
+# self.show_strain = self.is_strain and self.setting("show_strain")
+# colorColumn = "Strain" if self.show_strain else "Bond Length"
+# xAxis = self.setting("xAxis"); yAxis = self.setting("yAxis")
+
+# for tiles in tileCombs :
+    
+#     #Get the translation vector
+#     translate = np.array(tiles).dot(self.geom.cell)
+
+#     #Draw bonds
+#     self.data = [*self.data, *[{
+#                     'type': 'scatter',
+#                     'x': np.linspace(bond["init{}".format(xAxis)], bond["final{}".format(xAxis)], points_per_bond) + translate[["X","Y","Z"].index(xAxis)],
+#                     'y': np.linspace(bond["init{}".format(yAxis)], bond["final{}".format(yAxis)], points_per_bond) + translate[["X","Y","Z"].index(yAxis)],
+#                     'mode': 'markers', 
+#                     'name': "{}{}-{}{}".format(bond["From Species"], bond["From"], bond["To Species"], bond["To"]), 
+#                     #'line': {"color": "rgba{}".format(cmap(norm(bond["Bond Length"])) ), "width": 3},
+#                     'marker': {
+#                         "size": 3, 
+#                         "color": [bond[colorColumn]]*points_per_bond, 
+#                         "coloraxis": "coloraxis"
+#                     },
+#                     "showlegend": False,
+#                     'hoverinfo': "name",
+#                     'hovertemplate':'{:.2f} Ang{}'.format(bond["Bond Length"], ". Strain: {:.3f}".format(bond["Strain"]) if self.isStrain else "" ),
+#                 } for i, bond in self.df.iterrows() ]]
+
+    # def _after_get_figure(self):
+
+    #     #Add the ticks
+    #     self.figure.layout.yaxis.scaleratio = 1
+    #     self.figure.layout.yaxis.scaleanchor = "x"
+        
+    #     colorColumn = "Strain" if self.show_strain else "Bond Length"
+    #     cmap = self.setting("cmap")
+    #     reverse = "_r" in cmap
+    #     cmap = cmap[:-2] if reverse else cmap
+    #     self.figure.update_layout(coloraxis = {
+    #         'colorbar': {
+    #             'title': "Strain" if self.show_strain else "Length (Ang)"
+    #         },
+    #         'colorscale': cmap,
+    #         'reversescale': reverse ,
+    #         "cmin": (self.setting("cmin") or self.df[colorColumn].min()) if self.setting("cmid") == None else None,
+    #         "cmax": (self.setting("cmax") or self.df[colorColumn].max()) if self.setting("cmid") == None else None,
+    #         "cmid": self.setting("cmid"),
+    #     }, xaxis_title='X (Ang)', yaxis_title="Y (Ang)")
+
+#Build the dataframe with all the bonds info
+        # dfKeys = ("From", "To", "From Species", "To Species", "Bond Length",
+        #           "initX", "initY", "initZ", "finalX", "finalY", "finalZ")
+        # strainKeys = ("Relaxed Length", "Strain") if self.isStrain else ()
+
+        # dfKeys = (*dfKeys, *strainKeys)
+        # bondsDict = {key: [] for key in dfKeys}
+
+        # for at in self.geom:
+
+        #     #If there is a strain reference we take the neighbors of each atom from it
+        #     if self.isStrain:
+        #         geom = self.relaxedGeom
+        #     else:
+        #         geom = self.geom
+
+        #     _, neighs = geom.close(at, R=(0.1, self.setting("bond_thresh")))
+
+        #     for neigh in neighs:
+
+        #         bondsDict["From"].append(at)
+        #         bondsDict["To"].append(neigh)
+        #         bondsDict["From Species"].append(self.geom.atoms[at].symbol)
+        #         bondsDict["To Species"].append(
+        #             self.geom.atom[neigh % self.geom.na].symbol)
+        #         bondsDict["Bond Length"].append(
+        #             np.linalg.norm(self.geom[at] - self.geom[neigh]))
+
+        #         if self.isStrain:
+        #             relLength = np.linalg.norm(
+        #                 self.relaxedGeom[at] - self.relaxedGeom[neigh])
+        #             bondsDict["Relaxed Length"].append(relLength)
+        #             bondsDict["Strain"].append(
+        #                 (bondsDict["Bond Length"][-1] - relLength)/relLength)
+
+        #         bondsDict["initX"].append(self.geom[at][0])
+        #         bondsDict["initY"].append(self.geom[at][1])
+        #         bondsDict["initZ"].append(self.geom[at][2])
+        #         bondsDict["finalX"].append(self.geom[neigh][0])
+        #         bondsDict["finalY"].append(self.geom[neigh][1])
+        #         bondsDict["finalZ"].append(self.geom[neigh][2])
+
+        # self.df = pd.DataFrame(bondsDict)

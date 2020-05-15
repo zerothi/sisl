@@ -1,4 +1,6 @@
 from functools import wraps
+from collections import Iterable
+
 import numpy as np
 
 from sisl import Geometry, PeriodicTable, Atom
@@ -47,8 +49,6 @@ class BaseGeometryPlot(Plot):
     in your class, call this classes' one explicitly)
     '''
 
-    is_only_base = True
-
     # Colors of the atoms following CPK rules
     _atoms_colors = {
         "H" :"#ccc", # Should be white but the default background is white
@@ -94,8 +94,8 @@ class BaseGeometryPlot(Plot):
         self.bonds = None
     
     @staticmethod
-    def _sphere(center=[0,0,0], r=1):
-        phi, theta = np.mgrid[0.0:np.pi:10j, 0.0:2.0*np.pi:10j]
+    def _sphere(center=[0,0,0], r=1, vertices=10):
+        phi, theta = np.mgrid[0.0:np.pi:complex(0, vertices), 0.0:2.0*np.pi:complex(0, vertices)]
         x = center[0] + r*np.sin(phi)*np.cos(theta)
         y = center[1] + r*np.sin(phi)*np.sin(theta)
         z = center[2] + r*np.cos(phi)
@@ -117,7 +117,7 @@ class BaseGeometryPlot(Plot):
 
     def _read_siesta_output(self):
 
-        geom_file = self.setting("geom_file")
+        geom_file = self.setting("geom_file") or self.setting("root_fdf")
 
         self.geom = self.get_sile(geom_file).read_geometry()
             
@@ -143,35 +143,6 @@ class BaseGeometryPlot(Plot):
             return np.unique(bonds, axis=0)
         else:
             return bonds
-
-    def _plot_geom(self, atom_trace, bond_trace, cell_axes_traces=None, cell_trace=None, wrap_atom=None, wrap_bond=None, atom=None, cell="axes"):
-
-        # Add atoms
-        atom_traces = []
-        ats = self.geom[atom] if atom is not None else self.geom
-        for at in self.geom:
-            trace_args, trace_kwargs = wrap_atom(at)
-            atom_traces.append(atom_trace(*trace_args, **trace_kwargs))
-            self.add_traces(atom_traces)
-
-        # Add bonds
-        if self.setting('bonds'):
-            bond_traces = []
-
-            bonds = self.bonds
-            if atom is not None:
-                bonds = [bond for bond in bonds if np.any([at in ats for at in bond])]  
-
-            for bond in self.bonds:
-                trace_args, trace_kwargs = wrap_bond(bond)
-                bond_traces.append(bond_trace(*trace_args, **trace_kwargs))
-            self.add_traces(bond_traces)
-
-        # Draw unit cell
-        if cell == "axes":
-            self.add_traces(cell_axes_traces())
-        elif cell == "box":
-            self.add_trace(cell_trace())
     
     def _sanitize_axis(self, axis):
 
@@ -470,7 +441,8 @@ class BaseGeometryPlot(Plot):
     #                  3D plotting
     #---------------------------------------------------
 
-    def _plot_geom3D(self, wrap_atom=None, wrap_bond=None, cell='axes'):
+    def _plot_geom3D(self, wrap_atom=None, wrap_bond=None, cell='axes', 
+        atom=None, atom_vertices=20, cheap_bonds=True, cheap_atoms=False, atom_size_factor=40):
         '''
         Returns a 3D representation of the plot's geometry.
 
@@ -486,23 +458,87 @@ class BaseGeometryPlot(Plot):
             the args (array-like) and kwargs (dict) that go into self._bond_trace3D()
 
             If not provided, self._default_wrap_bond3D will be used.
+        cell: {'axes', 'box', False}, optional
+            defines how the unit cell is drawn
+        atom: array-like of int
+            the indices of the atoms that you want to plot
+        atom_vertices: int
+            the "definition" of the atom sphere, if not in cheap mode. The more vertices, the more defined the sphere
+            will be. However, it will also be more expensive to render.
+        cheap_bonds: boolean, optional
+            If set to True, it draws all in one trace, which results in a dramatically faster rendering.
+            The only limitation that it has is that you can't set individual widths.
+        cheap_atoms: boolean, optional
+            Whether atoms are drawn in a cheap way (all in one scatter trace). 
+            If `False`, each atom is drawn individually as a sphere. It's more expensive, but by doing
+            this you avoid variable size problems (and looks better).
+        atom_size_factor: float, optional
+            in cheap mode, the factor by which the atom sizes will be multiplied.
         '''
 
         wrap_atom = wrap_atom or self._default_wrap_atom3D
         wrap_bond = wrap_bond or self._default_wrap_bond3D
+
+        # Draw bonds
+        if self.setting('bonds'):
+            bond_traces = []
+
+            # Define the actual bonds that we are going to draw depending on which
+            # atoms are requested
+            bonds = self.bonds
+            if atom is not None:
+                bonds = [bond for bond in bonds if np.any([at in ats for at in bond])]  
+                
+            if cheap_bonds:
+                # Draw all bonds in the same trace, also drawing the atoms if requested
+                atomsprops = {}
+
+                if cheap_atoms:
+                    atomsinfo = [wrap_atom(at) for at in self.geom]
+
+                    atomsprops = {"atoms_color": [], "atoms_size": []}
+                    for atominfo in atomsinfo:
+                        atomsprops["atoms_color"].append(atominfo[1]["color"])
+                        atomsprops["atoms_size"].append(atominfo[1]["r"]*atom_size_factor)
+                
+                # Try to get the bonds colors (It might be that the user is not setting them)
+                bondsinfo = [wrap_bond(bond) for bond in bonds]
+
+                bondsprops = {"bonds_color": []}
+                for bondinfo in bondsinfo:
+                    # If a color is not returned from wrap_bond, we will just not pass
+                    # anything to _bonds_trace3d
+                    if "color" not in bondinfo[1]:
+                        bondsprops = {}
+                        break
+                    bondsprops["bonds_color"].append(bondinfo[1]["color"])
+                    
+                trace = self._bonds_trace3D(bonds, self.geom, atoms=cheap_atoms,**bondsprops, **atomsprops)
+                bond_traces.append(trace)
+            else:
+                # Draw each bond individually, allows styling each bond differently
+                for bond in self.bonds:
+                    trace_args, trace_kwargs = wrap_bond(bond)
+                    bond_traces.append(self._bond_trace3D(*trace_args, **trace_kwargs))
+                
+            self.add_traces(bond_traces)
+
+        # Draw atoms if they are not already drawn 
+        if not cheap_atoms:
+            atom_traces = []
+            ats = self.geom[atom] if atom is not None else self.geom
+            for at in self.geom:
+                trace_args, trace_kwargs = wrap_atom(at)
+                atom_traces.append(self._atom_trace3D(*trace_args, **trace_kwargs, vertices=atom_vertices))
+            self.add_traces(atom_traces)
+
+        # Draw unit cell
+        if cell == "axes":
+            self.add_traces(self._cell_axes_traces3D())
+        elif cell == "box":
+            self.add_trace(self._cell_trace3D())
         
-        self._plot_geom(
-            self._atom_trace3D, self._bond_trace3D, self._cell_axes_traces3D, self._cell_trace3D,
-            wrap_atom, wrap_bond , cell=cell   
-        )
-            
-        forbidden3D_keys = ('title', 'showlegend', 'paper_bgcolor', 'plot_bgcolor',
-                          'xaxis_scaleanchor', 'xaxis_scaleratio', 'yaxis_scaleanchor', 'yaxis_scaleratio')
-        
-        self.layout.scene = {
-            'aspectmode': 'data', 
-            **{key:val for key, val in self.settings_group("layout").items() if key not in forbidden3D_keys}
-        }
+        self.layout.scene.aspectmode = 'data'
 
     def _default_wrap_atom3D(self, at):
 
@@ -547,11 +583,11 @@ class BaseGeometryPlot(Plot):
             **kwargs
         }
         
-    def _atom_trace3D(self, xyz, r, color="gray", name=None, group=None, showlegend=False, **kwargs):
+    def _atom_trace3D(self, xyz, r, color="gray", name=None, group=None, showlegend=False, vertices=10, **kwargs):
         
         trace = {
             'type': 'surface',
-            **self._sphere(xyz, r),
+            **self._sphere(xyz, r, vertices=vertices),
             'showlegend': showlegend,
             'colorscale': [[0, color], [1, color]],
             'showscale': False,
@@ -563,8 +599,70 @@ class BaseGeometryPlot(Plot):
         }
         
         return trace
+
+    def _bonds_trace3D(self, bonds, geom_xyz, bonds_width=10, bonds_color='gray', 
+        atoms=False, atoms_color="blue", atoms_size=None, name=None, legendgroup=None, **kwargs):
+
+        # Check if we need to build the markers_properties from atoms_* arguments
+        if isinstance(atoms_color, Iterable) and not isinstance(atoms_color, str):
+            build_marker_color = True
+            atoms_color = np.array(atoms_color)
+            marker_color = []
+        else:
+            build_marker_color = False
+            marker_color = atoms_color
+
+        if isinstance(atoms_size, Iterable):
+            build_marker_size = True
+            atoms_size = np.array(atoms_size)
+            marker_size = []
+        else:
+            build_marker_size = False
+            marker_size = atoms_size
         
-    def _bond_trace3D(self, xyz1, xyz2, r=0.3, color="#ccc", name=None, group=None, showlegend=False, **kwargs):
+        # Bond color
+        if isinstance(bonds_color, Iterable) and not isinstance(bonds_color, str):
+            build_line_color = True
+            bonds_color = np.array(bonds_color)
+            line_color = []
+        else:
+            build_line_color = False
+            line_color = bonds_color
+
+        x = []; y = []; z = []
+        
+        for i, bond in enumerate(bonds):
+
+            bond_xyz = geom_xyz[bond]
+
+            x = [*x, *bond_xyz[:, 0], None]
+            y = [*y, *bond_xyz[:, 1], None]
+            z = [*z, *bond_xyz[:, 2], None]
+
+            if build_marker_color:
+                marker_color = [*marker_color, *atoms_color[bond], "white"]
+            if build_marker_size:
+                marker_size = [*marker_size, *atoms_size[bond], 0]
+            if build_line_color:
+                line_color = [*line_color, bonds_color[i], bonds_color[i],0]
+            
+        trace = {
+            'type': 'scatter3d',
+            'mode': f'lines{"+markers" if atoms else ""}',
+            'name': name,
+            'x': x,
+            'y': y,
+            'z': z,
+            'line': {'width': bonds_width, 'color': line_color, 'coloraxis': 'coloraxis'},
+            'marker': {'size': marker_size, 'color': marker_color},
+            'legendgroup': legendgroup,
+            'showlegend': False,
+            **kwargs
+        }
+
+        return trace
+
+    def _bond_trace3D(self, xyz1, xyz2, r=0.3, color="#ccc", name=None, group=None, showlegend=False, line_kwargs={}, **kwargs):
         
         # Drawing cylinders instead of lines would be better, but rendering would be slower
         # We need to give the possibility.
@@ -575,12 +673,12 @@ class BaseGeometryPlot(Plot):
             
         trace = {
             'type': 'scatter3d',
-            'mode': 'lines',
+            'mode': 'markers',
             'name': name,
             'x': x,
             'y': y,
             'z': z,
-            'line': {'width': r, 'color': color},
+            'line': {'width': r, 'color': color, **line_kwargs},
             'legendgroup': group,
             'showlegend': showlegend,
             **kwargs
@@ -627,8 +725,29 @@ class GeometryPlot(BaseGeometryPlot):
             (False: not rendered, 'axes': render axes only, 'box': render a bounding box)'''
         ),
 
-        ProgramaticInput(key="xaxis", name="X axis", default="x"),
-        ProgramaticInput(key="yaxis", name="Y axis", default="y")
+        DropdownInput(key="xaxis", name="X axis",
+            default="x",
+            params={
+                'options': [
+                    {'label': ax, 'value': ax} for ax in ["x", "y", "z", 0, 1, 2, "a", "b", "c"]
+                ],
+                'isMulti': False,
+                'isSearchable': True,
+                'isClearable': False
+            },
+        ),
+
+        DropdownInput(key="yaxis", name="Y axis",
+            default="y",
+            params={
+                'options': [
+                    {'label': ax, 'value': ax} for ax in ["x", "y", "z", 0, 1, 2, "a", "b", "c"]
+                ],
+                'isMulti': False,
+                'isSearchable': True,
+                'isClearable': False
+            },
+        )
         
     )
 

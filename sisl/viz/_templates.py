@@ -18,6 +18,17 @@ pio.templates["siesta"] = go.layout.Template(
              ("ticks", "outside"), ("ticklen", 5), ("ticksuffix", " "))
         )},
         "hovermode": "closest",
+        "scene": {
+            **{f"{ax}_{key}": val for ax, (key, val) in itertools.product(
+                ("xaxis", "yaxis", "zaxis"),
+                (("visible", True), ("showline", True), ("linewidth", 1), ("mirror", True),
+                 ("color", "black"), ("showgrid",
+                                      False), ("gridcolor", "#ccc"), ("gridwidth", 1),
+                    ("zeroline", False), ("zerolinecolor",
+                                          "#ccc"), ("zerolinewidth", 1),
+                    ("ticks", "outside"), ("ticklen", 5), ("ticksuffix", " "))
+            )},
+        }
         #"editrevision": True
         #"title": {"xref": "paper", "x": 0.5, "text": "Whhhhhhhat up", "pad": {"b": 0}}
     },
