@@ -82,6 +82,55 @@ class Category(metaclass=ABCMeta):
         r""" Override the name of the categorization """
         self._name = name
 
+    @classmethod
+    def kw(cls, **kwargs):
+        """ Create categories based on keywords
+
+        This will search through the inherited classes and
+        return and & category object for all keywords.
+
+        Since this is a class method one should use this
+        on the base category class in the given section
+        of the code.
+        """
+
+        subcls = set()
+        work = [cls]
+        while work:
+            parent = work.pop()
+            for child in parent.__subclasses__():
+                if child not in subcls:
+                    subcls.add(child)
+                    work.append(child)
+
+        del work, parent, child
+
+        # create dictionary look-up
+        subcls = {cl.__name__.lower(): cl for cl in subcls}
+
+        def get_cat(cl, args):
+            if isinstance(args, dict):
+                return cl(**args)
+            return cl(args)
+
+        # Now search keywords and create category
+        cat = None
+        for key, args in kwargs.items():
+            lkey = key.lower()
+            found = ''
+            for name, cl in subcls.items():
+                if name.endswith(lkey):
+                    if found:
+                        raise ValueError(f"{cls.__name__}.kw got a non-unique argument for category name:\n"
+                                         f"    Searching for {name} and found matches {found} and {name}.")
+                    found = name
+                    if cat is None:
+                        cat = get_cat(cl, args)
+                    else:
+                        cat = cat & get_cat(cl, args)
+
+        return cat
+
     @abstractmethod
     def categorize(self, *args, **kwargs):
         r""" Do categorization """
@@ -134,8 +183,8 @@ class Category(metaclass=ABCMeta):
     def __and__(self, other):
         return AndCategory(self, other)
 
-    #def __or__(self, other):
-    #    return OrCategory(self, other)
+    def __or__(self, other):
+        return OrCategory(self, other)
 
     def __xor__(self, other):
         return XOrCategory(self, other)
@@ -285,9 +334,7 @@ class OrCategory(CompositeCategory):
         def cmp(a, b):
             if isinstance(a, NullCategory):
                 return b
-            elif isinstance(b, NullCategory):
-                return a
-            return self
+            return a
 
         if isinstance(catA, list):
             return list(map(cmp, catA, catB))
