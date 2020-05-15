@@ -190,6 +190,8 @@ class Category(metaclass=ABCMeta):
         return XOrCategory(self, other)
 
     def __invert__(self):
+        if isinstance(self, NotCategory):
+            return self._cat
         return NotCategory(self)
 
 
