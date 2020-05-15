@@ -19,26 +19,24 @@ __all__ = ['oplist']
 def _crt_op(op, only_self=False):
     if only_self:
         def _(self):
-            return self.__class__(op(data) for data in self)
+            return self.__class__(op(s) for s in self)
     else:
         def _(self, other):
             if isiterable(other):
-                n = len(self)
-                if n != len(other):
+                if len(self) != len(other):
                     raise ValueError(f"{self.__class__.__name__} requires other data to contain same number of elements (or a scalar).")
-                return self.__class__(op(self[i], other[i]) for i in range(n))
-            return self.__class__(op(data, other) for data in self)
+                return self.__class__(op(s, o) for s, o in zip(self, other))
+            return self.__class__(op(s, other) for s in self)
     return _
 
 
 def _crt_rop(op):
     def _(self, other):
         if isiterable(other):
-            n = len(self)
-            if n != len(other):
+            if len(self) != len(other):
                 raise ValueError(f"{self.__class__.__name__} requires other data to contain same number of elements (or a scalar).")
-            return self.__class__(op(other[i], self[i]) for i in range(n))
-        return self.__class__(op(other, data) for data in self)
+            return self.__class__(op(o, s) for s, o in zip(self, other))
+        return self.__class__(op(other, s) for s in self)
     return _
 
 
@@ -50,14 +48,13 @@ def _crt_iop(op, only_self=False):
     else:
         def _(self, other):
             if isiterable(other):
-                n = len(self)
-                if n != len(other):
+                if len(self) != len(other):
                     raise ValueError(f"{self.__class__.__name__} requires other data to contain same number of elements (or a scalar).")
-                for i in range(n):
-                    op(self[i], other[i])
+                for s, o in zip(self, other):
+                    op(s, o)
             else:
-                for data in self:
-                    op(data, other)
+                for s in self:
+                    op(s, other)
     return _
 
 
