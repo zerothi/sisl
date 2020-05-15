@@ -81,5 +81,7 @@ from .nanoribbon import *
 from .nanotube import *
 from .special import *
 from .bilayer import *
+from .category import *
+
 
 __all__ = [s for s in dir() if not s.startswith('_')]

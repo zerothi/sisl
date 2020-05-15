@@ -27,9 +27,17 @@ from .supercell import SuperCell, SuperCellChild
 from .atom import Atom, Atoms
 from .shape import Shape, Sphere, Cube
 from ._namedindex import NamedIndex
+from .category import Category
 
 
 __all__ = ['Geometry', 'sgeom']
+
+
+# It needs to be here otherwise we can't use it in these routines
+# Note how we are overwriting the module
+@set_module("sisl.geom")
+class AtomCategory(Category):
+    __slots__ = tuple()
 
 
 @set_module("sisl")
@@ -311,6 +319,18 @@ class Geometry(SuperCellChild):
     @_sanitize_atom.register(Atom)
     def _(self, atom):
         return (self.atoms.specie == self.atoms.index(atom)).nonzero()[0]
+
+    @_sanitize_atom.register(AtomCategory)
+    def _(self, atom):
+        # First do categorization
+        cat = atom.categorize(self)
+        def m(cat):
+            for ia, c in enumerate(cat):
+                if c == None:
+                    pass
+                else:
+                    yield ia
+        return _a.fromiteri(m(cat))
 
     def _sanitize_orb(self, orbital):
         """ Converts an `orbital` to index under given inputs

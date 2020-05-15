@@ -208,6 +208,8 @@ class NullCategory(Category):
 
     @singledispatchmethod
     def __eq__(self, other):
+        if other is None:
+            return True
         return self.__class__ == other.__class__
 
     @__eq__.register(list)

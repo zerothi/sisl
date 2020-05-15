@@ -1,6 +1,7 @@
 import numpy as np
 
 from sisl._internal import set_module, singledispatchmethod
+from sisl._help import isiterable
 from .base import AtomCategory, NullCategory, _sanitize_loop
 
 
@@ -13,19 +14,23 @@ class AtomZ(AtomCategory):
 
     Parameters
     ----------
-    Z : int
-       atomic number match
+    Z : int or array_like
+       atomic number match for several values this is equivalent to AND
     """
     __slots__ = ("_Z",)
 
     def __init__(self, Z):
-        super().__init__(f"Z={Z}")
-        self._Z = Z
+        if isiterable(Z):
+            self._Z = set(Z)
+        else:
+            self._Z = set([Z])
+        # using a sorted list ensures that we can compare
+        super().__init__(f"Z={self._Z}")
 
     @_sanitize_loop
     def categorize(self, geometry, atoms=None):
         # _sanitize_loop will ensure that atoms will always be an integer
-        if geometry.atoms.Z[atoms] == self._Z:
+        if geometry.atoms.Z[atoms] in self._Z:
             return self
         return NullCategory()
 
