@@ -599,13 +599,13 @@ class Configurable:
 
         return self
     
-    def get_setting(self, setting_key, copy=True, fake_settings=None):
+    def get_setting(self, key, copy=True, fake_settings=None, parse=True):
         '''
         Gets the value for a given setting.
 
         Parameters
         ------------
-        setting_key: str
+        key: str
             The key of the setting we want to get
         copy: boolean, optional
             Whether you want a copy of the object or the actual object
@@ -614,17 +614,22 @@ class Configurable:
             as if the object had these settings.
             This is mainly to make it possible for classes to use other's classes methods even if
             they don't have the necessary settings.
-            It is used by the `with_settings` method, which 
+            It is used by the `with_settings` method, which
+        parse: boolean, optional
+            whether the setting should be parsed before returning it.
         '''
         
         settings = self.settings
         if fake_settings is not None:
             settings = {**settings, **fake_settings}
-        val = settings[setting_key]
+
+        # Get the value of the setting and parse it using the _parse method
+        # defined for the parameter
+        val = self.get_param(key)._parse(settings[key])
 
         return deepcopy(val) if copy else val
     
-    def setting(self, settingKey, **kwargs):
+    def setting(self, key, **kwargs):
 
         '''
         Gets the value for a given setting while logging where it has been required. 
@@ -646,16 +651,16 @@ class Configurable:
             functions_list = self._onSettingsUpdate["functions"]
             if funcName in functions_list:
 
-                prevFunc = self.whatToRunOnUpdate.get(settingKey, None)
+                prevFunc = self.whatToRunOnUpdate.get(key, None)
 
                 if prevFunc is None or functions_list.index(funcName) < functions_list.index(prevFunc):
-                    self.whatToRunOnUpdate[settingKey] = funcName
+                    self.whatToRunOnUpdate[key] = funcName
                 
                 break
             
             frame = frame.f_back
 
-        return self.get_setting(settingKey, copy=False, **kwargs)
+        return self.get_setting(key, copy=False, **kwargs)
     
     def get_settings_group(self, groupKey, stepsBack = 0):
         '''

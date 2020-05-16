@@ -1,11 +1,11 @@
 from functools import wraps
-from collections import Iterable
+from collections import Iterable, defaultdict
 
 import numpy as np
 
 from sisl import Geometry, PeriodicTable, Atom
 from sisl.viz import Plot
-from sisl.viz.input_fields import ProgramaticInput, FloatInput, SwitchInput, DropdownInput, FilePathInput
+from sisl.viz.input_fields import ProgramaticInput, FloatInput, SwitchInput, DropdownInput, AtomSelect, FilePathInput
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher
 
 class BoundGeometry(AbstractDispatch):
@@ -442,7 +442,8 @@ class BaseGeometryPlot(Plot):
     #---------------------------------------------------
 
     def _plot_geom3D(self, wrap_atom=None, wrap_bond=None, cell='axes', 
-        atom=None, atom_vertices=20, cheap_bonds=True, cheap_atoms=False, atom_size_factor=40):
+        atom=None, bind_bonds_to_ats=True, atom_vertices=20, cheap_bonds=True, cheap_atoms=False, atom_size_factor=40,
+        cheap_bonds_kwargs={}):
         '''
         Returns a 3D representation of the plot's geometry.
 
@@ -460,8 +461,11 @@ class BaseGeometryPlot(Plot):
             If not provided, self._default_wrap_bond3D will be used.
         cell: {'axes', 'box', False}, optional
             defines how the unit cell is drawn
-        atom: array-like of int
+        atom: array-like of int, optional
             the indices of the atoms that you want to plot
+        bind_bonds_to_ats: boolean, optional
+            whether only the bonds that belong to an atom that is present should be displayed.
+            If False, all bonds are displayed regardless of the `atom` parameter
         atom_vertices: int
             the "definition" of the atom sphere, if not in cheap mode. The more vertices, the more defined the sphere
             will be. However, it will also be more expensive to render.
@@ -474,10 +478,15 @@ class BaseGeometryPlot(Plot):
             this you avoid variable size problems (and looks better).
         atom_size_factor: float, optional
             in cheap mode, the factor by which the atom sizes will be multiplied.
+        cheap_bonds_kwargs: dict, optional
+            dict that is passed directly as keyword arguments to `self._bonds_trace3D`.
         '''
 
         wrap_atom = wrap_atom or self._default_wrap_atom3D
         wrap_bond = wrap_bond or self._default_wrap_bond3D
+
+        if atom is not None:
+            atom = self.geom._sanitize_atom(atom)
 
         # Draw bonds
         if self.setting('bonds'):
@@ -486,8 +495,8 @@ class BaseGeometryPlot(Plot):
             # Define the actual bonds that we are going to draw depending on which
             # atoms are requested
             bonds = self.bonds
-            if atom is not None:
-                bonds = [bond for bond in bonds if np.any([at in ats for at in bond])]  
+            if atom is not None and bind_bonds_to_ats:
+                bonds = [bond for bond in bonds if np.any([at in atom for at in bond])]
                 
             if cheap_bonds:
                 # Draw all bonds in the same trace, also drawing the atoms if requested
@@ -504,30 +513,28 @@ class BaseGeometryPlot(Plot):
                 # Try to get the bonds colors (It might be that the user is not setting them)
                 bondsinfo = [wrap_bond(bond) for bond in bonds]
 
-                bondsprops = {"bonds_color": []}
+                bondsprops = defaultdict(list)
                 for bondinfo in bondsinfo:
-                    # If a color is not returned from wrap_bond, we will just not pass
-                    # anything to _bonds_trace3d
-                    if "color" not in bondinfo[1]:
-                        bondsprops = {}
-                        break
-                    bondsprops["bonds_color"].append(bondinfo[1]["color"])
+                    if "color" in bondinfo[1]:
+                        bondsprops["bonds_color"].append(bondinfo[1]["color"])
+                    if "name" in bondinfo[1]:
+                        bondsprops["bonds_labels"].append(bondinfo[1]["name"])
                     
-                trace = self._bonds_trace3D(bonds, self.geom, atoms=cheap_atoms,**bondsprops, **atomsprops)
-                bond_traces.append(trace)
+                bond_traces = self._bonds_trace3D(bonds, self.geom, atoms=cheap_atoms,**bondsprops, **atomsprops, **cheap_bonds_kwargs)
             else:
                 # Draw each bond individually, allows styling each bond differently
                 for bond in self.bonds:
                     trace_args, trace_kwargs = wrap_bond(bond)
-                    bond_traces.append(self._bond_trace3D(*trace_args, **trace_kwargs))
+                    bond_traces.append(self._bond_trace3D(
+                        *trace_args, **trace_kwargs))
                 
             self.add_traces(bond_traces)
 
         # Draw atoms if they are not already drawn 
         if not cheap_atoms:
             atom_traces = []
-            ats = self.geom[atom] if atom is not None else self.geom
-            for at in self.geom:
+            ats = atom if atom is not None else self.geom
+            for at in ats:
                 trace_args, trace_kwargs = wrap_atom(at)
                 atom_traces.append(self._atom_trace3D(*trace_args, **trace_kwargs, vertices=atom_vertices))
             self.add_traces(atom_traces)
@@ -600,11 +607,23 @@ class BaseGeometryPlot(Plot):
         
         return trace
 
-    def _bonds_trace3D(self, bonds, geom_xyz, bonds_width=10, bonds_color='gray', 
-        atoms=False, atoms_color="blue", atoms_size=None, name=None, legendgroup=None, **kwargs):
+    def _bonds_trace3D(self, bonds, geom_xyz, bonds_width=10, bonds_color='gray', bonds_labels=None,
+        atoms=False, atoms_color="blue", atoms_size=None, name=None, coloraxis='coloraxis', legendgroup=None, **kwargs):
+        '''
+        This method is capable of plotting all the geometry in one 3d trace.
+
+        Parameters
+        ----------
+
+        Returns
+        ----------
+        tuple.
+            If bonds_labels are provided, it returns (trace, labels_trace).
+            Otherwise, just (trace,)
+        '''
 
         # Check if we need to build the markers_properties from atoms_* arguments
-        if isinstance(atoms_color, Iterable) and not isinstance(atoms_color, str):
+        if atoms and isinstance(atoms_color, Iterable) and not isinstance(atoms_color, str):
             build_marker_color = True
             atoms_color = np.array(atoms_color)
             marker_color = []
@@ -612,7 +631,7 @@ class BaseGeometryPlot(Plot):
             build_marker_color = False
             marker_color = atoms_color
 
-        if isinstance(atoms_size, Iterable):
+        if atoms and isinstance(atoms_size, Iterable):
             build_marker_size = True
             atoms_size = np.array(atoms_size)
             marker_size = []
@@ -645,6 +664,17 @@ class BaseGeometryPlot(Plot):
                 marker_size = [*marker_size, *atoms_size[bond], 0]
             if build_line_color:
                 line_color = [*line_color, bonds_color[i], bonds_color[i],0]
+
+        if bonds_labels:
+
+            x_labels, y_labels, z_labels = np.array([geom_xyz[bond].mean(axis=0) for bond in bonds]).T 
+            labels_trace = {
+                'type': 'scatter3d', 'mode': 'markers',
+                'x': x_labels, 'y': y_labels, 'z': z_labels,
+                'text': bonds_labels, 'hoverinfo': 'text',
+                'marker': {'size': bonds_width*3, "color": "rgba(255,255,255,0)"},
+                "showlegend": False
+            }
             
         trace = {
             'type': 'scatter3d',
@@ -653,14 +683,14 @@ class BaseGeometryPlot(Plot):
             'x': x,
             'y': y,
             'z': z,
-            'line': {'width': bonds_width, 'color': line_color, 'coloraxis': 'coloraxis'},
+            'line': {'width': bonds_width, 'color': line_color, 'coloraxis': coloraxis},
             'marker': {'size': marker_size, 'color': marker_color},
             'legendgroup': legendgroup,
             'showlegend': False,
             **kwargs
         }
 
-        return trace
+        return (trace, labels_trace) if bonds_labels else (trace,)
 
     def _bond_trace3D(self, xyz1, xyz2, r=0.3, color="#ccc", name=None, group=None, showlegend=False, line_kwargs={}, **kwargs):
         
@@ -747,17 +777,56 @@ class GeometryPlot(BaseGeometryPlot):
                 'isSearchable': True,
                 'isClearable': False
             },
+        ),
+
+        AtomSelect(key="atom", name="Atoms to display",
+            default=None,
+            params={
+                "options": [],
+                "isSearchable": True,
+                "isMulti": True,
+                "isClearable": True
+            },
+            help='''The atoms that are going to be displayed in the plot. 
+            This also has an impact on bonds (see the `bind_bonds_to_ats` and `show_atoms` parameters).
+            If set to None, all atoms are displayed'''
+        ),
+
+        SwitchInput(key="bind_bonds_to_ats", name="Bind bonds to atoms",
+            default=True,
+            help='''whether only the bonds that belong to an atom that is present should be displayed.
+            If False, all bonds are displayed regardless of the `atom` parameter'''
+        ),
+
+        SwitchInput(key="show_atoms", name="Show atoms",
+            default=True,
+            help='''If set to False, it will not display atoms. 
+            Basically this is a shortcut for `atom = [], bind_bonds_to_ats=False`.
+            Therefore, it will override these two parameters.'''
         )
         
     )
+
+    def _after_read(self):
+
+        BaseGeometryPlot._after_read(self)
+
+        self.get_param("atom").update_options(self.geom)
 
     def _set_data(self):
 
         ndims = self.setting("ndims")
         cell_rendering = self.setting("cell")
+        if self.setting("show_atoms") == False:
+            atom = []
+            bind_bonds_to_ats = False
+        else:
+            atom = self.setting("atom")
+            bind_bonds_to_ats = self.setting("bind_bonds_to_ats")
+        
 
         if ndims == 3:
-            self._plot_geom3D(cell=cell_rendering)
+            self._plot_geom3D(cell=cell_rendering, atom=atom, bind_bonds_to_ats=bind_bonds_to_ats)
         elif ndims == 2:
             xaxis = self.setting("xaxis")
             yaxis = self.setting("yaxis")

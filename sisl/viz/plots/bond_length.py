@@ -64,7 +64,7 @@ class BondLengthMap(GeometryPlot):
         
         TextInput(
             key = "cmap", name = "Plotly colormap",
-            default = "solar",
+            default = "viridis",
             width = "s100% m50% l33%",
             params = {
                 "placeholder": "Write a valid plotly colormap here..."
@@ -74,32 +74,32 @@ class BondLengthMap(GeometryPlot):
             Note that you can reverse a color map by adding _r'''
         ),
         
-        IntegerInput(
-            key = "tileX", name = "Tile first axis",
-            default = 1,
-            params = {
-                "min": 1
-            },
-            help = "Number of unit cells to display along the first axis"
-        ),
+        # IntegerInput(
+        #     key = "tileX", name = "Tile first axis",
+        #     default = 1,
+        #     params = {
+        #         "min": 1
+        #     },
+        #     help = "Number of unit cells to display along the first axis"
+        # ),
         
-        IntegerInput(
-            key = "tileY", name = "Tile second axis",
-            default = 1,
-            params = {
-                "min": 1
-            },
-            help = "Number of unit cells to display along the second axis"
-        ),
+        # IntegerInput(
+        #     key = "tileY", name = "Tile second axis",
+        #     default = 1,
+        #     params = {
+        #         "min": 1
+        #     },
+        #     help = "Number of unit cells to display along the second axis"
+        # ),
         
-        IntegerInput(
-            key = "tileZ", name = "Tile third axis",
-            default = 1,
-            params = {
-                "min": 1
-            },
-            help = "Number of unit cells to display along the third axis"
-        ),
+        # IntegerInput(
+        #     key = "tileZ", name = "Tile third axis",
+        #     default = 1,
+        #     params = {
+        #         "min": 1
+        #     },
+        #     help = "Number of unit cells to display along the third axis"
+        # ),
         
         FloatInput(
             key = "cmin", name = "Color scale low limit",
@@ -132,7 +132,7 @@ class BondLengthMap(GeometryPlot):
             key = "points_per_bond", name = "Points per bond",
             default = 5,
             help = "Number of points that fill a bond <br>More points will make it look more like a line but will slow plot rendering down."
-        )
+        ),
     
     )
 
@@ -155,7 +155,6 @@ class BondLengthMap(GeometryPlot):
 
         strain_ref_file = self.setting("strain_ref")
         if strain_ref_file:
-
             self.relaxed_geom = self.get_sile(strain_ref_file).read_geometry()
     
     def _after_read(self):
@@ -164,6 +163,8 @@ class BondLengthMap(GeometryPlot):
 
         if getattr(self, "relaxed_geom", None):
             self.relaxed_bonds = self.find_all_bonds(self.relaxed_geom)
+        
+        self.get_param("atom").update_options(self.geom)
     
     def _wrap_bond3D(self, bond, strain=False):
         '''
@@ -172,12 +173,14 @@ class BondLengthMap(GeometryPlot):
 
         if strain:
             color = self._bond_strain(self.relaxed_geom, self.geom, bond)
+            name = f'Strain: {color:.3f}'
         else:
             color = self._bond_length(self.geom, bond)
+            name = f'{color:.3f} Ang'
         
         self.colors.append(color)
 
-        return (*self.geom[bond], 15), {"color": color}
+        return (*self.geom[bond], 15), {"color": color, "name": name }
     
     @staticmethod
     def _bond_length(geom, bond):
@@ -195,9 +198,16 @@ class BondLengthMap(GeometryPlot):
 
         ndims = self.setting("ndims")
         cell_rendering = self.setting("cell")
+        if self.setting("show_atoms") == False:
+            atom = []
+            bind_bonds_to_ats = False
+        else:
+            atom = self.setting("atom")
+            bind_bonds_to_ats = self.setting("bind_bonds_to_ats")
         
         # Set the bonds to the relaxed ones if there is a strain reference
-        show_strain = self.setting("show_strain")
+        show_strain = self.setting("strain")
+        show_strain = show_strain and hasattr(self, "relaxed_bonds")
         if show_strain:
             self.bonds = self.relaxed_bonds
 
@@ -212,7 +222,9 @@ class BondLengthMap(GeometryPlot):
 
         if ndims == 3:
             self._plot_geom3D(cell=cell_rendering, cheap_bonds=True,
-                wrap_bond=partial(self._wrap_bond3D, strain=show_strain))
+                wrap_bond=partial(self._wrap_bond3D, strain=show_strain), 
+                atom=atom, bind_bonds_to_ats=bind_bonds_to_ats
+            )
         elif ndims == 2:
             xaxis = self.setting("xaxis")
             yaxis = self.setting("yaxis")

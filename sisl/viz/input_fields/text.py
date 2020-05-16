@@ -1,4 +1,6 @@
+from sisl import BaseSile
 from .._input_field import InputField
+
 
 class TextInput(InputField):
 
@@ -21,3 +23,10 @@ class FilePathInput(TextInput):
             "placeholder": "Write your path here...",
         }
     }
+
+    def _parse(self, val):
+
+        if isinstance(val, BaseSile):
+            return str(val.file)
+        else:
+            return val

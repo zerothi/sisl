@@ -31,3 +31,12 @@ class DropdownInput(InputField):
                 self.valid_vals = [option["value"] for option in options]
 
         super().__init__(*args, **kwargs)
+
+class AtomSelect(DropdownInput):
+
+    def update_options(self, geom):
+
+        self.modify("inputField.params.options", 
+            [{"label": f"{at+1} ({geom.atoms[at].symbol})", "value": at} for at in geom])
+
+        return self

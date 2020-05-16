@@ -20,13 +20,15 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 import sisl
-from sisl.viz.GUI.api_utils.sync import Connected
 
+
+from ..io.sile import sile_fh_open
 from .configurable import *
 from .plotutils import init_multiple_plots, repeat_if_childs, dictOfLists2listOfDicts, trigger_notification, \
      spoken_message, running_in_notebook, check_widgets, call_method_if_present
 from .input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
 from ._shortcuts import ShortCutable
+from .GUI.api_utils.sync import Connected
 
 PLOTS_CONSTANTS = {
     "spins": ["up", "down"],
@@ -158,6 +160,16 @@ class Plot(ShortCutable, Configurable, Connected):
     @classmethod
     def plotName(cls):
         return getattr(cls, "_plot_type", cls.__name__)
+    
+    @classmethod
+    def suffix(cls):
+        '''
+        Get the suffix that this class adds to plotting functions.
+
+        See sisl/viz/_plotables.py and particularly the `register_plotable`
+        function to understand this better.
+        '''
+        return getattr(cls, "_suffix", cls.__name__.lower())
 
     @property
     def plotType(self):
@@ -312,42 +324,38 @@ class Plot(ShortCutable, Configurable, Connected):
 
         if args:
 
+            # This is just so that the plotable framework knows from which plot class
+            # it is being called so that it can build the corresponding plot.
+            # Only relevant if the plot is built with obj.plot()
+            if "plot_suffix" not in kwargs and cls != Plot:
+                kwargs["plot_suffix"] = cls.suffix()
+            
             # If a filename is recieved, we will try to find a plot for it
             if isinstance(args[0], str):
 
                 filename = args[0]
-                SileClass = sisl.get_sile_class(filename)
+                sile = sisl.get_sile(filename)
 
-                if SileClass == sisl.io.siesta.fdfSileSiesta:
+                if sile.__class__ == sisl.io.siesta.fdfSileSiesta:
                     kwargs["root_fdf"] = filename
                     plot = cls(**kwargs)
                 else:
-
-                    if hasattr(SileClass, "__plot__"):
-                        plot = SileClass.__plot__(**kwargs)
-                    elif hasattr(SileClass, "_plot"):
-                        PlotClass, kwarg_key = SileClass._plot
-                        kwargs[kwarg_key] = filename
-                        kwargs["title"] = kwargs.get("title", os.path.basename(filename))
-                        plot = PlotClass(**kwargs)
+                    if hasattr(sile, "plot"):
+                        # This is a fix until Nick tells me how to bypass the
+                        # file handle is not open yet exception
+                        plot = sile.plot(**kwargs)
                     else:
-                        raise NotImplementedError(f'There is no plot implementation for {os.path.splitext(filename)[-1]} extensions yet.')
+                        raise NotImplementedError(
+                            f'There is no plot implementation for {sile.__class__} yet.')
 
-                    if cls != Plot and cls != plot.__class__:
-                        print((
-                            f"You requested a {cls.__name__} and we got you a {plot.__class__.__name__} instead.\nWe hope you don't mind :)\n\n"
-                            f'We did this because "{filename}" is a {SileClass.__name__}. If you are not happy with this, please specify the key of the setting where "{filename}" should go.'
-                        ))
             else:
                 obj = args[0]
                 # Maybe the first argument is a plotable object (e.g. a geometry)
                 # __plot__ is currently implemented outside the viz package, we will not use it for the moment
                 # if hasattr(obj, "__plot__"):
                 #     plot = obj.__plot__(**kwargs)
-                if hasattr(obj, "_plot"):
-                    PlotClass, kwarg_key = obj._plot
-                    kwargs[kwarg_key] = obj
-                    plot = PlotClass(**kwargs)
+                if hasattr(obj, "plot"):
+                    plot = obj.plot(**kwargs)
                 else:
                     return object.__new__(cls)
         

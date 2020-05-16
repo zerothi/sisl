@@ -22,7 +22,7 @@ from .configurable import *
 from .session import Session
 from .sessions import *
 from .plotutils import load
-from ._plotables import register_plotable_sile, register_plotable_object
+from ._plotables import register_plotable
 from ._presets import get_preset, add_presets
 from ._user_customs import import_user_plots, import_user_presets, import_user_sessions, import_user_plugins
 

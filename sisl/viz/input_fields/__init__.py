@@ -1,6 +1,6 @@
 from .array import Array1dInput, Array2dInput
 from .color import ColorPicker
-from .dropdown import DropdownInput
+from .dropdown import DropdownInput, AtomSelect
 from .list import ListInput
 from .number import IntegerInput, FloatInput
 from .programatic import ProgramaticInput, FunctionInput
