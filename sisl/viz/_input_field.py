@@ -251,6 +251,9 @@ class InputField:
 
     def _parse(self, val):
 
+        if val is None:
+            return None
+
         dtypes = self.dtype
 
         if dtypes is None:

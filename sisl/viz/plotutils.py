@@ -65,7 +65,7 @@ def get_plotable_siles(rules=False):
     else:
         sile_getter = get_siles
         
-    return sile_getter(["_plot", "__plot__"])
+    return sile_getter(["plot"])
 
 def get_plotable_variables(variables):
     '''

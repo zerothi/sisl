@@ -735,7 +735,7 @@ class Session(Configurable, Connected):
         # Start filling it
         for rule in get_plotable_siles(rules=True):
             searchString = f"*.{rule.suffix}"
-            plotType = rule.cls._plot[0].plotName()
+            plotType = rule.cls._plot_default_suffix
 
             files = find_files(path, searchString, self.setting(
                 "searchDepth"), case_insensitive=True)
