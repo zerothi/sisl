@@ -420,6 +420,19 @@ setuptools_kwargs = {
             "xarray >= " + min_version["xarray"],
             "tqdm",
         ],
+        'visualization': [
+            'tqdm',
+            'plotly',
+            'pandas',
+            'pathos',
+            'dill',
+            'simplejson',  # Because built-in json parses nan and JS does not understand it
+            'xarray',
+            'flask',
+            'flask-restx',
+            'flask-socketio',
+            'flask-cors'
+        ]
     },
     "zip_safe": False,
 }

@@ -1,0 +1,28 @@
+SystemLabel water
+
+LatticeConstant 1.0 Ang
+%block LatticeVectors
+ 10.75860200 0.00000000 0.00000000
+ 0.00000000 10.00000000 0.00000000
+ 0.00000000 0.00000000 11.00856800
+%endblock LatticeVectors
+
+NumberOfAtoms 3
+AtomicCoordinatesFormat Ang
+%block AtomicCoordinatesAndAtomicSpecies
+  0.00000000  0.00000000  0.00000000 1 # 1: O
+  0.9860200  0.00000000  0.50428400 2 # 2: H
+  0.75860200  0.00000000 -0.50428400 2 # 3: H
+%endblock AtomicCoordinatesAndAtomicSpecies
+
+NumberOfSpecies 2
+%block ChemicalSpeciesLabel
+ 1 8 O
+ 2 1 H
+%endblock ChemicalSpeciesLabel
+
+MD.TypeOfRun CG
+MD.Steps 1000
+WriteForces .true.
+
+SaveHS .true.

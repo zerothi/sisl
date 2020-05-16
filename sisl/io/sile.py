@@ -16,7 +16,8 @@ __all__ = [
     'add_sile',
     'get_sile_class',
     'get_sile',
-    'get_siles']
+    'get_siles',
+    'get_sile_rules']
 
 __all__ += [
     'BaseSile',
@@ -317,6 +318,34 @@ def get_siles(attrs=None):
 
     return siles
 
+@set_module("sisl.io")
+def get_sile_rules(attrs=None):
+    '''
+    Retrieve all sile rules of siles with specific attributes or methods
+
+    Parameters
+    ----------
+    attrs : list of attribute names
+       limits the returned objects to those that have
+       the given attributes ``hasattr(sile, attrs)``, default ``[None]``
+    '''
+    global __sile_rules
+
+    if attrs is None:
+        attrs = [None]
+
+    if len(attrs) == 1 and attrs[0] is None:
+        return list(__sile_rules)
+
+    sile_rules = []
+    for rule in __sile_rules:
+        sile = rule.cls
+        for attr in attrs:
+            if hasattr(sile, attr):
+                sile_rules.append(rule)
+                break
+
+    return sile_rules
 
 @set_module("sisl.io")
 class BaseSile:
