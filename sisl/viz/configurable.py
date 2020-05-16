@@ -98,7 +98,7 @@ class NamedHistory:
             else:
                 # Check if we already have that value
                 val = new_settings[key]
-                if val in self._vals[key]:
+                if not isinstance(val, np.ndarray) and val in self._vals[key]:
                     new_index = self._vals[key].index(val)
                 else:
                     self._vals[key].append(val)
