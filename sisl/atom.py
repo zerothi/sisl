@@ -1277,69 +1277,69 @@ class Atoms:
     # Using the slots should make this class slightly faster.
     __slots__ = ['_atom', '_specie', '_firsto']
 
-    def __init__(self, atom=None, na=None):
+    def __init__(self, atoms=None, na=None):
 
         # Default value of the atom object
-        if atom is None:
-            atom = Atom('H')
+        if atoms is None:
+            atoms = Atom('H')
 
         # Correct the atoms input to Atom
-        if isinstance(atom, (np.ndarray, list, tuple)):
+        if isinstance(atoms, (np.ndarray, list, tuple)):
             # Convert to a list of unique elements
             # We can not use set because that is unordered
             # And we want the same order, always...
-            uatom = []
-            specie = [0] * len(atom)
-            if isinstance(atom[0], Atom):
-                for i, a in enumerate(atom):
+            uatoms = []
+            specie = [0] * len(atoms)
+            if isinstance(atoms[0], Atom):
+                for i, a in enumerate(atoms):
                     try:
-                        s = uatom.index(a)
+                        s = uatoms.index(a)
                     except:
                         s = -1
                     if s < 0:
-                        s = len(uatom)
-                        uatom.append(a)
+                        s = len(uatoms)
+                        uatoms.append(a)
                     specie[i] = s
 
-            elif isinstance(atom[0], (str, Integral)):
-                for i, a in enumerate(atom):
+            elif isinstance(atoms[0], (str, Integral)):
+                for i, a in enumerate(atoms):
                     a = Atom(a)
                     try:
-                        s = uatom.index(a)
+                        s = uatoms.index(a)
                     except:
                         s = -1
                     if s < 0:
-                        s = len(uatom)
-                        uatom.append(a)
+                        s = len(uatoms)
+                        uatoms.append(a)
                     specie[i] = s
 
             else:
-                raise ValueError('atom keyword was wrong input')
+                raise ValueError('atoms keyword was wrong input')
 
-        elif isinstance(atom, (str, Integral)):
-            uatom = [Atom(atom)]
+        elif isinstance(atoms, (str, Integral)):
+            uatoms = [Atom(atoms)]
             specie = [0]
 
-        elif isinstance(atom, Atom):
-            uatom = [atom]
+        elif isinstance(atoms, Atom):
+            uatoms = [atoms]
             specie = [0]
 
-        elif isinstance(atom, Atoms):
+        elif isinstance(atoms, Atoms):
             # Ensure we make a copy to not operate
             # on the same data.
-            catom = atom.copy()
-            uatom = catom.atom[:]
-            specie = catom.specie[:]
+            catoms = atoms.copy()
+            uatoms = catoms.atom[:]
+            specie = catoms.specie[:]
 
         else:
-            raise ValueError('atom keyword was wrong input')
+            raise ValueError('atoms keyword was wrong input')
 
         # Default for number of atoms
         if na is None:
             na = len(specie)
 
         # Create atom and species objects
-        self._atom = list(uatom)
+        self._atom = list(uatoms)
 
         self._specie = array_fill_repeat(specie, na, cls=np.int16)
 
