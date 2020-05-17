@@ -5,7 +5,7 @@ import numpy as np
 
 from sisl import Geometry, PeriodicTable, Atom
 from sisl.viz import Plot
-from sisl.viz.input_fields import ProgramaticInput, FloatInput, SwitchInput, DropdownInput, AtomSelect, FilePathInput
+from sisl.viz.input_fields import ProgramaticInput, FunctionInput, FloatInput, SwitchInput, DropdownInput, AtomSelect, GeomAxisSelect, FilePathInput
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher
 
 class BoundGeometry(AbstractDispatch):
@@ -876,20 +876,23 @@ class GeometryPlot(BaseGeometryPlot):
 
     _parameters = (
 
-        DropdownInput(key="ndims", name="Dimensions",
-            default=3,
-            width="s100% m50% l90%",
-            params={
-                'options': [
-                    {'label': '1', 'value': 1},
-                    {'label': '2', 'value': 2},
-                    {'label': '3', 'value': 3}
-                ],
-                'isMulti': False,
-                'isSearchable': True,
-                'isClearable': False
-            },
-            help='''The dimensionality of the plot'''
+        GeomAxisSelect(
+            key="axes", name="Axes to display",
+            default=["x", "y", "z"],
+            help='''The axis along which you want to see the geometry. 
+            You can provide as many axes as dimensions you want for your plot.
+            Note that the order is important and will result in setting the plot axes diferently.
+            For 2D and 1D representations, you can pass an arbitrary direction as an axis (array of shape (3,))'''
+        ),
+
+        FunctionInput(
+            key="1d_dataaxis", name="1d data axis",
+            default=None,
+            help='''If you want a 1d representation, you can provide a data axis.
+            It should be a function that receives the 1d coordinate of each atom and
+            returns it's "data-coordinate", which will be in the y axis of the plot.
+            If not provided, the y axis will be all 0.
+            '''
         ),
 
         DropdownInput(key="cell", name="Cell display",
@@ -907,30 +910,6 @@ class GeometryPlot(BaseGeometryPlot):
             },
             help='''Specifies how the cell should be rendered. 
             (False: not rendered, 'axes': render axes only, 'box': render a bounding box)'''
-        ),
-
-        DropdownInput(key="xaxis", name="X axis",
-            default="x",
-            params={
-                'options': [
-                    {'label': ax, 'value': ax} for ax in ["x", "y", "z", 0, 1, 2, "a", "b", "c"]
-                ],
-                'isMulti': False,
-                'isSearchable': True,
-                'isClearable': False
-            },
-        ),
-
-        DropdownInput(key="yaxis", name="Y axis",
-            default="y",
-            params={
-                'options': [
-                    {'label': ax, 'value': ax} for ax in ["x", "y", "z", 0, 1, 2, "a", "b", "c"]
-                ],
-                'isMulti': False,
-                'isSearchable': True,
-                'isClearable': False
-            },
         ),
 
         AtomSelect(key="atom", name="Atoms to display",
@@ -969,8 +948,9 @@ class GeometryPlot(BaseGeometryPlot):
 
     def _set_data(self):
 
-        ndims = self.setting("ndims")
         cell_rendering = self.setting("cell")
+        axes = self.setting("axes")
+        ndims = len(axes)
         if self.setting("show_atoms") == False:
             atom = []
             bind_bonds_to_ats = False
@@ -982,18 +962,17 @@ class GeometryPlot(BaseGeometryPlot):
         if ndims == 3:
             self._plot_geom3D(cell=cell_rendering, atom=atom, bind_bonds_to_ats=bind_bonds_to_ats)
         elif ndims == 2:
-            xaxis = self.setting("xaxis")
-            yaxis = self.setting("yaxis")
+            xaxis, yaxis = axes
             self._plot_geom2D(xaxis=xaxis, yaxis=yaxis, cell=cell_rendering)
             self.update_layout(xaxis_title=f'Axis {xaxis} (Ang)', yaxis_title=f'Axis {yaxis} (Ang)')
         elif ndims == 1:
-            coords_axis = self.setting("xaxis")
-            data_axis = self.setting("yaxis")
+            coords_axis = axes[0]
+            data_axis = self.setting("1d_dataaxis")
             self._plot_geom1D(coords_axis=coords_axis, data_axis=data_axis )
 
     def _after_get_figure(self):
 
-        ndims = self.setting("ndims")
+        ndims = len(self.setting("axes"))
 
         if ndims == 2:
             self.layout.yaxis.scaleanchor = "x"

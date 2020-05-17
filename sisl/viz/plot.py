@@ -167,7 +167,7 @@ class Plot(ShortCutable, Configurable, Connected):
         See sisl/viz/_plotables.py and particularly the `register_plotable`
         function to understand this better.
         '''
-        return getattr(cls, "_suffix", cls.__name__.lower())
+        return getattr(cls, "_suffix", cls.__name__.lower().replace("plot", ""))
 
     @property
     def plotType(self):

@@ -67,3 +67,8 @@ class TestFatbandsSislHamiltonian(FatbandsPlotTester):
     ticktext = ["Gamma", "M", "K"]
     tickvals = [0., 1.70309799, 2.55464699]
     groups = {}
+
+
+class TestFatbandsBandStructure(TestFatbandsSislHamiltonian):
+
+    plot = FatbandsPlot(band_structure=bz)

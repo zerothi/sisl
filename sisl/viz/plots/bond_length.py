@@ -233,7 +233,8 @@ class BondLengthMap(GeometryPlot):
 
     def _set_data(self):
 
-        ndims = self.setting("ndims")
+        axes = self.setting("axes")
+        ndims = len(axes)
         cell_rendering = self.setting("cell")
         if self.setting("show_atoms") == False:
             atom = []
@@ -263,13 +264,12 @@ class BondLengthMap(GeometryPlot):
                 atom=atom, bind_bonds_to_ats=bind_bonds_to_ats
             )
         elif ndims == 2:
-            xaxis = self.setting("xaxis")
-            yaxis = self.setting("yaxis")
+            xaxis, yaxis = axes
             points_per_bond = self.setting("points_per_bond")
 
             self._plot_geom2D(
                 xaxis=xaxis, yaxis=yaxis, cell=cell_rendering,
-                bonds_together=True, points_per_bond=20,
+                bonds_together=True, points_per_bond=points_per_bond,
                 wrap_bond=partial(self._wrap_bond2D, strain=show_strain),
                 atom=atom, bind_bonds_to_ats=bind_bonds_to_ats
             )

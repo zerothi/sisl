@@ -47,7 +47,23 @@ class GridPlot(Plot):
             },
             help='''The representation of the grid that should be displayed'''
         ),
-        
+
+        DropdownInput(
+            key="transforms", name="Grid transforms",
+            default=[],
+            width="s100% m50% l90%",
+            params={
+                'options': [
+                    {'label': 'Squared', 'value': 'squared'},
+                    {'label': 'Absolute', 'value': 'abs'},
+                ],
+                'isMulti': False,
+                'isSearchable': True,
+                'isClearable': True
+            },
+            help='''The representation of the grid that should be displayed'''
+        ),
+
         DropdownInput(
             key = "axes", name="Axes to display",
             default=[2],
@@ -101,6 +117,34 @@ class GridPlot(Plot):
                 'shape': (3,),
                 'extendable': False,
             },
+        ),
+
+        Array1dInput(
+            key="offset", name="Grid offset",
+            default=[0,0,0],
+            params={
+                'inputType': 'number',
+                'shape': (3,),
+                'extendable': False,
+            },
+            help='''The offset of the grid along each axis. This is important if you are planning to match this grid with other geometry related plots.'''
+        ),
+
+        SwitchInput(
+            key="cut_vacuum", name="Cut vacuum",
+            default=True,
+            help='''Whether the vacuum should not be taken into account for displaying the grid.
+            This is essential especially in 3D representations, since plotly needs to calculate the
+            isosurfaces of the grid.'''
+        ),
+
+        TextInput(
+            key="trace_name", name="Trace name",
+            default=None,
+            params={
+                "placeholder": "Give a name to the trace..."
+            },
+            help='''The name that the trace will show in the legend. Good when merging with other plots to be able to toggle the trace in the legend'''
         ),
 
         RangeSlider(
@@ -221,13 +265,28 @@ class GridPlot(Plot):
 
         for ax, key in enumerate(range_keys):
             self.modify_param(key, "inputField.params.max", self.grid.cell[ax,ax] )
-            self.get_param(key, justDict=False).update_marks()
+            self.get_param(key, as_dict=False).update_marks()
 
     def _set_data(self):
 
         grid = self.grid
+
+        transforms = self.setting('transforms')
+        for transform in transforms:
+            grid = self._transform_grid(grid, transform)
+
+        cut_vacuum = self.setting('cut_vacuum')
+        if cut_vacuum and getattr(grid, "geom", None):
+            grid, lims = self._cut_vacuum(grid)
+            self.grid_offset = lims[0]
+        else:
+            self.grid_offset = [0,0,0]
+
         display_axes = self.setting('axes')
         sc = self.setting("sc")
+        name = self.setting("trace_name")
+        if name is None:
+            name = os.path.basename(self.setting("grid_file") or "")
 
         # Get only the part of the grid that we need
         range_keys = ("xRange", "yRange", "zRange")
@@ -283,20 +342,63 @@ class GridPlot(Plot):
             plot_func = self._plot3D
         
         # Use it
-        plot_func(grid, values, display_axes, sc)
+        plot_func(grid, values, display_axes, sc, name, showlegend=bool(name))
 
     def _get_ax_range(self, grid, ax, sc):
 
         ax_range = self.setting(["xRange", "yRange", "zRange"][ax])
+        grid_offset = self.grid_offset + self.setting("offset")
 
         if ax_range is not None:
             offset = ax_range[0]
         else:
             offset = 0
 
-        return np.arange(0, sc[ax]*grid.cell[ax, ax], grid.dcell[ax, ax]) + offset
+        return np.arange(0, sc[ax]*grid.cell[ax, ax], grid.dcell[ax, ax]) + offset + grid_offset[ax]
 
-    def _plot1D(self, grid, values, display_axes, sc):
+    @staticmethod
+    def _cut_vacuum(grid):
+
+        if not hasattr(grid, "geom"):
+            raise Exception("The grid does not have an associated geometry, and therefore we can not calculate where the vacuum is.")
+
+        geom = grid.geom
+        maxR = geom.maxR()
+
+        # Calculate the limits based on the positions of the atoms and the maxR of
+        # the geometry.
+        lims = np.array([geom.xyz.min(axis=0) - maxR, geom.xyz.max(axis=0) + maxR])
+
+        # Get the limits in indexes
+        i_lims = grid.index(lims)
+
+        # Make sure that the limits don't go outside the cell
+        i_lims[i_lims < 0] = 0
+        for ax in (0, 1, 2):
+            i_lims[1, ax] = min(i_lims[1, ax], grid.shape[ax])
+
+        print(i_lims, grid.shape)
+        # Actually "cut" the grid
+        for ax, (min_i, max_i) in enumerate(i_lims.T):
+            grid = grid.sub(range(min_i, max_i), ax)
+        
+        print("CUTTED")
+        
+        # Return the cut grid, but also the limits that have been applied
+        # The user can access the offset of the grid at lims[0]
+        return grid, grid.index2xyz(i_lims)
+
+    @staticmethod
+    def _transform_grid(grid, transform):
+
+        if transform == 'abs':
+            grid = abs(grid)
+        elif transform == 'squared':
+            grid.grid = grid.grid ** 2
+
+        return grid
+
+    def _plot1D(self, grid, values, display_axes, sc, name, **kwargs):
 
         ax = display_axes[0]
 
@@ -308,14 +410,15 @@ class GridPlot(Plot):
             'mode': 'lines',
             'y': values,
             'x': self._get_ax_range(grid, ax, sc),
-            'name': os.path.basename(self.setting("grid_file") or "")
+            'name': name,
+            **kwargs 
         }]
 
         axes_titles = {'xaxis_title': f'{("X","Y", "Z")[ax]} axis (Ang)', 'yaxis_title': 'Values' }
 
         self.update_layout(**axes_titles)
     
-    def _plot2D(self, grid, values, display_axes, sc):
+    def _plot2D(self, grid, values, display_axes, sc, name, **kwargs):
 
         xaxis = display_axes[0]
         yaxis = display_axes[1]
@@ -332,6 +435,7 @@ class GridPlot(Plot):
 
         self.data = [{
             'type': 'heatmap',
+            'name': name,
             'z': values,
             'x': self._get_ax_range(grid, xaxis, sc),
             'y': self._get_ax_range(grid, yaxis, sc),
@@ -339,14 +443,15 @@ class GridPlot(Plot):
             'zmin': cmin,
             'zmax': cmax,
             'zmid': self.setting('cmid'),
-            'colorscale': self.setting('colorscale')
+            'colorscale': self.setting('colorscale'),
+            **kwargs
         }]
 
         axes_titles = {'xaxis_title': f'{("X","Y", "Z")[xaxis]} axis (Ang)', 'yaxis_title': f'{("X","Y", "Z")[yaxis]} axis (Ang)'}
 
         self.update_layout(**axes_titles)
         
-    def _plot3D(self, grid, values, display_axes, sc):
+    def _plot3D(self, grid, values, display_axes, sc, name, **kwargs):
 
         # The minimum and maximum values might be needed at some places
         minval, maxval = np.min(values), np.max(values)
@@ -377,14 +482,15 @@ class GridPlot(Plot):
         elif type3D == 'isosurface':
             plot_func = self._plot3D_isosurface
         
-        plot_func(X, Y, Z, values, cmin, cmax, isomin, isomax)
+        plot_func(X, Y, Z, values, cmin, cmax, isomin, isomax, name, **kwargs)
         
         self.layout.scene = {'aspectmode': 'data'}
 
-    def _plot3D_volume(self, X, Y, Z, values, cmin, cmax, isomin, isomax):
+    def _plot3D_volume(self, X, Y, Z, values, cmin, cmax, isomin, isomax, name, **kwargs):
 
         self.data = [{
             'type': 'volume',
+            'name': name,
             'x': X.ravel(),
             'y': Y.ravel(),
             'z': Z.ravel(),
@@ -400,12 +506,14 @@ class GridPlot(Plot):
             'colorscale': self.setting('colorscale'),
             'opacityscale': self.setting('opacityscale'),
             'caps': {'x_show': False, 'y_show': False, 'z_show': False},
+            **kwargs
         }]
     
-    def _plot3D_isosurface(self, X, Y, Z, values, cmin, cmax, isomin, isomax):
+    def _plot3D_isosurface(self, X, Y, Z, values, cmin, cmax, isomin, isomax, name, **kwargs):
 
         self.data = [{
             'type': 'isosurface',
+            'name': name,
             'x': X.ravel(),
             'y': Y.ravel(),
             'z': Z.ravel(),
@@ -419,6 +527,7 @@ class GridPlot(Plot):
             'surface_count': self.setting('surface_count'),
             'colorscale': self.setting('colorscale'),
             'caps': {'x_show': False, 'y_show': False, 'z_show': False},
+            **kwargs
         }]
 
     def _after_get_figure(self):

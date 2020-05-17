@@ -313,7 +313,7 @@ class PdosPlot(Plot):
                 atom = self.geom.atoms[iAt]
                 orb = atom[iOrb]
 
-                orbProperties["iAtom"].append(iAt + 1)
+                orbProperties["iAtom"].append(iAt)
                 orbProperties["Species"].append(atom.symbol)
                 orbProperties["Atom Z"].append(atom.Z)
                 orbProperties["Spin"].append(iSpin)
@@ -333,7 +333,7 @@ class PdosPlot(Plot):
         def modifier(requestsInput):
 
             options = {
-                "atoms": [{ "label": "{} ({})".format(iAt, self.geom.atoms[iAt - 1].symbol), "value": iAt } 
+                "atoms": [{ "label": "{} ({})".format(iAt, self.geom.atoms[iAt].symbol), "value": iAt } 
                     for iAt in self.df["iAtom"].unique()],
                 "species": [{ "label": spec, "value": spec } for spec in self.df.Species.unique()],
                 "orbitals": [{ "label": orbName, "value": orbName } for orbName in self.df["Orbital name"].unique()],
@@ -648,7 +648,7 @@ class PdosPlot(Plot):
 
             #If it's none, it means that is getting all the possible values
             if values is None:
-                options = self.get_param("requests", justDict=False).get_param(on, justDict=False)["inputField.params.options"]
+                options = self.get_param("requests").get_param(on)["inputField.params.options"]
                 values = [option["value"] for option in options]
 
             requests = [*requests, *[
@@ -694,7 +694,7 @@ class PdosPlot(Plot):
             exclude = []
 
         # First, we get all available values for the parameter we want to split
-        options = self.get_param("requests", justDict=False).get_param(on, justDict=False)["inputField.params.options"]
+        options = self.get_param("requests").get_param(on)["inputField.params.options"]
 
         # If the parameter is spin but the PDOS is not polarized we will not be providing
         # options to the user, but in fact there is one option: 0

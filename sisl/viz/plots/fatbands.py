@@ -122,14 +122,21 @@ class FatbandsPlot(BandsPlot):
         def _weights_from_eigenstate(eigenstate, plot):
             plot.weights.append(eigenstate.norm2(sum=False))
 
-        self.setup_hamiltonian()
-
-        self._set_group_options()
-
         # We make bands plot read the bands, which will also populate the weights
         # thanks to the above step
-        BandsPlot._read_from_H(self, eigenstate_map=_weights_from_eigenstate)
+        bands_read = False; err = None
+        try:
+            BandsPlot._read_from_H(self, eigenstate_map=_weights_from_eigenstate)
+            bands_read = True
+        except Exception as e:
+            # Let's keep this error, we are going to at least set the group options so that the
+            # user knows what can they choose (specially important for the GUI)
+            err = e
 
+        self._set_group_options()
+        if not bands_read:
+            raise e
+        
         # Then we just convert the weights to a DataArray
         self.weights = np.array(self.weights).real
 
@@ -149,13 +156,16 @@ class FatbandsPlot(BandsPlot):
         # But for now it's ok.
         orbProperties = defaultdict(list)
 
+        if not hasattr(self, "geom"):
+            self.geom = self.setting("band_structure").parent.geom
+
         #Loop over all orbitals of the basis
         for iAt, iOrb in self.geom.iter_orbitals():
 
             atom = self.geom.atoms[iAt]
             orb = atom[iOrb]
 
-            orbProperties["iAtom"].append(iAt + 1)
+            orbProperties["iAtom"].append(iAt)
             orbProperties["Species"].append(atom.symbol)
             orbProperties["Atom Z"].append(atom.Z)
             orbProperties["Orbital name"].append(orb.name())
@@ -174,7 +184,7 @@ class FatbandsPlot(BandsPlot):
         def modifier(requestsInput):
 
             options = {
-                "atoms": [{"label": "{} ({})".format(iAt, self.geom.atoms[iAt - 1].symbol), "value": iAt}
+                "atoms": [{"label": "{} ({})".format(iAt, self.geom.atoms[iAt].symbol), "value": iAt}
                           for iAt in self._filtering_df["iAtom"].unique()],
                 "species": [{"label": spec, "value": spec} for spec in self._filtering_df.Species.unique()],
                 "orbitals": [{"label": orbName, "value": orbName} for orbName in self._filtering_df["Orbital name"].unique()],

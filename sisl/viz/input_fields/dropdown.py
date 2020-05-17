@@ -40,3 +40,18 @@ class AtomSelect(DropdownInput):
             [{"label": f"{at+1} ({geom.atoms[at].symbol})", "value": at} for at in geom])
 
         return self
+
+class GeomAxisSelect(DropdownInput):
+
+    _default = {
+        "width": "s100% m50% l33%",
+        "params": {
+            "placeholder": "Choose an option...",
+            "options": [
+                {'label': ax, 'value': ax} for ax in ["x", "y", "z", 0, 1, 2, "a", "b", "c"]
+            ],
+            "isMulti": True,
+            "isClearable": False,
+            "isSearchable": True,
+        }
+    }

@@ -8,6 +8,8 @@ In the future, sisl objects will probably be 'plotable' too
 from functools import partial
 from types import MethodType
 
+import numpy as np
+
 import sisl.io.siesta as siesta
 from sisl.io.sile import get_siles, BaseSile
 
@@ -144,13 +146,11 @@ register_plotable(siesta.bandsSileSiesta, BandsPlot, 'bands_file')
 register_plotable(siesta.pdosSileSiesta, PdosPlot, 'pdos_file')
 
 for GridSile in get_siles(attrs=["read_grid"]):
-    if GridSile not in [siesta.fdfSileSiesta]:
-        register_plotable(GridSile, GridPlot, 'grid_file')
+    register_plotable(GridSile, GridPlot, 'grid_file')
 
 for GeomSile in get_siles(attrs=["read_geometry"]):
-    if GeomSile not in [siesta.fdfSileSiesta]:
-        register_plotable(GeomSile, GeometryPlot, 'geom_file')
-        register_plotable(GeomSile, BondLengthMap, 'geom_file')
+    register_plotable(GeomSile, GeometryPlot, 'geom_file', default=True)
+    register_plotable(GeomSile, BondLengthMap, 'geom_file')
 
 # -----------------------------------------------------
 #           Register plotable sisl objects
@@ -160,4 +160,107 @@ register_plotable(sisl.Geometry, GeometryPlot, 'geom')
 register_plotable(sisl.Geometry, BondLengthMap, 'geom')
 
 register_plotable(sisl.Grid, GridPlot, 'grid')
+
+def plot_wf(eigenstate, geometry, i=0, grid_prec=0.2, plot_geom=False, geom_kwargs={}, **kwargs):
+    '''
+    Plots a wavefunction from an eigenstate using the basis orbitals of a geometry.
+
+    Parameters
+    -----------
+    geometry: sisl.Geometry
+        Necessary to generate the grid and to plot the wavefunctions, since the basis orbitals are needed.
+    i: int, optional
+        the index of the wavefunction.
+    grid_prec: float, optional
+        the precision (in Ang) of the grid where the WF will be projected. If you are
+        plotting a 3D representation, take into account that a very fine and big grid could result in
+        your computer crashing on render. If it's the first time you are using this function,
+        assess the capabilities of your computer by first using a low-precision grid and increase
+        it gradually.
+    plot_geom: boolean, optional
+        whether the geometry should also be plotted. If true, a geometry plot and a grid plot
+        are merged to create the final plot.
+    geom_kwargs: dict, optional
+        dictionary with the keyword arguments that should be passed to `geom.plot()` if `plot_geom`
+        is set to True.
+    **kwargs:
+        they go directly to the initialization of GridPlot, so you can check the documentation
+        of grid plot to see what you have available.
+    '''
+
+    grid = sisl.Grid(grid_prec, geometry=geometry)
+    eigenstate[i].wavefunction(grid)
+
+    grid_plot_kwargs = {**{'axes': [0, 1, 2],
+                           'trace_name': f'WF {int(i)}'}, **kwargs}
+
+    plot = grid.plot(**grid_plot_kwargs)
+
+    if plot_geom:
+        geom_plot = geometry.plot(
+            **{**{'axes': grid_plot_kwargs["axes"]}, **geom_kwargs})
+        plot = plot.merge(geom_plot)
+
+        plot.layout = geom_plot.layout
+
+    plot.update_layout(legend_orientation='h')
+
+    return plot
+
+def plot_wf_H(H, i, from_valence=False, k=(0,0,0), grid_prec=0.2, geometry=None, plot_geom=False, geom_kwargs={}, **kwargs):
+    '''
+    Plots a wavefunction calculated from the hamiltonian and the basis orbitals in a geometry.
+
+    Parameters
+    -----------
+    i: int
+        the index of the wavefunction,
+    from_valence: boolean, optional
+        whether the indexing reference should be the valence state (or HOMO) instead
+        of the first state.
+
+        If set to True, i=0 means the valence state (HOMO), i=1 is the conduction state (LUMO),
+        i=-1 is the level just below the valence state, etc...
+
+        Right now, it ASSUMES THAT THE VALENCE INDEX IS JUST HALF THE NUMBER OF ORBITALS (or the number of
+        orbitals if there is spin polarization) so it may not be correct in some cases (e.g. electron doping).
+    k: array-like of shape (3,), optional
+        the k point where the wavefunction needs to be calculated
+    grid_prec: float, optional
+        the precision (in Ang) of the grid where the WF will be projected. If you are
+        plotting a 3D representation, take into account that a very fine and big grid could result in
+        your computer crashing on render. If it's the first time you are using this function,
+        assess the capabilities of your computer by first using a low-precision grid and increase
+        it gradually.
+    geometry: sisl.Geometry, optional
+        Necessary to generate the grid and to plot the wavefunctions, since the basis orbitals are needed.
+        If not provided, it will be taken from the Hamiltonian. 
+    plot_geom: boolean, optional
+        whether the geometry should also be plotted. If true, a geometry plot and a grid plot
+        are merged to create the final plot.
+    geom_kwargs: dict, optional
+        dictionary with the keyword arguments that should be passed to `geom.plot()` if `plot_geom`
+        is set to True.
+    **kwargs:
+        they go directly to the initialization of GridPlot, so you can check the documentation
+        of grid plot to see what you have available.
+    '''
+
+    geom = geometry if geometry is not None else H.geom
+
+    if from_valence:
+        i += geom.no/(1 if H.spin.is_polarized else 2)
+
+    eig = H.eigenstate(k)
+
+    return eig.plot_wf(geometry=geom, i=i, grid_prec=grid_prec, plot_geom=plot_geom, geom_kwargs=geom_kwargs, **kwargs)
+
+register_plotable(sisl.EigenstateElectron, GridPlot, plotting_func=plot_wf, suffix='wf')
+register_plotable(sisl.Hamiltonian, GridPlot, plotting_func=plot_wf_H, suffix='wf')
+
+register_plotable(sisl.Hamiltonian, BandsPlot, "H")
+register_plotable(sisl.BandStructure, BandsPlot, "band_structure")
+
+register_plotable(sisl.Hamiltonian, FatbandsPlot, "H")
+register_plotable(sisl.BandStructure, FatbandsPlot, "band_structure")
     

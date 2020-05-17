@@ -481,20 +481,20 @@ class Configurable:
             
             return self
     
-    def get_param(self, settingKey, justDict = False, paramsExtractor = False):
+    def get_param(self, key, as_dict=False, paramsExtractor=False):
         '''
         Gets the parameter for a given setting. 
         
         By default it returns its dictionary, so that one can check the information that it contains.
-        You can ask for the parameter itself by setting justDict to False. However, if you want to
+        You can ask for the parameter itself by setting as_dict to False. However, if you want to
         modify the parameter you should use the modify_param() method instead.
 
         Arguments
         ----------
-        settingKey: str
+        key: str
             The key of the desired parameter.
-        justDict: bool, optional (True)
-            If set to False, returns the actual parameter object. By default it returns just the info.
+        as_dict: bool, optional
+            If set to True, returns a dictionary instead of the actual parameter object.
         paramsExtractor: function, optional
             A function that accepts the object (self) and returns its params (NOT A COPY OF THEM!).
             This will only be used in case this method is used outside the class, where objects
@@ -504,16 +504,16 @@ class Configurable:
         Returns
         ----------
         param: dict or InputField
-            The parameter in the form specified by justDict.
+            The parameter in the form specified by as_dict.
         '''
 
         for param in self.params if not paramsExtractor else paramsExtractor(self):
-            if param.key == settingKey:
-                return param.__dict__ if justDict else param
+            if param.key == key:
+                return param.__dict__ if as_dict else param
         else:
-            return None
+            raise KeyError(f"There is no parameter '{key}' in {self.__class__.__name__}")
     
-    def modify_param(self, settingKey, *args, **kwargs):
+    def modify_param(self, key, *args, **kwargs):
         '''
         Modifies a given parameter.
         
@@ -547,7 +547,7 @@ class Configurable:
 
         Arguments
         --------
-        settingKey: str
+        key: str
             The key of the parameter to be modified
         *args:
             Depending on what you pass the setting will be modified in different ways:
@@ -595,7 +595,7 @@ class Configurable:
             The configurable object.
         '''
 
-        self.get_param(settingKey, justDict = False, **kwargs).modify(*args)
+        self.get_param(key, as_dict = False, **kwargs).modify(*args)
 
         return self
     
