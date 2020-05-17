@@ -21,8 +21,6 @@ from plotly.subplots import make_subplots
 
 import sisl
 
-
-from ..io.sile import sile_fh_open
 from .configurable import *
 from .plotutils import init_multiple_plots, repeat_if_childs, dictOfLists2listOfDicts, trigger_notification, \
      spoken_message, running_in_notebook, check_widgets, call_method_if_present

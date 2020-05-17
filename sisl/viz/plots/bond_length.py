@@ -5,7 +5,7 @@ from functools import partial
 
 import sisl
 from ..plot import Plot
-from .geometry import GeometryPlot
+from .geometry import GeometryPlot, BoundGeometry
 from ..plotutils import find_files
 from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
 
@@ -33,12 +33,13 @@ class BondLengthMap(GeometryPlot):
         FilePathInput(
             key = "strain_ref", name = "Strain reference geometry",
             default = None,
+            dtype=(str, sisl.Geometry),
             group = "dataread",
             width = "s100% m50% l33%",
             params = {
                 "placeholder": "Write the path to your strain reference file here..."
             },
-            help = '''The path to a geometry used to calculate strain from.<br>
+            help = '''The path to a geometry or a Geometry object used to calculate strain from.<br>
             This geometry will probably be the relaxed one<br>
             If provided, colors can indicate strain values. Otherwise they are just bond length'''
         ),
@@ -127,11 +128,17 @@ class BondLengthMap(GeometryPlot):
             If this is set 'cmin' and 'cmax' are ignored. In strain representations this might be set to 0.
             '''
         ),
+
+        SwitchInput(
+            key='colorbar', name='Show colorbar',
+            default=True,
+            help='''Whether the color bar should be displayed or not.'''
+        ),
         
         IntegerInput(
             key = "points_per_bond", name = "Points per bond",
-            default = 5,
-            help = "Number of points that fill a bond <br>More points will make it look more like a line but will slow plot rendering down."
+            default = 10,
+            help = "Number of points that fill a bond. <br>More points will make it look more like a line but will slow plot rendering down."
         ),
     
     )
@@ -149,14 +156,31 @@ class BondLengthMap(GeometryPlot):
 
         return BondLengthMap.animated("geom_file", geomsFiles, wdir = wdir, **kwargs)
 
+    @property
+    def on_relaxed_geom(self):
+        return BoundGeometry(self.relaxed_geom, self)
+
+    def _read_nosource(self):
+
+        GeometryPlot._read_nosource(self)
+
+        self._read_strain_ref()
+
     def _read_siesta_output(self):
         
         GeometryPlot._read_siesta_output(self)
 
-        strain_ref_file = self.setting("strain_ref")
-        if strain_ref_file:
-            self.relaxed_geom = self.get_sile(strain_ref_file).read_geometry()
-    
+        self._read_strain_ref()
+
+    def _read_strain_ref(self):
+
+        strain_ref = self.setting("strain_ref")
+
+        if isinstance(strain_ref, str):
+            self.relaxed_geom = self.get_sile(strain_ref).read_geometry()
+        elif isinstance(strain_ref, sisl.Geometry):
+            self.relaxed_geom = strain_ref
+
     def _after_read(self):
 
         self.geom_bonds = self.find_all_bonds(self.geom)
@@ -181,6 +205,19 @@ class BondLengthMap(GeometryPlot):
         self.colors.append(color)
 
         return (*self.geom[bond], 15), {"color": color, "name": name }
+    
+    def _wrap_bond2D(self, bond, xys, strain=False):
+
+        if strain:
+            color = self._bond_strain(self.relaxed_geom, self.geom, bond)
+            name = f'Strain: {color:.3f}'
+        else:
+            color = self._bond_length(self.geom, bond)
+            name = f'{color:.3f} Ang'
+
+        self.colors.append(color)
+
+        return (*xys, ), {"color": color, "name": name}
     
     @staticmethod
     def _bond_length(geom, bond):
@@ -228,20 +265,30 @@ class BondLengthMap(GeometryPlot):
         elif ndims == 2:
             xaxis = self.setting("xaxis")
             yaxis = self.setting("yaxis")
-            self._plot_geom2D(xaxis=xaxis, yaxis=yaxis, cell=cell_rendering)
-            self.update_layout(
-                xaxis_title=f'Axis {xaxis} (Ang)', yaxis_title=f'Axis {yaxis} (Ang)')
+            points_per_bond = self.setting("points_per_bond")
+
+            self._plot_geom2D(
+                xaxis=xaxis, yaxis=yaxis, cell=cell_rendering,
+                bonds_together=True, points_per_bond=20,
+                wrap_bond=partial(self._wrap_bond2D, strain=show_strain),
+                atom=atom, bind_bonds_to_ats=bind_bonds_to_ats
+            )
+
+            self.update_layout(xaxis_title=f'Axis {xaxis} (Ang)', yaxis_title=f'Axis {yaxis} (Ang)')
         elif ndims == 1:
-            coords_axis = self.setting("xaxis")
-            data_axis = self.setting("yaxis")
-            self._plot_geom1D(coords_axis=coords_axis, data_axis=data_axis)
+            raise NotImplementedError("Does it make sense to implement 1 dimensional bond length maps? If so, post an issue on sisl's github page. Thanks!")
+
+        showscale = self.setting('colorbar')
         
         self.update_layout(coloraxis={"cmin": self.setting("cmin") or min(self.colors) ,
                                       "cmax": self.setting("cmax") or max(self.colors),
-                                      "colorscale": self.setting("cmap")})
+                                      "colorscale": self.setting("cmap"),
+                                      'showscale': showscale,
+                                      'colorbar_title': 'Strain' if show_strain else 'Bond length (Ang)'})
+        
+        self.update_layout(legend_orientation='h')
         
         #tileCombs = itertools.product(*[range(self.setting(tile)) for tile in ("tileX", "tileY", "tileZ")])
-
 
 
 # points_per_bond = self.setting("points_per_bond")

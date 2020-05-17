@@ -159,5 +159,5 @@ for GeomSile in get_siles(attrs=["read_geometry"]):
 register_plotable(sisl.Geometry, GeometryPlot, 'geom')
 register_plotable(sisl.Geometry, BondLengthMap, 'geom')
 
-#register_plotable(sisl.Grid, GridPlot, 'grid')
+register_plotable(sisl.Grid, GridPlot, 'grid')
     

@@ -52,3 +52,17 @@ def test_history_item_getting():
     assert s[val_key] == [2,6]
     assert isinstance(s[test_keys], dict)
     assert len(s[test_keys][val_key]) == len(s)
+
+def test_update_array():
+
+    # Here we are just checking that we can update with numpy arrays
+    # without an error. This is because comparing two numpy arrays
+    # raises an Exception, so we need to make sure this doesn't happen
+
+    test_keys = ["hey", "nope"]
+    val_key, def_key = test_keys
+
+    s = NamedHistory({val_key: 2}, defaults={def_key: 5})
+
+    s.update(**{val_key: np.array([1,2,3])})
+    s.update(**{val_key: np.array([1, 2, 3, 4])})

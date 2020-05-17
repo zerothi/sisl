@@ -136,6 +136,9 @@ from .io.sile import (add_sile, get_sile_class, get_sile,
 # sisl.geom.graphene
 from . import geom
 
+# Import the visualization module so that it initializes
+from . import viz
+
 # Make these things publicly available
 __all__ = [s for s in dir() if not s.startswith('_')]
 __all__ += [f'__{s}__' for s in ['bibtex', 'version', 'major', 'minor', 'micro']]

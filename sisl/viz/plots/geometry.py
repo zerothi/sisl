@@ -179,6 +179,19 @@ class BaseGeometryPlot(Plot):
 
         return np.array([xyz(coeffs) for coeffs in points])
     
+    def _get_atoms_bonds(self, bonds, atom, geom=None, sanitize_atom=True):
+        '''
+        Gets the bonds where the given atoms are involved
+        '''
+
+        if atom is None:
+            return bonds
+
+        if sanitize_atom:
+            geom = geom or self.geom
+            atom = geom._sanitize_atom(atom)
+        
+        return [bond for bond in bonds if np.any([at in atom for at in bond])]
     #---------------------------------------------------
     #                  1D plotting
     #---------------------------------------------------
@@ -264,7 +277,9 @@ class BaseGeometryPlot(Plot):
     #                  2D plotting
     #---------------------------------------------------
 
-    def _plot_geom2D(self, xaxis="x", yaxis="y", bonds=True, cell='axes', wrap_atoms=None):
+    def _plot_geom2D(self, xaxis="x", yaxis="y", atom=None , show_bonds=True, bind_bonds_to_ats=True,
+        bonds_together=True, points_per_bond=5,
+        cell='box', wrap_atoms=None, wrap_bond=None):
         '''
         Returns a 2D representation of the plot's geometry.
 
@@ -276,8 +291,25 @@ class BaseGeometryPlot(Plot):
         yaxis: {0,1,2, "x", "y", "z", "a", "b", "c"} or array-like of shape 3, optional
             the direction to be displayed along the X axis. 
             If it's an int, it will interpreted as the index of the cell axis.
-        bonds: boolean, optional
+        atom: array-like of int, optional
+            the indices of the atoms that you want to plot
+        show_bonds: boolean, optional
             whether bonds should be plotted.
+        bind_bonds_to_ats: boolean, optional
+            whether only the bonds that belong to an atom that is present should be displayed.
+            If False, all bonds are displayed regardless of the `atom` parameter.
+        bonds_together: boolean, optional
+            If set to True, it draws all bonds in one trace, which may be faster for rendering.
+            The only limitation that it has is that you can't set individual widths.
+
+            If you provide variable color and/or size for the bonds, bonds will be drawn as dots
+            (if you use enough points per bond it almost looks like a line). If you don't like this, use individual
+            bonds instead, but then note that you can not share a colorscale between bonds. This indirectly means that you 
+            can not provide the color as a number, so you will need to calculate the colors yourself if you want
+            a colorscale-like behavior.
+        points_per_bond: int, optional
+            If `bonds_together` is True and you provide a variable color or size (using `wrap_bonds`), this is
+            the number of points that are used for each bond. See `bonds_together` for more info.
         cell: {False, "box", "axes"}, optional
             determines how the unit cell is represented.
         wrap_atoms: function, optional
@@ -285,19 +317,65 @@ class BaseGeometryPlot(Plot):
             the args (array-like) and kwargs (dict) that go into self._atoms_scatter_trace2D()
 
             If not provided, self._default_wrap_atoms2D will be used.
+            wrap_atom: function, optional
+            function that recieves the index of an atom and returns
+            the args (array-like) and kwargs (dict) that go into self._atom_trace3D()
+
+            If not provided, self._default_wrap_atom3D will be used.
+        wrap_bond: function, optional
+            function that recieves "a bond" (list of 2 atom indices) and its coordinates ((x1,y1), (x2, y2)).
+            It should return the args (array-like) and kwargs (dict) that go into `self._bond_trace2D()`
+
+            If not provided, self._default_wrap_bond2D will be used.
+        cell: {'axes', 'box', False}, optional
+            defines how the unit cell is drawn
         '''
 
         wrap_atoms = wrap_atoms or self._default_wrap_atoms2D
+        wrap_bond = wrap_bond or self._default_wrap_bonds2D
 
-        xy = self._projected_2Dcoords(self.geom.xyz, xaxis=xaxis, yaxis=yaxis)
+        if atom is not None:
+            atom = self.geom._sanitize_atom(atom)
+
+        xy = self._projected_2Dcoords(self.geom[atom], xaxis=xaxis, yaxis=yaxis)
         traces = []
 
         # Add bonds
-        if bonds:
-            for bond in self.bonds:
-                xys = self._projected_2Dcoords(self.geom[bond], xaxis=xaxis, yaxis=yaxis)
-                trace = self._bond_trace2D(*xys.T)
-                traces.append(trace)
+        if show_bonds:
+            # Define the actual bonds that we are going to draw depending on which
+            # atoms are requested
+            bonds = self.bonds
+            if bind_bonds_to_ats:
+                bonds = self._get_atoms_bonds(bonds, atom, sanitize_atom=False)
+
+            if bonds_together:
+                
+                bonds_xyz = np.array([self.geom[bond] for bond in bonds])
+                xys = self._projected_2Dcoords(bonds_xyz, xaxis=xaxis, yaxis=yaxis)
+
+                # By reshaping we get the following: First axis -> bond (length: number of bonds),
+                # Second axis -> atoms in the bond (length 2), Third axis -> coordinate (x, y)
+                xys = xys.transpose((1,2,0))
+
+                # Try to get the bonds colors (It might be that the user is not setting them)
+                bondsinfo = [wrap_bond(bond, xy) for bond, xy in zip(bonds, xys)]
+
+                bondsprops = defaultdict(list)
+                for bondinfo in bondsinfo:
+                    if "color" in bondinfo[1]:
+                        bondsprops["bonds_color"].append(bondinfo[1]["color"])
+                    if "name" in bondinfo[1]:
+                        bondsprops["bonds_labels"].append(bondinfo[1]["name"])
+
+                bonds_trace = self._bonds_scatter_trace2D(xys, points_per_bond=points_per_bond, **bondsprops)
+                traces.append(bonds_trace)
+
+            else:
+                for bond in self.bonds:
+                    xys = self._projected_2Dcoords(self.geom[bond], xaxis=xaxis, yaxis=yaxis)
+                    bond_args, bond_kwargs = wrap_bond(bond, xys.T)
+                    trace = self._bond_trace2D(*bond_args, **bond_kwargs)
+                    traces.append(trace)
 
         # Add atoms
         atoms_args, atoms_kwargs = wrap_atoms(xy)
@@ -352,7 +430,7 @@ class BaseGeometryPlot(Plot):
 
         raise NotImplementedError
 
-    def _atoms_scatter_trace2D(self, xyz=None, xaxis="x", yaxis="y", color="gray", size=10, name=None, text=None, group=None, showlegend=False, **kwargs):
+    def _atoms_scatter_trace2D(self, xyz=None, xaxis="x", yaxis="y", color="gray", size=10, name='atoms', text=None, group=None, showlegend=True, **kwargs):
 
         if xyz is None:
             xyz = self.geom.xyz
@@ -399,6 +477,75 @@ class BaseGeometryPlot(Plot):
 
         return trace
 
+    def _bonds_scatter_trace2D(self, xys, points_per_bond=5, force_bonds_as_points=False, 
+        bonds_color='#ccc', bonds_size=3, bonds_labels=None,
+        coloraxis="coloraxis", name='bonds', group=None, showlegend=True, **kwargs):
+        '''
+        Cheaper than _bond_trace2D because it draws all bonds in a single trace.
+
+        It is also more flexible, since it allows providing bond colors as floats that all
+        relate to the same colorscale.
+
+        However, the bonds are represented as dots between the two atoms (if you use enough
+        points per bond it almost looks like a line).
+        '''
+
+        # Check if we need to build the markers_properties from atoms_* arguments
+        if isinstance(bonds_color, Iterable) and not isinstance(bonds_color, str):
+            bonds_color = np.repeat(bonds_color, points_per_bond)
+            single_color = False
+        else:
+            single_color = True
+
+        if isinstance(bonds_size, Iterable):
+            bonds_size = np.repeat(bonds_size, points_per_bond)
+            single_size = False
+        else:
+            single_size = True
+
+        x = []
+        y = []
+        text = []
+        if single_color and single_size and not force_bonds_as_points:
+            # Then we can display this trace as lines! :)
+            for i, ((x1, y1), (x2, y2)) in enumerate(xys):
+
+                x = [*x, x1, x2, None]
+                y = [*y, y1, y2, None]
+
+                if bonds_labels:
+                    text = np.repeat(bonds_labels, 3)
+                
+            
+            mode = 'markers+lines'
+
+        else:
+            # Otherwise we will need to draw points in between atoms
+            # representing the bonds
+            for i, ((x1, y1), (x2, y2)) in enumerate(xys):
+
+                x = [*x, *np.linspace(x1, x2, points_per_bond)]
+                y = [*y, *np.linspace(y1, y2, points_per_bond)]
+            
+            mode = 'markers'
+            if bonds_labels:
+                text = np.repeat(bonds_labels, points_per_bond)
+
+        trace = {
+            'type': 'scatter',
+            'mode': mode,
+            'name': name,
+            'x': x,'y': y,
+            'marker': {'color': bonds_color, 'size': bonds_size, 'coloraxis': coloraxis},
+            'text': text if len(text) != 0 else None,
+            'hoverinfo': 'text',
+            'legendgroup': group,
+            'showlegend': showlegend,
+            **kwargs
+        }
+
+        return trace
+
     def _cell_axes_traces2D(self, cell=None, xaxis="x", yaxis="y"):
 
         if cell is None:
@@ -436,12 +583,16 @@ class BaseGeometryPlot(Plot):
     def _default_wrap_atoms2D(self, xy):
 
         return self._default_wrap_atoms1D(xy)
+    
+    def _default_wrap_bonds2D(self, bond, xys):
+
+        return (*xys, ) , {}
 
     #---------------------------------------------------
     #                  3D plotting
     #---------------------------------------------------
 
-    def _plot_geom3D(self, wrap_atom=None, wrap_bond=None, cell='axes', 
+    def _plot_geom3D(self, wrap_atom=None, wrap_bond=None, cell='box', 
         atom=None, bind_bonds_to_ats=True, atom_vertices=20, cheap_bonds=True, cheap_atoms=False, atom_size_factor=40,
         cheap_bonds_kwargs={}):
         '''
@@ -495,8 +646,8 @@ class BaseGeometryPlot(Plot):
             # Define the actual bonds that we are going to draw depending on which
             # atoms are requested
             bonds = self.bonds
-            if atom is not None and bind_bonds_to_ats:
-                bonds = [bond for bond in bonds if np.any([at in atom for at in bond])]
+            if bind_bonds_to_ats:
+                bonds = self._get_atoms_bonds(bonds, atom, sanitize_atom=False)
                 
             if cheap_bonds:
                 # Draw all bonds in the same trace, also drawing the atoms if requested
@@ -534,9 +685,9 @@ class BaseGeometryPlot(Plot):
         if not cheap_atoms:
             atom_traces = []
             ats = atom if atom is not None else self.geom
-            for at in ats:
+            for i, at in enumerate(ats):
                 trace_args, trace_kwargs = wrap_atom(at)
-                atom_traces.append(self._atom_trace3D(*trace_args, **trace_kwargs, vertices=atom_vertices))
+                atom_traces.append(self._atom_trace3D(*trace_args, **{"vertices": atom_vertices, "legendgroup": "atoms", "showlegend": i==0, **trace_kwargs} ))
             self.add_traces(atom_traces)
 
         # Draw unit cell
@@ -621,6 +772,9 @@ class BaseGeometryPlot(Plot):
             If bonds_labels are provided, it returns (trace, labels_trace).
             Otherwise, just (trace,)
         '''
+        # If only bonds are in this trace, we will 
+        if not name:
+            name = 'Bonds and atoms' if atoms else 'Bonds'
 
         # Check if we need to build the markers_properties from atoms_* arguments
         if atoms and isinstance(atoms_color, Iterable) and not isinstance(atoms_color, str):
@@ -686,7 +840,7 @@ class BaseGeometryPlot(Plot):
             'line': {'width': bonds_width, 'color': line_color, 'coloraxis': coloraxis},
             'marker': {'size': marker_size, 'color': marker_color},
             'legendgroup': legendgroup,
-            'showlegend': False,
+            'showlegend': True,
             **kwargs
         }
 

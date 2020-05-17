@@ -1,4 +1,3 @@
-from sisl import BaseSile
 from .._input_field import InputField
 from types import MethodType
 
@@ -15,12 +14,14 @@ class TextInput(InputField):
         }
     }
 
-# Little patch so that Siles can be sent to the GUI
-def sile_to_json(self):
-    return str(self.file)
+from sisl import BaseSile
 
+if not hasattr(BaseSile, "to_json"):
+    # Little patch so that Siles can be sent to the GUI
+    def sile_to_json(self):
+        return str(self.file)
 
-BaseSile.to_json = sile_to_json
+    BaseSile.to_json = sile_to_json
 
 class FilePathInput(TextInput):
 
@@ -30,7 +31,7 @@ class FilePathInput(TextInput):
             "placeholder": "Write your path here...",
         }
     }
-
+        
     def _parse(self, val):
 
         if isinstance(val, BaseSile):
