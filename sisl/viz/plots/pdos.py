@@ -1,5 +1,5 @@
 import numpy as np
-import pandas as pd
+from xarray import DataArray
 
 import os
 from collections import defaultdict
@@ -7,7 +7,7 @@ from collections import defaultdict
 import sisl
 from ..plot import Plot
 from ..plotutils import find_files
-from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput, Array1dInput, ListInput
+from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, OrbitalQueries, ProgramaticInput, Array1dInput, ListInput
 from ..input_fields.range import ErangeInput
 
 class PdosPlot(Plot):
@@ -72,7 +72,7 @@ class PdosPlot(Plot):
             help='''Displacement of the Monkhorst-Pack grid'''
         ),
         
-        QueriesInput(
+        OrbitalQueries(
             key = "requests", name = "PDOS queries",
             default = [{"active": True, "name": "DOS", "species": None, "atoms": None, "orbitals": None, "spin": None, "normalize": False, "color": "black", "linewidth": 1}],
             help = '''Here you can ask for the specific PDOS that you need. 
@@ -88,59 +88,7 @@ class PdosPlot(Plot):
                     },
                 ),
 
-                DropdownInput(
-                    key = "species", name = "Species",
-                    default = None,
-                    width = "s100% m50% l40%",
-                    params = {
-                        "options":  [],
-                        "isMulti": True,
-                        "placeholder": "",
-                        "isClearable": True,
-                        "isSearchable": True,  
-                    },
-                ),
-
-                DropdownInput(
-                    key = "atoms", name = "Atoms",
-                    default = None,
-                    width = "s100% m50% l40%",
-                    params = {
-                        "options":  [],
-                        "isMulti": True,
-                        "placeholder": "",
-                        "isClearable": True,
-                        "isSearchable": True,  
-                    },
-                ),
-
-                DropdownInput(
-                    key = "orbitals", name = "Orbitals",
-                    default = None,
-                    width = "s100% m50% l50%",
-                    params = {
-                        "options":  [],
-                        "isMulti": True,
-                        "placeholder": "",
-                        "isClearable": True,
-                        "isSearchable": True,  
-                    },
-                ),
-
-                DropdownInput(
-                    key = "spin", name = "Spin",
-                    default = None,
-                    width = "s100% m50% l25%",
-                    params = {
-                        "options":  [],
-                        "isMulti": False,
-                        "placeholder": "",
-                        "isClearable": True, 
-                    },
-                    style = {
-                        "width": 200
-                    }
-                ),
+                'species', 'atoms', 'orbitals', 'spin',
 
                 SwitchInput(
                     key = "normalize", name = "Normalize",
@@ -163,22 +111,22 @@ class PdosPlot(Plot):
             ]
         ),
 
-        DropdownInput(
-            key="add_customdata", name="Add customdata",
-            default=[],
-            params={
-                'options': [
-                    {"label": key, "value": key}
-                    for key in ("iAtom", "Species", "Orbital name", "Spin")
-                ],
-                'isMulti': True,
-                'isClearable': True,
-                'isSearchable': True
-            },
-            help='''Which info about the provenance of each trace should be added in their customdata attribute.
-            This is good for post-processing the plot (grouping, filtering...), but it can make the memory requirements
-            significantly larger, specially for large systems'''
-        )
+        # DropdownInput(
+        #     key="add_customdata", name="Add customdata",
+        #     default=[],
+        #     params={
+        #         'options': [
+        #             {"label": key, "value": key}
+        #             for key in ("iAtom", "Species", "Orbital name", "Spin")
+        #         ],
+        #         'isMulti': True,
+        #         'isClearable': True,
+        #         'isSearchable': True
+        #     },
+        #     help='''Which info about the provenance of each trace should be added in their customdata attribute.
+        #     This is good for post-processing the plot (grouping, filtering...), but it can make the memory requirements
+        #     significantly larger, specially for large systems'''
+        # )
 
     )
 
@@ -186,7 +134,8 @@ class PdosPlot(Plot):
         'xaxis_title': 'Density of states (1/eV)',
         'xaxis_mirror': True,
         'yaxis_mirror': True,
-        'yaxis_title': 'Energy (eV)'
+        'yaxis_title': 'Energy (eV)',
+        'showlegend': True
     }
 
     _shortcuts = {
@@ -252,14 +201,14 @@ class PdosPlot(Plot):
 
         self.E = np.linspace( Erange[0], Erange[-1], 1000) 
 
-        self.mp = sisl.MonkhorstPack(self.H, kgrid)
-        self.PDOSinfo = self.mp.apply.average.PDOS(self.E, eta=True)
+        self.mp = sisl.MonkhorstPack(self.H, kgrid, kgrid_displ)
+        self.PDOS = self.mp.apply.average.PDOS(self.E, eta=True)
 
     def _read_siesta_output(self):
 
         pdos_file = self.setting("pdos_file") or self.requiredFiles[0]
         #Get the info from the .PDOS file
-        self.geom, self.E, self.PDOSinfo = self.get_sile(pdos_file).read_data()
+        self.geom, self.E, self.PDOS = self.get_sile(pdos_file).read_data()
 
         self.fermi = 0
 
@@ -288,63 +237,24 @@ class PdosPlot(Plot):
             The energy values where PDOS is calculated
 
         '''
-
-        #Get the orbital where each atom starts
-        orbitals = self.geom.orbitals.cumsum()[:-1]
         
-        #Normalize self.PDOSinfo to do the same treatment for both spin-polarized and spinless simulations
-        self.isSpinPolarized = len(self.PDOSinfo.shape) == 3
+        #Normalize self.PDOS to do the same treatment for both spin-polarized and spinless simulations
+        self.isSpinPolarized = len(self.PDOS.shape) == 3
 
-        #Initialize the dataframe to store all the info
-        self.df = pd.DataFrame()
+        #Normalize the PDOS array
+        self.PDOS = np.array([self.PDOS]) if not self.isSpinPolarized else self.PDOS 
 
-        #Normalize the PDOSinfo array
-        self.PDOSinfo = [self.PDOSinfo] if not self.isSpinPolarized else self.PDOSinfo 
+        self.PDOS = DataArray(
+            self.PDOS, 
+            coords={
+                'spin': [0,1] if self.isSpinPolarized else [0],
+                'orb': range(0, self.PDOS.shape[1]),
+                'E': self.E
+            },
+            dims=('spin', 'orb', 'E')
+        )
 
-        #Loop over all spin components
-        for iSpin, spinComponentPDOS in enumerate(self.PDOSinfo):
-
-            #Initialize the dictionary with all the properties of the orbital
-            orbProperties = defaultdict(list)     
-
-            #Loop over all orbitals of the basis
-            for iAt, iOrb in self.geom.iter_orbitals():
-
-                atom = self.geom.atoms[iAt]
-                orb = atom[iOrb]
-
-                orbProperties["iAtom"].append(iAt)
-                orbProperties["Species"].append(atom.symbol)
-                orbProperties["Atom Z"].append(atom.Z)
-                orbProperties["Spin"].append(iSpin)
-                orbProperties["Orbital name"].append(orb.name())
-                orbProperties["Z shell"].append(getattr(orb, "Z", 1))
-                orbProperties["n"].append(getattr(orb, "n", None))
-                orbProperties["l"].append(getattr(orb, "l", None))
-                orbProperties["m"].append(getattr(orb, "m", None))
-                orbProperties["Polarized"].append(getattr(orb, "P", None))
-                orbProperties["Initial charge"].append(getattr(orb, "q0", None))
-            
-            #Append this part of the dataframe (a full spin component)
-            self.df = self.df.append( pd.concat([pd.DataFrame(orbProperties), pd.DataFrame(spinComponentPDOS, columns = self.E)], axis=1, sort = False), ignore_index = True)
-        
-        #"Inform" the queries of the available options
-        #First define the function that will modify all the fields of the query form
-        def modifier(requestsInput):
-
-            options = {
-                "atoms": [{ "label": "{} ({})".format(iAt, self.geom.atoms[iAt].symbol), "value": iAt } 
-                    for iAt in self.df["iAtom"].unique()],
-                "species": [{ "label": spec, "value": spec } for spec in self.df.Species.unique()],
-                "orbitals": [{ "label": orbName, "value": orbName } for orbName in self.df["Orbital name"].unique()],
-                "spin": [{ "label": "↑", "value": 0 },{ "label": "↓", "value": 1 }] if self.isSpinPolarized else []
-            }
-
-            for key, val in options.items():
-                requestsInput.modify_query_param(key, "inputField.params.options", val)
-
-        #And then apply it
-        self.modify_param("requests", modifier)
+        self.get_param('requests').update_options(self.geom, self.isSpinPolarized)
 
     def _set_data(self):
         '''
@@ -371,21 +281,13 @@ class PdosPlot(Plot):
         '''
 
         #Get only the energies we are interested in 
-        Emin, Emax = self.setting("Erange") or [min(self.E), max(self.E)]
-        plotEvals = [Evalue for Evalue in self.E if Emin < Evalue < Emax]
+        Emin, Emax = self.setting("Erange") or [min(
+            self.PDOS.E.values), max(self.PDOS.E.values)]
 
-        self.figure.layout.yaxis.range = [Emin, Emax]
+        #Get only the part of the arra
+        E_PDOS = self.PDOS.where(
+            (self.PDOS.E > Emin) & (self.PDOS.E < Emax), drop=True)
 
-        #Inform and abort if there is no data
-        if len(plotEvals) == 0:
-            print("PDOS Plot error: There is no data for the provided energy range ({}).\n The energy range of the read data is: [{},{}]"
-                .format(self.setting("Erange"), min(self.E), max(self.E))
-            )
-
-            return self.data
-
-        #If there is data, get it (drop the columns that we don't want)
-        self.req_df = self.df.drop([Evalue for Evalue in self.E if Evalue not in plotEvals], axis = 1)
         requests_param = self.get_param("requests")
 
         #Go request by request and plot the corresponding PDOS contribution
@@ -397,39 +299,32 @@ class PdosPlot(Plot):
             if not request["active"]:
                 continue
 
-            req_df = self.req_df.copy()
+            orb = requests_param.get_orbitals(request)
 
-            req_df = requests_param.filter_df(req_df, request,
-                [
-                    ("atoms", "iAtom"),
-                    ("species", "Species"),
-                    ("orbitals", "Orbital name"),
-                    ("spin", "Spin")
-                ]
-            )
-
-            if req_df.empty:
-                # print("PDOS Plot warning: No PDOS for the following request: {}".format(request.params))
-                # PDOS = []
+            if len(orb) == 0:
+                # This request does not match any possible orbital
                 continue
-            else:
-                PDOS = req_df[plotEvals].values
 
-                if request.get("normalize"):
-                    PDOS = PDOS.mean(axis = 0)
-                else:
-                    PDOS = PDOS.sum(axis = 0)   
-            
+            req_PDOS = E_PDOS.sel(orb=orb)
+            if request['spin'] is not None:
+                E_PDOS.sel(spin=request['spin'])
+
+            if request["normalize"]:
+                req_PDOS = req_PDOS.mean("orb").mean('spin')
+            else:
+                req_PDOS = req_PDOS.sum("orb").sum('spin')
+
             self.add_trace({
                 'type': 'scatter',
-                'x': PDOS,
-                'y': plotEvals ,
+                'x': req_PDOS.values,
+                'y': req_PDOS.E.values ,
                 'mode': 'lines', 
                 'name': request["name"], 
                 'line': {'width' : request["linewidth"], "color": request["color"]},
                 "hoverinfo": "name",
-                "customdata": [{ key: req_df[key].unique() for key in self.setting("add_customdata")}]
             })
+
+            self.update_layout(yaxis_range=[Emin, Emax])
         
         return self.data
 
@@ -447,7 +342,7 @@ class PdosPlot(Plot):
 
         if len(query) == 0:
             return True
-
+        
         return request["name"] in query or iReq in query
     
     def _new_request(self, **kwargs):
@@ -648,13 +543,16 @@ class PdosPlot(Plot):
 
             #If it's none, it means that is getting all the possible values
             if values is None:
-                options = self.get_param("requests").get_param(on)["inputField.params.options"]
-                values = [option["value"] for option in options]
+                values = self.get_param("requests")[on].options
+            
 
             requests = [*requests, *[
                 self._new_request(**{**req, on: [value], "name": f'{req["name"]}, {value}', **kwargs})
                 for value in values if value not in exclude and (only is None or value in only)
             ]]
+
+            # Use only those requests that make sense
+            requests = [req for req in requests if len(self.get_param("requests").get_orbitals(req)) > 0]
 
         if remove:
             self.remove_requests(*i_or_names, update_fig=False)

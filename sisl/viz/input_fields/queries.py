@@ -1,4 +1,9 @@
+from collections import defaultdict
+
+import pandas as pd
+
 from .._input_field import InputField
+from .dropdown import AtomSelect, SpeciesSelect, OrbitalsNameSelect, SpinSelect
 from ..configurable import Configurable
 
 class QueriesInput(InputField):
@@ -23,7 +28,7 @@ class QueriesInput(InputField):
 
         inputFieldAttrs = {
             **kwargs.get("inputFieldAttrs", {}),
-            "queryForm": queryForm 
+            "queryForm": self._sanitize_queryform(queryForm)
         }
 
         super().__init__(*args, **kwargs, inputFieldAttrs = inputFieldAttrs)
@@ -103,4 +108,95 @@ class QueriesInput(InputField):
                 query_df = query_df[query_df[col].isin(query[key])]
 
         return query_df
+
+    def _sanitize_queryform(self, queryform):
+        '''
+        Parses a query form to fields, converting strings
+        to the known input fields (under self._fields). As an example,
+        see OrbitalQueries.
+        '''
+
+        sanitized_form = []
+        for i, field in enumerate(queryform):
+            if isinstance(field, str):
+                if field not in self._fields:
+                    raise KeyError(
+                        f"{self.__class__.__name__} has no pre-built field for '{field}'")
+
+                built_field = self._fields[field]['field'](
+                    key=field, **{key: val for key, val in self._fields[field].items() if key != 'field'}
+                )
+
+                sanitized_form.append(built_field)
+            else:
+                sanitized_form.append(field)
+            
+        return sanitized_form
+
+    def __getitem__(self, key):
+
+        for field in self.inputField['queryForm']:
+            if field.key == key:
+                return field
+        
+        return super().__getitem__(key)
+
+class OrbitalQueries(QueriesInput):
+    '''
+    This class implements an input field that allows you to select orbitals by atom, species, etc...
+    '''
+
+    _fields = {
+        "species": {"field": SpeciesSelect, "name": "Species"},
+        "atoms": {"field": AtomSelect, "name": "Atoms"},
+        "orbitals": {"field": OrbitalsNameSelect, "name": "Orbitals"},
+        "spin": {"field": SpinSelect, "name": "Spin"},
+    }
+
+    def _build_orb_filtering_df(self, geom):
+
+        orb_props = defaultdict(list)
+        #Loop over all orbitals of the basis
+        for at, iorb in geom.iter_orbitals():
+
+            atom = geom.atoms[at]
+            orb = atom[iorb]
+
+            orb_props["atom"].append(at)
+            orb_props["species"].append(atom.symbol)
+            orb_props["orbital name"].append(orb.name())
+        
+        self.orb_filtering_df = pd.DataFrame(orb_props)
+
+    def update_options(self, geom, polarized=False):
+
+        for key in ("species", "atoms", "orbitals"):
+            try:
+                self.get_query_param(key).update_options(geom)
+            except KeyError:
+                pass
+        
+        try:
+            self.get_query_param('spin').update_options(polarized)
+        except KeyError:
+            pass
+
+        self._build_orb_filtering_df(geom)
+
+    def get_orbitals(self, request):
+
+        filtered_df = self.filter_df(self.orb_filtering_df, request,
+            [
+                ("atoms", "atom"),
+                ("species", "species"),
+                ("orbitals", "orbital name"),
+            ]
+        )
+
+        return filtered_df.index
+
+
+
+
+        
 

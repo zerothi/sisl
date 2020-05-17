@@ -6,7 +6,7 @@ Different inputs are tested (siesta .PDOS and sisl Hamiltonian).
 
 '''
 
-from pandas import DataFrame
+from xarray import DataArray
 import numpy as np
 from sisl.viz.plots.tests.get_files import from_files
 
@@ -25,26 +25,22 @@ class PdosPlotTester:
     n_spin = 1
     species = []
 
-    def test_dataframe(self):
+    def test_dataarray(self):
 
-        df = self.plot.df
+        PDOS = self.plot.PDOS
         geom = self.plot.geom
 
-        assert isinstance(df, DataFrame)
+        assert isinstance(PDOS, DataArray)
         assert isinstance(geom, sisl.Geometry)
 
-        # Check if we read the correct number of atoms
-        assert len(df["iAtom"].unique()) == self.na == geom.na
         # Check if we have the correct number of orbitals
-        assert df.shape[0] == self.no == geom.no
-        # Check that the species have been correctly read
-        assert set(df["Species"].unique()) == set(self.species) == set([at.symbol for at in geom.atoms.atom])
+        assert len(PDOS.orb) == self.no == geom.no
 
     def test_splitDOS(self):
 
         split_DOS = self.plot.split_DOS
 
-        unique_orbs = self.plot.df["Orbital name"].unique()
+        unique_orbs = self.plot.get_param('requests')['orbitals'].options
 
         expected_splits = {
             "species": (len(self.species), self.species[0]),
@@ -52,8 +48,6 @@ class PdosPlotTester:
             "orbitals":(len(unique_orbs), unique_orbs[0]),
             "spin": (self.n_spin, None)
         }
-
-        print(self.plot.split_DOS().setting("requests"))
 
         # Test all splittings
         for on, (n, toggle_val) in expected_splits.items():
@@ -76,7 +70,7 @@ class PdosPlotTester:
 
         # Try to split this request in multiple ones
         plot.split_requests(0, on="orbitals")
-        species_no = len(plot.df[ plot.df["Species"] == sel_species ]["Orbital name"].unique())
+        species_no = len(self.plot.geom.atoms[sel_species].orbital)
         assert len(plot.data) == species_no
 
         # Then try to merge

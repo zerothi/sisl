@@ -156,9 +156,11 @@ for GeomSile in get_siles(attrs=["read_geometry"]):
 #           Register plotable sisl objects
 # -----------------------------------------------------
 
+# Geometry
 register_plotable(sisl.Geometry, GeometryPlot, 'geom')
 register_plotable(sisl.Geometry, BondLengthMap, 'geom')
 
+#Grid
 register_plotable(sisl.Grid, GridPlot, 'grid')
 
 def plot_wf(eigenstate, geometry, i=0, grid_prec=0.2, plot_geom=False, geom_kwargs={}, **kwargs):
@@ -255,12 +257,16 @@ def plot_wf_H(H, i, from_valence=False, k=(0,0,0), grid_prec=0.2, geometry=None,
 
     return eig.plot_wf(geometry=geom, i=i, grid_prec=grid_prec, plot_geom=plot_geom, geom_kwargs=geom_kwargs, **kwargs)
 
-register_plotable(sisl.EigenstateElectron, GridPlot, plotting_func=plot_wf, suffix='wf')
+# Hamiltonian
 register_plotable(sisl.Hamiltonian, GridPlot, plotting_func=plot_wf_H, suffix='wf')
-
+register_plotable(sisl.Hamiltonian, PdosPlot, "H")
 register_plotable(sisl.Hamiltonian, BandsPlot, "H")
-register_plotable(sisl.BandStructure, BandsPlot, "band_structure")
-
 register_plotable(sisl.Hamiltonian, FatbandsPlot, "H")
+
+# Band structure
+register_plotable(sisl.BandStructure, BandsPlot, "band_structure")
 register_plotable(sisl.BandStructure, FatbandsPlot, "band_structure")
+
+# Eigenstate
+register_plotable(sisl.EigenstateElectron, GridPlot,plotting_func=plot_wf, suffix='wf')
     

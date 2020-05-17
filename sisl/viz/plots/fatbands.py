@@ -8,7 +8,7 @@ import sisl
 from ..plot import Plot
 from .bands import BandsPlot
 from ..plotutils import random_color
-from ..input_fields import QueriesInput, TextInput, DropdownInput, SwitchInput, ColorPicker, FloatInput
+from ..input_fields import OrbitalQueries, TextInput, DropdownInput, SwitchInput, ColorPicker, FloatInput 
 from ..input_fields.range import ErangeInput
 
 class FatbandsPlot(BandsPlot):
@@ -17,7 +17,7 @@ class FatbandsPlot(BandsPlot):
 
     _parameters = (
 
-        QueriesInput(
+        OrbitalQueries(
             key="groups", name="Fatbands groups",
             default=[],
             help='''The different groups that are displayed in the fatbands''',
@@ -32,59 +32,7 @@ class FatbandsPlot(BandsPlot):
                     },
                 ),
 
-                DropdownInput(
-                    key="species", name="Species",
-                    default=None,
-                    width="s100% m50% l40%",
-                    params={
-                        "options":  [],
-                        "isMulti": True,
-                        "placeholder": "",
-                        "isClearable": True,
-                        "isSearchable": True,
-                    },
-                ),
-
-                DropdownInput(
-                    key="atoms", name="Atoms",
-                    default=None,
-                    width="s100% m50% l40%",
-                    params={
-                        "options":  [],
-                        "isMulti": True,
-                        "placeholder": "",
-                        "isClearable": True,
-                        "isSearchable": True,
-                    },
-                ),
-
-                DropdownInput(
-                    key="orbitals", name="Orbitals",
-                    default=None,
-                    width="s100% m50% l50%",
-                    params={
-                        "options":  [],
-                        "isMulti": True,
-                        "placeholder": "",
-                        "isClearable": True,
-                        "isSearchable": True,
-                    },
-                ),
-
-                DropdownInput(
-                    key="spin", name="Spin",
-                    default=None,
-                    width="s100% m50% l25%",
-                    params={
-                        "options":  [],
-                        "isMulti": False,
-                        "placeholder": "",
-                        "isClearable": True,
-                    },
-                    style={
-                        "width": 200
-                    }
-                ),
+                'species', 'atoms', 'orbitals', 'spin',
 
                 SwitchInput(
                     key="normalize", name="Normalize",
@@ -152,51 +100,10 @@ class FatbandsPlot(BandsPlot):
     
     def _set_group_options(self):
 
-        # Create dimensions to filter (this is not the definitive way it will work)
-        # But for now it's ok.
-        orbProperties = defaultdict(list)
-
         if not hasattr(self, "geom"):
             self.geom = self.setting("band_structure").parent.geom
-
-        #Loop over all orbitals of the basis
-        for iAt, iOrb in self.geom.iter_orbitals():
-
-            atom = self.geom.atoms[iAt]
-            orb = atom[iOrb]
-
-            orbProperties["iAtom"].append(iAt)
-            orbProperties["Species"].append(atom.symbol)
-            orbProperties["Atom Z"].append(atom.Z)
-            orbProperties["Orbital name"].append(orb.name())
-            orbProperties["Z shell"].append(getattr(orb, "Z", 1))
-            orbProperties["n"].append(getattr(orb, "n", None))
-            orbProperties["l"].append(getattr(orb, "l", None))
-            orbProperties["m"].append(getattr(orb, "m", None))
-            orbProperties["Polarized"].append(getattr(orb, "P", None))
-            orbProperties["Initial charge"].append(
-                getattr(orb, "q0", None))
-
-        self._filtering_df = pd.DataFrame(orbProperties)
-
-        #"Inform" the queries of the available options
-        #First define the function that will modify all the fields of the query form
-        def modifier(requestsInput):
-
-            options = {
-                "atoms": [{"label": "{} ({})".format(iAt, self.geom.atoms[iAt].symbol), "value": iAt}
-                          for iAt in self._filtering_df["iAtom"].unique()],
-                "species": [{"label": spec, "value": spec} for spec in self._filtering_df.Species.unique()],
-                "orbitals": [{"label": orbName, "value": orbName} for orbName in self._filtering_df["Orbital name"].unique()],
-                #"spin": [{"label": "↑", "value": 0}, {"label": "↓", "value": 1}] if self.isSpinPolarized else []
-            }
-
-            for key, val in options.items():
-                requestsInput.modify_query_param(
-                    key, "inputField.params.options", val)
-
-        #And then apply it
-        self.modify_param("groups", modifier)
+        
+        self.get_param('groups').update_options(self.geom)
 
     def _set_data(self):
 
@@ -220,7 +127,6 @@ class FatbandsPlot(BandsPlot):
         # Get the weights that matter
         plot_weights = self.weights.sel(band=np.arange(*plotted_bands))
         
-        
         # Get the groups of orbitals whose bands are requested
         groups = self.setting('groups')
 
@@ -242,17 +148,8 @@ class FatbandsPlot(BandsPlot):
             if not group.get("active", True):
                 continue
 
-            group_df = groups_param.filter_df(self._filtering_df, group, 
-                [
-                    ("atoms", "iAtom"),
-                    ("species", "Species"),
-                    ("orbitals", "Orbital name"),
-                    ("spin", "Spin")
-                ]
-            )
-
-            orb = list(group_df.index)
-
+            orb = groups_param.get_orbitals(group)
+            
             weights = plot_weights.sel(orb=orb)
             if group["normalize"]:
                 weights = weights.mean("orb")

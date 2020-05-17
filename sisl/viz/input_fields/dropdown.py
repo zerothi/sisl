@@ -1,3 +1,5 @@
+import numpy as np
+
 from .._input_field import InputField
 
 class DropdownInput(InputField):
@@ -31,13 +33,104 @@ class DropdownInput(InputField):
                 self.valid_vals = [option["value"] for option in options]
 
         super().__init__(*args, **kwargs)
+    
+    def _get_options(self):
+
+        return [opt["value"] for opt in self['inputField.params.options']]
+    
+    def _set_options(self, val):
+
+        self.modify("inputField.params.options", options)
+
+    options = property(fget=_get_options, fset=_set_options)
 
 class AtomSelect(DropdownInput):
+
+    _default={
+        "width": "s100% m50% l33%",
+        "default": None,
+        "params": {
+            "placeholder": "Select some atoms...",
+            "options": [
+            ],
+            "isMulti": True,
+            "isClearable": True,
+            "isSearchable": True,
+        }
+    }
 
     def update_options(self, geom):
 
         self.modify("inputField.params.options", 
-            [{"label": f"{at+1} ({geom.atoms[at].symbol})", "value": at} for at in geom])
+            [{"label": f"{at} ({geom.atoms[at].symbol})", "value": at} for at in geom])
+
+        return self
+
+class SpeciesSelect(DropdownInput):
+
+    _default = {
+        "width": "s100% m50% l40%",
+        "default": None,
+        "params": {
+            "placeholder": "Select the species...",
+            "options": [],
+            "isMulti": True,
+            "isClearable": True,
+            "isSearchable": True,
+        }
+    }
+
+    def update_options(self, geom):
+
+        self.modify("inputField.params.options",
+            [{"label": unique_at.symbol, "value": unique_at.symbol} for unique_at in geom.atoms.atom])
+
+        return self
+
+class OrbitalsNameSelect(DropdownInput):
+
+    _default = {
+        "width": "s100% m50% l50%",
+        "default": None,
+        "params": {
+            "placeholder": "Select the species...",
+            "options": [],
+            "isMulti": True,
+            "isClearable": True,
+            "isSearchable": True,
+        }
+    }
+
+    def update_options(self, geom):
+
+        orbs = [orb.name() for unique_at in geom.atoms.atom for orb in unique_at]
+
+        self.modify("inputField.params.options",
+                [{"label": orb, "value": orb} for orb in np.unique(orbs)])
+
+        return self
+
+class SpinSelect(DropdownInput):
+
+    _default = {
+        "width": "s100% m50% l25%",
+        "default": None,
+        "params": {
+            "placeholder": "Select the species...",
+            "options": [],
+            "isMulti": True,
+            "isClearable": True,
+            "isSearchable": True,
+        },
+        "style": {
+            "width": 200
+        }
+    }
+
+    def update_options(self, polarized):
+
+        self.modify("inputField.params.options",
+                    [{"label": "↑", "value": 0}, {"label": "↓", "value": 1}] if polarized else [])
 
         return self
 
