@@ -54,6 +54,13 @@ class PdosPlot(Plot):
             help = "Energy range where PDOS is displayed."
         ),
 
+        IntegerInput(
+            key="nE", name="Number of energy points",
+            group="Hparams",
+            default=100,
+            help='''If calculating the PDOS from a hamiltonian, the number of energy points used'''
+        ),
+
         Array1dInput(key="kgrid", name="Monkhorst-Pack grid",
             default=None,
             group="Hparams",
@@ -199,7 +206,7 @@ class PdosPlot(Plot):
         if Erange is None:
             raise Exception('You need to provide an energy range to calculate the PDOS from the Hamiltonian')
 
-        self.E = np.linspace( Erange[0], Erange[-1], 1000) 
+        self.E = np.linspace( Erange[0], Erange[-1], self.setting("nE")) 
 
         self.mp = sisl.MonkhorstPack(self.H, kgrid, kgrid_displ)
         self.PDOS = self.mp.apply.average.PDOS(self.E, eta=True)
