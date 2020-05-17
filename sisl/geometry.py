@@ -1096,6 +1096,12 @@ class Geometry(SuperCellChild):
            for subsequent sorting methods).
            In either case the returned indices must never hold any other indices but the ones passed
            as ``atom``.
+        func_sort : callable, optional
+           pass a function returning a 1D array corresponding to all atoms in the geometry.
+           The interface should simply be: ``func(geometry)``.
+           Those values will be passed down to the internal sorting algorithm.
+           To be compatible with `atol` the returned values from `func_sort` should
+           be on the scale of coordinates (in Ang).
         ascend, descend : bool, optional
             control ascending or descending sorting for all subsequent sorting methods.
             Default ``ascend=True``.
@@ -1280,6 +1286,7 @@ class Geometry(SuperCellChild):
                 new_nl.append(split(jdx, d.nonzero()[0] + 1), sort=True)
             return new_nl
 
+        # Functions allowed by external users
         funcs = dict()
         def _axis(axis, atom, **kwargs):
             """ Cartesian coordinate sort """
@@ -1333,6 +1340,13 @@ class Geometry(SuperCellChild):
                 nl.append(func(self, a, **kwargs))
             return nl
         funcs["func"] = _func
+
+        def _func_sort(func, atom, **kwargs):
+            """
+            User defined function, but using internal sorting
+            """
+            return _sort(func(self), atom, **kwargs)
+        funcs["func_sort"] = _func_sort
 
         def _group_vals(vals, groups, atom, **kwargs):
             """
@@ -1465,14 +1479,14 @@ class Geometry(SuperCellChild):
         if len(kwargs) == 0:
             kwargs['axis'] = (0, 1, 2)
 
-        for key_int in kwargs:
+        for key_int, method in kwargs.items():
             key = stripint(key_int)
-            if update_flag(func_kw, key, kwargs[key_int]):
+            if update_flag(func_kw, key, method):
                 continue
             if not key in funcs:
                 raise ValueError(f"{self.__class__.__name__}.sort unrecognized keyword '{key}' ('{key_int}')")
             # call sorting algorithm and retrieve new grouped sorting
-            atom = funcs[key](kwargs[key_int], atom, **func_kw)
+            atom = funcs[key](method, atom, **func_kw)
 
         atom_flat = concatenate(atom.tolist()).ravel()
 
