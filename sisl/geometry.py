@@ -1042,6 +1042,7 @@ class Geometry(SuperCellChild):
         - by user defined vectors, `vector`
         - by grouping atoms, `group`
         - by a user defined function, `func`
+        - by a user defined function using internal sorting algorithm, `func_sort`
 
         - a combination of the above in arbitrary order
 
@@ -1063,14 +1064,14 @@ class Geometry(SuperCellChild):
         axis : int or tuple of int, optional
            sort coordinates according to Cartesian coordinates, if a tuple of
            ints is passed it will be equivalent to ``sort(axis0=axis[0], axis1=axis[1])``.
-           This is different behaviour than `numpy.lexsort`!
+           This behaves differently than `numpy.lexsort`!
         lattice : int or tuple of int, optional
            sort coordinates according to lattice vectors, if a tuple of
            ints is passed it will be equivalent to ``sort(lattice0=lattice[0], lattice1=lattice[1])``.
-           This is different behaviour than `numpy.lexsort`!
            Note that before sorting we multiply the fractional coordinates by the length of the
            lattice vector. This ensures that `atol` is meaningful for both `axis` and `lattice` since
            they will be on the same order of magnitude.
+           This behaves differently than `numpy.lexsort`!
         vector : (3, ), optional
            sort along a user defined vector, similar to `lattice` but with a user defined
            direction. Note that `lattice` sorting and `vector` sorting are *only* equivalent
@@ -1086,7 +1087,7 @@ class Geometry(SuperCellChild):
            list of groups, where each group comprises elements that should be sorted on an
            equal footing. If one of the groups is None, that group will be replaced with all
            non-mentioned elements. See examples.
-        func : callable, optional
+        func : callable or list-like of callable, optional
            pass a sorting function which should have an interface like ``func(geometry, atom, **kwargs)``.
            The first argument is the geometry to sort. The 2nd argument is a list of indices in
            the current group of sorted atoms. And ``**kwargs`` are any optional arguments
@@ -1096,7 +1097,8 @@ class Geometry(SuperCellChild):
            for subsequent sorting methods).
            In either case the returned indices must never hold any other indices but the ones passed
            as ``atom``.
-        func_sort : callable, optional
+           If a list/tuple of functions, they will be processed in that order.
+        func_sort : callable or list-like of callable, optional
            pass a function returning a 1D array corresponding to all atoms in the geometry.
            The interface should simply be: ``func(geometry)``.
            Those values will be passed down to the internal sorting algorithm.
@@ -1133,7 +1135,7 @@ class Geometry(SuperCellChild):
 
         Examples
         --------
-        >>> geom = sisl.geom.bilayer(top_atom=(sisl.Atom(5), sisl.Atom(7)), bottom_atom=sisl.Atom(6))
+        >>> geom = sisl.geom.bilayer(top_atom=sisl.Atom[5, 7], bottom_atom=sisl.Atom(6))
         >>> geom = geom.tile(5, 0).repeat(7, 1)
 
         Sort according to :math:`x` coordinate
@@ -1155,7 +1157,7 @@ class Geometry(SuperCellChild):
         Sort according to :math:`z` (descending), then first lattice vector (ascending)
         Note how integer suffixes has no importance.
 
-        >>> geom.sort(ascend0=False, axis=2, ascend1=True, lattice=0)
+        >>> geom.sort(ascend1=False, axis=2, ascend0=True, lattice=0)
 
         Sort only atoms ``range(1, 5)`` first by :math:`z`, then by first lattice vector
 
@@ -1182,9 +1184,9 @@ class Geometry(SuperCellChild):
 
         >>> assert geom.sort() == geom.sort(axis=(0, 1, 2))
 
-        Sort along a user defined vector ``[2, 1, 0]``
+        Sort along a user defined vector ``[2.2, 1., 0.]``
 
-        >>> geom.sort(vector=[2, 1, 0])
+        >>> geom.sort(vector=[2.2, 1., 0.])
 
         Integer specification has no influence on the order of operations.
         It is _always_ the keyword argument order that determines the operation.
@@ -1288,6 +1290,7 @@ class Geometry(SuperCellChild):
 
         # Functions allowed by external users
         funcs = dict()
+
         def _axis(axis, atom, **kwargs):
             """ Cartesian coordinate sort """
             if isinstance(axis, int):
@@ -1327,25 +1330,36 @@ class Geometry(SuperCellChild):
             return _sort(self.xyz.dot(vector), atom, **kwargs)
         funcs["vector"] = _vector
 
-        def _func(func, atom, **kwargs):
+        def _funcs(funcs, atom, **kwargs):
             """
-            User defined function
+            User defined function (tuple/list of function)
             """
-            nl = NestedList()
-            for a in atom:
-                # TODO add check that
-                #  res = func(...) in a
-                # A user *may* remove an atom from the sorting here (but
-                # that negates all sorting of that atom)
-                nl.append(func(self, a, **kwargs))
-            return nl
-        funcs["func"] = _func
+            def _func(func, atom, kwargs):
+                nl = NestedList()
+                for a in atom:
+                    # TODO add check that
+                    #  res = func(...) in a
+                    # A user *may* remove an atom from the sorting here (but
+                    # that negates all sorting of that atom)
+                    nl.append(func(self, a, **kwargs))
+                return nl
 
-        def _func_sort(func, atom, **kwargs):
+            if callable(funcs):
+                funcs = [funcs]
+            for func in funcs:
+                atom = _func(func, atom, kwargs)
+            return atom
+        funcs["func"] = _funcs
+
+        def _func_sort(funcs, atom, **kwargs):
             """
             User defined function, but using internal sorting
             """
-            return _sort(func(self), atom, **kwargs)
+            if callable(funcs):
+                funcs = [funcs]
+            for func in funcs:
+                atom = _sort(func(self), atom, **kwargs)
+            return atom
         funcs["func_sort"] = _func_sort
 
         def _group_vals(vals, groups, atom, **kwargs):

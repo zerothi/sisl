@@ -924,7 +924,7 @@ class AtomMeta(type):
             # The key is a dictionary, hence
             # we can return the atom directly
             return cls(**key)
-        elif isinstance(key, list):
+        elif isinstance(key, (list, tuple)):
             # The key is a list,
             # we need to create a list of atoms
             return [cls[k] for k in key]

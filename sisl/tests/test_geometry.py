@@ -1372,6 +1372,9 @@ def test_geometry_sort_func():
 
     assert np.allclose(out.xyz, bi.sub(all_atoms).xyz)
 
+    bi_again = bi.sort(func=(reverse, reverse), atom=atom)
+    assert bi == bi_again
+
     # Ensure that they are swapped
     atom = [2, 0]
     out = bi.sort(func=reverse, atom=atom)
@@ -1381,6 +1384,18 @@ def test_geometry_sort_func():
     out = bi.sort(func=reverse)
     all_atoms = np.arange(len(bi))[::-1]
     assert np.allclose(out.xyz, bi.sub(all_atoms).xyz)
+
+
+def test_geometry_sort_func_sort():
+    bi = sisl_geom.bilayer().tile(2, 0).repeat(2, 1)
+
+    # Sort according to another cell fractional coordinates
+    fcc = sisl_geom.fcc(2.4, Atom(6))
+    def fcc_fracs(axis):
+        def _(geometry):
+            return np.dot(geometry.xyz, fcc.icell.T)[:, axis]
+        return _
+    out = bi.sort(func_sort=(fcc_fracs(0), fcc_fracs(2)))
 
 
 def test_geometry_sort_group():
