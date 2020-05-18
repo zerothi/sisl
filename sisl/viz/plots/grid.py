@@ -8,9 +8,12 @@ from ..plot import Plot
 from ..input_fields import TextInput, FilePathInput, Array1dInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput
 
 class GridPlot(Plot):
-
     '''
-    Plot representation of the projected density of states.
+    Versatile visualization tool for any kind of grid.
+
+    Parameters
+    -------------
+    %%configurable_settings%%
     '''
 
     #Define all the class attributes

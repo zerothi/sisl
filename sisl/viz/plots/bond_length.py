@@ -13,6 +13,10 @@ class BondLengthMap(GeometryPlot):
     
     '''
     Colorful representation of bond lengths.
+
+    Parameters
+    -------------
+    %%configurable_settings%%
     '''
 
     _plot_type = "Bond length"

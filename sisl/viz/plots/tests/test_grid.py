@@ -28,8 +28,6 @@ class GridPlotTester:
 
         plot = self.plot
 
-        print(plot)
-
         plot.update_settings(axes=[0])
         assert isinstance(plot.data[0], go.Scatter), "Not displaying grid in 1D correctly?"
 

@@ -11,9 +11,12 @@ from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, D
 from ..input_fields.range import ErangeInput
 
 class PdosPlot(Plot):
-
     '''
     Plot representation of the projected density of states.
+
+    Parameters
+    -------------
+    %%configurable_settings%%
     '''
 
     #Define all the class attributes

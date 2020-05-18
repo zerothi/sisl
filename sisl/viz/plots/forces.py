@@ -7,6 +7,13 @@ from ..plot import Plot
 from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
 
 class ForcesPlot(Plot):
+    '''
+    Display of atomic forces.
+
+    Parameters
+    -------------
+    %%configurable_settings%%
+    '''
 
     _plot_type = "Forces"
 

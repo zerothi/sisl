@@ -12,6 +12,13 @@ from ..input_fields import OrbitalQueries, TextInput, DropdownInput, SwitchInput
 from ..input_fields.range import ErangeInput
 
 class FatbandsPlot(BandsPlot):
+    '''
+    Colorful representation of orbital weights in bands.
+
+    Parameters
+    -------------
+    %%configurable_settings%%
+    '''
 
     _plot_type = 'Fatbands'
 

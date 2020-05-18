@@ -871,6 +871,13 @@ class BaseGeometryPlot(Plot):
         return trace
 
 class GeometryPlot(BaseGeometryPlot):
+    '''
+    Versatile representation of geometries.
+
+    Parameters
+    -------------
+    %%configurable_settings%%
+    '''
 
     _plot_type = "Geometry"
 

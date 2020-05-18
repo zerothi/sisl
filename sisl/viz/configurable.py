@@ -98,8 +98,14 @@ class NamedHistory:
             else:
                 # Check if we already have that value
                 val = new_settings[key]
-                if not isinstance(val, np.ndarray) and val in self._vals[key]:
-                    new_index = self._vals[key].index(val)
+                is_nparray = isinstance(val, np.ndarray)
+                
+                # We have to do this because np.arrays don't like being compared :)
+                # Otherwise we would just do if val in self._vals[key]
+                for saved_val in self._vals[key]:
+                    if not isinstance(saved_val, np.ndarray) and not is_nparray:
+                        if val == saved_val:
+                            new_index = self._vals[key].index(val)   
                 else:
                     self._vals[key].append(val)
                     new_index = len(self._vals[key]) - 1

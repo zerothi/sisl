@@ -122,6 +122,8 @@ def get_configurable_docstring(cls):
     if isinstance(cls, type):
         params = cls._parameters
         doc = cls.__doc__
+        if doc is None:
+            doc = ""
     else:
         # It's really an instance, not the class
         params = cls.params
@@ -731,7 +733,9 @@ def spoken_message(message):
     elif sys.platform == 'darwin':
         os.system(f'''osascript -e 'say "{message}"' ''')
 
-# Plot manipulation
+#-------------------------------------
+#        Plot manipulation
+#-------------------------------------
 
 def shift_trace(trace, shift, axis="y"):
     '''

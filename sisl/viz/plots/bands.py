@@ -15,6 +15,10 @@ class BandsPlot(Plot):
 
     '''
     Plot representation of the bands.
+
+    Parameters
+    -------------
+    %%configurable_settings%%
     '''
 
     _plot_type = "Bands"

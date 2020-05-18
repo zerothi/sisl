@@ -64,6 +64,7 @@ class Plot(ShortCutable, Configurable, Connected):
 
     Parameters
     ----------
+    %%configurable_settings%%
 
     Attributes
     ----------
@@ -77,6 +78,7 @@ class Plot(ShortCutable, Configurable, Connected):
         contains the different setting groups present in the plot.
 
         Each group is a dict like { "key": , "name": ,"icon": , "description": }
+    
 
     ...
 
