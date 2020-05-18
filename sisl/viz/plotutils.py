@@ -731,3 +731,35 @@ def spoken_message(message):
     elif sys.platform == 'darwin':
         os.system(f'''osascript -e 'say "{message}"' ''')
 
+# Plot manipulation
+
+def shift_trace(trace, shift, axis="y"):
+    '''
+    Shifts a trace by a given value in the given axis.
+
+    Parameters
+    -----------
+    shift: float or array-like
+        If it's a float, it will be a solid shift (i.e. all points moved equally).
+        If it's an array, an element-wise sum will be performed
+    axis: {"x","y","z"}, optional
+        The axis along which we want to shift the traces.
+    '''
+    trace[axis] = np.array(trace[axis]) + shift
+
+def normalize_trace(trace, min_val=0, max_val=1, axis='y'):
+    '''
+    Normalizes a trace to a given range along an axis.
+
+    Parameters
+    -----------
+    min_val: float, optional
+        The lower bound of the range.
+    max_val: float, optional
+        The upper part of the range
+    axis: {"x", "y", "z"}, optional
+        The axis along which we want to normalize.
+    '''
+
+    trace[axis] = (np.array(trace[axis]) - np.min(trace[axis])) / \
+        (np.max(trace[axis]) - np.min(trace[axis]))*(max_val-min_val) + min_val

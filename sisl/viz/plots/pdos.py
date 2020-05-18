@@ -78,6 +78,11 @@ class PdosPlot(Plot):
             group="Hparams",
             help='''Displacement of the Monkhorst-Pack grid'''
         ),
+
+        FloatInput(key="E0", name="Reference energy",
+            default=0,
+            help='''The energy to which all energies will be referenced (including Erange).'''
+        ),
         
         OrbitalQueries(
             key = "requests", name = "PDOS queries",
@@ -206,7 +211,7 @@ class PdosPlot(Plot):
         if Erange is None:
             raise Exception('You need to provide an energy range to calculate the PDOS from the Hamiltonian')
 
-        self.E = np.linspace( Erange[0], Erange[-1], self.setting("nE")) 
+        self.E = np.linspace(Erange[0], Erange[-1], self.setting("nE")) + self.setting("E0")
 
         self.mp = sisl.MonkhorstPack(self.H, kgrid, kgrid_displ)
         self.PDOS = self.mp.apply.average.PDOS(self.E, eta=True)
@@ -216,8 +221,6 @@ class PdosPlot(Plot):
         pdos_file = self.setting("pdos_file") or self.requiredFiles[0]
         #Get the info from the .PDOS file
         self.geom, self.E, self.PDOS = self.get_sile(pdos_file).read_data()
-
-        self.fermi = 0
 
     def _after_read(self):
 
@@ -256,7 +259,7 @@ class PdosPlot(Plot):
             coords={
                 'spin': [0,1] if self.isSpinPolarized else [0],
                 'orb': range(0, self.PDOS.shape[1]),
-                'E': self.E
+                'E': self.E 
             },
             dims=('spin', 'orb', 'E')
         )
@@ -287,9 +290,13 @@ class PdosPlot(Plot):
 
         '''
 
-        #Get only the energies we are interested in 
-        Emin, Emax = self.setting("Erange") or [min(
-            self.PDOS.E.values), max(self.PDOS.E.values)]
+        #Get only the energies we are interested in
+        E0 = self.setting("E0")
+        Erange = np.array(self.setting("Erange"))
+        if Erange is None:
+            Emin, Emax = [min(self.PDOS.E.values), max(self.PDOS.E.values)]
+        else:
+            Emin, Emax = Erange + E0 
 
         #Get only the part of the arra
         E_PDOS = self.PDOS.where(
@@ -321,17 +328,19 @@ class PdosPlot(Plot):
             else:
                 req_PDOS = req_PDOS.sum("orb").sum('spin')
 
+            print(request["linewidth"])
+
             self.add_trace({
                 'type': 'scatter',
                 'x': req_PDOS.values,
-                'y': req_PDOS.E.values ,
+                'y': req_PDOS.E.values - E0,
                 'mode': 'lines', 
                 'name': request["name"], 
                 'line': {'width' : request["linewidth"], "color": request["color"]},
                 "hoverinfo": "name",
             })
 
-            self.update_layout(yaxis_range=[Emin, Emax])
+            self.update_layout(yaxis_range=np.array([Emin - E0, Emax - E0]))
         
         return self.data
 

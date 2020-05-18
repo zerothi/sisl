@@ -932,7 +932,7 @@ class Plot(ShortCutable, Configurable, Connected):
         return self
     
     #-------------------------------------------
-    #       PLOT MANIPULATION METHODS
+    #       PLOT DISPLAY METHODS
     #-------------------------------------------
 
     def show(self, *args, listen=False, return_figWidget=False, **kwargs):
@@ -1068,6 +1068,10 @@ class Plot(ShortCutable, Configurable, Connected):
         fig_widget.add_traces(self.data)
         fig_widget.layout = self.layout
         fig_widget.update(frames=self.frames)
+
+    #-------------------------------------------
+    #       PLOT MANIPULATION METHODS
+    #-------------------------------------------
 
     def merge(self, others, to="multiple", extend_multiples=True, **kwargs):
         '''
@@ -1307,14 +1311,26 @@ class Plot(ShortCutable, Configurable, Connected):
         
         return self
 
-    def normalize(self, axis = "y"):
+    def normalize(self, min_val=0, max_val=1, axis = "y", **kwargs):
         '''
-        Normalizes all data between 0 and 1 along the requested axis
+        Normalizes traces to a given range along an axis.
+
+        Parameters
+        -----------
+        min_val: float, optional
+            The lower bound of the range.
+        max_val: float, optional
+            The upper part of the range
+        axis: {"x", "y", "z"}, optional
+            The axis along which we want to normalize.
+        **kwargs:
+            keyword arguments that are passed directly to plotly's Figure `for_each_trace`
+            method. You can check its documentation. One important thing is that you can pass a
+            'selector', which will choose if the trace is updated or not. 
         '''
-        
-        self.data = [{**lineData.to_plotly_json(), 
-            axis: (np.array(lineData[axis]) - np.min(lineData[axis]))/(np.max(lineData[axis]) - np.min(lineData[axis]))
-        } for lineData in self.data]
+        from .plotutils import normalize_trace
+
+        self.for_each_trace(partial(normalize_trace, min_val=min_val, max_val=max_val, axis=axis), **kwargs)
 
         return self
     
@@ -1323,6 +1339,28 @@ class Plot(ShortCutable, Configurable, Connected):
         self.data = [{**lineData.to_plotly_json(), 
             "x": lineData["y"], "y": lineData["x"]
         } for lineData in self.data]
+
+        return self
+    
+    def shift(self, shift, axis="y", **kwargs):
+        '''
+        Shifts the traces of the plot by a given value in the given axis.
+
+        Parameters
+        -----------
+        shift: float or array-like
+            If it's a float, it will be a solid shift (i.e. all points moved equally).
+            If it's an array, an element-wise sum will be performed
+        axis: {"x","y","z"}, optional
+            The axis along which we want to shift the traces.
+        **kwargs:
+            keyword arguments that are passed directly to plotly's Figure `for_each_trace`
+            method. You can check its documentation. One important thing is that you can pass a
+            'selector', which will choose if the trace is updated or not. 
+        '''
+        from .plotutils import shift_trace
+
+        self.for_each_trace(partial(shift_trace, shift=shift, axis=axis), **kwargs)
 
         return self
     

@@ -61,6 +61,11 @@ class BandsPlot(Plot):
             help = "Energy range where the bands are displayed."
         ),
 
+        FloatInput(key="E0", name="Reference energy",
+            default=0,
+            help='''The energy to which all energies will be referenced (including Erange).'''
+        ),
+
         RangeSlider(key = "bands_range", name = "Bands range",
             default = None,
             width = "s90%",
@@ -222,9 +227,8 @@ class BandsPlot(Plot):
                 division=np.array([point["divisions"] for point in self.path][1:], dtype=int) ,
                 name=np.array([point["tick"] for point in self.path])
             )
-            self.fermi = 0
+
         else:
-            self.fermi = 0
 
             if not hasattr(bandStruct, "H"):
                 self.setup_hamiltonian()
@@ -264,7 +268,6 @@ class BandsPlot(Plot):
         bands_file = self.setting("bands_file") or self.requiredFiles[0]
 
         self.bands = self.get_sile(bands_file).read_data(as_dataarray=True)
-        self.fermi = 0.0 #Energies are already shifted
 
         # Inform of the path that it's being used if we can
         # THIS IS ONLY WORKING PROPERLY FOR FRACTIONAL UNITS OF THE BAND POINTS RN
@@ -319,21 +322,29 @@ class BandsPlot(Plot):
         '''
 
         Erange = self.setting('Erange')
+        E0 = self.setting('E0')
+
+        # Shift all the bands to the reference
+        filtered_bands = self.bands - E0
+
         # Get the bands that matter for the plot
         if Erange is None:
             bands_range = self.setting("bands_range")
 
             if bands_range is None:
                 # If neither E range or bands_range was provided, we will just plot the 15 bands below and above the fermi level
-                CB = int(self.bands.where(self.bands <= 0).argmax('band').max())
-                bands_range = [int(max(self.bands["band"].min(), CB - 15)), int(min(self.bands["band"].max() + 1, CB + 16))]
+                CB = int(filtered_bands.where(filtered_bands <= 0).argmax('band').max())
+                bands_range = [int(max(filtered_bands["band"].min(), CB - 15)), int(min(filtered_bands["band"].max() + 1, CB + 16))]
 
             iBands = np.arange(*bands_range)
-            filtered_bands = self.bands.where(self.bands.band.isin(iBands), drop=True)
-            self.update_settings(run_updates=False, Erange=[float(f'{val:.3f}') for val in [float(filtered_bands.min()), float(filtered_bands.max())]], bands_range=bands_range, no_log=True)
+            filtered_bands = filtered_bands.where(filtered_bands.band.isin(iBands), drop=True)
+            self.update_settings(
+                run_updates=False,
+                Erange=np.array([float(f'{val:.3f}') for val in [float(filtered_bands.min()), float(filtered_bands.max())]]),
+                bands_range=bands_range, no_log=True)
         else:
-            Erange = np.array(Erange) + self.fermi
-            filtered_bands = self.bands.where( (self.bands <= Erange[1]) & (self.bands >= Erange[0])).dropna("band", "all")
+            Erange = np.array(Erange)
+            filtered_bands = filtered_bands.where( (filtered_bands <= Erange[1]) & (filtered_bands >= Erange[0])).dropna("band", "all")
             self.update_settings(run_updates=False, bands_range=[int(filtered_bands['band'].min()), int(filtered_bands['band'].max())], no_log=True)
 
         add_band_trace_data = add_band_trace_data or self.setting("add_band_trace_data")
@@ -348,7 +359,7 @@ class BandsPlot(Plot):
         self.add_traces(np.ravel([[{
                         'type': 'scatter',
                         'x': band.k.values,
-                        'y': (band - self.fermi).values,
+                        'y': (band).values,
                         'mode': 'lines', 
                         'name': "{} spin {}".format( band.band.values, PLOTS_CONSTANTS["spins"][spin]) if self.isSpinPolarized else str(band.band.values) , 
                         'line': {"color": [self.setting("bands_color"),self.setting("spindown_color")][spin], 'width' : self.setting("bands_width")},
@@ -364,7 +375,7 @@ class BandsPlot(Plot):
         #Add the ticks
         self.figure.layout.xaxis.tickvals = getattr(self.bands, "ticks", None)
         self.figure.layout.xaxis.ticktext = getattr(self.bands, "ticklabels", None)
-        self.figure.layout.yaxis.range = np.array(self.setting("Erange")) + self.fermi
+        self.figure.layout.yaxis.range = np.array(self.setting("Erange"))
     
     def _calculate_gaps(self):
 
