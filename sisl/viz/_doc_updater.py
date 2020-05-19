@@ -24,7 +24,7 @@ Then, just run this script and it will update all the classes documentation.
 Or you can use fill_class_docs to only update a certain class.
 '''
 
-from sisl.viz.plotutils import get_configurable_docstring, get_plot_classes
+from sisl.viz.plotutils import get_configurable_docstring, get_plot_classes, get_session_classes
 from sisl.viz import Plot, MultiplePlot, Animation, SubPlots, Session
 import inspect
 
@@ -112,7 +112,7 @@ def get_init_method(Cls):
     return definition + "\n\n" + code
 
 if __name__ == "__main__":
-    for Cls in [*get_plot_classes(), Plot, MultiplePlot, Animation, SubPlots, Session]:
+    for Cls in [*get_plot_classes(), Plot, MultiplePlot, Animation, SubPlots, Session, *get_session_classes().values()]:
         fill_class_docs(Cls)
         
 

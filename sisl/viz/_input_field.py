@@ -21,20 +21,6 @@ class InputField:
         The name that you want to show for this setting in the GUI.
     default: optional (None)
         The default value for the setting. If it is not provided it will be None.
-    inputType: str, optional {'text', 'switch', 'color', 'dropdown'}
-
-        NOT DOING ANYTHING CURRENTLY!!!
-
-        The type of input you want to retrieve. If you don't specify a type or it is an inexistent one,
-        sisl will attempt to give it one according to the type of data of the default value
-        If it doesn't succeed, no type will be asigned. Your parameter will still work but won't be showed in the GUI.
-
-        This is how data types are mapped to inputFields: {
-        
-        }
-
-        You may want to create settings without graphical interface for parameters that are too complex
-        to modify by hand but can be useful for people that use your plot programatically.
     params: dict, optional
         A dictionary with parameters that you want to add to the params key of the input field.
         If a key is already in the defaults, your provided value will have preference.
@@ -275,6 +261,9 @@ class InputField:
         return val
         
     def _get_docstring(self):
+        '''
+        Generates the docstring for this input field
+        '''
         import textwrap
 
         valid_vals = getattr(self, "valid_vals", None)
@@ -282,6 +271,9 @@ class InputField:
         if valid_vals is None:
 
             dtypes = getattr(self, "dtype", "")
+            if dtypes is None:
+                dtypes = ""
+
             if not isinstance(dtypes, tuple):
                 dtypes = (dtypes,)
             

@@ -375,7 +375,7 @@ class Plot(ShortCutable, Configurable, Connected):
         return object.__new__(cls)
 
     @after_settings_init
-    def __init__(self, *args, H = None, attrs_for_plot={}, only_init=False, layout=None, _debug=False,**kwargs):
+    def __init__(self, *args, H = None, attrs_for_plot={}, only_init=False, presets=None, layout={}, _debug=False,**kwargs):
 
         if getattr(self, "INIT_ON_NEW", False):
             delattr(self, "INIT_ON_NEW")
@@ -386,7 +386,7 @@ class Plot(ShortCutable, Configurable, Connected):
         # Initialize possibility to connect to a GUI
         Connected.__init__(self, socketio=kwargs.get("socketio", None))
         
-        #Give an ID to the plot
+        # Give an ID to the plot
         self.id = str(uuid.uuid4())
 
         # Inform whether the plot is in debug mode or not:
@@ -414,8 +414,16 @@ class Plot(ShortCutable, Configurable, Connected):
 
         # Initialize the figure
         self.figure = go.Figure()
+
         # Update its layout if a layout is provided
-        self.update_layout(**getattr(self.__class__, "_layout_defaults", {}), **(layout or {}) )
+        self.update_layout(**getattr(self.__class__, "_layout_defaults", {}), **layout )
+
+        if presets is not None:
+            if isinstance(presets, str):
+                presets = [presets]
+            for preset in presets:
+                self.update_layout(**get_preset(preset)['layout'])
+        
 
         # on_figure_change is triggered after get_figure.
         self.on_figure_change = None

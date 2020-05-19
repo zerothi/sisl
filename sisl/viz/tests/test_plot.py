@@ -92,9 +92,9 @@ class BasePlotTester:
 
     def test_presets(self):
         
-        plot = self.PlotClass(presets="Dark theme")
+        plot = self.PlotClass(presets="dark")
 
-        assert np.all([ key not in plot.settings or plot.settings[key] == val for key, val in PRESETS["Dark theme"].items()])
+        assert np.all([ key not in plot.settings or plot.settings[key] == val for key, val in PRESETS["dark"].items()])
 
     def test_save_and_load(self, obj=None):
 

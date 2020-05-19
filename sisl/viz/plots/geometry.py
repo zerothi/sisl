@@ -593,7 +593,7 @@ class BaseGeometryPlot(Plot):
     #---------------------------------------------------
 
     def _plot_geom3D(self, wrap_atom=None, wrap_bond=None, cell='box', 
-        atom=None, bind_bonds_to_ats=True, atom_vertices=20, cheap_bonds=True, cheap_atoms=False, atom_size_factor=40,
+        atom=None, bind_bonds_to_ats=True, atom_vertices=20, show_bonds=True, cheap_bonds=True, cheap_atoms=False, atom_size_factor=40,
         cheap_bonds_kwargs={}):
         '''
         Returns a 3D representation of the plot's geometry.
@@ -640,7 +640,7 @@ class BaseGeometryPlot(Plot):
             atom = self.geom._sanitize_atom(atom)
 
         # Draw bonds
-        if self.setting('bonds'):
+        if show_bonds:
             bond_traces = []
 
             # Define the actual bonds that we are going to draw depending on which
@@ -876,6 +876,34 @@ class GeometryPlot(BaseGeometryPlot):
 
     Parameters
     -------------
+    axes: None, optional
+        The axis along which you want to see the geometry.              You
+        can provide as many axes as dimensions you want for your plot.
+        Note that the order is important and will result in setting the plot
+        axes diferently.             For 2D and 1D representations, you can
+        pass an arbitrary direction as an axis (array of shape (3,))
+    1d_dataaxis: None, optional
+        If you want a 1d representation, you can provide a data axis.
+        It should be a function that receives the 1d coordinate of each atom
+        and             returns it's "data-coordinate", which will be in the
+        y axis of the plot.             If not provided, the y axis will be
+        all 0.
+    cell: None, optional
+        Specifies how the cell should be rendered.              (False: not
+        rendered, 'axes': render axes only, 'box': render a bounding box)
+    atom: None, optional
+        The atoms that are going to be displayed in the plot.
+        This also has an impact on bonds (see the `bind_bonds_to_ats` and
+        `show_atoms` parameters).             If set to None, all atoms are
+        displayed
+    bind_bonds_to_ats: bool, optional
+        whether only the bonds that belong to an atom that is present should
+        be displayed.             If False, all bonds are displayed
+        regardless of the `atom` parameter
+    show_atoms: bool, optional
+        If set to False, it will not display atoms.              Basically
+        this is a shortcut for `atom = [], bind_bonds_to_ats=False`.
+        Therefore, it will override these two parameters.
     geom: None, optional
     
     geom_file: str, optional
@@ -968,6 +996,7 @@ class GeometryPlot(BaseGeometryPlot):
     def _set_data(self):
 
         cell_rendering = self.setting("cell")
+        bonds = self.setting('bonds')
         axes = self.setting("axes")
         ndims = len(axes)
         if self.setting("show_atoms") == False:
@@ -977,12 +1006,13 @@ class GeometryPlot(BaseGeometryPlot):
             atom = self.setting("atom")
             bind_bonds_to_ats = self.setting("bind_bonds_to_ats")
         
+        common_kwargs = {'cell': cell_rendering, 'show_bonds': bonds, 'atom': atom, 'bind_bonds_to_ats': bind_bonds_to_ats}
 
         if ndims == 3:
-            self._plot_geom3D(cell=cell_rendering, atom=atom, bind_bonds_to_ats=bind_bonds_to_ats)
+            self._plot_geom3D(**common_kwargs)
         elif ndims == 2:
             xaxis, yaxis = axes
-            self._plot_geom2D(xaxis=xaxis, yaxis=yaxis, cell=cell_rendering)
+            self._plot_geom2D(xaxis=xaxis, yaxis=yaxis, **common_kwargs)
             self.update_layout(xaxis_title=f'Axis {xaxis} (Ang)', yaxis_title=f'Axis {yaxis} (Ang)')
         elif ndims == 1:
             coords_axis = axes[0]
