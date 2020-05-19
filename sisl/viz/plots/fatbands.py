@@ -123,6 +123,8 @@ class FatbandsPlot(BandsPlot):
     
     def _draw_fatbands(self):
 
+        E0 = self.setting('E0')
+
         # We get the bands range that is going to be plotted
         # Remember that the BandsPlot will have updated this setting accordingly,
         # so it's safe to use it directly
@@ -130,7 +132,7 @@ class FatbandsPlot(BandsPlot):
         #plotted_bands[-1] -= 1
         
         #Get the bands that matter (spin polarization currently not implemented)
-        plot_eigvals = self.bands.sel(band=np.arange(*plotted_bands), spin=0) - self.fermi
+        plot_eigvals = self.bands.sel(band=np.arange(*plotted_bands), spin=0) - E0
         # Get the weights that matter
         plot_weights = self.weights.sel(band=np.arange(*plotted_bands))
         

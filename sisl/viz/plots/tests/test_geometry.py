@@ -22,8 +22,11 @@ class GeometryPlotTester:
 
     plot = None
     
-    def test_1d(self)
+    def test_1d(self):
+        pass
 
-    def test_2d(self)
+    def test_2d(self):
+        pass
 
-    def test_3d(self)
+    def test_3d(self):
+        pass
