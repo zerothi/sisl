@@ -505,6 +505,9 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
         # Ensure we have an "array" in case of spin-polarized calculations
         q = _a.asarrayd(q)
+        if np.any(q <= 0.):
+            raise ValueError(f"{self.__class__.__name__}.fermi_level cannot calculate the Fermi level "
+                             "for 0 electrons.")
 
         if isinstance(distribution, str):
             distribution = get_distribution(distribution)
@@ -519,7 +522,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
             # parameter available.
             min_Ef, max_Ef = eig.min(), eig.max()
 
-            while True:
+            while min_Ef < max_Ef:
                 Ef = (min_Ef + max_Ef) * 0.5
 
                 # Calculate guessed charge
