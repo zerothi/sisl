@@ -24,6 +24,18 @@ class BasePlotTester:
 
     PlotClass = Plot
 
+    def test_documentation(self):
+
+        doc = self.PlotClass.__doc__
+
+        # Check that it has documentation
+        assert doc is not None, f'{self.PlotClass.__name__} does not have documentation'
+
+        # Check that all params are in the documentation
+        params = np.array([param.key for param in self.PlotClass._get_class_params()[0]])
+        is_indoc = np.array([key in doc for key in params])
+        assert np.all(is_indoc), f'The following parameters are missing in the documentation of {self.PlotClass.__name__}: {params[~is_indoc]} '
+
     def test_plot_settings(self):
 
         plot = self.PlotClass()

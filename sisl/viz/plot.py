@@ -64,7 +64,13 @@ class Plot(ShortCutable, Configurable, Connected):
 
     Parameters
     ----------
-    %%configurable_settings%%
+    reading_order: None, optional
+        Order in which the plot tries to read the data it needs.
+    root_fdf: str, optional
+        Path to the fdf file that is the 'parent' of the results.
+    results_path: str, optional
+        Directory where the files with the simulations results are
+        located. This path has to be relative to the root fdf.
 
     Attributes
     ----------
@@ -1508,6 +1514,19 @@ class Plot(ShortCutable, Configurable, Connected):
 #------------------------------------------------
 
 class MultiplePlot(Plot):
+    '''
+    General handler of a group of plots that need to be rendered together.
+
+    Parameters
+    ----------
+    reading_order: None, optional
+        Order in which the plot tries to read the data it needs.
+    root_fdf: str, optional
+        Path to the fdf file that is the 'parent' of the results.
+    results_path: str, optional
+        Directory where the files with the simulations results are
+        located. This path has to be relative to the root fdf.
+    '''
 
     def __init__(self, *args, plots=None, template_plot=None, **kwargs):
 
@@ -1734,6 +1753,30 @@ class MultiplePlot(Plot):
         return self
 
 class Animation(MultiplePlot):
+    '''
+    Version of MultiplePlot that renders each plot in a different animation frame.
+
+    Parameters
+    ----------
+    frameDuration: int, optional
+        Time (in ms) that each frame will be displayed.  This is only
+        meaningful if you have an animation
+    redraw: bool, optional
+        Whether each frame of the animation should be redrawn
+        If False, the animation will try to interpolate between one frame and
+        the other             Set this to False if you are sure that the
+        frames contain the same number of traces, otherwise new traces will
+        not appear.
+    ani_method: None, optional
+        It determines how the animation is rendered.
+    reading_order: None, optional
+        Order in which the plot tries to read the data it needs.
+    root_fdf: str, optional
+        Path to the fdf file that is the 'parent' of the results.
+    results_path: str, optional
+        Directory where the files with the simulations results are
+        located. This path has to be relative to the root fdf.
+    '''
 
     _isAnimation = True
 
@@ -2010,6 +2053,12 @@ class Animation(MultiplePlot):
         return [ Animation(plots=plots) for plots in new_animations ]
 
 class SubPlots(MultiplePlot):
+    '''
+    Version of MultiplePlot that renders each plot in a separate subplot.
+
+    IT'S JUST A FIRST SKETCH!
+
+    '''
 
     _is_subplots = True
 
