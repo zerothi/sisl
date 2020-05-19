@@ -522,7 +522,8 @@ class Hamiltonian(SparseOrbitalBZSpin):
             # parameter available.
             min_Ef, max_Ef = eig.min(), eig.max()
 
-            while min_Ef < max_Ef:
+            nextafter = np.nextafter
+            while nextafter(min_Ef, max_Ef) < max_Ef:
                 Ef = (min_Ef + max_Ef) * 0.5
 
                 # Calculate guessed charge
@@ -542,6 +543,9 @@ class Hamiltonian(SparseOrbitalBZSpin):
         eigh = bz.apply.array.eigh
 
         if self.spin.is_polarized and q.size == 2:
+            if np.any(q >= len(self)):
+                raise ValueError(f"{self.__class__.__name__}.fermi_level cannot calculate the Fermi level "
+                                 "for electrons ({q}) equal to or above number of orbitals ({len(self)}).")
             # We need to do Fermi-level separately since the user requests
             # separate fillings
             Ef = _a.emptyd(2)
@@ -550,6 +554,9 @@ class Hamiltonian(SparseOrbitalBZSpin):
         else:
             # Ensure a single charge
             q = q.sum()
+            if q >= len(self):
+                raise ValueError(f"{self.__class__.__name__}.fermi_level cannot calculate the Fermi level "
+                                 "for electrons ({q}) equal to or above number of orbitals ({len(self)}).")
             if self.spin.is_polarized:
                 Ef = _Ef(q, np.concatenate([eigh(spin=0),
                                             eigh(spin=1)], axis=1))
