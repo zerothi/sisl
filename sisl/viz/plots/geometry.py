@@ -876,7 +876,19 @@ class GeometryPlot(BaseGeometryPlot):
 
     Parameters
     -------------
-    %%configurable_settings%%
+    geom: None, optional
+    
+    geom_file: str, optional
+    
+    bonds: bool, optional
+    
+    reading_order: None, optional
+        Order in which the plot tries to read the data it needs.
+    root_fdf: str, optional
+        Path to the fdf file that is the 'parent' of the results.
+    results_path: str, optional
+        Directory where the files with the simulations results are
+        located. This path has to be relative to the root fdf.
     '''
 
     _plot_type = "Geometry"

@@ -13,7 +13,79 @@ class GridPlot(Plot):
 
     Parameters
     -------------
-    %%configurable_settings%%
+    grid: None, optional
+        A sisl.Grid object. If provided, grid_file is ignored.
+    grid_file: str, optional
+    
+    represent: None, optional
+        The representation of the grid that should be displayed
+    transforms: None, optional
+        The representation of the grid that should be displayed
+    axes: None, optional
+        The axis along you want to see the grid, it will be averaged along
+        the other ones
+    zsmooth: None, optional
+        Parameter that smoothens how data looks in a heatmap.
+        'best' interpolates data, 'fast' interpolates pixels, 'False'
+        displays the data as is.
+    interp: array-like, optional
+        Interpolation factors to make the grid finer on each axis.See the
+        zsmooth setting for faster smoothing of 2D heatmap.
+    sc: array-like, optional
+    
+    offset: array-like, optional
+        The offset of the grid along each axis. This is important if you are
+        planning to match this grid with other geometry related plots.
+    cut_vacuum: bool, optional
+        Whether the vacuum should not be taken into account for displaying
+        the grid.             This is essential especially in 3D
+        representations, since plotly needs to calculate the
+        isosurfaces of the grid.
+    trace_name: str, optional
+        The name that the trace will show in the legend. Good when merging
+        with other plots to be able to toggle the trace in the legend
+    xRange: array-like of shape (2,), optional
+        Range where the X is displayed. Should be inside the unit cell,
+        otherwise it will fail.
+    yRange: array-like of shape (2,), optional
+        Range where the Y is displayed. Should be inside the unit cell,
+        otherwise it will fail.
+    zRange: array-like of shape (2,), optional
+        Range where the Z is displayed. Should be inside the unit cell,
+        otherwise it will fail.
+    crange: array-like of shape (2,), optional
+        The range of values that the colorbar must enclose. This controls
+        saturation and hides below threshold values.
+    cmid: int, optional
+    
+    colorscale: str, optional
+    
+    iso_vals: array-like of shape (2,), optional
+    
+    surface_count: int, optional
+    
+    type3D: None, optional
+        This controls how the 3D data is displayed.              'volume'
+        displays different layers with different levels of opacity so that
+        there is more sensation of depth.             'isosurface' displays
+        only isosurfaces and nothing inbetween them. For plotting grids with
+        positive and negative             values, you should use 'isosurface'
+        or two different 'volume' plots.              If not provided, the
+        plot will decide for you based on the above mentioned fact
+    opacityscale: None, optional
+        Controls how the opacity changes through layers.              See
+        https://plotly.com/python/3d-volume-plots/ for a display of the
+        different possibilities
+    surface_opacity: float, optional
+        The opacity of the isosurfaces drawn by 3d plots from 0 (transparent)
+        to 1 (opaque).
+    reading_order: None, optional
+        Order in which the plot tries to read the data it needs.
+    root_fdf: str, optional
+        Path to the fdf file that is the 'parent' of the results.
+    results_path: str, optional
+        Directory where the files with the simulations results are
+        located. This path has to be relative to the root fdf.
     '''
 
     #Define all the class attributes

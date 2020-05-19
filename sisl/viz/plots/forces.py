@@ -12,7 +12,22 @@ class ForcesPlot(Plot):
 
     Parameters
     -------------
-    %%configurable_settings%%
+    out_file: str, optional
+        The path to the output file that contains logs where forces are
+        written.
+    type: None, optional
+        The type of forces that should be displayed.
+    all: bool, optional
+        Whether forces for all steps should be displayed.
+    linecolor: str, optional
+        Color of the line that displays the forces
+    reading_order: None, optional
+        Order in which the plot tries to read the data it needs.
+    root_fdf: str, optional
+        Path to the fdf file that is the 'parent' of the results.
+    results_path: str, optional
+        Directory where the files with the simulations results are
+        located. This path has to be relative to the root fdf.
     '''
 
     _plot_type = "Forces"

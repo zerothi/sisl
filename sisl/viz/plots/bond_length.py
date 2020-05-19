@@ -16,7 +16,79 @@ class BondLengthMap(GeometryPlot):
 
     Parameters
     -------------
-    %%configurable_settings%%
+    geom_from_output: bool, optional
+        In case the geometry is read from the fdf file, this will determine
+        whether the input or the output geometry is taken.This setting
+        will be ignored if geom_file is passed
+    strain_ref: str or Geometry, optional
+        The path to a geometry or a Geometry object used to calculate strain
+        from.             This geometry will probably be the relaxed
+        one             If provided, colors can indicate strain values.
+        Otherwise they are just bond length
+    strain: bool, optional
+        Determines whether strain values should be displayed instead of
+        lengths
+    bond_thresh: float, optional
+        Maximum distance between two atoms to draw a bond
+    cmap: str, optional
+        This determines the colormap to be used for the bond lengths
+        display.             You can see all valid colormaps here:
+        https://plot.ly/python/builtin-colorscales/
+        Note that you can reverse a color map by adding _r
+    cmin: float, optional
+    
+    cmax: float, optional
+    
+    cmid: float, optional
+        Sets the middle point of the color scale. Only meaningful in
+        diverging colormaps             If this is set 'cmin' and 'cmax'
+        are ignored. In strain representations this might be set to 0.
+    colorbar: bool, optional
+        Whether the color bar should be displayed or not.
+    points_per_bond: int, optional
+        Number of points that fill a bond. More points will make it look
+        more like a line but will slow plot rendering down.
+    axes: None, optional
+        The axis along which you want to see the geometry.              You
+        can provide as many axes as dimensions you want for your plot.
+        Note that the order is important and will result in setting the plot
+        axes diferently.             For 2D and 1D representations, you can
+        pass an arbitrary direction as an axis (array of shape (3,))
+    1d_dataaxis: None, optional
+        If you want a 1d representation, you can provide a data axis.
+        It should be a function that receives the 1d coordinate of each atom
+        and             returns it's "data-coordinate", which will be in the
+        y axis of the plot.             If not provided, the y axis will be
+        all 0.
+    cell: None, optional
+        Specifies how the cell should be rendered.              (False: not
+        rendered, 'axes': render axes only, 'box': render a bounding box)
+    atom: None, optional
+        The atoms that are going to be displayed in the plot.
+        This also has an impact on bonds (see the `bind_bonds_to_ats` and
+        `show_atoms` parameters).             If set to None, all atoms are
+        displayed
+    bind_bonds_to_ats: bool, optional
+        whether only the bonds that belong to an atom that is present should
+        be displayed.             If False, all bonds are displayed
+        regardless of the `atom` parameter
+    show_atoms: bool, optional
+        If set to False, it will not display atoms.              Basically
+        this is a shortcut for `atom = [], bind_bonds_to_ats=False`.
+        Therefore, it will override these two parameters.
+    geom: None, optional
+    
+    geom_file: str, optional
+    
+    bonds: bool, optional
+    
+    reading_order: None, optional
+        Order in which the plot tries to read the data it needs.
+    root_fdf: str, optional
+        Path to the fdf file that is the 'parent' of the results.
+    results_path: str, optional
+        Directory where the files with the simulations results are
+        located. This path has to be relative to the root fdf.
     '''
 
     _plot_type = "Bond length"

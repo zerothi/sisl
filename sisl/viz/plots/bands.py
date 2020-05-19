@@ -18,7 +18,61 @@ class BandsPlot(Plot):
 
     Parameters
     -------------
-    %%configurable_settings%%
+    bands_file: str, optional
+        This parameter explicitly sets a .bands file. Otherwise, the bands
+        file is attempted to read from the fdf file
+    band_structure: None, optional
+        The bandStruct structure object to be used.
+    add_band_trace_data: None, optional
+        A function that receives each band (as a DataArray) and adds data to
+        the trace. It also recieves the plot object.              The
+        returned data may even overwrite the existing one, therefore it can
+        be useful to fully customize your bands plot (individual style for
+        each band if you want).
+    eigenstate_map: None, optional
+        This function receives the eigenstate object for each k value when
+        the bands are being extracted from a hamiltonian.             You can
+        do whatever you want with it, the point of this function is to avoid
+        running the diagonalization process twice.
+    Erange: array-like of shape (2,), optional
+        Energy range where the bands are displayed.
+    E0: float, optional
+        The energy to which all energies will be referenced (including
+        Erange).
+    bands_range: array-like of shape (2,), optional
+        The bands that should be displayed. Only relevant if Erange is None.
+    path: array-like of dict, optional
+        Path along which bands are drawn in units of reciprocal lattice
+        vectors.             Note that if you want to provide a path
+        programatically you can do it more easily with the `band_structure`
+        setting
+    gap: bool, optional
+        Whether the gap should be displayed in the plot
+    direct_gaps_only: bool, optional
+        Whether to show only gaps that are direct, according to the gap
+        tolerance
+    gap_tol: float, optional
+        The difference in k that must exist to consider to gaps
+        different.             If two gaps' positions differ in less than
+        this, only one gap will be drawn.             Useful in cases
+        where there are degenerated bands with exactly the same values.
+    gap_color: str, optional
+        Color to display the gap
+    bands_width: float, optional
+        Width of the lines that represent the bands
+    bands_color: str, optional
+        Choose the color to display the bands.  This will be used for the
+        spin up bands if the calculation is spin polarized
+    spindown_color: str, optional
+        Choose the color for the spin down bands.Only used if the
+        calculation is spin polarized.
+    reading_order: None, optional
+        Order in which the plot tries to read the data it needs.
+    root_fdf: str, optional
+        Path to the fdf file that is the 'parent' of the results.
+    results_path: str, optional
+        Directory where the files with the simulations results are
+        located. This path has to be relative to the root fdf.
     '''
 
     _plot_type = "Bands"

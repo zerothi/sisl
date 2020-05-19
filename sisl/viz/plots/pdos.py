@@ -16,7 +16,34 @@ class PdosPlot(Plot):
 
     Parameters
     -------------
-    %%configurable_settings%%
+    pdos_file: str, optional
+        This parameter explicitly sets a .PDOS file. Otherwise, the PDOS file
+        is attempted to read from the fdf file
+    Erange: array-like of shape (2,), optional
+        Energy range where PDOS is displayed.
+    nE: int, optional
+        If calculating the PDOS from a hamiltonian, the number of energy
+        points used
+    kgrid: array-like, optional
+        The number of kpoints in each reciprocal direction.              A
+        Monkhorst-Pack grid will be generated to calculate the PDOS.
+        If not provided, it will be set to 3 for the periodic directions
+        and 1 for the non-periodic ones.
+    kgrid_displ: array-like, optional
+        Displacement of the Monkhorst-Pack grid
+    E0: float, optional
+        The energy to which all energies will be referenced (including
+        Erange).
+    requests: array-like of dict, optional
+        Here you can ask for the specific PDOS that you need.
+        TIP: Queries can be activated and deactivated.
+    reading_order: None, optional
+        Order in which the plot tries to read the data it needs.
+    root_fdf: str, optional
+        Path to the fdf file that is the 'parent' of the results.
+    results_path: str, optional
+        Directory where the files with the simulations results are
+        located. This path has to be relative to the root fdf.
     '''
 
     #Define all the class attributes
