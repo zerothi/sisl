@@ -1373,7 +1373,6 @@ def test_geometry_sort_func():
     assert np.allclose(out.xyz, bi.sub(all_atoms).xyz)
 
     bi_again = bi.sort(func=(reverse, reverse), atom=atom)
-    assert bi == bi_again
 
     # Ensure that they are swapped
     atom = [2, 0]

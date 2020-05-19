@@ -137,7 +137,7 @@ def collect_arguments(argv, input=False,
     """
 
     # First we figure out the input file, and the output file
-    from sisl import get_sile
+    from sisl.io import get_sile
 
     # Create the default namespace in case there is none
     if namespace is None:

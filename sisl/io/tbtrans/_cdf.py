@@ -158,12 +158,15 @@ class _ncSileTBtrans(SileCDFTBtrans):
 
         Parameters
         ----------
-        E : float or int
-           if ``int``, return it-self, else return the energy index which is
+        E : float or int or str
+           if `int`, return it-self, else return the energy index which is
            closests to the energy.
+           For a `str` it will be parsed to a float and treated as such.
         """
         if isinstance(E, Integral):
             return E
+        elif isinstance(E, str):
+            E = float(E)
         idxE = np.abs(self.E - E).argmin()
         ret_E = self.E[idxE]
         if abs(ret_E - E) > 5e-3:

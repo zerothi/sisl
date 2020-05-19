@@ -4377,11 +4377,11 @@ class Geometry(SuperCellChild):
                     kwargs['fmt'] = ns._geom_fmt
                 if hasattr(ns, '_vector'):
                     v = getattr(ns, '_vector')
-                    vs = getattr(ns, '_vector_scale', True)
+                    vs = getattr(ns, '_vector_scale')
                     if isinstance(vs, bool):
                         if vs:
                             vs = 1. / np.max(sqrt(square(v).sum(1)))
-                            info(f'Scaling vector by: {vs}')
+                            info(f"Scaling vector by: {vs}")
                         else:
                             vs = 1.
 

@@ -6,7 +6,7 @@ Easy conversion of data from different formats to other formats.
 import sys
 import argparse
 
-__all__ = ['sdata']
+__all__ = ["sisl_cmd"]
 
 
 def argparse_patch(parser):
@@ -59,7 +59,7 @@ def argparse_patch(parser):
     parser.register('action', 'parsers', MySubParsersAction)
 
 
-def sdata(argv=None, sile=None):
+def sisl_cmd(argv=None, sile=None):
 
     from . import cmd
 
@@ -99,8 +99,7 @@ changing ways. It handles files dependent on type AND content.
     argparse_patch(p)
 
     # Now try and figure out the actual arguments
-    p, ns, argv = cmd.collect_arguments(argv, input=True,
-                                        argumentparser=p)
+    p, ns, argv = cmd.collect_arguments(argv, input=True, argumentparser=p)
 
     # Now the arguments should have been populated
     # and we will sort out if the input options

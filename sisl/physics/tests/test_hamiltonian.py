@@ -1410,7 +1410,7 @@ class TestHamiltonian:
         H = Hamiltonian(setup.g.copy())
         H.construct([R, param])
         bz = MonkhorstPack(H, [10, 10, 1])
-        E = np.linspace(-4, 4, 1000)
+        E = np.linspace(-4, 4, 500)
         dist = get_distribution('gaussian', smearing=0.05)
         def wrap(es, parent, k, weight):
             DOS = es.DOS(E, distribution=dist)

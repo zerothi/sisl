@@ -288,15 +288,21 @@ class xsfSile(Sile):
            the parser which gets amended the additional output options.
         """
         import argparse
+        ns = kwargs.get("namespace", None)
+        if ns is None:
+            class _():
+                pass
+            ns = _()
 
         # We will add the vector data
         class VectorNoScale(argparse.Action):
-
             def __call__(self, parser, ns, no_value, option_string=None):
-                setattr(ns, '_vector_scale', False)
-        p.add_argument('--no-vector-scale', '-nsv', nargs=0,
+                setattr(ns, "_vector_scale", False)
+        p.add_argument("--no-vector-scale", "-nsv", nargs=0,
                        action=VectorNoScale,
                        help='''Do not modify vector components (same as --vector-scale 1.)''')
+        # Default to scale the vectors
+        setattr(ns, "_vector_scale", True)
 
         # We will add the vector data
         class VectorScale(argparse.Action):
@@ -339,6 +345,13 @@ class xsfSile(Sile):
                     d = {routine: True}
                     vector = input_sile.read_data(*values, **d)
 
+                if vector is None and len(values) > 1:
+                    # try and see if the first argument is a str, if
+                    # so use that as a keyword
+                    if isinstance(values[0], str):
+                        d = {values[0]: True}
+                        vector = input_sile.read_data(*values[1:], **d)
+
                 # Clean the sile
                 del input_sile
 
@@ -349,7 +362,7 @@ class xsfSile(Sile):
                 if len(vector) != len(ns._geometry):
                     raise ValueError(f'read_{routine} could read from file: {input_file}, sizes does not conform to geometry.')
                 setattr(ns, '_vector', vector)
-        p.add_argument('--vector', '-v', metavar=('DATA', '*ARGS, FILE'), nargs='+',
+        p.add_argument('--vector', '-v', metavar=('DATA', '*ARGS[, FILE]'), nargs='+',
                        action=Vectors,
                        help='''Adds vector arrows for each atom, first argument is type (force, moment, ...).
 If the current input file contains the vectors no second argument is necessary, else
@@ -359,11 +372,6 @@ Any arguments inbetween are passed to the `read_data` function (in order).
 
 By default the vectors scaled by 1 / max(|V|) such that the longest vector has length 1.
                        ''')
-
-        # currently adding an argument that is already there does not remove the
-        # old one...
-        p.add_argument('--out', '-o', nargs=1, action=Out,
-                       help='Store the geometry/grid (plus any vector fields) the out file.')
 
 
 @set_module("sisl.io")

@@ -43,18 +43,20 @@ def _crt_rop(op):
 def _crt_iop(op, only_self=False):
     if only_self:
         def _(self):
-            for data in self:
-                op(data)
+            for i in range(len(self)):
+                self[i] = op(self[i])
+            return self
     else:
         def _(self, other):
             if isiterable(other):
                 if len(self) != len(other):
                     raise ValueError(f"{self.__class__.__name__} requires other data to contain same number of elements (or a scalar).")
-                for s, o in zip(self, other):
-                    op(s, o)
+                for i in range(len(self)):
+                    self[i] = op(self[i], other[i])
             else:
-                for s in self:
-                    op(s, other)
+                for i in range(len(self)):
+                    self[i] = op(self[i], other)
+            return self
     return _
 
 

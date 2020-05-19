@@ -136,9 +136,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         return data
 
     def _value_E(self, name, tree=None, kavg=False, E=None):
-        """ Local method for obtaining the data from the SileCDF using an E index.
-
-        """
+        """ Local method for obtaining the data from the SileCDF using an E index. """
         if E is None:
             return self._value_avg(name, tree, kavg)
 

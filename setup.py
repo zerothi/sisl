@@ -425,8 +425,8 @@ metadata = dict(
         "console_scripts":
         ["sgeom = sisl.geometry:sgeom",
          "sgrid = sisl.grid:sgrid",
-         "sdata = sisl.utils.sdata:sdata",
-         "sisl = sisl.utils.sdata:sdata"]
+         "sdata = sisl.utils._sisl_cmd:sisl_cmd",
+         "sisl = sisl.utils._sisl_cmd:sisl_cmd"]
     },
     classifiers=CLASSIFIERS,
     platforms="any",
