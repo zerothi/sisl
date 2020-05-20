@@ -452,12 +452,9 @@ class GridPlot(Plot):
         for ax in (0, 1, 2):
             i_lims[1, ax] = min(i_lims[1, ax], grid.shape[ax])
 
-        print(i_lims, grid.shape)
         # Actually "cut" the grid
         for ax, (min_i, max_i) in enumerate(i_lims.T):
             grid = grid.sub(range(min_i, max_i), ax)
-        
-        print("CUTTED")
         
         # Return the cut grid, but also the limits that have been applied
         # The user can access the offset of the grid at lims[0]
