@@ -12,7 +12,6 @@ from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, D
 from ..input_fields.range import ErangeInput
 
 class BandsPlot(Plot):
-
     '''
     Plot representation of the bands.
 
@@ -248,15 +247,15 @@ class BandsPlot(Plot):
     }
 
     @classmethod
-    def _default_animation(cls, wdir = None, frameNames = None, **kwargs):
+    def _default_animation(cls, wdir = None, frame_names=None, **kwargs):
         
         bands_files = find_files(wdir, "*.bands", sort = True)
 
-        def _getFrameNames(self):
+        def _get_frame_names(self):
 
             return [os.path.basename( childPlot.setting("bands_file")) for childPlot in self.childPlots]
 
-        return cls.animated("bands_file", bands_files, frameNames = _getFrameNames, wdir = wdir, **kwargs)
+        return cls.animated("bands_file", bands_files, frame_names = _get_frame_names, wdir = wdir, **kwargs)
 
     def _after_init(self):
 

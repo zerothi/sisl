@@ -226,7 +226,7 @@ class BondLengthMap(GeometryPlot):
     }
     
     @classmethod
-    def _default_animation(self, wdir = None, frameNames = None, **kwargs):
+    def _default_animation(self, wdir = None, frame_names = None, **kwargs):
         
         geomsFiles = find_files(wdir, "*.XV", sort = True)
 

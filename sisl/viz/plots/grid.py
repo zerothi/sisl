@@ -865,7 +865,7 @@ class GridPlot(Plot):
             },
             plot_template=self,
             fixed={**{key: val for key, val in self.settings.items() if key != range_key}, "iso_vals": isovals, **kwargs},
-            frameNames=[ f'{bp:2f}' for bp in breakpoints],
+            frame_names=[ f'{bp:2f}' for bp in breakpoints],
             **(animation_kwargs or {})
         )
 
@@ -1178,6 +1178,7 @@ class WavefunctionPlot(GridPlot):
             self.grid = sisl.Grid(grid_prec, geometry=self.geom)
 
         # GridPlot's after_read basically sets the xRange, yRange and zRange options
+        # which need to know what the grid is, that's why we are calling it here
         GridPlot._after_read(self)
 
         self.eigenstate[i].wavefunction(self.grid)

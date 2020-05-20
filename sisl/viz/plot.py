@@ -71,6 +71,23 @@ class Plot(ShortCutable, Configurable, Connected):
     results_path: str, optional
         Directory where the files with the simulations results are
         located. This path has to be relative to the root fdf.
+    animate: str, array-like of str or dict, optional
+        the settings to animate. 
+        If it's a dict it should contain the values of the settings for each frame.
+        You only need to pass the ones that are changing! The rest of settings you can
+        still specify them as usual.
+
+        If it's a string or a list of strings, it will basically create the above mentioned
+        dictionary using the values that you passed. E.g:
+            object.plot(i=[1,4,5], animate="i")
+        will create a plot with 3 frames where i=1, i=4 and i=5. Note that of course you should
+        provide a list, tuple, etc... for the values of the settings that you want to animate.
+    varying: str, array-like of str or dict, optional
+        works exactly like `animate` but will create a MultiplePlot instead of an Animation. That is,
+        it will render all the different plots in the same canvas.
+    subplots: str, array-like of str or dict, optional
+        works exactly like `animate` but will create a SubPlots instead of an Animation. That is,
+        it will display a layout with subplots corresponding to each configuration.
 
     Attributes
     ----------
@@ -84,19 +101,6 @@ class Plot(ShortCutable, Configurable, Connected):
         contains the different setting groups present in the plot.
 
         Each group is a dict like { "key": , "name": ,"icon": , "description": }
-    animate: str, array-like of str or dict, optional
-        the settings to animate. 
-        If it's a dict it should contain the values of the settings for each frame.
-        You only need to pass the ones that are changing! The rest of settings you can
-        still specify them as usual.
-
-        If it's a string or a list of strings, it will basically create the above mentioned
-        dictionary using the values that you passed. E.g:
-            object.plot(i=[1,4,5], animate="i")
-        will create a plot with 3 frames where i=1, i=4 and i=5. Note that of course you should
-        provide a list, tuple, etc... for the values of the settings that you want to animate.
-    
-
     ...
 
     '''
@@ -199,9 +203,179 @@ class Plot(ShortCutable, Configurable, Connected):
     @property
     def _widgets(self):
         return check_widgets()
+    
+    @classmethod
+    def multiple(cls, *args, fixed={}, template_plot=None, merge_method='together', **kwargs):
+        '''Creates a multiple plot out of a class.
+
+        This class method returns a multiple plot that contains several plots of the same class.
+        It is a general method that serves as a common denominator for building MultiplePlot, SubPlot
+        or Animation objects. Therefore, it is used by the `animated` and `subplots` methods
+
+        If no arguments are passed, you will get the default multiple plot for the class, if there is any.
+
+        Parameters
+        -----------
+        *args:
+            Depending on what you pass the arguments will be interpreted differently:
+                - Two arguments:
+                    First: str
+                        Key of the setting that you want to be variable.
+                    Second: array-like
+                        Values that you want the setting to have in each individual plot.
+
+                    Ex: BandsPlot.multiple("bands_file", ["file1", "file2", "file3"] )
+                    will produce a multiple plot where each plot uses a different bands_file.
+
+                - One argument and it is a dictionary:
+                    First: dict
+                        The keys of this dictionary will be the setting keys you want to be variable
+                        and the values are of course the values for each plot for that setting. 
+
+                    It works exactly as the previous case, but in this case we have multiple settings that vary.
+                
+                - One argument and it is a function:
+                    First: function
+                        With this function you can produce any settings you want without limitations.
+
+                        It will be used as the `_getInitKwargsList` method of the MultiplePlot object, so it needs to
+                        accept self (the MultiplePlot object) and return a list of dictionaries which are the 
+                        settings for each plot.
+
+        fixed: dict, optional
+            A dictionary containing values for settings that will be fixed for all plots.
+            For the settings that you don't specify here you will get the defaults.
+        template_plot: sisl Plot, optional
+            If provided this plot will be used as a template.
+
+            It is important to know that it will not act only as the settings template,
+            but it will also PROVIDE DATA FOR THE OTHER PLOTS in case the data reading
+            settings are not being varied through the different plots.
+
+            This is extremely important to provide when possible, because in some cases the data
+            that a plot gathers can be very large and therefore it may not be even feasable to store
+            the repeated data in terms of memory/time.
+        merge_method: {'together', 'subplots', 'animation'}, optional
+            the way in which the multiple plots are 'related' to each other (i.e. how they should be displayed).
+            In most cases, instead of using this argument, you should probably use the specific method (`animated` or
+            `subplots`). They set this argument accordingly but also do some other work to make your life easier.
+        **kwargs:
+            Will be passed directly to initialization, so it can contain the settings for the MultiplePlot object, for example.
+
+            If args are not passed and the default multiple plot is being created, some keyword arguments may be used by the method
+            that generates the default multiple plot. One recurrent example of this is the keyword `wdir`. 
+
+        Returns
+        --------
+        MultiplePlot, SubPlots or Animation
+            The plot that you asked for. 
+        '''
+
+        #Try to retrieve the default animation if no arguments are provided
+        if len(args) == 0:
+
+            return call_method_if_present(cls, "_default_animation", fixed=fixed, **kwargs)
+
+        #Define how the getInitkwargsList method will look like
+        if callable(args[0]):
+            _getInitKwargsList = args[0]
+        else:
+            if len(args) == 2:
+                variable_settings = {args[0]: args[1]}
+            elif isinstance(args[0], dict):
+                variable_settings = args[0]
+
+            def _getInitKwargsList(self):
+
+                #Adding the fixed values to the list
+                vals = {
+                    **{key: itertools.repeat(val) for key, val in fixed.items()},
+                    **variable_settings
+                }
+
+                return dictOfLists2listOfDicts(vals)
+
+        # Choose the specific class that we want to initialize
+        MultipleClass = {'together': MultiplePlot, 'subplots': SubPlots, 'animation': Animation}[merge_method]
+
+        #Return the initialized multiple plot
+        return MultipleClass(_plugins={
+            "_getInitKwargsList": _getInitKwargsList,
+            "_plotClasses": cls,
+            **kwargs.pop('_plugins', {})
+        }, template_plot=template_plot, **kwargs)
 
     @classmethod
-    def animated(cls, *args, fixed = {}, frameNames = None, template_plot=None, **kwargs):
+    def subplots(cls, *args, fixed={}, template_plot=None, rows=None, cols=None, arrange="rows", **kwargs):
+        '''
+        Creates subplots where each plot has different settings.
+
+        Mainly, it uses the `multiple` method to generate them.
+
+        Parameters
+        -----------
+        *args:
+            Depending on what you pass the arguments will be interpreted differently:
+                - Two arguments:
+                    First: str
+                        Key of the setting that you want to vary across subplots.
+                    Second: array-like
+                        Values that you want the setting to have in each subplot.
+
+                    Ex: BandsPlot.multiple("bands_file", ["file1", "file2", "file3"] )
+                    will produce a layout where each subplot uses a different bands_file.
+
+                - One argument and it is a dictionary:
+                    First: dict
+                        The keys of this dictionary will be the setting keys you want to vary across subplots
+                        and the values are of course the values for each plot for that setting. 
+
+                    It works exactly as the previous case, but in this case we have multiple settings that vary.
+                
+                - One argument and it is a function:
+                    First: function
+                        With this function you can produce any settings you want without limitations.
+
+                        It will be used as the `_getInitKwargsList` method of the MultiplePlot object, so it needs to
+                        accept self (the MultiplePlot object) and return a list of dictionaries which are the 
+                        settings for each plot.
+
+        fixed: dict, optional
+            A dictionary containing values for settings that will be fixed for all subplots.
+            For the settings that you don't specify here you will get the defaults.
+        template_plot: sisl Plot, optional
+            If provided this plot will be used as a template.
+
+            It is important to know that it will not act only as the settings template,
+            but it will also PROVIDE DATA FOR THE OTHER PLOTS in case the data reading
+            settings are not being varied through the different plots.
+
+            This is extremely important to provide when possible, because in some cases the data
+            that a plot gathers can be very large and therefore it may not be even feasable to store
+            the repeated data in terms of memory/time.
+        rows: int, optional
+            The number of rows of the plot grid. If not provided, it will be inferred from `cols`
+            and the number of plots. If neither `cols` or `rows` are provided, the `arrange` parameter will decide
+            how the layout should look like.
+        cols: int, optional
+            The number of columns of the subplot grid. If not provided, it will be inferred from `rows`
+            and the number of plots. If neither `cols` or `rows` are provided, the `arrange` parameter will decide
+            how the layout should look like.
+        arrange: {'rows', 'col', 'square'}, optional
+            The way in which subplots should be aranged if the `rows` and/or `cols`
+            parameters are not provided.
+        **kwargs:
+            Will be passed directly to SubPlots initialization, so it can contain the settings for it, for example.
+
+            If args are not passed and the default multiple plot is being created, some keyword arguments may be used by the method
+            that generates the default multiple plot. One recurrent example of this is the keyword `wdir`. 
+        '''
+
+        return cls.multiple(*args, fixed=fixed, template_plot=None, merge_method='subplots',
+                rows=rows, cols=cols, arrange=arrange, **kwargs)
+    
+    @classmethod
+    def animated(cls, *args, fixed={}, frame_names=None, template_plot=None, **kwargs):
         '''Creates an animation out of a class.
 
         This class method returns an animation with frames belonging to a given plot class.
@@ -248,7 +422,7 @@ class Plot(ShortCutable, Configurable, Connected):
         fixed: dict, optional
             A dictionary containing values for settings that will be fixed along the animation.
             For the settings that you don't specify here you will get the defaults.
-        frameNames: list of str or function, optional
+        frame_names: list of str or function, optional
             If it is a list of strings, each string will be used as the name for the corresponding frame.
 
             If it is a function, it should accept `self` (the animation object) and return a list of strings
@@ -281,47 +455,20 @@ class Plot(ShortCutable, Configurable, Connected):
             The Animation that you asked for
         
         '''
-
-        #Try to retrieve the default animation if no arguments are provided
-        if len(args) == 0:
-
-            return call_method_if_present(cls, "_default_animation", fixed = fixed, frameNames = frameNames, **kwargs)
-
-        #Define how the getInitkwargsList method will look like
-        if callable(args[0]):
-            _getInitKwargsList = args[0]
-        else:
-            if len(args) == 2:
-                animated_settings = {args[0]: args[1]}
-            elif isinstance(args[0], dict):
-                animated_settings = args[0]
-
-            def _getInitKwargsList(self):
-
-                #Adding the fixed values to the list
-                vals = {
-                    **{key: itertools.repeat(val) for key, val in fixed.items()},
-                    **animated_settings
-                }
-
-                return dictOfLists2listOfDicts(vals)
         
-        _getFrameNames = None
+        _get_frame_names = None
         #Define how to get the framenames
-        if frameNames:
+        if frame_names:
 
-            if callable(frameNames):
-                _getFrameNames = frameNames
+            if callable(frame_names):
+                _get_frame_names = frame_names
             else:
-                def _getFrameNames(self,i):
-                    return frameNames[i]
-        
-        #Return the initialized animation
-        return Animation( _plugins = {
-            "_getInitKwargsList": _getInitKwargsList,
-            "_getFrameNames": _getFrameNames,
-            "_plotClasses": cls
-        }, template_plot=template_plot, **kwargs)
+                def _get_frame_names(self,i):
+                    return frame_names[i]
+
+        # And just let the general multiple plot creator do the work
+        return cls.multiple(*args, fixed=fixed, template_plot=template_plot, merge_method='animation',
+                            _plugins={**kwargs.pop('_plugins', {}), "_get_frame_names": _get_frame_names}, **kwargs)
 
     def __new__(cls, *args, **kwargs):
         '''
@@ -383,16 +530,25 @@ class Plot(ShortCutable, Configurable, Connected):
 
             return plot
         
-        elif kwargs.get('animate', None):
+        elif 'animate' in kwargs or 'varying' in kwargs or 'subplots' in kwargs:
 
-            animate = kwargs.pop('animate')
+            methods = {'animate': cls.animated, 'varying': cls.multiple, 'subplots': cls.subplots}
+            # Retrieve the keyword that was actually passed 
+            # and choose the appropiate method
+            for keyword in ('animate', 'varying', 'subplots'):
+                variable_settings = kwargs.pop(keyword, None)
+                if variable_settings is not None:
+                    method = methods[keyword]
+                    break
 
-            if isinstance(animate, str):
-                animate = [animate]
-            if isinstance(animate, (list, tuple, np.ndarray)):
-                animate = {key: kwargs.pop(key) for key in animate}
+            # Normalize all accepted input types to a dict
+            if isinstance(variable_settings, str):
+                variable_settings = [variable_settings]
+            if isinstance(variable_settings, (list, tuple, np.ndarray)):
+                variable_settings = {key: kwargs.pop(key) for key in variable_settings}
 
-            plot = cls.animated(animate, fixed=kwargs)
+            # Just run the method that will get us the desired plot
+            plot = method(variable_settings, fixed=kwargs, **kwargs)
 
             # Inform that we don't want to run the __init__ method anymore
             # See the beggining of __init__()
@@ -1872,23 +2028,23 @@ class Animation(MultiplePlot):
 
     )
 
-    def __init__(self, *args, frameNames=None, _plugins={}, **kwargs):
+    def __init__(self, *args, frame_names=None, _plugins={}, **kwargs):
         
-        if frameNames is not None:
-            _plugins["_getFrameNames"] = frameNames if callable(frameNames) else lambda self: frameNames
+        if frame_names is not None:
+            _plugins["_get_frame_names"] = frame_names if callable(frame_names) else lambda self: frame_names
         
         super().__init__(*args, **kwargs, _plugins=_plugins)
     
     def _build_frames(self):
 
         # Get the names for each frame
-        frameNames = []
+        frame_names = []
         for i, plot in enumerate(self.childPlots):
             try:
-                frame_name = self._getFrameNames(i)
+                frame_name = self._get_frame_names(i)
             except Exception:
                 frame_name = f"Frame {i+1}"
-            frameNames.append(frame_name)
+            frame_names.append(frame_name)
         
         ani_method = self.setting('ani_method')
         if ani_method is None:
@@ -1904,7 +2060,7 @@ class Animation(MultiplePlot):
         elif ani_method == "update":
             figure_builder = self._figure_update_method
 
-        steps, updatemenus = figure_builder(frameNames)
+        steps, updatemenus = figure_builder(frame_names)
 
         framesLayout = {
 
@@ -2097,25 +2253,113 @@ class SubPlots(MultiplePlot):
     '''
     Version of MultiplePlot that renders each plot in a separate subplot.
 
-    IT'S JUST A FIRST SKETCH!
+    Parameters
+    -----------
+    arrange:  optional
+        The way in which subplots should be aranged if the `rows` and/or
+        `cols` parameters are not provided.
+    rows: int, optional
+        The number of rows of the plot grid. If not provided, it will be
+        inferred from `cols` and the number of plots. If neither
+        `cols` or `rows` are provided, the `arrange` parameter will decide
+        how the layout should look like.
+    cols: int, optional
+        The number of columns of the subplot grid. If not provided, it will
+        be inferred from `rows` and the number of plots. If
+        neither `cols` or `rows` are provided, the `arrange` parameter will
+        decide how the layout should look like.
+    make_subplot_kwargs: dict, optional
+        Extra keyword arguments that will be passed to make_subplots.
+    reading_order:  optional
+        Order in which the plot tries to read the data it needs.
+    root_fdf: str, optional
+        Path to the fdf file that is the 'parent' of the results.
+    results_path: str, optional
+        Directory where the files with the simulations results are
+        located. This path has to be relative to the root fdf.
 
     '''
 
     _is_subplots = True
 
-    def _get_figure(self, *args, **kwargs):
+    _parameters = (
+
+        DropdownInput(key='arrange', name='Automatic arrangement method',
+            default='rows',
+            params={
+                'options':[
+                    {'value': option, 'label': option} for option in ('rows', 'cols', 'square')
+                ],
+                'placeholder': 'Choose a subplot arrangement method...',
+                'isMulti': False,
+                'isSearchable': True,
+                'isClearable': True,
+            },
+            help='''The way in which subplots should be aranged if the `rows` and/or `cols`
+            parameters are not provided.'''
+        ),
+
+        IntegerInput(key='rows', name='Rows',
+            default=None,
+            help='''The number of rows of the plot grid. If not provided, it will be inferred from `cols`
+            and the number of plots. If neither `cols` or `rows` are provided, the `arrange` parameter will decide
+            how the layout should look like.'''
+        ),
+
+        IntegerInput(key='cols', name='Columns',
+            default=None,
+            help='''The number of columns of the subplot grid. If not provided, it will be inferred from `rows`
+            and the number of plots. If neither `cols` or `rows` are provided, the `arrange` parameter will decide
+            how the layout should look like.'''
+        ),
+
+        ProgramaticInput(key='make_subplot_kwargs', name='make_subplot additional arguments',
+            dtype=dict,
+            default={},
+            help='''Extra keyword arguments that will be passed to make_subplots.'''
+        )
+    )
+
+    def _get_figure(self):
 
         nplots = len(self.childPlots)
+        rows = self.setting('rows')
+        cols = self.setting('cols')
+        if rows is None and cols is None:
+            arrange = self.setting('arrange')
+            if arrange == 'rows':
+                rows = nplots
+                cols = 1
+            elif arrange == 'cols':
+                cols = nplots
+                rows = 1
+            elif arrange == 'square':
+                cols = np.sqrt(nplots)
+                rows = np.sqrt(nplots)
+        elif rows is None:
+            rows = nplots/cols
+        elif cols is None:
+            cols = nplots/rows
 
-        self.figure = make_subplots(*args, **{"rows": nplots, "cols": 1, **kwargs})
+        if cols % 1 != 0 or rows % 1 != 0:
+            raise Exception(f'It is impossible to draw a layout with {rows} rows and {cols} cols.' +
+                f' Please review the values provided, keeping in mind that the layout should accomodate {nplots} plots')
+        elif cols*rows > nplots:
+            # They will see the empty spaces, not worth it to print something I believe
+            pass
+        elif cols*rows < nplots:
+            print(f'{nplots - cols*rows} plots will be missing, because a {rows}x{cols} layout was requested and you have {nplots}')
 
-        for i, plot in enumerate(self.childPlots):
+        rows = int(rows)
+        cols = int(cols)
+        
+        kwargs = self.setting('make_subplot_kwargs')
+        self.figure = make_subplots(**{"rows": rows, "cols": cols, **kwargs})
+
+        # Start assigning each plot to a position of the layout
+        for (row, col), plot in zip(itertools.product(range(1, rows + 1), range(1, cols + 1)), self.childPlots):
 
             ntraces = len(plot.data)
-
-            # This should not be hardcoded!!!!!!!
-            row = i+1
-            col = 1
 
             self.add_traces(plot.data, rows=[row]*ntraces, cols=[col]*ntraces)
 

@@ -11,7 +11,8 @@ import tempfile
 import pytest
 import numpy as np
 
-from sisl.viz.plot import Plot, MultiplePlot, Animation
+import sisl
+from sisl.viz.plot import Plot, MultiplePlot, SubPlots, Animation
 
 from sisl.viz.plots import *
 from sisl.viz.plotutils import get_plotable_siles, load
@@ -143,6 +144,40 @@ class TestPlot(BasePlotTester):
 class TestMultiplePlot(BasePlotTester):
 
     PlotClass = MultiplePlot
+
+# ------------------------------------------------------------
+#            Tests for the SubPlots class
+# ------------------------------------------------------------
+
+
+class TestSubPlots(BasePlotTester):
+
+    PlotClass = SubPlots
+
+    def test_subplots_arrangement(self):
+
+        geom = sisl.geom.graphene()
+
+        # We are going to try some things here and check that they don't fail
+        # as we have no way of checking the actual layout of the subplots
+        plot = GeometryPlot.subplots('bonds', [True, False], 
+            fixed={'geom': geom, 'axes': [0, 1]}, _debug=True)
+
+        plot.update_settings(cols=2)
+
+        plot.update_settings(rows=2)
+        
+        plot.update_settings(cols=1, rows=1)
+
+        with pytest.raises(Exception):
+            plot.update_settings(cols=None, rows=None, arrange='square')
+
+    def test_init_from_kw(self):
+
+        geom = sisl.geom.graphene()
+
+        geom.plot(bonds=[True, False], subplots=['bonds'])
+
 
 # ------------------------------------------------------------
 #              Tests for the Animation class

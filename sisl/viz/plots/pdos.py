@@ -185,15 +185,15 @@ class PdosPlot(Plot):
     }
     
     @classmethod
-    def _default_animation(self, wdir = None, frameNames = None, **kwargs):
+    def _default_animation(self, wdir = None, frame_names = None, **kwargs):
         
         pdos_files = find_files(wdir, "*.PDOS", sort = True)
 
-        def _getFrameNames(self):
+        def _get_frame_names(self):
 
             return [os.path.basename( childPlot.setting("pdos_file")) for childPlot in self.childPlots]
 
-        return PdosPlot.animated("pdos_file", pdos_files, frameNames = _getFrameNames, wdir = wdir, **kwargs)
+        return PdosPlot.animated("pdos_file", pdos_files, frame_names = _get_frame_names, wdir = wdir, **kwargs)
     
     def _after_init(self):
 

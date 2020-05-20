@@ -24,7 +24,7 @@ from .plot import Plot
 
 def _get_plotting_func(PlotClass, setting_key):
 
-    def _plot(self, *args, animate=None, **kwargs):
+    def _plot(self, *args, **kwargs):
 
         return PlotClass(*args, **{setting_key: self, **kwargs})
     

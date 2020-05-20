@@ -14,7 +14,7 @@ H.construct([(0.1, 1.44), (0, -2.7)], )
 
 def test_eigenstate_wf():
 
-    plot = H.eigenstate()[0].plot_wf(geometry=H.geom)
+    plot = H.eigenstate()[0].plot_wavefunction(geom=H.geom)
 
     assert len(plot.data) > 0
     assert isinstance(plot.data[0], go.Isosurface)
@@ -22,21 +22,23 @@ def test_eigenstate_wf():
 def test_hamiltonian_wf():
 
     # Check if it works for 3D plots
-    plot = H.plot_wf(2)
-    prev_len = len(plot.data)
+    plot = H.plot_wavefunction(2)
     assert isinstance(plot.data[0], go.Isosurface)
 
     # Check that setting plot geom to True adds data traces
-    plot = H.plot_wf(2, plot_geom=True)
+    plot.update_settings(plot_geom=False)
+    prev_len = len(plot.data)
+    plot.update_settings(plot_geom=True)
     assert len(plot.data) > prev_len
 
     # Now 2D
-    plot = H.plot_wf(2, axes=[0,1])
-    prev_len = len(plot.data)
+    plot = H.plot_wavefunction(2, axes=[0,1])
     assert isinstance(plot.data[0], go.Heatmap)
 
     # Check that setting plot geom to True adds data traces
-    plot = H.plot_wf(2, axes=[0, 1], plot_geom=True)
+    plot.update_settings(plot_geom=False)
+    prev_len = len(plot.data)
+    plot.update_settings(plot_geom=True)
     assert len(plot.data) > prev_len
 
 
