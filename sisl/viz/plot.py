@@ -1380,14 +1380,17 @@ class Plot(ShortCutable, Configurable, Connected):
 
         return self
     
-    def v_line(self, x):
+    def v_line(self, x, yrange=None, **kwargs):
         '''
         Draws a vertical line in the figure (NOT WORKING YET!)
         '''
 
-        yrange = self.figure.layout.yaxis.range or [0, 7000]
+        if yrange is None:
+            yrange = self.layout.yaxis.range
+            if yrange is None:
+                yrange = [0,7000]
     
-        self.figure.add_scatter(mode = "lines", x = [x,x], y = yrange, hoverinfo = 'none', showlegend = False)
+        self.add_scatter(mode = "lines", x = [x,x], y = yrange, **kwargs)
 
         return self
 

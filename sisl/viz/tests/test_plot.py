@@ -36,6 +36,9 @@ class BasePlotTester:
         is_indoc = np.array([key in doc for key in params])
         assert np.all(is_indoc), f'The following parameters are missing in the documentation of {self.PlotClass.__name__}: {params[~is_indoc]} '
 
+        missing_help = [param.key for param in self.PlotClass._parameters if not getattr(param, "help", None)]
+        assert len(missing_help) == 0, f"Parameters {missing_help} in {self.PlotClass.__name__} are missing a help message. Don't be lazy!"
+
     def test_plot_settings(self):
 
         plot = self.PlotClass()

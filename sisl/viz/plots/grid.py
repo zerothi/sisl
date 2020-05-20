@@ -5,7 +5,9 @@ import plotly.graph_objects as go
 
 import sisl
 from ..plot import Plot
-from ..input_fields import TextInput, FilePathInput, Array1dInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput
+from ..input_fields import TextInput, FilePathInput, Array1dInput, SwitchInput, \
+     ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, \
+     QueriesInput, ProgramaticInput, PlotableInput, SislObjectInput
 
 class GridPlot(Plot):
     '''
@@ -156,6 +158,17 @@ class GridPlot(Plot):
             help = '''The axis along you want to see the grid, it will be averaged along the other ones '''
         ),
 
+        SwitchInput(key='plot_geom', name='Plot geometry',
+            default=False,
+            help='''If True the geometry associated to the grid will also be plotted'''
+        ),
+
+        ProgramaticInput(key='geom_kwargs', name='Geometry plot extra arguments',
+            default={},
+            dtype=dict,
+            help='''Extra arguments that are passed to geom.plot() if plot_geom is set to True'''
+        ),
+
         DropdownInput(
             key = "zsmooth", name="2D heatmap smoothing method",
             default=False,
@@ -257,22 +270,38 @@ class GridPlot(Plot):
 
         IntegerInput(
             key="cmid", name="Colorbar center",
-            default=None
+            default=None,
+            help='''The value to set at the center of the colorbar. If not provided, the color range is used'''
         ),
 
         TextInput(
             key="colorscale", name="Color scale",
-            default=None
+            default=None,
+            help='''A valid plotly colorscale. See https://plotly.com/python/colorscales/'''
         ),
 
         RangeInput(
             key="iso_vals", name="Min and max isosurfaces",
-            default=None
+            default=None,
+            help='''The minimum and maximum values of the isosurfaces to be displayed.
+            If not provided, iso_frac will be used to calculate these values (which is more versatile).'''
+        ),
+
+        FloatInput(
+            key='iso_frac', name="Isosurfaces fractions",
+            default=0.3,
+            help='''If iso_vals is not provided, this value is used to calculate where the isosurfaces are drawn.
+            It calculates them from the minimum and maximum values of the grid like so:
+            If iso_frac = 0.3:
+            (min_value----30%-----ISOMIN----------ISOMAX---30%-----max_value)
+            Therefore, it should be a number between 0 and 0.5.
+            '''
         ),
 
         IntegerInput(
             key="surface_count", name="Number of surfaces",
             default=2,
+            help='''The number of surfaces between the lower and the upper limits of iso_vals'''
         ),
 
         DropdownInput(
@@ -419,6 +448,22 @@ class GridPlot(Plot):
         # Use it
         plot_func(grid, values, display_axes, sc, name, showlegend=bool(name))
 
+        # Add also the geometry if the user requested it
+        # This should probably not work like this. It should make use
+        # of MultiplePlot somehow. The problem is that right now, the bonds
+        # are calculated each time this method is called, for example
+        plot_geom = self.setting('plot_geom')
+        if plot_geom:
+            if not hasattr(grid, 'geom'):
+                print('You asked to plot the geometry, but the grid does not contain any geometry')
+            else:
+                geom_kwargs = self.setting('geom_kwargs')
+                geom_plot = grid.geom.plot(**{'axes':self.settings['axes'], **geom_kwargs})
+
+                self.add_traces(geom_plot.data)
+
+        self.update_layout(legend_orientation='h')
+
     def _get_ax_range(self, grid, ax, sc):
 
         ax_range = self.setting(["xRange", "yRange", "zRange"][ax])
@@ -534,9 +579,10 @@ class GridPlot(Plot):
         cmin, cmax = crange
 
         isovals = self.setting('iso_vals')
+        iso_frac = self.setting('iso_frac')
         if isovals is None:
-            isovals = [minval + (maxval-minval)*0.3,
-                        maxval - (maxval-minval)*0.3]
+            isovals = [minval + (maxval-minval)*iso_frac,
+                        maxval - (maxval-minval)*iso_frac]
         isomin, isomax = isovals
 
         X, Y, Z = np.meshgrid(*[self._get_ax_range(grid, i, sc) for i, shape in enumerate(grid.shape)])
@@ -924,6 +970,219 @@ class GridPlot(Plot):
         )
 
         return fig
+
+class WavefunctionPlot(GridPlot):
+    '''
+    An extension of GridPlot specifically tailored for plotting wavefunctions
+
+    Parameters
+    -----------
+    eigenstate: EigenstateElectron, optional
+        The eigenstate that contains the coefficients of the wavefunction.
+        Note that an eigenstate can contain coefficients for multiple states.
+    geom: Geometry, optional
+        Necessary to generate the grid and to plot the wavefunctions, since
+        the basis orbitals are needed.             If you provide a
+        hamiltonian, the geometry is probably inside the hamiltonian, so you
+        don't need to provide it.             However, this field is
+        compulsory if you are providing the eigenstate directly.
+    k: array-like, optional
+        If the eigenstates need to be calculated from a hamiltonian, the k
+        point for which you want them to be calculated
+    grid_prec: float, optional
+        The spacing between points of the grid where the wavefunction will be
+        projected (in Ang).             If you are plotting a 3D
+        representation, take into account that a very fine and big grid could
+        result in             your computer crashing on render. If it's the
+        first time you are using this function,             assess the
+        capabilities of your computer by first using a low-precision grid and
+        increase             it gradually.
+    i: int, optional
+        The index of the wavefunction
+    grid:  optional
+        A sisl.Grid object. If provided, grid_file is ignored.
+    grid_file: str, optional
+    
+    represent:  optional
+        The representation of the grid that should be displayed
+    transforms:  optional
+        The representation of the grid that should be displayed
+    axes:  optional
+        The axis along you want to see the grid, it will be averaged along
+        the other ones
+    plot_geom: bool, optional
+        If True the geometry associated to the grid will also be plotted
+    geom_kwargs: dict, optional
+        Extra arguments that are passed to geom.plot() if plot_geom is set to
+        True
+    zsmooth:  optional
+        Parameter that smoothens how data looks in a heatmap.
+        'best' interpolates data, 'fast' interpolates pixels, 'False'
+        displays the data as is.
+    interp: array-like, optional
+        Interpolation factors to make the grid finer on each axis.See the
+        zsmooth setting for faster smoothing of 2D heatmap.
+    sc: array-like, optional
+    
+    offset: array-like, optional
+        The offset of the grid along each axis. This is important if you are
+        planning to match this grid with other geometry related plots.
+    cut_vacuum: bool, optional
+        Whether the vacuum should not be taken into account for displaying
+        the grid.             This is essential especially in 3D
+        representations, since plotly needs to calculate the
+        isosurfaces of the grid.
+    trace_name: str, optional
+        The name that the trace will show in the legend. Good when merging
+        with other plots to be able to toggle the trace in the legend
+    xRange: array-like of shape (2,), optional
+        Range where the X is displayed. Should be inside the unit cell,
+        otherwise it will fail.
+    yRange: array-like of shape (2,), optional
+        Range where the Y is displayed. Should be inside the unit cell,
+        otherwise it will fail.
+    zRange: array-like of shape (2,), optional
+        Range where the Z is displayed. Should be inside the unit cell,
+        otherwise it will fail.
+    crange: array-like of shape (2,), optional
+        The range of values that the colorbar must enclose. This controls
+        saturation and hides below threshold values.
+    cmid: int, optional
+        The value to set at the center of the colorbar. If not provided, the
+        color range is used
+    colorscale: str, optional
+        A valid plotly colorscale. See https://plotly.com/python/colorscales/
+    iso_vals: array-like of shape (2,), optional
+        The minimum and maximum values of the isosurfaces to be displayed.
+        If not provided, iso_frac will be used to calculate these values
+        (which is more versatile).
+    iso_frac: float, optional
+        If iso_vals is not provided, this value is used to calculate where
+        the isosurfaces are drawn.             It calculates them from the
+        minimum and maximum values of the grid like so:             If
+        iso_frac = 0.3:             (min_value----30%-----ISOMIN----------
+        ISOMAX---30%-----max_value)             Therefore, it should be a
+        number between 0 and 0.5.
+    surface_count: int, optional
+        The number of surfaces between the lower and the upper limits of
+        iso_vals
+    type3D:  optional
+        This controls how the 3D data is displayed.              'volume'
+        displays different layers with different levels of opacity so that
+        there is more sensation of depth.             'isosurface' displays
+        only isosurfaces and nothing inbetween them. For plotting grids with
+        positive and negative             values, you should use 'isosurface'
+        or two different 'volume' plots.              If not provided, the
+        plot will decide for you based on the above mentioned fact
+    opacityscale:  optional
+        Controls how the opacity changes through layers.              See
+        https://plotly.com/python/3d-volume-plots/ for a display of the
+        different possibilities
+    surface_opacity: float, optional
+        The opacity of the isosurfaces drawn by 3d plots from 0 (transparent)
+        to 1 (opaque).
+    reading_order:  optional
+        Order in which the plot tries to read the data it needs.
+    root_fdf: str, optional
+        Path to the fdf file that is the 'parent' of the results.
+    results_path: str, optional
+        Directory where the files with the simulations results are
+        located. This path has to be relative to the root fdf.
+    '''
+
+    _parameters = (
+
+        PlotableInput(key="eigenstate", name="Electron eigenstate",
+            default=None,
+            dtype=sisl.EigenstateElectron,
+            help='''The eigenstate that contains the coefficients of the wavefunction.
+            Note that an eigenstate can contain coefficients for multiple states.
+            '''
+        ),
+
+        SislObjectInput(key='geom', name='Geometry',
+            default=None,
+            dtype=sisl.Geometry,
+            help='''Necessary to generate the grid and to plot the wavefunctions, since the basis orbitals are needed.
+            If you provide a hamiltonian, the geometry is probably inside the hamiltonian, so you don't need to provide it.
+            However, this field is compulsory if you are providing the eigenstate directly.'''
+        ),
+
+        Array1dInput(key='k', name='K point',
+            default=(0,0,0),
+            help='''If the eigenstates need to be calculated from a hamiltonian, the k point for which you want them to be calculated'''
+        ),
+
+        FloatInput(key='grid_prec', name='Grid precision',
+            default=0.2,
+            help='''The spacing between points of the grid where the wavefunction will be projected (in Ang).
+            If you are plotting a 3D representation, take into account that a very fine and big grid could result in
+            your computer crashing on render. If it's the first time you are using this function,
+            assess the capabilities of your computer by first using a low-precision grid and increase
+            it gradually.
+            '''
+        ),
+
+        IntegerInput(key='i', name='Wavefunction index',
+            default=0,
+            help="The index of the wavefunction"
+        ),
+
+    )
+
+    _overwrite_defaults = {
+        'axes': [0,1,2],
+        'plot_geom': True,
+    }
+
+    def _read_nosource(self):
+
+        eigenstate = self.setting('eigenstate')
+
+        if eigenstate is None:
+            raise Exception('No eigenstate was provided')
+
+        self.eigenstate = eigenstate
+
+    def _read_from_H(self):
+
+        self.setup_hamiltonian()
+
+        k = self.setting('k')
+
+        self.eigenstate = self.H.eigenstate(k)
+
+    def _after_read(self):
+        # Just avoid here GridPlot's _after_grid. Note that we are
+        # calling it later in _set_data
+        pass
+
+    def _set_data(self):
+
+        geom = self.setting('geom')
+        if geom is not None:
+            self.geom = geom
+        if getattr(self, 'geom', None) is None:
+            raise Exception('No geometry was provided and we need it the basis orbitals to build the wavefunctions from the coefficients!')
+        
+        transforms = self.setting('transforms')
+        if 'abs' in transforms or 'squared' in transforms:
+            self.update_settings(cmid=None, run_updates=False)
+        else:
+            self.update_settings(cmid=0, run_updates=False)
+
+        grid_prec = self.setting('grid_prec')
+        i = self.setting('i')
+
+        if self.setting('grid') is None:
+            self.grid = sisl.Grid(grid_prec, geometry=self.geom)
+
+        # GridPlot's after_read basically sets the xRange, yRange and zRange options
+        GridPlot._after_read(self)
+
+        self.eigenstate[i].wavefunction(self.grid)
+
+        GridPlot._set_data(self)
 
 # class GridSlice(Plot):
 
