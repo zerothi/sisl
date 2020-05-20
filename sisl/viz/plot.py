@@ -84,6 +84,17 @@ class Plot(ShortCutable, Configurable, Connected):
         contains the different setting groups present in the plot.
 
         Each group is a dict like { "key": , "name": ,"icon": , "description": }
+    animate: str, array-like of str or dict, optional
+        the settings to animate. 
+        If it's a dict it should contain the values of the settings for each frame.
+        You only need to pass the ones that are changing! The rest of settings you can
+        still specify them as usual.
+
+        If it's a string or a list of strings, it will basically create the above mentioned
+        dictionary using the values that you passed. E.g:
+            object.plot(i=[1,4,5], animate="i")
+        will create a plot with 3 frames where i=1, i=4 and i=5. Note that of course you should
+        provide a list, tuple, etc... for the values of the settings that you want to animate.
     
 
     ...
@@ -371,6 +382,25 @@ class Plot(ShortCutable, Configurable, Connected):
             plot.AVOID_SETTINGS_INIT = True
 
             return plot
+        
+        elif kwargs.get('animate', None):
+
+            animate = kwargs.pop('animate')
+
+            if isinstance(animate, str):
+                animate = [animate]
+            if isinstance(animate, (list, tuple, np.ndarray)):
+                animate = {key: kwargs.pop(key) for key in animate}
+
+            plot = cls.animated(animate, fixed=kwargs)
+
+            # Inform that we don't want to run the __init__ method anymore
+            # See the beggining of __init__()
+            plot.INIT_ON_NEW = True
+            plot.AVOID_SETTINGS_INIT = True
+
+            return plot
+
 
         return object.__new__(cls)
 
@@ -1585,7 +1615,7 @@ class MultiplePlot(Plot):
             template_settings={}
             if self.has_template_plot:
                 self._plotClasses = self.template_plot.__class__
-                template_settings = template_plot.settings
+                template_settings = self.template_plot.settings
                 
             SINGLE_CLASS = isinstance(self._plotClasses, type)
 

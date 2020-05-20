@@ -24,12 +24,13 @@ from .plot import Plot
 
 def _get_plotting_func(PlotClass, setting_key):
 
-    def _plot(self, *args, **kwargs):
+    def _plot(self, *args, animate=None, **kwargs):
+
         return PlotClass(*args, **{setting_key: self, **kwargs})
     
     _plot.__doc__ = f'''Builds a {PlotClass.__name__} by setting the value of "{setting_key}" to the current object.
-    
-    It accepts the same arguments as {PlotClass.__name__}. 
+
+    Apart from this specific parameter ,it accepts the same arguments as {PlotClass.__name__}.
     
     Documentation for {PlotClass.__name__}
     -------------
