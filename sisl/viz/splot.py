@@ -35,6 +35,14 @@ def general_arguments(parser):
     parser.add_argument('--no-show', dest='show', action='store_false',
                         help="Pass this flag if you don't want the plot to be displayed.")
     
+    parser.add_argument('--editable', '-e', dest='editable', action='store_true',
+                        help="Display the plot in editable mode, so that you can edit on-site the titles, axis ranges and more." +
+                        " Keep in mind that the changes won't be saved, but you can take a picture of it with the toolbar")
+
+    parser.add_argument('--drawable', '-d', dest='drawable', action='store_true',
+                        help="Display the plot in drawable mode, which allows you to draw shapes and lines" +
+                        " Keep in mind that the changes won't be saved, but you can take a picture of it with the toolbar")
+    
     parser.add_argument('--shortcuts', '-sh', nargs="*",
                         help="The shortcuts to apply to the plot after it has been built. " +
                         "They should be passed as the sequence of keys that need to be pressed to trigger the shortcut"+
@@ -134,4 +142,16 @@ def splot():
         plot.save(args.save)
 
     if getattr(args, "show", True):
-        plot.show()
+
+        config = {
+            'editable': args.editable,
+            'modeBarButtonsToAdd': [
+                'drawline',
+                'drawopenpath',
+                'drawclosedpath',
+                'drawcircle',
+                'drawrect',
+                'eraseshape'
+            ] if args.drawable else []
+        }
+        plot.show(config=config)

@@ -530,7 +530,7 @@ class BandsPlot(Plot):
         '''
         ONLY WORKING FOR A PAIR OF BANDS THAT ARE ALWAYS INCREASING OR ALWAYS DECREASING
         
-        Plots the energy difference between two bands.
+        Plots the k difference between two bands.
 
         Parameters
         -----------
@@ -567,6 +567,6 @@ class BandsPlot(Plot):
 
         plt = Plot.from_plotly(fig)
 
-        plt.update_layout({"title": f"Delta K between bands {band1} and {band2}"})
+        plt.update_layout({"title": f"Delta K between bands {band1} and {band2}", 'xaxis_title': 'Delta k', 'yaxis_title': 'Energy (eV)'})
 
         return plt
