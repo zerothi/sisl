@@ -1090,6 +1090,8 @@ class WavefunctionPlot(GridPlot):
         located. This path has to be relative to the root fdf.
     '''
 
+    _plot_type = 'Wavefunction'
+
     _parameters = (
 
         PlotableInput(key="eigenstate", name="Electron eigenstate",
@@ -1175,7 +1177,9 @@ class WavefunctionPlot(GridPlot):
         i = self.setting('i')
 
         if self.setting('grid') is None:
-            self.grid = sisl.Grid(grid_prec, geometry=self.geom)
+            k = self.setting('k')
+            dtype = float if (np.array(k) == 0).all() else complex
+            self.grid = sisl.Grid(grid_prec, geometry=self.geom, dtype=dtype)
 
         # GridPlot's after_read basically sets the xRange, yRange and zRange options
         # which need to know what the grid is, that's why we are calling it here

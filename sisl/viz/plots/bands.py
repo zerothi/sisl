@@ -558,10 +558,13 @@ class BandsPlot(Plot):
             diff = ks - b2Ks_for_b1Es
 
         else:
+            if offsetE:
+                E += np.min(b1)
+
             diff = np.interp(E, b1, ks) - \
                 np.interp(E, b2, ks)
 
-        E += np.min(b1) if offsetE else 0
+        E -= np.min(b1) if offsetE else 0
 
         fig = px.line(x=diff, y=E)
 
