@@ -122,7 +122,7 @@ class TestHamiltonian:
     def test_set4(self, setup):
         for ia in setup.H.geometry:
             # Find atoms close to 'ia'
-            idx = setup.H.geom.close(ia, R=(0.1, 1.5))
+            idx = setup.H.geometry.close(ia, R=(0.1, 1.5))
             setup.H[ia, idx[0]] = 1.
             setup.H[ia, idx[1]] = 0.1
         assert setup.H.H[0, 0] == 1.
@@ -257,7 +257,7 @@ class TestHamiltonian:
     def test_fromsp1(self, setup):
         setup.H.construct([(0.1, 1.5), (1., 0.1)])
         csr = setup.H.tocsr(0)
-        H = Hamiltonian.fromsp(setup.H.geom, csr)
+        H = Hamiltonian.fromsp(setup.H.geometry, csr)
         assert H.spsame(setup.H)
         setup.H.empty()
 
@@ -266,12 +266,12 @@ class TestHamiltonian:
         H = setup.H.copy()
         H.construct([(0.1, 1.5), (1., 0.1)])
         csr = H.tocsr(0)
-        Hamiltonian.fromsp(setup.H.geom.tile(2, 0), csr)
+        Hamiltonian.fromsp(setup.H.geometry.tile(2, 0), csr)
 
     def test_fromsp3(self, setup):
         H = setup.HS.copy()
         H.construct([(0.1, 1.5), ([1., 1.], [0.1, 0])])
-        h = Hamiltonian.fromsp(H.geom.copy(), H.tocsr(0), H.tocsr(1))
+        h = Hamiltonian.fromsp(H.geometry.copy(), H.tocsr(0), H.tocsr(1))
         assert H.spsame(h)
 
     def test_op1(self, setup):
@@ -1194,15 +1194,15 @@ class TestHamiltonian:
 
     def test_tile4(self, setup):
         def func(self, ia, idxs, idxs_xyz=None):
-            idx = self.geom.close(ia, R=[0.1, 1.43], idx=idxs)
-            io = self.geom.a2o(ia)
+            idx = self.geometry.close(ia, R=[0.1, 1.43], idx=idxs)
+            io = self.geometry.a2o(ia)
             # Set on-site on first and second orbital
-            odx = self.geom.a2o(idx[0])
+            odx = self.geometry.a2o(idx[0])
             self[io, odx] = -1.
             self[io+1, odx+1] = 1.
 
             # Set connecting
-            odx = self.geom.a2o(idx[1])
+            odx = self.geometry.a2o(idx[1])
             self[io, odx] = 0.2
             self[io, odx+1] = 0.01
             self[io+1, odx] = 0.01
@@ -1211,7 +1211,7 @@ class TestHamiltonian:
         setup.H2.construct(func)
         Hbig = setup.H2.tile(3, 0).tile(3, 1)
 
-        gbig = setup.H2.geom.tile(3, 0).tile(3, 1)
+        gbig = setup.H2.geometry.tile(3, 0).tile(3, 1)
         H = Hamiltonian(gbig)
         H.construct(func)
         assert H.spsame(Hbig)
@@ -1278,15 +1278,15 @@ class TestHamiltonian:
     @pytest.mark.slow
     def test_repeat4(self, setup):
         def func(self, ia, idxs, idxs_xyz=None):
-            idx = self.geom.close(ia, R=[0.1, 1.43], idx=idxs)
-            io = self.geom.a2o(ia)
+            idx = self.geometry.close(ia, R=[0.1, 1.43], idx=idxs)
+            io = self.geometry.a2o(ia)
             # Set on-site on first and second orbital
-            odx = self.geom.a2o(idx[0])
+            odx = self.geometry.a2o(idx[0])
             self[io, odx] = -1.
             self[io+1, odx+1] = 1.
 
             # Set connecting
-            odx = self.geom.a2o(idx[1])
+            odx = self.geometry.a2o(idx[1])
             self[io, odx] = 0.2
             self[io, odx+1] = 0.01
             self[io+1, odx] = 0.01
@@ -1295,7 +1295,7 @@ class TestHamiltonian:
         setup.H2.construct(func)
         Hbig = setup.H2.repeat(3, 0).repeat(3, 1)
 
-        gbig = setup.H2.geom.repeat(3, 0).repeat(3, 1)
+        gbig = setup.H2.geometry.repeat(3, 0).repeat(3, 1)
         H = Hamiltonian(gbig)
         H.construct(func)
 
@@ -1437,15 +1437,15 @@ class TestHamiltonian:
 
     def test_edges3(self, setup):
         def func(self, ia, idxs, idxs_xyz=None):
-            idx = self.geom.close(ia, R=[0.1, 1.43], idx=idxs)
-            io = self.geom.a2o(ia)
+            idx = self.geometry.close(ia, R=[0.1, 1.43], idx=idxs)
+            io = self.geometry.a2o(ia)
             # Set on-site on first and second orbital
-            odx = self.geom.a2o(idx[0])
+            odx = self.geometry.a2o(idx[0])
             self[io, odx] = -1.
             self[io+1, odx+1] = 1.
 
             # Set connecting
-            odx = self.geom.a2o(idx[1])
+            odx = self.geometry.a2o(idx[1])
             self[io, odx] = 0.2
             self[io, odx+1] = 0.01
             self[io+1, odx] = 0.01
@@ -1458,19 +1458,19 @@ class TestHamiltonian:
         # orbitals of first atom
         edge = H2.edges(orbital=[0, 1])
         assert len(edge) == 8
-        assert len(H2.geom.o2a(edge, unique=True)) == 4
+        assert len(H2.geometry.o2a(edge, unique=True)) == 4
 
         # first orbital on first two atoms
         edge = H2.edges(orbital=[0, 2])
         # The 1, 3 are still on the first two atoms, but aren't
         # excluded. Hence they are both there
         assert len(edge) == 12
-        assert len(H2.geom.o2a(edge, unique=True)) == 6
+        assert len(H2.geometry.o2a(edge, unique=True)) == 6
 
         # first orbital on first two atoms
         edge = H2.edges(orbital=[0, 2], exclude=[0, 1, 2, 3])
         assert len(edge) == 8
-        assert len(H2.geom.o2a(edge, unique=True)) == 4
+        assert len(H2.geometry.o2a(edge, unique=True)) == 4
 
 
 def test_wavefunction1():
@@ -1482,7 +1482,7 @@ def test_wavefunction1():
     H.construct([R, param])
     ES = H.eigenstate(dtype=np.float64)
     # Plot in the full thing
-    grid = Grid(0.1, geometry=H.geom)
+    grid = Grid(0.1, geometry=H.geometry)
     grid.fill(0.)
     ES.sub(0).wavefunction(grid)
 

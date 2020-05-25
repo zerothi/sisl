@@ -24,7 +24,7 @@ def setup():
             self.ES = EnergyDensityMatrix(self.g, orthogonal=False)
 
             def func(E, ia, idxs, idxs_xyz):
-                idx = E.geom.close(ia, R=(0.1, 1.44), idx=idxs, idx_xyz=idxs_xyz)
+                idx = E.geometry.close(ia, R=(0.1, 1.44), idx=idxs, idx_xyz=idxs_xyz)
                 ia = ia * 3
 
                 i0 = idx[0] * 3

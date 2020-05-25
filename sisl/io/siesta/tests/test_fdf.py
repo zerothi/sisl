@@ -41,8 +41,8 @@ def test_fdf2(sisl_tmp, sisl_system):
     assert np.allclose(g.cell, sisl_system.g.cell)
     assert np.allclose(g.xyz, sisl_system.g.xyz)
     for ia in g:
-        assert g.atom[ia].Z == sisl_system.g.atom[ia].Z
-        assert g.atom[ia].tag == sisl_system.g.atom[ia].tag
+        assert g.atoms[ia].Z == sisl_system.g.atoms[ia].Z
+        assert g.atoms[ia].tag == sisl_system.g.atoms[ia].tag
 
 
 def test_fdf_units(sisl_tmp, sisl_system):
@@ -56,8 +56,8 @@ def test_fdf_units(sisl_tmp, sisl_system):
         assert np.allclose(g.cell, g2.cell)
         assert np.allclose(g.xyz, g2.xyz)
         for ia in g:
-            assert g.atom[ia].Z == g2.atom[ia].Z
-            assert g.atom[ia].tag == g2.atom[ia].tag
+            assert g.atoms[ia].Z == g2.atoms[ia].Z
+            assert g.atoms[ia].tag == g2.atoms[ia].tag
 
 
 def test_supercell(sisl_tmp):
@@ -151,8 +151,8 @@ def test_geometry(sisl_tmp):
     assert g.na == 2
     assert np.allclose(g.xyz, [[1.] * 3,
                                [0, 0, 1]])
-    assert g.atom[0].Z == 6
-    assert g.atom[1].Z == 6
+    assert g.atoms[0].Z == 6
+    assert g.atoms[1].Z == 6
 
     # default read # of atoms from list
     with open(f, 'w') as fh:
@@ -165,9 +165,9 @@ def test_geometry(sisl_tmp):
     assert np.allclose(g.xyz, [[1.] * 3,
                                [0, 0, 1],
                                [1, 0, 1]])
-    assert g.atom[0].Z == 6
-    assert g.atom[1].Z == 6
-    assert g.atom[2].Z == 12
+    assert g.atoms[0].Z == 6
+    assert g.atoms[1].Z == 6
+    assert g.atoms[2].Z == 12
 
 
 def test_re_read(sisl_tmp):

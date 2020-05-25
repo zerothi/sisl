@@ -23,7 +23,7 @@ def setup():
             self.D = DynamicalMatrix(self.g)
 
             def func(D, ia, idxs, idxs_xyz):
-                idx = D.geom.close(ia, R=(0.1, 1.44), idx=idxs, idx_xyz=idxs_xyz)
+                idx = D.geometry.close(ia, R=(0.1, 1.44), idx=idxs, idx_xyz=idxs_xyz)
                 ia = ia * 3
 
                 i0 = idx[0] * 3

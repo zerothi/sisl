@@ -12,7 +12,7 @@ from . import _array as _a
 from .atom import Atom
 from .orbital import Orbital
 from .geometry import Geometry
-from .messages import warn, SislError, SislWarning, tqdm_eta
+from .messages import warn, SislError, SislWarning, tqdm_eta, deprecate_method
 from ._indices import indices_only
 from ._help import get_dtype
 from .utils.ranges import array_arange, list2str
@@ -60,7 +60,12 @@ class _SparseGeometry:
     def geometry(self):
         """ Associated geometry """
         return self._geometry
-    geom = geometry
+
+    @property
+    @deprecate_method(f"*.geom is deprecated, use *.geometry instead")
+    def geom(self):
+        """ deprecated geometry """
+        return self._geometry
 
     @property
     def _size(self):
@@ -1066,7 +1071,7 @@ class SparseAtom(_SparseGeometry):
         for ja, ia in self.iter_nnz(range(geom.na)):
 
             # Get the equivalent orbital in the smaller cell
-            a, afp, afm = _sca2sca(self.geometry, ia, S.geom, seps, axis)
+            a, afp, afm = _sca2sca(self.geometry, ia, S.geometry, seps, axis)
             if a is None:
                 continue
             S[ja, a + afp] = self[ja, ia]
@@ -1155,7 +1160,7 @@ class SparseAtom(_SparseGeometry):
 
         # Information for the new Hamiltonian sparse matrix
         na_n = int32(S.na)
-        geom_n = S.geom
+        geom_n = S.geometry
 
         # First loop on axis tiling and local
         # atoms in the geometry
@@ -1235,7 +1240,7 @@ class SparseAtom(_SparseGeometry):
 
         # Information for the new Hamiltonian sparse matrix
         na_n = int32(S.na)
-        geom_n = S.geom
+        geom_n = S.geometry
 
         # First loop on axis tiling and local
         # atoms in the geometry
@@ -1578,7 +1583,7 @@ class SparseOrbital(_SparseGeometry):
         for jo, io in self.iter_nnz(orbital=range(geom.no)):
 
             # Get the equivalent orbital in the smaller cell
-            o, ofp, ofm = _sco2sco(self.geometry, io, S.geom, seps, axis)
+            o, ofp, ofm = _sco2sco(self.geometry, io, S.geometry, seps, axis)
             if o is None:
                 continue
             d = self[jo, io]
@@ -1830,7 +1835,7 @@ class SparseOrbital(_SparseGeometry):
 
         # Information for the new Hamiltonian sparse matrix
         no_n = int32(S.no)
-        geom_n = S.geom
+        geom_n = S.geometry
 
         # First loop on axis tiling and local
         # atoms in the geometry
@@ -1908,7 +1913,7 @@ class SparseOrbital(_SparseGeometry):
 
         # Information for the new Hamiltonian sparse matrix
         no_n = int32(S.no)
-        geom_n = S.geom
+        geom_n = S.geometry
 
         # First loop on axis tiling and local
         # orbitals in the geometry

@@ -18,7 +18,7 @@ def test_xv1(sisl_tmp, sisl_system):
     # Assert they are the same
     assert np.allclose(g.cell, sisl_system.g.cell)
     assert np.allclose(g.xyz, sisl_system.g.xyz)
-    assert sisl_system.g.atom.equal(g.atom, R=False)
+    assert sisl_system.g.atoms.equal(g.atoms, R=False)
 
 
 def test_xv_reorder(sisl_tmp, sisl_system):

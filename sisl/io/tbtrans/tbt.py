@@ -2190,7 +2190,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
                 # Make sure g has the same # of orbitals
                 atoms = [None] * len(old_g)
-                for a, idx in g.atom:
+                for a, idx in g.atoms:
                     for i in idx:
                         atoms[i] = a.copy(orbital=old_g.atoms[i].R)
                 g._atoms = Atoms(atoms)

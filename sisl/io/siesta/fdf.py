@@ -483,15 +483,15 @@ class fdfSileSiesta(SileSiesta):
         self._write('%endblock LatticeVectors\n')
 
     @sile_fh_open()
-    def write_geometry(self, geom, fmt='.8f', *args, **kwargs):
+    def write_geometry(self, geometry, fmt='.8f', *args, **kwargs):
         """ Writes the geometry to the contained file """
         # Check that we can write to the file
         sile_raise_write(self)
 
-        self.write_supercell(geom.sc, fmt, *args, **kwargs)
+        self.write_supercell(geometry.sc, fmt, *args, **kwargs)
 
         self._write('\n')
-        self._write(f'NumberOfAtoms {geom.na}\n')
+        self._write(f'NumberOfAtoms {geometry.na}\n')
         unit = kwargs.get('unit', 'Ang').capitalize()
         is_fractional = unit in ['Frac', 'Fractional']
         if is_fractional:
@@ -501,21 +501,21 @@ class fdfSileSiesta(SileSiesta):
             self._write(f'AtomicCoordinatesFormat {unit}\n')
         self._write('%block AtomicCoordinatesAndAtomicSpecies\n')
 
-        n_species = len(geom.atoms.atom)
+        n_species = len(geometry.atoms.atom)
 
         # Count for the species
         if is_fractional:
-            xyz = geom.fxyz
+            xyz = geometry.fxyz
         else:
-            xyz = geom.xyz * conv
+            xyz = geometry.xyz * conv
             if fmt[0] == '.':
                 # Correct for a "same" length of all coordinates
                 c_max = len(str((f'{{:{fmt}}}').format(xyz.max())))
                 c_min = len(str((f'{{:{fmt}}}').format(xyz.min())))
                 fmt = str(max(c_min, c_max)) + fmt
-        fmt_str = ' {{3:{0}}} {{4:{0}}} {{5:{0}}} {{0}} # {{1:{1}d}}: {{2}}\n'.format(fmt, len(str(len(geom))))
+        fmt_str = ' {{3:{0}}} {{4:{0}}} {{5:{0}}} {{0}} # {{1:{1}d}}: {{2}}\n'.format(fmt, len(str(len(geometry))))
 
-        for ia, a, isp in geom.iter_species():
+        for ia, a, isp in geometry.iter_species():
             self._write(fmt_str.format(isp + 1, ia + 1, a.tag, *xyz[ia, :]))
         self._write('%endblock AtomicCoordinatesAndAtomicSpecies\n\n')
 
@@ -523,7 +523,7 @@ class fdfSileSiesta(SileSiesta):
         # First swap key and value
         self._write(f'NumberOfSpecies {n_species}\n')
         self._write('%block ChemicalSpeciesLabel\n')
-        for i, a in enumerate(geom.atom.atom):
+        for i, a in enumerate(geometry.atoms.atom):
             self._write(' {} {} {}\n'.format(i + 1, a.Z, a.tag))
         self._write('%endblock ChemicalSpeciesLabel\n')
 
@@ -538,8 +538,8 @@ class fdfSileSiesta(SileSiesta):
         for d in range(4):
             append = {0: '', 1: ' 1. 0. 0.', 2: ' 0. 1. 0.', 3: ' 0. 0. 1.'}.get(d)
             n = 'CONSTRAIN' + {0: '', 1: '-x', 2: '-y', 3: '-z'}.get(d)
-            if n in geom.names:
-                idx = list2str(geom.names[n] + 1).replace('-', ' -- ')
+            if n in geometry.names:
+                idx = list2str(geometry.names[n] + 1).replace('-', ' -- ')
                 if len(idx) > 200:
                     info(str(self) + f'.write_geometry will not write the constraints for {n} (too long line).')
                 else:
@@ -549,8 +549,8 @@ class fdfSileSiesta(SileSiesta):
             self._write('%endblock\n')
 
     @staticmethod
-    def _SpGeom_replace_geom(spgeom, geom):
-        """ Replace all atoms in spgeom with the atom in geom while retaining the number of orbitals
+    def _SpGeom_replace_geom(spgeom, geometry):
+        """ Replace all atoms in spgeom with the atom in geometry while retaining the number of orbitals
 
         Currently we need some way of figuring out whether the number of atoms and orbitals are
         consistent.
@@ -559,34 +559,34 @@ class fdfSileSiesta(SileSiesta):
         ----------
         spgeom : SparseGeometry
            the sparse object with attached geometry
-        geom : Geometry
+        geometry : Geometry
            geometry to grab atoms from
         full_replace : bool, optional
-           whether the full geometry may be replaced in case ``spgeom.na != geom.na && spgeom.no == geom.no``.
+           whether the full geometry may be replaced in case ``spgeom.na != geometry.na && spgeom.no == geometry.no``.
            This is required when `spgeom` does not contain information about atoms.
         """
-        if spgeom.na != geom.na and spgeom.no == geom.no:
+        if spgeom.na != geometry.na and spgeom.no == geometry.no:
             # In this case we cannot compare individiual atoms # of orbitals.
             # I.e. we suspect the incoming geometry to be correct.
-            spgeom._geometry = geom
+            spgeom._geometry = geometry
             return True
 
-        elif spgeom.na != geom.na:
+        elif spgeom.na != geometry.na:
             warn('cannot replace geometry due to insufficient information regarding number of '
                  'atoms and orbitals, ensuring correct geometry failed...')
 
-        no_no = spgeom.no == geom.no
+        no_no = spgeom.no == geometry.no
         # Loop and make sure the number of orbitals is consistent
-        for a, idx in geom.atom.iter(True):
+        for a, idx in geometry.atoms.iter(True):
             if len(idx) == 0:
                 continue
-            Sa = spgeom.geom.atom[idx[0]]
+            Sa = spgeom.geometry.atoms[idx[0]]
             if Sa.no != a.no:
                 # Make sure the atom we replace with retains the same information
                 # *except* the number of orbitals.
                 a = Atom(a.Z, Sa.orbital, mass=a.mass, tag=a.tag)
-            spgeom.geom.atom.replace(idx, a)
-            spgeom.geom.reduce()
+            spgeom.geometry.atoms.replace(idx, a)
+            spgeom.geometry.reduce()
         return no_no
 
     def read_supercell_nsc(self, *args, **kwargs):
@@ -1200,8 +1200,8 @@ class fdfSileSiesta(SileSiesta):
                 geom = xvSileSiesta(f).read_geometry(species_Z=True)
                 with warnings.catch_warnings():
                     warnings.simplefilter('ignore')
-                    for atom, _ in geom.atom.iter(True):
-                        geom.atom.replace(atom, basis[atom.Z-1])
+                    for atom, _ in geom.atoms.iter(True):
+                        geom.atoms.replace(atom, basis[atom.Z-1])
                     geom.reduce()
             nsc = self.read_supercell_nsc()
             geom.set_nsc(nsc)

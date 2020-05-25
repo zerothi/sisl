@@ -87,45 +87,45 @@ class refSileScaleUp(SileScaleUp):
         return Geometry(xyz * Bohr2Ang, atoms, sc=sc)
 
     @sile_fh_open()
-    def write_geometry(self, geom, fmt='18.8e'):
+    def write_geometry(self, geometry, fmt='18.8e'):
         """ Writes the geometry to the contained file """
         # Check that we can write to the file
         sile_raise_write(self)
 
         # 1st line is number of supercells
-        self._write('{:5d}{:5d}{:5d}\n'.format(*geom.sc.nsc // 2 + 1))
+        self._write('{:5d}{:5d}{:5d}\n'.format(*geometry.sc.nsc // 2 + 1))
         # natoms, nspecies
-        self._write('{:5d}{:5d}\n'.format(len(geom), len(geom.atom.atom)))
+        self._write('{:5d}{:5d}\n'.format(len(geometry), len(geometry.atoms.atom)))
 
         s = ''
-        for a in geom.atom.atom:
+        for a in geometry.atoms.atom:
             # Append the species label
             s += f'{a.tag:<10}'
         self._write(s + '\n')
 
         fmt_str = f'{{:{fmt}}} ' * 9 + '\n'
-        self._write(fmt_str.format(*(geom.cell*Ang2Bohr).reshape(-1)))
+        self._write(fmt_str.format(*(geometry.cell*Ang2Bohr).reshape(-1)))
 
         # Create line
         #   ix  iy  iz  ia  is   x  y  z
         line = '{:5d}{:5d}{:5d}{:5d}{:5d}' + f'{{:{fmt}}}' * 3 + '\n'
 
         args = [None] * 8
-        for _, isc in geom.sc:
+        for _, isc in geometry.sc:
             if np.any(isc < 0):
                 continue
 
             # Write the geometry
-            for ia in geom:
+            for ia in geometry:
 
                 args[0] = isc[0]
                 args[1] = isc[1]
                 args[2] = isc[2]
                 args[3] = ia + 1
-                args[4] = geom.atom.specie[ia] + 1
-                args[5] = geom.xyz[ia, 0] * Ang2Bohr
-                args[6] = geom.xyz[ia, 1] * Ang2Bohr
-                args[7] = geom.xyz[ia, 2] * Ang2Bohr
+                args[4] = geometry.atoms.specie[ia] + 1
+                args[5] = geometry.xyz[ia, 0] * Ang2Bohr
+                args[6] = geometry.xyz[ia, 1] * Ang2Bohr
+                args[7] = geometry.xyz[ia, 2] * Ang2Bohr
 
                 self._write(line.format(*args))
 

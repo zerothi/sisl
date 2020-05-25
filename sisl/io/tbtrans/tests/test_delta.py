@@ -16,7 +16,7 @@ def test_tbt_delta1(sisl_tmp, sisl_system):
 
     # annoyingly this has to be performed like this...
     with deltancSileTBtrans(f, 'w') as sile:
-        H.geom.write(sile)
+        H.geometry.write(sile)
     with deltancSileTBtrans(f, 'a') as sile:
 
         # Write to level-1

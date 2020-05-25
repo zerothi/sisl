@@ -16,7 +16,7 @@ from . import _array as _a
 from ._math_small import is_ascending, cross3
 from ._indices import indices_in_sphere_with_dist, indices_le, indices_gt_le
 from ._indices import list_index_le
-from .messages import info, warn, SislError
+from .messages import info, warn, SislError, deprecate_method
 from ._help import isndarray
 from .utils import default_ArgumentParser, default_namespace, cmd, str_spec
 from .utils import angle, direction
@@ -195,7 +195,11 @@ class Geometry(SuperCellChild):
         return self._atoms
 
     # Backwards compatability (do not use)
-    atom = atoms
+    @property
+    @deprecate_method(f"Geometry.atom is deprecated, use Geometry.atoms instead")
+    def atom(self):
+        """ deprecated atom """
+        return self._atoms
 
     @property
     def names(self):
@@ -583,7 +587,7 @@ class Geometry(SuperCellChild):
     def __str__(self):
         """ str of the object """
         s = self.__class__.__name__ + f'{{na: {self.na}, no: {self.no},\n '
-        s += str(self.atom).replace('\n', '\n ')
+        s += str(self.atoms).replace('\n', '\n ')
         if len(self.names) > 0:
             s += ',\n ' + str(self.names).replace('\n', '\n ')
         return (s + ',\n maxR: {0:.5f},\n {1}\n}}'.format(self.maxR(), str(self.sc).replace('\n', '\n '))).strip()
@@ -2216,7 +2220,7 @@ class Geometry(SuperCellChild):
 
         else:
             xyz = np.append(self.xyz, offset + other.xyz, axis=0)
-            atom = self.atoms.append(other.atom)
+            atom = self.atoms.append(other.atoms)
             sc = self.sc.append(other.sc, axis)
             names = self._names.merge(other._names, offset=len(self))
 
@@ -2283,7 +2287,7 @@ class Geometry(SuperCellChild):
 
         else:
             xyz = np.append(other.xyz, offset + self.xyz, axis=0)
-            atom = self.atoms.prepend(other.atom)
+            atom = self.atoms.prepend(other.atoms)
             sc = self.sc.prepend(other.sc, axis)
             names = other._names.merge(self._names, offset=len(other))
 
@@ -2318,7 +2322,7 @@ class Geometry(SuperCellChild):
         else:
             xyz = np.append(self.xyz, other.xyz + _a.arrayd(offset).reshape(1, 3), axis=0)
             sc = self.sc.copy()
-            atom = self.atoms.add(other.atom)
+            atom = self.atoms.add(other.atoms)
             names = self._names.merge(other._names, offset=len(self))
         return self.__class__(xyz, atom=atom, sc=sc, names=names)
 
@@ -2343,7 +2347,7 @@ class Geometry(SuperCellChild):
         attach : attach a geometry
         """
         xyz = np.insert(self.xyz, atom, geom.xyz, axis=0)
-        atoms = self.atoms.insert(atom, geom.atom)
+        atoms = self.atoms.insert(atom, geom.atoms)
         return self.__class__(xyz, atom=atoms, sc=self.sc.copy())
 
     def __add__(self, b):
@@ -2549,7 +2553,7 @@ class Geometry(SuperCellChild):
             # first subtract the projection, then its mirror position
             self.xyz[atom, :] -= vp.reshape(-1, 1) * method.reshape(1, 3)
 
-        return self.__class__(g.xyz, atom=g.atom, sc=self.sc.copy())
+        return self.__class__(g.xyz, atom=g.atoms, sc=self.sc.copy())
 
     @property
     def fxyz(self):
@@ -3698,7 +3702,7 @@ class Geometry(SuperCellChild):
             return False
         same = self.sc.equal(other.sc, tol=tol)
         same = same and np.allclose(self.xyz, other.xyz, atol=tol)
-        same = same and self.atoms.equal(other.atom, R)
+        same = same and self.atoms.equal(other.atoms, R)
         return same
 
     def __eq__(self, other):

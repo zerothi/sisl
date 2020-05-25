@@ -148,13 +148,13 @@ class hamiltonianSile(Sile):
         return Hamiltonian.fromsp(geom, H, S)
 
     @sile_fh_open()
-    def write_geometry(self, geom, fmt='.8f', **kwargs):
+    def write_geometry(self, geometry, fmt='.8f', **kwargs):
         """
         Writes the geometry to the output file
 
         Parameters
         ----------
-        geom : Geometry
+        geometry : Geometry
               The geometry we wish to write
         """
 
@@ -170,11 +170,11 @@ class hamiltonianSile(Sile):
         # Write the cell
         fmt_str = '  {{0:{0}}} {{1:{0}}} {{2:{0}}}\n'.format(cell_fmt)
         for i in range(3):
-            self._write(fmt_str.format(*geom.cell[i, :]))
+            self._write(fmt_str.format(*geometry.cell[i, :]))
         self._write('end cell\n')
 
         # Write number of super cells in each direction
-        self._write('\nsupercell {:d} {:d} {:d}\n'.format(*geom.nsc))
+        self._write('\nsupercell {:d} {:d} {:d}\n'.format(*geometry.nsc))
 
         # Write all atomic positions along with the specie type
         self._write('\nbegin atom\n')
@@ -182,13 +182,13 @@ class hamiltonianSile(Sile):
         fmt2_str = '  {{0:d}}[{{1:d}}] {{2:{0}}} {{3:{0}}} {{4:{0}}}\n'.format(
             xyz_fmt)
 
-        for ia in geom:
-            Z = geom.atoms[ia].Z
-            no = geom.atoms[ia].no
+        for ia in geometry:
+            Z = geometry.atoms[ia].Z
+            no = geometry.atoms[ia].no
             if no == 1:
-                self._write(fmt1_str.format(Z, *geom.xyz[ia, :]))
+                self._write(fmt1_str.format(Z, *geometry.xyz[ia, :]))
             else:
-                self._write(fmt2_str.format(Z, no, *geom.xyz[ia, :]))
+                self._write(fmt2_str.format(Z, no, *geometry.xyz[ia, :]))
 
         self._write('end atom\n')
 
@@ -221,7 +221,7 @@ class hamiltonianSile(Sile):
         # We default to the advanced layuot if we have more than one
         # orbital on any one atom
         advanced = kwargs.get('advanced', np.any(
-            np.array([a.no for a in geom.atom.atom], np.int32) > 1))
+            np.array([a.no for a in geom.atoms.atom], np.int32) > 1))
 
         fmt = kwargs.get('fmt', 'g')
         if advanced:

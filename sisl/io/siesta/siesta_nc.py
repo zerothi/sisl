@@ -449,17 +449,17 @@ class ncSileSiesta(SileCDFSiesta):
         v.unit = "b**-1"
         v[:] = 0.
 
-    def write_geometry(self, geom):
+    def write_geometry(self, geometry):
         """ Creates the NetCDF file and writes the geometry information """
         sile_raise_write(self)
 
         # Create initial dimensions
         self._crt_dim(self, 'one', 1)
-        self._crt_dim(self, 'n_s', np.prod(geom.nsc, dtype=np.int32))
+        self._crt_dim(self, 'n_s', np.prod(geometry.nsc, dtype=np.int32))
         self._crt_dim(self, 'xyz', 3)
-        self._crt_dim(self, 'no_s', np.prod(geom.nsc, dtype=np.int32) * geom.no)
-        self._crt_dim(self, 'no_u', geom.no)
-        self._crt_dim(self, 'na_u', geom.na)
+        self._crt_dim(self, 'no_s', np.prod(geometry.nsc, dtype=np.int32) * geometry.no)
+        self._crt_dim(self, 'no_u', geometry.no)
+        self._crt_dim(self, 'na_u', geometry.na)
 
         # Create initial geometry
         v = self._crt_var(self, 'nsc', 'i4', ('xyz',))
@@ -477,15 +477,15 @@ class ncSileSiesta(SileCDFSiesta):
         self.method = 'sisl'
 
         # Save stuff
-        self.variables['nsc'][:] = geom.nsc
-        self.variables['xa'][:] = geom.xyz / Bohr2Ang
-        self.variables['cell'][:] = geom.cell / Bohr2Ang
+        self.variables['nsc'][:] = geometry.nsc
+        self.variables['xa'][:] = geometry.xyz / Bohr2Ang
+        self.variables['cell'][:] = geometry.cell / Bohr2Ang
 
         # Create basis group
-        self.write_basis(geom.atom)
+        self.write_basis(geometry.atoms)
 
         # Store the lasto variable as the remaining thing to do
-        self.variables['lasto'][:] = geom.lasto + 1
+        self.variables['lasto'][:] = geometry.lasto + 1
 
     def _write_sparsity(self, csr, nsc):
         # Append the sparsity pattern
@@ -613,7 +613,7 @@ class ncSileSiesta(SileCDFSiesta):
         csr.finalize()
 
         # Ensure that the geometry is written
-        self.write_geometry(DM.geom)
+        self.write_geometry(DM.geometry)
 
         self._crt_dim(self, 'spin', len(DM.spin))
 
@@ -622,7 +622,7 @@ class ncSileSiesta(SileCDFSiesta):
 
         v = self._crt_var(self, 'Qtot', 'f8', ('one',))
         v.info = 'Total charge'
-        v[:] = np.sum(DM.geom.atom.q0)
+        v[:] = np.sum(DM.geometry.atoms.q0)
         if 'Qtot' in kwargs:
             v[:] = kwargs['Qtot']
         if 'Q' in kwargs:
@@ -673,7 +673,7 @@ class ncSileSiesta(SileCDFSiesta):
         v[:] = kwargs.get('Ef', 0.) / Ry2eV
         v = self._crt_var(self, 'Qtot', 'f8', ('one',))
         v.info = 'Total charge'
-        v[:] = np.sum(EDM.geometry.atom.q0)
+        v[:] = np.sum(EDM.geometry.atoms.q0)
         if 'Qtot' in kwargs:
             v[:] = kwargs['Qtot']
         if 'Q' in kwargs:

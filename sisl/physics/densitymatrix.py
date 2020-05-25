@@ -306,7 +306,7 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
         eta = tqdm_eta(len(IA), self.__class__.__name__ + '.density', 'atom', eta)
 
         cell = geometry.cell
-        atom = geometry.atom
+        atoms = geometry.atoms
         axyz = geometry.axyz
         a2o = geometry.a2o
 
@@ -377,7 +377,7 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
         # Loop over all atoms in the grid-cell
         for ia, ia_xyz, isc in zip(IA, XYZ, ISC):
             # Get current atom
-            ia_atom = atom[ia]
+            ia_atom = atoms[ia]
             IO = a2o(ia)
             IO_range = range(ia_atom.no)
             cell_offset = (cell * isc.reshape(3, 1)).sum(0) - origo
@@ -428,7 +428,7 @@ class _realspace_DensityMatrix(SparseOrbitalBZSpin):
             # As that will be calculated in the end
             for ja in a_col[a_ptr[ia]:a_ptr[ia+1]]:
                 # Retrieve atom (which contains the orbitals)
-                ja_atom = atom[ja % na]
+                ja_atom = atoms[ja % na]
                 JO = a2o(ja)
                 jR = ja_atom.maxR()
                 # Get actual coordinate of the atom

@@ -24,7 +24,7 @@ def test_nc1(sisl_tmp, sisl_system):
     assert np.allclose(tb.xyz, ntb.xyz)
     tb.finalize()
     assert np.allclose(tb._csr._D[:, 0], ntb._csr._D[:, 0])
-    assert sisl_system.g.atom.equal(ntb.atom, R=False)
+    assert sisl_system.g.atoms.equal(ntb.atoms, R=False)
 
 
 def test_nc2(sisl_tmp, sisl_system):
@@ -40,7 +40,7 @@ def test_nc2(sisl_tmp, sisl_system):
     assert np.allclose(tb.xyz, ntb.xyz)
     tb.finalize()
     assert np.allclose(tb._csr._D[:, 0], ntb._csr._D[:, 0])
-    assert sisl_system.g.atom.equal(ntb.atom, R=False)
+    assert sisl_system.g.atoms.equal(ntb.atoms, R=False)
 
 
 def test_nc_overlap(sisl_tmp, sisl_system):
@@ -76,7 +76,7 @@ def test_nc_dynamical_matrix(sisl_tmp, sisl_system):
     assert np.allclose(dm.xyz, ndm.xyz)
     dm.finalize()
     assert np.allclose(dm._csr._D[:, 0], ndm._csr._D[:, 0])
-    assert sisl_system.g.atom.equal(ndm.atom, R=False)
+    assert sisl_system.g.atoms.equal(ndm.atoms, R=False)
 
 
 def test_nc_density_matrix(sisl_tmp, sisl_system):
@@ -93,7 +93,7 @@ def test_nc_density_matrix(sisl_tmp, sisl_system):
     assert np.allclose(dm.xyz, ndm.xyz)
     dm.finalize()
     assert np.allclose(dm._csr._D[:, 0], ndm._csr._D[:, 0])
-    assert sisl_system.g.atom.equal(ndm.atom, R=False)
+    assert sisl_system.g.atoms.equal(ndm.atoms, R=False)
 
 
 def test_nc_H_non_colinear(sisl_tmp):

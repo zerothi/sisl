@@ -287,13 +287,13 @@ class TestObject:
         sile(f, mode='w').write_density_matrix(DM)
         # Read 1
         try:
-            dm = sile(f, mode='r').read_density_matrix(geometry=DM.geom)
+            dm = sile(f, mode='r').read_density_matrix(geometry=DM.geometry)
             assert DM.spsame(dm)
         except UnicodeDecodeError as e:
             pass
         # Read 2
         try:
-            dm = DensityMatrix.read(sile(f, mode='r'), geometry=DM.geom)
+            dm = DensityMatrix.read(sile(f, mode='r'), geometry=DM.geometry)
             assert DM.spsame(dm)
         except UnicodeDecodeError as e:
             pass
@@ -308,13 +308,13 @@ class TestObject:
         sile(f, mode='w').write_energy_density_matrix(EDM)
         # Read 1
         try:
-            edm = sile(f, mode='r').read_energy_density_matrix(geometry=EDM.geom)
+            edm = sile(f, mode='r').read_energy_density_matrix(geometry=EDM.geometry)
             assert EDM.spsame(edm)
         except UnicodeDecodeError as e:
             pass
         # Read 2
         try:
-            edm = EnergyDensityMatrix.read(sile(f, mode='r'), geometry=EDM.geom)
+            edm = EnergyDensityMatrix.read(sile(f, mode='r'), geometry=EDM.geometry)
             assert EDM.spsame(edm)
         except UnicodeDecodeError as e:
             pass

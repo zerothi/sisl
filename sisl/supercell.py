@@ -4,6 +4,7 @@ This class is the basis of many different objects.
 """
 
 import math
+import warnings
 from numbers import Integral
 import numpy as np
 from numpy import dot
@@ -1045,12 +1046,14 @@ class SuperCellChild:
         # set_sc on that too.
         # Sadly, getattr fails for @property methods
         # which forces us to use try ... except
-        for a in dir(self):
-            try:
-                if isinstance(getattr(self, a), SuperCellChild):
-                    getattr(self, a).set_supercell(self.sc)
-            except:
-                pass
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            for a in dir(self):
+                try:
+                    if isinstance(getattr(self, a), SuperCellChild):
+                        getattr(self, a).set_supercell(self.sc)
+                except:
+                    pass
 
     set_sc = set_supercell
 

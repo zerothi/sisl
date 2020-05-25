@@ -1383,7 +1383,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     origo = grid.sc.origo.reshape(1, 3)
     idx_mm = _a.emptyd([geometry.na, 2, 3])
     all_negative_R = True
-    for atom, ia in geometry.atom.iter(True):
+    for atom, ia in geometry.atoms.iter(True):
         if len(ia) == 0:
             continue
         R = atom.maxR()

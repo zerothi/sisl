@@ -274,7 +274,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
         delta.finalize()
 
         # Ensure that the geometry is written
-        self.write_geometry(delta.geom)
+        self.write_geometry(delta.geometry)
 
         self._crt_dim(self, 'spin', len(delta.spin))
 
