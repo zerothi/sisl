@@ -43,9 +43,9 @@ def test_dm_si_pdos_kgrid_mulliken(sisl_files):
 
     o2a = DM.geometry.o2a(np.arange(DM.no))
 
-    ma = np.zeros_like(Ma.T)
-    np.add.at(ma, o2a, Mo.T)
-    assert np.allclose(ma.T, Ma)
+    ma = np.zeros_like(Ma)
+    np.add.at(ma, o2a, Mo)
+    assert np.allclose(ma, Ma)
 
 
 def test_dm_soc_pt2_xx_mulliken(sisl_files):
@@ -58,9 +58,9 @@ def test_dm_soc_pt2_xx_mulliken(sisl_files):
 
     o2a = DM.geometry.o2a(np.arange(DM.no))
 
-    ma = np.zeros_like(Ma.T)
-    np.add.at(ma, o2a, Mo.T)
-    assert np.allclose(ma.T, Ma)
+    ma = np.zeros_like(Ma)
+    np.add.at(ma, o2a, Mo)
+    assert np.allclose(ma, Ma)
 
 
 def test_dm_soc_pt2_xx_rw(sisl_files, sisl_tmp):
