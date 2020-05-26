@@ -3,7 +3,7 @@ from abc import ABCMeta, abstractmethod
 from functools import lru_cache
 import numpy as np
 
-from sisl._internal import set_module, singledispatchmethod
+from ._internal import set_module, singledispatchmethod
 
 __all__ = ["Category", "CompositeCategory", "NullCategory"]
 __all__ += ["AndCategory", "OrCategory", "XOrCategory"]

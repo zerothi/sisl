@@ -7,6 +7,9 @@ import math as m
 import numpy as np
 
 
+pytestmark = [pytest.mark.geom]
+
+
 def test_basis():
     a = sc(2.52, Atom['Fe'])
     a = bcc(2.52, Atom['Fe'])

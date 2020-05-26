@@ -1,6 +1,6 @@
 from functools import wraps
 from sisl._internal import set_module
-from sisl.category import Category, NullCategory
+from sisl._category import Category, NullCategory
 from sisl.geometry import AtomCategory
 
 

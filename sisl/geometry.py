@@ -27,7 +27,7 @@ from .supercell import SuperCell, SuperCellChild
 from .atom import Atom, Atoms
 from .shape import Shape, Sphere, Cube
 from ._namedindex import NamedIndex
-from .category import Category
+from ._category import Category
 
 
 __all__ = ['Geometry', 'sgeom']

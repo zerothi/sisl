@@ -1,1 +1,1 @@
-""" test init for $d """
+""" tests for sisl/io/tbtrans """
