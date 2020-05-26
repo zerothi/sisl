@@ -88,9 +88,9 @@ class TestDensityMatrix:
         D = setup.D.copy()
         D.construct(setup.func)
         mulliken = D.mulliken('atom')
-        assert mulliken.shape == (1, len(D.geometry))
+        assert mulliken.shape == (len(D.geometry), 1)
         mulliken = D.mulliken('orbital')
-        assert mulliken.shape == (1, len(D))
+        assert mulliken.shape == (len(D), 1)
 
     def test_mulliken_values_orthogonal(self, setup):
         D = setup.D.copy()
@@ -98,7 +98,7 @@ class TestDensityMatrix:
         D.D[1, 1] = 2.
         D.D[1, 2] = 2.
         mulliken = D.mulliken('orbital')
-        assert np.allclose(mulliken[0, :2], [1., 2.])
+        assert np.allclose(mulliken[:2, 0], [1., 2.])
         assert mulliken.sum() == pytest.approx(3)
         mulliken = D.mulliken('atom')
         assert mulliken[0, 0] == pytest.approx(3)
@@ -110,7 +110,7 @@ class TestDensityMatrix:
         D[1, 1] = (2., 1.)
         D[1, 2] = (2., 0.5)
         mulliken = D.mulliken('orbital')
-        assert np.allclose(mulliken[0, :2], [1., 3.])
+        assert np.allclose(mulliken[:2, 0], [1., 3.])
         assert mulliken.sum() == pytest.approx(4.)
         mulliken = D.mulliken('atom')
         assert mulliken[0, 0] == pytest.approx(4)
@@ -181,6 +181,133 @@ class TestDensityMatrix:
         D.construct([[0.1, bond + 0.01], [(1., 0.5, 0.01, 0.01, 0.01, 0.01, 0., 0.), (0.1, 0.1, 0.1, 0.1, 0., 0., 0., 0.)]])
         D.orbital_momentum("atom")
         D.orbital_momentum("orbital")
+
+    def test_spin_align_pol(self, setup):
+        bond = 1.42
+        sq3h = 3.**.5 * 0.5
+        sc = SuperCell(np.array([[1.5, sq3h, 0.],
+                                      [1.5, -sq3h, 0.],
+                                      [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
+
+        orb = AtomicOrbital('px', R=bond * 1.001)
+        C = Atom(6, orb)
+        g = Geometry(np.array([[0., 0., 0.],
+                                    [1., 0., 0.]], np.float64) * bond,
+                        atom=C, sc=sc)
+        D = DensityMatrix(g, spin=Spin('p'))
+        D.construct([[0.1, bond + 0.01], [(1., 0.5), (0.1, 0.2)]])
+        D_mull = D.mulliken()
+        v = np.array([1, 2, 3])
+        d = D.spin_align(v)
+        d_mull = d.mulliken()
+        assert D_mull.shape == (len(D), 2)
+        assert d_mull.shape == (len(D), 4)
+        assert not np.allclose(-np.diff(D_mull, axis=1), d_mull[:, 3])
+        assert np.allclose(D_mull.sum(1), d_mull[:, 0])
+
+    def test_spin_align_nc(self, setup):
+        bond = 1.42
+        sq3h = 3.**.5 * 0.5
+        sc = SuperCell(np.array([[1.5, sq3h, 0.],
+                                      [1.5, -sq3h, 0.],
+                                      [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
+
+        orb = AtomicOrbital('px', R=bond * 1.001)
+        C = Atom(6, orb)
+        g = Geometry(np.array([[0., 0., 0.],
+                                    [1., 0., 0.]], np.float64) * bond,
+                        atom=C, sc=sc)
+        D = DensityMatrix(g, spin=Spin('nc'))
+        D.construct([[0.1, bond + 0.01], [(1., 0.5, 0.01, 0.01), (0.1, 0.2, 0.1, 0.1)]])
+        D_mull = D.mulliken()
+        v = np.array([1, 2, 3])
+        d = D.spin_align(v)
+        d_mull = d.mulliken()
+        assert not np.allclose(D_mull, d_mull)
+        assert np.allclose(D_mull[:, 0], d_mull[:, 0])
+
+    def test_spin_align_so(self, setup):
+        bond = 1.42
+        sq3h = 3.**.5 * 0.5
+        sc = SuperCell(np.array([[1.5, sq3h, 0.],
+                                      [1.5, -sq3h, 0.],
+                                      [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
+
+        orb = AtomicOrbital('px', R=bond * 1.001)
+        C = Atom(6, orb)
+        g = Geometry(np.array([[0., 0., 0.],
+                                    [1., 0., 0.]], np.float64) * bond,
+                        atom=C, sc=sc)
+        D = DensityMatrix(g, spin=Spin('SO'))
+        D.construct([[0.1, bond + 0.01], [(1., 0.5, 0.01, 0.01, 0.01, 0.01, 0.2, 0.2), (0.1, 0.2, 0.1, 0.1, 0., 0.1, 0.2, 0.3)]])
+        D_mull = D.mulliken()
+        v = np.array([1, 2, 3])
+        d = D.spin_align(v)
+        d_mull = d.mulliken()
+        assert not np.allclose(D_mull, d_mull)
+        assert np.allclose(D_mull[:, 0], d_mull[:, 0])
+
+    def test_spin_rotate_pol(self, setup):
+        bond = 1.42
+        sq3h = 3.**.5 * 0.5
+        sc = SuperCell(np.array([[1.5, sq3h, 0.],
+                                      [1.5, -sq3h, 0.],
+                                      [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
+
+        orb = AtomicOrbital('px', R=bond * 1.001)
+        C = Atom(6, orb)
+        g = Geometry(np.array([[0., 0., 0.],
+                                    [1., 0., 0.]], np.float64) * bond,
+                        atom=C, sc=sc)
+        D = DensityMatrix(g, spin=Spin('p'))
+        D.construct([[0.1, bond + 0.01], [(1., 0.5), (0.1, 0.2)]])
+        D_mull = D.mulliken()
+        d = D.spin_rotate([45, 60, 90], rad=False)
+        d_mull = d.mulliken()
+        assert D_mull.shape == (len(D), 2)
+        assert d_mull.shape == (len(D), 4)
+        assert not np.allclose(-np.diff(D_mull, axis=1), d_mull[:, 3])
+        assert np.allclose(D_mull.sum(1), d_mull[:, 0])
+
+    def test_spin_rotate_nc(self, setup):
+        bond = 1.42
+        sq3h = 3.**.5 * 0.5
+        sc = SuperCell(np.array([[1.5, sq3h, 0.],
+                                      [1.5, -sq3h, 0.],
+                                      [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
+
+        orb = AtomicOrbital('px', R=bond * 1.001)
+        C = Atom(6, orb)
+        g = Geometry(np.array([[0., 0., 0.],
+                                    [1., 0., 0.]], np.float64) * bond,
+                        atom=C, sc=sc)
+        D = DensityMatrix(g, spin=Spin('nc'))
+        D.construct([[0.1, bond + 0.01], [(1., 0.5, 0.01, 0.01), (0.1, 0.2, 0.1, 0.1)]])
+        D_mull = D.mulliken()
+        d = D.spin_rotate([45, 60, 90], rad=False)
+        d_mull = d.mulliken()
+        assert not np.allclose(D_mull, d_mull)
+        assert np.allclose(D_mull[:, 0], d_mull[:, 0])
+
+    def test_spin_rotate_so(self, setup):
+        bond = 1.42
+        sq3h = 3.**.5 * 0.5
+        sc = SuperCell(np.array([[1.5, sq3h, 0.],
+                                      [1.5, -sq3h, 0.],
+                                      [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
+
+        orb = AtomicOrbital('px', R=bond * 1.001)
+        C = Atom(6, orb)
+        g = Geometry(np.array([[0., 0., 0.],
+                                    [1., 0., 0.]], np.float64) * bond,
+                        atom=C, sc=sc)
+        D = DensityMatrix(g, spin=Spin('SO'))
+        D.construct([[0.1, bond + 0.01], [(1., 0.5, 0.01, 0.01, 0.01, 0.01, 0.2, 0.2), (0.1, 0.2, 0.1, 0.1, 0., 0.1, 0.2, 0.3)]])
+        D_mull = D.mulliken()
+        d = D.spin_rotate([45, 60, 90], rad=False)
+        d_mull = d.mulliken()
+        assert not np.allclose(D_mull, d_mull)
+        assert np.allclose(D_mull[:, 0], d_mull[:, 0])
 
     def test_rho_eta(self, setup):
         D = setup.D.copy()

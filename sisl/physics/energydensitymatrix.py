@@ -3,13 +3,13 @@ import numpy as np
 from sisl._internal import set_module
 import sisl._array as _a
 from sisl.messages import SislError
-from .densitymatrix import _realspace_DensityMatrix
+from .densitymatrix import _densitymatrix
 
 __all__ = ['EnergyDensityMatrix']
 
 
 @set_module("sisl.physics")
-class EnergyDensityMatrix(_realspace_DensityMatrix):
+class EnergyDensityMatrix(_densitymatrix):
     """ Sparse energy density matrix object
 
     Assigning or changing elements is as easy as with standard `numpy` assignments:
@@ -239,8 +239,8 @@ class EnergyDensityMatrix(_realspace_DensityMatrix):
            density matrix corresponding to the same geometry
         """
         if not self.spsame(DM):
-            raise SislError(self.__class__.__name__ + '.shift requires the input DM to have '
-                            'the same sparsity as the shifted object.')
+            raise SislError(f"{self.__class__.__name__}.shift requires the input DM to have "
+                            "the same sparsity as the shifted object.")
 
         E = _a.asarrayd(E)
         if E.size == 1:
