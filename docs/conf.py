@@ -21,7 +21,11 @@ import shlex
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 # make sure the source version is preferred (#3567)
 _root = pathlib.Path(__file__).absolute().parent.parent
-os.environ["PYTHONPATH"] = str(_root)
+_pp = os.environ["PYTHONPATH"]
+if len(_pp) > 0:
+    os.environ["PYTHONPATH"] = f"{_root}:{_pp}"
+else:
+    os.environ["PYTHONPATH"] = f"{_root}"
 sys.path.insert(0, str(_root))
 
 # Print standard information about executable and path...
