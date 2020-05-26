@@ -25,10 +25,10 @@ __all__ = ['DensityMatrix']
 class _densitymatrix(SparseOrbitalBZSpin):
 
     def spin_rotate(self, angles, rad=False):
-        r""" Rotates the spin-boxes by fixed angles around the :math:`x`, :math:`y` and :math`z` axis, respectively.
+        r""" Rotates spin-boxes by fixed angles around the :math:`x`, :math:`y` and :math:`z` axis, respectively.
 
         The angles are with respect to each spin-boxes initial angle.
-        One should use `spin_align` to fix all angles along a specific vector.
+        One should use `spin_align` to fix all angles along a specific direction.
 
         Notes
         -----
@@ -49,7 +49,8 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
         Returns
         -------
-        object : an equivalent object with rotated spins
+        object
+             a new object with rotated spins
         """
         angles = _a.asarrayd(angles)
         if not rad:
@@ -158,12 +159,8 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
         return out
 
-
     def spin_align(self, vec):
         r""" Aligns *all* spin along the vector `vec`
-
-        After this routine all spins will point along `vec` with their initial
-        magnitude.
 
         In case the matrix is polarized and `vec` is not aligned at the z-axis, the returned
         matrix will be a non-collinear spin configuration.
@@ -171,15 +168,16 @@ class _densitymatrix(SparseOrbitalBZSpin):
         Parameters
         ----------
         vec : (3,)
-           vector to align the spin boxes
+           vector to align the spin boxes against
 
         See Also
         --------
-        spin_rotate : rotate spin-boxes by a fixed amount (does not align all spins)
+        spin_rotate : rotate spin-boxes by a fixed amount (does not align spins)
 
         Returns
         -------
-        object : an equivalent object with rotated spins
+        object
+            a new object with aligned spins
         """
         vec = _a.asarrayd(vec)
         # normalize vector
@@ -262,16 +260,17 @@ class _densitymatrix(SparseOrbitalBZSpin):
                     out._csr._D[:, [0, 1, 4]] = self._csr._D[:, :]
                 out = out.spin_align(vec)
 
-            else:
+            elif vec[2] < 0:
                 # flip spin
                 out = self.copy()
                 out._csr._D[:, [0, 1]] = out._csr._D[:, [1, 0]]
+            else:
+                out = self.copy()
 
         else:
             raise ValueError(f"{self.__class__.__name__}.spin_align requires a matrix with some spin configuration, not an unpolarized matrix.")
 
         return out
-
 
     def mulliken(self, projection='orbital'):
         r""" Calculate Mulliken charges from the density matrix
@@ -1101,7 +1100,8 @@ class DensityMatrix(_densitymatrix):
 
         Returns
         -------
-        object : the density matrix at :math:`k`. The returned object depends on `format`.
+        matrix : numpy.ndarray or scipy.sparse.*_matrix
+            the density matrix at :math:`k`. The returned object depends on `format`.
         """
         pass
 
@@ -1155,7 +1155,8 @@ class DensityMatrix(_densitymatrix):
 
         Returns
         -------
-        tuple : for each of the Cartesian directions a :math:`\partial \mathbf D(k)/\partial k` is returned.
+        tuple
+             for each of the Cartesian directions a :math:`\partial \mathbf D(k)/\partial k` is returned.
         """
         pass
 
@@ -1209,7 +1210,8 @@ class DensityMatrix(_densitymatrix):
 
         Returns
         -------
-        tuple of tuples : for each of the Cartesian directions
+        tuple of tuples
+            for each of the Cartesian directions
         """
         pass
 

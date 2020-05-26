@@ -116,7 +116,8 @@ class Coefficient(ParentContainer):
 
         Returns
         -------
-        list of numpy.ndarray : a list of indices
+        list of numpy.ndarray
+            a list of indices
         """
         deg = list()
         sidx = np.argsort(self.c)
@@ -698,7 +699,8 @@ class StateC(State):
 
         Returns
         -------
-        state : a new state with all states normalized, otherwise equal to this
+        State
+            a new state with all states normalized, otherwise equal to this
         """
         n = self.norm()
         s = self.__class__(self.state / n.reshape(-1, 1), self.c.copy(), parent=self.parent)
@@ -715,7 +717,8 @@ class StateC(State):
 
         Returns
         -------
-        numpy.ndarray : a matrix with the sum of outer state products
+        numpy.ndarray
+            a matrix with the sum of outer state products
         """
         if idx is None:
             return einsum('k,ki,kj->ij', self.c, self.state, _conj(self.state))
@@ -746,7 +749,8 @@ class StateC(State):
 
         Returns
         -------
-        list of numpy.ndarray : a list of indices
+        list of numpy.ndarray
+            a list of indices
         """
         deg = list()
         sidx = np.argsort(self.c)
@@ -775,7 +779,8 @@ class StateC(State):
 
         Returns
         -------
-        StateC : a new object with a subset of the states
+        StateC
+            a new object with a subset of the states
         """
         idx = self._sanitize_index(idx)
         sub = self.__class__(self.state[idx, ...], self.c[idx], self.parent)

@@ -106,7 +106,8 @@ class EnergyDensityMatrix(_densitymatrix):
 
         Returns
         -------
-        object : the energy density matrix at :math:`k`. The returned object depends on `format`.
+        matrix : numpy.ndarray or scipy.sparse.*_matrix
+            the energy density matrix at :math:`k`. The returned object depends on `format`.
         """
         pass
 
@@ -160,7 +161,8 @@ class EnergyDensityMatrix(_densitymatrix):
 
         Returns
         -------
-        tuple : for each of the Cartesian directions a :math:`\partial \mathbf E(k)/\partial k` is returned.
+        tuple
+            for each of the Cartesian directions a :math:`\partial \mathbf E(k)/\partial k` is returned.
         """
         pass
 
@@ -214,7 +216,8 @@ class EnergyDensityMatrix(_densitymatrix):
 
         Returns
         -------
-        tuple of tuples : for each of the Cartesian directions
+        tuple of tuples
+            for each of the Cartesian directions
         """
         pass
 

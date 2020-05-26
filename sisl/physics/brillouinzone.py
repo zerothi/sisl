@@ -306,7 +306,8 @@ class BrillouinZone:
 
         Returns
         -------
-        BrillouinZone : with the parameterized k-points.
+        BrillouinZone
+            with the parameterized k-points.
         """
         if isinstance(N_or_dk, Integral):
             N = N_or_dk
@@ -390,7 +391,8 @@ class BrillouinZone:
 
         Returns
         -------
-        k : in units of 1/Ang
+        numpy.ndarray
+            in units of 1/Ang
         """
         return dot(k, self.rcell)
 
@@ -404,7 +406,8 @@ class BrillouinZone:
 
         Returns
         -------
-        k : in units of reciprocal lattice vectors ]-0.5 ; 0.5] (if k is in the primitive cell)
+        numpy.ndarray
+            in units of reciprocal lattice vectors ]-0.5 ; 0.5] (if k is in the primitive cell)
         """
         return dot(k, self.cell.T / (2 * pi))
 
@@ -419,7 +422,8 @@ class BrillouinZone:
 
         Returns
         -------
-        k : all k-points moved into the primitive cell
+        numpy.ndarray
+            all k-points moved into the primitive cell
         """
         k = _a.arrayd(k) % 1.
 
@@ -993,7 +997,8 @@ class BrillouinZone:
 
         Returns
         -------
-        getattr(self, attr)(k, *args, **kwargs) : whatever this returns
+        *
+            whatever ``getattr(self, attr)(k, *args, **kwargs)`` returns
         """
         try:
             func = "." + self._bz_get_func().__name__
@@ -1941,7 +1946,8 @@ class BandStructure(BrillouinZone):
 
         Returns
         -------
-        linear_k : The positions in reciprocal space determined by the distance between points
+        numpy.ndarray
+            the positions in reciprocal space determined by the distance between points
 
         See Also
         --------
@@ -1976,9 +1982,12 @@ class BandStructure(BrillouinZone):
 
         Returns
         -------
-        linear_k : The positions in reciprocal space determined by the distance between points
-        ticks : Linear k-positions of the points, only returned if `ticks` is ``True``
-        ticklabels : Labels at `ticks`, only returned if `ticks` is ``True``
+        linear_k : numpy.ndarray
+            the positions in reciprocal space determined by the distance between points
+        ticks : numpy.ndarray
+            linear k-positions of the points, only returned if `ticks` is ``True``
+        ticklabels : list of str
+            labels at `ticks`, only returned if `ticks` is ``True``
         """
         # Calculate points
         k = [self.tocartesian(pnt) for pnt in self.point]

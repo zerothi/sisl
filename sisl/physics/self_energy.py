@@ -229,7 +229,8 @@ class RecursiveSI(SemiInfinite):
 
         Returns
         -------
-        self-energy : the self-energy corresponding to the semi-infinite direction
+        numpy.ndarray
+            the self-energy corresponding to the semi-infinite direction
         """
         if E.imag == 0.:
             E = E.real + 1j * self.eta
@@ -329,7 +330,8 @@ class RecursiveSI(SemiInfinite):
 
         Returns
         -------
-        self-energy : the self-energy corresponding to the semi-infinite direction
+        numpy.ndarray
+            the self-energy corresponding to the semi-infinite direction
         """
         if E.imag == 0.:
             E = E.real + 1j * self.eta
@@ -433,8 +435,10 @@ class RecursiveSI(SemiInfinite):
 
         Returns
         -------
-        left : the left self-energy
-        right : the right self-energy
+        left : numpy.ndarray
+            the left self-energy
+        right : numpy.ndarray
+            the right self-energy
         """
         if E.imag == 0.:
             E = E.real + 1j * self.eta
@@ -695,8 +699,10 @@ class RealSpaceSE(SelfEnergy):
 
         Returns
         -------
-        parent : parent object only retaining the elements of the atoms that couple out of the primary unit cell
-        atom_index : indices for the atoms that couple out of the geometry (`ret_indices`)
+        parent : object
+            parent object only retaining the elements of the atoms that couple out of the primary unit cell
+        atom_index : numpy.ndarray
+            indices for the atoms that couple out of the geometry, only if `ret_indices` is true
         """
         s_ax = self._semi_axis
         k_ax = self._k_axes
@@ -1253,8 +1259,10 @@ class RealSpaceSI(SelfEnergy):
 
         Returns
         -------
-        parent : parent object only retaining the elements of the atoms that couple out of the primary unit cell
-        atom_index : indices for the atoms that couple out of the geometry (`ret_indices`)
+        parent : object
+            parent object only retaining the elements of the atoms that couple out of the primary unit cell
+        atom_index : numpy.ndarray
+            indices for the atoms that couple out of the geometry, only if `ret_indices` is true
         """
         k_ax = self._k_axes
         n_unfold = np.prod(self._unfold)

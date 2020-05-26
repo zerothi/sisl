@@ -110,7 +110,8 @@ class Bloch:
 
         Returns
         -------
-        k_unfold : a list of ``np.prod(self.bloch)`` k-points used for the unfolding
+        k_unfold
+            a list of ``np.prod(self.bloch)`` k-points used for the unfolding
         """
         k = _a.arrayd(k)
 
@@ -154,7 +155,8 @@ class Bloch:
 
         Returns
         -------
-        M : unfolded Bloch matrix
+        numpy.ndarray
+            unfolded Bloch matrix
         """
         K_unfold = self.unfold_points(k)
         M0 = func(*args, k=K_unfold[0, :], **kwargs)
@@ -178,7 +180,8 @@ class Bloch:
 
         Returns
         -------
-        M_unfold : unfolded matrix of size ``M[0].shape * k_unfold.shape[0] ** 2``
+        numpy.ndarray
+            unfolded matrix of size ``M[0].shape * k_unfold.shape[0] ** 2``
         """
         if isinstance(M, (list, tuple)):
             M = np.stack(M)

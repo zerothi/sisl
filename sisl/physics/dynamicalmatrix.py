@@ -82,7 +82,8 @@ class DynamicalMatrix(SparseOrbitalBZ):
 
         Returns
         -------
-        object : the dynamical matrix at :math:`k`. The returned object depends on `format`.
+        matrix : numpy.ndarray or scipy.sparse.*_matrix
+            the dynamical matrix at :math:`k`. The returned object depends on `format`.
         """
         pass
 
@@ -132,7 +133,8 @@ class DynamicalMatrix(SparseOrbitalBZ):
 
         Returns
         -------
-        tuple : for each of the Cartesian directions a :math:`\partial \mathbf D(k)/\partial k_\gamma` is returned.
+        tuple
+            for each of the Cartesian directions a :math:`\partial \mathbf D(k)/\partial k_\gamma` is returned.
         """
         pass
 
@@ -182,7 +184,8 @@ class DynamicalMatrix(SparseOrbitalBZ):
 
         Returns
         -------
-        tuple of tuples : for each of the Cartesian directions
+        tuple of tuples
+            for each of the Cartesian directions
         """
         pass
 

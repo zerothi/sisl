@@ -109,7 +109,8 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
         Returns
         -------
-        object : the Hamiltonian matrix at :math:`k`. The returned object depends on `format`.
+        matrix : numpy.ndarray or scipy.sparse.*_matrix
+            the Hamiltonian matrix at :math:`k`. The returned object depends on `format`.
         """
         pass
 
@@ -163,7 +164,8 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
         Returns
         -------
-        tuple : for each of the Cartesian directions a :math:`\partial \mathbf H(k)/\partial k_\alpha` is returned.
+        tuple
+            for each of the Cartesian directions a :math:`\partial \mathbf H(k)/\partial k_\alpha` is returned.
         """
         pass
 
@@ -217,7 +219,8 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
         Returns
         -------
-        tuple of tuples : for each of the Cartesian directions
+        tuple of tuples
+            for each of the Cartesian directions
         """
         pass
 
@@ -487,7 +490,8 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
         Returns
         -------
-        fermi-level : the Fermi-level of the system (or two if two different charges are passed)
+        float or array_like
+            the Fermi-level of the system (or two if two different charges are passed)
         """
         if bz is None:
             # Gamma-point only

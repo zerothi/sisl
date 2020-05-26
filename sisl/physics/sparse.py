@@ -316,7 +316,8 @@ class SparseOrbitalBZ(SparseOrbital):
 
         Returns
         -------
-        object : the overlap matrix for the :math:`k`-point, `format` determines the object type.
+        matrix : numpy.ndarray or scipy.sparse.*_matrix
+            the overlap matrix at :math:`k`. The returned object depends on `format`.
         """
         pass
 
@@ -395,7 +396,8 @@ class SparseOrbitalBZ(SparseOrbital):
 
         Returns
         -------
-        tuple : for each of the Cartesian directions a :math:`\partial \mathbf S(k)/\partial k` is returned.
+        tuple
+            for each of the Cartesian directions a :math:`\partial \mathbf S(k)/\partial k` is returned.
         """
         pass
 
@@ -474,7 +476,8 @@ class SparseOrbitalBZ(SparseOrbital):
 
         Returns
         -------
-        tuple of tuples : for each of the Cartesian directions
+        tuple of tuples
+            for each of the Cartesian directions
         """
         pass
 
