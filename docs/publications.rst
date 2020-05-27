@@ -9,6 +9,10 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. S. Sanz, P. Brandimarte, G. Giedke, D. Sanchez-Portal, T. Frederiksen,
+   *Crossed graphene nanoribbons as beam splitters and mirrorsfor electron quantum optics*,
+   arXiv `2005.11391 <https://arxiv.org/abs/2005.11391>`_
+
 #. J. Li, S. Sanz, J. Castro-Esteban, M. Vilas-Varela, N. Friedrich, T. Frederiksen, D. Pena, J.I. Pascual,
    *Uncovering the Triplet Ground State of Triangular Graphene Nanoflakes Engineeredwith Atomic Precision on a Metal Surface*,
    Physical Review Letters **124**, `177201 (2020) <https://doi.org/10.1103/PhysRevLett.124.177201>`_
