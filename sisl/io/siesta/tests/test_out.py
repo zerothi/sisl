@@ -103,10 +103,8 @@ def test_md_nose_out_dataframe(sisl_files):
     # this will read all MD-steps and only latest iscf
     assert len(data) == len(df)
     assert df.index.names == ["imd"]
-    
+
     df = out.read_scf(iscf=None, as_dataframe=True)
     assert df.index.names == ["imd", "iscf"]
     df = out.read_scf(iscf=None, imd=-1, as_dataframe=True)
     assert df.index.names == ["iscf"]
-
-

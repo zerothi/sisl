@@ -737,7 +737,7 @@ class outSileSiesta(SileSiesta):
                 return pd.DataFrame(index=pd.Index([], name="iscf"),
                                     columns=props[1:])
             return np.array(md[imd])
-                
+
         if imd > len(md):
             raise ValueError(f"{self.__class__.__name__}.read_scf could not find requested MD step ({imd}).")
 
