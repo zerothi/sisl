@@ -79,7 +79,6 @@ def test_md_nose_out(sisl_files):
         assert np.allclose(scf_all[i], scf)
 
 
-@pytest.mark.skipif(sys.version_info < (3, 6), reason="requires python3.6 or higher for ordered kwargs")
 def test_md_nose_out_data(sisl_files):
     f = sisl_files(_dir, 'md_nose.out')
     out = outSileSiesta(f)
@@ -89,3 +88,25 @@ def test_md_nose_out_data(sisl_files):
 
     assert np.allclose(f0, f1)
     assert g0 == g1
+
+
+def test_md_nose_out_dataframe(sisl_files):
+    try:
+        import pandas
+    except ImportError:
+        pytest.skip('pandas not available')
+    f = sisl_files(_dir, 'md_nose.out')
+    out = outSileSiesta(f)
+
+    data = out.read_scf()
+    df = out.read_scf(as_dataframe=True)
+    # this will read all MD-steps and only latest iscf
+    assert len(data) == len(df)
+    assert df.index.names == ["imd"]
+    
+    df = out.read_scf(iscf=None, as_dataframe=True)
+    assert df.index.names == ["imd", "iscf"]
+    df = out.read_scf(iscf=None, imd=-1, as_dataframe=True)
+    assert df.index.names == ["iscf"]
+
+

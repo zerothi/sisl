@@ -5,6 +5,7 @@ from .sile import SileSiesta
 from ..sile import add_sile, sile_fh_open
 
 from sisl._internal import set_module
+import sisl._array as _a
 from sisl import Geometry, Atom, SuperCell
 from sisl.utils.cmd import *
 from sisl.unit.siesta import unit_convert
@@ -88,7 +89,7 @@ class outSileSiesta(SileSiesta):
             cell.append([float(x) for x in line[:3]])
             line = self.readline()
 
-        cell = np.array(cell)
+        cell = _a.arrayd(cell)
 
         if not Ang:
             cell *= Bohr2Ang
@@ -116,7 +117,7 @@ class outSileSiesta(SileSiesta):
 
         # in outcoor we know it is always just after
         cell = self._read_supercell_outcell()
-        xyz = np.array(xyz)
+        xyz = _a.arrayd(xyz)
 
         # Now create the geometry
         if scaled:
@@ -125,7 +126,7 @@ class outSileSiesta(SileSiesta):
             # So... :(
             raise ValueError("Could not read the lattice-constant for the scaled geometry")
         elif fractional:
-            xyz = np.dot(xyz, cell.cell)
+            xyz = xyz.dot(cell.cell)
         elif not Ang:
             xyz *= Bohr2Ang
 
@@ -158,7 +159,7 @@ class outSileSiesta(SileSiesta):
         self.fh.seek(pos, os.SEEK_SET)
 
         # Convert xyz
-        xyz = np.array(xyz)
+        xyz = _a.arrayd(xyz)
         if not Ang:
             xyz *= Bohr2Ang
 
@@ -325,12 +326,12 @@ class outSileSiesta(SileSiesta):
                 else:
                     F = maxF
 
-            return np.array(F)
+            return _a.arrayd(F)
 
         def return_forces(Fs):
             # Handle cases where we can't now if they are found
             if Fs is None: return None
-            Fs = np.array(Fs)
+            Fs = _a.arrayd(Fs)
             if max and total:
                 return (Fs[..., :-1], Fs[..., -1])
             elif max and not all:
@@ -390,7 +391,7 @@ class outSileSiesta(SileSiesta):
                 line = self.readline().split()
                 S.append([float(x) for x in line[-3:]])
 
-            return np.array(S)
+            return _a.arrayd(S)
 
         # list of all stresses
         Ss = []
@@ -486,7 +487,7 @@ class outSileSiesta(SileSiesta):
             moments[ia-1] = atom
 
         if not all:
-            return np.array(moments)
+            return _a.arrayd(moments)
         return moments
 
     def read_data(self, *args, **kwargs):
@@ -536,7 +537,7 @@ class outSileSiesta(SileSiesta):
         return val
 
     @sile_fh_open()
-    def read_scf(self, key='scf', iscf=-1, imd=None, as_dataframe=False):
+    def read_scf(self, key="scf", iscf=-1, imd=None, as_dataframe=False):
         r""" Parse SCF information and return a table of SCF information depending on what is requested
 
         Parameters
@@ -557,17 +558,20 @@ class outSileSiesta(SileSiesta):
         """
 
         #These are the properties that are written in SIESTA scf
-        props = ["iscf", "Eharris","E_KS", "FreeEng", "dDmax", "Ef", "dHmax"]
+        props = ["iscf", "Eharris", "E_KS", "FreeEng", "dDmax", "Ef", "dHmax"]
 
         if not iscf is None:
             if iscf == 0:
-                raise ValueError(f"{self.__class__.__name__}.read_scf: requires iscf argument to *not* be 0!")
+                raise ValueError(f"{self.__class__.__name__}.read_scf requires iscf argument to *not* be 0!")
         if not imd is None:
             if imd == 0:
-                raise ValueError(f"{self.__class__.__name__}.read_scf: requires imd argument to *not* be 0!")
+                raise ValueError(f"{self.__class__.__name__}.read_scf requires imd argument to *not* be 0!")
         def reset_d(d, line):
             if line.startswith('SCF cycle converged'):
-                d['_final_iscf'] = len(d['data']) > 0
+                if len(d['data']) > 0:
+                    d['_final_iscf'] = 1
+            elif line.startswith('SCF cycle continued'):
+                d['_final_iscf'] = 0
 
         if key.lower() == 'scf':
             def parse_next(line, d):
@@ -578,6 +582,8 @@ class outSileSiesta(SileSiesta):
                 elif line.startswith('scf:'):
                     d['_found_iscf'] = True
                     if len(line) == 97:
+                        # this should be for Efup/dwn
+                        # but I think this will fail for as_dataframe (TODO)
                         data = [int(line[5:9]), float(line[9:25]), float(line[25:41]),
                                 float(line[41:57]), float(line[57:67]), float(line[67:77]),
                                 float(line[77:87]), float(line[87:97])]
@@ -592,17 +598,21 @@ class outSileSiesta(SileSiesta):
                     d['data'] = data
 
         elif key.lower() == 'ts-scf':
+            props.append("ts-Vha")
             def parse_next(line, d):
                 line = line.strip().replace('*', '0')
                 reset_d(d, line)
                 if line.startswith('ts-Vha:'):
                     d['ts-Vha'] = float(line.split()[1])
                 elif line.startswith('ts-q:'):
-                    data = line.split()
+                    data = line.split()[1:]
                     try:
-                        d['ts-q'] = list(map(float, data[1:]))
+                        d['ts-q'] = list(map(float, data))
                     except:
                         # We are probably reading a device list
+                        # ensure that props are appended
+                        if props[-1] != data[-1]:
+                            props.extend(data)
                         pass
                 elif line.startswith('ts-scf:'):
                     d['_found_iscf'] = True
@@ -617,13 +627,13 @@ class outSileSiesta(SileSiesta):
                     else:
                         # Populate DATA by splitting
                         data = line.split()
-                        data =  [int(data[1])] + list(map(float, data[2:])) + [d['ts-Vha']] + d['ts-q']
+                        data = [int(data[1])] + list(map(float, data[2:])) + [d['ts-Vha']] + d['ts-q']
                     d['data'] = data
 
         # A temporary dictionary to hold information while reading the output file
         d = {
             '_found_iscf': False,
-            '_final_iscf': False,
+            '_final_iscf': 0,
             'data': [],
         }
         md = []
@@ -643,8 +653,10 @@ class outSileSiesta(SileSiesta):
                     # case the requested iscf is too big
                     scf = data
 
-            if d['_final_iscf']:
-                d['_final_iscf'] = False
+            if d['_final_iscf'] == 1:
+                d['_final_iscf'] = 2
+            elif d['_final_iscf'] == 2:
+                d['_final_iscf'] = 0
                 data = d['data']
                 if len(data) == 0:
                     # this traps the case where we read ts-scf
@@ -653,8 +665,14 @@ class outSileSiesta(SileSiesta):
                     scf = []
                     continue
 
+                if len(scf) == 0:
+                    # this traps cases where final_iscf has
+                    # been trickered but we haven't collected anything.
+                    # I.e. if key == scf but ts-scf also exists.
+                    continue
+
                 # First figure out which iscf we should store
-                if iscf is None or iscf > 0:
+                if iscf is None: # or iscf > 0
                     # scf is correct
                     pass
                 elif iscf < 0:
@@ -670,61 +688,65 @@ class outSileSiesta(SileSiesta):
                 # We are going to return the last MD (see below)
                 if imd == len(md):
                     break
-        
+
         # Define the function that is going to convert the information of a MDstep to a Dataset
         if as_dataframe:
             import pandas as pd
 
             def MDstep_dataframe(scf):
-
+                scf = np.atleast_2d(scf)
                 return pd.DataFrame(
-                    np.atleast_2d(scf[...,1:]), 
-                    index=pd.Index(np.ravel(scf[...,0]).astype(int), name="iscf"),
+                    scf[..., 1:],
+                    index=pd.Index(scf[..., 0].ravel().astype(np.int32),
+                                   name="iscf"),
                     columns=props[1:]
                 )
-            
-            def MD_dataframe(md):
-
-                return pd.concat([MDstep_dataframe(scf) for scf in md], keys=np.arange(1, len(md) + 1), names=["MD step"])
 
         # Now we know how many MD steps there are
+
+        # We will return stuff based on what the user requested
+        # For pandas DataFrame this will be dependent
+        #  1. all MD steps requested => imd == index, iscf == column (regardless of iscf==none|int)
+        #  2. 1 MD step requested => iscf == index
+
         if imd is None:
+            if as_dataframe:
+                if len(md) == 0:
+                    # return an empty dataframe (with imd as index)
+                    return pd.DataFrame(index=pd.Index([], name="imd"),
+                                        columns=props)
+                # Regardless of what the user requests we will always have imd == index
+                # and iscf a column, a user may easily change this.
+                df = pd.concat(map(MDstep_dataframe, md),
+                               keys=_a.arangei(1, len(md) + 1), names=["imd"])
+                if iscf is not None:
+                    df.reset_index("iscf", inplace=True)
+                return df
+
             if iscf is None:
                 # since each MD step may be a different number of SCF steps
                 # we cannot convert to a dense array
-                if as_dataframe:
-                    return MD_dataframe(md)
-                else:
-                    return md
-            
-            md = np.array(md)
-            if as_dataframe:
-                if len(np.unique(md[:,0])) == 1:
-                    # This means that there is only one value for iscf, so we can use it as an index
-                    # In fact it will be the top level of the index hierarchy (hence the swaplevel)
-                    return MD_dataframe(md).swaplevel(0,1)
-                else:
-                    # We generate a dataframe, but in this case iscf is a dependent variable
-                    # Because iscf is different for each MD step
-
-                    df = pd.DataFrame(
-                        md,
-                        index=pd.Index(np.arange(1, md.shape[0] + 1), name="MD step"),
-                        columns=props
-                    )
-
-                    df['iscf'] = df['iscf'].astype(int)
-                    return df 
-            else:
                 return md
-        elif imd > len(md):
-            raise ValueError(f"{self.__class__.__name__}.read_scf: could not find requested MD step ({imd}).")
+            return np.array(md)
+
+        # correct imd to ensure we check against the final size
+        imd = min(len(md) - 1, max(len(md) + imd, 0))
+        if len(md) == 0:
+            # no data collected
+            if as_dataframe:
+                return pd.DataFrame(index=pd.Index([], name="iscf"),
+                                    columns=props[1:])
+            return np.array(md[imd])
+                
+        if imd > len(md):
+            raise ValueError(f"{self.__class__.__name__}.read_scf could not find requested MD step ({imd}).")
 
         # If a certain imd was requested, get it
         # Remember that if imd is positive, we stopped reading at the moment we reached it
-        imd =  min( len(md) - 1, max(len(md) + imd, 0)) 
         scf = np.array(md[imd])
-        return MDstep_dataframe(scf) if as_dataframe else scf
+        if as_dataframe:
+            return MDstep_dataframe(scf)
+        return scf
 
 
 add_sile('out', outSileSiesta, case=False, gzip=True)
