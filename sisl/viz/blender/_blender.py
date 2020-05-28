@@ -1,7 +1,10 @@
-from scipy.spatial.transform import Rotation
-import numpy as np
-from math import acos
 import os
+from math import acos
+from numbers import Integral
+from pathlib import Path
+import numpy as np
+from scipy.spatial.transform import Rotation
+
 from ._array import arrayd
 
 try:
@@ -25,12 +28,29 @@ except ModuleNotFoundError as BLENDER_IMPORT_EXCEPTION:
     BLENDER_ASPACKAGE = False
     INSIDE_BLENDER = False
 
+
 __all__ = ['BlenderScene', 'blender']
 
 
-class BlenderScene:
+# Default the directory to
+SISL_BLENDER_TMP = Path.cwd()
 
-    """ Serves as an interface between sisl and blender.
+
+def _def_pov(arg):
+    if isinstance(arg, str):
+        return np.array({
+            '+z': (0, 0, 1),
+            '-z': (0, 0, -1),
+            '+y': (0, 1, 0),
+            '-y': (0, -1, 0),
+            '+x': (1, 0, 0),
+            '-x': (-1, 0, 0),
+        }.get(arg))
+    return np.array(arg)
+
+
+class BlenderScene:
+    """ Interface between sisl and blender.
 
     The `BlenderScene` class aims to help displaying sisl's
     scientifically meaningful classes in Blender (https://www.blender.org/)
@@ -79,7 +99,7 @@ class BlenderScene:
 
     Parameters
     ----------
-    objs : array_like, optional
+    objs : list of objects, optional
         the objects that should be added to the scene on initialization.
         This is equivalent to adding them with the `add()` method
     filepath : str, optional
@@ -92,26 +112,22 @@ class BlenderScene:
 
     """
 
-    _POVs = {
-        '+z': (0, 0, 1),
-        '-z': (0, 0, -1),
-        '+y': (0, 1, 0),
-        '-y': (0, -1, 0),
-        '+x': (1, 0, 0),
-        '-x': (-1, 0, 0),
-    }
+    def __init__(self, filepath=None, objs=[]):
 
-    def __init__(self, objs = [], filepath = None):
-
-        #Define some attributes that will be helpful so that bpy does not need to be imported elsewhere
+        # Define some attributes that will be helpful
+        # so that bpy does not need to be imported elsewhere
         self.ops = bpy.ops
         self.context = bpy.context
         self.data = bpy.data
+
         self.atomic_blender = lambda: addon_utils.enable("io_mesh_atomic")
 
-        self.filepath = filepath or os.path.join(os.path.expanduser("~"), "sislImage")
+        if filepath is None:
+            self.filepath = Path.home() / "sislImage"
+        else:
+            self.filepath = filepath
 
-        #Clean the scene of any objects that were there (e.g. the default cube)
+        # Clean the scene of any objects that were there (e.g. the default cube)
         self.clean()
 
         self.objs = []
@@ -120,6 +136,29 @@ class BlenderScene:
         #If objects were provided on initialization, add them to the scene
         for obj in objs:
             self.add(obj)
+
+    def get_tmpdir(self, filename=None):
+        """ Query the temporary directory used for blender
+
+        This will return the env-var SISL_BLENDER_TMPDIR but default to
+        the ``Path.cwd() / "sisl-blender-tmp"``
+
+        It will query on every call and hence one may change the environment
+        sometimes.
+
+        Parameters
+        ----------
+        filename : str or None
+           if None, the directory will be returned, otherwise a file suffixed with
+           an increasing integer will be returned.
+        """
+        if "SISL_BLENDER_TMPDIR" in os.environ:
+            d = os.environ["SISL_BLENDER_TMPDIR"]
+        else:
+            d = Path.cwd() / "sisl-blender-tmp"
+        if filename is None:
+            return d
+        
 
     def rotate_object(self, rot_mat, obj):
         '''
@@ -227,7 +266,7 @@ class BlenderScene:
             the direction along we want the limit of the cube. 
             A semi infinite vector in this direction and starting at (0,0,0) will be considered.
         '''
-        vec = np.array(self._POVs[vec]) if isinstance(vec, str) else np.array(vec)
+        vec = _def_pov(vec)
 
         #Get the predominant axis of the provided vector
         main_axis = np.argmax(abs(vec))
@@ -251,7 +290,7 @@ class BlenderScene:
             set this to true if you want just the opposite point of view from the one you provided.
         '''
 
-        loc_vec = np.array(self._POVs[POV]) if isinstance(POV, str) else np.array(POV)
+        loc_vec = _def_pov(POV)
         loc_vec *= -1 if opposite else 1
         camera_vec = [0, 0, 1] #This is the default vector along which camera points
         horizontal_camera_vec =  [1, 0, 0] #This is the original vector for the horizontal side
@@ -344,24 +383,24 @@ class BlenderScene:
 
         radius = np.max(self.bounding_box) - np.min(self.bounding_box)*2
 
-        #Calculate the lights power according to intensity and radius
+        # Calculate the lights power according to intensity and radius
         front_power = front_intensity/radius**2
         fill_power = fill_intensity/radius**2
 
         max_bounces = 1
 
-        #Key
+        # Key
         POV = self.POV(front)
         location = self.bound_box_intersection(POV["direction"]) + POV["direction"]*front_distance
         self.light_add(type='AREA', radius=radius, location=location, rotation=POV["rotation"], max_bounces = max_bounces, energy = front_power)
 
-        #Fill
+        # Fill
         POV = self.POV(front, opposite=True)
         location = self.bound_box_intersection(POV["direction"]) + POV["direction"]*fill_distance
         self.light_add(type='AREA', radius=radius, location=location, rotation=POV["rotation"],
             max_bounces = max_bounces, energy = fill_power)
 
-        #Sides
+        # Sides
         orto_axes = [ax for ax in ["x", "y", "z"] if ax not in front]
         for ax in orto_axes:
             for opposite in [True, False]:
@@ -414,44 +453,51 @@ class BlenderScene:
             NOT IMPLEMENTED YET, DON'T USE
         '''
 
-        #If no horizontal_axis is provided, we provide a default one depending on the POV
+        # If no horizontal_axis is provided, we provide a default one depending on the POV
         if horizontal_axis is None:
-            horizontal_axis = POV.replace("x", "y") if "x" in POV else POV.replace("y", "x") if "y" in POV else POV.replace("z", "x")
+            for key, rep in [("x", "y"), ("y", "x"), ("z", "x")]:
+                if key in POV:
+                    horizontal_axis = POV.replace(key, rep)
+                    break
+            else:
+                horizontal_axis = POV
 
-        #Define the resolution of the image
-        if isinstance(resolution, int):
-            resolution = [resolution]*2
+        # Define the resolution of the image
+        if isinstance(resolution, Integral):
+            resolution = [resolution] * 2
+
         self.context.scene.render.resolution_x = resolution[0]
         self.context.scene.render.resolution_y = resolution[1]
 
-        #Define the location and rotation of the camera
+        # Define the location and rotation of the camera
         if location is None:
 
             if distance is None:
-                distance = 10 #Here distance should be calculated according to dimensions of bounding box
+                 # TODO distance should be calculated according to dimensions of bounding box
+                distance = 10
 
             POV = self.POV(POV)
-            location = self.bound_box_intersection(POV["direction"]) + POV["direction"]*distance
+            location = self.bound_box_intersection(POV["direction"]) + POV["direction"] * distance
             rotation = POV["rotation"]
-            horizontal_axis = self._POVs[horizontal_axis] if isinstance(horizontal_axis, str) else horizontal_axis
+            horizontal_axis = _def_pov(horizontal_axis)
 
-        #Create the camera and set it as the scene camera
+        # Create the camera and set it as the scene camera
         self.ops.object.camera_add(location=location,
                                 rotation=rotation)
 
         cam = self.context.object
         self.context.scene.camera = cam
 
-        #Rotate the camera along its axis to get the horizontal side that we want
+        # Rotate the camera along its axis to get the horizontal side that we want
         angle = Vector(horizontal_axis).angle(POV["horizontal"])
         self.rotate_object(Matrix.Rotation(angle, 4, POV["direction"]), cam)
 
         #cam.keyframe_insert("rotation_euler")
         #cam.keyframe_insert("location")
 
-        #Rotate the camera
+        # Rotate the camera
 
-        # #Set the number of frames
+        # Set the number of frames
         # bpy.context.scene.frame_end = 20
 
         # #
@@ -477,7 +523,7 @@ class BlenderScene:
         ---------
         filepath: str, optional
             The path where the rendered image/movie should be stored, without extension
-        engine: {'CYCLES', 'BLENDER_EEVEE', 'BLENDER_WORKBENCH' }, optional
+        engine: {'CYCLES', 'BLENDER_EEVEE', 'BLENDER_WORKBENCH', *}, optional
             The render engine to be used. The default is 'CYCLES'.
             If you don't know the difference, you probably will be good with CYCLES, but you can try the other two.
             This parameter can take other values if you have external render engines in your blender install.
@@ -512,10 +558,10 @@ class BlenderScene:
             BlenderScene.data respectively. *You shouldn't need any blender imports inside your function*
         '''
 
-        #Define the output path
+        # Define the output path
         self.context.scene.render.filepath = filepath or self.filepath
 
-        #Define the renderer
+        # Define the renderer
         self.context.scene.render.engine = engine
 
         image_settings = {"file_format": file_format, **image_settings}
@@ -530,7 +576,7 @@ class BlenderScene:
         if callable(before_render):
             before_render(self)
 
-        #And render :)
+        # And render :)
         self.ops.render.render('INVOKE_DEFAULT', write_still=True)
 
 if BLENDER_AVAIL:
@@ -541,7 +587,7 @@ if BLENDER_AVAIL:
 
         Parameters
         ----------
-        obj: any sisl object with a __blender__() method
+        obj: any sisl object with a ``__blender__`` method
             The object to be added to the 3D view.
         scene: BlenderScene, optional
             The scene in which to put the 3D representation of the object. If not provided, a new scene will be created.

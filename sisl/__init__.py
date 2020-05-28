@@ -138,6 +138,7 @@ from .io.sile import (add_sile, get_sile_class, get_sile,
 # import sisl
 # sisl.geom.graphene
 from . import geom
+from . import viz
 
 # Make these things publicly available
 __all__ = [s for s in dir() if not s.startswith('_')]
