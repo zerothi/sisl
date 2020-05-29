@@ -488,21 +488,30 @@ class ncSileSiesta(SileCDFSiesta):
         self.variables['lasto'][:] = geometry.lasto + 1
 
     def _write_sparsity(self, csr, nsc):
-        # Append the sparsity pattern
-        # Create basis group
+        if csr.nnz != len(csr.col):
+            raise ValueError(f"{self.file}._write_sparsity *must* be a finalized sparsity matrix")
+        # Create sparse group
         sp = self._crt_grp(self, 'SPARSE')
 
-        self._crt_dim(sp, 'nnzs', csr.col.shape[0])
-        v = self._crt_var(sp, 'n_col', 'i4', ('no_u',))
-        v.info = "Number of non-zero elements per row"
-        v[:] = csr.ncol[:]
-        v = self._crt_var(sp, 'list_col', 'i4', ('nnzs',),
-                          chunksizes=(len(csr.col),), **self._cmp_args)
-        v.info = "Supercell column indices in the sparse format"
-        v[:] = csr.col[:] + 1  # correct for fortran indices
-        v = self._crt_var(sp, 'isc_off', 'i4', ('n_s', 'xyz'))
-        v.info = "Index of supercell coordinates"
-        v[:, :] = _siesta.siesta_sc_off(*nsc).T
+        if 'n_col' in sp.variables:
+            if len(sp.dimensions['nnzs']) != csr.nnz or \
+               np.any(sp.variables['n_col'][:] != csr.ncol[:]) or \
+               np.any(sp.variables['list_col'][:] != csr.col[:]+1) or \
+               np.any(sp.variables['isc_off'][:] != _siesta.siesta_sc_off(*nsc).T):
+                raise ValueError(f"{self.file} sparsity pattern stored *MUST* be equivalent for all matrices")
+        else:
+            self._crt_dim(sp, 'nnzs', csr.col.shape[0])
+            v = self._crt_var(sp, 'n_col', 'i4', ('no_u',))
+            v.info = "Number of non-zero elements per row"
+            v[:] = csr.ncol[:]
+
+            v = self._crt_var(sp, 'list_col', 'i4', ('nnzs',),
+                              chunksizes=(len(csr.col),), **self._cmp_args)
+            v.info = "Supercell column indices in the sparse format"
+            v[:] = csr.col[:] + 1  # correct for fortran indices
+            v = self._crt_var(sp, 'isc_off', 'i4', ('n_s', 'xyz'))
+            v.info = "Index of supercell coordinates"
+            v[:, :] = _siesta.siesta_sc_off(*nsc).T
         return sp
 
     def _write_overlap(self, spgroup, csr, orthogonal, S_idx):
@@ -536,7 +545,7 @@ class ncSileSiesta(SileCDFSiesta):
 
         # Convert to siesta CSR
         _csr_to_siesta(S.geometry, csr)
-        csr.finalize()
+        csr.finalize(sort=kwargs.get("sort", True))
 
         # Ensure that the geometry is written
         self.write_geometry(S.geometry)
@@ -562,7 +571,8 @@ class ncSileSiesta(SileCDFSiesta):
 
         # Convert to siesta CSR
         _csr_to_siesta(H.geometry, csr)
-        csr.finalize()
+        csr.finalize(sort=kwargs.get("sort", True))
+        _mat_spin_convert(csr, H.spin)
 
         # Ensure that the geometry is written
         self.write_geometry(H.geometry)
@@ -590,7 +600,6 @@ class ncSileSiesta(SileCDFSiesta):
                           chunksizes=(1, len(csr.col)), **self._cmp_args)
         v.info = "Hamiltonian"
         v.unit = "Ry"
-        _mat_spin_convert(csr, H.spin)
         for i in range(len(H.spin)):
             v[i, :] = csr._D[:, i] / Ry2eV
 
@@ -608,9 +617,10 @@ class ncSileSiesta(SileCDFSiesta):
         if csr.nnz == 0:
             raise SileError(str(self) + '.write_density_matrix cannot write a zero element sparse matrix!')
 
-        # Convert to siesta CSR
+        # Convert to siesta CSR (we don't need to sort this matrix)
         _csr_to_siesta(DM.geometry, csr)
-        csr.finalize()
+        csr.finalize(sort=kwargs.get("sort", True))
+        _mat_spin_convert(csr, DM.spin)
 
         # Ensure that the geometry is written
         self.write_geometry(DM.geometry)
@@ -637,7 +647,6 @@ class ncSileSiesta(SileCDFSiesta):
         v = self._crt_var(spgroup, 'DM', 'f8', ('spin', 'nnzs'),
                           chunksizes=(1, len(csr.col)), **self._cmp_args)
         v.info = "Density matrix"
-        _mat_spin_convert(csr, DM.spin)
         for i in range(len(DM.spin)):
             v[i, :] = csr._D[:, i]
 
@@ -655,9 +664,10 @@ class ncSileSiesta(SileCDFSiesta):
         if csr.nnz == 0:
             raise SileError(str(self) + '.write_energy_density_matrix cannot write a zero element sparse matrix!')
 
-        # Convert to siesta CSR
+        # no need to sort this matrix
         _csr_to_siesta(EDM.geometry, csr)
-        csr.finalize()
+        csr.finalize(sort=kwargs.get("sort", True))
+        _mat_spin_convert(csr, EDM.spin)
 
         # Ensure that the geometry is written
         self.write_geometry(EDM.geometry)
@@ -689,7 +699,6 @@ class ncSileSiesta(SileCDFSiesta):
                           chunksizes=(1, len(csr.col)), **self._cmp_args)
         v.info = "Energy density matrix"
         v.unit = "Ry"
-        _mat_spin_convert(csr, EDM.spin)
         for i in range(len(EDM.spin)):
             v[i, :] = csr._D[:, i] / Ry2eV
 
@@ -709,7 +718,7 @@ class ncSileSiesta(SileCDFSiesta):
 
         # Convert to siesta CSR
         _csr_to_siesta(D.geometry, csr)
-        csr.finalize()
+        csr.finalize(sort=kwargs.get("sort", True))
 
         # Ensure that the geometry is written
         self.write_geometry(D.geometry)

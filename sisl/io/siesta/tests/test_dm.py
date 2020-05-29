@@ -27,11 +27,17 @@ def test_dm_si_pdos_kgrid_rw(sisl_files, sisl_tmp):
     f2 = sisl.get_sile(sisl_tmp('test.DM', _dir))
 
     DM1 = f1.read_density_matrix()
-    f2.write_density_matrix(DM1)
+    f2.write_density_matrix(DM1, sort=False)
     DM2 = f2.read_density_matrix()
 
     assert DM1._csr.spsame(DM2._csr)
     assert np.allclose(DM1._csr._D[:, :-1], DM2._csr._D[:, :-1])
+
+    f2.write_density_matrix(DM1)
+    DM2 = f2.read_density_matrix()
+
+    assert DM1._csr.spsame(DM2._csr)
+    assert not np.allclose(DM1._csr._D[:, :-1], DM2._csr._D[:, :-1])
 
 
 def test_dm_si_pdos_kgrid_mulliken(sisl_files):

@@ -206,6 +206,7 @@ class onlysSileSiesta(SileBinSiesta):
         S._csr._D[:, 0] = dS[:]
 
         # Convert to sisl supercell
+        # equivalent as _csr_from_siesta with explicit isc from file
         _csr_from_sc_off(S.geometry, isc, S._csr)
 
         return S
@@ -266,6 +267,7 @@ class tshsSileSiesta(onlysSileSiesta):
         _mat_spin_convert(H)
 
         # Convert to sisl supercell
+        # equivalent as _csr_from_siesta with explicit isc from file
         _csr_from_sc_off(H.geometry, isc, H._csr)
 
         # Find all indices where dS == 1 (remember col is in fortran indices)
@@ -287,11 +289,7 @@ class tshsSileSiesta(onlysSileSiesta):
 
         # Convert to siesta CSR
         _csr_to_siesta(H.geometry, csr)
-        # TODO consider removing finalize here!
-        # If tbtrans really needs this, then we should definitely do this
-        # in tbtrans!
-        # I.e. we should probably just do finalize(sort=False)
-        csr.finalize()
+        csr.finalize(sort=kwargs.get("sort", True))
         _mat_spin_convert(csr, H.spin)
 
         # Extract the data to pass to the fortran routine
@@ -302,9 +300,9 @@ class tshsSileSiesta(onlysSileSiesta):
         if H.orthogonal:
             h = csr._D.astype(np.float64, 'C', copy=False)
             s = csr.diags(1., dim=1)
-            # Ensure all data is correctly formatted (i.e. have the same sparsity pattern
+            # Ensure all data is correctly formatted (i.e. have the same sparsity pattern)
             s.align(csr)
-            s.finalize()
+            s.finalize(sort=kwargs.get("sort", True))
             if s.nnz != len(h):
                 raise SislError('The diagonal elements of your orthogonal Hamiltonian '
                                 'have not been defined, this is a requirement.')
@@ -390,12 +388,14 @@ class dmSileSiesta(SileBinSiesta):
         """ Writes the density matrix to a siesta.DM file """
         csr = DM._csr.copy()
         # This ensures that we don't have any *empty* elements
-        csr.finalize(sort=False)
         if csr.nnz == 0:
             raise SileError(str(self) + '.write_density_matrix cannot write '
                             'a zero element sparse matrix!')
 
         _csr_to_siesta(DM.geometry, csr)
+        # We do not really need to sort this one, but we do for consistency
+        # of the interface.
+        csr.finalize(sort=kwargs.get("sort", True))
         _mat_spin_convert(csr, DM.spin)
 
         # Get DM
@@ -480,7 +480,7 @@ class tsdeSileSiesta(dmSileSiesta):
         _bin_check(self, 'read_fermi_level', 'could not read fermi-level.')
         return Ef
 
-    def write_density_matrices(self, DM, EDM, Ef=0.):
+    def write_density_matrices(self, DM, EDM, Ef=0., **kwargs):
         r""" Writes the density matrix to a siesta.DM file
 
         Parameters
@@ -496,9 +496,6 @@ class tsdeSileSiesta(dmSileSiesta):
         EDMcsr = EDM._csr.copy()
         DMcsr.align(EDMcsr)
         EDMcsr.align(DMcsr)
-        # This ensures that we don't have any *empty* elements
-        DMcsr.finalize(sort=False)
-        EDMcsr.finalize(sort=False)
 
         if DMcsr.nnz == 0:
             raise SileError(str(self) + '.write_density_matrices cannot write '
@@ -506,6 +503,9 @@ class tsdeSileSiesta(dmSileSiesta):
 
         _csr_to_siesta(DM.geometry, DMcsr)
         _csr_to_siesta(DM.geometry, EDMcsr)
+        sort = kwargs.get("sort", True)
+        DMcsr.finalize(sort=sort)
+        EDMcsr.finalize(sort=sort)
         _mat_spin_convert(DMcsr, DM.spin)
         _mat_spin_convert(EDMcsr, EDM.spin)
 

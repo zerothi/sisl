@@ -12,10 +12,12 @@ from sisl import Geometry, Atom, SuperCell
 from sisl import SparseOrbitalBZSpin
 from sisl.messages import warn
 from sisl.unit.siesta import unit_convert
-from ..siesta._help import _mat_spin_convert
+from ..siesta._help import _csr_to_siesta, _csr_from_sc_off, _mat_spin_convert
+from ..siesta._siesta import siesta_sc_off
 
 
 __all__ = ['deltancSileTBtrans']
+
 
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 Ry2eV = unit_convert('Ry', 'eV')
@@ -159,9 +161,9 @@ class deltancSileTBtrans(SileCDFTBtrans):
             if a.tag in bs.groups:
                 # Assert the file sizes
                 if bs.groups[a.tag].Number_of_orbitals != a.no:
-                    raise ValueError(('File {}'
-                                      ' has erroneous data in regards of '
-                                      'of the alreay stored dimensions.').format(self.file))
+                    raise ValueError(f"File {self.file} "
+                                     "has erroneous data in regards of "
+                                     "of the alreay stored dimensions.")
             else:
                 ba = bs.createGroup(a.tag)
                 ba.ID = np.int32(isp + 1)
@@ -270,8 +272,15 @@ class deltancSileTBtrans(SileCDFTBtrans):
            an energy dependent :math:`\delta` term. I.e. only save the :math:`\delta` term for
            the given energy. May be combined with `k` for a specific k and energy point.
         """
-        # Ensure finalization
-        delta.finalize()
+        csr = delta._csr.copy()
+        if csr.nnz == 0:
+            raise SileError(f"{str(self)}.write_overlap cannot write a zero element sparse matrix!")
+
+        # convert to siesta thing and store
+        _csr_to_siesta(delta.geometry, csr)
+        # delta should always write sorted matrices
+        csr.finalize(sort=True)
+        _mat_spin_convert(csr, delta.spin)
 
         # Ensure that the geometry is written
         self.write_geometry(delta.geometry)
@@ -288,30 +297,30 @@ class deltancSileTBtrans(SileCDFTBtrans):
         # Append the sparsity pattern
         # Create basis group
         if 'n_col' in lvl.variables:
-            if len(lvl.dimensions['nnzs']) != delta.nnz:
+            if len(lvl.dimensions['nnzs']) != csr.nnz:
                 raise ValueError("The sparsity pattern stored in delta *MUST* be equivalent for "
                                  "all delta entries [nnz].")
-            if np.any(lvl.variables['n_col'][:] != delta._csr.ncol[:]):
+            if np.any(lvl.variables['n_col'][:] != csr.ncol[:]):
                 raise ValueError("The sparsity pattern stored in delta *MUST* be equivalent for "
                                  "all delta entries [n_col].")
-            if np.any(lvl.variables['list_col'][:] != delta._csr.col[:]+1):
+            if np.any(lvl.variables['list_col'][:] != csr.col[:]+1):
                 raise ValueError("The sparsity pattern stored in delta *MUST* be equivalent for "
                                  "all delta entries [list_col].")
-            if np.any(lvl.variables['isc_off'][:] != delta.geometry.sc.sc_off):
+            if np.any(lvl.variables['isc_off'][:] != siesta_sc_off(*delta.geometry.sc.nsc).T):
                 raise ValueError("The sparsity pattern stored in delta *MUST* be equivalent for "
                                  "all delta entries [sc_off].")
         else:
-            self._crt_dim(lvl, 'nnzs', delta.nnz)
+            self._crt_dim(lvl, 'nnzs', csr.nnz)
             v = self._crt_var(lvl, 'n_col', 'i4', ('no_u',))
             v.info = "Number of non-zero elements per row"
-            v[:] = delta._csr.ncol[:]
+            v[:] = csr.ncol[:]
             v = self._crt_var(lvl, 'list_col', 'i4', ('nnzs',),
-                              chunksizes=(delta.nnz,), **self._cmp_args)
+                              chunksizes=(csr.nnz,), **self._cmp_args)
             v.info = "Supercell column indices in the sparse format"
-            v[:] = delta._csr.col[:] + 1  # correct for fortran indices
+            v[:] = csr.col[:] + 1  # correct for fortran indices
             v = self._crt_var(lvl, 'isc_off', 'i4', ('n_s', 'xyz'))
             v.info = "Index of supercell coordinates"
-            v[:] = delta.geometry.sc.sc_off[:, :]
+            v[:] = siesta_sc_off(*delta.geometry.sc.nsc).T
 
         warn_E = True
         if ilvl in [3, 4]:
@@ -361,7 +370,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
             csize = [1] * 4
 
         # Number of non-zero elements
-        csize[-1] = delta.nnz
+        csize[-1] = csr.nnz
 
         if delta.spin.kind > delta.spin.POLARIZED:
             print(delta.spin)
@@ -378,8 +387,8 @@ class deltancSileTBtrans(SileCDFTBtrans):
                                        'unit': "Ry"}, **self._cmp_args)
             for i in range(len(delta.spin)):
                 sl[-2] = i
-                v1[sl] = delta._csr._D[:, i].real * eV2Ry
-                v2[sl] = delta._csr._D[:, i].imag * eV2Ry
+                v1[sl] = csr._D[:, i].real * eV2Ry
+                v2[sl] = csr._D[:, i].imag * eV2Ry
 
         else:
             v = self._crt_var(lvl, 'delta', 'f8', dim,
@@ -388,7 +397,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
                                       'unit': "Ry"},  **self._cmp_args)
             for i in range(len(delta.spin)):
                 sl[-2] = i
-                v[sl] = delta._csr._D[:, i] * eV2Ry
+                v[sl] = csr._D[:, i] * eV2Ry
 
     def _read_class(self, cls, **kwargs):
         """ Reads a class model from a file """
@@ -456,6 +465,8 @@ class deltancSileTBtrans(SileCDFTBtrans):
                 sl[-2] = ispin
                 C._csr._D[:, ispin] = lvl.variables['delta'][sl] * Ry2eV
 
+        # Convert from isc to sisl isc
+        _csr_from_sc_off(C.geometry, lvl.variables['isc_off'][:, :], C._csr)
         _mat_spin_convert(C)
 
         return C

@@ -43,6 +43,45 @@ def test_nc2(sisl_tmp, sisl_system):
     assert sisl_system.g.atoms.equal(ntb.atoms, R=False)
 
 
+@pytest.mark.xfail(reason="writing two matrices with different sparsity patterns")
+def test_nc_multiple_fail(sisl_tmp, sisl_system):
+    f = sisl_tmp('gr.nc', _dir)
+    H = Hamiltonian(sisl_system.gtb)
+    DM = DensityMatrix(sisl_system.gtb)
+
+    sile = ncSileSiesta(f, 'w')
+    H.construct([sisl_system.R, sisl_system.t])
+    H.write(sile)
+
+    DM[0, 0] = 1.
+    DM.write(sile)
+
+
+@pytest.mark.parametrize(
+    ("sort"),
+    [
+        True,
+        pytest.param(False, marks=pytest.mark.xfail(reason="same sparsity pattern, different sparsity layout")),
+    ],
+)
+def test_nc_multiple_checks(sisl_tmp, sisl_system, sort):
+    f = sisl_tmp('gr.nc', _dir)
+    H = Hamiltonian(sisl_system.gtb)
+    DM = DensityMatrix(sisl_system.gtb)
+
+    sile = ncSileSiesta(f, 'w')
+    H.construct([sisl_system.R, sisl_system.t])
+    H.write(sile, sort=sort)
+
+    shuffle = np.random.shuffle
+    for io in range(len(H)):
+        edges = H.edges(io) # get all edges
+        shuffle(edges)
+        DM[io, edges] = 2.
+
+    DM.write(sile, sort=sort)
+
+
 def test_nc_overlap(sisl_tmp, sisl_system):
     f = sisl_tmp('gr.nc', _dir)
     tb = Hamiltonian(sisl_system.gtb)
@@ -128,9 +167,13 @@ def test_nc_DM_non_colinear(sisl_tmp):
     DM2.write(f2)
     DM3 = sisl.get_sile(f2).read_density_matrix()
     assert DM1._csr.spsame(DM2._csr)
-    assert np.allclose(DM1._csr._D, DM2._csr._D)
     assert DM1._csr.spsame(DM3._csr)
-    assert np.allclose(DM1._csr._D, DM3._csr._D)
+    # DM1 is finalized, but DM2 is not finalized
+    assert np.allclose(DM1._csr._D, DM2._csr._D)
+    # DM2 and DM3 are the same
+    assert np.allclose(DM2._csr._D, DM3._csr._D)
+    DM2.finalize()
+    assert np.allclose(DM1._csr._D, DM2._csr._D)
 
 
 def test_nc_EDM_non_colinear(sisl_tmp):
@@ -140,15 +183,19 @@ def test_nc_EDM_non_colinear(sisl_tmp):
 
     f1 = sisl_tmp('EDM1.nc', _dir)
     f2 = sisl_tmp('EDM2.nc', _dir)
-    EDM1.write(f1)
+    EDM1.write(f1, sort=False)
     EDM1.finalize()
     EDM2 = sisl.get_sile(f1).read_energy_density_matrix()
-    EDM2.write(f2)
+    EDM2.write(f2, sort=False)
     EDM3 = sisl.get_sile(f2).read_energy_density_matrix()
     assert EDM1._csr.spsame(EDM2._csr)
-    assert np.allclose(EDM1._csr._D, EDM2._csr._D)
     assert EDM1._csr.spsame(EDM3._csr)
-    assert np.allclose(EDM1._csr._D, EDM3._csr._D)
+    # EDM1 is finalized, but EDM2 is not finalized
+    assert not np.allclose(EDM1._csr._D, EDM2._csr._D)
+    # EDM2 and EDM3 are the same
+    assert np.allclose(EDM2._csr._D, EDM3._csr._D)
+    EDM2.finalize()
+    assert np.allclose(EDM1._csr._D, EDM2._csr._D)
 
 
 def test_nc_H_spin_orbit(sisl_tmp):
