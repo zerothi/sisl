@@ -1403,7 +1403,7 @@ class SparseOrbital(_SparseGeometry):
             the edges are returned only for the given atom (but by using  all orbitals of the
             requested atom). The returned edges are also atoms.
         exclude : int or list of int or None, optional
-           remove edges which are in the `exclude` list.
+           remove edges which are in the `exclude` list, this list refers to orbitals.
         orbital : int or list of int
             the edges are returned only for the given orbital. The returned edges are orbitals.
 
@@ -1412,7 +1412,7 @@ class SparseOrbital(_SparseGeometry):
         SparseCSR.edges: the underlying routine used for extracting the edges
         """
         if atom is None and orbital is None:
-            raise ValueError(self.__class__.__name__ + '.edges must have either "atom" or "orbital" keyword defined.')
+            raise ValueError(f"{self.__class__.__name__}.edges must have either 'atom' or 'orbital' keyword defined.")
         if orbital is None:
             return unique(self.geometry.o2a(self._csr.edges(self.geometry.a2o(atom, True), exclude)))
         return self._csr.edges(orbital, exclude)

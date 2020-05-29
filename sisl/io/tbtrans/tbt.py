@@ -2271,7 +2271,12 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
             @collect_action
             def __call__(self, parser, ns, value, option_string=None):
-                value = value.replace(' ', '')
+                value = ",".join(# ensure only single commas (no space between them)
+                    "".join(# ensure no empty whitespaces
+                        ",".join(# join different lines with a comma
+                            value.splitlines())
+                        .split())
+                    .split(","))
 
                 # Immediately convert to proper indices
                 geom = ns._geometry
