@@ -25,7 +25,7 @@ try:
     import sisl
     print(f"Located sisl here: {sisl.__path__}")
 except:
-    _pp = os.environ["PYTHONPATH"]
+    _pp = os.environ.get("PYTHONPATH", "")
     if len(_pp) > 0:
         os.environ["PYTHONPATH"] = f"{_root}:{_pp}"
     else:
