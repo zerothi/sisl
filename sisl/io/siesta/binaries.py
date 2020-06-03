@@ -1,4 +1,5 @@
 from numbers import Integral
+from itertools import product
 import numpy as np
 
 try:
@@ -25,7 +26,7 @@ from sisl.physics.electron import EigenstateElectron
 
 __all__ = ['tshsSileSiesta', 'onlysSileSiesta', 'tsdeSileSiesta']
 __all__ += ['hsxSileSiesta', 'dmSileSiesta']
-#__all__ += ['wfsxSileSiesta']
+__all__ += ['wfsxSileSiesta']
 __all__ += ['gridSileSiesta']
 __all__ += ['tsgfSileSiesta']
 
@@ -628,15 +629,40 @@ class hsxSileSiesta(SileBinSiesta):
 class wfsxSileSiesta(SileBinSiesta):
     r""" Binary WFSX file reader for Siesta """
 
-    def read_state(self):
-        r""" Reads states from the WFSX file
+    def yield_eigenstate(self, parent=None):
+        r""" Reads eigenstates from the WFSX file
 
         Returns
         -------
         state: EigenstateElectron
         """
         # First query information
-        nspin, no, nk, Gamma = _siesta.read_wfsx_sizes(self.file)
+        nspin, nou, nk, Gamma = _siesta.read_wfsx_sizes(self.file)
+        _bin_check(self, 'yield_eigenstate', 'could not read sizes.')
+
+        if nspin in [4, 8]:
+            nspin = 1 # only 1 spin
+            func = _siesta.read_wfsx_index_4
+        elif Gamma:
+            func = _siesta.read_wfsx_index_1
+        else:
+            func = _siesta.read_wfsx_index_2
+
+        for ispin, ik in product(range(1, nspin + 1), range(1, nk + 1)):
+            k, _, nwf = _siesta.read_wfsx_index_info(self.file, ispin, ik)
+            _bin_check(self, 'yield_eigenstate', f"could not read index info [{ispin}, {ik}]")
+
+            idx, eig, state = func(self.file, ispin, ik, nou, nwf)
+            _bin_check(self, 'yield_eigenstate', f"could not read state information [{ispin}, {ik}, {nwf}]")
+
+            # eig is already in eV
+            # k is in 1/Bohr, we should probably adapt,
+            # but we should also consider using parent to convert to
+            # sisl-style k-point
+            # we also need to add spin
+            es = EigenstateElectron(state.T, eig, parent=parent,
+                                    k=k, gauge="r", indices=idx - 1)
+            yield es
 
 
 @set_module("sisl.io.siesta")
@@ -1246,6 +1272,7 @@ if found_module:
     add_sile('DM', dmSileSiesta)
     add_sile('HSX', hsxSileSiesta)
     add_sile('TSGF', tsgfSileSiesta)
+    add_sile('WFSX', wfsxSileSiesta)
     # These have unit-conversions
     BohrC2AngC = unit_convert('Bohr', 'Ang') ** 3
     Ry2eV = unit_convert('Ry', 'eV')

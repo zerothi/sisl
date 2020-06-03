@@ -233,7 +233,7 @@ class State(ParentContainer):
         """ The string representation of this object """
         s = self.__class__.__name__ + '{{states: {0}, kind: {1}'.format(len(self), self.dkind)
         if self.parent is None:
-            s += '}}'
+            s += '}'
         else:
             s += ',\n {}\n}}'.format(str(self.parent).replace('\n', '\n '))
         return s
