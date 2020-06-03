@@ -1057,7 +1057,7 @@ class fdfSileSiesta(SileSiesta):
 
                 if R > 0:
                     # find distances between the other atoms to cut-off the distance
-                    idx = geom.close(fia, R=R, idx=FC_atoms)
+                    idx = geom.close(fia, R=R, atoms=FC_atoms)
                     idx = indices_only(FC_atoms, idx)
                     j_FC_atoms = FC_atoms[idx]
 
@@ -1291,15 +1291,15 @@ class fdfSileSiesta(SileSiesta):
         xyz *= s
 
         # Read the block (not strictly needed, if so we simply set all atoms to H)
-        atom = self.read_basis()
-        if atom is None:
+        atoms = self.read_basis()
+        if atoms is None:
             warn(SileWarning('Block ChemicalSpeciesLabel does not exist, cannot determine the basis (all Hydrogen).'))
 
             # Default atom (hydrogen)
-            atom = Atom(1)
+            atoms = Atom(1)
         else:
-            atom = [atom[i] for i in species]
-        atom = Atoms(atom, na=len(xyz))
+            atoms = [atoms[i] for i in species]
+        atoms = Atoms(atoms, na=len(xyz))
 
         if isinstance(origo, str):
             opt = origo
@@ -1330,7 +1330,7 @@ class fdfSileSiesta(SileSiesta):
         xyz += origo
 
         # Create and return geometry object
-        return Geometry(xyz, atom=atom, sc=sc)
+        return Geometry(xyz, atoms, sc=sc)
 
     def read_grid(self, name, *args, **kwargs):
         """ Read grid related information from any of the output files
@@ -1474,7 +1474,7 @@ class fdfSileSiesta(SileSiesta):
             return None
 
         # Now spcs contains the block of the chemicalspecieslabel
-        atom = [None] * len(spcs)
+        atoms = [None] * len(spcs)
         found_one = False
         found_all = True
         for spc in spcs:
@@ -1486,14 +1486,14 @@ class fdfSileSiesta(SileSiesta):
 
             # now try and read the basis
             if f.with_suffix('.ion.nc').is_file():
-                atom[idx] = ionncSileSiesta(f.with_suffix('.ion.nc')).read_basis()
+                atoms[idx] = ionncSileSiesta(f.with_suffix('.ion.nc')).read_basis()
                 found_one = True
             elif f.with_suffix('.ion.xml').is_file():
-                atom[idx] = ionxmlSileSiesta(f.with_suffix('.ion.xml')).read_basis()
+                atoms[idx] = ionxmlSileSiesta(f.with_suffix('.ion.xml')).read_basis()
                 found_one = True
             else:
                 # default the atom to not have a range, and no associated orbitals
-                atom[idx] = Atom(Z=Z, tag=lbl)
+                atoms[idx] = Atom(Z=Z, tag=lbl)
                 found_all = False
 
         if found_one and not found_all:
@@ -1501,7 +1501,7 @@ class fdfSileSiesta(SileSiesta):
                              'Only a subset of the basis information is accessible.'))
         elif not found_one:
             return None
-        return atom
+        return atoms
 
     def _r_basis_orb_indx(self):
         f = self.dir_file(self.get('SystemLabel', default='siesta') + '.ORB_INDX')
@@ -1523,7 +1523,7 @@ class fdfSileSiesta(SileSiesta):
         mass = None
 
         # Now spcs contains the block of the chemicalspecieslabel
-        atom = [None] * len(spcs)
+        atoms = [None] * len(spcs)
         for spc in spcs:
             idx, Z, lbl = spc.split()[:3]
             idx = int(idx) - 1 # F-indexing
@@ -1539,8 +1539,8 @@ class fdfSileSiesta(SileSiesta):
                 else:
                     mass = None
 
-            atom[idx] = Atom(Z=Z, mass=mass, tag=lbl)
-        return atom
+            atoms[idx] = Atom(Z=Z, mass=mass, tag=lbl)
+        return atoms
 
     def _r_add_overlap(self, parent_call, M):
         """ Internal routine to ensure that the overlap matrix is read and added to the matrix `M` """

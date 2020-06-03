@@ -701,7 +701,7 @@ class RealSpaceSE(SelfEnergy):
         -------
         parent : object
             parent object only retaining the elements of the atoms that couple out of the primary unit cell
-        atom_index : numpy.ndarray
+        atoms : numpy.ndarray
             indices for the atoms that couple out of the geometry, only if `ret_indices` is true
         """
         s_ax = self._semi_axis
@@ -735,7 +735,7 @@ class RealSpaceSE(SelfEnergy):
         # Now PC only contains couplings along the k and semi-inf directions
         # Extract the connecting orbitals and reduce them to unique atomic indices
         orbs = g.osc2uc(csr.col[array_arange(csr.ptr[:-1], n=csr.ncol)], True)
-        atom_idx = g.o2a(orbs, True)
+        atoms = g.o2a(orbs, True)
 
         # Only retain coupling atoms
         # Remove all out-of-cell couplings such that we only have inner-cell couplings
@@ -748,13 +748,13 @@ class RealSpaceSE(SelfEnergy):
             if unfold[ax] == 1:
                 continue
             PC = PC.tile(unfold[ax], ax)
-        PC = PC.sub(atom_idx)
+        PC = PC.sub(atoms)
 
         # Truncate nsc along the repititions
         nsc = array_replace(PC.nsc, (s_ax, 1), (k_ax, 1))
         PC.set_nsc(nsc)
         if ret_indices:
-            return PC, atom_idx
+            return PC, atoms
         return PC
 
     def initialize(self):

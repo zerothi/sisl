@@ -7,7 +7,7 @@ __all__ = ['nanotube']
 
 
 @set_module("sisl.geom")
-def nanotube(bond, atom=None, chirality=(1, 1)):
+def nanotube(bond, atoms=None, chirality=(1, 1)):
     """ Nanotube with user-defined chirality.
 
     This routine is implemented as in `ASE`_ with some cosmetic changes.
@@ -16,13 +16,13 @@ def nanotube(bond, atom=None, chirality=(1, 1)):
     ----------
     bond : float
        length between atoms in nano-tube
-    atom : Atom(6)
+    atoms : Atom(6)
        nanotube atoms
     chirality : (int, int)
        chirality of nanotube (n, m)
     """
-    if atom is None:
-        atom = Atom(Z=6, R=bond * 1.01)
+    if atoms is None:
+        atoms = Atom(Z=6, R=bond * 1.01)
 
     # Correct the input...
     n, m = chirality
@@ -133,6 +133,6 @@ def nanotube(bond, atom=None, chirality=(1, 1)):
 
     sc = SuperCell([rs * 4, rs * 4, t], nsc=[1, 1, 3])
 
-    geom = Geometry(xyz, atom, sc=sc)
+    geom = Geometry(xyz, atoms, sc=sc)
     # Return a geometry with the first atom at (0,0,0)
     return geom.translate(-np.amin(geom.xyz, axis=0))

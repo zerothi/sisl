@@ -322,10 +322,14 @@ class Geometry(SuperCellChild):
     def _(self, atoms):
         return (self.atoms.specie == self.atoms.index(atoms)).nonzero()[0]
 
-    @_sanitize_atom.register(AtomCategory)
-    def _(self, atom):
+    @_sanitize_atoms.register(tuple)
+    def _(self, atoms):
+        return np.concatenate(self._sanitize_atoms(atom) for atom in atoms)
+
+    @_sanitize_atoms.register(AtomCategory)
+    def _(self, atoms):
         # First do categorization
-        cat = atom.categorize(self)
+        cat = atoms.categorize(self)
         def m(cat):
             for ia, c in enumerate(cat):
                 if c == None:
@@ -334,7 +338,7 @@ class Geometry(SuperCellChild):
                     yield ia
         return _a.fromiteri(m(cat))
 
-    def _sanitize_orb(self, orbital):
+    def _sanitize_orbs(self, orbital):
         """ Converts an `orbital` to index under given inputs
 
         `orbital` may be one of the following:
@@ -1161,7 +1165,7 @@ class Geometry(SuperCellChild):
 
         Examples
         --------
-        >>> geom = sisl.geom.bilayer(top_atom=sisl.Atom[5, 7], bottom_atom=sisl.Atom(6))
+        >>> geom = sisl.geom.bilayer(top_atoms=sisl.Atom[5, 7], bottom_atoms=sisl.Atom(6))
         >>> geom = geom.tile(5, 0).repeat(7, 1)
 
         Sort according to :math:`x` coordinate
@@ -1287,32 +1291,32 @@ class Geometry(SuperCellChild):
             def tolist(self):
                 return self._idx
 
-        def _sort(val, nl, **kwargs):
+        def _sort(val, atoms, **kwargs):
             """ We do not sort according to lexsort """
             if len(val) <= 1:
                 # no values to sort
-                return nl
+                return atoms
 
             # control ascend vs descending
             ascend = kwargs['ascend']
             atol = kwargs['atol']
 
-            new_nl = NestedList()
-            for idx in nl:
-                if len(idx) <= 1:
+            new_atoms = NestedList()
+            for atom in atoms:
+                if len(atom) <= 1:
                     # no need for complexity
-                    new_nl.append(idx)
+                    new_atoms.append(atom)
                     continue
 
                 # Sort values
-                jdx = idx[argsort(val[idx])]
+                jdx = atom[argsort(val[atom])]
                 if ascend:
                     d = diff(val[jdx]) > atol
                 else:
                     jdx = jdx[::-1]
                     d = diff(val[jdx]) < -atol
-                new_nl.append(split(jdx, d.nonzero()[0] + 1), sort=True)
-            return new_nl
+                new_atoms.append(split(jdx, d.nonzero()[0] + 1), sort=True)
+            return new_atoms
 
         # Functions allowed by external users
         funcs = dict()
@@ -2347,7 +2351,7 @@ class Geometry(SuperCellChild):
             names = self._names.merge(other._names, offset=len(self))
         return self.__class__(xyz, atoms=atoms, sc=sc, names=names)
 
-    def insert(self, atom, geom):
+    def insert(self, index, geometry):
         """ Inserts other atoms right before index
 
         We insert the `geom` `Geometry` before `atom`.
@@ -2355,9 +2359,9 @@ class Geometry(SuperCellChild):
 
         Parameters
         ----------
-        atom : int
+        index : int
            the index at which atom the other geometry is inserted
-        geom : Geometry
+        geometry : Geometry
            the other geometry to be inserted
 
         See Also
@@ -2367,11 +2371,11 @@ class Geometry(SuperCellChild):
         prepend : prending geometries
         attach : attach a geometry
         """
-        atom = self._sanitize_atoms(atom)
-        if atom.size > 1:
+        index = self._sanitize_atoms(index)
+        if index.size > 1:
             raise ValueError(f"{self.__class__.__name__}.insert requires only 1 atomic index for insertion.")
-        xyz = np.insert(self.xyz, atom, geom.xyz, axis=0)
-        atoms = self.atoms.insert(atom, geom.atoms)
+        xyz = np.insert(self.xyz, index, geometry.xyz, axis=0)
+        atoms = self.atoms.insert(index, geometry.atoms)
         return self.__class__(xyz, atoms=atoms, sc=self.sc.copy())
 
     def __add__(self, b):
@@ -2513,7 +2517,7 @@ class Geometry(SuperCellChild):
         if atoms is None:
             xyz = self.xyz[::-1, :]
         else:
-            atoms = self._sanitize_atoms(atoms)
+            atoms = self._sanitize_atoms(atoms).ravel()
             xyz = np.copy(self.xyz)
             xyz[atoms, :] = self.xyz[atoms[::-1], :]
         return self.__class__(xyz, atoms=self.atoms.reverse(atoms), sc=self.sc.copy())
@@ -2864,7 +2868,7 @@ class Geometry(SuperCellChild):
 
         # Convert to actual array
         if atoms is not None:
-            atoms = self._sanitize_atoms(atoms)
+            atoms = self._sanitize_atoms(atoms).ravel()
         else:
             # If atoms is None, then atoms_xyz cannot be used!
             atoms_xyz = None
@@ -3091,7 +3095,7 @@ class Geometry(SuperCellChild):
         """
 
         # Decide which algorithm to choose from
-        atoms = self._sanitize_atoms(atoms)
+        atoms = self._sanitize_atoms(atoms).ravel()
         if len(atoms) == 1:
             algo = atoms[0]
         else:
@@ -3104,7 +3108,7 @@ class Geometry(SuperCellChild):
             # Get bond length in the closest direction
             # A bond-length HAS to be below 10
             atoms, c, d = self.close(ia, R=(0.1, 10.), atoms=algo,
-                                   ret_xyz=True, ret_rij=True)
+                                     ret_xyz=True, ret_rij=True)
             i = np.argmin(d[1])
             # Convert to unitcell atom (and get the one atom)
             atoms = self.sc2uc(atoms[1][i])
@@ -3227,8 +3231,8 @@ class Geometry(SuperCellChild):
         return ret[0]
 
     def close(self, xyz_ia, R=None,
-            atoms=None, atoms_xyz=None,
-            ret_xyz=False, ret_rij=False):
+              atoms=None, atoms_xyz=None,
+              ret_xyz=False, ret_rij=False):
         """ Indices of atoms in the entire supercell within a given radius from a given coordinate
 
         This heavily relies on the `close_sc` method.
@@ -3441,13 +3445,13 @@ class Geometry(SuperCellChild):
             transposed indices for orb1
         """
         # First check whether they have the same size, if so then do not pre-process
-        orb1 = self._sanitize_orb(orb1)
+        orb1 = self._sanitize_orbs(orb1)
         if orb2 is None:
             # we only need to transpose orb1
             offset = self.sc.sc_index(-self.o2isc(orb1)) * self.no
             return orb1 % self.no + offset
 
-        orb2 = self._sanitize_orb(orb2)
+        orb2 = self._sanitize_orbs(orb2)
         if orb1.size == orb2.size:
             pass
         elif orb1.size == 1: # typical case where orb1 is a single number
@@ -3580,7 +3584,8 @@ class Geometry(SuperCellChild):
            If True the returned indices are unique and sorted.
         """
         orbitals = _a.asarrayi(orbitals) % self.no
-        orbitals = (orb.reshape(1, -1) + _a.arangei(self.n_s).reshape(-1, 1) * self.no).ravel()
+        orbitals = (orbitals.reshape(1, -1) +
+                    _a.arangei(self.n_s).reshape(-1, 1) * self.no).ravel()
         if unique:
             return np.unique(orbitals)
         return orbitals

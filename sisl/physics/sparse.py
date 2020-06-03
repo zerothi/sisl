@@ -193,7 +193,7 @@ class SparseOrbitalBZ(SparseOrbital):
 
         return p
 
-    def iter_orbitals(self, atom=None, local=False):
+    def iter_orbitals(self, atoms=None, local=False):
         r""" Iterations of the orbital space in the geometry, two indices from loop
 
         An iterator returning the current atomic index and the corresponding
@@ -207,7 +207,7 @@ class SparseOrbitalBZ(SparseOrbital):
 
         Parameters
         ----------
-        atom : int or array_like, optional
+        atoms : int or array_like, optional
            only loop on the given atoms, default to all atoms
         local : bool, optional
            whether the orbital index is the global index, or the local index relative to
@@ -224,7 +224,7 @@ class SparseOrbitalBZ(SparseOrbital):
         --------
         Geometry.iter_orbitals : method used to iterate orbitals
         """
-        yield from self.geometry.iter_orbitals(local=local)
+        yield from self.geometry.iter_orbitals(atoms=atoms, local=local)
 
     def _Pk(self, k=(0, 0, 0), dtype=None, gauge='R', format='csr', _dim=0):
         r""" Sparse matrix (``scipy.sparse.csr_matrix``) at `k` for a polarized system

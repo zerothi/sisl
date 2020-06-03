@@ -181,7 +181,7 @@ class xsfSile(Sile):
         elif len(atom) == 1 and atom[0] == -999:
             geom = None
         else:
-            geom = Geometry(xyz, atom=atom, sc=SuperCell(cell))
+            geom = Geometry(xyz, atoms=atom, sc=SuperCell(cell))
 
         if data:
             return geom, dat

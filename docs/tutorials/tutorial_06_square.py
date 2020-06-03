@@ -14,7 +14,7 @@ print(H)
 # Specify matrix elements
 for ias, idxs in square.iter_block():
     for ia in ias:
-        idx_a = square.close(ia, R=[0.1, 1.1], idx=idxs)
+        idx_a = square.close(ia, R=[0.1, 1.1], atoms=idxs)
         H[ia, idx_a[0]] = -4.
         H[ia, idx_a[1]] = 1.
 

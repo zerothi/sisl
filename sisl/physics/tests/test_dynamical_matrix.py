@@ -19,11 +19,11 @@ def setup():
             C = Atom(Z=6, R=[bond * 1.01] * 3)
             self.g = Geometry(np.array([[0., 0., 0.],
                                         [1., 0., 0.]], np.float64) * bond,
-                              atom=C, sc=self.sc)
+                              atoms=C, sc=self.sc)
             self.D = DynamicalMatrix(self.g)
 
             def func(D, ia, idxs, idxs_xyz):
-                idx = D.geometry.close(ia, R=(0.1, 1.44), idx=idxs, idx_xyz=idxs_xyz)
+                idx = D.geometry.close(ia, R=(0.1, 1.44), atoms=idxs, atoms_xyz=idxs_xyz)
                 ia = ia * 3
 
                 i0 = idx[0] * 3

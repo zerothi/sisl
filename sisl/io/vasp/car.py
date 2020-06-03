@@ -203,7 +203,7 @@ class carSileVASP(SileVASP):
             xyz = xyz.dot(sc.cell)
 
         # The POT/CONT-CAR does not contain information on the atomic species
-        geom = Geometry(xyz=xyz, atom=atom, sc=sc)
+        geom = Geometry(xyz=xyz, atoms=atom, sc=sc)
         if ret_dynamic:
             return geom, dynamic
         return geom

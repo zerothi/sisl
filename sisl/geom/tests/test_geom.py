@@ -22,7 +22,7 @@ def test_basis():
 
 def test_flat():
     a = graphene()
-    a = graphene(atom='C')
+    a = graphene(atoms='C')
     a = graphene(orthogonal=True)
 
 
@@ -45,8 +45,8 @@ def test_bilayer():
         a = bilayer(1.42, twist=(m, m + 1))
     a = bilayer(1.42, twist=(6, 7), layer='bottom')
     a = bilayer(1.42, twist=(6, 7), layer='TOP')
-    a = bilayer(1.42, bottom_atom=(Atom['B'], Atom['N']), twist=(6, 7))
-    a = bilayer(1.42, top_atom=(Atom(5), Atom(7)), twist=(6, 7))
+    a = bilayer(1.42, bottom_atoms=(Atom['B'], Atom['N']), twist=(6, 7))
+    a = bilayer(1.42, top_atoms=(Atom(5), Atom(7)), twist=(6, 7))
     a, th = bilayer(1.42, twist=(6, 7), ret_angle=True)
 
 

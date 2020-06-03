@@ -13,7 +13,7 @@ def _sanitize_loop(func):
         if atoms is None:
             return [func(self, geometry, ia) for ia in geometry]
         # extract based on atoms selection
-        atoms = geometry._sanitize_atom(atoms)
+        atoms = geometry._sanitize_atoms(atoms)
         if atoms.ndim == 0:
             return func(self, geometry, atoms)
         return [func(self, geometry, ia) for ia in atoms]

@@ -27,14 +27,14 @@ def setup():
             C = Atom(Z=6, R=[bond * 1.01])
             self.g = Geometry(np.array([[0., 0., 0.],
                                         [1., 0., 0.]], np.float64) * bond,
-                              atom=C, sc=self.sc)
+                              atoms=C, sc=self.sc)
             self.H = Hamiltonian(self.g)
             self.HS = Hamiltonian(self.g, orthogonal=False)
 
             C = Atom(Z=6, R=[bond * 1.01] * 2)
             self.g2 = Geometry(np.array([[0., 0., 0.],
                                          [1., 0., 0.]], np.float64) * bond,
-                               atom=C, sc=self.sc)
+                               atoms=C, sc=self.sc)
             self.H2 = Hamiltonian(self.g2)
             self.HS2 = Hamiltonian(self.g2, orthogonal=False)
     return t()
@@ -1193,8 +1193,8 @@ class TestHamiltonian:
         assert np.allclose(H._csr._D, HG._csr._D)
 
     def test_tile4(self, setup):
-        def func(self, ia, idxs, idxs_xyz=None):
-            idx = self.geometry.close(ia, R=[0.1, 1.43], idx=idxs)
+        def func(self, ia, atoms, atoms_xyz=None):
+            idx = self.geometry.close(ia, R=[0.1, 1.43], atoms=atoms)
             io = self.geometry.a2o(ia)
             # Set on-site on first and second orbital
             odx = self.geometry.a2o(idx[0])
@@ -1277,8 +1277,8 @@ class TestHamiltonian:
 
     @pytest.mark.slow
     def test_repeat4(self, setup):
-        def func(self, ia, idxs, idxs_xyz=None):
-            idx = self.geometry.close(ia, R=[0.1, 1.43], idx=idxs)
+        def func(self, ia, atoms, atoms_xyz=None):
+            idx = self.geometry.close(ia, R=[0.1, 1.43], atoms=atoms)
             io = self.geometry.a2o(ia)
             # Set on-site on first and second orbital
             odx = self.geometry.a2o(idx[0])
@@ -1436,8 +1436,8 @@ class TestHamiltonian:
         H.edges()
 
     def test_edges3(self, setup):
-        def func(self, ia, idxs, idxs_xyz=None):
-            idx = self.geometry.close(ia, R=[0.1, 1.43], idx=idxs)
+        def func(self, ia, atoms, atoms_xyz=None):
+            idx = self.geometry.close(ia, R=[0.1, 1.43], atoms=atoms)
             io = self.geometry.a2o(ia)
             # Set on-site on first and second orbital
             odx = self.geometry.a2o(idx[0])
@@ -1456,19 +1456,19 @@ class TestHamiltonian:
         # first atom
         assert len(H2.edges(0)) == 4
         # orbitals of first atom
-        edge = H2.edges(orbital=[0, 1])
+        edge = H2.edges(orbitals=[0, 1])
         assert len(edge) == 8
         assert len(H2.geometry.o2a(edge, unique=True)) == 4
 
         # first orbital on first two atoms
-        edge = H2.edges(orbital=[0, 2])
+        edge = H2.edges(orbitals=[0, 2])
         # The 1, 3 are still on the first two atoms, but aren't
         # excluded. Hence they are both there
         assert len(edge) == 12
         assert len(H2.geometry.o2a(edge, unique=True)) == 6
 
         # first orbital on first two atoms
-        edge = H2.edges(orbital=[0, 2], exclude=[0, 1, 2, 3])
+        edge = H2.edges(orbitals=[0, 2], exclude=[0, 1, 2, 3])
         assert len(edge) == 8
         assert len(H2.geometry.o2a(edge, unique=True)) == 4
 

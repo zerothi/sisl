@@ -78,7 +78,7 @@ class xyzSile(Sile):
         nsc = list(map(int, header.pop("nsc").split()))
         cell = _a.fromiterd(header.pop("cell").split()).reshape(3, 3)
 
-        return Geometry(xyz, atom=sp, sc=SuperCell(cell, nsc=nsc))
+        return Geometry(xyz, atoms=sp, sc=SuperCell(cell, nsc=nsc))
 
     def _r_geometry_ase(self, na, header, sp, xyz):
         """ Read the geometry as though it was created with ASE """
@@ -88,13 +88,13 @@ class xyzSile(Sile):
         nsc = list(map(lambda x: "FT".index(x) * 2 + 1, header.pop("pbc").strip('"').split()))
         cell = _a.fromiterd(header.pop("Lattice").strip('"').split()).reshape(3, 3)
 
-        return Geometry(xyz, atom=sp, sc=SuperCell(cell, nsc=nsc))
+        return Geometry(xyz, atoms=sp, sc=SuperCell(cell, nsc=nsc))
 
     def _r_geometry(self, na, sp, xyz):
         """ Read the geometry for a generic xyz file (not sisl, nor ASE) """
         # The cell dimensions isn't defined, we are going to create a molecule box
         cell = xyz.max(0) - xyz.min(0) + 10.
-        return Geometry(xyz, atom=sp, sc=SuperCell(cell, nsc=[1] * 3))
+        return Geometry(xyz, atoms=sp, sc=SuperCell(cell, nsc=[1] * 3))
 
     @sile_fh_open()
     def read_geometry(self):

@@ -318,7 +318,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         """
         return self._value_avg('T', self._elec(elec), kavg=kavg)
 
-    def norm(self, atom=None, orbital=None, norm='none'):
+    def norm(self, atoms=None, orbitals=None, norm='none'):
         r""" Normalization factor depending on the input
 
         The normalization can be performed in one of the below methods.
@@ -340,10 +340,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         Parameters
         ----------
-        atom : array_like of int or bool, optional
+        atoms : array_like of int or bool, optional
            only return for a given set of atoms (default to all).
            *NOT* allowed with `orbital` keyword
-        orbital : array_like of int or bool, optional
+        orbitals : array_like of int or bool, optional
            only return for a given set of orbitals (default to all)
            *NOT* allowed with `atom` keyword
         norm : {'none', 'atom', 'orbital', 'all'}
@@ -356,46 +356,46 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         elif norm in ['all', 'atom', 'orbital']:
             NORM = float(self.no_d)
         else:
-            raise ValueError(self.__class__.__name__ + '.norm error on norm keyword in when requesting normalization!')
+            raise ValueError(f"{self.__class__.__name__}.norm error on norm keyword in when requesting normalization!")
 
         # If the user simply requests a specific norm
-        if atom is None and orbital is None:
+        if atoms is None and orbitals is None:
             return NORM
 
         # Now figure out what to do
-        if atom is None:
+        if atoms is None:
             # Get pivoting indices to average over
             if norm == 'orbital':
-                NORM = float(len(self.o2p(orbital)))
+                NORM = float(len(self.o2p(orbitals)))
             elif norm == 'atom':
                 geom = self.geometry
-                a = np.unique(geom.o2a(orbital))
+                a = np.unique(geom.o2a(orbitals))
                 # Now sum the orbitals per atom
                 NORM = float(_a.sumi(geom.firsto[a+1] - geom.firsto[a]))
             return NORM
 
-        if not orbital is None:
-            raise ValueError(self.__class__.__name__ + '.norm both atom and orbital cannot be specified!')
+        if not orbitals is None:
+            raise ValueError(f"{self.__class__.__name__}.norm both atom and orbital cannot be specified!")
 
         # atom is specified, this will result in the same normalization
         # regardless of norm == [orbital, atom] since it is all orbitals
         # on the given atoms.
         if norm in ['orbital', 'atom']:
-            NORM = float(len(self.a2p(atom)))
+            NORM = float(len(self.a2p(atoms)))
 
         return NORM
 
-    def _DOS(self, DOS, atom, orbital, sum, norm):
+    def _DOS(self, DOS, atoms, orbitals, sum, norm):
         """ Averages/sums the DOS
 
         Parameters
         ----------
         DOS : numpy.ndarray
            data to process
-        atom : array_like of int, optional
+        atoms : array_like of int, optional
            only return for a given set of atoms (default to all).
            *NOT* allowed with `orbital` keyword
-        orbital : array_like of int, optional
+        orbitals : array_like of int, optional
            only return for a given set of orbitals (default to all)
            *NOT* allowed with `atom` keyword
         sum : bool, optional
@@ -410,12 +410,12 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             If `atom` or `orbital` is specified they are returned in that order.
         """
         # Force False equivalent as None.
-        if isinstance(atom, bool):
-            if not atom: atom = None
-        if isinstance(orbital, bool):
-            if not orbital: orbital = None
-        if not atom is None and not orbital is None:
-            raise ValueError('Both atom and orbital keyword in DOS request '
+        if isinstance(atoms, bool):
+            if not atoms: atoms = None
+        if isinstance(orbitals, bool):
+            if not orbitals: orbitals = None
+        if not atoms is None and not orbitals is None:
+            raise ValueError('Both atoms and orbitals keyword in DOS request '
                               'cannot be specified, only one at a time.')
         # Cast to lower
         norm = norm.lower()
@@ -428,7 +428,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
         geom = self.geometry
 
-        if atom is None and orbital is None:
+        if atoms is None and orbitals is None:
             # We simply return *everything*
             if sum:
                 return DOS.sum(-1) / NORM
@@ -437,20 +437,20 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             return DOS[..., p] / NORM
 
         # Now figure out what to do
-        if atom is None:
+        if atoms is None:
             # orbital *must* be specified
-            if isinstance(orbital, bool):
+            if isinstance(orbitals, bool):
                 # Request all orbitals of the device
-                orbital = geom.a2o('Device', all=True)
-            elif isinstance(orbital, str):
-                orbital = geom.a2o(orbital, all=True)
+                orbitals = geom.a2o('Device', all=True)
+            elif isinstance(orbitals, str):
+                orbitals = geom.a2o(orbitals, all=True)
 
             # Get pivoting indices to average over
-            p = self.o2p(orbital)
+            p = self.o2p(orbitals)
             if norm == 'orbital':
                 NORM = float(len(p))
             elif norm == 'atom':
-                a = geom.o2a(orbital, unique=True)
+                a = geom.o2a(orbitals, unique=True)
                 # Now sum the orbitals per atom
                 NORM = float(_a.sumi(geom.firsto[a+1] - geom.firsto[a]))
 
@@ -460,45 +460,45 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             return DOS[..., p] / NORM
 
         # Check if user requests all atoms/orbitals
-        if isinstance(atom, bool):
+        if isinstance(atoms, bool):
             # Request all atoms of the device
-            atom = geom.names['Device']
-        elif isinstance(atom, str):
-            atom = geom.names[atom]
+            atoms = geom.names['Device']
+        elif isinstance(atoms, str):
+            atoms = geom.names[atoms]
 
         # atom is specified
         # Return the pivoting orbitals for the atom
-        p = self.a2p(atom)
+        p = self.a2p(atoms)
         if norm in ['orbital', 'atom']:
             NORM = float(len(p))
 
-        if sum or isinstance(atom, Integral):
+        if sum or isinstance(atoms, Integral):
             # Regardless of SUM, when requesting a single atom
             # we return it
             return DOS[..., p].sum(-1) / NORM
 
         # We default the case where 1-orbital systems are in use
         # Then it becomes *very* easy
-        if len(p) == len(atom):
+        if len(p) == len(atoms):
             return DOS[..., p] / NORM
 
         # This is the multi-orbital case...
 
         # We will return per-atom
         shp = list(DOS.shape[:-1])
-        nDOS = np.empty(shp + [len(atom)], DOS.dtype)
+        nDOS = np.empty(shp + [len(atoms)], DOS.dtype)
 
         # Quicker than re-creating the geometry on every instance
         geom = self.geometry
 
         # Sum for new return stuff
-        for i, a in enumerate(atom):
+        for i, a in enumerate(atoms):
             pvt = self.a2p(a)
             nDOS[..., i] = DOS[..., pvt].sum(-1) / NORM
 
         return nDOS
 
-    def DOS(self, E=None, kavg=True, atom=None, orbital=None, sum=True, norm='none'):
+    def DOS(self, E=None, kavg=True, atoms=None, orbitals=None, sum=True, norm='none'):
         r""" Green function density of states (DOS) (1/eV).
 
         Extract the DOS on a selected subset of atoms/orbitals in the device region
@@ -517,11 +517,11 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         kavg: bool, int, optional
            whether the returned DOS is k-averaged, or an explicit (unweighed) k-point
            is returned
-        atom : array_like of int or bool, optional
+        atoms : array_like of int or bool, optional
            only return for a given set of atoms (default to all).
            *NOT* allowed with `orbital` keyword. If `True` it will use all atoms in the device.
            False is equivalent to None.
-        orbital : array_like of int or bool, optional
+        orbitals : array_like of int or bool, optional
            only return for a given set of orbitals (default to all)
            *NOT* allowed with `atom` keyword. If `True` it will use all orbitals in the device.
            False is equivalent to None.
@@ -535,9 +535,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         ADOS : the spectral density of states from an electrode
         BDOS : the bulk density of states in an electrode
         """
-        return self._DOS(self._value_E('DOS', kavg=kavg, E=E), atom, orbital, sum, norm) * eV2Ry
+        return self._DOS(self._value_E('DOS', kavg=kavg, E=E), atoms, orbitals, sum, norm) * eV2Ry
 
-    def ADOS(self, elec=0, E=None, kavg=True, atom=None, orbital=None, sum=True, norm='none'):
+    def ADOS(self, elec=0, E=None, kavg=True, atoms=None, orbitals=None, sum=True, norm='none'):
         r""" Spectral density of states (DOS) (1/eV).
 
         Extract the spectral DOS from electrode `elec` on a selected subset of atoms/orbitals in the device region
@@ -557,11 +557,11 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         kavg: bool, int, optional
            whether the returned DOS is k-averaged, or an explicit (unweighed) k-point
            is returned
-        atom : array_like of int or bool, optional
+        atoms : array_like of int or bool, optional
            only return for a given set of atoms (default to all).
            *NOT* allowed with `orbital` keyword. If `True` it will use all atoms in the device.
            False is equivalent to None.
-        orbital : array_like of int or bool, optional
+        orbitals : array_like of int or bool, optional
            only return for a given set of orbitals (default to all)
            *NOT* allowed with `atom` keyword. If `True` it will use all orbitals in the device.
            False is equivalent to None.
@@ -576,7 +576,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         BDOS : the bulk density of states in an electrode
         """
         elec = self._elec(elec)
-        return self._DOS(self._value_E('ADOS', elec, kavg=kavg, E=E), atom, orbital, sum, norm) * eV2Ry
+        return self._DOS(self._value_E('ADOS', elec, kavg=kavg, E=E), atoms, orbitals, sum, norm) * eV2Ry
 
     def BDOS(self, elec=0, E=None, kavg=True, sum=True, norm='none'):
         r""" Bulk density of states (DOS) (1/eV).
@@ -2192,7 +2192,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 atoms = [None] * len(old_g)
                 for a, idx in g.atoms:
                     for i in idx:
-                        atoms[i] = a.copy(orbital=old_g.atoms[i].R)
+                        atoms[i] = a.copy(orbitals=old_g.atoms[i].R)
                 g._atoms = Atoms(atoms)
 
                 ns._geometry = g
@@ -2423,12 +2423,12 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                     e = ns._tbt._elec(value)
                     if e not in ns._tbt.elecs:
                         raise ValueError('Electrode: "'+e+'" cannot be found in the specified file.')
-                    data = ns._tbt.ADOS(e, kavg=ns._krng, orbital=ns._Orng, norm=ns._norm)
+                    data = ns._tbt.ADOS(e, kavg=ns._krng, orbitals=ns._Orng, norm=ns._norm)
                     ns._data_header.append(f'ADOS[1/eV]:{e}')
                 else:
-                    data = ns._tbt.DOS(kavg=ns._krng, orbital=ns._Orng, norm=ns._norm)
+                    data = ns._tbt.DOS(kavg=ns._krng, orbitals=ns._Orng, norm=ns._norm)
                     ns._data_header.append('DOS[1/eV]')
-                NORM = int(ns._tbt.norm(orbital=ns._Orng, norm=ns._norm))
+                NORM = int(ns._tbt.norm(orbitals=ns._Orng, norm=ns._norm))
 
                 # The flatten is because when ns._Erng is None, then a new
                 # dimension (of size 1) is created

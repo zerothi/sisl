@@ -492,7 +492,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
             se_pvt = indices(pvt, se_pvt, 0)
         return se_pvt
 
-    def a2p(self, atom, elec=None):
+    def a2p(self, atoms, elec=None):
         """ Return the pivoting orbital indices (0-based) for the atoms, possibly on an electrode
 
         This is equivalent to:
@@ -503,31 +503,31 @@ class _devncSileTBtrans(_ncSileTBtrans):
 
         Parameters
         ----------
-        atom : array_like or int
+        atoms : array_like or int
            atomic indices (0-based)
         elec : str or int or None, optional
            electrode to return pivoting indices of (if None it is the
            device pivoting indices).
         """
-        return self.o2p(self.geometry.a2o(atom, True))
+        return self.o2p(self.geometry.a2o(atoms, True))
 
-    def o2p(self, orbital, elec=None):
+    def o2p(self, orbitals, elec=None):
         """ Return the pivoting indices (0-based) for the orbitals, possibly on an electrode
 
         Will warn if an orbital requested is not in the device list of orbitals.
 
         Parameters
         ----------
-        orbital : array_like or int
+        orbitals : array_like or int
            orbital indices (0-based)
         elec : str or int or None, optional
            electrode to return pivoting indices of (if None it is the
            device pivoting indices).
         """
         # We need ravel(), otherwise taking len of an int will fail
-        orbital = self.geometry._sanitize_orb(orbital).ravel()
-        porb = in1d(self.pivot(elec), orbital).nonzero()[0]
-        d = len(orbital) - len(porb)
+        orbitals = self.geometry._sanitize_orbs(orbitals).ravel()
+        porb = in1d(self.pivot(elec), orbitals).nonzero()[0]
+        d = len(orbitals) - len(porb)
         if d != 0:
             warn(f'{self.__class__.__name__}.o2p requesting an orbital outside the device region, '
                  '{d} orbitals will be removed from the returned list')

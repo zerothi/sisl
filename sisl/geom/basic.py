@@ -38,15 +38,15 @@ def sc(alat, atom):
 
 
 @set_module("sisl.geom")
-def bcc(alat, atom, orthogonal=False):
+def bcc(alat, atoms, orthogonal=False):
     """ Body centered cubic lattice with 1 (non-orthogonal) or 2 atoms (orthogonal)
 
     Parameters
     ----------
     alat : float
         lattice parameter
-    atom : Atom
-        the atom in the BCC lattice
+    atoms : Atom
+        the atom(s) in the BCC lattice
     orthogonal : bool, optional
         whether the lattice is orthogonal (2 atoms)
     """
@@ -55,27 +55,27 @@ def bcc(alat, atom, orthogonal=False):
                                  [0, 1, 0],
                                  [0, 0, 1]], np.float64) * alat)
         ah = alat / 2
-        g = Geometry([[0, 0, 0], [ah, ah, ah]], atom, sc=sc)
+        g = Geometry([[0, 0, 0], [ah, ah, ah]], atoms, sc=sc)
     else:
         sc = SuperCell(np.array([[-1, 1, 1],
                                  [1, -1, 1],
                                  [1, 1, -1]], np.float64) * alat / 2)
-        g = Geometry([0, 0, 0], atom, sc=sc)
+        g = Geometry([0, 0, 0], atoms, sc=sc)
     if np.all(g.maxR(True) > 0.):
         g.optimize_nsc()
     return g
 
 
 @set_module("sisl.geom")
-def fcc(alat, atom, orthogonal=False):
+def fcc(alat, atoms, orthogonal=False):
     """ Face centered cubic lattice with 1 (non-orthogonal) or 4 atoms (orthogonal)
 
     Parameters
     ----------
     alat : float
         lattice parameter
-    atom : Atom
-        the atom in the FCC lattice
+    atoms : Atom
+        the atom(s) in the FCC lattice
     orthogonal : bool, optional
         whether the lattice is orthogonal (4 atoms)
     """
@@ -85,27 +85,27 @@ def fcc(alat, atom, orthogonal=False):
                                  [0, 0, 1]], np.float64) * alat)
         ah = alat / 2
         g = Geometry([[0, 0, 0], [ah, ah, 0],
-                      [ah, 0, ah], [0, ah, ah]], atom, sc=sc)
+                      [ah, 0, ah], [0, ah, ah]], atoms, sc=sc)
     else:
         sc = SuperCell(np.array([[0, 1, 1],
                                  [1, 0, 1],
                                  [1, 1, 0]], np.float64) * alat / 2)
-        g = Geometry([0, 0, 0], atom, sc=sc)
+        g = Geometry([0, 0, 0], atoms, sc=sc)
     if np.all(g.maxR(True) > 0.):
         g.optimize_nsc()
     return g
 
 
 @set_module("sisl.geom")
-def hcp(a, atom, coa=1.63333, orthogonal=False):
+def hcp(a, atoms, coa=1.63333, orthogonal=False):
     """ Hexagonal closed packed lattice with 2 (non-orthogonal) or 4 atoms (orthogonal)
 
     Parameters
     ----------
     a : float
         lattice parameter for 1st and 2nd lattice vectors
-    atom : Atom
-        the atom in the HCP lattice
+    atoms : Atom
+        the atom(s) in the HCP lattice
     coa : float, optional
         c over a parameter where c is the 3rd lattice vector length
     orthogonal : bool, optional
@@ -121,7 +121,7 @@ def hcp(a, atom, coa=1.63333, orthogonal=False):
         gt = Geometry([[0, 0, 0],
                        [a, 0, 0],
                        [a * _s30, a * _c30, 0],
-                       [a * (1 + _s30), a * _c30, 0]], atom, sc=sc)
+                       [a * (1 + _s30), a * _c30, 0]], atoms, sc=sc)
         # Create the rotated one on top
         gr = gt.copy()
         # mirror structure
@@ -134,7 +134,7 @@ def hcp(a, atom, coa=1.63333, orthogonal=False):
     else:
         sc = SuperCell([a, a, c, 90, 90, 60])
         g = Geometry([[0, 0, 0], [a2sq * _c30, a2sq * _s30, c / 2]],
-                     atom, sc=sc)
+                     atoms, sc=sc)
     if np.all(g.maxR(True) > 0.):
         g.optimize_nsc()
     return g

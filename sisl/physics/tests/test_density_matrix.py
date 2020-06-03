@@ -25,12 +25,12 @@ def setup():
             C = Atom(6, orb.toAtomicOrbital())
             self.g = Geometry(np.array([[0., 0., 0.],
                                         [1., 0., 0.]], np.float64) * bond,
-                              atom=C, sc=self.sc)
+                              atoms=C, sc=self.sc)
             self.D = DensityMatrix(self.g)
             self.DS = DensityMatrix(self.g, orthogonal=False)
 
-            def func(D, ia, idxs, idxs_xyz):
-                idx = D.geometry.close(ia, R=(0.1, 1.44), idx=idxs, idx_xyz=idxs_xyz)
+            def func(D, ia, atoms, atoms_xyz):
+                idx = D.geometry.close(ia, R=(0.1, 1.44), atoms=atoms, atoms_xyz=atoms_xyz)
                 ia = ia * 3
 
                 i0 = idx[0] * 3
@@ -136,7 +136,7 @@ class TestDensityMatrix:
         C = Atom(6, orb)
         g = Geometry(np.array([[0., 0., 0.],
                                     [1., 0., 0.]], np.float64) * bond,
-                        atom=C, sc=sc)
+                        atoms=C, sc=sc)
         D = DensityMatrix(g)
         D.construct([[0.1, bond + 0.01], [1., 0.1]])
         grid = Grid(0.2, geometry=D.geometry)
@@ -176,7 +176,7 @@ class TestDensityMatrix:
         C = Atom(6, orb)
         g = Geometry(np.array([[0., 0., 0.],
                                     [1., 0., 0.]], np.float64) * bond,
-                        atom=C, sc=sc)
+                        atoms=C, sc=sc)
         D = DensityMatrix(g, spin=Spin('SO'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5, 0.01, 0.01, 0.01, 0.01, 0., 0.), (0.1, 0.1, 0.1, 0.1, 0., 0., 0., 0.)]])
         D.orbital_momentum("atom")
@@ -193,7 +193,7 @@ class TestDensityMatrix:
         C = Atom(6, orb)
         g = Geometry(np.array([[0., 0., 0.],
                                     [1., 0., 0.]], np.float64) * bond,
-                        atom=C, sc=sc)
+                        atoms=C, sc=sc)
         D = DensityMatrix(g, spin=Spin('p'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5), (0.1, 0.2)]])
         D_mull = D.mulliken()
@@ -216,7 +216,7 @@ class TestDensityMatrix:
         C = Atom(6, orb)
         g = Geometry(np.array([[0., 0., 0.],
                                     [1., 0., 0.]], np.float64) * bond,
-                        atom=C, sc=sc)
+                        atoms=C, sc=sc)
         D = DensityMatrix(g, spin=Spin('nc'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5, 0.01, 0.01), (0.1, 0.2, 0.1, 0.1)]])
         D_mull = D.mulliken()
@@ -237,7 +237,7 @@ class TestDensityMatrix:
         C = Atom(6, orb)
         g = Geometry(np.array([[0., 0., 0.],
                                     [1., 0., 0.]], np.float64) * bond,
-                        atom=C, sc=sc)
+                        atoms=C, sc=sc)
         D = DensityMatrix(g, spin=Spin('SO'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5, 0.01, 0.01, 0.01, 0.01, 0.2, 0.2), (0.1, 0.2, 0.1, 0.1, 0., 0.1, 0.2, 0.3)]])
         D_mull = D.mulliken()
@@ -258,7 +258,7 @@ class TestDensityMatrix:
         C = Atom(6, orb)
         g = Geometry(np.array([[0., 0., 0.],
                                     [1., 0., 0.]], np.float64) * bond,
-                        atom=C, sc=sc)
+                        atoms=C, sc=sc)
         D = DensityMatrix(g, spin=Spin('p'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5), (0.1, 0.2)]])
         D_mull = D.mulliken()
@@ -280,7 +280,7 @@ class TestDensityMatrix:
         C = Atom(6, orb)
         g = Geometry(np.array([[0., 0., 0.],
                                     [1., 0., 0.]], np.float64) * bond,
-                        atom=C, sc=sc)
+                        atoms=C, sc=sc)
         D = DensityMatrix(g, spin=Spin('nc'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5, 0.01, 0.01), (0.1, 0.2, 0.1, 0.1)]])
         D_mull = D.mulliken()
@@ -300,7 +300,7 @@ class TestDensityMatrix:
         C = Atom(6, orb)
         g = Geometry(np.array([[0., 0., 0.],
                                     [1., 0., 0.]], np.float64) * bond,
-                        atom=C, sc=sc)
+                        atoms=C, sc=sc)
         D = DensityMatrix(g, spin=Spin('SO'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5, 0.01, 0.01, 0.01, 0.01, 0.2, 0.2), (0.1, 0.2, 0.1, 0.1, 0., 0.1, 0.2, 0.3)]])
         D_mull = D.mulliken()
@@ -337,7 +337,7 @@ class TestDensityMatrix:
         C = Atom(6, orb)
         g = Geometry(np.array([[0., 0., 0.],
                                     [1., 0., 0.]], np.float64) * bond,
-                        atom=C, sc=sc)
+                        atoms=C, sc=sc)
 
         D = DensityMatrix(g, spin=Spin('P'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5), (0.1, 0.1)]])
@@ -359,7 +359,7 @@ class TestDensityMatrix:
         C = Atom(6, orb)
         g = Geometry(np.array([[0., 0., 0.],
                                     [1., 0., 0.]], np.float64) * bond,
-                        atom=C, sc=sc)
+                        atoms=C, sc=sc)
 
         D = DensityMatrix(g, spin=Spin('NC'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5, 0.01, 0.01), (0.1, 0.1, 0.1, 0.1)]])

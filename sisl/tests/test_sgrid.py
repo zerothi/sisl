@@ -19,7 +19,7 @@ def setup():
             C = Atom(Z=6, R=[bond * 1.01] * 2)
             self.g = Geometry(np.array([[0., 0., 0.],
                                         [1., 0., 0.]], np.float64) * bond,
-                              atom=C, sc=self.sc)
+                              atoms=C, sc=self.sc)
             self.grid = Grid(0.2, geometry=self.g)
             self.grid.grid[:, :, :] = np.random.rand(*self.grid.shape)
 

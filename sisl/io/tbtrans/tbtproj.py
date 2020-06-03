@@ -77,7 +77,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         mol = self.groups[molecule]
         return list(mol.groups.keys())
 
-    def ADOS(self, elec_mol_proj, E=None, kavg=True, atom=None, orbital=None, sum=True, norm='none'):
+    def ADOS(self, elec_mol_proj, E=None, kavg=True, atoms=None, orbitals=None, sum=True, norm='none'):
         r""" Projected spectral density of states (DOS) (1/eV)
 
         Extract the projected spectral DOS from electrode `elec` on a selected subset of atoms/orbitals in the device region
@@ -98,10 +98,10 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         kavg: bool, int or array_like, optional
            whether the returned DOS is k-averaged, an explicit k-point
            or a selection of k-points
-        atom : array_like of int or bool, optional
+        atoms : array_like of int or bool, optional
            only return for a given set of atoms (default to all).
            *NOT* allowed with `orbital` keyword
-        orbital : array_like of int or bool, optional
+        orbitals : array_like of int or bool, optional
            only return for a given set of orbitals (default to all)
            *NOT* allowed with `atom` keyword
         sum : bool, optional
@@ -110,7 +110,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
            how the normalization of the summed DOS is performed (see `norm` routine).
         """
         mol_proj_elec = self._mol_proj_elec(elec_mol_proj)
-        return self._DOS(self._value_E('ADOS', mol_proj_elec, kavg=kavg, E=E), atom, orbital, sum, norm) * eV2Ry
+        return self._DOS(self._value_E('ADOS', mol_proj_elec, kavg=kavg, E=E), atoms, orbitals, sum, norm) * eV2Ry
 
     def transmission(self, elec_mol_proj_from, elec_mol_proj_to, kavg=True):
         """ Transmission from `mol_proj_elec_from` to `mol_proj_elec_to`
@@ -352,9 +352,9 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
             @collect_action
             @ensure_E
             def __call__(self, parser, ns, value, option_string=None):
-                data = ns._tbt.ADOS(value, kavg=ns._krng, orbital=ns._Orng, norm=ns._norm)
+                data = ns._tbt.ADOS(value, kavg=ns._krng, orbitals=ns._Orng, norm=ns._norm)
                 ns._data_header.append(f'ADOS[1/eV]:{value}')
-                NORM = int(ns._tbt.norm(orbital=ns._Orng, norm=ns._norm))
+                NORM = int(ns._tbt.norm(orbitals=ns._Orng, norm=ns._norm))
 
                 # The flatten is because when ns._Erng is None, then a new
                 # dimension (of size 1) is created

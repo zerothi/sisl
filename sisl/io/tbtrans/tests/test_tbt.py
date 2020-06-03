@@ -78,8 +78,8 @@ def test_1_graphene_all_content(sisl_files):
 
     # Get geometry
     geom = tbt.geometry
-    geom_c1 = tbt.read_geometry(atom=sisl.Atoms(sisl.Atom[6], geom.na))
-    geom_c2 = tbt.read_geometry(atom=sisl.Atoms(sisl.Atom(6, orbs=2), geom.na))
+    geom_c1 = tbt.read_geometry(atoms=sisl.Atoms(sisl.Atom[6], geom.na))
+    geom_c2 = tbt.read_geometry(atoms=sisl.Atoms(sisl.Atom(6, orbs=2), geom.na))
     assert geom_c1 == geom_c2
 
     # Check read is the same as the direct query
@@ -211,16 +211,16 @@ def test_1_graphene_all_content(sisl_files):
     DOS = tbt.DOS
     ADOS = tbt.ADOS
 
-    assert DOS(2, atom=True, sum=False).size == geom.names['Device'].size
-    assert np.allclose(DOS(2, atom='Device', sum=False), DOS(2, atom=True, sum=False))
-    assert DOS(2, orbital=True, sum=False).size == geom.a2o('Device', all=True).size
-    assert ADOS(left, 2, atom=True, sum=False).size == geom.names['Device'].size
-    assert ADOS(left, 2, orbital=True, sum=False).size == geom.a2o('Device', all=True).size
-    assert np.allclose(ADOS(left, 2, atom='Device', sum=False), ADOS(left, 2, atom=True, sum=False))
+    assert DOS(2, atoms=True, sum=False).size == geom.names['Device'].size
+    assert np.allclose(DOS(2, atoms='Device', sum=False), DOS(2, atoms=True, sum=False))
+    assert DOS(2, orbitals=True, sum=False).size == geom.a2o('Device', all=True).size
+    assert ADOS(left, 2, atoms=True, sum=False).size == geom.names['Device'].size
+    assert ADOS(left, 2, orbitals=True, sum=False).size == geom.a2o('Device', all=True).size
+    assert np.allclose(ADOS(left, 2, atoms='Device', sum=False), ADOS(left, 2, atoms=True, sum=False))
 
-    atom = range(8, 40) # some in device, some not in device
-    for o in ['atom', 'orbital']:
-        opt = {o: atom}
+    atoms = range(8, 40) # some in device, some not in device
+    for o in ['atoms', 'orbitals']:
+        opt = {o: atoms}
 
         for E in [None, 2, 4]:
             assert np.allclose(DOS(E), ADOS(left, E) + ADOS(right, E))
@@ -232,7 +232,7 @@ def test_1_graphene_all_content(sisl_files):
             assert np.allclose(DOS(E, **opt), ADOS(left, E, **opt) + ADOS(right, E, **opt))
 
         opt['sum'] = True
-        opt['norm'] = o
+        opt['norm'] = o[:-1]
         for E in [None, 2, 4]:
             assert np.allclose(DOS(E), ADOS(left, E) + ADOS(right, E))
             assert np.allclose(DOS(E, **opt), ADOS(left, E, **opt) + ADOS(right, E, **opt))

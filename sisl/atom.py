@@ -1615,18 +1615,18 @@ class Atoms:
             other = Atoms(other)
         return other.append(self)
 
-    def reverse(self, atom=None):
+    def reverse(self, atoms=None):
         """ Returns a reversed geometry
 
         Also enables reversing a subset of the atoms.
         """
-        atoms = self.copy()
-        if atom is None:
-            atoms._specie = atoms._specie[::-1]
+        copy = self.copy()
+        if atoms is None:
+            copy._specie = self._specie[::-1]
         else:
-            atoms._specie[atom] = atoms._specie[atom[::-1]]
-        atoms._update_orbitals()
-        return atoms
+            copy._specie[atoms] = self._specie[atoms[::-1]]
+        copy._update_orbitals()
+        return copy
 
     def insert(self, index, other):
         """ Insert other atoms into the list of atoms at index """

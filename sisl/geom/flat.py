@@ -7,7 +7,7 @@ __all__ = ['honeycomb', 'graphene']
 
 
 @set_module("sisl.geom")
-def honeycomb(bond, atom, orthogonal=False):
+def honeycomb(bond, atoms, orthogonal=False):
     """ Honeycomb lattice with 2 or 4 atoms per unit-cell, latter orthogonal cell
 
     This enables creating BN lattices with ease, or graphene lattices.
@@ -16,7 +16,7 @@ def honeycomb(bond, atom, orthogonal=False):
     ----------
     bond : float
         bond length between atoms (*not* lattice constant)
-    atom : Atom
+    atoms : Atom
         the atom (or atoms) that the honeycomb lattice consists of
     orthogonal : bool, optional
         if True returns an orthogonal lattice
@@ -35,18 +35,18 @@ def honeycomb(bond, atom, orthogonal=False):
                                [0.5, sq3h, 0.],
                                [1.5, sq3h, 0.],
                                [2., 0., 0.]], np.float64) * bond,
-                     atom, sc=sc)
+                     atoms, sc=sc)
     else:
         sc = SuperCell(np.array([[1.5, sq3h, 0.],
                                  [1.5, -sq3h, 0.],
                                  [0., 0., 10.]], np.float64) * bond, nsc=[3, 3, 1])
         g = Geometry(np.array([[0., 0., 0.],
                                [1., 0., 0.]], np.float64) * bond,
-                     atom, sc=sc)
+                     atoms, sc=sc)
     return g
 
 
-def graphene(bond=1.42, atom=None, orthogonal=False):
+def graphene(bond=1.42, atoms=None, orthogonal=False):
     """ Graphene lattice with 2 or 4 atoms per unit-cell, latter orthogonal cell
 
     Parameters
@@ -64,6 +64,6 @@ def graphene(bond=1.42, atom=None, orthogonal=False):
     honeycomb: the equivalent of this, but with non-default atoms
     bilayer: create bilayer honeycomb lattices
     """
-    if atom is None:
+    if atoms is None:
         return honeycomb(bond, Atom(Z=6, R=bond * 1.01), orthogonal)
-    return honeycomb(bond, atom, orthogonal)
+    return honeycomb(bond, atoms, orthogonal)

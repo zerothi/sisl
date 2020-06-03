@@ -117,7 +117,7 @@ class winSileWannier90(SileWannier90):
                 na = ia + 1
             xyz[ia, :] = [float(k) for k in l[:3]]
 
-        return Geometry(xyz[:na, :], atom='H')
+        return Geometry(xyz[:na, :], atoms='H')
 
     @sile_fh_open()
     def _read_geometry(self, sc, *args, **kwargs):
@@ -164,7 +164,7 @@ class winSileWannier90(SileWannier90):
         if is_frac:
             xyz = np.dot(sc.cell.T, xyz.T).T
 
-        return Geometry(xyz, atom=s, sc=sc)
+        return Geometry(xyz, atoms=s, sc=sc)
 
     def read_geometry(self, *args, **kwargs):
         """ Reads a `Geometry` and creates the Wannier90 cell """

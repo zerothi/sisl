@@ -27,7 +27,7 @@ def setup():
             C = Atom(6, orb.toAtomicOrbital())
             self.g = Geometry(np.array([[0., 0., 0.],
                                         [1., 0., 0.]], np.float64) * bond,
-                              atom=C, sc=self.sc)
+                              atoms=C, sc=self.sc)
             self.S = Overlap(self.g)
 
     return t()

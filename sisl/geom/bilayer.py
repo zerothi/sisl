@@ -8,7 +8,7 @@ __all__ = ['bilayer']
 
 
 @set_module("sisl.geom")
-def bilayer(bond=1.42, bottom_atom=None, top_atom=None, stacking='AB',
+def bilayer(bond=1.42, bottom_atoms=None, top_atoms=None, stacking='AB',
             twist=(0, 0), separation=3.35, ret_angle=False, layer='both'):
     r""" Commensurate unit cell of a hexagonal bilayer structure, possibly with a twist angle.
 
@@ -22,9 +22,9 @@ def bilayer(bond=1.42, bottom_atom=None, top_atom=None, stacking='AB',
     ----------
     bond : float, optional
        bond length between atoms in the honeycomb lattice
-    bottom_atom : Atom, optional
+    bottom_atoms : Atom, optional
        atom (or atoms) in the bottom layer. Defaults to ``Atom(6)``
-    top_atom : Atom, optional
+    top_atoms : Atom, optional
        atom (or atoms) in the top layer, defaults to `bottom_atom`
     stacking : {'AB', 'AA', 'BA'}
        stacking sequence of the bilayer, where XY means that site X in bottom layer coincides with site Y in top layer
@@ -46,16 +46,16 @@ def bilayer(bond=1.42, bottom_atom=None, top_atom=None, stacking='AB',
     ----------
     .. [1] G. Trambly de Laissardiere, D. Mayou, L. Magaud, "Localization of Dirac Electrons in Rotated Graphene Bilayers", Nano Letts. 10, 804-808 (2010)
     """
-    if bottom_atom is None:
-        bottom_atom = top_atom
-    if bottom_atom is None:
-        bottom_atom = Atom(Z=6, R=bond * 1.01)
-    if top_atom is None:
-        top_atom = bottom_atom
+    if bottom_atoms is None:
+        bottom_atoms = top_atoms
+    if bottom_atoms is None:
+        bottom_atoms = Atom(Z=6, R=bond * 1.01)
+    if top_atoms is None:
+        top_atoms = bottom_atoms
 
     # Construct two layers
-    bottom = geom.honeycomb(bond, bottom_atom)
-    top = geom.honeycomb(bond, top_atom)
+    bottom = geom.honeycomb(bond, bottom_atoms)
+    top = geom.honeycomb(bond, top_atoms)
     ref_cell = bottom.cell.copy()
 
     stacking = stacking.lower()

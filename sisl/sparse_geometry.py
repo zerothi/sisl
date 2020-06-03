@@ -188,7 +188,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         new = array_arange(new * no, n=n)
         self._csr.translate_columns(old, new)
 
-    def edges(self, atom, exclude=None):
+    def edges(self, atoms, exclude=None):
         """ Retrieve edges (connections) of a given `atom` or list of `atom`'s
 
         The returned edges are unique and sorted (see `numpy.unique`) and are returned
@@ -196,7 +196,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
         Parameters
         ----------
-        atom : int or list of int
+        atoms : int or list of int
             the edges are returned only for the given atom
         exclude : int or list of int or None, optional
            remove edges which are in the `exclude` list.
@@ -205,7 +205,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         --------
         SparseCSR.edges: the underlying routine used for extracting the edges
         """
-        return self._csr.edges(atom, exclude)
+        return self._csr.edges(atoms, exclude)
 
     def __str__(self):
         """ Representation of the sparse model """
@@ -470,8 +470,8 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
         Basically this returns a function:
 
-        >>> def func(self, ia, idxs, idxs_xyz=None):
-        ...     idx = self.geometry.close(ia, R=R, idx=idxs)
+        >>> def func(self, ia, atoms, atoms_xyz=None):
+        ...     idx = self.geometry.close(ia, R=R, atoms=atoms, atoms_xyz=atoms_xyz)
         ...     for ix, p in zip(idx, param):
         ...         self[ia, ix] = p
 
@@ -497,8 +497,8 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         construct : routine to create the sparse matrix from a generic function (as returned from `create_construct`)
         """
 
-        def func(self, ia, idxs, idxs_xyz=None):
-            idx = self.geometry.close(ia, R=R, idx=idxs, idx_xyz=idxs_xyz)
+        def func(self, ia, atoms, atoms_xyz=None):
+            idx = self.geometry.close(ia, R=R, atoms=atoms, atoms_xyz=atoms_xyz)
             for ix, p in zip(idx, param):
                 self[ia, ix] = p
 
@@ -529,8 +529,8 @@ class _SparseGeometry(NDArrayOperatorsMixin):
            4. Is the currently bounded indices atomic coordinates (``idxs_xyz``)
            An example `func` could be:
 
-           >>> def func(self, ia, idxs, idxs_xyz=None):
-           ...     idx = self.geometry.close(ia, R=[0.1, 1.44], idx=idxs, idx_xyz=idxs_xyz)
+           >>> def func(self, ia, atoms, atoms_xyz=None):
+           ...     idx = self.geometry.close(ia, R=[0.1, 1.44], atoms=atoms, atoms_xyz=atoms_xyz)
            ...     self[ia, idx[0]] = 0
            ...     self[ia, idx[1]] = -2.7
 
@@ -586,14 +586,14 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         """ Whether the contained data is finalized and non-used elements have been removed """
         return self._csr.finalized
 
-    def remove(self, atom):
+    def remove(self, atoms):
         """ Create a subset of this sparse matrix by removing the atoms corresponding to `atom`
 
         Negative indices are wrapped and thus works.
 
         Parameters
         ----------
-        atom : array_like of int
+        atoms : array_like of int
             indices of removed atoms
 
         See Also
@@ -602,11 +602,11 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         Geometry.sub : the negative of `Geometry.remove`
         sub : the opposite of `remove`, i.e. retain a subset of atoms
         """
-        atom = self.sc2uc(atom)
-        atom = delete(_a.arangei(self.na), atom)
-        return self.sub(atom)
+        atoms = self.sc2uc(atoms)
+        atoms = delete(_a.arangei(self.na), atoms)
+        return self.sub(atoms)
 
-    def sub(self, atom):
+    def sub(self, atoms):
         """ Create a subset of this sparse matrix by retaining the atoms corresponding to `atom`
 
         Indices passed must be unique.
@@ -615,7 +615,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
         Parameters
         ----------
-        atom : array_like of int
+        atoms : array_like of int
             indices of removed atoms
 
         See Also
@@ -832,12 +832,12 @@ class SparseAtom(_SparseGeometry):
     def _size(self):
         return self.geometry.na
 
-    def nonzero(self, atom=None, only_col=False):
+    def nonzero(self, atoms=None, only_col=False):
         """ Indices row and column indices where non-zero elements exists
 
         Parameters
         ----------
-        atom : int or array_like of int, optional
+        atoms : int or array_like of int, optional
            only return the tuples for the requested atoms, default is all atoms
         only_col : bool, optional
            only return then non-zero columns
@@ -846,9 +846,9 @@ class SparseAtom(_SparseGeometry):
         --------
         SparseCSR.nonzero : the equivalent function call
         """
-        return self._csr.nonzero(row=atom, only_col=only_col)
+        return self._csr.nonzero(row=atoms, only_col=only_col)
 
-    def iter_nnz(self, atom=None):
+    def iter_nnz(self, atoms=None):
         """ Iterations of the non-zero elements
 
         An iterator on the sparse matrix with, row and column
@@ -860,14 +860,14 @@ class SparseAtom(_SparseGeometry):
 
         Parameters
         ----------
-        atom : int or array_like
+        atoms : int or array_like
             only loop on the non-zero elements coinciding with the atoms
         """
-        if atom is None:
+        if atoms is None:
             yield from self._csr
         else:
-            atom = _a.asarrayi(atom).ravel()
-            yield from self._csr.iter_nnz(atom)
+            atoms = self.geometry._sanitize_atoms(atoms)
+            yield from self._csr.iter_nnz(atoms)
 
     def set_nsc(self, *args, **kwargs):
         """ Reset the number of allowed supercells in the sparse atom
@@ -996,7 +996,7 @@ class SparseAtom(_SparseGeometry):
 
         return S
 
-    def sub(self, atom):
+    def sub(self, atoms):
         """ Create a subset of this sparse matrix by only retaining the elements corresponding to the ``atom``
 
         Indices passed *MUST* be unique.
@@ -1005,7 +1005,7 @@ class SparseAtom(_SparseGeometry):
 
         Parameters
         ----------
-        atom : array_like of int
+        atoms : array_like of int
             indices of retained atoms
 
         See Also
@@ -1014,10 +1014,10 @@ class SparseAtom(_SparseGeometry):
         Geometry.sub : equivalent to the resulting `Geometry` from this routine
         remove : the negative of `sub`, i.e. remove a subset of atoms
         """
-        atom = self.sc2uc(atom)
-        geom = self.geometry.sub(atom)
+        atoms = self.sc2uc(atoms)
+        geom = self.geometry.sub(atoms)
 
-        idx = tile(atom, self.n_s)
+        idx = tile(atoms, self.n_s)
         # Use broadcasting rules
         idx.shape = (self.n_s, -1)
         idx += (_a.arangei(self.n_s) * self.na).reshape(-1, 1)
@@ -1307,7 +1307,7 @@ class SparseOrbital(_SparseGeometry):
     def _size(self):
         return self.geometry.no
 
-    def edges(self, atom=None, exclude=None, orbital=None):
+    def edges(self, atoms=None, exclude=None, orbitals=None):
         """ Retrieve edges (connections) of a given `atom` or list of `atom`'s
 
         The returned edges are unique and sorted (see `numpy.unique`) and are returned
@@ -1315,7 +1315,7 @@ class SparseOrbital(_SparseGeometry):
 
         Parameters
         ----------
-        atom : int or list of int
+        atoms : int or list of int
             the edges are returned only for the given atom (but by using  all orbitals of the
             requested atom). The returned edges are also atoms.
         exclude : int or list of int or None, optional
@@ -1327,18 +1327,18 @@ class SparseOrbital(_SparseGeometry):
         --------
         SparseCSR.edges: the underlying routine used for extracting the edges
         """
-        if atom is None and orbital is None:
+        if atoms is None and orbitals is None:
             raise ValueError(f"{self.__class__.__name__}.edges must have either 'atom' or 'orbital' keyword defined.")
-        if orbital is None:
-            return unique(self.geometry.o2a(self._csr.edges(self.geometry.a2o(atom, True), exclude)))
-        return self._csr.edges(orbital, exclude)
+        if orbitals is None:
+            return unique(self.geometry.o2a(self._csr.edges(self.geometry.a2o(atoms, True), exclude)))
+        return self._csr.edges(orbitals, exclude)
 
-    def nonzero(self, atom=None, only_col=False):
+    def nonzero(self, atoms=None, only_col=False):
         """ Indices row and column indices where non-zero elements exists
 
         Parameters
         ----------
-        atom : int or array_like of int, optional
+        atoms : int or array_like of int, optional
            only return the tuples for the requested atoms, default is all atoms
            But for *all* orbitals.
         only_col : bool, optional
@@ -1348,12 +1348,12 @@ class SparseOrbital(_SparseGeometry):
         --------
         SparseCSR.nonzero : the equivalent function call
         """
-        if atom is None:
+        if atoms is None:
             return self._csr.nonzero(only_col=only_col)
-        row = self.geometry.a2o(atom, all=True)
+        row = self.geometry.a2o(atoms, all=True)
         return self._csr.nonzero(row=row, only_col=only_col)
 
-    def iter_nnz(self, atom=None, orbital=None):
+    def iter_nnz(self, atoms=None, orbitals=None):
         """ Iterations of the non-zero elements
 
         An iterator on the sparse matrix with, row and column
@@ -1365,21 +1365,21 @@ class SparseOrbital(_SparseGeometry):
 
         Parameters
         ----------
-        atom : int or array_like
+        atoms : int or array_like
             only loop on the non-zero elements coinciding with the orbitals
             on these atoms (not compatible with the ``orbital`` keyword)
-        orbital : int or array_like
+        orbitals : int or array_like
             only loop on the non-zero elements coinciding with the orbital
             (not compatible with the ``atom`` keyword)
         """
-        if not atom is None:
-            orbital = self.geometry.a2o(atom, True)
-        elif not orbital is None:
-            orbital = _a.asarrayi(orbital)
-        if orbital is None:
+        if not atoms is None:
+            orbitals = self.geometry.a2o(atoms, True)
+        elif not orbitals is None:
+            orbitals = _a.asarrayi(orbitals)
+        if orbitals is None:
             yield from self._csr
         else:
-            yield from self._csr.iter_nnz(orbital)
+            yield from self._csr.iter_nnz(orbitals)
 
     def set_nsc(self, *args, **kwargs):
         """ Reset the number of allowed supercells in the sparse orbital
@@ -1496,7 +1496,7 @@ class SparseOrbital(_SparseGeometry):
                 return None, None, None
 
         # only loop on the orbitals remaining in the cutted structure
-        for jo, io in self.iter_nnz(orbital=range(geom.no)):
+        for jo, io in self.iter_nnz(orbitals=range(geom.no)):
 
             # Get the equivalent orbital in the smaller cell
             o, ofp, ofm = _sco2sco(self.geometry, io, S.geometry, seps, axis)
@@ -1508,12 +1508,12 @@ class SparseOrbital(_SparseGeometry):
 
         return S
 
-    def remove(self, atom, orb_index=None):
+    def remove(self, atoms):
         """ Remove a subset of this sparse matrix by only retaining the atoms corresponding to `atom`
 
         Parameters
         ----------
-        atom : array_like of int or Atom
+        atoms : array_like of int or Atom
             indices of removed atoms or Atom for direct removal of all atoms
 
         See Also
@@ -1522,20 +1522,17 @@ class SparseOrbital(_SparseGeometry):
         Geometry.sub : the negative of `Geometry.remove`
         sub : the opposite of `remove`, i.e. retain a subset of atoms
         """
-        if isinstance(atom, Atom):
-            atom = self.geometry.atoms.index(atom)
-            atom = (self.geometry.atoms.specie == atom).nonzero()[0]
         # This will digress to call .sub
-        return super().remove(atom)
+        return super().remove(atoms)
 
-    def remove_orbital(self, atom, orbital):
+    def remove_orbital(self, atoms, orbitals):
         """ Remove a subset of orbitals on `atom` according to `orbital`
 
         Parameters
         ----------
-        atom : array_like of int or Atom
+        atoms : array_like of int or Atom
             indices of atoms or `Atom` that will be reduced in size according to `orbital`
-        orbital : array_like of int or Orbital
+        orbitals : array_like of int or Orbital
             indices of the orbitals on `atom` that are removed from the sparse matrix.
 
         Examples
@@ -1547,14 +1544,9 @@ class SparseOrbital(_SparseGeometry):
         >>> obj.remove_orbital(1, 1)
         """
         # Get specie index of the atom
-        if isinstance(atom, Atom):
-            # All atoms with this specie
-            atom = self.geometry.atoms.index(atom)
-            atom = (self.geometry.atoms.specie == atom).nonzero()[0]
-        atom = np.asarray(atom).ravel()
-
+        atoms = self.geometry._sanitize_atoms(atoms).ravel()
         # Figure out if all atoms have the same species
-        specie = self.geometry.atoms.specie[atom]
+        specie = self.geometry.atoms.specie[atoms]
         uniq_specie, indices = unique(specie, return_inverse=True)
         if len(uniq_specie) > 1:
             # In case there are multiple different species but one wishes to
@@ -1562,28 +1554,28 @@ class SparseOrbital(_SparseGeometry):
             new = self
             for i in range(uniq_specie.size):
                 idx = (indices == i).nonzero()[0]
-                new = new.remove_orbital(atom[idx], orbital)
+                new = new.remove_orbital(atoms[idx], orbitals)
             return new
 
         # Get the atom object we wish to reduce
         # We know np.all(geom.atoms[atom] == old_atom)
-        old_atom = self.geometry.atoms[atom[0]]
+        old_atom = self.geometry.atoms[atoms[0]]
 
         # Retrieve index of orbital
-        if isinstance(orbital, Orbital):
-            orbital = old_atom.index(orbital)
+        if isinstance(orbitals, Orbital):
+            orbitals = old_atom.index(orbitals)
         # Create the reverse index-table to delete those not required
-        orbital = delete(_a.arangei(len(old_atom)), np.asarray(orbital).ravel())
-        return self.sub_orbital(atom, orbital)
+        orbitals = delete(_a.arangei(len(old_atom)), np.asarray(orbitals).ravel())
+        return self.sub_orbital(atoms, orbitals)
 
-    def sub(self, atom):
+    def sub(self, atoms):
         """ Create a subset of this sparse matrix by only retaining the atoms corresponding to `atom`
 
         Negative indices are wrapped and thus works, supercell atoms are also wrapped to the unit-cell.
 
         Parameters
         ----------
-        atom : array_like of int or Atom
+        atoms : array_like of int or Atom
             indices of retained atoms or `Atom` for retaining only *that* atom
 
         Examples
@@ -1600,13 +1592,9 @@ class SparseOrbital(_SparseGeometry):
         Geometry.sub : equivalent to the resulting `Geometry` from this routine
         remove : the negative of `sub`, i.e. remove a subset of atoms
         """
-        if isinstance(atom, Atom):
-            idx = self.geometry.atoms.index(atom)
-            atom = (self.geometry.atoms.specie == idx).nonzero()[0]
-
-        atom = self.sc2uc(atom)
-        orbs = self.a2o(atom, all=True)
-        geom = self.geometry.sub(atom)
+        atoms = self.sc2uc(atoms)
+        orbs = self.a2o(atoms, all=True)
+        geom = self.geometry.sub(atoms)
 
         idx = tile(orbs, self.n_s)
         # Use broadcasting rules
@@ -1620,16 +1608,16 @@ class SparseOrbital(_SparseGeometry):
 
         return S
 
-    def sub_orbital(self, atom, orbital):
+    def sub_orbital(self, atoms, orbitals):
         """ Retain only a subset of the orbitals on `atom` according to `orbital`
 
         This allows one to retain only a given subset of the sparse matrix elements.
 
         Parameters
         ----------
-        atom : array_like of int or Atom
+        atoms : array_like of int or Atom
             indices of atoms or `Atom` that will be reduced in size according to `orbital`
-        orbital : array_like of int or Orbital
+        orbitals : array_like of int or Orbital
             indices of the orbitals on `atom` that are retained in the sparse matrix, the list of
             orbitals will be sorted. One cannot re-arrange matrix elements currently.
 
@@ -1646,20 +1634,16 @@ class SparseOrbital(_SparseGeometry):
         >>> obj.sub_orbital(1, 1)
         """
         # Get specie index of the atom
-        if isinstance(atom, (tuple, list)):
-            if isinstance(atom[0], Atom):
+        if isinstance(atoms, (tuple, list)):
+            if isinstance(atoms[0], Atom):
                 spg = self
-                for a in atom:
-                    spg = spg.sub_orbital(a, orbital)
+                for a in atoms:
+                    spg = spg.sub_orbital(a, orbitals)
                 return spg
-        if isinstance(atom, Atom):
-            # All atoms with this specie
-            atom = self.geometry.atoms.index(atom)
-            atom = (self.geometry.atoms.specie == atom).nonzero()[0]
-        atom = np.asarray(atom).ravel()
+        atoms = self.geometry._sanitize_atoms(atoms).ravel()
 
         # Figure out if all atoms have the same species
-        specie = self.geometry.atoms.specie[atom]
+        specie = self.geometry.atoms.specie[atoms]
         uniq_specie, indices = unique(specie, return_inverse=True)
         if len(uniq_specie) > 1:
             # In case there are multiple different species but one wishes to
@@ -1667,25 +1651,25 @@ class SparseOrbital(_SparseGeometry):
             new = self
             for i in range(uniq_specie.size):
                 idx = (indices == i).nonzero()[0]
-                new = new.sub_orbital(atom[idx], orbital)
+                new = new.sub_orbital(atoms[idx], orbitals)
             return new
 
         # At this point we are sure that uniq_specie is *only* one specie!
         geom = self.geometry.copy()
 
         # Get the atom object we wish to reduce
-        old_atom = geom.atoms[atom[0]]
+        old_atom = geom.atoms[atoms[0]]
 
         # Retrieve index of orbital
-        if isinstance(orbital, Orbital):
-            orbital = old_atom.index(orbital)
-        orbital = np.sort(np.asarray(orbital).ravel())
-        if len(orbital) == 0:
+        if isinstance(orbitals, Orbital):
+            orbitals = old_atom.index(orbitals)
+        orbitals = np.sort(np.asarray(orbitals).ravel())
+        if len(orbitals) == 0:
             raise ValueError('trying to retain 0 orbitals on a given atom. This is not allowed!')
 
-        new_atom = old_atom.sub(orbital)
+        new_atom = old_atom.sub(orbitals)
         # Rename the new-atom to <>_1_2 for orbital == [1, 2]
-        new_atom.tag += '_' + '_'.join(map(str, orbital))
+        new_atom.tag += '_' + '_'.join(map(str, orbitals))
 
         # We catch the warning about reducing the number of orbitals!
         with warnings.catch_warnings():
@@ -1695,9 +1679,9 @@ class SparseOrbital(_SparseGeometry):
         # Now create the new sparse orbital class
         SG = self.__class__(geom, self.dim, self.dtype, 1, **self._cls_kwargs())
 
-        rem_orbs = delete(_a.arangei(old_atom.no), orbital)
+        rem_orbs = delete(_a.arangei(old_atom.no), orbitals)
         # Find orbitals to remove (note this HAS to be from the original array)
-        rem_orbs = np.add.outer(self.geometry.a2o(atom), rem_orbs).ravel()
+        rem_orbs = np.add.outer(self.geometry.a2o(atoms), rem_orbs).ravel()
 
         # Generate a list of orbitals to retain
         sub_idx = delete(_a.arangei(self.no), rem_orbs)
@@ -2293,7 +2277,7 @@ class SparseOrbital(_SparseGeometry):
             exclude = _a.arangei(geom.no_s).reshape(geom.n_s, -1)
             exclude = exclude[geom.sc.sc_index(isc), :].ravel()
             # get connections and transfer them to the unit-cell
-            edges = geom.sc2uc(geom.o2a(spgeom.edges(orbital=_a.arangei(geom.no), exclude=exclude), True), True)
+            edges = geom.sc2uc(geom.o2a(spgeom.edges(orbitals=_a.arangei(geom.no), exclude=exclude), True), True)
             if not np.all(np.isin(edges, array, assume_unique=True)):
                 raise ValueError(self.__class__.__name__ + '.append requires that the coupling coordinates '
                                  'coincide between the two geometries:\n   '

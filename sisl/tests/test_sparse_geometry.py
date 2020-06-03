@@ -92,13 +92,13 @@ class TestSparseAtom:
         assert np.allclose(c, [0, 2, 3, 1, 2, 3])
         c = s2.nonzero(only_col=True)
         assert np.allclose(c, [0, 2, 3, 1, 2, 3])
-        r, c = s2.nonzero(atom=1)
+        r, c = s2.nonzero(atoms=1)
         assert len(r) == 0
         assert len(c) == 0
-        r, c = s2.nonzero(atom=0)
+        r, c = s2.nonzero(atoms=0)
         assert np.allclose(r, [0, 0, 0])
         assert np.allclose(c, [0, 2, 3])
-        c = s2.nonzero(atom=0, only_col=True)
+        c = s2.nonzero(atoms=0, only_col=True)
         assert np.allclose(c, [0, 2, 3])
 
     def test_cut1(self, setup):
@@ -290,7 +290,7 @@ class TestSparseAtom:
         assert s[0, 0] == 1
 
     def test_set_nsc2(self, setup):
-        g = graphene(atom=Atom(6, R=1.43))
+        g = graphene(atoms=Atom(6, R=1.43))
         s = SparseAtom(g)
         s.construct([[0.1, 1.43], [1, 2]])
         s.finalize()
@@ -302,7 +302,7 @@ class TestSparseAtom:
         assert s[0, 0] == 1
 
     def test_set_nsc3(self, setup):
-        g = graphene(atom=Atom(6, R=1.43))
+        g = graphene(atoms=Atom(6, R=1.43))
         s = SparseAtom(g)
 
         s.set_nsc((3, 3, 1))
@@ -326,14 +326,14 @@ class TestSparseAtom:
         assert s.nnz == s59.nnz
 
     def test_edges1(self, setup):
-        g = graphene(atom=Atom(6, R=1.43))
+        g = graphene(atoms=Atom(6, R=1.43))
         s = SparseAtom(g)
         s.construct([[0.1, 1.43], [1, 2]])
         assert len(s.edges(0)) == 4
         assert len(s.edges(0, exclude=[0])) == 3
 
     def test_op_numpy_scalar(self, setup):
-        g = graphene(atom=Atom(6, R=1.43))
+        g = graphene(atoms=Atom(6, R=1.43))
         S = SparseAtom(g)
         I = np.ones(1, dtype=np.complex128)[0]
         # Create initial stuff

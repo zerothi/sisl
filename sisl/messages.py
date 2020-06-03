@@ -18,6 +18,7 @@ We prefer the later which is particularly useful when the installation path is
 complex.
 """
 import warnings
+from functools import wraps
 
 from ._internal import set_module
 
@@ -81,6 +82,7 @@ def deprecate_method(msg):
        message displayed
     """
     def install_deprecate(func):
+        @wraps(func)
         def wrapped(*args, **kwargs):
             deprecate(msg)
             return func(*args, **kwargs)

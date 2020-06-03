@@ -22,7 +22,7 @@ def setup():
             C = Atom(Z=6, R=[bond * 1.01]*2)
             self.g = Geometry(np.array([[0., 0., 0.],
                                         [1., 0., 0.]], np.float64) * bond,
-                              atom=C, sc=self.sc)
+                              atoms=C, sc=self.sc)
 
             self.mol = Geometry([[i, 0, 0] for i in range(10)], sc=[50])
     return t()
@@ -436,7 +436,7 @@ class TestGeometry:
         assert i == len(setup.g)
 
         i = 0
-        for ias, idx in setup.g.iter_block(atom=1):
+        for ias, idx in setup.g.iter_block(atoms=1):
             for ia in ias:
                 i += 1
         assert i == 1
@@ -550,7 +550,7 @@ class TestGeometry:
         assert np.allclose(setup.g.cell[1, :], s.cell[0, :])
 
     def test_center(self, setup):
-        one = setup.g.center(atom=[0])
+        one = setup.g.center(atoms=[0])
         assert np.allclose(setup.g[0], one)
         al = setup.g.center()
         assert np.allclose(np.mean(setup.g.xyz, axis=0), al)
@@ -673,7 +673,7 @@ class TestGeometry:
         rev = setup.g.reverse()
         assert len(rev) == 2
         assert np.allclose(rev.xyz[::-1, :], setup.g.xyz)
-        rev = setup.g.reverse(atom=list(range(len(setup.g))))
+        rev = setup.g.reverse(atoms=list(range(len(setup.g))))
         assert len(rev) == 2
         assert np.allclose(rev.xyz[::-1, :], setup.g.xyz)
 
@@ -685,7 +685,7 @@ class TestGeometry:
     def test_close1(self, setup):
         three = range(3)
         for ia in setup.mol:
-            i = setup.mol.close(ia, R=(0.1, 1.1), idx=three)
+            i = setup.mol.close(ia, R=(0.1, 1.1), atoms=three)
             if ia < 3:
                 assert len(i[0]) == 1
             else:
@@ -703,7 +703,7 @@ class TestGeometry:
     def test_close2(self, setup):
         mol = range(3, 5)
         for ia in setup.mol:
-            i = setup.mol.close(ia, R=(0.1, 1.1), idx=mol)
+            i = setup.mol.close(ia, R=(0.1, 1.1), atoms=mol)
             assert len(i) == 2
         i = setup.mol.close([100, 100, 100], R=0.1)
         assert len(i) == 0
@@ -728,8 +728,8 @@ class TestGeometry:
         for ia in setup.mol:
             shapes = [Sphere(0.1, setup.mol[ia]),
                       Sphere(1.1, setup.mol[ia])]
-            i = setup.mol.close(ia, R=(0.1, 1.1), idx=three)
-            ii = setup.mol.within(shapes, idx=three)
+            i = setup.mol.close(ia, R=(0.1, 1.1), atoms=three)
+            ii = setup.mol.within(shapes, atoms=three)
             assert np.all(i[0] == ii[0])
             assert np.all(i[1] == ii[1])
 
@@ -978,7 +978,7 @@ class TestGeometry:
 
         # Assert that it correctly calculates the bond-length in the
         # directions of actual distance
-        g1 = Geometry([[0, 0, 0], [1, 1, 0]], atom='H', sc=s1)
+        g1 = Geometry([[0, 0, 0], [1, 1, 0]], atoms='H', sc=s1)
         g2 = Geometry(np.copy(g1.xyz))
         for i in range(2):
             assert np.allclose(g1.cell[i, :], g2.cell[i, :])
@@ -1308,12 +1308,12 @@ def test_geometry_sort_simple():
         s = bi.sort(lattice=i)
         assert np.all(np.diff(s.fxyz[:, i] * bi.sc.length[i]) >= -atol)
 
-    s, idx = bi.sort(axis=0, lattice=1, ret_atom=True)
+    s, idx = bi.sort(axis=0, lattice=1, ret_atoms=True)
     assert np.all(np.diff(s.xyz[:, 0]) >= -atol)
     for ix in idx:
         assert np.all(np.diff(bi.fxyz[ix, 1]) >= -atol)
 
-    s, idx = bi.sort(axis=0, ascending=False, lattice=1, vector=[0, 0, 1], ret_atom=True)
+    s, idx = bi.sort(axis=0, ascending=False, lattice=1, vector=[0, 0, 1], ret_atoms=True)
     assert np.all(np.diff(s.xyz[:, 0]) >= -atol)
     for ix in idx:
         # idx is according to bi
@@ -1333,12 +1333,12 @@ def test_geometry_sort_int():
         s = bi.sort(lattice3=i)
         assert np.all(np.diff(s.fxyz[:, i] * bi.sc.length[i]) >= -atol)
 
-    s, idx = bi.sort(axis12314=0, lattice0=1, ret_atom=True)
+    s, idx = bi.sort(axis12314=0, lattice0=1, ret_atoms=True)
     assert np.all(np.diff(s.xyz[:, 0]) >= -atol)
     for ix in idx:
         assert np.all(np.diff(bi.fxyz[ix, 1]) >= -atol)
 
-    s, idx = bi.sort(ascending1=True, axis15=0, ascending0=False, lattice235=1, ret_atom=True)
+    s, idx = bi.sort(ascending1=True, axis15=0, ascending0=False, lattice235=1, ret_atoms=True)
     assert np.all(np.diff(s.xyz[:, 0]) >= -atol)
     for ix in idx:
         # idx is according to bi
@@ -1349,7 +1349,7 @@ def test_geometry_sort_atom():
     bi = sisl_geom.bilayer().tile(2, 0).repeat(2, 1)
 
     atom = [[2, 0], [3, 1]]
-    out, atom = bi.sort(atom=atom, ret_atom=True)
+    out, atom = bi.sort(atoms=atom, ret_atoms=True)
 
     atom = np.concatenate(atom)
     all_atoms = np.arange(len(bi))
@@ -1361,10 +1361,10 @@ def test_geometry_sort_atom():
 def test_geometry_sort_func():
     bi = sisl_geom.bilayer().tile(2, 0).repeat(2, 1)
 
-    def reverse(geometry, atom, **kwargs):
-        return atom[::-1]
-    atom = [[2, 0], [3, 1]]
-    out = bi.sort(func=reverse, atom=atom)
+    def reverse(geometry, atoms, **kwargs):
+        return atoms[::-1]
+    atoms = [[2, 0], [3, 1]]
+    out = bi.sort(func=reverse, atoms=atoms)
 
     all_atoms = np.arange(len(bi))
     all_atoms[1] = 2
@@ -1372,11 +1372,11 @@ def test_geometry_sort_func():
 
     assert np.allclose(out.xyz, bi.sub(all_atoms).xyz)
 
-    bi_again = bi.sort(func=(reverse, reverse), atom=atom)
+    bi_again = bi.sort(func=(reverse, reverse), atoms=atoms)
 
     # Ensure that they are swapped
-    atom = [2, 0]
-    out = bi.sort(func=reverse, atom=atom)
+    atoms = [2, 0]
+    out = bi.sort(func=reverse, atoms=atoms)
 
     assert np.allclose(out.xyz, bi.xyz)
 
@@ -1398,7 +1398,7 @@ def test_geometry_sort_func_sort():
 
 
 def test_geometry_sort_group():
-    bi = sisl_geom.bilayer(bottom_atom=Atom[6], top_atom=(Atom[5], Atom[7])).tile(2, 0).repeat(2, 1)
+    bi = sisl_geom.bilayer(bottom_atoms=Atom[6], top_atoms=(Atom[5], Atom[7])).tile(2, 0).repeat(2, 1)
 
     out = bi.sort(group='Z')
 
@@ -1429,7 +1429,7 @@ def test_geometry_sort_fail_keyword():
 
 
 def test_geometry_sanitize_atom():
-    bi = sisl_geom.bilayer(bottom_atom=Atom[6], top_atom=(Atom[5], Atom[7])).tile(2, 0).repeat(2, 1)
+    bi = sisl_geom.bilayer(bottom_atoms=Atom[6], top_atoms=(Atom[5], Atom[7])).tile(2, 0).repeat(2, 1)
     C_idx = (bi.atoms.Z == 6).nonzero()[0]
     check_C = bi.axyz(C_idx)
     only_C = bi.axyz(Atom[6])
