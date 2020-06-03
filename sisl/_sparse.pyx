@@ -7,6 +7,9 @@ cimport numpy as np
 
 from sisl._indices cimport in_1d
 
+__all__ = ["fold_csr_matrix", "fold_csr_matrix_nc",
+           "fold_csr_diagonal_nc", "sparse_dense"]
+
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
@@ -209,3 +212,44 @@ def fold_csr_diagonal_nc(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
 
     # Return objects
     return FOLD_ptr, FOLD_ncol, FOLD_col[:nz].copy()
+
+
+ctypedef fused numeric_complex:
+    int
+    long
+    float
+    double
+    float complex
+    double complex
+
+
+def sparse_dense(M):
+    return _sparse_dense(M.shape, M.ptr, M.ncol, M.col, M._D, M.dtype)
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.initializedcheck(False)
+@cython.cdivision(True)
+def _sparse_dense(shape,
+                  np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
+                  np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
+                  np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
+                  numeric_complex[:, ::1] D, dtype):
+
+    # Convert to memory views
+    cdef int[::1] ptr = PTR
+    cdef int[::1] ncol = NCOL
+    cdef int[::1] col = COL
+
+    cdef int nr = ncol.shape[0]
+    cdef V = np.zeros(shape, dtype=dtype)
+    cdef int r, ind, ix, s2
+
+    s2 = shape[2]
+    for r in range(nr):
+        for ind in range(ptr[r], ptr[r] + ncol[r]):
+            for ix in range(s2):
+                V[r, col[ind], ix] += D[ind, ix]
+
+    return V

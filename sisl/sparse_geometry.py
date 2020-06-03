@@ -1,11 +1,14 @@
+from numbers import Integral
 import warnings
 import functools as ftool
-from numbers import Integral
 import numpy as np
-from numpy import int32
-from numpy import insert, unique, take, delete, argsort
-from numpy import diff, allclose
-from numpy import tile, repeat, concatenate
+from numpy.lib.mixins import NDArrayOperatorsMixin
+from numpy import (
+    int32,
+    insert, take, delete, argsort,
+    unique, diff, allclose,
+    tile, repeat, concatenate
+)
 
 from ._internal import set_module
 from . import _array as _a
@@ -22,7 +25,7 @@ from .sparse import SparseCSR, isspmatrix
 __all__ = ['SparseAtom', 'SparseOrbital']
 
 
-class _SparseGeometry:
+class _SparseGeometry(NDArrayOperatorsMixin):
     """ Sparse object containing sparse elements for a given geometry.
 
     This is a base class intended to be sub-classed because the sparsity information
@@ -36,18 +39,6 @@ class _SparseGeometry:
      - geometry
 
     """
-    # These overrides are necessary to be able to perform
-    # ufunc operations with numpy.
-    # The reason is that the ufunc in numpy arrays are first
-    # tried when encountering operations:
-    #   np.int + object will invoke __add__ from ndarray, regardless
-    # of objects __radd__ routine.
-    # We thus need to define the ufunc method in this object
-    # to tell numpy that using numpy.ndarray.__array_ufunc__ won't work.
-    # Prior to 1.13 the ufunc is named numpy_ufunc, subsequent versions
-    # are using array_ufunc.
-    __numpy_ufunc__ = None
-    __array_ufunc__ = None
 
     def __init__(self, geometry, dim=1, dtype=None, nnzpr=None, **kwargs):
         """ Create sparse object with element between orbitals """
@@ -746,114 +737,36 @@ class _SparseGeometry:
 
         return p
 
-    ###############################
-    # Overload of math operations #
-    ###############################
-    def __add__(self, b):
-        c = self.copy(dtype=get_dtype(b, other=self.dtype))
-        c += b
-        return c
-    __radd__ = __add__
+    # numpy dispatch methods (same priority as SparseCSR!)
+    __array_priority__ = 14
 
-    def __iadd__(self, b):
-        if isinstance(b, _SparseGeometry):
-            self._csr += b._csr
-        else:
-            self._csr += b
-        return self
+    def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
+        # grab the inputs and convert to the respective csr matrices
+        # such that we can defer the call to that function
+        # while converting, also grab the first _SparseGeometry
+        # object such that we may create the output matrix
+        sp_inputs = []
+        obj = None
+        for inp in inputs:
+            if isinstance(inp, _SparseGeometry):
+                # simply store a reference
+                # if needed we will copy it later
+                obj = inp
+                sp_inputs.append(inp._csr)
+            else:
+                sp_inputs.append(inp)
 
-    def __sub__(self, b):
-        c = self.copy(dtype=get_dtype(b, other=self.dtype))
-        c -= b
-        return c
+        out = kwargs.get("out", None)
+        if out is not None:
+            (out,) = out
+            kwargs["out"] = (out._csr,)
 
-    def __rsub__(self, b):
-        if isinstance(b, _SparseGeometry):
-            c = b.copy(dtype=get_dtype(self, other=b.dtype))
-            c._csr += -1 * self._csr
-        else:
-            c = b + (-1) * self
-        return c
+        result = self._csr.__array_ufunc__(ufunc, method, *sp_inputs, **kwargs)
 
-    def __isub__(self, b):
-        if isinstance(b, _SparseGeometry):
-            self._csr -= b._csr
-        else:
-            self._csr -= b
-        return self
-
-    def __mul__(self, b):
-        c = self.copy(dtype=get_dtype(b, other=self.dtype))
-        c *= b
-        return c
-    __rmul__ = __mul__
-
-    def __imul__(self, b):
-        if isinstance(b, _SparseGeometry):
-            self._csr *= b._csr
-        else:
-            self._csr *= b
-        return self
-
-    def __div__(self, b):
-        c = self.copy(dtype=get_dtype(b, other=self.dtype))
-        c /= b
-        return c
-
-    def __rdiv__(self, b):
-        c = b.copy(dtype=get_dtype(self, other=b.dtype))
-        c /= self
-        return c
-
-    def __idiv__(self, b):
-        if isinstance(b, _SparseGeometry):
-            self._csr /= b._csr
-        else:
-            self._csr /= b
-        return self
-
-    def __floordiv__(self, b):
-        if isinstance(b, _SparseGeometry):
-            raise NotImplementedError
-        c = self.copy(dtype=get_dtype(b, other=self.dtype))
-        c //= b
-        return c
-
-    def __ifloordiv__(self, b):
-        if isinstance(b, _SparseGeometry):
-            raise NotImplementedError
-        self._csr //= b
-        return self
-
-    def __truediv__(self, b):
-        if isinstance(b, _SparseGeometry):
-            raise NotImplementedError
-        c = self.copy(dtype=get_dtype(b, other=self.dtype))
-        c /= b
-        return c
-
-    def __itruediv__(self, b):
-        if isinstance(b, _SparseGeometry):
-            raise NotImplementedError
-        self._csr /= b
-        return self
-
-    def __pow__(self, b):
-        c = self.copy(dtype=get_dtype(b, other=self.dtype))
-        c **= b
-        return c
-
-    def __rpow__(self, b):
-        c = self.copy(dtype=get_dtype(b, other=self.dtype))
-        c._csr = b ** c._csr
-        return c
-
-    def __ipow__(self, b):
-        if isinstance(b, _SparseGeometry):
-            self._csr **= b._csr
-        else:
-            self._csr **= b
-        return self
+        if out is None:
+            out = obj.copy()
+            out._csr = result
+        return out
 
     def __getstate__(self):
         """ Return dictionary with the current state """

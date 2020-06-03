@@ -896,6 +896,20 @@ def test_op2(setup):
             assert setup.s1[0, jj] == i
             assert s[1, jj] == 0
 
+        # *
+        s = np.multiply(setup.s1, 2)
+        for jj in j:
+            assert s[0, jj] == i*2
+            assert setup.s1[0, jj] == i
+            assert s[1, jj] == 0
+        # *
+        s.empty()
+        np.multiply(setup.s1, 2, out=s)
+        for jj in j:
+            assert s[0, jj] == i*2
+            assert setup.s1[0, jj] == i
+            assert s[1, jj] == 0
+
         # //
         s = s // 2
         for jj in j:
@@ -1068,16 +1082,30 @@ def test_op5(setup):
             S3[0, j] = i
 
     S = S1 * S2
-    assert np.allclose(S._D, (S2**2)._D)
+    assert np.allclose(S.todense(), (S2**2).todense())
 
     S = S * S
-    assert np.allclose(S._D, (S2**4)._D)
+    assert np.allclose(S.todense(), (S2**4).todense())
 
     S = S1 + S2
-    assert np.allclose(S._D, S1._D + S2._D)
+    S1 += S2
+    assert np.allclose(S.todense(), S1.todense())
 
     S = S1 - S2
-    assert np.allclose(S._D, S1._D - S2._D)
+    S1 -= S2
+    assert np.allclose(S.todense(), S1.todense())
+
+    S = S1 + 2
+    S -= 2
+    assert np.allclose(S.todense(), S1.todense())
+
+    S = S1 * 2
+    S //= 2
+    assert np.allclose(S.todense(), S1.todense())
+
+    S = S1 / 2.
+    S *= 2
+    assert np.allclose(S.todense(), S1.todense())
 
 
 def test_op_numpy_scalar(setup):
@@ -1127,6 +1155,10 @@ def test_op_numpy_scalar(setup):
     assert s._D.sum() == Ssum
 
     s = I ** S
+    assert isinstance(s, SparseCSR)
+    assert s.dtype == np.complex64
+
+    s = np.exp(1j * S)
     assert isinstance(s, SparseCSR)
     assert s.dtype == np.complex64
 
