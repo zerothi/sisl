@@ -46,6 +46,30 @@ class FatbandsPlotTester(BandsPlotTester):
         assert len(fatbands_traces) > 0
         assert fatbands_traces[0].line.color == color
         assert fatbands_traces[0].name == name
+    
+    def test_build_groups(self):
+
+        plot = self.plot
+
+        # Number of groups that each splitting should give
+        expected_splits = [
+            ('species', len(plot.geom.atoms.atom)),
+            ('atoms', plot.geom.na),
+            ('orbitals', plot.geom.no)
+        ]
+
+        # Check how many traces are there before generating groups
+        # (these traces correspond to bands)
+        plot.update_settings(groups=[])
+        traces_before = len(plot.data)
+
+        # Check that each splitting works as expected
+        for group_by, length in expected_splits:
+
+            plot.build_groups(group_by)
+            err_message = f'Not correctly grouping by {group_by}'
+            assert len(plot.data) - traces_before, err_message
+
 
 
 

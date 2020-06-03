@@ -358,8 +358,6 @@ class PdosPlot(Plot):
             else:
                 req_PDOS = req_PDOS.sum("orb").sum('spin')
 
-            print(request["linewidth"])
-
             self.add_trace({
                 'type': 'scatter',
                 'x': req_PDOS.values,
@@ -634,25 +632,11 @@ class PdosPlot(Plot):
             only those that belong to carbon atoms.
         '''
 
-        if exclude is None:
-            exclude = []
-
-        # First, we get all available values for the parameter we want to split
-        options = self.get_param("requests").get_param(on)["inputField.params.options"]
-
-        # If the parameter is spin but the PDOS is not polarized we will not be providing
-        # options to the user, but in fact there is one option: 0
-        if on == "spin" and len(options) == 0:
-            options = [{"label": 0, "value": 0}]
-        
-        # Build all the requests that will be passed to the settings of the plot
-        requests = [
-            self._new_request(**{on: [option["value"]], "name": option["label"], **kwargs})
-            for option in options if option["value"] not in exclude and (only is None or option["value"] in only)
-        ]
+        requests = self.get_param('requests')._generate_queries(
+            on=on, only=only, exclude=exclude, query_gen=self._new_request, **kwargs)
 
         # If the user doesn't want to clean the plot, we will just add the requests to the existing ones
         if not clean:
-            requests = [ *self.setting("requests"), *requests]
+            requests = [*self.setting("requests"), *requests]
 
         return self.update_settings(requests=requests)

@@ -1730,6 +1730,7 @@ class BandStructure(BrillouinZone):
 
             div = np.floor(dists / dist * division).astype(dtype=np.int32)
             n = sum(div)
+            print(n)
             if n < division:
                 div[-1] +=1
                 n = sum(div)

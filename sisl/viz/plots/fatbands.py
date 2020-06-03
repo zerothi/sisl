@@ -2,6 +2,7 @@ from collections import defaultdict
 
 import numpy as np
 import pandas as pd
+from  plotly.colors import DEFAULT_PLOTLY_COLORS
 from xarray import DataArray
 
 import sisl
@@ -82,7 +83,7 @@ class FatbandsPlot(BandsPlot):
 
         OrbitalQueries(
             key="groups", name="Fatbands groups",
-            default=[],
+            default=None,
             help='''The different groups that are displayed in the fatbands''',
             queryForm=[
 
@@ -146,7 +147,7 @@ class FatbandsPlot(BandsPlot):
 
         self._set_group_options()
         if not bands_read:
-            raise e
+            raise err
         
         # Then we just convert the weights to a DataArray
         self.weights = np.array(self.weights).real
@@ -195,6 +196,17 @@ class FatbandsPlot(BandsPlot):
         # Get the groups of orbitals whose bands are requested
         groups = self.setting('groups')
 
+        # If the user didn't provide groups and didn't specify that groups is an
+        # empty list, we are going to build the default groups, which is to split by species
+        # in case there is more than one species or else, by orbitals
+        if groups is None:
+            if len(self.geom.atoms.atom) > 1:
+                group_by = 'species'
+            else:
+                group_by = 'orbitals'
+
+            return self.build_groups(group_by)
+
         # We are going to need a trace that goes forward and then back so that
         # it is self-fillable
         xs = self.bands.k.values
@@ -235,3 +247,82 @@ class FatbandsPlot(BandsPlot):
                 'legendgroup':group["name"],
                 'fill': 'toself'
             } for i, (band, band_weights) in enumerate(zip(plot_eigvals.transpose('band', 'k'), weights.transpose('band', 'k')))])
+
+    # -------------------------------------
+    #         Convenience methods
+    # -------------------------------------
+
+    def build_groups(self, on="species", only=None, exclude=None, clean=True, colors=DEFAULT_PLOTLY_COLORS, **kwargs):
+        '''
+        Builds groups automatically to draw their contributions.
+
+        Works exactly the same as `PdosPlot.split_DOS`
+
+        Parameters
+        --------
+        on: str, {"species", "atoms", "orbitals", "spin"}
+            the parameter to split along
+        only: array-like, optional
+            if desired, the only values that should be plotted out of
+            all of the values that come from the splitting.
+        exclude: array-like, optional
+            values that should not be plotted
+        clean: boolean, optional
+            whether the plot should be cleaned before drawing.
+            If False, all the groups that come from the method will
+            be drawn on top of what is already there.
+        colors: array-like, optional
+            A list of colors to be used. There can be more colors than
+            needed, or less. If there are less colors than groups, the colors
+            will just be repeated.
+        **kwargs:
+            keyword arguments that go directly to each request.
+            
+            This is useful to add extra filters. For example:
+            `plot.build_groups(on="orbitals", species=["C"])`
+            will split the PDOS on the different orbitals but will take
+            only those that belong to carbon atoms.
+        '''
+
+        groups = self.get_param('groups')._generate_queries(
+            on=on, only=only, exclude=exclude, **kwargs)
+
+        # Repeat the colors in case there are more groups than colors
+        colors = np.tile(colors, len(groups) // len(colors) + 1)
+
+        # Asign colors
+        for i, _ in enumerate(groups):
+            groups[i]['color'] = colors[i]
+
+        # If the user doesn't want to clean the plot, we will just add the groups to the existing ones
+        if not clean:
+            groups = [*self.setting("groups"), *groups]
+
+        return self.update_settings(groups=groups)
+
+    def scale_fatbands(self, factor, from_current=False):
+        '''
+        Scales all bands by a given factor.
+
+        Basically, it updates the 'factor' key of all the groups provided
+        in the group setting.
+
+        Parameters
+        -----------
+        factor: float
+            the factor that should be used to scale.
+        from_current: boolean, optional
+            whether 'factor' is meant to multiply the current scaling factor.
+            If False, it will just replace the current factor.
+        '''
+
+        groups = self.setting('groups')
+
+        # Asign colors
+        for i, _ in enumerate(groups):
+            if from_current:
+                groups[i]['factor'] *= factor
+            else:
+                groups[i]['factor'] = factor
+
+        return self.update_settings(groups=groups)

@@ -194,6 +194,59 @@ class OrbitalQueries(QueriesInput):
         )
 
         return filtered_df.index
+    
+    def _generate_queries(self, on, only=None, exclude=None, clean=True, query_gen=None, **kwargs):
+        '''
+        Automatically generates queries based on the current options.
+
+        Parameters
+        --------
+        on: str, {"species", "atoms", "orbitals", "spin"}
+            the parameter to split along
+        only: array-like, optional
+            if desired, the only values that should be plotted out of
+            all of the values that come from the splitting.
+        exclude: array-like, optional
+            values that should not be plotted
+        query_gen: function, optional
+            the request generator. It is a function that takes all the parameters for each
+            request that this method has come up with and gets a chance to do some modifications.
+
+            This may be useful, for example, to give each request a color, or a custom name.
+        **kwargs:
+            keyword arguments that go directly to each request.
+            
+            This is useful to add extra filters. For example:
+            `plot._generate_requests(on="orbitals", species=["C"])`
+            will split the PDOS on the different orbitals but will take
+            only those that belong to carbon atoms.
+        '''
+
+        if exclude is None:
+            exclude = []
+
+        # First, we get all available values for the parameter we want to split
+        options = self.get_param(on)["inputField.params.options"]
+
+        # If the parameter is spin but the orbitals are not polarized we will not be providing
+        # options to the user, but in fact there is one option: 0
+        if on == "spin" and len(options) == 0:
+            options = [{"label": 0, "value": 0}]
+
+        # If no function to modify requests was provided we are just going to generate a 
+        # dummy one that just returns the request as it gets it
+        if query_gen is None:
+            def query_gen(**kwargs):
+                return kwargs
+
+        # Build all the requests that will be passed to the settings of the plot
+        requests = [
+            query_gen(
+                **{on: [option["value"]], "name": option["label"], **kwargs})
+            for option in options if option["value"] not in exclude and (only is None or option["value"] in only)
+        ]
+
+        return requests
 
 
 

@@ -274,15 +274,17 @@ class BandsPlot(Plot):
             #Get the requested path
             self.path = self.setting('path')
             if self.path and len(self.path) > 1:
-                self.path = [point for point in self.setting("path") if point["active"]]
+                self.path = [point for point in self.setting("path") if point.get("active", True)]
             else:
                 raise Exception(f"You need to provide at least 2 points of the path to draw the bands. Please update the 'path' setting. The current path is: {self.path}")
 
             bandStruct = sisl.BandStructure(
                 self.H,
-                point=np.array([[point["x"] or 0, point["y"] or 0, point["z"] or 0] for point in self.path], dtype=float),
-                division=np.array([point["divisions"] for point in self.path][1:], dtype=int) ,
-                name=np.array([point["tick"] for point in self.path])
+                point=np.array([[
+                        point.get("x", None) or 0, point.get("y", None) or 0, point.get("z", None) or 0
+                    ] for point in self.path], dtype=float),
+                division=np.array([point["divisions"] for point in self.path[1:]], dtype=int),
+                name=np.array([point.get("tick", '') for point in self.path])
             )
 
         else:
