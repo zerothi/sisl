@@ -1,24 +1,28 @@
 from numbers import Integral
+from functools import reduce
+from operator import eq as op_eq
+from itertools import zip_longest
 
-# To speed up the extension algorithm we limit
-# the lookup table
 import numpy as np
-from numpy import ndarray, int32
-from numpy import empty, zeros, full, asarray, arange
-from numpy import insert, take, delete, copyto, split
-from numpy import intersect1d, setdiff1d, unique, in1d
-from numpy import diff, count_nonzero, allclose
-from numpy import any as np_any
-from numpy import all as np_all
-from numpy import atleast_1d
-from numpy import isnan, broadcast
-from numpy import argsort
+# To speed up the _extend algorithm we limit lookups
+from numpy import (
+    ndarray, int32,
+    empty, zeros, full, arange,
+    asarray, atleast_1d,
+    take, delete, insert, split,
+    copyto,
+    intersect1d, setdiff1d, unique, in1d,
+    diff, count_nonzero, allclose,
+    isnan, broadcast, argsort, isscalar,
+    any as np_any, all as np_all
+)
+from numpy.lib.mixins import NDArrayOperatorsMixin
 
-from scipy.sparse import isspmatrix
-from scipy.sparse import isspmatrix_coo
-from scipy.sparse import csr_matrix, isspmatrix_csr
-from scipy.sparse import isspmatrix_csc
-from scipy.sparse import isspmatrix_lil
+from scipy.sparse import (
+    spmatrix, csr_matrix,
+    isspmatrix, isspmatrix_coo, isspmatrix_lil,
+    isspmatrix_csr, isspmatrix_csc
+)
 
 from ._internal import set_module
 from . import _array as _a
@@ -27,6 +31,7 @@ from ._indices import indices, indices_only, sorted_unique
 from .messages import warn, SislError
 from ._help import array_fill_repeat, get_dtype, isiterable
 from .utils.ranges import array_arange
+from ._sparse import sparse_dense
 
 # Although this re-implements the CSR in scipy.sparse.csr_matrix
 # we use it slightly differently and thus require this new sparse pattern.
@@ -35,7 +40,7 @@ __all__ = ['SparseCSR', 'ispmatrix', 'ispmatrixd']
 
 
 @set_module("sisl")
-class SparseCSR:
+class SparseCSR(NDArrayOperatorsMixin):
     """
     A compressed sparse row matrix, slightly different than :class:`~scipy.sparse.csr_matrix`.
 
@@ -107,19 +112,10 @@ class SparseCSR:
        whether the sparse matrix is finalized and non-set elements
        are removed
     """
-
-    # These overrides are necessary to be able to perform
-    # ufunc operations with numpy.
-    # The reason is that the ufunc in numpy arrays are first
-    # tried when encountering operations:
-    #   np.int + object will invoke __add__ from ndarray, regardless
-    # of objects __radd__ routine.
-    # We thus need to define the ufunc method in this object
-    # to tell numpy that using numpy.ndarray.__array_ufunc__ won't work.
-    # Prior to 1.13 the ufunc is named numpy_ufunc, subsequent versions
-    # are using array_ufunc.
-    __numpy_ufunc__ = None
-    __array_ufunc__ = None
+    # We don't really need slots, but it is useful
+    # to keep a good overview of which variables are present
+    __slots__ = ("_shape", "_ns", "_finalized",
+                 "_nnz", "ptr", "ncol", "col")
 
     def __init__(self, arg1, dim=1, dtype=None, nnzpr=20, nnz=None,
                  **kwargs):
@@ -631,6 +627,10 @@ class SparseCSR:
         # Scale values where columns coincide with scaling factor
         self._D[idx[scale_idx]] *= scale
 
+    def todense(self):
+        """ Return a dense `numpy.ndarray` which has 3 dimensions (self.shape) """
+        return sparse_dense(self)
+
     def spsame(self, other):
         """ Check whether two sparse matrices have the same non-zero elements
 
@@ -682,7 +682,6 @@ class SparseCSR:
         if self.shape[:2] != other.shape[:2]:
             raise ValueError('Aligning two sparse matrices requires same shapes')
 
-        lsetdiff1d = setdiff1d
         sptr = self.ptr
         sncol = self.ncol
         scol = self.col
@@ -700,7 +699,7 @@ class SparseCSR:
                 continue
 
             sp = sptr[r]
-            adds = lsetdiff1d(ocol[op:op+on], scol[sp:sp+sn])
+            adds = setdiff1d(ocol[op:op+on], scol[sp:sp+sn])
             if len(adds) > 0:
                 # simply extend the elements
                 self._extend(r, adds, False)
@@ -1320,6 +1319,31 @@ class SparseCSR:
         return csr_matrix((self._D[idx, dim].copy(), self.col[idx], ptr.astype(int32, copy=False)),
                           shape=shape, **kwargs)
 
+    @classmethod
+    def fromsp(cls, *sps, **kwargs):
+        shape = sps[0].shape
+        dtype = kwargs.get("dtype", np.result_type(*tuple(sp.dtype for sp in sps)))
+        out = cls(shape + (len(sps), ), dtype=dtype)
+
+        ptr = out.ptr
+        ncol = out.ncol
+        col = out.col
+
+        # Now we need to add things to the sparsity pattern
+        for iD, sp in enumerate(sps):
+            sp = sp.tocsr()
+            if sp.shape != shape:
+                raise ValueError(f"{cls.__name__}.fromsp found non compatible shapes")
+
+            # Loop stuff
+            for r in range(shape[0]):
+                sl = slice(sp.indptr[r], sp.indptr[r+1])
+                cols = sp.indices[sl]
+                idx = out._extend(r, cols)
+                out._D[idx, iD] += sp.data[sl]
+
+        return out
+
     def remove(self, indices):
         """ Return a new sparse CSR matrix with all the indices removed
 
@@ -1466,258 +1490,51 @@ class SparseCSR:
     def __repr__(self):
         return f"<{self.__module__}.{self.__class__.__name__} shape={self.shape}, kind={self.dkind}, nnz={self.nnz}>"
 
-    ###############################
-    # Overload of math operations #
-    ###############################
-    def __add__(self, other):
-        c = self.copy(dtype=get_dtype(other, other=self.dtype))
-        c += other
-        return c
-    __radd__ = __add__
+    # numpy dispatch methods
+    __array_priority__ = 14
 
-    def __iadd__(self, other):
-        if isinstance(other, SparseCSR):
-            if self.shape != other.shape:
-                raise ValueError('Adding two sparse matrices requires the same shape')
+    def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
+        out = kwargs.pop("out", None)
 
-            # loop and add elements
-            for r in range(self.shape[0]):
-                # pointers
-                bptr = other.ptr[r]
-                bn = other.ncol[r]
-                sl = slice(bptr, bptr+bn, None)
+        if getattr(ufunc, "signature", None) is not None:
+            # The signature is not a scalar operation
+            return NotImplemented
 
-                # Get positions of b-elements in a:
-                in_a = self._extend(r, other.col[sl])
-                self._D[in_a, :] += other._D[sl, :]
+        if out is not None:
+            (out,) = out
+            kwargs["dtype"] = out.dtype
 
-        elif isspmatrix(other):
-            tmp = SparseCSR(other, shape=self.shape[:2])
-            self += tmp
-
+        if method == "__call__":
+            result = _ufunc_pre(ufunc, *inputs, **kwargs)
+        elif method == "reduce":
+            # to be handled
+            return NotImplemented
+        elif method == "outer":
+            # Currently I don't know what to do here
+            # We don't have multidimensional sparse matrices,
+            # but perhaps that could be needed later?
+            return NotImplemented
         else:
-            self._D += other
-        return self
+            return NotImplemented
 
-    def __sub__(self, other):
-        c = self.copy(dtype=get_dtype(other, other=self.dtype))
-        c -= other
-        return c
+        if out is None:
+            return result
 
-    def __rsub__(self, other):
-        if isinstance(other, SparseCSR):
-            c = other.copy(dtype=get_dtype(self, other=other.dtype))
-            c += -1 * self
-        else:
-            c = other + (-1) * self
-        return c
-
-    def __isub__(self, other):
-        if isinstance(other, SparseCSR):
-            if self.shape != other.shape:
-                raise ValueError('Subtracting two sparse matrices requires the same shape')
-
-            # loop and add elements
-            for r in range(self.shape[0]):
-                # pointers
-                bptr = other.ptr[r]
-                bn = other.ncol[r]
-                sl = slice(bptr, bptr+bn, None)
-
-                # Get positions of b-elements in a:
-                in_a = self._extend(r, other.col[sl])
-                self._D[in_a, :] -= other._D[sl, :]
-
-        elif isspmatrix(other):
-            tmp = SparseCSR(other, shape=self.shape[:2])
-            self -= tmp
-
-        else:
-            self._D -= other
-        return self
-
-    def __mul__(self, other):
-        c = self.copy(dtype=get_dtype(other, other=self.dtype))
-        c *= other
-        return c
-    __rmul__ = __mul__
-
-    def __imul__(self, other):
-        if isinstance(other, SparseCSR):
-            if self.shape != other.shape:
-                raise ValueError('Multiplication of two sparse matrices requires the same shape')
-
-            # Note that for multiplication of these two matrices
-            # it is not required that they are aligned...
-            # 0 * float == 0
-            # Hence aligning is superfluous
-
-            # loop and add elements
-            for r in range(self.shape[0]):
-                # pointers
-                aptr = self.ptr[r]
-                an = self.ncol[r]
-                bptr = other.ptr[r]
-                bn = other.ncol[r]
-
-                acol = self.col[aptr:aptr+an]
-                bcol = other.col[bptr:bptr+bn]
-
-                # Get positions of b-elements in a:
-                in_a = self._get_only(r, bcol)
-                # Everything else *must* be zeroes! :)
-                self._D[in_a, :] *= other._D[bptr:bptr+bn, :]
-
-                # Now set everything *not* in b but in a, to zero
-                not_in_b = in1d(acol, bcol, invert=True).nonzero()[0]
-                self._D[aptr+not_in_b, :] = 0
-
-        elif isspmatrix(other):
-            tmp = SparseCSR(other, shape=self.shape[:2])
-            self *= tmp
-
-        else:
-            self._D *= other
-        return self
-
-    def __div__(self, other):
-        c = self.copy(dtype=get_dtype(other, other=self.dtype))
-        c /= other
-        return c
-
-    def __rdiv__(self, other):
-        c = other.copy(dtype=get_dtype(self, other=other.dtype))
-        c /= self
-        return c
-
-    def __idiv__(self, other):
-        if isinstance(other, SparseCSR):
-            if self.shape != other.shape:
-                raise ValueError('Division of two sparse matrices requires the same shape')
-
-            # loop and add elements
-            for r in range(self.shape[0]):
-                # pointers
-                bptr = other.ptr[r]
-                bn = other.ncol[r]
-                sl = slice(bptr, bptr+bn, None)
-
-                # Get positions of b-elements in a:
-                in_a = self._extend(r, other.col[sl])
-                self._D[in_a, :] /= other._D[sl, :]
-
-        elif isspmatrix(other):
-            tmp = SparseCSR(other, shape=self.shape[:2])
-            self /= tmp
-
-        else:
-            self._D /= other
-        return self
-
-    def __floordiv__(self, other):
-        c = self.copy(dtype=get_dtype(other, other=self.dtype))
-        c //= other
-        return c
-
-    def __ifloordiv__(self, other):
-        if isinstance(other, SparseCSR):
-            if self.shape != other.shape:
-                raise ValueError('Floor-division of two sparse matrices requires the same shape')
-
-            # loop and add elements
-            for r in range(self.shape[0]):
-                # pointers
-                bptr = other.ptr[r]
-                bn = other.ncol[r]
-                sl = slice(bptr, bptr+bn, None)
-
-                # Get positions of b-elements in a:
-                in_a = self._extend(r, other.col[sl])
-                self._D[in_a, :] //= other._D[sl, :]
-
-        elif isspmatrix(other):
-            tmp = SparseCSR(other, shape=self.shape[:2])
-            self //= tmp
-
-        else:
-            self._D //= other
-        return self
-
-    def __truediv__(self, other):
-        c = self.copy(dtype=get_dtype(other, other=self.dtype))
-        c /= other
-        return c
-
-    def __itruediv__(self, other):
-        if isinstance(other, SparseCSR):
-            if self.shape != other.shape:
-                raise ValueError('True-division of two sparse matrices requires the same shape')
-
-            # loop and add elements
-            for r in range(self.shape[0]):
-                # pointers
-                bptr = other.ptr[r]
-                bn = other.ncol[r]
-                sl = slice(bptr, bptr+bn, None)
-
-                # Get positions of b-elements in a:
-                in_a = self._get(r, other.col[sl])
-                self._D[in_a, :].__itruediv__(other._D[sl, :])
-
-        elif isspmatrix(other):
-            tmp = SparseCSR(other, shape=self.shape[:2])
-            self /= tmp
-
-        else:
-            self._D /= other
-        return self
-
-    def __pow__(self, other):
-        c = self.copy(dtype=get_dtype(other, other=self.dtype))
-        c **= other
-        return c
-
-    def __rpow__(self, other):
-        if isinstance(other, SparseCSR):
-            raise NotImplementedError
-        c = self.copy(dtype=get_dtype(other, other=self.dtype))
-        c._D[...] = other ** c._D[...]
-        return c
-
-    def __ipow__(self, other):
-        if isinstance(other, SparseCSR):
-            if self.shape != other.shape:
-                raise ValueError('True-division of two sparse matrices requires the same shape')
-            # Ensure that a is aligned with b
-            # 0 ** float == 1.
-
-            # loop and add elements
-            for r in range(self.shape[0]):
-                # pointers
-                aptr = self.ptr[r]
-                an = self.ncol[r]
-                bptr = other.ptr[r]
-                bn = other.ncol[r]
-
-                acol = self.col[aptr:aptr+an]
-                bcol = other.col[bptr:bptr+bn]
-
-                # Get positions of b-elements in a:
-                in_a = self._extend(r, bcol)
-                self._D[in_a, :] **= other._D[bptr:bptr+bn, :]
-
-                # Now set everything *not* in b but in a, to 1
-                #  float ** 0 == 1
-                not_in_b = in1d(acol, bcol, invert=True).nonzero()[0]
-                self._D[aptr+not_in_b, :] = 1
-
-        elif isspmatrix(other):
-            tmp = SparseCSR(other, shape=self.shape[:2])
-            self **= tmp
-
-        else:
-            self._D **= other
-        return self
+        # we have to explicitly save it *somewhere*
+        if isinstance(out, ndarray):
+            out[...] = result[...]
+        elif isinstance(out, SparseCSR):
+            if out.shape != result.shape:
+                raise ValueError(f"non-broadcastable output operand with shape {out.shape} "
+                                 "doesn't match the broadcast shape {result.shape}")
+            out._finalized = result._finalized
+            out.ncol[:] = result.ncol[:]
+            out.ptr[:] = result.ptr[:]
+            # this will copy
+            out.col = result.col
+            out._D = result._D.astype(kwargs.get("dtype", out.dtype))
+            return out
+        return NotImplemented
 
     def __getstate__(self):
         """ Return dictionary with the current state (finalizing the object may reduce memory footprint) """
@@ -1744,6 +1561,167 @@ class SparseCSR:
             self.ptr = insert(_a.cumsumi(self.ncol), 0, 0)
         else:
             self.ptr = state['ptr']
+
+
+def _get_reduced_shape(shape):
+    return tuple(s for s in shape[::-1] if s > 1)[::-1]
+
+
+def _get_bcast_shape(*shapes):
+    """ Calculate the b-casted shape of the results """
+    res_shape = ()
+    for shape in shapes:
+        shape = shape[::-1]
+        if not all((l1 == l2) or (l1 == 1)
+                   for l1, l2 in zip(shape, res_shape)):
+            raise ValueError(f"operands could not be broadcast together "
+                             f"with shapes {shape[::-1]}, {res_shape[::-1]} <- ({shapes})")
+
+        # Create b-cast shape
+        # https://stackoverflow.com/a/47244284/774273
+        res_shape = tuple(max(l1, l2)
+                          for l1, l2 in
+                          zip_longest(shape, res_shape, fillvalue=1))
+
+    return res_shape[::-1]
+
+
+def _ufunc(ufunc, a, b, **kwargs):
+    if isinstance(a, (SparseCSR, spmatrix, tuple)):
+        if isinstance(b, (SparseCSR, spmatrix, tuple)):
+            return _ufunc_sp_sp(ufunc, a, b, **kwargs)
+        return _ufunc_sp_ndarray(ufunc, a, b, **kwargs)
+    elif isinstance(b, SparseCSR):
+        return _ufunc_ndarray_sp(ufunc, a, b, **kwargs)
+    return ufunc(a, b, **kwargs)
+
+
+def _ufunc_sp_ndarray(ufunc, a, b, **kwargs):
+    if len(_get_reduced_shape(b.shape)) > 1:
+        # there are shapes for individiual
+        # we will now calculate a full matrix
+        return ufunc(a.todense(), b, **kwargs)
+
+    # create a copy
+    out = a.copy(dtype=kwargs.get("dtype", a.dtype))
+    if out.ptr[-1] == out.nnz:
+        ufunc(a._D, b, **kwargs, out=out._D)
+    else:
+        # limit the values
+        # since slicing non-uniform ranges does not return
+        # a view, we can't use
+        #   ufunc(..., out=out._D[idx, :])
+        idx = array_arange(a.ptr[:-1], n=a.ncol)
+        out._D[idx, :] = ufunc(a._D[idx, :], b, **kwargs)
+        del idx
+    return out
+
+
+def _ufunc_ndarray_sp(ufunc, a, b, **kwargs):
+    if len(_get_reduced_shape(a.shape)) > 1:
+        # there are shapes for individiual
+        # we will now calculate a full matrix
+        return ufunc(a, b.todense(), **kwargs)
+
+    # create a copy
+    out = b.copy(dtype=kwargs.get("dtype", b.dtype))
+    if out.ptr[-1] == out.nnz:
+        ufunc(a, b._D, **kwargs, out=out._D)
+    else:
+        # limit the values
+        idx = array_arange(b.ptr[:-1], n=b.ncol)
+        out._D[idx, :] = ufunc(a, b._D[idx, :], **kwargs)
+        del idx
+    return out
+
+
+def _ufunc_sp_sp(ufunc, a, b, **kwargs):
+    """ Calculate ufunc on sparse matrices """
+    if isinstance(a, tuple):
+        a = SparseCSR.fromsp(*a)
+    elif not isinstance(a, SparseCSR):
+        a = SparseCSR.fromsp(a)
+    if isinstance(b, tuple):
+        b = SparseCSR.fromsp(*b)
+    elif not isinstance(b, SparseCSR):
+        b = SparseCSR.fromsp(b)
+
+    if not (reduce(op_eq, zip(a.shape[:2], b.shape[:2])) and
+            a.shape[2] == 1 or b.shape[2] == 1 or a.shape[2] == b.shape[2]):
+        raise ValueError(f"could not broadcast sparse matrices {a.shape} and {b.shape}")
+
+    shape = a.shape
+    dtype = kwargs.get("dtype", np.result_type(a.dtype, b.dtype))
+    out = SparseCSR(shape, dtype=dtype, nnzpr=1, nnz=a.shape[0])
+
+    # Now we need to add things to the sparsity pattern
+    for r in range(shape[0]):
+        asl = np.arange(a.ptr[r], a.ptr[r] + a.ncol[r])
+        aidx = out._extend(r, a.col[asl])
+        bsl = np.arange(b.ptr[r], b.ptr[r] + b.ncol[r])
+        bidx = out._extend(r, b.col[bsl])
+
+        # Find common indices
+        idx, aover, bover = np.intersect1d(aidx, bidx, return_indices=True)
+        out._D[idx, :] = ufunc(a._D[asl[aover], :],
+                               b._D[bsl[bover], :], **kwargs)
+
+        aonly = np.delete(aidx, aover)
+        out._D[aonly, :] = ufunc(a._D[np.delete(asl, aover), :], 0, **kwargs)
+        bonly = np.delete(bidx, bover)
+        out._D[bonly, :] = ufunc(0, b._D[np.delete(bsl, bover), :], **kwargs)
+
+    return out
+
+
+def _ufunc_pre(ufunc, *in_args, **kwargs):
+
+    # first process in_args to args
+    # by numpy-fying and checking for sparsecsr
+    args = []
+    for arg in in_args:
+        if isinstance(arg, SparseCSR):
+            args.append(arg)
+        elif isscalar(arg) or isinstance(arg, ndarray):
+            args.append(asarray(arg))
+        elif isinstance(arg, spmatrix):
+            args.append(arg)
+        else:
+            args = None
+            return
+
+    if "dtype" not in kwargs:
+        kwargs["dtype"] = np.result_type(*args)
+
+    # Input arguments are corrected
+    # Get resulting shape
+    # Currently we don't check shapes and output,
+    # however this function fails in case the shapes
+    # are not b-castable.
+    def spshape(arg):
+        if isinstance(arg, spmatrix):
+            # spmatrices can only ever have 2 dimensions
+            # but SparseCSR always have 3, so we pad with ones.
+            return arg.shape + (1,)
+        return arg.shape
+    shape = _get_bcast_shape(*tuple(spshape(arg) for arg in args))
+
+    if len(args) == 1:
+        a = args[0]
+        # create a copy
+        out = a.copy(dtype=kwargs.get("dtype", a.dtype))
+        if out.ptr[-1] == out.nnz:
+            ufunc(a._D[:, :], **kwargs, out=out._D)
+        else:
+            # limit the values
+            idx = array_arange(a.ptr[:-1], n=a.ncol)
+            out._D[idx, :] = ufunc(a._D[idx, :], **kwargs)
+            del idx
+        return out
+
+    def _(a, b):
+        return _ufunc(ufunc, a, b, **kwargs)
+    return reduce(_, args)
 
 
 @set_module("sisl")

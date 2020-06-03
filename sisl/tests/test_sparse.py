@@ -896,6 +896,20 @@ def test_op2(setup):
             assert setup.s1[0, jj] == i
             assert s[1, jj] == 0
 
+        # *
+        s = np.multiply(setup.s1, 2)
+        for jj in j:
+            assert s[0, jj] == i*2
+            assert setup.s1[0, jj] == i
+            assert s[1, jj] == 0
+        # *
+        s.empty()
+        np.multiply(setup.s1, 2, out=s)
+        for jj in j:
+            assert s[0, jj] == i*2
+            assert setup.s1[0, jj] == i
+            assert s[1, jj] == 0
+
         # //
         s = s // 2
         for jj in j:
@@ -1068,16 +1082,30 @@ def test_op5(setup):
             S3[0, j] = i
 
     S = S1 * S2
-    assert np.allclose(S._D, (S2**2)._D)
+    assert np.allclose(S.todense(), (S2**2).todense())
 
     S = S * S
-    assert np.allclose(S._D, (S2**4)._D)
+    assert np.allclose(S.todense(), (S2**4).todense())
 
     S = S1 + S2
-    assert np.allclose(S._D, S1._D + S2._D)
+    S1 += S2
+    assert np.allclose(S.todense(), S1.todense())
 
     S = S1 - S2
-    assert np.allclose(S._D, S1._D - S2._D)
+    S1 -= S2
+    assert np.allclose(S.todense(), S1.todense())
+
+    S = S1 + 2
+    S -= 2
+    assert np.allclose(S.todense(), S1.todense())
+
+    S = S1 * 2
+    S //= 2
+    assert np.allclose(S.todense(), S1.todense())
+
+    S = S1 / 2.
+    S *= 2
+    assert np.allclose(S.todense(), S1.todense())
 
 
 def test_op_numpy_scalar(setup):
@@ -1130,6 +1158,10 @@ def test_op_numpy_scalar(setup):
     assert isinstance(s, SparseCSR)
     assert s.dtype == np.complex64
 
+    s = np.exp(1j * S)
+    assert isinstance(s, SparseCSR)
+    assert s.dtype == np.complex64
+
 
 def test_sum1(setup):
     S1 = SparseCSR((10, 10, 2), dtype=np.int32)
@@ -1165,6 +1197,39 @@ def test_sum2(setup):
     S1[2, 0] = [1, 2]
     S1[2, 2] = [1, 2]
     S1.sum(1)
+
+
+def test_unfinalized_math(setup):
+    S1 = SparseCSR((4, 4, 1))
+    S2 = SparseCSR((4, 4, 1))
+    S1[0, 0] = 2.
+    S1[1, 2] = 3.
+    S2[2, 3] = 4.
+    S2[2, 2] = 3.
+    S2[0, 0] = 4
+
+    for i in range(3):
+        assert np.allclose(S1.todense() + S2.todense(),
+                           (S1 + S2).todense())
+        assert np.allclose(S1.todense() * S2.todense(),
+                           (S1 * S2).todense())
+        sin = np.sin(S1.todense()) + np.sin(S2.todense())
+        sins = (np.sin(S1) + np.sin(S2)).todense()
+        assert np.allclose(sin, sins)
+        sins = np.sin(S1).todense() + np.sin(S2).todense()
+        assert np.allclose(sin, sins)
+
+        if i == 0:
+            assert not S1.finalized
+            assert not S2.finalized
+            S1.finalize()
+        elif i == 1:
+            assert S1.finalized
+            assert not S2.finalized
+            S2.finalize()
+        elif i == 2:
+            assert S1.finalized
+            assert S2.finalized
 
 
 def test_pickle(setup):
