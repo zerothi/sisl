@@ -1711,14 +1711,11 @@ def _ufunc_pre(ufunc, *in_args, **kwargs):
         # create a copy
         out = a.copy(dtype=kwargs.get("dtype", a.dtype))
         if out.ptr[-1] == out.nnz:
-            #out._D[:, :] = ufunc(a._D[:, :], **kwargs)
             ufunc(a._D[:, :], **kwargs, out=out._D)
         else:
             # limit the values
             idx = array_arange(a.ptr[:-1], n=a.ncol)
-            # extract the diagonal
-            #out._D[idx, :] = ufunc(a._D[idx, :], **kwargs)
-            ufunc(a._D[idx, :], **kwargs, out=out._D[idx, :])
+            out._D[idx, :] = ufunc(a._D[idx, :], **kwargs)
             del idx
         return out
 
