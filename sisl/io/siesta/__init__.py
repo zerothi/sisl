@@ -28,6 +28,7 @@ Remark that the `gridSileSiesta` file encompass all ``RHO``, ``RHOINIT``, ``DRHO
    onlysSileSiesta - Overlap matrix information
    dmSileSiesta - density matrix information
    hsxSileSiesta - Hamiltonian and overlap matrix information
+   wfsxSileSiesta - wavefunctions
    ncSileSiesta - NetCDF output file
    ionxmlSileSiesta - Basis-information from the ion.xml files
    ionncSileSiesta - Basis-information from the ion.nc files

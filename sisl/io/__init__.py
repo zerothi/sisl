@@ -137,8 +137,10 @@ Siesta (:mod:`~sisl.io.siesta`)
    pdosSileSiesta - PDOS file
    gridSileSiesta - Grid charge information (binary)
    gridncSileSiesta - NetCDF grid output files (netcdf)
+   onlysSileSiesta - Overlap matrix information
    dmSileSiesta - density matrix information
    hsxSileSiesta - Hamiltonian and overlap matrix information
+   wfsxSileSiesta - wavefunctions
    ncSileSiesta - NetCDF output file
    ionxmlSileSiesta - Basis-information from the ion.xml files
    ionncSileSiesta - Basis-information from the ion.nc files
