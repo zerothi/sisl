@@ -465,7 +465,7 @@ def spin_squared(state_alpha, state_beta, S=None):
         return spin_squared(state_alpha, state_beta.reshape(1, -1), S)
 
     if state_alpha.shape[1] != state_beta.shape[1]:
-        raise ValueError('spin_squared requires alpha and beta states to have same number of orbitals')
+        raise ValueError("spin_squared requires alpha and beta states to have same number of orbitals")
 
     if S is None:
         class S:
@@ -804,7 +804,7 @@ def berry_curvature(state, energy, dHk, dSk=None, degenerate=None, complex=False
         v_matrix = _velocity_matrix_ortho(state, dHk, degenerate, dtype)
     else:
         v_matrix = _velocity_matrix_non_ortho(state, dHk, energy, dSk, degenerate, dtype)
-        warn('berry_curvature calculation for non-orthogonal basis sets are not tested! Do not expect this to be correct!')
+        warn("berry_curvature calculation for non-orthogonal basis sets are not tested! Do not expect this to be correct!")
     if complex:
         return _berry_curvature(v_matrix, energy, degenerate)
     return _berry_curvature(v_matrix, energy, degenerate).imag
@@ -877,7 +877,7 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc', complex=False):
     from .hamiltonian import Hamiltonian
     # Currently we require the conductivity calculation to *only* accept Hamiltonians
     if not isinstance(bz.parent, Hamiltonian):
-        raise SislError('conductivity: requires the Brillouin zone object to contain a Hamiltonian!')
+        raise SislError("conductivity: requires the Brillouin zone object to contain a Hamiltonian!")
 
     if isinstance(distribution, str):
         distribution = get_distribution(distribution)
@@ -891,7 +891,7 @@ def conductivity(bz, distribution='fermi-dirac', method='ahc', complex=False):
 
         cond = - bz.apply.average.eigenstate(wrap=_ahc) / constant.hbar('eV ps')
     else:
-        raise SislError('conductivity: requires the method to be [ahc]')
+        raise SislError("conductivity: requires the method to be [ahc]")
 
     return cond
 
@@ -1118,22 +1118,22 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
     from .hamiltonian import Hamiltonian
     # Currently we require the Berry phase calculation to *only* accept Hamiltonians
     if not isinstance(contour.parent, Hamiltonian):
-        raise SislError('berry_phase: requires the Brillouin zone object to contain a Hamiltonian!')
+        raise SislError("berry_phase: requires the Brillouin zone object to contain a Hamiltonian!")
 
     if not contour.parent.orthogonal:
-        raise SislError('berry_phase: requires the Hamiltonian to use an orthogonal basis!')
+        raise SislError("berry_phase: requires the Hamiltonian to use an orthogonal basis!")
 
     if np.allclose(contour.k[0, :], contour.k[-1, :]):
         # When the user has the contour points closed, we don't need to do this in the below loop
         closed = False
 
     method = method.lower()
-    if method == 'berry':
+    if method == "berry":
         pass
-    elif method == 'zak':
+    elif method == "zak":
         closed = True
     else:
-        raise SislError('berry_phase: requires the method to be [berry, zak]')
+        raise SislError("berry_phase: requires the method to be [berry, zak]")
 
     # Whether we should calculate the eigenvalues of the overlap matrix
     if eigvals:
@@ -1166,7 +1166,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
             # Complete the loop
             if closed:
                 # Insert Bloch phase for 1D integral?
-                if method == 'zak':
+                if method == "zak":
                     g = contour.parent.geometry
                     axis = contour.k[1] - contour.k[0]
                     axis /= axis.dot(axis) ** 0.5
@@ -1189,7 +1189,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
                 prd = _process(prd, prev.inner(second, diagonal=False))
                 prev = second
             if closed:
-                if method == 'zak':
+                if method == "zak":
                     g = contour.parent.geometry
                     axis = contour.k[1] - contour.k[0]
                     axis /= axis.dot(axis) ** 0.5
@@ -1285,19 +1285,19 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     if geometry is None:
         geometry = grid.geometry
     if geometry is None:
-        raise SislError('wavefunction: did not find a usable Geometry through keywords or the Grid!')
+        raise SislError("wavefunction: did not find a usable Geometry through keywords or the Grid!")
 
     # In case the user has passed several vectors we sum them to plot the summed state
     if v.ndim == 2:
         if v.shape[0] > 1:
-            info('wavefunction: summing {} different state coefficients, will continue silently!'.format(v.shape[0]))
+            info(f"wavefunction: summing {v.shape[0]} different state coefficients, will continue silently!")
         v = v.sum(0)
 
     if spin is None:
         if len(v) // 2 == geometry.no:
             # We can see from the input that the vector *must* be a non-colinear calculation
             v = v.reshape(-1, 2)[:, spinor]
-            info('wavefunction: assumes the input wavefunction coefficients to originate from a non-colinear calculation!')
+            info("wavefunction: assumes the input wavefunction coefficients to originate from a non-colinear calculation!")
 
     elif spin.kind > Spin.POLARIZED:
         # For non-colinear cases the user selects the spinor component.
@@ -1446,7 +1446,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
     phase = 1
 
     # Retrieve progressbar
-    eta = tqdm_eta(len(IA), 'wavefunction', 'atom', eta)
+    eta = tqdm_eta(len(IA), "wavefunction", "atom", eta)
 
     # Loop over all atoms in the grid-cell
     for ia, xyz, isc in zip(IA, XYZ, ISC):
@@ -1584,7 +1584,7 @@ class _electron_State:
                 opt = {'k': self.info.get('k', (0, 0, 0)),
                        "dtype": self.dtype,
                        "format": format}
-                gauge = self.info.get('gauge', None)
+                gauge = self.info.get("gauge", None)
                 if not gauge is None:
                     opt["gauge"] = gauge
                 return self.parent.Sk(**opt)
@@ -1663,14 +1663,14 @@ class _electron_State:
             return dot(conj(self.state), S.dot(self.state.T))
 
         else:
-            if 'FakeSk' in S.__class__.__name__:
-                raise NotImplementedError(self.__class__.__name__ + '.inner does not implement the inner product between two different overlap matrices.')
+            if "FakeSk" in S.__class__.__name__:
+                raise NotImplementedError(f"{self.__class__.__name__}.inner does not implement the inner product between two different overlap matrices.")
 
             # Same as State.inner
             # In the current implementation we require no overlap matrix!
             if align:
                 if self.shape[0] != right.shape[0]:
-                    raise ValueError(self.__class__.__name__ + '.inner with align=True requires exactly the same shape!')
+                    raise ValueError(f"{self.__class__.__name__}.inner with align=True requires exactly the same shape!")
                 # Align the states
                 right = self.align_phase(right, copy=False)
 
@@ -1871,7 +1871,7 @@ class StateCElectron(_electron_State, StateC):
                 opt["spin"] = self.info.get("spin", None)
             deg = self.degenerate(eps)
         except:
-            raise SislError(self.__class__.__name__ + '.velocity requires the parent to have a spin associated.')
+            raise SislError(f"{self.__class__.__name__}.velocity requires the parent to have a spin associated.")
         return velocity(self.state, self.parent.dHk(**opt), self.c, dSk, degenerate=deg)
 
     def velocity_matrix(self, eps=1e-4):
@@ -1907,7 +1907,7 @@ class StateCElectron(_electron_State, StateC):
                 opt["spin"] = self.info.get("spin", None)
             deg = self.degenerate(eps)
         except:
-            raise SislError(self.__class__.__name__ + ".velocity_matrix requires the parent to have a spin associated.")
+            raise SislError(f"{self.__class__.__name__}.velocity_matrix requires the parent to have a spin associated.")
         return velocity_matrix(self.state, self.parent.dHk(**opt), self.c, dSk, degenerate=deg)
 
     def berry_curvature(self, complex=False, eps=1e-4):
@@ -1944,7 +1944,7 @@ class StateCElectron(_electron_State, StateC):
                 opt["spin"] = self.info.get("spin", None)
             deg = self.degenerate(eps)
         except:
-            raise SislError(self.__class__.__name__ + ".berry_curvature requires the parent to have a spin associated.")
+            raise SislError(f"{self.__class__.__name__}.berry_curvature requires the parent to have a spin associated.")
         return berry_curvature(self.state, self.c, self.parent.dHk(**opt), dSk, degenerate=deg, complex=complex)
 
     def inv_eff_mass_tensor(self, as_matrix=False, eps=1e-3):
@@ -1993,7 +1993,7 @@ class StateCElectron(_electron_State, StateC):
                 opt["spin"] = self.info.get("spin", None)
             degenerate = self.degenerate(eps)
         except:
-            raise SislError(self.__class__.__name__ + ".inv_eff_mass_tensor requires the parent to have a spin associated.")
+            raise SislError(f"{self.__class__.__name__}.inv_eff_mass_tensor requires the parent to have a spin associated.")
         return inv_eff_mass_tensor(self.state, self.parent.ddHk(**opt), self.c, ddSk, degenerate, as_matrix)
 
 
