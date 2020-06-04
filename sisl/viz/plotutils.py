@@ -481,6 +481,44 @@ def find_files(rootDir = ".", searchString = "*", depth = [0,0], sort = True, so
     else:       
         return files
 
+def find_plotable_siles(dir_path=None, depth=0):
+    '''
+    Spans the filesystem to look for files that are registered as plotables.
+
+    Parameters
+    -----------
+    dir_path: str, optional
+        the directory where to look for the files.
+        If not provided, the current working directory will be used.
+    depth: int or array-like of length 2, optional
+        how deep into directories we should go to look for files.
+
+        If it is an array:
+
+            It will specify the limits of the search. 
+            For example, depth = [1,3] will make the function search for the searchString from 1 to 3 directories deep from rootDir.
+            (0 depth means to look for files in the rootDir)
+        
+        If it is an int:
+            Only that depth level will be searched.
+            That is, depth = 1 is the same as depth = [1,1].
+
+    Returns
+    -----------
+    dict
+        A dict containing all the files found sorted by sile (the keys are the siles)
+    '''
+
+    files = {}
+    for rule in get_plotable_siles(rules=True):
+        search_string = f"*.{rule.suffix}"
+
+        sile_files = find_files(dir_path, search_string, depth, case_insensitive=True)
+
+        if sile_files:
+            files[rule.cls] = sile_files
+
+    return files
 #-------------------------------------
 #         Multiprocessing
 #-------------------------------------

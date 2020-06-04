@@ -105,7 +105,6 @@ def register_plotable(plotable, PlotClass=None, setting_key=None, plotting_func=
     # let's initialize it's "plotability"
     is_first_register = not hasattr(plotable, "_plot_funcs")
     if is_first_register:
-        plotable._plot_funcs = {}
 
         # If the object already has a plot attribute, we will call this one
         # plot_sisl to avoid overwriting (I don't know if this will ever happen)
@@ -138,6 +137,14 @@ def register_plotable(plotable, PlotClass=None, setting_key=None, plotting_func=
     # Register the plotting method
     setattr(plotable, f'plot{"_"+suffix if suffix else ""}', plotting_func)
 
+    # And to help keep track of the plotability we tell to the plot class that 
+    # it can plot this object, and which setting to use.
+    if PlotClass is not None:
+        if not hasattr(PlotClass, '_registered_plotables'):
+            PlotClass._registered_plotables = {}
+
+        PlotClass._registered_plotables[plotable] = setting_key
+
 # -----------------------------------------------------
 #               Register plotable siles
 # -----------------------------------------------------
@@ -162,7 +169,7 @@ for GeomSile in get_siles(attrs=["read_geometry"]):
 register_plotable(sisl.Geometry, GeometryPlot, 'geom')
 register_plotable(sisl.Geometry, BondLengthMap, 'geom')
 
-#Grid
+# Grid
 register_plotable(sisl.Grid, GridPlot, 'grid')
 
 # Hamiltonian

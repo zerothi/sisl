@@ -10,7 +10,7 @@ import sisl
 from sisl.viz.GUI.api_utils.sync import Connected
 from .plot import Plot, MultiplePlot, Animation, SubPlots
 from .configurable import Configurable, after_settings_init
-from .plotutils import find_files, get_plotable_siles, call_method_if_present
+from .plotutils import find_files, find_plotable_siles, call_method_if_present
 
 from .input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, Array1dInput
 
@@ -762,19 +762,15 @@ class Session(Configurable, Connected):
         self.warehouse["plotables"] = {}
         path = path or self.setting("rootDir")
 
-        # Start filling it
-        for rule in get_plotable_siles(rules=True):
-            searchString = f"*.{rule.suffix}"
-            plotType = rule.cls._plot_default_suffix
+        # Get all the files that correspond to registered plotable siles
+        files = find_plotable_siles(path, self.setting('searchDepth'))
 
-            files = find_files(path, searchString, self.setting(
-                "searchDepth"), case_insensitive=True)
+        for SileClass, filepaths in files.items():
 
-            if files:
-                # Extend the plotables dict with the files that we find that belong to this sile
-                self.warehouse["plotables"] = { **self.warehouse["plotables"], **{
-                    str(uuid.uuid4()): {"name": os.path.basename(path), "path": path, "plot": plotType} for path in files
-                }}
+            # Extend the plotables dict with the files that we find that belong to this sile
+            self.warehouse["plotables"] = { **self.warehouse["plotables"], **{
+                str(uuid.uuid4()): {"name": os.path.basename(path), "path": path, "plot": SileClass._plot_default_suffix} for path in filepaths
+            }}
 
         #Avoid passing unnecessary info to the browser.
         return {id: {"id": id, **{k: struct[k] for k in ["name", "path", "plot"]}} for id, struct in self.warehouse["plotables"].items() }
