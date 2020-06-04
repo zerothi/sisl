@@ -82,8 +82,8 @@ def splot():
         " However, if you want to avoid sisl automatic choice, you can use these subcommands to select a"+
         " plot class. By doing so, you will also get access to plot-specific settings. Try splot bands -h, for example."+
         " Note that you can also build your own plots that will be automatically available here." +
-        f" Sisl is looking to import plots defined in {PLOTS_FILE}."
-        "\n Also note that doing 'splot bands' with any extra arguments will search your current directory ",
+        f" Sisl is looking to import plots defined in {PLOTS_FILE}."+
+        "\n Also note that doing 'splot bands' with any extra arguments will search your current directory "+
         "for *.bands files to plot. The rest of plots will also do this.",
         dest="plot_class"
     )
@@ -127,10 +127,10 @@ def splot():
             settings[param.key] = setting_value
 
     # If no settings were provided, we are going to try to guess
-    if not settings:
+    if not settings and hasattr(plot_class, '_registered_plotables'):
         siles = find_plotable_siles(depth=0)
-
         for SileClass, filepaths in siles.items():
+
             if SileClass in plot_class._registered_plotables:
                 settings[plot_class._registered_plotables[SileClass]] = filepaths[0]
                 break

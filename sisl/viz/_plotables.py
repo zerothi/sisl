@@ -161,6 +161,7 @@ for GeomSile in get_siles(attrs=["read_geometry"]):
     register_plotable(GeomSile, GeometryPlot, 'geom_file', default=True)
     register_plotable(GeomSile, BondLengthMap, 'geom_file')
 
+register_plotable(siesta.outSileSiesta, ForcesPlot, 'out_file')
 # -----------------------------------------------------
 #           Register plotable sisl objects
 # -----------------------------------------------------
