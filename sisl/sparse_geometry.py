@@ -386,10 +386,11 @@ class _SparseGeometry(NDArrayOperatorsMixin):
             D = csr._D[idx, :].copy()
             del idx
 
-        # Create an array ready for holding all transposed columns
-        row = _a.zerosi(len(col))
-        row[ptr[1:-1]] = 1
-        _a.cumsumi(row, out=row)
+        # figure out rows where ncol is > 0
+        # we skip the first column
+        row_nonzero = (ncol > 0).nonzero()[0]
+        row = repeat(row_nonzero.astype(np.int32, copy=False),
+                     ncol[row_nonzero]).astype(np.int32, copy=False)
 
         # Now we have the DOK format
         #  row, col, _D
@@ -405,7 +406,10 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
         # Now we can re-create the sparse matrix
         # All we need is to count the number of non-zeros per column.
-        _, nrow = unique(col, return_counts=True)
+        rows, nrow = unique(col, return_counts=True)
+        T._csr.ncol = _a.zerosi(size)
+        T._csr.ncol[rows] = nrow
+        del rows
 
         # Now we have everything ready...
         # Simply figure out how to sort the columns
@@ -417,8 +421,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         del row
         T._csr._D = D[idx]
         del D
-        T._csr.ncol = nrow.astype(int32, copy=False)
-        T._csr.ptr = insert(_a.cumsumi(nrow), 0, 0)
+        T._csr.ptr = insert(_a.cumsumi(T._csr.ncol), 0, 0)
 
         # For-sure we haven't sorted the columns.
         # We haven't changed the number of non-zeros

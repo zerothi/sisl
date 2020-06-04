@@ -466,6 +466,68 @@ def test_sparse_atom_symmetric(n0, n1, n2):
     assert s.nnz == nnz
 
 
+@pytest.mark.parametrize("i", [0, 1, 2])
+def test_sparse_atom_transpose_single(i):
+    """ This is problematic when the sparsity pattern is not *filled* """
+    g = fcc(1., Atom(1, R=1.5)) * 3
+    s = SparseAtom(g)
+    s[i, 2] = 1.
+    s[i, 0] = 2.
+    t = s.transpose()
+
+    assert t.nnz == s.nnz
+    assert t[2, i] == pytest.approx(1.)
+    assert t[0, i] == pytest.approx(2.)
+
+
+@pytest.mark.parametrize("i", [0, 1, 2])
+def test_sparse_atom_transpose_more(i):
+    """ This is problematic when the sparsity pattern is not *filled* """
+    g = fcc(1., Atom(1, R=1.5)) * 3
+    s = SparseAtom(g)
+    s[i, 2] = 1.
+    s[i, 0] = 2.
+    s[i + 2, 3] = 1.
+    s[i + 2, 5] = 2.
+    t = s.transpose()
+
+    assert t.nnz == s.nnz
+    assert t[2, i] == pytest.approx(1.)
+    assert t[0, i] == pytest.approx(2.)
+    assert t[3, i + 2] == pytest.approx(1.)
+    assert t[5, i + 2] == pytest.approx(2.)
+
+
+@pytest.mark.parametrize("i", [0, 1, 2])
+def test_sparse_orbital_transpose_single(i):
+    g = fcc(1., Atom(1, R=(1.5, 2.1))) * 3
+    s = SparseOrbital(g)
+    s[i, 2] = 1.
+    s[i, 0] = 2.
+    t = s.transpose()
+
+    assert t.nnz == s.nnz
+    assert t[2, i] == pytest.approx(1.)
+    assert t[0, i] == pytest.approx(2.)
+
+
+@pytest.mark.parametrize("i", [0, 1, 2])
+def test_sparse_orbital_transpose_more(i):
+    g = fcc(1., Atom(1, R=(1.5, 2.1))) * 3
+    s = SparseOrbital(g)
+    s[i, 2] = 1.
+    s[i, 0] = 2.
+    s[i + 3, 4] = 1.
+    s[i + 2, 4] = 2.
+    t = s.transpose()
+
+    assert t.nnz == s.nnz
+    assert t[2, i] == pytest.approx(1.)
+    assert t[0, i] == pytest.approx(2.)
+    assert t[4, i + 3] == pytest.approx(1.)
+    assert t[4, i + 2] == pytest.approx(2.)
+
+
 def test_sparse_orbital_add_axis(setup):
     g = setup.g.copy()
     s = SparseOrbital(g)
