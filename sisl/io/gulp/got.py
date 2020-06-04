@@ -137,7 +137,7 @@ class gotSileGULP(SileGULP):
                         break
 
                     ls = l.split()
-                    Z.append(Atom(ls[1], orbital=orbs))
+                    Z.append(Atom(ls[1], orbitals=orbs))
                     xyz.append([float(x) for x in ls[3:6]])
 
                 # Convert to array and correct size
@@ -195,7 +195,6 @@ class gotSileGULP(SileGULP):
                 v.data *= scale ** 2
                 v = DynamicalMatrix.fromsp(geom, v)
                 if kwargs.get("hermitian", True):
-                    v.finalize()
                     v = (v + v.transpose()) * 0.5
                 return v
 
@@ -278,8 +277,11 @@ class gotSileGULP(SileGULP):
 
         fc = fcSileGULP(f, 'r').read_force_constant(**kwargs)
 
-        if fc.shape[0] != geometry.no:
-            warn(self.__class__.__name__ + 'read_dynamical_matrix(FC) inconsistent force constant file, number of atoms not correct!')
+        if fc.shape[0] // 3 != geometry.na:
+            warn(f"{self.__class__.__name__}.read_dynamical_matrix(FC) inconsistent force constant file, na_file={fc.shape[0]//3}, na_geom={geometry.na}")
+            return None
+        elif fc.shape[0] != geometry.no:
+            warn(f"{self.__class__.__name__}.read_dynamical_matrix(FC) inconsistent geometry, no_file={fc.shape[0]}, no_geom={geometry.no}")
             return None
 
         # Construct orbital mass ** (-.5)

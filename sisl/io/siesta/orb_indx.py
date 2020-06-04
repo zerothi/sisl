@@ -73,7 +73,7 @@ class orbindxSileSiesta(SileSiesta):
                 else:
                     return Atom(-1, orbs, tag=spec)
             # Get the atom and add the orbitals
-            return atoms[i_s].copy(orbital=orbs)
+            return atoms[i_s].copy(orbitals=orbs)
 
         # Now we begin by reading the atoms
         atom = []

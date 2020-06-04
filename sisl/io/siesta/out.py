@@ -412,13 +412,13 @@ class outSileSiesta(SileSiesta):
         return next_stress()
 
     @sile_fh_open()
-    def read_moment(self, orbital=False, quantity='S', last=True, all=False):
+    def read_moment(self, orbitals=False, quantity='S', last=True, all=False):
         """ Reads the moments from the Siesta output file
         These will only be present in case of spin-orbit coupling.
 
         Parameters
         ----------
-        orbital: bool, False
+        orbitals: bool, False
            return a table with orbitally resolved
            moments.
         quantity: str, 'S'
@@ -469,7 +469,7 @@ class outSileSiesta(SileSiesta):
                     elif quantity == 'L':
                         atom.append([float(x) for x in line[7:10]])
                 line = next(itt).split() # Total ...
-                if not orbital:
+                if not orbitals:
                     ia = int(line[0])
                     if quantity == 'S':
                         atom.append([float(x) for x in line[4:7]])

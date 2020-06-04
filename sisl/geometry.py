@@ -306,7 +306,7 @@ class Geometry(SuperCellChild):
         """
         if atoms is None:
             return _a.arangei(self.na)
-        return np.asarray(atomn, dtype=np.integer)
+        return np.asarray(atoms, dtype=np.integer)
 
     @_sanitize_atoms.register(str)
     def _(self, atoms):
@@ -2351,16 +2351,16 @@ class Geometry(SuperCellChild):
             names = self._names.merge(other._names, offset=len(self))
         return self.__class__(xyz, atoms=atoms, sc=sc, names=names)
 
-    def insert(self, index, geometry):
+    def insert(self, atom, geometry):
         """ Inserts other atoms right before index
 
-        We insert the `geom` `Geometry` before `atom`.
+        We insert the `geometry` `Geometry` before `atom`.
         Note that this will not change the unit cell.
 
         Parameters
         ----------
-        index : int
-           the index at which atom the other geometry is inserted
+        atom : int
+           the atomic index at which the other geometry is inserted
         geometry : Geometry
            the other geometry to be inserted
 
@@ -2371,12 +2371,12 @@ class Geometry(SuperCellChild):
         prepend : prending geometries
         attach : attach a geometry
         """
-        index = self._sanitize_atoms(index)
-        if index.size > 1:
+        atom = self._sanitize_atoms(atom)
+        if atom.size > 1:
             raise ValueError(f"{self.__class__.__name__}.insert requires only 1 atomic index for insertion.")
-        xyz = np.insert(self.xyz, index, geometry.xyz, axis=0)
-        atoms = self.atoms.insert(index, geometry.atoms)
-        return self.__class__(xyz, atoms=atoms, sc=self.sc.copy())
+        xyz = np.insert(self.xyz, atom, geometry.xyz, axis=0)
+        atoms = self.atoms.insert(atom, geometry.atoms)
+        return self.__class__(xyz, atoms, sc=self.sc.copy())
 
     def __add__(self, b):
         """ Merge two geometries (or geometry and supercell)
@@ -2438,21 +2438,21 @@ class Geometry(SuperCellChild):
             return b.add(self)
         return self + b
 
-    def attach(self, s_idx, other, o_idx, dist='calc', axis=None):
-        """ Attaches another `Geometry` at the `s_idx` index with respect to `o_idx` using different methods.
+    def attach(self, atom, other, other_atom, dist='calc', axis=None):
+        """ Attaches another `Geometry` at the `atom` index with respect to `other_atom` using different methods.
 
         The attached geometry will be inserted at the end of the geometry via `add`.
 
         Parameters
         ----------
-        s_idx : int
+        atom : int
            atomic index which is the base position of the attachment. The distance
-           between `s_idx` and `o_idx` is `dist`.
+           between `atom` and `other_atom` is `dist`.
         other : Geometry
            the other Geometry to attach at the given point. In this case `dist` from
-           `s_idx`.
-        o_idx : int
-           the index of the atom in `other` that is inserted at `s_idx`.
+           `atom`.
+        other_atom : int
+           the index of the atom in `other` that is inserted at `atom`.
         dist : array_like or float or str, optional
            the distance (in `Ang`) between the attached coordinates.
            If `dist` is `array_like` it should be the vector between
@@ -2474,7 +2474,7 @@ class Geometry(SuperCellChild):
             # Now calculate the vector that we should have
             # between the atoms
             v = self.cell[axis, :]
-            v = v / (v[0]**2 + v[1]**2 + v[2]**2) ** .5 * dist
+            v = v / (v ** 2).sum() ** 0.5 * dist
 
         elif isinstance(dist, str):
             # We have a single rational number
@@ -2482,13 +2482,13 @@ class Geometry(SuperCellChild):
                 raise ValueError(self.__class__.__name__ + ".attach, `axis` has not been specified, please specify the axis when using a distance")
 
             # This is the empirical distance between the atoms
-            d = self.atoms[s_idx].radius(dist) + other.atoms[o_idx].radius(dist)
+            d = self.atoms[atom].radius(dist) + other.atoms[other_atom].radius(dist)
             if isinstance(axis, Integral):
                 v = self.cell[axis, :]
             else:
                 v = np.array(axis)
 
-            v = v / (v[0]**2 + v[1]**2 + v[2]**2) ** .5 * d
+            v = v / (v ** 2).sum() ** 0.5 * d
 
         else:
             # The user *must* have supplied a vector
@@ -2497,7 +2497,7 @@ class Geometry(SuperCellChild):
         # Now create a copy of the other geometry
         # so that we move it...
         # Translate to origo, then back to position in new cell
-        o = other.translate(-other.xyz[o_idx] + self.xyz[s_idx] + v)
+        o = other.translate(-other.xyz[other_atom] + self.xyz[atom] + v)
 
         # We do not know how to handle the lattice-vectors,
         # so we will do nothing...

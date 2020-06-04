@@ -970,7 +970,7 @@ class Atom(metaclass=AtomMeta):
     ----------
     Z : int or str
         key lookup for the atomic specie, `Atom[key]`
-    orbital : list of Orbital or float, optional
+    orbitals : list of Orbital or float, optional
         all orbitals associated with this atom. Default to one orbital.
     mass : float, optional
         the atomic mass, if not specified uses the mass from `PeriodicTable`
@@ -979,31 +979,31 @@ class Atom(metaclass=AtomMeta):
         different settings (defaults to the label of the atom)
     """
 
-    def __init__(self, Z, orbital=None, mass=None, tag=None, **kwargs):
+    def __init__(self, Z, orbitals=None, mass=None, tag=None, **kwargs):
         if isinstance(Z, Atom):
             Z = Z.Z
         self.Z = _ptbl.Z_int(Z)
 
-        self.orbital = None
-        if isinstance(orbital, (tuple, list, np.ndarray)):
-            if isinstance(orbital[0], Orbital):
+        self.orbitals = None
+        if isinstance(orbitals, (tuple, list, np.ndarray)):
+            if isinstance(orbitals[0], Orbital):
                 # all is good
-                self.orbital = orbital
-            elif isinstance(orbital[0], Real):
+                self.orbitals = orbitals
+            elif isinstance(orbitals[0], Real):
                 # radius has been given
-                self.orbital = [Orbital(R) for R in orbital]
-        elif isinstance(orbital, Orbital):
-            self.orbital = [orbital]
-        elif isinstance(orbital, Real):
-            self.orbital = [Orbital(orbital)]
+                self.orbitals = [Orbital(R) for R in orbitals]
+        elif isinstance(orbitals, Orbital):
+            self.orbitals = [orbitals]
+        elif isinstance(orbitals, Real):
+            self.orbitals = [Orbital(orbitals)]
 
-        if self.orbital is None:
+        if self.orbitals is None:
             if 'R' in kwargs:
                 # backwards compatibility (possibly remove this in the future)
                 R = _a.asarrayd(kwargs['R']).ravel()
-                self.orbital = [Orbital(r) for r in R]
+                self.orbitals = [Orbital(r) for r in R]
             else:
-                self.orbital = [Orbital(-1.)]
+                self.orbitals = [Orbital(-1.)]
 
         if mass is None:
             self.mass = _ptbl.atomic_mass(self.Z)
@@ -1018,23 +1018,23 @@ class Atom(metaclass=AtomMeta):
     @property
     def no(self):
         """ Number of orbitals on this atom """
-        return len(self.orbital)
+        return len(self.orbitals)
 
     @property
     def R(self):
         """ Orbital radius """
-        return _a.arrayd([o.R for o in self.orbital])
+        return _a.arrayd([o.R for o in self.orbitals])
 
     @property
     def q0(self):
         """ Orbital initial charges """
-        return _a.arrayd([o.q0 for o in self.orbital])
+        return _a.arrayd([o.q0 for o in self.orbitals])
 
     def index(self, orbital):
         """ Return the index of the orbital in the atom object """
         if not isinstance(orbital, Orbital):
             orbital = self[orbital]
-        for i, o in enumerate(self.orbital):
+        for i, o in enumerate(self.orbitals):
             if o == orbital:
                 return i
         raise KeyError('Could not find `orbital` in the list of orbitals.')
@@ -1062,8 +1062,8 @@ class Atom(metaclass=AtomMeta):
         if np.any(orbitals >= self.no):
             raise ValueError(self.__class__.__name__ + '.sub tries to remove a non-existing orbital io > no.')
 
-        orbs = [self.orbital[o].copy() for o in orbitals]
-        return self.copy(orbital=orbs)
+        orbs = [self.orbitals[o].copy() for o in orbitals]
+        return self.copy(orbitals=orbs)
 
     def remove(self, orbitals):
         """ Return the same atom without a specific set of orbitals
@@ -1085,10 +1085,10 @@ class Atom(metaclass=AtomMeta):
         orbs = np.delete(_a.arangei(self.no), orbitals)
         return self.sub(orbs)
 
-    def copy(self, Z=None, orbital=None, mass=None, tag=None):
+    def copy(self, Z=None, orbitals=None, mass=None, tag=None):
         """ Return copy of this object """
         return self.__class__(self.Z if Z is None else Z,
-                              self.orbital if orbital is None else orbital,
+                              self.orbitals if orbitals is None else orbitals,
                               self.mass if mass is None else mass,
                               self.tag if tag is None else tag)
 
@@ -1108,21 +1108,21 @@ class Atom(metaclass=AtomMeta):
         """ The orbital corresponding to index `key` """
         if isinstance(key, slice):
             ol = key.indices(len(self))
-            return [self.orbital[o] for o in range(ol[0], ol[1], ol[2])]
+            return [self.orbitals[o] for o in range(ol[0], ol[1], ol[2])]
         elif isinstance(key, Integral):
-            return self.orbital[key]
+            return self.orbitals[key]
         elif isinstance(key, str):
-            orbs = [orb for orb in self.orbital if key in orb.name()]
+            orbs = [orb for orb in self.orbitals if key in orb.name()]
             # In case none are found, None will be returned
             if not orbs:
                 return None
             return orbs if len(orbs) != 1 else orbs[0]
-        return [self.orbital[o] for o in np.asarray(key).ravel()]
+        return [self.orbitals[o] for o in np.asarray(key).ravel()]
 
     def maxR(self):
         """ Return the maximum range of orbitals. """
         mR = -1e10
-        for o in self.orbital:
+        for o in self.orbitals:
             mR = max(mR, o.R)
         return mR
 
@@ -1135,12 +1135,12 @@ class Atom(metaclass=AtomMeta):
            the scale factor for the atomic radii
         """
         new = self.copy()
-        new.orbital = [o.scale(scale) for o in self.orbital]
+        new.orbitals = [o.scale(scale) for o in self.orbitals]
         return new
 
     def __iter__(self):
         """ Loop on all orbitals in this atom """
-        yield from self.orbital
+        yield from self.orbitals
 
     def iter(self, group=False):
         """ Loop on all orbitals in this atom
@@ -1164,22 +1164,22 @@ class Atom(metaclass=AtomMeta):
                 # Figure out how many share the same radial part
                 j = i + 1
                 while j <= no:
-                    if np.allclose(self.orbital[i].R, self.orbital[j].R):
+                    if np.allclose(self.orbitals[i].R, self.orbitals[j].R):
                         j += 1
                     else:
                         break
-                yield self.orbital[i:j]
+                yield self.orbitals[i:j]
                 i = j
             return
-        yield from self.orbital
+        yield from self.orbitals
 
     def __str__(self):
         # Create orbitals output
-        orbs = ',\n '.join([str(o) for o in self.orbital])
+        orbs = ',\n '.join([str(o) for o in self.orbitals])
         return self.__class__.__name__ + '{{{0}, Z: {1:d}, mass(au): {2:.5f}, maxR: {3:.5f},\n {4}\n}}'.format(self.tag, self.Z, self.mass, self.maxR(), orbs)
 
     def __repr__(self):
-        return f"<{self.__module__}.{self.__class__.__name__} {self.tag}, Z={self.Z}, M={self.mass}, maxR={self.maxR()}, no={len(self.orbital)}>"
+        return f"<{self.__module__}.{self.__class__.__name__} {self.tag}, Z={self.Z}, M={self.mass}, maxR={self.maxR()}, no={len(self.orbitals)}>"
 
     def __len__(self):
         """ Return number of orbitals in this atom """
@@ -1212,7 +1212,7 @@ class Atom(metaclass=AtomMeta):
         same = self.Z == other.Z
         same &= self.no == other.no
         if same and R:
-            same &= all([self.orbital[i].equal(other.orbital[i], psi=psi) for i in range(self.no)])
+            same &= all([self.orbitals[i].equal(other.orbitals[i], psi=psi) for i in range(self.no)])
         same &= np.isclose(self.mass, other.mass)
         same &= self.tag == other.tag
         return same
@@ -1228,11 +1228,11 @@ class Atom(metaclass=AtomMeta):
     # Create pickling routines
     def __getstate__(self):
         """ Return the state of this object """
-        return {'Z': self.Z, 'orbital': self.orbital, 'mass': self.mass, 'tag': self.tag}
+        return {'Z': self.Z, 'orbitals': self.orbitals, 'mass': self.mass, 'tag': self.tag}
 
     def __setstate__(self, d):
         """ Re-create the state of this object """
-        self.__init__(d['Z'], d['orbital'], d['mass'], d['tag'])
+        self.__init__(d['Z'], d['orbitals'], d['mass'], d['tag'])
 
 
 @set_module("sisl")
@@ -1247,7 +1247,7 @@ class Atoms:
 
     Parameters
     ----------
-    atom : list of Atom
+    atoms : list of Atom
        atoms to be contained in this list of atoms
     na : int or None
        total number of atoms, if ``len(atom)`` is smaller than `na` it will
@@ -1411,8 +1411,8 @@ class Atoms:
         a = self.specie[a]
         # Now extract the list of orbitals
         if ndim == 0:
-            return self.atom[a[0]].orbital[io[0]]
-        return [self.atom[ia].orbital[o] for ia, o in zip(a, io)]
+            return self.atom[a[0]].orbitals[io[0]]
+        return [self.atom[ia].orbitals[o] for ia, o in zip(a, io)]
 
     def maxR(self, all=False):
         """ The maximum radius of the atoms
@@ -1524,19 +1524,19 @@ class Atoms:
 
         return atoms
 
-    def sub(self, atom):
+    def sub(self, atoms):
         """ Return a subset of the list """
-        atom = _a.asarrayi(atom).ravel()
-        atoms = Atoms()
-        atoms._atom = self._atom[:]
-        atoms._specie = self._specie[atom]
-        atoms._update_orbitals()
-        return atoms
+        atoms = _a.asarrayi(atoms).ravel()
+        new_atoms = Atoms()
+        new_atoms._atom = self._atom[:]
+        new_atoms._specie = self._specie[atoms]
+        new_atoms._update_orbitals()
+        return new_atoms
 
-    def remove(self, atom):
+    def remove(self, atoms):
         """ Remove a set of atoms """
-        atom = _a.asarrayi(atom).ravel()
-        idx = np.setdiff1d(np.arange(len(self)), atom, assume_unique=True)
+        atoms = _a.asarrayi(atoms).ravel()
+        idx = np.setdiff1d(np.arange(len(self)), atoms, assume_unique=True)
         return self.sub(idx)
 
     def tile(self, reps):

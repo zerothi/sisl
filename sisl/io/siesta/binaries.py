@@ -103,7 +103,7 @@ def _geometry_align(geom_b, geom_u, cls, method):
 
         # Now create a new atom specie with the correct number of orbitals
         norbs = geom_b.atoms.orbitals[:]
-        atoms = Atoms([geom.atoms[i].copy(orbital=[-1] * norbs[i]) for i in range(geom.na)])
+        atoms = Atoms([geom.atoms[i].copy(orbitals=[-1] * norbs[i]) for i in range(geom.na)])
         geom._atoms = atoms
 
     return geom

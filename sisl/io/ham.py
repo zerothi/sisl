@@ -30,7 +30,7 @@ class hamiltonianSile(Sile):
         Z = []
         xyz = []
 
-        nsc = np.zeros([3], np.int32)
+        nsc = _a.zerosi([3])
 
         def Z2no(i, no):
             try:
@@ -42,7 +42,7 @@ class hamiltonianSile(Sile):
                 return int(j[0]), int(j[1])
 
         # The format of the geometry file is
-        keys = ['atom', 'cell', 'supercell', 'nsc']
+        keys = ['atoms', 'cell', 'supercell', 'nsc']
         for _ in range(len(keys)):
             _, l = self.step_to(keys, case=False)
             l = l.strip()
@@ -65,7 +65,7 @@ class hamiltonianSile(Sile):
                     for i in range(3):
                         cell[i, i] = float(l[i])
                     # TODO incorporate rotations
-            elif 'atom' in l.lower():
+            elif 'atoms' in l.lower():
                 l = self.readline()
                 while not l.startswith('end'):
                     ls = l.split()
@@ -177,7 +177,7 @@ class hamiltonianSile(Sile):
         self._write('\nsupercell {:d} {:d} {:d}\n'.format(*geometry.nsc))
 
         # Write all atomic positions along with the specie type
-        self._write('\nbegin atom\n')
+        self._write('\nbegin atoms\n')
         fmt1_str = '  {{0:d}} {{1:{0}}} {{2:{0}}} {{3:{0}}}\n'.format(xyz_fmt)
         fmt2_str = '  {{0:d}}[{{1:d}}] {{2:{0}}} {{3:{0}}} {{4:{0}}}\n'.format(
             xyz_fmt)
@@ -190,11 +190,11 @@ class hamiltonianSile(Sile):
             else:
                 self._write(fmt2_str.format(Z, no, *geometry.xyz[ia, :]))
 
-        self._write('end atom\n')
+        self._write('end atoms\n')
 
     @wrap_filterwarnings("ignore", category=SparseEfficiencyWarning)
     @sile_fh_open()
-    def write_hamiltonian(self, ham, hermitian=True, **kwargs):
+    def write_hamiltonian(self, H, hermitian=True, **kwargs):
         """ Writes the Hamiltonian model to the file
 
         Writes a Hamiltonian model to the intrinsic Hamiltonian file format.
@@ -206,14 +206,14 @@ class hamiltonianSile(Sile):
 
         Parameters
         ----------
-        ham : `Hamiltonian` model
+        H : `Hamiltonian` model
         hermitian : boolean=True
             whether the stored data is halved using the Hermitian property
         """
         # We use the upper-triangular form of the Hamiltonian
         # and the overlap matrix for hermitian problems
 
-        geom = ham.geometry
+        geom = H.geometry
 
         # First write the geometry
         self.write_geometry(geom, **kwargs)
@@ -236,9 +236,9 @@ class hamiltonianSile(Sile):
         # We currently force the model to be finalized
         # before we can write it
         # This should be easily circumvented
-        H = ham.tocsr(0)
-        if not ham.orthogonal:
-            S = ham.tocsr(ham.S_idx)
+        h = H.tocsr(0)
+        if not H.orthogonal:
+            S = H.tocsr(H.S_idx)
 
         # If the model is Hermitian we can
         # do with writing out half the entries
@@ -249,13 +249,13 @@ class hamiltonianSile(Sile):
                 oi = i * geom.no
                 oj = geom.sc_index(-isc) * geom.no
                 # get the difference between the ^\dagger elements
-                diff = H[:, oi:oi + geom.no] - \
-                    H[:, oj:oj + geom.no].transpose()
+                diff = h[:, oi:oi + geom.no] - \
+                    h[:, oj:oj + geom.no].transpose()
                 diff.eliminate_zeros()
                 if np.any(np.abs(diff.data) > herm_acc):
                     amax = np.amax(np.abs(diff.data))
-                    warn(SileWarning('The model could not be asserted to be Hermitian '
-                                     'within the accuracy required ({}).'.format(amax)))
+                    warn(f"The model could not be asserted to be Hermitian "
+                         "within the accuracy required ({amax}).")
                     hermitian = False
                 del diff
 
@@ -271,19 +271,19 @@ class hamiltonianSile(Sile):
                     # Therefore we do it on a row basis, to limit memory
                     # requirements
                     for j in range(geom.no):
-                        H[j, o:o + geom.no] = 0.
-                        H.eliminate_zeros()
-                        if not ham.orthogonal:
+                        h[j, o:o + geom.no] = 0.
+                        h.eliminate_zeros()
+                        if not H.orthogonal:
                             S[j, o:o + geom.no] = 0.
                             S.eliminate_zeros()
             o = geom.sc_index(np.zeros([3], np.int32))
             # Get upper-triangular matrix of the unit-cell H and S
-            ut = triu(H[:, o:o + geom.no], k=0).tocsr()
+            ut = triu(h[:, o:o + geom.no], k=0).tocsr()
             for j in range(geom.no):
-                H[j, o:o + geom.no] = 0.
-                H[j, o:o + geom.no] = ut[j, :]
-                H.eliminate_zeros()
-            if not ham.orthogonal:
+                h[j, o:o + geom.no] = 0.
+                h[j, o:o + geom.no] = ut[j, :]
+                h.eliminate_zeros()
+            if not H.orthogonal:
                 ut = triu(S[:, o:o + geom.no], k=0).tocsr()
                 for j in range(geom.no):
                     S[j, o:o + geom.no] = 0.
@@ -292,7 +292,7 @@ class hamiltonianSile(Sile):
 
                 # Ensure that S and H have the same sparsity pattern
                 for jo, io in ispmatrix(S):
-                    H[jo, io] = H[jo, io]
+                    h[jo, io] = h[jo, io]
 
             del ut
 
@@ -301,42 +301,42 @@ class hamiltonianSile(Sile):
         for i, isc in enumerate(geom.sc.sc_off):
             # Check that we have any contributions in this
             # sub-section
-            Hsub = H[:, i * geom.no:(i + 1) * geom.no]
-            if not ham.orthogonal:
+            Hsub = h[:, i * geom.no:(i + 1) * geom.no]
+            if not H.orthogonal:
                 Ssub = S[:, i * geom.no:(i + 1) * geom.no]
             if Hsub.getnnz() == 0:
                 continue
             # We have a contribution, write out the information
             self._write('\nbegin matrix {:d} {:d} {:d}\n'.format(*isc))
             if advanced:
-                for jo, io, h in ispmatrixd(Hsub):
+                for jo, io, hh in ispmatrixd(Hsub):
                     o = np.array([jo, io], np.int32)
                     a = geom.o2a(o)
                     o = o - geom.a2o(a)
-                    if not ham.orthogonal:
+                    if not H.orthogonal:
                         s = Ssub[jo, io]
                     elif jo == io:
                         s = 1.
                     else:
                         s = 0.
                     if s == 0.:
-                        self._write(fmt1_str.format(a[0], o[0], a[1], o[1], h))
+                        self._write(fmt1_str.format(a[0], o[0], a[1], o[1], hh))
                     else:
                         self._write(
                             fmt2_str.format(
-                                a[0], o[0], a[1], o[1], h, s))
+                                a[0], o[0], a[1], o[1], hh, s))
             else:
-                for jo, io, h in ispmatrixd(Hsub):
-                    if not ham.orthogonal:
+                for jo, io, hh in ispmatrixd(Hsub):
+                    if not H.orthogonal:
                         s = Ssub[jo, io]
                     elif jo == io:
                         s = 1.
                     else:
                         s = 0.
                     if s == 0.:
-                        self._write(fmt1_str.format(jo, io, h))
+                        self._write(fmt1_str.format(jo, io, hh))
                     else:
-                        self._write(fmt2_str.format(jo, io, h, s))
+                        self._write(fmt2_str.format(jo, io, hh, s))
             self._write('end matrix {:d} {:d} {:d}\n'.format(*isc))
 
 

@@ -691,7 +691,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
                 # Loop on orbitals on this atom
                 for jo in range(ja_atom.no):
-                    o = ja_atom.orbital[jo]
+                    o = ja_atom.orbitals[jo]
                     oR = o.R
 
                     # Downsize to the correct indices
@@ -736,7 +736,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
                 for jo in range(io+1, ia_atom.no):
                     DM = DM_io[io, off+IO+jo]
 
-                    oj = ia_atom.orbital[jo]
+                    oj = ia_atom.orbitals[jo]
                     ojR = oj.R
 
                     # Downsize to the correct indices
@@ -763,7 +763,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
                 # Note that this one *also* zeroes points outside the shell
                 # I.e. this step is important because it "nullifies" all but points where
                 # orbital io is defined.
-                psi = ia_atom.orbital[io].psi_spher(ia_r, ia_theta, ia_cos_phi, cos_phi=True)
+                psi = ia_atom.orbitals[io].psi_spher(ia_r, ia_theta, ia_cos_phi, cos_phi=True)
                 DM_pj[io, :] += DM_io[io, off+IO+io] * psi
                 DM_pj[io, :] *= psi
 
