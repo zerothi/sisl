@@ -145,6 +145,18 @@ class FatbandsPlot(BandsPlot):
         if wfsx_file is None:
             wfsx_file = f'{bands_file}.WFSX'
 
+        # We will need the overlap matrix from the hamiltonian to get the correct
+        # weights. 
+        # If there is no root_fdf we will try to guess it from bands_file 
+        root_fdf = self.setting('root_fdf')
+        if root_fdf is None and not hasattr(self, 'H'):
+            possible_fdf = f'{os.path.splitext(bands_file)[0]}.fdf'
+            print(f'We are assuming that the fdf associated to {bands_file} is {possible_fdf}.'+
+            ' If it is not, please provide a "root_fdf" by using the update_settings method.')
+            self.set_files(root_fdf=possible_fdf)
+        
+        self.setup_hamiltonian()
+
         # If the wfsx doesn't exist, we will not even bother to read the bands
         if not os.path.exists(wfsx_file):
             raise Exception(f"We didn't find a WFSX file in the location {wfsx_file}")
@@ -156,7 +168,7 @@ class FatbandsPlot(BandsPlot):
         wfsx_sile = self.get_sile(wfsx_file)
 
         weights = []
-        for i, state in enumerate(wfsx_sile.yield_eigenstate()):
+        for i, state in enumerate(wfsx_sile.yield_eigenstate(self.H)):
             # Each eigenstate represents all the states for a given k-point
 
             # Get the band indices to which these states correspond
@@ -229,12 +241,6 @@ class FatbandsPlot(BandsPlot):
             band_struct = self.setting("band_structure")
             if band_struct is not None:
                 self.geom = band_struct.parent.geom
-
-            # Or by trying to find the corresponding fdf
-            else:
-                bands_file = self.setting("bands_file") or self.requiredFiles[0]
-                possible_fdf = f'{os.path.splitext(bands_file)[0]}.fdf'
-                self.geom = self.get_sile(possible_fdf).read_geometry(output=True)
         
         self.get_param('groups').update_options(self.geom)
 

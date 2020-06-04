@@ -53,7 +53,7 @@ class Session(Configurable, Connected):
 
     Parameters
     -----------
-    rootDir: str, optional
+    root_dir: str, optional
     
     file_storage_dir: str, optional
         Directory where files uploaded in the GUI will be stored
@@ -118,7 +118,7 @@ class Session(Configurable, Connected):
     _parameters = (
         
         TextInput(
-            key = "rootDir", name = "Root directory",
+            key = "root_dir", name = "Root directory",
             group = "filesystem",
             default = os.getcwd(),
             width = "s100% l50%",
@@ -356,7 +356,7 @@ class Session(Configurable, Connected):
             kwargs = {**kwargs, "root_fdf": self.warehouse["structs"][structID]["path"] }
 
         if animation:
-            wdir = os.path.dirname(self.warehouse["structs"][structID]["path"]) if structID else self.setting("rootDir")
+            wdir = os.path.dirname(self.warehouse["structs"][structID]["path"]) if structID else self.setting("root_dir")
             new_plot = ReqPlotClass.animated(wdir = wdir)
         else:
             plot_preset = self.setting("plot_preset")
@@ -746,11 +746,11 @@ class Session(Configurable, Connected):
 
     def get_structures(self, path=None):
 
-        path = path or self.setting("rootDir")
+        path = path or self.setting("root_dir")
 
         #Get the structures
         self.warehouse["structs"] = {
-            str(uuid.uuid4()): {"name": os.path.basename(path), "path": path} for path in find_files(self.setting("rootDir"), "*fdf", self.setting("searchDepth"))
+            str(uuid.uuid4()): {"name": os.path.basename(path), "path": path} for path in find_files(self.setting("root_dir"), "*fdf", self.setting("searchDepth"))
         }
 
         #Avoid passing unnecessary info to the browser.
@@ -760,7 +760,7 @@ class Session(Configurable, Connected):
 
         # Empty the plotables dictionary
         self.warehouse["plotables"] = {}
-        path = path or self.setting("rootDir")
+        path = path or self.setting("root_dir")
 
         # Get all the files that correspond to registered plotable siles
         files = find_plotable_siles(path, self.setting('searchDepth'))

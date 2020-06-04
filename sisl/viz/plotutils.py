@@ -430,13 +430,13 @@ def load(path):
     
     return loadedObj
 
-def find_files(rootDir = ".", searchString = "*", depth = [0,0], sort = True, sortFn = None, case_insensitive=False):
+def find_files(root_dir = ".", searchString = "*", depth = [0,0], sort = True, sortFn = None, case_insensitive=False):
     '''
     Function that finds files (or directories) according to some conditions.
 
     Arguments
     -----------
-    rootDir: str
+    root_dir: str
         Path of the directory from which the search will start.
     searchString: str
         This is the string that will be passed to glob.glob() to find files or directories. 
@@ -445,8 +445,8 @@ def find_files(rootDir = ".", searchString = "*", depth = [0,0], sort = True, so
         If it is an array:
 
             It will specify the limits of the search. 
-            For example, depth = [1,3] will make the function search for the searchString from 1 to 3 directories deep from rootDir.
-            (0 depth means to look for files in the rootDir)
+            For example, depth = [1,3] will make the function search for the searchString from 1 to 3 directories deep from root_dir.
+            (0 depth means to look for files in the root_dir)
         
         If it is an int:
             Only that depth level will be searched.
@@ -472,7 +472,7 @@ def find_files(rootDir = ".", searchString = "*", depth = [0,0], sort = True, so
 
     files = []
     for depth in range(depth[0],depth[1] + 1):
-        newFiles = glob.glob(os.path.join(rootDir or ".","*/"*depth, searchString))
+        newFiles = glob.glob(os.path.join(root_dir or ".","*/"*depth, searchString))
         if newFiles:
             files += [os.path.abspath(path) for path in newFiles]
 
@@ -496,8 +496,8 @@ def find_plotable_siles(dir_path=None, depth=0):
         If it is an array:
 
             It will specify the limits of the search. 
-            For example, depth = [1,3] will make the function search for the searchString from 1 to 3 directories deep from rootDir.
-            (0 depth means to look for files in the rootDir)
+            For example, depth = [1,3] will make the function search for the searchString from 1 to 3 directories deep from root_dir.
+            (0 depth means to look for files in the root_dir)
         
         If it is an int:
             Only that depth level will be searched.

@@ -8,7 +8,7 @@ class BlankSession(Session):
 
     Parameters
     ------------
-    rootDir: str, optional
+    root_dir: str, optional
     
     file_storage_dir: str, optional
         Directory where files uploaded in the GUI will be stored

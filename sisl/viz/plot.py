@@ -734,7 +734,7 @@ class Plot(ShortCutable, Configurable, Connected):
         '''
 
         # Restart the filesToFollow variable so that we can start to fill it with the new files
-        # Apart from the explicit call in this method, setFiles and setUpHamiltonian also add files to follow
+        # Apart from the explicit call in this method, setFiles and setup_hamiltonian also add files to follow
         self._filesToFollow = []
 
         call_method_if_present(self, "_before_read")
@@ -1027,6 +1027,8 @@ class Plot(ShortCutable, Configurable, Connected):
             self._listening_task = None
         
             self._listening_shortcut(fig_widget=fig_widget)
+        
+        return self
 
     @after_settings_update
     def set_files(self, **kwargs):
@@ -1035,10 +1037,10 @@ class Plot(ShortCutable, Configurable, Connected):
         '''
         #Set the fdfSile
         root_fdf = self.setting("root_fdf")
-        self.rootDir, fdfFile = os.path.split( root_fdf )
-        self.rootDir = "." if self.rootDir == "" else self.rootDir
+        self.root_dir, fdfFile = os.path.split( root_fdf )
+        self.root_dir = "." if self.root_dir == "" else self.root_dir
         
-        self.wdir = os.path.join(self.rootDir, self.setting("results_path"))
+        self.wdir = os.path.join(self.root_dir, self.setting("results_path"))
         self.fdfSile = self.get_sile(root_fdf)
         self.struct = self.fdfSile.get("SystemLabel", "")
             
@@ -1046,7 +1048,7 @@ class Plot(ShortCutable, Configurable, Connected):
         #if RequirementsFilter().check(self.root_fdf, self.__class__.__name__ ):
         if hasattr(self, "_requirements"):
             #If they are there, we can confidently build this list
-            self.requiredFiles = [ os.path.join( self.rootDir, self.setting("results_path"), req.replace("$struct$", self.struct) ) for req in self.__class__._requirements["siesOut"]["files"] ]
+            self.requiredFiles = [ os.path.join( self.root_dir, self.setting("results_path"), req.replace("$struct$", self.struct) ) for req in self.__class__._requirements["siesOut"]["files"] ]
         #else:
             #raise Exception("The required files were not found, please check your file system.")
 
@@ -1075,16 +1077,12 @@ class Plot(ShortCutable, Configurable, Connected):
                 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             except Exception:
 
-                HSXfile = os.path.join(self.rootDir, self.struct + ".HSX")
+                HSXfile = os.path.join(self.root_dir, self.struct + ".HSX")
                 Hsile = sisl.get_sile(HSXfile)
                 self.H = Hsile.read_hamiltonian(geom = self.geom)
 
                 #Inform that we have read the hamiltonian from the HSX file
-                self._followFiles([HSXfile], unfollow=False)
-
-        # Sisl is hanging on this step, so for now we are not going to calculate the fermi level
-        # self.fermi = self.H.fermi_level()
-        self.fermi = 0
+                self.follow(HSXfile, unfollow=False)
 
         return self
     
@@ -1131,7 +1129,7 @@ class Plot(ShortCutable, Configurable, Connected):
         
         call_method_if_present(self, 'on_figure_change')
 
-        return self
+        return self.figure
     
     #-------------------------------------------
     #       PLOT DISPLAY METHODS
@@ -1151,10 +1149,7 @@ class Plot(ShortCutable, Configurable, Connected):
         if listen:
             self.listen(show=True, **kwargs)
 
-        if not hasattr(self, "figure"):
-            self.get_figure()
-
-        if self._innotebook and len(args) == 0:
+        if self._innotebook and (len(args) == 0 or 'config' in kwargs):
             try:
                 return self._show_in_jupyternb(listen=listen, return_figWidget = return_figWidget, **kwargs)
             except Exception as e:
@@ -1170,7 +1165,7 @@ class Plot(ShortCutable, Configurable, Connected):
             from IPython.display import display
             import ipywidgets as widgets
 
-            f = go.FigureWidget(self.figure)
+            f = go.FigureWidget(self.figure, )
 
             if self._widgets["events"]:
                 # If ipyevents is available, show with shortcut support

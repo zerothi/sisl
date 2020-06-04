@@ -193,7 +193,7 @@ class LDOSmap(Plot):
         self.fermi = False
         for out_fileName in (self.struct, self.fdfSile.base_file.replace(".fdf", "")):
             try:
-                for line in open(os.path.join(self.rootDir, "{}.out".format(out_fileName)) ):
+                for line in open(os.path.join(self.root_dir, "{}.out".format(out_fileName)) ):
                     if "Fermi =" in line:
                         self.fermi = float(line.split()[-1])
                         print("\nFERMI LEVEL FOUND: {} eV\n Energies will be relative to this level (E-Ef)\n".format(self.fermi))
@@ -216,8 +216,8 @@ class LDOSmap(Plot):
         Epoints = np.linspace( *(np.array(self.setting("Erange")) + self.fermi), self.setting("nE") )
 
         #Copy selected WFSX into WFSX if it exists (denchar reads from .WFSX)
-        shutil.copyfile(os.path.join(self.rootDir, '{}.selected.WFSX'.format(self.struct)),
-            os.path.join(self.rootDir, '{}.WFSX'.format(self.struct) ) )
+        shutil.copyfile(os.path.join(self.root_dir, '{}.selected.WFSX'.format(self.struct)),
+            os.path.join(self.root_dir, '{}.WFSX'.format(self.struct) ) )
         
         #Get the fdf file and replace include paths so that they work
         with open(self.setting("root_fdf"), "r") as f:
@@ -230,14 +230,14 @@ class LDOSmap(Plot):
 
         #Denchar needs to be run from the directory where everything is stored
         cwd = os.getcwd()
-        os.chdir(self.rootDir)
+        os.chdir(self.root_dir)
 
         #Inform that the WFSX file is used so that changes in it can be followed
-        self.follow(os.path.join(self.rootDir, '{}.WFSX'.format(self.struct) ))
+        self.follow(os.path.join(self.root_dir, '{}.WFSX'.format(self.struct) ))
         
         def getSpectraForPath(argsTuple):
 
-            path, nE, iPath, rootDir, struct, STSflags, args, kwargs = argsTuple
+            path, nE, iPath, root_dir, struct, STSflags, args, kwargs = argsTuple
 
             #Generate a temporal directory so that we don't interfere with the other processes
             tempDir = "{}tempSTS".format(iPath)
@@ -292,7 +292,7 @@ class LDOSmap(Plot):
             self.path,
             self.setting("nE"),
             pathIs,
-            self.rootDir, self.struct,
+            self.root_dir, self.struct,
             #All the strings that need to be added to each file
             [ [self._getdencharSTSfdf(point) for point in points] for points in self.path ],
             kwargsList = {"root_fdf" : self.setting("root_fdf"), "fdfLines": self.fdfLines },
