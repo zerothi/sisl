@@ -103,8 +103,9 @@ def register_plotable(plotable, PlotClass=None, setting_key=None, plotting_func=
 
     # If it's the first time that the class is being registered,
     # let's initialize it's "plotability"
-    is_first_register = not hasattr(plotable, "_plot_funcs")
+    is_first_register = not hasattr(plotable, "_plotable")
     if is_first_register:
+        plotable._plotable = True
 
         # If the object already has a plot attribute, we will call this one
         # plot_sisl to avoid overwriting (I don't know if this will ever happen)

@@ -330,11 +330,11 @@ class BandsPlot(Plot):
 
         # Inform of the path that it's being used if we can
         # THIS IS ONLY WORKING PROPERLY FOR FRACTIONAL UNITS OF THE BAND POINTS RN
-        if hasattr(self, "fdfSile") and self.fdfSile.get("BandLines"):
+        if hasattr(self, "fdf_sile") and self.fdf_sile.get("BandLines"):
 
             try:
                 self.siestaPath = []
-                points = self.fdfSile.get("BandLines")
+                points = self.fdf_sile.get("BandLines")
 
                 for i, point in enumerate(points):
 

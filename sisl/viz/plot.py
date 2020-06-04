@@ -1035,14 +1035,14 @@ class Plot(ShortCutable, Configurable, Connected):
         '''
         Checks if the required files are available and then builds a list with them
         '''
-        #Set the fdfSile
+        #Set the fdf_sile
         root_fdf = self.setting("root_fdf")
         self.root_dir, fdfFile = os.path.split( root_fdf )
         self.root_dir = "." if self.root_dir == "" else self.root_dir
         
         self.wdir = os.path.join(self.root_dir, self.setting("results_path"))
-        self.fdfSile = self.get_sile(root_fdf)
-        self.struct = self.fdfSile.get("SystemLabel", "")
+        self.fdf_sile = self.get_sile(root_fdf)
+        self.struct = self.fdf_sile.get("SystemLabel", "")
             
         #Check that the required files are there
         #if RequirementsFilter().check(self.root_fdf, self.__class__.__name__ ):
@@ -1064,25 +1064,11 @@ class Plot(ShortCutable, Configurable, Connected):
             NEW_FDF = self.settings_history.was_updated("root_fdf")
         
         if not self.PROVIDED_GEOM and (not hasattr(self, "geom") or NEW_FDF):
-            self.geom = self.fdfSile.read_geometry(output = True)
+            self.geom = self.fdf_sile.read_geometry(output = True)
         
         if not self.PROVIDED_H and (not hasattr(self, "H") or NEW_FDF):
-            #Try to read the hamiltonian in two different ways
-            try:
-                #This one is favoured because it may read from TSHS file, which contains all the information of the geometry and basis already
-                self.H = self.fdfSile.read_hamiltonian()
-
-                # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                # WE SHOULD FOLLOW THE FILES HERE SOMEHOW
-                # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            except Exception:
-
-                HSXfile = os.path.join(self.root_dir, self.struct + ".HSX")
-                Hsile = sisl.get_sile(HSXfile)
-                self.H = Hsile.read_hamiltonian(geom = self.geom)
-
-                #Inform that we have read the hamiltonian from the HSX file
-                self.follow(HSXfile, unfollow=False)
+            #Read the hamiltonian
+            self.H = self.fdf_sile.read_hamiltonian()
 
         return self
     
@@ -1639,9 +1625,9 @@ class Plot(ShortCutable, Configurable, Connected):
         Removes from the instance the attributes that are not pickleable.
         '''
 
-        unpickleableAttrs = ['fdfSile']
+        unpickleableAttrs = ['fdf_sile']
 
-        for attr in ['fdfSile']:
+        for attr in ['fdf_sile']:
             if hasattr(self, attr):
                 delattr(self, attr)
 

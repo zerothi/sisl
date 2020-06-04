@@ -187,11 +187,11 @@ class LDOSmap(Plot):
     def _read_siesta_output(self):
         '''Function that uses denchar to get STSpecra along a path'''
 
-        self.geom = self.fdfSile.read_geometry(output = True)
+        self.geom = self.fdf_sile.read_geometry(output = True)
 
         #Find fermi level
         self.fermi = False
-        for out_fileName in (self.struct, self.fdfSile.base_file.replace(".fdf", "")):
+        for out_fileName in (self.struct, self.fdf_sile.base_file.replace(".fdf", "")):
             try:
                 for line in open(os.path.join(self.root_dir, "{}.out".format(out_fileName)) ):
                     if "Fermi =" in line:
