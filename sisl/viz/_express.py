@@ -38,7 +38,7 @@ class WithSislManagement(AbstractDispatch):
 
                     # Otherwise, we are just going to interpret it as if the user wants to get the attributes
                     # of the object. We will support deep attribute getting here using points as separators.
-                    # (I don't know if this make sense because there's probably hardly any attributes that are
+                    # (I don't know if this makes sense because there's probably hardly any attributes that are
                     # ready to be plotted, i.e. they are 1d arrays)
                     for key, val in kwargs.items():
                         if isinstance(val, str):

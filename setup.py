@@ -476,7 +476,9 @@ metadata = dict(
          "sisl = sisl.utils._sisl_cmd:sisl_cmd",
          # Add toolbox CLI
          "stoolbox = sisl_toolbox.cli:stoolbox_cli",
-        ],
+         "ts_poisson = sisl_toolbox.transiesta.poisson.poisson_explicit:poisson_explicit_cli",
+         "splot = sisl.viz.splot:splot",
+         "sgui = sisl.viz.GUI:sgui"]
     },
     classifiers=CLASSIFIERS,
     platforms="any",

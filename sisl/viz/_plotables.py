@@ -143,6 +143,7 @@ def register_plotable(plotable, PlotClass=None, setting_key=None, plotting_func=
 # -----------------------------------------------------
 
 register_plotable(siesta.bandsSileSiesta, BandsPlot, 'bands_file')
+register_plotable(siesta.bandsSileSiesta, FatbandsPlot, 'bands_file')
 
 register_plotable(siesta.pdosSileSiesta, PdosPlot, 'pdos_file')
 
