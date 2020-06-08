@@ -265,10 +265,9 @@ class NotCategory(Category):
 
 @set_module("sisl.category")
 class CompositeCategory(Category):
-    """ A composite class consisting of two categories
+    """ A composite class consisting of two categories, an abstract class to always be inherited
 
-    This should take 2 categories as arguments and a binary operator to define
-    how the categories are related.
+    This should take 2 categories as arguments
 
     Parameters
     ----------
@@ -276,8 +275,6 @@ class CompositeCategory(Category):
        the left hand side of the set operation
     B : Category
        the right hand side of the set operation
-    op : {_OR, _AND, _XOR}
-       the operator defining the sets relation
     """
     __slots__ = ("A", "B")
 

@@ -8,7 +8,9 @@ import sisl._array as _a
 from sisl.utils.mathematics import fnorm
 
 
-__all__ = ['Shape', 'CompositeShape', 'PureShape', 'NullShape']
+__all__ = ["Shape",
+           "PureShape", "NullShape",
+           "CompositeShape", "OrShape", "XOrShape", "AndShape", "SubShape"]
 
 
 @set_module("sisl.shape")
@@ -71,11 +73,11 @@ class Shape:
 
     def scale(self, scale):
         """ Return a new Shape with a scaled size """
-        raise NotImplementedError('scale has not been implemented in: '+self.__class__.__name__)
+        raise NotImplementedError(f"{self.__class__.__name__}.scale has not been implemented")
 
     def toSphere(self):
         """ Create a sphere which is surely encompassing the *full* shape """
-        raise NotImplementedError('toSphere has not been implemented in: '+self.__class__.__name__)
+        raise NotImplementedError(f"{self.__class__.__name__}.toSphere has not been implemented")
 
     def toEllipsoid(self):
         """ Create an ellipsoid which is surely encompassing the *full* shape """
@@ -113,7 +115,7 @@ class Shape:
 
     def within_index(self, other, *args, **kwargs):
         """ Return indices of the elements of `other` that are within the shape """
-        raise NotImplementedError('within_index has not been implemented in: '+self.__class__.__name__)
+        raise NotImplementedError(f"{self.__class__.__name__}.within_index has not been implemented")
 
     def __contains__(self, other):
         """ Checks whether all of `other` is within the shape """
@@ -124,27 +126,26 @@ class Shape:
 
     # Implement logical operators to enable composition of sets
     def __and__(self, other):
-        return CompositeShape(self, other, CompositeShape._AND)
+        return AndShape(self, other)
 
     def __or__(self, other):
-        return CompositeShape(self, other, CompositeShape._OR)
+        return OrShape(self, other)
 
     def __add__(self, other):
-        return CompositeShape(self, other, CompositeShape._OR)
+        return OrShape(self, other)
 
     def __sub__(self, other):
-        return CompositeShape(self, other, CompositeShape._SUB)
+        return SubShape(self, other)
 
     def __xor__(self, other):
-        return CompositeShape(self, other, CompositeShape._XOR)
+        return XOrShape(self, other)
 
 
 @set_module("sisl.shape")
 class CompositeShape(Shape):
-    """ A composite shape consisting of two shapes
+    """ A composite shape consisting of two shapes, an abstract class
 
-    This should take 2 shapes as arguments and a binary operator to define
-    how the shapes are related.
+    This should take 2 shapes as arguments.
 
     Parameters
     ----------
@@ -152,21 +153,12 @@ class CompositeShape(Shape):
        the left hand side of the set operation
     B : Shape
        the right hand side of the set operation
-    op : {_OR, _AND, _SUB, _XOR}
-       the operator defining the sets relation
     """
-    # Internal variables to handle set-operations
-    _OR = 0
-    _AND = 1
-    _SUB = 2
-    _XOR = 3
+    __slots__ = ('A', 'B')
 
-    __slots__ = ('A', 'B', 'op')
-
-    def __init__(self, A, B, op):
+    def __init__(self, A, B):
         self.A = A.copy()
         self.B = B.copy()
-        self.op = op
 
     @property
     def center(self):
@@ -192,85 +184,137 @@ class CompositeShape(Shape):
         Br = B.radius
         Bc = B.center
 
-        if self.op == self._AND:
-            # Calculate the distance between the spheres
-            dist = fnorm(Ac - Bc)
-
-            # If one is fully enclosed in the other, we can simply neglect the other
-            if dist + Ar <= Br:
-                # A is fully enclosed in B (or they are the same)
-                return A
-
-            elif dist + Br <= Ar:
-                # B is fully enclosed in A (or they are the same)
-                return B
-
-            elif dist <= (Ar + Br):
-                # We can reduce the sphere drastically because only the overlapping region is important
-                # i_r defines the intersection radius, search for Sphere-Sphere Intersection
-                dx = (dist ** 2 - Br ** 2 + Ar ** 2) / (2 * dist)
-
-                if dx > dist:
-                    # the intersection is placed after the radius of B
-                    # And in this case B is smaller (otherwise dx < 0)
-                    return B
-                elif dx < 0:
-                    return A
-
-                i_r = msqrt(4 * (dist * Ar) ** 2 - (dist ** 2 - Br ** 2 + Ar ** 2) ** 2) / (2 * dist)
-
-                # Now we simply need to find the dx point along the vector Bc - Ac
-                # Then we can easily calculate the point from A
-                center = Bc - Ac
-                center = Ac + center / fnorm(center) * dx
-                A = i_r
-                B = i_r
-
-            else:
-                # In this case there is actually no overlap. So perhaps we should
-                # create an infinitisemal sphere such that no point will ever be found
-                # Or we should return a new Shape which *always* return False for indices etc.
-                center = (Ac + Bc) * 0.5
-                # Currently we simply use a very small sphere and put it in the middle between
-                # the spheres
-                # This should at least speed up comparisons
-                A = 0.001
-                B = 0.001
-
-        else:
-            center = (Ac + Bc) * 0.5
-            A = Ar + fnorm(center - Ac)
-            B = Br + fnorm(center - Bc)
+        center = (Ac + Bc) * 0.5
+        A = Ar + fnorm(center - Ac)
+        B = Br + fnorm(center - Bc)
 
         return Sphere(max(A, B), center)
 
-    # within is defined in Shape to use within_index
-    # So no need to doubly implement it
+    def scale(self, scale):
+        return self.__class__(self.A.scale(scale), self.B.scale(scale))
+
+    def copy(self):
+        return self.__class__(self.A, self.B)
+
+
+def _composite_name(sep):
+    def _str(self):
+        if isinstance(self.A, CompositeShape):
+            A = "({})".format(str(self.A).replace('\n', '\n '))
+        else:
+            A = "{}".format(str(self.A).replace('\n', '\n '))
+        if isinstance(self.B, CompositeShape):
+            B = "({})".format(str(self.B).replace('\n', '\n '))
+        else:
+            B = "{}".format(str(self.B).replace('\n', '\n '))
+        return f"{self.__class__.__name__}{{{A} {sep} {B}}}"
+    return _str
+
+
+@set_module("sisl.shape")
+class OrShape(CompositeShape):
+    """ Boolean ``A | B`` shape """
+    __slots__ = ()
+    __str__ = _composite_name("|")
 
     def within_index(self, *args, **kwargs):
         A = self.A.within_index(*args, **kwargs)
         B = self.B.within_index(*args, **kwargs)
-        op = self.op
-        if op == self._OR:
-            return union1d(A, B)
-        elif op == self._AND:
-            return intersect1d(A, B, assume_unique=True)
-        elif op == self._SUB:
-            return setdiff1d(A, B, assume_unique=True)
-        elif op == self._XOR:
-            return setxor1d(A, B, assume_unique=True)
+        return union1d(A, B)
 
-    def __str__(self):
-        A = str(self.A).replace('\n', '\n ')
-        B = str(self.B).replace('\n', '\n ')
-        op = {self._OR: 'OR', self._AND: 'AND', self._SUB: 'SUB', self._XOR: 'XOR'}.get(self.op)
-        return f'{self.__class__.__name__}{{{op},\n {A},\n {B}\n}}'
 
-    def scale(self, scale):
-        return self.__class__(self.A.scale(scale), self.B.scale(scale), self.op)
+@set_module("sisl.shape")
+class XOrShape(CompositeShape):
+    """ Boolean ``A ^ B`` shape """
+    __slots__ = ()
+    __str__ = _composite_name("^")
 
-    def copy(self):
-        return self.__class__(self.A, self.B, self.op)
+    def within_index(self, *args, **kwargs):
+        A = self.A.within_index(*args, **kwargs)
+        B = self.B.within_index(*args, **kwargs)
+        return setxor1d(A, B, assume_unique=True)
+
+
+@set_module("sisl.shape")
+class SubShape(CompositeShape):
+    """ Boolean ``A - B`` shape """
+    __slots__ = ()
+    __str__ = _composite_name("-")
+
+    def within_index(self, *args, **kwargs):
+        A = self.A.within_index(*args, **kwargs)
+        B = self.B.within_index(*args, **kwargs)
+        return setdiff1d(A, B, assume_unique=True)
+
+
+@set_module("sisl.shape")
+class AndShape(CompositeShape):
+    """ Boolean ``A & B`` shape """
+    __slots__ = ()
+    __str__ = _composite_name("&")
+
+    def toSphere(self):
+        """ Create a sphere which is surely encompassing the *full* shape """
+        from .ellipsoid import Sphere
+
+        # Retrieve spheres
+        A = self.A.toSphere()
+        Ar = A.radius
+        Ac = A.center
+        B = self.B.toSphere()
+        Br = B.radius
+        Bc = B.center
+
+        # Calculate the distance between the spheres
+        dist = fnorm(Ac - Bc)
+
+        # If one is fully enclosed in the other, we can simply neglect the other
+        if dist + Ar <= Br:
+            # A is fully enclosed in B (or they are the same)
+            return A
+
+        elif dist + Br <= Ar:
+            # B is fully enclosed in A (or they are the same)
+            return B
+
+        elif dist <= (Ar + Br):
+            # We can reduce the sphere drastically because only the overlapping region is important
+            # i_r defines the intersection radius, search for Sphere-Sphere Intersection
+            dx = (dist ** 2 - Br ** 2 + Ar ** 2) / (2 * dist)
+
+            if dx > dist:
+                # the intersection is placed after the radius of B
+                # And in this case B is smaller (otherwise dx < 0)
+                return B
+            elif dx < 0:
+                return A
+
+            i_r = msqrt(4 * (dist * Ar) ** 2 - (dist ** 2 - Br ** 2 + Ar ** 2) ** 2) / (2 * dist)
+
+            # Now we simply need to find the dx point along the vector Bc - Ac
+            # Then we can easily calculate the point from A
+            center = Bc - Ac
+            center = Ac + center / fnorm(center) * dx
+            A = i_r
+            B = i_r
+
+        else:
+            # In this case there is actually no overlap. So perhaps we should
+            # create an infinitisemal sphere such that no point will ever be found
+            # Or we should return a new Shape which *always* return False for indices etc.
+            center = (Ac + Bc) * 0.5
+            # Currently we simply use a very small sphere and put it in the middle between
+            # the spheres
+            # This should at least speed up comparisons
+            A = 0.001
+            B = 0.001
+
+        return Sphere(max(A, B), center)
+
+    def within_index(self, *args, **kwargs):
+        A = self.A.within_index(*args, **kwargs)
+        B = self.B.within_index(*args, **kwargs)
+        return intersect1d(A, B, assume_unique=True)
 
 
 @set_module("sisl.shape")
@@ -283,13 +327,14 @@ class PureShape(Shape):
     `volume`
       return the volume of the shape.
     """
+    __slots__ = ()
 
     def volume(self, *args, **kwargs):
-        raise NotImplementedError('volume has not been implemented in: '+self.__class__.__name__)
+        raise NotImplementedError(f"{self.__class__.__name__}.volume has not been implemented")
 
     def expand(self, c):
         """ Expand the shape by a constant value """
-        raise NotImplementedError('expand has not been implemented in: '+self.__class__.__name__)
+        raise NotImplementedError(f"{self.__class__.__name__}.expand has not been implemented")
 
 
 @set_module("sisl.shape")
@@ -306,6 +351,7 @@ class NullShape(PureShape):
     Since it has no volume of point in space, none of the arguments
     has any meaning.
     """
+    __slots__ = ()
 
     def __init__(self, *args, **kwargs):
         """ Initialize a null-shape """
