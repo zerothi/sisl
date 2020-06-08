@@ -304,7 +304,9 @@ class Geometry(SuperCellChild):
         - `Atom` -> (self.atoms.index(atom) == self.atoms.specie).nonzero()[0]
         - range/list/ndarray -> ndarray
         """
-        return np.asarray(atom)
+        if atom is None:
+            return _a.arangei(self.na)
+        return np.asarray(atom, dtype=np.integer)
 
     @_sanitize_atom.register(str)
     def _(self, atom):
@@ -1708,7 +1710,7 @@ class Geometry(SuperCellChild):
         --------
         sub : the negative of this routine, i.e. retain a subset of atoms
         """
-        atom = self.sc2uc(self._sanitize_atom(atom))
+        atom = self.sc2uc(atom)
         atom = np.delete(_a.arangei(self.na), atom)
         return self.sub(atom)
 
@@ -2532,7 +2534,7 @@ class Geometry(SuperCellChild):
            only mirror a subset of atoms
         """
         if atom is None:
-            atom = slice(None)
+            atom = _a.arangei(self.na)
         else:
             atom = self._sanitize_atom(atom)
 
@@ -3832,12 +3834,7 @@ class Geometry(SuperCellChild):
         --------
         sparserij : return a sparse matrix will all distances between atoms
         """
-
-        # Correct atom input
-        if atom is None:
-            atom = _a.arangei(len(self))
-        else:
-            atom = self._sanitize_atom(atom).ravel()
+        atom = self._sanitize_atom(atom).ravel()
 
         # Figure out maximum distance
         if R is None:
