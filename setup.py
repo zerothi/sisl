@@ -428,7 +428,6 @@ def readme():
 metadata = dict(
     name=DISTNAME,
     maintainer=AUTHOR,
-    maintainer_email="NONE",
     description="Python interface for tight-binding model creation and analysis of DFT output. Input mechanism for large scale transport calculations using NEGF TBtrans (TranSiesta)",
     long_description=readme(),
     long_description_content_type="text/markdown",
