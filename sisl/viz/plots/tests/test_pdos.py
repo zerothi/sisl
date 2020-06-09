@@ -28,7 +28,7 @@ class PdosPlotTester:
     def test_dataarray(self):
 
         PDOS = self.plot.PDOS
-        geom = self.plot.geom
+        geom = self.plot.geometry
 
         assert isinstance(PDOS, DataArray)
         assert isinstance(geom, sisl.Geometry)
@@ -70,7 +70,7 @@ class PdosPlotTester:
 
         # Try to split this request in multiple ones
         plot.split_requests(0, on="orbitals")
-        species_no = len(self.plot.geom.atoms[sel_species].orbital)
+        species_no = len(self.plot.geometry.atoms[sel_species].orbital)
         assert len(plot.data) == species_no
 
         # Then try to merge

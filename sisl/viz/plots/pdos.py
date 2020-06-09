@@ -173,10 +173,10 @@ class PdosPlot(Plot):
     )
 
     _layout_defaults = {
-        'xaxis_title': 'Density of states (1/eV)',
+        'xaxis_title': 'Density of states [1/eV]',
         'xaxis_mirror': True,
         'yaxis_mirror': True,
-        'yaxis_title': 'Energy (eV)',
+        'yaxis_title': 'Energy [eV]',
         'showlegend': True
     }
 
@@ -230,10 +230,11 @@ class PdosPlot(Plot):
         if not hasattr(self, "H"):
             self.setup_hamiltonian()
 
-        # Get the kgrid, or 
+        # Get the kgrid or generate a default grid by checking the interaction between cells
+        # This should probably take into account how big the cell is.
         kgrid = self.setting('kgrid')
         if kgrid is None:
-            kgrid = [ 3 if nsc > 1 else 1 for nsc in self.H.geom.nsc]
+            kgrid = [ 3 if nsc > 1 else 1 for nsc in self.H.geometry.nsc]
         kgrid_displ = self.setting('kgrid_displ')
 
         Erange = self.setting("Erange")
@@ -250,7 +251,7 @@ class PdosPlot(Plot):
 
         pdos_file = self.setting("pdos_file") or self.requiredFiles[0]
         #Get the info from the .PDOS file
-        self.geom, self.E, self.PDOS = self.get_sile(pdos_file).read_data()
+        self.geometry, self.E, self.PDOS = self.get_sile(pdos_file).read_data()
 
     def _after_read(self):
 
@@ -294,7 +295,7 @@ class PdosPlot(Plot):
             dims=('spin', 'orb', 'E')
         )
 
-        self.get_param('requests').update_options(self.geom, self.isSpinPolarized)
+        self.get_param('requests').update_options(self.geometry, self.isSpinPolarized)
 
     def _set_data(self):
         '''

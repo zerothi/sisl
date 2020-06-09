@@ -26,29 +26,28 @@ class WithSislManagement(AbstractDispatch):
         @wraps(method)
         def with_sisl_support(*args, **kwargs):
 
-            if len(args) > 0:
-                # The first arg is the sisl object
-                args = list(args)
+            if args:
 
-                if args:
-
-                    # Try to generate the dataframe for this object.
-                    if hasattr(args[0], 'to_df'):
-                        args[0] = args[0].to_df()
-
+                # Try to generate the dataframe for this object.
+                if hasattr(args[0], 'to_df'):
+                    args[0] = args[0].to_df()
+                else:
                     # Otherwise, we are just going to interpret it as if the user wants to get the attributes
                     # of the object. We will support deep attribute getting here using points as separators.
                     # (I don't know if this makes sense because there's probably hardly any attributes that are
                     # ready to be plotted, i.e. they are 1d arrays)
+                    obj = args.pop(0)
                     for key, val in kwargs.items():
                         if isinstance(val, str):
                             attrs = val.split('.')
-                            obj = args[0]
+                            search_obj = obj
+
+                            # We try to recursively get the attributes
                             for attr in attrs:
                                 newval = getattr(obj, attr, None)
                                 if newval is None:
                                     break
-                                obj = newval
+                                search_obj = newval
 
                             else:
                                 # If we've gotten to the end of the loop, it is because we've found the attribute.

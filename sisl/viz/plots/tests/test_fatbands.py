@@ -53,9 +53,9 @@ class FatbandsPlotTester(BandsPlotTester):
 
         # Number of groups that each splitting should give
         expected_splits = [
-            ('species', len(plot.geom.atoms.atom)),
-            ('atoms', plot.geom.na),
-            ('orbitals', plot.geom.no)
+            ('species', len(plot.geometry.atoms.atom)),
+            ('atoms', plot.geometry.na),
+            ('orbitals', plot.geometry.no)
         ]
 
         # Check how many traces are there before generating groups

@@ -10,6 +10,8 @@ from sisl._dispatcher import AbstractDispatch
 from ._presets import get_preset
 from .plotutils import get_configurable_docstring, get_configurable_kwargs, get_configurable_kwargs_to_pass
 
+__all__ = ['Configurable', 'vizplotly_settings']
+
 class NamedHistory:
     r""" Useful for tracking and modifying the history of named parameters
 
@@ -727,51 +729,51 @@ class Configurable:
         else:
             return True
 
-#DECORATORS TO USE WHEN DEFINING METHODS IN CLASSES THAT INHERIT FROM Configurable
-#Run the method after having initialized the settings
-def after_settings_init(method):
-    
-    def update_and_execute(obj, *args, **kwargs):
-        
-        obj.init_settings(**kwargs)
-        
-        return method(obj, *args, **kwargs)
-    
-    return update_and_execute
+# DECORATORS TO USE WHEN DEFINING METHODS IN CLASSES THAT INHERIT FROM Configurable
 
-#Run the method and then initialize the settings
-def before_settings_init(method):
-    
-    def update_and_execute(obj, *args, **kwargs):
-        
-        returns = method(obj, *args, **kwargs)
-        
-        obj.init_settings(**kwargs)
-        
-        return returns
-    
-    return update_and_execute
+def vizplotly_settings(when='before', init=False):
+    '''
+    Specifies how settings should be updated when running a method.
 
-#Run the method after having updated the settings
-def after_settings_update(method):
+    It can only decorate a method of a class that inherits from Configurable.
 
-    def update_and_execute(obj, *args, **kwargs):
-        
-        obj.update_settings(**kwargs, from_decorator=True, run_updates=False)
-        
-        return method(obj, *args, **kwargs)
-    
-    return update_and_execute
+    Works by grabbing the kwargs from the method and taking the ones whose keys
+    represent settings.
 
-#Run the method and then update the settings
-def before_settings_update(method):
+    Parameters
+    -----------
+    when: {'after', 'before'}
+        specifies when should the settings be updated.
+
+        'after': After the method has been ran.
+        'before': Before running the method.
+
+    init: boolean, optional
+        whether the settings should be initialized (restored).
+
+        If `False`, the settings are just updated.
+    '''
+    extra_kwargs = {}
+    if init:
+        method_name = 'init_settings'
+    else:
+        method_name = 'update_settings'
+        extra_kwargs = {'from_decorator': True, 'run_updates': True}
     
-    def execute_and_update(obj, *args, **kwargs):
-        
-        returns = method(obj, *args, **kwargs)
-        
-        obj.update_settings(**kwargs, from_decorator=True, run_updates=False)
-        
-        return returns
-    
-    return execute_and_update 
+    def decorator(method):
+        if when == 'before':
+            @wraps(method)
+            def func(obj, *args, **kwargs):
+                getattr(obj, method_name)(**kwargs, **extra_kwargs)
+                return method(obj, *args, **kwargs)
+                
+        elif when == 'after':
+            @wraps(method)
+            def func(obj, *args, **kwargs):
+                ret = method(obj, *args, **kwargs)
+                getattr(obj, method_name)(**kwargs, **extra_kwargs)
+                return ret
+        else:
+            raise ValueError("Incorrect decorator usage")
+        return func
+    return decorator

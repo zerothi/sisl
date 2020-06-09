@@ -22,6 +22,7 @@ from plotly.subplots import make_subplots
 import sisl
 
 from .configurable import *
+from ._presets import get_preset
 from .plotutils import init_multiple_plots, repeat_if_childs, dictOfLists2listOfDicts, trigger_notification, \
      spoken_message, running_in_notebook, check_widgets, call_method_if_present
 from .input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
@@ -560,7 +561,7 @@ class Plot(ShortCutable, Configurable, Connected):
 
         return object.__new__(cls)
 
-    @after_settings_init
+    @vizplotly_settings('before', init=True)
     def __init__(self, *args, H = None, attrs_for_plot={}, only_init=False, presets=None, layout={}, _debug=False,**kwargs):
 
         if getattr(self, "INIT_ON_NEW", False):
@@ -588,8 +589,8 @@ class Plot(ShortCutable, Configurable, Connected):
         if H is not None:
             self.PROVIDED_H = True
             self.H = H
-            self.geom = getattr(H, "geom", None)
-            self.PROVIDED_GEOM = self.geom is not None
+            self.geometry = getattr(H, "geometry", None)
+            self.PROVIDED_GEOM = self.geometry is not None
 
         #Set the isChildPlot attribute to let the plot know if it is part of a bigger picture (e.g. Animation)
         self.isChildPlot = kwargs.get("isChildPlot", False)
@@ -722,7 +723,7 @@ class Plot(ShortCutable, Configurable, Connected):
         self.add_shortcut("ctrl+z", "Undo settings", self.undo_settings, _description="Takes the settings of the plot one step back")
 
     @repeat_if_childs
-    @after_settings_update
+    @vizplotly_settings('before')
     def read_data(self, update_fig = True, **kwargs):
         '''
         Gets the information for the bands plot and stores it into self.df
@@ -1030,7 +1031,7 @@ class Plot(ShortCutable, Configurable, Connected):
         
         return self
 
-    @after_settings_update
+    @vizplotly_settings('before')
     def set_files(self, **kwargs):
         '''
         Checks if the required files are available and then builds a list with them
@@ -1054,7 +1055,7 @@ class Plot(ShortCutable, Configurable, Connected):
 
         return self
     
-    @after_settings_update
+    @vizplotly_settings('before')
     def setup_hamiltonian(self, **kwargs):
         '''
         Sets up the hamiltonian for calculations with sisl.
@@ -1063,8 +1064,8 @@ class Plot(ShortCutable, Configurable, Connected):
         if len(self.settings_history) > 1:
             NEW_FDF = self.settings_history.was_updated("root_fdf")
         
-        if not self.PROVIDED_GEOM and (not hasattr(self, "geom") or NEW_FDF):
-            self.geom = self.fdf_sile.read_geometry(output = True)
+        if not self.PROVIDED_GEOM and (not hasattr(self, "geometry") or NEW_FDF):
+            self.geometry = self.fdf_sile.read_geometry(output = True)
         
         if not self.PROVIDED_H and (not hasattr(self, "H") or NEW_FDF):
             #Read the hamiltonian
@@ -1073,7 +1074,7 @@ class Plot(ShortCutable, Configurable, Connected):
         return self
     
     @repeat_if_childs
-    @after_settings_update
+    @vizplotly_settings('before')
     def set_data(self, update_fig = True, **kwargs):
         
         '''
@@ -1096,7 +1097,7 @@ class Plot(ShortCutable, Configurable, Connected):
 
         return self
     
-    @after_settings_update
+    @vizplotly_settings('before')
     def get_figure(self, **kwargs):
 
         '''

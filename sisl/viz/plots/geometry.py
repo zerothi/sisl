@@ -64,7 +64,7 @@ class BaseGeometryPlot(Plot):
     _pt = PeriodicTable()
     
     _parameters = (
-        ProgramaticInput(key="geom", name="Geometry",
+        ProgramaticInput(key='geometry', name="Geometry",
             default=None
         ),
 
@@ -87,7 +87,7 @@ class BaseGeometryPlot(Plot):
 
     @property
     def on_geom(self):
-        return BoundGeometry(self.geom, self)
+        return BoundGeometry(self.geometry, self)
 
     def _after_init(self):
 
@@ -110,21 +110,21 @@ class BaseGeometryPlot(Plot):
         return cls._atoms_colors.get(symb, cls._atoms_colors["else"])
     
     def _read_nosource(self):
-        self.geom = self.setting("geom") or getattr(self, "geom", None)
+        self.geometry = self.setting('geometry') or getattr(self, "geometry", None)
         
-        if self.geom is None:
+        if self.geometry is None:
             raise Exception("No geometry has been provided.")
 
     def _read_siesta_output(self):
 
         geom_file = self.setting("geom_file") or self.setting("root_fdf")
 
-        self.geom = self.get_sile(geom_file).read_geometry()
+        self.geometry = self.get_sile(geom_file).read_geometry()
             
     def _after_read(self):
 
         if self.setting('bonds'):
-            self.bonds = self.find_all_bonds(self.geom)
+            self.bonds = self.find_all_bonds(self.geometry)
     
     @staticmethod
     def find_all_bonds(geom):
@@ -136,7 +136,7 @@ class BaseGeometryPlot(Plot):
             neighs = geom.close(at, R=[0.1, 3])[-1]
 
             for neigh in neighs:
-                if pt.radius([geom.atom[at].Z, geom.atom[neigh % geom.na].Z]).sum() + 0.15 > np.linalg.norm(geom[neigh] - geom[at]):
+                if pt.radius([geom.atoms[at].Z, geom.atoms[neigh % geom.na].Z]).sum() + 0.15 > np.linalg.norm(geom[neigh] - geom[at]):
                     bonds.append(np.sort([at, neigh]))
 
         if bonds:
@@ -153,16 +153,16 @@ class BaseGeometryPlot(Plot):
                 axis[i] = 1
             except:
                 i = ["a", "b", "c"].index(axis)
-                axis = self.geom.cell[i]
+                axis = self.geometry.cell[i]
         elif isinstance(axis, int):
-            axis = self.geom.cell[axis]
+            axis = self.geometry.cell[axis]
         
         return np.array(axis)
     
     def _get_cell_corners(self, cell=None, unique=False):
 
         if cell is None:
-            cell = self.geom.cell
+            cell = self.geometry.cell
 
         def xyz(coeffs):
             return np.dot(coeffs, cell)
@@ -188,7 +188,7 @@ class BaseGeometryPlot(Plot):
             return bonds
 
         if sanitize_atom:
-            geom = geom or self.geom
+            geom = geom or self.geometry
             atom = geom._sanitize_atom(atom)
         
         return [bond for bond in bonds if np.any([at in atom for at in bond])]
@@ -218,7 +218,7 @@ class BaseGeometryPlot(Plot):
         wrap_atoms = wrap_atoms or self._default_wrap_atoms1D
         traces = []
 
-        x = self._projected_1Dcoords(self.geom.xyz, axis=coords_axis)
+        x = self._projected_1Dcoords(self.geometry.xyz, axis=coords_axis)
         if not callable(data_axis):
             def data_axis(x): 
                 return np.zeros(x.shape[0])
@@ -237,10 +237,10 @@ class BaseGeometryPlot(Plot):
     def _default_wrap_atoms1D(self, xy):
 
         return (xy, ), {
-            "text": [f'{self.geom[at]}<br>{at+1} ({self.geom.atom[at].tag})' for at in self.geom],
+            "text": [f'{self.geometry[at]}<br>{at+1} ({self.geometry.atoms[at].tag})' for at in self.geometry],
             "name": "Atoms",
-            "color": [self.atom_color(atom.Z) for atom in self.geom.atoms],
-            "size": [self._pt.radius(atom.Z)*16 for atom in self.geom.atoms]
+            "color": [self.atom_color(atom.Z) for atom in self.geometry.atoms],
+            "size": [self._pt.radius(atom.Z)*16 for atom in self.geometry.atoms]
         }
 
     def _projected_1Dcoords(self, xyz=None, axis="x"):
@@ -265,7 +265,7 @@ class BaseGeometryPlot(Plot):
             defined by xaxis and yaxis.
         '''
         if xyz is None:
-            xyz = self.geom.xyz
+            xyz = self.geometry.xyz
 
         # Get the directions that these axes represent if the provided input
         # is an axis index
@@ -335,9 +335,9 @@ class BaseGeometryPlot(Plot):
         wrap_bond = wrap_bond or self._default_wrap_bonds2D
 
         if atom is not None:
-            atom = self.geom._sanitize_atom(atom)
+            atom = self.geometry._sanitize_atom(atom)
 
-        xy = self._projected_2Dcoords(self.geom[atom], xaxis=xaxis, yaxis=yaxis)
+        xy = self._projected_2Dcoords(self.geometry[atom], xaxis=xaxis, yaxis=yaxis)
         traces = []
 
         # Add bonds
@@ -350,7 +350,7 @@ class BaseGeometryPlot(Plot):
 
             if bonds_together:
                 
-                bonds_xyz = np.array([self.geom[bond] for bond in bonds])
+                bonds_xyz = np.array([self.geometry[bond] for bond in bonds])
                 xys = self._projected_2Dcoords(bonds_xyz, xaxis=xaxis, yaxis=yaxis)
 
                 # By reshaping we get the following: First axis -> bond (length: number of bonds),
@@ -372,7 +372,7 @@ class BaseGeometryPlot(Plot):
 
             else:
                 for bond in self.bonds:
-                    xys = self._projected_2Dcoords(self.geom[bond], xaxis=xaxis, yaxis=yaxis)
+                    xys = self._projected_2Dcoords(self.geometry[bond], xaxis=xaxis, yaxis=yaxis)
                     bond_args, bond_kwargs = wrap_bond(bond, xys.T)
                     trace = self._bond_trace2D(*bond_args, **bond_kwargs)
                     traces.append(trace)
@@ -417,7 +417,7 @@ class BaseGeometryPlot(Plot):
             defined by xaxis and yaxis.
         '''
         if xyz is None:
-            xyz = self.geom.xyz
+            xyz = self.geometry.xyz
 
         # Get the directions that these axes represent if the provided input
         # is an axis index
@@ -433,7 +433,7 @@ class BaseGeometryPlot(Plot):
     def _atoms_scatter_trace2D(self, xyz=None, xaxis="x", yaxis="y", color="gray", size=10, name='atoms', text=None, group=None, showlegend=True, **kwargs):
 
         if xyz is None:
-            xyz = self.geom.xyz
+            xyz = self.geometry.xyz
 
         # If 3D coordinates 3D coordinates into 2D
         if xyz.shape[1] == 3:
@@ -549,7 +549,7 @@ class BaseGeometryPlot(Plot):
     def _cell_axes_traces2D(self, cell=None, xaxis="x", yaxis="y"):
 
         if cell is None:
-            cell = self.geom.cell
+            cell = self.geometry.cell
 
         cell_xy = self._projected_2Dcoords(xyz=cell, xaxis=xaxis, yaxis=yaxis).T
 
@@ -564,7 +564,7 @@ class BaseGeometryPlot(Plot):
     def _cell_trace2D(self, cell=None, xaxis="x", yaxis="y", color=None, filled=False, **kwargs):
 
         if cell is None:
-            cell = self.geom.cell
+            cell = self.geometry.cell
 
         cell_corners = self._get_cell_corners(cell)
         x, y = self._projected_2Dcoords(xyz=cell_corners, xaxis=xaxis, yaxis=yaxis)
@@ -637,7 +637,7 @@ class BaseGeometryPlot(Plot):
         wrap_bond = wrap_bond or self._default_wrap_bond3D
 
         if atom is not None:
-            atom = self.geom._sanitize_atom(atom)
+            atom = self.geometry._sanitize_atom(atom)
 
         # Draw bonds
         if show_bonds:
@@ -654,7 +654,7 @@ class BaseGeometryPlot(Plot):
                 atomsprops = {}
 
                 if cheap_atoms:
-                    atomsinfo = [wrap_atom(at) for at in self.geom]
+                    atomsinfo = [wrap_atom(at) for at in self.geometry]
 
                     atomsprops = {"atoms_color": [], "atoms_size": []}
                     for atominfo in atomsinfo:
@@ -671,7 +671,7 @@ class BaseGeometryPlot(Plot):
                     if "name" in bondinfo[1]:
                         bondsprops["bonds_labels"].append(bondinfo[1]["name"])
                     
-                bond_traces = self._bonds_trace3D(bonds, self.geom, atoms=cheap_atoms,**bondsprops, **atomsprops, **cheap_bonds_kwargs)
+                bond_traces = self._bonds_trace3D(bonds, self.geometry, atoms=cheap_atoms,**bondsprops, **atomsprops, **cheap_bonds_kwargs)
             else:
                 # Draw each bond individually, allows styling each bond differently
                 for bond in self.bonds:
@@ -684,7 +684,7 @@ class BaseGeometryPlot(Plot):
         # Draw atoms if they are not already drawn 
         if not cheap_atoms:
             atom_traces = []
-            ats = atom if atom is not None else self.geom
+            ats = atom if atom is not None else self.geometry
             for i, at in enumerate(ats):
                 trace_args, trace_kwargs = wrap_atom(at)
                 atom_traces.append(self._atom_trace3D(*trace_args, **{"vertices": atom_vertices, "legendgroup": "atoms", "showlegend": i==0, **trace_kwargs} ))
@@ -700,20 +700,20 @@ class BaseGeometryPlot(Plot):
 
     def _default_wrap_atom3D(self, at):
 
-        return (self.geom[at], ), {
-            "name": f'{at+1} ({self.geom.atom[at].tag})',
-            "color": self.atom_color(self.geom.atom[at].Z),
-            "r": self._pt.radius(self.geom.atom[at].Z)*0.6
+        return (self.geometry[at], ), {
+            "name": f'{at+1} ({self.geometry.atoms[at].tag})',
+            "color": self.atom_color(self.geometry.atoms[at].Z),
+            "r": self._pt.radius(self.geometry.atoms[at].Z)*0.6
         }
 
     def _default_wrap_bond3D(self, bond):
 
-        return (*self.geom[bond], 15), {}
+        return (*self.geometry[bond], 15), {}
 
     def _cell_axes_traces3D(self, cell=None):
 
         if cell is None:
-            cell = self.geom.cell
+            cell = self.geometry.cell
 
         return [{
             'type': 'scatter3d',
@@ -726,7 +726,7 @@ class BaseGeometryPlot(Plot):
     def _cell_trace3D(self, cell=None, color=None, width=2, **kwargs):
 
         if cell is None:
-            cell = self.geom.cell
+            cell = self.geometry.cell
 
         x, y, z = self._get_cell_corners(cell).T
 
@@ -991,7 +991,7 @@ class GeometryPlot(BaseGeometryPlot):
 
         BaseGeometryPlot._after_read(self)
 
-        self.get_param("atom").update_options(self.geom)
+        self.get_param("atom").update_options(self.geometry)
 
     def _set_data(self):
 
@@ -1013,7 +1013,7 @@ class GeometryPlot(BaseGeometryPlot):
         elif ndims == 2:
             xaxis, yaxis = axes
             self._plot_geom2D(xaxis=xaxis, yaxis=yaxis, **common_kwargs)
-            self.update_layout(xaxis_title=f'Axis {xaxis} (Ang)', yaxis_title=f'Axis {yaxis} (Ang)')
+            self.update_layout(xaxis_title=f'Axis {xaxis} [Ang]', yaxis_title=f'Axis {yaxis} [Ang]')
         elif ndims == 1:
             coords_axis = axes[0]
             data_axis = self.setting("1d_dataaxis")

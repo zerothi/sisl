@@ -380,7 +380,7 @@ class GridPlot(Plot):
             grid = self._transform_grid(grid, transform)
 
         cut_vacuum = self.setting('cut_vacuum')
-        if cut_vacuum and getattr(grid, "geom", None):
+        if cut_vacuum and getattr(grid, "geometry", None):
             grid, lims = self._cut_vacuum(grid)
             self.grid_offset = lims[0]
         else:
@@ -454,11 +454,11 @@ class GridPlot(Plot):
         # are calculated each time this method is called, for example
         plot_geom = self.setting('plot_geom')
         if plot_geom:
-            if not hasattr(grid, 'geom'):
+            if not hasattr(grid, 'geometry'):
                 print('You asked to plot the geometry, but the grid does not contain any geometry')
             else:
                 geom_kwargs = self.setting('geom_kwargs')
-                geom_plot = grid.geom.plot(**{'axes':self.settings['axes'], **geom_kwargs})
+                geom_plot = grid.geometry.plot(**{'axes':self.settings['axes'], **geom_kwargs})
 
                 self.add_traces(geom_plot.data)
 
@@ -479,10 +479,10 @@ class GridPlot(Plot):
     @staticmethod
     def _cut_vacuum(grid):
 
-        if not hasattr(grid, "geom"):
+        if not hasattr(grid, "geometry"):
             raise Exception("The grid does not have an associated geometry, and therefore we can not calculate where the vacuum is.")
 
-        geom = grid.geom
+        geom = grid.geometry
         maxR = geom.maxR()
 
         # Calculate the limits based on the positions of the atoms and the maxR of
@@ -531,7 +531,7 @@ class GridPlot(Plot):
             **kwargs 
         }]
 
-        axes_titles = {'xaxis_title': f'{("X","Y", "Z")[ax]} axis (Ang)', 'yaxis_title': 'Values' }
+        axes_titles = {'xaxis_title': f'{("X","Y", "Z")[ax]} axis [Ang]', 'yaxis_title': 'Values' }
 
         self.update_layout(**axes_titles)
     
@@ -564,7 +564,7 @@ class GridPlot(Plot):
             **kwargs
         }]
 
-        axes_titles = {'xaxis_title': f'{("X","Y", "Z")[xaxis]} axis (Ang)', 'yaxis_title': f'{("X","Y", "Z")[yaxis]} axis (Ang)'}
+        axes_titles = {'xaxis_title': f'{("X","Y", "Z")[xaxis]} axis [Ang]', 'yaxis_title': f'{("X","Y", "Z")[yaxis]} axis [Ang]'}
 
         self.update_layout(**axes_titles)
         
@@ -932,7 +932,7 @@ class GridPlot(Plot):
                     }
                 ]
         
-        def ax_title(ax): return f'{["X", "Y", "Z"][ax]} axis (Ang)'
+        def ax_title(ax): return f'{["X", "Y", "Z"][ax]} axis [Ang]'
 
         # Layout
         fig.update_layout(
@@ -1102,7 +1102,7 @@ class WavefunctionPlot(GridPlot):
             '''
         ),
 
-        SislObjectInput(key='geom', name='Geometry',
+        SislObjectInput(key='geometry', name='Geometry',
             default=None,
             dtype=sisl.Geometry,
             help='''Necessary to generate the grid and to plot the wavefunctions, since the basis orbitals are needed.
@@ -1161,10 +1161,10 @@ class WavefunctionPlot(GridPlot):
 
     def _set_data(self):
 
-        geom = self.setting('geom')
+        geom = self.setting('geometry')
         if geom is not None:
-            self.geom = geom
-        if getattr(self, 'geom', None) is None:
+            self.geometry = geom
+        if getattr(self, 'geometry', None) is None:
             raise Exception('No geometry was provided and we need it the basis orbitals to build the wavefunctions from the coefficients!')
         
         transforms = self.setting('transforms')
@@ -1179,7 +1179,7 @@ class WavefunctionPlot(GridPlot):
         if self.setting('grid') is None:
             k = self.setting('k')
             dtype = float if (np.array(k) == 0).all() else complex
-            self.grid = sisl.Grid(grid_prec, geometry=self.geom, dtype=dtype)
+            self.grid = sisl.Grid(grid_prec, geometry=self.geometry, dtype=dtype)
 
         # GridPlot's after_read basically sets the xRange, yRange and zRange options
         # which need to know what the grid is, that's why we are calling it here

@@ -40,20 +40,21 @@ class CustomJSONEncoder(JSONEncoder):
 # and then javascript does not understand it
 simplejson.dumps = partial(simplejson.dumps, ignore_nan=True, cls=CustomJSONEncoder)
 
+# No user management yet
 if False:
     with_user_management(app)
 
-socketio = SocketIO(app, cors_allowed_origins="*",
+SOCKETIO = SocketIO(app, cors_allowed_origins="*",
                     json=simplejson, manage_session=True, async_mode='threading')
-on = socketio.on
+on = SOCKETIO.on
 
 if False:
     listen_to_users(on, emit_session)
 
 # This will be the global session
-session = BlankSession(socketio=socketio)
+SESSION = BlankSession(socketio=SOCKETIO)
 
-@socketio.on_error()
+@SOCKETIO.on_error()
 def send_error(err):
     emit_error(err)
     raise err
@@ -61,12 +62,12 @@ def send_error(err):
 @on('request_session')
 @if_user_can('see')
 def send_session(path = None):
-    global session
+    global SESSION
 
     if path is not None:
-        session = load(path)
+        SESSION = load(path)
 
-    emit_session(session, broadcast = False)
+    emit_session(SESSION, broadcast = False)
 
 @on('apply_method_on_session')
 @if_user_can("edit")
@@ -82,7 +83,7 @@ def apply_method(method_name, kwargs = {}, *args):
     
     # Remember that if the method is not found an error will be raised
     # but it will be handled socketio.on_error (used above)
-    method = getattr(session.autosync, method_name)
+    method = getattr(SESSION.autosync, method_name)
     
     # Since the session is bound to the app, this will automatically emit the
     # session
@@ -99,13 +100,13 @@ def retrieve_plot(plotID):
     if __DEBUG:
         print(f"Asking for plot: {plotID}")
 
-    emit_plot(plotID, session, broadcast=False)
+    emit_plot(plotID, SESSION, broadcast=False)
 
 @on("upload_file")
 @if_user_can("edit")
 def plot_uploaded_file(file_bytes, name):
 
-    dirname = session.setting("file_storage_dir")
+    dirname = SESSION.setting("file_storage_dir")
     if not os.path.exists(dirname):
         os.mkdir(dirname)
 
@@ -117,18 +118,26 @@ def plot_uploaded_file(file_bytes, name):
     # file_contents = {name: file_bytes}
 
     plot = Plot(file_name)#, attrs_for_plot={"_file_contents": file_contents}, _debug=True) # 
-    session.autosync.add_plot(plot, session.tabs[0]["id"])
+    SESSION.autosync.add_plot(plot, SESSION.tabs[0]["id"])
 
-    if not session.setting("keep_uploaded"):
+    if not SESSION.setting("keep_uploaded"):
         shutil.rmtree(dirname)
 
-def set_session(new_session):
+def set_session(new_session, ret_old=False):
     '''
     Binds a new session to the GUI.
 
     The old session is unbound from the GUI. If you want to keep it, store
     it in a variable (or save it to disk with `save`)before setting the new session.
-    Note that, otherwise, THE OLD SESSION WILL BE LOST. 
+    Note that, otherwise, THE OLD SESSION WILL BE LOST. You can also set "ret_old"
+    to True to get a tuple of (new_session, old_session) from this method
+
+    Parameters
+    ----------
+    new_session: Session
+        the new session to be used by the API.
+    ret_old: bool, optional
+        whether the old session should also be returned
 
     Returns
     ----------
@@ -136,23 +145,29 @@ def set_session(new_session):
         the new session, bound to the GUI. Note that if you keep using old references
         the GUI will not be in sync automatically. You need to store the returned session
         and perform all the actions on it.
+    Session
+        the old session, only returned if `ret_old` is `True`
     '''
-    global session
+    global SESSION
 
-    session.socketio = None
+    old_session = SESSION
 
-    session = new_session
+    SESSION.socketio = None
 
-    session.socketio = socketio
+    SESSION = new_session
 
-    return session
+    SESSION.socketio = SOCKETIO
+
+    if ret_old:
+        return SESSION, old_session
+    return SESSION
 
 def run(host="localhost", port=4000, debug=False):
 
     print(
         f"\nApi running on http://{host}:{port}...\nconnect the GUI to this address or send it to someone for sharing.")
     
-    socketio.run(app, debug=debug, host=host, port=port)
+    SOCKETIO.run(app, debug=debug, host=host, port=port)
 
 if __name__ == '__main__':
     run()

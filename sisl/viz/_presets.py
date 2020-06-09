@@ -1,5 +1,4 @@
-import itertools
-import os
+__all__ = ['add_presets', 'get_preset']
 
 PRESETS = {
 
@@ -21,9 +20,7 @@ def add_presets(**presets):
         as many as you want. Each preset is a dict.
     '''
 
-    global PRESETS
-
-    PRESETS = {**PRESETS, **presets}
+    PRESETS.update(presets)
 
 def get_preset(name):
     '''

@@ -9,7 +9,7 @@ from copy import deepcopy, copy
 import sisl
 from sisl.viz.GUI.api_utils.sync import Connected
 from .plot import Plot, MultiplePlot, Animation, SubPlots
-from .configurable import Configurable, after_settings_init
+from .configurable import Configurable, vizplotly_settings
 from .plotutils import find_files, find_plotable_siles, call_method_if_present
 
 from .input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, Array1dInput
@@ -185,16 +185,6 @@ class Session(Configurable, Connected):
             help = "Determines whether the session updates plots when files change <br> This is very useful to track progress. It is only meaningful in the GUI."
         ),
 
-        IntegerInput(
-            key="updateInterval", name="Update time interval",
-            group="gui",
-            default=2000,
-            params={
-                "min": 0
-            },
-            help="The time in ms between consecutive checks for updates."
-        ),
-
         Array1dInput(
             key="plotDims", name="Initial plot dimensions",
             default=[4, 30],
@@ -214,7 +204,7 @@ class Session(Configurable, Connected):
 
     )
 
-    @after_settings_init
+    @vizplotly_settings('before', init=True)
     def __init__(self, *args, **kwargs):
 
         self.id = str(uuid.uuid4())

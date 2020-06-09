@@ -235,14 +235,14 @@ class FatbandsPlot(BandsPlot):
     def _set_group_options(self):
 
         # Try to find a geometry if there isn't already one
-        if not hasattr(self, "geom"):
+        if not hasattr(self, "geometry"):
 
             # From the hamiltonian
             band_struct = self.setting("band_structure")
             if band_struct is not None:
-                self.geom = band_struct.parent.geom
+                self.geometry = band_struct.parent.geometry
         
-        self.get_param('groups').update_options(self.geom)
+        self.get_param('groups').update_options(self.geometry)
 
     def _set_data(self):
 
@@ -280,7 +280,7 @@ class FatbandsPlot(BandsPlot):
         # empty list, we are going to build the default groups, which is to split by species
         # in case there is more than one species or else, by orbitals
         if groups is None:
-            if len(self.geom.atoms.atom) > 1:
+            if len(self.geometry.atoms.atom) > 1:
                 group_by = 'species'
             else:
                 group_by = 'orbitals'

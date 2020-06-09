@@ -29,7 +29,7 @@ class BondLengthMapTester(GeometryPlotTester):
 class TestSislBondLength(BondLengthMapTester):
     
     plot = BondLengthMap(
-        geom=sisl.geom.graphene(orthogonal=True, bond=1.35),
+        geometry=sisl.geom.graphene(orthogonal=True, bond=1.35),
         strain_ref=sisl.geom.graphene(orthogonal=True)
     )
     has_strain_ref = True

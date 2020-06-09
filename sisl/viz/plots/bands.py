@@ -243,7 +243,7 @@ class BandsPlot(Plot):
         'xaxis_mirror': True,
         'yaxis_mirror': True,
         'xaxis_showgrid': True,
-        'yaxis_title': 'Energy (eV)'
+        'yaxis_title': 'Energy [eV]'
     }
 
     @classmethod
@@ -531,6 +531,7 @@ class BandsPlot(Plot):
     def _plot_Kdiff(self, band1, band2, E=None, offsetE=False):
         '''
         ONLY WORKING FOR A PAIR OF BANDS THAT ARE ALWAYS INCREASING OR ALWAYS DECREASING
+        AND ARE ISOLATED (sorry)
         
         Plots the k difference between two bands.
 
@@ -572,6 +573,6 @@ class BandsPlot(Plot):
 
         plt = Plot.from_plotly(fig)
 
-        plt.update_layout({"title": f"Delta K between bands {band1} and {band2}", 'xaxis_title': 'Delta k', 'yaxis_title': 'Energy (eV)'})
+        plt.update_layout({"title": f"Delta K between bands {band1} and {band2}", 'xaxis_title': 'Delta k', 'yaxis_title': 'Energy [eV]'})
 
         return plt

@@ -97,7 +97,7 @@ class ForcesPlot(Plot):
     
     def _after_read(self):
 
-        self.update_layout(xaxis_title="MD step", yaxis_title="Force (eV/Ang)")
+        self.update_layout(xaxis_title="MD step", yaxis_title="Force [eV/Ang]")
 
     def _set_data(self):
 

@@ -4,7 +4,7 @@ import os
 from ..plotutils import load, get_session_classes
 from .._user_customs import SESSION_FILE
 
-session = None
+SESSION = None
 
 def launch(only_api=False, api_kwargs=None, load_session=None, session_settings={}, session_cls=None, interactive=False):
     '''
@@ -21,13 +21,13 @@ def launch(only_api=False, api_kwargs=None, load_session=None, session_settings=
     from threading import Thread, Semaphore
 
     from .server import app as server, run as run_server
-    from .api import session as api_session, set_session as set_api_session, run as run_api, app as app
+    from .api import SESSION as api_session, set_session as set_api_session, run as run_api, app as app
     
     global threads
-    global session
+    global SESSION
     global set_session
     
-    session = api_session
+    SESSION = api_session
     set_session = set_api_session
 
     if load_session is not None:
@@ -40,7 +40,7 @@ def launch(only_api=False, api_kwargs=None, load_session=None, session_settings=
         set_session(session_cls(**session_settings))
 
     if session_settings:
-        session.update_settings(**session_settings)
+        SESSION.update_settings(**session_settings)
 
     threads = [Thread(target=run_api, kwargs=api_kwargs), Thread(target=run_server)]
 

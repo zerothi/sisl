@@ -55,7 +55,7 @@ class GeometryPlotTester:
         assert len(plot.data) == 1
 
         # Check that we can toggle bonds being bound to atoms
-        if plot.geom.na > 2:
+        if plot.geometry.na > 2:
             plot.update_settings(atom=[0], bonds=True, bind_bonds_to_ats=True)
             #First trace is the bonds
             prev_len = len(plot.data[0].x)
@@ -92,7 +92,7 @@ class GeometryPlotTester:
         assert len(plot.data) == 1
 
         # Check that we can toggle bonds being bound to atoms
-        if plot.geom.na > 2:
+        if plot.geometry.na > 2:
             plot.update_settings(atom=[0], bonds=True, bind_bonds_to_ats=True)
             #First trace is the bonds
             prev_len = len(plot.data[0].x)

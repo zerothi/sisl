@@ -220,8 +220,8 @@ class BondLengthMap(GeometryPlot):
     )
 
     _layout_defaults = {
-        'xaxis_title': 'X (Ang)', 
-        'yaxis_title': "Y (Ang)",
+        'xaxis_title': 'X [Ang]', 
+        'yaxis_title': "Y [Ang]",
         'yaxis_zeroline': False
     }
     
@@ -259,12 +259,12 @@ class BondLengthMap(GeometryPlot):
 
     def _after_read(self):
 
-        self.geom_bonds = self.find_all_bonds(self.geom)
+        self.geom_bonds = self.find_all_bonds(self.geometry)
 
         if getattr(self, "relaxed_geom", None):
             self.relaxed_bonds = self.find_all_bonds(self.relaxed_geom)
         
-        self.get_param("atom").update_options(self.geom)
+        self.get_param("atom").update_options(self.geometry)
     
     def _wrap_bond3D(self, bond, strain=False):
         '''
@@ -272,23 +272,23 @@ class BondLengthMap(GeometryPlot):
         '''
 
         if strain:
-            color = self._bond_strain(self.relaxed_geom, self.geom, bond)
+            color = self._bond_strain(self.relaxed_geom, self.geometry, bond)
             name = f'Strain: {color:.3f}'
         else:
-            color = self._bond_length(self.geom, bond)
+            color = self._bond_length(self.geometry, bond)
             name = f'{color:.3f} Ang'
         
         self.colors.append(color)
 
-        return (*self.geom[bond], 15), {"color": color, "name": name }
+        return (*self.geometry[bond], 15), {"color": color, "name": name }
     
     def _wrap_bond2D(self, bond, xys, strain=False):
 
         if strain:
-            color = self._bond_strain(self.relaxed_geom, self.geom, bond)
+            color = self._bond_strain(self.relaxed_geom, self.geometry, bond)
             name = f'Strain: {color:.3f}'
         else:
-            color = self._bond_length(self.geom, bond)
+            color = self._bond_length(self.geometry, bond)
             name = f'{color:.3f} Ang'
 
         self.colors.append(color)
@@ -326,7 +326,7 @@ class BondLengthMap(GeometryPlot):
         if show_strain:
             self.bonds = self.relaxed_bonds
 
-            self.geom.set_nsc(self.relaxed_geom.sc.nsc)
+            self.geometry.set_nsc(self.relaxed_geom.sc.nsc)
         else:
             self.bonds = self.geom_bonds
 
@@ -354,7 +354,7 @@ class BondLengthMap(GeometryPlot):
                 **common_kwargs
             )
 
-            self.update_layout(xaxis_title=f'Axis {xaxis} (Ang)', yaxis_title=f'Axis {yaxis} (Ang)')
+            self.update_layout(xaxis_title=f'Axis {xaxis} [Ang]', yaxis_title=f'Axis {yaxis} [Ang]')
         elif ndims == 1:
             raise NotImplementedError("Does it make sense to implement 1 dimensional bond length maps? If so, post an issue on sisl's github page. Thanks!")
 
@@ -365,6 +365,6 @@ class BondLengthMap(GeometryPlot):
                                         "cmax": self.setting("cmax") or max(self.colors),
                                         "colorscale": self.setting("cmap"),
                                         'showscale': showscale,
-                                        'colorbar_title': 'Strain' if show_strain else 'Bond length (Ang)'})
+                                        'colorbar_title': 'Strain' if show_strain else 'Bond length [Ang]'})
         
         self.update_layout(legend_orientation='h')
