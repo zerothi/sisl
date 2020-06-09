@@ -96,7 +96,7 @@ sed -i -e "s:\(GIT_REVISION[[:space:]]*=\).*:\1 \"$rev\":" setup.py
 sed -i -e "s:\(REVISION_YEAR[[:space:]]*=\).*:\1 $year:" setup.py
 
 if [ $no_commit -eq 1 ]; then
-    python setup.py sdist bdist_wheel
+    python3 setup.py sdist bdist_wheel
     git checkout setup.py
     exit 0
 fi
@@ -124,7 +124,7 @@ git tag -a "v$v" -m "$MSG"
 #username = zeroth
 
 # Publish on testpypi
-python setup.py sdist bdist_wheel
+python3 setup.py sdist bdist_wheel
 twine upload --repository testpypi dist/sisl-$v*.tar.gz
 
 exit 0
