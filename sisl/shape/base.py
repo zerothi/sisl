@@ -61,7 +61,7 @@ class Shape:
 
     def __init__(self, center):
         if center is None:
-            self._center = _a.arrayd(3)
+            self._center = _a.zerosd(3)
         else:
             self._center = _a.asarrayd(center)
 
