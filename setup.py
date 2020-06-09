@@ -350,9 +350,9 @@ REVISION_YEAR = 2020
 
 
 DISTNAME = "sisl"
-LICENSE = "LGPLv3",
+LICENSE = "LGPLv3"
 AUTHOR = "sisl developers"
-URL = "https://github.com/zerothi/sisl",
+URL = "https://github.com/zerothi/sisl"
 DOWNLOAD_URL = "https://github.com/zerothi/sisl/releases"
 PROJECT_URLS = {
     "Bug Tracker": "https://github.com/zerothi/sisl/issues",
