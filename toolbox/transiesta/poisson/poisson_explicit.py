@@ -1,4 +1,4 @@
-""" Poisson solver for arbitrary electrode positions
+r""" Poisson solver for arbitrary electrode positions
 
 Developer: Nick Papior
 Contact: nickpapior <at> gmail.com
@@ -230,7 +230,7 @@ def solve_poisson(geometry, shape, radius=2.0,
     return grid
 
 
-if __name__ == "__main__":
+def poisson_explicit_cli():
 
     # Create the argument parser
     p = argp.ArgumentParser("Creation of custom Poisson solutions for TranSiesta calculations with arbitrary number of electrodes.")
@@ -332,3 +332,7 @@ Try one of: cg, gmres, fgmres, cr, cgnr, cgne, bicgstab, steepest_descent, minim
     for out in args.out:
         print(f"Writing to file: {out}...")
         V.write(out)
+
+
+if __name__ == "__main__":
+    poisson_explicit_cli()

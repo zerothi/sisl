@@ -1,6 +1,13 @@
 This directory contains contributed examples which may be used
 as examples in extended calculations.
 
+Once modules are present in this toolbox users may import them using
+
+    from sisl_toolbox.transiesta import *
+
+and use them. Note that toolboxes imported _have_ to have the full
+name on import line. No top-level imports are done.
+
 We welcome *any* user to contribute a toolbox such that other users
 may benefit from it.
 
@@ -10,4 +17,4 @@ code is followed:
 - Name of developer should be present in the code, preferentially contact details
 - Which version of sisl it was originally developed and tested with
 - Document the use in the script
-- Ensure the script is Python 2 and 3 compliant
+- Ensure the script is *only* Python 3 compliant

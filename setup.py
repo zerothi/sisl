@@ -415,17 +415,31 @@ metadata = dict(
     description="Python interface for tight-binding model creation and analysis of DFT output. Input mechanism for large scale transport calculations using NEGF TBtrans (TranSiesta)",
     long_description=readme(),
     long_description_content_type="text/markdown",
-    url="http://github.com/zerothi/sisl",
+    url="https://github.com/zerothi/sisl",
     download_url=DOWNLOAD_URL,
     license=LICENSE,
-    packages=find_packages(include=["sisl", "sisl.*"]),
+    # Ensure the packages are being found in the correct locations
+    package_dir={"sisl_toolbox": "toolbox"},
+    packages=
+    # We need to add sisl.* since that recursively adds modules
+    find_packages(include=["sisl", "sisl.*"])
+    +
+    # Add toolboxes
+    # This requires some name-mangling since we can't place them
+    # in the correct place unless we use 'package_dir' and this trick.
+    # 1. Here we list files as they should appear in packages for end-users
+    # 2. In 'package_dir' we defer the package name to the local file path
+    list(map(lambda x: f"sisl_toolbox.{x}", find_packages("toolbox"))),
     ext_modules=cythonizer(extensions, compiler_directives=directives),
     entry_points={
         "console_scripts":
         ["sgeom = sisl.geometry:sgeom",
          "sgrid = sisl.grid:sgrid",
          "sdata = sisl.utils._sisl_cmd:sisl_cmd",
-         "sisl = sisl.utils._sisl_cmd:sisl_cmd"]
+         "sisl = sisl.utils._sisl_cmd:sisl_cmd",
+         # Add toolbox CLI
+         "ts_poisson = sisl_toolbox.transiesta.poisson.poisson_explicit:poisson_explicit_cli",
+        ],
     },
     classifiers=CLASSIFIERS,
     platforms="any",
@@ -557,5 +571,4 @@ if __name__ == "__main__":
 
     # Freeze to support parallel compilation when using spawn instead of fork
     multiprocessing.freeze_support()
-    # Main setup of python modules
     setup(**metadata)
