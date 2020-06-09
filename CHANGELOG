@@ -1,5 +1,30 @@
-0.9.9
-=====
+0.10.0
+======
+
+- Exposing sisl_toolbox as a module for external contributions
+	Now stuff contributed from 3rd parties can easily be included
+	in a toolbox which is a separate module.
+
+- Changed asarray (as*) methods for SparseGeometry
+	Now we have a dispatch class which enables one
+	to store the behaviour as variables and then post-process
+
+- Using *.geom or geometry.atom is now deprecated, use
+	*.geometry and geometry.atoms instead (respectively)
+
+- Added spin-rotation for density matrices, this will
+	enable sisl to manipulate DM and write them for
+	Siesta calculations
+
+- Enabled all numpy.ufuncs (np.exp(H))
+
+- Added nanoribbons construction (Thomas)
+
+- Internal change to pathlib for files and paths
+
+- Added velocity calculations for NC+SOC Hamiltonians
+
+- Sparse pattern transposes of non-full matrices, fixed bug
 
 - Changed Geometry.sort to be more diverse (this may break old code)
   This new way of sorting is way more flexible and allows very fine
@@ -19,6 +44,8 @@
 - Added preliminary usage of Mixers, primarily intented for extending
 	sisl operations where SCF are used (may heavily change).
 
+- Lots of small bug-fixes
+
 - Now sisl is Python >=3.6 only, #162
 
 This release was helped by the following committers (THANKS):
@@ -26,6 +53,7 @@ This release was helped by the following committers (THANKS):
 - Thomas Frederiksen
 - Pol Febrer
 - Jonas Lundholm Bertelsen
+- Bernhard Kretz
 
 0.9.8
 =====
