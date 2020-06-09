@@ -8,8 +8,7 @@ import sisl._array as _a
 from sisl.utils.mathematics import fnorm
 
 
-__all__ = ["Shape",
-           "PureShape", "NullShape",
+__all__ = ["Shape", "PureShape", "NullShape",
            "CompositeShape", "OrShape", "XOrShape", "AndShape", "SubShape"]
 
 
@@ -62,9 +61,9 @@ class Shape:
 
     def __init__(self, center):
         if center is None:
-            self._center = np.zeros(3, np.float64).ravel()
+            self._center = _a.arrayd(3)
         else:
-            self._center = np.array(center, np.float64).ravel()
+            self._center = _a.asarrayd(center)
 
     @property
     def center(self):
@@ -170,6 +169,13 @@ class CompositeShape(Shape):
         """ Volume of a composite shape is current undefined, so a negative number is returned (may change) """
         # The volume for these set operators cannot easily be defined, so
         # we should rather not do anything about it.
+        # TODO we could *estimate* the volume by doing
+        #      self.toSphere()
+        #      grid of density 0.01
+        #      within_index
+        #      and calculate fractional volume
+        #      This is very inaccurate, but would probably be
+        #      good enough.
         return -1.
 
     def toSphere(self):
@@ -339,7 +345,7 @@ class PureShape(Shape):
 
 @set_module("sisl.shape")
 class NullShape(PureShape):
-    """ A unique shape which has no well-defined spatial extend, volume or center
+    """ A unique shape which has no well-defined spatial volume or center
 
     This special shape is used when composite shapes turns out to have
     a null space.
