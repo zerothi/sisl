@@ -95,6 +95,8 @@ sed -i -e "s:\(ISRELEASED[[:space:]]*=\).*:\1 True:" setup.py
 sed -i -e "s:\(GIT_REVISION[[:space:]]*=\).*:\1 \"$rev\":" setup.py
 sed -i -e "s:\(REVISION_YEAR[[:space:]]*=\).*:\1 $year:" setup.py
 
+# Ensure sources are created
+python3 setup.py cython
 if [ $no_commit -eq 1 ]; then
     python3 setup.py sdist bdist_wheel
     git checkout setup.py
