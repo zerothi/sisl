@@ -56,6 +56,8 @@ class gridncSileSiesta(SileCDFSiesta):
             specify the retrieved values
         name : str, optional
             the name for the grid-function (do not supply for standard Siesta output)
+        geometry: Geometry, optional
+            add the Geometry to the Grid
         """
         # Default to *index* variable
         spin = kwargs.get('index', spin)
@@ -107,7 +109,8 @@ class gridncSileSiesta(SileCDFSiesta):
             v = self._variable(name)
 
         # Create the grid, Siesta uses periodic, always
-        grid = Grid([nz, ny, nx], bc=Grid.PERIODIC, sc=sc, dtype=v.dtype)
+        grid = Grid([nz, ny, nx], bc=Grid.PERIODIC, sc=sc, dtype=v.dtype,
+                    geometry=kwargs.get("geometry", None))
 
         if v.ndim == 3:
             grid.grid[:, :, :] = v[:, :, :] * unit
@@ -115,14 +118,14 @@ class gridncSileSiesta(SileCDFSiesta):
             grid.grid[:, :, :] = v[spin, :, :, :] * unit
         else:
             if len(spin) > v.shape[0]:
-                raise SileError(self.__class__.__name__ + '.read_grid requires spin to be an integer or '
-                                'an array of length equal to the number of spin components.')
+                raise SileError(f"{self.__class__.__name__}.read_grid requires spin to be an integer or "
+                                "an array of length equal to the number of spin components.")
             grid.grid[:, :, :] = v[0, :, :, :] * spin[0] * unit
             for i, scale in enumerate(spin[1:]):
                 grid.grid[:, :, :] += v[1+i, :, :, :] * scale * unit
         if show_info:
-            info(self.__class__.__name__ + '.read_grid cannot determine the units of the grid. '
-                 'The units may not be in sisl units.')
+            info(f"{self.__class__.__name__}.read_grid cannot determine the units of the grid. "
+                 "The units may not be in sisl units.")
 
         # Read the grid, we want the z-axis to be the fastest
         # looping direction, hence x,y,z == 0,1,2
@@ -144,10 +147,10 @@ class gridncSileSiesta(SileCDFSiesta):
         self._crt_dim(self, 'n3', grid.shape[2])
 
         if nspin is None:
-            v = self._crt_var(self, 'gridfunc', grid.dtype, ('n3', 'n2', 'n1'))
+            v = self._crt_var(self, "gridfunc", grid.dtype, ('n3', 'n2', 'n1'))
         else:
-            v = self._crt_var(self, 'gridfunc', grid.dtype, ('spin', 'n3', 'n2', 'n1'))
-        v.info = 'Grid function'
+            v = self._crt_var(self, "gridfunc", grid.dtype, ('spin', 'n3', 'n2', 'n1'))
+        v.info = "Grid function"
 
         if nspin is None:
             v[:, :, :] = np.swapaxes(grid.grid, 0, 2)

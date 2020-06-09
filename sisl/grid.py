@@ -12,6 +12,7 @@ from scipy.sparse import SparseEfficiencyWarning
 from ._internal import set_module
 from . import _array as _a
 from ._help import dtype_complex_to_real, wrap_filterwarnings
+from .messages import deprecate_method
 from .shape import Shape
 from .utils import default_ArgumentParser, default_namespace
 from .utils import cmd, strseq, direction, str_spec
@@ -103,8 +104,9 @@ class Grid(SuperCellChild):
         self.grid[key] = val
 
     @property
+    @deprecate_method(f"*.geom is deprecated, use *.geometry instead")
     def geom(self):
-        """ Short-hand for `self.geometry`, may be deprecated later """
+        """ deprecated geometry """
         return self.geometry
 
     def set_geometry(self, geometry):
@@ -121,7 +123,11 @@ class Grid(SuperCellChild):
         else:
             self.geometry = geometry
             self.set_sc(geometry.sc)
-    set_geom = set_geometry
+
+    @deprecate_method(f"*.set_geom is deprecated, use *.set_geometry instead")
+    def set_geom(self, geometry):
+        """ deprecated set_geom """
+        self.set_geometry(geometry)
 
     def fill(self, val):
         """ Fill the grid with this value
