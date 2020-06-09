@@ -109,7 +109,7 @@ if not cython:
 
 
 # Custom command classes
-cmdclass = {"sdist": sdist}
+cmdclass = {}
 
 
 # Now create the build extensions
@@ -146,6 +146,30 @@ macros.append(("NPY_NO_DEPRECATED_API", "0"))
 # We do not need it
 #  https://cython.readthedocs.io/en/latest/src/userguide/source_files_and_compilation.html#integrating-multiple-modules
 macros.append(("CYTHON_NO_PYINIT_EXPORT", "1"))
+
+
+class EnsureSource_sdist(sdist):
+    """Ensure Cython has runned on all pyx files (i.e. we need c sources)."""
+
+    def initialize_options(self):
+        super().initialize_options()
+
+    def run(self):
+        if "cython" in cmdclass:
+            self.run_command("cython")
+        else:
+            pyx_files = [(_pyxfiles, "c"), (self._cpp_pyxfiles, "cpp")]
+
+            for pyxfiles, extension in [(_pyxfiles, "c")]:
+                for pyxfile in pyxfiles:
+                    sourcefile = pyxfile[:-3] + extension
+                    msg = (f"{extension}-source file '{sourcefile}' not found.\n"
+                           "Run 'setup.py cython' before sdist."
+                    )
+                    assert os.path.isfile(sourcefile), msg
+        super().run()
+
+cmdclass["sdist"] = EnsureSource_sdist
 
 
 _pyxfiles = [
@@ -196,13 +220,10 @@ extensions = []
 for name, data in ext_cython.items():
     sources = [data["pyxfile"] + suffix] + data.get("sources", [])
 
-    # Get options for extensions
-    include = data.get("include", None)
-
     ext = Extension(name,
         sources=sources,
         depends=data.get("depends", []),
-        include_dirs=include,
+        include_dirs=data.get("include", None),
         language=data.get("language", "c"),
         define_macros=macros + data.get("macros", []),
         extra_compile_args=extra_compile_args,
@@ -231,15 +252,10 @@ ext_fortran = {
 }
 
 for name, data in ext_fortran.items():
-    sources = data.get("sources")
-
-    # Get options for extensions
-    include = data.get("include", None)
-
     ext = FortranExtension(name,
-        sources=sources,
+        sources=data.get("sources"),
         depends=data.get("depends", []),
-        include_dirs=include,
+        include_dirs=data.get("include", None),
         define_macros=macros + data.get("macros", []),
         extra_compile_args=extra_compile_args,
         extra_link_args=extra_link_args,
@@ -412,6 +428,7 @@ def readme():
 metadata = dict(
     name=DISTNAME,
     maintainer=AUTHOR,
+    maintainer_email="NONE",
     description="Python interface for tight-binding model creation and analysis of DFT output. Input mechanism for large scale transport calculations using NEGF TBtrans (TranSiesta)",
     long_description=readme(),
     long_description_content_type="text/markdown",
