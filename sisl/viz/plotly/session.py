@@ -1,4 +1,4 @@
-import dill as pickle
+import dill
 
 import uuid
 import os
@@ -508,10 +508,13 @@ class Session(Configurable, Connected):
         forever: boolean, optional
             whether to keep listening after the first plot updates.
         '''
+        from threading import Event
+        
+        exit_event = Event()
 
-        while True:
+        while exit_event.is_set():
             
-            time.sleep(1)
+            exit_event.wait(1)
 
             updates_avail = self.updates_available()
             
@@ -521,7 +524,7 @@ class Session(Configurable, Connected):
                     self.plots[plotID].read_data(update_fig=True)
                 
                 if not forever:
-                    break
+                    exit_event.set()
     
     def figures_only(self):
         '''
@@ -828,7 +831,7 @@ class Session(Configurable, Connected):
             plot._get_pickleable()
             
         with open(path, 'wb') as handle:
-            pickle.dump(session, handle, protocol=pickle.HIGHEST_PROTOCOL)
+            dill.dump(session, handle, protocol=dill.HIGHEST_PROTOCOL)
 
         self.socketio = socket
 

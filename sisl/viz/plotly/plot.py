@@ -7,9 +7,8 @@ from io import StringIO, BytesIO
 import sys
 import numpy as np
 import json
-import dill as pickle
+import dill
 from copy import deepcopy
-#import pickle
 import time
 from types import MethodType, FunctionType
 import itertools
@@ -1645,7 +1644,7 @@ class Plot(ShortCutable, Configurable, Connected):
         self._get_pickleable()
 
         with open(path, 'wb') as handle:
-            pickle.dump(self, handle, protocol=pickle.HIGHEST_PROTOCOL)
+            dill.dump(self, handle, protocol=dill.HIGHEST_PROTOCOL)
         
         return True
     

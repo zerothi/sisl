@@ -1,6 +1,7 @@
 import os
 import glob
-import dill as pickle
+import dill
+import sys
 
 import numpy as np
 import itertools
@@ -427,7 +428,7 @@ def load(path):
     '''
 
     with open(path, 'rb') as handle:
-        loadedObj = pickle.load(handle)
+        loadedObj = dill.load(handle)
     
     return loadedObj
 
@@ -753,14 +754,22 @@ def trigger_notification(title, message, sound="Submarine"):
     Triggers a notification.
 
     Will not do anything in Windows (oops!)
+
+    Parameters
+    -----------
+    title: str
+    message: str
+    sound: str
     '''
-    import sys
     
     if sys.platform == 'linux':
         os.system(f'''notify-send "{title}" "{message}" ''')
     elif sys.platform == 'darwin':
         sound_string = f'sound name "{sound}"' if sound else ''
         os.system(f'''osascript -e 'display notification "{message}" with title "{title}" {sound_string}' ''')
+    else:
+        print(f'Notifications are not implemented in your operating system ({sys.platform}).'
+        ' Maybe consider switching to linux? https://www.amazon.com/s?k=linux+computers&rh=n%3A565108&ref=nb_sb_noss :)')
 
 def spoken_message(message):
     '''
@@ -769,14 +778,21 @@ def spoken_message(message):
     In linux espeak must be installed (sudo apt-get install espeak)
 
     Will not do anything in Windows (oops!)
-    '''
 
-    import sys
+    Parameters
+    -----------
+    title: str
+    message: str
+    sound: str
+    '''
     
     if sys.platform == 'linux':
         os.system(f'''espeak -s 150 "{message}" 2>/dev/null''')
     elif sys.platform == 'darwin':
         os.system(f'''osascript -e 'say "{message}"' ''')
+    else:
+        print(f'Notifications are not implemented in your operating system ({sys.platform}).'
+        ' Maybe consider switching to linux? https://www.amazon.com/s?k=linux+computers&rh=n%3A565108&ref=nb_sb_noss :)')
 
 #-------------------------------------
 #        Plot manipulation
@@ -810,5 +826,6 @@ def normalize_trace(trace, min_val=0, max_val=1, axis='y'):
         The axis along which we want to normalize.
     '''
 
-    trace[axis] = (np.array(trace[axis]) - np.min(trace[axis])) / \
-        (np.max(trace[axis]) - np.min(trace[axis]))*(max_val-min_val) + min_val
+    t = np.array(trace[axis])
+    tmin = t.min()
+    trace[axis] = (t - tmin) / (t.max() - tmin) * (max_val - min_val) + min_val
