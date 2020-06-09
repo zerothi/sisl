@@ -37,6 +37,29 @@ min_version ={
     "xarray": "0.10.0",
 }
 
+viz = {
+    "plotly": [
+        'tqdm', # for niceness
+        'dill', # for pathos
+        'pathos', # for multiprocessing
+        'plotly',
+        'pandas',
+        "xarray >= " + min_version["xarray"],
+        'simplejson',  # Because built-in json parses nan and JS does not understand it
+        'flask',
+        'flask-restx',
+        'flask-socketio',
+        'flask-cors',
+        'flask-login',
+        'flask-session'
+    ],
+    "blender": [
+    ], # for when blender enters
+    "ase": [
+        "ase" # for Jonas's implementation
+    ],
+}
+
 # Macros for use when compiling stuff
 macros = []
 
@@ -420,21 +443,11 @@ setuptools_kwargs = {
             "xarray >= " + min_version["xarray"],
             "tqdm",
         ],
-        'visualization': [
-            'tqdm',
-            'plotly',
-            'pandas',
-            'pathos',
-            'dill',
-            'simplejson',  # Because built-in json parses nan and JS does not understand it
-            'xarray',
-            'flask',
-            'flask-restx',
-            'flask-socketio',
-            'flask-cors',
-            'flask_login',
-            'flask_session'
-        ]
+        "viz": reduce(lambda a, b: a + b, viz.values()),
+        "visualization": reduce(lambda a, b: a + b, viz.values()),
+        "viz-plotly": viz["plotly"],
+        "viz-blender": viz["blender"],
+        "viz-ase": viz["ase"],
     },
     "zip_safe": False,
 }
@@ -477,8 +490,8 @@ metadata = dict(
          # Add toolbox CLI
          "stoolbox = sisl_toolbox.cli:stoolbox_cli",
          "ts_poisson = sisl_toolbox.transiesta.poisson.poisson_explicit:poisson_explicit_cli",
-         "splot = sisl.viz.splot:splot",
-         "sgui = sisl.viz.GUI:sgui"]
+         "splot = sisl.viz.plotly.splot:splot",
+         "sgui = sisl.viz.plotly.GUI:sgui"]
     },
     classifiers=CLASSIFIERS,
     platforms="any",
