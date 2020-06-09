@@ -38,20 +38,7 @@ PLOTS_CONSTANTS = {
     }
 }
 
-#Wrapper to time methods
-def timeit(method):
-
-    def timed(obj, *args, **kwargs):
-
-        start = time.time()
-
-        result = method(obj, *args, **kwargs)
-
-        print("{}: {} seconds".format(method.__name__, time.time() - start))
-
-        return result
-    
-    return timed
+__all__ = ['Plot', 'MultiplePlot', 'Animation', 'SubPlots']
 
 #------------------------------------------------
 #                 PLOT CLASS

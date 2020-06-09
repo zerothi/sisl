@@ -187,7 +187,10 @@ class PdosPlot(Plot):
     @classmethod
     def _default_animation(self, wdir = None, frame_names = None, **kwargs):
         
-        pdos_files = find_files(wdir, "*.PDOS", sort = True)
+        pdos_files = find_files(wdir, "*.PDOS.xml", sort = True)
+
+        if not pdos_files:
+            pdos_files = find_files(wdir, "*.PDOS", sort = True)
 
         def _get_frame_names(self):
 

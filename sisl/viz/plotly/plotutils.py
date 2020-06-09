@@ -10,6 +10,7 @@ import tqdm
 from copy import deepcopy
 
 from sisl.io.sile import get_siles, get_sile_rules
+from .._env_vars import register_env_var
 
 #-------------------------------------
 #            Ipython
@@ -523,6 +524,12 @@ def find_plotable_siles(dir_path=None, depth=0):
 #         Multiprocessing
 #-------------------------------------
 
+_MAX_NPROCS = register_env_var(
+    'NPROCS', max(os.cpu_count() - 1, 1),
+    "The maximum number of processors that should be used when processing"
+    " multiple plots."
+)
+
 def _apply_method(argsTuple):
     '''
     Apply a method to an object. This function is meant for multiprocessing.
@@ -608,7 +615,7 @@ def run_multiple(func, *args, argsList = None, kwargsList = None, messageFn = No
         return [func(argsTuple) for argsTuple in zip(*toZip) ]
 
     #Create a pool with the appropiate number of processes
-    pool = Pool( min(nTasks, os.cpu_count() - 1) )
+    pool = Pool( min(nTasks, _MAX_NPROCS) )
     #Define the plots array to store all the plots that we initialize
     results = [None]*nTasks
 

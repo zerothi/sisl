@@ -2,9 +2,19 @@ import os
 import sys
 import importlib
 
-from .plotutils import get_file_vars
+from .._env_vars import register_env_var
 
-USER_CUSTOM_FOLDER = os.path.join(os.path.expanduser('~'), ".sisl")
+__all__ = ['import_user_presets', 'import_user_plots',
+    'import_user_sessions', 'import_user_plugins']
+
+# Define the folder where the user will store their stuff
+DEFAULT_USER_CUSTOM_FOLDER = os.path.join(os.path.expanduser('~'), ".sisl")
+USER_CUSTOM_FOLDER = register_env_var(
+    'USER_DIR', DEFAULT_USER_CUSTOM_FOLDER,
+    "Path to the directory where the user stores their custom scripts"
+    " to extend sisl"
+)
+
 sys.path.append(os.path.abspath(USER_CUSTOM_FOLDER))
 
 def import_user_extension(extension_file):

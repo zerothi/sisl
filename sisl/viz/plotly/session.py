@@ -7,12 +7,15 @@ import glob
 from copy import deepcopy, copy
 
 import sisl
-from sisl.viz.GUI.api_utils.sync import Connected
+from .GUI.api_utils.sync import Connected
+from .._env_vars import register_env_var
 from .plot import Plot, MultiplePlot, Animation, SubPlots
 from .configurable import Configurable, vizplotly_settings
 from .plotutils import find_files, find_plotable_siles, call_method_if_present
 
 from .input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, Array1dInput
+
+__all__ = ['Session']
 
 class Warehouse:
     '''
@@ -37,7 +40,6 @@ class Warehouse:
 
     def __setitem__(self, item, value):
         self._warehouse[item] = value
-
     
 class Session(Configurable, Connected):
     '''
@@ -130,7 +132,10 @@ class Session(Configurable, Connected):
         TextInput(
             key="file_storage_dir", name="File storage directory",
             group="filesystem",
-            default="__sisltmp",
+            default= register_env_var(
+                'TEMPORAL_STORAGE', '__sisltmp',
+                "Path where temporal files should be stored"
+            ),
             width="s100% l50%",
             params={
                 "placeholder": "Write the path here..."

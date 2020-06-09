@@ -4,8 +4,8 @@ on it '''
 
 from functools import wraps
 
-from sisl.viz.plotutils import call_method_if_present
 from sisl._dispatcher import AbstractDispatch
+from ...plotutils import call_method_if_present
 from .emiters import emit_object
 
 class AutoSync(AbstractDispatch):

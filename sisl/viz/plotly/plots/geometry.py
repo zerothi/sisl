@@ -4,8 +4,8 @@ from collections import Iterable, defaultdict
 import numpy as np
 
 from sisl import Geometry, PeriodicTable, Atom
-from sisl.viz import Plot
-from sisl.viz.input_fields import ProgramaticInput, FunctionInput, FloatInput, SwitchInput, DropdownInput, AtomSelect, GeomAxisSelect, FilePathInput
+from ..plot import Plot
+from ..input_fields import ProgramaticInput, FunctionInput, FloatInput, SwitchInput, DropdownInput, AtomSelect, GeomAxisSelect, FilePathInput
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher
 
 class BoundGeometry(AbstractDispatch):

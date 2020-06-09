@@ -3,7 +3,7 @@
 Visualization utilities (:mod:`sisl.viz`)
 ====================================
 
-.. module:: sisl.viz
+.. module:: sisl.viz.plotly
    :noindex:
 
 Classes that are used for visualizing simulations results
@@ -16,8 +16,9 @@ Miscellaneous routines
 
 """
 try:
-   import sisl.viz._templates
-   from ._presets import get_preset, add_presets
+
+   from ._presets import *
+   from ._templates import *
    from ._user_customs import import_user_plots, import_user_presets, import_user_sessions, import_user_plugins
 
    from .plot import Plot, Animation, MultiplePlot, SubPlots
@@ -28,12 +29,8 @@ try:
    from ._plotables import register_plotable
 
    from ._express import sx as express
-
-   user_plots = import_user_plots()
-   user_presets = import_user_presets()
-   user_sessions = import_user_sessions()
-   user_plugins = import_user_plugins()
-except ModuleNotFoundError:
+   
+except ModuleNotFoundError as e:
+   raise e
    # Should we print a message here?
-
-__all__ = ['']
+   pass
