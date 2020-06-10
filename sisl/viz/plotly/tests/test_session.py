@@ -5,8 +5,8 @@ import numpy as np
 
 from sisl.viz import Session, Plot
 
-from sisl.viz.plots import *
-from sisl.viz.tests.test_plot import BasePlotTester
+from sisl.viz.plotly.plots import *
+from sisl.viz.plotly.tests.test_plot import BasePlotTester
 
 # This file tests general session behavior
 

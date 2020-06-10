@@ -11,9 +11,9 @@ import os
 import plotly.graph_objs as go
 
 import sisl
-from sisl.viz.plots import GridPlot
+from sisl.viz import GridPlot
 from sisl.viz import Animation
-from sisl.viz.plots.tests.get_files import from_files
+from sisl.viz.plotly.plots.tests.get_files import from_files
 
 # ------------------------------------------------------------
 #         Build a generic tester for the bands plot

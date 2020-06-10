@@ -7,7 +7,7 @@ import glob
 from copy import deepcopy, copy
 
 import sisl
-from .GUI.api_utils.sync import Connected
+from .gui.api_utils.sync import Connected
 from .._env_vars import register_env_var
 from .plot import Plot, MultiplePlot, Animation, SubPlots
 from .configurable import Configurable, vizplotly_settings

@@ -45,7 +45,7 @@ class NotebookTester:
                 os.remove(path)
 
 
-tut_root = "/home/pfebrer/webDevelopement/sislGUI/sisl/sisl/viz/Notebooks/tutorials"
+tut_root = "/home/pfebrer/webDevelopement/sislGUI/sisl/sisl/viz/plotly/Notebooks/tutorials"
 
 class TestDemo(NotebookTester):
 

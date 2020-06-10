@@ -1,5 +1,6 @@
 # Import everything from the plotly submodule
 from .plotly import *
+from .plotly import plotutils
 
 # And then import user customs (we need to do it here
 # to allow the user importing sisl.viz.Plot, for example)

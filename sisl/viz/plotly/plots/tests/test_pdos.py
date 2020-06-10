@@ -8,10 +8,10 @@ Different inputs are tested (siesta .PDOS and sisl Hamiltonian).
 
 from xarray import DataArray
 import numpy as np
-from sisl.viz.plots.tests.get_files import from_files
+from sisl.viz.plotly.plots.tests.get_files import from_files
 
 import sisl
-from sisl.viz.plots import PdosPlot
+from sisl.viz import PdosPlot
 
 # ------------------------------------------------------------
 #         Build a generic tester for the bands plot

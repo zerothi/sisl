@@ -26,7 +26,7 @@ from .plotutils import init_multiple_plots, repeat_if_childs, dictOfLists2listOf
      spoken_message, running_in_notebook, check_widgets, call_method_if_present
 from .input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
 from ._shortcuts import ShortCutable
-from .GUI.api_utils.sync import Connected
+from .gui.api_utils.sync import Connected
 
 PLOTS_CONSTANTS = {
     "spins": ["up", "down"],
@@ -841,7 +841,7 @@ class Plot(ShortCutable, Configurable, Connected):
             return sisl.get_sile(path, *args, **kwargs)
 
         else:
-            from .GUI.api_utils.iosile import get_io_sile
+            from gui.api_utils.iosile import get_io_sile
 
             SileClass = sisl.get_sile_class(path)
 

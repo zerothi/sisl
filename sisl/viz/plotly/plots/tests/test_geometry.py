@@ -10,8 +10,8 @@ import numpy as np
 import plotly.graph_objs as go
 
 import sisl
-from sisl.viz.plots import GeometryPlot
-from sisl.viz.plots.tests.get_files import from_files
+from sisl.viz import GeometryPlot
+from sisl.viz.plotly.plots.tests.get_files import from_files
 
 # ------------------------------------------------------------
 #      Build a generic tester for the geometry plot

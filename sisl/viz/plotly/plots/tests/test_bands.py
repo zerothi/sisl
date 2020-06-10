@@ -10,8 +10,8 @@ from xarray import DataArray
 import numpy as np
 
 import sisl
-from sisl.viz.plots import BandsPlot
-from sisl.viz.plots.tests.get_files import from_files
+from sisl.viz import BandsPlot
+from sisl.viz.plotly.plots.tests.get_files import from_files
 
 # ------------------------------------------------------------
 #         Build a generic tester for the bands plot

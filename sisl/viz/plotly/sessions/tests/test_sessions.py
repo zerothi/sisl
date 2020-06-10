@@ -4,9 +4,9 @@ More tests should be run on each session, but these are the most basic ones to
 ensure that at least they do not break basic session functionality.
 '''
 
-from sisl.viz.tests.test_session import BaseSessionTester
+from sisl.viz.plotly.tests.test_session import BaseSessionTester
 from sisl.viz import Session
-from sisl.viz.sessions import *
+from sisl.viz.plotly.sessions import *
 
 def get_basic_functionality_test(SessionSubClass):
 

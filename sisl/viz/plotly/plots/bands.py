@@ -8,7 +8,9 @@ import os
 import sisl
 from ..plot import Plot, PLOTS_CONSTANTS
 from ..plotutils import find_files
-from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput, FunctionInput
+from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput,\
+     IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput, FunctionInput,\
+         PlotableInput
 from ..input_fields.range import ErangeInput
 
 class BandsPlot(Plot):
@@ -93,9 +95,10 @@ class BandsPlot(Plot):
             help = '''This parameter explicitly sets a .bands file. Otherwise, the bands file is attempted to read from the fdf file '''
         ),
 
-        ProgramaticInput(key = "band_structure", name = "bandStruct structure object",
+        PlotableInput(key = "band_structure", name = "Band structure object",
             default= None,
-            help = "The bandStruct structure object to be used."
+            dtype=sisl.BandStructure,
+            help = "The BandStructure object to be used."
         ),
 
         FunctionInput(key="add_band_trace_data", name="Additional data for band traces",

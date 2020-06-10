@@ -1,6 +1,6 @@
 import numpy as np
 
-from sisl.viz.configurable import NamedHistory
+from sisl.viz.plotly.configurable import NamedHistory
 
 def test_named_history():
 

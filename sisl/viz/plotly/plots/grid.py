@@ -7,7 +7,7 @@ import sisl
 from ..plot import Plot
 from ..input_fields import TextInput, FilePathInput, Array1dInput, SwitchInput, \
      ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, \
-     QueriesInput, ProgramaticInput, PlotableInput, SislObjectInput
+     QueriesInput, ProgramaticInput, PlotableInput, SislObjectInput, PlotableInput
 
 class GridPlot(Plot):
     '''
@@ -95,8 +95,9 @@ class GridPlot(Plot):
 
     _parameters = (
 
-        ProgramaticInput(
+        PlotableInput(
             key="grid", name="Grid",
+            dtype=sisl.Grid,
             default=None,
             help="A sisl.Grid object. If provided, grid_file is ignored."
         ),

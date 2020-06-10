@@ -5,7 +5,8 @@ import numpy as np
 
 from sisl import Geometry, PeriodicTable, Atom
 from ..plot import Plot
-from ..input_fields import ProgramaticInput, FunctionInput, FloatInput, SwitchInput, DropdownInput, AtomSelect, GeomAxisSelect, FilePathInput
+from ..input_fields import ProgramaticInput, FunctionInput, FloatInput, SwitchInput, DropdownInput, AtomSelect, GeomAxisSelect, \
+    FilePathInput, PlotableInput
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher
 
 class BoundGeometry(AbstractDispatch):
@@ -64,7 +65,8 @@ class BaseGeometryPlot(Plot):
     _pt = PeriodicTable()
     
     _parameters = (
-        ProgramaticInput(key='geometry', name="Geometry",
+        PlotableInput(key='geometry', name="Geometry",
+            dtype=Geometry,
             default=None
         ),
 

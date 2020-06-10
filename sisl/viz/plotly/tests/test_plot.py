@@ -12,11 +12,11 @@ import pytest
 import numpy as np
 
 import sisl
-from sisl.viz.plot import Plot, MultiplePlot, SubPlots, Animation
+from sisl.viz.plotly.plot import Plot, MultiplePlot, SubPlots, Animation
 
-from sisl.viz.plots import *
-from sisl.viz.plotutils import get_plotable_siles, load
-from sisl.viz._presets import PRESETS
+from sisl.viz.plotly.plots import *
+from sisl.viz.plotly.plotutils import get_plotable_siles, load
+from sisl.viz.plotly._presets import PRESETS
 
 # ------------------------------------------------------------
 # Checks that will be available to be used on any plot class
@@ -161,7 +161,7 @@ class TestSubPlots(BasePlotTester):
         # We are going to try some things here and check that they don't fail
         # as we have no way of checking the actual layout of the subplots
         plot = GeometryPlot.subplots('bonds', [True, False], 
-            fixed={'geom': geom, 'axes': [0, 1]}, _debug=True)
+            fixed={'geometry': geom, 'axes': [0, 1]}, _debug=True)
 
         plot.update_settings(cols=2)
 

@@ -6,9 +6,9 @@ More tests should be run on each plot, but these are the most basic ones to
 ensure that at least they do not break basic plot functionality.
 '''
 
-from sisl.viz.tests.test_plot import BasePlotTester
-from sisl.viz.plots import *
-from sisl.viz.plotutils import get_plot_classes
+from sisl.viz.plotly.tests.test_plot import BasePlotTester
+from sisl.viz.plotly.plots import *
+from sisl.viz.plotly.plotutils import get_plot_classes
 
 # ------------------------------------------------------------
 # Factory that returns a basic functionality test for a class

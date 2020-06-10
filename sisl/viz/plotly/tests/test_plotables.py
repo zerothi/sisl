@@ -14,7 +14,7 @@ H.construct([(0.1, 1.44), (0, -2.7)], )
 
 def test_eigenstate_wf():
 
-    plot = H.eigenstate()[0].plot_wavefunction(geom=H.geom)
+    plot = H.eigenstate()[0].plot_wavefunction(geometry=H.geometry)
 
     assert len(plot.data) > 0
     assert isinstance(plot.data[0], go.Isosurface)

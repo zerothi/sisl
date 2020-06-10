@@ -1,6 +1,6 @@
 import os
 
-files_root = "/home/pfebrer/webDevelopement/sislGUI/sisl/sisl/viz/Notebooks/files"
+files_root = "/home/pfebrer/webDevelopement/sislGUI/sisl/sisl/viz/plotly/Notebooks/files"
 
 def from_files(path):
 

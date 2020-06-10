@@ -1,6 +1,6 @@
 import sisl
 from sisl.viz import BondLengthMap
-from sisl.viz.plots.tests.test_geometry import GeometryPlotTester
+from sisl.viz.plotly.plots.tests.test_geometry import GeometryPlotTester
 
 # ------------------------------------------------------------
 #      Build a generic tester for bond length plot
