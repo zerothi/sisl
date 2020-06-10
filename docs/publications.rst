@@ -9,6 +9,14 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. A. Garcia, *et. al.*,
+   *Siesta: Recent developments and applications*,
+   J. Chem. Phys. **152**, `204108 (2020) <https://doi.org/10.1063/5.0005077>`_
+
+#. N. Papior, G. Calogero, S. Leitherer, M. Brandbyge,
+  *Removing all periodic boundary conditions: Efficient non-equilibrium Green's function calculations*
+   Physical Review B **100**, `195417 (2019) <https://doi.org/10.1103/PhysRevB.100.195417>`_
+
 #. S. Sanz, P. Brandimarte, G. Giedke, D. Sanchez-Portal, T. Frederiksen,
    *Crossed graphene nanoribbons as beam splitters and mirrorsfor electron quantum optics*,
    arXiv `2005.11391 <https://arxiv.org/abs/2005.11391>`_
@@ -114,10 +122,6 @@ arXiv publications
 ------------------
 
 These publications are as far as we know in the review process.
-
-- N. Papior, G. Calogero, S. Leitherer, M. Brandbyge,
-  *Removing all periodic boundary conditions: Efficient non-equilibrium Green function calculations*
-  `1905.11113 <https://arxiv.org/abs/1905.11113>`_
 
 - D. Weckbecker, M. Fleischmann, R. Gupta, W. Landgraf, S. Leitherer, O. Pankratov, S. Sharma, V. Meded, S. Shallcross,
   *Moiré ordered current loops in the graphene twist bilayer*,
