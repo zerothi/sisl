@@ -1,6 +1,8 @@
 from numbers import Integral
 import warnings
 import functools as ftool
+import itertools
+import operator
 import numpy as np
 from numpy.lib.mixins import NDArrayOperatorsMixin
 from numpy import (
@@ -2269,30 +2271,58 @@ class SparseOrbital(_SparseGeometry):
             raise ValueError(self.__class__.__name__ + '.append requires the overlapping geometries '
                              'to have the same number of orbitals per atom that is to be replaced.')
 
-        def _check_edges_and_coordinates(spgeom, array, isc):
+
+        def _check_edges_and_coordinates(spgeom, array, isc, err_help=("unknown", "unknown")):
             # Figure out if we have found all couplings
             geom = spgeom.geometry
             # Find orbitals that we wish to exclude from the orbital connections
             # This ensures that we only find couplings crossing the supercell boundaries
-            exclude = _a.arangei(geom.no_s).reshape(geom.n_s, -1)
-            exclude = exclude[geom.sc.sc_index(isc), :].ravel()
+            irrelevant_sc = np.delete(np.arange(geom.n_s), geom.sc.sc_index(isc))
+            sc_orbitals = _a.arangei(geom.no_s).reshape(geom.n_s, -1)
+            exclude = sc_orbitals[irrelevant_sc, :].ravel()
             # get connections and transfer them to the unit-cell
-            edges = geom.sc2uc(geom.o2a(spgeom.edges(orbitals=_a.arangei(geom.no), exclude=exclude), True), True)
-            if not np.all(np.isin(edges, array, assume_unique=True)):
-                raise ValueError(self.__class__.__name__ + '.append requires that the coupling coordinates '
-                                 'coincide between the two geometries:\n   '
-                                 'overlapping atoms: {}'.format(list2str(idx_s_first)) + '\n   '
-                                 'connected atoms: {}'.format(list2str(edges)))
+            edges_sc = geom.o2a(spgeom.edges(orbitals=_a.arangei(geom.no), exclude=exclude), True)
+            edges_uc = geom.sc2uc(edges_sc, True)
+            edges_valid = np.isin(edges_uc, array, assume_unique=True)
+            if not np.all(edges_valid):
+                edges_uc = edges_sc % geom.na
+                edges_valid = np.isin(edges_uc, array, assume_unique=False)
+                errors = edges_sc[~edges_valid]
+                isc_off, uca = np.divmod(errors, geom.na)
+                sc_off_atoms = itertools.groupby(zip(isc_off, uca), operator.itemgetter(0))
+                sc_off_atoms = (
+                    (str(geom.sc.sc_off[isc]), list2str(list(map(operator.itemgetter(1), a))))
+                    for isc, a in sc_off_atoms
+                )
+                sc_off_atoms = "\n   ".join(f"{k}: {v}" for k, v in sc_off_atoms)
+
+                raise ValueError(
+                    self.__class__.__name__ + '.append requires that the coupling coordinates '
+                    'coincide between the two geometries.\n   '
+                    f'The following atoms in a {err_help[1]} `{err_help[0]}` super-cell'
+                     ' are connected to from the unit cell, but are not in matches:\n   '
+                    f'Cell-offset: atoms\n   {sc_off_atoms}'
+                )
+
+
         isc = [None] * 3
+        isc[axis] = 1
+        isc_forward = isc.copy()
+        isc[axis] = -1
+        isc_back = isc.copy()
+        isc[axis] = 0
+        isc_inplace = isc.copy()
 
         # Check that edges and overlapping atoms are the same (or at least that the
         # edges are all in the overlapping region)
-        isc[axis] = 1
-        _check_edges_and_coordinates(self, idx_s_first, isc)
-        _check_edges_and_coordinates(other, idx_o_first, isc)
-        isc[axis] = -1
-        _check_edges_and_coordinates(self, idx_s_last, isc)
-        _check_edges_and_coordinates(other, idx_o_last, isc)
+        # [self|other]: self sc-connections forward must be on left-aligned matching atoms
+        _check_edges_and_coordinates(self, idx_s_first, isc_forward, ("self", "forward"))
+        # [other|self]: other sc-connections forward must be on left-aligned matching atoms
+        _check_edges_and_coordinates(other, idx_o_first, isc_forward, ("other", "forward"))
+        # [other|self]: self sc-connections backward must be on right-aligned matching atoms
+        _check_edges_and_coordinates(self, idx_s_last, isc_back, ("self", "backward"))
+        # [self|other]: other sc-connections backward must be on right-aligned matching atoms
+        _check_edges_and_coordinates(other, idx_o_last, isc_back, ("other", "backward"))
 
         # Now we have ensured that the overlapping coordinates and the connectivity graph
         # co-incide and that we can actually perform the merge.
@@ -2308,12 +2338,9 @@ class SparseOrbital(_SparseGeometry):
             off = delete(geom.sc.sc_off[idx].T, axis, axis=0)
             return idx[np.lexsort(off)]
 
-        isc[axis] = 1
-        idx_iscP = idx[_sc_index_sort(isc)]
-        isc[axis] = 0
-        idx_isc0 = idx[_sc_index_sort(isc)]
-        isc[axis] = -1
-        idx_iscM = idx[_sc_index_sort(isc)]
+        idx_iscP = idx[_sc_index_sort(isc_forward)]
+        idx_isc0 = idx[_sc_index_sort(isc_inplace)]
+        idx_iscM = idx[_sc_index_sort(isc_back)]
         # Clean (for me to know what to do in this code)
         del idx, isc, _sc_index_sort
 
