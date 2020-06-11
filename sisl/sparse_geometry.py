@@ -1101,9 +1101,9 @@ class SparseAtom(_SparseGeometry):
         # Create repetitions
         for rep in range(reps):
             # Correct the supercell information
-            isc[:, axis] = JA // na_n
+            isc[:, axis], mod = np.divmod(JA, na_n)
 
-            indices[rep, :] = JA % na_n + sc_index(isc) * na_n
+            indices[rep, :] = mod + sc_index(isc) * na_n
 
             # Step atoms
             JA += na
@@ -1184,11 +1184,11 @@ class SparseAtom(_SparseGeometry):
             # Update the offset
             A += 1
             # Correct supercell information
-            isc[:, axis] = A // reps
+            isc[:, axis], mod = np.divmod(A, reps)
 
             # Create the indices for the repetition
             idx = array_arange(indptr[rep:-1:reps], n=csr.ncol)
-            indices[idx] = JA + A % reps + sc_index(isc) * na_n
+            indices[idx] = JA + mod + sc_index(isc) * na_n
 
         # Clean-up
         del isc, JA, A, idx
@@ -1760,9 +1760,9 @@ class SparseOrbital(_SparseGeometry):
         # Create repetitions
         for rep in range(reps):
             # Correct the supercell information
-            isc[:, axis] = JO // no_n
+            isc[:, axis], mod = np.divmod(JO, no_n)
 
-            indices[rep, :] = JO % no_n + sc_index(isc) * no_n
+            indices[rep, :] = mod + sc_index(isc) * no_n
 
             # Step orbitals
             JO += no
@@ -1873,11 +1873,11 @@ class SparseOrbital(_SparseGeometry):
             # Update the offset
             O += 1
             # Correct supercell information
-            isc[:, axis] = O // reps
+            isc[:, axis], mod = np.divmod(O, reps)
 
             # Create the indices for the repetition
             idx = array_arange(indptr[array_arange(OA, n=AO)], n=ncol)
-            indices[idx] = JO + oA * (O % reps) + sc_index(isc) * no_n
+            indices[idx] = JO + oA * mod + sc_index(isc) * no_n
 
         # Clean-up
         del isc, JO, O, OA, AO, idx
