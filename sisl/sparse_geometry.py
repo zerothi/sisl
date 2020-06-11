@@ -2186,24 +2186,24 @@ class SparseOrbital(_SparseGeometry):
             a new instance with two sparse matrices joined and appended together
         """
         if not (type(self) is type(other)):
-            raise ValueError(self.__class__.__name__ + f'.append requires other to be of same type: {other.__class__.__name__}')
+            raise ValueError(f"{self.__class__.__name__}.append requires other to be of same type: {other.__class__.__name__}")
 
         if self.geometry.nsc[axis] > 3 or other.geometry.nsc[axis] > 3:
-            raise ValueError(self.__class__.__name__ + '.append requires sparse-geometries to maximally '
-                             'have 3 supercells along appending axis.')
+            raise ValueError(f"{self.__class__.__name__}.append requires sparse-geometries to maximally "
+                             "have 3 supercells along appending axis.")
 
         if not allclose(self.geometry.nsc, other.geometry.nsc):
-            raise ValueError(self.__class__.__name__ + '.append requires sparse-geometries to have the same '
-                             'number of supercells along all directions.')
+            raise ValueError(f"{self.__class__.__name__}.append requires sparse-geometries to have the same "
+                             "number of supercells along all directions.")
 
         if not allclose(self.geometry.sc._isc_off, other.geometry.sc._isc_off):
-            raise ValueError(self.__class__.__name__ + '.append requires supercell offsets to be the same.')
+            raise ValueError(f"{self.__class__.__name__}.append requires supercell offsets to be the same.")
 
         if self.dtype != other.dtype:
-            raise ValueError(self.__class__.__name__ + '.append requires the same datatypes in the two matrices.')
+            raise ValueError(f"{self.__class__.__name__}.append requires the same datatypes in the two matrices.")
 
         if self.dim != other.dim:
-            raise ValueError(self.__class__.__name__ + '.append requires the same number of dimensions in the matrix.')
+            raise ValueError(f"{self.__class__.__name__}.append requires the same number of dimensions in the matrix.")
 
         if np.asarray(scale).size == 1:
             scale = np.array([scale, scale])
@@ -2261,66 +2261,68 @@ class SparseOrbital(_SparseGeometry):
         # allowed
         def _test(diff):
             if diff.size != diff.nonzero()[0].size:
-                raise ValueError(self.__class__.__name__ + '.append requires that there is maximally one '
-                                 'atom overlapping one other atom in the other structure.')
+                raise ValueError(f"{self.__class__.__name__}.append requires that there is maximally one "
+                                 "atom overlapping one other atom in the other structure.")
         _test(diff(idx_s_first))
         _test(diff(idx_s_last))
         # Also ensure that atoms have the same number of orbitals in the two cases
         if (not allclose(self.geometry.orbitals[idx_s_first], other.geometry.orbitals[idx_o_first])) or \
            (not allclose(self.geometry.orbitals[idx_s_last], other.geometry.orbitals[idx_o_last])):
-            raise ValueError(self.__class__.__name__ + '.append requires the overlapping geometries '
-                             'to have the same number of orbitals per atom that is to be replaced.')
+            raise ValueError(f"{self.__class__.__name__}.append requires the overlapping geometries "
+                             "to have the same number of orbitals per atom that is to be replaced.")
 
 
-        def _check_edges_and_coordinates(spgeom, array, isc, err_help=("unknown", "unknown")):
+        def _check_edges_and_coordinates(spgeom, atoms, isc, err_help):
             # Figure out if we have found all couplings
             geom = spgeom.geometry
             # Find orbitals that we wish to exclude from the orbital connections
             # This ensures that we only find couplings crossing the supercell boundaries
-            irrelevant_sc = np.delete(np.arange(geom.n_s), geom.sc.sc_index(isc))
-            sc_orbitals = _a.arangei(geom.no_s).reshape(geom.n_s, -1)
+            irrelevant_sc = delete(_a.arangei(geom.sc.n_s), geom.sc.sc_index(isc))
+            sc_orbitals = _a.arangei(geom.no_s).reshape(geom.sc.n_s, -1)
             exclude = sc_orbitals[irrelevant_sc, :].ravel()
             # get connections and transfer them to the unit-cell
             edges_sc = geom.o2a(spgeom.edges(orbitals=_a.arangei(geom.no), exclude=exclude), True)
             edges_uc = geom.sc2uc(edges_sc, True)
-            edges_valid = np.isin(edges_uc, array, assume_unique=True)
+            edges_valid = np.isin(edges_uc, atoms, assume_unique=True)
             if not np.all(edges_valid):
                 edges_uc = edges_sc % geom.na
-                edges_valid = np.isin(edges_uc, array, assume_unique=False)
+                # Reduce edges to those that are faulty
+                edges_valid = np.isin(edges_uc, atoms, assume_unique=False)
                 errors = edges_sc[~edges_valid]
+                # Get supercell offset and unit-cell atom
                 isc_off, uca = np.divmod(errors, geom.na)
-                sc_off_atoms = itertools.groupby(zip(isc_off, uca), operator.itemgetter(0))
-                sc_off_atoms = (
-                    (str(geom.sc.sc_off[isc]), list2str(list(map(operator.itemgetter(1), a))))
-                    for isc, a in sc_off_atoms
-                )
-                sc_off_atoms = "\n   ".join(f"{k}: {v}" for k, v in sc_off_atoms)
+                # group atoms for each supercell index
+                # find unique supercell offsets
+                sc_off_atoms = []
+                # This will be much faster
+                for isc in unique(isc_off):
+                    idx = (isc_off == isc).nonzero()[0]
+                    sc_off_atoms.append("{k}: {v}".format(
+                        k=str(geom.sc.sc_off[isc]),
+                        v=list2str(np.sort(uca[idx]))))
+                sc_off_atoms = "\n   ".join(sc_off_atoms)
+                raise ValueError(f"{self.__class__.__name__}.append requires matching coupling elements.\n\n"
+                                 f"The following atoms in a {err_help[1]} connection of `{err_help[0]}` super-cell "
+                                 "are connected from the unit cell, but are not found in matches:\n\n"
+                                 f"[sc-offset]: atoms\n   {sc_off_atoms}")
 
-                raise ValueError(
-                    self.__class__.__name__ + '.append requires that the coupling coordinates '
-                    'coincide between the two geometries.\n   '
-                    f'The following atoms in a {err_help[1]} `{err_help[0]}` super-cell'
-                     ' are connected to from the unit cell, but are not in matches:\n   '
-                    f'Cell-offset: atoms\n   {sc_off_atoms}'
-                )
 
-
-        isc = [None] * 3
-        isc[axis] = 1
-        isc_forward = isc.copy()
-        isc[axis] = -1
-        isc_back = isc.copy()
-        isc[axis] = 0
-        isc_inplace = isc.copy()
+        # setup supercells to look up
+        isc_inplace = [None] * 3
+        isc_inplace[axis] = 0
+        isc_forward = isc_inplace.copy()
+        isc_forward[axis] = 1
+        isc_back = isc_inplace.copy()
+        isc_back[axis] = -1
 
         # Check that edges and overlapping atoms are the same (or at least that the
         # edges are all in the overlapping region)
         # [self|other]: self sc-connections forward must be on left-aligned matching atoms
-        _check_edges_and_coordinates(self, idx_s_first, isc_forward, ("self", "forward"))
+        _check_edges_and_coordinates(self, idx_s_first, isc_forward, err_help=("self", "forward"))
         # [other|self]: other sc-connections forward must be on left-aligned matching atoms
-        _check_edges_and_coordinates(other, idx_o_first, isc_forward, ("other", "forward"))
+        _check_edges_and_coordinates(other, idx_o_first, isc_forward, err_help=("other", "forward"))
         # [other|self]: self sc-connections backward must be on right-aligned matching atoms
-        _check_edges_and_coordinates(self, idx_s_last, isc_back, ("self", "backward"))
+        _check_edges_and_coordinates(self, idx_s_last, isc_back, err_help=("self", "backward"))
         # [self|other]: other sc-connections backward must be on right-aligned matching atoms
         _check_edges_and_coordinates(other, idx_o_last, isc_back, ("other", "backward"))
 
@@ -2342,7 +2344,7 @@ class SparseOrbital(_SparseGeometry):
         idx_isc0 = idx[_sc_index_sort(isc_inplace)]
         idx_iscM = idx[_sc_index_sort(isc_back)]
         # Clean (for me to know what to do in this code)
-        del idx, isc, _sc_index_sort
+        del idx, _sc_index_sort
 
         # First scale all values
         idx_s_first = self.geometry.a2o(idx_s_first, all=True).reshape(1, -1)
