@@ -174,7 +174,7 @@ except ImportError:
         def __init__(self, total, desc, unit):
             self.total = total
             self.desc = desc
-            _stdout.write(self.desc + "  ETA = ?????h ??m ????s\r")
+            _stdout.write(f"{self.desc}  ETA = ?????h ??m ????s\r")
             _stdout.flush()
             self.t0 = _time()
             self.n = 0
@@ -185,13 +185,13 @@ except ImportError:
             self.l -= n
             m, s = divmod((_time() - self.t0) / self.n * self.l, 60)
             h, m = divmod(m, 60)
-            _stdout.write("{}  ETA = {:5d}h {:2d}m {:4.1f}s\r".format(self.desc, int(h), int(m), s))
+            _stdout.write(f"{self.desc}  ETA = {int(h):5d}h {int(m):2d}m {s:4.1f}s\r")
             _stdout.flush()
 
         def close(self):
             m, s = divmod(_time() - self.t0, 60)
             h, m = divmod(m, 60)
-            _stdout.write("{} finished after {:d}h {:d}m {:.1f}s\n".format(self.desc, int(h), int(m), s))
+            _stdout.write(f"{self.desc} finished after {int(h):d}h {int(m):d}m {s:.1f}s\r")
             _stdout.flush()
 
 

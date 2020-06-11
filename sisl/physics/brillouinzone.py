@@ -119,7 +119,7 @@ except ImportError:
     _has_xarray = False
 
 
-__all__ = ['BrillouinZone', 'MonkhorstPack', 'BandStructure']
+__all__ = ["BrillouinZone", "MonkhorstPack", "BandStructure"]
 __all__ += ["BrillouinZoneApply", "BrillouinZoneParentApply"]
 
 
@@ -1288,7 +1288,7 @@ class MonkhorstPack(BrillouinZone):
     parent : object or array_like
        An object with associated `parent.cell` and `parent.rcell` or
        an array of floats which may be turned into a `SuperCell`
-    nktp : array_like of ints
+    nkpt : array_like of ints
        a list of number of k-points along each cell direction
     displacement : float or array_like of float, optional
        the displacement of the evenly spaced grid, a single floating
