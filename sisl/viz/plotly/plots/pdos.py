@@ -5,7 +5,7 @@ import os
 from collections import defaultdict
 
 import sisl
-from ..plot import Plot
+from ..plot import Plot, entry_point
 from ..plotutils import find_files
 from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, OrbitalQueries, ProgramaticInput, Array1dInput, ListInput
 from ..input_fields.range import ErangeInput
@@ -228,6 +228,7 @@ class PdosPlot(Plot):
             _description="Split the total DOS along the different spin"
         )
 
+    @entry_point('hamiltonian')
     def _read_from_H(self):
 
         if not hasattr(self, "H"):
@@ -250,6 +251,7 @@ class PdosPlot(Plot):
         self.mp = sisl.MonkhorstPack(self.H, kgrid, kgrid_displ)
         self.PDOS = self.mp.apply.average.PDOS(self.E, eta=True)
 
+    @entry_point('siesta_output')
     def _read_siesta_output(self):
 
         pdos_file = self.setting("pdos_file") or self.requiredFiles[0]

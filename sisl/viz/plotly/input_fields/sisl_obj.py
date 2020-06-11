@@ -37,6 +37,24 @@ class SislObjectInput(InputField):
 
         super().__init__(key, *args, **kwargs)
 
+class GeometryInput(SislObjectInput):
+    pass
+
+class HamiltonianInput(SislObjectInput):
+    pass
+
+class BandStructureInput(SislObjectInput):
+    pass
+
+class BrillouinZoneInput(SislObjectInput):
+    pass
+
+class GridInput(SislObjectInput):
+    pass
+
+class EigenstateElectronInput(SislObjectInput):
+    pass  
+
 class PlotableInput(SislObjectInput):
 
     _type = "plotable"

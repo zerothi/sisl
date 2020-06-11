@@ -4,7 +4,7 @@ import numpy as np
 import plotly.graph_objects as go
 
 import sisl
-from ..plot import Plot
+from ..plot import Plot, entry_point
 from ..input_fields import TextInput, FilePathInput, Array1dInput, SwitchInput, \
      ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, \
      QueriesInput, ProgramaticInput, PlotableInput, SislObjectInput, PlotableInput
@@ -354,14 +354,20 @@ class GridPlot(Plot):
 
         self._add_shortcuts()
     
+    @entry_point('grid')
     def _read_nosource(self):
 
         self.grid = self.setting("grid")
-        
-        if self.grid is None:
-            grid_file = self.setting("grid_file")
 
-            self.grid = self.get_sile(grid_file).read_grid()
+        if self.grid is None:
+            raise Exception()
+    
+    @entry_point('grid_file')
+    def _read_grid_file(self):
+
+        grid_file = self.setting("grid_file")
+
+        self.grid = self.get_sile(grid_file).read_grid()
     
     def _after_read(self):
 
@@ -1138,6 +1144,7 @@ class WavefunctionPlot(GridPlot):
         'plot_geom': True,
     }
 
+    @entry_point('eigenstate')
     def _read_nosource(self):
 
         eigenstate = self.setting('eigenstate')
@@ -1147,6 +1154,7 @@ class WavefunctionPlot(GridPlot):
 
         self.eigenstate = eigenstate
 
+    @entry_point('hamiltonian')
     def _read_from_H(self):
 
         self.setup_hamiltonian()

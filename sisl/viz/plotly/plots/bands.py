@@ -6,7 +6,7 @@ import plotly.express as px
 import os
 
 import sisl
-from ..plot import Plot, PLOTS_CONSTANTS
+from ..plot import Plot, PLOTS_CONSTANTS, entry_point
 from ..plotutils import find_files
 from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput,\
      IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput, FunctionInput,\
@@ -264,6 +264,7 @@ class BandsPlot(Plot):
 
         self.add_shortcut("g", "Toggle gap", self.toggle_gap)
 
+    @entry_point('hamiltonian')
     def _read_from_H(self, eigenstate_map=None):
 
         bandStruct = self.setting("band_structure")
@@ -319,6 +320,7 @@ class BandsPlot(Plot):
 
         self.bands.attrs = {"ticks": self.ticks[0], "ticklabels": self.ticks[1]}
 
+    @entry_point('bands_file')
     def _read_siesta_output(self):
         
         #Get the info from the bands file

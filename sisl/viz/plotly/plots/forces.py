@@ -3,7 +3,7 @@ import numpy as np
 import os
 
 import sisl
-from ..plot import Plot
+from ..plot import Plot, entry_point
 from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
 
 class ForcesPlot(Plot):
@@ -78,6 +78,7 @@ class ForcesPlot(Plot):
 
     )
 
+    @entry_point('siesta_output')
     def _read_siesta_output(self):
 
         root_fdf = self.setting("root_fdf")

@@ -24,17 +24,12 @@ from .configurable import *
 from ._presets import get_preset
 from .plotutils import init_multiple_plots, repeat_if_childs, dictOfLists2listOfDicts, trigger_notification, \
      spoken_message, running_in_notebook, check_widgets, call_method_if_present
-from .input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
+from .input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput, PlotableInput
 from ._shortcuts import ShortCutable
 from .gui.api_utils.sync import Connected
 
 PLOTS_CONSTANTS = {
     "spins": ["up", "down"],
-    "readFuncs": {
-        "from_H": lambda obj: obj._read_from_H, 
-        "siesta_output": lambda obj: obj._read_siesta_output,
-        "no_source": lambda obj: obj._read_nosource
-    }
 }
 
 __all__ = ['Plot', 'MultiplePlot', 'Animation', 'SubPlots']
@@ -547,6 +542,34 @@ class Plot(ShortCutable, Configurable, Connected):
 
         return object.__new__(cls)
 
+    def __init_subclass__(cls):
+        '''
+        Whenever a plot class is defined, this method is called.
+
+        We will use this opportunity to register entry points.
+
+        We could use this to register plotables (see commented code).
+        However, there is one major problem: how to specify defaults.
+        This is a problem because sometimes an input field is inherited from one plot
+        to another, therefore you can not say: "this is the default plotable input".
+        
+        Probably, defaults should be centralized, but I don't know where just yet.
+        '''
+        import inspect
+
+        # Register the entry points of this class.
+        cls.entry_points = []
+        for key, val in inspect.getmembers(cls, lambda x: isinstance(x, EntryPoint)):
+            cls.entry_points.append(val)
+            # After registering an entry point, we will just set the method
+            setattr(cls, key, val._method)  
+
+        # from ._plotables import register_plotly_plotable
+
+        # for param in cls._get_class_params()[0]:
+        #     if isinstance(param, PlotableInput):
+        #         register_plotly_plotable(param.dtype, cls, param.key)
+
     @vizplotly_settings('before', init=True)
     def __init__(self, *args, H = None, attrs_for_plot={}, only_init=False, presets=None, layout={}, _debug=False,**kwargs):
 
@@ -754,25 +777,27 @@ class Plot(ShortCutable, Configurable, Connected):
         return self
     
     def _read_from_sources(self):
-        
         '''
-        Tries to read the data from the different possible sources in the order 
-        determined by self.settings["reading_order"].
+        Tries to read the data from the different available entry points in the plot class.
         '''
+
+        # It is possible that the class does not implement any entry points,
+        # because it doesn't need to read any data. Then the plotting process
+        # will basically start at set_data.
+        if not self.entry_points:
+            return
         
         errors = []
-        #Try to read in the order specified by the user
-        for source in self.setting("reading_order"):
+        # Try to read data using all the different entry points
+        # This is just a first implementation. One of the reasons entry points
+        # have been implemented is that we can do smarter things than this.
+        for entry_point in self.entry_points:
             try:
-                #Get the reading function
-                readingFunc = PLOTS_CONSTANTS["readFuncs"][source](self)
-                #Execute it
-                returns = readingFunc()
-                self.source = source
+                returns = getattr(self, entry_point._method_attr)()
+                self.source = entry_point
                 return returns
             except Exception as e:
-                errors.append("\t- {}: {}.{}".format(source, type(e).__name__, e))
-                
+                errors.append("\t- {}: {}.{}".format(entry_point._name, type(e).__name__, e))
         else:
             self.source = None
             raise Exception("Could not read or generate data for {} from any of the possible sources.\n\n Here are the errors for each source:\n\n {}  "
@@ -1062,7 +1087,6 @@ class Plot(ShortCutable, Configurable, Connected):
     @repeat_if_childs
     @vizplotly_settings('before')
     def set_data(self, update_fig = True, **kwargs):
-        
         '''
         Method to process the data that has been read beforehand by read_data() and prepare the figure.
         '''
@@ -1673,7 +1697,52 @@ class Plot(ShortCutable, Configurable, Connected):
         import chart_studio.plotly as py
 
         return py.plot(self.figure, *args, **kwargs)
+  
+class EntryPoint:
     
+    def __init__(self, name, setting_key, method, instance=None):
+        self._name = name
+        self._method_attr = method.__name__
+        self._setting_key = setting_key
+        self._method = method
+
+def entry_point(name):
+    '''
+    Helps registering entry points for plots.
+
+    See the usage section to get a fast intuitive way of how to use it.
+
+    Basically, you need to provide some parameters (which are described
+    in the parameters section), and this function will return a decorator that
+    you can use in the functions of your plot class that do the reading part.
+
+    A function that is meant to read data but it's not marked as an entry_point
+    will be invisible to Plot.
+
+    NOTE: A plot class can have no entry points. This is perfectly fine if the 
+    class does not need to read data for some reason. In this case, we will go straight
+    into the data setting methods (i.e. set_data).
+
+    Parameters
+    -----------
+    name: str
+        the name of the entry point that the decorated function implements.
+
+    Usage
+    -------
+
+    class MyPlot(Plot):
+
+        @entry_point('siesta_output')
+        def _lets_read_from_siesta_output(self):
+            ...do some work here
+
+        @entry_point('ask_mum'):
+        def _we_are_quite_lost_so_we_better_ask_mum(self):
+            self.call_mum()
+    '''
+    return partial(EntryPoint, name, ())
+
 #------------------------------------------------
 #               ANIMATION CLASS
 #------------------------------------------------

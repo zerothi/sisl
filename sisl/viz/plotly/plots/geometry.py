@@ -4,7 +4,7 @@ from collections import Iterable, defaultdict
 import numpy as np
 
 from sisl import Geometry, PeriodicTable, Atom
-from ..plot import Plot
+from ..plot import Plot, entry_point
 from ..input_fields import ProgramaticInput, FunctionInput, FloatInput, SwitchInput, DropdownInput, AtomSelect, GeomAxisSelect, \
     FilePathInput, PlotableInput
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher
@@ -64,22 +64,6 @@ class BaseGeometryPlot(Plot):
 
     _pt = PeriodicTable()
     
-    _parameters = (
-        PlotableInput(key='geometry', name="Geometry",
-            dtype=Geometry,
-            default=None
-        ),
-
-        FilePathInput(key="geom_file", name="Geometry file",
-            group="dataread",
-            default=None
-        ),
-
-        SwitchInput(key='bonds', name='Show bonds',
-            default=True,
-        ),
-    )
-    
     _layout_defaults = {
         'xaxis_showgrid': False,
         'xaxis_zeroline': False,
@@ -110,18 +94,6 @@ class BaseGeometryPlot(Plot):
         symb = Atom(atom).symbol
 
         return cls._atoms_colors.get(symb, cls._atoms_colors["else"])
-    
-    def _read_nosource(self):
-        self.geometry = self.setting('geometry') or getattr(self, "geometry", None)
-        
-        if self.geometry is None:
-            raise Exception("No geometry has been provided.")
-
-    def _read_siesta_output(self):
-
-        geom_file = self.setting("geom_file") or self.setting("root_fdf")
-
-        self.geometry = self.get_sile(geom_file).read_geometry()
             
     def _after_read(self):
 
@@ -925,6 +897,20 @@ class GeometryPlot(BaseGeometryPlot):
 
     _parameters = (
 
+        PlotableInput(key='geometry', name="Geometry",
+            dtype=Geometry,
+            default=None,
+        ),
+
+        FilePathInput(key="geom_file", name="Geometry file",
+            group="dataread",
+            default=None
+        ),
+
+        SwitchInput(key='bonds', name='Show bonds',
+            default=True,
+        ),
+
         GeomAxisSelect(
             key="axes", name="Axes to display",
             default=["x", "y", "z"],
@@ -988,6 +974,20 @@ class GeometryPlot(BaseGeometryPlot):
         )
         
     )
+
+    @entry_point('geometry')
+    def _read_nosource(self):
+        self.geometry = self.setting('geometry') or getattr(self, "geometry", None)
+        
+        if self.geometry is None:
+            raise Exception("No geometry has been provided.")
+
+    @entry_point('geom_file')
+    def _read_siesta_output(self):
+
+        geom_file = self.setting("geom_file") or self.setting("root_fdf")
+
+        self.geometry = self.get_sile(geom_file).read_geometry()
 
     def _after_read(self):
 

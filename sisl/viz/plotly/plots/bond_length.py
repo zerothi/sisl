@@ -4,7 +4,7 @@ import itertools
 from functools import partial
 
 import sisl
-from ..plot import Plot
+from ..plot import Plot, entry_point
 from .geometry import GeometryPlot, BoundGeometry
 from ..plotutils import find_files
 from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
@@ -236,12 +236,14 @@ class BondLengthMap(GeometryPlot):
     def on_relaxed_geom(self):
         return BoundGeometry(self.relaxed_geom, self)
 
+    @entry_point('geometry')
     def _read_nosource(self):
 
         GeometryPlot._read_nosource(self)
 
         self._read_strain_ref()
-
+    
+    @entry_point('geom_file')
     def _read_siesta_output(self):
         
         GeometryPlot._read_siesta_output(self)

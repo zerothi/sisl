@@ -7,7 +7,7 @@ from  plotly.colors import DEFAULT_PLOTLY_COLORS
 from xarray import DataArray
 
 import sisl
-from ..plot import Plot
+from ..plot import Plot, entry_point
 from .bands import BandsPlot
 from ..plotutils import random_color
 from ..input_fields import OrbitalQueries, TextInput, DropdownInput, SwitchInput, ColorPicker, FloatInput, FilePathInput
@@ -136,6 +136,7 @@ class FatbandsPlot(BandsPlot):
 
     )
 
+    @entry_point('siesta_output')
     def _read_siesta_output(self):
 
         # Try to get the wfsx file either by user input or by guessing it
@@ -194,6 +195,7 @@ class FatbandsPlot(BandsPlot):
         # Set up the options for the 'groups' setting based on the plot's associated geometry
         self._set_group_options()
 
+    @entry_point('hamiltonian')
     def _read_from_H(self):
 
         self.weights = []
