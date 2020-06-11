@@ -4,6 +4,11 @@ ignore:
   - developments
 
 coverage:
+  status:
+    project:
+      default:
+        target: auto
+	base: auto
   notify:
     gitter:
       default:
