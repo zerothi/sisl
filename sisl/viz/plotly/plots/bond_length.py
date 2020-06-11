@@ -7,7 +7,8 @@ import sisl
 from ..plot import Plot, entry_point
 from .geometry import GeometryPlot, BoundGeometry
 from ..plotutils import find_files
-from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
+from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput, \
+     IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput, SileInput
 
 class BondLengthMap(GeometryPlot):
     
@@ -106,9 +107,9 @@ class BondLengthMap(GeometryPlot):
             help = "In case the geometry is read from the fdf file, this will determine whether the input or the output geometry is taken.<br>This setting will be ignored if geom_file is passed"
         ),
 
-        FilePathInput(
+        SileInput(
             key = "strain_ref", name = "Strain reference geometry",
-            default = None,
+            hasattr=['read_geometry'],
             dtype=(str, sisl.Geometry),
             group = "dataread",
             width = "s100% m50% l33%",

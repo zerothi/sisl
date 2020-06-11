@@ -5,6 +5,16 @@ This input field is prepared to receive sisl objects that are plotables
 import sisl
 
 from .._input_field import InputField
+from .text import FilePathInput
+
+from sisl import BaseSile
+
+if not hasattr(BaseSile, "to_json"):
+    # Little patch so that Siles can be sent to the GUI
+    def sile_to_json(self):
+        return str(self.file)
+
+    BaseSile.to_json = sile_to_json
 
 
 forced_keys = {
@@ -27,7 +37,7 @@ class SislObjectInput(InputField):
 
         valid_key = forced_keys.get(kwargs['dtype'], None)
 
-        if not key.endswith(valid_key):
+        if valid_key is not None and not key.endswith(valid_key):
 
             raise ValueError(
                 f'Invalid key ("{key}") for an input that accepts {kwargs["dtype"]}, please use {valid_key}'
@@ -38,7 +48,17 @@ class SislObjectInput(InputField):
         super().__init__(key, *args, **kwargs)
 
 class GeometryInput(SislObjectInput):
-    pass
+
+    _dtype = (str, sisl.Geometry, *sisl.get_siles(attrs=['read_geometry']))
+
+    def parse(self, val):
+
+        if isinstance(val, str):
+            val = sisl.get_sile(val)
+        if isinstance(val, sisl.io.Sile):
+            val = val.read_geometry()
+        
+        return val
 
 class HamiltonianInput(SislObjectInput):
     pass
@@ -60,4 +80,13 @@ class PlotableInput(SislObjectInput):
     _type = "plotable"
 
     def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+class SileInput(FilePathInput, SislObjectInput):
+
+    def __init__(self, *args, required_attrs=None, **kwargs):
+
+        if required_attrs:
+            kwargs['dtype'] = sisl.get_siles(attrs=required_attrs)
+        
         super().__init__(*args, **kwargs)

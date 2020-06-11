@@ -4,7 +4,7 @@ from .dropdown import DropdownInput, AtomSelect, SpeciesSelect, OrbitalsNameSele
 from .list import ListInput
 from .number import IntegerInput, FloatInput
 from .programatic import ProgramaticInput, FunctionInput
-from .sisl_obj import SislObjectInput, PlotableInput
+from .sisl_obj import SislObjectInput, GeometryInput, PlotableInput, SileInput
 from .queries import QueriesInput, OrbitalQueries
 from .range import RangeInput
 from .rangeslider import RangeSlider

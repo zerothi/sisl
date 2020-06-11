@@ -32,7 +32,7 @@ class FilePathInput(TextInput):
         }
     }
         
-    def _parse(self, val):
+    def parse(self, val):
 
         if isinstance(val, BaseSile):
             return str(val.file)

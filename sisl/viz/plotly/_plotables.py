@@ -114,11 +114,11 @@ def register_plotly_plotable(plotable, PlotClass=None, setting_key=None, plottin
 
     # And to help keep track of the plotability we tell to the plot class that 
     # it can plot this object, and which setting to use.
-    if PlotClass is not None:
-        if not hasattr(PlotClass, '_registered_plotables'):
-            PlotClass._registered_plotables = {}
+    # if PlotClass is not None:
+    #     if not hasattr(PlotClass, '_registered_plotables'):
+    #         PlotClass._registered_plotables = {}
 
-        PlotClass._registered_plotables[plotable] = setting_key
+    #     PlotClass._registered_plotables[plotable] = setting_key
 
 # -----------------------------------------------------
 #               Register plotable siles
@@ -126,19 +126,19 @@ def register_plotly_plotable(plotable, PlotClass=None, setting_key=None, plottin
 
 register = register_plotly_plotable
 
-register(siesta.bandsSileSiesta, BandsPlot, 'bands_file')
+register(siesta.bandsSileSiesta, BandsPlot, 'bands_file', default=True)
 register(siesta.bandsSileSiesta, FatbandsPlot, 'bands_file')
 
-register(siesta.pdosSileSiesta, PdosPlot, 'pdos_file')
+register(siesta.pdosSileSiesta, PdosPlot, 'pdos_file', default=True)
 
 for GridSile in get_siles(attrs=["read_grid"]):
-    register(GridSile, GridPlot, 'grid_file')
+    register(GridSile, GridPlot, 'grid_file', default=True)
 
 for GeomSile in get_siles(attrs=["read_geometry"]):
     register(GeomSile, GeometryPlot, 'geom_file', default=True)
     register(GeomSile, BondLengthMap, 'geom_file')
 
-register(siesta.outSileSiesta, ForcesPlot, 'out_file')
+register(siesta.outSileSiesta, ForcesPlot, 'out_file', default=True)
 
 # -----------------------------------------------------
 #           Register plotable sisl objects

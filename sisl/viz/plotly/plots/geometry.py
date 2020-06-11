@@ -921,7 +921,7 @@ class GeometryPlot(BaseGeometryPlot):
         ),
 
         FunctionInput(
-            key="1d_dataaxis", name="1d data axis",
+            key="dataaxis_1d", name="1d data axis",
             default=None,
             help='''If you want a 1d representation, you can provide a data axis.
             It should be a function that receives the 1d coordinate of each atom and

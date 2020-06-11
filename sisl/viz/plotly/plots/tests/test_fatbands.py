@@ -47,7 +47,7 @@ class FatbandsPlotTester(BandsPlotTester):
         assert fatbands_traces[0].line.color == color
         assert fatbands_traces[0].name == name
     
-    def test_build_groups(self):
+    def test_split_groups(self):
 
         plot = self.plot
 
@@ -66,7 +66,7 @@ class FatbandsPlotTester(BandsPlotTester):
         # Check that each splitting works as expected
         for group_by, length in expected_splits:
 
-            plot.build_groups(group_by)
+            plot.split_groups(group_by)
             err_message = f'Not correctly grouping by {group_by}'
             assert len(plot.data) - traces_before, err_message
 

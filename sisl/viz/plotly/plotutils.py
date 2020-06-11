@@ -143,7 +143,7 @@ def get_configurable_docstring(cls):
 
     return doc
 
-def get_configurable_kwargs(cls):
+def get_configurable_kwargs(cls_or_inst, fake_default):
     '''
     Builds a string to help you define all the kwargs coming from the settings.
 
@@ -154,8 +154,11 @@ def get_configurable_kwargs(cls):
 
     Parameters
     ------------
-    cls:
-        the class you want the kwargs for
+    cls_or_inst:
+        the class (or instance) you want the kwargs for.
+    fake_default: str
+        only floats, ints, bools and strings can be parsed safely into strings and then into values again.
+        For this reason, the rest of the settings will just be given a fake default that you need to handle.
 
     Returns
     -----------
@@ -163,13 +166,24 @@ def get_configurable_kwargs(cls):
         the string containing the described kwargs.
     '''
 
-    if isinstance(cls, type):
-        params = cls._parameters
+    def get_string(val):
+        if isinstance(val, (float, int, bool)) or val is None:
+            return val
+        elif isinstance(val, str):
+            return val.__repr__()
+        else:
+            return fake_default.__repr__()
+
+    if isinstance(cls_or_inst, type):
+        params = cls_or_inst._parameters
+        return ", ".join([f'{param.key}={get_string(param.default)}' for param in params])
     else:
         # It's really an instance, not the class
-        params = cls.params
+        # In this case, the defaults for the method will be the current values.
+        params = cls_or_inst.params
+        return ", ".join([f'{param.key}={get_string(cls_or_inst.settings[param.key])}' for param in params])
 
-    return ", ".join([f'{param.key}={param.default if not isinstance(param.default, str) else param.default.__repr__()}' for param in params])
+    
 
 def get_configurable_kwargs_to_pass(cls):
     '''

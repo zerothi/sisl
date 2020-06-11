@@ -9,7 +9,7 @@ import sisl
 from ..plot import Plot, PLOTS_CONSTANTS, entry_point
 from ..plotutils import find_files
 from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput,\
-     IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput, FunctionInput,\
+     IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput, FunctionInput, SileInput, \
          PlotableInput
 from ..input_fields.range import ErangeInput
 
@@ -264,41 +264,17 @@ class BandsPlot(Plot):
 
         self.add_shortcut("g", "Toggle gap", self.toggle_gap)
 
-    @entry_point('hamiltonian')
-    def _read_from_H(self, eigenstate_map=None):
+    @entry_point('band_structure')
+    def _read_from_band_structure(self, band_structure=None, eigenstate_map=None):
 
-        bandStruct = self.setting("band_structure")
-        
-        #If no bandStruct structure is provided, then build it ourselves
-        if bandStruct is None:
+        band_struct = band_structure or self.setting("band_structure")
 
-            if not hasattr(self, "H"):
-                self.setup_hamiltonian()
+        if not hasattr(band_struct, "H"):
+            self.setup_hamiltonian()
+            band_struct.set_parent(self.H)
 
-            #Get the requested path
-            self.path = self.setting('path')
-            if self.path and len(self.path) > 1:
-                self.path = [point for point in self.setting("path") if point.get("active", True)]
-            else:
-                raise Exception(f"You need to provide at least 2 points of the path to draw the bands. Please update the 'path' setting. The current path is: {self.path}")
-
-            bandStruct = sisl.BandStructure(
-                self.H,
-                point=np.array([[
-                        point.get("x", None) or 0, point.get("y", None) or 0, point.get("z", None) or 0
-                    ] for point in self.path], dtype=float),
-                division=np.array([point["divisions"] for point in self.path[1:]], dtype=int),
-                name=np.array([point.get("tick", '') for point in self.path])
-            )
-
-        else:
-
-            if not hasattr(bandStruct, "H"):
-                self.setup_hamiltonian()
-                bandStruct.set_parent(self.H)
-            
-        self.ticks = bandStruct.lineartick()
-        self.kPath = bandStruct._k
+        self.ticks = band_struct.lineartick()
+        self.kPath = band_struct._k
 
         # We define a wrapper to get the values out of the eigenstates
         # to give the possibility to the user to do something inbetween
@@ -310,16 +286,48 @@ class BandsPlot(Plot):
             return eigenstate.eig
 
         # THIS DOES NOT SUPPORT SPIN!!!!!!!!!!!!!!!! (I think)
-        self.bands = bandStruct.apply.dataarray.eigenstate(
+        self.bands = band_struct.apply.dataarray.eigenstate(
             wrap=bands_wrapper,
             coords=('band',),
         )
 
         self.bands = self.bands.expand_dims('spin', axis=1)
-        self.bands['k'] = bandStruct.lineark()
+        self.bands['k'] = band_struct.lineark()
 
         self.bands.attrs = {"ticks": self.ticks[0], "ticklabels": self.ticks[1]}
 
+    @entry_point('path')
+    def _read_from_H(self, eigenstate_map=None):
+        '''
+        This entry point just generates a band structure from the path and
+        then the band_structure entry point takes it from there.
+
+        (it seems stupid now, but this is because of how things were at the beggining)
+
+        Therefore it should be removed. Only one of "path" or "band_structure"
+        inputs should exist. And then it should be always parsed into a sisl.BandStructure.
+        '''
+
+        #Get the requested path
+        self.path = self.setting('path')
+        if not self.path and self.setting('band_structure'):
+            return self._read_from_band_structure(eigenstate_map=eigenstate_map)
+        if self.path and len(self.path) > 1:
+            self.path = [point for point in self.setting("path") if point.get("active", True)]
+        else:
+            raise Exception(f"You need to provide at least 2 points of the path to draw the bands. Please update the 'path' setting. The current path is: {self.path}")
+
+        band_struct = sisl.BandStructure(
+            None, # The band structure entry_point will take care of this
+            point=np.array([[
+                    point.get("x", None) or 0, point.get("y", None) or 0, point.get("z", None) or 0
+                ] for point in self.path], dtype=float),
+            division=np.array([point["divisions"] for point in self.path[1:]], dtype=int),
+            name=np.array([point.get("tick", '') for point in self.path])
+        )
+
+        self._read_from_band_structure(band_structure=band_struct, eigenstate_map=eigenstate_map)
+        
     @entry_point('bands_file')
     def _read_siesta_output(self):
         

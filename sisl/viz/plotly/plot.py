@@ -37,6 +37,7 @@ __all__ = ['Plot', 'MultiplePlot', 'Animation', 'SubPlots']
 #------------------------------------------------
 #                 PLOT CLASS
 #------------------------------------------------    
+
 class Plot(ShortCutable, Configurable, Connected):
     '''
     Parent class of all plot classes.
@@ -104,28 +105,9 @@ class Plot(ShortCutable, Configurable, Connected):
             "description": "In such a busy world, one may forget how the files are structured in their computer. Please take a moment to <b>make sure your data is being read exactly in the way you expect<b>."
         },
 
-        {
-            "key": "layout",
-            "name": "Layout settings",
-            "icon": "format_paint",
-            "subGroups":[
-                {"key": "xaxis", "name": "X axis"},
-                {"key": "yaxis", "name": "Y axis"},
-                {"key": "animation", "name": "Animation"}
-            ],
-            "description": "Data may loose its value if it is not well presented. Play with this parameters to <b>make your plot as beautiful and easy to understand as you can</b>."
-        },
-
     )
     
     _parameters = (
-
-        ProgramaticInput(
-            key = "reading_order", name = "Output reading/generating order",
-            group = "dataread",
-            default = ("guiOut", "siesta_output", "from_H", "no_source"),
-            help = "Order in which the plot tries to read the data it needs."
-        ),
 
         TextInput(
             key = "root_fdf", name = "Path to fdf file",
@@ -172,6 +154,8 @@ class Plot(ShortCutable, Configurable, Connected):
         See sisl/viz/_plotables.py and particularly the `register_plotable`
         function to understand this better.
         '''
+        if cls is Plot:
+            return None
         return getattr(cls, "_suffix", cls.__name__.lower().replace("plot", ""))
 
     @property
@@ -473,8 +457,7 @@ class Plot(ShortCutable, Configurable, Connected):
             # This is just so that the plotable framework knows from which plot class
             # it is being called so that it can build the corresponding plot.
             # Only relevant if the plot is built with obj.plot()
-            if "plot_suffix" not in kwargs and cls != Plot:
-                kwargs["plot_suffix"] = cls.suffix()
+            plot_method = kwargs.get("plot_method", cls.suffix())
             
             # If a filename is recieved, we will try to find a plot for it
             if isinstance(args[0], str):
@@ -487,9 +470,7 @@ class Plot(ShortCutable, Configurable, Connected):
                     plot = cls(**kwargs)
                 else:
                     if hasattr(sile, "plot"):
-                        # This is a fix until Nick tells me how to bypass the
-                        # file handle is not open yet exception
-                        plot = sile.plot(**kwargs)
+                        plot = sile.plot(**{**kwargs, "method": plot_method})
                     else:
                         raise NotImplementedError(
                             f'There is no plot implementation for {sile.__class__} yet.')
@@ -497,11 +478,8 @@ class Plot(ShortCutable, Configurable, Connected):
             else:
                 obj = args[0]
                 # Maybe the first argument is a plotable object (e.g. a geometry)
-                # __plot__ is currently implemented outside the viz package, we will not use it for the moment
-                # if hasattr(obj, "__plot__"):
-                #     plot = obj.__plot__(**kwargs)
                 if hasattr(obj, "plot"):
-                    plot = obj.plot(**kwargs)
+                    plot = obj.plot(**{**kwargs, "method": plot_method})
                 else:
                     return object.__new__(cls)
         
@@ -546,7 +524,9 @@ class Plot(ShortCutable, Configurable, Connected):
         '''
         Whenever a plot class is defined, this method is called.
 
-        We will use this opportunity to register entry points.
+        We will use this opportunity to:
+            - Register entry points.
+            - Generate a more helpful __init__ method that exposes all the settings.
 
         We could use this to register plotables (see commented code).
         However, there is one major problem: how to specify defaults.
@@ -555,6 +535,7 @@ class Plot(ShortCutable, Configurable, Connected):
         
         Probably, defaults should be centralized, but I don't know where just yet.
         '''
+        super().__init_subclass__()
         import inspect
 
         # Register the entry points of this class.
@@ -562,7 +543,7 @@ class Plot(ShortCutable, Configurable, Connected):
         for key, val in inspect.getmembers(cls, lambda x: isinstance(x, EntryPoint)):
             cls.entry_points.append(val)
             # After registering an entry point, we will just set the method
-            setattr(cls, key, val._method)  
+            setattr(cls, key, val._method)
 
         # from ._plotables import register_plotly_plotable
 
@@ -899,7 +880,8 @@ class Plot(ShortCutable, Configurable, Connected):
 
         return filesModified.any()
     
-    def listen(self, forever=True, show=True, as_animation=False, return_animation=True, return_figWidget=False, clearPrevious=True, notify=False, speak=False, notify_title=None, notify_message=None, speak_message=None, fig_widget=None):
+    def listen(self, forever=True, show=True, as_animation=False, return_animation=True, return_figWidget=False, 
+        clear_previous=True, notify=False, speak=False, notify_title=None, notify_message=None, speak_message=None, fig_widget=None):
         '''
         Listens for updates in the followed files (see the `updates_available` method)
 
@@ -930,7 +912,7 @@ class Plot(ShortCutable, Configurable, Connected):
 
             if return_animation is True, both the animation and the figure widget will be returned in a tuple.
             Although right now, this does not make much sense because figure widgets don't support frames. You will get None.
-        clearPrevious: boolean, optional
+        clear_previous: boolean, optional
             in case show is True, whether the previous version of the plot should be hidden or kept in display.
         notify: boolean, optional
             trigger a notification everytime the plot updates.
@@ -980,7 +962,7 @@ class Plot(ShortCutable, Configurable, Connected):
                             pt.add_childplots(new_plot)
                             pt.get_figure()
 
-                        if clearPrevious and fig_widget is None:
+                        if clear_previous and fig_widget is None:
                             clear_output()
 
                         if show and fig_widget is None:
@@ -1705,6 +1687,7 @@ class EntryPoint:
         self._method_attr = method.__name__
         self._setting_key = setting_key
         self._method = method
+        self.__doc__ = method.__doc__
 
 def entry_point(name):
     '''

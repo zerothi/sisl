@@ -360,17 +360,25 @@ class Configurable:
 
         #Initialize the object where we are going to store what each setting needs to rerun when it is updated
         self.whatToRunOnUpdate = {}
-
-        # Update the docs of the update_settings method to truly reflect
-        # the available kwargs for the object
-        def update_settings(self, **kwargs):
-            return Configurable.update_settings(self, **kwargs)
-
-        update_settings.__doc__ = get_configurable_docstring(self)
-        self.update_settings = MethodType(update_settings, self)
         
         return self
     
+    def __init_subclass__(cls):
+        '''
+        When a configurable class is defined, this will be called.
+
+        We will make use of it to:
+            - Give a more specific docstring to update settings.
+        '''
+
+        # Change the docs of the update_settings method to truly reflect
+        # the available kwargs for the plot class and provide more help to the user
+        def update_settings(self, *args, **kwargs):
+            return self._update_settings(*args, **kwargs)
+
+        update_settings.__doc__ = f"Updates the settings of this plot.\n\nDocs for {cls.__name__}:\n\n{get_configurable_docstring(cls)}" 
+        cls.update_settings = update_settings
+
     @property
     def settings(self):
         return self.settings_history.current
@@ -395,14 +403,26 @@ class Configurable:
 
         return params, param_groups
 
-    def update_settings(self, run_updates=True, no_log=False , **kwargs):
+    def update_settings(self, *args, **kwargs):
+        '''
+        This method will be overwritten for each class. See `_update_settings`.
+        '''
+        return self._update_settings(*args, **kwargs)
+
+    def _update_settings(self, run_updates=True, no_log=False , **kwargs):
+        '''
+        Updates the settings of the object. 
+        
+        Note that this is only private because we provide a public update_settings
+        with the specific kwargs for each class so that users can quickly know which
+        settings are available. You can see how we define this method in `__init_subclass__`
+        '''
         
         #Initialize the settings in case there are none yet
         if not hasattr(self, "settings_history"):
             return self.init_settings(**kwargs)
         
-        
-        #Otherwise, update them
+        # Otherwise, update them
         updates = {key:val for key, val in kwargs.items() if key in self.settings_history}
         if updates:
             self.settings_history.update(**updates)
@@ -631,9 +651,9 @@ class Configurable:
         if fake_settings is not None:
             settings = {**settings, **fake_settings}
 
-        # Get the value of the setting and parse it using the _parse method
+        # Get the value of the setting and parse it using the parse method
         # defined for the parameter
-        val = self.get_param(key)._parse(settings[key])
+        val = self.get_param(key).parse(settings[key])
 
         return deepcopy(val) if copy else val
     
@@ -757,7 +777,7 @@ def vizplotly_settings(when='before', init=False):
     if init:
         method_name = 'init_settings'
     else:
-        method_name = 'update_settings'
+        method_name = '_update_settings'
         extra_kwargs = {'from_decorator': True, 'run_updates': True}
     
     def decorator(method):

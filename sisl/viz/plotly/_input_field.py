@@ -237,7 +237,7 @@ class InputField:
             json.dumps(self, default=default)
         )
 
-    def _parse(self, val):
+    def parse(self, val):
 
         if val is None:
             return None

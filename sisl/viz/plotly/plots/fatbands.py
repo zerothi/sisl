@@ -96,6 +96,13 @@ class FatbandsPlot(BandsPlot):
             '''
         ),
 
+        FloatInput(key='scale', name='Scale factor',
+            default=None,
+            help='''The factor by which the width of all fatbands should be multiplied.
+            Note that each group has an additional individual factor that you can also tweak.'''
+            # Probably scale should not multiply but normalize everything relative to the energy range!
+        ),
+
         OrbitalQueries(
             key="groups", name="Fatbands groups",
             default=None,
@@ -128,7 +135,7 @@ class FatbandsPlot(BandsPlot):
                 ),
 
                 FloatInput(
-                    key="factor", name="Width factor",
+                    key="scale", name="Scale factor",
                     default=1,
                 ),
             ]
@@ -287,7 +294,7 @@ class FatbandsPlot(BandsPlot):
             else:
                 group_by = 'orbitals'
 
-            return self.build_groups(group_by)
+            return self.split_groups(group_by)
 
         # We are going to need a trace that goes forward and then back so that
         # it is self-fillable
@@ -297,6 +304,10 @@ class FatbandsPlot(BandsPlot):
         prev_traces = len(self.data)
 
         groups_param = self.get_param("groups")
+        scale = self.setting('scale')
+        if scale is None:
+            # Probably we can calculate a more suitable scale
+            scale = 1
 
         # Let's plot each group of orbitals as an area that surrounds each band
         for i ,group in enumerate(groups):
@@ -322,7 +333,7 @@ class FatbandsPlot(BandsPlot):
                 'type': 'scatter',
                 'mode': 'lines',
                 'x': area_xs,
-                'y': [*(band + band_weights*group["factor"]), *np.flip(band - band_weights*group["factor"])],
+                'y': [*(band + band_weights*scale*group["scale"]), *np.flip(band - band_weights*scale*group["scale"])],
                 'line':{'width': 0, "color": group["color"]},
                 'showlegend': i == 0,
                 'name': group["name"],
@@ -334,7 +345,7 @@ class FatbandsPlot(BandsPlot):
     #         Convenience methods
     # -------------------------------------
 
-    def build_groups(self, on="species", only=None, exclude=None, clean=True, colors=DEFAULT_PLOTLY_COLORS, **kwargs):
+    def split_groups(self, on="species", only=None, exclude=None, clean=True, colors=DEFAULT_PLOTLY_COLORS, **kwargs):
         '''
         Builds groups automatically to draw their contributions.
 
@@ -361,7 +372,7 @@ class FatbandsPlot(BandsPlot):
             keyword arguments that go directly to each request.
             
             This is useful to add extra filters. For example:
-            `plot.build_groups(on="orbitals", species=["C"])`
+            `plot.split_groups(on="orbitals", species=["C"])`
             will split the PDOS on the different orbitals but will take
             only those that belong to carbon atoms.
         '''
@@ -386,8 +397,7 @@ class FatbandsPlot(BandsPlot):
         '''
         Scales all bands by a given factor.
 
-        Basically, it updates the 'factor' key of all the groups provided
-        in the group setting.
+        Basically, it updates 'scale' setting.
 
         Parameters
         -----------
@@ -398,13 +408,11 @@ class FatbandsPlot(BandsPlot):
             If False, it will just replace the current factor.
         '''
 
-        groups = self.setting('groups')
+        scale = self.setting('scale')
 
-        # Asign colors
-        for i, _ in enumerate(groups):
-            if from_current:
-                groups[i]['factor'] *= factor
-            else:
-                groups[i]['factor'] = factor
+        if from_current:
+            scale *= factor
+        else:
+            scale = factor
 
-        return self.update_settings(groups=groups)
+        return self.update_settings(scale=scale)

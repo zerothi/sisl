@@ -52,6 +52,8 @@ class PlotEngine:
         '''
 
         if method is None:
+            if not hasattr(self, '_default'):
+                raise ValueError('There is no default plotting method registered in this plotting engine')
             method = self._default
 
         if otherwise == 'raise':
@@ -209,6 +211,7 @@ class PlotHandler:
         **kwargs:
             all the keyword arguments that will go into executing the method
         '''
+
         if engine is None:
             engine = self._default_engine
         
