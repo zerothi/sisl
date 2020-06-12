@@ -139,7 +139,30 @@ class Grid(SuperCellChild):
         """
         self.grid.fill(val)
 
-    def interp(self, shape, method='linear', **kwargs):
+    def interp(self, shape, order=1, **kwargs):
+        """ 
+        Interpolate grid values to a new grid.
+
+        It uses the `zoom` method in `scipy.ndimage`, which creates a finer or
+        # more spaced grid using spline interpolation
+
+        Parameters
+        ----------
+        shape : int, array_like
+            the new shape of the grid
+        order : int 0-5, optional
+            the order of the spline interpolation. 
+            1 means linear, 2 quadratic, etc...
+        **kwargs : dict
+            optional arguments passed to the interpolation algorithm
+            The interpolation routine is `scipy.ndimage.zoom`
+        """
+        # Calculate the zoom_factors
+        zoom_factors = np.array(shape) / self.shape
+
+        return self.apply('zoom', zoom_factors, mode='wrap', order=order, **kwargs)
+
+    def old_interp(self, shape, method='linear', **kwargs):
         """ Interpolate grid values to a new grid
 
         Parameters
@@ -195,6 +218,72 @@ class Grid(SuperCellChild):
 
         return grid
 
+    def smooth(self, method='gaussian', r=None, mode='wrap', **kwargs):
+        '''
+        Make a smoother grid by applying a filter.
+
+        Parameters
+        -----------
+        method: {'gaussian', 'uniform'}
+            the type of filter to apply to smoothen the grid.
+        r: float or array-like of float, optional
+            the radius of the filter in Angstrom for each axis.
+            If the method is 'gaussian', this is the standard deviation!
+            
+            If a single float is provided, then the same distance will be used for all axes.
+            
+            The defaults are 0.6 Ang for a gaussian filter and 1.5 Ang for a uniform filter.
+        '''
+        
+        if r is None:
+            r = 0.6 if method == 'gaussian' else 1.5
+        # Normalize the radius input to a list of radius
+        if isinstance(r, (int, float)):
+            r = [r]*3
+        
+        # Calculate the size of the kernel in pixels (in case the
+        # gaussian filter is used, this is the standard deviation)
+        size = (r/np.linalg.norm(self.dcell, axis=1)).astype(int)
+        
+        # Update the kwargs accordingly
+        if method == 'gaussian':
+            kwargs['sigma'] = size  
+        elif method == 'uniform':
+            kwargs['size'] = size
+        
+        # Apply the method
+        return self.apply(f'{method}_filter', mode=mode, **kwargs)
+
+        
+    def apply(self, method, *args, **kwargs):
+        '''
+        Applies a function of `scipy.ndimage` to the grid and returns a new grid.
+
+        There are many interesting functions in the `scipy.ndimage` submodule. You can
+        check for yourself: https://docs.scipy.org/doc/scipy/reference/ndimage.html
+
+        Parameters
+        -----------
+        method: str or function
+            if it's a string, it should be the name of a function in `scipy.ndimage`.
+
+            if it's a function, it can really be anything. It will get the numpy grid as
+            the first argument.
+        **args and **kwargs:
+            arguments that go directly to the function call
+        '''
+
+        if isinstance(method, str):
+            import scipy.ndimage
+            method = getattr(scipy.ndimage, method)
+
+        grid = self.copy()
+        del grid.grid
+
+        grid.grid = method(self.grid, *args, **kwargs)
+
+        return grid
+            
     @property
     def size(self):
         """ Total number of elements in the grid """
