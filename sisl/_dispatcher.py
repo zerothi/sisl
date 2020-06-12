@@ -1,3 +1,11 @@
+""" Dispatcher classes for handling methods dispatched for wrapped function calls.
+
+This method allows classes to dispatch methods through other classes.
+
+Here is a small snippet showing how to utilize this module.
+
+"""
+
 from abc import ABCMeta, abstractmethod
 from functools import wraps
 
@@ -5,14 +13,33 @@ from functools import wraps
 __all__ = ["AbstractDispatch", "ObjectDispatcher", "ClassDispatcher"]
 
 
+def _dict_to_str(name, d, parser=None):
+    """ Convert a dict to __str__ representation """
+    if parser is None:
+        def parser(kv):
+            return f" {kv[0]} = {kv[1]}"
+    d_str = ",\n ".join(map(parser, d.items()))
+    if len(d_str) > 0:
+        return f"{name} ({len(d)}): [\n {d_str}\n ]"
+    return ""
+
+
 class AbstractDispatch(metaclass=ABCMeta):
     r""" Dispatcher class used for dispatching function calls """
+    __slots__ = ("_obj", "_attrs")
 
-    def __init__(self, obj):
+    def __init__(self, obj, **attrs):
         self._obj = obj
+        # Local dictionary with attributes.
+        # This could in principle contain anything.
+        self._attrs = attrs
 
     def __str__(self):
-        return f"{self.__class__.__name__}"
+        obj = str(self._obj).replace("\n", "\n ")
+        attrs = _dict_to_str("attrs", self._attrs)
+        if len(attrs) == 0:
+            return f"{self.__class__.__name__}{{{obj}}}"
+        return f"{self.__class__.__name__}{{{obj}, {attrs}\n}}"
 
     ####
     # Only the following methods are necessary for the dispatch method to work
@@ -41,14 +68,16 @@ class AbstractDispatch(metaclass=ABCMeta):
 
 
 class Dispatcher:
-    __slots__ = ("_dispatchs", "_default", "__name__")
+    __slots__ = ("_dispatchs", "_default", "__name__", "_attrs")
 
-    def __init__(self, dispatchs=None, default=None):
+    def __init__(self, dispatchs=None, default=None, **attrs):
         if dispatchs is None:
             dispatchs = dict()
         self._dispatchs = dispatchs
         self._default = default
         self.__name__ = self.__class__.__name__
+        # Attributes associated with the dispatcher
+        self._attrs = attrs
 
     def __len__(self):
         return len(self._dispatchs)
@@ -56,11 +85,15 @@ class Dispatcher:
     def __str__(self):
         def toline(kv):
             k, v = kv
+            v = str(v(object())).replace("\n", "\n ")
             if k == self._default:
-                return f"*{k} = " + str(v(object())).replace("\n", "\n ")
-            return f" {k} = " + str(v(object())).replace("\n", "\n ")
-        dispatchs = ",\n ".join(map(toline, self._dispatchs.items()))
-        return f"{self.__name__}{{dispatchs: {len(self)},\n {dispatchs}\n}}"
+                return f"*{k} = {v}"
+            return f" {k} = {v}"
+        dispatchs = _dict_to_str("dispatchs", self._dispatchs, parser=toline)
+        attrs = _dict_to_str("attrs", self._attrs)
+        if len(attrs) == 0:
+            return f"{self.__name__}{{{dispatchs}\n}}"
+        return f"{self.__name__}{{{dispatchs},\n {attrs}\n}}"
 
     def register(self, key, dispatch, default=False):
         """ Register a dispatch class to this container
@@ -82,9 +115,8 @@ class Dispatcher:
 class MethodDispatcher(Dispatcher):
     __slots__ = ("_method", "_obj")
 
-    def __init__(self, method, dispatchs=None, default=None, obj=None):
-        super().__init__(dispatchs, default)
-        # This will probably fail for PYTHONOPTIMIZE=2
+    def __init__(self, method, dispatchs=None, default=None, obj=None, **attrs):
+        super().__init__(dispatchs, default, **attrs)
         self._method = method
 
         # In python3 a method *always* have the __self__ key
@@ -94,7 +126,7 @@ class MethodDispatcher(Dispatcher):
         else:
             self._obj = obj
 
-        # Make function documentation local to __call__
+        # This will probably fail for PYTHONOPTIMIZE=2
         self.__call__.__func__.__doc__ = method.__doc__
         # Storing the name is required for help on functions
         self.__name__ = method.__name__
@@ -102,11 +134,11 @@ class MethodDispatcher(Dispatcher):
     def __call__(self, *args, **kwargs):
         if self._default is None:
             return self._method(*args, **kwargs)
-        return self._dispatchs[self._default](self._obj).dispatch(self._method)(*args, **kwargs)
+        return self._dispatchs[self._default](self._obj, **self._attrs).dispatch(self._method)(*args, **kwargs)
 
     def __getitem__(self, key):
         r""" Get method using dispatch according to `key` """
-        return self._dispatchs[key](self._obj).dispatch(self._method)
+        return self._dispatchs[key](self._obj, **self._attrs).dispatch(self._method)
 
     __getattr__ = __getitem__
 
@@ -116,8 +148,8 @@ class ObjectDispatcher(Dispatcher):
     # since we are going to retrieve dispatchs from the object it-self
     __slots__ = ("_obj", "_obj_getattr", "_cls_attr_name")
 
-    def __init__(self, obj, dispatchs=None, default=None, cls_attr_name=None, obj_getattr=None):
-        super().__init__(dispatchs, default)
+    def __init__(self, obj, dispatchs=None, default=None, cls_attr_name=None, obj_getattr=None, **attrs):
+        super().__init__(dispatchs, default, **attrs)
         self._obj = obj
         if obj_getattr is None:
             def obj_getattr(obj, key):
@@ -154,28 +186,28 @@ class ObjectDispatcher(Dispatcher):
 
     def __getitem__(self, key):
         r""" Retrieve dispatched dispatchs by hash (allows functions to be dispatched) """
-        return self._dispatchs[key](self._obj)
+        return self._dispatchs[key](self._obj, **self._attrs)
 
     def __getattr__(self, key):
         """ Retrieve dispatched method by name, or if the name does not exist return a MethodDispatcher """
         if key in self._dispatchs:
-            return self._dispatchs[key](self._obj)
+            return self._dispatchs[key](self._obj, **self._attrs)
 
         attr = self._obj_getattr(self._obj, key)
         if callable(attr):
             # This will also ensure that if the user calls immediately after it will use the default
             return MethodDispatcher(attr, dispatchs=self._dispatchs,
-                                    default=self._default, obj=self._obj)
+                                    default=self._default, obj=self._obj, **self._attrs)
         return attr
 
 
 class ClassDispatcher(Dispatcher):
     __slots__ = ("_obj_getattr", "_attr_name")
 
-    def __init__(self, name, dispatchs=None, default=None, obj_getattr=None):
+    def __init__(self, name, dispatchs=None, default=None, obj_getattr=None, **attrs):
         # obj_getattr is necessary for the ObjectDispatcher to create the correct
         # MethodDispatcher
-        super().__init__(dispatchs, default)
+        super().__init__(dispatchs, default, **attrs)
         if obj_getattr is None:
             def obj_getattr(obj, key):
                 return getattr(obj, key)
@@ -197,4 +229,5 @@ class ClassDispatcher(Dispatcher):
         return ObjectDispatcher(instance, self._dispatchs,
                                 default=self._default,
                                 cls_attr_name=self._attr_name,
-                                obj_getattr=self._obj_getattr)
+                                obj_getattr=self._obj_getattr,
+                                **self._attrs)

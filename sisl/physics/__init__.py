@@ -162,6 +162,8 @@ from .distribution import *
 from .brillouinzone import *
 # Patch BrillouinZone objects and import apply classes
 from ._brillouinzone_apply import *
+from ._brillouinzone_papply import *
+
 from .bloch import *
 from .spin import *
 from .sparse import *

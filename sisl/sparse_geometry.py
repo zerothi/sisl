@@ -2271,7 +2271,6 @@ class SparseOrbital(_SparseGeometry):
             raise ValueError(f"{self.__class__.__name__}.append requires the overlapping geometries "
                              "to have the same number of orbitals per atom that is to be replaced.")
 
-
         def _check_edges_and_coordinates(spgeom, atoms, isc, err_help):
             # Figure out if we have found all couplings
             geom = spgeom.geometry
@@ -2305,7 +2304,6 @@ class SparseOrbital(_SparseGeometry):
                                  f"The following atoms in a {err_help[1]} connection of `{err_help[0]}` super-cell "
                                  "are connected from the unit cell, but are not found in matches:\n\n"
                                  f"[sc-offset]: atoms\n   {sc_off_atoms}")
-
 
         # setup supercells to look up
         isc_inplace = [None] * 3

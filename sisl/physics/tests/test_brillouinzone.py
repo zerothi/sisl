@@ -256,7 +256,7 @@ class TestBrillouinZone:
         try:
             import xarray
         except ImportError:
-            pytest.skip('xarray not available')
+            pytest.skip("xarray not available")
 
         from sisl import geom, Hamiltonian
         g = geom.graphene()
@@ -276,6 +276,32 @@ class TestBrillouinZone:
 
         asdarray = bz_da.eigh(coords=['orb'])
         assert asdarray.dims == ('k', 'orb')
+
+    def test_pathos(self):
+        try:
+            import pathos
+        except ImportError:
+            pytest.skip("pathos not available")
+
+        from sisl import geom, Hamiltonian
+        g = geom.graphene()
+        H = Hamiltonian(g)
+        H.construct([[0.1, 1.44], [0, -2.7]])
+
+        bz = MonkhorstPack(H, [2, 2, 2], trs=False)
+
+        # We need to ensure that all functions does the same
+        apply = bz.apply
+        papply = bz.papply
+
+        for method in ["iter", "average", "sum", "array", "list", "oplist"]:
+            # TODO One should be careful with zip
+            # zip will stop when it hits the final element in the first
+            # list.
+            # So if a generator has some clean-up code one has to use zip_longest
+            # regardless of method
+            for v1, v2 in zip(papply[method].eigh(), apply[method].eigh()):
+                assert np.allclose(v1, v2)
 
     def test_as_single(self):
         from sisl import geom, Hamiltonian

@@ -9,7 +9,7 @@ sisl is easy to install using any of your preferred methods.
 Required dependencies
 ---------------------
 
-- `Python`_ 3.5 or above
+- `Python`_ 3.6 or above
 - `setuptools`_
 - `numpy`_ (1.13 or later)
 - `scipy`_ (0.18 or later)
@@ -20,6 +20,7 @@ Required dependencies
 Optional dependencies:
 
 - `pytest`_ (for running the test suite)
+- `pathos`_ (for parallel BrillouinZone calculations)
 - `matplotlib`_
 - `tqdm`_ (for displaying progress-bars)
 - `xarray`_ (for advanced table data structures in certain methods)

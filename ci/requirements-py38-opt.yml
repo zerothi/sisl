@@ -17,6 +17,7 @@ dependencies:
   - matplotlib
   - tqdm
   - xarray
+  - pathos
   # Testing facilities
   - pytest
   - pytest-cov

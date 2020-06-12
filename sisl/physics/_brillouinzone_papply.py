@@ -2,55 +2,64 @@
 
 This module should not expose any methods!
 """
+""" Injection module for adding apply functions for BrillouinZone classes
+
+This module should not expose any methods!
+"""
 from functools import wraps, reduce
+import os
 import operator as op
 
 import numpy as np
+try:
+    import pathos as pos
+    _has_pathos = True
+except ImportError:
+    _has_pathos = False
 try:
     import xarray
     _has_xarray = True
 except ImportError:
     _has_xarray = False
 
-from sisl._dispatcher import ClassDispatcher, AbstractDispatch
+from sisl._dispatcher import ClassDispatcher
 from sisl._internal import set_module
 from sisl.utils.misc import allow_kwargs
 from sisl.oplist import oplist
-import sisl._array as _a
-from sisl.messages import tqdm_eta
 
 # Stuff used for patching
 from .brillouinzone import BrillouinZone
-
+from ._brillouinzone_apply import (
+    BrillouinZoneApply,
+    _asoplist
+)
 
 # We expose the Apply and ParentApply classes
-__all__ = ["BrillouinZoneApply", "BrillouinZoneParentApply"]
+__all__ = ["BrillouinZonePApply", "BrillouinZoneParentPApply"]
 
 
-def _asoplist(arg):
-    if isinstance(arg, tuple):
-        return oplist(arg)
-    elif isinstance(arg, list) and not isinstance(arg, oplist):
-        return oplist(arg)
-    return arg
+# I do not know what way is the best, we should probably have
+_NPROCS = os.environ.get("SISL_NPROCS", None)
+if isinstance(_NPROCS, str):
+    _NPROCS = int(_NPROCS)
 
 
 def _apply_str(s):
     def __str__(self):
-        return f"Apply{{{s}}}"
+        return f"PApply{{{s}}}"
     return __str__
 
 
 @set_module("sisl.physics")
-class BrillouinZoneApply(AbstractDispatch):
+class BrillouinZonePApply(BrillouinZoneApply):
     # this dispatch function will do stuff on the BrillouinZone object
     pass
 
 
 @set_module("sisl.physics")
-class BrillouinZoneParentApply(BrillouinZoneApply):
+class BrillouinZoneParentPApply(BrillouinZonePApply):
 
-    def _parse_kwargs(self, wrap, eta, eta_key):
+    def _parse_kwargs(self, wrap):
         """ Parse kwargs """
         bz = self._obj
         parent = bz.parent
@@ -60,8 +69,7 @@ class BrillouinZoneParentApply(BrillouinZoneApply):
                 return v
         else:
             wrap = allow_kwargs("parent", "k", "weight")(wrap)
-        eta = tqdm_eta(len(bz), f"{bz.__class__.__name__}.{eta_key}", "k", eta)
-        return bz, parent, wrap, eta
+        return bz, parent, wrap
 
     def __getattr__(self, key):
         # We need to offload the dispatcher to retrieve
@@ -72,31 +80,40 @@ class BrillouinZoneParentApply(BrillouinZoneApply):
 
 
 @set_module("sisl.physics")
-class IteratorApply(BrillouinZoneParentApply):
+class IteratorPApply(BrillouinZoneParentPApply):
     __str__ = _apply_str("iter")
 
-    def dispatch(self, method, eta_key="iter"):
+    def dispatch(self, method):
         """ Dispatch the method by iterating values """
         @wraps(method)
-        def func(*args, wrap=None, eta=False, **kwargs):
-            bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key=eta_key)
+        def func(*args, wrap=None, **kwargs):
+            pool = self._attrs["pool"]
+            pool.restart()
+            bz, parent, wrap = self._parse_kwargs(wrap)
             k = bz.k
             w = bz.weight
-            for i in range(len(k)):
-                yield wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
-                eta.update()
-            eta.close()
+
+            def func(k, w):
+                return wrap(method(*args, k=k, **kwargs), parent=parent, k=k, weight=w)
+
+            yield from pool.imap(func, k, w)
+            # TODO notify users that this may be bad when used with zip
+            # unless this generator is the first argument of zip
+            # zip has left-to-right checks of length and stops querying
+            # elements as soon as the left-most one stops.
+            pool.close()
+            pool.join()
 
         return func
 
 
 @set_module("sisl.physics")
-class SumApply(IteratorApply):
+class SumPApply(IteratorPApply):
     __str__ = _apply_str("sum over k")
 
     def dispatch(self, method):
         """ Dispatch the method by summing """
-        iter_func = super().dispatch(method, eta_key="sum")
+        iter_func = super().dispatch(method)
 
         @wraps(method)
         def func(*args, **kwargs):
@@ -108,29 +125,27 @@ class SumApply(IteratorApply):
 
 
 @set_module("sisl.physics")
-class NoneApply(IteratorApply):
+class NonePApply(IteratorPApply):
     __str__ = _apply_str("None")
 
     def dispatch(self, method):
         """ Dispatch the method by doing nothing (mostly useful if wrapped) """
-        iter_func = super().dispatch(method, eta_key="none")
-
+        iter_func = super().dispatch(method)
         @wraps(method)
         def func(*args, **kwargs):
             for _ in iter_func(*args, **kwargs):
                 pass
             return None
-
         return func
 
 
 @set_module("sisl.physics")
-class ListApply(IteratorApply):
+class ListPApply(IteratorPApply):
     __str__ = _apply_str("list")
 
     def dispatch(self, method):
         """ Dispatch the method by returning list of values """
-        iter_func = super().dispatch(method, eta_key="list")
+        iter_func = super().dispatch(method)
         @wraps(method)
         def func(*args, **kwargs):
             return [v for v in iter_func(*args, **kwargs)]
@@ -138,12 +153,12 @@ class ListApply(IteratorApply):
 
 
 @set_module("sisl.physics")
-class OpListApply(IteratorApply):
+class OpListPApply(IteratorPApply):
     __str__ = _apply_str("oplist")
 
     def dispatch(self, method):
         """ Dispatch the method by returning oplist of values """
-        iter_func = super().dispatch(method, eta_key="oplist")
+        iter_func = super().dispatch(method)
         @wraps(method)
         def func(*args, **kwargs):
             return oplist(v for v in iter_func(*args, **kwargs))
@@ -151,69 +166,75 @@ class OpListApply(IteratorApply):
 
 
 @set_module("sisl.physics")
-class ArrayApply(BrillouinZoneParentApply):
+class ArrayPApply(BrillouinZoneParentPApply):
     __str__ = _apply_str("numpy.ndarray")
 
-    def dispatch(self, method, eta_key="array"):
+    def dispatch(self, method):
         """ Dispatch the method by one array """
         @wraps(method)
-        def func(*args, wrap=None, eta=False, **kwargs):
-            bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key=eta_key)
+        def func(*args, wrap=None, **kwargs):
+            pool = self._attrs["pool"]
+            pool.restart()
+            bz, parent, wrap = self._parse_kwargs(wrap)
             k = bz.k
             w = bz.weight
 
-            # Get first values
-            v = wrap(method(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])
-            eta.update()
+            def func(k, w):
+                return wrap(method(*args, k=k, **kwargs), parent=parent, k=k, weight=w)
 
+            it = pool.imap(func, k, w)
+            v = next(it)
             # Create full array
             if v.ndim == 0:
                 a = np.empty([len(k)], dtype=v.dtype)
             else:
                 a = np.empty((len(k), ) + v.shape, dtype=v.dtype)
             a[0] = v
+
+            for i, v in enumerate(it):
+                a[i+1] = v
             del v
-
-            for i in range(1, len(k)):
-                a[i] = wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
-                eta.update()
-            eta.close()
-
+            pool.close()
+            pool.join()
             return a
+
         return func
 
 
 @set_module("sisl.physics")
-class AverageApply(BrillouinZoneParentApply):
+class AveragePApply(BrillouinZoneParentPApply):
     __str__ = _apply_str("average")
 
     def dispatch(self, method):
         """ Dispatch the method by averaging """
         @wraps(method)
-        def func(*args, wrap=None, eta=False, **kwargs):
-            bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key="average")
-            # Do actual average
+        def func(*args, wrap=None, **kwargs):
+            pool = self._attrs["pool"]
+            pool.restart()
+            bz, parent, wrap = self._parse_kwargs(wrap)
             k = bz.k
             w = bz.weight
-            v = _asoplist(wrap(method(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])) * w[0]
-            eta.update()
-            for i in range(1, len(k)):
-                v += _asoplist(wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])) * w[i]
-                eta.update()
-            eta.close()
-            return v
+
+            def func(k, w):
+                return wrap(method(*args, k=k, **kwargs), parent=parent, k=k, weight=w) * w
+
+            iter_func = pool.uimap(func, k, w)
+            avg = reduce(op.add, iter_func, _asoplist(next(iter_func)))
+            pool.close()
+            pool.join()
+            return avg
 
         return func
 
 
 @set_module("sisl.physics")
-class DataArrayApply(ArrayApply):
+class DataArrayPApply(ArrayPApply):
     __str__ = _apply_str("xarray.DataArray")
 
     def dispatch(self, method):
         """ Dispatch the method by returning a DataArray """
         # Get data as array
-        array_func = super().dispatch(method, eta_key="dataarray")
+        array_func = super().dispatch(method)
 
         @wraps(method)
         def func(*args, coords=None, name=method.__name__, **kwargs):
@@ -225,37 +246,40 @@ class DataArrayApply(ArrayApply):
 
             # Create coords
             if coords is None:
-                coords = [('k', _a.arangei(len(bz)))]
+                coords = [("k", _a.arangei(len(bz)))]
                 for i, v in enumerate(array.shape[1:]):
                     coords.append((f"v{i+1}", _a.arangei(v)))
             else:
                 coords = list(coords)
-                coords.insert(0, ('k', _a.arangei(len(bz))))
+                coords.insert(0, ("k", _a.arangei(len(bz))))
                 for i in range(1, len(coords)):
                     if isinstance(coords[i], str):
                         coords[i] = (coords[i], _a.arangei(array.shape[i]))
-            attrs = {'bz': bz, 'parent': bz.parent}
+            attrs = {"bz": bz, "parent": bz.parent}
 
             return xarray.DataArray(array, coords=coords, name=name, attrs=attrs)
 
         return func
 
 
-if not hasattr(BrillouinZone, "apply"):
-    # Add dispatcher methods
-    # Since apply is a built-in, we cannot do "BrillouinZone.assign = ..."
-    setattr(BrillouinZone, "apply",
-            ClassDispatcher("apply",
-                            obj_getattr=lambda obj, key: getattr(obj.parent, key)
-            )
+if _has_pathos and not hasattr(BrillouinZone, "papply"):
+    # Create pool
+    _pool = pos.multiprocessing.ProcessPool(nodes=_NPROCS)
+    _pool.close()
+    _pool.join()
+
+    BrillouinZone.papply = ClassDispatcher("papply",
+                                           obj_getattr=lambda obj, key: getattr(obj.parent, key),
+                                           # The rest are attributes
+                                           pool=_pool
     )
     # Register dispatched functions
-    BrillouinZone.apply.register("iter", IteratorApply, default=True)
-    BrillouinZone.apply.register("average", AverageApply)
-    BrillouinZone.apply.register("sum", SumApply)
-    BrillouinZone.apply.register("array", ArrayApply)
-    BrillouinZone.apply.register("none", NoneApply)
-    BrillouinZone.apply.register("list", ListApply)
-    BrillouinZone.apply.register("oplist", OpListApply)
+    BrillouinZone.papply.register("iter", IteratorPApply, default=True)
+    BrillouinZone.papply.register("average", AveragePApply)
+    BrillouinZone.papply.register("sum", SumPApply)
+    BrillouinZone.papply.register("array", ArrayPApply)
+    BrillouinZone.papply.register("none", NonePApply)
+    BrillouinZone.papply.register("list", ListPApply)
+    BrillouinZone.papply.register("oplist", OpListPApply)
     if _has_xarray:
-        BrillouinZone.apply.register("dataarray", DataArrayApply)
+        BrillouinZone.papply.register("dataarray", DataArrayPApply)
