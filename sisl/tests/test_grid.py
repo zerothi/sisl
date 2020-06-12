@@ -182,6 +182,32 @@ class TestGrid:
         # grid... Perhaps this is ok, but not good... :(
         assert np.allclose(setup.g.sum(2).grid, g1.grid)
 
+    def test_smooth_gaussian(self, setup):
+        g = Grid(0.1, sc=[[2, 0, 0], [0, 2, 0], [0, 0, 2]])
+        g[10, 10, 10] = 1
+
+        # With a sigma of 0.3 Ang, that single value should be propagated
+        # to the whole grid
+        smoothed = g.smooth(r=0.7, truncate=4)
+        assert not np.any(smoothed.grid == 0)
+
+        # With a sigma of 0.2 Ang, borders should be still 0
+        smoothed = g.smooth(r=0.1, truncate=4)
+        assert np.any(smoothed.grid == 0)
+
+    def test_smooth_uniform(self, setup):
+        g = Grid(0.1, sc=[[2, 0, 0], [0, 2, 0], [0, 0, 2]])
+        g[10, 10, 10] = 1
+
+        # With a radius of 0.7 Ang, that single value should be propagated
+        # to the whole grid
+        smoothed = g.smooth(r=1., method='uniform')
+        assert not np.any(smoothed.grid == 0)
+
+        # With a sigma of 0.1 Ang, borders should still be 0
+        smoothed = g.smooth(r=0.9, method='uniform')
+        assert np.any(smoothed.grid == 0)
+
     def test_index_ndim1(self, setup):
         mid = np.array(setup.g.shape, np.int32) // 2 - 1
         v = [0.001, 0., 0.001]

@@ -8,6 +8,7 @@ from math import pi
 
 __all__ = ['merge_instances', 'str_spec', 'direction', 'angle']
 __all__ += ['iter_shape', 'math_eval', 'allow_kwargs']
+__all__ += ["import_attr"]
 
 
 # supported operators
@@ -321,3 +322,23 @@ def allow_kwargs(*args):
         return dec_func
 
     return deco
+
+
+def import_attr(attr_path):
+    """ Returns an attribute from a full module path
+
+    Examples
+    --------
+    >>> func = import_attr("sisl.utils.import_attr")
+    >>> assert func is import_attr
+
+    Parameters
+    -----------
+    attr_path: str
+        the module path to the attribute
+    """
+    from importlib import import_module
+    module, variable = path.rsplit('.', 1)
+
+    module = import_module(module)
+    return getattr(module, variable)
