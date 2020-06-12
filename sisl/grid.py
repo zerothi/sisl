@@ -224,7 +224,7 @@ class Grid(SuperCellChild):
 
         Parameters
         -----------
-        method: {'gaussian', 'uniform'}
+        method: {'gaussian', 'uniform'}, optional
             the type of filter to apply to smoothen the grid.
         r: float or array-like of float, optional
             the radius of the filter in Angstrom for each axis.
@@ -233,6 +233,11 @@ class Grid(SuperCellChild):
             If a single float is provided, then the same distance will be used for all axes.
             
             The defaults are 0.6 Ang for a gaussian filter and 1.5 Ang for a uniform filter.
+        mode: {'wrap', 'mirror', 'constant', 'reflect', 'nearest'}, optional
+            determines how to compute the borders of the grid.
+            The default is wrap, which accounts for periodic conditions. 
+            
+            See https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.gaussian_filter.html#scipy.ndimage.gaussian_filter
         '''
         
         if r is None:
@@ -253,8 +258,7 @@ class Grid(SuperCellChild):
         
         # Apply the method
         return self.apply(f'{method}_filter', mode=mode, **kwargs)
-
-        
+  
     def apply(self, method, *args, **kwargs):
         '''
         Applies a function of `scipy.ndimage` to the grid and returns a new grid.
