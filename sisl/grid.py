@@ -156,8 +156,8 @@ class Grid(SuperCellChild):
             1 means linear, 2 quadratic, etc...
         mode: {'wrap', 'mirror', 'constant', 'reflect', 'nearest'}, optional
             determines how to compute the borders of the grid.
-            The default is ``"wrap"``, which accounts for periodic conditions. 
-        **kwargs : dict
+            The default is ``"wrap"``, which accounts for periodic conditions.
+        **kwargs :
             optional arguments passed to the interpolation algorithm
             The interpolation routine is `scipy.ndimage.zoom`
 
@@ -195,7 +195,7 @@ class Grid(SuperCellChild):
             the type of filter to apply to smoothen the grid.
         mode: {'wrap', 'mirror', 'constant', 'reflect', 'nearest'}, optional
             determines how to compute the borders of the grid.
-            The default is wrap, which accounts for periodic conditions. 
+            The default is wrap, which accounts for periodic conditions.
 
         See Also
         --------

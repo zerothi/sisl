@@ -1,7 +1,6 @@
 import pytest
 
 import math as m
-import numpy as np
 
 from sisl.utils.misc import *
 
