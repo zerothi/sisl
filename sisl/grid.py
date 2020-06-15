@@ -17,6 +17,7 @@ from .shape import Shape
 from .utils import default_ArgumentParser, default_namespace
 from .utils import cmd, strseq, direction, str_spec
 from .utils import array_arange
+from .utils import call_func
 from .utils.mathematics import fnorm
 
 from .supercell import SuperCellChild
@@ -139,152 +140,109 @@ class Grid(SuperCellChild):
         """
         self.grid.fill(val)
 
-    def interp(self, shape, order=1, **kwargs):
+    def interp(self, shape, order=1, mode='wrap', **kwargs):
         """ 
         Interpolate grid values to a new grid.
 
         It uses the `zoom` method in `scipy.ndimage`, which creates a finer or
-        # more spaced grid using spline interpolation
+        more spaced grid using spline interpolation.
+
+        If you check the code ,you'll see that we check for the "method" keyword
+        argument. This is just for backwards compatibility and SHOULD NOT BE USED
+        in new code.
 
         Parameters
         ----------
-        shape : int, array_like
-            the new shape of the grid
+        shape : int, array_like of len 3
+            the new shape of the grid.
         order : int 0-5, optional
             the order of the spline interpolation. 
             1 means linear, 2 quadratic, etc...
+        mode: {'wrap', 'mirror', 'constant', 'reflect', 'nearest'}, optional
+            determines how to compute the borders of the grid.
+            The default is wrap, which accounts for periodic conditions. 
+            
+            See https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.zoom.html#scipy.ndimage.zoom
         **kwargs : dict
             optional arguments passed to the interpolation algorithm
             The interpolation routine is `scipy.ndimage.zoom`
         """
+        # For backwards compatibility
+        method = kwargs.pop("method", None)
+        # Maybe the method was passed as a positional argument
+        if isinstance(order, str):
+            method = order
+        if method is not None:
+            order = {'linear': 1}.get(method, 3)
+
+        # And now we do the actual interpolation
         # Calculate the zoom_factors
         zoom_factors = np.array(shape) / self.shape
 
-        return self.apply('zoom', zoom_factors, mode='wrap', order=order, **kwargs)
+        # Apply the scipy.ndimage.zoom function and return a new grid
+        return self.apply('scipy.ndimage.zoom', zoom_factors, mode=mode, order=order, **kwargs)
 
-    def old_interp(self, shape, method='linear', **kwargs):
-        """ Interpolate grid values to a new grid
-
-        Parameters
-        ----------
-        shape : int, array_like
-            the new shape of the grid
-        method : str
-            the method used to perform the interpolation,
-            see `scipy.interpolate.interpn` for further details.
-        **kwargs : dict
-            optional arguments passed to the interpolation algorithm
-            The interpolation routine is `scipy.interpolate.interpn`
+    def smooth(self, r=0.7, method='gaussian', mode='wrap', **kwargs):
         """
-        # Interpolate function
-        from scipy.interpolate import RegularGridInterpolator
-
-        # Current dimensions of size 1
-        idx = tuple(i for i in range(3) if self.shape[i] > 1)
-        idx_1 = tuple(i for i in range(3) if not i in idx)
-
-        # Get current grid spacing
-        dold = tuple(_a.linspacef(0, 1, self.shape[i]) for i in idx)
-
-        # Create new grid and clean-up to reduce memory
-        grid = self.copy()
-        del grid.grid
-
-        # Create the interpolator!
-        # And remove 1 dimensions
-        f = RegularGridInterpolator(dold, np.squeeze(self.grid), method=method)
-        del dold
-
-        # Create new interpolation points
-        dnew = tuple(_a.linspacef(0, 1, shape[i]) for i in idx)
-
-        grid.grid = np.empty(shape, dtype=self.dtype)
-
-        # Special case where grid has different dimensionality
-        if len(dnew) == 0:
-            # all is copied
-            grid.grid[...] = self.grid.ravel()
-        elif len(dnew) < 3:
-            reshape = tuple(shape[i] if i in idx else 1 for i in range(3))
-            sl = tuple(slice(0, 1, shape[i] * 1j) for i in idx)
-            dnew = np.mgrid[sl].reshape(len(sl), -1).T
-            grid.grid[:, :, :] = f(dnew).reshape(reshape)
-        else:
-            for iz, dz in enumerate(dnew[2]):
-                dnew = np.mgrid[0:1:shape[0] * 1j, 0:1:shape[1] * 1j, dz:dz+0.1:1j].reshape(3, -1).T
-                grid.grid[:, :, iz] = f(dnew).reshape((shape[0], shape[1]))
-
-        del dnew
-
-        return grid
-
-    def smooth(self, method='gaussian', r=None, mode='wrap', **kwargs):
-        '''
         Make a smoother grid by applying a filter.
 
         Parameters
         -----------
-        method: {'gaussian', 'uniform'}, optional
-            the type of filter to apply to smoothen the grid.
-        r: float or array-like of float, optional
+        r: float or array-like of len 3, optional
             the radius of the filter in Angstrom for each axis.
             If the method is 'gaussian', this is the standard deviation!
             
             If a single float is provided, then the same distance will be used for all axes.
-            
-            The defaults are 0.6 Ang for a gaussian filter and 1.5 Ang for a uniform filter.
+        method: {'gaussian', 'uniform'}, optional
+            the type of filter to apply to smoothen the grid.
         mode: {'wrap', 'mirror', 'constant', 'reflect', 'nearest'}, optional
             determines how to compute the borders of the grid.
             The default is wrap, which accounts for periodic conditions. 
             
             See https://docs.scipy.org/doc/scipy/reference/generated/scipy.ndimage.gaussian_filter.html#scipy.ndimage.gaussian_filter
-        '''
+        """
         
-        if r is None:
-            r = 0.6 if method == 'gaussian' else 1.5
         # Normalize the radius input to a list of radius
         if isinstance(r, (int, float)):
             r = [r]*3
         
         # Calculate the size of the kernel in pixels (in case the
         # gaussian filter is used, this is the standard deviation)
-        size = (r/np.linalg.norm(self.dcell, axis=1)).astype(int)
+        pixels_r = np.round(r/fnorm(self.dcell)).astype(np.int32)
         
         # Update the kwargs accordingly
         if method == 'gaussian':
-            kwargs['sigma'] = size  
+            kwargs['sigma'] = pixels_r 
         elif method == 'uniform':
-            kwargs['size'] = size
+            kwargs['size'] = pixels_r * 2
+        else:
+            raise ValueError(f'"{method}" is not a valid method. The smoothing method must be "gaussian" or "uniform".')
         
         # Apply the method
-        return self.apply(f'{method}_filter', mode=mode, **kwargs)
+        return self.apply(f'scipy.ndimage.{method}_filter', mode=mode, **kwargs)
   
-    def apply(self, method, *args, **kwargs):
-        '''
-        Applies a function of `scipy.ndimage` to the grid and returns a new grid.
+    def apply(self, function_, *args, **kwargs):
+        """
+        Applies a function to the grid and returns a new grid.
 
-        There are many interesting functions in the `scipy.ndimage` submodule. You can
-        check for yourself: https://docs.scipy.org/doc/scipy/reference/ndimage.html
+        You can also apply a function that does not return a grid (maybe you want to do
+        some measurement). In that case, you will get the result instead of a `Grid`.
 
         Parameters
         -----------
-        method: str or function
-            if it's a string, it should be the name of a function in `scipy.ndimage`.
+        function_: str or function
+            if it's a string, it should be the full path to a function that can be imported.
+            E.g.: 'scipy.ndimage.zoom'
 
-            if it's a function, it can really be anything. It will get the numpy grid as
-            the first argument.
+            if it's a function, it will get the numpy grid as the first argument.
         **args and **kwargs:
             arguments that go directly to the function call
-        '''
+        """
 
-        if isinstance(method, str):
-            import scipy.ndimage
-            method = getattr(scipy.ndimage, method)
-
-        result = method(self.grid, *args, **kwargs)
+        result = call_func(function_, self.grid, *args, **kwargs)
 
         # Maybe the result is not a grid, because there are methods that actually
-        # do measurements of the grid (e.g. "center_of_mass")
+        # do measurements of the grid
         if not isinstance(result, np.ndarray) or result.ndim != 3:
             return result
 

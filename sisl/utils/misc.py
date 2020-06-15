@@ -8,6 +8,7 @@ from math import pi
 
 __all__ = ['merge_instances', 'str_spec', 'direction', 'angle']
 __all__ += ['iter_shape', 'math_eval', 'allow_kwargs']
+__all__ += ['str2func', 'call_func']
 
 
 # supported operators
@@ -321,3 +322,50 @@ def allow_kwargs(*args):
         return dec_func
 
     return deco
+
+
+def str2func(string):
+    '''
+    Imports a function from a path and returns it.
+
+    Parameters
+    -----------
+    string: str or function
+        the path to the function. (E.g.: 'module.submodule.submodule.function').
+
+        If a function is passed it will just be returned as is.
+    '''
+
+    from importlib import import_module
+    from types import FunctionType
+
+    if isinstance(string, FunctionType):
+        return string
+    elif not isinstance(string, str):
+        raise TypeError(f'We can only dinamically import functions from a string, you provided {type(string)}')
+
+
+    module, function = string.rsplit('.', 1)
+
+    module = import_module(module)
+    function = getattr(module, function)
+
+    return function
+
+
+def call_func(func_or_str_, *args, **kwargs):
+    '''
+    Given a path to a function, this util calls it.
+
+    It uses the `str2func` util, therefore it will not break
+    if instead of a string you pass a function.
+
+    Parameters
+    -----------
+    func_or_str_: str or function
+        the path to the function. (E.g.: 'module.submodule.submodule.function').
+
+        If a function is passed it will just be used as is.
+
+    '''
+    return str2func(func_or_str_)(*args, **kwargs)
