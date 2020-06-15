@@ -17,7 +17,7 @@ from .shape import Shape
 from .utils import default_ArgumentParser, default_namespace
 from .utils import cmd, strseq, direction, str_spec
 from .utils import array_arange
-from .utils import call_func
+from .utils import import_attr
 from .utils.mathematics import fnorm
 
 from .supercell import SuperCellChild
@@ -239,7 +239,10 @@ class Grid(SuperCellChild):
             arguments that go directly to the function call
         """
 
-        result = call_func(function_, self.grid, *args, **kwargs)
+        if isinstance(function_, str):
+            function_ = import_attr(function_)
+
+        result = function_(self.grid, *args, **kwargs)
 
         # Maybe the result is not a grid, because there are methods that actually
         # do measurements of the grid

@@ -109,11 +109,3 @@ class TestMisc:
         assert d.hello == 2
         assert d.foo == 2
         assert d.bar == 3
-
-    def test_call_func(self):
-
-        # Call function from a string
-        assert np.all(call_func('numpy.array', [1, 2]) == np.array([1,2]))
-
-        # Check that passing a function instead of a string is ok
-        assert np.all(call_func(np.array, [1,2]) == np.array([1,2]))
