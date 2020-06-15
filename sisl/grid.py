@@ -281,10 +281,16 @@ class Grid(SuperCellChild):
             import scipy.ndimage
             method = getattr(scipy.ndimage, method)
 
-        grid = self.copy()
-        del grid.grid
+        result = method(self.grid, *args, **kwargs)
 
-        grid.grid = method(self.grid, *args, **kwargs)
+        # Maybe the result is not a grid, because there are methods that actually
+        # do measurements of the grid (e.g. "center_of_mass")
+        if not isinstance(result, np.ndarray) or result.ndim != 3:
+            return result
+
+        # If the result is a grid, we will generate a copy of this one with the new grid values
+        grid = self.copy()
+        grid.grid = result        
 
         return grid
             
