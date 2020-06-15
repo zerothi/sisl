@@ -10,26 +10,30 @@ __all__ += ['spher2cart', 'cart2spher', 'spherical_harm']
 __all__ += ['curl']
 
 
-def fnorm(array):
+def fnorm(array, axis=-1):
     r""" Fast calculation of the norm of a vector
 
     Parameters
     ----------
     array : (..., *)
-       the vector/matrix to perform the norm on, norm performed on last axis
+       the vector/matrix to perform the norm on, norm performed along `axis`
+    axis : int, optional
+       the axis to take the norm against, default to last axis.
     """
-    return sqrt(square(array).sum(-1))
+    return sqrt(square(array).sum(axis))
 
 
-def fnorm2(array):
+def fnorm2(array, axis=-1):
     r""" Fast calculation of the squared norm of a vector
 
     Parameters
     ----------
     array : (..., *)
-       the vector/matrix to perform the squared norm on, norm performed on last axis
+       the vector/matrix to perform the squared norm on, norm performed along `axis`
+    axis : int, optional
+       the axis to take the norm against, default to last axis.
     """
-    return square(array).sum(-1)
+    return square(array).sum(axis)
 
 
 def expand(vector, length):
