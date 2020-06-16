@@ -70,7 +70,7 @@ class PdosPlotTester:
 
         # Try to split this request in multiple ones
         plot.split_requests(0, on="orbitals")
-        species_no = len(self.plot.geometry.atoms[sel_species].orbital)
+        species_no = len(self.plot.geometry.atoms[sel_species].orbitals)
         assert len(plot.data) == species_no
 
         # Then try to merge

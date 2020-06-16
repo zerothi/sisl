@@ -7,7 +7,7 @@ ENV_VARS = {}
 _PREFIX = 'SISL_VIZ'
 
 def register_env_var(name, default, description=None):
-    '''
+    """
     Registers a new environment variable.
 
     Parameters
@@ -19,7 +19,7 @@ def register_env_var(name, default, description=None):
         the default value for this environment variable
     description: str
         a description of what this variable does.
-    '''
+    """
 
     if not name.startswith(_PREFIX):
         name = f'{_PREFIX}_{name}'
@@ -30,7 +30,7 @@ def register_env_var(name, default, description=None):
     return get_env_var(name)
 
 def get_env_var(name):
-    '''
+    """
     Gets the value of a registered environment variable.
 
     Parameters
@@ -38,7 +38,7 @@ def get_env_var(name):
     name: str
         the name of the environment variable. If it doesn't
         start with SISL_VIZ, this prefix will be added.
-    '''
+    """
 
     if not name.startswith(_PREFIX):
         name = f'{_PREFIX}_{name}'

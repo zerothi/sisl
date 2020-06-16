@@ -15,9 +15,19 @@ USER_CUSTOM_FOLDER = register_env_var(
     " to extend sisl"
 )
 
+# Here we let python know that there are importable files
+# in USER_CUSTOM_FOLDER
 sys.path.append(os.path.abspath(USER_CUSTOM_FOLDER))
 
 def import_user_extension(extension_file):
+    """
+    Basis for importing users extensions.
+
+    Parameters
+    ------------
+    extension_file: str
+        the name of the file that you want to import (NOT THE FULL PATH).
+    """
 
     try:
         return importlib.import_module(extension_file.replace(".py", ""))
@@ -34,11 +44,18 @@ PRESETS_FILE = os.path.join(USER_CUSTOM_FOLDER, PRESETS_FILE_NAME)
 PRESETS_VARIABLE = "presets"
 
 def import_user_presets():
+    """
+    Imports the users presets.
+
+    All the presets that the user wants to import into sisl
+    should be in the 'presets' variable as a dict in the 'user_presets.py'
+    file. Then, this method will add them to the global dictionary of presets.
+    """
     from ._presets import add_presets
 
     module = import_user_extension(PRESETS_FILE_NAME)
 
-    # Add this presets 
+    # Add these presets 
     if module is not None:
         if PRESETS_VARIABLE in vars(module):
             add_presets(**vars(module)[PRESETS_VARIABLE])
@@ -58,6 +75,14 @@ PLOTS_FILE = os.path.join(USER_CUSTOM_FOLDER, PLOTS_FILE_NAME)
 PLOTS_VARIABLE = "plots"
 
 def import_user_plots():
+    """
+    Imports the user's plots.
+
+    We don't need to do anything here because all plots available
+    are tracked by checking the subclasses of `Plot`.
+    Therefore, the user only needs to make sure that their plot classes
+    are defined.
+    """
     return import_user_extension(PLOTS_FILE_NAME)
 
 #--------------------------------------
@@ -70,6 +95,14 @@ SESSION_FILE = os.path.join(USER_CUSTOM_FOLDER, SESSION_FILE_NAME)
 SESSION_VARIABLE = "sessions"
 
 def import_user_sessions():
+    """
+    Imports the user's sessions.
+
+    We don't need to do anything here because all sessions available
+    are tracked by checking the subclasses of `Session`.
+    Therefore, the user only needs to make sure that their session classes
+    are defined.
+    """
     return import_user_extension(SESSION_FILE_NAME)
 
 
@@ -82,4 +115,8 @@ def import_user_sessions():
 PLUGINS_FILE_NAME = "user_plugins.py"
 
 def import_user_plugins():
+    """
+    This imports an extra file where the user can do really anything
+    that they want to finish customizing the package.
+    """
     return import_user_extension(PLUGINS_FILE_NAME)

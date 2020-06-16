@@ -1,4 +1,4 @@
-'''
+"""
 
 This file implements a smooth interface between sisl and plotly express,
 to make visualization of sisl objects even easier.
@@ -6,7 +6,7 @@ to make visualization of sisl objects even easier.
 This goes hand by hand with the implementation of dataframe extraction in sisl
 objects, which is not already implemented (https://github.com/zerothi/sisl/issues/220)
 
-'''
+"""
 
 from functools import wraps
 

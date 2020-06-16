@@ -18,6 +18,14 @@ from ._user_customs import PRESETS_FILE, PRESETS_VARIABLE, PLOTS_FILE
 __all__ = ['splot']
 
 def general_arguments(parser):
+    """
+    Adds arguments that are general to any plot class.
+
+    Parameters
+    -----------
+    parser: argparse.ArgumentParser
+        the parser to which you want to add the arguments
+    """
 
     parser.add_argument('--presets', '-p', type=str, nargs="*", required=False,
                     help=f'The names of the stored presets that you want to use for the settings. Current available presets: {get_avail_presets()}')
@@ -52,6 +60,9 @@ def general_arguments(parser):
 
 
 def splot():
+    """
+    Command utility for plotting things fast from the terminal.
+    """
 
     parser = argparse.ArgumentParser(prog='splot', 
                                      description="Command utility to plot files fast. This command allows great customability." +

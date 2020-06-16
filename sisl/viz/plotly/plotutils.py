@@ -17,12 +17,31 @@ from .._env_vars import register_env_var
 #            Ipython
 #-------------------------------------
 def running_in_notebook():
+    """
+    Finds out whether the code is being run on a notebook.
+
+    Returns
+    --------
+    bool
+        whether the code is running in a notebook
+    """
     try:
         return get_ipython().__class__.__name__ == 'ZMQInteractiveShell'
     except NameError:
         return False
     
 def check_widgets():
+    """
+    Checks if some jupyter notebook widgets are there.
+
+    This will be helpful to know how the figures should be displayed.
+
+    Returns
+    -------
+    dict
+        contains whether widgets are available and if there was any error
+        loading them.
+    """
     import subprocess
 
     widgets = {
@@ -56,11 +75,40 @@ def check_widgets():
 #-------------------------------------
 
 def get_plot_classes():
-    from .session import Session
+    """
+    This method returns all the plot subclasses, even the nested ones.
 
-    return Session.get_plot_classes(None)
+    Returns
+    ---------
+    list
+        all the plot classes that the module is aware of.
+    """
+    from . import Plot, MultiplePlot, Animation, SubPlots
+
+    def get_all_subclasses(cls):
+
+        all_subclasses = []
+
+        for Subclass in cls.__subclasses__():
+
+            if Subclass not in [MultiplePlot, Animation, SubPlots] and not getattr(Subclass, 'is_only_base', False):
+                all_subclasses.append(Subclass)
+
+            all_subclasses.extend(get_all_subclasses(Subclass))
+
+        return all_subclasses
+    
+    return sorted(get_all_subclasses(Plot), key = lambda clss: clss.plot_name()) 
 
 def get_plotable_siles(rules=False):
+    """
+    Gets the subset of siles that are plotable.
+
+    Returns
+    ---------
+    list
+        all the siles that the module knows how to plot.
+    """
     
     if rules:
         sile_getter = get_sile_rules
@@ -70,7 +118,7 @@ def get_plotable_siles(rules=False):
     return sile_getter(["plot"])
 
 def get_plotable_variables(variables):
-    '''
+    """
     Retrieves all plotable variables that are in the global scope.
 
     Parameters
@@ -89,7 +137,7 @@ def get_plotable_variables(variables):
     --------
     get_plotable_variables(locals())
     get_plotable_variables(globals())
-    '''
+    """
     from types import ModuleType
 
     plotables = {}
@@ -106,7 +154,7 @@ def get_plotable_variables(variables):
     return plotables
 
 def get_configurable_docstring(cls):
-    '''
+    """
     Builds the docstring for a class that inherits from Configurable
 
     Parameters
@@ -118,7 +166,7 @@ def get_configurable_docstring(cls):
     -----------
     str:
         the docs with the settings added.
-    '''
+    """
     import re
 
     if isinstance(cls, type):
@@ -144,7 +192,7 @@ def get_configurable_docstring(cls):
     return doc
 
 def get_configurable_kwargs(cls_or_inst, fake_default):
-    '''
+    """
     Builds a string to help you define all the kwargs coming from the settings.
 
     The main point is to avoid wasting time writing all the kwargs manually, and
@@ -164,7 +212,7 @@ def get_configurable_kwargs(cls_or_inst, fake_default):
     -----------
     str:
         the string containing the described kwargs.
-    '''
+    """
 
     def get_string(val):
         if isinstance(val, (float, int, bool)) or val is None:
@@ -181,12 +229,10 @@ def get_configurable_kwargs(cls_or_inst, fake_default):
         # It's really an instance, not the class
         # In this case, the defaults for the method will be the current values.
         params = cls_or_inst.params
-        return ", ".join([f'{param.key}={get_string(cls_or_inst.settings[param.key])}' for param in params])
-
-    
+        return ", ".join([f'{param.key}={get_string(cls_or_inst.settings[param.key])}' for param in params])   
 
 def get_configurable_kwargs_to_pass(cls):
-    '''
+    """
     Builds a string to help you pass all the kwargs that you got from
     the function using `get_configurable_kwargs`.
 
@@ -202,7 +248,7 @@ def get_configurable_kwargs_to_pass(cls):
     -----------
     str:
         the string containing the described kwargs.
-    '''
+    """
 
     if isinstance(cls, type):
         params = cls._parameters
@@ -213,33 +259,36 @@ def get_configurable_kwargs_to_pass(cls):
     return ", ".join([f'{param.key}={param.key}' for param in params])
 
 def get_session_classes():
-    '''
+    """
     Returns the available session classes
-    '''
+
+    Returns
+    --------
+    dict
+        keys are the name of the class and values are the class itself.
+    """
     from .session import Session
 
     return { sbcls.__name__: sbcls for sbcls in Session.__subclasses__() }
 
 def get_avail_presets():
-    '''
-    Gets the names of the currently available presets
-    '''
+    """
+    Gets the names of the currently available presets.
+
+    Returns
+    ---------
+    list
+        a list with all the presets names
+    """
     from ._presets import PRESETS
 
     return list(PRESETS.keys())
 
-def get_file_vars(path):
-    from runpy import run_path
-
-    if os.path.exists(path) and os.path.splitext(path)[-1] == ".py":
-        return run_path(path)
-    else:
-        return {}
 #-------------------------------------
 #           Python helpers
 #-------------------------------------
 def get_nested_key(obj, nestedKey, separator="."):
-    '''
+    """
     Gets a nested key from a dictionary using a given separator.
 
     Parameters
@@ -265,7 +314,7 @@ def get_nested_key(obj, nestedKey, separator="."):
                 "moreKeys": whatever,
                 "notRelevant": whatever
             }
-    '''
+    """
 
     ref = obj
     splitted = nestedKey.split(separator)
@@ -275,7 +324,7 @@ def get_nested_key(obj, nestedKey, separator="."):
     return ref[splitted[-1]]
 
 def modify_nested_dict(obj, nestedKey, val, separator = "."):
-    '''
+    """
     Use it to modify a nested dictionary with ease. 
     
     It modifies the dictionary itself, does not return anything.
@@ -305,7 +354,7 @@ def modify_nested_dict(obj, nestedKey, val, separator = "."):
                 "moreKeys": whatever,
                 "notRelevant": whatever
             }
-    '''
+    """
 
     ref = obj
     splitted = nestedKey.split(separator)
@@ -315,7 +364,7 @@ def modify_nested_dict(obj, nestedKey, val, separator = "."):
     ref[splitted[-1]] = val
 
 def dictOfLists2listOfDicts(dictOfLists):
-    '''Converts a dictionary of lists to a list of dictionaries.
+    """Converts a dictionary of lists to a list of dictionaries.
 
     The example will make it quite clear.
 
@@ -332,48 +381,42 @@ def dictOfLists2listOfDicts(dictOfLists):
     Examples
     ---------
     >>> dictOfLists2listOfDicts({"a": [0,1,2], "b": [3,4,5]})
-    '''
+    """
 
     return [dict(zip(dictOfLists,t)) for t in zip(*dictOfLists.values())]
 
 def call_method_if_present(obj, method_name, *args, **kwargs):
+    """
+    Calls a method of the object if it is present.
+
+    If the method is not there, it just does nothing.
+
+    Parameters
+    -----------
+    method_name: str
+        the name of the method that you want to call.
+    *args and **kwargs:
+        arguments passed to the method call.
+    """
 
     method = getattr(obj, method_name, None)
     if callable(method):
         return method(*args, **kwargs)
 
 def random_color():
-    '''
+    """
     Returns a random color in hex format
-    '''
+
+    Returns
+    --------
+    str
+        the color in HEX format
+    """
     import random
     return "#"+"%06x" % random.randint(0, 0xFFFFFF)
-#------------------------------------
-
-def sortOrbitals(orbitals):
-    '''
-    Function that sorts a list of orbital names scientifically. (1s -> 2s -> etc)
-
-    Arguments
-    ---------
-    orbitals: list of str
-        the list of orbitals to sort
-    
-    Return
-    --------
-    sortedOrbs: list
-    '''
-
-    def sortKey(x):
-
-        l = "spdfghi"
-
-        return x[0], l.index(x[1]) 
-
-    return sorted(orbitals, key = sortKey)
 
 def copy_params(params, only = [], exclude = []):
-    '''
+    """
     Function that returns a copy of the provided plot parameters.
 
     Arguments
@@ -390,7 +433,7 @@ def copy_params(params, only = [], exclude = []):
     ----------
     copiedParams: tuple
         The params that the user asked for. They are not linked to the input params, so they can be modified independently.
-    ''' 
+    """ 
 
     if only:
         return tuple( param for param in deepcopy(params) if param.key in only)
@@ -398,7 +441,7 @@ def copy_params(params, only = [], exclude = []):
         return tuple( param for param in deepcopy(params) if param.key not in exclude)
 
 def copy_dict(dictInst, only = [], exclude = []):
-    '''
+    """
     Function that returns a copy of a dict. This function is thought to be used for the settings dictionary, for example.
 
     Arguments
@@ -415,7 +458,7 @@ def copy_dict(dictInst, only = [], exclude = []):
     ----------
     copiedDict: dict
         The dictionary that the user asked for. It is not linked to the input dict, so it can be modified independently.
-    ''' 
+    """ 
 
     if only:
         return {k: v for k,v  in deepcopy(dictInst).iteritems() if k in only}
@@ -427,7 +470,7 @@ def copy_dict(dictInst, only = [], exclude = []):
 #-------------------------------------
 
 def load(path):
-    '''
+    """
     Loads a previously saved python object using pickle. To be used for plots, sessions, etc...
 
     Arguments
@@ -439,7 +482,7 @@ def load(path):
     ----------
     loadedObj: object
         The object that was saved.
-    '''
+    """
 
     with open(path, 'rb') as handle:
         loadedObj = dill.load(handle)
@@ -447,7 +490,7 @@ def load(path):
     return loadedObj
 
 def find_files(root_dir = ".", searchString = "*", depth = [0,0], sort = True, sortFn = None, case_insensitive=False):
-    '''
+    """
     Function that finds files (or directories) according to some conditions.
 
     Arguments
@@ -478,7 +521,7 @@ def find_files(root_dir = ".", searchString = "*", depth = [0,0], sort = True, s
     -----------
     paths: list
         A list with all the paths found for the given conditions and sorted according to the provided arguments.
-    '''
+    """
     #Normalize the depth parameter
     if isinstance(depth, int):
         depth = [depth]*2
@@ -498,7 +541,7 @@ def find_files(root_dir = ".", searchString = "*", depth = [0,0], sort = True, s
         return files
 
 def find_plotable_siles(dir_path=None, depth=0):
-    '''
+    """
     Spans the filesystem to look for files that are registered as plotables.
 
     Parameters
@@ -523,7 +566,7 @@ def find_plotable_siles(dir_path=None, depth=0):
     -----------
     dict
         A dict containing all the files found sorted by sile (the keys are the siles)
-    '''
+    """
 
     files = {}
     for rule in get_plotable_siles(rules=True):
@@ -546,9 +589,9 @@ _MAX_NPROCS = register_env_var(
 )
 
 def _apply_method(argsTuple):
-    '''
+    """
     Apply a method to an object. This function is meant for multiprocessing.
-    '''
+    """
 
     method, obj, args, kwargs = argsTuple
 
@@ -560,16 +603,16 @@ def _apply_method(argsTuple):
     return obj._get_pickleable()
 
 def _init_single_plot(argsTuple):
-    '''
+    """
     Initialize a single plot. This function is meant to be used in multiprocessing, when multiple plots need to be initialized
-    '''
+    """
 
     PlotClass, args, kwargs = argsTuple
 
     return PlotClass(**kwargs)._get_pickleable()
 
 def run_multiple(func, *args, argsList = None, kwargsList = None, messageFn = None, serial = False):
-    '''
+    """
 
     Makes use of the pathos.multiprocessing module to run a function simultanously multiple times.
     This is meant mainly to update multiple plots at the same time, which can accelerate significantly the process of visualizing data.
@@ -615,7 +658,7 @@ def run_multiple(func, *args, argsList = None, kwargsList = None, messageFn = No
     results: list
         A list with all the returned values or objects from each function execution.
         This list is ordered, so results[0] is the result of executing the function with argsList[0] and kwargsList[0].  
-    '''
+    """
 
     #Prepare the arguments to be passed to the initSinglePlot function
     toZip = [*args, argsList, kwargsList]
@@ -656,7 +699,7 @@ def run_multiple(func, *args, argsList = None, kwargsList = None, messageFn = No
     return results
 
 def init_multiple_plots(PlotClass, argsList = None, kwargsList = None, **kwargs):
-    '''
+    """
     Initializes a set of plots in multiple processes simultanously making use of runMultiple()
 
     All arguments passed to the function, can be passed as specified in the arguments section of this documentation
@@ -690,13 +733,13 @@ def init_multiple_plots(PlotClass, argsList = None, kwargsList = None, **kwargs)
     plots: list
         A list with all the initialized plots.
         This list is ordered, so plots[0] is the plot initialized with argsList[0] and kwargsList[0].  
-    '''
+    """
 
     return run_multiple(_init_single_plot, PlotClass, argsList = argsList, kwargsList = kwargsList, **kwargs)
 
 def apply_method_on_multiple_objs(method, objs, argsList = None, kwargsList = None, **kwargs):
     
-    '''
+    """
     Applies a given method to the objects provided on multiple processes simultanously making use of the runMultiple() function.
 
     This is useful in principle for any kind of object and any method, but has been tested only on plots.
@@ -734,14 +777,14 @@ def apply_method_on_multiple_objs(method, objs, argsList = None, kwargsList = No
     plots: list
         A list with all the initialized plots.
         This list is ordered, so plots[0] is the plot initialized with argsList[0] and kwargsList[0].  
-    '''
+    """
 
     return run_multiple(_apply_method, method, objs, argsList = argsList, kwargsList = kwargsList, **kwargs)
 
 def repeat_if_childs(method):
-    '''
+    """
     Decorator that will force a method to be run on all the plot's childPlots in case there are any.
-    '''
+    """
     
     def applyToAllPlots(obj, *args, **kwargs):
         
@@ -751,7 +794,7 @@ def repeat_if_childs(method):
             
             obj.childPlots = apply_method_on_multiple_objs(method, obj.childPlots, kwargsList = kwargsList, serial=True)
                 
-            obj.update_settings(onlyOnParent = True, run_updates=False, **kwargs).get_figure()
+            obj.get_figure()
         
         else:
         
@@ -764,7 +807,7 @@ def repeat_if_childs(method):
 #-------------------------------------
 
 def trigger_notification(title, message, sound="Submarine"):
-    '''
+    """
     Triggers a notification.
 
     Will not do anything in Windows (oops!)
@@ -774,19 +817,19 @@ def trigger_notification(title, message, sound="Submarine"):
     title: str
     message: str
     sound: str
-    '''
+    """
     
     if sys.platform == 'linux':
-        os.system(f'''notify-send "{title}" "{message}" ''')
+        os.system(f"""notify-send "{title}" "{message}" """)
     elif sys.platform == 'darwin':
         sound_string = f'sound name "{sound}"' if sound else ''
-        os.system(f'''osascript -e 'display notification "{message}" with title "{title}" {sound_string}' ''')
+        os.system(f"""osascript -e 'display notification "{message}" with title "{title}" {sound_string}' """)
     else:
         print(f'Notifications are not implemented in your operating system ({sys.platform}).'
         ' Maybe consider switching to linux? https://www.amazon.com/s?k=linux+computers&rh=n%3A565108&ref=nb_sb_noss :)')
 
 def spoken_message(message):
-    '''
+    """
     Trigger a spoken message.
 
     In linux espeak must be installed (sudo apt-get install espeak)
@@ -798,12 +841,12 @@ def spoken_message(message):
     title: str
     message: str
     sound: str
-    '''
+    """
     
     if sys.platform == 'linux':
-        os.system(f'''espeak -s 150 "{message}" 2>/dev/null''')
+        os.system(f"""espeak -s 150 "{message}" 2>/dev/null""")
     elif sys.platform == 'darwin':
-        os.system(f'''osascript -e 'say "{message}"' ''')
+        os.system(f"""osascript -e 'say "{message}"' """)
     else:
         print(f'Notifications are not implemented in your operating system ({sys.platform}).'
         ' Maybe consider switching to linux? https://www.amazon.com/s?k=linux+computers&rh=n%3A565108&ref=nb_sb_noss :)')
@@ -813,7 +856,7 @@ def spoken_message(message):
 #-------------------------------------
 
 def shift_trace(trace, shift, axis="y"):
-    '''
+    """
     Shifts a trace by a given value in the given axis.
 
     Parameters
@@ -823,11 +866,11 @@ def shift_trace(trace, shift, axis="y"):
         If it's an array, an element-wise sum will be performed
     axis: {"x","y","z"}, optional
         The axis along which we want to shift the traces.
-    '''
+    """
     trace[axis] = np.array(trace[axis]) + shift
 
 def normalize_trace(trace, min_val=0, max_val=1, axis='y'):
-    '''
+    """
     Normalizes a trace to a given range along an axis.
 
     Parameters
@@ -838,8 +881,23 @@ def normalize_trace(trace, min_val=0, max_val=1, axis='y'):
         The upper part of the range
     axis: {"x", "y", "z"}, optional
         The axis along which we want to normalize.
-    '''
+    """
 
     t = np.array(trace[axis])
     tmin = t.min()
     trace[axis] = (t - tmin) / (t.max() - tmin) * (max_val - min_val) + min_val
+
+def swap_trace_axes(trace, ax1='x', ax2='y'):
+    """
+    Swaps two axes of a trace.
+
+    Parameters
+    -----------
+    ax1, ax2: str, {'x', 'x*', 'y', 'y*', 'z', 'z*'}
+        The names of the axes that you want to swap. 
+    """
+
+    ax1_data = trace[ax1]
+
+    trace[ax1] = trace[ax2]
+    trace[ax2] = ax1_data

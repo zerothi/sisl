@@ -1,18 +1,18 @@
-'''
+"""
 This file provides tools to handle plotability of objects
-'''
+"""
 
 from functools import wraps
 
 __all__ = ['register_plotable']
 
 class PlotEngine:
-    '''
+    """
     Stores and takes care of calling all methods of a plotting engine.
-    '''
+    """
             
     def _add(self, name, function, default=False):
-        '''
+        """
         Makes a new function available to this plotting engine.
 
         Basically, it sets 
@@ -29,14 +29,14 @@ class PlotEngine:
             whether this method is the default for the engine.
 
             The default method can be called by simply calling the engine.        
-        '''
+        """
         if default:
             self._default = name
             
         setattr(self, name, function)
     
     def get(self, method=None, otherwise='raise'):
-        '''
+        """
         Returns a method of the engine.
 
         Parameters
@@ -49,7 +49,7 @@ class PlotEngine:
             what to return in case that the method is not found.
 
             If you want the method to raise an exception, set this to 'raise'.
-        '''
+        """
 
         if method is None:
             if not hasattr(self, '_default'):
@@ -62,7 +62,7 @@ class PlotEngine:
             return getattr(self, method, otherwise)
     
     def __call__(self, method=None, **kwargs):
-        '''
+        """
         Handles a call to the engine, which will trigger calling plot methods.
 
         Note that you can also call the methods directly, since they are stored
@@ -76,13 +76,13 @@ class PlotEngine:
             If not provided, the default will be executed.
         **kwargs:
             all the keyword arguments that will go into executing the method
-        '''
+        """
 
         return self.get(method)(**kwargs)
         
         
 class PlotHandler:
-    '''
+    """
     Handles all plotting possibilities for a class.
 
     It supports handling multiple plotting engines while keeping autocompletion
@@ -116,13 +116,13 @@ class PlotHandler:
 
     A().plot = PlotHandler()
     
-    '''
+    """
     
     def __init__(self, default_engine='plotly'):
         self._default_engine = default_engine
     
     def register(self, function, name=None, engine=None, default=False):
-        '''
+        """
         Registers plotting functions to the plot handler.
 
         Parameters
@@ -148,7 +148,7 @@ class PlotHandler:
             with no "method" argument.
             The default method of the default engine can be accessed by calling the
             plot handler with no "engine" and "method" arguments.
-        '''
+        """
         if name is None:
             name = function.__name__
             
@@ -180,10 +180,10 @@ class PlotHandler:
             setattr(self, name, shortcut)
             
     def __get__(self, instance, owner):
-        '''
+        """
         Makes the plot handler aware of what is the instance that it is handling
         plots for.
-        '''
+        """
         
         if instance is not None:
             self._obj = instance
@@ -191,7 +191,7 @@ class PlotHandler:
         return self
         
     def __call__(self, engine=None, method=None, **kwargs):
-        '''
+        """
         Handles a call to the engine, which will trigger calling plot methods.
 
         Note that you can also call the methods directly, since they are stored
@@ -210,7 +210,7 @@ class PlotHandler:
             If not provided, the default will be executed.
         **kwargs:
             all the keyword arguments that will go into executing the method
-        '''
+        """
 
         if engine is None:
             engine = self._default_engine
@@ -219,7 +219,7 @@ class PlotHandler:
 
 
 def register_plotable(plotable, plotting_func, name=None, engine='plotly', default=False, plot_handler_attr='plot'):
-    '''
+    """
     Makes the sisl.viz module aware of which sisl objects can be plotted and how to do it.
 
     The implementation uses plot handlers. The only thing that this function does is to check
@@ -245,7 +245,7 @@ def register_plotable(plotable, plotting_func, name=None, engine='plotly', defau
         the engine that the function uses.
     plot_handler_attr: str, optional
         the attribute where the plot handler is or should be located in the class that you want to register.
-    '''
+    """
 
     # Check if we already have a plot_handler
     plot_handler = getattr(plotable, plot_handler_attr, None)

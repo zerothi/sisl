@@ -1,4 +1,4 @@
-'''
+"""
 This file makes documentation of plots and sessions easy based on their parameters.
 
 Basically, you just need to have your class defined and have a flag in the docs
@@ -22,14 +22,14 @@ IF YOU HAVE MORE THAN ONE PLOT CLASS IN A FILE, YOU SHOULD SPECIFY %%FakePlot_co
 
 Then, just run this script and it will update all the classes documentation.
 Or you can use fill_class_docs to only update a certain class.
-'''
+"""
 
 from sisl.viz.plotutils import get_configurable_docstring, get_plot_classes, get_session_classes
 from sisl.viz import Plot, MultiplePlot, Animation, SubPlots, Session
 import inspect
 
 def get_parameters_docstrings(cls):
-    '''
+    """
     Returns the documentation for the configurable's parameters.
 
     Parameters
@@ -41,7 +41,7 @@ def get_parameters_docstrings(cls):
     -----------
     str:
         the docs with the settings added.
-    '''
+    """
     import re
 
     if isinstance(cls, type):
@@ -62,26 +62,22 @@ def get_parameters_docstrings(cls):
 
     return configurable_settings
 
-def get_class_docs(Cls):
-
-    doc = Cls.__doc__
-    if doc is None:
-        doc = f'\tParameters\n\t-----------\n\t%%configurable_settings%%'
-
-    parameters_docs = get_parameters_docstrings(Cls)
-
-    is_template_doc = "%%configurable_settings%%" in doc
-
-    #parameters_docs = "\n".join(parameters_docs.split("\n"))
-
-    if is_template_doc:
-        doc = doc.replace("%%configurable_settings%%", parameters_docs)
-    else:
-        params = [param.key for param in Cls._parameters]
-
-    return doc
 
 def fill_class_docs(Cls):
+    """
+    Fills the documentation for a class that inherits from Configurable.
+
+    You just need to use the placeholder %%configurable_settings%% or 
+    %%ClassName_configurable_settings%% for more specificity, where ClassName is the name
+    of the class that you want to document. Then, this function replaces that placeholder
+    with the documentation for all the settings.
+
+    Parameters
+    -----------
+    cls:
+        the class you want to document.
+
+    """
 
     filename = inspect.getfile(Cls)
 
@@ -97,19 +93,6 @@ def fill_class_docs(Cls):
 
     with open(filename, 'w') as fo:
         fo.write(new_lines)
-
-def get_init_method(Cls):
-    import textwrap
-
-    w = textwrap.TextWrapper(
-        initial_indent='', subsequent_indent="\t", tabsize=4)
-
-    definition = w.fill(
-        f'def __init__(self, *args, {get_configurable_kwargs(Cls)}, **kwargs):')
-    code = w.fill(
-        f'\tsuper().__init__(self, *args, {get_configurable_kwargs_to_pass(Cls)}, **kwargs )')
-
-    return definition + "\n\n" + code
 
 if __name__ == "__main__":
     for Cls in [*get_plot_classes(), Plot, MultiplePlot, Animation, SubPlots, Session, *get_session_classes().values()]:

@@ -1,12 +1,10 @@
-'''
+"""
 This file contains the Plot class, which should be inherited by all plot classes
-'''
+"""
 import uuid
 import os
 from io import StringIO, BytesIO
-import sys
 import numpy as np
-import json
 import dill
 from copy import deepcopy
 import time
@@ -28,6 +26,7 @@ from .input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, In
 from ._shortcuts import ShortCutable
 from .gui.api_utils.sync import Connected
 
+# This will definetly be removed
 PLOTS_CONSTANTS = {
     "spins": ["up", "down"],
 }
@@ -39,7 +38,7 @@ __all__ = ['Plot', 'MultiplePlot', 'Animation', 'SubPlots']
 #------------------------------------------------    
 
 class Plot(ShortCutable, Configurable, Connected):
-    '''
+    """
     Parent class of all plot classes.
 
     Implements general things needed by all plots such as settings and shortcut
@@ -86,7 +85,7 @@ class Plot(ShortCutable, Configurable, Connected):
         Each group is a dict like { "key": , "name": ,"icon": , "description": }
     ...
 
-    '''
+    """
     
     _onSettingsUpdate = {
         "functions": ["read_data", "set_data", "get_figure"],
@@ -133,9 +132,19 @@ class Plot(ShortCutable, Configurable, Connected):
 
     @classmethod
     def from_plotly(cls, plotly_fig):
-        '''
-        Converts a plotly plot to a Plot object
-        '''
+        """
+        Converts a plotly plot to a Plot object.
+
+        Parameters
+        -----------
+        plotly_fig: plotly.graph_objs.Figure
+            the figure that we want to convert into a sisl plot
+
+        Returns
+        -----------
+        Plot
+            the converted plot that contains the plotly figure.
+        """
 
         plot = cls(only_init=True)
         plot.figure = plotly_fig
@@ -143,36 +152,44 @@ class Plot(ShortCutable, Configurable, Connected):
         return plot
 
     @classmethod
-    def plotName(cls):
+    def plot_name(cls):
+        """
+        The name of the plot. Used to be displayed in the GUI, for example.
+        """
         return getattr(cls, "_plot_type", cls.__name__)
     
     @classmethod
     def suffix(cls):
-        '''
+        """
         Get the suffix that this class adds to plotting functions.
 
         See sisl/viz/_plotables.py and particularly the `register_plotable`
         function to understand this better.
-        '''
+        """
         if cls is Plot:
             return None
         return getattr(cls, "_suffix", cls.__name__.lower().replace("plot", ""))
-
-    @property
-    def plotType(self):
-        return self.__class__.plotName()
     
     @property
     def _innotebook(self):
+        """
+        Boolean indicating whether this plot is being used in a notebook.
+
+        Used to understand how we should display the plot.
+        """
         return running_in_notebook()
     
     @property
     def _widgets(self):
+        """
+        Dictionary that informs of which jupyter notebook widgets are available.
+        """
         return check_widgets()
     
     @classmethod
     def multiple(cls, *args, fixed={}, template_plot=None, merge_method='together', **kwargs):
-        '''Creates a multiple plot out of a class.
+        """
+        Creates a multiple plot out of a class.
 
         This class method returns a multiple plot that contains several plots of the same class.
         It is a general method that serves as a common denominator for building MultiplePlot, SubPlot
@@ -235,7 +252,7 @@ class Plot(ShortCutable, Configurable, Connected):
         --------
         MultiplePlot, SubPlots or Animation
             The plot that you asked for. 
-        '''
+        """
 
         #Try to retrieve the default animation if no arguments are provided
         if len(args) == 0:
@@ -273,7 +290,7 @@ class Plot(ShortCutable, Configurable, Connected):
 
     @classmethod
     def subplots(cls, *args, fixed={}, template_plot=None, rows=None, cols=None, arrange="rows", **kwargs):
-        '''
+        """
         Creates subplots where each plot has different settings.
 
         Mainly, it uses the `multiple` method to generate them.
@@ -335,14 +352,15 @@ class Plot(ShortCutable, Configurable, Connected):
 
             If args are not passed and the default multiple plot is being created, some keyword arguments may be used by the method
             that generates the default multiple plot. One recurrent example of this is the keyword `wdir`. 
-        '''
+        """
 
         return cls.multiple(*args, fixed=fixed, template_plot=None, merge_method='subplots',
                 rows=rows, cols=cols, arrange=arrange, **kwargs)
     
     @classmethod
     def animated(cls, *args, fixed={}, frame_names=None, template_plot=None, **kwargs):
-        '''Creates an animation out of a class.
+        """
+        Creates an animation out of a class.
 
         This class method returns an animation with frames belonging to a given plot class.
 
@@ -420,7 +438,7 @@ class Plot(ShortCutable, Configurable, Connected):
         Animation
             The Animation that you asked for
         
-        '''
+        """
         
         _get_frame_names = None
         #Define how to get the framenames
@@ -437,7 +455,7 @@ class Plot(ShortCutable, Configurable, Connected):
                             _plugins={**kwargs.pop('_plugins', {}), "_get_frame_names": _get_frame_names}, **kwargs)
 
     def __new__(cls, *args, **kwargs):
-        '''
+        """
         This method decides what to return when the plot class is instantiated.
 
         It is supposed to help the users by making the plot class very functional
@@ -450,7 +468,7 @@ class Plot(ShortCutable, Configurable, Connected):
 
         Note that both cases are registered in the _plotables.py file, and you
         can register new siles/plotables by using the register functions.
-        '''
+        """
 
         if args:
 
@@ -521,7 +539,7 @@ class Plot(ShortCutable, Configurable, Connected):
         return object.__new__(cls)
 
     def __init_subclass__(cls):
-        '''
+        """
         Whenever a plot class is defined, this method is called.
 
         We will use this opportunity to:
@@ -534,7 +552,7 @@ class Plot(ShortCutable, Configurable, Connected):
         to another, therefore you can not say: "this is the default plotable input".
         
         Probably, defaults should be centralized, but I don't know where just yet.
-        '''
+        """
         super().__init_subclass__()
         import inspect
 
@@ -587,7 +605,7 @@ class Plot(ShortCutable, Configurable, Connected):
         
         #Initialize the variable to store when has been the last data read (0 means never basically)
         self.last_dataread = 0
-        self._filesToFollow = []
+        self._files_to_follow = []
 
         # Initialize the figure
         self.figure = go.Figure()
@@ -654,20 +672,20 @@ class Plot(ShortCutable, Configurable, Connected):
     def __str__(self):
         
         string = (
-            f'Plot class: {self.plotType}    Plot type: {getattr(self, "_plot_type", None)}\n\n'
+            f'Plot class: {self.__class__.__name__}    Plot type: {self.plot_name()}\n\n'
             'Settings:\n{}'.format("\n".join([ "\t- {}: {}".format(key,value) for key, value in self.settings.items()]))
         )
         
         return string
     
     def __getattr__(self, key):
-        '''
+        """
         This method is executed only after python has found that there is no such attribute in the instance
 
-        So let's try to find elsewhere. There are two options:
+        So let's try to find it elsewhere. There are two options:
             - The attribute is in the figure object (self.figure)
             - The attribute is currently being shared with other plots (only possible if it's a childplot)
-        '''
+        """
 
         if key in ["figure", "shared_attr"]:
             pass
@@ -683,7 +701,7 @@ class Plot(ShortCutable, Configurable, Connected):
         raise AttributeError(f"The attribute '{key}' was not found either in the plot, its figure, or in shared attributes.")
 
     def __setattr__(self, key, val):
-        '''
+        """
         If the attribute is one of ["data", "layout", "frames"] we are going to store it directly in `self.figure` for convenience
         and in order to save memory.
 
@@ -691,8 +709,8 @@ class Plot(ShortCutable, Configurable, Connected):
         This happens in animations/multiple plots. There's a "leading plot" that reads the data and then shares it with the rest
         so that they don't need to read it again, in a collective effort to save memory and time.
 
-        Otherwise
-        '''
+        Otherwise we set the attribute to the plot itself.
+        """
 
         if key in ["data", "layout", "frames"]:
             self.figure.update(**{key: val})
@@ -702,11 +720,20 @@ class Plot(ShortCutable, Configurable, Connected):
             object.__setattr__(self, key, val)
 
     def __getitem__(self, key):
+        """
+        Getting an item from plot returns the trace(s) that correspond
+        to the requested indices.
+        """
 
         if isinstance(key, (int, slice)):
             return self.data[key]
 
     def _general_plot_shortcuts(self):
+        """
+        In this method we set the shortcuts that are general to all plots.
+
+        This is called in `__init__`
+        """
 
         self._listening_shortcut()
 
@@ -714,19 +741,16 @@ class Plot(ShortCutable, Configurable, Connected):
 
     @repeat_if_childs
     @vizplotly_settings('before')
-    def read_data(self, update_fig = True, **kwargs):
-        '''
-        Gets the information for the bands plot and stores it into self.df
+    def read_data(self, update_fig=True, **kwargs):
+        """
+        This method is responsible for organizing the data-reading step.
 
-        Returns
-        -----------
-        dataRead: boolean
-            whether data has been read succesfully or not
-        '''
+        If everything is done succesfully, it calls the next step (`set_data`)
+        """
 
-        # Restart the filesToFollow variable so that we can start to fill it with the new files
+        # Restart the files_to_follow variable so that we can start to fill it with the new files
         # Apart from the explicit call in this method, setFiles and setup_hamiltonian also add files to follow
-        self._filesToFollow = []
+        self._files_to_follow = []
 
         call_method_if_present(self, "_before_read")
         
@@ -735,15 +759,15 @@ class Plot(ShortCutable, Configurable, Connected):
         except Exception:
             pass
 
-        #Update the title of the plot if there is none
+        # Update the title of the plot if there is none
         if not self.figure.layout["title"]:
-            self.update_layout(title = '{} {}'.format(getattr(self, "struct", ""), self.plotType) )
+            self.update_layout(title = '{} {}'.format(getattr(self, "struct", ""), self.plot_name()) )
         
-        #We try to read from the different sources using the _readFromSources method of the parent Plot class.
+        # We try to read from the different entry points available
         self._read_from_sources()
 
         # We don't update the last dataread here in case there has been a succesful data read because we want to
-        # wait for the afterRead() method to be succesful
+        # wait for the after_read() method to be succesful
         if self.source is None:
             self.last_dataread = 0
 
@@ -758,9 +782,11 @@ class Plot(ShortCutable, Configurable, Connected):
         return self
     
     def _read_from_sources(self):
-        '''
+        """
         Tries to read the data from the different available entry points in the plot class.
-        '''
+
+        If it fails to read from all entry points, it raises an exception.
+        """
 
         # It is possible that the class does not implement any entry points,
         # because it doesn't need to read any data. Then the plotting process
@@ -785,7 +811,7 @@ class Plot(ShortCutable, Configurable, Connected):
                             .format(self.__class__.__name__, "\n".join(errors)) )
     
     def follow(self, *files, to_abs=True, unfollow=False):
-        '''
+        """
         Makes sure that the object knows which files to follow in order to trigger updates.
 
         Parameters
@@ -801,14 +827,14 @@ class Plot(ShortCutable, Configurable, Connected):
             more robust. It is better to leave it as True unless you have a good reason to change it.
         unfollow: boolean, optional
             whether the previous files should be unfollowed. If set to False, we are just adding more files.
-        '''
+        """
 
-        newFilesToFollow = [os.path.abspath(filePath) if to_abs else filePath for filePath in files or []]
+        new_files = [os.path.abspath(filePath) if to_abs else filePath for filePath in files or []]
 
-        self._filesToFollow = newFilesToFollow if unfollow else [*self._filesToFollow, *newFilesToFollow]
+        self._files_to_follow = new_files if unfollow else [*self._files_to_follow, *new_files]
     
     def get_sile(self, path, *args, follow=True, follow_kwargs={}, file_contents=None, **kwargs):
-        '''
+        """
         A wrapper around get_sile so that the reading of the file is registered.
 
         This is useful so that you don't neet to go always like:
@@ -835,7 +861,7 @@ class Plot(ShortCutable, Configurable, Connected):
             useful for the drag and drop functionality of the GUI.
         **kwargs:
             passed to sisl.get_sile
-        '''
+        """
 
         if file_contents is None:
             file_contents = self._file_contents.get(path, None)
@@ -856,18 +882,18 @@ class Plot(ShortCutable, Configurable, Connected):
             return get_io_sile(SileClass)(path, ioobj=file_IO)
 
     def updates_available(self):
-        '''
+        """
         This function checks whether the read files have changed.
 
         For it to work properly, one should specify the files that have been read by
-        their _read*() methods. This is done by using the `follow()` method or by
-        reading files with `self.get_sile()` instead of `sisl.get_sile()`.
+        their reading methods (usually, the entry points). This is done by using the 
+        `follow()` method or by reading files with `self.get_sile()` instead of `sisl.get_sile()`.
 
-        Note that the `setFiles` and `setUpHamiltonian` methods are already responsible for
+        Note that the `set_files` and `setup_hamiltonian` methods are already responsible for
         informing about the files they read, so you only need to specify those that you are
         "explicitly" reading in your method.
 
-        '''
+        """
 
         def modified(filepath):
 
@@ -876,13 +902,13 @@ class Plot(ShortCutable, Configurable, Connected):
             except FileNotFoundError:
                 return False  # This probably should implement better logic
 
-        filesModified = np.array([ modified(filePath) for filePath in self._filesToFollow])
+        files_modified = np.array([ modified(filePath) for filePath in self._files_to_follow])
 
-        return filesModified.any()
+        return files_modified.any()
     
     def listen(self, forever=True, show=True, as_animation=False, return_animation=True, return_figWidget=False, 
         clear_previous=True, notify=False, speak=False, notify_title=None, notify_message=None, speak_message=None, fig_widget=None):
-        '''
+        """
         Listens for updates in the followed files (see the `updates_available` method)
 
         Parameters
@@ -924,7 +950,7 @@ class Plot(ShortCutable, Configurable, Connected):
             the message of the notification.
         speak_message: str, optional
             the spoken message. Feel free to get creative here!
-        '''
+        """
         from IPython.display import clear_output
         import asyncio
 
@@ -999,6 +1025,16 @@ class Plot(ShortCutable, Configurable, Connected):
             return fig_widget
 
     def _listening_shortcut(self, fig_widget=None):
+        """
+        Adds the shortcut to start listening for updates. 
+        
+        This is done here and not in `_general_plot_settings` because
+        we need to be able to toggle this shortcut each time the plot
+        starts/stops listening.
+
+        Maybe at some point we can have a rule to automatically disable
+        shortcuts based on state in `ShortCutable`.
+        """
 
         self.add_shortcut(
             "ctrl+alt+l", "Listen for updates", 
@@ -1007,12 +1043,22 @@ class Plot(ShortCutable, Configurable, Connected):
         )
 
     def stop_listening(self, fig_widget=None):
-        '''
+        """
         Makes the plot stop listening for updates.
 
         Using this method only makes sense if you have previously made the plot listen
         either through `Plot.listen()` or `Plot.show(listen=True)`
-        '''
+
+        Parameters
+        -----------
+        fig_widget: plotly FigureWidget, optional
+            the figure widget where the plot is currently being displayed.
+
+            This is just used to reset the listening shortcut.
+
+            YOU WILL MOST LIKELY NOT USE THIS because `Plot` already knows
+            where is it being displayed in normal situations.
+        """
 
         task = getattr(self, "_listening_task", None)
 
@@ -1026,9 +1072,20 @@ class Plot(ShortCutable, Configurable, Connected):
 
     @vizplotly_settings('before')
     def set_files(self, **kwargs):
-        '''
-        Checks if the required files are available and then builds a list with them
-        '''
+        """
+        Checks if the required files are available and then builds a list with them.
+
+        This was initially thought with a very "fdf-centered" vision of the module, but then
+        realised that you don't necessarily need the fdf to process some files.
+
+        Therefore, it needs revision.
+
+        Note that this method is being called inside a try/except in `read_data`, which already
+        indicates that it is not essential.
+
+        However, it still allows to get the bands file from the root_fdf in BandsPlot
+        in case no bands file is specified, for example.       
+        """
         #Set the fdf_sile
         root_fdf = self.setting("root_fdf")
         self.root_dir, fdfFile = os.path.split( root_fdf )
@@ -1038,21 +1095,18 @@ class Plot(ShortCutable, Configurable, Connected):
         self.fdf_sile = self.get_sile(root_fdf)
         self.struct = self.fdf_sile.get("SystemLabel", "")
             
-        #Check that the required files are there
-        #if RequirementsFilter().check(self.root_fdf, self.__class__.__name__ ):
+        # Check that the required files are there
         if hasattr(self, "_requirements"):
-            #If they are there, we can confidently build this list
+            # If they are there, we can confidently build this list
             self.requiredFiles = [ os.path.join( self.root_dir, self.setting("results_path"), req.replace("$struct$", self.struct) ) for req in self.__class__._requirements["siesOut"]["files"] ]
-        #else:
-            #raise Exception("The required files were not found, please check your file system.")
 
         return self
     
     @vizplotly_settings('before')
     def setup_hamiltonian(self, **kwargs):
-        '''
+        """
         Sets up the hamiltonian for calculations with sisl.
-        '''
+        """
 
         if len(self.settings_history) > 1:
             NEW_FDF = self.settings_history.was_updated("root_fdf")
@@ -1069,10 +1123,13 @@ class Plot(ShortCutable, Configurable, Connected):
     @repeat_if_childs
     @vizplotly_settings('before')
     def set_data(self, update_fig = True, **kwargs):
-        '''
+        """
         Method to process the data that has been read beforehand by read_data() and prepare the figure.
-        '''
 
+        If everything is succesful, it calls the next step in plotting (`get_figure`)
+        """
+
+        # Clear all the traces from the figure before drawing the new ones
         self.clear()
 
         # This is used to know how many traces have been added, so that the user can clear only
@@ -1091,18 +1148,24 @@ class Plot(ShortCutable, Configurable, Connected):
     
     @vizplotly_settings('before')
     def get_figure(self, **kwargs):
+        """
+        This is here mainly for historic reasons. At the beggining, the plot's figure was not
+        constructed until this point (each time a new figure was constructed). However, it seemed
+        better to construct a figure only once on `__init__` so that it can be manipulated at any
+        point of the plotting process.
 
-        '''
-        Define the plot object using the actual data. 
+        Therefore, there is nothing left to do here.
+
+        HOWEVER, `MultiplePlot` and its child classes overwrite this method and actually make use of it,
+        because they need to collect the data from all their childplots and build the figure.
         
         This method can be applied after updating the data so that the plot object is refreshed.
 
         Returns
         ---------
-        self.figure: go.Figure()
-            the updated version of the figure.
-
-        '''
+        self.figure: plotly.graph_objs.Figure
+            the plotly figure.
+        """
 
         call_method_if_present(self, '_after_get_figure')
         
@@ -1115,16 +1178,18 @@ class Plot(ShortCutable, Configurable, Connected):
     #-------------------------------------------
 
     def show(self, *args, listen=False, return_figWidget=False, **kwargs):
-        '''
-        Shows the plot.
+        """
+        Displays the plot.
 
         Parameters
         ------
-        listen: boolean, optional
+        listen: bool, optional
             after showing, keeps listening for file changes to update the plot.
             This is nice for monitoring.
-        '''
-
+        return_figureWidget: bool, optional
+            if the plot is displayed in a jupyter notebook, whether you want to
+            get the figure widget as a return so that you can act on it.
+        """
         if listen:
             self.listen(show=True, **kwargs)
 
@@ -1138,6 +1203,22 @@ class Plot(ShortCutable, Configurable, Connected):
         return self.figure.show(*args, **kwargs)
     
     def _show_in_jupyternb(self, listen=False, return_figWidget=False, **kwargs):
+        """
+        Handles all things needed to display the plot in a jupyter notebook.
+
+        Plotly already knows how to show a plot in the jupyter notebook, however
+        here we try to extend it to support shortcuts if the appropiate widget is 
+        there (ipyevents, https://github.com/mwcraig/ipyevents).
+
+        Parameters
+        ------
+        listen: bool, optional
+            after showing, keeps listening for file changes to update the plot.
+            This is nice for monitoring.
+        return_figureWidget: bool, optional
+            if the plot is displayed in a jupyter notebook, whether you want to
+            get the figure widget as a return so that you can act on it.
+        """
 
         if self._widgets["plotly"]:
 
@@ -1162,6 +1243,16 @@ class Plot(ShortCutable, Configurable, Connected):
             self.figure.show(**kwargs)
                                     
     def _show_jupnb_with_shortcuts(self, fig_widget, **kwargs):
+        """
+        If the appropiate widget is there (ipyevents, https://github.com/mwcraig/ipyevents),
+        we extend plotly's FigureWidget to support keypress events so that we can trigger
+        shortcuts from the notebook.
+
+        Parameters
+        ------
+        fig_widget: plotly.graph_objs.FigureWidget
+            The figure widget that we need to extend.
+        """
 
         from ipyevents import Event
         from ipywidgets import HTML, Output
@@ -1239,6 +1330,14 @@ class Plot(ShortCutable, Configurable, Connected):
         display(fig_widget, messages, h, styles, Output())
 
     def _update_FigureWidget(self, fig_widget, plot = None):
+        """
+        Updates a figure widget so that it is in sync with this plot's data.
+
+        Parameters
+        ------
+        fig_widget: plotly.graph_objs.FigureWidget
+            The figure widget that we need to extend.
+        """
 
         fig_widget.data = []
         fig_widget.add_traces(self.data)
@@ -1250,7 +1349,7 @@ class Plot(ShortCutable, Configurable, Connected):
     #-------------------------------------------
 
     def merge(self, others, to="multiple", extend_multiples=True, **kwargs):
-        '''
+        """
         Merges this plot's instance with the list of plots provided
 
         Parameters
@@ -1276,7 +1375,7 @@ class Plot(ShortCutable, Configurable, Connected):
         -------
         MultiplePlot, Subplots or Animation
             depending on the value of the `to` parameter.
-        '''
+        """
         
         #Make sure we deal with a list (user can provide a single plot)
         if not isinstance(others, (list, tuple, np.ndarray)):
@@ -1297,7 +1396,7 @@ class Plot(ShortCutable, Configurable, Connected):
         return PlotClass(plots=childPlots, **kwargs)
     
     def group_legend(self, by=None, names=None, show_all=False, extra_updates=None, **kwargs):
-        '''
+        """
         Joins plot traces in groups in the legend.
 
         As the result of this method, plot traces end up with a legendgroup attribute.
@@ -1361,7 +1460,7 @@ class Plot(ShortCutable, Configurable, Connected):
             argument. Since you recieve the trace, you can run `trace.update(...)` inside your function.
         **kwargs:
             like extra_updates but they are passed to all groups without distinction
-        '''
+        """
     
         unique_values = []
         
@@ -1440,11 +1539,9 @@ class Plot(ShortCutable, Configurable, Connected):
         return self
     
     def ungroup_legend(self):
-        '''
-        Ungroups traces if a legend contains groups
-
-        Maybe group_legend should store the name in customdata
-        '''
+        """
+        Ungroups traces if a legend contains groups.
+        """
 
         self.figure.for_each_trace(
             lambda trace: trace.update(
@@ -1457,7 +1554,7 @@ class Plot(ShortCutable, Configurable, Connected):
         return self
 
     def clear(self, plot_traces=True, added_traces=True, frames=True, layout=False):
-        '''
+        """
         Clears the plot canvas so that data can be reset
 
         Parameters
@@ -1468,7 +1565,7 @@ class Plot(ShortCutable, Configurable, Connected):
             whether traces added externally (by the user) should be cleared.
         frames: boolean, optional
             whether frames should also be deleted
-        '''
+        """
 
         own_slice = getattr(self, '_own_traces_slice', slice(0,0))
 
@@ -1487,8 +1584,8 @@ class Plot(ShortCutable, Configurable, Connected):
         
         return self
 
-    def normalize(self, min_val=0, max_val=1, axis = "y", **kwargs):
-        '''
+    def normalize(self, min_val=0, max_val=1, axis="y", **kwargs):
+        """
         Normalizes traces to a given range along an axis.
 
         Parameters
@@ -1503,23 +1600,44 @@ class Plot(ShortCutable, Configurable, Connected):
             keyword arguments that are passed directly to plotly's Figure `for_each_trace`
             method. You can check its documentation. One important thing is that you can pass a
             'selector', which will choose if the trace is updated or not. 
-        '''
+        """
         from .plotutils import normalize_trace
 
         self.for_each_trace(partial(normalize_trace, min_val=min_val, max_val=max_val, axis=axis), **kwargs)
 
         return self
     
-    def swap_axes(self):
+    def swap_axes(self, ax1='x', ax2='y', **kwargs):
+        """
+        Swaps two axes in the plot.
 
-        self.data = [{**lineData.to_plotly_json(), 
-            "x": lineData["y"], "y": lineData["x"]
-        } for lineData in self.data]
+        Parameters
+        -----------
+        ax1, ax2: str, {'x', 'x*', 'y', 'y*', 'z', 'z*'}
+            The names of the axes that you want to swap. 
+        **kwargs:
+            keyword arguments that are passed directly to plotly's Figure `for_each_trace`
+            method. You can check its documentation. One important thing is that you can pass a
+            'selector', which will choose if the trace is updated or not. 
+        """
 
+        from .plotutils import swap_trace_axes
+        # Swap the traces
+        self.for_each_trace(partial(swap_trace_axes, ax1=ax1, ax2=ax2), **kwargs)
+
+        # Try to also swap the axes
+        try:
+            self.update_layout({
+                f'{ax1}axis': self.layout[f'{ax2}axis'].to_plotly_json(),
+                f'{ax2}axis': self.layout[f'{ax1}axis'].to_plotly_json(),
+            }, overwrite=True)
+        except:
+            pass
+        
         return self
     
     def shift(self, shift, axis="y", **kwargs):
-        '''
+        """
         Shifts the traces of the plot by a given value in the given axis.
 
         Parameters
@@ -1533,7 +1651,7 @@ class Plot(ShortCutable, Configurable, Connected):
             keyword arguments that are passed directly to plotly's Figure `for_each_trace`
             method. You can check its documentation. One important thing is that you can pass a
             'selector', which will choose if the trace is updated or not. 
-        '''
+        """
         from .plotutils import shift_trace
 
         self.for_each_trace(partial(shift_trace, shift=shift, axis=axis), **kwargs)
@@ -1541,9 +1659,9 @@ class Plot(ShortCutable, Configurable, Connected):
         return self
     
     def v_line(self, x, yrange=None, **kwargs):
-        '''
+        """
         Draws a vertical line in the figure (NOT WORKING YET!)
-        '''
+        """
 
         if yrange is None:
             yrange = self.layout.yaxis.range
@@ -1555,23 +1673,23 @@ class Plot(ShortCutable, Configurable, Connected):
         return self
 
     def copy(self):
-        '''
+        """
         Returns a copy of the plot.
 
         If you want a plot with the exact plot configuration but newly initialized,
         use `clone()` instead.
-        '''
+        """
         return deepcopy(self)
 
     def clone(self, *args, **kwargs):
-        '''
+        """
         Gets you and exact clone of this plot
 
         You can pass extra args that will overwrite the previous parameters though, if you don't want it to be that exact.
 
         IMPORTANT: IT WILL INITIALIZE A NEW PLOT, THEREFORE IT WILL READ NEW DATA.
         IF YOU JUST WANT A COPY, USE THE `copy()` method.
-        '''
+        """
 
         return deepcopy(self)
 
@@ -1582,9 +1700,9 @@ class Plot(ShortCutable, Configurable, Connected):
     #-------------------------------------------
 
     def dispatch_event(self, event, *args, **kwargs):
-        '''
+        """
         Not functional yet
-        '''
+        """
         print(event, args, kwargs)
         # Of course this needs to be done
         raise NotImplementedError
@@ -1594,10 +1712,10 @@ class Plot(ShortCutable, Configurable, Connected):
     #-------------------------------------------
 
     def _get_dict_for_GUI(self):
-        '''
+        """
         This method is thought mainly to prepare data to be sent through the API to the GUI.
         Data has to be sent as JSON, so this method can only return JSONifiable objects. (no numpy arrays, no NaN,...)
-        '''
+        """
 
         infoDict = {
             "id": self.id,
@@ -1614,9 +1732,9 @@ class Plot(ShortCutable, Configurable, Connected):
         return infoDict
     
     def _get_pickleable(self):
-        '''
+        """
         Removes from the instance the attributes that are not pickleable.
-        '''
+        """
 
         unpickleableAttrs = ['fdf_sile']
 
@@ -1627,7 +1745,7 @@ class Plot(ShortCutable, Configurable, Connected):
         return self
     
     def save(self, path, html=False):
-        '''
+        """
         Saves the plot so that it can be loaded in the future.
 
         Parameters
@@ -1640,7 +1758,7 @@ class Plot(ShortCutable, Configurable, Connected):
         Returns
         ---------
         self
-        '''
+        """
 
         if html or os.path.splitext(path)[-1] == ".html":
             self.figure.write_html('{}.html'.format(path.replace(".html", "")))
@@ -1656,26 +1774,26 @@ class Plot(ShortCutable, Configurable, Connected):
     
     def html(self, path):
 
-        '''
+        """
         Just a shortcut for save( html = True )
 
         Arguments
         --------
         path: str
             The path to the file where you want to save the plot.
-        '''
+        """
 
         return self.save(path, html = True)
     
     def to_chart_studio(self, *args, **kwargs):
-        '''
+        """
         Sends the plot to chart studio if it is possible.
 
         For it to work, the user should have their credentials correctly set up.
 
         It is a shortcut for chart_studio.plotly.plot(self.figure, ...etc) so you can pass any extra arguments as if
         you were using `py.plot`
-        '''
+        """
         import chart_studio.plotly as py
 
         return py.plot(self.figure, *args, **kwargs)
@@ -1690,7 +1808,7 @@ class EntryPoint:
         self.__doc__ = method.__doc__
 
 def entry_point(name):
-    '''
+    """
     Helps registering entry points for plots.
 
     See the usage section to get a fast intuitive way of how to use it.
@@ -1723,7 +1841,7 @@ def entry_point(name):
         @entry_point('ask_mum'):
         def _we_are_quite_lost_so_we_better_ask_mum(self):
             self.call_mum()
-    '''
+    """
     return partial(EntryPoint, name, ())
 
 #------------------------------------------------
@@ -1731,7 +1849,7 @@ def entry_point(name):
 #------------------------------------------------
 
 class MultiplePlot(Plot):
-    '''
+    """
     General handler of a group of plots that need to be rendered together.
 
     Parameters
@@ -1743,7 +1861,7 @@ class MultiplePlot(Plot):
     results_path: str, optional
         Directory where the files with the simulations results are
         located. This path has to be relative to the root fdf.
-    '''
+    """
 
     def __init__(self, *args, plots=None, template_plot=None, **kwargs):
 
@@ -1768,9 +1886,9 @@ class MultiplePlot(Plot):
     
     @property
     def _attrs_for_childplots(self):
-        '''
+        """
         Returns all the attributes that its childplots should have
-        '''
+        """
 
         return {
             'isChildPlot': True,
@@ -1778,7 +1896,21 @@ class MultiplePlot(Plot):
             'share_attr': lambda key, val: self.set_shared_attr(key, val)
         }
 
-    def init_all_plots(self, update_fig = True, try_sharing=True):
+    def init_all_plots(self, update_fig=True, try_sharing=True):
+        """
+        Initializes all child plots.
+
+        Parameters
+        -----------
+        update_fig: boolean, optional
+            whether we should build the figure if this step is succesful.
+        try_sharing: boolean, optional
+            If `True`, we will check if all plots have exactly the same settings to read
+            data and, in that case, they will share attributes to avoid memory waste.
+
+            This is specially essential for plots that read big amounts of data (e.g. `GridPlot`),
+            but also for those that take significant time to read it. 
+        """
 
         try:
             self.set_files()
@@ -1823,7 +1955,7 @@ class MultiplePlot(Plot):
                     leading_plot = self.template_plot
 
                 # Now, we get the settings of the first plot
-                read_data_settings = {key: leading_plot.get_setting(key) for key, func in leading_plot.whatToRunOnUpdate.items() if func == "read_data"}
+                read_data_settings = {key: leading_plot.get_setting(key) for key, func in leading_plot._run_on_update.items() if func == "read_data"}
 
                 for i, plot in enumerate(plots):
                     if not plot.has_these_settings(read_data_settings):
@@ -1851,28 +1983,31 @@ class MultiplePlot(Plot):
 
         return self
     
-    def update_settings(self, **kwargs):
-        '''
+    def _update_settings(self, on_child_plots=False, on_parent_plot=True, **kwargs):
+        """
         This method takes into account that on plots that contain childs, one may want to update only the parent settings or all the child's settings.
 
-        Use
-        ------
-        Call update settings
-        '''
+        Parameters
+        -----------
+        on_child_plots: boolean, optional
+            whether the settings should be updated on child plots
+        on_parent_plot: boolean, optional
+            whether the settings should be updated on the parent plot.
+        """
 
-        if kwargs.get("onlyOnParent", False) or kwargs.get("from_decorator", False):
-            return super().update_settings(**kwargs)
+        if on_parent_plot:
+            super()._update_settings(**kwargs)
         
-        else:
+        if on_child_plots:
 
-            repeat_if_childs(Configurable.update_settings)(self, **kwargs)
+            repeat_if_childs(Configurable._update_settings)(self, **kwargs)
 
             call_method_if_present(self, "_after_childs_updated")
 
-            return self
+        return self
 
     def set_child_plots(self, plots, keep=False):
-        '''
+        """
         Sets the childplots of a multiple plot
 
         Parameters
@@ -1883,7 +2018,7 @@ class MultiplePlot(Plot):
             whether the existing childplots should be kept.
 
             If `True`, `plots` is added after them.
-        '''
+        """
 
         # Maybe one of the plots is a plotly figure, normalize all to the plot class
         plots = [Plot.from_plotly(plot) if isinstance(plot, go.Figure) else plot for plot in plots]
@@ -1898,14 +2033,19 @@ class MultiplePlot(Plot):
         return self
     
     def add_childplots(self, *plots):
-        '''
-        Append childplots to the existing ones
-        '''
+        """
+        Append childplots to the existing ones.
+
+        Parameters
+        -----------
+        *plots: Plot
+            all the plots that you want to add as child plots of this one.
+        """
 
         self.set_child_plots(plots, keep=True)
     
     def insert_childplot(self, index, plot):
-        '''
+        """
         Inserts a plot in a given position of the childplots list
 
         Parameters
@@ -1914,7 +2054,7 @@ class MultiplePlot(Plot):
             The position where the plot should be inserted
         plot: sisl Plot or plotly Figure
             The plot to insert in the list
-        '''
+        """
 
         if isinstance(plot, go.Figure):
             plot = Plot.from_plotly(plot)
@@ -1922,22 +2062,50 @@ class MultiplePlot(Plot):
         self.childPlots.insert(index, plot)
            
     def shared_attr(self, key):
+        """
+        Gets an attribute that is located in the shared storage of the MultiplePlot.
 
+        This method will be given to all childplots so that they can retreive the shared
+        attributes. This is done in `set_child_plots`.
+
+        Parameters
+        ------------
+        key: str
+            the name of the attribute that you want to retrieve
+        
+        Returns
+        -----------
+        any
+            the value that you asked for
+        """
+
+        # If from the beggining there is a template plot, the shared
+        # storage is actually that plot.
         if self.has_template_plot:
             return getattr(self.template_plot, key)
 
         return self.shared[key]
     
     def set_shared_attr(self, key, val):
+        """
+        Sets the value of a shared attribute.
+
+        Parameters
+        ------------
+        key: str
+            the key of the attribute that is to be set.
+        val: any
+            the new value for the attribute
+        """
         
         self.shared[key] = val
 
         return self
 
     def to_animation(self):
-        '''
+        """
         Converts the multiple plot into an animation by splitting its plots into frames
-        '''
+        """
 
         self._isAnimation = True
 
@@ -1946,8 +2114,10 @@ class MultiplePlot(Plot):
         return self
 
     def get_figure(self):
+        """
+        This method is responsible of building the figure from the child plots.
+        """
 
-        #Then it is a multiple plot and we need to create the figure from the child plots
         self.clear()
 
         if getattr(self, "_isAnimation", False):
@@ -1970,7 +2140,7 @@ class MultiplePlot(Plot):
         return self
 
 class Animation(MultiplePlot):
-    '''
+    """
     Version of MultiplePlot that renders each plot in a different animation frame.
 
     Parameters
@@ -1993,7 +2163,7 @@ class Animation(MultiplePlot):
     results_path: str, optional
         Directory where the files with the simulations results are
         located. This path has to be relative to the root fdf.
-    '''
+    """
 
     _isAnimation = True
 
@@ -2024,9 +2194,9 @@ class Animation(MultiplePlot):
             key='redraw', name='Redraw each frame',
             default=True,
             group='animation',
-            help='''Whether each frame of the animation should be redrawn<br>
+            help="""Whether each frame of the animation should be redrawn<br>
             If False, the animation will try to interpolate between one frame and the other<br>
-            Set this to False if you are sure that the frames contain the same number of traces, otherwise new traces will not appear.'''
+            Set this to False if you are sure that the frames contain the same number of traces, otherwise new traces will not appear."""
         ),
 
         DropdownInput(
@@ -2043,7 +2213,7 @@ class Animation(MultiplePlot):
                 "isSearchable": True,
                 "isMulti": False
             },
-            help='''It determines how the animation is rendered. '''
+            help="""It determines how the animation is rendered. """
         )
 
     )
@@ -2056,6 +2226,17 @@ class Animation(MultiplePlot):
         super().__init__(*args, **kwargs, _plugins=_plugins)
     
     def _build_frames(self):
+        """
+        Builds the frames of the plotly figure from the child plots' data.
+
+        It actually sets the frames of the figure.
+
+        Returns
+        -----------
+        dict
+            keys and values that need to be added to the layout
+            in order for frames to work.
+        """
 
         # Get the names for each frame
         frame_names = []
@@ -2082,7 +2263,7 @@ class Animation(MultiplePlot):
 
         steps, updatemenus = figure_builder(frame_names)
 
-        framesLayout = {
+        frames_layout = {
 
             "sliders": [
                 {
@@ -2107,13 +2288,13 @@ class Animation(MultiplePlot):
             "updatemenus": updatemenus
         }
 
-        return framesLayout
+        return frames_layout
     
     def _figure_update_method(self, frame_names):
-        '''
+        """
         In the update method, we give all the traces to data, and we are just going to toggle
         their visibility depending on which 'frame' needs to be displayed.
-        '''
+        """
 
         # Add all the traces
         for i, (frame_name, plot) in enumerate(zip(frame_names, self.childPlots)):
@@ -2143,10 +2324,10 @@ class Animation(MultiplePlot):
         return steps, []
 
     def _figure_animate_method(self, frame_names):
-        '''
+        """
         In the animate method, we explicitly define frames, And the transition from one to the other
         will be animated
-        '''
+        """
 
         # Data will actually only be the first frame
         self.data = self.childPlots[0].data
@@ -2204,9 +2385,9 @@ class Animation(MultiplePlot):
         return steps, updatemenus      
 
     def merge_frames(self):
-        '''
+        """
         Merges all frames of an animation into one.
-        '''
+        """
 
         self._isAnimation = False
 
@@ -2216,7 +2397,7 @@ class Animation(MultiplePlot):
     
     @staticmethod
     def zip(*animations):
-        '''
+        """
         Zips multiple animations together.
 
         YOU NEED TO MAKE SURE THAT ALL THE ANIMATIONS HAVE THE SAME NUMBER OF FRAMES
@@ -2226,7 +2407,7 @@ class Animation(MultiplePlot):
         *animations: sisl Animation
             the animations that you want to zip together.
             YOU NEED TO MAKE SURE THAT ALL THE ANIMATIONS HAVE THE SAME NUMBER OF FRAMES
-        '''
+        """
 
         frames = []
         for (*old_frames,) in zip(*animations):
@@ -2240,7 +2421,7 @@ class Animation(MultiplePlot):
         )
     
     def zip_with(self, *others):
-        '''
+        """
         Zips the animation with the other provided animations
 
         This method is just for convenience, all it does is to use `Animation.zip()`
@@ -2250,18 +2431,18 @@ class Animation(MultiplePlot):
         *others: sisl Animation
             the animations that you want to zip with this one.
             YOU NEED TO MAKE SURE THAT ALL THE ANIMATIONS HAVE THE SAME NUMBER OF FRAMES
-        '''
+        """
 
         return Animation.zip(self, *others)
 
     def unzip(self):
-        '''
+        """
         Unzips the animation.
 
         In order for this method to make sense, the animation needs to be previously zipped.
         This basically means that each frame needs to be a multiple plot and all frames are made
         of the same number of plots.
-        '''
+        """
 
         # Basically we just need to get the plots for each frame and then transpose it
         # so that we have the "frames for each plot"
@@ -2270,7 +2451,7 @@ class Animation(MultiplePlot):
         return [ Animation(plots=plots) for plots in new_animations ]
 
 class SubPlots(MultiplePlot):
-    '''
+    """
     Version of MultiplePlot that renders each plot in a separate subplot.
 
     Parameters
@@ -2298,7 +2479,7 @@ class SubPlots(MultiplePlot):
         Directory where the files with the simulations results are
         located. This path has to be relative to the root fdf.
 
-    '''
+    """
 
     _is_subplots = True
 
@@ -2315,32 +2496,35 @@ class SubPlots(MultiplePlot):
                 'isSearchable': True,
                 'isClearable': True,
             },
-            help='''The way in which subplots should be aranged if the `rows` and/or `cols`
-            parameters are not provided.'''
+            help="""The way in which subplots should be aranged if the `rows` and/or `cols`
+            parameters are not provided."""
         ),
 
         IntegerInput(key='rows', name='Rows',
             default=None,
-            help='''The number of rows of the plot grid. If not provided, it will be inferred from `cols`
+            help="""The number of rows of the plot grid. If not provided, it will be inferred from `cols`
             and the number of plots. If neither `cols` or `rows` are provided, the `arrange` parameter will decide
-            how the layout should look like.'''
+            how the layout should look like."""
         ),
 
         IntegerInput(key='cols', name='Columns',
             default=None,
-            help='''The number of columns of the subplot grid. If not provided, it will be inferred from `rows`
+            help="""The number of columns of the subplot grid. If not provided, it will be inferred from `rows`
             and the number of plots. If neither `cols` or `rows` are provided, the `arrange` parameter will decide
-            how the layout should look like.'''
+            how the layout should look like."""
         ),
 
         ProgramaticInput(key='make_subplot_kwargs', name='make_subplot additional arguments',
             dtype=dict,
             default={},
-            help='''Extra keyword arguments that will be passed to make_subplots.'''
+            help="""Extra keyword arguments that will be passed to make_subplots."""
         )
     )
 
     def _get_figure(self):
+        """
+        Builds the subplots layout from the child plots' data.
+        """
 
         nplots = len(self.childPlots)
         rows = self.setting('rows')

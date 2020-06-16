@@ -11,9 +11,22 @@ __all__ = ['InputField']
 
 class InputField:
 
-    '''
-    Returns the input field that you ask for with the default values. 
-    However, you can overwrite them.
+    """
+    This class is meant to help a smooth interface between python and the GUI.
+
+    A class that inherits from Configurable should have all its settings defined as `ÌnputField`s. In
+    this way, the GUI will know how to display an input field to let the user interact with the 
+    settings plot.
+
+    This is just the base class of all input fields. Each type of field has its own class. The most
+    simple one is `TextInput`, which just renders an input of type text in the GUI.
+
+    Input fields also help documenting the class and parsing the user's input to normalize it (with
+    the `parse` method.).
+
+    Finally, since all input fields are copied to the instance, the classes that define input fields
+    can have methods that help making your life easier. See the `OrbitalQueries` input field for an example
+    of that. In that case, the input field can update its own options based on a geometry that is passed.
 
     Parameters
     ----------
@@ -70,8 +83,7 @@ class InputField:
         This parameter is optional but extremely adviseable.
     **kwargs:
         All keyword arguments passed will be added to the parameter, overwriting any existing value in case there is one.
-    
-    '''
+    """
 
     dtype = None
 
@@ -123,7 +135,7 @@ class InputField:
         return self.__str__()
 
     def modify(self, *args):
-        '''
+        """
         Modifies the parameter.
         
         See *args to know how can it be used.
@@ -198,7 +210,7 @@ class InputField:
         --------
         self:
             The configurable object.
-        '''
+        """
                 
         if len(args) == 2:
            
@@ -238,6 +250,23 @@ class InputField:
         )
 
     def parse(self, val):
+        """
+        Parses the user input to the actual values that will be used.
+
+        This method may be overwritten, but you probably need to still call
+        it with `super().parse(val)`, because it implements the basic functionality
+        for the `splot` commmand to understand the values that receives.
+
+        Parameters
+        -----------
+        val: any
+            the value to parse
+        
+        Returns
+        -----------
+        self.dtype
+            the parsed value, which will be of the datatype specified by the input.
+        """
 
         if val is None:
             return None
@@ -263,9 +292,9 @@ class InputField:
         return val
         
     def _get_docstring(self):
-        '''
+        """
         Generates the docstring for this input field
-        '''
+        """
         import textwrap
 
         valid_vals = getattr(self, "valid_vals", None)

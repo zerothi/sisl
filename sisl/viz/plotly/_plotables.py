@@ -1,10 +1,10 @@
-'''
+"""
 This file defines all the siles that are plotable.
 
 It does so by patching the classes accordingly
 
 In the future, sisl objects will probably be 'plotable' too
-'''
+"""
 from functools import partial
 from types import MethodType
 
@@ -25,7 +25,7 @@ __all__= ['register_plotly_plotable']
 # -----------------------------------------------------
 
 def _get_plotting_func(PlotClass, setting_key):
-    '''
+    """
     Generates a plotting function for an object.
 
     Parameters
@@ -42,13 +42,13 @@ def _get_plotting_func(PlotClass, setting_key):
 
         It sends the object to the appropiate setting key. The rest works exactly the same as
         calling the plot class. I.e. you can provide all the extra settings/keywords that you want.  
-    '''
+    """
 
     def _plot(self, *args, **kwargs):
 
         return PlotClass(*args, **{setting_key: self, **kwargs})
     
-    _plot.__doc__ = f'''Builds a {PlotClass.__name__} by setting the value of "{setting_key}" to the current object.
+    _plot.__doc__ = f"""Builds a {PlotClass.__name__} by setting the value of "{setting_key}" to the current object.
 
     Apart from this specific parameter ,it accepts the same arguments as {PlotClass.__name__}.
     
@@ -56,13 +56,13 @@ def _get_plotting_func(PlotClass, setting_key):
     -------------
     
     {PlotClass.__doc__}
-    '''
+    """
     
     return _plot
 
 def register_plotly_plotable(plotable, PlotClass=None, setting_key=None, plotting_func=None,
     name=None, default=False, plot_handler_attr='plot'):
-    '''
+    """
     Makes the sisl.viz module aware of which sisl objects have a plotly representation available.
 
     Basically, this handles generating the plotting functions from a PlotClass to make the process
@@ -97,7 +97,7 @@ def register_plotly_plotable(plotable, PlotClass=None, setting_key=None, plottin
         whether this way of plotting the class should be the default one.
     plot_handler_attr: str, optional
         the attribute where the plot handler is or should be located in the class that you want to register.
-    '''
+    """
     
     # If no plotting function is provided, we will try to create one by using the PlotClass
     # and the setting_key that have been provided

@@ -163,7 +163,7 @@ class BaseGeometryPlot(Plot):
 
         if sanitize_atom:
             geom = geom or self.geometry
-            atom = geom._sanitize_atom(atom)
+            atom = geom._sanitize_atoms(atom)
         
         return [bond for bond in bonds if np.any([at in atom for at in bond])]
     #---------------------------------------------------
@@ -309,7 +309,7 @@ class BaseGeometryPlot(Plot):
         wrap_bond = wrap_bond or self._default_wrap_bonds2D
 
         if atom is not None:
-            atom = self.geometry._sanitize_atom(atom)
+            atom = self.geometry._sanitize_atoms(atom)
 
         xy = self._projected_2Dcoords(self.geometry[atom], xaxis=xaxis, yaxis=yaxis)
         traces = []
@@ -611,7 +611,7 @@ class BaseGeometryPlot(Plot):
         wrap_bond = wrap_bond or self._default_wrap_bond3D
 
         if atom is not None:
-            atom = self.geometry._sanitize_atom(atom)
+            atom = self.geometry._sanitize_atoms(atom)
 
         # Draw bonds
         if show_bonds:

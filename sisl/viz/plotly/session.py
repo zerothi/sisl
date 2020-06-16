@@ -9,22 +9,22 @@ from copy import deepcopy, copy
 import sisl
 from .gui.api_utils.sync import Connected
 from .._env_vars import register_env_var
-from .plot import Plot, MultiplePlot, Animation, SubPlots
+from .plot import Plot
 from .configurable import Configurable, vizplotly_settings
-from .plotutils import find_files, find_plotable_siles, call_method_if_present
+from .plotutils import find_files, find_plotable_siles, call_method_if_present, get_plot_classes
 
 from .input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, Array1dInput
 
 __all__ = ['Session']
 
 class Warehouse:
-    '''
+    """
     Class to store everything related to a session.
 
     A warehouse can be shared between multiple sessions.
     THIS SHOULD ONLY CONTAIN PLOTS!!!! 
     (The rest: tabs, structures and plotables should be session-specific)
-    '''
+    """
 
     def __init__(self):
 
@@ -42,7 +42,7 @@ class Warehouse:
         self._warehouse[item] = value
     
 class Session(Configurable, Connected):
-    '''
+    """
     Represents a session of the graphical interface.
 
     Plots are organized in different tabs and each tab has a layout
@@ -83,7 +83,7 @@ class Session(Configurable, Connected):
         Preset that is passed directly to each plot initialization
     plotly_template: str, optional
         Plotly template that should be used as the default for this session
-    '''
+    """
 
     _onSettingsUpdate = {
         "functions": ["get_structures"],
@@ -194,7 +194,7 @@ class Session(Configurable, Connected):
             key="plotDims", name="Initial plot dimensions",
             default=[4, 30],
             group="gui",
-            help='''The initial width and height of a new plot. <br> Width is in columns (out of a total of 12). For height, you really should try what works best for you'''
+            help="""The initial width and height of a new plot. <br> Width is in columns (out of a total of 12). For height, you really should try what works best for you"""
         ),
 
         TextInput(key="plot_preset", name="Plot presets",
@@ -230,10 +230,13 @@ class Session(Configurable, Connected):
 
     @property
     def plots(self):
+        """
+        The plots that this session contains.
+        """
         return self.warehouse["plots"]
 
     def plot(self, plotID):
-        '''
+        """
         Method to get a plot that is already in the session's warehouse
 
         Arguments
@@ -245,7 +248,7 @@ class Session(Configurable, Connected):
         ---------
         plot: sisl.viz.Plot()
             The instance of the desired plot
-        '''
+        """
 
         plot = self.plots[plotID]
 
@@ -254,28 +257,21 @@ class Session(Configurable, Connected):
 
         return plot
 
-    def get_plot_classes(self):
-        '''
-        This method provides all the plot subclasses, even the nested ones
-        '''
+    @staticmethod
+    def get_plot_classes():
+        """
+        This method provides all the plot subclasses, even the nested ones.
 
-        def get_all_subclasses(cls):
+        Returns
+        -------
+        list
+            all the plot classes that the module is aware of.
+        """
 
-            all_subclasses = []
-
-            for Subclass in cls.__subclasses__():
-
-                if Subclass not in [MultiplePlot, Animation, SubPlots] and not getattr(Subclass, 'is_only_base', False):
-                    all_subclasses.append(Subclass)
-
-                all_subclasses.extend(get_all_subclasses(Subclass))
-
-            return all_subclasses
-        
-        return sorted(get_all_subclasses(sisl.viz.Plot), key = lambda clss: clss.plotName()) 
+        return get_plot_classes()
     
     def add_plot(self, plot, tabID = None, noTab = False): 
-        '''
+        """
         Adds an already initialized plot object to the session
 
         Parameters
@@ -289,7 +285,7 @@ class Session(Configurable, Connected):
             If neither tab or tabID are provided, it will be appended to the first tab
         noTab: boolean, optional
             if set to true, prevents the plot from being added to a tab
-        '''
+        """
 
         # Make sure the plot is connected to the same socketio as the session
         plot.socketio = self.socketio
@@ -304,7 +300,7 @@ class Session(Configurable, Connected):
         return self
     
     def new_plot(self, plotClass=None, tabID = None, structID = None, plotableID=None, animation = False ,**kwargs):
-        '''
+        """
         Get a new plot from the specified class
 
         Arguments
@@ -331,7 +327,7 @@ class Session(Configurable, Connected):
         -----------
         new_plot: sisl.viz.Plot()
             The initialized new plot
-        '''
+        """
 
         args = []
 
@@ -369,7 +365,7 @@ class Session(Configurable, Connected):
         return self.plot(new_plot.id)
     
     def update_plot(self, plotID, newSettings):
-        '''
+        """
         Method to update the settings of a plot that is in the session's warehouse
 
         Arguments
@@ -383,12 +379,12 @@ class Session(Configurable, Connected):
         ---------
         plot: sisl.viz.Plot()
             The instance of the updated plot
-        '''
+        """
 
         return self.plot(plotID).update_settings(**newSettings)
     
     def undo_plot_settings(self, plotID):
-        '''
+        """
         Method undo the settings of a plot that is in the session's warehouse
 
         Arguments
@@ -400,23 +396,35 @@ class Session(Configurable, Connected):
         ---------
         plot: sisl.viz.Plot()
             The instance of the plot with the settings rolled back.
-        '''
+        """
 
         return self.plot(plotID).undo_settings()
     
-    def remove_plot_from_tab(self, plotID, tabID):
-        '''
+    def remove_plot_from_tab(self, plotID, tab):
+        """
         Method to remove a plot only from a given tab.
-        '''
 
-        tab = self.tab(tabID)
+        Parameters
+        -----------
+        plotID: str
+            the ID of the plot that you want to remove.
+        tab: str
+            the ID or name of the tab that you want to remove the plot from.
+        """
+
+        tab = self.tab(tab)
 
         tab["plots"] = [plot for plot in tab["plots"] if plot != plotID]
 
     def remove_plot(self, plotID):
-        '''
-        Method to remove a plot
-        '''
+        """
+        Method to remove a plot from all tabs.
+
+        Parameters
+        ----------
+        plotID: str
+            the ID of the plot that you want to remove.
+        """
 
         plot = self.plot(plotID)
 
@@ -429,7 +437,7 @@ class Session(Configurable, Connected):
         return self
 
     def merge_plots(self, plots, to="multiple", tab=None, remove=True, **kwargs):
-        '''
+        """
         Merges two or more plots present in the session using `Plot.merge`.
 
         Parameters
@@ -454,7 +462,7 @@ class Session(Configurable, Connected):
         **kwargs: 
             go directly extra arguments that are directly passed to `MultiplePlot`, `Subplots`
             or `Animation` initialization. (see `Plot.merge`)
-        '''
+        """
 
         # Get the plots if ids where passed. Note that we can accept plots that are not in the warehouse yet
         plots = [self.plot(plot) if isinstance(plot, str) else plot for plot in plots]
@@ -476,20 +484,25 @@ class Session(Configurable, Connected):
         return self
 
     def updates_available(self):
-        '''
+        """
         Checks if the session's plots have pending updates due to changes in files.
-        '''
+
+        Returns
+        ---------
+        list
+            the ids of the plots where an update is available.
+        """
 
         updates_avail = [plotID for plotID, plot in self.plots.items() if plot.updates_available()]
 
         return updates_avail
     
     def commit_updates(self):
-        '''
+        """
         Updates the plots that can be updated according to `updates_available`.
 
         Note that this method can be safely called since it has no effect when no updates are available.
-        '''
+        """
 
         for plotID in self.updates_available():
             try:
@@ -500,14 +513,14 @@ class Session(Configurable, Connected):
         return self
 
     def listen(self, forever=False):
-        '''
+        """
         Listens for updates in the followed files (see the `updates_available` method)
 
         Parameters
         ---------
         forever: boolean, optional
             whether to keep listening after the first plot updates.
-        '''
+        """
         from threading import Event
         
         exit_event = Event()
@@ -527,12 +540,12 @@ class Session(Configurable, Connected):
                     exit_event.set()
     
     def figures_only(self):
-        '''
+        """
         Removes all plot data from this session's plots except the actual figure.
 
         This is very useful to save just for display, since it can decrease the size of the session
         DRAMATICALLY.
-        '''
+        """
 
         for plotID, plot in self.plots.items():
 
@@ -542,13 +555,13 @@ class Session(Configurable, Connected):
             self.warehouse["plots"][plotID] = plot
 
     def _run_plot_method(self, plotID, method_name, *args, **kwargs):
-        '''
+        """
         Generic private method to run methods on plots that belong to this session.
 
         Any public method that runs plot methods should use this private method under the hood.
 
         In this way, the session will be able to consistently respond to plot updates. E.g. 
-        '''
+        """
 
         plot = self.plot(plotID)
 
@@ -561,10 +574,13 @@ class Session(Configurable, Connected):
     #-----------------------------------------
     @property
     def tabs(self):
+        """
+        The tabs that this session contains.
+        """
         return self.warehouse["tabs"]
     
     def tab(self, tab):
-        '''
+        """
         Get a tab by its name or ID. 
         
         If it does not exist, it will be created (this acts as a shortcut for add_tab in that case)
@@ -573,7 +589,7 @@ class Session(Configurable, Connected):
         --------
         tab: str
             The name or ID of the tab you want to get
-        '''
+        """
 
         tab_str = tab
 
@@ -587,7 +603,7 @@ class Session(Configurable, Connected):
             return self.tab(tab_str)
 
     def add_tab(self, name = "New tab", plots = []):
-        '''
+        """
         Adds a new tab to the session
 
         Arguments
@@ -597,7 +613,7 @@ class Session(Configurable, Connected):
         plots: optional, array-like
             Array of ids (as strings) that identify the plots that you want to put inside your tab.
             Keep in mind that the plots with these ids must be present in self.plots.
-        '''
+        """
 
         newTab = {"id": str(uuid.uuid4()), "name": name, "plots": deepcopy(plots), "layouts": {"lg":[]}}
 
@@ -606,9 +622,9 @@ class Session(Configurable, Connected):
         return self
     
     def update_tab(self, tabID, newParams = {}, **kwargs):
-        '''
+        """
         Method to update the parameters of a given tab
-        '''
+        """
 
         tab = self.tab(tabID)
 
@@ -618,9 +634,9 @@ class Session(Configurable, Connected):
         return self
 
     def remove_tab(self, tabID):
-        '''
+        """
         Removes a tab from the current session
-        '''
+        """
 
         tabID = self._tab_id(tabID)
 
@@ -632,7 +648,7 @@ class Session(Configurable, Connected):
         return self
 
     def move_plot(self, plot, tab, keep=False):
-        '''
+        """
         Moves a plot to a tab
 
         Parameters
@@ -646,7 +662,7 @@ class Session(Configurable, Connected):
             This doesn't waste any additional memory,
             since the tabs only hold references of the plots they have,
             each plot is stored only once
-        '''
+        """
 
         plotID = plot
         if isinstance(plot, Plot):
@@ -660,7 +676,7 @@ class Session(Configurable, Connected):
         return self
 
     def _add_plot_to_tab(self, plot, tab):
-        '''
+        """
         Adds a plot to the requested tab.
 
         If the plot is not part of the session already, it will be added.
@@ -671,7 +687,7 @@ class Session(Configurable, Connected):
             the plot's ID or the plot's instance
         tab: str
             the tab's id or the tab's name.
-        '''
+        """
 
         if isinstance(plot, Plot):
             plotID = plot.id
@@ -687,9 +703,14 @@ class Session(Configurable, Connected):
         return self
     
     def remove_plot_from_all_tabs(self, plotID):
-        '''
-        Removes a given plot from all tabs where it is located
-        '''
+        """
+        Removes a given plot from all tabs where it is located.
+
+        Parameters
+        -----------
+        plotID: str
+            the id of the plot you want to remove.
+        """
 
         for tab in self.tabs:
             self.remove_plot_from_tab(plotID, tab["id"])
@@ -697,16 +718,21 @@ class Session(Configurable, Connected):
         return self
 
     def get_tab_plots(self, tab):
-        '''
-        Returns all the plots of a given tab
-        '''
+        """
+        Returns all the plots of a given tab.
+
+        Parameters
+        ------------
+        tab: str
+            the id or name of the tab.
+        """
 
         tab = self.tab(tab)
 
         return [self.plot(plotID) for plotID in tab["plots"]] if tab else None
 
     def set_tab_plots(self, tab, plots):
-        '''
+        """
         Sets the plots list of a tab
 
         Parameters
@@ -715,7 +741,7 @@ class Session(Configurable, Connected):
             tab's id or name
         plots: array-like of str or sisl.viz.Plot (or combination of the two)
             plots ids or plot instances.
-        '''
+        """
 
         tab = self.tab(tab)
 
@@ -725,12 +751,38 @@ class Session(Configurable, Connected):
             self.add_plot(plot, tab)
     
     def tab_id(self, tab_name):
+        """
+        Gets the id of a given tab.
+
+        Parameters
+        -----------
+        tab_name: str
+            the name of the tab
+        
+        Returns
+        ---------
+        str or None.
+            the ID of the tab. None if there's no such tab.
+        """
 
         for tab in self.tabs:
             if tab["name"] == tab_name:
                 return tab["id"]
     
     def _tab_id(self, tab_id_or_name):
+        """
+        Gets the id of a given tab.
+
+        Parameters
+        -----------
+        tab_id_or_name: str
+            the id or name of the tab.
+        
+        Returns
+        ---------
+        str or None.
+            the ID of the tab. None if there's no such tab.
+        """
 
         try:
             uuid.UUID(str(tab_id_or_name))
@@ -743,6 +795,21 @@ class Session(Configurable, Connected):
     #-----------------------------------------
 
     def get_structures(self, path=None):
+        """
+        Gets all the structures that are in the scope of this session
+
+        Parameters
+        -----------
+        path: str, optional
+            the path where to start looking for structures.
+
+            If not provided, the session's "root_dir" will be used.
+        
+        Returns
+        ----------
+        dict
+            keys are the structure ID and values are info about each structure.
+        """
 
         path = path or self.setting("root_dir")
 
@@ -755,6 +822,21 @@ class Session(Configurable, Connected):
         return {structID: {"id": structID, **{k: struct[k] for k in ["name", "path"]}} for structID, struct in self.warehouse["structs"].items() }
     
     def get_plotables(self, path=None):
+        """
+        Gets all the plotables that are in the scope of this session.
+
+        Parameters
+        -----------
+        path: str, optional
+            the path where to start looking for plotables.
+
+            If not provided, the session's "root_dir" will be used.
+        
+        Returns
+        ----------
+        dict
+            keys are the plotable ID and values are info about each structure.
+        """
 
         # Empty the plotables dictionary
         self.warehouse["plotables"] = {}
@@ -778,10 +860,10 @@ class Session(Configurable, Connected):
     #-----------------------------------------
     
     def _get_dict_for_GUI(self):
-        '''
+        """
         This method is thought mainly to prepare data to be sent through the API to the GUI.
         Data has to be sent as JSON, so this method can only return JSONifiable objects. (no numpy arrays, no NaN,...)
-        '''
+        """
 
         infoDict = {
             "id": self.id,
@@ -791,7 +873,7 @@ class Session(Configurable, Connected):
             "paramGroups": self._param_groups,
             "updatesAvailable": self.updates_available(),
             "plotOptions": [
-                {"value": subclass.__name__, "label": subclass.plotName()} 
+                {"value": subclass.__name__, "label": subclass.plot_name()} 
                 for subclass in self.get_plot_classes()
             ],
             "structures": self.get_structures(),
@@ -801,15 +883,15 @@ class Session(Configurable, Connected):
         return infoDict
     
     def _on_socketio_change(self):
-        '''
+        """
         Transmit the socketio change to all the plots
-        '''
+        """
 
         for _, plot in self.plots.items():
             plot.socketio = self.socketio
 
     def save(self, path, figs_only=False):
-        '''
+        """
         Stores the session in disk.
 
         Parameters
@@ -818,7 +900,7 @@ class Session(Configurable, Connected):
             Path where the session should be saved.
         figs_only: boolean, optional
             Whether only figures should be saved, the rest of plot's data will be ignored.
-        '''
+        """
 
         socket = self.socketio
         self.socketio = None
