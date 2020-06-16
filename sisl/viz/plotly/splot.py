@@ -50,7 +50,6 @@ def general_arguments(parser):
                         "to each plot separately"
     )
 
-                    
 
 def splot():
 
@@ -75,7 +74,7 @@ def splot():
     # Add arguments that correspond to the settings of the Plot class   
     for param in Plot._parameters:
         if param.dtype is not None and not isinstance(param.dtype, str):
-            parser.add_argument(f'--{param.key}', type=param._parse, required=False, help=getattr(param, "help", ""))
+            parser.add_argument(f'--{param.key}', type=param.parse, required=False, help=getattr(param, "help", ""))
 
     subparsers = parser.add_subparsers(
         help="YOU DON'T NEED TO PASS A PLOT CLASS. You can provide a file (see the -f flag) and sisl will decide for you."+
@@ -105,7 +104,7 @@ def splot():
 
         for param in PlotClass._get_class_params()[0]:
             if param.dtype is not None and not isinstance(param.dtype, str):
-                specific_parser.add_argument(f'--{param.key}', type=param._parse, required=False, help=getattr(param, "help", ""))
+                specific_parser.add_argument(f'--{param.key}', type=param.parse, required=False, help=getattr(param, "help", ""))
   
     args = parser.parse_args()
 

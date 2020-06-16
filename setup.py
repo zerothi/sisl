@@ -17,6 +17,7 @@ import multiprocessing
 import os
 import os.path as osp
 import argparse
+from functools import reduce
 
 # pkg_resources are part of setuptools
 import pkg_resources
