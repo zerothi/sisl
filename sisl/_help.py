@@ -6,14 +6,14 @@ import numpy as np
 
 from ._internal import set_module
 
-__all__ = ['array_fill_repeat']
-__all__ += ['isndarray', 'isiterable', 'voigt_matrix']
-__all__ += ['get_dtype']
-__all__ += ['dtype_complex_to_real', 'dtype_real_to_complex']
-__all__ += ['wrap_filterwarnings']
+__all__ = ["array_fill_repeat"]
+__all__ += ["isndarray", "isiterable", "voigt_matrix"]
+__all__ += ["get_dtype"]
+__all__ += ["dtype_complex_to_real", "dtype_real_to_complex"]
+__all__ += ["wrap_filterwarnings"]
 
 # Wrappers typically used
-__all__ += ['xml_parse']
+__all__ += ["xml_parse"]
 
 
 # Base-class for string object checks
@@ -22,14 +22,13 @@ import collections.abc as collections_abc
 # Load the correct xml-parser
 try:
     from defusedxml.ElementTree import parse as xml_parse
-    if sys.version_info > (3, 6):
-        from defusedxml import __version__ as defusedxml_version
-        try:
-            defusedxml_version = list(map(int, defusedxml_version.split('.')))
-            if defusedxml_version[0] == 0 and defusedxml_version[1] <= 5:
-                raise ImportError
-        except:
+    from defusedxml import __version__ as defusedxml_version
+    try:
+        defusedxml_version = list(map(int, defusedxml_version.split(".")))
+        if defusedxml_version[0] == 0 and defusedxml_version[1] <= 5:
             raise ImportError
+    except:
+        raise ImportError
 except ImportError:
     from xml.etree.ElementTree import parse as xml_parse
 
@@ -48,8 +47,8 @@ def array_fill_repeat(array, size, cls=None):
     if size % len(array) != 0:
         # We do not have it correctly formatted (either an integer
         # repeatable part, full, or a single)
-        raise ValueError('Repetition of or array is not divisible with actual length. '
-                         'Hence we cannot create a repeated size.')
+        raise ValueError("Repetition of or array is not divisible with actual length. "
+                         "Hence we cannot create a repeated size.")
     if cls is None:
         if reps > 1:
             return np.tile(array, reps)
@@ -221,9 +220,9 @@ def array_replace(array, *replace, **kwargs):
             ar[idx] = val
         others.append(np.asarray(idx).ravel())
 
-    if 'other' in kwargs:
+    if "other" in kwargs:
         others = np.delete(np.arange(ar.size), np.unique(np.concatenate(others)))
-        ar[others] = kwargs['other']
+        ar[others] = kwargs["other"]
 
     return ar
 

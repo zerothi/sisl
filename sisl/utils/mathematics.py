@@ -5,9 +5,9 @@ from numpy import asarray, take, delete, empty
 from sisl import _array as _a
 from sisl._indices import indices_le
 
-__all__ = ['fnorm', 'fnorm2', 'expand', 'orthogonalize']
-__all__ += ['spher2cart', 'cart2spher', 'spherical_harm']
-__all__ += ['curl']
+__all__ = ["fnorm", "fnorm2", "expand", "orthogonalize"]
+__all__ += ["spher2cart", "cart2spher", "spherical_harm"]
+__all__ += ["curl"]
 
 
 def fnorm(array, axis=-1):
@@ -236,15 +236,15 @@ def curl(m, axis=-2, axisv=-1):
     curl : the curl of the matrix shape of `m` without axis `axis` 
     """
     if m.shape[axis] != 3:
-        raise ValueError('curl requires 3 vectors to calculate the curl of!')
+        raise ValueError("curl requires 3 vectors to calculate the curl of!")
     elif m.shape[axisv] != 3:
-        raise ValueError('curl requires the vectors to have 3 components!')
+        raise ValueError("curl requires the vectors to have 3 components!")
 
     # Check that no two axis are used for the same thing
     axis %= m.ndim
     axisv %= m.ndim
     if axis == axisv:
-        raise ValueError('curl requires axis and axisv to be different axes')
+        raise ValueError("curl requires axis and axisv to be different axes")
 
     # Create lists for correct slices
     slx = [slice(None) for _ in m.shape]

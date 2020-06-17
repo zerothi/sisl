@@ -4,12 +4,12 @@ from itertools import groupby
 from numpy import zeros, ones, cumsum, take, int32, int64
 from numpy import asarray
 
-__all__ = ['strmap', 'strseq', 'lstranges', 'erange', 'list2str', 'fileindex']
-__all__ += ['array_arange']
+__all__ = ["strmap", "strseq", "lstranges", "erange", "list2str", "fileindex"]
+__all__ += ["array_arange"]
 
 
 # Function to change a string to a range of integers
-def strmap(func, s, start=None, end=None, sep='b'):
+def strmap(func, s, start=None, end=None, sep="b"):
     """ Parse a string as though it was a slice and map all entries using ``func``.
 
     Parameters
@@ -22,39 +22,39 @@ def strmap(func, s, start=None, end=None, sep='b'):
        the replacement in case the LHS of the delimiter is not present
     end  : optional
        the replacement in case the RHS of the delimiter is not present
-    sep  : {'b', 'c'}
-       separator used, ``'b'`` is square brackets, ``'c'``, curly braces
+    sep  : {"b", "c"}
+       separator used, ``"b"`` is square brackets, ``"c"``, curly braces
 
     Examples
     --------
-    >>> strmap(int, '1')
+    >>> strmap(int, "1")
     [1]
-    >>> strmap(int, '1-2')
+    >>> strmap(int, "1-2")
     [(1, 2)]
-    >>> strmap(int, '1-')
+    >>> strmap(int, "1-")
     [(1, None)]
-    >>> strmap(int, '1-', end=4)
+    >>> strmap(int, "1-", end=4)
     [(1, 4)]
-    >>> strmap(int, '1-10[2-3]')
+    >>> strmap(int, "1-10[2-3]")
     [((1, 10), [(2, 3)])]
     """
-    if sep == 'b':
-        segment = re.compile(r'\[(.+)\]\[(.+)\]|(.+)\[(.+)\]|(.+)')
-        sep1, sep2 = '[', ']'
-    elif sep == 'c':
-        segment = re.compile(r'\{(.+)\}\{(.+)\}|(.+)\{(.+)\}|(.+)')
-        sep1, sep2 = '{', '}'
+    if sep == "b":
+        segment = re.compile(r"\[(.+)\]\[(.+)\]|(.+)\[(.+)\]|(.+)")
+        sep1, sep2 = "[", "]"
+    elif sep == "c":
+        segment = re.compile(r"\{(.+)\}\{(.+)\}|(.+)\{(.+)\}|(.+)")
+        sep1, sep2 = "{", "}"
     else:
-        raise ValueError('Unknown separator for the sequence')
+        raise ValueError("strmap: unknown separator for the sequence")
 
     # Create list
-    s = s.replace(' ', '')
+    s = s.replace(" ", "")
     if len(s) == 0:
         return [None]
-    elif s in ['-', ':']:
+    elif s in ["-", ":"]:
         return [(start, end)]
 
-    commas = s.split(',')
+    commas = s.split(",")
 
     # Collect all the comma separated quantities that
     # may be selected by [..,..]
@@ -109,25 +109,25 @@ def strseq(cast, s, start=None, end=None):
 
     Examples
     --------
-    >>> strseq(int, '3')
+    >>> strseq(int, "3")
     3
-    >>> strseq(int, '3-6')
+    >>> strseq(int, "3-6")
     (3, 6)
-    >>> strseq(int, '3-')
+    >>> strseq(int, "3-")
     (3, None)
-    >>> strseq(int, '3:2:7')
+    >>> strseq(int, "3:2:7")
     (3, 2, 7)
-    >>> strseq(int, '3:2:', end=8)
+    >>> strseq(int, "3:2:", end=8)
     (3, 2, 8)
-    >>> strseq(int, ':2:', start=2)
+    >>> strseq(int, ":2:", start=2)
     (2, 2, None)
-    >>> strseq(float, '3.2:6.3')
+    >>> strseq(float, "3.2:6.3")
     (3.2, 6.3)
     """
-    if ':' in s:
-        s = [ss.strip() for ss in s.split(':')]
-    elif '-' in s:
-        s = [ss.strip() for ss in s.split('-')]
+    if ":" in s:
+        s = [ss.strip() for ss in s.split(":")]
+    elif "-" in s:
+        s = [ss.strip() for ss in s.split("-")]
     if isinstance(s, list):
         if len(s[0]) == 0:
             s[0] = start
@@ -185,28 +185,28 @@ def list2str(lst):
     Examples
     --------
     >>> list2str([2, 4, 5, 6])
-    '2, 4-6'
+    "2, 4-6"
     >>> list2str([2, 4, 5, 6, 8, 9])
-    '2, 4-6, 8-9'
+    "2, 4-6, 8-9"
     """
     lst = lst[:]
     lst.sort()
     # Create positions
     pos = [j - i for i, j in enumerate(lst)]
     t = 0
-    rng = ''
+    rng = ""
     for _, els in groupby(pos):
         ln = len(list(els))
         el = lst[t]
         if t > 0:
-            rng += ', '
+            rng += ", "
         t += ln
         if ln == 1:
             rng += str(el)
         #elif ln == 2:
-        #    rng += '{}, {}'.format(str(el), str(el+ln-1))
+        #    rng += "{}, {}".format(str(el), str(el+ln-1))
         else:
-            rng += '{}-{}'.format(el, el+ln-1)
+            rng += "{}-{}".format(el, el+ln-1)
     return rng
 
 
@@ -235,21 +235,21 @@ def fileindex(f, cast=int):
 
     Examples
     --------
-    >>> fileindex('Hello[0]')
-    ('Hello', 0)
-    >>> fileindex('Hello[0-2]')
-    ('Hello', [0, 1, 2])
+    >>> fileindex("Hello[0]")
+    ("Hello", 0)
+    >>> fileindex("Hello[0-2]")
+    ("Hello", [0, 1, 2])
     """
 
-    if '[' not in f:
+    if "[" not in f:
         return f, None
 
     # Grab the filename
-    f = f.split('[')
+    f = f.split("[")
     fname = f.pop(0)
-    # Re-join and remove the last ']'
-    f = '['.join(f)
-    if f[-1] == ']':
+    # Re-join and remove the last "]"
+    f = "[".join(f)
+    if f[-1] == "]":
         f = f[:-1]
     ranges = strmap(cast, f)
     rng = lstranges(ranges)
