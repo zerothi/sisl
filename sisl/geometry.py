@@ -3707,7 +3707,7 @@ class Geometry(SuperCellChild):
         """ Returns the geometry as an ASE ``Atoms`` object """
         from ase import Atoms as ASE_Atoms
         return ASE_Atoms(symbols=self.atoms.Z, positions=self.xyz.tolist(),
-                         cell=self.cell.tolist(), pbc=[ax_sc > 1 for ax_sc in self.nsc])
+                         cell=self.cell.tolist(), pbc=self.nsc > 1)
 
     def equal(self, other, R=True, tol=1e-4):
         """ Whether two geometries are the same (optional not check of the orbital radius)
