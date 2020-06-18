@@ -280,11 +280,10 @@ class InputField:
             dtypes = (dtypes, )
 
         for dtype in dtypes:
-
             try:
                 if dtype == bool and isinstance(val, str):
                     val = val.lower() not in ('false', 'f', 'no', 'n')
-                else:
+                elif dtype in [list, int, float]:
                     val = dtype(val)
             except:
                 continue

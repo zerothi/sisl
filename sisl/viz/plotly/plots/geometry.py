@@ -4,6 +4,7 @@ from collections import Iterable, defaultdict
 import numpy as np
 
 from sisl import Geometry, PeriodicTable, Atom
+from sisl.utils.mathematics import fnorm
 from ..plot import Plot, entry_point
 from ..input_fields import ProgramaticInput, FunctionInput, FloatInput, SwitchInput, DropdownInput, AtomSelect, GeomAxisSelect, \
     FilePathInput, PlotableInput
@@ -28,7 +29,7 @@ class BoundGeometry(AbstractDispatch):
 
             # Maybe the returned value is not a geometry
             if isinstance(ret, Geometry):
-                self.parent_plot.update_settings(geom=ret)
+                self.parent_plot.update_settings(geometry=ret)
                 return self.parent_plot.on_geom
 
             return ret
@@ -325,24 +326,25 @@ class BaseGeometryPlot(Plot):
             if bonds_together:
                 
                 bonds_xyz = np.array([self.geometry[bond] for bond in bonds])
-                xys = self._projected_2Dcoords(bonds_xyz, xaxis=xaxis, yaxis=yaxis)
+                if len(bonds_xyz) != 0:
+                    xys = self._projected_2Dcoords(bonds_xyz, xaxis=xaxis, yaxis=yaxis)
 
-                # By reshaping we get the following: First axis -> bond (length: number of bonds),
-                # Second axis -> atoms in the bond (length 2), Third axis -> coordinate (x, y)
-                xys = xys.transpose((1,2,0))
+                    # By reshaping we get the following: First axis -> bond (length: number of bonds),
+                    # Second axis -> atoms in the bond (length 2), Third axis -> coordinate (x, y)
+                    xys = xys.transpose((1,2,0))
 
-                # Try to get the bonds colors (It might be that the user is not setting them)
-                bondsinfo = [wrap_bond(bond, xy) for bond, xy in zip(bonds, xys)]
+                    # Try to get the bonds colors (It might be that the user is not setting them)
+                    bondsinfo = [wrap_bond(bond, xy) for bond, xy in zip(bonds, xys)]
 
-                bondsprops = defaultdict(list)
-                for bondinfo in bondsinfo:
-                    if "color" in bondinfo[1]:
-                        bondsprops["bonds_color"].append(bondinfo[1]["color"])
-                    if "name" in bondinfo[1]:
-                        bondsprops["bonds_labels"].append(bondinfo[1]["name"])
+                    bondsprops = defaultdict(list)
+                    for bondinfo in bondsinfo:
+                        if "color" in bondinfo[1]:
+                            bondsprops["bonds_color"].append(bondinfo[1]["color"])
+                        if "name" in bondinfo[1]:
+                            bondsprops["bonds_labels"].append(bondinfo[1]["name"])
 
-                bonds_trace = self._bonds_scatter_trace2D(xys, points_per_bond=points_per_bond, **bondsprops)
-                traces.append(bonds_trace)
+                    bonds_trace = self._bonds_scatter_trace2D(xys, points_per_bond=points_per_bond, **bondsprops)
+                    traces.append(bonds_trace)
 
             else:
                 for bond in self.bonds:
@@ -398,7 +400,7 @@ class BaseGeometryPlot(Plot):
         xaxis = self._sanitize_axis(xaxis)
         yaxis = self._sanitize_axis(yaxis)
 
-        return np.array([xyz.dot(ax)/np.linalg.norm(ax) for ax in (xaxis, yaxis)])
+        return np.array([xyz.dot(ax)/fnorm(ax) for ax in (xaxis, yaxis)])
 
     def _atom_circle_trace2D(self, xyz, r):
 

@@ -5,13 +5,17 @@ import os
 import shutil
 
 import sisl
-from ..plot import Plot
-from ..plotutils import run_multiple
-from ..input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
+from ...plot import Plot, entry_point
+from ...plotutils import run_multiple
+from ...input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
 
 class LDOSmap(Plot):
     '''
     Generates a heat map with the STS spectra along a path.
+
+    Parameters
+    ------------
+    %%configurable_settings%%
 
     '''
     
@@ -184,6 +188,7 @@ class LDOSmap(Plot):
             Denchar.STSEta {} eV
             '''.format(*stsPosition, *(np.array(self.setting("Erange")) + self.fermi), self.setting("nE"), self.setting("STSEta"))
 
+    @entry_point('siesta')
     def _read_siesta_output(self):
         '''Function that uses denchar to get STSpecra along a path'''
 
@@ -330,7 +335,7 @@ class LDOSmap(Plot):
             for reqPoint in self.setting("points"):
 
                 if reqPoint.get("atom"):
-                    translate = np.array([reqPoint["x"],reqPoint["y"],reqPoint["z"]]).dot(self.geom.cell)
+                    translate = np.array([reqPoint.get("x",0),reqPoint.get("y",0),reqPoint.get("z", 0)]).dot(self.geom.cell)
                     points.append(self.geom[reqPoint["atom"]] + translate)
                 else:
                     points.append([reqPoint["x"],reqPoint["y"],reqPoint["z"]])
