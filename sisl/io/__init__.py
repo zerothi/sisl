@@ -62,6 +62,7 @@ Files not specificly related to any code.
    ~cube.cubeSile - atomic coordinates *and* 3D grid values
    ~molden.moldenSile - atomic coordinate file specific for Molden
    ~xsf.xsfSile - atomic coordinate file specific for XCrySDen
+   ~vesta.vestaSile - atomic coordinate file specific for VESTA
 
 
 .. _toc-io-bigdft:
@@ -284,6 +285,7 @@ from .siesta import *
 from .tbtrans import *
 from .table import *
 from .vasp import *
+from .vesta import *
 from .wannier90 import *
 from .xsf import *
 from .xyz import *
