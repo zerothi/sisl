@@ -18,9 +18,9 @@ from sisl.physics.brillouinzone import MonkhorstPack
 from sisl.physics.bloch import Bloch
 
 
-__all__ = ['SelfEnergy', 'SemiInfinite']
-__all__ += ['RecursiveSI']
-__all__ += ['RealSpaceSE', 'RealSpaceSI']
+__all__ = ["SelfEnergy", "SemiInfinite"]
+__all__ += ["RecursiveSI"]
+__all__ += ["RealSpaceSE", "RealSpaceSI"]
 
 
 @set_module("sisl.physics")
@@ -125,34 +125,34 @@ class SemiInfinite(SelfEnergy):
         self.eta = eta
 
         # Determine whether we are in plus/minus direction
-        if infinite.startswith('+'):
+        if infinite.startswith("+"):
             self.semi_inf_dir = 1
-        elif infinite.startswith('-'):
+        elif infinite.startswith("-"):
             self.semi_inf_dir = -1
         else:
-            raise ValueError(self.__class__.__name__ + ": infinite keyword does not start with `+` or `-`.")
+            raise ValueError(f"{self.__class__.__name__} infinite keyword does not start with `+` or `-`.")
 
         # Determine the direction
         INF = infinite.upper()
-        if INF.endswith('A'):
+        if INF.endswith("A"):
             self.semi_inf = 0
-        elif INF.endswith('B'):
+        elif INF.endswith("B"):
             self.semi_inf = 1
-        elif INF.endswith('C'):
+        elif INF.endswith("C"):
             self.semi_inf = 2
 
         # Check that the Hamiltonian does have a non-zero V along the semi-infinite direction
         if spgeom.geometry.sc.nsc[self.semi_inf] == 1:
-            warn('Creating a semi-infinite self-energy with no couplings along the semi-infinite direction')
+            warn("Creating a semi-infinite self-energy with no couplings along the semi-infinite direction")
 
         # Finalize the setup by calling the class specific routine
         self._setup(spgeom)
 
     def __str__(self):
         """ String representation of SemiInfinite """
-        return  '{0}{{direction: {1}{2}}}'.format(self.__class__.__name__,
-                                                  {-1: '-', 1: '+'}.get(self.semi_inf_dir),
-                                                  {0: 'A', 1: 'B', 2: 'C'}.get(self.semi_inf))
+        return  "{0}{{direction: {1}{2}}}".format(self.__class__.__name__,
+                                                  {-1: "-", 1: "+"}.get(self.semi_inf_dir),
+                                                  {0: "A", 1: "B", 2: "C"}.get(self.semi_inf))
 
 
 @set_module("sisl.physics")
@@ -165,11 +165,11 @@ class RecursiveSI(SemiInfinite):
 
     def __str__(self):
         """ Representation of the RecursiveSI model """
-        direction = {-1: '-', 1: '+'}
-        axis = {0: 'A', 1: 'B', 2: 'C'}
-        return '{0}{{direction: {1}{2},\n {3}\n}}'.format(self.__class__.__name__,
+        direction = {-1: "-", 1: "+"}
+        axis = {0: "A", 1: "B", 2: "C"}
+        return "{0}{{direction: {1}{2},\n {3}\n}}".format(self.__class__.__name__,
                                                           direction[self.semi_inf_dir], axis[self.semi_inf],
-                                                          str(self.spgeom0).replace('\n', '\n '),
+                                                          str(self.spgeom0).replace("\n", "\n "),
         )
 
     def _setup(self, spgeom):
@@ -247,7 +247,7 @@ class RecursiveSI(SemiInfinite):
         # As the SparseGeometry inherently works for
         # orthogonal and non-orthogonal basis, there is no
         # need to have two algorithms.
-        GB = sp0.Sk(k, dtype=dtype, format='array') * E - sp0.Pk(k, dtype=dtype, format='array', **kwargs)
+        GB = sp0.Sk(k, dtype=dtype, format="array") * E - sp0.Pk(k, dtype=dtype, format="array", **kwargs)
         n = GB.shape[0]
 
         ab = empty([n, 2, n], dtype=dtype)
@@ -262,35 +262,35 @@ class RecursiveSI(SemiInfinite):
         ab2.shape = (n, 2 * n)
 
         if sp1.orthogonal:
-            alpha[:, :] = sp1.Pk(k, dtype=dtype, format='array', **kwargs)
+            alpha[:, :] = sp1.Pk(k, dtype=dtype, format="array", **kwargs)
             beta[:, :] = conjugate(alpha.T)
         else:
-            P = sp1.Pk(k, dtype=dtype, format='array', **kwargs)
-            S = sp1.Sk(k, dtype=dtype, format='array')
+            P = sp1.Pk(k, dtype=dtype, format="array", **kwargs)
+            S = sp1.Sk(k, dtype=dtype, format="array")
             alpha[:, :] = P - S * E
             beta[:, :] = conjugate(P.T) - conjugate(S.T) * E
             del P, S
 
         # Get faster methods since we don't want overhead of solve
-        gesv = linalg_info('gesv', dtype)
+        gesv = linalg_info("gesv", dtype)
 
-        getrf = linalg_info('getrf', dtype)
-        getri = linalg_info('getri', dtype)
-        getri_lwork = linalg_info('getri_lwork', dtype)
+        getrf = linalg_info("getrf", dtype)
+        getri = linalg_info("getri", dtype)
+        getri_lwork = linalg_info("getri_lwork", dtype)
         lwork = int(1.01 * _compute_lwork(getri_lwork, n))
         def inv(A):
             lu, piv, info = getrf(A, overwrite_a=True)
             if info == 0:
                 x, info = getri(lu, piv, lwork=lwork, overwrite_lu=True)
             if info != 0:
-                raise ValueError(self.__class__.__name__ + '.green could not compute the inverse.')
+                raise ValueError(f"{self.__class__.__name__}.green could not compute the inverse.")
             return x
 
         while True:
             _, _, tab, info = gesv(GB, ab2, overwrite_a=False, overwrite_b=False)
             tab.shape = shape
             if info != 0:
-                raise ValueError(self.__class__.__name__ + '.green could not solve G x = B system!')
+                raise ValueError(f"{self.__class__.__name__}.green could not solve G x = B system!")
 
             # Update bulk Green function
             subtract(GB, dot(alpha, tab[:, 1, :]), out=GB)
@@ -306,7 +306,7 @@ class RecursiveSI(SemiInfinite):
                 del ab, alpha, beta, ab2, tab
                 return inv(GB)
 
-        raise ValueError(self.__class__.__name__+'.green could not converge Green function calculation')
+        raise ValueError(self.__class__.__name__+".green could not converge Green function calculation")
 
     def self_energy(self, E, k=(0, 0, 0), dtype=None, eps=1e-14, bulk=False, **kwargs):
         r""" Return a dense matrix with the self-energy at energy `E` and k-point `k` (default Gamma).
@@ -348,7 +348,7 @@ class RecursiveSI(SemiInfinite):
         # As the SparseGeometry inherently works for
         # orthogonal and non-orthogonal basis, there is no
         # need to have two algorithms.
-        GB = sp0.Sk(k, dtype=dtype, format='array') * E - sp0.Pk(k, dtype=dtype, format='array', **kwargs)
+        GB = sp0.Sk(k, dtype=dtype, format="array") * E - sp0.Pk(k, dtype=dtype, format="array", **kwargs)
         n = GB.shape[0]
 
         ab = empty([n, 2, n], dtype=dtype)
@@ -363,11 +363,11 @@ class RecursiveSI(SemiInfinite):
         ab2.shape = (n, 2 * n)
 
         if sp1.orthogonal:
-            alpha[:, :] = sp1.Pk(k, dtype=dtype, format='array', **kwargs)
+            alpha[:, :] = sp1.Pk(k, dtype=dtype, format="array", **kwargs)
             beta[:, :] = conjugate(alpha.T)
         else:
-            P = sp1.Pk(k, dtype=dtype, format='array', **kwargs)
-            S = sp1.Sk(k, dtype=dtype, format='array')
+            P = sp1.Pk(k, dtype=dtype, format="array", **kwargs)
+            S = sp1.Sk(k, dtype=dtype, format="array")
             alpha[:, :] = P - S * E
             beta[:, :] = conjugate(P.T) - conjugate(S.T) * E
             del P, S
@@ -379,15 +379,15 @@ class RecursiveSI(SemiInfinite):
             GS = zeros_like(GB)
 
         # Get faster methods since we don't want overhead of solve
-        gesv = linalg_info('gesv', dtype)
+        gesv = linalg_info("gesv", dtype)
 
-        # Specifying dot with 'out' argument should be faster
+        # Specifying dot with "out" argument should be faster
         tmp = empty_like(GS)
         while True:
             _, _, tab, info = gesv(GB, ab2, overwrite_a=False, overwrite_b=False)
             tab.shape = shape
             if info != 0:
-                raise ValueError(self.__class__.__name__ + '.self_energy could not solve G x = B system!')
+                raise ValueError(f"{self.__class__.__name__}.self_energy could not solve G x = B system!")
 
             dot(alpha, tab[:, 1, :], tmp)
             # Update bulk Green function
@@ -408,7 +408,7 @@ class RecursiveSI(SemiInfinite):
                     return GS
                 return - GS
 
-        raise ValueError(self.__class__.__name__+': could not converge self-energy calculation')
+        raise ValueError(f"{self.__class__.__name__}: could not converge self-energy calculation")
 
     def self_energy_lr(self, E, k=(0, 0, 0), dtype=None, eps=1e-14, bulk=False, **kwargs):
         r""" Return two dense matrices with the left/right self-energy at energy `E` and k-point `k` (default Gamma).
@@ -455,7 +455,7 @@ class RecursiveSI(SemiInfinite):
         # As the SparseGeometry inherently works for
         # orthogonal and non-orthogonal basis, there is no
         # need to have two algorithms.
-        SmH0 = sp0.Sk(k, dtype=dtype, format='array') * E - sp0.Pk(k, dtype=dtype, format='array', **kwargs)
+        SmH0 = sp0.Sk(k, dtype=dtype, format="array") * E - sp0.Pk(k, dtype=dtype, format="array", **kwargs)
         GB = SmH0.copy()
         n = GB.shape[0]
 
@@ -471,11 +471,11 @@ class RecursiveSI(SemiInfinite):
         ab2.shape = (n, 2 * n)
 
         if sp1.orthogonal:
-            alpha[:, :] = sp1.Pk(k, dtype=dtype, format='array', **kwargs)
+            alpha[:, :] = sp1.Pk(k, dtype=dtype, format="array", **kwargs)
             beta[:, :] = conjugate(alpha.T)
         else:
-            P = sp1.Pk(k, dtype=dtype, format='array', **kwargs)
-            S = sp1.Sk(k, dtype=dtype, format='array')
+            P = sp1.Pk(k, dtype=dtype, format="array", **kwargs)
+            S = sp1.Sk(k, dtype=dtype, format="array")
             alpha[:, :] = P - S * E
             beta[:, :] = conjugate(P.T) - conjugate(S.T) * E
             del P, S
@@ -487,15 +487,15 @@ class RecursiveSI(SemiInfinite):
             GS = zeros_like(GB)
 
         # Get faster methods since we don't want overhead of solve
-        gesv = linalg_info('gesv', dtype)
+        gesv = linalg_info("gesv", dtype)
 
-        # Specifying dot with 'out' argument should be faster
+        # Specifying dot with "out" argument should be faster
         tmp = empty_like(GS)
         while True:
             _, _, tab, info = gesv(GB, ab2, overwrite_a=False, overwrite_b=False)
             tab.shape = shape
             if info != 0:
-                raise ValueError(self.__class__.__name__ + '.self_energy_lr could not solve G x = B system!')
+                raise ValueError(f"{self.__class__.__name__}.self_energy_lr could not solve G x = B system!")
 
             dot(alpha, tab[:, 1, :], tmp)
             # Update bulk Green function
@@ -522,7 +522,7 @@ class RecursiveSI(SemiInfinite):
                     return GS, GB - GS + SmH0
                 return - GS, GS - GB + SmH0
 
-        raise ValueError(self.__class__.__name__+': could not converge self-energy (LR) calculation')
+        raise ValueError(f"{self.__class__.__name__}: could not converge self-energy (LR) calculation")
 
 
 @set_module("sisl.physics")
@@ -599,28 +599,28 @@ class RealSpaceSE(SelfEnergy):
         s_ax = self._semi_axis
         k_ax = self._k_axes
         if s_ax in k_ax:
-            raise ValueError(self.__class__.__name__ + ' found the self-energy direction to be '
-                             'the same as one of the k-axes, this is not allowed.')
+            raise ValueError(f"{self.__class__.__name__} found the self-energy direction to be "
+                             "the same as one of the k-axes, this is not allowed.")
         if np.any(self.parent.nsc[k_ax] < 3):
-            raise ValueError(self.__class__.__name__ + ' found k-axes without periodicity. '
-                             'Correct k_axes via .set_options.')
+            raise ValueError(f"{self.__class__.__name__} found k-axes without periodicity. "
+                             "Correct k_axes via .set_options.")
         if self.parent.nsc[s_ax] != 3:
-            raise ValueError(self.__class__.__name__ + ' found the self-energy direction to be '
-                             'incompatible with the parent object. It *must* have 3 supercells along the '
-                             'semi-infinite direction.')
+            raise ValueError(f"{self.__class__.__name__} found the self-energy direction to be "
+                             "incompatible with the parent object. It *must* have 3 supercells along the "
+                             "semi-infinite direction.")
 
         # Local variables for the completion of the details
         self._unfold = _a.arrayi([max(1, un) for un in unfold])
 
         self._options = {
             # fineness of the integration k-grid [Ang]
-            'dk': 1000,
+            "dk": 1000,
             # whether TRS is used (G + G.T) * 0.5
-            'trs': True,
+            "trs": True,
             # imaginary part used in the Green function calculation (unless an imaginary energy is passed)
-            'eta': 1e-4,
+            "eta": 1e-4,
             # The BrillouinZone used for integration
-            'bz': None,
+            "bz": None,
         }
         self.set_options(**options)
         self.initialize()
@@ -631,18 +631,18 @@ class RealSpaceSE(SelfEnergy):
 
     def __str__(self):
         """ String representation of RealSpaceSE """
-        d = {'class': self.__class__.__name__}
+        d = {"class": self.__class__.__name__}
         for i in range(3):
-            d[f'u{i}'] = self._unfold[i]
-        d['semi'] = self._semi_axis
-        d['k'] = str(list(self._k_axes))
-        d['parent'] = str(self.parent).replace('\n', '\n ')
-        d['bz'] = str(self._options['bz']).replace('\n', '\n ')
-        d['trs'] = str(self._options['trs'])
-        return  ('{class}{{unfold: [{u0}, {u1}, {u2}],\n '
-                 'semi-axis: {semi}, k-axes: {k}, trs: {trs},\n '
-                 'bz: {bz},\n '
-                 '{parent}\n}}').format(**d)
+            d[f"u{i}"] = self._unfold[i]
+        d["semi"] = self._semi_axis
+        d["k"] = str(list(self._k_axes))
+        d["parent"] = str(self.parent).replace("\n", "\n ")
+        d["bz"] = str(self._options["bz"]).replace("\n", "\n ")
+        d["trs"] = str(self._options["trs"])
+        return  ("{class}{{unfold: [{u0}, {u1}, {u2}],\n "
+                 "semi-axis: {semi}, k-axes: {k}, trs: {trs},\n "
+                 "bz: {bz},\n "
+                 "{parent}\n}}").format(**d)
 
     def set_options(self, **options):
         r""" Update options in the real-space self-energy
@@ -777,23 +777,23 @@ class RealSpaceSE(SelfEnergy):
         self._calc = {
             # The below algorithm requires the direction to be negative
             # if changed, B, C should be reversed below
-            'SE': RecursiveSI(self.parent, '-' + 'ABC'[s_ax], eta=self._options['eta']),
+            "SE": RecursiveSI(self.parent, "-" + "ABC"[s_ax], eta=self._options["eta"]),
             # Used to calculate the real-space self-energy
-            'P0': P0.Pk,
-            'S0': P0.Sk,
+            "P0": P0.Pk,
+            "S0": P0.Sk,
             # Orbitals in the coupling atoms
-            'orbs': P0.a2o(V_atoms, True).reshape(-1, 1),
+            "orbs": P0.a2o(V_atoms, True).reshape(-1, 1),
         }
 
         # Update the BrillouinZone integration grid in case it isn't specified
-        if self._options['bz'] is None:
+        if self._options["bz"] is None:
             # Update the integration grid
             # Note this integration grid is based on the big system.
             sc = self.parent.sc * self._unfold
             rcell = fnorm(sc.rcell)[k_ax]
             nk = _a.onesi(3)
-            nk[k_ax] = np.ceil(self._options['dk'] * rcell).astype(np.int32)
-            self._options['bz'] = MonkhorstPack(sc, nk, trs=self._options['trs'])
+            nk[k_ax] = np.ceil(self._options["dk"] * rcell).astype(np.int32)
+            self._options["bz"] = MonkhorstPack(sc, nk, trs=self._options["trs"])
 
     def self_energy(self, E, k=(0, 0, 0), bulk=False, coupling=False, dtype=None, **kwargs):
         r""" Calculate the real-space self-energy
@@ -825,15 +825,15 @@ class RealSpaceSE(SelfEnergy):
         if dtype is None:
             dtype = complex128
         if E.imag == 0:
-            E = E.real + 1j * self._options['eta']
+            E = E.real + 1j * self._options["eta"]
 
         # Calculate the real-space Green function
         G = self.green(E, k, dtype=dtype)
 
         if coupling:
-            orbs = self._calc['orbs']
+            orbs = self._calc["orbs"]
             iorbs = delete(_a.arangei(len(G)), orbs).reshape(-1, 1)
-            SeH = self._calc['S0'](k, dtype=dtype) * E - self._calc['P0'](k, dtype=dtype, **kwargs)
+            SeH = self._calc["S0"](k, dtype=dtype) * E - self._calc["P0"](k, dtype=dtype, **kwargs)
             if bulk:
                 return solve(G[orbs, orbs.T], eye(orbs.size, dtype=dtype) - dot(G[orbs, iorbs.T], SeH[iorbs, orbs.T].toarray()), True, True)
             return SeH[orbs, orbs.T].toarray() - solve(G[orbs, orbs.T], eye(orbs.size, dtype=dtype) - dot(G[orbs, iorbs.T], SeH[iorbs, orbs.T].toarray()), True, True)
@@ -844,19 +844,19 @@ class RealSpaceSE(SelfEnergy):
             # since comparing the two yields numerical differences on the order 1e-8 eV depending
             # on the size of the full matrix G.
 
-            #orbs = self._calc['orbs']
+            #orbs = self._calc["orbs"]
             #iorbs = _a.arangei(orbs.size).reshape(1, -1)
             #I = zeros([G.shape[0], orbs.size], dtype)
             ### Set diagonal
             #I[orbs.ravel(), iorbs.ravel()] = 1.
             #if bulk:
             #    return solve(G, I, True, True)[orbs, iorbs]
-            #return (self._calc['S0'](k, dtype=dtype) * E - self._calc['P0'](k, dtype=dtype, **kwargs))[orbs, orbs.T].toarray() \
+            #return (self._calc["S0"](k, dtype=dtype) * E - self._calc["P0"](k, dtype=dtype, **kwargs))[orbs, orbs.T].toarray() \
             #    - solve(G, I, True, True)[orbs, iorbs]
 
         if bulk:
             return inv(G, True)
-        return (self._calc['S0'](k, dtype=dtype) * E - self._calc['P0'](k, dtype=dtype, **kwargs)).toarray() - inv(G, True)
+        return (self._calc["S0"](k, dtype=dtype) * E - self._calc["P0"](k, dtype=dtype, **kwargs)).toarray() - inv(G, True)
 
     def green(self, E, k=(0, 0, 0), dtype=None, **kwargs):
         r""" Calculate the real-space Green function
@@ -881,19 +881,19 @@ class RealSpaceSE(SelfEnergy):
         opt = self._options
 
         # Retrieve integration k-grid
-        bz = opt['bz']
+        bz = opt["bz"]
         try:
             # If the BZ implements TRS (MonkhorstPack) then force it
             trs = bz._trs >= 0
         except:
-            trs = opt['trs']
+            trs = opt["trs"]
 
         if dtype is None:
             dtype = complex128
 
         # Now we are to calculate the real-space self-energy
         if E.imag == 0:
-            E = E.real + 1j * opt['eta']
+            E = E.real + 1j * opt["eta"]
 
         # Used axes
         s_ax = self._semi_axis
@@ -904,14 +904,14 @@ class RealSpaceSE(SelfEnergy):
         if is_k:
             axes = [s_ax] + k_ax.tolist()
             if np.any(k[axes] != 0.):
-                raise ValueError(f'{self.__class__.__name__}.green requires the k-point to be zero along the integrated axes.')
+                raise ValueError(f"{self.__class__.__name__}.green requires the k-point to be zero along the integrated axes.")
             if trs:
-                raise ValueError(f'{self.__class__.__name__}.green requires a k-point sampled Green function to not use time reversal symmetry.')
+                raise ValueError(f"{self.__class__.__name__}.green requires a k-point sampled Green function to not use time reversal symmetry.")
             # Shift k-points to get the correct k-point in the larger one.
             bz._k += k.reshape(1, 3)
 
         # Calculate both left and right at the same time.
-        SE = self._calc['SE'].self_energy_lr
+        SE = self._calc["SE"].self_energy_lr
 
         # Define Bloch unfolding routine and number of tiles along the semi-inf direction
         unfold = self._unfold.copy()
@@ -920,54 +920,54 @@ class RealSpaceSE(SelfEnergy):
         bloch = Bloch(unfold)
 
         # We always need the inverse
-        getrf = linalg_info('getrf', dtype)
-        getri = linalg_info('getri', dtype)
-        getri_lwork = linalg_info('getri_lwork', dtype)
-        lwork = int(1.01 * _compute_lwork(getri_lwork, self._calc['SE'].spgeom0.shape[0]))
+        getrf = linalg_info("getrf", dtype)
+        getri = linalg_info("getri", dtype)
+        getri_lwork = linalg_info("getri_lwork", dtype)
+        lwork = int(1.01 * _compute_lwork(getri_lwork, self._calc["SE"].spgeom0.shape[0]))
         def inv(A):
             lu, piv, info = getrf(A, overwrite_a=True)
             if info == 0:
                 x, info = getri(lu, piv, lwork=lwork, overwrite_lu=True)
             if info != 0:
-                raise ValueError(self.__class__.__name__ + '.green could not compute the inverse.')
+                raise ValueError(f"{self.__class__.__name__}.green could not compute the inverse.")
             return x
 
         if tile == 1:
             # When not tiling, it can be simplified quite a bit
-            M0 = self._calc['SE'].spgeom0
+            M0 = self._calc["SE"].spgeom0
             M0Pk = M0.Pk
             if self.parent.orthogonal:
                 # Orthogonal *always* identity
                 S0E = eye(len(M0), dtype=dtype) * E
                 def _calc_green(k, dtype, no, tile, idx0):
                     SL, SR = SE(E, k, dtype=dtype, **kwargs)
-                    return inv(S0E - M0Pk(k, dtype=dtype, format='array', **kwargs) - SL - SR)
+                    return inv(S0E - M0Pk(k, dtype=dtype, format="array", **kwargs) - SL - SR)
             else:
                 M0Sk = M0.Sk
                 def _calc_green(k, dtype, no, tile, idx0):
                     SL, SR = SE(E, k, dtype=dtype, **kwargs)
-                    return inv(M0Sk(k, dtype=dtype, format='array') * E - M0Pk(k, dtype=dtype, format='array', **kwargs) - SL - SR)
+                    return inv(M0Sk(k, dtype=dtype, format="array") * E - M0Pk(k, dtype=dtype, format="array", **kwargs) - SL - SR)
 
         else:
             # Get faster methods since we don't want overhead of solve
-            gesv = linalg_info('gesv', dtype)
-            M1 = self._calc['SE'].spgeom1
+            gesv = linalg_info("gesv", dtype)
+            M1 = self._calc["SE"].spgeom1
             M1Pk = M1.Pk
             if self.parent.orthogonal:
                 def _calc_green(k, dtype, no, tile, idx0):
                     # Calculate left/right self-energies
                     Gf, A2 = SE(E, k, dtype=dtype, bulk=True, **kwargs) # A1 == Gf, because of memory usage
                     # skip negation since we don't do negation on tY/tX
-                    B = M1Pk(k, dtype=dtype, format='array', **kwargs)
+                    B = M1Pk(k, dtype=dtype, format="array", **kwargs)
                     # C = conjugate(B.T)
 
                     _, _, tY, info = gesv(Gf, conjugate(B.T), overwrite_a=True, overwrite_b=True)
                     if info != 0:
-                        raise ValueError(self.__class__.__name__ + '.green could not solve tY x = B system!')
+                        raise ValueError(f"{self.__class__.__name__}.green could not solve tY x = B system!")
                     Gf[:, :] = inv(A2 - dot(B, tY))
                     _, _, tX, info = gesv(A2, B, overwrite_a=True, overwrite_b=True)
                     if info != 0:
-                        raise ValueError(self.__class__.__name__ + '.green could not solve tX x = B system!')
+                        raise ValueError(f"{self.__class__.__name__}.green could not solve tX x = B system!")
 
                     # Since this is the pristine case, we know that
                     # G11 and G22 are the same:
@@ -984,19 +984,19 @@ class RealSpaceSE(SelfEnergy):
                 M1Sk = M1.Sk
                 def _calc_green(k, dtype, no, tile, idx0):
                     Gf, A2 = SE(E, k, dtype=dtype, bulk=True, **kwargs) # A1 == Gf, because of memory usage
-                    tY = M1Sk(k, dtype=dtype, format='array') # S
-                    tX = M1Pk(k, dtype=dtype, format='array', **kwargs) # H
+                    tY = M1Sk(k, dtype=dtype, format="array") # S
+                    tX = M1Pk(k, dtype=dtype, format="array", **kwargs) # H
                     # negate B to allow faster gesv method
                     B = tX - tY * E
                     # C = _conj(tY.T) * E - _conj(tX.T)
 
                     _, _, tY[:, :], info = gesv(Gf, conjugate(tX.T) - conjugate(tY.T) * E, overwrite_a=True, overwrite_b=True)
                     if info != 0:
-                        raise ValueError(self.__class__.__name__ + '.green could not solve tY x = B system!')
+                        raise ValueError(f"{self.__class__.__name__}.green could not solve tY x = B system!")
                     Gf[:, :] = inv(A2 - dot(B, tY))
                     _, _, tX[:, :], info = gesv(A2, B, overwrite_a=True, overwrite_b=True)
                     if info != 0:
-                        raise ValueError(self.__class__.__name__ + '.green could not solve tX x = B system!')
+                        raise ValueError(f"{self.__class__.__name__}.green could not solve tX x = B system!")
 
                     G = empty([tile, no, tile, no], dtype=dtype)
                     G[idx0, :, idx0, :] = Gf.reshape(1, no, no)
@@ -1087,7 +1087,7 @@ class RealSpaceSI(SelfEnergy):
     >>> graphene = geom.graphene()
     >>> H = Hamiltonian(graphene)
     >>> H.construct([(0.1, 1.44), (0, -2.7)])
-    >>> se = RecursiveSI(H, '-A')
+    >>> se = RecursiveSI(H, "-A")
     >>> Hsurf = H.tile(3, 0)
     >>> Hsurf.set_nsc(a=1)
     >>> rsi = RealSpaceSI(se, Hsurf, 1, (1, 4, 1))
@@ -1098,7 +1098,7 @@ class RealSpaceSI(SelfEnergy):
     >>> graphene = geom.graphene()
     >>> H = Hamiltonian(graphene)
     >>> H.construct([(0.1, 1.44), (0, -2.7)])
-    >>> se = RecursiveSI(H, '-A')
+    >>> se = RecursiveSI(H, "-A")
     >>> Hsurf = H.tile(3, 0)
     >>> Hsurf.set_nsc(a=1)
     >>> rsi = RealSpaceSI(se, Hsurf, 1, (1, 4, 1))
@@ -1116,29 +1116,29 @@ class RealSpaceSI(SelfEnergy):
         self.surface = surface
 
         if not self.semi.sc.parallel(surface.sc):
-            raise ValueError(self.__class__.__name__ + ' requires semi and surface to have parallel '
-                             'lattice vectors.')
+            raise ValueError(f"{self.__class__.__name__} requires semi and surface to have parallel "
+                             "lattice vectors.")
 
         self._k_axes = np.sort(_a.arrayi(k_axes).ravel())
         k_ax = self._k_axes
 
         if self.semi.semi_inf in k_ax:
-            raise ValueError(self.__class__.__name__ + ' found the self-energy direction to be '
-                             'the same as one of the k-axes, this is not allowed.')
+            raise ValueError(f"{self.__class__.__name__} found the self-energy direction to be "
+                             "the same as one of the k-axes, this is not allowed.")
 
         # Local variables for the completion of the details
         self._unfold = _a.arrayi([max(1, un) for un in unfold])
 
         if self.surface.nsc[semi.semi_inf] > 1:
-            raise ValueError(self.__class__.__name__ + ' surface has periodicity along the semi-infinite '
-                             'direction. This is not allowed.')
+            raise ValueError(f"{self.__class__.__name__} surface has periodicity along the semi-infinite "
+                             "direction. This is not allowed.")
         if np.any(self.surface.nsc[k_ax] < 3):
-            raise ValueError(self.__class__.__name__ + ' found k-axes without periodicity. '
-                             'Correct k_axes via .set_option.')
+            raise ValueError(f"{self.__class__.__name__} found k-axes without periodicity. "
+                             "Correct `k_axes` via `.set_option`.")
 
         if self._unfold[semi.semi_inf] > 1:
-            raise ValueError(self.__class__.__name__ + ' cannot unfold along the semi-infinite direction. '
-                             'This is a surface real-space self-energy.')
+            raise ValueError(f"{self.__class__.__name__} cannot unfold along the semi-infinite direction. "
+                             "This is a surface real-space self-energy.")
 
         # Now we need to figure out the atoms in the surface that corresponds to the
         # semi-infinite direction.
@@ -1165,10 +1165,10 @@ class RealSpaceSI(SelfEnergy):
         # Check atomic coordinates are the same
         # Precision is 0.001 Ang
         if not np.allclose(self.semi.geometry.xyz, g_surf, rtol=0, atol=1e-3):
-            print('Coordinate difference:')
+            print("Coordinate difference:")
             print(self.semi.geometry.xyz - g_surf)
-            raise ValueError(self.__class__.__name__ + ' overlapping semi-infinite '
-                             'and surface atoms does not coincide!')
+            raise ValueError(f"{self.__class__.__name__} overlapping semi-infinite "
+                             "and surface atoms does not coincide!")
 
         # Surface orbitals to put in the semi-infinite self-energy into.
         self._surface_orbs = self.surface.geometry.a2o(atoms, True).reshape(-1, 1)
@@ -1176,34 +1176,34 @@ class RealSpaceSI(SelfEnergy):
         self._options = {
             # For true, the semi-infinite direction will use the bulk values for the
             # elements that overlap with the semi-infinito
-            'semi_bulk': True,
+            "semi_bulk": True,
             # fineness of the integration k-grid [Ang]
-            'dk': 1000,
+            "dk": 1000,
             # whether TRS is used (G + G.T) * 0.5
-            'trs': True,
+            "trs": True,
             # imaginary part used in the Green function calculation (unless an imaginary energy is passed)
-            'eta': 1e-4,
+            "eta": 1e-4,
             # The BrillouinZone used for integration
-            'bz': None,
+            "bz": None,
         }
         self.set_options(**options)
         self.initialize()
 
     def __str__(self):
         """ String representation of RealSpaceSI """
-        d = {'class': self.__class__.__name__}
+        d = {"class": self.__class__.__name__}
         for i in range(3):
-            d[f'u{i}'] = self._unfold[i]
-        d['k'] = str(list(self._k_axes))
-        d['semi'] = str(self.semi).replace('\n', '\n  ')
-        d['surface'] = str(self.surface).replace('\n', '\n  ')
-        d['bz'] = str(self._options['bz']).replace('\n', '\n ')
-        d['trs'] = str(self._options['trs'])
-        return  ('{class}{{unfold: [{u0}, {u1}, {u2}],\n '
-                 'k-axes: {k}, trs: {trs},\n '
-                 'bz: {bz},\n '
-                 'semi-infinite:\n  {semi},\n '
-                 'surface:\n  {surface}\n}}').format(**d)
+            d[f"u{i}"] = self._unfold[i]
+        d["k"] = str(list(self._k_axes))
+        d["semi"] = str(self.semi).replace("\n", "\n  ")
+        d["surface"] = str(self.surface).replace("\n", "\n  ")
+        d["bz"] = str(self._options["bz"]).replace("\n", "\n ")
+        d["trs"] = str(self._options["trs"])
+        return  ("{class}{{unfold: [{u0}, {u1}, {u2}],\n "
+                 "k-axes: {k}, trs: {trs},\n "
+                 "bz: {bz},\n "
+                 "semi-infinite:\n  {semi},\n "
+                 "surface:\n  {surface}\n}}").format(**d)
 
     def set_options(self, **options):
         r""" Update options in the real-space self-energy
@@ -1366,21 +1366,21 @@ class RealSpaceSI(SelfEnergy):
         V_atoms = self.real_space_coupling(True)[1]
         self._calc = {
             # Used to calculate the real-space self-energy
-            'P0': P0.Pk,
-            'S0': P0.Sk,
+            "P0": P0.Pk,
+            "S0": P0.Sk,
             # Orbitals in the coupling atoms
-            'orbs': P0.a2o(V_atoms, True).reshape(-1, 1),
+            "orbs": P0.a2o(V_atoms, True).reshape(-1, 1),
         }
 
         # Update the BrillouinZone integration grid in case it isn't specified
-        if self._options['bz'] is None:
+        if self._options["bz"] is None:
             # Update the integration grid
             # Note this integration grid is based on the big system.
             sc = self.surface.sc * self._unfold
             rcell = fnorm(sc.rcell)[self._k_axes]
             nk = _a.onesi(3)
-            nk[self._k_axes] = np.ceil(self._options['dk'] * rcell).astype(np.int32)
-            self._options['bz'] = MonkhorstPack(sc, nk, trs=self._options['trs'])
+            nk[self._k_axes] = np.ceil(self._options["dk"] * rcell).astype(np.int32)
+            self._options["bz"] = MonkhorstPack(sc, nk, trs=self._options["trs"])
 
     def self_energy(self, E, k=(0, 0, 0), bulk=False, coupling=False, dtype=None, **kwargs):
         r""" Calculate real-space surface self-energy
@@ -1411,15 +1411,15 @@ class RealSpaceSI(SelfEnergy):
         if dtype is None:
             dtype = complex128
         if E.imag == 0:
-            E = E.real + 1j * self._options['eta']
+            E = E.real + 1j * self._options["eta"]
 
         # Calculate the real-space Green function
         G = self.green(E, k, dtype=dtype)
 
         if coupling:
-            orbs = self._calc['orbs']
+            orbs = self._calc["orbs"]
             iorbs = delete(_a.arangei(len(G)), orbs).reshape(-1, 1)
-            SeH = self._calc['S0'](k, dtype=dtype) * E - self._calc['P0'](k, dtype=dtype, **kwargs)
+            SeH = self._calc["S0"](k, dtype=dtype) * E - self._calc["P0"](k, dtype=dtype, **kwargs)
             if bulk:
                 return solve(G[orbs, orbs.T], eye(orbs.size, dtype=dtype) - dot(G[orbs, iorbs.T], SeH[iorbs, orbs.T].toarray()), True, True)
             return SeH[orbs, orbs.T].toarray() - solve(G[orbs, orbs.T], eye(orbs.size, dtype=dtype) - dot(G[orbs, iorbs.T], SeH[iorbs, orbs.T].toarray()), True, True)
@@ -1430,19 +1430,19 @@ class RealSpaceSI(SelfEnergy):
             # since comparing the two yields numerical differences on the order 1e-8 eV depending
             # on the size of the full matrix G.
 
-            #orbs = self._calc['orbs']
+            #orbs = self._calc["orbs"]
             #iorbs = _a.arangei(orbs.size).reshape(1, -1)
             #I = zeros([G.shape[0], orbs.size], dtype)
             # Set diagonal
             #I[orbs.ravel(), iorbs.ravel()] = 1.
             #if bulk:
             #    return solve(G, I, True, True)[orbs, iorbs]
-            #return (self._calc['S0'](k, dtype=dtype) * E - self._calc['P0'](k, dtype=dtype, **kwargs))[orbs, orbs.T].toarray() \
+            #return (self._calc["S0"](k, dtype=dtype) * E - self._calc["P0"](k, dtype=dtype, **kwargs))[orbs, orbs.T].toarray() \
             #    - solve(G, I, True, True)[orbs, iorbs]
 
         if bulk:
             return inv(G, True)
-        return (self._calc['S0'](k, dtype=dtype) * E - self._calc['P0'](k, dtype=dtype, **kwargs)).toarray() - inv(G, True)
+        return (self._calc["S0"](k, dtype=dtype) * E - self._calc["P0"](k, dtype=dtype, **kwargs)).toarray() - inv(G, True)
 
     def green(self, E, k=(0, 0, 0), dtype=None, **kwargs):
         r""" Calculate the real-space Green function
@@ -1467,19 +1467,19 @@ class RealSpaceSI(SelfEnergy):
         opt = self._options
 
         # Retrieve integration k-grid
-        bz = opt['bz']
+        bz = opt["bz"]
         try:
             # If the BZ implements TRS (MonkhorstPack) then force it
             trs = bz._trs >= 0
         except:
-            trs = opt['trs']
+            trs = opt["trs"]
 
         if dtype is None:
             dtype = complex128
 
         # Now we are to calculate the real-space self-energy
         if E.imag == 0:
-            E = E.real + 1j * opt['eta']
+            E = E.real + 1j * opt["eta"]
 
         # Used k-axes
         k_ax = self._k_axes
@@ -1489,9 +1489,9 @@ class RealSpaceSI(SelfEnergy):
         if is_k:
             axes = [self.semi.semi_inf] + k_ax.tolist()
             if np.any(k[axes] != 0.):
-                raise ValueError(f'{self.__class__.__name__}.green requires k-point to be zero along the integrated axes.')
+                raise ValueError(f"{self.__class__.__name__}.green requires k-point to be zero along the integrated axes.")
             if trs:
-                raise ValueError(f'{self.__class__.__name__}.green requires a k-point sampled Green function to not use time reversal symmetry.')
+                raise ValueError(f"{self.__class__.__name__}.green requires a k-point sampled Green function to not use time reversal symmetry.")
             # Shift k-points to get the correct k-point in the larger one.
             bz._k += k.reshape(1, 3)
 
@@ -1501,23 +1501,23 @@ class RealSpaceSI(SelfEnergy):
         M0 = self.surface
         M0Pk = M0.Pk
 
-        getrf = linalg_info('getrf', dtype)
-        getri = linalg_info('getri', dtype)
-        getri_lwork = linalg_info('getri_lwork', dtype)
+        getrf = linalg_info("getrf", dtype)
+        getri = linalg_info("getri", dtype)
+        getri_lwork = linalg_info("getri_lwork", dtype)
         lwork = int(1.01 * _compute_lwork(getri_lwork, M0.shape[0]))
         def inv(A):
             lu, piv, info = getrf(A, overwrite_a=True)
             if info == 0:
                 x, info = getri(lu, piv, lwork=lwork, overwrite_lu=True)
             if info != 0:
-                raise ValueError(self.__class__.__name__ + '.green could not compute the inverse.')
+                raise ValueError(f"{self.__class__.__name__}.green could not compute the inverse.")
             return x
 
         if M0.orthogonal:
             # Orthogonal *always* identity
             S0E = eye(len(M0), dtype=dtype) * E
             def _calc_green(k, dtype, surf_orbs, semi_bulk):
-                invG = S0E - M0Pk(k, dtype=dtype, format='array', **kwargs)
+                invG = S0E - M0Pk(k, dtype=dtype, format="array", **kwargs)
                 if semi_bulk:
                     invG[surf_orbs, surf_orbs.T] = SE(E, k, dtype=dtype, bulk=semi_bulk, **kwargs)
                 else:
@@ -1526,7 +1526,7 @@ class RealSpaceSI(SelfEnergy):
         else:
             M0Sk = M0.Sk
             def _calc_green(k, dtype, surf_orbs, semi_bulk):
-                invG = M0Sk(k, dtype=dtype, format='array') * E - M0Pk(k, dtype=dtype, format='array', **kwargs)
+                invG = M0Sk(k, dtype=dtype, format="array") * E - M0Pk(k, dtype=dtype, format="array", **kwargs)
                 if semi_bulk:
                     invG[surf_orbs, surf_orbs.T] = SE(E, k, dtype=dtype, bulk=semi_bulk, **kwargs)
                 else:
@@ -1552,7 +1552,7 @@ class RealSpaceSI(SelfEnergy):
         # calculate the Green function
         G = bz.apply.average(_func_bloch)(dtype=dtype,
                                           surf_orbs=self._surface_orbs,
-                                          semi_bulk=opt['semi_bulk'])
+                                          semi_bulk=opt["semi_bulk"])
 
         if is_k:
             # Restore Brillouin zone k-points
