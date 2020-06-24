@@ -1,6 +1,6 @@
 import os
 
-__all__ = ['ENV_VARS']
+__all__ = ["ENV_VARS", "register_env_var", "get_env_var"]
 
 ENV_VARS = {}
 

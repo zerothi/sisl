@@ -7,7 +7,7 @@ import numpy as np
 
 from .plotutils import modify_nested_dict, get_nested_key
 
-__all__ = ['InputField']
+__all__ = ["InputField"]
 
 
 class InputField:

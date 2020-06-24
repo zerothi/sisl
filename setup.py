@@ -492,7 +492,7 @@ metadata = dict(
          "stoolbox = sisl_toolbox.cli:stoolbox_cli",
          "ts_poisson = sisl_toolbox.transiesta.poisson.poisson_explicit:poisson_explicit_cli",
          "splot = sisl.viz.plotly.splot:splot",
-         "sgui = sisl.viz.plotly.GUI:sgui"]
+         "sgui = sisl.viz.plotly.gui:sgui"]
     },
     classifiers=CLASSIFIERS,
     platforms="any",

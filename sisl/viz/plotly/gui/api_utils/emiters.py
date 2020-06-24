@@ -1,6 +1,9 @@
 from flask_socketio import SocketIO, emit as real_emit
 from functools import wraps
 
+__all__ = ["emit", "emit_session", "emit_plot", "emit_loading_plot",
+                "emit_loading_plot", "emit_error", "emit_object"]
+
 
 def emit(*args, socketio=None, **kwargs):
 
@@ -11,14 +14,14 @@ def emit(*args, socketio=None, **kwargs):
 
 
 def emit_session(session_to_emit=None, broadcast=True, **kwargs):
-    '''
+    """
     Emits a session through the socket connection
 
     Parameters
     -----------
     session_to_emit: Session, optional
         The session you want to emit. If none is provided, it will try to find the global session
-    '''
+    """
 
     if session_to_emit is None:
         session_to_emit = session
@@ -27,7 +30,7 @@ def emit_session(session_to_emit=None, broadcast=True, **kwargs):
 
 
 def emit_plot(plot, session=None, broadcast=True, **kwargs):
-    '''
+    """
     Emits a plot through the socket connection
 
     Parameters
@@ -37,7 +40,7 @@ def emit_plot(plot, session=None, broadcast=True, **kwargs):
 
             It can be either its ID, to search for the plot in the current session, or
             an actual plot instance.
-    '''
+    """
 
     if isinstance(plot, str):
         plot = session.plot(plot)
@@ -46,7 +49,7 @@ def emit_plot(plot, session=None, broadcast=True, **kwargs):
 
 
 def emit_loading_plot(plot, broadcast=True, **kwargs):
-    '''
+    """
     Emits a message to inform that an action is being performed on this plot.
 
     This is useful to make the client know that their request is on its way to be fulfilled.
@@ -55,7 +58,7 @@ def emit_loading_plot(plot, broadcast=True, **kwargs):
     -----------
     plot: str or Plot
             It can be either a plot ID or an actual plot instance.
-    '''
+    """
 
     return emit("loading_plot", {"plot_id": plot if isinstance(plot, str) else plot.id}, broadcast=broadcast, **kwargs)
 
@@ -66,7 +69,7 @@ def emit_error(err, **kwargs):
 
 
 def emit_object(obj, *args, **kwargs):
-    '''
+    """
     Emits a sisl object (plot or session) to the GUI.
 
     Parameters
@@ -77,7 +80,7 @@ def emit_object(obj, *args, **kwargs):
             passed directly to the corresponding emiter.
     **kwargs:
             passed directly to the corresponding emiter.
-    '''
+    """
     from sisl.viz import Plot, Session
 
     if isinstance(obj, Plot):

@@ -1,4 +1,3 @@
-import os
 import shutil
 import traceback
 
@@ -20,6 +19,8 @@ from .api_utils import with_user_management, if_user_can, listen_to_users, \
 __DEBUG = False
 
 app = Flask("SISL GUI API")
+
+__all__ = ["SESSION", "set_session"]
 
 
 class CustomJSONEncoder(JSONEncoder):
@@ -46,7 +47,7 @@ if False:
     with_user_management(app)
 
 SOCKETIO = SocketIO(app, cors_allowed_origins="*",
-                    json=simplejson, manage_session=True, async_mode='threading')
+                    json=simplejson, manage_session=True, async_mode="threading")
 on = SOCKETIO.on
 
 if False:
@@ -62,8 +63,8 @@ def send_error(err):
     raise err
 
 
-@on('request_session')
-@if_user_can('see')
+@on("request_session")
+@if_user_can("see")
 def send_session(path = None):
     global SESSION
 
@@ -73,7 +74,7 @@ def send_session(path = None):
     emit_session(SESSION, broadcast = False)
 
 
-@on('apply_method_on_session')
+@on("apply_method_on_session")
 @if_user_can("edit")
 def apply_method(method_name, kwargs = {}, *args):
 
@@ -98,7 +99,7 @@ def apply_method(method_name, kwargs = {}, *args):
         emit(event_name, returns, {"method_name": method_name}, broadcast=False)
 
 
-@on('get_plot')
+@on("get_plot")
 @if_user_can("see")
 def retrieve_plot(plotID):
     if __DEBUG:
@@ -112,25 +113,25 @@ def retrieve_plot(plotID):
 def plot_uploaded_file(file_bytes, name):
 
     dirname = SESSION.setting("file_storage_dir")
-    if not os.path.exists(dirname):
-        os.mkdir(dirname)
+    if not dirname.exists():
+        dirname.mkdir()
 
-    file_name = os.path.join(dirname, name)
+    file_name = dirname / name
     with open(file_name, "wb") as fh:
         fh.write(file_bytes)
 
     # file_name = name
     # file_contents = {name: file_bytes}
 
-    plot = Plot(file_name)#, attrs_for_plot={"_file_contents": file_contents}, _debug=True) #
+    plot = Plot(str(file_name))#, attrs_for_plot={"_file_contents": file_contents}, _debug=True) #
     SESSION.autosync.add_plot(plot, SESSION.tabs[0]["id"])
 
     if not SESSION.setting("keep_uploaded"):
-        shutil.rmtree(dirname)
+        shutil.rmtree(str(dirname))
 
 
 def set_session(new_session, ret_old=False):
-    '''
+    """
     Binds a new session to the GUI.
 
     The old session is unbound from the GUI. If you want to keep it, store
@@ -153,7 +154,7 @@ def set_session(new_session, ret_old=False):
         and perform all the actions on it.
     Session
         the old session, only returned if `ret_old` is `True`
-    '''
+    """
     global SESSION
 
     old_session = SESSION
@@ -176,5 +177,5 @@ def run(host="localhost", port=4000, debug=False):
 
     SOCKETIO.run(app, debug=debug, host=host, port=port)
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     run()

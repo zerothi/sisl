@@ -13,7 +13,7 @@ from functools import wraps
 import plotly.express as px
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher
 
-__all__ = ['sx']
+__all__ = ["sx"]
 
 
 class WithSislManagement(AbstractDispatch):

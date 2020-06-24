@@ -15,7 +15,7 @@ from .plotutils import find_files, find_plotable_siles, call_method_if_present, 
 
 from .input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, Array1dInput
 
-__all__ = ['Session']
+__all__ = ["Session"]
 
 
 class Warehouse:

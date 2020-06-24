@@ -4,7 +4,7 @@ This file provides tools to handle plotability of objects
 
 from functools import wraps
 
-__all__ = ['register_plotable']
+__all__ = ["register_plotable"]
 
 
 class PlotEngine:

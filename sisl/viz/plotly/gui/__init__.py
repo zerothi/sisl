@@ -6,6 +6,8 @@ from .._user_customs import SESSION_FILE
 
 SESSION = None
 
+__all__ = ["SESSION", "launch"]
+
 
 def launch(only_api=False, api_kwargs=None, load_session=None, session_settings={}, session_cls=None, interactive=False):
     '''

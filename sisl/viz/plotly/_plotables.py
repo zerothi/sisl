@@ -19,7 +19,7 @@ from .plot import Plot
 
 from .._plotables import register_plotable
 
-__all__= ['register_plotly_plotable']
+__all__= ["register_plotly_plotable"]
 # -----------------------------------------------------
 #   Let's define the functions that will help us here
 # -----------------------------------------------------

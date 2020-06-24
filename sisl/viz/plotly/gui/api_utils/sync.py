@@ -1,6 +1,6 @@
-''' In this file we build the patches that will make the session
+""" In this file we build the patches that will make the session
 capable of updating the GUI automatically when an action is performed
-on it '''
+on it """
 
 from functools import wraps
 
@@ -8,9 +8,11 @@ from sisl._dispatcher import AbstractDispatch
 from ...plotutils import call_method_if_present
 from .emiters import emit_object
 
+__all__ = ["AutoSync", "Connected"]
+
 
 class AutoSync(AbstractDispatch):
-    '''
+    """
     Takes care of emiting all changes automatically to the GUI.
 
     You probably don't need to use it directly. Inheriting from the `Connected`
@@ -63,7 +65,7 @@ class AutoSync(AbstractDispatch):
     session.add_tab("Not sent automatically", emit=False)
 
     ```
-    '''
+    """
 
     def __init__(self, obj):
 
@@ -91,7 +93,7 @@ class AutoSync(AbstractDispatch):
 
 
 class Connected:
-    '''
+    """
     Helps connecting objects to the graphical interface.
 
     Objects that inherit from this class have the possibility
@@ -113,7 +115,7 @@ class Connected:
     session.autosync.add_tab("Just a new tab")
     # This change will be automatically transmitted to all socket listeners.
     ```
-    '''
+    """
 
     def __init__(self, *args, socketio=None, **kwargs):
 
@@ -132,7 +134,7 @@ class Connected:
 
     @property
     def autosync(self):
-        '''
+        """
         A super-powered version of the object that syncs automatically through
         the socketio channel after each method call.
 
@@ -142,11 +144,11 @@ class Connected:
         session.autosync.add_tab("Just a new tab")
         # This change will be automatically transmitted to all socket listeners.
         ```
-        '''
+        """
         return AutoSync(self)
 
     def emit(self, socketio=None):
-        '''
+        """
         Emits the object through a socketio channel.
 
         Parameters
@@ -157,7 +159,7 @@ class Connected:
             NOTE: Most certainly YOU DON'T NEED TO PROVIDE A SOCKETIO, if your object
             has a socketio already associated to it, the object will be sent through 
             that channel.
-        '''
+        """
 
         if socketio is None:
             socketio = self.socketio

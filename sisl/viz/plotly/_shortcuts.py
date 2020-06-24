@@ -1,6 +1,8 @@
 from functools import partial
 import numpy as np
 
+__all__ = ["ShortCutable"]
+
 
 class ShortCutable:
     """

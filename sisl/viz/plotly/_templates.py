@@ -6,8 +6,8 @@ import itertools
 import plotly.io as pio
 import plotly.graph_objs as go
 
-__all__ = ['get_plotly_template', 'add_plotly_template',
-    'set_default_plotly_template', 'available_plotly_templates']
+__all__ = ["get_plotly_template", "add_plotly_template",
+    "set_default_plotly_template", "available_plotly_templates"]
 
 
 def get_plotly_template(name):

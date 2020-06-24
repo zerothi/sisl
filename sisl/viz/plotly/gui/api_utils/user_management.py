@@ -4,13 +4,15 @@ from flask_login import LoginManager, UserMixin, current_user, login_user, \
 from flask_session import Session
 from flask_socketio import emit
 
+__all__ = ["User", "if_user_can", "with_user_management", "listen_to_users"]
+
 __WITH_USERS__ = False
 
 
 class User(UserMixin):
-    '''
+    """
     Class used for users that are accessing the session through the GUI.
-    '''
+    """
 
     def __init__(self, id=None):
         self.id = id
@@ -25,7 +27,7 @@ class User(UserMixin):
         }
 
     def change_permissions(self, new_permissions):
-        '''
+        """
         Changes the permissions of this user.
 
         This method can be executed only by:
@@ -37,7 +39,7 @@ class User(UserMixin):
         -----------
         new_permissions: dict
             A dictionary containing new permissions that will overwrite the old ones
-        '''
+        """
 
         # If the current_user environment variable is not present, this means the
         # method is being executed from python directly
@@ -47,7 +49,7 @@ class User(UserMixin):
             raise Exception("You don't have the rights to change user permissions.")
 
     def has_permissions(self, *perms):
-        '''
+        """
         Checks if the user has the provided permissions.
 
         Parameters
@@ -59,7 +61,7 @@ class User(UserMixin):
         ---------
         boolean
             only True if it fulfills ALL the requested permissions.
-        '''
+        """
         for perm in perms:
             if not self.permissions[perm]:
                 return False
@@ -68,7 +70,7 @@ class User(UserMixin):
 
 
 def if_user_can(*perms):
-    '''
+    """
     Wrapper that restricts actions to only users with the required permissions.
 
     Note that the permissions of each user are stored under user.permissions.
@@ -90,7 +92,7 @@ def if_user_can(*perms):
     def destroy(*args, **kwargs):
         # All the code here will only be executed if the user has permission to use nuclear weapons
     ```
-    '''
+    """
 
     def with_permissions_check(f):
 
@@ -126,14 +128,14 @@ def with_user_management(app):
 
 
 def listen_to_users(socketio_on):
-    '''
+    """
     Sets the necessary socketio event listeners to manage users.
 
     Parameters
     ----------
     socketio_on: socketio.on
         The function to be used to listen to socketio events
-    '''
+    """
 
     @socketio_on('login')
     def login(username):

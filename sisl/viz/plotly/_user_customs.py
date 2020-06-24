@@ -5,8 +5,8 @@ import importlib
 
 from .._env_vars import register_env_var
 
-__all__ = ['import_user_presets', 'import_user_plots',
-    'import_user_sessions', 'import_user_plugins']
+__all__ = ["import_user_presets", "import_user_plots",
+    "import_user_sessions", "import_user_plugins"]
 
 # Define the folder where the user will store their stuff
 DEFAULT_USER_CUSTOM_FOLDER = Path.home() / ".sisl"

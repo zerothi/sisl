@@ -1,4 +1,4 @@
-__all__ = ['add_presets', 'get_preset']
+__all__ = ["add_presets", "get_preset"]
 
 PRESETS = {
 
