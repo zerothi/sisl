@@ -166,7 +166,7 @@ def splot():
     if args.shortcuts:
         print("Applying shortcuts...")
         if getattr(args, "animated", False):
-            plots = plot.childPlots
+            plots = plot.child_plots
         else:
             plots = [plot]
         for pt in plots:

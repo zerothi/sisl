@@ -411,7 +411,7 @@ class Plot(ShortCutable, Configurable, Connected):
 
             If it is a function, it should accept `self` (the animation object) and return a list of strings
             with the frame names. Note that you can access the plot instance responsible for each frame under
-            `self.childPlots`. The function will be run each time the figure is generated, so in this way your
+            `self.child_plots`. The function will be run each time the figure is generated, so in this way your
             frame names will be dynamic.
 
             FRAME NAMES SHOULD BE UNIQUE, OTHERWISE THE ANIMATION WILL HAVE A WEIRD BEHAVIOR.
@@ -985,7 +985,7 @@ class Plot(ShortCutable, Configurable, Connected):
 
                         if as_animation:
                             new_plot = self.clone()
-                            pt.add_childplots(new_plot)
+                            pt.add_child_plots(new_plot)
                             pt.get_figure()
 
                         if clear_previous and fig_widget is None:
@@ -1157,7 +1157,7 @@ class Plot(ShortCutable, Configurable, Connected):
         Therefore, there is nothing left to do here.
 
         HOWEVER, `MultiplePlot` and its child classes overwrite this method and actually make use of it,
-        because they need to collect the data from all their childplots and build the figure.
+        because they need to collect the data from all their child_plots and build the figure.
         
         This method can be applied after updating the data so that the plot object is refreshed.
 
@@ -1364,8 +1364,8 @@ class Plot(ShortCutable, Configurable, Connected):
             - "subplots": The layout is divided in different subplots.
             - "animation": Each plot is converted into the frame of an animation.
         extend_multiples: boolean, optional
-            if True, if `MultiplePlot`s are passed, they are splitted into their childplots, so that the result
-            is the merge of its childplots with the rest.
+            if True, if `MultiplePlot`s are passed, they are splitted into their child_plots, so that the result
+            is the merge of its child_plots with the rest.
             If False, a `MultiplePlot` is treated as a solid unit.
         kwargs:
             extra arguments that are directly passed to `MultiplePlot`, `Subplots`
@@ -1381,11 +1381,11 @@ class Plot(ShortCutable, Configurable, Connected):
         if not isinstance(others, (list, tuple, np.ndarray)):
             others = [others]
 
-        childPlots = [self, *others]
+        child_plots = [self, *others]
         if extend_multiples:
-            childPlots = [[pt] if not isinstance(pt, MultiplePlot) else pt.childPlots for pt in childPlots]
+            child_plots = [[pt] if not isinstance(pt, MultiplePlot) else pt.child_plots for pt in child_plots]
             # Flatten the list
-            childPlots = [pt for plots in childPlots for pt in plots]
+            child_plots = [pt for plots in child_plots for pt in plots]
 
         PlotClass = {
             "multiple": MultiplePlot,
@@ -1393,7 +1393,7 @@ class Plot(ShortCutable, Configurable, Connected):
             "animation": Animation
         }[to]
         
-        return PlotClass(plots=childPlots, **kwargs)
+        return PlotClass(plots=child_plots, **kwargs)
     
     def group_legend(self, by=None, names=None, show_all=False, extra_updates=None, **kwargs):
         """
@@ -1882,12 +1882,12 @@ class MultiplePlot(Plot):
     
     def __getitem__(self, i):
 
-        return self.childPlots[i]
+        return self.child_plots[i]
     
     @property
-    def _attrs_for_childplots(self):
+    def _attrs_for_child_plots(self):
         """
-        Returns all the attributes that its childplots should have
+        Returns all the attributes that its child_plots should have
         """
 
         return {
@@ -1935,7 +1935,7 @@ class MultiplePlot(Plot):
             plots = init_multiple_plots(
                 self._plotClasses, 
                 kwargsList = [
-                    {**template_settings, **kwargs, "attrs_for_plot": self._attrs_for_childplots, "only_init": SINGLE_CLASS and try_sharing} 
+                    {**template_settings, **kwargs, "attrs_for_plot": self._attrs_for_child_plots, "only_init": SINGLE_CLASS and try_sharing} 
                     for kwargs in self._getInitKwargsList()
                 ],
                 serial=SINGLE_CLASS and try_sharing
@@ -2008,14 +2008,14 @@ class MultiplePlot(Plot):
 
     def set_child_plots(self, plots, keep=False):
         """
-        Sets the childplots of a multiple plot
+        Sets the child_plots of a multiple plot
 
         Parameters
         --------
         plots: array-like of sisl.viz.Plot or plotly Figure
-            the plots that should be set as childplots for the animation. 
+            the plots that should be set as child_plots for the animation. 
         keep: boolean, optional
-            whether the existing childplots should be kept.
+            whether the existing child_plots should be kept.
 
             If `True`, `plots` is added after them.
         """
@@ -2025,16 +2025,16 @@ class MultiplePlot(Plot):
 
         for plot in plots:
 
-            for key, val in self._attrs_for_childplots.items():
+            for key, val in self._attrs_for_child_plots.items():
                 setattr(plot, key, val)
 
-        self.childPlots = plots if not keep else [*self.childPlots, *plots]
+        self.child_plots = plots if not keep else [*self.child_plots, *plots]
 
         return self
     
-    def add_childplots(self, *plots):
+    def add_child_plots(self, *plots):
         """
-        Append childplots to the existing ones.
+        Append child_plots to the existing ones.
 
         Parameters
         -----------
@@ -2046,7 +2046,7 @@ class MultiplePlot(Plot):
     
     def insert_childplot(self, index, plot):
         """
-        Inserts a plot in a given position of the childplots list
+        Inserts a plot in a given position of the child_plots list
 
         Parameters
         ----------
@@ -2059,13 +2059,13 @@ class MultiplePlot(Plot):
         if isinstance(plot, go.Figure):
             plot = Plot.from_plotly(plot)
         
-        self.childPlots.insert(index, plot)
+        self.child_plots.insert(index, plot)
            
     def shared_attr(self, key):
         """
         Gets an attribute that is located in the shared storage of the MultiplePlot.
 
-        This method will be given to all childplots so that they can retreive the shared
+        This method will be given to all child_plots so that they can retreive the shared
         attributes. This is done in `set_child_plots`.
 
         Parameters
@@ -2128,7 +2128,7 @@ class MultiplePlot(Plot):
 
         else:
             data = []
-            for plot in self.childPlots:
+            for plot in self.child_plots:
                 data = [*data, *plot.data]
 
             self.data = data
@@ -2240,7 +2240,7 @@ class Animation(MultiplePlot):
 
         # Get the names for each frame
         frame_names = []
-        for i, plot in enumerate(self.childPlots):
+        for i, plot in enumerate(self.child_plots):
             try:
                 frame_name = self._get_frame_names(i)
             except Exception:
@@ -2250,7 +2250,7 @@ class Animation(MultiplePlot):
         ani_method = self.setting('ani_method')
         if ani_method is None:
             same_traces = np.unique(
-                [len(plot.data) for plot in self.childPlots]
+                [len(plot.data) for plot in self.child_plots]
             ).shape[0] == 1
             
             ani_method = "animate" if same_traces else "update"
@@ -2297,7 +2297,7 @@ class Animation(MultiplePlot):
         """
 
         # Add all the traces
-        for i, (frame_name, plot) in enumerate(zip(frame_names, self.childPlots)):
+        for i, (frame_name, plot) in enumerate(zip(frame_names, self.child_plots)):
 
             visible = i == 0
 
@@ -2330,12 +2330,12 @@ class Animation(MultiplePlot):
         """
 
         # Data will actually only be the first frame
-        self.data = self.childPlots[0].data
+        self.data = self.child_plots[0].data
 
         frames = []
         
-        maxN = np.max([len(plot.data) for plot in self.childPlots])
-        for frame_name, plot in zip(frame_names, self.childPlots):
+        maxN = np.max([len(plot.data) for plot in self.child_plots])
+        for frame_name, plot in zip(frame_names, self.child_plots):
 
             data = plot.data
             nTraces = len(data)
@@ -2446,7 +2446,7 @@ class Animation(MultiplePlot):
 
         # Basically we just need to get the plots for each frame and then transpose it
         # so that we have the "frames for each plot"
-        new_animations = np.array([frame.childPlots for frame in self]).T
+        new_animations = np.array([frame.child_plots for frame in self]).T
 
         return [ Animation(plots=plots) for plots in new_animations ]
 
@@ -2526,7 +2526,7 @@ class SubPlots(MultiplePlot):
         Builds the subplots layout from the child plots' data.
         """
 
-        nplots = len(self.childPlots)
+        nplots = len(self.child_plots)
         rows = self.setting('rows')
         cols = self.setting('cols')
         if rows is None and cols is None:
@@ -2561,7 +2561,7 @@ class SubPlots(MultiplePlot):
         self.figure = make_subplots(**{"rows": rows, "cols": cols, **kwargs})
 
         # Start assigning each plot to a position of the layout
-        for (row, col), plot in zip(itertools.product(range(1, rows + 1), range(1, cols + 1)), self.childPlots):
+        for (row, col), plot in zip(itertools.product(range(1, rows + 1), range(1, cols + 1)), self.child_plots):
 
             ntraces = len(plot.data)
 

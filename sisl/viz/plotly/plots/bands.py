@@ -256,7 +256,7 @@ class BandsPlot(Plot):
 
         def _get_frame_names(self):
 
-            return [os.path.basename( childPlot.setting("bands_file")) for childPlot in self.childPlots]
+            return [os.path.basename( childPlot.setting("bands_file")) for childPlot in self.child_plots]
 
         return cls.animated("bands_file", bands_files, frame_names = _get_frame_names, wdir = wdir, **kwargs)
 

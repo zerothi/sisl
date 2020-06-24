@@ -194,7 +194,7 @@ class PdosPlot(Plot):
 
         def _get_frame_names(self):
 
-            return [os.path.basename( childPlot.setting("pdos_file")) for childPlot in self.childPlots]
+            return [os.path.basename( childPlot.setting("pdos_file")) for childPlot in self.child_plots]
 
         return PdosPlot.animated("pdos_file", pdos_files, frame_names = _get_frame_names, wdir = wdir, **kwargs)
     
