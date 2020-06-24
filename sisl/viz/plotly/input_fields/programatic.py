@@ -1,5 +1,6 @@
 from .._input_field import InputField
 
+
 class ProgramaticInput(InputField):
 
     _type="programatic"
@@ -9,6 +10,7 @@ class ProgramaticInput(InputField):
         #help = f"only meant to be provided programatically. {help}"
 
         super().__init__(*args, help=help, **kwargs)
+
 
 class FunctionInput(ProgramaticInput):
     '''

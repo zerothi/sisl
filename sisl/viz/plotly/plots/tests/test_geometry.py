@@ -17,10 +17,11 @@ from sisl.viz.plotly.plots.tests.get_files import from_files
 #      Build a generic tester for the geometry plot
 # ------------------------------------------------------------
 
+
 class GeometryPlotTester:
 
     plot = None
-    
+
     def test_1d(self):
         # Remains untested for now as there is no clear behavior
         pass
@@ -67,10 +68,10 @@ class GeometryPlotTester:
 
         plot = self.plot
 
-        plot.update_settings(axes=[0,1,2], cell='box', bonds=True, atom=None)
+        plot.update_settings(axes=[0, 1, 2], cell='box', bonds=True, atom=None)
 
         # Check that the first trace is 3d
-        assert np.all([hasattr(plot.data[0], ax ) for ax in ('x', 'y', 'z')])
+        assert np.all([hasattr(plot.data[0], ax) for ax in ('x', 'y', 'z')])
 
         # Check that there is a cell and we can toggle it
         with_box_cell = len(plot.data)
@@ -103,6 +104,7 @@ class GeometryPlotTester:
 # ------------------------------------------------------------
 #              Test it with a sisl geometry
 # ------------------------------------------------------------
+
 
 class TestSislGeometryPlot(GeometryPlotTester):
 

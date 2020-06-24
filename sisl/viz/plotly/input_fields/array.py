@@ -6,7 +6,7 @@ from .._input_field import InputField
 class ArrayInput(InputField):
 
     dtype = "array-like"
-    
+
     _type = 'array'
 
     _default = {
@@ -18,7 +18,7 @@ class ArrayInput(InputField):
         # If the shape of the array was not provided, register it
         # This is important because otherwise when the setting is set to None
         # there is no way of knowing how to display the input field.
-        # For variable shapes, a different input (ListInput) should be used 
+        # For variable shapes, a different input (ListInput) should be used
         try:
             kwargs["params"]["shape"]
         except:
@@ -31,11 +31,12 @@ class ArrayInput(InputField):
 
         super().__init__(*args, **kwargs)
 
+
 class Array1dInput(ArrayInput):
 
     _type = 'vector'
 
+
 class Array2dInput(ArrayInput):
 
     _type = "matrix"
-    

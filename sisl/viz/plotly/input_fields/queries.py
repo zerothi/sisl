@@ -6,6 +6,7 @@ from .._input_field import InputField
 from .dropdown import AtomSelect, SpeciesSelect, OrbitalsNameSelect, SpinSelect
 from ..configurable import Configurable
 
+
 class QueriesInput(InputField):
 
     '''
@@ -16,7 +17,7 @@ class QueriesInput(InputField):
     '''
 
     dtype = "array-like of dict"
-    
+
     _type = 'queries'
 
     _default = {
@@ -32,15 +33,14 @@ class QueriesInput(InputField):
         }
 
         super().__init__(*args, **kwargs, inputFieldAttrs = inputFieldAttrs)
-    
-    def get_query_param(self, key, **kwargs):
 
+    def get_query_param(self, key, **kwargs):
         '''
         Gets the parameter info for a given key. It uses the Configurable.get_param method.
         '''
 
         return Configurable.get_param(self, key, paramsExtractor = lambda obj: obj.inputField["queryForm"], **kwargs)
-    
+
     def get_param(self, *args, **kwargs):
         '''
         Just a clone of getQueryParam.
@@ -51,7 +51,6 @@ class QueriesInput(InputField):
         return self.get_query_param(*args, **kwargs)
 
     def modify_query_param(self, key, *args, **kwargs):
-
         '''
         Uses Configurable.modify_param to modify a parameter inside QueryForm
         '''
@@ -76,7 +75,7 @@ class QueriesInput(InputField):
             **kwargs,
             **query
         }
-    
+
     def filter_df(self, df, query, key_to_cols, raise_not_active=False):
         '''
         Filters a dataframe according to a query
@@ -99,7 +98,7 @@ class QueriesInput(InputField):
         if raise_not_active:
             if not group["active"]:
                 raise Exception(f"Query {query} is not active and you are trying to use it")
-        
+
         query_df = df
 
         cond = None
@@ -130,7 +129,7 @@ class QueriesInput(InputField):
                 sanitized_form.append(built_field)
             else:
                 sanitized_form.append(field)
-            
+
         return sanitized_form
 
     def __getitem__(self, key):
@@ -138,8 +137,9 @@ class QueriesInput(InputField):
         for field in self.inputField['queryForm']:
             if field.key == key:
                 return field
-        
+
         return super().__getitem__(key)
+
 
 class OrbitalQueries(QueriesInput):
     '''
@@ -165,7 +165,7 @@ class OrbitalQueries(QueriesInput):
             orb_props["atom"].append(at)
             orb_props["species"].append(atom.symbol)
             orb_props["orbital name"].append(orb.name())
-        
+
         self.orb_filtering_df = pd.DataFrame(orb_props)
 
     def update_options(self, geom, polarized=False):
@@ -175,7 +175,7 @@ class OrbitalQueries(QueriesInput):
                 self.get_query_param(key).update_options(geom)
             except KeyError:
                 pass
-        
+
         try:
             self.get_query_param('spin').update_options(polarized)
         except KeyError:
@@ -194,7 +194,7 @@ class OrbitalQueries(QueriesInput):
         )
 
         return filtered_df.index
-    
+
     def _generate_queries(self, on, only=None, exclude=None, clean=True, query_gen=None, **kwargs):
         '''
         Automatically generates queries based on the current options.
@@ -215,7 +215,7 @@ class OrbitalQueries(QueriesInput):
             This may be useful, for example, to give each request a color, or a custom name.
         **kwargs:
             keyword arguments that go directly to each request.
-            
+
             This is useful to add extra filters. For example:
             `plot._generate_requests(on="orbitals", species=["C"])`
             will split the PDOS on the different orbitals but will take
@@ -233,7 +233,7 @@ class OrbitalQueries(QueriesInput):
         if on == "spin" and len(options) == 0:
             options = [{"label": 0, "value": 0}]
 
-        # If no function to modify requests was provided we are just going to generate a 
+        # If no function to modify requests was provided we are just going to generate a
         # dummy one that just returns the request as it gets it
         if query_gen is None:
             def query_gen(**kwargs):
@@ -247,9 +247,3 @@ class OrbitalQueries(QueriesInput):
         ]
 
         return requests
-
-
-
-
-        
-

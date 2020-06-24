@@ -17,6 +17,7 @@ from sisl.viz.plotly.plots.tests.get_files import from_files
 #         Build a generic tester for the bands plot
 # ------------------------------------------------------------
 
+
 class BandsPlotTester:
 
     plot = None
@@ -38,7 +39,7 @@ class BandsPlotTester:
         assert isinstance(bands, DataArray)
         assert bands.dims == ('k', 'spin', 'band')
         assert bands.shape == self.bands_shape
-    
+
     def test_bands_in_figure(self):
 
         # Check if all bands are plotted
@@ -65,6 +66,7 @@ class BandsPlotTester:
 # ------------------------------------------------------------
 bands_file = from_files("SrTiO3.bands")
 
+
 class TestBandsSiestaOutput(BandsPlotTester):
 
     plot = BandsPlot(bands_file=bands_file)
@@ -80,7 +82,8 @@ class TestBandsSiestaOutput(BandsPlotTester):
 gr = sisl.geom.graphene()
 H = sisl.Hamiltonian(gr)
 H.construct([(0.1, 1.44), (0, -2.7)])
-bz = sisl.BandStructure(H, [[0,0,0], [2/3, 1/3, 0], [1/2, 0, 0]], 9, ["Gamma", "M", "K"])
+bz = sisl.BandStructure(H, [[0, 0, 0], [2/3, 1/3, 0], [1/2, 0, 0]], 9, ["Gamma", "M", "K"])
+
 
 class TestBandsSislHamiltonian(BandsPlotTester):
 
@@ -92,7 +95,8 @@ class TestBandsSislHamiltonian(BandsPlotTester):
 
 path = [{"active": True, "x": x, "y": y, "z": z, "divisions": 3,
             "tick": tick} for tick, (x, y, z) in zip(["Gamma", "M", "K"], [[0, 0, 0], [2/3, 1/3, 0], [1/2, 0, 0]])]
-            
+
+
 class TestBandsPathSislHamiltonian(TestBandsSislHamiltonian):
 
     plot = BandsPlot(H=H, path=path)

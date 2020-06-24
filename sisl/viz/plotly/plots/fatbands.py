@@ -13,6 +13,7 @@ from ..plotutils import random_color
 from ..input_fields import OrbitalQueries, TextInput, DropdownInput, SwitchInput, ColorPicker, FloatInput, FilePathInput
 from ..input_fields.range import ErangeInput
 
+
 class FatbandsPlot(BandsPlot):
     """
     Colorful representation of orbital weights in bands.
@@ -154,15 +155,15 @@ class FatbandsPlot(BandsPlot):
             wfsx_file = bands_file.with_suffix(bands_file.suffix + ".WFSX")
 
         # We will need the overlap matrix from the hamiltonian to get the correct
-        # weights. 
-        # If there is no root_fdf we will try to guess it from bands_file 
+        # weights.
+        # If there is no root_fdf we will try to guess it from bands_file
         root_fdf = self.setting("root_fdf")
         if root_fdf is None and not hasattr(self, "H"):
             possible_fdf = bands_file.with_suffix(".fdf")
             print(f"We are assuming that the fdf associated to {bands_file} is {possible_fdf}."+
             ' If it is not, please provide a "root_fdf" by using the update_settings method.')
             self.set_files(root_fdf=possible_fdf)
-        
+
         self.setup_hamiltonian()
 
         # If the wfsx doesn't exist, we will not even bother to read the bands
@@ -207,7 +208,7 @@ class FatbandsPlot(BandsPlot):
 
         self.weights = []
 
-        # Define the function that will "catch" each eigenstate and 
+        # Define the function that will "catch" each eigenstate and
         # build the weights array. See BandsPlot._read_from_H to understand where
         # this will go exactly
         def _weights_from_eigenstate(eigenstate, plot):
@@ -227,7 +228,7 @@ class FatbandsPlot(BandsPlot):
         self._set_group_options()
         if not bands_read:
             raise err
-        
+
         # Then we just convert the weights to a DataArray
         self.weights = np.array(self.weights).real
 
@@ -240,7 +241,7 @@ class FatbandsPlot(BandsPlot):
             },
             dims=('k', 'band', 'orb')
         )
-    
+
     def _set_group_options(self):
 
         # Try to find a geometry if there isn't already one
@@ -250,7 +251,7 @@ class FatbandsPlot(BandsPlot):
             band_struct = self.setting("band_structure")
             if band_struct is not None:
                 self.geometry = band_struct.parent.geometry
-        
+
         self.get_param('groups').update_options(self.geometry)
 
     def _set_data(self):
@@ -261,7 +262,7 @@ class FatbandsPlot(BandsPlot):
             # Avoid bands being displayed in the legend individually (it would be a mess)
             add_band_trace_data=lambda band, plot: {'showlegend': False}
         )
-    
+
     def _draw_fatbands(self):
 
         E0 = self.setting('E0')
@@ -270,18 +271,18 @@ class FatbandsPlot(BandsPlot):
         # Remember that the BandsPlot will have updated this setting accordingly,
         # so it's safe to use it directly
         plotted_bands = self.setting("bands_range")
-        
+
         # If we don't have weights for all plotted bands (specially possible if we
         # have read from the WFSX file), reduce the range of the bands. Note that this
         # does not affect the bands displayed, just the "fatbands".
         plotted_bands[0] = max(self.weights.band.values.min(), plotted_bands[0])
         plotted_bands[1] = min(self.weights.band.values.max(), plotted_bands[1])
-        
+
         #Get the bands that matter (spin polarization currently not implemented)
         plot_eigvals = self.bands.sel(band=np.arange(*plotted_bands), spin=0) - E0
         # Get the weights that matter
         plot_weights = self.weights.sel(band=np.arange(*plotted_bands))
-        
+
         # Get the groups of orbitals whose bands are requested
         groups = self.setting('groups')
 
@@ -310,7 +311,7 @@ class FatbandsPlot(BandsPlot):
             scale = 1
 
         # Let's plot each group of orbitals as an area that surrounds each band
-        for i ,group in enumerate(groups):
+        for i, group in enumerate(groups):
 
             group = groups_param.complete_query(group, name=f"Group {i+1}")
 
@@ -319,7 +320,7 @@ class FatbandsPlot(BandsPlot):
                 continue
 
             orb = groups_param.get_orbitals(group)
-            
+
             weights = plot_weights.sel(orb=orb)
             if group["normalize"]:
                 weights = weights.mean("orb")
@@ -370,7 +371,7 @@ class FatbandsPlot(BandsPlot):
             will just be repeated.
         **kwargs:
             keyword arguments that go directly to each request.
-            
+
             This is useful to add extra filters. For example:
             `plot.split_groups(on="orbitals", species=["C"])`
             will split the PDOS on the different orbitals but will take

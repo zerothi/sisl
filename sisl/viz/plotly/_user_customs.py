@@ -22,6 +22,7 @@ USER_CUSTOM_FOLDER = Path(USER_CUSTOM_FOLDER)
 # in USER_CUSTOM_FOLDER
 sys.path.append(str(USER_CUSTOM_FOLDER.resolve()))
 
+
 def import_user_extension(extension_file):
     """
     Basis for importing users extensions.
@@ -46,6 +47,7 @@ PRESETS_FILE = USER_CUSTOM_FOLDER / PRESETS_FILE_NAME
 # We will look for presets under this variable
 PRESETS_VARIABLE = "presets"
 
+
 def import_user_presets():
     """
     Imports the users presets.
@@ -58,7 +60,7 @@ def import_user_presets():
 
     module = import_user_extension(PRESETS_FILE_NAME)
 
-    # Add these presets 
+    # Add these presets
     if module is not None:
         if PRESETS_VARIABLE in vars(module):
             add_presets(**vars(module)[PRESETS_VARIABLE])
@@ -76,6 +78,7 @@ PLOTS_FILE_NAME = "user_plots.py"
 PLOTS_FILE = USER_CUSTOM_FOLDER / PLOTS_FILE_NAME
 # We will look for plots under this variable
 PLOTS_VARIABLE = "plots"
+
 
 def import_user_plots():
     """
@@ -97,6 +100,7 @@ SESSION_FILE = USER_CUSTOM_FOLDER / SESSION_FILE_NAME
 # We will look for sessions under this variable
 SESSION_VARIABLE = "sessions"
 
+
 def import_user_sessions():
     """
     Imports the user's sessions.
@@ -116,6 +120,7 @@ def import_user_sessions():
 # that sisl is imported, it can automatically import all their utilities that they
 # developed to work with sisl
 PLUGINS_FILE_NAME = "user_plugins.py"
+
 
 def import_user_plugins():
     """

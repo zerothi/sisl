@@ -1,5 +1,6 @@
 from .._input_field import InputField
 
+
 class NumericInput(InputField):
 
     _type = 'number'
@@ -12,6 +13,7 @@ class NumericInput(InputField):
         }
     }
 
+
 class IntegerInput(NumericInput):
 
     dtype = int
@@ -23,6 +25,7 @@ class IntegerInput(NumericInput):
             "step": 1
         }
     }
+
 
 class FloatInput(NumericInput):
 

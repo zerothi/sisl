@@ -8,6 +8,7 @@ from sisl._dispatcher import AbstractDispatch
 from ...plotutils import call_method_if_present
 from .emiters import emit_object
 
+
 class AutoSync(AbstractDispatch):
     '''
     Takes care of emiting all changes automatically to the GUI.
@@ -19,7 +20,7 @@ class AutoSync(AbstractDispatch):
     AutoSync works by wrapping all methods of the object, in a way that after
     their execution, the updated session is sent to the front end of the
     graphical interface. 
-    
+
     For this purpose, the wrapped object needs to have an emit method, as this is
     what AutoSync triggers after the method call. Again, the Connected class 
     automatically provides an emit method that is suitable for Session and Plot
@@ -63,6 +64,7 @@ class AutoSync(AbstractDispatch):
 
     ```
     '''
+
     def __init__(self, obj):
 
         self.autosync_enabled = True
@@ -84,8 +86,9 @@ class AutoSync(AbstractDispatch):
                 self._obj.emit()
 
             return ret
-        
+
         return with_changes_emitted
+
 
 class Connected:
     '''
@@ -141,7 +144,7 @@ class Connected:
         ```
         '''
         return AutoSync(self)
-    
+
     def emit(self, socketio=None):
         '''
         Emits the object through a socketio channel.
@@ -158,8 +161,7 @@ class Connected:
 
         if socketio is None:
             socketio = self.socketio
-        
+
         emit_object(self, socketio=socketio)
 
         return self
-

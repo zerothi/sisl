@@ -17,6 +17,7 @@ from sisl.viz import PdosPlot
 #         Build a generic tester for the bands plot
 # ------------------------------------------------------------
 
+
 class PdosPlotTester:
 
     plot = None
@@ -45,7 +46,7 @@ class PdosPlotTester:
         expected_splits = {
             "species": (len(self.species), self.species[0]),
             "atoms": (self.na, 1),
-            "orbitals":(len(unique_orbs), unique_orbs[0]),
+            "orbitals": (len(unique_orbs), unique_orbs[0]),
             "spin": (self.n_spin, None)
         }
 
@@ -54,9 +55,9 @@ class PdosPlotTester:
             err_message = f'Error splitting DOS based on {on}'
             assert len(split_DOS(on=on).data) == n, err_message
             if toggle_val is not None:
-                assert len(split_DOS(on=on, only=[toggle_val]).data) == 1 , err_message
+                assert len(split_DOS(on=on, only=[toggle_val]).data) == 1, err_message
                 assert len(split_DOS(on=on, exclude=[toggle_val]).data) == n - 1, err_message
-    
+
     def test_request_management(self):
 
         plot = self.plot
@@ -77,7 +78,7 @@ class PdosPlotTester:
         if species_no >= 2:
             plot.merge_requests(species_no - 1, species_no - 2)
             assert len(plot.data) == species_no - 1
-        
+
         # And try to remove one request
         prev = len(plot.data)
         assert len(plot.remove_requests(0).data) == prev - 1
@@ -87,6 +88,7 @@ class PdosPlotTester:
 # ------------------------------------------------------------
 
 pdos_file = from_files("SrTiO3.PDOS")
+
 
 class TestPDOSSiestaOutput(PdosPlotTester):
 
@@ -104,11 +106,11 @@ gr = sisl.geom.graphene()
 H = sisl.Hamiltonian(gr)
 H.construct([(0.1, 1.44), (0, -2.7)])
 
+
 class TestPDOSSislHamiltonian(PdosPlotTester):
 
-    plot = PdosPlot(H=H, Erange=[-5,5])
+    plot = PdosPlot(H=H, Erange=[-5, 5])
     na = 2
     no = 2
     n_spin = 1
     species = ('C',)
-    

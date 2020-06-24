@@ -19,6 +19,7 @@ from sisl.viz.plotly.plots.tests.get_files import from_files
 #         Build a generic tester for the bands plot
 # ------------------------------------------------------------
 
+
 class GridPlotTester:
 
     plot = None
@@ -31,15 +32,14 @@ class GridPlotTester:
         plot.update_settings(axes=[0])
         assert isinstance(plot.data[0], go.Scatter), "Not displaying grid in 1D correctly?"
 
-        plot.update_settings(axes=[0,1])
+        plot.update_settings(axes=[0, 1])
         assert isinstance(plot.data[0], go.Heatmap), "Not displaying grid in 2D correctly?"
 
-        plot.update_settings(axes=[0,1,2], type3D="isosurface")
+        plot.update_settings(axes=[0, 1, 2], type3D="isosurface")
         assert isinstance(plot.data[0], go.Isosurface)
 
         plot.update_settings(type3D="volume")
         assert isinstance(plot.data[0], go.Volume)
-
 
     def test_grid(self):
 
@@ -59,12 +59,12 @@ class GridPlotTester:
         assert len(scanned.frames) == 2
 
         # Provide step in Ang
-        step = self.plot.grid.cell[0,0]/2
+        step = self.plot.grid.cell[0, 0]/2
         scanned = self.plot.scan(along=0, steps=step, mode="as_is")
         assert len(scanned.frames) == 2
 
         # Provide breakpoints
-        breakpoints = [ self.plot.grid.cell[0,0]*frac for frac in [1/3, 2/3, 3/3]]
+        breakpoints = [self.plot.grid.cell[0, 0]*frac for frac in [1/3, 2/3, 3/3]]
         scanned = self.plot.scan(along=0, breakpoints=breakpoints, mode="as_is")
         assert len(scanned.frames) == 2
 
@@ -80,8 +80,8 @@ class GridPlotTester:
 
 grid_file = from_files("SrTiO3.RHO")
 
+
 class TestGridSiestaOutput(GridPlotTester):
 
     plot = GridPlot(grid_file=grid_file)
     grid_shape = (48, 48, 48)
-    

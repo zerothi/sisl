@@ -9,6 +9,7 @@ from .plotutils import modify_nested_dict, get_nested_key
 
 __all__ = ['InputField']
 
+
 class InputField:
 
     """
@@ -56,7 +57,7 @@ class InputField:
         This links provide info on:
             - What CSS is: https://www.youtube.com/watch?v=4BEyFVufmM8&list=PL4cUxeGkcC9gQeDH6xYhmO-db2mhoTSrT&index=2
             - React CSS examples (you can play with them): https://www.w3schools.com/react/react_css.asp
-        
+
         Just remember that you want to pass REACT CSS keys, NOT CSS. Basically the difference is that "-" are replaced by
         capital letters:
             Normal CSS: {font-size: 10}         React CSS: {fontSize: 10}
@@ -114,11 +115,11 @@ class InputField:
             "width": width or default_input.get("width"),
             **inputFieldAttrs
         })
-        
+
         for key, value in kwargs.items():
 
             setattr(self, key, value)
-    
+
     def __getitem__(self, key):
 
         if isinstance(key, str):
@@ -137,7 +138,7 @@ class InputField:
     def modify(self, *args):
         """
         Modifies the parameter.
-        
+
         See *args to know how can it be used.
 
         This is a general schema of how an input field parameter looks internally, so that you
@@ -183,7 +184,7 @@ class InputField:
                     will modify the width key inside inputField on the schema above.
 
                     The last key, but only the last one, will be created if it does not exist.
-                    
+
                     Ex: obj.modify_param("length", "inputField.width.inWinter.duringDay", 3)
                     will only work if all the path before duringDay exists and the value of inWinter is a dictionary.
 
@@ -195,7 +196,7 @@ class InputField:
 
                     Each key-value pair in the dictionary will be updated in exactly the same way as
                     it is in the previous case.
-                
+
                 - One argument and it is a function:
 
                     the function will recieve the parameter and can act on it in any way you like.
@@ -211,16 +212,16 @@ class InputField:
         self:
             The configurable object.
         """
-                
+
         if len(args) == 2:
-           
-            modFunction = lambda obj: modify_nested_dict( obj.__dict__, *args)
+
+            modFunction = lambda obj: modify_nested_dict(obj.__dict__, *args)
 
         elif isinstance(args[0], dict):
 
             def modFunction(obj):
                 for attr, val in args[0].items():
-                    modify_nested_dict( obj.__dict__, attr, val)
+                    modify_nested_dict(obj.__dict__, attr, val)
 
         elif callable(args[0]):
 
@@ -240,10 +241,10 @@ class InputField:
                 return float(obj)
             elif isinstance(obj, np.ndarray):
                 return obj.tolist()
-            elif isinstance(obj, np.generic): 
+            elif isinstance(obj, np.generic):
                 return obj.item()
             else:
-                return getattr(obj, '__dict__', str(obj)) 
+                return getattr(obj, '__dict__', str(obj))
 
         return json.loads(
             json.dumps(self, default=default)
@@ -261,7 +262,7 @@ class InputField:
         -----------
         val: any
             the value to parse
-        
+
         Returns
         -----------
         self.dtype
@@ -289,7 +290,7 @@ class InputField:
                 continue
 
         return val
-        
+
     def _get_docstring(self):
         """
         Generates the docstring for this input field
@@ -306,13 +307,12 @@ class InputField:
 
             if not isinstance(dtypes, tuple):
                 dtypes = (dtypes,)
-            
-            vals_help = " or ".join([ getattr(dtype, "__name__", str(dtype)) for dtype in dtypes])
-                
+
+            vals_help = " or ".join([getattr(dtype, "__name__", str(dtype)) for dtype in dtypes])
+
         else:
             vals_help = '{' + ', '.join(valid_vals) + '}'
-        
-            
+
         help_message = getattr(self, "help", "")
         tw = textwrap.TextWrapper(width=70, initial_indent="\t", subsequent_indent="\t")
         help_message = tw.fill(help_message)

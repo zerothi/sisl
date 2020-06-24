@@ -33,6 +33,8 @@ __all__ += ["shift_trace", "normalize_trace", "swap_trace_axes"]
 #-------------------------------------
 #            Ipython
 #-------------------------------------
+
+
 def running_in_notebook():
     """
     Finds out whether the code is being run on a notebook.
@@ -46,7 +48,8 @@ def running_in_notebook():
         return get_ipython().__class__.__name__ == 'ZMQInteractiveShell'
     except NameError:
         return False
-    
+
+
 def check_widgets():
     """
     Checks if some jupyter notebook widgets are there.
@@ -68,20 +71,20 @@ def check_widgets():
         'events_error': False
     }
 
-    out, err = subprocess.Popen( ['jupyter', 'nbextension', 'list'], stdout=subprocess.PIPE, stderr=subprocess.PIPE ).communicate()
+    out, err = subprocess.Popen(['jupyter', 'nbextension', 'list'], stdout=subprocess.PIPE, stderr=subprocess.PIPE).communicate()
     out = str(out)
     err = str(err)
-        
+
     if 'plotlywidget' in out:
         widgets['plotly_avail'] = True
     if 'plotlywidget' in err:
-        widgets['plotly_error'] = True       
-            
+        widgets['plotly_error'] = True
+
     if 'ipyevents' in out:
         widgets['events_avail'] = True
     if 'ipyevents' in err:
         widgets['events_error'] = True
-        
+
     widgets['plotly'] = widgets['plotly_avail'] and not widgets['plotly_error']
     widgets['events'] = widgets['events_avail'] and not widgets['events_error']
 
@@ -90,6 +93,7 @@ def check_widgets():
 #-------------------------------------
 #            Informative
 #-------------------------------------
+
 
 def get_plot_classes():
     """
@@ -114,8 +118,9 @@ def get_plot_classes():
             all_subclasses.extend(get_all_subclasses(Subclass))
 
         return all_subclasses
-    
-    return sorted(get_all_subclasses(Plot), key = lambda clss: clss.plot_name()) 
+
+    return sorted(get_all_subclasses(Plot), key = lambda clss: clss.plot_name())
+
 
 def get_plotable_siles(rules=False):
     """
@@ -126,13 +131,14 @@ def get_plotable_siles(rules=False):
     list
         all the siles that the module knows how to plot.
     """
-    
+
     if rules:
         sile_getter = get_sile_rules
     else:
         sile_getter = get_siles
-        
+
     return sile_getter(["plot"])
+
 
 def get_plotable_variables(variables):
     """
@@ -167,8 +173,9 @@ def get_plotable_variables(variables):
         is_plotable = isinstance(getattr(obj, "_plot", None), tuple)
         if is_object and is_plotable:
             plotables[vname] = obj
-    
+
     return plotables
+
 
 def get_configurable_docstring(cls):
     """
@@ -208,6 +215,7 @@ def get_configurable_docstring(cls):
 
     return doc
 
+
 def get_configurable_kwargs(cls_or_inst, fake_default):
     """
     Builds a string to help you define all the kwargs coming from the settings.
@@ -246,7 +254,8 @@ def get_configurable_kwargs(cls_or_inst, fake_default):
         # It's really an instance, not the class
         # In this case, the defaults for the method will be the current values.
         params = cls_or_inst.params
-        return ", ".join([f'{param.key}={get_string(cls_or_inst.settings[param.key])}' for param in params])   
+        return ", ".join([f'{param.key}={get_string(cls_or_inst.settings[param.key])}' for param in params])
+
 
 def get_configurable_kwargs_to_pass(cls):
     """
@@ -275,6 +284,7 @@ def get_configurable_kwargs_to_pass(cls):
 
     return ", ".join([f'{param.key}={param.key}' for param in params])
 
+
 def get_session_classes():
     """
     Returns the available session classes
@@ -286,7 +296,8 @@ def get_session_classes():
     """
     from .session import Session
 
-    return { sbcls.__name__: sbcls for sbcls in Session.__subclasses__() }
+    return {sbcls.__name__: sbcls for sbcls in Session.__subclasses__()}
+
 
 def get_avail_presets():
     """
@@ -304,6 +315,8 @@ def get_avail_presets():
 #-------------------------------------
 #           Python helpers
 #-------------------------------------
+
+
 def get_nested_key(obj, nestedKey, separator="."):
     """
     Gets a nested key from a dictionary using a given separator.
@@ -337,13 +350,14 @@ def get_nested_key(obj, nestedKey, separator="."):
     splitted = nestedKey.split(separator)
     for key in splitted[:-1]:
         ref = ref[key]
-    
+
     return ref[splitted[-1]]
+
 
 def modify_nested_dict(obj, nestedKey, val, separator = "."):
     """
     Use it to modify a nested dictionary with ease. 
-    
+
     It modifies the dictionary itself, does not return anything.
 
     Arguments
@@ -377,8 +391,9 @@ def modify_nested_dict(obj, nestedKey, val, separator = "."):
     splitted = nestedKey.split(separator)
     for key in splitted[:-1]:
         ref = ref[key]
-    
+
     ref[splitted[-1]] = val
+
 
 def dictOfLists2listOfDicts(dictOfLists):
     """Converts a dictionary of lists to a list of dictionaries.
@@ -401,7 +416,8 @@ def dictOfLists2listOfDicts(dictOfLists):
         A list with the individual dicts generated by the function.
     """
 
-    return [dict(zip(dictOfLists,t)) for t in zip(*dictOfLists.values())]
+    return [dict(zip(dictOfLists, t)) for t in zip(*dictOfLists.values())]
+
 
 def call_method_if_present(obj, method_name, *args, **kwargs):
     """
@@ -421,6 +437,7 @@ def call_method_if_present(obj, method_name, *args, **kwargs):
     if callable(method):
         return method(*args, **kwargs)
 
+
 def random_color():
     """
     Returns a random color in hex format
@@ -432,6 +449,7 @@ def random_color():
     """
     import random
     return "#"+"%06x" % random.randint(0, 0xFFFFFF)
+
 
 def copy_params(params, only = [], exclude = []):
     """
@@ -446,17 +464,18 @@ def copy_params(params, only = [], exclude = []):
     exclude: array-like
         Use this if there are some parameters that you don't want. Pass the unwanted keys as a list.
         This argument will not be used if "only" is present.
-    
+
     Returns
     ----------
     copiedParams: tuple
         The params that the user asked for. They are not linked to the input params, so they can be modified independently.
-    """ 
+    """
 
     if only:
-        return tuple( param for param in deepcopy(params) if param.key in only)
+        return tuple(param for param in deepcopy(params) if param.key in only)
     else:
-        return tuple( param for param in deepcopy(params) if param.key not in exclude)
+        return tuple(param for param in deepcopy(params) if param.key not in exclude)
+
 
 def copy_dict(dictInst, only = [], exclude = []):
     """
@@ -471,21 +490,22 @@ def copy_dict(dictInst, only = [], exclude = []):
     exclude: array-like
         Use this if there are some values that you don't want. Pass the unwanted keys as a list.
         This argument will not be used if "only" is present.
-    
+
     Returns
     ----------
     copiedDict: dict
         The dictionary that the user asked for. It is not linked to the input dict, so it can be modified independently.
-    """ 
+    """
 
     if only:
-        return {k: v for k,v  in deepcopy(dictInst).iteritems() if k in only}
+        return {k: v for k, v  in deepcopy(dictInst).iteritems() if k in only}
     else:
-        return {k: v for k,v  in deepcopy(dictInst).iteritems() if k not in exclude}
+        return {k: v for k, v  in deepcopy(dictInst).iteritems() if k not in exclude}
 
 #-------------------------------------
 #            Filesystem
 #-------------------------------------
+
 
 def load(path):
     """
@@ -495,7 +515,7 @@ def load(path):
     ----------
     path: str
         The path to the saved object.
-    
+
     Returns
     ----------
     loadedObj: object
@@ -504,10 +524,11 @@ def load(path):
 
     with open(path, 'rb') as handle:
         loadedObj = dill.load(handle)
-    
+
     return loadedObj
 
-def find_files(root_dir=Path("."), search_string = "*", depth = [0,0], sort = True, sort_func = None, case_insensitive=False):
+
+def find_files(root_dir=Path("."), search_string = "*", depth = [0, 0], sort = True, sort_func = None, case_insensitive=False):
     """
     Function that finds files (or directories) according to some conditions.
 
@@ -524,7 +545,7 @@ def find_files(root_dir=Path("."), search_string = "*", depth = [0,0], sort = Tr
             It will specify the limits of the search. 
             For example, depth = [1,3] will make the function search for the search_string from 1 to 3 directories deep from root_dir.
             (0 depth means to look for files in the root_dir)
-        
+
         If it is an int:
             Only that depth level will be searched.
             That is, depth = 1 is the same as depth = [1,1].
@@ -547,20 +568,21 @@ def find_files(root_dir=Path("."), search_string = "*", depth = [0,0], sort = Tr
     # Normalize the root path to a pathlib path
     if isinstance(root_dir, str):
         root_dir = Path(root_dir)
-    
+
     if case_insensitive:
         search_string = "".join([f"[{char.upper()}{char.lower()}]" if char.isalpha() else char for char in search_string])
 
     files = []
-    for depth in range(depth[0],depth[1] + 1):
+    for depth in range(depth[0], depth[1] + 1):
         new_files = root_dir.glob(root_dir / "*/"*depth / search_string)
         if new_files:
             files += [path.resolve() for path in new_files]
 
     if sort:
         return sorted(files, key=sort_func)
-    else:       
+    else:
         return files
+
 
 def find_plotable_siles(dir_path=None, depth=0):
     """
@@ -579,7 +601,7 @@ def find_plotable_siles(dir_path=None, depth=0):
             It will specify the limits of the search. 
             For example, depth = [1,3] will make the function search for the searchString from 1 to 3 directories deep from root_dir.
             (0 depth means to look for files in the root_dir)
-        
+
         If it is an int:
             Only that depth level will be searched.
             That is, depth = 1 is the same as depth = [1,1].
@@ -611,6 +633,7 @@ _MAX_NPROCS = register_env_var(
     " multiple plots."
 )
 
+
 def _apply_method(args_tuple):
     """
     Apply a method to an object. This function is meant for multiprocessing.
@@ -625,6 +648,7 @@ def _apply_method(args_tuple):
 
     return obj._get_pickleable()
 
+
 def _init_single_plot(args_tuple):
     """
     Initialize a single plot. This function is meant to be used in multiprocessing, when multiple plots need to be initialized
@@ -633,6 +657,7 @@ def _init_single_plot(args_tuple):
     PlotClass, args, kwargs = args_tuple
 
     return PlotClass(**kwargs)._get_pickleable()
+
 
 def run_multiple(func, *args, argsList = None, kwargsList = None, messageFn = None, serial = False):
     """
@@ -664,7 +689,7 @@ def run_multiple(func, *args, argsList = None, kwargsList = None, messageFn = No
         of argsList on Plot's methods (everything is passed as keyword arguments).
     kwargsList: dict
         A dictionary with the keyword arguments that have to be passed to the executed function.
-        
+
         If the executed function is a Plot's method, these can be the settings, for example.
 
         Can also be a list of dicts (see this function's description).
@@ -690,18 +715,18 @@ def run_multiple(func, *args, argsList = None, kwargsList = None, messageFn = No
             toZip[i] = itertools.repeat(arg)
         else:
             nTasks = len(arg)
-    
+
     #Run things in serial mode in case it is demanded
     if serial:
-        return [func(argsTuple) for argsTuple in zip(*toZip) ]
+        return [func(argsTuple) for argsTuple in zip(*toZip)]
 
     #Create a pool with the appropiate number of processes
-    pool = Pool( min(nTasks, _MAX_NPROCS) )
+    pool = Pool(min(nTasks, _MAX_NPROCS))
     #Define the plots array to store all the plots that we initialize
     results = [None]*nTasks
 
     #Initialize the pool iterator and the progress bar that controls it
-    progress = tqdm.tqdm(pool.imap(func, zip(*toZip) ), total = nTasks)
+    progress = tqdm.tqdm(pool.imap(func, zip(*toZip)), total = nTasks)
 
     #Set a description for the progress bar
     if not callable(messageFn):
@@ -714,12 +739,13 @@ def run_multiple(func, *args, argsList = None, kwargsList = None, messageFn = No
     #Run the processes and store each result in the plots array
     for i, res in enumerate(progress):
         results[i] = res
-    
+
     pool.close()
     pool.join()
     pool.clear()
-    
+
     return results
+
 
 def init_multiple_plots(PlotClass, argsList = None, kwargsList = None, **kwargs):
     """
@@ -746,7 +772,7 @@ def init_multiple_plots(PlotClass, argsList = None, kwargsList = None, **kwargs)
         of argsList on Plot's methods (everything is passed as keyword arguments).
     kwargsList: dict
         A dictionary with the keyword arguments that have to be passed to the executed function.
-        
+
         If the executed function is a Plot's method, these can be the settings, for example.
 
         Can also be a list of dicts (see this function's description).
@@ -760,8 +786,8 @@ def init_multiple_plots(PlotClass, argsList = None, kwargsList = None, **kwargs)
 
     return run_multiple(_init_single_plot, PlotClass, argsList = argsList, kwargsList = kwargsList, **kwargs)
 
+
 def apply_method_on_multiple_objs(method, objs, argsList = None, kwargsList = None, **kwargs):
-    
     """
     Applies a given method to the objects provided on multiple processes simultanously making use of the runMultiple() function.
 
@@ -790,7 +816,7 @@ def apply_method_on_multiple_objs(method, objs, argsList = None, kwargsList = No
         of argsList on Plot's methods (everything is passed as keyword arguments).
     kwargsList: dict
         A dictionary with the keyword arguments that have to be passed to the executed function.
-        
+
         If the executed function is a Plot's method, these can be the settings, for example.
 
         Can also be a list of dicts (see this function's description).
@@ -804,30 +830,32 @@ def apply_method_on_multiple_objs(method, objs, argsList = None, kwargsList = No
 
     return run_multiple(_apply_method, method, objs, argsList = argsList, kwargsList = kwargsList, **kwargs)
 
+
 def repeat_if_childs(method):
     """
     Decorator that will force a method to be run on all the plot's child_plots in case there are any.
     """
-    
+
     def apply_to_all_plots(obj, *args, **kwargs):
-        
+
         if hasattr(obj, "child_plots"):
 
             kwargsList = kwargs.get("kwargsList", kwargs)
-            
+
             obj.child_plots = apply_method_on_multiple_objs(method, obj.child_plots, kwargsList = kwargsList, serial=True)
-                
+
             obj.get_figure()
-        
+
         else:
-        
+
             return method(obj, *args, **kwargs)
-    
+
     return apply_to_all_plots
 
 #-------------------------------------
 #             Fun stuff
 #-------------------------------------
+
 
 def trigger_notification(title, message, sound="Submarine"):
     """
@@ -841,7 +869,7 @@ def trigger_notification(title, message, sound="Submarine"):
     message: str
     sound: str
     """
-    
+
     if sys.platform == 'linux':
         os.system(f"""notify-send "{title}" "{message}" """)
     elif sys.platform == 'darwin':
@@ -850,6 +878,7 @@ def trigger_notification(title, message, sound="Submarine"):
     else:
         print(f'Notifications are not implemented in your operating system ({sys.platform}).'
         ' Maybe consider switching to linux? https://www.amazon.com/s?k=linux+computers&rh=n%3A565108&ref=nb_sb_noss :)')
+
 
 def spoken_message(message):
     """
@@ -865,7 +894,7 @@ def spoken_message(message):
     message: str
     sound: str
     """
-    
+
     if sys.platform == 'linux':
         os.system(f"""espeak -s 150 "{message}" 2>/dev/null""")
     elif sys.platform == 'darwin':
@@ -877,6 +906,7 @@ def spoken_message(message):
 #-------------------------------------
 #        Plot manipulation
 #-------------------------------------
+
 
 def shift_trace(trace, shift, axis="y"):
     """
@@ -891,6 +921,7 @@ def shift_trace(trace, shift, axis="y"):
         The axis along which we want to shift the traces.
     """
     trace[axis] = np.array(trace[axis]) + shift
+
 
 def normalize_trace(trace, min_val=0, max_val=1, axis='y'):
     """
@@ -909,6 +940,7 @@ def normalize_trace(trace, min_val=0, max_val=1, axis='y'):
     t = np.array(trace[axis])
     tmin = t.min()
     trace[axis] = (t - tmin) / (t.max() - tmin) * (max_val - min_val) + min_val
+
 
 def swap_trace_axes(trace, ax1='x', ax2='y'):
     """

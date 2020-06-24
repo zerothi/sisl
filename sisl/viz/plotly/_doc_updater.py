@@ -28,6 +28,7 @@ from sisl.viz.plotutils import get_configurable_docstring, get_plot_classes, get
 from sisl.viz import Plot, MultiplePlot, Animation, SubPlots, Session
 import inspect
 
+
 def get_parameters_docstrings(cls):
     """
     Returns the documentation for the configurable's parameters.
@@ -97,6 +98,3 @@ def fill_class_docs(Cls):
 if __name__ == "__main__":
     for Cls in [*get_plot_classes(), Plot, MultiplePlot, Animation, SubPlots, Session, *get_session_classes().values()]:
         fill_class_docs(Cls)
-        
-
-    

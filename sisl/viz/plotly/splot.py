@@ -17,6 +17,7 @@ from ._user_customs import PRESETS_FILE, PRESETS_VARIABLE, PLOTS_FILE
 
 __all__ = ['splot']
 
+
 def general_arguments(parser):
     """
     Adds arguments that are general to any plot class.
@@ -29,20 +30,20 @@ def general_arguments(parser):
 
     parser.add_argument('--presets', '-p', type=str, nargs="*", required=False,
                     help=f'The names of the stored presets that you want to use for the settings. Current available presets: {get_avail_presets()}')
-    
+
     parser.add_argument('--template', '-t', type=str, required=False,
                         help=f'''The plotly layout template that you want to use. It is equivalent as passing a template to --layout. 
                         Available templates: {list(plotly.io.templates.keys())}. Default: {plotly.io.templates.default}''')
 
     parser.add_argument('--layout', '-l', type=ast.literal_eval, required=False,
                         help=f'A dict containing all the layout attributes that you want to pass to the plot.')
-    
+
     parser.add_argument('--save', '-s', type=str, required=False,
                         help='The path where you want to save the plot. Note that you can add the extension .html to save to html.')
-    
+
     parser.add_argument('--no-show', dest='show', action='store_false',
                         help="Pass this flag if you don't want the plot to be displayed.")
-    
+
     parser.add_argument('--editable', '-e', dest='editable', action='store_true',
                         help="Display the plot in editable mode, so that you can edit on-site the titles, axis ranges and more." +
                         " Keep in mind that the changes won't be saved, but you can take a picture of it with the toolbar")
@@ -50,7 +51,7 @@ def general_arguments(parser):
     parser.add_argument('--drawable', '-d', dest='drawable', action='store_true',
                         help="Display the plot in drawable mode, which allows you to draw shapes and lines" +
                         " Keep in mind that the changes won't be saved, but you can take a picture of it with the toolbar")
-    
+
     parser.add_argument('--shortcuts', '-sh', nargs="*",
                         help="The shortcuts to apply to the plot after it has been built. " +
                         "They should be passed as the sequence of keys that need to be pressed to trigger the shortcut"+
@@ -64,7 +65,7 @@ def splot():
     Command utility for plotting things fast from the terminal.
     """
 
-    parser = argparse.ArgumentParser(prog='splot', 
+    parser = argparse.ArgumentParser(prog='splot',
                                      description="Command utility to plot files fast. This command allows great customability." +
                                      "\n\nOnly you know how you like your plots. Therefore, a nice way to use this command is by " +
                                      "using presets that you stored previously. Note that you can either use sisl's provided presets" +
@@ -82,7 +83,7 @@ def splot():
     # Add some arguments that work for any plot
     general_arguments(parser)
 
-    # Add arguments that correspond to the settings of the Plot class   
+    # Add arguments that correspond to the settings of the Plot class
     for param in Plot._parameters:
         if param.dtype is not None and not isinstance(param.dtype, str):
             parser.add_argument(f'--{param.key}', type=param.parse, required=False, help=getattr(param, "help", ""))
@@ -106,7 +107,7 @@ def splot():
         specific_parser = subparsers.add_parser(PlotClass.suffix(), help=doc.split(".")[0])
 
         if hasattr(PlotClass, "_default_animation"):
-            specific_parser.add_argument('--animated', '-ani', dest="animated", action="store_true", 
+            specific_parser.add_argument('--animated', '-ani', dest="animated", action="store_true",
                 help=f"If this flag is present, the default animation for {PlotClass.__name__} will be build"+
                 " instead of a regular plot"
             )
@@ -116,7 +117,7 @@ def splot():
         for param in PlotClass._get_class_params()[0]:
             if param.dtype is not None and not isinstance(param.dtype, str):
                 specific_parser.add_argument(f'--{param.key}', type=param.parse, required=False, help=getattr(param, "help", ""))
-  
+
     args = parser.parse_args()
 
     # Select the plotclass that the user requested
@@ -145,7 +146,6 @@ def splot():
                 settings[plot_class._registered_plotables[SileClass]] = filepaths[0]
                 break
 
-
     # Layout settings require some extra care because layout and template are
     # two separate settings but effectively template goes 'inside' layout
     layout = {} if args.layout is None else args.layout
@@ -154,7 +154,7 @@ def splot():
 
     # These are finally all the keyword arguments that we will pass to plot
     # initialization.
-    keyword_args = {**settings, "presets": args.presets, "layout": layout }
+    keyword_args = {**settings, "presets": args.presets, "layout": layout}
 
     if getattr(args, "animated", False):
         print("Building animation...")
@@ -176,7 +176,7 @@ def splot():
     if args.save:
         print(f"Saving it to {args.save}...")
         plot.save(args.save)
-    
+
     # Show the plot if it was requested
     if getattr(args, "show", True):
 

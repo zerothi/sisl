@@ -7,6 +7,7 @@ from ..input_fields import TextInput, FilePathInput, Array1dInput, SwitchInput, 
      ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, \
      QueriesInput, ProgramaticInput, PlotableInput, SislObjectInput, PlotableInput
 
+
 class GridPlot(Plot):
     """
     Versatile visualization tool for any kind of grid.
@@ -16,7 +17,7 @@ class GridPlot(Plot):
     grid: None, optional
         A sisl.Grid object. If provided, grid_file is ignored.
     grid_file: str, optional
-    
+
     represent: None, optional
         The representation of the grid that should be displayed
     transforms: None, optional
@@ -32,7 +33,7 @@ class GridPlot(Plot):
         Interpolation factors to make the grid finer on each axis.See the
         zsmooth setting for faster smoothing of 2D heatmap.
     sc: array-like, optional
-    
+
     offset: array-like, optional
         The offset of the grid along each axis. This is important if you are
         planning to match this grid with other geometry related plots.
@@ -57,13 +58,13 @@ class GridPlot(Plot):
         The range of values that the colorbar must enclose. This controls
         saturation and hides below threshold values.
     cmid: int, optional
-    
+
     colorscale: str, optional
-    
+
     iso_vals: array-like of shape (2,), optional
-    
+
     surface_count: int, optional
-    
+
     type3D: None, optional
         This controls how the 3D data is displayed.              'volume'
         displays different layers with different levels of opacity so that
@@ -187,7 +188,7 @@ class GridPlot(Plot):
 
         Array1dInput(
             key="interp", name="Interpolation",
-            default=[1,1,1],
+            default=[1, 1, 1],
             params={
                 'inputType': 'number',
                 'shape': (3,),
@@ -198,7 +199,7 @@ class GridPlot(Plot):
 
         Array1dInput(
             key="sc", name="Supercell",
-            default=[1,1,1],
+            default=[1, 1, 1],
             params={
                 'inputType': 'number',
                 'shape': (3,),
@@ -208,7 +209,7 @@ class GridPlot(Plot):
 
         Array1dInput(
             key="offset", name="Grid offset",
-            default=[0,0,0],
+            default=[0, 0, 0],
             params={
                 'inputType': 'number',
                 'shape': (3,),
@@ -351,7 +352,7 @@ class GridPlot(Plot):
     def _after_init(self):
 
         self._add_shortcuts()
-    
+
     @entry_point('grid')
     def _read_nosource(self):
 
@@ -359,21 +360,21 @@ class GridPlot(Plot):
 
         if self.grid is None:
             raise Exception()
-    
+
     @entry_point('grid_file')
     def _read_grid_file(self):
 
         grid_file = self.setting("grid_file")
 
         self.grid = self.get_sile(grid_file).read_grid()
-    
+
     def _after_read(self):
 
         #Inform of the new available ranges
         range_keys = ("xRange", "yRange", "zRange")
 
         for ax, key in enumerate(range_keys):
-            self.modify_param(key, "inputField.params.max", self.grid.cell[ax,ax] )
+            self.modify_param(key, "inputField.params.max", self.grid.cell[ax, ax])
             self.get_param(key, as_dict=False).update_marks()
 
     def _set_data(self):
@@ -389,7 +390,7 @@ class GridPlot(Plot):
             grid, lims = self._cut_vacuum(grid)
             self.grid_offset = lims[0]
         else:
-            self.grid_offset = [0,0,0]
+            self.grid_offset = [0, 0, 0]
 
         display_axes = self.setting("axes")
         sc = self.setting("sc")
@@ -405,31 +406,31 @@ class GridPlot(Plot):
         for ax, ax_range in enumerate(ax_ranges):
             if ax_range is not None:
                 #Build an array with the limits
-                lims = np.zeros((2,3))
+                lims = np.zeros((2, 3))
                 lims[:, ax] = ax_range
-                
+
                 #Get the indices of those points
                 indices = np.array([grid.index(lim) for lim in lims], dtype=int)
 
                 #And finally get the subpart of the grid
-                grid = grid.sub(np.arange(indices[0,ax], indices[1,ax] + 1), ax)
+                grid = grid.sub(np.arange(indices[0, ax], indices[1, ax] + 1), ax)
 
-        interpFactors = np.array([ factor if ax in display_axes else 1 for ax, factor in enumerate(self.setting("interp"))], dtype=int)
+        interpFactors = np.array([factor if ax in display_axes else 1 for ax, factor in enumerate(self.setting("interp"))], dtype=int)
 
         interpolate = (interpFactors != 1).any()
 
-        for ax in [0,1,2]:
+        for ax in [0, 1, 2]:
             if ax not in display_axes:
                 grid = grid.average(ax)
 
                 if interpolate:
                     #Duplicate this axis so that interpolate can work
                     grid.grid = np.concatenate((grid.grid, grid.grid), axis=2)
-        
+
         if interpolate:
             grid = grid.interp([factor for factor in grid.shape*interpFactors])
-        
-            for ax in [0,1,2]:
+
+            for ax in [0, 1, 2]:
                 if ax not in display_axes:
                     grid = grid.average(ax)
 
@@ -450,7 +451,7 @@ class GridPlot(Plot):
             plot_func = self._plot2D
         elif values.ndim == 3:
             plot_func = self._plot3D
-        
+
         # Use it
         plot_func(grid, values, display_axes, sc, name, showlegend=bool(name))
 
@@ -464,7 +465,7 @@ class GridPlot(Plot):
                 print('You asked to plot the geometry, but the grid does not contain any geometry')
             else:
                 geom_kwargs = self.setting('geom_kwargs')
-                geom_plot = grid.geometry.plot(**{'axes':self.settings['axes'], **geom_kwargs})
+                geom_plot = grid.geometry.plot(**{'axes': self.settings['axes'], **geom_kwargs})
 
                 self.add_traces(geom_plot.data)
 
@@ -506,7 +507,7 @@ class GridPlot(Plot):
         # Actually "cut" the grid
         for ax, (min_i, max_i) in enumerate(i_lims.T):
             grid = grid.sub(range(min_i, max_i), ax)
-        
+
         # Return the cut grid, but also the limits that have been applied
         # The user can access the offset of the grid at lims[0]
         return grid, grid.index2xyz(i_lims)
@@ -534,13 +535,13 @@ class GridPlot(Plot):
             'y': values,
             'x': self._get_ax_range(grid, ax, sc),
             'name': name,
-            **kwargs 
+            **kwargs
         }]
 
-        axes_titles = {'xaxis_title': f'{("X","Y", "Z")[ax]} axis [Ang]', 'yaxis_title': 'Values' }
+        axes_titles = {'xaxis_title': f'{("X","Y", "Z")[ax]} axis [Ang]', 'yaxis_title': 'Values'}
 
         self.update_layout(**axes_titles)
-    
+
     def _plot2D(self, grid, values, display_axes, sc, name, **kwargs):
 
         xaxis = display_axes[0]
@@ -548,8 +549,8 @@ class GridPlot(Plot):
 
         if xaxis < yaxis:
             values = values.T
-        
-        values = np.tile(values, (sc[yaxis], sc[xaxis]) )
+
+        values = np.tile(values, (sc[yaxis], sc[xaxis]))
 
         crange = self.setting('crange')
         if crange is None:
@@ -573,7 +574,7 @@ class GridPlot(Plot):
         axes_titles = {'xaxis_title': f'{("X","Y", "Z")[xaxis]} axis [Ang]', 'yaxis_title': f'{("X","Y", "Z")[yaxis]} axis [Ang]'}
 
         self.update_layout(**axes_titles)
-        
+
     def _plot3D(self, grid, values, display_axes, sc, name, **kwargs):
 
         # The minimum and maximum values might be needed at some places
@@ -592,7 +593,7 @@ class GridPlot(Plot):
         isomin, isomax = isovals
 
         X, Y, Z = np.meshgrid(*[self._get_ax_range(grid, i, sc) for i, shape in enumerate(grid.shape)])
-        
+
         type3D = self.setting('type3D')
         if type3D is None:
             if np.min(values)*np.max(values) < 0:
@@ -605,9 +606,9 @@ class GridPlot(Plot):
             plot_func = self._plot3D_volume
         elif type3D == 'isosurface':
             plot_func = self._plot3D_isosurface
-        
+
         plot_func(X, Y, Z, values, cmin, cmax, isomin, isomax, name, **kwargs)
-        
+
         self.layout.scene = {'aspectmode': 'data'}
 
     def _plot3D_volume(self, X, Y, Z, values, cmin, cmax, isomin, isomax, name, **kwargs):
@@ -632,7 +633,7 @@ class GridPlot(Plot):
             'caps': {'x_show': False, 'y_show': False, 'z_show': False},
             **kwargs
         }]
-    
+
     def _plot3D_isosurface(self, X, Y, Z, values, cmin, cmax, isomin, isomax, name, **kwargs):
 
         self.data = [{
@@ -660,7 +661,7 @@ class GridPlot(Plot):
         if len(self.setting("axes")) == 2:
             self.figure.layout.yaxis.scaleanchor = "x"
             self.figure.layout.yaxis.scaleratio = 1
- 
+
     def _add_shortcuts(self):
 
         axes = self.get_param("axes")["inputField.params.options"]
@@ -677,7 +678,7 @@ class GridPlot(Plot):
             self.add_shortcut(f'{ax_name.lower()}+-', f"Substract a unit cell along {ax_name}", self.tighten, 1, ax_val)
 
             self.add_shortcut(f'{ax_name.lower()}++', f"Add a unit cell along {ax_name}", self.tighten, -1, ax_val)
-        
+
         for xaxis in axes:
             xaxis_name = xaxis["label"]
             for yaxis in [ax for ax in axes if ax != xaxis]:
@@ -703,12 +704,12 @@ class GridPlot(Plot):
 
             If you provide multiple axes, the number of different steps must match the number of axes or be a single int.
         """
-        
+
         if isinstance(ax, int):
             ax = [ax]
         if isinstance(steps, int):
             steps = [steps]*len(ax)
-        
+
         sc = [*self.setting("sc")]
 
         for a, step in zip(ax, steps):
@@ -724,7 +725,7 @@ class GridPlot(Plot):
         ----------
         tiles: int or array-like
             factor by which the supercell will be multiplied along axes `ax`.
-            
+
             If you provide multiple tiles, it needs to match the number of axes provided.
         ax: int or array-like
             axis that you want to tile.
@@ -736,7 +737,7 @@ class GridPlot(Plot):
             ax = [ax]
         if isinstance(tiles, int):
             tiles = [tiles]*len(ax)
-        
+
         sc = [*self.setting("sc")]
 
         for a, tile in zip(ax, tiles):
@@ -763,7 +764,7 @@ class GridPlot(Plot):
                 the number of steps that you want the scan to consist of.
             If it's a float:
                 the division between steps in Angstrom.
-            
+
             Note that the grid is only stored once, so having a big number of steps is not that big of a deal.
         breakpoints: array-like, optional
             the discrete points of the scan. To be used if you don't want regular steps.
@@ -798,7 +799,7 @@ class GridPlot(Plot):
 
         # Get the full range
         if start is not None and stop is not None:
-            along_range = [start,stop]
+            along_range = [start, stop]
         else:
             along_range = self.setting(range_key)
             if along_range is None:
@@ -808,7 +809,7 @@ class GridPlot(Plot):
                 along_range[0] = start
             if stop is not None:
                 along_range[1] = stop
-        
+
         if breakpoints is None:
             if steps is None:
                 steps = 1.0
@@ -822,17 +823,16 @@ class GridPlot(Plot):
             # np.linspace will use the last point as a step (and we don't want it)
             # therefore we will add an extra step
             breakpoints = np.linspace(*along_range, steps + 1)
-        
+
         if breakpoints[-1] == self.grid.cell[along, along]:
             breakpoints[-1] = self.grid.cell[along, along] - self.grid.dcell[along, along]
-        
+
         if mode == "moving_slice":
             return self._moving_slice_scan(along, breakpoints)
         elif mode == "as_is":
             return self._asis_scan(range_key, breakpoints, animation_kwargs=animation_kwargs, **kwargs)
 
     def _asis_scan(self, range_key, breakpoints, animation_kwargs=None, **kwargs):
-
         """
         Returns an animation containing multiple frames scaning along an axis.
 
@@ -871,7 +871,7 @@ class GridPlot(Plot):
             },
             plot_template=self,
             fixed={**{key: val for key, val in self.settings.items() if key != range_key}, "iso_vals": isovals, **kwargs},
-            frame_names=[ f'{bp:2f}' for bp in breakpoints],
+            frame_names=[f'{bp:2f}' for bp in breakpoints],
             **(animation_kwargs or {})
         )
 
@@ -892,11 +892,11 @@ class GridPlot(Plot):
     def _moving_slice_scan(self, along, breakpoints):
 
         ax = along
-        displayed_axes = [ i for i in range(3) if i != ax]
+        displayed_axes = [i for i in range(3) if i != ax]
         shape = np.array(self.grid.shape)[displayed_axes]
         cmin = np.min(self.grid.grid)
         cmax = np.max(self.grid.grid)
-        x_ax , y_ax = displayed_axes
+        x_ax, y_ax = displayed_axes
         x = np.linspace(0, self.grid.cell[x_ax, x_ax], self.grid.shape[x_ax])
         y = np.linspace(0, self.grid.cell[y_ax, y_ax], self.grid.shape[y_ax])
 
@@ -937,7 +937,7 @@ class GridPlot(Plot):
                         ],
                     }
                 ]
-        
+
         def ax_title(ax): return f'{["X", "Y", "Z"][ax]} axis [Ang]'
 
         # Layout
@@ -948,7 +948,7 @@ class GridPlot(Plot):
                 scene=dict(
                             xaxis=dict(title=ax_title(x_ax)),
                             yaxis=dict(title=ax_title(y_ax)),
-                            zaxis=dict(range=[0, self.grid.cell[ax,ax]], autorange=False, title=ax_title(ax)),
+                            zaxis=dict(range=[0, self.grid.cell[ax, ax]], autorange=False, title=ax_title(ax)),
                             aspectratio=dict(x=1, y=1, z=1),
                             ),
                 updatemenus = [
@@ -976,6 +976,7 @@ class GridPlot(Plot):
         )
 
         return fig
+
 
 class WavefunctionPlot(GridPlot):
     """
@@ -1008,7 +1009,7 @@ class WavefunctionPlot(GridPlot):
     grid:  optional
         A sisl.Grid object. If provided, grid_file is ignored.
     grid_file: str, optional
-    
+
     represent:  optional
         The representation of the grid that should be displayed
     transforms:  optional
@@ -1029,7 +1030,7 @@ class WavefunctionPlot(GridPlot):
         Interpolation factors to make the grid finer on each axis.See the
         zsmooth setting for faster smoothing of 2D heatmap.
     sc: array-like, optional
-    
+
     offset: array-like, optional
         The offset of the grid along each axis. This is important if you are
         planning to match this grid with other geometry related plots.
@@ -1117,7 +1118,7 @@ class WavefunctionPlot(GridPlot):
         ),
 
         Array1dInput(key='k', name='K point',
-            default=(0,0,0),
+            default=(0, 0, 0),
             help="""If the eigenstates need to be calculated from a hamiltonian, the k point for which you want them to be calculated"""
         ),
 
@@ -1139,7 +1140,7 @@ class WavefunctionPlot(GridPlot):
     )
 
     _overwrite_defaults = {
-        'axes': [0,1,2],
+        'axes': [0, 1, 2],
         'plot_geom': True,
     }
 
@@ -1174,7 +1175,7 @@ class WavefunctionPlot(GridPlot):
             self.geometry = geom
         if getattr(self, 'geometry', None) is None:
             raise Exception('No geometry was provided and we need it the basis orbitals to build the wavefunctions from the coefficients!')
-        
+
         transforms = self.setting('transforms')
         if 'abs' in transforms or 'squared' in transforms:
             self.update_settings(cmid=None, run_updates=False)
@@ -1201,7 +1202,7 @@ class WavefunctionPlot(GridPlot):
 
 #     _parameters = (
 #         ProgramaticInput(key="grid_slice", name="Grid slice",
-#             default=None, 
+#             default=None,
 #         ),
 
 #         DropdownInput(
@@ -1209,7 +1210,7 @@ class WavefunctionPlot(GridPlot):
 #             default=2,
 #             params={
 #                 "options":[{"label": ax, "value": ax} for ax in [0,1,2]]
-#             }   
+#             }
 #         ),
 
 #         IntegerInput(
@@ -1233,4 +1234,3 @@ class WavefunctionPlot(GridPlot):
 #             surfacecolor=self.grid.cross_section(i, ax).grid,
 #             cmin=cmin, cmax=cmax,
 #         }]
-

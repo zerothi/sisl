@@ -1,6 +1,7 @@
 from functools import partial
 import numpy as np
 
+
 class ShortCutable:
     """
     Class that adds hot key functionality to those that inherit from it.
@@ -17,7 +18,7 @@ class ShortCutable:
         self._shortcuts = {}
 
         super().__init__(*args, **kwargs)
-    
+
     def shortcut(self, keys):
         """
         Gets the dict that represents a shortcut.
@@ -58,7 +59,7 @@ class ShortCutable:
             "description": _description,
             "action": partial(func, *args, **kwargs)
         }
-    
+
     def remove_shortcut(self, keys):
         """
         Unregisters a given shortcut.
@@ -71,7 +72,7 @@ class ShortCutable:
 
         if keys in self._shortcuts:
             del self._shortcuts[keys]
-            
+
     def call_shortcut(self, keys, *args, **kwargs):
         """
         Programatic way to call a shortcut.
@@ -90,7 +91,7 @@ class ShortCutable:
         self._shortcuts[keys]["action"](*args, **kwargs)
 
         return self
-    
+
     def has_shortcut(self, keys):
         """
         Checks if a shortcut is already registered.
@@ -102,7 +103,7 @@ class ShortCutable:
         """
 
         return keys in self._shortcuts
-    
+
     @property
     def shortcuts_for_json(self):
         """
@@ -112,31 +113,28 @@ class ShortCutable:
         """
 
         #Basically we are going to remove the action
-        return {key: {key:val for key,val in info.items() if key != 'action'} for key, info in self._shortcuts.items()}
+        return {key: {key: val for key, val in info.items() if key != 'action'} for key, info in self._shortcuts.items()}
 
     def shortcuts_summary(self, format="str"):
         """
         Gets a formatted summary of the shortcuts.
         """
 
-        if format == "str": 
-            return "\n".join([ f'{key}: {shortcut["name"]}' for key, shortcut in self._shortcuts.items()])
+        if format == "str":
+            return "\n".join([f'{key}: {shortcut["name"]}' for key, shortcut in self._shortcuts.items()])
         elif format == "html":
             summ = "<span style='font-weight:bold'>Available keyboard shortcuts:</span><br>"
 
             def get_shortcut_div(key, shortcut):
-                
+
                 key_span = "".join([f'<span style="background: #ccc; padding: 5px 7px; border-radius: 2px; margin-right: 10px">{key}</span>' for key in key.split()])
-                
+
                 name_span = f'<span style="font-weight: bold">{shortcut["name"]}</span>'
-                
+
                 description_div = f'<div style="padding-left: 40px"><i>{shortcut["description"] or ""}</i></div>'
-                
+
                 return f'<div style="background:aliceblue; border-left: solid 1px; padding: 10px; margin: 10px 0px; border-radius: 3px">{key_span}{name_span}{description_div}</div>'
-                
-            summ += "".join([ get_shortcut_div(key, shortcut) for key, shortcut in self._shortcuts.items()])
+
+            summ += "".join([get_shortcut_div(key, shortcut) for key, shortcut in self._shortcuts.items()])
 
             return f'<div style="background-color:whitesmoke; padding: 10px 20px; border-radius: 5px">{summ}</div>'
-
-
-

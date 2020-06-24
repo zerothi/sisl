@@ -1,5 +1,6 @@
 from .._input_field import InputField
 
+
 class SwitchInput(InputField):
 
     dtype = bool

@@ -2,6 +2,7 @@ import os
 
 from ..session import Session
 
+
 class BlankSession(Session):
     '''
     The most basic session one could have, really.
@@ -9,7 +10,7 @@ class BlankSession(Session):
     Parameters
     ------------
     root_dir: str, optional
-    
+
     file_storage_dir: str, optional
         Directory where files uploaded in the GUI will be stored
     keep_uploaded: bool, optional
@@ -43,5 +44,5 @@ class BlankSession(Session):
     _description = "The most basic session one could have, really."
 
     def _after_init(self):
-        
+
         self.add_tab("First tab")

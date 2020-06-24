@@ -11,6 +11,7 @@ from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, D
          PlotableInput
 from ..input_fields.range import ErangeInput
 
+
 class BandsPlot(Plot):
     """
     Plot representation of the bands.
@@ -75,13 +76,13 @@ class BandsPlot(Plot):
     """
 
     _plot_type = "Bands"
-    
+
     _requirements = {
         "siesOut": {
             "files": ["$struct$.bands", "*.bands"]
         }
     }
-    
+
     _parameters = (
 
         FilePathInput(key = "bands_file", name = "Path to bands file",
@@ -249,7 +250,7 @@ class BandsPlot(Plot):
 
     @classmethod
     def _default_animation(cls, wdir = None, frame_names=None, **kwargs):
-        
+
         bands_files = find_files(wdir, "*.bands", sort = True)
 
         def _get_frame_names(self):
@@ -325,10 +326,10 @@ class BandsPlot(Plot):
         )
 
         self._read_from_band_structure(band_structure=band_struct, eigenstate_map=eigenstate_map)
-        
+
     @entry_point('bands_file')
     def _read_siesta_output(self):
-        
+
         #Get the info from the bands file
         self.path = self.setting("path")
 
@@ -354,11 +355,11 @@ class BandsPlot(Plot):
                     tick = others[0] if len(others) > 0 else None
 
                     self.siestaPath.append({"active": True, "x": float(x), "y": float(y), "z": float(z), "divisions": divisions, "tick": tick})
-                    
+
                     self.update_settings(path=self.siestaPath, run_updates=False, no_log=True)
             except Exception as e:
                 print(f"Could not correctly read the bands path from siesta.\n Error {e}")
-    
+
     def _after_read(self):
 
         self.isSpinPolarized = len(self.bands.spin.values) == 2
@@ -375,11 +376,10 @@ class BandsPlot(Plot):
             "min": min(iBands),
             "max": max(iBands),
             "allowCross": False,
-            "marks": { int(i): str(i) for i in iBands },
+            "marks": {int(i): str(i) for i in iBands},
         })
-    
+
     def _set_data(self, draw_before_bands=None, add_band_trace_data=None):
-        
         """
         Converts the bands dataframe into a data object for plotly.
 
@@ -414,13 +414,13 @@ class BandsPlot(Plot):
                 bands_range=bands_range, no_log=True)
         else:
             Erange = np.array(Erange)
-            filtered_bands = filtered_bands.where( (filtered_bands <= Erange[1]) & (filtered_bands >= Erange[0])).dropna("band", "all")
+            filtered_bands = filtered_bands.where((filtered_bands <= Erange[1]) & (filtered_bands >= Erange[0])).dropna("band", "all")
             self.update_settings(run_updates=False, bands_range=[int(filtered_bands['band'].min()), int(filtered_bands['band'].max())], no_log=True)
 
         add_band_trace_data = add_band_trace_data or self.setting("add_band_trace_data")
         if not callable(add_band_trace_data):
             add_band_trace_data = lambda * args, **kwargs: {}
-        
+
         # Give the oportunity to draw before bands are drawn (used by Fatbands)
         if callable(draw_before_bands):
             draw_before_bands()
@@ -430,14 +430,14 @@ class BandsPlot(Plot):
                         'type': 'scatter',
                         'x': band.k.values,
                         'y': (band).values,
-                        'mode': 'lines', 
-                        'name': "{} spin {}".format( band.band.values, PLOTS_CONSTANTS["spins"][spin]) if self.isSpinPolarized else str(band.band.values) , 
-                        'line': {"color": [self.setting("bands_color"),self.setting("spindown_color")][spin], 'width' : self.setting("bands_width")},
+                        'mode': 'lines',
+                        'name': "{} spin {}".format(band.band.values, PLOTS_CONSTANTS["spins"][spin]) if self.isSpinPolarized else str(band.band.values),
+                        'line': {"color": [self.setting("bands_color"), self.setting("spindown_color")][spin], 'width': self.setting("bands_width")},
                         'hoverinfo':'name',
                         "hovertemplate": '%{y:.2f} eV',
                         **add_band_trace_data(band, self)
                         } for band in spin_bands] for spin_bands, spin in zip(filtered_bands.transpose('spin', 'band', 'k'), filtered_bands.spin.values)]).tolist())
-        
+
         self._draw_gaps()
 
     def _after_get_figure(self):
@@ -446,7 +446,7 @@ class BandsPlot(Plot):
         self.figure.layout.xaxis.tickvals = getattr(self.bands, "ticks", None)
         self.figure.layout.xaxis.ticktext = getattr(self.bands, "ticklabels", None)
         self.figure.layout.yaxis.range = np.array(self.setting("Erange"))
-    
+
     def _calculate_gaps(self):
 
         # Calculate the band gap to store it
@@ -459,11 +459,11 @@ class BandsPlot(Plot):
         VB = below_fermi.where(below_fermi==VBtop, drop=True).squeeze()
 
         self.gap = float(CBbot - VBtop)
-        
+
         self.gap_info = {
             'k': (VB["k"].values, CB['k'].values),
             'bands': (VB["band"].values, CB["band"].values),
-            'spin': (VB["spin"].values, CB["spin"].values) if self.isSpinPolarized else (0,0),
+            'spin': (VB["spin"].values, CB["spin"].values) if self.isSpinPolarized else (0, 0),
             'Es': [float(VBtop), float(CBbot)]
         }
 
@@ -502,7 +502,7 @@ class BandsPlot(Plot):
                     'x': gapKs,
                     'y': self.gap_info["Es"],
                     'text': [f'Gap: {self.gap:.3f} eV', ''],
-                    'marker':{'color': gap_color },
+                    'marker': {'color': gap_color},
                     'line': {'color': gap_color},
                     'name': 'Gap',
                     'textposition': 'top right',
@@ -511,7 +511,7 @@ class BandsPlot(Plot):
     def toggle_gap(self):
 
         self.update_settings(gap= not self.settings["gap"])
-    
+
     def plot_Ediff(self, band1, band2):
         """
         Plots the energy difference between two bands.
@@ -531,11 +531,11 @@ class BandsPlot(Plot):
 
         diff = two_bands[:, 1] - two_bands[:, 0]
 
-        fig = px.line(x=self.bands.k.values ,y=diff)
+        fig = px.line(x=self.bands.k.values, y=diff)
 
         plt = Plot.from_plotly(fig)
 
-        plt.update_layout({ **self.layout.to_plotly_json(), "title": f"Energy difference between bands {band1} and {band2}", "yaxis_range": [np.min(diff), np.max(diff)]})
+        plt.update_layout({**self.layout.to_plotly_json(), "title": f"Energy difference between bands {band1} and {band2}", "yaxis_range": [np.min(diff), np.max(diff)]})
 
         return plt
 
@@ -543,7 +543,7 @@ class BandsPlot(Plot):
         """
         ONLY WORKING FOR A PAIR OF BANDS THAT ARE ALWAYS INCREASING OR ALWAYS DECREASING
         AND ARE ISOLATED (sorry)
-        
+
         Plots the k difference between two bands.
 
         Parameters

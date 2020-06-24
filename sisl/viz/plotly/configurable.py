@@ -12,6 +12,7 @@ from .plotutils import get_configurable_docstring, get_configurable_kwargs, get_
 
 __all__ = ["Configurable", "vizplotly_settings"]
 
+
 class NamedHistory:
     """ Useful for tracking and modifying the history of named parameters
 
@@ -46,28 +47,28 @@ class NamedHistory:
         if defaults is not None:
             if keep_defaults:
                 self._defaults = defaults
-        
+
         # This makes it easier to restore the parameters
         if hasattr(self, "_defaults"):
             init_params = {**self._defaults, **init_params}
-        
+
         # Vals will contain the unique values for each parameter
         self._vals = {key: [val] for key, val in init_params.items()}
-        
+
         # And _hist will just hold params
         self._hist = {key: deque([0], maxlen=history_len) for key in init_params}
-        
+
     def __str__(self):
         """ str of the object """
         return self.__class__.__name__ + f"{{history: {self._hist}, parameters={list(self._vals.keys())}}}"
-    
+
     @property
     def current(self):
         """
         The current state of the history
         """
         return self.step(-1)
-    
+
     def step(self, i):
         """
         Retrieves a given step of the history.
@@ -76,7 +77,7 @@ class NamedHistory:
         -----------
         i: int
             the index of the step that you want. It can be negative.
-        
+
         Returns
         -----------
         dict
@@ -109,13 +110,13 @@ class NamedHistory:
         # Finally, if it's a slice, we will get the steps that are within that slice.
         elif isinstance(item, slice):
             return {key: np.array(self._vals[key])[hist][item] for key, hist in self._hist.items()}
-    
+
     def __contains__(self, item):
         """
         Check if we are storing that named item.
         """
         return item in self._vals
-    
+
     def update(self, **new_settings):
         """
         Updates the history by appending a new step.
@@ -132,32 +133,32 @@ class NamedHistory:
         -----------
         self
         """
-        
+
         for key in self._vals:
-            
+
             if key not in new_settings:
                 new_index = self._hist[key][-1]
-            
+
             else:
                 # Check if we already have that value
                 val = new_settings[key]
                 is_nparray = isinstance(val, np.ndarray)
-                
+
                 # We have to do this because np.arrays don't like being compared :)
                 # Otherwise we would just do if val in self._vals[key]
                 for saved_val in self._vals[key]:
                     if not isinstance(saved_val, np.ndarray) and not is_nparray:
                         if val == saved_val:
-                            new_index = self._vals[key].index(val)   
+                            new_index = self._vals[key].index(val)
                 else:
                     self._vals[key].append(val)
                     new_index = len(self._vals[key]) - 1
-            
+
             # Append the index to the history
             self._hist[key].append(new_index)
-        
+
         return self
-    
+
     @property
     def last_updated(self):
         """
@@ -179,10 +180,10 @@ class NamedHistory:
         int or None
             the index of the last update. 
             If the parameter was never updated it returns None.
-        """   
+        """
 
         current = self._vals[key][self._hist[key][-1]]
-        
+
         for i, val in enumerate(reversed(self._hist[key])):
             if val != current:
                 return len(self._hist[key]) - (i+1)
@@ -202,7 +203,7 @@ class NamedHistory:
             the list of parameters that were updated at that step
         """
         return self.diff_keys(step, step - 1)
-    
+
     def was_updated(self, key, step=-1):
         """
         Checks whether a given step updated the parameter's value.
@@ -219,7 +220,7 @@ class NamedHistory:
         bool
             whether the parameter was updated or not
         """
-        
+
         return self.is_different(key, step1=step, step2=step-1)
 
     def is_different(self, key, step1, step2):
@@ -243,7 +244,7 @@ class NamedHistory:
         """
 
         hist = self._hist[key]
-        
+
         return hist[step1] != hist[step2]
 
     def diff_keys(self, step1, step2):
@@ -298,7 +299,7 @@ class NamedHistory:
                 "after": self[step_after][key],
             } for key in keys
         }
-    
+
     @property
     def last_delta(self):
         """
@@ -333,23 +334,23 @@ class NamedHistory:
         #     keys = self._vals.keys()
         #     if exclude is not None:
         #         keys = [ key for key in keys if key not in exclude]
-        
+
         for key, hist in self._hist.items():
-            
+
             for _ in range(steps):
                 hist.pop()
-        
+
         # Clear the unused values (for the moment we are setting them to None
         # so that we don't need to change the indices of the history)
         for key in self._vals:
-            
+
             if self._defaults_kept:
-                self._vals[key] = [ val if i in hist or i==0 else None for i, val in enumerate(self._vals[key]) ]
+                self._vals[key] = [val if i in hist or i==0 else None for i, val in enumerate(self._vals[key])]
             else:
-                self._vals[key] = [ val if i in hist else None for i, val in enumerate(self._vals[key]) ]
-        
+                self._vals[key] = [val if i in hist else None for i, val in enumerate(self._vals[key])]
+
         return self
-    
+
     def clear(self):
         """
         Clears the history.
@@ -358,11 +359,11 @@ class NamedHistory:
         use `restore_defaults` instead.
 
         """
-        
+
         self.__init__(init_settings={key: None for key in self._vals})
-        
+
         return self
-    
+
     def restore_initial(self):
         """
         Restores the history to its initial values (the first step).
@@ -376,7 +377,7 @@ class NamedHistory:
         """
         Restores the history to its defaults.
         """
-        
+
         if self._defaults_kept:
             if hasattr(self, "_defaults"):
                 self.__init__({})
@@ -384,9 +385,9 @@ class NamedHistory:
                 self.restore_initial()
         else:
             raise Exception("Defaults were not kept! You need to use keep_defaults=True on initialization")
-            
+
         return self
-    
+
     @property
     def defaults(self):
         """
@@ -399,9 +400,9 @@ class NamedHistory:
                 return self.step(0)
         else:
             raise Exception("Defaults were not kept! You need to use keep_defaults=True on initialization")
-            
+
         return self
-    
+
     def is_default(self, key):
         """
         Checks if a parameter currently has the default value.
@@ -419,6 +420,7 @@ class NamedHistory:
 
         return self[key][-1] == self.defaults[key]
 
+
 class FakeSettingsDispatch(AbstractDispatch):
     """
     Provides a dispatch that executes methods using "fake" settings.
@@ -435,11 +437,11 @@ class FakeSettingsDispatch(AbstractDispatch):
         self.fake_settings = settings
 
         super().__init__(obj)
-    
+
     def setting(self, *args, **kwargs):
 
-        kwargs["fake_settings"] = { **kwargs.get("fake_settings", {}), **self.fake_settings}
-        
+        kwargs["fake_settings"] = {**kwargs.get("fake_settings", {}), **self.fake_settings}
+
         return Configurable.setting(self._obj, *args, **kwargs)
 
     def dispatch(self, method):
@@ -454,11 +456,12 @@ class FakeSettingsDispatch(AbstractDispatch):
             self._obj.setting = MethodType(Configurable.setting, self._obj)
 
             return ret
-            
+
         return run_with_fake_settings
 
+
 class Configurable:
-    
+
     def with_settings(self, method=None, method_args=[], method_kwargs={}, **settings):
         """
         Gives you the possibility to run the methods of an object AS IF the object
@@ -483,7 +486,7 @@ class Configurable:
             For example: `obj.with_settings(color="green")`
 
             will provide the object with a fake "color" setting of value "green"
-            
+
         Returns
         ---------
         any
@@ -499,13 +502,13 @@ class Configurable:
             if isinstance(method, str):
                 method = getattr(self, method)
             return method(*method_args, **method_kwargs)
-        
+
         return disp
 
     def init_settings(self, presets=None, **kwargs):
         """
         Initializes the settings for the object.
-        
+
         Parameters
         -----------
         presets: str or array-like of str
@@ -526,21 +529,21 @@ class Configurable:
         for key, val in overwrite_defaults.items():
             if key not in kwargs:
                 kwargs[key] = val
-        
+
         #Get the parameters of all the classes the object belongs to
         self.params, self.param_groups = self._get_class_params()
-        
+
         if presets is not None:
             if isinstance(presets, str):
                 presets = [presets]
-                
+
             for preset in presets:
                 preset_settings = get_preset(preset)
                 kwargs = {**preset_settings, **kwargs}
 
         # Define the settings dictionary, taking the value of each parameter from kwargs if it is there or from the defaults otherwise.
         # And initialize the settings history
-        defaults = { param.key: deepcopy(param.default) for param in self.params}
+        defaults = {param.key: deepcopy(param.default) for param in self.params}
         self.settings_history = NamedHistory(
             {key: kwargs.get(key, val) for key, val in defaults.items()},
             defaults=defaults, history_len=20, keep_defaults=True
@@ -548,9 +551,9 @@ class Configurable:
 
         #Initialize the object where we are going to store what each setting needs to rerun when it is updated
         self._run_on_update = {}
-        
+
         return self
-    
+
     def __init_subclass__(cls):
         """
         When a configurable class is defined, this will be called.
@@ -564,7 +567,7 @@ class Configurable:
         def update_settings(self, *args, **kwargs):
             return self._update_settings(*args, **kwargs)
 
-        update_settings.__doc__ = f"Updates the settings of this plot.\n\nDocs for {cls.__name__}:\n\n{get_configurable_docstring(cls)}" 
+        update_settings.__doc__ = f"Updates the settings of this plot.\n\nDocs for {cls.__name__}:\n\n{get_configurable_docstring(cls)}"
         cls.update_settings = update_settings
 
     @property
@@ -583,7 +586,7 @@ class Configurable:
 
         Note that parameters are inherited even if you overwrite the `_parameters`
         variable. 
-        
+
         Probably there should be a variable `_exclude_params` to avoid some parameters.
         """
 
@@ -613,7 +616,7 @@ class Configurable:
     def _update_settings(self, run_updates=True, **kwargs):
         """
         Updates the settings of the object. 
-        
+
         Note that this is only private because we provide a public update_settings
         with the specific kwargs for each class so that users can quickly know which
         settings are available. You can see how we define this method in `__init_subclass__`
@@ -626,22 +629,22 @@ class Configurable:
         **kwargs:
             the values of the settings that we want to update passed as keyword arguments.
         """
-        
+
         #Initialize the settings in case there are none yet
         if not hasattr(self, "settings_history"):
             return self.init_settings(**kwargs)
-        
+
         # Otherwise, update them
-        updates = {key:val for key, val in kwargs.items() if key in self.settings_history}
+        updates = {key: val for key, val in kwargs.items() if key in self.settings_history}
         if updates:
             self.settings_history.update(**updates)
 
             #Do things after updating the settings
             if len(self.settings_history.last_updated) > 0 and run_updates:
                 self._run_updates(self.settings_history.last_updated)
-        
+
         return self
-        
+
     def _run_updates(self, for_keys):
         """
         Runs the functions/methods that are supposed to be ran when
@@ -658,7 +661,7 @@ class Configurable:
 
         #Run the functions specified
         if hasattr(self, "_onSettingsUpdate"):
-            
+
             #Get the unique names of the functions that should be executed
             noInfoKeys = [settingKey for settingKey in for_keys if settingKey not in self._run_on_update]
             if len(noInfoKeys) > 0 and len(noInfoKeys) == len(for_keys):
@@ -669,13 +672,13 @@ class Configurable:
             for fName in self._onSettingsUpdate["functions"]:
                 if fName in funcNames:
                     getattr(self, fName)()
-                    
+
                     #If we need to execute all the functions keep going thorugh the loop, else stop here
                     if not self._onSettingsUpdate["config"].get("multipleFunc", False):
                         break
-            
+
         return self
-    
+
     def undo_settings(self, steps=1, run_updates=True):
         """
         Brings the settings back a number of steps.
@@ -688,7 +691,7 @@ class Configurable:
             whether we should run updates after updating the settings. If not, the settings
             will be updated, but you won't see any change in the object.
         """
-        
+
         try:
             diff = self.settings_history.diff_keys(-1, -steps-1)
             self.settings_history.undo(steps=steps)
@@ -698,9 +701,9 @@ class Configurable:
             print("This instance of {} does not contain earlier settings as requested ({} step{} back)"
                  .format(self.__class__.__name__, steps, "" if steps == 1 else "s"))
             pass
-            
+
         return self
-    
+
     def undo_setting(self, key):
         """
         Undoes only a particular setting and leaves the others unchanged.
@@ -723,7 +726,6 @@ class Configurable:
         return self
 
     def undo_settings_group(self, group_key):
-
         """
         Takes the desired group of settings one step back, but the rest of the settings remain unchanged.
 
@@ -748,13 +750,13 @@ class Configurable:
                 return self.update_settings(previousSettings)
         else:
             print("There is no registry of any setting of the group '{}' having been changed. Sorry :(".format(group_key))
-            
+
             return self
-    
+
     def get_param(self, key, as_dict=False, paramsExtractor=False):
         """
         Gets the parameter for a given setting. 
-        
+
         By default it returns its dictionary, so that one can check the information that it contains.
         You can ask for the parameter itself by setting as_dict to False. However, if you want to
         modify the parameter you should use the modify_param() method instead.
@@ -770,7 +772,7 @@ class Configurable:
             This will only be used in case this method is used outside the class, where objects
             have a different structure (e.g. QueriesInput inputField) or if there is some nested params
             field that the class is not aware of (although this second case is probably not advisable).
-        
+
         Returns
         ----------
         param: dict or InputField
@@ -782,11 +784,11 @@ class Configurable:
                 return param.__dict__ if as_dict else param
         else:
             raise KeyError(f"There is no parameter '{key}' in {self.__class__.__name__}")
-    
+
     def modify_param(self, key, *args, **kwargs):
         """
         Modifies a given parameter.
-        
+
         See *args to know how can it be used.
 
         This is a general schema of how an input field parameter looks internally, so that you
@@ -834,7 +836,7 @@ class Configurable:
                     will modify the width key inside inputField on the schema above.
 
                     The last key, but only the last one, will be created if it does not exist.
-                    
+
                     Ex: obj.modify_param("length", "inputField.width.inWinter.duringDay", 3)
                     will only work if all the path before duringDay exists and the value of inWinter is a dictionary.
 
@@ -846,7 +848,7 @@ class Configurable:
 
                     Each key-value pair in the dictionary will be updated in exactly the same way as
                     it is in the previous case.
-                
+
                 - One argument and it is a function:
 
                     the function will recieve the parameter and can act on it in any way you like.
@@ -868,7 +870,7 @@ class Configurable:
         self.get_param(key, as_dict = False, **kwargs).modify(*args)
 
         return self
-    
+
     def get_setting(self, key, copy=True, fake_settings=None, parse=True):
         """
         Gets the value for a given setting.
@@ -888,7 +890,7 @@ class Configurable:
         parse: boolean, optional
             whether the setting should be parsed before returning it.
         """
-        
+
         settings = self.settings
         if fake_settings is not None:
             settings = {**settings, **fake_settings}
@@ -898,14 +900,13 @@ class Configurable:
         val = self.get_param(key).parse(settings[key])
 
         return deepcopy(val) if copy else val
-    
-    def setting(self, key, **kwargs):
 
+    def setting(self, key, **kwargs):
         """
         Gets the value for a given setting while logging where it has been required. 
-        
+
         THIS METHOD MUST BE USED IN DEVELOPEMENT! (And should not be used by users, use get_setting() instead)
-        
+
         It stores where the setting has been demanded so that the plot can be efficiently updated when it is modified.
         """
 
@@ -925,13 +926,13 @@ class Configurable:
 
                 if prevFunc is None or functions_list.index(funcName) < functions_list.index(prevFunc):
                     self._run_on_update[key] = funcName
-                
+
                 break
-            
+
             frame = frame.f_back
 
         return self.get_setting(key, copy=False, **kwargs)
-    
+
     def get_settings_group(self, group_key, steps_back = 0):
         """
         Gets the subset of the settings that corresponds to a given group
@@ -955,8 +956,8 @@ class Configurable:
         else:
             settings = self.settings
 
-        return deepcopy({ setting.key: settings[setting.key] for setting in self.params if getattr(setting, "group", None) == group_key })
-    
+        return deepcopy({setting.key: settings[setting.key] for setting in self.params if getattr(setting, "group", None) == group_key})
+
     def settings_group(self, group_key):
         """
         Gets the subset of the settings that corresponds to a given group and logs its use
@@ -972,7 +973,7 @@ class Configurable:
             The key of the settings group that we desire.
         """
 
-        return deepcopy({ setting.key: self.setting(setting.key) for setting in self.params if getattr(setting, "group", None) == group_key })
+        return deepcopy({setting.key: self.setting(setting.key) for setting in self.params if getattr(setting, "group", None) == group_key})
 
     def has_these_settings(self, settings={}, **kwargs):
         """
@@ -997,6 +998,7 @@ class Configurable:
             return True
 
 # DECORATORS TO USE WHEN DEFINING METHODS IN CLASSES THAT INHERIT FROM Configurable
+
 
 def vizplotly_settings(when='before', init=False):
     """
@@ -1026,14 +1028,14 @@ def vizplotly_settings(when='before', init=False):
     else:
         method_name = '_update_settings'
         extra_kwargs = {'from_decorator': True, 'run_updates': True}
-    
+
     def decorator(method):
         if when == 'before':
             @wraps(method)
             def func(obj, *args, **kwargs):
                 getattr(obj, method_name)(**kwargs, **extra_kwargs)
                 return method(obj, *args, **kwargs)
-                
+
         elif when == 'after':
             @wraps(method)
             def func(obj, *args, **kwargs):

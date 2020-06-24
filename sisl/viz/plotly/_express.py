@@ -15,6 +15,7 @@ from sisl._dispatcher import AbstractDispatch, ClassDispatcher
 
 __all__ = ['sx']
 
+
 class WithSislManagement(AbstractDispatch):
 
     def __init__(self, px):
@@ -52,10 +53,10 @@ class WithSislManagement(AbstractDispatch):
                             else:
                                 # If we've gotten to the end of the loop, it is because we've found the attribute.
                                 val = newval
-                            
+
                             # Replace the provided string by the actual value of the attribute
                             kwargs[key] = val
-                            
+
             ret = method(*args, **kwargs)
 
             return ret

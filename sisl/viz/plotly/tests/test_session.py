@@ -14,6 +14,7 @@ from sisl.viz.plotly.tests.test_plot import BasePlotTester
 # Checks that will be available to be used on any session class
 # ------------------------------------------------------------
 
+
 class BaseSessionTester:
 
     SessionClass = Session
@@ -24,7 +25,7 @@ class BaseSessionTester:
         # Check that all the parameters have been passed to the settings
         assert np.all([param.key in session.settings for param in self.SessionClass._parameters])
         # Build some test settings
-        new_settings = {'root_dir': 'Test', 'search_depth': [4,6]}
+        new_settings = {'root_dir': 'Test', 'search_depth': [4, 6]}
         # Update settings and check they have been succesfully updated
         old_settings = deepcopy(session.settings)
         session.update_settings(**new_settings, run_updates=False)
@@ -33,7 +34,7 @@ class BaseSessionTester:
         session.undo_settings(run_updates=False)
         assert np.all([session.settings[key] ==
                     val for key, val in old_settings.items()])
-        
+
         # Build a session directly with test settings and check if it works
         session = self.SessionClass(**new_settings)
         assert np.all([session.settings[key] == val for key, val in new_settings.items()])
@@ -64,7 +65,7 @@ class BaseSessionTester:
 
         BasePlotTester.test_save_and_load(self, obj=self.SessionClass())
 
-        
+
 # ------------------------------------------------------------
 #           Actual tests on the Session parent class
 # ------------------------------------------------------------

@@ -29,6 +29,7 @@ SERVER_HOST = "localhost"
 SERVER_PORT = 7001
 SERVER_ADRESS = f'http://{SERVER_HOST}:{SERVER_PORT}'
 
+
 def run():
     host = SERVER_HOST
     port = SERVER_PORT
@@ -39,4 +40,3 @@ def run():
 
 if __name__ == "__main__":
     run()
-

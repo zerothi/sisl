@@ -2,6 +2,7 @@ import numpy as np
 
 from sisl.viz.plotly.configurable import NamedHistory
 
+
 def test_named_history():
 
     test_keys = ["hey", "nope"]
@@ -30,10 +31,11 @@ def test_named_history():
     assert s._vals[val_key][1] is None
     assert s.current[val_key] == 2
 
-    # One last check with multiple updates 
+    # One last check with multiple updates
     s.update(**{val_key: 5})
     s.update(**{val_key: 6})
     assert len(s._vals[val_key]) == 4
+
 
 def test_history_item_getting():
 
@@ -44,14 +46,15 @@ def test_history_item_getting():
     s.update(**{val_key: 6})
 
     assert s[-1][val_key] == 6
-    
+
     assert len(s[[-1, -2]]) == 2
     assert isinstance(s[:], dict)
     assert len(s[0:1][val_key]) == 1
 
-    assert s[val_key] == [2,6]
+    assert s[val_key] == [2, 6]
     assert isinstance(s[test_keys], dict)
     assert len(s[test_keys][val_key]) == len(s)
+
 
 def test_update_array():
 
@@ -64,5 +67,5 @@ def test_update_array():
 
     s = NamedHistory({val_key: 2}, defaults={def_key: 5})
 
-    s.update(**{val_key: np.array([1,2,3])})
+    s.update(**{val_key: np.array([1, 2, 3])})
     s.update(**{val_key: np.array([1, 2, 3, 4])})

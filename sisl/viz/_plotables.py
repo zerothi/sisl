@@ -6,11 +6,12 @@ from functools import wraps
 
 __all__ = ['register_plotable']
 
+
 class PlotEngine:
     """
     Stores and takes care of calling all methods of a plotting engine.
     """
-            
+
     def _add(self, name, function, default=False):
         """
         Makes a new function available to this plotting engine.
@@ -21,7 +22,7 @@ class PlotEngine:
         -----------
         name: str
             the name of the plotting method. 
-            
+
             This will be the name of the attribute where the function is stored.
         function: function
             the plotting method.
@@ -32,9 +33,9 @@ class PlotEngine:
         """
         if default:
             self._default = name
-            
+
         setattr(self, name, function)
-    
+
     def get(self, method=None, otherwise='raise'):
         """
         Returns a method of the engine.
@@ -60,7 +61,7 @@ class PlotEngine:
             return getattr(self, method)
         else:
             return getattr(self, method, otherwise)
-    
+
     def __call__(self, method=None, **kwargs):
         """
         Handles a call to the engine, which will trigger calling plot methods.
@@ -79,8 +80,8 @@ class PlotEngine:
         """
 
         return self.get(method)(**kwargs)
-        
-        
+
+
 class PlotHandler:
     """
     Handles all plotting possibilities for a class.
@@ -102,7 +103,7 @@ class PlotHandler:
     class A:
 
         plot = PlotHandler()
-    
+
     or
 
     class A:
@@ -115,12 +116,12 @@ class PlotHandler:
     You can not do:
 
     A().plot = PlotHandler()
-    
+
     """
-    
+
     def __init__(self, default_engine='plotly'):
         self._default_engine = default_engine
-    
+
     def register(self, function, name=None, engine=None, default=False):
         """
         Registers plotting functions to the plot handler.
@@ -136,7 +137,7 @@ class PlotHandler:
             If not provided, the name of the function will be used.
         engine: str, optional
             the engine where we should register this plotting function. 
-            
+
             If it doesn't exist yet, a new plotting engine is created.
 
             If not provided, the default engine is used.
@@ -151,45 +152,45 @@ class PlotHandler:
         """
         if name is None:
             name = function.__name__
-            
+
         if engine is None:
             engine = self._default_engine
-        
+
         # Initialize a new plot engine, if it isn't already present
         if not hasattr(self, engine):
             setattr(self, engine, PlotEngine())
-        
+
         # This is the function that really does the plotting and goes
         # into the engine
         @wraps(function)
         def real_function(*args, **kwargs):
             return function(self._obj, *args, **kwargs)
-        
+
         getattr(self, engine)._add(name, real_function, default=default)
-        
+
         # This is just a "shortcut" for calling the function.
         # With not hasattr(self, name) we allow methods from different
-        # engines to be in the first level simultanously if they don't 
+        # engines to be in the first level simultanously if they don't
         # interfere with each other (is it desirable?)
         if not hasattr(self, name) or engine == self._default_engine:
-            
+
             @wraps(function)
             def shortcut(*args, **kwargs):
                 return self(engine=engine, method=name, **kwargs)
 
             setattr(self, name, shortcut)
-            
+
     def __get__(self, instance, owner):
         """
         Makes the plot handler aware of what is the instance that it is handling
         plots for.
         """
-        
+
         if instance is not None:
             self._obj = instance
-        
+
         return self
-        
+
     def __call__(self, engine=None, method=None, **kwargs):
         """
         Handles a call to the engine, which will trigger calling plot methods.
@@ -202,7 +203,7 @@ class PlotHandler:
         -----------
         engine: str
             the engine where we should look for methods.
-            
+
             If not provided the default engine will be used
         method: str, optional
             the method that we want to execute.
@@ -214,7 +215,7 @@ class PlotHandler:
 
         if engine is None:
             engine = self._default_engine
-        
+
         return getattr(self, engine)(method=method, **kwargs)
 
 
@@ -264,4 +265,3 @@ def register_plotable(plotable, plotting_func, name=None, engine='plotly', defau
 
     # Register the function in the plot_handler
     plot_handler.register(plotting_func, name=name, engine=engine, default=default)
-    

@@ -3,6 +3,7 @@ from types import MethodType
 
 from .._input_field import InputField
 
+
 class TextInput(InputField):
 
     dtype = str
@@ -25,6 +26,7 @@ if not hasattr(BaseSile, "to_json"):
 
     BaseSile.to_json = sile_to_json
 
+
 class FilePathInput(TextInput):
 
     _default = {
@@ -33,13 +35,13 @@ class FilePathInput(TextInput):
             "placeholder": "Write your path here...",
         }
     }
-        
+
     def parse(self, val):
 
         if isinstance(val, BaseSile):
             val = val.file
-        
+
         if isinstance(val, str):
             val = Path(val)
-        
+
         return val

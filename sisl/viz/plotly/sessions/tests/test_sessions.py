@@ -8,13 +8,14 @@ from sisl.viz.plotly.tests.test_session import BaseSessionTester
 from sisl.viz import Session
 from sisl.viz.plotly.sessions import *
 
+
 def get_basic_functionality_test(SessionSubClass):
 
     class BasicSubClassTest(BaseSessionTester):
 
         SessionClass = SessionSubClass
 
-    return BasicSubClassTest 
+    return BasicSubClassTest
 
 
 for SessionSubClass in Session.__subclasses__():

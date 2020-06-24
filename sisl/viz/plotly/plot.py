@@ -35,7 +35,8 @@ __all__ = ["Plot", "MultiplePlot", "Animation", "SubPlots"]
 
 #------------------------------------------------
 #                 PLOT CLASS
-#------------------------------------------------    
+#------------------------------------------------
+
 
 class Plot(ShortCutable, Configurable, Connected):
     """
@@ -86,10 +87,10 @@ class Plot(ShortCutable, Configurable, Connected):
     ...
 
     """
-    
+
     _onSettingsUpdate = {
         "functions": ["read_data", "set_data", "get_figure"],
-        "config":{
+        "config": {
             "multipleFunc": False,
             "order": True,
         },
@@ -105,7 +106,7 @@ class Plot(ShortCutable, Configurable, Connected):
         },
 
     )
-    
+
     _parameters = (
 
         TextInput(
@@ -127,7 +128,7 @@ class Plot(ShortCutable, Configurable, Connected):
             width = "s100% m50% l33%",
             help = "Directory where the files with the simulations results are located.<br> This path has to be relative to the root fdf.",
         ),
-        
+
     )
 
     @classmethod
@@ -157,7 +158,7 @@ class Plot(ShortCutable, Configurable, Connected):
         The name of the plot. Used to be displayed in the GUI, for example.
         """
         return getattr(cls, "_plot_type", cls.__name__)
-    
+
     @classmethod
     def suffix(cls):
         """
@@ -169,7 +170,7 @@ class Plot(ShortCutable, Configurable, Connected):
         if cls is Plot:
             return None
         return getattr(cls, "_suffix", cls.__name__.lower().replace("plot", ""))
-    
+
     @property
     def _innotebook(self):
         """
@@ -178,14 +179,14 @@ class Plot(ShortCutable, Configurable, Connected):
         Used to understand how we should display the plot.
         """
         return running_in_notebook()
-    
+
     @property
     def _widgets(self):
         """
         Dictionary that informs of which jupyter notebook widgets are available.
         """
         return check_widgets()
-    
+
     @classmethod
     def multiple(cls, *args, fixed={}, template_plot=None, merge_method='together', **kwargs):
         """
@@ -216,7 +217,7 @@ class Plot(ShortCutable, Configurable, Connected):
                         and the values are of course the values for each plot for that setting. 
 
                     It works exactly as the previous case, but in this case we have multiple settings that vary.
-                
+
                 - One argument and it is a function:
                     First: function
                         With this function you can produce any settings you want without limitations.
@@ -314,7 +315,7 @@ class Plot(ShortCutable, Configurable, Connected):
                         and the values are of course the values for each plot for that setting. 
 
                     It works exactly as the previous case, but in this case we have multiple settings that vary.
-                
+
                 - One argument and it is a function:
                     First: function
                         With this function you can produce any settings you want without limitations.
@@ -356,7 +357,7 @@ class Plot(ShortCutable, Configurable, Connected):
 
         return cls.multiple(*args, fixed=fixed, template_plot=None, merge_method='subplots',
                 rows=rows, cols=cols, arrange=arrange, **kwargs)
-    
+
     @classmethod
     def animated(cls, *args, fixed={}, frame_names=None, template_plot=None, **kwargs):
         """
@@ -387,7 +388,7 @@ class Plot(ShortCutable, Configurable, Connected):
                         and the values are of course the values for each frame for that setting. 
 
                     It works exactly as the previous case, but in this case we have multiple settings to animate.
-                
+
                 - One argument and it is a function:
                     First: function
                         With this function you can produce any settings you want without limitations.
@@ -437,9 +438,9 @@ class Plot(ShortCutable, Configurable, Connected):
         --------
         Animation
             The Animation that you asked for
-        
+
         """
-        
+
         _get_frame_names = None
         #Define how to get the framenames
         if frame_names:
@@ -447,7 +448,7 @@ class Plot(ShortCutable, Configurable, Connected):
             if callable(frame_names):
                 _get_frame_names = frame_names
             else:
-                def _get_frame_names(self,i):
+                def _get_frame_names(self, i):
                     return frame_names[i]
 
         # And just let the general multiple plot creator do the work
@@ -476,7 +477,7 @@ class Plot(ShortCutable, Configurable, Connected):
             # it is being called so that it can build the corresponding plot.
             # Only relevant if the plot is built with obj.plot()
             plot_method = kwargs.get("plot_method", cls.suffix())
-            
+
             # If a filename is recieved, we will try to find a plot for it
             if isinstance(args[0], str):
 
@@ -500,18 +501,18 @@ class Plot(ShortCutable, Configurable, Connected):
                     plot = obj.plot(**{**kwargs, "method": plot_method})
                 else:
                     return object.__new__(cls)
-        
+
             # Inform that we don't want to run the __init__ method anymore
             # See the beggining of __init__()
             plot.INIT_ON_NEW = True
             plot.AVOID_SETTINGS_INIT = True
 
             return plot
-        
+
         elif 'animate' in kwargs or 'varying' in kwargs or 'subplots' in kwargs:
 
             methods = {'animate': cls.animated, 'varying': cls.multiple, 'subplots': cls.subplots}
-            # Retrieve the keyword that was actually passed 
+            # Retrieve the keyword that was actually passed
             # and choose the appropiate method
             for keyword in ('animate', 'varying', 'subplots'):
                 variable_settings = kwargs.pop(keyword, None)
@@ -535,7 +536,6 @@ class Plot(ShortCutable, Configurable, Connected):
 
             return plot
 
-
         return object.__new__(cls)
 
     def __init_subclass__(cls):
@@ -550,7 +550,7 @@ class Plot(ShortCutable, Configurable, Connected):
         However, there is one major problem: how to specify defaults.
         This is a problem because sometimes an input field is inherited from one plot
         to another, therefore you can not say: "this is the default plotable input".
-        
+
         Probably, defaults should be centralized, but I don't know where just yet.
         """
         super().__init_subclass__()
@@ -570,17 +570,17 @@ class Plot(ShortCutable, Configurable, Connected):
         #         register_plotly_plotable(param.dtype, cls, param.key)
 
     @vizplotly_settings('before', init=True)
-    def __init__(self, *args, H = None, attrs_for_plot={}, only_init=False, presets=None, layout={}, _debug=False,**kwargs):
+    def __init__(self, *args, H = None, attrs_for_plot={}, only_init=False, presets=None, layout={}, _debug=False, **kwargs):
 
         if getattr(self, "INIT_ON_NEW", False):
             delattr(self, "INIT_ON_NEW")
             return
-        
+
         # Initialize shortcut management
         ShortCutable.__init__(self)
         # Initialize possibility to connect to a GUI
         Connected.__init__(self, socketio=kwargs.get("socketio", None))
-        
+
         # Give an ID to the plot
         self.id = str(uuid.uuid4())
 
@@ -602,7 +602,7 @@ class Plot(ShortCutable, Configurable, Connected):
 
         #Set the isChildPlot attribute to let the plot know if it is part of a bigger picture (e.g. Animation)
         self.isChildPlot = kwargs.get("isChildPlot", False)
-        
+
         #Initialize the variable to store when has been the last data read (0 means never basically)
         self.last_dataread = 0
         self._files_to_follow = []
@@ -611,20 +611,19 @@ class Plot(ShortCutable, Configurable, Connected):
         self.figure = go.Figure()
 
         # Update its layout if a layout is provided
-        self.update_layout(**getattr(self.__class__, "_layout_defaults", {}), **layout )
+        self.update_layout(**getattr(self.__class__, "_layout_defaults", {}), **layout)
 
         if presets is not None:
             if isinstance(presets, str):
                 presets = [presets]
             for preset in presets:
                 self.update_layout(**get_preset(preset)['layout'])
-        
 
         # on_figure_change is triggered after get_figure.
         self.on_figure_change = None
 
         # This is a temporary storage place where file contents are stored
-        # See how self.get_sile makes use of it  
+        # See how self.get_sile makes use of it
         self._file_contents = {}
 
         # Set all the attributes that have been passed
@@ -647,7 +646,7 @@ class Plot(ShortCutable, Configurable, Connected):
 
         #Give the user the possibility to overwrite default settings
         call_method_if_present(self, "_after_init")
-        
+
         # If we were supposed to only initialize the plot, stop here
         if only_init:
             return
@@ -662,22 +661,22 @@ class Plot(ShortCutable, Configurable, Connected):
                     self.init_all_plots()
             else:
                 self.read_data()
-                
+
         except Exception as e:
             if self._debug:
                 raise e
             else:
                 print("The plot has been initialized correctly, but the current settings were not enough to generate the figure.\n (Error: {})".format(e))
-    
+
     def __str__(self):
-        
+
         string = (
             f'Plot class: {self.__class__.__name__}    Plot type: {self.plot_name()}\n\n'
-            'Settings:\n{}'.format("\n".join([ "\t- {}: {}".format(key,value) for key, value in self.settings.items()]))
+            'Settings:\n{}'.format("\n".join(["\t- {}: {}".format(key, value) for key, value in self.settings.items()]))
         )
-        
+
         return string
-    
+
     def __getattr__(self, key):
         """
         This method is executed only after python has found that there is no such attribute in the instance
@@ -753,16 +752,16 @@ class Plot(ShortCutable, Configurable, Connected):
         self._files_to_follow = []
 
         call_method_if_present(self, "_before_read")
-        
-        try:    
+
+        try:
             self.set_files()
         except Exception:
             pass
 
         # Update the title of the plot if there is none
         if not self.figure.layout["title"]:
-            self.update_layout(title = '{} {}'.format(getattr(self, "struct", ""), self.plot_name()) )
-        
+            self.update_layout(title = '{} {}'.format(getattr(self, "struct", ""), self.plot_name()))
+
         # We try to read from the different entry points available
         self._read_from_sources()
 
@@ -778,9 +777,9 @@ class Plot(ShortCutable, Configurable, Connected):
 
         if update_fig:
             self.set_data(update_fig = update_fig)
-        
+
         return self
-    
+
     def _read_from_sources(self):
         """
         Tries to read the data from the different available entry points in the plot class.
@@ -793,7 +792,7 @@ class Plot(ShortCutable, Configurable, Connected):
         # will basically start at set_data.
         if not self.entry_points:
             return
-        
+
         errors = []
         # Try to read data using all the different entry points
         # This is just a first implementation. One of the reasons entry points
@@ -808,8 +807,8 @@ class Plot(ShortCutable, Configurable, Connected):
         else:
             self.source = None
             raise Exception("Could not read or generate data for {} from any of the possible sources.\n\n Here are the errors for each source:\n\n {}  "
-                            .format(self.__class__.__name__, "\n".join(errors)) )
-    
+                            .format(self.__class__.__name__, "\n".join(errors)))
+
     def follow(self, *files, to_abs=True, unfollow=False):
         """
         Makes sure that the object knows which files to follow in order to trigger updates.
@@ -832,7 +831,7 @@ class Plot(ShortCutable, Configurable, Connected):
         new_files = [Path(file_path).resolve() if to_abs else Path(file_path) for file_path in files or []]
 
         self._files_to_follow = new_files if unfollow else [*self._files_to_follow, *new_files]
-    
+
     def get_sile(self, path, *args, follow=True, follow_kwargs={}, file_contents=None, **kwargs):
         """
         A wrapper around get_sile so that the reading of the file is registered.
@@ -869,7 +868,7 @@ class Plot(ShortCutable, Configurable, Connected):
         if file_contents is None:
             if follow:
                 self.follow(path, **follow_kwargs)
-            
+
             return sisl.get_sile(path, *args, **kwargs)
 
         else:
@@ -902,11 +901,11 @@ class Plot(ShortCutable, Configurable, Connected):
             except FileNotFoundError:
                 return False  # This probably should implement better logic
 
-        files_modified = np.array([ modified(file_path) for file_path in self._files_to_follow])
+        files_modified = np.array([modified(file_path) for file_path in self._files_to_follow])
 
         return files_modified.any()
-    
-    def listen(self, forever=True, show=True, as_animation=False, return_animation=True, return_figWidget=False, 
+
+    def listen(self, forever=True, show=True, as_animation=False, return_animation=True, return_figWidget=False,
         clear_previous=True, notify=False, speak=False, notify_title=None, notify_message=None, speak_message=None, fig_widget=None):
         """
         Listens for updates in the followed files (see the `updates_available` method)
@@ -970,7 +969,7 @@ class Plot(ShortCutable, Configurable, Connected):
             fig = pt.show(return_figWidget=True)
             if isinstance(fig, go.FigureWidget):
                 fig_widget = fig
-        
+
         if notify:
             trigger_notification("SISL", "Notifications will appear here")
         if speak:
@@ -1002,13 +1001,13 @@ class Plot(ShortCutable, Configurable, Connected):
                         if notify:
                             title = notify_title or "SISL PLOT UPDATE"
                             message = notify_message or f"{getattr(self, 'struct', '')} {self.__class__.__name__} updated"
-                            trigger_notification(title, message )
+                            trigger_notification(title, message)
                         if speak:
                             spoken_message(speak_message if speak_message is not None else f"Your {self.__class__.__name__} is updated. Check it out")
 
                     except Exception as e:
                         pass
-                    
+
                 await asyncio.sleep(1)
 
         loop = asyncio.get_event_loop()
@@ -1027,7 +1026,7 @@ class Plot(ShortCutable, Configurable, Connected):
     def _listening_shortcut(self, fig_widget=None):
         """
         Adds the shortcut to start listening for updates. 
-        
+
         This is done here and not in `_general_plot_settings` because
         we need to be able to toggle this shortcut each time the plot
         starts/stops listening.
@@ -1037,7 +1036,7 @@ class Plot(ShortCutable, Configurable, Connected):
         """
 
         self.add_shortcut(
-            "ctrl+alt+l", "Listen for updates", 
+            "ctrl+alt+l", "Listen for updates",
             self.listen, fig_widget=fig_widget,
             _description="Make the plot listen for changes in the files that it reads"
         )
@@ -1065,9 +1064,9 @@ class Plot(ShortCutable, Configurable, Connected):
         if task is not None:
             task.cancel()
             self._listening_task = None
-        
+
             self._listening_shortcut(fig_widget=fig_widget)
-        
+
         return self
 
     @vizplotly_settings('before')
@@ -1094,18 +1093,18 @@ class Plot(ShortCutable, Configurable, Connected):
 
         self.root_dir = root_fdf.parent
         fdfFile = root_fdf.name
-        
+
         self.wdir = self.root_dir / self.setting("results_path")
         self.fdf_sile = self.get_sile(root_fdf)
         self.struct = self.fdf_sile.get("SystemLabel", "")
-            
+
         # Check that the required files are there
         if hasattr(self, "_requirements"):
             # If they are there, we can confidently build this list
-            self.requiredFiles = [ self.wdir / req.replace("$struct$", self.struct) for req in self.__class__._requirements["siesOut"]["files"] ]
+            self.requiredFiles = [self.wdir / req.replace("$struct$", self.struct) for req in self.__class__._requirements["siesOut"]["files"]]
 
         return self
-    
+
     @vizplotly_settings('before')
     def setup_hamiltonian(self, **kwargs):
         """
@@ -1114,16 +1113,16 @@ class Plot(ShortCutable, Configurable, Connected):
 
         if len(self.settings_history) > 1:
             NEW_FDF = self.settings_history.was_updated("root_fdf")
-        
+
         if not self.PROVIDED_GEOM and (not hasattr(self, "geometry") or NEW_FDF):
             self.geometry = self.fdf_sile.read_geometry(output = True)
-        
+
         if not self.PROVIDED_H and (not hasattr(self, "H") or NEW_FDF):
             #Read the hamiltonian
             self.H = self.fdf_sile.read_hamiltonian()
 
         return self
-    
+
     @repeat_if_childs
     @vizplotly_settings('before')
     def set_data(self, update_fig = True, **kwargs):
@@ -1144,12 +1143,12 @@ class Plot(ShortCutable, Configurable, Connected):
 
         if update_fig:
             self.get_figure()
-        
+
         # The explanation for this is above (in the definition of _starting_traces)
         self._own_traces_slice = slice(self._starting_traces, len(self.data))
 
         return self
-    
+
     @vizplotly_settings('before')
     def get_figure(self, **kwargs):
         """
@@ -1162,7 +1161,7 @@ class Plot(ShortCutable, Configurable, Connected):
 
         HOWEVER, `MultiplePlot` and its child classes overwrite this method and actually make use of it,
         because they need to collect the data from all their child_plots and build the figure.
-        
+
         This method can be applied after updating the data so that the plot object is refreshed.
 
         Returns
@@ -1172,11 +1171,11 @@ class Plot(ShortCutable, Configurable, Connected):
         """
 
         call_method_if_present(self, '_after_get_figure')
-        
+
         call_method_if_present(self, 'on_figure_change')
 
         return self.figure
-    
+
     #-------------------------------------------
     #       PLOT DISPLAY METHODS
     #-------------------------------------------
@@ -1203,9 +1202,9 @@ class Plot(ShortCutable, Configurable, Connected):
             except Exception as e:
                 print(e)
                 pass
-        
+
         return self.figure.show(*args, **kwargs)
-    
+
     def _show_in_jupyternb(self, listen=False, return_figWidget=False, **kwargs):
         """
         Handles all things needed to display the plot in a jupyter notebook.
@@ -1245,7 +1244,7 @@ class Plot(ShortCutable, Configurable, Connected):
 
         else:
             self.figure.show(**kwargs)
-                                    
+
     def _show_jupnb_with_shortcuts(self, fig_widget, **kwargs):
         """
         If the appropiate widget is there (ipyevents, https://github.com/mwcraig/ipyevents),
@@ -1263,9 +1262,9 @@ class Plot(ShortCutable, Configurable, Connected):
 
         h = HTML("") # This is to display help such as available shortcuts
         messages = HTML("") # This is to inform about current status
-        styles = HTML( "<style>.ipyevents-watched:focus {outline: none}</style>")
+        styles = HTML("<style>.ipyevents-watched:focus {outline: none}</style>")
         d = Event(source=fig_widget, watched_events=['keydown', 'keyup'])
-       
+
         def handle_dom_events(event, keys_down=[], last_timestamp=[0], keys_up=[]):
             # We will keep track of keydowns because then we will be able to support multiple keys shortcuts
             time_threshold = 500 #To remove key up events
@@ -1279,7 +1278,7 @@ class Plot(ShortCutable, Configurable, Connected):
                     keys_down *= 0 #Clear the list
                 if time_diff > time_threshold:
                     keys_up *= 0
-                
+
                 last_timestamp[0] = timestamp
 
                 # This means that the key has been held down for a long time
@@ -1303,7 +1302,7 @@ class Plot(ShortCutable, Configurable, Connected):
                         keys_up.append(key)
                     # If it's a key up event, anounce that the key is not down anymore
                     keys_down.remove(key)
-                
+
                 only_down = "+".join(keys_down)
                 shortcut_key = f'{" ".join(keys_up)} {only_down}'.strip()
 
@@ -1313,16 +1312,15 @@ class Plot(ShortCutable, Configurable, Connected):
                 # Get the help message
                 if shortcut_key == "shift+?":
                     h.value = self.shortcuts_summary("html") if not h.value else ""
-                
+
                 shortcut = self.shortcut(shortcut_key)
                 if shortcut is not None:
                     keys_down *= 0
-                    keys_up *= 0 
+                    keys_up *= 0
 
                     messages.value = f'Executing "{shortcut["name"]}" because you pressed "{shortcut_key}"...'
                     self.call_shortcut(shortcut_key)
                     messages.value = ""
-                    
 
                     self._update_FigureWidget(fig_widget)
 
@@ -1380,7 +1378,7 @@ class Plot(ShortCutable, Configurable, Connected):
         MultiplePlot, Subplots or Animation
             depending on the value of the `to` parameter.
         """
-        
+
         #Make sure we deal with a list (user can provide a single plot)
         if not isinstance(others, (list, tuple, np.ndarray)):
             others = [others]
@@ -1396,9 +1394,9 @@ class Plot(ShortCutable, Configurable, Connected):
             "subplots": SubPlots,
             "animation": Animation
         }[to]
-        
+
         return PlotClass(plots=child_plots, **kwargs)
-    
+
     def group_legend(self, by=None, names=None, show_all=False, extra_updates=None, **kwargs):
         """
         Joins plot traces in groups in the legend.
@@ -1465,9 +1463,9 @@ class Plot(ShortCutable, Configurable, Connected):
         **kwargs:
             like extra_updates but they are passed to all groups without distinction
         """
-    
+
         unique_values = []
-        
+
         # Normalize the "by" parameter to a function
         if by is None:
             if show_all:
@@ -1484,22 +1482,22 @@ class Plot(ShortCutable, Configurable, Connected):
                     return None
         else:
             func = by
-        
+
         # Normalize also the names parameter to a function
         if names is None:
-            def get_name(val,trace):
+            def get_name(val, trace):
                 return str(val) if not show_all else f'{val}: {trace.name}'
         elif callable(names):
             get_name = names
         elif isinstance(names, dict):
-            def get_name(val, trace): 
-                name = names.get(val,val)
+            def get_name(val, trace):
+                name = names.get(val, val)
                 return str(name) if not show_all else f'{name}: {trace.name}'
         else:
             def get_name(val, trace):
                 name = names[len(unique_values) - 1]
                 return str(name) if not show_all else f'{name}: {trace.name}'
-        
+
         # And finally normalize the extra updates
         if extra_updates is None:
             get_extra_updates = lambda *args, **kwargs: {}
@@ -1507,17 +1505,17 @@ class Plot(ShortCutable, Configurable, Connected):
             get_extra_updates = lambda val, trace: extra_updates.get(val, {})
         elif callable(extra_updates):
             get_extra_updates = extra_updates
-        
+
         # Build the function that will apply the change
         def check_and_apply(trace):
-            
+
             val = func(trace)
 
             if isinstance(val, np.ndarray):
                 val =  val.tolist()
             if isinstance(val, list):
                 val = ", ".join([str(item) for item in val])
-            
+
             if val in unique_values:
                 showlegend = show_all
             else:
@@ -1525,7 +1523,7 @@ class Plot(ShortCutable, Configurable, Connected):
                 showlegend = True
 
             customdata = trace.customdata if trace.customdata is not None else [{}]
-                
+
             trace.update(
                 showlegend=showlegend,
                 legendgroup=str(val),
@@ -1534,14 +1532,14 @@ class Plot(ShortCutable, Configurable, Connected):
                 **get_extra_updates(val, trace=trace),
                 **kwargs
             )
-        
-        # And finally apply all the changes        
+
+        # And finally apply all the changes
         self.figure.for_each_trace(
             lambda trace: check_and_apply(trace)
         )
-        
+
         return self
-    
+
     def ungroup_legend(self):
         """
         Ungroups traces if a legend contains groups.
@@ -1552,7 +1550,7 @@ class Plot(ShortCutable, Configurable, Connected):
                 legendgroup=None,
                 showlegend=True,
                 name=trace.customdata[0]["name"]
-            )    
+            )
         )
 
         return self
@@ -1571,21 +1569,21 @@ class Plot(ShortCutable, Configurable, Connected):
             whether frames should also be deleted
         """
 
-        own_slice = getattr(self, '_own_traces_slice', slice(0,0))
+        own_slice = getattr(self, '_own_traces_slice', slice(0, 0))
 
         if not plot_traces and added_traces:
             self.figure.data = self.figure.data[own_slice]
         elif not added_traces and plot_traces:
-            self.figure.data = [ trace for i, trace in enumerate(self.data) if i < own_slice.start or i >= own_slice.stop ]
+            self.figure.data = [trace for i, trace in enumerate(self.data) if i < own_slice.start or i >= own_slice.stop]
         else:
             self.figure.data = []
-        
+
         if frames:
             self.figure.frames = []
-        
+
         if layout:
             self.figure.layout = {}
-        
+
         return self
 
     def normalize(self, min_val=0, max_val=1, axis="y", **kwargs):
@@ -1610,7 +1608,7 @@ class Plot(ShortCutable, Configurable, Connected):
         self.for_each_trace(partial(normalize_trace, min_val=min_val, max_val=max_val, axis=axis), **kwargs)
 
         return self
-    
+
     def swap_axes(self, ax1='x', ax2='y', **kwargs):
         """
         Swaps two axes in the plot.
@@ -1637,9 +1635,9 @@ class Plot(ShortCutable, Configurable, Connected):
             }, overwrite=True)
         except:
             pass
-        
+
         return self
-    
+
     def shift(self, shift, axis="y", **kwargs):
         """
         Shifts the traces of the plot by a given value in the given axis.
@@ -1661,7 +1659,7 @@ class Plot(ShortCutable, Configurable, Connected):
         self.for_each_trace(partial(shift_trace, shift=shift, axis=axis), **kwargs)
 
         return self
-    
+
     def v_line(self, x, yrange=None, **kwargs):
         """
         Draws a vertical line in the figure (NOT WORKING YET!)
@@ -1670,9 +1668,9 @@ class Plot(ShortCutable, Configurable, Connected):
         if yrange is None:
             yrange = self.layout.yaxis.range
             if yrange is None:
-                yrange = [0,7000]
-    
-        self.add_scatter(mode = "lines", x = [x,x], y = yrange, **kwargs)
+                yrange = [0, 7000]
+
+        self.add_scatter(mode = "lines", x = [x, x], y = yrange, **kwargs)
 
         return self
 
@@ -1697,7 +1695,7 @@ class Plot(ShortCutable, Configurable, Connected):
 
         return deepcopy(self)
 
-        return self.__class__(*args, **self.settings, **kwargs) 
+        return self.__class__(*args, **self.settings, **kwargs)
 
     #-------------------------------------------
     #          LISTENING TO EVENTS
@@ -1726,7 +1724,7 @@ class Plot(ShortCutable, Configurable, Connected):
             "plotClass": self.__class__.__name__,
             "struct": getattr(self, "struct", None),
             "figure": self.figure,
-            "settings": {param.key:self.settings[param.key] for param in self.params if not isinstance(param, ProgramaticInput)},
+            "settings": {param.key: self.settings[param.key] for param in self.params if not isinstance(param, ProgramaticInput)},
             "params": self.params,
             "paramGroups": self.param_groups,
             "grid_dims": getattr(self, "grid_dims", None),
@@ -1734,7 +1732,7 @@ class Plot(ShortCutable, Configurable, Connected):
         }
 
         return infoDict
-    
+
     def _get_pickleable(self):
         """
         Removes from the instance the attributes that are not pickleable.
@@ -1747,7 +1745,7 @@ class Plot(ShortCutable, Configurable, Connected):
                 delattr(self, attr)
 
         return self
-    
+
     def save(self, path, html=False):
         """
         Saves the plot so that it can be loaded in the future.
@@ -1776,11 +1774,10 @@ class Plot(ShortCutable, Configurable, Connected):
 
         with open(path, 'wb') as handle:
             dill.dump(self, handle, protocol=dill.HIGHEST_PROTOCOL)
-        
-        return True
-    
-    def html(self, path):
 
+        return True
+
+    def html(self, path):
         """
         Just a shortcut for save( html = True )
 
@@ -1791,7 +1788,7 @@ class Plot(ShortCutable, Configurable, Connected):
         """
 
         return self.save(path, html = True)
-    
+
     def to_chart_studio(self, *args, **kwargs):
         """
         Sends the plot to chart studio if it is possible.
@@ -1804,15 +1801,17 @@ class Plot(ShortCutable, Configurable, Connected):
         import chart_studio.plotly as py
 
         return py.plot(self.figure, *args, **kwargs)
-  
+
+
 class EntryPoint:
-    
+
     def __init__(self, name, setting_key, method, instance=None):
         self._name = name
         self._method_attr = method.__name__
         self._setting_key = setting_key
         self._method = method
         self.__doc__ = method.__doc__
+
 
 def entry_point(name):
     """
@@ -1847,13 +1846,14 @@ def entry_point(name):
     -----------
     name: str
         the name of the entry point that the decorated function implements.
-    
+
     """
     return partial(EntryPoint, name, ())
 
 #------------------------------------------------
 #               ANIMATION CLASS
 #------------------------------------------------
+
 
 class MultiplePlot(Plot):
     """
@@ -1879,18 +1879,18 @@ class MultiplePlot(Plot):
         if self.PLOTS_PROVIDED:
 
             self.set_child_plots(plots)
-        
+
         self.has_template_plot = False
         if isinstance(template_plot, Plot):
             self.template_plot = template_plot
             self.has_template_plot = True
-        
+
         super().__init__(*args, **kwargs)
-    
+
     def __getitem__(self, i):
 
         return self.child_plots[i]
-    
+
     @property
     def _attrs_for_child_plots(self):
         """
@@ -1931,7 +1931,7 @@ class MultiplePlot(Plot):
             if self.has_template_plot:
                 self._plotClasses = self.template_plot.__class__
                 template_settings = self.template_plot.settings
-                
+
             SINGLE_CLASS = isinstance(self._plotClasses, type)
 
             # Initialize all the plots
@@ -1940,9 +1940,9 @@ class MultiplePlot(Plot):
             # with multiprocessing they won't know that the current instance is their parent
             # (objects get copied in multiprocessing) and they won't be able to share data
             plots = init_multiple_plots(
-                self._plotClasses, 
+                self._plotClasses,
                 kwargsList = [
-                    {**template_settings, **kwargs, "attrs_for_plot": self._attrs_for_child_plots, "only_init": SINGLE_CLASS and try_sharing} 
+                    {**template_settings, **kwargs, "attrs_for_plot": self._attrs_for_child_plots, "only_init": SINGLE_CLASS and try_sharing}
                     for kwargs in self._getInitKwargsList()
                 ],
                 serial=SINGLE_CLASS and try_sharing
@@ -1978,18 +1978,18 @@ class MultiplePlot(Plot):
                     self.set_child_plots(plots)
 
                     self.set_data()
-            
+
             else:
                 # If we haven't tried sharing data, the plots are already prepared (with read data of their own)
                 self.set_child_plots(plots)
-            
+
             call_method_if_present(self, "_after_childs_updated")
 
         if update_fig:
             self.get_figure()
 
         return self
-    
+
     def _update_settings(self, on_child_plots=False, on_parent_plot=True, **kwargs):
         """
         This method takes into account that on plots that contain childs, one may want to update only the parent settings or all the child's settings.
@@ -2004,7 +2004,7 @@ class MultiplePlot(Plot):
 
         if on_parent_plot:
             super()._update_settings(**kwargs)
-        
+
         if on_child_plots:
 
             repeat_if_childs(Configurable._update_settings)(self, **kwargs)
@@ -2038,7 +2038,7 @@ class MultiplePlot(Plot):
         self.child_plots = plots if not keep else [*self.child_plots, *plots]
 
         return self
-    
+
     def add_child_plots(self, *plots):
         """
         Append child_plots to the existing ones.
@@ -2050,7 +2050,7 @@ class MultiplePlot(Plot):
         """
 
         self.set_child_plots(plots, keep=True)
-    
+
     def insert_childplot(self, index, plot):
         """
         Inserts a plot in a given position of the child_plots list
@@ -2065,9 +2065,9 @@ class MultiplePlot(Plot):
 
         if isinstance(plot, go.Figure):
             plot = Plot.from_plotly(plot)
-        
+
         self.child_plots.insert(index, plot)
-           
+
     def shared_attr(self, key):
         """
         Gets an attribute that is located in the shared storage of the MultiplePlot.
@@ -2079,7 +2079,7 @@ class MultiplePlot(Plot):
         ------------
         key: str
             the name of the attribute that you want to retrieve
-        
+
         Returns
         -----------
         any
@@ -2092,7 +2092,7 @@ class MultiplePlot(Plot):
             return getattr(self.template_plot, key)
 
         return self.shared[key]
-    
+
     def set_shared_attr(self, key, val):
         """
         Sets the value of a shared attribute.
@@ -2104,7 +2104,7 @@ class MultiplePlot(Plot):
         val: any
             the new value for the attribute
         """
-        
+
         self.shared[key] = val
 
         return self
@@ -2117,7 +2117,7 @@ class MultiplePlot(Plot):
         self._isAnimation = True
 
         self.clear().get_figure()
-        
+
         return self
 
     def get_figure(self):
@@ -2145,6 +2145,7 @@ class MultiplePlot(Plot):
         call_method_if_present(self, 'on_figure_change')
 
         return self
+
 
 class Animation(MultiplePlot):
     """
@@ -2226,12 +2227,12 @@ class Animation(MultiplePlot):
     )
 
     def __init__(self, *args, frame_names=None, _plugins={}, **kwargs):
-        
+
         if frame_names is not None:
             _plugins["_get_frame_names"] = frame_names if callable(frame_names) else lambda self: frame_names
-        
+
         super().__init__(*args, **kwargs, _plugins=_plugins)
-    
+
     def _build_frames(self):
         """
         Builds the frames of the plotly figure from the child plots' data.
@@ -2253,15 +2254,15 @@ class Animation(MultiplePlot):
             except Exception:
                 frame_name = f"Frame {i+1}"
             frame_names.append(frame_name)
-        
+
         ani_method = self.setting('ani_method')
         if ani_method is None:
             same_traces = np.unique(
                 [len(plot.data) for plot in self.child_plots]
             ).shape[0] == 1
-            
+
             ani_method = "animate" if same_traces else "update"
-        
+
         # Choose the method that we need to run in order to get the figure
         if ani_method == "animate":
             figure_builder = self._figure_animate_method
@@ -2296,7 +2297,7 @@ class Animation(MultiplePlot):
         }
 
         return frames_layout
-    
+
     def _figure_update_method(self, frame_names):
         """
         In the update method, we give all the traces to data, and we are just going to toggle
@@ -2313,7 +2314,7 @@ class Animation(MultiplePlot):
                 'customdata': [{'frame': frame_name, "iFrame": i}],
                 'visible': visible
             } for trace in plot.data])
-        
+
         # Generate the steps
         steps = []
         for i, frame_name in enumerate(frame_names):
@@ -2340,7 +2341,7 @@ class Animation(MultiplePlot):
         self.data = self.child_plots[0].data
 
         frames = []
-        
+
         maxN = np.max([len(plot.data) for plot in self.child_plots])
         for frame_name, plot in zip(frame_names, self.child_plots):
 
@@ -2382,14 +2383,14 @@ class Animation(MultiplePlot):
                 {
                     'label': '⏸',
                     'method': 'animate',
-                    'args': [ [None], {"frame": {"duration": 0}, "redraw": True,
+                    'args': [[None], {"frame": {"duration": 0}, "redraw": True,
                                     'mode': 'immediate',
                                     "transition": {"duration": 0}}],
                 }
             ]}
         ]
 
-        return steps, updatemenus      
+        return steps, updatemenus
 
     def merge_frames(self):
         """
@@ -2401,7 +2402,7 @@ class Animation(MultiplePlot):
         self.clear().get_figure()
 
         return self
-    
+
     @staticmethod
     def zip(*animations):
         """
@@ -2418,7 +2419,7 @@ class Animation(MultiplePlot):
 
         frames = []
         for (*old_frames,) in zip(*animations):
-            
+
             new_frame = MultiplePlot(plots=old_frames)
 
             frames.append(new_frame)
@@ -2426,7 +2427,7 @@ class Animation(MultiplePlot):
         return Animation(
             plots=frames
         )
-    
+
     def zip_with(self, *others):
         """
         Zips the animation with the other provided animations
@@ -2455,7 +2456,8 @@ class Animation(MultiplePlot):
         # so that we have the "frames for each plot"
         new_animations = np.array([frame.child_plots for frame in self]).T
 
-        return [ Animation(plots=plots) for plots in new_animations ]
+        return [Animation(plots=plots) for plots in new_animations]
+
 
 class SubPlots(MultiplePlot):
     """
@@ -2495,7 +2497,7 @@ class SubPlots(MultiplePlot):
         DropdownInput(key='arrange', name='Automatic arrangement method',
             default='rows',
             params={
-                'options':[
+                'options': [
                     {'value': option, 'label': option} for option in ('rows', 'cols', 'square')
                 ],
                 'placeholder': 'Choose a subplot arrangement method...',
@@ -2563,7 +2565,7 @@ class SubPlots(MultiplePlot):
 
         rows = int(rows)
         cols = int(cols)
-        
+
         kwargs = self.setting('make_subplot_kwargs')
         self.figure = make_subplots(**{"rows": rows, "cols": cols, **kwargs})
 
@@ -2576,6 +2578,3 @@ class SubPlots(MultiplePlot):
 
             self.update_xaxes(plot.layout.xaxis, row=row, col=col)
             self.update_yaxes(plot.layout.yaxis, row=row, col=col)
-        
-
-

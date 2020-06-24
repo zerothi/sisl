@@ -10,8 +10,9 @@ from ..plotutils import find_files
 from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput, \
      IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput, SileInput
 
+
 class BondLengthMap(GeometryPlot):
-    
+
     """
     Colorful representation of bond lengths.
 
@@ -37,9 +38,9 @@ class BondLengthMap(GeometryPlot):
         https://plot.ly/python/builtin-colorscales/
         Note that you can reverse a color map by adding _r
     cmin: float, optional
-    
+
     cmax: float, optional
-    
+
     cmid: float, optional
         Sets the middle point of the color scale. Only meaningful in
         diverging colormaps             If this is set 'cmin' and 'cmax'
@@ -78,11 +79,11 @@ class BondLengthMap(GeometryPlot):
         this is a shortcut for `atom = [], bind_bonds_to_ats=False`.
         Therefore, it will override these two parameters.
     geom: None, optional
-    
+
     geom_file: str, optional
-    
+
     bonds: bool, optional
-    
+
     reading_order: None, optional
         Order in which the plot tries to read the data it needs.
     root_fdf: str, optional
@@ -93,9 +94,9 @@ class BondLengthMap(GeometryPlot):
     """
 
     _plot_type = "Bond length"
-    
+
     _parameters = (
-        
+
         SwitchInput(
             key = "geom_from_output", name = "Geometry from output",
             default = True,
@@ -130,7 +131,7 @@ class BondLengthMap(GeometryPlot):
             },
             help = """Determines whether strain values should be displayed instead of lengths"""
         ),
-        
+
         FloatInput(
             key = "bond_thresh", name = "Bond length threshold",
             default = 1.7,
@@ -139,7 +140,7 @@ class BondLengthMap(GeometryPlot):
             },
             help = "Maximum distance between two atoms to draw a bond"
         ),
-        
+
         TextInput(
             key = "cmap", name = "Plotly colormap",
             default = "viridis",
@@ -151,7 +152,7 @@ class BondLengthMap(GeometryPlot):
             You can see all valid colormaps here: <a>https://plot.ly/python/builtin-colorscales/<a/><br>
             Note that you can reverse a color map by adding _r"""
         ),
-        
+
         # IntegerInput(
         #     key = "tileX", name = "Tile first axis",
         #     default = 1,
@@ -160,7 +161,7 @@ class BondLengthMap(GeometryPlot):
         #     },
         #     help = "Number of unit cells to display along the first axis"
         # ),
-        
+
         # IntegerInput(
         #     key = "tileY", name = "Tile second axis",
         #     default = 1,
@@ -169,7 +170,7 @@ class BondLengthMap(GeometryPlot):
         #     },
         #     help = "Number of unit cells to display along the second axis"
         # ),
-        
+
         # IntegerInput(
         #     key = "tileZ", name = "Tile third axis",
         #     default = 1,
@@ -178,7 +179,7 @@ class BondLengthMap(GeometryPlot):
         #     },
         #     help = "Number of unit cells to display along the third axis"
         # ),
-        
+
         FloatInput(
             key = "cmin", name = "Color scale low limit",
             default = 0,
@@ -186,7 +187,7 @@ class BondLengthMap(GeometryPlot):
                 "step": 0.01
             }
         ),
-        
+
         FloatInput(
             key = "cmax", name = "Color scale high limit",
             default = 0,
@@ -211,24 +212,24 @@ class BondLengthMap(GeometryPlot):
             default=True,
             help="""Whether the color bar should be displayed or not."""
         ),
-        
+
         IntegerInput(
             key = "points_per_bond", name = "Points per bond",
             default = 10,
             help = "Number of points that fill a bond. <br>More points will make it look more like a line but will slow plot rendering down."
         ),
-    
+
     )
 
     _layout_defaults = {
-        'xaxis_title': 'X [Ang]', 
+        'xaxis_title': 'X [Ang]',
         'yaxis_title': "Y [Ang]",
         'yaxis_zeroline': False
     }
-    
+
     @classmethod
     def _default_animation(self, wdir = None, frame_names = None, **kwargs):
-        
+
         geom_files = find_files(wdir, "*.XV", sort = True)
 
         return BondLengthMap.animated("geom_file", geom_files, wdir = wdir, **kwargs)
@@ -243,10 +244,10 @@ class BondLengthMap(GeometryPlot):
         GeometryPlot._read_nosource(self)
 
         self._read_strain_ref()
-    
+
     @entry_point('geom_file')
     def _read_siesta_output(self):
-        
+
         GeometryPlot._read_siesta_output(self)
 
         self._read_strain_ref()
@@ -266,9 +267,9 @@ class BondLengthMap(GeometryPlot):
 
         if getattr(self, "relaxed_geom", None):
             self.relaxed_bonds = self.find_all_bonds(self.relaxed_geom)
-        
+
         self.get_param("atom").update_options(self.geometry)
-    
+
     def _wrap_bond3D(self, bond, strain=False):
         """
         Receives a bond and sets its color to the bond length
@@ -280,11 +281,11 @@ class BondLengthMap(GeometryPlot):
         else:
             color = self._bond_length(self.geometry, bond)
             name = f'{color:.3f} Ang'
-        
+
         self.colors.append(color)
 
-        return (*self.geometry[bond], 15), {"color": color, "name": name }
-    
+        return (*self.geometry[bond], 15), {"color": color, "name": name}
+
     def _wrap_bond2D(self, bond, xys, strain=False):
 
         if strain:
@@ -297,11 +298,11 @@ class BondLengthMap(GeometryPlot):
         self.colors.append(color)
 
         return (*xys, ), {"color": color, "name": name}
-    
+
     @staticmethod
     def _bond_length(geom, bond):
         return np.linalg.norm(geom[bond[1]] - geom[bond[0]])
-    
+
     @staticmethod
     def _bond_strain(relaxed_geom, geom, bond):
 
@@ -322,7 +323,7 @@ class BondLengthMap(GeometryPlot):
         else:
             atom = self.setting("atom")
             bind_bonds_to_ats = self.setting("bind_bonds_to_ats")
-        
+
         # Set the bonds to the relaxed ones if there is a strain reference
         show_strain = self.setting("strain")
         show_strain = show_strain and hasattr(self, "relaxed_bonds")
@@ -343,7 +344,7 @@ class BondLengthMap(GeometryPlot):
 
         if ndims == 3:
             self._plot_geom3D(cheap_bonds=True,
-                wrap_bond=partial(self._wrap_bond3D, strain=show_strain), 
+                wrap_bond=partial(self._wrap_bond3D, strain=show_strain),
                 **common_kwargs
             )
         elif ndims == 2:
@@ -362,12 +363,12 @@ class BondLengthMap(GeometryPlot):
             raise NotImplementedError("Does it make sense to implement 1 dimensional bond length maps? If so, post an issue on sisl's github page. Thanks!")
 
         showscale = self.setting('colorbar')
-        
+
         if self.colors:
-            self.update_layout(coloraxis={"cmin": self.setting("cmin") or min(self.colors) ,
+            self.update_layout(coloraxis={"cmin": self.setting("cmin") or min(self.colors),
                                         "cmax": self.setting("cmax") or max(self.colors),
                                         "colorscale": self.setting("cmap"),
                                         'showscale': showscale,
                                         'colorbar_title': 'Strain' if show_strain else 'Bond length [Ang]'})
-        
+
         self.update_layout(legend_orientation='h')

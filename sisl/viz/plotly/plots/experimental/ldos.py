@@ -9,6 +9,7 @@ from ...plot import Plot, entry_point
 from ...plotutils import run_multiple
 from ...input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
 
+
 class LDOSmap(Plot):
     '''
     Generates a heat map with the STS spectra along a path.
@@ -18,12 +19,12 @@ class LDOSmap(Plot):
     %%configurable_settings%%
 
     '''
-    
+
     _plot_type = "LDOS map"
-    
+
     _requirements = {
         "siesOut": {
-            "files": ["$struct$.DIM", "$struct$.PLD", "*.ion" , "$struct$.selected.WFSX"],
+            "files": ["$struct$.DIM", "$struct$.PLD", "*.ion", "$struct$.selected.WFSX"],
             "codes": {
 
                 "denchar": {
@@ -32,21 +33,21 @@ class LDOSmap(Plot):
 
             }
         },
-        
+
     }
 
     _parameters = (
 
         RangeSlider(
             key = "Erange", name = "Energy range",
-            default = [-2,4],
+            default = [-2, 4],
             width = "s90%",
             params = {
                 "min": -10,
                 "max": 10,
                 "allowCross": False,
                 "step": 0.1,
-                "marks": { **{ i: str(i) for i in range(-10,11) }, 0: "Ef",},
+                "marks": {**{i: str(i) for i in range(-10, 11)}, 0: "Ef", },
             },
             help = "Energy range where the STS spectra are computed."
         ),
@@ -103,11 +104,11 @@ class LDOSmap(Plot):
             default = "sum",
             width = "s100% m50% l40%",
             params = {
-                "options":  [{"label": "Sum", "value": "sum"}, {"label" : "Average", "value": "average"}],
+                "options":  [{"label": "Sum", "value": "sum"}, {"label": "Average", "value": "average"}],
                 "isMulti": False,
                 "placeholder": "",
                 "isClearable": False,
-                "isSearchable": True, 
+                "isSearchable": True,
             },
             help = "Determines whether values surrounding a point should be summed or averaged"
         ),
@@ -122,7 +123,7 @@ class LDOSmap(Plot):
                     default = 0,
                     width = "s30%",
                     params = {
-                        "step" : 0.01
+                        "step": 0.01
                     }
                 ) for key in ("x", "y", "z")],
 
@@ -134,7 +135,7 @@ class LDOSmap(Plot):
                         "isMulti": False,
                         "placeholder": "",
                         "isClearable": True,
-                        "isSearchable": True, 
+                        "isSearchable": True,
                     },
                     help = '''You can provide an atom index instead of the coordinates<br>
                     If an atom is provided, x, y and z will be interpreted as the supercell indices.<br>
@@ -162,16 +163,16 @@ class LDOSmap(Plot):
             },
             help = "All points above this value will be displayed as the maximum.<br> Decreasing this value will increase saturation."
         ),
-    
+
     )
 
     _layout_defaults = {
-        'xaxis_title': "Path coordinate", 
+        'xaxis_title': "Path coordinate",
         'yaxis_title': "E-Ef (eV)"
     }
 
     def _getdencharSTSfdf(self, stsPosition):
-        
+
         return '''
             Denchar.PlotSTS .true.
             Denchar.PlotWaveFunctions   .false.
@@ -198,14 +199,13 @@ class LDOSmap(Plot):
         self.fermi = False
         for out_fileName in (self.struct, self.fdf_sile.base_file.replace(".fdf", "")):
             try:
-                for line in open(os.path.join(self.root_dir, "{}.out".format(out_fileName)) ):
+                for line in open(os.path.join(self.root_dir, "{}.out".format(out_fileName))):
                     if "Fermi =" in line:
                         self.fermi = float(line.split()[-1])
                         print("\nFERMI LEVEL FOUND: {} eV\n Energies will be relative to this level (E-Ef)\n".format(self.fermi))
                 break
             except FileNotFoundError:
                 pass
-        
 
         if not self.fermi:
             print("\nFERMI LEVEL NOT FOUND IN THE OUTPUT FILE. \nEnergy values will be absolute\n")
@@ -213,21 +213,21 @@ class LDOSmap(Plot):
 
         #Get the path (this also sets some attributes: 'distances', 'pointsByStage', 'totalPoints')
         self._getPath()
-        
+
         #Prepare the array that will store all the spectra
         self.spectra = np.zeros((self.path.shape[0], self.path.shape[1], self.setting("nE")))
         #Other helper arrays
-        pathIs = np.linspace(0, self.path.shape[0] - 1, self.path.shape[0] )
-        Epoints = np.linspace( *(np.array(self.setting("Erange")) + self.fermi), self.setting("nE") )
+        pathIs = np.linspace(0, self.path.shape[0] - 1, self.path.shape[0])
+        Epoints = np.linspace(*(np.array(self.setting("Erange")) + self.fermi), self.setting("nE"))
 
         #Copy selected WFSX into WFSX if it exists (denchar reads from .WFSX)
         shutil.copyfile(os.path.join(self.root_dir, '{}.selected.WFSX'.format(self.struct)),
-            os.path.join(self.root_dir, '{}.WFSX'.format(self.struct) ) )
-        
+            os.path.join(self.root_dir, '{}.WFSX'.format(self.struct)))
+
         #Get the fdf file and replace include paths so that they work
         with open(self.setting("root_fdf"), "r") as f:
             self.fdfLines = f.readlines()
-        
+
         for i, line in enumerate(self.fdfLines):
             if "%include" in line and not os.path.isabs(line.split()[-1]):
 
@@ -238,8 +238,8 @@ class LDOSmap(Plot):
         os.chdir(self.root_dir)
 
         #Inform that the WFSX file is used so that changes in it can be followed
-        self.follow(os.path.join(self.root_dir, '{}.WFSX'.format(self.struct) ))
-        
+        self.follow(os.path.join(self.root_dir, '{}.WFSX'.format(self.struct)))
+
         def getSpectraForPath(argsTuple):
 
             path, nE, iPath, root_dir, struct, STSflags, args, kwargs = argsTuple
@@ -264,7 +264,7 @@ class LDOSmap(Plot):
                 with open(tempFdf, "w") as fh:
                     fh.writelines(kwargs["fdfLines"])
                     fh.write(STSflags[i])
-                    
+
                 #Do the STS calculation for the point
                 os.system("denchar < {} > /dev/null".format(tempFdf))
 
@@ -275,18 +275,17 @@ class LDOSmap(Plot):
                 try:
                     spectrum = np.loadtxt(outputFile)
 
-                    spectra.append(spectrum[:,1])
+                    spectra.append(spectrum[:, 1])
                 except Exception as e:
-                    
+
                     print("Error calculating the spectra for point {}: \n{}".format(point, e))
                     failedPoints += 1
                     #If any spectrum was read, just fill it with zeros
                     spectra.append(np.zeros(nE))
-            
+
             if failedPoints:
                 print("Path {} finished with {} error{} ({}/{} points succesfully calculated)".format(int(iPath), failedPoints, "s" if failedPoints > 1 else "", len(path) - failedPoints, len(path)))
 
-            
             os.chdir("..")
             shutil.rmtree(tempDir, ignore_errors=True)
 
@@ -299,8 +298,8 @@ class LDOSmap(Plot):
             pathIs,
             self.root_dir, self.struct,
             #All the strings that need to be added to each file
-            [ [self._getdencharSTSfdf(point) for point in points] for points in self.path ],
-            kwargsList = {"root_fdf" : self.setting("root_fdf"), "fdfLines": self.fdfLines },
+            [[self._getdencharSTSfdf(point) for point in points] for points in self.path],
+            kwargsList = {"root_fdf": self.setting("root_fdf"), "fdfLines": self.fdfLines},
             messageFn = lambda nTasks, nodes: "Calculating {} simultaneous paths in {} nodes".format(nTasks, nodes),
             serial = self.isChildPlot
         )
@@ -312,14 +311,14 @@ class LDOSmap(Plot):
             name = "LDOSmap",
             data = self.spectra,
             dims = ["iPath", "x", "E"],
-            coords = [pathIs, list(range(self.path.shape[1])), Epoints] 
+            coords = [pathIs, list(range(self.path.shape[1])), Epoints]
         )
 
         os.chdir(cwd)
-        
+
         #Update the values for the limits so that they are automatically set
-        self.update_settings(run_updates = False, cmin = 0, cmax = 0) 
-    
+        self.update_settings(run_updates = False, cmin = 0, cmax = 0)
+
     def _getPath(self):
 
         if list(self.setting("trajectory")):
@@ -328,17 +327,17 @@ class LDOSmap(Plot):
 
             #At the moment these make little sense, but in the future there will be the possibility to add breakpoints
             self.pointsByStage = np.array([len(self.path)])
-            self.distances = np.array( [np.linalg.norm(self.path[-1] - self.path[0])] )
+            self.distances = np.array([np.linalg.norm(self.path[-1] - self.path[0])])
         else:
             #Otherwise, we will calculate the trajectory according to the points provided
             points = []
             for reqPoint in self.setting("points"):
 
                 if reqPoint.get("atom"):
-                    translate = np.array([reqPoint.get("x",0),reqPoint.get("y",0),reqPoint.get("z", 0)]).dot(self.geom.cell)
+                    translate = np.array([reqPoint.get("x", 0), reqPoint.get("y", 0), reqPoint.get("z", 0)]).dot(self.geom.cell)
                     points.append(self.geom[reqPoint["atom"]] + translate)
                 else:
-                    points.append([reqPoint["x"],reqPoint["y"],reqPoint["z"]])
+                    points.append([reqPoint["x"], reqPoint["y"], reqPoint["z"]])
             points = np.array(points)
 
             nCorners = len(points)
@@ -362,16 +361,16 @@ class LDOSmap(Plot):
                 self.path = [*self.path, *np.linspace(prevPoint, point, nSteps)]
 
                 self.pointsByStage[i] = nSteps
-            
+
             self.path = np.array(self.path)
-        
+
         #Then, let's widen the path if the user wants to do it (check also points that surround the path)
         if callable(self.setting("widen_func")):
             self.path = self.setting("widen_func")(self.path)
         else:
             #This is just to normalize path
             self.path = np.expand_dims(self.path, 0)
-        
+
         #Store the total number of points of the path
         self.nPathPoints = self.path.shape[1]
         self.totalPoints = self.path.shape[0] * self.path.shape[1]
@@ -384,7 +383,7 @@ class LDOSmap(Plot):
             spectraToPlot = self.xarr.sum(dim = "iPath")
         elif self.setting("widen_method") == "average":
             spectraToPlot = self.xarr.mean(dim = "iPath")
-        
+
         self.data = [{
             'type': 'heatmap',
             'z': spectraToPlot.transpose("E", "x").values,
@@ -393,4 +392,3 @@ class LDOSmap(Plot):
             'zmax': self.setting("cmax"),
             #Yaxis is the energy axis
             'y': np.linspace(*self.setting("Erange"), self.setting("nE"))}]
- 

@@ -9,6 +9,7 @@ from ..plotutils import find_files
 from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, OrbitalQueries, ProgramaticInput, Array1dInput, ListInput
 from ..input_fields.range import ErangeInput
 
+
 class PdosPlot(Plot):
     """
     Plot representation of the projected density of states.
@@ -66,7 +67,7 @@ class PdosPlot(Plot):
     )
 
     _parameters = (
-        
+
         FilePathInput(
             key = "pdos_file", name = "Path to PDOS file",
             width = "s100% m50% l33%",
@@ -79,7 +80,7 @@ class PdosPlot(Plot):
 
         ErangeInput(
             key="Erange",
-            default=[-2,2],
+            default=[-2, 2],
             help = "Energy range where PDOS is displayed."
         ),
 
@@ -103,7 +104,7 @@ class PdosPlot(Plot):
         ),
 
         Array1dInput(key="kgrid_displ", name="Monkhorst-Pack grid displacement",
-            default=[0,0,0],
+            default=[0, 0, 0],
             group="Hparams",
             help="""Displacement of the Monkhorst-Pack grid"""
         ),
@@ -112,7 +113,7 @@ class PdosPlot(Plot):
             default=0,
             help="""The energy to which all energies will be referenced (including Erange)."""
         ),
-        
+
         OrbitalQueries(
             key = "requests", name = "PDOS queries",
             default = [{"active": True, "name": "DOS", "species": None, "atoms": None, "orbitals": None, "spin": None, "normalize": False, "color": "black", "linewidth": 1}],
@@ -182,10 +183,10 @@ class PdosPlot(Plot):
     _shortcuts = {
 
     }
-    
+
     @classmethod
     def _default_animation(self, wdir = None, frame_names = None, **kwargs):
-        
+
         pdos_files = find_files(wdir, "*.PDOS.xml", sort = True)
 
         if not pdos_files:
@@ -196,11 +197,11 @@ class PdosPlot(Plot):
             return [child_plot.setting("pdos_file").name for child_plot in self.child_plots]
 
         return PdosPlot.animated("pdos_file", pdos_files, frame_names = _get_frame_names, wdir = wdir, **kwargs)
-    
+
     def _after_init(self):
 
         self._add_shortcuts()
-    
+
     def _add_shortcuts(self):
 
         self.add_shortcut(
@@ -214,13 +215,13 @@ class PdosPlot(Plot):
             self.split_DOS, on="species",
             _description="Split the total DOS along the different species"
         )
-        
+
         self.add_shortcut(
             "a", "Split on atoms",
             self.split_DOS, on="atoms",
             _description="Split the total DOS along the different atoms"
         )
-        
+
         self.add_shortcut(
             "p", "Split on spin",
             self.split_DOS, on="spin",
@@ -237,7 +238,7 @@ class PdosPlot(Plot):
         # This should probably take into account how big the cell is.
         kgrid = self.setting('kgrid')
         if kgrid is None:
-            kgrid = [ 3 if nsc > 1 else 1 for nsc in self.H.geometry.nsc]
+            kgrid = [3 if nsc > 1 else 1 for nsc in self.H.geometry.nsc]
         kgrid_displ = self.setting('kgrid_displ')
 
         Erange = self.setting("Erange")
@@ -258,7 +259,6 @@ class PdosPlot(Plot):
         self.geometry, self.E, self.PDOS = self.get_sile(pdos_file).read_data()
 
     def _after_read(self):
-
         """
 
         Gets the information out of the .pdos and processes it into self.PDOSdicts so that it can be accessed by 
@@ -282,19 +282,19 @@ class PdosPlot(Plot):
             The energy values where PDOS is calculated
 
         """
-        
+
         #Normalize self.PDOS to do the same treatment for both spin-polarized and spinless simulations
         self.isSpinPolarized = len(self.PDOS.shape) == 3
 
         #Normalize the PDOS array
-        self.PDOS = np.array([self.PDOS]) if not self.isSpinPolarized else self.PDOS 
+        self.PDOS = np.array([self.PDOS]) if not self.isSpinPolarized else self.PDOS
 
         self.PDOS = DataArray(
-            self.PDOS, 
+            self.PDOS,
             coords={
-                'spin': [0,1] if self.isSpinPolarized else [0],
+                'spin': [0, 1] if self.isSpinPolarized else [0],
                 'orb': range(0, self.PDOS.shape[1]),
-                'E': self.E 
+                'E': self.E
             },
             dims=('spin', 'orb', 'E')
         )
@@ -314,7 +314,7 @@ class PdosPlot(Plot):
             contains all the user's requests for the PDOS display.
 
             The contributions of all the requests under a request group [ ] will be summed and displayed together.
-        
+
         normalize: bool
             whether the contribution is normalized by the number of atoms.
 
@@ -331,7 +331,7 @@ class PdosPlot(Plot):
         if Erange is None:
             Emin, Emax = [min(self.PDOS.E.values), max(self.PDOS.E.values)]
         else:
-            Emin, Emax = Erange + E0 
+            Emin, Emax = Erange + E0
 
         #Get only the part of the arra
         E_PDOS = self.PDOS.where(
@@ -367,14 +367,14 @@ class PdosPlot(Plot):
                 'type': 'scatter',
                 'x': req_PDOS.values,
                 'y': req_PDOS.E.values - E0,
-                'mode': 'lines', 
-                'name': request["name"], 
-                'line': {'width' : request["linewidth"], "color": request["color"]},
+                'mode': 'lines',
+                'name': request["name"],
+                'line': {'width': request["linewidth"], "color": request["color"]},
                 "hoverinfo": "name",
             })
 
             self.update_layout(yaxis_range=np.array([Emin - E0, Emax - E0]))
-        
+
         return self.data
 
     # ----------------------------------
@@ -391,9 +391,9 @@ class PdosPlot(Plot):
 
         if len(query) == 0:
             return True
-        
+
         return request["name"] in query or iReq in query
-    
+
     def _new_request(self, **kwargs):
 
         complete_req = self.get_param("requests").complete_query
@@ -438,7 +438,7 @@ class PdosPlot(Plot):
         request = self._new_request(**{**req, **kwargs})
 
         try:
-            requests = [request] if clean else [*self.settings["requests"], request ]
+            requests = [request] if clean else [*self.settings["requests"], request]
             self.update_settings(requests=requests)
         except Exception as e:
             print("There was a problem with your new request ({}): \n\n {}".format(request, e))
@@ -458,15 +458,15 @@ class PdosPlot(Plot):
 
             Note that if you have a list of them you can go like `remove_requests(*mylist)`
             to spread it and use all items in your list as args
-            
+
             If no query is provided, all the requests will be matched
         """
 
         if all:
             requests = []
         else:
-            requests = [ req for i, req in enumerate(self.setting("requests")) if not self._matches_request(req, i_or_names, i)]
-        
+            requests = [req for i, req in enumerate(self.setting("requests")) if not self._matches_request(req, i_or_names, i)]
+
         return self.update_settings(run_updates=update_fig, requests=requests)
 
     def update_requests(self, *i_or_names, **kwargs):
@@ -481,7 +481,7 @@ class PdosPlot(Plot):
 
             Note that if you have a list of them you can go like `update_requests(*mylist)`
             to spread it and use all items in your list as args
-            
+
             If no query is provided, all the requests will be matched
         **kwargs:
             keyword arguments containing the values that you want to update
@@ -516,7 +516,7 @@ class PdosPlot(Plot):
             whether all requests should be removed before drawing the merged request
         **kwargs:
             keyword arguments that go directly to the new request.
-            
+
             You can use them to set other attributes to the request. For example:
             `plot.merge_requests(on="orbitals", species=["C"])`
             will split the PDOS on the different orbitals but will take
@@ -532,16 +532,16 @@ class PdosPlot(Plot):
                 for key in keys:
                     if request[key] is not None:
                         new_request[key] = [*new_request[key], *request[key]]
-        
-        # Remove duplicate values for each key 
+
+        # Remove duplicate values for each key
         # and if it's an empty list set it to None (empty list returns no PDOS)
         for key in keys:
             new_request[key] = list(set(new_request[key])) or None
-        
+
         # Remove the merged requests if desired
         if remove:
             self.remove_requests(*i_or_names, update_fig=False)
-        
+
         return self.add_request(**new_request, **kwargs, clean=clean)
 
     def split_requests(self, *i_or_names, on="species", only=None, exclude=None, remove=True, clean=False, **kwargs):
@@ -573,7 +573,7 @@ class PdosPlot(Plot):
             be drawn on top of what is already there.
         **kwargs:
             keyword arguments that go directly to each request.
-            
+
             This is useful to add extra filters. For example:
             If you had a request called "C":
             `plot.split_request("C", on="orbitals", spin=[0])`
@@ -583,7 +583,7 @@ class PdosPlot(Plot):
 
         if exclude is None:
             exclude = []
-        
+
         reqs = self.requests(*i_or_names)
 
         requests = []
@@ -593,7 +593,6 @@ class PdosPlot(Plot):
             #If it's none, it means that is getting all the possible values
             if values is None:
                 values = self.get_param("requests")[on].options
-            
 
             requests = [*requests, *[
                 self._new_request(**{**req, on: [value], "name": f'{req["name"]}, {value}', **kwargs})
@@ -607,7 +606,7 @@ class PdosPlot(Plot):
             self.remove_requests(*i_or_names, update_fig=False)
 
         if not clean:
-            requests = [ *self.setting("requests"), *requests]
+            requests = [*self.setting("requests"), *requests]
 
         return self.update_settings(requests=requests)
 
@@ -630,7 +629,7 @@ class PdosPlot(Plot):
             be drawn on top of what is already there.
         **kwargs:
             keyword arguments that go directly to each request.
-            
+
             This is useful to add extra filters. For example:
             `plot.split_DOS(on="orbitals", species=["C"])`
             will split the PDOS on the different orbitals but will take

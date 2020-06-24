@@ -15,6 +15,7 @@ from sisl.viz.plotly.plots.tests.test_bands import BandsPlotTester
 #         Build a generic tester for the bands plot
 # ------------------------------------------------------------
 
+
 class FatbandsPlotTester(BandsPlotTester):
 
     def test_weights_dataarray(self):
@@ -30,7 +31,7 @@ class FatbandsPlotTester(BandsPlotTester):
         assert isinstance(weights, DataArray)
         assert weights.dims == ('k', 'band', 'orb')
         assert weights.shape == self.weights_shape
-    
+
     def test_groups(self):
         '''
         Check that we can request groups
@@ -41,12 +42,12 @@ class FatbandsPlotTester(BandsPlotTester):
 
         self.plot.update_settings(groups=[{"atoms": [1], "color": color, "name": name}])
 
-        fatbands_traces = [ trace for trace in self.plot.data if trace.fill == 'toself']
+        fatbands_traces = [trace for trace in self.plot.data if trace.fill == 'toself']
 
         assert len(fatbands_traces) > 0
         assert fatbands_traces[0].line.color == color
         assert fatbands_traces[0].name == name
-    
+
     def test_split_groups(self):
 
         plot = self.plot
@@ -71,8 +72,6 @@ class FatbandsPlotTester(BandsPlotTester):
             assert len(plot.data) - traces_before, err_message
 
 
-
-
 # ------------------------------------------------------------
 #    Test the fatbands plot reading from a sisl Hamiltonian
 # ------------------------------------------------------------
@@ -80,7 +79,8 @@ class FatbandsPlotTester(BandsPlotTester):
 gr = sisl.geom.graphene()
 H = sisl.Hamiltonian(gr)
 H.construct([(0.1, 1.44), (0, -2.7)])
-bz = sisl.BandStructure(H, [[0,0,0], [2/3, 1/3, 0], [1/2, 0, 0]], 9, ["Gamma", "M", "K"])
+bz = sisl.BandStructure(H, [[0, 0, 0], [2/3, 1/3, 0], [1/2, 0, 0]], 9, ["Gamma", "M", "K"])
+
 
 class TestFatbandsSislHamiltonian(FatbandsPlotTester):
 

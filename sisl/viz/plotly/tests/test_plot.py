@@ -21,6 +21,8 @@ from sisl.viz.plotly._presets import PRESETS
 # ------------------------------------------------------------
 # Checks that will be available to be used on any plot class
 # ------------------------------------------------------------
+
+
 class BasePlotTester:
 
     PlotClass = Plot
@@ -57,7 +59,7 @@ class BasePlotTester:
         print(plot.settings)
         assert np.all([plot.settings[key] ==
                     val for key, val in old_settings.items()])
-        
+
         # Build a plot directly with test settings and check if it works
         plot = self.PlotClass(**new_settings)
         assert np.all([plot.settings[key] == val for key, val in new_settings.items()])
@@ -95,10 +97,10 @@ class BasePlotTester:
         assert plot.a_value == 8
 
     def test_presets(self):
-        
+
         plot = self.PlotClass(presets="dark")
 
-        assert np.all([ key not in plot.settings or plot.settings[key] == val for key, val in PRESETS["dark"].items()])
+        assert np.all([key not in plot.settings or plot.settings[key] == val for key, val in PRESETS["dark"].items()])
 
     def test_save_and_load(self, obj=None):
 
@@ -121,6 +123,7 @@ class BasePlotTester:
 #          Actual tests on the Plot parent class
 # ------------------------------------------------------------
 
+
 class TestPlot(BasePlotTester):
 
     PlotClass = Plot
@@ -136,7 +139,7 @@ class TestPlot(BasePlotTester):
 
     #         plot = Plot(file_name)
 
-    
+
 # ------------------------------------------------------------
 #            Tests for the MultiplePlot class
 # ------------------------------------------------------------
@@ -160,13 +163,13 @@ class TestSubPlots(BasePlotTester):
 
         # We are going to try some things here and check that they don't fail
         # as we have no way of checking the actual layout of the subplots
-        plot = GeometryPlot.subplots('bonds', [True, False], 
+        plot = GeometryPlot.subplots('bonds', [True, False],
             fixed={'geometry': geom, 'axes': [0, 1]}, _debug=True)
 
         plot.update_settings(cols=2)
 
         plot.update_settings(rows=2)
-        
+
         plot.update_settings(cols=1, rows=1)
 
         with pytest.raises(Exception):
@@ -186,6 +189,3 @@ class TestSubPlots(BasePlotTester):
 class TestAnimation(BasePlotTester):
 
     PlotClass = Animation
-
-    
-

@@ -6,10 +6,12 @@ from flask_socketio import emit
 
 __WITH_USERS__ = False
 
+
 class User(UserMixin):
     '''
     Class used for users that are accessing the session through the GUI.
     '''
+
     def __init__(self, id=None):
         self.id = id
 
@@ -43,7 +45,7 @@ class User(UserMixin):
             self.permissions = {**self.permissions, **new_permissions}
         else:
             raise Exception("You don't have the rights to change user permissions.")
-    
+
     def has_permissions(self, *perms):
         '''
         Checks if the user has the provided permissions.
@@ -63,6 +65,7 @@ class User(UserMixin):
                 return False
         else:
             return True
+
 
 def if_user_can(*perms):
     '''
@@ -103,8 +106,9 @@ def if_user_can(*perms):
             else:
                 return f(*args, **kwargs)
         return wrapped
-    
+
     return with_permissions_check
+
 
 def with_user_management(app):
 
@@ -119,6 +123,7 @@ def with_user_management(app):
     @login_manager.user_loader
     def load_user(id):
         return User(id)
+
 
 def listen_to_users(socketio_on):
     '''

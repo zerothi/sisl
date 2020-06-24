@@ -5,6 +5,7 @@ import tempfile
 
 import nbformat
 
+
 def _notebook_run(path):
     """Execute a notebook via nbconvert and collect output.
        :returns (parsed nb object, execution errors)
@@ -12,7 +13,7 @@ def _notebook_run(path):
     dirname, __ = os.path.split(path)
     os.chdir(dirname)
     with tempfile.NamedTemporaryFile(suffix=".ipynb") as fout:
-        args = ["jupyter","nbconvert", "--to", "notebook", "--execute",
+        args = ["jupyter", "nbconvert", "--to", "notebook", "--execute",
           "--ExecutePreprocessor.timeout=60",
           "--output", fout.name, path]
         subprocess.check_call(args)
@@ -25,6 +26,7 @@ def _notebook_run(path):
                      if output.output_type == "error"]
 
     return nb, errors
+
 
 class NotebookTester:
 
@@ -47,6 +49,7 @@ class NotebookTester:
 
 tut_root = "/home/pfebrer/webDevelopement/sislGUI/sisl/sisl/viz/plotly/Notebooks/tutorials"
 
+
 class TestDemo(NotebookTester):
 
     path = os.path.join(tut_root, "Demo.ipynb")
@@ -57,14 +60,12 @@ class TestDemo(NotebookTester):
 
         super().test_ipynb()
 
-        
 
 class TestDIY(NotebookTester):
 
     path = os.path.join(tut_root, "DIY.ipynb")
 
+
 class TestGUISession(NotebookTester):
 
     path = os.path.join(tut_root, "GUI with Python Demo.ipynb")
-
-

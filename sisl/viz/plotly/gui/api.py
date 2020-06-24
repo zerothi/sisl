@@ -21,8 +21,9 @@ __DEBUG = False
 
 app = Flask("SISL GUI API")
 
+
 class CustomJSONEncoder(JSONEncoder):
-    
+
     def default(self, obj):
 
         if isinstance(obj, Figure):
@@ -31,9 +32,9 @@ class CustomJSONEncoder(JSONEncoder):
             return obj.to_json()
         elif isinstance(obj, np.ndarray):
             return obj.tolist()
-        elif isinstance(obj, np.generic): 
+        elif isinstance(obj, np.generic):
             return obj.item()
-        
+
         return super().default(obj)
 
 # We need to use simplejson because built-in json happily parses nan to NaN
@@ -54,10 +55,12 @@ if False:
 # This will be the global session
 SESSION = BlankSession(socketio=SOCKETIO)
 
+
 @SOCKETIO.on_error()
 def send_error(err):
     emit_error(err)
     raise err
+
 
 @on('request_session')
 @if_user_can('see')
@@ -69,6 +72,7 @@ def send_session(path = None):
 
     emit_session(SESSION, broadcast = False)
 
+
 @on('apply_method_on_session')
 @if_user_can("edit")
 def apply_method(method_name, kwargs = {}, *args):
@@ -76,15 +80,14 @@ def apply_method(method_name, kwargs = {}, *args):
     if __DEBUG:
         print(f"Applying {method_name}. Args: {args}. Kwargs: {kwargs}")
 
-
     if kwargs is None:
         # This is because the GUI might send None
         kwargs = {}
-    
+
     # Remember that if the method is not found an error will be raised
     # but it will be handled socketio.on_error (used above)
     method = getattr(SESSION.autosync, method_name)
-    
+
     # Since the session is bound to the app, this will automatically emit the
     # session
     returns = method(*args, **kwargs)
@@ -94,6 +97,7 @@ def apply_method(method_name, kwargs = {}, *args):
         event_name = kwargs.get("returns_as", "call_returns")
         emit(event_name, returns, {"method_name": method_name}, broadcast=False)
 
+
 @on('get_plot')
 @if_user_can("see")
 def retrieve_plot(plotID):
@@ -101,6 +105,7 @@ def retrieve_plot(plotID):
         print(f"Asking for plot: {plotID}")
 
     emit_plot(plotID, SESSION, broadcast=False)
+
 
 @on("upload_file")
 @if_user_can("edit")
@@ -117,11 +122,12 @@ def plot_uploaded_file(file_bytes, name):
     # file_name = name
     # file_contents = {name: file_bytes}
 
-    plot = Plot(file_name)#, attrs_for_plot={"_file_contents": file_contents}, _debug=True) # 
+    plot = Plot(file_name)#, attrs_for_plot={"_file_contents": file_contents}, _debug=True) #
     SESSION.autosync.add_plot(plot, SESSION.tabs[0]["id"])
 
     if not SESSION.setting("keep_uploaded"):
         shutil.rmtree(dirname)
+
 
 def set_session(new_session, ret_old=False):
     '''
@@ -162,11 +168,12 @@ def set_session(new_session, ret_old=False):
         return SESSION, old_session
     return SESSION
 
+
 def run(host="localhost", port=4000, debug=False):
 
     print(
         f"\nApi running on http://{host}:{port}...\nconnect the GUI to this address or send it to someone for sharing.")
-    
+
     SOCKETIO.run(app, debug=debug, host=host, port=port)
 
 if __name__ == '__main__':

@@ -318,6 +318,7 @@ def get_siles(attrs=None):
 
     return siles
 
+
 @set_module("sisl.io")
 def get_sile_rules(attrs=None):
     '''
@@ -346,6 +347,7 @@ def get_sile_rules(attrs=None):
                 break
 
     return sile_rules
+
 
 @set_module("sisl.io")
 class BaseSile:

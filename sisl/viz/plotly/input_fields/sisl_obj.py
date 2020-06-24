@@ -26,6 +26,7 @@ forced_keys = {
     sisl.EigenstateElectron: 'eigenstate',
 }
 
+
 class SislObjectInput(InputField):
 
     _type = "sisl_object"
@@ -47,6 +48,7 @@ class SislObjectInput(InputField):
 
         super().__init__(key, *args, **kwargs)
 
+
 class GeometryInput(SislObjectInput):
 
     _dtype = (str, sisl.Geometry, *sisl.get_siles(attrs=['read_geometry']))
@@ -57,23 +59,29 @@ class GeometryInput(SislObjectInput):
             val = sisl.get_sile(val)
         if isinstance(val, sisl.io.Sile):
             val = val.read_geometry()
-        
+
         return val
+
 
 class HamiltonianInput(SislObjectInput):
     pass
 
+
 class BandStructureInput(SislObjectInput):
     pass
+
 
 class BrillouinZoneInput(SislObjectInput):
     pass
 
+
 class GridInput(SislObjectInput):
     pass
 
+
 class EigenstateElectronInput(SislObjectInput):
-    pass  
+    pass
+
 
 class PlotableInput(SislObjectInput):
 
@@ -82,11 +90,12 @@ class PlotableInput(SislObjectInput):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+
 class SileInput(FilePathInput, SislObjectInput):
 
     def __init__(self, *args, required_attrs=None, **kwargs):
 
         if required_attrs:
             kwargs['dtype'] = sisl.get_siles(attrs=required_attrs)
-        
+
         super().__init__(*args, **kwargs)

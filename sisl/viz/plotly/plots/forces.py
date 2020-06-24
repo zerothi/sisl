@@ -4,6 +4,7 @@ import sisl
 from ..plot import Plot, entry_point
 from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
 
+
 class ForcesPlot(Plot):
     """
     Display of atomic forces.
@@ -83,17 +84,17 @@ class ForcesPlot(Plot):
 
         out_file = self.setting("out_file") or root_fdf.with_suffix(".out")
 
-        outSile = self.get_sile(out_file) 
-        
+        outSile = self.get_sile(out_file)
+
         self.atomic_forces = outSile.read_force(all=True)
 
         if len(self.atomic_forces[0]) == 0:
             self.total_forces, self.max_forces = outSile.read_force(all=True, total=True, max=True)
         else:
             self.total_forces, self.max_forces = outSile.read_force(all=True, total=True, max=True)
-            
+
         self.simulation_ended = outSile.job_completed
-    
+
     def _after_read(self):
 
         self.update_layout(xaxis_title="MD step", yaxis_title="Force [eV/Ang]")

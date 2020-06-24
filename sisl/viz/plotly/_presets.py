@@ -10,6 +10,7 @@ PRESETS = {
 
 }
 
+
 def add_presets(**presets):
     """
     Registers new presets
@@ -21,6 +22,7 @@ def add_presets(**presets):
     """
 
     PRESETS.update(presets)
+
 
 def get_preset(name):
     """

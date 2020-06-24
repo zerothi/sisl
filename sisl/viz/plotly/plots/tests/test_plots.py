@@ -14,6 +14,7 @@ from sisl.viz.plotly.plotutils import get_plot_classes
 # Factory that returns a basic functionality test for a class
 # ------------------------------------------------------------
 
+
 def get_basic_functionality_test(PlotSubClass):
 
     class BasicSubClassTest(BasePlotTester):
@@ -27,7 +28,7 @@ def get_basic_functionality_test(PlotSubClass):
 
             assert hasattr(self.PlotClass, '_plot_type')
             assert isinstance(self.PlotClass._plot_type, str)
-        
+
         def test_param_groups(self):
 
             plot = self.PlotClass()
@@ -35,8 +36,8 @@ def get_basic_functionality_test(PlotSubClass):
             for group in plot.param_groups:
                 for key in ("key", "name", "icon", "description"):
                     assert key in group, f'{self.PlotClass} is missing {key} in parameters group {group}'
-            
-    return BasicSubClassTest 
+
+    return BasicSubClassTest
 
 # ------------------------------------------------------------
 #               Let's test all plot subclasses

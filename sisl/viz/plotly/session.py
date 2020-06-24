@@ -17,6 +17,7 @@ from .input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, In
 
 __all__ = ['Session']
 
+
 class Warehouse:
     """
     Class to store everything related to a session.
@@ -40,7 +41,8 @@ class Warehouse:
 
     def __setitem__(self, item, value):
         self._warehouse[item] = value
-    
+
+
 class Session(Configurable, Connected):
     """
     Represents a session of the graphical interface.
@@ -56,7 +58,7 @@ class Session(Configurable, Connected):
     Parameters
     -----------
     root_dir: str, optional
-    
+
     file_storage_dir: str, optional
         Directory where files uploaded in the GUI will be stored
     keep_uploaded: bool, optional
@@ -87,7 +89,7 @@ class Session(Configurable, Connected):
 
     _onSettingsUpdate = {
         "functions": ["get_structures"],
-        "config":{
+        "config": {
             "multipleFunc": False,
             "order": False,
         },
@@ -118,7 +120,7 @@ class Session(Configurable, Connected):
     )
 
     _parameters = (
-        
+
         TextInput(
             key = "root_dir", name = "Root directory",
             group = "filesystem",
@@ -154,14 +156,14 @@ class Session(Configurable, Connected):
         RangeSlider(
             key = "search_depth", name = "Search depth",
             group = "filesystem",
-            default = [0,3],
+            default = [0, 3],
             width = "s100% l50%",
             params = {
                 "min": 0,
                 "max": 15,
                 "allowCross": False,
                 "step": 1,
-                "marks": { i: str(i) for i in range(0,16) },
+                "marks": {i: str(i) for i in range(0, 16)},
                 "updatemode": "drag",
                 "units": "eV",
             },
@@ -221,7 +223,7 @@ class Session(Configurable, Connected):
         self.warehouse = Warehouse()
 
         call_method_if_present(self, "_after_init")
-        
+
         super().__init__(*args, **kwargs)
 
     #-----------------------------------------
@@ -243,7 +245,7 @@ class Session(Configurable, Connected):
         -----------
         plotID: str
             The ID of the desired plot
-        
+
         Returns
         ---------
         plot: sisl.viz.Plot()
@@ -269,8 +271,8 @@ class Session(Configurable, Connected):
         """
 
         return get_plot_classes()
-    
-    def add_plot(self, plot, tabID = None, noTab = False): 
+
+    def add_plot(self, plot, tabID = None, noTab = False):
         """
         Adds an already initialized plot object to the session
 
@@ -296,10 +298,10 @@ class Session(Configurable, Connected):
             tabID = self._tab_id(tabID) if tabID is not None else self.tabs[0]["id"]
 
             self._add_plot_to_tab(plot.id, tabID)
-        
+
         return self
-    
-    def new_plot(self, plotClass=None, tabID = None, structID = None, plotableID=None, animation = False ,**kwargs):
+
+    def new_plot(self, plotClass=None, tabID = None, structID = None, plotableID=None, animation = False, **kwargs):
         """
         Get a new plot from the specified class
 
@@ -318,7 +320,7 @@ class Session(Configurable, Connected):
             The ID of the plotable file that we want to plot.
         animation: bool, optional
             Whether the initialized plot should be an animation.
-            
+
             If true, it uses the `Plot.animated` method to initialize the plot
         **kwargs:
             Passed directly to plot initialization
@@ -344,7 +346,7 @@ class Session(Configurable, Connected):
         if plotableID is not None:
             args = (self.warehouse["plotables"][plotableID]["path"],)
         if structID:
-            kwargs = {**kwargs, "root_fdf": self.warehouse["structs"][structID]["path"] }
+            kwargs = {**kwargs, "root_fdf": self.warehouse["structs"][structID]["path"]}
 
         if animation:
             wdir = self.warehouse["structs"][structID]["path"].parent if structID else self.setting("root_dir")
@@ -363,7 +365,7 @@ class Session(Configurable, Connected):
         self.add_plot(new_plot, tabID)
 
         return self.plot(new_plot.id)
-    
+
     def update_plot(self, plotID, newSettings):
         """
         Method to update the settings of a plot that is in the session's warehouse
@@ -382,7 +384,7 @@ class Session(Configurable, Connected):
         """
 
         return self.plot(plotID).update_settings(**newSettings)
-    
+
     def undo_plot_settings(self, plotID):
         """
         Method undo the settings of a plot that is in the session's warehouse
@@ -399,7 +401,7 @@ class Session(Configurable, Connected):
         """
 
         return self.plot(plotID).undo_settings()
-    
+
     def remove_plot_from_tab(self, plotID, tab):
         """
         Method to remove a plot only from a given tab.
@@ -430,7 +432,7 @@ class Session(Configurable, Connected):
 
         plot.socketio = None
 
-        self.warehouse["plots"] = { ID: plot for ID, plot in self.plots.items() if ID != plotID}
+        self.warehouse["plots"] = {ID: plot for ID, plot in self.plots.items() if ID != plotID}
 
         self.remove_plot_from_all_tabs(plotID)
 
@@ -496,7 +498,7 @@ class Session(Configurable, Connected):
         updates_avail = [plotID for plotID, plot in self.plots.items() if plot.updates_available()]
 
         return updates_avail
-    
+
     def commit_updates(self):
         """
         Updates the plots that can be updated according to `updates_available`.
@@ -509,7 +511,7 @@ class Session(Configurable, Connected):
                 self.plots[plotID].read_data(update_fig=True)
             except Exception as e:
                 print(f"Could not update plot {plotID}. \n Error: {e}")
-        
+
         return self
 
     def listen(self, forever=False):
@@ -522,23 +524,23 @@ class Session(Configurable, Connected):
             whether to keep listening after the first plot updates.
         """
         from threading import Event
-        
+
         exit_event = Event()
 
         while exit_event.is_set():
-            
+
             exit_event.wait(1)
 
             updates_avail = self.updates_available()
-            
+
             if len(updates_avail) != 0:
-                
+
                 for plotID in updates_avail:
                     self.plots[plotID].read_data(update_fig=True)
-                
+
                 if not forever:
                     exit_event.set()
-    
+
     def figures_only(self):
         """
         Removes all plot data from this session's plots except the actual figure.
@@ -578,11 +580,11 @@ class Session(Configurable, Connected):
         The tabs that this session contains.
         """
         return self.warehouse["tabs"]
-    
+
     def tab(self, tab):
         """
         Get a tab by its name or ID. 
-        
+
         If it does not exist, it will be created (this acts as a shortcut for add_tab in that case)
 
         Parameters
@@ -615,12 +617,12 @@ class Session(Configurable, Connected):
             Keep in mind that the plots with these ids must be present in self.plots.
         """
 
-        newTab = {"id": str(uuid.uuid4()), "name": name, "plots": deepcopy(plots), "layouts": {"lg":[]}}
+        newTab = {"id": str(uuid.uuid4()), "name": name, "plots": deepcopy(plots), "layouts": {"lg": []}}
 
         self.tabs.append(newTab)
 
         return self
-    
+
     def update_tab(self, tabID, newParams = {}, **kwargs):
         """
         Method to update the parameters of a given tab
@@ -670,7 +672,7 @@ class Session(Configurable, Connected):
 
         if not keep:
             self.remove_plot_from_all_tabs(plotID)
-        
+
         self._add_plot_to_tab(plotID, tab)
 
         return self
@@ -699,9 +701,9 @@ class Session(Configurable, Connected):
         tab = self.tab(tab)
 
         tab["plots"] = [*tab["plots"], plotID]
-        
+
         return self
-    
+
     def remove_plot_from_all_tabs(self, plotID):
         """
         Removes a given plot from all tabs where it is located.
@@ -714,7 +716,7 @@ class Session(Configurable, Connected):
 
         for tab in self.tabs:
             self.remove_plot_from_tab(plotID, tab["id"])
-        
+
         return self
 
     def get_tab_plots(self, tab):
@@ -749,7 +751,7 @@ class Session(Configurable, Connected):
 
         for plot in plots:
             self.add_plot(plot, tab)
-    
+
     def tab_id(self, tab_name):
         """
         Gets the id of a given tab.
@@ -758,7 +760,7 @@ class Session(Configurable, Connected):
         -----------
         tab_name: str
             the name of the tab
-        
+
         Returns
         ---------
         str or None.
@@ -768,7 +770,7 @@ class Session(Configurable, Connected):
         for tab in self.tabs:
             if tab["name"] == tab_name:
                 return tab["id"]
-    
+
     def _tab_id(self, tab_id_or_name):
         """
         Gets the id of a given tab.
@@ -777,7 +779,7 @@ class Session(Configurable, Connected):
         -----------
         tab_id_or_name: str
             the id or name of the tab.
-        
+
         Returns
         ---------
         str or None.
@@ -804,7 +806,7 @@ class Session(Configurable, Connected):
             the path where to start looking for structures.
 
             If not provided, the session's "root_dir" will be used.
-        
+
         Returns
         ----------
         dict
@@ -819,8 +821,8 @@ class Session(Configurable, Connected):
         }
 
         #Avoid passing unnecessary info to the browser.
-        return {structID: {"id": structID, **{k: struct[k] for k in ["name", "path"]}} for structID, struct in self.warehouse["structs"].items() }
-    
+        return {structID: {"id": structID, **{k: struct[k] for k in ["name", "path"]}} for structID, struct in self.warehouse["structs"].items()}
+
     def get_plotables(self, path=None):
         """
         Gets all the plotables that are in the scope of this session.
@@ -831,7 +833,7 @@ class Session(Configurable, Connected):
             the path where to start looking for plotables.
 
             If not provided, the session's "root_dir" will be used.
-        
+
         Returns
         ----------
         dict
@@ -848,17 +850,17 @@ class Session(Configurable, Connected):
         for SileClass, filepaths in files.items():
 
             # Extend the plotables dict with the files that we find that belong to this sile
-            self.warehouse["plotables"] = { **self.warehouse["plotables"], **{
+            self.warehouse["plotables"] = {**self.warehouse["plotables"], **{
                 str(uuid.uuid4()): {"name": path.name, "path": path, "plot": SileClass._plot_default_suffix} for path in filepaths
             }}
 
         #Avoid passing unnecessary info to the browser.
-        return {id: {"id": id, **{k: struct[k] for k in ["name", "path", "plot"]}} for id, struct in self.warehouse["plotables"].items() }
+        return {id: {"id": id, **{k: struct[k] for k in ["name", "path", "plot"]}} for id, struct in self.warehouse["plotables"].items()}
 
     #-----------------------------------------
     #      NOTIFY CURRENT STATE TO GUI
     #-----------------------------------------
-    
+
     def _get_dict_for_GUI(self):
         """
         This method is thought mainly to prepare data to be sent through the API to the GUI.
@@ -873,7 +875,7 @@ class Session(Configurable, Connected):
             "paramGroups": self._param_groups,
             "updatesAvailable": self.updates_available(),
             "plotOptions": [
-                {"value": subclass.__name__, "label": subclass.plot_name()} 
+                {"value": subclass.__name__, "label": subclass.plot_name()}
                 for subclass in self.get_plot_classes()
             ],
             "structures": self.get_structures(),
@@ -881,7 +883,7 @@ class Session(Configurable, Connected):
         }
 
         return infoDict
-    
+
     def _on_socketio_change(self):
         """
         Transmit the socketio change to all the plots
@@ -911,7 +913,7 @@ class Session(Configurable, Connected):
 
         for plotID, plot in session.plots.items():
             plot._get_pickleable()
-            
+
         with open(path, 'wb') as handle:
             dill.dump(session, handle, protocol=dill.HIGHEST_PROTOCOL)
 

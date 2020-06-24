@@ -6,6 +6,7 @@ ENV_VARS = {}
 
 _PREFIX = 'SISL_VIZ'
 
+
 def register_env_var(name, default, description=None):
     """
     Registers a new environment variable.
@@ -29,6 +30,7 @@ def register_env_var(name, default, description=None):
 
     return get_env_var(name)
 
+
 def get_env_var(name):
     """
     Gets the value of a registered environment variable.
@@ -49,5 +51,3 @@ def get_env_var(name):
     ENV_VARS[name].update({'value': val})
 
     return val
-
-    

@@ -9,6 +9,7 @@ import plotly.graph_objs as go
 __all__ = ['get_plotly_template', 'add_plotly_template',
     'set_default_plotly_template', 'available_plotly_templates']
 
+
 def get_plotly_template(name):
     """
     Gets a plotly template from plotly global space.
@@ -23,6 +24,7 @@ def get_plotly_template(name):
     """
 
     return pio.templates[name]
+
 
 def add_plotly_template(name, template, default=False):
     """
@@ -50,7 +52,8 @@ def add_plotly_template(name, template, default=False):
     if default:
         set_default_plotly_template(name)
 
-    return 
+    return
+
 
 def set_default_plotly_template(name):
     """
@@ -67,6 +70,7 @@ def set_default_plotly_template(name):
     """
 
     pio.templates.default = name
+
 
 def available_plotly_templates():
     """
@@ -88,7 +92,7 @@ pio.templates["sisl"] = go.layout.Template(
             ("xaxis", "yaxis"),
             (("visible", True), ("showline", True), ("linewidth", 1), ("mirror", True),
              ("color", "black"), ("showgrid", False), ("gridcolor", "#ccc"), ("gridwidth", 1),
-             ("zeroline", False), ("zerolinecolor", "#ccc"), ("zerolinewidth", 1), 
+             ("zeroline", False), ("zerolinecolor", "#ccc"), ("zerolinewidth", 1),
              ("ticks", "outside"), ("ticklen", 5), ("ticksuffix", " "))
         )},
         "hovermode": "closest",

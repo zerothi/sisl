@@ -1,9 +1,10 @@
 from .._input_field import InputField
 
+
 class RangeInput(InputField):
 
     dtype = "array-like of shape (2,)"
-    
+
     _type = 'range'
 
     _default = {
@@ -12,6 +13,7 @@ class RangeInput(InputField):
             'step': 0.1
         }
     }
+
 
 class ErangeInput(RangeInput):
 

@@ -24,6 +24,7 @@ __all__= ['register_plotly_plotable']
 #   Let's define the functions that will help us here
 # -----------------------------------------------------
 
+
 def _get_plotting_func(PlotClass, setting_key):
     """
     Generates a plotting function for an object.
@@ -47,7 +48,7 @@ def _get_plotting_func(PlotClass, setting_key):
     def _plot(self, *args, **kwargs):
 
         return PlotClass(*args, **{setting_key: self, **kwargs})
-    
+
     _plot.__doc__ = f"""Builds a {PlotClass.__name__} by setting the value of "{setting_key}" to the current object.
 
     Apart from this specific parameter ,it accepts the same arguments as {PlotClass.__name__}.
@@ -57,8 +58,9 @@ def _get_plotting_func(PlotClass, setting_key):
     
     {PlotClass.__doc__}
     """
-    
+
     return _plot
+
 
 def register_plotly_plotable(plotable, PlotClass=None, setting_key=None, plotting_func=None,
     name=None, default=False, plot_handler_attr='plot'):
@@ -98,7 +100,7 @@ def register_plotly_plotable(plotable, PlotClass=None, setting_key=None, plottin
     plot_handler_attr: str, optional
         the attribute where the plot handler is or should be located in the class that you want to register.
     """
-    
+
     # If no plotting function is provided, we will try to create one by using the PlotClass
     # and the setting_key that have been provided
     if plotting_func is None:
@@ -112,7 +114,7 @@ def register_plotly_plotable(plotable, PlotClass=None, setting_key=None, plottin
         plotable, plotting_func, name=name, engine='plotly', default=default, plot_handler_attr=plot_handler_attr
     )
 
-    # And to help keep track of the plotability we tell to the plot class that 
+    # And to help keep track of the plotability we tell to the plot class that
     # it can plot this object, and which setting to use.
     # if PlotClass is not None:
     #     if not hasattr(PlotClass, '_registered_plotables'):
