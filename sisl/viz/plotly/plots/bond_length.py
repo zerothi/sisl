@@ -12,7 +12,7 @@ from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, D
 
 class BondLengthMap(GeometryPlot):
     
-    '''
+    """
     Colorful representation of bond lengths.
 
     Parameters
@@ -90,7 +90,7 @@ class BondLengthMap(GeometryPlot):
     results_path: str, optional
         Directory where the files with the simulations results are
         located. This path has to be relative to the root fdf.
-    '''
+    """
 
     _plot_type = "Bond length"
     
@@ -116,9 +116,9 @@ class BondLengthMap(GeometryPlot):
             params = {
                 "placeholder": "Write the path to your strain reference file here..."
             },
-            help = '''The path to a geometry or a Geometry object used to calculate strain from.<br>
+            help = """The path to a geometry or a Geometry object used to calculate strain from.<br>
             This geometry will probably be the relaxed one<br>
-            If provided, colors can indicate strain values. Otherwise they are just bond length'''
+            If provided, colors can indicate strain values. Otherwise they are just bond length"""
         ),
 
         SwitchInput(
@@ -128,7 +128,7 @@ class BondLengthMap(GeometryPlot):
                 "offLabel": False,
                 "onLabel": True
             },
-            help = '''Determines whether strain values should be displayed instead of lengths'''
+            help = """Determines whether strain values should be displayed instead of lengths"""
         ),
         
         FloatInput(
@@ -147,9 +147,9 @@ class BondLengthMap(GeometryPlot):
             params = {
                 "placeholder": "Write a valid plotly colormap here..."
             },
-            help = '''This determines the colormap to be used for the bond lengths display.<br>
+            help = """This determines the colormap to be used for the bond lengths display.<br>
             You can see all valid colormaps here: <a>https://plot.ly/python/builtin-colorscales/<a/><br>
-            Note that you can reverse a color map by adding _r'''
+            Note that you can reverse a color map by adding _r"""
         ),
         
         # IntegerInput(
@@ -201,15 +201,15 @@ class BondLengthMap(GeometryPlot):
             params = {
                 "step": 0.01
             },
-            help = '''Sets the middle point of the color scale. Only meaningful in diverging colormaps<br>
+            help = """Sets the middle point of the color scale. Only meaningful in diverging colormaps<br>
             If this is set 'cmin' and 'cmax' are ignored. In strain representations this might be set to 0.
-            '''
+            """
         ),
 
         SwitchInput(
             key='colorbar', name='Show colorbar',
             default=True,
-            help='''Whether the color bar should be displayed or not.'''
+            help="""Whether the color bar should be displayed or not."""
         ),
         
         IntegerInput(
@@ -229,9 +229,9 @@ class BondLengthMap(GeometryPlot):
     @classmethod
     def _default_animation(self, wdir = None, frame_names = None, **kwargs):
         
-        geomsFiles = find_files(wdir, "*.XV", sort = True)
+        geom_files = find_files(wdir, "*.XV", sort = True)
 
-        return BondLengthMap.animated("geom_file", geomsFiles, wdir = wdir, **kwargs)
+        return BondLengthMap.animated("geom_file", geom_files, wdir = wdir, **kwargs)
 
     @property
     def on_relaxed_geom(self):
@@ -270,9 +270,9 @@ class BondLengthMap(GeometryPlot):
         self.get_param("atom").update_options(self.geometry)
     
     def _wrap_bond3D(self, bond, strain=False):
-        '''
+        """
         Receives a bond and sets its color to the bond length
-        '''
+        """
 
         if strain:
             color = self._bond_strain(self.relaxed_geom, self.geometry, bond)

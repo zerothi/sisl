@@ -1,8 +1,8 @@
-import os
+from pathlib import Path
 
-files_root = "/home/pfebrer/webDevelopement/sislGUI/sisl/sisl/viz/plotly/Notebooks/files"
+files_root = Path("/home/pfebrer/webDevelopement/sislGUI/sisl/sisl/viz/plotly/Notebooks/files")
 
 def from_files(path):
 
-    return os.path.join(files_root, path)
+    return files_root / path
 

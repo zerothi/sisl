@@ -2,7 +2,6 @@
 This file contains the Plot class, which should be inherited by all plot classes
 """
 import uuid
-import os
 from io import StringIO, BytesIO
 import numpy as np
 import dill
@@ -11,6 +10,7 @@ import time
 from types import MethodType, FunctionType
 import itertools
 from functools import partial
+from pathlib import Path
 
 import plotly
 import plotly.graph_objects as go
@@ -31,7 +31,7 @@ PLOTS_CONSTANTS = {
     "spins": ["up", "down"],
 }
 
-__all__ = ['Plot', 'MultiplePlot', 'Animation', 'SubPlots']
+__all__ = ["Plot", "MultiplePlot", "Animation", "SubPlots"]
 
 #------------------------------------------------
 #                 PLOT CLASS
@@ -829,7 +829,7 @@ class Plot(ShortCutable, Configurable, Connected):
             whether the previous files should be unfollowed. If set to False, we are just adding more files.
         """
 
-        new_files = [os.path.abspath(filePath) if to_abs else filePath for filePath in files or []]
+        new_files = [Path(file_path).resolve() if to_abs else Path(file_path) for file_path in files or []]
 
         self._files_to_follow = new_files if unfollow else [*self._files_to_follow, *new_files]
     
@@ -898,11 +898,11 @@ class Plot(ShortCutable, Configurable, Connected):
         def modified(filepath):
 
             try:
-                return os.path.getmtime(filepath) > self.last_dataread
+                return filepath.stat().st_mtime > self.last_dataread
             except FileNotFoundError:
                 return False  # This probably should implement better logic
 
-        files_modified = np.array([ modified(filePath) for filePath in self._files_to_follow])
+        files_modified = np.array([ modified(file_path) for file_path in self._files_to_follow])
 
         return files_modified.any()
     
@@ -1088,17 +1088,21 @@ class Plot(ShortCutable, Configurable, Connected):
         """
         #Set the fdf_sile
         root_fdf = self.setting("root_fdf")
-        self.root_dir, fdfFile = os.path.split( root_fdf )
-        self.root_dir = "." if self.root_dir == "" else self.root_dir
+
+        if isinstance(root_fdf, str):
+            root_fdf = Path(root_fdf)
+
+        self.root_dir = root_fdf.parent
+        fdfFile = root_fdf.name
         
-        self.wdir = os.path.join(self.root_dir, self.setting("results_path"))
+        self.wdir = self.root_dir / self.setting("results_path")
         self.fdf_sile = self.get_sile(root_fdf)
         self.struct = self.fdf_sile.get("SystemLabel", "")
             
         # Check that the required files are there
         if hasattr(self, "_requirements"):
             # If they are there, we can confidently build this list
-            self.requiredFiles = [ os.path.join( self.root_dir, self.setting("results_path"), req.replace("$struct$", self.struct) ) for req in self.__class__._requirements["siesOut"]["files"] ]
+            self.requiredFiles = [ self.wdir / req.replace("$struct$", self.struct) for req in self.__class__._requirements["siesOut"]["files"] ]
 
         return self
     
@@ -1760,8 +1764,11 @@ class Plot(ShortCutable, Configurable, Connected):
         self
         """
 
-        if html or os.path.splitext(path)[-1] == ".html":
-            self.figure.write_html('{}.html'.format(path.replace(".html", "")))
+        if isinstance(path, str):
+            path = Path(path)
+
+        if html or path.suffix == ".html":
+            self.figure.write_html(path.with_suffix(".html"))
             return self
 
         #The following method actually modifies 'self', so there's no need to get the return
@@ -1824,23 +1831,23 @@ def entry_point(name):
     class does not need to read data for some reason. In this case, we will go straight
     into the data setting methods (i.e. set_data).
 
+    Examples
+    -----------
+
+    >>> class MyPlot(Plot):
+    >>>     @entry_point('siesta_output')
+    >>>     def _lets_read_from_siesta_output(self):
+    >>>         ...do some work here
+    >>> 
+    >>>     @entry_point('ask_mum'):
+    >>>     def _we_are_quite_lost_so_we_better_ask_mum(self):
+    >>>         self.call_mum()
+
     Parameters
     -----------
     name: str
         the name of the entry point that the decorated function implements.
-
-    Usage
-    -------
-
-    class MyPlot(Plot):
-
-        @entry_point('siesta_output')
-        def _lets_read_from_siesta_output(self):
-            ...do some work here
-
-        @entry_point('ask_mum'):
-        def _we_are_quite_lost_so_we_better_ask_mum(self):
-            self.call_mum()
+    
     """
     return partial(EntryPoint, name, ())
 

@@ -10,7 +10,7 @@ from sisl._dispatcher import AbstractDispatch
 from ._presets import get_preset
 from .plotutils import get_configurable_docstring, get_configurable_kwargs, get_configurable_kwargs_to_pass
 
-__all__ = ['Configurable', 'vizplotly_settings']
+__all__ = ["Configurable", "vizplotly_settings"]
 
 class NamedHistory:
     """ Useful for tracking and modifying the history of named parameters

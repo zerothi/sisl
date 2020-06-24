@@ -1,13 +1,11 @@
 import numpy as np
 
-import os
-
 import sisl
 from ..plot import Plot, entry_point
 from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
 
 class ForcesPlot(Plot):
-    '''
+    """
     Display of atomic forces.
 
     Parameters
@@ -28,7 +26,7 @@ class ForcesPlot(Plot):
     results_path: str, optional
         Directory where the files with the simulations results are
         located. This path has to be relative to the root fdf.
-    '''
+    """
 
     _plot_type = "Forces"
 
@@ -78,12 +76,12 @@ class ForcesPlot(Plot):
 
     )
 
-    @entry_point('siesta_output')
+    @entry_point("siesta_output")
     def _read_siesta_output(self):
 
         root_fdf = self.setting("root_fdf")
 
-        out_file = self.setting("out_file") or os.path.splitext(root_fdf)[0] + ".out"
+        out_file = self.setting("out_file") or root_fdf.with_suffix(".out")
 
         outSile = self.get_sile(out_file) 
         

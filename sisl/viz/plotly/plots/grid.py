@@ -1,5 +1,3 @@
-import os
-
 import numpy as np
 import plotly.graph_objects as go
 
@@ -10,7 +8,7 @@ from ..input_fields import TextInput, FilePathInput, Array1dInput, SwitchInput, 
      QueriesInput, ProgramaticInput, PlotableInput, SislObjectInput, PlotableInput
 
 class GridPlot(Plot):
-    '''
+    """
     Versatile visualization tool for any kind of grid.
 
     Parameters
@@ -88,7 +86,7 @@ class GridPlot(Plot):
     results_path: str, optional
         Directory where the files with the simulations results are
         located. This path has to be relative to the root fdf.
-    '''
+    """
 
     #Define all the class attributes
     _plot_type = "Grid"
@@ -123,7 +121,7 @@ class GridPlot(Plot):
                 'isSearchable': True,
                 'isClearable': False
             },
-            help='''The representation of the grid that should be displayed'''
+            help="""The representation of the grid that should be displayed"""
         ),
 
         DropdownInput(
@@ -139,7 +137,7 @@ class GridPlot(Plot):
                 'isSearchable': True,
                 'isClearable': True
             },
-            help='''The representation of the grid that should be displayed'''
+            help="""The representation of the grid that should be displayed"""
         ),
 
         DropdownInput(
@@ -156,18 +154,18 @@ class GridPlot(Plot):
                 'isSearchable': True,
                 'isClearable': False
             },
-            help = '''The axis along you want to see the grid, it will be averaged along the other ones '''
+            help = """The axis along you want to see the grid, it will be averaged along the other ones """
         ),
 
         SwitchInput(key='plot_geom', name='Plot geometry',
             default=False,
-            help='''If True the geometry associated to the grid will also be plotted'''
+            help="""If True the geometry associated to the grid will also be plotted"""
         ),
 
         ProgramaticInput(key='geom_kwargs', name='Geometry plot extra arguments',
             default={},
             dtype=dict,
-            help='''Extra arguments that are passed to geom.plot() if plot_geom is set to True'''
+            help="""Extra arguments that are passed to geom.plot() if plot_geom is set to True"""
         ),
 
         DropdownInput(
@@ -183,8 +181,8 @@ class GridPlot(Plot):
                 'isSearchable': True,
                 'isClearable': False
             },
-            help = '''Parameter that smoothens how data looks in a heatmap.<br>
-            'best' interpolates data, 'fast' interpolates pixels, 'False' displays the data as is.'''
+            help = """Parameter that smoothens how data looks in a heatmap.<br>
+            'best' interpolates data, 'fast' interpolates pixels, 'False' displays the data as is."""
         ),
 
         Array1dInput(
@@ -216,15 +214,15 @@ class GridPlot(Plot):
                 'shape': (3,),
                 'extendable': False,
             },
-            help='''The offset of the grid along each axis. This is important if you are planning to match this grid with other geometry related plots.'''
+            help="""The offset of the grid along each axis. This is important if you are planning to match this grid with other geometry related plots."""
         ),
 
         SwitchInput(
             key="cut_vacuum", name="Cut vacuum",
             default=True,
-            help='''Whether the vacuum should not be taken into account for displaying the grid.
+            help="""Whether the vacuum should not be taken into account for displaying the grid.
             This is essential especially in 3D representations, since plotly needs to calculate the
-            isosurfaces of the grid.'''
+            isosurfaces of the grid."""
         ),
 
         TextInput(
@@ -233,7 +231,7 @@ class GridPlot(Plot):
             params={
                 "placeholder": "Give a name to the trace..."
             },
-            help='''The name that the trace will show in the legend. Good when merging with other plots to be able to toggle the trace in the legend'''
+            help="""The name that the trace will show in the legend. Good when merging with other plots to be able to toggle the trace in the legend"""
         ),
 
         RangeSlider(
@@ -272,37 +270,37 @@ class GridPlot(Plot):
         IntegerInput(
             key="cmid", name="Colorbar center",
             default=None,
-            help='''The value to set at the center of the colorbar. If not provided, the color range is used'''
+            help="""The value to set at the center of the colorbar. If not provided, the color range is used"""
         ),
 
         TextInput(
             key="colorscale", name="Color scale",
             default=None,
-            help='''A valid plotly colorscale. See https://plotly.com/python/colorscales/'''
+            help="""A valid plotly colorscale. See https://plotly.com/python/colorscales/"""
         ),
 
         RangeInput(
             key="iso_vals", name="Min and max isosurfaces",
             default=None,
-            help='''The minimum and maximum values of the isosurfaces to be displayed.
-            If not provided, iso_frac will be used to calculate these values (which is more versatile).'''
+            help="""The minimum and maximum values of the isosurfaces to be displayed.
+            If not provided, iso_frac will be used to calculate these values (which is more versatile)."""
         ),
 
         FloatInput(
             key='iso_frac', name="Isosurfaces fractions",
             default=0.3,
-            help='''If iso_vals is not provided, this value is used to calculate where the isosurfaces are drawn.
+            help="""If iso_vals is not provided, this value is used to calculate where the isosurfaces are drawn.
             It calculates them from the minimum and maximum values of the grid like so:
             If iso_frac = 0.3:
             (min_value----30%-----ISOMIN----------ISOMAX---30%-----max_value)
             Therefore, it should be a number between 0 and 0.5.
-            '''
+            """
         ),
 
         IntegerInput(
             key="surface_count", name="Number of surfaces",
             default=2,
-            help='''The number of surfaces between the lower and the upper limits of iso_vals'''
+            help="""The number of surfaces between the lower and the upper limits of iso_vals"""
         ),
 
         DropdownInput(
@@ -317,11 +315,11 @@ class GridPlot(Plot):
                 'isClearable': True,
                 'isMulti': True
             },
-            help='''This controls how the 3D data is displayed. 
+            help="""This controls how the 3D data is displayed. 
             'volume' displays different layers with different levels of opacity so that there is more sensation of depth.
             'isosurface' displays only isosurfaces and nothing inbetween them. For plotting grids with positive and negative
             values, you should use 'isosurface' or two different 'volume' plots. 
-            If not provided, the plot will decide for you based on the above mentioned fact'''
+            If not provided, the plot will decide for you based on the above mentioned fact"""
         ),
 
         DropdownInput(
@@ -338,15 +336,15 @@ class GridPlot(Plot):
                 'isClearable': False,
                 'isMulti': True
             },
-            help='''Controls how the opacity changes through layers. 
-            See https://plotly.com/python/3d-volume-plots/ for a display of the different possibilities'''
+            help="""Controls how the opacity changes through layers. 
+            See https://plotly.com/python/3d-volume-plots/ for a display of the different possibilities"""
         ),
 
         FloatInput(
             key='surface_opacity', name="Surface opacity",
             default=1,
             params={'min': 0, 'max': 1, 'step': 0.1},
-            help='''The opacity of the isosurfaces drawn by 3d plots from 0 (transparent) to 1 (opaque).'''
+            help="""The opacity of the isosurfaces drawn by 3d plots from 0 (transparent) to 1 (opaque)."""
         )
     )
 
@@ -382,22 +380,23 @@ class GridPlot(Plot):
 
         grid = self.grid
 
-        transforms = self.setting('transforms')
+        transforms = self.setting("transforms")
         for transform in transforms:
             grid = self._transform_grid(grid, transform)
 
-        cut_vacuum = self.setting('cut_vacuum')
+        cut_vacuum = self.setting("cut_vacuum")
         if cut_vacuum and getattr(grid, "geometry", None):
             grid, lims = self._cut_vacuum(grid)
             self.grid_offset = lims[0]
         else:
             self.grid_offset = [0,0,0]
 
-        display_axes = self.setting('axes')
+        display_axes = self.setting("axes")
         sc = self.setting("sc")
         name = self.setting("trace_name")
-        if name is None:
-            name = os.path.basename(self.setting("grid_file") or "")
+        grid_file = self.setting("grid_file")
+        if name is None and grid_file:
+            name = grid_file.name
 
         # Get only the part of the grid that we need
         range_keys = ("xRange", "yRange", "zRange")
@@ -689,7 +688,7 @@ class GridPlot(Plot):
                 )
 
     def tighten(self, steps, ax):
-        '''
+        """
         Makes the supercell tighter by a number of unit cells
 
         Parameters
@@ -703,7 +702,7 @@ class GridPlot(Plot):
             Axis along which to tighten the supercell.
 
             If you provide multiple axes, the number of different steps must match the number of axes or be a single int.
-        '''
+        """
         
         if isinstance(ax, int):
             ax = [ax]
@@ -718,7 +717,7 @@ class GridPlot(Plot):
         return self.update_settings(sc=sc)
 
     def tile(self, tiles, ax):
-        '''
+        """
         Tile a given axis to display more unit cells in the plot
 
         Parameters
@@ -731,7 +730,7 @@ class GridPlot(Plot):
             axis that you want to tile.
 
             If you provide multiple axes, the number of different tiles must match the number of axes or be a single int.
-        '''
+        """
 
         if isinstance(ax, int):
             ax = [ax]
@@ -746,7 +745,7 @@ class GridPlot(Plot):
         return self.update_settings(sc=sc)
 
     def scan(self, along=None, start=None, stop=None, steps=None, breakpoints=None, mode="moving_slice", animation_kwargs=None, **kwargs):
-        '''
+        """
         Returns an animation containing multiple frames scaning along an axis.
 
         Parameters
@@ -786,7 +785,7 @@ class GridPlot(Plot):
         ----------
         sisl.viz.Animation
             An animation representation of the scan
-        '''
+        """
 
         # If no axis is provided, let's get the first one that is not displayed
         if along is None:
@@ -834,7 +833,7 @@ class GridPlot(Plot):
 
     def _asis_scan(self, range_key, breakpoints, animation_kwargs=None, **kwargs):
 
-        '''
+        """
         Returns an animation containing multiple frames scaning along an axis.
 
         Parameters
@@ -855,7 +854,7 @@ class GridPlot(Plot):
         ----------
         scan: sisl Animation
             An animation representation of the scan
-        '''
+        """
 
         # To keep the same iso_vals along all the animation in case it is a scan of 3D frames
         if getattr(self.data[0], "isomin", None):
@@ -979,7 +978,7 @@ class GridPlot(Plot):
         return fig
 
 class WavefunctionPlot(GridPlot):
-    '''
+    """
     An extension of GridPlot specifically tailored for plotting wavefunctions
 
     Parameters
@@ -1095,7 +1094,7 @@ class WavefunctionPlot(GridPlot):
     results_path: str, optional
         Directory where the files with the simulations results are
         located. This path has to be relative to the root fdf.
-    '''
+    """
 
     _plot_type = 'Wavefunction'
 
@@ -1104,32 +1103,32 @@ class WavefunctionPlot(GridPlot):
         PlotableInput(key="eigenstate", name="Electron eigenstate",
             default=None,
             dtype=sisl.EigenstateElectron,
-            help='''The eigenstate that contains the coefficients of the wavefunction.
+            help="""The eigenstate that contains the coefficients of the wavefunction.
             Note that an eigenstate can contain coefficients for multiple states.
-            '''
+            """
         ),
 
         SislObjectInput(key='geometry', name='Geometry',
             default=None,
             dtype=sisl.Geometry,
-            help='''Necessary to generate the grid and to plot the wavefunctions, since the basis orbitals are needed.
+            help="""Necessary to generate the grid and to plot the wavefunctions, since the basis orbitals are needed.
             If you provide a hamiltonian, the geometry is probably inside the hamiltonian, so you don't need to provide it.
-            However, this field is compulsory if you are providing the eigenstate directly.'''
+            However, this field is compulsory if you are providing the eigenstate directly."""
         ),
 
         Array1dInput(key='k', name='K point',
             default=(0,0,0),
-            help='''If the eigenstates need to be calculated from a hamiltonian, the k point for which you want them to be calculated'''
+            help="""If the eigenstates need to be calculated from a hamiltonian, the k point for which you want them to be calculated"""
         ),
 
         FloatInput(key='grid_prec', name='Grid precision',
             default=0.2,
-            help='''The spacing between points of the grid where the wavefunction will be projected (in Ang).
+            help="""The spacing between points of the grid where the wavefunction will be projected (in Ang).
             If you are plotting a 3D representation, take into account that a very fine and big grid could result in
             your computer crashing on render. If it's the first time you are using this function,
             assess the capabilities of your computer by first using a low-precision grid and increase
             it gradually.
-            '''
+            """
         ),
 
         IntegerInput(key='i', name='Wavefunction index',

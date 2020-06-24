@@ -3,8 +3,6 @@ import xarray as xr
 import itertools
 import plotly.express as px
 
-import os
-
 import sisl
 from ..plot import Plot, PLOTS_CONSTANTS, entry_point
 from ..plotutils import find_files
@@ -14,7 +12,7 @@ from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, D
 from ..input_fields.range import ErangeInput
 
 class BandsPlot(Plot):
-    '''
+    """
     Plot representation of the bands.
 
     Parameters
@@ -74,7 +72,7 @@ class BandsPlot(Plot):
     results_path: str, optional
         Directory where the files with the simulations results are
         located. This path has to be relative to the root fdf.
-    '''
+    """
 
     _plot_type = "Bands"
     
@@ -92,7 +90,7 @@ class BandsPlot(Plot):
             params = {
                 "placeholder": "Write the path to your bands file here...",
             },
-            help = '''This parameter explicitly sets a .bands file. Otherwise, the bands file is attempted to read from the fdf file '''
+            help = """This parameter explicitly sets a .bands file. Otherwise, the bands file is attempted to read from the fdf file """
         ),
 
         PlotableInput(key = "band_structure", name = "Band structure object",
@@ -105,16 +103,16 @@ class BandsPlot(Plot):
             default=None,
             positional=["band", "plot"],
             returns=[dict],
-            help='''A function that receives each band (as a DataArray) and adds data to the trace. It also recieves the plot object. 
-            The returned data may even overwrite the existing one, therefore it can be useful to fully customize your bands plot (individual style for each band if you want).'''
+            help="""A function that receives each band (as a DataArray) and adds data to the trace. It also recieves the plot object. 
+            The returned data may even overwrite the existing one, therefore it can be useful to fully customize your bands plot (individual style for each band if you want)."""
         ),
 
         FunctionInput(key="eigenstate_map", name="Eigenstate map function",
             default=None,
             positional=["eigenstate", "plot"],
             returns=[],
-            help='''This function receives the eigenstate object for each k value when the bands are being extracted from a hamiltonian.
-            You can do whatever you want with it, the point of this function is to avoid running the diagonalization process twice.'''
+            help="""This function receives the eigenstate object for each k value when the bands are being extracted from a hamiltonian.
+            You can do whatever you want with it, the point of this function is to avoid running the diagonalization process twice."""
         ),
 
         ErangeInput(key="Erange",
@@ -123,7 +121,7 @@ class BandsPlot(Plot):
 
         FloatInput(key="E0", name="Reference energy",
             default=0,
-            help='''The energy to which all energies will be referenced (including Erange).'''
+            help="""The energy to which all energies will be referenced (including Erange)."""
         ),
 
         RangeSlider(key = "bands_range", name = "Bands range",
@@ -137,8 +135,8 @@ class BandsPlot(Plot):
 
         QueriesInput(key = "path", name = "Bands path",
             default = [],
-            help='''Path along which bands are drawn in units of reciprocal lattice vectors.<br>
-            Note that if you want to provide a path programatically you can do it more easily with the `band_structure` setting''',
+            help="""Path along which bands are drawn in units of reciprocal lattice vectors.<br>
+            Note that if you want to provide a path programatically you can do it more easily with the `band_structure` setting""",
             queryForm=[
 
                 FloatInput(
@@ -214,9 +212,9 @@ class BandsPlot(Plot):
             params={
                 'step': 0.001
             },
-            help='''The difference in k that must exist to consider to gaps different.<br>
+            help="""The difference in k that must exist to consider to gaps different.<br>
             If two gaps' positions differ in less than this, only one gap will be drawn.<br>
-            Useful in cases where there are degenerated bands with exactly the same values.'''
+            Useful in cases where there are degenerated bands with exactly the same values."""
         ),
 
         ColorPicker(key = "gap_color", name = "Gap color",
@@ -256,7 +254,7 @@ class BandsPlot(Plot):
 
         def _get_frame_names(self):
 
-            return [os.path.basename( childPlot.setting("bands_file")) for childPlot in self.child_plots]
+            return [childPlot.setting("bands_file").name for childPlot in self.child_plots]
 
         return cls.animated("bands_file", bands_files, frame_names = _get_frame_names, wdir = wdir, **kwargs)
 
@@ -298,7 +296,7 @@ class BandsPlot(Plot):
 
     @entry_point('path')
     def _read_from_H(self, eigenstate_map=None):
-        '''
+        """
         This entry point just generates a band structure from the path and
         then the band_structure entry point takes it from there.
 
@@ -306,7 +304,7 @@ class BandsPlot(Plot):
 
         Therefore it should be removed. Only one of "path" or "band_structure"
         inputs should exist. And then it should be always parsed into a sisl.BandStructure.
-        '''
+        """
 
         #Get the requested path
         self.path = self.setting('path')
@@ -382,7 +380,7 @@ class BandsPlot(Plot):
     
     def _set_data(self, draw_before_bands=None, add_band_trace_data=None):
         
-        '''
+        """
         Converts the bands dataframe into a data object for plotly.
 
         It stores the data under self.data, so that it can be accessed by posterior methods.
@@ -391,7 +389,7 @@ class BandsPlot(Plot):
         ---------
         self.data: list of dicts
             contains a dictionary for each bandStruct with all its information.
-        '''
+        """
 
         Erange = self.setting('Erange')
         E0 = self.setting('E0')
@@ -515,7 +513,7 @@ class BandsPlot(Plot):
         self.update_settings(gap= not self.settings["gap"])
     
     def plot_Ediff(self, band1, band2):
-        '''
+        """
         Plots the energy difference between two bands.
 
         Parameters
@@ -527,7 +525,7 @@ class BandsPlot(Plot):
         ---------
         Plot
             a new plot with the plotted information.
-        '''
+        """
 
         two_bands = self.bands.sel(band=[band1, band2]).squeeze().values
 
@@ -542,7 +540,7 @@ class BandsPlot(Plot):
         return plt
 
     def _plot_Kdiff(self, band1, band2, E=None, offsetE=False):
-        '''
+        """
         ONLY WORKING FOR A PAIR OF BANDS THAT ARE ALWAYS INCREASING OR ALWAYS DECREASING
         AND ARE ISOLATED (sorry)
         
@@ -561,7 +559,7 @@ class BandsPlot(Plot):
         ---------
         Plot
             a new plot with the plotted information.
-        '''
+        """
 
         b1, b2 = self.bands.sel(band=[band1, band2]).squeeze().values.T
         ks = self.bands.k.values

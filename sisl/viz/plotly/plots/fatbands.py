@@ -1,7 +1,7 @@
 from collections import defaultdict
 
 import numpy as np
-import os
+from pathlib import Path
 import pandas as pd
 from  plotly.colors import DEFAULT_PLOTLY_COLORS
 from xarray import DataArray
@@ -14,7 +14,7 @@ from ..input_fields import OrbitalQueries, TextInput, DropdownInput, SwitchInput
 from ..input_fields.range import ErangeInput
 
 class FatbandsPlot(BandsPlot):
-    '''
+    """
     Colorful representation of orbital weights in bands.
 
     Parameters
@@ -76,7 +76,7 @@ class FatbandsPlot(BandsPlot):
     results_path: str, optional
         Directory where the files with the simulations results are
         located. This path has to be relative to the root fdf.
-    '''
+    """
 
     _plot_type = 'Fatbands'
 
@@ -84,7 +84,7 @@ class FatbandsPlot(BandsPlot):
 
         FilePathInput(key='wfsx_file', name='Path to WFSX file',
             default=None,
-            help='''The WFSX file to get the weights of the different orbitals in the bands.
+            help="""The WFSX file to get the weights of the different orbitals in the bands.
             In standard SIESTA nomenclature, this should be the *.bands.WFSX file, as it is the one
             that contains the weights that correspond to the bands.
             
@@ -93,20 +93,20 @@ class FatbandsPlot(BandsPlot):
 
             If the *.bands file is provided but the wfsx one isn't, we will try to find it.
             If `bands_file` is SystemLabel.bands, we will look for SystemLabel.bands.WFSX
-            '''
+            """
         ),
 
         FloatInput(key='scale', name='Scale factor',
             default=None,
-            help='''The factor by which the width of all fatbands should be multiplied.
-            Note that each group has an additional individual factor that you can also tweak.'''
+            help="""The factor by which the width of all fatbands should be multiplied.
+            Note that each group has an additional individual factor that you can also tweak."""
             # Probably scale should not multiply but normalize everything relative to the energy range!
         ),
 
         OrbitalQueries(
             key="groups", name="Fatbands groups",
             default=None,
-            help='''The different groups that are displayed in the fatbands''',
+            help="""The different groups that are displayed in the fatbands""",
             queryForm=[
 
                 TextInput(
@@ -143,30 +143,30 @@ class FatbandsPlot(BandsPlot):
 
     )
 
-    @entry_point('siesta_output')
+    @entry_point("siesta_output")
     def _read_siesta_output(self):
 
         # Try to get the wfsx file either by user input or by guessing it
         # from bands_file
-        wfsx_file = self.setting('wfsx_file')
-        bands_file = self.setting("bands_file") or self.requiredFiles[0]
+        wfsx_file = self.setting("wfsx_file")
+        bands_file = Path(self.setting("bands_file") or self.requiredFiles[0])
         if wfsx_file is None:
-            wfsx_file = f'{bands_file}.WFSX'
+            wfsx_file = bands_file.with_suffix(bands_file.suffix + ".WFSX")
 
         # We will need the overlap matrix from the hamiltonian to get the correct
         # weights. 
         # If there is no root_fdf we will try to guess it from bands_file 
-        root_fdf = self.setting('root_fdf')
-        if root_fdf is None and not hasattr(self, 'H'):
-            possible_fdf = f'{os.path.splitext(bands_file)[0]}.fdf'
-            print(f'We are assuming that the fdf associated to {bands_file} is {possible_fdf}.'+
+        root_fdf = self.setting("root_fdf")
+        if root_fdf is None and not hasattr(self, "H"):
+            possible_fdf = bands_file.with_suffix(".fdf")
+            print(f"We are assuming that the fdf associated to {bands_file} is {possible_fdf}."+
             ' If it is not, please provide a "root_fdf" by using the update_settings method.')
             self.set_files(root_fdf=possible_fdf)
         
         self.setup_hamiltonian()
 
         # If the wfsx doesn't exist, we will not even bother to read the bands
-        if not os.path.exists(wfsx_file):
+        if not wfsx_file.exists():
             raise Exception(f"We didn't find a WFSX file in the location {wfsx_file}")
 
         # Otherwise we will make BandsPlot read the bands
@@ -346,7 +346,7 @@ class FatbandsPlot(BandsPlot):
     # -------------------------------------
 
     def split_groups(self, on="species", only=None, exclude=None, clean=True, colors=DEFAULT_PLOTLY_COLORS, **kwargs):
-        '''
+        """
         Builds groups automatically to draw their contributions.
 
         Works exactly the same as `PdosPlot.split_DOS`
@@ -375,7 +375,7 @@ class FatbandsPlot(BandsPlot):
             `plot.split_groups(on="orbitals", species=["C"])`
             will split the PDOS on the different orbitals but will take
             only those that belong to carbon atoms.
-        '''
+        """
 
         groups = self.get_param('groups')._generate_queries(
             on=on, only=only, exclude=exclude, **kwargs)
@@ -394,7 +394,7 @@ class FatbandsPlot(BandsPlot):
         return self.update_settings(groups=groups)
 
     def scale_fatbands(self, factor, from_current=False):
-        '''
+        """
         Scales all bands by a given factor.
 
         Basically, it updates 'scale' setting.
@@ -406,7 +406,7 @@ class FatbandsPlot(BandsPlot):
         from_current: boolean, optional
             whether 'factor' is meant to multiply the current scaling factor.
             If False, it will just replace the current factor.
-        '''
+        """
 
         scale = self.setting('scale')
 

@@ -1,4 +1,5 @@
 import os
+from pathlib import Path
 import sys
 import importlib
 
@@ -8,16 +9,18 @@ __all__ = ['import_user_presets', 'import_user_plots',
     'import_user_sessions', 'import_user_plugins']
 
 # Define the folder where the user will store their stuff
-DEFAULT_USER_CUSTOM_FOLDER = os.path.join(os.path.expanduser('~'), ".sisl")
+DEFAULT_USER_CUSTOM_FOLDER = Path.home() / ".sisl"
 USER_CUSTOM_FOLDER = register_env_var(
     'USER_DIR', DEFAULT_USER_CUSTOM_FOLDER,
     "Path to the directory where the user stores their custom scripts"
     " to extend sisl"
 )
 
+USER_CUSTOM_FOLDER = Path(USER_CUSTOM_FOLDER)
+
 # Here we let python know that there are importable files
 # in USER_CUSTOM_FOLDER
-sys.path.append(os.path.abspath(USER_CUSTOM_FOLDER))
+sys.path.append(str(USER_CUSTOM_FOLDER.resolve()))
 
 def import_user_extension(extension_file):
     """
@@ -30,7 +33,7 @@ def import_user_extension(extension_file):
     """
 
     try:
-        return importlib.import_module(extension_file.replace(".py", ""))
+        return importlib.import_module(str(extension_file).replace(".py", ""))
     except ModuleNotFoundError:
         return None
 
@@ -39,7 +42,7 @@ def import_user_extension(extension_file):
 #--------------------------------------
 # File where the user's presets will be searched
 PRESETS_FILE_NAME = "user_presets.py"
-PRESETS_FILE = os.path.join(USER_CUSTOM_FOLDER, PRESETS_FILE_NAME)
+PRESETS_FILE = USER_CUSTOM_FOLDER / PRESETS_FILE_NAME
 # We will look for presets under this variable
 PRESETS_VARIABLE = "presets"
 
@@ -70,7 +73,7 @@ def import_user_presets():
 #--------------------------------------
 # File where the user's plots will be searched
 PLOTS_FILE_NAME = "user_plots.py"
-PLOTS_FILE = os.path.join(USER_CUSTOM_FOLDER, PLOTS_FILE_NAME)
+PLOTS_FILE = USER_CUSTOM_FOLDER / PLOTS_FILE_NAME
 # We will look for plots under this variable
 PLOTS_VARIABLE = "plots"
 
@@ -90,7 +93,7 @@ def import_user_plots():
 #--------------------------------------
 # File where the user's sessions will be searched
 SESSION_FILE_NAME = "user_sessions.py"
-SESSION_FILE = os.path.join(USER_CUSTOM_FOLDER, SESSION_FILE_NAME)
+SESSION_FILE = USER_CUSTOM_FOLDER / SESSION_FILE_NAME
 # We will look for sessions under this variable
 SESSION_VARIABLE = "sessions"
 

@@ -1,7 +1,6 @@
 import numpy as np
 from xarray import DataArray
 
-import os
 from collections import defaultdict
 
 import sisl
@@ -11,7 +10,7 @@ from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, D
 from ..input_fields.range import ErangeInput
 
 class PdosPlot(Plot):
-    '''
+    """
     Plot representation of the projected density of states.
 
     Parameters
@@ -44,7 +43,7 @@ class PdosPlot(Plot):
     results_path: str, optional
         Directory where the files with the simulations results are
         located. This path has to be relative to the root fdf.
-    '''
+    """
 
     #Define all the class attributes
     _plot_type = "PDOS"
@@ -75,7 +74,7 @@ class PdosPlot(Plot):
             params = {
                 "placeholder": "Write the path to your PDOS file here...",
             },
-            help = '''This parameter explicitly sets a .PDOS file. Otherwise, the PDOS file is attempted to read from the fdf file '''
+            help = """This parameter explicitly sets a .PDOS file. Otherwise, the PDOS file is attempted to read from the fdf file """
         ),
 
         ErangeInput(
@@ -88,7 +87,7 @@ class PdosPlot(Plot):
             key="nE", name="Number of energy points",
             group="Hparams",
             default=100,
-            help='''If calculating the PDOS from a hamiltonian, the number of energy points used'''
+            help="""If calculating the PDOS from a hamiltonian, the number of energy points used"""
         ),
 
         Array1dInput(key="kgrid", name="Monkhorst-Pack grid",
@@ -97,28 +96,28 @@ class PdosPlot(Plot):
             params={
                 "shape": (3,)
             },
-            help='''The number of kpoints in each reciprocal direction. 
+            help="""The number of kpoints in each reciprocal direction. 
             A Monkhorst-Pack grid will be generated to calculate the PDOS.
             If not provided, it will be set to 3 for the periodic directions
-            and 1 for the non-periodic ones.'''
+            and 1 for the non-periodic ones."""
         ),
 
         Array1dInput(key="kgrid_displ", name="Monkhorst-Pack grid displacement",
             default=[0,0,0],
             group="Hparams",
-            help='''Displacement of the Monkhorst-Pack grid'''
+            help="""Displacement of the Monkhorst-Pack grid"""
         ),
 
         FloatInput(key="E0", name="Reference energy",
             default=0,
-            help='''The energy to which all energies will be referenced (including Erange).'''
+            help="""The energy to which all energies will be referenced (including Erange)."""
         ),
         
         OrbitalQueries(
             key = "requests", name = "PDOS queries",
             default = [{"active": True, "name": "DOS", "species": None, "atoms": None, "orbitals": None, "spin": None, "normalize": False, "color": "black", "linewidth": 1}],
-            help = '''Here you can ask for the specific PDOS that you need. 
-                    <br>TIP: Queries can be activated and deactivated.''',
+            help = """Here you can ask for the specific PDOS that you need. 
+                    <br>TIP: Queries can be activated and deactivated.""",
             queryForm = [
 
                 TextInput(
@@ -165,9 +164,9 @@ class PdosPlot(Plot):
         #         'isClearable': True,
         #         'isSearchable': True
         #     },
-        #     help='''Which info about the provenance of each trace should be added in their customdata attribute.
+        #     help="""Which info about the provenance of each trace should be added in their customdata attribute.
         #     This is good for post-processing the plot (grouping, filtering...), but it can make the memory requirements
-        #     significantly larger, specially for large systems'''
+        #     significantly larger, specially for large systems"""
         # )
 
     )
@@ -194,7 +193,7 @@ class PdosPlot(Plot):
 
         def _get_frame_names(self):
 
-            return [os.path.basename( childPlot.setting("pdos_file")) for childPlot in self.child_plots]
+            return [child_plot.setting("pdos_file").name for child_plot in self.child_plots]
 
         return PdosPlot.animated("pdos_file", pdos_files, frame_names = _get_frame_names, wdir = wdir, **kwargs)
     
@@ -260,7 +259,7 @@ class PdosPlot(Plot):
 
     def _after_read(self):
 
-        '''
+        """
 
         Gets the information out of the .pdos and processes it into self.PDOSdicts so that it can be accessed by 
         the self.setData() method once the orbitals/atoms to display PDOS are selected.
@@ -282,7 +281,7 @@ class PdosPlot(Plot):
         self.E:
             The energy values where PDOS is calculated
 
-        '''
+        """
         
         #Normalize self.PDOS to do the same treatment for both spin-polarized and spinless simulations
         self.isSpinPolarized = len(self.PDOS.shape) == 3
@@ -303,7 +302,7 @@ class PdosPlot(Plot):
         self.get_param('requests').update_options(self.geometry, self.isSpinPolarized)
 
     def _set_data(self):
-        '''
+        """
 
         Uses the information processed by the self.read_data() method and converts it into a data object for plotly.
 
@@ -324,7 +323,7 @@ class PdosPlot(Plot):
         self.data: list of dicts
             contains a dictionary for each bandStruct with all its information.
 
-        '''
+        """
 
         #Get only the energies we are interested in
         E0 = self.setting("E0")
@@ -383,9 +382,9 @@ class PdosPlot(Plot):
     # ----------------------------------
 
     def _matches_request(self, request, query, iReq=None):
-        '''
+        """
         Checks if a query matches a PDOS request
-        '''
+        """
 
         if isinstance(query, (int, str)):
             query = [query]
@@ -402,7 +401,7 @@ class PdosPlot(Plot):
         return complete_req({"name": str(len(self.settings["requests"])), **kwargs})
 
     def requests(self, *i_or_names):
-        '''
+        """
         Gets the requests that match your query
 
         Parameters
@@ -415,12 +414,12 @@ class PdosPlot(Plot):
             to spread it and use all items in your list as args.
 
             If no query is provided, all the requests will be matched
-        '''
+        """
 
         return [req for i, req in enumerate(self.setting("requests")) if self._matches_request(req, i_or_names, i)]
 
     def add_request(self, req = {}, clean=False, **kwargs):
-        '''
+        """
         Adds a new PDOS request. The new request can be passed as a dict or as a list of keyword arguments.
         The keyword arguments will overwrite what has been passed as a dict if there is conflict.
 
@@ -434,7 +433,7 @@ class PdosPlot(Plot):
         **kwargs:
             parameters of the request can be passed as keyword arguments too.
             They will overwrite the values in req
-        '''
+        """
 
         request = self._new_request(**{**req, **kwargs})
 
@@ -448,7 +447,7 @@ class PdosPlot(Plot):
         return self
 
     def remove_requests(self, *i_or_names, all=False, update_fig=True):
-        '''
+        """
         Removes requests from the PDOS plot
 
         Parameters
@@ -461,7 +460,7 @@ class PdosPlot(Plot):
             to spread it and use all items in your list as args
             
             If no query is provided, all the requests will be matched
-        '''
+        """
 
         if all:
             requests = []
@@ -471,7 +470,7 @@ class PdosPlot(Plot):
         return self.update_settings(run_updates=update_fig, requests=requests)
 
     def update_requests(self, *i_or_names, **kwargs):
-        '''
+        """
         Updates an existing request
 
         Parameters
@@ -487,7 +486,7 @@ class PdosPlot(Plot):
         **kwargs:
             keyword arguments containing the values that you want to update
 
-        '''
+        """
 
         requests = self.setting("requests")
         for i, request in enumerate(requests):
@@ -497,7 +496,7 @@ class PdosPlot(Plot):
         return self.update_settings(requests=requests)
 
     def merge_requests(self, *i_or_names, remove=True, clean=False, **kwargs):
-        '''
+        """
         Merge multiple requests into one.
 
         Parameters
@@ -522,7 +521,7 @@ class PdosPlot(Plot):
             `plot.merge_requests(on="orbitals", species=["C"])`
             will split the PDOS on the different orbitals but will take
             only those that belong to carbon atoms.
-        '''
+        """
 
         keys = ["atoms", "orbitals", "species", "spin"]
 
@@ -546,7 +545,7 @@ class PdosPlot(Plot):
         return self.add_request(**new_request, **kwargs, clean=clean)
 
     def split_requests(self, *i_or_names, on="species", only=None, exclude=None, remove=True, clean=False, **kwargs):
-        '''
+        """
         Splits the desired requests into multiple requests
 
         Parameters
@@ -580,7 +579,7 @@ class PdosPlot(Plot):
             `plot.split_request("C", on="orbitals", spin=[0])`
             will split the PDOS on the different orbitals but will take
             only the contributions from spin up.
-        '''
+        """
 
         if exclude is None:
             exclude = []
@@ -613,7 +612,7 @@ class PdosPlot(Plot):
         return self.update_settings(requests=requests)
 
     def split_DOS(self, on="species", only=None, exclude=None, clean=True, **kwargs):
-        '''
+        """
         Splits the density of states to the different contributions.
 
         Parameters
@@ -636,7 +635,7 @@ class PdosPlot(Plot):
             `plot.split_DOS(on="orbitals", species=["C"])`
             will split the PDOS on the different orbitals but will take
             only those that belong to carbon atoms.
-        '''
+        """
 
         requests = self.get_param('requests')._generate_queries(
             on=on, only=only, exclude=exclude, query_gen=self._new_request, **kwargs)

@@ -553,7 +553,7 @@ def find_files(root_dir=Path("."), search_string = "*", depth = [0,0], sort = Tr
 
     files = []
     for depth in range(depth[0],depth[1] + 1):
-        new_files = root_dir.glob(root_dir / "*/"*depth / search_string))
+        new_files = root_dir.glob(root_dir / "*/"*depth / search_string)
         if new_files:
             files += [path.resolve() for path in new_files]
 

@@ -24,7 +24,7 @@ class BaseSessionTester:
         # Check that all the parameters have been passed to the settings
         assert np.all([param.key in session.settings for param in self.SessionClass._parameters])
         # Build some test settings
-        new_settings = {'root_dir': 'Test', 'searchDepth': [4,6]}
+        new_settings = {'root_dir': 'Test', 'search_depth': [4,6]}
         # Update settings and check they have been succesfully updated
         old_settings = deepcopy(session.settings)
         session.update_settings(**new_settings, run_updates=False)

@@ -2,7 +2,7 @@ import dill
 
 import uuid
 import os
-import glob
+from pathlib import Path
 
 from copy import deepcopy, copy
 
@@ -62,7 +62,7 @@ class Session(Configurable, Connected):
     keep_uploaded: bool, optional
         Whether uploaded files should be kept in disk or directly removed
         after plotting them.
-    searchDepth: array-like of shape (2,), optional
+    search_depth: array-like of shape (2,), optional
         Determines the depth limits of the search for structures (from the
         root directory).
     showTooltips: bool, optional
@@ -152,7 +152,7 @@ class Session(Configurable, Connected):
         ),
 
         RangeSlider(
-            key = "searchDepth", name = "Search depth",
+            key = "search_depth", name = "Search depth",
             group = "filesystem",
             default = [0,3],
             width = "s100% l50%",
@@ -347,7 +347,7 @@ class Session(Configurable, Connected):
             kwargs = {**kwargs, "root_fdf": self.warehouse["structs"][structID]["path"] }
 
         if animation:
-            wdir = os.path.dirname(self.warehouse["structs"][structID]["path"]) if structID else self.setting("root_dir")
+            wdir = self.warehouse["structs"][structID]["path"].parent if structID else self.setting("root_dir")
             new_plot = ReqPlotClass.animated(wdir = wdir)
         else:
             plot_preset = self.setting("plot_preset")
@@ -811,11 +811,11 @@ class Session(Configurable, Connected):
             keys are the structure ID and values are info about each structure.
         """
 
-        path = path or self.setting("root_dir")
+        path = Path(path or self.setting("root_dir"))
 
         #Get the structures
         self.warehouse["structs"] = {
-            str(uuid.uuid4()): {"name": os.path.basename(path), "path": path} for path in find_files(self.setting("root_dir"), "*fdf", self.setting("searchDepth"))
+            str(uuid.uuid4()): {"name": path.name, "path": path} for path in find_files(self.setting("root_dir"), "*fdf", self.setting("search_depth"))
         }
 
         #Avoid passing unnecessary info to the browser.
@@ -840,16 +840,16 @@ class Session(Configurable, Connected):
 
         # Empty the plotables dictionary
         self.warehouse["plotables"] = {}
-        path = path or self.setting("root_dir")
+        path = Path(path or self.setting("root_dir"))
 
         # Get all the files that correspond to registered plotable siles
-        files = find_plotable_siles(path, self.setting('searchDepth'))
+        files = find_plotable_siles(path, self.setting('search_depth'))
 
         for SileClass, filepaths in files.items():
 
             # Extend the plotables dict with the files that we find that belong to this sile
             self.warehouse["plotables"] = { **self.warehouse["plotables"], **{
-                str(uuid.uuid4()): {"name": os.path.basename(path), "path": path, "plot": SileClass._plot_default_suffix} for path in filepaths
+                str(uuid.uuid4()): {"name": path.name, "path": path, "plot": SileClass._plot_default_suffix} for path in filepaths
             }}
 
         #Avoid passing unnecessary info to the browser.

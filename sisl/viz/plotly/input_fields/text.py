@@ -1,5 +1,7 @@
-from .._input_field import InputField
+from pathlib import Path
 from types import MethodType
+
+from .._input_field import InputField
 
 class TextInput(InputField):
 
@@ -35,6 +37,9 @@ class FilePathInput(TextInput):
     def parse(self, val):
 
         if isinstance(val, BaseSile):
-            return str(val.file)
-        else:
-            return val
+            val = val.file
+        
+        if isinstance(val, str):
+            val = Path(val)
+        
+        return val

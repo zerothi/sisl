@@ -11,9 +11,9 @@ from ..input_fields import ProgramaticInput, FunctionInput, FloatInput, SwitchIn
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher
 
 class BoundGeometry(AbstractDispatch):
-    '''
+    """
     Updates the plot after a method is run on the plot's geometry.
-    '''
+    """
 
     def __init__(self, geom, parent_plot):
 
@@ -37,7 +37,7 @@ class BoundGeometry(AbstractDispatch):
         return with_plot_update
 
 class BaseGeometryPlot(Plot):
-    '''
+    """
     Representation of a geometry in a plotly Figure.
     
     This class serves just as a base for child classes that display properties of a geometry.
@@ -49,7 +49,7 @@ class BaseGeometryPlot(Plot):
 
     Warning: by now, make sure _after_read is triggered (i.e. if you overwrite it
     in your class, call this classes' one explicitly)
-    '''
+    """
 
     # Colors of the atoms following CPK rules
     _atoms_colors = {
@@ -155,9 +155,9 @@ class BaseGeometryPlot(Plot):
         return np.array([xyz(coeffs) for coeffs in points])
     
     def _get_atoms_bonds(self, bonds, atom, geom=None, sanitize_atom=True):
-        '''
+        """
         Gets the bonds where the given atoms are involved
-        '''
+        """
 
         if atom is None:
             return bonds
@@ -172,7 +172,7 @@ class BaseGeometryPlot(Plot):
     #---------------------------------------------------
 
     def _plot_geom1D(self, coords_axis="x", data_axis=None, wrap_atoms=None, **kwargs):
-        '''
+        """
         Returns a 1D representation of the plot's geometry.
 
         Parameters
@@ -188,7 +188,7 @@ class BaseGeometryPlot(Plot):
             If not provided self._default_wrap_atoms is used.
         **kwargs: 
             passed directly to the atoms scatter trace
-        '''
+        """
 
         wrap_atoms = wrap_atoms or self._default_wrap_atoms1D
         traces = []
@@ -219,7 +219,7 @@ class BaseGeometryPlot(Plot):
         }
 
     def _projected_1Dcoords(self, xyz=None, axis="x"):
-        '''
+        """
         Moves the 3D positions of the atoms to a 2D supspace.
 
         In this way, we can plot the structure from the "point of view" that we want.
@@ -238,7 +238,7 @@ class BaseGeometryPlot(Plot):
         np.ndarray of shape (natoms, )
             the 2D coordinates of the geometry, with all positions projected into the plane
             defined by xaxis and yaxis.
-        '''
+        """
         if xyz is None:
             xyz = self.geometry.xyz
 
@@ -255,7 +255,7 @@ class BaseGeometryPlot(Plot):
     def _plot_geom2D(self, xaxis="x", yaxis="y", atom=None , show_bonds=True, bind_bonds_to_ats=True,
         bonds_together=True, points_per_bond=5,
         cell='box', wrap_atoms=None, wrap_bond=None):
-        '''
+        """
         Returns a 2D representation of the plot's geometry.
 
         Parameters
@@ -304,7 +304,7 @@ class BaseGeometryPlot(Plot):
             If not provided, self._default_wrap_bond2D will be used.
         cell: {'axes', 'box', False}, optional
             defines how the unit cell is drawn
-        '''
+        """
 
         wrap_atoms = wrap_atoms or self._default_wrap_atoms2D
         wrap_bond = wrap_bond or self._default_wrap_bonds2D
@@ -369,7 +369,7 @@ class BaseGeometryPlot(Plot):
         self.add_traces(traces)
 
     def _projected_2Dcoords(self, xyz=None, xaxis="x" , yaxis="y"):
-        '''
+        """
         Moves the 3D positions of the atoms to a 2D supspace.
 
         In this way, we can plot the structure from the "point of view" that we want.
@@ -391,7 +391,7 @@ class BaseGeometryPlot(Plot):
         np.ndarray of shape (2, natoms)
             the 2D coordinates of the geometry, with all positions projected into the plane
             defined by xaxis and yaxis.
-        '''
+        """
         if xyz is None:
             xyz = self.geometry.xyz
 
@@ -433,9 +433,9 @@ class BaseGeometryPlot(Plot):
         return trace
 
     def _bond_trace2D(self, xy1, xy2, width=2, color="#ccc", name=None, group=None, showlegend=False, **kwargs):
-        '''
+        """
         Returns a bond trace in 2d.
-        '''
+        """
 
         x, y = np.array([xy1, xy2]).T
 
@@ -456,7 +456,7 @@ class BaseGeometryPlot(Plot):
     def _bonds_scatter_trace2D(self, xys, points_per_bond=5, force_bonds_as_points=False, 
         bonds_color='#ccc', bonds_size=3, bonds_labels=None,
         coloraxis="coloraxis", name='bonds', group=None, showlegend=True, **kwargs):
-        '''
+        """
         Cheaper than _bond_trace2D because it draws all bonds in a single trace.
 
         It is also more flexible, since it allows providing bond colors as floats that all
@@ -464,7 +464,7 @@ class BaseGeometryPlot(Plot):
 
         However, the bonds are represented as dots between the two atoms (if you use enough
         points per bond it almost looks like a line).
-        '''
+        """
 
         # Check if we need to build the markers_properties from atoms_* arguments
         if isinstance(bonds_color, Iterable) and not isinstance(bonds_color, str):
@@ -571,7 +571,7 @@ class BaseGeometryPlot(Plot):
     def _plot_geom3D(self, wrap_atom=None, wrap_bond=None, cell='box', 
         atom=None, bind_bonds_to_ats=True, atom_vertices=20, show_bonds=True, cheap_bonds=True, cheap_atoms=False, atom_size_factor=40,
         cheap_bonds_kwargs={}):
-        '''
+        """
         Returns a 3D representation of the plot's geometry.
 
         Parameters
@@ -607,7 +607,7 @@ class BaseGeometryPlot(Plot):
             in cheap mode, the factor by which the atom sizes will be multiplied.
         cheap_bonds_kwargs: dict, optional
             dict that is passed directly as keyword arguments to `self._bonds_trace3D`.
-        '''
+        """
 
         wrap_atom = wrap_atom or self._default_wrap_atom3D
         wrap_bond = wrap_bond or self._default_wrap_bond3D
@@ -736,7 +736,7 @@ class BaseGeometryPlot(Plot):
 
     def _bonds_trace3D(self, bonds, geom_xyz, bonds_width=10, bonds_color='gray', bonds_labels=None,
         atoms=False, atoms_color="blue", atoms_size=None, name=None, coloraxis='coloraxis', legendgroup=None, **kwargs):
-        '''
+        """
         This method is capable of plotting all the geometry in one 3d trace.
 
         Parameters
@@ -747,7 +747,7 @@ class BaseGeometryPlot(Plot):
         tuple.
             If bonds_labels are provided, it returns (trace, labels_trace).
             Otherwise, just (trace,)
-        '''
+        """
         # If only bonds are in this trace, we will 
         if not name:
             name = 'Bonds and atoms' if atoms else 'Bonds'
@@ -847,7 +847,7 @@ class BaseGeometryPlot(Plot):
         return trace
 
 class GeometryPlot(BaseGeometryPlot):
-    '''
+    """
     Versatile representation of geometries.
 
     Parameters
@@ -893,7 +893,7 @@ class GeometryPlot(BaseGeometryPlot):
     results_path: str, optional
         Directory where the files with the simulations results are
         located. This path has to be relative to the root fdf.
-    '''
+    """
 
     _plot_type = "Geometry"
 
@@ -916,20 +916,20 @@ class GeometryPlot(BaseGeometryPlot):
         GeomAxisSelect(
             key="axes", name="Axes to display",
             default=["x", "y", "z"],
-            help='''The axis along which you want to see the geometry. 
+            help="""The axis along which you want to see the geometry. 
             You can provide as many axes as dimensions you want for your plot.
             Note that the order is important and will result in setting the plot axes diferently.
-            For 2D and 1D representations, you can pass an arbitrary direction as an axis (array of shape (3,))'''
+            For 2D and 1D representations, you can pass an arbitrary direction as an axis (array of shape (3,))"""
         ),
 
         FunctionInput(
             key="dataaxis_1d", name="1d data axis",
             default=None,
-            help='''If you want a 1d representation, you can provide a data axis.
+            help="""If you want a 1d representation, you can provide a data axis.
             It should be a function that receives the 1d coordinate of each atom and
             returns it's "data-coordinate", which will be in the y axis of the plot.
             If not provided, the y axis will be all 0.
-            '''
+            """
         ),
 
         DropdownInput(key="cell", name="Cell display",
@@ -945,8 +945,8 @@ class GeometryPlot(BaseGeometryPlot):
                 'isSearchable': True,
                 'isClearable': False
             },
-            help='''Specifies how the cell should be rendered. 
-            (False: not rendered, 'axes': render axes only, 'box': render a bounding box)'''
+            help="""Specifies how the cell should be rendered. 
+            (False: not rendered, 'axes': render axes only, 'box': render a bounding box)"""
         ),
 
         AtomSelect(key="atom", name="Atoms to display",
@@ -957,22 +957,22 @@ class GeometryPlot(BaseGeometryPlot):
                 "isMulti": True,
                 "isClearable": True
             },
-            help='''The atoms that are going to be displayed in the plot. 
+            help="""The atoms that are going to be displayed in the plot. 
             This also has an impact on bonds (see the `bind_bonds_to_ats` and `show_atoms` parameters).
-            If set to None, all atoms are displayed'''
+            If set to None, all atoms are displayed"""
         ),
 
         SwitchInput(key="bind_bonds_to_ats", name="Bind bonds to atoms",
             default=True,
-            help='''whether only the bonds that belong to an atom that is present should be displayed.
-            If False, all bonds are displayed regardless of the `atom` parameter'''
+            help="""whether only the bonds that belong to an atom that is present should be displayed.
+            If False, all bonds are displayed regardless of the `atom` parameter"""
         ),
 
         SwitchInput(key="show_atoms", name="Show atoms",
             default=True,
-            help='''If set to False, it will not display atoms. 
+            help="""If set to False, it will not display atoms. 
             Basically this is a shortcut for `atom = [], bind_bonds_to_ats=False`.
-            Therefore, it will override these two parameters.'''
+            Therefore, it will override these two parameters."""
         )
         
     )
