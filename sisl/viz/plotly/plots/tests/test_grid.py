@@ -1,10 +1,10 @@
-'''
+"""
 
 Tests specific functionality of the grid plot.
 
 Different inputs are tested (siesta .RHO and sisl Hamiltonian).
 
-'''
+"""
 
 import numpy as np
 import os

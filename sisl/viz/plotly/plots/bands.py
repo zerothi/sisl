@@ -1,6 +1,8 @@
+from functools import partial
+import itertools
+
 import numpy as np
 import xarray as xr
-import itertools
 import plotly.express as px
 
 import sisl
@@ -279,21 +281,33 @@ class BandsPlot(Plot):
         # to give the possibility to the user to do something inbetween
         # NOTE THAT THIS IS USED BY FAT BANDS TO GET THE WEIGHTS SIMULTANEOUSLY
         eig_map = eigenstate_map or self.setting('eigenstate_map')
-        def bands_wrapper(eigenstate):
+        def bands_wrapper(eigenstate, spin):
             if callable(eig_map):
-                eig_map(eigenstate, self)
+                eig_map(eigenstate, self, spin)
             return eigenstate.eig
 
-        # THIS DOES NOT SUPPORT SPIN!!!!!!!!!!!!!!!! (I think)
-        self.bands = band_struct.apply.dataarray.eigenstate(
-            wrap=bands_wrapper,
-            coords=('band',),
-        )
+        # Define the available spins
+        spins = [0]
+        if band_struct.parent.spin.is_polarized:
+            spins = [0,1]
 
-        self.bands = self.bands.expand_dims('spin', axis=1)
+        # Get the eigenstates for all the available spin components
+        bands_arrays = []
+        for spin in spins:
+
+            spin_bands = band_struct.apply.dataarray.eigenstate(
+                wrap=partial(bands_wrapper, spin=spin),
+                spin=spin,
+                coords=('band',),
+            )
+
+            bands_arrays.append(spin_bands)
+
+        # Merge everything into a single dataarray with a spin dimension
+        self.bands = xr.concat(bands_arrays, "spin").assign_coords({"spin": spins}).transpose("k", "spin", "band")
+
         self.bands['k'] = band_struct.lineark()
-
-        self.bands.attrs = {"ticks": self.ticks[0], "ticklabels": self.ticks[1]}
+        self.bands.attrs = {"ticks": self.ticks[0], "ticklabels": self.ticks[1], **bands_arrays[0].attrs}
 
     @entry_point('path')
     def _read_from_H(self, eigenstate_map=None):

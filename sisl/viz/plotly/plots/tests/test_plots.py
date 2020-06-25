@@ -1,10 +1,10 @@
-'''
+"""
 
 These tests check that all plot subclasses fulfill at least the most basic stuff
 
 More tests should be run on each plot, but these are the most basic ones to
 ensure that at least they do not break basic plot functionality.
-'''
+"""
 
 from sisl.viz.plotly.tests.test_plot import BasePlotTester
 from sisl.viz.plotly.plots import *
@@ -23,10 +23,10 @@ def get_basic_functionality_test(PlotSubClass):
 
         def test_compulsory_methods(self):
 
-            assert hasattr(self.PlotClass, '_set_data')
+            assert hasattr(self.PlotClass, "_set_data")
             assert callable(self.PlotClass._set_data)
 
-            assert hasattr(self.PlotClass, '_plot_type')
+            assert hasattr(self.PlotClass, "_plot_type")
             assert isinstance(self.PlotClass._plot_type, str)
 
         def test_param_groups(self):
@@ -45,4 +45,4 @@ def get_basic_functionality_test(PlotSubClass):
 
 for PlotSubClass in get_plot_classes():
 
-    globals()[f'Test{PlotSubClass.__name__}'] = get_basic_functionality_test(PlotSubClass)
+    globals()[f"Test{PlotSubClass.__name__}"] = get_basic_functionality_test(PlotSubClass)

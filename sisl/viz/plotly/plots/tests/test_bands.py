@@ -1,10 +1,10 @@
-'''
+"""
 
 Tests specific functionality of the bands plot.
 
 Different inputs are tested (siesta .bands and sisl Hamiltonian).
 
-'''
+"""
 
 from xarray import DataArray
 import numpy as np
@@ -27,9 +27,9 @@ class BandsPlotTester:
     tickvals = None
 
     def test_bands_dataarray(self):
-        '''
+        """
         Check that the data array was created and contains the correct information.
-        '''
+        """
 
         # Check that there is a bands attribute
         assert hasattr(self.plot, 'bands')

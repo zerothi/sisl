@@ -356,12 +356,12 @@ class PdosPlot(Plot):
 
             req_PDOS = E_PDOS.sel(orb=orb)
             if request['spin'] is not None:
-                E_PDOS.sel(spin=request['spin'])
+                req_PDOS = req_PDOS.sel(spin=request['spin'])
 
             if request["normalize"]:
-                req_PDOS = req_PDOS.mean("orb").mean('spin')
+                req_PDOS = req_PDOS.mean(["orb", "spin"])
             else:
-                req_PDOS = req_PDOS.sum("orb").sum('spin')
+                req_PDOS = req_PDOS.sum(["orb", "spin"])
 
             self.add_trace({
                 'type': 'scatter',

@@ -1,10 +1,10 @@
-'''
+"""
 
 Tests specific functionality of the bands plot.
 
 Different inputs are tested (siesta .bands and sisl Hamiltonian).
 
-'''
+"""
 
 import numpy as np
 import plotly.graph_objs as go

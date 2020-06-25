@@ -1,10 +1,10 @@
-'''
+"""
 
 Tests specific functionality of the PDOS plot.
 
 Different inputs are tested (siesta .PDOS and sisl Hamiltonian).
 
-'''
+"""
 
 from xarray import DataArray
 import numpy as np

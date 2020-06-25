@@ -182,7 +182,7 @@ class FatbandsPlot(BandsPlot):
 
             # Get the band indices to which these states correspond
             if i == 0:
-                bands = state.info['indices']
+                bands = state.info["indices"]
 
             # Get the weights for this eigenstate
             weights.append(state.norm2(sum=False))
@@ -193,26 +193,26 @@ class FatbandsPlot(BandsPlot):
         self.weights = DataArray(
             weights,
             coords={
-                'k': self.bands.k,
-                'band': bands,
-                'orb': np.arange(0, weights.shape[2]),
+                "k": self.bands.k,
+                "band": bands,
+                "orb": np.arange(0, weights.shape[2]),
             },
-            dims=('k', 'band', 'orb')
+            dims=("k", "band", "orb")
         )
 
         # Set up the options for the 'groups' setting based on the plot's associated geometry
         self._set_group_options()
 
-    @entry_point('hamiltonian')
+    @entry_point("hamiltonian")
     def _read_from_H(self):
 
-        self.weights = []
+        self.weights = [[],[]]
 
         # Define the function that will "catch" each eigenstate and
         # build the weights array. See BandsPlot._read_from_H to understand where
         # this will go exactly
-        def _weights_from_eigenstate(eigenstate, plot):
-            plot.weights.append(eigenstate.norm2(sum=False))
+        def _weights_from_eigenstate(eigenstate, plot, spin):
+            plot.weights[spin].append(eigenstate.norm2(sum=False))
 
         # We make bands plot read the bands, which will also populate the weights
         # thanks to the above step
@@ -229,17 +229,22 @@ class FatbandsPlot(BandsPlot):
         if not bands_read:
             raise err
 
+        # If there was only one spin component then we just take the first item in self.weights
+        if not self.weights[1]:
+            self.weights = [self.weights[0]]
+
         # Then we just convert the weights to a DataArray
         self.weights = np.array(self.weights).real
 
         self.weights = DataArray(
             self.weights,
             coords={
-                'k': self.bands.k,
-                'band': np.arange(0, self.weights.shape[1]),
-                'orb': np.arange(0, self.weights.shape[2]),
+                "k": self.bands.k,
+                "spin": np.arange(self.weights.shape[0]),
+                "band": np.arange(self.weights.shape[2]),
+                "orb": np.arange(self.weights.shape[3]),
             },
-            dims=('k', 'band', 'orb')
+            dims=("spin", "k", "band", "orb")
         )
 
     def _set_group_options(self):
@@ -252,7 +257,11 @@ class FatbandsPlot(BandsPlot):
             if band_struct is not None:
                 self.geometry = band_struct.parent.geometry
 
-        self.get_param('groups').update_options(self.geometry)
+        # Check if we have information of multiple spins to inform the input field.
+        if hasattr(self, "bands"):
+            spin_polarized = len(self.bands.spin) == 2
+
+        self.get_param('groups').update_options(self.geometry, spin_polarized)
 
     def _set_data(self):
 
@@ -321,26 +330,32 @@ class FatbandsPlot(BandsPlot):
 
             orb = groups_param.get_orbitals(group)
 
+            # Get the weights for the requested orbitals
             weights = plot_weights.sel(orb=orb)
+
+            # Now get a particular spin component if the user wants it 
+            if group["spin"] is not None:
+                weights = weights.sel(spin=group["spin"])
+
             if group["normalize"]:
-                weights = weights.mean("orb")
+                weights = weights.mean(["orb", "spin"])
             else:
-                weights = weights.sum("orb")
+                weights = weights.sum(["orb", "spin"])
 
             if group["color"] is None:
                 group["color"] = random_color()
 
             self.add_traces([{
-                'type': 'scatter',
-                'mode': 'lines',
-                'x': area_xs,
-                'y': [*(band + band_weights*scale*group["scale"]), *np.flip(band - band_weights*scale*group["scale"])],
-                'line':{'width': 0, "color": group["color"]},
-                'showlegend': i == 0,
-                'name': group["name"],
-                'legendgroup':group["name"],
-                'fill': 'toself'
-            } for i, (band, band_weights) in enumerate(zip(plot_eigvals.transpose('band', 'k'), weights.transpose('band', 'k')))])
+                "type": "scatter",
+                "mode": "lines",
+                "x": area_xs,
+                "y": [*(band + band_weights*scale*group["scale"]), *np.flip(band - band_weights*scale*group["scale"])],
+                "line":{"width": 0, "color": group["color"]},
+                "showlegend": i == 0,
+                "name": group["name"],
+                "legendgroup":group["name"],
+                "fill": "toself"
+            } for i, (band, band_weights) in enumerate(zip(plot_eigvals.transpose("band", "k"), weights.transpose("band", "k")))])
 
     # -------------------------------------
     #         Convenience methods

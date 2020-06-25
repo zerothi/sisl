@@ -1,8 +1,8 @@
-'''
+"""
 
 Tests specific functionality of a fatbands plot
 
-'''
+"""
 
 from xarray import DataArray
 import numpy as np
@@ -19,23 +19,23 @@ from sisl.viz.plotly.plots.tests.test_bands import BandsPlotTester
 class FatbandsPlotTester(BandsPlotTester):
 
     def test_weights_dataarray(self):
-        '''
+        """
         Check that the data array was created and contains the correct information.
-        '''
+        """
 
         # Check that there is a weights attribute
-        assert hasattr(self.plot, 'weights')
+        assert hasattr(self.plot, "weights")
 
         # Check that it is a dataarray containing the right information
         weights = self.plot.weights
         assert isinstance(weights, DataArray)
-        assert weights.dims == ('k', 'band', 'orb')
+        assert weights.dims == ("spin", "k", "band", "orb")
         assert weights.shape == self.weights_shape
 
     def test_groups(self):
-        '''
+        """
         Check that we can request groups
-        '''
+        """
 
         color = "green"
         name = "Nice group"
@@ -86,7 +86,7 @@ class TestFatbandsSislHamiltonian(FatbandsPlotTester):
 
     plot = FatbandsPlot(H=H, band_structure=bz)
     bands_shape = (9, 1, 2)
-    weights_shape = (9, 2, 2)
+    weights_shape = (1, 9, 2, 2)
     gap = 0
     ticktext = ["Gamma", "M", "K"]
     tickvals = [0., 1.70309799, 2.55464699]
