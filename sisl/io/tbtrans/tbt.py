@@ -2381,7 +2381,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 data = ns._tbt.transmission(e1, e2, kavg=ns._krng)[ns._Erng]
                 data.shape = (-1,)
                 ns._data.append(data)
-                ns._data_header.append(f'T[G0]:{e1}-{e2}')
+                ns._data_header.append(f'T:{e1}-{e2}')
                 ns._data_description.append('Column {} is transmission from {} to {}'.format(len(ns._data), e1, e2))
         p.add_argument('-T', '--transmission', nargs=2, metavar=('ELEC1', 'ELEC2'),
                        action=DataT,
@@ -2407,7 +2407,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 data = ns._tbt.transmission_bulk(e, kavg=ns._krng)[ns._Erng]
                 data.shape = (-1,)
                 ns._data.append(data)
-                ns._data_header.append(f'BT[G0]:{e}')
+                ns._data_header.append(f'BT:{e}')
                 ns._data_description.append('Column {} is bulk-transmission'.format(len(ns._data)))
         p.add_argument('-BT', '--transmission-bulk', nargs=1, metavar='ELEC',
                        action=DataBT,
@@ -2493,7 +2493,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 neig = data.shape[-1]
                 for eig in range(neig):
                     ns._data.append(data[ns._Erng, ..., eig].flatten())
-                    ns._data_header.append('Teig({})[G0]:{}-{}'.format(eig+1, e1, e2))
+                    ns._data_header.append('Teig({}):{}-{}'.format(eig+1, e1, e2))
                     ns._data_description.append('Column {} is transmission eigenvalues from electrode {} to {}'.format(len(ns._data), e1, e2))
         p.add_argument('--transmission-eig', '-Teig', nargs=2, metavar=('ELEC1', 'ELEC2'),
                        action=DataTEig,
@@ -2591,7 +2591,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 if is_DOS:
                     plt.ylabel('DOS [1/eV]')
                 elif is_T:
-                    plt.ylabel('Transmission [G0]')
+                    plt.ylabel('Transmission')
                 else:
                     plt.ylabel('mixed units')
                 plt.xlabel('E - E_F [eV]')

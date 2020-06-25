@@ -379,7 +379,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
                 data = ns._tbt.transmission(elec_mol_proj1, elec_mol_proj2, kavg=ns._krng)[ns._Erng]
                 data.shape = (-1,)
                 ns._data.append(data)
-                ns._data_header.append(f'T[G0]:{elec_mol_proj1}-{elec_mol_proj2}')
+                ns._data_header.append(f'T:{elec_mol_proj1}-{elec_mol_proj2}')
                 ns._data_description.append('Column {} is transmission from {} to {}'.format(len(ns._data), elec_mol_proj1, elec_mol_proj2))
         p.add_argument('-T', '--transmission', nargs=2, metavar=('E.M.P1', 'E.M.P2'),
                        action=DataT,
@@ -398,7 +398,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
                 neig = data.shape[-1]
                 for eig in range(neig):
                     ns._data.append(data[ns._Erng, ..., eig].flatten())
-                    ns._data_header.append('Teig({})[G0]:{}-{}'.format(eig+1, elec_mol_proj1, elec_mol_proj2))
+                    ns._data_header.append('Teig({}):{}-{}'.format(eig+1, elec_mol_proj1, elec_mol_proj2))
                     ns._data_description.append('Column {} is transmission eigenvalues from electrode {} to {}'.format(len(ns._data), elec_mol_proj1, elec_mol_proj2))
         p.add_argument('-Teig', '--transmission-eig', nargs=2, metavar=('E.M.P1', 'E.M.P2'),
                        action=DataTEig,
