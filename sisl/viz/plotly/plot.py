@@ -2229,7 +2229,7 @@ class Animation(MultiplePlot):
     def __init__(self, *args, frame_names=None, _plugins={}, **kwargs):
 
         if frame_names is not None:
-            _plugins["_get_frame_names"] = frame_names if callable(frame_names) else lambda self: frame_names
+            _plugins["_get_frame_names"] = frame_names if callable(frame_names) else lambda self, i: frame_names[i]
 
         super().__init__(*args, **kwargs, _plugins=_plugins)
 
