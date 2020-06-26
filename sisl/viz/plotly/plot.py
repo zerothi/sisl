@@ -441,19 +441,9 @@ class Plot(ShortCutable, Configurable, Connected):
 
         """
 
-        _get_frame_names = None
-        #Define how to get the framenames
-        if frame_names:
-
-            if callable(frame_names):
-                _get_frame_names = frame_names
-            else:
-                def _get_frame_names(self, i):
-                    return frame_names[i]
-
         # And just let the general multiple plot creator do the work
         return cls.multiple(*args, fixed=fixed, template_plot=template_plot, merge_method='animation',
-                            _plugins={**kwargs.pop('_plugins', {}), "_get_frame_names": _get_frame_names}, **kwargs)
+                            frame_names=frame_names, **kwargs)
 
     def __new__(cls, *args, **kwargs):
         """
