@@ -1463,6 +1463,33 @@ class Atoms:
                 return s
         raise KeyError('Could not find `atom` in the list of atoms.')
 
+    def group_data(self, data, axis=0):
+        r""" Group data for each atom
+
+        This is useful for grouping data that is orbitally resolved.
+        This will return a list of length ``len(self)`` and with each item
+        having the sub-slice of the data corresponding to the orbitals on the given
+        atom.
+
+        Examples
+        --------
+        >>> atoms = Atoms([Atom(4, [0.1, 0.2]), Atom(6, [0.2, 0.3, 0.5])])
+        >>> orb_data = np.arange(10).reshape(2, 5)
+        >>> atoms.group_data(orb_data, axis=1)
+        [
+         [[0, 1], [2, 3]],
+         [[4, 5, 6], [7, 8, 9]]
+        ]
+
+        Parameters
+        ----------
+        data : numpy.ndarray
+           data to be grouped
+        axis : int, optional
+           along which axis one should split the data
+        """
+        return np.split(data, self.lasto[:-1] + 1, axis=axis)
+
     def reorder(self, in_place=False):
         """ Reorders the atoms and species index so that they are ascending (starting with a specie that exists)
 
