@@ -50,6 +50,21 @@ def _listify_str(arg):
     return arg
 
 
+def _track(method, msg):
+    if method.__self__.track:
+        info(f"{method.__self__.__class__.__name__}.{method.__name__}: {msg}")
+
+
+def _track_file(method, f, msg=None):
+    if msg is None:
+        if f.is_file():
+            msg = f"reading file {f}"
+        else:
+            msg = f"could not find file {f}"
+    if method.__self__.track:
+        info(f"{method.__self__.__class__.__name__}.{method.__name__}: {msg}")
+
+
 @set_module("sisl.io.siesta")
 class fdfSileSiesta(SileSiesta):
     """ FDF-input file
@@ -81,7 +96,7 @@ class fdfSileSiesta(SileSiesta):
         self._parent_fh = []
 
         # Public key for printing information about where stuff comes from
-        self.track = False
+        self.track = kwargs.get("track", False)
 
     def _pushfile(self, f):
         if self.dir_file(f).is_file():
@@ -600,8 +615,7 @@ class fdfSileSiesta(SileSiesta):
         for f in order:
             v = getattr(self, '_r_supercell_nsc_{}'.format(f.lower()))(*args, **kwargs)
             if v is not None:
-                if self.track:
-                    info(f"{self.file}(read_supercell_nsc) found in file={f}")
+                _track(self.read_supercell_nsc, f"found file {f}")
                 return v
         warn('number of supercells could not be read from output files. Assuming molecule cell '
              '(no supercell connections)')
@@ -609,12 +623,14 @@ class fdfSileSiesta(SileSiesta):
 
     def _r_supercell_nsc_nc(self, *args, **kwargs):
         f = self.dir_file(self.get('SystemLabel', default='siesta') + '.nc')
+        _track_file(self._r_supercell_nsc_nc, f)
         if f.is_file():
             return ncSileSiesta(f).read_supercell_nsc()
         return None
 
     def _r_supercell_nsc_orb_indx(self, *args, **kwargs):
         f = self.dir_file(self.get('SystemLabel', default='siesta') + '.ORB_INDX')
+        _track_file(self._r_supercell_nsc_orb_indx, f)
         if f.is_file():
             return orbindxSileSiesta(f).read_supercell_nsc()
         return None
@@ -650,8 +666,7 @@ class fdfSileSiesta(SileSiesta):
         for f in order:
             v = getattr(self, '_r_supercell_{}'.format(f.lower()))(*args, **kwargs)
             if v is not None:
-                if self.track:
-                    info(f"{self.file}(read_supercell) found in file={f}")
+                _track(self.read_supercell, f"found file {f}")
                 return v
         return None
 
@@ -688,6 +703,7 @@ class fdfSileSiesta(SileSiesta):
     def _r_supercell_nc(self):
         # Read supercell from <>.nc file
         f = self.dir_file(self.get('SystemLabel', default='siesta') + '.nc')
+        _track_file(self._r_supercell_nc, f)
         if f.is_file():
             return ncSileSiesta(f).read_supercell()
         return None
@@ -695,11 +711,26 @@ class fdfSileSiesta(SileSiesta):
     def _r_supercell_xv(self, *args, **kwargs):
         """ Returns `SuperCell` object from the FDF file """
         f = self.dir_file(self.get('SystemLabel', default='siesta') + '.XV')
+        _track_file(self._r_supercell_xv, f)
         if f.is_file():
             nsc = self.read_supercell_nsc()
             sc = xvSileSiesta(f).read_supercell()
             sc.set_nsc(nsc)
             return sc
+        return None
+
+    def _r_supercell_tshs(self, *args, **kwargs):
+        f = self.dir_file(self.get('SystemLabel', default='siesta') + '.TSHS')
+        _track_file(self._r_supercell_tshs, f)
+        if f.is_file():
+            return tshsSileSiesta(f).read_supercell()
+        return None
+
+    def _r_supercell_onlys(self, *args, **kwargs):
+        f = self.dir_file(self.get('SystemLabel', default='siesta') + '.onlyS')
+        _track_file(self._r_supercell_onlys, f)
+        if f.is_file():
+            return onlysSileSiesta(f).read_supercell()
         return None
 
     def read_force(self, *args, **kwargs):
@@ -1570,14 +1601,14 @@ class fdfSileSiesta(SileSiesta):
         for f in order:
             DM = getattr(self, '_r_density_matrix_{}'.format(f.lower()))(*args, **kwargs)
             if DM is not None:
-                if self.track:
-                    info(f"{self.file}(read_density_matrix) found in file={f}")
+                _track(self.read_density_matrix, f"found file {f}")
                 return DM
         return None
 
     def _r_density_matrix_nc(self, *args, **kwargs):
         """ Try and read the density matrix by reading the <>.nc """
         f = self.dir_file(self.get('SystemLabel', default='siesta') + '.nc')
+        _track_file(self._r_density_matrix_nc, f)
         DM = None
         if f.is_file():
             # this *should* also contain the overlap matrix
@@ -1587,6 +1618,7 @@ class fdfSileSiesta(SileSiesta):
     def _r_density_matrix_tsde(self, *args, **kwargs):
         """ Read density matrix from the TSDE file """
         f = self.dir_file(self.get('SystemLabel', default='siesta') + '.TSDE')
+        _track_file(self._r_density_matrix_tsde, f)
         DM = None
         if f.is_file():
             if 'geometry' not in kwargs:
@@ -1599,6 +1631,7 @@ class fdfSileSiesta(SileSiesta):
     def _r_density_matrix_dm(self, *args, **kwargs):
         """ Read density matrix from the DM file """
         f = self.dir_file(self.get('SystemLabel', default='siesta') + '.DM')
+        _track_file(self._r_density_matrix_dm, f)
         DM = None
         if f.is_file():
             if 'geometry' not in kwargs:
@@ -1624,14 +1657,14 @@ class fdfSileSiesta(SileSiesta):
         for f in order:
             EDM = getattr(self, '_r_energy_density_matrix_{}'.format(f.lower()))(*args, **kwargs)
             if EDM is not None:
-                if self.track:
-                    info(f"{self.file}(read_energy_density_matrix) found in file={f}")
+                _track(self.read_energy_density_matrix, f"found file {f}")
                 return EDM
         return None
 
     def _r_energy_density_matrix_nc(self, *args, **kwargs):
         """ Read energy density matrix by reading the <>.nc """
         f = self.dir_file(self.get('SystemLabel', default='siesta') + '.nc')
+        _track_file(self._r_energy_density_matrix_nc, f)
         if f.is_file():
             return ncSileSiesta(f).read_energy_density_matrix(*args, **kwargs)
         return None
@@ -1639,6 +1672,7 @@ class fdfSileSiesta(SileSiesta):
     def _r_energy_density_matrix_tsde(self, *args, **kwargs):
         """ Read energy density matrix from the TSDE file """
         f = self.dir_file(self.get('SystemLabel', default='siesta') + '.TSDE')
+        _track_file(self._r_energy_density_matrix_tsde, f)
         EDM = None
         if f.is_file():
             if 'geometry' not in kwargs:
@@ -1664,14 +1698,14 @@ class fdfSileSiesta(SileSiesta):
         for f in order:
             v = getattr(self, '_r_overlap_{}'.format(f.lower()))(*args, **kwargs)
             if v is not None:
-                if self.track:
-                    info(f"{self.file}(read_overlap) found in file={f}")
+                _track(self.read_overlap, f"found file {f}")
                 return v
         return None
 
     def _r_overlap_nc(self, *args, **kwargs):
         """ Read overlap from the nc file """
         f = self.dir_file(self.get('SystemLabel', default='siesta') + '.nc')
+        _track_file(self._r_overlap_nc, f)
         if f.is_file():
             return ncSileSiesta(f).read_overlap(*args, **kwargs)
         return None
@@ -1679,6 +1713,7 @@ class fdfSileSiesta(SileSiesta):
     def _r_overlap_tshs(self, *args, **kwargs):
         """ Read overlap from the TSHS file """
         f = self.dir_file(self.get('SystemLabel', default='siesta') + '.TSHS')
+        _track_file(self._r_overlap_tshs, f)
         S = None
         if f.is_file():
             if 'geometry' not in kwargs:
@@ -1690,6 +1725,7 @@ class fdfSileSiesta(SileSiesta):
     def _r_overlap_hsx(self, *args, **kwargs):
         """ Read overlap from the HSX file """
         f = self.dir_file(self.get('SystemLabel', default='siesta') + '.HSX')
+        _track_file(self._r_overlap_hsx, f)
         S = None
         if f.is_file():
             if 'geometry' not in kwargs:
@@ -1701,6 +1737,7 @@ class fdfSileSiesta(SileSiesta):
     def _r_overlap_onlys(self, *args, **kwargs):
         """ Read overlap from the onlyS file """
         f = self.dir_file(self.get('SystemLabel', default='siesta') + '.onlyS')
+        _track_file(self._r_overlap_onlys, f)
         S = None
         if f.is_file():
             if 'geometry' not in kwargs:
@@ -1725,14 +1762,14 @@ class fdfSileSiesta(SileSiesta):
         for f in order:
             H = getattr(self, '_r_hamiltonian_{}'.format(f.lower()))(*args, **kwargs)
             if H is not None:
-                if self.track:
-                    info(f"{self.file}(read_hamiltonian) found in file={f}")
+                _track(self.read_hamiltonian, f"found file {f}")
                 return H
         return None
 
     def _r_hamiltonian_nc(self, *args, **kwargs):
         """ Read Hamiltonian from the nc file """
         f = self.dir_file(self.get('SystemLabel', default='siesta') + '.nc')
+        _track_file(self._r_hamiltonian_nc, f)
         if f.is_file():
             return ncSileSiesta(f).read_hamiltonian(*args, **kwargs)
         return None
@@ -1740,6 +1777,7 @@ class fdfSileSiesta(SileSiesta):
     def _r_hamiltonian_tshs(self, *args, **kwargs):
         """ Read Hamiltonian from the TSHS file """
         f = self.dir_file(self.get('SystemLabel', default='siesta') + '.TSHS')
+        _track_file(self._r_hamiltonian_tshs, f)
         H = None
         if f.is_file():
             if 'geometry' not in kwargs:
@@ -1751,6 +1789,7 @@ class fdfSileSiesta(SileSiesta):
     def _r_hamiltonian_hsx(self, *args, **kwargs):
         """ Read Hamiltonian from the HSX file """
         f = self.dir_file(self.get('SystemLabel', default='siesta') + '.HSX')
+        _track_file(self._r_hamiltonian_hsx, f)
         H = None
         if f.is_file():
             if 'geometry' not in kwargs:
