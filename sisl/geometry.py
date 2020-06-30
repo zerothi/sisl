@@ -322,10 +322,6 @@ class Geometry(SuperCellChild):
     def _(self, atoms):
         return (self.atoms.specie == self.atoms.index(atoms)).nonzero()[0]
 
-    @_sanitize_atoms.register(tuple)
-    def _(self, atoms):
-        return np.concatenate(self._sanitize_atoms(atom) for atom in atoms)
-
     @_sanitize_atoms.register(AtomCategory)
     def _(self, atoms):
         # First do categorization

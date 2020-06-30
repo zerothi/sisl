@@ -1463,8 +1463,8 @@ class Atoms:
                 return s
         raise KeyError('Could not find `atom` in the list of atoms.')
 
-    def group_data(self, data, axis=0):
-        r""" Group data for each atom
+    def group_atom_data(self, data, axis=0):
+        r""" Group data for each atom based on number of orbitals
 
         This is useful for grouping data that is orbitally resolved.
         This will return a list of length ``len(self)`` and with each item

@@ -1436,3 +1436,11 @@ def test_geometry_sanitize_atom():
     assert np.allclose(only_C, check_C)
     only_C = bi.axyz(bi.atoms.Z == 6)
     assert np.allclose(only_C, check_C)
+
+    tup_01 = (0, 2)
+    list_01 = [0, 2]
+    ndarray_01 = np.array(list_01)
+    assert np.allclose(bi._sanitize_atoms(tup_01),
+                       bi._sanitize_atoms(list_01))
+    assert np.allclose(bi._sanitize_atoms(ndarray_01),
+                       bi._sanitize_atoms(list_01))
