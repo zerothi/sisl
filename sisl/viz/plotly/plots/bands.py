@@ -270,7 +270,7 @@ class BandsPlot(Plot):
 
         band_struct = band_structure or self.setting("band_structure")
 
-        if not hasattr(band_struct, "H"):
+        if not hasattr(band_struct, "parent"):
             self.setup_hamiltonian()
             band_struct.set_parent(self.H)
 

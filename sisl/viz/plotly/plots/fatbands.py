@@ -258,6 +258,7 @@ class FatbandsPlot(BandsPlot):
                 self.geometry = band_struct.parent.geometry
 
         # Check if we have information of multiple spins to inform the input field.
+        spin_polarized = False
         if hasattr(self, "bands"):
             spin_polarized = len(self.bands.spin) == 2
 
@@ -287,8 +288,8 @@ class FatbandsPlot(BandsPlot):
         plotted_bands[0] = max(self.weights.band.values.min(), plotted_bands[0])
         plotted_bands[1] = min(self.weights.band.values.max(), plotted_bands[1])
 
-        #Get the bands that matter (spin polarization currently not implemented)
-        plot_eigvals = self.bands.sel(band=np.arange(*plotted_bands), spin=0) - E0
+        # Get the bands that matter
+        plot_eigvals = self.bands.sel(band=np.arange(*plotted_bands)) - E0
         # Get the weights that matter
         plot_weights = self.weights.sel(band=np.arange(*plotted_bands))
 
@@ -338,24 +339,26 @@ class FatbandsPlot(BandsPlot):
                 weights = weights.sel(spin=group["spin"])
 
             if group["normalize"]:
-                weights = weights.mean(["orb", "spin"])
+                weights = weights.mean("orb")
             else:
-                weights = weights.sum(["orb", "spin"])
+                weights = weights.sum("orb")
 
             if group["color"] is None:
                 group["color"] = random_color()
 
-            self.add_traces([{
-                "type": "scatter",
-                "mode": "lines",
-                "x": area_xs,
-                "y": [*(band + band_weights*scale*group["scale"]), *np.flip(band - band_weights*scale*group["scale"])],
-                "line":{"width": 0, "color": group["color"]},
-                "showlegend": i == 0,
-                "name": group["name"],
-                "legendgroup":group["name"],
-                "fill": "toself"
-            } for i, (band, band_weights) in enumerate(zip(plot_eigvals.transpose("band", "k"), weights.transpose("band", "k")))])
+            for ispin, (spin_eigvals, spin_weights) in enumerate(zip(plot_eigvals.transpose("spin", "band", "k"), weights.transpose("spin", "band", "k"))):
+
+                self.add_traces([{
+                    "type": "scatter",
+                    "mode": "lines",
+                    "x": area_xs,
+                    "y": [*(band + band_weights*scale*group["scale"]), *np.flip(band - band_weights*scale*group["scale"])],
+                    "line":{"width": 0, "color": group["color"]},
+                    "showlegend": i == 0 and ispin == 0,
+                    "name": group["name"],
+                    "legendgroup":group["name"],
+                    "fill": "toself"
+                } for i, (band, band_weights) in enumerate(zip(spin_eigvals, spin_weights))])
 
     # -------------------------------------
     #         Convenience methods
