@@ -60,7 +60,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
 
     def read_supercell(self):
         """ Returns the `SuperCell` object from this file """
-        cell = _a.arrayd(np.copy(self._value('cell')))
+        cell = _a.arrayd(np.copy(self._value('cell'))) * Bohr2Ang
         cell.shape = (3, 3)
 
         nsc = self._value('nsc')
@@ -77,7 +77,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
         """ Returns the `Geometry` object from this file """
         sc = self.read_supercell()
 
-        xyz = _a.arrayd(np.copy(self._value('xa')))
+        xyz = _a.arrayd(np.copy(self._value('xa'))) * Bohr2Ang
         xyz.shape = (-1, 3)
 
         # Create list with correct number of orbitals
