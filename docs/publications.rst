@@ -33,7 +33,11 @@ by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
    *Nonequilibrium Bond Forces in Single-Molecule Junctions*,
    Nano Letters `(2019) <https://doi.org/10.1021/acs.nanolett.9b02845>`_
 
-#. G. Singh, K. Kumar, R. K. Moudgil,
+#. F. Schindler, M. Brzezinska, W.A. Benalcazar, M. Iraola, A. Bouhon, S.S. Tsirkin, M.G. Vergniory, T. Neupert,
+   *Fractional corner charges in spin-orbit coupled crystals*,
+   Physical Rev. Research **1**, `033074 (2019) <https://journals.aps.org/prresearch/abstract/10.1103/PhysRevResearch.1.033074>`_
+
+#. G. Singh, K. Kumar, R.K. Moudgil,
    *Alloying-induced Spin Seebeck Effect and Spin Figure of Merit in Pt-based Bimetallic Atomic Wires of Noble Metals*,
    Physical Chemistry Chemical Physics `(2019) <https://doi.org/10.1039/C9CP01671F>`_
 
@@ -53,7 +57,7 @@ by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
    *Ballistic phonon thermal transport across nano-junctions on aluminum and platinum nanowires*,
    AIP Conference Proceedings **2093**, `020029 (2019) <https://doi.org/10.1063/1.5097098>`_
 
-#. G. Calogero, N. Papior, M. Koleini, M. H. L. Larsen and M. Brandbyge,
+#. G. Calogero, N. Papior, M. Koleini, M.H.L. Larsen and M. Brandbyge,
    *Multi-scale approach to first-principles electron transport beyond 100 nm*,
    Nanoscale **11**, `6153 (2019) <https://www.doi.org/10.1039/C9NR00866G>`_
 
