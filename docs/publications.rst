@@ -14,7 +14,7 @@ by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
    J. Chem. Phys. **152**, `204108 (2020) <https://doi.org/10.1063/5.0005077>`_
 
 #. N. Papior, G. Calogero, S. Leitherer, M. Brandbyge,
-  *Removing all periodic boundary conditions: Efficient non-equilibrium Green's function calculations*
+   *Removing all periodic boundary conditions: Efficient non-equilibrium Green's function calculations*
    Physical Review B **100**, `195417 (2019) <https://doi.org/10.1103/PhysRevB.100.195417>`_
 
 #. S. Sanz, P. Brandimarte, G. Giedke, D. Sanchez-Portal, T. Frederiksen,
