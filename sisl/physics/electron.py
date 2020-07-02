@@ -1119,6 +1119,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
     # Currently we require the Berry phase calculation to *only* accept Hamiltonians
     if not isinstance(contour.parent, Hamiltonian):
         raise SislError("berry_phase: requires the Brillouin zone object to contain a Hamiltonian!")
+    spin = contour.parent.spin
 
     if not contour.parent.orthogonal:
         raise SislError("berry_phase: requires the Hamiltonian to use an orthogonal basis!")
@@ -1171,7 +1172,11 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
                     axis = contour.k[1] - contour.k[0]
                     axis /= axis.dot(axis) ** 0.5
                     phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], dot(axis, g.rcell)).reshape(1, -1)
-                    prev.state *= np.exp(-1j * phase)
+                    if spin.has_noncolinear:
+                        # for NC/SOC we have a 2x2 spin-box per orbital
+                        prev.state *= np.repeat(np.exp(-1j * phase), 2, axis=1)
+                    else:
+                        prev.state *= np.exp(-1j * phase)
 
                 # Include last-to-first segment
                 prd = _process(prd, prev.inner(first, diagonal=False))
@@ -1194,7 +1199,11 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
                     axis = contour.k[1] - contour.k[0]
                     axis /= axis.dot(axis) ** 0.5
                     phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], dot(axis, g.rcell)).reshape(1, -1)
-                    prev.state *= np.exp(-1j * phase)
+                    if spin.has_noncolinear:
+                        # for NC/SOC we have a 2x2 spin-box per orbital
+                        prev.state *= np.repeat(np.exp(-1j * phase), 2, axis=1)
+                    else:
+                        prev.state *= np.exp(-1j * phase)
                 prd = _process(prd, prev.inner(first, diagonal=False))
             return prd
 
