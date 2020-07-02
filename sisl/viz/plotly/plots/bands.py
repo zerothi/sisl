@@ -268,6 +268,8 @@ class BandsPlot(Plot):
 
     def _after_init(self):
 
+        self.spin = sisl.Spin("")
+
         self.add_shortcut("g", "Toggle gap", self.toggle_gap)
 
     @entry_point('band_structure')
@@ -284,6 +286,9 @@ class BandsPlot(Plot):
         else:
             self.H = band_struct.parent
 
+        # Define the spin class of this calculation.
+        self.spin = self.H.spin
+
         self.ticks = band_struct.lineartick()
         self.kPath = band_struct._k
 
@@ -294,37 +299,37 @@ class BandsPlot(Plot):
 
         # Also, in this wrapper we will get the spin moments in case it is a non_colinear
         # calculation
-        if band_struct.parent.spin.is_noncolinear:
+        if self.spin.is_noncolinear:
             self.spin_moments = []
         elif hasattr(self, "spin_moments"):
             del self.spin_moments
 
-        def bands_wrapper(eigenstate, spin):
+        def bands_wrapper(eigenstate, spin_index):
             if callable(eig_map):
-                eig_map(eigenstate, self, spin)
+                eig_map(eigenstate, self, spin_index)
             if hasattr(self, "spin_moments"):
                 self.spin_moments.append(eigenstate.spin_moment())
             return eigenstate.eig
 
         # Define the available spins
-        spins = [0]
-        if band_struct.parent.spin.is_polarized:
-            spins = [0,1]
+        spin_indices = [0]
+        if self.spin.is_polarized:
+            spin_indices = [0,1]
 
         # Get the eigenstates for all the available spin components
         bands_arrays = []
-        for spin in spins:
+        for spin_index in spin_indices:
 
             spin_bands = band_struct.apply.dataarray.eigenstate(
-                wrap=partial(bands_wrapper, spin=spin),
-                spin=spin,
+                wrap=partial(bands_wrapper, spin_index=spin_index),
+                spin=spin_index,
                 coords=('band',),
             )
 
             bands_arrays.append(spin_bands)
 
         # Merge everything into a single dataarray with a spin dimension
-        self.bands = xr.concat(bands_arrays, "spin").assign_coords({"spin": spins}).transpose("k", "spin", "band")
+        self.bands = xr.concat(bands_arrays, "spin").assign_coords({"spin": spin_indices}).transpose("k", "spin", "band")
 
         self.bands['k'] = band_struct.lineark()
         self.bands.attrs = {"ticks": self.ticks[0], "ticklabels": self.ticks[1], **bands_arrays[0].attrs}
@@ -404,18 +409,14 @@ class BandsPlot(Plot):
                     self.update_settings(path=self.siestaPath, run_updates=False, no_log=True)
             except Exception as e:
                 print(f"Could not correctly read the bands path from siesta.\n Error {e}")
+        
+        # Define the spin class of the results we have retrieved
+        if len(self.bands.spin.values) == 2:
+                self.spin = sisl.Spin("p")
 
     def _after_read(self):
 
         # Inform the spin input of what spin class are we handling
-        self.spin = sisl.Spin("")
-        if hasattr(self, "H"):
-            self.spin = self.H.spin
-
-        else:
-            if len(self.bands.spin.values) == 2:
-                self.spin = sisl.Spin("p")
-
         self.get_param("spin").update_options(self.spin)
 
         self._calculate_gaps()
@@ -480,7 +481,7 @@ class BandsPlot(Plot):
                 filtered_bands = filtered_bands.sel(spin=spin)
             elif isinstance(spin[0], str):
                 if not hasattr(self, "spin_moment"):
-                    raise ValueError(f"You requested spin texture ({}), but spin moments have not been calculated. The spin class is {self.spin.kind}")
+                    raise ValueError(f"You requested spin texture ({spin[0]}), but spin moments have not been calculated. The spin class is {self.spin.kind}")
                 self.spin_texture = True
 
         add_band_trace_data = add_band_trace_data or self.setting("add_band_trace_data")

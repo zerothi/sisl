@@ -215,8 +215,17 @@ class FatbandsPlot(BandsPlot):
         # Define the function that will "catch" each eigenstate and
         # build the weights array. See BandsPlot._read_from_H to understand where
         # this will go exactly
-        def _weights_from_eigenstate(eigenstate, plot, spin):
-            plot.weights[spin].append(eigenstate.norm2(sum=False))
+        def _weights_from_eigenstate(eigenstate, plot, spin_index):
+            
+            weights = eigenstate.norm2(sum=False)
+
+            if plot.spin.spins > 2:
+                # If it is a non-colinear or spin orbit calculation, we have two weights for each
+                # orbital (one for each spin component of the state), so we just pair them together
+                # and sum their contributions to get the weight of the orbital.
+                weights = weights.reshape(len(weights), -1, 2).sum(2)
+                
+            plot.weights[spin_index].append(weights)
 
         # We make bands plot read the bands, which will also populate the weights
         # thanks to the above step
