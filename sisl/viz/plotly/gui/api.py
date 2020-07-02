@@ -1,4 +1,5 @@
 import shutil
+import pathlib
 import traceback
 
 from plotly.graph_objects import Figure
@@ -35,6 +36,8 @@ class CustomJSONEncoder(JSONEncoder):
             return obj.tolist()
         elif isinstance(obj, np.generic):
             return obj.item()
+        elif isinstance(obj, pathlib.Path):
+            return str(obj)
 
         return super().default(obj)
 

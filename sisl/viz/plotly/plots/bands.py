@@ -480,7 +480,7 @@ class BandsPlot(Plot):
             if isinstance(spin[0], int):
                 filtered_bands = filtered_bands.sel(spin=spin)
             elif isinstance(spin[0], str):
-                if not hasattr(self, "spin_moment"):
+                if not hasattr(self, "spin_moments"):
                     raise ValueError(f"You requested spin texture ({spin[0]}), but spin moments have not been calculated. The spin class is {self.spin.kind}")
                 self.spin_texture = True
 

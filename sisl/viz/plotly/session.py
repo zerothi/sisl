@@ -851,7 +851,7 @@ class Session(Configurable, Connected):
 
             # Extend the plotables dict with the files that we find that belong to this sile
             self.warehouse["plotables"] = {**self.warehouse["plotables"], **{
-                str(uuid.uuid4()): {"name": path.name, "path": path, "plot": SileClass._plot_default_suffix} for path in filepaths
+                str(uuid.uuid4()): {"name": path.name, "path": path, "plot": SileClass.plot.plotly._default} for path in filepaths
             }}
 
         #Avoid passing unnecessary info to the browser.

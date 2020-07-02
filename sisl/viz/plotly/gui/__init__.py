@@ -94,7 +94,7 @@ def sgui():
 
     for param in Session._get_class_params()[0]:
         if param.dtype is not None and not isinstance(param.dtype, str):
-            parser.add_argument(f'--{param.key}', type=param._parse, required=False, help=getattr(param, "help", ""))
+            parser.add_argument(f'--{param.key}', type=param.parse, required=False, help=getattr(param, "help", ""))
 
     subparsers = parser.add_subparsers(
         help="YOU DON'T NEED TO PASS A SESSION CLASS. You can provide a session file to load a saved session (see the --load flag)."+
@@ -111,7 +111,7 @@ def sgui():
         general_arguments(specific_parser)
         for param in SessionClass._get_class_params()[0]:
             if param.dtype is not None and not isinstance(param.dtype, str):
-                specific_parser.add_argument(f'--{param.key}', type=param._parse, required=False, help=getattr(param, "help", ""))
+                specific_parser.add_argument(f'--{param.key}', type=param.parse, required=False, help=getattr(param, "help", ""))
 
     args = parser.parse_args()
 

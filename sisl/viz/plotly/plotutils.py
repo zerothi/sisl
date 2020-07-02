@@ -574,9 +574,11 @@ def find_files(root_dir=Path("."), search_string = "*", depth = [0, 0], sort = T
 
     files = []
     for depth in range(depth[0], depth[1] + 1):
-        new_files = root_dir.glob(root_dir / ("*/" * depth) / search_string)
-        if new_files:
-            files += [path.resolve() for path in new_files]
+        # Path.glob returns a generator
+        new_files = root_dir.glob(("*/" * depth) + search_string)
+
+        # And we just iterate over all the found paths (if any)
+        files += [path.resolve() for path in new_files]
 
     if sort:
         return sorted(files, key=sort_func)
