@@ -197,8 +197,12 @@ class FatbandsPlot(BandsPlot):
                 "band": bands,
                 "orb": np.arange(0, weights.shape[2]),
             },
-            dims=("k", "band", "orb")
+            dims=("k", "band","orb")
         )
+
+        # Add the spin dimension so that the weights array is normalized,
+        # even though spin is not yet supported by this entrypoint
+        self.weights = self.weights.expand_dims("spin")
 
         # Set up the options for the 'groups' setting based on the plot's associated geometry
         self._set_group_options()
@@ -257,12 +261,7 @@ class FatbandsPlot(BandsPlot):
             if band_struct is not None:
                 self.geometry = band_struct.parent.geometry
 
-        # Check if we have information of multiple spins to inform the input field.
-        spin_polarized = False
-        if hasattr(self, "bands"):
-            spin_polarized = len(self.bands.spin) == 2
-
-        self.get_param('groups').update_options(self.geometry, spin_polarized)
+        self.get_param('groups').update_options(self.geometry, self.H.spin)
 
     def _set_data(self):
 

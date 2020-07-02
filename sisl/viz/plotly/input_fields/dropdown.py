@@ -1,5 +1,6 @@
 import numpy as np
 
+from sisl import Spin
 from .._input_field import InputField
 
 
@@ -132,12 +133,42 @@ class SpinSelect(DropdownInput):
         }
     }
 
-    def update_options(self, polarized):
+    _options = {
+        Spin.UNPOLARIZED: [],
+        Spin.POLARIZED: [{"label": "↑", "value": 0}, {"label": "↓", "value": 1}],
+        Spin.NONCOLINEAR: [{"label": val, "value": val} for val in ("x", "y", "z")],
+        Spin.SPINORBIT: []
+    }
 
-        self.modify("inputField.params.options",
-                    [{"label": "↑", "value": 0}, {"label": "↓", "value": 1}] if polarized else [])
+    def update_options(self, spin):
+        """
+        Updates the options of the spin selector.
+
+        It does so according to the type of spin that the plot is handling.
+
+        Parameters
+        -----------
+        spin: sisl.Spin, str or int
+            It is used to indicate the kind of spin.
+
+        See also
+        ---------
+        sisl.physics.Spin
+        """
+
+        if not isinstance(spin, Spin):
+            spin = Spin(spin)
+
+        self.modify("inputField.params.options", self._options[spin.kind])
 
         return self
+    
+    def parse(self, val):
+
+        if not isinstance(val, (list, np.ndarray)):
+            val = [val]
+        
+        return val
 
 
 class GeomAxisSelect(DropdownInput):

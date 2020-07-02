@@ -10,7 +10,7 @@ from ..plot import Plot, PLOTS_CONSTANTS, entry_point
 from ..plotutils import find_files
 from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput,\
      IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput, FunctionInput, SileInput, \
-         PlotableInput
+         PlotableInput, SpinSelect
 from ..input_fields.range import ErangeInput
 
 
@@ -192,6 +192,11 @@ class BandsPlot(Plot):
             ]
         ),
 
+        SpinSelect(key="spin", name="Spin",
+            default=None,
+            help="Determines how the different spin configurations should be displayed"
+        ),
+
         SwitchInput(key="gap", name="Show gap",
             default=False,
             params={
@@ -270,9 +275,14 @@ class BandsPlot(Plot):
 
         band_struct = band_structure or self.setting("band_structure")
 
-        if not hasattr(band_struct, "parent"):
+        if band_struct is None:
+            raise ValueError("No band structure (k points path) was provided")
+
+        if not isinstance(getattr(band_struct, "parent", None), sisl.Hamiltonian):
             self.setup_hamiltonian()
             band_struct.set_parent(self.H)
+        else:
+            self.H = band_struct.parent
 
         self.ticks = band_struct.lineartick()
         self.kPath = band_struct._k
@@ -281,9 +291,19 @@ class BandsPlot(Plot):
         # to give the possibility to the user to do something inbetween
         # NOTE THAT THIS IS USED BY FAT BANDS TO GET THE WEIGHTS SIMULTANEOUSLY
         eig_map = eigenstate_map or self.setting('eigenstate_map')
+
+        # Also, in this wrapper we will get the spin moments in case it is a non_colinear
+        # calculation
+        if band_struct.parent.spin.is_noncolinear:
+            self.spin_moments = []
+        elif hasattr(self, "spin_moments"):
+            del self.spin_moments
+
         def bands_wrapper(eigenstate, spin):
             if callable(eig_map):
                 eig_map(eigenstate, self, spin)
+            if hasattr(self, "spin_moments"):
+                self.spin_moments.append(eigenstate.spin_moment())
             return eigenstate.eig
 
         # Define the available spins
@@ -308,6 +328,17 @@ class BandsPlot(Plot):
 
         self.bands['k'] = band_struct.lineark()
         self.bands.attrs = {"ticks": self.ticks[0], "ticklabels": self.ticks[1], **bands_arrays[0].attrs}
+
+        if hasattr(self, "spin_moments"):
+            self.spin_moments = xr.DataArray(
+                self.spin_moments,
+                coords={
+                    "k": self.bands.k,
+                    "band": self.bands.band,
+                    "axis": ["x", "y", "z"]
+                },
+                dims=("k", "band", "axis")
+            )
 
     @entry_point('path')
     def _read_from_H(self, eigenstate_map=None):
@@ -348,7 +379,7 @@ class BandsPlot(Plot):
         self.path = self.setting("path")
 
         if self.path and self.path != getattr(self, "siestaPath", None) or self.setting("band_structure"):
-            raise Exception("A path was provided, therefore we can not use the .bands file even if there is one")
+            raise ValueError("A path was provided, therefore we can not use the .bands file even if there is one")
 
         bands_file = self.setting("bands_file") or self.requiredFiles[0]
 
@@ -376,7 +407,17 @@ class BandsPlot(Plot):
 
     def _after_read(self):
 
-        self.isSpinPolarized = len(self.bands.spin.values) == 2
+        # Inform the spin input of what spin class are we handling
+        self.spin = sisl.Spin("")
+        if hasattr(self, "H"):
+            self.spin = self.H.spin
+
+        else:
+            if len(self.bands.spin.values) == 2:
+                self.spin = sisl.Spin("p")
+
+        self.get_param("spin").update_options(self.spin)
+
         self._calculate_gaps()
 
         # Make sure that the bands_range control knows which bands are available
@@ -430,14 +471,49 @@ class BandsPlot(Plot):
             Erange = np.array(Erange)
             filtered_bands = filtered_bands.where((filtered_bands <= Erange[1]) & (filtered_bands >= Erange[0])).dropna("band", "all")
             self.update_settings(run_updates=False, bands_range=[int(filtered_bands['band'].min()), int(filtered_bands['band'].max())], no_log=True)
+        
+        # Let's treat the spin if the user requested it 
+        spin = self.setting("spin")
+        self.spin_texture = False
+        if spin is not None and len(spin) > 0:
+            if isinstance(spin[0], int):
+                filtered_bands = filtered_bands.sel(spin=spin)
+            elif isinstance(spin[0], str):
+                if not hasattr(self, "spin_moment"):
+                    raise ValueError(f"You requested spin texture ({}), but spin moments have not been calculated. The spin class is {self.spin.kind}")
+                self.spin_texture = True
 
         add_band_trace_data = add_band_trace_data or self.setting("add_band_trace_data")
         if not callable(add_band_trace_data):
             add_band_trace_data = lambda * args, **kwargs: {}
 
-        # Give the oportunity to draw before bands are drawn (used by Fatbands)
+        # Give the oportunity to draw before bands are drawn (used by Fatbands, for example)
         if callable(draw_before_bands):
             draw_before_bands()
+
+        if self.spin_texture:
+
+            def scatter_additions(band, spin_index):
+
+                width = self.setting("bands_width")
+
+                return {
+                    "mode": "markers",
+                    "marker": {"color": self.spin_moments.sel(band=band, axis=spin[0]).values, "size": width, "showscale": True, "coloraxis": "coloraxis"},
+                    "showlegend": False
+                }
+        else:
+
+            bands_color = self.setting("bands_color")
+            spindown_color = self.setting("spindown_color")
+            width = self.setting("bands_width")
+
+            def scatter_additions(band, spin_index):
+                
+                return {
+                    "mode": "lines",
+                    'line': {"color": [bands_color, spindown_color][spin_index], 'width': width},
+                }
 
         #Define the data of the plot as a list of dictionaries {x, y, 'type', 'name'}
         self.add_traces(np.ravel([[{
@@ -445,8 +521,8 @@ class BandsPlot(Plot):
                         'x': band.k.values,
                         'y': (band).values,
                         'mode': 'lines',
-                        'name': "{} spin {}".format(band.band.values, PLOTS_CONSTANTS["spins"][spin]) if self.isSpinPolarized else str(band.band.values),
-                        'line': {"color": [self.setting("bands_color"), self.setting("spindown_color")][spin], 'width': self.setting("bands_width")},
+                        'name': "{} spin {}".format(band.band.values, PLOTS_CONSTANTS["spins"][spin]) if self.spin.is_polarized else str(band.band.values),
+                        **scatter_additions(band.band.values, spin),
                         'hoverinfo':'name',
                         "hovertemplate": '%{y:.2f} eV',
                         **add_band_trace_data(band, self)
@@ -460,6 +536,10 @@ class BandsPlot(Plot):
         self.figure.layout.xaxis.tickvals = getattr(self.bands, "ticks", None)
         self.figure.layout.xaxis.ticktext = getattr(self.bands, "ticklabels", None)
         self.figure.layout.yaxis.range = np.array(self.setting("Erange"))
+
+        # If we are showing spin textured bands, customize the colorbar
+        if self.spin_texture:
+            self.layout.coloraxis.colorbar = {"title": f"Spin texture ({self.setting('spin')[0]})"}
 
     def _calculate_gaps(self):
 
@@ -477,7 +557,7 @@ class BandsPlot(Plot):
         self.gap_info = {
             'k': (VB["k"].values, CB['k'].values),
             'bands': (VB["band"].values, CB["band"].values),
-            'spin': (VB["spin"].values, CB["spin"].values) if self.isSpinPolarized else (0, 0),
+            'spin': (VB["spin"].values, CB["spin"].values) if self.spin.is_polarized else (0, 0),
             'Es': [float(VBtop), float(CBbot)]
         }
 

@@ -87,7 +87,7 @@ bz = sisl.BandStructure(H, [[0, 0, 0], [2/3, 1/3, 0], [1/2, 0, 0]], 9, ["Gamma",
 
 class TestBandsSislHamiltonian(BandsPlotTester):
 
-    plot = BandsPlot(H=H, band_structure=bz)
+    plot = BandsPlot(band_structure=bz)
     bands_shape = (9, 1, 2)
     gap = 0
     ticktext = ["Gamma", "M", "K"]

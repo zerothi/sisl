@@ -168,20 +168,36 @@ class OrbitalQueries(QueriesInput):
 
         self.orb_filtering_df = pd.DataFrame(orb_props)
 
-    def update_options(self, geom, polarized=False):
+    def update_options(self, geometry, spin=""):
+        """
+        Updates the options of the orbital queries.
+
+        Parameters
+        -----------
+        geometry: sisl.Geometry
+            the geometry that contains the orbitals that can be selected.
+        spin: sisl.Spin, str or int
+            It is used to indicate the kind of spin so that the spin selector
+            (in case there is one) can display the appropiate options.
+
+        See also
+        ---------
+        sisl.viz.plotly.input_fields.dropdown.SpinSelect
+        sisl.physics.Spin
+        """
 
         for key in ("species", "atoms", "orbitals"):
             try:
-                self.get_query_param(key).update_options(geom)
+                self.get_query_param(key).update_options(geometry)
             except KeyError:
                 pass
 
         try:
-            self.get_query_param('spin').update_options(polarized)
+            self.get_query_param('spin').update_options(spin)
         except KeyError:
             pass
 
-        self._build_orb_filtering_df(geom)
+        self._build_orb_filtering_df(geometry)
 
     def get_orbitals(self, request):
 

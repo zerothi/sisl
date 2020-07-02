@@ -284,22 +284,22 @@ class PdosPlot(Plot):
         """
 
         #Normalize self.PDOS to do the same treatment for both spin-polarized and spinless simulations
-        self.isSpinPolarized = len(self.PDOS.shape) == 3
+        self.spin_polarized = len(self.PDOS.shape) == 3
 
         #Normalize the PDOS array
-        self.PDOS = np.array([self.PDOS]) if not self.isSpinPolarized else self.PDOS
+        self.PDOS = np.array([self.PDOS]) if not self.spin_polarized else self.PDOS
 
         self.PDOS = DataArray(
             self.PDOS,
             coords={
-                'spin': [0, 1] if self.isSpinPolarized else [0],
-                'orb': range(0, self.PDOS.shape[1]),
+                'spin': range(self.PDOS.shape[0]),
+                'orb': range(self.PDOS.shape[1]),
                 'E': self.E
             },
             dims=('spin', 'orb', 'E')
         )
 
-        self.get_param('requests').update_options(self.geometry, self.isSpinPolarized)
+        self.get_param('requests').update_options(self.geometry, "p" if self.spin_polarized else "")
 
     def _set_data(self):
         """
