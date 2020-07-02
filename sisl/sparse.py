@@ -774,7 +774,7 @@ class SparseCSR(NDArrayOperatorsMixin):
         if asarray(i).size == 0:
             return arrayi([])
         if i < 0 or i >= self.shape[0]:
-            raise IndexError('row index is out-of-bounds')
+            raise IndexError(f"row index is out-of-bounds {i} : {self.shape[0]}")
         i1 = int(i) + 1
         # We skip this check and let sisl die if wrong input is given...
         #if not isinstance(i, Integral):
@@ -786,7 +786,7 @@ class SparseCSR(NDArrayOperatorsMixin):
         if len(j) == 0:
             return arrayi([])
         if np_any(j < 0) or np_any(j >= self.shape[1]):
-            raise IndexError('column index is out-of-bounds')
+            raise IndexError(f"column index is out-of-bounds {j} : {self.shape[1]}")
 
         # fast reference
         ptr = self.ptr
@@ -875,7 +875,7 @@ class SparseCSR(NDArrayOperatorsMixin):
             return indices(col[ptr_i:ncol_ptr_i], j, ptr_i)
 
     def _extend_empty(self, i, n):
-        """ Extends the sparsity pattern to retain elements `j` in row `i`
+        """ Extends the sparsity pattern with `n` elements in row `i`
 
         Parameters
         ----------
@@ -1323,11 +1323,12 @@ class SparseCSR(NDArrayOperatorsMixin):
     def fromsp(cls, *sps, **kwargs):
         shape = sps[0].shape
         dtype = kwargs.get("dtype", np.result_type(*tuple(sp.dtype for sp in sps)))
-        out = cls(shape + (len(sps), ), dtype=dtype)
-
-        ptr = out.ptr
-        ncol = out.ncol
-        col = out.col
+        # create a single sparse matrix to get the final size
+        # this will also error out if the shapes are not coherent
+        full_sp = reduce(lambda x, y: x + y.tocsr(), sps, 0.)
+        nnzpr = max(np.diff(full_sp.indptr).max(), 1)
+        out = cls(shape + (len(sps), ), nnzpr=nnzpr, dtype=dtype)
+        del full_sp
 
         # Now we need to add things to the sparsity pattern
         for iD, sp in enumerate(sps):
@@ -1338,8 +1339,7 @@ class SparseCSR(NDArrayOperatorsMixin):
             # Loop stuff
             for r in range(shape[0]):
                 sl = slice(sp.indptr[r], sp.indptr[r+1])
-                cols = sp.indices[sl]
-                idx = out._extend(r, cols)
+                idx = out._extend(r, sp.indices[sl])
                 out._D[idx, iD] += sp.data[sl]
 
         return out
