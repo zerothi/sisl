@@ -469,7 +469,7 @@ class Plot(ShortCutable, Configurable, Connected):
             plot_method = kwargs.get("plot_method", cls.suffix())
 
             # If a filename is recieved, we will try to find a plot for it
-            if isinstance(args[0], str):
+            if isinstance(args[0], (str, Path)):
 
                 filename = args[0]
                 sile = sisl.get_sile(filename)

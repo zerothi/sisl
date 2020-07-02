@@ -47,6 +47,11 @@ class DropdownInput(InputField):
     options = property(fget=_get_options, fset=_set_options)
 
 
+class CreatableDropdown(DropdownInput):
+
+    _type = "creatable dropdown"
+
+
 class AtomSelect(DropdownInput):
 
     _default={

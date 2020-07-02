@@ -4,7 +4,7 @@ import plotly.graph_objects as go
 import sisl
 from ..plot import Plot, entry_point
 from ..input_fields import TextInput, FilePathInput, Array1dInput, SwitchInput, \
-     ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, \
+     ColorPicker, DropdownInput, CreatableDropdown, IntegerInput, FloatInput, RangeInput, RangeSlider, \
      QueriesInput, ProgramaticInput, PlotableInput, SislObjectInput, PlotableInput
 
 
@@ -45,13 +45,13 @@ class GridPlot(Plot):
     trace_name: str, optional
         The name that the trace will show in the legend. Good when merging
         with other plots to be able to toggle the trace in the legend
-    xRange: array-like of shape (2,), optional
+    x_range: array-like of shape (2,), optional
         Range where the X is displayed. Should be inside the unit cell,
         otherwise it will fail.
-    yRange: array-like of shape (2,), optional
+    y_range: array-like of shape (2,), optional
         Range where the Y is displayed. Should be inside the unit cell,
         otherwise it will fail.
-    zRange: array-like of shape (2,), optional
+    z_range: array-like of shape (2,), optional
         Range where the Z is displayed. Should be inside the unit cell,
         otherwise it will fail.
     crange: array-like of shape (2,), optional
@@ -125,20 +125,26 @@ class GridPlot(Plot):
             help="""The representation of the grid that should be displayed"""
         ),
 
-        DropdownInput(
+        CreatableDropdown(
             key="transforms", name="Grid transforms",
             default=[],
             width="s100% m50% l90%",
             params={
                 'options': [
-                    {'label': 'Squared', 'value': 'squared'},
+                    {'label': 'Square', 'value': 'square'},
                     {'label': 'Absolute', 'value': 'abs'},
                 ],
-                'isMulti': False,
+                'isMulti': True,
                 'isSearchable': True,
                 'isClearable': True
             },
-            help="""The representation of the grid that should be displayed"""
+            help="""Transformations to apply to the whole grid.
+            It can be a function, or a string that represents the path
+            to a function (e.g. "scipy.exp"). If a string that is a single
+            word is provided, numpy will be assumed to be the module (e.g.
+            "square" will be converted into "np.square"). 
+            Note that transformations will be applied in the order provided. Some
+            transforms might not be necessarily commutable (e.g. "abs" and "cos")."""
         ),
 
         DropdownInput(
@@ -236,7 +242,7 @@ class GridPlot(Plot):
         ),
 
         RangeSlider(
-            key="xRange", name="X range",
+            key="x_range", name="X range",
             default=None,
             params={
                 "min": 0
@@ -245,7 +251,7 @@ class GridPlot(Plot):
         ),
 
         RangeSlider(
-            key="yRange", name="Y range",
+            key="y_range", name="Y range",
             default=None,
             params={
                 "min": 0
@@ -254,7 +260,7 @@ class GridPlot(Plot):
         ),
 
         RangeSlider(
-            key="zRange", name="Z range",
+            key="z_range", name="Z range",
             default=None,
             params={
                 "min": 0
@@ -371,7 +377,7 @@ class GridPlot(Plot):
     def _after_read(self):
 
         #Inform of the new available ranges
-        range_keys = ("xRange", "yRange", "zRange")
+        range_keys = ("x_range", "y_range", "z_range")
 
         for ax, key in enumerate(range_keys):
             self.modify_param(key, "inputField.params.max", self.grid.cell[ax, ax])
@@ -400,7 +406,7 @@ class GridPlot(Plot):
             name = grid_file.name
 
         # Get only the part of the grid that we need
-        range_keys = ("xRange", "yRange", "zRange")
+        range_keys = ("x_range", "y_range", "z_range")
         ax_ranges = [self.setting(key) for ax, key in enumerate(range_keys)]
 
         for ax, ax_range in enumerate(ax_ranges):
@@ -415,9 +421,9 @@ class GridPlot(Plot):
                 #And finally get the subpart of the grid
                 grid = grid.sub(np.arange(indices[0, ax], indices[1, ax] + 1), ax)
 
-        interpFactors = np.array([factor if ax in display_axes else 1 for ax, factor in enumerate(self.setting("interp"))], dtype=int)
+        interp_factors = np.array([factor if ax in display_axes else 1 for ax, factor in enumerate(self.setting("interp"))], dtype=int)
 
-        interpolate = (interpFactors != 1).any()
+        interpolate = (interp_factors != 1).any()
 
         for ax in [0, 1, 2]:
             if ax not in display_axes:
@@ -428,7 +434,7 @@ class GridPlot(Plot):
                     grid.grid = np.concatenate((grid.grid, grid.grid), axis=2)
 
         if interpolate:
-            grid = grid.interp([factor for factor in grid.shape*interpFactors])
+            grid = grid.interp([factor for factor in grid.shape*interp_factors])
 
             for ax in [0, 1, 2]:
                 if ax not in display_axes:
@@ -473,7 +479,7 @@ class GridPlot(Plot):
 
     def _get_ax_range(self, grid, ax, sc):
 
-        ax_range = self.setting(["xRange", "yRange", "zRange"][ax])
+        ax_range = self.setting(["x_range", "y_range", "z_range"][ax])
         grid_offset = self.grid_offset + self.setting("offset")
 
         if ax_range is not None:
@@ -515,12 +521,16 @@ class GridPlot(Plot):
     @staticmethod
     def _transform_grid(grid, transform):
 
-        if transform == 'abs':
-            grid = abs(grid)
-        elif transform == 'squared':
-            grid.grid = grid.grid ** 2
+        if isinstance(transform, str):
 
-        return grid
+            # Since this may come from the GUI, there might be extra spaces
+            transform = transform.strip()
+
+            # If is a string with no dots, we will assume it is a numpy function
+            if len(transform.split(".")) == 1:
+                transform = f"numpy.{transform}"
+
+        return grid.apply(transform)
 
     def _plot1D(self, grid, values, display_axes, sc, name, **kwargs):
 
@@ -557,6 +567,11 @@ class GridPlot(Plot):
             crange = [None, None]
         cmin, cmax = crange
 
+        cmid = self.setting("cmid")
+        if cmid is None and cmin is None and cmax is None:
+            if np.any(values > 0) and np.any(values < 0):
+                cmid = 0
+
         self.data = [{
             'type': 'heatmap',
             'name': name,
@@ -566,7 +581,7 @@ class GridPlot(Plot):
             'zsmooth': self.setting('zsmooth'),
             'zmin': cmin,
             'zmax': cmax,
-            'zmid': self.setting('cmid'),
+            'zmid': cmid,
             'colorscale': self.setting('colorscale'),
             **kwargs
         }]
@@ -584,6 +599,11 @@ class GridPlot(Plot):
         if crange is None:
             crange = [None, None]
         cmin, cmax = crange
+
+        cmid = self.setting("cmid")
+        if cmid is None and cmin is None and cmax is None:
+            if np.any(values > 0) and np.any(values < 0):
+                cmid = 0
 
         isovals = self.setting('iso_vals')
         iso_frac = self.setting('iso_frac')
@@ -607,11 +627,11 @@ class GridPlot(Plot):
         elif type3D == 'isosurface':
             plot_func = self._plot3D_isosurface
 
-        plot_func(X, Y, Z, values, cmin, cmax, isomin, isomax, name, **kwargs)
+        plot_func(X, Y, Z, values, cmin, cmid, cmax, isomin, isomax, name, **kwargs)
 
         self.layout.scene = {'aspectmode': 'data'}
 
-    def _plot3D_volume(self, X, Y, Z, values, cmin, cmax, isomin, isomax, name, **kwargs):
+    def _plot3D_volume(self, X, Y, Z, values, cmin, cmid, cmax, isomin, isomax, name, **kwargs):
 
         self.data = [{
             'type': 'volume',
@@ -621,7 +641,7 @@ class GridPlot(Plot):
             'z': Z.ravel(),
             'value': np.rollaxis(values, 1).ravel(),
             'cmin': cmin,
-            'cmid': self.setting('cmid'),
+            'cmid': cmid,
             'cmax': cmax,
             'isomin': isomin,
             'isomax': isomax,
@@ -634,7 +654,7 @@ class GridPlot(Plot):
             **kwargs
         }]
 
-    def _plot3D_isosurface(self, X, Y, Z, values, cmin, cmax, isomin, isomax, name, **kwargs):
+    def _plot3D_isosurface(self, X, Y, Z, values, cmin, cmid, cmax, isomin, isomax, name, **kwargs):
 
         self.data = [{
             'type': 'isosurface',
@@ -644,7 +664,7 @@ class GridPlot(Plot):
             'z': Z.ravel(),
             'value': np.rollaxis(values, 1).ravel(),
             'cmin': cmin,
-            'cmid': self.setting('cmid'),
+            'cmid': cmid,
             'cmax': cmax,
             'isomin': isomin,
             'isomax': isomax,
@@ -795,7 +815,7 @@ class GridPlot(Plot):
             along = not_displayed[0] if not_displayed else 2
 
         # We get the key that needs to be animated (we will divide the full range in frames)
-        range_key = ["xRange", "yRange", "zRange"][along]
+        range_key = ["x_range", "y_range", "z_range"][along]
 
         # Get the full range
         if start is not None and stop is not None:
@@ -838,7 +858,7 @@ class GridPlot(Plot):
 
         Parameters
         -----------
-        range_key: {'xRange', 'yRange', 'zRange'}
+        range_key: {'x_range', 'y_range', 'z_range'}
             the key of the setting that is to be animated through the scan.
         breakpoints: array-like
             the discrete points of the scan
@@ -1042,13 +1062,13 @@ class WavefunctionPlot(GridPlot):
     trace_name: str, optional
         The name that the trace will show in the legend. Good when merging
         with other plots to be able to toggle the trace in the legend
-    xRange: array-like of shape (2,), optional
+    x_range: array-like of shape (2,), optional
         Range where the X is displayed. Should be inside the unit cell,
         otherwise it will fail.
-    yRange: array-like of shape (2,), optional
+    y_range: array-like of shape (2,), optional
         Range where the Y is displayed. Should be inside the unit cell,
         otherwise it will fail.
-    zRange: array-like of shape (2,), optional
+    z_range: array-like of shape (2,), optional
         Range where the Z is displayed. Should be inside the unit cell,
         otherwise it will fail.
     crange: array-like of shape (2,), optional
@@ -1176,12 +1196,6 @@ class WavefunctionPlot(GridPlot):
         if getattr(self, 'geometry', None) is None:
             raise Exception('No geometry was provided and we need it the basis orbitals to build the wavefunctions from the coefficients!')
 
-        transforms = self.setting('transforms')
-        if 'abs' in transforms or 'squared' in transforms:
-            self.update_settings(cmid=None, run_updates=False)
-        else:
-            self.update_settings(cmid=0, run_updates=False)
-
         grid_prec = self.setting('grid_prec')
         i = self.setting('i')
 
@@ -1190,7 +1204,7 @@ class WavefunctionPlot(GridPlot):
             dtype = float if (np.array(k) == 0).all() else complex
             self.grid = sisl.Grid(grid_prec, geometry=self.geometry, dtype=dtype)
 
-        # GridPlot's after_read basically sets the xRange, yRange and zRange options
+        # GridPlot's after_read basically sets the x_range, y_range and z_range options
         # which need to know what the grid is, that's why we are calling it here
         GridPlot._after_read(self)
 

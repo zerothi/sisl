@@ -151,7 +151,7 @@ register(sisl.Geometry, GeometryPlot, 'geometry', default=True)
 register(sisl.Geometry, BondLengthMap, 'geometry')
 
 # Grid
-register(sisl.Grid, GridPlot, 'grid')
+register(sisl.Grid, GridPlot, 'grid', default=True)
 
 # Hamiltonian
 register(sisl.Hamiltonian, WavefunctionPlot, 'H', default=True)
