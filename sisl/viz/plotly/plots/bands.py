@@ -194,7 +194,15 @@ class BandsPlot(Plot):
 
         SpinSelect(key="spin", name="Spin",
             default=None,
-            help="Determines how the different spin configurations should be displayed"
+            help="""Determines how the different spin configurations should be displayed.
+            In spin polarized calculations, it allows you to choose between spin 0 and 1.
+            In non-colinear spin calculations, it allows you to ask for a given spin texture,
+            by specifying the direction."""
+        ),
+
+        TextInput(key="spin_texture_colorscale", name="Spin texture colorscale",
+            default=None,
+            help="The plotly colorscale to use for the spin texture (if displayed)"
         ),
 
         SwitchInput(key="gap", name="Show gap",
@@ -537,10 +545,12 @@ class BandsPlot(Plot):
         self.figure.layout.xaxis.tickvals = getattr(self.bands, "ticks", None)
         self.figure.layout.xaxis.ticktext = getattr(self.bands, "ticklabels", None)
         self.figure.layout.yaxis.range = np.array(self.setting("Erange"))
+        self.figure.layout.xaxis.range = self.bands.k.values[[0,-1]]
 
         # If we are showing spin textured bands, customize the colorbar
         if self.spin_texture:
             self.layout.coloraxis.colorbar = {"title": f"Spin texture ({self.setting('spin')[0]})"}
+            self.update_layout(coloraxis = {"cmin": -1, "cmax": 1, "colorscale": self.setting("spin_texture_colorscale")})
 
     def _calculate_gaps(self):
 
