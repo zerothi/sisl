@@ -710,35 +710,12 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         if isinstance(P, tuple):
             P = list(P)
 
-        # Number of dimensions
-        dim = len(P)
-        nnzpr = 1
-        # Sort all indices for the passed sparse matrices
-        for i in range(dim):
-            P[i] = P[i].tocsr()
-            P[i].sort_indices()
-            P[i].sum_duplicates()
-
-            # Figure out the maximum connections per
-            # row to reduce number of re-allocations to 0
-            nnzpr = max(nnzpr, P[i].nnz // P[i].shape[0])
-
-        # Create the sparse object
-        p = cls(geometry, dim, P[0].dtype, nnzpr, **kwargs)
+        p = cls(geometry, len(P), P[0].dtype, 1, **kwargs)
+        p._csr = p._csr.fromsp(*P, **kwargs)
 
         if p._size != P[0].shape[0]:
-            raise ValueError(cls.__name__ + '.fromsp cannot create a new class, the geometry ' + \
-                             'and sparse matrices does not have coinciding dimensions size != P[0].shape[0]')
-
-        for i in range(dim):
-            ptr = P[i].indptr
-            col = P[i].indices
-            D = P[i].data
-
-            # loop and add elements
-            for r in range(p.shape[0]):
-                sl = slice(ptr[r], ptr[r+1], None)
-                p[r, col[sl], i] = D[sl]
+            raise ValueError(f"{cls.__name__}.fromsp cannot create a new class, the geometry "
+                             "and sparse matrices does not have coinciding dimensions size != P[0].shape[0]")
 
         return p
 
