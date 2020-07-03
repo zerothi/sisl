@@ -821,7 +821,7 @@ class SparseCSR(NDArrayOperatorsMixin):
         new_nnz = new_n - int(ptr[i1]) + ncol_ptr_i
 
         if new_nnz > 0:
-
+            #print(f"new_nnz {i} : {new_nnz}")
             # Ensure that it is not-set as finalized
             # There is no need to set it all the time.
             # Simply because the first call to finalize
@@ -1326,21 +1326,21 @@ class SparseCSR(NDArrayOperatorsMixin):
         # create a single sparse matrix to get the final size
         # this will also error out if the shapes are not coherent
         full_sp = reduce(lambda x, y: x + y.tocsr(), sps, 0.)
-        nnzpr = max(np.diff(full_sp.indptr).max(), 1)
+        nnzpr = max(np.diff(full_sp.indptr).max(), 0) + 3
         out = cls(shape + (len(sps), ), nnzpr=nnzpr, dtype=dtype)
         del full_sp
 
         # Now we need to add things to the sparsity pattern
         for iD, sp in enumerate(sps):
             sp = sp.tocsr()
+            ptr = sp.indptr
             if sp.shape != shape:
                 raise ValueError(f"{cls.__name__}.fromsp found non compatible shapes")
 
             # Loop stuff
             for r in range(shape[0]):
-                sl = slice(sp.indptr[r], sp.indptr[r+1])
-                idx = out._extend(r, sp.indices[sl])
-                out._D[idx, iD] += sp.data[sl]
+                idx = out._extend(r, sp.indices[ptr[r]:ptr[r+1]])
+                out._D[idx, iD] += sp.data[ptr[r]:ptr[r+1]]
 
         return out
 

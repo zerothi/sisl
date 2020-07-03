@@ -1255,3 +1255,76 @@ def test_sparse_row_out_of_bounds(i):
 def test_sparse_column_out_of_bounds(j):
     S = SparseCSR((10, 10, 1), dtype=np.int32)
     S[0, j] = 1
+
+
+def test_fromsp_csr():
+    csr1 = sc.sparse.random(10, 100, 0.01, random_state=24812)
+    csr2 = sc.sparse.random(10, 100, 0.02, random_state=24813)
+    csr = SparseCSR.fromsp(csr1, csr2)
+    csr_1 = csr.tocsr(0)
+    csr_2 = csr.tocsr(1)
+
+    assert np.abs(csr1 - csr_1).sum() == 0.
+    assert np.abs(csr2 - csr_2).sum() == 0.
+
+
+@pytest.mark.slow
+@pytest.mark.only
+def test_fromsp_csr_large():
+    csr1 = sc.sparse.random(10000, 10, 0.1, format="csr", random_state=23583)
+    csr2 = csr1.copy()
+
+    print_time = False
+
+    from time import time
+
+    # Add some more stuff
+    row = csr1[9948]
+    indices = row.indices
+    if len(indices) == 0:
+        indices = np.arange(3)
+    csr2[9948, (indices + 1) % 10] = 1.
+    assert csr1.getnnz() != csr2.getnnz()
+
+    t0 = time()
+    csr = SparseCSR.fromsp(csr1, csr2)
+    if print_time:
+        print(f"timing: fromsp {time() - t0}")
+    csr_1 = csr.tocsr(0)
+    csr_2 = csr.tocsr(1)
+
+    assert np.abs(csr1 - csr_1).sum() == 0.
+    assert np.abs(csr2 - csr_2).sum() == 0.
+
+    csr_ = SparseCSR(csr1.shape + (2, ), nnzpr=1)
+
+    t0 = time()
+    for ic, c in enumerate([csr1, csr2]):
+        ptr = c.indptr
+
+        # Loop stuff
+        for r in range(c.shape[0]):
+            idx = csr_._extend(r, c.indices[ptr[r]:ptr[r+1]])
+            csr_._D[idx, ic] += c.data[ptr[r]:ptr[r+1]]
+    if print_time:
+        print(f"timing: 2 x ptr[]:ptr[] {time() - t0}")
+
+    dcsr = csr - csr_
+
+    assert np.abs(dcsr.tocsr(0)).sum() == 0.
+    assert np.abs(dcsr.tocsr(1)).sum() == 0.
+
+
+    csr_ = SparseCSR(csr1.shape + (2, ), nnzpr=1)
+
+    t0 = time()
+    for ic, c in enumerate([csr1, csr2]):
+        ptr = c.indptr
+
+        # Loop stuff
+        for r in range(c.shape[0]):
+            sl = slice(ptr[r], ptr[r+1])
+            idx = csr_._extend(r, c.indices[sl])
+            csr_._D[idx, ic] += c.data[sl]
+    if print_time:
+        print(f"timing: slice(ptr[]:ptr[]) {time() - t0}")
