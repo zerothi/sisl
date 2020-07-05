@@ -126,7 +126,7 @@ def plot_uploaded_file(file_bytes, name):
     # file_name = name
     # file_contents = {name: file_bytes}
 
-    plot = Plot(str(file_name))#, attrs_for_plot={"_file_contents": file_contents}, _debug=True) #
+    plot = Plot(file_name)#, attrs_for_plot={"_file_contents": file_contents}, _debug=True) #
     SESSION.autosync.add_plot(plot, SESSION.tabs[0]["id"])
 
     if not SESSION.setting("keep_uploaded"):

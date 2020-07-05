@@ -1756,7 +1756,7 @@ class Plot(ShortCutable, Configurable, Connected):
             path = Path(path)
 
         if html or path.suffix == ".html":
-            self.figure.write_html(path.with_suffix(".html"))
+            self.figure.write_html(str(path.with_suffix(".html")))
             return self
 
         #The following method actually modifies 'self', so there's no need to get the return

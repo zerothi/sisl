@@ -13,7 +13,7 @@ from .plot import Plot
 from .configurable import Configurable, vizplotly_settings
 from .plotutils import find_files, find_plotable_siles, call_method_if_present, get_plot_classes
 
-from .input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, Array1dInput
+from .input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, Array1dInput
 
 __all__ = ["Session"]
 
@@ -131,7 +131,7 @@ class Session(Configurable, Connected):
             }
         ),
 
-        TextInput(
+        FilePathInput(
             key="file_storage_dir", name="File storage directory",
             group="filesystem",
             default= register_env_var(

@@ -25,4 +25,4 @@ MD.TypeOfRun CG
 MD.Steps 1000
 WriteForces .true.
 
-SaveHS .true.
+TS.HS.save .true.
