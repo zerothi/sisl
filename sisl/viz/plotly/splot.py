@@ -1,5 +1,5 @@
 """
-Easy conversion of data from different formats to other formats.
+Easy plotting from the command line.
 """
 
 import sys
