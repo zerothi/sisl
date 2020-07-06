@@ -8,13 +8,13 @@ for you.
 Example:
 
 class FakePlot(Plot):
-    '' (add another ')
+    '''
     This plot does really nothing useful
 
     Parameters
     -----------
     %%configurable_settings%%
-    '' (add another ')
+    '''
 
 %%configurable_settings%% is the key to let the script now where to put the documentation.
 
