@@ -12,11 +12,14 @@ class PlotEngine:
     Stores and takes care of calling all methods of a plotting engine.
     """
 
+    def __init__(self, name):
+
+        self._available_methods = []
+        self._engine_name = name
+
     def _add(self, name, function, default=False):
         """
         Makes a new function available to this plotting engine.
-
-        Basically, it sets 
 
         Parameters
         -----------
@@ -34,6 +37,7 @@ class PlotEngine:
         if default:
             self._default = name
 
+        self._available_methods.append(name)
         setattr(self, name, function)
 
     def get(self, method=None, otherwise='raise'):
@@ -158,7 +162,7 @@ class PlotHandler:
 
         # Initialize a new plot engine, if it isn't already present
         if not hasattr(self, engine):
-            setattr(self, engine, PlotEngine())
+            setattr(self, engine, PlotEngine(engine))
 
         # This is the function that really does the plotting and goes
         # into the engine

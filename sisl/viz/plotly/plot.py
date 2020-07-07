@@ -568,29 +568,22 @@ class Plot(ShortCutable, Configurable, Connected):
             delattr(self, "INIT_ON_NEW")
             return
 
-        # Initialize shortcut management
-        ShortCutable.__init__(self)
-        # Initialize possibility to connect to a GUI
-        Connected.__init__(self, socketio=kwargs.get("socketio", None))
-
         # Give an ID to the plot
         self.id = str(uuid.uuid4())
 
         # Inform whether the plot is in debug mode or not:
         self._debug = _debug
 
+        # Initialize the figure
+        self.figure = go.Figure()
+
+        # Initialize shortcut management
+        ShortCutable.__init__(self)
+        # Initialize possibility to connect to a GUI
+        Connected.__init__(self, socketio=kwargs.get("socketio", None))
+
         #Give the user the possibility to do things before initialization (IDK why)
         call_method_if_present(self, "_before_init")
-
-        # Check if the user has provided a hamiltonian (which can contain a geometry)
-        # This is not meant to be used by the GUI (in principle), just programatically
-        self.PROVIDED_H = False
-        self.PROVIDED_GEOM = False
-        if H is not None:
-            self.PROVIDED_H = True
-            self.H = H
-            self.geometry = getattr(H, "geometry", None)
-            self.PROVIDED_GEOM = self.geometry is not None
 
         #Set the isChildPlot attribute to let the plot know if it is part of a bigger picture (e.g. Animation)
         self.isChildPlot = kwargs.get("isChildPlot", False)
@@ -599,8 +592,14 @@ class Plot(ShortCutable, Configurable, Connected):
         self.last_dataread = 0
         self._files_to_follow = []
 
-        # Initialize the figure
-        self.figure = go.Figure()
+        # Check if the user has provided a hamiltonian (which can contain a geometry)
+        # This is not meant to be used by the GUI (in principle), just programatically
+        self.PROVIDED_H = False
+        self.PROVIDED_GEOM = False
+        if H is not None:
+            self.PROVIDED_H = True
+            self.H = H
+            self.setup_hamiltonian()
 
         # Update its layout if a layout is provided
         self.update_layout(**getattr(self.__class__, "_layout_defaults", {}), **layout)
@@ -1066,17 +1065,30 @@ class Plot(ShortCutable, Configurable, Connected):
         Sets up the hamiltonian for calculations with sisl.
         """
 
+        NEW_FDF = True
         if len(self.settings_history) > 1:
             NEW_FDF = self.settings_history.was_updated("root_fdf")
 
-        if not self.PROVIDED_GEOM and (not hasattr(self, "geometry") or NEW_FDF):
-            fdf_sile = sisl.get_sile("root_fdf")
-            self.geometry = fdf_sile.read_geometry(output = True)
+        if not hasattr(self, "geometry") or NEW_FDF:
+            try:
+                fdf_sile = self.get_sile("root_fdf")
+                self.geometry = fdf_sile.read_geometry(output = True)
+            except:
+                pass
 
         if not self.PROVIDED_H and (not hasattr(self, "H") or NEW_FDF):
             #Read the hamiltonian
-            fdf_sile = sisl.get_sile("root_fdf")
+            fdf_sile = self.get_sile("root_fdf")
             self.H = fdf_sile.read_hamiltonian()
+        else:
+            if isinstance(self.H, (str, Path)):
+                self.H = self.get_sile(self.H)
+
+            if isinstance(self.H, sisl.BaseSile):
+                self.H = self.H.read_hamiltonian(geometry=getattr(self, "geometry", None))
+
+        if not hasattr(self, "geometry"):        
+            self.geometry = self.H.geometry
 
         return self
 

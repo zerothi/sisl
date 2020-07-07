@@ -140,6 +140,12 @@ for GeomSile in get_siles(attrs=["read_geometry"]):
     register(GeomSile, GeometryPlot, 'geom_file', default=True)
     register(GeomSile, BondLengthMap, 'geom_file')
 
+for HSile in get_siles(attrs=["read_hamiltonian"]):
+    register(HSile, WavefunctionPlot, 'H', default=HSile != siesta.fdfSileSiesta)
+    register(HSile, PdosPlot, "H")
+    register(HSile, BandsPlot, "H")
+    register(HSile, FatbandsPlot, "H")
+
 register(siesta.outSileSiesta, ForcesPlot, 'out_file', default=True)
 
 # -----------------------------------------------------

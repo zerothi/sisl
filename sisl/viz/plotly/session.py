@@ -301,7 +301,7 @@ class Session(Configurable, Connected):
 
         return self
 
-    def new_plot(self, plotClass=None, tabID = None, structID = None, plotableID=None, animation = False, **kwargs):
+    def new_plot(self, plotClass=None, tabID=None, structID=None, plotable_path=None, animation = False, **kwargs):
         """
         Get a new plot from the specified class
 
@@ -343,8 +343,8 @@ class Session(Configurable, Connected):
             else:
                 raise Exception("Didn't find the desired plot class: {}".format(plotClass))
 
-        if plotableID is not None:
-            args = (self.warehouse["plotables"][plotableID]["path"],)
+        if plotable_path is not None:
+            args = (plotable_path,)
         if structID:
             kwargs = {**kwargs, "root_fdf": self.warehouse["structs"][structID]["path"]}
 
@@ -849,13 +849,17 @@ class Session(Configurable, Connected):
 
         for SileClass, filepaths in files.items():
 
+            avail_plots = SileClass.plot.plotly._available_methods
+            default_plot = SileClass.plot.plotly._default
+
             # Extend the plotables dict with the files that we find that belong to this sile
             self.warehouse["plotables"] = {**self.warehouse["plotables"], **{
-                str(uuid.uuid4()): {"name": path.name, "path": path, "plot": SileClass.plot.plotly._default} for path in filepaths
+                str(uuid.uuid4()): {"name": path.name, "path": path, "plots": avail_plots, "default_plot": default_plot} for path in filepaths
             }}
 
         #Avoid passing unnecessary info to the browser.
-        return {id: {"id": id, **{k: struct[k] for k in ["name", "path", "plot"]}} for id, struct in self.warehouse["plotables"].items()}
+        return {id: {"id": id, **{k: plotable[k] for k in ["name", "path", "plots", "default_plot"]}, "chosenPlots": [plotable["default_plot"]] } 
+                for id, plotable in self.warehouse["plotables"].items()}
 
     #-----------------------------------------
     #      NOTIFY CURRENT STATE TO GUI
