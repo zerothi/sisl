@@ -127,7 +127,7 @@ from .physics import *
 # that sisl is made of.
 from . import io
 from .io.sile import (add_sile, get_sile_class, get_sile,
-                      get_siles, SileError,
+                      get_siles, get_sile_rules, SileError,
                       BaseSile, Sile, SileCDF, SileBin)
 
 # Import the default geom structure

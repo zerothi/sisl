@@ -193,13 +193,16 @@ class LDOSmap(Plot):
     def _read_siesta_output(self):
         '''Function that uses denchar to get STSpecra along a path'''
 
-        self.geom = self.fdf_sile.read_geometry(output = True)
+        fdf_sile = self.get_sile("root_fdf")
+        root_dir = fdf_sile._directory
+
+        self.geom = fdf_sile.read_geometry(output = True)
 
         #Find fermi level
         self.fermi = False
         for out_fileName in (self.struct, self.fdf_sile.base_file.replace(".fdf", "")):
             try:
-                for line in open(os.path.join(self.root_dir, "{}.out".format(out_fileName))):
+                for line in open(fdf_sile.dir_file(f"{out_fileName}.out")):
                     if "Fermi =" in line:
                         self.fermi = float(line.split()[-1])
                         print("\nFERMI LEVEL FOUND: {} eV\n Energies will be relative to this level (E-Ef)\n".format(self.fermi))
@@ -221,8 +224,9 @@ class LDOSmap(Plot):
         Epoints = np.linspace(*(np.array(self.setting("Erange")) + self.fermi), self.setting("nE"))
 
         #Copy selected WFSX into WFSX if it exists (denchar reads from .WFSX)
-        shutil.copyfile(os.path.join(self.root_dir, '{}.selected.WFSX'.format(self.struct)),
-            os.path.join(self.root_dir, '{}.WFSX'.format(self.struct)))
+        system_label = fdf_sile.get("SystemLabel", default="siesta")
+        shutil.copyfile(fdf_sile.dir_file(f"{system_label}.selected.WFSX"),
+            fdf_sile.dir_file( f"{system_label}.WFSX"))
 
         #Get the fdf file and replace include paths so that they work
         with open(self.setting("root_fdf"), "r") as f:
@@ -235,10 +239,10 @@ class LDOSmap(Plot):
 
         #Denchar needs to be run from the directory where everything is stored
         cwd = os.getcwd()
-        os.chdir(self.root_dir)
+        os.chdir(root_dir)
 
         #Inform that the WFSX file is used so that changes in it can be followed
-        self.follow(os.path.join(self.root_dir, '{}.WFSX'.format(self.struct)))
+        self.follow(fdf_sile.dir_file( f"{system_label}.WFSX"))
 
         def getSpectraForPath(argsTuple):
 
@@ -296,7 +300,7 @@ class LDOSmap(Plot):
             self.path,
             self.setting("nE"),
             pathIs,
-            self.root_dir, self.struct,
+            root_dir, self.struct,
             #All the strings that need to be added to each file
             [[self._getdencharSTSfdf(point) for point in points] for points in self.path],
             kwargsList = {"root_fdf": self.setting("root_fdf"), "fdfLines": self.fdfLines},

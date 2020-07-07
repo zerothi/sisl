@@ -2,7 +2,8 @@ import numpy as np
 
 import sisl
 from ..plot import Plot, entry_point
-from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
+from ..input_fields import TextInput, SileInput, SwitchInput, ColorPicker, DropdownInput, \
+    IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
 
 
 class ForcesPlot(Plot):
@@ -33,8 +34,9 @@ class ForcesPlot(Plot):
 
     _parameters = (
 
-        FilePathInput(
+        SileInput(
             key="out_file", name="Output log file",
+            dtype=sisl.io.siesta.outSileSiesta,
             default = None,
             group="dataread",
             params = {

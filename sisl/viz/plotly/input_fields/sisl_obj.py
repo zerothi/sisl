@@ -96,6 +96,24 @@ class SileInput(FilePathInput, SislObjectInput):
     def __init__(self, *args, required_attrs=None, **kwargs):
 
         if required_attrs:
-            kwargs['dtype'] = sisl.get_siles(attrs=required_attrs)
+            self._required_attrs = required_attrs
+            kwargs["dtype"] = None
 
         super().__init__(*args, **kwargs)
+
+    def _get_dtype(self):
+        """
+        This is a temporal fix because for some reason some sile classes can not be pickled
+        """
+
+        if hasattr(self, "_required_attrs"):
+            return tuple(sisl.get_siles(attrs=self._required_attrs))
+        else:
+            return self.__dict__["dtype"]
+    
+    def _set_dtype(self, val):
+        self.__dict__["dtype"] = val
+
+    dtype = property(fget=_get_dtype, fset=_set_dtype, )
+
+    

@@ -6,7 +6,7 @@ from collections import defaultdict
 import sisl
 from ..plot import Plot, entry_point
 from ..plotutils import find_files
-from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, OrbitalQueries, ProgramaticInput, Array1dInput, ListInput
+from ..input_fields import TextInput, SileInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, OrbitalQueries, ProgramaticInput, Array1dInput, ListInput
 from ..input_fields.range import ErangeInput
 
 
@@ -49,12 +49,6 @@ class PdosPlot(Plot):
     #Define all the class attributes
     _plot_type = "PDOS"
 
-    _requirements = {
-        "siesOut": {
-            "files": ["$struct$.PDOS"]
-        }
-    }
-
     _param_groups = (
 
         {
@@ -68,8 +62,9 @@ class PdosPlot(Plot):
 
     _parameters = (
 
-        FilePathInput(
+        SileInput(
             key = "pdos_file", name = "Path to PDOS file",
+            dtype=sisl.io.siesta.pdosSileSiesta,
             width = "s100% m50% l33%",
             group="dataread",
             params = {
@@ -254,9 +249,8 @@ class PdosPlot(Plot):
     @entry_point('siesta_output')
     def _read_siesta_output(self):
 
-        pdos_file = self.setting("pdos_file") or self.requiredFiles[0]
         #Get the info from the .PDOS file
-        self.geometry, self.E, self.PDOS = self.get_sile(pdos_file).read_data()
+        self.geometry, self.E, self.PDOS = self.get_sile("pdos_file").read_data()
 
     def _after_read(self):
         """

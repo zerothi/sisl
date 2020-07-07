@@ -3,7 +3,7 @@ import plotly.graph_objects as go
 
 import sisl
 from ..plot import Plot, entry_point
-from ..input_fields import TextInput, FilePathInput, Array1dInput, SwitchInput, \
+from ..input_fields import TextInput, SileInput, Array1dInput, SwitchInput, \
      ColorPicker, DropdownInput, CreatableDropdown, IntegerInput, FloatInput, RangeInput, RangeSlider, \
      QueriesInput, ProgramaticInput, PlotableInput, SislObjectInput, PlotableInput
 
@@ -101,8 +101,9 @@ class GridPlot(Plot):
             help="A sisl.Grid object. If provided, grid_file is ignored."
         ),
 
-        FilePathInput(
+        SileInput(
             key="grid_file", name="Path to grid file",
+            required_attrs=["read_grid"],
             default=None,
             params={
                 "placeholder": "Write the path to your grid file here..."

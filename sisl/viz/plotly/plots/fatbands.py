@@ -10,7 +10,7 @@ import sisl
 from ..plot import Plot, entry_point
 from .bands import BandsPlot
 from ..plotutils import random_color
-from ..input_fields import OrbitalQueries, TextInput, DropdownInput, SwitchInput, ColorPicker, FloatInput, FilePathInput
+from ..input_fields import OrbitalQueries, TextInput, DropdownInput, SwitchInput, ColorPicker, FloatInput, SileInput
 from ..input_fields.range import ErangeInput
 
 
@@ -83,7 +83,8 @@ class FatbandsPlot(BandsPlot):
 
     _parameters = (
 
-        FilePathInput(key='wfsx_file', name='Path to WFSX file',
+        SileInput(key='wfsx_file', name='Path to WFSX file',
+            dtype=sisl.io.siesta.wfsxSileSiesta,
             default=None,
             help="""The WFSX file to get the weights of the different orbitals in the bands.
             In standard SIESTA nomenclature, this should be the *.bands.WFSX file, as it is the one
@@ -150,7 +151,7 @@ class FatbandsPlot(BandsPlot):
         # Try to get the wfsx file either by user input or by guessing it
         # from bands_file
         wfsx_file = self.setting("wfsx_file")
-        bands_file = Path(self.setting("bands_file") or self.requiredFiles[0])
+        bands_file = self.get_sile("bands_file").file
         if wfsx_file is None:
             wfsx_file = bands_file.with_suffix(bands_file.suffix + ".WFSX")
 
@@ -162,7 +163,7 @@ class FatbandsPlot(BandsPlot):
             possible_fdf = bands_file.with_suffix(".fdf")
             print(f"We are assuming that the fdf associated to {bands_file} is {possible_fdf}."+
             ' If it is not, please provide a "root_fdf" by using the update_settings method.')
-            self.set_files(root_fdf=possible_fdf)
+            self.update_settings(root_fdf=root_fdf, run_updates=False)
 
         self.setup_hamiltonian()
 

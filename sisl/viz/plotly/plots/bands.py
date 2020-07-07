@@ -8,7 +8,7 @@ import plotly.express as px
 import sisl
 from ..plot import Plot, PLOTS_CONSTANTS, entry_point
 from ..plotutils import find_files
-from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput,\
+from ..input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput,\
      IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput, FunctionInput, SileInput, \
          PlotableInput, SpinSelect
 from ..input_fields.range import ErangeInput
@@ -79,16 +79,11 @@ class BandsPlot(Plot):
 
     _plot_type = "Bands"
 
-    _requirements = {
-        "siesOut": {
-            "files": ["$struct$.bands", "*.bands"]
-        }
-    }
-
     _parameters = (
 
-        FilePathInput(key = "bands_file", name = "Path to bands file",
+        SileInput(key = "bands_file", name = "Path to bands file",
             width = "s100% m50% l33%",
+            dtype=sisl.io.siesta.bandsSileSiesta,
             group="dataread",
             params = {
                 "placeholder": "Write the path to your bands file here...",
@@ -394,9 +389,7 @@ class BandsPlot(Plot):
         if self.path and self.path != getattr(self, "siestaPath", None) or self.setting("band_structure"):
             raise ValueError("A path was provided, therefore we can not use the .bands file even if there is one")
 
-        bands_file = self.setting("bands_file") or self.requiredFiles[0]
-
-        self.bands = self.get_sile(bands_file).read_data(as_dataarray=True)
+        self.bands = self.get_sile("bands_file").read_data(as_dataarray=True)
 
         # Inform of the path that it's being used if we can
         # THIS IS ONLY WORKING PROPERLY FOR FRACTIONAL UNITS OF THE BAND POINTS RN

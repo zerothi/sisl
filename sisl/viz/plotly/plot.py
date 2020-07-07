@@ -22,7 +22,8 @@ from .configurable import *
 from ._presets import get_preset
 from .plotutils import init_multiple_plots, repeat_if_childs, dictOfLists2listOfDicts, trigger_notification, \
      spoken_message, running_in_notebook, check_widgets, call_method_if_present
-from .input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput, PlotableInput
+from .input_fields import TextInput, SileInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, \
+    FloatInput, RangeSlider, QueriesInput, ProgramaticInput, PlotableInput
 from ._shortcuts import ShortCutable
 from .gui.api_utils.sync import Connected
 
@@ -109,8 +110,9 @@ class Plot(ShortCutable, Configurable, Connected):
 
     _parameters = (
 
-        TextInput(
+        SileInput(
             key = "root_fdf", name = "Path to fdf file",
+            dtype=sisl.io.siesta.fdfSileSiesta,
             group = "dataread",
             help = "Path to the fdf file that is the 'parent' of the results.",
             params = {
@@ -612,10 +614,6 @@ class Plot(ShortCutable, Configurable, Connected):
         # on_figure_change is triggered after get_figure.
         self.on_figure_change = None
 
-        # This is a temporary storage place where file contents are stored
-        # See how self.get_sile makes use of it
-        self._file_contents = {}
-
         # Set all the attributes that have been passed
         # It is important that this is here so that it can overwrite any of
         # the already written attributes
@@ -743,11 +741,6 @@ class Plot(ShortCutable, Configurable, Connected):
 
         call_method_if_present(self, "_before_read")
 
-        try:
-            self.set_files()
-        except Exception:
-            pass
-
         # Update the title of the plot if there is none
         if not self.figure.layout["title"]:
             self.update_layout(title = '{} {}'.format(getattr(self, "struct", ""), self.plot_name()))
@@ -826,49 +819,61 @@ class Plot(ShortCutable, Configurable, Connected):
         """
         A wrapper around get_sile so that the reading of the file is registered.
 
-        This is useful so that you don't neet to go always like:
+        It has to main functions:
+            - Automatically following files that are read, so that you don't neet to go always like:
 
-        ```
-        self.follow(file)
-        sisl.get_sile(file)
-        ```
-
-        It improves readability and avoids errors.
+                ```
+                self.follow(file)
+                sisl.get_sile(file)
+                ```
+            - Infering files from a root file. For example, using the root_fdf. 
 
         Parameters
         ----------
         path: str
-            the path to the file that you want to read
+            the path to the file that you want to read.
+            It can also be the setting key that you want to read.
         *args:
             passed to sisl.get_sile
         follow: boolean, optional
             whether the path should be followed.
         follow_kwargs: dict, optional
             dictionary of keywords that are passed directly to the follow method.
-        file_contents: bytes or str, optional
-            the actual content of the file, if you have it already in python. This is mainly
-            useful for the drag and drop functionality of the GUI.
         **kwargs:
             passed to sisl.get_sile
         """
 
-        if file_contents is None:
-            file_contents = self._file_contents.get(path, None)
+        # If path is a setting name, retrieve it
+        if path in self.settings:
+            setting_key = path
+            path = self.setting(path)
 
-        if file_contents is None:
-            if follow:
-                self.follow(path, **follow_kwargs)
+            # However, if it wasn't provided, try to infer it.
+            # For example, if it is a siesta sile, we will try to infer it
+            # from the fdf file
+            if not path:
 
-            return sisl.get_sile(path, *args, **kwargs)
+                sile_type = self.get_param(setting_key).dtype
+                # We need to check here if it is a SIESTA related sile!
 
-        else:
-            from gui.api_utils.iosile import get_io_sile
+                fdf_sile = sisl.get_sile(self.setting("root_fdf"))
+                results_path = self.setting("results_path")
 
-            SileClass = sisl.get_sile_class(path)
+                for rule in sisl.get_sile_rules(cls=sile_type):
+                    filename = fdf_sile.get('SystemLabel', default='siesta') + f'.{rule.suffix}'
+                    try:
+                        path = fdf_sile.dir_file(filename, results_path)
+                        return self.get_sile(path, *args, follow=True, follow_kwargs={}, file_contents=None, **kwargs)
+                    except:
+                        pass
+                else:
+                    raise FileNotFoundError(f"Tried to infer {setting_key} from the 'root_fdf', "
+                    f"but didn't find any {sile_type.__name__} in {Path(fdf_sile._directory) / results_path }")
 
-            file_IO = BytesIO if isinstance(file_contents, bytes) else StringIO
+        if follow:
+            self.follow(path, **follow_kwargs)
 
-            return get_io_sile(SileClass)(path, ioobj=file_IO)
+        return sisl.get_sile(path, *args, **kwargs)
 
     def updates_available(self):
         """
@@ -877,10 +882,6 @@ class Plot(ShortCutable, Configurable, Connected):
         For it to work properly, one should specify the files that have been read by
         their reading methods (usually, the entry points). This is done by using the 
         `follow()` method or by reading files with `self.get_sile()` instead of `sisl.get_sile()`.
-
-        Note that the `set_files` and `setup_hamiltonian` methods are already responsible for
-        informing about the files they read, so you only need to specify those that you are
-        "explicitly" reading in your method.
 
         """
 
@@ -1060,42 +1061,6 @@ class Plot(ShortCutable, Configurable, Connected):
         return self
 
     @vizplotly_settings('before')
-    def set_files(self, **kwargs):
-        """
-        Checks if the required files are available and then builds a list with them.
-
-        This was initially thought with a very "fdf-centered" vision of the module, but then
-        realised that you don't necessarily need the fdf to process some files.
-
-        Therefore, it needs revision.
-
-        Note that this method is being called inside a try/except in `read_data`, which already
-        indicates that it is not essential.
-
-        However, it still allows to get the bands file from the root_fdf in BandsPlot
-        in case no bands file is specified, for example.       
-        """
-        #Set the fdf_sile
-        root_fdf = self.setting("root_fdf")
-
-        if isinstance(root_fdf, str):
-            root_fdf = Path(root_fdf)
-
-        self.root_dir = root_fdf.parent
-        fdfFile = root_fdf.name
-
-        self.wdir = self.root_dir / self.setting("results_path")
-        self.fdf_sile = self.get_sile(root_fdf)
-        self.struct = self.fdf_sile.get("SystemLabel", "")
-
-        # Check that the required files are there
-        if hasattr(self, "_requirements"):
-            # If they are there, we can confidently build this list
-            self.requiredFiles = [self.wdir / req.replace("$struct$", self.struct) for req in self.__class__._requirements["siesOut"]["files"]]
-
-        return self
-
-    @vizplotly_settings('before')
     def setup_hamiltonian(self, **kwargs):
         """
         Sets up the hamiltonian for calculations with sisl.
@@ -1105,11 +1070,13 @@ class Plot(ShortCutable, Configurable, Connected):
             NEW_FDF = self.settings_history.was_updated("root_fdf")
 
         if not self.PROVIDED_GEOM and (not hasattr(self, "geometry") or NEW_FDF):
-            self.geometry = self.fdf_sile.read_geometry(output = True)
+            fdf_sile = sisl.get_sile("root_fdf")
+            self.geometry = fdf_sile.read_geometry(output = True)
 
         if not self.PROVIDED_H and (not hasattr(self, "H") or NEW_FDF):
             #Read the hamiltonian
-            self.H = self.fdf_sile.read_hamiltonian()
+            fdf_sile = sisl.get_sile("root_fdf")
+            self.H = fdf_sile.read_hamiltonian()
 
         return self
 
@@ -1908,11 +1875,6 @@ class MultiplePlot(Plot):
             This is specially essential for plots that read big amounts of data (e.g. `GridPlot`),
             but also for those that take significant time to read it. 
         """
-
-        try:
-            self.set_files()
-        except Exception:
-            pass
 
         if not self.PLOTS_PROVIDED:
 
