@@ -12,18 +12,16 @@ class ForcesPlot(Plot):
 
     Parameters
     -------------
-    out_file: str, optional
+    out_file: outSileSiesta, optional
         The path to the output file that contains logs where forces are
         written.
-    type: None, optional
+    type:  optional
         The type of forces that should be displayed.
     all: bool, optional
         Whether forces for all steps should be displayed.
     linecolor: str, optional
         Color of the line that displays the forces
-    reading_order: None, optional
-        Order in which the plot tries to read the data it needs.
-    root_fdf: str, optional
+    root_fdf: fdfSileSiesta, optional
         Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
         Directory where the files with the simulations results are

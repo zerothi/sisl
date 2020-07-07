@@ -14,18 +14,30 @@ class GridPlot(Plot):
 
     Parameters
     -------------
-    grid: None, optional
+    grid: Grid, optional
         A sisl.Grid object. If provided, grid_file is ignored.
-    grid_file: str, optional
-
-    represent: None, optional
+    grid_file: cubeSile or rhoSileSiesta or ldosSileSiesta or rhoinitSileSiesta or rhoxcSileSiesta or drhoSileSiesta or baderSileSiesta or iorhoSileSiesta or totalrhoSileSiesta or stsSileSiesta or stmldosSileSiesta or hartreeSileSiesta or neutralatomhartreeSileSiesta or totalhartreeSileSiesta or gridncSileSiesta or ncSileSiesta or fdfSileSiesta or tsvncSileSiesta or chgSileVASP or locpotSileVASP, optional
+    
+    represent:  optional
         The representation of the grid that should be displayed
-    transforms: None, optional
-        The representation of the grid that should be displayed
-    axes: None, optional
+    transforms:  optional
+        Transformations to apply to the whole grid.             It can be a
+        function, or a string that represents the path             to a
+        function (e.g. "scipy.exp"). If a string that is a single
+        word is provided, numpy will be assumed to be the module (e.g.
+        "square" will be converted into "np.square").              Note that
+        transformations will be applied in the order provided. Some
+        transforms might not be necessarily commutable (e.g. "abs" and
+        "cos").
+    axes:  optional
         The axis along you want to see the grid, it will be averaged along
         the other ones
-    zsmooth: None, optional
+    plot_geom: bool, optional
+        If True the geometry associated to the grid will also be plotted
+    geom_kwargs: dict, optional
+        Extra arguments that are passed to geom.plot() if plot_geom is set to
+        True
+    zsmooth:  optional
         Parameter that smoothens how data looks in a heatmap.
         'best' interpolates data, 'fast' interpolates pixels, 'False'
         displays the data as is.
@@ -33,7 +45,7 @@ class GridPlot(Plot):
         Interpolation factors to make the grid finer on each axis.See the
         zsmooth setting for faster smoothing of 2D heatmap.
     sc: array-like, optional
-
+    
     offset: array-like, optional
         The offset of the grid along each axis. This is important if you are
         planning to match this grid with other geometry related plots.
@@ -58,14 +70,25 @@ class GridPlot(Plot):
         The range of values that the colorbar must enclose. This controls
         saturation and hides below threshold values.
     cmid: int, optional
-
+        The value to set at the center of the colorbar. If not provided, the
+        color range is used
     colorscale: str, optional
-
+        A valid plotly colorscale. See https://plotly.com/python/colorscales/
     iso_vals: array-like of shape (2,), optional
-
+        The minimum and maximum values of the isosurfaces to be displayed.
+        If not provided, iso_frac will be used to calculate these values
+        (which is more versatile).
+    iso_frac: float, optional
+        If iso_vals is not provided, this value is used to calculate where
+        the isosurfaces are drawn.             It calculates them from the
+        minimum and maximum values of the grid like so:             If
+        iso_frac = 0.3:             (min_value----30%-----ISOMIN----------
+        ISOMAX---30%-----max_value)             Therefore, it should be a
+        number between 0 and 0.5.
     surface_count: int, optional
-
-    type3D: None, optional
+        The number of surfaces between the lower and the upper limits of
+        iso_vals
+    type3D:  optional
         This controls how the 3D data is displayed.              'volume'
         displays different layers with different levels of opacity so that
         there is more sensation of depth.             'isosurface' displays
@@ -73,16 +96,14 @@ class GridPlot(Plot):
         positive and negative             values, you should use 'isosurface'
         or two different 'volume' plots.              If not provided, the
         plot will decide for you based on the above mentioned fact
-    opacityscale: None, optional
+    opacityscale:  optional
         Controls how the opacity changes through layers.              See
         https://plotly.com/python/3d-volume-plots/ for a display of the
         different possibilities
     surface_opacity: float, optional
         The opacity of the isosurfaces drawn by 3d plots from 0 (transparent)
         to 1 (opaque).
-    reading_order: None, optional
-        Order in which the plot tries to read the data it needs.
-    root_fdf: str, optional
+    root_fdf: fdfSileSiesta, optional
         Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
         Directory where the files with the simulations results are
@@ -1008,7 +1029,7 @@ class WavefunctionPlot(GridPlot):
     eigenstate: EigenstateElectron, optional
         The eigenstate that contains the coefficients of the wavefunction.
         Note that an eigenstate can contain coefficients for multiple states.
-    geom: Geometry, optional
+    geometry: Geometry, optional
         Necessary to generate the grid and to plot the wavefunctions, since
         the basis orbitals are needed.             If you provide a
         hamiltonian, the geometry is probably inside the hamiltonian, so you
@@ -1027,14 +1048,21 @@ class WavefunctionPlot(GridPlot):
         increase             it gradually.
     i: int, optional
         The index of the wavefunction
-    grid:  optional
+    grid: Grid, optional
         A sisl.Grid object. If provided, grid_file is ignored.
-    grid_file: str, optional
-
+    grid_file: cubeSile or rhoSileSiesta or ldosSileSiesta or rhoinitSileSiesta or rhoxcSileSiesta or drhoSileSiesta or baderSileSiesta or iorhoSileSiesta or totalrhoSileSiesta or stsSileSiesta or stmldosSileSiesta or hartreeSileSiesta or neutralatomhartreeSileSiesta or totalhartreeSileSiesta or gridncSileSiesta or ncSileSiesta or fdfSileSiesta or tsvncSileSiesta or chgSileVASP or locpotSileVASP, optional
+    
     represent:  optional
         The representation of the grid that should be displayed
     transforms:  optional
-        The representation of the grid that should be displayed
+        Transformations to apply to the whole grid.             It can be a
+        function, or a string that represents the path             to a
+        function (e.g. "scipy.exp"). If a string that is a single
+        word is provided, numpy will be assumed to be the module (e.g.
+        "square" will be converted into "np.square").              Note that
+        transformations will be applied in the order provided. Some
+        transforms might not be necessarily commutable (e.g. "abs" and
+        "cos").
     axes:  optional
         The axis along you want to see the grid, it will be averaged along
         the other ones
@@ -1051,7 +1079,7 @@ class WavefunctionPlot(GridPlot):
         Interpolation factors to make the grid finer on each axis.See the
         zsmooth setting for faster smoothing of 2D heatmap.
     sc: array-like, optional
-
+    
     offset: array-like, optional
         The offset of the grid along each axis. This is important if you are
         planning to match this grid with other geometry related plots.
@@ -1109,9 +1137,7 @@ class WavefunctionPlot(GridPlot):
     surface_opacity: float, optional
         The opacity of the isosurfaces drawn by 3d plots from 0 (transparent)
         to 1 (opaque).
-    reading_order:  optional
-        Order in which the plot tries to read the data it needs.
-    root_fdf: str, optional
+    root_fdf: fdfSileSiesta, optional
         Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
         Directory where the files with the simulations results are

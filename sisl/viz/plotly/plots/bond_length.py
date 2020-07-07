@@ -38,9 +38,9 @@ class BondLengthMap(GeometryPlot):
         https://plot.ly/python/builtin-colorscales/
         Note that you can reverse a color map by adding _r
     cmin: float, optional
-
+    
     cmax: float, optional
-
+    
     cmid: float, optional
         Sets the middle point of the color scale. Only meaningful in
         diverging colormaps             If this is set 'cmin' and 'cmax'
@@ -50,22 +50,28 @@ class BondLengthMap(GeometryPlot):
     points_per_bond: int, optional
         Number of points that fill a bond. More points will make it look
         more like a line but will slow plot rendering down.
-    axes: None, optional
+    geometry: Geometry, optional
+    
+    geom_file: str, optional
+    
+    bonds: bool, optional
+    
+    axes:  optional
         The axis along which you want to see the geometry.              You
         can provide as many axes as dimensions you want for your plot.
         Note that the order is important and will result in setting the plot
         axes diferently.             For 2D and 1D representations, you can
         pass an arbitrary direction as an axis (array of shape (3,))
-    1d_dataaxis: None, optional
+    dataaxis_1d:  optional
         If you want a 1d representation, you can provide a data axis.
         It should be a function that receives the 1d coordinate of each atom
         and             returns it's "data-coordinate", which will be in the
         y axis of the plot.             If not provided, the y axis will be
         all 0.
-    cell: None, optional
+    cell:  optional
         Specifies how the cell should be rendered.              (False: not
         rendered, 'axes': render axes only, 'box': render a bounding box)
-    atom: None, optional
+    atom:  optional
         The atoms that are going to be displayed in the plot.
         This also has an impact on bonds (see the `bind_bonds_to_ats` and
         `show_atoms` parameters).             If set to None, all atoms are
@@ -78,15 +84,7 @@ class BondLengthMap(GeometryPlot):
         If set to False, it will not display atoms.              Basically
         this is a shortcut for `atom = [], bind_bonds_to_ats=False`.
         Therefore, it will override these two parameters.
-    geom: None, optional
-
-    geom_file: str, optional
-
-    bonds: bool, optional
-
-    reading_order: None, optional
-        Order in which the plot tries to read the data it needs.
-    root_fdf: str, optional
+    root_fdf: fdfSileSiesta, optional
         Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
         Directory where the files with the simulations results are

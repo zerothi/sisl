@@ -24,7 +24,7 @@ Then, just run this script and it will update all the classes documentation.
 Or you can use fill_class_docs to only update a certain class.
 """
 
-from sisl.viz.plotutils import get_configurable_docstring, get_plot_classes, get_session_classes
+from sisl.viz.plotly.plotutils import get_configurable_docstring, get_plot_classes, get_session_classes
 from sisl.viz import Plot, MultiplePlot, Animation, SubPlots, Session
 import inspect
 

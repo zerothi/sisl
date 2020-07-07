@@ -20,18 +20,18 @@ class BandsPlot(Plot):
 
     Parameters
     -------------
-    bands_file: str, optional
+    bands_file: bandsSileSiesta, optional
         This parameter explicitly sets a .bands file. Otherwise, the bands
         file is attempted to read from the fdf file
-    band_structure: None, optional
-        The bandStruct structure object to be used.
-    add_band_trace_data: None, optional
+    band_structure: BandStructure, optional
+        The BandStructure object to be used.
+    add_band_trace_data:  optional
         A function that receives each band (as a DataArray) and adds data to
         the trace. It also recieves the plot object.              The
         returned data may even overwrite the existing one, therefore it can
         be useful to fully customize your bands plot (individual style for
         each band if you want).
-    eigenstate_map: None, optional
+    eigenstate_map:  optional
         This function receives the eigenstate object for each k value when
         the bands are being extracted from a hamiltonian.             You can
         do whatever you want with it, the point of this function is to avoid
@@ -48,6 +48,14 @@ class BandsPlot(Plot):
         vectors.             Note that if you want to provide a path
         programatically you can do it more easily with the `band_structure`
         setting
+    spin:  optional
+        Determines how the different spin configurations should be displayed.
+        In spin polarized calculations, it allows you to choose between spin
+        0 and 1.             In non-colinear spin calculations, it allows you
+        to ask for a given spin texture,             by specifying the
+        direction.
+    spin_texture_colorscale: str, optional
+        The plotly colorscale to use for the spin texture (if displayed)
     gap: bool, optional
         Whether the gap should be displayed in the plot
     direct_gaps_only: bool, optional
@@ -68,9 +76,7 @@ class BandsPlot(Plot):
     spindown_color: str, optional
         Choose the color for the spin down bands.Only used if the
         calculation is spin polarized.
-    reading_order: None, optional
-        Order in which the plot tries to read the data it needs.
-    root_fdf: str, optional
+    root_fdf: fdfSileSiesta, optional
         Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
         Directory where the files with the simulations results are

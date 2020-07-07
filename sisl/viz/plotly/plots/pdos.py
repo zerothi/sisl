@@ -16,7 +16,7 @@ class PdosPlot(Plot):
 
     Parameters
     -------------
-    pdos_file: str, optional
+    pdos_file: pdosSileSiesta, optional
         This parameter explicitly sets a .PDOS file. Otherwise, the PDOS file
         is attempted to read from the fdf file
     Erange: array-like of shape (2,), optional
@@ -37,9 +37,7 @@ class PdosPlot(Plot):
     requests: array-like of dict, optional
         Here you can ask for the specific PDOS that you need.
         TIP: Queries can be activated and deactivated.
-    reading_order: None, optional
-        Order in which the plot tries to read the data it needs.
-    root_fdf: str, optional
+    root_fdf: fdfSileSiesta, optional
         Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
         Directory where the files with the simulations results are
