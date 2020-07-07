@@ -96,3 +96,15 @@ class TestFatbandsSislHamiltonian(FatbandsPlotTester):
 class TestFatbandsBandStructure(TestFatbandsSislHamiltonian):
 
     plot = FatbandsPlot(band_structure=bz)
+
+H = sisl.get_sile("/home/pfebrer/Simulations/siesta/siesta-4.1-b4/Tests/fe_clust_noncollinear/work/fe_clust_noncollinear.TSHS").read_hamiltonian()
+bz = sisl.BandStructure(H, [[0, 0, 0], [0.5,0,0]], 3, ["Gamma", "X"])
+
+class TestNCSpinFatbands(FatbandsPlotTester):
+
+    plot = bz.plot.fatbands()
+    bands_shape = (3, 1, 90)
+    weights_shape = (1, 3, 90, H.geometry.no)
+    gap = 0.40
+    ticktext = ["Gamma", "X"]
+    tickvals = [0., 0.49472934]

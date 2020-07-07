@@ -74,6 +74,35 @@ class GridPlotTester:
         assert isinstance(scanned, go.Figure)
         assert len(scanned.frames) == 3 # One cross section for each breakpoint
 
+    def test_supercell(self):
+
+        plot = self.plot
+
+        plot.update_settings(axes=[0,1], interp=[1,1,1], sc=[1,1,1])
+
+        # Check that the initial shapes are right
+        prev_shape = (len(plot.data[0].x), len(plot.data[0].y))
+        assert prev_shape == (plot.grid.shape[0], plot.grid.shape[1])
+
+        # Check that the supercell is displayed
+        plot.update_settings(sc=[2,1,1])
+        sc_shape = (len(plot.data[0].x), len(plot.data[0].y))
+        assert sc_shape[0] == 2*prev_shape[0]
+        assert sc_shape[1] == prev_shape[1]
+
+        plot.update_settings(sc=[1,1,1])
+
+    def test_transforms(self):
+
+        plot = self.plot
+
+        plot.update_settings(axes=[0], transforms=["cos"])
+
+        # Check that transforms = ["cos"] applies np.cos
+        assert np.allclose(plot.data[0].y, np.cos(plot.grid.grid).mean(2).mean(1))
+        
+
+
 # ------------------------------------------------------------
 #       Test the grid plot reading from siesta .RHO
 # ------------------------------------------------------------
