@@ -517,20 +517,20 @@ cdef int _index_sorted(const int[::1] a, const int v) nogil:
 
     # Simple binary search
     L = 0
-    R = a.shape[0] - 1
-    if v < a[L]:
+    R = a.shape[0]
+    if R == 0:
         return -1
-    if v > a[R]:
+    elif v < a[L]:
         return -1
 
     while L < R:
         i = (L + R) // 2
         if a[i] < v:
             L = i + 1
-        elif a[i] > v:
-            R = i - 1
         elif a[i] == v:
             return i
+        else:
+            R = i
     if a[R] == v:
         return R
     return -1
