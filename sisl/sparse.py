@@ -1321,18 +1321,18 @@ class SparseCSR(NDArrayOperatorsMixin):
 
     @classmethod
     def fromsp(cls, *sps, **kwargs):
+        sps = list(map(lambda x: x.tocsr(), sps))
         shape = sps[0].shape
         dtype = kwargs.get("dtype", np.result_type(*tuple(sp.dtype for sp in sps)))
         # create a single sparse matrix to get the final size
         # this will also error out if the shapes are not coherent
-        full_sp = reduce(lambda x, y: x + y.tocsr(), sps, 0.)
-        nnzpr = max(np.diff(full_sp.indptr).max(), 0) + 3
+        full_sp = reduce(lambda x, y: x + y, sps, 0.)
+        nnzpr = np.diff(full_sp.indptr).max() + 3
         out = cls(shape + (len(sps), ), nnzpr=nnzpr, dtype=dtype)
         del full_sp
 
         # Now we need to add things to the sparsity pattern
         for iD, sp in enumerate(sps):
-            sp = sp.tocsr()
             ptr = sp.indptr
             if sp.shape != shape:
                 raise ValueError(f"{cls.__name__}.fromsp found non compatible shapes")
