@@ -36,7 +36,7 @@ def _phase3_so_csr_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef int[::1] col = COL
     cdef float complex[:, ::1] phases = PHASES
     # Local columns (not in NC form)
-    cdef int nr = ncol.shape[0]
+    cdef Py_ssize_t nr = ncol.shape[0]
 
     # Now create the folded sparse elements
     V_PTR, V_NCOL, V_COL = fold_csr_matrix_nc(PTR, NCOL, COL)
@@ -51,7 +51,8 @@ def _phase3_so_csr_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef float complex[::1] vy = Vy
     cdef float complex[::1] vz = Vz
     cdef float complex ph, vv
-    cdef int r, rr, ind, c, s, s_idx
+    cdef Py_ssize_t r, rr, ind, s, s_idx
+    cdef int c
 
     if p_opt == 0:
         for r in range(nr):
@@ -149,7 +150,7 @@ def _phase3_so_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef int[::1] col = COL
     cdef double complex[:, ::1] phases = PHASES
     # Local columns (not in NC form)
-    cdef int nr = ncol.shape[0]
+    cdef Py_ssize_t nr = ncol.shape[0]
 
     # Now create the folded sparse elements
     V_PTR, V_NCOL, V_COL = fold_csr_matrix_nc(PTR, NCOL, COL)
@@ -164,7 +165,8 @@ def _phase3_so_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef double complex[::1] vy = Vy
     cdef double complex[::1] vz = Vz
     cdef double complex ph, vv
-    cdef int r, rr, ind, c, s, s_idx
+    cdef Py_ssize_t r, rr, ind, s, s_idx
+    cdef int c
 
     if p_opt == 0:
         for r in range(nr):
@@ -261,7 +263,7 @@ def _phase3_so_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef int[::1] ncol = NCOL
     cdef int[::1] col = COL
     cdef float complex[:, ::1] phases = PHASES
-    cdef int nr = ncol.shape[0]
+    cdef Py_ssize_t nr = ncol.shape[0]
 
     cdef np.ndarray[np.complex64_t, ndim=2, mode='c'] Vx = np.zeros([nr * 2, nr * 2], dtype=np.complex64)
     cdef np.ndarray[np.complex64_t, ndim=2, mode='c'] Vy = np.zeros([nr * 2, nr * 2], dtype=np.complex64)
@@ -270,7 +272,7 @@ def _phase3_so_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef float complex[:, ::1] vy = Vy
     cdef float complex[:, ::1] vz = Vz
     cdef float complex ph, v12
-    cdef int r, rr, ind, s, c
+    cdef Py_ssize_t r, rr, ind, s, c
 
     if p_opt == 0:
         for r in range(nr):
@@ -363,7 +365,7 @@ def _phase3_so_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef int[::1] ncol = NCOL
     cdef int[::1] col = COL
     cdef double complex[:, ::1] phases = PHASES
-    cdef int nr = ncol.shape[0]
+    cdef Py_ssize_t nr = ncol.shape[0]
 
     cdef np.ndarray[np.complex128_t, ndim=2, mode='c'] Vx = np.zeros([nr * 2, nr * 2], dtype=np.complex128)
     cdef np.ndarray[np.complex128_t, ndim=2, mode='c'] Vy = np.zeros([nr * 2, nr * 2], dtype=np.complex128)
@@ -372,7 +374,7 @@ def _phase3_so_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef double complex[:, ::1] vy = Vy
     cdef double complex[:, ::1] vz = Vz
     cdef double complex ph, vv
-    cdef int r, rr, ind, s, c
+    cdef Py_ssize_t r, rr, ind, s, c
 
     if p_opt == 0:
         for r in range(nr):
