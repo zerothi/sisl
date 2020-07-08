@@ -610,19 +610,20 @@ def list_index_le(np.ndarray[np.int32_t, ndim=1, mode='c'] a, np.ndarray[np.int3
 cdef inline void _list_index_le(const int[::1] a, const int[::1] b, int[::1] c) nogil:
     cdef int na = a.shape[0]
     cdef int nb = b.shape[0]
-    cdef int ai = 0
-    cdef int lasta = -1
-    cdef int lastc = 0
+    cdef int ai
+    cdef int lasta
+    cdef int start = 0
+
+    if na > 0:
+        lasta = a[0]
 
     for ia in range(na):
         ai = a[ia]
-        if ai > lasta:
-            start = lastc
-        else:
+        if ai < lasta:
             start = 0
         lasta = ai
         for ib in range(start, nb):
             if ai <= b[ib]:
                 c[ia] = ib
-                lastc = ib
+                start = ib
                 break
