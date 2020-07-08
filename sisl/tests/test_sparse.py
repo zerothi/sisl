@@ -1314,7 +1314,6 @@ def test_fromsp_csr_large():
     assert np.abs(dcsr.tocsr(0)).sum() == 0.
     assert np.abs(dcsr.tocsr(1)).sum() == 0.
 
-
     csr_ = SparseCSR(csr1.shape + (2, ), nnzpr=1)
 
     t0 = time()

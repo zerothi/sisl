@@ -33,7 +33,7 @@ def product3(np.ndarray[np.float64_t, ndim=1, mode='c'] v):
 @cython.initializedcheck(False)
 def is_ascending(np.ndarray[np.float64_t, ndim=1, mode='c'] v):
     cdef double[::1] V = v
-    cdef int i
+    cdef Py_ssize_t i
     for i in range(1, V.shape[0]):
         if V[i-1] > V[i]:
             return 0
@@ -54,7 +54,7 @@ def xyz_to_spherical_cos_phi(np.ndarray[np.float64_t, ndim=1, mode='c'] x,
     cdef double[::1] X = x
     cdef double[::1] Y = y
     cdef double[::1] Z = z
-    cdef int i
+    cdef Py_ssize_t i
     cdef double R
     for i in range(X.shape[0]):
         # theta (radians)

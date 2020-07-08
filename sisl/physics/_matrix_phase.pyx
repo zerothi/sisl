@@ -46,10 +46,11 @@ def _csr_f32(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef int[::1] v_ncol = V_NCOL
     cdef int[::1] v_col = V_COL
 
-    cdef int nr = v_ncol.shape[0]
+    cdef Py_ssize_t nr = v_ncol.shape[0]
     cdef np.ndarray[np.float32_t, ndim=1, mode='c'] V = np.zeros([v_col.shape[0]], dtype=np.float32)
     cdef float[::1] v = V
-    cdef int r, ind, c, s_idx
+    cdef Py_ssize_t r, ind, s_idx
+    cdef int c
 
     for r in range(nr):
         for ind in range(ptr[r], ptr[r] + ncol[r]):
@@ -80,10 +81,11 @@ def _csr_f64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef int[::1] v_ncol = V_NCOL
     cdef int[::1] v_col = V_COL
 
-    cdef int nr = v_ncol.shape[0]
+    cdef Py_ssize_t nr = v_ncol.shape[0]
     cdef np.ndarray[np.float64_t, ndim=1, mode='c'] V = np.zeros([v_col.shape[0]], dtype=np.float64)
     cdef double[::1] v = V
-    cdef int r, ind, c, s_idx
+    cdef Py_ssize_t r, ind, s_idx
+    cdef int c
 
     for r in range(nr):
         for ind in range(ptr[r], ptr[r] + ncol[r]):
@@ -116,10 +118,11 @@ def _phase_csr_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef int[::1] v_ncol = V_NCOL
     cdef int[::1] v_col = V_COL
 
-    cdef int nr = v_ncol.shape[0]
+    cdef Py_ssize_t nr = v_ncol.shape[0]
     cdef np.ndarray[np.complex64_t, ndim=1, mode='c'] V = np.zeros([v_col.shape[0]], dtype=np.complex64)
     cdef float complex[::1] v = V
-    cdef int r, ind, c, s_idx
+    cdef Py_ssize_t r, ind, s_idx
+    cdef int c
 
     if p_opt == 0:
         for r in range(nr):
@@ -159,10 +162,11 @@ def _phase_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef int[::1] v_ncol = V_NCOL
     cdef int[::1] v_col = V_COL
 
-    cdef int nr = v_ncol.shape[0]
+    cdef Py_ssize_t nr = v_ncol.shape[0]
     cdef np.ndarray[np.complex128_t, ndim=1, mode='c'] V = np.zeros([v_col.shape[0]], dtype=np.complex128)
     cdef double complex[::1] v = V
-    cdef int r, ind, c, s_idx
+    cdef Py_ssize_t r, ind, s_idx
+    cdef int c
 
     if p_opt == 0:
         for r in range(nr):
@@ -194,10 +198,10 @@ def _array_f32(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef int[::1] ncol = NCOL
     cdef int[::1] col = COL
 
-    cdef int nr = ncol.shape[0]
+    cdef Py_ssize_t nr = ncol.shape[0]
     cdef np.ndarray[np.float32_t, ndim=2, mode='c'] V = np.zeros([nr, nr], dtype=np.float32)
     cdef float[:, ::1] v = V
-    cdef int r, ind
+    cdef Py_ssize_t r, ind
 
     for r in range(nr):
         for ind in range(ptr[r], ptr[r] + ncol[r]):
@@ -220,10 +224,10 @@ def _array_f64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef int[::1] ncol = NCOL
     cdef int[::1] col = COL
 
-    cdef int nr = ncol.shape[0]
+    cdef Py_ssize_t nr = ncol.shape[0]
     cdef np.ndarray[np.float64_t, ndim=2, mode='c'] V = np.zeros([nr, nr], dtype=np.float64)
     cdef double[:, ::1] v = V
-    cdef int r, ind
+    cdef Py_ssize_t r, ind
 
     for r in range(nr):
         for ind in range(ptr[r], ptr[r] + ncol[r]):
@@ -248,10 +252,10 @@ def _phase_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef int[::1] col = COL
     cdef float complex[::1] phases = PHASES
 
-    cdef int nr = ncol.shape[0]
+    cdef Py_ssize_t nr = ncol.shape[0]
     cdef np.ndarray[np.complex64_t, ndim=2, mode='c'] V = np.zeros([nr, nr], dtype=np.complex64)
     cdef float complex[:, ::1] v = V
-    cdef int r, ind, c
+    cdef Py_ssize_t r, ind, c
 
     if p_opt == 0:
         for r in range(nr):
@@ -284,10 +288,10 @@ def _phase_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef int[::1] col = COL
     cdef double complex[::1] phases = PHASES
 
-    cdef int nr = ncol.shape[0]
+    cdef Py_ssize_t nr = ncol.shape[0]
     cdef np.ndarray[np.complex128_t, ndim=2, mode='c'] V = np.zeros([nr, nr], dtype=np.complex128)
     cdef double complex[:, ::1] v = V
-    cdef int r, ind, c
+    cdef Py_ssize_t r, ind, c
 
     if p_opt == 0:
         for r in range(nr):

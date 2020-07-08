@@ -14,8 +14,8 @@ __all__ = ["fold_csr_matrix", "fold_csr_matrix_nc",
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef inline int _sum(const int[::1] array) nogil:
-    cdef int total, i
+cdef inline Py_ssize_t _sum(const int[::1] array) nogil:
+    cdef Py_ssize_t total, i
 
     total = 0
     for i in range(array.shape[0]):
@@ -35,7 +35,7 @@ def fold_csr_matrix(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef int[::1] ncol = NCOL
     cdef int[::1] col = COL
     # Number of rows
-    cdef int nr = ncol.shape[0]
+    cdef Py_ssize_t nr = ncol.shape[0]
     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] FOLD_ptr = np.empty([nr + 1], dtype=np.int32)
     cdef int[::1] fold_ptr = FOLD_ptr
     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] FOLD_ncol = np.empty([nr], dtype=np.int32)
@@ -43,7 +43,7 @@ def fold_csr_matrix(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] FOLD_col = np.empty([_sum(ncol)], dtype=np.int32)
     cdef int[::1] fold_col = FOLD_col
     # local variables
-    cdef int r, ind, nz, c
+    cdef Py_ssize_t r, ind, nz, c
 
     nz = 0
     fold_ptr[0] = 0
@@ -90,7 +90,7 @@ def fold_csr_matrix_nc(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef int[::1] ncol = NCOL
     cdef int[::1] col = COL
     # Number of rows
-    cdef int nr = ncol.shape[0]
+    cdef Py_ssize_t nr = ncol.shape[0]
 
     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] FOLD_ptr = np.empty([nr * 2 + 1], dtype=np.int32)
     cdef int[::1] fold_ptr = FOLD_ptr
@@ -100,7 +100,7 @@ def fold_csr_matrix_nc(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] FOLD_col = np.empty([_sum(ncol) * 4], dtype=np.int32)
     cdef int[::1] fold_col = FOLD_col
     # local variables
-    cdef int r, rr, ind, nz, c
+    cdef Py_ssize_t r, rr, ind, nz, c
 
     nz = 0
     fold_ptr[0] = 0
@@ -159,7 +159,7 @@ def fold_csr_diagonal_nc(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef int[::1] ncol = NCOL
     cdef int[::1] col = COL
     # Number of rows
-    cdef int nr = ncol.shape[0]
+    cdef Py_ssize_t nr = ncol.shape[0]
 
     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] FOLD_ptr = np.empty([nr * 2 + 1], dtype=np.int32)
     cdef int[::1] fold_ptr = FOLD_ptr
@@ -169,7 +169,7 @@ def fold_csr_diagonal_nc(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] FOLD_col = np.empty([_sum(ncol) * 2], dtype=np.int32)
     cdef int[::1] fold_col = FOLD_col
     # local variables
-    cdef int r, rr, ind, nz, c
+    cdef Py_ssize_t r, rr, ind, nz, c
 
     nz = 0
     fold_ptr[0] = 0
@@ -242,9 +242,9 @@ def _sparse_dense(shape,
     cdef int[::1] ncol = NCOL
     cdef int[::1] col = COL
 
-    cdef int nr = ncol.shape[0]
+    cdef Py_ssize_t nr = ncol.shape[0]
     cdef V = np.zeros(shape, dtype=dtype)
-    cdef int r, ind, ix, s2
+    cdef Py_ssize_t r, ind, ix, s2
 
     s2 = shape[2]
     for r in range(nr):
