@@ -103,7 +103,7 @@ class QueriesInput(InputField):
 
         cond = None
         for key, col in key_to_cols:
-            if query.get(key):
+            if query.get(key, None) is not None:
                 query_df = query_df[query_df[col].isin(query[key])]
 
         return query_df
