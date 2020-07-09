@@ -248,7 +248,7 @@ class GridPlot(Plot):
 
         SwitchInput(
             key="cut_vacuum", name="Cut vacuum",
-            default=True,
+            default=False,
             help="""Whether the vacuum should not be taken into account for displaying the grid.
             This is essential especially in 3D representations, since plotly needs to calculate the
             isosurfaces of the grid."""
