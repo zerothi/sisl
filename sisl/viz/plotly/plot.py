@@ -287,7 +287,7 @@ class Plot(ShortCutable, Configurable, Connected):
         #Return the initialized multiple plot
         return MultipleClass(_plugins={
             "_getInitKwargsList": _getInitKwargsList,
-            "_plotClasses": cls,
+            "_plot_classes": cls,
             **kwargs.pop('_plugins', {})
         }, template_plot=template_plot, **kwargs)
 
@@ -1893,10 +1893,10 @@ class MultiplePlot(Plot):
             # If there is a template plot, take its settings as the starting point
             template_settings={}
             if self.has_template_plot:
-                self._plotClasses = self.template_plot.__class__
+                self._plot_classes = self.template_plot.__class__
                 template_settings = self.template_plot.settings
 
-            SINGLE_CLASS = isinstance(self._plotClasses, type)
+            SINGLE_CLASS = isinstance(self._plot_classes, type)
 
             # Initialize all the plots
             # In case there is only one class only initialize them, avoid reading data
@@ -1904,7 +1904,7 @@ class MultiplePlot(Plot):
             # with multiprocessing they won't know that the current instance is their parent
             # (objects get copied in multiprocessing) and they won't be able to share data
             plots = init_multiple_plots(
-                self._plotClasses,
+                self._plot_classes,
                 kwargsList = [
                     {**template_settings, **kwargs, "attrs_for_plot": self._attrs_for_child_plots, "only_init": SINGLE_CLASS and try_sharing}
                     for kwargs in self._getInitKwargsList()

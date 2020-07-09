@@ -413,13 +413,6 @@ class GridPlot(Plot):
         for transform in transforms:
             grid = self._transform_grid(grid, transform)
 
-        cut_vacuum = self.setting("cut_vacuum")
-        if cut_vacuum and getattr(grid, "geometry", None):
-            grid, lims = self._cut_vacuum(grid)
-            self.grid_offset = lims[0]
-        else:
-            self.grid_offset = [0, 0, 0]
-
         display_axes = self.setting("axes")
         sc = self.setting("sc")
         name = self.setting("trace_name")
@@ -443,17 +436,21 @@ class GridPlot(Plot):
                 #And finally get the subpart of the grid
                 grid = grid.sub(np.arange(indices[0, ax], indices[1, ax] + 1), ax)
 
-        interp_factors = np.array([factor if ax in display_axes else 1 for ax, factor in enumerate(self.setting("interp"))], dtype=int)
+        cut_vacuum = self.setting("cut_vacuum")
+        if cut_vacuum and getattr(grid, "geometry", None):
+            grid, lims = self._cut_vacuum(grid)
+            self.grid_offset = lims[0]
+        else:
+            self.grid_offset = [0, 0, 0]
+
+        interp_factors = np.array([factor if ax in display_axes else 1 for ax, factor in enumerate(
+            self.setting("interp"))], dtype=int)
 
         interpolate = (interp_factors != 1).any()
 
         for ax in [0, 1, 2]:
             if ax not in display_axes:
                 grid = grid.average(ax)
-
-                if interpolate:
-                    #Duplicate this axis so that interpolate can work
-                    grid.grid = np.concatenate((grid.grid, grid.grid), axis=2)
 
         if interpolate:
             grid = grid.interp([factor for factor in grid.shape*interp_factors])
