@@ -152,8 +152,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             elif not tree is None:
                 group = tree
             if not group is None:
-                raise KeyError(self.__class__.__name__ + f' could not retrieve key "{group}.{name}" due to missing flags in the input file.')
-            raise KeyError(self.__class__.__name__ + f' could not retrieve key "{name}" due to missing flags in the input file.')
+                raise KeyError(f"{self.__class__.__name__} could not retrieve key '{group}.{name}' due to missing flags in the input file.")
+            raise KeyError(f"{self.__class__.__name__} could not retrieve key '{name}' due to missing flags in the input file.")
         if self._k_avg:
             return v[iE, ...]
 

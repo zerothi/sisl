@@ -217,7 +217,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
         try:
             for elec in self.elecs:
                 g[elec] = self._value('a', [elec]) - 1
-                g[elec + '+'] = self._value('a_down', [elec]) - 1
+                g[f"{elec}+"] = self._value('a_down', [elec]) - 1
         except:
             pass
         return g

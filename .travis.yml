@@ -70,7 +70,7 @@ script:
 - |
   if [[ ${COVERAGE:-true} == true ]]; then
       echo "Running coverage tests..." ;
-      py.test --pyargs sisl -rX --cov=sisl --cov-report term-missing --cov-config=.coveragerc ;
+      py.test -vvv --pyargs sisl -rX --cov=sisl --cov-report term-missing --cov-config=.coveragerc ;
   else
       echo "Running non-coverage tests..." ;
       py.test --doctest-modules sisl ;
