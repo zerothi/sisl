@@ -566,6 +566,33 @@ class Grid(SuperCellChild):
         ret_idx = np.delete(_a.arangei(self.shape[axis]), _a.asarrayi(idx))
         return self.sub(ret_idx, axis)
 
+    def tile(self, reps, axis):
+        """ Tile grid to create a bigger one
+
+        The atomic indices for the base Geometry will be retained.
+
+        Parameters
+        ----------
+        reps : int
+           number of tiles (repetitions)
+        axis : int
+           direction of tiling, 0, 1, 2 according to the cell-direction
+
+        See Also
+        --------
+        Geometry.tile : equivalent method for Geometry class
+        """
+        grid = self.copy()
+        grid.grid = None
+        reps_all = [1, 1, 1]
+        reps_all[axis] = reps
+        grid.grid = np.tile(self.grid, reps_all)
+        if self.geometry is None:
+            grid.set_sc(self.sc.tile(reps, axis))
+        else:
+            grid.set_geometry(self.geometry.tile(reps, axis))
+        return grid
+
     def index2xyz(self, index):
         """ Real-space coordinates of indices related to the grid
 

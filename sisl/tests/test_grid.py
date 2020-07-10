@@ -418,3 +418,33 @@ def test_grid_fold():
     assert np.all(grid.index_fold(idx, False) == idx)
     assert not np.all(grid.index_fold(idx) == idx) # sorted from unique
     assert np.all(grid.index_fold(idx) == np.sort(idx, axis=0))
+
+
+def test_grid_tile_sc():
+    grid = Grid([4, 5, 6])
+    grid2 = grid.tile(2, 2)
+    assert grid.shape[:2] == grid2.shape[:2]
+    assert grid.shape[2] == grid2.shape[2] // 2
+    assert grid.volume * 2 == pytest.approx(grid2.volume)
+
+    grid4 = grid2.tile(2, 1)
+    assert grid.shape[0] == grid4.shape[0]
+    assert grid.shape[1] == grid4.shape[1] // 2
+    assert grid.shape[2] == grid4.shape[2] // 2
+    assert grid.volume * 4 == pytest.approx(grid4.volume)
+
+
+def test_grid_tile_geom():
+    grid = Grid([4, 5, 6], geometry=Geometry([0] * 3, Atom[4], sc=4.))
+    grid2 = grid.tile(2, 2)
+    assert grid.shape[:2] == grid2.shape[:2]
+    assert grid.shape[2] == grid2.shape[2] // 2
+    assert grid.volume * 2 == pytest.approx(grid2.volume)
+    assert grid.geometry.na * 2 == grid2.geometry.na
+
+    grid4 = grid2.tile(2, 1)
+    assert grid.shape[0] == grid4.shape[0]
+    assert grid.shape[1] == grid4.shape[1] // 2
+    assert grid.shape[2] == grid4.shape[2] // 2
+    assert grid.volume * 4 == pytest.approx(grid4.volume)
+    assert grid.geometry.na * 4 == grid4.geometry.na
