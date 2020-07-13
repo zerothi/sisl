@@ -5,7 +5,7 @@ import scipy as sp
 from os.path import isfile
 import itertools as itools
 
-from ..sile import add_sile, sile_fh_open, sile_raise_write, SileError
+from ..sile import add_sile, get_sile_class, sile_fh_open, sile_raise_write, SileError
 from .sile import SileSiesta
 from .._help import *
 
