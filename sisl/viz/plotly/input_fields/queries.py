@@ -186,6 +186,8 @@ class OrbitalQueries(QueriesInput):
         sisl.physics.Spin
         """
 
+        self.geometry = geometry
+
         for key in ("species", "atoms", "orbitals"):
             try:
                 self.get_query_param(key).update_options(geometry)
@@ -200,6 +202,8 @@ class OrbitalQueries(QueriesInput):
         self._build_orb_filtering_df(geometry)
 
     def get_orbitals(self, request):
+
+        request["atoms"] = self.geometry._sanitize_atoms(request.get("atoms", []))
 
         filtered_df = self.filter_df(self.orb_filtering_df, request,
             [
