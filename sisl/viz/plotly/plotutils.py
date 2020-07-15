@@ -838,13 +838,25 @@ def repeat_if_childs(method):
     Decorator that will force a method to be run on all the plot's child_plots in case there are any.
     """
 
-    def apply_to_all_plots(obj, *args, **kwargs):
+    def apply_to_all_plots(obj, *args, childs_sel=None, **kwargs):
 
         if hasattr(obj, "child_plots"):
 
-            kwargsList = kwargs.get("kwargsList", kwargs)
+            kwargs_list = kwargs.get("kwargs_list", kwargs)
 
-            obj.child_plots = apply_method_on_multiple_objs(method, obj.child_plots, kwargsList = kwargsList, serial=True)
+            # Get all the child plots that we are going to modify
+            childs = obj.child_plots
+            if childs_sel is not None:
+                childs = np.array(childs)[childs_sel].tolist()
+            else:
+                childs_sel = range(len(childs))
+            
+            new_childs = apply_method_on_multiple_objs(method, childs, kwargsList=kwargs_list, serial=True)
+
+            # Set the new plots. We need to do this because apply_method_on_multiple_objs
+            # can use multiprocessing, and therefore will not modify the plot in place.
+            for i, new_child in zip(childs_sel, new_childs):
+                obj.child_plots[i] = new_child
 
             obj.get_figure()
 

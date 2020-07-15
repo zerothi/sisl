@@ -1954,7 +1954,22 @@ class MultiplePlot(Plot):
 
         return self
 
-    def _update_settings(self, on_child_plots=False, on_parent_plot=True, **kwargs):
+    def update_child_settings(self, childs_sel=None, **kwargs):
+        """
+        Updates the settings of all child plots.
+
+        Parameters
+        -----------
+        childs_sel: array-like of int, optional
+            The indices of the child plots that you want to update.
+        **kwargs
+            Keyword arguments specifying the settings that you want to update
+            and the values you want them to have
+        """
+
+        return self.update_settings(on_child_plots=True, on_parent_plot=False, childs_sel=childs_sel, **kwargs)
+
+    def _update_settings(self, on_child_plots=False, on_parent_plot=True, childs_sel=None, **kwargs):
         """
         This method takes into account that on plots that contain childs, one may want to update only the parent settings or all the child's settings.
 
@@ -1964,6 +1979,8 @@ class MultiplePlot(Plot):
             whether the settings should be updated on child plots
         on_parent_plot: boolean, optional
             whether the settings should be updated on the parent plot.
+        childs_sel: array-like of int, optional
+            The indices of the child plots that you want to update.
         """
 
         if on_parent_plot:
@@ -1971,7 +1988,7 @@ class MultiplePlot(Plot):
 
         if on_child_plots:
 
-            repeat_if_childs(Configurable._update_settings)(self, **kwargs)
+            repeat_if_childs(Configurable._update_settings)(self, childs_sel=childs_sel, **kwargs)
 
             call_method_if_present(self, "_after_childs_updated")
 

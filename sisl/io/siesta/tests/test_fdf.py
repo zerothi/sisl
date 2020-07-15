@@ -33,7 +33,6 @@ def test_fdf1(sisl_tmp, sisl_system):
         fdf.read_supercell()
         fdf.read_geometry()
 
-
 def test_fdf2(sisl_tmp, sisl_system):
     f = sisl_tmp('gr.fdf', _dir)
     sisl_system.g.write(fdfSileSiesta(f, 'w'))

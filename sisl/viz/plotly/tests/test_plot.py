@@ -148,6 +148,22 @@ class TestMultiplePlot(BasePlotTester):
 
     PlotClass = MultiplePlot
 
+    def test_update_settings(self):
+
+        geom = sisl.geom.graphene()
+
+        subplots = geom.plot(cell=["box", False, False], subplots="cell")
+        print(subplots.child_plots)
+        assert len(subplots.child_plots) == 3
+
+        prev_data_lens = [len(plot.data) for plot in subplots]
+        assert prev_data_lens[0] > prev_data_lens[1]
+
+        subplots.update_child_settings(cell="box", childs_sel=[1])
+        data_lens = [len(plot.data) for plot in subplots]
+        assert prev_data_lens[0] == prev_data_lens[1]
+        assert prev_data_lens[1] > prev_data_lens[2]
+
 # ------------------------------------------------------------
 #            Tests for the SubPlots class
 # ------------------------------------------------------------
