@@ -106,8 +106,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             elif not tree is None:
                 group = tree
             if not group is None:
-                raise KeyError(self.__class__.__name__ + f' could not retrieve key "{group}.{name}" due to missing flags in the input file.')
-            raise KeyError(self.__class__.__name__ + f' could not retrieve key "{name}" due to missing flags in the input file.')
+                raise KeyError(f"{self.__class__.__name__} could not retrieve key '{group}.{name}' due to missing flags in the input file.")
+            raise KeyError(f"{self.__class__.__name__} could not retrieve key '{name}' due to missing flags in the input file.")
 
         if self._k_avg:
             return v[:]
@@ -415,8 +415,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         if isinstance(orbitals, bool):
             if not orbitals: orbitals = None
         if not atoms is None and not orbitals is None:
-            raise ValueError('Both atoms and orbitals keyword in DOS request '
-                              'cannot be specified, only one at a time.')
+            raise ValueError("Both atoms and orbitals keyword in DOS request "
+                             "cannot be specified, only one at a time.")
         # Cast to lower
         norm = norm.lower()
         if norm == 'none':
@@ -424,7 +424,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         elif norm in ['all', 'atom', 'orbital']:
             NORM = float(self.no_d)
         else:
-            raise ValueError('Error on norm keyword in DOS request')
+            raise ValueError("Error on norm keyword in DOS request")
 
         geom = self.geometry
 
@@ -2239,7 +2239,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                         k = map(float, value.split())
                     k = list(k)
                     if len(k) != 3:
-                        raise ValueError('Argument --kpoint *must* be an integer or 3 values to find the corresponding k-index')
+                        raise ValueError("Argument --kpoint *must* be an integer or 3 values to find the corresponding k-index")
                     ns._krng = ns._tbt.kindex(k)
                 # Add a description on which k-point this is
                 k = ns._tbt.k[ns._krng]
@@ -2363,7 +2363,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             def __call__(self, parser, ns, values, option_string=None):
                 e1 = ns._tbt._elec(values[0])
                 if e1 not in ns._tbt.elecs:
-                    raise ValueError('Electrode: "'+e1+'" cannot be found in the specified file.')
+                    raise ValueError(f"Electrode: '{e1}' cannot be found in the specified file.")
                 e2 = ns._tbt._elec(values[1])
                 if e2 not in ns._tbt.elecs:
                     if e2.strip() == '.':
@@ -2374,7 +2374,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                                 except:
                                     pass
                         return
-                    raise ValueError('Electrode: "'+e2+'" cannot be found in the specified file.')
+                    raise ValueError(f"Electrode: '{e2}' cannot be found in the specified file.")
 
                 # Grab the information
                 data = ns._tbt.transmission(e1, e2, kavg=ns._krng)[ns._Erng]
@@ -2400,7 +2400,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                             except:
                                 pass
                         return
-                    raise ValueError('Electrode: "'+e+'" cannot be found in the specified file.')
+                    raise ValueError(f"Electrode: '{e}' cannot be found in the specified file.")
 
                 # Grab the information
                 data = ns._tbt.transmission_bulk(e, kavg=ns._krng)[ns._Erng]
@@ -2421,7 +2421,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                     # we are storing the spectral DOS
                     e = ns._tbt._elec(value)
                     if e not in ns._tbt.elecs:
-                        raise ValueError('Electrode: "'+e+'" cannot be found in the specified file.')
+                        raise ValueError(f"Electrode: '{e}' cannot be found in the specified file.")
                     data = ns._tbt.ADOS(e, kavg=ns._krng, orbitals=ns._Orng, norm=ns._norm)
                     ns._data_header.append(f'ADOS[1/eV]:{e}')
                 else:
@@ -2453,7 +2453,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 # we are storing the Bulk DOS
                 e = ns._tbt._elec(value[0])
                 if e not in ns._tbt.elecs:
-                    raise ValueError('Electrode: "'+e+'" cannot be found in the specified file.')
+                    raise ValueError(f"Electrode: '{e}' cannot be found in the specified file.")
                 # Grab the information
                 data = ns._tbt.BDOS(e, kavg=ns._krng, sum=False)
                 ns._data_header.append(f'BDOS[1/eV]:{e}')
@@ -2473,7 +2473,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             def __call__(self, parser, ns, values, option_string=None):
                 e1 = ns._tbt._elec(values[0])
                 if e1 not in ns._tbt.elecs:
-                    raise ValueError('Electrode: "'+e1+'" cannot be found in the specified file.')
+                    raise ValueError(f"Electrode: '{e1}' cannot be found in the specified file.")
                 e2 = ns._tbt._elec(values[1])
                 if e2 not in ns._tbt.elecs:
                     if e2.strip() == '.':
@@ -2484,7 +2484,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                                 except:
                                     pass
                         return
-                    raise ValueError('Electrode: "'+e2+'" cannot be found in the specified file.')
+                    raise ValueError(f"Electrode: '{e2}' cannot be found in the specified file.")
 
                 # Grab the information
                 data = ns._tbt.transmission_eig(e1, e2, kavg=ns._krng)
