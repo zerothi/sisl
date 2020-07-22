@@ -23,3 +23,10 @@ def test_si_pdos_kgrid_grid_fractions(sisl_files):
     grid = si.read_grid()
     grid_halve = si.read_grid(index=[0.5])
     assert np.allclose(grid.grid * 0.5, grid_halve.grid)
+
+
+def test_si_pdos_kgrid_grid_fdf(sisl_files):
+    si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.fdf'))
+    VT = si.read_grid("VT", order='bin')
+    TotPot = si.read_grid("totalpotential", order='bin')
+    assert np.allclose(VT.grid, TotPot.grid)
