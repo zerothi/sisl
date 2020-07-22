@@ -15,7 +15,7 @@ __env = 'SISL_FILES_TESTS'
 
 
 travis_ci = pytest.mark.skipif(
-    os.environ.get("TRAVIS_CI", None),
+    os.environ.get("TRAVIS_HOME", None),
     reason=="running on TRAVIS"
 )
 
