@@ -49,6 +49,7 @@ before_install:
   fi
 
 install:
+- env
 - conda env create -n test_env --file ci/requirements-$CONDA_ENV.yml
 - source activate test_env
 - conda info --envs

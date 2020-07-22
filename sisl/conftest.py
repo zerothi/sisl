@@ -14,6 +14,12 @@ from sisl import Atom, Geometry, SuperCell, Hamiltonian
 __env = 'SISL_FILES_TESTS'
 
 
+travis_ci = pytest.mark.skipif(
+    os.environ.get("TRAVIS_CI", None),
+    reason=="running on TRAVIS"
+)
+
+
 # Modify items based on whether the env is correct or not
 def pytest_collection_modifyitems(config, items):
     sisl_files_tests = os.environ.get(__env, '_THIS_DIRECTORY_DOES_NOT_EXIST_')
