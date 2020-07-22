@@ -1436,6 +1436,9 @@ def test_geometry_sanitize_atom():
     assert np.allclose(only_C, check_C)
     only_C = bi.axyz(bi.atoms.Z == 6)
     assert np.allclose(only_C, check_C)
+    # with dict redirect
+    only_C = bi.axyz({'Z': 6})
+    assert np.allclose(only_C, check_C)
 
     tup_01 = (0, 2)
     list_01 = [0, 2]

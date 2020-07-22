@@ -334,6 +334,11 @@ class Geometry(SuperCellChild):
                     yield ia
         return _a.fromiteri(m(cat))
 
+    @_sanitize_atoms.register(dict)
+    def _(self, atoms):
+        # First do categorization
+        return self._sanitize_atoms(AtomCategory.kw(**atoms))
+
     def _sanitize_orbs(self, orbital):
         """ Converts an `orbital` to index under given inputs
 
