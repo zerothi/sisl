@@ -14,7 +14,7 @@ from sisl import Atom, Geometry, SuperCell, Hamiltonian
 __env = 'SISL_FILES_TESTS'
 
 
-travis_ci = pytest.mark.skipif(
+pytest_travis_ci = pytest.mark.skipif(
     os.environ.get("TRAVIS_HOME", None),
     reason="running on TRAVIS"
 )
