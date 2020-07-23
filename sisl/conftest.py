@@ -14,12 +14,6 @@ from sisl import Atom, Geometry, SuperCell, Hamiltonian
 __env = 'SISL_FILES_TESTS'
 
 
-pytest_travis_ci = pytest.mark.skipif(
-    os.environ.get("TRAVIS_HOME", None),
-    reason="running on TRAVIS"
-)
-
-
 # Modify items based on whether the env is correct or not
 def pytest_collection_modifyitems(config, items):
     sisl_files_tests = os.environ.get(__env, '_THIS_DIRECTORY_DOES_NOT_EXIST_')
@@ -162,6 +156,11 @@ def sisl_system():
 
 
 def pytest_configure(config):
+
+    pytest.sisl_travis_skip = pytest.mark.skipif(
+        os.environ.get("TRAVIS_HOME", None),
+        reason="running on TRAVIS"
+    )
 
     # Locally manage pytest.ini input
     for mark in ['io', 'bloch', 'hamiltonian', 'geometry', 'geom', 'shape',
