@@ -1488,6 +1488,7 @@ def test_wavefunction1():
     ES.sub(0).wavefunction(grid)
 
 
+@pytest.sisl_travis_skip
 def test_wavefunction2():
     N = 50
     o1 = SphericalOrbital(0, (np.linspace(0, 2, N), np.exp(-np.linspace(0, 100, N))))
@@ -1503,6 +1504,7 @@ def test_wavefunction2():
     ES.sub(0).wavefunction(grid)
 
 
+@pytest.sisl_travis_skip
 def test_wavefunction3():
     N = 50
     o1 = SphericalOrbital(0, (np.linspace(0, 2, N), np.exp(-np.linspace(0, 100, N))))
@@ -1518,6 +1520,7 @@ def test_wavefunction3():
     ES.sub(0).wavefunction(grid)
 
 
+@pytest.sisl_travis_skip
 def test_wavefunction_eta():
     N = 50
     o1 = SphericalOrbital(0, (np.linspace(0, 2, N), np.exp(-np.linspace(0, 100, N))))
