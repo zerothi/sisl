@@ -22,6 +22,12 @@ notifications:
     on_failure: always
     on_start: never
 
+
+# Signal we are running travis
+env:
+  global: SISL_TRAVIS_CI=true
+
+
 matrix:
   include:
   - env:
@@ -68,6 +74,7 @@ script:
 - which python
 - python --version
 - python -OO -c "import sisl"
+- python -OO -c "import sisl_toolbox"
 - |
   if [[ ${COVERAGE:-true} == true ]]; then
       echo "Running coverage tests..." ;

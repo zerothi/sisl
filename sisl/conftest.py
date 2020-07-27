@@ -158,7 +158,7 @@ def sisl_system():
 def pytest_configure(config):
 
     pytest.sisl_travis_skip = pytest.mark.skipif(
-        os.environ.get("TRAVIS_HOME", None),
+        os.environ.get("SISL_TRAVIS_CI", "false").lower() == "true",
         reason="running on TRAVIS"
     )
 
