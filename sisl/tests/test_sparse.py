@@ -1269,7 +1269,6 @@ def test_fromsp_csr():
 
 
 @pytest.mark.slow
-@pytest.mark.only
 def test_fromsp_csr_large():
     csr1 = sc.sparse.random(10000, 10, 0.1, format="csr", random_state=23583)
     csr2 = csr1.copy()

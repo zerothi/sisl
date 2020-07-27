@@ -235,8 +235,8 @@ class Orbital:
 
             # Plot data
             cax = axes.contourf(theta, phi, s, *args, **kwargs)
+            cax.set_clim(s.min(), s.max())
             cab = axes.get_figure().colorbar(cax)
-            cab.set_clim(s.min(), s.max())
             axes.set_title(r'${}$'.format(self.name(True)))
             # I don't know how exactly to handle this...
             #axes.set_xlabel(r'Azimuthal angle $\theta$')
