@@ -1,3 +1,27 @@
+0.X.Y
+=====
+
+- Enabled more user control over categories, #242
+
+- Improved interpolation function for Grid's, and also
+	added filters
+
+- Bugfix for periodic directions for ASE conversion, #231
+
+- Fixed tuples for _sanitize_atoms, #233
+
+- Fixed reading correct unit from deltanc files, #234
+
+- Enabled berry-phase calculations for NC+SOC, #235
+
+- Added tiling to Grid, #238
+
+- Added Atoms.group_data which nicely splits an array holding
+	orbital information into atomic contributions (a list since
+	each sub-list may be unequal in length)
+
+- Many small bug-fixes and performance improvements
+
 0.10.0
 ======
 

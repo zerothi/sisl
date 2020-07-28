@@ -1,5 +1,7 @@
 from collections import namedtuple
 
+from numpy import ndarray
+
 from sisl._internal import set_module
 from .base import AtomCategory, NullCategory, _sanitize_loop
 
@@ -18,10 +20,25 @@ class AtomNeighbours(AtomCategory):
        minimum number of neighbours
     max : int
        maximum number of neighbours
-    neigh_cat : Category
+    neigh_cat : Category, optional
        a category the neighbour must be in to be counted
+    R : tuple, float, callable or None, optional
+       Value passed to `Geometry.close`.
+       - ``tuple``, directly passed and thus only neigbours within
+         the tuple range are considered
+       - ``float``, this will pass ``(0.01, R)`` and thus *not* count the
+         atom itself.
+       - ``callable``, the return value of this will be directly passed.
+         If the callable returns a single float it will count the atom itself.
+
+    Examples
+    --------
+    >>> AtomNeighbours(4) # 4 neighbours within (0.01, Geometry.maxR())
+    >>> AtomNeighbours(4, R=1.44) # 4 neighbours within (0.01, 1.44)
+    >>> AtomNeighbours(4, R=(1, 1.44)) # 4 neighbours within (1, Geometry.maxR())
+    >>> AtomNeighbours(4, R=lambda atom: (0.01, PeriodicTable().radius(atom.Z))) # 4 neighbours within (0.01, <>)
     """
-    __slots__ = ("_min", "_max", "_in")
+    __slots__ = ("_min", "_max", "_in", "_R")
 
     def __init__(self, *args, **kwargs):
         if len(args) > 0:
@@ -52,6 +69,7 @@ class AtomNeighbours(AtomCategory):
             name = f" ∈ [{self._min};{self._max}]"
 
         self._in = kwargs.get("neigh_cat", None)
+        self._R = kwargs.get("R", None)
 
         # Determine name. If there are requirements for the neighbours
         # then the name changes
@@ -60,10 +78,19 @@ class AtomNeighbours(AtomCategory):
         else:
             self.set_name(f"neighbours({self._in}){name}")
 
+    def R(self, atom):
+        if self._R is None:
+            return (0.01, atom.maxR())
+        elif callable(self._R):
+            return self._R(atom)
+        elif isinstance(self._R, (tuple, list, ndarray)):
+            return self._R
+        return (0.01, self._R)
+
     @_sanitize_loop
     def categorize(self, geometry, atoms=None):
         """ Check that number of neighbours are matching """
-        idx, rij = geometry.close(atoms, R=(0.01, geometry.atoms[atoms].maxR()), ret_rij=True)
+        idx, rij = geometry.close(atoms, R=self.R(geometry.atoms[atoms]), ret_rij=True)
         idx, rij = idx[1], rij[1]
         if len(idx) < self._min:
             return NullCategory()
