@@ -134,7 +134,14 @@ class WideBandSE(SelfEnergy):
         return self._N
 
     def self_energy(self, *args, **kwargs):
-        eta = kwargs.get("eta", self.eta)
+        r""" Return a dense matrix with the self-energy
+
+        Parameters
+        ----------
+        eta : float, optional
+            locally override the `eta` value for the object
+        """
+        eta = - kwargs.get("eta", self.eta)
         return np.diag(np.repeat(1j*eta, self._N))
 
 
