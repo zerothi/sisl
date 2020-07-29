@@ -68,7 +68,7 @@ install:
 - "$FC --version"
 - python -c 'import sys ; print(sys.version)'
 - unset LDFLAGS
-- pip install --no-deps -v -v -v -e .
+- pip install --no-deps -vvv -e .
 
 script:
 - which python
