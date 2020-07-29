@@ -6,7 +6,7 @@ import numpy as np
 
 from sisl import Geometry, Atom, SuperCell, Hamiltonian
 from sisl import BrillouinZone
-from sisl import SelfEnergy, SemiInfinite, RecursiveSI
+from sisl import SelfEnergy, WideBandSE, SemiInfinite, RecursiveSI
 from sisl import RealSpaceSE, RealSpaceSI
 
 
@@ -128,6 +128,13 @@ def test_sancho_green(setup):
     G = SL.green(E, k)
     assert np.allclose(g, G)
     assert np.allclose(SL.green(E, k), SR.green(E, k))
+
+
+def test_wideband_1(setup):
+    SE = WideBandSE(10, 1e-2)
+    assert SE.self_energy().shape == (10, 10)
+    assert np.allclose(np.diag(SE.self_energy()), 1j*1e-2)
+    assert np.allclose(np.diag(SE.self_energy(eta=1)), 1j*1.)
 
 
 @pytest.mark.parametrize("k_axes", [0, 1])

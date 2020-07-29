@@ -46,6 +46,7 @@ Physical quantites
    DynamicalMatrix
    Overlap
    SelfEnergy
+   WideBandSE
    SemiInfinite
    RecursiveSI
    RealSpaceSE

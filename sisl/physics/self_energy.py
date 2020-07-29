@@ -14,12 +14,14 @@ from sisl._help import array_replace
 import sisl._array as _a
 from sisl.linalg import linalg_info, solve, inv
 from sisl.linalg.base import _compute_lwork
+from sisl.sparse_geometry import _SparseGeometry
 from sisl.physics.brillouinzone import MonkhorstPack
 from sisl.physics.bloch import Bloch
 
 
-__all__ = ["SelfEnergy", "SemiInfinite"]
-__all__ += ["RecursiveSI"]
+__all__ = ["SelfEnergy"]
+__all__ += ["WideBandSE"]
+__all__ += ["SemiInfinite", "RecursiveSI"]
 __all__ += ["RealSpaceSE", "RealSpaceSI"]
 
 
@@ -104,6 +106,36 @@ class SelfEnergy:
     def __getattr__(self, attr):
         r""" Overload attributes from the hosting object """
         pass
+
+
+@set_module("sisl.physics")
+class WideBandSE(SelfEnergy):
+    r""" Self-energy object with a wide-band electronic structure
+
+    Such a self-energy only have imaginary components on the diagonal,
+    with all of them being equal to the `eta` value.
+
+    Parameters
+    ----------
+    spgeom : SparseGeometry or int
+       for a `SparseGeometry` only the length will be queried.
+    eta : float
+       the imaginary part of the self-energy
+    """
+    def __init__(self, spgeom, eta):
+        if isinstance(spgeom, _SparseGeometry):
+            self._N = len(spgeom)
+        else:
+            self._N = spgeom
+        self.eta = eta
+
+    def __len__(self):
+        r"""Dimension of the self-energy"""
+        return self._N
+
+    def self_energy(self, *args, **kwargs):
+        eta = kwargs.get("eta", self.eta)
+        return np.diag(np.repeat(1j*eta, self._N))
 
 
 @set_module("sisl.physics")
