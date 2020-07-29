@@ -182,6 +182,21 @@ class TestGrid:
         # grid... Perhaps this is ok, but not good... :(
         assert np.allclose(setup.g.sum(2).grid, g1.grid)
 
+    def test_isosurface(self, setup):
+
+        # Build an empty grid
+        grid = sisl.Grid(0.1, sc=[[1, 0, 0], [0, 1, 0], [0, 0, 1]])
+
+        # Fill it with some values that have a clear isosurface
+        grid.grid = np.tile([1, 2, 3, 4, 5, 4, 3, 2, 1, 0], 100).reshape(10, 10, 10)
+
+        # Calculate the isosurface for the value of 2.5
+        verts, *returns = grid.isosurface(2.5)
+
+        # The third dimension should contain only two coordinates
+        # [1, 2, (HERE) 3, 4, 5, 4, 3, (HERE) 2, 1, 0]
+        assert np.unique(verts[:, 2]).shape == (2,)
+
     def test_smooth_gaussian(self, setup):
         g = Grid(0.1, sc=[[2, 0, 0], [0, 2, 0], [0, 0, 2]])
         g[10, 10, 10] = 1
