@@ -133,8 +133,9 @@ def test_sancho_green(setup):
 def test_wideband_1(setup):
     SE = WideBandSE(10, 1e-2)
     assert SE.self_energy().shape == (10, 10)
-    assert np.allclose(np.diag(SE.self_energy()), 1j*1e-2)
-    assert np.allclose(np.diag(SE.self_energy(eta=1)), 1j*1.)
+    assert np.allclose(np.diag(SE.self_energy()), -1j*1e-2)
+    assert np.allclose(np.diag(SE.self_energy(eta=1)), -1j*1.)
+    assert np.allclose(np.diag(SE.scattering_matrix(eta=1)), 2.)
 
 
 @pytest.mark.parametrize("k_axes", [0, 1])
