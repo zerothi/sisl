@@ -18,10 +18,7 @@ def test_si_pdos_kgrid_eig(sisl_files):
 
 
 def test_si_pdos_kgrid_eig_ArgumentParser(sisl_files, sisl_tmp):
-    try:
-        import matplotlib
-    except ImportError:
-        pytest.skip('matplotlib not available')
+    pytest.importorskip("matplotlib", reason="matplotlib not available")
     png = sisl_tmp('si_pdos_kgrid.EIG.png', _dir)
     si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.EIG'))
     p, ns = si.ArgumentParser()

@@ -19,10 +19,7 @@ def test_si_pdos_gamma(sisl_files):
 
 
 def test_si_pdos_gamma_xarray(sisl_files):
-    try:
-        import xarray
-    except ImportError:
-        pytest.skip('xarray not available')
+    pytest.importorskip("xarray", reason="xarray not available")
     si = sisl.get_sile(sisl_files(_dir, 'si_pdos_gamma.PDOS.xml'))
     X = si.read_data(as_dataarray=True)
     assert len(X.geometry) == 2
@@ -42,10 +39,7 @@ def test_si_pdos_kgrid(sisl_files):
 
 
 def test_si_pdos_kgrid_xarray(sisl_files):
-    try:
-        import xarray
-    except ImportError:
-        pytest.skip('xarray not available')
+    pytest.importorskip("xarray", reason="xarray not available")
     si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.PDOS.xml'))
     X = si.read_data(as_dataarray=True)
     assert len(X.geometry) == 2

@@ -55,10 +55,7 @@ def test_2_projection_tbtav(sisl_files, sisl_tmp):
 
 
 def test_2_projection_ArgumentParser(sisl_files, sisl_tmp):
-    try:
-        import matplotlib
-    except ImportError:
-        pytest.skip('matplotlib not available')
+    pytest.importorskip("matplotlib", reason="matplotlib not available")
 
     # Create copy function
     from copy import deepcopy

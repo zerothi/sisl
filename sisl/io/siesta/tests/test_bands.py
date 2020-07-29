@@ -18,10 +18,7 @@ def test_fe(sisl_files):
 
 
 def test_fe_ArgumentParser(sisl_files, sisl_tmp):
-    try:
-        import matplotlib
-    except ImportError:
-        pytest.skip('matplotlib not available')
+    pytest.importorskip("matplotlib", reason="matplotlib not available")
     png = sisl_tmp('fe.bands.png', _dir)
     si = sisl.get_sile(sisl_files(_dir, 'fe.bands'))
     p, ns = si.ArgumentParser()
@@ -31,10 +28,7 @@ def test_fe_ArgumentParser(sisl_files, sisl_tmp):
 
 
 def test_fe_xarray(sisl_files, sisl_tmp):
-    try:
-        import xarray
-    except ImportError:
-        pytest.skip('xarray not available')
+    pytest.importorskip("xarray", reason="xarray not available")
     si = sisl.get_sile(sisl_files(_dir, 'fe.bands'))
 
     bands = si.read_data(as_dataarray=True)

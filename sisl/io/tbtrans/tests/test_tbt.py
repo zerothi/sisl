@@ -370,10 +370,7 @@ def test_1_graphene_all_fail_kavg_E(sisl_files, sisl_tmp):
 
 
 def test_1_graphene_all_ArgumentParser(sisl_files, sisl_tmp):
-    try:
-        import matplotlib
-    except ImportError:
-        pytest.skip('matplotlib not available')
+    pytest.importorskip("matplotlib", reason="matplotlib not available")
 
     # Create copy function
     from copy import deepcopy

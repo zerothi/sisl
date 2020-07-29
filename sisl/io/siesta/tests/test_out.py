@@ -91,10 +91,7 @@ def test_md_nose_out_data(sisl_files):
 
 
 def test_md_nose_out_dataframe(sisl_files):
-    try:
-        import pandas
-    except ImportError:
-        pytest.skip('pandas not available')
+    pytest.importorskip("pandas", reason="pandas not available")
     f = sisl_files(_dir, 'md_nose.out')
     out = outSileSiesta(f)
 

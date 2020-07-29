@@ -253,10 +253,7 @@ class TestBrillouinZone:
         apply.none.eigh()
 
     def test_as_dataarray(self):
-        try:
-            import xarray
-        except ImportError:
-            pytest.skip("xarray not available")
+        pytest.importorskip("xarray", reason="xarray not available")
 
         from sisl import geom, Hamiltonian
         g = geom.graphene()
@@ -278,10 +275,7 @@ class TestBrillouinZone:
         assert asdarray.dims == ('k', 'orb')
 
     def test_pathos(self):
-        try:
-            import pathos
-        except ImportError:
-            pytest.skip("pathos not available")
+        pytest.importorskip("pathos", reason="pathos not available")
 
         from sisl import geom, Hamiltonian
         g = geom.graphene()
