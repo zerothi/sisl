@@ -197,6 +197,16 @@ class TestGrid:
         # [1, 2, (HERE) 3, 4, 5, 4, 3, (HERE) 2, 1, 0]
         assert np.unique(verts[:, 2]).shape == (2,)
 
+        # If the grid is non-orthogonal, there should be 20 unique values
+        # (10 for each (HERE))
+        grid = Grid(0.1, sc=[[1, 0, 0], [0, 1, 0], [0, 2, 1]])
+        
+        grid.grid = np.tile([1, 2, 3, 4, 5, 4, 3, 2, 1, 0], 100).reshape(10, 10, 10)
+
+        verts, *returns = grid.isosurface(2.5)
+
+        assert np.unique(verts[:, 2]).shape == (20,)
+
     def test_smooth_gaussian(self, setup):
         g = Grid(0.1, sc=[[2, 0, 0], [0, 2, 0], [0, 0, 2]])
         g[10, 10, 10] = 1
