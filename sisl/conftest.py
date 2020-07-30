@@ -106,8 +106,8 @@ def sisl_files():
     If the environment variable is empty and a test has this fixture, it will
     be skipped.
     """
-    def _path(path, *files):
-        return Path(os.environ[__env]).joinpath(path, *files)
+    def _path(*files):
+        return Path(os.environ[__env]).joinpath(*files)
     return _path
 
 
