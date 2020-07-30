@@ -141,8 +141,16 @@ class WideBandSE(SelfEnergy):
         eta : float, optional
             locally override the `eta` value for the object
         """
+        # note the sign (-)
         eta = - kwargs.get("eta", self.eta)
         return np.diag(np.repeat(1j*eta, self._N))
+
+    def scattering_matrix(self, E=0., *args, **kwargs):
+        # note the sign (+)
+        eta = kwargs.get("eta", self.eta)
+        return np.diag(np.repeat(np.complex128(2*eta), self._N))
+
+    scattering_matrix.__doc__ = SelfEnergy.scattering_matrix.__doc__
 
 
 @set_module("sisl.physics")

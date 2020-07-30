@@ -136,6 +136,9 @@ def test_wideband_1(setup):
     assert np.allclose(np.diag(SE.self_energy()), -1j*1e-2)
     assert np.allclose(np.diag(SE.self_energy(eta=1)), -1j*1.)
     assert np.allclose(np.diag(SE.scattering_matrix(eta=1)), 2.)
+    # ensure our custom function works!
+    assert np.allclose(SE.scattering_matrix(eta=1),
+                       SE.se2scat(SE.self_energy(eta=1)))
 
 
 @pytest.mark.parametrize("k_axes", [0, 1])
