@@ -16,9 +16,9 @@ __env = 'SISL_FILES_TESTS'
 
 # Modify items based on whether the env is correct or not
 def pytest_collection_modifyitems(config, items):
-    sisl_files_tests = os.environ.get(__env, '_THIS_DIRECTORY_DOES_NOT_EXIST_')
-    if os.path.isdir(sisl_files_tests):
-        if os.path.isdir(os.path.join(sisl_files_tests, 'sisl')):
+    sisl_files_tests = Path(os.environ.get(__env, '_THIS_DIRECTORY_DOES_NOT_EXIST_'))
+    if sisl_files_tests.is_dir():
+        if (sisl_files_tests / 'sisl').is_dir():
             return
         print(f'pytest-sisl: Could not locate sisl directory in: {sisl_files_tests}')
 
@@ -31,7 +31,7 @@ def pytest_collection_modifyitems(config, items):
 
 
 @pytest.fixture(scope='function')
-def sisl_tmp(request, tmpdir_factory):
+def sisl_tmp(request, tmp_path_factory):
     """ sisl specific temporary file and directory creator.
 
         sisl_tmp(file, dir_name='sisl')
@@ -43,8 +43,7 @@ def sisl_tmp(request, tmpdir_factory):
     """
     class FileFactory:
         def __init__(self):
-            # Force use of Path
-            self.base = Path(tmpdir_factory.getbasetemp())
+            self.base = tmp_path_factory.getbasetemp()
             self.dirs = [self.base]
             self.files = []
 
@@ -52,11 +51,8 @@ def sisl_tmp(request, tmpdir_factory):
             # Make name a path
             D = Path(name.replace('/', '-'))
             if not (self.base / D).is_dir():
-                # Apparently tmpdir_factory.mktemp returns a LocalPath
-                # which is really annoying
-                # We have to cast to Path to use pathlib methods
-                d = Path(tmpdir_factory.mktemp(str(D), numbered=False))
-                self.dirs.append(d)
+                # tmp_path_factory.mktemp returns pathlib.Path
+                self.dirs.append(tmp_path_factory.mktemp(str(D), numbered=False))
 
             return self.dirs[-1]
 
@@ -110,11 +106,8 @@ def sisl_files():
     If the environment variable is empty and a test has this fixture, it will
     be skipped.
     """
-    env = os.environ[__env]
     def _path(path, *files):
-        if len(files) == 0:
-            return os.path.join(os.environ[__env], path)
-        return os.path.join(os.environ[__env], path, *files)
+        return Path(os.environ[__env]).joinpath(path, *files)
     return _path
 
 
