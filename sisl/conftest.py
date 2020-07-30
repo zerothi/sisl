@@ -106,8 +106,18 @@ def sisl_files():
     If the environment variable is empty and a test has this fixture, it will
     be skipped.
     """
+    if __env not in os.environ:
+        def _path(*files):
+            pytest.skip(f"Environment {__env} not defined")
+        return _path
+
     def _path(*files):
-        return Path(os.environ[__env]).joinpath(*files)
+        p = Path(os.environ[__env]).joinpath(*files)
+        if p.exists():
+            return p
+        # I expect this test to fail due to the wrong environment.
+        # But it isn't an actual fail since it hasn't runned...
+        pytest.xfail(f"Environment {__env} may point to a wrong path(?); file {p} not found")
     return _path
 
 
