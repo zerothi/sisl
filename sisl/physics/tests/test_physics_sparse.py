@@ -184,6 +184,7 @@ def test_sparse_orbital_bz_non_colinear_trs_kramers_theorem():
 
 
 def test_sparse_orbital_bz_spin_orbit():
+    # compare transpose with
     M = SparseOrbitalBZSpin(geom.graphene(), spin=Spin('SO'))
 
     M.construct(([0.1, 1.44],
@@ -216,7 +217,7 @@ def test_sparse_orbital_bz_spin_orbit_trs_kramers_theorem():
     assert np.allclose(eig1, eig2)
 
 
-def test_sparse_orbital_bz_spin_orbit():
+def test_sparse_orbital_bz_spin_orbit_trs_not():
     M = SparseOrbitalBZSpin(geom.graphene(), spin=Spin('SO'))
 
     M.construct(([0.1, 1.44],

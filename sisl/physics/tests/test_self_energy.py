@@ -71,7 +71,7 @@ def test_sancho_scattering_matrix(setup):
     assert np.allclose(SE.scattering_matrix(0.1), SE.se2scat(SE.self_energy(0.1)))
 
 
-def test_sancho_non_orthogonal(setup):
+def test_sancho_non_orthogonal_dtype(setup):
     SE = RecursiveSI(setup.HS, '-A')
     s64 = SE.self_energy(0.1, dtype=np.complex64)
     s128 = SE.self_energy(0.1)
@@ -298,7 +298,7 @@ def test_real_space_SE_fail_nsc_k():
         RSE = RealSpaceSE(H, 0, 1, (3, 4, 1), dk=100)
 
 
-def test_real_space_SE_fail_nsc_semi():
+def test_real_space_SE_fail_nsc_semi_fully_periodic():
     sq = Geometry([0] * 3, Atom(1, 1.01), [1])
     sq.set_nsc([3, 5, 3])
     H = Hamiltonian(sq)
@@ -314,7 +314,7 @@ def test_real_space_SE_fail_nsc_semi():
 @pytest.mark.parametrize("unfold", [1, 3])
 @pytest.mark.parametrize("bulk", [True, False])
 @pytest.mark.parametrize("coupling", [True, False])
-def test_real_space_HS(setup, k_axes, trs, bz, unfold, bulk, coupling):
+def test_real_space_SI_HS(setup, k_axes, trs, bz, unfold, bulk, coupling):
     semi = RecursiveSI(setup.HS, '-B')
     surf = setup.HS.tile(4, 1)
     surf.set_nsc(b=1)
@@ -332,7 +332,7 @@ def test_real_space_HS(setup, k_axes, trs, bz, unfold, bulk, coupling):
 @pytest.mark.parametrize("bulk", [True, False])
 @pytest.mark.parametrize("semi_bulk", [True, False])
 @pytest.mark.parametrize("coupling", [True, False])
-def test_real_space_H(setup, semi_dir, k_axes, trs, bz, unfold, bulk, semi_bulk, coupling):
+def test_real_space_SI_H(setup, semi_dir, k_axes, trs, bz, unfold, bulk, semi_bulk, coupling):
     semi = RecursiveSI(setup.H, semi_dir)
     surf = setup.H.tile(4, 1)
     surf.set_nsc(b=1)
@@ -342,7 +342,7 @@ def test_real_space_H(setup, semi_dir, k_axes, trs, bz, unfold, bulk, semi_bulk,
     RSI.self_energy(0.1, bulk=bulk, coupling=coupling)
 
 
-def test_real_space_H_test(setup):
+def test_real_space_SI_H_test(setup):
     semi = RecursiveSI(setup.H, '-B')
     surf = setup.H.tile(4, 1)
     surf.set_nsc(b=1)
@@ -354,7 +354,7 @@ def test_real_space_H_test(setup):
     RSI.clear()
 
 
-def test_real_space_H_k_trs(setup):
+def test_real_space_SI_H_k_trs(setup):
     semi = RecursiveSI(setup.H, '-B')
     surf = setup.H.tile(4, 1)
     surf.set_nsc(b=1)
