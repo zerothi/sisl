@@ -1134,7 +1134,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
     elif method == "zak":
         closed = True
     else:
-        raise SislError("berry_phase: requires the method to be [berry, zak]")
+        raise ValueError("berry_phase: requires the method to be [berry, zak]")
 
     # Whether we should calculate the eigenvalues of the overlap matrix
     if eigvals:

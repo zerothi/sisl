@@ -122,6 +122,7 @@ class WideBandSE(SelfEnergy):
     eta : float
        the imaginary part of the self-energy
     """
+
     def __init__(self, spgeom, eta):
         if isinstance(spgeom, _SparseGeometry):
             self._N = len(spgeom)

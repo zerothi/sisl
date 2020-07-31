@@ -50,9 +50,10 @@ def test_get_sile1():
     assert issubclass(cls, fdfSileSiesta)
 
 
-@pytest.mark.xfail(raises=NotImplementedError)
 def test_get_sile2():
-    gsc("test.this_file_does_not_exist")
+    # requesting non implemented files
+    with pytest.raises(NotImplementedError):
+        gsc("test.this_file_does_not_exist")
 
 
 class TestObject:

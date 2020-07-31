@@ -28,11 +28,11 @@ def test_solve2():
     assert np.allclose(b, bc)
 
 
-@pytest.mark.xfail(raises=ValueError)
 def test_solve3():
     a = np.random.rand(10, 2)
     b = np.random.rand(10)
-    solve(a, b)
+    with pytest.raises(ValueError):
+        solve(a, b)
 
 
 def test_solve4():

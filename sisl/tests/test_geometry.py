@@ -88,9 +88,9 @@ class TestGeometry:
             i += 1
         assert i == 2
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_tile0(self, setup):
-        t = setup.g.tile(0, 0)
+        with pytest.raises(ValueError):
+            t = setup.g.tile(0, 0)
 
     def test_tile1(self, setup):
         cell = np.copy(setup.g.sc.cell)
@@ -158,9 +158,9 @@ class TestGeometry:
         t = setup.g.tile(2, 0).tile(2, 2)
         assert np.allclose(t[:len(setup.g), :], setup.g.xyz)
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_repeat0(self, setup):
-        t = setup.g.repeat(0, 0)
+        with pytest.raises(ValueError):
+            t = setup.g.repeat(0, 0)
 
     def test_repeat1(self, setup):
         cell = np.copy(setup.g.sc.cell)
@@ -515,13 +515,13 @@ class TestGeometry:
             assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :]* 2)
             assert np.allclose(s.cell[axis, :], setup.g.cell[axis, :]* 2)
 
-    @pytest.mark.xfail(raises=ValueError)
-    def test_append_xfail(self, setup):
-        s = setup.g.append(setup.g, 0, offset='not')
+    def test_append_raise_valueerror(self, setup):
+        with pytest.raises(ValueError):
+            s = setup.g.append(setup.g, 0, offset='not')
 
-    @pytest.mark.xfail(raises=ValueError)
-    def test_prepend_xfail(self, setup):
-        s = setup.g.prepend(setup.g, 0, offset='not')
+    def test_prepend_raise_valueerror(self, setup):
+        with pytest.raises(ValueError):
+            s = setup.g.prepend(setup.g, 0, offset='not')
 
     def test_append_prepend_offset(self, setup):
         for axis in [0, 1, 2]:
@@ -557,9 +557,9 @@ class TestGeometry:
         al = setup.g.center(what='mass')
         al = setup.g.center(what='mm(xyz)')
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_center_raise(self, setup):
-        al = setup.g.center(what='unknown')
+        with pytest.raises(ValueError):
+            al = setup.g.center(what='unknown')
 
     def test___add1__(self, setup):
         n = len(setup.g)
@@ -984,16 +984,16 @@ class TestGeometry:
             assert np.allclose(g1.cell[i, :], g2.cell[i, :])
         assert not np.allclose(g1.cell[2, :], g2.cell[2, :])
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_distance1(self, setup):
         geom = Geometry(setup.g.xyz, Atom[6])
         # maxR is undefined
-        d = geom.distance()
+        with pytest.raises(ValueError):
+            d = geom.distance()
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_distance2(self, setup):
         geom = Geometry(setup.g.xyz, Atom[6])
-        d = geom.distance(R=1.42, method='unknown_numpy_function')
+        with pytest.raises(ValueError):
+            d = geom.distance(R=1.42, method='unknown_numpy_function')
 
     def test_distance3(self, setup):
         geom = setup.g.copy()
@@ -1207,31 +1207,26 @@ class TestGeometry:
         del g.names['B']
         assert len(g.names) == 1
 
-    @pytest.mark.xfail(raises=SislError)
     def test_geometry_groups_raise(self):
         g = sisl_geom.graphene()
         g['A'] = 1
-        g['A'] = [1, 2]
+        with pytest.raises(SislError):
+            g['A'] = [1, 2]
 
-    @pytest.mark.xfail(raises=ValueError)
-    def test_geometry_sanitize_raise(self):
-        g = sisl_geom.graphene()
-        xyz = g.axyz([[[0, 1]]])
-
-    @pytest.mark.xfail(raises=ValueError)
     def test_geometry_as_primary_raise_nondivisable(self):
         g = sisl_geom.graphene()
-        g.as_primary(3)
+        with pytest.raises(ValueError):
+            g.as_primary(3)
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_geometry_cut_raise_nondivisable(self):
         g = sisl_geom.graphene()
-        g.cut(3, 0)
+        with pytest.raises(ValueError):
+            g.cut(3, 0)
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_geometry_iR_negative_R(self):
         g = sisl_geom.graphene()
-        g.iR(-1.)
+        with pytest.raises(ValueError):
+            g.iR(R=-1.)
 
     @pytest.mark.parametrize("geometry", [sisl_geom.graphene(),
                                           sisl_geom.diamond(),
@@ -1423,9 +1418,9 @@ def test_geometry_sort_group():
     assert np.allclose(BN.atoms.Z, BN3.atoms.Z)
 
 
-@pytest.mark.xfail(raises=ValueError)
 def test_geometry_sort_fail_keyword():
-    sisl_geom.bilayer().sort(not_found_keyword=True)
+    with pytest.raises(ValueError):
+        sisl_geom.bilayer().sort(not_found_keyword=True)
 
 
 def test_geometry_sanitize_atom():

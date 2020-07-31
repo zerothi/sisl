@@ -31,9 +31,9 @@ def test_distribution2():
     assert np.allclose(d(x), heaviside(x, -0.5))
 
 
-@pytest.mark.xfail(raises=ValueError)
 def test_distribution3():
-    get_distribution('unknown-function')
+    with pytest.raises(ValueError):
+        get_distribution('unknown-function')
 
 
 def test_distribution_x0():

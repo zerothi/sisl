@@ -91,10 +91,10 @@ class TestGrid:
         assert np.allclose(g.grid, setup.g.grid * 2)
         assert np.allclose((g - setup.g).grid, setup.g.grid)
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_add_fail1(self, setup):
         g = Grid(np.array(setup.g.shape) // 2 + 1, sc=setup.g.sc.copy())
-        setup.g + g
+        with pytest.raises(ValueError):
+            setup.g + g
 
     def test_iadd1(self):
         g = Grid([10, 10, 10])
@@ -248,9 +248,9 @@ class TestGrid:
             idx = setup.g.index(setup.sc.center() - v, axis=i)
             assert idx == mid[i]
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_index_fail(self, setup):
-        setup.g.index([0.1, 0.2])
+        with pytest.raises(ValueError):
+            setup.g.index([0.1, 0.2])
 
     def test_index_ndim2(self, setup):
         mid = np.array(setup.g.shape, np.int32) // 2 - 1
@@ -326,18 +326,18 @@ class TestGrid:
         for i in range(3):
             assert setup.g.cross_section(1, i).shape[i] == 1
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_cross_section_fail(self, setup):
-        setup.g.cross_section(1, -1)
+        with pytest.raises(ValueError):
+            setup.g.cross_section(1, -1)
 
     def test_remove_part(self, setup):
         for i in range(3):
             assert setup.g.remove_part(1, i, above=True).shape[i] == 1
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_sub_fail(self, setup):
         g = Grid(np.array(setup.g.shape) // 2 + 1, sc=setup.g.sc.copy())
-        g.sub([], 0)
+        with pytest.raises(ValueError):
+            g.sub([], 0)
 
     def test_sub_part(self, setup):
         for i in range(3):
@@ -363,10 +363,10 @@ class TestGrid:
         g.set_grid([2, 2, 3])
         assert np.all(np.array(g.shape) == [2, 2, 3])
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_set_grid2(self, setup):
         g = setup.g.copy()
-        g.set_grid([2, 2, 2, 4])
+        with pytest.raises(ValueError):
+            g.set_grid([2, 2, 2, 4])
 
     def test_bc1(self, setup):
         assert np.all(setup.g.bc == setup.g.PERIODIC)

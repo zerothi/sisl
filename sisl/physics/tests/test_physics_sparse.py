@@ -54,7 +54,6 @@ def test_eigh_non_orthogonal():
     assert np.allclose(sp.eigh(), [0.5, 0.5])
 
 
-@pytest.mark.xfail
 def test_eigsh_orthogonal():
     gr = _get()
     # The most simple setup.
@@ -62,15 +61,16 @@ def test_eigsh_orthogonal():
     sp[0, 0] = 0.5
     sp[1, 1] = 0.5
     # Fails due to too many requested eigenvalues
-    sp.eigsh()
+    with pytest.raises(TypeError):
+        sp.eigsh()
 
 
-@pytest.mark.xfail
 def test_eigsh_non_orthogonal():
     gr = _get()
-    # The most simple setup.
     sp = SparseOrbitalBZ(gr, orthogonal=False)
-    sp.eigsh()
+    # not possible in non-orthogonal basis
+    with pytest.raises(ValueError):
+        sp.eigsh()
 
 
 def test_pickle_non_orthogonal():
@@ -216,7 +216,6 @@ def test_sparse_orbital_bz_spin_orbit_trs_kramers_theorem():
     assert np.allclose(eig1, eig2)
 
 
-@pytest.mark.xfail(reason="Sparse.construct does not obey Hermitivity for complex values")
 def test_sparse_orbital_bz_spin_orbit():
     M = SparseOrbitalBZSpin(geom.graphene(), spin=Spin('SO'))
 
@@ -224,4 +223,4 @@ def test_sparse_orbital_bz_spin_orbit():
                  [[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
                   [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]]))
     new = (M + M.transpose(True)) / 2
-    assert np.abs((M - new)._csr._D).sum() == 0
+    assert np.abs((M - new)._csr._D).sum() != 0

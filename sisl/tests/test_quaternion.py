@@ -81,10 +81,10 @@ class TestQuaternion:
         rx *= setup.qy
         assert rx == setup.qx * setup.qy
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_fail_div1(self, setup):
-        setup.qx /= setup.qy
+        with pytest.raises(ValueError):
+            setup.qx /= setup.qy
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_fail_div2(self, setup):
-        a = setup.qx / setup.qy
+        with pytest.raises(ValueError):
+            a = setup.qx / setup.qy

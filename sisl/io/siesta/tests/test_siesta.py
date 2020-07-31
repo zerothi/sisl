@@ -43,8 +43,9 @@ def test_nc2(sisl_tmp, sisl_system):
     assert sisl_system.g.atoms.equal(ntb.atoms, R=False)
 
 
-@pytest.mark.xfail(reason="writing two matrices with different sparsity patterns")
 def test_nc_multiple_fail(sisl_tmp, sisl_system):
+    # writing two different sparse matrices to the same
+    # file will fail
     f = sisl_tmp('gr.nc', _dir)
     H = Hamiltonian(sisl_system.gtb)
     DM = DensityMatrix(sisl_system.gtb)
@@ -54,15 +55,13 @@ def test_nc_multiple_fail(sisl_tmp, sisl_system):
     H.write(sile)
 
     DM[0, 0] = 1.
-    DM.write(sile)
+    with pytest.raises(ValueError):
+        DM.write(sile)
 
 
 @pytest.mark.parametrize(
     ("sort"),
-    [
-        True,
-        pytest.param(False, marks=pytest.mark.xfail(reason="same sparsity pattern, different sparsity layout")),
-    ],
+    [True, False],
 )
 def test_nc_multiple_checks(sisl_tmp, sisl_system, sort):
     f = sisl_tmp('gr.nc', _dir)
@@ -79,7 +78,11 @@ def test_nc_multiple_checks(sisl_tmp, sisl_system, sort):
         shuffle(edges)
         DM[io, edges] = 2.
 
-    DM.write(sile, sort=sort)
+    if not sort:
+        with pytest.raises(ValueError):
+            DM.write(sile, sort=sort)
+    else:
+        DM.write(sile, sort=sort)
 
 
 def test_nc_overlap(sisl_tmp, sisl_system):

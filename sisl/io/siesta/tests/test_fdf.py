@@ -105,7 +105,6 @@ def test_supercell(sisl_tmp):
     assert np.allclose(sc.cell, cell)
 
 
-@pytest.mark.xfail(raises=SileError)
 def test_supercell_fail(sisl_tmp):
     f = sisl_tmp('file.fdf', _dir)
     lines = [
@@ -117,7 +116,8 @@ def test_supercell_fail(sisl_tmp):
     ]
     with open(f, 'w') as fh:
         fh.write('\n'.join(lines))
-    fdfSileSiesta(f).read_supercell()
+    with pytest.raises(SileError):
+        fdfSileSiesta(f).read_supercell()
 
 
 def test_geometry(sisl_tmp):

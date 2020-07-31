@@ -43,9 +43,9 @@ class TestRanges:
         assert strmap(int, '[82,83][10]') == [(82, [10]), (83, [10])]
         assert strmap(int, '[82,83][10-13]') == [(82, [(10, 13)]), (83, [(10, 13)])]
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_strmap2(self):
-        strmap(int, '1', sep='*')
+        with pytest.raises(ValueError):
+            strmap(int, '1', sep='*')
 
     def test_strmap3(self):
         sm = partial(strmap, sep='c')
@@ -58,9 +58,9 @@ class TestRanges:
         assert sm(int, '{82,83}{10}') == [(82, [10]), (83, [10])]
         assert sm(int, '{82,83}{10-13}') == [(82, [(10, 13)]), (83, [(10, 13)])]
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_strmap4(self):
-        strmap(int, '1[oestuh]]')
+        with pytest.raises(ValueError):
+            strmap(int, '1[oestuh]]')
 
     def test_strmap5(self):
         r = strmap(int, '1-', end=5)

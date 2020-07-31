@@ -88,14 +88,15 @@ def test_tshs_warn(sisl_files):
         si.read_hamiltonian(geometry=geom)
 
 
-@pytest.mark.xfail(raises=sisl.SileError)
 def test_tshs_error(sisl_files):
+    # reading with a wrong geometry
     si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.TSHS'))
 
     # check number of orbitals
     geom = si.read_geometry()
     geom = sisl.Geometry(np.random.rand(geom.na + 1, 3))
-    si.read_hamiltonian(geometry=geom)
+    with pytest.raises(sisl.SileError):
+        si.read_hamiltonian(geometry=geom)
 
 
 def test_tshs_si_pdos_kgrid_overlap(sisl_files):

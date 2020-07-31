@@ -37,29 +37,29 @@ def test_indices():
     assert np.allclose(idx, [-1, 23, 20, 22, -1])
 
 
-@pytest.mark.xfail(raises=ValueError)
 def test_fail_init1():
-    SparseCSR((10, 100, 20, 20), dtype=np.int32)
+    with pytest.raises(ValueError):
+        SparseCSR((10, 100, 20, 20), dtype=np.int32)
 
 
-@pytest.mark.xfail(raises=ValueError)
 def test_fail_init_shape0():
-    SparseCSR((0, 10, 10), dtype=np.int32)
+    with pytest.raises(ValueError):
+        SparseCSR((0, 10, 10), dtype=np.int32)
 
 
-@pytest.mark.xfail(raises=ValueError)
 def test_fail_init2():
     data = np.empty([2, 2], np.float64)
     indices = np.arange(2)
     indptr = np.arange(2)
-    s = SparseCSR((data, indices, indptr, indptr), shape=(100, 20, 20))
+    with pytest.raises(ValueError):
+        SparseCSR((data, indices, indptr, indptr), shape=(100, 20, 20))
 
 
-@pytest.mark.xfail(raises=ValueError)
 def test_fail_align1():
     s1 = SparseCSR((10, 100), dtype=np.int32)
     s2 = SparseCSR((20, 100), dtype=np.int32)
-    s1.align(s2)
+    with pytest.raises(ValueError):
+        s1.align(s2)
 
 
 def test_set_get1():
@@ -391,31 +391,31 @@ def test_create_2d_data_3d(setup):
     assert (s1 - s2).sum() == 0
 
 
-@pytest.mark.xfail(raises=ValueError)
 def test_fail_data_3d_to_1d(setup):
     s1 = setup.s2.copy()
     # matrix assignment
     I = np.arange(len(s1) // 2).reshape(-1, 1)
     data = np.random.randint(1, 100, I.size * 2).reshape(I.size, 1, 2)
-    s1[I, I.T] = data
+    with pytest.raises(ValueError):
+        s1[I, I.T] = data
 
 
-@pytest.mark.xfail(raises=ValueError)
 def test_fail_data_2d_to_2d(setup):
     s1 = setup.s2.copy()
     # matrix assignment
     I = np.arange(len(s1) // 2).reshape(-1, 1)
     data = np.random.randint(1, 100, I.size **2).reshape(I.size, I.size)
-    s1[I, I.T] = data
+    with pytest.raises(ValueError):
+        s1[I, I.T] = data
 
 
-@pytest.mark.xfail(raises=ValueError)
 def test_fail_data_2d_to_3d(setup):
     s1 = setup.s2.copy()
     # matrix assignment
     I = np.arange(len(s1) // 2).reshape(-1, 1)
     data = np.random.randint(1, 100, I.size **2).reshape(I.size, I.size)
-    s1[I, I.T, [0, 1]] = data
+    with pytest.raises(ValueError):
+        s1[I, I.T, [0, 1]] = data
 
 
 def test_finalize1(setup):
@@ -681,7 +681,7 @@ def test_delete_col3(setup):
     assert s1.spsame(s2)
 
 
-def test_delete_col4(setup):
+def test_delete_col4():
     s1 = SparseCSR((10, 100), dtype=np.int32)
     s2 = SparseCSR((10, 98), dtype=np.int32)
     nc = s1.shape[1]
@@ -1190,8 +1190,8 @@ def test_sum1(setup):
     assert np.allclose(S.sum(1), v)
 
 
-@pytest.mark.xfail(raises=NotImplementedError)
-def test_sum2(setup):
+@pytest.mark.xfail(reason="Not implemented for summing on columns TODO")
+def test_sum2():
     S1 = SparseCSR((10, 10, 2), dtype=np.int32)
     S1[0, 0] = [1, 2]
     S1[2, 0] = [1, 2]
@@ -1199,7 +1199,7 @@ def test_sum2(setup):
     S1.sum(1)
 
 
-def test_unfinalized_math(setup):
+def test_unfinalized_math():
     S1 = SparseCSR((4, 4, 1))
     S2 = SparseCSR((4, 4, 1))
     S1[0, 0] = 2.
@@ -1232,7 +1232,7 @@ def test_unfinalized_math(setup):
             assert S2.finalized
 
 
-def test_pickle(setup):
+def test_pickle():
     import pickle as p
     S = SparseCSR((10, 10, 2), dtype=np.int32)
     S[0, 0] = [1, 2]
@@ -1243,18 +1243,18 @@ def test_pickle(setup):
     assert s.spsame(S)
 
 
-@pytest.mark.xfail(raises=IndexError)
 @pytest.mark.parametrize("i", [-1, 10])
 def test_sparse_row_out_of_bounds(i):
     S = SparseCSR((10, 10, 1), dtype=np.int32)
-    S[i, 0] = 1
+    with pytest.raises(IndexError):
+        S[i, 0] = 1
 
 
-@pytest.mark.xfail(raises=IndexError)
 @pytest.mark.parametrize("j", [-1, 10])
 def test_sparse_column_out_of_bounds(j):
     S = SparseCSR((10, 10, 1), dtype=np.int32)
-    S[0, j] = 1
+    with pytest.raises(IndexError):
+        S[0, j] = 1
 
 
 def test_fromsp_csr():

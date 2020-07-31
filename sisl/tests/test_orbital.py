@@ -47,13 +47,15 @@ class Test_orbital:
         assert orb == orb.copy()
         assert orb != 1.
 
-    @pytest.mark.xfail(raises=NotImplementedError)
     def test_radial1(self):
-        Orbital(1.).radial(np.arange(10))
+        # Orbital does not have radial part
+        with pytest.raises(NotImplementedError):
+            Orbital(1.).radial(np.arange(10))
 
-    @pytest.mark.xfail(raises=NotImplementedError)
     def test_psi1(self):
-        Orbital(1.).psi(np.arange(10))
+        # Orbital does not have radial part
+        with pytest.raises(NotImplementedError):
+            Orbital(1.).psi(np.arange(10))
 
     def test_scale1(self):
         o = Orbital(1.)
@@ -100,11 +102,11 @@ class Test_sphericalorbital:
         orb = SphericalOrbital(1, rf, tag='none')
         str(orb)
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_set_radial1(self):
         rf = r_f(6)
         o = SphericalOrbital(1, rf)
-        o.set_radial(1.)
+        with pytest.raises(ValueError):
+            o.set_radial(1.)
 
     def test_set_radial_none(self):
         rf = r_f(6)
@@ -228,11 +230,11 @@ class Test_sphericalorbital:
         assert ao[1].m == -1
         assert ao[2].m == 1
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_toatomicorbital2(self):
         rf = r_f(6)
         orb = SphericalOrbital(1, rf)
-        ao = orb.toAtomicOrbital(2)
+        with pytest.raises(ValueError):
+            ao = orb.toAtomicOrbital(2)
 
     def test_toatomicorbital_q0(self):
         rf = r_f(6)
@@ -266,10 +268,10 @@ class Test_sphericalorbital:
         o.toGrid()
         o.toGrid(R=10)
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_togrid2(self):
         o = SphericalOrbital(1, r_f(6))
-        o.toGrid(R=-1)
+        with pytest.raises(ValueError):
+            o.toGrid(R=-1)
 
 
 @pytest.mark.orbital
@@ -316,9 +318,9 @@ class Test_atomicorbital:
         assert o1 == o4
         assert o1 == o5
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_init5(self):
-        AtomicOrbital(5, 5, 0)
+        with pytest.raises(ValueError):
+            AtomicOrbital(5, 5, 0)
 
     def test_radial1(self):
         rf = r_f(6)

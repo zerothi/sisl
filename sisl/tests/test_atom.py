@@ -115,9 +115,9 @@ def test_fail_equal():
     assert Atom(1.2) != 2.
 
 
-@pytest.mark.xfail(raises=ValueError)
 def test_radius1(setup):
-    setup.PT.radius(1, method='unknown')
+    with pytest.raises(ValueError):
+        setup.PT.radius(1, method='unknown')
 
 
 def test_tag1():
@@ -220,16 +220,16 @@ def test_multiple_orbitals():
     assert a2[2] == o[0]
 
 
-@pytest.mark.xfail(raises=ValueError)
 def test_multiple_orbitals_fail_io():
     o = [Orbital(1., 1.), Orbital(2., .5), Orbital(3., .75)]
-    Atom(5, o).sub([3])
+    with pytest.raises(ValueError):
+        Atom(5, o).sub([3])
 
 
-@pytest.mark.xfail(raises=ValueError)
 def test_multiple_orbitals_fail_len():
     o = [Orbital(1., 1.), Orbital(2., .5), Orbital(3., .75)]
-    Atom(5, o).sub([0, 0, 0, 0, 0])
+    with pytest.raises(ValueError):
+        Atom(5, o).sub([0, 0, 0, 0, 0])
 
 
 def test_pickle(setup):

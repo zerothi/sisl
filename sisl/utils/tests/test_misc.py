@@ -36,13 +36,13 @@ class TestMisc:
         assert direction(' 1  ') == 1
         assert direction('   2   ') == 2
 
-    @pytest.mark.xfail(raises=ValueError)
-    def test_direction_str(self):
-        direction(4)
+    def test_direction_int_raises(self):
+        with pytest.raises(ValueError):
+            direction(4)
 
-    @pytest.mark.xfail(raises=ValueError)
-    def test_direction_str(self):
-        direction('aosetuh')
+    def test_direction_str_raises(self):
+        with pytest.raises(ValueError):
+            direction('aosetuh')
 
     def test_angle_r2r(self):
         assert pytest.approx(angle('2pi')) == 2*m.pi

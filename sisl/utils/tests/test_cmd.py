@@ -30,14 +30,9 @@ def test_collect_arguments2():
     assert len(argv) == 0
 
 
-@pytest.mark.xfail(raises=ValueError)
 def test_collect_arguments3():
-    collect_arguments(['this.file.never.exists'], input=True)
-
-
-@pytest.mark.xfail(raises=ValueError)
-def test_collect_arguments4():
-    collect_arguments(['--out', 'this.fdf'])
+    with pytest.raises(ValueError):
+        collect_arguments(['this.file.never.exists'], input=True)
 
 
 def test_decorators1():

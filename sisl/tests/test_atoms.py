@@ -38,14 +38,14 @@ def test_create2():
         assert atom.maxR(True)[ia] == 1.45
 
 
-@pytest.mark.xfail(raises=ValueError)
 def test_create3():
-    Atoms([{0: Atom(4)}])
+    with pytest.raises(ValueError):
+        Atoms([{0: Atom(4)}])
 
 
-@pytest.mark.xfail(raises=ValueError)
 def test_create4():
-    Atoms({0: Atom(4)})
+    with pytest.raises(ValueError):
+        Atoms({0: Atom(4)})
 
 
 def test_len(setup):
@@ -293,7 +293,7 @@ def test_charge_diff():
     assert np.allclose(a.q0, [3, 5])
 
 
-@pytest.mark.xfail(raises=KeyError)
 def test_index1():
     atom = Atoms(['C', 'Au'])
-    atom.index(Atom('B'))
+    with pytest.raises(KeyError):
+        atom.index(Atom('B'))

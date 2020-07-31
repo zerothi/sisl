@@ -322,7 +322,6 @@ class TestDensityMatrix:
         grid = Grid(0.2, geometry=setup.D.geometry.copy(), sc=sc)
         D.density(grid)
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_rho_fail_p(self, setup):
         bond = 1.42
         sq3h = 3.**.5 * 0.5
@@ -342,9 +341,9 @@ class TestDensityMatrix:
         D = DensityMatrix(g, spin=Spin('P'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5), (0.1, 0.1)]])
         grid = Grid(0.2, geometry=D.geometry)
-        D.density(grid, [1., -1, 0.])
+        with pytest.raises(ValueError):
+            D.density(grid, [1., -1, 0.])
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_rho_fail_nc(self, setup):
         bond = 1.42
         sq3h = 3.**.5 * 0.5
@@ -364,7 +363,8 @@ class TestDensityMatrix:
         D = DensityMatrix(g, spin=Spin('NC'))
         D.construct([[0.1, bond + 0.01], [(1., 0.5, 0.01, 0.01), (0.1, 0.1, 0.1, 0.1)]])
         grid = Grid(0.2, geometry=D.geometry)
-        D.density(grid, [1., 0.])
+        with pytest.raises(ValueError):
+            D.density(grid, [1., 0.])
 
     def test_pickle(self, setup):
         import pickle as p

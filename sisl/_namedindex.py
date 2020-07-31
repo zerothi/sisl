@@ -67,7 +67,7 @@ class NamedIndex:
            the indices that has a name associated
         """
         if name in self._name:
-            raise SislError(self.__class__.__name__ + f'.add_name already contains name {name}, please delete group name before adding.')
+            raise SislError(f"{self.__class__.__name__}.add_name already contains name {name}, please delete group name before adding.")
         self._name.append(name)
         if isinstance(index, ndarray) and index.dtype == bool_:
             index = np.flatnonzero(index)

@@ -167,7 +167,7 @@ def collect_arguments(argv, input=False,
             setattr(namespace, '_input_file', input_file)
         except Exception as e:
             print(e)
-            raise ValueError("File: '"+input_file+"' cannot be found. Please supply a readable file!")
+            raise ValueError(f"File: '{input_file}' cannot be found. Please supply a readable file!")
 
     if args.out is not None:
         try:

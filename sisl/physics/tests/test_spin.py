@@ -72,9 +72,9 @@ def test_spin2():
     assert s4.is_spinorbit
 
 
-@pytest.mark.xfail(raises=ValueError)
 def test_spin3():
-    s = Spin('satoehus')
+    with pytest.raises(ValueError):
+        s = Spin('satoehus')
 
 
 def test_spin4():

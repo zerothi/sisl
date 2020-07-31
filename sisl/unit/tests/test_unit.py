@@ -45,21 +45,21 @@ def test_default():
     assert unit_default('force') == 'eV/Ang'
 
 
-@pytest.mark.xfail(raises=ValueError)
 def test_group_f1():
-    unit_group('not-existing')
+    with pytest.raises(ValueError):
+        unit_group('not-existing')
 
 
-@pytest.mark.xfail(raises=ValueError)
 def test_default_f1():
-    unit_default('not-existing')
+    with pytest.raises(ValueError):
+        unit_default('not-existing')
 
 
-@pytest.mark.xfail(raises=ValueError)
 def test_unit_convert_f1():
-    unit_convert('eV', 'megaerg')
+    with pytest.raises(ValueError):
+        unit_convert('eV', 'megaerg')
 
 
-@pytest.mark.xfail(raises=ValueError)
 def test_unit_convert_f2():
-    unit_convert('eV', 'kg')
+    with pytest.raises(ValueError):
+        unit_convert('eV', 'kg')

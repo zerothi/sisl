@@ -16,9 +16,9 @@ def test_array_fill_repeat1():
     assert array_fill_repeat(1, 20).shape[0] == 20
 
 
-@pytest.mark.xfail(raises=ValueError)
 def test_array_fill_repeat2():
-    array_fill_repeat([1, 2, 3], 20)
+    with pytest.raises(ValueError):
+        array_fill_repeat([1, 2, 3], 20)
 
 
 def test_get_dtype1():

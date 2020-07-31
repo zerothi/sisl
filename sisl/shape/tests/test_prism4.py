@@ -19,13 +19,13 @@ def test_create_cuboid():
     str(cube)
 
 
-@pytest.mark.xfail(raises=ValueError)
 def test_create_fail():
     v0 = [1., 0.2, 1.0]
     v1 = [1., 0.2, 1.0]
     v2 = [1., -0.2, -1.0]
     v3 = [1., -0.2, -1.0]
-    el = Cuboid([v0, v1, v2, v3])
+    with pytest.raises(ValueError):
+        el = Cuboid([v0, v1, v2, v3])
 
 
 def test_tosphere():
@@ -58,10 +58,10 @@ def test_create_cube():
     assert cube.expand([2] * 3).volume() == pytest.approx(3 ** 3)
 
 
-@pytest.mark.xfail(raises=ValueError)
 def test_expand_fail():
     cube = Cube(1.0)
-    cube.expand([2, 1])
+    with pytest.raises(ValueError):
+        cube.expand([2, 1])
 
 
 def test_vol1():
@@ -88,7 +88,7 @@ def test_origo():
 
 def test_within1():
     cube = Cuboid([1.0]*3)
-    assert not cube.within([-1.]*3)
+    assert not cube.within([-1.]*3).any()
     assert not cube.within([[-1.]*3, [-1., 0.5, 0.2]]).any()
     assert cube.within([[-1.]*3,
                         [-1., 0.5, 0.2],
@@ -97,8 +97,8 @@ def test_within1():
 
 def test_within_index1():
     cube = Cuboid([1.0]*3)
-    assert not cube.within_index([-1.]*3) == [0]
-    assert not cube.within_index([[-1.]*3, [-1., 0.5, 0.2]]) == [0, 1]
+    assert cube.within_index([-1.]*3).size == 0
+    assert cube.within_index([[-1.]*3, [-1., 0.5, 0.2]]).size == 0
     assert (cube.within_index([[-1.]*3,
                           [-1., 0.5, 0.2],
                           [.1, 0.5, 0.2]]) == [0, 1, 2]).any()

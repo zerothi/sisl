@@ -174,7 +174,8 @@ def direction(d):
     1
     """
     if isinstance(d, Integral):
-        return d
+        # pass through to find it
+        d = str(d)
 
     # We take it as a string
     d = d.lower().strip()

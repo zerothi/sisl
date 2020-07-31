@@ -61,13 +61,13 @@ class TestSuperCell:
         sc_off = setup.sc.sc_off[arng, :]
         assert np.all(setup.sc.sc_index(sc_off) == arng)
 
-    @pytest.mark.xfail(raises=ValueError)
-    def test_nsc4(self, setup):
-        setup.sc.set_nsc(a=2)
+    def test_nsc_fail_even(self, setup):
+        with pytest.raises(ValueError):
+            setup.sc.set_nsc(a=2)
 
-    @pytest.mark.xfail(raises=ValueError)
-    def test_nsc5(self, setup):
-        setup.sc.set_nsc([1, 2, 3])
+    def test_nsc_fail_even_and_odd(self, setup):
+        with pytest.raises(ValueError):
+            setup.sc.set_nsc([1, 2, 3])
 
     def test_area1(self, setup):
         setup.sc.area(0, 1)
@@ -158,9 +158,9 @@ class TestSuperCell:
         s = str(sc_index)
         assert len(sc_index) == 2
 
-    @pytest.mark.xfail(raises=Exception)
     def test_sc_index3(self, setup):
-        setup.sc.sc_index([100, 100, 100])
+        with pytest.raises(Exception):
+            setup.sc.sc_index([100, 100, 100])
 
     def test_cut1(self, setup):
         cut = setup.sc.cut(2, 0)
@@ -207,17 +207,17 @@ class TestSuperCell:
             t2 = tmp2.add_vacuum(10, i)
             assert tmp1.cell[i, i] + 10 == t2.cell[i, i]
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_creation3(self, setup):
-        setup.sc.tocell([3, 6])
+        with pytest.raises(ValueError):
+            setup.sc.tocell([3, 6])
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_creation4(self, setup):
-        setup.sc.tocell([3, 4, 5, 6])
+        with pytest.raises(ValueError):
+            setup.sc.tocell([3, 4, 5, 6])
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_creation5(self, setup):
-        setup.sc.tocell([3, 4, 5, 6, 7, 6, 7])
+        with pytest.raises(ValueError):
+            setup.sc.tocell([3, 4, 5, 6, 7, 6, 7])
 
     def test_creation_rotate(self, setup):
         # cell parameters
@@ -342,11 +342,10 @@ class TestSuperCell:
         assert np.allclose(sc.length, (sc.cell_length(sc.length) ** 2).sum(1) ** 0.5)
         assert np.allclose(1, (sc.cell_length(1) ** 2).sum(0))
 
-    @pytest.mark.xfail(raises=ValueError)
-    def test_set_nsc1(self, setup):
+    def test_set_sc_off_wrong_size(self, setup):
         sc = setup.sc.copy()
-        sc.sc_off = np.zeros([10000, 3])
-        setup.sc.set_nsc(a=2)
+        with pytest.raises(ValueError):
+            sc.sc_off = np.zeros([10000, 3])
 
 
 def _dot(u, v):

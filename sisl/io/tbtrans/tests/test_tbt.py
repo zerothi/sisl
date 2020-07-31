@@ -356,17 +356,17 @@ def test_1_graphene_all_tbtav(sisl_files, sisl_tmp):
     tbt.write_tbtav(f)
 
 
-@pytest.mark.xfail(raises=ValueError)
 def test_1_graphene_all_fail_kavg(sisl_files, sisl_tmp):
     tbt = sisl.get_sile(sisl_files(_dir, '1_graphene_all.TBT.nc'))
-    tbt.transmission(kavg=[0, 1])
+    with pytest.raises(ValueError):
+        tbt.transmission(kavg=[0, 1])
 
 
-@pytest.mark.xfail(raises=ValueError)
 @pytest.mark.filterwarnings("ignore:.*requesting energy")
 def test_1_graphene_all_fail_kavg_E(sisl_files, sisl_tmp):
     tbt = sisl.get_sile(sisl_files(_dir, '1_graphene_all.TBT.nc'))
-    tbt.orbital_COOP(kavg=[0, 1], E=0.1)
+    with pytest.raises(ValueError):
+        tbt.orbital_COOP(kavg=[0, 1], E=0.1)
 
 
 def test_1_graphene_all_ArgumentParser(sisl_files, sisl_tmp):

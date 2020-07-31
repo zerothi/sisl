@@ -86,9 +86,9 @@ def test_orbital_harmonics():
     plt.close('all')
 
 
-@pytest.mark.xfail(raises=NotImplementedError)
 def test_not_implemented():
     class Test:
         pass
     t = Test()
-    sisl.plot(t)
+    with pytest.raises(NotImplementedError):
+        sisl.plot(t)

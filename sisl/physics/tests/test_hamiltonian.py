@@ -221,11 +221,11 @@ class TestHamiltonian:
         assert np.allclose(csr, arr)
         assert np.allclose(csr, coo)
 
-    @pytest.mark.xfail(raises=ValueError)
-    def test_construct_raise(self, setup):
+    def test_construct_raise_default(self, setup):
         # Test that construct fails with more than one
         # orbital
-        setup.H2.construct([(0.1, 1.5), (1., 0.1)])
+        with pytest.raises(ValueError):
+            setup.H2.construct([(0.1, 1.5), (1., 0.1)])
 
     def test_getitem1(self, setup):
         H = setup.H
@@ -261,12 +261,12 @@ class TestHamiltonian:
         assert H.spsame(setup.H)
         setup.H.empty()
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_fromsp2(self, setup):
         H = setup.H.copy()
         H.construct([(0.1, 1.5), (1., 0.1)])
         csr = H.tocsr(0)
-        Hamiltonian.fromsp(setup.H.geometry.tile(2, 0), csr)
+        with pytest.raises(ValueError):
+            Hamiltonian.fromsp(setup.H.geometry.tile(2, 0), csr)
 
     def test_fromsp3(self, setup):
         H = setup.HS.copy()
@@ -600,12 +600,12 @@ class TestHamiltonian:
         berry_phase(bz, sub=0)
         berry_phase(bz, eigvals=True, sub=0)
 
-    @pytest.mark.xfail(raises=SislError)
     def test_berry_phase_fail_sc(self, setup):
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
         H = Hamiltonian(g)
         bz = BandStructure.param_circle(H.geometry.sc, 20, 0.01, [0, 0, 1], [1/3] * 3)
-        berry_phase(bz)
+        with pytest.raises(SislError):
+            berry_phase(bz)
 
     def test_berry_phase_loop(self, setup):
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
@@ -629,7 +629,6 @@ class TestHamiltonian:
         # Just to do the other branch
         berry_phase(bz, method='zak')
 
-    @pytest.mark.xfail(raises=SislError)
     def test_berry_phase_method_fail(self):
         # wrong method keyword
         g = Geometry([[-.6, 0, 0], [0.6, 0, 0]], Atom(1, 1.001), sc=[2, 10, 10])
@@ -641,7 +640,8 @@ class TestHamiltonian:
         K = np.zeros([k.size, 3])
         K[:, 0] = k
         bz = BrillouinZone(H, K)
-        berry_phase(bz, method='unknown')
+        with pytest.raises(ValueError):
+            berry_phase(bz, method='unknown')
 
     def test_berry_curvature(self, setup):
         R, param = [0.1, 1.5], [1., 0.1]
@@ -1428,12 +1428,12 @@ class TestHamiltonian:
         H.construct([R, param])
         assert len(H.edges(0)) == 4
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_edges2(self, setup):
         R, param = [0.1, 1.5], [1., 0.1]
         H = Hamiltonian(setup.g)
         H.construct([R, param])
-        H.edges()
+        with pytest.raises(ValueError):
+            H.edges()
 
     def test_edges3(self, setup):
         def func(self, ia, atoms, atoms_xyz=None):

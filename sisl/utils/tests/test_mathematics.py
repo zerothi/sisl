@@ -31,7 +31,8 @@ def test_curl_4d():
     assert np.allclose(C1, C2)
 
     b = np.swapaxes(a, 1, 2)
-    C3 = np.swapaxes(curl(b), 1, 2)
+    C3 = curl(b)
+    # no need to swap, we are removing the 2nd last axis
     assert np.allclose(C1, C3)
 
 
@@ -47,13 +48,15 @@ def test_curl_6d():
     assert C2.shape == (4, 3, 4, 10, 3)
 
 
-@pytest.mark.xfail(raises=ValueError)
-def test_curl_4d():
+def test_curl_4d_same():
+    # same axis specification
     a = np.random.rand(4, 3, 4, 3)
-    curl(a, axis=1, axisv=1)
+    with pytest.raises(ValueError):
+        curl(a, axis=1, axisv=1)
 
 
-@pytest.mark.xfail(raises=ValueError)
-def test_curl_4d():
+def test_curl_4d_not_3():
+    # axis lengths must equal 3 (nothing else is supported currently)
     a = np.random.rand(4, 3, 4, 3)
-    curl(a, axis=1, axisv=2)
+    with pytest.raises(ValueError):
+        curl(a, axis=1, axisv=2)

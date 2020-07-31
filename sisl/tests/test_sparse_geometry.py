@@ -23,11 +23,11 @@ def setup():
 @pytest.mark.sparse_geometry
 class TestSparseAtom:
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_fail_align1(self, setup):
         s = SparseAtom(setup.g * 2)
         str(s)
-        setup.s1.spalign(s)
+        with pytest.raises(ValueError):
+            setup.s1.spalign(s)
 
     def test_align1(self, setup):
         s = SparseAtom(setup.g)
@@ -131,11 +131,11 @@ class TestSparseAtom:
             i += 1
         assert i == s1.nnz
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_rij_fail1(self, setup):
         s = SparseOrbital(setup.g.copy())
         s.construct([[0.1, 1.5], [1, 2]])
-        s.rij(what='none')
+        with pytest.raises(ValueError):
+            s.rij(what='none')
 
     def test_rij_atom(self, setup):
         s = SparseAtom(setup.g.copy())
@@ -414,7 +414,6 @@ class TestSparseAtom:
         assert np.allclose(s1[1, [1, 2, 4], 0], np.zeros([3], np.int32))
         assert np.allclose(s1[1, [1, 2, 4], 1], np.ones([3], np.int32)*2)
 
-    @pytest.mark.xfail(raises=ValueError)
     def test_fromsp4(self, setup):
         g = setup.g.repeat(2, 0).tile(2, 1)
         lil1 = sc.sparse.lil_matrix((g.na, g.na_s), dtype=np.int32)
@@ -423,7 +422,8 @@ class TestSparseAtom:
         lil2[1, [2, 4, 1]] = 2
 
         # Ensure that one does not mix everything.
-        SparseAtom.fromsp(setup.g.copy(), [lil1, lil2])
+        with pytest.raises(ValueError):
+            SparseAtom.fromsp(setup.g.copy(), [lil1, lil2])
 
     def test_pickle(self, setup):
         import pickle as p

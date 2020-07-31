@@ -47,14 +47,14 @@ def test_info_category():
         sm.info('Information', sm.SislInfo)
 
 
-@pytest.mark.xfail(raises=sm.SislError)
 def test_error():
-    raise sm.SislError('This is an error')
+    with pytest.raises(sm.SislError):
+        raise sm.SislError('This is an error')
 
 
-@pytest.mark.xfail(raises=sm.SislException)
 def test_exception():
-    raise sm.SislException('This is an error')
+    with pytest.raises(sm.SislException):
+        raise sm.SislException('This is an error')
 
 
 def test_tqdm_eta_true():

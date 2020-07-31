@@ -67,7 +67,6 @@ def test_imaginary(sisl_tmp):
     assert np.allclose(grid.grid, read.grid)
 
 
-@pytest.mark.xfail(raises=SislError)
 def test_imaginary_fail_shape(sisl_tmp):
     fr = sisl_tmp('GRID_real.cube', _dir)
     fi = sisl_tmp('GRID_imag.cube', _dir)
@@ -79,10 +78,10 @@ def test_imaginary_fail_shape(sisl_tmp):
     # Assert it fails on shape
     grid2 = Grid(0.3, geometry=geom, dtype=np.complex128)
     grid2.write(fi, imag=True)
-    grid.read(fr, imag=fi)
+    with pytest.raises(SislError):
+        grid.read(fr, imag=fi)
 
 
-@pytest.mark.xfail(raises=SislError)
 def test_imaginary_fail_geometry(sisl_tmp):
     fr = sisl_tmp('GRID_real.cube', _dir)
     fi = sisl_tmp('GRID_imag.cube', _dir)
@@ -94,4 +93,5 @@ def test_imaginary_fail_geometry(sisl_tmp):
     # Assert it fails on geometry
     grid2 = Grid(0.3, dtype=np.complex128)
     grid2.write(fi, imag=True)
-    grid.read(fr, imag=fi)
+    with pytest.raises(SislError):
+        grid.read(fr, imag=fi)

@@ -745,7 +745,7 @@ class Geometry(SuperCellChild):
         if R is None:
             R = self.maxR()
         if R < 0:
-            raise ValueError(self.__class__.__name__ + ".iR unable to determine a number of atoms within a sphere with negative radius, is maxR() defined?")
+            raise ValueError(f"{self.__class__.__name__}.iR unable to determine a number of atoms within a sphere with negative radius, is maxR() defined?")
 
         # Number of atoms within 20 * R
         naiR = max(1, len(self.close(ia, R=R * iR)))

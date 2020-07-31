@@ -189,6 +189,6 @@ def test_gf_write_read_direct(sisl_tmp, sisl_system):
         assert np.allclose(SE1, SE2)
 
 
-@pytest.mark.xfail(raises=sisl.SileError)
 def test_gf_sile_error():
-    sisl.get_sile('non_existing_file.TSGF').read_header()
+    with pytest.raises(sisl.SileError):
+        sisl.get_sile('non_existing_file.TSGF').read_header()
