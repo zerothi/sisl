@@ -1024,7 +1024,7 @@ class SparseCSR(NDArrayOperatorsMixin):
             n = len(get_idx)
 
         # Indices of existing values in return array
-        ret_idx = (get_idx >= 0).nonzero()[0]
+        ret_idx = atleast_1d(get_idx >= 0).nonzero()[0]
         # Indices of existing values in get array
         get_idx = get_idx.ravel()[ret_idx]
 
