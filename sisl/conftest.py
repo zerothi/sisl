@@ -49,7 +49,7 @@ def sisl_tmp(request, tmp_path_factory):
 
         def dir(self, name='sisl'):
             # Make name a path
-            D = Path(name.replace('/', '-'))
+            D = Path(name.replace(os.path.sep, '-'))
             if not (self.base / D).is_dir():
                 # tmp_path_factory.mktemp returns pathlib.Path
                 self.dirs.append(tmp_path_factory.mktemp(str(D), numbered=False))
@@ -58,7 +58,7 @@ def sisl_tmp(request, tmp_path_factory):
 
         def file(self, name, dir_name='sisl'):
             # self.base *is* a pathlib
-            D = self.base / dir_name.replace('/', '-')
+            D = self.base / dir_name.replace(os.path.sep, '-')
             if D in self.dirs:
                 i = self.dirs.index(D)
             else:
