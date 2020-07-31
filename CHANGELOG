@@ -1,6 +1,11 @@
 0.X.Y
 =====
 
+- Added calculation of isosurfaces, #246
+
+- Added `sisl.WideBandSE` for self-energies with constant
+	diagonals
+
 - Enabled more user control over categories, #242
 
 - Improved interpolation function for Grid's, and also
