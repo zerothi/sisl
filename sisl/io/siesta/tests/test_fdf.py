@@ -9,7 +9,9 @@ from sisl.unit.siesta import unit_convert
 import numpy as np
 
 
-pytestmark = [pytest.mark.io, pytest.mark.siesta, pytest.mark.fdf]
+pytestmark = [pytest.mark.io, pytest.mark.siesta, pytest.mark.fdf,
+              pytest.mark.filterwarnings("ignore:number of supercells")
+]
 _dir = osp.join('sisl', 'io', 'siesta')
 
 
@@ -176,10 +178,12 @@ def test_re_read(sisl_tmp):
         fh.write('Flag1 date\n')
         fh.write('Flag1 not-date\n')
         fh.write('Flag1 not-date-2\n')
+        fh.write('Flag3 true\n')
 
     fdf = fdfSileSiesta(f)
     for i in range(10):
         assert fdf.get('Flag1') == 'date'
+    assert fdf.get('Flag3')
 
 
 def test_get_set(sisl_tmp):
@@ -196,6 +200,18 @@ def test_get_set(sisl_tmp):
     fdf.set('Flag1', 'date-date')
     assert fdf.get('Flag1') == 'date-date'
     fdf.set('Flag1', 'date-date', keep=False)
+
+
+def test_get_block(sisl_tmp):
+    f = sisl_tmp('file.fdf', _dir)
+    with open(f, 'w') as fh:
+        fh.write('%block MyBlock\n  date\n%endblock\n')
+
+    fdf = fdfSileSiesta(f)
+
+    assert isinstance(fdf.get('MyBlock'), list)
+    assert fdf.get('MyBlock')[0] == 'date'
+    assert 'block' in fdf.print("MyBlock", fdf.get("MyBlock"))
 
 
 def test_include(sisl_tmp):
@@ -272,7 +288,9 @@ def test_xv_preference(sisl_tmp):
     g.xyz[0, 0] += 1.
     g.write(sisl_tmp('siesta.XV', _dir))
 
+    sc = fdfSileSiesta(sisl_tmp('file.fdf', _dir)).read_supercell(True)
     g2 = fdfSileSiesta(sisl_tmp('file.fdf', _dir)).read_geometry(True)
+    assert np.allclose(sc.cell, g.cell)
     assert np.allclose(g.cell, g2.cell)
     assert np.allclose(g.xyz, g2.xyz)
 
@@ -367,3 +385,14 @@ def test_dry_read(sisl_tmp):
         # in the fdf. The read functions will still go dry-running through eg. nc-files.
         kwarg = kwargs.get(methodname[5:], dict())
         getattr(fdf, methodname)(**kwarg)
+
+
+def test_fdf_argumentparser(sisl_tmp):
+    f = sisl_tmp('file.fdf', _dir)
+    with open(f, 'w') as fh:
+        fh.write('Flag1 date\n')
+        fh.write('Flag1 not-date\n')
+        fh.write('Flag1 not-date-2\n')
+        fh.write('Flag3 true\n')
+
+    fdfSileSiesta(f).ArgumentParser()

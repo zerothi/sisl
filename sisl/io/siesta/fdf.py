@@ -556,7 +556,7 @@ class fdfSileSiesta(SileSiesta):
             if n in geometry.names:
                 idx = list2str(geometry.names[n] + 1).replace('-', ' -- ')
                 if len(idx) > 200:
-                    info(str(self) + f'.write_geometry will not write the constraints for {n} (too long line).')
+                    info(f"{str(self)}.write_geometry will not write the constraints for {n} (too long line).")
                 else:
                     _write_block = write_block(idx, append, _write_block)
 
@@ -964,8 +964,8 @@ class fdfSileSiesta(SileSiesta):
             supercell = [1] * 3
         elif supercell is True:
             _, supercell = geom.as_primary(FC.shape[0], ret_super=True)
-            info(str(self) + ".read_dynamical_matrix(FC) guessed on a [{}, {}, {}] "
-                 "supercell calculation.".format(*supercell))
+            info("{}.read_dynamical_matrix(FC) guessed on a [{}, {}, {}] "
+                 "supercell calculation.".format(str(self), *supercell))
         # Convert to integer array
         supercell = _a.asarrayi(supercell)
 
@@ -1271,7 +1271,7 @@ class fdfSileSiesta(SileSiesta):
             s = Bohr2Ang
         elif 'scaledcartesian' in lc:
             # the same scaling as the lattice-vectors
-            s = self.get('LatticeConstant', 'Ang')
+            s = self.get('LatticeConstant', unit='Ang')
         elif 'fractional' in lc or 'scaledbylatticevectors' in lc:
             # no scaling of coordinates as that is entirely
             # done by the latticevectors
@@ -1810,7 +1810,7 @@ class fdfSileSiesta(SileSiesta):
             H = hsxSileSiesta(f).read_hamiltonian(*args, **kwargs)
             Ef = self.read_fermi_level()
             if Ef is None:
-                info(str(self) + '.read_hamiltonian from HSX file failed shifting to the Fermi-level.')
+                info(f"{str(self)}.read_hamiltonian from HSX file failed shifting to the Fermi-level.")
             else:
                 H.shift(-Ef)
         return H

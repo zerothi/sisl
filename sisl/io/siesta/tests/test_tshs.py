@@ -56,7 +56,9 @@ def test_tshs_soc_pt2_xx(sisl_files, sisl_tmp):
 
 def test_tshs_soc_pt2_xx_pdos(sisl_files):
     fdf = sisl.get_sile(sisl_files(_dir, 'SOC_Pt2_xx.fdf'), base=sisl_files(_dir))
+    sc = fdf.read_supercell(order='TSHS')
     HS = fdf.read_hamiltonian()
+    assert np.allclose(sc.cell, HS.geometry.sc.cell)
     HS.eigenstate().PDOS(np.linspace(-2, 2, 400))
 
 
@@ -141,6 +143,7 @@ def test_tshs_spin_orbit_tshs2nc2tshs(sisl_tmp):
     H2 = sisl.get_sile(f1).read_hamiltonian()
     H2.write(f2)
     H3 = sisl.get_sile(f2).read_hamiltonian()
+    sisl.get_sile(f2).read_supercell(order='nc')
     assert H1._csr.spsame(H2._csr)
     assert np.allclose(H1._csr._D, H2._csr._D)
     assert H1._csr.spsame(H3._csr)
