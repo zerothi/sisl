@@ -1,6 +1,6 @@
 ---
-name: Workshop example request (2020 workshop)
-about: Pre-post requests related to the 2020 TS+TBT+sisl workshop
+name: Workshop example request (2021 workshop)
+about: Pre-post requests related to the 2021 TS+TBT+sisl workshop
 
 ---
 
