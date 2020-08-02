@@ -169,6 +169,7 @@ class BaseGeometryPlot(Plot):
             atom = geom._sanitize_atoms(atom)
 
         return [bond for bond in bonds if np.any([at in atom for at in bond])]
+    
     #---------------------------------------------------
     #                  1D plotting
     #---------------------------------------------------

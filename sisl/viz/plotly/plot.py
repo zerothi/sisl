@@ -1820,7 +1820,7 @@ def entry_point(name):
     return partial(EntryPoint, name, ())
 
 #------------------------------------------------
-#               ANIMATION CLASS
+#       CLASSES TO SUPPORT COMPOSITE PLOTS
 #------------------------------------------------
 
 
