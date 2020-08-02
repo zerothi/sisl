@@ -4424,6 +4424,28 @@ class Geometry(SuperCellChild):
         # We have now created all arguments
         return p, namespace
 
+    def __blender__(self, scene):
+
+        import os
+
+        #Enable the atomic blender add-on, just in case it wasn't enabled
+        scene.atomic_blender()
+
+        #Create a temporal file so that we can import the structure in blender
+        temp_filename = False
+        i = -1
+        while not temp_filename or os.path.exists(temp_filename):
+            i += 1
+            temp_filename = f"__TEMPGEOM{i}__.xyz"
+
+        self.write(temp_filename)
+
+        #Import the geometry
+        scene.ops.import_mesh.xyz(
+            filepath=temp_filename, use_camera=False, use_lamp=False)
+
+        os.remove(temp_filename)
+
 
 @set_module("sisl")
 def sgeom(geometry=None, argv=None, ret_geometry=False):

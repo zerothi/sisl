@@ -1562,6 +1562,25 @@ class Grid(SuperCellChild):
         # We have now created all arguments
         return p, namespace
 
+    def __blender__(self, scene, level=0.4, isosurface_kwargs={}):
+
+        mesh = scene.data.meshes.new("myBeautifulMesh")  # add the new mesh
+
+        obj = scene.data.objects.new(mesh.name, mesh)
+
+        col = scene.data.collections.get("Grids")
+
+        if col is None:
+            col = scene.data.collections.new("Grids")
+            scene.context.scene.collection.children.link(col)
+
+        col.objects.link(obj)
+        scene.context.view_layer.objects.active = obj
+
+        verts, faces, *_ = self.isosurface(level, **isosurface_kwargs)
+        edges = []
+        mesh.from_pydata(verts, edges, faces.tolist())
+
 
 @set_module("sisl")
 def sgrid(grid=None, argv=None, ret_grid=False):
