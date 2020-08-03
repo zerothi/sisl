@@ -2,7 +2,7 @@ __pycache__
 .eggs
 .pytest_cache
 dist
-build
+./build
 *.pyc
 *.so
 *.c
