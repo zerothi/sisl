@@ -11,6 +11,7 @@ graft sisl
 
 include sisl/info.py
 
+recursive-include sisl/viz/plotly/gui/build
 recursive-include toolbox *.py *.md README
 
 exclude DEPLOY.md

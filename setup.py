@@ -42,7 +42,7 @@ viz = {
     "plotly": [
         'tqdm', # for niceness
         'dill', # for pathos
-        'pathos', # for multiprocessing
+        'pathos', # for multiprocessing,
         'plotly',
         'pandas',
         "xarray >= " + min_version["xarray"],
@@ -52,7 +52,8 @@ viz = {
         'flask-socketio',
         'flask-cors',
         'flask-login',
-        'flask-session'
+        'flask-session',
+        'eventlet' # To improve socket performance for flask-socketio
     ],
     "blender": [
     ], # for when blender enters
@@ -471,6 +472,9 @@ metadata = dict(
     license=LICENSE,
     # Ensure the packages are being found in the correct locations
     package_dir={"sisl_toolbox": "toolbox"},
+    package_data={
+        "sisl.viz.plotly.gui": ["build/*"],
+    },
     packages=
     # We need to add sisl.* since that recursively adds modules
     find_packages(include=["sisl", "sisl.*"])
