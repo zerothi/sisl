@@ -17,120 +17,134 @@ from ..plotutils import load
 from .api_utils import with_user_management, if_user_can, listen_to_users, \
     emit_plot, emit_session, emit_error, emit_loading_plot, emit
 
+__all__ = ["APP", "SESSION", "SOCKETIO", "set_session", "create_app"]
+
 __DEBUG = False
 
-app = Flask("SISL GUI API")
+APP = None
+SESSION = None
+SOCKETIO = None
 
-__all__ = ["SESSION", "set_session"]
+def create_app():
 
-
-class CustomJSONEncoder(JSONEncoder):
-
-    def default(self, obj):
-
-        if isinstance(obj, Figure):
-            return obj.to_plotly_json()
-        elif hasattr(obj, "to_json"):
-            return obj.to_json()
-        elif isinstance(obj, np.ndarray):
-            return obj.tolist()
-        elif isinstance(obj, np.generic):
-            return obj.item()
-        elif isinstance(obj, pathlib.Path):
-            return str(obj)
-
-        return super().default(obj)
-
-# We need to use simplejson because built-in json happily parses nan to NaN
-# and then javascript does not understand it
-simplejson.dumps = partial(simplejson.dumps, ignore_nan=True, cls=CustomJSONEncoder)
-
-# No user management yet
-if False:
-    with_user_management(app)
-
-SOCKETIO = SocketIO(app, cors_allowed_origins="*",
-                    json=simplejson, manage_session=True, async_mode="threading")
-on = SOCKETIO.on
-
-if False:
-    listen_to_users(on, emit_session)
-
-# This will be the global session
-SESSION = BlankSession(socketio=SOCKETIO)
-
-
-@SOCKETIO.on_error()
-def send_error(err):
-    emit_error(err)
-    raise err
-
-
-@on("request_session")
-@if_user_can("see")
-def send_session(path = None):
+    global APP
     global SESSION
+    global SOCKETIO
 
-    if path is not None:
-        SESSION = load(path)
+    APP = Flask("SISL GUI API")
 
-    emit_session(SESSION, broadcast = False)
-
-
-@on("apply_method_on_session")
-@if_user_can("edit")
-def apply_method(method_name, kwargs = {}, *args):
-
-    if __DEBUG:
-        print(f"Applying {method_name}. Args: {args}. Kwargs: {kwargs}")
-
-    if kwargs is None:
-        # This is because the GUI might send None
-        kwargs = {}
-
-    # Remember that if the method is not found an error will be raised
-    # but it will be handled socketio.on_error (used above)
-    method = getattr(SESSION.autosync, method_name)
-
-    # Since the session is bound to the app, this will automatically emit the
-    # session
-    returns = method(*args, **kwargs)
-
-    if kwargs.get("get_returns", None):
-        # Let's send the returned values if the user asked for it
-        event_name = kwargs.get("returns_as", "call_returns")
-        emit(event_name, returns, {"method_name": method_name}, broadcast=False)
+    __all__ = ["SESSION", "set_session"]
 
 
-@on("get_plot")
-@if_user_can("see")
-def retrieve_plot(plotID):
-    if __DEBUG:
-        print(f"Asking for plot: {plotID}")
+    class CustomJSONEncoder(JSONEncoder):
 
-    emit_plot(plotID, SESSION, broadcast=False)
+        def default(self, obj):
+
+            if isinstance(obj, Figure):
+                return obj.to_plotly_json()
+            elif hasattr(obj, "to_json"):
+                return obj.to_json()
+            elif isinstance(obj, np.ndarray):
+                return obj.tolist()
+            elif isinstance(obj, np.generic):
+                return obj.item()
+            elif isinstance(obj, pathlib.Path):
+                return str(obj)
+
+            return super().default(obj)
+
+    # We need to use simplejson because built-in json happily parses nan to NaN
+    # and then javascript does not understand it
+    simplejson.dumps = partial(simplejson.dumps, ignore_nan=True, cls=CustomJSONEncoder)
+
+    # No user management yet
+    if False:
+        with_user_management(APP)
+
+    SOCKETIO = SocketIO(APP, cors_allowed_origins="*",
+                        json=simplejson, manage_session=True, async_mode="threading")
+    on = SOCKETIO.on
+
+    if False:
+        listen_to_users(on, emit_session)
+
+    # This will be the global session
+    SESSION = BlankSession(socketio=SOCKETIO)
 
 
-@on("upload_file")
-@if_user_can("edit")
-def plot_uploaded_file(file_bytes, name):
+    @SOCKETIO.on_error()
+    def send_error(err):
+        emit_error(err)
+        raise err
 
-    dirname = SESSION.setting("file_storage_dir")
-    if not dirname.exists():
-        dirname.mkdir()
 
-    file_name = dirname / name
-    with open(file_name, "wb") as fh:
-        fh.write(file_bytes)
+    @on("request_session")
+    @if_user_can("see")
+    def send_session(path = None):
+        global SESSION
 
-    # file_name = name
-    # file_contents = {name: file_bytes}
+        if path is not None:
+            SESSION = load(path)
 
-    plot = Plot(file_name)#, attrs_for_plot={"_file_contents": file_contents}, _debug=True) #
-    SESSION.autosync.add_plot(plot, SESSION.tabs[0]["id"])
+        emit_session(SESSION, broadcast = False)
 
-    if not SESSION.setting("keep_uploaded"):
-        shutil.rmtree(str(dirname))
+
+    @on("apply_method_on_session")
+    @if_user_can("edit")
+    def apply_method(method_name, kwargs = {}, *args):
+
+        if __DEBUG:
+            print(f"Applying {method_name}. Args: {args}. Kwargs: {kwargs}")
+
+        if kwargs is None:
+            # This is because the GUI might send None
+            kwargs = {}
+
+        # Remember that if the method is not found an error will be raised
+        # but it will be handled socketio.on_error (used above)
+        method = getattr(SESSION.autosync, method_name)
+
+        # Since the session is bound to the APP, this will automatically emit the
+        # session
+        returns = method(*args, **kwargs)
+
+        if kwargs.get("get_returns", None):
+            # Let's send the returned values if the user asked for it
+            event_name = kwargs.get("returns_as", "call_returns")
+            emit(event_name, returns, {"method_name": method_name}, broadcast=False)
+
+
+    @on("get_plot")
+    @if_user_can("see")
+    def retrieve_plot(plotID):
+        if __DEBUG:
+            print(f"Asking for plot: {plotID}")
+
+        emit_plot(plotID, SESSION, broadcast=False)
+
+
+    @on("upload_file")
+    @if_user_can("edit")
+    def plot_uploaded_file(file_bytes, name):
+
+        dirname = SESSION.setting("file_storage_dir")
+        if not dirname.exists():
+            dirname.mkdir()
+
+        file_name = dirname / name
+        with open(file_name, "wb") as fh:
+            fh.write(file_bytes)
+
+        # file_name = name
+        # file_contents = {name: file_bytes}
+
+        plot = Plot(file_name)#, attrs_for_plot={"_file_contents": file_contents}, _debug=True) #
+        SESSION.autosync.add_plot(plot, SESSION.tabs[0]["id"])
+
+        if not SESSION.setting("keep_uploaded"):
+            shutil.rmtree(str(dirname))
+
+    return APP
 
 
 def set_session(new_session, ret_old=False):
@@ -175,10 +189,14 @@ def set_session(new_session, ret_old=False):
 
 def run(host="localhost", port=4000, debug=False):
 
+    if APP is None:
+        create_app()
+
     print(
         f"\nApi running on http://{host}:{port}...\nconnect the GUI to this address or send it to someone for sharing.")
 
-    SOCKETIO.run(app, debug=debug, host=host, port=port)
+    SOCKETIO.run(APP, debug=debug, host=host, port=port)
 
 if __name__ == "__main__":
+
     run()

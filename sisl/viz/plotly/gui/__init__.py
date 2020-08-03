@@ -9,12 +9,34 @@ SESSION = None
 __all__ = ["SESSION", "launch"]
 
 
-def launch(only_api=False, api_kwargs=None, load_session=None, session_settings={}, session_cls=None, interactive=False):
+def launch(only_api=False, api_kwargs=None, server_kwargs=None, load_session=None, session_cls=None, session_settings={}, interactive=False):
     '''
     Launches the graphical interface.
 
     Parameters
     -----------
+    only_api: bool, optional
+        whether only the api should be run. 
+        You will probably want this if you already have an instance of the GUI running and/or are planning
+        to use the online version of the GUI (https://sisl-siesta.xyz)
+    api_kwargs: dict, optional
+        keyword arguments that go into `api.run`. These are {"host", "port", "debug"}
+    server_kwargs: dict, optional
+        keyword arguments that go into `server.run`. These are {"host", "port", "debug"}.
+    load_session: str or Session, optional
+        the session to set.
+        If it is a string, it will be interpreted as the path were the session is.
+
+        If it is a Session, it will be used directly.
+
+        If it is not provided, the default one will be used.
+    session_cls: str or child of Session, optional
+        If load_session is not provided, you can pass a class and a new session will be initialized from it.
+
+        If it's a string it should be the name of the class.
+    session_settings: dict, optional
+        settings that will be applied to the new session, regardless of how it has been obtained (default, from load_session
+        or from session_cls.)
     interactive: bool, optional
         whether an interactive console should be started. Probably you will never need to set this to true.
         It is only meant to open a python console in the terminal and it is used by sgui.
@@ -23,15 +45,17 @@ def launch(only_api=False, api_kwargs=None, load_session=None, session_settings=
     from code import interact
     from threading import Thread, Semaphore
 
-    from .server import app as server, run as run_server
-    from .api import SESSION as api_session, set_session as set_api_session, run as run_api, app as app
+    from . import server
+    from . import api
 
     global threads
     global SESSION
     global set_session
 
-    SESSION = api_session
-    set_session = set_api_session
+    app = api.create_app()
+
+    SESSION = api.SESSION
+    set_session = api.set_session
 
     if load_session is not None:
         if isinstance(load_session, str):
@@ -45,7 +69,7 @@ def launch(only_api=False, api_kwargs=None, load_session=None, session_settings=
     if session_settings:
         SESSION.update_settings(**session_settings)
 
-    threads = [Thread(target=run_api, kwargs=api_kwargs), Thread(target=run_server)]
+    threads = [Thread(target=api.run, kwargs=api_kwargs), Thread(target=server.run, kwargs=server_kwargs)]
 
     if only_api:
         threads = [threads[0]]

@@ -30,7 +30,5 @@ try:
 
     from ._express import sx as express
 
-except ModuleNotFoundError as e:
-    raise e
-    # Should we print a message here?
+except ModuleNotFoundError:
     pass

@@ -64,7 +64,7 @@ def get_parameters_docstrings(cls):
     return configurable_settings
 
 
-def fill_class_docs(Cls):
+def fill_class_docs(cls):
     """
     Fills the documentation for a class that inherits from Configurable.
 

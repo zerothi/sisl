@@ -9,7 +9,7 @@ __all__ = ["import_user_presets", "import_user_plots",
     "import_user_sessions", "import_user_plugins"]
 
 # Define the folder where the user will store their stuff
-DEFAULT_USER_CUSTOM_FOLDER = Path.home() / ".sisl"
+DEFAULT_USER_CUSTOM_FOLDER = Path.home() / ".sisl/viz/plotly"
 USER_CUSTOM_FOLDER = register_env_var(
     'USER_DIR', DEFAULT_USER_CUSTOM_FOLDER,
     "Path to the directory where the user stores their custom scripts"
@@ -42,7 +42,7 @@ def import_user_extension(extension_file):
 #              Presets
 #--------------------------------------
 # File where the user's presets will be searched
-PRESETS_FILE_NAME = "user_presets.py"
+PRESETS_FILE_NAME = "presets.py"
 PRESETS_FILE = USER_CUSTOM_FOLDER / PRESETS_FILE_NAME
 # We will look for presets under this variable
 PRESETS_VARIABLE = "presets"
@@ -74,11 +74,8 @@ def import_user_presets():
 #               Plots
 #--------------------------------------
 # File where the user's plots will be searched
-PLOTS_FILE_NAME = "user_plots.py"
+PLOTS_FILE_NAME = "plots.py"
 PLOTS_FILE = USER_CUSTOM_FOLDER / PLOTS_FILE_NAME
-# We will look for plots under this variable
-PLOTS_VARIABLE = "plots"
-
 
 def import_user_plots():
     """
@@ -95,10 +92,8 @@ def import_user_plots():
 #              Sessions
 #--------------------------------------
 # File where the user's sessions will be searched
-SESSION_FILE_NAME = "user_sessions.py"
+SESSION_FILE_NAME = "sessions.py"
 SESSION_FILE = USER_CUSTOM_FOLDER / SESSION_FILE_NAME
-# We will look for sessions under this variable
-SESSION_VARIABLE = "sessions"
 
 
 def import_user_sessions():
@@ -119,7 +114,7 @@ def import_user_sessions():
 # This is a general file that the user can have for convenience so that everytime
 # that sisl is imported, it can automatically import all their utilities that they
 # developed to work with sisl
-PLUGINS_FILE_NAME = "user_plugins.py"
+PLUGINS_FILE_NAME = "plugins.py"
 
 
 def import_user_plugins():
