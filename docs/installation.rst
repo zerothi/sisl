@@ -107,6 +107,17 @@ Testing the installation may be done by:
 
    pytest --pyargs sisl
 
+The above will run the default test-suite which covers most of the `sisl` tool-box.
+Additional tests may be runned by cloning the `sisl-files <sisl-test-files_>`_
+and setting the environment variable `SISL_FILES_TESTS` as the path to the repository.
+
+A basic procedure would be:
+
+.. code-block:: bash
+
+   git clone https://github.com/zerothi/sisl-files.git
+   SISL_FILES_TESTS=$(pwd)/sisl-files pytest --pyargs sisl
+
 
 Development version
 -------------------
@@ -129,3 +140,6 @@ the Intel compilers you should do:
    pip3 install --global-option="build" --global-option="--compiler=intelem" --global-option="--fcompiler=intelem" .
 
 which will pass the correct options to the build system.
+
+
+.. _sisl-test-files: http://github.com/zerothi/sisl-files

@@ -9,6 +9,10 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. J. Tong, F. Luo, L. Ruan, G. Qin, L. Zhou, F. Tian, X. Zhang,
+   *High and reversible spin polarization in a collinear antiferromagnet*,
+   Applied Physics Review, **7**, `031405 (2020) <https://aip.scitation.org/doi/10.1063/5.0004564>`_
+
 #. A. Garcia, *et. al.*,
    *Siesta: Recent developments and applications*,
    J. Chem. Phys. **152**, `204108 (2020) <https://doi.org/10.1063/5.0005077>`_
