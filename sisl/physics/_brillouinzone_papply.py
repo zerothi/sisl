@@ -26,6 +26,7 @@ from sisl._dispatcher import ClassDispatcher
 from sisl._internal import set_module
 from sisl.utils.misc import allow_kwargs
 from sisl.oplist import oplist
+from sisl._environ import get_environ_variable
 
 # Stuff used for patching
 from .brillouinzone import BrillouinZone
@@ -39,9 +40,7 @@ __all__ = ["BrillouinZonePApply", "BrillouinZoneParentPApply"]
 
 
 # I do not know what way is the best, we should probably have
-_NPROCS = os.environ.get("SISL_NPROCS", None)
-if isinstance(_NPROCS, str):
-    _NPROCS = int(_NPROCS)
+_NPROCS = get_environ_variable("SISL_NPROCS")
 
 
 def _apply_str(s):
