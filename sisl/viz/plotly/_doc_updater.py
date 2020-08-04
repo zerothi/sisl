@@ -25,7 +25,8 @@ Or you can use fill_class_docs to only update a certain class.
 """
 
 from sisl.viz.plotly.plotutils import get_configurable_docstring, get_plot_classes, get_session_classes
-from sisl.viz import Plot, MultiplePlot, Animation, SubPlots, Session
+from sisl.viz.plotly.plot import Plot, MultiplePlot, Animation, SubPlots
+from sisl.viz.plotly.session import Session
 import inspect
 
 
@@ -80,9 +81,9 @@ def fill_class_docs(cls):
 
     """
 
-    filename = inspect.getfile(Cls)
+    filename = inspect.getfile(cls)
 
-    parameters_docs = get_parameters_docstrings(Cls)
+    parameters_docs = get_parameters_docstrings(cls)
 
     parameters_docs = "\n\t".join(
         parameters_docs.split("\n")).replace("\t", "    ")
@@ -90,11 +91,11 @@ def fill_class_docs(cls):
     with open(filename, 'r') as fi:
         lines = fi.read()
         new_lines = lines.replace("%%configurable_settings%%", parameters_docs)
-        new_lines = new_lines.replace(f"%%{Cls.__name__}_configurable_settings%%", parameters_docs)
+        new_lines = new_lines.replace(f"%%{cls.__name__}_configurable_settings%%", parameters_docs)
 
     with open(filename, 'w') as fo:
         fo.write(new_lines)
 
 if __name__ == "__main__":
-    for Cls in [*get_plot_classes(), Plot, MultiplePlot, Animation, SubPlots, Session, *get_session_classes().values()]:
-        fill_class_docs(Cls)
+    for cls in [*get_plot_classes(), Plot, MultiplePlot, Animation, SubPlots, Session, *get_session_classes().values()]:
+        fill_class_docs(cls)

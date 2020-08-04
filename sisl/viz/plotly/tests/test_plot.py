@@ -55,8 +55,7 @@ class BasePlotTester:
         assert np.all([plot.settings[key] == val for key, val in new_settings.items()])
         # Undo settings and check if they go back to the previous ones
         plot.undo_settings(run_updates=False)
-        print(old_settings)
-        print(plot.settings)
+        
         assert np.all([plot.settings[key] ==
                     val for key, val in old_settings.items()])
 

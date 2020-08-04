@@ -122,6 +122,20 @@ class OrbitalsNameSelect(DropdownInput):
 
 
 class SpinSelect(DropdownInput):
+    """
+    Input field that helps selecting and managing the desired spin.
+
+    It has a method to update the options according to spin class.
+
+    Parameters
+    ------------
+    only_if_polarized: bool, optional
+        If set to `True`, the options can only be either [UP, DOWN] or [].
+
+        That is, no extra options for non collinear and spin orbit calculations.
+
+        Defaults to False.
+    """
 
     _default = {
         "width": "s100% m50% l25%",
@@ -145,7 +159,13 @@ class SpinSelect(DropdownInput):
         Spin.SPINORBIT: []
     }
 
-    def update_options(self, spin):
+    def __init__(self, *args, only_if_polarized=False, **kwargs):
+
+        super().__init__(*args, **kwargs)
+
+        self._only_if_polarized = only_if_polarized
+
+    def update_options(self, spin, only_if_polarized=None):
         """
         Updates the options of the spin selector.
 
@@ -155,6 +175,12 @@ class SpinSelect(DropdownInput):
         -----------
         spin: sisl.Spin, str or int
             It is used to indicate the kind of spin.
+        only_if_polarized: bool, optional
+            If set to `True`, the options can only be either [UP, DOWN] or [].
+
+            That is, no extra options for non collinear and spin orbit calculations.
+
+            If not provided the initialization value of `only_if_polarized` will be used.
 
         See also
         ---------
@@ -164,7 +190,21 @@ class SpinSelect(DropdownInput):
         if not isinstance(spin, Spin):
             spin = Spin(spin)
 
-        self.modify("inputField.params.options", self._options[spin.kind])
+        # Use the default for this input field if only_if_polarized is not provided.
+        if only_if_polarized is None:
+            only_if_polarized = self._only_if_polarized
+
+        # Determine what are the new options
+        if only_if_polarized:
+            if spin.is_polarized:
+                options = self._options[Spin.POLARIZED]
+            else:
+                options = self._options[Spin.UNPOLARIZED]
+        else:
+            options = self._options[spin.kind]
+        
+        # Update them
+        self.modify("inputField.params.options", options)
 
         return self
 

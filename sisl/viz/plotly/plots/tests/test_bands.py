@@ -8,6 +8,7 @@ Different inputs are tested (siesta .bands and sisl Hamiltonian).
 
 from xarray import DataArray
 import numpy as np
+import itertools
 
 import sisl
 from sisl.viz import BandsPlot
@@ -60,6 +61,35 @@ class BandsPlotTester:
         # Check that the gap can be drawn correctly
         self.plot.update_settings(gap=True)
         assert len([True for trace in self.plot.data if trace.name == "Gap"]) > 0
+
+    def test_custom_gaps(self):
+
+        plot = self.plot
+
+        plot.update_settings(gap=False, custom_gaps=[])
+
+        prev_traces = len(plot.data)
+
+        gaps = list(itertools.combinations(self.ticktext, 2))
+
+        plot.update_settings(custom_gaps=[{"from": gap[0], "to": gap[1]} for gap in gaps])
+
+        assert len(plot.data) == prev_traces + len(gaps)
+
+        # Get the traces that have been generated and assert that they are
+        # exactly the same as if we define the gaps with numerical values for the ks
+        from_labels = plot.data[-len(gaps):]
+        gaps = list(itertools.combinations(self.tickvals, 2))
+
+        plot.update_settings(
+            custom_gaps=[{"from": gap[0], "to": gap[1]} for gap in gaps])
+
+        assert len(plot.data) == prev_traces + len(gaps)
+        assert np.all([
+            np.allclose(old_trace.y, new_trace.y)
+            for old_trace, new_trace in zip(from_labels, plot.data[-len(gaps):])])
+        
+
 
 # ------------------------------------------------------------
 #       Test the bands plot reading from siesta .bands

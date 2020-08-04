@@ -47,7 +47,9 @@ class BandsPlot(Plot):
         Path along which bands are drawn in units of reciprocal lattice
         vectors.             Note that if you want to provide a path
         programatically you can do it more easily with the `band_structure`
-        setting
+        setting   Each item is a dict. Structure of the expected dicts:{
+        'x':          'y':          'z':          'divisions':
+        'tick': Tick that should be displayed at this corner of the path. }
     spin:  optional
         Determines how the different spin configurations should be displayed.
         In spin polarized calculations, it allows you to choose between spin
@@ -68,6 +70,15 @@ class BandsPlot(Plot):
         where there are degenerated bands with exactly the same values.
     gap_color: str, optional
         Color to display the gap
+    custom_gaps: array-like of dict, optional
+        List of all the gaps that you want to display.   Each item is a dict.
+        Structure of the expected dicts:{         'from': K value where to
+        start measuring the gap.                      It can be either the
+        label of the k-point or the numeric value in the plot.         'to':
+        K value where to end measuring the gap.                      It can
+        be either the label of the k-point or the numeric value in the plot.
+        'color': The color with which the gap should be displayed
+        'spin': The spin components where the gap should be calculated. }
     bands_width: float, optional
         Width of the lines that represent the bands
     bands_color: str, optional
@@ -234,14 +245,52 @@ class BandsPlot(Plot):
             Useful in cases where there are degenerated bands with exactly the same values."""
         ),
 
-        ColorPicker(key = "gap_color", name = "Gap color",
-            default = None,
-            help = "Color to display the gap"
+        ColorPicker(key="gap_color", name="Gap color",
+            default=None,
+            help="Color to display the gap"
         ),
 
-        FloatInput(key = "bands_width", name = "Band lines width",
-            default = 1,
-            help = "Width of the lines that represent the bands"
+        QueriesInput(key="custom_gaps", name="Custom gaps",
+            default=[],
+            help="""List of all the gaps that you want to display.""",
+            queryForm=[
+
+                TextInput(
+                    key="from", name="From",
+                    help="""K value where to start measuring the gap. 
+                    It can be either the label of the k-point or the numeric value in the plot.""",
+                    width="s50% m20% l10%",
+                    default="0",
+                ),
+
+                TextInput(
+                    key="to", name="To",
+                    help="""K value where to end measuring the gap. 
+                    It can be either the label of the k-point or the numeric value in the plot.""",
+                    width="s50% m20% l10%",
+                    default="0",
+                ),
+
+                ColorPicker(
+                    key="color", name="Line color",
+                    help="The color with which the gap should be displayed",
+                    width="s50% m20% l10%",
+                    default=None,
+                ),
+
+                SpinSelect(
+                    key="spin", name="Spin",
+                    help="The spin components where the gap should be calculated.",
+                    default=None,
+                    only_if_polarized=True,
+                ),
+
+            ]
+        ),
+
+        FloatInput(key="bands_width", name="Band lines width",
+            default=1,
+            help="Width of the lines that represent the bands"
         ),
 
         ColorPicker(key = "bands_color", name = "No spin/spin up line color",
@@ -425,6 +474,7 @@ class BandsPlot(Plot):
 
         # Inform the spin input of what spin class are we handling
         self.get_param("spin").update_options(self.spin)
+        self.get_param("custom_gaps").get_param("spin").update_options(self.spin)
 
         self._calculate_gaps()
 
@@ -595,22 +645,63 @@ class BandsPlot(Plot):
 
             all_gapKs = itertools.product(*[clear_equivalent(ks) for ks in gapKs])
 
-            for gapKs in all_gapKs:
+            for gap_ks in all_gapKs:
 
-                if only_direct and abs(gapKs[1] - gapKs[0]) > gap_tolerance:
+                if only_direct and abs(gap_ks[1] - gap_ks[0]) > gap_tolerance:
                     continue
 
-                self.add_trace({
-                    'type': 'scatter',
-                    'mode': 'lines+markers+text',
-                    'x': gapKs,
-                    'y': self.gap_info["Es"],
-                    'text': [f'Gap: {self.gap:.3f} eV', ''],
-                    'marker': {'color': gap_color},
-                    'line': {'color': gap_color},
-                    'name': 'Gap',
-                    'textposition': 'top right',
-                })
+                self.draw_gap(gap_ks, gap_color=gap_color, true_gap=True)
+        
+        # Draw the custom gaps. These are gaps that do not necessarily represent
+        # the maximum and the minimum of the VB and CB.
+        custom_gaps = self.setting("custom_gaps")
+        for gap in custom_gaps:
+
+            requested_spin = gap.get("spin", None)
+            if requested_spin is None:
+                requested_spin = [0,1]
+            
+            # Parse the names of the kpoints into their numeric values
+            # if a string was provided.
+            for key in ("from", "to"):
+                val = gap[key]
+                try:
+                    gap[key] = float(val)
+                except ValueError:
+                    if val in self.bands.attrs["ticklabels"]:
+                        i = self.bands.attrs["ticklabels"].index(val)
+                        gap[key] = self.bands.attrs["ticks"][i]
+                    #else:
+                        # raise ValueError(f"We can not interpret {gap[key]} as a k-location in the current bands plot")
+                        # This should be logged instead of raising the error
+
+            for spin in self.bands.spin:
+                if spin in requested_spin:
+                    self.draw_gap((gap["from"], gap["to"]), gap_color=gap.get("color", None), spin=spin)
+
+
+    def draw_gap(self, ks, gap_color=None, true_gap=False, spin=0, **kwargs):
+
+        if true_gap:
+            # Take the energies from the gap information
+            Es = self.gap_info["Es"]
+        else:
+            # 
+            VB, CB = self.gap_info["bands"]
+            Es = [np.ravel(self.bands.sel(k=k, band=band, spin=spin, method="nearest"))[0] for k, band in zip(ks, (VB, CB))]
+        
+        self.add_trace({
+            'type': 'scatter',
+            'mode': 'lines+markers+text',
+            'x': ks,
+            'y': Es,
+            'text': [f'Gap: {Es[1] - Es[0]:.3f} eV', ''],
+            'marker': {'color': gap_color},
+            'line': {'color': gap_color},
+            'name': 'Gap',
+            'textposition': 'top right',
+            **kwargs
+        })
 
     def toggle_gap(self):
 

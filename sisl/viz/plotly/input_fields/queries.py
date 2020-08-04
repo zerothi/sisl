@@ -25,14 +25,21 @@ class QueriesInput(InputField):
         "queryForm": []
     }
 
-    def __init__(self, queryForm = [], *args, **kwargs):
+    def __init__(self, *args, queryForm=[], help="", **kwargs):
+
+        query_form = self._sanitize_queryform(queryForm)
 
         inputFieldAttrs = {
             **kwargs.get("inputFieldAttrs", {}),
-            "queryForm": self._sanitize_queryform(queryForm)
+            "queryForm": query_form
         }
 
-        super().__init__(*args, **kwargs, inputFieldAttrs = inputFieldAttrs)
+        def get_queryform_help():
+            return "\n\t".join([f"'{param.key}': {param.help}" for param in query_form])
+
+        help += "\n\n Each item is a dict. Structure of the expected dicts:{\n\t" + get_queryform_help() + "\n}"
+
+        super().__init__(*args, **kwargs, help=help, inputFieldAttrs = inputFieldAttrs)
 
     def get_query_param(self, key, **kwargs):
         '''

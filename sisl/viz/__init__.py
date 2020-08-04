@@ -8,5 +8,3 @@ user_plots = import_user_plots()
 user_presets = import_user_presets()
 user_sessions = import_user_sessions()
 user_plugins = import_user_plugins()
-
-from ._env_vars import ENV_VARS

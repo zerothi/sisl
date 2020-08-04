@@ -88,13 +88,14 @@ class InputField:
 
     dtype = None
 
-    def __init__(self, key, name, default=None, params={}, style={}, width="", inputFieldAttrs={}, group=None, subGroup=None, dtype=None, **kwargs):
+    def __init__(self, key, name, default=None, params={}, style={}, width="", inputFieldAttrs={}, group=None, subGroup=None, dtype=None, help="", **kwargs):
 
         self.key = key
         self.name = name
         self.default = default
         self.group = group
         self.subGroup = subGroup
+        self.help = help
 
         if dtype is not None:
             self.dtype = dtype
