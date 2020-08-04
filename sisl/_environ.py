@@ -57,7 +57,7 @@ def get_environ_variable(name):
         the name of the environment variable.
     """
     variable = SISL_ENVIRON[name]
-    value = variable["process"](os.environ.get(name, var["default"]))
+    value = variable["process"](os.environ.get(name, variable["default"]))
     variable["value"] = value
     return value
 
@@ -68,5 +68,5 @@ register_environ_variable("SISL_NPROCS", os.cpu_count(),
                           process=int)
 
 register_environ_variable("SISL_TMP", "__sisltmp",
-￼                          "Path where temporary files should be stored",
-￼                          process=Path)
+                          "Path where temporary files should be stored",
+                          process=Path)
