@@ -26,7 +26,7 @@ by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
    Physical Review B **102**, `035436 (2020) <https://journals.aps.org/prb/abstract/10.1103/PhysRevB.102.035436>`_
 
 #. J. Li, S. Sanz, J. Castro-Esteban, M. Vilas-Varela, N. Friedrich, T. Frederiksen, D. Pena, J.I. Pascual,
-   *Uncovering the Triplet Ground State of Triangular Graphene Nanoflakes Engineeredwith Atomic Precision on a Metal Surface*,
+   *Uncovering the Triplet Ground State of Triangular Graphene Nanoflakes Engineered with Atomic Precision on a Metal Surface*,
    Physical Review Letters **124**, `177201 (2020) <https://doi.org/10.1103/PhysRevLett.124.177201>`_
 
 #. T. Schmitt, S. Bourelle, N. Tye, G. Soavi, A.D. Bond, S. Feldmann, T. Boubacar, C. Katan, J. Even, S.E. Dutton, F. Deschler,
