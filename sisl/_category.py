@@ -177,7 +177,7 @@ class Category(metaclass=ABCMeta):
         eq = self == other
         if isinstance(eq, list):
             return [not e for e in eq]
-        return eq
+        return not eq
 
     # Implement logical operators to enable composition of sets
     def __and__(self, other):

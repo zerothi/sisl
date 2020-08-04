@@ -36,13 +36,11 @@ class AtomZ(AtomCategory):
 
     def __eq__(self, other):
         if isinstance(other, (list, tuple, np.ndarray)):
-            # this *should* use the dispatch method for different
-            # classes
+            # this *should* use the dispatch method for different classes
             return super().__eq__(other)
 
-        eq = self.__class__ is other.__class__
-        if eq:
-            return self._Z == other._Z
+        if self.__class__ is other.__class__:
+            return len(self._Z ^ other._Z) == 0
         return False
 
 
@@ -59,7 +57,7 @@ class AtomOdd(AtomCategory):
         # _sanitize_loop will ensure that atoms will always be an integer
         if atoms % 2 == 1:
             return self
-        return NullClass()
+        return NullCategory()
 
     def __eq__(self, other):
         return self.__class__ is other.__class__
@@ -78,7 +76,7 @@ class AtomEven(AtomCategory):
         # _sanitize_loop will ensure that atoms will always be an integer
         if atoms % 2 == 0:
             return self
-        return NullClass()
+        return NullCategory()
 
     def __eq__(self, other):
         return self.__class__ is other.__class__
