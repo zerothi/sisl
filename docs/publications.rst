@@ -22,8 +22,8 @@ by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
    Physical Review B **100**, `195417 (2019) <https://doi.org/10.1103/PhysRevB.100.195417>`_
 
 #. S. Sanz, P. Brandimarte, G. Giedke, D. Sanchez-Portal, T. Frederiksen,
-   *Crossed graphene nanoribbons as beam splitters and mirrorsfor electron quantum optics*,
-   arXiv `2005.11391 <https://arxiv.org/abs/2005.11391>`_
+   *Crossed graphene nanoribbons as beam splitters and mirrors for electron quantum optics*,
+   Physical Review B **102**, `035436 (2020) <https://journals.aps.org/prb/abstract/10.1103/PhysRevB.102.035436>`_
 
 #. J. Li, S. Sanz, J. Castro-Esteban, M. Vilas-Varela, N. Friedrich, T. Frederiksen, D. Pena, J.I. Pascual,
    *Uncovering the Triplet Ground State of Triangular Graphene Nanoflakes Engineeredwith Atomic Precision on a Metal Surface*,
@@ -35,7 +35,7 @@ by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
 #. J. Brand, S. Leitherer, N. Papior, N. Neel, Y. Lei, M. Brandbyge and J. Kroger,
    *Nonequilibrium Bond Forces in Single-Molecule Junctions*,
-   Nano Letters `(2019) <https://doi.org/10.1021/acs.nanolett.9b02845>`_
+   Nano Letters **19** `(2019) <https://doi.org/10.1021/acs.nanolett.9b02845>`_
 
 #. F. Schindler, M. Brzezinska, W.A. Benalcazar, M. Iraola, A. Bouhon, S.S. Tsirkin, M.G. Vergniory, T. Neupert,
    *Fractional corner charges in spin-orbit coupled crystals*,
