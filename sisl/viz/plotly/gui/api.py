@@ -13,17 +13,27 @@ from flask import Flask, request, jsonify, make_response
 from flask_socketio import SocketIO, join_room
 
 from sisl.viz import BlankSession, Plot
+from sisl._environ import register_environ_variable, get_environ_variable
 from ..plotutils import load
 from .api_utils import with_user_management, if_user_can, listen_to_users, \
     emit_plot, emit_session, emit_error, emit_loading_plot, emit
 
 __all__ = ["APP", "SESSION", "SOCKETIO", "set_session", "create_app"]
 
+# Register the environment variables that the user can tweak
+register_environ_variable("SISL_PLOTLY_API_HOST", "localhost",
+                          "The host where the GUI will run when self-hosted by the user.",
+                          process=str)
+register_environ_variable("SISL_PLOTLY_API_PORT", 4000,
+                          "The port where the GUI will run when self-hosted by the user.",
+                          process=int)
+
 __DEBUG = False
 
 APP = None
 SESSION = None
 SOCKETIO = None
+
 
 def create_app():
 
@@ -34,7 +44,6 @@ def create_app():
     APP = Flask("SISL GUI API")
 
     __all__ = ["SESSION", "set_session"]
-
 
     class CustomJSONEncoder(JSONEncoder):
 
@@ -62,7 +71,8 @@ def create_app():
         with_user_management(APP)
 
     SOCKETIO = SocketIO(APP, cors_allowed_origins="*",
-                        json=simplejson, manage_session=True, async_mode="threading")
+                        json=simplejson, manage_session=True)
+                        # async_mode="threading" (this option can not use websockets, less communication performance)
     on = SOCKETIO.on
 
     if False:
@@ -71,12 +81,10 @@ def create_app():
     # This will be the global session
     SESSION = BlankSession(socketio=SOCKETIO)
 
-
     @SOCKETIO.on_error()
     def send_error(err):
         emit_error(err)
         raise err
-
 
     @on("request_session")
     @if_user_can("see")
@@ -87,7 +95,6 @@ def create_app():
             SESSION = load(path)
 
         emit_session(SESSION, broadcast = False)
-
 
     @on("apply_method_on_session")
     @if_user_can("edit")
@@ -113,7 +120,6 @@ def create_app():
             event_name = kwargs.get("returns_as", "call_returns")
             emit(event_name, returns, {"method_name": method_name}, broadcast=False)
 
-
     @on("get_plot")
     @if_user_can("see")
     def retrieve_plot(plotID):
@@ -121,7 +127,6 @@ def create_app():
             print(f"Asking for plot: {plotID}")
 
         emit_plot(plotID, SESSION, broadcast=False)
-
 
     @on("upload_file")
     @if_user_can("edit")
@@ -187,10 +192,15 @@ def set_session(new_session, ret_old=False):
     return SESSION
 
 
-def run(host="localhost", port=4000, debug=False):
+def run(host=None, port=None, debug=False):
 
     if APP is None:
         create_app()
+
+    if host is None:
+        host = get_environ_variable("SISL_PLOTLY_API_HOST")
+    if port is None:
+        port = get_environ_variable("SISL_PLOTLY_API_PORT")
 
     print(
         f"\nApi running on http://{host}:{port}...\nconnect the GUI to this address or send it to someone for sharing.")

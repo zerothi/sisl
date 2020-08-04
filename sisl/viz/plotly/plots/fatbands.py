@@ -219,7 +219,7 @@ class FatbandsPlot(BandsPlot):
                 "band": bands,
                 "orb": np.arange(0, weights.shape[2]),
             },
-            dims=("k", "band","orb")
+            dims=("k", "band", "orb")
         )
 
         # Add the spin dimension so that the weights array is normalized,
@@ -232,13 +232,13 @@ class FatbandsPlot(BandsPlot):
     @entry_point("hamiltonian")
     def _read_from_H(self):
 
-        self.weights = [[],[]]
+        self.weights = [[], []]
 
         # Define the function that will "catch" each eigenstate and
         # build the weights array. See BandsPlot._read_from_H to understand where
         # this will go exactly
         def _weights_from_eigenstate(eigenstate, plot, spin_index):
-            
+
             weights = eigenstate.norm2(sum=False)
 
             if plot.spin.spins > 2:
@@ -246,7 +246,7 @@ class FatbandsPlot(BandsPlot):
                 # orbital (one for each spin component of the state), so we just pair them together
                 # and sum their contributions to get the weight of the orbital.
                 weights = weights.reshape(len(weights), -1, 2).sum(2)
-                
+
             plot.weights[spin_index].append(weights)
 
         # We make bands plot read the bands, which will also populate the weights
@@ -364,7 +364,7 @@ class FatbandsPlot(BandsPlot):
             # Get the weights for the requested orbitals
             weights = plot_weights.sel(orb=orb)
 
-            # Now get a particular spin component if the user wants it 
+            # Now get a particular spin component if the user wants it
             if group["spin"] is not None:
                 weights = weights.sel(spin=group["spin"])
 

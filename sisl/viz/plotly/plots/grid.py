@@ -17,7 +17,7 @@ class GridPlot(Plot):
     grid: Grid, optional
         A sisl.Grid object. If provided, grid_file is ignored.
     grid_file: cubeSile or rhoSileSiesta or ldosSileSiesta or rhoinitSileSiesta or rhoxcSileSiesta or drhoSileSiesta or baderSileSiesta or iorhoSileSiesta or totalrhoSileSiesta or stsSileSiesta or stmldosSileSiesta or hartreeSileSiesta or neutralatomhartreeSileSiesta or totalhartreeSileSiesta or gridncSileSiesta or ncSileSiesta or fdfSileSiesta or tsvncSileSiesta or chgSileVASP or locpotSileVASP, optional
-    
+
     represent:  optional
         The representation of the grid that should be displayed
     transforms:  optional
@@ -45,7 +45,7 @@ class GridPlot(Plot):
         Interpolation factors to make the grid finer on each axis.See the
         zsmooth setting for faster smoothing of 2D heatmap.
     sc: array-like, optional
-    
+
     offset: array-like, optional
         The offset of the grid along each axis. This is important if you are
         planning to match this grid with other geometry related plots.
@@ -1048,7 +1048,7 @@ class WavefunctionPlot(GridPlot):
     grid: Grid, optional
         A sisl.Grid object. If provided, grid_file is ignored.
     grid_file: cubeSile or rhoSileSiesta or ldosSileSiesta or rhoinitSileSiesta or rhoxcSileSiesta or drhoSileSiesta or baderSileSiesta or iorhoSileSiesta or totalrhoSileSiesta or stsSileSiesta or stmldosSileSiesta or hartreeSileSiesta or neutralatomhartreeSileSiesta or totalhartreeSileSiesta or gridncSileSiesta or ncSileSiesta or fdfSileSiesta or tsvncSileSiesta or chgSileVASP or locpotSileVASP, optional
-    
+
     represent:  optional
         The representation of the grid that should be displayed
     transforms:  optional
@@ -1076,7 +1076,7 @@ class WavefunctionPlot(GridPlot):
         Interpolation factors to make the grid finer on each axis.See the
         zsmooth setting for faster smoothing of 2D heatmap.
     sc: array-like, optional
-    
+
     offset: array-like, optional
         The offset of the grid along each axis. This is important if you are
         planning to match this grid with other geometry related plots.

@@ -12,7 +12,7 @@ import tqdm
 from copy import deepcopy
 
 from sisl.io.sile import get_siles, get_sile_rules
-from .._env_vars import register_env_var
+from sisl._environ import register_environ_variable, get_environ_variable
 
 __all__ = ["running_in_notebook", "check_widgets"]
 
@@ -629,11 +629,10 @@ def find_plotable_siles(dir_path=None, depth=0):
 #         Multiprocessing
 #-------------------------------------
 
-_MAX_NPROCS = register_env_var(
-    'NPROCS', max(os.cpu_count() - 1, 1),
-    "The maximum number of processors that should be used when processing"
-    " multiple plots."
-)
+register_environ_variable("SISL_NPROCS_VIZ", max(os.cpu_count() - 1, 1),
+                          description="Maximum number of processors used for parallel plotting",
+                          process=int)
+_MAX_NPROCS = get_environ_variable("SISL_NPROCS_VIZ")
 
 
 def _apply_method(args_tuple):
@@ -850,7 +849,7 @@ def repeat_if_childs(method):
                 childs = np.array(childs)[childs_sel].tolist()
             else:
                 childs_sel = range(len(childs))
-            
+
             new_childs = apply_method_on_multiple_objs(method, childs, kwargsList=kwargs_list, serial=True)
 
             # Set the new plots. We need to do this because apply_method_on_multiple_objs

@@ -226,7 +226,7 @@ class LDOSmap(Plot):
         #Copy selected WFSX into WFSX if it exists (denchar reads from .WFSX)
         system_label = fdf_sile.get("SystemLabel", default="siesta")
         shutil.copyfile(fdf_sile.dir_file(f"{system_label}.selected.WFSX"),
-            fdf_sile.dir_file( f"{system_label}.WFSX"))
+            fdf_sile.dir_file(f"{system_label}.WFSX"))
 
         #Get the fdf file and replace include paths so that they work
         with open(self.setting("root_fdf"), "r") as f:
@@ -242,7 +242,7 @@ class LDOSmap(Plot):
         os.chdir(root_dir)
 
         #Inform that the WFSX file is used so that changes in it can be followed
-        self.follow(fdf_sile.dir_file( f"{system_label}.WFSX"))
+        self.follow(fdf_sile.dir_file(f"{system_label}.WFSX"))
 
         def getSpectraForPath(argsTuple):
 

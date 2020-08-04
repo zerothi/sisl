@@ -38,9 +38,9 @@ class BondLengthMap(GeometryPlot):
         https://plot.ly/python/builtin-colorscales/
         Note that you can reverse a color map by adding _r
     cmin: float, optional
-    
+
     cmax: float, optional
-    
+
     cmid: float, optional
         Sets the middle point of the color scale. Only meaningful in
         diverging colormaps             If this is set 'cmin' and 'cmax'
@@ -51,11 +51,11 @@ class BondLengthMap(GeometryPlot):
         Number of points that fill a bond. More points will make it look
         more like a line but will slow plot rendering down.
     geometry: Geometry, optional
-    
+
     geom_file: str, optional
-    
+
     bonds: bool, optional
-    
+
     axes:  optional
         The axis along which you want to see the geometry.              You
         can provide as many axes as dimensions you want for your plot.

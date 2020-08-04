@@ -104,7 +104,8 @@ class TestBandsPathSislHamiltonian(TestBandsSislHamiltonian):
 
 
 H = sisl.get_sile(from_files("fe_clust_noncollinear.TSHS")).read_hamiltonian()
-bz = sisl.BandStructure(H, [[0, 0, 0], [0.5,0,0]], 3, ["Gamma", "X"])
+bz = sisl.BandStructure(H, [[0, 0, 0], [0.5, 0, 0]], 3, ["Gamma", "X"])
+
 
 class TestNCSpinbands(BandsPlotTester):
 
@@ -133,7 +134,7 @@ class TestNCSpinbands(BandsPlotTester):
 
         plot.update_settings(spin="x")
 
-        # Check that spin texture has been 
+        # Check that spin texture has been
         for band in range(*plot.settings["bands_range"]):
             expected = plot.spin_moments.sel(band=band, axis="x").values
             displayed = plot.data[band].marker.color
@@ -141,7 +142,3 @@ class TestNCSpinbands(BandsPlotTester):
             assert np.all(expected == displayed), f"Colors of spin textured bands not correctly set (band {band})"
 
         plot.update_settings(spin=None)
-
-
-
-        

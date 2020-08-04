@@ -323,7 +323,7 @@ class BandsPlot(Plot):
         # Define the available spins
         spin_indices = [0]
         if self.spin.is_polarized:
-            spin_indices = [0,1]
+            spin_indices = [0, 1]
 
         # Get the eigenstates for all the available spin components
         bands_arrays = []
@@ -416,10 +416,10 @@ class BandsPlot(Plot):
                     self.update_settings(path=self.siestaPath, run_updates=False, no_log=True)
             except Exception as e:
                 print(f"Could not correctly read the bands path from siesta.\n Error {e}")
-        
+
         # Define the spin class of the results we have retrieved
         if len(self.bands.spin.values) == 2:
-                self.spin = sisl.Spin("p")
+            self.spin = sisl.Spin("p")
 
     def _after_read(self):
 
@@ -465,7 +465,7 @@ class BandsPlot(Plot):
             bands_range = self.setting("bands_range")
 
             if bands_range is None:
-                # If neither E range or bands_range was provided, we will just plot the 15 bands below and above the fermi level
+            # If neither E range or bands_range was provided, we will just plot the 15 bands below and above the fermi level
                 CB = int(filtered_bands.where(filtered_bands <= 0).argmax('band').max())
                 bands_range = [int(max(filtered_bands["band"].min(), CB - 15)), int(min(filtered_bands["band"].max() + 1, CB + 16))]
 
@@ -479,8 +479,8 @@ class BandsPlot(Plot):
             Erange = np.array(Erange)
             filtered_bands = filtered_bands.where((filtered_bands <= Erange[1]) & (filtered_bands >= Erange[0])).dropna("band", "all")
             self.update_settings(run_updates=False, bands_range=[int(filtered_bands['band'].min()), int(filtered_bands['band'].max())], no_log=True)
-        
-        # Let's treat the spin if the user requested it 
+
+        # Let's treat the spin if the user requested it
         spin = self.setting("spin")
         self.spin_texture = False
         if spin is not None and len(spin) > 0:
@@ -517,7 +517,7 @@ class BandsPlot(Plot):
             width = self.setting("bands_width")
 
             def scatter_additions(band, spin_index):
-                
+
                 return {
                     "mode": "lines",
                     'line': {"color": [bands_color, spindown_color][spin_index], 'width': width},
@@ -544,7 +544,7 @@ class BandsPlot(Plot):
         self.figure.layout.xaxis.tickvals = getattr(self.bands, "ticks", None)
         self.figure.layout.xaxis.ticktext = getattr(self.bands, "ticklabels", None)
         self.figure.layout.yaxis.range = np.array(self.setting("Erange"))
-        self.figure.layout.xaxis.range = self.bands.k.values[[0,-1]]
+        self.figure.layout.xaxis.range = self.bands.k.values[[0, -1]]
 
         # If we are showing spin textured bands, customize the colorbar
         if self.spin_texture:

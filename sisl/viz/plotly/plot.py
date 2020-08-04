@@ -1087,7 +1087,7 @@ class Plot(ShortCutable, Configurable, Connected):
             if isinstance(self.H, sisl.BaseSile):
                 self.H = self.H.read_hamiltonian(geometry=getattr(self, "geometry", None))
 
-        if not hasattr(self, "geometry"):        
+        if not hasattr(self, "geometry"):
             self.geometry = self.H.geometry
 
         return self

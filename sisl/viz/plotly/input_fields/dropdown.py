@@ -167,12 +167,12 @@ class SpinSelect(DropdownInput):
         self.modify("inputField.params.options", self._options[spin.kind])
 
         return self
-    
+
     def parse(self, val):
 
         if not isinstance(val, (list, np.ndarray)):
             val = [val]
-        
+
         return val
 
 

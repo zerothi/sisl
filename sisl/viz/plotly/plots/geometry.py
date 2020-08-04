@@ -169,7 +169,7 @@ class BaseGeometryPlot(Plot):
             atom = geom._sanitize_atoms(atom)
 
         return [bond for bond in bonds if np.any([at in atom for at in bond])]
-    
+
     #---------------------------------------------------
     #                  1D plotting
     #---------------------------------------------------
@@ -856,11 +856,11 @@ class GeometryPlot(BaseGeometryPlot):
     Parameters
     -------------
     geometry: Geometry, optional
-    
+
     geom_file: str, optional
-    
+
     bonds: bool, optional
-    
+
     axes:  optional
         The axis along which you want to see the geometry.              You
         can provide as many axes as dimensions you want for your plot.

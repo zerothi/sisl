@@ -7,8 +7,8 @@ from pathlib import Path
 from copy import deepcopy, copy
 
 import sisl
+from sisl._environ import register_environ_variable, get_environ_variable
 from .gui.api_utils.sync import Connected
-from .._env_vars import register_env_var
 from .plot import Plot
 from .configurable import Configurable, vizplotly_settings
 from .plotutils import find_files, find_plotable_siles, call_method_if_present, get_plot_classes
@@ -134,10 +134,7 @@ class Session(Configurable, Connected):
         FilePathInput(
             key="file_storage_dir", name="File storage directory",
             group="filesystem",
-            default= register_env_var(
-                'TEMPORAL_STORAGE', '__sisltmp',
-                "Path where temporal files should be stored"
-            ),
+            default= get_environ_variable("SISL_TMP"),
             width="s100% l50%",
             params={
                 "placeholder": "Write the path here..."
@@ -858,7 +855,7 @@ class Session(Configurable, Connected):
             }}
 
         #Avoid passing unnecessary info to the browser.
-        return {id: {"id": id, **{k: plotable[k] for k in ["name", "path", "plots", "default_plot"]}, "chosenPlots": [plotable["default_plot"]] } 
+        return {id: {"id": id, **{k: plotable[k] for k in ["name", "path", "plots", "default_plot"]}, "chosenPlots": [plotable["default_plot"]]}
                 for id, plotable in self.warehouse["plotables"].items()}
 
     #-----------------------------------------

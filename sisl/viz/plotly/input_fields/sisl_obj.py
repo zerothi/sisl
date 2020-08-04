@@ -110,10 +110,8 @@ class SileInput(FilePathInput, SislObjectInput):
             return tuple(sisl.get_siles(attrs=self._required_attrs))
         else:
             return self.__dict__["dtype"]
-    
+
     def _set_dtype(self, val):
         self.__dict__["dtype"] = val
 
     dtype = property(fget=_get_dtype, fset=_set_dtype, )
-
-    
