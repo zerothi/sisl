@@ -66,6 +66,9 @@ class AbstractDispatch(metaclass=ABCMeta):
         # This could in principle contain anything.
         self._attrs = attrs
 
+    def __call__(self, method):
+        return self.dispatch(method)
+
     def __str__(self):
         obj = str(self._obj).replace("\n", "\n ")
         attrs = _dict_to_str("attrs", self._attrs)
