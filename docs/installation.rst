@@ -94,6 +94,29 @@ the `git repository <sisl-git_>`_ for the latest developments
    python3 setup.py install --prefix=<prefix>
 
 
+Windows
+~~~~~~~
+
+To install `sisl` on Windows one will require a specification of
+the compilers used. Typically one may do
+
+.. code-block:: bash
+
+   python3 setup.py install --prefix=<prefix> --fcompiler=gfortran --compiler=mingw32
+
+but sometimes ``setuptools`` does not intercept the flags in the build process.
+To remedy this please ensure ``%HOME%\pydistutils.cfg`` contains the build options:
+
+.. code-block:: bash
+
+   [build]
+   compiler = mingw32
+   fcompiler = gfortran
+
+Adapt to compilers. For an explanation, see `here <https://docs.python.org/3/install/index.html#location-and-names-of-config-files>`_
+or the `user issue <https://github.com/zerothi/sisl/issues/244>`_ which spurred this content.
+
+
 Testing your installation
 -------------------------
 
