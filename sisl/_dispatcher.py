@@ -24,38 +24,6 @@ def _dict_to_str(name, d, parser=None):
     return ""
 
 
-class DispatcherContext:
-    """ Context creator for dispatch methods to hold attributes
-
-    This context allows one to change the attributes in sub-contexts.
-    """
-    __slots__ = ("obj", "attrs", "overlap", "new", "store")
-
-    def __init__(self, obj, **attrs):
-        self.obj = obj
-        self.attrs = attrs
-        self.overlap = None
-        self.new = None
-        self.store = None
-
-    def __enter__(self):
-        # original keys in object
-        obj_attrs = self.obj._attrs
-        # retrieve overlapping stuff
-        self.overlap = obj_attrs.keys() & self.attrs.keys()
-        # get keys that are new
-        self.new = self.attrs.keys() - obj_attrs.keys()
-        # these should be restored on exit
-        self.store = {key: obj_attrs[key] for key in self.overlap}
-        self.obj._attrs.update(self.attrs)
-        return self.obj
-
-    def __exit__(self, exc_type, exc_value, traceback):
-        self.obj._attrs.update(self.store)
-        for key in self.new:
-            del self.obj._attrs[key]
-
-
 class AbstractDispatch(metaclass=ABCMeta):
     r""" Dispatcher class used for dispatching function calls """
     __slots__ = ("_obj", "_attrs")
@@ -217,7 +185,14 @@ class ObjectDispatcher(Dispatcher):
                 cls_dispatch.register(key, dispatch)
 
     def __call__(self, **attrs):
-        return DispatcherContext(self, **attrs)
+        # Return a new instance of this object (with correct attributes)
+        overlap = self._attrs.keys() & attrs.keys()
+        # Create new attributes without overlaps
+        new_attrs = {key: self._attrs[key]
+                     for key in self._attrs if key not in overlap}
+        new_attrs.update(attrs)
+        return self.__class__(self._obj, self._dispatchs, self._default,
+                              self._cls_attr_name, self._obj_getattr, **new_attrs)
 
     def __enter__(self):
         return self

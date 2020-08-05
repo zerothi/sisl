@@ -286,7 +286,7 @@ class TestBrillouinZone:
 
         # We need to ensure that all functions does the same
         apply = bz.apply
-        papply = bz.papply
+        papply = bz.apply(pool=True)
 
         for method in ["iter", "average", "sum", "array", "list", "oplist"]:
             # TODO One should be careful with zip

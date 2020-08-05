@@ -13,6 +13,7 @@ except ImportError:
     _has_xarray = False
 
 from sisl._dispatcher import ClassDispatcher, AbstractDispatch
+from sisl._environ import get_environ_variable
 from sisl._internal import set_module
 from sisl.utils.misc import allow_kwargs
 from sisl.oplist import oplist
@@ -41,6 +42,29 @@ def _apply_str(s):
     return __str__
 
 
+def _pool_procs(pool):
+    """
+    This is still a bit mysterious to me.
+
+    One have to close/terminate + restart to get a functioning
+    pool. Also, the pool's are not existing in a local scope. `pathos`
+    have a global list of open pools to not pollute the pools.
+    This means that one may accidentially request a pool that the user
+    has openened elsewhere.
+    """
+    if pool is False or pool is None:
+        return None
+    elif pool is True:
+        import pathos as pos
+        pool = pos.pools.ProcessPool(nodes=get_environ_variable("SISL_NPROCS"))
+    elif isinstance(pool, int):
+        import pathos as pos
+        pool = pos.pools.ProcessPool(nodes=pool)
+    pool.terminate()
+    pool.restart()
+    return pool
+
+
 @set_module("sisl.physics")
 class BrillouinZoneApply(AbstractDispatch):
     # this dispatch function will do stuff on the BrillouinZone object
@@ -50,7 +74,7 @@ class BrillouinZoneApply(AbstractDispatch):
 @set_module("sisl.physics")
 class BrillouinZoneParentApply(BrillouinZoneApply):
 
-    def _parse_kwargs(self, wrap, eta, eta_key):
+    def _parse_kwargs(self, wrap, eta=False, eta_key=""):
         """ Parse kwargs """
         bz = self._obj
         parent = bz.parent
@@ -77,15 +101,35 @@ class IteratorApply(BrillouinZoneParentApply):
 
     def dispatch(self, method, eta_key="iter"):
         """ Dispatch the method by iterating values """
-        @wraps(method)
-        def func(*args, wrap=None, eta=False, **kwargs):
-            bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key=eta_key)
-            k = bz.k
-            w = bz.weight
-            for i in range(len(k)):
-                yield wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
-                eta.update()
-            eta.close()
+        pool = _pool_procs(self._attrs.get("pool", None))
+        if pool is None:
+            @wraps(method)
+            def func(*args, wrap=None, eta=False, **kwargs):
+                bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key=eta_key)
+                k = bz.k
+                w = bz.weight
+                for i in range(len(k)):
+                    yield wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
+                    eta.update()
+                eta.close()
+        else:
+            @wraps(method)
+            def func(*args, wrap=None, eta=False, **kwargs):
+                pool.restart()
+                bz, parent, wrap, _ = self._parse_kwargs(wrap)
+                k = bz.k
+                w = bz.weight
+
+                def func(k, w):
+                    return wrap(method(*args, k=k, **kwargs), parent=parent, k=k, weight=w)
+
+                yield from pool.imap(func, k, w)
+                # TODO notify users that this may be bad when used with zip
+                # unless this generator is the first argument of zip
+                # zip has left-to-right checks of length and stops querying
+                # elements as soon as the left-most one stops.
+                pool.terminate()
+                pool.restart()
 
         return func
 
@@ -156,30 +200,59 @@ class ArrayApply(BrillouinZoneParentApply):
 
     def dispatch(self, method, eta_key="array"):
         """ Dispatch the method by one array """
-        @wraps(method)
-        def func(*args, wrap=None, eta=False, **kwargs):
-            bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key=eta_key)
-            k = bz.k
-            w = bz.weight
+        pool = _pool_procs(self._attrs.get("pool", None))
+        if pool is None:
+            @wraps(method)
+            def func(*args, wrap=None, eta=False, **kwargs):
+                bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key=eta_key)
+                k = bz.k
+                w = bz.weight
 
-            # Get first values
-            v = wrap(method(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])
-            eta.update()
-
-            # Create full array
-            if v.ndim == 0:
-                a = np.empty([len(k)], dtype=v.dtype)
-            else:
-                a = np.empty((len(k), ) + v.shape, dtype=v.dtype)
-            a[0] = v
-            del v
-
-            for i in range(1, len(k)):
-                a[i] = wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
+                # Get first values
+                v = wrap(method(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])
                 eta.update()
-            eta.close()
 
-            return a
+                # Create full array
+                if v.ndim == 0:
+                    a = np.empty([len(k)], dtype=v.dtype)
+                else:
+                    a = np.empty((len(k), ) + v.shape, dtype=v.dtype)
+                a[0] = v
+                del v
+
+                for i in range(1, len(k)):
+                    a[i] = wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
+                    eta.update()
+                eta.close()
+
+                return a
+        else:
+            @wraps(method)
+            def func(*args, wrap=None, **kwargs):
+                pool.restart()
+                bz, parent, wrap, _ = self._parse_kwargs(wrap)
+                k = bz.k
+                w = bz.weight
+
+                def func(k, w):
+                    return wrap(method(*args, k=k, **kwargs), parent=parent, k=k, weight=w)
+
+                it = pool.imap(func, k, w)
+                v = next(it)
+                # Create full array
+                if v.ndim == 0:
+                    a = np.empty([len(k)], dtype=v.dtype)
+                else:
+                    a = np.empty((len(k), ) + v.shape, dtype=v.dtype)
+                a[0] = v
+
+                for i, v in enumerate(it):
+                    a[i+1] = v
+                del v
+                pool.terminate()
+                pool.restart()
+                return a
+
         return func
 
 
@@ -189,19 +262,37 @@ class AverageApply(BrillouinZoneParentApply):
 
     def dispatch(self, method):
         """ Dispatch the method by averaging """
-        @wraps(method)
-        def func(*args, wrap=None, eta=False, **kwargs):
-            bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key="average")
-            # Do actual average
-            k = bz.k
-            w = bz.weight
-            v = _asoplist(wrap(method(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])) * w[0]
-            eta.update()
-            for i in range(1, len(k)):
-                v += _asoplist(wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])) * w[i]
+        pool = _pool_procs(self._attrs.get("pool", None))
+        if pool is None:
+            @wraps(method)
+            def func(*args, wrap=None, eta=False, **kwargs):
+                bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key="average")
+                # Do actual average
+                k = bz.k
+                w = bz.weight
+                v = _asoplist(wrap(method(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])) * w[0]
                 eta.update()
-            eta.close()
-            return v
+                for i in range(1, len(k)):
+                    v += _asoplist(wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])) * w[i]
+                    eta.update()
+                eta.close()
+                return v
+        else:
+            @wraps(method)
+            def func(*args, wrap=None, **kwargs):
+                pool.restart()
+                bz, parent, wrap, _ = self._parse_kwargs(wrap)
+                k = bz.k
+                w = bz.weight
+
+                def func(k, w):
+                    return wrap(method(*args, k=k, **kwargs), parent=parent, k=k, weight=w) * w
+
+                iter_func = pool.uimap(func, k, w)
+                avg = reduce(op.add, iter_func, _asoplist(next(iter_func)))
+                pool.terminate()
+                pool.restart()
+                return avg
 
         return func
 
@@ -257,5 +348,4 @@ if not hasattr(BrillouinZone, "apply"):
     BrillouinZone.apply.register("none", NoneApply)
     BrillouinZone.apply.register("list", ListApply)
     BrillouinZone.apply.register("oplist", OpListApply)
-    if _has_xarray:
-        BrillouinZone.apply.register("dataarray", DataArrayApply)
+    BrillouinZone.apply.register("dataarray", DataArrayApply)
