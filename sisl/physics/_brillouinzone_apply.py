@@ -61,7 +61,6 @@ def _pool_procs(pool):
         import pathos as pos
         pool = pos.pools.ProcessPool(nodes=pool)
     pool.terminate()
-    pool.restart()
     return pool
 
 
@@ -129,7 +128,6 @@ class IteratorApply(BrillouinZoneParentApply):
                 # zip has left-to-right checks of length and stops querying
                 # elements as soon as the left-most one stops.
                 pool.terminate()
-                pool.restart()
 
         return func
 
@@ -250,7 +248,6 @@ class ArrayApply(BrillouinZoneParentApply):
                     a[i+1] = v
                 del v
                 pool.terminate()
-                pool.restart()
                 return a
 
         return func
@@ -291,7 +288,6 @@ class AverageApply(BrillouinZoneParentApply):
                 iter_func = pool.uimap(func, k, w)
                 avg = reduce(op.add, iter_func, _asoplist(next(iter_func)))
                 pool.terminate()
-                pool.restart()
                 return avg
 
         return func
