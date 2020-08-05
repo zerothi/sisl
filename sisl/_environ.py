@@ -29,7 +29,7 @@ def register_environ_variable(name, default,
     Raises
     ------
     ValueError: if `name` does not start with "SISL_"
-    """    
+    """
     if not name.startswith("SISL_"):
         raise ValueError("register_environ_variable: name should start with 'SISL_'")
     if process is None:

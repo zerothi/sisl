@@ -17,11 +17,43 @@ def _dict_to_str(name, d, parser=None):
     """ Convert a dict to __str__ representation """
     if parser is None:
         def parser(kv):
-            return f" {kv[0]} = {kv[1]}"
+            return f" {kv[0]}: {kv[1]}"
     d_str = ",\n ".join(map(parser, d.items()))
     if len(d_str) > 0:
         return f"{name} ({len(d)}): [\n {d_str}\n ]"
     return ""
+
+
+class DispatcherContext:
+    """ Context creator for dispatch methods to hold attributes
+
+    This context allows one to change the attributes in sub-contexts.
+    """
+    __slots__ = ("obj", "attrs", "overlap", "new", "store")
+
+    def __init__(self, obj, **attrs):
+        self.obj = obj
+        self.attrs = attrs
+        self.overlap = None
+        self.new = None
+        self.store = None
+
+    def __enter__(self):
+        # original keys in object
+        obj_attrs = self.obj._attrs
+        # retrieve overlapping stuff
+        self.overlap = obj_attrs.keys() & self.attrs.keys()
+        # get keys that are new
+        self.new = self.attrs.keys() - obj_attrs.keys()
+        # these should be restored on exit
+        self.store = {key: obj_attrs[key] for key in self.overlap}
+        self.obj._attrs.update(self.attrs)
+        return self.obj
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        self.obj._attrs.update(self.store)
+        for key in self.new:
+            del self.obj._attrs[key]
 
 
 class AbstractDispatch(metaclass=ABCMeta):
@@ -56,9 +88,6 @@ class AbstractDispatch(metaclass=ABCMeta):
         def func(*args, **kwargs):
             return method(*args, **kwargs)
         return func
-
-    def __call__(self, method):
-        return self.dispatch(method)
 
     def __getattr__(self, key):
         method = getattr(self._obj, key)
@@ -159,7 +188,7 @@ class ObjectDispatcher(Dispatcher):
 
     def __str__(self):
         obj = str(self._obj).replace("\n", "\n ")
-        return super().__str__().replace(",\n", f",\n {obj},\n", 1)
+        return super().__str__().replace("{", f"{{\n {obj},\n ", 1)
 
     def register(self, key, dispatch, default=False, to_class=True):
         """ Register a dispatch class to this object and to the object class instance (if existing)
@@ -183,6 +212,15 @@ class ObjectDispatcher(Dispatcher):
             cls_dispatch = getattr(self._obj.__class__, self._cls_attr_name, None)
             if isinstance(cls_dispatch, ClassDispatcher):
                 cls_dispatch.register(key, dispatch)
+
+    def __call__(self, **attrs):
+        return DispatcherContext(self, **attrs)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, exc_type, exc_value, traceback):
+        pass
 
     def __getitem__(self, key):
         r""" Retrieve dispatched dispatchs by hash (allows functions to be dispatched) """
