@@ -69,22 +69,6 @@ class Geometry(SuperCellChild):
        }
 
 
-    Attributes
-    ----------
-    na
-    xyz : numpy.ndarray
-        atomic coordinates
-    atoms
-    orbitals
-    sc : SuperCell
-        the supercell describing the periodicity of the
-        geometry
-    no
-    n_s : int
-        total number of supercells in the supercell
-    no_s : int
-        total number of orbitals in the geometry times number of supercells
-
     Parameters
     ----------
     xyz : array_like

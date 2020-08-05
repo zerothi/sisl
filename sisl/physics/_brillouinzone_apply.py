@@ -328,20 +328,19 @@ class DataArrayApply(ArrayApply):
         return func
 
 
-if not hasattr(BrillouinZone, "apply"):
-    # Add dispatcher methods
-    # Since apply is a built-in, we cannot do "BrillouinZone.assign = ..."
-    setattr(BrillouinZone, "apply",
-            ClassDispatcher("apply",
-                            obj_getattr=lambda obj, key: getattr(obj.parent, key)
-            )
-    )
-    # Register dispatched functions
-    BrillouinZone.apply.register("iter", IteratorApply, default=True)
-    BrillouinZone.apply.register("average", AverageApply)
-    BrillouinZone.apply.register("sum", SumApply)
-    BrillouinZone.apply.register("array", ArrayApply)
-    BrillouinZone.apply.register("none", NoneApply)
-    BrillouinZone.apply.register("list", ListApply)
-    BrillouinZone.apply.register("oplist", OpListApply)
-    BrillouinZone.apply.register("dataarray", DataArrayApply)
+# Add dispatcher methods
+# Since apply is a built-in, we cannot do "BrillouinZone.assign = ..."
+setattr(BrillouinZone, "apply",
+        ClassDispatcher("apply",
+                        obj_getattr=lambda obj, key: getattr(obj.parent, key)
+        )
+)
+# Register dispatched functions
+BrillouinZone.apply.register("iter", IteratorApply, default=True)
+BrillouinZone.apply.register("average", AverageApply)
+BrillouinZone.apply.register("sum", SumApply)
+BrillouinZone.apply.register("array", ArrayApply)
+BrillouinZone.apply.register("none", NoneApply)
+BrillouinZone.apply.register("list", ListApply)
+BrillouinZone.apply.register("oplist", OpListApply)
+BrillouinZone.apply.register("dataarray", DataArrayApply)

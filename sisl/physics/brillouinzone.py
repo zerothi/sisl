@@ -81,6 +81,55 @@ to use `~sisl.oplist` to handle cases of `BrillouinZone.apply.average` and `Bril
 
 Which does mathematical operations (averaging/summing) using `~sisl.oplist`.
 
+
+Parallel calculations
+---------------------
+
+The ``apply`` method looping k-points may be explicitly parallelized.
+To run parallel do:
+
+>>> H = Hamiltonian(...)
+>>> mp = MonkhorstPack(H, [10, 10, 10])
+>>> with mp.apply(pool=True) as par:
+...     par.eigh()
+
+This requires you also have the package ``pathos`` available.
+The above will run in parallel using a default number of processors
+in priority:
+
+1. Environment variable ``SISL_NPROCS``
+2. Return value of ``os.cpu_count()``.
+
+Note that this may interfere with BLAS implementation which defaults
+to use all CPU's for threading. The total processors/threads that will
+be created is ``SISL_NPROCS * OMP_NUM_THREADS``. Try and ensure this is below
+the actual core-count of your machine (or the number of requested cores in a
+HPC environment).
+
+
+Alternatively one can control the number of processors locally by doing:
+
+>>> H = Hamiltonian(...)
+>>> mp = MonkhorstPack(H, [10, 10, 10])
+>>> with mp.apply(pool=2) as par:
+...     par.eigh()
+
+which will request 2 processors (regardless of core-count).
+As a last resort you can pass your own ``Pool`` of workers that
+will be used for the parallel processing.
+
+>>> from multiprocessing import Pool
+>>> pool = Pool(4)
+>>> H = Hamiltonian(...)
+>>> mp = MonkhorstPack(H, [10, 10, 10])
+>>> with mp.apply(pool=pool) as par:
+...     par.eigh()
+
+The ``Pool`` should implement some standard methods that are
+existing in the ``pathos`` enviroment such as ``Pool.restart`` and ``Pool.terminate``
+and ``imap`` and ``uimap`` methods. See the ``pathos`` documentation for detalis.
+
+
 .. autosummary::
    :toctree:
 
@@ -168,6 +217,42 @@ class BrillouinZone:
         with warnings.catch_warnings():
             warnings.filterwarnings('ignore')
             self.asarray()
+
+    def apply(self, **attrs):
+        r""" Loop over all k-points by applying `parent` methods for all k.
+
+        This allows great potential for running and collecting various computationally
+        heavy methods from a single point on all k-points.
+
+        The `apply` method will *dispatch* the parent methods through all k-points
+        and passing `k` as arguments to the parent methods in a straight-forward manner.
+
+        For instance to iterate over all eigenvalues of a Hamiltonian
+
+        >>> H = Hamiltonian(...)
+        >>> bz = BrillouinZone(H)
+        >>> for ik, eigh in enumerate(bz.apply.eigh()):
+        ...    # do something with eigh which corresponds to bz.k[ik]
+
+        By default the `apply` method exposes a set of dispatch methods:
+
+        - `apply.iter`, the default iterator module
+        - `apply.average` reduced result by averaging (using `BrillouinZone.weight`
+           as the weight per k-point.
+        - `apply.sum` reduced result without weighing
+        - `apply.array` return a single array with all values; has `len` equal to
+           number of k-points
+        - `apply.none`, specialized method that is mainly useful when wrapping
+           methods
+        - `apply.list` same as `apply.array` but using Python list as return value
+        - `apply.oplist` using `sisl.oplist` allows greater flexibility for mathematical
+           operations element wise
+        - `apply.datarray` if `xarray` is available one can retrieve an `xarray.DataArray`
+           instance
+
+        Please see `sisl.physics.brillouinzone` for further examples.
+        """
+        pass
 
     def set_parent(self, parent):
         """ Update the parent associated to this object

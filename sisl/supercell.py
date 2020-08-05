@@ -47,10 +47,6 @@ class SuperCell:
     ----------
     cell : (3, 3) of float
        the lattice vectors (``cell[i, :]`` is the i'th vector)
-    icell : (3, 3) of float
-       the inverse lattice vectors (``icell[i, :]`` is the i'th vector inverse lattice vector)
-    rcell : (3, 3) of float
-       the reciprocal lattice vectors, equivalent to ``icell * 2 * pi``
     """
 
     # We limit the scope of this SuperCell object.
