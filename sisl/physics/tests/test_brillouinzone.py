@@ -284,9 +284,10 @@ class TestBrillouinZone:
 
         bz = MonkhorstPack(H, [2, 2, 2], trs=False)
 
-        # We need to ensure that all functions does the same
+        # Check that the ObjectDispatcher works
         apply = bz.apply
         papply = bz.apply(pool=True)
+        assert str(apply) != str(papply)
 
         for method in ["iter", "average", "sum", "array", "list", "oplist"]:
             # TODO One should be careful with zip
@@ -295,6 +296,20 @@ class TestBrillouinZone:
             # So if a generator has some clean-up code one has to use zip_longest
             # regardless of method
             for v1, v2 in zip(papply[method].eigh(), apply[method].eigh()):
+                assert np.allclose(v1, v2)
+
+        # Check that the MethodDispatcher works
+        apply = bz.apply.eigh
+        papply = bz.apply(pool=True).eigh
+        assert str(apply) != str(papply)
+
+        for method in ["iter", "average", "sum", "array", "list", "oplist"]:
+            # TODO One should be careful with zip
+            # zip will stop when it hits the final element in the first
+            # list.
+            # So if a generator has some clean-up code one has to use zip_longest
+            # regardless of method
+            for v1, v2 in zip(papply[method](), apply[method]()):
                 assert np.allclose(v1, v2)
 
     def test_as_single(self):

@@ -44,21 +44,22 @@ class AbstractDispatch(metaclass=ABCMeta):
             return f"{self.__class__.__name__}{{{obj}}}"
         return f"{self.__class__.__name__}{{{obj}, {attrs}\n}}"
 
-    ####
-    # Only the following methods are necessary for the dispatch method to work
-    ####
-
     @abstractmethod
     def dispatch(self, method):
         """ Create dispatched method with correctly wrapped documentation
 
         This should return a function that mimics method but wraps it
         in some way.
+
+        A basic interception would be
+
+        .. code:: python
+            @wraps(method)
+            def func(*args, **kwargs):
+                return method(*args, **kwargs)
+
         """
-        @wraps(method)
-        def func(*args, **kwargs):
-            return method(*args, **kwargs)
-        return func
+        pass
 
     def __getattr__(self, key):
         method = getattr(self._obj, key)

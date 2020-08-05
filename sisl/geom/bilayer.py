@@ -1,6 +1,7 @@
+from numbers import Integral
 import numpy as np
-
 from math import acos, pi
+
 from sisl._internal import set_module
 from sisl import geom, Atom, Cuboid
 
@@ -75,7 +76,7 @@ def bilayer(bond=1.42, bottom_atoms=None, top_atoms=None, stacking='AB',
         # Set m as the smaller integer
         m, n = n, m
 
-    if not (isinstance(n, int) and isinstance(m, int)):
+    if not (isinstance(n, Integral) and isinstance(m, Integral)):
         raise ValueError("bilayer: twist coordinates need to be integers!")
 
     if m == n:

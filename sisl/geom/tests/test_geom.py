@@ -49,6 +49,15 @@ def test_bilayer():
     a = bilayer(1.42, top_atoms=(Atom(5), Atom(7)), twist=(6, 7))
     a, th = bilayer(1.42, twist=(6, 7), ret_angle=True)
 
+    with pytest.raises(ValueError):
+        bilayer(1.42, twist=(6, 7), layer='undefined')
+
+    with pytest.raises(ValueError):
+        bilayer(1.42, twist=(6, 7), stacking='undefined')
+
+    with pytest.raises(ValueError):
+        bilayer(1.42, twist=('str', 7), stacking='undefined')
+
 
 def test_nanoribbon():
     for w in range(0, 5):
@@ -56,6 +65,12 @@ def test_nanoribbon():
         a = nanoribbon(1.42, Atom(6), w, kind='zigzag')
         a = nanoribbon(1.42, (Atom(5), Atom(7)), w, kind='armchair')
         a = nanoribbon(1.42, (Atom(5), Atom(7)), w, kind='zigzag')
+
+    with pytest.raises(ValueError):
+        nanoribbon(1.42, (Atom(5), Atom(7)), 6, kind='undefined')
+
+    with pytest.raises(ValueError):
+        nanoribbon(1.42, (Atom(5), Atom(7)), 'str', kind='undefined')
 
 
 def test_graphene_nanoribbon():
