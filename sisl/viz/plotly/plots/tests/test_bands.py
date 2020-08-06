@@ -8,24 +8,23 @@ Different inputs are tested (siesta .bands and sisl Hamiltonian).
 
 from xarray import DataArray
 import numpy as np
+import pytest
 import itertools
+from functools import partial
 
 import sisl
 from sisl.viz import BandsPlot
 from sisl.viz.plotly.plots.tests.get_files import from_files
+from sisl.viz.plotly.plots.tests.helpers import PlotTester
 
-# ------------------------------------------------------------
-#         Build a generic tester for the bands plot
-# ------------------------------------------------------------
+class BandsPlotTester(PlotTester):
 
-
-class BandsPlotTester:
-
-    plot = None
-    bands_shape = ()
-    gap = None
-    ticktext = None
-    tickvals = None
+    _required_attrs = [
+        "bands_shape", # Tuple specifying the shape of the bands dataarray
+        "gap", # Float. The value of the gap in eV
+        "ticklabels", # Array-like with the tick labels
+        "tickvals" # Array-like with the expected positions of the ticks
+    ]
 
     def test_bands_dataarray(self):
         """
@@ -49,7 +48,7 @@ class BandsPlotTester:
 
         # Now check if the ticks are correctly set
         assert np.allclose(list(self.tickvals), self.plot.figure.layout.xaxis.tickvals, rtol=0.01)
-        assert np.all(list(self.ticktext) == list(self.plot.figure.layout.xaxis.ticktext))
+        assert np.all(list(self.ticklabels) == list(self.plot.figure.layout.xaxis.ticktext))
 
     def test_gap(self):
 
@@ -70,7 +69,7 @@ class BandsPlotTester:
 
         prev_traces = len(plot.data)
 
-        gaps = list(itertools.combinations(self.ticktext, 2))
+        gaps = list(itertools.combinations(self.ticklabels, 2))
 
         plot.update_settings(custom_gaps=[{"from": gap[0], "to": gap[1]} for gap in gaps])
 
@@ -88,62 +87,8 @@ class BandsPlotTester:
         assert np.all([
             np.allclose(old_trace.y, new_trace.y)
             for old_trace, new_trace in zip(from_labels, plot.data[-len(gaps):])])
-        
 
-
-# ------------------------------------------------------------
-#       Test the bands plot reading from siesta .bands
-# ------------------------------------------------------------
-bands_file = from_files("SrTiO3.bands")
-
-
-class TestBandsSiestaOutput(BandsPlotTester):
-
-    plot = BandsPlot(bands_file=bands_file)
-    bands_shape = (150, 1, 72)
-    ticktext = ('Gamma', 'X', 'M', 'Gamma', 'R', 'X')
-    tickvals = [0.0, 0.429132, 0.858265, 1.465149, 2.208428, 2.815313]
-    gap = 1.677
-
-# ------------------------------------------------------------
-#     Test the bands plot reading from a sisl Hamiltonian
-# ------------------------------------------------------------
-
-gr = sisl.geom.graphene()
-H = sisl.Hamiltonian(gr)
-H.construct([(0.1, 1.44), (0, -2.7)])
-bz = sisl.BandStructure(H, [[0, 0, 0], [2/3, 1/3, 0], [1/2, 0, 0]], 9, ["Gamma", "M", "K"])
-
-
-class TestBandsSislHamiltonian(BandsPlotTester):
-
-    plot = BandsPlot(band_structure=bz)
-    bands_shape = (9, 1, 2)
-    gap = 0
-    ticktext = ["Gamma", "M", "K"]
-    tickvals = [0., 1.70309799, 2.55464699]
-
-path = [{"active": True, "x": x, "y": y, "z": z, "divisions": 3,
-            "tick": tick} for tick, (x, y, z) in zip(["Gamma", "M", "K"], [[0, 0, 0], [2/3, 1/3, 0], [1/2, 0, 0]])]
-
-
-class TestBandsPathSislHamiltonian(TestBandsSislHamiltonian):
-
-    plot = BandsPlot(H=H, path=path)
-    bands_shape = (6, 1, 2)
-
-
-H = sisl.get_sile(from_files("fe_clust_noncollinear.TSHS")).read_hamiltonian()
-bz = sisl.BandStructure(H, [[0, 0, 0], [0.5, 0, 0]], 3, ["Gamma", "X"])
-
-
-class TestNCSpinbands(BandsPlotTester):
-
-    plot = bz.plot()
-    bands_shape = (3, 1, 90)
-    gap = 0.40
-    ticktext = ["Gamma", "X"]
-    tickvals = [0., 0.49472934]
+class NCSpinBandsTester(BandsPlotTester):
 
     def test_spin_moments(self):
 
@@ -172,3 +117,68 @@ class TestNCSpinbands(BandsPlotTester):
             assert np.all(expected == displayed), f"Colors of spin textured bands not correctly set (band {band})"
 
         plot.update_settings(spin=None)
+
+# Define the dictionary where we will store all the plots that we want to try out
+bands_plots = {}
+
+# ---- From siesta.bands
+
+bands_file = sisl.get_sile(from_files("SrTiO3.bands"))
+
+bands_plots["siesta_output"] = {
+    "init_func": bands_file.plot,
+    "bands_shape": (150, 1, 72),
+    "ticklabels": ('Gamma', 'X', 'M', 'Gamma', 'R', 'X'),
+    "tickvals": [0.0, 0.429132, 0.858265, 1.465149, 2.208428, 2.815313],
+    "gap": 1.677
+}
+
+# ---- From a hamiltonian generated in sisl
+
+gr = sisl.geom.graphene()
+H = sisl.Hamiltonian(gr)
+H.construct([(0.1, 1.44), (0, -2.7)])
+bz = sisl.BandStructure(H, [[0, 0, 0], [2/3, 1/3, 0], [1/2, 0, 0]], 9, ["Gamma", "M", "K"])
+
+bands_plots["sisl_H"] = {
+    "init_func": bz.plot.bind(),
+    "bands_shape": (9, 1, 2),
+    "ticklabels": ["Gamma", "M", "K"],
+    "tickvals": [0., 1.70309799, 2.55464699],
+    "gap": 0
+}
+
+# ---- From a hamiltonian generated in sisl but passing a path
+# ---- (as if we were providing the input from the GUI)
+
+path = [{"active": True, "x": x, "y": y, "z": z, "divisions": 3,
+            "tick": tick} for tick, (x, y, z) in zip(["Gamma", "M", "K"], [[0, 0, 0], [2/3, 1/3, 0], [1/2, 0, 0]])]
+
+bands_plots["sisl_H_path"] = {
+    "init_func": partial(H.plot.bind().bands, path=path),
+    "bands_shape": (6, 1, 2),
+    "ticklabels": ["Gamma", "M", "K"],
+    "tickvals": [0., 1.70309799, 2.55464699],
+    "gap": 0,
+}
+
+# ---- From a non collinear calculation in SIESTA
+
+H = sisl.get_sile(from_files("fe_clust_noncollinear.TSHS")).read_hamiltonian()
+bz = sisl.BandStructure(H, [[0, 0, 0], [0.5, 0, 0]], 3, ["Gamma", "X"])
+
+
+class TestBandsPlot(BandsPlotTester):
+    run_for = bands_plots
+
+class TestNCSpinBands(NCSpinBandsTester):
+
+    run_for = {
+        "NCspin_H" : {
+            "init_func": bz.plot.bind(),
+            "bands_shape": (3, 1, 90),
+            "ticklabels": ["Gamma", "X"],
+            "tickvals": [0., 0.49472934],
+            "gap": 0.40,
+        }
+    }

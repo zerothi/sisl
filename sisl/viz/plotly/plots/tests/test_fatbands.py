@@ -9,7 +9,7 @@ import numpy as np
 
 import sisl
 from sisl.viz import FatbandsPlot
-from sisl.viz.plotly.plots.tests.test_bands import BandsPlotTester
+from sisl.viz.plotly.plots.tests.test_bands import BandsPlotTester, NCSpinBandsTester
 
 # ------------------------------------------------------------
 #         Build a generic tester for the bands plot
@@ -17,6 +17,11 @@ from sisl.viz.plotly.plots.tests.test_bands import BandsPlotTester
 
 
 class FatbandsPlotTester(BandsPlotTester):
+
+    _required_attrs = [
+        *BandsPlotTester._required_attrs,
+        "weights_shape", # Tuple. The shape that self.weights dataarray is expected to have
+    ]
 
     def test_weights_dataarray(self):
         """
@@ -76,36 +81,39 @@ class FatbandsPlotTester(BandsPlotTester):
 #    Test the fatbands plot reading from a sisl Hamiltonian
 # ------------------------------------------------------------
 
+fatbands_plots = {}
+
 gr = sisl.geom.graphene()
 H = sisl.Hamiltonian(gr)
 H.construct([(0.1, 1.44), (0, -2.7)])
 bz = sisl.BandStructure(H, [[0, 0, 0], [2/3, 1/3, 0], [1/2, 0, 0]], 9, ["Gamma", "M", "K"])
 
-
-class TestFatbandsSislHamiltonian(FatbandsPlotTester):
-
-    plot = FatbandsPlot(H=H, band_structure=bz)
-    bands_shape = (9, 1, 2)
-    weights_shape = (1, 9, 2, 2)
-    gap = 0
-    ticktext = ["Gamma", "M", "K"]
-    tickvals = [0., 1.70309799, 2.55464699]
-    groups = {}
-
-
-class TestFatbandsBandStructure(TestFatbandsSislHamiltonian):
-
-    plot = FatbandsPlot(band_structure=bz)
+fatbands_plots["sisl_H"] = {
+    "init_func": bz.plot.bind().fatbands,
+    "bands_shape": (9, 1, 2),
+    "weights_shape": (1, 9, 2, 2),
+    "gap": 0,
+    "ticklabels": ["Gamma", "M", "K"],
+    "tickvals": [0., 1.70309799, 2.55464699],
+}
 
 H = sisl.get_sile("/home/pfebrer/Simulations/siesta/siesta-4.1-b4/Tests/fe_clust_noncollinear/work/fe_clust_noncollinear.TSHS").read_hamiltonian()
 bz = sisl.BandStructure(H, [[0, 0, 0], [0.5, 0, 0]], 3, ["Gamma", "X"])
 
+class TestFatbandsPlot(FatbandsPlotTester):
 
-class TestNCSpinFatbands(FatbandsPlotTester):
+    run_for = fatbands_plots
 
-    plot = bz.plot.fatbands()
-    bands_shape = (3, 1, 90)
-    weights_shape = (1, 3, 90, H.geometry.no)
-    gap = 0.40
-    ticktext = ["Gamma", "X"]
-    tickvals = [0., 0.49472934]
+class TestNCSpinFatbands(FatbandsPlotTester, NCSpinBandsTester):
+
+    run_for = { 
+        
+        "siesta_H": {
+            "init_func": bz.plot.bind().fatbands,
+            "bands_shape": (3, 1, 90),
+            "weights_shape": (1, 3, 90, H.geometry.no),
+            "gap": 0.40,
+            "ticklabels": ["Gamma", "X"],
+            "tickvals": [0., 0.49472934]
+        }
+    }

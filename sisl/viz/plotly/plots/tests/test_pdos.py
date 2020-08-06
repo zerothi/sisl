@@ -8,23 +8,27 @@ Different inputs are tested (siesta .PDOS and sisl Hamiltonian).
 
 from xarray import DataArray
 import numpy as np
-from sisl.viz.plotly.plots.tests.get_files import from_files
+from functools import partial
 
 import sisl
 from sisl.viz import PdosPlot
+
+from sisl.viz.plotly.plots.tests.get_files import from_files
+from sisl.viz.plotly.plots.tests.helpers import PlotTester
 
 # ------------------------------------------------------------
 #         Build a generic tester for the bands plot
 # ------------------------------------------------------------
 
 
-class PdosPlotTester:
+class PdosPlotTester(PlotTester):
 
-    plot = None
-    na = 0
-    no = 0
-    n_spin = 1
-    species = []
+    _required_attrs = [
+        "na", # int, number of atoms in the geometry
+        "no", # int, number of orbitals in the geometry
+        "n_spin", # int, number of spin components for the PDOS
+        "species", # array-like of str. The names of the species.
+    ]
 
     def test_dataarray(self):
 
@@ -83,34 +87,35 @@ class PdosPlotTester:
         prev = len(plot.data)
         assert len(plot.remove_requests(0).data) == prev - 1
 
-# ------------------------------------------------------------
-#       Test the pdos plot reading from siesta .PDOS
-# ------------------------------------------------------------
 
-pdos_file = from_files("SrTiO3.PDOS")
+pdos_plots = {}
 
+# ---- For a siesta PDOS file
 
-class TestPDOSSiestaOutput(PdosPlotTester):
+pdos_file = sisl.get_sile(from_files("SrTiO3.PDOS"))
 
-    plot = PdosPlot(pdos_file=pdos_file)
-    na = 5
-    no = 72
-    n_spin = 1
-    species = ('Sr', 'Ti', 'O')
+pdos_plots["siesta_PDOS_file"] = {
+    "init_func": pdos_file.plot.bind(),
+    "na": 5,
+    "no": 72,
+    "n_spin": 1,
+    "species": ('Sr', 'Ti', 'O')
+}
 
-# ------------------------------------------------------------
-#     Test the PDOS plot reading from a sisl Hamiltonian
-# ------------------------------------------------------------
+# ---- From a hamiltonian generated in sisl
+
 
 gr = sisl.geom.graphene()
 H = sisl.Hamiltonian(gr)
 H.construct([(0.1, 1.44), (0, -2.7)])
 
+pdos_plots["sisl_H"] = {
+    "init_func": partial(H.plot.bind().pdos, Erange=[-5, 5]),
+    "na": 2,
+    "no": 2,
+    "n_spin": 1,
+    "species": ('C',)
+}
 
-class TestPDOSSislHamiltonian(PdosPlotTester):
-
-    plot = PdosPlot(H=H, Erange=[-5, 5])
-    na = 2
-    no = 2
-    n_spin = 1
-    species = ('C',)
+class TestPDOSPlot(PdosPlotTester):
+    run_for = pdos_plots

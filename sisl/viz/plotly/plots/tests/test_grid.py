@@ -14,16 +14,13 @@ import sisl
 from sisl.viz import GridPlot
 from sisl.viz import Animation
 from sisl.viz.plotly.plots.tests.get_files import from_files
+from sisl.viz.plotly.plots.tests.helpers import PlotTester
 
-# ------------------------------------------------------------
-#         Build a generic tester for the bands plot
-# ------------------------------------------------------------
+class GridPlotTester(PlotTester):
 
-
-class GridPlotTester:
-
-    plot = None
-    grid_shape = []
+    _required_attrs = [
+        "grid_shape" # Tuple indicating the grid shape
+    ]
 
     def test_plotting_modes(self):
 
@@ -102,14 +99,16 @@ class GridPlotTester:
         assert np.allclose(plot.data[0].y, np.cos(plot.grid.grid).mean(2).mean(1))
 
 
-# ------------------------------------------------------------
-#       Test the grid plot reading from siesta .RHO
-# ------------------------------------------------------------
+# ----- Test with a siesta RHO file
 
-grid_file = from_files("SrTiO3.RHO")
+grid_file = sisl.get_sile(from_files("SrTiO3.RHO"))
 
 
-class TestGridSiestaOutput(GridPlotTester):
+class TestGridPlot(GridPlotTester):
 
-    plot = GridPlot(grid_file=grid_file)
-    grid_shape = (48, 48, 48)
+    run_for = {
+        "siesta_RHO": {
+            "init_func": grid_file.plot.bind(),
+            "grid_shape": (48, 48, 48)
+        }
+    }

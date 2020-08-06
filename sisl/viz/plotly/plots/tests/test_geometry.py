@@ -12,15 +12,9 @@ import plotly.graph_objs as go
 import sisl
 from sisl.viz import GeometryPlot
 from sisl.viz.plotly.plots.tests.get_files import from_files
+from sisl.viz.plotly.plots.tests.helpers import PlotTester
 
-# ------------------------------------------------------------
-#      Build a generic tester for the geometry plot
-# ------------------------------------------------------------
-
-
-class GeometryPlotTester:
-
-    plot = None
+class GeometryPlotTester(PlotTester):
 
     def test_1d(self):
         # Remains untested for now as there is no clear behavior
@@ -101,11 +95,10 @@ class GeometryPlotTester:
             plot.update_settings(atom=[0], bonds=True, bind_bonds_to_ats=False)
             assert len(plot.data[0].x) > prev_len
 
-# ------------------------------------------------------------
-#              Test it with a sisl geometry
-# ------------------------------------------------------------
 
+class TestGeometryPlot(GeometryPlotTester):
 
-class TestSislGeometryPlot(GeometryPlotTester):
-
-    plot = sisl.geom.graphene(orthogonal=True).plot()
+    run_for = {
+        "sisl_geom": {"init_func": sisl.geom.graphene(orthogonal=True).plot.bind() },
+        "ghost_atoms": {"init_func": sisl.Geometry([[0, 0, 1], [1, 0, 0]], atoms=[sisl.Atom(6), sisl.Atom(-6)]).plot.bind() }
+    }

@@ -1,3 +1,5 @@
+from functools import partial
+
 import sisl
 from sisl.viz import BondLengthMap
 from sisl.viz.plotly.plots.tests.test_geometry import GeometryPlotTester
@@ -9,7 +11,7 @@ from sisl.viz.plotly.plots.tests.test_geometry import GeometryPlotTester
 
 class BondLengthMapTester(GeometryPlotTester):
 
-    has_strain_ref = False
+    _required_attrs = ["has_strain_ref"]
 
     def test_strain_ref(self):
 
@@ -27,11 +29,15 @@ class BondLengthMapTester(GeometryPlotTester):
 #            Test it with two sisl geometries
 # ------------------------------------------------------------
 
+class TestBondLengthMap(BondLengthMapTester):
 
-class TestSislBondLength(BondLengthMapTester):
+    run_for = {
+        "sisl_geom_strain": {
+            "init_func": partial(BondLengthMap,
+                    geometry=sisl.geom.graphene(orthogonal=True, bond=1.35),
+                    strain_ref=sisl.geom.graphene(orthogonal=True)
+                ),
+            "has_strain_ref": True
+        }
+    }
 
-    plot = BondLengthMap(
-        geometry=sisl.geom.graphene(orthogonal=True, bond=1.35),
-        strain_ref=sisl.geom.graphene(orthogonal=True)
-    )
-    has_strain_ref = True
