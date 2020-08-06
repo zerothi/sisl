@@ -427,12 +427,10 @@ class BaseSile:
 
     def __getstate__(self):
         """This method and __setstate__ avoid errors when pickling siles"""
-
         return self.__dict__ 
 
     def __setstate__(self, state):
-        """This method and __getstate__ avoid errors when pickling siles"""
-            
+        """This method and __getstate__ avoid errors when pickling siles""" 
         self.__dict__ = state
 
     @classmethod
