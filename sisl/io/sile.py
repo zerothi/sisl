@@ -425,6 +425,16 @@ class BaseSile:
             raise AttributeError(f"The filehandle for {self.file} has not been opened yet...")
         return getattr(self.fh, name)
 
+    def __getstate__(self):
+        """This method and __setstate__ avoid errors when pickling siles"""
+
+        return self.__dict__ 
+
+    def __setstate__(self, state):
+        """This method and __getstate__ avoid errors when pickling siles"""
+            
+        self.__dict__ = state
+
     @classmethod
     def _ArgumentParser_args_single(cls):
         """ Default arguments for the Sile """
