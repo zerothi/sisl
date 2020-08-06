@@ -41,7 +41,7 @@ min_version ={
 viz = {
     "plotly": [
         'tqdm', # for niceness
-        'dill', # for pathos
+        'dill >= 0.3.2', # for pathos and for saving plots (a lower version raises https://github.com/pfebrer96/sisl/issues/11)
         'pathos', # for multiprocessing,
         'plotly',
         'pandas',

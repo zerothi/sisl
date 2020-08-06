@@ -1707,11 +1707,7 @@ class Plot(ShortCutable, Configurable, Connected):
         Removes from the instance the attributes that are not pickleable.
         """
 
-        unpickleableAttrs = ['fdf_sile']
-
-        for attr in ['fdf_sile']:
-            if hasattr(self, attr):
-                delattr(self, attr)
+        # Currently there is nothing unpickleable in plots :)
 
         return self
 
