@@ -820,7 +820,7 @@ class Session(Configurable, Connected):
 
         for SileClass, filepaths in files.items():
 
-            avail_plots = SileClass.plot.plotly._available_methods
+            avail_plots = list(SileClass.plot.plotly._raw_methods)
             default_plot = SileClass.plot.plotly._default
 
             # Extend the plotables dict with the files that we find that belong to this sile

@@ -214,6 +214,66 @@ class OrbitalQueries(QueriesInput):
 
         return filtered_df.index
 
+    def _split_query(self, query, on, only=None, exclude=None, query_gen=None, **kwargs):
+        """
+        Splits a query into multiple queries based on one of its parameters.
+
+        Parameters
+        --------
+        query: dict
+            the query that we want to split
+        on: str, {"species", "atoms", "orbitals", "spin"}
+            the parameter to split along
+        only: array-like, optional
+            if desired, the only values that should be plotted out of
+            all of the values that come from the splitting.
+        exclude: array-like, optional
+            values of the splitting that should not be plotted.
+        query_gen: function, optional
+            the request generator. It is a function that takes all the parameters for each
+            request that this method has come up with and gets a chance to do some modifications.
+
+            This may be useful, for example, to give each request a color, or a custom name.
+        **kwargs:
+            keyword arguments that go directly to each new request.
+
+            This is useful to add extra filters. For example:
+
+            `self._split_query(request, on="orbitals", spin=[0])`
+            will split the request on the different orbitals but will take
+            only the contributions from spin up.
+        """
+        if exclude is None:
+            exclude = []
+
+        # Get the current values of the parameter that we want to split the request on
+        values = query[on]
+
+        # If it's None, it means that is getting all the possible values
+        if values is None:
+            values = self[on].options
+
+            # If the parameter is spin but the orbitals are not polarized we will not be providing
+            # options to the user, but in fact there is one option: 0
+            if on == "spin" and len(values) == 0:
+                values = [0]
+
+        # If no function to modify queries was provided we are just going to generate a
+        # dummy one that just returns the query as it gets it
+        if query_gen is None:
+            def query_gen(**kwargs):
+                return kwargs
+
+        queries = [
+            query_gen(**{**query, on: [value], "name": f'{query["name"]}, {value}', **kwargs})
+            for i, value in enumerate(values) if value not in exclude and (only is None or value in only)
+        ]
+
+        # Use only those queries that make sense
+        queries = [query for query in queries if len(self.get_orbitals(query)) > 0]
+
+        return queries
+
     def _generate_queries(self, on, only=None, exclude=None, clean=True, query_gen=None, **kwargs):
         '''
         Automatically generates queries based on the current options.
@@ -244,7 +304,7 @@ class OrbitalQueries(QueriesInput):
             exclude = []
 
         # First, we get all available values for the parameter we want to split
-        options = self.get_param(on)["inputField.params.options"]
+        options = self[on]["inputField.params.options"]
 
         # If the parameter is spin but the orbitals are not polarized we will not be providing
         # options to the user, but in fact there is one option: 0

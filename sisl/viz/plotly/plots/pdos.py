@@ -5,7 +5,7 @@ from collections import defaultdict
 
 import sisl
 from ..plot import Plot, entry_point
-from ..plotutils import find_files
+from ..plotutils import find_files, random_color
 from ..input_fields import TextInput, SileInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, OrbitalQueries, ProgramaticInput, Array1dInput, ListInput
 from ..input_fields.range import ErangeInput
 
@@ -115,10 +115,10 @@ class PdosPlot(Plot):
             queryForm = [
 
                 TextInput(
-                    key = "name", name = "Name",
-                    default = "DOS",
-                    width = "s100% m50% l20%",
-                    params = {
+                    key="name", name="Name",
+                    default="DOS",
+                    width="s100% m50% l20%",
+                    params={
                         "placeholder": "Name of the line..."
                     },
                 ),
@@ -126,22 +126,43 @@ class PdosPlot(Plot):
                 'species', 'atoms', 'orbitals', 'spin',
 
                 SwitchInput(
-                    key = "normalize", name = "Normalize",
-                    default = False,
-                    params = {
+                    key="normalize", name="Normalize",
+                    default=False,
+                    params={
                         "offLabel": "No",
                         "onLabel": "Yes"
                     }
                 ),
 
                 ColorPicker(
-                    key = "color", name = "Line color",
-                    default = None,
+                    key="color", name="Line color",
+                    default=None,
                 ),
 
                 FloatInput(
-                    key = "linewidth", name = "Line width",
-                    default = 1,
+                    key="linewidth", name="Line width",
+                    default=1,
+                ),
+
+                DropdownInput(
+                    key="dash", name="Line style",
+                    default="solid",
+                    params={
+                        "isMulti": False,
+                        "isClearable": False,
+                        "isSearchable": True,
+                        "options": [{"value": option, "label": option} for option in ("solid", "dot", "dash", "longdash", "dashdot", "longdashdot")]
+                    }
+                ),
+
+                DropdownInput(
+                    key="split_on", name="Split",
+                    default=None,
+                    params={
+                        "isMulti": False,
+                        "isSearchable": True,
+                        "options": [{"value": option, "label": option} for option in ("species", "atoms", "orbitals", "spin")]
+                    }
                 )
             ]
         ),
@@ -290,41 +311,92 @@ class PdosPlot(Plot):
 
         #Go request by request and plot the corresponding PDOS contribution
         for request in self.setting("requests"):
+            self._draw_request(request, E_PDOS, requests_param, E0)
 
-            request = self._new_request(**request)
-
-            #Use only the active requests
-            if not request["active"]:
-                continue
-
-            orb = requests_param.get_orbitals(request)
-
-            if len(orb) == 0:
-                # This request does not match any possible orbital
-                continue
-
-            req_PDOS = E_PDOS.sel(orb=orb)
-            if request['spin'] is not None:
-                req_PDOS = req_PDOS.sel(spin=request['spin'])
-
-            if request["normalize"]:
-                req_PDOS = req_PDOS.mean(["orb", "spin"])
-            else:
-                req_PDOS = req_PDOS.sum(["orb", "spin"])
-
-            self.add_trace({
-                'type': 'scatter',
-                'x': req_PDOS.values,
-                'y': req_PDOS.E.values - E0,
-                'mode': 'lines',
-                'name': request["name"],
-                'line': {'width': request["linewidth"], "color": request["color"]},
-                "hoverinfo": "name",
-            })
-
-            self.update_layout(yaxis_range=np.array([Emin - E0, Emax - E0]))
+        self.update_layout(yaxis_range=np.array([Emin - E0, Emax - E0]))
 
         return self.data
+
+    def _draw_request(self, request, E_PDOS, requests_param, E0):
+        """
+        Draws a given PDOS request.
+
+        This has been made a function so that it can call itself recursively
+        to support splitting individual requests.
+
+        Parameters
+        --------------
+        request: dict
+            the request to draw
+        E_PDOS: DataArray
+            the part of the PDOS dataarray that falls in the energy range that we want to draw.
+        requests_param: OrbitalQueries
+            the requests input field, so that we don't need to retrieve it each time
+        E0: float
+            the energy reference that we should use for drawing this request.
+        """
+
+        request = self._new_request(**request)
+
+        # If the request has an split_on parameter that is not None,
+        # we are going to split the request in place. Note that you can also
+        # split requests or the full DOS using the `split_requests` and `split_DOS`
+        # methods, but this may be more convenient for the GUI.
+        if request["split_on"]:
+
+            # We are going to give a different dash style to each obtained request
+            dash_options = requests_param["dash"].options
+            n_dash_options = len(dash_options)
+            def query_gen(i=[-1], **kwargs):
+                i[0] += 1
+                return self._new_request(**{**kwargs, "dash": dash_options[i[0] % n_dash_options]})
+            
+            # And ensure they all have the same color (if the color is None,
+            # each request will show up with a different color)
+            request["color"] = request["color"] or random_color()
+
+            # Now, get all the requests that emerge from splitting the "parent" request
+            # Note that we need to set split_on to None for the new requests, otherwise the 
+            # cycle would be infinite
+            splitted_request = requests_param._split_query(request, on=request["split_on"], split_on=None, query_gen=query_gen, vary="dash")
+            # Now that we have them, draw them
+            for req in splitted_request:
+                self._draw_request(req, E_PDOS, requests_param, E0)
+            # Since we have already drawn all the requests, we don't need to do anything else
+            # This would not be true if we wanted to represent the "total request" as well, but we
+            # don't give that option yet. Just removing the return would draw the total
+            return
+
+        # From now on, the code focuses on actually drawing the request
+
+        # Use only the active requests
+        if not request["active"]:
+            return
+
+        orb = requests_param.get_orbitals(request)
+
+        if len(orb) == 0:
+            # This request does not match any possible orbital
+            return
+
+        req_PDOS = E_PDOS.sel(orb=orb)
+        if request['spin'] is not None:
+            req_PDOS = req_PDOS.sel(spin=request['spin'])
+
+        if request["normalize"]:
+            req_PDOS = req_PDOS.mean(["orb", "spin"])
+        else:
+            req_PDOS = req_PDOS.sum(["orb", "spin"])
+
+        self.add_trace({
+            'type': 'scatter',
+            'x': req_PDOS.values,
+            'y': req_PDOS.E.values - E0,
+            'mode': 'lines',
+            'name': request["name"],
+            'line': {'width': request["linewidth"], "color": request["color"], "dash": request["dash"]},
+            "hoverinfo": "name",
+        })
 
     # ----------------------------------
     #        CONVENIENCE METHODS
@@ -485,7 +557,7 @@ class PdosPlot(Plot):
         if remove:
             self.remove_requests(*i_or_names, update_fig=False)
 
-        return self.add_request(**new_request, **kwargs, clean=clean)
+        return self.add_request(**new_request, **kwargs, clean=clean)        
 
     def split_requests(self, *i_or_names, on="species", only=None, exclude=None, remove=True, clean=False, **kwargs):
         """
@@ -523,26 +595,14 @@ class PdosPlot(Plot):
             will split the PDOS on the different orbitals but will take
             only the contributions from spin up.
         """
-        if exclude is None:
-            exclude = []
-
         reqs = self.requests(*i_or_names)
 
         requests = []
         for req in reqs:
-            values = req[on]
 
-            #If it's none, it means that is getting all the possible values
-            if values is None:
-                values = self.get_param("requests")[on].options
+            new_requests = self.get_param("requests")._split_query(req, on=on, only=only, exclude=exclude, req_gen=self._new_request, **kwargs)
 
-            requests = [*requests, *[
-                self._new_request(**{**req, on: [value], "name": f'{req["name"]}, {value}', **kwargs})
-                for value in values if value not in exclude and (only is None or value in only)
-            ]]
-
-            # Use only those requests that make sense
-            requests = [req for req in requests if len(self.get_param("requests").get_orbitals(req)) > 0]
+            requests = [*requests, *new_requests]
 
         if remove:
             self.remove_requests(*i_or_names, update_fig=False)

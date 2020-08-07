@@ -8,6 +8,7 @@ Different inputs are tested (siesta .PDOS and sisl Hamiltonian).
 
 from xarray import DataArray
 import numpy as np
+import pytest
 from functools import partial
 
 import sisl
@@ -20,6 +21,9 @@ from sisl.viz.plotly.plots.tests.helpers import PlotTester
 #         Build a generic tester for the bands plot
 # ------------------------------------------------------------
 
+@pytest.fixture(params=[True, False], ids=["method_splitting", "inplace_split"])
+def inplace_split(request):
+    return request.param
 
 class PdosPlotTester(PlotTester):
 
@@ -41,9 +45,13 @@ class PdosPlotTester(PlotTester):
         # Check if we have the correct number of orbitals
         assert len(PDOS.orb) == self.no == geom.no
 
-    def test_splitDOS(self):
+    def test_splitDOS(self, inplace_split):
 
-        split_DOS = self.plot.split_DOS
+        if inplace_split:
+            def split_DOS(on):
+                return self.plot.update_settings(requests=[{"split_on": on}])
+        else:
+            split_DOS = self.plot.split_DOS
 
         unique_orbs = self.plot.get_param('requests')['orbitals'].options
 
@@ -58,7 +66,7 @@ class PdosPlotTester(PlotTester):
         for on, (n, toggle_val) in expected_splits.items():
             err_message = f'Error splitting DOS based on {on}'
             assert len(split_DOS(on=on).data) == n, err_message
-            if toggle_val is not None:
+            if toggle_val is not None and not inplace_split:
                 assert len(split_DOS(on=on, only=[toggle_val]).data) == 1, err_message
                 assert len(split_DOS(on=on, exclude=[toggle_val]).data) == n - 1, err_message
 
