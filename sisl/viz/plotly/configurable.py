@@ -146,8 +146,13 @@ class NamedHistory:
                 # Otherwise we would just do if val in self._vals[key]
                 for saved_val in self._vals[key]:
                     if not isinstance(saved_val, np.ndarray) and not is_nparray:
-                        if val == saved_val:
-                            new_index = self._vals[key].index(val)
+                        try:
+                            if val == saved_val:
+                                new_index = self._vals[key].index(val)
+                        except ValueError:
+                            # It is possible that the value itself is not a numpy array
+                            # but contains one. This is very hard to handle
+                            pass
                 else:
                     self._vals[key].append(val)
                     new_index = len(self._vals[key]) - 1
@@ -552,6 +557,7 @@ class Configurable:
         """
         # Change the docs of the update_settings method to truly reflect
         # the available kwargs for the plot class and provide more help to the user
+
         def update_settings(self, *args, **kwargs):
             return self._update_settings(*args, **kwargs)
 

@@ -584,7 +584,7 @@ class BandsPlot(Plot):
                         "hovertemplate": '%{y:.2f} eV',
                         **add_band_trace_data(band, self)
                         } for band in spin_bands] for spin_bands, spin in zip(filtered_bands.transpose('spin', 'band', 'k'), filtered_bands.spin.values)]).tolist())
-        
+
         self._draw_gaps()
 
     def _after_get_figure(self):

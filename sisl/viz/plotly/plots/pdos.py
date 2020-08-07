@@ -350,13 +350,13 @@ class PdosPlot(Plot):
             def query_gen(i=[-1], **kwargs):
                 i[0] += 1
                 return self._new_request(**{**kwargs, "dash": dash_options[i[0] % n_dash_options]})
-            
+
             # And ensure they all have the same color (if the color is None,
             # each request will show up with a different color)
             request["color"] = request["color"] or random_color()
 
             # Now, get all the requests that emerge from splitting the "parent" request
-            # Note that we need to set split_on to None for the new requests, otherwise the 
+            # Note that we need to set split_on to None for the new requests, otherwise the
             # cycle would be infinite
             splitted_request = requests_param._split_query(request, on=request["split_on"], split_on=None, query_gen=query_gen, vary="dash")
             # Now that we have them, draw them
@@ -557,7 +557,7 @@ class PdosPlot(Plot):
         if remove:
             self.remove_requests(*i_or_names, update_fig=False)
 
-        return self.add_request(**new_request, **kwargs, clean=clean)        
+        return self.add_request(**new_request, **kwargs, clean=clean)
 
     def split_requests(self, *i_or_names, on="species", only=None, exclude=None, remove=True, clean=False, **kwargs):
         """
@@ -573,8 +573,11 @@ class PdosPlot(Plot):
             to spread it and use all items in your list as args
 
             If no query is provided, all the requests will be matched
-        on: str, {"species", "atoms", "orbitals", "spin"}
-            the parameter to split along
+        on: str, {"species", "atoms", "orbitals", "n", "l", "m", "Z", "spin"}
+            the parameter to split along.
+
+            Note that you can combine parameters with a "+" to split along multiple parameters
+            at the same time.See examples.
         only: array-like, optional
             if desired, the only values that should be plotted out of
             all of the values that come from the splitting.
@@ -594,6 +597,14 @@ class PdosPlot(Plot):
             `plot.split_request("C", on="orbitals", spin=[0])`
             will split the PDOS on the different orbitals but will take
             only the contributions from spin up.
+
+        Examples
+        -----------
+
+        >>> plot = H.plot.pdos(requests=[...])
+        >>>
+        >>> # Split requests 0 and 1 along n and l
+        >>> plot.split_requests(0, 1, on="n+l")
         """
         reqs = self.requests(*i_or_names)
 
@@ -618,8 +629,10 @@ class PdosPlot(Plot):
 
         Parameters
         --------
-        on: str, {"species", "atoms", "orbitals", "spin"}
-            the parameter to split along
+        on: str, {"species", "atoms", "orbitals", "n", "l", "m", "Z", "spin"}
+            the parameter to split along.
+            Note that you can combine parameters with a "+" to split along multiple parameters
+            at the same time.
         only: array-like, optional
             if desired, the only values that should be plotted out of
             all of the values that come from the splitting.
@@ -636,6 +649,16 @@ class PdosPlot(Plot):
             `plot.split_DOS(on="orbitals", species=["C"])`
             will split the PDOS on the different orbitals but will take
             only those that belong to carbon atoms.
+
+        Examples
+        -----------
+
+        >>> plot = H.plot.pdos()
+        >>>
+        >>> # Split the DOS in n and l but show only the DOS from Au
+        >>> # Also use "Au $ns" as a template for the name, where $n will
+        >>> # be replaced by the value of n.
+        >>> plot.split_DOS(on="n+l", species=["Au"], name="Au $ns")
         """
         requests = self.get_param('requests')._generate_queries(
             on=on, only=only, exclude=exclude, query_gen=self._new_request, **kwargs)

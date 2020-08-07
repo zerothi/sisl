@@ -1,5 +1,6 @@
 from collections import defaultdict
-
+import itertools
+import numpy as np
 import pandas as pd
 
 from .._input_field import InputField
@@ -100,14 +101,15 @@ class QueriesInput(InputField):
             if not group["active"]:
                 raise Exception(f"Query {query} is not active and you are trying to use it")
 
-        query_df = df
+        query_str = []
+        for key, val in query.items():
+            key = key_to_cols.get(key, key)
+            if key in df and val is not None:
+                if isinstance(val, (np.ndarray, tuple)):
+                    val = list(val)
+                query_str.append(f'{key}=={repr(val)}')
 
-        cond = None
-        for key, col in key_to_cols:
-            if query.get(key, None) is not None:
-                query_df = query_df[query_df[col].isin(query[key])]
-
-        return query_df
+        return df.query(" & ".join(query_str))
 
     def _sanitize_queryform(self, queryform):
         '''
@@ -140,6 +142,14 @@ class QueriesInput(InputField):
 
         return super().__getitem__(key)
 
+    def __contains__(self, key):
+
+        for field in self.inputField['queryForm']:
+            if field.key == key:
+                return True
+
+        return False
+
 
 class OrbitalQueries(QueriesInput):
     '''
@@ -153,6 +163,11 @@ class OrbitalQueries(QueriesInput):
         "spin": {"field": SpinSelect, "name": "Spin"},
     }
 
+    _keys_to_cols = {
+        "atoms": "atom",
+        "orbitals": "orbital_name",
+    }
+
     def _build_orb_filtering_df(self, geom):
 
         orb_props = defaultdict(list)
@@ -164,7 +179,14 @@ class OrbitalQueries(QueriesInput):
 
             orb_props["atom"].append(at)
             orb_props["species"].append(atom.symbol)
-            orb_props["orbital name"].append(orb.name())
+            orb_props["orbital_name"].append(orb.name())
+
+            for key in ("n", "l", "m", "Z"):
+                orb_props[key].append(getattr(orb, key, None))
+
+        for key in ("n", "l", "m", "Z"):
+            if np.any(orb_props[key]) is None:
+                del orb_props[key]
 
         self.orb_filtering_df = pd.DataFrame(orb_props)
 
@@ -200,17 +222,70 @@ class OrbitalQueries(QueriesInput):
 
         self._build_orb_filtering_df(geometry)
 
-    def get_orbitals(self, request):
+    def get_options(self, key, **kwargs):
+        """
+        Gets the options for a given key or combination of keys.
 
-        request["atoms"] = self.geometry._sanitize_atoms(request.get("atoms", []))
+        Parameters
+        ------------
+        key: str, {"species", "atoms", "orbitals", "n", "l", "m", "Z", "spin"}
+            the parameter that you want the options for.
 
-        filtered_df = self.filter_df(self.orb_filtering_df, request,
-            [
-                ("atoms", "atom"),
-                ("species", "species"),
-                ("orbitals", "orbital name"),
-            ]
-        )
+            Note that you can combine them with a "+" to get all the possible combinations.
+            See examples.
+        **kwargs:
+            keyword arguments that add additional conditions to the query. The values of this
+            keyword arguments can be lists, in which case it indicates that you want a value
+            that is in the list. See examples.
+
+        Returns
+        ----------
+        list
+            all the possible options. If a composite key was provided this will be a list of lists
+            following the order of the keys.
+
+        Examples
+        -----------
+
+        >>> plot = H.plot.pdos()
+        >>> plot.get_param("requests").get_options("l", species="Au")
+        >>> plot.get_param("requests").get_options("n+l", atoms=[0,1])
+        """
+
+        if key in self and not kwargs:
+
+            # Get the options from the corresponding input field
+            options = self[key].options
+
+            # If the key is spin, we may not give any option to the user, but in fact
+            # there is one option -> spin=0
+            if key == "spin" and len(options) == 0:
+                options = [0]
+
+        else:
+
+            # Get the options from the unique values of the dataframe.
+            df = self.orb_filtering_df
+            if kwargs:
+                query = ' & '.join([f'{k}=={repr(v)}' for k, v in kwargs.items()])
+                df = df.query(query)
+
+            # If + is in key, it is a composite key. In that case we are going to
+            # split it into all the keys that are present and get the options for all
+            # of them. At the end we are going to return a list of tuples that will be all
+            # the possible combinations of the keys.
+            keys = [self._keys_to_cols.get(k, k) for k in key.split("+")]
+
+            options = df.drop_duplicates(subset=keys)[keys].values.squeeze()
+
+        return options
+
+    def get_orbitals(self, query):
+
+        if "atoms" in query:
+            query["atoms"] = self.geometry._sanitize_atoms(query["atoms"])
+
+        filtered_df = self.filter_df(self.orb_filtering_df, query, self._keys_to_cols)
 
         return filtered_df.index
 
@@ -222,8 +297,10 @@ class OrbitalQueries(QueriesInput):
         --------
         query: dict
             the query that we want to split
-        on: str, {"species", "atoms", "orbitals", "spin"}
-            the parameter to split along
+        on: str, {"species", "atoms", "orbitals", "n", "l", "m", "Z", "spin"}
+            the parameter to split along.
+            Note that you can combine parameters with a "+" to split along multiple parameters
+            at the same time.
         only: array-like, optional
             if desired, the only values that should be plotted out of
             all of the values that come from the splitting.
@@ -247,16 +324,11 @@ class OrbitalQueries(QueriesInput):
             exclude = []
 
         # Get the current values of the parameter that we want to split the request on
-        values = query[on]
+        values = query.get(on, None)
 
         # If it's None, it means that is getting all the possible values
         if values is None:
-            values = self[on].options
-
-            # If the parameter is spin but the orbitals are not polarized we will not be providing
-            # options to the user, but in fact there is one option: 0
-            if on == "spin" and len(values) == 0:
-                values = [0]
+            values = self.get_options(on)
 
         # If no function to modify queries was provided we are just going to generate a
         # dummy one that just returns the query as it gets it
@@ -264,24 +336,52 @@ class OrbitalQueries(QueriesInput):
             def query_gen(**kwargs):
                 return kwargs
 
-        queries = [
-            query_gen(**{**query, on: [value], "name": f'{query["name"]}, {value}', **kwargs})
-            for i, value in enumerate(values) if value not in exclude and (only is None or value in only)
-        ]
+        on = on.split("+")
+
+        base_name = kwargs.pop("name", query.get("name", ""))
+
+        first_added = True
+        for key in on:
+            kwargs.pop(key, None)
+
+            if f"${key}" not in base_name:
+                base_name += f"{' | ' if first_added else ', '}{key}=${key}"
+                first_added = False
+
+        queries = []
+        for i, value in enumerate(values):
+            if value not in exclude and (only is None or value in only):
+
+                if not isinstance(value, np.ndarray):
+                    value = (value, )
+
+                name = base_name
+                for key, val in zip(on, value):
+                    name = name.replace(f"${key}", str(val))
+
+                queries.append(
+                    query_gen(**{
+                        **query,
+                        **{key: [val] for key, val in zip(on, value)},
+                        "name": name, **kwargs
+                    })
+                )
 
         # Use only those queries that make sense
         queries = [query for query in queries if len(self.get_orbitals(query)) > 0]
 
         return queries
 
-    def _generate_queries(self, on, only=None, exclude=None, clean=True, query_gen=None, **kwargs):
+    def _generate_queries(self, on, only=None, exclude=None, query_gen=None, **kwargs):
         '''
         Automatically generates queries based on the current options.
 
         Parameters
         --------
-        on: str, {"species", "atoms", "orbitals", "spin"}
-            the parameter to split along
+        on: str, {"species", "atoms", "orbitals", "n", "l", "m", "Z", "spin"}
+            the parameter to split along.
+            Note that you can combine parameters with a "+" to split along multiple parameters
+            at the same time.
         only: array-like, optional
             if desired, the only values that should be plotted out of
             all of the values that come from the splitting.
@@ -300,28 +400,4 @@ class OrbitalQueries(QueriesInput):
             will split the PDOS on the different orbitals but will take
             only those that belong to carbon atoms.
         '''
-        if exclude is None:
-            exclude = []
-
-        # First, we get all available values for the parameter we want to split
-        options = self[on]["inputField.params.options"]
-
-        # If the parameter is spin but the orbitals are not polarized we will not be providing
-        # options to the user, but in fact there is one option: 0
-        if on == "spin" and len(options) == 0:
-            options = [{"label": 0, "value": 0}]
-
-        # If no function to modify requests was provided we are just going to generate a
-        # dummy one that just returns the request as it gets it
-        if query_gen is None:
-            def query_gen(**kwargs):
-                return kwargs
-
-        # Build all the requests that will be passed to the settings of the plot
-        requests = [
-            query_gen(
-                **{on: [option["value"]], "name": option["label"], **kwargs})
-            for option in options if option["value"] not in exclude and (only is None or option["value"] in only)
-        ]
-
-        return requests
+        return self._split_query({}, on=on, only=only, exclude=exclude, query_gen=query_gen, **kwargs)

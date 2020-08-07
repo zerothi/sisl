@@ -402,8 +402,10 @@ class FatbandsPlot(BandsPlot):
 
         Parameters
         --------
-        on: str, {"species", "atoms", "orbitals", "spin"}
-            the parameter to split along
+        on: str, {"species", "atoms", "orbitals", "n", "l", "m", "Z", "spin"}
+            the parameter to split along.
+            Note that you can combine parameters with a "+" to split along multiple parameters
+            at the same time.
         only: array-like, optional
             if desired, the only values that should be plotted out of
             all of the values that come from the splitting.
@@ -424,6 +426,16 @@ class FatbandsPlot(BandsPlot):
             `plot.split_groups(on="orbitals", species=["C"])`
             will split the PDOS on the different orbitals but will take
             only those that belong to carbon atoms.
+
+        Examples
+        -----------
+
+        >>> plot = H.plot.fatbands()
+        >>>
+        >>> # Split the fatbands in n and l but show only the fatbands from Au
+        >>> # Also use "Au $ns" as a template for the name, where $n will
+        >>> # be replaced by the value of n.
+        >>> plot.split_groups(on="n+l", species=["Au"], name="Au $ns")
         """
         groups = self.get_param('groups')._generate_queries(
             on=on, only=only, exclude=exclude, **kwargs)

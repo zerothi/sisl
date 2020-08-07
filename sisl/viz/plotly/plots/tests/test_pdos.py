@@ -21,9 +21,11 @@ from sisl.viz.plotly.plots.tests.helpers import PlotTester
 #         Build a generic tester for the bands plot
 # ------------------------------------------------------------
 
+
 @pytest.fixture(params=[True, False], ids=["method_splitting", "inplace_split"])
 def inplace_split(request):
     return request.param
+
 
 class PdosPlotTester(PlotTester):
 
@@ -48,8 +50,8 @@ class PdosPlotTester(PlotTester):
     def test_splitDOS(self, inplace_split):
 
         if inplace_split:
-            def split_DOS(on):
-                return self.plot.update_settings(requests=[{"split_on": on}])
+            def split_DOS(on, **kwargs):
+                return self.plot.update_settings(requests=[{"split_on": on, **kwargs}])
         else:
             split_DOS = self.plot.split_DOS
 
@@ -69,6 +71,21 @@ class PdosPlotTester(PlotTester):
             if toggle_val is not None and not inplace_split:
                 assert len(split_DOS(on=on, only=[toggle_val]).data) == 1, err_message
                 assert len(split_DOS(on=on, exclude=[toggle_val]).data) == n - 1, err_message
+
+    def test_composite_splitting(self, inplace_split):
+
+        if inplace_split:
+            def split_DOS(on, **kwargs):
+                return self.plot.update_settings(requests=[{"split_on": on, **kwargs}])
+        else:
+            split_DOS = self.plot.split_DOS
+
+        split_DOS(on="species+orbitals", name="This is $species")
+
+        first_trace = self.plot.data[0]
+        assert "This is " in first_trace.name, "Composite splitting not working"
+        assert "species" not in first_trace.name, "Name templating not working in composite splitting"
+        assert "orbitals=" in first_trace.name, "Name templating not working in composite splitting"
 
     def test_request_management(self):
 
@@ -94,7 +111,6 @@ class PdosPlotTester(PlotTester):
         # And try to remove one request
         prev = len(plot.data)
         assert len(plot.remove_requests(0).data) == prev - 1
-
 
 pdos_plots = {}
 
