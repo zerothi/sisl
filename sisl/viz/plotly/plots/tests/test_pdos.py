@@ -121,9 +121,9 @@ class PdosPlotTester(PlotTester):
         assert len(plot.data) == species_no
 
         # Then try to merge
-        if species_no >= 2:
-            plot.merge_requests(species_no - 1, species_no - 2)
-            assert len(plot.data) == species_no - 1
+        # if species_no >= 2:
+        #     plot.merge_requests(species_no - 1, species_no - 2)
+        #     assert len(plot.data) == species_no - 1
 
         # And try to remove one request
         prev = len(plot.data)

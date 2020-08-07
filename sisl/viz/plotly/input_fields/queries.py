@@ -241,9 +241,10 @@ class OrbitalQueries(QueriesInput):
 
         Returns
         ----------
-        list
-            all the possible options. If a composite key was provided this will be a list of lists
-            following the order of the keys.
+        np.ndarray of shape (n_options, [n_keys])
+            all the possible options.
+
+            If only one key was provided, it is a one dimensional array. 
 
         Examples
         -----------
@@ -252,38 +253,30 @@ class OrbitalQueries(QueriesInput):
         >>> plot.get_param("requests").get_options("l", species="Au")
         >>> plot.get_param("requests").get_options("n+l", atoms=[0,1])
         """
+        # Get the tadatframe
+        df = self.orb_filtering_df
 
-        if key in self and not kwargs:
+        # If there is no spin in this df, we are going to introduce it to avoid problems.
+        if "spin" not in df:
+            df["spin"] = 0
 
-            # Get the options from the corresponding input field
-            options = self[key].options
+        # Filter the dataframe according to the constraints imposed by the kwargs,
+        # if there are any.
+        if kwargs:
+            query = ' & '.join([f'{self._keys_to_cols.get(k, k)}=={repr(v)}' for k, v in kwargs.items()])
+            df = df.query(query)
 
-            # If the key is spin, we may not give any option to the user, but in fact
-            # there is one option -> spin=0
-            if key == "spin" and len(options) == 0:
-                options = [0]
+        # If + is in key, it is a composite key. In that case we are going to
+        # split it into all the keys that are present and get the options for all
+        # of them. At the end we are going to return a list of tuples that will be all
+        # the possible combinations of the keys.
+        keys = [self._keys_to_cols.get(k, k) for k in key.split("+")]
 
-        else:
-            # Get the options from the unique values of the dataframe.
+        options = df.drop_duplicates(subset=keys)[keys].values.squeeze()
 
-            # First filter the dataframe according to the constrains imposed by the kwargs,
-            # if there are any.
-            df = self.orb_filtering_df
-            if kwargs:
-                query = ' & '.join([f'{self._keys_to_cols.get(k, k)}=={repr(v)}' for k, v in kwargs.items()])
-                df = df.query(query)
-
-            # If + is in key, it is a composite key. In that case we are going to
-            # split it into all the keys that are present and get the options for all
-            # of them. At the end we are going to return a list of tuples that will be all
-            # the possible combinations of the keys.
-            keys = [self._keys_to_cols.get(k, k) for k in key.split("+")]
-
-            options = df.drop_duplicates(subset=keys)[keys].values.squeeze()
-
-            # If there is only one option, squeeze converts it to a number, so
-            # we need to make sure there is at least 1d
-            options = np.atleast_1d(options)
+        # If there is only one option, squeeze converts it to a number, so
+        # we need to make sure there is at least 1d
+        options = np.atleast_1d(options)
 
         return options
 
@@ -335,16 +328,22 @@ class OrbitalQueries(QueriesInput):
             on = on.split("+")
 
         # Get the current values of the parameters that we want to split the request on
-        # because these will be our constrains. If a parameter is set to None or not
-        # provided, we have no constrains for that parameter.
-        constrains = {}
+        # because these will be our constraints. If a parameter is set to None or not
+        # provided, we have no constraints for that parameter.
+        constraints = {}
         for key in on:
             val = query.get(key, None)
             if val is not None:
-                constrains[key] = val
+                constraints[key] = val
 
-        # Knowing what are our constrains (which may be none), get the available options
-        values = self.get_options("+".join(on), **constrains)
+        # Knowing what are our constraints (which may be none), get the available options
+        values = self.get_options("+".join(on), **constraints)
+
+        # We are going to make sure that, even if there was only one parameter to split on,
+        # the values are two dimensional. In this way, we can take the same actions for the
+        # case when there is only one parameter and the case when there are multiple.
+        if values.ndim == 1:
+            values = values.reshape(-1,1)
 
         # If no function to modify queries was provided we are just going to generate a
         # dummy one that just returns the query as it gets it
@@ -352,11 +351,15 @@ class OrbitalQueries(QueriesInput):
             def query_gen(**kwargs):
                 return kwargs
 
+        # We ensure that on is a list even if there is only one parameter, for the same
+        # reason we ensured values was 2 dimensional
         if isinstance(on, str):
             on = on.split("+")
 
+        # Define the name that we will give to the new queries, using templating
+        # If a splitting parameter is not used by the name, we are going to
+        # append it, in order to make names unique and self-explanatory.
         base_name = kwargs.pop("name", query.get("name", ""))
-
         first_added = True
         for key in on:
             kwargs.pop(key, None)
@@ -364,18 +367,18 @@ class OrbitalQueries(QueriesInput):
             if f"${key}" not in base_name:
                 base_name += f"{' | ' if first_added else ', '}{key}=${key}"
                 first_added = False
-
+            
+        # Now build all the queries
         queries = []
         for i, value in enumerate(values):
             if value not in exclude and (only is None or value in only):
 
-                if not isinstance(value, np.ndarray):
-                    value = (value, )
-
+                # Use the name template to generate the name for this query
                 name = base_name
                 for key, val in zip(on, value):
                     name = name.replace(f"${key}", str(val))
 
+                # And append the new query to the queries
                 queries.append(
                     query_gen(**{
                         **query,
@@ -383,9 +386,6 @@ class OrbitalQueries(QueriesInput):
                         "name": name, **kwargs
                     })
                 )
-
-        # Use only those queries that make sense
-        queries = [query for query in queries if len(self.get_orbitals(query)) > 0]
 
         return queries
 

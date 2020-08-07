@@ -144,11 +144,12 @@ class NamedHistory:
 
                 # We have to do this because np.arrays don't like being compared :)
                 # Otherwise we would just do if val in self._vals[key]
-                for saved_val in self._vals[key]:
+                for i, saved_val in enumerate(self._vals[key]):
                     if not isinstance(saved_val, np.ndarray) and not is_nparray:
                         try:
                             if val == saved_val:
-                                new_index = self._vals[key].index(val)
+                                new_index = i
+                                break
                         except ValueError:
                             # It is possible that the value itself is not a numpy array
                             # but contains one. This is very hard to handle

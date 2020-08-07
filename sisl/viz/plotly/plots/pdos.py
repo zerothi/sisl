@@ -512,7 +512,7 @@ class PdosPlot(Plot):
 
         return self.update_settings(requests=requests)
 
-    def merge_requests(self, *i_or_names, remove=True, clean=False, **kwargs):
+    def _NOT_WORKING_merge_requests(self, *i_or_names, remove=True, clean=False, **kwargs):
         """
         Merge multiple requests into one.
 
@@ -539,15 +539,19 @@ class PdosPlot(Plot):
             will split the PDOS on the different orbitals but will take
             only those that belong to carbon atoms.
         """
-        keys = ["atoms", "orbitals", "species", "spin"]
+        keys = ["atoms", "orbitals", "species", "spin", "n", "l", "m", "Z"]
 
         # Merge all the requests (nice tree I built here, isn't it? :) )
         new_request = {key: [] for key in keys}
         for i, request in enumerate(self.setting("requests")):
             if self._matches_request(request, i_or_names, i):
                 for key in keys:
-                    if request[key] is not None:
-                        new_request[key] = [*new_request[key], *request[key]]
+                    if request.get(key, None) is not None:
+                        val = request[key]
+                        if key == "atoms":
+                            val = self.geometry._sanitize_atoms(val)
+                        val = np.atleast_1d(val)
+                        new_request[key] = [*new_request[key], *val]
 
         # Remove duplicate values for each key
         # and if it's an empty list set it to None (empty list returns no PDOS)
