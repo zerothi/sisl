@@ -186,7 +186,6 @@ class SpinSelect(DropdownInput):
         ---------
         sisl.physics.Spin
         """
-
         if not isinstance(spin, Spin):
             spin = Spin(spin)
 
@@ -202,7 +201,7 @@ class SpinSelect(DropdownInput):
                 options = self._options[Spin.UNPOLARIZED]
         else:
             options = self._options[spin.kind]
-        
+
         # Update them
         self.modify("inputField.params.options", options)
 

@@ -4,6 +4,7 @@ import itertools
 from functools import partial
 
 import sisl
+from sisl.utils.mathematics import fnorm
 from ..plot import Plot, entry_point
 from .geometry import GeometryPlot, BoundGeometry
 from ..plotutils import find_files
@@ -12,7 +13,6 @@ from ..input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, D
 
 
 class BondLengthMap(GeometryPlot):
-
     """
     Colorful representation of bond lengths.
 
@@ -226,14 +226,18 @@ class BondLengthMap(GeometryPlot):
     }
 
     @classmethod
-    def _default_animation(self, wdir = None, frame_names = None, **kwargs):
-
+    def _default_animation(self, wdir=None, frame_names=None, **kwargs):
+        """By default, we will animate all the *XV files that we find"""
         geom_files = find_files(wdir, "*.XV", sort = True)
 
         return BondLengthMap.animated("geom_file", geom_files, wdir = wdir, **kwargs)
 
     @property
     def on_relaxed_geom(self):
+        """
+        Returns a bound geometry, which you can apply methods to so that the plot
+        updates automatically.
+        """
         return BoundGeometry(self.relaxed_geom, self)
 
     @entry_point('geometry')
@@ -251,7 +255,7 @@ class BondLengthMap(GeometryPlot):
         self._read_strain_ref()
 
     def _read_strain_ref(self):
-
+        """Reads the strain reference, if there is any."""
         strain_ref = self.setting("strain_ref")
 
         if isinstance(strain_ref, str):
@@ -260,7 +264,6 @@ class BondLengthMap(GeometryPlot):
             self.relaxed_geom = strain_ref
 
     def _after_read(self):
-
         self.geom_bonds = self.find_all_bonds(self.geometry)
 
         if getattr(self, "relaxed_geom", None):
@@ -270,9 +273,8 @@ class BondLengthMap(GeometryPlot):
 
     def _wrap_bond3D(self, bond, strain=False):
         """
-        Receives a bond and sets its color to the bond length
+        Receives a bond and sets its color to the bond length for the 3D case
         """
-
         if strain:
             color = self._bond_strain(self.relaxed_geom, self.geometry, bond)
             name = f'Strain: {color:.3f}'
@@ -285,7 +287,9 @@ class BondLengthMap(GeometryPlot):
         return (*self.geometry[bond], 15), {"color": color, "name": name}
 
     def _wrap_bond2D(self, bond, xys, strain=False):
-
+        """
+        Receives a bond and sets its color to the bond length for the 2D case
+        """
         if strain:
             color = self._bond_strain(self.relaxed_geom, self.geometry, bond)
             name = f'Strain: {color:.3f}'
@@ -299,18 +303,38 @@ class BondLengthMap(GeometryPlot):
 
     @staticmethod
     def _bond_length(geom, bond):
-        return np.linalg.norm(geom[bond[1]] - geom[bond[0]])
+        """
+        Returns the length of a bond between two atoms.
+
+        Parameters
+        ------------
+        geom: Geometry
+            the structure where the atoms are
+        bond: array-like of two int
+            the indices of the atoms that form the bond
+        """
+        return fnorm(geom[bond[1]] - geom[bond[0]])
 
     @staticmethod
     def _bond_strain(relaxed_geom, geom, bond):
+        """
+        Calculates the strain of a bond using a reference geometry.
 
+        Parameters
+        ------------
+        relaxed_geom: Geometry
+            the structure to take as a reference
+        geom: Geometry
+            the structure to take as the "current" one
+        bond: array-like of two int
+            the indices of the atoms that form the bond
+        """
         relaxed_bl = BondLengthMap._bond_length(relaxed_geom, bond)
         bond_length = BondLengthMap._bond_length(geom, bond)
 
         return (bond_length - relaxed_bl) / relaxed_bl
 
     def _set_data(self):
-
         axes = self.setting("axes")
         bonds = self.setting('bonds')
         ndims = len(axes)

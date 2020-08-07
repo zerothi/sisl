@@ -29,6 +29,7 @@ class BondLengthMapTester(GeometryPlotTester):
 #            Test it with two sisl geometries
 # ------------------------------------------------------------
 
+
 class TestBondLengthMap(BondLengthMapTester):
 
     run_for = {
@@ -40,4 +41,3 @@ class TestBondLengthMap(BondLengthMapTester):
             "has_strain_ref": True
         }
     }
-

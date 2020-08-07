@@ -8,7 +8,6 @@ from ..configurable import Configurable
 
 
 class QueriesInput(InputField):
-
     '''
     Parameters
     ----------
@@ -45,23 +44,20 @@ class QueriesInput(InputField):
         '''
         Gets the parameter info for a given key. It uses the Configurable.get_param method.
         '''
-
         return Configurable.get_param(self, key, paramsExtractor = lambda obj: obj.inputField["queryForm"], **kwargs)
 
     def get_param(self, *args, **kwargs):
         '''
-        Just a clone of getQueryParam.
+        Just a clone of get_query_param.
 
         Because Configurable looks for this method when modifying parameters, but the other name is clearer.
         '''
-
         return self.get_query_param(*args, **kwargs)
 
     def modify_query_param(self, key, *args, **kwargs):
         '''
         Uses Configurable.modify_param to modify a parameter inside QueryForm
         '''
-
         return Configurable.modify_param(self, key, *args, **kwargs)
 
     def complete_query(self, query, **kwargs):
@@ -75,7 +71,6 @@ class QueriesInput(InputField):
         **kwargs:
             other keys that need to be added to the query IN CASE THEY DON'T ALREADY EXIST
         '''
-
         return {
             "active": True,
             **{param.key: param.default for param in self.inputField["queryForm"]},
@@ -99,7 +94,6 @@ class QueriesInput(InputField):
             where key is the key of the parameter in the query and col the corresponding
             column in the dataframe.
         '''
-
         query = self.complete_query(query)
 
         if raise_not_active:
@@ -121,7 +115,6 @@ class QueriesInput(InputField):
         to the known input fields (under self._fields). As an example,
         see OrbitalQueries.
         '''
-
         sanitized_form = []
         for i, field in enumerate(queryform):
             if isinstance(field, str):
@@ -192,7 +185,6 @@ class OrbitalQueries(QueriesInput):
         sisl.viz.plotly.input_fields.dropdown.SpinSelect
         sisl.physics.Spin
         """
-
         self.geometry = geometry
 
         for key in ("species", "atoms", "orbitals"):
@@ -248,7 +240,6 @@ class OrbitalQueries(QueriesInput):
             will split the PDOS on the different orbitals but will take
             only those that belong to carbon atoms.
         '''
-
         if exclude is None:
             exclude = []
 

@@ -16,7 +16,6 @@ class ShortCutable:
     """
 
     def __init__(self, *args, **kwargs):
-
         self._shortcuts = {}
 
         super().__init__(*args, **kwargs)
@@ -30,7 +29,6 @@ class ShortCutable:
         keys: str
             the sequence of keys that trigger the shortcut.
         """
-
         return self._shortcuts.get(keys, None)
 
     def add_shortcut(self, _keys, _name, func, *args, _description=None, **kwargs):
@@ -55,7 +53,6 @@ class ShortCutable:
         **kwargs:
             keyword arguments that go to the function's execution.
         """
-
         self._shortcuts[_keys] = {
             "name": _name,
             "description": _description,
@@ -71,7 +68,6 @@ class ShortCutable:
         keys: str
             the sequence of keys that trigger the shortcut.
         """
-
         if keys in self._shortcuts:
             del self._shortcuts[keys]
 
@@ -89,7 +85,6 @@ class ShortCutable:
         *args and **kwargs:
             extra arguments that you pass to the function call.
         """
-
         self._shortcuts[keys]["action"](*args, **kwargs)
 
         return self
@@ -103,7 +98,6 @@ class ShortCutable:
         keys: str
             the sequence of keys that trigger the shortcut.
         """
-
         return keys in self._shortcuts
 
     @property
@@ -113,7 +107,6 @@ class ShortCutable:
 
         This is meant to be passed to the GUI, so that it knows which shortcuts are available.
         """
-
         #Basically we are going to remove the action
         return {key: {key: val for key, val in info.items() if key != 'action'} for key, info in self._shortcuts.items()}
 
@@ -121,7 +114,6 @@ class ShortCutable:
         """
         Gets a formatted summary of the shortcuts.
         """
-
         if format == "str":
             return "\n".join([f'{key}: {shortcut["name"]}' for key, shortcut in self._shortcuts.items()])
         elif format == "html":

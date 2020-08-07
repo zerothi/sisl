@@ -58,7 +58,6 @@ def _get_plotting_func(PlotClass, setting_key):
     
     {PlotClass.__doc__}
     """
-
     return _plot
 
 

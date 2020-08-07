@@ -252,29 +252,8 @@ class PdosPlot(Plot):
 
     def _after_read(self):
         """
-
-        Gets the information out of the .pdos and processes it into self.PDOSdicts so that it can be accessed by 
-        the self.setData() method once the orbitals/atoms to display PDOS are selected.
-
-        The method stores all the information in a pandas dataframe that looks like this:
-
-             |  species  |     1s     |    2s      |
-        _____|___________|____________|____________|......
-             |           |            |            |
-        iAt  |  string   | PDOS array | PDOS array |
-        _____|___________|____________|____________|......
-             .           .            .            .
-             .           .            .            .
-
-        Returns
-        ---------
-        self.df:
-            The dataframe obtained
-        self.E:
-            The energy values where PDOS is calculated
-
+        Creates the PDOS dataarray and updates the "requests" input field.
         """
-
         #Normalize self.PDOS to do the same treatment for both spin-polarized and spinless simulations
         self.spin_polarized = len(self.PDOS.shape) == 3
 
@@ -294,28 +273,6 @@ class PdosPlot(Plot):
         self.get_param('requests').update_options(self.geometry, "p" if self.spin_polarized else "")
 
     def _set_data(self):
-        """
-
-        Uses the information processed by the self.read_data() method and converts it into a data object for plotly.
-
-        It stores the data under self.data, so that it can be accessed by posterior methods.
-
-        Arguments
-        ---------
-        requests: list of [ list of (int, str and dict) ]
-            contains all the user's requests for the PDOS display.
-
-            The contributions of all the requests under a request group [ ] will be summed and displayed together.
-
-        normalize: bool
-            whether the contribution is normalized by the number of atoms.
-
-        Returns
-        ---------
-        self.data: list of dicts
-            contains a dictionary for each bandStruct with all its information.
-
-        """
 
         #Get only the energies we are interested in
         E0 = self.setting("E0")
@@ -377,7 +334,6 @@ class PdosPlot(Plot):
         """
         Checks if a query matches a PDOS request
         """
-
         if isinstance(query, (int, str)):
             query = [query]
 
@@ -407,7 +363,6 @@ class PdosPlot(Plot):
 
             If no query is provided, all the requests will be matched
         """
-
         return [req for i, req in enumerate(self.setting("requests")) if self._matches_request(req, i_or_names, i)]
 
     def add_request(self, req = {}, clean=False, **kwargs):
@@ -426,7 +381,6 @@ class PdosPlot(Plot):
             parameters of the request can be passed as keyword arguments too.
             They will overwrite the values in req
         """
-
         request = self._new_request(**{**req, **kwargs})
 
         try:
@@ -453,7 +407,6 @@ class PdosPlot(Plot):
 
             If no query is provided, all the requests will be matched
         """
-
         if all:
             requests = []
         else:
@@ -479,7 +432,6 @@ class PdosPlot(Plot):
             keyword arguments containing the values that you want to update
 
         """
-
         requests = self.setting("requests")
         for i, request in enumerate(requests):
             if self._matches_request(request, i_or_names, i):
@@ -514,7 +466,6 @@ class PdosPlot(Plot):
             will split the PDOS on the different orbitals but will take
             only those that belong to carbon atoms.
         """
-
         keys = ["atoms", "orbitals", "species", "spin"]
 
         # Merge all the requests (nice tree I built here, isn't it? :) )
@@ -572,7 +523,6 @@ class PdosPlot(Plot):
             will split the PDOS on the different orbitals but will take
             only the contributions from spin up.
         """
-
         if exclude is None:
             exclude = []
 
@@ -627,7 +577,6 @@ class PdosPlot(Plot):
             will split the PDOS on the different orbitals but will take
             only those that belong to carbon atoms.
         """
-
         requests = self.get_param('requests')._generate_queries(
             on=on, only=only, exclude=exclude, query_gen=self._new_request, **kwargs)
 

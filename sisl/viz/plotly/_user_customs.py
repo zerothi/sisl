@@ -29,7 +29,6 @@ def import_user_extension(extension_file):
     extension_file: str
         the name of the file that you want to import (NOT THE FULL PATH).
     """
-
     try:
         return importlib.import_module(str(extension_file).replace(".py", ""))
     except ModuleNotFoundError:

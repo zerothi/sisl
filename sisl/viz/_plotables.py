@@ -46,7 +46,7 @@ class PlotEngine:
 
         self._raw_methods[name] = function
         self._set_wrapped_function(name)
-    
+
     def _set_wrapped_function(self, name):
 
         function = self._raw_methods[name]
@@ -200,7 +200,7 @@ class PlotHandler:
             self._engines.append(engine)
 
         getattr(self, engine)._add(name, function, default=default)
-        
+
         self._set_method_shortcut(engine, name, function)
 
     def bind(self, instance=None):
@@ -211,7 +211,7 @@ class PlotHandler:
             raise ValueError("You need to provide an instance to bind this handler to.")
 
         return BoundPlotHandler(self, instance)
-        
+
     def _set_method_shortcut(self, engine, name, function):
 
         # This is just a "shortcut" for calling the function.
@@ -220,7 +220,7 @@ class PlotHandler:
         # interfere with each other (is it desirable?)
 
         if not hasattr(self, name) or engine == self._default_engine:
-        
+
             @wraps(function)
             def shortcut(*args, **kwargs):
                 return self(engine=engine, method=name, **kwargs)
@@ -235,7 +235,7 @@ class PlotHandler:
 
         if instance is not None:
             self._obj = instance
-        
+
         return self
 
     def __call__(self, engine=None, method=None, **kwargs):
@@ -275,7 +275,7 @@ class BoundPlotHandler(PlotHandler):
     knows which instance to use.
 
     For example, if I have two hamiltonians "H1" and "H2" and I do
-    
+
     >>> pt = H1.plot
     >>> H2.plot
 
@@ -317,7 +317,6 @@ class BoundPlotHandler(PlotHandler):
 
         self._obj = instance
 
-        
 
 def register_plotable(plotable, plotting_func, name=None, engine='plotly', default=False, plot_handler_attr='plot'):
     """
@@ -347,7 +346,6 @@ def register_plotable(plotable, plotting_func, name=None, engine='plotly', defau
     plot_handler_attr: str, optional
         the attribute where the plot handler is or should be located in the class that you want to register.
     """
-
     # Check if we already have a plot_handler
     plot_handler = getattr(plotable, plot_handler_attr, None)
 

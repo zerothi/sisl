@@ -27,7 +27,6 @@ def general_arguments(parser):
     parser: argparse.ArgumentParser
         the parser to which you want to add the arguments
     """
-
     parser.add_argument('--presets', '-p', type=str, nargs="*", required=False,
                     help=f'The names of the stored presets that you want to use for the settings. Current available presets: {get_avail_presets()}')
 
@@ -64,7 +63,6 @@ def splot():
     """
     Command utility for plotting things fast from the terminal.
     """
-
     parser = argparse.ArgumentParser(prog='splot',
                                      description="Command utility to plot files fast. This command allows great customability." +
                                      "\n\nOnly you know how you like your plots. Therefore, a nice way to use this command is by " +

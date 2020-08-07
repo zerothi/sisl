@@ -425,7 +425,6 @@ class FatbandsPlot(BandsPlot):
             will split the PDOS on the different orbitals but will take
             only those that belong to carbon atoms.
         """
-
         groups = self.get_param('groups')._generate_queries(
             on=on, only=only, exclude=exclude, **kwargs)
 
@@ -456,7 +455,6 @@ class FatbandsPlot(BandsPlot):
             whether 'factor' is meant to multiply the current scaling factor.
             If False, it will just replace the current factor.
         """
-
         scale = self.setting('scale')
 
         if from_current:

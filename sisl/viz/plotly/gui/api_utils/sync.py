@@ -160,7 +160,6 @@ class Connected:
             has a socketio already associated to it, the object will be sent through 
             that channel.
         """
-
         if socketio is None:
             socketio = self.socketio
 

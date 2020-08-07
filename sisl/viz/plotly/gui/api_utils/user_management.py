@@ -40,7 +40,6 @@ class User(UserMixin):
         new_permissions: dict
             A dictionary containing new permissions that will overwrite the old ones
         """
-
         # If the current_user environment variable is not present, this means the
         # method is being executed from python directly
         if 'current_user' not in locals() or current_user.has_permissions("manage_users"):
@@ -93,7 +92,6 @@ def if_user_can(*perms):
         # All the code here will only be executed if the user has permission to use nuclear weapons
     ```
     """
-
     def with_permissions_check(f):
 
         @wraps(f)
@@ -136,7 +134,6 @@ def listen_to_users(socketio_on):
     socketio_on: socketio.on
         The function to be used to listen to socketio events
     """
-
     @socketio_on('login')
     def login(username):
 

@@ -2,6 +2,7 @@ from pathlib import Path
 import pytest
 import inspect
 
+
 class MultipleTesterCreator(type):
     """
     Metaclass to setup multiple tests seamlessly.
@@ -45,6 +46,7 @@ class MultipleTesterCreator(type):
         # Once we have it, we proceed to apply the fixtures and returned the class
         # properly setup for tests :)
         return setup_multiple_tests(cls, params, scope)
+
 
 @pytest.mark.usefixtures("only_if_plot_initialized")
 class PlotTester(metaclass=MultipleTesterCreator):
@@ -113,6 +115,7 @@ class PlotTester(metaclass=MultipleTesterCreator):
         # We have to set the plot as a class attribute because for some reason pytest doesn't like to
         # set an instance attribute
         self.plot = self.init_func(_debug=True)
+
 
 @pytest.fixture
 def only_if_plot_initialized(request):

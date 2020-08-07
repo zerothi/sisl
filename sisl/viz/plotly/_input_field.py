@@ -11,7 +11,6 @@ __all__ = ["InputField"]
 
 
 class InputField:
-
     """
     This class is meant to help a smooth interface between python and the GUI.
 
@@ -89,7 +88,6 @@ class InputField:
     dtype = None
 
     def __init__(self, key, name, default=None, params={}, style={}, width="", inputFieldAttrs={}, group=None, subGroup=None, dtype=None, help="", **kwargs):
-
         self.key = key
         self.name = name
         self.default = default
@@ -122,18 +120,18 @@ class InputField:
             setattr(self, key, value)
 
     def __getitem__(self, key):
-
+        """Gets a key from the input field, even if it is nested"""
         if isinstance(key, str):
             return get_nested_key(self.__dict__, key)
 
         return None
 
     def __str__(self):
-
+        """String representation of the structure of the input field"""
         return str(vars(self))
 
     def __repr__(self):
-
+        """String representation of the structure of the input field"""
         return self.__str__()
 
     def modify(self, *args):
@@ -213,7 +211,6 @@ class InputField:
         self:
             The configurable object.
         """
-
         if len(args) == 2:
 
             modFunction = lambda obj: modify_nested_dict(obj.__dict__, *args)
@@ -233,7 +230,14 @@ class InputField:
         return self
 
     def to_json(self):
+        """
+        Helps converting the input field to json so that it can be sent to the GUI.
 
+        Returns
+        ---------
+        dict
+            the dict ready to be jsonified.
+        """
         def default(obj):
 
             if isinstance(obj, np.integer):
@@ -269,7 +273,6 @@ class InputField:
         self.dtype
             the parsed value, which will be of the datatype specified by the input.
         """
-
         if val is None:
             return None
 

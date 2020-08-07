@@ -19,11 +19,12 @@ __all__ = ["sx"]
 class WithSislManagement(AbstractDispatch):
 
     def __init__(self, px):
-
         self._obj = px
 
     def dispatch(self, method):
-
+        """
+        Wraps the methods of the object to preprocess the inputs.
+        """
         @wraps(method)
         def with_sisl_support(*args, **kwargs):
 

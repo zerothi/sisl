@@ -41,7 +41,6 @@ class NamedHistory:
     """
 
     def __init__(self, init_params, defaults=None, history_len=20, keep_defaults=True):
-
         self._defaults_kept = keep_defaults
 
         if defaults is not None:
@@ -133,7 +132,6 @@ class NamedHistory:
         -----------
         self
         """
-
         for key in self._vals:
 
             if key not in new_settings:
@@ -181,7 +179,6 @@ class NamedHistory:
             the index of the last update. 
             If the parameter was never updated it returns None.
         """
-
         current = self._vals[key][self._hist[key][-1]]
 
         for i, val in enumerate(reversed(self._hist[key])):
@@ -220,7 +217,6 @@ class NamedHistory:
         bool
             whether the parameter was updated or not
         """
-
         return self.is_different(key, step1=step, step2=step-1)
 
     def is_different(self, key, step1, step2):
@@ -242,7 +238,6 @@ class NamedHistory:
             whether the value of the parameter is different in these
             two steps
         """
-
         hist = self._hist[key]
 
         return hist[step1] != hist[step2]
@@ -263,7 +258,6 @@ class NamedHistory:
         list of str
             the names of the parameters that are different between these two steps.
         """
-
         return [key for key in self._vals if self.is_different(key, step1, step2)]
 
     def delta(self, step_after=-1, step_before=None):
@@ -287,7 +281,6 @@ class NamedHistory:
 
             The dict will not contain the parameters that were not changed.
         """
-
         if step_before is None:
             step_before = step_after -1
 
@@ -324,7 +317,6 @@ class NamedHistory:
         -----------
         self
         """
-
         # Decide which keys to undo.
         # This can not be done yet because all keys
         # are supposed to have the same number of steps.
@@ -359,7 +351,6 @@ class NamedHistory:
         use `restore_defaults` instead.
 
         """
-
         self.__init__(init_settings={key: None for key in self._vals})
 
         return self
@@ -368,7 +359,6 @@ class NamedHistory:
         """
         Restores the history to its initial values (the first step).
         """
-
         self.__init__(init_settings=self.step(0))
 
         return self
@@ -377,7 +367,6 @@ class NamedHistory:
         """
         Restores the history to its defaults.
         """
-
         if self._defaults_kept:
             if hasattr(self, "_defaults"):
                 self.__init__({})
@@ -417,7 +406,6 @@ class NamedHistory:
         bool
             whether the parameter currently holds the default value.
         """
-
         return self[key][-1] == self.defaults[key]
 
 
@@ -433,19 +421,22 @@ class FakeSettingsDispatch(AbstractDispatch):
     """
 
     def __init__(self, obj, **settings):
-
         self.fake_settings = settings
 
         super().__init__(obj)
 
     def setting(self, *args, **kwargs):
-
+        """
+        Overwrites the "correct" `setting` method to provide the fake settings.
+        """
         kwargs["fake_settings"] = {**kwargs.get("fake_settings", {}), **self.fake_settings}
 
         return Configurable.setting(self._obj, *args, **kwargs)
 
     def dispatch(self, method):
-
+        """
+        Returns the wrapped method to run it with fake settings
+        """
         @wraps(method)
         def run_with_fake_settings(*args, **kwargs):
 
@@ -495,7 +486,6 @@ class Configurable:
             acts exactly as the object itself, but any method that you run on it 
             will use the fake settings.
         """
-
         disp = FakeSettingsDispatch(self, **settings)
 
         if method is not None:
@@ -519,7 +509,6 @@ class Configurable:
 
             If a setting is not provided, the default value will be used.
         """
-
         if getattr(self, "AVOID_SETTINGS_INIT", False):
             delattr(self, "AVOID_SETTINGS_INIT")
             return
@@ -561,7 +550,6 @@ class Configurable:
         We will make use of it to:
             - Give a more specific docstring to update settings.
         """
-
         # Change the docs of the update_settings method to truly reflect
         # the available kwargs for the plot class and provide more help to the user
         def update_settings(self, *args, **kwargs):
@@ -589,7 +577,6 @@ class Configurable:
 
         Probably there should be a variable `_exclude_params` to avoid some parameters.
         """
-
         params = []; param_groups = []
         for clss in type.mro(cls):
             if "_parameters" in vars(clss):
@@ -629,7 +616,6 @@ class Configurable:
         **kwargs:
             the values of the settings that we want to update passed as keyword arguments.
         """
-
         #Initialize the settings in case there are none yet
         if not hasattr(self, "settings_history"):
             return self.init_settings(**kwargs)
@@ -658,7 +644,6 @@ class Configurable:
         for_keys: array-like of str
             the keys of the settings that have been updated.
         """
-
         #Run the functions specified
         if hasattr(self, "_onSettingsUpdate"):
 
@@ -691,7 +676,6 @@ class Configurable:
             whether we should run updates after updating the settings. If not, the settings
             will be updated, but you won't see any change in the object.
         """
-
         try:
             diff = self.settings_history.diff_keys(-1, -steps-1)
             self.settings_history.undo(steps=steps)
@@ -715,7 +699,6 @@ class Configurable:
         key: str
             the key of the setting that you want to undo.
         """
-
         i = self.settings_history.last_update_for(key)
 
         if i is None:
@@ -736,7 +719,6 @@ class Configurable:
         group_key: str
             the key of the settings group for which you want to undo its values.
         """
-
         #Get the actual settings for that group
         actualSettings = self.get_settings_group(group_key)
 
@@ -778,7 +760,6 @@ class Configurable:
         param: dict or InputField
             The parameter in the form specified by as_dict.
         """
-
         for param in self.params if not paramsExtractor else paramsExtractor(self):
             if param.key == key:
                 return param.__dict__ if as_dict else param
@@ -866,7 +847,6 @@ class Configurable:
         self:
             The configurable object.
         """
-
         self.get_param(key, as_dict = False, **kwargs).modify(*args)
 
         return self
@@ -890,7 +870,6 @@ class Configurable:
         parse: boolean, optional
             whether the setting should be parsed before returning it.
         """
-
         settings = self.settings
         if fake_settings is not None:
             settings = {**settings, **fake_settings}
@@ -909,7 +888,6 @@ class Configurable:
 
         It stores where the setting has been demanded so that the plot can be efficiently updated when it is modified.
         """
-
         #Get the last frame
         frame = sys._getframe().f_back
         #And then iterate over all the past frames to get their names
@@ -950,7 +928,6 @@ class Configurable:
         settings_group: dict
             A subset of the settings with only those that belong to the asked group.
         """
-
         if steps_back:
             settings = self.settings_history[-steps_back]
         else:
@@ -972,7 +949,6 @@ class Configurable:
         group_key: str
             The key of the settings group that we desire.
         """
-
         return deepcopy({setting.key: self.setting(setting.key) for setting in self.params if getattr(setting, "group", None) == group_key})
 
     def has_these_settings(self, settings={}, **kwargs):
@@ -988,7 +964,6 @@ class Configurable:
 
         You can use settings and **kwargs at the same time, they will be merged.
         """
-
         settings = {**settings, **kwargs}
 
         for key, val in settings.items():
@@ -997,8 +972,8 @@ class Configurable:
         else:
             return True
 
-# DECORATORS TO USE WHEN DEFINING METHODS IN CLASSES THAT INHERIT FROM Configurable
 
+# DECORATOR TO USE WHEN DEFINING METHODS IN CLASSES THAT INHERIT FROM Configurable
 
 def vizplotly_settings(when='before', init=False):
     """

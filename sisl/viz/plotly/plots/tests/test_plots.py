@@ -20,15 +20,16 @@ from sisl.viz.plotly.plotutils import get_plot_classes
 def plot_class(request):
     request.cls.PlotClass = request.param
 
+
 class TestPlotSubClass(BasePlotTester):
 
     def test_compulsory_methods(self):
 
-            assert hasattr(self.PlotClass, "_set_data")
-            assert callable(self.PlotClass._set_data)
+        assert hasattr(self.PlotClass, "_set_data")
+        assert callable(self.PlotClass._set_data)
 
-            assert hasattr(self.PlotClass, "_plot_type")
-            assert isinstance(self.PlotClass._plot_type, str)
+        assert hasattr(self.PlotClass, "_plot_type")
+        assert isinstance(self.PlotClass._plot_type, str)
 
     def test_param_groups(self):
 
@@ -37,4 +38,3 @@ class TestPlotSubClass(BasePlotTester):
         for group in plot.param_groups:
             for key in ("key", "name", "icon", "description"):
                 assert key in group, f'{self.PlotClass} is missing {key} in parameters group {group}'
-    

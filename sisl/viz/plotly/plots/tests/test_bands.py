@@ -17,6 +17,7 @@ from sisl.viz import BandsPlot
 from sisl.viz.plotly.plots.tests.get_files import from_files
 from sisl.viz.plotly.plots.tests.helpers import PlotTester
 
+
 class BandsPlotTester(PlotTester):
 
     _required_attrs = [
@@ -87,6 +88,7 @@ class BandsPlotTester(PlotTester):
         assert np.all([
             np.allclose(old_trace.y, new_trace.y)
             for old_trace, new_trace in zip(from_labels, plot.data[-len(gaps):])])
+
 
 class NCSpinBandsTester(BandsPlotTester):
 
@@ -171,10 +173,11 @@ bz = sisl.BandStructure(H, [[0, 0, 0], [0.5, 0, 0]], 3, ["Gamma", "X"])
 class TestBandsPlot(BandsPlotTester):
     run_for = bands_plots
 
+
 class TestNCSpinBands(NCSpinBandsTester):
 
     run_for = {
-        "NCspin_H" : {
+        "NCspin_H": {
             "init_func": bz.plot.bind(),
             "bands_shape": (3, 1, 90),
             "ticklabels": ["Gamma", "X"],

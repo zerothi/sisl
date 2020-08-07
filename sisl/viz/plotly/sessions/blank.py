@@ -44,5 +44,5 @@ class BlankSession(Session):
     _description = "The most basic session one could have, really."
 
     def _after_init(self):
-
+        # Add a first tab so that the user can see something :)
         self.add_tab("First tab")

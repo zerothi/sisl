@@ -22,7 +22,6 @@ def get_plotly_template(name):
     name: str
         the name of the plotly template
     """
-
     return pio.templates[name]
 
 
@@ -46,7 +45,6 @@ def add_plotly_template(name, template, default=False):
         gives you to customize the sisl visualization package by acting every time the
         package is imported.
     """
-
     pio.templates[name] = template
 
     if default:
@@ -68,7 +66,6 @@ def set_default_plotly_template(name):
     name: str
         the name of the template that you want to use as default
     """
-
     pio.templates.default = name
 
 
@@ -81,7 +78,6 @@ def available_plotly_templates():
     list
         the list with all the template's names.
     """
-
     list(pio.templates.keys())
 
 pio.templates["sisl"] = go.layout.Template(

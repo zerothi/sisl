@@ -30,7 +30,6 @@ class RangeSlider(InputField):
             If no marks are passed, the method will try to update the marks acoording to the current
             min and max values.
         '''
-
         if marks is None:
             marks = {int(val): str(val) for val in np.arange(self.inputField["params"]["min"], self.inputField["params"]["max"], 1, dtype=int)}
 

@@ -117,5 +117,6 @@ pdos_plots["sisl_H"] = {
     "species": ('C',)
 }
 
+
 class TestPDOSPlot(PdosPlotTester):
     run_for = pdos_plots

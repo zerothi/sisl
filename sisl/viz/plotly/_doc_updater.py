@@ -80,7 +80,6 @@ def fill_class_docs(cls):
         the class you want to document.
 
     """
-
     filename = inspect.getfile(cls)
 
     parameters_docs = get_parameters_docstrings(cls)

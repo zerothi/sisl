@@ -105,7 +105,6 @@ class SileInput(FilePathInput, SislObjectInput):
         """
         This is a temporal fix because for some reason some sile classes can not be pickled
         """
-
         if hasattr(self, "_required_attrs"):
             return tuple(sisl.get_siles(attrs=self._required_attrs))
         else:

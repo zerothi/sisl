@@ -16,6 +16,7 @@ from sisl.viz import Animation
 from sisl.viz.plotly.plots.tests.get_files import from_files
 from sisl.viz.plotly.plots.tests.helpers import PlotTester
 
+
 class GridPlotTester(PlotTester):
 
     _required_attrs = [

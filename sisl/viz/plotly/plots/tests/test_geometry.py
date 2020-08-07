@@ -14,6 +14,7 @@ from sisl.viz import GeometryPlot
 from sisl.viz.plotly.plots.tests.get_files import from_files
 from sisl.viz.plotly.plots.tests.helpers import PlotTester
 
+
 class GeometryPlotTester(PlotTester):
 
     def test_1d(self):
@@ -99,6 +100,6 @@ class GeometryPlotTester(PlotTester):
 class TestGeometryPlot(GeometryPlotTester):
 
     run_for = {
-        "sisl_geom": {"init_func": sisl.geom.graphene(orthogonal=True).plot.bind() },
-        "ghost_atoms": {"init_func": sisl.Geometry([[0, 0, 1], [1, 0, 0]], atoms=[sisl.Atom(6), sisl.Atom(-6)]).plot.bind() }
+        "sisl_geom": {"init_func": sisl.geom.graphene(orthogonal=True).plot.bind()},
+        "ghost_atoms": {"init_func": sisl.Geometry([[0, 0, 1], [1, 0, 0]], atoms=[sisl.Atom(6), sisl.Atom(-6)]).plot.bind()}
     }

@@ -22,7 +22,6 @@ def emit_session(session_to_emit=None, broadcast=True, **kwargs):
     session_to_emit: Session, optional
         The session you want to emit. If none is provided, it will try to find the global session
     """
-
     if session_to_emit is None:
         session_to_emit = session
 
@@ -41,7 +40,6 @@ def emit_plot(plot, session=None, broadcast=True, **kwargs):
             It can be either its ID, to search for the plot in the current session, or
             an actual plot instance.
     """
-
     if isinstance(plot, str):
         plot = session.plot(plot)
 
@@ -59,12 +57,10 @@ def emit_loading_plot(plot, broadcast=True, **kwargs):
     plot: str or Plot
             It can be either a plot ID or an actual plot instance.
     """
-
     return emit("loading_plot", {"plot_id": plot if isinstance(plot, str) else plot.id}, broadcast=broadcast, **kwargs)
 
 
 def emit_error(err, **kwargs):
-
     emit("server_error", str(err), broadcast=False, **kwargs)
 
 

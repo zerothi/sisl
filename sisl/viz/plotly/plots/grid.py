@@ -743,7 +743,6 @@ class GridPlot(Plot):
 
             If you provide multiple axes, the number of different steps must match the number of axes or be a single int.
         """
-
         if isinstance(ax, int):
             ax = [ax]
         if isinstance(steps, int):
@@ -771,7 +770,6 @@ class GridPlot(Plot):
 
             If you provide multiple axes, the number of different tiles must match the number of axes or be a single int.
         """
-
         if isinstance(ax, int):
             ax = [ax]
         if isinstance(tiles, int):
@@ -826,7 +824,6 @@ class GridPlot(Plot):
         sisl.viz.Animation
             An animation representation of the scan
         """
-
         # If no axis is provided, let's get the first one that is not displayed
         if along is None:
             displayed = self.setting('axes')
@@ -894,7 +891,6 @@ class GridPlot(Plot):
         scan: sisl Animation
             An animation representation of the scan
         """
-
         # To keep the same iso_vals along all the animation in case it is a scan of 3D frames
         if getattr(self.data[0], "isomin", None):
             isovals = [self.data[0].isomin, self.data[0].isomax]

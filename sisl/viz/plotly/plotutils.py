@@ -131,7 +131,6 @@ def get_plotable_siles(rules=False):
     list
         all the siles that the module knows how to plot.
     """
-
     if rules:
         sile_getter = get_sile_rules
     else:
@@ -238,7 +237,6 @@ def get_configurable_kwargs(cls_or_inst, fake_default):
     str:
         the string containing the described kwargs.
     """
-
     def get_string(val):
         if isinstance(val, (float, int, bool)) or val is None:
             return val
@@ -275,7 +273,6 @@ def get_configurable_kwargs_to_pass(cls):
     str:
         the string containing the described kwargs.
     """
-
     if isinstance(cls, type):
         params = cls._parameters
     else:

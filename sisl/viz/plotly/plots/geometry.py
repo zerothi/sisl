@@ -96,7 +96,17 @@ class BaseGeometryPlot(Plot):
 
         symb = Atom(atom).symbol
 
-        return cls._atoms_colors.get(symb, cls._atoms_colors["else"])
+        if isinstance(atom, Number) and atom < 0:
+            ghost = True
+            atom = abs(atom)
+
+        color = cls._atoms_colors.get(Atom(atom).symbol, cls._atoms_colors["else"])
+
+        if ghost:
+            color = (np.array(matplotlib.colors.to_rgb(color))*255).astype(int)
+            color = f'rgba({",".join(color.astype(str))}, 0.4)'
+
+        return color
 
     def _after_read(self):
 
@@ -160,7 +170,6 @@ class BaseGeometryPlot(Plot):
         """
         Gets the bonds where the given atoms are involved
         """
-
         if atom is None:
             return bonds
 
@@ -192,7 +201,6 @@ class BaseGeometryPlot(Plot):
         **kwargs: 
             passed directly to the atoms scatter trace
         """
-
         wrap_atoms = wrap_atoms or self._default_wrap_atoms1D
         traces = []
 
@@ -308,7 +316,6 @@ class BaseGeometryPlot(Plot):
         cell: {'axes', 'box', False}, optional
             defines how the unit cell is drawn
         """
-
         wrap_atoms = wrap_atoms or self._default_wrap_atoms2D
         wrap_bond = wrap_bond or self._default_wrap_bonds2D
 
@@ -439,7 +446,6 @@ class BaseGeometryPlot(Plot):
         """
         Returns a bond trace in 2d.
         """
-
         x, y = np.array([xy1, xy2]).T
 
         trace = {
@@ -468,7 +474,6 @@ class BaseGeometryPlot(Plot):
         However, the bonds are represented as dots between the two atoms (if you use enough
         points per bond it almost looks like a line).
         """
-
         # Check if we need to build the markers_properties from atoms_* arguments
         if isinstance(bonds_color, Iterable) and not isinstance(bonds_color, str):
             bonds_color = np.repeat(bonds_color, points_per_bond)
@@ -610,7 +615,6 @@ class BaseGeometryPlot(Plot):
         cheap_bonds_kwargs: dict, optional
             dict that is passed directly as keyword arguments to `self._bonds_trace3D`.
         """
-
         wrap_atom = wrap_atom or self._default_wrap_atom3D
         wrap_bond = wrap_bond or self._default_wrap_bond3D
 
