@@ -248,3 +248,40 @@ class ClassDispatcher(Dispatcher):
                                 cls_attr_name=self._attr_name,
                                 obj_getattr=self._obj_getattr,
                                 **self._attrs)
+
+
+'''
+For use when doing cached dispatechers
+class CachedClassDispatcher(ClassDispatcher):
+    __slots__ = ("_obj_getattr", "_attr_name")
+
+    def __init__(self, name, dispatchs=None, default=None, obj_getattr=None, **attrs):
+        # obj_getattr is necessary for the ObjectDispatcher to create the correct
+        # MethodDispatcher
+        super().__init__(dispatchs, default, **attrs)
+        if obj_getattr is None:
+            def obj_getattr(obj, key):
+                return getattr(obj, key)
+        self._obj_getattr = obj_getattr
+        # the name of the ClassDispatcher attribute in the class
+        self._attr_name = name
+
+    def __get__(self, instance, owner):
+        """ Class dispatcher retrieval
+
+        When directly retrieved from the class we return it-self to
+        allow interaction with the dispatcher.
+
+        When retrieved from an object it returns an `ObjectDispatcher`
+        which contains the current dispatchs allowed to be dispatched through.
+        """
+        if instance is None:
+            return self
+        dispatcher = ObjectDispatcher(instance, self._dispatchs,
+                                default=self._default,
+                                cls_attr_name=self._attr_name,
+                                obj_getattr=self._obj_getattr,
+                                **self._attrs)
+        object.__setattr__(instance, self._attr_name, dispatcher)
+        return dispatcher
+'''
