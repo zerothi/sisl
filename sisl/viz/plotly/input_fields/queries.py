@@ -106,7 +106,7 @@ class QueriesInput(InputField):
             key = key_to_cols.get(key, key)
             if key in df and val is not None:
                 if isinstance(val, (np.ndarray, tuple)):
-                    val = list(val)
+                    val = np.ravel(val).tolist()
                 query_str.append(f'{key}=={repr(val)}')
 
         return df.query(" & ".join(query_str))
@@ -232,6 +232,7 @@ class OrbitalQueries(QueriesInput):
             the parameter that you want the options for.
 
             Note that you can combine them with a "+" to get all the possible combinations.
+            You can get the same effect also by passing a list.
             See examples.
         **kwargs:
             keyword arguments that add additional conditions to the query. The values of this
@@ -263,11 +264,13 @@ class OrbitalQueries(QueriesInput):
                 options = [0]
 
         else:
-
             # Get the options from the unique values of the dataframe.
+
+            # First filter the dataframe according to the constrains imposed by the kwargs,
+            # if there are any.
             df = self.orb_filtering_df
             if kwargs:
-                query = ' & '.join([f'{k}=={repr(v)}' for k, v in kwargs.items()])
+                query = ' & '.join([f'{self._keys_to_cols.get(k, k)}=={repr(v)}' for k, v in kwargs.items()])
                 df = df.query(query)
 
             # If + is in key, it is a composite key. In that case we are going to
@@ -277,6 +280,10 @@ class OrbitalQueries(QueriesInput):
             keys = [self._keys_to_cols.get(k, k) for k in key.split("+")]
 
             options = df.drop_duplicates(subset=keys)[keys].values.squeeze()
+
+            # If there is only one option, squeeze converts it to a number, so
+            # we need to make sure there is at least 1d
+            options = np.atleast_1d(options)
 
         return options
 
@@ -297,10 +304,10 @@ class OrbitalQueries(QueriesInput):
         --------
         query: dict
             the query that we want to split
-        on: str, {"species", "atoms", "orbitals", "n", "l", "m", "Z", "spin"}
+        on: str, {"species", "atoms", "orbitals", "n", "l", "m", "Z", "spin"}, or list of str
             the parameter to split along.
             Note that you can combine parameters with a "+" to split along multiple parameters
-            at the same time.
+            at the same time. You can get the same effect also by passing a list.
         only: array-like, optional
             if desired, the only values that should be plotted out of
             all of the values that come from the splitting.
@@ -323,12 +330,21 @@ class OrbitalQueries(QueriesInput):
         if exclude is None:
             exclude = []
 
-        # Get the current values of the parameter that we want to split the request on
-        values = query.get(on, None)
+        # Divide the splitting request into all the parameters
+        if isinstance(on, str):
+            on = on.split("+")
 
-        # If it's None, it means that is getting all the possible values
-        if values is None:
-            values = self.get_options(on)
+        # Get the current values of the parameters that we want to split the request on
+        # because these will be our constrains. If a parameter is set to None or not
+        # provided, we have no constrains for that parameter.
+        constrains = {}
+        for key in on:
+            val = query.get(key, None)
+            if val is not None:
+                constrains[key] = val
+
+        # Knowing what are our constrains (which may be none), get the available options
+        values = self.get_options("+".join(on), **constrains)
 
         # If no function to modify queries was provided we are just going to generate a
         # dummy one that just returns the query as it gets it
@@ -336,7 +352,8 @@ class OrbitalQueries(QueriesInput):
             def query_gen(**kwargs):
                 return kwargs
 
-        on = on.split("+")
+        if isinstance(on, str):
+            on = on.split("+")
 
         base_name = kwargs.pop("name", query.get("name", ""))
 
@@ -378,10 +395,10 @@ class OrbitalQueries(QueriesInput):
 
         Parameters
         --------
-        on: str, {"species", "atoms", "orbitals", "n", "l", "m", "Z", "spin"}
+        on: str, {"species", "atoms", "orbitals", "n", "l", "m", "Z", "spin"} or list of str
             the parameter to split along.
             Note that you can combine parameters with a "+" to split along multiple parameters
-            at the same time.
+            at the same time. You can get the same effect also by passing a list.
         only: array-like, optional
             if desired, the only values that should be plotted out of
             all of the values that come from the splitting.

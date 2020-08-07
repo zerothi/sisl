@@ -6,7 +6,8 @@ from collections import defaultdict
 import sisl
 from ..plot import Plot, entry_point
 from ..plotutils import find_files, random_color
-from ..input_fields import TextInput, SileInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeInput, RangeSlider, OrbitalQueries, ProgramaticInput, Array1dInput, ListInput
+from ..input_fields import TextInput, SileInput, SwitchInput, ColorPicker, DropdownInput, CreatableDropdown, \
+    IntegerInput, FloatInput, RangeInput, RangeSlider, OrbitalQueries, ProgramaticInput, Array1dInput, ListInput
 from ..input_fields.range import ErangeInput
 
 
@@ -159,9 +160,9 @@ class PdosPlot(Plot):
                     key="split_on", name="Split",
                     default=None,
                     params={
-                        "isMulti": False,
+                        "isMulti": True,
                         "isSearchable": True,
-                        "options": [{"value": option, "label": option} for option in ("species", "atoms", "orbitals", "spin")]
+                        "options": [{"value": option, "label": option} for option in ("species", "atoms", "orbitals", "spin", "n", "l", "m", "Z")]
                     }
                 )
             ]
@@ -412,7 +413,7 @@ class PdosPlot(Plot):
         if len(query) == 0:
             return True
 
-        return request["name"] in query or iReq in query
+        return ("name" in request and request.get("name") in query) or iReq in query
 
     def _new_request(self, **kwargs):
 
@@ -573,11 +574,11 @@ class PdosPlot(Plot):
             to spread it and use all items in your list as args
 
             If no query is provided, all the requests will be matched
-        on: str, {"species", "atoms", "orbitals", "n", "l", "m", "Z", "spin"}
+        on: str, {"species", "atoms", "orbitals", "n", "l", "m", "Z", "spin"}, or list of str
             the parameter to split along.
 
             Note that you can combine parameters with a "+" to split along multiple parameters
-            at the same time.See examples.
+            at the same time. You can get the same effect also by passing a list. See examples.
         only: array-like, optional
             if desired, the only values that should be plotted out of
             all of the values that come from the splitting.
@@ -629,10 +630,10 @@ class PdosPlot(Plot):
 
         Parameters
         --------
-        on: str, {"species", "atoms", "orbitals", "n", "l", "m", "Z", "spin"}
+        on: str, {"species", "atoms", "orbitals", "n", "l", "m", "Z", "spin"}, or list of str
             the parameter to split along.
             Note that you can combine parameters with a "+" to split along multiple parameters
-            at the same time.
+            at the same time. You can get the same effect also by passing a list.
         only: array-like, optional
             if desired, the only values that should be plotted out of
             all of the values that come from the splitting.
