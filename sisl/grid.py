@@ -267,8 +267,8 @@ class Grid(SuperCellChild):
         """
 
         # Normalize the radius input to a list of radius
-        if isinstance(r, (int, float)):
-            r = [r]*3
+        if isinstance(r, Real):
+            r = [r, r, r]
 
         # Calculate the size of the kernel in pixels (in case the
         # gaussian filter is used, this is the standard deviation)
