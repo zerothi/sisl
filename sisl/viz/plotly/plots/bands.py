@@ -314,8 +314,10 @@ class BandsPlot(Plot):
     }
 
     @classmethod
-    def _default_animation(cls, wdir = None, frame_names=None, **kwargs):
-
+    def _default_animation(cls, wdir=None, frame_names=None, **kwargs):
+        """
+        Defines the default animation, which is to look for all .bands files in wdir.
+        """
         bands_files = find_files(wdir, "*.bands", sort = True)
 
         def _get_frame_names(self):
@@ -325,7 +327,6 @@ class BandsPlot(Plot):
         return cls.animated("bands_file", bands_files, frame_names = _get_frame_names, wdir = wdir, **kwargs)
 
     def _after_init(self):
-
         self.spin = sisl.Spin("")
 
         self.add_shortcut("g", "Toggle gap", self.toggle_gap)
@@ -414,7 +415,6 @@ class BandsPlot(Plot):
         Therefore it should be removed. Only one of "path" or "band_structure"
         inputs should exist. And then it should be always parsed into a sisl.BandStructure.
         """
-
         #Get the requested path
         self.path = self.setting('path')
         if not self.path and self.setting('band_structure'):
@@ -503,7 +503,6 @@ class BandsPlot(Plot):
         self.data: list of dicts
             contains a dictionary for each bandStruct with all its information.
         """
-
         Erange = self.setting('Erange')
         E0 = self.setting('E0')
 
@@ -523,7 +522,7 @@ class BandsPlot(Plot):
             filtered_bands = filtered_bands.where(filtered_bands.band.isin(iBands), drop=True)
             self.update_settings(
                 run_updates=False,
-                Erange=np.array([float(f'{val:.3f}') for val in [float(filtered_bands.min()), float(filtered_bands.max())]]),
+                Erange=np.array([float(f'{val:.3f}') for val in [float(filtered_bands.min() - 0.01), float(filtered_bands.max() + 0.01)]]),
                 bands_range=bands_range, no_log=True)
         else:
             Erange = np.array(Erange)
@@ -585,11 +584,10 @@ class BandsPlot(Plot):
                         "hovertemplate": '%{y:.2f} eV',
                         **add_band_trace_data(band, self)
                         } for band in spin_bands] for spin_bands, spin in zip(filtered_bands.transpose('spin', 'band', 'k'), filtered_bands.spin.values)]).tolist())
-
+        
         self._draw_gaps()
 
     def _after_get_figure(self):
-
         #Add the ticks
         self.figure.layout.xaxis.tickvals = getattr(self.bands, "ticks", None)
         self.figure.layout.xaxis.ticktext = getattr(self.bands, "ticklabels", None)
@@ -602,7 +600,11 @@ class BandsPlot(Plot):
             self.update_layout(coloraxis = {"cmin": -1, "cmax": 1, "colorscale": self.setting("spin_texture_colorscale")})
 
     def _calculate_gaps(self):
+        """
+        Calculates the gap (or gaps) assuming 0 is the fermi level.
 
+        It creates the attributes `gap` and `gap_info`
+        """
         # Calculate the band gap to store it
         above_fermi = self.bands.where(self.bands > 0)
         below_fermi = self.bands.where(self.bands < 0)
@@ -622,7 +624,9 @@ class BandsPlot(Plot):
         }
 
     def _draw_gaps(self):
-
+        """
+        Draws the calculated gaps and the custom gaps in the plot
+        """
         # Draw gaps
         if self.setting("gap"):
 
@@ -650,8 +654,8 @@ class BandsPlot(Plot):
                 if only_direct and abs(gap_ks[1] - gap_ks[0]) > gap_tolerance:
                     continue
 
-                self.draw_gap(gap_ks, gap_color=gap_color, true_gap=True)
-        
+                self.draw_gap(*gap_ks, color=gap_color, true_gap=True)
+
         # Draw the custom gaps. These are gaps that do not necessarily represent
         # the maximum and the minimum of the VB and CB.
         custom_gaps = self.setting("custom_gaps")
@@ -659,53 +663,101 @@ class BandsPlot(Plot):
 
             requested_spin = gap.get("spin", None)
             if requested_spin is None:
-                requested_spin = [0,1]
-            
-            # Parse the names of the kpoints into their numeric values
-            # if a string was provided.
-            for key in ("from", "to"):
-                val = gap[key]
-                try:
-                    gap[key] = float(val)
-                except ValueError:
-                    if val in self.bands.attrs["ticklabels"]:
-                        i = self.bands.attrs["ticklabels"].index(val)
-                        gap[key] = self.bands.attrs["ticks"][i]
-                    #else:
-                        # raise ValueError(f"We can not interpret {gap[key]} as a k-location in the current bands plot")
-                        # This should be logged instead of raising the error
+                requested_spin = [0, 1]
 
             for spin in self.bands.spin:
                 if spin in requested_spin:
-                    self.draw_gap((gap["from"], gap["to"]), gap_color=gap.get("color", None), spin=spin)
+                    self.draw_gap(gap["from"], gap["to"], color=gap.get("color", None), spin=spin)
 
+    def draw_gap(self, from_k, to_k=None, color=None, true_gap=False, spin=0, save=False, **kwargs):
+        """
+        Function that draws a given gap in the plot.
 
-    def draw_gap(self, ks, gap_color=None, true_gap=False, spin=0, **kwargs):
+        Please note that if you want gaps to persist through updates you should
+        use the "custom_gaps" setting or indicate save=True in this function.
+
+        Parameters
+        -----------
+        from_k: float or str
+            The k value where you want the gap to start (bottom limit).
+            If "to_k" is not provided, it will be interpreted also as the top limit.
+
+            If a k-value is a float, it will be directly interpreted
+            as the position in the graph's k axis.
+
+            If a k-value is a string, it will be attempted to be parsed
+            into a float. If not possible, it will be interpreted as a label
+            (e.g. "Gamma").
+        to_k: float or str, optional
+            same as "from_k" but in this case represents the top limit.
+
+            If not provided, "from_k" will be used.
+        color: str, optional
+            the color with which the gap should be represented.
+        true_gap: bool, optional
+            whether it is the true gap of the structure. You should probably
+            never use this, it is just used internally to save time.
+        spin: int, optional
+            the spin component where you want to draw the gap.
+        save: bool, optional
+            whether you want this gap to persist through updates.
+        **kwargs:
+            keyword arguments that are passed directly to the new trace.
+        """
+        if to_k is None:
+            to_k = from_k
+
+        if save:
+            return self.update_settings(custom_gaps=[*self.settings["custom_gaps"], {"from": from_k, "to": to_k, "color": color, "spin": [spin]}])
+
+        ks = [None, None]
+        # Parse the names of the kpoints into their numeric values
+        # if a string was provided.
+        for i, val in enumerate((from_k, to_k)):
+            try:
+                ks[i] = float(val)
+            except ValueError:
+                if val in self.bands.attrs["ticklabels"]:
+                    i_tick = self.bands.attrs["ticklabels"].index(val)
+                    ks[i] = self.bands.attrs["ticks"][i_tick]
+                else:
+                    return
+                    # raise ValueError(f"We can not interpret {val} as a k-location in the current bands plot")
+                    # This should be logged instead of raising the error
 
         if true_gap:
             # Take the energies from the gap information
             Es = self.gap_info["Es"]
+            name = "Gap"
         else:
-            # 
+            name = f"Gap ({from_k}-{to_k})"
             VB, CB = self.gap_info["bands"]
-            Es = [np.ravel(self.bands.sel(k=k, band=band, spin=spin, method="nearest"))[0] for k, band in zip(ks, (VB, CB))]
-        
+            Es = [self.bands.sel(k=k, band=band, spin=spin, method="nearest") for k, band in zip(ks, (VB, CB))]
+            # Get the real values of ks that have been obtained
+            # because we might not have exactly the ks requested
+            ks = [np.ravel(E.k)[0] for E in Es]
+            Es = [np.ravel(E)[0] for E in Es]
+
         self.add_trace({
             'type': 'scatter',
             'mode': 'lines+markers+text',
             'x': ks,
             'y': Es,
             'text': [f'Gap: {Es[1] - Es[0]:.3f} eV', ''],
-            'marker': {'color': gap_color},
-            'line': {'color': gap_color},
-            'name': 'Gap',
+            'marker': {'color': color},
+            'line': {'color': color},
+            'name': name,
             'textposition': 'top right',
             **kwargs
         })
 
-    def toggle_gap(self):
+        return self
 
-        self.update_settings(gap= not self.settings["gap"])
+    def toggle_gap(self):
+        """
+        If the gap was being displayed, hide it. Else, show it.
+        """
+        return self.update_settings(gap= not self.settings["gap"])
 
     def plot_Ediff(self, band1, band2):
         """
@@ -721,7 +773,6 @@ class BandsPlot(Plot):
         Plot
             a new plot with the plotted information.
         """
-
         two_bands = self.bands.sel(band=[band1, band2]).squeeze().values
 
         diff = two_bands[:, 1] - two_bands[:, 0]
@@ -755,7 +806,6 @@ class BandsPlot(Plot):
         Plot
             a new plot with the plotted information.
         """
-
         b1, b2 = self.bands.sel(band=[band1, band2]).squeeze().values.T
         ks = self.bands.k.values
 
