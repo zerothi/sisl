@@ -820,7 +820,7 @@ class AtomicOrbital(Orbital):
         #  2. The SphericalOrbital-class is passed which already contains
         #     the relevant information.
         # Figure out if it is a sphericalorbital
-        s = kwargs.get('spherical') 
+        s = kwargs.get('spherical')
         if s is None:
             if len(args) > 0:
                 s = args.pop(0)
@@ -836,7 +836,7 @@ class AtomicOrbital(Orbital):
             self.orb = Orbital(self.R)
 
         self.R = self.orb.R
-    
+
     @staticmethod
     def orb_name_to_params(orb_name, force_n=False, n=None, l=None, m=None, Z=None, P=None):
         """
@@ -870,7 +870,7 @@ class AtomicOrbital(Orbital):
 
         if P is None:
             # First remove a P for polarization
-            P = 'P' in orb_name 
+            P = 'P' in orb_name
         orb_name = orb_name.replace('P', '')
 
         # Try and figure out the input
