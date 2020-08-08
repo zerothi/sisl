@@ -825,9 +825,9 @@ class AtomicOrbital(Orbital):
             if len(args) > 0:
                 s = args.pop(0)
 
-        if isinstance(s, SphericalOrbital) or s is None:
+        if isinstance(s, SphericalOrbital):
             self.orb = s
-        else:
+        elif s is not None:
             self.orb = SphericalOrbital(l, s)
 
         if self.orb is None:
