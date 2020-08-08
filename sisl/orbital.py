@@ -773,20 +773,7 @@ class AtomicOrbital(Orbital):
                 # String specification of the atomic orbital
                 s = args.pop(0)
 
-                n, l, m, Z, P = self.orb_name_to_params(s, force_n=True, n=n, l=l, m=m, Z=Z, P=P)
-
-                # Now we should figure out how the spherical orbital
-                # has been passed.
-                # There are two options:
-                #  1. The radial function is passed as two arrays: r, f
-                #  2. The SphericalOrbital-class is passed which already contains
-                #     the relevant information.
-                # Figure out if it is a sphericalorbital
-                if len(args) > 0:
-                    if isinstance(args[0], SphericalOrbital):
-                        self.orb = args.pop(0)
-                    else:
-                        self.orb = SphericalOrbital(l, args.pop(0))
+                n, l, m, Z, P = self.orb_name_to_params(s, force_n=True, n=n, l=l, m=m, Z=Z, P=kwargs.get('P'))
             else:
 
                 # Arguments *have* to be
@@ -810,13 +797,6 @@ class AtomicOrbital(Orbital):
                     if isinstance(args[0], bool):
                         P = args.pop(0)
 
-                # Figure out if it is a sphericalorbital
-                if len(args) > 0:
-                    if isinstance(args[0], SphericalOrbital):
-                        self.orb = args.pop(0)
-                    else:
-                        self.orb = SphericalOrbital(l, args.pop(0))
-
         # Still if n is None, we assign the default (lowest) quantum number
         if n is None:
             n = l + 1
@@ -833,13 +813,19 @@ class AtomicOrbital(Orbital):
         if abs(self.m) > self.l:
             raise ValueError(self.__class__.__name__ + ' requires |m| <= l.')
 
-        # Retrieve user-passed spherical orbital
-        s = kwargs.get('spherical', None)
-
+        # Now we should figure out how the spherical orbital
+        # has been passed.
+        # There are two options:
+        #  1. The radial function is passed as two arrays: r, f
+        #  2. The SphericalOrbital-class is passed which already contains
+        #     the relevant information.
+        # Figure out if it is a sphericalorbital
+        s = kwargs.get('spherical') 
         if s is None:
-            # Expect the orbital to already be set
-            pass
-        elif isinstance(s, Orbital):
+            if len(args) > 0:
+                s = args.pop(0)
+
+        if isinstance(s, SphericalOrbital) or s is None:
             self.orb = s
         else:
             self.orb = SphericalOrbital(l, s)
@@ -882,8 +868,9 @@ class AtomicOrbital(Orbital):
                 'gz3x': 1, 'gz2(x2-y2)': 2, 'gzx(x2-3y2)': 3, 'gx4+y4': 4,
         }
 
-        # First remove a P for polarization
-        P = 'P' in orb_name
+        if P is None:
+            # First remove a P for polarization
+            P = 'P' in orb_name 
         orb_name = orb_name.replace('P', '')
 
         # Try and figure out the input
