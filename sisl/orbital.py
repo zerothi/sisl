@@ -846,6 +846,17 @@ class AtomicOrbital(Orbital):
         ------------
         orb_name: str
             the name for which we want to retreive the parameters
+        n: int, optional
+            the default value for n.
+        l: int, optional
+            the default value for n.
+        m: int, optional
+            the default value for n.
+        Z: int, optional
+            the default value for Z.
+        P: bool, optional
+            if provided, the value for P. Note that this is not the default, but will
+            be enforced.
 
         Returns
         --------
