@@ -773,7 +773,7 @@ class AtomicOrbital(Orbital):
                 # String specification of the atomic orbital
                 s = args.pop(0)
 
-                n, l, m, Z, P = self.orb_name_to_params(s, force_n=True, n=n, l=l, m=m, Z=Z, P=kwargs.get('P'))
+                n, l, m, Z, P = self.orb_name_to_params(s, n=n, l=l, m=m, Z=Z, P=kwargs.get('P'))
             else:
 
                 # Arguments *have* to be
@@ -838,7 +838,7 @@ class AtomicOrbital(Orbital):
         self.R = self.orb.R
 
     @staticmethod
-    def orb_name_to_params(orb_name, force_n=False, n=None, l=None, m=None, Z=None, P=None):
+    def orb_name_to_params(orb_name, n=None, l=None, m=None, Z=None, P=None):
         """
         Gets the quantum numbers, Z shell and polarization corresponding to an orbital.
 
@@ -846,18 +846,12 @@ class AtomicOrbital(Orbital):
         ------------
         orb_name: str
             the name for which we want to retreive the parameters
-        force_n: bool, optional
-            whether n should be forced.
-
-            This means that if the first character is not a number, it will be attempted to read from
-            {'s': 1, 'p': 2, 'd': 3, 'f': 4, 'g': 5}.
 
         Returns
         --------
         n, l, m, Z, P
         """
 
-        _n = {'s': 1, 'p': 2, 'd': 3, 'f': 4, 'g': 5}
         _l = {'s': 0, 'p': 1, 'd': 2, 'f': 3, 'g': 4}
         _m = {'s': 0,
                 'pz': 0, 'px': 1, 'py': -1,
@@ -877,17 +871,12 @@ class AtomicOrbital(Orbital):
         #   2s => n=2, l=0, m=0, z=1, P=False
         #   2sZ2P => n=2, l=0, m=0, z=2, P=True
         #   2pxZ2P => n=2, l=0, m=0, z=2, P=True
-        # By default a non-"n" specification takes the lowest value allowed
-        #    s => n=1
-        #    p => n=2
-        #    ...
         try:
             n = int(orb_name[0])
             # Remove n specification
             orb_name = orb_name[1:]
         except:
-            if force_n:
-                n = _n.get(orb_name[0], n)
+            pass
 
         if orb_name:
             # Get l
