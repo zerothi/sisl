@@ -56,7 +56,7 @@ class ionxmlSileSiesta(SileSiesta):
             delta = float(rad.find('delta').text)
 
             # Read in data to a list
-            dat = list(map(float, rad.find('data').text.split()))
+            dat = arrayd(rad.find('data').text.split())
 
             # Since the readed data has fewer significant digits we
             # might as well re-create the table of the radial component.
@@ -67,7 +67,7 @@ class ionxmlSileSiesta(SileSiesta):
             # The fact that we have to have it normalized means that we need
             # to convert psi /sqrt(Bohr**3) -> /sqrt(Ang**3)
             # \int psi^\dagger psi == 1
-            psi = arrayd(dat[1::2]) * r ** l / Bohr2Ang ** (3./2.)
+            psi = dat[1::2] * r ** l / Bohr2Ang ** (3./2.)
 
             # Create the sphericalorbital and then the atomicorbital
             sorb = SphericalOrbital(l, (r * Bohr2Ang, psi), q0)

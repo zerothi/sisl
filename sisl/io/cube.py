@@ -167,7 +167,7 @@ class cubeSile(Sile):
         self.readline()  # header 2
         origo = self.readline().split() # origo
         lna = int(origo[0])
-        origo = np.array(list(map(float, origo[1:])), np.float64)
+        origo = np.fromiter(map(float, origo[1:]), np.float64)
 
         cell = np.empty([3, 3], np.float64)
         for i in [0, 1, 2]:
