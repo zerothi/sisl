@@ -3,6 +3,7 @@ import numpy as np
 from ..sile import add_sile, sile_fh_open, SileError
 from .sile import SileSiesta
 
+from sisl._array import arrayd
 from sisl._internal import set_module
 from sisl.physics import get_distribution
 from sisl.utils import strmap
@@ -93,13 +94,20 @@ class eigSileSiesta(SileSiesta):
         eigs = np.empty([ns, nk, nb], np.float64)
 
         readline = self.readline
+        def iterE(size):
+            ne = 0
+            out = readline().split()[1:]
+            ne += len(out)
+            yield from out
+            while ne < size:
+                out = readline().split()
+                ne += len(out)
+                yield from out
+
         for ik in range(nk):
             # The first line is special
-            E_list = list(map(float, readline().split()[1:]))
-            for _ in range(ns):
-                while len(E_list) < ns * nb:
-                    E_list.extend(list(map(float, readline().split())))
-            eigs[:, ik, :] = np.asarray(E_list, np.float64).reshape(ns, nb)
+            E_list = np.fromiter(iterE(ns * nb), dtype=np.float64)
+            eigs[:, ik, :] = E_list.reshape(ns, nb)
 
         return eigs - Ef
 

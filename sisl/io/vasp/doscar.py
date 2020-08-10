@@ -3,6 +3,7 @@ import numpy as np
 from .sile import SileVASP
 from ..sile import add_sile, sile_fh_open
 
+from sisl._array import arrayf
 from sisl._internal import set_module
 
 
@@ -38,13 +39,13 @@ class doscarSileVASP(SileVASP):
 
         E = np.empty([NE], np.float32)
         # Determine output
-        line = list(map(float, self.readline().split()))
+        line = arrayf(self.readline().split())
         ns = (len(line) - 1) // 2
         DOS = np.empty([ns, NE], np.float32)
         E[0] = line[0]
         DOS[:, 0] = line[1:ns+1]
         for ie in range(1, NE):
-            line = list(map(float, self.readline().split()))
+            line = arrayf(self.readline().split())
             E[ie] = line[0]
             DOS[:, ie] = line[1:ns+1]
         return E - Ef, DOS

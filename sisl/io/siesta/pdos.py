@@ -53,7 +53,7 @@ class pdosSileSiesta(SileSiesta):
         nspin = int(root.find('nspin').text)
         # Try and find the fermi-level
         Ef = root.find('fermi_energy')
-        E = arrayd(list(map(float, root.find('energy_values').text.split())))
+        E = arrayd(root.find('energy_values').text.split())
         if Ef is None:
             warn(str(self) + '.read_data could not locate the Fermi-level in the XML tree, using E_F = 0. eV')
         else:
@@ -143,7 +143,7 @@ class pdosSileSiesta(SileSiesta):
                 P = False
 
             ensure_size(ia)
-            xyz[ia] = list(map(float, orb.get('position').split()))
+            xyz[ia] = arrayd(orb.get('position').split())
             atom_species[ia] = Z
 
             # Construct the atomic orbital
@@ -155,7 +155,7 @@ class pdosSileSiesta(SileSiesta):
             atoms[ia][i] = O
 
             # it is formed like : spin-1, spin-2 (however already in eV)
-            DOS = arrayd(list(map(float, orb.find('data').text.split()))).reshape(-1, nspin)
+            DOS = arrayd(orb.find('data').text.split()).reshape(-1, nspin)
 
             if as_dataarray:
                 D = D.combine_first(to(O, DOS))
