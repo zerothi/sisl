@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: sisl community support + discussions
+    url: https://discord.gg/bvJ9Zuk
+    about: "If you have basic user questions like *How do I create a Hamiltonian tight-binding model?*"

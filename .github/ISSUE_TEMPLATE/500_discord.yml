@@ -1,5 +1,0 @@
-blank_issues_enabled: true
-contact_links:
-  - name: Quick Questions + discussions
-    url: https://stackoverflow.com/questions/tagged/python-xarray
-    about: "If you have basic user questions like *How do I create a Hamiltonian tight-binding model?*"
