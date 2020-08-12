@@ -1434,6 +1434,10 @@ def test_geometry_sanitize_atom():
     # with dict redirect
     only_C = bi.axyz({'Z': 6})
     assert np.allclose(only_C, check_C)
+    # Using a dict that has multiple keys. This basically checks
+    # that it accepts generic categories such as the AndCategory
+    only_C = bi.axyz({'Z': 6, "neighbours": 3})
+    assert np.allclose(only_C, check_C)
 
     tup_01 = (0, 2)
     list_01 = [0, 2]
