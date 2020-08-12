@@ -223,7 +223,7 @@ class BaseGeometryPlot(Plot):
     def _default_wrap_atoms1D(self, xy):
 
         return (xy, ), {
-            "text": [f'{self.geometry[at]}<br>{at+1} ({self.geometry.atoms[at].tag})' for at in self.geometry],
+            "text": [f'{self.geometry[at]}<br>{at} ({self.geometry.atoms[at].tag})' for at in self.geometry],
             "name": "Atoms",
             "color": [self.atom_color(atom.Z) for atom in self.geometry.atoms],
             "size": [self._pt.radius(atom.Z)*16 for atom in self.geometry.atoms]
@@ -683,9 +683,10 @@ class BaseGeometryPlot(Plot):
     def _default_wrap_atom3D(self, at):
 
         return (self.geometry[at], ), {
-            "name": f'{at+1} ({self.geometry.atoms[at].tag})',
-            "color": self.atom_color(self.geometry.atoms[at].Z),
-            "r": self._pt.radius(self.geometry.atoms[at].Z)*0.6
+            "name": f'{at} ({atom.tag})',
+            "color": self.atom_color(atom.Z),
+            "r": self._pt.radius(abs(atom.Z))*0.6,
+            "opacity": 1 if atom.Z > 0 else 0.4
         }
 
     def _default_wrap_bond3D(self, bond):
