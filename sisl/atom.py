@@ -968,8 +968,16 @@ class Atom(metaclass=AtomMeta):
         arbitrary designation for user handling similar atoms with
         different settings (defaults to the label of the atom)
     """
-    def __new__(cls, Z, *args, **kwargs):
+    def __new__(cls, *args, **kwargs):
         """ Figure out which class to actually use """
+        # Handle the case where no arguments are passed (e.g. for serializing stuff)
+        if len(args) == 0 and "Z" not in kwargs:
+            return super().__new__(cls)
+
+        # direct call
+        if len(args) > 0:
+            Z = args[0]
+        Z = kwargs.get("Z", Z)
         if isinstance(Z, Integral) and not issubclass(cls, AtomGhost) and Z < 0:
             cls = AtomGhost
         elif Z not in _ptbl._Z_int and not issubclass(cls, AtomUnknown):
