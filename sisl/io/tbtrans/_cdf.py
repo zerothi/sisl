@@ -171,10 +171,10 @@ class _ncSileTBtrans(SileCDFTBtrans):
         ret_E = self.E[idxE]
         if abs(ret_E - E) > 5e-3:
             warn(f"{self.__class__.__name__} requesting energy "
-                 "{E:.5f} eV, found {ret_E:.5f} eV as the closest energy!")
+                 f"{E:.5f} eV, found {ret_E:.5f} eV as the closest energy!")
         elif abs(ret_E - E) > 1e-3:
             info(f"{self.__class__.__name__} requesting energy "
-                 "{E:.5f} eV, found {ret_E:.5f} eV as the closest energy!")
+                 f"{E:.5f} eV, found {ret_E:.5f} eV as the closest energy!")
         return idxE
 
     def kindex(self, k):
@@ -530,5 +530,5 @@ class _devncSileTBtrans(_ncSileTBtrans):
         d = len(orbitals) - len(porb)
         if d != 0:
             warn(f"{self.__class__.__name__}.o2p requesting an orbital outside the device region, "
-                 "{d} orbitals will be removed from the returned list")
+                 f"{d} orbitals will be removed from the returned list")
         return porb
