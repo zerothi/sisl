@@ -43,7 +43,7 @@ class AtomNeighbours(AtomCategory):
     def __init__(self, *args, **kwargs):
         if len(args) > 0:
             if isinstance(args[-1], AtomCategory):
-                kwargs["neigh_cat"] = args.pop()
+                *args, kwargs["neigh_cat"] = args
 
         self._min = 0
         self._max = 2 ** 31
