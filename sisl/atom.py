@@ -977,6 +977,8 @@ class Atom(metaclass=AtomMeta):
         # direct call
         if len(args) > 0:
             Z = args[0]
+        else:
+            Z = None
         Z = kwargs.get("Z", Z)
         if isinstance(Z, Integral) and not issubclass(cls, AtomGhost) and Z < 0:
             cls = AtomGhost
