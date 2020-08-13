@@ -133,7 +133,7 @@ def test_fail_equal():
 
 
 def test_radius1(setup):
-    with pytest.raises(ValueError):
+    with pytest.raises(AttributeError):
         setup.PT.radius(1, method='unknown')
 
 
@@ -144,9 +144,9 @@ def test_tag1():
 
 def test_negative1():
     a = Atom(-1)
-    assert a.symbol == 'fa'
-    assert a.tag == 'fa'
-    assert a.Z == -1
+    assert a.symbol == 'H'
+    assert a.tag == 'ghost'
+    assert a.Z == 1
 
 
 def test_iter1():

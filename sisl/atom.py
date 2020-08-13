@@ -980,7 +980,9 @@ class Atom(metaclass=AtomMeta):
         else:
             Z = None
         Z = kwargs.get("Z", Z)
-        if isinstance(Z, Integral) and not issubclass(cls, AtomGhost) and Z < 0:
+        if isinstance(Z, Atom):
+            return super().__new__(Z.__class__)
+        elif isinstance(Z, Integral) and not issubclass(cls, AtomGhost) and Z < 0:
             cls = AtomGhost
         elif Z not in _ptbl._Z_int and not issubclass(cls, AtomUnknown):
             cls = AtomUnknown
@@ -988,7 +990,7 @@ class Atom(metaclass=AtomMeta):
 
     def __init__(self, Z, orbitals=None, mass=None, tag=None, **kwargs):
         if isinstance(Z, Atom):
-            Z = Z.Z
+            self.Z = Z.Z
         elif isinstance(Z, Integral):
             self.Z = Z
         else:
