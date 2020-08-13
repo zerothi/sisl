@@ -28,7 +28,7 @@ from .siesta_nc import ncSileSiesta
 from .basis import ionxmlSileSiesta, ionncSileSiesta
 from .orb_indx import orbindxSileSiesta
 from .xv import xvSileSiesta
-from sisl import Geometry, Orbital, Atom, Atoms, SuperCell, DynamicalMatrix
+from sisl import Geometry, Orbital, Atom, AtomGhost, Atoms, SuperCell, DynamicalMatrix
 
 from sisl.utils.cmd import default_ArgumentParser, default_namespace
 from sisl.utils.misc import merge_instances
@@ -539,7 +539,10 @@ class fdfSileSiesta(SileSiesta):
         self._write(f'NumberOfSpecies {n_species}\n')
         self._write('%block ChemicalSpeciesLabel\n')
         for i, a in enumerate(geometry.atoms.atom):
-            self._write(' {} {} {}\n'.format(i + 1, a.Z, a.tag))
+            if isinstance(a, AtomGhost):
+                self._write(' {} {} {}\n'.format(i + 1, -a.Z, a.tag))
+            else:
+                self._write(' {} {} {}\n'.format(i + 1, a.Z, a.tag))
         self._write('%endblock ChemicalSpeciesLabel\n')
 
         _write_block = True
@@ -599,7 +602,7 @@ class fdfSileSiesta(SileSiesta):
             if Sa.no != a.no:
                 # Make sure the atom we replace with retains the same information
                 # *except* the number of orbitals.
-                a = Atom(a.Z, Sa.orbital, mass=a.mass, tag=a.tag)
+                a = a.__class__(a.Z, Sa.orbital, mass=a.mass, tag=a.tag)
             spgeom.geometry.atoms.replace(idx, a)
             spgeom.geometry.reduce()
         return no_no
@@ -955,7 +958,7 @@ class fdfSileSiesta(SileSiesta):
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
             for atom, _ in geom.atoms.iter(True):
-                new_atom = Atom(atom.Z, orbs, mass=atom.mass, tag=atom.tag)
+                new_atom = atom.__class__(atom.Z, orbs, mass=atom.mass, tag=atom.tag)
                 geom.atoms.replace(atom, new_atom)
 
         # Figure out the supercell indices
@@ -1540,8 +1543,8 @@ class fdfSileSiesta(SileSiesta):
                 found_all = False
 
         if found_one and not found_all:
-            warn(SileWarning('Siesta basis information could not read all ion.nc/ion.xml files. '
-                             'Only a subset of the basis information is accessible.'))
+            warn("Siesta basis information could not read all ion.nc/ion.xml files. "
+                 "Only a subset of the basis information is accessible.")
         elif not found_one:
             return None
         return atoms

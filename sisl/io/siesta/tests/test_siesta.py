@@ -1,9 +1,12 @@
+import os.path as osp
+
 import pytest
 import numpy as np
-import os.path as osp
+
 import sisl
 from sisl import Hamiltonian, DynamicalMatrix, DensityMatrix
 from sisl import EnergyDensityMatrix
+from sisl import Atom, Geometry
 from sisl.io.siesta import *
 
 
@@ -275,3 +278,19 @@ def test_nc_DM_spin_orbit_nc2dm2nc(sisl_tmp):
     assert np.allclose(DM1._csr._D, DM2._csr._D)
     assert DM1._csr.spsame(DM3._csr)
     assert np.allclose(DM1._csr._D, DM3._csr._D)
+
+
+def test_nc_ghost(sisl_tmp):
+    f = sisl_tmp('ghost.nc', _dir)
+    a1 = Atom(1)
+    am1 = Atom(-1)
+    g = Geometry([[0., 0., i] for i in range(2)], [a1, am1], 2.)
+    g.write(ncSileSiesta(f, 'w'))
+
+    g2 = ncSileSiesta(f).read_geometry()
+    assert np.allclose(g.cell, g2.cell)
+    assert np.allclose(g.xyz, g2.xyz)
+    assert np.allclose(g.atoms.Z, g2.atoms.Z)
+    assert g.atoms[0].__class__ is g2.atoms[0].__class__
+    assert g.atoms[1].__class__ is g2.atoms[1].__class__
+    assert g.atoms[0].__class__ is not g2.atoms[1].__class__

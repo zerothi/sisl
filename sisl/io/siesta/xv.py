@@ -4,7 +4,7 @@ from ..sile import add_sile, sile_fh_open, sile_raise_write
 from .sile import SileSiesta
 
 from sisl._internal import set_module
-from sisl import Geometry, Atom, Atoms, SuperCell
+from sisl import Geometry, Atom, AtomGhost, AtomUnknown, Atoms, SuperCell
 from sisl.unit.siesta import unit_convert
 
 __all__ = ['xvSileSiesta']
@@ -57,7 +57,10 @@ class xvSileSiesta(SileSiesta):
         for ia, a, ips in geom.iter_species():
             tmp[0:3] = geom.xyz[ia, :] / Bohr2Ang
             tmp[3:] = velocity[ia, :] / Bohr2Ang
-            self._write(fmt_str.format(ips + 1, a.Z, *tmp))
+            if isinstance(a, AtomGhost):
+                self._write(fmt_str.format(ips + 1, -a.Z, *tmp))
+            else:
+                self._write(fmt_str.format(ips + 1, a.Z, *tmp))
 
     @sile_fh_open()
     def read_supercell(self):
@@ -112,12 +115,12 @@ class xvSileSiesta(SileSiesta):
         max_s = sp.max()
         sp -= 1
         # Ensure we can remove the atom after having aligned them
-        atms2 = Atoms(Atom(-150), na=na)
+        atms2 = Atoms(AtomUnknown(1000), na=na)
         for i in range(max_s):
             idx = (sp[:] == i).nonzero()[0]
             if len(idx) == 0:
                 # Always ensure we have "something" for the unoccupied places
-                atms2[idx] = Atom(-150 - i)
+                atms2[idx] = AtomUnknown(1000 + i)
             else:
                 atms2[idx] = atms[idx[0]]
 

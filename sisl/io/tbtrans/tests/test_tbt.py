@@ -372,15 +372,6 @@ def test_1_graphene_all_fail_kavg_E(sisl_files, sisl_tmp):
 def test_1_graphene_all_ArgumentParser(sisl_files, sisl_tmp):
     pytest.importorskip("matplotlib", reason="matplotlib not available")
 
-    # Create copy function
-    from copy import deepcopy
-    def copy(ns):
-        if hasattr(ns, '_tbt'):
-            del ns._tbt
-        new = deepcopy(ns)
-        new._tbt = tbt
-        return new
-
     # Local routine to run the collected actions
     def run(ns):
         ns._actions_run = True
@@ -391,58 +382,69 @@ def test_1_graphene_all_ArgumentParser(sisl_files, sisl_tmp):
         ns._actions = []
 
     tbt = sisl.get_sile(sisl_files(_dir, '1_graphene_all.TBT.nc'))
-    p, ns = tbt.ArgumentParser()
 
-    p.parse_args([], namespace=copy(ns))
-    out = p.parse_args(['--energy', ' -1.995:1.995'], namespace=copy(ns))
+    p, ns = tbt.ArgumentParser()
+    p.parse_args([], namespace=ns)
+
+    p, ns = tbt.ArgumentParser()
+    out = p.parse_args(['--energy', ' -1.995:1.995'], namespace=ns)
     assert not out._actions_run
     run(out)
 
-    out = p.parse_args(['--kpoint', '1'], namespace=copy(ns))
+    p, ns = tbt.ArgumentParser()
+    out = p.parse_args(['--kpoint', '1'], namespace=ns)
     assert out._krng
     run(out)
     assert out._krng == 1
 
-    out = p.parse_args(['--norm', 'orbital'], namespace=copy(ns))
+    p, ns = tbt.ArgumentParser()
+    out = p.parse_args(['--norm', 'orbital'], namespace=ns)
     run(out)
     assert out._norm == 'orbital'
 
-    out = p.parse_args(['--norm', 'atom'], namespace=copy(ns))
+    p, ns = tbt.ArgumentParser()
+    out = p.parse_args(['--norm', 'atom'], namespace=ns)
     run(out)
     assert out._norm == 'atom'
 
-    out = p.parse_args(['--kpoint', '1', '--norm', 'orbital'], namespace=copy(ns))
+    p, ns = tbt.ArgumentParser()
+    out = p.parse_args(['--kpoint', '1', '--norm', 'orbital'], namespace=ns)
     run(out)
     assert out._krng == 1
     assert out._norm == 'orbital'
 
-    out = p.parse_args(['--atom', '10:11,14'], namespace=copy(ns))
+    p, ns = tbt.ArgumentParser()
+    out = p.parse_args(['--atom', '10:11,14'], namespace=ns)
     run(out)
     assert out._Ovalue == '10:11,14'
     # Only atom 14 is in the device region
     assert np.all(out._Orng + 1 == [14])
 
-    out = p.parse_args(['--atom', '10:11,12,14:20'], namespace=copy(ns))
+    p, ns = tbt.ArgumentParser()
+    out = p.parse_args(['--atom', '10:11,12,14:20'], namespace=ns)
     run(out)
     assert out._Ovalue == '10:11,12,14:20'
     # Only 13-48 is in the device
     assert np.all(out._Orng + 1 == [14, 15, 16, 17, 18, 19, 20])
 
-    out = p.parse_args(['--transmission', 'Left', 'Right'], namespace=copy(ns))
+    p, ns = tbt.ArgumentParser()
+    out = p.parse_args(['--transmission', 'Left', 'Right'], namespace=ns)
     run(out)
     assert len(out._data) == 2
     assert out._data_header[0][0] == 'E'
     assert out._data_header[1][0] == 'T'
 
+    p, ns = tbt.ArgumentParser()
     out = p.parse_args(['--transmission', 'Left', 'Right',
-                        '--transmission-bulk', 'Left'], namespace=copy(ns))
+                        '--transmission-bulk', 'Left'], namespace=ns)
     run(out)
     assert len(out._data) == 3
     assert out._data_header[0][0] == 'E'
     assert out._data_header[1][0] == 'T'
     assert out._data_header[2][:2] == 'BT'
 
-    out = p.parse_args(['--dos', '--dos', 'Left', '--ados', 'Right'], namespace=copy(ns))
+    p, ns = tbt.ArgumentParser()
+    out = p.parse_args(['--dos', '--dos', 'Left', '--ados', 'Right'], namespace=ns)
     run(out)
     assert len(out._data) == 4
     assert out._data_header[0][0] == 'E'
@@ -450,30 +452,35 @@ def test_1_graphene_all_ArgumentParser(sisl_files, sisl_tmp):
     assert out._data_header[2][:2] == 'AD'
     assert out._data_header[3][:2] == 'AD'
 
-    out = p.parse_args(['--bulk-dos', 'Left', '--ados', 'Right'], namespace=copy(ns))
+    p, ns = tbt.ArgumentParser()
+    out = p.parse_args(['--bulk-dos', 'Left', '--ados', 'Right'], namespace=ns)
     run(out)
     assert len(out._data) == 3
     assert out._data_header[0][0] == 'E'
     assert out._data_header[1][:2] == 'BD'
     assert out._data_header[2][:2] == 'AD'
 
-    out = p.parse_args(['--transmission-eig', 'Left', 'Right'], namespace=copy(ns))
+    p, ns = tbt.ArgumentParser()
+    out = p.parse_args(['--transmission-eig', 'Left', 'Right'], namespace=ns)
     run(out)
     assert out._data_header[0][0] == 'E'
     for i in range(1, len(out._data)):
         assert out._data_header[i][:4] == 'Teig'
 
-    out = p.parse_args(['--info'], namespace=copy(ns))
+    p, ns = tbt.ArgumentParser()
+    out = p.parse_args(['--info'], namespace=ns)
 
     # Test output
     f = sisl_tmp('1_graphene_all.dat', _dir)
-    out = p.parse_args(['--transmission-eig', 'Left', 'Right', '--out', f], namespace=copy(ns))
+    p, ns = tbt.ArgumentParser()
+    out = p.parse_args(['--transmission-eig', 'Left', 'Right', '--out', f], namespace=ns)
     assert len(out._data) == 0
 
     f1 = sisl_tmp('1_graphene_all_1.dat', _dir)
     f2 = sisl_tmp('1_graphene_all_2.dat', _dir)
+    p, ns = tbt.ArgumentParser()
     out = p.parse_args(['--transmission', 'Left', 'Right', '--out', f1,
-                        '--dos', '--atom', '12:2:48', '--dos', 'Right', '--ados', 'Left', '--out', f2], namespace=copy(ns))
+                        '--dos', '--atom', '12:2:48', '--dos', 'Right', '--ados', 'Left', '--out', f2], namespace=ns)
 
     d = sisl.io.tableSile(f1).read_data()
     assert len(d) == 2
@@ -483,9 +490,10 @@ def test_1_graphene_all_ArgumentParser(sisl_files, sisl_tmp):
     assert np.allclose(d[2, :], d[3, :])
 
     f = sisl_tmp('1_graphene_all_T.png', _dir)
+    p, ns = tbt.ArgumentParser()
     out = p.parse_args(['--transmission', 'Left', 'Right',
                         '--transmission-bulk', 'Left',
-                        '--plot', f], namespace=copy(ns))
+                        '--plot', f], namespace=ns)
 
 
 # Requesting an orbital outside of the device region

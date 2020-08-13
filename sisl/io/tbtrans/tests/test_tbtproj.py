@@ -56,15 +56,7 @@ def test_2_projection_tbtav(sisl_files, sisl_tmp):
 
 def test_2_projection_ArgumentParser(sisl_files, sisl_tmp):
     pytest.importorskip("matplotlib", reason="matplotlib not available")
-
-    # Create copy function
-    from copy import deepcopy
-    def copy(ns):
-        if hasattr(ns, '_tbt'):
-            del ns._tbt
-        new = deepcopy(ns)
-        new._tbt = tbt
-        return new
+    import argparse
 
     # Local routine to run the collected actions
     def run(ns):
@@ -77,77 +69,89 @@ def test_2_projection_ArgumentParser(sisl_files, sisl_tmp):
 
     tbt = sisl.get_sile(sisl_files(_dir, '2_projection.TBT.Proj.nc'))
 
-    import argparse
     p, ns = tbt.ArgumentParser(argparse.ArgumentParser(conflict_handler='resolve'))
+    p.parse_args([], namespace=ns)
 
-    p.parse_args([], namespace=copy(ns))
-    out = p.parse_args(['--energy', ' -1.995:1.995'], namespace=copy(ns))
+    p, ns = tbt.ArgumentParser(argparse.ArgumentParser(conflict_handler='resolve'))
+    out = p.parse_args(['--energy', ' -1.995:1.995'], namespace=ns)
     assert not out._actions_run
     run(out)
 
-    out = p.parse_args(['--norm', 'orbital'], namespace=copy(ns))
+    p, ns = tbt.ArgumentParser(argparse.ArgumentParser(conflict_handler='resolve'))
+    out = p.parse_args(['--norm', 'orbital'], namespace=ns)
     run(out)
     assert out._norm == 'orbital'
 
-    out = p.parse_args(['--norm', 'atom'], namespace=copy(ns))
+    p, ns = tbt.ArgumentParser(argparse.ArgumentParser(conflict_handler='resolve'))
+    out = p.parse_args(['--norm', 'atom'], namespace=ns)
     run(out)
     assert out._norm == 'atom'
 
-    out = p.parse_args(['--atom', '10:11,14'], namespace=copy(ns))
+    p, ns = tbt.ArgumentParser(argparse.ArgumentParser(conflict_handler='resolve'))
+    out = p.parse_args(['--atom', '10:11,14'], namespace=ns)
     run(out)
     assert out._Ovalue == '10:11,14'
     # Only atom 14 is in the device region
     assert np.all(out._Orng + 1 == [14])
 
-    out = p.parse_args(['--atom', '10:11,12,14:20'], namespace=copy(ns))
+    p, ns = tbt.ArgumentParser(argparse.ArgumentParser(conflict_handler='resolve'))
+    out = p.parse_args(['--atom', '10:11,12,14:20'], namespace=ns)
     run(out)
     assert out._Ovalue == '10:11,12,14:20'
     # Only 13-72 is in the device
     assert np.all(out._Orng + 1 == [14, 15, 16, 17, 18, 19, 20])
 
-    out = p.parse_args(['--transmission', 'Left.C60.HOMO', 'Right.C60.HOMO'], namespace=copy(ns))
+    p, ns = tbt.ArgumentParser(argparse.ArgumentParser(conflict_handler='resolve'))
+    out = p.parse_args(['--transmission', 'Left.C60.HOMO', 'Right.C60.HOMO'], namespace=ns)
     run(out)
     assert len(out._data) == 2
     assert out._data_header[0][0] == 'E'
     assert out._data_header[1][0] == 'T'
 
-    out = p.parse_args(['--molecules', '-P', 'C60'], namespace=copy(ns))
+    p, ns = tbt.ArgumentParser(argparse.ArgumentParser(conflict_handler='resolve'))
+    out = p.parse_args(['--molecules', '-P', 'C60'], namespace=ns)
     run(out)
 
+    p, ns = tbt.ArgumentParser(argparse.ArgumentParser(conflict_handler='resolve'))
     out = p.parse_args(['--transmission', 'Left', 'Right.C60.LUMO',
-                        '--transmission', 'Left.C60.LUMO', 'Right'], namespace=copy(ns))
+                        '--transmission', 'Left.C60.LUMO', 'Right'], namespace=ns)
     run(out)
     assert len(out._data) == 3
     assert out._data_header[0][0] == 'E'
     assert out._data_header[1][0] == 'T'
     assert out._data_header[2][0] == 'T'
 
-    out = p.parse_args(['--ados', 'Left.C60.HOMO', '--ados', 'Left.C60.LUMO'], namespace=copy(ns))
+    p, ns = tbt.ArgumentParser(argparse.ArgumentParser(conflict_handler='resolve'))
+    out = p.parse_args(['--ados', 'Left.C60.HOMO', '--ados', 'Left.C60.LUMO'], namespace=ns)
     run(out)
     assert len(out._data) == 3
     assert out._data_header[0][0] == 'E'
     assert out._data_header[1][:2] == 'AD'
     assert out._data_header[2][:2] == 'AD'
 
-    out = p.parse_args(['--transmission-eig', 'Left.C60.HOMO', 'Right.C60.LUMO'], namespace=copy(ns))
+    p, ns = tbt.ArgumentParser(argparse.ArgumentParser(conflict_handler='resolve'))
+    out = p.parse_args(['--transmission-eig', 'Left.C60.HOMO', 'Right.C60.LUMO'], namespace=ns)
     run(out)
     assert out._data_header[0][0] == 'E'
     for i in range(1, len(out._data)):
         assert out._data_header[i][:4] == 'Teig'
 
-    out = p.parse_args(['--info'], namespace=copy(ns))
+    p, ns = tbt.ArgumentParser(argparse.ArgumentParser(conflict_handler='resolve'))
+    out = p.parse_args(['--info'], namespace=ns)
 
     # Test output
     f = sisl_tmp('2_projection.dat', _dir)
-    out = p.parse_args(['--transmission-eig', 'Left', 'Right.C60.HOMO', '--out', f], namespace=copy(ns))
+    p, ns = tbt.ArgumentParser(argparse.ArgumentParser(conflict_handler='resolve'))
+    out = p.parse_args(['--transmission-eig', 'Left', 'Right.C60.HOMO', '--out', f], namespace=ns)
     assert len(out._data) == 0
 
     f1 = sisl_tmp('2_projection_1.dat', _dir)
     f2 = sisl_tmp('2_projection_2.dat', _dir)
+    p, ns = tbt.ArgumentParser(argparse.ArgumentParser(conflict_handler='resolve'))
     out = p.parse_args(['--transmission', 'Left', 'Right.C60.HOMO', '--out', f1,
                         '--ados', 'Left.C60.HOMO',
                         '--atom', '13:2:72', '--ados', 'Left.C60.HOMO',
-                        '--atom', '14:2:72', '--ados', 'Left.C60.HOMO', '--out', f2], namespace=copy(ns))
+                        '--atom', '14:2:72', '--ados', 'Left.C60.HOMO', '--out', f2], namespace=ns)
 
     d = sisl.io.tableSile(f1).read_data()
     assert len(d) == 2
@@ -156,6 +160,7 @@ def test_2_projection_ArgumentParser(sisl_files, sisl_tmp):
     assert np.allclose(d[1, :], d[2, :] + d[3, :])
 
     f = sisl_tmp('2_projection_T.png', _dir)
+    p, ns = tbt.ArgumentParser(argparse.ArgumentParser(conflict_handler='resolve'))
     out = p.parse_args(['--transmission', 'Left', 'Right.C60.HOMO',
                         '--transmission', 'Left.C60.HOMO', 'Right.C60.HOMO',
-                        '--plot', f], namespace=copy(ns))
+                        '--plot', f], namespace=ns)

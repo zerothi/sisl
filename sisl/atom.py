@@ -10,7 +10,7 @@ from ._help import array_fill_repeat
 from .shape import Sphere
 from .orbital import Orbital
 
-__all__ = ['PeriodicTable', 'Atom', 'Atoms']
+__all__ = ['PeriodicTable', 'Atom', 'AtomUnknown', 'AtomGhost', 'Atoms']
 
 
 @set_module("sisl")
@@ -23,7 +23,7 @@ class PeriodicTable:
     Several quantities available to the atomic species are available
     from <https://en.wikipedia.org/wiki/Atomic_radii_of_the_elements_(data_page)>.
 
-    The following values are accesible:
+    The following values are accessible:
 
     * atomic mass (in atomic units)
     * empirical atomic radii (in Ang)
@@ -816,7 +816,7 @@ class PeriodicTable:
         get = self._Z_int.get
         if len(key) == 1:
             return get(key[0], key[0])
-        return _a.asarrayi([get(ia, ia) for ia in key])
+        return _a.fromiteri(map(get, key, key))
 
     Z_int = Z
 
@@ -840,8 +840,8 @@ class PeriodicTable:
         ak = np.asarray(key).ravel()
         get = self._Z_short.get
         if len(ak) == 1:
-            return get(ak[0], 'fa')
-        return [get(ia, 'fa') for ia in ak]
+            return get(ak[0], "fa")
+        return [get(ia, "fa") for ia in ak]
 
     Z_short = Z_label
 
@@ -866,7 +866,7 @@ class PeriodicTable:
         get = self._atomic_mass.get
         if isinstance(Z, (Integral, Real)):
             return get(Z, 0.)
-        return _a.arrayd([get(z, 0.) for z in Z])
+        return _a.fromiterd(map(get, Z, iter(float, 1)))
 
     def radius(self, key, method='calc'):
         """ Atomic radii using different methods
@@ -891,20 +891,10 @@ class PeriodicTable:
             atomic radius in `Ang`
         """
         Z = self.Z_int(key)
-        if method == 'calc':
-            if isinstance(Z, Integral):
-                return self._radius_calc[Z] / 100
-            return _a.arrayd([self._radius_calc[i] for i in Z]) / 100
-        elif method == 'empirical':
-            if isinstance(Z, Integral):
-                return self._radius_empirical[Z] / 100
-            return _a.arrayd([self._radius_empirical[i] for i in Z]) / 100
-        elif method == 'vdw':
-            if isinstance(Z, Integral):
-                return self._radius_vdw[Z] / 100
-            return _a.arrayd([self._radius_vdw[i] for i in Z]) / 100
-        raise ValueError(
-            'Method option could not be deciphered [calc|empirical|vdw].')
+        func = getattr(self, f"_radius_{method}").get
+        if isinstance(Z, Integral):
+            return func(Z) / 100
+        return _a.fromiterd(map(func, Z)) / 100
     radii = radius
 
 # Create a local instance of the periodic table to
@@ -978,11 +968,21 @@ class Atom(metaclass=AtomMeta):
         arbitrary designation for user handling similar atoms with
         different settings (defaults to the label of the atom)
     """
+    def __new__(cls, Z, *args, **kwargs):
+        """ Figure out which class to actually use """
+        if isinstance(Z, Integral) and not issubclass(cls, AtomGhost) and Z < 0:
+            cls = AtomGhost
+        elif Z not in _ptbl._Z_int and not issubclass(cls, AtomUnknown):
+            cls = AtomUnknown
+        return super().__new__(cls)
 
     def __init__(self, Z, orbitals=None, mass=None, tag=None, **kwargs):
         if isinstance(Z, Atom):
             Z = Z.Z
-        self.Z = _ptbl.Z_int(Z)
+        elif isinstance(Z, Integral):
+            self.Z = Z
+        else:
+            self.Z = _ptbl.Z_int(Z)
 
         self.orbitals = None
         if isinstance(orbitals, (tuple, list, np.ndarray)):
@@ -1233,6 +1233,29 @@ class Atom(metaclass=AtomMeta):
     def __setstate__(self, d):
         """ Re-create the state of this object """
         self.__init__(d['Z'], d['orbitals'], d['mass'], d['tag'])
+
+
+@set_module("sisl")
+class AtomUnknown(Atom):
+    def __init__(self, Z, *args, **kwargs):
+        """ Instantiate with overridden tag """
+        if len(args) < 3 and "tag" not in kwargs:
+            kwargs["tag"] = "unknown"
+        super().__init__(Z, *args, **kwargs)
+
+
+@set_module("sisl")
+class AtomGhost(AtomUnknown):
+    def __init__(self, Z, *args, **kwargs):
+        """ Instantiate with overridden tag and taking the absolute value of Z """
+        if Z < 0:
+            Z = - Z
+        if len(args) < 3 and "tag" not in kwargs:
+            kwargs["tag"] = "ghost"
+        if len(args) < 2 and "mass" not in kwargs:
+            # A very high default mass (unless specified)
+            kwargs["mass"] = 1e40
+        super().__init__(Z, *args, **kwargs)
 
 
 @set_module("sisl")
