@@ -9,7 +9,7 @@ from ..sile import add_sile, sile_fh_open, sile_raise_write
 from sisl._internal import set_module
 from sisl._array import aranged
 from sisl.unit.siesta import unit_convert
-from sisl import Geometry, Atom, Atoms, SuperCell, Grid, SphericalOrbital
+from sisl import Geometry, Atom, AtomGhost, Atoms, SuperCell, Grid, SphericalOrbital
 from sisl.physics import SparseOrbitalBZ
 from sisl.physics import DensityMatrix, EnergyDensityMatrix
 from sisl.physics import DynamicalMatrix
@@ -417,12 +417,15 @@ class ncSileSiesta(SileCDFSiesta):
             if a.tag in bs.groups:
                 # Assert the file sizes
                 if bs.groups[a.tag].Number_of_orbitals != a.no:
-                    raise ValueError('File {} has erroneous data '
-                                     'in regards of the already stored dimensions.'.format(self.file))
+                    raise ValueError(f'File {self.file} has erroneous data '
+                                     'in regards of the already stored dimensions.')
             else:
                 ba = bs.createGroup(a.tag)
                 ba.ID = np.int32(isp + 1)
-                ba.Atomic_number = np.int32(a.Z)
+                if isinstance(a, AtomGhost):
+                    ba.Atomic_number = -np.int32(a.Z)
+                else:
+                    ba.Atomic_number = np.int32(a.Z)
                 ba.Mass = a.mass
                 ba.Label = a.tag
                 ba.Element = a.symbol

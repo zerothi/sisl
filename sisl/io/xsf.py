@@ -5,7 +5,7 @@ import numpy as np
 from .sile import *
 
 from sisl._internal import set_module
-from sisl import Geometry, Atom, SuperCell
+from sisl import Geometry, AtomUnknown, SuperCell
 from sisl.utils import str_spec
 
 
@@ -215,7 +215,7 @@ class xsfSile(Sile):
 
         geom = kwargs.get('geometry', args[0].geometry)
         if geom is None:
-            geom = Geometry([0, 0, 0], Atom(-999), sc=args[0].sc)
+            geom = Geometry([0, 0, 0], AtomUnknown(999), sc=args[0].sc)
         self.write_geometry(geom)
 
         # Buffer size for writing

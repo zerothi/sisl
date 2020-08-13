@@ -173,7 +173,7 @@ class onlysSileSiesta(SileBinSiesta):
                     atom.append(a)
                 else:
                     # correct atom
-                    atom.append(Atom(a.Z, [-1. for io in range(no)], mass=a.mass, tag=a.tag))
+                    atom.append(a.__class__(a.Z, [-1. for io in range(no)], mass=a.mass, tag=a.tag))
 
         # Create and return geometry object
         return Geometry(xyz, atom, sc=sc)

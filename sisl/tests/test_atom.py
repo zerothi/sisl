@@ -3,7 +3,8 @@ import pytest
 import math as m
 import numpy as np
 
-from sisl import Atom, Atoms, PeriodicTable, Orbital
+from sisl import (Atom, AtomGhost, AtomUnknown,
+                  Atoms, PeriodicTable, Orbital)
 
 pytestmark = [pytest.mark.atom]
 
@@ -29,6 +30,22 @@ def test1(setup):
     assert setup.Au == Atom['Au']
     assert setup.Au != setup.C
     assert setup.Au == setup.Au.copy()
+
+
+def test_atom_ghost():
+    assert isinstance(Atom[1], Atom)
+    assert isinstance(Atom[-1], AtomGhost)
+    assert isinstance(Atom(1), Atom)
+    assert isinstance(Atom(-1), AtomGhost)
+    assert isinstance(AtomGhost(-1), AtomGhost)
+    assert AtomGhost(-1).Z == 1
+    assert Atom(-1).Z == 1
+
+
+def test_atom_unknown():
+    assert isinstance(Atom[1000], AtomUnknown)
+    # negative ones are still considered ghosts!
+    assert isinstance(Atom[-1000], AtomGhost)
 
 
 def test2(setup):

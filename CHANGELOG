@@ -1,6 +1,9 @@
 0.X.Y
 =====
 
+- Ensured ghost atoms in Siesta are handled with separate
+	class, AtomGhost, #249
+
 - Added calculation of isosurfaces, #246
 
 - Added `sisl.WideBandSE` for self-energies with constant

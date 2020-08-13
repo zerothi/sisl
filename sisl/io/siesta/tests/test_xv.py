@@ -1,7 +1,7 @@
 import pytest
 import os.path as osp
 
-from sisl.atom import Atom
+from sisl import Atom, Geometry
 from sisl.io.siesta.xv import *
 
 import numpy as np
@@ -56,3 +56,19 @@ def test_xv_velocity(sisl_tmp, sisl_system):
     # Try to read in different ways
     v2 = xvSileSiesta(f).read_velocity()
     assert np.allclose(v, v2)
+
+
+def test_xv_ghost(sisl_tmp):
+    f = sisl_tmp('ghost.XV', _dir)
+    a1 = Atom(1)
+    am1 = Atom(-1)
+    g = Geometry([[0., 0., i] for i in range(2)], [a1, am1], 2.)
+    g.write(xvSileSiesta(f, 'w'))
+
+    g2 = xvSileSiesta(f).read_geometry()
+    assert np.allclose(g.cell, g2.cell)
+    assert np.allclose(g.xyz, g2.xyz)
+    assert np.allclose(g.atoms.Z, g2.atoms.Z)
+    assert g.atoms[0].__class__ is g2.atoms[0].__class__
+    assert g.atoms[1].__class__ is g2.atoms[1].__class__
+    assert g.atoms[0].__class__ is not g2.atoms[1].__class__
