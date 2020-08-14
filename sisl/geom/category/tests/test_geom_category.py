@@ -66,5 +66,3 @@ def test_geom_category_even_odd():
             assert c == even
         else:
             assert c == odd
-
-    

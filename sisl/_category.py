@@ -111,20 +111,8 @@ class Category(metaclass=ABCMeta):
         def get_cat(cl, args):
             if isinstance(args, dict):
                 return cl(**args)
-            
-            try:
-                return cl(args)
-            except TypeError as e:
-                # Here we are trying to catch the fact that some classes
-                # don't accept any arguments
-                if args is True:
-                    return cl()
-                elif args is False:
-                    return ~cl()
-                
-                # If it wasn't the case, let the exception be raised
-                raise e
-            
+            return cl(args)
+
         # Now search keywords and create category
         cat = None
         for key, args in kwargs.items():
@@ -210,7 +198,7 @@ class Category(metaclass=ABCMeta):
 @set_module("sisl.category")
 class GenericCategory(Category):
     """Used to indicate that the category does not act on specific objects
-    
+
     It serves to identify categories such as `NullCategory`, `NotCategory`
     and composite categories and distinguish them from categories that have
     a specific object in which they act.
