@@ -61,9 +61,17 @@ class InstanceCache:
         object.__setattr__(self, name, attr)
         return attr
 
+class CategoryMeta(ABCMeta):
+
+    def __call__(cls, *args, **kwargs):
+
+        try:
+            return super().__call__(*args, **kwargs)
+        except TypeError:
+            return cls.kw(**kwargs)
 
 @set_module("sisl.category")
-class Category(metaclass=ABCMeta):
+class Category(metaclass=CategoryMeta):
     r""" A category """
     __slots__ = ("_name", "_wrapper")
 
