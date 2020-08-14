@@ -196,7 +196,18 @@ class Category(metaclass=ABCMeta):
 
 
 @set_module("sisl.category")
-class NullCategory(Category):
+class GenericCategory(Category):
+    """Used to indicate that the category does not act on specific objects
+
+    It serves to identify categories such as `NullCategory`, `NotCategory`
+    and composite categories and distinguish them from categories that have
+    a specific object in which they act.
+    """
+    pass
+
+
+@set_module("sisl.category")
+class NullCategory(GenericCategory):
     r""" Special Null class which always represents a classification not being *anything* """
     __slots__ = tuple()
 
@@ -224,7 +235,7 @@ class NullCategory(Category):
 
 
 @set_module("sisl.category")
-class NotCategory(Category):
+class NotCategory(GenericCategory):
     """ A class returning the *opposite* of this class (NullCategory) if it is categorized as such """
     __slots__ = ("_cat",)
 
@@ -264,7 +275,7 @@ class NotCategory(Category):
 
 
 @set_module("sisl.category")
-class CompositeCategory(Category):
+class CompositeCategory(GenericCategory):
     """ A composite class consisting of two categories, an abstract class to always be inherited
 
     This should take 2 categories as arguments
