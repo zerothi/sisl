@@ -63,12 +63,33 @@ class InstanceCache:
 
 
 class CategoryMeta(ABCMeta):
+    """
+    Metaclass that defines how category classes should behave.
+    """
 
     def __call__(cls, *args, **kwargs):
+        """
+        If a category class is called, we will attempt to instantiate it.
+
+        However, it may be that this is a parent class (e.g. `AtomCategory`)
+        that does not make sense to instantiate. Since this classes are abstract,
+        they will raise an error that we will use to build the categories that the user
+        requested.
+
+        Examples
+        -----------
+
+        >>> AtomZ(6) # returns an AtomZ category with the Z parameter set to 6
+        >>> AtomCategory(Z=6) # returns exactly the same since it uses `AtomCategory.kw`
+        """
         try:
             return super().__call__(*args, **kwargs)
-        except TypeError:
-            return cls.kw(**kwargs)
+        except TypeError as e:
+            if len(args) == 0:
+                return cls.kw(**kwargs)
+            # If args were provided, the user probably didn't want to use the category builder,
+            # so we are going to let the exception be raised
+            raise e
 
 
 @set_module("sisl.category")
