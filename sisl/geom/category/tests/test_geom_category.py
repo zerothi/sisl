@@ -1,10 +1,20 @@
 import pytest
 
-from sisl import Atom, PeriodicTable
+import numpy as np
+
+from sisl import Atom, PeriodicTable, Cuboid
 from sisl.geom import *
 
 
 pytestmark = [pytest.mark.geom, pytest.mark.category, pytest.mark.geom_category]
+
+
+def test_geom_category_kw_and_call():
+    # Check that categories can be built indistinctively using the kw builder
+    # or directly calling them.
+    cat1 = AtomCategory.kw(odd={})
+    cat2 = AtomCategory(odd={})
+    assert cat1 == cat2
 
 
 def test_geom_category():
@@ -66,3 +76,106 @@ def test_geom_category_even_odd():
             assert c == even
         else:
             assert c == odd
+
+
+def test_geom_category_index():
+    hBN = honeycomb(1.42, Atom[5, 7]) * (4, 5, 1)
+
+    odd = AtomIndex(mod=2)
+    even = ~odd
+    str(odd)
+    str(even)
+
+    assert odd != even
+    assert even != odd
+
+    cat = (odd | even).categorize(hBN)
+    for i, c in enumerate(cat):
+        if i % 2 == 0:
+            assert c == even
+        else:
+            assert c == odd
+
+
+def test_geom_category_frac_site():
+    hBN_gr = bilayer(1.42, Atom[5, 7], Atom[6]) * (4, 5, 1)
+    mid_layer = np.average(hBN_gr.xyz[:, 2])
+
+    A_site = AtomFracSite(graphene())
+    bottom = AtomXYZ(z_lt=mid_layer, z=(None, mid_layer))
+    top = ~bottom
+
+    bottom_A = A_site & bottom
+    top_A = A_site & top
+
+    cat = (bottom_A | top_A).categorize(hBN_gr)
+    str(cat)
+    cnull = 0
+    for i, c in enumerate(cat):
+        if c == NullCategory():
+            cnull += 1
+        elif hBN_gr.xyz[i, 2] < mid_layer:
+            assert c == bottom_A
+        else:
+            assert False
+    assert cnull == len(hBN_gr) // 4 * 3
+
+
+def test_geom_category_frac_A_B_site():
+    gr = graphene() * (4, 5, 1)
+
+    A_site = AtomFracSite(graphene())
+    B_site = AtomFracSite(graphene(), foffset=(-1/3, -1/3, 0))
+
+    cat = (A_site | B_site).categorize(gr)
+    for i, c in enumerate(cat):
+        if i % 2 == 0:
+            assert c == A_site
+        else:
+            assert c == B_site
+
+
+def test_geom_category_shape():
+    hBN_gr = bilayer(1.42, Atom[5, 7], Atom[6]) * (4, 5, 1)
+    mid_layer = np.average(hBN_gr.xyz[:, 2])
+
+    A_site = AtomFracSite(graphene())
+    bottom = AtomXYZ(Cuboid([10000, 10000, mid_layer], [-100, -100, 0]))
+    top = ~bottom
+
+    bottom_A = A_site & bottom
+    top_A = A_site & top
+
+    cat = (bottom_A | top_A).categorize(hBN_gr)
+    cnull = 0
+    for i, c in enumerate(cat):
+        if c == NullCategory():
+            cnull += 1
+        elif hBN_gr.xyz[i, 2] < mid_layer:
+            assert c == bottom_A
+        else:
+            assert False
+    assert cnull == len(hBN_gr) // 4 * 3
+
+
+def test_geom_category_xyz_none():
+    hBN_gr = bilayer(1.42, Atom[5, 7], Atom[6]) * (4, 5, 1)
+    mid_layer = np.average(hBN_gr.xyz[:, 2])
+
+    A_site = AtomFracSite(graphene())
+    bottom = AtomXYZ(z=(None, mid_layer))
+    top = AtomXYZ(z=(mid_layer, None))
+
+    bottom_A = A_site & bottom
+    top_A = A_site & top
+
+    cat = (bottom_A | top_A).categorize(hBN_gr)
+    cnull = 0
+    for i, c in enumerate(cat):
+        if c == NullCategory():
+            cnull += 1
+        elif hBN_gr.xyz[i, 2] < mid_layer:
+            assert c == bottom_A
+        else:
+            assert False
+    assert cnull == len(hBN_gr) // 4 * 3

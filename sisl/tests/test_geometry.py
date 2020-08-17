@@ -1423,6 +1423,8 @@ def test_geometry_sort_fail_keyword():
         sisl_geom.bilayer().sort(not_found_keyword=True)
 
 
+@pytest.mark.category
+@pytest.mark.geom_category
 def test_geometry_sanitize_atom():
     bi = sisl_geom.bilayer(bottom_atoms=Atom[6], top_atoms=(Atom[5], Atom[7])).tile(2, 0).repeat(2, 1)
     C_idx = (bi.atoms.Z == 6).nonzero()[0]
