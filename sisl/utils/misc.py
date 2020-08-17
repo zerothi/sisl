@@ -145,12 +145,13 @@ def str_spec(name):
 
 # Transform a string to a Cartesian direction
 def direction(d):
-    """ Return the index coordinate index corresponding to the Cartesian coordinate system.
+    """ Index coordinate corresponding to the Cartesian coordinate system.
 
     Parameters
     ----------
-    d : {0, "X", "x", 1, "Y", "y",  2, "Z", "z"}
-       returns the integer that corresponds to the coordinate index.
+    d : {0, "x", "a", 1, "y", "b", 2, "z", "c"}
+       returns the integer that corresponds to the coordinate index (strings are
+       lower-cased).
        If it is an integer, it is returned *as is*.
 
     Returns
