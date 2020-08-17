@@ -10,6 +10,9 @@ __all__ += ["AndCategory", "OrCategory", "XOrCategory"]
 __all__ += ["InstanceCache"]
 
 
+_list_types = (tuple, list, np.ndarray)
+
+
 class InstanceCache:
     """ Wraps an instance to cache *all* results based on `functools.lru_cache`
 
@@ -205,7 +208,7 @@ class Category(metaclass=CategoryMeta):
 
     def __ne__(self, other):
         eq = self == other
-        if isinstance(eq, list):
+        if isinstance(eq, _list_types):
             return [not e for e in eq]
         return not eq
 
@@ -281,12 +284,13 @@ class NotCategory(GenericCategory):
         r""" Base method for queriyng whether an object is a certain category """
         cat = self._cat.categorize(*args, **kwargs)
 
+        _null = NullCategory()
         def check(cat):
             if isinstance(cat, NullCategory):
                 return self
-            return NullCategory()
+            return _null
 
-        if isinstance(cat, list):
+        if isinstance(cat, _list_types):
             return list(map(check, cat))
         return check(cat)
 
@@ -378,7 +382,7 @@ class OrCategory(CompositeCategory):
                 return b
             return a
 
-        if isinstance(catA, list):
+        if isinstance(catA, _list_types):
             return list(map(cmp, catA, catB))
         return cmp(catA, catB)
 
@@ -412,7 +416,7 @@ class AndCategory(CompositeCategory):
                 return b
             return self
 
-        if isinstance(catA, list):
+        if isinstance(catA, _list_types):
             return list(map(cmp, catA, catB))
         return cmp(catA, catB)
 
@@ -448,7 +452,7 @@ class XOrCategory(CompositeCategory):
             # is exclusive, so we return the NullCategory
             return NullCategory()
 
-        if isinstance(catA, list):
+        if isinstance(catA, _list_types):
             return list(map(cmp, catA, catB))
         return cmp(catA, catB)
 
