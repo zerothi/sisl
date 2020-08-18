@@ -94,7 +94,7 @@ def test_geom_category_frac_site():
     mid_layer = np.average(hBN_gr.xyz[:, 2])
 
     A_site = AtomFracSite(graphene())
-    bottom = AtomCoordinate(z_lt=mid_layer, z=(-10, mid_layer))
+    bottom = AtomXYZ(z_lt=mid_layer, z=(None, mid_layer))
     top = ~bottom
 
     bottom_A = A_site & bottom
@@ -132,7 +132,7 @@ def test_geom_category_shape():
     mid_layer = np.average(hBN_gr.xyz[:, 2])
 
     A_site = AtomFracSite(graphene())
-    bottom = AtomCoordinate(Cuboid([10000, 10000, mid_layer], [-100, -100, 0]))
+    bottom = AtomXYZ(Cuboid([10000, 10000, mid_layer], [-100, -100, 0]))
     top = ~bottom
 
     bottom_A = A_site & bottom

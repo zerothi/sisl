@@ -15,7 +15,7 @@ import sisl._array as _a
 from .base import AtomCategory, NullCategory, _sanitize_loop
 
 
-__all__ = ["AtomFracSite", "AtomCoordinate"]
+__all__ = ["AtomFracSite", "AtomXYZ"]
 
 
 @set_module("sisl.geom")
@@ -100,7 +100,7 @@ class AtomFracSite(AtomCategory):
 
 
 @set_module("sisl.geom")
-class AtomCoordinate(AtomCategory):
+class AtomXYZ(AtomCategory):
     r""" Classify atoms based on coordinates
 
     Parameters
@@ -184,6 +184,12 @@ class AtomCoordinate(AtomCategory):
             else:
                 raise ValueError(f"{self.__class__.__name__} could not determine the operations for {key}={value}.\n"
                                  f"{key} must be on the form [fa]_<dir>_<operator>")
+
+            if value.size == 2:
+                if value[0] is None:
+                    value[0] = -np.inf
+                if value[1] is None:
+                    value[1] = np.inf
 
             # parse options
             is_abs = "a" in spec
