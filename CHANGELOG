@@ -4,6 +4,9 @@
 - Ensured ghost atoms in Siesta are handled with separate
 	class, AtomGhost, #249
 
+- Using `si.RealspaceSI` with `unfold=(1,1,1)` no longer results in `nsc` on
+    the given surface hamiltonian being set to `(1,1,1)`.
+
 - Added calculation of isosurfaces, #246
 
 - Added `sisl.WideBandSE` for self-energies with constant

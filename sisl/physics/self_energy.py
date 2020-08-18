@@ -1286,6 +1286,8 @@ class RealSpaceSI(SelfEnergy):
         correspond to the `self.surface` object, always!
         """
         P0 = self.surface
+        if np.all(self._unfold == 1):
+            P0 = P0.copy()
         for ax in range(3):
             if self._unfold[ax] == 1:
                 continue
@@ -1321,6 +1323,8 @@ class RealSpaceSI(SelfEnergy):
         PC_k = self.semi.spgeom0
         PC_semi = self.semi.spgeom1
         PC = self.surface
+        if np.all(self._unfold == 1):
+            PC = PC.copy()
         for ax in range(3):
             if self._unfold[ax] == 1:
                 continue
