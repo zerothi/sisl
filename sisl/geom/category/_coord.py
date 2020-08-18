@@ -166,6 +166,7 @@ class AtomXYZ(AtomCategory):
             coord_ops.append(create1(False, False, arg.within, (0, 1, 2)))
 
         for key, value in kwargs.items():
+            # will allow us to do value.size
             value = np.array(value)
 
             # Parse key for to get values
@@ -185,12 +186,6 @@ class AtomXYZ(AtomCategory):
                 raise ValueError(f"{self.__class__.__name__} could not determine the operations for {key}={value}.\n"
                                  f"{key} must be on the form [fa]_<dir>_<operator>")
 
-            if value.size == 2:
-                if value[0] is None:
-                    value[0] = -np.inf
-                if value[1] is None:
-                    value[1] = np.inf
-
             # parse options
             is_abs = "a" in spec
             is_frac = "f" in spec
@@ -200,8 +195,10 @@ class AtomXYZ(AtomCategory):
             # Now we are ready to build our scheme
             if value.size == 2:
                 # do it twice
-                coord_ops.append(create2(is_frac, is_abs, operator.ge, sdir, value[0]))
-                coord_ops.append(create2(is_frac, is_abs, operator.le, sdir, value[1]))
+                if not value[0] is None:
+                    coord_ops.append(create2(is_frac, is_abs, operator.ge, sdir, value[0]))
+                if not value[1] is None:
+                    coord_ops.append(create2(is_frac, is_abs, operator.le, sdir, value[1]))
             else:
                 coord_ops.append(create2(is_frac, is_abs, getattr(operator, op), sdir, value))
 

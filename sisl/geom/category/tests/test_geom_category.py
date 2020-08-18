@@ -148,3 +148,26 @@ def test_geom_category_shape():
         else:
             assert False
     assert cnull == len(hBN_gr) // 4 * 3
+
+
+def test_geom_category_xyz_none():
+    hBN_gr = bilayer(1.42, Atom[5, 7], Atom[6]) * (4, 5, 1)
+    mid_layer = np.average(hBN_gr.xyz[:, 2])
+
+    A_site = AtomFracSite(graphene())
+    bottom = AtomXYZ(z=(None, mid_layer))
+    top = AtomXYZ(z=(mid_layer, None))
+
+    bottom_A = A_site & bottom
+    top_A = A_site & top
+
+    cat = (bottom_A | top_A).categorize(hBN_gr)
+    cnull = 0
+    for i, c in enumerate(cat):
+        if c == NullCategory():
+            cnull += 1
+        elif hBN_gr.xyz[i, 2] < mid_layer:
+            assert c == bottom_A
+        else:
+            assert False
+    assert cnull == len(hBN_gr) // 4 * 3
