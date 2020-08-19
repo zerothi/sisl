@@ -343,7 +343,7 @@ class OrbitalQueries(QueriesInput):
         # the values are two dimensional. In this way, we can take the same actions for the
         # case when there is only one parameter and the case when there are multiple.
         if values.ndim == 1:
-            values = values.reshape(-1,1)
+            values = values.reshape(-1, 1)
 
         # If no function to modify queries was provided we are just going to generate a
         # dummy one that just returns the query as it gets it
@@ -367,7 +367,7 @@ class OrbitalQueries(QueriesInput):
             if f"${key}" not in base_name:
                 base_name += f"{' | ' if first_added else ', '}{key}=${key}"
                 first_added = False
-            
+
         # Now build all the queries
         queries = []
         for i, value in enumerate(values):

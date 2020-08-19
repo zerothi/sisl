@@ -3,7 +3,7 @@ from collections import Iterable, defaultdict
 
 import numpy as np
 
-from sisl import Geometry, PeriodicTable, Atom
+from sisl import Geometry, PeriodicTable, Atom, AtomGhost
 from sisl.utils.mathematics import fnorm
 from ..plot import Plot, entry_point
 from ..input_fields import ProgramaticInput, FunctionInput, FloatInput, SwitchInput, DropdownInput, AtomSelect, GeomAxisSelect, \
@@ -94,13 +94,11 @@ class BaseGeometryPlot(Plot):
     @classmethod
     def atom_color(cls, atom):
 
-        symb = Atom(atom).symbol
+        atom = Atom(atom)
 
-        if isinstance(atom, Number) and atom < 0:
-            ghost = True
-            atom = abs(atom)
+        ghost = isinstance(atom, AtomGhost)
 
-        color = cls._atoms_colors.get(Atom(atom).symbol, cls._atoms_colors["else"])
+        color = cls._atoms_colors.get(atom.symbol, cls._atoms_colors["else"])
 
         if ghost:
             color = (np.array(matplotlib.colors.to_rgb(color))*255).astype(int)
