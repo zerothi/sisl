@@ -119,7 +119,7 @@ class AtomXYZ(AtomCategory):
        - ``direction`` is anything that gets parsed in `sisl.utils.misc.direction`
          either one of ``{0, "X", "x", "a", 1, "Y", "y", "b", 2, "Z", "z", "c"}``.
        - ``operator`` is a name for an operator defined in the `operator` module.
-         
+
        For instance `a_z_lt=3.` will be equivalent to the
        boolean operation ``np.fabs(geometry.xyz[:, 2]) < 3.``.
 

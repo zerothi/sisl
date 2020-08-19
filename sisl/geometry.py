@@ -39,6 +39,11 @@ __all__ = ['Geometry', 'sgeom']
 class AtomCategory(Category):
     __slots__ = tuple()
 
+    @classmethod
+    def is_class(cls, name):
+        # Strip off `Atom`
+        return cls.__name__.lower()[4:] == name.lower()
+
 
 @set_module("sisl")
 class Geometry(SuperCellChild):

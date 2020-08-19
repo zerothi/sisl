@@ -116,6 +116,32 @@ class Category(metaclass=CategoryMeta):
         self._name = name
 
     @classmethod
+    @abstractmethod
+    def is_class(cls, name):
+        r""" Query whether `name` matches the class name by removing a prefix `kw`
+
+        This is important to ensure that users match the full class name
+        by omitting the prefix returned from this method.
+
+        This is an abstract method to ensure sub-classes of `Category`
+        implements it.
+
+        For instance:
+
+        .. code::
+
+            class MyCategory(Category):
+
+                @classmethod
+                def is_class(cls, name):
+                     # strip "My" and do comparison
+                     return cl.__name__.lower()[2:] == name.lower()
+
+        would enable one to compare against the *base* category scheme.
+        """
+        pass
+
+    @classmethod
     def kw(cls, **kwargs):
         """ Create categories based on keywords
 
@@ -152,7 +178,7 @@ class Category(metaclass=CategoryMeta):
             lkey = key.lower()
             found = ''
             for name, cl in subcls.items():
-                if name.endswith(lkey):
+                if cl.is_class(name):
                     if found:
                         raise ValueError(f"{cls.__name__}.kw got a non-unique argument for category name:\n"
                                          f"    Searching for {name} and found matches {found} and {name}.")
@@ -233,10 +259,14 @@ class GenericCategory(Category):
     """Used to indicate that the category does not act on specific objects
 
     It serves to identify categories such as `NullCategory`, `NotCategory`
-    and composite categories and distinguish them from categories that have
+    and `CompositeCategory` and distinguish them from categories that have
     a specific object in which they act.
     """
-    pass
+    @classmethod
+    def is_class(cls, name):
+        # never allow one to match a generic class
+        # I.e. you can't instantiate a Null/Not/And/Or/XOr category by name
+        return False
 
 
 @set_module("sisl.category")
