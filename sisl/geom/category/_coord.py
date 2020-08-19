@@ -1,6 +1,6 @@
 from functools import partial, wraps
 import operator
-from numbers import Integral
+from numbers import Integral, Number
 
 import numpy as np
 from numpy import dot, fabs, where
@@ -262,10 +262,12 @@ class CoordMeta(CategoryMeta):
         return self((other, None))
 
 
-def _new(cls, interval):
+def _new(cls, *interval):
     """
     Will go into the __new__ method of the new coordinate classes
     """
+    if not isinstance(interval[0], Number):
+        interval = interval[0]
     return AtomXYZ(**{cls._coord_key: interval})
 
 # Iterate over all directions that deserve an individual class
