@@ -179,3 +179,27 @@ def test_geom_category_xyz_none():
         else:
             assert False
     assert cnull == len(hBN_gr) // 4 * 3
+
+
+def test_geom_category_xyz_meta():
+    """
+    We check that the metaclass defined for individual direction categories works.
+    """
+
+    hBN_gr = bilayer(1.42, Atom[5, 7], Atom[6]) * (4, 5, 1)
+
+    # Check that all classes work
+    for key in ("x", "y", "z", "f_x", "f_y", "f_z", "a_x", "a_y", "a_z"):
+
+        name = key.replace("_", "")
+        
+        # Check that the attribute is present
+        assert hasattr(AtomXYZ, name)
+        
+        # Get the category class
+        cat = getattr(AtomXYZ, name)
+        
+        # Assert that using the class actually does the same effect as calling the AtomXYZ
+        # category with the appropiate arguments
+        assert np.all(hBN_gr.sc2uc(cat < 0.5) == hBN_gr.sc2uc(AtomXYZ(**{key+"_lt": 0.5})))
+        assert np.all(hBN_gr.sc2uc(cat > 0.5) == hBN_gr.sc2uc(AtomXYZ(**{key+"_gt": 0.5})))
