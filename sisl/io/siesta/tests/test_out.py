@@ -90,6 +90,9 @@ def test_md_nose_out_data(sisl_files):
     assert np.allclose(f0, f1)
     assert g0 == g1
     assert isinstance(e, dict)
+    assert e["Ef"] == pytest.approx(-2.836423)
+    assert e["Exc"] == pytest.approx(-704.656164)
+    assert e["Ekin"] == pytest.approx(2293.584862)
 
 
 def test_md_nose_out_dataframe(sisl_files):
