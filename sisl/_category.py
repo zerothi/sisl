@@ -178,7 +178,7 @@ class Category(metaclass=CategoryMeta):
             lkey = key.lower()
             found = ''
             for name, cl in subcls.items():
-                if cl.is_class(name):
+                if cl.is_class(key):
                     if found:
                         raise ValueError(f"{cls.__name__}.kw got a non-unique argument for category name:\n"
                                          f"    Searching for {name} and found matches {found} and {name}.")
