@@ -145,3 +145,19 @@ class TestsGrid:
         for remove in ['remove :.8 2', 'remove :0.8 z']:
             G = setup.sg_g(argv=('--' + remove).split())
             assert np.allclose(G.grid, gs.grid)
+
+
+    def test_tile1(self, setup):
+        g = setup.grid.copy()
+
+        g2 = g.tile(2, 0)
+        G = setup.sg_g(argv='--tile 2 a'.split())
+        assert np.allclose(G.grid, g2.grid)
+
+        g2 = g.tile(2, 1)
+        G = setup.sg_g(argv='--tile 2 y'.split())
+        assert np.allclose(G.grid, g2.grid)
+
+        g2 = g.tile(2, 2)
+        G = setup.sg_g(argv='--tile 2 c'.split())
+        assert np.allclose(G.grid, g2.grid)
