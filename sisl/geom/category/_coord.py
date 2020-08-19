@@ -256,10 +256,10 @@ class CoordMeta(CategoryMeta):
     """
 
     def __lt__(self, other):
-        return self((None, other))
+        return self(None, other)
 
     def __gt__(self, other):
-        return self((other, None))
+        return self(other, None)
 
 
 def _new(cls, *interval):
