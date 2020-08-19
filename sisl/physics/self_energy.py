@@ -1285,7 +1285,10 @@ class RealSpaceSI(SelfEnergy):
         The returned object does *not* obey the ``semi_bulk`` option. I.e. the matrix elements
         correspond to the `self.surface` object, always!
         """
-        P0 = self.surface
+        if np.allclose(self._unfold, 1):
+            P0 = self.surface.copy()
+        else:
+            P0 = self.surface
         for ax in range(3):
             if self._unfold[ax] == 1:
                 continue
@@ -1320,7 +1323,10 @@ class RealSpaceSI(SelfEnergy):
         #  2. The full surface
         PC_k = self.semi.spgeom0
         PC_semi = self.semi.spgeom1
-        PC = self.surface
+        if np.allclose(self._unfold, 1):
+            PC = self.surface.copy()
+        else:
+            PC = self.surface
         for ax in range(3):
             if self._unfold[ax] == 1:
                 continue
