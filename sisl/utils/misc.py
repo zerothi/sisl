@@ -152,7 +152,6 @@ def direction(d):
     d : {0, "x", "a", 1, "y", "b", 2, "z", "c"}
        returns the integer that corresponds to the coordinate index (strings are
        lower-cased).
-       If it is an integer, it is returned *as is*.
 
     Returns
     -------
