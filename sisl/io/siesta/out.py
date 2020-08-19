@@ -432,9 +432,11 @@ class outSileSiesta(SileSiesta):
 
         # Read until outcoor is found
         itt = iter(self)
-        while not 'moments: Atomic' in next(itt):
-            if next(itt) == '':
-                return None
+        for line in itt:
+            if 'moments: Atomic' in line:
+                break
+        if not 'moments: Atomic' in line:
+            return None
 
         # The moments are printed in SPECIES list
         next(itt) # empty
@@ -490,6 +492,42 @@ class outSileSiesta(SileSiesta):
             return _a.arrayd(moments)
         return moments
 
+    @sile_fh_open()
+    def read_energy(self):
+        """ Reads the final energy distribution """
+        itt = iter(self)
+        for line in itt:
+            if 'siesta: Final energy' in line:
+                break
+        if not 'siesta: Final energy' in line:
+            return None
+
+        # Read data
+        line = next(itt)
+        name_conv = {
+            "Band Struct." : "Ebs",
+            "Kinetic": "Ekin",
+            "Hartree": "Ehartree",
+            "Eldau": "Eldau",
+            "Eso": "Eso",
+            "Ext. field": "EextE",
+            "Exch.-corr.": "Exc",
+            "Ion-electron": "Eion_elec",
+            "Ion-ion": "Eion_ion",
+            "Ekinion": "Ekin_ion",
+            "Total": "Etot",
+            "Fermi": "Ef",
+            "Enegf": "Enegf",
+        }
+        out = {}
+        while len(line.strip()) > 0:
+            key, val = line.split("=")
+            key = key.split(":")[1].strip()
+            out[name_conv[key]] = float(val)
+            line = next(itt)
+
+        return out
+
     def read_data(self, *args, **kwargs):
         """ Read specific content in the Siesta out file
 
@@ -513,12 +551,14 @@ class outSileSiesta(SileSiesta):
            read stress, args are passed to `read_stress`
         moment: bool, optional
            read moment, args are passed to `read_moment` (only for spin-orbit calculations)
+        energy: bool, optional
+           read final energies, args are passed to `read_energy`
         """
         run = []
         # This loops ensures that we preserve the order of arguments
         # From Py3.6 and onwards the **kwargs is an OrderedDictionary
         for kw in kwargs.keys():
-            if kw in ['geometry', 'force', 'moment', 'stress']:
+            if kw in ['geometry', 'force', 'moment', 'stress', 'energy']:
                 if kwargs[kw]:
                     run.append(kw)
 
@@ -573,12 +613,27 @@ class outSileSiesta(SileSiesta):
             elif line.startswith('SCF cycle continued'):
                 d['_final_iscf'] = 0
 
+        def common_parse(line, d):
+            if line.startswith('ts-Vha:'):
+                d['ts-Vha'] = float(line.split()[1])
+            elif line.startswith('bulk-bias: |v'):
+                d['bb-v'] = list(map(float, line.split()[-3:]))
+                if 'bb-vx' not in props:
+                    props.extend(['BB-vx', 'BB-vy', 'BB-vz'])
+            elif line.startswith('bulk-bias: {q'):
+                d['bb-q'] = list(map(float, line.split()[-3:]))
+                if 'bb-q+' not in props:
+                    props.extend(['BB-q+', 'BB-q-', 'BB-q0'])
+            else:
+                return False
+            return True
+
         if key.lower() == 'scf':
             def parse_next(line, d):
                 line = line.strip().replace('*', '0')
                 reset_d(d, line)
-                if line.startswith('ts-Vha:'):
-                    d['ts-Vha'] = float(line.split()[1])
+                if common_parse(line, d):
+                    pass
                 elif line.startswith('scf:'):
                     d['_found_iscf'] = True
                     if len(line) == 97:
@@ -602,8 +657,8 @@ class outSileSiesta(SileSiesta):
             def parse_next(line, d):
                 line = line.strip().replace('*', '0')
                 reset_d(d, line)
-                if line.startswith('ts-Vha:'):
-                    d['ts-Vha'] = float(line.split()[1])
+                if common_parse(line, d):
+                    pass
                 elif line.startswith('ts-q:'):
                     data = line.split()[1:]
                     try:
@@ -611,7 +666,7 @@ class outSileSiesta(SileSiesta):
                     except:
                         # We are probably reading a device list
                         # ensure that props are appended
-                        if props[-1] != data[-1]:
+                        if data[-1] not in props:
                             props.extend(data)
                         pass
                 elif line.startswith('ts-scf:'):

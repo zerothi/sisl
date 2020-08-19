@@ -79,15 +79,17 @@ def test_md_nose_out(sisl_files):
         assert np.allclose(scf_all[i], scf)
 
 
+
 def test_md_nose_out_data(sisl_files):
     f = sisl_files(_dir, 'md_nose.out')
     out = outSileSiesta(f)
 
     f0, g0 = out.read_data(force=True, geometry=True)
-    g1, f1 = out.read_data(geometry=True, force=True)
+    g1, f1, e = out.read_data(geometry=True, force=True, energy=True)
 
     assert np.allclose(f0, f1)
     assert g0 == g1
+    assert isinstance(e, dict)
 
 
 def test_md_nose_out_dataframe(sisl_files):
