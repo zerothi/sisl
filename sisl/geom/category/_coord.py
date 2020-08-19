@@ -1,6 +1,6 @@
 from functools import partial, wraps
 import operator
-from numbers import Integral, Number
+from numbers import Integral, Real
 
 import numpy as np
 from numpy import dot, fabs, where
@@ -240,7 +240,7 @@ class AtomXYZ(AtomCategory):
 # without needing to nest "x", as in `AtomCategory(xyz={"x": (1,2)})`.
 
 
-class CoordMeta(CategoryMeta):
+class AtomXYZMeta(CategoryMeta):
     """
     Metaclass to give extra functionality to individual coordinates categories.
 
@@ -266,7 +266,7 @@ def _new(cls, *interval):
     """
     Will go into the __new__ method of the new coordinate classes
     """
-    if not isinstance(interval[0], Number):
+    if not isinstance(interval[0], Real):
         interval = interval[0]
     return AtomXYZ(**{cls._coord_key: interval})
 
@@ -278,7 +278,7 @@ for key in ("x", "y", "z", "f_x", "f_y", "f_z", "a_x", "a_y", "a_z"):
     name = key.replace("_", "")
 
     # Create the class for this direction
-    new_cls = CoordMeta(f"Atom{name}", (AtomCategory, ), {"__new__": _new, "_coord_key": key})
+    new_cls = CoordMeta(f"Atom{name.upper()}", (AtomCategory, ), {"__new__": _new, "_coord_key": key})
 
     # Set it as an attribute of `AtomXYZ`, so that you can access them from it.
     # Note that the classes are never exposed, so you can not import them, and the way
