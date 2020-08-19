@@ -269,8 +269,12 @@ class AtomXYZMeta(CategoryMeta):
     def __lt__(self, other):
         return self(None, other)
 
+    __le__ = __lt__
+
     def __gt__(self, other):
         return self(other, None)
+
+    __ge__ = __gt__
 
 
 def _new(cls, *interval):
