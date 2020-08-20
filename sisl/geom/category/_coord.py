@@ -291,12 +291,16 @@ def _new_factory(key):
             new_kwargs = {}
 
         # Convert interval to correct interpretation
-        if len(interval) > 1:
-            raise ValueError(f"{cls.__name__} makes only sense to instantiate with 1 non-keyword argument")
-        elif len(interval) == 1:
+        if len(interval) == 1:
             # we want to do it explicitly to let AtomXYZ raise an
             # error for multiple entries
             return AtomXYZ(**{key: interval[0]}, **new_kwargs)
+        elif len(interval) == 2:
+            # we want to do it explicitly to let AtomXYZ raise an
+            # error for multiple entries
+            return AtomXYZ(**{key: interval}, **new_kwargs)
+        elif len(interval) != 0:
+            raise ValueError(f"{cls.__name__} non-keyword argumest must be 1 tuple, or 2 values")
         return AtomXYZ(**new_kwargs)
 
     return _new
