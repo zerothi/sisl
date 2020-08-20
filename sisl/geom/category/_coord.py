@@ -314,10 +314,9 @@ for key in ("x", "y", "z", "f_x", "f_y", "f_z", "a_x", "a_y", "a_z"):
 
     # Create the class for this direction
     # note this is lower case since AtomZ should not interfere with Atomz
-    new_cls = AtomXYZMeta(f"Atom{name}", (AtomCategory, ),
-                          {"__new__": _new_factory(key),
-                           "__module__": "sisl.geom"
-                          })
+    new_cls = AtomXYZMeta(f"Atom{name}", (AtomCategory, ), {"__new__": _new_factory(key)})
+
+    new_cls = set_module("sisl.geom")(new_cls)
 
     # Set it as an attribute of `AtomXYZ`, so that you can access them from it.
     # Note that the classes are never exposed, so you can not import them, and the way
