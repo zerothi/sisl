@@ -414,18 +414,19 @@ class outSileSiesta(SileSiesta):
     @sile_fh_open()
     def read_moment(self, orbitals=False, quantity='S', last=True, all=False):
         """ Reads the moments from the Siesta output file
+
         These will only be present in case of spin-orbit coupling.
 
         Parameters
         ----------
-        orbitals: bool, False
+        orbitals: bool, optional
            return a table with orbitally resolved
            moments.
-        quantity: str, 'S'
+        quantity: {'S', 'L'}, optional
            return the spin-moments or the L moments
-        last: bool, True
+        last: bool, optional
            only read the last force
-        all: bool, False
+        all: bool, optional
            return a list of all forces (like an MD)
            If `True` `last` is ignored
         """
