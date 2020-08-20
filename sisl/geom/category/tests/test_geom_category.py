@@ -186,6 +186,7 @@ def test_geom_category_xyz_meta():
     We check that the metaclass defined for individual direction categories works.
     """
     hBN_gr = bilayer(1.42, Atom[5, 7], Atom[6]) * (4, 5, 1)
+    sc2uc = hBN_gr.sc2uc
 
     # Check that all classes work
     for key in ("x", "y", "z", "f_x", "f_y", "f_z", "a_x", "a_y", "a_z"):
@@ -196,11 +197,18 @@ def test_geom_category_xyz_meta():
         assert hasattr(AtomXYZ, name)
 
         # Get the category class
-        cat = getattr(AtomXYZ, name)
+        cls = getattr(AtomXYZ, name)
 
         # Assert that using the class actually does the same effect as calling the AtomXYZ
         # category with the appropiate arguments
-        assert np.all(hBN_gr.sc2uc(cat < 0.5) == hBN_gr.sc2uc(AtomXYZ(**{key+"_lt": 0.5})))
-        assert np.all(hBN_gr.sc2uc(cat <= 0.5) == hBN_gr.sc2uc(AtomXYZ(**{key+"_lt": 0.5})))
-        assert np.all(hBN_gr.sc2uc(cat > 0.5) == hBN_gr.sc2uc(AtomXYZ(**{key+"_gt": 0.5})))
-        assert np.all(hBN_gr.sc2uc(cat >= 0.5) == hBN_gr.sc2uc(AtomXYZ(**{key+"_gt": 0.5})))
+        def get_cls(op, v):
+            return AtomXYZ(**{f"{key}_{op}": v})
+
+        assert np.all(sc2uc(cls < 0.5) == sc2uc(cls(lt=0.5)))
+        assert np.all(sc2uc(cls < 0.5) == sc2uc(get_cls("lt", 0.5)))
+        assert np.all(sc2uc(cls <= 0.5) == sc2uc(cls(le=0.5)))
+        assert np.all(sc2uc(cls <= 0.5) == sc2uc(get_cls("le", 0.5)))
+        assert np.all(sc2uc(cls > 0.5) == sc2uc(cls(gt=0.5)))
+        assert np.all(sc2uc(cls > 0.5) == sc2uc(get_cls("gt", 0.5)))
+        assert np.all(sc2uc(cls >= 0.5) == sc2uc(cls(ge=0.5)))
+        assert np.all(sc2uc(cls >= 0.5) == sc2uc(get_cls("ge", 0.5)))

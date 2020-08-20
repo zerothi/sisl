@@ -262,7 +262,7 @@ class AtomXYZMeta(CategoryMeta):
 
     If `AtomX` has been built using this metaclass:
     >>> AtomX < 5 == AtomX((None, 5)) == AtomXYZ(x=(None, 5))
-    >>> AtomX > 5 == AtomX((5, None)) == AtomXYZ(x=(5, None))
+    >>> AtomX > 5 == AtomX(gt=5) == AtomXYZ(x=(5, None))
     """
 
     def __lt__(self, other):
@@ -277,16 +277,6 @@ class AtomXYZMeta(CategoryMeta):
     def __ge__(self, other):
         return self(ge=other)
 
-    def __contains__(self, other):
-        # This will not be called:
-        #  AtomXYZ.x in [-1, 2] ?
-        # override self in (-1, 2)
-        # Make sure `other` is a list
-        other = list(other)
-        if len(other) != 2:
-            raise ValueError(f"{self.__name__} in requires the argument to be a list of 2 values")
-        return self(other)
-
 
 def _new_factory(key):
     def _new(cls, *interval, **kwargs):
@@ -295,7 +285,10 @@ def _new_factory(key):
         """
         def _apply_key(k, v):
             return f"{key}_{k}", v
-        new_kwargs = dict(map(_apply_key, *zip(*kwargs.items())))
+        if len(kwargs) > 0:
+            new_kwargs = dict(map(_apply_key, *zip(*kwargs.items())))
+        else:
+            new_kwargs = {}
 
         # Convert interval to correct interpretation
         if len(interval) > 1:
@@ -303,7 +296,7 @@ def _new_factory(key):
         elif len(interval) == 1:
             # we want to do it explicitly to let AtomXYZ raise an
             # error for multiple entries
-            return AtomXYZ(**{f"{key}": interval}, **new_kwargs)
+            return AtomXYZ(**{key: interval}, **new_kwargs)
         return AtomXYZ(**new_kwargs)
 
     return _new
@@ -316,7 +309,7 @@ for key in ("x", "y", "z", "f_x", "f_y", "f_z", "a_x", "a_y", "a_z"):
     name = key.replace("_", "")
 
     # Create the class for this direction
-    new_cls = AtomXYZMeta(f"Atom{name.upper()}", (AtomCategory, ),
+    new_cls = AtomXYZMeta(f"Atom{name.upper()}_", (AtomCategory, ),
                           {"__new__": _new_factory(key),
                            "__module__": "sisl.geom"
                           })
