@@ -506,7 +506,7 @@ class outSileSiesta(SileSiesta):
         # Read data
         line = next(itt)
         name_conv = {
-            "Band Struct." : "Ebs",
+            "Band Struct.": "Ebs",
             "Kinetic": "Ekin",
             "Hartree": "Ehartree",
             "Eldau": "Eldau",

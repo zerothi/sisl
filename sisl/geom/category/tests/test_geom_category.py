@@ -212,3 +212,5 @@ def test_geom_category_xyz_meta():
         assert np.all(sc2uc(cls > 0.5) == sc2uc(get_cls("gt", 0.5)))
         assert np.all(sc2uc(cls >= 0.5) == sc2uc(cls(ge=0.5)))
         assert np.all(sc2uc(cls >= 0.5) == sc2uc(get_cls("ge", 0.5)))
+
+        assert np.all(sc2uc(cls((-1, 1))) == sc2uc(get_cls("ge", -1) & get_cls("le", 1)))

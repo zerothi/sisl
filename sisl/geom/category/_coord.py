@@ -296,7 +296,7 @@ def _new_factory(key):
         elif len(interval) == 1:
             # we want to do it explicitly to let AtomXYZ raise an
             # error for multiple entries
-            return AtomXYZ(**{key: interval}, **new_kwargs)
+            return AtomXYZ(**{key: interval[0]}, **new_kwargs)
         return AtomXYZ(**new_kwargs)
 
     return _new
