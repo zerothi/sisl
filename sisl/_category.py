@@ -162,7 +162,7 @@ class Category(metaclass=CategoryMeta):
                     subcls.add(child)
                     work.append(child)
 
-        del work, parent, child
+        del work
 
         # create dictionary look-up
         subcls = {cl.__name__.lower(): cl for cl in subcls}
