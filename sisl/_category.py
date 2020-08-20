@@ -117,7 +117,7 @@ class Category(metaclass=CategoryMeta):
 
     @classmethod
     @abstractmethod
-    def is_class(cls, name):
+    def is_class(cls, name, case=True):
         r""" Query whether `name` matches the class name by removing a prefix `kw`
 
         This is important to ensure that users match the full class name
@@ -138,6 +138,8 @@ class Category(metaclass=CategoryMeta):
                      return cl.__name__.lower()[2:] == name.lower()
 
         would enable one to compare against the *base* category scheme.
+
+        This has the option to search case-sensitivity or not.
         """
         pass
 
@@ -176,17 +178,31 @@ class Category(metaclass=CategoryMeta):
         cat = None
         for key, args in kwargs.items():
             lkey = key.lower()
-            found = ''
+            found = None
+            # First search case-sensitive
             for name, cl in subcls.items():
                 if cl.is_class(key):
                     if found:
                         raise ValueError(f"{cls.__name__}.kw got a non-unique argument for category name:\n"
-                                         f"    Searching for {name} and found matches {found} and {name}.")
-                    found = name
-                    if cat is None:
-                        cat = get_cat(cl, args)
-                    else:
-                        cat = cat & get_cat(cl, args)
+                                         f"    Searching for {key} and found matches {found.__name__} and {cl.__name__}.")
+                    found = cl
+
+            if found is None:
+                for name, cl in subcls.items():
+                    if cl.is_class(key, case=False):
+                        if found:
+                            raise ValueError(f"{cls.__name__}.kw got a non-unique argument for category name:\n"
+                                             f"    Searching for {key} and found matches {found.__name__.lower()} and {cl.__name__.lower()}.")
+                        found = cl
+
+            if found is None:
+                raise ValueError(f"{cls.__name__}.kw got an argument for category name:\n"
+                                 f"    Searching for {key} but found no matches.")
+
+            if cat is None:
+                cat = get_cat(found, args)
+            else:
+                cat = cat & get_cat(found, args)
 
         return cat
 

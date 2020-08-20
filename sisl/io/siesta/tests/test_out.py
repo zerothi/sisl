@@ -79,7 +79,6 @@ def test_md_nose_out(sisl_files):
         assert np.allclose(scf_all[i], scf)
 
 
-
 def test_md_nose_out_data(sisl_files):
     f = sisl_files(_dir, 'md_nose.out')
     out = outSileSiesta(f)

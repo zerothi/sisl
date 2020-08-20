@@ -103,7 +103,7 @@ def test_geom_category_frac_site():
 
     A_site = AtomFracSite(graphene())
     bottom = AtomXYZ(z_lt=mid_layer, z=(None, mid_layer))
-    top = ~bottom
+    top = ~AtomCategory(xyz={"z_lt": mid_layer}, z=(None, mid_layer))
 
     bottom_A = A_site & bottom
     top_A = A_site & top
@@ -179,3 +179,39 @@ def test_geom_category_xyz_none():
         else:
             assert False
     assert cnull == len(hBN_gr) // 4 * 3
+
+
+def test_geom_category_xyz_meta():
+    """
+    We check that the metaclass defined for individual direction categories works.
+    """
+    hBN_gr = bilayer(1.42, Atom[5, 7], Atom[6]) * (4, 5, 1)
+    sc2uc = hBN_gr.sc2uc
+
+    # Check that all classes work
+    for key in ("x", "y", "z", "f_x", "f_y", "f_z", "a_x", "a_y", "a_z"):
+
+        name = key.replace("_", "")
+
+        # Check that the attribute is present
+        assert hasattr(AtomXYZ, name)
+
+        # Get the category class
+        cls = getattr(AtomXYZ, name)
+
+        # Assert that using the class actually does the same effect as calling the AtomXYZ
+        # category with the appropiate arguments
+        def get_cls(op, v):
+            return AtomXYZ(**{f"{key}_{op}": v})
+
+        assert np.all(sc2uc(cls < 0.5) == sc2uc(cls(lt=0.5)))
+        assert np.all(sc2uc(cls < 0.5) == sc2uc(get_cls("lt", 0.5)))
+        assert np.all(sc2uc(cls <= 0.5) == sc2uc(cls(le=0.5)))
+        assert np.all(sc2uc(cls <= 0.5) == sc2uc(get_cls("le", 0.5)))
+        assert np.all(sc2uc(cls > 0.5) == sc2uc(cls(gt=0.5)))
+        assert np.all(sc2uc(cls > 0.5) == sc2uc(get_cls("gt", 0.5)))
+        assert np.all(sc2uc(cls >= 0.5) == sc2uc(cls(ge=0.5)))
+        assert np.all(sc2uc(cls >= 0.5) == sc2uc(get_cls("ge", 0.5)))
+
+        assert np.all(sc2uc(cls((-1, 1))) == sc2uc(get_cls("ge", -1) & get_cls("le", 1)))
+        assert np.all(sc2uc(cls(-1, 1)) == sc2uc(get_cls("ge", -1) & get_cls("le", 1)))

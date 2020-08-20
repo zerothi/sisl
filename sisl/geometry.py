@@ -40,8 +40,10 @@ class AtomCategory(Category):
     __slots__ = tuple()
 
     @classmethod
-    def is_class(cls, name):
+    def is_class(cls, name, case=True):
         # Strip off `Atom`
+        if case:
+            return cls.__name__[4:] == name
         return cls.__name__[4:].lower() == name.lower()
 
 

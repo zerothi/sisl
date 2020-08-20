@@ -146,7 +146,6 @@ class TestsGrid:
             G = setup.sg_g(argv=('--' + remove).split())
             assert np.allclose(G.grid, gs.grid)
 
-
     def test_tile1(self, setup):
         g = setup.grid.copy()
 
