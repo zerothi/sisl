@@ -313,7 +313,8 @@ for key in ("x", "y", "z", "f_x", "f_y", "f_z", "a_x", "a_y", "a_z"):
     name = key.replace("_", "")
 
     # Create the class for this direction
-    new_cls = AtomXYZMeta(f"Atom{name.upper()}_", (AtomCategory, ),
+    # note this is lower case since AtomZ should not interfere with Atomz
+    new_cls = AtomXYZMeta(f"Atom{name}", (AtomCategory, ),
                           {"__new__": _new_factory(key),
                            "__module__": "sisl.geom"
                           })

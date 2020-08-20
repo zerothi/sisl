@@ -103,7 +103,7 @@ def test_geom_category_frac_site():
 
     A_site = AtomFracSite(graphene())
     bottom = AtomXYZ(z_lt=mid_layer, z=(None, mid_layer))
-    top = ~bottom
+    top = ~AtomCategory(xyz={"z_lt": mid_layer}, z=(None, mid_layer))
 
     bottom_A = A_site & bottom
     top_A = A_site & top
