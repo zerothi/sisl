@@ -515,6 +515,7 @@ class outSileSiesta(SileSiesta):
             "Exch.-corr.": "Exc",
             "Ion-electron": "Eion_elec",
             "Ion-ion": "Eion_ion",
+            "Bulk bias": "EbV",
             "Ekinion": "Ekin_ion",
             "Total": "Etot",
             "Fermi": "Ef",
@@ -524,7 +525,7 @@ class outSileSiesta(SileSiesta):
         while len(line.strip()) > 0:
             key, val = line.split("=")
             key = key.split(":")[1].strip()
-            out[name_conv[key]] = float(val)
+            out[name_conv.get(key, key)] = float(val)
             line = next(itt)
 
         return out
