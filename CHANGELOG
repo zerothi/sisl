@@ -1,6 +1,8 @@
 0.X.Y
 =====
 
+- Added outSileSiesta.read_energy to read final energies
+
 - Ensured ghost atoms in Siesta are handled with separate
 	class, AtomGhost, #249
 

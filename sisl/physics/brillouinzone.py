@@ -26,7 +26,7 @@ This may be extremely convenient when calculating band-structures:
 
 >>> H = Hamiltonian(...)
 >>> bs = BandStructure(H, [[0, 0, 0], [0.5, 0, 0]], 100)
->>> bs_eig = bs.apply.array.eigh().T
+>>> bs_eig = bs.apply.array.eigh()
 >>> plt.plot(bs.lineark(), bs_eig)
 
 and then you have all eigenvalues for all the k-points along the path.
