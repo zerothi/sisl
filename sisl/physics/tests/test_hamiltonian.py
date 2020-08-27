@@ -588,7 +588,20 @@ class TestHamiltonian:
 
         es2.change_gauge('r')
         es1.change_gauge('r')
-        assert np.allclose(es1.velocity(), es2.velocity())
+        v1 = es1.velocity()
+        v2 = es2.velocity()
+        assert np.allclose(v1, v2)
+
+        # Projected velocity
+        pv1 = es1.velocity(project='orbital')
+        pv2 = es2.velocity(project='orbital')
+        assert np.allclose(pv1.sum(1), v2)
+        assert np.allclose(pv2.sum(1), v1)
+        # since degenerate states *could* swap states
+        # we can't for sure compare states
+        # This test is one of those cases
+        # hence the below is disabled
+        #assert np.allclose(pv1, pv2)
 
     def test_berry_phase(self, setup):
         R, param = [0.1, 1.5], [1., 0.1]
@@ -931,7 +944,7 @@ class TestHamiltonian:
         assert len(sup) == 2
         assert len(sdn) == 1
 
-    def test_non_colinear1(self, setup):
+    def test_non_colinear_orthogonal(self, setup):
         g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(100, nsc=[3, 3, 1]))
         H = Hamiltonian(g, dtype=np.float64, spin=Spin.NONCOLINEAR)
         for i in range(10):
@@ -993,6 +1006,14 @@ class TestHamiltonian:
             es.velocity_matrix()
             es.inv_eff_mass_tensor()
 
+        # Check the velocities
+        # But only compare for np.float64, we need the precision
+        v = es.velocity()
+        pv = es.velocity(project='orbital')
+        assert np.allclose(pv.sum(1), v)
+        pnc = es.velocity(project='nc')
+        assert np.allclose(pnc[:, 0, :, :].sum(1), v)
+
         # Ensure we can change gauge for NC stuff
         es.change_gauge('R')
         es.change_gauge('r')
@@ -1050,6 +1071,14 @@ class TestHamiltonian:
             assert np.allclose(PDOS.sum(1)[0, :], DOS)
             es.velocity_matrix()
             es.inv_eff_mass_tensor()
+
+        # Check the velocities
+        # But only compare for np.float64, we need the precision
+        v = es.velocity()
+        pnc = es.velocity(project='nc')
+        assert np.allclose(pnc[:, 0, :, :].sum(1), v)
+        pv = es.velocity(project='orbital')
+        assert np.allclose(pv.sum(1), v)
 
         # Ensure we can change gauge for NC stuff
         es.change_gauge('R')
