@@ -247,19 +247,21 @@ def PDOS(E, eig, state, S=None, distribution='gaussian', spin=None):
 
         d = distribution(E - eig[0]).reshape(1, -1)
         v = S.dot(state[0].reshape(-1, 2))
-        D = (conj(state[0]) * v.ravel()).real.reshape(-1, 2) # diagonal PDOS
+        cs = conj(state[0]).reshape(-1, 2)
+        D = (cs * v).real # diagonal PDOS
         PDOS[0, :, :] = D.sum(1).reshape(-1, 1) * d # total DOS
         PDOS[3, :, :] = (D[:, 0] - D[:, 1]).reshape(-1, 1) * d # z-dos
-        D = (conj(state[0, 1::2]) * 2 * v[:, 0]).reshape(-1, 1) # psi_down * psi_up * 2
+        D = (cs[:, 1] * 2 * v[:, 0]).reshape(-1, 1) # psi_down * psi_up * 2
         PDOS[1, :, :] = D.real * d # x-dos
         PDOS[2, :, :] = D.imag * d # y-dos
         for i in range(1, len(eig)):
             d = distribution(E - eig[i]).reshape(1, -1)
             v = S.dot(state[i].reshape(-1, 2))
-            D = (conj(state[i]) * v.ravel()).real.reshape(-1, 2)
+            cs = conj(state[i]).reshape(-1, 2)
+            D = (cs * v).real
             PDOS[0, :, :] += D.sum(1).reshape(-1, 1) * d
             PDOS[3, :, :] += (D[:, 0] - D[:, 1]).reshape(-1, 1) * d
-            D = (conj(state[i, 1::2]) * 2 * v[:, 0]).reshape(-1, 1)
+            D = (cs[:, 1] * 2 * v[:, 0]).reshape(-1, 1)
             PDOS[1, :, :] += D.real * d
             PDOS[2, :, :] += D.imag * d
 
@@ -343,9 +345,10 @@ def spin_moment(state, S=None):
     # TODO but also way more memory demanding!
     for i in range(len(state)):
         Sstate = S.dot(state[i].reshape(-1, 2))
-        D = (conj(state[i]) * Sstate.ravel()).real.reshape(-1, 2).sum(0)
+        cs = conj(state[i]).reshape(-1, 2)
+        D = (cs * Sstate).real.sum(0)
         s[i, 2] = D[0] - D[1]
-        D = 2 * conj(state[i, 1::2]).dot(Sstate[:, 0])
+        D = 2 * cs[:, 1].dot(Sstate[:, 0])
         s[i, 0] = D.real
         s[i, 1] = D.imag
 
@@ -419,9 +422,10 @@ def spin_orbital_moment(state, S=None):
 
     for i in range(len(state)):
         Sstate = S.dot(state[i].reshape(-1, 2))
-        D = (conj(state[i]) * Sstate.ravel()).real.reshape(-1, 2)
+        cs = conj(state[i]).reshape(-1, 2)
+        D = (cs * Sstate).real
         s[i, :, 2] = D[:, 0] - D[:, 1]
-        D = 2 * conj(state[i, 1::2]) * Sstate[:, 0]
+        D = 2 * cs[:, 1] * Sstate[:, 0]
         s[i, :, 0] = D.real
         s[i, :, 1] = D.imag
 
@@ -635,12 +639,12 @@ def _velocity_non_ortho(state, dHk, energy, dSk, degenerate, project):
 
         for d in (0, 1, 2):
             for s, e in enumerate(energy):
-                ds = (dHk[d] - e * dSk[d]).dot(state[s])
-                cs = conj(state[s])
-                D = (cs * ds).real.reshape(-1, 2)
+                ds = (dHk[d] - e * dSk[d]).dot(state[s]).reshape(-1, 2)
+                cs = conj(state[s]).reshape(-1, 2)
+                D = (cs * ds).real
                 v[s, 0, :, d] = D.sum(1)
                 v[s, 3, :, d] = D[:, 0] - D[:, 1]
-                D = cs[1::2] * 2 * ds[::2]
+                D = cs[:, 1] * 2 * ds[:, 0]
                 v[s, 1, :, 0] = D.real
                 v[s, 2, :, 0] = D.imag
 
