@@ -114,6 +114,13 @@ class BandsPlot(Plot):
             help = "The BandStructure object to be used."
         ),
 
+        ProgramaticInput(key="aiida_bands", name="Aiida BandsData node",
+            default=None,
+            help="""
+            The bands data contained in an aiida BandsData node.
+            """
+        ),
+
         FunctionInput(key="add_band_trace_data", name="Additional data for band traces",
             default=None,
             positional=["band", "plot"],
@@ -330,6 +337,29 @@ class BandsPlot(Plot):
         self.spin = sisl.Spin("")
 
         self.add_shortcut("g", "Toggle gap", self.toggle_gap)
+
+    @entry_point('aiida_bands')
+    def _read_aiida_bands(self):
+        """
+        Creates the bands plot reading from an aiida BandsData node.
+        """
+
+        band_node = self.setting("aiida_bands")
+
+        bands = band_node.get_bands()
+
+        if bands.ndim == 2:
+            bands = np.expand_dims(bands, 0)
+        
+        self.bands = xr.DataArray(
+            bands,
+            coords={
+                "spin": np.arange(0, bands.shape[0]),
+                "k": band_node._get_bandplot_data(False)["x"],
+                "band": np.arange(0, bands.shape[2]),
+            },
+            dims=("spin", "k", "band"),
+        )
 
     @entry_point('band_structure')
     def _read_from_band_structure(self, band_structure=None, eigenstate_map=None):
