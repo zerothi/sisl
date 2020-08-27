@@ -7,7 +7,7 @@
 |pypi|_
 |conda|_
 |zenodo|_
-|gitter|_
+|discord|_
 
 |license|_
 |buildstatus|_
@@ -171,3 +171,6 @@ a table of contents for the sub-modules may be found :ref:`here <modindex>`.
 
 .. |gitter| image:: https://img.shields.io/gitter/room/nwjs/nw.js.svg
 .. _gitter: https://gitter.im/sisl-tool/Lobby
+
+.. |discord| image:: https://img.shields.io/discord/742636379871379577.svg?label=&logo=discord&logoColor=ffffff&color=green&labelColor=red
+.. _discord: https://discord.gg/bvJ9Zuk
