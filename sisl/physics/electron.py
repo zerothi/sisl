@@ -246,27 +246,26 @@ def PDOS(E, eig, state, S=None, distribution='gaussian', spin=None):
         PDOS = np.empty([4, state.shape[1] // 2, len(E)], dtype=dtype_complex_to_real(state.dtype))
 
         d = distribution(E - eig[0]).reshape(1, -1)
-        v = S.dot(state[0].reshape(-1, 2))
         cs = conj(state[0]).reshape(-1, 2)
-        D = (cs * v).real # diagonal PDOS
-        PDOS[0, :, :] = D.sum(1).reshape(-1, 1) * d # total DOS
-        PDOS[3, :, :] = (D[:, 0] - D[:, 1]).reshape(-1, 1) * d # z-dos
-        D = (cs[:, 1] * 2 * v[:, 0]).reshape(-1, 1) # psi_down * psi_up * 2
-        PDOS[1, :, :] = D.real * d # x-dos
-        PDOS[2, :, :] = D.imag * d # y-dos
+        v = S.dot(state[0].reshape(-1, 2))
+        D1 = (cs * v).real # uu,dd PDOS
+        PDOS[0, :, :] = D1.sum(1).reshape(-1, 1) * d # total DOS
+        PDOS[3, :, :] = (D1[:, 0] - D1[:, 1]).reshape(-1, 1) * d # z-dos
+        D1 = (cs[:, 1] * v[:, 0]).reshape(-1, 1)
+        D2 = (cs[:, 0] * v[:, 1]).reshape(-1, 1)
+        PDOS[1, :, :] = (D1.real + D2.real) * d # x-dos
+        PDOS[2, :, :] = (D1.imag - D2.imag) * d # y-dos
         for i in range(1, len(eig)):
             d = distribution(E - eig[i]).reshape(1, -1)
-            v = S.dot(state[i].reshape(-1, 2))
             cs = conj(state[i]).reshape(-1, 2)
-            D = (cs * v).real
-            PDOS[0, :, :] += D.sum(1).reshape(-1, 1) * d
-            PDOS[3, :, :] += (D[:, 0] - D[:, 1]).reshape(-1, 1) * d
-            D = (cs[:, 1] * 2 * v[:, 0]).reshape(-1, 1)
-            PDOS[1, :, :] += D.real * d
-            PDOS[2, :, :] += D.imag * d
-            # this should always return 0, the PDOS is Hermitian
-            #D1 = (cs[:, 0] * 2 * v[:, 1]).reshape(-1, 1)
-            #assert np.allclose(D, -conj(D1))
+            v = S.dot(state[i].reshape(-1, 2))
+            D1 = (cs * v).real
+            PDOS[0, :, :] += D1.sum(1).reshape(-1, 1) * d
+            PDOS[3, :, :] += (D1[:, 0] - D1[:, 1]).reshape(-1, 1) * d
+            D1 = (cs[:, 1] * v[:, 0]).reshape(-1, 1)
+            D2 = (cs[:, 0] * v[:, 1]).reshape(-1, 1)
+            PDOS[1, :, :] += (D1.real + D2.real) * d
+            PDOS[2, :, :] += (D1.imag - D2.imag) * d
 
     else:
         PDOS = (conj(state[0]) * S.dot(state[0])).real.reshape(-1, 1) \
@@ -643,19 +642,17 @@ def _velocity_non_ortho(state, dHk, energy, dSk, degenerate, project):
     elif project == 2:
         v = np.empty([state.shape[0], 4, state.shape[1] // 2, 3], dtype=dtype_complex_to_real(state.dtype))
 
-        for d in (0, 1, 2):
-            for s, e in enumerate(energy):
+        for s, e in enumerate(energy):
+            cs = conj(state[s]).reshape(-1, 2)
+            for d in (0, 1, 2):
                 ds = (dHk[d] - e * dSk[d]).dot(state[s]).reshape(-1, 2)
-                cs = conj(state[s]).reshape(-1, 2)
-                D = (cs * ds).real
-                v[s, 0, :, d] = D.sum(1)
-                v[s, 3, :, d] = D[:, 0] - D[:, 1]
-                D = cs[:, 1] * 2 * ds[:, 0]
-                v[s, 1, :, d] = D.real
-                v[s, 2, :, d] = D.imag
-                # The velocity operator is anti-Hermitian
-                #D1 = cs[:, 0] * 2 * ds[:, 1]
-                #assert np.allclose(D, conj(D1))
+                D1 = (cs * ds).real
+                v[s, 0, :, d] = D1.sum(1)
+                v[s, 3, :, d] = D1[:, 0] - D1[:, 1]
+                D1 = cs[:, 1] * ds[:, 0]
+                D2 = cs[:, 0] * ds[:, 1]
+                v[s, 1, :, d] = D1.real + D2.real
+                v[s, 2, :, d] = D1.imag - D2.imag
 
     return v * _velocity_const
 
@@ -675,11 +672,11 @@ def _velocity_ortho(state, dHk, degenerate, project):
             vv = conj(S).dot((dHk[2]).dot(S.T))
             state[deg, :] = _decouple_eigh(vv).dot(S)
 
+    cs = conj(state)
     project = _velocity_project(project)
     if project == 0:
         v = np.empty([state.shape[0], 3], dtype=dtype_complex_to_real(state.dtype))
 
-        cs = conj(state)
         v[:, 0] = einsum('ij,ji->i', cs, dHk[0].dot(state.T)).real
         v[:, 1] = einsum('ij,ji->i', cs, dHk[1].dot(state.T)).real
         v[:, 2] = einsum('ij,ji->i', cs, dHk[2].dot(state.T)).real
@@ -687,7 +684,6 @@ def _velocity_ortho(state, dHk, degenerate, project):
     elif project == 1:
         v = np.empty([state.shape[0], state.shape[1], 3], dtype=dtype_complex_to_real(state.dtype))
 
-        cs = conj(state)
         v[:, :, 0] = (cs * dHk[0].dot(state.T).T).real
         v[:, :, 1] = (cs * dHk[1].dot(state.T).T).real
         v[:, :, 2] = (cs * dHk[2].dot(state.T).T).real
@@ -698,16 +694,13 @@ def _velocity_ortho(state, dHk, degenerate, project):
         n = state.shape[0]
         for d in (0, 1, 2):
             ds = dHk[d].dot(state.T).T
-            cs = conj(state)
-            D = (cs * ds).real.reshape(n, -1, 2)
-            v[:, 0, :, d] = D.sum(2)
-            v[:, 3, :, d] = D[:, :, 0] - D[:, :, 1]
-            D = cs[:, 1::2] * ds[:, 0::2] * 2
-            v[:, 1, :, d] = D.real
-            v[:, 2, :, d] = D.imag
-            # The velocity operator is anti-Hermitian
-            #D1 = cs[:, 0::2] * ds[:, 1::2] * 2
-            #assert np.allclose(D, conj(D1))
+            D1 = (cs * ds).real.reshape(n, -1, 2)
+            v[:, 0, :, d] = D1.sum(2)
+            v[:, 3, :, d] = D1[:, :, 0] - D1[:, :, 1]
+            D1 = cs[:, 1::2] * ds[:, 0::2]
+            D2 = cs[:, 0::2] * ds[:, 1::2]
+            v[:, 1, :, d] = D1.real + D2.real
+            v[:, 2, :, d] = D1.imag - D2.imag
 
     return v * _velocity_const
 
@@ -793,13 +786,14 @@ def _velocity_matrix_non_ortho(state, dHk, energy, dSk, degenerate, dtype):
             state[deg, :] = _decouple_eigh(vv).dot(S)
 
     # Since they depend on the state energies and dSk we have to loop them individually.
+    cs = conj(state)
     for s, e in enumerate(energy):
 
         # Since dHk *may* be a csr_matrix or sparse, we have to do it like
         # this. A sparse matrix cannot be re-shaped with an extra dimension.
-        v[s, :, 0] = conj(state).dot((dHk[0] - e * dSk[0]).dot(state[s]))
-        v[s, :, 1] = conj(state).dot((dHk[1] - e * dSk[1]).dot(state[s]))
-        v[s, :, 2] = conj(state).dot((dHk[2] - e * dSk[2]).dot(state[s]))
+        v[s, :, 0] = cs.dot((dHk[0] - e * dSk[0]).dot(state[s]))
+        v[s, :, 1] = cs.dot((dHk[1] - e * dSk[1]).dot(state[s]))
+        v[s, :, 2] = cs.dot((dHk[2] - e * dSk[2]).dot(state[s]))
 
     return v * _velocity_const
 
@@ -824,10 +818,11 @@ def _velocity_matrix_ortho(state, dHk, degenerate, dtype):
             vv = conj(S).dot((dHk[2]).dot(S.T))
             state[deg, :] = _decouple_eigh(vv).dot(S)
 
+    cs = conj(state)
     for s in range(n):
-        v[s, :, 0] = conj(state).dot(dHk[0].dot(state[s, :]))
-        v[s, :, 1] = conj(state).dot(dHk[1].dot(state[s, :]))
-        v[s, :, 2] = conj(state).dot(dHk[2].dot(state[s, :]))
+        v[s, :, 0] = cs.dot(dHk[0].dot(state[s, :]))
+        v[s, :, 1] = cs.dot(dHk[1].dot(state[s, :]))
+        v[s, :, 2] = cs.dot(dHk[2].dot(state[s, :]))
 
     return v * _velocity_const
 
