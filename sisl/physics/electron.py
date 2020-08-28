@@ -266,7 +266,7 @@ def PDOS(E, eig, state, S=None, distribution='gaussian', spin=None):
             PDOS[2, :, :] += D.imag * d
             # this should always return 0, the PDOS is Hermitian
             #D1 = (cs[:, 0] * 2 * v[:, 1]).reshape(-1, 1)
-            #print(np.allclose(D, -conj(D1)))
+            #assert np.allclose(D, -conj(D1))
 
     else:
         PDOS = (conj(state[0]) * S.dot(state[0])).real.reshape(-1, 1) \
@@ -561,6 +561,7 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None, project=False):
        is required to decouple them. This is done 3 times along each of the Cartesian directions.
     project : {'none'/False, 'orbital'/True/Spin, 'nc'/'non-colinear'/Spin}
        whether the velocities will be returned projected per orbital (and optionally per spin-direction).
+       Spin-resolved velocities does not necessarily retain correct signs (except the total ``v[:, 0, :, :]`` velocity)
 
     Returns
     -------
@@ -654,7 +655,7 @@ def _velocity_non_ortho(state, dHk, energy, dSk, degenerate, project):
                 v[s, 2, :, d] = D.imag
                 # The velocity operator is anti-Hermitian
                 #D1 = cs[:, 0] * 2 * ds[:, 1]
-                #print(np.allclose(D, conj(D1)))
+                #assert np.allclose(D, conj(D1))
 
     return v * _velocity_const
 
@@ -706,7 +707,7 @@ def _velocity_ortho(state, dHk, degenerate, project):
             v[:, 2, :, d] = D.imag
             # The velocity operator is anti-Hermitian
             #D1 = cs[:, 0::2] * ds[:, 1::2] * 2
-            #print(np.allclose(D, conj(D1)))
+            #assert np.allclose(D, conj(D1))
 
     return v * _velocity_const
 
