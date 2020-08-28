@@ -515,10 +515,6 @@ class Configurable:
 
             If a setting is not provided, the default value will be used.
         """
-        if getattr(self, "AVOID_SETTINGS_INIT", False):
-            delattr(self, "AVOID_SETTINGS_INIT")
-            return
-
         # If the class needs to overwrite some defaults of settings that has inherited, do it
         overwrite_defaults = getattr(self, "_overwrite_defaults", {})
         for key, val in overwrite_defaults.items():

@@ -89,8 +89,6 @@ class BaseGeometryPlot(Plot):
             },
         }
 
-        self.bonds = None
-
     @staticmethod
     def _sphere(center=[0, 0, 0], r=1, vertices=10):
         phi, theta = np.mgrid[0.0:np.pi:complex(0, vertices), 0.0:2.0*np.pi:complex(0, vertices)]

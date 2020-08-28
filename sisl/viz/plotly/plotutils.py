@@ -993,7 +993,6 @@ def values_to_colors(values, scale):
     list
         the corresponding colors in "rgb(r,g,b)" format.
     """
-
     import plotly
     import matplotlib
 

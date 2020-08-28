@@ -28,11 +28,6 @@ from .input_fields import TextInput, SileInput, SwitchInput, ColorPicker, Dropdo
 from ._shortcuts import ShortCutable
 from .gui.api_utils.sync import Connected
 
-# This will definetly be removed
-PLOTS_CONSTANTS = {
-    "spins": ["up", "down"],
-}
-
 __all__ = ["Plot", "MultiplePlot", "Animation", "SubPlots"]
 
 #------------------------------------------------
@@ -40,7 +35,86 @@ __all__ = ["Plot", "MultiplePlot", "Animation", "SubPlots"]
 #------------------------------------------------
 
 
-class Plot(ShortCutable, Configurable, Connected):
+class PlotMeta(type):
+
+    def __call__(cls, *args, **kwargs):
+        """
+        This method decides what to return when the plot class is instantiated.
+
+        It is supposed to help the users by making the plot class very functional
+        without the need for the users to use extra methods.
+
+        It will catch the first argument and initialize the corresponding plot
+        if the first argument is:
+            - A string, it will be assumed that it is a path to a file.
+            - A plotable object (has a _plot attribute)
+
+        Note that both cases are registered in the _plotables.py file, and you
+        can register new siles/plotables by using the register functions.
+        """
+        if args:
+
+            # This is just so that the plotable framework knows from which plot class
+            # it is being called so that it can build the corresponding plot.
+            # Only relevant if the plot is built with obj.plot()
+            plot_method = kwargs.get("plot_method", cls.suffix())
+
+            # If a filename is recieved, we will try to find a plot for it
+            if isinstance(args[0], (str, Path)):
+
+                filename = args[0]
+                sile = sisl.get_sile(filename)
+
+                if sile.__class__ == sisl.io.siesta.fdfSileSiesta:
+                    kwargs["root_fdf"] = filename
+                    plot = cls(**kwargs)
+                else:
+                    if hasattr(sile, "plot"):
+                        plot = sile.plot(**{**kwargs, "method": plot_method})
+                    else:
+                        raise NotImplementedError(
+                            f'There is no plot implementation for {sile.__class__} yet.')
+
+            elif isinstance(args[0], go.Figure):
+                plot = Plot.from_plotly(args[0]).update_settings(**kwargs)
+            elif isinstance(args[0], Plot):
+                plot = args[0].update_settings(**kwargs)
+            else:
+                obj = args[0]
+                # Maybe the first argument is a plotable object (e.g. a geometry)
+                if hasattr(obj, "plot"):
+                    plot = obj.plot(**{**kwargs, "method": plot_method})
+                else:
+                    return object.__new__(cls)
+
+            return plot
+
+        elif 'animate' in kwargs or 'varying' in kwargs or 'subplots' in kwargs:
+
+            methods = {'animate': cls.animated, 'varying': cls.multiple, 'subplots': cls.subplots}
+            # Retrieve the keyword that was actually passed
+            # and choose the appropiate method
+            for keyword in ('animate', 'varying', 'subplots'):
+                variable_settings = kwargs.pop(keyword, None)
+                if variable_settings is not None:
+                    method = methods[keyword]
+                    break
+
+            # Normalize all accepted input types to a dict
+            if isinstance(variable_settings, str):
+                variable_settings = [variable_settings]
+            if isinstance(variable_settings, (list, tuple, np.ndarray)):
+                variable_settings = {key: kwargs.pop(key) for key in variable_settings}
+
+            # Just run the method that will get us the desired plot
+            plot = method(variable_settings, fixed=kwargs, **kwargs)
+
+            return plot
+
+        return super().__call__(cls, *args, **kwargs)
+
+
+class Plot(ShortCutable, Configurable, Connected, metaclass=PlotMeta):
     """
     Parent class of all plot classes.
 
@@ -444,92 +518,6 @@ class Plot(ShortCutable, Configurable, Connected):
         return cls.multiple(*args, fixed=fixed, template_plot=template_plot, merge_method='animation',
                             frame_names=frame_names, **kwargs)
 
-    def __new__(cls, *args, **kwargs):
-        """
-        This method decides what to return when the plot class is instantiated.
-
-        It is supposed to help the users by making the plot class very functional
-        without the need for the users to use extra methods.
-
-        It will catch the first argument and initialize the corresponding plot
-        if the first argument is:
-            - A string, it will be assumed that it is a path to a file.
-            - A plotable object (has a _plot attribute)
-
-        Note that both cases are registered in the _plotables.py file, and you
-        can register new siles/plotables by using the register functions.
-        """
-        if args:
-
-            # This is just so that the plotable framework knows from which plot class
-            # it is being called so that it can build the corresponding plot.
-            # Only relevant if the plot is built with obj.plot()
-            plot_method = kwargs.get("plot_method", cls.suffix())
-
-            # If a filename is recieved, we will try to find a plot for it
-            if isinstance(args[0], (str, Path)):
-
-                filename = args[0]
-                sile = sisl.get_sile(filename)
-
-                if sile.__class__ == sisl.io.siesta.fdfSileSiesta:
-                    kwargs["root_fdf"] = filename
-                    plot = cls(**kwargs)
-                else:
-                    if hasattr(sile, "plot"):
-                        plot = sile.plot(**{**kwargs, "method": plot_method})
-                    else:
-                        raise NotImplementedError(
-                            f'There is no plot implementation for {sile.__class__} yet.')
-
-            elif isinstance(args[0], go.Figure):
-                plot = Plot.from_plotly(args[0]).update_settings(**kwargs)
-            elif isinstance(args[0], Plot):
-                plot = args[0].update_settings(**kwargs)
-            else:
-                obj = args[0]
-                # Maybe the first argument is a plotable object (e.g. a geometry)
-                if hasattr(obj, "plot"):
-                    plot = obj.plot(**{**kwargs, "method": plot_method})
-                else:
-                    return object.__new__(cls)
-
-            # Inform that we don't want to run the __init__ method anymore
-            # See the beggining of __init__()
-            plot.INIT_ON_NEW = True
-            plot.AVOID_SETTINGS_INIT = True
-
-            return plot
-
-        elif 'animate' in kwargs or 'varying' in kwargs or 'subplots' in kwargs:
-
-            methods = {'animate': cls.animated, 'varying': cls.multiple, 'subplots': cls.subplots}
-            # Retrieve the keyword that was actually passed
-            # and choose the appropiate method
-            for keyword in ('animate', 'varying', 'subplots'):
-                variable_settings = kwargs.pop(keyword, None)
-                if variable_settings is not None:
-                    method = methods[keyword]
-                    break
-
-            # Normalize all accepted input types to a dict
-            if isinstance(variable_settings, str):
-                variable_settings = [variable_settings]
-            if isinstance(variable_settings, (list, tuple, np.ndarray)):
-                variable_settings = {key: kwargs.pop(key) for key in variable_settings}
-
-            # Just run the method that will get us the desired plot
-            plot = method(variable_settings, fixed=kwargs, **kwargs)
-
-            # Inform that we don't want to run the __init__ method anymore
-            # See the beggining of __init__()
-            plot.INIT_ON_NEW = True
-            plot.AVOID_SETTINGS_INIT = True
-
-            return plot
-
-        return object.__new__(cls)
-
     def __init_subclass__(cls):
         """
         Whenever a plot class is defined, this method is called.
@@ -562,10 +550,6 @@ class Plot(ShortCutable, Configurable, Connected):
 
     @vizplotly_settings('before', init=True)
     def __init__(self, *args, H = None, attrs_for_plot={}, only_init=False, presets=None, layout={}, _debug=False, **kwargs):
-        if getattr(self, "INIT_ON_NEW", False):
-            delattr(self, "INIT_ON_NEW")
-            return
-
         # Give an ID to the plot
         self.id = str(uuid.uuid4())
 

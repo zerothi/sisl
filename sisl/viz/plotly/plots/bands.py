@@ -6,7 +6,7 @@ import xarray as xr
 import plotly.express as px
 
 import sisl
-from ..plot import Plot, PLOTS_CONSTANTS, entry_point
+from ..plot import Plot, entry_point
 from ..plotutils import find_files
 from ..input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput,\
      IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput, FunctionInput, SileInput, \
@@ -608,7 +608,7 @@ class BandsPlot(Plot):
                         'x': band.k.values,
                         'y': (band).values,
                         'mode': 'lines',
-                        'name': "{} spin {}".format(band.band.values, PLOTS_CONSTANTS["spins"][spin]) if self.spin.is_polarized else str(band.band.values),
+                        'name': "{} spin {}".format(band.band.values, ["up", "down"][spin]) if self.spin.is_polarized else str(band.band.values),
                         **scatter_additions(band.band.values, spin),
                         'hoverinfo':'name',
                         "hovertemplate": '%{y:.2f} eV',
