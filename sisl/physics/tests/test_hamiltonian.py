@@ -1084,7 +1084,7 @@ class TestHamiltonian:
         es.change_gauge('R')
         es.change_gauge('r')
 
-    def test_so1(self):
+    def test_spin_orbit_orthogonal(self):
         g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(100, nsc=[3, 3, 1]))
         H = Hamiltonian(g, dtype=np.float64, spin=Spin.SPINORBIT)
         for i in range(10):
@@ -1146,6 +1146,14 @@ class TestHamiltonian:
             assert np.allclose(PDOS.sum(1)[0, :], DOS)
             es.velocity_matrix()
             es.inv_eff_mass_tensor()
+
+        # Check the velocities
+        # But only compare for np.float64, we need the precision
+        v = es.velocity()
+        pv = es.velocity(project='orbital')
+        assert np.allclose(pv.sum(1), v)
+        pnc = es.velocity(project='nc')
+        assert np.allclose(pnc[:, 0, :, :].sum(1), v)
 
         # Ensure we can change gauge for SO stuff
         es.change_gauge('R')

@@ -264,6 +264,9 @@ def PDOS(E, eig, state, S=None, distribution='gaussian', spin=None):
             D = (cs[:, 1] * 2 * v[:, 0]).reshape(-1, 1)
             PDOS[1, :, :] += D.real * d
             PDOS[2, :, :] += D.imag * d
+            # this should always return 0, the PDOS is Hermitian
+            #D1 = (cs[:, 0] * 2 * v[:, 1]).reshape(-1, 1)
+            #print(np.allclose(D, -conj(D1)))
 
     else:
         PDOS = (conj(state[0]) * S.dot(state[0])).real.reshape(-1, 1) \
@@ -647,8 +650,11 @@ def _velocity_non_ortho(state, dHk, energy, dSk, degenerate, project):
                 v[s, 0, :, d] = D.sum(1)
                 v[s, 3, :, d] = D[:, 0] - D[:, 1]
                 D = cs[:, 1] * 2 * ds[:, 0]
-                v[s, 1, :, 0] = D.real
-                v[s, 2, :, 0] = D.imag
+                v[s, 1, :, d] = D.real
+                v[s, 2, :, d] = D.imag
+                # The velocity operator is anti-Hermitian
+                #D1 = cs[:, 0] * 2 * ds[:, 1]
+                #print(np.allclose(D, conj(D1)))
 
     return v * _velocity_const
 
@@ -695,9 +701,12 @@ def _velocity_ortho(state, dHk, degenerate, project):
             D = (cs * ds).real.reshape(n, -1, 2)
             v[:, 0, :, d] = D.sum(2)
             v[:, 3, :, d] = D[:, :, 0] - D[:, :, 1]
-            D = cs[:, 1::2] * ds[:, ::2] * 2
+            D = cs[:, 1::2] * ds[:, 0::2] * 2
             v[:, 1, :, d] = D.real
             v[:, 2, :, d] = D.imag
+            # The velocity operator is anti-Hermitian
+            #D1 = cs[:, 0::2] * ds[:, 1::2] * 2
+            #print(np.allclose(D, conj(D1)))
 
     return v * _velocity_const
 
