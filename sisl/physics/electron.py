@@ -346,13 +346,14 @@ def spin_moment(state, S=None):
     # TODO dot products in one go and then use b-casting rules. Should be much faster
     # TODO but also way more memory demanding!
     for i in range(len(state)):
-        Sstate = S.dot(state[i].reshape(-1, 2))
         cs = conj(state[i]).reshape(-1, 2)
-        D = (cs * Sstate).real.sum(0)
-        s[i, 2] = D[0] - D[1]
-        D = 2 * cs[:, 1].dot(Sstate[:, 0])
-        s[i, 0] = D.real
-        s[i, 1] = D.imag
+        Sstate = S.dot(state[i].reshape(-1, 2))
+        D1 = (cs * Sstate).real.sum(0)
+        s[i, 2] = D1[0] - D1[1]
+        D1 = cs[:, 1].dot(Sstate[:, 0])
+        D2 = cs[:, 0].dot(Sstate[:, 1])
+        s[i, 0] = D1.real + D2.real
+        s[i, 1] = D1.imag - D2.imag
 
     return s
 
@@ -423,13 +424,14 @@ def spin_orbital_moment(state, S=None):
     s = np.empty([state.shape[0], state.shape[1] // 2, 3], dtype=dtype_complex_to_real(state.dtype))
 
     for i in range(len(state)):
-        Sstate = S.dot(state[i].reshape(-1, 2))
         cs = conj(state[i]).reshape(-1, 2)
-        D = (cs * Sstate).real
-        s[i, :, 2] = D[:, 0] - D[:, 1]
-        D = 2 * cs[:, 1] * Sstate[:, 0]
-        s[i, :, 0] = D.real
-        s[i, :, 1] = D.imag
+        Sstate = S.dot(state[i].reshape(-1, 2))
+        D1 = (cs * Sstate).real
+        s[i, :, 2] = D1[:, 0] - D1[:, 1]
+        D1 = cs[:, 1] * Sstate[:, 0]
+        D2 = cs[:, 0] * Sstate[:, 1]
+        s[i, :, 0] = D1.real + D2.real
+        s[i, :, 1] = D1.imag - D2.imag
 
     return s
 
