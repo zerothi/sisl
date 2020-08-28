@@ -519,7 +519,7 @@ def spin_squared(state_alpha, state_beta, S=None):
 
 
 @set_module("sisl.physics.electron")
-def velocity(state, dHk, energy=None, dSk=None, degenerate=None, project='none'):
+def velocity(state, dHk, energy=None, dSk=None, degenerate=None, project=False):
     r""" Calculate the velocity of a set of states
 
     These are calculated using the analytic expression (:math:`\alpha` corresponding to the Cartesian directions):
@@ -556,20 +556,20 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None, project='none')
     degenerate : list of array_like, optional
        a list containing the indices of degenerate states. In that case a prior diagonalization
        is required to decouple them. This is done 3 times along each of the Cartesian directions.
-    project : {'none', 'orbital', 'nc'/'non-colinear'/Spin}
+    project : {'none'/False, 'orbital'/True, 'nc'/'non-colinear'/Spin}
        whether the velocities will be returned projected per orbital (and optionally per spin-direction).
 
     Returns
     -------
     numpy.ndarray
-        if `project` is none, velocities per state with final dimension ``(state.shape[0], 3)``, the velocity unit is Ang/ps. Units *may* change in future releases.
+        if `project` is false, velocities per state with final dimension ``(state.shape[0], 3)``, the velocity unit is Ang/ps. Units *may* change in future releases.
     numpy.ndarray
-        if `project` is orbital, velocities per state with final dimension ``(state.shape[0], state.shape[1], 3)``, the velocity unit is Ang/ps. Units *may* change in future releases.
+        if `project` is true, velocities per state with final dimension ``(state.shape[0], state.shape[1], 3)``, the velocity unit is Ang/ps. Units *may* change in future releases.
     numpy.ndarray
-        if `project` is nc, velocities per state with final dimension ``(state.shape[0], 4, state.shape[1] // 2, 3)``, the velocity unit is Ang/ps. Units *may* change in future releases.
+        if `project` is 'nc', velocities per state with final dimension ``(state.shape[0], 4, state.shape[1] // 2, 3)``, the velocity unit is Ang/ps. Units *may* change in future releases.
     """
     if state.ndim == 1:
-        return velocity(state.reshape(1, -1), dHk, energy, dSk, degenerate, project).ravel()
+        return velocity(state.reshape(1, -1), dHk, energy, dSk, degenerate, project)[0]
 
     if dSk is None:
         return _velocity_ortho(state, dHk, degenerate, project)
@@ -748,7 +748,7 @@ def velocity_matrix(state, dHk, energy=None, dSk=None, degenerate=None):
         velocity matrixstate with final dimension ``(state.shape[0], state.shape[0], 3)``, the velocity unit is Ang/ps. Units *may* change in future releases.
     """
     if state.ndim == 1:
-        return velocity_matrix(state.reshape(1, -1), dHk, energy, dSk, degenerate).ravel()
+        return velocity_matrix(state.reshape(1, -1), dHk, energy, dSk, degenerate)
 
     dtype = find_common_type([state.dtype, dHk[0].dtype, dtype_real_to_complex(state.dtype)], [])
     if dSk is None:
@@ -875,7 +875,7 @@ def berry_curvature(state, energy, dHk, dSk=None, degenerate=None, complex=False
         Berry flux with final dimension ``(state.shape[0], 3, 3)`` (complex if `complex` is True).
     """
     if state.ndim == 1:
-        return berry_curvature(state.reshape(1, -1), energy, dHk, dSk, degenerate, complex).ravel()
+        return berry_curvature(state.reshape(1, -1), energy, dHk, dSk, degenerate, complex)[0]
 
     if degenerate is None:
         # Fix following routine
@@ -1041,7 +1041,7 @@ def inv_eff_mass_tensor(state, ddHk, energy=None, ddSk=None, degenerate=None, as
         inverse effective mass tensor of each state in units of inverse electron mass
     """
     if state.ndim == 1:
-        return inv_eff_mass_tensor(state.reshape(1, -1), ddHk, energy, ddSk, degenerate, as_matrix).ravel()
+        return inv_eff_mass_tensor(state.reshape(1, -1), ddHk, energy, ddSk, degenerate, as_matrix)[0]
 
     if ddSk is None:
         return _inv_eff_mass_tensor_ortho(state, ddHk, degenerate, as_matrix)

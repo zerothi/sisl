@@ -386,13 +386,15 @@ class Hamiltonian(SparseOrbitalBZSpin):
         # es_alpha.Sk should equal es_beta.Sk, so just pass one of them
         return spin_squared(es_alpha.state, es_beta.state, es_alpha.Sk())
 
-    def velocity(self, k=(0, 0, 0), **kwargs):
+    def velocity(self, k=(0, 0, 0), project=False, **kwargs):
         r""" Calculate the velocity for the eigenstates for a given `k` point
 
         Parameters
         ----------
         k : array_like, optional
             k-point at which the velocities are calculated
+        project : {}
+            see `sisl.physics.electron.velocity` for details and possible arguments
         **kwargs : optional
             additional parameters passed to the `eigenstate` routine
 
@@ -401,7 +403,7 @@ class Hamiltonian(SparseOrbitalBZSpin):
         eigenstate : method used to calculate the eigenstates
         EigenvalueElectron.velocity : Underlying method used to calculate the velocity
         """
-        return self.eigenstate(k, **kwargs).velocity()
+        return self.eigenstate(k, **kwargs).velocity(project=project)
 
     def spin_moment(self, k=(0, 0, 0), **kwargs):
         r""" Calculate the spin moment for the eigenstates for a given `k` point

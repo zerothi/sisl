@@ -339,13 +339,15 @@ class DynamicalMatrix(SparseOrbitalBZ):
             with get_sile(sile, 'w') as fh:
                 fh.write_dynamical_matrix(self, *args, **kwargs)
 
-    def velocity(self, k=(0, 0, 0), **kwargs):
+    def velocity(self, k=(0, 0, 0), project=False, **kwargs):
         r""" Calculate the velocity for the eigenmodes for a given `k` point
 
         Parameters
         ----------
         k : array_like, optional
             k-point at which the velocities are calculated
+        project : {}
+            see `sisl.physics.phonon.velocity` for details and possible arguments
         **kwargs : optional
             additional parameters passed to the `eigenmode` routine
 
@@ -355,7 +357,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         displacement : Calculate mode displacements
         EigenmodePhonon.velocity : Underlying method used to calculate the velocity
         """
-        return self.eigenmode(k, **kwargs).velocity()
+        return self.eigenmode(k, **kwargs).velocity(project=project)
 
     def displacement(self, k=(0, 0, 0), **kwargs):
         r""" Calculate the displacement for the eigenmodes for a given `k` point

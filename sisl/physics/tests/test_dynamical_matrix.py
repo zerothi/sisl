@@ -6,6 +6,9 @@ import numpy as np
 from sisl import Geometry, Atom, SuperCell, DynamicalMatrix
 
 
+pytestmark = pytest.mark.dynamicalmatrix
+
+
 @pytest.fixture
 def setup():
     class t():
@@ -58,7 +61,6 @@ def setup():
     return t()
 
 
-@pytest.mark.dynamicalmatrix
 class TestDynamicalMatrix:
 
     def test_objects(self, setup):
@@ -113,6 +115,7 @@ class TestDynamicalMatrix:
         assert np.allclose(D.PDOS(E), em.PDOS(E))
         assert np.allclose(D.displacement(), em.displacement())
         assert np.allclose(D.velocity(), em.velocity())
+        assert np.allclose(D.velocity(project=True).sum(1), em.velocity())
 
     def test_pickle(self, setup):
         import pickle as p

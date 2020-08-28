@@ -45,10 +45,10 @@ from numpy import delete
 from sisl._internal import set_module
 import sisl._array as _a
 from sisl import units, constant
-from sisl.linalg import eigh_destroy
 from sisl._help import dtype_complex_to_real
 from .state import Coefficient, State, StateC
 
+from .electron import _decouple_eigh
 from .electron import DOS as electron_DOS
 from .electron import PDOS as electron_PDOS
 
@@ -136,7 +136,7 @@ def PDOS(E, mode, hw, distribution='gaussian'):
 
 
 @set_module("sisl.physics.phonon")
-def velocity(mode, hw, dDk, degenerate=None):
+def velocity(mode, hw, dDk, degenerate=None, project=False):
     r""" Calculate the velocity of a set of modes
 
     These are calculated using the analytic expression (:math:`\alpha` corresponding to the Cartesian directions):
@@ -159,17 +159,22 @@ def velocity(mode, hw, dDk, degenerate=None):
     degenerate : list of array_like, optional
        a list containing the indices of degenerate modes. In that case a prior diagonalization
        is required to decouple them. This is done 3 times along each of the Cartesian directions.
+    project : bool, optional
+       if true, velocities will be returned projected per mode component
 
     Returns
     -------
     numpy.ndarray
-        velocities per mode with final dimension ``(mode.shape[0], 3)``, the velocity unit is Ang/ps
+        if `project` is false; velocities per mode with final dimension ``(mode.shape[0], 3)``, the velocity unit is Ang/ps
+        Units *may* change in future releases.
+    numpy.ndarray
+        if `project` is true; velocities per mode with final dimension ``(mode.shape[0], mode.shape[1], 3)``, the velocity unit is Ang/ps
         Units *may* change in future releases.
     """
     if mode.ndim == 1:
-        return velocity(mode.reshape(1, -1), hw, dDk, degenerate).ravel()
+        return velocity(mode.reshape(1, -1), hw, dDk, degenerate, project)[0]
 
-    return _velocity(mode, hw, dDk, degenerate)
+    return _velocity(mode, hw, dDk, degenerate, project)
 
 
 # dDk is in [Ang * eV ** 2]
@@ -177,12 +182,8 @@ def velocity(mode, hw, dDk, degenerate=None):
 _velocity_const = units('ps', 's') / constant.hbar('eV s')
 
 
-def _velocity(mode, hw, dDk, degenerate):
+def _velocity(mode, hw, dDk, degenerate, project):
     r""" For modes in an orthogonal basis """
-
-    # Along all directions
-    v = np.empty([mode.shape[0], 3], dtype=dtype_complex_to_real(mode.dtype))
-
     # Decouple the degenerate modes
     if not degenerate is None:
         for deg in degenerate:
@@ -193,19 +194,30 @@ def _velocity(mode, hw, dDk, degenerate):
             # then re-construct the seperated degenerate modes
             # Since we do this for all directions we should decouple them all
             vv = conj(mode[deg, :]).dot(dDk[0].dot(mode[deg, :].T))
-            S = eigh_destroy(vv)[1].T.dot(mode[deg, :])
+            S = _decouple_eigh(vv).dot(mode[deg, :])
             vv = conj(S).dot((dDk[1]).dot(S.T))
-            S = eigh_destroy(vv)[1].T.dot(S)
+            S = _decouple_eigh(vv).dot(S)
             vv = conj(S).dot((dDk[2]).dot(S.T))
-            mode[deg, :] = eigh_destroy(vv)[1].T.dot(S)
+            mode[deg, :] = _decouple_eigh(vv).dot(S)
 
-    v[:, 0] = einsum('ij,ji->i', conj(mode), dDk[0].dot(mode.T)).real
-    v[:, 1] = einsum('ij,ji->i', conj(mode), dDk[1].dot(mode.T)).real
-    v[:, 2] = einsum('ij,ji->i', conj(mode), dDk[2].dot(mode.T)).real
+    cm = conj(mode)
+    if project:
+        v = np.empty([mode.shape[0], mode.shape[1], 3], dtype=dtype_complex_to_real(mode.dtype))
+        v[:, :, 0] = (cm * dDk[0].dot(mode.T).T).real
+        v[:, :, 1] = (cm * dDk[1].dot(mode.T).T).real
+        v[:, :, 2] = (cm * dDk[2].dot(mode.T).T).real
+
+    else:
+        v = np.empty([mode.shape[0], 3], dtype=dtype_complex_to_real(mode.dtype))
+        v[:, 0] = einsum('ij,ji->i', cm, dDk[0].dot(mode.T)).real
+        v[:, 1] = einsum('ij,ji->i', cm, dDk[1].dot(mode.T)).real
+        v[:, 2] = einsum('ij,ji->i', cm, dDk[2].dot(mode.T)).real
 
     # Set everything to zero for the negative frequencies
-    v[hw < 0, :] = 0
+    v[hw < 0, ...] = 0
 
+    if project:
+        return v * _velocity_const / (2 * hw.reshape(-1, 1, 1))
     return v * _velocity_const / (2 * hw.reshape(-1, 1))
 
 
@@ -240,7 +252,7 @@ def displacement(mode, hw, mass):
         displacements per mode with final dimension ``(mode.shape[0], 3)``, displacements are in Ang
     """
     if mode.ndim == 1:
-        return displacement(mode.reshape(1, -1), hw, mass).reshape(-1, 3)
+        return displacement(mode.reshape(1, -1), hw, mass)[0]
 
     return _displacement(mode, hw, mass)
 
@@ -332,7 +344,7 @@ class ModeCPhonon(_phonon_Mode, StateC):
     """ A mode describing a physical quantity related to phonons, with associated coefficients of the mode """
     __slots__ = []
 
-    def velocity(self, eps=1e-7):
+    def velocity(self, eps=1e-7, project=False):
         r""" Calculate velocity for the modes
 
         This routine calls `~sisl.physics.phonon.velocity` with appropriate arguments
@@ -353,6 +365,7 @@ class ModeCPhonon(_phonon_Mode, StateC):
         ----------
         eps : float, optional
            precision used to find degenerate modes.
+        project: bool, optional
         """
         opt = {'k': self.info.get('k', (0, 0, 0))}
         gauge = self.info.get('gauge', None)
@@ -360,7 +373,7 @@ class ModeCPhonon(_phonon_Mode, StateC):
             opt['gauge'] = gauge
 
         deg = self.degenerate(eps)
-        return velocity(self.mode, self.hw, self.parent.dDk(**opt), degenerate=deg)
+        return velocity(self.mode, self.hw, self.parent.dDk(**opt), degenerate=deg, project=project)
 
 
 @set_module("sisl.physics.phonon")
