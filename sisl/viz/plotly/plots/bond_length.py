@@ -82,7 +82,7 @@ class BondLengthMap(GeometryPlot):
         regardless of the `atom` parameter
     show_atoms: bool, optional
         If set to False, it will not display atoms.              Basically
-        this is a shortcut for `atom = [], bind_bonds_to_ats=False`.
+        this is a shortcut for `atoms = [], bind_bonds_to_ats=False`.
         Therefore, it will override these two parameters.
     root_fdf: fdfSileSiesta, optional
         Path to the fdf file that is the 'parent' of the results.
@@ -269,7 +269,7 @@ class BondLengthMap(GeometryPlot):
         if getattr(self, "relaxed_geom", None):
             self.relaxed_bonds = self.find_all_bonds(self.relaxed_geom)
 
-        self.get_param("atom").update_options(self.geometry)
+        self.get_param("atoms").update_options(self.geometry)
 
     def _wrap_bond3D(self, bond, strain=False):
         """
@@ -340,10 +340,10 @@ class BondLengthMap(GeometryPlot):
         ndims = len(axes)
         cell_rendering = self.setting("cell")
         if self.setting("show_atoms") == False:
-            atom = []
+            atoms = []
             bind_bonds_to_ats = False
         else:
-            atom = self.setting("atom")
+            atoms = self.setting("atoms")
             bind_bonds_to_ats = self.setting("bind_bonds_to_ats")
 
         # Set the bonds to the relaxed ones if there is a strain reference
@@ -362,7 +362,7 @@ class BondLengthMap(GeometryPlot):
         self.colors = []
 
         common_kwargs = {'cell': cell_rendering, 'show_bonds': bonds,
-                         'atom': atom, 'bind_bonds_to_ats': bind_bonds_to_ats}
+                         'atoms': atoms, 'bind_bonds_to_ats': bind_bonds_to_ats}
 
         if ndims == 3:
             self._plot_geom3D(cheap_bonds=True,

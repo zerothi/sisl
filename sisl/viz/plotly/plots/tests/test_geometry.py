@@ -25,7 +25,7 @@ class GeometryPlotTester(PlotTester):
 
         plot = self.plot
 
-        plot.update_settings(axes=[0, 1], bonds=True, cell='box', atom=None)
+        plot.update_settings(axes=[0, 1], bonds=True, cell='box', atoms=None)
 
         # Check that the first trace is 2d
         assert np.all([hasattr(plot.data[0], ax) for ax in ('x', 'y')])
@@ -47,23 +47,23 @@ class GeometryPlotTester(PlotTester):
         assert len(plot.data) == with_bonds - 1
 
         # Check that we can ask for specific atoms
-        plot.update_settings(atom=[0], bonds=False, cell=False)
+        plot.update_settings(atoms=[0], bonds=False, cell=False)
         assert len(plot.data) == 1
 
         # Check that we can toggle bonds being bound to atoms
         if plot.geometry.na > 2:
-            plot.update_settings(atom=[0], bonds=True, bind_bonds_to_ats=True)
+            plot.update_settings(atoms=[0], bonds=True, bind_bonds_to_ats=True)
             #First trace is the bonds
             prev_len = len(plot.data[0].x)
 
-            plot.update_settings(atom=[0], bonds=True, bind_bonds_to_ats=False)
+            plot.update_settings(atoms=[0], bonds=True, bind_bonds_to_ats=False)
             assert len(plot.data[0].x) > prev_len
 
     def test_3d(self):
 
         plot = self.plot
 
-        plot.update_settings(axes=[0, 1, 2], cell='box', bonds=True, atom=None)
+        plot.update_settings(axes=[0, 1, 2], cell='box', bonds=True, atoms=None)
 
         # Check that the first trace is 3d
         assert np.all([hasattr(plot.data[0], ax) for ax in ('x', 'y', 'z')])
@@ -84,16 +84,16 @@ class GeometryPlotTester(PlotTester):
         assert len(plot.data) < with_bonds
 
         # Check that we can ask for specific atoms
-        plot.update_settings(atom=[0], bonds=False, cell=False)
+        plot.update_settings(atoms=[0], bonds=False, cell=False)
         assert len(plot.data) == 1
 
         # Check that we can toggle bonds being bound to atoms
         if plot.geometry.na > 2:
-            plot.update_settings(atom=[0], bonds=True, bind_bonds_to_ats=True)
+            plot.update_settings(atoms=[0], bonds=True, bind_bonds_to_ats=True)
             #First trace is the bonds
             prev_len = len(plot.data[0].x)
 
-            plot.update_settings(atom=[0], bonds=True, bind_bonds_to_ats=False)
+            plot.update_settings(atoms=[0], bonds=True, bind_bonds_to_ats=False)
             assert len(plot.data[0].x) > prev_len
 
 

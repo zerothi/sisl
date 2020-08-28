@@ -435,19 +435,6 @@ def call_method_if_present(obj, method_name, *args, **kwargs):
         return method(*args, **kwargs)
 
 
-def random_color():
-    """
-    Returns a random color in hex format
-
-    Returns
-    --------
-    str
-        the color in HEX format
-    """
-    import random
-    return "#"+"%06x" % random.randint(0, 0xFFFFFF)
-
-
 def copy_params(params, only = [], exclude = []):
     """
     Function that returns a copy of the provided plot parameters.
@@ -966,3 +953,57 @@ def swap_trace_axes(trace, ax1='x', ax2='y'):
 
     trace[ax1] = trace[ax2]
     trace[ax2] = ax1_data
+
+
+#-------------------------------------
+#            Colors
+#-------------------------------------
+
+def random_color():
+    """
+    Returns a random color in hex format
+
+    Returns
+    --------
+    str
+        the color in HEX format
+    """
+    import random
+    return "#"+"%06x" % random.randint(0, 0xFFFFFF)
+
+def values_to_colors(values, scale):
+    """
+    Maps an array of numbers to colors using a colorscale.
+
+    Parameters
+    -----------
+    values: array-like of float or int
+        the values to map to colors.
+    scale: str or list
+        the color scale to use for the mapping.
+        
+        If it's a string, it is interpreted as a plotly scale (the supported names are
+        the same accepted by the "colorscale" key in plotly)
+
+        Otherwise, it must be a list of colors.
+
+    Returns
+    -----------
+    list
+        the corresponding colors in "rgb(r,g,b)" format.
+    """
+
+    import plotly
+    import matplotlib
+
+    v_min = values.min()
+    values = (values - v_min) / (values.max() - v_min)
+    
+    scale_colors = plotly.colors.convert_colors_to_same_type(scale, colortype="tuple")[0]
+
+    if not scale_colors and isinstance(scale, str):
+        scale_colors = plotly.colors.convert_colors_to_same_type(scale[0].upper() + scale[1:], colortype="tuple")[0]
+
+    cmap = matplotlib.colors.LinearSegmentedColormap.from_list("my color map", scale_colors)
+
+    return plotly.colors.convert_colors_to_same_type([cmap(c) for c in values])[0]
