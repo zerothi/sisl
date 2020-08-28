@@ -166,9 +166,6 @@ class Category(metaclass=CategoryMeta):
 
         del work
 
-        # create dictionary look-up
-        subcls = {cl.__name__.lower(): cl for cl in subcls}
-
         def get_cat(cl, args):
             if isinstance(args, dict):
                 return cl(**args)
@@ -177,10 +174,9 @@ class Category(metaclass=CategoryMeta):
         # Now search keywords and create category
         cat = None
         for key, args in kwargs.items():
-            lkey = key.lower()
             found = None
             # First search case-sensitive
-            for name, cl in subcls.items():
+            for cl in subcls:
                 if cl.is_class(key):
                     if found:
                         raise ValueError(f"{cls.__name__}.kw got a non-unique argument for category name:\n"
@@ -188,7 +184,7 @@ class Category(metaclass=CategoryMeta):
                     found = cl
 
             if found is None:
-                for name, cl in subcls.items():
+                for cl in subcls:
                     if cl.is_class(key, case=False):
                         if found:
                             raise ValueError(f"{cls.__name__}.kw got a non-unique argument for category name:\n"

@@ -556,7 +556,7 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None, project=False):
     degenerate : list of array_like, optional
        a list containing the indices of degenerate states. In that case a prior diagonalization
        is required to decouple them. This is done 3 times along each of the Cartesian directions.
-    project : {'none'/False, 'orbital'/True, 'nc'/'non-colinear'/Spin}
+    project : {'none'/False, 'orbital'/True/Spin, 'nc'/'non-colinear'/Spin}
        whether the velocities will be returned projected per orbital (and optionally per spin-direction).
 
     Returns
@@ -583,7 +583,9 @@ _velocity_const = 1 / constant.hbar('eV ps')
 
 def _velocity_project(project):
     if isinstance(project, Spin):
-        return 2
+        if project.has_noncolinear:
+            return 2
+        return 1
     elif project in ["nc", "non-colinear", "non-collinear"]:
         return 2
     elif project in ["o", "orb", "orbital", True]:
