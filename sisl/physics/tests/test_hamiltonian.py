@@ -593,8 +593,8 @@ class TestHamiltonian:
         assert np.allclose(v1, v2)
 
         # Projected velocity
-        pv1 = es1.velocity(project='orbital')
-        pv2 = es2.velocity(project='orbital')
+        pv1 = es1.velocity(project=True)
+        pv2 = es2.velocity(project=True)
         assert np.allclose(pv1.sum(1), v2)
         assert np.allclose(pv2.sum(1), v1)
         # since degenerate states *could* swap states
@@ -997,7 +997,7 @@ class TestHamiltonian:
             assert np.allclose(sm[:, 2], sm2)
             assert np.allclose(sm[:, 2], sm3)
 
-            om = es.spin_orbital_moment()
+            om = es.spin_moment(project=True)
             assert np.allclose(sm, om.sum(1))
 
             PDOS = es.PDOS(np.linspace(-1, 1, 100))
@@ -1009,10 +1009,8 @@ class TestHamiltonian:
         # Check the velocities
         # But only compare for np.float64, we need the precision
         v = es.velocity()
-        pv = es.velocity(project='orbital')
+        pv = es.velocity(project=True)
         assert np.allclose(pv.sum(1), v)
-        pnc = es.velocity(project='nc')
-        assert np.allclose(pnc[:, 0, :, :].sum(1), v)
 
         # Ensure we can change gauge for NC stuff
         es.change_gauge('R')
@@ -1063,7 +1061,7 @@ class TestHamiltonian:
 
             sm = es.spin_moment()
 
-            om = es.spin_orbital_moment()
+            om = es.spin_moment(project=True)
             assert np.allclose(sm, om.sum(1))
 
             PDOS = es.PDOS(np.linspace(-1, 1, 100))
@@ -1075,9 +1073,7 @@ class TestHamiltonian:
         # Check the velocities
         # But only compare for np.float64, we need the precision
         v = es.velocity()
-        pnc = es.velocity(project='nc')
-        assert np.allclose(pnc[:, 0, :, :].sum(1), v)
-        pv = es.velocity(project='orbital')
+        pv = es.velocity(project=True)
         assert np.allclose(pv.sum(1), v)
 
         # Ensure we can change gauge for NC stuff
@@ -1138,7 +1134,7 @@ class TestHamiltonian:
             assert np.allclose(sm[:, 2], sm2)
             assert np.allclose(sm[:, 2], sm3)
 
-            om = es.spin_orbital_moment()
+            om = es.spin_moment(project=True)
             assert np.allclose(sm, om.sum(1))
 
             PDOS = es.PDOS(np.linspace(-1, 1, 100))
@@ -1150,10 +1146,8 @@ class TestHamiltonian:
         # Check the velocities
         # But only compare for np.float64, we need the precision
         v = es.velocity()
-        pv = es.velocity(project='orbital')
+        pv = es.velocity(project=True)
         assert np.allclose(pv.sum(1), v)
-        pnc = es.velocity(project='nc')
-        assert np.allclose(pnc[:, 0, :, :].sum(1), v)
 
         # Ensure we can change gauge for SO stuff
         es.change_gauge('R')

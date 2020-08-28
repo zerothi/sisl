@@ -405,13 +405,15 @@ class Hamiltonian(SparseOrbitalBZSpin):
         """
         return self.eigenstate(k, **kwargs).velocity(project=project)
 
-    def spin_moment(self, k=(0, 0, 0), **kwargs):
+    def spin_moment(self, k=(0, 0, 0), project=False, **kwargs):
         r""" Calculate the spin moment for the eigenstates for a given `k` point
 
         Parameters
         ----------
         k : array_like, optional
             k-point at which the spin moments are calculated
+        project : bool, optional
+           whether the moments are orbitally resolved or not
         **kwargs : optional
             additional parameters passed to the `eigenstate` routine
 

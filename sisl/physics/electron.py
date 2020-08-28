@@ -24,7 +24,6 @@ One may also plot real-space wavefunctions.
    conductivity
    wavefunction
    spin_moment
-   spin_orbital_moment
    spin_squared
 
 
@@ -81,7 +80,7 @@ from .state import Coefficient, State, StateC
 
 __all__ = ['DOS', 'PDOS']
 __all__ += ['velocity', 'velocity_matrix']
-__all__ += ['spin_moment', 'spin_orbital_moment', 'spin_squared']
+__all__ += ['spin_moment', 'spin_squared']
 __all__ += ['inv_eff_mass_tensor']
 __all__ += ['berry_phase', 'berry_curvature']
 __all__ += ['conductivity']
@@ -124,10 +123,9 @@ def DOS(E, eig, distribution='gaussian'):
 
     See Also
     --------
-    sisl.physics.distribution : a selected set of implemented distribution functions
+    ~sisl.physics.distribution : a selected set of implemented distribution functions
     PDOS : projected DOS (same as this, but projected onto each orbital)
-    spin_moment : spin moment for states
-    spin_orbital_moment : orbital resolved spin-moment
+    spin_moment : spin moment
 
     Returns
     -------
@@ -203,10 +201,9 @@ def PDOS(E, eig, state, S=None, distribution='gaussian', spin=None):
 
     See Also
     --------
-    sisl.physics.distribution : a selected set of implemented distribution functions
+    ~sisl.physics.distribution : a selected set of implemented distribution functions
     DOS : total DOS (same as summing over orbitals)
-    spin_moment : spin moment for states
-    spin_orbital_moment : orbital resolved spin-moment
+    spin_moment : spin moment
 
     Returns
     -------
@@ -278,8 +275,8 @@ def PDOS(E, eig, state, S=None, distribution='gaussian', spin=None):
 
 
 @set_module("sisl.physics.electron")
-def spin_moment(state, S=None):
-    r""" Calculate the spin magnetic moment (also known as spin texture)
+def spin_moment(state, S=None, project=False):
+    r""" Spin magnetic moment (spin texture) and optionally orbitally resolved moments
 
     This calculation only makes sense for non-colinear calculations.
 
@@ -299,6 +296,8 @@ def spin_moment(state, S=None):
        \\
        \mathbf{S}_i^z &= \langle \psi_i | \boldsymbol\sigma_z \mathbf S | \psi_i \rangle
 
+    If `project` is true, the above will be the orbitally resolved quantities.
+
     Parameters
     ----------
     state : array_like
@@ -307,6 +306,8 @@ def spin_moment(state, S=None):
        overlap matrix used in the :math:`\langle\psi|\mathbf S|\psi\rangle` calculation. If `None` the identity
        matrix is assumed. The overlap matrix should correspond to the system and :math:`k` point the eigenvectors
        has been evaluated at.
+    project: bool, optional
+       whether the spin-moments will be orbitally resolved or not
 
     Notes
     -----
@@ -317,15 +318,14 @@ def spin_moment(state, S=None):
     --------
     DOS : total DOS
     PDOS : projected DOS
-    spin_orbital_moment : orbital resolved spin-moment
 
     Returns
     -------
     numpy.ndarray
-        spin moments per state with final dimension ``(state.shape[0], 3)``.
+        spin moments per state with final dimension ``(state.shape[0], 3)``, or ``(state.shape[0], state.shape[1]//2, 3)`` if project is true
     """
     if state.ndim == 1:
-        return spin_moment(state.reshape(1, -1), S).ravel()
+        return spin_moment(state.reshape(1, -1), S, project)[0]
 
     if S is None:
         class S:
@@ -338,100 +338,35 @@ def spin_moment(state, S=None):
     if S.shape[1] == state.shape[1]:
         S = S[::2, ::2]
 
-    # Initialize
-    s = np.empty([state.shape[0], 3], dtype=dtype_complex_to_real(state.dtype))
+    if project:
+        s = np.empty([state.shape[0], state.shape[1] // 2, 3], dtype=dtype_complex_to_real(state.dtype))
 
-    # TODO consider doing this all in a few lines
-    # TODO Since there are no energy dependencies here we can actually do all
-    # TODO dot products in one go and then use b-casting rules. Should be much faster
-    # TODO but also way more memory demanding!
-    for i in range(len(state)):
-        cs = conj(state[i]).reshape(-1, 2)
-        Sstate = S.dot(state[i].reshape(-1, 2))
-        D1 = (cs * Sstate).real.sum(0)
-        s[i, 2] = D1[0] - D1[1]
-        D1 = cs[:, 1].dot(Sstate[:, 0])
-        D2 = cs[:, 0].dot(Sstate[:, 1])
-        s[i, 0] = D1.real + D2.real
-        s[i, 1] = D1.imag - D2.imag
+        for i in range(len(state)):
+            cs = conj(state[i]).reshape(-1, 2)
+            Sstate = S.dot(state[i].reshape(-1, 2))
+            D1 = (cs * Sstate).real
+            s[i, :, 2] = D1[:, 0] - D1[:, 1]
+            D1 = cs[:, 1] * Sstate[:, 0]
+            D2 = cs[:, 0] * Sstate[:, 1]
+            s[i, :, 0] = D1.real + D2.real
+            s[i, :, 1] = D1.imag - D2.imag
 
-    return s
+    else:
+        s = np.empty([state.shape[0], 3], dtype=dtype_complex_to_real(state.dtype))
 
-
-@set_module("sisl.physics.electron")
-def spin_orbital_moment(state, S=None):
-    r""" Calculate the spin magnetic moment per orbital site (equivalent to spin-moment per orbital)
-
-    This calculation only makes sense for non-colinear calculations.
-
-    The returned quantities are given in this order:
-
-    - Spin magnetic moment along :math:`x` direction
-    - Spin magnetic moment along :math:`y` direction
-    - Spin magnetic moment along :math:`z` direction
-
-    These are calculated using the Pauli matrices :math:`\boldsymbol\sigma_x`, :math:`\boldsymbol\sigma_y` and :math:`\boldsymbol\sigma_z`:
-
-    .. math::
-
-       \mathbf{S}_{i,o}^x &= \psi_{i,o}^* | \boldsymbol\sigma_x \mathbf S | \psi_i \rangle
-       \\
-       \mathbf{S}_{i,o}^y &= \psi_{i,o}^* | \boldsymbol\sigma_y \mathbf S | \psi_i \rangle
-       \\
-       \mathbf{S}_{i,o}^z &= \psi_{i,o}^* | \boldsymbol\sigma_z \mathbf S | \psi_i \rangle
-
-    Note that this is equivalent to `PDOS` *without* the distribution function and energy grid.
-
-    Parameters
-    ----------
-    state : array_like
-       vectors describing the electronic states, 2nd dimension contains the states
-    S : array_like, optional
-       overlap matrix used in the :math:`\mathbf S|\psi\rangle` calculation. If `None` the identity
-       matrix is assumed. The overlap matrix should correspond to the system and :math:`k` point the eigenvectors
-       has been evaluated at.
-
-    Notes
-    -----
-    This routine cannot check whether the input eigenvectors originate from a non-colinear calculation.
-    If a non-polarized eigenvector is passed to this routine, the output will have no physical meaning.
-
-    See Also
-    --------
-    DOS : total DOS
-    PDOS : projected DOS
-    spin_moment : spin moment for states (equivalent to the ``spin_orbital_moment.sum(1)``)
-
-    Returns
-    -------
-    numpy.ndarray
-        spin moments per state with final dimension ``(state.shape[0], state.shape[1] // 2, 3)``.
-    """
-    if state.ndim == 1:
-        return spin_orbital_moment(state.reshape(1, -1), S)[0]
-
-    if S is None:
-        class S:
-            __slots__ = []
-            shape = (state.shape[1] // 2, state.shape[1] // 2)
-            @staticmethod
-            def dot(v):
-                return v
-
-    if S.shape[1] == state.shape[1]:
-        S = S[::2, ::2]
-
-    s = np.empty([state.shape[0], state.shape[1] // 2, 3], dtype=dtype_complex_to_real(state.dtype))
-
-    for i in range(len(state)):
-        cs = conj(state[i]).reshape(-1, 2)
-        Sstate = S.dot(state[i].reshape(-1, 2))
-        D1 = (cs * Sstate).real
-        s[i, :, 2] = D1[:, 0] - D1[:, 1]
-        D1 = cs[:, 1] * Sstate[:, 0]
-        D2 = cs[:, 0] * Sstate[:, 1]
-        s[i, :, 0] = D1.real + D2.real
-        s[i, :, 1] = D1.imag - D2.imag
+        # TODO consider doing this all in a few lines
+        # TODO Since there are no energy dependencies here we can actually do all
+        # TODO dot products in one go and then use b-casting rules. Should be much faster
+        # TODO but also way more memory demanding!
+        for i in range(len(state)):
+            cs = conj(state[i]).reshape(-1, 2)
+            Sstate = S.dot(state[i].reshape(-1, 2))
+            D1 = (cs * Sstate).real.sum(0)
+            s[i, 2] = D1[0] - D1[1]
+            D1 = cs[:, 1].dot(Sstate[:, 0])
+            D2 = cs[:, 0].dot(Sstate[:, 1])
+            s[i, 0] = D1.real + D2.real
+            s[i, 1] = D1.imag - D2.imag
 
     return s
 
@@ -560,9 +495,8 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None, project=False):
     degenerate : list of array_like, optional
        a list containing the indices of degenerate states. In that case a prior diagonalization
        is required to decouple them. This is done 3 times along each of the Cartesian directions.
-    project : {'none'/False, 'orbital'/True/Spin, 'nc'/'non-colinear'/Spin}
-       whether the velocities will be returned projected per orbital (and optionally per spin-direction).
-       Spin-resolved velocities does not necessarily retain correct signs (except the total ``v[:, 0, :, :]`` velocity)
+    project : bool, optional
+       whether the velocities will be returned projected per orbital
 
     Returns
     -------
@@ -570,8 +504,6 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None, project=False):
         if `project` is false, velocities per state with final dimension ``(state.shape[0], 3)``, the velocity unit is Ang/ps. Units *may* change in future releases.
     numpy.ndarray
         if `project` is true, velocities per state with final dimension ``(state.shape[0], state.shape[1], 3)``, the velocity unit is Ang/ps. Units *may* change in future releases.
-    numpy.ndarray
-        if `project` is 'nc', velocities per state with final dimension ``(state.shape[0], 4, state.shape[1] // 2, 3)``, the velocity unit is Ang/ps. Units *may* change in future releases.
     """
     if state.ndim == 1:
         return velocity(state.reshape(1, -1), dHk, energy, dSk, degenerate, project)[0]
@@ -584,20 +516,6 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None, project=False):
 # dHk is in [Ang eV]
 # velocity units in [Ang/ps]
 _velocity_const = 1 / constant.hbar('eV ps')
-
-
-def _velocity_project(project):
-    if isinstance(project, Spin):
-        if project.has_noncolinear:
-            return 2
-        return 1
-    elif project in ["nc", "non-colinear", "non-collinear"]:
-        return 2
-    elif project in ["o", "orb", "orbital", True]:
-        return 1
-    elif project in ["none", False]:
-        return 0
-    raise ValueError("velocity: project argument is not in [none, orbital, nc]")
 
 
 def _velocity_non_ortho(state, dHk, energy, dSk, degenerate, project):
@@ -619,42 +537,24 @@ def _velocity_non_ortho(state, dHk, energy, dSk, degenerate, project):
             vv = conj(S).dot((dHk[2] - e * dSk[2]).dot(S.T))
             state[deg, :] = _decouple_eigh(vv).dot(S)
 
-    project = _velocity_project(project)
-    if project == 0:
-        v = np.empty([state.shape[0], 3], dtype=dtype_complex_to_real(state.dtype))
+    if project:
+        v = np.empty([state.shape[0], state.shape[1], 3], dtype=dtype_complex_to_real(state.dtype))
         # Since they depend on the state energies and dSk we have to loop them individually.
         for s, e in enumerate(energy):
-
+            cs = conj(state[s])
             # Since dHk *may* be a csr_matrix or sparse, we have to do it like
             # this. A sparse matrix cannot be re-shaped with an extra dimension.
-            cs = conj(state[s])
-            v[s, 0] = cs.dot((dHk[0] - e * dSk[0]).dot(state[s])).real
-            v[s, 1] = cs.dot((dHk[1] - e * dSk[1]).dot(state[s])).real
-            v[s, 2] = cs.dot((dHk[2] - e * dSk[2]).dot(state[s])).real
-
-    elif project == 1:
-        v = np.empty([state.shape[0], state.shape[1], 3], dtype=dtype_complex_to_real(state.dtype))
-
-        for s, e in enumerate(energy):
-            cs = conj(state[s])
             v[s, :, 0] = (cs * (dHk[0] - e * dSk[0]).dot(state[s])).real
             v[s, :, 1] = (cs * (dHk[1] - e * dSk[1]).dot(state[s])).real
             v[s, :, 2] = (cs * (dHk[2] - e * dSk[2]).dot(state[s])).real
 
-    elif project == 2:
-        v = np.empty([state.shape[0], 4, state.shape[1] // 2, 3], dtype=dtype_complex_to_real(state.dtype))
-
+    else:
+        v = np.empty([state.shape[0], 3], dtype=dtype_complex_to_real(state.dtype))
         for s, e in enumerate(energy):
-            cs = conj(state[s]).reshape(-1, 2)
-            for d in (0, 1, 2):
-                ds = (dHk[d] - e * dSk[d]).dot(state[s]).reshape(-1, 2)
-                D1 = (cs * ds).real
-                v[s, 0, :, d] = D1.sum(1)
-                v[s, 3, :, d] = D1[:, 0] - D1[:, 1]
-                D1 = cs[:, 1] * ds[:, 0]
-                D2 = cs[:, 0] * ds[:, 1]
-                v[s, 1, :, d] = D1.real + D2.real
-                v[s, 2, :, d] = D1.imag - D2.imag
+            cs = conj(state[s])
+            v[s, 0] = cs.dot((dHk[0] - e * dSk[0]).dot(state[s])).real
+            v[s, 1] = cs.dot((dHk[1] - e * dSk[1]).dot(state[s])).real
+            v[s, 2] = cs.dot((dHk[2] - e * dSk[2]).dot(state[s])).real
 
     return v * _velocity_const
 
@@ -675,34 +575,19 @@ def _velocity_ortho(state, dHk, degenerate, project):
             state[deg, :] = _decouple_eigh(vv).dot(S)
 
     cs = conj(state)
-    project = _velocity_project(project)
-    if project == 0:
-        v = np.empty([state.shape[0], 3], dtype=dtype_complex_to_real(state.dtype))
-
-        v[:, 0] = einsum('ij,ji->i', cs, dHk[0].dot(state.T)).real
-        v[:, 1] = einsum('ij,ji->i', cs, dHk[1].dot(state.T)).real
-        v[:, 2] = einsum('ij,ji->i', cs, dHk[2].dot(state.T)).real
-
-    elif project == 1:
+    if project:
         v = np.empty([state.shape[0], state.shape[1], 3], dtype=dtype_complex_to_real(state.dtype))
 
         v[:, :, 0] = (cs * dHk[0].dot(state.T).T).real
         v[:, :, 1] = (cs * dHk[1].dot(state.T).T).real
         v[:, :, 2] = (cs * dHk[2].dot(state.T).T).real
 
-    elif project == 2:
-        v = np.empty([state.shape[0], 4, state.shape[1] // 2, 3], dtype=dtype_complex_to_real(state.dtype))
+    else:
+        v = np.empty([state.shape[0], 3], dtype=dtype_complex_to_real(state.dtype))
 
-        n = state.shape[0]
-        for d in (0, 1, 2):
-            ds = dHk[d].dot(state.T).T
-            D1 = (cs * ds).real.reshape(n, -1, 2)
-            v[:, 0, :, d] = D1.sum(2)
-            v[:, 3, :, d] = D1[:, :, 0] - D1[:, :, 1]
-            D1 = cs[:, 1::2] * ds[:, 0::2]
-            D2 = cs[:, 0::2] * ds[:, 1::2]
-            v[:, 1, :, d] = D1.real + D2.real
-            v[:, 2, :, d] = D1.imag - D2.imag
+        v[:, 0] = einsum('ij,ji->i', cs, dHk[0].dot(state.T)).real
+        v[:, 1] = einsum('ij,ji->i', cs, dHk[1].dot(state.T)).real
+        v[:, 2] = einsum('ij,ji->i', cs, dHk[2].dot(state.T)).real
 
     return v * _velocity_const
 
@@ -1780,33 +1665,24 @@ class _electron_State:
                 return einsum('ij,ji->i', conj(self.state), S.dot(right.state.T))
             return dot(conj(self.state), S.dot(right.state.T))
 
-    def spin_moment(self):
+    def spin_moment(self, project=False):
         r""" Calculate spin moment from the states
 
         This routine calls `~sisl.physics.electron.spin_moment` with appropriate arguments
         and returns the spin moment for the states.
 
         See `~sisl.physics.electron.spin_moment` for details.
+
+        Parameters
+        ----------
+        project : bool, optional
+           whether the moments are orbitally resolved or not
         """
         try:
             spin = self.parent.spin
         except:
             spin = None
-        return spin_moment(self.state, self.Sk(spin=spin))
-
-    def spin_orbital_moment(self):
-        r""" Calculate spin moment per orbital from the states
-
-        This routine calls `~sisl.physics.electron.spin_orbital_moment` with appropriate arguments
-        and returns the spin moment for each orbital on the states.
-
-        See `~sisl.physics.electron.spin_orbital_moment` for details.
-        """
-        try:
-            spin = self.parent.spin
-        except:
-            spin = None
-        return spin_orbital_moment(self.state, self.Sk(spin=spin))
+        return spin_moment(self.state, self.Sk(spin=spin), project=project)
 
     def expectation(self, A, diag=True):
         r""" Calculate the expectation value of matrix `A`
@@ -1938,7 +1814,7 @@ class StateCElectron(_electron_State, StateC):
     r""" A state describing a physical quantity related to electrons, with associated coefficients of the state """
     __slots__ = []
 
-    def velocity(self, eps=1e-4, project='none'):
+    def velocity(self, eps=1e-4, project=False):
         r""" Calculate velocity for the states
 
         This routine calls `~sisl.physics.electron.velocity` with appropriate arguments
@@ -1954,7 +1830,7 @@ class StateCElectron(_electron_State, StateC):
         ----------
         eps : float, optional
            precision used to find degenerate states.
-        project : {'none', 'orbital', 'nc'}
+        project : bool, optional
            whether to return projected velocities (per orbital), see `velocity` for details
 
         See Also

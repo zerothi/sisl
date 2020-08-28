@@ -1,6 +1,11 @@
 0.X.Y
 =====
 
+- Merged spin_orbital_moment(deleted) and spin_moment with
+	optional argument project
+
+- Enabled orbital resolved velocities
+
 - Added outSileSiesta.read_energy to read final energies
 
 - Ensured ghost atoms in Siesta are handled with separate

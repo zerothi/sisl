@@ -69,7 +69,6 @@ Electrons (:mod:`~sisl.physics.electron`)
    ~electron.conductivity
    ~electron.wavefunction
    ~electron.spin_moment
-   ~electron.spin_orbital_moment
    ~electron.spin_squared
    EigenvalueElectron
    EigenvectorElectron
