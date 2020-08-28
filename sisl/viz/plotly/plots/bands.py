@@ -350,7 +350,7 @@ class BandsPlot(Plot):
 
         if bands.ndim == 2:
             bands = np.expand_dims(bands, 0)
-        
+
         self.bands = xr.DataArray(
             bands,
             coords={

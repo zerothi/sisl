@@ -971,6 +971,7 @@ def random_color():
     import random
     return "#"+"%06x" % random.randint(0, 0xFFFFFF)
 
+
 def values_to_colors(values, scale):
     """
     Maps an array of numbers to colors using a colorscale.
@@ -981,7 +982,7 @@ def values_to_colors(values, scale):
         the values to map to colors.
     scale: str or list
         the color scale to use for the mapping.
-        
+
         If it's a string, it is interpreted as a plotly scale (the supported names are
         the same accepted by the "colorscale" key in plotly)
 
@@ -996,9 +997,9 @@ def values_to_colors(values, scale):
     import plotly
     import matplotlib
 
-    v_min = values.min()
-    values = (values - v_min) / (values.max() - v_min)
-    
+    v_min = np.min(values)
+    values = (values - v_min) / (np.max(values) - v_min)
+
     scale_colors = plotly.colors.convert_colors_to_same_type(scale, colortype="tuple")[0]
 
     if not scale_colors and isinstance(scale, str):

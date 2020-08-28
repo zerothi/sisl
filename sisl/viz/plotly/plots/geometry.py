@@ -254,7 +254,7 @@ class BaseGeometryPlot(Plot):
 
             if isinstance(color, (list, tuple, np.ndarray)):
                 extra_kwargs["text"] = [f"Color: {c}" for c in color]
-        
+
         predefined_sizes = self._display_props["atoms"]["size"]
 
         if predefined_sizes is None:
@@ -678,7 +678,7 @@ class BaseGeometryPlot(Plot):
 
         if atoms is not None:
             atoms = self.geometry._sanitize_atoms(atoms)
-        
+
         self._display_props["atoms"]["colorscale"] = atoms_colorscale
         if atoms_color is not None:
             try:
@@ -686,7 +686,6 @@ class BaseGeometryPlot(Plot):
             except:
                 self._display_props["atoms"]["color"] = atoms_color
         self._display_props["atoms"]["size"] = atoms_size
-        
 
         # Draw bonds
         if show_bonds:
@@ -767,7 +766,7 @@ class BaseGeometryPlot(Plot):
             "name": f'{at} ({atom.tag})',
             "color": color,
             "r": size,
-            "opacity": 1 if atom.Z > 0 else 0.4
+            "opacity": 0.4 if isinstance(atom, AtomGhost) else 1
         }
 
     def _default_wrap_bond3D(self, bond):
@@ -963,11 +962,21 @@ class GeometryPlot(BaseGeometryPlot):
     cell:  optional
         Specifies how the cell should be rendered.              (False: not
         rendered, 'axes': render axes only, 'box': render a bounding box)
-    atom:  optional
+    atoms:  optional
         The atoms that are going to be displayed in the plot.
         This also has an impact on bonds (see the `bind_bonds_to_ats` and
         `show_atoms` parameters).             If set to None, all atoms are
         displayed
+    atoms_color: array-like, optional
+        A list containing the color for each atom.
+    atoms_size: array-like, optional
+        A list containing the size for each atom.
+    atoms_colorscale: str, optional
+        The colorscale to use to map values to colors for the atoms.
+        Only used if atoms_color is provided and is an array of values.
+    atoms_vertices: int, optional
+        In a 3D representation, the number of vertices that each atom sphere
+        is composed of.
     bind_bonds_to_ats: bool, optional
         whether only the bonds that belong to an atom that is present should
         be displayed.             If False, all bonds are displayed
@@ -1127,7 +1136,7 @@ class GeometryPlot(BaseGeometryPlot):
             bind_bonds_to_ats = self.setting("bind_bonds_to_ats")
 
         common_kwargs = {
-            'cell': cell_rendering, 'show_bonds': bonds, 
+            'cell': cell_rendering, 'show_bonds': bonds,
             'atoms': atoms, "atoms_color": atoms_color, "atoms_size": atoms_size, "atoms_colorscale": atoms_colorscale,
             'bind_bonds_to_ats': bind_bonds_to_ats
         }

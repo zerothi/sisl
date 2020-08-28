@@ -345,6 +345,10 @@ class BondLengthMap(GeometryPlot):
         else:
             atoms = self.setting("atoms")
             bind_bonds_to_ats = self.setting("bind_bonds_to_ats")
+        atoms_color = self.setting("atoms_color")
+        atoms_colorscale = self.setting("atoms_colorscale")
+        atoms_size = self.setting("atoms_size")
+        atoms_vertices = self.setting("atoms_vertices")
 
         # Set the bonds to the relaxed ones if there is a strain reference
         show_strain = self.setting("strain")
@@ -362,11 +366,14 @@ class BondLengthMap(GeometryPlot):
         self.colors = []
 
         common_kwargs = {'cell': cell_rendering, 'show_bonds': bonds,
-                         'atoms': atoms, 'bind_bonds_to_ats': bind_bonds_to_ats}
+            'atoms': atoms, "atoms_color": atoms_color, "atoms_size": atoms_size, "atoms_colorscale": atoms_colorscale,
+            'bind_bonds_to_ats': bind_bonds_to_ats
+        }
 
         if ndims == 3:
             self._plot_geom3D(cheap_bonds=True,
                 wrap_bond=partial(self._wrap_bond3D, strain=show_strain),
+                atoms_vertices=atoms_vertices,
                 **common_kwargs
             )
         elif ndims == 2:
