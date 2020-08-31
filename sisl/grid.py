@@ -1559,7 +1559,7 @@ The 5th optional argument is the mode to interpolate; wrap/mirror/constant/refle
                        help="""Smoothen grid values according to methods by applying a filter, all arguments are optional.
 The 1st argument is the radius of the filter for smoothening, a larger value means a larger volume which is agglomerated
 The 2nd argument is the method to use; gaussian/uniform
-The 3nd argument is the mode to use; wrap/mirror/constant/reflect/nearest
+The 3rd argument is the mode to use; wrap/mirror/constant/reflect/nearest
 """)
 
         # Define size of grid
