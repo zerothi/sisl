@@ -154,9 +154,9 @@ class Grid(SuperCellChild):
         order : int 0-5, optional
             the order of the spline interpolation.
             1 means linear, 2 quadratic, etc...
-        mode: {'wrap', 'mirror', 'constant', 'reflect', 'nearest'}, optional
+        mode: {'wrap', 'mirror', 'constant', 'reflect', 'nearest'}
             determines how to compute the borders of the grid.
-            The default is ``"wrap"``, which accounts for periodic conditions.
+            The default is ``'wrap'``, which accounts for periodic conditions.
         **kwargs :
             optional arguments passed to the interpolation algorithm
             The interpolation routine is `scipy.ndimage.zoom`
@@ -216,7 +216,6 @@ class Grid(SuperCellChild):
         See Also
         --------
         skimage.measure.marching_cubes : method used to calculate the isosurface.
-
         """
         try:
             import skimage.measure
@@ -233,7 +232,7 @@ class Grid(SuperCellChild):
 
         # Define the transformation matrix to get the real vertices
         # This is because skimage calculates the vertices as if it was an orthogonal cell
-        T = self.cell / fnorm(self.cell).T
+        T = self.cell / fnorm(self.cell).reshape(3, 1)
 
         # Check that the transformation matrix is definite positive
         if np.linalg.det(T) < 0:
@@ -245,8 +244,7 @@ class Grid(SuperCellChild):
         return (verts, *returns)
 
     def smooth(self, r=0.7, method="gaussian", mode="wrap", **kwargs):
-        """
-        Make a smoother grid by applying a filter.
+        """ Make a smoother grid by applying a filter.
 
         Parameters
         -----------
@@ -255,9 +253,9 @@ class Grid(SuperCellChild):
             If the method is ``"gaussian"``, this is the standard deviation!
 
             If a single float is provided, then the same distance will be used for all axes.
-        method: {'gaussian', 'uniform'}, optional
+        method: {'gaussian', 'uniform'}
             the type of filter to apply to smoothen the grid.
-        mode: {'wrap', 'mirror', 'constant', 'reflect', 'nearest'}, optional
+        mode: {'wrap', 'mirror', 'constant', 'reflect', 'nearest'}
             determines how to compute the borders of the grid.
             The default is wrap, which accounts for periodic conditions.
 
@@ -272,7 +270,7 @@ class Grid(SuperCellChild):
 
         # Calculate the size of the kernel in pixels (in case the
         # gaussian filter is used, this is the standard deviation)
-        pixels_r = np.round(r/fnorm(self.dcell)).astype(np.int32)
+        pixels_r = np.round(r / fnorm(self.dcell)).astype(np.int32)
 
         # Update the kwargs accordingly
         if method == "gaussian":
@@ -1409,15 +1407,6 @@ class Grid(SuperCellChild):
         p.add_argument(*opts('--geometry', '-G'), action=SetGeometry,
                        help='Define the geometry attached to the Grid.')
 
-        # Define size of grid
-        class InterpGrid(argparse.Action):
-
-            def __call__(self, parser, ns, values, option_string=None):
-                ns._grid = ns._grid.interp([int(x) for x in values])
-        p.add_argument(*opts('--interp'), nargs=3, metavar=('NX', 'NY', 'NZ'),
-                       action=InterpGrid,
-                       help='Interpolate the grid.')
-
         # substract another grid
         # They *MUST* be conmensurate.
         class DiffGrid(argparse.Action):
@@ -1538,9 +1527,43 @@ class Grid(SuperCellChild):
                 ns._grid.grid *= value
         p.add_argument(*opts('--scale', '-S'), type=float,
                        action=ScaleGrid,
-                       help='Scale grid values.')
+                       help='Scale grid values with a factor')
 
         # Define size of grid
+        class InterpGrid(argparse.Action):
+
+            def __call__(self, parser, ns, values, option_string=None):
+                shape = list(map(int, values[:3]))
+                # shorten list for easier arguments
+                values = values[3:]
+                if len(values) > 0:
+                    values[0] = int(values[0])
+                ns._grid = ns._grid.interp(shape, *values)
+        p.add_argument(*opts('--interp'), nargs='*', metavar='NX NY NZ *ORDER *MODE',
+                       action=InterpGrid,
+                       help="""Interpolate grid for higher or lower density (minimum 3 arguments)
+Requires at least 3 arguments, number of points along 1st, 2nd and 3rd lattice vector.
+The 4th optional argument is the order of interpolation; an integer 0<=i<=5 (default 1)
+The 5th optional argument is the mode to interpolate; wrap/mirror/constant/reflect/nearest
+""")
+
+        # Smoothen the grid
+        class SmoothGrid(argparse.Action):
+
+            def __call__(self, parser, ns, values, option_string=None):
+                if len(values) > 0:
+                    values[0] = float(values[0])
+                ns._grid = ns._grid.smooth(*values)
+        p.add_argument(*opts('--smooth'), nargs='*', metavar='*R *METHOD *MODE',
+                       action=SmoothGrid,
+                       help="""Smoothen grid values according to methods by applying a filter, all arguments are optional.
+The 1st argument is the radius of the filter for smoothening, a larger value means a larger volume which is agglomerated
+The 2nd argument is the method to use; gaussian/uniform
+The 3nd argument is the mode to use; wrap/mirror/constant/reflect/nearest
+""")
+
+        # Define size of grid
+
         class PrintInfo(argparse.Action):
 
             def __call__(self, parser, ns, values, option_string=None):
@@ -1557,7 +1580,30 @@ class Grid(SuperCellChild):
                     return
                 if len(value) == 0:
                     return
-                ns._grid.write(value[0])
+                from sisl.io import get_sile
+                grid = ns._grid
+
+                # determine whether the write-out file has *write_grid* as a methd
+                # if not, and the grid only have 1 dimension, we allow it to be
+                # written to a datafile
+                sile = get_sile(value[0], 'w')
+                if hasattr(sile, "write_grid"):
+                    grid.write(sile)
+                elif np.prod(grid.shape) == np.amax(grid.shape):
+                    # this means that 2 dimensions have a length of 1
+                    # figure out which dimensions it is and add calculate
+                    # the distance along the lattice vector
+                    idx = np.argmax(grid.shape)
+
+                    dx = np.linspace(0, grid.sc.length[idx], grid.shape[idx], endpoint=False)
+                    sile.write_data(dx, grid.grid.ravel())
+                else:
+                    raise ValueError(f"""Either of these two cases are not fullfilled:
+
+1. {sile} do not have the `write_grid` method
+
+2. The grid is not 1D data; averaged or summed along 2 directions.""")
+
                 # Issue to the namespace that the grid has been written, at least once.
                 ns._stored_grid = True
         p.add_argument(*opts('--out', '-o'), nargs=1, action=Out,

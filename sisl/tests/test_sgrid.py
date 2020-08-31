@@ -1,10 +1,14 @@
 import pytest
-
+import os.path as osp
 import math as m
+
 import numpy as np
 
 from sisl import Geometry, Atom, SuperCell, Grid
 from sisl.grid import sgrid
+from sisl import get_sile
+
+_dir = osp.join('sisl')
 
 
 @pytest.fixture
@@ -106,6 +110,21 @@ class TestsGrid:
     def test_print1(self, setup):
         setup.sg_g(argv=['--info'])
 
+    def test_interp(self, setup):
+        g1 = setup.sg_g(argv='--interp 10 10 10'.split())
+        # last argument is default
+        g2 = setup.sg_g(argv='--interp 10 10 10 1'.split())
+        assert np.allclose(g1.grid, g2.grid)
+        g2 = setup.sg_g(argv='--interp 10 10 10 3'.split())
+        assert not np.allclose(g1.grid, g2.grid)
+
+    def test_smooth(self, setup):
+        g1 = setup.sg_g(argv=['--smooth'])
+        g2 = setup.sg_g(argv='--smooth 0.7'.split())
+        assert np.allclose(g1.grid, g2.grid)
+        g2 = setup.sg_g(argv='--smooth 1.'.split())
+        assert not np.allclose(g1.grid, g2.grid)
+
     def test_sub1(self, setup):
         g = setup.grid.copy()
         idx = g.index(1., 0)
@@ -160,3 +179,13 @@ class TestsGrid:
         g2 = g.tile(2, 2)
         G = setup.sg_g(argv='--tile 2 c'.split())
         assert np.allclose(G.grid, g2.grid)
+
+    def test_write_data(self, setup, sisl_tmp):
+        out = sisl_tmp('table.dat', _dir)
+        G = setup.sg_g(argv=f'--sum 0 --average 1 --out {out}'.split())
+        dat = get_sile(out).read_data()
+        assert np.allclose(dat[1, :], G.grid.ravel())
+
+    def test_write_grid(self, setup, sisl_tmp):
+        out = sisl_tmp('table.cube', _dir)
+        G = setup.sg_g(argv=f'--sum 0 --out {out}'.split())

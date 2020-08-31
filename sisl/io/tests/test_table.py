@@ -1,6 +1,7 @@
 import pytest
 import os.path as osp
 import numpy as np
+
 from sisl.io.table import *
 
 

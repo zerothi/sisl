@@ -1,6 +1,8 @@
 0.X.Y
 =====
 
+- Enabled `sgrid` to write tables of data
+
 - Merged spin_orbital_moment(deleted) and spin_moment with
 	optional argument project
 
