@@ -117,6 +117,7 @@ class TestsGrid:
         assert np.allclose(g1.grid, g2.grid)
         g2 = setup.sg_g(argv='--interp 10 10 10 3'.split())
         assert not np.allclose(g1.grid, g2.grid)
+        g3 = setup.sg_g(argv='--interp 0.01 0.1 1. 3'.split())
 
     def test_smooth(self, setup):
         g1 = setup.sg_g(argv=['--smooth'])

@@ -1533,7 +1533,11 @@ class Grid(SuperCellChild):
         class InterpGrid(argparse.Action):
 
             def __call__(self, parser, ns, values, option_string=None):
-                shape = list(map(int, values[:3]))
+                def _conv_shape(length, value):
+                    if "." in value:
+                        return int(round(length / float(value)))
+                    return int(value)
+                shape = list(map(_conv_shape, ns._grid.shape, ns._grid.sc.length, values[:3]))
                 # shorten list for easier arguments
                 values = values[3:]
                 if len(values) > 0:
@@ -1542,7 +1546,9 @@ class Grid(SuperCellChild):
         p.add_argument(*opts('--interp'), nargs='*', metavar='NX NY NZ *ORDER *MODE',
                        action=InterpGrid,
                        help="""Interpolate grid for higher or lower density (minimum 3 arguments)
-Requires at least 3 arguments, number of points along 1st, 2nd and 3rd lattice vector.
+Requires at least 3 arguments, number of points along 1st, 2nd and 3rd lattice vector. These may contain a "." to signal a distance in angstrom of each voxel.
+For instance --interp 0.1 10 100 will result in an interpolated shape of [nint(grid.sc.length / 0.1), 10, 100].
+
 The 4th optional argument is the order of interpolation; an integer 0<=i<=5 (default 1)
 The 5th optional argument is the mode to interpolate; wrap/mirror/constant/reflect/nearest
 """)
