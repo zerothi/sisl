@@ -175,7 +175,7 @@ class Grid(SuperCellChild):
 
         # And now we do the actual interpolation
         # Calculate the zoom_factors
-        zoom_factors = np.array(shape) / self.shape
+        zoom_factors = _a.arrayd(shape) / self.shape
 
         # Apply the scipy.ndimage.zoom function and return a new grid
         return self.apply(ndimage_zoom, zoom_factors, mode=mode, order=order, **kwargs)
