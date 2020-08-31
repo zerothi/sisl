@@ -151,7 +151,7 @@ class TestMultiplePlot(BasePlotTester):
 
         geom = sisl.geom.graphene()
 
-        subplots = geom.plot(cell=["box", False, False], axes=[0,1], subplots="cell")
+        subplots = geom.plot(cell=["box", False, False], axes=[0, 1], subplots="cell")
         assert len(subplots.child_plots) == 3
 
         prev_data_lens = [len(plot.data) for plot in subplots]

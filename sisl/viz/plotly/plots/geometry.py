@@ -120,16 +120,34 @@ class BaseGeometryPlot(Plot):
             self.bonds = self.find_all_bonds(self.geometry)
 
     @staticmethod
-    def find_all_bonds(geom):
+    def find_all_bonds(geometry, tol=0.2):
+        """
+        Finds all bonds present in a geometry.
 
+        Parameters
+        -----------
+        geometry: sisl.Geometry
+            the structure where the bonds should be found.
+        tol: float
+            the fraction that the distance between atoms is allowed to differ from
+            the "standard" in order to be considered a bond.
+        
+        Return
+        ---------
+        np.ndarray of shape (nbonds, 2)
+            each item of the array contains the 2 indices of the atoms that participate in the
+            bond.
+        """
         pt = PeriodicTable()
 
         bonds = []
-        for at in geom:
-            neighs = geom.close(at, R=[0.1, 3])[-1]
+        for at in geometry:
+            neighs = geometry.close(at, R=[0.1, 3])[-1]
 
             for neigh in neighs:
-                if pt.radius([geom.atoms[at].Z, geom.atoms[neigh % geom.na].Z]).sum() + 0.15 > np.linalg.norm(geom[neigh] - geom[at]):
+                summed_radius = pt.radius([abs(geometry.atoms[at].Z), abs(geometry.atoms[neigh % geometry.na].Z)]).sum()
+                bond_thresh = (1+tol) * summed_radius
+                if  bond_thresh > np.linalg.norm(geometry[neigh] - geometry[at]):
                     bonds.append(np.sort([at, neigh]))
 
         if bonds:
