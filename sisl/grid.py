@@ -1407,8 +1407,8 @@ class Grid(SuperCellChild):
         p.add_argument(*opts('--geometry', '-G'), action=SetGeometry,
                        help='Define the geometry attached to the Grid.')
 
-        # substract another grid
-        # They *MUST* be conmensurate.
+        # subtract another grid
+        # They *MUST* be comensurate.
         class DiffGrid(argparse.Action):
 
             def __call__(self, parser, ns, value, option_string=None):
