@@ -16,6 +16,7 @@ from sisl.io.sile import get_siles, BaseSile
 import sisl
 from .plots import *
 from .plot import Plot
+from .plotutils import get_plot_classes
 
 from .._plotables import register_plotable
 
@@ -144,6 +145,9 @@ for HSile in get_siles(attrs=["read_hamiltonian"]):
     register(HSile, PdosPlot, "H")
     register(HSile, BandsPlot, "H")
     register(HSile, FatbandsPlot, "H")
+
+for cls in get_plot_classes():
+    register(siesta.fdfSileSiesta, cls, "root_fdf")
 
 register(siesta.outSileSiesta, ForcesPlot, 'out_file', default=True)
 
