@@ -1,13 +1,35 @@
-language: minimal
-sudo: false
+language: python
+os: linux
 
 # Manage sub-modules manually
 git:
+  quiet: true
   submodules: false
+
+addons:
+  apt:
+    packages: &common_packages
+      - gfortran
+      - libgfortran5
+      - libatlas-base-dev
+      - liblapack-dev
+      - libnetcdf-dev
+      - libnetcdff-dev
+      - eatmydata
+      - ccache
+
+cache:
+  directories:
+    - $HOME/.cache/pip
+
+stages:
+  # First do simple test, then proceed with the others if successfull
+  - name: Initial test
+  - name: All tests
 
 branches:
   except:
-  - "/.*gh-pages.*/"
+    - "/.*gh-pages.*/"
 
 notifications:
   email:
@@ -27,78 +49,32 @@ notifications:
 env:
   global: SISL_TRAVIS_CI=true
 
-
-matrix:
+jobs:
   include:
-  - env:
-    - CONDA_ENV=py36
-  - env:
-    - CONDA_ENV=py36-opt
-    - OPTIONAL_DEPENDENCIES=true
-  - env:
-    - CONDA_ENV=py38
-  - env:
-    - CONDA_ENV=py38-opt
-    - OPTIONAL_DEPENDENCIES=true
+    - stage: Initial test
+      python: 3.6
 
-before_install:
-- wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh ;
-- bash miniconda.sh -b -p $HOME/miniconda
-- export PATH=$HOME/miniconda/bin:$PATH
-- hash -r
-- conda config --set always_yes yes --set changeps1 no --set show_channel_urls true
-- conda info -a
-- |
-  if [[ ${OPTIONAL_DEPENDENCIES:-false} == true ]]; then
-     export SISL_FILES_TESTS=$(pwd)/files/tests ;
-     git submodule update --init files ;
-  fi
+    - stage: All tests
+      python: 3.8
 
-install:
-- env | grep TRAVIS 
-- conda env create -n test_env --file ci/requirements-$CONDA_ENV.yml
-- source activate test_env
-- conda info --envs
-- conda list
-- export CC=$GCC
-- export FC=$GFORTRAN
-- export F77=$GFORTRAN
-- export F90=$GFORTRAN
-- "$CC --version"
-- "$FC --version"
-- python -c 'import sys ; print(sys.version)'
-- unset LDFLAGS
-- pip install --no-deps -vvv -e .
+    - python: 3.6
+      env: OPTIONAL_DEPENDENCIES=true
+    - python: 3.8
+      env: OPTIONAL_DEPENDENCIES=true
 
-script:
-- which python
-- python --version
-- python -OO -c "import sisl"
-- |
-  if [[ ${COVERAGE:-true} == true ]]; then
-      echo "Running coverage tests..." ;
-      py.test -vvv --pyargs sisl -rX --cov=sisl --cov-report term-missing --cov-config=.coveragerc ;
-  else
-      echo "Running non-coverage tests..." ;
-      py.test --doctest-modules sisl ;
-      py.test --pyargs sisl -rX ;
-  fi
-
-after_success:
-- |
-  if [[ ${COVERAGE:-true} == true ]]; then
-     bash <(curl -s https://codecov.io/bash) ;
-     python-codacy-coverage -r coverage.xml ;
-  fi
+before_install: ./ci/travis-before-install.sh
+install: ./ci/travis-install.sh
+script: ./ci/travis-script.sh
+after_success: ./ci/travis-after-success.sh
 
 before_script:
-- |
-  if [[ $TRAVIS_OS_NAME != 'osx' ]]; then
-      export DISPLAY=:99.0 ;
-      sh -e /etc/init.d/xvfb start ;
-      sleep 2 ;
-  fi
-- export MPLBACKEND=Agg
+   - |
+    if [[ $TRAVIS_OS_NAME != 'osx' ]]; then
+        export DISPLAY=:99.0 ;
+        sh -e /etc/init.d/xvfb start ;
+        sleep 2 ;
+    fi
+  - export MPLBACKEND=Agg
 
 
 deploy:
