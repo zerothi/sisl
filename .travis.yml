@@ -26,7 +26,7 @@ cache:
 stages:
   # First do simple test, then proceed with the others if successfull
   - name: Initial test
-  - name: All tests
+  - name: Full tests
 
 branches:
   except:
@@ -55,7 +55,7 @@ jobs:
     - stage: Initial test
       python: 3.6
 
-    - stage: All tests
+    - stage: Full tests
       python: 3.8
 
     - python: 3.6

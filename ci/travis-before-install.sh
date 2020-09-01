@@ -18,7 +18,7 @@ pushd builds
 pip install --upgrade virtualenv
 
 virtualenv --python=python venv
-ource venv/bin/activate
+source venv/bin/activate
 python -V
 gcc --version
 
