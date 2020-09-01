@@ -20,7 +20,9 @@ addons:
 
 cache:
   directories:
+    - $HOME/.ccache
     - $HOME/.cache/pip
+    - $HOME/Library/Caches/pip
 
 stages:
   # First do simple test, then proceed with the others if successfull
@@ -68,13 +70,13 @@ script: ./ci/travis-script.sh
 after_success: ./ci/travis-after-success.sh
 
 before_script:
-   - |
-    if [[ $TRAVIS_OS_NAME != 'osx' ]]; then
-        export DISPLAY=:99.0 ;
-        sh -e /etc/init.d/xvfb start ;
-        sleep 2 ;
-    fi
-  - export MPLBACKEND=Agg
+- |
+  if [[ $TRAVIS_OS_NAME != 'osx' ]]; then
+     export DISPLAY=:99.0 ;
+     sh -e /etc/init.d/xvfb start ;
+     sleep 2 ;
+  fi
+- export MPLBACKEND=Agg
 
 
 deploy:
