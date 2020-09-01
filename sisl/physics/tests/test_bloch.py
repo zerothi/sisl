@@ -14,9 +14,9 @@ def get_H():
     return H.tile(2, 0).tile(2, 1).tile(2, 2)
 
 
-@pytest.mark.parametrize("nx", [1, 2, 4])
-@pytest.mark.parametrize("ny", [1, 3, 4])
-@pytest.mark.parametrize("nz", [1, 2, 3])
+@pytest.mark.parametrize("nx", [1, 3])
+@pytest.mark.parametrize("ny", [1, 4])
+@pytest.mark.parametrize("nz", [1, 5])
 def test_bloch_create(nx, ny, nz):
     b = Bloch([nx, ny, nz])
     assert len(b) == nx * ny * nz
@@ -42,9 +42,9 @@ def test_bloch_call():
 
 
 @pytest.mark.parametrize("dtype", [np.complex64, np.complex128])
-@pytest.mark.parametrize("nx", [1, 3])
-@pytest.mark.parametrize("ny", [1, 4])
-@pytest.mark.parametrize("nz", [1, 3])
+@pytest.mark.parametrize("nx", [1, 2])
+@pytest.mark.parametrize("ny", [1, 3])
+@pytest.mark.parametrize("nz", [1, 4])
 def test_bloch_one_direction(nx, ny, nz, dtype):
     H = get_H()
     b = Bloch([nx, ny, nz])

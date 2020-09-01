@@ -1537,7 +1537,7 @@ class Grid(SuperCellChild):
                     if "." in value:
                         return int(round(length / float(value)))
                     return int(value)
-                shape = list(map(_conv_shape, ns._grid.shape, ns._grid.sc.length, values[:3]))
+                shape = list(map(_conv_shape, ns._grid.sc.length, values[:3]))
                 # shorten list for easier arguments
                 values = values[3:]
                 if len(values) > 0:

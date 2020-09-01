@@ -12,9 +12,9 @@ from sisl.sparse_geometry import *
 pytestmark = [pytest.mark.sparse, pytest.mark.sparse_geometry]
 
 
-@pytest.mark.parametrize("n0", [1, 2, 4])
-@pytest.mark.parametrize("n1", [1, 2, 4])
-@pytest.mark.parametrize("n2", [1, 2, 4])
+@pytest.mark.parametrize("n0", [1, 3])
+@pytest.mark.parametrize("n1", [1, 4])
+@pytest.mark.parametrize("n2", [1, 5])
 def test_sparse_orbital_symmetric(n0, n1, n2):
     g = fcc(1., Atom(1, R=1.5)) * 2
     s = SparseOrbital(g)
@@ -39,9 +39,9 @@ def test_sparse_orbital_symmetric(n0, n1, n2):
     assert s.nnz == nnz
 
 
-@pytest.mark.parametrize("n0", [1, 2])
-@pytest.mark.parametrize("n1", [1, 2])
-@pytest.mark.parametrize("n2", [1, 2])
+@pytest.mark.parametrize("n0", [1, 3])
+@pytest.mark.parametrize("n1", [1, 4])
+@pytest.mark.parametrize("n2", [1, 5])
 @pytest.mark.parametrize("axis", [0, 1, 2])
 def test_sparse_orbital_append(n0, n1, n2, axis):
     g = fcc(1., Atom(1, R=1.98)) * 2
@@ -75,9 +75,9 @@ def test_sparse_orbital_append(n0, n1, n2, axis):
         assert np.allclose(s._csr._D, sout._csr._D)
 
 
-@pytest.mark.parametrize("n0", [1, 2])
-@pytest.mark.parametrize("n1", [1, 2])
-@pytest.mark.parametrize("n2", [1, 2])
+@pytest.mark.parametrize("n0", [1, 3])
+@pytest.mark.parametrize("n1", [1, 4])
+@pytest.mark.parametrize("n2", [1, 5])
 @pytest.mark.parametrize("axis", [0, 1, 2])
 def test_sparse_orbital_append_scale(n0, n1, n2, axis):
     g = fcc(1., Atom(1, R=1.98)) * 2

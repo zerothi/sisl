@@ -439,9 +439,9 @@ class TestSparseAtom:
         assert s.spsame(S)
 
 
-@pytest.mark.parametrize("n0", [1, 2, 4])
-@pytest.mark.parametrize("n1", [1, 2, 4])
-@pytest.mark.parametrize("n2", [1, 2, 4])
+@pytest.mark.parametrize("n0", [1, 2])
+@pytest.mark.parametrize("n1", [1, 3])
+@pytest.mark.parametrize("n2", [1, 4])
 def test_sparse_atom_symmetric(n0, n1, n2):
     g = fcc(1., Atom(1, R=1.5)) * 2
     s = SparseAtom(g)
