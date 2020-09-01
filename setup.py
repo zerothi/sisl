@@ -92,6 +92,7 @@ directives = {"linetrace": False, "language_level": 3}
 if linetrace:
     # https://pypkg.com/pypi/pytest-cython/f/tests/example-project/setup.py
     directives["linetrace"] = True
+    directives["emit_code_comments"] = True
     macros.extend([("CYTHON_TRACE", "1"), ("CYTHON_TRACE_NOGIL", "1")])
 
 
@@ -431,6 +432,7 @@ def readme():
 
 metadata = dict(
     name=DISTNAME,
+    author=AUTHOR,
     maintainer=AUTHOR,
     description="Python interface for tight-binding model creation and analysis of DFT output. Input mechanism for large scale transport calculations using NEGF TBtrans (TranSiesta)",
     long_description=readme(),
