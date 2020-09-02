@@ -15,6 +15,7 @@ import sys
 import os
 import pathlib
 import shlex
+from datetime import date
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -65,6 +66,9 @@ except Exception as e:
                                    'phase_nc_diag', 'phase_nc', 'phase', 'phase_so']])
     MOCK_MODULES.extend([f'sisl.physics._{a}'
                          for a in ['bloch', 'phase']])
+    # This will only get installed later in the sequence, so if we do it know it
+    # should always work
+    MOCK_MODULES.extend(['sisl.info'])
     sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
     nbsphinx_allow_errors = True
@@ -135,7 +139,7 @@ autosummary_generate = [f for f in autosummary_generate if 'api-generated' not i
 # General information about the project.
 project = 'sisl'
 author = 'Nick Papior'
-copyright = '2015-2020, ' + author
+copyright = f"2015-{date.today().year}, {author}"
 
 # If building this on RTD, mock out fortran sources
 on_rtd = os.environ.get('READTHEDOCS', 'false').lower() == 'true'
