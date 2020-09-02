@@ -68,7 +68,8 @@ except Exception as e:
                          for a in ['bloch', 'phase']])
     # This will only get installed later in the sequence, so if we do it know it
     # should always work
-    MOCK_MODULES.extend(['sisl.info'])
+    if 'sisl.info' not in sys.modules:
+        MOCK_MODULES.extend(['sisl.info'])
     sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
     nbsphinx_allow_errors = True
