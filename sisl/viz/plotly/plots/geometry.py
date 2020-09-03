@@ -131,7 +131,7 @@ class BaseGeometryPlot(Plot):
         tol: float
             the fraction that the distance between atoms is allowed to differ from
             the "standard" in order to be considered a bond.
-        
+
         Return
         ---------
         np.ndarray of shape (nbonds, 2)

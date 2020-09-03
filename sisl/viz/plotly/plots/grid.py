@@ -5,7 +5,7 @@ import sisl
 from ..plot import Plot, entry_point
 from ..input_fields import TextInput, SileInput, Array1dInput, SwitchInput, \
      ColorPicker, DropdownInput, CreatableDropdown, IntegerInput, FloatInput, RangeInput, RangeSlider, \
-     QueriesInput, ProgramaticInput, PlotableInput, SislObjectInput, PlotableInput
+     QueriesInput, ProgramaticInput, PlotableInput, SislObjectInput, PlotableInput, SpinSelect
 
 
 class GridPlot(Plot):
@@ -1162,6 +1162,13 @@ class WavefunctionPlot(GridPlot):
             help="""If the eigenstates need to be calculated from a hamiltonian, the k point for which you want them to be calculated"""
         ),
 
+        SpinSelect(key='spin', name="Spin",
+            default=0,
+            help="""The spin component where the eigenstate should be calculated.
+            Only meaningful if the state needs to be calculated from the hamiltonian.""",
+            only_if_polarized=True,
+        ),
+
         FloatInput(key='grid_prec', name='Grid precision',
             default=0.2,
             help="""The spacing between points of the grid where the wavefunction will be projected (in Ang).
@@ -1199,9 +1206,10 @@ class WavefunctionPlot(GridPlot):
 
         self.setup_hamiltonian()
 
-        k = self.setting('k')
+        k = self.setting("k")
+        spin = self.setting("spin")[0]
 
-        self.eigenstate = self.H.eigenstate(k)
+        self.eigenstate = self.H.eigenstate(k, spin=spin)
 
     def _after_read(self):
         # Just avoid here GridPlot's _after_grid. Note that we are

@@ -16,6 +16,8 @@ from sisl.viz.plotly.plotutils import get_plot_classes
 # The following function basically tells pytest to run TestPlotSubClass
 # once for each plot class. It takes care of setting the PlotClass attribute
 # to the corresponding plot class.
+
+
 @pytest.fixture(autouse=True, scope="class", params=get_plot_classes())
 def plot_class(request):
     request.cls.PlotClass = request.param

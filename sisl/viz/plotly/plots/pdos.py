@@ -264,7 +264,17 @@ class PdosPlot(Plot):
         self.E = np.linspace(Erange[0], Erange[-1], self.setting("nE")) + self.setting("E0")
 
         self.mp = sisl.MonkhorstPack(self.H, kgrid, kgrid_displ)
-        self.PDOS = self.mp.apply.average.PDOS(self.E, eta=True)
+
+        # Define the available spins
+        spin_indices = [0]
+        if self.H.spin.is_polarized:
+            spin_indices = [0, 1]
+
+        # Calculate the PDOS for all available spins
+        PDOS = []
+        for spin in spin_indices:
+            PDOS.append(self.mp.apply.average.PDOS(self.E, spin=spin, eta=True))
+        self.PDOS = np.array(PDOS)
 
     @entry_point('siesta_output')
     def _read_siesta_output(self):
