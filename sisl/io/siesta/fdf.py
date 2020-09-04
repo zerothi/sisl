@@ -771,6 +771,20 @@ class fdfSileSiesta(SileSiesta):
             return faSileSiesta(f).read_force()
         return None
 
+    def _r_force_tsfa(self, *args, **kwargs):
+        """ Read forces from the TSFA file """
+        f = self.dir_file(self.get('SystemLabel', default='siesta') + '.TSFA')
+        if f.is_file():
+            return faSileSiesta(f).read_force()
+        return None
+
+    def _r_force_tsfac(self, *args, **kwargs):
+        """ Read forces from the TSFAC file """
+        f = self.dir_file(self.get('SystemLabel', default='siesta') + '.TSFAC')
+        if f.is_file():
+            return faSileSiesta(f).read_force()
+        return None
+
     def _r_force_nc(self, *args, **kwargs):
         """ Read forces from the nc file """
         f = self.dir_file(self.get('SystemLabel', default='siesta') + '.nc')
