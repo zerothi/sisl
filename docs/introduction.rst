@@ -66,3 +66,6 @@ Command line usage
 The functionality of sisl is also extended to command line utilities for easy manipulation
 of data from DFT programs. There are a variety of commands to manipulate generic data (`sdata`),
 geometries (`sgeom`) or grid-related quantities (`sgrid`).
+
+Additionally there are user-contributed toolboxes which are exposed in the module `sisl_toolbox`
+and through the `stoolbox` command.

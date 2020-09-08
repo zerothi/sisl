@@ -253,8 +253,8 @@ def poisson_explicit_cli(subp=None):
                    help=("Radius of atoms when figuring out the electrode sizes, this corresponds to the extend of each electrode where boundary"
                          "conditions are fixed [3. Ang]."))
 
-    p.add_argument("--dtype", "-d", choices=["d", "f"], default="d",
-                   help="Precision of data (d==double, f==single)")
+    p.add_argument("--dtype", "-d", choices=["d", "f64", "f", "f32"], default="d",
+                   help="Precision of data (d/f64==double, f/f32==single)")
 
     p.add_argument("--elec-V", "-e-V", nargs=2, action="append", metavar=("NAME", "V"), default=[],
                    help="Specify the potential on the electrode")
@@ -310,9 +310,9 @@ def poisson_explicit_run(args):
     for name, V in args.elec_V:
         elecs_V[name] = float(V)
 
-    if args.dtype == "f":
+    if args.dtype.lower() in ("f", "f32"):
         dtype = np.float32
-    elif args.dtype == "d":
+    elif args.dtype.lower() in ("d", "f64"):
         dtype = np.float64
 
     # Now we can solve Poisson

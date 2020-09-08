@@ -106,6 +106,19 @@ When one is dealing with fractional coordinates is can be convenient to use frac
 The length unit for the position is *always* in Ångstrøm, unless an optional **f** is appended which
 forces the unit to be in fractional position (must be between 0 and 1).
 
+When combining grid reductions with grid differences the order is also important, the following two
+commands are not equivalent:
+
+::
+
+   sgrid Rho.grid.nc --sub 2.5:7.5 x --diff Other.Rho.grid.nc --out test.cube
+   sgrid Rho.grid.nc --diff Other.Rho.grid.nc --sub 2.5:7.5 x --out test.cube
+
+where the first command assumes ``Other.Rho.grid.nc`` matches the shape of ``Rho.grid.nc`` *after* it has
+been reduced to 5 Ång along the :math:`x` direction. The second assumes the two grids to have the same
+shape, then the reduction will be performed on the grid difference.
+
+
 Averaging and summing
 ---------------------
 
@@ -119,6 +132,15 @@ Sometimes it is convenient to average or sum grids along cell directions:
 which takes the average or the sum along the first cell direction, respectively. Note that this results
 in the number of partitions along that direction to be 1 (not all 3D software is capable of reading such a
 CUBE file).
+
+If one averages along two directions the resulting grid will be a 1D array and one can save it in a table
+with the first column being the remaining dimensions position (in Ång).
+
+::
+
+   sgrid Rho.grid.nc --average x --average y z_charge.dat
+
+will create a two-column data file with :math:`z` coordinate and the plane-averaged charge-density.
 
 
 Advanced features
