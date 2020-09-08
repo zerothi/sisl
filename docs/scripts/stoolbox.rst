@@ -17,12 +17,12 @@ We encourage users to contribute toolboxes to increase visibility and usability.
 For a short description of the possible toolboxes do:
 
 ::
-
+   
    stoolbox --help
 
 
 Have an idea?
-~~~~~~~~~~~~~
+-------------
 
 If you want to contribute or have an idea for a toolbox, feel free to open an issue `here <issue_>`_.
 
@@ -43,7 +43,7 @@ The potentials you should give for the individual electrodes should match the ra
 So for a 2-probe calculation at :math:`\pm V/2` the command would be::
 
 ::
-
+   
    stoolbox ts-poisson <other options> --elec-V Left 1. --elec-V Right -1.
 
 If the ratio between the potentials is fixed for all simulations this is only necessary once since
@@ -61,10 +61,8 @@ These will speed up the calculation considerably.
 Further details may be found by using the ``--help`` feature::
 
 ::
-
+   
    stoolbox ts-poisson --help
-
-
 
 
 .. highlight:: python

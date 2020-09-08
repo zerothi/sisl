@@ -1,8 +1,8 @@
 
 .. _toc-scripts:
 
-Scripts
-=======
+Scripts (command line interface)
+================================
 
 `sisl` implements a set of command-line utitilies that enables easy interaction
 with *all* the data files compatible with `sisl`.

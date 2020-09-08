@@ -86,8 +86,9 @@ of places to search/ask for answers:
 
 - This page for the documentation!
 - Workshop examples showing different uses, see `workshop`_
-- Ask questions on its use on the Github issue page `here <issue_>`_
-- Ask questions on the Gitter page `here <sisl-gitter_>`_
+- Ask questions on its use on the Github `issue page <issue_>`_
+- Ask questions on `Discord <sisl-discord_>`_
+- Ask questions on `Gitter <sisl-gitter_>`_
 
 If sisl was used to produce scientific contributions, please use this `DOI <sisl-doi_>`_ for citation.
 We recommend to specify the version of sisl in combination of this citation:
@@ -105,8 +106,8 @@ We recommend to specify the version of sisl in combination of this citation:
 To get the BibTeX entry easily you may issue the following command:
 
 .. code-block:: bash
-
-    sdata --cite
+   
+   sdata --cite
 
 which fills in the version number.
 
@@ -136,6 +137,12 @@ which fills in the version number.
    scripts/scripts
    visualization/visualization
    rst/files
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Toolboxes
+
+   toolbox/toolbox
 
 .. toctree::
    :maxdepth: 3
