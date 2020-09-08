@@ -460,7 +460,7 @@ metadata = dict(
          "sdata = sisl.utils._sisl_cmd:sisl_cmd",
          "sisl = sisl.utils._sisl_cmd:sisl_cmd",
          # Add toolbox CLI
-         "ts_poisson = sisl_toolbox.transiesta.poisson.poisson_explicit:poisson_explicit_cli",
+         "stoolbox = sisl_toolbox.cli:stoolbox_cli",
         ],
     },
     classifiers=CLASSIFIERS,
