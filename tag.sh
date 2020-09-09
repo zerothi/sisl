@@ -91,8 +91,9 @@ sed -i -e "s:\(MAJOR[[:space:]]*=\).*:\1 $MAJOR:" setup.py
 sed -i -e "s:\(MINOR[[:space:]]*=\).*:\1 $MINOR:" setup.py
 sed -i -e "s:\(MICRO[[:space:]]*=\).*:\1 $MICRO:" setup.py
 # Update release tag and git revision
+# Since the tag is a revision it-self we will store that directly
 sed -i -e "s:\(ISRELEASED[[:space:]]*=\).*:\1 True:" setup.py
-sed -i -e "s:\(GIT_REVISION[[:space:]]*=\).*:\1 \"$rev\":" setup.py
+sed -i -e "s:\(GIT_REVISION[[:space:]]*=\).*:\1 \"$v\":" setup.py
 sed -i -e "s:\(REVISION_YEAR[[:space:]]*=\).*:\1 $year:" setup.py
 
 # Ensure sources are created
@@ -129,9 +130,11 @@ git tag -a "v$v" -m "$MSG"
 python3 setup.py sdist bdist_wheel
 twine upload --repository testpypi dist/sisl-$v*.tar.gz
 
-exit 0
 # Revert release tag
 sed -i -e "s:\(ISRELEASED[[:space:]]*=\).*:\1 False:" setup.py
+# Git revision
+rev=$(git rev-parse HEAD)
+sed -i -e "s:\(GIT_REVISION[[:space:]]*=\).*:\1 \"$rev\":" setup.py
 git add setup.py
 git commit -s -m "Reverting internal release"
 git push

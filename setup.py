@@ -478,7 +478,7 @@ if not osp.exists(_ospath(cwd + "/PKG-INFO")):
 
 
 def git_version():
-    global GIT_REVISION
+    global GIT_REVISION, ISRELEASED
 
     def _minimal_ext_cmd(cmd):
         # construct minimal environment
@@ -512,6 +512,8 @@ def git_version():
         count = _minimal_ext_cmd(["git", "rev-list", tag + "..", "--count"])
         if len(count) == 0:
             count = "1"
+        # Ensure we have the correct ISRELEASED tag
+        ISRELEASED = int(count) == 0
         # Get year
         year = int(_minimal_ext_cmd(["git", "show", "-s", "--format=%ci"]).split("-")[0])
         print("sisl-install: using git revision")
