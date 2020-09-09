@@ -7,4 +7,4 @@ echo "### mybinder environment"
 env
 echo "### mybinder environment^^^"
 
-pip install .
+pip install -vv .
