@@ -215,8 +215,12 @@ class BaseGeometryPlot(Plot):
         -----------
         coords_axis:  {0,1,2, "x", "y", "z", "a", "b", "c"} or array-like of shape 3, optional
             the axis onto which all the atoms are projected.
-        data_axis: function, optional
-            function that takes the projected 1D coordinates and returns the coordinates for the other axis.
+        data_axis: function or array-like, optional
+            determines the second coordinate of the atoms
+            
+            If it's a function, it will recieve the projected 1D coordinates and needs to returns 
+            the coordinates for the other axis as an array.
+
             If not provided, the other axis will just be 0 for all points.
         atoms_color: array-like, optional
             an array of colors or values that will be mapped into colors
@@ -241,11 +245,14 @@ class BaseGeometryPlot(Plot):
         self._display_props["atoms"]["colorscale"] = atoms_colorscale
 
         x = self._projected_1Dcoords(self.geometry.xyz, axis=coords_axis)
-        if not callable(data_axis):
+        if data_axis is None:
             def data_axis(x):
                 return np.zeros(x.shape[0])
-        y = np.array(data_axis(x))
-        xy = np.array([x, y])
+        
+        if callable(data_axis):
+            data_axis = np.array(data_axis(x))
+
+        xy = np.array([x, data_axis])
 
         atoms_args, atoms_kwargs = wrap_atoms(xy)
         atoms_kwargs = {**atoms_kwargs, **kwargs}
@@ -1035,13 +1042,17 @@ class GeometryPlot(BaseGeometryPlot):
             For 2D and 1D representations, you can pass an arbitrary direction as an axis (array of shape (3,))"""
         ),
 
-        FunctionInput(
+        ProgramaticInput(
             key="dataaxis_1d", name="1d data axis",
             default=None,
+            dtype="array-like or function",
             help="""If you want a 1d representation, you can provide a data axis.
-            It should be a function that receives the 1d coordinate of each atom and
-            returns it's "data-coordinate", which will be in the y axis of the plot.
-            If not provided, the y axis will be all 0.
+            It determines the second coordinate of the atoms.
+            
+            If it's a function, it will recieve the projected 1D coordinates and needs to returns 
+            the coordinates for the other axis as an array.
+            
+            If not provided, the other axis will just be 0 for all points.
             """
         ),
 
@@ -1165,8 +1176,11 @@ class GeometryPlot(BaseGeometryPlot):
             self.update_layout(xaxis_title=f'Axis {xaxis} [Ang]', yaxis_title=f'Axis {yaxis} [Ang]')
         elif ndims == 1:
             coords_axis = axes[0]
-            data_axis = self.setting("1d_dataaxis")
+            data_axis = self.setting("dataaxis_1d")
             self._plot_geom1D(coords_axis=coords_axis, data_axis=data_axis)
+
+            data_axis_name = data_axis.__name__ if callable(data_axis) else 'Data axis'
+            self.update_layout(xaxis_title=f'Axis {coords_axis} [Ang]', yaxis_title=data_axis_name)
 
     def _after_get_figure(self):
 
