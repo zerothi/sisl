@@ -7,4 +7,5 @@ echo "### mybinder environment"
 env
 echo "### mybinder environment^^^"
 
-pip install -vv .
+# Manually install the necessary stuff for sisl
+pip install -vv Cython tqdm matplotlib xarray .
