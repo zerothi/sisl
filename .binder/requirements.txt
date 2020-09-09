@@ -1,4 +1,5 @@
 setuptools
+Cython
 # We use some functionality in 1.13 (np.unique)
 numpy>=1.13
 scipy>=0.18
