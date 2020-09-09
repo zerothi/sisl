@@ -211,7 +211,7 @@ class BrillouinZone:
             else:
                 self._w = _a.arrayd(weight).ravel()
         if len(self.k) != len(self.weight):
-            raise ValueError(self.__class__.__name__ + '.__init__ requires input k-points and weights to be of equal length.')
+            raise ValueError(f'{self.__class__.__name__}.__init__ requires input k-points and weights to be of equal length.')
 
         # Instantiate the array call
         with warnings.catch_warnings():
@@ -606,7 +606,7 @@ class BrillouinZone:
             has_wrap = 'wrap' in kwargs
             if has_wrap:
                 wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap'))
-            eta = tqdm_eta(len(self), self.__class__.__name__ + '.asarray',
+            eta = tqdm_eta(len(self), f'{self.__class__.__name__}.asarray',
                            'k', kwargs.pop('eta', False))
             parent = self.parent
             k = self.k
@@ -672,7 +672,7 @@ class BrillouinZone:
         def asnone(self, *args, **kwargs):
             func = self._bz_get_func()
             wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', lambda x: x))
-            eta = tqdm_eta(len(self), self.__class__.__name__ + '.asnone',
+            eta = tqdm_eta(len(self), f'{self.__class__.__name__}.asnone',
                            'k', kwargs.pop('eta', False))
             parent = self.parent
             k = self.k
@@ -736,7 +736,7 @@ class BrillouinZone:
                 has_wrap = 'wrap' in kwargs
                 if has_wrap:
                     wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap'))
-                eta = tqdm_eta(len(self), self.__class__.__name__ + '.asarray',
+                eta = tqdm_eta(len(self), f'{self.__class__.__name__}.asarray',
                                'k', kwargs.pop('eta', False))
                 parent = self.parent
                 k = self.k
@@ -822,7 +822,7 @@ class BrillouinZone:
             has_wrap = 'wrap' in kwargs
             if has_wrap:
                 wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap'))
-            eta = tqdm_eta(len(self), self.__class__.__name__ + '.aslist',
+            eta = tqdm_eta(len(self), f'{self.__class__.__name__}.aslist',
                            'k', kwargs.pop('eta', False))
             a = [None] * len(self)
             parent = self.parent
@@ -880,7 +880,7 @@ class BrillouinZone:
             has_wrap = 'wrap' in kwargs
             if has_wrap:
                 wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap'))
-            eta = tqdm_eta(len(self), self.__class__.__name__ + '.asyield',
+            eta = tqdm_eta(len(self), f'{self.__class__.__name__}.asyield',
                            'k', kwargs.pop('eta', False))
             parent = self.parent
             k = self.k
@@ -947,7 +947,7 @@ class BrillouinZone:
             has_wrap = 'wrap' in kwargs
             if has_wrap:
                 wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap'))
-            eta = tqdm_eta(len(self), self.__class__.__name__ + '.asaverage',
+            eta = tqdm_eta(len(self), f'{self.__class__.__name__}.asaverage',
                            'k', kwargs.pop('eta', False))
             parent = self.parent
             k = self.k
@@ -1023,7 +1023,7 @@ class BrillouinZone:
             has_wrap = 'wrap' in kwargs
             if has_wrap:
                 wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap'))
-            eta = tqdm_eta(len(self), self.__class__.__name__ + '.assum',
+            eta = tqdm_eta(len(self), f'{self.__class__.__name__}.assum',
                            'k', kwargs.pop('eta', False))
             parent = self.parent
             k = self.k
@@ -1187,7 +1187,7 @@ class MonkhorstPack(BrillouinZone):
         # Retrieve the diagonal number of values
         Dn = np.diag(nkpt).astype(np.int32)
         if np.any(Dn) == 0:
-            raise ValueError(self.__class__.__name__ + ' *must* be initialized with '
+            raise ValueError(f'{self.__class__.__name__} *must* be initialized with '
                              'diagonal elements different from 0.')
 
         i_trs = -1
@@ -1364,7 +1364,7 @@ class MonkhorstPack(BrillouinZone):
 
             func = self._bz_get_func()
             wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', lambda x: x))
-            eta = tqdm_eta(len(self), self.__class__.__name__ + '.asgrid',
+            eta = tqdm_eta(len(self), f'{self.__class__.__name__}.asgrid',
                            'k', kwargs.pop('eta', False))
             parent = self.parent
             k = self.k
@@ -1624,7 +1624,7 @@ class MonkhorstPack(BrillouinZone):
         # k-point volumes.
         k_int = mp._size / k_vol
         if not np.allclose(np.rint(k_int), k_int):
-            raise SislError(self.__class__.__name__ + '.reduce could not replace k-point, BZ '
+            raise SislError(f'{self.__class__.__name__}.reduce could not replace k-point, BZ '
                             'volume replaced is not equivalent to the inherent k-point volume.')
         k_int = np.rint(k_int)
 
@@ -1639,7 +1639,7 @@ class MonkhorstPack(BrillouinZone):
         diff_k = self.in_primitive(self.k % 1. - k % 1.)
         idx = np.logical_and.reduce(np.abs(diff_k) <= dk, axis=1).nonzero()[0]
         if len(idx) == 0:
-            raise SislError(self.__class__.__name__ + '.reduce could not find any points to replace.')
+            raise SislError(f'{self.__class__.__name__}.reduce could not find any points to replace.')
 
         # Now we have the k-points we need to remove
         # Figure out if the total weight is consistent
@@ -1650,7 +1650,7 @@ class MonkhorstPack(BrillouinZone):
         elif abs(total_weight - replace_weight * 2) < 1e-8:
             weight_factor = 2.
             if self._trs < 0:
-                info(self.__class__.__name__ + '.reduce assumes that the replaced k-point has double weights.')
+                info(f'{self.__class__.__name__}.reduce assumes that the replaced k-point has double weights.')
         else:
             print('k-point to replace:')
             print(' ', k.ravel())
@@ -1660,7 +1660,7 @@ class MonkhorstPack(BrillouinZone):
             print(' ', idx)
             print('k-points replaced:')
             print(self.k[idx, :])
-            raise SislError(self.__class__.__name__ + '.reduce could not assert the weights are consistent during replacement.')
+            raise SislError(f'{self.__class__.__name__}.reduce could not assert the weights are consistent during replacement.')
 
         self._k = np.delete(self._k, idx, axis=0)
         self._w = np.delete(self._w, idx)
