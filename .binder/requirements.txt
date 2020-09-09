@@ -1,0 +1,11 @@
+setuptools
+# We use some functionality in 1.13 (np.unique)
+numpy>=1.13
+scipy>=0.18
+netCDF4
+pyparsing>=1.5.7
+# stuff for mybinder
+tqdm
+matplotlib
+xarray
+jupyter

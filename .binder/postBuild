@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Stop at errors
+set -e
+
+echo "### mybinder environment"
+env
+echo "### mybinder environment^^^"
