@@ -20,6 +20,7 @@
 .. _pyparsing: https://github.com/pyparsing/pyparsing
 .. _matplotlib: https://matplotlib.org/
 .. _pytest: https://docs.pytest.org/en/stable/
+.. _pathos: https://github.com/uqfoundation/pathos
 .. _tqdm: https://github.com/tqdm/tqdm
 .. _xarray: http://xarray.pydata.org/en/stable/index.html
 .. _workshop: https://github.com/zerothi/ts-tbt-sisl-tutorial

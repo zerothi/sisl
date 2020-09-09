@@ -133,7 +133,6 @@ which fills in the version number.
    
    installation
    tutorials.rst
-   examples.rst
    scripts/scripts
    visualization/visualization
    rst/files
