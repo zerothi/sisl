@@ -151,6 +151,7 @@ else:
     extensions += [
         'sphinx.ext.inheritance_diagram',
         'nbsphinx',
+        'sphinx_gallery.load_style',
         'IPython.sphinxext.ipython_directive',
         'IPython.sphinxext.ipython_console_highlighting',
     ]
@@ -435,7 +436,7 @@ nbsphinx_timeout = 600
 
 # Insert a link to download the IPython notebook
 nbsphinx_prolog = r"""
-{% set docname = env.doc2path(env.docname, base='docs') %}
+{% set docname = "docs/" ~ env.doc2path(env.docname, base=false) %}
 
 .. raw:: html
 
@@ -445,6 +446,10 @@ nbsphinx_prolog = r"""
      </div>
 
 """
+
+nbsphinx_thumbnails = {
+    "visualization/plotly/tutorials/GUI with Python Demo": "visualization/plotly/tutorials/GUIScreenshot.png"
+}
 
 import inspect
 
