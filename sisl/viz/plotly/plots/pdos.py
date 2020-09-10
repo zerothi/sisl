@@ -515,10 +515,11 @@ class PdosPlot(Plot):
             keyword arguments containing the values that you want to update
 
         """
-        requests = self.setting("requests")
+        # We create a new list, otherwise we would be modifying the current one (not good)
+        requests = list(self.setting("requests"))
         for i, request in enumerate(requests):
             if self._matches_request(request, i_or_names, i):
-                requests[i] = {**requests[i], **kwargs}
+                requests[i] = {**request, **kwargs}
 
         return self.update_settings(requests=requests)
 

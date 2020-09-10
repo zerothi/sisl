@@ -910,14 +910,16 @@ class GridPlot(Plot):
             **(animation_kwargs or {})
         )
 
-        # Set all frames to the same colorscale
-        cmin = 10**6; cmax = -10**6
-        for scan_im in scan:
-            c = getattr(scan_im.data[0], "value", scan_im.data[0].z)
-            cmin = min(cmin, np.min(c))
-            cmax = max(cmax, np.max(c))
-        for scan_im in scan:
-            scan_im.update_settings(crange=[cmin, cmax])
+        # Set all frames to the same colorscale, if it's a 2d or 3d representation
+        if len(self.setting("axes")) > 1:
+            cmin = 10**6; cmax = -10**6
+            for scan_im in scan:
+                c = getattr(scan_im.data[0], "value", scan_im.data[0].z)
+                cmin = min(cmin, np.min(c))
+                cmax = max(cmax, np.max(c))
+            for scan_im in scan:
+                scan_im.update_settings(crange=[cmin, cmax])
+        
         scan.get_figure()
 
         scan.layout = self.layout
