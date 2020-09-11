@@ -25,8 +25,6 @@ def emit_session(session_to_emit=None, broadcast=True, **kwargs):
     if session_to_emit is None:
         session_to_emit = session
 
-    print("EMITTING", session_to_emit, kwargs)
-
     return emit("current_session", session_to_emit._get_dict_for_GUI(), broadcast=broadcast, **kwargs)
 
 
