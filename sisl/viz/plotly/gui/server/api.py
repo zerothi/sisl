@@ -54,8 +54,10 @@ def create_app(get_session, set_session):
         with_user_management(app)
 
     socketio = SocketIO(app, cors_allowed_origins="*",
-                        json=simplejson, manage_session=True)
-                        # async_mode="threading" (this option can not use websockets, less communication performance)
+                        json=simplejson, manage_session=True, async_mode="threading")
+                        # async_mode="threading" this option can not use websockets, therefore there is less communication performance
+                        # however, it's the only way we can emit socket events from outside of the thread that is running the api
+                        # Maybe instead of threading we can use socketio.start_background_task (see https://github.com/miguelgrinberg/Flask-SocketIO/issues/876)
     on = socketio.on
 
     if False:

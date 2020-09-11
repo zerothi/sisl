@@ -75,12 +75,14 @@ def launch(no_api=False, only_api=False, server_kwargs={}, load_session=None, se
         from code import interact
         #To launch an interactive console (not needed from jupyter)
         threads.append(Thread(target=interact, kwargs={'local': vars(server)}))
+    
+    if not only_api:
+        threads.append(Thread(target=open_gui))
 
     for t in threads:
         t.start()
 
-    if not only_api:
-        open_gui()
+    
 
     print("\nThe session has started succesfully. Happy visualization!\n")
 

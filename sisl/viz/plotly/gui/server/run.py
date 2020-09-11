@@ -1,3 +1,6 @@
+import logging
+import sys
+
 from sisl._environ import register_environ_variable, get_environ_variable
 
 from . import api
@@ -63,9 +66,24 @@ def set_session(new_session, ret_old=False):
 def get_session():
     return SESSION
 
+def get_server_address():
+    return f"http://{SERVER_HOST}:{SERVER_PORT}"
+
 def run(host=None, port=None, debug=False, app=None, socketio=None, prelaunch=None):
+
+    global SERVER_PORT
+    global SERVER_HOST
+
     if app is None:
         app, socketio = api.create_app(get_session, set_session)
+
+    # Disable all kinds of logging
+    if not debug:
+        app.logger.disabled = True
+        log = logging.getLogger("werkzeug")
+        log.disabled = True
+        cli = sys.modules["flask.cli"]
+        cli.show_server_banner = lambda *x: None
 
     if prelaunch is not None:
         prelaunch(get_session, set_session)
@@ -79,6 +97,6 @@ def run(host=None, port=None, debug=False, app=None, socketio=None, prelaunch=No
     SERVER_PORT = port
 
     print(
-        f"\nApi running on http://{host}:{port}...\nconnect the GUI to this address or send it to someone for sharing.")
+        f"\nApi running on {get_server_address()}...\nconnect the GUI to this address or send it to someone for sharing.")
 
     socketio.run(app, debug=debug, host=host, port=port)

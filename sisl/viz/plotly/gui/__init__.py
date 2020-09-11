@@ -1,6 +1,6 @@
-from .launch import launch
+from .launch import launch, open_gui
 from .server import *
 
-__all__ = ["launch"]
+__all__ = ["launch", "open_gui"]
 
-__all__ += ["SERVER_HOST", "SERVER_PORT", "set_session", "get_session"]
+__all__ += ["get_server_address", "set_session", "get_session"]
