@@ -26,7 +26,7 @@ from .plotutils import init_multiple_plots, repeat_if_childs, dictOfLists2listOf
 from .input_fields import TextInput, SileInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, \
     FloatInput, RangeSlider, QueriesInput, ProgramaticInput, PlotableInput
 from ._shortcuts import ShortCutable
-from .gui.api_utils.sync import Connected
+from .gui.server.sync import Connected
 
 __all__ = ["Plot", "MultiplePlot", "Animation", "SubPlots"]
 

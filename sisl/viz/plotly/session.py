@@ -8,7 +8,7 @@ from copy import deepcopy, copy
 
 import sisl
 from sisl._environ import register_environ_variable, get_environ_variable
-from .gui.api_utils.sync import Connected
+from .gui.server.sync import Connected
 from .plot import Plot
 from .configurable import Configurable, vizplotly_settings
 from .plotutils import find_files, find_plotable_siles, call_method_if_present, get_plot_classes
