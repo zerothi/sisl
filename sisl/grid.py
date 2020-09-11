@@ -1642,13 +1642,14 @@ def sgrid(grid=None, argv=None, ret_grid=False):
        whether the function should return the grid
     """
     import sys
-    import os.path as osp
     import argparse
+    from pathlib import Path
 
     from sisl.io import get_sile, BaseSile
 
     # The file *MUST* be the first argument
     # (except --help|-h)
+    exe = Path(sys.argv[0]).name
 
     # We cannot create a separate ArgumentParser to retrieve a positional arguments
     # as that will grab the first argument for an option!
@@ -1658,14 +1659,14 @@ def sgrid(grid=None, argv=None, ret_grid=False):
 This manipulation utility is highly advanced and one should note that the ORDER of
 options is determining the final structure. For instance:
 
-   $> {0} Reference.grid.nc --diff Other.grid.nc --sub 0.:0.2f z
+   {exe} Reference.grid.nc --diff Other.grid.nc --sub 0.:0.2f z
 
 is NOT equivalent to:
 
-   $> {0} Reference.grid.nc --sub 0.:0.2f z --diff Other.grid.nc
+   {exe} Reference.grid.nc --sub 0.:0.2f z --diff Other.grid.nc
 
 This may be unexpected but enables one to do advanced manipulations.
-    """.format(osp.basename(sys.argv[0]))
+    """
 
     if argv is not None:
         if len(argv) == 0:
@@ -1680,9 +1681,9 @@ This may be unexpected but enables one to do advanced manipulations.
     # Ensure that the arguments have pre-pended spaces
     argv = cmd.argv_negative_fix(argv)
 
-    p = argparse.ArgumentParser('Manipulates real-space grids.',
-                           formatter_class=argparse.RawDescriptionHelpFormatter,
-                           description=description)
+    p = argparse.ArgumentParser(exe,
+                                formatter_class=argparse.RawDescriptionHelpFormatter,
+                                description=description)
 
     # Add default sisl version stuff
     cmd.add_sisl_version_cite_arg(p)

@@ -60,11 +60,14 @@ def argparse_patch(parser):
 
 
 def sisl_cmd(argv=None, sile=None):
+    import sys
+    from pathlib import Path
 
     from . import cmd
 
     # The file *MUST* be the first argument
     # (except --help|-h)
+    exe = Path(sys.argv[0]).name
 
     # We cannot create a separate ArgumentParser to retrieve a positional arguments
     # as that will grab the first argument for an option!
@@ -88,7 +91,7 @@ changing ways. It handles files dependent on type AND content.
     # Ensure that the arguments have pre-pended spaces
     argv = cmd.argv_negative_fix(argv)
 
-    p = argparse.ArgumentParser("Manipulates generic sisl Sile's.",
+    p = argparse.ArgumentParser(exe,
                                 formatter_class=argparse.RawDescriptionHelpFormatter,
                                 description=description, conflict_handler='resolve')
 

@@ -4434,34 +4434,35 @@ def sgeom(geometry=None, argv=None, ret_geometry=False):
        whether the function should return the geometry
     """
     import sys
-    import os.path as osp
     import argparse
+    from pathlib import Path
 
     from sisl.io import get_sile, BaseSile
 
     # The geometry-file *MUST* be the first argument
     # (except --help|-h)
+    exe = Path(sys.argv[0]).name
 
     # We cannot create a separate ArgumentParser to retrieve a positional arguments
     # as that will grab the first argument for an option!
 
     # Start creating the command-line utilities that are the actual ones.
-    description = """
+    description = f"""
 This manipulation utility is highly advanced and one should note that the ORDER of
 options is determining the final structure. For instance:
 
-   {0} geom.xyz --repeat x 2 --repeat y 2
+   {exe} geom.xyz --repeat x 2 --repeat y 2
 
 is NOT equivalent to:
 
-   {0} geom.xyz --repeat y 2 --repeat x 2
+   {exe} geom.xyz --repeat y 2 --repeat x 2
 
 This may be unexpected but enables one to do advanced manipulations.
 
 Additionally, in between arguments, one may store the current state of the geometry
 by writing to a standard file.
 
-   {0} geom.xyz --repeat y 2 geom_repy.xyz --repeat x 2 geom_repy_repx.xyz
+   {exe} geom.xyz --repeat y 2 geom_repy.xyz --repeat x 2 geom_repy_repx.xyz
 
 will create two files:
    geom_repy.xyz
@@ -4469,7 +4470,7 @@ will only be repeated 2 times along the second lattice vector, while:
    geom_repy_repx.xyz
 will be repeated 2 times along the second lattice vector, and then the first
 lattice vector.
-    """.format(osp.basename(sys.argv[0]))
+    """
 
     if argv is not None:
         if len(argv) == 0:
@@ -4484,7 +4485,7 @@ lattice vector.
     # Ensure that the arguments have pre-pended spaces
     argv = cmd.argv_negative_fix(argv)
 
-    p = argparse.ArgumentParser('Manipulates geometries.',
+    p = argparse.ArgumentParser(exe,
                                 formatter_class=argparse.RawDescriptionHelpFormatter,
                                 description=description)
 
