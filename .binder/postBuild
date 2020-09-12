@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# Stop at errors
+set -ex
+
+echo "### mybinder environment"
+env
+echo "### mybinder environment^^^"
+
+# Manually install the necessary stuff for sisl
+pip install -vv Cython tqdm matplotlib xarray .
