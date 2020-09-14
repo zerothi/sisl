@@ -783,7 +783,7 @@ class SileCDF(BaseSile):
 
     @staticmethod
     def _crt_grp(n, name):
-        if '/' in name:
+        if '/' in name: # this is NetCDF, so / is fixed as seperator!
             groups = name.split('/')
             grp = n
             for group in groups:
