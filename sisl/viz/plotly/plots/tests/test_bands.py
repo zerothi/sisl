@@ -14,7 +14,6 @@ from functools import partial
 
 import sisl
 from sisl.viz import BandsPlot
-from sisl.viz.plotly.plots.tests.get_files import from_files
 from sisl.viz.plotly.plots.tests.helpers import PlotTester
 
 
@@ -125,10 +124,8 @@ bands_plots = {}
 
 # ---- From siesta.bands
 
-bands_file = sisl.get_sile(from_files("SrTiO3.bands"))
-
 bands_plots["siesta_output"] = {
-    "init_func": bands_file.plot,
+    "plot_file": "SrTiO3.bands",
     "bands_shape": (150, 1, 72),
     "ticklabels": ('Gamma', 'X', 'M', 'Gamma', 'R', 'X'),
     "tickvals": [0.0, 0.429132, 0.858265, 1.465149, 2.208428, 2.815313],
@@ -166,8 +163,12 @@ bands_plots["sisl_H_path"] = {
 
 # ---- From a non collinear calculation in SIESTA
 
-H = sisl.get_sile(from_files("fe_clust_noncollinear.TSHS")).read_hamiltonian()
-bz = sisl.BandStructure(H, [[0, 0, 0], [0.5, 0, 0]], 3, ["Gamma", "X"])
+
+def NC_init_func(sisl_files, **kwargs):
+    H = sisl.get_sile(sisl_files("fe_clust_noncollinear.TSHS")).read_hamiltonian()
+    bz = sisl.BandStructure(H, [[0, 0, 0], [0.5, 0, 0]], 3, ["Gamma", "X"])
+
+    return bz.plot(sisl_files, **kwargs)
 
 
 class TestBandsPlot(BandsPlotTester):
@@ -178,7 +179,7 @@ class TestNCSpinBands(NCSpinBandsTester):
 
     run_for = {
         "NCspin_H": {
-            "init_func": bz.plot.bind(),
+            "init_func": NC_init_func,
             "bands_shape": (3, 1, 90),
             "ticklabels": ["Gamma", "X"],
             "tickvals": [0., 0.49472934],

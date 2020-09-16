@@ -217,7 +217,7 @@ class BaseGeometryPlot(Plot):
             the axis onto which all the atoms are projected.
         data_axis: function or array-like, optional
             determines the second coordinate of the atoms
-            
+
             If it's a function, it will recieve the projected 1D coordinates and needs to returns 
             the coordinates for the other axis as an array.
 
@@ -248,7 +248,7 @@ class BaseGeometryPlot(Plot):
         if data_axis is None:
             def data_axis(x):
                 return np.zeros(x.shape[0])
-        
+
         if callable(data_axis):
             data_axis = np.array(data_axis(x))
 

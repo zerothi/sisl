@@ -7,7 +7,7 @@ import sisl
 from ..plot import Plot, entry_point
 from ..plotutils import find_files, random_color
 from ..input_fields import TextInput, SileInput, SwitchInput, ColorPicker, DropdownInput, CreatableDropdown, \
-    IntegerInput, FloatInput, RangeInput, RangeSlider, OrbitalQueries, ProgramaticInput, Array1dInput, ListInput
+    IntegerInput, FloatInput, RangeInput, RangeSlider, OrbitalQueries, ProgramaticInput, Array1DInput, ListInput
 from ..input_fields.range import ErangeInput
 
 
@@ -85,7 +85,7 @@ class PdosPlot(Plot):
             help="""If calculating the PDOS from a hamiltonian, the number of energy points used"""
         ),
 
-        Array1dInput(key="kgrid", name="Monkhorst-Pack grid",
+        Array1DInput(key="kgrid", name="Monkhorst-Pack grid",
             default=None,
             group="Hparams",
             params={
@@ -97,7 +97,7 @@ class PdosPlot(Plot):
             and 1 for the non-periodic ones."""
         ),
 
-        Array1dInput(key="kgrid_displ", name="Monkhorst-Pack grid displacement",
+        Array1DInput(key="kgrid_displ", name="Monkhorst-Pack grid displacement",
             default=[0, 0, 0],
             group="Hparams",
             help="""Displacement of the Monkhorst-Pack grid"""

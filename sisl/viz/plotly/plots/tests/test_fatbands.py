@@ -97,8 +97,12 @@ fatbands_plots["sisl_H"] = {
     "tickvals": [0., 1.70309799, 2.55464699],
 }
 
-H = sisl.get_sile("/home/pfebrer/Simulations/siesta/siesta-4.1-b4/Tests/fe_clust_noncollinear/work/fe_clust_noncollinear.TSHS").read_hamiltonian()
-bz = sisl.BandStructure(H, [[0, 0, 0], [0.5, 0, 0]], 3, ["Gamma", "X"])
+
+def NC_init_func(sisl_files, **kwargs):
+    H = sisl.get_sile(sisl_files("fe_clust_noncollinear.TSHS")).read_hamiltonian()
+    bz = sisl.BandStructure(H, [[0, 0, 0], [0.5, 0, 0]], 3, ["Gamma", "X"])
+
+    return bz.plot.fatbands(sisl_files, **kwargs)
 
 
 class TestFatbandsPlot(FatbandsPlotTester):
@@ -111,7 +115,7 @@ class TestNCSpinFatbands(FatbandsPlotTester, NCSpinBandsTester):
     run_for = {
 
         "siesta_H": {
-            "init_func": bz.plot.bind().fatbands,
+            "init_func": NC_init_func,
             "bands_shape": (3, 1, 90),
             "weights_shape": (1, 3, 90, H.geometry.no),
             "gap": 0.40,

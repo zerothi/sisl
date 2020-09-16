@@ -7,11 +7,13 @@ import webbrowser
 from ..plotutils import get_session_classes
 from . import server
 
+
 def open_gui():
     """
     Opens the graphical interface
     """
     webbrowser.open(str(Path(__file__).parent / "build" / "index.html"))
+
 
 def launch(no_api=False, only_api=False, server_kwargs={}, load_session=None, session_cls=None, session_settings={}, interactive=False):
     '''
@@ -75,14 +77,12 @@ def launch(no_api=False, only_api=False, server_kwargs={}, load_session=None, se
         from code import interact
         #To launch an interactive console (not needed from jupyter)
         threads.append(Thread(target=interact, kwargs={'local': vars(server)}))
-    
+
     if not only_api:
         threads.append(Thread(target=open_gui))
 
     for t in threads:
         t.start()
-
-    
 
     print("\nThe session has started succesfully. Happy visualization!\n")
 

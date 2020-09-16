@@ -3,6 +3,7 @@ from pathlib import Path
 
 from sisl.viz.plotly.plotutils import get_plot_classes
 
+
 def create_showcase_nb(cls, force=False):
     """
     Creates a new notebook to showcase a plot class from the showcase template.
@@ -14,7 +15,7 @@ def create_showcase_nb(cls, force=False):
     """
     if cls not in [c.__name__ for c in get_plot_classes()]:
         message = f"We didn't find a plot class with the name '{cls}'"
-        
+
         if force:
             print(message)
         else:

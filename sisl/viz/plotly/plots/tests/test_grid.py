@@ -13,7 +13,6 @@ import plotly.graph_objs as go
 import sisl
 from sisl.viz import GridPlot
 from sisl.viz import Animation
-from sisl.viz.plotly.plots.tests.get_files import from_files
 from sisl.viz.plotly.plots.tests.helpers import PlotTester
 
 
@@ -100,16 +99,12 @@ class GridPlotTester(PlotTester):
         assert np.allclose(plot.data[0].y, np.cos(plot.grid.grid).mean(2).mean(1))
 
 
-# ----- Test with a siesta RHO file
-
-grid_file = sisl.get_sile(from_files("SrTiO3.RHO"))
-
-
 class TestGridPlot(GridPlotTester):
 
     run_for = {
+        # Test with a siesta RHO file
         "siesta_RHO": {
-            "init_func": grid_file.plot.bind(),
+            "plot_file": "SrTiO3.RHO",
             "grid_shape": (48, 48, 48)
         }
     }

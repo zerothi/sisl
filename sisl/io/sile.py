@@ -340,7 +340,6 @@ def get_sile_rules(attrs=None, cls=None):
         sile = rule.cls
         if sile is cls:
             sile_rules.append(rule)
-            continue
         elif attrs:
             for attr in attrs:
                 if hasattr(sile, attr):
@@ -364,11 +363,11 @@ class BaseSile:
         """ File of the current `Sile` """
         return basename(self._file)
 
-    def dir_file(self, filename=None, extra_dirs=""):
+    def dir_file(self, filename=None, filename_base=""):
         """ File of the current `Sile` """
         if filename is None:
             filename = Path(self._file).name
-        return Path(self._directory) / extra_dirs / filename
+        return Path(self._directory) / filename_base / filename
 
     def exist(self):
         """ Query whether the file exists """

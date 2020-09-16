@@ -1,4 +1,4 @@
-from .array import Array1dInput, Array2dInput
+from .array import Array1DInput, Array2DInput
 from .color import ColorPicker
 from .dropdown import DropdownInput, CreatableDropdown, AtomSelect, SpeciesSelect, OrbitalsNameSelect, SpinSelect, GeomAxisSelect
 from .list import ListInput

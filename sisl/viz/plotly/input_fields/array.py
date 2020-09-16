@@ -3,7 +3,7 @@ import numpy as np
 from .._input_field import InputField
 
 
-class ArrayInput(InputField):
+class ArrayNDInput(InputField):
 
     dtype = "array-like"
 
@@ -32,11 +32,11 @@ class ArrayInput(InputField):
         super().__init__(*args, **kwargs)
 
 
-class Array1dInput(ArrayInput):
+class Array1DInput(ArrayNDInput):
 
     _type = 'vector'
 
 
-class Array2dInput(ArrayInput):
+class Array2DInput(ArrayNDInput):
 
     _type = "matrix"

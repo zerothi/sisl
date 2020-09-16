@@ -2,6 +2,8 @@ from pathlib import Path
 import pytest
 import inspect
 
+import sisl
+
 
 class MultipleTesterCreator(type):
     """
@@ -65,7 +67,10 @@ class PlotTester(metaclass=MultipleTesterCreator):
     that will be tested. The first thing any class that inherits from PlotTester will do is to
     try to run that function and store the result in self.plot. If the plot can not be initialized
     for some reason, PlotTester won't bother to run the rest of the tests so that you can more
-    easily spot the problem.
+    easily spot the problem. 
+
+    One can also provide the "plot_file" attribute instead of "init_func" if all they want to do
+    is to get the file from sisl files and and plot it.
 
     Examples
     ----------
@@ -111,10 +116,26 @@ class PlotTester(metaclass=MultipleTesterCreator):
 
         raise AttributeError
 
-    def test_plot_initialization(self):
+    def test_plot_initialization(self, sisl_files):
+        """
+        We are going to try to initialize the plot.
+
+        If plot_file is provided, we will retrieve it from sisl_files and plot
+        the default plot. Otherwise, an init_func must be provided. The init_func
+        receives sisl_files, just in case you want to plot a file with a plot method
+        other than the default.
+        """
+        filename = getattr(self, "plot_file", None)
+
+        if filename is None:
+            plot = self.init_func(sisl_files=sisl_files, _debug=True)
+        else:
+            sile = sisl.get_sile(sisl_files(filename))
+            plot = sile.plot()
+
         # We have to set the plot as a class attribute because for some reason pytest doesn't like to
         # set an instance attribute
-        self.plot = self.init_func(_debug=True)
+        self.plot = plot
 
 
 @pytest.fixture
@@ -158,7 +179,7 @@ def setup_multiple_tests(cls, params, global_scope):
         key, plot_attributes = request.param
 
         # Set up the tester attributes
-        for attr in ["init_func", *getattr(request.cls, "_required_attrs", [])]:
+        for attr in [*getattr(request.cls, "_required_attrs", [])]:
             if attr not in plot_attributes:
                 pytest.fail(f"You are missing the '{attr}' required attribute")
             request.cls._attrs[attr] = plot_attributes[attr]

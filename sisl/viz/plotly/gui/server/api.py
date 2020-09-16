@@ -15,12 +15,13 @@ from flask_socketio import SocketIO, join_room
 from ...plotutils import load
 from .emiters import emit_plot, emit_session, emit_error, emit_loading_plot, emit
 from .user_management import with_user_management, if_user_can, listen_to_users
-    
+
 
 __all__ = ["APP", "SESSION", "SOCKETIO", "set_session", "create_app"]
 
 
 __DEBUG = False
+
 
 class CustomJSONEncoder(JSONEncoder):
 
@@ -42,6 +43,7 @@ class CustomJSONEncoder(JSONEncoder):
 # We need to use simplejson because built-in json happily parses nan to NaN
 # and then javascript does not understand it
 simplejson.dumps = partial(simplejson.dumps, ignore_nan=True, cls=CustomJSONEncoder)
+
 
 def create_app(get_session, set_session):
 
@@ -140,4 +142,3 @@ def create_app(get_session, set_session):
             shutil.rmtree(str(dirname))
 
     return app, socketio
-

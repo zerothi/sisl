@@ -3,7 +3,7 @@ import plotly.graph_objects as go
 
 import sisl
 from ..plot import Plot, entry_point
-from ..input_fields import TextInput, SileInput, Array1dInput, SwitchInput, \
+from ..input_fields import TextInput, SileInput, Array1DInput, SwitchInput, \
      ColorPicker, DropdownInput, CreatableDropdown, IntegerInput, FloatInput, RangeInput, RangeSlider, \
      QueriesInput, ProgramaticInput, PlotableInput, SislObjectInput, PlotableInput, SpinSelect
 
@@ -214,7 +214,7 @@ class GridPlot(Plot):
             'best' interpolates data, 'fast' interpolates pixels, 'False' displays the data as is."""
         ),
 
-        Array1dInput(
+        Array1DInput(
             key="interp", name="Interpolation",
             default=[1, 1, 1],
             params={
@@ -225,7 +225,7 @@ class GridPlot(Plot):
             help="Interpolation factors to make the grid finer on each axis.<br>See the zsmooth setting for faster smoothing of 2D heatmap."
         ),
 
-        Array1dInput(
+        Array1DInput(
             key="sc", name="Supercell",
             default=[1, 1, 1],
             params={
@@ -235,7 +235,7 @@ class GridPlot(Plot):
             },
         ),
 
-        Array1dInput(
+        Array1DInput(
             key="offset", name="Grid offset",
             default=[0, 0, 0],
             params={
@@ -919,7 +919,7 @@ class GridPlot(Plot):
                 cmax = max(cmax, np.max(c))
             for scan_im in scan:
                 scan_im.update_settings(crange=[cmin, cmax])
-        
+
         scan.get_figure()
 
         scan.layout = self.layout
@@ -1159,7 +1159,7 @@ class WavefunctionPlot(GridPlot):
             However, this field is compulsory if you are providing the eigenstate directly."""
         ),
 
-        Array1dInput(key='k', name='K point',
+        Array1DInput(key='k', name='K point',
             default=(0, 0, 0),
             help="""If the eigenstates need to be calculated from a hamiltonian, the k point for which you want them to be calculated"""
         ),

@@ -13,7 +13,7 @@ from .plot import Plot
 from .configurable import Configurable, vizplotly_settings
 from .plotutils import find_files, find_plotable_siles, call_method_if_present, get_plot_classes
 
-from .input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, Array1dInput
+from .input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, Array1DInput
 
 __all__ = ["Session"]
 
@@ -190,7 +190,7 @@ class Session(Configurable, Connected):
             help = "Determines whether the session updates plots when files change <br> This is very useful to track progress. It is only meaningful in the GUI."
         ),
 
-        Array1dInput(
+        Array1DInput(
             key="plotDims", name="Initial plot dimensions",
             default=[4, 30],
             group="gui",

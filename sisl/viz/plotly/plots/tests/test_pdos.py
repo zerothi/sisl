@@ -14,7 +14,6 @@ from functools import partial
 import sisl
 from sisl.viz import PdosPlot
 
-from sisl.viz.plotly.plots.tests.get_files import from_files
 from sisl.viz.plotly.plots.tests.helpers import PlotTester
 
 # ------------------------------------------------------------
@@ -133,10 +132,8 @@ pdos_plots = {}
 
 # ---- For a siesta PDOS file
 
-pdos_file = sisl.get_sile(from_files("SrTiO3.PDOS"))
-
 pdos_plots["siesta_PDOS_file"] = {
-    "init_func": pdos_file.plot.bind(),
+    "plot_file": "SrTiO3.PDOS",
     "na": 5,
     "no": 72,
     "n_spin": 1,
