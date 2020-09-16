@@ -62,10 +62,10 @@ class AbstractDispatch(metaclass=ABCMeta):
         pass
 
     def __getattr__(self, key):
-        method = getattr(self._obj, key)
-        if callable(method):
-            return self.dispatch(method)
-        return method
+        attr = getattr(self._obj, key)
+        if callable(attr):
+            return self.dispatch(attr)
+        return attr
 
 
 class Dispatcher:
