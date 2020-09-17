@@ -314,73 +314,75 @@ class GridPlot(Plot):
             help="""A valid plotly colorscale. See https://plotly.com/python/colorscales/"""
         ),
 
-        RangeInput(
-            key="iso_vals", name="Min and max isosurfaces",
-            default=None,
-            help="""The minimum and maximum values of the isosurfaces to be displayed.
-            If not provided, iso_frac will be used to calculate these values (which is more versatile)."""
+        QueriesInput(key = "isos", name = "Isosurfaces / contours / marks",
+            default = [],
+            help = """The isovalues that you want to represent.
+            The way they will be represented are of course dependant on the type of representation:
+                - 1D representations: Just a scatter mark
+                - 2D representations: A contour (i.e. a line)
+                - 3D representations: A surface
+            """,
+            queryForm = [
+
+                TextInput(
+                    key="name", name="Name",
+                    default="Iso=$isoval$",
+                    width="s100% m50% l20%",
+                    params={
+                        "placeholder": "Name of the isovalue..."
+                    },
+                    help="The name of the iso query. Note that you can use $isoval$ as a template to indicate where the isoval should go."
+                ),
+
+                FloatInput(
+                    key="val", name="Value",
+                    default=None,
+                ),
+
+                FloatInput(
+                    key="frac", name="Fraction",
+                    default=0.3,
+                    params={
+                        "min": 0,
+                        "max": 1,
+                        "step": 0.05
+                    },
+                    help="""If val is not provided, this is used to calculate where the isosurface should be drawn.
+                    It calculates them from the minimum and maximum values of the grid like so:
+                    If iso_frac = 0.3:
+                    (min_value-----ISOVALUE(30%)-----------max_value)
+                    Therefore, it should be a number between 0 and 1.
+                    """
+                ),
+
+                IntegerInput(
+                    key="step_size", name="Step size",
+                    default=1,
+                    help="""The step size to use to calculate the isosurface in case it's a 3D representation
+                    A bigger step-size can speed up the process dramatically, specially the rendering part
+                    and the resolution may still be more than satisfactory (try to use step_size=2). For very big
+                    grids your computer may not even be able to render very fine surfaces, so it's worth keeping
+                    this setting in mind."""
+                ),
+
+                ColorPicker(
+                    key="color", name="Color",
+                    default=None,
+                ),
+
+                FloatInput(
+                    key="opacity", name="Opacity",
+                    default=1,
+                    params={
+                        "min": 0,
+                        "max": 1,
+                        "step": 0.1
+                    }
+                )
+
+            ]
         ),
 
-        FloatInput(
-            key='iso_frac', name="Isosurfaces fractions",
-            default=0.3,
-            help="""If iso_vals is not provided, this value is used to calculate where the isosurfaces are drawn.
-            It calculates them from the minimum and maximum values of the grid like so:
-            If iso_frac = 0.3:
-            (min_value----30%-----ISOMIN----------ISOMAX---30%-----max_value)
-            Therefore, it should be a number between 0 and 0.5.
-            """
-        ),
-
-        IntegerInput(
-            key="surface_count", name="Number of surfaces",
-            default=2,
-            help="""The number of surfaces between the lower and the upper limits of iso_vals"""
-        ),
-
-        DropdownInput(
-            key="type3D", name="Type of 3D representation",
-            default=None,
-            params={
-                'options': [
-                    {'label': 'Isosurface', 'value': 'isosurface'},
-                    {'label': 'Volume', 'value': 'volume'},
-                ],
-                'isSearchable': True,
-                'isClearable': True,
-                'isMulti': True
-            },
-            help="""This controls how the 3D data is displayed. 
-            'volume' displays different layers with different levels of opacity so that there is more sensation of depth.
-            'isosurface' displays only isosurfaces and nothing inbetween them. For plotting grids with positive and negative
-            values, you should use 'isosurface' or two different 'volume' plots. 
-            If not provided, the plot will decide for you based on the above mentioned fact"""
-        ),
-
-        DropdownInput(
-            key="opacityscale", name="Opacity scale for 3D volume",
-            default="uniform",
-            params={
-                'options': [
-                    {'label': 'Uniform', 'value': 'uniform'},
-                    {'label': 'Min', 'value': 'min'},
-                    {'label': 'Max', 'value': 'max'},
-                    {'label': 'Extremes', 'value': 'extremes'},
-                ],
-                'isSearchable': True,
-                'isClearable': False,
-                'isMulti': True
-            },
-            help="""Controls how the opacity changes through layers. 
-            See https://plotly.com/python/3d-volume-plots/ for a display of the different possibilities"""
-        ),
-
-        FloatInput(
-            key='surface_opacity', name="Surface opacity",
-            default=1,
-            params={'min': 0, 'max': 1, 'step': 0.1},
-            help="""The opacity of the isosurfaces drawn by 3d plots from 0 (transparent) to 1 (opaque)."""
-        )
     )
 
     def _after_init(self):
@@ -474,17 +476,18 @@ class GridPlot(Plot):
             plot_func = self._plot3D
 
         # Use it
-        plot_func(grid, values, axes, sc, trace_name, showlegend=bool(trace_name))
+        plot_func(grid, values, axes, sc, trace_name, showlegend=bool(trace_name) or values.ndim == 3)
 
         # Add also the geometry if the user requested it
         # This should probably not work like this. It should make use
         # of MultiplePlot somehow. The problem is that right now, the bonds
         # are calculated each time this method is called, for example
         if plot_geom:
-            if not hasattr(grid, 'geometry'):
+            geom = getattr(grid, 'geometry', None)
+            if geom is None:
                 print('You asked to plot the geometry, but the grid does not contain any geometry')
             else:
-                geom_plot = grid.geometry.plot(**{'axes': axes, **geom_kwargs})
+                geom_plot = geom.plot(**{'axes': axes, **geom_kwargs})
 
                 self.add_traces(geom_plot.data)
 
@@ -601,87 +604,61 @@ class GridPlot(Plot):
 
         self.update_layout(**axes_titles)
 
-    def _plot3D(self, grid, values, display_axes, sc, name, crange, cmid, iso_vals, iso_frac, type3D, **kwargs):
-
+    def _plot3D(self, grid, values, display_axes, sc, name, isos, **kwargs):
         # The minimum and maximum values might be needed at some places
         minval, maxval = np.min(values), np.max(values)
 
-        if crange is None:
-            crange = [None, None]
-        cmin, cmax = crange
+        # Get the isos input field. It will be used to get the default fraction
+        # value and to complete queries
+        isos_param = self.get_param("isos")
 
-        if cmid is None and cmin is None and cmax is None:
-            if np.any(values > 0) and np.any(values < 0):
-                cmid = 0
+        # If there are no iso queries, we are going to create 2 isosurfaces.
+        if len(isos) == 0:
 
-        if iso_vals is None:
-            iso_vals = [minval + (maxval-minval)*iso_frac,
-                        maxval - (maxval-minval)*iso_frac]
-        isomin, isomax = iso_vals
+            default_iso_frac = isos_param["frac"].default
 
-        X, Y, Z = np.meshgrid(*[self._get_ax_range(grid, i, sc) for i, shape in enumerate(grid.shape)])
+            # If the default frac is 0.3, they will be displayed at 0.3 and 0.7
+            isos = [
+                {"frac": default_iso_frac},
+                {"frac": 1-default_iso_frac}
+            ]
 
-        if type3D is None:
-            if np.min(values)*np.max(values) < 0:
-                # Then we have mixed positive and negative values, use isosurface
-                type3D = 'isosurface'
-            else:
-                type3D = 'volume'
+        # Go through each iso query to draw the isosurface
+        for iso in isos:
 
-        if type3D == 'volume':
-            plot_func = self._plot3D_volume
-        elif type3D == 'isosurface':
-            plot_func = self._plot3D_isosurface
+            iso = isos_param.complete_query(iso)
 
-        plot_func(X, Y, Z, values, cmin, cmid, cmax, isomin, isomax, name, **kwargs)
+            if not iso.get("active", True):
+                continue
+
+            # Infer the iso value either from val or from frac
+            isoval = iso.get("val")
+            if isoval is None:
+                frac = iso.get("frac")
+                if frac is None:
+                    raise ValueError(f"You are providing an iso query without 'val' and 'frac'. There's no way to know the isovalue!\nquery: {iso}")
+                isoval = minval + (maxval-minval)*frac
+            
+            # Calculate the isosurface
+            vertices, faces, normals, intensities = grid.isosurface(isoval, iso.get("step_size", 1))
+
+            # Create the mesh trace and add it to the plot
+            x, y, z = vertices.T
+            I, J, K = faces.T
+
+            self.add_trace(go.Mesh3d(x=x,
+                        y=y,
+                        z=z,
+                        i=I,
+                        j=J,
+                        k=K,
+                        color=iso.get("color"),
+                        opacity=iso.get("opacity"),
+                        name=iso.get("name", "").replace("$isoval$", str(isoval)),
+                        **kwargs
+            ))
 
         self.layout.scene = {'aspectmode': 'data'}
-
-    def _plot3D_volume(self, X, Y, Z, values, cmin, cmid, cmax, isomin, isomax, name, surface_count,
-        surface_opacity, colorscale, opacityscale, **kwargs):
-
-        self.data = [{
-            'type': 'volume',
-            'name': name,
-            'x': X.ravel(),
-            'y': Y.ravel(),
-            'z': Z.ravel(),
-            'value': np.rollaxis(values, 1).ravel(),
-            'cmin': cmin,
-            'cmid': cmid,
-            'cmax': cmax,
-            'isomin': isomin,
-            'isomax': isomax,
-            'surface_count': surface_count,
-            'opacity': surface_opacity,
-            'autocolorscale': False,
-            'colorscale': colorscale,
-            'opacityscale': opacityscale,
-            'caps': {'x_show': False, 'y_show': False, 'z_show': False},
-            **kwargs
-        }]
-
-    def _plot3D_isosurface(self, X, Y, Z, values, cmin, cmid, cmax, isomin, isomax, name,
-        surface_opacity, surface_count, colorscale, **kwargs):
-
-        self.data = [{
-            'type': 'isosurface',
-            'name': name,
-            'x': X.ravel(),
-            'y': Y.ravel(),
-            'z': Z.ravel(),
-            'value': np.rollaxis(values, 1).ravel(),
-            'cmin': cmin,
-            'cmid': cmid,
-            'cmax': cmax,
-            'isomin': isomin,
-            'isomax': isomax,
-            'opacity': surface_opacity,
-            'surface_count': surface_count,
-            'colorscale': colorscale,
-            'caps': {'x_show': False, 'y_show': False, 'z_show': False},
-            **kwargs
-        }]
 
     def _after_get_figure(self, axes):
 
@@ -880,12 +857,6 @@ class GridPlot(Plot):
         scan: sisl Animation
             An animation representation of the scan
         """
-        # To keep the same iso_vals along all the animation in case it is a scan of 3D frames
-        if getattr(self.data[0], "isomin", None):
-            isovals = [self.data[0].isomin, self.data[0].isomax]
-        else:
-            isovals = self.get_setting("iso_vals")
-
         # Generate the plot using self as a template so that plots don't need
         # to read data, just process it and show it differently.
         # (If each plot read the grid, the memory requirements would be HUGE)
@@ -894,13 +865,13 @@ class GridPlot(Plot):
                 range_key: [[bp, breakpoints[i+1]] for i, bp in enumerate(breakpoints[:-1])]
             },
             plot_template=self,
-            fixed={**{key: val for key, val in self.settings.items() if key != range_key}, "iso_vals": isovals, **kwargs},
+            fixed={**{key: val for key, val in self.settings.items() if key != range_key}, **kwargs},
             frame_names=[f'{bp:2f}' for bp in breakpoints],
             **(animation_kwargs or {})
         )
 
-        # Set all frames to the same colorscale, if it's a 2d or 3d representation
-        if len(self.get_setting("axes")) > 1:
+        # Set all frames to the same colorscale, if it's a 2d representation
+        if len(self.get_setting("axes")) == 2:
             cmin = 10**6; cmax = -10**6
             for scan_im in scan:
                 c = getattr(scan_im.data[0], "value", scan_im.data[0].z)

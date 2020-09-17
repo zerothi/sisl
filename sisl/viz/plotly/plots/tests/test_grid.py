@@ -32,11 +32,8 @@ class GridPlotTester(PlotTester):
         plot.update_settings(axes=[0, 1])
         assert isinstance(plot.data[0], go.Heatmap), "Not displaying grid in 2D correctly?"
 
-        plot.update_settings(axes=[0, 1, 2], type3D="isosurface")
-        assert isinstance(plot.data[0], go.Isosurface)
-
-        plot.update_settings(type3D="volume")
-        assert isinstance(plot.data[0], go.Volume)
+        plot.update_settings(axes=[0, 1, 2]), "Not displaying grid in 3D correctly?"
+        assert isinstance(plot.data[0], go.Mesh3d)
 
     def test_grid(self):
 
