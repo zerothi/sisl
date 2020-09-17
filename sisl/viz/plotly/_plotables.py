@@ -128,11 +128,6 @@ def register_plotly_plotable(plotable, PlotClass=None, setting_key=None, plottin
 
 register = register_plotly_plotable
 
-register(siesta.bandsSileSiesta, BandsPlot, 'bands_file', default=True)
-register(siesta.bandsSileSiesta, FatbandsPlot, 'bands_file')
-
-register(siesta.pdosSileSiesta, PdosPlot, 'pdos_file', default=True)
-
 for GridSile in get_siles(attrs=["read_grid"]):
     register(GridSile, GridPlot, 'grid_file', default=True)
 
@@ -150,6 +145,11 @@ for cls in get_plot_classes():
     register(siesta.fdfSileSiesta, cls, "root_fdf")
 
 register(siesta.outSileSiesta, ForcesPlot, 'out_file', default=True)
+
+register(siesta.bandsSileSiesta, BandsPlot, 'bands_file', default=True)
+register(siesta.bandsSileSiesta, FatbandsPlot, 'bands_file')
+
+register(siesta.pdosSileSiesta, PdosPlot, 'pdos_file', default=True)
 
 # -----------------------------------------------------
 #           Register plotable sisl objects
