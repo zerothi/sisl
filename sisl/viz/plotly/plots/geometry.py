@@ -114,9 +114,9 @@ class BaseGeometryPlot(Plot):
 
         return color
 
-    def _after_read(self):
+    def _after_read(self, bonds):
 
-        if self.setting('bonds'):
+        if bonds:
             self.bonds = self.find_all_bonds(self.geometry)
 
     @staticmethod
@@ -1125,45 +1125,36 @@ class GeometryPlot(BaseGeometryPlot):
     )
 
     @entry_point('geometry')
-    def _read_nosource(self):
-        self.geometry = self.setting('geometry') or getattr(self, "geometry", None)
+    def _read_nosource(self, geometry):
+        self.geometry = geometry or getattr(self, "geometry", None)
 
         if self.geometry is None:
             raise Exception("No geometry has been provided.")
 
     @entry_point('geom_file')
-    def _read_siesta_output(self):
+    def _read_siesta_output(self, geom_file, root_fdf):
 
-        geom_file = self.setting("geom_file") or self.setting("root_fdf")
+        geom_file = geom_file or root_fdf
 
         self.geometry = self.get_sile(geom_file).read_geometry()
 
-    def _after_read(self):
+    def _after_read(self, bonds):
 
-        BaseGeometryPlot._after_read(self)
+        BaseGeometryPlot._after_read(self, bonds)
 
         self.get_param("atoms").update_options(self.geometry)
 
-    def _set_data(self):
+    def _set_data(self, atoms, show_atoms, atoms_color, atoms_colorscale, atoms_size, atoms_vertices,
+        cell, bonds, bind_bonds_to_ats, axes, dataaxis_1d):
 
-        cell_rendering = self.setting("cell")
-        bonds = self.setting('bonds')
-        axes = self.setting("axes")
         ndims = len(axes)
-        atoms_color = self.setting("atoms_color")
-        atoms_colorscale = self.setting("atoms_colorscale")
-        atoms_size = self.setting("atoms_size")
-        atoms_vertices = self.setting("atoms_vertices")
 
-        if self.setting("show_atoms") == False:
+        if show_atoms == False:
             atoms = []
             bind_bonds_to_ats = False
-        else:
-            atoms = self.setting("atoms")
-            bind_bonds_to_ats = self.setting("bind_bonds_to_ats")
 
         common_kwargs = {
-            'cell': cell_rendering, 'show_bonds': bonds,
+            'cell': cell, 'show_bonds': bonds,
             'atoms': atoms, "atoms_color": atoms_color, "atoms_size": atoms_size, "atoms_colorscale": atoms_colorscale,
             'bind_bonds_to_ats': bind_bonds_to_ats
         }
@@ -1176,15 +1167,15 @@ class GeometryPlot(BaseGeometryPlot):
             self.update_layout(xaxis_title=f'Axis {xaxis} [Ang]', yaxis_title=f'Axis {yaxis} [Ang]')
         elif ndims == 1:
             coords_axis = axes[0]
-            data_axis = self.setting("dataaxis_1d")
+            data_axis = dataaxis_1d
             self._plot_geom1D(coords_axis=coords_axis, data_axis=data_axis)
 
             data_axis_name = data_axis.__name__ if callable(data_axis) else 'Data axis'
             self.update_layout(xaxis_title=f'Axis {coords_axis} [Ang]', yaxis_title=data_axis_name)
 
-    def _after_get_figure(self):
+    def _after_get_figure(self, axes):
 
-        ndims = len(self.setting("axes"))
+        ndims = len(axes)
 
         if ndims == 2:
             self.layout.yaxis.scaleanchor = "x"

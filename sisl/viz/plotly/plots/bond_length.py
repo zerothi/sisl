@@ -140,13 +140,13 @@ class BondLengthMap(GeometryPlot):
         ),
 
         TextInput(
-            key = "cmap", name = "Plotly colormap",
-            default = "viridis",
-            width = "s100% m50% l33%",
-            params = {
+            key="colorscale", name="Plotly colormap",
+            default="viridis",
+            width="s100% m50% l33%",
+            params={
                 "placeholder": "Write a valid plotly colormap here..."
             },
-            help = """This determines the colormap to be used for the bond lengths display.<br>
+            help="""This determines the colormap to be used for the bond lengths display.<br>
             You can see all valid colormaps here: <a>https://plot.ly/python/builtin-colorscales/<a/><br>
             Note that you can reverse a color map by adding _r"""
         ),
@@ -241,22 +241,22 @@ class BondLengthMap(GeometryPlot):
         return BoundGeometry(self.relaxed_geom, self)
 
     @entry_point('geometry')
-    def _read_nosource(self):
+    def _read_nosource(self, strain_ref):
 
         GeometryPlot._read_nosource(self)
 
-        self._read_strain_ref()
+        self._read_strain_ref(strain_ref)
 
     @entry_point('geom_file')
-    def _read_siesta_output(self):
+    def _read_siesta_output(self, strain_ref):
 
         GeometryPlot._read_siesta_output(self)
 
-        self._read_strain_ref()
+        self._read_strain_ref(strain_ref)
 
-    def _read_strain_ref(self):
+    def _read_strain_ref(self, ref):
         """Reads the strain reference, if there is any."""
-        strain_ref = self.setting("strain_ref")
+        strain_ref = ref
 
         if isinstance(strain_ref, str):
             self.relaxed_geom = self.get_sile(strain_ref).read_geometry()
@@ -271,11 +271,11 @@ class BondLengthMap(GeometryPlot):
 
         self.get_param("atoms").update_options(self.geometry)
 
-    def _wrap_bond3D(self, bond, strain=False):
+    def _wrap_bond3D(self, bond, show_strain=False):
         """
         Receives a bond and sets its color to the bond length for the 3D case
         """
-        if strain:
+        if show_strain:
             color = self._bond_strain(self.relaxed_geom, self.geometry, bond)
             name = f'Strain: {color:.3f}'
         else:
@@ -286,11 +286,11 @@ class BondLengthMap(GeometryPlot):
 
         return (*self.geometry[bond], 15), {"color": color, "name": name}
 
-    def _wrap_bond2D(self, bond, xys, strain=False):
+    def _wrap_bond2D(self, bond, xys, show_strain=False):
         """
         Receives a bond and sets its color to the bond length for the 2D case
         """
-        if strain:
+        if show_strain:
             color = self._bond_strain(self.relaxed_geom, self.geometry, bond)
             name = f'Strain: {color:.3f}'
         else:
@@ -334,25 +334,16 @@ class BondLengthMap(GeometryPlot):
 
         return (bond_length - relaxed_bl) / relaxed_bl
 
-    def _set_data(self):
-        axes = self.setting("axes")
-        bonds = self.setting('bonds')
+    def _set_data(self, strain, atoms, show_atoms, atoms_color, atoms_colorscale, atoms_size, atoms_vertices,
+        cell, bonds, points_per_bond, cmin, cmax, colorscale, colorbar, bind_bonds_to_ats, axes):
         ndims = len(axes)
-        cell_rendering = self.setting("cell")
-        if self.setting("show_atoms") == False:
+
+        if show_atoms == False:
             atoms = []
             bind_bonds_to_ats = False
-        else:
-            atoms = self.setting("atoms")
-            bind_bonds_to_ats = self.setting("bind_bonds_to_ats")
-        atoms_color = self.setting("atoms_color")
-        atoms_colorscale = self.setting("atoms_colorscale")
-        atoms_size = self.setting("atoms_size")
-        atoms_vertices = self.setting("atoms_vertices")
 
         # Set the bonds to the relaxed ones if there is a strain reference
-        show_strain = self.setting("strain")
-        show_strain = show_strain and hasattr(self, "relaxed_bonds")
+        show_strain = strain and hasattr(self, "relaxed_bonds")
         if show_strain:
             self.bonds = self.relaxed_bonds
 
@@ -365,25 +356,24 @@ class BondLengthMap(GeometryPlot):
         # of the color scale
         self.colors = []
 
-        common_kwargs = {'cell': cell_rendering, 'show_bonds': bonds,
+        common_kwargs = {'cell': cell, 'show_bonds': bonds,
             'atoms': atoms, "atoms_color": atoms_color, "atoms_size": atoms_size, "atoms_colorscale": atoms_colorscale,
             'bind_bonds_to_ats': bind_bonds_to_ats
         }
 
         if ndims == 3:
             self._plot_geom3D(cheap_bonds=True,
-                wrap_bond=partial(self._wrap_bond3D, strain=show_strain),
+                wrap_bond=partial(self._wrap_bond3D, show_strain=show_strain),
                 atoms_vertices=atoms_vertices,
                 **common_kwargs
             )
         elif ndims == 2:
             xaxis, yaxis = axes
-            points_per_bond = self.setting("points_per_bond")
 
             self._plot_geom2D(
                 xaxis=xaxis, yaxis=yaxis,
                 bonds_together=True, points_per_bond=points_per_bond,
-                wrap_bond=partial(self._wrap_bond2D, strain=show_strain),
+                wrap_bond=partial(self._wrap_bond2D, show_strain=show_strain),
                 **common_kwargs
             )
 
@@ -391,13 +381,11 @@ class BondLengthMap(GeometryPlot):
         elif ndims == 1:
             raise NotImplementedError("Does it make sense to implement 1 dimensional bond length maps? If so, post an issue on sisl's github page. Thanks!")
 
-        showscale = self.setting('colorbar')
-
         if self.colors:
-            self.update_layout(coloraxis={"cmin": self.setting("cmin") or min(self.colors),
-                                        "cmax": self.setting("cmax") or max(self.colors),
-                                        "colorscale": self.setting("cmap"),
-                                        'showscale': showscale,
+            self.update_layout(coloraxis={"cmin": cmin or min(self.colors),
+                                        "cmax": cmax or max(self.colors),
+                                        "colorscale": colorscale,
+                                        'showscale': colorbar,
                                         'colorbar_title': 'Strain' if show_strain else 'Bond length [Ang]'})
 
         self.update_layout(legend_orientation='h')

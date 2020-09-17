@@ -124,7 +124,7 @@ def create_app(get_session, set_session):
 
         session = get_session()
 
-        dirname = session.setting("file_storage_dir")
+        dirname = session.get_setting("file_storage_dir")
         if not dirname.exists():
             dirname.mkdir()
 
@@ -138,7 +138,7 @@ def create_app(get_session, set_session):
         plot = Plot(file_name)#, attrs_for_plot={"_file_contents": file_contents}, _debug=True) #
         session.autosync.add_plot(plot, session.tabs[0]["id"])
 
-        if not session.setting("keep_uploaded"):
+        if not session.get_setting("keep_uploaded"):
             shutil.rmtree(str(dirname))
 
     return app, socketio

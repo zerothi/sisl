@@ -209,7 +209,7 @@ class PdosPlot(Plot):
 
         def _get_frame_names(self):
 
-            return [child_plot.setting("pdos_file").name for child_plot in self.child_plots]
+            return [child_plot.get_setting("pdos_file").name for child_plot in self.child_plots]
 
         return PdosPlot.animated("pdos_file", pdos_files, frame_names = _get_frame_names, wdir = wdir, **kwargs)
 
@@ -244,24 +244,20 @@ class PdosPlot(Plot):
         )
 
     @entry_point('hamiltonian')
-    def _read_from_H(self):
+    def _read_from_H(self, kgrid, kgrid_displ, Erange, nE, E0):
 
         if not hasattr(self, "H"):
             self.setup_hamiltonian()
 
         # Get the kgrid or generate a default grid by checking the interaction between cells
         # This should probably take into account how big the cell is.
-        kgrid = self.setting('kgrid')
         if kgrid is None:
             kgrid = [3 if nsc > 1 else 1 for nsc in self.H.geometry.nsc]
-        kgrid_displ = self.setting('kgrid_displ')
-
-        Erange = self.setting("Erange")
 
         if Erange is None:
             raise Exception('You need to provide an energy range to calculate the PDOS from the Hamiltonian')
 
-        self.E = np.linspace(Erange[0], Erange[-1], self.setting("nE")) + self.setting("E0")
+        self.E = np.linspace(Erange[0], Erange[-1], nE) + E0
 
         self.mp = sisl.MonkhorstPack(self.H, kgrid, kgrid_displ)
 
@@ -277,10 +273,10 @@ class PdosPlot(Plot):
         self.PDOS = np.array(PDOS)
 
     @entry_point('siesta_output')
-    def _read_siesta_output(self):
+    def _read_siesta_output(self, pdos_file):
 
         #Get the info from the .PDOS file
-        self.geometry, self.E, self.PDOS = self.get_sile("pdos_file").read_data()
+        self.geometry, self.E, self.PDOS = self.get_sile(pdos_file or "pdos_file").read_data()
 
     def _after_read(self):
         """
@@ -304,11 +300,10 @@ class PdosPlot(Plot):
 
         self.get_param('requests').update_options(self.geometry, "p" if self.spin_polarized else "")
 
-    def _set_data(self):
+    def _set_data(self, requests, E0, Erange):
 
         #Get only the energies we are interested in
-        E0 = self.setting("E0")
-        Erange = np.array(self.setting("Erange"))
+        Erange = np.array(Erange)
         if Erange is None:
             Emin, Emax = [min(self.PDOS.E.values), max(self.PDOS.E.values)]
         else:
@@ -321,7 +316,7 @@ class PdosPlot(Plot):
         requests_param = self.get_param("requests")
 
         #Go request by request and plot the corresponding PDOS contribution
-        for request in self.setting("requests"):
+        for request in requests:
             self._draw_request(request, E_PDOS, requests_param, E0)
 
         self.update_layout(yaxis_range=np.array([Emin - E0, Emax - E0]))
@@ -446,7 +441,7 @@ class PdosPlot(Plot):
 
             If no query is provided, all the requests will be matched
         """
-        return [req for i, req in enumerate(self.setting("requests")) if self._matches_request(req, i_or_names, i)]
+        return [req for i, req in enumerate(self.get_setting("requests")) if self._matches_request(req, i_or_names, i)]
 
     def add_request(self, req = {}, clean=False, **kwargs):
         """
@@ -493,7 +488,7 @@ class PdosPlot(Plot):
         if all:
             requests = []
         else:
-            requests = [req for i, req in enumerate(self.setting("requests")) if not self._matches_request(req, i_or_names, i)]
+            requests = [req for i, req in enumerate(self.get_setting("requests", copy=False)) if not self._matches_request(req, i_or_names, i)]
 
         return self.update_settings(run_updates=update_fig, requests=requests)
 
@@ -516,7 +511,7 @@ class PdosPlot(Plot):
 
         """
         # We create a new list, otherwise we would be modifying the current one (not good)
-        requests = list(self.setting("requests"))
+        requests = list(self.get_setting("requests", copy=False))
         for i, request in enumerate(requests):
             if self._matches_request(request, i_or_names, i):
                 requests[i] = {**request, **kwargs}
@@ -554,7 +549,7 @@ class PdosPlot(Plot):
 
         # Merge all the requests (nice tree I built here, isn't it? :) )
         new_request = {key: [] for key in keys}
-        for i, request in enumerate(self.setting("requests")):
+        for i, request in enumerate(self.get_setting("requests", copy=False)):
             if self._matches_request(request, i_or_names, i):
                 for key in keys:
                     if request.get(key, None) is not None:
@@ -635,7 +630,7 @@ class PdosPlot(Plot):
             self.remove_requests(*i_or_names, update_fig=False)
 
         if not clean:
-            requests = [*self.setting("requests"), *requests]
+            requests = [*self.get_setting("requests", copy=False), *requests]
 
         return self.update_settings(requests=requests)
 
@@ -681,6 +676,6 @@ class PdosPlot(Plot):
 
         # If the user doesn't want to clean the plot, we will just add the requests to the existing ones
         if not clean:
-            requests = [*self.setting("requests"), *requests]
+            requests = [*self.get_setting("requests", copy=False), *requests]
 
         return self.update_settings(requests=requests)

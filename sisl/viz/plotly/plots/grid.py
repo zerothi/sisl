@@ -113,6 +113,12 @@ class GridPlot(Plot):
     #Define all the class attributes
     _plot_type = "Grid"
 
+    _update_methods = {
+        "read_data": [],
+        "set_data": ["_plot1D", "_plot2D", "_plot3D"],
+        "get_figure": []
+    }
+
     _parameters = (
 
         PlotableInput(
@@ -382,17 +388,15 @@ class GridPlot(Plot):
         self._add_shortcuts()
 
     @entry_point('grid')
-    def _read_nosource(self):
+    def _read_nosource(self, grid):
 
-        self.grid = self.setting("grid")
+        self.grid = grid
 
         if self.grid is None:
             raise Exception()
 
     @entry_point('grid_file')
-    def _read_grid_file(self):
-
-        grid_file = self.setting("grid_file")
+    def _read_grid_file(self, grid_file):
 
         self.grid = self.get_sile(grid_file).read_grid()
 
@@ -405,24 +409,19 @@ class GridPlot(Plot):
             self.modify_param(key, "inputField.params.max", self.grid.cell[ax, ax])
             self.get_param(key, as_dict=False).update_marks()
 
-    def _set_data(self):
+    def _set_data(self, axes, sc, interp, trace_name, transforms, represent, cut_vacuum, grid_file,
+        x_range, y_range, z_range, plot_geom, geom_kwargs):
 
         grid = self.grid
 
-        transforms = self.setting("transforms")
         for transform in transforms:
             grid = self._transform_grid(grid, transform)
 
-        display_axes = self.setting("axes")
-        sc = self.setting("sc")
-        name = self.setting("trace_name")
-        grid_file = self.setting("grid_file")
-        if name is None and grid_file:
-            name = grid_file.name
+        if trace_name is None and grid_file:
+            trace_name = grid_file.name
 
         # Get only the part of the grid that we need
-        range_keys = ("x_range", "y_range", "z_range")
-        ax_ranges = [self.setting(key) for ax, key in enumerate(range_keys)]
+        ax_ranges = [x_range, y_range, z_range]
 
         for ax, ax_range in enumerate(ax_ranges):
             if ax_range is not None:
@@ -436,34 +435,31 @@ class GridPlot(Plot):
                 #And finally get the subpart of the grid
                 grid = grid.sub(np.arange(indices[0, ax], indices[1, ax] + 1), ax)
 
-        cut_vacuum = self.setting("cut_vacuum")
         if cut_vacuum and getattr(grid, "geometry", None):
             grid, lims = self._cut_vacuum(grid)
             self.grid_offset = lims[0]
         else:
             self.grid_offset = [0, 0, 0]
 
-        interp_factors = np.array([factor if ax in display_axes else 1 for ax, factor in enumerate(
-            self.setting("interp"))], dtype=int)
+        interp_factors = np.array([factor if ax in axes else 1 for ax, factor in enumerate(interp)], dtype=int)
 
         interpolate = (interp_factors != 1).any()
 
         for ax in [0, 1, 2]:
-            if ax not in display_axes:
+            if ax not in axes:
                 grid = grid.average(ax)
 
         if interpolate:
             grid = grid.interp([factor for factor in grid.shape*interp_factors])
 
             for ax in [0, 1, 2]:
-                if ax not in display_axes:
+                if ax not in axes:
                     grid = grid.average(ax)
 
         # Choose the representation of the grid that we want to display
-        representation = self.setting("represent")
-        if representation == 'real':
+        if represent == 'real':
             values = grid.grid.real
-        elif representation == 'imag':
+        elif represent == 'imag':
             values = grid.grid.imag
 
         #Remove the leftover dimensions
@@ -478,28 +474,26 @@ class GridPlot(Plot):
             plot_func = self._plot3D
 
         # Use it
-        plot_func(grid, values, display_axes, sc, name, showlegend=bool(name))
+        plot_func(grid, values, axes, sc, trace_name, showlegend=bool(trace_name))
 
         # Add also the geometry if the user requested it
         # This should probably not work like this. It should make use
         # of MultiplePlot somehow. The problem is that right now, the bonds
         # are calculated each time this method is called, for example
-        plot_geom = self.setting('plot_geom')
         if plot_geom:
             if not hasattr(grid, 'geometry'):
                 print('You asked to plot the geometry, but the grid does not contain any geometry')
             else:
-                geom_kwargs = self.setting('geom_kwargs')
-                geom_plot = grid.geometry.plot(**{'axes': self.settings['axes'], **geom_kwargs})
+                geom_plot = grid.geometry.plot(**{'axes': axes, **geom_kwargs})
 
                 self.add_traces(geom_plot.data)
 
         self.update_layout(legend_orientation='h')
 
-    def _get_ax_range(self, grid, ax, sc):
+    def _get_ax_range(self, grid, ax, sc, offset, x_range, y_range, z_range):
 
-        ax_range = self.setting(["x_range", "y_range", "z_range"][ax])
-        grid_offset = self.grid_offset + self.setting("offset")
+        ax_range = [x_range, y_range, z_range][ax]
+        grid_offset = self.grid_offset + offset
 
         if ax_range is not None:
             offset = ax_range[0]
@@ -571,7 +565,7 @@ class GridPlot(Plot):
 
         self.update_layout(**axes_titles)
 
-    def _plot2D(self, grid, values, display_axes, sc, name, **kwargs):
+    def _plot2D(self, grid, values, display_axes, sc, name, crange, cmid, colorscale, zsmooth, **kwargs):
 
         xaxis = display_axes[0]
         yaxis = display_axes[1]
@@ -581,12 +575,10 @@ class GridPlot(Plot):
 
         values = np.tile(values, (sc[yaxis], sc[xaxis]))
 
-        crange = self.setting('crange')
         if crange is None:
             crange = [None, None]
         cmin, cmax = crange
 
-        cmid = self.setting("cmid")
         if cmid is None and cmin is None and cmax is None:
             if np.any(values > 0) and np.any(values < 0):
                 cmid = 0
@@ -597,11 +589,11 @@ class GridPlot(Plot):
             'z': values,
             'x': self._get_ax_range(grid, xaxis, sc),
             'y': self._get_ax_range(grid, yaxis, sc),
-            'zsmooth': self.setting('zsmooth'),
+            'zsmooth': zsmooth,
             'zmin': cmin,
             'zmax': cmax,
             'zmid': cmid,
-            'colorscale': self.setting('colorscale'),
+            'colorscale': colorscale,
             **kwargs
         }]
 
@@ -609,31 +601,26 @@ class GridPlot(Plot):
 
         self.update_layout(**axes_titles)
 
-    def _plot3D(self, grid, values, display_axes, sc, name, **kwargs):
+    def _plot3D(self, grid, values, display_axes, sc, name, crange, cmid, iso_vals, iso_frac, type3D, **kwargs):
 
         # The minimum and maximum values might be needed at some places
         minval, maxval = np.min(values), np.max(values)
 
-        crange = self.setting('crange')
         if crange is None:
             crange = [None, None]
         cmin, cmax = crange
 
-        cmid = self.setting("cmid")
         if cmid is None and cmin is None and cmax is None:
             if np.any(values > 0) and np.any(values < 0):
                 cmid = 0
 
-        isovals = self.setting('iso_vals')
-        iso_frac = self.setting('iso_frac')
-        if isovals is None:
-            isovals = [minval + (maxval-minval)*iso_frac,
+        if iso_vals is None:
+            iso_vals = [minval + (maxval-minval)*iso_frac,
                         maxval - (maxval-minval)*iso_frac]
-        isomin, isomax = isovals
+        isomin, isomax = iso_vals
 
         X, Y, Z = np.meshgrid(*[self._get_ax_range(grid, i, sc) for i, shape in enumerate(grid.shape)])
 
-        type3D = self.setting('type3D')
         if type3D is None:
             if np.min(values)*np.max(values) < 0:
                 # Then we have mixed positive and negative values, use isosurface
@@ -650,7 +637,8 @@ class GridPlot(Plot):
 
         self.layout.scene = {'aspectmode': 'data'}
 
-    def _plot3D_volume(self, X, Y, Z, values, cmin, cmid, cmax, isomin, isomax, name, **kwargs):
+    def _plot3D_volume(self, X, Y, Z, values, cmin, cmid, cmax, isomin, isomax, name, surface_count,
+        surface_opacity, colorscale, opacityscale, **kwargs):
 
         self.data = [{
             'type': 'volume',
@@ -664,16 +652,17 @@ class GridPlot(Plot):
             'cmax': cmax,
             'isomin': isomin,
             'isomax': isomax,
-            'surface_count': self.setting('surface_count'),
-            'opacity': self.setting('surface_opacity'),
+            'surface_count': surface_count,
+            'opacity': surface_opacity,
             'autocolorscale': False,
-            'colorscale': self.setting('colorscale'),
-            'opacityscale': self.setting('opacityscale'),
+            'colorscale': colorscale,
+            'opacityscale': opacityscale,
             'caps': {'x_show': False, 'y_show': False, 'z_show': False},
             **kwargs
         }]
 
-    def _plot3D_isosurface(self, X, Y, Z, values, cmin, cmid, cmax, isomin, isomax, name, **kwargs):
+    def _plot3D_isosurface(self, X, Y, Z, values, cmin, cmid, cmax, isomin, isomax, name,
+        surface_opacity, surface_count, colorscale, **kwargs):
 
         self.data = [{
             'type': 'isosurface',
@@ -687,17 +676,17 @@ class GridPlot(Plot):
             'cmax': cmax,
             'isomin': isomin,
             'isomax': isomax,
-            'opacity': self.setting('surface_opacity'),
-            'surface_count': self.setting('surface_count'),
-            'colorscale': self.setting('colorscale'),
+            'opacity': surface_opacity,
+            'surface_count': surface_count,
+            'colorscale': colorscale,
             'caps': {'x_show': False, 'y_show': False, 'z_show': False},
             **kwargs
         }]
 
-    def _after_get_figure(self):
+    def _after_get_figure(self, axes):
 
         # If we are plotting the 2D version, use a 1:1 ratio
-        if len(self.setting("axes")) == 2:
+        if len(axes) == 2:
             self.figure.layout.yaxis.scaleanchor = "x"
             self.figure.layout.yaxis.scaleratio = 1
 
@@ -748,7 +737,7 @@ class GridPlot(Plot):
         if isinstance(steps, int):
             steps = [steps]*len(ax)
 
-        sc = [*self.setting("sc")]
+        sc = list(self.get_setting(sc))
 
         for a, step in zip(ax, steps):
             sc[a] = max(1, sc[a]-step)
@@ -775,7 +764,7 @@ class GridPlot(Plot):
         if isinstance(tiles, int):
             tiles = [tiles]*len(ax)
 
-        sc = [*self.setting("sc")]
+        sc = [*self.get_setting("sc")]
 
         for a, tile in zip(ax, tiles):
             sc[a] *= tile
@@ -826,7 +815,7 @@ class GridPlot(Plot):
         """
         # If no axis is provided, let's get the first one that is not displayed
         if along is None:
-            displayed = self.setting('axes')
+            displayed = self.get_setting('axes')
             not_displayed = [ax["value"] for ax in self.get_param('axes')['inputField.params.options'] if ax["value"] not in displayed]
             along = not_displayed[0] if not_displayed else 2
 
@@ -837,7 +826,7 @@ class GridPlot(Plot):
         if start is not None and stop is not None:
             along_range = [start, stop]
         else:
-            along_range = self.setting(range_key)
+            along_range = self.get_setting(range_key)
             if along_range is None:
                 range_param = self.get_param(range_key)
                 along_range = [range_param[f"inputField.params.{lim}"] for lim in ["min", "max"]]
@@ -895,7 +884,7 @@ class GridPlot(Plot):
         if getattr(self.data[0], "isomin", None):
             isovals = [self.data[0].isomin, self.data[0].isomax]
         else:
-            isovals = self.setting("iso_vals")
+            isovals = self.get_setting("iso_vals")
 
         # Generate the plot using self as a template so that plots don't need
         # to read data, just process it and show it differently.
@@ -911,7 +900,7 @@ class GridPlot(Plot):
         )
 
         # Set all frames to the same colorscale, if it's a 2d or 3d representation
-        if len(self.setting("axes")) > 1:
+        if len(self.get_setting("axes")) > 1:
             cmin = 10**6; cmax = -10**6
             for scan_im in scan:
                 c = getattr(scan_im.data[0], "value", scan_im.data[0].z)
@@ -1194,9 +1183,7 @@ class WavefunctionPlot(GridPlot):
     }
 
     @entry_point('eigenstate')
-    def _read_nosource(self):
-
-        eigenstate = self.setting('eigenstate')
+    def _read_nosource(self, eigenstate):
 
         if eigenstate is None:
             raise Exception('No eigenstate was provided')
@@ -1204,33 +1191,25 @@ class WavefunctionPlot(GridPlot):
         self.eigenstate = eigenstate
 
     @entry_point('hamiltonian')
-    def _read_from_H(self):
+    def _read_from_H(self, k, spin):
 
         self.setup_hamiltonian()
 
-        k = self.setting("k")
-        spin = self.setting("spin")[0]
-
-        self.eigenstate = self.H.eigenstate(k, spin=spin)
+        self.eigenstate = self.H.eigenstate(k, spin=spin[0])
 
     def _after_read(self):
         # Just avoid here GridPlot's _after_grid. Note that we are
         # calling it later in _set_data
         pass
 
-    def _set_data(self):
+    def _set_data(self, i, geometry, grid, k, grid_prec):
 
-        geom = self.setting('geometry')
-        if geom is not None:
-            self.geometry = geom
+        if geometry is not None:
+            self.geometry = geometry
         if getattr(self, 'geometry', None) is None:
             raise Exception('No geometry was provided and we need it the basis orbitals to build the wavefunctions from the coefficients!')
 
-        grid_prec = self.setting('grid_prec')
-        i = self.setting('i')
-
-        if self.setting('grid') is None:
-            k = self.setting('k')
+        if grid is None:
             dtype = float if (np.array(k) == 0).all() else complex
             self.grid = sisl.Grid(grid_prec, geometry=self.geometry, dtype=dtype)
 

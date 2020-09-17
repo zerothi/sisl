@@ -312,6 +312,12 @@ class BandsPlot(Plot):
 
     )
 
+    _update_methods = {
+        "read_data": [],
+        "set_data": ["_draw_gaps"],
+        "get_figure": []
+    }
+
     _layout_defaults = {
         'xaxis_title': 'K',
         'xaxis_mirror': True,
@@ -329,7 +335,7 @@ class BandsPlot(Plot):
 
         def _get_frame_names(self):
 
-            return [childPlot.setting("bands_file").name for childPlot in self.child_plots]
+            return [childPlot.get_setting("bands_file").name for childPlot in self.child_plots]
 
         return cls.animated("bands_file", bands_files, frame_names = _get_frame_names, wdir = wdir, **kwargs)
 
@@ -339,14 +345,12 @@ class BandsPlot(Plot):
         self.add_shortcut("g", "Toggle gap", self.toggle_gap)
 
     @entry_point('aiida_bands')
-    def _read_aiida_bands(self):
+    def _read_aiida_bands(self, aiida_bands):
         """
         Creates the bands plot reading from an aiida BandsData node.
         """
 
-        band_node = self.setting("aiida_bands")
-
-        bands = band_node.get_bands()
+        bands = aiida_bands.get_bands()
 
         if bands.ndim == 2:
             bands = np.expand_dims(bands, 0)
@@ -362,29 +366,27 @@ class BandsPlot(Plot):
         )
 
     @entry_point('band_structure')
-    def _read_from_band_structure(self, band_structure=None, eigenstate_map=None):
+    def _read_from_band_structure(self, band_structure, eigenstate_map):
 
-        band_struct = band_structure or self.setting("band_structure")
-
-        if band_struct is None:
+        if band_structure is None:
             raise ValueError("No band structure (k points path) was provided")
 
-        if not isinstance(getattr(band_struct, "parent", None), sisl.Hamiltonian):
+        if not isinstance(getattr(band_structure, "parent", None), sisl.Hamiltonian):
             self.setup_hamiltonian()
-            band_struct.set_parent(self.H)
+            band_structure.set_parent(self.H)
         else:
-            self.H = band_struct.parent
+            self.H = band_structure.parent
 
         # Define the spin class of this calculation.
         self.spin = self.H.spin
 
-        self.ticks = band_struct.lineartick()
-        self.kPath = band_struct._k
+        self.ticks = band_structure.lineartick()
+        self.kPath = band_structure._k
 
         # We define a wrapper to get the values out of the eigenstates
         # to give the possibility to the user to do something inbetween
         # NOTE THAT THIS IS USED BY FAT BANDS TO GET THE WEIGHTS SIMULTANEOUSLY
-        eig_map = eigenstate_map or self.setting('eigenstate_map')
+        eig_map = eigenstate_map
 
         # Also, in this wrapper we will get the spin moments in case it is a non_colinear
         # calculation
@@ -409,7 +411,7 @@ class BandsPlot(Plot):
         bands_arrays = []
         for spin_index in spin_indices:
 
-            spin_bands = band_struct.apply.dataarray.eigenstate(
+            spin_bands = band_structure.apply.dataarray.eigenstate(
                 wrap=partial(bands_wrapper, spin_index=spin_index),
                 spin=spin_index,
                 coords=('band',),
@@ -420,7 +422,7 @@ class BandsPlot(Plot):
         # Merge everything into a single dataarray with a spin dimension
         self.bands = xr.concat(bands_arrays, "spin").assign_coords({"spin": spin_indices}).transpose("k", "spin", "band")
 
-        self.bands['k'] = band_struct.lineark()
+        self.bands['k'] = band_structure.lineark()
         self.bands.attrs = {"ticks": self.ticks[0], "ticklabels": self.ticks[1], **bands_arrays[0].attrs}
 
         if hasattr(self, "spin_moments"):
@@ -435,7 +437,7 @@ class BandsPlot(Plot):
             )
 
     @entry_point('path')
-    def _read_from_H(self, eigenstate_map=None):
+    def _read_from_H(self, path, band_structure, eigenstate_map=None):
         """
         This entry point just generates a band structure from the path and
         then the band_structure entry point takes it from there.
@@ -446,11 +448,11 @@ class BandsPlot(Plot):
         inputs should exist. And then it should be always parsed into a sisl.BandStructure.
         """
         #Get the requested path
-        self.path = self.setting('path')
-        if not self.path and self.setting('band_structure'):
+        self.path = path
+        if not self.path and band_structure:
             return self._read_from_band_structure(eigenstate_map=eigenstate_map)
         if self.path and len(self.path) > 1:
-            self.path = [point for point in self.setting("path") if point.get("active", True)]
+            self.path = [point for point in path if point.get("active", True)]
         else:
             raise Exception(f"You need to provide at least 2 points of the path to draw the bands. Please update the 'path' setting. The current path is: {self.path}")
 
@@ -466,22 +468,22 @@ class BandsPlot(Plot):
         self._read_from_band_structure(band_structure=band_struct, eigenstate_map=eigenstate_map)
 
     @entry_point('bands_file')
-    def _read_siesta_output(self):
+    def _read_siesta_output(self, bands_file, path, band_structure):
 
         #Get the info from the bands file
-        self.path = self.setting("path")
+        self.path = path
 
-        if self.path and self.path != getattr(self, "siestaPath", None) or self.setting("band_structure"):
+        if self.path and self.path != getattr(self, "siesta_path", None) or band_structure:
             raise ValueError("A path was provided, therefore we can not use the .bands file even if there is one")
 
-        self.bands = self.get_sile("bands_file").read_data(as_dataarray=True)
+        self.bands = self.get_sile(bands_file or "bands_file").read_data(as_dataarray=True)
 
         # Inform of the path that it's being used if we can
         # THIS IS ONLY WORKING PROPERLY FOR FRACTIONAL UNITS OF THE BAND POINTS RN
         if hasattr(self, "fdf_sile") and self.fdf_sile.get("BandLines"):
 
             try:
-                self.siestaPath = []
+                self.siesta_path = []
                 points = self.fdf_sile.get("BandLines")
 
                 for i, point in enumerate(points):
@@ -490,9 +492,9 @@ class BandsPlot(Plot):
                     divisions = int(divisions) - int(points[i-1].split()[0]) if i > 0 else None
                     tick = others[0] if len(others) > 0 else None
 
-                    self.siestaPath.append({"active": True, "x": float(x), "y": float(y), "z": float(z), "divisions": divisions, "tick": tick})
+                    self.siesta_path.append({"active": True, "x": float(x), "y": float(y), "z": float(z), "divisions": divisions, "tick": tick})
 
-                    self.update_settings(path=self.siestaPath, run_updates=False, no_log=True)
+                    self.update_settings(path=self.siesta_path, run_updates=False, no_log=True)
             except Exception as e:
                 print(f"Could not correctly read the bands path from siesta.\n Error {e}")
 
@@ -522,7 +524,7 @@ class BandsPlot(Plot):
             "marks": {int(i): str(i) for i in iBands},
         })
 
-    def _set_data(self, draw_before_bands=None, add_band_trace_data=None):
+    def _set_data(self, Erange, E0, bands_range, spin, bands_width, bands_color, spindown_color, add_band_trace_data, draw_before_bands=None):
         """
         Converts the bands dataframe into a data object for plotly.
 
@@ -533,15 +535,12 @@ class BandsPlot(Plot):
         self.data: list of dicts
             contains a dictionary for each bandStruct with all its information.
         """
-        Erange = self.setting('Erange')
-        E0 = self.setting('E0')
 
         # Shift all the bands to the reference
         filtered_bands = self.bands - E0
 
         # Get the bands that matter for the plot
         if Erange is None:
-            bands_range = self.setting("bands_range")
 
             if bands_range is None:
             # If neither E range or bands_range was provided, we will just plot the 15 bands below and above the fermi level
@@ -560,7 +559,6 @@ class BandsPlot(Plot):
             self.update_settings(run_updates=False, bands_range=[int(filtered_bands['band'].min()), int(filtered_bands['band'].max())], no_log=True)
 
         # Let's treat the spin if the user requested it
-        spin = self.setting("spin")
         self.spin_texture = False
         if spin is not None and len(spin) > 0:
             if isinstance(spin[0], int):
@@ -570,7 +568,6 @@ class BandsPlot(Plot):
                     raise ValueError(f"You requested spin texture ({spin[0]}), but spin moments have not been calculated. The spin class is {self.spin.kind}")
                 self.spin_texture = True
 
-        add_band_trace_data = add_band_trace_data or self.setting("add_band_trace_data")
         if not callable(add_band_trace_data):
             add_band_trace_data = lambda * args, **kwargs: {}
 
@@ -582,24 +579,18 @@ class BandsPlot(Plot):
 
             def scatter_additions(band, spin_index):
 
-                width = self.setting("bands_width")
-
                 return {
                     "mode": "markers",
-                    "marker": {"color": self.spin_moments.sel(band=band, axis=spin[0]).values, "size": width, "showscale": True, "coloraxis": "coloraxis"},
+                    "marker": {"color": self.spin_moments.sel(band=band, axis=spin[0]).values, "size": bands_width, "showscale": True, "coloraxis": "coloraxis"},
                     "showlegend": False
                 }
         else:
-
-            bands_color = self.setting("bands_color")
-            spindown_color = self.setting("spindown_color")
-            width = self.setting("bands_width")
 
             def scatter_additions(band, spin_index):
 
                 return {
                     "mode": "lines",
-                    'line': {"color": [bands_color, spindown_color][spin_index], 'width': width},
+                    'line': {"color": [bands_color, spindown_color][spin_index], 'width': bands_width},
                 }
 
         #Define the data of the plot as a list of dictionaries {x, y, 'type', 'name'}
@@ -617,17 +608,17 @@ class BandsPlot(Plot):
 
         self._draw_gaps()
 
-    def _after_get_figure(self):
+    def _after_get_figure(self, Erange, spin, spin_texture_colorscale):
         #Add the ticks
         self.figure.layout.xaxis.tickvals = getattr(self.bands, "ticks", None)
         self.figure.layout.xaxis.ticktext = getattr(self.bands, "ticklabels", None)
-        self.figure.layout.yaxis.range = np.array(self.setting("Erange"))
+        self.figure.layout.yaxis.range = Erange
         self.figure.layout.xaxis.range = self.bands.k.values[[0, -1]]
 
         # If we are showing spin textured bands, customize the colorbar
         if self.spin_texture:
-            self.layout.coloraxis.colorbar = {"title": f"Spin texture ({self.setting('spin')[0]})"}
-            self.update_layout(coloraxis = {"cmin": -1, "cmax": 1, "colorscale": self.setting("spin_texture_colorscale")})
+            self.layout.coloraxis.colorbar = {"title": f"Spin texture ({spin[0]})"}
+            self.update_layout(coloraxis = {"cmin": -1, "cmax": 1, "colorscale": spin_texture_colorscale})
 
     def _calculate_gaps(self):
         """
@@ -653,16 +644,12 @@ class BandsPlot(Plot):
             'Es': [float(VBtop), float(CBbot)]
         }
 
-    def _draw_gaps(self):
+    def _draw_gaps(self, gap, gap_tol, gap_color, direct_gaps_only, custom_gaps):
         """
         Draws the calculated gaps and the custom gaps in the plot
         """
         # Draw gaps
-        if self.setting("gap"):
-
-            gap_tolerance = self.setting('gap_tol')
-            gap_color = self.setting('gap_color')
-            only_direct = self.setting('direct_gaps_only')
+        if gap:
 
             gapKs = [np.atleast_1d(k) for k in self.gap_info['k']]
 
@@ -673,7 +660,7 @@ class BandsPlot(Plot):
 
                 uniq = [ks[0]]
                 for k in ks[1:]:
-                    if abs(min(np.array(uniq) - k)) > gap_tolerance:
+                    if abs(min(np.array(uniq) - k)) > gap_tol:
                         uniq.append(k)
                 return uniq
 
@@ -681,25 +668,24 @@ class BandsPlot(Plot):
 
             for gap_ks in all_gapKs:
 
-                if only_direct and abs(gap_ks[1] - gap_ks[0]) > gap_tolerance:
+                if direct_gaps_only and abs(gap_ks[1] - gap_ks[0]) > gap_tol:
                     continue
 
                 self.draw_gap(*gap_ks, color=gap_color, true_gap=True)
 
         # Draw the custom gaps. These are gaps that do not necessarily represent
         # the maximum and the minimum of the VB and CB.
-        custom_gaps = self.setting("custom_gaps")
-        for gap in custom_gaps:
+        for custom_gap in custom_gaps:
 
-            requested_spin = gap.get("spin", None)
+            requested_spin = custom_gap.get("spin", None)
             if requested_spin is None:
                 requested_spin = [0, 1]
 
             for spin in self.bands.spin:
                 if spin in requested_spin:
-                    self.draw_gap(gap["from"], gap["to"], color=gap.get("color", None), spin=spin)
+                    self.draw_gap(custom_gap["from"], custom_gap["to"], color=custom_gap.get("color", None), gap_spin=spin)
 
-    def draw_gap(self, from_k, to_k=None, color=None, true_gap=False, spin=0, save=False, **kwargs):
+    def draw_gap(self, from_k, to_k=None, color=None, true_gap=False, gap_spin=0, save=False, **kwargs):
         """
         Function that draws a given gap in the plot.
 
@@ -727,7 +713,7 @@ class BandsPlot(Plot):
         true_gap: bool, optional
             whether it is the true gap of the structure. You should probably
             never use this, it is just used internally to save time.
-        spin: int, optional
+        gap_spin: int, optional
             the spin component where you want to draw the gap.
         save: bool, optional
             whether you want this gap to persist through updates.
@@ -738,7 +724,7 @@ class BandsPlot(Plot):
             to_k = from_k
 
         if save:
-            return self.update_settings(custom_gaps=[*self.settings["custom_gaps"], {"from": from_k, "to": to_k, "color": color, "spin": [spin]}])
+            return self.update_settings(custom_gaps=[*self.settings["custom_gaps"], {"from": from_k, "to": to_k, "color": color, "spin": [gap_spin]}])
 
         ks = [None, None]
         # Parse the names of the kpoints into their numeric values
@@ -762,7 +748,7 @@ class BandsPlot(Plot):
         else:
             name = f"Gap ({from_k}-{to_k})"
             VB, CB = self.gap_info["bands"]
-            Es = [self.bands.sel(k=k, band=band, spin=spin, method="nearest") for k, band in zip(ks, (VB, CB))]
+            Es = [self.bands.sel(k=k, band=band, spin=gap_spin, method="nearest") for k, band in zip(ks, (VB, CB))]
             # Get the real values of ks that have been obtained
             # because we might not have exactly the ks requested
             ks = [np.ravel(E.k)[0] for E in Es]

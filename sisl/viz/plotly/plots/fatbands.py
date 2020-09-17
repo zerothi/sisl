@@ -102,6 +102,12 @@ class FatbandsPlot(BandsPlot):
 
     _plot_type = 'Fatbands'
 
+    _update_methods = {
+        "read_data": [],
+        "set_data": ["_draw_gaps", "_draw_fatbands"],
+        "get_figure": []
+    }
+
     _parameters = (
 
         SileInput(key='wfsx_file', name='Path to WFSX file',
@@ -167,19 +173,17 @@ class FatbandsPlot(BandsPlot):
     )
 
     @entry_point("siesta_output")
-    def _read_siesta_output(self):
+    def _read_siesta_output(self, wfsx_file, bands_file, root_fdf):
 
         # Try to get the wfsx file either by user input or by guessing it
         # from bands_file
-        wfsx_file = self.setting("wfsx_file")
-        bands_file = self.get_sile("bands_file").file
+        bands_file = self.get_sile(bands_file or "bands_file").file
         if wfsx_file is None:
             wfsx_file = bands_file.with_suffix(bands_file.suffix + ".WFSX")
 
         # We will need the overlap matrix from the hamiltonian to get the correct
         # weights.
         # If there is no root_fdf we will try to guess it from bands_file
-        root_fdf = self.setting("root_fdf")
         if root_fdf is None and not hasattr(self, "H"):
             possible_fdf = bands_file.with_suffix(".fdf")
             print(f"We are assuming that the fdf associated to {bands_file} is {possible_fdf}."+
@@ -288,7 +292,7 @@ class FatbandsPlot(BandsPlot):
         if not hasattr(self, "geometry"):
 
             # From the hamiltonian
-            band_struct = self.setting("band_structure")
+            band_struct = self.get_setting("band_structure")
             if band_struct is not None:
                 self.geometry = band_struct.parent.geometry
 
@@ -303,14 +307,12 @@ class FatbandsPlot(BandsPlot):
             add_band_trace_data=lambda band, plot: {'showlegend': False}
         )
 
-    def _draw_fatbands(self):
-
-        E0 = self.setting('E0')
+    def _draw_fatbands(self, groups, E0, bands_range, scale):
 
         # We get the bands range that is going to be plotted
         # Remember that the BandsPlot will have updated this setting accordingly,
         # so it's safe to use it directly
-        plotted_bands = self.setting("bands_range")
+        plotted_bands = bands_range
 
         # If we don't have weights for all plotted bands (specially possible if we
         # have read from the WFSX file), reduce the range of the bands. Note that this
@@ -322,9 +324,6 @@ class FatbandsPlot(BandsPlot):
         plot_eigvals = self.bands.sel(band=np.arange(*plotted_bands)) - E0
         # Get the weights that matter
         plot_weights = self.weights.sel(band=np.arange(*plotted_bands))
-
-        # Get the groups of orbitals whose bands are requested
-        groups = self.setting('groups')
 
         # If the user didn't provide groups and didn't specify that groups is an
         # empty list, we are going to build the default groups, which is to split by species
@@ -345,7 +344,6 @@ class FatbandsPlot(BandsPlot):
         prev_traces = len(self.data)
 
         groups_param = self.get_param("groups")
-        scale = self.setting('scale')
         if scale is None:
             # Probably we can calculate a more suitable scale
             scale = 1
@@ -449,7 +447,7 @@ class FatbandsPlot(BandsPlot):
 
         # If the user doesn't want to clean the plot, we will just add the groups to the existing ones
         if not clean:
-            groups = [*self.setting("groups"), *groups]
+            groups = [*self.get_setting("groups"), *groups]
 
         return self.update_settings(groups=groups)
 
@@ -467,7 +465,7 @@ class FatbandsPlot(BandsPlot):
             whether 'factor' is meant to multiply the current scaling factor.
             If False, it will just replace the current factor.
         """
-        scale = self.setting('scale')
+        scale = self.get_setting('scale')
 
         if from_current:
             scale *= factor

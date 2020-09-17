@@ -78,7 +78,7 @@ class Session(Configurable, Connected):
         GUI.
     updateInterval: int, optional
         The time in ms between consecutive checks for updates.
-    plotDims: array-like, optional
+    plot_dims: array-like, optional
         The initial width and height of a new plot.  Width is in columns
         (out of a total of 12). For height, you really should try what works
         best for you
@@ -87,14 +87,6 @@ class Session(Configurable, Connected):
     plotly_template: str, optional
         Plotly template that should be used as the default for this session
     """
-
-    _onSettingsUpdate = {
-        "functions": ["get_structures"],
-        "config": {
-            "multipleFunc": False,
-            "order": False,
-        },
-    }
 
     _param_groups = (
 
@@ -191,7 +183,7 @@ class Session(Configurable, Connected):
         ),
 
         Array1DInput(
-            key="plotDims", name="Initial plot dimensions",
+            key="plot_dims", name="Initial plot dimensions",
             default=[4, 30],
             group="gui",
             help="""The initial width and height of a new plot. <br> Width is in columns (out of a total of 12). For height, you really should try what works best for you"""
@@ -251,7 +243,7 @@ class Session(Configurable, Connected):
         plot = self.plots[plotID]
 
         if not hasattr(plot, "grid_dims"):
-            plot.grid_dims = self.setting('plotDims')
+            plot.grid_dims = self.get_setting("plot_dims")
 
         return plot
 
@@ -342,13 +334,13 @@ class Session(Configurable, Connected):
             kwargs = {**kwargs, "root_fdf": self.warehouse["structs"][structID]["path"]}
 
         if animation:
-            wdir = self.warehouse["structs"][structID]["path"].parent if structID else self.setting("root_dir")
+            wdir = self.warehouse["structs"][structID]["path"].parent if structID else self.get_setting("root_dir")
             new_plot = ReqPlotClass.animated(wdir = wdir)
         else:
-            plot_preset = self.setting("plot_preset")
+            plot_preset = self.get_setting("plot_preset")
             if plot_preset is not None:
                 kwargs["presets"] = [*[plot_preset], *kwargs.get("presets", [])]
-            plotly_template = self.setting("plotly_template")
+            plotly_template = self.get_setting("plotly_template")
             if plotly_template is not None:
                 layout = kwargs.get("layout", {})
                 template = layout.get("template", "")
@@ -769,7 +761,7 @@ class Session(Configurable, Connected):
     #         STRUCTURES MANAGEMENT
     #-----------------------------------------
 
-    def get_structures(self, path=None):
+    def get_structures(self, path=None, root_dir=".", search_depth=None):
         """
         Gets all the structures that are in the scope of this session
 
@@ -785,17 +777,17 @@ class Session(Configurable, Connected):
         dict
             keys are the structure ID and values are info about each structure.
         """
-        path = Path(path or self.setting("root_dir"))
+        path = Path(path or root_dir)
 
         #Get the structures
         self.warehouse["structs"] = {
-            str(uuid.uuid4()): {"name": path.name, "path": path} for path in find_files(self.setting("root_dir"), "*fdf", self.setting("search_depth"))
+            str(uuid.uuid4()): {"name": path.name, "path": path} for path in find_files(root_dir, "*fdf", search_depth)
         }
 
         #Avoid passing unnecessary info to the browser.
         return {structID: {"id": structID, **{k: struct[k] for k in ["name", "path"]}} for structID, struct in self.warehouse["structs"].items()}
 
-    def get_plotables(self, path=None):
+    def get_plotables(self, path=None, root_dir=".", search_depth=None):
         """
         Gets all the plotables that are in the scope of this session.
 
@@ -813,10 +805,10 @@ class Session(Configurable, Connected):
         """
         # Empty the plotables dictionary
         self.warehouse["plotables"] = {}
-        path = Path(path or self.setting("root_dir"))
+        path = Path(path or root_dir)
 
         # Get all the files that correspond to registered plotable siles
-        files = find_plotable_siles(path, self.setting('search_depth'))
+        files = find_plotable_siles(path, search_depth)
 
         for SileClass, filepaths in files.items():
 

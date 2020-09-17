@@ -171,7 +171,7 @@ class LDOSmap(Plot):
         'yaxis_title': "E-Ef (eV)"
     }
 
-    def _getdencharSTSfdf(self, stsPosition):
+    def _getdencharSTSfdf(self, stsPosition, Erange, nE, STSEta):
 
         return '''
             Denchar.PlotSTS .true.
@@ -187,13 +187,13 @@ class LDOSmap(Plot):
             Denchar.STSEnergyPoints {}
             Denchar.CoorUnits Ang
             Denchar.STSEta {} eV
-            '''.format(*stsPosition, *(np.array(self.setting("Erange")) + self.fermi), self.setting("nE"), self.setting("STSEta"))
+            '''.format(*stsPosition, *(np.array(Erange) + self.fermi), nE, STSEta)
 
     @entry_point('siesta')
-    def _read_siesta_output(self):
+    def _read_siesta_output(self, Erange, nE, STSEta, root_fdf, trajectory, points, dist_step, widen_func):
         '''Function that uses denchar to get STSpecra along a path'''
 
-        fdf_sile = self.get_sile("root_fdf")
+        fdf_sile = self.get_sile(root_fdf)
         root_dir = fdf_sile._directory
 
         self.geom = fdf_sile.read_geometry(output = True)
@@ -215,13 +215,13 @@ class LDOSmap(Plot):
             self.fermi = 0
 
         #Get the path (this also sets some attributes: 'distances', 'pointsByStage', 'totalPoints')
-        self._getPath()
+        self._getPath(trajectory, points, dist_step, widen_func)
 
         #Prepare the array that will store all the spectra
-        self.spectra = np.zeros((self.path.shape[0], self.path.shape[1], self.setting("nE")))
+        self.spectra = np.zeros((self.path.shape[0], self.path.shape[1], nE))
         #Other helper arrays
         pathIs = np.linspace(0, self.path.shape[0] - 1, self.path.shape[0])
-        Epoints = np.linspace(*(np.array(self.setting("Erange")) + self.fermi), self.setting("nE"))
+        Epoints = np.linspace(*(np.array(Erange) + self.fermi), nE)
 
         #Copy selected WFSX into WFSX if it exists (denchar reads from .WFSX)
         system_label = fdf_sile.get("SystemLabel", default="siesta")
@@ -229,7 +229,7 @@ class LDOSmap(Plot):
             fdf_sile.dir_file(f"{system_label}.WFSX"))
 
         #Get the fdf file and replace include paths so that they work
-        with open(self.setting("root_fdf"), "r") as f:
+        with open(root_fdf, "r") as f:
             self.fdfLines = f.readlines()
 
         for i, line in enumerate(self.fdfLines):
@@ -298,12 +298,12 @@ class LDOSmap(Plot):
         self.spectra = run_multiple(
             getSpectraForPath,
             self.path,
-            self.setting("nE"),
+            nE,
             pathIs,
             root_dir, self.struct,
             #All the strings that need to be added to each file
-            [[self._getdencharSTSfdf(point) for point in points] for points in self.path],
-            kwargsList = {"root_fdf": self.setting("root_fdf"), "fdfLines": self.fdfLines},
+            [[self._getdencharSTSfdf(point, Erange, nE, STSEta) for point in points] for points in self.path],
+            kwargsList = {"root_fdf": root_fdf, "fdfLines": self.fdfLines},
             messageFn = lambda nTasks, nodes: "Calculating {} simultaneous paths in {} nodes".format(nTasks, nodes),
             serial = self.isChildPlot
         )
@@ -323,11 +323,11 @@ class LDOSmap(Plot):
         #Update the values for the limits so that they are automatically set
         self.update_settings(run_updates = False, cmin = 0, cmax = 0)
 
-    def _getPath(self):
+    def _getPath(self, trajectory, points, dist_step, widen_func):
 
-        if list(self.setting("trajectory")):
+        if list(trajectory):
             #If the user provides a trajectory, we are going to use that without questioning it
-            self.path = np.array(self.setting("trajectory"))
+            self.path = np.array(trajectory)
 
             #At the moment these make little sense, but in the future there will be the possibility to add breakpoints
             self.pointsByStage = np.array([len(self.path)])
@@ -335,7 +335,7 @@ class LDOSmap(Plot):
         else:
             #Otherwise, we will calculate the trajectory according to the points provided
             points = []
-            for reqPoint in self.setting("points"):
+            for reqPoint in points:
 
                 if reqPoint.get("atom"):
                     translate = np.array([reqPoint.get("x", 0), reqPoint.get("y", 0), reqPoint.get("z", 0)]).dot(self.geom.cell)
@@ -359,7 +359,7 @@ class LDOSmap(Plot):
                 prevPoint = points[i]
 
                 self.distances[i] = np.linalg.norm(point - prevPoint)
-                nSteps = int(round(self.distances[i]/self.setting("dist_step"))) + 1
+                nSteps = int(round(self.distances[i]/dist_step)) + 1
 
                 #Add the trajectory from the previous point to this one to the path
                 self.path = [*self.path, *np.linspace(prevPoint, point, nSteps)]
@@ -369,8 +369,8 @@ class LDOSmap(Plot):
             self.path = np.array(self.path)
 
         #Then, let's widen the path if the user wants to do it (check also points that surround the path)
-        if callable(self.setting("widen_func")):
-            self.path = self.setting("widen_func")(self.path)
+        if callable(widen_func):
+            self.path = widen_func(self.path)
         else:
             #This is just to normalize path
             self.path = np.expand_dims(self.path, 0)
@@ -380,19 +380,19 @@ class LDOSmap(Plot):
         self.totalPoints = self.path.shape[0] * self.path.shape[1]
         self.iCorners = self.pointsByStage.cumsum()
 
-    def _set_data(self):
+    def _set_data(self, widen_method, cmin, cmax, Erange, nE):
 
         #With xarray
-        if self.setting("widen_method") == "sum":
+        if widen_method == "sum":
             spectraToPlot = self.xarr.sum(dim = "iPath")
-        elif self.setting("widen_method") == "average":
+        elif widen_method == "average":
             spectraToPlot = self.xarr.mean(dim = "iPath")
 
         self.data = [{
             'type': 'heatmap',
             'z': spectraToPlot.transpose("E", "x").values,
             #These limits determine the contrast of the image
-            'zmin': self.setting("cmin"),
-            'zmax': self.setting("cmax"),
+            'zmin': cmin,
+            'zmax': cmax,
             #Yaxis is the energy axis
-            'y': np.linspace(*self.setting("Erange"), self.setting("nE"))}]
+            'y': np.linspace(*Erange, nE)}]

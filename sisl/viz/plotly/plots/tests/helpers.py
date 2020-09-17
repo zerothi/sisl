@@ -114,7 +114,7 @@ class PlotTester(metaclass=MultipleTesterCreator):
         if key in self._attrs:
             return self.__class__._attrs[key]
 
-        raise AttributeError
+        raise AttributeError(key)
 
     def test_plot_initialization(self, sisl_files):
         """
@@ -182,7 +182,7 @@ def setup_multiple_tests(cls, params, global_scope):
         for attr in [*getattr(request.cls, "_required_attrs", [])]:
             if attr not in plot_attributes:
                 pytest.fail(f"You are missing the '{attr}' required attribute")
-            request.cls._attrs[attr] = plot_attributes[attr]
+        request.cls._attrs = plot_attributes
 
         yield # run the test
 

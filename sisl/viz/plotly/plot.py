@@ -19,7 +19,7 @@ from plotly.subplots import make_subplots
 
 import sisl
 
-from .configurable import *
+from .configurable import Configurable, ConfigurableMeta, vizplotly_settings, _populate_with_settings
 from ._presets import get_preset
 from .plotutils import init_multiple_plots, repeat_if_childs, dictOfLists2listOfDicts, trigger_notification, \
      spoken_message, running_in_notebook, check_widgets, call_method_if_present
@@ -35,7 +35,7 @@ __all__ = ["Plot", "MultiplePlot", "Animation", "SubPlots"]
 #------------------------------------------------
 
 
-class PlotMeta(type):
+class PlotMeta(ConfigurableMeta):
 
     def __call__(cls, *args, **kwargs):
         """
@@ -163,13 +163,10 @@ class Plot(ShortCutable, Configurable, Connected, metaclass=PlotMeta):
     ...
 
     """
-
-    _onSettingsUpdate = {
-        "functions": ["read_data", "set_data", "get_figure"],
-        "config": {
-            "multipleFunc": False,
-            "order": True,
-        },
+    _update_methods = {
+        "read_data": [],
+        "set_data": [],
+        "get_figure": []
     }
 
     _param_groups = (
@@ -207,6 +204,64 @@ class Plot(ShortCutable, Configurable, Connected, metaclass=PlotMeta):
         ),
 
     )
+
+    def _parse_update_funcs(self, func_names):
+        """
+        Decides which functions to run when the settings of the plot are updated.
+
+        This is called in self._run_updates as a final oportunity to decide what functions to run.
+
+        In the case of plots, all we basically want to know is if we need to read the data again (execute
+        `read_data`), set new data for the plot without needing to read (execute `set_data`) or just update 
+        some aesthetic aspects of the plot (execute `get_figure`).
+
+        When Plot sees one of the following functions in the list of functions with updated parameters:
+            - "_before_read", "_after_read", any entry point function, functions in cls._update_methods["read_data"]
+
+        it knows that `read_data` needs to be executed. (which afterwards triggers `set_data` and `get_figure`).
+
+        Otherwise, if any of this functions is present:
+            - "_set_data", functions in cls._update_methods["set_data"]
+
+        it executes `set_data` (and `get_figure` subsequentially)
+
+        Finally, if it finds:
+            - "_after_get_figure", functions in cls._update_methods["get_figure"]
+
+        it executes `get_figure`.
+
+        WARNING: If it doesn't find any of these, it will return the unparsed list of functions,
+        and all functions will get executed.
+
+        Parameters
+        -----------
+        func_names: set of str
+            the unique functions names that are to be executed unless you modify them.
+
+        Returns
+        -----------
+        array-like of str
+            the final list of functions that will be executed.
+
+        See also
+        ------------
+        ``Configurable._run_updates``
+        """
+        entry_points_names = [entry_point._method.__name__ for entry_point in self.entry_points]
+        read_data_methods = ["_before_read", "_after_read", *entry_points_names, *self._update_methods["read_data"]]
+
+        if len(func_names.intersection(read_data_methods)) > 0:
+            return ["read_data"]
+
+        set_data_methods = ["_set_data", *self._update_methods["set_data"]]
+        if len(func_names.intersection(set_data_methods)) > 0:
+            return ["set_data"]
+
+        get_figure_methods = ["_after_get_figure", *self._update_methods["get_figure"]]
+        if len(func_names.intersection(read_data_methods)) > 0:
+            return ["get_figure"]
+
+        return func_names
 
     @classmethod
     def from_plotly(cls, plotly_fig):
@@ -540,7 +595,7 @@ class Plot(ShortCutable, Configurable, Connected, metaclass=PlotMeta):
         for key, val in inspect.getmembers(cls, lambda x: isinstance(x, EntryPoint)):
             cls.entry_points.append(val)
             # After registering an entry point, we will just set the method
-            setattr(cls, key, val._method)
+            setattr(cls, key, _populate_with_settings(val._method, [param["key"] for param in cls._get_class_params()[0]]))
 
         # from ._plotables import register_plotly_plotable
 
@@ -789,7 +844,7 @@ class Plot(ShortCutable, Configurable, Connected, metaclass=PlotMeta):
 
         self._files_to_follow = new_files if unfollow else [*self._files_to_follow, *new_files]
 
-    def get_sile(self, path, *args, follow=True, follow_kwargs={}, file_contents=None, **kwargs):
+    def get_sile(self, path, results_path, root_fdf, *args, follow=True, follow_kwargs={}, file_contents=None, **kwargs):
         """
         A wrapper around get_sile so that the reading of the file is registered.
 
@@ -819,7 +874,7 @@ class Plot(ShortCutable, Configurable, Connected, metaclass=PlotMeta):
         # If path is a setting name, retrieve it
         if path in self.settings:
             setting_key = path
-            path = self.setting(path)
+            path = self.get_setting(path)
 
             # However, if it wasn't provided, try to infer it.
             # For example, if it is a siesta sile, we will try to infer it
@@ -829,8 +884,7 @@ class Plot(ShortCutable, Configurable, Connected, metaclass=PlotMeta):
                 sile_type = self.get_param(setting_key).dtype
                 # We need to check here if it is a SIESTA related sile!
 
-                fdf_sile = sisl.get_sile(self.setting("root_fdf"))
-                results_path = self.setting("results_path")
+                fdf_sile = sisl.get_sile(root_fdf)
 
                 for rule in sisl.get_sile_rules(cls=sile_type):
                     filename = fdf_sile.get('SystemLabel', default='siesta') + f'.{rule.suffix}'
@@ -2072,7 +2126,7 @@ class Animation(MultiplePlot):
 
     Parameters
     ----------
-    frameDuration: int, optional
+    frame_duration: int, optional
         Time (in ms) that each frame will be displayed.  This is only
         meaningful if you have an animation
     redraw: bool, optional
@@ -2108,7 +2162,7 @@ class Animation(MultiplePlot):
     _parameters = (
 
         IntegerInput(
-            key = "frameDuration", name = "Frame duration",
+            key = "frame_duration", name = "Frame duration",
             default = 500,
             group = "animation",
             params = {
@@ -2151,7 +2205,7 @@ class Animation(MultiplePlot):
 
         super().__init__(*args, **kwargs, _plugins=_plugins)
 
-    def _build_frames(self):
+    def _build_frames(self, ani_method):
         """
         Builds the frames of the plotly figure from the child plots' data.
 
@@ -2172,7 +2226,6 @@ class Animation(MultiplePlot):
                 frame_name = f"Frame {i+1}"
             frame_names.append(frame_name)
 
-        ani_method = self.setting('ani_method')
         if ani_method is None:
             same_traces = np.unique(
                 [len(plot.data) for plot in self.child_plots]
@@ -2247,7 +2300,7 @@ class Animation(MultiplePlot):
 
         return steps, []
 
-    def _figure_animate_method(self, frame_names):
+    def _figure_animate_method(self, frame_names, frame_duration, redraw):
         """
         In the animate method, we explicitly define frames, And the transition from one to the other
         will be animated
@@ -2268,14 +2321,14 @@ class Animation(MultiplePlot):
                     *data, *np.full(nAddTraces, {"type": "scatter", "x":  [0], "y": [0], "visible": False})]
 
             frames = [
-                *frames, {'name': frame_name, 'data': data, "layout": plot.settings_group("layout")}]
+                *frames, {'name': frame_name, 'data': data, "layout": plot.get_settings_group("layout")}]
 
         self.frames = frames
 
         steps = [
             {"args": [
             [frame["name"]],
-            {"frame": {"duration": int(self.setting("frameDuration")), "redraw": self.setting("redraw")},
+            {"frame": {"duration": int(frame_duration), "redraw": redraw},
             "mode": "immediate",
             "transition": {"duration": 300}}
         ],
@@ -2290,7 +2343,7 @@ class Animation(MultiplePlot):
                 {
                     'label': '▶',
                     'method': 'animate',
-                    'args': [None, {"frame": {"duration": int(self.setting("frameDuration")), "redraw": True},
+                    'args': [None, {"frame": {"duration": int(frame_duration), "redraw": True},
                                     "fromcurrent": True, "transition": {"duration": 100,
                                                                         "easing": "quadratic-in-out"}}],
                 },
@@ -2441,15 +2494,12 @@ class SubPlots(MultiplePlot):
         )
     )
 
-    def _get_figure(self):
+    def _get_figure(self, rows, cols, arrange, make_subplot_kwargs):
         """
         Builds the subplots layout from the child plots' data.
         """
         nplots = len(self.child_plots)
-        rows = self.setting('rows')
-        cols = self.setting('cols')
         if rows is None and cols is None:
-            arrange = self.setting('arrange')
             if arrange == 'rows':
                 rows = nplots
                 cols = 1
@@ -2476,8 +2526,7 @@ class SubPlots(MultiplePlot):
         rows = int(rows)
         cols = int(cols)
 
-        kwargs = self.setting('make_subplot_kwargs')
-        self.figure = make_subplots(**{"rows": rows, "cols": cols, **kwargs})
+        self.figure = make_subplots(**{"rows": rows, "cols": cols, **make_subplot_kwargs})
 
         # Start assigning each plot to a position of the layout
         for (row, col), plot in zip(itertools.product(range(1, rows + 1), range(1, cols + 1)), self.child_plots):

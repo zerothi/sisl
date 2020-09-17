@@ -1,7 +1,8 @@
 from copy import deepcopy
 from functools import wraps
+import inspect
 from types import MethodType
-from collections import deque, Iterable
+from collections import deque, Iterable, defaultdict
 import sys
 
 import numpy as np
@@ -415,91 +416,47 @@ class NamedHistory:
         return self[key][-1] == self.defaults[key]
 
 
-class FakeSettingsDispatch(AbstractDispatch):
+class ConfigurableMeta(type):
     """
-    Provides a dispatch that executes methods using "fake" settings.
+    Metaclass used to build the Configurable class and its childs.
 
-    This is mainly useful to use methods from other classes without having
-    the settings that are required.
-
-    AT THE MOMENT ATTRIBUTES ARE NOT SET TO THE PLOT WHEN THE METHOD RUNS, SO YOU 
-    SHOULD PROBABLY NOT USE IT UNLESS YOU ARE AWARE OF THAT!
+    This is used mainly for two reasons, and they both afect only subclasses of Configurable
+    not Configurable itself.:
+        - Make the class functions able to access settings through their arguments
+        (see the `_populate_with_settings` function in this same file)
+        - Set documentation to the `update_settings` method that is specific to the particular class
+        so that the user can check what each parameter does exactly.
     """
 
-    def __init__(self, obj, **settings):
-        self.fake_settings = settings
+    def __new__(cls, name, bases, attrs):
+        """Prepares a subclass of Configurable, as explained in this class' docstring."""
+        # If there are no bases, it is the Configurable class, and we don't need to modify its methods.
+        if bases:
+            # If this is a sub class
+            class_params = attrs.get("_parameters", [])
+            for base in bases:
+                if "_parameters" in vars(base):
+                    class_params = [*class_params, *base._parameters]
+            for f_name, f in attrs.items():
+                if callable(f) and not f_name.startswith("__"):
+                    attrs[f_name] = _populate_with_settings(f, [param["key"] for param in class_params])
+        new_cls = super().__new__(cls, name, bases, attrs)
 
-        super().__init__(obj)
+        new_cls._create_update_maps()
 
-    def setting(self, *args, **kwargs):
-        """
-        Overwrites the "correct" `setting` method to provide the fake settings.
-        """
-        kwargs["fake_settings"] = {**kwargs.get("fake_settings", {}), **self.fake_settings}
+        if bases:
+            # Change the docs of the update_settings method to truly reflect
+            # the available kwargs for the plot class and provide more help to the user
+            def update_settings(self, *args, **kwargs):
+                return self._update_settings(*args, **kwargs)
 
-        return Configurable.setting(self._obj, *args, **kwargs)
+            update_settings.__doc__ = f"Updates the settings of this plot.\n\nDocs for {new_cls.__name__}:\n\n{get_configurable_docstring(new_cls)}"
+            new_cls.update_settings = update_settings
 
-    def dispatch(self, method):
-        """
-        Returns the wrapped method to run it with fake settings
-        """
-        @wraps(method)
-        def run_with_fake_settings(*args, **kwargs):
-
-            self._obj.setting = self.setting
-
-            ret = method(*args, **kwargs)
-
-            self._obj.setting = MethodType(Configurable.setting, self._obj)
-
-            return ret
-
-        return run_with_fake_settings
+        return new_cls
 
 
-class Configurable:
-
-    def with_settings(self, method=None, method_args=[], method_kwargs={}, **settings):
-        """
-        Gives you the possibility to run the methods of an object AS IF the object
-        had certain settings.
-
-        NOTE: The settings of the object WILL NOT BE UPDATED, it will just use the
-        provided settings to run the methods that you want.
-
-        Parameters
-        ----------
-        method: method or str, optional
-            If provided, the method that will be run with those settings.
-            If not, a `FakeSettingsDispatch` is returned. See returns for more info.
-        method_args: array-like, optional
-            the arguments to pass to the method on call
-        method_kwargs: dict, optional
-            the keyword arguments to pass to the method on call.
-        **settings: 
-            The settings that you want to make the object believe it has.
-            Pass each setting as a keyword argument.
-
-            For example: `obj.with_settings(color="green")`
-
-            will provide the object with a fake "color" setting of value "green"
-
-        Returns
-        ---------
-        any
-            if a method is provided the returns of the method will be returned.
-            If not, a `FakeSettingsDispatch` is returned. A `FakeSettingsDispatch`
-            acts exactly as the object itself, but any method that you run on it 
-            will use the fake settings.
-        """
-        disp = FakeSettingsDispatch(self, **settings)
-
-        if method is not None:
-            if isinstance(method, str):
-                method = getattr(self, method)
-            return method(*method_args, **method_kwargs)
-
-        return disp
+class Configurable(metaclass=ConfigurableMeta):
 
     def init_settings(self, presets=None, **kwargs):
         """
@@ -540,26 +497,24 @@ class Configurable:
             defaults=defaults, history_len=20, keep_defaults=True
         )
 
-        #Initialize the object where we are going to store what each setting needs to rerun when it is updated
-        self._run_on_update = {}
-
         return self
 
-    def __init_subclass__(cls):
+    @classmethod
+    def _create_update_maps(cls):
         """
-        When a configurable class is defined, this will be called.
+        Generates a mapping from setting keys to functions that use them.
 
-        We will make use of it to:
-            - Give a more specific docstring to update settings.
+        Therefore, this mapping (`cls._run_on_update`) contains information about 
+        which functions need to be executed again when a setting is updated.
+
+        The mapping generated here is used in `Configurable.run_updates`
         """
-        # Change the docs of the update_settings method to truly reflect
-        # the available kwargs for the plot class and provide more help to the user
+        #Initialize the object where we are going to store what each setting needs to rerun when it is updated
+        cls._run_on_update = defaultdict(list)
 
-        def update_settings(self, *args, **kwargs):
-            return self._update_settings(*args, **kwargs)
-
-        update_settings.__doc__ = f"Updates the settings of this plot.\n\nDocs for {cls.__name__}:\n\n{get_configurable_docstring(cls)}"
-        cls.update_settings = update_settings
+        for name, f in inspect.getmembers(cls, predicate=inspect.isfunction):
+            for param in getattr(f, "_settings_params", []):
+                cls._run_on_update[param].append(f.__name__)
 
     @property
     def settings(self):
@@ -647,25 +602,40 @@ class Configurable:
         for_keys: array-like of str
             the keys of the settings that have been updated.
         """
-        #Run the functions specified
-        if hasattr(self, "_onSettingsUpdate"):
+        # Get the functions that need to be executed for each key that has been updated and
+        # put them in a list
+        func_names = [self._run_on_update.get(setting_key, None) for setting_key in for_keys]
 
-            #Get the unique names of the functions that should be executed
-            noInfoKeys = [settingKey for settingKey in for_keys if settingKey not in self._run_on_update]
-            if len(noInfoKeys) > 0 and len(noInfoKeys) == len(for_keys):
-                print(f"We don't know (yet) what to do when the following settings are updated: {noInfoKeys}. Please run the corresponding methods yourself in order to update the plot")
+        # Flatten that list (list comprehension) and take only the unique values (set)
+        func_names = set([f_name for sublist in func_names for f_name in sublist])
 
-            funcNames = set([self._run_on_update.get(settingKey, None) for settingKey in for_keys])
+        # Give the oportunity to parse the functions that need to be ran. See `Plot._parse_update_funcs`
+        # for an example
+        func_names = self._parse_update_funcs(func_names)
 
-            for fName in self._onSettingsUpdate["functions"]:
-                if fName in funcNames:
-                    getattr(self, fName)()
-
-                    #If we need to execute all the functions keep going thorugh the loop, else stop here
-                    if not self._onSettingsUpdate["config"].get("multipleFunc", False):
-                        break
+        # Execute the functions that we need to execute.
+        for f_name in func_names:
+            getattr(self, f_name)()
 
         return self
+
+    def _parse_update_funcs(self, func_names):
+        """
+        Called on _run_updates as a final oportunity to decide what functions to run.
+
+        May be overwritten in child classes.
+
+        Parameters
+        -----------
+        func_names: set of str
+            the unique functions names that are to be executed unless you modify them.
+
+        Returns
+        -----------
+        array-like of str
+            the final list of functions that will be executed.
+        """
+        return func_names
 
     def undo_settings(self, steps=1, run_updates=True):
         """
@@ -854,7 +824,7 @@ class Configurable:
 
         return self
 
-    def get_setting(self, key, copy=True, fake_settings=None, parse=True):
+    def get_setting(self, key, copy=True, parse=True):
         """
         Gets the value for a given setting.
 
@@ -864,57 +834,16 @@ class Configurable:
             The key of the setting we want to get
         copy: boolean, optional
             Whether you want a copy of the object or the actual object
-        fake_settings: dict, optional
-            These will be added to the real settings. It is intended to make it look
-            as if the object had these settings.
-            This is mainly to make it possible for classes to use other's classes methods even if
-            they don't have the necessary settings.
-            It is used by the `with_settings` method, which
         parse: boolean, optional
             whether the setting should be parsed before returning it.
         """
-        settings = self.settings
-        if fake_settings is not None:
-            settings = {**settings, **fake_settings}
-
         # Get the value of the setting and parse it using the parse method
         # defined for the parameter
-        val = self.get_param(key).parse(settings[key])
+        val = self.get_param(key).parse(self.settings[key])
 
         return deepcopy(val) if copy else val
 
-    def setting(self, key, **kwargs):
-        """
-        Gets the value for a given setting while logging where it has been required. 
-
-        THIS METHOD MUST BE USED IN DEVELOPEMENT! (And should not be used by users, use get_setting() instead)
-
-        It stores where the setting has been demanded so that the plot can be efficiently updated when it is modified.
-        """
-        #Get the last frame
-        frame = sys._getframe().f_back
-        #And then iterate over all the past frames to get their names
-        while frame:
-
-            #Get the function name
-            funcName = frame.f_code.co_name
-
-            #If it is in the list of functions provided on class definition (e.g. on Plot class) store it
-            functions_list = self._onSettingsUpdate["functions"]
-            if funcName in functions_list:
-
-                prevFunc = self._run_on_update.get(key, None)
-
-                if prevFunc is None or functions_list.index(funcName) < functions_list.index(prevFunc):
-                    self._run_on_update[key] = funcName
-
-                break
-
-            frame = frame.f_back
-
-        return self.get_setting(key, copy=False, **kwargs)
-
-    def get_settings_group(self, group_key, steps_back = 0):
+    def get_settings_group(self, group_key, steps_back=0):
         """
         Gets the subset of the settings that corresponds to a given group
 
@@ -937,22 +866,6 @@ class Configurable:
             settings = self.settings
 
         return deepcopy({setting.key: settings[setting.key] for setting in self.params if getattr(setting, "group", None) == group_key})
-
-    def settings_group(self, group_key):
-        """
-        Gets the subset of the settings that corresponds to a given group and logs its use
-
-        This method is to `get_settings_group` the same as `setting` is to `get_setting`.
-
-        That is, the return is exactly the same but the use of the settings is logged to update
-        the plot properly.
-
-        Arguments
-        -----------
-        group_key: str
-            The key of the settings group that we desire.
-        """
-        return deepcopy({setting.key: self.setting(setting.key) for setting in self.params if getattr(setting, "group", None) == group_key})
 
     def has_these_settings(self, settings={}, **kwargs):
         """
@@ -1024,3 +937,65 @@ def vizplotly_settings(when='before', init=False):
             raise ValueError("Incorrect decorator usage")
         return func
     return decorator
+
+
+def _populate_with_settings(f, class_params):
+    """
+    Makes functions of a Configurable object able to access settings through arguments.
+
+    Parameters
+    -----------
+    f: function
+        the function that you want to give this functionality
+    class_params: array-like of str
+        the keys of the parameters that this function will be able to access. Presumably these
+        are the keys of the parameters of the class where the function is defined.
+
+    Returns
+    ------------
+    function
+        in case the function has some arguments named like parameters that are available to it,
+        this will be a wrapped function that defaults the values of those arguments to the values
+        of the settings.
+
+        Otherwise, it returns the same function.
+
+    Examples
+    -----------
+
+    >>> class MyPlot(Configurable):
+    >>>     _parameters = (TextInput(key="my_param", name=...))
+    >>>
+    >>>     def some_method(self, my_param):
+    >>>          return my_param
+
+    After `some_method` has been correctly passed through `_populate_with_settings`:
+    >>> plot = MyPlot(my_param=3)
+    >>> plot.some_method() # Returns 3
+    >>> plot.some_method(5) # Returns 5
+    >>> plot.some_method() # Returns 3
+    """
+    params = inspect.signature(f).parameters
+    try:
+        settings_indices, settings_params = np.array([(i, param) for i, param in enumerate(params) if param in class_params]).T
+    except:
+        return f
+
+    f._settings_params = settings_params
+    f._settings_indices = settings_indices.astype(int)
+
+    @wraps(f)
+    def wrapped(self, *args, **kwargs):
+        #print("HEY", f.__name__)
+        #print(f._settings_indices, f._settings_params)
+        nargs = len(args)
+        for i, param in zip(f._settings_indices, f._settings_params):
+            if i > nargs and param not in kwargs:
+                try:
+                    kwargs[param] = self.get_setting(param, copy=False)
+                except KeyError:
+                    pass
+
+        return f(self, *args, **kwargs)
+
+    return wrapped

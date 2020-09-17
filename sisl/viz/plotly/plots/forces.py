@@ -78,11 +78,9 @@ class ForcesPlot(Plot):
     )
 
     @entry_point("siesta_output")
-    def _read_siesta_output(self):
+    def _read_siesta_output(self, root_fdf, out_file):
 
-        root_fdf = self.setting("root_fdf")
-
-        out_file = self.setting("out_file") or root_fdf.with_suffix(".out")
+        out_file = out_file or root_fdf.with_suffix(".out")
 
         outSile = self.get_sile(out_file)
 
@@ -99,9 +97,9 @@ class ForcesPlot(Plot):
 
         self.update_layout(xaxis_title="MD step", yaxis_title="Force [eV/Ang]")
 
-    def _set_data(self):
+    def _set_data(self, type, linecolor):
 
-        forces_type = self.setting('type')
+        forces_type = type
 
         if forces_type == 'total':
             self.data = [{
@@ -116,7 +114,7 @@ class ForcesPlot(Plot):
                 'type': 'scatter',
                 'mode': 'lines+markers',
                 'y': self.max_forces,
-                'marker': {'color': self.setting("linecolor")},
-                'line': {"color": self.setting("linecolor")},
+                'marker': {'color': linecolor},
+                'line': {"color": linecolor},
                 'name': 'Max force'
             }]

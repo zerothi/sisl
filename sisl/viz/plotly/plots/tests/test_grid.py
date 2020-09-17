@@ -40,7 +40,7 @@ class GridPlotTester(PlotTester):
 
     def test_grid(self):
 
-        assert os.path.exists(self.plot.setting("grid_file")), "You provided a non-existent grid_file"
+        assert os.path.exists(self.plot.get_setting("grid_file")), "You provided a non-existent grid_file"
 
         grid = self.plot.grid
 

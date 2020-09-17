@@ -102,7 +102,7 @@ def NC_init_func(sisl_files, **kwargs):
     H = sisl.get_sile(sisl_files("fe_clust_noncollinear.TSHS")).read_hamiltonian()
     bz = sisl.BandStructure(H, [[0, 0, 0], [0.5, 0, 0]], 3, ["Gamma", "X"])
 
-    return bz.plot.fatbands(sisl_files, **kwargs)
+    return bz.plot.fatbands(**kwargs)
 
 
 class TestFatbandsPlot(FatbandsPlotTester):
