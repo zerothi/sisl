@@ -54,7 +54,7 @@ viz = {
         'flask-login',
         'flask-session',
         #'eventlet' # To improve socket performance for flask-socketio
-        'skimage'
+        'scikit-image'
     ],
     "blender": [
     ], # for when blender enters
