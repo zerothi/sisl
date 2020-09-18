@@ -227,19 +227,12 @@ class Grid(SuperCellChild):
         # Run the marching cubes algorithm to calculate the vertices and faces
         # of the requested isosurface.
         verts, *returns = skimage.measure.marching_cubes(
-            self.grid, level=level, spacing=fnorm(self.dcell), step_size=step_size, **kwargs
+            self.grid, level=level, spacing=1/np.array(self.shape), step_size=step_size, **kwargs
         )
 
-        # Define the transformation matrix to get the real vertices
-        # This is because skimage calculates the vertices as if it was an orthogonal cell
-        T = self.cell / fnorm(self.cell).reshape(3, 1)
-
-        # Check that the transformation matrix is definite positive
-        if np.linalg.det(T) < 0:
-            T[:, 2] = -T[:, 2]  # change the orientation of the third vector
-
-        # Apply the transformation and get the real coordinates of the vertices
-        verts = T.dot(verts.T).T
+        # The verts cordinates are in fractional coordinates. Therefore, we need to use
+        # the cell vectors to get the actual xyz coordinates
+        verts = verts.dot(self.cell)
 
         return (verts, *returns)
 
