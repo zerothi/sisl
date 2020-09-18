@@ -1,5 +1,6 @@
 import numpy as np
 import plotly.graph_objects as go
+from skimage.measure import find_contours
 
 import sisl
 from ..plot import Plot, entry_point
@@ -17,7 +18,7 @@ class GridPlot(Plot):
     grid: Grid, optional
         A sisl.Grid object. If provided, grid_file is ignored.
     grid_file: cubeSile or rhoSileSiesta or ldosSileSiesta or rhoinitSileSiesta or rhoxcSileSiesta or drhoSileSiesta or baderSileSiesta or iorhoSileSiesta or totalrhoSileSiesta or stsSileSiesta or stmldosSileSiesta or hartreeSileSiesta or neutralatomhartreeSileSiesta or totalhartreeSileSiesta or gridncSileSiesta or ncSileSiesta or fdfSileSiesta or tsvncSileSiesta or chgSileVASP or locpotSileVASP, optional
-
+    
     represent:  optional
         The representation of the grid that should be displayed
     transforms:  optional
@@ -45,7 +46,7 @@ class GridPlot(Plot):
         Interpolation factors to make the grid finer on each axis.See the
         zsmooth setting for faster smoothing of 2D heatmap.
     sc: array-like, optional
-
+    
     offset: array-like, optional
         The offset of the grid along each axis. This is important if you are
         planning to match this grid with other geometry related plots.
@@ -74,35 +75,29 @@ class GridPlot(Plot):
         color range is used
     colorscale: str, optional
         A valid plotly colorscale. See https://plotly.com/python/colorscales/
-    iso_vals: array-like of shape (2,), optional
-        The minimum and maximum values of the isosurfaces to be displayed.
-        If not provided, iso_frac will be used to calculate these values
-        (which is more versatile).
-    iso_frac: float, optional
-        If iso_vals is not provided, this value is used to calculate where
-        the isosurfaces are drawn.             It calculates them from the
-        minimum and maximum values of the grid like so:             If
-        iso_frac = 0.3:             (min_value----30%-----ISOMIN----------
-        ISOMAX---30%-----max_value)             Therefore, it should be a
-        number between 0 and 0.5.
-    surface_count: int, optional
-        The number of surfaces between the lower and the upper limits of
-        iso_vals
-    type3D:  optional
-        This controls how the 3D data is displayed.              'volume'
-        displays different layers with different levels of opacity so that
-        there is more sensation of depth.             'isosurface' displays
-        only isosurfaces and nothing inbetween them. For plotting grids with
-        positive and negative             values, you should use 'isosurface'
-        or two different 'volume' plots.              If not provided, the
-        plot will decide for you based on the above mentioned fact
-    opacityscale:  optional
-        Controls how the opacity changes through layers.              See
-        https://plotly.com/python/3d-volume-plots/ for a display of the
-        different possibilities
-    surface_opacity: float, optional
-        The opacity of the isosurfaces drawn by 3d plots from 0 (transparent)
-        to 1 (opaque).
+    isos: array-like of dict, optional
+        The isovalues that you want to represent.             The way they
+        will be represented are of course dependant on the type of
+        representation:                 - 1D representations: Just a scatter
+        mark                 - 2D representations: A contour (i.e. a line)
+        - 3D representations: A surface                Each item is a dict.
+        Structure of the expected dicts:{         'name': The name of the iso
+        query. Note that you can use $isoval$ as a template to indicate where
+        the isoval should go.         'val':          'frac': If val is not
+        provided, this is used to calculate where the isosurface should be
+        drawn.                     It calculates them from the minimum and
+        maximum values of the grid like so:                     If iso_frac =
+        0.3:                     (min_value-----
+        ISOVALUE(30%)-----------max_value)                     Therefore, it
+        should be a number between 0 and 1.
+        'step_size': The step size to use to calculate the isosurface in case
+        it's a 3D representation                     A bigger step-size can
+        speed up the process dramatically, specially the rendering part
+        and the resolution may still be more than satisfactory (try to use
+        step_size=2). For very big                     grids your computer
+        may not even be able to render very fine surfaces, so it's worth
+        keeping                     this setting in mind.         'color':
+        'opacity':  }
     root_fdf: fdfSileSiesta, optional
         Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
@@ -145,6 +140,9 @@ class GridPlot(Plot):
                 'options': [
                     {'label': 'Real part', 'value': "real"},
                     {'label': 'Imaginary part', 'value': 'imag'},
+                    {'label': 'Complex modulus', 'value': "mod"},
+                    {'label': 'Phase (in rad)', 'value': 'rad_phase'},
+                    {'label': 'Phase (in deg)', 'value': 'deg_phase'},
                 ],
                 'isMulti': False,
                 'isSearchable': True,
@@ -314,11 +312,10 @@ class GridPlot(Plot):
             help="""A valid plotly colorscale. See https://plotly.com/python/colorscales/"""
         ),
 
-        QueriesInput(key = "isos", name = "Isosurfaces / contours / marks",
+        QueriesInput(key = "isos", name = "Isosurfaces / contours",
             default = [],
             help = """The isovalues that you want to represent.
             The way they will be represented are of course dependant on the type of representation:
-                - 1D representations: Just a scatter mark
                 - 2D representations: A contour (i.e. a line)
                 - 3D representations: A surface
             """,
@@ -463,6 +460,10 @@ class GridPlot(Plot):
             values = grid.grid.real
         elif represent == 'imag':
             values = grid.grid.imag
+        elif represent == 'mod':
+            values = np.absolute(grid.grid)
+        elif represent.endswith("phase"):
+            values = np.angle(grid.grid, deg=represent.startswith("deg"))
 
         #Remove the leftover dimensions
         values = np.squeeze(values)
@@ -503,7 +504,12 @@ class GridPlot(Plot):
         else:
             offset = 0
 
-        return np.arange(0, sc[ax]*grid.cell[ax, ax], grid.dcell[ax, ax]) + offset + grid_offset[ax]
+        ax_vals = np.arange(0, sc[ax]*grid.cell[ax, ax], grid.dcell[ax, ax]) + offset + grid_offset[ax]
+
+        if len(ax_vals) == grid.shape[ax] + 1:
+            ax_vals = ax_vals[:-1]
+        
+        return ax_vals
 
     @staticmethod
     def _cut_vacuum(grid):
@@ -568,7 +574,7 @@ class GridPlot(Plot):
 
         self.update_layout(**axes_titles)
 
-    def _plot2D(self, grid, values, display_axes, sc, name, crange, cmid, colorscale, zsmooth, **kwargs):
+    def _plot2D(self, grid, values, display_axes, sc, name, crange, cmid, colorscale, zsmooth, isos, **kwargs):
 
         xaxis = display_axes[0]
         yaxis = display_axes[1]
@@ -586,12 +592,15 @@ class GridPlot(Plot):
             if np.any(values > 0) and np.any(values < 0):
                 cmid = 0
 
+        xs = self._get_ax_range(grid, xaxis, sc)
+        ys = self._get_ax_range(grid, yaxis, sc)
+
         self.data = [{
             'type': 'heatmap',
             'name': name,
             'z': values,
-            'x': self._get_ax_range(grid, xaxis, sc),
-            'y': self._get_ax_range(grid, yaxis, sc),
+            'x': xs,
+            'y': ys,
             'zsmooth': zsmooth,
             'zmin': cmin,
             'zmax': cmax,
@@ -599,6 +608,44 @@ class GridPlot(Plot):
             'colorscale': colorscale,
             **kwargs
         }]
+
+        # Draw the contours (if any)
+        if len(isos) > 0:
+            xs_indices = np.arange(values.shape[1])
+            ys_indices = np.arange(values.shape[0])
+            isos_param = self.get_param("isos")
+            minval = np.min(values)
+            maxval = np.max(values)
+
+        for iso in isos:
+
+            iso = isos_param.complete_query(iso)
+
+            # Infer the iso value either from val or from frac
+            isoval = iso.get("val")
+            if isoval is None:
+                frac = iso.get("frac")
+                if frac is None:
+                    raise ValueError(f"You are providing an iso query without 'val' and 'frac'. There's no way to know the isovalue!\nquery: {iso}")
+                isoval = minval + (maxval-minval)*frac
+
+            # Find contours at a constant value of 0.8
+            contours = find_contours(values, isoval)
+
+            contour_xs = []
+            contour_ys = []
+            for contour in contours:
+                contour_xs = [*contour_xs, None, *np.interp(contour[:, 1], xs_indices, xs)]
+                contour_ys = [*contour_ys, None, *np.interp(contour[:, 0], ys_indices, ys)]
+            
+            color = iso.get("color")
+            self.add_scatter(
+                x=contour_xs, y=contour_ys, 
+                marker_color=color, line_color=color,
+                opacity=iso.get("opacity"),
+                name=iso.get("name", "").replace("$isoval$", str(isoval))
+            )
+            
 
         axes_titles = {'xaxis_title': f'{("X","Y", "Z")[xaxis]} axis [Ang]', 'yaxis_title': f'{("X","Y", "Z")[yaxis]} axis [Ang]'}
 
@@ -613,7 +660,7 @@ class GridPlot(Plot):
         isos_param = self.get_param("isos")
 
         # If there are no iso queries, we are going to create 2 isosurfaces.
-        if len(isos) == 0:
+        if len(isos) == 0 and maxval != minval:
 
             default_iso_frac = isos_param["frac"].default
 
