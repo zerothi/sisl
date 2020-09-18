@@ -18,7 +18,7 @@ class GridPlot(Plot):
     grid: Grid, optional
         A sisl.Grid object. If provided, grid_file is ignored.
     grid_file: cubeSile or rhoSileSiesta or ldosSileSiesta or rhoinitSileSiesta or rhoxcSileSiesta or drhoSileSiesta or baderSileSiesta or iorhoSileSiesta or totalrhoSileSiesta or stsSileSiesta or stmldosSileSiesta or hartreeSileSiesta or neutralatomhartreeSileSiesta or totalhartreeSileSiesta or gridncSileSiesta or ncSileSiesta or fdfSileSiesta or tsvncSileSiesta or chgSileVASP or locpotSileVASP, optional
-    
+
     represent:  optional
         The representation of the grid that should be displayed
     transforms:  optional
@@ -46,7 +46,7 @@ class GridPlot(Plot):
         Interpolation factors to make the grid finer on each axis.See the
         zsmooth setting for faster smoothing of 2D heatmap.
     sc: array-like, optional
-    
+
     offset: array-like, optional
         The offset of the grid along each axis. This is important if you are
         planning to match this grid with other geometry related plots.
@@ -315,7 +315,7 @@ class GridPlot(Plot):
         QueriesInput(key = "isos", name = "Isosurfaces / contours",
             default = [],
             help = """The isovalues that you want to represent.
-            The way they will be represented are of course dependant on the type of representation:
+            The way they will be represented is of course dependant on the type of representation:
                 - 2D representations: A contour (i.e. a line)
                 - 3D representations: A surface
             """,
@@ -334,6 +334,7 @@ class GridPlot(Plot):
                 FloatInput(
                     key="val", name="Value",
                     default=None,
+                    help="The iso value. If not provided, it will be infered from `frac`"
                 ),
 
                 FloatInput(
@@ -365,6 +366,7 @@ class GridPlot(Plot):
                 ColorPicker(
                     key="color", name="Color",
                     default=None,
+                    help="The color of the surface/contour."
                 ),
 
                 FloatInput(
@@ -374,7 +376,8 @@ class GridPlot(Plot):
                         "min": 0,
                         "max": 1,
                         "step": 0.1
-                    }
+                    },
+                    help="Opacity of the surface/contour. Between 0 (transparent) and 1 (opaque)."
                 )
 
             ]
@@ -508,7 +511,7 @@ class GridPlot(Plot):
 
         if len(ax_vals) == grid.shape[ax] + 1:
             ax_vals = ax_vals[:-1]
-        
+
         return ax_vals
 
     @staticmethod
@@ -637,15 +640,14 @@ class GridPlot(Plot):
             for contour in contours:
                 contour_xs = [*contour_xs, None, *np.interp(contour[:, 1], xs_indices, xs)]
                 contour_ys = [*contour_ys, None, *np.interp(contour[:, 0], ys_indices, ys)]
-            
+
             color = iso.get("color")
             self.add_scatter(
-                x=contour_xs, y=contour_ys, 
+                x=contour_xs, y=contour_ys,
                 marker_color=color, line_color=color,
                 opacity=iso.get("opacity"),
                 name=iso.get("name", "").replace("$isoval$", str(isoval))
             )
-            
 
         axes_titles = {'xaxis_title': f'{("X","Y", "Z")[xaxis]} axis [Ang]', 'yaxis_title': f'{("X","Y", "Z")[yaxis]} axis [Ang]'}
 
@@ -685,7 +687,7 @@ class GridPlot(Plot):
                 if frac is None:
                     raise ValueError(f"You are providing an iso query without 'val' and 'frac'. There's no way to know the isovalue!\nquery: {iso}")
                 isoval = minval + (maxval-minval)*frac
-            
+
             # Calculate the isosurface
             vertices, faces, normals, intensities = grid.isosurface(isoval, iso.get("step_size", 1))
 

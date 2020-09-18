@@ -34,7 +34,7 @@ class GridPlotTester(PlotTester):
 
         plot.update_settings(axes=[0, 1, 2]), "Not displaying grid in 3D correctly?"
         assert isinstance(plot.data[0], go.Mesh3d)
-    
+
     def test_complex_representations(self):
         for repr in ["imag", "mod", "rad_phase", "deg_phase", "real"]:
             self.plot.update_settings(represent=repr)

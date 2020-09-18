@@ -53,7 +53,8 @@ viz = {
         'flask-cors',
         'flask-login',
         'flask-session',
-        'eventlet' # To improve socket performance for flask-socketio
+        #'eventlet' # To improve socket performance for flask-socketio
+        'skimage'
     ],
     "blender": [
     ], # for when blender enters
