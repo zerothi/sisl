@@ -8,7 +8,7 @@ from numpy import floor, dot, add, cos, sin
 from numpy import ogrid, take, asarray
 from scipy.sparse import diags as sp_diags
 from scipy.sparse import SparseEfficiencyWarning
-from scipy.ndimage import zoom as ndimage_zoom
+from scipy.ndimage import zoom as ndimage_zoom, affine_transform
 
 from ._internal import set_module
 from . import _array as _a
@@ -179,6 +179,84 @@ class Grid(SuperCellChild):
 
         # Apply the scipy.ndimage.zoom function and return a new grid
         return self.apply(ndimage_zoom, zoom_factors, mode=mode, order=order, **kwargs)
+    
+    def transform_axes(self, axes=np.eye(3), output_shape=None, mode="constant", order=1, **kwargs):
+        """
+        Applies a linear transformation to the grid to get it relative to arbitrary axes.
+
+        This method can be used, for example to get the values of the grid with respect to
+        the standard basis, so that you can easily visualize it or overlap it with other grids
+        (e.g. to perform integrals).
+
+        Parameters
+        -----------
+        axes: array-like of shape (3,3)
+            these axes represent the directions that you want to use as references for
+            the new grid.
+
+            The length of the axes does not have any effect! They will be rescaled to create
+            the minimum bounding box necessary to accomodate the unit cell.
+        output_shape: array-like of int of shape (3,), optional
+            the shape of the final output. If not provided, the current shape of the grid
+            will be used. 
+            
+            Notice however that if the transformation applies a big shear to the image (grid)
+            you will probably need to have a bigger output_shape.
+        mode: str, optional
+            determines how to handle borders. See scipy docs for more info on the possible values.
+        order : int 0-5, optional
+            the order of the spline interpolation to calculate the values (since we are applying
+            a transformation, we don't actually have values for the new locations and we need to
+            interpolate them)
+            1 means linear, 2 quadratic, etc...
+        **kwargs:
+            the rest of keyword arguments are passed directly to `scipy.ndimage.affine_transform`
+
+        See also
+        ----------
+        scipy.ndimage.affine_transform : method used to apply the linear transformation.
+        """
+        # Take the current shape of the grid if no output shape was provided
+        if output_shape is None:
+            output_shape = self.shape
+
+        # Get the current cell in coordinates of the destination axes
+        inv_axes = np.linalg.inv(axes)
+        projected_cell = self.cell.dot(inv_axes)
+
+        # From that, infere how long will the bounding box of the cell be
+        lengths = abs(projected_cell).sum(axis=0)
+
+        # Create the transformation matrix. Since we want to control the shape
+        # of the output, we can not use self.dcell directly, we need to modify it.
+        scales = output_shape / lengths
+        forward_t = (self.dcell.dot(inv_axes)*scales).T
+
+        # Scipy's affine transform asks for the inverse transformation matrix, to
+        # map from output pixels to input pixels. By taking the inverse of our
+        # transformation matrix, we get exactly that.
+        tr = np.linalg.inv(forward_t)
+
+        # Calculate the offset of the image so that all points of the grid "fall" inside
+        # the output array. 
+        # For this we just calculate the centers of the input and output images
+        center_input = 0.5 * (np.array(self.shape) - 1)
+        center_output = 0.5 * (np.array(output_shape) - 1)
+
+        # And then make sure that the input center that is interpolated from the output
+        # falls in the actual input's center
+        offset = center_input - np.dot(tr, center_output)
+
+        # We pass all the parameters to scipy's affine_transform
+        transformed_image = affine_transform(self.grid, tr, order=1, offset=offset, 
+            output_shape=output_shape, mode=mode, **kwargs)
+
+        # Create a new grid with the new shape and the new axes (notice how the axes
+        # are rescaled from the input axes to fit the actual coordinates of the system)
+        grid = self.__class__(output_shape, sc=axes*lengths.reshape(3,1))
+        grid.grid = transformed_image
+            
+        return grid
 
     def isosurface(self, level, step_size=1, **kwargs):
         """Calculates the isosurface for a given value.
