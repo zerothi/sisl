@@ -5,7 +5,7 @@ from math import pi
 import numpy as np
 from numpy import int32
 from numpy import floor, dot, add, cos, sin
-from numpy import ogrid, take
+from numpy import ogrid, take, asarray
 from scipy.sparse import diags as sp_diags
 from scipy.sparse import SparseEfficiencyWarning
 from scipy.ndimage import zoom as ndimage_zoom
@@ -227,12 +227,11 @@ class Grid(SuperCellChild):
         # Run the marching cubes algorithm to calculate the vertices and faces
         # of the requested isosurface.
         verts, *returns = skimage.measure.marching_cubes(
-            self.grid, level=level, spacing=1/np.array(self.shape), step_size=step_size, **kwargs
+            self.grid, level=level, step_size=step_size, **kwargs
         )
 
-        # The verts cordinates are in fractional coordinates. Therefore, we need to use
-        # the cell vectors to get the actual xyz coordinates
-        verts = verts.dot(self.cell)
+        # The verts cordinates are in fractional coordinates of unit-length.
+        verts = self.index2xyz(verts)
 
         return (verts, *returns)
 
@@ -661,7 +660,7 @@ class Grid(SuperCellChild):
         numpy.ndarray
            coordinates of the indices with respect to this grid spacing
         """
-        return dot(np.asarray(index), self.dcell)
+        return asarray(index).dot(self.dcell)
 
     def index_fold(self, index, unique=True):
         """ Converts indices from *any* placement to only exist in the "primary" grid
