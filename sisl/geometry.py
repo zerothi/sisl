@@ -2823,8 +2823,9 @@ class Geometry(SuperCellChild):
             Either a point in space or an index of an atom.
             If an index is passed it is the equivalent of passing
             the atomic coordinate ``close_sc(self.xyz[xyz_ia,:])``.
-        isc : array_like, optional
-            The super-cell which the coordinates are checked in.
+        isc : (3,), optional
+            Integer super-cell offsets in which the coordinates are checked in.
+            I.e. ``isc=[0, 0, 0]`` is the primary cell (default).
         R : float or array_like, optional
             The radii parameter to where the atomic connections are found.
             If `R` is an array it will return the indices:
