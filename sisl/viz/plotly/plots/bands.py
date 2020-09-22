@@ -511,7 +511,7 @@ class BandsPlot(Plot):
         self._calculate_gaps()
 
         # Make sure that the bands_range control knows which bands are available
-        iBands = self.bands.band.values
+        i_bands = self.bands.band.values
 
         if len(iBands) > 30:
             iBands = iBands[np.linspace(0, len(iBands)-1, 20, dtype=int)]
@@ -547,8 +547,8 @@ class BandsPlot(Plot):
                 CB = int(filtered_bands.where(filtered_bands <= 0).argmax('band').max())
                 bands_range = [int(max(filtered_bands["band"].min(), CB - 15)), int(min(filtered_bands["band"].max() + 1, CB + 16))]
 
-            iBands = np.arange(*bands_range)
-            filtered_bands = filtered_bands.where(filtered_bands.band.isin(iBands), drop=True)
+            i_bands = np.arange(*bands_range)
+            filtered_bands = filtered_bands.where(filtered_bands.band.isin(i_bands), drop=True)
             self.update_settings(
                 run_updates=False,
                 Erange=np.array([float(f'{val:.3f}') for val in [float(filtered_bands.min() - 0.01), float(filtered_bands.max() + 0.01)]]),
@@ -569,7 +569,7 @@ class BandsPlot(Plot):
                 self.spin_texture = True
 
         if not callable(add_band_trace_data):
-            add_band_trace_data = lambda * args, **kwargs: {}
+            add_band_trace_data = lambda *args, **kwargs: {}
 
         # Give the oportunity to draw before bands are drawn (used by Fatbands, for example)
         if callable(draw_before_bands):
