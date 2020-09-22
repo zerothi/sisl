@@ -374,8 +374,8 @@ class Geometry(SuperCellChild):
         """
         na = len(self)
         if na % na_primary != 0:
-            raise ValueError(self.__class__.__name__ + '.as_primary requires the number of atoms to be divisable by the '
-                            'total number of atoms.')
+            raise ValueError(f'{self.__class__.__name__}.as_primary requires the number of atoms to be divisable by the '
+                             'total number of atoms.')
 
         n_supercells = len(self) // na_primary
         if n_supercells == 1:
@@ -426,7 +426,7 @@ class Geometry(SuperCellChild):
 
         # Check that the number of supercells match
         if np.product(supercell) != n_supercells:
-            raise SislError(self.__class__.__name__ + '.as_primary could not determine the optimal supercell.')
+            raise SislError(f'{self.__class__.__name__}.as_primary could not determine the optimal supercell.')
 
         # Cut down the supercell (TODO this does not correct the number of supercell connections!)
         sc = self.sc.copy()
@@ -765,7 +765,7 @@ class Geometry(SuperCellChild):
         not_passed_N = np.sum(not_passed)
 
         if iR < 2:
-            raise SislError(self.__class__.__name__ + '.iter_block_rand too small iR!')
+            raise SislError(f'{self.__class__.__name__}.iter_block_rand too small iR!')
 
         if R is None:
             R = self.maxR()
@@ -816,7 +816,7 @@ class Geometry(SuperCellChild):
         if np.any(not_passed):
             print(not_passed.nonzero()[0])
             print(np.sum(not_passed), len(self))
-            raise SislError(self.__class__.__name__ + '.iter_block_rand error on iterations. Not all atoms have been visited.')
+            raise SislError(f'{self.__class__.__name__}.iter_block_rand error on iterations. Not all atoms have been visited.')
 
     def iter_block_shape(self, shape=None, iR=20, atoms=None):
         """ Perform the *grid* block-iteration by looping a grid """
@@ -835,7 +835,7 @@ class Geometry(SuperCellChild):
         not_passed_N = np.sum(not_passed)
 
         if iR < 2:
-            raise SislError(self.__class__.__name__ + '.iter_block_shape too small iR!')
+            raise SislError(f'{self.__class__.__name__}.iter_block_shape too small iR!')
 
         R = self.maxR()
         if shape is None:
@@ -850,7 +850,7 @@ class Geometry(SuperCellChild):
             if len(dS) == 1:
                 dS += (dS[0].expand(R + 0.01), )
         if len(dS) != 2:
-            raise ValueError(self.__class__.__name__ + '.iter_block_shape, number of Shapes *must* be one or two')
+            raise ValueError(f'{self.__class__.__name__}.iter_block_shape, number of Shapes *must* be one or two')
 
         # Now create the Grid
         # convert the radius to a square Grid
@@ -863,7 +863,7 @@ class Geometry(SuperCellChild):
         # Sphere and Cube
         for s in dS:
             if not isinstance(s, (Cube, Sphere)):
-                raise ValueError(self.__class__.__name__ + '.iter_block_shape currently only works for '
+                raise ValueError(f'{self.__class__.__name__}.iter_block_shape currently only works for '
                                  'Cube or Sphere objects. Please change sources.')
 
         # Retrieve the internal diameter
@@ -936,7 +936,7 @@ class Geometry(SuperCellChild):
         if np.any(not_passed):
             print(not_passed.nonzero()[0])
             print(np.sum(not_passed), len(self))
-            raise SislError(self.__class__.__name__ + '.iter_block_shape error on iterations. Not all atoms have been visited.')
+            raise SislError(f'{self.__class__.__name__}.iter_block_shape error on iterations. Not all atoms have been visited.')
 
     def iter_block(self, iR=20, R=None, atoms=None, method='rand'):
         """ Iterator for performance critical loops
@@ -978,7 +978,7 @@ class Geometry(SuperCellChild):
             atoms that needs searching
         """
         if iR < 2:
-            raise SislError(self.__class__.__name__ + '.iter_block too small iR!')
+            raise SislError(f'{self.__class__.__name__}.iter_block too small iR!')
 
         method = method.lower()
         if method == 'rand' or method == 'random':
@@ -1673,8 +1673,8 @@ class Geometry(SuperCellChild):
         tile : opposite method of this
         """
         if self.na % seps != 0:
-            raise ValueError(self.__class__.__name__ + '.cut '
-                             'cannot be cut into {} different '.format(seps) +
+            raise ValueError(f'{self.__class__.__name__}.cut '
+                             f'cannot be cut into {seps} different '
                              'pieces. Please check your geometry and input.')
         # Truncate to the correct segments
         lseg = seg % seps
@@ -1754,7 +1754,7 @@ class Geometry(SuperCellChild):
         cut : opposite method of this
         """
         if reps < 1:
-            raise ValueError(self.__class__.__name__ + '.tile requires a repetition above 0')
+            raise ValueError(f'{self.__class__.__name__}.tile requires a repetition above 0')
 
         sc = self.sc.tile(reps, axis)
 
@@ -1829,7 +1829,7 @@ class Geometry(SuperCellChild):
         tile : equivalent but different ordering of final structure
         """
         if reps < 1:
-            raise ValueError(self.__class__.__name__ + '.repeat requires a repetition above 0')
+            raise ValueError(f'{self.__class__.__name__}.repeat requires a repetition above 0')
 
         sc = self.sc.repeat(reps, axis)
 
@@ -2225,7 +2225,7 @@ class Geometry(SuperCellChild):
                 min_other_f = dot(other.xyz, self.icell.T)[:, axis].min()
                 offset = self.cell[axis, :] * (1 + min_f - min_other_f)
             else:
-                raise ValueError(self.__class__.__name__ + '.append requires align keyword to be one of [none, min, (3,)]')
+                raise ValueError(f'{self.__class__.__name__}.append requires align keyword to be one of [none, min, (3,)]')
         else:
             offset = (self.cell[axis, :] + _a.arrayd(offset)).reshape(1, 3)
 
@@ -2293,7 +2293,7 @@ class Geometry(SuperCellChild):
                 min_other_f = dot(self.xyz, other.icell.T)[:, axis].min()
                 offset = other.cell[axis, :] * (1 + min_f - min_other_f)
             else:
-                raise ValueError(self.__class__.__name__ + '.prepend requires align keyword to be one of [none, min, (3,)]')
+                raise ValueError(f'{self.__class__.__name__}.prepend requires align keyword to be one of [none, min, (3,)]')
         else:
             offset = (other.cell[axis, :] + _a.arrayd(offset)).reshape(1, 3)
         if isinstance(other, SuperCell):
@@ -2462,7 +2462,7 @@ class Geometry(SuperCellChild):
         if isinstance(dist, Real):
             # We have a single rational number
             if axis is None:
-                raise ValueError(self.__class__.__name__ + ".attach, `axis` has not been specified, please specify the axis when using a distance")
+                raise ValueError(f"{self.__class__.__name__}.attach, `axis` has not been specified, please specify the axis when using a distance")
 
             # Now calculate the vector that we should have
             # between the atoms
@@ -2472,7 +2472,7 @@ class Geometry(SuperCellChild):
         elif isinstance(dist, str):
             # We have a single rational number
             if axis is None:
-                raise ValueError(self.__class__.__name__ + ".attach, `axis` has not been specified, please specify the axis when using a distance")
+                raise ValueError(f"{self.__class__.__name__}.attach, `axis` has not been specified, please specify the axis when using a distance")
 
             # This is the empirical distance between the atoms
             d = self.atoms[atom].radius(dist) + other.atoms[other_atom].radius(dist)
@@ -2941,7 +2941,7 @@ class Geometry(SuperCellChild):
             return ret[0]
 
         if not is_ascending(R):
-            raise ValueError(self.__class__.__name__ + '.close_sc proximity checks for several '
+            raise ValueError(f'{self.__class__.__name__}.close_sc proximity checks for several '
                              'quantities at a time requires ascending R values.')
 
         # The more neigbours you wish to find the faster this becomes
@@ -3391,7 +3391,7 @@ class Geometry(SuperCellChild):
         elif atoms2.size == 1:
             atoms2 = np.tile(atoms2, atoms1.size)
         else:
-            raise ValueError(self.__class__.__name__ + '.a2transpose only allows length 1 or same length arrays.')
+            raise ValueError(f'{self.__class__.__name__}.a2transpose only allows length 1 or same length arrays.')
 
         # Now convert atoms
         na = self.na
@@ -3453,7 +3453,7 @@ class Geometry(SuperCellChild):
         elif orb2.size == 1:
             orb2 = np.tile(orb2, orb1.size)
         else:
-            raise ValueError(self.__class__.__name__ + '.o2transpose only allows length 1 or same length arrays.')
+            raise ValueError(f'{self.__class__.__name__}.o2transpose only allows length 1 or same length arrays.')
 
         # Now convert orbs
         no = self.no
@@ -3482,10 +3482,9 @@ class Geometry(SuperCellChild):
              ``True``, returns list of the full atom
         """
         atoms = self._sanitize_atoms(atoms)
+        off = np.divmod(atoms, self.na, out=(None, atoms))[0] * self.no
         if not all:
-            return self.firsto[atoms % self.na] + (atoms // self.na) * self.no
-        off = np.divmod(atoms, self.na, out=(None, atoms))[0]
-        off *= self.no
+            return self.firsto[atoms] + off
         ob = self.firsto[atoms] + off
         oe = self.lasto[atoms] + off + 1
 
@@ -3908,7 +3907,7 @@ class Geometry(SuperCellChild):
                 try:
                     func = getattr(np, method)
                 except:
-                    raise ValueError(self.__class__.__name__ + ".distance `method` has wrong input value.")
+                    raise ValueError(f"{self.__class__.__name__}.distance `method` has wrong input value.")
         else:
             func = method
 
