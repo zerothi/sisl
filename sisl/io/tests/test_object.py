@@ -19,6 +19,11 @@ gs = get_sile
 gsc = get_sile_class
 
 
+sile_geom_write_instantiation_args = {
+    axsfSile: dict(count=1),
+}
+
+
 def _my_intersect(a, b):
     a = get_siles(a)
     b = set(get_siles(b))
@@ -237,7 +242,8 @@ class TestObject:
         if issubclass(sile, (_ncSileTBtrans, deltancSileTBtrans)):
             return
         # Write
-        sile(f, mode="w").write_geometry(G)
+        kwargs = sile_geom_write_instantiation_args.get(sile, {})
+        sile(f, mode="w", **kwargs).write_geometry(G)
         # Read 1
         try:
             g = sile(f, mode="r").read_geometry()
