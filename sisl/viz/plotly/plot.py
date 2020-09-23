@@ -2537,3 +2537,22 @@ class SubPlots(MultiplePlot):
 
             self.update_xaxes(plot.layout.xaxis, row=row, col=col)
             self.update_yaxes(plot.layout.yaxis, row=row, col=col)
+
+        # Since we have directly copied the layouts of the child plots, there may be some references
+        # between axes that we need to fix. E.g.: if yaxis was set to follow xaxis in the second child plot,
+        # since the second child plot is put in (xaxes2, yaxes2) the reference will be now to the first child
+        # plot xaxis, not itself. This is best understood by printing the figure of a subplot :)
+        new_layouts = {}
+        for ax, layout in self.figure.layout.to_plotly_json().items():
+            if "axis" in ax:
+                ax_name, ax_num = ax.split("axis")
+                
+                # Go over all possible problematic keys
+                for key in ["anchor", "scaleanchor"]:
+                    val = layout.get(key)
+                    if val in ["x", "y"]:
+                        layout[key] = f"{val}{ax_num}"
+                
+                new_layouts[ax] = layout
+
+        self.update_layout(**new_layouts)

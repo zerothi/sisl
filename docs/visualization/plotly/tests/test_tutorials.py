@@ -47,7 +47,7 @@ class NotebookTester:
                 os.remove(path)
 
 
-tut_root = "/home/pfebrer/webDevelopement/sislGUI/sisl/sisl/viz/plotly/Notebooks/tutorials"
+tut_root = Path(__file__)/ "basic-tutorials"
 
 
 class TestDemo(NotebookTester):
