@@ -513,15 +513,15 @@ class BandsPlot(Plot):
         # Make sure that the bands_range control knows which bands are available
         i_bands = self.bands.band.values
 
-        if len(iBands) > 30:
-            iBands = iBands[np.linspace(0, len(iBands)-1, 20, dtype=int)]
+        if len(i_bands) > 30:
+            i_bands = i_bands[np.linspace(0, len(i_bands)-1, 20, dtype=int)]
 
         self.modify_param('bands_range', 'inputField.params', {
             **self.get_param('bands_range')["inputField"]["params"],
-            "min": min(iBands),
-            "max": max(iBands),
+            "min": min(i_bands),
+            "max": max(i_bands),
             "allowCross": False,
-            "marks": {int(i): str(i) for i in iBands},
+            "marks": {int(i): str(i) for i in i_bands},
         })
 
     def _set_data(self, Erange, E0, bands_range, spin, bands_width, bands_color, spindown_color, add_band_trace_data, draw_before_bands=None):
