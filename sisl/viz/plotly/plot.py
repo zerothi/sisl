@@ -2526,7 +2526,21 @@ class SubPlots(MultiplePlot):
         rows = int(rows)
         cols = int(cols)
 
-        self.figure = make_subplots(**{"rows": rows, "cols": cols, **make_subplot_kwargs})
+        # Check if all childplots have the same xaxis or yaxis titles.
+        axes_titles = defaultdict(list)
+        for child_plot in self.child_plots:
+            axes_titles["x"].append(child_plot.layout.xaxis.title.text)
+            axes_titles["y"].append(child_plot.layout.yaxis.title.text)
+
+        # If so, we will set the subplots figure x_title and/or y_title so that it looks cleaner.
+        # See how we remove the titles from the axis layout below when we allocate each plot.
+        axes_titles = {f"{key}_title": val[0] for key, val in axes_titles.items() if len(set(val)) == 1}
+
+        self.figure = make_subplots(**{
+            "rows": rows, "cols": cols,
+            **axes_titles,
+            **make_subplot_kwargs
+        })
 
         # Start assigning each plot to a position of the layout
         for (row, col), plot in zip(itertools.product(range(1, rows + 1), range(1, cols + 1)), self.child_plots):
@@ -2535,8 +2549,16 @@ class SubPlots(MultiplePlot):
 
             self.add_traces(plot.data, rows=[row]*ntraces, cols=[col]*ntraces)
 
-            self.update_xaxes(plot.layout.xaxis, row=row, col=col)
-            self.update_yaxes(plot.layout.yaxis, row=row, col=col)
+            for ax in "x", "y":
+                ax_layout = getattr(plot.layout, f"{ax}axis").to_plotly_json()
+                
+                # If we have set a global title for this axis, just remove it from the plot
+                if axes_titles.get(f"{ax}_title"):
+                    ax_layout["title"] = None
+
+                update_axis = getattr(self, f"update_{ax}axes")
+
+                update_axis(ax_layout, row=row, col=col)
 
         # Since we have directly copied the layouts of the child plots, there may be some references
         # between axes that we need to fix. E.g.: if yaxis was set to follow xaxis in the second child plot,
