@@ -7,6 +7,7 @@ import inspect
 import numpy as np
 import dill
 from copy import deepcopy
+from collections import defaultdict
 import time
 from types import MethodType, FunctionType
 import itertools
