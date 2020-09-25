@@ -24,7 +24,7 @@ class GeometryPlotTester(PlotTester):
 
         plot = self.plot
 
-        plot.update_settings(axes=[0, 1], bonds=True, cell='box', atoms=None)
+        plot.update_settings(axes=[0, 1], show_bonds=True, show_cell='box', atoms=None)
 
         # Check that the first trace is 2d
         assert np.all([hasattr(plot.data[0], ax) for ax in ('x', 'y')])
@@ -33,36 +33,36 @@ class GeometryPlotTester(PlotTester):
         # Check that there is a cell and we can toggle it
         with_box_cell = len(plot.data)
 
-        plot.update_settings(cell=False)
+        plot.update_settings(show_cell=False)
         assert len(plot.data) == with_box_cell - 1
 
-        plot.update_settings(cell='axes')
+        plot.update_settings(show_cell='axes')
         assert len(plot.data) == with_box_cell + 2
 
         # Check that we can toggle the bonds
         with_bonds = len(plot.data)
 
-        plot.update_settings(bonds=False)
+        plot.update_settings(show_bonds=False)
         assert len(plot.data) == with_bonds - 1
 
         # Check that we can ask for specific atoms
-        plot.update_settings(atoms=[0], bonds=False, cell=False)
+        plot.update_settings(atoms=[0], show_bonds=False, show_cell=False)
         assert len(plot.data) == 1
 
         # Check that we can toggle bonds being bound to atoms
         if plot.geometry.na > 2:
-            plot.update_settings(atoms=[0], bonds=True, bind_bonds_to_ats=True)
+            plot.update_settings(atoms=[0], show_bonds=True, bind_bonds_to_ats=True)
             #First trace is the bonds
             prev_len = len(plot.data[0].x)
 
-            plot.update_settings(atoms=[0], bonds=True, bind_bonds_to_ats=False)
+            plot.update_settings(atoms=[0], show_bonds=True, bind_bonds_to_ats=False)
             assert len(plot.data[0].x) > prev_len
 
     def test_3d(self):
 
         plot = self.plot
 
-        plot.update_settings(axes=[0, 1, 2], cell='box', bonds=True, atoms=None)
+        plot.update_settings(axes=[0, 1, 2], show_cell='box', show_bonds=True, atoms=None)
 
         # Check that the first trace is 3d
         assert np.all([hasattr(plot.data[0], ax) for ax in ('x', 'y', 'z')])
@@ -70,29 +70,29 @@ class GeometryPlotTester(PlotTester):
         # Check that there is a cell and we can toggle it
         with_box_cell = len(plot.data)
 
-        plot.update_settings(cell=False)
+        plot.update_settings(show_cell=False)
         assert len(plot.data) == with_box_cell - 1
 
-        plot.update_settings(cell='axes')
+        plot.update_settings(show_cell='axes')
         assert len(plot.data) == with_box_cell + 2
 
         # Check that we can toggle the bonds
         with_bonds = len(plot.data)
 
-        plot.update_settings(bonds=False)
+        plot.update_settings(show_bonds=False)
         assert len(plot.data) < with_bonds
 
         # Check that we can ask for specific atoms
-        plot.update_settings(atoms=[0], bonds=False, cell=False)
+        plot.update_settings(atoms=[0], show_bonds=False, show_cell=False)
         assert len(plot.data) == 1
 
         # Check that we can toggle bonds being bound to atoms
         if plot.geometry.na > 2:
-            plot.update_settings(atoms=[0], bonds=True, bind_bonds_to_ats=True)
+            plot.update_settings(atoms=[0], show_bonds=True, bind_bonds_to_ats=True)
             #First trace is the bonds
             prev_len = len(plot.data[0].x)
 
-            plot.update_settings(atoms=[0], bonds=True, bind_bonds_to_ats=False)
+            plot.update_settings(atoms=[0], show_bonds=True, bind_bonds_to_ats=False)
             assert len(plot.data[0].x) > prev_len
 
     def test_atom_colors_2d(self):

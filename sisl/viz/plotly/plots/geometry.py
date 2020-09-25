@@ -38,21 +38,174 @@ class BoundGeometry(AbstractDispatch):
 
         return with_plot_update
 
-
-class BaseGeometryPlot(Plot):
+class GeometryPlot(Plot):
     """
-    Representation of a geometry in a plotly Figure.
+    Versatile representation of geometries. 
+    
+    This class contains all functions necessary to plot geometries in very diverse ways.
 
-    This class serves just as a base for child classes that display properties of a geometry.
-    IF YOU WANT TO BUILD A GEOMETRY BASED PLOT, INHERIT FROM THIS CLASS. It contains all the necessary
-    methods for this purpose.
-
-    However, this class IS NOT TO BE USED DIRECTLY. In this way, we can keep child classes
-    clean of meaningless settings. TO DISPLAY A GEOMETRY, USE GEOMETRY PLOT.
-
-    Warning: by now, make sure _after_read is triggered (i.e. if you overwrite it
-    in your class, call this classes' one explicitly)
+    Parameters
+    -------------
+    geometry: Geometry, optional
+    
+    geom_file: str, optional
+    
+    show_bonds: bool, optional
+    
+    axes:  optional
+        The axis along which you want to see the geometry.              You
+        can provide as many axes as dimensions you want for your plot.
+        Note that the order is important and will result in setting the plot
+        axes diferently.             For 2D and 1D representations, you can
+        pass an arbitrary direction as an axis (array of shape (3,))
+    dataaxis_1d: array-like or function, optional
+        If you want a 1d representation, you can provide a data axis.
+        It determines the second coordinate of the atoms.
+        If it's a function, it will recieve the projected 1D coordinates and
+        needs to returns              the coordinates for the other axis as
+        an array.                          If not provided, the other axis
+        will just be 0 for all points.
+    show_cell:  optional
+        Specifies how the cell should be rendered.              (False: not
+        rendered, 'axes': render axes only, 'box': render a bounding box)
+    atoms:  optional
+        The atoms that are going to be displayed in the plot.
+        This also has an impact on bonds (see the `bind_bonds_to_ats` and
+        `show_atoms` parameters).             If set to None, all atoms are
+        displayed
+    atoms_color: array-like, optional
+        A list containing the color for each atom.
+    atoms_size: array-like, optional
+        A list containing the size for each atom.
+    atoms_colorscale: str, optional
+        The colorscale to use to map values to colors for the atoms.
+        Only used if atoms_color is provided and is an array of values.
+    atoms_vertices: int, optional
+        In a 3D representation, the number of vertices that each atom sphere
+        is composed of.
+    bind_bonds_to_ats: bool, optional
+        whether only the bonds that belong to an atom that is present should
+        be displayed.             If False, all bonds are displayed
+        regardless of the `atom` parameter
+    show_atoms: bool, optional
+        If set to False, it will not display atoms.              Basically
+        this is a shortcut for `atom = [], bind_bonds_to_ats=False`.
+        Therefore, it will override these two parameters.
+    root_fdf: fdfSileSiesta, optional
+        Path to the fdf file that is the 'parent' of the results.
+    results_path: str, optional
+        Directory where the files with the simulations results are
+        located. This path has to be relative to the root fdf.
     """
+
+    _plot_type = "Geometry"
+
+    _parameters = (
+
+        PlotableInput(key='geometry', name="Geometry",
+            dtype=Geometry,
+            default=None,
+        ),
+
+        FilePathInput(key="geom_file", name="Geometry file",
+            group="dataread",
+            default=None
+        ),
+
+        SwitchInput(key='show_bonds', name='Show bonds',
+            default=True,
+        ),
+
+        GeomAxisSelect(
+            key="axes", name="Axes to display",
+            default=["x", "y", "z"],
+            help="""The axis along which you want to see the geometry. 
+            You can provide as many axes as dimensions you want for your plot.
+            Note that the order is important and will result in setting the plot axes diferently.
+            For 2D and 1D representations, you can pass an arbitrary direction as an axis (array of shape (3,))"""
+        ),
+
+        ProgramaticInput(
+            key="dataaxis_1d", name="1d data axis",
+            default=None,
+            dtype="array-like or function",
+            help="""If you want a 1d representation, you can provide a data axis.
+            It determines the second coordinate of the atoms.
+            
+            If it's a function, it will recieve the projected 1D coordinates and needs to returns 
+            the coordinates for the other axis as an array.
+            
+            If not provided, the other axis will just be 0 for all points.
+            """
+        ),
+
+        DropdownInput(key="show_cell", name="Cell display",
+            default="box",
+            width="s100% m50% l90%",
+            params={
+                'options': [
+                    {'label': 'False', 'value': False},
+                    {'label': 'axes', 'value': 'axes'},
+                    {'label': 'box', 'value': 'box'}
+                ],
+                'isMulti': False,
+                'isSearchable': True,
+                'isClearable': False
+            },
+            help="""Specifies how the cell should be rendered. 
+            (False: not rendered, 'axes': render axes only, 'box': render a bounding box)"""
+        ),
+
+        AtomSelect(key="atoms", name="Atoms to display",
+            default=None,
+            params={
+                "options": [],
+                "isSearchable": True,
+                "isMulti": True,
+                "isClearable": True
+            },
+            help="""The atoms that are going to be displayed in the plot. 
+            This also has an impact on bonds (see the `bind_bonds_to_ats` and `show_atoms` parameters).
+            If set to None, all atoms are displayed"""
+        ),
+
+        ProgramaticInput(key="atoms_color", name="Atoms color",
+            default=None,
+            dtype="array-like",
+            help="""A list containing the color for each atom."""
+        ),
+
+        ProgramaticInput(key="atoms_size", name="Atoms size",
+            default=None,
+            dtype="array-like",
+            help="""A list containing the size for each atom."""
+        ),
+
+        TextInput(key="atoms_colorscale", name="Atoms vertices",
+            default="viridis",
+            help="""The colorscale to use to map values to colors for the atoms.
+            Only used if atoms_color is provided and is an array of values."""
+        ),
+
+        IntegerInput(key="atoms_vertices", name="Atoms vertices",
+            default=15,
+            help="""In a 3D representation, the number of vertices that each atom sphere is composed of."""
+        ),
+
+        SwitchInput(key="bind_bonds_to_ats", name="Bind bonds to atoms",
+            default=True,
+            help="""whether only the bonds that belong to an atom that is present should be displayed.
+            If False, all bonds are displayed regardless of the `atom` parameter"""
+        ),
+
+        SwitchInput(key="show_atoms", name="Show atoms",
+            default=True,
+            help="""If set to False, it will not display atoms. 
+            Basically this is a shortcut for `atom = [], bind_bonds_to_ats=False`.
+            Therefore, it will override these two parameters."""
+        )
+
+    )
 
     # Colors of the atoms following CPK rules
     _atoms_colors = {
@@ -75,9 +228,11 @@ class BaseGeometryPlot(Plot):
         'yaxis_zeroline': False,
     }
 
-    @property
-    def on_geom(self):
-        return BoundGeometry(self.geometry, self)
+    _update_methods = {
+        "read_data": [],
+        "set_data": ["_plot_geom1D", "_plot_geom2D", "_plot_geom3D"],
+        "get_figure": []
+    }
 
     def _after_init(self):
 
@@ -88,6 +243,60 @@ class BaseGeometryPlot(Plot):
                 "colorscale": "viridis"
             },
         }
+
+    @entry_point('geometry')
+    def _read_nosource(self, geometry):
+        self.geometry = geometry or getattr(self, "geometry", None)
+
+        if self.geometry is None:
+            raise Exception("No geometry has been provided.")
+
+    @entry_point('geom_file')
+    def _read_siesta_output(self, geom_file, root_fdf):
+
+        geom_file = geom_file or root_fdf
+
+        self.geometry = self.get_sile(geom_file).read_geometry()
+
+    def _after_read(self, show_bonds):
+
+        if show_bonds:
+            self.bonds = self.find_all_bonds(self.geometry)
+
+        self.get_param("atoms").update_options(self.geometry)
+
+    def _set_data(self, axes, atoms, show_atoms, bind_bonds_to_ats, dataaxis_1d):
+        ndims = len(axes)
+
+        if show_atoms == False:
+            atoms = []
+            bind_bonds_to_ats = False
+
+        if ndims == 3:
+            self._plot_geom3D(atoms=atoms, bind_bonds_to_ats=bind_bonds_to_ats)
+        elif ndims == 2:
+            xaxis, yaxis = axes
+            self._plot_geom2D(xaxis=xaxis, yaxis=yaxis, atoms=atoms, bind_bonds_to_ats=bind_bonds_to_ats)
+            self.update_layout(xaxis_title=f'Axis {xaxis} [Ang]', yaxis_title=f'Axis {yaxis} [Ang]')
+        elif ndims == 1:
+            coords_axis = axes[0]
+            data_axis = dataaxis_1d
+            self._plot_geom1D(coords_axis=coords_axis, data_axis=data_axis)
+
+            data_axis_name = data_axis.__name__ if callable(data_axis) else 'Data axis'
+            self.update_layout(xaxis_title=f'Axis {coords_axis} [Ang]', yaxis_title=data_axis_name)
+
+    def _after_get_figure(self, axes):
+        ndims = len(axes)
+
+        if ndims == 2:
+            self.layout.yaxis.scaleanchor = "x"
+            self.layout.yaxis.scaleratio = 1
+
+    # From here, we start to define all the helper methods:
+    @property
+    def on_geom(self):
+        return BoundGeometry(self.geometry, self)
 
     @staticmethod
     def _sphere(center=[0, 0, 0], r=1, vertices=10):
@@ -113,11 +322,6 @@ class BaseGeometryPlot(Plot):
             color = f'rgba({",".join(color.astype(str))}, 0.4)'
 
         return color
-
-    def _after_read(self, bonds):
-
-        if bonds:
-            self.bonds = self.find_all_bonds(self.geometry)
 
     @staticmethod
     def find_all_bonds(geometry, tol=0.2):
@@ -166,7 +370,9 @@ class BaseGeometryPlot(Plot):
                 i = ["a", "b", "c"].index(axis)
                 axis = self.geometry.cell[i]
         elif isinstance(axis, int):
-            axis = self.geometry.cell[axis]
+            i = axis
+            axis = np.zeros(3)
+            axis[i] = 1
 
         return np.array(axis)
 
@@ -178,7 +384,8 @@ class BaseGeometryPlot(Plot):
         def xyz(coeffs):
             return np.dot(coeffs, cell)
 
-        # Define the vertices of the cube
+        # Define the vertices of the cube. They follow an order so that we can
+        # draw a line that represents the cell's box
         points = [
             (0, 0, 0), (0, 1, 0), (1, 1, 0), (1, 0, 0), (0, 0, 0),
             (0, 0, 1), (0, 1, 1), (0, 1, 0), (0, 1, 1), (1, 1, 1),
@@ -329,7 +536,7 @@ class BaseGeometryPlot(Plot):
 
     def _plot_geom2D(self, xaxis="x", yaxis="y", atoms=None, atoms_color=None, atoms_size=None, atoms_colorscale="viridis",
         show_bonds=True, bind_bonds_to_ats=True, bonds_together=True, points_per_bond=5,
-        cell='box', wrap_atoms=None, wrap_bond=None):
+        show_cell='box', wrap_atoms=None, wrap_bond=None):
         """
         Returns a 2D representation of the plot's geometry.
 
@@ -368,7 +575,7 @@ class BaseGeometryPlot(Plot):
         points_per_bond: int, optional
             If `bonds_together` is True and you provide a variable color or size (using `wrap_bonds`), this is
             the number of points that are used for each bond. See `bonds_together` for more info.
-        cell: {False, "box", "axes"}, optional
+        show_cell: {False, "box", "axes"}, optional
             determines how the unit cell is represented.
         wrap_atoms: function, optional
             function that recieves the 2D coordinates and returns
@@ -385,8 +592,6 @@ class BaseGeometryPlot(Plot):
             It should return the args (array-like) and kwargs (dict) that go into `self._bond_trace2D()`
 
             If not provided, self._default_wrap_bond2D will be used.
-        cell: {'axes', 'box', False}, optional
-            defines how the unit cell is drawn
         """
         wrap_atoms = wrap_atoms or self._default_wrap_atoms2D
         wrap_bond = wrap_bond or self._default_wrap_bonds2D
@@ -447,9 +652,9 @@ class BaseGeometryPlot(Plot):
         )
 
         #Draw cell
-        if cell == "box":
+        if show_cell == "box":
             traces.append(self._cell_trace2D(xaxis=xaxis, yaxis=yaxis))
-        if cell == "axes":
+        if show_cell == "axes":
             traces = [*traces, *self._cell_axes_traces2D(xaxis=xaxis, yaxis=yaxis)]
 
         self.add_traces(traces)
@@ -647,7 +852,7 @@ class BaseGeometryPlot(Plot):
     #                  3D plotting
     #---------------------------------------------------
 
-    def _plot_geom3D(self, wrap_atom=None, wrap_bond=None, cell='box',
+    def _plot_geom3D(self, wrap_atom=None, wrap_bond=None, show_cell='box',
         atoms=None, bind_bonds_to_ats=True, atoms_vertices=15, atoms_color=None, atoms_size=None, atoms_colorscale="viridis",
         show_bonds=True, cheap_bonds=True, cheap_atoms=False, atom_size_factor=40,
         cheap_bonds_kwargs={}):
@@ -666,7 +871,7 @@ class BaseGeometryPlot(Plot):
             the args (array-like) and kwargs (dict) that go into self._bond_trace3D()
 
             If not provided, self._default_wrap_bond3D will be used.
-        cell: {'axes', 'box', False}, optional
+        show_cell: {'axes', 'box', False}, optional
             defines how the unit cell is drawn
         atoms: array-like of int, optional
             the indices of the atoms that you want to plot
@@ -762,9 +967,9 @@ class BaseGeometryPlot(Plot):
             self.add_traces(atom_traces)
 
         # Draw unit cell
-        if cell == "axes":
+        if show_cell == "axes":
             self.add_traces(self._cell_axes_traces3D())
-        elif cell == "box":
+        elif show_cell == "box":
             self.add_trace(self._cell_trace3D())
 
         self.layout.scene.aspectmode = 'data'
@@ -956,227 +1161,3 @@ class BaseGeometryPlot(Plot):
         }
 
         return trace
-
-
-class GeometryPlot(BaseGeometryPlot):
-    """
-    Versatile representation of geometries.
-
-    Parameters
-    -------------
-    geometry: Geometry, optional
-
-    geom_file: str, optional
-
-    bonds: bool, optional
-
-    axes:  optional
-        The axis along which you want to see the geometry.              You
-        can provide as many axes as dimensions you want for your plot.
-        Note that the order is important and will result in setting the plot
-        axes diferently.             For 2D and 1D representations, you can
-        pass an arbitrary direction as an axis (array of shape (3,))
-    dataaxis_1d:  optional
-        If you want a 1d representation, you can provide a data axis.
-        It should be a function that receives the 1d coordinate of each atom
-        and             returns it's "data-coordinate", which will be in the
-        y axis of the plot.             If not provided, the y axis will be
-        all 0.
-    cell:  optional
-        Specifies how the cell should be rendered.              (False: not
-        rendered, 'axes': render axes only, 'box': render a bounding box)
-    atoms:  optional
-        The atoms that are going to be displayed in the plot.
-        This also has an impact on bonds (see the `bind_bonds_to_ats` and
-        `show_atoms` parameters).             If set to None, all atoms are
-        displayed
-    atoms_color: array-like, optional
-        A list containing the color for each atom.
-    atoms_size: array-like, optional
-        A list containing the size for each atom.
-    atoms_colorscale: str, optional
-        The colorscale to use to map values to colors for the atoms.
-        Only used if atoms_color is provided and is an array of values.
-    atoms_vertices: int, optional
-        In a 3D representation, the number of vertices that each atom sphere
-        is composed of.
-    bind_bonds_to_ats: bool, optional
-        whether only the bonds that belong to an atom that is present should
-        be displayed.             If False, all bonds are displayed
-        regardless of the `atom` parameter
-    show_atoms: bool, optional
-        If set to False, it will not display atoms.              Basically
-        this is a shortcut for `atom = [], bind_bonds_to_ats=False`.
-        Therefore, it will override these two parameters.
-    root_fdf: fdfSileSiesta, optional
-        Path to the fdf file that is the 'parent' of the results.
-    results_path: str, optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
-    """
-
-    _plot_type = "Geometry"
-
-    _parameters = (
-
-        PlotableInput(key='geometry', name="Geometry",
-            dtype=Geometry,
-            default=None,
-        ),
-
-        FilePathInput(key="geom_file", name="Geometry file",
-            group="dataread",
-            default=None
-        ),
-
-        SwitchInput(key='bonds', name='Show bonds',
-            default=True,
-        ),
-
-        GeomAxisSelect(
-            key="axes", name="Axes to display",
-            default=["x", "y", "z"],
-            help="""The axis along which you want to see the geometry. 
-            You can provide as many axes as dimensions you want for your plot.
-            Note that the order is important and will result in setting the plot axes diferently.
-            For 2D and 1D representations, you can pass an arbitrary direction as an axis (array of shape (3,))"""
-        ),
-
-        ProgramaticInput(
-            key="dataaxis_1d", name="1d data axis",
-            default=None,
-            dtype="array-like or function",
-            help="""If you want a 1d representation, you can provide a data axis.
-            It determines the second coordinate of the atoms.
-            
-            If it's a function, it will recieve the projected 1D coordinates and needs to returns 
-            the coordinates for the other axis as an array.
-            
-            If not provided, the other axis will just be 0 for all points.
-            """
-        ),
-
-        DropdownInput(key="cell", name="Cell display",
-            default="box",
-            width="s100% m50% l90%",
-            params={
-                'options': [
-                    {'label': 'False', 'value': False},
-                    {'label': 'axes', 'value': 'axes'},
-                    {'label': 'box', 'value': 'box'}
-                ],
-                'isMulti': False,
-                'isSearchable': True,
-                'isClearable': False
-            },
-            help="""Specifies how the cell should be rendered. 
-            (False: not rendered, 'axes': render axes only, 'box': render a bounding box)"""
-        ),
-
-        AtomSelect(key="atoms", name="Atoms to display",
-            default=None,
-            params={
-                "options": [],
-                "isSearchable": True,
-                "isMulti": True,
-                "isClearable": True
-            },
-            help="""The atoms that are going to be displayed in the plot. 
-            This also has an impact on bonds (see the `bind_bonds_to_ats` and `show_atoms` parameters).
-            If set to None, all atoms are displayed"""
-        ),
-
-        ProgramaticInput(key="atoms_color", name="Atoms color",
-            default=None,
-            dtype="array-like",
-            help="""A list containing the color for each atom."""
-        ),
-
-        ProgramaticInput(key="atoms_size", name="Atoms size",
-            default=None,
-            dtype="array-like",
-            help="""A list containing the size for each atom."""
-        ),
-
-        TextInput(key="atoms_colorscale", name="Atoms vertices",
-            default="viridis",
-            help="""The colorscale to use to map values to colors for the atoms.
-            Only used if atoms_color is provided and is an array of values."""
-        ),
-
-        IntegerInput(key="atoms_vertices", name="Atoms vertices",
-            default=15,
-            help="""In a 3D representation, the number of vertices that each atom sphere is composed of."""
-        ),
-
-        SwitchInput(key="bind_bonds_to_ats", name="Bind bonds to atoms",
-            default=True,
-            help="""whether only the bonds that belong to an atom that is present should be displayed.
-            If False, all bonds are displayed regardless of the `atom` parameter"""
-        ),
-
-        SwitchInput(key="show_atoms", name="Show atoms",
-            default=True,
-            help="""If set to False, it will not display atoms. 
-            Basically this is a shortcut for `atom = [], bind_bonds_to_ats=False`.
-            Therefore, it will override these two parameters."""
-        )
-
-    )
-
-    @entry_point('geometry')
-    def _read_nosource(self, geometry):
-        self.geometry = geometry or getattr(self, "geometry", None)
-
-        if self.geometry is None:
-            raise Exception("No geometry has been provided.")
-
-    @entry_point('geom_file')
-    def _read_siesta_output(self, geom_file, root_fdf):
-
-        geom_file = geom_file or root_fdf
-
-        self.geometry = self.get_sile(geom_file).read_geometry()
-
-    def _after_read(self, bonds):
-
-        BaseGeometryPlot._after_read(self, bonds)
-
-        self.get_param("atoms").update_options(self.geometry)
-
-    def _set_data(self, atoms, show_atoms, atoms_color, atoms_colorscale, atoms_size, atoms_vertices,
-        cell, bonds, bind_bonds_to_ats, axes, dataaxis_1d):
-
-        ndims = len(axes)
-
-        if show_atoms == False:
-            atoms = []
-            bind_bonds_to_ats = False
-
-        common_kwargs = {
-            'cell': cell, 'show_bonds': bonds,
-            'atoms': atoms, "atoms_color": atoms_color, "atoms_size": atoms_size, "atoms_colorscale": atoms_colorscale,
-            'bind_bonds_to_ats': bind_bonds_to_ats
-        }
-
-        if ndims == 3:
-            self._plot_geom3D(**common_kwargs, atoms_vertices=atoms_vertices)
-        elif ndims == 2:
-            xaxis, yaxis = axes
-            self._plot_geom2D(xaxis=xaxis, yaxis=yaxis, **common_kwargs)
-            self.update_layout(xaxis_title=f'Axis {xaxis} [Ang]', yaxis_title=f'Axis {yaxis} [Ang]')
-        elif ndims == 1:
-            coords_axis = axes[0]
-            data_axis = dataaxis_1d
-            self._plot_geom1D(coords_axis=coords_axis, data_axis=data_axis)
-
-            data_axis_name = data_axis.__name__ if callable(data_axis) else 'Data axis'
-            self.update_layout(xaxis_title=f'Axis {coords_axis} [Ang]', yaxis_title=data_axis_name)
-
-    def _after_get_figure(self, axes):
-
-        ndims = len(axes)
-
-        if ndims == 2:
-            self.layout.yaxis.scaleanchor = "x"
-            self.layout.yaxis.scaleratio = 1

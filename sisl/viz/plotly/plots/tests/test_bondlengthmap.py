@@ -18,7 +18,7 @@ class BondLengthMapTester(GeometryPlotTester):
         plot = self.plot
 
         if self.has_strain_ref:
-            plot.update_settings(axes=[0, 1, 2], strain=True, bonds=True)
+            plot.update_settings(axes=[0, 1, 2], strain=True, show_bonds=True)
 
             strains = plot.data[0].line.color
 
