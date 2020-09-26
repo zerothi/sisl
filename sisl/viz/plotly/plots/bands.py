@@ -344,7 +344,7 @@ class BandsPlot(Plot):
 
         self.add_shortcut("g", "Toggle gap", self.toggle_gap)
 
-    @entry_point('aiida_bands')
+    @entry_point('aiida bands')
     def _read_aiida_bands(self, aiida_bands):
         """
         Creates the bands plot reading from an aiida BandsData node.
@@ -365,8 +365,11 @@ class BandsPlot(Plot):
             dims=("spin", "k", "band"),
         )
 
-    @entry_point('band_structure')
+    @entry_point('band structure')
     def _read_from_band_structure(self, band_structure, eigenstate_map):
+        """
+        Uses a sisl's `BandStructure` object to calculate the bands.
+        """
 
         if band_structure is None:
             raise ValueError("No band structure (k points path) was provided")
@@ -467,9 +470,11 @@ class BandsPlot(Plot):
 
         self._read_from_band_structure(band_structure=band_struct, eigenstate_map=eigenstate_map)
 
-    @entry_point('bands_file')
+    @entry_point('bands file')
     def _read_siesta_output(self, bands_file, path, band_structure):
-
+        """
+        Reads the bands information from a SIESTA bands file.
+        """
         #Get the info from the bands file
         self.path = path
 

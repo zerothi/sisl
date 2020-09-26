@@ -245,7 +245,9 @@ class PdosPlot(Plot):
 
     @entry_point('hamiltonian')
     def _read_from_H(self, kgrid, kgrid_displ, Erange, nE, E0):
-
+        """
+        Calculates the PDOS from a sisl Hamiltonian.
+        """
         if not hasattr(self, "H"):
             self.setup_hamiltonian()
 
@@ -272,9 +274,11 @@ class PdosPlot(Plot):
             PDOS.append(self.mp.apply.average.PDOS(self.E, spin=spin, eta=True))
         self.PDOS = np.array(PDOS)
 
-    @entry_point('siesta_output')
+    @entry_point('siesta output')
     def _read_siesta_output(self, pdos_file):
-
+        """
+        Reads the pdos from a SIESTA .PDOS file.
+        """
         #Get the info from the .PDOS file
         self.geometry, self.E, self.PDOS = self.get_sile(pdos_file or "pdos_file").read_data()
 

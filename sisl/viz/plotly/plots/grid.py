@@ -391,15 +391,19 @@ class GridPlot(Plot):
 
     @entry_point('grid')
     def _read_nosource(self, grid):
-
+        """
+        Reads the grid directly from a sisl grid.
+        """
         self.grid = grid
 
         if self.grid is None:
             raise Exception()
 
-    @entry_point('grid_file')
+    @entry_point('grid file')
     def _read_grid_file(self, grid_file):
-
+        """
+        Reads the grid from any sile that implements `read_grid`.
+        """
         self.grid = self.get_sile(grid_file).read_grid()
 
     def _after_read(self):
@@ -1204,7 +1208,9 @@ class WavefunctionPlot(GridPlot):
 
     @entry_point('eigenstate')
     def _read_nosource(self, eigenstate):
-
+        """
+        Uses an already calculated Eigenstate object to generate the wavefunctions.
+        """
         if eigenstate is None:
             raise Exception('No eigenstate was provided')
 
@@ -1212,7 +1218,9 @@ class WavefunctionPlot(GridPlot):
 
     @entry_point('hamiltonian')
     def _read_from_H(self, k, spin):
-
+        """
+        Calculates the eigenstates from a Hamiltonian and then generates the wavefunctions.
+        """
         self.setup_hamiltonian()
 
         self.eigenstate = self.H.eigenstate(k, spin=spin[0])

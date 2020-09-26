@@ -172,9 +172,14 @@ class FatbandsPlot(BandsPlot):
 
     )
 
-    @entry_point("siesta_output")
+    @entry_point("siesta output")
     def _read_siesta_output(self, wfsx_file, bands_file, root_fdf):
+        """
+        Generates fatbands from SIESTA output.
 
+        Uses the `.bands` file to read the bands and a `.wfsx` file to
+        retrieve the wavefunctions coefficients. 
+        """
         # Try to get the wfsx file either by user input or by guessing it
         # from bands_file
         bands_file = self.get_sile(bands_file or "bands_file").file
@@ -235,7 +240,9 @@ class FatbandsPlot(BandsPlot):
 
     @entry_point("hamiltonian")
     def _read_from_H(self):
-
+        """
+        Calculates the fatbands from a sisl hamiltonian.
+        """
         self.weights = [[], []]
 
         # Define the function that will "catch" each eigenstate and

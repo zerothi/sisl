@@ -250,20 +250,9 @@ class BondLengthMap(GeometryPlot):
         updates automatically.
         """
         return BoundGeometry(self.relaxed_geom, self)
-
-    @entry_point('geometry')
-    def _read_nosource(self, strain_ref):
-
-        GeometryPlot._read_nosource(self)
-
-        self._read_strain_ref(strain_ref)
-
-    @entry_point('geom_file')
-    def _read_siesta_output(self, strain_ref):
-
-        GeometryPlot._read_siesta_output(self)
-
-        self._read_strain_ref(strain_ref)
+    
+    _read_geom = GeometryPlot.entry_points[0]
+    _read_file = GeometryPlot.entry_points[1]
 
     def _read_strain_ref(self, ref):
         """Reads the strain reference, if there is any."""
@@ -274,7 +263,9 @@ class BondLengthMap(GeometryPlot):
         elif isinstance(strain_ref, sisl.Geometry):
             self.relaxed_geom = strain_ref
 
-    def _after_read(self):
+    def _after_read(self, strain_ref):
+        self._read_strain_ref(strain_ref)
+
         self.geom_bonds = self.find_all_bonds(self.geometry)
 
         if getattr(self, "relaxed_geom", None):

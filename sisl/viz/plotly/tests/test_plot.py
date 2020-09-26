@@ -147,18 +147,45 @@ class TestMultiplePlot(BasePlotTester):
 
     PlotClass = MultiplePlot
 
-    def test_update_settings(self):
+    def test_init_from_kw(self):
+
+        kw = MultiplePlot._kw_from_cls(self.PlotClass)
 
         geom = sisl.geom.graphene()
 
-        subplots = geom.plot(cell=["box", False, False], axes=[0, 1], subplots="cell")
-        assert len(subplots.child_plots) == 3
+        multiple_plot = geom.plot(show_cell=["box", False, False], axes=[0, 1], **{kw: "show_cell"})
 
-        prev_data_lens = [len(plot.data) for plot in subplots]
+        assert isinstance(multiple_plot, self.PlotClass), f"{self.PlotClass} was not correctly initialized using the {kw} keyword argument"
+        assert len(multiple_plot.child_plots) == 3, "Child plots were not properly generated"
+
+    def test_object_sharing(self):
+
+        kw = MultiplePlot._kw_from_cls(self.PlotClass)
+
+        geom = sisl.geom.graphene()
+
+        multiple_plot = geom.plot(show_cell=["box", False, False], axes=[0, 1], **{kw: "show_cell"})
+        geoms_ids = [id(plot.geometry) for plot in multiple_plot]
+        assert len(set(geoms_ids)) == 1, f"{self.PlotClass} is not properly sharing objects"
+
+        multiple_plot = GeometryPlot(geometry=[sisl.geom.graphene(bond=bond) for bond in (1.2,1.6)], axes=[0, 1], **{kw: "geometry"})
+        geoms_ids = [id(plot.geometry) for plot in multiple_plot]
+        assert len(set(geoms_ids)) > 1, f"{self.PlotClass} is sharing objects that should not be shared"
+
+    def test_update_settings(self):
+
+        kw = MultiplePlot._kw_from_cls(self.PlotClass)
+
+        geom = sisl.geom.graphene()
+
+        multiple_plot = geom.plot(show_cell=["box", False, False], axes=[0, 1], **{kw: "show_cell"})
+        assert len(multiple_plot.child_plots) == 3
+
+        prev_data_lens = [len(plot.data) for plot in multiple_plot]
         assert prev_data_lens[0] > prev_data_lens[1]
 
-        subplots.update_child_settings(cell="box", childs_sel=[1])
-        data_lens = [len(plot.data) for plot in subplots]
+        multiple_plot.update_child_settings(show_cell="box", childs_sel=[1])
+        data_lens = [len(plot.data) for plot in multiple_plot]
         assert data_lens[0] == data_lens[1]
         assert data_lens[1] > data_lens[2]
 
@@ -167,7 +194,7 @@ class TestMultiplePlot(BasePlotTester):
 # ------------------------------------------------------------
 
 
-class TestSubPlots(BasePlotTester):
+class TestSubPlots(TestMultiplePlot):
 
     PlotClass = SubPlots
 
@@ -177,7 +204,7 @@ class TestSubPlots(BasePlotTester):
 
         # We are going to try some things here and check that they don't fail
         # as we have no way of checking the actual layout of the subplots
-        plot = GeometryPlot.subplots('bonds', [True, False],
+        plot = GeometryPlot.subplots('show_bonds', [True, False],
             fixed={'geometry': geom, 'axes': [0, 1]}, _debug=True)
 
         plot.update_settings(cols=2)
@@ -189,17 +216,10 @@ class TestSubPlots(BasePlotTester):
         with pytest.raises(Exception):
             plot.update_settings(cols=None, rows=None, arrange='square')
 
-    def test_init_from_kw(self):
-
-        geom = sisl.geom.graphene()
-
-        geom.plot(bonds=[True, False], subplots=['bonds'])
-
-
 # ------------------------------------------------------------
 #              Tests for the Animation class
 # ------------------------------------------------------------
 
-class TestAnimation(BasePlotTester):
+class TestAnimation(TestMultiplePlot):
 
     PlotClass = Animation

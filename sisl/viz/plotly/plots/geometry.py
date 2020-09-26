@@ -246,14 +246,19 @@ class GeometryPlot(Plot):
 
     @entry_point('geometry')
     def _read_nosource(self, geometry):
+        """
+        Reads directly from a sisl geometry.
+        """
         self.geometry = geometry or getattr(self, "geometry", None)
 
         if self.geometry is None:
             raise Exception("No geometry has been provided.")
 
-    @entry_point('geom_file')
+    @entry_point('geometry file')
     def _read_siesta_output(self, geom_file, root_fdf):
-
+        """
+        Reads from a sile that contains a geometry using the `read_geometry` method.
+        """
         geom_file = geom_file or root_fdf
 
         self.geometry = self.get_sile(geom_file).read_geometry()

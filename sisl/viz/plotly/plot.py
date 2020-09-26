@@ -206,6 +206,20 @@ class Plot(ShortCutable, Configurable, Connected, metaclass=PlotMeta):
 
     )
 
+    @property
+    def read_data_methods(self):
+        entry_points_names = [entry_point._method.__name__ for entry_point in self.entry_points]
+        
+        return ["_before_read", "_after_read", *entry_points_names, *self._update_methods["read_data"]]
+
+    @property
+    def set_data_methods(self):
+        return ["_set_data", *self._update_methods["set_data"]]
+    
+    @property
+    def get_figure_methods(self):
+        return ["_after_get_figure", *self._update_methods["get_figure"]]
+
     def _parse_update_funcs(self, func_names):
         """
         Decides which functions to run when the settings of the plot are updated.
@@ -248,18 +262,13 @@ class Plot(ShortCutable, Configurable, Connected, metaclass=PlotMeta):
         ------------
         ``Configurable._run_updates``
         """
-        entry_points_names = [entry_point._method.__name__ for entry_point in self.entry_points]
-        read_data_methods = ["_before_read", "_after_read", *entry_points_names, *self._update_methods["read_data"]]
-
-        if len(func_names.intersection(read_data_methods)) > 0:
+        if len(func_names.intersection(self.read_data_methods)) > 0:
             return ["read_data"]
 
-        set_data_methods = ["_set_data", *self._update_methods["set_data"]]
-        if len(func_names.intersection(set_data_methods)) > 0:
+        if len(func_names.intersection(self.set_data_methods)) > 0:
             return ["set_data"]
-
-        get_figure_methods = ["_after_get_figure", *self._update_methods["get_figure"]]
-        if len(func_names.intersection(read_data_methods)) > 0:
+ 
+        if len(func_names.intersection(self.get_figure_methods)) > 0:
             return ["get_figure"]
 
         return func_names
@@ -302,6 +311,22 @@ class Plot(ShortCutable, Configurable, Connected, metaclass=PlotMeta):
         if cls is Plot:
             return None
         return getattr(cls, "_suffix", cls.__name__.lower().replace("plot", ""))
+
+    @classmethod
+    def entry_points_help(cls):
+        """Generates a helpful message about the entry points of the plot class."""
+        string = ""
+        
+        for entry_point in cls.entry_points:
+            
+            string += f"{entry_point._name.capitalize()}\n------------\n\n"
+            string += (entry_point.help or "").lstrip()
+            
+            string += "\nSettings used:\n\t- "
+            string += '\n\t- '.join(entry_point._method._settings_params)
+            string += "\n\n"
+            
+        return string
 
     @property
     def _innotebook(self):
@@ -1784,7 +1809,7 @@ class EntryPoint:
         self._method_attr = method.__name__
         self._setting_key = setting_key
         self._method = method
-        self.__doc__ = method.__doc__
+        self.help = method.__doc__
 
 
 def entry_point(name):
@@ -1844,6 +1869,8 @@ class MultiplePlot(Plot):
         located. This path has to be relative to the root fdf.
     """
 
+    _trigger_kw = "varying"
+
     def __init__(self, *args, plots=None, template_plot=None, **kwargs):
         self.shared = {}
 
@@ -1863,6 +1890,18 @@ class MultiplePlot(Plot):
     def __getitem__(self, i):
         """Gets a given child plot"""
         return self.child_plots[i]
+
+    @staticmethod
+    def _kw_from_cls(cls):
+        return cls._trigger_kw
+
+    @staticmethod
+    def _cls_from_kw(key):
+        for cls in MultiplePlot.__subclasses__():
+            if cls._trigger_kw == key:
+                return cls
+        else:
+            return None
 
     @property
     def _attrs_for_child_plots(self):
@@ -1917,18 +1956,16 @@ class MultiplePlot(Plot):
             if SINGLE_CLASS and try_sharing:
 
                 if not self.has_template_plot:
-
-                    # Then, we read the data of a leading plot
-                    # This leading plot will share attributes with the rest in case it is needed
+                    # Our leading plot will be the first one
                     leading_plot = plots[0]
-                    leading_plot._SHOULD_SHARE_WITH_SIBLINGS = True
-                    leading_plot.read_data(update_fig=False)
-                    leading_plot._SHOULD_SHARE_WITH_SIBLINGS = False
                 else:
                     leading_plot = self.template_plot
 
                 # Now, we get the settings of the first plot
-                read_data_settings = {key: leading_plot.get_setting(key) for key, func in leading_plot._run_on_update.items() if func == "read_data"}
+                read_data_settings = {
+                    key: leading_plot.get_setting(key) for key, funcs in leading_plot._run_on_update.items() 
+                    if set(funcs).intersection(leading_plot.read_data_methods)
+                }
 
                 for i, plot in enumerate(plots):
                     if not plot.has_these_settings(read_data_settings):
@@ -1942,6 +1979,11 @@ class MultiplePlot(Plot):
                     # their missing attributes from the shared store or from the plot
                     # template
                     self.set_child_plots(plots)
+
+                    if not self.has_template_plot:
+                        leading_plot._SHOULD_SHARE_WITH_SIBLINGS = True
+                        leading_plot.read_data(update_fig=False)
+                        leading_plot._SHOULD_SHARE_WITH_SIBLINGS = False
 
                     self.set_data()
 
@@ -2146,6 +2188,8 @@ class Animation(MultiplePlot):
         Directory where the files with the simulations results are
         located. This path has to be relative to the root fdf.
     """
+
+    _trigger_kw = "animate"
 
     _isAnimation = True
 
@@ -2454,6 +2498,8 @@ class SubPlots(MultiplePlot):
         located. This path has to be relative to the root fdf.
 
     """
+
+    _trigger_kw = "subplots"
 
     _is_subplots = True
 
