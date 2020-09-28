@@ -41,7 +41,7 @@ def bloch_unfold(np.ndarray[np.int32_t, ndim=1, mode='c'] B,
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-def _unfold64(const int[::1] B, const double[:, ::1] K2pi,
+def _unfold64(const int[::1] B, const double[:, ::1] k2pi,
               const float complex[:, :, ::1] m):
     """ Main unfolding routine for a matrix `m`. """
 
@@ -53,18 +53,19 @@ def _unfold64(const int[::1] B, const double[:, ::1] K2pi,
     cdef Py_ssize_t N1 = m.shape[1]
     cdef Py_ssize_t N2 = m.shape[2]
     cdef np.ndarray[np.complex64_t, ndim=2, mode='c'] M = np.zeros([N * N1, N * N2], dtype=np.complex64)
-    cdef float complex[:, ::1] MM = M
+    cdef float complex[:, :, :, ::1] M4 = M.reshape(N, N1, N, N2)
+    cdef float complex[:, ::1] M2 = M
 
     # Split calculations into single expansion (easy to abstract)
     # and full calculation (which is too heavy!)
     if B0 == B1 == 1:
-        _unfold64_single(B2, K2pi[:, 2], N1, N2, m, MM)
+        _unfold64_1(B2, k2pi[:, 2], N1, N2, m, M4)
     elif B0 == B2 == 1:
-        _unfold64_single(B1, K2pi[:, 1], N1, N2, m, MM)
+        _unfold64_1(B1, k2pi[:, 1], N1, N2, m, M4)
     elif B1 == B2 == 1:
-        _unfold64_single(B0, K2pi[:, 0], N1, N2, m, MM)
+        _unfold64_1(B0, k2pi[:, 0], N1, N2, m, M4)
     else:
-        _unfold64_3(B0, B1, B2, K2pi, N1, N2, m, MM)
+        _unfold64_3(B0, B1, B2, k2pi, N1, N2, m, M2)
 
     return M
 
@@ -136,7 +137,7 @@ cdef void _unfold64_matrix(const double w,
 @cython.wraparound(False)
 @cython.initializedcheck(False)
 cdef void _unfold64_3(const Py_ssize_t B0, const Py_ssize_t B1, const Py_ssize_t B2,
-                      const double[:, ::1] K2pi,
+                      const double[:, ::1] k2pi,
                       const Py_ssize_t N1, const Py_ssize_t N2,
                       const float complex[:, :, ::1] m,
                       float complex[:, ::1] M) nogil:
@@ -149,9 +150,9 @@ cdef void _unfold64_3(const Py_ssize_t B0, const Py_ssize_t B1, const Py_ssize_t
 
     # Now perform expansion
     for T in range(N):
-        k0 = K2pi[T, 0]
-        k1 = K2pi[T, 1]
-        k2 = K2pi[T, 2]
+        k0 = k2pi[T, 0]
+        k1 = k2pi[T, 1]
+        k2 = k2pi[T, 2]
         _unfold64_matrix(w, B0, B1, B2, k0, k1, k2, N1, N2, m[T], M)
 
 
@@ -159,15 +160,15 @@ cdef void _unfold64_3(const Py_ssize_t B0, const Py_ssize_t B1, const Py_ssize_t
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef void _unfold64_single(const Py_ssize_t N, const double[:] K2pi,
-                           const Py_ssize_t N1, const Py_ssize_t N2,
-                           const float complex[:, :, ::1] m,
-                           float complex[:, ::1] M) nogil:
+cdef void _unfold64_1(const Py_ssize_t NA, const double[:] kA2pi,
+                      const Py_ssize_t N1, const Py_ssize_t N2,
+                      const float complex[:, :, ::1] m,
+                      float complex[:, :, :, ::1] M) nogil:
 
     cdef double k, w
-    cdef Py_ssize_t T, NN2, c
-    cdef Py_ssize_t i, j, I, J, Jj
-    cdef double complex ph, phc, aph
+    cdef Py_ssize_t TA, iA
+    cdef Py_ssize_t i, j
+    cdef double complex ph, cph, pha
     cdef const float complex[:, ::1] mT
 
     # The algorithm for constructing the unfolded matrix can be done in the
@@ -179,55 +180,46 @@ cdef void _unfold64_single(const Py_ssize_t N, const double[:] K2pi,
     #    b) copy from the previous column-block the first N-1 blocks into 1:N
 
     # Dimension of final matrix
-    NN2 = N * N2
-    w = 1. / N
+    w = 1. / NA
 
-    for T in range(N):
-        mT = m[T]
-        k = K2pi[T]
+    for TA in range(NA):
+        mT = m[TA]
+        k = kA2pi[TA]
 
         # 1: construct M[0, :, 0, :]
         for j in range(N1):
             for i in range(N2):
-                M[j, i] = M[j, i] + mT[j, i] * <float> w
+                M[0, j, 0, i] = M[0, j, 0, i] + mT[j, i] * <float> w
 
         # Initial phases along the column
-        aph = cos(k) + 1j * sin(k)
-        ph = w * aph
+        pha = cos(k) + 1j * sin(k)
+        ph = w * pha
 
-        for c in range(1, N):
-            J = c * N1
-            I = c * N2
-
+        for iA in range(1, NA):
             # Conjugate to construct first columns
-            phc = ph.conjugate()
+            cph = ph.conjugate()
             for j in range(N1):
-                Jj = J + j
                 for i in range(N2):
-
                     # 2: construct M[0, :, 1:, :]
-                    M[j, I+i] = M[j, I+i] + mT[j, i] * <float complex> ph
+                    M[0, j, iA, i] = M[0, j, iA, i] + mT[j, i] * <float complex> ph
 
                     # 3a: construct M[1:, :, 0, :]
-                    M[Jj, i] = M[Jj, i] + mT[j, i] * <float complex> phc
+                    M[iA, j, 0, i] = M[iA, j, 0, i] + mT[j, i] * <float complex> cph
 
             # Increment phases
-            ph = ph * aph
+            ph = ph * pha
 
-    for c in range(1, N):
-        J = c * N1
-
-        # 3b: copy all the previously calculated segments
-        for j in range(J, J + N1):
-            I = j - N1
-            for i in range(N2, NN2):
-                M[j, i] = M[I, i-N2]
+    for iA in range(1, NA):
+        for j in range(N1):
+            for TA in range(1, NA):
+                for i in range(N2):
+                    M[iA, j, TA, i] = M[iA-1, j, TA-1, i]
 
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-def _unfold128(const int[::1] B, const double[:, ::1] K2pi,
+def _unfold128(const int[::1] B, const double[:, ::1] k2pi,
                const double complex[:, :, ::1] m):
     """ Main unfolding routine for a matrix `m`. """
 
@@ -238,19 +230,20 @@ def _unfold128(const int[::1] B, const double[:, ::1] K2pi,
     cdef Py_ssize_t N = B0 * B1 * B2
     cdef Py_ssize_t N1 = m.shape[1]
     cdef Py_ssize_t N2 = m.shape[2]
-    cdef np.ndarray[np.complex128_t, ndim=2, mode='c'] M = np.zeros([N * N1, N * N2], dtype=np.complex128)
-    cdef double complex[:, ::1] MM = M
+    cdef np.ndarray[np.complex128_t, ndim=2, mode='c'] M = np.zeros([N*N1, N*N2], dtype=np.complex128)
+    cdef double complex[:, :, :, ::1] M4 = M.reshape(N, N1, N, N2)
+    cdef double complex[:, ::1] M2 = M
 
     # Split calculations into single expansion (easy to abstract)
     # and full calculation (which is too heavy!)
     if B0 == B1 == 1:
-        _unfold128_single(B2, K2pi[:, 2], N1, N2, m, MM)
+        _unfold128_1(B2, k2pi[:, 2], N1, N2, m, M4)
     elif B0 == B2 == 1:
-        _unfold128_single(B1, K2pi[:, 1], N1, N2, m, MM)
+        _unfold128_1(B1, k2pi[:, 1], N1, N2, m, M4)
     elif B1 == B2 == 1:
-        _unfold128_single(B0, K2pi[:, 0], N1, N2, m, MM)
+        _unfold128_1(B0, k2pi[:, 0], N1, N2, m, M4)
     else:
-        _unfold128_3(B0, B1, B2, K2pi, N1, N2, m, MM)
+        _unfold128_3(B0, B1, B2, k2pi, N1, N2, m, M2)
 
     return M
 
@@ -322,10 +315,10 @@ cdef void _unfold128_matrix(const double w,
 @cython.wraparound(False)
 @cython.initializedcheck(False)
 cdef void _unfold128_3(const Py_ssize_t B0, const Py_ssize_t B1, const Py_ssize_t B2,
-                       const double[:, ::1] K2pi,
+                       const double[:, ::1] k2pi,
                        const Py_ssize_t N1, const Py_ssize_t N2,
                        const double complex[:, :, ::1] m,
-                       double complex[:, ::1] M) nogil:
+                       double complex[:, ::1] M):
 
     # N should now equal K.shape[0]
     cdef Py_ssize_t N = B0 * B1 * B2
@@ -335,9 +328,9 @@ cdef void _unfold128_3(const Py_ssize_t B0, const Py_ssize_t B1, const Py_ssize_
 
     # Now perform expansion
     for T in range(N):
-        k0 = K2pi[T, 0]
-        k1 = K2pi[T, 1]
-        k2 = K2pi[T, 2]
+        k0 = k2pi[T, 0]
+        k1 = k2pi[T, 1]
+        k2 = k2pi[T, 2]
         _unfold128_matrix(w, B0, B1, B2, k0, k1, k2, N1, N2, m[T], M)
 
 
@@ -345,15 +338,15 @@ cdef void _unfold128_3(const Py_ssize_t B0, const Py_ssize_t B1, const Py_ssize_
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef void _unfold128_single(const Py_ssize_t N, const double[:] K2pi,
-                            const Py_ssize_t N1, const Py_ssize_t N2,
-                            const double complex[:, :, ::1] m,
-                            double complex[:, ::1] M) nogil:
+cdef void _unfold128_1(const Py_ssize_t NA, const double[:] kA2pi,
+                       const Py_ssize_t N1, const Py_ssize_t N2,
+                       const double complex[:, :, ::1] m,
+                       double complex[:, :, :, ::1] M) nogil:
 
     cdef double k, w
-    cdef Py_ssize_t T, NN2, c
-    cdef Py_ssize_t i, j, I, J, Jj
-    cdef double complex ph, phc, aph
+    cdef Py_ssize_t TA, iA
+    cdef Py_ssize_t i, j
+    cdef double complex ph, cph, pha
     cdef const double complex[:, ::1] mT
 
     # The algorithm for constructing the unfolded matrix can be done in the
@@ -364,47 +357,37 @@ cdef void _unfold128_single(const Py_ssize_t N, const double[:] K2pi,
     #    a) calculate the first N1 rows
     #    b) copy from the previous column-block the first N-1 blocks into 1:N
 
-    # Dimension of final matrix
-    NN2 = N * N2
-    w = 1. / N
+    w = 1. / NA
 
-    for T in range(N):
-        mT = m[T]
-        k = K2pi[T]
+    for TA in range(NA):
+        mT = m[TA]
+        k = kA2pi[TA]
 
         # 1: construct M[0, :, 0, :]
         for j in range(N1):
             for i in range(N2):
-                M[j, i] = M[j, i] + mT[j, i] * w
+                M[0, j, 0, i] = M[0, j, 0, i] + mT[j, i] * w
 
         # Initial phases along the column
-        aph = cos(k) + 1j * sin(k)
-        ph = w * aph
+        pha = cos(k) + 1j * sin(k)
+        ph = w * pha
 
-        for c in range(1, N):
-            J = c * N1
-            I = c * N2
-
+        for iA in range(1, NA):
             # Conjugate to construct first columns
-            phc = ph.conjugate()
+            cph = ph.conjugate()
             for j in range(N1):
-                Jj = J + j
                 for i in range(N2):
-
                     # 2: construct M[0, :, 1:, :]
-                    M[j, I+i] = M[j, I+i] + mT[j, i] * ph
+                    M[0, j, iA, i] = M[0, j, iA, i] + mT[j, i] * ph
 
                     # 3a: construct M[1:, :, 0, :]
-                    M[Jj, i] = M[Jj, i] + mT[j, i] * phc
+                    M[iA, j, 0, i] = M[iA, j, 0, i] + mT[j, i] * cph
 
             # Increment phases
-            ph = ph * aph
+            ph = ph * pha
 
-    for c in range(1, N):
-        J = c * N1
-
-        # 3b: copy all the previously calculated segments
-        for j in range(J, J + N1):
-            I = j - N1
-            for i in range(N2, NN2):
-                M[j, i] = M[I, i-N2]
+    for iA in range(1, NA):
+        for j in range(N1):
+            for TA in range(1, NA):
+                for i in range(N2):
+                    M[iA, j, TA, i] = M[iA-1, j, TA-1, i]
