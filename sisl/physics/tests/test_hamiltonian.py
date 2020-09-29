@@ -1169,36 +1169,25 @@ class TestHamiltonian:
         setup.HS.empty()
 
     @pytest.mark.slow
-    def test_tile1(self, setup):
+    @pytest.mark.parametrize("nx", [1, 4])
+    @pytest.mark.parametrize("ny", [1, 5])
+    @pytest.mark.parametrize("nz", [1, 6])
+    def test_tile_same(self, setup, nx, ny, nz):
         R, param = [0.1, 1.5], [1., 0.1]
 
         # Create reference
-        Hg = Hamiltonian(setup.g.tile(2, 0).tile(2, 1).tile(2, 2))
+        Hg = Hamiltonian(setup.g.tile(nx, 0).tile(ny, 1).tile(nz, 2))
         Hg.construct([R, param])
         Hg.finalize()
         H = Hamiltonian(setup.g)
         H.construct([R, param])
-        H = H.tile(2, 0).tile(2, 1).tile(2, 2)
+        H = H.tile(nx, 0).tile(ny, 1).tile(nz, 2)
         assert Hg.spsame(H)
         H.finalize()
         Hg.finalize()
         assert np.allclose(H._csr._D, Hg._csr._D)
-
-    @pytest.mark.slow
-    def test_tile2(self, setup):
-        R, param = [0.1, 1.5], [1., 0.1]
-
-        # Create reference
-        Hg = Hamiltonian(setup.g.tile(2, 0))
-        Hg.construct([R, param])
-        Hg.finalize()
-        H = Hamiltonian(setup.g)
-        H.construct([R, param])
-        H = H.tile(2, 0)
-        assert Hg.spsame(H)
-        H.finalize()
-        Hg.finalize()
-        assert np.allclose(H._csr._D, Hg._csr._D)
+        assert np.allclose(Hg.Hk([0.1, 0.2, 0.3], format='array'),
+                           H.Hk([0.1, 0.2, 0.3], format='array'))
 
     @pytest.mark.slow
     def test_tile3(self, setup):
