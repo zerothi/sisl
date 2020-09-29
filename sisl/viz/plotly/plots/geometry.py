@@ -210,12 +210,12 @@ class GeometryPlot(Plot):
     # Colors of the atoms following CPK rules
     _atoms_colors = {
         "H": "#ccc", # Should be white but the default background is white
-        "O": "Red",
-        "Cl": "Green",
+        "O": "red",
+        "Cl": "green",
         "N": "blue",
-        "C": "Grey",
-        "S": "Yellow",
-        "P": "Orange",
+        "C": "grey",
+        "S": "yellow",
+        "P": "orange",
         "else": "pink"
     }
 
