@@ -164,6 +164,9 @@ cdef void _indices_sorted_arrays(
         elif csearch > cvalue:
             idx[j] = -1
             j += 1
+    i = j
+    for j in range(i, n_value):
+        idx[j] = -1
 
 
 @cython.boundscheck(False)
