@@ -1372,6 +1372,7 @@ class SparseCSR(NDArrayOperatorsMixin):
 
         if len(sps) == 1:
             m = sps[0]
+            m.sort_indices()
             out = cls(shape + (1,), nnzpr=1, nnz=1, dtype=m.dtype)
             out.col = m.indices
             out.ptr = m.indptr
@@ -1383,8 +1384,8 @@ class SparseCSR(NDArrayOperatorsMixin):
                 out.ptr = out.ptr.copy()
                 out._D = out._D.copy()
             return out
-
-        # Start with a sparsity pattern union
+        
+        # Pre-allocate by finding sparsity pattern union
         kw1 = kwargs.copy()
         kw1["copy"] = False
         sps = [cls.fromsp(m, **kw1) for m in sps]
@@ -1395,7 +1396,8 @@ class SparseCSR(NDArrayOperatorsMixin):
             for r in range(out.shape[0]):
                 msl = slice(m.ptr[r], m.ptr[r] + m.ncol[r])
                 osl = slice(out.ptr[r], out.ptr[r] + out.ncol[r])
-                oidx = indices(out.col[osl], m.col[msl], osl.start)
+                # oidx = indices(out.col[osl], m.col[msl], osl.start)
+                oidx = np.searchsorted(out.col[osl], m.col[msl]) + osl.start
                 out._D[oidx, im] = m._D[msl, 0]
 
         return out
@@ -1709,11 +1711,11 @@ def _ufunc_sp_sp(ufunc, a, b, **kwargs):
         ocol = out.col[offset:offset + out.ncol[r]]
 
         asl = slice(a.ptr[r], a.ptr[r] + a.ncol[r])
-        aidx = indices(ocol, a.col[asl], offset)
+        aidx = np.searchsorted(ocol, a.col[asl]) + offset
         asl = np.arange(asl.start, asl.stop)
 
         bsl = slice(b.ptr[r], b.ptr[r] + b.ncol[r])
-        bidx = indices(ocol, b.col[bsl], offset)
+        bidx = np.searchsorted(ocol, b.col[bsl]) + offset
         bsl = np.arange(bsl.start, bsl.stop)
 
         # Common indices
