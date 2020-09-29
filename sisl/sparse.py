@@ -246,33 +246,39 @@ class SparseCSR(NDArrayOperatorsMixin):
         self._finalized = False
 
     @classmethod
-    def zeros_from_sparsity_union(cls, a, b, dtype=None):
-        """Create a SparseCSR with explicit zeros in all places that a and b have nonzeros.
+    def zeros_from_sparsity_union(cls, *spmats, dtype=None, dim=None):
+        """Create a SparseCSR with explicit zeros in all places that *spmats have nonzeros.
 
         Parameters
         ----------
-            a, b : SparseCSR
+            *spmats : SparseCSR
                 SparseCSRs to find the sparsity pattern union of.
             dtype : dtype, optional
-                Output dtype. If not given, use the result dtype of a and b.
+                Output dtype. If not given, use the result dtype of the spmats.
+            dim : int, optional
+                If given, the returned SparseCSR will have this as dim.
         """
-        if a.shape != b.shape:
+        if not reduce(op_eq, (m.shape for m in spmats)):
             raise ValueError(
-                f"Cannot find sparsity union of differently shaped csrs:"
-                " {a.shape} and {b.shape}"
+                f"Cannot find sparsity union of differently shaped csrs: "
+                + " & ".join(str(m.shape) for m in spmats)
             )
-        shape = a.shape
-        dtype = dtype or np.result_type(a.dtype, b.dtype)
-        out = cls(shape, dtype=dtype, nnzpr=1, nnz=a.shape[0])
+        shape = spmats[0].shape
+        if dim is not None:
+            shape = shape[:2] + (dim,)
+        dtype = dtype or reduce(np.result_type, (m.dtype for m in spmats))
+        out = cls(shape, dtype=dtype, nnzpr=1, nnz=2)
 
-        out_col = []
-        for r in range(shape[0]):
-            acols = a.col[a.ptr[r]:a.ptr[r] + a.ncol[r]]
-            bcols = b.col[b.ptr[r]:b.ptr[r] + b.ncol[r]]
-            out_col.append(np.union1d(acols, bcols))
+        out_col = [
+            reduce(
+                np.union1d,
+                (m.col[m.ptr[r]:m.ptr[r] + m.ncol[r]] for m in spmats)
+            )
+            for r in range(shape[0])
+        ]
         out.ncol = np.array([len(cols) for cols in out_col], dtype=np.int32)
         out.ptr = np.cumsum([0] + list(out.ncol), dtype=np.int32)
-        out.col = np.concatenate(out_col).astype(np.int32)
+        out.col = np.concatenate(out_col)
         out._nnz = len(out.col)
         out._D = np.zeros((out._nnz, out.dim), dtype=dtype)
         return out
@@ -1363,24 +1369,34 @@ class SparseCSR(NDArrayOperatorsMixin):
     def fromsp(cls, *sps, **kwargs):
         sps = list(map(lambda x: x.tocsr(), sps))
         shape = sps[0].shape
-        dtype = kwargs.get("dtype", np.result_type(*tuple(sp.dtype for sp in sps)))
-        # create a single sparse matrix to get the final size
-        # this will also error out if the shapes are not coherent
-        full_sp = reduce(lambda x, y: x + y, sps, 0.)
-        nnzpr = np.diff(full_sp.indptr).max() + 3
-        out = cls(shape + (len(sps), ), nnzpr=nnzpr, dtype=dtype)
-        del full_sp
 
-        # Now we need to add things to the sparsity pattern
-        for iD, sp in enumerate(sps):
-            ptr = sp.indptr
-            if sp.shape != shape:
-                raise ValueError(f"{cls.__name__}.fromsp found non compatible shapes")
+        if len(sps) == 1:
+            m = sps[0]
+            out = cls(shape + (1,), nnzpr=1, nnz=1, dtype=m.dtype)
+            out.col = m.indices
+            out.ptr = m.indptr
+            out.ncol = np.diff(out.ptr)
+            out._nnz = len(out.col)
+            out._D = m.data.reshape(-1, 1)
+            if kwargs.get("copy", True):
+                out.col = out.col.copy()
+                out.ptr = out.ptr.copy()
+                out._D = out._D.copy()
+            return out
 
-            # Loop stuff
-            for r in range(shape[0]):
-                idx = out._extend(r, sp.indices[ptr[r]:ptr[r+1]])
-                out._D[idx, iD] += sp.data[ptr[r]:ptr[r+1]]
+        # Start with a sparsity pattern union
+        kw1 = kwargs.copy()
+        kw1["copy"] = False
+        sps = [cls.fromsp(m, **kw1) for m in sps]
+        out = cls.zeros_from_sparsity_union(*sps, dim=len(sps))
+
+        # Now transfer the data
+        for im, m in enumerate(sps):
+            for r in range(out.shape[0]):
+                msl = slice(m.ptr[r], m.ptr[r] + m.ncol[r])
+                osl = slice(out.ptr[r], out.ptr[r] + out.ncol[r])
+                oidx = indices(out.col[osl], m.col[msl], osl.start)
+                out._D[oidx, im] = m._D[msl, 0]
 
         return out
 
@@ -1689,11 +1705,16 @@ def _ufunc_sp_sp(ufunc, a, b, **kwargs):
     out = SparseCSR.zeros_from_sparsity_union(a, b)
 
     for r in range(out.shape[0]):
-        # Indices of a and b in out
-        asl = np.arange(a.ptr[r], a.ptr[r] + a.ncol[r])
-        aidx = out._extend(r, a.col[asl])
-        bsl = np.arange(b.ptr[r], b.ptr[r] + b.ncol[r])
-        bidx = out._extend(r, b.col[bsl])
+        offset = out.ptr[r]
+        ocol = out.col[offset:offset + out.ncol[r]]
+
+        asl = slice(a.ptr[r], a.ptr[r] + a.ncol[r])
+        aidx = indices(ocol, a.col[asl], offset)
+        asl = np.arange(asl.start, asl.stop)
+
+        bsl = slice(b.ptr[r], b.ptr[r] + b.ncol[r])
+        bidx = indices(ocol, b.col[bsl], offset)
+        bsl = np.arange(bsl.start, bsl.stop)
 
         # Common indices
         idx, aover, bover = np.intersect1d(aidx, bidx, return_indices=True)
