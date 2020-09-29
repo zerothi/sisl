@@ -258,7 +258,7 @@ class SparseCSR(NDArrayOperatorsMixin):
             dim : int, optional
                 If given, the returned SparseCSR will have this as dim.
         """
-        if not reduce(op_eq, (m.shape for m in spmats)):
+        if not all(spmats[0].shape == m.shape for m in spmats):
             raise ValueError(
                 f"Cannot find sparsity union of differently shaped csrs: "
                 + " & ".join(str(m.shape) for m in spmats)
@@ -270,10 +270,7 @@ class SparseCSR(NDArrayOperatorsMixin):
         out = cls(shape, dtype=dtype, nnzpr=1, nnz=2)
 
         out_col = [
-            reduce(
-                np.union1d,
-                (m.col[m.ptr[r]:m.ptr[r] + m.ncol[r]] for m in spmats)
-            )
+            np.unique(np.concatenate([m.col[m.ptr[r]:m.ptr[r] + m.ncol[r]] for m in spmats]))
             for r in range(shape[0])
         ]
         out.ncol = np.array([len(cols) for cols in out_col], dtype=np.int32)
@@ -1396,8 +1393,7 @@ class SparseCSR(NDArrayOperatorsMixin):
             for r in range(out.shape[0]):
                 msl = slice(m.ptr[r], m.ptr[r] + m.ncol[r])
                 osl = slice(out.ptr[r], out.ptr[r] + out.ncol[r])
-                # oidx = indices(out.col[osl], m.col[msl], osl.start)
-                oidx = np.searchsorted(out.col[osl], m.col[msl]) + osl.start
+                oidx = indices(out.col[osl], m.col[msl], osl.start, both_sorted=True)
                 out._D[oidx, im] = m._D[msl, 0]
 
         return out

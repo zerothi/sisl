@@ -68,7 +68,7 @@ cdef Py_ssize_t _indices_only(const int n_search, const int[::1] search,
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def indices(np.ndarray[np.int32_t, ndim=1, mode='c'] search, np.ndarray[np.int32_t, ndim=1, mode='c'] value, int offset):
+def indices(np.ndarray[np.int32_t, ndim=1, mode='c'] search, np.ndarray[np.int32_t, ndim=1, mode='c'] value, int offset, both_sorted=False):
     """ Return indices of all `value` in the search array. If not found the index will be ``-1``
 
     Parameters
@@ -89,7 +89,10 @@ def indices(np.ndarray[np.int32_t, ndim=1, mode='c'] search, np.ndarray[np.int32
     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] idx = np.empty([n_value], dtype=np.int32)
     cdef int[::1] IDX = idx
 
-    _indices(n_search, SEARCH, n_value, VALUE, offset, IDX)
+    if both_sorted:
+        _indices_sorted_arrays(n_search, SEARCH, n_value, VALUE, offset, IDX)
+    else:
+        _indices(n_search, SEARCH, n_value, VALUE, offset, IDX)
 
     return idx
 
@@ -127,6 +130,40 @@ cdef void _indices(const int n_search, const int[::1] search,
                 if value[j] == search[i]:
                     idx[j] = offset + i
                     break
+
+
+@cython.boundscheck(False)
+@cython.wraparound(False)
+@cython.initializedcheck(False)
+cdef void _indices_sorted_arrays(
+    const int n_search, const int[::1] search,
+    const int n_value, const int[::1] value,
+    const int offset, int[::1] idx
+    ) nogil:
+    cdef Py_ssize_t i, j
+    cdef int cvalue, csearch
+
+    # Fast return
+    if n_value == 0:
+        pass
+    elif n_search == 0:
+        for j in range(n_value):
+            idx[j] = -1
+        pass
+
+    i = 0
+    j = 0
+    while (i < n_search) and (j < n_value):
+        csearch = search[i]
+        cvalue = search[j]
+        if csearch == cvalue:
+            idx[j] = i + offset
+            j += 1
+        elif csearch < cvalue:
+            i += 1
+        elif csearch > cvalue:
+            idx[j] = -1
+            j += 1
 
 
 @cython.boundscheck(False)
