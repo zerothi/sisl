@@ -245,6 +245,38 @@ class SparseCSR(NDArrayOperatorsMixin):
         # Denote that this sparsity pattern hasn't been finalized
         self._finalized = False
 
+    @classmethod
+    def zeros_from_sparsity_union(cls, a, b, dtype=None):
+        """Create a SparseCSR with explicit zeros in all places that a and b have nonzeros.
+
+        Parameters
+        ----------
+            a, b : SparseCSR
+                SparseCSRs to find the sparsity pattern union of.
+            dtype : dtype, optional
+                Output dtype. If not given, use the result dtype of a and b.
+        """
+        if a.shape != b.shape:
+            raise ValueError(
+                f"Cannot find sparsity union of differently shaped csrs:"
+                " {a.shape} and {b.shape}"
+            )
+        shape = a.shape
+        dtype = dtype or np.result_type(a.dtype, b.dtype)
+        out = cls(shape, dtype=dtype, nnzpr=1, nnz=a.shape[0])
+
+        out_col = []
+        for r in range(shape[0]):
+            acols = a.col[a.ptr[r]:a.ptr[r] + a.ncol[r]]
+            bcols = b.col[b.ptr[r]:b.ptr[r] + b.ncol[r]]
+            out_col.append(np.union1d(acols, bcols))
+        out.ncol = np.array([len(cols) for cols in out_col], dtype=np.int32)
+        out.ptr = np.cumsum([0] + list(out.ncol), dtype=np.int32)
+        out.col = np.concatenate(out_col).astype(np.int32)
+        out._nnz = len(out.col)
+        out._D = np.zeros((out._nnz, out.dim), dtype=dtype)
+        return out
+
     def diagonal(self):
         r""" Return the diagonal elements from the matrix """
         return np.array([self[i, i] for i in range(self.shape[0])], dtype=self.dtype)
@@ -1654,26 +1686,21 @@ def _ufunc_sp_sp(ufunc, a, b, **kwargs):
     elif not isinstance(b, SparseCSR):
         b = SparseCSR.fromsp(b)
 
-    if not (reduce(op_eq, zip(a.shape[:2], b.shape[:2])) and
-            a.shape[2] == 1 or b.shape[2] == 1 or a.shape[2] == b.shape[2]):
-        raise ValueError(f"could not broadcast sparse matrices {a.shape} and {b.shape}")
+    out = SparseCSR.zeros_from_sparsity_union(a, b)
 
-    shape = a.shape
-    dtype = kwargs.get("dtype", np.result_type(a.dtype, b.dtype))
-    out = SparseCSR(shape, dtype=dtype, nnzpr=1, nnz=a.shape[0])
-
-    # Now we need to add things to the sparsity pattern
-    for r in range(shape[0]):
+    for r in range(out.shape[0]):
+        # Indices of a and b in out
         asl = np.arange(a.ptr[r], a.ptr[r] + a.ncol[r])
         aidx = out._extend(r, a.col[asl])
         bsl = np.arange(b.ptr[r], b.ptr[r] + b.ncol[r])
         bidx = out._extend(r, b.col[bsl])
 
-        # Find common indices
+        # Common indices
         idx, aover, bover = np.intersect1d(aidx, bidx, return_indices=True)
         out._D[idx, :] = ufunc(a._D[asl[aover], :],
                                b._D[bsl[bover], :], **kwargs)
 
+        # Remaining indices
         aonly = np.delete(aidx, aover)
         out._D[aonly, :] = ufunc(a._D[np.delete(asl, aover), :], 0, **kwargs)
         bonly = np.delete(bidx, bover)
