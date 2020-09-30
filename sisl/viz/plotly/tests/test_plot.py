@@ -168,7 +168,7 @@ class TestMultiplePlot(BasePlotTester):
         geoms_ids = [id(plot.geometry) for plot in multiple_plot]
         assert len(set(geoms_ids)) == 1, f"{self.PlotClass} is not properly sharing objects"
 
-        multiple_plot = GeometryPlot(geometry=[sisl.geom.graphene(bond=bond) for bond in (1.2,1.6)], axes=[0, 1], **{kw: "geometry"})
+        multiple_plot = GeometryPlot(geometry=[sisl.geom.graphene(bond=bond) for bond in (1.2, 1.6)], axes=[0, 1], **{kw: "geometry"})
         geoms_ids = [id(plot.geometry) for plot in multiple_plot]
         assert len(set(geoms_ids)) > 1, f"{self.PlotClass} is sharing objects that should not be shared"
 
@@ -219,6 +219,7 @@ class TestSubPlots(TestMultiplePlot):
 # ------------------------------------------------------------
 #              Tests for the Animation class
 # ------------------------------------------------------------
+
 
 class TestAnimation(TestMultiplePlot):
 

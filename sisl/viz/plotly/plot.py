@@ -209,13 +209,13 @@ class Plot(ShortCutable, Configurable, Connected, metaclass=PlotMeta):
     @property
     def read_data_methods(self):
         entry_points_names = [entry_point._method.__name__ for entry_point in self.entry_points]
-        
+
         return ["_before_read", "_after_read", *entry_points_names, *self._update_methods["read_data"]]
 
     @property
     def set_data_methods(self):
         return ["_set_data", *self._update_methods["set_data"]]
-    
+
     @property
     def get_figure_methods(self):
         return ["_after_get_figure", *self._update_methods["get_figure"]]
@@ -267,7 +267,7 @@ class Plot(ShortCutable, Configurable, Connected, metaclass=PlotMeta):
 
         if len(func_names.intersection(self.set_data_methods)) > 0:
             return ["set_data"]
- 
+
         if len(func_names.intersection(self.get_figure_methods)) > 0:
             return ["get_figure"]
 
@@ -316,16 +316,16 @@ class Plot(ShortCutable, Configurable, Connected, metaclass=PlotMeta):
     def entry_points_help(cls):
         """Generates a helpful message about the entry points of the plot class."""
         string = ""
-        
+
         for entry_point in cls.entry_points:
-            
+
             string += f"{entry_point._name.capitalize()}\n------------\n\n"
             string += (entry_point.help or "").lstrip()
-            
+
             string += "\nSettings used:\n\t- "
             string += '\n\t- '.join(entry_point._method._settings_params)
             string += "\n\n"
-            
+
         return string
 
     @property
@@ -1963,7 +1963,7 @@ class MultiplePlot(Plot):
 
                 # Now, we get the settings of the first plot
                 read_data_settings = {
-                    key: leading_plot.get_setting(key) for key, funcs in leading_plot._run_on_update.items() 
+                    key: leading_plot.get_setting(key) for key, funcs in leading_plot._run_on_update.items()
                     if set(funcs).intersection(leading_plot.read_data_methods)
                 }
 
@@ -2598,7 +2598,7 @@ class SubPlots(MultiplePlot):
 
             for ax in "x", "y":
                 ax_layout = getattr(plot.layout, f"{ax}axis").to_plotly_json()
-                
+
                 # If we have set a global title for this axis, just remove it from the plot
                 if axes_titles.get(f"{ax}_title"):
                     ax_layout["title"] = None
@@ -2615,13 +2615,13 @@ class SubPlots(MultiplePlot):
         for ax, layout in self.figure.layout.to_plotly_json().items():
             if "axis" in ax:
                 ax_name, ax_num = ax.split("axis")
-                
+
                 # Go over all possible problematic keys
                 for key in ["anchor", "scaleanchor"]:
                     val = layout.get(key)
                     if val in ["x", "y"]:
                         layout[key] = f"{val}{ax_num}"
-                
+
                 new_layouts[ax] = layout
 
         self.update_layout(**new_layouts)

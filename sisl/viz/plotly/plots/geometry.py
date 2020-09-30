@@ -38,20 +38,21 @@ class BoundGeometry(AbstractDispatch):
 
         return with_plot_update
 
+
 class GeometryPlot(Plot):
     """
     Versatile representation of geometries. 
-    
+
     This class contains all functions necessary to plot geometries in very diverse ways.
 
     Parameters
     -------------
     geometry: Geometry, optional
-    
+
     geom_file: str, optional
-    
+
     show_bonds: bool, optional
-    
+
     axes:  optional
         The axis along which you want to see the geometry.              You
         can provide as many axes as dimensions you want for your plot.
@@ -475,14 +476,14 @@ class GeometryPlot(Plot):
 
         self.add_traces(traces)
 
-    def _default_wrap_atoms1D(self, xy):
+    def _default_wrap_atoms1D(self, ats, xy):
 
         extra_kwargs = {}
 
         predefined_colors = self._display_props["atoms"]["color"]
 
         if predefined_colors is None:
-            color = [self.atom_color(atom.Z) for atom in self.geometry.atoms]
+            color = [self.atom_color(atom.Z) for atom in self.geometry.atoms[ats]]
         else:
             color = predefined_colors
             extra_kwargs["marker_colorscale"] = self._display_props["atoms"]["colorscale"]
@@ -493,12 +494,12 @@ class GeometryPlot(Plot):
         predefined_sizes = self._display_props["atoms"]["size"]
 
         if predefined_sizes is None:
-            size = [self._pt.radius(abs(atom.Z))*16 for atom in self.geometry.atoms]
+            size = [self._pt.radius(abs(atom.Z))*16 for atom in self.geometry.atoms[ats]]
         else:
             size = predefined_sizes
 
         return (xy, ), {
-            "text": [f'{self.geometry[at]}<br>{at} ({self.geometry.atoms[at].tag})' for at in self.geometry],
+            "text": [f'{self.geometry[at]}<br>{at} ({self.geometry.atoms[at].tag})' for at in ats],
             "name": "Atoms",
             "color": color,
             "size": size,
@@ -601,8 +602,7 @@ class GeometryPlot(Plot):
         wrap_atoms = wrap_atoms or self._default_wrap_atoms2D
         wrap_bond = wrap_bond or self._default_wrap_bonds2D
 
-        if atoms is not None:
-            atoms = self.geometry._sanitize_atoms(atoms)
+        atoms = self.geometry._sanitize_atoms(atoms)
 
         self._display_props["atoms"]["color"] = atoms_color
         self._display_props["atoms"]["size"] = atoms_size
@@ -650,7 +650,7 @@ class GeometryPlot(Plot):
                     traces.append(trace)
 
         # Add atoms
-        atoms_args, atoms_kwargs = wrap_atoms(xy)
+        atoms_args, atoms_kwargs = wrap_atoms(atoms, xy)
 
         traces.append(
             self._atoms_scatter_trace2D(*atoms_args, **atoms_kwargs)
@@ -845,9 +845,8 @@ class GeometryPlot(Plot):
             **kwargs
         }
 
-    def _default_wrap_atoms2D(self, xy):
-
-        return self._default_wrap_atoms1D(xy)
+    def _default_wrap_atoms2D(self, ats, xy):
+        return self._default_wrap_atoms1D(ats, xy)
 
     def _default_wrap_bonds2D(self, bond, xys):
 
@@ -909,8 +908,7 @@ class GeometryPlot(Plot):
         wrap_atom = wrap_atom or self._default_wrap_atom3D
         wrap_bond = wrap_bond or self._default_wrap_bond3D
 
-        if atoms is not None:
-            atoms = self.geometry._sanitize_atoms(atoms)
+        atoms = self.geometry._sanitize_atoms(atoms)
 
         self._display_props["atoms"]["colorscale"] = atoms_colorscale
         if atoms_color is not None:
@@ -965,8 +963,7 @@ class GeometryPlot(Plot):
         # Draw atoms if they are not already drawn
         if not cheap_atoms:
             atom_traces = []
-            ats = atoms if atoms is not None else self.geometry
-            for i, at in enumerate(ats):
+            for i, at in enumerate(atoms):
                 trace_args, trace_kwargs = wrap_atom(at)
                 atom_traces.append(self._atom_trace3D(*trace_args, **{"vertices": atoms_vertices, "legendgroup": "atoms", "showlegend": i==0, **trace_kwargs}))
             self.add_traces(atom_traces)
@@ -1069,7 +1066,7 @@ class GeometryPlot(Plot):
             If bonds_labels are provided, it returns (trace, labels_trace).
             Otherwise, just (trace,)
         """
-        # If only bonds are in this trace, we will
+        # If only bonds are in this trace, we will name it "bonds".
         if not name:
             name = 'Bonds and atoms' if atoms else 'Bonds'
 
