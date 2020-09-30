@@ -773,68 +773,7 @@ class AtomicOrbital(Orbital):
                 # String specification of the atomic orbital
                 s = args.pop(0)
 
-                _n = {'s': 1, 'p': 2, 'd': 3, 'f': 4, 'g': 5}
-                _l = {'s': 0, 'p': 1, 'd': 2, 'f': 3, 'g': 4}
-                _m = {'s': 0,
-                      'pz': 0, 'px': 1, 'py': -1,
-                      'dxy': -2, 'dyz': -1, 'dz2': 0, 'dxz': 1, 'dx2-y2': 2,
-                      'fy(3x2-y2)': -3, 'fxyz': -2, 'fz2y': -1, 'fz3': 0,
-                      'fz2x': 1, 'fz(x2-y2)': 2, 'fx(x2-3y2)': 3,
-                      'gxy(x2-y2)': -4, 'gzy(3x2-y2)': -3, 'gz2xy': -2, 'gz3y': -1, 'gz4': 0,
-                      'gz3x': 1, 'gz2(x2-y2)': 2, 'gzx(x2-3y2)': 3, 'gx4+y4': 4,
-                }
-
-                # First remove a P for polarization
-                P = 'P' in s
-                s = s.replace('P', '')
-
-                # Try and figure out the input
-                #   2s => n=2, l=0, m=0, z=1, P=False
-                #   2sZ2P => n=2, l=0, m=0, z=2, P=True
-                #   2pxZ2P => n=2, l=0, m=0, z=2, P=True
-                # By default a non-"n" specification takes the lowest value allowed
-                #    s => n=1
-                #    p => n=2
-                #    ...
-                try:
-                    n = int(s[0])
-                    # Remove n specification
-                    s = s[1:]
-                except:
-                    n = _n.get(s[0])
-
-                # Get l
-                l = _l.get(s[0])
-
-                # Get number of zeta shell
-                iZ = s.find('Z')
-                if iZ >= 0:
-                    # Currently we know that we are limited to 9 zeta shells.
-                    # However, for now we assume this is enough (could easily
-                    # be extended by a reg-exp)
-                    try:
-                        Z = int(s[iZ+1])
-                        # Remove Z + int
-                        s = s[:iZ] + s[iZ+2:]
-                    except:
-                        Z = 1
-                        s = s[:iZ] + s[iZ+1:]
-
-                # We should be left with m specification
-                m = _m.get(s)
-
-                # Now we should figure out how the spherical orbital
-                # has been passed.
-                # There are two options:
-                #  1. The radial function is passed as two arrays: r, f
-                #  2. The SphericalOrbital-class is passed which already contains
-                #     the relevant information.
-                # Figure out if it is a sphericalorbital
-                if len(args) > 0:
-                    if isinstance(args[0], SphericalOrbital):
-                        self.orb = args.pop(0)
-                    else:
-                        self.orb = SphericalOrbital(l, args.pop(0))
+                n, l, m, Z, P = self.orb_name_to_params(s, n=n, l=l, m=m, Z=Z, P=kwargs.get('P'))
             else:
 
                 # Arguments *have* to be
@@ -858,13 +797,6 @@ class AtomicOrbital(Orbital):
                     if isinstance(args[0], bool):
                         P = args.pop(0)
 
-                # Figure out if it is a sphericalorbital
-                if len(args) > 0:
-                    if isinstance(args[0], SphericalOrbital):
-                        self.orb = args.pop(0)
-                    else:
-                        self.orb = SphericalOrbital(l, args.pop(0))
-
         # Still if n is None, we assign the default (lowest) quantum number
         if n is None:
             n = l + 1
@@ -881,15 +813,21 @@ class AtomicOrbital(Orbital):
         if abs(self.m) > self.l:
             raise ValueError(self.__class__.__name__ + ' requires |m| <= l.')
 
-        # Retrieve user-passed spherical orbital
-        s = kwargs.get('spherical', None)
-
+        # Now we should figure out how the spherical orbital
+        # has been passed.
+        # There are two options:
+        #  1. The radial function is passed as two arrays: r, f
+        #  2. The SphericalOrbital-class is passed which already contains
+        #     the relevant information.
+        # Figure out if it is a sphericalorbital
+        s = kwargs.get('spherical')
         if s is None:
-            # Expect the orbital to already be set
-            pass
-        elif isinstance(s, Orbital):
+            if len(args) > 0:
+                s = args.pop(0)
+
+        if isinstance(s, SphericalOrbital):
             self.orb = s
-        else:
+        elif s is not None:
             self.orb = SphericalOrbital(l, s)
 
         if self.orb is None:
@@ -898,6 +836,81 @@ class AtomicOrbital(Orbital):
             self.orb = Orbital(self.R)
 
         self.R = self.orb.R
+
+    @staticmethod
+    def orb_name_to_params(orb_name, n=None, l=None, m=None, Z=None, P=None):
+        """
+        Gets the quantum numbers, Z shell and polarization corresponding to an orbital.
+
+        Parameters
+        ------------
+        orb_name: str
+            the name for which we want to retreive the parameters
+        n: int, optional
+            the default value for n.
+        l: int, optional
+            the default value for n.
+        m: int, optional
+            the default value for n.
+        Z: int, optional
+            the default value for Z.
+        P: bool, optional
+            if provided, the value for P. Note that this is not the default, but will
+            be enforced.
+
+        Returns
+        --------
+        n, l, m, Z, P
+        """
+
+        _l = {'s': 0, 'p': 1, 'd': 2, 'f': 3, 'g': 4}
+        _m = {'s': 0,
+                'pz': 0, 'px': 1, 'py': -1,
+                'dxy': -2, 'dyz': -1, 'dz2': 0, 'dxz': 1, 'dx2-y2': 2,
+                'fy(3x2-y2)': -3, 'fxyz': -2, 'fz2y': -1, 'fz3': 0,
+                'fz2x': 1, 'fz(x2-y2)': 2, 'fx(x2-3y2)': 3,
+                'gxy(x2-y2)': -4, 'gzy(3x2-y2)': -3, 'gz2xy': -2, 'gz3y': -1, 'gz4': 0,
+                'gz3x': 1, 'gz2(x2-y2)': 2, 'gzx(x2-3y2)': 3, 'gx4+y4': 4,
+        }
+
+        if P is None:
+            # First remove a P for polarization
+            P = 'P' in orb_name
+        orb_name = orb_name.replace('P', '')
+
+        # Try and figure out the input
+        #   2s => n=2, l=0, m=0, z=1, P=False
+        #   2sZ2P => n=2, l=0, m=0, z=2, P=True
+        #   2pxZ2P => n=2, l=0, m=0, z=2, P=True
+        try:
+            n = int(orb_name[0])
+            # Remove n specification
+            orb_name = orb_name[1:]
+        except:
+            pass
+
+        if orb_name:
+            # Get l
+            l = _l.get(orb_name[0], l)
+
+            # Get number of zeta shell
+            iZ = orb_name.find('Z')
+            if iZ >= 0:
+                # Currently we know that we are limited to 9 zeta shells.
+                # However, for now we assume this is enough (could easily
+                # be extended by a reg-exp)
+                try:
+                    Z = int(orb_name[iZ+1])
+                    # Remove Z + int
+                    orb_name = orb_name[:iZ] + orb_name[iZ+2:]
+                except:
+                    Z = 1
+                    orb_name = orb_name[:iZ] + orb_name[iZ+1:]
+
+            # We should be left with m specification
+            m = _m.get(orb_name, m)
+
+        return n, l, m, Z, P
 
     @property
     def f(self):

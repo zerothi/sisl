@@ -287,6 +287,9 @@ class Test_atomicorbital:
         a.append(AtomicOrbital('pzP', f))
         a.append(AtomicOrbital('pzP', rf))
         a.append(AtomicOrbital('2pzP', rf))
+        a.append(AtomicOrbital('2', rf, l=1, m=0, Z=1, P=True))
+        a.append(AtomicOrbital('2p', m=0, Z=1, P=True, spherical=f))
+        a.append(AtomicOrbital('2p', "dummy",  m=0, Z=1, P=True, spherical=rf))
         for i in range(len(a) - 1):
             for j in range(i+1, len(a)):
                 assert a[i] == a[j] and a[i].equal(a[j], psi=True, radial=True)
