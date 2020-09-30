@@ -155,7 +155,7 @@ cdef void _indices_sorted_arrays(
     j = 0
     while (i < n_search) and (j < n_value):
         csearch = search[i]
-        cvalue = search[j]
+        cvalue = value[j]
         if csearch == cvalue:
             idx[j] = i + offset
             j += 1
@@ -164,8 +164,7 @@ cdef void _indices_sorted_arrays(
         elif csearch > cvalue:
             idx[j] = -1
             j += 1
-    i = j
-    for j in range(i, n_value):
+    for j in range(j, n_value):
         idx[j] = -1
 
 
