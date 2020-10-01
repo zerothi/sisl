@@ -31,6 +31,7 @@ from ._indices import indices, indices_only, sorted_unique
 from .messages import warn, SislError
 from ._help import array_fill_repeat, get_dtype, isiterable
 from .utils.ranges import array_arange
+from .utils.mathematics import intersect_and_diff_sets
 from ._sparse import sparse_dense
 
 # Although this re-implements the CSR in scipy.sparse.csr_matrix
@@ -1703,41 +1704,57 @@ def _ufunc_sp_sp(ufunc, a, b, **kwargs):
     """ Calculate ufunc on sparse matrices """
     if isinstance(a, tuple):
         a = SparseCSR.fromsp(*a)
-    elif not isinstance(a, SparseCSR):
-        a = SparseCSR.fromsp(a)
     if isinstance(b, tuple):
         b = SparseCSR.fromsp(*b)
-    elif not isinstance(b, SparseCSR):
-        b = SparseCSR.fromsp(b)
+
+    def accessors(mat):
+        if isinstance(mat, SparseCSR):
+            def rowslice(r):
+                return slice(mat.ptr[r], mat.ptr[r] + mat.ncol[r])
+            accessors = mat.dim, mat.col, mat._D, rowslice
+            issorted = mat.finalized
+        elif isinstance(mat, csr_matrix):
+            def rowslice(r):
+                return slice(mat.indptr[r], mat.indptr[r + 1])
+            accessors = 1, mat.indices, mat.data.reshape(-1, 1), rowslice
+            issorted = mat.has_sorted_indices
+        else:
+            raise TypeError(f"Type not understood: {type(mat)}")
+        if issorted:
+            indexfunc = lambda ocol, matcol, offset: indices(ocol, matcol, offset, both_sorted=True)
+        else:
+            indexfunc = lambda ocol, matcol, offset: np.searchsorted(ocol, matcol) + offset
+        return accessors + (indexfunc,)
+
+    adim, acol, adata, arow, afindidx = accessors(a)
+    bdim, bcol, bdata, brow, bfindidx = accessors(b)
 
     if (a.shape[:2] != b.shape[:2]
-        or (a.dim != b.dim and not (a.dim == 1 or b.dim == 1))):
+        or (adim != bdim and not (adim == 1 or bdim == 1))):
         raise ValueError(f"could not broadcast sparse matrices {a.shape} and {b.shape}")
 
-    out = SparseCSR.sparsity_union(a, b, dim=max(a.dim, b.dim))
+    out = SparseCSR.sparsity_union(a, b, dim=max(adim, bdim))
 
     for r in range(out.shape[0]):
         offset = out.ptr[r]
         ocol = out.col[offset:offset + out.ncol[r]]
 
-        asl = slice(a.ptr[r], a.ptr[r] + a.ncol[r])
-        aidx = np.searchsorted(ocol, a.col[asl]) + offset
+        asl = arow(r)
+        aidx = afindidx(ocol, acol[asl], offset)
         asl = np.arange(asl.start, asl.stop)
 
-        bsl = slice(b.ptr[r], b.ptr[r] + b.ncol[r])
-        bidx = np.searchsorted(ocol, b.col[bsl]) + offset
+        bsl = brow(r)
+        bidx = bfindidx(ocol, bcol[bsl], offset)
         bsl = np.arange(bsl.start, bsl.stop)
 
         # Common indices
-        idx, aover, bover = np.intersect1d(aidx, bidx, return_indices=True)
-        out._D[idx, :] = ufunc(a._D[asl[aover], :],
-                               b._D[bsl[bover], :], **kwargs)
+        idx, aover, bover, iaonly, ibonly = intersect_and_diff_sets(aidx, bidx)
+        out._D[idx, :] = ufunc(adata[asl[aover], :],
+                               bdata[bsl[bover], :], **kwargs)
 
         # Remaining indices
-        aonly = np.delete(aidx, aover)
-        out._D[aonly, :] = ufunc(a._D[np.delete(asl, aover), :], 0, **kwargs)
-        bonly = np.delete(bidx, bover)
-        out._D[bonly, :] = ufunc(0, b._D[np.delete(bsl, bover), :], **kwargs)
+        out._D[aidx[iaonly]] = ufunc(adata[asl[iaonly], :], 0, **kwargs)
+        out._D[bidx[ibonly]] = ufunc(0, bdata[bsl[ibonly], :], **kwargs)
 
     return out
 

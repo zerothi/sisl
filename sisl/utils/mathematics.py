@@ -1,6 +1,7 @@
 from numpy import dot, sqrt, square
 from numpy import cos, sin, arctan2, arccos
 from numpy import asarray, take, delete, empty
+from numpy import concatenate, argsort
 
 from sisl import _array as _a
 from sisl._indices import indices_le
@@ -278,3 +279,36 @@ def curl(m, axis=-2, axisv=-1):
     curl[vy] = m[slz][vx] - m[slx][vz]
     curl[vz] = m[slx][vy] - m[sly][vx]
     return curl
+
+
+def intersect_and_diff_sets(a, b):
+    """See numpy.intersect1d(a, b, assume_unique=True, return_indices=True).
+    In addition to that, this function also returns the indices in a and b which
+    are *not* in the intersection.
+    This saves a bit compared to doing np.delete() afterwards.
+    """
+    aux = concatenate((a, b))
+    aux_sort_indices = argsort(aux, kind='mergesort')
+    aux = aux[aux_sort_indices]
+    mask = aux[1:] == aux[:-1]
+    int1d = aux[:-1][mask]
+
+    aover = aux_sort_indices[:-1][mask]
+    bover = aux_sort_indices[1:][mask] - a.size
+
+    nobuddy_lr = concatenate([[True], ~mask, [True]])
+    no_buddy = nobuddy_lr[:-1]  # no match left
+    no_buddy &= nobuddy_lr[1:]  # no match right
+
+    aonly = (aux_sort_indices < a.size)
+    bonly = ~aonly
+    aonly &= no_buddy
+    bonly &= no_buddy
+    # # the below is for some reason slower even though its only two ops
+    # aonly &= no_buddy
+    # bonly = aonly ^ no_buddy
+
+    aonly = aux_sort_indices[aonly]
+    bonly = aux_sort_indices[bonly] - a.size
+
+    return int1d, aover, bover, aonly, bonly
