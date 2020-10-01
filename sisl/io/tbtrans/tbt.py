@@ -22,6 +22,7 @@ import sisl._array as _a
 
 from sisl import Geometry, Atoms
 from sisl import units, constant
+from sisl.sparse import _ncol_to_indptr
 from sisl.messages import warn, info, SislError
 from sisl._help import wrap_filterwarnings
 from sisl.unit.siesta import unit_convert
@@ -980,7 +981,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         geom = self.geometry
 
         # These are the row-pointers...
-        rptr = np.insert(_a.cumsumi(self._value('n_col')), 0, 0)
+        rptr = _ncol_to_indptr(self._value('n_col'))
 
         # Get column indices
         col = self._value('list_col') - 1
@@ -1043,7 +1044,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             def func(ptr1, ptr2):
                 return cnz(all_col[ptr1:ptr2])
             tmp = _a.fromiteri(map(func, rptr[:geom.no], rptr[1:]))
-            rptr = np.insert(_a.cumsumi(tmp), 0, 0)
+            rptr = _ncol_to_indptr(tmp)
             del tmp
 
         if all_col is None:
@@ -1112,7 +1113,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             fo = geom.firsto
             # Automatically create the new index pointer
             # from first and last orbital
-            indptr = np.insert(_a.cumsumi(iptr[fo[1:]] - iptr[fo[:-1]]), 0, 0)
+            indptr = _ncol_to_indptr(iptr[fo[1:]] - iptr[fo[:-1]])
 
             # Now we have a new indptr, and the column indices have also
             # been processed.

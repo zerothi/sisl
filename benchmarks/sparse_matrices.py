@@ -11,7 +11,9 @@
 #
 #  python stats.py $0.profile
 #
-import cProfile, pstats, io
+import cProfile
+import pstats
+import io
 import sys
 import sisl
 import numpy as np

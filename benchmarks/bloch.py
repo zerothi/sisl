@@ -11,7 +11,8 @@
 #
 #  python stats.py $0.profile
 #
-import cProfile, pstats
+import cProfile
+import pstats
 import sys
 import time
 import sisl

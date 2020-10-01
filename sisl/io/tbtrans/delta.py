@@ -10,6 +10,7 @@ import sisl._array as _a
 # Import the geometry object
 from sisl import Geometry, Atom, SuperCell
 from sisl import SparseOrbitalBZSpin
+from sisl.sparse import _ncol_to_indptr
 from sisl.messages import warn
 from sisl.unit.siesta import unit_convert
 from ..siesta._help import _csr_to_siesta, _csr_from_sc_off, _mat_spin_convert
@@ -449,7 +450,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
 
         C._csr.ncol = _a.arrayi(lvl.variables['n_col'][:])
         # Update maximum number of connections (in case future stuff happens)
-        C._csr.ptr = np.insert(_a.cumsumi(C._csr.ncol), 0, 0)
+        C._csr.ptr = _ncol_to_indptr(C._csr.ncol)
         C._csr.col = _a.arrayi(lvl.variables['list_col'][:]) - 1
 
         # Copy information over

@@ -10,6 +10,7 @@ from sisl._internal import set_module
 from sisl._array import aranged
 from sisl.unit.siesta import unit_convert
 from sisl import Geometry, Atom, AtomGhost, Atoms, SuperCell, Grid, SphericalOrbital
+from sisl.sparse import _ncol_to_indptr
 from sisl.physics import SparseOrbitalBZ
 from sisl.physics import DensityMatrix, EnergyDensityMatrix
 from sisl.physics import DynamicalMatrix
@@ -174,7 +175,7 @@ class ncSileSiesta(SileCDFSiesta):
 
         C._csr.ncol = np.array(sp.variables['n_col'][:], np.int32)
         # Update maximum number of connections (in case future stuff happens)
-        C._csr.ptr = np.insert(np.cumsum(C._csr.ncol, dtype=np.int32), 0, 0)
+        C._csr.ptr = _ncol_to_indptr(C._csr.ncol)
         C._csr.col = np.array(sp.variables['list_col'][:], np.int32) - 1
 
         # Copy information over
@@ -208,7 +209,7 @@ class ncSileSiesta(SileCDFSiesta):
 
         C._csr.ncol = np.array(sp.variables['n_col'][:], np.int32)
         # Update maximum number of connections (in case future stuff happens)
-        C._csr.ptr = np.insert(np.cumsum(C._csr.ncol, dtype=np.int32), 0, 0)
+        C._csr.ptr = _ncol_to_indptr(C._csr.ncol)
         C._csr.col = np.array(sp.variables['list_col'][:], np.int32) - 1
 
         # Copy information over

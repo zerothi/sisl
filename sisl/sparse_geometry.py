@@ -7,7 +7,7 @@ import numpy as np
 from numpy.lib.mixins import NDArrayOperatorsMixin
 from numpy import (
     int32,
-    insert, take, delete, argsort,
+    take, delete, argsort,
     unique, diff, allclose,
     tile, repeat, concatenate
 )
@@ -21,7 +21,7 @@ from .messages import warn, SislError, SislWarning, tqdm_eta, deprecate_method
 from ._indices import indices_only
 from ._help import get_dtype
 from .utils.ranges import array_arange, list2str
-from .sparse import SparseCSR, isspmatrix
+from .sparse import SparseCSR, isspmatrix, _ncol_to_indptr
 
 
 __all__ = ['SparseAtom', 'SparseOrbital']
@@ -383,7 +383,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
             D = csr._D.copy()
         else:
             idx = array_arange(csr.ptr[:-1], n=ncol, dtype=int32)
-            ptr = insert(_a.cumsumi(ncol), 0, 0)
+            ptr = _ncol_to_indptr(ncol)
             col = csr.col[idx]
             D = csr._D[idx, :].copy()
             del idx
@@ -423,7 +423,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         del row
         T._csr._D = D[idx]
         del D
-        T._csr.ptr = insert(_a.cumsumi(T._csr.ncol), 0, 0)
+        T._csr.ptr = _ncol_to_indptr(T._csr.ncol)
 
         # For-sure we haven't sorted the columns.
         # We haven't changed the number of non-zeros
@@ -1064,7 +1064,7 @@ class SparseAtom(_SparseGeometry):
         # Create new indptr, indices and D
         ncol = tile(ncol, reps)
         # Now indptr is complete
-        indptr = insert(_a.cumsumi(ncol), 0, 0)
+        indptr = _ncol_to_indptr(ncol)
         del ncol
         indices = _a.emptyi([indptr[-1]])
         indices.shape = (reps, -1)
@@ -1144,7 +1144,7 @@ class SparseAtom(_SparseGeometry):
         # Create new indptr, indices and D
         ncol = repeat(ncol, reps)
         # Now indptr is complete
-        indptr = insert(_a.cumsumi(ncol), 0, 0)
+        indptr = _ncol_to_indptr(ncol)
         del ncol
         indices = _a.emptyi([indptr[-1]])
 
@@ -1723,7 +1723,7 @@ class SparseOrbital(_SparseGeometry):
         # Create new indptr, indices and D
         ncol = tile(ncol, reps)
         # Now indptr is complete
-        indptr = insert(_a.cumsumi(ncol), 0, 0)
+        indptr = _ncol_to_indptr(ncol)
         del ncol
         indices = _a.emptyi([indptr[-1]])
         indices.shape = (reps, -1)
@@ -1803,11 +1803,11 @@ class SparseOrbital(_SparseGeometry):
                            repeat(geom.firsto[1:], reps))
         ncol = csr.ncol[idx]
         # Now indptr is complete
-        indptr = insert(_a.cumsumi(ncol), 0, 0)
+        indptr = _ncol_to_indptr(ncol)
         # Note that D above is already reduced to a *finalized* state
         # So we have to re-create the reduced index pointer
         # Then we take repeat the data by smart indexing
-        D = D[array_arange(insert(_a.cumsumi(csr.ncol), 0, 0)[idx], n=ncol), :]
+        D = D[array_arange(_ncol_to_indptr(csr.ncol)[idx], n=ncol), :]
         del ncol, idx
         indices = _a.emptyi([indptr[-1]])
 

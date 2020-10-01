@@ -39,6 +39,14 @@ from ._sparse import sparse_dense
 __all__ = ['SparseCSR', 'ispmatrix', 'ispmatrixd']
 
 
+def _ncol_to_indptr(ncol):
+    """ Convert the ncol array into a pointer array """
+    ptr = _a.emptyi(ncol.size + 1)
+    ptr[0] = 0
+    _a.cumsumi(ncol, out=ptr[1:])
+    return ptr
+
+
 @set_module("sisl")
 class SparseCSR(NDArrayOperatorsMixin):
     """
@@ -1314,7 +1322,7 @@ class SparseCSR(NDArrayOperatorsMixin):
         # Use array_arange
         idx = array_arange(self.ptr[:-1], n=self.ncol)
         # create new pointer
-        ptr = insert(_a.cumsumi(self.ncol), 0, 0)
+        ptr = _ncol_to_indptr(self.ncol)
 
         return csr_matrix((self._D[idx, dim].copy(), self.col[idx], ptr.astype(int32, copy=False)),
                           shape=shape, **kwargs)
@@ -1558,7 +1566,7 @@ class SparseCSR(NDArrayOperatorsMixin):
         self._nnz = self.ncol.sum()
         self._finalized = state['finalized']
         if self.finalized:
-            self.ptr = insert(_a.cumsumi(self.ncol), 0, 0)
+            self.ptr = _ncol_to_indptr(self.ncol)
         else:
             self.ptr = state['ptr']
 

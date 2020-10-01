@@ -15,7 +15,7 @@ from sisl._math_small import xyz_to_spherical_cos_phi
 from sisl.messages import warn, tqdm_eta
 from sisl.utils.ranges import array_arange
 from .spin import Spin
-from sisl.sparse import SparseCSR
+from sisl.sparse import SparseCSR, _ncol_to_indptr
 from sisl.sparse_geometry import SparseOrbital
 from .sparse import SparseOrbitalBZSpin
 
@@ -486,7 +486,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
             DM = csr._D[idx, 0]
 
         # Create the DM csr matrix.
-        csrDM = csr_matrix((DM, csr.col[idx], np.insert(np.cumsum(csr.ncol), 0, 0)),
+        csrDM = csr_matrix((DM, csr.col[idx], _ncol_to_indptr(csr.ncol)),
                            shape=(self.shape[:2]), dtype=DM.dtype)
 
         # Clean-up
@@ -612,7 +612,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
         # Get pointers and delete the atomic sparse pattern
         # The below complexity is because we are not finalizing spA
         csr = spA._csr
-        a_ptr = np.insert(_a.cumsumi(csr.ncol), 0, 0)
+        a_ptr = _ncol_to_indptr(csr.ncol)
         a_col = csr.col[array_arange(csr.ptr, n=csr.ncol)]
         del spA, csr
 

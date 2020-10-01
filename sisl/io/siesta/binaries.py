@@ -17,6 +17,7 @@ from sisl.messages import warn, SislError
 from ._help import *
 import sisl._array as _a
 from sisl import Geometry, Atom, Atoms, SuperCell, Grid
+from sisl.sparse import _ncol_to_indptr
 from sisl.unit.siesta import unit_convert
 from sisl.physics.sparse import SparseOrbitalBZ
 from sisl.physics import Hamiltonian, DensityMatrix, EnergyDensityMatrix
@@ -198,7 +199,7 @@ class onlysSileSiesta(SileBinSiesta):
 
         # Create the new sparse matrix
         S._csr.ncol = ncol.astype(np.int32, copy=False)
-        S._csr.ptr = np.insert(np.cumsum(ncol, dtype=np.int32), 0, 0)
+        S._csr.ptr = _ncol_to_indptr(ncol)
         # Correct fortran indices
         S._csr.col = col.astype(np.int32, copy=False) - 1
         S._csr._nnz = len(col)
@@ -252,7 +253,7 @@ class tshsSileSiesta(onlysSileSiesta):
 
         # Create the new sparse matrix
         H._csr.ncol = ncol.astype(np.int32, copy=False)
-        H._csr.ptr = np.insert(np.cumsum(ncol, dtype=np.int32), 0, 0)
+        H._csr.ptr = _ncol_to_indptr(ncol)
         # Correct fortran indices
         H._csr.col = col.astype(np.int32, copy=False) - 1
         H._csr._nnz = len(col)
@@ -365,7 +366,7 @@ class dmSileSiesta(SileBinSiesta):
 
         # Create the new sparse matrix
         DM._csr.ncol = ncol.astype(np.int32, copy=False)
-        DM._csr.ptr = np.insert(np.cumsum(ncol, dtype=np.int32), 0, 0)
+        DM._csr.ptr = _ncol_to_indptr(ncol)
         # Correct fortran indices
         DM._csr.col = col.astype(np.int32, copy=False) - 1
         DM._csr._nnz = len(col)
@@ -450,7 +451,7 @@ class tsdeSileSiesta(dmSileSiesta):
 
         # Create the new sparse matrix
         EDM._csr.ncol = ncol.astype(np.int32, copy=False)
-        EDM._csr.ptr = np.insert(np.cumsum(ncol, dtype=np.int32), 0, 0)
+        EDM._csr.ptr = _ncol_to_indptr(ncol)
         # Correct fortran indices
         EDM._csr.col = col.astype(np.int32, copy=False) - 1
         EDM._csr._nnz = len(col)
@@ -572,7 +573,7 @@ class hsxSileSiesta(SileBinSiesta):
 
         # Create the new sparse matrix
         H._csr.ncol = ncol.astype(np.int32, copy=False)
-        H._csr.ptr = np.insert(np.cumsum(ncol, dtype=np.int32), 0, 0)
+        H._csr.ptr = _ncol_to_indptr(ncol)
         # Correct fortran indices
         H._csr.col = col.astype(np.int32, copy=False) - 1
         H._csr._nnz = len(col)
@@ -610,7 +611,7 @@ class hsxSileSiesta(SileBinSiesta):
 
         # Create the new sparse matrix
         S._csr.ncol = ncol.astype(np.int32, copy=False)
-        S._csr.ptr = np.insert(np.cumsum(ncol, dtype=np.int32), 0, 0)
+        S._csr.ptr = _ncol_to_indptr(ncol)
         # Correct fortran indices
         S._csr.col = col.astype(np.int32, copy=False) - 1
         S._csr._nnz = len(col)
