@@ -291,7 +291,9 @@ class SparseCSR(NDArrayOperatorsMixin):
             out_col.append(np.unique(concatenate(row_cols)))
         # Put into the output
         out.ncol = _a.arrayi([len(cols) for cols in out_col])
-        out.ptr = insert(_a.cumsumi(out.ncol), 0, 0)
+        out.ptr = _a.emptyi(out.ncol.size + 1)
+        out.ptr[0] = 0
+        _a.cumsumi(out.ncol, out=out.ptr[1:])
         out.col = concatenate(out_col)
         out._nnz = len(out.col)
         out._D = full((out._nnz, out.dim), value, dtype=dtype)
