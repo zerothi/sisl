@@ -209,43 +209,46 @@ def test_diag3():
 
 
 def test_create1(setup):
-    setup.s1d[0, [1, 2, 3]] = 1
-    assert setup.s1d.nnz == 3
-    setup.s1d[2, [1, 2, 3]] = 1
-    assert setup.s1d.nnz == 6
-    setup.s1d.empty(keep_nnz=True)
-    assert setup.s1d.nnz == 6
-    setup.s1d.empty()
-    assert setup.s1d.nnz == 0
-    setup.s1d[0, 0] = np.nan
+    s1d = setup.s1d
+    s1d[0, [1, 2, 3]] = 1
+    assert s1d.nnz == 3
+    s1d[2, [1, 2, 3]] = 1
+    assert s1d.nnz == 6
+    s1d.empty(keep_nnz=True)
+    assert s1d.nnz == 6
+    s1d.empty()
+    assert s1d.nnz == 0
+    s1d[0, 0] = np.nan
     # nan produces zeros
-    assert setup.s1d.nnz == 1
-    setup.s1d.empty()
+    assert s1d.nnz == 1
+    s1d.empty()
 
 
 def test_create2(setup):
-    assert len(setup.s1) == setup.s1.shape[0]
+    s1 = setup.s1
+    assert len(s1) == s1.shape[0]
     for i in range(10):
         j = range(i*4, i*4+3)
-        setup.s1[0, j] = i
-        assert setup.s1.nnz == (i+1)*3
+        s1[0, j] = i
+        assert s1.nnz == (i+1)*3
         for jj in j:
-            assert setup.s1[0, jj] == i
-            assert setup.s1[1, jj] == 0
-    setup.s1.empty()
+            assert s1[0, jj] == i
+            assert s1[1, jj] == 0
+    s1.empty()
 
 
 def test_create3(setup):
+    s1 = setup.s1
     for i in range(10):
         j = range(i*4, i*4+3)
-        setup.s1[0, j] = i
-        assert setup.s1.nnz == (i+1)*3
-        setup.s1[0, range((i+1)*4, (i+1)*4+3)] = None
-        assert setup.s1.nnz == (i+1)*3
+        s1[0, j] = i
+        assert s1.nnz == (i+1)*3
+        s1[0, range((i+1)*4, (i+1)*4+3)] = None
+        assert s1.nnz == (i+1)*3
         for jj in j:
-            assert setup.s1[0, jj] == i
-            assert setup.s1[1, jj] == 0
-    setup.s1.empty()
+            assert s1[0, jj] == i
+            assert s1[1, jj] == 0
+    s1.empty()
 
 
 def test_create_1d_bcasting_data_1d(setup):
@@ -291,6 +294,7 @@ def test_create_1d_diag(setup):
     d = np.arange(len(s1))
     for i in d:
         s1[i, i] = data[i]
+
     s2 = setup.s1.copy()
     s2[d, d] = data
 
@@ -392,103 +396,111 @@ def test_create_2d_data_3d(setup):
 
 
 def test_fail_data_3d_to_1d(setup):
-    s1 = setup.s2.copy()
+    s2 = setup.s2
     # matrix assignment
-    I = np.arange(len(s1) // 2).reshape(-1, 1)
+    I = np.arange(len(s2) // 2).reshape(-1, 1)
     data = np.random.randint(1, 100, I.size * 2).reshape(I.size, 1, 2)
     with pytest.raises(ValueError):
-        s1[I, I.T] = data
+        s2[I, I.T] = data
+    s2.empty()
 
 
 def test_fail_data_2d_to_2d(setup):
-    s1 = setup.s2.copy()
+    s2 = setup.s2
     # matrix assignment
-    I = np.arange(len(s1) // 2).reshape(-1, 1)
+    I = np.arange(len(s2) // 2).reshape(-1, 1)
     data = np.random.randint(1, 100, I.size **2).reshape(I.size, I.size)
     with pytest.raises(ValueError):
-        s1[I, I.T] = data
+        s2[I, I.T] = data
+    s2.empty()
 
 
 def test_fail_data_2d_to_3d(setup):
-    s1 = setup.s2.copy()
+    s2 = setup.s2
     # matrix assignment
-    I = np.arange(len(s1) // 2).reshape(-1, 1)
+    I = np.arange(len(s2) // 2).reshape(-1, 1)
     data = np.random.randint(1, 100, I.size **2).reshape(I.size, I.size)
     with pytest.raises(ValueError):
-        s1[I, I.T, [0, 1]] = data
+        s2[I, I.T, [0, 1]] = data
+    s2.empty()
 
 
 def test_finalize1(setup):
-    setup.s1[0, [1, 2, 3]] = 1
-    setup.s1[2, [1, 2, 3]] = 1.
-    setup.s1[1, [3, 2, 1]] = 1.
-    assert not setup.s1.finalized
-    p = setup.s1.ptr.view()
-    n = setup.s1.ncol.view()
+    s1 = setup.s1
+    s1[0, [1, 2, 3]] = 1
+    s1[2, [1, 2, 3]] = 1.
+    s1[1, [3, 2, 1]] = 1.
+    assert not s1.finalized
+    p = s1.ptr.view()
+    n = s1.ncol.view()
     # Assert that the ordering is good
-    assert np.allclose(setup.s1.col[p[1]:p[1]+n[1]], [3, 2, 1])
-    setup.s1.finalize()
+    assert np.allclose(s1.col[p[1]:p[1]+n[1]], [3, 2, 1])
+    s1.finalize()
     # This also asserts that we do not change the memory-locations
     # of the pointers and ncol
-    assert np.allclose(setup.s1.col[p[1]:p[1]+n[1]], [1, 2, 3])
-    assert setup.s1.finalized
-    setup.s1.empty(keep_nnz=True)
-    assert setup.s1.finalized
-    setup.s1.empty()
-    assert not setup.s1.finalized
+    assert np.allclose(s1.col[p[1]:p[1]+n[1]], [1, 2, 3])
+    assert s1.finalized
+    s1.empty(keep_nnz=True)
+    assert s1.finalized
+    s1.empty()
+    assert not s1.finalized
 
 
 def test_finalize2(setup):
-    setup.s1[0, [1, 2, 3]] = 1
-    setup.s1[2, [1, 2, 3]] = 1.
-    setup.s1[1, [3, 2, 1]] = 1.
-    assert not setup.s1.finalized
-    p = setup.s1.ptr.view()
-    n = setup.s1.ncol.view()
+    s1 = setup.s1
+    s1[0, [1, 2, 3]] = 1
+    s1[2, [1, 2, 3]] = 1.
+    s1[1, [3, 2, 1]] = 1.
+    assert not s1.finalized
+    p = s1.ptr.view()
+    n = s1.ncol.view()
     # Assert that the ordering is good
-    assert np.allclose(setup.s1.col[p[1]:p[1]+n[1]], [3, 2, 1])
-    setup.s1.finalize(False)
+    assert np.allclose(s1.col[p[1]:p[1]+n[1]], [3, 2, 1])
+    s1.finalize(False)
     # This also asserts that we do not change the memory-locations
     # of the pointers and ncol
-    assert np.allclose(setup.s1.col[p[1]:p[1]+n[1]], [3, 2, 1])
-    assert not setup.s1.finalized
-    assert len(setup.s1.col) == 9
+    assert np.allclose(s1.col[p[1]:p[1]+n[1]], [3, 2, 1])
+    assert not s1.finalized
+    assert len(s1.col) == 9
+    s1.empty()
 
 
 def test_iterator1(setup):
-    setup.s1[0, [1, 2, 3]] = 1
-    setup.s1[2, [1, 2, 4]] = 1.
+    s1 = setup.s1
+    s1[0, [1, 2, 3]] = 1
+    s1[2, [1, 2, 4]] = 1.
     e = [[1, 2, 3], [], [1, 2, 4]]
-    for i, j in setup.s1:
+    for i, j in s1:
         assert j in e[i]
 
-    for i, j in setup.s1.iter_nnz(0):
+    for i, j in s1.iter_nnz(0):
         assert i == 0
         assert j in e[0]
-    for i, j in setup.s1.iter_nnz(2):
+    for i, j in s1.iter_nnz(2):
         assert i == 2
         assert j in e[2]
 
-    for i, j in ispmatrix(setup.s1):
+    for i, j in ispmatrix(s1):
         assert j in e[i]
 
-    for i, j in ispmatrix(setup.s1, map_col = lambda x: x):
+    for i, j in ispmatrix(s1, map_col = lambda x: x):
         assert j in e[i]
-    for i, j in ispmatrix(setup.s1, map_row = lambda x: x):
+    for i, j in ispmatrix(s1, map_row = lambda x: x):
         assert j in e[i]
 
-    for i, j, d in ispmatrixd(setup.s1):
+    for i, j, d in ispmatrixd(s1):
         assert j in e[i]
         assert d == 1.
 
-    setup.s1.empty()
+    s1.empty()
 
 
 def test_iterator2(setup):
+    s1 = setup.s1
     e = [[1, 2, 3], [], [1, 2, 4]]
-    setup.s1[0, [1, 2, 3]] = 1
-    setup.s1[2, [1, 2, 4]] = 1.
-    a = setup.s1.tocsr()
+    s1[0, [1, 2, 3]] = 1
+    s1[2, [1, 2, 4]] = 1.
+    a = s1.tocsr()
     for func in ['csr', 'csc', 'coo', 'lil']:
         a = getattr(a, 'to' + func)()
         for r, c in ispmatrix(a):
@@ -502,14 +514,15 @@ def test_iterator2(setup):
             assert c in e[r]
             assert d == 1.
 
-    setup.s1.empty()
+    s1.empty()
 
 
 def test_iterator3(setup):
+    s1 = setup.s1
     e = [[1, 2, 3], [], [1, 2, 4]]
-    setup.s1[0, [1, 2, 3]] = 1
-    setup.s1[2, [1, 2, 4]] = 1.
-    a = setup.s1.tocsr()
+    s1[0, [1, 2, 3]] = 1
+    s1[2, [1, 2, 4]] = 1.
+    a = s1.tocsr()
     for func in ['csr', 'csc', 'coo', 'lil']:
         a = getattr(a, 'to' + func)()
         for r, c in ispmatrix(a):
@@ -526,83 +539,90 @@ def test_iterator3(setup):
             assert c in [0, 1]
             n += 1
         assert n == nvals
+    s1.empty()
 
 
 def test_delitem1(setup):
-    setup.s1[0, [1, 2, 3]] = 1
-    assert setup.s1.nnz == 3
-    del setup.s1[0, 1]
-    assert setup.s1.nnz == 2
-    assert setup.s1[0, 1] == 0
-    assert setup.s1[0, 2] == 1
-    assert setup.s1[0, 3] == 1
-    setup.s1[0, [1, 2, 3]] = 1
-    del setup.s1[0, [1, 3]]
-    assert setup.s1.nnz == 1
-    assert setup.s1[0, 1] == 0
-    assert setup.s1[0, 2] == 1
-    assert setup.s1[0, 3] == 0
-    del setup.s1[range(2), 0]
-    assert setup.s1.nnz == 1
+    s1 = setup.s1
+    s1[0, [1, 2, 3]] = 1
+    assert s1.nnz == 3
+    del s1[0, 1]
+    assert s1.nnz == 2
+    assert s1[0, 1] == 0
+    assert s1[0, 2] == 1
+    assert s1[0, 3] == 1
+    s1[0, [1, 2, 3]] = 1
+    del s1[0, [1, 3]]
+    assert s1.nnz == 1
+    assert s1[0, 1] == 0
+    assert s1[0, 2] == 1
+    assert s1[0, 3] == 0
+    del s1[range(2), 0]
+    assert s1.nnz == 1
     for i in range(2):
-        assert setup.s1[i, 0] == 0
-    del setup.s1[range(2), range(3), 0]
-    assert setup.s1.nnz == 0
-    setup.s1.empty()
+        assert s1[i, 0] == 0
+    del s1[range(2), range(3), 0]
+    assert s1.nnz == 0
+    s1.empty()
 
 
 def test_contains1(setup):
-    setup.s1[0, [1, 2, 3]] = 1
-    assert setup.s1.nnz == 3
-    assert [0, 1] in setup.s1
-    assert [0, [1, 3]] in setup.s1
-    setup.s1.empty()
+    s1 = setup.s1
+    s1[0, [1, 2, 3]] = 1
+    assert s1.nnz == 3
+    assert [0, 1] in s1
+    assert [0, [1, 3]] in s1
+    s1.empty()
 
 
 def test_sub1(setup):
-    setup.s1[0, [1, 2, 3]] = 1
-    assert setup.s1.nnz == 3
-    s1 = setup.s1.sub([0, 1])
+    s1 = setup.s1
+    s1[0, [1, 2, 3]] = 1
+    assert s1.nnz == 3
+    s1 = s1.sub([0, 1])
     assert s1.nnz == 1
     assert s1.shape[0] == 2
     assert s1.shape[1] == 2
-    setup.s1.empty()
+    s1.empty()
 
 
 def test_remove1(setup):
-    setup.s1[0, [1, 2, 3]] = 1
-    assert setup.s1.nnz == 3
-    s1 = setup.s1.remove([1])
-    assert s1.nnz == 2
-    assert s1.shape[0] == setup.s1.shape[0] - 1
-    assert s1.shape[1] == setup.s1.shape[1] - 1
-    setup.s1.empty()
+    s1 = setup.s1
+    s1[0, [1, 2, 3]] = 1
+    assert s1.nnz == 3
+    s2 = s1.remove([1])
+    assert s2.nnz == 2
+    assert s2.shape[0] == s1.shape[0] - 1
+    assert s2.shape[1] == s1.shape[1] - 1
+    s1.empty()
 
 
 def test_eliminate_zeros1(setup):
-    setup.s1[0, [1, 2, 3]] = 1
-    setup.s1[1, [1, 2, 3]] = 0
-    assert setup.s1.nnz == 6
-    setup.s1.eliminate_zeros()
-    assert setup.s1.nnz == 3
-    assert setup.s1[1, 1] == 0
-    assert setup.s1[1, 2] == 0
-    assert setup.s1[1, 3] == 0
-    setup.s1.empty()
+    s1 = setup.s1
+    s1[0, [1, 2, 3]] = 1
+    s1[1, [1, 2, 3]] = 0
+    assert s1.nnz == 6
+    s1.eliminate_zeros()
+    assert s1.nnz == 3
+    assert s1[1, 1] == 0
+    assert s1[1, 2] == 0
+    assert s1[1, 3] == 0
+    s1.empty()
 
 
 def test_eliminate_zeros_tolerance(setup):
-    setup.s1[0, [1, 2, 3]] = 1
-    setup.s1[1, [1, 2, 3]] = 2
-    assert setup.s1.nnz == 6
-    setup.s1.eliminate_zeros()
-    assert setup.s1.nnz == 6
-    setup.s1.eliminate_zeros(1)
-    assert setup.s1.nnz == 3
-    assert setup.s1[0, 1] == 0
-    assert setup.s1[0, 2] == 0
-    assert setup.s1[0, 3] == 0
-    setup.s1.empty()
+    s1 = setup.s1
+    s1[0, [1, 2, 3]] = 1
+    s1[1, [1, 2, 3]] = 2
+    assert s1.nnz == 6
+    s1.eliminate_zeros()
+    assert s1.nnz == 6
+    s1.eliminate_zeros(1)
+    assert s1.nnz == 3
+    assert s1[0, 1] == 0
+    assert s1[0, 2] == 0
+    assert s1[0, 3] == 0
+    s1.empty()
 
 
 def test_eliminate_zeros_tolerance_ndim(setup):
@@ -621,18 +641,30 @@ def test_eliminate_zeros_tolerance_ndim(setup):
     assert s.nnz == 0
 
 
-def test_same1(setup):
-    setup.s1[0, [1, 2, 3]] = 1
-    setup.s2[0, [1, 2, 3]] = (1, 1)
-    assert setup.s1.spsame(setup.s2)
-    setup.s2[1, 1] = (1, 1)
-    assert not setup.s1.spsame(setup.s2)
-    setup.s1.align(setup.s2)
-    assert setup.s1.spsame(setup.s2)
+def test_spsame(setup):
+    s1 = setup.s1
+    s2 = setup.s2
+    s1[0, [1, 2, 3]] = 1
+    s2[0, [1, 2, 3]] = (1, 1)
+    assert s1.spsame(s2)
+    s2[1, 1] = (1, 1)
+    assert not s1.spsame(s2)
+    s1.align(s2)
+    assert s1.spsame(s2)
+    s1.empty()
+    s2.empty()
+
+
+@pytest.mark.xfail(reason="same index assignment in single statement")
+def test_set_same_index(setup):
+    s1 = setup.s1
+    s1[0, [1, 1]] = 1
+    assert s1.nnz == 1
+    s1.empty()
 
 
 def test_delete_col1(setup):
-    s1 = setup.s1.copy()
+    s1 = setup.s1
     nc = s1.shape[1]
     s1[0, [1, 3]] = 1
     s1[1, [1, 2, 3]] = 1
@@ -649,10 +681,11 @@ def test_delete_col1(setup):
     s1.delete_columns(100000, True)
     assert s1.nnz == 2
     assert s1.shape[1] == nc - 1
+    s1.empty()
 
 
 def test_delete_col2(setup):
-    s1 = setup.s1.copy()
+    s1 = setup.s1
     nc = s1.shape[1]
     s1[1, [1, 2, 3]] = 1
     assert s1.nnz == 3
@@ -662,6 +695,7 @@ def test_delete_col2(setup):
     s1.delete_columns(2, True)
     assert s1.nnz == 1
     assert s1.shape[1] == nc - 1
+    s1.empty()
 
 
 def test_delete_col3(setup):
@@ -699,7 +733,7 @@ def test_delete_col4():
 
 
 def test_delete_col5(setup):
-    s1 = setup.s1.copy()
+    s1 = setup.s1
     nc = s1.shape[1]
     s1[1, [1, 2, 3]] = 1
     assert s1.nnz == 3
@@ -715,10 +749,11 @@ def test_delete_col5(setup):
     s1.delete_columns(100000, True)
     assert s1.nnz == 1
     assert s1.shape[1] == nc - 1
+    s1.empty()
 
 
 def test_delete_col6(setup):
-    s1 = setup.s1.copy()
+    s1 = setup.s1
     nc = s1.shape[1]
     for i in range(3):
         s1[i, [1, 2, 3]] = 1
@@ -726,10 +761,11 @@ def test_delete_col6(setup):
     s1.delete_columns(2)
     assert s1.nnz == 6
     assert s1.shape[1] == nc - 1
+    s1.empty()
 
 
 def test_translate_col1(setup):
-    s1 = setup.s1.copy()
+    s1 = setup.s1
     s1[1, 1] = 1
     s1[1, 2] = 2
     s1[1, 3] = 3
@@ -738,10 +774,11 @@ def test_translate_col1(setup):
     assert s1.nnz == 3
     assert s1[1, 1] == 3
     assert s1[1, 3] == 1
+    s1.empty()
 
 
 def test_translate_col2(setup):
-    s1 = setup.s1.copy()
+    s1 = setup.s1
     s1[1, 1] = 1
     s1[1, 2] = 2
     s1[1, 3] = 3
@@ -750,10 +787,11 @@ def test_translate_col2(setup):
     assert s1.nnz == 2
     assert s1[1, 3] == 1
     assert s1[1, 1] == 0
+    s1.empty()
 
 
 def test_translate_col3(setup):
-    s1 = setup.s1.copy()
+    s1 = setup.s1
     for i in range(3):
         s1[i, 1] = 1
         s1[i, 2] = 2
@@ -769,10 +807,11 @@ def test_translate_col3(setup):
     for i in range(3):
         assert s1[i, 1] == 1
         assert s1[i, 3] == 3
+    s1.empty()
 
 
 def test_translate_col4(setup):
-    s1 = setup.s1.copy()
+    s1 = setup.s1
     nc = s1.shape[1]
     for i in range(3):
         s1[i, 1] = 1
@@ -791,10 +830,11 @@ def test_translate_col4(setup):
     for i in range(3):
         assert s1[i, 1] == 0
         assert s1[i, 3] == 3
+    s1.empty()
 
 
 def test_edges1(setup):
-    s1 = setup.s1.copy()
+    s1 = setup.s1
     s1[1, 1] = 1
     s1[1, 2] = 2
     s1[1, 3] = 3
@@ -802,10 +842,11 @@ def test_edges1(setup):
     assert np.all(s1.edges(1, exclude=[1]) == [2, 3])
     assert np.all(s1.edges(1, exclude=2) == [1, 3])
     assert len(s1.edges(2)) == 0
+    s1.empty()
 
 
 def test_nonzero1(setup):
-    s1 = setup.s1.copy()
+    s1 = setup.s1
     s1[2, 1] = 1
     s1[1, 1] = 1
     s1[1, 2] = 2
@@ -825,156 +866,162 @@ def test_nonzero1(setup):
     r, c = s1.nonzero(row=[0, 1])
     assert np.all(r == [1, 1, 1])
     assert np.all(c == [1, 2, 3])
+    s1.empty()
 
 
 def test_op1(setup):
+    s1 = setup.s1
     for i in range(10):
         j = range(i*4, i*4+3)
-        setup.s1[0, j] = i
+        s1[0, j] = i
 
         # i+
-        setup.s1 += 1
+        s1 += 1
         for jj in j:
-            assert setup.s1[0, jj] == i+1
-            assert setup.s1[1, jj] == 0
+            assert s1[0, jj] == i+1
+            assert s1[1, jj] == 0
 
         # i-
-        setup.s1 -= 1
+        s1 -= 1
         for jj in j:
-            assert setup.s1[0, jj] == i
-            assert setup.s1[1, jj] == 0
+            assert s1[0, jj] == i
+            assert s1[1, jj] == 0
 
         # i*
-        setup.s1 *= 2
+        s1 *= 2
         for jj in j:
-            assert setup.s1[0, jj] == i*2
-            assert setup.s1[1, jj] == 0
+            assert s1[0, jj] == i*2
+            assert s1[1, jj] == 0
 
         # //
-        setup.s1 //= 2
+        s1 //= 2
         for jj in j:
-            assert setup.s1[0, jj] == i
-            assert setup.s1[1, jj] == 0
+            assert s1[0, jj] == i
+            assert s1[1, jj] == 0
 
         # i**
-        setup.s1 **= 2
+        s1 **= 2
         for jj in j:
-            assert setup.s1[0, jj] == i**2
-            assert setup.s1[1, jj] == 0
+            assert s1[0, jj] == i**2
+            assert s1[1, jj] == 0
+    s1.empty()
 
 
 def test_op2(setup):
+    s1 = setup.s1
     for i in range(10):
         j = range(i*4, i*4+3)
-        setup.s1[0, j] = i
+        s1[0, j] = i
 
         # +
-        s = setup.s1 + 1
+        s = s1 + 1
         for jj in j:
             assert s[0, jj] == i+1
-            assert setup.s1[0, jj] == i
+            assert s1[0, jj] == i
             assert s[1, jj] == 0
 
         # -
-        s = setup.s1 - 1
+        s = s1 - 1
         for jj in j:
             assert s[0, jj] == i-1
-            assert setup.s1[0, jj] == i
+            assert s1[0, jj] == i
             assert s[1, jj] == 0
 
         # - (r)
-        s = 1 - setup.s1
+        s = 1 - s1
         for jj in j:
             assert s[0, jj] == 1 - i
-            assert setup.s1[0, jj] == i
+            assert s1[0, jj] == i
             assert s[1, jj] == 0
 
         # *
-        s = setup.s1 * 2
+        s = s1 * 2
         for jj in j:
             assert s[0, jj] == i*2
-            assert setup.s1[0, jj] == i
+            assert s1[0, jj] == i
             assert s[1, jj] == 0
 
         # *
-        s = np.multiply(setup.s1, 2)
+        s = np.multiply(s1, 2)
         for jj in j:
             assert s[0, jj] == i*2
-            assert setup.s1[0, jj] == i
+            assert s1[0, jj] == i
             assert s[1, jj] == 0
         # *
         s.empty()
-        np.multiply(setup.s1, 2, out=s)
+        np.multiply(s1, 2, out=s)
         for jj in j:
             assert s[0, jj] == i*2
-            assert setup.s1[0, jj] == i
+            assert s1[0, jj] == i
             assert s[1, jj] == 0
 
         # //
         s = s // 2
         for jj in j:
             assert s[0, jj] == i
-            assert setup.s1[0, jj] == i
+            assert s1[0, jj] == i
             assert s[1, jj] == 0
 
         # **
-        s = setup.s1 ** 2
+        s = s1 ** 2
         for jj in j:
             assert s[0, jj] == i**2
-            assert setup.s1[0, jj] == i
+            assert s1[0, jj] == i
             assert s[1, jj] == 0
 
         # ** (r)
-        s = 2 ** setup.s1
+        s = 2 ** s1
         for jj in j:
-            assert s[0, jj], 2 ** setup.s1[0 == jj]
-            assert setup.s1[0, jj] == i
+            assert s[0, jj], 2 ** s1[0 == jj]
+            assert s1[0, jj] == i
             assert s[1, jj] == 0
+    s1.empty()
 
 
 def test_op_csr(setup):
     csr = sc.sparse.csr_matrix((10, 100), dtype=np.int32)
+    s1 = setup.s1
     for i in range(10):
         j = range(i + 2)
-        setup.s1[0, j] = i
+        s1[0, j] = i
 
         csr[0, 0] = 1
 
         # +
-        s = setup.s1 + csr
+        s = s1 + csr
         for jj in j:
             if jj == 0: continue
             assert s[0, jj] == i
-            assert setup.s1[0, jj] == i
+            assert s1[0, jj] == i
             assert s[1, jj] == 0
         assert s[0, 0] == i + 1
 
         # -
-        s = setup.s1 - csr
+        s = s1 - csr
         for jj in j:
             if jj == 0: continue
             assert s[0, jj] == i
-            assert setup.s1[0, jj] == i
+            assert s1[0, jj] == i
             assert s[1, jj] == 0
         assert s[0, 0] == i - 1
 
         # - (r)
-        s = csr - setup.s1
+        s = csr - s1
         for jj in j:
             if jj == 0: continue
             assert s[0, jj] == -i
-            assert setup.s1[0, jj] == i
+            assert s1[0, jj] == i
             assert s[1, jj] == 0
         assert s[0, 0] == 1 - i
 
         csr[0, 0] = 2
 
         # *
-        s = setup.s1 * csr
+        s = s1 * csr
         for jj in j:
             if jj == 0: continue
             assert s[0, jj] == 0
-            assert setup.s1[0, jj] == i
+            assert s1[0, jj] == i
             assert s[1, jj] == 0
         assert s[0, 0] == i * 2
 
@@ -983,16 +1030,17 @@ def test_op_csr(setup):
         assert s[0, 0] == i
 
         # **
-        s = setup.s1 ** csr
+        s = s1 ** csr
         for jj in j:
             if jj == 0: continue
             assert s[0, jj] == 1
-            assert setup.s1[0, jj] == i
+            assert s1[0, jj] == i
             assert s[1, jj] == 0
         assert s[0, 0] == i ** 2
+    s1.empty()
 
 
-def test_op3(setup):
+def test_op3():
     S = SparseCSR((10, 100), dtype=np.int32)
     # Create initial stuff
     for i in range(10):
@@ -1032,7 +1080,7 @@ def test_op3(setup):
             assert s.dtype == np.complex128
 
 
-def test_op4(setup):
+def test_op4():
     S = SparseCSR((10, 100), dtype=np.int32)
     # Create initial stuff
     for i in range(10):
@@ -1068,7 +1116,7 @@ def test_op4(setup):
     assert s.dtype == np.complex128
 
 
-def test_op5(setup):
+def test_op5():
     S1 = SparseCSR((10, 100), dtype=np.int32)
     S2 = SparseCSR((10, 100), dtype=np.int32)
     S3 = SparseCSR((10, 100), dtype=np.int32)
@@ -1108,7 +1156,7 @@ def test_op5(setup):
     assert np.allclose(S.todense(), S1.todense())
 
 
-def test_op_numpy_scalar(setup):
+def test_op_numpy_scalar():
     S = SparseCSR((10, 100), dtype=np.float32)
     I = np.ones(1, dtype=np.complex64)[0]
     # Create initial stuff
@@ -1163,7 +1211,7 @@ def test_op_numpy_scalar(setup):
     assert s.dtype == np.complex64
 
 
-def test_sum1(setup):
+def test_sum1():
     S1 = SparseCSR((10, 10, 2), dtype=np.int32)
     S1[0, 0] = [1, 2]
     S1[2, 0] = [1, 2]
