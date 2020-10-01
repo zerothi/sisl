@@ -135,11 +135,9 @@ cdef void _indices(const int n_search, const int[::1] search,
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef void _indices_sorted_arrays(
-    const int n_search, const int[::1] search,
-    const int n_value, const int[::1] value,
-    const int offset, int[::1] idx
-    ) nogil:
+cdef void _indices_sorted_arrays(const int n_search, const int[::1] search,
+                                 const int n_value, const int[::1] value,
+                                 const int offset, int[::1] idx) nogil:
     cdef Py_ssize_t i, j
     cdef int cvalue, csearch
 
@@ -149,7 +147,7 @@ cdef void _indices_sorted_arrays(
     elif n_search == 0:
         for j in range(n_value):
             idx[j] = -1
-        pass
+        return
 
     i = 0
     j = 0

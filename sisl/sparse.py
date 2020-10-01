@@ -271,8 +271,8 @@ class SparseCSR(NDArrayOperatorsMixin):
         if dim is not None:
             shape = shape2 + (dim,)
         elif len(spmats[0].shape) == 3:
-            shape = shape2 + (spmats[0][2],)
-        else:  # csr_matrix
+            shape = shape2 + (spmats[0].shape[2],)
+        else: # csr_matrix
             shape = shape2 + (1,)
         if dtype is None:
             dtype = np.result_type(*(m.dtype for m in spmats))
@@ -284,9 +284,11 @@ class SparseCSR(NDArrayOperatorsMixin):
         for row in range(shape[0]):
             row_cols = []
             for mat in spmats:
-                if hasattr(mat, "ncol"):
+                if isinstance(mat, SparseCSR):
                     row_cols.append(mat.col[mat.ptr[row]:mat.ptr[row] + mat.ncol[row]])
                 else:
+                    # we have to ensure it is a csr matrix
+                    mat = mat.tocsr()
                     row_cols.append(mat.indices[mat.indptr[row]:mat.indptr[row+1]])
             out_col.append(np.unique(concatenate(row_cols)))
         # Put into the output
@@ -1382,27 +1384,39 @@ class SparseCSR(NDArrayOperatorsMixin):
                           shape=shape, **kwargs)
 
     @classmethod
-    def fromsp(cls, *sps, **kwargs):
-        sps = list(map(lambda x: x.tocsr(), sps))
-        shape = sps[0].shape
+    def fromsp(cls, *sps, dtype=None):
+        """ Combine multiple single-dimension sparse matrices into one SparseCSR matrix
+
+        The different sparse matrices need not have the same sparsity pattern.
+
+        Parameters
+        ----------
+        *sps : sparse-matrix
+            any sparse matrix which can convert to a `scipy.sparse.csr_matrix` matrix
+        dtype : numpy.dtype, optional
+            data-type to store in the matrix, default to largest ``dtype`` for the
+            passed sparse matrices
+        """
+        if dtype is None:
+            dtype = np.result_type(*[sp.dtype for sp in sps])
 
         if len(sps) == 1:
-            m = sps[0]
-            out = cls(shape + (1,), nnzpr=1, nnz=1, dtype=m.dtype)
+            m = sps[0].tocsr()
+            out = cls(m.shape + (1,), nnzpr=1, nnz=1, dtype=dtype)
             out.col = m.indices.copy()
             out.ptr = m.indptr.copy()
             out.ncol = np.diff(out.ptr)
             out._nnz = len(out.col)
-            out._D = m.data.reshape(-1, 1).copy()
+            out._D = m.data.reshape(-1, 1).astype(dtype, copy=True)
             return out
 
         # Pre-allocate by finding sparsity pattern union
-        for mat in sps:
-            mat.sort_indices()
-        out = cls.sparsity_union(*sps, dim=len(sps))
+        out = cls.sparsity_union(*sps, dim=len(sps), dtype=dtype)
 
         # Now transfer the data
         for im, m in enumerate(sps):
+            m = m.tocsr()
+            m.sort_indices()
             for r in range(out.shape[0]):
                 msl = slice(m.indptr[r], m.indptr[r+1])
                 osl = slice(out.ptr[r], out.ptr[r] + out.ncol[r])
@@ -1715,13 +1729,15 @@ def _ufunc_sp_sp(ufunc, a, b, **kwargs):
                 return slice(mat.ptr[r], mat.ptr[r] + mat.ncol[r])
             accessors = mat.dim, mat.col, mat._D, rowslice
             issorted = mat.finalized
-        elif isinstance(mat, csr_matrix):
+        else:
+            # makes this work for all matrices
+            # and csr_matrix.tocsr is a no-op
+            mat = mat.tocsr()
+            mat.sort_indices()
             def rowslice(r):
                 return slice(mat.indptr[r], mat.indptr[r + 1])
             accessors = 1, mat.indices, mat.data.reshape(-1, 1), rowslice
             issorted = mat.has_sorted_indices
-        else:
-            raise TypeError(f"Type not understood: {type(mat)}")
         if issorted:
             indexfunc = lambda ocol, matcol, offset: indices(ocol, matcol, offset, both_sorted=True)
         else:
@@ -1731,10 +1747,10 @@ def _ufunc_sp_sp(ufunc, a, b, **kwargs):
     adim, acol, adata, arow, afindidx = accessors(a)
     bdim, bcol, bdata, brow, bfindidx = accessors(b)
 
-    if (a.shape[:2] != b.shape[:2]
-        or (adim != bdim and not (adim == 1 or bdim == 1))):
+    if a.shape[:2] != b.shape[:2] or (adim != bdim and not (adim == 1 or bdim == 1)):
         raise ValueError(f"could not broadcast sparse matrices {a.shape} and {b.shape}")
 
+    # create union of the sparsity pattern
     out = SparseCSR.sparsity_union(a, b, dim=max(adim, bdim))
 
     for r in range(out.shape[0]):
@@ -1743,11 +1759,11 @@ def _ufunc_sp_sp(ufunc, a, b, **kwargs):
 
         asl = arow(r)
         aidx = afindidx(ocol, acol[asl], offset)
-        asl = np.arange(asl.start, asl.stop)
+        asl = arange(asl.start, asl.stop)
 
         bsl = brow(r)
         bidx = bfindidx(ocol, bcol[bsl], offset)
-        bsl = np.arange(bsl.start, bsl.stop)
+        bsl = arange(bsl.start, bsl.stop)
 
         # Common indices
         idx, aover, bover, iaonly, ibonly = intersect_and_diff_sets(aidx, bidx)
