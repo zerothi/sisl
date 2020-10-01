@@ -1,4 +1,5 @@
 import os.path as osp
+from numbers import Integral
 import numpy as np
 
 # Import sile objects
@@ -7,6 +8,7 @@ from .sile import *
 from sisl._internal import set_module
 from sisl import Geometry, AtomUnknown, SuperCell
 from sisl.utils import str_spec
+import sisl._array as _a
 
 
 __all__ = ['xsfSile', 'axsfSile']
@@ -115,27 +117,22 @@ class xsfSile(Sile):
                 self._write(fmt_str.format(geometry.atoms[ia].Z, *geometry.xyz[ia, :]))
 
     @sile_fh_open()
-    def _r_geometry_multiple(self, steps, reuse_geom0=False, load_data=False, squeeze=False):
+    def _r_geometry_multiple(self, steps, ret_data=False, squeeze=False):
         asteps = steps
         steps = dict((step, i) for i, step in enumerate(steps))
 
-        if reuse_geom0:
-            cell = [None]
-            cell_set = [False]
-            xyz_set = [False]
-            atom = [None]
-            xyz = [None]
-        else:
-            cell = [None] * len(steps)
-            cell_set = [False] * len(steps)
-            xyz_set = [False] * len(steps)
-            atom = [None for _ in steps]
-            xyz = [None for _ in steps]
+        # initialize all things
+        cell = [None] * len(steps)
+        cell_set = [False] * len(steps)
+        xyz_set = [False] * len(steps)
+        atom = [None for _ in steps]
+        xyz = [None for _ in steps]
         data = [None for _ in steps]
-        data_set = [not load_data for _ in steps]
+        data_set = [not ret_data for _ in steps]
 
         line = " "
         all_loaded = False
+
         while line != '' and not all_loaded:
             line = self.readline()
 
@@ -144,6 +141,7 @@ class xsfSile(Sile):
             kw = line.split()[0]
             if kw not in ("CONVVEC", "PRIMVEC", "PRIMCOORD"):
                 continue
+
             step = _get_kw_index(line)
             if step != -1 and step not in steps:
                 continue
@@ -152,7 +150,7 @@ class xsfSile(Sile):
                 step = idstep = istep = None
             else:
                 idstep = steps[step]
-                istep = 0 if reuse_geom0 else idstep
+                istep = idstep
 
             if kw == "CONVVEC":
                 if step is None:
@@ -165,7 +163,7 @@ class xsfSile(Sile):
                 else:
                     cell_set[istep] = True
 
-                icell = np.zeros((3, 3), np.float64)
+                icell = _a.zerosd([3, 3])
                 for i in range(3):
                     line = self.readline()
                     icell[i] = line.split()
@@ -180,7 +178,7 @@ class xsfSile(Sile):
                 else:
                     cell_set[istep] = True
 
-                icell = np.zeros((3, 3), np.float64)
+                icell = _a.zerosd([3, 3])
                 for i in range(3):
                     line = self.readline()
                     icell[i] = line.split()
@@ -191,8 +189,8 @@ class xsfSile(Sile):
 
             elif kw == "PRIMCOORD":
                 if step is None:
-                    raise ValueError(
-                        "The file contains an unindexed (or somehow malform) 'PRIMCOORD'"
+                    raise ValueError(f"{self.__class__.__name__}"
+                        " contains an unindexed (or somehow malformed) 'PRIMCOORD'"
                         " section but you've asked for a particular index. This"
                         f" shouldn't happen. line:\n {line}"
                     )
@@ -204,10 +202,9 @@ class xsfSile(Sile):
                 for _ in range(int(line[0])):
                     line = self.readline().split()
                     if not xyz_set[istep]:
-                        # xyz_set[istep] only true for reuse_geom0
                         iatom.append(int(line[0]))
                         ixyz.append([float(x) for x in line[1:4]])
-                    if load_data and len(line) > 4:
+                    if ret_data and len(line) > 4:
                         idata.append([float(x) for x in line[4:]])
                 if not xyz_set[istep]:
                     atom[istep] = iatom
@@ -219,44 +216,46 @@ class xsfSile(Sile):
             all_loaded = all(xyz_set) and all(cell_set) and all(data_set)
 
         if not all(xyz_set):
-            which = [astep[i] for i in np.flatnonzero(xyz_set)]
-            raise ValueError(f"The file did not contain atom coordinates for the following requested index: {which}")
+            which = [asteps[i] for i in np.flatnonzero(xyz_set)]
+            raise ValueError(f"{self.__class__.__name__} file did not contain atom coordinates for the following requested index: {which}")
 
-        if load_data:
-            data = np.array(data)
+        if ret_data:
+            data = _a.arrayd(data)
             if data.size == 0:
                 data.shape = (len(steps), len(xyz[0]), 0)
 
-        xyz, cell, atom = map(np.array, (xyz, cell, atom))
+        xyz = _a.arrayd(xyz)
+        cell = _a.arrayd(cell)
+        atom = _a.arrayi(atom)
 
-        num_geoms = 1 if reuse_geom0 else len(steps)
         geoms = []
-        for istep in range(num_geoms):
+        for istep in range(len(steps)):
             if len(atom) == 0:
                 geoms.append(si.Geometry(xyz[istep], sc=SuperCell(cell[istep])))
             elif len(atom[0]) == 1 and atom[0][0] == -999:
+                # should we perhaps do AtomUnknown?
                 geoms.append(None)
             else:
                 geoms.append(Geometry(xyz[istep], atoms=atom[istep], sc=SuperCell(cell[istep])))
 
-        if squeeze and load_data and len(steps) == 1:
-            data = data[0]
-        if (squeeze and len(steps) == 1) or reuse_geom0:
+        if squeeze and len(steps) == 1:
             geoms = geoms[0]
+            if ret_data:
+                data = data[0]
 
-        if load_data:
+        if ret_data:
             return geoms, data
         return geoms
 
-    def read_geometry(self, data=False):
-        """ Returns Geometry object from the XSF file
+    def read_geometry(self, ret_data=False):
+        """ Geometry contained in file, and optionally the associated data
 
         Parameters
         ----------
-        data : bool, optional
-           in case the XSF file has auxiliary data, return that as well.
+        ret_data : bool, optional
+           in case the the file has auxiliary data, return that as well.
         """
-        return self._r_geometry_multiple([-1], load_data=data, squeeze=True)
+        return self._r_geometry_multiple([-1], ret_data=ret_data, squeeze=True)
 
     @sile_fh_open()
     def write_grid(self, *args, **kwargs):
@@ -453,23 +452,23 @@ class axsfSile(xsfSile):
     It is also necessary to use the axsf in a context manager, otherwise it will
     overwrite itself repeatedly.
 
-    >>> with axsfSile('file.axsf', 'w', count=100) as axsf:
+    >>> with axsfSile('file.axsf', 'w', steps=100) as axsf:
     ...     for i in range(100):
     ...         axsf.write_geometry(geom)
     """
 
-    def _setup(self, *args, **kwargs):
+    def _setup(self, *args, steps=1, **kwargs):
         super()._setup(*args, **kwargs)
 
         # Index of last written geometry (or current geom when writing one)
         self._geometry_index = -1
 
         # Total number of geometries intended to be written
-        self._geometry_count = kwargs.get('count', -1)
+        self._geometry_count = steps
         if self._geometry_count < 1 and "w" in self._mode:
             raise ValueError(
                 "In write mode, the intended positive number of geometries must be passed in the"
-                " `count` keyword."
+                " `steps` keyword."
             )
 
     def _incr_index(self):
@@ -501,38 +500,31 @@ class axsfSile(xsfSile):
         self._write_once(f"ANIMSTEPS {self._geometry_count}\n")
         return super().write_geometry(geometry, fmt=fmt, data=data)
 
-    def read_geometry(self, index=0, one_geometry=False, load_data=False):
-        """ Returns Geometries and associated data stored in the AXSF file
+    def read_geometry(self, index=-1, ret_data=False):
+        """ Geometries and (possibly) associated data stored in the AXSF file
 
         Parameters
         ----------
-        index : int or iterable of int, default 0
+        index : int or iterable of int or None, optional
             The indices to load (0-indexed). If None, load all.
             If an integer is passed, a single Geometry is returned, and the leading dimension on data is removed.
-        one_geometry : bool, default True
-            If your axsf file contains the same geometry repeated over, you may pass
-            True here to skip construction of repeated geometries.
-        load_data : bool, optional
-            in case the AXSF file has auxiliary data, return that as well.
+        ret_data : bool, optional
+            in case the file has auxiliary data, return that as well.
 
         Returns
         -------
         geometries : list of Geometry or Geometry
-            A list of geometries corresponding to requested index.
-            If one_geometry is True or index is an integer, a single geometry (first given index) is returned.
+            A list of geometries (or a single Geometries) corresponding to requested indices.
         data : ndarray of shape (nindex, natoms, nperatom) and dtype float64
-            Only returned if load_data is True. nindex is the number of requested indices, not total.
-            If an integer index was passed, the leading dimension (nindex) is removed.
+            Only returned if `data` is True.
         """
-        squeeze = isinstance(index, int)
+        squeeze = isinstance(index, Integral)
         if index is None:
             index = np.arange(self._r_geometry_count())
         else:
-            index = np.array(index).ravel()
+            index = _a.arrayi(index).ravel()
             index[index < 0] += self._r_geometry_count()
-        return self._r_geometry_multiple(
-            index, reuse_geom0=one_geometry, load_data=load_data, squeeze=squeeze
-        )
+        return self._r_geometry_multiple(index, ret_data=ret_data, squeeze=squeeze)
 
     @sile_fh_open()
     def _r_geometry_count(self):
@@ -541,7 +533,7 @@ class axsfSile(xsfSile):
             line = self.readline()
             if line.startswith("ANIMSTEPS"):
                 return _get_kw_index(line) + 1
-        raise ValueError("Did not find 'ANIMSTEPS' in the file...")
+        raise ValueError(f"{self.__class__.__name__} did not find 'ANIMSTEPS' in the file...")
 
     write_grid = None
 
