@@ -296,7 +296,7 @@ class SparseCSR(NDArrayOperatorsMixin):
         _a.cumsumi(out.ncol, out=out.ptr[1:])
         out.col = concatenate(out_col)
         out._nnz = len(out.col)
-        out._D = full((out._nnz, out.dim), value, dtype=dtype)
+        out._D = full([out._nnz, out.dim], value, dtype=dtype)
         return out
 
     def diagonal(self):
