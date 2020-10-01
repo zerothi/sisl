@@ -11,7 +11,7 @@
 #
 #  python stats.py $0.profile
 #
-import cProfile, pstats
+import cProfile, pstats, io
 import sys
 import sisl
 import numpy as np
@@ -19,21 +19,28 @@ import numpy as np
 pr = cProfile.Profile()
 pr.disable()
 
+randint = np.random.randint
+
 if len(sys.argv) > 1:
     N = int(sys.argv[1])
 else:
     N = 200
+if len(sys.argv) > 2:
+    frac = float(sys.argv[2])
+else:
+    frac = 0.2
 print(f"N = {N}")
+print(f"sparsity = {frac}")
 
 # Always fix the random seed to make each profiling concurrent
 np.random.seed(1234567890)
 
-gr = sisl.geom.graphene(orthogonal=True)
-H = sisl.Hamiltonian(gr)
-H.construct([(0.1, 1.44), (0., -2.7)])
 pr.enable()
-H = H.tile(N, 0).tile(N, 1)
-H.finalize()
+n = int(N * frac)
+s = sisl.SparseCSR((N, N), dtype=np.int32)
+for i in range(N):
+    dat = randint(0, N, n)
+    s[i, dat] = 1
 pr.disable()
 pr.dump_stats(f"{sys.argv[0]}.profile")
 

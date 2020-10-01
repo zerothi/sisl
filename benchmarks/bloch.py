@@ -13,6 +13,7 @@
 #
 import cProfile, pstats
 import sys
+import time
 import sisl
 import numpy as np
 
@@ -22,18 +23,22 @@ pr.disable()
 if len(sys.argv) > 1:
     N = int(sys.argv[1])
 else:
-    N = 200
+    N = 1
 print(f"N = {N}")
 
 # Always fix the random seed to make each profiling concurrent
 np.random.seed(1234567890)
 
-gr = sisl.geom.graphene(orthogonal=True)
+gr = sisl.geom.graphene().tile(N, 0).tile(N, 1)
 H = sisl.Hamiltonian(gr)
-H.construct([(0.1, 1.44), (0., -2.7)])
-pr.enable()
-H = H.tile(N, 0).tile(N, 1)
+H.construct([(0.1, 1.44), (0.0, -2.7)], eta=True)
 H.finalize()
+bloch = sisl.Bloch((N, N, N))
+
+pr.enable()
+t0 = time.time()
+while time.time() < t0 + 10:
+    bloch(H.Hk, [0] * 3, format="array")
 pr.disable()
 pr.dump_stats(f"{sys.argv[0]}.profile")
 
