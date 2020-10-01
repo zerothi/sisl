@@ -248,7 +248,7 @@ class SparseCSR(NDArrayOperatorsMixin):
 
     @classmethod
     def sparsity_union(cls, *spmats, dtype=None, dim=None, value=0):
-        """Create a SparseCSR with constant fill value in all places that *spmats have nonzeros.
+        """Create a SparseCSR with constant fill value in all places that *spmats have nonzeros
 
         Parameters
         ----------
@@ -274,6 +274,7 @@ class SparseCSR(NDArrayOperatorsMixin):
             shape = shape2 + (spmats[0].shape[2],)
         else: # csr_matrix
             shape = shape2 + (1,)
+
         if dtype is None:
             dtype = np.result_type(*(m.dtype for m in spmats))
 

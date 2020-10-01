@@ -290,6 +290,8 @@ def intersect_and_diff_sets(a, b):
     aux = concatenate((a, b))
     aux_sort_indices = argsort(aux, kind='mergesort')
     aux = aux[aux_sort_indices]
+    # find elements that are the same in both arrays
+    # after sorting we should have at most 2 same elements
     mask = aux[1:] == aux[:-1]
     int1d = aux[:-1][mask]
 
@@ -304,7 +306,7 @@ def intersect_and_diff_sets(a, b):
     bonly = ~aonly
     aonly &= no_buddy
     bonly &= no_buddy
-    # # the below is for some reason slower even though its only two ops
+    # the below is for some reason slower even though its only two ops
     # aonly &= no_buddy
     # bonly = aonly ^ no_buddy
 
