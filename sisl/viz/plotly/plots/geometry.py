@@ -7,7 +7,7 @@ from sisl import Geometry, PeriodicTable, Atom, AtomGhost
 from sisl.utils.mathematics import fnorm
 from ..plot import Plot, entry_point
 from ..input_fields import ProgramaticInput, FunctionInput, FloatInput, SwitchInput, DropdownInput, AtomSelect, GeomAxisSelect, \
-    FilePathInput, PlotableInput, IntegerInput, TextInput
+    FilePathInput, PlotableInput, IntegerInput, TextInput, Array1DInput
 from ..plotutils import values_to_colors
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher
 
@@ -157,6 +157,16 @@ class GeometryPlot(Plot):
             (False: not rendered, 'axes': render axes only, 'box': render a bounding box)"""
         ),
 
+        Array1DInput(
+            key="sc", name="Supercell",
+            default=[1, 1, 1],
+            params={
+                'inputType': 'number',
+                'shape': (3,),
+                'extendable': False,
+            },
+        ),
+
         AtomSelect(key="atoms", name="Atoms to display",
             default=None,
             params={
@@ -264,7 +274,11 @@ class GeometryPlot(Plot):
 
         self.geometry = self.get_sile(geom_file).read_geometry()
 
-    def _after_read(self, show_bonds):
+    def _after_read(self, show_bonds, sc):
+        # Tile the geometry. It shouldn't be done here, since we will need to calculate the bonds for
+        # the whole supercell. FIND A SMARTER WAY!!
+        for ax, reps in enumerate(sc):
+            self.geometry = self.geometry.tile(reps, ax)
 
         if show_bonds:
             self.bonds = self.find_all_bonds(self.geometry)

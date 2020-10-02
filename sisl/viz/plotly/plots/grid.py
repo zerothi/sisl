@@ -1,8 +1,12 @@
+from collections import defaultdict
 import numpy as np
 import plotly.graph_objects as go
 from skimage.measure import find_contours
+from scipy.ndimage import affine_transform
 
 import sisl
+from sisl._supercell import cell_invert
+from sisl import _array as _a
 from ..plot import Plot, entry_point
 from ..input_fields import TextInput, SileInput, Array1DInput, SwitchInput, \
      ColorPicker, DropdownInput, CreatableDropdown, IntegerInput, FloatInput, RangeInput, RangeSlider, \
@@ -229,6 +233,20 @@ class GridPlot(Plot):
             help="Interpolation factors to make the grid finer on each axis.<br>See the zsmooth setting for faster smoothing of 2D heatmap."
         ),
 
+        DropdownInput(key="transform_bc", name="Transform boundary conditions",
+            default="constant",
+            params={
+                'options': [
+                    {'label': 'constant', 'value': 'constant'},
+                    {'label': 'wrap', 'value': 'wrap'},
+                ],
+            },
+            help="""
+            The boundary conditions when a cell transform is applied to the grid. Cell transforms are only
+            applied when the grid's cell doesn't follow the cartesian coordinates and the requested display is 2D.
+            """
+        ),
+
         Array1DInput(
             key="sc", name="Supercell",
             default=[1, 1, 1],
@@ -387,6 +405,8 @@ class GridPlot(Plot):
 
     def _after_init(self):
 
+        self.offsets = defaultdict(lambda: _a.arrayd([0, 0, 0]))
+
         self._add_shortcuts()
 
     @entry_point('grid')
@@ -416,9 +436,28 @@ class GridPlot(Plot):
             self.get_param(key, as_dict=False).update_marks()
 
     def _set_data(self, axes, sc, interp, trace_name, transforms, represent, cut_vacuum, grid_file,
-        x_range, y_range, z_range, plot_geom, geom_kwargs):
+        x_range, y_range, z_range, plot_geom, geom_kwargs, transform_bc):
 
         grid = self.grid
+
+        is_skewed_2d = not grid.sc.is_cartesian() and len(axes) == 2
+        if is_skewed_2d or len(axes) == 3:
+            # We will tile the grid now, as at the moment there's no good way to tile it afterwards
+            # Note that this means extra computation, as we are transforming (skewed_2d) or calculating
+            # the isosurfaces (3d) using more than one unit cell (FIND SMARTER WAYS!)
+            for ax, reps in enumerate(sc):
+                grid = grid.tile(reps, ax)
+            # We have already tiled the grid, so we will set sc to [1,1,1]
+            sc = [1, 1, 1]
+
+        if is_skewed_2d:
+            # If the grid doesn't follow the cartesian axes and we want to display it in 2D,
+            # we will transform it to make our lives easier.
+            grid, self.offsets["cell_transform"] = self._transform_grid_cell(
+                grid, mode=transform_bc, output_shape=(np.array(interp)*grid.shape).astype(int), cval=np.nan
+            )
+            # The interpolation has already happened, so just set it to [1,1,1] for the rest of the method
+            interp = [1, 1, 1]
 
         for transform in transforms:
             grid = self._transform_grid(grid, transform)
@@ -443,9 +482,9 @@ class GridPlot(Plot):
 
         if cut_vacuum and getattr(grid, "geometry", None):
             grid, lims = self._cut_vacuum(grid)
-            self.grid_offset = lims[0]
+            self.offsets["vacuum"] = lims[0]
         else:
-            self.grid_offset = [0, 0, 0]
+            self.offsets["vacuum"] = [0, 0, 0]
 
         interp_factors = np.array([factor if ax in axes else 1 for ax, factor in enumerate(interp)], dtype=int)
 
@@ -456,7 +495,7 @@ class GridPlot(Plot):
                 grid = grid.average(ax)
 
         if interpolate:
-            grid = grid.interp([factor for factor in grid.shape*interp_factors])
+            grid = grid.interp((np.array(interp_factors)*grid.shape).astype(int))
 
             for ax in [0, 1, 2]:
                 if ax not in axes:
@@ -491,32 +530,41 @@ class GridPlot(Plot):
         # of MultiplePlot somehow. The problem is that right now, the bonds
         # are calculated each time this method is called, for example
         if plot_geom:
-            geom = getattr(grid, 'geometry', None)
+            geom = getattr(self.grid, 'geometry', None)
             if geom is None:
                 print('You asked to plot the geometry, but the grid does not contain any geometry')
             else:
-                geom_plot = geom.plot(**{'axes': axes, **geom_kwargs})
+                geom_plot = geom.plot(**{'axes': axes, "sc": self.get_setting("sc"), **geom_kwargs})
 
                 self.add_traces(geom_plot.data)
 
         self.update_layout(legend_orientation='h')
 
-    def _get_ax_range(self, grid, ax, sc, offset, x_range, y_range, z_range):
+    def _get_ax_range(self, grid, ax, sc):
+
+        offset = self._get_offset(ax)
+
+        ax_vals = np.arange(0, sc[ax]*grid.cell[ax, ax], grid.dcell[ax, ax]) + offset
+
+        if len(ax_vals) == grid.shape[ax] + 1:
+            ax_vals = ax_vals[:-1]
+
+        return ax_vals
+
+    def _get_offset(self, ax, offset, x_range, y_range, z_range):
 
         ax_range = [x_range, y_range, z_range][ax]
-        grid_offset = self.grid_offset + offset
+        grid_offset = _a.asarrayd(offset) + self.offsets["vacuum"] + self.offsets["cell_transform"]
 
         if ax_range is not None:
             offset = ax_range[0]
         else:
             offset = 0
 
-        ax_vals = np.arange(0, sc[ax]*grid.cell[ax, ax], grid.dcell[ax, ax]) + offset + grid_offset[ax]
+        return offset + grid_offset[ax]
 
-        if len(ax_vals) == grid.shape[ax] + 1:
-            ax_vals = ax_vals[:-1]
-
-        return ax_vals
+    def _get_offsets(self, display_axes=[0, 1, 2]):
+        return np.array([self._get_offset(ax) for ax in display_axes])
 
     @staticmethod
     def _cut_vacuum(grid):
@@ -562,7 +610,7 @@ class GridPlot(Plot):
         return grid.apply(transform)
 
     def _plot1D(self, grid, values, display_axes, sc, name, **kwargs):
-
+        """Takes care of plotting the grid in 1D"""
         ax = display_axes[0]
 
         if sc[ax] > 1:
@@ -582,7 +630,12 @@ class GridPlot(Plot):
         self.update_layout(**axes_titles)
 
     def _plot2D(self, grid, values, display_axes, sc, name, crange, cmid, colorscale, zsmooth, isos, **kwargs):
+        """
+        Takes care of plotting the grid in 2D
 
+        - It uses plotly's heatmap trace.
+        - It also draws contours for the isovalues.
+        """
         xaxis = display_axes[0]
         yaxis = display_axes[1]
 
@@ -596,13 +649,16 @@ class GridPlot(Plot):
         cmin, cmax = crange
 
         if cmid is None and cmin is None and cmax is None:
-            if np.any(values > 0) and np.any(values < 0):
+            real_vals = values[~np.isnan(values)]
+            if np.any(real_vals > 0) and np.any(real_vals < 0):
                 cmid = 0
 
         xs = self._get_ax_range(grid, xaxis, sc)
         ys = self._get_ax_range(grid, yaxis, sc)
 
-        self.data = [{
+        is_cartesian = grid.sc.is_cartesian()
+
+        self.add_trace({
             'type': 'heatmap',
             'name': name,
             'z': values,
@@ -614,15 +670,14 @@ class GridPlot(Plot):
             'zmid': cmid,
             'colorscale': colorscale,
             **kwargs
-        }]
+        })
 
         # Draw the contours (if any)
         if len(isos) > 0:
-            xs_indices = np.arange(values.shape[1])
-            ys_indices = np.arange(values.shape[0])
+            offsets = self._get_offsets(display_axes)
             isos_param = self.get_param("isos")
-            minval = np.min(values)
-            maxval = np.max(values)
+            minval = np.nanmin(values)
+            maxval = np.nanmax(values)
 
         for iso in isos:
 
@@ -642,8 +697,13 @@ class GridPlot(Plot):
             contour_xs = []
             contour_ys = []
             for contour in contours:
-                contour_xs = [*contour_xs, None, *np.interp(contour[:, 1], xs_indices, xs)]
-                contour_ys = [*contour_ys, None, *np.interp(contour[:, 0], ys_indices, ys)]
+                # Swap the first and second columns so that we have [x,y] for each
+                # contour point (instead of [row, col], which means [y, x])
+                contour_coords = contour[:, [1, 0]]
+                # Then convert from indices to
+                contour_coords = contour_coords.dot(grid.dcell[display_axes])[:, display_axes] + offsets
+                contour_xs = [*contour_xs, None, *contour_coords[:, 0]]
+                contour_ys = [*contour_ys, None, *contour_coords[:, 1]]
 
             color = iso.get("color")
             self.add_scatter(
@@ -657,7 +717,132 @@ class GridPlot(Plot):
 
         self.update_layout(**axes_titles)
 
+    def _plot_2D_carpet(self, grid, values, xaxis, yaxis):
+        """
+        CURRENTLY NOT USED, but kept here just in case it is needed in the future
+
+        It was supposed to display skewed grids in 2D, but it has some limitations
+        (see https://github.com/zerothi/sisl/pull/268#issuecomment-702758586). In these cases,
+        the grid is first transformed to cartesian coordinates and then plotted in a regular map
+        instead of using the Carpet trace.
+        """
+
+        minval, maxval = values.min(), values.max()
+
+        values = values.T
+
+        x, y = np.mgrid[:values.shape[0], :values.shape[1]]
+        x, y = x * grid.dcell[xaxis, xaxis] + y * grid.dcell[yaxis, xaxis], x * grid.dcell[xaxis, yaxis] + y * grid.dcell[yaxis, yaxis]
+
+        self.figure.add_trace(go.Contourcarpet(
+            z = values,
+            contours = dict(
+                start = minval,
+                end = maxval,
+                size = (maxval - minval) / 40,
+                showlines=False
+            ),
+        ))
+
+        self.figure.add_trace(go.Carpet(
+            a = np.arange(values.shape[1]),
+            b = np.arange(values.shape[0]),
+            x = x,
+            y = y,
+            aaxis = dict(
+                showgrid=False,
+                showline=False,
+                showticklabels="none"
+            ),
+            baxis = dict(
+                showgrid=False,
+                showline=False,
+                showticklabels="none"
+            ),
+        ))
+
+    @staticmethod
+    def _transform_grid_cell(grid, cell=np.eye(3), output_shape=None, mode="constant", order=1, **kwargs):
+        """
+        Applies a linear transformation to the grid to get it relative to arbitrary cell.
+
+        This method can be used, for example to get the values of the grid with respect to
+        the standard basis, so that you can easily visualize it or overlap it with other grids
+        (e.g. to perform integrals).
+
+        Parameters
+        -----------
+        cell: array-like of shape (3,3)
+            these cell represent the directions that you want to use as references for
+            the new grid.
+
+            The length of the axes does not have any effect! They will be rescaled to create
+            the minimum bounding box necessary to accomodate the unit cell.
+        output_shape: array-like of int of shape (3,), optional
+            the shape of the final output. If not provided, the current shape of the grid
+            will be used. 
+
+            Notice however that if the transformation applies a big shear to the image (grid)
+            you will probably need to have a bigger output_shape.
+        mode: str, optional
+            determines how to handle borders. See scipy docs for more info on the possible values.
+        order : int 0-5, optional
+            the order of the spline interpolation to calculate the values (since we are applying
+            a transformation, we don't actually have values for the new locations and we need to
+            interpolate them)
+            1 means linear, 2 quadratic, etc...
+        **kwargs:
+            the rest of keyword arguments are passed directly to `scipy.ndimage.affine_transform`
+
+        See also
+        ----------
+        scipy.ndimage.affine_transform : method used to apply the linear transformation.
+        """
+        # Take the current shape of the grid if no output shape was provided
+        if output_shape is None:
+            output_shape = grid.shape
+
+        # Get the current cell in coordinates of the destination axes
+        inv_cell = cell_invert(cell).T
+        projected_cell = grid.cell.dot(inv_cell)
+
+        # From that, infere how long will the bounding box of the cell be
+        lengths = abs(projected_cell).sum(axis=0)
+
+        # Create the transformation matrix. Since we want to control the shape
+        # of the output, we can not use grid.dcell directly, we need to modify it.
+        scales = output_shape / lengths
+        forward_t = (grid.dcell.dot(inv_cell)*scales).T
+
+        # Scipy's affine transform asks for the inverse transformation matrix, to
+        # map from output pixels to input pixels. By taking the inverse of our
+        # transformation matrix, we get exactly that.
+        tr = cell_invert(forward_t).T
+
+        # Calculate the offset of the image so that all points of the grid "fall" inside
+        # the output array.
+        # For this we just calculate the centers of the input and output images
+        center_input = 0.5 * (_a.asarrayd(grid.shape) - 1)
+        center_output = 0.5 * (_a.asarrayd(output_shape) - 1)
+
+        # And then make sure that the input center that is interpolated from the output
+        # falls in the actual input's center
+        offset = center_input - tr.dot(center_output)
+
+        # We pass all the parameters to scipy's affine_transform
+        transformed_image = affine_transform(grid.grid, tr, order=1, offset=offset,
+            output_shape=output_shape, mode=mode, **kwargs)
+
+        # Create a new grid with the new shape and the new cell (notice how the cell
+        # is rescaled from the input cell to fit the actual coordinates of the system)
+        new_grid = grid.__class__((1, 1, 1), sc=cell*lengths.reshape(3, 1))
+        new_grid.grid = transformed_image
+
+        # Find the offset between the origin before and after the transformation
+        return new_grid, new_grid.dcell.dot(forward_t.dot(offset))
+
     def _plot3D(self, grid, values, display_axes, sc, name, isos, **kwargs):
+        """Takes care of plotting the grid in 3D"""
         # The minimum and maximum values might be needed at some places
         minval, maxval = np.min(values), np.max(values)
 
@@ -694,6 +879,8 @@ class GridPlot(Plot):
 
             # Calculate the isosurface
             vertices, faces, normals, intensities = grid.isosurface(isoval, iso.get("step_size", 1))
+
+            vertices = vertices + self._get_offsets()
 
             # Create the mesh trace and add it to the plot
             x, y, z = vertices.T

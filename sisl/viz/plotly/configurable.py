@@ -986,8 +986,6 @@ def _populate_with_settings(f, class_params):
 
     @wraps(f)
     def wrapped(self, *args, **kwargs):
-        #print("HEY", f.__name__)
-        #print(f._settings_indices, f._settings_params)
         nargs = len(args)
         for i, param in zip(f._settings_indices, f._settings_params):
             if i > nargs and param not in kwargs:
