@@ -388,7 +388,7 @@ class TestSparseAtom:
         lil = sc.sparse.lil_matrix((g.na, g.na_s), dtype=np.int32)
         lil[0, [1, 2, 3]] = 1
         lil[1, [2, 4, 1]] = 2
-        s1 = SparseAtom.fromsp(g, [lil])
+        s1 = SparseAtom.fromsp(g, [lil], unknown_key="hello")
         assert s1.nnz == 6
         assert np.allclose(s1.shape, [g.na, g.na_s, 1])
 

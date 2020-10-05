@@ -872,7 +872,7 @@ class DensityMatrix(_densitymatrix):
             oidx = self.geometry.a2o(idx)
             # loop orbitals
             for io, orb in enumerate(atom):
-                orb_lmZ[oidx + io, :] = orb.l, orb.m, orb.Z
+                orb_lmZ[oidx + io, :] = orb.l, orb.m, orb.zeta
 
         # Now we need to calculate the stuff
         DM = self.copy()

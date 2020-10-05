@@ -156,7 +156,7 @@ class SparseOrbitalBZ(SparseOrbital):
             P.append(S)
 
         p = cls(geometry, dim, P[0].dtype, 1, orthogonal=S is None, **kwargs)
-        p._csr = p._csr.fromsp(*P, **kwargs)
+        p._csr = p._csr.fromsp(*P, dtype=kwargs.get("dtype"))
 
         if p._size != P[0].shape[0]:
             raise ValueError(f"{cls.__name__}.fromsp cannot create a new class, the geometry "

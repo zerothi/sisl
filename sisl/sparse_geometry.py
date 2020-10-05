@@ -711,7 +711,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
             P = list(P)
 
         p = cls(geometry, len(P), P[0].dtype, 1, **kwargs)
-        p._csr = p._csr.fromsp(*P, **kwargs)
+        p._csr = p._csr.fromsp(*P, dtype=kwargs.get("dtype"))
 
         if p._size != P[0].shape[0]:
             raise ValueError(f"{cls.__name__}.fromsp cannot create a new class, the geometry "
@@ -1648,7 +1648,7 @@ class SparseOrbital(_SparseGeometry):
 
         new_atom = old_atom.sub(orbitals)
         # Rename the new-atom to <>_1_2 for orbital == [1, 2]
-        new_atom.tag += '_' + '_'.join(map(str, orbitals))
+        new_atom._tag += '_' + '_'.join(map(str, orbitals))
 
         # We catch the warning about reducing the number of orbitals!
         with warnings.catch_warnings():
