@@ -990,57 +990,63 @@ class Atom(metaclass=AtomMeta):
 
     def __init__(self, Z, orbitals=None, mass=None, tag=None, **kwargs):
         if isinstance(Z, Atom):
-            self.Z = Z.Z
+            self._Z = Z.Z
         elif isinstance(Z, Integral):
-            self.Z = Z
+            self._Z = Z
         else:
-            self.Z = _ptbl.Z_int(Z)
+            self._Z = _ptbl.Z_int(Z)
 
-        self.orbitals = None
+        self._orbitals = None
         if isinstance(orbitals, (tuple, list, np.ndarray)):
             if isinstance(orbitals[0], Orbital):
                 # all is good
-                self.orbitals = orbitals
+                self._orbitals = orbitals
             elif isinstance(orbitals[0], Real):
                 # radius has been given
-                self.orbitals = [Orbital(R) for R in orbitals]
+                self._orbitals = [Orbital(R) for R in orbitals]
         elif isinstance(orbitals, Orbital):
-            self.orbitals = [orbitals]
+            self._orbitals = [orbitals]
         elif isinstance(orbitals, Real):
-            self.orbitals = [Orbital(orbitals)]
+            self._orbitals = [Orbital(orbitals)]
 
-        if self.orbitals is None:
+        if self._orbitals is None:
             if 'R' in kwargs:
                 # backwards compatibility (possibly remove this in the future)
                 R = _a.asarrayd(kwargs['R']).ravel()
-                self.orbitals = [Orbital(r) for r in R]
+                self._orbitals = [Orbital(r) for r in R]
             else:
-                self.orbitals = [Orbital(-1.)]
+                self._orbitals = [Orbital(-1.)]
 
         if mass is None:
-            self.mass = _ptbl.atomic_mass(self.Z)
+            self._mass = _ptbl.atomic_mass(self.Z)
         else:
-            self.mass = mass
+            self._mass = mass
 
         if tag is None:
-            self.tag = self.symbol
+            self._tag = self.symbol
         else:
-            self.tag = tag
+            self._tag = tag
+
+    @property
+    def Z(self):
+        return self._Z
+
+    @property
+    def orbitals(self):
+        return self._orbitals
+
+    @property
+    def mass(self):
+        return self._mass
+
+    @property
+    def tag(self):
+        return self._tag
 
     @property
     def no(self):
         """ Number of orbitals on this atom """
         return len(self.orbitals)
-
-    @property
-    def R(self):
-        """ Orbital radius """
-        return _a.arrayd([o.R for o in self.orbitals])
-
-    @property
-    def q0(self):
-        """ Orbital initial charges """
-        return _a.arrayd([o.q0 for o in self.orbitals])
 
     def index(self, orbital):
         """ Return the index of the orbital in the atom object """
@@ -1147,7 +1153,7 @@ class Atom(metaclass=AtomMeta):
            the scale factor for the atomic radii
         """
         new = self.copy()
-        new.orbitals = [o.scale(scale) for o in self.orbitals]
+        new._orbitals = [o.scale(scale) for o in self.orbitals]
         return new
 
     def __iter__(self):
@@ -1196,6 +1202,62 @@ class Atom(metaclass=AtomMeta):
     def __len__(self):
         """ Return number of orbitals in this atom """
         return self.no
+
+    def __getattr__(self, attr):
+        """ Pass attribute calls to the orbital classes and return lists/array
+
+        Parameters
+        ----------
+        attr : str
+        """
+
+        # First we create a list of values that the orbitals have
+        # Some may have it, others may not
+        vals = [None] * len(self.orbitals)
+        found = False
+        is_Integral = is_Real = is_callable = True
+        for io, orb in enumerate(self.orbitals):
+            try:
+                vals[io] = getattr(orb, attr)
+                found = True
+                is_callable &= callable(vals[io])
+                is_Integral &= isinstance(vals[io], Integral)
+                is_Real &= isinstance(vals[io], Real)
+            except AttributeError:
+                pass
+
+        if found == 0:
+            # we never got any values, reraise the AttributeError
+            raise AttributeError(f"'{self.__class__.__name__}.orbitals' objects has no attribute '{attr}'")
+
+        # Now parse the data, currently we'll only allow Integral, Real, Complex
+        if is_Integral:
+            for io in range(len(vals)):
+                if vals[io] is None:
+                    vals[io] = 0
+            return _a.arrayi(vals)
+        elif is_Real:
+            for io in range(len(vals)):
+                if vals[io] is None:
+                    vals[io] = 0.
+            return _a.arrayd(vals)
+        elif is_callable:
+            def _ret_none(*args, **kwargs):
+                return None
+            for io in range(len(vals)):
+                if vals[io] is None:
+                    vals[io] = _ret_none
+
+            # Now subclass the content and return values per method
+            class ArrayCall:
+                def __init__(self, methods):
+                    self.methods = methods
+                def __call__(self, *args, **kwargs):
+                    return [m(*args, **kwargs) for m in self.methods]
+            return ArrayCall(vals)
+
+        # We don't know how to handle this, simply return...
+        return vals
 
     def toSphere(self, center=None):
         """ Return a sphere with the maximum orbital radius equal

@@ -4,6 +4,7 @@ import math as m
 import numpy as np
 from scipy import interpolate as interp
 
+from sisl.messages import SislDeprecation
 from sisl.utils.mathematics import cart2spher, spher2cart
 from sisl.orbital import Orbital, SphericalOrbital, AtomicOrbital
 
@@ -342,6 +343,13 @@ class Test_atomicorbital:
             for m in range(-l, l+1):
                 o = AtomicOrbital(l=l, m=m, spherical=rf)
                 assert np.allclose(so.psi(r, m), o.psi(r))
+
+    @pytest.mark.xfail(raises=SislDeprecation, reason='Z is deprecated for zeta')
+    def test_zeta_Z_deprecate(self):
+        rf = r_f(6)
+        r = np.linspace(0, 6, 999).reshape(-1, 3)
+        o = AtomicOrbital(l=1, m=1, spherical=rf)
+        assert o.Z == o.zeta
 
     def test_pickle1(self):
         import pickle as p

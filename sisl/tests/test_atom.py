@@ -73,6 +73,7 @@ def test4(setup):
 
 def test5(setup):
     assert Atom(Z=1, mass=12).R < 0
+    assert Atom(Z=1, mass=12).R.size == 1
     assert Atom(Z=1, mass=12).mass == 12
     assert Atom(Z=31, mass=12).mass == 12
     assert Atom(Z=31, mass=12).Z == 31
@@ -247,6 +248,23 @@ def test_multiple_orbitals_fail_len():
     o = [Orbital(1., 1.), Orbital(2., .5), Orbital(3., .75)]
     with pytest.raises(ValueError):
         Atom(5, o).sub([0, 0, 0, 0, 0])
+
+
+def test_atom_getattr_orbs():
+    class UOrbital(Orbital):
+        def __init__(self, *args, **kwargs):
+            U = kwargs.pop("U", 0.)
+            super().__init__(*args, **kwargs)
+            self._U = U
+        @property
+        def U(self):
+            return self._U
+
+    o = [UOrbital(1., 1., U=1.), UOrbital(2., .5, U=2.), UOrbital(3., .75, U=3.)]
+    a = Atom(5, o)
+    assert np.allclose(a.U, [1, 2, 3])
+    # also test the callable interface
+    assert all(map(lambda x: len(x) == 0, a.name()))
 
 
 def test_pickle(setup):
