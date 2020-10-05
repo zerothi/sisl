@@ -434,12 +434,14 @@ class GeometryPlot(Plot):
     #                  1D plotting
     #---------------------------------------------------
 
-    def _plot_geom1D(self, coords_axis="x", data_axis=None, wrap_atoms=None, atoms_color=None, atoms_size=None, atoms_colorscale="viridis", **kwargs):
+    def _plot_geom1D(self, atoms=None, coords_axis="x", data_axis=None, wrap_atoms=None, atoms_color=None, atoms_size=None, atoms_colorscale="viridis", **kwargs):
         """
         Returns a 1D representation of the plot's geometry.
 
         Parameters
         -----------
+        atoms: array-like of int, optional
+            the indices of the atoms that you want to plot
         coords_axis:  {0,1,2, "x", "y", "z", "a", "b", "c"} or array-like of shape 3, optional
             the axis onto which all the atoms are projected.
         data_axis: function or array-like, optional
@@ -467,11 +469,13 @@ class GeometryPlot(Plot):
         wrap_atoms = wrap_atoms or self._default_wrap_atoms1D
         traces = []
 
+        atoms = self.geometry._sanitize_atoms(atoms)
+
         self._display_props["atoms"]["color"] = atoms_color
         self._display_props["atoms"]["size"] = atoms_size
         self._display_props["atoms"]["colorscale"] = atoms_colorscale
 
-        x = self._projected_1Dcoords(self.geometry.xyz, axis=coords_axis)
+        x = self._projected_1Dcoords(self.geometry[atoms], axis=coords_axis)
         if data_axis is None:
             def data_axis(x):
                 return np.zeros(x.shape[0])
@@ -481,7 +485,7 @@ class GeometryPlot(Plot):
 
         xy = np.array([x, data_axis])
 
-        atoms_args, atoms_kwargs = wrap_atoms(xy)
+        atoms_args, atoms_kwargs = wrap_atoms(atoms, xy)
         atoms_kwargs = {**atoms_kwargs, **kwargs}
 
         traces.append(
