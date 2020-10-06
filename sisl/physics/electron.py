@@ -361,12 +361,10 @@ def spin_moment(state, S=None, project=False):
         for i in range(len(state)):
             cs = conj(state[i]).reshape(-1, 2)
             Sstate = S.dot(state[i].reshape(-1, 2))
-            D1 = (cs * Sstate).real.sum(0)
-            s[i, 2] = D1[0] - D1[1]
-            D1 = cs[:, 1].dot(Sstate[:, 0])
-            D2 = cs[:, 0].dot(Sstate[:, 1])
-            s[i, 0] = D1.real + D2.real
-            s[i, 1] = D1.imag - D2.imag
+            D = cs.T @ Sstate
+            s[i, 2] = D[0, 0] - D[1, 1]
+            s[i, 0] = (D[1, 0] + D[0, 1]).real
+            s[i, 1] = (D[1, 0] - D[0, 1]).imag
 
     return s
 
@@ -1546,7 +1544,7 @@ class _electron_State:
         except:
             return False
 
-    def Sk(self, format='csr', spin=None):
+    def Sk(self, format=None, spin=None):
         r""" Retrieve the overlap matrix corresponding to the originating parent structure.
 
         When ``self.parent`` is a Hamiltonian this will return :math:`\mathbf S(k)` for the
@@ -1562,16 +1560,18 @@ class _electron_State:
            will have halve the size of the input matrix. If you want the *full* overlap
            matrix, simply do not specify the `spin` argument.
         """
-
+        if format is None:
+            format = self.info.get("format", "csr")
         if isinstance(self.parent, SparseOrbitalBZSpin):
             # Calculate the overlap matrix
             if not self.parent.orthogonal:
                 opt = {'k': self.info.get('k', (0, 0, 0)),
                        "dtype": self.dtype,
                        "format": format}
-                gauge = self.info.get("gauge", None)
-                if not gauge is None:
-                    opt["gauge"] = gauge
+                for key in ["gauge", "spin"]:
+                    val = self.info.get(key, None)
+                    if not val is None:
+                        opt[key] = val
                 return self.parent.Sk(**opt)
 
         if self.__is_nc():
@@ -1678,11 +1678,7 @@ class _electron_State:
         project : bool, optional
            whether the moments are orbitally resolved or not
         """
-        try:
-            spin = self.parent.spin
-        except:
-            spin = None
-        return spin_moment(self.state, self.Sk(spin=spin), project=project)
+        return spin_moment(self.state, self.Sk(), project=project)
 
     def expectation(self, A, diag=True):
         r""" Calculate the expectation value of matrix `A`
@@ -1839,9 +1835,10 @@ class StateCElectron(_electron_State, StateC):
         """
         try:
             opt = {'k': self.info.get('k', (0, 0, 0)), "dtype": self.dtype}
-            gauge = self.info.get("gauge", None)
-            if not gauge is None:
-                opt["gauge"] = gauge
+            for key in ["gauge", "format"]:
+                val = self.info.get(key, None)
+                if not val is None:
+                    opt[key] = val
 
             # Get dSk before spin
             if self.parent.orthogonal:
@@ -1850,7 +1847,7 @@ class StateCElectron(_electron_State, StateC):
                 dSk = self.parent.dSk(**opt)
 
             if "spin" in self.info:
-                opt["spin"] = self.info.get("spin", None)
+                opt["spin"] = self.info["spin"]
             deg = self.degenerate(eps)
         except:
             raise SislError(f"{self.__class__.__name__}.velocity requires the parent to have a spin associated.")
@@ -1875,9 +1872,10 @@ class StateCElectron(_electron_State, StateC):
         """
         try:
             opt = {'k': self.info.get('k', (0, 0, 0)), "dtype": self.dtype}
-            gauge = self.info.get("gauge", None)
-            if not gauge is None:
-                opt["gauge"] = gauge
+            for key in ["gauge", "format"]:
+                val = self.info.get(key, None)
+                if not val is None:
+                    opt[key] = val
 
             # Get dSk before spin
             if self.parent.orthogonal:
@@ -1886,7 +1884,7 @@ class StateCElectron(_electron_State, StateC):
                 dSk = self.parent.dSk(**opt)
 
             if "spin" in self.info:
-                opt["spin"] = self.info.get("spin", None)
+                opt["spin"] = self.info["spin"]
             deg = self.degenerate(eps)
         except:
             raise SislError(f"{self.__class__.__name__}.velocity_matrix requires the parent to have a spin associated.")
@@ -1912,9 +1910,10 @@ class StateCElectron(_electron_State, StateC):
         """
         try:
             opt = {'k': self.info.get('k', (0, 0, 0)), "dtype": self.dtype}
-            gauge = self.info.get("gauge", None)
-            if not gauge is None:
-                opt["gauge"] = gauge
+            for key in ["gauge", "format"]:
+                val = self.info.get(key, None)
+                if not val is None:
+                    opt[key] = val
 
             # Get dSk before spin
             if self.parent.orthogonal:
@@ -1923,7 +1922,7 @@ class StateCElectron(_electron_State, StateC):
                 dSk = self.parent.dSk(**opt)
 
             if "spin" in self.info:
-                opt["spin"] = self.info.get("spin", None)
+                opt["spin"] = self.info["spin"]
             deg = self.degenerate(eps)
         except:
             raise SislError(f"{self.__class__.__name__}.berry_curvature requires the parent to have a spin associated.")
@@ -1961,9 +1960,10 @@ class StateCElectron(_electron_State, StateC):
             self.change_gauge('r')
 
             opt = {'k': self.info.get('k', (0, 0, 0)), "dtype": self.dtype}
-            gauge = self.info.get("gauge", None)
-            if not gauge is None:
-                opt["gauge"] = gauge
+            for key in ["gauge", "format"]:
+                val = self.info.get(key, None)
+                if not val is None:
+                    opt[key] = val
 
             # Get dSk before spin
             if self.parent.orthogonal:
@@ -1972,7 +1972,7 @@ class StateCElectron(_electron_State, StateC):
                 ddSk = self.parent.ddSk(**opt)
 
             if "spin" in self.info:
-                opt["spin"] = self.info.get("spin", None)
+                opt["spin"] = self.info["spin"]
             degenerate = self.degenerate(eps)
         except:
             raise SislError(f"{self.__class__.__name__}.inv_eff_mass_tensor requires the parent to have a spin associated.")
@@ -2078,8 +2078,4 @@ class EigenstateElectron(StateCElectron):
 
         See `~sisl.physics.electron.PDOS` for argument details.
         """
-        try:
-            spin = self.parent.spin
-        except:
-            spin = None
-        return PDOS(E, self.c, self.state, self.Sk(spin=spin), distribution, spin)
+        return PDOS(E, self.c, self.state, self.Sk(), distribution, getattr(self.parent, "spin", None))
