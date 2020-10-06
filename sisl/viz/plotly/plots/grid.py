@@ -490,16 +490,12 @@ class GridPlot(Plot):
 
         interpolate = (interp_factors != 1).any()
 
-        for ax in [0, 1, 2]:
-            if ax not in axes:
-                grid = grid.average(ax)
-
         if interpolate:
             grid = grid.interp((np.array(interp_factors)*grid.shape).astype(int))
 
-            for ax in [0, 1, 2]:
-                if ax not in axes:
-                    grid = grid.average(ax)
+        for ax in [0, 1, 2]:
+            if ax not in axes:
+                grid = grid.average(ax)
 
         # Choose the representation of the grid that we want to display
         if represent == 'real':
