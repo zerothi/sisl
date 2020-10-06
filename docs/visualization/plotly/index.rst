@@ -42,3 +42,20 @@ to the right place!
     :reversed:
 
     combining-plots/*
+
+Do it yourself
+--------------------
+
+You don't like the plots that we, with all the love of the world, have prepared? 
+
+That seems unlikely, but if it happens, you can easily create your own plots! The following notebooks will guide you through 
+the process and by the end of your reading it will be dead easy for you to have a **self-updating plot that can be used and tuned in the GUI**.
+
+.. nbgallery::
+    :name: viz-plotly-diy-gallery
+    :glob:
+
+    diy/*
+
+.. note::
+    Consider contributing to the package if you build a useful presentation. The community will appreciate it! :)
