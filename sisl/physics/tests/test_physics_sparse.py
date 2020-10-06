@@ -200,7 +200,7 @@ def test_sparse_orbital_bz_spin_orbit():
 
 
 def test_sparse_orbital_bz_spin_orbit_trs_kramers_theorem():
-    M = SparseOrbitalBZSpin(geom.graphene(), spin=Spin('SO'))
+    M = SparseOrbitalBZSpin(geom.graphene(), spin='SO')
 
     M.construct(([0.1, 1.44],
                  [[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
@@ -218,7 +218,7 @@ def test_sparse_orbital_bz_spin_orbit_trs_kramers_theorem():
 
 
 def test_sparse_orbital_bz_spin_orbit_trs_not():
-    M = SparseOrbitalBZSpin(geom.graphene(), spin=Spin('SO'))
+    M = SparseOrbitalBZSpin(geom.graphene(), spin='SO')
 
     M.construct(([0.1, 1.44],
                  [[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],

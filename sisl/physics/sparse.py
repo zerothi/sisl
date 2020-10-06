@@ -589,11 +589,6 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         if 'spin' not in kwargs:
             if isinstance(dim, Spin):
                 spin = dim
-            else:
-                spin = {1: Spin.UNPOLARIZED,
-                        2: Spin.POLARIZED,
-                        4: Spin.NONCOLINEAR,
-                        8: Spin.SPINORBIT}.get(dim)
         else:
             spin = kwargs.pop('spin')
         self._spin = Spin(spin, dtype)
