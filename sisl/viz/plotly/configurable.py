@@ -1,4 +1,4 @@
-from copy import deepcopy
+from copy import copy, deepcopy
 from functools import wraps
 import inspect
 from types import MethodType
@@ -510,7 +510,12 @@ class Configurable(metaclass=ConfigurableMeta):
         The mapping generated here is used in `Configurable.run_updates`
         """
         #Initialize the object where we are going to store what each setting needs to rerun when it is updated
-        cls._run_on_update = defaultdict(list)
+        if hasattr(cls, "_run_on_update"):
+            updates_dict = copy(cls._run_on_update)
+        else:
+            updates_dict = defaultdict(list)
+
+        cls._run_on_update = updates_dict
 
         for name, f in inspect.getmembers(cls, predicate=inspect.isfunction):
             for param in getattr(f, "_settings_params", []):
