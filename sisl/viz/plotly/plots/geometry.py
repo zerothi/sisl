@@ -285,23 +285,33 @@ class GeometryPlot(Plot):
 
         self.get_param("atoms").update_options(self.geometry)
 
-    def _set_data(self, axes, atoms, show_atoms, bind_bonds_to_ats, dataaxis_1d):
+    def _set_data(self, axes, atoms, atoms_color, atoms_size, show_atoms, bind_bonds_to_ats, dataaxis_1d):
         ndims = len(axes)
 
         if show_atoms == False:
             atoms = []
             bind_bonds_to_ats = False
 
+        # Account for supercell extensions
+        if isinstance(atoms_color, (np.ndarray, list, tuple)):
+            if not self.geometry.na % len(atoms_color):
+                atoms_color = np.tile(atoms_color, self.geometry.na // len(atoms_color))
+        if isinstance(atoms_size, (np.ndarray, list, tuple)):
+            if not self.geometry.na % len(atoms_size):
+                atoms_size = np.tile(atoms_size, self.geometry.na // len(atoms_size))
+
+        atoms_kwargs = {"atoms": atoms, "atoms_color": atoms_color, "atoms_size": atoms_size}
+        
         if ndims == 3:
-            self._plot_geom3D(atoms=atoms, bind_bonds_to_ats=bind_bonds_to_ats)
+            self._plot_geom3D(**atoms_kwargs, bind_bonds_to_ats=bind_bonds_to_ats)
         elif ndims == 2:
             xaxis, yaxis = axes
-            self._plot_geom2D(xaxis=xaxis, yaxis=yaxis, atoms=atoms, bind_bonds_to_ats=bind_bonds_to_ats)
+            self._plot_geom2D(xaxis=xaxis, yaxis=yaxis, **atoms_kwargs, bind_bonds_to_ats=bind_bonds_to_ats)
             self.update_layout(xaxis_title=f'Axis {xaxis} [Ang]', yaxis_title=f'Axis {yaxis} [Ang]')
         elif ndims == 1:
             coords_axis = axes[0]
             data_axis = dataaxis_1d
-            self._plot_geom1D(coords_axis=coords_axis, data_axis=data_axis)
+            self._plot_geom1D(atoms=atoms, coords_axis=coords_axis, data_axis=data_axis)
 
             data_axis_name = data_axis.__name__ if callable(data_axis) else 'Data axis'
             self.update_layout(xaxis_title=f'Axis {coords_axis} [Ang]', yaxis_title=data_axis_name)

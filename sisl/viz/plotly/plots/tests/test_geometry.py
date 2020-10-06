@@ -166,6 +166,20 @@ class GeometryPlotTester(PlotTester):
 
         assert len(atom_traces) == len(sized_atom_traces)
         assert np.all([np.any(old.x != new.x) for old, new in zip(atom_traces, sized_atom_traces)])
+    
+    def test_atom_properties_sc(self):
+        """
+        We need to check that atoms_color and atoms_size are handled correctly
+        when a supercell is requested.
+        """
+        geom = self.plot.geometry
+
+        # Just check that they work, i.e. the arrays have been properly extended.
+        # Otherwise an index error would be raised.
+        self.plot.update_settings(atoms_color=np.random.random(geom.na), sc=[2,1,1])
+
+        self.plot.update_settings(atoms_size=geom.atoms.Z+1, atoms_color=None, sc=[2,1,1])
+
 
 
 class TestGeometryPlot(GeometryPlotTester):
