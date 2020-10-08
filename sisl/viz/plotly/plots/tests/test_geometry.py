@@ -95,6 +95,22 @@ class GeometryPlotTester(PlotTester):
             plot.update_settings(atoms=[0], show_bonds=True, bind_bonds_to_ats=False)
             assert len(plot.data[0].x) > prev_len
 
+    def test_sc(self):
+        self.plot.update_settings(axes=[0, 1], atoms=None)
+
+        na = self.plot.geometry.na
+
+        atom_traces = [trace for trace in self.plot.data if trace.name == "Atoms"]
+        assert len(atom_traces) == 1
+        assert len(atom_traces[0].y) == na
+
+        self.plot.update_settings(sc=[2, 2, 1])
+
+        atom_traces = [trace for trace in self.plot.data if trace.name == "Atoms"]
+        assert len(atom_traces[0].y) == na * 4, f"Supercell is not correctly displayed in {self.plot.__class__.__name__}"
+
+        self.plot.update_settings(sc=[1, 1, 1])
+
     def test_atom_colors_2d(self):
 
         geom = self.plot.geometry
@@ -166,7 +182,7 @@ class GeometryPlotTester(PlotTester):
 
         assert len(atom_traces) == len(sized_atom_traces)
         assert np.all([np.any(old.x != new.x) for old, new in zip(atom_traces, sized_atom_traces)])
-    
+
     def test_atom_properties_sc(self):
         """
         We need to check that atoms_color and atoms_size are handled correctly
@@ -176,10 +192,9 @@ class GeometryPlotTester(PlotTester):
 
         # Just check that they work, i.e. the arrays have been properly extended.
         # Otherwise an index error would be raised.
-        self.plot.update_settings(atoms_color=np.random.random(geom.na), sc=[2,1,1])
+        self.plot.update_settings(atoms_color=np.random.random(geom.na), sc=[2, 1, 1])
 
-        self.plot.update_settings(atoms_size=geom.atoms.Z+1, atoms_color=None, sc=[2,1,1])
-
+        self.plot.update_settings(atoms_size=geom.atoms.Z+1, atoms_color=None, sc=[2, 1, 1])
 
 
 class TestGeometryPlot(GeometryPlotTester):

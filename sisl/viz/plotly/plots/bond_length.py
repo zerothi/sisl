@@ -262,13 +262,22 @@ class BondLengthMap(GeometryPlot):
             self.relaxed_geom = self.get_sile(strain_ref).read_geometry()
         elif isinstance(strain_ref, sisl.Geometry):
             self.relaxed_geom = strain_ref
+        else:
+            self.relaxed_geom = None
 
-    def _after_read(self, strain_ref):
+    def _after_read(self, strain_ref, sc):
         self._read_strain_ref(strain_ref)
+
+        is_strain_ref = self.relaxed_geom is not None
+
+        for ax, reps in enumerate(sc):
+            self.geometry = self.geometry.tile(reps, ax)
+            if is_strain_ref:
+                self.relaxed_geom = self.relaxed_geom.tile(reps, ax)
 
         self.geom_bonds = self.find_all_bonds(self.geometry)
 
-        if getattr(self, "relaxed_geom", None):
+        if is_strain_ref:
             self.relaxed_bonds = self.find_all_bonds(self.relaxed_geom)
 
         self.get_param("atoms").update_options(self.geometry)
@@ -336,12 +345,8 @@ class BondLengthMap(GeometryPlot):
 
         return (bond_length - relaxed_bl) / relaxed_bl
 
-    def _set_data(self, strain, axes, atoms, show_atoms, bind_bonds_to_ats, points_per_bond, cmin, cmax, colorscale, colorbar):
-        ndims = len(axes)
-
-        if show_atoms == False:
-            atoms = []
-            bind_bonds_to_ats = False
+    def _set_data(self, strain, axes, atoms, show_atoms, bind_bonds_to_ats, points_per_bond, cmin, cmax, colorscale, colorbar,
+        kwargs3d={}, kwargs2d={}, kwargs1d={}):
 
         # Set the bonds to the relaxed ones if there is a strain reference
         show_strain = strain and hasattr(self, "relaxed_bonds")
@@ -357,24 +362,21 @@ class BondLengthMap(GeometryPlot):
         # of the color scale
         self.colors = []
 
-        if ndims == 3:
-            self._plot_geom3D(cheap_bonds=True,
-                wrap_bond=partial(self._wrap_bond3D, show_strain=show_strain),
-                atoms=atoms, bind_bonds_to_ats=bind_bonds_to_ats
-            )
-        elif ndims == 2:
-            xaxis, yaxis = axes
-
-            self._plot_geom2D(
-                xaxis=xaxis, yaxis=yaxis,
-                bonds_together=True, points_per_bond=points_per_bond,
-                wrap_bond=partial(self._wrap_bond2D, show_strain=show_strain),
-                atoms=atoms, bind_bonds_to_ats=bind_bonds_to_ats
-            )
-
-            self.update_layout(xaxis_title=f'Axis {xaxis} [Ang]', yaxis_title=f'Axis {yaxis} [Ang]')
-        elif ndims == 1:
-            raise NotImplementedError("Does it make sense to implement 1 dimensional bond length maps? If so, post an issue on sisl's github page. Thanks!")
+        # Let GeometryPlot set the data
+        super()._set_data(
+            kwargs3d={
+                "wrap_bond": partial(self._wrap_bond3D, show_strain=show_strain),
+                "cheap_bonds": True,
+                **kwargs3d
+            },
+            kwargs2d={
+                "wrap_bond": partial(self._wrap_bond2D, show_strain=show_strain),
+                "bonds_together": True,
+                "points_per_bond": points_per_bond,
+                **kwargs2d
+            },
+            kwargs1d=kwargs1d
+        )
 
         if self.colors:
             self.update_layout(coloraxis={"cmin": cmin or min(self.colors),
