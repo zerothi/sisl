@@ -68,8 +68,6 @@ class xyzSile(Sile):
         for ia, a, _ in geom.iter_species():
             s = {'fa': 'Ds'}.get(a.symbol, a.symbol)
             self._write(fmt_str.format(s, *geom.xyz[ia, :]))
-        # Add a single new line
-        self._write('\n')
 
     def _r_geometry_sisl(self, na, header, sp, xyz):
         """ Read the geometry as though it was created with sisl """
