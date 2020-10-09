@@ -42,7 +42,7 @@ class xyzSile(Sile):
     """ XYZ file object """
 
     @sile_fh_open()
-    def write_geometry(self, geom, fmt='.8f'):
+    def write_geometry(self, geom, fmt='.8f', comment=None):
         """ Writes the geometry to the contained file
 
         Parameters
@@ -51,6 +51,9 @@ class xyzSile(Sile):
            the geometry to be written
         fmt : str, optional
            used format for the precision of the data
+        comment : str, optional
+           if None, a sisl made comment that can be used for parsing the unit-cell is used
+           else this comment will be written at the 2nd line.
         """
         # Check that we can write to the file
         sile_raise_write(self)
@@ -61,8 +64,11 @@ class xyzSile(Sile):
         # Write out the cell information in the comment field
         # This contains the cell vectors in a single vector (3 + 3 + 3)
         # quantities, plus the number of supercells (3 ints)
-        fmt_str = 'sisl-version=1 cell= ' + f'{{:{fmt}}} ' * 9 + ' nsc= {} {} {}\n'.format(*geom.nsc[:])
-        self._write(fmt_str.format(*geom.cell.flatten()))
+        if comment is None:
+            fmt_str = 'sisl-version=1 cell= ' + f'{{:{fmt}}} ' * 9 + ' nsc= {} {} {}\n'.format(*geom.nsc[:])
+            self._write(fmt_str.format(*geom.cell.flatten()))
+        else:
+            self._write(f"{comment}\n")
 
         fmt_str = '{{0:2s}}  {{1:{0}}}  {{2:{0}}}  {{3:{0}}}\n'.format(fmt)
         for ia, a, _ in geom.iter_species():
