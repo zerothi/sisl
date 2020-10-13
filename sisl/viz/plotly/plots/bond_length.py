@@ -162,33 +162,6 @@ class BondLengthMap(GeometryPlot):
             Note that you can reverse a color map by adding _r"""
         ),
 
-        # IntegerInput(
-        #     key = "tileX", name = "Tile first axis",
-        #     default = 1,
-        #     params = {
-        #         "min": 1
-        #     },
-        #     help = "Number of unit cells to display along the first axis"
-        # ),
-
-        # IntegerInput(
-        #     key = "tileY", name = "Tile second axis",
-        #     default = 1,
-        #     params = {
-        #         "min": 1
-        #     },
-        #     help = "Number of unit cells to display along the second axis"
-        # ),
-
-        # IntegerInput(
-        #     key = "tileZ", name = "Tile third axis",
-        #     default = 1,
-        #     params = {
-        #         "min": 1
-        #     },
-        #     help = "Number of unit cells to display along the third axis"
-        # ),
-
         FloatInput(
             key = "cmin", name = "Color scale low limit",
             default = 0,
