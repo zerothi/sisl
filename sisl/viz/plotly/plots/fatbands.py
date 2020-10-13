@@ -303,7 +303,13 @@ class FatbandsPlot(BandsPlot):
             if band_struct is not None:
                 self.geometry = band_struct.parent.geometry
 
-        self.get_param('groups').update_options(self.geometry, self.H.spin)
+        if getattr(self, "H", None) is not None:
+            spin = self.H.spin
+        else:
+            # There is yet no spin support reading from bands.WFSX
+            spin = sisl.Spin.UNPOLARIZED
+
+        self.get_param('groups').update_options(self.geometry, spin)
 
     def _set_data(self):
 
