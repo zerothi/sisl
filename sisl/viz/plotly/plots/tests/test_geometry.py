@@ -200,6 +200,6 @@ class GeometryPlotTester(PlotTester):
 class TestGeometryPlot(GeometryPlotTester):
 
     run_for = {
-        "sisl_geom": {"init_func": sisl.geom.graphene(orthogonal=True).plot.bind()},
-        "ghost_atoms": {"init_func": sisl.Geometry([[0, 0, 1], [1, 0, 0]], atoms=[sisl.Atom(6), sisl.Atom(-6)]).plot.bind()}
+        "sisl_geom": {"init_func": sisl.geom.graphene(orthogonal=True).plot},
+        "ghost_atoms": {"init_func": sisl.Geometry([[0, 0, 1], [1, 0, 0]], atoms=[sisl.Atom(6), sisl.Atom(-6)]).plot}
     }

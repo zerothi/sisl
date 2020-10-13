@@ -19,10 +19,17 @@ class PlotEngine:
         self._handler = handler
 
         for name, method in methods.items():
-            self._add(name, function)
+            self._add(name, method)
 
         self._name = name
-        self._default = None
+        self._default = default
+
+    def copy(self, **kwargs):
+        return self.__class__(self._name, kwargs.get("handler", self._handler),
+            default=self._default, methods=self._raw_methods)
+
+    def __dir__(self):
+        return list(self._raw_methods)
 
     def _add(self, name, function, default=False):
         """
@@ -45,10 +52,8 @@ class PlotEngine:
             self._default = name
 
         self._raw_methods[name] = function
-        self._set_wrapped_function(name)
 
-    def _set_wrapped_function(self, name):
-
+    def _get_wrapped_function(self, name):
         function = self._raw_methods[name]
 
         # This is the function that really does the plotting and goes
@@ -57,21 +62,15 @@ class PlotEngine:
         def real_function(*args, **kwargs):
             return function(self._handler._obj, *args, **kwargs)
 
-        setattr(self, name, real_function)
+        return real_function
 
     def set_handler(self, handler):
-
         self._handler = handler
-
-        for name in self._raw_methods:
-            self._set_wrapped_function(name)
-            handler._set_method_shortcut(self._name, name, self._raw_methods[name])
 
         return self
 
-    def bind(self, handler):
-
-        return copy(self).set_handler(handler)
+    def __getattr__(self, key):
+        return self._get_wrapped_function(key)
 
     def get(self, method=None, otherwise='raise'):
         """
@@ -156,9 +155,14 @@ class PlotHandler:
 
     """
 
-    def __init__(self, default_engine='plotly'):
-        self._engines = []
+    def __init__(self, obj=None, engines=None, default_engine='plotly'):
+        self._obj = obj
+
+        self._engines = engines or {}
         self._default_engine = default_engine
+
+    def __dir__(self):
+        return ["register", *list(self._engines), *dir(self._engines[self._default_engine])]
 
     def register(self, function, name=None, engine=None, default=False):
         """
@@ -195,46 +199,33 @@ class PlotHandler:
             engine = self._default_engine
 
         # Initialize a new plot engine, if it isn't already present
-        if not hasattr(self, engine):
-            setattr(self, engine, PlotEngine(engine, handler=self))
-            self._engines.append(engine)
+        if engine not in self._engines:
+            self._engines[engine] = PlotEngine(engine, handler=self)
 
-        getattr(self, engine)._add(name, function, default=default)
+        engine = self._engines[engine]
 
-        self._set_method_shortcut(engine, name, function)
+        engine._add(name, function, default=default)
 
-    def bind(self, instance=None):
+    def __getattr__(self, key):
 
-        if instance is None:
-            instance = self._obj
-        if instance is None:
-            raise ValueError("You need to provide an instance to bind this handler to.")
+        if key in self._engines:
+            return self._engines[key]
 
-        return BoundPlotHandler(self, instance)
-
-    def _set_method_shortcut(self, engine, name, function):
-
-        # This is just a "shortcut" for calling the function.
-        # With not hasattr(self, name) we allow methods from different
-        # engines to be in the first level simultanously if they don't
-        # interfere with each other (is it desirable?)
-
-        if not hasattr(self, name) or engine == self._default_engine:
-
-            @wraps(function)
-            def shortcut(*args, **kwargs):
-                return self(engine=engine, method=name, **kwargs)
-
-            setattr(self, name, shortcut)
+        return getattr(self._engines[self._default_engine], key)
 
     def __get__(self, instance, owner):
         """
         Makes the plot handler aware of what is the instance that it is handling
         plots for.
         """
-
         if instance is not None:
-            self._obj = instance
+
+            new_handler = self.__class__(obj=instance, default_engine=self._default_engine)
+
+            for name, engine in self._engines.items():
+                new_handler._engines[name] = engine.copy(handler=new_handler)
+
+            return new_handler
 
         return self
 
@@ -263,59 +254,7 @@ class PlotHandler:
         if engine is None:
             engine = self._default_engine
 
-        return getattr(self, engine)(method=method, **kwargs)
-
-
-class BoundPlotHandler(PlotHandler):
-    """
-    Plot handler that is bound to an instance of the class.
-
-    This is needed basically so that one can store the plot functions 
-    without calling them and still make sure that the plot handler
-    knows which instance to use.
-
-    For example, if I have two hamiltonians "H1" and "H2" and I do
-
-    >>> pt = H1.plot
-    >>> H2.plot
-
-    the plot handler `pt` no longer has H1 as its instance, so if
-    you do `pt()`, it will plot H2. The following code:
-
-    >>> pt = H1.plot.bind()
-    >>> H2.plot
-
-    results in `pt` being a bound plot handler and it is perfectly
-    safe. 
-
-    This is not the default because binding a plot handler is slow
-    due to the wrapped functions that we have set up in the plot handlers
-    and plot engines to allow help messages and autocompletion in
-    interactive environments. (they need to be rewrapped using the new
-    handler).
-
-    Parameters
-    ------------
-    class_handler: PlotHandler
-        the class_handler that you want to bind.
-    instance: any
-        the object to which you want to bind the plot handler.
-
-        Of course you can not bind objects to plot handlers from
-        other classes.
-    """
-
-    def __init__(self, class_handler, instance):
-
-        self._engines = class_handler._engines
-        self._default_engine = class_handler._default_engine
-
-        for engine in self._engines:
-
-            bound_engine = getattr(class_handler, engine).bind(self)
-            setattr(self, engine, bound_engine)
-
-        self._obj = instance
+        return self._engines[engine](method=method, **kwargs)
 
 
 def register_plotable(plotable, plotting_func, name=None, engine='plotly', default=False, plot_handler_attr='plot'):

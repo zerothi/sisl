@@ -148,7 +148,7 @@ H = sisl.Hamiltonian(gr)
 H.construct([(0.1, 1.44), (0, -2.7)])
 
 pdos_plots["sisl_H"] = {
-    "init_func": partial(H.plot.bind().pdos, Erange=[-5, 5]),
+    "init_func": partial(H.plot.pdos, Erange=[-5, 5]),
     "na": 2,
     "no": 2,
     "n_spin": 1,

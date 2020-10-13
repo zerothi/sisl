@@ -140,7 +140,7 @@ H.construct([(0.1, 1.44), (0, -2.7)])
 bz = sisl.BandStructure(H, [[0, 0, 0], [2/3, 1/3, 0], [1/2, 0, 0]], 9, ["Gamma", "M", "K"])
 
 bands_plots["sisl_H"] = {
-    "init_func": bz.plot.bind(),
+    "init_func": bz.plot,
     "bands_shape": (9, 1, 2),
     "ticklabels": ["Gamma", "M", "K"],
     "tickvals": [0., 1.70309799, 2.55464699],
@@ -154,7 +154,7 @@ path = [{"active": True, "x": x, "y": y, "z": z, "divisions": 3,
             "tick": tick} for tick, (x, y, z) in zip(["Gamma", "M", "K"], [[0, 0, 0], [2/3, 1/3, 0], [1/2, 0, 0]])]
 
 bands_plots["sisl_H_path"] = {
-    "init_func": partial(H.plot.bind().bands, path=path),
+    "init_func": partial(H.plot.bands, path=path),
     "bands_shape": (6, 1, 2),
     "ticklabels": ["Gamma", "M", "K"],
     "tickvals": [0., 1.70309799, 2.55464699],

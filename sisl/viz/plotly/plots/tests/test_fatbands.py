@@ -89,7 +89,7 @@ H.construct([(0.1, 1.44), (0, -2.7)])
 bz = sisl.BandStructure(H, [[0, 0, 0], [2/3, 1/3, 0], [1/2, 0, 0]], 9, ["Gamma", "M", "K"])
 
 fatbands_plots["sisl_H"] = {
-    "init_func": bz.plot.bind().fatbands,
+    "init_func": bz.plot.fatbands,
     "bands_shape": (9, 1, 2),
     "weights_shape": (1, 9, 2, 2),
     "gap": 0,
