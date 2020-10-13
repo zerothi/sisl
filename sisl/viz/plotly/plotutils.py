@@ -81,7 +81,11 @@ def check_widgets():
         widgets['plotly_error'] = True
 
     if 'ipyevents' in out:
-        widgets['events_avail'] = True
+        try:
+            import ipyevents
+            widgets['events_avail'] = True
+        except:
+            pass
     if 'ipyevents' in err:
         widgets['events_error'] = True
 

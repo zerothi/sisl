@@ -1257,7 +1257,7 @@ class Plot(ShortCutable, Configurable, Connected, metaclass=PlotMeta):
                 return f
 
         else:
-            self.figure.show(**kwargs)
+            self.figure._ipython_display_(**kwargs)
 
     def _ipython_display_with_shortcuts(self, fig_widget, **kwargs):
         """
