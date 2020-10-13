@@ -1215,14 +1215,14 @@ class Plot(ShortCutable, Configurable, Connected, metaclass=PlotMeta):
 
         if self._innotebook and (len(args) == 0 or 'config' in kwargs):
             try:
-                return self._show_in_jupyternb(listen=listen, return_figWidget = return_figWidget, **kwargs)
+                return self._ipython_display_(listen=listen, return_figWidget=return_figWidget, **kwargs)
             except Exception as e:
                 print(e)
                 pass
 
         return self.figure.show(*args, **kwargs)
 
-    def _show_in_jupyternb(self, listen=False, return_figWidget=False, **kwargs):
+    def _ipython_display_(self, return_figWidget=False, **kwargs):
         """
         Handles all things needed to display the plot in a jupyter notebook.
 
@@ -1232,13 +1232,11 @@ class Plot(ShortCutable, Configurable, Connected, metaclass=PlotMeta):
 
         Parameters
         ------
-        listen: bool, optional
-            after showing, keeps listening for file changes to update the plot.
-            This is nice for monitoring.
         return_figureWidget: bool, optional
             if the plot is displayed in a jupyter notebook, whether you want to
             get the figure widget as a return so that you can act on it.
         """
+
         if self._widgets["plotly"]:
 
             from IPython.display import display
@@ -1248,7 +1246,7 @@ class Plot(ShortCutable, Configurable, Connected, metaclass=PlotMeta):
 
             if self._widgets["events"]:
                 # If ipyevents is available, show with shortcut support
-                self._show_jupnb_with_shortcuts(f, **kwargs)
+                self._ipython_display_with_shortcuts(f, **kwargs)
             else:
                 # Else, show without shortcut support
                 display(f)
@@ -1261,7 +1259,7 @@ class Plot(ShortCutable, Configurable, Connected, metaclass=PlotMeta):
         else:
             self.figure.show(**kwargs)
 
-    def _show_jupnb_with_shortcuts(self, fig_widget, **kwargs):
+    def _ipython_display_with_shortcuts(self, fig_widget, **kwargs):
         """
         If the appropiate widget is there (ipyevents, https://github.com/mwcraig/ipyevents),
         we extend plotly's FigureWidget to support keypress events so that we can trigger
