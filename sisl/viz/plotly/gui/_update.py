@@ -4,6 +4,7 @@ import urllib
 import shutil
 from pathlib import Path
 
+
 def update_gui():
     """Installs the latest version of the GUI"""
     gui_root = Path(__file__).parent
@@ -16,7 +17,7 @@ def update_gui():
     # Get the downloadable assets
     assets = release["assets"]
 
-    # Find the file that we want to upload
+    # Find the file that we want to download
     for asset in assets:
         if "build" in asset["name"] and asset["name"].endswith("tar.gz"):
             file_url = asset["browser_download_url"]
