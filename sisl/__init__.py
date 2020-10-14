@@ -53,6 +53,8 @@ Advanced classes
 __author__ = "Nick Papior"
 __copyright__ = "LGPL-3.0"
 
+from . import _environ
+
 # Import bibtex, version string and the major, minor, micro as well
 from . import info
 from .info import bibtex as __bibtex__
@@ -136,8 +138,25 @@ from .io.sile import (add_sile, get_sile_class, get_sile,
 # sisl.geom.graphene
 from . import geom
 
-# Import the visualization module so that it initializes
-from . import viz
+
+def load_viz():
+    """
+    Loads the visualization module. 
+
+    This is done lazily to avoid unnecessary overhead when sisl is imported solely
+    for computation, when any delay is important to preserve efficiency
+    """
+    from . import viz as loaded_viz
+
+    globals()["viz"] = loaded_viz
+
+# Load the visualization module if we need to
+try:
+    if _environ.get_environ_variable("SISL_VIZ_AUTOLOAD") or __IPYTHON__:
+        load_viz()
+except:
+    pass
+
 
 # Make these things publicly available
 __all__ = [s for s in dir() if not s.startswith('_')]

@@ -70,3 +70,12 @@ register_environ_variable("SISL_NPROCS", os.cpu_count(),
 register_environ_variable("SISL_TMP", "__sisltmp",
                           "Path where temporary files should be stored",
                           process=Path)
+
+register_environ_variable("SISL_VIZ_AUTOLOAD", "true",
+                          """Determines whether the visualization module is automatically loaded.
+                          If not, you can load it using sisl.load_viz().
+                          It may be good to turn auto load off if you are doing performance critical
+                          calculations to avoid the overhead of loading the visualization module.
+                          If you are in an ipython environment, it always get loaded regardless of what the
+                          environment variable is.""",
+                          process=lambda val: val and val.lower().strip() in ["t", "true"])
