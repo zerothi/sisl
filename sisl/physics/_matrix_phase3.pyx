@@ -14,14 +14,10 @@ __all__ = ['_phase3_csr_f32', '_phase3_csr_f64',
 
 # The fused data-types forces the data input to be of "correct" values.
 ctypedef fused numeric_real:
-    int
-    long
     float
     double
 
 ctypedef fused numeric_complex:
-    int
-    long
     float
     double
     float complex

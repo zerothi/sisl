@@ -12,8 +12,6 @@ __all__ = ['_phase_so_csr_c64', '_phase_so_csr_c128',
 
 # The fused data-types forces the data input to be of "correct" values.
 ctypedef fused numeric_complex:
-    int
-    long
     float
     double
     float complex

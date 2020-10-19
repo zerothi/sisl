@@ -1,6 +1,8 @@
 0.X.Y
 =====
 
+- removed support for int and long as matrix types, only float/complex
+
 - Enabled `sgrid` to write tables of data
 
 - Merged spin_orbital_moment(deleted) and spin_moment with
