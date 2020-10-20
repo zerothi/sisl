@@ -249,25 +249,13 @@ class TestHamiltonian:
         n_s = H.geometry.sc.n_s
 
         for k in [[0, 0, 0], [0.15, 0.1, 0.05]]:
-            csr = H.Hk(k, format='csr', gauge=gauge, dtype=dtype)
-            sc_csr1 = H.Hk(k, format='sc:csr', gauge=gauge, dtype=dtype)
-            sc_csr2 = H.Hk(k, format='sc', gauge=gauge, dtype=dtype)
-            sc_mat = H.Hk(k, format='sc:array', gauge=gauge, dtype=dtype)
-            mat = sc_mat.reshape(no, n_s, no).sum(1)
-
-            assert sc_mat.shape == sc_csr1.shape
-            assert allclose(csr.toarray(), mat)
-            assert allclose(sc_csr1.toarray(), sc_csr2.toarray())
-            for isc in range(n_s):
-                csr -= sc_csr1[:, isc * no: (isc + 1) * no]
-            assert allclose(csr.toarray(), 0.)
-
-            if not orthogonal:
-                csr = H.Sk(k, format='csr', dtype=dtype)
-                sc_csr1 = H.Sk(k, format='sc:csr', dtype=dtype)
-                sc_csr2 = H.Sk(k, format='sc', dtype=dtype)
-                sc_mat = H.Sk(k, format='sc:array', dtype=dtype)
-                mat = sc_mat.reshape(no, n_s, -1).sum(1)
+            for attr, kwargs in [("Hk", {"gauge": gauge}), ("Sk", {})]:
+                Mk = getattr(H, attr)
+                csr = Mk(k, format='csr', **kwargs, dtype=dtype)
+                sc_csr1 = Mk(k, format='sc:csr', **kwargs, dtype=dtype)
+                sc_csr2 = Mk(k, format='sc', **kwargs, dtype=dtype)
+                sc_mat = Mk(k, format='sc:array', **kwargs, dtype=dtype)
+                mat = sc_mat.reshape(no, n_s, no).sum(1)
 
                 assert sc_mat.shape == sc_csr1.shape
                 assert allclose(csr.toarray(), mat)

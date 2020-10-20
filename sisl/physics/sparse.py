@@ -299,14 +299,23 @@ class SparseOrbitalBZ(SparseOrbital):
         r""" For an orthogonal case we always return the identity matrix """
         if dtype is None:
             dtype = np.float64
-        no = len(self)
+        nr = len(self)
+        nc = nr
+        if 'sc:' in format:
+            format = format[3:]
+            nc = self.n_s * nr
+        elif 'sc' == format:
+            format = 'csr'
+            nc = self.n_s * nr
         # In the "rare" but could be found situation where
         # the matrix only describes neighbouring couplings it is vital
         # to not return anything
         # TODO
         if format in ['array', 'matrix', 'dense']:
-            return np.diag(np.ones(no, dtype=dtype))
-        S = csr_matrix((no, no), dtype=dtype)
+            S = np.zeros([nr, nc], dtype=dtype)
+            np.fill_diagonal(S, 1.)
+            return S
+        S = csr_matrix((nr, nc), dtype=dtype)
         S.setdiag(1.)
         return S.asformat(format)
 
