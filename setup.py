@@ -180,39 +180,39 @@ cmdclass["sdist"] = EnsureSource_sdist
 # In this scheme all modules are named the same as their pyx files.
 # If the module name should change, simply manually put the pyxfile.
 ext_cython = {
-    "sisl/_indices": {},
-    "sisl/_math_small": {},
-    "sisl/_sparse": {
+    "sisl._indices": {},
+    "sisl._math_small": {},
+    "sisl._sparse": {
         "depends": [_ospath("sisl/_indices.pxd")]
     },
-    "sisl/_supercell": {},
-    "sisl/physics/_bloch": {},
-    "sisl/physics/_phase": {},
-    "sisl/physics/_matrix_utils": {},
-    "sisl/physics/_matrix_k": {},
-    "sisl/physics/_matrix_dk": {},
-    "sisl/physics/_matrix_ddk": {},
-    "sisl/physics/_matrix_phase3": {},
-    "sisl/physics/_matrix_phase3_nc": {},
-    "sisl/physics/_matrix_phase3_so": {},
-    "sisl/physics/_matrix_phase": {},
-    "sisl/physics/_matrix_phase_nc_diag": {},
-    "sisl/physics/_matrix_phase_nc": {},
-    "sisl/physics/_matrix_phase_so": {},
-    "sisl/physics/_matrix_sc_phase": {
+    "sisl._supercell": {},
+    "sisl.physics._bloch": {},
+    "sisl.physics._phase": {},
+    "sisl.physics._matrix_utils": {},
+    "sisl.physics._matrix_k": {},
+    "sisl.physics._matrix_dk": {},
+    "sisl.physics._matrix_ddk": {},
+    "sisl.physics._matrix_phase3": {},
+    "sisl.physics._matrix_phase3_nc": {},
+    "sisl.physics._matrix_phase3_so": {},
+    "sisl.physics._matrix_phase": {},
+    "sisl.physics._matrix_phase_nc_diag": {},
+    "sisl.physics._matrix_phase_nc": {},
+    "sisl.physics._matrix_phase_so": {},
+    "sisl.physics._matrix_sc_phase": {
         "depends": [_ospath("sisl/_sparse.pxd")]
     },
-    "sisl/physics/_matrix_sc_phase_nc_diag": {
+    "sisl.physics._matrix_sc_phase_nc_diag": {
         "depends": [_ospath("sisl/_sparse.pxd"),
                     _ospath("sisl/physics/_matrix_utils.pxd")
         ]
     },
-    "sisl/physics/_matrix_sc_phase_nc": {
+    "sisl.physics._matrix_sc_phase_nc": {
         "depends": [_ospath("sisl/_sparse.pxd"),
                     _ospath("sisl/physics/_matrix_utils.pxd")
         ]
     },
-    "sisl/physics/_matrix_sc_phase_so": {
+    "sisl.physics._matrix_sc_phase_so": {
         "depends": [_ospath("sisl/_sparse.pxd"),
                     _ospath("sisl/physics/_matrix_utils.pxd")
         ]
@@ -227,7 +227,7 @@ extensions = []
 for name, data in ext_cython.items():
     # Create pyx-file name
     # Default to module name + .pyx
-    pyxfile = data.get("pyxfile", f"{name}.pyx")
+    pyxfile = data.get("pyxfile", f"{name}.pyx").replace(".", os.path.sep)
     extensions.append(
         Extension(name,
                   sources=[f"{pyxfile[:-4]}{suffix}"] + data.get("sources", []),
