@@ -214,7 +214,11 @@ def fold_csr_diagonal_nc(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     return FOLD_ptr, FOLD_ncol, FOLD_col[:nz].copy()
 
 
+# Here we have the int + long
+# For some analysis it may be useful
 ctypedef fused numeric_complex:
+    int
+    long
     float
     double
     float complex
