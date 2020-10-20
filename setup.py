@@ -163,95 +163,81 @@ class EnsureSource_sdist(sdist):
         if "cython" in cmdclass:
             self.run_command("cython")
         else:
-            pyx_files = [(_pyxfiles, "c"), (self._cpp_pyxfiles, "cpp")]
-
-            for pyxfiles, extension in [(_pyxfiles, "c")]:
-                for pyxfile in pyxfiles:
-                    sourcefile = pyxfile[:-3] + extension
-                    msg = (f"{extension}-source file '{sourcefile}' not found.\n"
-                           "Run 'setup.py cython' before sdist."
-                    )
-                    assert os.path.isfile(sourcefile), msg
+            for ext, ext_d in ext_cython.items():
+                pyx = ext_d.get("pyxfile", f"{ext}.pyx")
+                source = f"{pyx[:-4]}.c"
+                msg = (f".c-source file '{source}' not found.\n"
+                       "Run 'setup.py cython' to convert {pyx} to {source} before sdist."
+                )
+                assert os.path.isfile(source), msg
         super().run()
 
 cmdclass["sdist"] = EnsureSource_sdist
 
 
-_pyxfiles = [
-    "sisl/_indices.pyx",
-    "sisl/_math_small.pyx",
-    "sisl/physics/_bloch.pyx",
-    "sisl/physics/_matrix_utils.pyx",
-    "sisl/physics/_matrix_ddk.pyx",
-    "sisl/physics/_matrix_dk.pyx",
-    "sisl/physics/_matrix_k.pyx",
-    "sisl/physics/_matrix_phase3.pyx",
-    "sisl/physics/_matrix_phase3_nc.pyx",
-    "sisl/physics/_matrix_phase3_so.pyx",
-    "sisl/physics/_matrix_phase_nc_diag.pyx",
-    "sisl/physics/_matrix_phase_nc.pyx",
-    "sisl/physics/_matrix_phase.pyx",
-    "sisl/physics/_matrix_phase_so.pyx",
-    "sisl/physics/_matrix_sc_phase_nc_diag.pyx",
-    "sisl/physics/_matrix_sc_phase_nc.pyx",
-    "sisl/physics/_matrix_sc_phase.pyx",
-    "sisl/physics/_matrix_sc_phase_so.pyx",
-    "sisl/physics/_phase.pyx",
-    "sisl/_sparse.pyx",
-    "sisl/_supercell.pyx",
-]
+# Cython extensions can't be merged as a single module
+# It requires a single source file.
+# In this scheme all modules are named the same as their pyx files.
+# If the module name should change, simply manually put the pyxfile.
+ext_cython = {
+    "sisl/_indices": {},
+    "sisl/_math_small": {},
+    "sisl/_sparse": {
+        "depends": [_ospath("sisl/_indices.pxd")]
+    },
+    "sisl/_supercell": {},
+    "sisl/physics/_bloch": {},
+    "sisl/physics/_phase": {},
+    "sisl/physics/_matrix_utils": {},
+    "sisl/physics/_matrix_k": {},
+    "sisl/physics/_matrix_dk": {},
+    "sisl/physics/_matrix_ddk": {},
+    "sisl/physics/_matrix_phase3": {},
+    "sisl/physics/_matrix_phase3_nc": {},
+    "sisl/physics/_matrix_phase3_so": {},
+    "sisl/physics/_matrix_phase": {},
+    "sisl/physics/_matrix_phase_nc_diag": {},
+    "sisl/physics/_matrix_phase_nc": {},
+    "sisl/physics/_matrix_phase_so": {},
+    "sisl/physics/_matrix_sc_phase": {
+        "depends": [_ospath("sisl/_sparse.pxd")]
+    },
+    "sisl/physics/_matrix_sc_phase_nc_diag": {
+        "depends": [_ospath("sisl/_sparse.pxd"),
+                    _ospath("sisl/physics/_matrix_utils.pxd")
+        ]
+    },
+    "sisl/physics/_matrix_sc_phase_nc": {
+        "depends": [_ospath("sisl/_sparse.pxd"),
+                    _ospath("sisl/physics/_matrix_utils.pxd")
+        ]
+    },
+    "sisl/physics/_matrix_sc_phase_so": {
+        "depends": [_ospath("sisl/_sparse.pxd"),
+                    _ospath("sisl/physics/_matrix_utils.pxd")
+        ]
+    },
+}
 
-# Prepopulate the ext_cython to create extensions
-# Later, when we complicate things more, we
-# may need the dictionary to add include statements etc.
-# I.e. ext_cython[...] = {pyxfile: ...,
-#                       include: ...,
-#                       depends: ...,
-#                       sources: ...}
 # All our extensions depend on numpy/core/include
 numpy_incl = pkg_resources.resource_filename("numpy", _ospath("core/include"))
-
-ext_cython = {}
-for pyx in _pyxfiles:
-    # remove ".pyx"
-    pyx_src = pyx[:-4]
-    pyx_mod = pyx_src.replace("/", ".")
-    ext_cython[pyx_mod] = {
-        "pyxfile": _ospath(pyx_src),
-        "include": [numpy_incl]
-    }
-    #ext_cython[pyx_mod] = {"pyxfile": _ospath(pyx_src)}
-
-ext_cython["sisl._sparse"]["depends"] = [_ospath("sisl/_indices.pxd")]
-# Add sisl/_sparse.pxd as dependency
-for key in ext_cython:
-    if "_matrix_sc" in key:
-        if "depends" in ext_cython[key]:
-            ext_cython[key]["depends"] += [_ospath("sisl/_sparse.pxd")]
-        else:
-            ext_cython[key]["depends"] = [_ospath("sisl/_sparse.pxd")]
-
-    if "_matrix_sc_phase_nc" in key:
-        ext_cython[key]["depends"] += [_ospath("sisl/physics/_matrix_utils.pxd")]
-    elif "_matrix_sc_phase_so" in key:
-        ext_cython[key]["depends"] += [_ospath("sisl/physics/_matrix_utils.pxd")]
 
 # List of extensions for setup(...)
 extensions = []
 for name, data in ext_cython.items():
-    sources = [data["pyxfile"] + suffix] + data.get("sources", [])
-
-    ext = Extension(name,
-        sources=sources,
-        depends=data.get("depends", []),
-        include_dirs=data.get("include", None),
-        language=data.get("language", "c"),
-        define_macros=macros + data.get("macros", []),
-        extra_compile_args=extra_compile_args,
-        extra_link_args=extra_link_args,
+    # Create pyx-file name
+    # Default to module name + .pyx
+    pyxfile = data.get("pyxfile", f"{name}.pyx")
+    extensions.append(
+        Extension(name,
+                  sources=[f"{pyxfile[:-4]}{suffix}"] + data.get("sources", []),
+                  depends=data.get("depends", []),
+                  include_dirs=[numpy_incl] + data.get("include", []),
+                  language=data.get("language", "c"),
+                  define_macros=macros + data.get("macros", []),
+                  extra_compile_args=extra_compile_args,
+                  extra_link_args=extra_link_args)
     )
-
-    extensions.append(ext)
 
 
 # Specific Fortran extensions
