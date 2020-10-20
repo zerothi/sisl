@@ -3482,7 +3482,9 @@ class Geometry(SuperCellChild):
              ``True``, returns list of the full atom
         """
         atoms = self._sanitize_atoms(atoms)
-        off = np.divmod(atoms, self.na, out=(None, atoms))[0] * self.no
+        # we must not alter `atoms` as it may come from outside
+        off, atoms = np.divmod(atoms, self.na)
+        off *= self.no
         if not all:
             return self.firsto[atoms] + off
         ob = self.firsto[atoms] + off
