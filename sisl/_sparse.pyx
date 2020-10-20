@@ -8,13 +8,13 @@ cimport numpy as np
 from sisl._indices cimport in_1d
 
 __all__ = ["fold_csr_matrix", "fold_csr_matrix_nc",
-           "fold_csr_diagonal_nc", "sparse_dense"]
+           "fold_csr_diagonal_nc", "sparse_dense", "inline_sum"]
 
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef inline Py_ssize_t _sum(const int[::1] array) nogil:
+cdef inline Py_ssize_t inline_sum(const int[::1] array) nogil:
     cdef Py_ssize_t total, i
 
     total = 0
@@ -40,7 +40,7 @@ def fold_csr_matrix(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef int[::1] fold_ptr = FOLD_ptr
     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] FOLD_ncol = np.empty([nr], dtype=np.int32)
     cdef int[::1] fold_ncol = FOLD_ncol
-    cdef np.ndarray[np.int32_t, ndim=1, mode='c'] FOLD_col = np.empty([_sum(ncol)], dtype=np.int32)
+    cdef np.ndarray[np.int32_t, ndim=1, mode='c'] FOLD_col = np.empty([inline_sum(ncol)], dtype=np.int32)
     cdef int[::1] fold_col = FOLD_col
     # local variables
     cdef Py_ssize_t r, ind, nz, c
@@ -97,7 +97,7 @@ def fold_csr_matrix_nc(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] FOLD_ncol = np.empty([nr * 2], dtype=np.int32)
     cdef int[::1] fold_ncol = FOLD_ncol
     # We have to multiply by 4, 2 times the number of rows, and each row couples to 2 more elements
-    cdef np.ndarray[np.int32_t, ndim=1, mode='c'] FOLD_col = np.empty([_sum(ncol) * 4], dtype=np.int32)
+    cdef np.ndarray[np.int32_t, ndim=1, mode='c'] FOLD_col = np.empty([inline_sum(ncol) * 4], dtype=np.int32)
     cdef int[::1] fold_col = FOLD_col
     # local variables
     cdef Py_ssize_t r, rr, ind, nz, c
@@ -166,7 +166,7 @@ def fold_csr_diagonal_nc(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] FOLD_ncol = np.empty([nr * 2], dtype=np.int32)
     cdef int[::1] fold_ncol = FOLD_ncol
     # We have to multiply by 2, 2 times the number of rows
-    cdef np.ndarray[np.int32_t, ndim=1, mode='c'] FOLD_col = np.empty([_sum(ncol) * 2], dtype=np.int32)
+    cdef np.ndarray[np.int32_t, ndim=1, mode='c'] FOLD_col = np.empty([inline_sum(ncol) * 2], dtype=np.int32)
     cdef int[::1] fold_col = FOLD_col
     # local variables
     cdef Py_ssize_t r, rr, ind, nz, c
@@ -215,8 +215,6 @@ def fold_csr_diagonal_nc(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
 
 
 ctypedef fused numeric_complex:
-    int
-    long
     float
     double
     float complex

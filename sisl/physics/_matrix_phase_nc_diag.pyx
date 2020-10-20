@@ -1,3 +1,4 @@
+# cython: boundscheck=False, wraparound=False, initializedcheck=False, cdivision=True
 cimport cython
 
 import numpy as np
@@ -18,10 +19,6 @@ ctypedef fused numeric_complex:
     double complex
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.initializedcheck(False)
-@cython.cdivision(True)
 def _phase_nc_diag_csr_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                            np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
                            np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
@@ -71,10 +68,6 @@ def _phase_nc_diag_csr_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.initializedcheck(False)
-@cython.cdivision(True)
 def _phase_nc_diag_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                             np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
                             np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
@@ -124,10 +117,6 @@ def _phase_nc_diag_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     return csr_matrix((V, V_COL, V_PTR), shape=(nr, nr))
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.initializedcheck(False)
-@cython.cdivision(True)
 def _phase_nc_diag_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                              np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
                              np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
@@ -167,10 +156,6 @@ def _phase_nc_diag_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     return V
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.initializedcheck(False)
-@cython.cdivision(True)
 def _phase_nc_diag_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                               np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
                               np.ndarray[np.int32_t, ndim=1, mode='c'] COL,

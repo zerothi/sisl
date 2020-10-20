@@ -1,3 +1,4 @@
+# cython: boundscheck=False, wraparound=False, initializedcheck=False, cdivision=True
 cimport cython
 
 import numpy as np
@@ -18,10 +19,6 @@ ctypedef fused numeric_complex:
     double complex
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.initializedcheck(False)
-@cython.cdivision(True)
 def _phase3_so_csr_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                        np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
                        np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
@@ -132,10 +129,6 @@ def _phase3_so_csr_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     return csr_matrix((Vx, V_COL, V_PTR), shape=(nr, nr)), csr_matrix((Vy, V_COL, V_PTR), shape=(nr, nr)), csr_matrix((Vz, V_COL, V_PTR), shape=(nr, nr))
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.initializedcheck(False)
-@cython.cdivision(True)
 def _phase3_so_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                         np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
                         np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
@@ -246,10 +239,6 @@ def _phase3_so_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     return csr_matrix((Vx, V_COL, V_PTR), shape=(nr, nr)), csr_matrix((Vy, V_COL, V_PTR), shape=(nr, nr)), csr_matrix((Vz, V_COL, V_PTR), shape=(nr, nr))
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.initializedcheck(False)
-@cython.cdivision(True)
 def _phase3_so_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                          np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
                          np.ndarray[np.int32_t, ndim=1, mode='c'] COL,
@@ -348,10 +337,6 @@ def _phase3_so_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
     return Vx, Vy, Vz
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.initializedcheck(False)
-@cython.cdivision(True)
 def _phase3_so_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                           np.ndarray[np.int32_t, ndim=1, mode='c'] NCOL,
                           np.ndarray[np.int32_t, ndim=1, mode='c'] COL,

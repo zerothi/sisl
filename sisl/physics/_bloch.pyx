@@ -1,3 +1,4 @@
+# cython: boundscheck=False, wraparound=False, initializedcheck=False, cdivision=True
 cimport cython
 from libc.math cimport cos, sin, pi
 
@@ -7,6 +8,9 @@ cimport numpy as np
 __all__ = ['bloch_unfold']
 
 
+@cython.boundscheck(True)
+@cython.wraparound(True)
+@cython.initializedcheck(True)
 def bloch_unfold(np.ndarray[np.int32_t, ndim=1, mode='c'] B,
                  np.ndarray[np.float64_t, ndim=2, mode='c'] k,
                  np.ndarray M):
@@ -40,9 +44,6 @@ def bloch_unfold(np.ndarray[np.int32_t, ndim=1, mode='c'] B,
     raise ValueError('bloch_unfold: requires dtype to be either complex64 or complex128.')
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.initializedcheck(False)
 def _unfold64(const int[::1] B, const double[:, :, :, ::1] k2pi,
               const float complex[:, :, ::1] m):
     """ Main unfolding routine for a matrix `m`. """
@@ -83,9 +84,6 @@ def _unfold64(const int[::1] B, const double[:, :, :, ::1] k2pi,
     return M
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.initializedcheck(False)
 cdef void _unfold64_matrix(const double w,
                            const Py_ssize_t B0, const Py_ssize_t B1, const Py_ssize_t B2,
                            const double k0, const double k1, const double k2,
@@ -145,10 +143,6 @@ cdef void _unfold64_matrix(const double w,
                     J += 1
 
 
-@cython.cdivision(True)
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.initializedcheck(False)
 cdef void _unfold64_3(const Py_ssize_t B0, const Py_ssize_t B1, const Py_ssize_t B2,
                       const double[:, :, :, ::1] k2pi,
                       const Py_ssize_t N1, const Py_ssize_t N2,
@@ -173,10 +167,6 @@ cdef void _unfold64_3(const Py_ssize_t B0, const Py_ssize_t B1, const Py_ssize_t
                 T = T + 1
 
 
-@cython.cdivision(True)
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.initializedcheck(False)
 cdef void _unfold64_1(const Py_ssize_t NA, const double[:] kA2pi,
                       const Py_ssize_t N1, const Py_ssize_t N2,
                       const float complex[:, :, ::1] m,
@@ -233,10 +223,6 @@ cdef void _unfold64_1(const Py_ssize_t NA, const double[:] kA2pi,
                     M[TA, j, iA, i] = M[TA-1, j, iA-1, i]
 
 
-@cython.cdivision(True)
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.initializedcheck(False)
 cdef void _unfold64_2(const Py_ssize_t NA, const double[:] kA2pi,
                       const Py_ssize_t NB, const double[:] kB2pi,
                       const Py_ssize_t N1, const Py_ssize_t N2,
@@ -365,9 +351,6 @@ cdef void _unfold64_2(const Py_ssize_t NA, const double[:] kA2pi,
                             M[TB*NA+TA, j, iB*NA+iA, i] = M[(TB-1)*NA+TA, j, (iB-1)*NA+iA, i]
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.initializedcheck(False)
 def _unfold128(const int[::1] B, const double[:, :, :, ::1] k2pi,
                const double complex[:, :, ::1] m):
     """ Main unfolding routine for a matrix `m`. """
@@ -408,9 +391,6 @@ def _unfold128(const int[::1] B, const double[:, :, :, ::1] k2pi,
     return M
 
 
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.initializedcheck(False)
 cdef void _unfold128_matrix(const double w,
                             const Py_ssize_t B0, const Py_ssize_t B1, const Py_ssize_t B2,
                             const double k0, const double k1, const double k2,
@@ -470,10 +450,6 @@ cdef void _unfold128_matrix(const double w,
                     J += 1
 
 
-@cython.cdivision(True)
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.initializedcheck(False)
 cdef void _unfold128_3(const Py_ssize_t B0, const Py_ssize_t B1, const Py_ssize_t B2,
                        const double[:, :, :, ::1] k2pi,
                        const Py_ssize_t N1, const Py_ssize_t N2,
@@ -498,10 +474,6 @@ cdef void _unfold128_3(const Py_ssize_t B0, const Py_ssize_t B1, const Py_ssize_
                 T = T + 1
 
 
-@cython.cdivision(True)
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.initializedcheck(False)
 cdef void _unfold128_1(const Py_ssize_t NA, const double[:] kA2pi,
                        const Py_ssize_t N1, const Py_ssize_t N2,
                        const double complex[:, :, ::1] m,
@@ -557,10 +529,6 @@ cdef void _unfold128_1(const Py_ssize_t NA, const double[:] kA2pi,
                     M[TA, j, iA, i] = M[TA-1, j, iA-1, i]
 
 
-@cython.cdivision(True)
-@cython.boundscheck(False)
-@cython.wraparound(False)
-@cython.initializedcheck(False)
 cdef void _unfold128_2(const Py_ssize_t NA, const double[:] kA2pi,
                        const Py_ssize_t NB, const double[:] kB2pi,
                        const Py_ssize_t N1, const Py_ssize_t N2,

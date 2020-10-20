@@ -181,6 +181,7 @@ _pyxfiles = [
     "sisl/_indices.pyx",
     "sisl/_math_small.pyx",
     "sisl/physics/_bloch.pyx",
+    "sisl/physics/_matrix_utils.pyx",
     "sisl/physics/_matrix_ddk.pyx",
     "sisl/physics/_matrix_dk.pyx",
     "sisl/physics/_matrix_k.pyx",
@@ -191,6 +192,10 @@ _pyxfiles = [
     "sisl/physics/_matrix_phase_nc.pyx",
     "sisl/physics/_matrix_phase.pyx",
     "sisl/physics/_matrix_phase_so.pyx",
+    "sisl/physics/_matrix_sc_phase_nc_diag.pyx",
+    "sisl/physics/_matrix_sc_phase_nc.pyx",
+    "sisl/physics/_matrix_sc_phase.pyx",
+    "sisl/physics/_matrix_sc_phase_so.pyx",
     "sisl/physics/_phase.pyx",
     "sisl/_sparse.pyx",
     "sisl/_supercell.pyx",
@@ -218,7 +223,18 @@ for pyx in _pyxfiles:
     #ext_cython[pyx_mod] = {"pyxfile": _ospath(pyx_src)}
 
 ext_cython["sisl._sparse"]["depends"] = [_ospath("sisl/_indices.pxd")]
+# Add sisl/_sparse.pxd as dependency
+for key in ext_cython:
+    if "_matrix_sc" in key:
+        if "depends" in ext_cython[key]:
+            ext_cython[key]["depends"] += [_ospath("sisl/_sparse.pxd")]
+        else:
+            ext_cython[key]["depends"] = [_ospath("sisl/_sparse.pxd")]
 
+    if "_matrix_sc_phase_nc" in key:
+        ext_cython[key]["depends"] += [_ospath("sisl/physics/_matrix_utils.pxd")]
+    elif "_matrix_sc_phase_so" in key:
+        ext_cython[key]["depends"] += [_ospath("sisl/physics/_matrix_utils.pxd")]
 
 # List of extensions for setup(...)
 extensions = []
