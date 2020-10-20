@@ -74,6 +74,8 @@ class DynamicalMatrix(SparseOrbitalBZ):
            the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
+           Prefixing with 'sc:', or simply 'sc' returns the matrix in supercell format
+           with phases.
 
         See Also
         --------

@@ -279,6 +279,9 @@ class SparseOrbitalBZ(SparseOrbital):
            the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
+           Prefixing with 'sc:', or simply 'sc' returns the matrix in supercell format
+           with phases. This is useful for e.g. bond-current calculations where individual
+           hopping + phases are required.
 
         See Also
         --------

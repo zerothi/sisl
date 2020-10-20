@@ -1,6 +1,9 @@
 0.X.Y
 =====
 
+- enabled calculating supercell matrices with phases, format=sc:<format>
+  returns in supercell matrix form (no, no_s)
+
 - removed support for int and long as matrix types, only float/complex
 
 - Enabled `sgrid` to write tables of data

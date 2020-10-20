@@ -97,6 +97,9 @@ class Hamiltonian(SparseOrbitalBZSpin):
            the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,
            however if one always requires operations on dense matrices, one can always
            return in `numpy.ndarray` (`'array'`/`'dense'`/`'matrix'`).
+           Prefixing with 'sc:', or simply 'sc' returns the matrix in supercell format
+           with phases. This is useful for e.g. bond-current calculations where individual
+           hopping + phases are required.
         spin : int, optional
            if the Hamiltonian is a spin polarized one can extract the specific spin direction
            matrix by passing an integer (0 or 1). If the Hamiltonian is not `Spin.POLARIZED`
