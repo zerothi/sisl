@@ -57,7 +57,7 @@ jobs:
       python: 3.6
 
     - stage: Full tests
-      python: 3.8
+      python: 3.9
 
     - python: 3.6
       env: OPTIONAL_DEPENDENCIES=true
