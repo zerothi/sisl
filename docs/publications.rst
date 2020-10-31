@@ -131,6 +131,10 @@ arXiv publications
 
 These publications are as far as we know in the review process.
 
+- B. Focassio, G.R. Schleder, M. Costa, A. Fazzio, C. Lewenkopf,
+  *Structural and electronic properties of realistic two-dimensional amorphous topological insulators*,
+  `2010.14239 <https://arxiv.org/abs/2010.14239>`_
+
 - D. Weckbecker, M. Fleischmann, R. Gupta, W. Landgraf, S. Leitherer, O. Pankratov, S. Sharma, V. Meded, S. Shallcross,
   *Moiré ordered current loops in the graphene twist bilayer*,
   `1901.04712 <https://arxiv.org/abs/1901.04712>`_
