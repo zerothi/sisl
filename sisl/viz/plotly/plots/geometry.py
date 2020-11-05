@@ -227,6 +227,7 @@ class GeometryPlot(Plot):
         "C": "grey",
         "S": "yellow",
         "P": "orange",
+        "Au": "gold",
         "else": "pink"
     }
 
