@@ -11,7 +11,7 @@ from ..plot import Plot, entry_point
 from ..plotutils import find_files
 from ..input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput,\
      IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput, FunctionInput, SileInput, \
-         PlotableInput, SpinSelect
+         PlotableInput, SpinSelect, AiidaNodeInput
 from ..input_fields.range import ErangeInput
 
 
@@ -115,10 +115,10 @@ class BandsPlot(Plot):
             help = "The BandStructure object to be used."
         ),
 
-        ProgramaticInput(key="aiida_bands", name="Aiida BandsData node",
+        AiidaNodeInput(key="aiida_bands", name="Aiida BandsData node",
             default=None,
             help="""
-            The bands data contained in an aiida BandsData node.
+            An aiida BandsData node.
             """
         ),
 

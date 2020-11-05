@@ -1,3 +1,4 @@
+from .aiida_node import AiidaNodeInput
 from .array import Array1DInput, Array2DInput
 from .color import ColorPicker
 from .dropdown import DropdownInput, CreatableDropdown, AtomSelect, SpeciesSelect, OrbitalsNameSelect, SpinSelect, GeomAxisSelect
