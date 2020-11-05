@@ -1,3 +1,4 @@
+from collections import defaultdict
 from functools import partial
 import itertools
 
@@ -350,19 +351,29 @@ class BandsPlot(Plot):
         Creates the bands plot reading from an aiida BandsData node.
         """
 
-        bands = aiida_bands.get_bands()
+        plot_data = aiida_bands._get_bandplot_data(cartesian=True)
+        bands = plot_data["y"]
 
+        # Expand the bands array to have an extra dimension for spin
         if bands.ndim == 2:
             bands = np.expand_dims(bands, 0)
 
+        # Get the info about where to put the labels
+        tick_info = defaultdict(list)
+        for tick, label in plot_data["labels"]:
+            tick_info["ticks"].append(tick)
+            tick_info["ticklabels"].append(label)
+
+        # Construct the dataarray
         self.bands = xr.DataArray(
             bands,
             coords={
                 "spin": np.arange(0, bands.shape[0]),
-                "k": band_node._get_bandplot_data(False)["x"],
+                "k": plot_data["x"],
                 "band": np.arange(0, bands.shape[2]),
             },
             dims=("spin", "k", "band"),
+            attrs={**tick_info}
         )
 
     @entry_point('band structure')
