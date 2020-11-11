@@ -2413,10 +2413,13 @@ class Animation(MultiplePlot):
 
         return self
 
-    @staticmethod
     def zip(*animations):
         """
         Zips multiple animations together.
+
+        This can work both as a static method or an object method:
+        It can be called from the Animation class. However, if called from an Animation, 
+        it will automatically include itself in the animations to zip.
 
         YOU NEED TO MAKE SURE THAT ALL THE ANIMATIONS HAVE THE SAME NUMBER OF FRAMES
 
@@ -2436,20 +2439,6 @@ class Animation(MultiplePlot):
         return Animation(
             plots=frames
         )
-
-    def zip_with(self, *others):
-        """
-        Zips the animation with the other provided animations
-
-        This method is just for convenience, all it does is to use `Animation.zip()`
-
-        Parameters
-        -----------
-        *others: sisl Animation
-            the animations that you want to zip with this one.
-            YOU NEED TO MAKE SURE THAT ALL THE ANIMATIONS HAVE THE SAME NUMBER OF FRAMES
-        """
-        return Animation.zip(self, *others)
 
     def unzip(self):
         """
