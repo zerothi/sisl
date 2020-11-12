@@ -1667,19 +1667,6 @@ class Plot(ShortCutable, Configurable, Connected, metaclass=PlotMeta):
 
         return self
 
-    def v_line(self, x, yrange=None, **kwargs):
-        """
-        Draws a vertical line in the figure (NOT WORKING YET!)
-        """
-        if yrange is None:
-            yrange = self.layout.yaxis.range
-            if yrange is None:
-                yrange = [0, 7000]
-
-        self.add_scatter(mode = "lines", x = [x, x], y = yrange, **kwargs)
-
-        return self
-
     def copy(self):
         """
         Returns a copy of the plot.
