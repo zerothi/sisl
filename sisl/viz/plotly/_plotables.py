@@ -11,6 +11,7 @@ from types import MethodType
 import numpy as np
 
 import sisl.io.siesta as siesta
+import sisl.io.tbtrans as tbtrans
 from sisl.io.sile import get_siles, BaseSile
 
 import sisl
@@ -150,6 +151,7 @@ register(siesta.bandsSileSiesta, BandsPlot, 'bands_file', default=True)
 register(siesta.bandsSileSiesta, FatbandsPlot, 'bands_file')
 
 register(siesta.pdosSileSiesta, PdosPlot, 'pdos_file', default=True)
+register(tbtrans.tbtncSileTBtrans, PdosPlot, 'tbt_out', default=True)
 
 # -----------------------------------------------------
 #           Register plotable sisl objects

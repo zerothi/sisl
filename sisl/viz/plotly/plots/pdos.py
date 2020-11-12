@@ -72,6 +72,17 @@ class PdosPlot(Plot):
             help = """This parameter explicitly sets a .PDOS file. Otherwise, the PDOS file is attempted to read from the fdf file """
         ),
 
+        SileInput(
+            key = "tbt_nc", name = "Path to the TBT.nc file",
+            dtype=sisl.io.tbtrans.tbtncSileTBtrans,
+            width = "s100% m50% l33%",
+            group="dataread",
+            params = {
+                "placeholder": "Write the path to your TBT.nc file here...",
+            },
+            help = """This parameter explicitly sets a .TBT.nc file. Otherwise, the PDOS file is attempted to read from the fdf file """
+        ),
+
         ErangeInput(
             key="Erange",
             default=[-2, 2],
@@ -243,6 +254,26 @@ class PdosPlot(Plot):
             _description="Split the total DOS along the different spin"
         )
 
+    @entry_point('siesta output')
+    def _read_siesta_output(self, pdos_file):
+        """
+        Reads the pdos from a SIESTA .PDOS file.
+        """
+        #Get the info from the .PDOS file
+        self.geometry, self.E, self.PDOS = self.get_sile(pdos_file or "pdos_file").read_data()
+
+    @entry_point("TB trans")
+    def _read_TBtrans(self, root_fdf, tbt_nc):
+        """
+        Reads the PDOS from a *.TBT.nc file coming from a TBtrans run.
+        """
+        #Get the info from the .PDOS file
+        tbt_sile = self.get_sile("tbt_nc")
+        self.PDOS = tbt_sile.DOS(sum=False).data.T
+        self.E = tbt_sile.E
+
+        self.geometry = sisl.get_sile(root_fdf).read_geometry().sub(tbt_sile.a_dev)
+
     @entry_point('hamiltonian')
     def _read_from_H(self, kgrid, kgrid_displ, Erange, nE, E0):
         """
@@ -273,14 +304,6 @@ class PdosPlot(Plot):
         for spin in spin_indices:
             PDOS.append(self.mp.apply.average.PDOS(self.E, spin=spin, eta=True))
         self.PDOS = np.array(PDOS)
-
-    @entry_point('siesta output')
-    def _read_siesta_output(self, pdos_file):
-        """
-        Reads the pdos from a SIESTA .PDOS file.
-        """
-        #Get the info from the .PDOS file
-        self.geometry, self.E, self.PDOS = self.get_sile(pdos_file or "pdos_file").read_data()
 
     def _after_read(self):
         """
