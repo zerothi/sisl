@@ -33,8 +33,9 @@ __all__ += ['tsgfSileSiesta']
 
 
 def _bin_check(obj, method, message):
-    if _siesta.io_m.iostat_query() != 0:
-        raise SileError('{}.{} {} (ierr={})'.format(str(obj), method, message, _siesta.io_m.iostat_query()))
+    ierr = _siesta.io_m.iostat_query()
+    if ierr != 0:
+        raise SileError(f'{str(obj)}.{method} {message} (ierr={ierr})')
 
 
 def _geometry_align(geom_b, geom_u, cls, method):
@@ -76,9 +77,8 @@ def _geometry_align(geom_b, geom_u, cls, method):
 
     if geom_b.na != geom.na:
         # we have no way of solving this issue...
-        raise SileError("{cls}.{method} could not use the passed geometry as the "
-                        "of atoms is not consistent, user-atoms={u_na}, file-atoms={b_na}.".format(cls=cls.__name__, method=method,
-                                                                                                   b_na=geom_b.na, u_na=geom_u.na))
+        raise SileError(f"{cls.__name__}.{method} could not use the passed geometry as the "
+                        f"of atoms is not consistent, user-atoms={geom_u.na}, file-atoms={geom_b.na}.")
 
     # Try and figure out what to do
     if not np.allclose(geom_b.xyz, geom.xyz):

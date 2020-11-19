@@ -19,11 +19,11 @@ subroutine read_tshs_version(fname, version)
 
   read(iu, iostat=ierr) tmp
   if ( ierr /= 0 ) then
-     ! we have a version
-     rewind(iu)
-     read(iu, iostat=ierr) version
+    ! we have a version
+    rewind(iu)
+    read(iu, iostat=ierr) version
   else
-     version = 0
+    version = 0
   end if
   call iostat_update(ierr)
 
@@ -59,6 +59,7 @@ subroutine read_tshs_sizes(fname, nspin, na_u, no_u, n_s, nnz)
     n_s = 0
     nnz = 0
 
+    call iostat_update(-1)
     return
 
   end if
@@ -161,6 +162,7 @@ subroutine read_tshs_cell(fname, n_s, nsc, cell, isc)
     cell = 0._dp
     isc = 0
 
+    call iostat_update(-1)
     return
 
   end if
@@ -254,6 +256,7 @@ subroutine read_tshs_geom(fname, na_u, xa, lasto)
     xa = 0._dp
     cell = 0._dp
 
+    call iostat_update(-1)
     return
 
   end if
@@ -326,6 +329,7 @@ subroutine read_tshs_hs(fname, nspin, no_u, nnz, ncol, list_col, H, S)
     H = 0._dp
     S = 0._dp
 
+    call iostat_update(-1)
     return
 
   end if
@@ -429,6 +433,7 @@ subroutine read_tshs_s(fname, no_u, nnz, ncol, list_col, S)
     list_col = -1
     S = 0._dp
 
+    call iostat_update(-1)
     return
 
   end if
