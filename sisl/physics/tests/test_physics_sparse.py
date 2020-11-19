@@ -66,11 +66,9 @@ def test_eigsh_orthogonal():
 
 
 def test_eigsh_non_orthogonal():
-    gr = _get()
-    sp = SparseOrbitalBZ(gr, orthogonal=False)
-    # not possible in non-orthogonal basis
-    with pytest.raises(ValueError):
-        sp.eigsh()
+    sp = SparseOrbitalBZ(_get(), orthogonal=False)
+    sp.construct([(0.1, 1.44), ([0, 1.], [-2.7, 0])])
+    sp.eigsh(n=1)
 
 
 def test_pickle_non_orthogonal():

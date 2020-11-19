@@ -543,10 +543,10 @@ class SparseOrbitalBZ(SparseOrbital):
         dtype = kwargs.pop('dtype', None)
 
         P = self.Pk(k=k, dtype=dtype, gauge=gauge)
-        if not self.orthogonal:
-            raise ValueError("The sparsity pattern is non-orthogonal, you cannot use the Arnoldi procedure with scipy")
-
-        return lin.eigsh(P, k=n, return_eigenvectors=not eigvals_only, **kwargs)
+        if self.orthogonal:
+            return lin.eigsh(P, k=n, return_eigenvectors=not eigvals_only, **kwargs)
+        S = self.Sk(k=k, dtype=dtype, gauge=gauge)
+        return lin.eigsh(P, M=S, k=n, return_eigenvectors=not eigvals_only, **kwargs)
 
     def __getstate__(self):
         return {
