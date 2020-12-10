@@ -28,6 +28,7 @@ from .atom import Atom, Atoms
 from .shape import Shape, Sphere, Cube
 from ._namedindex import NamedIndex
 from ._category import Category, GenericCategory
+from ._dispatcher import ClassTypeDispatcher, AbstractDispatch
 
 
 __all__ = ['Geometry', 'sgeom']
@@ -4416,6 +4417,48 @@ class Geometry(SuperCellChild):
 
         # We have now created all arguments
         return p, namespace
+
+
+# Create the dispatch methods
+# Add dispatcher methods
+setattr(Geometry, "frm", ClassTypeDispatcher("frm"))
+
+# Define base-class for this
+
+
+class GeometryFromDispatcher(AbstractDispatch):
+    """ Base dispatcher from class passing arguments to Geometry class """
+
+    def __call__(self, *args, **kwargs):
+        return Geometry(*args, **kwargs)
+
+    def dispatch(self, *args, **kwargs):
+        return self(*args, **kwargs)
+
+
+# The default try would be to convert any *unknown* arguments
+# directly to feed the Geometry instantiation.
+Geometry.frm.register("sisl", GeometryFromDispatcher, default=True)
+
+
+class GeometryFromAseDispatcher(GeometryFromDispatcher):
+    """ Base dispatcher from class passing arguments to Geometry class """
+
+    def __call__(self, aseg, **kwargs):
+        Z = aseg.get_atomic_numbers()
+        xyz = aseg.get_positions()
+        cell = aseg.get_cell()
+        return Geometry(xyz, atoms=Z, sc=cell, **kwargs)
+
+Geometry.frm.register("ase", GeometryFromAseDispatcher)
+
+
+class GeometryFromSileDispatcher(GeometryFromDispatcher):
+    """ Base dispatcher from class passing arguments to Geometry class """
+
+    def __call__(self, *args, **kwargs):
+        return Geometry.read(*args, **kwargs)
+Geometry.frm.register(str, GeometryFromAseDispatcher)
 
 
 @set_module("sisl")

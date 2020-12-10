@@ -96,7 +96,7 @@ class Dispatcher:
             return f"{self.__name__}{{{dispatchs}\n}}"
         return f"{self.__name__}{{{dispatchs},\n {attrs}\n}}"
 
-    def register(self, key, dispatch, default=False):
+    def register(self, key, dispatch, default=False, overwrite=False):
         """ Register a dispatch class to this container
 
         Parameter
@@ -107,7 +107,12 @@ class Dispatcher:
             dispatch class to be registered
         default : bool, optional
             if true, `dispatch` will be the default when requesting it
+        overwrite : bool, optional
+            if true and `key` already exists in the list of dispatchs, then
+            it will be overwritten, otherwise a `LookupError` is raised.
         """
+        if not overwrite and key in self._dispatchs:
+            raise LookupError(f"{self.__class__.__name__} already has {key} registered (and overwrite is false)")
         self._dispatchs[key] = dispatch
         if default:
             self._default = key
@@ -162,7 +167,7 @@ class ObjectDispatcher(Dispatcher):
         obj = str(self._obj).replace("\n", "\n ")
         return super().__str__().replace("{", f"{{\n {obj},\n ", 1)
 
-    def register(self, key, dispatch, default=False, to_class=True):
+    def register(self, key, dispatch, default=False, overwrite=False, to_class=True):
         """ Register a dispatch class to this object and to the object class instance (if existing)
 
         Parameter
@@ -175,15 +180,18 @@ class ObjectDispatcher(Dispatcher):
             this dispatch class will be the default on this object _only_.
             To register a class as the default class-wide, do this on the class
             variable.
+        overwrite : bool, optional
+            if true and `key` already exists in the list of dispatchs, then
+            it will be overwritten, otherwise a `LookupError` is raised.
         to_class : bool, optional
             whether the dispatch class will also be registered with the
             contained object's class instance
         """
-        super().register(key, dispatch, default)
+        super().register(key, dispatch, default, overwrite)
         if to_class:
             cls_dispatch = getattr(self._obj.__class__, self._cls_attr_name, None)
             if isinstance(cls_dispatch, ClassDispatcher):
-                cls_dispatch.register(key, dispatch)
+                cls_dispatch.register(key, dispatch, overwrite=overwrite)
 
     def __call__(self, **attrs):
         # Return a new instance of this object (with correct attributes)
@@ -248,6 +256,29 @@ class ClassDispatcher(Dispatcher):
                                 cls_attr_name=self._attr_name,
                                 obj_getattr=self._obj_getattr,
                                 **self._attrs)
+
+
+class ClassTypeDispatcher(ClassDispatcher):
+    __slots__ = tuple()
+
+    def __get__(self, instance, owner):
+        return self
+
+    def __call__(self, *args, **kwargs):
+        # now check the first argument
+        if len(args) > 0:
+            typ = type(args[0])
+        elif self._default is None:
+            raise ValueError(f"{self.__class__.__name__} could not find any type from the input arguments and no default are defined.")
+        else:
+            return self._dispatchs[self._default](*args, **kwargs)
+        return self._dispatchs[typ](*args, **kwargs)
+
+    def __getitem__(self, key):
+        r""" Get method using dispatch according to `key` """
+        return self._dispatchs[key]
+
+    __getattr__ = __getitem__
 
 
 '''
