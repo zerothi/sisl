@@ -3,6 +3,7 @@ from numbers import Integral, Real
 from math import acos
 from itertools import product
 from collections import OrderedDict
+from pathlib import Path
 
 import numpy as np
 from numpy import ndarray, int32, bool_
@@ -4450,16 +4451,17 @@ Geometry.frm.register("ase", GeometryFromAseDispatcher)
 # currently we can't ensure the ase Atoms type
 # to get it by type(). That requires ase to be importable.
 try:
-    from ase import Atoms ase ASE_Atoms
+    from ase import Atoms as ASE_Atoms
     Geometry.frm.register(ASE_Atoms, GeometryFromAseDispatcher)
 except:
     pass
 
 
-class GeometryFromSileDispatcher(GeometryFromDispatcher):
+class GeometryFromFileDispatcher(GeometryFromDispatcher):
     def __call__(self, *args, **kwargs):
         return self._obj.read(*args, **kwargs)
-Geometry.frm.register(str, GeometryFromSileDispatcher)
+Geometry.frm.register(str, GeometryFromFileDispatcher)
+Geometry.frm.register(Path, GeometryFromFileDispatcher)
 
 
 #setattr(Geometry, "to", ClassTypeDispatcher("to"))
