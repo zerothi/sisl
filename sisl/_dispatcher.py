@@ -259,9 +259,13 @@ class ClassDispatcher(Dispatcher):
 
 
 class ClassTypeDispatcher(ClassDispatcher):
-    __slots__ = tuple()
+    __slots__ = ('_cls',)
 
     def __get__(self, instance, owner):
+        if instance is None:
+            self._cls = owner
+        else:
+            self._cls = instance.__class__
         return self
 
     def __call__(self, *args, **kwargs):
@@ -271,8 +275,9 @@ class ClassTypeDispatcher(ClassDispatcher):
         elif self._default is None:
             raise ValueError(f"{self.__class__.__name__} could not find any type from the input arguments and no default are defined.")
         else:
-            return self._dispatchs[self._default](*args, **kwargs)
-        return self._dispatchs[typ](*args, **kwargs)
+            typ = self._default
+        print(f"calling ClassTypeDispatcher.__call__ {typ}", self._dispatchs[typ])
+        return self._dispatchs[typ](self._cls)(*args, **kwargs)
 
     def __getitem__(self, key):
         r""" Get method using dispatch according to `key` """

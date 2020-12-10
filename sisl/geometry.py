@@ -4424,13 +4424,11 @@ class Geometry(SuperCellChild):
 setattr(Geometry, "frm", ClassTypeDispatcher("frm"))
 
 # Define base-class for this
-
-
 class GeometryFromDispatcher(AbstractDispatch):
     """ Base dispatcher from class passing arguments to Geometry class """
 
     def __call__(self, *args, **kwargs):
-        return Geometry(*args, **kwargs)
+        return self._obj(*args, **kwargs)
 
     def dispatch(self, *args, **kwargs):
         return self(*args, **kwargs)
@@ -4442,23 +4440,49 @@ Geometry.frm.register("sisl", GeometryFromDispatcher, default=True)
 
 
 class GeometryFromAseDispatcher(GeometryFromDispatcher):
-    """ Base dispatcher from class passing arguments to Geometry class """
-
     def __call__(self, aseg, **kwargs):
         Z = aseg.get_atomic_numbers()
         xyz = aseg.get_positions()
         cell = aseg.get_cell()
-        return Geometry(xyz, atoms=Z, sc=cell, **kwargs)
+        return self._obj(xyz, atoms=Z, sc=cell, **kwargs)
 
 Geometry.frm.register("ase", GeometryFromAseDispatcher)
+# currently we can't ensure the ase Atoms type
+# to get it by type(). That requires ase to be importable.
+try:
+    from ase import Atoms ase ASE_Atoms
+    Geometry.frm.register(ASE_Atoms, GeometryFromAseDispatcher)
+except:
+    pass
 
 
 class GeometryFromSileDispatcher(GeometryFromDispatcher):
-    """ Base dispatcher from class passing arguments to Geometry class """
-
     def __call__(self, *args, **kwargs):
-        return Geometry.read(*args, **kwargs)
-Geometry.frm.register(str, GeometryFromAseDispatcher)
+        return self._obj.read(*args, **kwargs)
+Geometry.frm.register(str, GeometryFromSileDispatcher)
+
+
+#setattr(Geometry, "to", ClassTypeDispatcher("to"))
+#
+#class GeometryToDispatcher(AbstractDispatch):
+#    """ Base dispatcher from class passing from Geometry class """
+#
+#    def dispatch(self, *args, **kwargs):
+#        return self(*args, **kwargs)
+#
+#
+#class GeometryToAseDispatcher(GeometryFromDispatcher):
+#    def __call__(self, _, **kwargs):
+#        from ase import Atoms as ASE_Atoms
+#        return ASE_Atoms(symbols=self.atoms.Z, positions=self.xyz.tolist(),
+#                         cell=self.cell.tolist(), pbc=self.nsc > 1, **kwargs)
+#Geometry.to.register("ase", GeometryToAseDispatcher)
+#
+#class GeometryToSileDispatcher(GeometryFromDispatcher):
+#    def __call__(self, *args, **kwargs):
+#        return self._obj.write(*args, **kwargs)
+#Geometry.to.register(str, GeometryToSileDispatcher)
+
 
 
 @set_module("sisl")
