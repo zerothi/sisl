@@ -134,7 +134,6 @@ which fills in the version number.
    installation
    tutorials.rst
    scripts/scripts
-   visualization/visualization
    rst/files
 
 .. toctree::
@@ -142,6 +141,13 @@ which fills in the version number.
    :caption: Toolboxes
 
    toolbox/toolbox
+
+.. toctree::
+   :maxdepth: 4
+   :caption: Visualization
+   :glob:
+   
+   visualization/*/index
 
 .. toctree::
    :maxdepth: 3

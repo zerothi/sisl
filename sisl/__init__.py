@@ -53,6 +53,8 @@ Advanced classes
 __author__ = "Nick Papior"
 __copyright__ = "LGPL-3.0"
 
+from . import _environ
+
 # Import bibtex, version string and the major, minor, micro as well
 from . import info
 from .info import bibtex as __bibtex__
@@ -127,7 +129,7 @@ from .physics import *
 # that sisl is made of.
 from . import io
 from .io.sile import (add_sile, get_sile_class, get_sile,
-                      get_siles, SileError,
+                      get_siles, get_sile_rules, SileError,
                       BaseSile, Sile, SileCDF, SileBin)
 
 # Import the default geom structure
@@ -135,6 +137,10 @@ from .io.sile import (add_sile, get_sile_class, get_sile,
 # import sisl
 # sisl.geom.graphene
 from . import geom
+
+if _environ.get_environ_variable("SISL_VIZ_AUTOLOAD"):
+    from . import viz
+
 
 # Make these things publicly available
 __all__ = [s for s in dir() if not s.startswith('_')]

@@ -5,11 +5,12 @@ import ast
 import operator as op
 from numbers import Integral
 from math import pi
-from importlib import import_module
+import importlib
+
 
 __all__ = ["merge_instances", "str_spec", "direction", "angle"]
 __all__ += ["iter_shape", "math_eval", "allow_kwargs"]
-__all__ += ["import_attr"]
+__all__ += ["import_attr", "lazy_import"]
 
 
 # supported operators
@@ -334,5 +335,48 @@ def import_attr(attr_path):
     """
     module, variable = attr_path.rsplit(".", 1)
 
-    module = import_module(module)
+    module = importlib.import_module(module)
     return getattr(module, variable)
+
+
+def lazy_import(name, package=None):
+    """ Lazily import a module or submodule
+
+    Parameters
+    ----------
+    name : str
+       module name to load, optionally a sub-package from `package`
+    package : str, optional
+       whether `name` is a sub-package
+
+    Examples
+    --------
+    >>> hello = lazy_import("hello")
+    >>> hello.mod_func
+
+    This will only load the module upon method inspection in
+    the module.
+
+    >>> hello = lazy_import(".hello", "package")
+    >>> hello.mod_func
+
+    The dot is required to indicate it being a name within package.
+
+    NOTE currently this is not working due to id's changing upon
+    actual loading. I have yet to figure out why...
+    """
+    util = importlib.util
+
+    abs_name = util.resolve_name(name, package)
+    if abs_name in sys.modules:
+        return sys.modules[abs_name]
+
+    # Create module specification
+    # Find specifications for module
+    spec = util.find_spec(abs_name)
+    module = util.module_from_spec(spec)
+
+    # Make module with proper locking and get it inserted into sys.modules.
+    util.LazyLoader(spec.loader).exec_module(module)
+
+    return module

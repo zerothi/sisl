@@ -831,18 +831,39 @@ class SuperCell:
         raise ValueError(
             "Creating a unit-cell has to have 1, 3 or 6 arguments, please correct.")
 
-    def is_orthogonal(self):
-        """ Returns true if the cell vectors are orthogonal """
+    def is_orthogonal(self, tol=0.001):
+        """
+        Returns true if the cell vectors are orthogonal.
+
+        Parameters
+        -----------
+        tol: float, optional
+            the threshold above which the scalar product of two cell vectors will be considered non-zero.
+        """
         # Convert to unit-vector cell
         cell = np.copy(self.cell)
         cl = fnorm(cell)
         cell[0, :] = cell[0, :] / cl[0]
         cell[1, :] = cell[1, :] / cl[1]
         cell[2, :] = cell[2, :] / cl[2]
-        i_s = dot3(cell[0, :], cell[1, :]) < 0.001
-        i_s = dot3(cell[0, :], cell[2, :]) < 0.001 and i_s
-        i_s = dot3(cell[1, :], cell[2, :]) < 0.001 and i_s
+        i_s = dot3(cell[0, :], cell[1, :]) < tol
+        i_s = dot3(cell[0, :], cell[2, :]) < tol and i_s
+        i_s = dot3(cell[1, :], cell[2, :]) < tol and i_s
         return i_s
+
+    def is_cartesian(self, tol=0.001):
+        """
+        Checks if cell vectors a,b,c are multiples of the cartesian axis vectors (x, y, z)
+
+        Parameters
+        -----------
+        tol: float, optional
+            the threshold above which an off diagonal term will be considered non-zero.
+        """
+        # Get the off diagonal terms of the cell
+        off_diagonal = self.cell.ravel()[:-1].reshape(2, 4)[:, 1:]
+        # Check if any of them are above the threshold tolerance
+        return ~np.any(np.abs(off_diagonal) > tol)
 
     def parallel(self, other, axis=(0, 1, 2)):
         """ Returns true if the cell vectors are parallel to `other`

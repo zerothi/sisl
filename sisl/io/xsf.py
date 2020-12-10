@@ -370,7 +370,7 @@ class xsfSile(Sile):
                 setattr(ns, "_vector_scale", False)
         p.add_argument("--no-vector-scale", "-nsv", nargs=0,
                        action=VectorNoScale,
-                       help='''Do not modify vector components (same as --vector-scale 1.)''')
+                       help="""Do not modify vector components (same as --vector-scale 1.)""")
         # Default to scale the vectors
         setattr(ns, "_vector_scale", True)
 
@@ -381,7 +381,7 @@ class xsfSile(Sile):
                 setattr(ns, '_vector_scale', float(value))
         p.add_argument('--vector-scale', '-sv', metavar='SCALE',
                        action=VectorScale,
-                       help='''Scale vector components by this factor.''')
+                       help="""Scale vector components by this factor.""")
 
         # We will add the vector data
         class Vectors(argparse.Action):
@@ -434,14 +434,14 @@ class xsfSile(Sile):
                 setattr(ns, '_vector', vector)
         p.add_argument('--vector', '-v', metavar=('DATA', '*ARGS[, FILE]'), nargs='+',
                        action=Vectors,
-                       help='''Adds vector arrows for each atom, first argument is type (force, moment, ...).
+                       help="""Adds vector arrows for each atom, first argument is type (force, moment, ...).
 If the current input file contains the vectors no second argument is necessary, else
 the file containing the data is required as the last input.
 
 Any arguments inbetween are passed to the `read_data` function (in order).
 
 By default the vectors scaled by 1 / max(|V|) such that the longest vector has length 1.
-                       ''')
+                       """)
 
 
 @set_module("sisl.io")
