@@ -67,6 +67,15 @@ register_environ_variable("SISL_NPROCS", os.cpu_count(),
                           "Maximum number of CPU's used for parallel computing",
                           process=int)
 
-register_environ_variable("SISL_TMP", "__sisltmp",
+register_environ_variable("SISL_TMP", ".sisl_tmp",
                           "Path where temporary files should be stored",
+                          process=Path)
+
+register_environ_variable("SISL_CONFIGDIR", "~/.config/sisl",
+                          "Directory where configuration files for sisl should be stored",
+                          process=Path)
+
+register_environ_variable("SISL_FILES_TESTS", "_THIS_DIRECTORY_DOES_NOT_EXIST_",
+                          """Full path of the sisl/files folder.
+                          Generally this is only used for tests and for documentations.""",
                           process=Path)

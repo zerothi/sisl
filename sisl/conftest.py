@@ -6,17 +6,15 @@ import numpy as np
 
 from pathlib import Path
 import pytest
-from sisl import Atom, Geometry, SuperCell, Hamiltonian
+from sisl import Atom, Geometry, SuperCell, Hamiltonian, _environ
 
 
 # Here we create the necessary methods and fixtures to enabled/disable
 # tests depending on whether a sisl-files directory is present.
-__env = 'SISL_FILES_TESTS'
-
 
 # Modify items based on whether the env is correct or not
 def pytest_collection_modifyitems(config, items):
-    sisl_files_tests = Path(os.environ.get(__env, '_THIS_DIRECTORY_DOES_NOT_EXIST_'))
+    sisl_files_tests = _environ.get_environ_variable("SISL_FILES_TESTS")
     if sisl_files_tests.is_dir():
         if (sisl_files_tests / 'sisl').is_dir():
             return
@@ -106,18 +104,19 @@ def sisl_files():
     If the environment variable is empty and a test has this fixture, it will
     be skipped.
     """
-    if __env not in os.environ:
+    sisl_files_tests = _environ.get_environ_variable("SISL_FILES_TESTS")
+    if not sisl_files_tests.is_dir():
         def _path(*files):
-            pytest.skip(f"Environment {__env} not defined")
+            pytest.skip(f"Environment SISL_FILES_TESTS not pointing to a valid directory.")
         return _path
 
     def _path(*files):
-        p = Path(os.environ[__env]).joinpath(*files)
+        p = sisl_files_tests.joinpath(*files)
         if p.exists():
             return p
         # I expect this test to fail due to the wrong environment.
         # But it isn't an actual fail since it hasn't runned...
-        pytest.xfail(f"Environment {__env} may point to a wrong path(?); file {p} not found")
+        pytest.xfail(f"Environment SISL_FILES_TESTS may point to a wrong path(?); file {p} not found")
     return _path
 
 
