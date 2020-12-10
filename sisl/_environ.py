@@ -79,3 +79,9 @@ register_environ_variable("SISL_FILES_TESTS", "_THIS_DIRECTORY_DOES_NOT_EXIST_",
                           """Full path of the sisl/files folder.
                           Generally this is only used for tests and for documentations.""",
                           process=Path)
+
+register_environ_variable("SISL_VIZ_AUTOLOAD", "false",
+                          """Determines whether the visualization module is automatically loaded.
+                          It may be good to leave auto load off if you are doing performance critical
+                          calculations to avoid the overhead of loading the visualization module.""",
+                          process=lambda val: val and val.lower().strip() in ["1", "t", "true"])

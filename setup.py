@@ -17,6 +17,7 @@ import multiprocessing
 import os
 import os.path as osp
 import argparse
+from functools import reduce
 
 # pkg_resources are part of setuptools
 import pkg_resources
@@ -35,6 +36,31 @@ min_version ={
     "numpy": "1.13",
     "pyparsing": "1.5.7",
     "xarray": "0.10.0",
+}
+
+viz = {
+    "plotly": [
+        'tqdm', # for niceness
+        'dill >= 0.3.2', # for pathos and for saving plots (a lower version raises https://github.com/pfebrer96/sisl/issues/11)
+        'pathos', # for multiprocessing,
+        'plotly',
+        'pandas',
+        "xarray >= " + min_version["xarray"],
+        'simplejson',  # Because built-in json parses nan and JS does not understand it
+        'flask',
+        'flask-restx',
+        'flask-socketio',
+        'flask-cors',
+        'flask-login',
+        'flask-session',
+        #'eventlet' # To improve socket performance for flask-socketio
+        'scikit-image'
+    ],
+    "blender": [
+    ], # for when blender enters
+    "ase": [
+        "ase" # for Jonas's implementation
+    ],
 }
 
 # Macros for use when compiling stuff
@@ -422,6 +448,11 @@ setuptools_kwargs = {
             "xarray >= " + min_version["xarray"],
             "tqdm",
         ],
+        "viz": reduce(lambda a, b: a + b, viz.values()),
+        "visualization": reduce(lambda a, b: a + b, viz.values()),
+        "viz-plotly": viz["plotly"],
+        "viz-blender": viz["blender"],
+        "viz-ase": viz["ase"],
     },
     "zip_safe": False,
 }
@@ -444,6 +475,9 @@ metadata = dict(
     license=LICENSE,
     # Ensure the packages are being found in the correct locations
     package_dir={"sisl_toolbox": "toolbox"},
+    package_data={
+        "sisl.viz.plotly.gui": ["build/*"],
+    },
     packages=
     # We need to add sisl.* since that recursively adds modules
     find_packages(include=["sisl", "sisl.*"])
@@ -463,7 +497,10 @@ metadata = dict(
          "sisl = sisl.utils._sisl_cmd:sisl_cmd",
          # Add toolbox CLI
          "stoolbox = sisl_toolbox.cli:stoolbox_cli",
-        ],
+         "ts_poisson = sisl_toolbox.transiesta.poisson.poisson_explicit:poisson_explicit_cli",
+         ]
+        #"splotly = sisl.viz.plotly.splot:splot",
+        # "sgui = sisl.viz.plotly.gui.sgui:sgui"]
     },
     classifiers=CLASSIFIERS,
     platforms="any",

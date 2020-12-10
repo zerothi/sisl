@@ -19,6 +19,7 @@ def pytest_collection_modifyitems(config, items):
         if (sisl_files_tests / 'sisl').is_dir():
             return
         print(f'pytest-sisl: Could not locate sisl directory in: {sisl_files_tests}')
+        return
 
     skip_sisl_files = pytest.mark.skip(reason="requires env(SISL_FILES_TESTS) pointing to clone of: https://github.com/zerothi/sisl-files")
     for item in items:

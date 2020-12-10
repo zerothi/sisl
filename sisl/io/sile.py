@@ -16,7 +16,8 @@ __all__ = [
     'add_sile',
     'get_sile_class',
     'get_sile',
-    'get_siles']
+    'get_siles',
+    'get_sile_rules']
 
 __all__ += [
     'BaseSile',
@@ -319,6 +320,36 @@ def get_siles(attrs=None):
 
 
 @set_module("sisl.io")
+def get_sile_rules(attrs=None, cls=None):
+    """
+    Retrieve all sile rules of siles with specific attributes or methods
+
+    Parameters
+    ----------
+    attrs : list of attribute names
+       limits the returned objects to those that have
+       the given attributes ``hasattr(sile, attrs)``, default ``[None]``
+    """
+    global __sile_rules
+
+    if attrs is None and cls is None:
+        return list(__sile_rules)
+
+    sile_rules = []
+    for rule in __sile_rules:
+        sile = rule.cls
+        if sile is cls:
+            sile_rules.append(rule)
+        elif attrs:
+            for attr in attrs:
+                if hasattr(sile, attr):
+                    sile_rules.append(rule)
+                    break
+
+    return sile_rules
+
+
+@set_module("sisl.io")
 class BaseSile:
     """ Base class for all sisl files """
 
@@ -332,11 +363,11 @@ class BaseSile:
         """ File of the current `Sile` """
         return basename(self._file)
 
-    def dir_file(self, filename=None):
+    def dir_file(self, filename=None, filename_base=""):
         """ File of the current `Sile` """
         if filename is None:
             filename = Path(self._file).name
-        return Path(self._directory) / filename
+        return Path(self._directory) / filename_base / filename
 
     def exist(self):
         """ Query whether the file exists """
