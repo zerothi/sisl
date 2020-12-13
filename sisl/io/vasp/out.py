@@ -40,7 +40,7 @@ class outSileVASP(SileVASP):
                 line = next(itt) # energy(sigma->0) line
                 esigma0 = float(line.split()[6])
                 self._energy.append([free_energy, esigma0])
-        _file_read = True
+        self._file_read = True
 
     @property
     def job_completed(self):
