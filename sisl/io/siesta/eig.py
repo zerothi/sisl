@@ -165,8 +165,9 @@ class eigSileSiesta(SileSiesta):
 
                 def myplot(ax, title, y, E, s):
                     ax.set_title(title)
-                    for ib in range(y.shape[0]):
-                        ax.scatter(np.ones(y.shape[1])*ib, y[ib, :], s=s)
+                    ik = np.arange(y.shape[0])
+                    for ib in range(y.shape[1]):
+                        ax.scatter(ik, y[:, ib], s=s)
                     ax.set_xlabel('k-index')
                     ax.set_xlim(-0.5, len(y) + 0.5)
                     if not E is None:
