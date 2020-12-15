@@ -496,12 +496,10 @@ class outSileSiesta(SileSiesta):
     @sile_fh_open()
     def read_energy(self):
         """ Reads the final energy distribution """
-        itt = iter(self)
-        for line in itt:
-            if 'siesta: Final energy' in line:
-                break
-        if not 'siesta: Final energy' in line:
+        found = self.step_to("siesta: Final energy", reread=False)[0]
+        if not found:
             return None
+        itt = iter(self)
 
         # Read data
         line = next(itt)
