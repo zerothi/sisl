@@ -32,10 +32,14 @@ class winSileWannier90(SileWannier90):
     For instance to read the Wannier-centres you *must* have this in your
     seedname.win:
 
+    .. code:: bash
+
         write_xyz = true
         translate_home_cell = False
 
     while if you want to read the Wannier Hamiltonian you should have this:
+
+    .. code:: bash
 
         write_xyz = true
         plot_hr = true
