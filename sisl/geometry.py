@@ -3,6 +3,7 @@ from numbers import Integral, Real
 from math import acos
 from itertools import product
 from collections import OrderedDict
+from pathlib import Path
 
 import numpy as np
 from numpy import ndarray, int32, bool_
@@ -28,6 +29,8 @@ from .atom import Atom, Atoms
 from .shape import Shape, Sphere, Cube
 from ._namedindex import NamedIndex
 from ._category import Category, GenericCategory
+from ._dispatcher import AbstractDispatch
+from ._dispatcher import ErrorDispatcher, ClassDispatcher, TypeDispatcher
 
 
 __all__ = ['Geometry', 'sgeom']
@@ -105,6 +108,15 @@ class Geometry(SuperCellChild):
     ...        [1, 1, 1]]
     >>> g = Geometry(xyz, Atom('H'))
 
+    Conversion of geometries to other projects instances can be done via
+    sisl's dispatch functionality
+
+    >>> g.to.ase()
+    Atoms(...)
+
+    converts to an ASE ``Atoms`` object. See ``sisl/geometry.py`` for details
+    on how to add more conversion methods.
+
     See Also
     --------
     Atoms : contained atoms `self.atoms`
@@ -131,6 +143,22 @@ class Geometry(SuperCellChild):
             self._names = NamedIndex(names)
 
         self.__init_sc(sc)
+
+    # Define a dispatcher for converting and requesting
+    # new Geometries
+    #  Geometry.new("run.fdf") will invoke Geometry.read("run.fdf")
+    new = ClassDispatcher("new",
+                          obj_getattr=lambda obj, key: (_ for _ in ()).throw(
+                              KeyError((f"{obj}.new does not implement '{key}' "
+                                        f"dispatcher, are you using it incorrectly?"))),
+                          instance_dispatcher=TypeDispatcher)
+
+    # Define a dispatcher for converting Geometries
+    #  Geometry.to("run.fdf") will invoke Geometry.read("run.fdf")
+    to = ClassDispatcher("to",
+                         obj_getattr=lambda obj, key: (_ for _ in ()).throw(
+                             KeyError((f"{obj}.new does not implement '{key}' "
+                                       f"dispatcher, are you using it incorrectly?"))))
 
     def __init_sc(self, sc):
         """ Initializes the supercell by *calculating* the size if not supplied
@@ -1043,6 +1071,8 @@ class Geometry(SuperCellChild):
         idx_other : numpy.ndarray of int
              indices in `other` that are equivalent with `idx_self`
         """
+        # sanitize `other`
+        other = self.new(other)
         s_xyz = self.xyz + (_a.arrayd(offset) - _a.arrayd(offset_other)).reshape(1, 3)
         idx_self = []
         self_append = idx_self.append
@@ -2206,7 +2236,8 @@ class Geometry(SuperCellChild):
             With 'min', the routine will shift both the structures along the cell
             axis of `self` such that they coincide at the first atom, lastly one
             may use a specified offset to manually select how `other` is displaced.
-            NOTE: That `self.cell[axis, :]` will be added to `offset` always.
+            NOTE: That `self.cell[axis, :]` will be added to `offset` if `other` is
+            a geometry.
 
         See Also
         --------
@@ -2215,28 +2246,36 @@ class Geometry(SuperCellChild):
         attach : attach a geometry
         insert : insert a geometry
         """
-        if isinstance(offset, str):
-            offset = offset.lower()
-            if offset == 'none':
-                offset = self.cell[axis, :].reshape(1, 3)
-            elif offset == 'min':
-                # We want to align at the minimum position along the `axis`
-                min_f = self.fxyz[:, axis].min()
-                min_other_f = dot(other.xyz, self.icell.T)[:, axis].min()
-                offset = self.cell[axis, :] * (1 + min_f - min_other_f)
-            else:
-                raise ValueError(f'{self.__class__.__name__}.append requires align keyword to be one of [none, min, (3,)]')
-        else:
-            offset = (self.cell[axis, :] + _a.arrayd(offset)).reshape(1, 3)
-
         if isinstance(other, SuperCell):
             # Only extend the supercell.
             xyz = np.copy(self.xyz)
             atoms = self.atoms.copy()
             sc = self.sc.append(other, axis)
             names = self._names.copy()
+            if isinstance(offset, str):
+                if offset == "none":
+                    offset = [0, 0, 0]
+                else:
+                    raise ValueError(f"{self.__class__.__name__}.append requires offset to be (3,) for supercell input")
+            xyz += _a.arrayd(offset).reshape(1, 3)
 
         else:
+            # sanitize output
+            other = self.new(other)
+            if isinstance(offset, str):
+                offset = offset.lower()
+                if offset == 'none':
+                    offset = self.cell[axis, :].reshape(1, 3)
+                elif offset == 'min':
+                    # We want to align at the minimum position along the `axis`
+                    min_f = self.fxyz[:, axis].min()
+                    min_other_f = dot(other.xyz, self.icell.T)[:, axis].min()
+                    offset = self.cell[axis, :] * (1 + min_f - min_other_f)
+                else:
+                    raise ValueError(f'{self.__class__.__name__}.append requires align keyword to be one of [none, min, (3,)]')
+            else:
+                offset = (self.cell[axis, :] + _a.arrayd(offset)).reshape(1, 3)
+
             xyz = np.append(self.xyz, offset + other.xyz, axis=0)
             atoms = self.atoms.append(other.atoms)
             sc = self.sc.append(other.sc, axis)
@@ -2274,7 +2313,8 @@ class Geometry(SuperCellChild):
             With 'min', the routine will shift both the structures along the cell
             axis of `other` such that they coincide at the first atom, lastly one
             may use a specified offset to manually select how `self` is displaced.
-            NOTE: That `other.cell[axis, :]` will be added to `offset` always.
+            NOTE: That `other.cell[axis, :]` will be added to `offset` if `other` is
+            a geometry.
 
         See Also
         --------
@@ -2283,27 +2323,36 @@ class Geometry(SuperCellChild):
         attach : attach a geometry
         insert : insert a geometry
         """
-        if isinstance(offset, str):
-            offset = offset.lower()
-            if offset == 'none':
-                offset = other.cell[axis, :].reshape(1, 3)
-            elif offset == 'min':
-                # We want to align at the minimum position along the `axis`
-                min_f = other.fxyz[:, axis].min()
-                min_other_f = dot(self.xyz, other.icell.T)[:, axis].min()
-                offset = other.cell[axis, :] * (1 + min_f - min_other_f)
-            else:
-                raise ValueError(f'{self.__class__.__name__}.prepend requires align keyword to be one of [none, min, (3,)]')
-        else:
-            offset = (other.cell[axis, :] + _a.arrayd(offset)).reshape(1, 3)
         if isinstance(other, SuperCell):
             # Only extend the supercell.
             xyz = np.copy(self.xyz)
             atoms = self.atoms.copy()
             sc = self.sc.prepend(other, axis)
             names = self._names.copy()
+            if isinstance(offset, str):
+                if offset == "none":
+                    offset = [0, 0, 0]
+                else:
+                    raise ValueError(f"{self.__class__.__name__}.prepend requires offset to be (3,) for supercell input")
+            xyz += _a.arrayd(offset).reshape(1, 3)
 
         else:
+            # sanitize output
+            other = self.new(other)
+            if isinstance(offset, str):
+                offset = offset.lower()
+                if offset == 'none':
+                    offset = other.cell[axis, :].reshape(1, 3)
+                elif offset == 'min':
+                    # We want to align at the minimum position along the `axis`
+                    min_f = other.fxyz[:, axis].min()
+                    min_other_f = dot(self.xyz, other.icell.T)[:, axis].min()
+                    offset = other.cell[axis, :] * (1 + min_f - min_other_f)
+                else:
+                    raise ValueError(f'{self.__class__.__name__}.prepend requires align keyword to be one of [none, min, (3,)]')
+            else:
+                offset = (other.cell[axis, :] + _a.arrayd(offset)).reshape(1, 3)
+
             xyz = np.append(other.xyz, offset + self.xyz, axis=0)
             atoms = self.atoms.prepend(other.atoms)
             sc = self.sc.prepend(other.sc, axis)
@@ -2338,13 +2387,14 @@ class Geometry(SuperCellChild):
             atoms = self.atoms.copy()
             names = self._names.copy()
         else:
+            other = self.new(other)
             xyz = np.append(self.xyz, other.xyz + _a.arrayd(offset).reshape(1, 3), axis=0)
             sc = self.sc.copy()
             atoms = self.atoms.add(other.atoms)
             names = self._names.merge(other._names, offset=len(self))
         return self.__class__(xyz, atoms=atoms, sc=sc, names=names)
 
-    def insert(self, atom, geometry):
+    def insert(self, atom, other):
         """ Inserts other atoms right before index
 
         We insert the `geometry` `Geometry` before `atom`.
@@ -2354,7 +2404,7 @@ class Geometry(SuperCellChild):
         ----------
         atom : int
            the atomic index at which the other geometry is inserted
-        geometry : Geometry
+        other : Geometry
            the other geometry to be inserted
 
         See Also
@@ -2367,8 +2417,9 @@ class Geometry(SuperCellChild):
         atom = self._sanitize_atoms(atom)
         if atom.size > 1:
             raise ValueError(f"{self.__class__.__name__}.insert requires only 1 atomic index for insertion.")
-        xyz = np.insert(self.xyz, atom, geometry.xyz, axis=0)
-        atoms = self.atoms.insert(atom, geometry.atoms)
+        other = self.new(other)
+        xyz = np.insert(self.xyz, atom, other.xyz, axis=0)
+        atoms = self.atoms.insert(atom, other.atoms)
         return self.__class__(xyz, atoms, sc=self.sc.copy())
 
     def __add__(self, b):
@@ -2459,6 +2510,7 @@ class Geometry(SuperCellChild):
            specify the direction of the lattice vectors used.
            Not used if `dist` is an array-like argument.
         """
+        other = self.new(other)
         if isinstance(dist, Real):
             # We have a single rational number
             if axis is None:
@@ -3682,6 +3734,7 @@ class Geometry(SuperCellChild):
         return axes
 
     @classmethod
+    @deprecate_method("Geometry.fromASE is deprecated in favor of Geometry.new(ase_obj)")
     def fromASE(cls, aseg):
         """ Returns geometry from an ASE object.
 
@@ -3697,6 +3750,7 @@ class Geometry(SuperCellChild):
         # Convert to sisl object
         return cls(xyz, atoms=Z, sc=cell)
 
+    @deprecate_method("Geometry.toASE is deprecated in favor of Geometry.to.ase()")
     def toASE(self):
         """ Returns the geometry as an ASE ``Atoms`` object """
         from ase import Atoms as ASE_Atoms
@@ -3715,6 +3769,7 @@ class Geometry(SuperCellChild):
         tol : float, optional
             tolerance for checking the atomic coordinates
         """
+        other = self.new(other)
         if not isinstance(other, Geometry):
             return False
         same = self.sc.equal(other.sc, tol=tol)
@@ -4416,6 +4471,89 @@ class Geometry(SuperCellChild):
 
         # We have now created all arguments
         return p, namespace
+
+
+# Define base-class for this
+class GeometryNewDispatcher(AbstractDispatch):
+    """ Base dispatcher from class passing arguments to Geometry class
+
+    This forwards all `__call__` calls to `dispatch`
+    """
+
+    def __call__(self, *args, **kwargs):
+        return self.dispatch(*args, **kwargs)
+
+
+class GeometryNewAseDispatcher(GeometryNewDispatcher):
+    def dispatch(self, aseg, **kwargs):
+        """ Convert an ``ase`` object into a `Geometry` """
+        Z = aseg.get_atomic_numbers()
+        xyz = aseg.get_positions()
+        cell = aseg.get_cell()
+        nsc = [3 if pbc else 1 for pbc in aseg.pbc]
+        sc = SuperCell(cell, nsc=nsc)
+        return self._obj(xyz, atoms=Z, sc=sc, **kwargs)
+Geometry.new.register("ase", GeometryNewAseDispatcher)
+
+# currently we can't ensure the ase Atoms type
+# to get it by type(). That requires ase to be importable.
+try:
+    from ase import Atoms as ase_Atoms
+    Geometry.new.register(ase_Atoms, GeometryNewAseDispatcher)
+    # ensure we don't pollute name-space
+    del ase_Atoms
+except:
+    pass
+
+
+# Bypass regular Geometry to be returned as is
+class GeometryNewGeometryDispatcher(GeometryNewDispatcher):
+    def dispatch(self, geom):
+        """ Return geometry as-is (no copy), for sanitization purposes """
+        return geom
+Geometry.new.register(Geometry, GeometryNewGeometryDispatcher)
+
+
+class GeometryNewFileDispatcher(GeometryNewDispatcher):
+    def dispatch(self, *args, **kwargs):
+        """ Defer the `Geometry.read` method by passing down arguments """
+        return self._obj.read(*args, **kwargs)
+Geometry.new.register(str, GeometryNewFileDispatcher)
+Geometry.new.register(Path, GeometryNewFileDispatcher)
+# see sisl/__init__.py for Geometry.new.register(BaseSile, GeometryNewFileDispatcher)
+
+
+class GeometryToDispatcher(AbstractDispatch):
+    """ Base dispatcher from class passing from Geometry class """
+    @staticmethod
+    def _ensure_object(obj):
+        if isinstance(obj, type):
+            raise ValueError(f"Dispatcher on {obj} must not be called on the class.")
+
+
+class GeometryToAseDispatcher(GeometryToDispatcher):
+    def dispatch(self, *args, **kwargs):
+        from ase import Atoms as ase_Atoms
+        geom = self._obj
+        self._ensure_object(geom)
+        if len(args) > 0:
+            raise ValueError(f"{geom}.to.ase only accepts keyword arguments")
+        return ase_Atoms(symbols=geom.atoms.Z, positions=geom.xyz.tolist(),
+                         cell=geom.cell.tolist(), pbc=geom.nsc > 1, **kwargs)
+
+Geometry.to.register("ase", GeometryToAseDispatcher)
+
+
+class GeometryToSileDispatcher(GeometryToDispatcher):
+    def dispatch(self, *args, **kwargs):
+        geom = self._obj
+        self._ensure_object(geom)
+        return geom.write(*args, **kwargs)
+Geometry.to.register("str", GeometryToSileDispatcher)
+Geometry.to.register("path", GeometryToSileDispatcher)
+# to do geom.to[Path](path)
+Geometry.to.register(str, GeometryToSileDispatcher)
+Geometry.to.register(Path, GeometryToSileDispatcher)
 
 
 @set_module("sisl")

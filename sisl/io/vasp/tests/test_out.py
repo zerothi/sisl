@@ -24,6 +24,3 @@ def test_diamond_outcar_(sisl_files):
     # Read CPU time
     assert f.cpu_time() > 0.
     assert f.job_completed
-
-
-

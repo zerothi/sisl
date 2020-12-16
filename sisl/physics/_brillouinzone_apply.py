@@ -327,9 +327,8 @@ class DataArrayApply(ArrayApply):
 
         return func
 
-
 # Add dispatcher methods
-# Since apply is a built-in, we cannot do "BrillouinZone.assign = ..."
+# Since apply is a built-in, we cannot do "BrillouinZone.apply = ..."
 setattr(BrillouinZone, "apply",
         ClassDispatcher("apply",
                         obj_getattr=lambda obj, key: getattr(obj.parent, key)

@@ -286,7 +286,7 @@ class TestBrillouinZone:
 
         # Check that the ObjectDispatcher works
         apply = bz.apply
-        papply = bz.apply(pool=True)
+        papply = bz.apply.renew(pool=True)
         assert str(apply) != str(papply)
 
         for method in ["iter", "average", "sum", "array", "list", "oplist"]:
@@ -300,7 +300,7 @@ class TestBrillouinZone:
 
         # Check that the MethodDispatcher works
         apply = bz.apply.eigh
-        papply = bz.apply(pool=True).eigh
+        papply = bz.apply.renew(pool=True).eigh
         assert str(apply) != str(papply)
 
         for method in ["iter", "average", "sum", "array", "list", "oplist"]:
