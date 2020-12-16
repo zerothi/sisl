@@ -42,7 +42,7 @@ def test_sparse_orbital_symmetric(n0, n1, n2):
 @pytest.mark.parametrize("n0", [1, 3])
 @pytest.mark.parametrize("n1", [1, 4])
 @pytest.mark.parametrize("n2", [1, 3])
-@pytest.mark.parametrize("axis", [0, 1, 2])
+@pytest.mark.parametrize("axis", [0, 1])
 def test_sparse_orbital_append(n0, n1, n2, axis):
     g = fcc(1., Atom(1, R=1.98)) * 2
     dists = np.insert(g.distance(0, R=g.maxR()) + 0.001, 0, 0.001)
@@ -78,7 +78,7 @@ def test_sparse_orbital_append(n0, n1, n2, axis):
 @pytest.mark.parametrize("n0", [1, 3])
 @pytest.mark.parametrize("n1", [1, 4])
 @pytest.mark.parametrize("n2", [1, 3])
-@pytest.mark.parametrize("axis", [0, 1, 2])
+@pytest.mark.parametrize("axis", [1, 2])
 def test_sparse_orbital_append_scale(n0, n1, n2, axis):
     g = fcc(1., Atom(1, R=1.98)) * 2
     dists = np.insert(g.distance(0, R=g.maxR()) + 0.001, 0, 0.001)
