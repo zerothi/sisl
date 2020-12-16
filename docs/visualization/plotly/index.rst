@@ -13,10 +13,9 @@ These are some tutorials that will introduce you to the framework.
 
 .. nbgallery::
     :name: viz-plotly-tutorials-gallery
-    :glob:
-    :reversed:
 
-    basic-tutorials/*
+    basic-tutorials/Demo.ipynb
+    basic-tutorials/GUI with Python Demo.ipynb
 
 Showcase of plot classes
 -------------------------
@@ -25,10 +24,13 @@ The following notebooks will help you develop a deeper understanding of what eac
 
 .. nbgallery::
     :name: viz-plotly-showcase-gallery
-    :glob:
-    :reversed:
 
-    showcase/*
+    showcase/GeometryPlot.ipynb
+    showcase/GridPlot.ipynb
+    showcase/BandsPlot.ipynb
+    showcase/PdosPlot.ipynb
+    showcase/WavefunctionPlot.ipynb
+
 
 Combining plots
 --------------------
@@ -38,10 +40,8 @@ to the right place!
 
 .. nbgallery::
     :name: viz-plotly-combining-plots-gallery
-    :glob:
-    :reversed:
 
-    combining-plots/*
+    combining-plots/Intro to multiple plots.ipynb
 
 Do it yourself
 --------------------
@@ -53,9 +53,8 @@ the process and by the end of your reading it will be dead easy for you to have 
 
 .. nbgallery::
     :name: viz-plotly-diy-gallery
-    :glob:
 
-    diy/*
+    diy/Building a plot class.ipynb
 
 .. note::
     Consider contributing to the package if you build a useful presentation. The community will appreciate it! :)

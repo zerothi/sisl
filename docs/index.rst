@@ -145,10 +145,12 @@ which fills in the version number.
 .. toctree::
    :maxdepth: 4
    :caption: Visualization
-   :glob:
    
-   visualization/*/index
+   visualization/ase/index
 
+.. for now the plotly build fails, so we need to figure out
+   a better way for this documentation.
+   
 .. toctree::
    :maxdepth: 3
    :caption: Reference documentation
