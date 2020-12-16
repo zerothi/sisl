@@ -8,6 +8,7 @@ Here is a small snippet showing how to utilize this module.
 
 from abc import ABCMeta, abstractmethod
 from functools import wraps
+from collections import namedtuple
 
 
 __all__ = ["AbstractDispatch", "ObjectDispatcher", "MethodDispatcher",
@@ -346,13 +347,15 @@ class ClassDispatcher(AbstractDispatcher):
        name of the attribute in the class
     dispatchs : dict, optional
        dictionary of dispatch methods
-    obj_getattr : callable
+    obj_getattr : callable, optional
        method with 2 arguments, an ``obj`` and the ``attr`` which may be used
        to control how the attribute is called.
-    instance_dispatcher : AbstractDispatcher
-       control how instance vs class dispatchers are handled through `__get__` method.
-       By default a `TypeDispatcher` is returned for classes, and `ObjectDispatcher`
-       is returned for objects.
+    instance_dispatcher : AbstractDispatcher, optional
+       control how instance dispatchers are handled through `__get__` method.
+       This controls the dispatcher used if called from an instance.
+    type_dispatcher : AbstractDispatcher, optional
+       control how class dispatchers are handled through `__get__` method.
+       This controls the dispatcher used if called from a class.
 
     Examples
     --------
@@ -361,18 +364,20 @@ class ClassDispatcher(AbstractDispatcher):
 
     The above defers any attributes to the contained `A.sub` attribute.
     """
-    __slots__ = ("_obj_getattr", "_attr_name", "_instance_dispatcher")
+    __slots__ = ("_obj_getattr", "_attr_name", "_get")
 
     def __init__(self, attr_name, dispatchs=None, default=None,
                  obj_getattr=None,
                  instance_dispatcher=ObjectDispatcher,
+                 type_dispatcher=TypeDispatcher,
                  **attrs):
         # obj_getattr is necessary for the ObjectDispatcher to create the correct
         # MethodDispatcher
         super().__init__(dispatchs, default, **attrs)
         # the name of the ClassDispatcher attribute in the class
         self._attr_name = attr_name
-        self._instance_dispatcher = instance_dispatcher
+        p = namedtuple("get_class", ["instance", "type"])
+        self._get = p(instance_dispatcher, type_dispatcher)
 
         # Default the obj_getattr
         if obj_getattr is None:
@@ -383,7 +388,8 @@ class ClassDispatcher(AbstractDispatcher):
     def renew(self, **attrs):
         """ Create a new class with updated attributes """
         return self.__class__(self._attr_name, self._dispatchs, self._default,
-                              self._obj_getattr, self._instance_dispatcher,
+                              self._obj_getattr,
+                              self._get.instance, self._get.type,
                               **{**self._attrs, **attrs})
 
     def __get__(self, instance, owner):
@@ -397,10 +403,10 @@ class ClassDispatcher(AbstractDispatcher):
         """
         if instance is None:
             inst = owner
-            cls = TypeDispatcher
+            cls = self._get.type
         else:
             inst = instance
-            cls = self._instance_dispatcher
+            cls = self._get.instance
         return cls(inst, self._dispatchs, default=self._default,
                    cls_attr_name=self._attr_name,
                    obj_getattr=self._obj_getattr,
