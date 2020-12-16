@@ -1,6 +1,12 @@
 0.X.Y
 =====
 
+- added Geometry.new allowing easy type-lookups to convert to Geometry
+	e.g. Geometry.new("RUN.fdf") and Geometry.new(ase_atoms) automatically
+	figures out which method to call and how to interpret the objects.
+  added Geometry.to allowing easy type-lookups to convert to other objects
+	#282
+
 - enabled calculating supercell matrices with phases, format=sc:<format>
   returns in supercell matrix form (no, no_s)
 
