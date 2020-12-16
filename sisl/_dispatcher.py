@@ -10,7 +10,8 @@ from abc import ABCMeta, abstractmethod
 from functools import wraps
 
 
-__all__ = ["AbstractDispatch", "ObjectDispatcher", "ClassDispatcher"]
+__all__ = ["AbstractDispatch", "ObjectDispatcher", "MethodDispatcher",
+           "ClassDispatcher", "TypeDispatcher"]
 
 
 def _dict_to_str(name, d, parser=None):
@@ -68,7 +69,12 @@ class AbstractDispatch(metaclass=ABCMeta):
         return attr
 
 
-class Dispatcher:
+class AbstractDispatcher:
+    """ A container for dispatchers
+
+    This is an abstract class holding the dispatch classes (`AbstractDispatch`)
+    and the attributes that are associated with the dispatchers.
+    """
     __slots__ = ("_dispatchs", "_default", "__name__", "_attrs")
 
     def __init__(self, dispatchs=None, default=None, **attrs):
@@ -96,6 +102,18 @@ class Dispatcher:
             return f"{self.__name__}{{{dispatchs}\n}}"
         return f"{self.__name__}{{{dispatchs},\n {attrs}\n}}"
 
+    def __setitem__(self, key, dispatch):
+        """ Registers a dispatch method (using `register` with default values)
+
+        Parameters
+        ----------
+        key : *any hashable*
+            key used in the dictionary look-up for the dispatch class
+        dispatch : AbstractDispatch
+            dispatch class to be registered
+        """
+        self.register(key, dispatch)
+
     def register(self, key, dispatch, default=False, overwrite=False):
         """ Register a dispatch class to this container
 
@@ -118,7 +136,7 @@ class Dispatcher:
             self._default = key
 
 
-class MethodDispatcher(Dispatcher):
+class MethodDispatcher(AbstractDispatcher):
     __slots__ = ("_method", "_obj")
 
     def __init__(self, method, dispatchs=None, default=None, obj=None, **attrs):
@@ -149,9 +167,25 @@ class MethodDispatcher(Dispatcher):
     __getattr__ = __getitem__
 
 
-class ObjectDispatcher(Dispatcher):
-    # We need to hide the methods and objects
-    # since we are going to retrieve dispatchs from the object it-self
+class ObjectDispatcher(AbstractDispatcher):
+    """ A dispatcher relying on object lookups
+
+    This dispatcher wraps a method call with lookup tables and possible defaults.
+
+    Examples
+    --------
+    >>> a = ObjectDispatcher(lambda x: print(x))
+    >>> class DoubleCall(AbstractDispatch):
+    ...    def dispatch(self, method):
+    ...        def func(x):
+    ...            method(x)
+    ...            method(x)
+    ...        return func
+    >>> a.register("double", DoubleCall)
+    >>> a.double("hello world")
+    hello world
+    hello world
+    """
     __slots__ = ("_obj", "_obj_getattr", "_cls_attr_name")
 
     def __init__(self, obj, dispatchs=None, default=None, cls_attr_name=None, obj_getattr=None, **attrs):
@@ -193,16 +227,6 @@ class ObjectDispatcher(Dispatcher):
             if isinstance(cls_dispatch, ClassDispatcher):
                 cls_dispatch.register(key, dispatch, overwrite=overwrite)
 
-    def __call__(self, **attrs):
-        # Return a new instance of this object (with correct attributes)
-        overlap = self._attrs.keys() & attrs.keys()
-        # Create new attributes without overlaps
-        new_attrs = {key: self._attrs[key]
-                     for key in self._attrs if key not in overlap}
-        new_attrs.update(attrs)
-        return self.__class__(self._obj, self._dispatchs, self._default,
-                              self._cls_attr_name, self._obj_getattr, **new_attrs)
-
     def __enter__(self):
         return self
 
@@ -226,19 +250,120 @@ class ObjectDispatcher(Dispatcher):
         return attr
 
 
-class ClassDispatcher(Dispatcher):
-    __slots__ = ("_obj_getattr", "_attr_name")
+class TypeDispatcher(ObjectDispatcher):
+    """ A dispatcher relying on type lookups
 
-    def __init__(self, name, dispatchs=None, default=None, obj_getattr=None, **attrs):
+    This dispatcher may be called directly and will query the dispatch method
+    through the type of the first argument.
+
+    Examples
+    --------
+    >>> a = TypeDispatcher("a")
+    >>> class MyDispatch(AbstractDispatch):
+    ...    def dispatch(self, arg):
+    ...        print(arg)
+    >>> a.register(str, MyDispatch)
+    >>> a("hello world")
+    hello world
+    """
+    __slots__ = tuple()
+
+    def register(self, key, dispatch, default=False, overwrite=False, to_class=True):
+        """ Register a dispatch class to this object and to the object class instance (if existing)
+
+        Parameter
+        ---------
+        key : *any hashable*
+            key used in the dictionary look-up for the dispatch class
+        dispatch : AbstractDispatch
+            dispatch class to be registered
+        default : bool, optional
+            this dispatch class will be the default on this object _only_.
+            To register a class as the default class-wide, do this on the class
+            variable.
+        overwrite : bool, optional
+            if true and `key` already exists in the list of dispatchs, then
+            it will be overwritten, otherwise a `LookupError` is raised.
+        to_class : bool, optional
+            whether the dispatch class will also be registered with the
+            contained object's class instance
+        """
+        super().register(key, dispatch, default, overwrite, to_class=False)
+        if to_class:
+            cls_dispatch = getattr(self._obj, self._cls_attr_name, None)
+            if isinstance(cls_dispatch, ClassDispatcher):
+                cls_dispatch.register(key, dispatch, overwrite=overwrite)
+
+    def __call__(self, obj, *args, **kwargs):
+        # A call on a TypeDispatcher forces at least a single argument
+        # where the type is being dispatched.
+        if not isinstance(obj, type):
+            # Figure out if obj is a class or not
+            # If not, then get the type (basically same as obj.__class__)
+            typ = type(obj)
+        else:
+            typ = obj
+
+        print(f"calling TypeDispatcher.__call__ {typ}", self._dispatchs[typ])
+        # if you want obj to be a type, then the dispatcher should
+        # control that
+        return self._dispatchs[typ](self._obj)(obj, *args, **kwargs)
+
+    def __getitem__(self, key):
+        r""" Retrieve dispatched dispatchs by hash (allows functions to be dispatched) """
+        return self._dispatchs[key](self._obj, **self._attrs)
+
+
+class ClassDispatcher(AbstractDispatcher):
+    """ A dispatcher for classes, using `__get__` it converts into `ObjectDispatcher` upon invocation from an object, or a `TypeDispatcher` when invoked from a class
+
+    This is a class-placeholder allowing a dispatecher to be a class attribute and converted into an
+    `ObjectDispatcher` when invoked from an object.
+
+    If it is called on the class, it will return a `TypeDispatcher`.
+
+    This class should be an attribute of a class. It heavily relies on the `__get__` special
+    method.
+
+    Parameters
+    ----------
+    name : str
+       name of the attribute in the class
+    dispatchs : dict, optional
+       dictionary of dispatch methods
+    obj_getattr : callable
+       method with 2 arguments, an ``obj`` and the ``attr`` which may be used
+       to control how the attribute is called.
+    instance_dispatcher : AbstractDispatcher
+       control how instance vs class dispatchers are handled through `__get__` method.
+       By default a `TypeDispatcher` is returned for classes, and `ObjectDispatcher`
+       is returned for objects.
+
+    Examples
+    --------
+    >>> class A:
+    ...   new = ClassDispatcher("new", obj_getattr=lambda obj, attr: getattr(obj.sub, attr))
+
+    The above defers any attributes to the contained `A.sub` attribute.
+    """
+    __slots__ = ("_obj_getattr", "_attr_name", "_instance_dispatcher")
+
+    def __init__(self, attr_name, dispatchs=None, default=None,
+                 obj_getattr=None,
+                 instance_dispatcher=ObjectDispatcher,
+                 **attrs):
         # obj_getattr is necessary for the ObjectDispatcher to create the correct
         # MethodDispatcher
         super().__init__(dispatchs, default, **attrs)
+        # the name of the ClassDispatcher attribute in the class
+        self._attr_name = attr_name
+        self._instance_dispatcher = instance_dispatcher
+
+        # Default the obj_getattr
         if obj_getattr is None:
             def obj_getattr(obj, key):
                 return getattr(obj, key)
         self._obj_getattr = obj_getattr
-        # the name of the ClassDispatcher attribute in the class
-        self._attr_name = name
 
     def __get__(self, instance, owner):
         """ Class dispatcher retrieval
@@ -246,44 +371,19 @@ class ClassDispatcher(Dispatcher):
         When directly retrieved from the class we return it-self to
         allow interaction with the dispatcher.
 
-        When retrieved from an object it returns an `ObjectDispatcher`
-        which contains the current dispatchs allowed to be dispatched through.
+        When retrieved from an object it returns an `ObjectDispatcher`.
+        When retrieved from a class it returns an `TypeDispatcher`.
         """
         if instance is None:
-            return self
-        return ObjectDispatcher(instance, self._dispatchs,
-                                default=self._default,
-                                cls_attr_name=self._attr_name,
-                                obj_getattr=self._obj_getattr,
-                                **self._attrs)
-
-
-class ClassTypeDispatcher(ClassDispatcher):
-    __slots__ = ('_cls',)
-
-    def __get__(self, instance, owner):
-        if instance is None:
-            self._cls = owner
+            inst = owner
+            cls = TypeDispatcher
         else:
-            self._cls = instance.__class__
-        return self
-
-    def __call__(self, *args, **kwargs):
-        # now check the first argument
-        if len(args) > 0:
-            typ = type(args[0])
-        elif self._default is None:
-            raise ValueError(f"{self.__class__.__name__} could not find any type from the input arguments and no default are defined.")
-        else:
-            typ = self._default
-        print(f"calling ClassTypeDispatcher.__call__ {typ}", self._dispatchs[typ])
-        return self._dispatchs[typ](self._cls)(*args, **kwargs)
-
-    def __getitem__(self, key):
-        r""" Get method using dispatch according to `key` """
-        return self._dispatchs[key]
-
-    __getattr__ = __getitem__
+            inst = instance
+            cls = self._instance_dispatcher
+        return cls(inst, self._dispatchs, default=self._default,
+                   cls_attr_name=self._attr_name,
+                   obj_getattr=self._obj_getattr,
+                   **self._attrs)
 
 
 '''

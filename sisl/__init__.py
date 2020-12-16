@@ -132,6 +132,13 @@ from .io.sile import (add_sile, get_sile_class, get_sile,
                       get_siles, get_sile_rules, SileError,
                       BaseSile, Sile, SileCDF, SileBin)
 
+# Allow geometry to register siles
+# Ensure BaseSile works as a str
+# We have to do it after loading BaseSile and Geometry
+# Since __getitem__ always instantiate the class, we have to use the
+# contained lookup table.
+Geometry.new.register(BaseSile, Geometry.new._dispatchs[type("str")].__class__)
+
 # Import the default geom structure
 # This enables:
 # import sisl

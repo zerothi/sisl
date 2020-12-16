@@ -29,7 +29,7 @@ from .atom import Atom, Atoms
 from .shape import Shape, Sphere, Cube
 from ._namedindex import NamedIndex
 from ._category import Category, GenericCategory
-from ._dispatcher import ClassTypeDispatcher, AbstractDispatch
+from ._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
 
 
 __all__ = ['Geometry', 'sgeom']
@@ -133,6 +133,15 @@ class Geometry(SuperCellChild):
             self._names = NamedIndex(names)
 
         self.__init_sc(sc)
+
+    # Define a dispatcher for converting and requesting
+    # new Geometries
+    #  Geometry.new("run.fdf") will invoke Geometry.read("run.fdf")
+    new = ClassDispatcher("new",
+                          obj_getattr=lambda obj, key: (_ for _ in ()).throw(
+                              KeyError((f"{obj}.new does not implement '{key}' "
+                                        f"dispatcher, are you using it incorrectly?"))),
+                          instance_dispatcher=TypeDispatcher)
 
     def __init_sc(self, sc):
         """ Initializes the supercell by *calculating* the size if not supplied
@@ -4447,55 +4456,52 @@ class Geometry(SuperCellChild):
         return p, namespace
 
 
-# Create the dispatch methods
-# Add dispatcher methods
-setattr(Geometry, "new", ClassTypeDispatcher("new"))
-
 # Define base-class for this
 class GeometryNewDispatcher(AbstractDispatch):
-    """ Base dispatcher from class passing arguments to Geometry class """
+    """ Base dispatcher from class passing arguments to Geometry class
+
+    This forwards all `__call__` calls to `dispatch`
+    """
 
     def __call__(self, *args, **kwargs):
-        return self._obj(*args, **kwargs)
-
-    def dispatch(self, *args, **kwargs):
-        return self(*args, **kwargs)
-
-
-# The default try would be to convert any *unknown* arguments
-# directly to feed the Geometry instantiation.
-Geometry.new.register("sisl", GeometryNewDispatcher)
+        return self.dispatch(*args, **kwargs)
 
 
 class GeometryNewAseDispatcher(GeometryNewDispatcher):
-    def __call__(self, aseg, **kwargs):
+    def dispatch(self, aseg, **kwargs):
+        """ Convert an ``ase`` object into a `Geometry` """
         Z = aseg.get_atomic_numbers()
         xyz = aseg.get_positions()
         cell = aseg.get_cell()
         return self._obj(xyz, atoms=Z, sc=cell, **kwargs)
-
 Geometry.new.register("ase", GeometryNewAseDispatcher)
+
 # currently we can't ensure the ase Atoms type
 # to get it by type(). That requires ase to be importable.
 try:
-    from ase import Atoms as ASE_Atoms
-    Geometry.new.register(ASE_Atoms, GeometryNewAseDispatcher)
+    from ase import Atoms as ase_Atoms
+    Geometry.new.register(ase_Atoms, GeometryNewAseDispatcher)
+    # ensure we don't pollute name-space
+    del ase_Atoms
 except:
     pass
 
 
 # Bypass regular Geometry to be returned as is
 class GeometryNewGeometryDispatcher(GeometryNewDispatcher):
-    def __call__(self, geom):
+    def dispatch(self, geom):
+        """ Return geometry as-is (no copy), for sanitization purposes """
         return geom
-Geometry.new.register(Geometry, GeometryNewDispatcher)
+Geometry.new.register(Geometry, GeometryNewGeometryDispatcher)
 
 
 class GeometryNewFileDispatcher(GeometryNewDispatcher):
-    def __call__(self, *args, **kwargs):
+    def dispatch(self, *args, **kwargs):
+        """ Defer the `Geometry.read` method by passing down arguments """
         return self._obj.read(*args, **kwargs)
 Geometry.new.register(str, GeometryNewFileDispatcher)
 Geometry.new.register(Path, GeometryNewFileDispatcher)
+# see sisl/__init__.py for Geometry.new.register(BaseSile, GeometryNewFileDispatcher)
 
 
 #setattr(Geometry, "to", ClassTypeDispatcher("to"))
@@ -4518,7 +4524,6 @@ Geometry.new.register(Path, GeometryNewFileDispatcher)
 #    def __call__(self, *args, **kwargs):
 #        return self._obj.write(*args, **kwargs)
 #Geometry.to.register(str, GeometryToSileDispatcher)
-
 
 
 @set_module("sisl")
