@@ -89,6 +89,10 @@ class AbstractDispatcher:
     def __len__(self):
         return len(self._dispatchs)
 
+    def renew(self, **attrs):
+        """ Create a new class with updated attributes """
+        return self.__class__(self._dispatchs, self._default, **{**self._attrs, **attrs})
+
     def __str__(self):
         def toline(kv):
             k, v = kv
@@ -155,6 +159,11 @@ class MethodDispatcher(AbstractDispatcher):
         # Storing the name is required for help on functions
         self.__name__ = method.__name__
 
+    def renew(self, **attrs):
+        """ Create a new class with updated attributes """
+        return self.__class__(self._method, self._dispatchs, self._default,
+                              self._obj, **{**self._attrs, **attrs})
+
     def __call__(self, *args, **kwargs):
         if self._default is None:
             return self._method(*args, **kwargs)
@@ -200,6 +209,12 @@ class ObjectDispatcher(AbstractDispatcher):
     def __str__(self):
         obj = str(self._obj).replace("\n", "\n ")
         return super().__str__().replace("{", f"{{\n {obj},\n ", 1)
+
+    def renew(self, **attrs):
+        """ Create a new class with updated attributes """
+        return self.__class__(self._obj, self._dispatchs, self._default,
+                              self._cls_attr_name, self._obj_getattr,
+                              **{**self._attrs, **attrs})
 
     def register(self, key, dispatch, default=False, overwrite=False, to_class=True):
         """ Register a dispatch class to this object and to the object class instance (if existing)
@@ -364,6 +379,12 @@ class ClassDispatcher(AbstractDispatcher):
             def obj_getattr(obj, key):
                 return getattr(obj, key)
         self._obj_getattr = obj_getattr
+
+    def renew(self, **attrs):
+        """ Create a new class with updated attributes """
+        return self.__class__(self._attr_name, self._dispatchs, self._default,
+                              self._obj_getattr, self._instance_dispatcher,
+                              **{**self._attrs, **attrs})
 
     def __get__(self, instance, owner):
         """ Class dispatcher retrieval
