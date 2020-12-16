@@ -1988,7 +1988,7 @@ class SparseOrbital(_SparseGeometry):
             geom = self.geometry.add(other.geometry, offset=offset)
         else:
             # Same effect but also adds the lattice vectors
-            geom = self.geometry.append(other, axis, offset=offset)
+            geom = self.geometry.append(other.geometry, axis, offset=offset)
 
         # Now we have the correct geometry, then create the correct
         # class
