@@ -462,8 +462,8 @@ def sisl_method2class(meth):
             if cls.__dict__.get(meth.__name__) is meth:
                 return cls
     if inspect.isfunction(meth):
-        cls =  getattr(inspect.getmodule(meth),
-                       meth.__qualname__.split('.<locals>', 1)[0].rsplit('.', 1)[0])
+        cls = getattr(inspect.getmodule(meth),
+                      meth.__qualname__.split('.<locals>', 1)[0].rsplit('.', 1)[0])
         if isinstance(cls, type):
             return cls
     return None  # not required since None would have been implicitly returned anyway

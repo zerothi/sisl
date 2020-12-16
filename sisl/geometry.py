@@ -154,10 +154,10 @@ class Geometry(SuperCellChild):
                           instance_dispatcher=TypeDispatcher)
 
     # Define a dispatcher for converting Geometries
-    #  Geometry.to("run.fdf") will invoke Geometry.read("run.fdf")
+    #  Geometry().to.ase() will convert to an ase.Atoms object
     to = ClassDispatcher("to",
                          obj_getattr=lambda obj, key: (_ for _ in ()).throw(
-                             KeyError((f"{obj}.new does not implement '{key}' "
+                             KeyError((f"{obj}.to does not implement '{key}' "
                                        f"dispatcher, are you using it incorrectly?"))))
 
     def __init_sc(self, sc):
