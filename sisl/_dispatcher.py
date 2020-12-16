@@ -12,7 +12,7 @@ from collections import namedtuple
 
 
 __all__ = ["AbstractDispatch", "ObjectDispatcher", "MethodDispatcher",
-           "ClassDispatcher", "TypeDispatcher"]
+           "ErrorDispatcher", "ClassDispatcher", "TypeDispatcher"]
 
 
 def _dict_to_str(name, d, parser=None):
@@ -36,8 +36,8 @@ class AbstractDispatch(metaclass=ABCMeta):
         # This could in principle contain anything.
         self._attrs = attrs
 
-    def __call__(self, method):
-        return self.dispatch(method)
+    def __call__(self, *args, **kwargs):
+        return self.dispatch(*args, **kwargs)
 
     def __str__(self):
         obj = str(self._obj).replace("\n", "\n ")
@@ -139,6 +139,18 @@ class AbstractDispatcher:
         self._dispatchs[key] = dispatch
         if default:
             self._default = key
+
+
+class ErrorDispatcher(AbstractDispatcher):
+    """ Faulty handler to ensure that certain operations are not allowed
+
+    This may for instance be used with ``ClassDispatcher(instance_dispatcher=ErrorDispatcher)``
+    to ensure that a certain dispatch attribute will never be called on an instance.
+    It won't work on type_dispatcher due to not being able to call `register`.
+    """
+
+    def __init__(self, obj, *args, **kwargs):
+        raise ValueError(f"Dispatcher on {obj} must not be called in this way, see documentation.")
 
 
 class MethodDispatcher(AbstractDispatcher):
@@ -320,7 +332,6 @@ class TypeDispatcher(ObjectDispatcher):
         else:
             typ = obj
 
-        print(f"calling TypeDispatcher.__call__ {typ}", self._dispatchs[typ])
         # if you want obj to be a type, then the dispatcher should
         # control that
         return self._dispatchs[typ](self._obj)(obj, *args, **kwargs)
@@ -405,8 +416,11 @@ class ClassDispatcher(AbstractDispatcher):
             inst = owner
             cls = self._get.type
         else:
-            inst = instance
             cls = self._get.instance
+            if issubclass(cls, TypeDispatcher):
+                inst = owner
+            else:
+                inst = instance
         return cls(inst, self._dispatchs, default=self._default,
                    cls_attr_name=self._attr_name,
                    obj_getattr=self._obj_getattr,

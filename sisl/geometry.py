@@ -29,7 +29,8 @@ from .atom import Atom, Atoms
 from .shape import Shape, Sphere, Cube
 from ._namedindex import NamedIndex
 from ._category import Category, GenericCategory
-from ._dispatcher import AbstractDispatch, ClassDispatcher, TypeDispatcher
+from ._dispatcher import AbstractDispatch
+from ._dispatcher import ErrorDispatcher, ClassDispatcher, TypeDispatcher
 
 
 __all__ = ['Geometry', 'sgeom']
@@ -107,6 +108,15 @@ class Geometry(SuperCellChild):
     ...        [1, 1, 1]]
     >>> g = Geometry(xyz, Atom('H'))
 
+    Conversion of geometries to other projects instances can be done via
+    sisl's dispatch functionality
+
+    >>> g.to.ase()
+    Atoms(...)
+
+    converts to an ASE ``Atoms`` object. See ``sisl/geometry.py`` for details
+    on how to add more conversion methods.
+
     See Also
     --------
     Atoms : contained atoms `self.atoms`
@@ -142,6 +152,13 @@ class Geometry(SuperCellChild):
                               KeyError((f"{obj}.new does not implement '{key}' "
                                         f"dispatcher, are you using it incorrectly?"))),
                           instance_dispatcher=TypeDispatcher)
+
+    # Define a dispatcher for converting Geometries
+    #  Geometry.to("run.fdf") will invoke Geometry.read("run.fdf")
+    to = ClassDispatcher("to",
+                         obj_getattr=lambda obj, key: (_ for _ in ()).throw(
+                             KeyError((f"{obj}.new does not implement '{key}' "
+                                       f"dispatcher, are you using it incorrectly?"))))
 
     def __init_sc(self, sc):
         """ Initializes the supercell by *calculating* the size if not supplied
@@ -4473,7 +4490,9 @@ class GeometryNewAseDispatcher(GeometryNewDispatcher):
         Z = aseg.get_atomic_numbers()
         xyz = aseg.get_positions()
         cell = aseg.get_cell()
-        return self._obj(xyz, atoms=Z, sc=cell, **kwargs)
+        nsc = [3 if pbc else 1 for pbc in aseg.pbc]
+        sc = SuperCell(cell, nsc=nsc)
+        return self._obj(xyz, atoms=Z, sc=sc, **kwargs)
 Geometry.new.register("ase", GeometryNewAseDispatcher)
 
 # currently we can't ensure the ase Atoms type
@@ -4504,26 +4523,37 @@ Geometry.new.register(Path, GeometryNewFileDispatcher)
 # see sisl/__init__.py for Geometry.new.register(BaseSile, GeometryNewFileDispatcher)
 
 
-#setattr(Geometry, "to", ClassTypeDispatcher("to"))
-#
-#class GeometryToDispatcher(AbstractDispatch):
-#    """ Base dispatcher from class passing from Geometry class """
-#
-#    def dispatch(self, *args, **kwargs):
-#        return self(*args, **kwargs)
-#
-#
-#class GeometryToAseDispatcher(GeometryNewDispatcher):
-#    def __call__(self, _, **kwargs):
-#        from ase import Atoms as ASE_Atoms
-#        return ASE_Atoms(symbols=self.atoms.Z, positions=self.xyz.tolist(),
-#                         cell=self.cell.tolist(), pbc=self.nsc > 1, **kwargs)
-#Geometry.to.register("ase", GeometryToAseDispatcher)
-#
-#class GeometryToSileDispatcher(GeometryNewDispatcher):
-#    def __call__(self, *args, **kwargs):
-#        return self._obj.write(*args, **kwargs)
-#Geometry.to.register(str, GeometryToSileDispatcher)
+class GeometryToDispatcher(AbstractDispatch):
+    """ Base dispatcher from class passing from Geometry class """
+    @staticmethod
+    def _ensure_object(obj):
+        if isinstance(obj, type):
+            raise ValueError(f"Dispatcher on {obj} must not be called on the class.")
+
+
+class GeometryToAseDispatcher(GeometryToDispatcher):
+    def dispatch(self, *args, **kwargs):
+        from ase import Atoms as ase_Atoms
+        geom = self._obj
+        self._ensure_object(geom)
+        if len(args) > 0:
+            raise ValueError(f"{geom}.to.ase only accepts keyword arguments")
+        return ase_Atoms(symbols=geom.atoms.Z, positions=geom.xyz.tolist(),
+                         cell=geom.cell.tolist(), pbc=geom.nsc > 1, **kwargs)
+
+Geometry.to.register("ase", GeometryToAseDispatcher)
+
+
+class GeometryToSileDispatcher(GeometryToDispatcher):
+    def dispatch(self, *args, **kwargs):
+        geom = self._obj
+        self._ensure_object(geom)
+        return geom.write(*args, **kwargs)
+Geometry.to.register("str", GeometryToSileDispatcher)
+Geometry.to.register("path", GeometryToSileDispatcher)
+# to do geom.to[Path](path)
+Geometry.to.register(str, GeometryToSileDispatcher)
+Geometry.to.register(Path, GeometryToSileDispatcher)
 
 
 @set_module("sisl")
