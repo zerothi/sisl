@@ -148,17 +148,21 @@ class Geometry(SuperCellChild):
     # new Geometries
     #  Geometry.new("run.fdf") will invoke Geometry.read("run.fdf")
     new = ClassDispatcher("new",
-                          obj_getattr=lambda obj, key: (_ for _ in ()).throw(
-                              KeyError((f"{obj}.new does not implement '{key}' "
-                                        f"dispatcher, are you using it incorrectly?"))),
-                          instance_dispatcher=TypeDispatcher)
+                          obj_getattr=lambda obj, key:
+                          (_ for _ in ()).throw(
+                              AttributeError((f"{obj}.new does not implement '{key}' "
+                                              f"dispatcher, are you using it incorrectly?"))
+                          ), instance_dispatcher=TypeDispatcher)
 
     # Define a dispatcher for converting Geometries
     #  Geometry().to.ase() will convert to an ase.Atoms object
     to = ClassDispatcher("to",
-                         obj_getattr=lambda obj, key: (_ for _ in ()).throw(
-                             KeyError((f"{obj}.to does not implement '{key}' "
-                                       f"dispatcher, are you using it incorrectly?"))))
+                         obj_getattr=lambda obj, key:
+                         (_ for _ in ()).throw(
+                             AttributeError((f"{obj}.to does not implement '{key}' "
+                                             f"dispatcher, are you using it incorrectly?"))
+                         )
+    )
 
     def __init_sc(self, sc):
         """ Initializes the supercell by *calculating* the size if not supplied
