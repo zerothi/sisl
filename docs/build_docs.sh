@@ -18,7 +18,7 @@ retval=$?
 
 # If succeeded, we may overwrite the old
 # documentation (if it exists)
-if [ $retval -eq 0 -a -d latest ]; then
+if [ $retval -eq 0 ]; then
 
     # Move folder to latest
     mv build/html latest
@@ -28,7 +28,7 @@ if [ $retval -eq 0 -a -d latest ]; then
     echo "Success = $retval"
 else
     # We need to restore the latest folder
-    git checkout latest
+    git checkout -- ./latest
 
     echo "Failure = $retval"
 fi
