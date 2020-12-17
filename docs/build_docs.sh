@@ -7,26 +7,28 @@ which sphinx-build
 # First make clean
 make clean
 
+# We need to remove the latest folder before
+# building to ensure we don't duplicate the
+# folder structure
+git rm -rf latest
+
 # Now ensure everything is ready...
 make html
-succeed=$?
+retval=$?
 
 # If succeeded, we may overwrite the old
 # documentation (if it exists)
-if [ $succeed -eq 0 -a -d latest ]; then
-    
-    # First remove directory
-    git rm -rf latest
-    mkdir latest
-    pushd latest
-    cp -rf ../build/html/* .
-    rm -rf _sources
-    # Clean all rst.dummy files in the
-    for f in $(find ./ -name "*rst.dummy")
-    do
-	rm $f
-    done
-    popd
+if [ $retval -eq 0 -a -d latest ]; then
+
+    # Move folder to latest
+    mv build/html latest
+    rm -rf latest/_sources
     git add latest
-    
+
+    echo "Success = $retval"
+else
+    # We need to restore the latest folder
+    git checkout latest
+
+    echo "Failure = $retval"
 fi

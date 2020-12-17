@@ -200,6 +200,9 @@ autodoc_default_options = {
 # directories to ignore when looking for source files.
 exclude_patterns = ['build', '**/setupegg.py', '**/setup.rst', '**/tests', '**.ipynb_checkpoints']
 
+# TODO temporarily disable ipynb in plotly subfolder
+exclude_patterns.append('**/plotly/**/*.ipynb')
+
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
 default_role = 'autolink'
