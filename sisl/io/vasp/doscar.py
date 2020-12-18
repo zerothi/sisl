@@ -14,6 +14,22 @@ __all__ = ['doscarSileVASP']
 class doscarSileVASP(SileVASP):
     """ Density of states output """
 
+    @sile_fh_open(True)
+    def read_fermi_level(self):
+        r""" Query the Fermi-level contained in the file
+
+        Returns
+        -------
+        Ef : fermi-level of the system
+        """
+        self.readline()  # NIONS, NIONS, JOBPAR_, WDES%INCDIJ
+        self.readline()  # AOMEGA, LATT_CUR%ANORM(1:3) *1e-10, POTIM * 1e-15
+        self.readline()  # TEMP
+        self.readline()  # ' CAR '
+        self.readline()  # name
+        line = self.readline().split()
+        return float(line[3])
+
     @sile_fh_open()
     def read_data(self):
         r""" Read DOS, as calculated and written by VASP
@@ -26,11 +42,11 @@ class doscarSileVASP(SileVASP):
             DOS points (in 1/eV)
         """
         # read first line
-        line = self.readline()  # NIONS, NIONS, JOBPAR_, WDES%INCDIJ
-        line = self.readline()  # AOMEGA, LATT_CUR%ANORM(1:3) *1e-10, POTIM * 1e-15
-        line = self.readline()  # TEMP
-        line = self.readline()  # ' CAR '
-        line = self.readline()  # name
+        self.readline()  # NIONS, NIONS, JOBPAR_, WDES%INCDIJ
+        self.readline()  # AOMEGA, LATT_CUR%ANORM(1:3) *1e-10, POTIM * 1e-15
+        self.readline()  # TEMP
+        self.readline()  # ' CAR '
+        self.readline()  # name
         line = self.readline().split()
         Emax = float(line[0])
         Emin = float(line[1])

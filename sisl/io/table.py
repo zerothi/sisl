@@ -122,23 +122,27 @@ class tableSile(Sile):
         comment = kwargs.get('comment', None)
         if comment is None:
             comment = ''
-        elif isinstance(comment, (list, tuple)):
+        elif isinstance(comment, str):
+            comment = comment.strip()
+            if not comment.startswith(self._comment[0]):
+                comment = self._comment[0] + comment
+        else:
             comment = (newline + self._comment[0] + ' ').join(comment)
         if len(comment) > 0:
             comment = self._comment[0] + ' ' + comment + newline
 
         header = kwargs.get('header', None)
-        if isinstance(header, (list, tuple)):
-            header = delimiter.join(header)
-        if header is not None:
+        if header is None:
+            header = ''
+        elif isinstance(header, str):
             # Ensure no "dangling" spaces
             header = header.strip()
             if not header.startswith(self._comment[0]):
                 header = self._comment[0] + header
-            if not header.endswith('\n'):
-                header += '\n'
         else:
-            header = ''
+            header = delimiter.join(header)
+
+        # Finalize output
         header = comment + header
 
         footer = kwargs.get('footer', None)
@@ -149,6 +153,8 @@ class tableSile(Sile):
 
         # Now we are ready to write
         if len(header) > 0:
+            if not header.endswith(newline):
+                header += newline
             self._write(header)
 
         # Create a unified data table
