@@ -118,29 +118,32 @@ class tableSile(Sile):
         fmt = kwargs.get('fmt', '.5e')
         newline = kwargs.get('newline', '\n')
         delimiter = kwargs.get('delimiter', '\t')
+        _com = self._comment[0]
+
+        def comment_newline(line, prefix=''):
+            """ Converts a list of str arguments into nicely formatted commented
+            and newlined output """
+            nonlocal _com
+            line = map(lambda s: s.strip(), line.strip().split(newline))
+            # always append a newline
+            line = newline.join([s if s.startswith(_com) else f"{_com}{prefix}{s}" for s in line]) + newline
+            return line
 
         comment = kwargs.get('comment', None)
         if comment is None:
             comment = ''
         elif isinstance(comment, str):
-            comment = comment.strip()
-            if not comment.startswith(self._comment[0]):
-                comment = self._comment[0] + comment
+            comment = comment_newline(comment, ' ')
         else:
-            comment = (newline + self._comment[0] + ' ').join(comment)
-        if len(comment) > 0:
-            comment = self._comment[0] + ' ' + comment + newline
+            comment = comment_newline(newline.join(comment), ' ')
 
         header = kwargs.get('header', None)
         if header is None:
             header = ''
         elif isinstance(header, str):
-            # Ensure no "dangling" spaces
-            header = header.strip()
-            if not header.startswith(self._comment[0]):
-                header = self._comment[0] + header
+            header = comment_newline(header)
         else:
-            header = delimiter.join(header)
+            header = comment_newline(delimiter.join(header))
 
         # Finalize output
         header = comment + header
@@ -148,13 +151,13 @@ class tableSile(Sile):
         footer = kwargs.get('footer', None)
         if footer is None:
             footer = ''
-        elif isinstance(footer, (list, tuple)):
+        elif isinstance(footer, str):
+            pass
+        else:
             footer = newline.join(footer)
 
         # Now we are ready to write
         if len(header) > 0:
-            if not header.endswith(newline):
-                header += newline
             self._write(header)
 
         # Create a unified data table
