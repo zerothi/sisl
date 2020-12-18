@@ -29,20 +29,22 @@ class outSileSiesta(SileSiesta):
 
     This enables reading the output quantities from the Siesta output.
     """
-    _job_completed = False
+    _completed = None
 
     def readline(self):
         line = super().readline()
         if 'Job completed' in line:
-            self._job_completed = True
+            self._completed = True
         return line
 
     readline.__doc__ = SileSiesta.readline.__doc__
 
-    @property
-    def job_completed(self):
+    @sile_fh_open()
+    def completed(self):
         """ True if the full file has been read and "Job completed" was found. """
-        return self._job_completed
+        if self._completed is not True:
+            self._completed = self.step_to("Job completed")[0]
+        return self._completed
 
     @sile_fh_open()
     def read_species(self):
@@ -405,7 +407,7 @@ class outSileSiesta(SileSiesta):
 
             if last:
                 return Ss[-1]
-            if self.job_completed and key == 'static':
+            if self.completed() and key == 'static':
                 return Ss[:-1]
             return Ss
 

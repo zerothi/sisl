@@ -13,12 +13,20 @@ __all__ = ['outSileVASP']
 @set_module("sisl.io.vasp")
 class outSileVASP(SileVASP):
     """ Output file from VASP """
-    _job_completed = False
+    _completed = None
 
-    @property
-    def job_completed(self):
+    def readline(self):
+        line = super().readline()
+        if "General timing and accounting" in line:
+            self._completed = True
+        return line
+
+    @sile_fh_open()
+    def completed(self):
         """ True if the line "General timing and accounting" was found. """
-        return self._job_completed
+        if self._completed is not True:
+            self._completed = self.step_to("General timing and accounting")[0]
+        return self._completed
 
     @sile_fh_open()
     def cpu_time(self, flag="General timing and accounting"):
@@ -30,7 +38,7 @@ class outSileVASP(SileVASP):
 
         found = self.step_to(flag, reread=False)[0]
         if found:
-            self._job_completed = True
+            self._completed = True
             for _ in range(nskip):
                 line = self.readline()
             return float(line.split()[iplace])

@@ -94,6 +94,12 @@ def test_md_nose_out_data(sisl_files):
     assert e["Ekin"] == pytest.approx(2293.584862)
 
 
+def test_md_nose_out_completed(sisl_files):
+    f = sisl_files(_dir, 'md_nose.out')
+    out = outSileSiesta(f)
+    out.completed()
+
+
 def test_md_nose_out_dataframe(sisl_files):
     pytest.importorskip("pandas", reason="pandas not available")
     f = sisl_files(_dir, 'md_nose.out')

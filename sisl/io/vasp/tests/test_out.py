@@ -11,18 +11,24 @@ def test_diamond_outcar_energies(sisl_files):
     f = sisl_files(_dir, 'diamond', 'OUTCAR')
     f = outSileVASP(f)
 
-    # Read energies
     E = f.read_energy()
     Eall = f.read_energy(all=True)
 
     assert E == Eall[-1]
     assert len(Eall) > 1
+    assert f.completed()
 
 
-def test_diamond_outcar_(sisl_files):
+def test_diamond_outcar_cputime(sisl_files):
     f = sisl_files(_dir, 'diamond', 'OUTCAR')
     f = outSileVASP(f)
 
-    # Read CPU time
     assert f.cpu_time() > 0.
-    assert f.job_completed
+    assert f.completed()
+
+
+def test_diamond_outcar_completed(sisl_files):
+    f = sisl_files(_dir, 'diamond', 'OUTCAR')
+    f = outSileVASP(f)
+
+    assert f.completed()
