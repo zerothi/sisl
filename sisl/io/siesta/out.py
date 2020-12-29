@@ -73,13 +73,27 @@ class outSileSiesta(SileSiesta):
 
         return atom
 
+    @sile_fh_open(True)
+    def read_basis_block(self):
+        """ Reads the PAO.Basis block that Siesta writes """
+        found, line = self.step_to("%block PAO.Basis")
+        if not found:
+            raise ValueError(f"{self.__class__.__name__}.read_basis_block could not find PAO.Basis in output")
+
+        basis = []
+        while not line.startswith("%endblock PAO.Basis"):
+            line = self.readline()
+            basis.append(line)
+
+        return basis
+
     def _read_supercell_outcell(self):
         """ Wrapper for reading the unit-cell from the outcoor block """
 
         # Read until outcell is found
-        line = self.readline()
-        while not 'outcell: Unit cell vectors' in line:
-            line = self.readline()
+        found, line = self.step_to("outcell: Unit cell vectors")
+        if not found:
+            raise ValueError(f"{self.__class__.__name__}._r_supercell_outcell did not find outcell key")
 
         Ang = 'Ang' in line
 

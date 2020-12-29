@@ -431,12 +431,9 @@ class fdfSileSiesta(SileSiesta):
         def write(fh, value):
             if value is None:
                 return
-            if isinstance(value, str):
-                fh.write(self.print(key, value))
-                if '\n' not in value:
-                    fh.write('\n')
-            else:
-                raise NotImplementedError('Currently blocks are not implemented in set!')
+            fh.write(self.print(key, value))
+            if isinstance(value, str) and '\n' not in value:
+                fh.write('\n')
 
         # Now loop, write and edit
         do_write = True
@@ -451,6 +448,8 @@ class fdfSileSiesta(SileSiesta):
                     do_write = False
                 else:
                     fh.write(line)
+            if do_write:
+                write(fh, value)
 
     @staticmethod
     def print(key, value):
@@ -464,11 +463,13 @@ class fdfSileSiesta(SileSiesta):
                     has_nl = True
                     break
             if has_nl:
+                # copy list, we are going to change it
+                value = value[:]
                 # do not skip to next line in next segment
-                value[-1].replace('\n', '')
-                s += '\n{}'.format(''.join(value))
+                value[-1] = value[-1].replace('\n', '')
+                s += '\n{}\n'.format(''.join(value))
             else:
-                s += '\n{} {}'.format(value[0], '\n'.join(value[1:]))
+                s += '\n{}\n'.format('\n'.join(value))
             s += f'%endblock {key}'
         else:
             s = f'{key} {value}'
