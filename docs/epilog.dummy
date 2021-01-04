@@ -26,9 +26,10 @@
 .. _workshop: https://github.com/zerothi/ts-tbt-sisl-tutorial
 
 .. DFT codes
-.. _Siesta: https://departments.icmab.es/leem/siesta
-.. _TranSiesta: https://gitlab.com/siesta-project/siesta
-.. _TBtrans: https://gitlab.com/siesta-project/siesta
+.. _atom: https://siesta-project.org/SIESTA_MATERIAL/Pseudos/atom_licence.html
+.. _Siesta: https://siesta-project.org
+.. _TranSiesta: https://siesta-project.org
+.. _TBtrans: https://siesta-project.org
 .. _BigDFT: http://www.bigdft.org
 .. _OpenMX: http://www.openmx-square.org
 .. _VASP: https://www.vasp.at

@@ -15,3 +15,4 @@ would go into the `sisl_toolbox` suite.
    :maxdepth: 1
 
    toolbox/ts_fft.rst
+   toolbox/atom_plot.rst

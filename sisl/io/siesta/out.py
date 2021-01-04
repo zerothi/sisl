@@ -582,9 +582,9 @@ class outSileSiesta(SileSiesta):
             "Eso": "spin_orbit",
             "Ext. field": "extE",
             "Exch.-corr.": "xc",
-            "Ekinion": "ion_kinetic",
-            "Ion-electron": "ion_electron",
-            "Ion-ion": "ion_ion",
+            "Ekinion": "ion.kinetic",
+            "Ion-electron": "ion.electron",
+            "Ion-ion": "ion.ion",
             "Bulk bias": "bulkV",
             "Total": "total",
             "Fermi": "fermi",
@@ -594,7 +594,7 @@ class outSileSiesta(SileSiesta):
             key, val = line.split("=")
             key = key.split(":")[1].strip()
             key = name_conv.get(key, key)
-            if key.startswith("ion"):
+            if key.startswith("ion."):
                 # sub-nest
                 out.ion[key[4:]] = float(val)
             else:
