@@ -38,6 +38,12 @@ def _bin_check(obj, method, message):
         raise SileError(f'{str(obj)}.{method} {message} (ierr={ierr})')
 
 
+def _to_fortran(M, dtype):
+    if np.isfortran(M):
+        return M.astype(dtype, copy=False)
+    return M.astype(dtype, copy=False).T
+
+
 def _geometry_align(geom_b, geom_u, cls, method):
     """ Routine used to align two geometries
 
@@ -1198,8 +1204,8 @@ class _gfSileSiesta(SileBinSiesta):
             S = np.eye(no, dtype=H.dtype)
         self._step_counter('write_hamiltonian', HS=True, read=True)
         _siesta.write_gf_hs(self._iu, self._ik, self._E[self._iE],
-                            H.astype(np.complex128, 'C', copy=False).T,
-                            S.astype(np.complex128, 'C', copy=False).T, no_u=no)
+                            _to_fortran(H, np.complex128),
+                            _to_fortran(S, np.complex128), no_u=no)
         _bin_check(self, 'write_hamiltonian', 'could not write Hamiltonian and overlap matrices.')
 
     def write_self_energy(self, SE):
@@ -1218,8 +1224,7 @@ class _gfSileSiesta(SileBinSiesta):
         no = len(SE)
         self._step_counter('write_self_energy', read=True)
         _siesta.write_gf_se(self._iu, self._ik, self._iE,
-                            self._E[self._iE],
-                            SE.astype(np.complex128, 'C', copy=False).T, no_u=no)
+                            self._E[self._iE], _to_fortran(SE, np.complex128), no_u=no)
         _bin_check(self, 'write_self_energy', 'could not write self-energy.')
 
     def __len__(self):
