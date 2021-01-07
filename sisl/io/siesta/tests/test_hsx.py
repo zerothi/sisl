@@ -11,8 +11,8 @@ _dir = osp.join('sisl', 'io', 'siesta')
 
 def si_pdos_kgrid_geom(with_orbs=True):
     if with_orbs:
-        return sisl.Geometry([[0, 0, 0], [1, 1, 1]], sisl.Atom('Si', R=np.arange(13) + 1))
-    return sisl.Geometry([[0, 0, 0], [1, 1, 1]], sisl.Atom('Si'))
+        return sisl.geom.diamond(5.43, sisl.Atom('Si', R=np.arange(13) + 1))
+    return sisl.geom.diamond(5.43, sisl.Atom('Si'))
 
 
 def test_si_pdos_kgrid_hsx_H(sisl_files, sisl_tmp):
