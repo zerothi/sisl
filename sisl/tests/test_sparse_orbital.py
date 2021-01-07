@@ -136,8 +136,9 @@ def test_sparse_orbital_hermitian():
 
         assert spo.nnz == 2
 
+        # implicit sort
         spoT = spo.transpose()
-        assert not spoT.finalized
+        assert spoT.finalized
         assert spoT.nnz == 2
         assert spoT[0, 0] == 1.
         assert spoT[0, 1] == 0.

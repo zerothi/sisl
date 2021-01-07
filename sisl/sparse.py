@@ -7,13 +7,14 @@ import numpy as np
 # To speed up the _extend algorithm we limit lookups
 from numpy import (
     ndarray, int32,
-    empty, zeros, full, arange,
+    empty, zeros, full, arange, repeat,
     asarray, atleast_1d,
     take, delete, insert, split, concatenate,
     copyto,
+    argsort, lexsort,
     intersect1d, setdiff1d, unique, in1d,
     diff, count_nonzero, allclose,
-    isnan, broadcast, argsort, isscalar,
+    isnan, isscalar, broadcast,
     any as np_any, all as np_all
 )
 from numpy.lib.mixins import NDArrayOperatorsMixin
@@ -437,19 +438,24 @@ class SparseCSR(NDArrayOperatorsMixin):
         D = self._D
 
         # We truncate all the connections
+        # to get correct rows we need to remove those which have 0 elements
+        row_nonzero = (ncol > 0).nonzero()[0]
+        # Now we have [0 0 0 0 1 1 1 1 2 2 ... no-1 no-1]
+        row = repeat(row_nonzero, ncol[row_nonzero])
         if sort:
-            for r in range(self.shape[0]):
-                # Sort and check whether there are double entries
-                sl = slice(ptr[r], ptr[r+1])
-                ccol = col[sl]
-                DD = D[sl, :]
-                idx = argsort(ccol)
-                # Do in-place sorting
-                ccol[:] = ccol[idx]
-                if not sorted_unique(ccol):
-                    raise SislError('You cannot have two elements between the same ' +
-                                    f'i,j index (i={r}), something has went terribly wrong.')
-                DD[:, :] = DD[idx, :]
+            # first sort according to row (which is already sorted)
+            # then sort by col
+            idx = lexsort((col, row))
+            # direct re-order
+            col[:] = col[idx]
+            D[:, :] = D[idx, :]
+
+            # check that we don't have any duplicate values
+            duplicates = np.logical_and(diff(col) == 0, diff(row) == 0).nonzero()[0]
+
+            if len(duplicates) > 0:
+                raise SislError('You cannot have two elements between the same ' +
+                                f'i,j index (i={row[duplicates]}, j={col[duplicates]})')
 
         else:
             for r in range(self.shape[0]):

@@ -995,7 +995,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         return lin.eigsh(P, k=n, return_eigenvectors=not eigvals_only, **kwargs)
 
-    def transpose(self, hermitian=False):
+    def transpose(self, hermitian=False, sort=True):
         r""" A transpose copy of this object, possibly apply the Hermitian conjugate as well
 
         Parameters
@@ -1003,8 +1003,11 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         hermitian : bool, optional
            if true, also emply a spin-box Hermitian operator to ensure TRS, otherwise
            only return the transpose values.
+        sort : bool, optional
+           the returned columns for the transposed structure will be sorted
+           if this is true, default
         """
-        new = super().transpose()
+        new = super().transpose(sort=sort)
         sp = self.spin
         D = new._csr._D
 

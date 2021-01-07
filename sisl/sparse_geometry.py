@@ -7,7 +7,7 @@ import numpy as np
 from numpy.lib.mixins import NDArrayOperatorsMixin
 from numpy import (
     int32,
-    take, delete, argsort,
+    take, delete, argsort, lexsort,
     unique, diff, allclose,
     tile, repeat, concatenate
 )
@@ -328,7 +328,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
         self.geometry.set_nsc(*args, **kwargs)
 
-    def transpose(self):
+    def transpose(self, sort=True):
         """ Create the transposed sparse geometry by interchanging supercell indices
 
         Sparse geometries are (typically) relying on symmetry in the supercell picture.
@@ -338,6 +338,12 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         This routine transposes all rows and columns such that any interaction between
         row, `r`, and column `c` in a given supercell `(i,j,k)` will be transposed
         into row `c`, column `r` in the supercell `(-i,-j,-k)`.
+
+        Parameters
+        ----------
+        sort : bool, optional
+           the returned columns for the transposed structure will be sorted
+           if this is true, default
 
         Notes
         -----
@@ -413,10 +419,13 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         T._csr.ncol[rows] = nrow
         del rows
 
-        # Now we have everything ready...
-        # Simply figure out how to sort the columns
-        # such that we have them unified.
-        idx = argsort(col)
+        if sort:
+            # also sort individual rows for each column
+            idx = lexsort((row, col))
+        else:
+            # sort columns to get transposed values, this will
+            # sort of randomize the rows
+            idx = argsort(col)
 
         # Our new data will then be
         T._csr.col = row[idx]
@@ -425,9 +434,10 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         del D
         T._csr.ptr = _ncol_to_indptr(T._csr.ncol)
 
+        # Because of lexsort we now have the columns sorted
         # For-sure we haven't sorted the columns.
         # We haven't changed the number of non-zeros
-        T._csr._finalized = False
+        T._csr._finalized = sort
 
         return T
 
