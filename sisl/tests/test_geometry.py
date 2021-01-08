@@ -818,11 +818,15 @@ class TestGeometry:
         assert idx[1][1].shape[1] == 3
 
         # Return index of two things
-        idx = setup.mol.close(point, R=(.1, 1.1), ret_xyz=True, ret_rij=True)
-        # [[idx-1, idx-2], [coord-1, coord-2], [dist-1, dist-2]]
-        assert len(idx) == 3
+        idx = setup.mol.close(point, R=(.1, 1.1), ret_xyz=True, ret_rij=True, ret_isc=True)
+        # [[idx-1, idx-2], [coord-1, coord-2], [dist-1, dist-2], [isc-1, isc-2]]
+        assert len(idx) == 4
         assert len(idx[0]) == 2
         assert len(idx[1]) == 2
+        assert len(idx[2]) == 2
+        assert len(idx[3]) == 2
+        assert all(len(idx[0][0]) == len(t[0]) for t in idx)
+        assert all(len(idx[0][1]) == len(t[1]) for t in idx)
         # idx-1
         assert len(idx[0][0].shape) == 1
         assert idx[0][0].shape[0] == 1
@@ -838,6 +842,11 @@ class TestGeometry:
         assert idx[2][0].shape[0] == 1
         # dist-2
         assert idx[2][1].shape[0] == 1
+        # isc-1
+        assert len(idx[3][0].shape) == 2
+        assert idx[3][0].shape[1] == 3
+        # isc-2
+        assert idx[3][1].shape[1] == 3
 
         # Return index of two things
         idx = setup.mol.close(point, R=(.1, 1.1), ret_rij=True)

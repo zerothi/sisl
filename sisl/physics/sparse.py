@@ -6,6 +6,7 @@ from scipy.sparse import csr_matrix, SparseEfficiencyWarning
 from sisl._internal import set_module
 import sisl.linalg as lin
 import sisl._array as _a
+from sisl.messages import warn
 from sisl.sparse import isspmatrix
 from sisl.sparse_geometry import SparseOrbital
 from .spin import Spin
@@ -690,9 +691,52 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         r""" Associated spin class """
         return self._spin
 
+    def create_construct(self, R, param):
+        """ Create a simple function for passing to the `construct` function.
+
+        This is simply to leviate the creation of simplistic
+        functions needed for setting up the sparse elements.
+
+        Basically this returns a function:
+
+        >>> def func(self, ia, atoms, atoms_xyz=None):
+        ...     idx = self.geometry.close(ia, R=R, atoms=atoms, atoms_xyz=atoms_xyz)
+        ...     for ix, p in zip(idx, param):
+        ...         self[ia, ix] = p
+
+        Notes
+        -----
+        This function only works for geometry sparse matrices (i.e. one
+        element per atom). If you have more than one element per atom
+        you have to implement the function your-self.
+
+        This method does **not** take into account Hermiticity for non-colinear matrices.
+        A warning will be issued for these matrices.
+
+        Parameters
+        ----------
+        R : array_like
+           radii parameters for different shells.
+           Must have same length as `param` or one less.
+           If one less it will be extended with ``R[0]/100``
+        param : array_like
+           coupling constants corresponding to the `R`
+           ranges. ``param[0,:]`` are the elements
+           for the all atoms within ``R[0]`` of each atom.
+
+        See Also
+        --------
+        construct : routine to create the sparse matrix from a generic function (as returned from `create_construct`)
+        """
+        if self.spin.is_spinorbit:
+            warn(f"{self.__class__.__name__}.create_construct cannot ensure Hermiticity for spin-orbit. To ensure Hermiticity do `M = (M + M.transpose(True))/2`")
+        elif self.spin.is_noncolinear:
+            warn(f"{self.__class__.__name__}.create_construct cannot ensure Hermiticity for non-colinear. To ensure Hermiticity do `M = (M + M.transpose(True))/2`")
+        return super().create_construct(R, param)
+
     def __len__(self):
         r""" Returns number of rows in the basis (if non-collinear or spin-orbit, twice the number of orbitals) """
-        if self.spin.spins > 2:
+        if self.spin.has_noncolinear:
             return self.no * 2
         return self.no
 

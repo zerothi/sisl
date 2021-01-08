@@ -158,9 +158,10 @@ def test_sparse_orbital_bz_non_colinear():
     assert np.abs((M - MT)._csr._D).sum() != 0
     # For a non-collinear with construct we don't take
     # into account the imaginary parts... :(
-    # This should be fixed
-    assert np.abs((M - MH)._csr._D).sum() == 0
-    assert np.abs((MT - MH)._csr._D).sum() != 0
+    # Transposing and Hermitian transpose are the same for NC
+    # There are only 1 imaginary part which will change sign regardless
+    assert np.abs((MT - MH)._csr._D).sum() == 0
+    assert np.abs((M - MH)._csr._D).sum() != 0
 
 
 def test_sparse_orbital_bz_non_colinear_trs_kramers_theorem():
@@ -182,7 +183,6 @@ def test_sparse_orbital_bz_non_colinear_trs_kramers_theorem():
 
 
 def test_sparse_orbital_bz_spin_orbit():
-    # compare transpose with
     M = SparseOrbitalBZSpin(geom.graphene(), spin=Spin('SO'))
 
     M.construct(([0.1, 1.44],

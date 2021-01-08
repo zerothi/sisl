@@ -101,7 +101,7 @@ class Bloch:
 
         The k-point `k` is with respect to the unfolded geometry.
         The return list of `k` points are the k-points required to be sampled in the
-        folded geometry (``this.parent``).
+        folded geometry.
 
         Parameters
         ----------

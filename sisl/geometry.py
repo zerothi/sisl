@@ -8,7 +8,7 @@ from pathlib import Path
 import numpy as np
 from numpy import ndarray, int32, bool_
 from numpy import dot, square, sqrt, diff
-from numpy import floor, ceil
+from numpy import floor, ceil, tile
 from numpy import argsort, split, isin, concatenate
 
 from ._internal import set_module, singledispatchmethod
@@ -3282,7 +3282,7 @@ class Geometry(SuperCellChild):
 
     def close(self, xyz_ia, R=None,
               atoms=None, atoms_xyz=None,
-              ret_xyz=False, ret_rij=False):
+              ret_xyz=False, ret_rij=False, ret_isc=False):
         """ Indices of atoms in the entire supercell within a given radius from a given coordinate
 
         This heavily relies on the `close_sc` method.
@@ -3319,6 +3319,9 @@ class Geometry(SuperCellChild):
         ret_rij : bool, optional
             If true this method will return the distances from the `xyz_ia`
             for each of the couplings.
+        ret_isc : bool, optional
+            If true this method will return the lattice offset from `xyz_ia`
+            for each of the couplings.
 
         Returns
         -------
@@ -3328,6 +3331,8 @@ class Geometry(SuperCellChild):
             atomic coordinates of the indexed atoms (only for true `ret_xyz`)
         rij
             distance of the indexed atoms to the center coordinate (only for true `ret_rij`)
+        isc
+            integer lattice offsets for the couplings (related to `rij` without atomic coordinates)
         """
         if R is None:
             R = self.maxR()
@@ -3345,25 +3350,32 @@ class Geometry(SuperCellChild):
         ret = [[np.empty([0], np.int32)] * len(R)]
         i = 0
         if ret_xyz:
-            c = i + 1
+            ixyz = i + 1
             i += 1
             ret.append([np.empty([0, 3], np.float64)] * len(R))
         if ret_rij:
-            d = i + 1
+            irij = i + 1
             i += 1
             ret.append([np.empty([0], np.float64)] * len(R))
+        if ret_isc:
+            iisc = i + 1
+            i += 1
+            ret.append([np.empty([0, 3], np.int32)] * len(R))
 
-        ret_special = ret_xyz or ret_rij
+        n_ret = sum([ret_xyz, ret_rij, ret_isc])
+
+        def isc_tile(isc, n):
+            return tile(isc.reshape(1, -1), (n, 1))
 
         for s in range(self.n_s):
 
             na = self.na * s
-            sret = self.close_sc(xyz_ia,
-                self.sc.sc_off[s, :], R=R,
-                atoms=atoms, atoms_xyz=atoms_xyz,
-                ret_xyz=ret_xyz, ret_rij=ret_rij)
+            isc = self.sc.sc_off[s, :]
+            sret = self.close_sc(xyz_ia, isc, R=R,
+                                 atoms=atoms, atoms_xyz=atoms_xyz,
+                                 ret_xyz=ret_xyz, ret_rij=ret_rij)
 
-            if not ret_special:
+            if n_ret == 0:
                 # This is to "fake" the return
                 # of a list (we will do indexing!)
                 sret = [sret]
@@ -3373,29 +3385,30 @@ class Geometry(SuperCellChild):
                 for i, x in enumerate(sret[0]):
                     ret[0][i] = concatenate((ret[0][i], x + na), axis=0)
                     if ret_xyz:
-                        ret[c][i] = concatenate((ret[c][i], sret[c][i]), axis=0)
+                        ret[ixyz][i] = concatenate((ret[ixyz][i], sret[ixyz][i]), axis=0)
                     if ret_rij:
-                        ret[d][i] = concatenate((ret[d][i], sret[d][i]), axis=0)
+                        ret[irij][i] = concatenate((ret[irij][i], sret[irij][i]), axis=0)
+                    if ret_isc:
+                        ret[iisc][i] = concatenate((ret[iisc][i], isc_tile(isc, len(x))), axis=0)
             elif len(sret[0]) > 0:
                 # We can add it to the list (len(R) == 1)
                 # We add the atomic offset for the supercell index
                 ret[0][0] = concatenate((ret[0][0], sret[0] + na), axis=0)
                 if ret_xyz:
-                    ret[c][0] = concatenate((ret[c][0], sret[c]), axis=0)
+                    ret[ixyz][0] = concatenate((ret[ixyz][0], sret[ixyz]), axis=0)
                 if ret_rij:
-                    ret[d][0] = concatenate((ret[d][0], sret[d]), axis=0)
+                    ret[irij][0] = concatenate((ret[irij][0], sret[irij]), axis=0)
+                if ret_isc:
+                    ret[iisc][0] = concatenate((ret[iisc][0], isc_tile(isc, len(sret[0]))), axis=0)
 
         if len(R) == 1:
-            if ret_xyz and ret_rij:
-                return [ret[0][0], ret[1][0], ret[2][0]]
-            elif ret_xyz or ret_rij:
-                return [ret[0][0], ret[1][0]]
-            return ret[0][0]
+            if n_ret == 0:
+                return ret[0][0]
+            return tuple(ret[i][0] for i in range(n_ret + 1))
 
-        if ret_special:
-            return ret
-
-        return ret[0]
+        if n_ret == 0:
+            return ret[0]
+        return ret
 
     def a2transpose(self, atoms1, atoms2=None):
         """ Transposes connections from `atoms1` to `atoms2` such that supercell connections are transposed
