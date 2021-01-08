@@ -347,8 +347,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
         Notes
         -----
-        For Hamiltonians with non-collinear or spin-orbit there is no transposing of the
-        sub-spin matrix box. This needs to be done *manually*.
+        The components for each sparse element are not changed in this method.
 
         Examples
         --------
@@ -397,8 +396,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         # figure out rows where ncol is > 0
         # we skip the first column
         row_nonzero = (ncol > 0).nonzero()[0]
-        row = repeat(row_nonzero.astype(np.int32, copy=False),
-                     ncol[row_nonzero]).astype(np.int32, copy=False)
+        row = repeat(row_nonzero.astype(np.int32, copy=False), ncol[row_nonzero])
 
         # Now we have the DOK format
         #  row, col, _D
@@ -423,8 +421,8 @@ class _SparseGeometry(NDArrayOperatorsMixin):
             # also sort individual rows for each column
             idx = lexsort((row, col))
         else:
-            # sort columns to get transposed values, this will
-            # sort of randomize the rows
+            # sort columns to get transposed values.
+            # This will randomize the rows
             idx = argsort(col)
 
         # Our new data will then be
@@ -434,9 +432,8 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         del D
         T._csr.ptr = _ncol_to_indptr(T._csr.ncol)
 
-        # Because of lexsort we now have the columns sorted
-        # For-sure we haven't sorted the columns.
-        # We haven't changed the number of non-zeros
+        # If `sort` we have everything sorted, otherwise it
+        # is not ensured
         T._csr._finalized = sort
 
         return T

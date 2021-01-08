@@ -995,7 +995,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         return lin.eigsh(P, k=n, return_eigenvectors=not eigvals_only, **kwargs)
 
-    def transpose(self, hermitian=False, sort=True):
+    def transpose(self, hermitian=False, spin=True, sort=True):
         r""" A transpose copy of this object, possibly apply the Hermitian conjugate as well
 
         Parameters
@@ -1003,6 +1003,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         hermitian : bool, optional
            if true, also emply a spin-box Hermitian operator to ensure TRS, otherwise
            only return the transpose values.
+        spin : bool, optional
+           whether the spin-box is also transposed if this is false, and `hermitian` is true,
+           then only imaginary values will change sign.
         sort : bool, optional
            the returned columns for the transposed structure will be sorted
            if this is true, default
@@ -1011,38 +1014,46 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         sp = self.spin
         D = new._csr._D
 
-        if hermitian:
-            if sp.is_spinorbit:
+        if sp.is_spinorbit:
+            if hermitian and spin:
                 # conjugate the imaginary value and transpose spin-box
                 if sp.dkind == 'f':
                     # imaginary components (including transposing)
                     #    12,11,22,21
                     D[:, [3, 4, 5, 7]] = -D[:, [7, 4, 5, 3]]
-                    # M21r -> M12r
+                    # R12 <-> R21
                     D[:, [2, 6]] = D[:, [6, 2]]
                 else:
-                    D[:, [0, 1]] = np.conj(D[:, [0, 1]])
-                    D[:, [2, 3]] = np.conj(D[:, [3, 2]])
+                    D[:, [0, 1, 2, 3]] = np.conj(D[:, [0, 1, 3, 2]])
+            elif hermitian:
+                # conjugate the imaginary value
+                if sp.dkind == 'f':
+                    # imaginary components
+                    #    12,11,22,21
+                    D[:, [3, 4, 5, 7]] *= -1.
+                else:
+                    D[:, :] = np.conj(D[:, :])
+            elif spin:
+                # transpose spin-box, 12 <-> 21
+                if sp.dkind == 'f':
+                    D[:, [2, 3, 6, 7]] = D[:, [6, 7, 2, 3]]
+                else:
+                    D[:, [2, 3]] = D[:, [3, 2]]
+
         elif sp.is_noncolinear:
-            # conjugate the imaginary value
-            # since for transposing D[:, 3] is the same
-            # value used for [--, ud]
-            #                [du, --]
-            #   ud = D[3] == - du
-            # So for transposing we should negate the sign
-            # to ensure we put the opposite value in the
-            # correct place.
-            if sp.dkind == 'f':
-                D[:, 3] = -D[:, 3]
-            else:
-                D[:, 2] = np.conj(D[:, 2])
-        elif sp.is_spinorbit:
-            # transpose spin-box
-            if sp.dkind == 'f':
-                #    12 -> 21
-                D[:, [2, 3, 6, 7]] = D[:, [6, 7, 2, 3]]
-            else:
-                D[:, [2, 3]] = D[:, [3, 2]]
+            if hermitian or spin:
+                # conjugate the imaginary value
+                # since for transposing D[:, 3] is the same
+                # value used for [--, ud]
+                #                [du, --]
+                #   ud = D[3] == - du
+                # So for transposing we should negate the sign
+                # to ensure we put the opposite value in the
+                # correct place.
+                if sp.dkind == 'f':
+                    D[:, 3] = -D[:, 3]
+                else:
+                    D[:, 2] = np.conj(D[:, 2])
 
         return new
 
