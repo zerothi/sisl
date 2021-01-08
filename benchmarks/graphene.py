@@ -17,6 +17,9 @@ import sys
 import sisl
 import numpy as np
 
+pr = cProfile.Profile()
+pr.disable()
+
 if len(sys.argv) > 1:
     N = int(sys.argv[1])
 else:
