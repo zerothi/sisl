@@ -89,7 +89,7 @@ class Bloch:
     def __str__(self):
         """ Representation of the Bloch model """
         B = self._bloch
-        return self.__class__.__name__ + '{{{0}, {1}, {2}}}'.format(B[0], B[1], B[2])
+        return f"{self.__class__.__name__}{{{B[0]}, {B[1]}, {B[2]}}}"
 
     @property
     def bloch(self):

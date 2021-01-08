@@ -156,7 +156,9 @@ def test_sparse_orbital_bz_non_colinear():
     MT = M.transpose()
     MH = M.transpose(True)
 
-    assert np.abs((M - MT)._csr._D).sum() != 0
+    assert np.abs((M - MT)._csr._D).sum() == 0
+    # MT and MH both do the same thing for NC
+    assert np.abs((MT - MH)._csr._D).sum() == 0
     # For a non-collinear with construct we don't take
     # into account the imaginary parts... :(
     # Transposing and Hermitian transpose are the same for NC
@@ -171,6 +173,7 @@ def test_sparse_orbital_bz_non_colinear_trs_kramers_theorem():
     M.construct(([0.1, 1.44],
                  [[0.1, 0.2, 0.3, 0.4],
                   [0.2, 0.3, 0.4, 0.5]]))
+    M.finalize()
 
     M = (M + M.transpose(True)) * 0.5
     MTRS = (M + M.trs()) * 0.5
@@ -214,6 +217,7 @@ def test_sparse_orbital_bz_spin_orbit_trs_kramers_theorem():
     M.construct(([0.1, 1.44],
                  [[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
                   [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]]))
+    M.finalize()
 
     M = (M + M.transpose(True)) / 2
     MTRS = (M + M.trs()) * 0.5
@@ -226,11 +230,13 @@ def test_sparse_orbital_bz_spin_orbit_trs_kramers_theorem():
     assert np.allclose(eig1, eig2)
 
 
-def test_sparse_orbital_bz_spin_orbit_trs_not():
+@pytest.mark.xfail(reason="Construct does not impose hermitian property")
+def test_sparse_orbital_bz_spin_orbit_hermitian_not():
     M = SparseOrbitalBZSpin(geom.graphene(), spin='SO')
 
     M.construct(([0.1, 1.44],
                  [[0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8],
                   [0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9]]))
+    M.finalize()
     new = (M + M.transpose(True)) / 2
-    assert np.abs((M - new)._csr._D).sum() != 0
+    assert np.abs((M - new)._csr._D).sum() == 0

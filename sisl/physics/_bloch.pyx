@@ -108,18 +108,18 @@ cdef void _unfold64_matrix(const double w,
     # Construct the phases to be added
     aph0 = aph1 = aph2 = 1.
     if B0 > 1:
-        aph0 = cos(k0) + 1j * sin(k0)
+        aph0 = cos(k0) - 1j * sin(k0)
     if B1 > 1:
-        aph1 = cos(k1) + 1j * sin(k1)
+        aph1 = cos(k1) - 1j * sin(k1)
     if B2 > 1:
-        aph2 = cos(k2) + 1j * sin(k2)
+        aph2 = cos(k2) - 1j * sin(k2)
 
     J = 0
     for j2 in range(B2):
         for j1 in range(B1):
             for j0 in range(B0):
                 rph = - j0 * k0 - j1 * k1 - j2 * k2
-                ph = w * cos(rph) + 1j * (w * sin(rph))
+                ph = w * cos(rph) - 1j * (w * sin(rph))
                 for j in range(N1):
                     # Every column starts from scratch
                     ph2 = ph
@@ -199,7 +199,7 @@ cdef void _unfold64_1(const Py_ssize_t NA, const double[:] kA2pi,
                 M[0, j, 0, i] = M[0, j, 0, i] + mT[j, i] * <float> w
 
         # Initial phases along the column
-        pha = cos(k) + 1j * sin(k)
+        pha = cos(k) - 1j * sin(k)
         ph = w * pha
 
         for iA in range(1, NA):
@@ -251,13 +251,13 @@ cdef void _unfold64_2(const Py_ssize_t NA, const double[:] kA2pi,
 
         # Initial phases along the column
         kB = kB2pi[TB]
-        phb_step = cos(kB) + 1j * sin(kB)
+        phb_step = cos(kB) - 1j * sin(kB)
 
         for TA in range(NA):
 
             # Initial phases along the column
             kA = kA2pi[TA]
-            pha_step = cos(kA) + 1j * sin(kA)
+            pha_step = cos(kA) - 1j * sin(kA)
 
             mT = m[TB*NA+TA]
 
@@ -415,18 +415,18 @@ cdef void _unfold128_matrix(const double w,
     # Construct the phases to be added
     aph0 = aph1 = aph2 = 1.
     if B0 > 1:
-        aph0 = cos(k0) + 1j * sin(k0)
+        aph0 = cos(k0) - 1j * sin(k0)
     if B1 > 1:
-        aph1 = cos(k1) + 1j * sin(k1)
+        aph1 = cos(k1) - 1j * sin(k1)
     if B2 > 1:
-        aph2 = cos(k2) + 1j * sin(k2)
+        aph2 = cos(k2) - 1j * sin(k2)
 
     J = 0
     for j2 in range(B2):
         for j1 in range(B1):
             for j0 in range(B0):
                 rph = - j0 * k0 - j1 * k1 - j2 * k2
-                ph = w * cos(rph) + 1j * (w * sin(rph))
+                ph = w * cos(rph) - 1j * (w * sin(rph))
                 for j in range(N1):
                     # Every column starts from scratch
                     ph2 = ph
@@ -505,7 +505,7 @@ cdef void _unfold128_1(const Py_ssize_t NA, const double[:] kA2pi,
                 M[0, j, 0, i] = M[0, j, 0, i] + mT[j, i] * w
 
         # Initial phases along the column
-        pha = cos(k) + 1j * sin(k)
+        pha = cos(k) - 1j * sin(k)
         ph = w * pha
 
         for iA in range(1, NA):
@@ -557,13 +557,13 @@ cdef void _unfold128_2(const Py_ssize_t NA, const double[:] kA2pi,
 
         # Initial phases along the column
         kB = kB2pi[TB]
-        phb_step = cos(kB) + 1j * sin(kB)
+        phb_step = cos(kB) - 1j * sin(kB)
 
         for TA in range(NA):
 
             # Initial phases along the column
             kA = kA2pi[TA]
-            pha_step = cos(kA) + 1j * sin(kA)
+            pha_step = cos(kA) - 1j * sin(kA)
 
             mT = m[TB*NA+TA]
 

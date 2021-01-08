@@ -59,7 +59,7 @@ def phase_rsc(sc, ndarray[float64_t, ndim=1, mode='c'] k, dtype):
     else:
         # This is equivalent to (k.rcell).(sc_off.cell)^T
         # since rcell.cell^T == I * 2 * pi
-        phases = exp(-1j * dot(sc.sc_off, k * 2 * pi)).astype(dtype, copy=False)
+        phases = exp(1j * dot(sc.sc_off, k * 2 * pi)).astype(dtype, copy=False)
 
     return phases
 
@@ -71,6 +71,6 @@ def phase_rij(rij, sc, ndarray[float64_t, ndim=1, mode='c'] k, dtype):
     if is_gamma(k):
         phases = ones(rij.shape[0], dtype=dtype)
     else:
-        phases = exp(-1j * dot(rij, dot(k, sc.rcell))).astype(dtype, copy=False)
+        phases = exp(1j * dot(rij, dot(k, sc.rcell))).astype(dtype, copy=False)
 
     return phases
