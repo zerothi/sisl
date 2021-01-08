@@ -1,6 +1,7 @@
 from numbers import Integral
 from itertools import product
 import numpy as np
+from numpy import pi
 
 try:
     from . import _siesta
@@ -655,20 +656,34 @@ class wfsxSileSiesta(SileBinSiesta):
         else:
             func = _siesta.read_wfsx_index_2
 
+        Bohr2Ang = unit_convert("Bohr", "Ang")
+        if parent is None:
+            def convert_k(k):
+                if not np.allclose(k, 0.):
+                    warn(f"{self.__class__.__name__}.yield_eigenstate returns a k-point in 1/Ang (not in reduced format), please pass 'parent' to ensure reduced k")
+                return k
+        else:
+            # We can succesfully convert to proper reduced k-points
+            if isinstance(parent, SuperCell):
+                def convert_k(k):
+                    return np.dot(k, parent.cell.T) / (2 * pi)
+            else:
+                def convert_k(k):
+                    return np.dot(k, parent.sc.cell.T) / (2 * pi)
+
         for ispin, ik in product(range(1, nspin + 1), range(1, nk + 1)):
             k, _, nwf = _siesta.read_wfsx_index_info(self.file, ispin, ik)
+            # Convert to 1/Ang
+            k /= Bohr2Ang
             _bin_check(self, 'yield_eigenstate', f"could not read index info [{ispin}, {ik}]")
 
             idx, eig, state = func(self.file, ispin, ik, nou, nwf)
             _bin_check(self, 'yield_eigenstate', f"could not read state information [{ispin}, {ik}, {nwf}]")
 
             # eig is already in eV
-            # k is in 1/Bohr, we should probably adapt,
-            # but we should also consider using parent to convert to
-            # sisl-style k-point
-            # we also need to add spin
+            # we probably need to add spin
             es = EigenstateElectron(state.T, eig, parent=parent,
-                                    k=k, gauge="r", indices=idx - 1)
+                                    k=convert_k(k), gauge="r", index=idx - 1)
             yield es
 
 
