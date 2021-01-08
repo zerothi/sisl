@@ -25,7 +25,7 @@ def test_dm_si_pdos_kgrid(sisl_files):
 def test_dm_si_pdos_kgrid_rw(sisl_files, sisl_tmp):
     fdf = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.fdf'), base=sisl_files(_dir))
     geom = fdf.read_geometry()
-    
+
     f1 = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.DM'))
     f2 = sisl.get_sile(sisl_tmp('test.DM', _dir))
 

@@ -15,6 +15,7 @@ def si_pdos_kgrid_geom(with_orbs=True):
     return sisl.geom.diamond(5.43, sisl.Atom('Si'))
 
 
+
 def test_si_pdos_kgrid_hsx_H(sisl_files, sisl_tmp):
     si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.HSX'))
     si.read_hamiltonian(geometry=si_pdos_kgrid_geom())
