@@ -505,6 +505,8 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         --------
         construct : routine to create the sparse matrix from a generic function (as returned from `create_construct`)
         """
+        if len(R) != len(param):
+            raise ValueError(f"{self.__class__.__name__}.create_construct got different lengths of `R` and `param`")
 
         def func(self, ia, atoms, atoms_xyz=None):
             idx = self.geometry.close(ia, R=R, atoms=atoms, atoms_xyz=atoms_xyz)

@@ -733,6 +733,8 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         --------
         construct : routine to create the sparse matrix from a generic function (as returned from `create_construct`)
         """
+        if len(R) != len(param):
+            raise ValueError(f"{self.__class__.__name__}.create_construct got different lengths of `R` and `param`")
         if self.spin.has_noncolinear:
             is_complex = self.dkind == 'c'
             if self.spin.is_spinorbit:

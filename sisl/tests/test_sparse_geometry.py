@@ -101,6 +101,11 @@ class TestSparseAtom:
         c = s2.nonzero(atoms=0, only_col=True)
         assert np.allclose(c, [0, 2, 3])
 
+    def test_create_construct_different_length(self, setup):
+        s1 = SparseAtom(setup.g)
+        with pytest.raises(ValueError):
+            s1.construct([[0.1, 1.5], [1]])
+
     def test_cut1(self, setup):
         s1 = SparseAtom(setup.g)
         s1.construct([[0.1, 1.5], [1, 2]])
