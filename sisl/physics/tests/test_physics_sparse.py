@@ -156,9 +156,7 @@ def test_sparse_orbital_bz_non_colinear():
     MT = M.transpose()
     MH = M.transpose(True)
 
-    assert np.abs((M - MT)._csr._D).sum() == 0
-    # MT and MH both do the same thing for NC
-    assert np.abs((MT - MH)._csr._D).sum() == 0
+    assert np.abs((M - MT)._csr._D).sum() != 0
     # For a non-collinear with construct we don't take
     # into account the imaginary parts... :(
     # Transposing and Hermitian transpose are the same for NC
