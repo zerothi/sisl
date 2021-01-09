@@ -692,17 +692,21 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         return self._spin
 
     def create_construct(self, R, param):
-        """ Create a simple function for passing to the `construct` function.
+        r""" Create a simple function for passing to the `construct` function.
 
-        This is simply to leviate the creation of simplistic
-        functions needed for setting up the sparse elements.
+        This is to relieve the creation of simplistic
+        functions needed for setting up sparse elements.
 
-        Basically this returns a function:
+        For simple matrices this returns a function:
 
         >>> def func(self, ia, atoms, atoms_xyz=None):
         ...     idx = self.geometry.close(ia, R=R, atoms=atoms, atoms_xyz=atoms_xyz)
         ...     for ix, p in zip(idx, param):
         ...         self[ia, ix] = p
+
+        In the non-colinear case the matrix element :math:`M_{ij}` will be set
+        to input values `param` if :math:`i \le j` and the Hermitian conjugated
+        values for :math:`j < i`.
 
         Notes
         -----
@@ -710,8 +714,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         element per atom). If you have more than one element per atom
         you have to implement the function your-self.
 
-        This method does **not** take into account Hermiticity for non-colinear matrices.
-        A warning will be issued for these matrices.
+        This method issues warnings if the on-site terms are not Hermitian
+        for spin-orbit systems. Do note that it *still* creates the matrices
+        based on the input.
 
         Parameters
         ----------
@@ -728,10 +733,74 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         --------
         construct : routine to create the sparse matrix from a generic function (as returned from `create_construct`)
         """
-        if self.spin.is_spinorbit:
-            warn(f"{self.__class__.__name__}.create_construct cannot ensure Hermiticity for spin-orbit. To ensure Hermiticity do `M = (M + M.transpose(True))/2`")
-        elif self.spin.is_noncolinear:
-            warn(f"{self.__class__.__name__}.create_construct cannot ensure Hermiticity for non-colinear. To ensure Hermiticity do `M = (M + M.transpose(True))/2`")
+        if self.spin.has_noncolinear:
+            is_complex = self.dkind == 'c'
+            if self.spin.is_spinorbit:
+                if is_complex:
+                    nv = 4
+                    # Hermitian parameters
+                    paramH = [[p[0].conj(), p[1].conj(), p[3].conj(), p[2].conj(), *p[4:]]
+                              for p in param]
+                else:
+                    nv = 8
+                    # Hermitian parameters
+                    paramH = [[p[0], p[1], p[6], -p[7], -p[4], -p[5], p[2], -p[3], *p[8:]]
+                              for p in param]
+                if not self.orthogonal:
+                    nv += 1
+
+                # ensure we have correct number of values
+                assert all(len(p) == nv for p in param)
+
+                if R[0] <= 0.1001: # no atom closer than 0.1001 Ang!
+                    # We check that the the parameters here is Hermitian
+                    p = param[0]
+                    if is_complex:
+                        onsite = np.array([[p[0], p[2]],
+                                           [p[3], p[1]]], self.dtype)
+                    else:
+                        onsite = np.array([[p[0] + 1j * p[4], p[2] + 1j * p[3]],
+                                           [p[6] + 1j * p[7], p[1] + 1j * p[5]]], np.complex128)
+                    if not np.allclose(onsite, onsite.T.conj()):
+                        warn(f"{self.__class__.__name__}.create_construct is NOT Hermitian for on-site terms. This is your responsibility!")
+
+            elif self.spin.is_noncolinear:
+                if is_complex:
+                    nv = 3
+                    # Hermitian parameters
+                    paramH = [[p[0].conj(), p[1].conj(), p[2], *p[3:]]
+                              for p in param]
+                else:
+                    nv = 4
+                    # Hermitian parameters
+                    # Note that we don't need to do anything here.
+                    # H_ij = [[0, 2 + 1j 3],
+                    #         [2 - 1j 3, 1]]
+                    # H_ji = [[0, 2 + 1j 3],
+                    #         [2 - 1j 3, 1]]
+                    # H_ij^H == H_ji^H
+                    paramH = param
+                if not self.orthogonal:
+                    nv += 1
+
+                # we don't need to check hermiticity for NC
+                # Since the values are ensured Hermitian in the on-site case anyways.
+
+                # ensure we have correct number of values
+                assert all(len(p) == nv for p in param)
+
+            na = self.geometry.na
+
+            # Now create the function that returns the assignment function
+            def func(self, ia, atoms, atoms_xyz=None):
+                idx = self.geometry.close(ia, R=R, atoms=atoms, atoms_xyz=atoms_xyz)
+                for ix, p, pc in zip(idx, param, paramH):
+                    ix_ge = (ix % na) >= ia
+                    self[ia, ix[ix_ge]] = p
+                    self[ia, ix[~ix_ge]] = pc
+
+            return func
+
         return super().create_construct(R, param)
 
     def __len__(self):
@@ -1085,7 +1154,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                     D[:, [2, 3]] = D[:, [3, 2]]
 
         elif sp.is_noncolinear:
-            if hermitian or spin:
+            if hermitian and spin:
+                pass # do nothing, it is already ensured Hermitian
+            elif hermitian or spin:
                 # conjugate the imaginary value
                 # since for transposing D[:, 3] is the same
                 # value used for [--, ud]
