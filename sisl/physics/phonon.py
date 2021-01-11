@@ -322,9 +322,11 @@ class _phonon_Mode:
         phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], dot(k, g.rcell))
 
         if gauge == 'r':
-            self.state *= exp(1j * phase).reshape(1, -1)
-        elif gauge == 'R':
+            # R -> r gauge tranformation.
             self.state *= exp(-1j * phase).reshape(1, -1)
+        elif gauge == 'R':
+            # r -> R gauge tranformation.
+            self.state *= exp(1j * phase).reshape(1, -1)
 
 
 @set_module("sisl.physics.phonon")

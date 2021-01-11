@@ -56,7 +56,7 @@ from numpy import find_common_type
 from numpy import zeros, empty
 from numpy import floor, ceil
 from numpy import conj, dot, ogrid, einsum
-from numpy import cos, sin, pi
+from numpy import cos, sin, exp, pi
 from numpy import int32, complex128
 from numpy import add, angle, argsort, sort
 
@@ -1152,9 +1152,9 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
                     phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], dot(axis, g.rcell)).reshape(1, -1)
                     if spin.has_noncolinear:
                         # for NC/SOC we have a 2x2 spin-box per orbital
-                        prev.state *= np.repeat(np.exp(1j * phase), 2, axis=1)
+                        prev.state *= np.repeat(exp(1j * phase), 2, axis=1)
                     else:
-                        prev.state *= np.exp(1j * phase)
+                        prev.state *= exp(1j * phase)
 
                 # Include last-to-first segment
                 prd = _process(prd, prev.inner(first, diagonal=False))
@@ -1179,9 +1179,9 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
                     phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], dot(axis, g.rcell)).reshape(1, -1)
                     if spin.has_noncolinear:
                         # for NC/SOC we have a 2x2 spin-box per orbital
-                        prev.state *= np.repeat(np.exp(1j * phase), 2, axis=1)
+                        prev.state *= np.repeat(exp(1j * phase), 2, axis=1)
                     else:
-                        prev.state *= np.exp(1j * phase)
+                        prev.state *= exp(1j * phase)
                 prd = _process(prd, prev.inner(first, diagonal=False))
             return prd
 
@@ -1482,7 +1482,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
         io = geometry.a2o(ia)
 
         if has_k:
-            phase = np.exp(-1j * phk.dot(isc))
+            phase = exp(-1j * phk.dot(isc))
 
         # Allocate a temporary array where we add the psi elements
         psi = psi_init(n)
@@ -1793,10 +1793,10 @@ class _electron_State:
 
         if gauge == 'r':
             # R -> r gauge tranformation.
-            self.state *= np.exp(-1j * phase).reshape(1, -1)
+            self.state *= exp(-1j * phase).reshape(1, -1)
         elif gauge == 'R':
             # r -> R gauge tranformation.
-            self.state *= np.exp(1j * phase).reshape(1, -1)
+            self.state *= exp(1j * phase).reshape(1, -1)
 
 
 @set_module("sisl.physics.electron")

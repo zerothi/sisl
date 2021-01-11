@@ -59,22 +59,22 @@ def _phase3_nc_csr_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 ph = phases[ind, 0]
                 vx[v_ptr[rr] + s_idx] = vx[v_ptr[rr] + s_idx] + <float complex> (ph * D[ind, 0])
                 v12 = <float complex> (D[ind, 2] + 1j * D[ind, 3])
-                vx[v_ptr[rr] + s_idx+1] = vx[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
-                vx[v_ptr[rr+1] + s_idx] = vx[v_ptr[rr+1] + s_idx] + ph * v12
+                vx[v_ptr[rr] + s_idx+1] = vx[v_ptr[rr] + s_idx+1] + ph * v12
+                vx[v_ptr[rr+1] + s_idx] = vx[v_ptr[rr+1] + s_idx] + ph * v12.conjugate()
                 vx[v_ptr[rr+1] + s_idx+1] = vx[v_ptr[rr+1] + s_idx+1] + <float complex> (ph * D[ind, 1])
 
                 ph = phases[ind, 1]
                 vy[v_ptr[rr] + s_idx] = vy[v_ptr[rr] + s_idx] + <float complex> (ph * D[ind, 0])
                 v12 = <float complex> (D[ind, 2] + 1j * D[ind, 3])
-                vy[v_ptr[rr] + s_idx+1] = vy[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
-                vy[v_ptr[rr+1] + s_idx] = vy[v_ptr[rr+1] + s_idx] + ph * v12
+                vy[v_ptr[rr] + s_idx+1] = vy[v_ptr[rr] + s_idx+1] + ph * v12
+                vy[v_ptr[rr+1] + s_idx] = vy[v_ptr[rr+1] + s_idx] + ph * v12.conjugate()
                 vy[v_ptr[rr+1] + s_idx+1] = vy[v_ptr[rr+1] + s_idx+1] + <float complex> (ph * D[ind, 1])
 
                 ph = phases[ind, 2]
                 vz[v_ptr[rr] + s_idx] = vz[v_ptr[rr] + s_idx] + <float complex> (ph * D[ind, 0])
                 v12 = <float complex> (D[ind, 2] + 1j * D[ind, 3])
-                vz[v_ptr[rr] + s_idx+1] = vz[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
-                vz[v_ptr[rr+1] + s_idx] = vz[v_ptr[rr+1] + s_idx] + ph * v12
+                vz[v_ptr[rr] + s_idx+1] = vz[v_ptr[rr] + s_idx+1] + ph * v12
+                vz[v_ptr[rr+1] + s_idx] = vz[v_ptr[rr+1] + s_idx] + ph * v12.conjugate()
                 vz[v_ptr[rr+1] + s_idx+1] = vz[v_ptr[rr+1] + s_idx+1] + <float complex> (ph * D[ind, 1])
 
     else:
@@ -89,22 +89,22 @@ def _phase3_nc_csr_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 ph = phases[s, 0]
                 vx[v_ptr[rr] + s_idx] = vx[v_ptr[rr] + s_idx] + <float complex> (ph * D[ind, 0])
                 v12 = <float complex> (D[ind, 2] + 1j * D[ind, 3])
-                vx[v_ptr[rr] + s_idx+1] = vx[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
-                vx[v_ptr[rr+1] + s_idx] = vx[v_ptr[rr+1] + s_idx] + ph * v12
+                vx[v_ptr[rr] + s_idx+1] = vx[v_ptr[rr] + s_idx+1] + ph * v12
+                vx[v_ptr[rr+1] + s_idx] = vx[v_ptr[rr+1] + s_idx] + ph * v12.conjugate()
                 vx[v_ptr[rr+1] + s_idx+1] = vx[v_ptr[rr+1] + s_idx+1] + <float complex> (ph * D[ind, 1])
 
                 ph = phases[s, 1]
                 vy[v_ptr[rr] + s_idx] = vy[v_ptr[rr] + s_idx] + <float complex> (ph * D[ind, 0])
                 v12 = <float complex> (D[ind, 2] + 1j * D[ind, 3])
-                vy[v_ptr[rr] + s_idx+1] = vy[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
-                vy[v_ptr[rr+1] + s_idx] = vy[v_ptr[rr+1] + s_idx] + ph * v12
+                vy[v_ptr[rr] + s_idx+1] = vy[v_ptr[rr] + s_idx+1] + ph * v12
+                vy[v_ptr[rr+1] + s_idx] = vy[v_ptr[rr+1] + s_idx] + ph * v12.conjugate()
                 vy[v_ptr[rr+1] + s_idx+1] = vy[v_ptr[rr+1] + s_idx+1] + <float complex> (ph * D[ind, 1])
 
                 ph = phases[s, 2]
                 vz[v_ptr[rr] + s_idx] = vz[v_ptr[rr] + s_idx] + <float complex> (ph * D[ind, 0])
                 v12 = <float complex> (D[ind, 2] + 1j * D[ind, 3])
-                vz[v_ptr[rr] + s_idx+1] = vz[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
-                vz[v_ptr[rr+1] + s_idx] = vz[v_ptr[rr+1] + s_idx] + ph * v12
+                vz[v_ptr[rr] + s_idx+1] = vz[v_ptr[rr] + s_idx+1] + ph * v12
+                vz[v_ptr[rr+1] + s_idx] = vz[v_ptr[rr+1] + s_idx] + ph * v12.conjugate()
                 vz[v_ptr[rr+1] + s_idx+1] = vz[v_ptr[rr+1] + s_idx+1] + <float complex> (ph * D[ind, 1])
 
     nr = nr * 2
@@ -151,22 +151,22 @@ def _phase3_nc_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 ph = phases[ind, 0]
                 vx[v_ptr[rr] + s_idx] = vx[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])
                 v12 = <double complex> (D[ind, 2] + 1j * D[ind, 3])
-                vx[v_ptr[rr] + s_idx+1] = vx[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
-                vx[v_ptr[rr+1] + s_idx] = vx[v_ptr[rr+1] + s_idx] + ph * v12
+                vx[v_ptr[rr] + s_idx+1] = vx[v_ptr[rr] + s_idx+1] + ph * v12
+                vx[v_ptr[rr+1] + s_idx] = vx[v_ptr[rr+1] + s_idx] + ph * v12.conjugate()
                 vx[v_ptr[rr+1] + s_idx+1] = vx[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])
 
                 ph = phases[ind, 1]
                 vy[v_ptr[rr] + s_idx] = vy[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])
                 v12 = <double complex> (D[ind, 2] + 1j * D[ind, 3])
-                vy[v_ptr[rr] + s_idx+1] = vy[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
-                vy[v_ptr[rr+1] + s_idx] = vy[v_ptr[rr+1] + s_idx] + ph * v12
+                vy[v_ptr[rr] + s_idx+1] = vy[v_ptr[rr] + s_idx+1] + ph * v12
+                vy[v_ptr[rr+1] + s_idx] = vy[v_ptr[rr+1] + s_idx] + ph * v12.conjugate()
                 vy[v_ptr[rr+1] + s_idx+1] = vy[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])
 
                 ph = phases[ind, 2]
                 vz[v_ptr[rr] + s_idx] = vz[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])
                 v12 = <double complex> (D[ind, 2] + 1j * D[ind, 3])
-                vz[v_ptr[rr] + s_idx+1] = vz[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
-                vz[v_ptr[rr+1] + s_idx] = vz[v_ptr[rr+1] + s_idx] + ph * v12
+                vz[v_ptr[rr] + s_idx+1] = vz[v_ptr[rr] + s_idx+1] + ph * v12
+                vz[v_ptr[rr+1] + s_idx] = vz[v_ptr[rr+1] + s_idx] + ph * v12.conjugate()
                 vz[v_ptr[rr+1] + s_idx+1] = vz[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])
 
     else:
@@ -181,22 +181,22 @@ def _phase3_nc_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 ph = phases[s, 0]
                 vx[v_ptr[rr] + s_idx] = vx[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])
                 v12 = <double complex> (D[ind, 2] + 1j * D[ind, 3])
-                vx[v_ptr[rr] + s_idx+1] = vx[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
-                vx[v_ptr[rr+1] + s_idx] = vx[v_ptr[rr+1] + s_idx] + ph * v12
+                vx[v_ptr[rr] + s_idx+1] = vx[v_ptr[rr] + s_idx+1] + ph * v12
+                vx[v_ptr[rr+1] + s_idx] = vx[v_ptr[rr+1] + s_idx] + ph * v12.conjugate()
                 vx[v_ptr[rr+1] + s_idx+1] = vx[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])
 
                 ph = phases[s, 1]
                 vy[v_ptr[rr] + s_idx] = vy[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])
                 v12 = <double complex> (D[ind, 2] + 1j * D[ind, 3])
-                vy[v_ptr[rr] + s_idx+1] = vy[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
-                vy[v_ptr[rr+1] + s_idx] = vy[v_ptr[rr+1] + s_idx] + ph * v12
+                vy[v_ptr[rr] + s_idx+1] = vy[v_ptr[rr] + s_idx+1] + ph * v12
+                vy[v_ptr[rr+1] + s_idx] = vy[v_ptr[rr+1] + s_idx] + ph * v12.conjugate()
                 vy[v_ptr[rr+1] + s_idx+1] = vy[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])
 
                 ph = phases[s, 2]
                 vz[v_ptr[rr] + s_idx] = vz[v_ptr[rr] + s_idx] + <double complex> (ph * D[ind, 0])
                 v12 = <double complex> (D[ind, 2] + 1j * D[ind, 3])
-                vz[v_ptr[rr] + s_idx+1] = vz[v_ptr[rr] + s_idx+1] + ph * v12.conjugate()
-                vz[v_ptr[rr+1] + s_idx] = vz[v_ptr[rr+1] + s_idx] + ph * v12
+                vz[v_ptr[rr] + s_idx+1] = vz[v_ptr[rr] + s_idx+1] + ph * v12
+                vz[v_ptr[rr+1] + s_idx] = vz[v_ptr[rr+1] + s_idx] + ph * v12.conjugate()
                 vz[v_ptr[rr+1] + s_idx+1] = vz[v_ptr[rr+1] + s_idx+1] + <double complex> (ph * D[ind, 1])
 
     nr = nr * 2
@@ -234,22 +234,22 @@ def _phase3_nc_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 ph = phases[ind, 0]
                 vx[rr, c] = vx[rr, c] + <float complex> (ph * D[ind, 0])
                 v12 = <float complex> (D[ind, 2] + 1j * D[ind, 3])
-                vx[rr, c+1] = vx[rr, c+1] + ph * v12.conjugate()
-                vx[rr+1, c] = vx[rr+1, c] + ph * v12
+                vx[rr, c+1] = vx[rr, c+1] + ph * v12
+                vx[rr+1, c] = vx[rr+1, c] + ph * v12.conjugate()
                 vx[rr+1, c+1] = vx[rr+1, c+1] + <float complex> (ph * D[ind, 1])
 
                 ph = phases[ind, 1]
                 vy[rr, c] = vy[rr, c] + <float complex> (ph * D[ind, 0])
                 v12 = <float complex> (D[ind, 2] + 1j * D[ind, 3])
-                vy[rr, c+1] = vy[rr, c+1] + ph * v12.conjugate()
-                vy[rr+1, c] = vy[rr+1, c] + ph * v12
+                vy[rr, c+1] = vy[rr, c+1] + ph * v12
+                vy[rr+1, c] = vy[rr+1, c] + ph * v12.conjugate()
                 vy[rr+1, c+1] = vy[rr+1, c+1] + <float complex> (ph * D[ind, 1])
 
                 ph = phases[ind, 2]
                 vz[rr, c] = vz[rr, c] + <float complex> (ph * D[ind, 0])
                 v12 = <float complex> (D[ind, 2] + 1j * D[ind, 3])
-                vz[rr, c+1] = vz[rr, c+1] + ph * v12.conjugate()
-                vz[rr+1, c] = vz[rr+1, c] + ph * v12
+                vz[rr, c+1] = vz[rr, c+1] + ph * v12
+                vz[rr+1, c] = vz[rr+1, c] + ph * v12.conjugate()
                 vz[rr+1, c+1] = vz[rr+1, c+1] + <float complex> (ph * D[ind, 1])
 
     else:
@@ -262,22 +262,22 @@ def _phase3_nc_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 ph = phases[s, 0]
                 vx[rr, c] = vx[rr, c] + <float complex> (ph * D[ind, 0])
                 v12 = <float complex> (D[ind, 2] + 1j * D[ind, 3])
-                vx[rr, c+1] = vx[rr, c+1] + ph * v12.conjugate()
-                vx[rr+1, c] = vx[rr+1, c] + ph * v12
+                vx[rr, c+1] = vx[rr, c+1] + ph * v12
+                vx[rr+1, c] = vx[rr+1, c] + ph * v12.conjugate()
                 vx[rr+1, c+1] = vx[rr+1, c+1] + <float complex> (ph * D[ind, 1])
 
                 ph = phases[s, 1]
                 vy[rr, c] = vy[rr, c] + <float complex> (ph * D[ind, 0])
                 v12 = <float complex> (D[ind, 2] + 1j * D[ind, 3])
-                vy[rr, c+1] = vy[rr, c+1] + ph * v12.conjugate()
-                vy[rr+1, c] = vy[rr+1, c] + ph * v12
+                vy[rr, c+1] = vy[rr, c+1] + ph * v12
+                vy[rr+1, c] = vy[rr+1, c] + ph * v12.conjugate()
                 vy[rr+1, c+1] = vy[rr+1, c+1] + <float complex> (ph * D[ind, 1])
 
                 ph = phases[s, 2]
                 vz[rr, c] = vz[rr, c] + <float complex> (ph * D[ind, 0])
                 v12 = <float complex> (D[ind, 2] + 1j * D[ind, 3])
-                vz[rr, c+1] = vz[rr, c+1] + ph * v12.conjugate()
-                vz[rr+1, c] = vz[rr+1, c] + ph * v12
+                vz[rr, c+1] = vz[rr, c+1] + ph * v12
+                vz[rr+1, c] = vz[rr+1, c] + ph * v12.conjugate()
                 vz[rr+1, c+1] = vz[rr+1, c+1] + <float complex> (ph * D[ind, 1])
 
     return Vx, Vy, Vz
@@ -314,22 +314,22 @@ def _phase3_nc_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 ph = phases[ind, 0]
                 vx[rr, c] = vx[rr, c] + <double complex> (ph * D[ind, 0])
                 v12 = <double complex> (D[ind, 2] + 1j * D[ind, 3])
-                vx[rr, c+1] = vx[rr, c+1] + ph * v12.conjugate()
-                vx[rr+1, c] = vx[rr+1, c] + ph * v12
+                vx[rr, c+1] = vx[rr, c+1] + ph * v12
+                vx[rr+1, c] = vx[rr+1, c] + ph * v12.conjugate()
                 vx[rr+1, c+1] = vx[rr+1, c+1] + <double complex> (ph * D[ind, 1])
 
                 ph = phases[ind, 1]
                 vy[rr, c] = vy[rr, c] + <double complex> (ph * D[ind, 0])
                 v12 = <double complex> (D[ind, 2] + 1j * D[ind, 3])
-                vy[rr, c+1] = vy[rr, c+1] + ph * v12.conjugate()
-                vy[rr+1, c] = vy[rr+1, c] + ph * v12
+                vy[rr, c+1] = vy[rr, c+1] + ph * v12
+                vy[rr+1, c] = vy[rr+1, c] + ph * v12.conjugate()
                 vy[rr+1, c+1] = vy[rr+1, c+1] + <double complex> (ph * D[ind, 1])
 
                 ph = phases[ind, 2]
                 vz[rr, c] = vz[rr, c] + <double complex> (ph * D[ind, 0])
                 v12 = <double complex> (D[ind, 2] + 1j * D[ind, 3])
-                vz[rr, c+1] = vz[rr, c+1] + ph * v12.conjugate()
-                vz[rr+1, c] = vz[rr+1, c] + ph * v12
+                vz[rr, c+1] = vz[rr, c+1] + ph * v12
+                vz[rr+1, c] = vz[rr+1, c] + ph * v12.conjugate()
                 vz[rr+1, c+1] = vz[rr+1, c+1] + <double complex> (ph * D[ind, 1])
 
     else:
@@ -342,22 +342,22 @@ def _phase3_nc_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 ph = phases[s, 0]
                 vx[rr, c] = vx[rr, c] + <double complex> (ph * D[ind, 0])
                 v12 = <double complex> (D[ind, 2] + 1j * D[ind, 3])
-                vx[rr, c+1] = vx[rr, c+1] + ph * v12.conjugate()
-                vx[rr+1, c] = vx[rr+1, c] + ph * v12
+                vx[rr, c+1] = vx[rr, c+1] + ph * v12
+                vx[rr+1, c] = vx[rr+1, c] + ph * v12.conjugate()
                 vx[rr+1, c+1] = vx[rr+1, c+1] + <double complex> (ph * D[ind, 1])
 
                 ph = phases[s, 1]
                 vy[rr, c] = vy[rr, c] + <double complex> (ph * D[ind, 0])
                 v12 = <double complex> (D[ind, 2] + 1j * D[ind, 3])
-                vy[rr, c+1] = vy[rr, c+1] + ph * v12.conjugate()
-                vy[rr+1, c] = vy[rr+1, c] + ph * v12
+                vy[rr, c+1] = vy[rr, c+1] + ph * v12
+                vy[rr+1, c] = vy[rr+1, c] + ph * v12.conjugate()
                 vy[rr+1, c+1] = vy[rr+1, c+1] + <double complex> (ph * D[ind, 1])
 
                 ph = phases[s, 2]
                 vz[rr, c] = vz[rr, c] + <double complex> (ph * D[ind, 0])
                 v12 = <double complex> (D[ind, 2] + 1j * D[ind, 3])
-                vz[rr, c+1] = vz[rr, c+1] + ph * v12.conjugate()
-                vz[rr+1, c] = vz[rr+1, c] + ph * v12
+                vz[rr, c+1] = vz[rr, c+1] + ph * v12
+                vz[rr+1, c] = vz[rr+1, c] + ph * v12.conjugate()
                 vz[rr+1, c+1] = vz[rr+1, c+1] + <double complex> (ph * D[ind, 1])
 
     return Vx, Vy, Vz

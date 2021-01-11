@@ -294,13 +294,13 @@ class tshsSileSiesta(onlysSileSiesta):
 
         # see onlysSileSiesta.read_overlap for .transpose()
         # For H, DM and EDM we also need to Hermitian conjugate it.
-        return H.transpose(True, sort=kwargs.get("sort", True))
+        return H.transpose(spin=False, sort=kwargs.get("sort", True))
 
     def write_hamiltonian(self, H, **kwargs):
         """ Writes the Hamiltonian to a siesta.TSHS file """
         # we sort below, so no need to do it here
         # see onlysSileSiesta.read_overlap for .transpose()
-        csr = H.transpose(True, sort=False)._csr
+        csr = H.transpose(spin=False, sort=False)._csr
         if csr.nnz == 0:
             raise SileError(str(self) + '.write_hamiltonian cannot write '
                             'a zero element sparse matrix!')
@@ -398,11 +398,11 @@ class dmSileSiesta(SileBinSiesta):
         else:
             warn(str(self) + '.read_density_matrix may result in a wrong sparse pattern!')
 
-        return DM.transpose(True, sort=kwargs.get("sort", True))
+        return DM.transpose(spin=False, sort=kwargs.get("sort", True))
 
     def write_density_matrix(self, DM, **kwargs):
         """ Writes the density matrix to a siesta.DM file """
-        csr = DM.transpose(True, sort=False)._csr
+        csr = DM.transpose(spin=False, sort=False)._csr
         # This ensures that we don't have any *empty* elements
         if csr.nnz == 0:
             raise SileError(str(self) + '.write_density_matrix cannot write '
@@ -483,7 +483,7 @@ class tsdeSileSiesta(dmSileSiesta):
         else:
             warn(str(self) + '.read_energy_density_matrix may result in a wrong sparse pattern!')
 
-        return EDM.transpose(True, sort=kwargs.get("sort", True))
+        return EDM.transpose(spin=False, sort=kwargs.get("sort", True))
 
     def read_fermi_level(self):
         r""" Query the Fermi-level contained in the file
@@ -508,8 +508,8 @@ class tsdeSileSiesta(dmSileSiesta):
         Ef : float, optional
            fermi-level to be contained
         """
-        DMcsr = DM.transpose(True, sort=False)._csr
-        EDMcsr = EDM.transpose(True, sort=False)._csr
+        DMcsr = DM.transpose(spin=False, sort=False)._csr
+        EDMcsr = EDM.transpose(spin=False, sort=False)._csr
         DMcsr.align(EDMcsr)
         EDMcsr.align(DMcsr)
 
@@ -879,7 +879,7 @@ class hsxSileSiesta(SileBinSiesta):
         if no_s // no == np.product(geom.nsc):
             _csr_from_siesta(geom, H._csr)
 
-        return H.transpose(True, sort=kwargs.get("sort", True))
+        return H.transpose(spin=False, sort=kwargs.get("sort", True))
 
     def read_overlap(self, **kwargs):
         """ Returns the overlap matrix from the siesta.HSX file """
