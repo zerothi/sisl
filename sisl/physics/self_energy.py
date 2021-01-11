@@ -1,5 +1,5 @@
 import numpy as np
-from numpy import dot, conjugate
+from numpy import conjugate, matmul
 from numpy import subtract
 from numpy import empty, zeros, eye, delete
 from numpy import zeros_like, empty_like
@@ -341,12 +341,12 @@ class RecursiveSI(SemiInfinite):
                 raise ValueError(f"{self.__class__.__name__}.green could not solve G x = B system!")
 
             # Update bulk Green function
-            subtract(GB, dot(alpha, tab[:, 1, :]), out=GB)
-            subtract(GB, dot(beta, tab[:, 0, :]), out=GB)
+            subtract(GB, matmul(alpha, tab[:, 1, :]), out=GB)
+            subtract(GB, matmul(beta, tab[:, 0, :]), out=GB)
 
             # Update forward/backward
-            alpha[:, :] = dot(alpha, tab[:, 0, :])
-            beta[:, :] = dot(beta, tab[:, 1, :])
+            alpha[:, :] = matmul(alpha, tab[:, 0, :])
+            beta[:, :] = matmul(beta, tab[:, 1, :])
 
             # Convergence criteria, it could be stricter
             if _abs(alpha).max() < eps:
@@ -430,23 +430,23 @@ class RecursiveSI(SemiInfinite):
         gesv = linalg_info("gesv", dtype)
 
         # Specifying dot with "out" argument should be faster
-        tmp = empty_like(GS)
+        tmp = empty_like(GS, order='C')
         while True:
             _, _, tab, info = gesv(GB, ab2, overwrite_a=False, overwrite_b=False)
             tab.shape = shape
             if info != 0:
                 raise ValueError(f"{self.__class__.__name__}.self_energy could not solve G x = B system!")
 
-            dot(alpha, tab[:, 1, :], tmp)
+            matmul(alpha, tab[:, 1, :], out=tmp)
             # Update bulk Green function
             subtract(GB, tmp, out=GB)
-            subtract(GB, dot(beta, tab[:, 0, :]), out=GB)
+            subtract(GB, matmul(beta, tab[:, 0, :]), out=GB)
             # Update surface self-energy
             subtract(GS, tmp, out=GS)
 
             # Update forward/backward
-            alpha[:, :] = dot(alpha, tab[:, 0, :])
-            beta[:, :] = dot(beta, tab[:, 1, :])
+            alpha[:, :] = matmul(alpha, tab[:, 0, :])
+            beta[:, :] = matmul(beta, tab[:, 1, :])
 
             # Convergence criteria, it could be stricter
             if _abs(alpha).max() < eps:
@@ -538,23 +538,23 @@ class RecursiveSI(SemiInfinite):
         gesv = linalg_info("gesv", dtype)
 
         # Specifying dot with "out" argument should be faster
-        tmp = empty_like(GS)
+        tmp = empty_like(GS, order='C')
         while True:
             _, _, tab, info = gesv(GB, ab2, overwrite_a=False, overwrite_b=False)
             tab.shape = shape
             if info != 0:
                 raise ValueError(f"{self.__class__.__name__}.self_energy_lr could not solve G x = B system!")
 
-            dot(alpha, tab[:, 1, :], tmp)
+            matmul(alpha, tab[:, 1, :], out=tmp)
             # Update bulk Green function
             subtract(GB, tmp, out=GB)
-            subtract(GB, dot(beta, tab[:, 0, :]), out=GB)
+            subtract(GB, matmul(beta, tab[:, 0, :]), out=GB)
             # Update surface self-energy
             subtract(GS, tmp, out=GS)
 
             # Update forward/backward
-            alpha[:, :] = dot(alpha, tab[:, 0, :])
-            beta[:, :] = dot(beta, tab[:, 1, :])
+            alpha[:, :] = matmul(alpha, tab[:, 0, :])
+            beta[:, :] = matmul(beta, tab[:, 1, :])
 
             # Convergence criteria, it could be stricter
             if _abs(alpha).max() < eps:
@@ -883,8 +883,8 @@ class RealSpaceSE(SelfEnergy):
             iorbs = delete(_a.arangei(len(G)), orbs).reshape(-1, 1)
             SeH = self._calc["S0"](k, dtype=dtype) * E - self._calc["P0"](k, dtype=dtype, **kwargs)
             if bulk:
-                return solve(G[orbs, orbs.T], eye(orbs.size, dtype=dtype) - dot(G[orbs, iorbs.T], SeH[iorbs, orbs.T].toarray()), True, True)
-            return SeH[orbs, orbs.T].toarray() - solve(G[orbs, orbs.T], eye(orbs.size, dtype=dtype) - dot(G[orbs, iorbs.T], SeH[iorbs, orbs.T].toarray()), True, True)
+                return solve(G[orbs, orbs.T], eye(orbs.size, dtype=dtype) - matmul(G[orbs, iorbs.T], SeH[iorbs, orbs.T].toarray()), True, True)
+            return SeH[orbs, orbs.T].toarray() - solve(G[orbs, orbs.T], eye(orbs.size, dtype=dtype) - matmul(G[orbs, iorbs.T], SeH[iorbs, orbs.T].toarray()), True, True)
 
             # Another way to do the coupling calculation would be the *full* thing
             # which should always be slower.
@@ -1012,7 +1012,7 @@ class RealSpaceSE(SelfEnergy):
                     _, _, tY, info = gesv(Gf, conjugate(B.T), overwrite_a=True, overwrite_b=True)
                     if info != 0:
                         raise ValueError(f"{self.__class__.__name__}.green could not solve tY x = B system!")
-                    Gf[:, :] = inv(A2 - dot(B, tY))
+                    Gf[:, :] = inv(A2 - matmul(B, tY))
                     _, _, tX, info = gesv(A2, B, overwrite_a=True, overwrite_b=True)
                     if info != 0:
                         raise ValueError(f"{self.__class__.__name__}.green could not solve tX x = B system!")
@@ -1024,8 +1024,8 @@ class RealSpaceSE(SelfEnergy):
                     G = empty([tile, no, tile, no], dtype=dtype)
                     G[idx0, :, idx0, :] = Gf.reshape(1, no, no)
                     for i in range(1, tile):
-                        G[idx0[i:], :, idx0[:-i], :] = dot(tX, G[i-1, :, 0, :]).reshape(1, no, no)
-                        G[idx0[:-i], :, idx0[i:], :] = dot(tY, G[0, :, i-1, :]).reshape(1, no, no)
+                        G[idx0[i:], :, idx0[:-i], :] = matmul(tX, G[i-1, :, 0, :]).reshape(1, no, no)
+                        G[idx0[:-i], :, idx0[i:], :] = matmul(tY, G[0, :, i-1, :]).reshape(1, no, no)
                     return G.reshape(tile * no, -1)
 
             else:
@@ -1041,7 +1041,7 @@ class RealSpaceSE(SelfEnergy):
                     _, _, tY[:, :], info = gesv(Gf, conjugate(tX.T) - conjugate(tY.T) * E, overwrite_a=True, overwrite_b=True)
                     if info != 0:
                         raise ValueError(f"{self.__class__.__name__}.green could not solve tY x = B system!")
-                    Gf[:, :] = inv(A2 - dot(B, tY))
+                    Gf[:, :] = inv(A2 - matmul(B, tY))
                     _, _, tX[:, :], info = gesv(A2, B, overwrite_a=True, overwrite_b=True)
                     if info != 0:
                         raise ValueError(f"{self.__class__.__name__}.green could not solve tX x = B system!")
@@ -1049,8 +1049,8 @@ class RealSpaceSE(SelfEnergy):
                     G = empty([tile, no, tile, no], dtype=dtype)
                     G[idx0, :, idx0, :] = Gf.reshape(1, no, no)
                     for i in range(1, tile):
-                        G[idx0[i:], :, idx0[:-i], :] = dot(tX, G[i-1, :, 0, :]).reshape(1, no, no)
-                        G[idx0[:-i], :, idx0[i:], :] = dot(tY, G[0, :, i-1, :]).reshape(1, no, no)
+                        G[idx0[i:], :, idx0[:-i], :] = matmul(tX, G[i-1, :, 0, :]).reshape(1, no, no)
+                        G[idx0[:-i], :, idx0[i:], :] = matmul(tY, G[0, :, i-1, :]).reshape(1, no, no)
                     return G.reshape(tile * no, -1)
 
         # Create functions used to calculate the real-space Green function
@@ -1475,8 +1475,8 @@ class RealSpaceSI(SelfEnergy):
             iorbs = delete(_a.arangei(len(G)), orbs).reshape(-1, 1)
             SeH = self._calc["S0"](k, dtype=dtype) * E - self._calc["P0"](k, dtype=dtype, **kwargs)
             if bulk:
-                return solve(G[orbs, orbs.T], eye(orbs.size, dtype=dtype) - dot(G[orbs, iorbs.T], SeH[iorbs, orbs.T].toarray()), True, True)
-            return SeH[orbs, orbs.T].toarray() - solve(G[orbs, orbs.T], eye(orbs.size, dtype=dtype) - dot(G[orbs, iorbs.T], SeH[iorbs, orbs.T].toarray()), True, True)
+                return solve(G[orbs, orbs.T], eye(orbs.size, dtype=dtype) - matmul(G[orbs, iorbs.T], SeH[iorbs, orbs.T].toarray()), True, True)
+            return SeH[orbs, orbs.T].toarray() - solve(G[orbs, orbs.T], eye(orbs.size, dtype=dtype) - matmul(G[orbs, iorbs.T], SeH[iorbs, orbs.T].toarray()), True, True)
 
             # Another way to do the coupling calculation would be the *full* thing
             # which should always be slower.

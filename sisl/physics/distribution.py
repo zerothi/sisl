@@ -160,7 +160,7 @@ def fermi_dirac(E, kT=0.1, mu=0.):
     numpy.ndarray
         the Fermi-Dirac distribution, same length as `E`
     """
-    return 1. / (exp((E - mu) / kT) + 1.)
+    return 1. / (expm1((E - mu) / kT) + 2.)
 
 
 @set_module("sisl.physics")
