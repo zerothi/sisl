@@ -3185,7 +3185,7 @@ class Geometry(SuperCellChild):
 
     def within(self, shapes,
                atoms=None, atoms_xyz=None,
-               ret_xyz=False, ret_rij=False):
+               ret_xyz=False, ret_rij=False, ret_isc=False):
         """ Indices of atoms in the entire supercell within a given shape from a given coordinate
 
         This heavily relies on the `within_sc` method.
@@ -3208,6 +3208,8 @@ class Geometry(SuperCellChild):
         ret_rij : bool, optional
             If true this method will return the distances from the `xyz_ia`
             for each of the couplings.
+        ret_isc : bool, optional
+            If true this method will return the supercell offsets for each of the couplings.
 
         Returns
         -------
@@ -3217,6 +3219,8 @@ class Geometry(SuperCellChild):
             atomic coordinates of the indexed atoms (only for true `ret_xyz`)
         rij
             distance of the indexed atoms to the center of the shape (only for true `ret_rij`)
+        isc
+            supercell indices of the couplings (only for true `ret_isc`)
         """
 
         # Ensure that `shapes` is a list
@@ -3224,29 +3228,35 @@ class Geometry(SuperCellChild):
             shapes = [shapes]
         nshapes = len(shapes)
 
-        # Get global calls
-        # Is faster for many loops
-        concat = np.concatenate
-
         ret = [[np.empty([0], np.int32)] * nshapes]
         i = 0
         if ret_xyz:
-            c = i + 1
+            ixyz = i + 1
             i += 1
             ret.append([np.empty([0, 3], np.float64)] * nshapes)
         if ret_rij:
-            d = i + 1
+            irij = i + 1
             i += 1
             ret.append([np.empty([0], np.float64)] * nshapes)
+        if ret_isc:
+            iisc = i + 1
+            i += 1
+            ret.append([np.empty([0, 3], np.int32)] * nshapes)
 
-        ret_special = ret_xyz or ret_rij
+        # number of special returns
+        n_ret = i
+
+        def isc_tile(isc, n):
+            return tile(isc.reshape(1, -1), (n, 1))
 
         for s in range(self.n_s):
+
             na = self.na * s
+            isc = self.sc.sc_off[s, :]
             sret = self.within_sc(shapes, self.sc.sc_off[s, :],
                                   atoms=atoms, atoms_xyz=atoms_xyz,
                                   ret_xyz=ret_xyz, ret_rij=ret_rij)
-            if not ret_special:
+            if n_ret == 0:
                 # This is to "fake" the return
                 # of a list (we will do indexing!)
                 sret = [sret]
@@ -3254,31 +3264,32 @@ class Geometry(SuperCellChild):
             if isinstance(sret[0], list):
                 # we have a list of arrays (nshapes > 1)
                 for i, x in enumerate(sret[0]):
-                    ret[0][i] = concat((ret[0][i], x + na), axis=0)
+                    ret[0][i] = concatenate((ret[0][i], x + na), axis=0)
                     if ret_xyz:
-                        ret[c][i] = concat((ret[c][i], sret[c][i]), axis=0)
+                        ret[ixyz][i] = concatenate((ret[ixyz][i], sret[ixyz][i]), axis=0)
                     if ret_rij:
-                        ret[d][i] = concat((ret[d][i], sret[d][i]), axis=0)
+                        ret[irij][i] = concatenate((ret[irij][i], sret[irij][i]), axis=0)
+                    if ret_isc:
+                        ret[iisc][i] = concatenate((ret[iisc][i], isc_tile(isc, len(x))), axis=0)
             elif len(sret[0]) > 0:
                 # We can add it to the list (nshapes == 1)
                 # We add the atomic offset for the supercell index
-                ret[0][0] = concat((ret[0][0], sret[0] + na), axis=0)
+                ret[0][0] = concatenate((ret[0][0], sret[0] + na), axis=0)
                 if ret_xyz:
-                    ret[c][0] = concat((ret[c][0], sret[c]), axis=0)
+                    ret[ixyz][0] = concatenate((ret[ixyz][0], sret[ixyz]), axis=0)
                 if ret_rij:
-                    ret[d][0] = concat((ret[d][0], sret[d]), axis=0)
+                    ret[irij][0] = concatenate((ret[irij][0], sret[irij]), axis=0)
+                if ret_isc:
+                    ret[iisc][0] = concatenate((ret[iisc][0], isc_tile(isc, len(sret[0]))), axis=0)
 
         if nshapes == 1:
-            if ret_xyz and ret_rij:
-                return [ret[0][0], ret[1][0], ret[2][0]]
-            elif ret_xyz or ret_rij:
-                return [ret[0][0], ret[1][0]]
-            return ret[0][0]
+            if n_ret == 0:
+                return ret[0][0]
+            return tuple(ret[i][0] for i in range(n_ret + 1))
 
-        if ret_special:
-            return ret
-
-        return ret[0]
+        if n_ret == 0:
+            return ret[0]
+        return ret
 
     def close(self, xyz_ia, R=None,
               atoms=None, atoms_xyz=None,
@@ -3337,6 +3348,7 @@ class Geometry(SuperCellChild):
         if R is None:
             R = self.maxR()
         R = _a.asarrayd(R).ravel()
+        nR = R.size
 
         # Convert inedx coordinate to point
         if isinstance(xyz_ia, Integral):
@@ -3344,25 +3356,23 @@ class Geometry(SuperCellChild):
         elif not isndarray(xyz_ia):
             xyz_ia = _a.asarrayd(xyz_ia)
 
-        # Get global calls
-        # Is faster for many loops
-
-        ret = [[np.empty([0], np.int32)] * len(R)]
+        ret = [[np.empty([0], np.int32)] * nR]
         i = 0
         if ret_xyz:
             ixyz = i + 1
             i += 1
-            ret.append([np.empty([0, 3], np.float64)] * len(R))
+            ret.append([np.empty([0, 3], np.float64)] * nR)
         if ret_rij:
             irij = i + 1
             i += 1
-            ret.append([np.empty([0], np.float64)] * len(R))
+            ret.append([np.empty([0], np.float64)] * nR)
         if ret_isc:
             iisc = i + 1
             i += 1
-            ret.append([np.empty([0, 3], np.int32)] * len(R))
+            ret.append([np.empty([0, 3], np.int32)] * nR)
 
-        n_ret = sum([ret_xyz, ret_rij, ret_isc])
+        # number of special returns
+        n_ret = i
 
         def isc_tile(isc, n):
             return tile(isc.reshape(1, -1), (n, 1))
@@ -3401,7 +3411,7 @@ class Geometry(SuperCellChild):
                 if ret_isc:
                     ret[iisc][0] = concatenate((ret[iisc][0], isc_tile(isc, len(sret[0]))), axis=0)
 
-        if len(R) == 1:
+        if nR == 1:
             if n_ret == 0:
                 return ret[0][0]
             return tuple(ret[i][0] for i in range(n_ret + 1))
