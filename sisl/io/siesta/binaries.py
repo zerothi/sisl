@@ -547,7 +547,21 @@ class tsdeSileSiesta(dmSileSiesta):
 
 @set_module("sisl.io.siesta")
 class hsxSileSiesta(SileBinSiesta):
-    """ Hamiltonian and overlap matrix file """
+    """ Hamiltonian and overlap matrix file
+
+    This file does not contain all information regarding the system.
+
+    To ensure no errors are being raised one should pass a `Geometry` with
+    correct number of atoms and correct number of supercells.
+    The number of orbitals will be updated in the returned matrices geometry.
+
+    >>> hsx = hsxSileSiesta("siesta.HSX")
+    >>> HS = hsx.read_hamiltonian() # may fail
+    >>> HS = hsx.read_hamiltonian(geometry=<>) # should run correctly if above satisfied
+
+    Users are adviced to use the `tshsSileSiesta` instead since that correctly contains
+    all information.
+    """
 
     def _xij2system(self, xij, geometry=None):
         """ Create a new geometry with *correct* nsc and somewhat correct xyz
@@ -590,7 +604,10 @@ class hsxSileSiesta(SileBinSiesta):
             a.sort()
             return a
         atoms = [list(a) for a in atoms]
-        atoms_all = np.stack(atoms)
+        if sum(map(len, atoms)) != len(xij):
+            raise ValueError(f"{self.__class__.__name__} could not determine correct "
+                             "number of orbitals.")
+
         atms = Atoms(Atom('H', [-1. for _ in atoms[0]]))
         for orbs in atoms[1:]:
             atms.append(Atom('H', [-1. for _ in orbs]))
@@ -618,7 +635,9 @@ class hsxSileSiesta(SileBinSiesta):
             duplicates = np.logical_and(np.diff(acol) == 0, np.diff(arow) == 0).nonzero()[0]
             if duplicates.size > 0:
                 if not np.allclose(xij[duplicates+1] - xij[duplicates], 0.):
-                    raise ValueError(f"{self.__class__.__name__} converting xij(orb) -> xij(atom) went wrong, some of the coordinates are not right.")
+                    raise ValueError(f"{self.__class__.__name__} converting xij(orb) -> xij(atom) went wrong. "
+                                     "This may happen if your coordinates are not inside the unitcell, please pass "
+                                     "a usable geometry.")
 
             # remove duplicates to create new matrix
             arow = np.delete(arow, duplicates)
@@ -786,9 +805,6 @@ class hsxSileSiesta(SileBinSiesta):
 
             return SuperCell(cell, nsc)
 
-        if atoms_all.size != len(xij):
-            raise NotImplementedError
-
         # now we have all orbitals, ensure compatibility with passed geometry
         if geometry is None:
             atm_xij = convert_to_atom(geom_handle, xij)
@@ -803,18 +819,22 @@ class hsxSileSiesta(SileBinSiesta):
             geometry.xyz[:, :] = (geometry.fxyz % 1.) @ geometry.cell
 
         else:
-            atm_xij = convert_to_atom(geom_handle, xij)
-            sc = sc_from_xij(atm_xij, coord_from_xij(atm_xij))
+            if geometry.n_s != xij.shape[1] // xij.shape[0]:
+                atm_xij = convert_to_atom(geom_handle, xij)
+                sc = sc_from_xij(atm_xij, coord_from_xij(atm_xij))
+                geometry.set_nsc(sc.nsc)
 
             def conv(orbs, atm):
                 if len(orbs) == len(atm):
                     return atm
                 return atm.copy(orbitals=[-1. for _ in orbs])
             atms = Atoms([conv(orbs, atm) for orbs, atm in zip(atoms, geometry.atoms)])
+            if len(atms) != len(geometry):
+                raise ValueError(f"{self.__class__.__name__} passed geometry for reading "
+                                 "sparse matrix does not contain same number of atoms!")
             geometry = geometry.copy()
             # TODO check that geometry and xyz are the same!
             geometry._atoms = atms
-            geometry.set_nsc(sc.nsc)
 
         return geometry
 
