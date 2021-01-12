@@ -1,6 +1,28 @@
 0.X.Y
 =====
 
+- Allowed reading the geometry for supercell HSX files
+	Atomic coordinates and nsc are determined from xij arrays
+
+- Basic implementation of Hermitian construct.
+	It now ensures a correct Hermitian matrix for simple cases
+
+- Added more return from close/within, supercell offsets
+	may be queried (ret_isc)
+
+- Added more transposing functionality for spin matrices
+
+- Fixed wfsxSileSiesta returning proper k-points if a geometry
+	is passed (i.e. reduced k-points). Otherwise warns users
+
+- Huge performance increase for finalizing very large structures
+
+- Fixed writing %block in fdf files
+
+- Enabled reading Fermi level from VASP DOSCAR files
+
+- Cleaned siesta and VASP reading of completed jobs, #287
+
 - added Geometry.new allowing easy type-lookups to convert to Geometry
 	e.g. Geometry.new("RUN.fdf") and Geometry.new(ase_atoms) automatically
 	figures out which method to call and how to interpret the objects.
