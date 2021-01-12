@@ -107,7 +107,6 @@ if "--with-cython-coverage" in sys.argv:
 else:
     linetrace = False
 
-
 # Define Cython directives
 # We shouldn't rely on sources having the headers filled
 # with directives.
@@ -121,6 +120,10 @@ if linetrace:
     directives["emit_code_comments"] = True
     macros.extend([("CYTHON_TRACE", "1"), ("CYTHON_TRACE_NOGIL", "1")])
 
+# Check if users requests checking fortran passing copies
+if "--f2py-report-copy" in sys.argv:
+    macros.append(("F2PY_REPORT_ON_ARRAY_COPY", "1"))
+    sys.argv.remove("--f2py-report-copy")
 
 # We will *only* use setuptools
 # Although setuptools is not shipped with the standard library, I think
