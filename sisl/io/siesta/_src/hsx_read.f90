@@ -143,8 +143,8 @@ subroutine read_hsx_hsx(fname, Gamma, nspin, no_u, no_s, maxnh, &
 
 end subroutine read_hsx_hsx
 
-subroutine read_hsx_s(fname, Gamma, nspin, no_u, no_s, maxnh, &
-    numh, listh, S)
+subroutine read_hsx_sx(fname, Gamma, nspin, no_u, no_s, maxnh, &
+    numh, listh, S, xij)
   use io_m, only: open_file, close_file
   use io_m, only: iostat_update
 
@@ -152,19 +152,20 @@ subroutine read_hsx_s(fname, Gamma, nspin, no_u, no_s, maxnh, &
 
   ! Precision 
   integer, parameter :: sp = selected_real_kind(p=6)
+  real(sp), parameter :: Ang = 0.529177_sp
 
   ! Input parameters
   character(len=*), intent(in) :: fname
   logical, intent(in) :: Gamma
   integer, intent(in) :: nspin, no_u, no_s, maxnh
   integer, intent(out) :: numh(no_u), listh(maxnh)
-  real(sp), intent(out) :: S(maxnh)
+  real(sp), intent(out) :: S(maxnh), xij(3,maxnh)
 
 ! Define f2py intents
 !f2py intent(in) :: fname
 !f2py intent(in) :: Gamma, nspin, no_u, no_s, maxnh
 !f2py intent(out) :: numh, listh
-!f2py intent(out) :: S
+!f2py intent(out) :: S, xij
 
 ! Internal variables and arrays
   integer :: iu, ierr
@@ -207,7 +208,7 @@ subroutine read_hsx_s(fname, Gamma, nspin, no_u, no_s, maxnh, &
     listhptr(ih) = listhptr(ih-1) + numh(ih-1)
   end do
 
-  allocate(buf(maxval(numh)))
+  allocate(buf(maxval(numh)*3))
 
 ! Read listh
   do ih = 1 , no_u
@@ -233,8 +234,22 @@ subroutine read_hsx_s(fname, Gamma, nspin, no_u, no_s, maxnh, &
     S(listhptr(ih)+1:listhptr(ih)+im) = buf(1:im)
   end do
 
+  read(iu, iostat=ierr) !Qtot,temp
+  call iostat_update(ierr)
+
+  if ( Gamma ) then
+    xij = 0._sp
+  else
+    do ih = 1 , no_u
+      im = numh(ih)
+      read(iu, iostat=ierr) buf(1:im*3)
+      call iostat_update(ierr)
+      xij(1:3,listhptr(ih)+1:listhptr(ih)+im) = reshape(buf(1:im*3),(/3,im/)) * Ang
+    end do
+  end if
+
   deallocate(buf)
 
   call close_file(iu)
 
-end subroutine read_hsx_s
+end subroutine read_hsx_sx

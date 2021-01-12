@@ -1,5 +1,6 @@
 from numbers import Integral
-from itertools import product
+from itertools import product, groupby
+from collections import deque
 import numpy as np
 from numpy import pi
 
@@ -17,7 +18,7 @@ from sisl.messages import warn, SislError
 
 from ._help import *
 import sisl._array as _a
-from sisl import Geometry, Atom, Atoms, SuperCell, Grid
+from sisl import Geometry, Atom, Atoms, SuperCell, Grid, SparseCSR
 from sisl.sparse import _ncol_to_indptr
 from sisl.unit.siesta import unit_convert
 from sisl.physics.sparse import SparseOrbitalBZ
@@ -111,7 +112,7 @@ def _geometry_align(geom_b, geom_u, cls, method):
 
         # Now create a new atom specie with the correct number of orbitals
         norbs = geom_b.atoms.orbitals[:]
-        atoms = Atoms([geom.atoms[i].copy(orbitals=[-1] * norbs[i]) for i in range(geom.na)])
+        atoms = Atoms([geom.atoms[i].copy(orbitals=[-1.] * norbs[i]) for i in range(geom.na)])
         geom._atoms = atoms
 
     return geom
@@ -548,6 +549,272 @@ class tsdeSileSiesta(dmSileSiesta):
 class hsxSileSiesta(SileBinSiesta):
     """ Hamiltonian and overlap matrix file """
 
+    def _xij2system(self, xij, geometry=None):
+        """ Create a new geometry with *correct* nsc and somewhat correct xyz
+
+        Parameters
+        ----------
+        xij : SparseCSR
+            orbital distances
+        geometry : Geometry, optional
+            passed geometry
+        """
+        N = len(xij)
+        # convert csr to dok format
+        row = (xij.ncol > 0).nonzero()[0]
+        # Now we have [0 0 0 0 1 1 1 1 2 2 ... no-1 no-1]
+        row = np.repeat(row, xij.ncol[row])
+        col = xij.col
+
+        # Parse xij to correct geometry
+        # first figure out all zeros (i.e. self-atom-orbitals)
+        idx0 = np.isclose(np.fabs(xij._D).sum(axis=1), 0.).nonzero()[0]
+        row0 = row[idx0]
+
+        # convert row0 and col0 to a first attempt of "atomization"
+        atoms = []
+        for r in range(N):
+            idx0r = (row0 == r).nonzero()[0]
+            row0r = row0[idx0r]
+            # although xij == 0, we just do % to ensure unit-cell orbs
+            col0r = col[idx0[idx0r]] % N
+            if np.all(col0r >= r):
+                # we have a new atom
+                atoms.append(set(col0r))
+            else:
+                atoms[-1].update(set(col0r))
+
+        # convert list of orbitals to lists
+        def conv(a):
+            a = list(a)
+            a.sort()
+            return a
+        atoms = [list(a) for a in atoms]
+        atoms_all = np.stack(atoms)
+        atms = Atoms(Atom('H', [-1. for _ in atoms[0]]))
+        for orbs in atoms[1:]:
+            atms.append(Atom('H', [-1. for _ in orbs]))
+        geom_handle = Geometry(np.zeros([len(atoms), 3]), atms)
+
+        def convert_to_atom(geom, xij):
+            # o2a does not check for correct super-cell index
+            n_s = xij.shape[1] // xij.shape[0]
+            atm_s = geom.o2a(np.arange(xij.shape[1]))
+
+            # convert csr to dok format
+            row = (xij.ncol > 0).nonzero()[0]
+            row = np.repeat(row, xij.ncol[row])
+            col = xij.col
+            arow = atm_s[row]
+            acol = atm_s[col]
+            del atm_s, row, col
+            idx = np.lexsort((acol, arow))
+            arow = arow[idx]
+            acol = acol[idx]
+            xij = xij._D[idx]
+            del idx
+
+            # Now figure out if xij is consistent
+            duplicates = np.logical_and(np.diff(acol) == 0, np.diff(arow) == 0).nonzero()[0]
+            if duplicates.size > 0:
+                if not np.allclose(xij[duplicates+1] - xij[duplicates], 0.):
+                    raise ValueError(f"{self.__class__.__name__} converting xij(orb) -> xij(atom) went wrong, some of the coordinates are not right.")
+
+            # remove duplicates to create new matrix
+            arow = np.delete(arow, duplicates)
+            acol = np.delete(acol, duplicates)
+            xij = np.delete(xij, duplicates, axis=0)
+
+            # Create a new sparse matrix
+            # Create the new index pointer
+            indptr = np.insert(np.array([0, len(xij)], np.int32), 1,
+                               (np.diff(arow) != 0).nonzero()[0] + 1)
+            assert len(indptr) == geom.na + 1
+            return SparseCSR((xij, acol, indptr), shape=(geom.na, geom.na * n_s))
+
+        def coord_from_xij(xij):
+            # first atom is at 0, 0, 0
+            na = len(xij)
+            xyz = _a.zerosd([na, 3])
+            xyz[0] = [0, 0, 0]
+            mark = _a.zerosi(na)
+            mark[0] = 1
+            run_atoms = deque([0])
+            while len(run_atoms) > 0:
+                atm = run_atoms.popleft()
+                xyz_atm = xyz[atm].reshape(1, 3)
+                neighbours = xij.edges(atm, exclude=atm)
+                neighbours = neighbours[neighbours < na]
+
+                # update those that haven't been calculated
+                idx = mark[neighbours] == 0
+                neigh_idx = neighbours[idx]
+                if len(neigh_idx) == 0:
+                    continue
+                xyz[neigh_idx, :] = xij[atm, neigh_idx] - xyz_atm
+                mark[neigh_idx] = 1
+                # add more atoms to be processed, since we have *mark*
+                # we will only run every atom once
+                run_atoms.extend(neigh_idx.tolist())
+
+                # check that everything is correct
+                if (~idx).sum() > 0:
+                    neg_neighbours = neighbours[~idx]
+                    if not np.allclose(xyz[neg_neighbours, :],
+                                       xij[atm, neg_neighbours] - xyz_atm):
+                        raise ValueError(f"{self.__class__.__name__} xij(orb) -> xyz did not  "
+                                         f"find same coordinates for different connections")
+
+            if mark.sum() != na:
+                raise ValueError(f"{self.__class__.__name__} xij(orb) -> Geometry does not  "
+                                 f"have a fully connected geometry. It is impossible to create relative coordinates")
+
+            return xyz
+
+        def sc_from_xij(xij, xyz):
+            na = xij.shape[0]
+            n_s = xij.shape[1] // xij.shape[0]
+            if n_s == 1:
+                # easy!!
+                return SuperCell(xyz.max(axis=0) - xyz.min(axis=0) + 10., nsc=[1] * 3)
+
+            sc_off = _a.zerosd([n_s, 3])
+            mark = _a.zerosi(n_s)
+            mark[0] = 1
+            for atm in range(na):
+                neighbours = xij.edges(atm, exclude=atm)
+                uneighbours = neighbours % na
+                neighbour_isc = neighbours // na
+
+                # get offset in terms of unit-cell
+                off = xij[atm, neighbours] - (xyz[uneighbours] - xyz[atm].reshape(1, 3))
+
+                idx = mark[neighbour_isc] == 0
+                if not np.allclose(off[~idx], sc_off[neighbour_isc[~idx]]):
+                    raise ValueError(f"{self.__class__.__name__} xij(orb) -> xyz did not  "
+                                     f"find same supercell offsets for different connections")
+
+                if idx.sum() == 0:
+                    continue
+
+                for idx in idx.nonzero()[0]:
+                    nidx = neighbour_isc[idx]
+                    if mark[nidx] == 0:
+                        mark[nidx] = 1
+                        sc_off[nidx] = off[idx]
+                    elif not np.allclose(sc_off[nidx], off[idx]):
+                        raise ValueError(f"{self.__class__.__name__} xij(orb) -> xyz did not  "
+                                         f"find same supercell offsets for different connections")
+            # We know that siesta returns isc
+            # for iz in [0, 1, 2, 3, -3, -2, -1]:
+            #  for iy in [0, 1, 2, -2, -1]:
+            #   for ix in [0, 1, -1]:
+            # every block we find a half monotonically increasing vector additions
+            # Note the first is always [0, 0, 0]
+            # So our best chance is to *guess* the first nsc
+            # then reshape, then guess, then reshape, then guess :)
+            sc_diff = np.diff(sc_off, axis=0)
+
+            def get_nsc(sc_off):
+                """ Determine nsc depending on the axis """
+                # correct the offsets
+                ndim = sc_off.ndim
+
+                if sc_off.shape[0] == 1:
+                    return 1
+
+                # always select the 2nd one since that contains the offset
+                # for the first isc [1, 0, 0] or [0, 1, 0] or [0, 0, 1]
+                sc_dir = sc_off[(1, ) + np.index_exp[0] * (ndim - 2)].reshape(1, 3)
+                norm2_sc_dir = (sc_dir ** 2).sum()
+                # figure out the maximum integer part
+                # we select 0 indices for all already determined lattice
+                # vectors since we know the first one is [0, 0, 0]
+                idx = np.index_exp[:] + np.index_exp[0] * (ndim - 2)
+                projection = (sc_off[idx] * sc_dir).sum(-1) / norm2_sc_dir
+                iprojection = np.rint(projection)
+                # find where they are close
+                # since there may be *many* zeros (non-coupling elements)
+                # we first have to cut off anything that is not integer
+                idx_close = np.isclose(projection, iprojection).nonzero()[0]
+                return (np.diff(idx_close) > 1).nonzero()[0][0] + 1
+
+            nsc = _a.onesi(3)
+            nsc[0] = get_nsc(sc_off)
+            sc_off = sc_off.reshape(-1, nsc[0], 3)
+            nsc[1] = get_nsc(sc_off)
+            sc_off = sc_off.reshape(-1, nsc[1], nsc[0], 3)
+            nsc[2] = sc_off.shape[0]
+
+            # now determine cell parameters
+            if all(nsc > 1):
+                cell = _a.arrayd([sc_off[0, 0, 1],
+                                  sc_off[0, 1, 0],
+                                  sc_off[1, 0, 0]])
+            else:
+                # we will never have all(nsc == 1) since that is
+                # taken care of at the start
+
+                # this gets a bit tricky, since we don't know one of the
+                # lattice vectors
+                cell = _a.zerosd([3, 3])
+                i = 0
+                for idx, isc in enumerate(nsc):
+                    if isc > 1:
+                        sl = tuple(0, 0, 0)
+                        sl[2 - idx] = 1
+                        cell[i] = sc_off[sl]
+                        i += 1
+                # figure out the last vectors
+                # We'll just use Cartesian coordinates
+                roll_n = 0
+                while i <= 2:
+                    # this means we don't have any supercell connections
+                    # along at least 1 other lattice vector.
+                    lcell = np.fabs(cell).sum(0)
+
+                    # figure out which Cartesian direction we are *missing*
+                    cart_dir = np.argmin(lcell)
+                    cell[i, cart_dir] = xyz[:, cart_dir].max() - xyz[:, cart_dir].min() + 10.
+                    roll_n = cart_dir - i
+                    i += 1
+
+                # we roll data to make Cartesian coordinates
+                # this won't always work. but should in most cases
+                cell = np.roll(cell, roll_n)
+                nsc = np.roll(nsc, roll_n)
+
+            return SuperCell(cell, nsc)
+
+        if atoms_all.size != len(xij):
+            raise NotImplementedError
+
+        # now we have all orbitals, ensure compatibility with passed geometry
+        if geometry is None:
+            atm_xij = convert_to_atom(geom_handle, xij)
+            xyz = coord_from_xij(atm_xij)
+            sc = sc_from_xij(atm_xij, xyz)
+            atms = Atoms(Atom('H', [-1. for _ in atoms[0]]))
+            for orbs in atoms[1:]:
+                atms.append(Atom('H', [-1. for _ in orbs]))
+            geometry = Geometry(xyz, atms, sc)
+
+        else:
+            atm_xij = convert_to_atom(geom_handle, xij)
+            sc = sc_from_xij(atm_xij, coord_from_xij(atm_xij))
+
+            def conv(orbs, atm):
+                if len(orbs) == len(atm):
+                    return atm
+                return atm.copy(orbitals=[-1. for _ in orbs])
+            atms = Atoms([conv(orbs, atm) for orbs, atm in zip(atoms, geometry.atoms)])
+            geometry = geometry.copy()
+            # TODO check that geometry and xyz are the same!
+            geometry._atoms = atms
+            geometry.set_nsc(sc.nsc)
+
+        return geometry
+
     def read_hamiltonian(self, **kwargs):
         """ Returns the electronic structure from the siesta.TSHS file """
 
@@ -555,34 +822,27 @@ class hsxSileSiesta(SileBinSiesta):
         Gamma, spin, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
         _bin_check(self, 'read_hamiltonian', 'could not read Hamiltonian sizes.')
         ncol, col, dH, dS, dxij = _siesta.read_hsx_hsx(self.file, Gamma, spin, no, no_s, nnz)
+        dxij = dxij.T
+        col -= 1
         _bin_check(self, 'read_hamiltonian', 'could not read Hamiltonian.')
 
-        # Try and immediately attach a geometry
-        geom = kwargs.get('geometry', kwargs.get('geom', None))
-        if geom is None:
-            # We have *no* clue about the
-            if np.allclose(dxij, 0.):
-                # We truly, have no clue,
-                # Just generate a boxed system
-                xyz = [[x, 0, 0] for x in range(no)]
-                geom = Geometry(xyz, Atom(1), sc=[no, 1, 1])
-            else:
-                # Try to figure out the supercell
-                warn(self.__class__.__name__ + '.read_hamiltonian '
-                     '(currently we can not calculate atomic positions from xij array)')
-        if geom.no != no:
-            raise SileError(str(self) + '.read_hamiltonian could not use the '
-                            'passed geometry as the number of atoms or orbitals is '
-                            'inconsistent with HSX file.')
+        ptr = _ncol_to_indptr(ncol)
+        xij = SparseCSR((dxij, col, ptr), shape=(no, no_s))
+        geom = self._xij2system(xij, kwargs.get('geometry', kwargs.get('geom', None)))
+
+        if geom.no != no or geom.no_s != no_s:
+            raise SileError(f"{str(self)}.read_hamiltonian could not use the "
+                            "passed geometry as the number of atoms or orbitals is "
+                            "inconsistent with HSX file.")
 
         # Create the Hamiltonian container
         H = Hamiltonian(geom, spin, nnzpr=1, dtype=np.float32, orthogonal=False)
 
         # Create the new sparse matrix
         H._csr.ncol = ncol.astype(np.int32, copy=False)
-        H._csr.ptr = _ncol_to_indptr(ncol)
+        H._csr.ptr = ptr
         # Correct fortran indices
-        H._csr.col = col.astype(np.int32, copy=False) - 1
+        H._csr.col = col.astype(np.int32, copy=False)
         H._csr._nnz = len(col)
 
         H._csr._D = _a.emptyf([nnz, spin+1])
@@ -602,16 +862,19 @@ class hsxSileSiesta(SileBinSiesta):
         # Now read the sizes used...
         Gamma, spin, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
         _bin_check(self, 'read_overlap', 'could not read overlap matrix sizes.')
-        ncol, col, dS = _siesta.read_hsx_s(self.file, Gamma, spin, no, no_s, nnz)
+        ncol, col, dS, dxij = _siesta.read_hsx_sx(self.file, Gamma, spin, no, no_s, nnz)
+        dxij = dxij.T
+        col -= 1
         _bin_check(self, 'read_overlap', 'could not read overlap matrix.')
 
-        geom = kwargs.get('geometry', kwargs.get('geom', None))
-        if geom is None:
-            warn(self.__class__.__name__ + ".read_overlap requires input geometry to assign S")
-        if geom.no != no:
-            raise SileError(str(self) + '.read_overlap could not use the '
-                            'passed geometry as the number of atoms or orbitals is '
-                            'inconsistent with HSX file.')
+        ptr = _ncol_to_indptr(ncol)
+        xij = SparseCSR((dxij, col, ptr), shape=(no, no_s))
+        geom = self._xij2system(xij, kwargs.get('geometry', kwargs.get('geom', None)))
+
+        if geom.no != no or geom.no_s != no_s:
+            raise SileError(f"{str(self)}.read_overlap could not use the "
+                            "passed geometry as the number of atoms or orbitals is "
+                            "inconsistent with HSX file.")
 
         # Create the Hamiltonian container
         S = Overlap(geom, nnzpr=1)
@@ -620,7 +883,7 @@ class hsxSileSiesta(SileBinSiesta):
         S._csr.ncol = ncol.astype(np.int32, copy=False)
         S._csr.ptr = _ncol_to_indptr(ncol)
         # Correct fortran indices
-        S._csr.col = col.astype(np.int32, copy=False) - 1
+        S._csr.col = col.astype(np.int32, copy=False)
         S._csr._nnz = len(col)
 
         S._csr._D = _a.emptyf([nnz, 1])

@@ -19,6 +19,11 @@ def test_si_pdos_kgrid_hsx_H(sisl_files, sisl_tmp):
     si.read_hamiltonian(geometry=si_pdos_kgrid_geom())
 
 
+def test_si_pdos_kgrid_hsx_H_no_geom(sisl_files, sisl_tmp):
+    si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.HSX'))
+    si.read_hamiltonian()
+
+
 def test_si_pdos_kgrid_hsx_overlap(sisl_files, sisl_tmp):
     si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.HSX'))
     HS = si.read_hamiltonian(geometry=si_pdos_kgrid_geom())
