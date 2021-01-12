@@ -799,6 +799,9 @@ class hsxSileSiesta(SileBinSiesta):
                 atms.append(Atom('H', [-1. for _ in orbs]))
             geometry = Geometry(xyz, atms, sc)
 
+            # Move coordinates into unit-cell
+            geometry.xyz[:, :] = (geometry.fxyz % 1.) @ geometry.cell
+
         else:
             atm_xij = convert_to_atom(geom_handle, xij)
             sc = sc_from_xij(atm_xij, coord_from_xij(atm_xij))
