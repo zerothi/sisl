@@ -45,4 +45,8 @@ def test_soc_pt2_xx_eig_fermi_level(sisl_files):
     assert ef == pytest.approx(ef1)
     # This should prefer the TSHS
     ef2 = fdfSileSiesta(fdf).read_fermi_level(order='TSHS')
-    assert ef == pytest.approx(ef2)
+    # since we are using a different conversion in sisl
+    # vs. siesta we have to make this.
+    # once https://gitlab.com/siesta-project/siesta/-/merge_requests/30
+    # is merged
+    assert ef == pytest.approx(ef2, abs=1e-5)

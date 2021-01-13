@@ -10,8 +10,6 @@ subroutine write_tshs_hs(fname, &
 
   integer, parameter :: sp = selected_real_kind(p=6)
   integer, parameter :: dp = selected_real_kind(p=15)
-  real(dp), parameter :: eV = 13.60580_dp
-  real(dp), parameter :: Ang = 0.529177_dp
 
   ! Input parameters
   character(len=*), intent(in) :: fname
@@ -46,7 +44,7 @@ subroutine write_tshs_hs(fname, &
 
   write(iu, iostat=ierr) nsc1, nsc2, nsc3
   call iostat_update(ierr)
-  write(iu, iostat=ierr) cell / Ang, xa / Ang
+  write(iu, iostat=ierr) cell, xa
   call iostat_update(ierr)
   ! TSGamma, Gamma, onlyS
   write(iu, iostat=ierr) .false., .false., .false.
@@ -55,7 +53,7 @@ subroutine write_tshs_hs(fname, &
   write(iu, iostat=ierr) (/2, 0, 0, 0, 2, 0, 0, 0, 2/), (/0._dp, 0._dp, 0._dp/)
   call iostat_update(ierr)
   ! Ef, qtot, Temp
-  write(iu, iostat=ierr) 0._dp / eV, 1._dp, 0.001_dp / eV
+  write(iu, iostat=ierr) 0._dp, 1._dp, 0.001_dp
   call iostat_update(ierr)
 
   ! istep, ia1
@@ -85,7 +83,7 @@ subroutine write_tshs_hs(fname, &
   do is = 1, nspin
     idx = 0
     do i = 1 , no_u
-      write(iu, iostat=ierr) H(idx+1:idx+ncol(i),is) / eV
+      write(iu, iostat=ierr) H(idx+1:idx+ncol(i),is)
       call iostat_update(ierr)
       idx = idx + ncol(i)
     end do

@@ -8,7 +8,6 @@ subroutine write_tsde_dm_edm(fname, nspin, no_u, nsc, nnz, &
   ! Precision 
   integer, parameter :: sp = selected_real_kind(p=6)
   integer, parameter :: dp = selected_real_kind(p=15)
-  real(dp), parameter :: eV = 13.60580_dp
 
   ! Input parameters
   character(len=*), intent(in) :: fname
@@ -58,14 +57,14 @@ subroutine write_tsde_dm_edm(fname, nspin, no_u, nsc, nnz, &
   do is = 1 , nspin
     n = 0
     do io = 1 , no_u
-      write(iu, iostat=ierr) EDM(n+1:n+ncol(io), is) / eV
+      write(iu, iostat=ierr) EDM(n+1:n+ncol(io), is)
       call iostat_update(ierr)
       n = n + ncol(io)
     end do
   end do
 
   ! Write Fermi-level
-  write(iu, iostat=ierr) Ef / eV
+  write(iu, iostat=ierr) Ef
   call iostat_update(ierr)
 
   call close_file(iu)

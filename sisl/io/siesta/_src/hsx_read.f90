@@ -39,8 +39,6 @@ subroutine read_hsx_hsx(fname, Gamma, nspin, no_u, no_s, maxnh, &
 
   ! Precision 
   integer, parameter :: sp = selected_real_kind(p=6)
-  real(sp), parameter :: eV = 13.60580_sp
-  real(sp), parameter :: Ang = 0.529177_sp
 
   ! Input parameters
   character(len=*), intent(in) :: fname
@@ -111,7 +109,7 @@ subroutine read_hsx_hsx(fname, Gamma, nspin, no_u, no_s, maxnh, &
       im = numh(ih)
       read(iu, iostat=ierr) buf(1:im)
       call iostat_update(ierr)
-      H(listhptr(ih)+1:listhptr(ih)+im,is) = buf(1:im) * eV
+      H(listhptr(ih)+1:listhptr(ih)+im,is) = buf(1:im)
     end do
   end do
 
@@ -133,7 +131,7 @@ subroutine read_hsx_hsx(fname, Gamma, nspin, no_u, no_s, maxnh, &
       im = numh(ih)
       read(iu, iostat=ierr) buf(1:im*3)
       call iostat_update(ierr)
-      xij(1:3,listhptr(ih)+1:listhptr(ih)+im) = reshape(buf(1:im*3),(/3,im/)) * Ang
+      xij(1:3,listhptr(ih)+1:listhptr(ih)+im) = reshape(buf(1:im*3),(/3,im/))
     end do
   end if
 
@@ -152,7 +150,6 @@ subroutine read_hsx_sx(fname, Gamma, nspin, no_u, no_s, maxnh, &
 
   ! Precision 
   integer, parameter :: sp = selected_real_kind(p=6)
-  real(sp), parameter :: Ang = 0.529177_sp
 
   ! Input parameters
   character(len=*), intent(in) :: fname
@@ -244,7 +241,7 @@ subroutine read_hsx_sx(fname, Gamma, nspin, no_u, no_s, maxnh, &
       im = numh(ih)
       read(iu, iostat=ierr) buf(1:im*3)
       call iostat_update(ierr)
-      xij(1:3,listhptr(ih)+1:listhptr(ih)+im) = reshape(buf(1:im*3),(/3,im/)) * Ang
+      xij(1:3,listhptr(ih)+1:listhptr(ih)+im) = reshape(buf(1:im*3),(/3,im/))
     end do
   end if
 

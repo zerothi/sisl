@@ -34,6 +34,11 @@ __all__ += ['gridSileSiesta']
 __all__ += ['tsgfSileSiesta']
 
 
+_Bohr2Ang = unit_convert('Bohr', 'Ang')
+_Ry2eV = unit_convert('Ry', 'eV')
+_eV2Ry = unit_convert('eV', 'Ry')
+
+
 def _bin_check(obj, method, message):
     ierr = _siesta.io_m.iostat_query()
     if ierr != 0:
@@ -129,7 +134,7 @@ class onlysSileSiesta(SileBinSiesta):
         # So we transpose to get it C-like
         # Note that care must be taken for the different data-structures
         # In particular not all data needs to be transposed (sparse H and S)
-        cell = arr[1].T
+        cell = arr[1].T * _Bohr2Ang
         return SuperCell(cell, nsc=nsc)
 
     def read_geometry(self, geometry=None):
@@ -143,7 +148,7 @@ class onlysSileSiesta(SileBinSiesta):
         arr = _siesta.read_tshs_geom(self.file, na)
         _bin_check(self, 'read_geometry', 'could not read geometry.')
         # see onlysSileSiesta.read_supercell for .T
-        xyz = arr[0].T
+        xyz = arr[0].T * _Bohr2Ang
         lasto = arr[1]
 
         # Since the TSHS file does not contain species information
@@ -231,7 +236,7 @@ class onlysSileSiesta(SileBinSiesta):
         -------
         Ef : fermi-level of the system
         """
-        Ef = _siesta.read_tshs_ef(self.file)
+        Ef = _siesta.read_tshs_ef(self.file) * _Ry2eV
         _bin_check(self, 'read_fermi_level', 'could not read fermi-level.')
         return Ef
 
@@ -272,10 +277,10 @@ class tshsSileSiesta(onlysSileSiesta):
 
         if orthogonal:
             H._csr._D = _a.emptyd([nnz, spin])
-            H._csr._D[:, :] = dH[:, :]
+            H._csr._D[:, :] = dH[:, :] * _Ry2eV
         else:
             H._csr._D = _a.emptyd([nnz, spin+1])
-            H._csr._D[:, :spin] = dH[:, :]
+            H._csr._D[:, :spin] = dH[:, :] * _Ry2eV
             H._csr._D[:, spin] = dS[:]
 
         _mat_spin_convert(H)
@@ -338,8 +343,8 @@ class tshsSileSiesta(onlysSileSiesta):
 
         # see onlysSileSiesta.read_supercell for .T
         _siesta.write_tshs_hs(self.file, nsc[0], nsc[1], nsc[2],
-                              cell.T, xyz.T, H.geometry.firsto,
-                              csr.ncol, csr.col + 1, h, s, isc)
+                              cell.T / _Bohr2Ang, xyz.T / _Bohr2Ang, H.geometry.firsto,
+                              csr.ncol, csr.col + 1, h * _eV2Ry, s, isc)
         _bin_check(self, 'write_hamiltonian', 'could not write Hamiltonian and overlap matrix.')
 
 
@@ -471,7 +476,7 @@ class tsdeSileSiesta(dmSileSiesta):
         EDM._csr._nnz = len(col)
 
         EDM._csr._D = _a.emptyd([nnz, spin+1])
-        EDM._csr._D[:, :spin] = dEDM[:, :]
+        EDM._csr._D[:, :spin] = dEDM[:, :] * _Ry2eV
         # EDM file does not contain overlap matrix... so neglect it for now.
         EDM._csr._D[:, spin] = 0.
 
@@ -492,7 +497,7 @@ class tsdeSileSiesta(dmSileSiesta):
         -------
         Ef : fermi-level of the system
         """
-        Ef = _siesta.read_tsde_ef(self.file)
+        Ef = _siesta.read_tsde_ef(self.file) * _Ry2eV
         _bin_check(self, 'read_fermi_level', 'could not read fermi-level.')
         return Ef
 
@@ -542,7 +547,7 @@ class tsdeSileSiesta(dmSileSiesta):
 
         nsc = DM.geometry.sc.nsc.astype(np.int32)
 
-        _siesta.write_tsde_dm_edm(self.file, nsc, DMcsr.ncol, DMcsr.col + 1, dm, edm, Ef)
+        _siesta.write_tsde_dm_edm(self.file, nsc, DMcsr.ncol, DMcsr.col + 1, dm, edm * _eV2Ry, Ef * _eV2Ry)
         _bin_check(self, 'write_density_matrices', 'could not write DM + EDM matrices.')
 
 
@@ -846,7 +851,7 @@ class hsxSileSiesta(SileBinSiesta):
         Gamma, spin, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
         _bin_check(self, 'read_hamiltonian', 'could not read Hamiltonian sizes.')
         ncol, col, dH, dS, dxij = _siesta.read_hsx_hsx(self.file, Gamma, spin, no, no_s, nnz)
-        dxij = dxij.T
+        dxij = dxij.T * _Bohr2Ang
         col -= 1
         _bin_check(self, 'read_hamiltonian', 'could not read Hamiltonian.')
 
@@ -870,7 +875,7 @@ class hsxSileSiesta(SileBinSiesta):
         H._csr._nnz = len(col)
 
         H._csr._D = _a.emptyf([nnz, spin+1])
-        H._csr._D[:, :spin] = dH[:, :]
+        H._csr._D[:, :spin] = dH[:, :] * _Ry2eV
         H._csr._D[:, spin] = dS[:]
 
         _mat_spin_convert(H)
@@ -887,7 +892,7 @@ class hsxSileSiesta(SileBinSiesta):
         Gamma, spin, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
         _bin_check(self, 'read_overlap', 'could not read overlap matrix sizes.')
         ncol, col, dS, dxij = _siesta.read_hsx_sx(self.file, Gamma, spin, no, no_s, nnz)
-        dxij = dxij.T
+        dxij = dxij.T * _Bohr2Ang
         col -= 1
         _bin_check(self, 'read_overlap', 'could not read overlap matrix.')
 
@@ -944,7 +949,6 @@ class wfsxSileSiesta(SileBinSiesta):
         else:
             func = _siesta.read_wfsx_index_2
 
-        Bohr2Ang = unit_convert("Bohr", "Ang")
         if parent is None:
             def convert_k(k):
                 if not np.allclose(k, 0.):
@@ -962,7 +966,7 @@ class wfsxSileSiesta(SileBinSiesta):
         for ispin, ik in product(range(1, nspin + 1), range(1, nk + 1)):
             k, _, nwf = _siesta.read_wfsx_index_info(self.file, ispin, ik)
             # Convert to 1/Ang
-            k /= Bohr2Ang
+            k /= _Bohr2Ang
             _bin_check(self, 'yield_eigenstate', f"could not read index info [{ispin}, {ik}]")
 
             idx, eig, state = func(self.file, ispin, ik, nou, nwf)
@@ -987,7 +991,7 @@ class _gridSileSiesta(SileBinSiesta):
     def read_supercell(self, *args, **kwargs):
         r""" Return the cell contained in the file """
 
-        cell = _siesta.read_grid_cell(self.file).T
+        cell = _siesta.read_grid_cell(self.file).T * _Bohr2Ang
         _bin_check(self, 'read_supercell', 'could not read cell.')
 
         return SuperCell(cell)
@@ -1300,15 +1304,14 @@ class _gfSileSiesta(SileBinSiesta):
         k, E = _siesta.read_gf_header(self._iu, nkpt, NE)
         _bin_check(self, 'read_header', 'could not read header information.')
 
-        k = k.T
         if self._nspin > 2: # non-colinear
             self._no_u = no_u * 2
         else:
             self._no_u = no_u
-        self._E = E
-        self._k = k
+        self._E = E * _Ry2eV
+        self._k = k.T
 
-        return nspin, no_u, k, E
+        return nspin, no_u, self._k, self._E
 
     def disk_usage(self):
         """ Calculate the estimated size of the resulting file
@@ -1347,7 +1350,7 @@ class _gfSileSiesta(SileBinSiesta):
         self._step_counter('read_hamiltonian', HS=True, read=True)
         H, S = _siesta.read_gf_hs(self._iu, self._no_u)
         _bin_check(self, 'read_hamiltonian', 'could not read Hamiltonian and overlap matrices.')
-        return H, S
+        return H * _Ry2eV, S
 
     def read_self_energy(self):
         r""" Read the currently reached bulk self-energy
@@ -1364,7 +1367,7 @@ class _gfSileSiesta(SileBinSiesta):
         self._step_counter('read_self_energy', read=True)
         SE = _siesta.read_gf_se(self._iu, self._no_u, self._iE)
         _bin_check(self, 'read_self_energy', 'could not read self-energy.')
-        return SE
+        return SE * _Ry2eV
 
     def HkSk(self, k=(0, 0, 0), spin=0):
         """ Retrieve H and S for the given k-point
@@ -1483,8 +1486,9 @@ class _gfSileSiesta(SileBinSiesta):
         # Now write to it...
         self._step_counter('write_header', header=True, read=True)
         # see onlysSileSiesta.read_supercell for .T
-        _siesta.write_gf_header(self._iu, nspin, cell.T, na_u, no_u, no_u, xa.T, lasto,
-                                bloch, 0, mu, k.T, w, self._E, **sizes)
+        _siesta.write_gf_header(self._iu, nspin, cell.T / _Bohr2Ang,
+                                na_u, no_u, no_u, xa.T / _Bohr2Ang, lasto,
+                                bloch, 0, mu * _eV2Ry, k.T, w, self._E * _eV2Ry, **sizes)
         _bin_check(self, 'write_header', 'could not write header information.')
 
     def write_hamiltonian(self, H, S=None):
@@ -1502,7 +1506,7 @@ class _gfSileSiesta(SileBinSiesta):
         if S is None:
             S = np.eye(no, dtype=np.complex128, order='F')
         self._step_counter('write_hamiltonian', HS=True, read=True)
-        _siesta.write_gf_hs(self._iu, self._ik, self._E[self._iE], H, S, no_u=no)
+        _siesta.write_gf_hs(self._iu, self._ik, self._E[self._iE] * _eV2Ry, H * _eV2Ry, S, no_u=no)
         _bin_check(self, 'write_hamiltonian', 'could not write Hamiltonian and overlap matrices.')
 
     def write_self_energy(self, SE):
@@ -1520,7 +1524,7 @@ class _gfSileSiesta(SileBinSiesta):
         """
         no = len(SE)
         self._step_counter('write_self_energy', read=True)
-        _siesta.write_gf_se(self._iu, self._ik, self._iE, self._E[self._iE], SE, no_u=no)
+        _siesta.write_gf_se(self._iu, self._ik, self._iE, self._E[self._iE] * _eV2Ry, SE * _eV2Ry, no_u=no)
         _bin_check(self, 'write_self_energy', 'could not write self-energy.')
 
     def __len__(self):
@@ -1576,22 +1580,20 @@ if found_module:
     add_sile('TSGF', tsgfSileSiesta)
     add_sile('WFSX', wfsxSileSiesta)
     # These have unit-conversions
-    BohrC2AngC = unit_convert('Bohr', 'Ang') ** 3
-    Ry2eV = unit_convert('Ry', 'eV')
-    add_sile('RHO', _type("rhoSileSiesta", _gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
-    add_sile('LDOS', _type("ldosSileSiesta", _gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
-    add_sile('RHOINIT', _type("rhoinitSileSiesta", _gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
-    add_sile('RHOXC', _type("rhoxcSileSiesta", _gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
-    add_sile('DRHO', _type("drhoSileSiesta", _gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
-    add_sile('BADER', _type("baderSileSiesta", _gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
-    add_sile('IOCH', _type("iorhoSileSiesta", _gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
-    add_sile('TOCH', _type("totalrhoSileSiesta", _gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
+    add_sile('RHO', _type("rhoSileSiesta", _gridSileSiesta, {'grid_unit': 1./_Bohr2Ang ** 3}))
+    add_sile('LDOS', _type("ldosSileSiesta", _gridSileSiesta, {'grid_unit': 1./_Bohr2Ang ** 3}))
+    add_sile('RHOINIT', _type("rhoinitSileSiesta", _gridSileSiesta, {'grid_unit': 1./_Bohr2Ang ** 3}))
+    add_sile('RHOXC', _type("rhoxcSileSiesta", _gridSileSiesta, {'grid_unit': 1./_Bohr2Ang ** 3}))
+    add_sile('DRHO', _type("drhoSileSiesta", _gridSileSiesta, {'grid_unit': 1./_Bohr2Ang ** 3}))
+    add_sile('BADER', _type("baderSileSiesta", _gridSileSiesta, {'grid_unit': 1./_Bohr2Ang ** 3}))
+    add_sile('IOCH', _type("iorhoSileSiesta", _gridSileSiesta, {'grid_unit': 1./_Bohr2Ang ** 3}))
+    add_sile('TOCH', _type("totalrhoSileSiesta", _gridSileSiesta, {'grid_unit': 1./_Bohr2Ang ** 3}))
     # The following two files *require* that
     #  STM.DensityUnits   Ele/bohr**3
     #  which I can't check!
     # They are however the default
-    add_sile('STS', _type("stsSileSiesta", _gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
-    add_sile('STM.LDOS', _type("stmldosSileSiesta", _gridSileSiesta, {'grid_unit': 1./BohrC2AngC}))
-    add_sile('VH', _type("hartreeSileSiesta", _gridSileSiesta, {'grid_unit': Ry2eV}))
-    add_sile('VNA', _type("neutralatomhartreeSileSiesta", _gridSileSiesta, {'grid_unit': Ry2eV}))
-    add_sile('VT', _type("totalhartreeSileSiesta", _gridSileSiesta, {'grid_unit': Ry2eV}))
+    add_sile('STS', _type("stsSileSiesta", _gridSileSiesta, {'grid_unit': 1./_Bohr2Ang ** 3}))
+    add_sile('STM.LDOS', _type("stmldosSileSiesta", _gridSileSiesta, {'grid_unit': 1./_Bohr2Ang ** 3}))
+    add_sile('VH', _type("hartreeSileSiesta", _gridSileSiesta, {'grid_unit': _Ry2eV}))
+    add_sile('VNA', _type("neutralatomhartreeSileSiesta", _gridSileSiesta, {'grid_unit': _Ry2eV}))
+    add_sile('VT', _type("totalhartreeSileSiesta", _gridSileSiesta, {'grid_unit': _Ry2eV}))

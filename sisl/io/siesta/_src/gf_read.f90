@@ -51,8 +51,6 @@ subroutine read_gf_header(iu, nkpt, kpt, NE, E)
 
   ! Precision 
   integer, parameter :: dp = selected_real_kind(p=15)
-  real(dp), parameter :: eV = 13.60580_dp
-  real(dp), parameter :: Ang = 0.529177_dp
 
   ! Input parameters
   integer, intent(in) :: iu
@@ -92,7 +90,6 @@ subroutine read_gf_header(iu, nkpt, kpt, NE, E)
   call iostat_update(ierr)
   read(iu, iostat=ierr) E
   call iostat_update(ierr)
-  E(:) = E(:) * eV
 
 end subroutine read_gf_header
 
@@ -206,7 +203,6 @@ subroutine read_gf_hs(iu, no_u, H, S)
 
   ! Precision 
   integer, parameter :: dp = selected_real_kind(p=15)
-  real(dp), parameter :: eV = 13.60580_dp
 
   ! Input parameters
   integer, intent(in) :: iu
@@ -230,7 +226,6 @@ subroutine read_gf_hs(iu, no_u, H, S)
   call iostat_update(ierr)
   read(iu, iostat=ierr) S
   call iostat_update(ierr)
-  H(:,:) = H(:,:) * eV
 
 end subroutine read_gf_hs
 
@@ -241,7 +236,6 @@ subroutine read_gf_se( iu, no_u, iE, SE )
 
   ! Precision 
   integer, parameter :: dp = selected_real_kind(p=15)
-  real(dp), parameter :: eV = 13.60580_dp
 
   ! Input parameters
   integer, intent(in) :: iu
@@ -269,6 +263,6 @@ subroutine read_gf_se( iu, no_u, iE, SE )
   read(iu, iostat=ierr) SE
   call iostat_update(ierr)
 
-  SE(:,:) = SE(:,:) * eV
+  SE(:,:) = SE(:,:)
 
 end subroutine read_gf_se

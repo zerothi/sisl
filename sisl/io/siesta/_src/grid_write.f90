@@ -7,7 +7,6 @@ subroutine write_grid(fname, nspin, mesh1, mesh2, mesh3, cell, grid)
   ! Precision 
   integer, parameter :: sp = selected_real_kind(p=6)
   integer, parameter :: dp = selected_real_kind(p=15)
-  real(dp), parameter :: Ang = 0.529177_dp
 
   ! Input parameters
   character(len=*), intent(in) :: fname
@@ -27,7 +26,7 @@ subroutine write_grid(fname, nspin, mesh1, mesh2, mesh3, cell, grid)
   ! Open file (ensure we start from a clean slate)!
   call open_file(fname, 'write', 'unknown', 'unformatted', iu)
 
-  write(iu, iostat=ierr) cell(:,:) / Ang
+  write(iu, iostat=ierr) cell(:,:)
   call iostat_update(ierr)
 
   write(iu, iostat=ierr) mesh1, mesh2, mesh3, nspin

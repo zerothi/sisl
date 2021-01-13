@@ -38,8 +38,6 @@ subroutine read_hs(fname, Gamma, nspin, no_u,no_s,maxnh, &
   ! Precision 
   integer, parameter :: sp = selected_real_kind(p=6)
   integer, parameter :: dp = selected_real_kind(p=15)
-  real(dp), parameter :: eV = 13.60580_dp
-  real(dp), parameter :: Ang = 0.529177_dp
 
   ! Input parameters
   character(len=*), intent(in) :: fname
@@ -106,7 +104,6 @@ subroutine read_hs(fname, Gamma, nspin, no_u,no_s,maxnh, &
       do im = 1 , numh(ih)
         read(iu, iostat=ierr) H(ip+im,is)
         call iostat_update(ierr)
-        H(ip+im,is) = H(ip+im,is) * eV
       end do
     end do
   end do
@@ -130,7 +127,6 @@ subroutine read_hs(fname, Gamma, nspin, no_u,no_s,maxnh, &
       do im = 1 , numh(ih)
         read(iu, iostat=ierr) xij(1:3,ip + im)
         call iostat_update(ierr)
-        xij(1:3,ip + im) = xij(1:3,ip + im) * Ang
       end do
     end do
   end if

@@ -193,9 +193,9 @@ def test_nc_EDM_non_colinear(sisl_tmp):
     f2 = sisl_tmp('EDM2.nc', _dir)
     EDM1.write(f1, sort=False)
     EDM1.finalize()
-    EDM2 = sisl.get_sile(f1).read_energy_density_matrix()
+    EDM2 = sisl.get_sile(f1).read_energy_density_matrix(sort=False)
     EDM2.write(f2, sort=False)
-    EDM3 = sisl.get_sile(f2).read_energy_density_matrix()
+    EDM3 = sisl.get_sile(f2).read_energy_density_matrix(sort=False)
     assert EDM1._csr.spsame(EDM2._csr)
     assert EDM1._csr.spsame(EDM3._csr)
     # EDM1 is finalized, but EDM2 is not finalized

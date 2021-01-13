@@ -91,7 +91,6 @@ subroutine read_tshs_ef(fname, Ef)
   implicit none
 
   integer, parameter :: dp = selected_real_kind(p=15)
-  real(dp), parameter :: eV = 13.60580_dp
 
   ! Input parameters
   character(len=*), intent(in) :: fname
@@ -120,7 +119,6 @@ subroutine read_tshs_ef(fname, Ef)
   call iostat_update(ierr)
   read(iu, iostat=ierr) Ef ! Qtot, Temp
   call iostat_update(ierr)
-  Ef = Ef * eV
 
   call close_file(iu)
 
@@ -134,8 +132,6 @@ subroutine read_tshs_cell(fname, n_s, nsc, cell, isc)
 
   integer, parameter :: sp = selected_real_kind(p=6)
   integer, parameter :: dp = selected_real_kind(p=15)
-  real(dp), parameter :: eV = 13.60580_dp
-  real(dp), parameter :: Ang = 0.529177_dp
 
   ! Input parameters
   character(len=*), intent(in) :: fname
@@ -180,7 +176,6 @@ subroutine read_tshs_cell(fname, n_s, nsc, cell, isc)
   call iostat_update(ierr)
   read(iu, iostat=ierr) cell ! xa
   call iostat_update(ierr)
-  cell = cell * Ang
   read(iu, iostat=ierr) Gamma, TSGamma, onlyS
   call iostat_update(ierr)
   read(iu, iostat=ierr) ! kscell, kdispl
@@ -230,8 +225,6 @@ subroutine read_tshs_geom(fname, na_u, xa, lasto)
 
   integer, parameter :: sp = selected_real_kind(p=6)
   integer, parameter :: dp = selected_real_kind(p=15)
-  real(dp), parameter :: eV = 13.60580_dp
-  real(dp), parameter :: Ang = 0.529177_dp
 
   ! Input parameters
   character(len=*), intent(in) :: fname
@@ -274,8 +267,6 @@ subroutine read_tshs_geom(fname, na_u, xa, lasto)
   call iostat_update(ierr)
   read(iu, iostat=ierr) cell, xa
   call iostat_update(ierr)
-  cell(:,:) = cell(:,:) * Ang
-  xa(:,:) = xa(:,:) * Ang
   read(iu, iostat=ierr) ! Gamma, TSGamma, onlyS
   call iostat_update(ierr)
   read(iu, iostat=ierr) ! kscell, kdispl
@@ -299,8 +290,6 @@ subroutine read_tshs_hs(fname, nspin, no_u, nnz, ncol, list_col, H, S)
 
   integer, parameter :: sp = selected_real_kind(p=6)
   integer, parameter :: dp = selected_real_kind(p=15)
-  real(dp), parameter :: eV = 13.60580_dp
-  real(dp), parameter :: Ang = 0.529177_dp
 
   ! Input parameters
   character(len=*), intent(in) :: fname
@@ -389,8 +378,6 @@ subroutine read_tshs_hs(fname, nspin, no_u, nnz, ncol, list_col, H, S)
       if ( is <= 2 ) then
         H(:,is) = H(:,is) - Ef * S(:)
       end if
-      ! Change to eV
-      H(:,is) = H(:,is) * eV
     end do
   end if
 
@@ -406,8 +393,6 @@ subroutine read_tshs_s(fname, no_u, nnz, ncol, list_col, S)
 
   integer, parameter :: sp = selected_real_kind(p=6)
   integer, parameter :: dp = selected_real_kind(p=15)
-  real(dp), parameter :: eV = 13.60580_dp
-  real(dp), parameter :: Ang = 0.529177_dp
 
   ! Input parameters
   character(len=*), intent(in) :: fname

@@ -116,7 +116,6 @@ subroutine read_tsde_ef(fname, Ef)
   ! Precision
   integer, parameter :: sp = selected_real_kind(p=6)
   integer, parameter :: dp = selected_real_kind(p=15)
-  real(dp), parameter :: eV = 13.60580_dp
 
   ! Input parameters
   character(len=*), intent(in) :: fname
@@ -162,8 +161,6 @@ subroutine read_tsde_ef(fname, Ef)
 
   call close_file(iu)
 
-  Ef = Ef * eV
-
 end subroutine read_tsde_ef
 
 subroutine read_tsde_edm(fname, nspin, no_u, nsc, nnz, &
@@ -176,7 +173,6 @@ subroutine read_tsde_edm(fname, nspin, no_u, nsc, nnz, &
   ! Precision 
   integer, parameter :: sp = selected_real_kind(p=6)
   integer, parameter :: dp = selected_real_kind(p=15)
-  real(dp), parameter :: eV = 13.60580_dp
 
   ! Input parameters
   character(len=*), intent(in) :: fname
@@ -246,13 +242,11 @@ subroutine read_tsde_edm(fname, nspin, no_u, nsc, nnz, &
       call iostat_update(ierr)
       n = n + ncol(io)
     end do
-    EDM(:, is) = EDM(:, is) * eV
   end do
 
   ! Read Fermi energy
   read(iu, iostat=ierr) Ef
   call iostat_update(ierr)
-  Ef = Ef * eV
 
   do is = 1 , nspin
     do io = 1 , nnz

@@ -267,7 +267,7 @@ class ncSileSiesta(SileCDFSiesta):
             raise SileError(self.__class__.__name__ + '.read_dynamical_matrix requires the stored matrix to be in Ry**2!')
         D._csr._D[:, 0] = sp.variables['H'][0, :] * Ry2eV ** 2
 
-        return D.transpose(spin=False, sort=kwargs.get("sort", True))
+        return D.transpose(sort=kwargs.get("sort", True))
 
     def read_density_matrix(self, **kwargs):
         """ Returns a density matrix from the underlying NetCDF file """
@@ -716,7 +716,7 @@ class ncSileSiesta(SileCDFSiesta):
         D : DynamicalMatrix
            the model to be saved in the NC file
         """
-        csr = D.transpose(spin=False, sort=False)._csr
+        csr = D.transpose(sort=False)._csr
         if csr.nnz == 0:
             raise SileError(str(self) + '.write_dynamical_matrix cannot write a zero element sparse matrix!')
 

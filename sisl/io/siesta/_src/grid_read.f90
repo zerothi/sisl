@@ -7,8 +7,6 @@ subroutine read_grid_sizes(fname, nspin, mesh)
   ! Precision 
   integer, parameter :: sp = selected_real_kind(p=6)
   integer, parameter :: dp = selected_real_kind(p=15)
-  real(dp), parameter :: eV = 13.60580_dp
-  real(dp), parameter :: Ang = 0.529177_dp
 
   ! Input parameters
   character(len=*), intent(in) :: fname
@@ -44,8 +42,6 @@ subroutine read_grid_cell(fname, cell)
   ! Precision 
   integer, parameter :: sp = selected_real_kind(p=6)
   integer, parameter :: dp = selected_real_kind(p=15)
-  real(dp), parameter :: eV = 13.60580_dp
-  real(dp), parameter :: Ang = 0.529177_dp
 
   ! Input parameters
   character(len=*), intent(in):: fname
@@ -62,7 +58,7 @@ subroutine read_grid_cell(fname, cell)
 
   read(iu, iostat=ierr) cell(:,:)
   call iostat_update(ierr)
-  cell(:,:) = cell(:,:) * Ang
+  cell(:,:) = cell(:,:)
 
   call close_file(iu)
 
@@ -77,7 +73,6 @@ subroutine read_grid(fname, nspin, mesh1, mesh2, mesh3, grid)
   ! Precision 
   integer, parameter :: sp = selected_real_kind(p=6)
   integer, parameter :: dp = selected_real_kind(p=15)
-  real(dp), parameter :: Ang = 0.529177_dp
 
   ! Input parameters
   character(len=*), intent(in) :: fname
