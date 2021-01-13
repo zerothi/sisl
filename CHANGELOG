@@ -1,6 +1,10 @@
 0.X.Y
 =====
 
+- **Major addition**: plotly backend for plotting and interaction with
+	output. This is still a work in progress made by Pol Febrer.
+	Many thanks to @pfebrer!
+
 - Bug in how non-colinear matrices are dealt with, now fixed
 	Thanks to Xe Hu for discovering this.
 
