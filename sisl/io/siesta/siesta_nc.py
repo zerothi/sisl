@@ -232,7 +232,7 @@ class ncSileSiesta(SileCDFSiesta):
         sp = self.groups['SPARSE']
         S._csr._D[:, 0] = sp.variables['S'][:]
 
-        return S
+        return S.transpose(sort=kwargs.get("sort", True))
 
     def read_hamiltonian(self, **kwargs):
         """ Returns a Hamiltonian from the underlying NetCDF file """
@@ -252,7 +252,7 @@ class ncSileSiesta(SileCDFSiesta):
         Ef = - self._value('Ef')[:] * Ry2eV
         H.shift(Ef)
 
-        return H
+        return H.transpose(spin=False, sort=kwargs.get("sort", True))
 
     def read_dynamical_matrix(self, **kwargs):
         """ Returns a dynamical matrix from the underlying NetCDF file
@@ -267,7 +267,7 @@ class ncSileSiesta(SileCDFSiesta):
             raise SileError(self.__class__.__name__ + '.read_dynamical_matrix requires the stored matrix to be in Ry**2!')
         D._csr._D[:, 0] = sp.variables['H'][0, :] * Ry2eV ** 2
 
-        return D
+        return D.transpose(spin=False, sort=kwargs.get("sort", True))
 
     def read_density_matrix(self, **kwargs):
         """ Returns a density matrix from the underlying NetCDF file """
@@ -281,7 +281,7 @@ class ncSileSiesta(SileCDFSiesta):
         # fix siesta specific notation
         _mat_spin_convert(DM)
 
-        return DM
+        return DM.transpose(spin=False, sort=kwargs.get("sort", True))
 
     def read_energy_density_matrix(self, **kwargs):
         """ Returns energy density matrix from the underlying NetCDF file """
@@ -301,7 +301,7 @@ class ncSileSiesta(SileCDFSiesta):
         # fix siesta specific notation
         _mat_spin_convert(EDM)
 
-        return EDM
+        return EDM.transpose(spin=False, sort=kwargs.get("sort", True))
 
     def read_force_constant(self):
         """ Reads the force-constant stored in the nc file
@@ -543,7 +543,7 @@ class ncSileSiesta(SileCDFSiesta):
 
     def write_overlap(self, S, **kwargs):
         """ Write the overlap matrix to the NetCDF file """
-        csr = S._csr.copy()
+        csr = S.transpose(sort=False)._csr
         if csr.nnz == 0:
             raise SileError(str(self) + '.write_overlap cannot write a zero element sparse matrix!')
 
@@ -569,7 +569,7 @@ class ncSileSiesta(SileCDFSiesta):
         Ef : float, optional
            the Fermi level of the electronic structure (in eV), default to 0.
         """
-        csr = H._csr.copy()
+        csr = H.transpose(spin=False, sort=False)._csr
         if csr.nnz == 0:
             raise SileError(str(self) + '.write_hamiltonian cannot write a zero element sparse matrix!')
 
@@ -617,7 +617,7 @@ class ncSileSiesta(SileCDFSiesta):
         DM : DensityMatrix
            the model to be saved in the NC file
         """
-        csr = DM._csr.copy()
+        csr = DM.transpose(spin=False, sort=False)._csr
         if csr.nnz == 0:
             raise SileError(str(self) + '.write_density_matrix cannot write a zero element sparse matrix!')
 
@@ -664,7 +664,7 @@ class ncSileSiesta(SileCDFSiesta):
         EDM : EnergyDensityMatrix
            the model to be saved in the NC file
         """
-        csr = EDM._csr.copy()
+        csr = EDM.transpose(spin=False, sort=False)._csr
         if csr.nnz == 0:
             raise SileError(str(self) + '.write_energy_density_matrix cannot write a zero element sparse matrix!')
 
@@ -716,7 +716,7 @@ class ncSileSiesta(SileCDFSiesta):
         D : DynamicalMatrix
            the model to be saved in the NC file
         """
-        csr = D._csr.copy()
+        csr = D.transpose(spin=False, sort=False)._csr
         if csr.nnz == 0:
             raise SileError(str(self) + '.write_dynamical_matrix cannot write a zero element sparse matrix!')
 
