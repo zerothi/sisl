@@ -1082,6 +1082,12 @@ class _gfSileSiesta(SileBinSiesta):
     def _setup(self, *args, **kwargs):
         """ Simple setup that needs to be overwritten """
         self._iu = -1
+        # The unit convention used for energy-points
+        # This is necessary until Siesta uses CODATA values
+        if kwargs.get("unit", "old").lower() in ("old", "4.1"):
+            self._E_Ry2eV = 13.60580
+        else:
+            self._E_Ry2eV = _Ry2eV
 
     def _is_open(self):
         return self._iu != -1
@@ -1308,7 +1314,7 @@ class _gfSileSiesta(SileBinSiesta):
             self._no_u = no_u * 2
         else:
             self._no_u = no_u
-        self._E = E * _Ry2eV
+        self._E = E * self._E_Ry2eV
         self._k = k.T
 
         return nspin, no_u, self._k, self._E
@@ -1488,7 +1494,8 @@ class _gfSileSiesta(SileBinSiesta):
         # see onlysSileSiesta.read_supercell for .T
         _siesta.write_gf_header(self._iu, nspin, cell.T / _Bohr2Ang,
                                 na_u, no_u, no_u, xa.T / _Bohr2Ang, lasto,
-                                bloch, 0, mu * _eV2Ry, k.T, w, self._E * _eV2Ry, **sizes)
+                                bloch, 0, mu * _eV2Ry, k.T, w, self._E / self._E_Ry2eV,
+                                **sizes)
         _bin_check(self, 'write_header', 'could not write header information.')
 
     def write_hamiltonian(self, H, S=None):
@@ -1506,7 +1513,7 @@ class _gfSileSiesta(SileBinSiesta):
         if S is None:
             S = np.eye(no, dtype=np.complex128, order='F')
         self._step_counter('write_hamiltonian', HS=True, read=True)
-        _siesta.write_gf_hs(self._iu, self._ik, self._E[self._iE] * _eV2Ry, H * _eV2Ry, S, no_u=no)
+        _siesta.write_gf_hs(self._iu, self._ik, self._E[self._iE] / self._E_Ry2eV, H * _eV2Ry, S, no_u=no)
         _bin_check(self, 'write_hamiltonian', 'could not write Hamiltonian and overlap matrices.')
 
     def write_self_energy(self, SE):
@@ -1524,7 +1531,7 @@ class _gfSileSiesta(SileBinSiesta):
         """
         no = len(SE)
         self._step_counter('write_self_energy', read=True)
-        _siesta.write_gf_se(self._iu, self._ik, self._iE, self._E[self._iE] * _eV2Ry, SE * _eV2Ry, no_u=no)
+        _siesta.write_gf_se(self._iu, self._ik, self._iE, self._E[self._iE] / self._E_Ry2eV, SE * _eV2Ry, no_u=no)
         _bin_check(self, 'write_self_energy', 'could not write self-energy.')
 
     def __len__(self):
