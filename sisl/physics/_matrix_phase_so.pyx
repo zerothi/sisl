@@ -54,9 +54,9 @@ def _phase_so_csr_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
 
                 vv = <float complex> (D[ind, 0] + 1j * D[ind, 4])
                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + ph * vv
-                vv = <float complex> (D[ind, 6] + 1j * D[ind, 7])
-                v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * vv
                 vv = <float complex> (D[ind, 2] + 1j * D[ind, 3])
+                v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * vv
+                vv = <float complex> (D[ind, 6] + 1j * D[ind, 7])
                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * vv
                 vv = <float complex> (D[ind, 1] + 1j * D[ind, 5])
                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + ph * vv
@@ -71,9 +71,9 @@ def _phase_so_csr_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
 
                 vv = <float complex> (D[ind, 0] + 1j * D[ind, 4])
                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + ph * vv
-                vv = <float complex> (D[ind, 6] + 1j * D[ind, 7])
-                v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * vv
                 vv = <float complex> (D[ind, 2] + 1j * D[ind, 3])
+                v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * vv
+                vv = <float complex> (D[ind, 6] + 1j * D[ind, 7])
                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * vv
                 vv = <float complex> (D[ind, 1] + 1j * D[ind, 5])
                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + ph * vv
@@ -116,9 +116,9 @@ def _phase_so_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
 
                 vv = <double complex> (D[ind, 0] + 1j * D[ind, 4])
                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + ph * vv
-                vv = <double complex> (D[ind, 6] + 1j * D[ind, 7])
-                v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * vv
                 vv = <double complex> (D[ind, 2] + 1j * D[ind, 3])
+                v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * vv
+                vv = <double complex> (D[ind, 6] + 1j * D[ind, 7])
                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * vv
                 vv = <double complex> (D[ind, 1] + 1j * D[ind, 5])
                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + ph * vv
@@ -133,9 +133,9 @@ def _phase_so_csr_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
 
                 vv = <double complex> (D[ind, 0] + 1j * D[ind, 4])
                 v[v_ptr[rr] + s_idx] = v[v_ptr[rr] + s_idx] + ph * vv
-                vv = <double complex> (D[ind, 6] + 1j * D[ind, 7])
-                v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * vv
                 vv = <double complex> (D[ind, 2] + 1j * D[ind, 3])
+                v[v_ptr[rr] + s_idx+1] = v[v_ptr[rr] + s_idx+1] + ph * vv
+                vv = <double complex> (D[ind, 6] + 1j * D[ind, 7])
                 v[v_ptr[rr+1] + s_idx] = v[v_ptr[rr+1] + s_idx] + ph * vv
                 vv = <double complex> (D[ind, 1] + 1j * D[ind, 5])
                 v[v_ptr[rr+1] + s_idx+1] = v[v_ptr[rr+1] + s_idx+1] + ph * vv
@@ -169,9 +169,9 @@ def _phase_so_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 ph = phases[ind]
                 vv = <float complex> (D[ind, 0] + 1j * D[ind, 4])
                 v[rr, c] = v[rr, c] + ph * vv
-                vv = <float complex> (D[ind, 6] + 1j * D[ind, 7])
-                v[rr, c+1] = v[rr, c+1] + ph * vv
                 vv = <float complex> (D[ind, 2] + 1j * D[ind, 3])
+                v[rr, c+1] = v[rr, c+1] + ph * vv
+                vv = <float complex> (D[ind, 6] + 1j * D[ind, 7])
                 v[rr+1, c] = v[rr+1, c] + ph * vv
                 vv = <float complex> (D[ind, 1] + 1j * D[ind, 5])
                 v[rr+1, c+1] = v[rr+1, c+1] + ph * vv
@@ -184,9 +184,9 @@ def _phase_so_array_c64(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 ph = phases[col[ind] / nr]
                 vv = <float complex> (D[ind, 0] + 1j * D[ind, 4])
                 v[rr, c] = v[rr, c] + ph * vv
-                vv = <float complex> (D[ind, 6] + 1j * D[ind, 7])
-                v[rr, c+1] = v[rr, c+1] + ph * vv
                 vv = <float complex> (D[ind, 2] + 1j * D[ind, 3])
+                v[rr, c+1] = v[rr, c+1] + ph * vv
+                vv = <float complex> (D[ind, 6] + 1j * D[ind, 7])
                 v[rr+1, c] = v[rr+1, c] + ph * vv
                 vv = <float complex> (D[ind, 1] + 1j * D[ind, 5])
                 v[rr+1, c+1] = v[rr+1, c+1] + ph * vv
@@ -220,9 +220,9 @@ def _phase_so_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 ph = phases[ind]
                 vv = <double complex> (D[ind, 0] + 1j * D[ind, 4])
                 v[rr, c] = v[rr, c] + ph * vv
-                vv = <double complex> (D[ind, 6] + 1j * D[ind, 7])
-                v[rr, c+1] = v[rr, c+1] + ph * vv
                 vv = <double complex> (D[ind, 2] + 1j * D[ind, 3])
+                v[rr, c+1] = v[rr, c+1] + ph * vv
+                vv = <double complex> (D[ind, 6] + 1j * D[ind, 7])
                 v[rr+1, c] = v[rr+1, c] + ph * vv
                 vv = <double complex> (D[ind, 1] + 1j * D[ind, 5])
                 v[rr+1, c+1] = v[rr+1, c+1] + ph * vv
@@ -235,9 +235,9 @@ def _phase_so_array_c128(np.ndarray[np.int32_t, ndim=1, mode='c'] PTR,
                 ph = phases[col[ind] / nr]
                 vv = <double complex> (D[ind, 0] + 1j * D[ind, 4])
                 v[rr, c] = v[rr, c] + ph * vv
-                vv = <double complex> (D[ind, 6] + 1j * D[ind, 7])
-                v[rr, c+1] = v[rr, c+1] + ph * vv
                 vv = <double complex> (D[ind, 2] + 1j * D[ind, 3])
+                v[rr, c+1] = v[rr, c+1] + ph * vv
+                vv = <double complex> (D[ind, 6] + 1j * D[ind, 7])
                 v[rr+1, c] = v[rr+1, c] + ph * vv
                 vv = <double complex> (D[ind, 1] + 1j * D[ind, 5])
                 v[rr+1, c+1] = v[rr+1, c+1] + ph * vv

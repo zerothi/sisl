@@ -40,12 +40,6 @@ def _bin_check(obj, method, message):
         raise SileError(f'{str(obj)}.{method} {message} (ierr={ierr})')
 
 
-def _to_fortran(M, dtype):
-    if np.isfortran(M):
-        return M.astype(dtype, copy=False)
-    return M.astype(dtype, copy=False).T
-
-
 def _geometry_align(geom_b, geom_u, cls, method):
     """ Routine used to align two geometries
 
@@ -129,8 +123,13 @@ class onlysSileSiesta(SileBinSiesta):
         arr = _siesta.read_tshs_cell(self.file, n_s)
         _bin_check(self, 'read_supercell', 'could not read cell.')
         nsc = np.array(arr[0], np.int32)
-        cell = np.array(arr[1].T, np.float64)
-        cell.shape = (3, 3)
+        # We have to transpose since the data is read *as-is*
+        # The cell in fortran files are (:, A1)
+        # after reading this is still obeyed (regardless of order)
+        # So we transpose to get it C-like
+        # Note that care must be taken for the different data-structures
+        # In particular not all data needs to be transposed (sparse H and S)
+        cell = arr[1].T
         return SuperCell(cell, nsc=nsc)
 
     def read_geometry(self, geometry=None):
@@ -143,9 +142,9 @@ class onlysSileSiesta(SileBinSiesta):
         _bin_check(self, 'read_geometry', 'could not read sizes.')
         arr = _siesta.read_tshs_geom(self.file, na)
         _bin_check(self, 'read_geometry', 'could not read geometry.')
-        xyz = np.array(arr[0].T, np.float64)
-        xyz.shape = (-1, 3)
-        lasto = np.array(arr[1], np.int32)
+        # see onlysSileSiesta.read_supercell for .T
+        xyz = arr[0].T
+        lasto = arr[1]
 
         # Since the TSHS file does not contain species information
         # and/or other stuff we *can* reuse an existing
@@ -195,6 +194,7 @@ class onlysSileSiesta(SileBinSiesta):
         # read the sizes used...
         sizes = _siesta.read_tshs_sizes(self.file)
         _bin_check(self, 'read_overlap', 'could not read sizes.')
+        # see onlysSileSiesta.read_supercell for .T
         isc = _siesta.read_tshs_cell(self.file, sizes[3])[2].T
         _bin_check(self, 'read_overlap', 'could not read cell.')
         no = sizes[2]
@@ -219,7 +219,10 @@ class onlysSileSiesta(SileBinSiesta):
         # equivalent as _csr_from_siesta with explicit isc from file
         _csr_from_sc_off(S.geometry, isc, S._csr)
 
-        return S
+        # In siesta the matrix layout is written in CSC format
+        # due to fortran indexing, this means that we need to transpose
+        # to get it to correct layout.
+        return S.transpose(sort=kwargs.get("sort", True))
 
     def read_fermi_level(self):
         r""" Query the Fermi-level contained in the file
@@ -245,6 +248,7 @@ class tshsSileSiesta(onlysSileSiesta):
         # read the sizes used...
         sizes = _siesta.read_tshs_sizes(self.file)
         _bin_check(self, 'read_hamiltonian', 'could not read sizes.')
+        # see onlysSileSiesta.read_supercell for .T
         isc = _siesta.read_tshs_cell(self.file, sizes[3])[2].T
         _bin_check(self, 'read_hamiltonian', 'could not read cell.')
         spin = sizes[0]
@@ -288,11 +292,15 @@ class tshsSileSiesta(onlysSileSiesta):
             raise SileError(str(self) + '.read_hamiltonian could not assert '
                             'the supercell connections in the primary unit-cell.')
 
-        return H
+        # see onlysSileSiesta.read_overlap for .transpose()
+        # For H, DM and EDM we also need to Hermitian conjugate it.
+        return H.transpose(spin=False, sort=kwargs.get("sort", True))
 
     def write_hamiltonian(self, H, **kwargs):
         """ Writes the Hamiltonian to a siesta.TSHS file """
-        csr = H._csr.copy()
+        # we sort below, so no need to do it here
+        # see onlysSileSiesta.read_overlap for .transpose()
+        csr = H.transpose(spin=False, sort=False)._csr
         if csr.nnz == 0:
             raise SileError(str(self) + '.write_hamiltonian cannot write '
                             'a zero element sparse matrix!')
@@ -328,9 +336,7 @@ class tshsSileSiesta(onlysSileSiesta):
         nsc = H.geometry.nsc[:].astype(np.int32)
         isc = _siesta.siesta_sc_off(*nsc)
 
-        # I can't seem to figure out the usage of f2py
-        # Below I get an error if xyz is not transposed and h is transposed,
-        # however, they are both in C-contiguous arrays and this is indeed weird... :(
+        # see onlysSileSiesta.read_supercell for .T
         _siesta.write_tshs_hs(self.file, nsc[0], nsc[1], nsc[2],
                               cell.T, xyz.T, H.geometry.firsto,
                               csr.ncol, csr.col + 1, h, s, isc)
@@ -392,11 +398,11 @@ class dmSileSiesta(SileBinSiesta):
         else:
             warn(str(self) + '.read_density_matrix may result in a wrong sparse pattern!')
 
-        return DM
+        return DM.transpose(spin=False, sort=kwargs.get("sort", True))
 
     def write_density_matrix(self, DM, **kwargs):
         """ Writes the density matrix to a siesta.DM file """
-        csr = DM._csr.copy()
+        csr = DM.transpose(spin=False, sort=False)._csr
         # This ensures that we don't have any *empty* elements
         if csr.nnz == 0:
             raise SileError(str(self) + '.write_density_matrix cannot write '
@@ -477,7 +483,7 @@ class tsdeSileSiesta(dmSileSiesta):
         else:
             warn(str(self) + '.read_energy_density_matrix may result in a wrong sparse pattern!')
 
-        return EDM
+        return EDM.transpose(spin=False, sort=kwargs.get("sort", True))
 
     def read_fermi_level(self):
         r""" Query the Fermi-level contained in the file
@@ -502,8 +508,8 @@ class tsdeSileSiesta(dmSileSiesta):
         Ef : float, optional
            fermi-level to be contained
         """
-        DMcsr = DM._csr.copy()
-        EDMcsr = EDM._csr.copy()
+        DMcsr = DM.transpose(spin=False, sort=False)._csr
+        EDMcsr = EDM.transpose(spin=False, sort=False)._csr
         DMcsr.align(EDMcsr)
         EDMcsr.align(DMcsr)
 
@@ -522,13 +528,8 @@ class tsdeSileSiesta(dmSileSiesta):
         # Ensure everything is correct
         if not (np.allclose(DMcsr.ncol, EDMcsr.ncol) and
                 np.allclose(DMcsr.col, EDMcsr.col)):
-            # Only finalize in cases where it is needed
-            DMcsr.finalize()
-            EDMcsr.finalize()
-            if not (np.allclose(DMcsr.ncol, EDMcsr.ncol) and
-                    np.allclose(DMcsr.col, EDMcsr.col)):
-                raise ValueError(str(self) + '.write_density_matrices got non compatible '
-                                 'DM and EDM matrices.')
+            raise ValueError(str(self) + '.write_density_matrices got non compatible '
+                             'DM and EDM matrices.')
 
         if DM.orthogonal:
             dm = DMcsr._D
@@ -878,7 +879,7 @@ class hsxSileSiesta(SileBinSiesta):
         if no_s // no == np.product(geom.nsc):
             _csr_from_siesta(geom, H._csr)
 
-        return H
+        return H.transpose(spin=False, sort=kwargs.get("sort", True))
 
     def read_overlap(self, **kwargs):
         """ Returns the overlap matrix from the siesta.HSX file """
@@ -916,7 +917,8 @@ class hsxSileSiesta(SileBinSiesta):
         if no_s // no == np.product(geom.nsc):
             _csr_from_siesta(geom, S._csr)
 
-        return S
+        # not really necessary with Hermitian transposing, but for consistency
+        return S.transpose(sort=kwargs.get("sort", True))
 
 
 @set_module("sisl.io.siesta")
@@ -968,6 +970,7 @@ class wfsxSileSiesta(SileBinSiesta):
 
             # eig is already in eV
             # we probably need to add spin
+            # see onlysSileSiesta.read_supercell for .T
             es = EigenstateElectron(state.T, eig, parent=parent,
                                     k=convert_k(k), gauge="r", index=idx - 1)
             yield es
@@ -984,10 +987,8 @@ class _gridSileSiesta(SileBinSiesta):
     def read_supercell(self, *args, **kwargs):
         r""" Return the cell contained in the file """
 
-        cell = _siesta.read_grid_cell(self.file)
+        cell = _siesta.read_grid_cell(self.file).T
         _bin_check(self, 'read_supercell', 'could not read cell.')
-        cell = np.array(cell.T, np.float64)
-        cell.shape = (3, 3)
 
         return SuperCell(cell)
 
@@ -1021,8 +1022,7 @@ class _gridSileSiesta(SileBinSiesta):
         index = kwargs.get('spin', index)
         # Read the sizes and cell
         nspin, mesh = self.read_grid_size()
-        cell = _siesta.read_grid_cell(self.file)
-        _bin_check(self, 'read_grid', 'could not read grid cell.')
+        sc = self.read_supercell()
         grid = _siesta.read_grid(self.file, nspin, mesh[0], mesh[1], mesh[2])
         _bin_check(self, 'read_grid', 'could not read grid.')
 
@@ -1038,15 +1038,12 @@ class _gridSileSiesta(SileBinSiesta):
                 g += grid[:, :, :, 1+i] * scale
             grid = g
 
-        cell = np.array(cell.T, np.float64)
-        cell.shape = (3, 3)
-
         # Simply create the grid (with no information)
         # We will overwrite the actual grid
-        g = Grid([1, 1, 1], sc=SuperCell(cell))
+        g = Grid([1, 1, 1], sc=sc)
         # NOTE: there is no need to swap-axes since the returned array is in F ordering
         #       and thus the first axis is the fast (x, y, z) is retained
-        g.grid = (grid * self.grid_unit).astype(dtype=dtype, order='C', copy=False)
+        g.grid = grid * self.grid_unit
         return g
 
 
@@ -1350,7 +1347,7 @@ class _gfSileSiesta(SileBinSiesta):
         self._step_counter('read_hamiltonian', HS=True, read=True)
         H, S = _siesta.read_gf_hs(self._iu, self._no_u)
         _bin_check(self, 'read_hamiltonian', 'could not read Hamiltonian and overlap matrices.')
-        return H.T, S.T
+        return H, S
 
     def read_self_energy(self):
         r""" Read the currently reached bulk self-energy
@@ -1365,7 +1362,7 @@ class _gfSileSiesta(SileBinSiesta):
         complex128 : Self-energy matrix
         """
         self._step_counter('read_self_energy', read=True)
-        SE = _siesta.read_gf_se(self._iu, self._no_u, self._iE).T
+        SE = _siesta.read_gf_se(self._iu, self._no_u, self._iE)
         _bin_check(self, 'read_self_energy', 'could not read self-energy.')
         return SE
 
@@ -1485,6 +1482,7 @@ class _gfSileSiesta(SileBinSiesta):
 
         # Now write to it...
         self._step_counter('write_header', header=True, read=True)
+        # see onlysSileSiesta.read_supercell for .T
         _siesta.write_gf_header(self._iu, nspin, cell.T, na_u, no_u, no_u, xa.T, lasto,
                                 bloch, 0, mu, k.T, w, self._E, **sizes)
         _bin_check(self, 'write_header', 'could not write header information.')
@@ -1502,11 +1500,9 @@ class _gfSileSiesta(SileBinSiesta):
         """
         no = len(H)
         if S is None:
-            S = np.eye(no, dtype=H.dtype)
+            S = np.eye(no, dtype=np.complex128, order='F')
         self._step_counter('write_hamiltonian', HS=True, read=True)
-        _siesta.write_gf_hs(self._iu, self._ik, self._E[self._iE],
-                            _to_fortran(H, np.complex128),
-                            _to_fortran(S, np.complex128), no_u=no)
+        _siesta.write_gf_hs(self._iu, self._ik, self._E[self._iE], H, S, no_u=no)
         _bin_check(self, 'write_hamiltonian', 'could not write Hamiltonian and overlap matrices.')
 
     def write_self_energy(self, SE):
@@ -1524,8 +1520,7 @@ class _gfSileSiesta(SileBinSiesta):
         """
         no = len(SE)
         self._step_counter('write_self_energy', read=True)
-        _siesta.write_gf_se(self._iu, self._ik, self._iE,
-                            self._E[self._iE], _to_fortran(SE, np.complex128), no_u=no)
+        _siesta.write_gf_se(self._iu, self._ik, self._iE, self._E[self._iE], SE, no_u=no)
         _bin_check(self, 'write_self_energy', 'could not write self-energy.')
 
     def __len__(self):

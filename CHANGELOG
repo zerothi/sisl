@@ -1,6 +1,9 @@
 0.X.Y
 =====
 
+- Bug in how non-colinear matrices are dealt with, now fixed
+	Thanks to Xe Hu for discovering this.
+
 - Allowed reading the geometry for supercell HSX files
 	Atomic coordinates and nsc are determined from xij arrays
 

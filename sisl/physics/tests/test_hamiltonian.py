@@ -1153,6 +1153,10 @@ class TestHamiltonian:
             H1[i, i, 1] = 0.05
             H1[i, i, 2] = 0.1
             H1[i, i, 3] = 0.1
+            H1[i, i, 4] = 0.1
+            H1[i, i, 5] = 0.1
+            H1[i, i, 6] = 0.1
+            H1[i, i, 7] = 0.1
             if i > 0:
                 H1[i, i-1, 0] = 1.
                 H1[i, i-1, 1] = 1.
@@ -1161,8 +1165,8 @@ class TestHamiltonian:
                 H1[i, i+1, 1] = 1.
         assert H1.spsame(H)
         eig1 = H1.eigh(dtype=np.complex64)
-        assert np.allclose(H1.eigh(dtype=np.complex128), eig1)
-        assert np.allclose(H.eigh(dtype=np.complex64), H1.eigh(dtype=np.complex128))
+        assert np.allclose(H1.eigh(dtype=np.complex128), eig1, atol=1e-5)
+        assert np.allclose(H.eigh(dtype=np.complex64), H1.eigh(dtype=np.complex128), atol=1e-5)
 
         # Create the block matrix for expectation
         SZ = block_diag(*([H1.spin.Z] * H1.no))

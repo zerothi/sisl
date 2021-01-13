@@ -56,7 +56,7 @@ from numpy import find_common_type
 from numpy import zeros, empty
 from numpy import floor, ceil
 from numpy import conj, dot, ogrid, einsum
-from numpy import cos, sin, pi
+from numpy import cos, sin, exp, pi
 from numpy import int32, complex128
 from numpy import add, angle, argsort, sort
 
@@ -1056,7 +1056,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
        'berry' will return the usual integral of the Berry connection over the specified contour
        'zak' will compute the Zak phase for 1D systems by performing a closed loop integration but
        taking into account the Bloch factor :math:`e^{-i2\pi/a x}` accumulated over a Brillouin zone,
-       see J. Zak, "Berry's phase for energy bands in solids" PRL 62, 2747 (1989).
+       see [1]_.
 
     Notes
     -----
@@ -1088,6 +1088,10 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
     >>> origo = [1/3, 2/3, 0]
     >>> bz = BrillouinZone.param_circle(H, N, kR, normal, origo)
     >>> phase = berry_phase(bz, sub=0)
+
+    References
+    ----------
+    .. [1] J. Zak, "Berry's phase for energy bands in solids", PRL, *62*, 2747 (1989)
     """
     from .hamiltonian import Hamiltonian
     # Currently we require the Berry phase calculation to *only* accept Hamiltonians
@@ -1148,9 +1152,9 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
                     phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], dot(axis, g.rcell)).reshape(1, -1)
                     if spin.has_noncolinear:
                         # for NC/SOC we have a 2x2 spin-box per orbital
-                        prev.state *= np.repeat(np.exp(-1j * phase), 2, axis=1)
+                        prev.state *= np.repeat(exp(1j * phase), 2, axis=1)
                     else:
-                        prev.state *= np.exp(-1j * phase)
+                        prev.state *= exp(1j * phase)
 
                 # Include last-to-first segment
                 prd = _process(prd, prev.inner(first, diagonal=False))
@@ -1175,9 +1179,9 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
                     phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], dot(axis, g.rcell)).reshape(1, -1)
                     if spin.has_noncolinear:
                         # for NC/SOC we have a 2x2 spin-box per orbital
-                        prev.state *= np.repeat(np.exp(-1j * phase), 2, axis=1)
+                        prev.state *= np.repeat(exp(1j * phase), 2, axis=1)
                     else:
-                        prev.state *= np.exp(-1j * phase)
+                        prev.state *= exp(1j * phase)
                 prd = _process(prd, prev.inner(first, diagonal=False))
             return prd
 
@@ -1478,7 +1482,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False)
         io = geometry.a2o(ia)
 
         if has_k:
-            phase = np.exp(-1j * phk.dot(isc))
+            phase = exp(-1j * phk.dot(isc))
 
         # Allocate a temporary array where we add the psi elements
         psi = psi_init(n)
@@ -1644,7 +1648,7 @@ class _electron_State:
         # TODO, perhaps check that it is correct... and fix multiple transposes
         if right is None:
             if diagonal:
-                return einsum('ij,ji->i', conj(self.state), S.dot(self.state.T)).real
+                return einsum('ij,ji->i', conj(self.state), S.dot(self.state.T))
             return dot(conj(self.state), S.dot(self.state.T))
 
         else:
@@ -1755,8 +1759,7 @@ class _electron_State:
 
             \tilde C_j = e^{i\mathbf k\mathbf r_j} C_j
 
-        where :math:`C_j` belongs to the gauge ``R`` and :math:`\tilde C_j` is in the gauge
-        ``r``.
+        where :math:`C_j` and :math:`\tilde C_j` belongs to the ``r`` and ``R`` gauge, respectively.
 
         Parameters
         ----------
@@ -1775,6 +1778,7 @@ class _electron_State:
         # Check that we can do a gauge transformation
         k = _a.asarrayd(self.info.get('k'))
         if k.dot(k) <= 0.000000001:
+            # no gauge transformation necessary
             return
 
         g = self.parent.geometry
@@ -1788,9 +1792,11 @@ class _electron_State:
             pass
 
         if gauge == 'r':
-            self.state *= np.exp(1j * phase).reshape(1, -1)
+            # R -> r gauge tranformation.
+            self.state *= exp(-1j * phase).reshape(1, -1)
         elif gauge == 'R':
-            self.state *= np.exp(-1j * phase).reshape(1, -1)
+            # r -> R gauge tranformation.
+            self.state *= exp(1j * phase).reshape(1, -1)
 
 
 @set_module("sisl.physics.electron")

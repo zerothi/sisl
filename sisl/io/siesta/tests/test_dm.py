@@ -23,21 +23,25 @@ def test_dm_si_pdos_kgrid(sisl_files):
 
 
 def test_dm_si_pdos_kgrid_rw(sisl_files, sisl_tmp):
+    fdf = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.fdf'), base=sisl_files(_dir))
+    geom = fdf.read_geometry()
+
     f1 = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.DM'))
     f2 = sisl.get_sile(sisl_tmp('test.DM', _dir))
 
-    DM1 = f1.read_density_matrix()
+    DM1 = f1.read_density_matrix(geometry=geom)
     f2.write_density_matrix(DM1, sort=False)
-    DM2 = f2.read_density_matrix()
+    DM2 = f2.read_density_matrix(geometry=geom)
 
     assert DM1._csr.spsame(DM2._csr)
     assert np.allclose(DM1._csr._D[:, :-1], DM2._csr._D[:, :-1])
 
     f2.write_density_matrix(DM1)
-    DM2 = f2.read_density_matrix()
-
+    DM2 = f2.read_density_matrix(sort=False)
     assert DM1._csr.spsame(DM2._csr)
     assert not np.allclose(DM1._csr._D[:, :-1], DM2._csr._D[:, :-1])
+    DM2.finalize()
+    assert np.allclose(DM1._csr._D[:, :-1], DM2._csr._D[:, :-1])
 
 
 def test_dm_si_pdos_kgrid_mulliken(sisl_files):
