@@ -282,9 +282,9 @@ class Test_atomicorbital:
         rf = r_f(6)
         a = []
         a.append(AtomicOrbital(2, 1, 0, 1, True, rf))
-        a.append(AtomicOrbital(l=1, m=0, Z=1, P=True, spherical=rf))
+        a.append(AtomicOrbital(l=1, m=0, zeta=1, P=True, spherical=rf))
         f = interp.interp1d(rf[0], rf[1], fill_value=(0., 0.), bounds_error=False, kind='cubic')
-        a.append(AtomicOrbital(l=1, m=0, Z=1, P=True, spherical=f))
+        a.append(AtomicOrbital(l=1, m=0, zeta=1, P=True, spherical=f))
         a.append(AtomicOrbital('pzP', f))
         a.append(AtomicOrbital('pzP', rf))
         a.append(AtomicOrbital('2pzP', rf))
@@ -355,8 +355,8 @@ class Test_atomicorbital:
         import pickle as p
         rf = r_f(6)
         o0 = AtomicOrbital(2, 1, 0, 1, True, rf, tag='hello', q0=1.)
-        o1 = AtomicOrbital(l=1, m=0, Z=1, P=False, spherical=rf)
-        o2 = AtomicOrbital(l=1, m=0, Z=1, P=False)
+        o1 = AtomicOrbital(l=1, m=0, zeta=1, P=False, spherical=rf)
+        o2 = AtomicOrbital(l=1, m=0, zeta=1, P=False)
         p0 = p.dumps(o0)
         p1 = p.dumps(o1)
         p2 = p.dumps(o2)

@@ -117,7 +117,7 @@ class ncSileSiesta(SileCDFSiesta):
                 sorb = SphericalOrbital(l, (r * Bohr2Ang, psi), orb_q0[io])
 
                 # This will be -l:l (this is the way siesta does it)
-                orbital.extend(sorb.toAtomicOrbital(n=n, Z=z, P=P))
+                orbital.extend(sorb.toAtomicOrbital(n=n, zeta=z, P=P))
 
             # Get number of orbitals
             label = a.Label.strip()

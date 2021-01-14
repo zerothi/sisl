@@ -113,7 +113,7 @@ class pdosSileSiesta(SileSiesta):
             def to(o, DOS):
                 # Coordinates for this dataarray
                 coords = [E, spin,
-                          [o.n], [o.l], [o.m], [o.Z], [o.P]]
+                          [o.n], [o.l], [o.m], [o.zeta], [o.P]]
 
                 return xr.DataArray(data=process(DOS).reshape(shape),
                                     dims=dims, coords=coords, name='PDOS')
@@ -156,7 +156,7 @@ class pdosSileSiesta(SileSiesta):
             atom_species[ia] = Z
 
             # Construct the atomic orbital
-            O = AtomicOrbital(n=oi('n'), l=oi('l'), m=oi('m'), Z=oi('z'), P=P)
+            O = AtomicOrbital(n=oi('n'), l=oi('l'), m=oi('m'), zeta=oi('z'), P=P)
 
             # We know that the index is far too high. However,
             # this ensures a consecutive orbital

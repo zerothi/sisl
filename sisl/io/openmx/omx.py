@@ -319,7 +319,7 @@ class omxSileOpenMX(SileOpenMX):
                     except:
                         nZ = 1
                     for z in range(nZ):
-                        orbs.extend(SphericalOrbital(l, rf_func(R)).toAtomicOrbital(m=m_order[l], Z=z+1))
+                        orbs.extend(SphericalOrbital(l, rf_func(R)).toAtomicOrbital(m=m_order[l], zeta=z+1))
                 except:
                     pass
 
