@@ -45,6 +45,19 @@ def _bin_check(obj, method, message):
         raise SileError(f'{str(obj)}.{method} {message} (ierr={ierr})')
 
 
+def _toF(array, dtype, scale=None):
+    if scale is None:
+        return array.astype(dtype, order='F', copy=False)
+    elif array.dtype == dtype and array.flags.f_contiguous:
+        # no need to copy since the order is correct
+        return array * scale
+
+    # We have to handle cases
+    out = np.empty_like(array, dtype, order='F')
+    np.multiply(array, scale, out=out)
+    return out
+
+
 def _geometry_align(geom_b, geom_u, cls, method):
     """ Routine used to align two geometries
 
@@ -321,7 +334,7 @@ class tshsSileSiesta(onlysSileSiesta):
 
         # Get H and S
         if H.orthogonal:
-            h = csr._D.astype(np.float64, 'C', copy=False)
+            h = csr._D
             s = csr.diags(1., dim=1)
             # Ensure all data is correctly formatted (i.e. have the same sparsity pattern)
             s.align(csr)
@@ -329,13 +342,10 @@ class tshsSileSiesta(onlysSileSiesta):
             if s.nnz != len(h):
                 raise SislError('The diagonal elements of your orthogonal Hamiltonian '
                                 'have not been defined, this is a requirement.')
-            s = (s._D[:, 0]).astype(np.float64, 'C', copy=False)
+            s = s._D[:, 0]
         else:
-            h = csr._D[:, :H.S_idx].astype(np.float64, 'C', copy=False)
-            s = csr._D[:, H.S_idx].astype(np.float64, 'C', copy=False)
-        # Ensure shapes (say if only 1 spin)
-        h.shape = (-1, len(H.spin))
-        s.shape = (-1,)
+            h = csr._D[:, :H.S_idx]
+            s = csr._D[:, H.S_idx]
 
         # Get shorter variants
         nsc = H.geometry.nsc[:].astype(np.int32)
@@ -344,7 +354,9 @@ class tshsSileSiesta(onlysSileSiesta):
         # see onlysSileSiesta.read_supercell for .T
         _siesta.write_tshs_hs(self.file, nsc[0], nsc[1], nsc[2],
                               cell.T / _Bohr2Ang, xyz.T / _Bohr2Ang, H.geometry.firsto,
-                              csr.ncol, csr.col + 1, h * _eV2Ry, s, isc)
+                              csr.ncol, csr.col + 1,
+                              _toF(h, np.float64, _eV2Ry), _toF(s, np.float64),
+                              isc)
         _bin_check(self, 'write_hamiltonian', 'could not write Hamiltonian and overlap matrix.')
 
 
@@ -430,7 +442,7 @@ class dmSileSiesta(SileBinSiesta):
 
         nsc = DM.geometry.sc.nsc.astype(np.int32)
 
-        _siesta.write_dm(self.file, nsc, csr.ncol, csr.col + 1, dm)
+        _siesta.write_dm(self.file, nsc, csr.ncol, csr.col + 1, _toF(dm, np.float64))
         _bin_check(self, 'write_density_matrix', 'could not write density matrix.')
 
 
@@ -547,7 +559,9 @@ class tsdeSileSiesta(dmSileSiesta):
 
         nsc = DM.geometry.sc.nsc.astype(np.int32)
 
-        _siesta.write_tsde_dm_edm(self.file, nsc, DMcsr.ncol, DMcsr.col + 1, dm, edm * _eV2Ry, Ef * _eV2Ry)
+        _siesta.write_tsde_dm_edm(self.file, nsc, DMcsr.ncol, DMcsr.col + 1,
+                                  _toF(dm, np.float64),
+                                  _toF(edm, np.float64, _eV2Ry), Ef * _eV2Ry)
         _bin_check(self, 'write_density_matrices', 'could not write DM + EDM matrices.')
 
 
@@ -1356,6 +1370,7 @@ class _gfSileSiesta(SileBinSiesta):
         self._step_counter('read_hamiltonian', HS=True, read=True)
         H, S = _siesta.read_gf_hs(self._iu, self._no_u)
         _bin_check(self, 'read_hamiltonian', 'could not read Hamiltonian and overlap matrices.')
+        # we don't convert to C order!
         return H * _Ry2eV, S
 
     def read_self_energy(self):
@@ -1373,6 +1388,7 @@ class _gfSileSiesta(SileBinSiesta):
         self._step_counter('read_self_energy', read=True)
         SE = _siesta.read_gf_se(self._iu, self._no_u, self._iE)
         _bin_check(self, 'read_self_energy', 'could not read self-energy.')
+        # we don't convert to C order!
         return SE * _Ry2eV
 
     def HkSk(self, k=(0, 0, 0), spin=0):
@@ -1492,9 +1508,10 @@ class _gfSileSiesta(SileBinSiesta):
         # Now write to it...
         self._step_counter('write_header', header=True, read=True)
         # see onlysSileSiesta.read_supercell for .T
-        _siesta.write_gf_header(self._iu, nspin, cell.T / _Bohr2Ang,
-                                na_u, no_u, no_u, xa.T / _Bohr2Ang, lasto,
-                                bloch, 0, mu * _eV2Ry, k.T, w, self._E / self._E_Ry2eV,
+        _siesta.write_gf_header(self._iu, nspin, _toF(cell.T, np.float64, 1. / _Bohr2Ang),
+                                na_u, no_u, no_u, _toF(xa.T, np.float64, 1. / _Bohr2Ang),
+                                lasto, bloch, 0, mu * _eV2Ry, _toF(k.T, np.float64),
+                                w, self._E / self._E_Ry2eV,
                                 **sizes)
         _bin_check(self, 'write_header', 'could not write header information.')
 
@@ -1513,7 +1530,9 @@ class _gfSileSiesta(SileBinSiesta):
         if S is None:
             S = np.eye(no, dtype=np.complex128, order='F')
         self._step_counter('write_hamiltonian', HS=True, read=True)
-        _siesta.write_gf_hs(self._iu, self._ik, self._E[self._iE] / self._E_Ry2eV, H * _eV2Ry, S, no_u=no)
+        _siesta.write_gf_hs(self._iu, self._ik, self._E[self._iE] / self._E_Ry2eV,
+                            _toF(H, np.complex128, _eV2Ry),
+                            _toF(S, np.complex128), no_u=no)
         _bin_check(self, 'write_hamiltonian', 'could not write Hamiltonian and overlap matrices.')
 
     def write_self_energy(self, SE):
@@ -1531,7 +1550,8 @@ class _gfSileSiesta(SileBinSiesta):
         """
         no = len(SE)
         self._step_counter('write_self_energy', read=True)
-        _siesta.write_gf_se(self._iu, self._ik, self._iE, self._E[self._iE] / self._E_Ry2eV, SE * _eV2Ry, no_u=no)
+        _siesta.write_gf_se(self._iu, self._ik, self._iE, self._E[self._iE] / self._E_Ry2eV,
+                            _toF(SE, np.complex128, _eV2Ry), no_u=no)
         _bin_check(self, 'write_self_energy', 'could not write self-energy.')
 
     def __len__(self):
