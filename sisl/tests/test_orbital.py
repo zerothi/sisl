@@ -344,12 +344,14 @@ class Test_atomicorbital:
                 o = AtomicOrbital(l=l, m=m, spherical=rf)
                 assert np.allclose(so.psi(r, m), o.psi(r))
 
-    @pytest.mark.xfail(raises=SislDeprecation, reason='Z is deprecated for zeta')
     def test_zeta_Z_deprecate(self):
         rf = r_f(6)
         r = np.linspace(0, 6, 999).reshape(-1, 3)
         o = AtomicOrbital(l=1, m=1, spherical=rf)
-        assert o.Z == o.zeta
+        with pytest.deprecated_call():
+            assert o.Z == o.zeta
+        with pytest.deprecated_call():
+            o = AtomicOrbital(l=1, m=1, spherical=rf, Z=1)
 
     def test_pickle1(self):
         import pickle as p

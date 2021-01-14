@@ -329,7 +329,7 @@ class Geometry(SuperCellChild):
         """
         if atoms is None:
             return _a.arangei(self.na)
-        return np.asarray(atoms, dtype=np.integer)
+        return np.asarray(atoms, dtype=np.int32)
 
     @_sanitize_atoms.register(str)
     def _(self, atoms):
