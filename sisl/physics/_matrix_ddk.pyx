@@ -16,11 +16,16 @@ _roll = np.roll
 __all__ = ["matrix_ddk", "matrix_ddk_nc", "matrix_ddk_nc_diag", "matrix_ddk_so"]
 
 
-def matrix_ddk(gauge, M, const int idx, sc,
-               np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
-    dtype = phase_dtype(k, M.dtype, dtype)
-    # This is the double differentiated matrix with respect to k
-    #  - i R (- i R) == - R ** 2
+def _phase_ddk(gauge, M, sc, np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype):
+    # dtype *must* be passed through phase_dtype
+
+    # This is the differentiated matrix with respect to k
+    # See _phase.pyx, we are using exp(i k.R/r)
+    #  (i R) * (i R) = - R**2
+    # And since we have a double differentiation we can have
+    # two dependent variables
+    # We always do the Voigt representation
+    #  Rd = dx^2, dy^2, dz^2, dzy, dxz, dyx
     if gauge == 'R':
         phases = phase_rsc(sc, k, dtype).reshape(-1, 1)
         Rs = _dot(sc.sc_off, sc.cell)
@@ -40,6 +45,13 @@ def matrix_ddk(gauge, M, const int idx, sc,
         del rij, phases
         p_opt = 1
 
+    return p_opt, Rd, Ro
+
+
+def matrix_ddk(gauge, M, const int idx, sc,
+               np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
+    dtype = phase_dtype(k, M.dtype, dtype)
+    p_opt, Rd, Ro = _phase_ddk(gauge, M, sc, k, dtype)
     return _matrix_ddk(M._csr, idx, Rd, Ro, dtype, format, p_opt)
 
 
@@ -119,27 +131,7 @@ def _matrix_ddk(csr, const int idx, Rd, Ro, dtype, format, p_opt):
 def matrix_ddk_nc(gauge, M, sc,
                   np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
-    # This is the double differentiated matrix with respect to k
-    #  - i R (- i R) == - R ** 2
-    if gauge == 'R':
-        phases = phase_rsc(sc, k, dtype).reshape(-1, 1)
-        Rs = _dot(sc.sc_off, sc.cell)
-        Rd = - (Rs * Rs * phases).astype(dtype, copy=False)
-        Ro = - (_roll(Rs, 1, axis=1) * phases).astype(dtype, copy=False) # z, x, y
-        Ro *= _roll(Rs, -1, axis=1) # y, z, x
-        del phases, Rs
-        p_opt = 1
-
-    elif gauge == 'r':
-        M.finalize()
-        rij = M.Rij()._csr._D
-        phases = phase_rij(rij, sc, k, dtype).reshape(-1, 1)
-        Rd = - (rij * rij * phases).astype(dtype, copy=False)
-        Ro = - (_roll(rij, 1, axis=1) * phases).astype(dtype, copy=False) # z, x, y
-        Ro *= _roll(rij, -1, axis=1) # y, z, x
-        del rij, phases
-        p_opt = 1
-
+    p_opt, Rd, Ro = _phase_ddk(gauge, M, sc, k, dtype)
     return _matrix_ddk_nc(M._csr, Rd, Ro, dtype, format, p_opt)
 
 
@@ -191,26 +183,7 @@ def _matrix_ddk_nc(csr, Rd, Ro, dtype, format, p_opt):
 def matrix_ddk_nc_diag(gauge, M, const int idx, sc,
                        np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
-    # This is the double differentiated matrix with respect to k
-    #  - i R (- i R) == - R ** 2
-    if gauge == 'R':
-        phases = phase_rsc(sc, k, dtype).reshape(-1, 1)
-        Rs = _dot(sc.sc_off, sc.cell)
-        Rd = - (Rs * Rs * phases).astype(dtype, copy=False)
-        Ro = - (_roll(Rs, 1, axis=1) * phases).astype(dtype, copy=False) # z, x, y
-        Ro *= _roll(Rs, -1, axis=1) # y, z, x
-        del phases, Rs
-        p_opt = 1
-
-    elif gauge == 'r':
-        M.finalize()
-        rij = M.Rij()._csr._D
-        phases = phase_rij(rij, sc, k, dtype).reshape(-1, 1)
-        Rd = - (rij * rij * phases).astype(dtype, copy=False)
-        Ro = - (_roll(rij, 1, axis=1) * phases).astype(dtype, copy=False) # z, x, y
-        Ro *= _roll(rij, -1, axis=1) # y, z, x
-        del rij, phases
-        p_opt = 1
+    p_opt, Rd, Ro = _phase_ddk(gauge, M, sc, k, dtype)
 
     Rxx = Rd[:, 0].copy()
     Ryy = Rd[:, 1].copy()
@@ -255,27 +228,7 @@ def _matrix_ddk_nc_diag(csr, const int idx, phases, dtype, format, p_opt):
 def matrix_ddk_so(gauge, M, sc,
                   np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
-    # This is the double differentiated matrix with respect to k
-    #  - i R (- i R) == - R ** 2
-    if gauge == 'R':
-        phases = phase_rsc(sc, k, dtype).reshape(-1, 1)
-        Rs = _dot(sc.sc_off, sc.cell)
-        Rd = - (Rs * Rs * phases).astype(dtype, copy=False)
-        Ro = - (_roll(Rs, 1, axis=1) * phases).astype(dtype, copy=False) # z, x, y
-        Ro *= _roll(Rs, -1, axis=1) # y, z, x
-        del phases, Rs
-        p_opt = 1
-
-    elif gauge == 'r':
-        M.finalize()
-        rij = M.Rij()._csr._D
-        phases = phase_rij(rij, sc, k, dtype).reshape(-1, 1)
-        Rd = - (rij * rij * phases).astype(dtype, copy=False)
-        Ro = - (_roll(rij, 1, axis=1) * phases).astype(dtype, copy=False) # z, x, y
-        Ro *= _roll(rij, -1, axis=1) # y, z, x
-        del rij, phases
-        p_opt = 1
-
+    p_opt, Rd, Ro = _phase_ddk(gauge, M, sc, k, dtype)
     return _matrix_ddk_so(M._csr, Rd, Ro, dtype, format, p_opt)
 
 

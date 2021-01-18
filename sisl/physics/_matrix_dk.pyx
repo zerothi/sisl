@@ -15,24 +15,31 @@ _dot = np.dot
 __all__ = ["matrix_dk", "matrik_dk_nc", "matrik_dk_nc_diag", "matrik_dk_so"]
 
 
-def matrix_dk(gauge, M, const int idx, sc,
-              np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
-    dtype = phase_dtype(k, M.dtype, dtype, True)
+def _phase_dk(gauge, M, sc, np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype):
+    # dtype *must* be passed through phase_dtype
 
     # This is the differentiated matrix with respect to k
-    #  - i R
+    # See _phase.pyx, we are using exp(i k.R/r)
+    #  i R
     if gauge == 'R':
         iRs = phase_rsc(sc, k, dtype).reshape(-1, 1)
-        iRs = (-1j * _dot(sc.sc_off, sc.cell) * iRs).astype(dtype, copy=False)
+        iRs = (1j * _dot(sc.sc_off, sc.cell) * iRs).astype(dtype, copy=False)
         p_opt = 1
 
     elif gauge == 'r':
         M.finalize()
         rij = M.Rij()._csr._D
-        iRs = (-1j * rij * phase_rij(rij, sc, k, dtype).reshape(-1, 1)).astype(dtype, copy=False)
+        iRs = (1j * rij * phase_rij(rij, sc, k, dtype).reshape(-1, 1)).astype(dtype, copy=False)
         del rij
         p_opt = 0
 
+    return p_opt, iRs
+
+
+def matrix_dk(gauge, M, const int idx, sc,
+              np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
+    dtype = phase_dtype(k, M.dtype, dtype, True)
+    p_opt, iRs = _phase_dk(gauge, M, sc, k, dtype)
     return _matrix_dk(M._csr, idx, iRs, dtype, format, p_opt)
 
 
@@ -62,21 +69,7 @@ def _matrix_dk(csr, const int idx, iRs, dtype, format, p_opt):
 def matrix_dk_nc(gauge, M, sc,
                  np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
-
-    # This is the differentiated matrix with respect to k
-    #  - i R
-    if gauge == 'R':
-        iRs = phase_rsc(sc, k, dtype).reshape(-1, 1)
-        iRs = (-1j * _dot(sc.sc_off, sc.cell) * iRs).astype(dtype, copy=False)
-        p_opt = 1
-
-    elif gauge == 'r':
-        M.finalize()
-        rij = M.Rij()._csr._D
-        iRs = (-1j * rij * phase_rij(rij, sc, k, dtype).reshape(-1, 1)).astype(dtype, copy=False)
-        del rij
-        p_opt = 0
-
+    p_opt, iRs = _phase_dk(gauge, M, sc, k, dtype)
     return _matrix_dk_nc(M._csr, iRs, dtype, format, p_opt)
 
 
@@ -106,16 +99,7 @@ def _matrix_dk_nc(csr, iRs, dtype, format, p_opt):
 def matrix_dk_nc_diag(gauge, M, const int idx, sc,
                       np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
-    if gauge == 'R':
-        iRs = phase_rsc(sc, k, dtype).reshape(-1, 1)
-        iRs = (-1j * _dot(sc.sc_off, sc.cell) * iRs).astype(dtype, copy=False)
-        p_opt = 1
-    elif gauge == 'r':
-        M.finalize()
-        rij = M.Rij()._csr._D
-        iRs = (-1j * rij * phase_rij(rij, sc, k, dtype).reshape(-1, 1)).astype(dtype, copy=False)
-        del rij
-        p_opt = 0
+    p_opt, iRs = _phase_dk(gauge, M, sc, k, dtype)
 
     phx = iRs[:, 0].copy()
     phy = iRs[:, 1].copy()
@@ -153,21 +137,7 @@ def _matrix_dk_nc_diag(csr, const int idx, phases, dtype, format, p_opt):
 def matrix_dk_so(gauge, M, sc,
                  np.ndarray[np.float64_t, ndim=1, mode='c'] k, dtype, format):
     dtype = phase_dtype(k, M.dtype, dtype, True)
-
-    # This is the differentiated matrix with respect to k
-    #  - i R
-    if gauge == 'R':
-        iRs = phase_rsc(sc, k, dtype).reshape(-1, 1)
-        iRs = (-1j * _dot(sc.sc_off, sc.cell) * iRs).astype(dtype, copy=False)
-        p_opt = 1
-
-    elif gauge == 'r':
-        M.finalize()
-        rij = M.Rij()._csr._D
-        iRs = (-1j * rij * phase_rij(rij, sc, k, dtype).reshape(-1, 1)).astype(dtype, copy=False)
-        del rij
-        p_opt = 0
-
+    p_opt, iRs = _phase_dk(gauge, M, sc, k, dtype)
     return _matrix_dk_so(M._csr, iRs, dtype, format, p_opt)
 
 
