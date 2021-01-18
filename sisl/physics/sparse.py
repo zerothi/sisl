@@ -460,8 +460,8 @@ class SparseOrbitalBZ(SparseOrbital):
 
         Returns
         -------
-        tuple of tuples
-            for each of the Cartesian directions
+        list of matrices
+            for each of the Cartesian directions (in Voigt representation); xx, yy, zz, zy, xz, xy
         """
         pass
 
