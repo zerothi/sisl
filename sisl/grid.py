@@ -1560,8 +1560,6 @@ The 2nd argument is the method to use; gaussian/uniform
 The 3rd argument is the mode to use; wrap/mirror/constant/reflect/nearest
 """)
 
-        # Define size of grid
-
         class PrintInfo(argparse.Action):
 
             def __call__(self, parser, ns, values, option_string=None):
@@ -1570,6 +1568,39 @@ The 3rd argument is the mode to use; wrap/mirror/constant/reflect/nearest
         p.add_argument(*opts('--info'), nargs=0,
                        action=PrintInfo,
                        help='Print, to stdout, some regular information about the grid.')
+
+        class Plot(argparse.Action):
+            def __call__(self, parser, ns, values, option_string=None):
+                ns._stored_grid = True
+                import matplotlib.pyplot as plt
+
+                grid = ns._grid
+
+                axs = []
+                idx = []
+                for ax in (0, 1, 2):
+                    shape = grid.shape[ax]
+                    if shape > 1:
+                        axs.append(np.linspace(0, grid.sc.length[ax], shape, endpoint=False))
+                        idx.append(ax)
+
+                # Now plot data
+                if len(idx) == 3:
+                    raise ValueError("Cannot plot a 3D grid (yet!)")
+                elif len(idx) == 2:
+                    X, Y = np.meshgrid(*axs)
+                    plt.contourf(X, Y, np.squeeze(grid.grid).T)
+                    plt.xlabel(f"Distance along {'ABC'[idx[0]]} [Ang]")
+                    plt.ylabel(f"Distance along {'ABC'[idx[1]]} [Ang]")
+                elif len(idx) == 1:
+                    plt.plot(axs[0], grid.grid.ravel())
+                    plt.xlabel(f"Distance along {'ABC'[idx[0]]} [Ang]")
+                    plt.ylabel(f"Arbitrary unit")
+                plt.show()
+
+        p.add_argument(*opts('--plot', '-P'), nargs=0,
+                       action=Plot,
+                       help='Plot the grid (currently only enabled if at least one dimension has been averaged out')
 
         class Out(argparse.Action):
 

@@ -1,6 +1,8 @@
 0.X.Y
 =====
 
+- Enabled plotting grids using the command-line
+
 - **Major addition**: plotly backend for plotting and interaction with
 	output. This is still a work in progress made by Pol Febrer.
 	Many thanks to @pfebrer!
