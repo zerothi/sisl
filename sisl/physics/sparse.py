@@ -1105,10 +1105,10 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             P = self.Pk(k=k, dtype=dtype, spin=spin, gauge=gauge)
         else:
             P = self.Pk(k=k, dtype=dtype, gauge=gauge)
-        if not self.orthogonal:
-            raise ValueError("The sparsity pattern is non-orthogonal, you cannot use the Arnoldi procedure with scipy")
-
-        return lin.eigsh(P, k=n, return_eigenvectors=not eigvals_only, **kwargs)
+        if self.orthogonal:
+            return lin.eigsh(P, k=n, return_eigenvectors=not eigvals_only, **kwargs)
+        S = self.Sk(k=k, dtype=dtype, gauge=gauge)
+        return lin.eigsh(P, M=S, k=n, return_eigenvectors=not eigvals_only, **kwargs)
 
     def transpose(self, hermitian=False, spin=True, sort=True):
         r""" A transpose copy of this object, possibly apply the Hermitian conjugate as well
