@@ -7,6 +7,7 @@ from ..sile import add_sile, sile_fh_open
 from sisl._internal import set_module
 import sisl._array as _a
 from sisl import Geometry, Atom, SuperCell
+from sisl.utils import PropertyDict
 from sisl.utils.cmd import *
 from sisl.unit.siesta import unit_convert
 
@@ -511,7 +512,54 @@ class outSileSiesta(SileSiesta):
 
     @sile_fh_open()
     def read_energy(self):
-        """ Reads the final energy distribution """
+        """ Reads the final energy distribution
+
+        Currently the energies translated are:
+
+        ``band``
+             band structure energy
+        ``kinetic``
+             electronic kinetic energy
+        ``hartree``
+             electronic electrostatic Hartree energy
+        ``dftu``
+             DFT+U energy
+        ``spin_orbit``
+             spin-orbit energy
+        ``extE``
+             external field energy
+        ``xc``
+             exchange-correlation energy
+        ``bulkV``
+             bulk-bias correction energy
+        ``total``
+             total energy
+        ``negf``
+             NEGF energy
+        ``fermi``
+             Fermi energy
+        ``ion.electron``
+             ion-electron interaction energy
+        ``ion.ion``
+             ion-ion interaction energy
+        ``ion.kinetic``
+             kinetic ion energy
+
+
+        Any unrecognized key gets added *as is*.
+
+        Examples
+        --------
+        >>> energies = sisl.get_sile("RUN.out").read_energy()
+        >>> ion_energies = energies.ion
+        >>> ion_energies.ion # ion-ion interaction energy
+        >>> ion_energies.kinetic # ion kinetic energy
+        >>> energies.fermi # fermi energy
+
+        Returns
+        -------
+        PropertyDict : dictionary like lookup table ionic energies are stored in a nested `PropertyDict` at the key ``ion`` (all energies in eV)
+        """
         found = self.step_to("siesta: Final energy", reread=False)[0]
         if not found:
             return None
@@ -520,26 +568,33 @@ class outSileSiesta(SileSiesta):
         # Read data
         line = next(itt)
         name_conv = {
-            "Band Struct.": "Ebs",
-            "Kinetic": "Ekin",
-            "Hartree": "Ehartree",
-            "Eldau": "Eldau",
-            "Eso": "Eso",
-            "Ext. field": "EextE",
-            "Exch.-corr.": "Exc",
-            "Ion-electron": "Eion_elec",
-            "Ion-ion": "Eion_ion",
-            "Bulk bias": "EbV",
-            "Ekinion": "Ekin_ion",
-            "Total": "Etot",
-            "Fermi": "Ef",
-            "Enegf": "Enegf",
+            "Band Struct.": "band",
+            "Kinetic": "kinetic",
+            "Hartree": "hartree",
+            "Edftu": "dftu",
+            "Eldau": "dftu",
+            "Eso": "spin_orbit",
+            "Ext. field": "extE",
+            "Exch.-corr.": "xc",
+            "Ekinion": "ion_kinetic",
+            "Ion-electron": "ion_electron",
+            "Ion-ion": "ion_ion",
+            "Bulk bias": "bulkV",
+            "Total": "total",
+            "Fermi": "fermi",
+            "Enegf": "negf",
         }
-        out = {}
+        out = PropertyDict()
+        out.ion = PropertyDict()
         while len(line.strip()) > 0:
             key, val = line.split("=")
             key = key.split(":")[1].strip()
-            out[name_conv.get(key, key)] = float(val)
+            key = name_conv.get(key, key)
+            if key.startswith("ion"):
+                # sub-nest
+                out.ion[key[4:]] = float(val)
+            else:
+                out[key] = float(val)
             line = next(itt)
 
         return out

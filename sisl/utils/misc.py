@@ -11,6 +11,7 @@ import importlib
 __all__ = ["merge_instances", "str_spec", "direction", "angle"]
 __all__ += ["iter_shape", "math_eval", "allow_kwargs"]
 __all__ += ["import_attr", "lazy_import"]
+__all__ += ["PropertyDict"]
 
 
 # supported operators
@@ -380,3 +381,19 @@ def lazy_import(name, package=None):
     util.LazyLoader(spec.loader).exec_module(module)
 
     return module
+
+
+class PropertyDict(dict):
+    """ Simple dictionary which may access items as properties as well """
+
+    def __getattr__(self, name):
+        try:
+            return self[name]
+        except KeyError as e:
+            raise AttributeError(name) from e
+
+    __setattr__ = dict.__setitem__
+    __delattr__ = dict.__delitem__
+
+    def __dir__(self):
+        return list(self.keys())

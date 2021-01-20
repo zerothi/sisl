@@ -88,10 +88,10 @@ def test_md_nose_out_data(sisl_files):
 
     assert np.allclose(f0, f1)
     assert g0 == g1
-    assert isinstance(e, dict)
-    assert e["Ef"] == pytest.approx(-2.836423)
-    assert e["Exc"] == pytest.approx(-704.656164)
-    assert e["Ekin"] == pytest.approx(2293.584862)
+    assert isinstance(e, sisl.utils.PropertyDict)
+    assert e.fermi == pytest.approx(-2.836423)
+    assert e.xc == pytest.approx(-704.656164)
+    assert e["kinetic"] == pytest.approx(2293.584862)
 
 
 def test_md_nose_out_completed(sisl_files):
@@ -115,3 +115,9 @@ def test_md_nose_out_dataframe(sisl_files):
     assert df.index.names == ["imd", "iscf"]
     df = out.read_scf(iscf=None, imd=-1, as_dataframe=True)
     assert df.index.names == ["iscf"]
+
+
+def test_md_nose_out_energy(sisl_files):
+    f = sisl_files(_dir, 'md_nose.out')
+    energy = outSileSiesta(f).read_energy()
+    assert isinstance(energy, sisl.utils.PropertyDict)

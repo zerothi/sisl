@@ -50,7 +50,8 @@
 
 - Enabled orbital resolved velocities
 
-- Added outSileSiesta.read_energy to read final energies
+- Added outSileSiesta.read_energy to read final energies in a property-dict
+  (works both as a property (`energy.fermi`) and a dictionary (`energy["fermi"]`)
 
 - Ensured ghost atoms in Siesta are handled with separate
 	class, AtomGhost, #249
