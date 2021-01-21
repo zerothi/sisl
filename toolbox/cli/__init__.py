@@ -63,9 +63,9 @@ class SToolBoxCLI:
 
 
 # Populate the commands
-from sisl_toolbox.transiesta.poisson.poisson_explicit import poisson_explicit_cli
 
 # First create the class to hold and dynamically create the commands
 stoolbox_cli = SToolBoxCLI()
 
-stoolbox_cli.register(poisson_explicit_cli)
+from sisl_toolbox.transiesta.poisson.fftpoisson_fix import fftpoisson_fix_cli
+stoolbox_cli.register(fftpoisson_fix_cli)

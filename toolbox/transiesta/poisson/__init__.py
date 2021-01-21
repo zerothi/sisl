@@ -1,1 +1,1 @@
-""" TranSiesta Poisson solutions """
+""" TranSiesta FFT Poisson corrections """
