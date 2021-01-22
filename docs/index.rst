@@ -140,10 +140,10 @@ which fills in the version number.
    :maxdepth: 2
    :caption: Toolboxes
 
-   toolbox/toolbox
+   toolbox.rst
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
    :caption: Visualization
    
    visualization/ase/index
@@ -187,4 +187,4 @@ a table of contents for the sub-modules may be found :ref:`here <modindex>`.
 .. _gitter: https://gitter.im/sisl-tool/Lobby
 
 .. |discord| image:: https://img.shields.io/discord/742636379871379577.svg?label=&logo=discord&logoColor=ffffff&color=green&labelColor=red
-.. _discord: https://discord.gg/bvJ9Zuk
+.. _discord: https://discord.gg/5XnFXFdkv2
