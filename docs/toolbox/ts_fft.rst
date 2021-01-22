@@ -25,6 +25,10 @@ is not trivial.
 This tool tries to remedy this by solving the Poisson equation with fixed boundaries
 as defined by the user.
 
+
+Command line tool
+-----------------
+
 It may be called using
 
 .. code:: bash
@@ -70,17 +74,26 @@ one would do:
 
 Which uses Dirichlet for transport direction, otherwise Neumann.
 
-The internal method solves the Poisson equation *twice*.
+Better performance
+^^^^^^^^^^^^^^^^^^
+
+Sometimes the grid used is very large ``--shape``. In these case it may be beneficial
+to solve the Poisson equation for a smaller shape, and then interpolate.
+This is accomblished using both ``--pyamg-shape`` (Poisson solution) and ``--shape``
+(output shape). An interpolation will be done after the solution step.
+
+
+Method
+------
+
+The internal method solves the Poisson equation *twice* using a multigrid solver (`pyamg`).
 First it fixes the potentials on all grid points touching the electrode atoms
-(atomic radius controlled with ``--radius``). Then it takes all boundary points,
-fixes these and solves the Poisson equation again.
+(atomic radius controlled with ``--radius``). Then uses the solution to find
+all boundary point values, fixes these and solves the Poisson equation again.
 The resulting solution should *somewhat* match the boundary conditions of the calculation
 and correct the FFT solution.
 
 If you know the boundary conditions that fixes the FFT solution for your particular setup,
 you are encouraged to use that instead.
 
-Sometimes the grid used is very large ``--shape``. In these case it may be beneficial
-to solve the Poisson equation for a smaller shape, and then interpolate.
-This is accomblished using both ``--pyamg-shape`` (Poisson solution) and ``--shape``
-(output shape). An interpolation will be done after the solution step.
+

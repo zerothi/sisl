@@ -14,4 +14,4 @@ would go into the `sisl_toolbox` suite.
 .. toctree::
    :maxdepth: 1
 
-   toolbox/ts-fix.rst
+   toolbox/ts_fft.rst
