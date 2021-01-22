@@ -14,7 +14,7 @@ from functools import partial
 
 import sisl
 from sisl.viz import BandsPlot
-from sisl.viz.plotly.plots.tests.helpers import PlotTester
+from sisl.viz.plotly.plots.tests.conftest import PlotTester
 
 
 class BandsPlotTester(PlotTester):

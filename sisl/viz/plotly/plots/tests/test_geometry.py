@@ -11,7 +11,7 @@ import plotly.graph_objs as go
 
 import sisl
 from sisl.viz import GeometryPlot
-from sisl.viz.plotly.plots.tests.helpers import PlotTester
+from sisl.viz.plotly.plots.tests.conftest import PlotTester
 
 
 class GeometryPlotTester(PlotTester):

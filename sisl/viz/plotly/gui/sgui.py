@@ -1,6 +1,8 @@
 import argparse
-from ..plotutils import get_session_classes
-from .._user_customs import SESSION_FILE
+
+from sisl.viz.plotly.plotutils import get_session_classes
+
+from sisl.viz.plotly._user_customs import SESSION_FILE
 from .launch import launch
 
 

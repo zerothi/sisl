@@ -12,7 +12,8 @@ import flask
 from flask import Flask, request, jsonify, make_response
 from flask_socketio import SocketIO, join_room
 
-from ...plotutils import load
+from sisl.viz.plotly.plotutils import load
+
 from .emiters import emit_plot, emit_session, emit_error, emit_loading_plot, emit
 from .user_management import with_user_management, if_user_can, listen_to_users
 
@@ -43,7 +44,6 @@ class CustomJSONEncoder(JSONEncoder):
 # We need to use simplejson because built-in json happily parses nan to NaN
 # and then javascript does not understand it
 simplejson.dumps = partial(simplejson.dumps, ignore_nan=True, cls=CustomJSONEncoder)
-
 
 def create_app(get_session, set_session):
 

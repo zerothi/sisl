@@ -4,7 +4,8 @@ from threading import Thread
 import time
 import webbrowser
 
-from ..plotutils import get_session_classes
+from sisl.viz.plotly.plotutils import get_session_classes
+
 from . import server
 
 

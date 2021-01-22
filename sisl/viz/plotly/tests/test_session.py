@@ -39,28 +39,6 @@ class BaseSessionTester:
         session = self.SessionClass(**new_settings)
         assert np.all([session.settings[key] == val for key, val in new_settings.items()])
 
-    def test_session_connected(self):
-
-        session = self.SessionClass()
-
-        # Check that the session has a socketio attribute and that it can be changed
-        # Seems dumb, but socketio is really a property that uses functions to set the
-        # real attribute, so they may be broken by something
-        assert hasattr(session, 'socketio')
-        assert session.socketio is None
-        session.socketio = 2
-        assert session.socketio == 2
-
-        # Check that if we add a plot to the session, their socketio will be tracked by
-        # the session
-        new_plot = Plot()
-        session.add_tab('Test tab')
-        session.add_plot(new_plot, 'Test tab')
-        assert new_plot.socketio == 2, f'Socketio not transfered from {session.__class__} to plot on add_plot'
-        # Fake a disconnection of the session and see if the plot follows
-        session.socketio = None
-        assert new_plot.socketio is None, f'Socketio change in {session.__class__} not transmitted to plots'
-
     def test_save_and_load(self):
 
         BasePlotTester.test_save_and_load(self, obj=self.SessionClass())

@@ -5,7 +5,8 @@ on it """
 from functools import wraps
 
 from sisl._dispatcher import AbstractDispatch
-from ...plotutils import call_method_if_present
+from sisl.viz.plotly.plotutils import call_method_if_present
+
 from .emiters import emit_object
 
 __all__ = ["AutoSync", "Connected"]
@@ -91,7 +92,6 @@ class AutoSync(AbstractDispatch):
 
         return with_changes_emitted
 
-
 class Connected:
     """
     Helps connecting objects to the graphical interface.
@@ -116,10 +116,6 @@ class Connected:
     # This change will be automatically transmitted to all socket listeners.
     ```
     """
-
-    def __init__(self, *args, socketio=None, **kwargs):
-
-        self._socketio = socketio
 
     def get_socketio(self):
         return self._socketio

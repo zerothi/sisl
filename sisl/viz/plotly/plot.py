@@ -27,7 +27,6 @@ from .plotutils import init_multiple_plots, repeat_if_childs, dictOfLists2listOf
 from .input_fields import TextInput, SileInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, \
     FloatInput, RangeSlider, QueriesInput, ProgramaticInput, PlotableInput
 from ._shortcuts import ShortCutable
-from .gui.server.sync import Connected
 
 
 __all__ = ["Plot", "MultiplePlot", "Animation", "SubPlots"]
@@ -111,7 +110,7 @@ class PlotMeta(ConfigurableMeta):
         return super().__call__(cls, *args, **kwargs)
 
 
-class Plot(ShortCutable, Configurable, Connected, metaclass=PlotMeta):
+class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
     """ Parent class of all plot classes
 
     Implements general things needed by all plots such as settings and shortcut
@@ -624,8 +623,6 @@ class Plot(ShortCutable, Configurable, Connected, metaclass=PlotMeta):
 
         # Initialize shortcut management
         ShortCutable.__init__(self)
-        # Initialize possibility to connect to a GUI
-        Connected.__init__(self, socketio=kwargs.get("socketio", None))
 
         #Give the user the possibility to do things before initialization (IDK why)
         call_method_if_present(self, "_before_init")

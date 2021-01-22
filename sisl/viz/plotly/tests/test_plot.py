@@ -63,18 +63,6 @@ class BasePlotTester:
         plot = self.PlotClass(**new_settings)
         assert np.all([plot.settings[key] == val for key, val in new_settings.items()])
 
-    def test_plot_connected(self):
-
-        plot = self.PlotClass()
-
-        # Check that the plot has a socketio attribute and that it can be changed
-        # Seems dumb, but socketio is really a property that uses functions to set the
-        # real attribute, so they may be broken by something
-        assert hasattr(plot, 'socketio'), f"Socketio connectivity is not initialized correctly in {plot.__class__}"
-        assert plot.socketio is None
-        plot.socketio = 2
-        assert plot.socketio == 2, f'Problems setting a new socketio for {plot.__class__}'
-
     def test_plot_shortcuts(self):
 
         plot = self.PlotClass()
