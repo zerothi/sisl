@@ -469,9 +469,7 @@ metadata = dict(
     license=LICENSE,
     # Ensure the packages are being found in the correct locations
     package_dir={"sisl_toolbox": "toolbox"},
-    package_data={
-        "sisl.viz.plotly.gui": ["build/*"],
-    },
+    package_data={},
     packages=
     # We need to add sisl.* since that recursively adds modules
     find_packages(include=["sisl", "sisl.*"])
@@ -494,7 +492,6 @@ metadata = dict(
          "ts_poisson = sisl_toolbox.transiesta.poisson.poisson_explicit:poisson_explicit_cli",
          ]
         #"splotly = sisl.viz.plotly.splot:splot",
-        # "sgui = sisl.viz.plotly.gui.sgui:sgui"]
     },
     classifiers=CLASSIFIERS,
     platforms="any",
