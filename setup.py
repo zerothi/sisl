@@ -40,20 +40,11 @@ min_version ={
 
 viz = {
     "plotly": [
-        'tqdm', # for niceness
         'dill >= 0.3.2', # for pathos and for saving plots (a lower version raises https://github.com/pfebrer96/sisl/issues/11)
         'pathos', # for multiprocessing,
         'plotly',
         'pandas',
         "xarray >= " + min_version["xarray"],
-        'simplejson',  # Because built-in json parses nan and JS does not understand it
-        'flask',
-        'flask-restx',
-        'flask-socketio',
-        'flask-cors',
-        'flask-login',
-        'flask-session',
-        #'eventlet' # To improve socket performance for flask-socketio
         'scikit-image'
     ],
     "blender": [
