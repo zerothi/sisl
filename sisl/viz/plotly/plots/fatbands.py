@@ -71,6 +71,15 @@ class FatbandsPlot(BandsPlot):
         direction.
     spin_texture_colorscale: str, optional
         The plotly colorscale to use for the spin texture (if displayed)
+    custom_gaps: array-like of dict, optional
+        List of all the gaps that you want to display.   Each item is a dict.
+        Structure of the expected dicts:{         'from': K value where to
+        start measuring the gap.                      It can be either the
+        label of the k-point or the numeric value in the plot.         'to':
+        K value where to end measuring the gap.                      It can
+        be either the label of the k-point or the numeric value in the plot.
+        'color': The color with which the gap should be displayed
+        'spin': The spin components where the gap should be calculated. }
     gap: bool, optional
         Whether the gap should be displayed in the plot
     direct_gaps_only: bool, optional

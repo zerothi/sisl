@@ -1,27 +1,41 @@
+import pytest
+
 import plotly.graph_objs as go
 import numpy as np
 
 import sisl
 
-r = np.linspace(0, 3.5, 50)
-f = np.exp(-r)
-
-orb = sisl.AtomicOrbital('2pzZ', (r, f))
-geom = sisl.geom.graphene(orthogonal=True, atoms=sisl.Atom(6, orb))
-geom = geom.move([0, 0, 5])
-H = sisl.Hamiltonian(geom)
-H.construct([(0.1, 1.44), (0, -2.7)], )
+pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 
 
-def test_eigenstate_wf():
+@pytest.fixture
+def setup():
+    t = sisl.utils.PropertyDict()
+    r = np.linspace(0, 3.5, 50)
+    f = np.exp(-r)
+    t.orb = sisl.AtomicOrbital('2pzZ', (r, f))
+    t.geom = (sisl.geom
+              .graphene(orthogonal=True, atoms=sisl.Atom(6, t.orb))
+              .move([0, 0, 5]))
+    t.H = sisl.Hamiltonian(t.geom)
+    t.H.construct([(0.1, 1.44), (0, -2.7)], )
+    return t
 
-    plot = H.eigenstate()[0].plot.wavefunction(geometry=H.geometry)
+
+def test_eigenstate_wf(setup):
+
+    H = setup.H
+    geometry = H.geometry
+
+    plot = H.eigenstate()[0].plot.wavefunction(geometry=geometry)
 
     assert len(plot.data) > 0
     assert isinstance(plot.data[0], go.Isosurface)
 
 
-def test_hamiltonian_wf():
+def test_hamiltonian_wf(setup):
+    H = setup.H
+    geometry = H.geometry
 
     # Check if it works for 3D plots
     plot = H.plot.wavefunction(2)

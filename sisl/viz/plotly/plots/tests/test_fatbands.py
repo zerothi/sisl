@@ -3,7 +3,7 @@
 Tests specific functionality of a fatbands plot
 
 """
-
+import pytest
 from xarray import DataArray
 import numpy as np
 
@@ -11,11 +11,12 @@ import sisl
 from sisl.viz import FatbandsPlot
 from sisl.viz.plotly.plots.tests.test_bands import BandsPlotTester, NCSpinBandsTester
 
+
+pytestmark = [pytest.mark.viz, pytest.mark.plotly]
+
 # ------------------------------------------------------------
 #         Build a generic tester for the bands plot
 # ------------------------------------------------------------
-
-
 class FatbandsPlotTester(BandsPlotTester):
 
     _required_attrs = [

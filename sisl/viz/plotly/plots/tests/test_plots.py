@@ -11,6 +11,9 @@ from sisl.viz.plotly.tests.test_plot import BasePlotTester
 from sisl.viz.plotly.plots import *
 from sisl.viz.plotly.plotutils import get_plot_classes
 
+
+pytestmark = [pytest.mark.viz, pytest.mark.plotly]
+
 # Test all plot subclasses with the subclass tester
 
 # The following function basically tells pytest to run TestPlotSubClass

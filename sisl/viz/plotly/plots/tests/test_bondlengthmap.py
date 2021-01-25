@@ -1,8 +1,15 @@
 from functools import partial
 
+import pytest
+
 import sisl
 from sisl.viz import BondLengthMap
+
 from sisl.viz.plotly.plots.tests.test_geometry import GeometryPlotTester
+
+
+pytestmark = [pytest.mark.viz, pytest.mark.plotly]
+
 
 # ------------------------------------------------------------
 #      Build a generic tester for bond length plot

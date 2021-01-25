@@ -88,6 +88,9 @@ class GeometryPlot(Plot):
         whether only the bonds that belong to an atom that is present should
         be displayed.             If False, all bonds are displayed
         regardless of the `atom` parameter
+    nsc: (3,) of ints, optional
+        number of tilings of the input geometry along each lattice vector
+        Path to the fdf file that is the 'parent' of the results.
     show_atoms: bool, optional
         If set to False, it will not display atoms.              Basically
         this is a shortcut for `atom = [], bind_bonds_to_ats=False`.
@@ -165,6 +168,7 @@ class GeometryPlot(Plot):
                 'shape': (3,),
                 'extendable': False,
             },
+            help="""Make the geometry larger by tiling it along each lattice vector"""
         ),
 
         AtomSelect(key="atoms", name="Atoms to display",

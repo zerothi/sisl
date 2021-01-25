@@ -1,10 +1,9 @@
 from copy import deepcopy
+import pytest
 
 import numpy as np
 
-
 from sisl.viz import Session, Plot
-
 from sisl.viz.plotly.plots import *
 from sisl.viz.plotly.tests.test_plot import BasePlotTester
 
@@ -13,6 +12,8 @@ from sisl.viz.plotly.tests.test_plot import BasePlotTester
 # ------------------------------------------------------------
 # Checks that will be available to be used on any session class
 # ------------------------------------------------------------
+
+pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 
 
 class BaseSessionTester:
