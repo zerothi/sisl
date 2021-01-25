@@ -38,7 +38,7 @@ __all__ += ['sile_fh_open',
 # This list of tuples is formed as
 #  [('fdf', fdfSileSiesta, fdfSileSiesta),
 #   ('fdf', ncSileSiesta, fdfSileSiesta)]
-# [0] is the file-endding
+# [0] is the file suffix
 # [1] is the base class that may be queried
 # [2] is the actual class the file represents
 # This enables one to add several files with the
@@ -55,10 +55,10 @@ class _sile_rule:
     def __init__(self, cls, suffix, case=True, gzip=False):
         self.cls = cls
         self.case = case
-        if not case:
-            self.suffix = suffix.lower()
-        else:
+        if case:
             self.suffix = suffix
+        else:
+            self.suffix = suffix.lower()
         self.gzip = gzip
         self.bases = self.build_bases()
         self.base_names = [c.__name__.lower() for c in self.bases]

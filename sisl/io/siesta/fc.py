@@ -107,5 +107,5 @@ class fcSileSiesta(SileSiesta):
         return fc
 
 
-add_sile('FC', fcSileSiesta, case=False, gzip=True)
-add_sile('FCC', fcSileSiesta, case=False, gzip=True)
+add_sile('FC', fcSileSiesta, gzip=True)
+add_sile('FCC', fcSileSiesta, gzip=True)

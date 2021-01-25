@@ -265,4 +265,4 @@ class eigSileSiesta(SileSiesta):
         return p, namespace
 
 
-add_sile('EIG', eigSileSiesta, case=False, gzip=True)
+add_sile('EIG', eigSileSiesta, gzip=True)

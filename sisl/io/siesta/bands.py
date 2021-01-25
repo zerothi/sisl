@@ -180,4 +180,4 @@ class bandsSileSiesta(SileSiesta):
         return p, namespace
 
 
-add_sile('bands', bandsSileSiesta, case=False, gzip=True)
+add_sile('bands', bandsSileSiesta, gzip=True)

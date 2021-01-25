@@ -47,5 +47,5 @@ class faSileSiesta(SileSiesta):
     write_data = write_force
 
 
-add_sile('FA', faSileSiesta, case=False, gzip=True)
-add_sile('FAC', faSileSiesta, case=False, gzip=True)
+add_sile('FA', faSileSiesta, gzip=True)
+add_sile('FAC', faSileSiesta, gzip=True)

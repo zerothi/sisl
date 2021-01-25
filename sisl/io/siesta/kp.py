@@ -168,5 +168,5 @@ class rkpSileSiesta(kpSileSiesta):
         self.write_data(bz.k, bz.weight, fmt)
 
 
-add_sile('KP', kpSileSiesta, case=False, gzip=True)
-add_sile('RKP', rkpSileSiesta, case=False, gzip=True)
+add_sile('KP', kpSileSiesta, gzip=True)
+add_sile('RKP', rkpSileSiesta, gzip=True)

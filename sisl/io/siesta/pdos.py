@@ -457,6 +457,6 @@ class pdosSileSiesta(SileSiesta):
 # They contain the same file (same xml-data)
 # However, pdos.xml is preferred because it has higher precision.
 #  siesta.PDOS
-add_sile('PDOS', pdosSileSiesta, case=False, gzip=True)
+add_sile('PDOS', pdosSileSiesta, gzip=True)
 #  pdos.xml/siesta.PDOS.xml
-add_sile('PDOS.xml', pdosSileSiesta, case=False, gzip=True)
+add_sile('PDOS.xml', pdosSileSiesta, gzip=True)
