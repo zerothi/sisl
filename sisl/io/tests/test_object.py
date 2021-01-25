@@ -157,7 +157,7 @@ class TestObject:
         for obj in [BaseSile, Sile, SileSiesta, xvSileSiesta]:
             assert isinstance(s, obj)
 
-    @pytest.mark.parametrize("sile", _fnames("test", ["PDOS.xml", "pdos.xml", "PDOS.xml.gz", "pdos.xml.gz"]))
+    @pytest.mark.parametrize("sile", _fnames("test", ["PDOS.xml", "PDOS.xml.gz"]))
     def test_siesta_pdos_xml(self, sile):
         s = gs(sile)
         for obj in [BaseSile, Sile, SileSiesta, pdosSileSiesta]:
