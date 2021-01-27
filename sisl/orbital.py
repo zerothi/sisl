@@ -372,6 +372,10 @@ class SphericalOrbital(Orbital):
         # Set the internal function
         if callable(rf_or_func):
             self.set_radial(rf_or_func, **kwargs)
+        elif rf_or_func is None:
+            # We don't do anything
+            self.f = NotImplemented
+            self._R = -1.
         else:
             # it must be two arguments
             self.set_radial(rf_or_func[0], rf_or_func[1], **kwargs)

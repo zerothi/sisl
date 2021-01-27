@@ -1342,7 +1342,7 @@ class fdfSileSiesta(SileSiesta):
         # Read the block (not strictly needed, if so we simply set all atoms to H)
         atoms = self.read_basis()
         if atoms is None:
-            warn(SileWarning('Block ChemicalSpeciesLabel does not exist, cannot determine the basis (all Hydrogen).'))
+            warn('Block ChemicalSpeciesLabel does not exist, cannot determine the basis (all Hydrogen).')
 
             # Default atom (hydrogen)
             atoms = Atom(1)
