@@ -704,6 +704,37 @@ class BandsPlot(Plot):
                 if spin in requested_spin:
                     self.draw_gap(custom_gap["from"], custom_gap["to"], color=custom_gap.get("color", None), gap_spin=spin)
 
+    def _sanitize_k(self, k):
+        """Returns the float value of a k point in the plot.
+
+        Parameters
+        ------------
+        k: float or str
+            The k point that you want to sanitize.
+            If it can be parsed into a float, the result of `float(k)` will be returned.
+            If it is a string and it is a label of a k point, the corresponding k value for that
+            label will be returned
+        
+        Returns
+        ------------
+        float
+            The sanitized k value.
+        """
+        san_k = None
+
+        try:
+            san_k = float(k)
+        except ValueError:
+            if k in self.bands.attrs["ticklabels"]:
+                i_tick = self.bands.attrs["ticklabels"].index(k)
+                san_k = self.bands.attrs["ticks"][i_tick]
+            else:
+                pass
+                # raise ValueError(f"We can not interpret {k} as a k-location in the current bands plot")
+                # This should be logged instead of raising the error
+        
+        return san_k
+
     def draw_gap(self, from_k, to_k=None, color=None, true_gap=False, gap_spin=0, save=False, **kwargs):
         """
         Function that draws a given gap in the plot.
@@ -749,16 +780,7 @@ class BandsPlot(Plot):
         # Parse the names of the kpoints into their numeric values
         # if a string was provided.
         for i, val in enumerate((from_k, to_k)):
-            try:
-                ks[i] = float(val)
-            except ValueError:
-                if val in self.bands.attrs["ticklabels"]:
-                    i_tick = self.bands.attrs["ticklabels"].index(val)
-                    ks[i] = self.bands.attrs["ticks"][i_tick]
-                else:
-                    return
-                    # raise ValueError(f"We can not interpret {val} as a k-location in the current bands plot")
-                    # This should be logged instead of raising the error
+            ks[i] = self._sanitize_k(val)
 
         if true_gap:
             # Take the energies from the gap information
@@ -867,3 +889,72 @@ class BandsPlot(Plot):
         plt.update_layout({"title": f"Delta K between bands {band1} and {band2}", 'xaxis_title': 'Delta k', 'yaxis_title': 'Energy [eV]'})
 
         return plt
+
+    def effective_mass(self, band, k, k_direction, band_spin=0, n_points=10):
+        """Calculates the effective mass from the curvature of a band in a given k point.
+
+        It works by fitting the band to a second order polynomial.
+
+        Notes
+        -----
+        Only valid if there are no band-crossings in the fitted range.  
+        The effective mass may be highly dependent on the `k_direction` parameter, as well as the
+        number of points fitted.
+
+        Parameters
+        -----------
+        band: int
+            The index of the band that we want to fit
+        k: float or str
+            The k value where we want to find the curvature of the band to calculate the effective mass.
+        band_spin: int, optional
+            The spin value for which we want the effective mass.
+        n_points: int
+            The number of points that we want to use for the polynomial fit.
+        k_direction: {"symmetric", "right", "left"}, optional
+            Indicates in which direction -starting from `k`- should the band be fitted. 
+            "left" and "right" mean that the fit will only be done in one direction, while
+            "symmetric" indicates that points from both sides will be used.
+        
+        Return
+        -----------
+        float
+            The efective mass, in atomic units.
+        """
+        from sisl.unit.base import units
+
+        # Get the band that we want to fit
+        band_vals = self.bands.sel(band=band, spin=band_spin)
+
+        # Sanitize k to a float
+        k = self._sanitize_k(k)
+        # Find the index of the requested k
+        k_index = abs(self.bands.k -k).values.argmin()
+
+        # Determine which slice of the band will we take depending on k_direction and n_points
+        if k_direction == "symmetric":
+            sel_slice = slice(k_index - n_points // 2, k_index + n_points // 2 + 1)
+        elif k_direction == "left":
+            sel_slice = slice(k_index - n_points + 1, k_index + 1)
+        elif k_direction == "right":
+            sel_slice = slice(k_index, k_index + n_points)
+        else:
+            raise ValueError(f"k_direction must be one of ['symmetric', 'left', 'right'], {k_direction} was passed")
+        
+        # Grab the slice of the band that we are going to fit
+        sel_band = band_vals[sel_slice] * units("eV", "Hartree")
+        sel_k = self.bands.k[sel_slice] - k
+
+        # Fit the band to a second order polynomial
+        polyfit = np.polynomial.Polynomial.fit(sel_k, sel_band, 2)
+
+        # Get the coefficient for the second order term
+        coeff_2 = polyfit.convert().coef[2]
+
+        # Calculate the effective mass from the dispersion relation.
+        # Note that hbar = m_e = 1, since we are using atomic units.
+        eff_m = 1 / (2 * coeff_2)
+
+        return eff_m
+
+
