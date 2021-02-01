@@ -21,6 +21,10 @@ def _convert_optimize_result(minimizer, result):
     """ Convert optimize result to conform to the scaling procedure performed """
     # reverse optimized value
     # and also store the normalized values (to match the gradients etc)
+    if minimizer.norm[0] in ("none", "identity"):
+        # We don't need to do anything
+        # We haven't scaled anything
+        return result
     result.x_norm = result.x
     result.x = minimizer.reverse_normalize(result.x)
     if hasattr(result, "jac"):
@@ -38,14 +42,13 @@ class BaseMinimize:
     # Basic minimizer basically used for figuring out whether
     # to use a local or global minimization strategy
 
-    def __init__(self, variables=(), out="minimize.dat", norm='identity', **opts):
+    def __init__(self, variables=(), out="minimize.dat", norm='identity'):
         # ensure we have an ordered dict, for one reason or the other
         self.variables = []
         if variables is not None:
             for v in variables:
                 self.add_variable(v)
         self.reset(out, norm)
-        self.opts = PropertyDict(**opts)
 
     def reset(self, out=None, norm=None):
         """ Reset data table to be able to restart """
