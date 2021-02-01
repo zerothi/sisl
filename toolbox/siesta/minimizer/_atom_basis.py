@@ -136,12 +136,12 @@ class AtomBasis:
                 elif opt == "S":
                     nlopts["split"] = float(nl_line.pop(0))
                 elif opt == "F":
-                    nlopts["filter"] = float(nl_line.pop(0))
+                    nlopts["filter"] = float(nl_line.pop(0)) / _eV2Ry
                 elif opt == "E":
                     # 1 or 2 values
-                    V0 = float(nl_line.pop(0))
+                    V0 = float(nl_line.pop(0)) / _eV2Ry
                     try:
-                        ri = float(nl_line[0])
+                        ri = float(nl_line[0]) / _Ang2Bohr
                         nl_line.pop(0)
                     except:
                         # default to None (uses siesta default)
@@ -151,13 +151,14 @@ class AtomBasis:
                     # 1, 2 or 3 values
                     charge = float(nl_line.pop(0))
                     try:
-                        yukawa = float(nl_line[0])
+                        # this is in Bohr-1
+                        yukawa = float(nl_line[0]) * _Ang2Bohr
                         nl_line.pop(0)
                     except:
                         # default to None (uses siesta default)
                         yukawa = None
                     try:
-                        width = float(nl_line[0])
+                        width = float(nl_line[0]) / _Ang2Bohr
                         nl_line.pop(0)
                     except:
                         # default to None (uses siesta default)
@@ -177,6 +178,7 @@ class AtomBasis:
         return cls(atom, opts)
 
     def yield_nl_orbs(self):
+        """ An iterator with each different ``n, l`` pair returned with a list of zeta-shells """
         orbs = {}
         for orb in self.atom:
             # build a dictionary
