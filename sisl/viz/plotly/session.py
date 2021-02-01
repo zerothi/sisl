@@ -785,32 +785,6 @@ class Session(Configurable):
         return {id: {"id": id, **{k: plotable[k] for k in ["name", "path", "plots", "default_plot"]}, "chosenPlots": [plotable["default_plot"]]}
                 for id, plotable in self.warehouse["plotables"].items()}
 
-    #-----------------------------------------
-    #      NOTIFY CURRENT STATE TO GUI
-    #-----------------------------------------
-
-    def _get_dict_for_GUI(self):
-        """
-        This method is thought mainly to prepare data to be sent through the API to the GUI.
-        Data has to be sent as JSON, so this method can only return JSONifiable objects. (no numpy arrays, no NaN,...)
-        """
-        info_dict = {
-            "id": self.id,
-            "tabs": self.tabs,
-            "settings": self.settings,
-            "params": self.params,
-            "paramGroups": self._param_groups,
-            "updatesAvailable": self.updates_available(),
-            "plotOptions": [
-                {"value": subclass.__name__, "label": subclass.plot_name()}
-                for subclass in self.get_plot_classes()
-            ],
-            "structures": self.get_structures(),
-            "plotables": self.get_plotables()
-        }
-
-        return info_dict
-
     def save(self, path, figs_only=False):
         """ Stores the session in disk.
 
