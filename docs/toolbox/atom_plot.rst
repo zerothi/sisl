@@ -22,7 +22,7 @@ It may be called using
 
 which by default will create 4 plots.
 
-.. image:: toolbox/atom_plot_output.png
+.. image:: atom_plot_output.png
    :align: center
    :width: 500
    :alt: Default `stoolbox atom-plot` output
