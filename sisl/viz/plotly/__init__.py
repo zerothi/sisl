@@ -9,9 +9,7 @@ It features a rich set of settings enabling fine-tuning of many parameters.
 
 .. autosummary::
    :toctree:
-   :recursive:
 
-   sisl.viz.plotly
    GeometryPlot
    BandsPlot
    FatbandsPlot
@@ -20,9 +18,6 @@ It features a rich set of settings enabling fine-tuning of many parameters.
    ForcesPlot
    GridPlot
    WavefunctionPlot
-
-.. autoclass:: BandsPlot
-   :members:
 
 """
 from ._presets import *

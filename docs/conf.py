@@ -493,7 +493,7 @@ def sisl_skip(app, what, name, obj, skip, options):
     try:
         cls = sisl_method2class(obj)
     except:
-        return skip
+        cls = None
 
     # Quick escape
     if cls is None:

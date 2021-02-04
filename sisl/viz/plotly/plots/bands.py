@@ -1,10 +1,3 @@
-"""
-.. autosummary::
-   :toctree:
-
-   BandsPlot
-
-"""
 from collections import defaultdict
 from functools import partial
 import itertools
