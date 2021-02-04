@@ -431,7 +431,7 @@ class FatbandsPlot(BandsPlot):
 
         Parameters
         --------
-        on: str, {"species", "atoms", "orbitals", "n", "l", "m", "Z", "spin"} or list of str
+        on: str, {"species", "atoms", "Z", "orbitals", "n", "l", "m", "zeta", "spin"} or list of str
             the parameter to split along.
             Note that you can combine parameters with a "+" to split along multiple parameters
             at the same time. You can get the same effect also by passing a list.

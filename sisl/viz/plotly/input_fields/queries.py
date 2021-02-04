@@ -171,6 +171,7 @@ class OrbitalQueries(QueriesInput):
         import pandas as pd
 
         orb_props = defaultdict(list)
+        del_key = set()
         #Loop over all orbitals of the basis
         for at, iorb in geom.iter_orbitals():
 
@@ -178,15 +179,18 @@ class OrbitalQueries(QueriesInput):
             orb = atom[iorb]
 
             orb_props["atom"].append(at)
+            orb_props["Z"].append(atom.Z)
             orb_props["species"].append(atom.symbol)
             orb_props["orbital_name"].append(orb.name())
 
-            for key in ("n", "l", "m", "Z"):
-                orb_props[key].append(getattr(orb, key, None))
+            for key in ("n", "l", "m", "zeta"):
+                val = getattr(orb, key, None)
+                if val is None:
+                    del_key.add(key)
+                orb_props[key].append(val)
 
-        for key in ("n", "l", "m", "Z"):
-            if np.any(orb_props[key]) is None:
-                del orb_props[key]
+        for key in del_key:
+            del orb_props[key]
 
         self.orb_filtering_df = pd.DataFrame(orb_props)
 
@@ -228,7 +232,7 @@ class OrbitalQueries(QueriesInput):
 
         Parameters
         ------------
-        key: str, {"species", "atoms", "orbitals", "n", "l", "m", "Z", "spin"}
+        key: str, {"species", "atoms", "Z", "orbitals", "n", "l", "m", "zeta", "spin"}
             the parameter that you want the options for.
 
             Note that you can combine them with a "+" to get all the possible combinations.
@@ -297,7 +301,7 @@ class OrbitalQueries(QueriesInput):
         --------
         query: dict
             the query that we want to split
-        on: str, {"species", "atoms", "orbitals", "n", "l", "m", "Z", "spin"}, or list of str
+        on: str, {"species", "atoms", "Z", "orbitals", "n", "l", "m", "zeta", "spin"}, or list of str
             the parameter to split along.
             Note that you can combine parameters with a "+" to split along multiple parameters
             at the same time. You can get the same effect also by passing a list.
@@ -395,7 +399,7 @@ class OrbitalQueries(QueriesInput):
 
         Parameters
         --------
-        on: str, {"species", "atoms", "orbitals", "n", "l", "m", "Z", "spin"} or list of str
+        on: str, {"species", "atoms", "Z", "orbitals", "n", "l", "m", "zeta", "spin"} or list of str
             the parameter to split along.
             Note that you can combine parameters with a "+" to split along multiple parameters
             at the same time. You can get the same effect also by passing a list.
