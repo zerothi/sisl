@@ -5,7 +5,6 @@ Tests specific functionality of the bands plot.
 Different inputs are tested (siesta .bands and sisl Hamiltonian).
 
 """
-
 from xarray import DataArray
 import numpy as np
 import pytest
@@ -14,7 +13,10 @@ from functools import partial
 
 import sisl
 from sisl.viz import BandsPlot
-from sisl.viz.plotly.plots.tests.helpers import PlotTester
+from sisl.viz.plotly.plots.tests.conftest import PlotTester
+
+
+pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 
 
 class BandsPlotTester(PlotTester):

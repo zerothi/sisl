@@ -8,7 +8,6 @@ from copy import deepcopy, copy
 
 import sisl
 from sisl._environ import register_environ_variable, get_environ_variable
-from .gui.server.sync import Connected
 from .plot import Plot
 from .configurable import Configurable, vizplotly_settings
 from .plotutils import find_files, find_plotable_siles, call_method_if_present, get_plot_classes
@@ -43,7 +42,7 @@ class Warehouse:
         self._warehouse[item] = value
 
 
-class Session(Configurable, Connected):
+class Session(Configurable):
     """ Represents a session of the graphical interface
 
     Plots are organized in different tabs and each tab has a layout
@@ -211,8 +210,6 @@ class Session(Configurable, Connected):
 
         call_method_if_present(self, "_after_init")
 
-        super().__init__(*args, **kwargs)
-
     #-----------------------------------------
     #            PLOT MANAGEMENT
     #-----------------------------------------
@@ -268,15 +265,14 @@ class Session(Configurable, Connected):
         noTab: boolean, optional
             if set to true, prevents the plot from being added to a tab
         """
-        # Make sure the plot is connected to the same socketio as the session
-        plot.socketio = self.socketio
-
         self.warehouse["plots"][plot.id] = plot
 
         if not noTab:
             tabID = self._tab_id(tabID) if tabID is not None else self.tabs[0]["id"]
 
             self._add_plot_to_tab(plot.id, tabID)
+        
+        call_method_if_present(self, "_on_plot_added", plot, tabID)
 
         return self
 
@@ -399,11 +395,11 @@ class Session(Configurable, Connected):
         """
         plot = self.plot(plotID)
 
-        plot.socketio = None
-
         self.warehouse["plots"] = {ID: plot for ID, plot in self.plots.items() if ID != plotID}
 
         self.remove_plot_from_all_tabs(plotID)
+
+        call_method_if_present(self, "_on_plot_removed", plot)
 
         return self
 
@@ -789,37 +785,6 @@ class Session(Configurable, Connected):
         return {id: {"id": id, **{k: plotable[k] for k in ["name", "path", "plots", "default_plot"]}, "chosenPlots": [plotable["default_plot"]]}
                 for id, plotable in self.warehouse["plotables"].items()}
 
-    #-----------------------------------------
-    #      NOTIFY CURRENT STATE TO GUI
-    #-----------------------------------------
-
-    def _get_dict_for_GUI(self):
-        """
-        This method is thought mainly to prepare data to be sent through the API to the GUI.
-        Data has to be sent as JSON, so this method can only return JSONifiable objects. (no numpy arrays, no NaN,...)
-        """
-        info_dict = {
-            "id": self.id,
-            "tabs": self.tabs,
-            "settings": self.settings,
-            "params": self.params,
-            "paramGroups": self._param_groups,
-            "updatesAvailable": self.updates_available(),
-            "plotOptions": [
-                {"value": subclass.__name__, "label": subclass.plot_name()}
-                for subclass in self.get_plot_classes()
-            ],
-            "structures": self.get_structures(),
-            "plotables": self.get_plotables()
-        }
-
-        return info_dict
-
-    def _on_socketio_change(self):
-        """ Transmit the socketio change to all the plots """
-        for plot in self.plots.values():
-            plot.socketio = self.socketio
-
     def save(self, path, figs_only=False):
         """ Stores the session in disk.
 
@@ -830,8 +795,6 @@ class Session(Configurable, Connected):
         figs_only: boolean, optional
             Whether only figures should be saved, the rest of plot's data will be ignored.
         """
-        socket = self.socketio
-        self.socketio = None
         session = copy(self)
 
         if figs_only:
@@ -842,7 +805,5 @@ class Session(Configurable, Connected):
 
         with open(path, 'wb') as handle:
             dill.dump(session, handle, protocol=dill.HIGHEST_PROTOCOL)
-
-        self.socketio = socket
 
         return self

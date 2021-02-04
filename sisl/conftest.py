@@ -175,7 +175,8 @@ def pytest_configure(config):
                  'density_matrix', 'dynamicalmatrix', 'energydensity_matrix',
                  'siesta', 'tbtrans', 'ham', 'vasp', 'w90', 'wannier90', 'gulp', 'fdf',
                  "category", "geom_category", "plot",
-                 'table', 'cube', 'slow', 'selector', 'overlap', 'mixing']:
+                 'table', 'cube', 'slow', 'selector', 'overlap', 'mixing',
+                 'viz', 'plotly', 'blender']:
         config.addinivalue_line(
             "markers", f"{mark}: mark test to run only on named environment"
         )

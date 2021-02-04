@@ -6,8 +6,11 @@ import numpy as np
 from sisl import Geometry, PeriodicTable, Atom, AtomGhost
 from sisl.utils.mathematics import fnorm
 from ..plot import Plot, entry_point
-from ..input_fields import ProgramaticInput, FunctionInput, FloatInput, SwitchInput, DropdownInput, AtomSelect, GeomAxisSelect, \
+from ..input_fields import (
+    ProgramaticInput, FunctionInput, FloatInput,
+    SwitchInput, DropdownInput, AtomSelect, GeomAxisSelect,
     FilePathInput, PlotableInput, IntegerInput, TextInput, Array1DInput
+)
 from ..plotutils import values_to_colors
 from sisl._dispatcher import AbstractDispatch, ClassDispatcher
 
@@ -54,25 +57,24 @@ class GeometryPlot(Plot):
     show_bonds: bool, optional
 
     axes:  optional
-        The axis along which you want to see the geometry.              You
+        The axis along which you want to see the geometry. You
         can provide as many axes as dimensions you want for your plot.
         Note that the order is important and will result in setting the plot
-        axes diferently.             For 2D and 1D representations, you can
+        axes diferently. For 2D and 1D representations, you can
         pass an arbitrary direction as an axis (array of shape (3,))
     dataaxis_1d: array-like or function, optional
         If you want a 1d representation, you can provide a data axis.
         It determines the second coordinate of the atoms.
         If it's a function, it will recieve the projected 1D coordinates and
-        needs to returns              the coordinates for the other axis as
-        an array.                          If not provided, the other axis
-        will just be 0 for all points.
+        needs to returns the coordinates for the other axis as
+        an array. If not provided, the other axis will just be 0 for all points.
     show_cell:  optional
-        Specifies how the cell should be rendered.              (False: not
+        Specifies how the cell should be rendered. (False: not
         rendered, 'axes': render axes only, 'box': render a bounding box)
     atoms:  optional
         The atoms that are going to be displayed in the plot.
         This also has an impact on bonds (see the `bind_bonds_to_ats` and
-        `show_atoms` parameters).             If set to None, all atoms are
+        `show_atoms` parameters). If set to None, all atoms are
         displayed
     atoms_color: array-like, optional
         A list containing the color for each atom.
@@ -81,15 +83,17 @@ class GeometryPlot(Plot):
     atoms_colorscale: str, optional
         The colorscale to use to map values to colors for the atoms.
         Only used if atoms_color is provided and is an array of values.
+    nsc: array-like, optional
+        number of times the geometry should be repeated
     atoms_vertices: int, optional
         In a 3D representation, the number of vertices that each atom sphere
         is composed of.
     bind_bonds_to_ats: bool, optional
         whether only the bonds that belong to an atom that is present should
-        be displayed.             If False, all bonds are displayed
+        be displayed. If False, all bonds are displayed
         regardless of the `atom` parameter
     show_atoms: bool, optional
-        If set to False, it will not display atoms.              Basically
+        If set to False, it will not display atoms. Basically
         this is a shortcut for `atom = [], bind_bonds_to_ats=False`.
         Therefore, it will override these two parameters.
     root_fdf: fdfSileSiesta, optional
@@ -106,15 +110,18 @@ class GeometryPlot(Plot):
         PlotableInput(key='geometry', name="Geometry",
             dtype=Geometry,
             default=None,
+            help="A geometry object",
         ),
 
         FilePathInput(key="geom_file", name="Geometry file",
             group="dataread",
-            default=None
+            default=None,
+            help="A file name that can read a geometry",
         ),
 
         SwitchInput(key='show_bonds', name='Show bonds',
-            default=True,
+                    default=True,
+                    help="Also show bonds between atoms."
         ),
 
         GeomAxisSelect(
@@ -165,6 +172,7 @@ class GeometryPlot(Plot):
                 'shape': (3,),
                 'extendable': False,
             },
+            help="""Make the geometry larger by tiling it along each lattice vector"""
         ),
 
         AtomSelect(key="atoms", name="Atoms to display",

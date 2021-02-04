@@ -27,7 +27,6 @@ from .plotutils import init_multiple_plots, repeat_if_childs, dictOfLists2listOf
 from .input_fields import TextInput, SileInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, \
     FloatInput, RangeSlider, QueriesInput, ProgramaticInput, PlotableInput
 from ._shortcuts import ShortCutable
-from .gui.server.sync import Connected
 
 
 __all__ = ["Plot", "MultiplePlot", "Animation", "SubPlots"]
@@ -111,7 +110,7 @@ class PlotMeta(ConfigurableMeta):
         return super().__call__(cls, *args, **kwargs)
 
 
-class Plot(ShortCutable, Configurable, Connected, metaclass=PlotMeta):
+class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
     """ Parent class of all plot classes
 
     Implements general things needed by all plots such as settings and shortcut
@@ -624,8 +623,6 @@ class Plot(ShortCutable, Configurable, Connected, metaclass=PlotMeta):
 
         # Initialize shortcut management
         ShortCutable.__init__(self)
-        # Initialize possibility to connect to a GUI
-        Connected.__init__(self, socketio=kwargs.get("socketio", None))
 
         #Give the user the possibility to do things before initialization (IDK why)
         call_method_if_present(self, "_before_init")
@@ -1662,24 +1659,6 @@ class Plot(ShortCutable, Configurable, Connected, metaclass=PlotMeta):
     #-------------------------------------------
     #       DATA TRANSFER/STORAGE METHODS
     #-------------------------------------------
-
-    def _get_dict_for_GUI(self):
-        """ This method is thought mainly to prepare data to be sent through the API to the GUI.
-        Data has to be sent as JSON, so this method can only return JSONifiable objects. (no numpy arrays, no NaN,...)
-        """
-        infoDict = {
-            "id": self.id,
-            "plotClass": self.__class__.__name__,
-            "struct": getattr(self, "struct", None),
-            "figure": self.figure,
-            "settings": {param.key: self.settings[param.key] for param in self.params if not isinstance(param, ProgramaticInput)},
-            "params": self.params,
-            "paramGroups": self.param_groups,
-            "grid_dims": getattr(self, "grid_dims", None),
-            "shortcuts": self.shortcuts_for_json
-        }
-
-        return infoDict
 
     def _get_pickleable(self):
         """ Removes from the instance the attributes that are not pickleable """

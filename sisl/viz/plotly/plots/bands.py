@@ -25,6 +25,8 @@ class BandsPlot(Plot):
         file is attempted to read from the fdf file
     band_structure: BandStructure, optional
         The BandStructure object to be used.
+    aiida_bands : aiida.BandsData, optional
+        the bands from an Aiida BandsData node
     add_band_trace_data:  optional
         A function that receives each band (as a DataArray) and adds data to
         the trace. It also recieves the plot object.              The

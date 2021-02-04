@@ -3,17 +3,14 @@
 This file tests general Plot behavior.
 
 """
-
 from copy import deepcopy
 import os
-import tempfile
 
 import pytest
 import numpy as np
 
 import sisl
 from sisl.viz.plotly.plot import Plot, MultiplePlot, SubPlots, Animation
-
 from sisl.viz.plotly.plots import *
 from sisl.viz.plotly.plotutils import get_plotable_siles, load
 from sisl.viz.plotly._presets import PRESETS
@@ -21,6 +18,8 @@ from sisl.viz.plotly._presets import PRESETS
 # ------------------------------------------------------------
 # Checks that will be available to be used on any plot class
 # ------------------------------------------------------------
+
+pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 
 
 class BasePlotTester:
@@ -35,11 +34,13 @@ class BasePlotTester:
         assert doc is not None, f'{self.PlotClass.__name__} does not have documentation'
 
         # Check that all params are in the documentation
-        params = np.array([param.key for param in self.PlotClass._get_class_params()[0]])
-        is_indoc = np.array([key in doc for key in params])
-        assert np.all(is_indoc), f'The following parameters are missing in the documentation of {self.PlotClass.__name__}: {params[~is_indoc]} '
+        params = [param.key for param in self.PlotClass._get_class_params()[0]]
+        missing_params = list(filter(lambda key: key not in doc, params))
+        assert len(missing_params) == 0, f"The following parameters are missing in the documentation of {self.PlotClass.__name__}: {missing_params}"
 
-        missing_help = [param.key for param in self.PlotClass._parameters if not getattr(param, "help", None)]
+        missing_help = list(map(lambda p: p.key,
+                                filter(lambda p: not getattr(p, "help", None), self.PlotClass._parameters)
+        ))
         assert len(missing_help) == 0, f"Parameters {missing_help} in {self.PlotClass.__name__} are missing a help message. Don't be lazy!"
 
     def test_plot_settings(self):
@@ -62,18 +63,6 @@ class BasePlotTester:
         # Build a plot directly with test settings and check if it works
         plot = self.PlotClass(**new_settings)
         assert np.all([plot.settings[key] == val for key, val in new_settings.items()])
-
-    def test_plot_connected(self):
-
-        plot = self.PlotClass()
-
-        # Check that the plot has a socketio attribute and that it can be changed
-        # Seems dumb, but socketio is really a property that uses functions to set the
-        # real attribute, so they may be broken by something
-        assert hasattr(plot, 'socketio'), f"Socketio connectivity is not initialized correctly in {plot.__class__}"
-        assert plot.socketio is None
-        plot.socketio = 2
-        assert plot.socketio == 2, f'Problems setting a new socketio for {plot.__class__}'
 
     def test_plot_shortcuts(self):
 

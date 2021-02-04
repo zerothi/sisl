@@ -5,7 +5,7 @@ Tests specific functionality of the grid plot.
 Different inputs are tested (siesta .RHO and sisl Hamiltonian).
 
 """
-
+import pytest
 import numpy as np
 import os
 import plotly.graph_objs as go
@@ -13,7 +13,10 @@ import plotly.graph_objs as go
 import sisl
 from sisl.viz import GridPlot
 from sisl.viz import Animation
-from sisl.viz.plotly.plots.tests.helpers import PlotTester
+from sisl.viz.plotly.plots.tests.conftest import PlotTester
+
+
+pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 
 
 class GridPlotTester(PlotTester):

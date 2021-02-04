@@ -86,6 +86,9 @@ class BondLengthMap(GeometryPlot):
     atoms_vertices: int, optional
         In a 3D representation, the number of vertices that each atom sphere
         is composed of.
+    nsc: (3,) of ints, optional
+        number of tilings of the input geometry along each lattice vector
+        Path to the fdf file that is the 'parent' of the results.
     bind_bonds_to_ats: bool, optional
         whether only the bonds that belong to an atom that is present should
         be displayed.             If False, all bonds are displayed
@@ -166,7 +169,8 @@ class BondLengthMap(GeometryPlot):
             default = 0,
             params = {
                 "step": 0.01
-            }
+            },
+            help="Minimum color scale"
         ),
 
         FloatInput(
@@ -174,7 +178,8 @@ class BondLengthMap(GeometryPlot):
             default = 0,
             params = {
                 "step": 0.01
-            }
+            },
+            help="Maximum color scale"
         ),
 
         FloatInput(

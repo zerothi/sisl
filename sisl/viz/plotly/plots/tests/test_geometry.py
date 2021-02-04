@@ -5,13 +5,17 @@ Tests specific functionality of the bands plot.
 Different inputs are tested (siesta .bands and sisl Hamiltonian).
 
 """
-
 import numpy as np
 import plotly.graph_objs as go
 
+import pytest
+
 import sisl
 from sisl.viz import GeometryPlot
-from sisl.viz.plotly.plots.tests.helpers import PlotTester
+from sisl.viz.plotly.plots.tests.conftest import PlotTester
+
+
+pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 
 
 class GeometryPlotTester(PlotTester):

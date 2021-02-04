@@ -7,13 +7,13 @@ for you.
 Example:
 
 class FakePlot(Plot):
-    """
+    '''
     This plot does really nothing useful
 
     Parameters
     -----------
     %%configurable_settings%%
-    """
+    '''
 
 %%configurable_settings%% is the key to let the script now where to put the documentation.
 
@@ -22,7 +22,6 @@ IF YOU HAVE MORE THAN ONE PLOT CLASS IN A FILE, YOU SHOULD SPECIFY %%FakePlot_co
 Then, just run this script and it will update all the classes documentation.
 Or you can use fill_class_docs to only update a certain class.
 """
-
 from sisl.viz.plotly.plotutils import get_configurable_docstring, get_plot_classes, get_session_classes
 from sisl.viz.plotly.plot import Plot, MultiplePlot, Animation, SubPlots
 from sisl.viz.plotly.session import Session

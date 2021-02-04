@@ -1,6 +1,11 @@
+import pytest
+
 import numpy as np
 
 from sisl.viz.plotly.configurable import NamedHistory
+
+
+pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 
 
 def test_named_history():
