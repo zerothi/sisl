@@ -1,5 +1,6 @@
 from functools import wraps
-from collections import Iterable, defaultdict
+from collections import defaultdict
+from collections.abc import Iterable
 
 import numpy as np
 

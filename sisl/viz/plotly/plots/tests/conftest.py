@@ -146,15 +146,22 @@ def only_if_plot_initialized(request):
 
     if request.function.__name__ != "test_plot_initialization":
         # loop modules that viz.plotly depends on
-        msg = ""
-        for modname in ("plotly", "skimage"):
+        importables = []
+        non_importables = []
+        for modname in ("plotly", "skimage", "pandas", "xarray"):
             try:
                 importlib.import_module(modname)
-                msg = f"{msg}; {modname} is importable"
+                importables.append(modname)
             except ImportError:
-                msg = f"{msg}; {modname} cannot be imported"
-        if msg.startswith(";"):
-            msg = msg[2:]
+                non_importables.append(modname)
+
+        if importables:
+            msg = ", ".join(importables) + " is/are importable"
+            if non_importables:
+                msg += "; " + ", ".join(non_importables) + " is/are not importable"
+        elif non_importables:
+            msg = ", ".join(non_importables) + " is/are not importable"
+
         if "plot" not in request.cls._attrs:
             pytest.skip(f"plot was not initialized ({msg})")
 

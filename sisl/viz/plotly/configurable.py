@@ -2,7 +2,8 @@ from copy import copy, deepcopy
 from functools import wraps
 import inspect
 from types import MethodType
-from collections import deque, Iterable, defaultdict
+from collections import deque, defaultdict
+from collections.abc import Iterable
 import sys
 
 import numpy as np
