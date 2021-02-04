@@ -5,9 +5,9 @@ Tests specific functionality of the grid plot.
 Different inputs are tested (siesta .RHO and sisl Hamiltonian).
 
 """
+import os.path as osp
 import pytest
 import numpy as np
-import os
 import plotly.graph_objs as go
 
 import sisl
@@ -17,6 +17,7 @@ from sisl.viz.plotly.plots.tests.conftest import PlotTester
 
 
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
+_dir = osp.join('sisl', 'io', 'siesta')
 
 
 class GridPlotTester(PlotTester):
@@ -44,7 +45,7 @@ class GridPlotTester(PlotTester):
 
     def test_grid(self):
 
-        assert os.path.exists(self.plot.get_setting("grid_file")), "You provided a non-existent grid_file"
+        assert osp.exists(self.plot.get_setting("grid_file")), "You provided a non-existent grid_file"
 
         grid = self.plot.grid
 
@@ -108,7 +109,7 @@ class TestGridPlot(GridPlotTester):
     run_for = {
         # Test with a siesta RHO file
         "siesta_RHO": {
-            "plot_file": "SrTiO3.RHO",
+            "plot_file": osp.join(_dir, "SrTiO3.RHO"),
             "grid_shape": (48, 48, 48)
         }
     }

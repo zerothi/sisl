@@ -5,10 +5,11 @@ Tests specific functionality of the PDOS plot.
 Different inputs are tested (siesta .PDOS and sisl Hamiltonian).
 
 """
+import os.path as osp
+from functools import partial
+import pytest
 from xarray import DataArray
 import numpy as np
-import pytest
-from functools import partial
 
 import sisl
 from sisl.viz import PdosPlot
@@ -16,6 +17,7 @@ from sisl.viz.plotly.plots.tests.conftest import PlotTester
 
 
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
+_dir = osp.join('sisl', 'io', 'siesta')
 
 
 @pytest.fixture(params=[True, False], ids=["method_splitting", "inplace_split"])
@@ -130,7 +132,7 @@ pdos_plots = {}
 # ---- For a siesta PDOS file
 
 pdos_plots["siesta_PDOS_file"] = {
-    "plot_file": "SrTiO3.PDOS",
+    "plot_file": osp.join(_dir, "SrTiO3.PDOS"),
     "na": 5,
     "no": 72,
     "n_spin": 1,

@@ -3,8 +3,11 @@ import numpy as np
 import sisl
 from ..plot import Plot, entry_point
 from ..plotutils import find_files, random_color
-from ..input_fields import TextInput, SileInput, SwitchInput, ColorPicker, DropdownInput, CreatableDropdown, \
-    IntegerInput, FloatInput, RangeInput, RangeSlider, OrbitalQueries, ProgramaticInput, Array1DInput, ListInput
+from ..input_fields import (
+    TextInput, SileInput, SwitchInput, ColorPicker, DropdownInput, CreatableDropdown,
+    IntegerInput, FloatInput, RangeInput, RangeSlider, OrbitalQueries,
+    ProgramaticInput, Array1DInput, ListInput
+)
 from ..input_fields.range import ErangeInput
 
 
@@ -172,7 +175,7 @@ class PdosPlot(Plot):
                     params={
                         "isMulti": True,
                         "isSearchable": True,
-                        "options": [{"value": option, "label": option} for option in ("species", "atoms", "orbitals", "spin", "n", "l", "m", "Z")]
+                        "options": [{"value": option, "label": option} for option in ("species", "atoms", "Z", "orbitals", "spin", "n", "l", "m", "zeta")]
                     }
                 )
             ]

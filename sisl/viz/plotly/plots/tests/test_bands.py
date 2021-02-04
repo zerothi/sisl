@@ -5,11 +5,12 @@ Tests specific functionality of the bands plot.
 Different inputs are tested (siesta .bands and sisl Hamiltonian).
 
 """
-from xarray import DataArray
-import numpy as np
-import pytest
+import os.path as osp
 import itertools
 from functools import partial
+import pytest
+from xarray import DataArray
+import numpy as np
 
 import sisl
 from sisl.viz import BandsPlot
@@ -17,6 +18,7 @@ from sisl.viz.plotly.plots.tests.conftest import PlotTester
 
 
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
+_dir = osp.join('sisl', 'io', 'siesta')
 
 
 class BandsPlotTester(PlotTester):
@@ -127,7 +129,7 @@ bands_plots = {}
 # ---- From siesta.bands
 
 bands_plots["siesta_output"] = {
-    "plot_file": "SrTiO3.bands",
+    "plot_file": osp.join(_dir, "SrTiO3.bands"),
     "bands_shape": (150, 1, 72),
     "ticklabels": ('Gamma', 'X', 'M', 'Gamma', 'R', 'X'),
     "tickvals": [0.0, 0.429132, 0.858265, 1.465149, 2.208428, 2.815313],
