@@ -147,6 +147,7 @@ which fills in the version number.
    :caption: Visualization
    
    visualization/ase/index
+   visualization/plotly/index
 
 .. for now the plotly build fails, so we need to figure out
    a better way for this documentation.

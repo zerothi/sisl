@@ -6,7 +6,7 @@ objects, which is not already implemented (https://github.com/zerothi/sisl/issue
 from functools import wraps
 
 import plotly.express as px
-from sisl._dispatcher import AbstractDispatch, ClassDispatcher
+from sisl._dispatcher import AbstractDispatch
 
 __all__ = ["sx"]
 
@@ -49,9 +49,7 @@ class WithSislManagement(AbstractDispatch):
                             # Replace the provided string by the actual value of the attribute
                             kwargs[key] = val
 
-            ret = method(*args, **kwargs)
-
-            return ret
+            return method(*args, **kwargs)
 
         return with_sisl_support
 

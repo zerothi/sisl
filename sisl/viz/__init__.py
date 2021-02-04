@@ -5,6 +5,15 @@ Visualization utilities (:mod:`sisl.viz`)
 
 .. module:: sisl.viz
    :noindex:
+
+Various visualization modules are described here.
+
+
+Plotly (:mod:`~sisl.viz.plotly`)
+================================
+
+The plotly backend.
+
 """
 
 # Import everything from the plotly submodule

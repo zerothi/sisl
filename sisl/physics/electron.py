@@ -1,5 +1,5 @@
 r"""Electron related functions and classes
-=========================================
+==========================================
 
 .. module:: sisl.physics.electron
    :noindex:

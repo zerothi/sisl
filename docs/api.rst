@@ -15,8 +15,8 @@ different routines for electronic structure calculations.
    api-generated/sisl.constant
    api-generated/sisl.unit
    api-generated/sisl.shape
+   api-generated/sisl.viz
    api-generated/sisl.utils
-
 
 
 .. Here we should list *all* modules we want to be hosted in the
@@ -36,6 +36,12 @@ different routines for electronic structure calculations.
    sisl.physics.bloch
    sisl.physics.electron
    sisl.physics.phonon
+   sisl.viz
+   sisl.viz.plotly
+   sisl.viz.plotly.input_fields
+   sisl.viz.plotly.plots
+   sisl.viz.plotly.plots.experimental
+   sisl.viz.plotly.sessions
    sisl.io
    sisl.shape
    sisl.unit

@@ -1,13 +1,12 @@
-Plotly visualization framework
-==============
+Plotly
+------
 
-There's a full visualization framework developed specifically for sisl that uses `plotly`_ to visualize
+A full visualization framework developed specifically for sisl that uses `plotly`_ to visualize
 all the processing that you can do with the package.
 
-.. _plotly: https://plotly.com/python/
 
 Basic Tutorials
----------
+^^^^^^^^^^^^^^^
 
 These are some tutorials that will introduce you to the framework.
 
@@ -17,8 +16,9 @@ These are some tutorials that will introduce you to the framework.
     basic-tutorials/Demo.ipynb
     basic-tutorials/GUI with Python Demo.ipynb
 
+
 Showcase of plot classes
--------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 The following notebooks will help you develop a deeper understanding of what each plot class is capable of.
 
@@ -33,7 +33,7 @@ The following notebooks will help you develop a deeper understanding of what eac
 
 
 Combining plots
---------------------
+^^^^^^^^^^^^^^^
 
 Have two plots that you would like to see displayed together, maybe as an animation or subplots? You've come
 to the right place!
@@ -43,8 +43,9 @@ to the right place!
 
     combining-plots/Intro to multiple plots.ipynb
 
+
 Do it yourself
---------------------
+^^^^^^^^^^^^^^
 
 You don't like the plots that we, with all the love of the world, have prepared? 
 
@@ -55,6 +56,7 @@ the process and by the end of your reading it will be dead easy for you to have 
     :name: viz-plotly-diy-gallery
 
     diy/Building a plot class.ipynb
+
 
 .. note::
     Consider contributing to the package if you build a useful presentation. The community will appreciate it! :)

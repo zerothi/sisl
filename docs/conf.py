@@ -432,6 +432,7 @@ intersphinx_mapping = {
     'scipy': ('https://docs.scipy.org/doc/scipy/reference/', None),
     'matplotlib': ('https://matplotlib.org/', None),
     'xarray': ('https://xarray.pydata.org/en/stable/', None),
+    'plotly': ('https://plotly.com/python-api-reference/', None),
 }
 
 # Tell nbsphinx to wait, at least X seconds for each cell
@@ -489,7 +490,10 @@ def sisl_skip(app, what, name, obj, skip, options):
         if name in ['ArgumentParser', 'ArgumentParser_out']:
             return True
 
-    cls = sisl_method2class(obj)
+    try:
+        cls = sisl_method2class(obj)
+    except:
+        return skip
 
     # Quick escape
     if cls is None:

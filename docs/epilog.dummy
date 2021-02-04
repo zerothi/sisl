@@ -24,6 +24,7 @@
 .. _tqdm: https://github.com/tqdm/tqdm
 .. _xarray: http://xarray.pydata.org/en/stable/index.html
 .. _workshop: https://github.com/zerothi/ts-tbt-sisl-tutorial
+.. _plotly: https://plotly.com/python/
 
 .. DFT codes
 .. _atom: https://siesta-project.org/SIESTA_MATERIAL/Pseudos/atom_licence.html

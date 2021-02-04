@@ -1,3 +1,10 @@
+"""
+.. autosummary::
+   :toctree:
+
+   BandsPlot
+
+"""
 from collections import defaultdict
 from functools import partial
 import itertools
@@ -8,9 +15,12 @@ import plotly.express as px
 import sisl
 from ..plot import Plot, entry_point
 from ..plotutils import find_files
-from ..input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput,\
-     IntegerInput, FloatInput, RangeInput, RangeSlider, QueriesInput, ProgramaticInput, FunctionInput, SileInput, \
-         PlotableInput, SpinSelect, AiidaNodeInput
+from ..input_fields import (
+    TextInput, SwitchInput, ColorPicker, DropdownInput,
+    IntegerInput, FloatInput, RangeInput, RangeSlider,
+    QueriesInput, ProgramaticInput, FunctionInput, SileInput,
+    PlotableInput, SpinSelect, AiidaNodeInput
+)
 from ..input_fields.range import ErangeInput
 
 

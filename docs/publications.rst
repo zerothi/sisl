@@ -35,7 +35,7 @@ by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
 #. J. Brand, S. Leitherer, N. Papior, N. Neel, Y. Lei, M. Brandbyge and J. Kroger,
    *Nonequilibrium Bond Forces in Single-Molecule Junctions*,
-   Nano Letters **19** `(2019) <https://doi.org/10.1021/acs.nanolett.9b02845>`_
+   Nano Letters **19** `11 (2019) <https://doi.org/10.1021/acs.nanolett.9b02845>`_
 
 #. F. Schindler, M. Brzezinska, W.A. Benalcazar, M. Iraola, A. Bouhon, S.S. Tsirkin, M.G. Vergniory, T. Neupert,
    *Fractional corner charges in spin-orbit coupled crystals*,
@@ -43,7 +43,7 @@ by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
 
 #. G. Singh, K. Kumar, R.K. Moudgil,
    *Alloying-induced Spin Seebeck Effect and Spin Figure of Merit in Pt-based Bimetallic Atomic Wires of Noble Metals*,
-   Physical Chemistry Chemical Physics `(2019) <https://doi.org/10.1039/C9CP01671F>`_
+   Physical Chemistry Chemical Physics **21** `20965 (2019) <https://doi.org/10.1039/C9CP01671F>`_
 
 #. L. Oroszlány, J. Ferrer, A. Deak, L. Udvardi and L. Szunyogh,
    *Exchange interactions from a nonorthogonal basis set: From bulk ferromagnetsto the magnetism in low-dimensional graphene systems*,

@@ -8,6 +8,7 @@ build
 *.c
 __config__.py
 docs/build
+docs/api-generated
 docs/sisl
 sisl.egg-info
 sisl/info.py
