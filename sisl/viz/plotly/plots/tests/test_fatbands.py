@@ -17,6 +17,8 @@ pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 # ------------------------------------------------------------
 #         Build a generic tester for the bands plot
 # ------------------------------------------------------------
+
+
 class FatbandsPlotTester(BandsPlotTester):
 
     _required_attrs = [

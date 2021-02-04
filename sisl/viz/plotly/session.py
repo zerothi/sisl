@@ -271,7 +271,7 @@ class Session(Configurable):
             tabID = self._tab_id(tabID) if tabID is not None else self.tabs[0]["id"]
 
             self._add_plot_to_tab(plot.id, tabID)
-        
+
         call_method_if_present(self, "_on_plot_added", plot, tabID)
 
         return self

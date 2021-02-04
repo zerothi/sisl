@@ -714,7 +714,7 @@ class BandsPlot(Plot):
             If it can be parsed into a float, the result of `float(k)` will be returned.
             If it is a string and it is a label of a k point, the corresponding k value for that
             label will be returned
-        
+
         Returns
         ------------
         float
@@ -732,7 +732,7 @@ class BandsPlot(Plot):
                 pass
                 # raise ValueError(f"We can not interpret {k} as a k-location in the current bands plot")
                 # This should be logged instead of raising the error
-        
+
         return san_k
 
     def draw_gap(self, from_k, to_k=None, color=None, true_gap=False, gap_spin=0, save=False, **kwargs):
@@ -915,7 +915,7 @@ class BandsPlot(Plot):
             Indicates in which direction -starting from `k`- should the band be fitted. 
             "left" and "right" mean that the fit will only be done in one direction, while
             "symmetric" indicates that points from both sides will be used.
-        
+
         Return
         -----------
         float
@@ -940,7 +940,7 @@ class BandsPlot(Plot):
             sel_slice = slice(k_index, k_index + n_points)
         else:
             raise ValueError(f"k_direction must be one of ['symmetric', 'left', 'right'], {k_direction} was passed")
-        
+
         # Grab the slice of the band that we are going to fit
         sel_band = band_vals[sel_slice] * units("eV", "Hartree")
         sel_k = self.bands.k[sel_slice] - k
@@ -956,5 +956,3 @@ class BandsPlot(Plot):
         eff_m = 1 / (2 * coeff_2)
 
         return eff_m
-
-
