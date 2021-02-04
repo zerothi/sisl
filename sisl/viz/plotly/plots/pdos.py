@@ -17,6 +17,8 @@ class PdosPlot(Plot):
     pdos_file: pdosSileSiesta, optional
         This parameter explicitly sets a .PDOS file. Otherwise, the PDOS file
         is attempted to read from the fdf file
+    tbt_nc: optional
+        TBtrans output for plotting PDOS from NEGF calculations
     Erange: array-like of shape (2,), optional
         Energy range where PDOS is displayed.
     nE: int, optional

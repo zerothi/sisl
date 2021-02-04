@@ -22,8 +22,8 @@ class GridPlot(Plot):
     -------------
     grid: Grid, optional
         A sisl.Grid object. If provided, grid_file is ignored.
-    grid_file: cubeSile or rhoSileSiesta or ldosSileSiesta or rhoinitSileSiesta or rhoxcSileSiesta or drhoSileSiesta or baderSileSiesta or iorhoSileSiesta or totalrhoSileSiesta or stsSileSiesta or stmldosSileSiesta or hartreeSileSiesta or neutralatomhartreeSileSiesta or totalhartreeSileSiesta or gridncSileSiesta or ncSileSiesta or fdfSileSiesta or tsvncSileSiesta or chgSileVASP or locpotSileVASP, optional
-
+    grid_file: Sile, optional
+        a sile that can read grids, e.g. `_gridSileSiesta` or `chgSileVASP` and friends.
     represent:  optional
         The representation of the grid that should be displayed
     transforms:  optional
@@ -35,6 +35,8 @@ class GridPlot(Plot):
         transformations will be applied in the order provided. Some
         transforms might not be necessarily commutable (e.g. "abs" and
         "cos").
+    transform_bc: optional
+        Transform the boundary conditions.
     axes:  optional
         The axis along you want to see the grid, it will be averaged along
         the other ones
@@ -134,7 +136,8 @@ class GridPlot(Plot):
             default=None,
             params={
                 "placeholder": "Write the path to your grid file here..."
-            }
+            },
+            help="A filename that can be return a Grid through `read_grid`."
         ),
 
         DropdownInput(
@@ -256,6 +259,7 @@ class GridPlot(Plot):
                 'shape': (3,),
                 'extendable': False,
             },
+            help="Number of times the grid should be repeated"
         ),
 
         Array1DInput(
@@ -1243,8 +1247,8 @@ class WavefunctionPlot(GridPlot):
         The index of the wavefunction
     grid: Grid, optional
         A sisl.Grid object. If provided, grid_file is ignored.
-    grid_file: cubeSile or rhoSileSiesta or ldosSileSiesta or rhoinitSileSiesta or rhoxcSileSiesta or drhoSileSiesta or baderSileSiesta or iorhoSileSiesta or totalrhoSileSiesta or stsSileSiesta or stmldosSileSiesta or hartreeSileSiesta or neutralatomhartreeSileSiesta or totalhartreeSileSiesta or gridncSileSiesta or ncSileSiesta or fdfSileSiesta or tsvncSileSiesta or chgSileVASP or locpotSileVASP, optional
-
+    grid_file: Sile, optional
+        a sile that can read grids, e.g. `_gridSileSiesta` or `chgSileVASP` and friends.
     represent:  optional
         The representation of the grid that should be displayed
     transforms:  optional
@@ -1256,6 +1260,11 @@ class WavefunctionPlot(GridPlot):
         transformations will be applied in the order provided. Some
         transforms might not be necessarily commutable (e.g. "abs" and
         "cos").
+    transform_bc: optional
+        Transform the boundary conditions.
+    spin : int, optional
+        which spin-component to plot, default to the first spin-component.
+        Only used in polarized wavefunctions.
     axes:  optional
         The axis along you want to see the grid, it will be averaged along
         the other ones
@@ -1272,7 +1281,7 @@ class WavefunctionPlot(GridPlot):
         Interpolation factors to make the grid finer on each axis.See the
         zsmooth setting for faster smoothing of 2D heatmap.
     nsc: array-like, optional
-
+        number of times the geometry should be repeated
     offset: array-like, optional
         The offset of the grid along each axis. This is important if you are
         planning to match this grid with other geometry related plots.

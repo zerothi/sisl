@@ -169,7 +169,8 @@ class BondLengthMap(GeometryPlot):
             default = 0,
             params = {
                 "step": 0.01
-            }
+            },
+            help="Minimum color scale"
         ),
 
         FloatInput(
@@ -177,7 +178,8 @@ class BondLengthMap(GeometryPlot):
             default = 0,
             params = {
                 "step": 0.01
-            }
+            },
+            help="Maximum color scale"
         ),
 
         FloatInput(
