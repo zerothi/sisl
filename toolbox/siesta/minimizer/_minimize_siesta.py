@@ -21,6 +21,7 @@ class MinimizeSiesta(BaseMinimize): # no inheritance!
     It is important that a this gets initialized with ``runner`` and ``metric``
     keyword arguments.
     """
+
     def __init__(self, runner, metric, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.runner = runner

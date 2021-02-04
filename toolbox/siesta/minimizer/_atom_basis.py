@@ -1,4 +1,4 @@
-from functools import reduce, partial
+from functools import partial
 
 import sisl as si
 

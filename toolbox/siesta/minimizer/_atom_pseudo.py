@@ -12,9 +12,6 @@ from ._variable import UpdateVariable
 __all__ = ["AtomPseudo"]
 
 
-_Ang2Bohr = si.units.convert("Ang", "Bohr")
-
-
 class AtomPseudo(AtomInput):
 
     def get_variables(self, dict_or_yaml):

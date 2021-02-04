@@ -20,6 +20,7 @@ which will show 4 plots for different sections. A command-line tool is also
 made available through the `stoolbox`.
 """
 import sys
+from functools import reduce
 from pathlib import Path
 
 import numpy as np
@@ -35,12 +36,38 @@ _script = Path(sys.argv[0]).name
 # We don't use the Siesta units here...
 _Ang2Bohr = si.units.convert("Ang", "Bohr")
 
-_orbs_core_val = {
-    'Bi': (13, 4),
-    'Al': (3, 4),
-    'Cu': (5, 4),
-    'C': (1, 4),
-}
+# Atom/Siesta uses this order of occupation for
+# core electrons
+# idx | shell | electrons | cum. electrons | noble gas
+#  1  |  1s   |    2      |       2        |   [He]
+#  2  |  2s   |    2      |       4        |   [He]2s2
+#  3  |  2p   |    6      |      10        |   [Ne]
+#  4  |  3s   |    2      |      12        |   [Ne]3s
+#  5  |  3p   |    6      |      18        |   [Ar]
+#  6  |  3d   |   10      |      28        |   [Ar]3d10
+#  7  |  4s   |    2      |      30        |   [Ar]3d10 2s2
+#  8  |  4p   |    6      |      36        |   [Kr]
+#  9  |  4d   |   10      |      46        |   [Kr]4d10
+# 10  |  5s   |    2      |      48        |   [Kr]4d10 5s2
+# 11  |  5p   |    6      |      54        |   [Xe]
+# 12  |  4f   |   14      |      68        |   [Xe]4f14
+# 13  |  5d   |   10      |      78        |   [Xe]4f14 5d10
+# 14  |  6s   |    2      |      80        |   [Xe]4f14 5d10 6s2
+# 15  |  6p   |    6      |      86        |   [Rn]
+# 16  |  7s   |    2      |      88        |   [Rn]7s2
+# 17  |  5f   |   14      |     102        |   [Rn]7s2 5f14
+# 18  |  6d   |   10      |     112        |   [Rn]7s2 5f14 6d10
+# 19  |  7p   |    6      |     118        |   [Og]
+_shell_order = [
+    # Occupation shell order
+    '1s', # [He]
+    '2s', '2p', # [Ne]
+    '3s', '3p', # [Ar]
+    '3d', '4s', '4p', # [Kr]
+    '4d', '5s', '5p', # [Xe]
+    '4f', '5d', '6s', '6p', # [Rn]
+    '7s', '5f', '6d', '7p' # [Og]
+]
 
 
 class AtomInput:
@@ -127,9 +154,24 @@ class AtomInput:
         self.opts.setdefault("xc", "pb")
 
         # Read in the core valence shells for this atom
-        core_valence = _orbs_core_val.get(self.atom.symbol, (-1, len(self.atom)))
-        self.opts.setdefault("core", core_valence[0])
-        self.opts.setdefault("valence", core_valence[1])
+        # figure out what the default value is.
+        # We do this my finding the minimum index of valence shells
+        # in the _shell_order list, then we use that as the default number
+        # of core-shells occpupied
+        # e.g if the minimum valence shell is 2p, it would mean that
+        #  _shell_order.index("2p") == 2
+        # which has 1s and 2s occupied.
+        spdf = 'spdf'
+        try:
+            core = reduce(min, (_shell_order.index(f"{orb.n}{spdf[orb.l]}")
+                                for orb in atom),
+                          len(_shell_order))
+        except:
+            core = -1
+
+        self.opts.setdefault("core", core)
+        if self.opts.core == -1:
+            raise ValueError(f"Default value for {self.atom.symbol} not added, please add core= at instantiation")
 
         # Store the defined names
         if define is None:
@@ -222,10 +264,10 @@ class AtomInput:
         # core, valence
         core, valence = inp.pop(0).split()
         opts.core = int(core)
-        opts.valence = int(valence)
+        valence = int(valence)
 
         orbs = []
-        for _ in range(opts.valence):
+        for _ in range(valence):
             n, l, *occ = inp.pop(0).split()
             orb = PropertyDict()
             orb.n = int(n)
@@ -267,9 +309,8 @@ class AtomInput:
         # now extract the charges for each orbital
         atom = self.atom
         core = self.opts.core
-        valence = self.opts.valence
+        valence = len(atom)
 
-        assert len(atom.orbitals) == valence
         f.write(f"{core:5d}{valence:5d}\n")
 
         orbs = sorted(atom.orbitals, key=lambda x: x.l)
