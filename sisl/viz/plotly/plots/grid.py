@@ -1062,7 +1062,7 @@ class GridPlot(Plot):
                 step = (along_range[1] - along_range[0])/steps
             elif isinstance(steps, float):
                 step = steps
-                steps = (along_range[1] - along_range[0])/step
+                steps = int((along_range[1] - along_range[0]) / step)
 
             # np.linspace will use the last point as a step (and we don't want it)
             # therefore we will add an extra step

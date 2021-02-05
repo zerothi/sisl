@@ -3,6 +3,7 @@
 Tests specific functionality of a fatbands plot
 
 """
+import os.path as osp
 import pytest
 from xarray import DataArray
 import numpy as np
@@ -13,6 +14,7 @@ from sisl.viz.plotly.plots.tests.test_bands import BandsPlotTester, NCSpinBandsT
 
 
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
+_dir = osp.join('sisl', 'io', 'siesta')
 
 # ------------------------------------------------------------
 #         Build a generic tester for the bands plot
@@ -102,7 +104,8 @@ fatbands_plots["sisl_H"] = {
 
 
 def NC_init_func(sisl_files, **kwargs):
-    H = sisl.get_sile(sisl_files("fe_clust_noncollinear.TSHS")).read_hamiltonian()
+    TSHS_path = osp.join(_dir, "fe_clust_noncollinear.TSHS")
+    H = sisl.get_sile(sisl_files(TSHS_path)).read_hamiltonian()
     bz = sisl.BandStructure(H, [[0, 0, 0], [0.5, 0, 0]], 3, ["Gamma", "X"])
 
     return bz.plot.fatbands(**kwargs)
@@ -120,9 +123,9 @@ class TestNCSpinFatbands(FatbandsPlotTester, NCSpinBandsTester):
         "siesta_H": {
             "init_func": NC_init_func,
             "bands_shape": (3, 1, 90),
-            "weights_shape": (1, 3, 90, H.geometry.no),
-            "gap": 0.40,
+            "weights_shape": (1, 3, 90, 45),
             "ticklabels": ["Gamma", "X"],
-            "tickvals": [0., 0.49472934]
+            "tickvals": [0., 0.93490333],
+            "gap": 5.457,
         }
     }

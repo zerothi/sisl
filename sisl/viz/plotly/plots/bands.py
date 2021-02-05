@@ -431,9 +431,14 @@ class BandsPlot(Plot):
         bands_arrays = []
         for spin_index in spin_indices:
 
+            # Non collinear routines don't accept the keyword argument "spin"
+            spin_kwarg = {"spin": spin_index}
+            if self.spin.is_noncolinear:
+                spin_kwarg = {}
+
             spin_bands = band_structure.apply.dataarray.eigenstate(
                 wrap=partial(bands_wrapper, spin_index=spin_index),
-                spin=spin_index,
+                **spin_kwarg,
                 coords=('band',),
             )
 
