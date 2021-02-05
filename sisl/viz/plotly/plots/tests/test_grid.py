@@ -70,6 +70,10 @@ class GridPlotTester(PlotTester):
         scanned = self.plot.scan(along=0, breakpoints=breakpoints, mode="as_is")
         assert len(scanned.frames) == 2
 
+        # Check that it doesn't accept step and breakpoints at the same time
+        with pytest.raises(ValueError):
+            self.plot.scan(along=0, step=4.5, breakpoints=breakpoints, mode="as_is")
+
         # 3D SCAN
         scanned = self.plot.scan(0, mode="moving_slice", breakpoints=breakpoints)
 

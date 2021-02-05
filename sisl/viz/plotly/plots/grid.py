@@ -1037,6 +1037,12 @@ class GridPlot(Plot):
         sisl.viz.Animation
             An animation representation of the scan
         """
+        # Do some checks on the args provided
+        _locals = locals()
+        _not_None = [arg for arg in ("step", "num", "breakpoints") if _locals[arg] is not None]
+        if len(_not_None) > 1:
+            raise ValueError(f"Only one of ('step', 'num', 'breakpoints') should be passed. You passed {_not_None}")
+
         # If no axis is provided, let's get the first one that is not displayed
         if along is None:
             displayed = self.get_setting('axes')
