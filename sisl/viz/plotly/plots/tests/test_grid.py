@@ -56,19 +56,23 @@ class GridPlotTester(PlotTester):
 
         # AS_IS SCAN
         # Provide number of steps
-        scanned = self.plot.scan(steps=2, mode="as_is")
+        scanned = self.plot.scan(num=2, mode="as_is")
         assert isinstance(scanned, Animation)
         assert len(scanned.frames) == 2
 
         # Provide step in Ang
         step = self.plot.grid.cell[0, 0]/2
-        scanned = self.plot.scan(along=0, steps=step, mode="as_is")
+        scanned = self.plot.scan(along=0, step=step, mode="as_is")
         assert len(scanned.frames) == 2
 
         # Provide breakpoints
         breakpoints = [self.plot.grid.cell[0, 0]*frac for frac in [1/3, 2/3, 3/3]]
         scanned = self.plot.scan(along=0, breakpoints=breakpoints, mode="as_is")
         assert len(scanned.frames) == 2
+
+        # Check that it doesn't accept step and breakpoints at the same time
+        with pytest.raises(ValueError):
+            self.plot.scan(along=0, step=4.5, breakpoints=breakpoints, mode="as_is")
 
         # 3D SCAN
         scanned = self.plot.scan(0, mode="moving_slice", breakpoints=breakpoints)

@@ -990,7 +990,7 @@ class GridPlot(Plot):
 
         return self.update_settings(nsc=nsc)
 
-    def scan(self, along=None, start=None, stop=None, steps=None, breakpoints=None, mode="moving_slice", animation_kwargs=None, **kwargs):
+    def scan(self, along=None, start=None, stop=None, step=None, num=None, breakpoints=None, mode="moving_slice", animation_kwargs=None, **kwargs):
         """
         Returns an animation containing multiple frames scaning along an axis.
 
@@ -1004,16 +1004,21 @@ class GridPlot(Plot):
         stop: float, optional
             the last value of the scan (in Angstrom).
             Make sure this value is inside the range of the unit cell, otherwise it will fail.
-        steps: int or float, optional
-            If it's an integer:
-                the number of steps that you want the scan to consist of.
-            If it's a float:
-                the division between steps in Angstrom.
+        step: float, optional
+            the distance between steps in Angstrom.
+
+            If not provided and `num` is also not provided, it will default to 1 Ang.
+        num: int , optional
+            the number of steps that you want the scan to consist of.
+
+            If `step` is passed, this argument is ignored.
 
             Note that the grid is only stored once, so having a big number of steps is not that big of a deal.
         breakpoints: array-like, optional
             the discrete points of the scan. To be used if you don't want regular steps.
             If the last step is exactly the length of the cell, it will be moved one dcell back to avoid errors.
+
+            Note that if this parameter is passed, both `step` and `num` are ignored.
         mode: {"moving_slice", "as_is"}, optional
             the type of scan you want to see.
             "moving_slice" renders a volumetric scan where a slice moves through the grid.
@@ -1032,6 +1037,12 @@ class GridPlot(Plot):
         sisl.viz.Animation
             An animation representation of the scan
         """
+        # Do some checks on the args provided
+        _locals = locals()
+        _not_None = [arg for arg in ("step", "num", "breakpoints") if _locals[arg] is not None]
+        if len(_not_None) > 1:
+            raise ValueError(f"Only one of ('step', 'num', 'breakpoints') should be passed. You passed {_not_None}")
+
         # If no axis is provided, let's get the first one that is not displayed
         if along is None:
             displayed = self.get_setting('axes')
@@ -1055,18 +1066,16 @@ class GridPlot(Plot):
                 along_range[1] = stop
 
         if breakpoints is None:
-            if steps is None:
-                steps = 1.0
-            # Divide it in steps
-            if isinstance(steps, int):
-                step = (along_range[1] - along_range[0])/steps
-            elif isinstance(steps, float):
-                step = steps
-                steps = (along_range[1] - along_range[0])/step
-
+            if step is None and num is None:
+                step = 1.0
+            if step is None:
+                step = (along_range[1] - along_range[0]) / num
+            else:
+                num = (along_range[1] - along_range[0]) // step
+                
             # np.linspace will use the last point as a step (and we don't want it)
             # therefore we will add an extra step
-            breakpoints = np.linspace(*along_range, steps + 1)
+            breakpoints = np.linspace(*along_range, int(num) + 1)
 
         if breakpoints[-1] == self.grid.cell[along, along]:
             breakpoints[-1] = self.grid.cell[along, along] - self.grid.dcell[along, along]

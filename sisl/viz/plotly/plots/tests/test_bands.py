@@ -114,10 +114,23 @@ class NCSpinBandsTester(BandsPlotTester):
 
         plot.update_settings(spin="x")
 
+        # If this is a fatbands plot, the first traces are drawing the weights
+        # (the actual fatbands). Therefore we need to find where the traces that
+        # belong to the bands begin.
+        if plot.data[0].fill is None:
+            first_band_trace = 0
+        else:
+            for i, trace in enumerate(plot.data):
+                if trace.fill is None:
+                    first_band_trace = i
+                    break
+            else:
+                raise Exception(f"We didn't find any band traces in the plot")
+
         # Check that spin texture has been
         for band in range(*plot.settings["bands_range"]):
             expected = plot.spin_moments.sel(band=band, axis="x").values
-            displayed = plot.data[band].marker.color
+            displayed = plot.data[first_band_trace + band].marker.color
 
             assert np.all(expected == displayed), f"Colors of spin textured bands not correctly set (band {band})"
 
@@ -169,7 +182,8 @@ bands_plots["sisl_H_path"] = {
 
 
 def NC_init_func(sisl_files, **kwargs):
-    H = sisl.get_sile(sisl_files("fe_clust_noncollinear.TSHS")).read_hamiltonian()
+    TSHS_path = osp.join(_dir, "fe_clust_noncollinear.TSHS")
+    H = sisl.get_sile(sisl_files(TSHS_path)).read_hamiltonian()
     bz = sisl.BandStructure(H, [[0, 0, 0], [0.5, 0, 0]], 3, ["Gamma", "X"])
 
     return bz.plot(**kwargs)
@@ -186,7 +200,7 @@ class TestNCSpinBands(NCSpinBandsTester):
             "init_func": NC_init_func,
             "bands_shape": (3, 1, 90),
             "ticklabels": ["Gamma", "X"],
-            "tickvals": [0., 0.49472934],
-            "gap": 0.40,
+            "tickvals": [0., 0.93490333],
+            "gap": 5.457,
         }
     }
