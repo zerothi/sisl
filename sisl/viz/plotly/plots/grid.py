@@ -1038,10 +1038,8 @@ class GridPlot(Plot):
             An animation representation of the scan
         """
         # Do some checks on the args provided
-        _locals = locals()
-        _not_None = [arg for arg in ("step", "num", "breakpoints") if _locals[arg] is not None]
-        if len(_not_None) > 1:
-            raise ValueError(f"Only one of ('step', 'num', 'breakpoints') should be passed. You passed {_not_None}")
+        if sum(1 for arg in (step, num, breakpoints) if arg is None) > 1:
+            raise ValueError(f"Only one of ('step', 'num', 'breakpoints') should be passed.")
 
         # If no axis is provided, let's get the first one that is not displayed
         if along is None:
