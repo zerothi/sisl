@@ -56,7 +56,7 @@ class GridPlotTester(PlotTester):
 
         # AS_IS SCAN
         # Provide number of steps
-        scanned = self.plot.scan(steps=2, mode="as_is")
+        scanned = self.plot.scan(num=2, mode="as_is")
         assert isinstance(scanned, Animation)
         assert len(scanned.frames) == 2
 

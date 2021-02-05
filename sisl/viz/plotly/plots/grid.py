@@ -990,7 +990,7 @@ class GridPlot(Plot):
 
         return self.update_settings(nsc=nsc)
 
-    def scan(self, along=None, start=None, stop=None, step=None, steps=None, breakpoints=None, mode="moving_slice", animation_kwargs=None, **kwargs):
+    def scan(self, along=None, start=None, stop=None, step=None, num=None, breakpoints=None, mode="moving_slice", animation_kwargs=None, **kwargs):
         """
         Returns an animation containing multiple frames scaning along an axis.
 
@@ -1007,8 +1007,8 @@ class GridPlot(Plot):
         step: float, optional
             the distance between steps in Angstrom.
 
-            If not provided and `steps` is also not provided, it will default to 1Ang.
-        steps: int , optional
+            If not provided and `num` is also not provided, it will default to 1 Ang.
+        num: int , optional
             the number of steps that you want the scan to consist of.
 
             If `step` is passed, this argument is ignored.
@@ -1017,6 +1017,8 @@ class GridPlot(Plot):
         breakpoints: array-like, optional
             the discrete points of the scan. To be used if you don't want regular steps.
             If the last step is exactly the length of the cell, it will be moved one dcell back to avoid errors.
+
+            Note that if this parameter is passed, both `step` and `num` are ignored.
         mode: {"moving_slice", "as_is"}, optional
             the type of scan you want to see.
             "moving_slice" renders a volumetric scan where a slice moves through the grid.
@@ -1058,16 +1060,16 @@ class GridPlot(Plot):
                 along_range[1] = stop
 
         if breakpoints is None:
-            if step is None and steps is None:
+            if step is None and num is None:
                 step = 1.0
             if step is None:
-                step = (along_range[1] - along_range[0]) / steps
+                step = (along_range[1] - along_range[0]) / num
             else:
-                steps = (along_range[1] - along_range[0]) // step
+                num = (along_range[1] - along_range[0]) // step
                 
             # np.linspace will use the last point as a step (and we don't want it)
             # therefore we will add an extra step
-            breakpoints = np.linspace(*along_range, int(steps) + 1)
+            breakpoints = np.linspace(*along_range, int(num) + 1)
 
         if breakpoints[-1] == self.grid.cell[along, along]:
             breakpoints[-1] = self.grid.cell[along, along] - self.grid.dcell[along, along]
