@@ -1,10 +1,6 @@
 """
-==================
-sisl (:mod:`sisl`)
-==================
-
-.. module:: sisl
-   :noindex:
+sisl
+====
 
 sisl is an electronic structure package which may interact with tight-binding
 and DFT matrices alike.
@@ -18,14 +14,10 @@ Below a set of classes that are the basis of *everything* in sisl is present.
 Generic classes
 ===============
 
-.. autosummary::
-   :toctree:
-
    PeriodicTable
    Orbital
    SphericalOrbital
    AtomicOrbital
-   Atom
    Atoms
    Geometry
    SuperCell
@@ -38,9 +30,6 @@ for users use.
 
 Advanced classes
 ================
-
-.. autosummary::
-   :toctree:
 
    Quaternion
    SparseCSR

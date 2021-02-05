@@ -1,18 +1,12 @@
 """Phonon related functions and classes
 =======================================
 
-.. module:: sisl.physics.phonon
-   :noindex:
-
 In sisl phonon calculations are relying on routines
 specific for phonons. For instance density of states calculations from
 phonon eigenvalues and other quantities.
 
 This module implements the necessary tools required for calculating
 DOS, PDOS, group-velocities and real-space displacements.
-
-.. autosummary::
-   :toctree:
 
    DOS
    PDOS
@@ -25,9 +19,6 @@ Supporting classes
 
 Certain classes aid in the usage of the above methods by implementing them
 using automatic arguments.
-
-.. autosummary::
-   :toctree:
 
    CoefficientPhonon
    ModePhonon

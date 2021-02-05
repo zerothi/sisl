@@ -74,7 +74,7 @@ class Coefficient(ParentContainer):
 
     def __str__(self):
         """ The string representation of this object """
-        s = self.__class__.__name__ + '{{coefficients: {0}, kind: {1}'.format(len(self), self.dkind)
+        s = f"{self.__class__.__name}{{coefficients: {len(self)}, kind: {self.dkind}"
         if self.parent is None:
             s += '}}'
         else:
@@ -231,7 +231,7 @@ class State(ParentContainer):
 
     def __str__(self):
         """ The string representation of this object """
-        s = self.__class__.__name__ + '{{states: {0}, kind: {1}'.format(len(self), self.dkind)
+        s = f"{self.__class__.__name}{{states: {len(self)}, kind: {self.dkind}"
         if self.parent is None:
             s += '}'
         else:
@@ -395,7 +395,7 @@ class State(ParentContainer):
         if right is None:
             return einsum('ki,kj->ij', self.state, _conj(self.state))
         if not np.array_equal(self.shape, right.shape):
-            raise ValueError(self.__class__.__name__ + '.outer requires the objects to have the same shape')
+            raise ValueError(f"{self.__class__.__name__}.outer requires the objects to have the same shape")
         if align:
             # Align the states
             right = self.align_phase(right, copy=False)
@@ -430,11 +430,11 @@ class State(ParentContainer):
 
         # They *must* have same number of basis points per state
         if self.shape[-1] != right.shape[-1]:
-            raise ValueError(self.__class__.__name__ + '.inner requires the objects to have the same shape')
+            raise ValueError(f"{self.__class__.__name__}.inner requires the objects to have the same shape")
 
         if align:
             if self.shape[0] != right.shape[0]:
-                raise ValueError(self.__class__.__name__ + '.inner with align=True requires exactly the same shape!')
+                raise ValueError(f"{self.__class__.__name__}.inner with align=True requires exactly the same shape!")
             # Align the states
             right = self.align_phase(right, copy=False)
 
@@ -464,7 +464,7 @@ class State(ParentContainer):
             return _phase(self.state[_a.arangei(len(self)), idx])
         elif method == 'all':
             return _phase(self.state)
-        raise ValueError(self.__class__.__name__ + '.phase only accepts method in ["max", "all"]')
+        raise ValueError(f"{self.__class__.__name__}.phase only accepts method in [max, all]")
 
     def align_phase(self, other, copy=False):
         r""" Align `other.state` with the phases for this state, a copy of `other` is returned with rotated elements
@@ -678,8 +678,8 @@ class StateC(State):
         super().__init__(state, parent, **info)
         self.c = np.atleast_1d(c)
         if len(self.c) != len(self.state):
-            raise ValueError(self.__class__.__name__ + ' could not be created with coefficients and states '
-                             'having unequal length.')
+            raise ValueError(f"{self.__class__.__name__} could not be created with coefficients and states "
+                             "having unequal length.")
 
     def copy(self):
         """ Return a copy (only the coefficients and states are copied), ``parent`` and ``info`` are passed by reference """

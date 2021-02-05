@@ -1,10 +1,6 @@
 """
-===================================
-Linear algebra (:mod:`sisl.linalg`)
-===================================
-
-.. module:: sisl.linalg
-   :noindex:
+Linear algebra
+==============
 
 Although `numpy` and `scipy` provides a large set of
 linear algebra routines, sisl re-implements some of them with
@@ -14,9 +10,6 @@ to a large variety of checks to assert the input matrices.
 
 sisl implements its own variants which has interfaces much
 like `numpy` and `scipy`.
-
-.. autosummary::
-   :toctree:
 
    inv
    solve

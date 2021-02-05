@@ -17,7 +17,8 @@ __all__ = [
     'get_sile_class',
     'get_sile',
     'get_siles',
-    'get_sile_rules']
+    'get_sile_rules'
+]
 
 __all__ += [
     'BaseSile',
@@ -27,12 +28,14 @@ __all__ += [
     'SileError',
     'SileWarning',
     'SileInfo',
-    ]
+]
 
 # Decorators or sile-specific functions
-__all__ += ['sile_fh_open',
+__all__ += [
+    'sile_fh_open',
     'sile_raise_write',
-    'sile_raise_read']
+    'sile_raise_read'
+]
 
 # Global container of all Sile rules
 # This list of tuples is formed as
@@ -971,21 +974,6 @@ class SileBin(BaseSile):
         return False
 
 
-@set_module("sisl.io")
-class SileError(IOError):
-    """ Define an error object related to the Sile objects """
-
-    def __init__(self, value, obj=None):
-        self.value = value
-        self.obj = obj
-
-    def __str__(self):
-        if self.obj:
-            return self.value + ' in ' + str(self.obj)
-        else:
-            return self.value
-
-
 def sile_raise_write(self, ok=('w', 'a')):
     is_ok = False
     for O in ok:
@@ -1000,9 +988,23 @@ def sile_raise_read(self, ok=('r', 'a')):
     for O in ok:
         is_ok = is_ok or (O in self._mode)
     if not is_ok:
-        raise SileError('Reading file not possible; allowed '
-                        'modes={}, used mode={}'.format(
-                            ok, self._mode), self)
+        raise SileError(f"Reading file not possible; allowed "
+                        f"modes={ok}, used mode={self._mode}", self)
+
+
+@set_module("sisl.io")
+class SileError(IOError):
+    """ Define an error object related to the Sile objects """
+
+    def __init__(self, value, obj=None):
+        self.value = value
+        self.obj = obj
+
+    def __str__(self):
+        if self.obj:
+            return self.value + ' in ' + str(self.obj)
+        else:
+            return self.value
 
 
 @set_module("sisl.io")

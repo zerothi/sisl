@@ -1,10 +1,6 @@
 """
-======================================
-Mixing objects (:mod:`sisl.mixing`)
-======================================
-
-.. module:: sisl.mixing
-   :noindex:
+Mixing objects
+==============
 
 Implementation of various mixing methods.
 

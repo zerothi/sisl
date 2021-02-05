@@ -747,7 +747,7 @@ class fdfSileSiesta(SileSiesta):
 
         Returns
         -------
-        (*, 3) : vector with forces for each of the atoms
+        numpy.ndarray : vector with forces for each of the atoms, along each Cartesian direction
         """
         order = _listify_str(kwargs.pop('order', ['FA', 'nc']))
         for f in order:

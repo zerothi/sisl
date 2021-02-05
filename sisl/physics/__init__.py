@@ -1,10 +1,6 @@
 """
-======================================
-Physical objects (:mod:`sisl.physics`)
-======================================
-
-.. module:: sisl.physics
-   :noindex:
+Physical objects
+================
 
 Implementations of various DFT and tight-binding related quantities
 are defined. The implementations range from simple Brillouin zone
@@ -14,11 +10,8 @@ In `sisl` the general usage of physical matrices are considering sparse
 matrices. Hence Hamiltonians, density matrices, etc. are considered
 sparse. There are exceptions, but it is generally advisable to have this in mind.
 
-Brillouin zone (:mod:`~sisl.physics.brillouinzone`)
-===================================================
-
-.. autosummary::
-   :toctree:
+Brillouin zone
+==============
 
    BrillouinZone - base class
    MonkhorstPack - MP class
@@ -28,17 +21,11 @@ Brillouin zone (:mod:`~sisl.physics.brillouinzone`)
 Spin configuration
 ==================
 
-.. autosummary::
-   :toctree:
-
    Spin - spin configuration
 
 
 Physical quantites
 ==================
-
-.. autosummary::
-   :toctree:
 
    EnergyDensityMatrix
    DensityMatrix
@@ -53,57 +40,14 @@ Physical quantites
    RealSpaceSI
 
 
-
-Electrons (:mod:`~sisl.physics.electron`)
-=========================================
-
-.. autosummary::
-   :toctree:
-
-   ~electron.DOS
-   ~electron.PDOS
-   ~electron.velocity
-   ~electron.velocity_matrix
-   ~electron.berry_phase
-   ~electron.berry_curvature
-   ~electron.conductivity
-   ~electron.wavefunction
-   ~electron.spin_moment
-   ~electron.spin_squared
-   EigenvalueElectron
-   EigenvectorElectron
-   EigenstateElectron
-
-
-Phonons (:mod:`~sisl.physics.phonon`)
-=====================================
-
-.. autosummary::
-   :toctree:
-
-   ~phonon.DOS
-   ~phonon.PDOS
-   ~phonon.velocity
-   ~phonon.displacement
-   EigenvaluePhonon
-   EigenvectorPhonon
-   EigenmodePhonon
-
-
-Bloch's theorem (:mod:`~sisl.physics.bloch`)
-============================================
-
-.. autosummary::
-   :toctree:
+Bloch's theorem
+===============
 
    Bloch
 
 
-Distribution functions (:mod:`~sisl.physics.distribution`)
-==========================================================
-
-.. autosummary::
-   :toctree:
+Distribution functions
+======================
 
    get_distribution
    gaussian
@@ -113,19 +57,6 @@ Distribution functions (:mod:`~sisl.physics.distribution`)
    cold
    step_function
    heaviside
-
-
-
-.. Below lines ensures that the sub-modules gets their own page.
-
-.. autosummary::
-   :toctree:
-   :hidden:
-
-   sisl.physics.electron
-   sisl.physics.phonon
-   sisl.physics.distribution
-   sisl.physics.brillouinzone
 
 
 Low level objects
@@ -140,9 +71,6 @@ using generic class-structures. For instance the `~Hamiltonian` inherits the
 States
 ------
 
-.. autosummary::
-   :toctree:
-
    Coefficient
    State
    StateC
@@ -150,9 +78,6 @@ States
 
 Sparse matrices
 ---------------
-
-.. autosummary::
-   :toctree:
 
    SparseOrbitalBZ - sparse orbital matrix with k-dependent properties
    SparseOrbitalBZSpin - sparse orbital matrix with k-dependent properties and spin configuration

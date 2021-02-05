@@ -1,18 +1,8 @@
 r"""Bloch's theorem
 ===================
 
-.. module:: sisl.physics.bloch
-   :noindex:
-
 Bloch's theorem is a very powerful proceduce that enables one to utilize
 the periodicity of a given direction to describe the complete system.
-
-
-.. autosummary::
-   :toctree:
-
-   Bloch
-
 """
 
 import numpy as np

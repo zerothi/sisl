@@ -286,7 +286,7 @@ class Grid(SuperCellChild):
             for a string the full module path to the function should be given.
             The function that will be called should have the grid as the first argument in its
             interface.
-        *args and **kwargs:
+        args and kwargs:
             arguments that go directly to the function call
         """
         if isinstance(function_, str):

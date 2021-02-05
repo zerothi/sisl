@@ -1,9 +1,6 @@
 """Brillouin zone classes
 =========================
 
-.. module:: sisl.physics.brillouinzone
-   :noindex:
-
 The Brillouin zone objects are all special classes enabling easy manipulation
 of an underlying physical quantity.
 
@@ -129,9 +126,6 @@ The ``Pool`` should implement some standard methods that are
 existing in the ``pathos`` enviroment such as ``Pool.restart`` and ``Pool.terminate``
 and ``imap`` and ``uimap`` methods. See the ``pathos`` documentation for detalis.
 
-
-.. autosummary::
-   :toctree:
 
    BrillouinZone
    MonkhorstPack

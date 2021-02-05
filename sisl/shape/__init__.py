@@ -1,10 +1,6 @@
 """
-==========================
-Shapes (:mod:`sisl.shape`)
-==========================
-
-.. module:: sisl.shape
-   :noindex:
+Shapes
+======
 
 A variety of default shapes.
 
@@ -28,9 +24,6 @@ Currently these mathematical/boolean operators are implemented:
 
 `A - B`
     complementary shape
-
-.. autosummary::
-   :toctree:
 
    Shape - base class
    Cuboid - 3d cube

@@ -1,18 +1,8 @@
 """
-==============================
-OpenMX (:mod:`sisl.io.openmx`)
-==============================
-
-.. module:: sisl.io.openmx
-   :noindex:
-
-`OpenMX`_ software is an LCAO code.
-
-.. autosummary::
-   :toctree:
+OpenMX
+======
 
    omxSileOpenMX - input file
-
 """
 from .sile import *
 

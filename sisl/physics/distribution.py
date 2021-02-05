@@ -1,13 +1,7 @@
 """Distribution functions
 =========================
 
-.. module:: sisl.physics.distribution
-   :noindex:
-
 Various distributions using different smearing techniques.
-
-.. autosummary::
-   :toctree:
 
    get_distribution
    gaussian
@@ -17,22 +11,6 @@ Various distributions using different smearing techniques.
    cold
    step_function
    heaviside
-
-
-.. autofunction:: gaussian
-   :noindex:
-.. autofunction:: lorentzian
-   :noindex:
-.. autofunction:: fermi_dirac
-   :noindex:
-.. autofunction:: bose_einstein
-   :noindex:
-.. autofunction:: cold
-   :noindex:
-.. autofunction:: step_function
-   :noindex:
-.. autofunction:: heaviside
-   :noindex:
 
 """
 

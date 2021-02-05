@@ -1440,6 +1440,7 @@ class RealSpaceSI(SelfEnergy):
         r""" Calculate real-space surface self-energy
 
         The real space self-energy is calculated via:
+
         .. math::
             \boldsymbol\Sigma^{\mathcal{R}}(E) = \mathbf S^{\mathcal{R}} E - \mathbf H^{\mathcal{R}}
                - \Big[\sum_{\mathbf k} \mathbf G_{\mathbf k}(E)\Big]^{-1}

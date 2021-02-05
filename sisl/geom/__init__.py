@@ -1,78 +1,33 @@
 """
-====================================
-Common geometries (:mod:`sisl.geom`)
-====================================
+Common geometries
+=================
 
-.. module:: sisl.geom
-   :noindex:
-
-A variety of default geometries.
-
-.. contents::
-   :local:
-
-.. autosummary::
-   :toctree:
-   :hidden:
+Bulk
+====
 
    sc
    bcc
    fcc
    hcp
-   nanoribbon
-   graphene_nanoribbon
-   agnr
-   zgnr
-   nanotube
-   honeycomb
-   bilayer
    diamond
-
-
-Basic
-=====
-
-.. autofunction:: sc
-   :noindex:
-.. autofunction:: bcc
-   :noindex:
-.. autofunction:: fcc
-   :noindex:
-.. autofunction:: hcp
-   :noindex:
 
 
 1D materials
 ============
 
-.. autofunction:: nanoribbon
-   :noindex:
-.. autofunction:: graphene_nanoribbon
-   :noindex:
-.. autofunction:: agnr
-   :noindex:
-.. autofunction:: zgnr
-   :noindex:
-.. autofunction:: nanotube
-   :noindex:
+   nanoribbon
+   graphene_nanoribbon
+   agnr
+   zgnr
+   nanotube
 
 
 2D materials
 ============
 
-.. autofunction:: honeycomb
-   :noindex:
-.. autofunction:: graphene
-   :noindex:
-.. autofunction:: bilayer
-   :noindex:
-
-
-Others
-======
-
-.. autofunction:: diamond
-   :noindex:
+   honeycomb
+   bilayer
+   graphene
 
 """
 from .basic import *

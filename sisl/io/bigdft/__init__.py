@@ -1,13 +1,6 @@
 """
-==============================
-BigDFT (:mod:`sisl.io.bigdft`)
-==============================
-
-.. module:: sisl.io.bigdft
-   :noindex:
-
-.. autosummary::
-   :toctree:
+BigDFT
+======
 
    asciiSileBigDFT - the input for BigDFT
 
