@@ -62,7 +62,7 @@ class GridPlotTester(PlotTester):
 
         # Provide step in Ang
         step = self.plot.grid.cell[0, 0]/2
-        scanned = self.plot.scan(along=0, steps=step, mode="as_is")
+        scanned = self.plot.scan(along=0, step=step, mode="as_is")
         assert len(scanned.frames) == 2
 
         # Provide breakpoints
