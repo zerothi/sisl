@@ -1,0 +1,52 @@
+name: Build docs and upload them to gh-pages
+
+on:
+  push:
+    branches:
+      - gh-pages-docs
+  workflow_dispatch:
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+          lfs: true
+
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.6'
+
+      - name: Install sisl
+        run: |
+          python -m pip install --upgrade pip
+          pip install Cython
+          pip install .[viz]
+        
+      - name: Install dependencies to build the docs
+        run: |
+          pip install IPython sphinx sphinx-gallery sphinx-rtd-theme nbsphinx ipykernel
+          pip install tqdm ipywidgets
+          pip install git+https://github.com/pfebrer/sisl-gui.git
+          pip install kaleido
+ 
+      - uses: r-lib/actions/setup-pandoc@v1 
+
+      - name: Build the docs
+        run: |
+          cd docs
+          SISL_FILES_TESTS=${GITHUB_WORKSPACE}/files/tests make html
+          cd ..
+        
+      # Deploy to github pages
+      - name: Deploy to github pages
+        uses: JamesIves/github-pages-deploy-action@132898
+        with:
+          BRANCH: gh-pages-pol
+          FOLDER: docs/build/html
+          GITHUB_TOKEN: ${{ github.token }}
+
