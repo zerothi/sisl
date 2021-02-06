@@ -1194,7 +1194,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
             get the figure widget as a return so that you can act on it.
         """
 
-        if self._widgets["plotly"]:
+        if self._widgets["plotly"] and not isinstance(self, Animation):
 
             from IPython.display import display
             import ipywidgets as widgets
@@ -1214,6 +1214,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
                 return f
 
         else:
+            kwargs.pop("listen", None)
             self.figure._ipython_display_(**kwargs)
 
     def _ipython_display_with_shortcuts(self, fig_widget, **kwargs):
