@@ -1038,7 +1038,7 @@ class GridPlot(Plot):
             An animation representation of the scan
         """
         # Do some checks on the args provided
-        if sum(1 for arg in (step, num, breakpoints) if arg is None) > 1:
+        if sum(1 for arg in (step, num, breakpoints) if arg is not None) > 1:
             raise ValueError(f"Only one of ('step', 'num', 'breakpoints') should be passed.")
 
         # If no axis is provided, let's get the first one that is not displayed
