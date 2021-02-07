@@ -1,4 +1,3 @@
-# To check for integers
 from functools import partial
 from numbers import Integral
 from math import pi

@@ -73,7 +73,7 @@ class SparseCSR(NDArrayOperatorsMixin):
     This class may be instantiated by verious means.
 
     - ``SparseCSR(S)``
-      where ``S`` is a :module:`scipy.sparse` matrix
+      where ``S`` is a `scipy.sparse` matrix
     - ``SparseCSR((M,N)[, dtype])``
       the shape of the sparse matrix (equivalent
       to ``SparseCSR((M,N,1)[, dtype])``.
@@ -249,19 +249,19 @@ class SparseCSR(NDArrayOperatorsMixin):
 
     @classmethod
     def sparsity_union(cls, *spmats, dtype=None, dim=None, value=0):
-        """Create a SparseCSR with constant fill value in all places that *spmats have nonzeros
+        """Create a SparseCSR with constant fill value in all places that `spmats` have nonzeros
 
         Parameters
         ----------
-            *spmats : SparseCSR or csr_matrix
-                SparseCSRs to find the sparsity pattern union of.
-            dtype : dtype, optional
-                Output dtype. If not given, use the result dtype of the spmats.
-            dim : int, optional
-                If given, the returned SparseCSR will have this as dim.
-                By default the first given spmat decides the dimension.
-            value : scalar, default 0
-                The used fill value.
+        spmats : SparseCSR or csr_matrix
+            SparseCSRs to find the sparsity pattern union of.
+        dtype : dtype, optional
+            Output dtype. If not given, use the result dtype of the spmats.
+        dim : int, optional
+            If given, the returned SparseCSR will have this as dim.
+            By default the first given spmat decides the dimension.
+        value : scalar, default 0
+            The used fill value.
         """
         shape2 = spmats[0].shape[:2]
         if not all(shape2 == m.shape[:2] for m in spmats):

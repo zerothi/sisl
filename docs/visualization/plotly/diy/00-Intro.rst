@@ -52,7 +52,7 @@ That's all you need to know for now, you will see more about the details in othe
 The `Session` class
 ###################
 
-Just as :code:`Plot` is the parent of all plots, :code:`Session` is the parent of all sessions. **Sessions store plots and allow you to organize them into tabs.** They are specially useful for the `graphical user interface <https://github.com/pfebrer96/sislGUIpublic)>`_, where the users can easily see all their plots at the same time and easily modify them as they wish.
+Just as :code:`Plot` is the parent of all plots, :code:`Session` is the parent of all sessions. **Sessions store plots and allow you to organize them into tabs.** They are specially useful for the `graphical user interface <https://github.com/pfebrer/sisl-gui)>`_, where the users can easily see all their plots at the same time and easily modify them as they wish.
 
 However, clicking things to create your plots may be slow and specially annoying if you have to repeat the same process time and time again. That's why you have the possibility to **create custom sessions that will do all the repetitive work with very little input**, so that all the user needs to do is enjoy the beauty of their automatically created plots in the GUI.
 

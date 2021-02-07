@@ -1,18 +1,11 @@
 """
-====================================
-Utility routines (:mod:`sisl.utils`)
-====================================
-
-.. module:: sisl.utils
-   :noindex:
+Utility routines
+================
 
 Several utility functions are used throughout sisl.
 
 Range routines
 ==============
-
-.. autosummary::
-   :toctree:
 
    array_arange - fast creation of sub-aranges
    strmap
@@ -24,9 +17,6 @@ Range routines
 
 Miscellaneous routines
 ======================
-
-.. autosummary::
-   :toctree:
 
    str_spec
    direction - abc/012 -> 012

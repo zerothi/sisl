@@ -14,7 +14,6 @@
 import sys
 import os
 import pathlib
-import shlex
 from datetime import date
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -38,41 +37,7 @@ sys.path.insert(0, str(_root))
 print("python exec:", sys.executable)
 print("sys.path:", sys.path)
 
-try:
-    import sisl
-except Exception as e:
-    print()
-    print('#' * 60)
-    print('Will mock the sisl modules:')
-    print(e)
-    print('#' * 60)
-    print()
-
-    # We will import locally
-    from unittest.mock import MagicMock
-
-    class Mock(MagicMock):
-        @classmethod
-        def __getattr__(cls, name):
-            return MagicMock()
-
-    # Add Mock modules
-    MOCK_MODULES = ['sisl.io.siesta._siesta']
-    MOCK_MODULES.extend([f'sisl._{a}'
-                         for a in ['indices', 'math_small', 'sparse', 'supercell']])
-    MOCK_MODULES.extend([f'sisl.physics._matrix_{a}'
-                         for a in ['ddk', 'dk', 'k',
-                                   'phase3_nc', 'phase3', 'phase3_so',
-                                   'phase_nc_diag', 'phase_nc', 'phase', 'phase_so']])
-    MOCK_MODULES.extend([f'sisl.physics._{a}'
-                         for a in ['bloch', 'phase']])
-    # This will only get installed later in the sequence, so if we do it know it
-    # should always work
-    if 'sisl.info' not in sys.modules:
-        MOCK_MODULES.extend(['sisl.info'])
-    sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
-
-    nbsphinx_allow_errors = True
+import sisl
 
 
 # -- General configuration ------------------------------------------------
@@ -92,24 +57,15 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.todo',
     'sphinx.ext.viewcode',
-    #'sphinx.ext.inheritance_diagram',
+    # plotting and advanced usage
+    'matplotlib.sphinxext.plot_directive',
+    'IPython.sphinxext.ipython_directive',
+    'IPython.sphinxext.ipython_console_highlighting',
+    'sphinx.ext.inheritance_diagram',
+    'nbsphinx',
+    'sphinx_gallery.load_style',
 ]
 napoleon_numpy_docstring = True
-
-# Enable plots in documentation
-from matplotlib import __version__ as mpl_version
-if int(mpl_version[0]) > 2:
-    extensions += [
-        'matplotlib.sphinxext.plot_directive',
-    ]
-else:
-    extensions += [
-        'matplotlib.sphinxext.only_directives',
-        'matplotlib.sphinxext.plot_directive',
-        #'nbsphinx',
-        #'IPython.sphinxext.ipython_directive',
-        #'IPython.sphinxext.ipython_console_highlighting',
-    ]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -133,9 +89,7 @@ rst_prolog = """
 # This means that every document has access to the links
 rst_epilog = ''.join(open('epilog.dummy').readlines())
 
-import glob
-autosummary_generate = glob.glob('*.rst') + glob.glob('*/*.rst')
-autosummary_generate = [f for f in autosummary_generate if 'api-generated' not in f]
+autosummary_generate = True
 
 # General information about the project.
 project = 'sisl'
@@ -147,14 +101,8 @@ on_rtd = os.environ.get('READTHEDOCS', 'false').lower() == 'true'
 if on_rtd:
     nbsphinx_allow_errors = True
 else:
-    nbsphinx_allow_errors = False
-    extensions += [
-        'sphinx.ext.inheritance_diagram',
-        'nbsphinx',
-        'sphinx_gallery.load_style',
-        'IPython.sphinxext.ipython_directive',
-        'IPython.sphinxext.ipython_console_highlighting',
-    ]
+    # TODO change to False
+    nbsphinx_allow_errors = True
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -235,14 +183,14 @@ html_theme = "sphinx_rtd_theme"
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#html_theme_options = {}
+html_theme_options = {}
 
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-html_title = "sisl |release| documentation"
+html_title = f"sisl {release} documentation"
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 html_short_title = "sisl"
@@ -430,6 +378,8 @@ intersphinx_mapping = {
     'matplotlib': ('https://matplotlib.org/', None),
     'xarray': ('https://xarray.pydata.org/en/stable/', None),
     'plotly': ('https://plotly.com/python-api-reference/', None),
+    'skimage': ('https://scikit-image.org/docs/stable', None),
+    'pandas': ('https://pandas.pydata.org/pandas-docs/stable', None),
 }
 
 # Tell nbsphinx to wait, at least X seconds for each cell

@@ -1,13 +1,6 @@
 """
-==========================
-GULP (:mod:`sisl.io.gulp`)
-==========================
-
-.. module:: sisl.io.gulp
-   :noindex:
-
-.. autosummary::
-   :toctree:
+GULP
+====
 
    gotSileGULP - the output from GULP
    fcSileGULP - force constant output from GULP

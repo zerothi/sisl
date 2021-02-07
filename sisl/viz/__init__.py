@@ -1,16 +1,12 @@
 """
-=========================================
-Visualization utilities (:mod:`sisl.viz`)
-=========================================
-
-.. module:: sisl.viz
-   :noindex:
+Visualization utilities
+=======================
 
 Various visualization modules are described here.
 
 
-Plotly (:mod:`~sisl.viz.plotly`)
-================================
+Plotly
+======
 
 The plotly backend.
 

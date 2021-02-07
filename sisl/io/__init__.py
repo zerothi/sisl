@@ -1,10 +1,6 @@
 """
-=============================
-Input/Output (:mod:`sisl.io`)
-=============================
-
-.. module:: sisl.io
-   :noindex:
+Input/Output
+============
 
 Available files for reading/writing
 
@@ -18,116 +14,52 @@ to distinguish them from files from other packages.
 Basic IO methods/classes
 ========================
 
-.. autosummary::
-   :toctree:
-
    add_sile - add a file to the list of files that sisl can interact with
    get_sile - retrieve a file object via a file name by comparing the extension
    SileError - sisl specific error
 
-
-.. _toc-io-supported:
-
-External code in/out put supported
-----------------------------------
-
-List the relevant codes that `sisl` can interact with. If there are files you think
-are missing, please create an issue `here <issue>`_.
-
-- :ref:`toc-io-generic`
-- :ref:`toc-io-bigdft`
-- :ref:`toc-io-gulp`
-- :ref:`toc-io-openmx`
-- :ref:`toc-io-scaleup`
-- :ref:`toc-io-siesta`
-- :ref:`toc-io-transiesta`
-- :ref:`toc-io-tbtrans`
-- :ref:`toc-io-vasp`
-- :ref:`toc-io-wannier90`
-
-
-.. _toc-io-generic:
 
 Generic files
 =============
 
 Files not specificly related to any code.
 
-.. autosummary::
-   :toctree:
+   tableSile - data file in tabular form
+   xyzSile - atomic coordinate file
+   pdbSile - atomic coordinates and MD content
+   cubeSile - atomic coordinates *and* 3D grid values
+   moldenSile - atomic coordinate file specific for Molden
+   xsfSile - atomic coordinate file specific for XCrySDen
 
-   ~table.tableSile - data file in tabular form
-   ~xyz.xyzSile - atomic coordinate file
-   ~pdb.pdbSile - atomic coordinates and MD content
-   ~cube.cubeSile - atomic coordinates *and* 3D grid values
-   ~molden.moldenSile - atomic coordinate file specific for Molden
-   ~xsf.xsfSile - atomic coordinate file specific for XCrySDen
-
-
-.. _toc-io-bigdft:
-
-BigDFT (:mod:`~sisl.io.bigdft`)
-===============================
-
-.. currentmodule:: sisl.io.bigdft
-
-.. autosummary::
-   :toctree:
+BigDFT
+======
 
    asciiSileBigDFT - the input for BigDFT
 
 
-.. _toc-io-gulp:
-
-GULP (:mod:`~sisl.io.gulp`)
-===========================
-
-.. currentmodule:: sisl.io.gulp
-
-.. autosummary::
-   :toctree:
+GULP
+====
 
    gotSileGULP - the output from GULP
    fcSileGULP - force constant output from GULP
 
 
-.. _toc-io-openmx:
-
-OpenMX (:mod:`~sisl.io.openmx`)
-===============================
-
-.. currentmodule:: sisl.io.openmx
-
-.. autosummary::
-   :toctree:
+OpenMX
+======
 
    omxSileOpenMX - input file
 
 
-.. _toc-io-scaleup:
-
-ScaleUp (:mod:`~sisl.io.scaleup`)
-=================================
-
-.. currentmodule:: sisl.io.scaleup
-
-.. autosummary::
-   :toctree:
+ScaleUp
+=======
 
    orboccSileScaleUp - orbital information
    refSileScaleUp - reference coordinates
    rhamSileScaleUp - Hamiltonian file
 
 
-.. _toc-io-siesta:
-
-Siesta (:mod:`~sisl.io.siesta`)
-===============================
-
-.. currentmodule:: sisl.io.siesta
-
-.. autosummary::
-   :toctree:
+Siesta
+======
 
    fdfSileSiesta - input file
    outSileSiesta - output file
@@ -151,13 +83,8 @@ Siesta (:mod:`~sisl.io.siesta`)
    rkpSileSiesta - k-points to simulation
 
 
-.. _toc-io-transiesta:
-
-TranSiesta (:mod:`~sisl.io.siesta`)
-===================================
-
-.. autosummary::
-   :toctree:
+TranSiesta
+==========
 
    tshsSileSiesta - TranSiesta Hamiltonian
    tsdeSileSiesta - TranSiesta (energy) density matrix
@@ -165,15 +92,8 @@ TranSiesta (:mod:`~sisl.io.siesta`)
    tsvncSileSiesta - TranSiesta specific Hartree potential file
 
 
-.. _toc-io-tbtrans:
-
-TBtrans (:mod:`~sisl.io.tbtrans`)
-=================================
-
-.. currentmodule:: sisl.io.tbtrans
-
-.. autosummary::
-   :toctree:
+TBtrans
+=======
 
    tbtncSileTBtrans
    deltancSileTBtrans
@@ -184,24 +104,14 @@ TBtrans (:mod:`~sisl.io.tbtrans`)
 
 Additionally the PHtrans code also has these files
 
-.. autosummary::
-   :toctree:
-
    phtncSilePHtrans
    phtsencSilePHtrans
    phtavncSilePHtrans
    phtprojncSilePHtrans
 
 
-.. _toc-io-vasp:
-
-VASP (:mod:`~sisl.io.vasp`)
-===========================
-
-.. currentmodule:: sisl.io.vasp
-
-.. autosummary::
-   :toctree:
+VASP
+====
 
    carSileVASP
    doscarSileVASP
@@ -211,24 +121,10 @@ VASP (:mod:`~sisl.io.vasp`)
    outSileVASP
 
 
-.. _toc-io-wannier90:
-
-Wannier90 (:mod:`~sisl.io.wannier90`)
-=====================================
-
-.. currentmodule:: sisl.io.wannier90
-
-.. autosummary::
-   :toctree:
+Wannier90
+=========
 
    winSileWannier90 - input file
-
-
-.. #################################
-.. Switch back to the sisl.io module
-.. #################################
-
-.. currentmodule:: sisl.io
 
 
 Low level methods/classes
@@ -240,8 +136,6 @@ your own `Sile` you should inherit either of `Sile` (ASCII), `SileCDF` (NetCDF)
 or `SileBin` (binary), then subsequently add it using `add_sile` which enables
 its generic use in all routines etc.
 
-.. autosummary::
-   :toctree:
 
    get_siles - retrieve all files with specific attributes or methods
    get_sile_class - retrieve class via a file name by comparing the extension
@@ -249,25 +143,6 @@ its generic use in all routines etc.
    Sile - a base class for ASCII files
    SileCDF - a base class for NetCDF files
    SileBin - a base class for binary files
-
-
-.. ###############################################
-.. Add all io modules to the toc (to be reachable)
-.. ###############################################
-
-.. autosummary::
-   :toctree:
-   :hidden:
-
-   bigdft
-   gulp
-   openmx
-   scaleup
-   siesta
-   tbtrans
-   vasp
-   wannier90
-
 """
 from .sile import *
 

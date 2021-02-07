@@ -1,10 +1,6 @@
 r"""
-================================
-TBtrans (:mod:`sisl.io.tbtrans`)
-================================
-
-.. module:: sisl.io.tbtrans
-   :noindex:
+TBtrans
+=======
 
 File objects for interaction with the `TBtrans`_ code.
 

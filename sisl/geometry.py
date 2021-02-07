@@ -1277,7 +1277,7 @@ class Geometry(SuperCellChild):
         >>> geom.xyz[:, 0]
         [0.    0.1   0.2   0.205 0.305]
 
-        In this case a high tolerance (``atol>0.005`) would group atoms 2 and 3
+        In this case a high tolerance (``atol>0.005``) would group atoms 2 and 3
         together
 
         >>> geom.sort(atol=0.01, axis=0, ret_atoms=True)[1]

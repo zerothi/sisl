@@ -1,10 +1,6 @@
 """
-==============================
-Siesta (:mod:`sisl.io.siesta`)
-==============================
-
-.. module:: sisl.io.siesta
-   :noindex:
+Siesta
+======
 
 The interaction between sisl and `Siesta`_ is one of the main goals due
 to the implicit relationship between the developer of sisl and `Siesta`_.
@@ -13,9 +9,6 @@ sisl.
 
 Remark that the `gridSileSiesta` file encompass all ``RHO``, ``RHOINIT``, ``DRHO``,
 ``RHOXC``, ``BADER``, ``IOCH``, ``TOCH`` ``VH``, ``VNA`` and ``VT`` binary output files.
-
-.. autosummary::
-   :toctree:
 
    fdfSileSiesta - input file
    outSileSiesta - output file
@@ -40,9 +33,6 @@ Remark that the `gridSileSiesta` file encompass all ``RHO``, ``RHOINIT``, ``DRHO
 
 
 The TranSiesta specific output files are:
-
-.. autosummary::
-   :toctree:
 
    tshsSileSiesta - TranSiesta Hamiltonian
    tsdeSileSiesta - TranSiesta TSDE

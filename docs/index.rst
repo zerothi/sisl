@@ -119,13 +119,7 @@ which fills in the version number.
    introduction
    contribute
    other
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Publications
-
    cite
-   publications
 
 .. toctree::
    :maxdepth: 2
@@ -134,13 +128,12 @@ which fills in the version number.
    installation
    tutorials.rst
    scripts/scripts
-   rst/files
 
 .. toctree::
    :maxdepth: 2
    :caption: Toolboxes
 
-   toolbox.rst
+   toolbox/index
 
 .. toctree::
    :maxdepth: 2
@@ -149,14 +142,11 @@ which fills in the version number.
    visualization/ase/index
    visualization/plotly/index
 
-.. for now the plotly build fails, so we need to figure out
-   a better way for this documentation.
-   
 .. toctree::
    :maxdepth: 3
    :caption: Reference documentation
    
-   api
+   api/index
 
 
 A table of contents for all methods may be found :ref:`here <genindex>` while

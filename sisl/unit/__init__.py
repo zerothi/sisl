@@ -1,10 +1,6 @@
 """
-==================================
-Unit conversion (:mod:`sisl.unit`)
-==================================
-
-.. module:: sisl.unit
-   :noindex:
+Unit conversion
+===============
 
 Generic conversion utility between different units.
 
@@ -16,9 +12,6 @@ the codes unit conversion are not the same as the sisl defaults.
 
 Default unit conversion utilities
 ---------------------------------
-
-.. autosummary::
-   :toctree:
 
    unit_group - which group does the unit belong to
    unit_convert - conversion factor between to units
@@ -36,8 +29,6 @@ table that only converts simple units. E.g. Ry to eV etc.
 
 Siesta units (:mod:`sisl.unit.siesta`)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. currentmodule:: sisl.unit.siesta
 
 This subpackage implements the unit conversions used in `Siesta`_.
 
