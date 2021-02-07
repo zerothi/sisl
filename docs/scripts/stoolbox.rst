@@ -8,7 +8,7 @@
 sisl exposes user contributed tool-box command line interfaces through a common
 interface.
 
-The sisl toolbox is a separate package (shipped together with sisl) which contains
+The `sisl` toolbox is a separate package (shipped together with sisl) which contains
 tools that are thought to be good tools for sisl users but are too specialized in
 terms of usability to enter the sisl API.
 

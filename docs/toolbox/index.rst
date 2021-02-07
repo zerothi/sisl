@@ -11,8 +11,19 @@ very focused on solving a particular problem. In order to maintain a stable
 and sufficiently clean API any `sisl` extensions that are thought to be specialized
 would go into the `sisl_toolbox` suite.
 
+Some toolboxes have a command-line-interface, see :ref:`script_stoolbox` for details.
+
+Toolboxes should be imported directly.
+
+.. code-block:: python
+
+   import sisl_toolbox.siesta.atom
+
+
+The implemented toolboxes are listed here:
+   
 .. toctree::
    :maxdepth: 1
 
-   toolbox/ts_fft.rst
-   toolbox/atom_plot.rst
+   ts_fft
+   atom_plot

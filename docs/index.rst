@@ -119,13 +119,7 @@ which fills in the version number.
    introduction
    contribute
    other
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Publications
-
    cite
-   publications
 
 .. toctree::
    :maxdepth: 2
@@ -139,7 +133,7 @@ which fills in the version number.
    :maxdepth: 2
    :caption: Toolboxes
 
-   toolbox.rst
+   toolbox/index
 
 .. toctree::
    :maxdepth: 2
