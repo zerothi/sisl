@@ -13,7 +13,7 @@ from xarray import DataArray
 import numpy as np
 
 import sisl
-from sisl.viz import BandsPlot
+from sisl.viz.plotly import BandsPlot
 from sisl.viz.plotly.plots.tests.conftest import PlotTester
 
 

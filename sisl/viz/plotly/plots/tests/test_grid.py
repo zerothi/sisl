@@ -11,8 +11,7 @@ import numpy as np
 import plotly.graph_objs as go
 
 import sisl
-from sisl.viz import GridPlot
-from sisl.viz import Animation
+from sisl.viz.plotly import GridPlot, Animation
 from sisl.viz.plotly.plots.tests.conftest import PlotTester
 
 

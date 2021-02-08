@@ -1,14 +1,8 @@
 r"""Plotly
 ==========
 
-.. module:: sisl.viz.plotly
-   :noindex:
-
 Plotly is a backend that provides expert plotting utilities using `plotly`.
 It features a rich set of settings enabling fine-tuning of many parameters.
-
-.. autosummary::
-   :toctree:
 
    GeometryPlot
    BandsPlot
@@ -32,3 +26,10 @@ from .plotutils import load
 from ._plotables import register_plotable
 
 from ._express import sx as express
+
+# And then import user customs (we need to do it here
+# to allow the user importing sisl.viz.plotly.Plot, for example)
+user_plots = import_user_plots()
+user_presets = import_user_presets()
+user_sessions = import_user_sessions()
+user_plugins = import_user_plugins()

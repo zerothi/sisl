@@ -721,7 +721,7 @@ def init_multiple_plots(PlotClass, argsList = None, kwargsList = None, **kwargs)
 
     Arguments
     ----------
-    PlotClass: child class of sisl.viz.Plot
+    PlotClass: child class of sisl.viz.plotly.Plot
         The plot class that must be initialized
 
         Can also be a list of classes (see this function's description).

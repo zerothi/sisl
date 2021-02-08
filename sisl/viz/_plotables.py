@@ -257,7 +257,8 @@ class PlotHandler:
         return self._engines[engine](method=method, **kwargs)
 
 
-def register_plotable(plotable, plotting_func, name=None, engine='plotly', default=False, plot_handler_attr='plot'):
+def register_plotable(plotable, plotting_func, name=None,
+                      engine='plotly', default=False, plot_handler_attr='plot'):
     """
     Makes the sisl.viz module aware of which sisl objects can be plotted and how to do it.
 

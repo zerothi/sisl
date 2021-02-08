@@ -3,7 +3,7 @@ import pytest
 
 import numpy as np
 
-from sisl.viz import Session, Plot
+from sisl.viz.plotly import Session, Plot
 from sisl.viz.plotly.plots import *
 from sisl.viz.plotly.tests.test_plot import BasePlotTester
 

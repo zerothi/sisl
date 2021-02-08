@@ -159,11 +159,32 @@ def sisl_system():
 
 
 # We are ignoring stuff in sisl.viz.plotly if plotly cannot be imported
-collect_ignore = []
+# collect - ignore seems not to fully work... I should report this upstream.
+# however, the pytest_ignore_collect seems very stable and favourable
+collect_ignore = ["setup.py"]
+collect_ignore_glob = []
+
+# skip paths
+_skip_paths = []
 try:
     import plotly
 except ImportError:
-    collect_ignore.append(os.path.join("sisl", "viz", "plotly"))
+    _skip_paths.append(os.path.join("sisl", "viz", "plotly"))
+
+
+def pytest_ignore_collect(path, config):
+    # ensure we only compare against final *sisl* stuff
+    global _skip_paths
+    parts = list(Path(path).parts)
+    parts.reverse()
+    sisl_parts = parts[:parts.index("sisl")]
+    sisl_parts.reverse()
+    sisl_path = str(Path("sisl").joinpath(*sisl_parts))
+
+    for skip_path in _skip_paths:
+        if skip_path in sisl_path:
+            return True
+    return False
 
 
 def pytest_configure(config):

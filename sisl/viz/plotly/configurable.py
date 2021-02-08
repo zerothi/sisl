@@ -432,7 +432,7 @@ class Configurable(metaclass=ConfigurableMeta):
         -----------
         presets: str or array-like of str
             all the presets that you want to use.
-            Note that you can register new presets using `sisl.viz.add_preset`
+            Note that you can register new presets using `sisl.viz.plotly.add_preset`
         **kwargs:
             the values of the settings passed as keyword arguments.
 

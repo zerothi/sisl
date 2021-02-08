@@ -1033,8 +1033,8 @@ class GridPlot(Plot):
             This settings apply to each plot and go directly to their initialization.
 
         Returns
-        ----------
-        sisl.viz.Animation
+        -------
+        sisl.viz.plotly.Animation
             An animation representation of the scan
         """
         # Do some checks on the args provided
@@ -1070,7 +1070,7 @@ class GridPlot(Plot):
                 step = (along_range[1] - along_range[0]) / num
             else:
                 num = (along_range[1] - along_range[0]) // step
-                
+
             # np.linspace will use the last point as a step (and we don't want it)
             # therefore we will add an extra step
             breakpoints = np.linspace(*along_range, int(num) + 1)

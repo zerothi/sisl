@@ -1949,7 +1949,7 @@ class MultiplePlot(Plot):
 
         Parameters
         --------
-        plots: array-like of sisl.viz.Plot or plotly Figure
+        plots: array-like of sisl.viz.plotly.Plot or plotly Figure
             the plots that should be set as child_plots for the animation. 
         keep: boolean, optional
             whether the existing child_plots should be kept.

@@ -9,7 +9,7 @@ from xarray import DataArray
 import numpy as np
 
 import sisl
-from sisl.viz import FatbandsPlot
+from sisl.viz.plotly import FatbandsPlot
 from sisl.viz.plotly.plots.tests.test_bands import BandsPlotTester, NCSpinBandsTester
 
 

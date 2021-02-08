@@ -3,17 +3,12 @@ from pathlib import Path
 import sys
 import importlib
 
-from sisl._environ import register_environ_variable, get_environ_variable
+from sisl._environ import get_environ_variable
 
 __all__ = ["import_user_presets", "import_user_plots",
-    "import_user_sessions", "import_user_plugins"]
+           "import_user_sessions", "import_user_plugins"]
 
-# Define the folder where the user will store their stuff
-register_environ_variable("SISL_USER", Path.home() / ".sisl",
-                          "Path to the directory where the user stores their custom scripts "
-                          "to extend sisl.",
-                          process=Path)
-USER_CUSTOM_FOLDER = (get_environ_variable("SISL_USER") / "viz") / "plotly"
+USER_CUSTOM_FOLDER = get_environ_variable("SISL_CONFIGDIR") / "viz" / "plotly"
 
 # Here we let python know that there are importable files
 # in USER_CUSTOM_FOLDER

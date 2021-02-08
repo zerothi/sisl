@@ -6,7 +6,7 @@ ensure that at least they do not break basic session functionality.
 import pytest
 
 from sisl.viz.plotly.tests.test_session import BaseSessionTester
-from sisl.viz import Session
+from sisl.viz.plotly import Session
 from sisl.viz.plotly.sessions import *
 
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]

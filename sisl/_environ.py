@@ -71,7 +71,7 @@ register_environ_variable("SISL_TMP", ".sisl_tmp",
                           "Path where temporary files should be stored",
                           process=Path)
 
-register_environ_variable("SISL_CONFIGDIR", "~/.config/sisl",
+register_environ_variable("SISL_CONFIGDIR", Path.home() / ".config" / "sisl",
                           "Directory where configuration files for sisl should be stored",
                           process=Path)
 
