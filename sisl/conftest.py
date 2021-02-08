@@ -158,6 +158,14 @@ def sisl_system():
     return d
 
 
+# We are ignoring stuff in sisl.viz.plotly if plotly cannot be imported
+collect_ignore = []
+try:
+    import plotly
+except ImportError:
+    collect_ignore.append(os.path.join("sisl", "viz", "plotly"))
+
+
 def pytest_configure(config):
 
     pytest.sisl_travis_skip = pytest.mark.skipif(

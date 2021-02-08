@@ -19,6 +19,12 @@ from sisl.viz.plotly.plots.tests.conftest import PlotTester
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 _dir = osp.join('sisl', 'io', 'siesta')
 
+try:
+    import skimage
+    skip_skimage = pytest.mark.skip(False, reason="scikit-image (skimage) not available")
+except ImportError:
+    skip_skimage = pytest.mark.skip(True, reason="scikit-image (skimage) not available")
+
 
 class GridPlotTester(PlotTester):
 
@@ -26,19 +32,18 @@ class GridPlotTester(PlotTester):
         "grid_shape" # Tuple indicating the grid shape
     ]
 
-    def test_plotting_modes(self):
-
+    @pytest.mark.parametrize("axes,go", [
+        ([0], go.Scatter),
+        pytest.param([0, 1], go.Heatmap, marks=skip_skimage),
+        pytest.param([0, 1, 2], go.Mesh3d, marks=skip_skimage),
+    ])
+    def test_plotting_modes(self, axes, go):
         plot = self.plot
 
-        plot.update_settings(axes=[0])
-        assert isinstance(plot.data[0], go.Scatter), "Not displaying grid in 1D correctly?"
+        plot.update_settings(axes=axes)
+        assert isinstance(plot.data[0], go), f"Not displaying grid in {len(axes)}D correctly?"
 
-        plot.update_settings(axes=[0, 1])
-        assert isinstance(plot.data[0], go.Heatmap), "Not displaying grid in 2D correctly?"
-
-        plot.update_settings(axes=[0, 1, 2]), "Not displaying grid in 3D correctly?"
-        assert isinstance(plot.data[0], go.Mesh3d)
-
+    @skip_skimage
     def test_complex_representations(self):
         for repr in ["imag", "mod", "rad_phase", "deg_phase", "real"]:
             self.plot.update_settings(represent=repr)
@@ -52,8 +57,8 @@ class GridPlotTester(PlotTester):
         assert isinstance(grid, sisl.Grid)
         assert grid.shape == self.grid_shape
 
+    @skip_skimage
     def test_scan(self):
-
         # AS_IS SCAN
         # Provide number of steps
         scanned = self.plot.scan(num=2, mode="as_is")
@@ -80,6 +85,7 @@ class GridPlotTester(PlotTester):
         assert isinstance(scanned, go.Figure)
         assert len(scanned.frames) == 3 # One cross section for each breakpoint
 
+    @skip_skimage
     def test_supercell(self):
 
         plot = self.plot

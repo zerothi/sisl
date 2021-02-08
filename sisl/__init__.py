@@ -46,13 +46,15 @@ from . import _environ
 
 # Import bibtex, version string and the major, minor, micro as well
 from . import info
-from .info import bibtex as __bibtex__
-from .info import git_revision as __git_revision__
-from .info import version as __version__
-from .info import major as __major__
-from .info import minor as __minor__
-from .info import micro as __micro__
-from .info import cite
+from .info import (
+    bibtex as __bibtex__,
+    git_revision as __git_revision__,
+    version as __version__,
+    major as __major__,
+    minor as __minor__,
+    micro as __micro__,
+    cite
+)
 
 # Import the Selector
 from .selector import *
@@ -117,9 +119,11 @@ from .physics import *
 # This will reduce the cluttering of the separate entities
 # that sisl is made of.
 from . import io
-from .io.sile import (add_sile, get_sile_class, get_sile,
-                      get_siles, get_sile_rules, SileError,
-                      BaseSile, Sile, SileCDF, SileBin)
+from .io.sile import (
+    add_sile, get_sile_class, get_sile,
+    get_siles, get_sile_rules, SileError,
+    BaseSile, Sile, SileCDF, SileBin
+)
 
 # Allow geometry to register siles
 # Ensure BaseSile works as a str
