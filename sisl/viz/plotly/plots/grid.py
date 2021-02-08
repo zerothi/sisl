@@ -422,7 +422,7 @@ class GridPlot(Plot):
         self.grid = grid
 
         if self.grid is None:
-            raise Exception()
+            raise ValueError("grid was not set")
 
     @entry_point('grid file')
     def _read_grid_file(self, grid_file):
@@ -571,7 +571,7 @@ class GridPlot(Plot):
     def _cut_vacuum(grid):
 
         if not hasattr(grid, "geometry"):
-            raise Exception("The grid does not have an associated geometry, and therefore we can not calculate where the vacuum is.")
+            raise ValueError("The grid does not have an associated geometry, and therefore we can not calculate where the vacuum is.")
 
         geom = grid.geometry
         maxR = geom.maxR()
@@ -1109,7 +1109,7 @@ class GridPlot(Plot):
         # Generate the plot using self as a template so that plots don't need
         # to read data, just process it and show it differently.
         # (If each plot read the grid, the memory requirements would be HUGE)
-        scan = GridPlot.animated(
+        scan = self.animated(
             {
                 range_key: [[bp, breakpoints[i+1]] for i, bp in enumerate(breakpoints[:-1])]
             },
@@ -1413,7 +1413,7 @@ class WavefunctionPlot(GridPlot):
         Uses an already calculated Eigenstate object to generate the wavefunctions.
         """
         if eigenstate is None:
-            raise Exception('No eigenstate was provided')
+            raise ValueError('No eigenstate was provided')
 
         self.eigenstate = eigenstate
 
@@ -1436,19 +1436,19 @@ class WavefunctionPlot(GridPlot):
         if geometry is not None:
             self.geometry = geometry
         if getattr(self, 'geometry', None) is None:
-            raise Exception('No geometry was provided and we need it the basis orbitals to build the wavefunctions from the coefficients!')
+            raise ValueError('No geometry was provided and we need it the basis orbitals to build the wavefunctions from the coefficients!')
 
         if grid is None:
-            dtype = float if (np.array(k) == 0).all() else complex
+            dtype = np.float64 if (np.array(k) == 0).all() else np.complex128
             self.grid = sisl.Grid(grid_prec, geometry=self.geometry, dtype=dtype)
 
         # GridPlot's after_read basically sets the x_range, y_range and z_range options
         # which need to know what the grid is, that's why we are calling it here
-        GridPlot._after_read(self)
+        super()._after_read()
 
         self.eigenstate[i].wavefunction(self.grid)
 
-        GridPlot._set_data(self)
+        super()._set_data()
 
 # class GridSlice(Plot):
 

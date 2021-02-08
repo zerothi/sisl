@@ -215,10 +215,10 @@ class FatbandsPlot(BandsPlot):
 
         # If the wfsx doesn't exist, we will not even bother to read the bands
         if not wfsx_file.exists():
-            raise Exception(f"We didn't find a WFSX file in the location {wfsx_file}")
+            raise ValueError(f"We did not find a WFSX file in the location {wfsx_file}")
 
         # Otherwise we will make BandsPlot read the bands
-        BandsPlot._read_siesta_output(self)
+        super()._read_siesta_output()
 
         # And then read the weights from the wfsx file
         wfsx_sile = self.get_sile(wfsx_file)
@@ -282,7 +282,7 @@ class FatbandsPlot(BandsPlot):
         # thanks to the above step
         bands_read = False; err = None
         try:
-            BandsPlot._read_from_H(self, eigenstate_map=_weights_from_eigenstate)
+            super()._read_from_H(eigenstate_map=_weights_from_eigenstate)
             bands_read = True
         except Exception as e:
             # Let's keep this error, we are going to at least set the group options so that the
@@ -332,10 +332,9 @@ class FatbandsPlot(BandsPlot):
     def _set_data(self):
 
         # We let the bands plot draw the bands
-        BandsPlot._set_data(
-            self, draw_before_bands=self._draw_fatbands,
-            # Avoid bands being displayed in the legend individually (it would be a mess)
-            add_band_trace_data=lambda band, plot: {'showlegend': False}
+        super()._set_data(draw_before_bands=self._draw_fatbands,
+                         # Avoid bands being displayed in the legend individually (it would be a mess)
+                         add_band_trace_data=lambda band, plot: {'showlegend': False}
         )
 
     def _draw_fatbands(self, groups, E0, bands_range, scale):

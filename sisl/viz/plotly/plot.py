@@ -815,8 +815,8 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
                 errors.append("\t- {}: {}.{}".format(entry_point._name, type(e).__name__, e))
         else:
             self.source = None
-            raise Exception("Could not read or generate data for {} from any of the possible sources.\n\n Here are the errors for each source:\n\n {}  "
-                            .format(self.__class__.__name__, "\n".join(errors)))
+            raise ValueError("Could not read or generate data for {} from any of the possible sources.\n\n Here are the errors for each source:\n\n {}  "
+                             .format(self.__class__.__name__, "\n".join(errors)))
 
     def follow(self, *files, to_abs=True, unfollow=False):
         """ Makes sure that the object knows which files to follow in order to trigger updates
@@ -2435,8 +2435,8 @@ class SubPlots(MultiplePlot):
             cols = nplots/rows
 
         if cols % 1 != 0 or rows % 1 != 0:
-            raise Exception(f'It is impossible to draw a layout with {rows} rows and {cols} cols.' +
-                f' Please review the values provided, keeping in mind that the layout should accomodate {nplots} plots')
+            raise ValueError(f'It is impossible to draw a layout with {rows} rows and {cols} cols. ' +
+                             f'Please review the values provided, keeping in mind that the layout should accomodate {nplots} plots')
         elif cols*rows > nplots:
             # They will see the empty spaces, not worth it to print something I believe
             pass

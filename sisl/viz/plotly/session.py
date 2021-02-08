@@ -314,7 +314,7 @@ class Session(Configurable):
                     ReqPlotClass = PlotClass
                     break
             else:
-                raise Exception("Didn't find the desired plot class: {}".format(plotClass))
+                raise ValueError(f"Didn't find the desired plot class: {plotClass}")
 
         if plotable_path is not None:
             args = (plotable_path,)

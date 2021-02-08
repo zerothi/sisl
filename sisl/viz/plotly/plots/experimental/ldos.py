@@ -346,7 +346,7 @@ class LDOSmap(Plot):
 
             nCorners = len(points)
             if nCorners < 2:
-                raise Exception("You need more than 1 point to generate a path! You better provide 2 next time...\n")
+                raise ValueError("You need more than 1 point to generate a path! You better provide 2 next time...\n")
 
             #Generate an evenly distributed path along the points provided
             self.path = []

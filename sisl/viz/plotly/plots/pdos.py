@@ -303,7 +303,7 @@ class PdosPlot(Plot):
             kgrid = [3 if nsc > 1 else 1 for nsc in self.H.geometry.nsc]
 
         if Erange is None:
-            raise Exception('You need to provide an energy range to calculate the PDOS from the Hamiltonian')
+            raise ValueError('You need to provide an energy range to calculate the PDOS from the Hamiltonian')
 
         self.E = np.linspace(Erange[0], Erange[-1], nE) + E0
 

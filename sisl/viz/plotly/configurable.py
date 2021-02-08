@@ -350,7 +350,7 @@ class NamedHistory:
             else:
                 self.restore_initial()
         else:
-            raise Exception("Defaults were not kept! You need to use keep_defaults=True on initialization")
+            raise RuntimeError("Defaults were not kept! You need to use keep_defaults=True on initialization")
 
         return self
 
@@ -363,7 +363,7 @@ class NamedHistory:
             else:
                 return self.step(0)
         else:
-            raise Exception("Defaults were not kept! You need to use keep_defaults=True on initialization")
+            raise RuntimeError("Defaults were not kept! You need to use keep_defaults=True on initialization")
 
         return self
 
