@@ -5,7 +5,7 @@ from sisl.io.cube import *
 import numpy as np
 
 
-pytestmark = [pytest.mark.io, pytest.mark.cube]
+pytestmark = [pytest.mark.io, pytest.mark.generic]
 _dir = osp.join('sisl', 'io')
 
 

@@ -195,16 +195,16 @@ def pytest_configure(config):
     )
 
     # Locally manage pytest.ini input
-    for mark in ['io', 'bloch', 'hamiltonian', 'geometry', 'geom', 'shape',
+    for mark in ['io', 'generic', 'bloch', 'hamiltonian', 'geometry', 'geom', 'shape',
                  'state', 'electron', 'phonon', 'utils', 'unit', 'distribution',
                  'spin', 'self_energy', 'help', 'messages', 'namedindex', 'sparse',
                  'supercell', 'sc', 'quaternion', 'sparse_geometry', 'ranges',
                  'orbital', 'oplist', 'grid', 'atoms', 'atom', 'sgrid', 'sdata', 'sgeom',
                  'version', 'bz', 'brillouinzone', 'inv', 'eig', 'linalg',
                  'density_matrix', 'dynamicalmatrix', 'energydensity_matrix',
-                 'siesta', 'tbtrans', 'ham', 'vasp', 'w90', 'wannier90', 'gulp', 'fdf',
+                 'siesta', 'tbtrans', 'vasp', 'w90', 'wannier90', 'gulp', 'fdf',
                  "category", "geom_category", "plot",
-                 'table', 'cube', 'slow', 'selector', 'overlap', 'mixing',
+                 'slow', 'selector', 'overlap', 'mixing',
                  'viz', 'plotly', 'blender']:
         config.addinivalue_line(
             "markers", f"{mark}: mark test to run only on named environment"

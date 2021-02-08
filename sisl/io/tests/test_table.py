@@ -5,7 +5,7 @@ import numpy as np
 from sisl.io.table import *
 
 
-pytestmark = [pytest.mark.io, pytest.mark.table]
+pytestmark = [pytest.mark.io, pytest.mark.generic]
 _dir = osp.join('sisl', 'io')
 
 

@@ -4,7 +4,7 @@ import numpy as np
 from sisl.io.ham import *
 
 
-pytestmark = [pytest.mark.io, pytest.mark.ham]
+pytestmark = [pytest.mark.io, pytest.mark.generic]
 _dir = osp.join('sisl', 'io')
 
 

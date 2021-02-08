@@ -6,7 +6,7 @@ import numpy as np
 from itertools import zip_longest
 
 
-pytestmark = [pytest.mark.io, pytest.mark.xsf]
+pytestmark = [pytest.mark.io, pytest.mark.generic]
 _dir = osp.join('sisl', 'io')
 
 
