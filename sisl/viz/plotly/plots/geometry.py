@@ -273,7 +273,7 @@ class GeometryPlot(Plot):
         self.geometry = geometry or getattr(self, "geometry", None)
 
         if self.geometry is None:
-            raise Exception("No geometry has been provided.")
+            raise ValueError("No geometry has been provided.")
 
     @entry_point('geometry file')
     def _read_siesta_output(self, geom_file, root_fdf):
@@ -347,7 +347,7 @@ class GeometryPlot(Plot):
 
     @staticmethod
     def _sphere(center=[0, 0, 0], r=1, vertices=10):
-        phi, theta = np.mgrid[0.0:np.pi:complex(0, vertices), 0.0:2.0*np.pi:complex(0, vertices)]
+        phi, theta = np.mgrid[0.0:np.pi: 1j*vertices, 0.0:2.0*np.pi: 1j*vertices]
 
         x = center[0] + r*np.sin(phi)*np.cos(theta)
         y = center[1] + r*np.sin(phi)*np.sin(theta)

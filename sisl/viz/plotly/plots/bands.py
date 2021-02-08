@@ -479,7 +479,7 @@ class BandsPlot(Plot):
         if self.path and len(self.path) > 1:
             self.path = [point for point in path if point.get("active", True)]
         else:
-            raise Exception(f"You need to provide at least 2 points of the path to draw the bands. Please update the 'path' setting. The current path is: {self.path}")
+            raise ValueError(f"You need to provide at least 2 points of the path to draw the bands. Please update the 'path' setting. The current path is: {self.path}")
 
         band_struct = sisl.BandStructure(
             None, # The band structure entry_point will take care of this
@@ -844,7 +844,7 @@ class BandsPlot(Plot):
 
         fig = px.line(x=self.bands.k.values, y=diff)
 
-        plt = Plot.from_plotly(fig)
+        plt = super().from_plotly(fig)
 
         plt.update_layout({**self.layout.to_plotly_json(), "title": f"Energy difference between bands {band1} and {band2}", "yaxis_range": [np.min(diff), np.max(diff)]})
 
@@ -892,7 +892,7 @@ class BandsPlot(Plot):
 
         fig = px.line(x=diff, y=E)
 
-        plt = Plot.from_plotly(fig)
+        plt = super().from_plotly(fig)
 
         plt.update_layout({"title": f"Delta K between bands {band1} and {band2}", 'xaxis_title': 'Delta k', 'yaxis_title': 'Energy [eV]'})
 
