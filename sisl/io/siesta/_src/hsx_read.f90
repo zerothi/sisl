@@ -56,7 +56,7 @@ subroutine read_hsx_hsx(fname, Gamma, nspin, no_u, no_s, maxnh, &
 ! Internal variables and arrays
   integer :: iu, ierr
   integer :: is, ih, im
-  integer :: listhptr(maxnh)
+  integer, allocatable :: listhptr(:)
 
   ! Local readables
   logical :: lGamma
@@ -88,7 +88,8 @@ subroutine read_hsx_hsx(fname, Gamma, nspin, no_u, no_s, maxnh, &
   read(iu, iostat=ierr) numh
   call iostat_update(ierr)
 
-! Create listhptr
+  ! Create listhptr
+  allocate(listhptr(no_u))
   listhptr(1) = 0
   do ih = 2 , no_u
     listhptr(ih) = listhptr(ih-1) + numh(ih-1)
@@ -135,7 +136,7 @@ subroutine read_hsx_hsx(fname, Gamma, nspin, no_u, no_s, maxnh, &
     end do
   end if
 
-  deallocate(buf)
+  deallocate(buf, listhptr)
 
   call close_file(iu)
 
@@ -167,7 +168,7 @@ subroutine read_hsx_sx(fname, Gamma, nspin, no_u, no_s, maxnh, &
 ! Internal variables and arrays
   integer :: iu, ierr
   integer :: is, ih, im
-  integer :: listhptr(maxnh)
+  integer, allocatable :: listhptr(:)
 
   ! Local readables
   logical :: lGamma
@@ -200,6 +201,7 @@ subroutine read_hsx_sx(fname, Gamma, nspin, no_u, no_s, maxnh, &
   call iostat_update(ierr)
 
 ! Create listhptr
+  allocate(listhptr(no_u))
   listhptr(1) = 0
   do ih = 2 , no_u
     listhptr(ih) = listhptr(ih-1) + numh(ih-1)
@@ -245,8 +247,312 @@ subroutine read_hsx_sx(fname, Gamma, nspin, no_u, no_s, maxnh, &
     end do
   end if
 
-  deallocate(buf)
+  deallocate(buf, listhptr)
 
   call close_file(iu)
 
 end subroutine read_hsx_sx
+
+subroutine read_hsx_specie_sizes(fname, no_u, na_u, nspecies)
+  use io_m, only: open_file, close_file
+  use io_m, only: iostat_update
+
+  implicit none
+
+  integer, parameter :: dp = selected_real_kind(p=15)
+
+  ! Input parameters
+  character(len=*), intent(in) :: fname
+  integer, intent(out) :: no_u, na_u, nspecies
+
+! Define f2py intents
+!f2py intent(in) :: fname
+!f2py intent(out) :: no_u, na_u, nspecies
+
+! Internal variables and arrays
+  integer :: iu, ierr
+  integer :: is, ih, io
+
+  ! Local readables
+  integer :: lno_s, lnspin, lmaxnh
+  logical :: lGamma
+  character(len=20), allocatable :: labelfis(:)
+  real(dp), allocatable :: zvalfis(:)
+  integer, allocatable :: nofis(:)
+
+  call open_file(fname, 'read', 'old', 'unformatted', iu)
+
+  ! Read overall data
+  read(iu, iostat=ierr) no_u, lno_s, lnspin, lmaxnh
+  call iostat_update(ierr)
+
+! Read logical
+  read(iu, iostat=ierr) lGamma
+  call iostat_update(ierr)
+
+! Read out indxuo
+  if (.not. lGamma) then
+    read(iu, iostat=ierr) ! indxuo
+    call iostat_update(ierr)
+  end if
+
+  read(iu, iostat=ierr) ! numh
+  call iostat_update(ierr)
+
+! Read listh
+  do ih = 1 , no_u
+    read(iu, iostat=ierr) !listh
+    call iostat_update(ierr)
+  end do
+
+! Read Hamiltonian
+  do is = 1 , lnspin
+    do ih = 1 , no_u
+      read(iu, iostat=ierr) ! H
+      call iostat_update(ierr)
+    end do
+  end do
+
+! Read Overlap matrix
+  do ih = 1,no_u
+    read(iu, iostat=ierr) ! S
+    call iostat_update(ierr)
+  end do
+
+  read(iu, iostat=ierr) !Qtot,temp
+  call iostat_update(ierr)
+
+  do ih = 1 , no_u
+    read(iu, iostat=ierr) ! xij
+    call iostat_update(ierr)
+  end do
+
+  ! Now read in the geometry information
+  read(iu, iostat=ierr) nspecies
+  call iostat_update(ierr)
+  allocate(labelfis(nspecies), zvalfis(nspecies), nofis(nspecies))
+  read(iu, iostat=ierr) (labelfis(is), zvalfis(is),nofis(is),is=1,nspecies)
+
+  do is = 1, nspecies
+    do io = 1 , nofis(is)
+      read(iu, iostat=ierr) !nfio(is,io), lfio(is,io), zetafio(is,io)
+      call iostat_update(ierr)
+    end do
+  end do
+
+  read(iu, iostat=ierr) na_u
+  call iostat_update(ierr)
+
+  call close_file(iu)
+
+end subroutine read_hsx_specie_sizes
+
+subroutine read_hsx_species(fname, nspecies, no_u, na_u, labelfis, zvalfis, nofis, isa)
+  use io_m, only: open_file, close_file
+  use io_m, only: iostat_update
+
+  implicit none
+
+  integer, parameter :: sp = selected_real_kind(p=9)
+  integer, parameter :: dp = selected_real_kind(p=15)
+
+  ! Input parameters
+  character(len=*), intent(in) :: fname
+  integer, intent(in) :: nspecies, no_u, na_u
+  character(len=1), intent(out) :: labelfis(20,nspecies)
+  real(dp), intent(out) :: zvalfis(nspecies)
+  integer, intent(out) :: nofis(nspecies)
+  integer, intent(out) :: isa(na_u)
+
+! Define f2py intents
+!f2py intent(in) :: fname
+!f2py intent(in) :: nspecies, no_u, na_u
+!f2py intent(out) :: labelfis, zvalfis, nofis, isa
+
+! Internal variables and arrays
+  integer :: iu, ierr
+  integer :: is, ih, io
+
+  ! Local readables
+  integer :: lno_u, lnspecies, lno_s, lna_u, lnspin, lmaxnh
+  logical :: lGamma
+
+  call open_file(fname, 'read', 'old', 'unformatted', iu)
+
+  ! Read overall data
+  read(iu, iostat=ierr) lno_u , lno_s, lnspin, lmaxnh
+  if ( lno_u /= no_u ) stop 'Error in reading data, not allocated, no_u'
+  call iostat_update(ierr)
+
+! Read logical
+  read(iu, iostat=ierr) lGamma
+  call iostat_update(ierr)
+
+! Read out indxuo
+  if (.not. lGamma) then
+    read(iu, iostat=ierr) ! indxuo
+    call iostat_update(ierr)
+  end if
+
+  read(iu, iostat=ierr) ! numh
+  call iostat_update(ierr)
+
+! Read listh
+  do ih = 1 , no_u
+    read(iu, iostat=ierr) !listh
+    call iostat_update(ierr)
+  end do
+
+! Read Hamiltonian
+  do is = 1 , lnspin
+    do ih = 1 , no_u
+      read(iu, iostat=ierr) ! H
+      call iostat_update(ierr)
+    end do
+  end do
+
+! Read Overlap matrix
+  do ih = 1,no_u
+    read(iu, iostat=ierr) ! S
+    call iostat_update(ierr)
+  end do
+
+  read(iu, iostat=ierr) !Qtot,temp
+  call iostat_update(ierr)
+
+! Read xij
+  do ih = 1 , no_u
+    read(iu, iostat=ierr) ! xij
+    call iostat_update(ierr)
+  end do
+
+  ! Now read in the geometry information
+  read(iu, iostat=ierr) lnspecies
+  if ( lnspecies /= nspecies ) stop 'Error in reading data, not allocated, nspecies'
+  call iostat_update(ierr)
+
+  read(iu, iostat=ierr) (labelfis(1:20,is), zvalfis(is),nofis(is),is=1,nspecies)
+  call iostat_update(ierr)
+  do is = 1, nspecies
+    do io = 1 , nofis(is)
+      read(iu, iostat=ierr) !nfio(is,io), lfio(is,io), zetafio(is,io)
+      call iostat_update(ierr)
+    end do
+  end do
+
+  read(iu, iostat=ierr) lna_u
+  if ( lna_u /= na_u ) stop 'Error in reading data, not allocated, na_u'
+  call iostat_update(ierr)
+  read(iu, iostat=ierr) isa
+  call iostat_update(ierr)
+
+  call close_file(iu)
+
+end subroutine read_hsx_species
+
+subroutine read_hsx_specie(fname, ispecie, no_specie, n_specie, l_specie, zeta_specie)
+  use io_m, only: open_file, close_file
+  use io_m, only: iostat_update
+
+  implicit none
+
+  integer, parameter :: dp = selected_real_kind(p=15)
+
+  ! Input parameters
+  character(len=*), intent(in) :: fname
+  integer, intent(in) :: ispecie, no_specie
+  integer, intent(out) :: n_specie(no_specie), l_specie(no_specie), zeta_specie(no_specie)
+
+! Define f2py intents
+!f2py intent(in) :: fname
+!f2py intent(in) :: ispecie, no_specie
+!f2py intent(out) :: n_specie, l_specie, zeta_specie
+
+! Internal variables and arrays
+  integer :: iu, ierr
+  integer :: is, ih, io
+
+  ! Local readables
+  logical :: lGamma
+  integer :: lnspecies, lno_u, lno_s, lnspin
+  character(len=20), allocatable :: labelfis(:)
+  real(dp), allocatable :: zvalfis(:)
+  integer, allocatable :: nofis(:)
+
+  call open_file(fname, 'read', 'old', 'unformatted', iu)
+
+  ! Read overall data
+  read(iu, iostat=ierr) lno_u, lno_s, lnspin !, lmaxnh
+  call iostat_update(ierr)
+
+! Read logical
+  read(iu, iostat=ierr) lGamma
+  call iostat_update(ierr)
+
+! Read out indxuo
+  if (.not. lGamma) then
+    read(iu, iostat=ierr) ! indxuo
+    call iostat_update(ierr)
+  end if
+
+  read(iu, iostat=ierr) ! numh
+  call iostat_update(ierr)
+
+! Read listh
+  do ih = 1 , lno_u
+    read(iu, iostat=ierr) !listh
+    call iostat_update(ierr)
+  end do
+
+! Read Hamiltonian
+  do is = 1 , lnspin
+    do ih = 1 , lno_u
+      read(iu, iostat=ierr) ! H
+      call iostat_update(ierr)
+    end do
+  end do
+
+! Read Overlap matrix
+  do ih = 1, lno_u
+    read(iu, iostat=ierr) ! S
+    call iostat_update(ierr)
+  end do
+
+  read(iu, iostat=ierr) !Qtot,temp
+  call iostat_update(ierr)
+
+! Read xij
+  do ih = 1 , lno_u
+    read(iu, iostat=ierr) ! xij
+    call iostat_update(ierr)
+  end do
+
+  ! Now read in the geometry information
+  read(iu, iostat=ierr) lnspecies
+  if ( lnspecies < ispecie ) stop 'Error in reading data, not allocated, nspecies<ispecie'
+  call iostat_update(ierr)
+  allocate(labelfis(lnspecies))
+  allocate(zvalfis(lnspecies))
+  allocate(nofis(lnspecies))
+
+  read(iu, iostat=ierr) (labelfis(is), zvalfis(is),nofis(is),is=1,lnspecies)
+  call iostat_update(ierr)
+  do is = 1, lnspecies
+    if ( is == ispecie ) then
+      do io = 1 , nofis(is)
+        read(iu, iostat=ierr) n_specie(io), l_specie(io), zeta_specie(io)
+        call iostat_update(ierr)
+      end do
+    else
+      do io = 1 , nofis(is)
+        read(iu, iostat=ierr) !nfio(is,io), lfio(is,io), zetafio(is,io)
+        call iostat_update(ierr)
+      end do
+    end if
+  end do
+
+  deallocate(labelfis, zvalfis, nofis)
+
+  call close_file(iu)
+
+end subroutine read_hsx_specie

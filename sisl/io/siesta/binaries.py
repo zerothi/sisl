@@ -19,6 +19,7 @@ from sisl.messages import warn, SislError
 from ._help import *
 import sisl._array as _a
 from sisl import Geometry, Atom, Atoms, SuperCell, Grid, SparseCSR
+from sisl import AtomicOrbital
 from sisl.sparse import _ncol_to_indptr
 from sisl.unit.siesta import unit_convert
 from sisl.physics.sparse import SparseOrbitalBZ
@@ -593,45 +594,52 @@ class hsxSileSiesta(SileBinSiesta):
         geometry : Geometry, optional
             passed geometry
         """
-        N = len(xij)
-        # convert csr to dok format
-        row = (xij.ncol > 0).nonzero()[0]
-        # Now we have [0 0 0 0 1 1 1 1 2 2 ... no-1 no-1]
-        row = np.repeat(row, xij.ncol[row])
-        col = xij.col
+        def get_geom_handle(xij):
+            atoms = self._read_atoms()
+            if not atoms is None:
+                return Geometry(np.zeros([len(atoms), 3]), atoms)
 
-        # Parse xij to correct geometry
-        # first figure out all zeros (i.e. self-atom-orbitals)
-        idx0 = np.isclose(np.fabs(xij._D).sum(axis=1), 0.).nonzero()[0]
-        row0 = row[idx0]
+            N = len(xij)
+            # convert csr to dok format
+            row = (xij.ncol > 0).nonzero()[0]
+            # Now we have [0 0 0 0 1 1 1 1 2 2 ... no-1 no-1]
+            row = np.repeat(row, xij.ncol[row])
+            col = xij.col
 
-        # convert row0 and col0 to a first attempt of "atomization"
-        atoms = []
-        for r in range(N):
-            idx0r = (row0 == r).nonzero()[0]
-            row0r = row0[idx0r]
-            # although xij == 0, we just do % to ensure unit-cell orbs
-            col0r = col[idx0[idx0r]] % N
-            if np.all(col0r >= r):
-                # we have a new atom
-                atoms.append(set(col0r))
-            else:
-                atoms[-1].update(set(col0r))
+            # Parse xij to correct geometry
+            # first figure out all zeros (i.e. self-atom-orbitals)
+            idx0 = np.isclose(np.fabs(xij._D).sum(axis=1), 0.).nonzero()[0]
+            row0 = row[idx0]
 
-        # convert list of orbitals to lists
-        def conv(a):
-            a = list(a)
-            a.sort()
-            return a
-        atoms = [list(a) for a in atoms]
-        if sum(map(len, atoms)) != len(xij):
-            raise ValueError(f"{self.__class__.__name__} could not determine correct "
-                             "number of orbitals.")
+            # convert row0 and col0 to a first attempt of "atomization"
+            atoms = []
+            for r in range(N):
+                idx0r = (row0 == r).nonzero()[0]
+                row0r = row0[idx0r]
+                # although xij == 0, we just do % to ensure unit-cell orbs
+                col0r = col[idx0[idx0r]] % N
+                if np.all(col0r >= r):
+                    # we have a new atom
+                    atoms.append(set(col0r))
+                else:
+                    atoms[-1].update(set(col0r))
 
-        atms = Atoms(Atom('H', [-1. for _ in atoms[0]]))
-        for orbs in atoms[1:]:
-            atms.append(Atom('H', [-1. for _ in orbs]))
-        geom_handle = Geometry(np.zeros([len(atoms), 3]), atms)
+            # convert list of orbitals to lists
+            def conv(a):
+                a = list(a)
+                a.sort()
+                return a
+            atoms = [list(a) for a in atoms]
+            if sum(map(len, atoms)) != len(xij):
+                raise ValueError(f"{self.__class__.__name__} could not determine correct "
+                                 "number of orbitals.")
+
+            atms = Atoms(Atom('H', [-1. for _ in atoms[0]]))
+            for orbs in atoms[1:]:
+                atms.append(Atom('H', [-1. for _ in orbs]))
+            return Geometry(np.zeros([len(atoms), 3]), atms)
+
+        geom_handle = get_geom_handle(xij)
 
         def convert_to_atom(geom, xij):
             # o2a does not check for correct super-cell index
@@ -652,7 +660,8 @@ class hsxSileSiesta(SileBinSiesta):
             del idx
 
             # Now figure out if xij is consistent
-            duplicates = np.logical_and(np.diff(acol) == 0, np.diff(arow) == 0).nonzero()[0]
+            duplicates = np.logical_and(np.diff(acol) == 0,
+                                        np.diff(arow) == 0).nonzero()[0]
             if duplicates.size > 0:
                 if not np.allclose(xij[duplicates+1] - xij[duplicates], 0.):
                     raise ValueError(f"{self.__class__.__name__} converting xij(orb) -> xij(atom) went wrong. "
@@ -707,7 +716,6 @@ class hsxSileSiesta(SileBinSiesta):
             if mark.sum() != na:
                 raise ValueError(f"{self.__class__.__name__} xij(orb) -> Geometry does not  "
                                  f"have a fully connected geometry. It is impossible to create relative coordinates")
-
             return xyz
 
         def sc_from_xij(xij, xyz):
@@ -772,11 +780,21 @@ class hsxSileSiesta(SileBinSiesta):
                 idx = np.index_exp[:] + np.index_exp[0] * (ndim - 2)
                 projection = (sc_off[idx] * sc_dir).sum(-1) / norm2_sc_dir
                 iprojection = np.rint(projection)
+                # reduce, find 0
+                idx_zero = np.isclose(iprojection, 0, atol=1e-5).nonzero()[0]
+                if idx_zero.size <= 1:
+                    return 1
+
+                # only take those values that are continuous
+                # we *must* have some supercell connections
+                idx_max = idx_zero[1]
+
                 # find where they are close
                 # since there may be *many* zeros (non-coupling elements)
                 # we first have to cut off anything that is not integer
-                idx_close = np.isclose(projection, iprojection).nonzero()[0]
-                return (np.diff(idx_close) > 1).nonzero()[0][0] + 1
+                if np.allclose(projection[:idx_max], iprojection[:idx_max], atol=1e-5):
+                    return idx_max
+                raise ValueError(f"Could not determine nsc from coordinates")
 
             nsc = _a.onesi(3)
             nsc[0] = get_nsc(sc_off)
@@ -800,14 +818,14 @@ class hsxSileSiesta(SileBinSiesta):
                 i = 0
                 for idx, isc in enumerate(nsc):
                     if isc > 1:
-                        sl = tuple(0, 0, 0)
+                        sl = [0, 0, 0]
                         sl[2 - idx] = 1
-                        cell[i] = sc_off[sl]
+                        cell[i] = sc_off[tuple(sl)]
                         i += 1
+
                 # figure out the last vectors
                 # We'll just use Cartesian coordinates
-                roll_n = 0
-                while i <= 2:
+                while i < 3:
                     # this means we don't have any supercell connections
                     # along at least 1 other lattice vector.
                     lcell = np.fabs(cell).sum(0)
@@ -815,13 +833,7 @@ class hsxSileSiesta(SileBinSiesta):
                     # figure out which Cartesian direction we are *missing*
                     cart_dir = np.argmin(lcell)
                     cell[i, cart_dir] = xyz[:, cart_dir].max() - xyz[:, cart_dir].min() + 10.
-                    roll_n = cart_dir - i
                     i += 1
-
-                # we roll data to make Cartesian coordinates
-                # this won't always work. but should in most cases
-                cell = np.roll(cell, roll_n)
-                nsc = np.roll(nsc, roll_n)
 
             return SuperCell(cell, nsc)
 
@@ -830,10 +842,7 @@ class hsxSileSiesta(SileBinSiesta):
             atm_xij = convert_to_atom(geom_handle, xij)
             xyz = coord_from_xij(atm_xij)
             sc = sc_from_xij(atm_xij, xyz)
-            atms = Atoms(Atom('H', [-1. for _ in atoms[0]]))
-            for orbs in atoms[1:]:
-                atms.append(Atom('H', [-1. for _ in orbs]))
-            geometry = Geometry(xyz, atms, sc)
+            geometry = Geometry(xyz, geom_handle.atoms, sc)
 
             # Move coordinates into unit-cell
             geometry.xyz[:, :] = (geometry.fxyz % 1.) @ geometry.cell
@@ -848,7 +857,7 @@ class hsxSileSiesta(SileBinSiesta):
                 if len(orbs) == len(atm):
                     return atm
                 return atm.copy(orbitals=[-1. for _ in orbs])
-            atms = Atoms([conv(orbs, atm) for orbs, atm in zip(atoms, geometry.atoms)])
+            atms = Atoms(list(map(conv, geom_handle.atoms, geometry.atoms)))
             if len(atms) != len(geometry):
                 raise ValueError(f"{self.__class__.__name__} passed geometry for reading "
                                  "sparse matrix does not contain same number of atoms!")
@@ -857,6 +866,86 @@ class hsxSileSiesta(SileBinSiesta):
             geometry._atoms = atms
 
         return geometry
+
+    def _read_atoms(self, **kwargs):
+        """ Reads basis set and geometry information from the HSX file """
+        # Now read the sizes used...
+        no, na, nspecies = _siesta.read_hsx_specie_sizes(self.file)
+        _bin_check(self, 'read_geometry', 'could not read specie sizes.')
+        # Read specie information
+        labels, val_q, norbs, isa = _siesta.read_hsx_species(self.file, nspecies, no, na)
+        # convert to proper string
+        labels = labels.T.reshape(nspecies, -1)
+        labels = labels.view(f"S{labels.shape[1]}")
+        labels = list(map(lambda s: b''.join(s).decode('utf-8').strip(),
+                          labels.tolist())
+        )
+        _bin_check(self, 'read_geometry', 'could not read species.')
+        # to python index
+        isa -= 1
+
+        from sisl.atom import _ptbl
+
+        # try and convert labels into symbols
+        # We do this by:
+        # 1. label -> symbol
+        # 2. label[:2] -> symbol
+        # 3. label[:1] -> symbol
+        symbols = []
+        lbls = []
+        for label in labels:
+            lbls.append(label)
+            try:
+                symbol = _ptbl.Z_label(label)
+                symbols.append(symbol)
+                continue
+            except:
+                pass
+            try:
+                symbol = _ptbl.Z_label(label[:2])
+                symbols.append(symbol)
+                continue
+            except:
+                pass
+            try:
+                symbol = _ptbl.Z_label(label[:1])
+                symbols.append(symbol)
+                continue
+            except:
+                # we have no clue, assign -1
+                symbols.append(-1)
+
+        # Read in orbital information
+        atoms = []
+        for ispecie in range(nspecies):
+            n_l_zeta = _siesta.read_hsx_specie(self.file, ispecie+1, norbs[ispecie])
+            _bin_check(self, 'read_geometry', f'could not read specie {ispecie}.')
+            # create orbital
+            # no shell will have l>5, so m=10 should be more than enough
+            m = 10
+            orbs = []
+            for n, l, zeta in zip(*n_l_zeta):
+                # manual loop on m quantum numbers
+                if m > l:
+                    m = -l
+                orbs.append(AtomicOrbital(n=n, l=l, m=m, zeta=zeta, R=-1.))
+                m += 1
+
+            # now create atom
+            atoms.append(Atom(symbols[ispecie], orbs, tag=lbls[ispecie]))
+
+        # now read in xij to retrieve atomic positions
+        Gamma, spin, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
+        _bin_check(self, 'read_geometry', 'could not read matrix sizes.')
+        ncol, col, _, dxij = _siesta.read_hsx_sx(self.file, Gamma, spin, no, no_s, nnz)
+        dxij = dxij.T * _Bohr2Ang
+        col -= 1
+        _bin_check(self, 'read_geometry', 'could not read xij matrix.')
+
+        # now create atoms object
+        atoms = Atoms([atoms[ia] for ia in isa])
+
+        return atoms
 
     def read_hamiltonian(self, **kwargs):
         """ Returns the electronic structure from the siesta.TSHS file """

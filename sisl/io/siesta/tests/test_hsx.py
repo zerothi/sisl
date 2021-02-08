@@ -5,7 +5,7 @@ import pytest
 import sisl
 
 
-pytestmark = [pytest.mark.io, pytest.mark.siesta]
+pytestmark = [pytest.mark.io, pytest.mark.siesta, pytest.mark.only]
 _dir = osp.join('sisl', 'io', 'siesta')
 
 
@@ -20,14 +20,16 @@ def test_si_pdos_kgrid_hsx_H(sisl_files, sisl_tmp):
     si.read_hamiltonian(geometry=si_pdos_kgrid_geom())
 
 
+def test_si_pdos_kgrid_hsx_H_no_geometry(sisl_files, sisl_tmp):
+    si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.HSX'))
+    H0 = si.read_hamiltonian()
+    H1 = si.read_hamiltonian(geometry=si_pdos_kgrid_geom())
+    assert H0._csr.spsame(H1._csr)
+
+
 def test_si_pdos_kgrid_hsx_H_fix_orbitals(sisl_files, sisl_tmp):
     si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.HSX'))
     si.read_hamiltonian(geometry=si_pdos_kgrid_geom(False))
-
-
-def test_si_pdos_kgrid_hsx_H_no_geom(sisl_files, sisl_tmp):
-    si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.HSX'))
-    si.read_hamiltonian()
 
 
 def test_si_pdos_kgrid_hsx_overlap(sisl_files, sisl_tmp):
@@ -39,12 +41,21 @@ def test_si_pdos_kgrid_hsx_overlap(sisl_files, sisl_tmp):
     assert np.allclose(HS._csr._D[:, HS.S_idx], S._csr._D[:, 0])
 
 
-def test_h2o_dipole_hsx(sisl_files, sisl_tmp):
+def test_h2o_dipole_hsx_no_geometry(sisl_files, sisl_tmp):
     HSX = sisl.get_sile(sisl_files(_dir, 'h2o_dipole.HSX'))
     geometry = sisl.get_sile(sisl_files(_dir, 'h2o_dipole.fdf')).read_geometry()
     # manually define this.
-    # The fdf does not contain it, and the following test asserts it will fail
-    # otherwise.
+    geometry.set_nsc(a=5, b=1, c=3)
+    HS = HSX.read_hamiltonian()
+    S = HSX.read_overlap(geometry=geometry)
+
+    assert HS._csr.spsame(S._csr)
+    assert np.allclose(HS._csr._D[:, HS.S_idx], S._csr._D[:, 0])
+
+
+def test_h2o_dipole_hsx(sisl_files, sisl_tmp):
+    HSX = sisl.get_sile(sisl_files(_dir, 'h2o_dipole.HSX'))
+    geometry = sisl.get_sile(sisl_files(_dir, 'h2o_dipole.fdf')).read_geometry()
     geometry.set_nsc(a=5, b=1, c=3)
     # reading from hsx just requires atoms + coordinates + nsc
     HS = HSX.read_hamiltonian(geometry=geometry)
@@ -54,9 +65,7 @@ def test_h2o_dipole_hsx(sisl_files, sisl_tmp):
     assert np.allclose(HS._csr._D[:, HS.S_idx], S._csr._D[:, 0])
 
 
-def test_h2o_dipole_hsx_fail(sisl_files, sisl_tmp):
+def test_h2o_dipole_hsx_hs_no_geometry(sisl_files, sisl_tmp):
     HSX = sisl.get_sile(sisl_files(_dir, 'h2o_dipole.HSX'))
-    with pytest.raises(ValueError, match=re.escape("xij(orb) -> xij(atom)")):
-        HS = HSX.read_hamiltonian()
-    with pytest.raises(ValueError, match=re.escape("xij(orb) -> xij(atom)")):
-        S = HSX.read_overlap()
+    HS = HSX.read_hamiltonian()
+    S = HSX.read_overlap()
