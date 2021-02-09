@@ -1294,6 +1294,14 @@ class TestGeometry:
         from_ase = gr.new(to_ase)
         assert gr.equal(from_ase, R=False)
 
+    def test_geometry_pandas_to(self):
+        pytest.importorskip("pandas", reason="pandas not available")
+        gr = sisl_geom.graphene()
+        df = gr.to.df()
+        assert np.allclose(df["x"], gr.xyz[:, 0])
+        assert np.allclose(df["y"], gr.xyz[:, 1])
+        assert np.allclose(df["z"], gr.xyz[:, 2])
+
     def test_geometry_overlapping_atoms(self):
         gr22 = sisl_geom.graphene().tile(2, 0).tile(2, 1)
         gr44 = gr22.tile(2, 0).tile(2, 1)

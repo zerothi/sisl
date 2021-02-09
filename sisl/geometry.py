@@ -4583,6 +4583,39 @@ Geometry.to.register(str, GeometryToSileDispatcher)
 Geometry.to.register(Path, GeometryToSileDispatcher)
 
 
+class GeometryToDataframeDispatcher(GeometryToDispatcher):
+    def dispatch(self, *args, **kwargs):
+        import pandas as pd
+        geom = self._obj
+        self._ensure_object(geom)
+
+        # Now create data-frame
+        # Currently we will populate it with
+        # - xyz
+        # - symbol
+        # - Z
+        # - tag
+        # - R
+        # - mass
+        # - valence q
+        # - norbs
+        data = {}
+        x, y, z = geom.xyz.T.tolist()
+        data["x"] = x
+        data["y"] = y
+        data["z"] = z
+
+        atoms = geom.atoms
+        data["Z"] = atoms.Z
+        data["mass"] = atoms.mass
+        data["R"] = atoms.maxR(all=True)
+        data["q0"] = atoms.q0
+        data["norbitals"] = atoms.orbitals
+
+        return pd.DataFrame(data)
+Geometry.to.register("df", GeometryToDataframeDispatcher)
+
+
 @set_module("sisl")
 def sgeom(geometry=None, argv=None, ret_geometry=False):
     """ Main script for sgeom.
