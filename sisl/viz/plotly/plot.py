@@ -5,7 +5,6 @@ import uuid
 from io import StringIO, BytesIO
 import inspect
 import numpy as np
-import dill
 from copy import deepcopy
 from collections import defaultdict
 import time
@@ -14,18 +13,29 @@ import itertools
 from functools import partial
 from pathlib import Path
 
+import dill
 import plotly
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 import sisl
 
-from .configurable import Configurable, ConfigurableMeta, vizplotly_settings, _populate_with_settings
+from .configurable import (
+    Configurable, ConfigurableMeta,
+    vizplotly_settings, _populate_with_settings
+)
 from ._presets import get_preset
-from .plotutils import init_multiple_plots, repeat_if_childs, dictOfLists2listOfDicts, trigger_notification, \
-     spoken_message, running_in_notebook, check_widgets, call_method_if_present
-from .input_fields import TextInput, SileInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, \
-    FloatInput, RangeSlider, QueriesInput, ProgramaticInput, PlotableInput
+from .plotutils import (
+    init_multiple_plots, repeat_if_childs, dictOfLists2listOfDicts,
+    trigger_notification, spoken_message,
+    running_in_notebook, check_widgets, call_method_if_present
+)
+from .input_fields import (
+    TextInput, SileInput, SwitchInput,
+    ColorPicker, DropdownInput, IntegerInput,
+    FloatInput, RangeSlider, QueriesInput,
+    ProgramaticInput, PlotableInput
+)
 from ._shortcuts import ShortCutable
 
 
@@ -312,7 +322,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
             string += (entry_point.help or "").lstrip()
 
             string += "\nSettings used:\n\t- "
-            string += '\n\t- '.join(entry_point._method._settings_params)
+            string += '\n\t- '.join(map(lambda ab: ab[1], entry_point._method._settings))
             string += "\n\n"
 
         return string
