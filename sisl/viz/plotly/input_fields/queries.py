@@ -260,15 +260,12 @@ class OrbitalQueries(QueriesInput):
         # Get the tadatframe
         df = self.orb_filtering_df
 
-        # If there is no spin in this df, we are going to introduce it to avoid problems.
-        if "spin" not in df:
-            df["spin"] = 0
-
         # Filter the dataframe according to the constraints imposed by the kwargs,
         # if there are any.
         if kwargs:
-            query = ' & '.join([f'{self._keys_to_cols.get(k, k)}=={repr(v)}' for k, v in kwargs.items()])
-            df = df.query(query)
+            query = ' & '.join([f'{self._keys_to_cols.get(k, k)}=={repr(v)}' for k, v in kwargs.items() if self._keys_to_cols.get(k, k) in df])
+            if query:
+                df = df.query(query)
 
         # If + is in key, it is a composite key. In that case we are going to
         # split it into all the keys that are present and get the options for all
@@ -276,11 +273,38 @@ class OrbitalQueries(QueriesInput):
         # the possible combinations of the keys.
         keys = [self._keys_to_cols.get(k, k) for k in key.split("+")]
 
-        options = df.drop_duplicates(subset=keys)[keys].values.squeeze()
+        # Spin values are not stored in the orbital filtering dataframe. If the options
+        # for spin are requested, we need to pop the key out and get the current options
+        # for spin from the input field
+        spin_in_keys = "spin" in keys
+        if spin_in_keys:
+            spin_key_i = keys.index("spin")
+            keys.remove("spin")
+            spin_options = self.get_param("spin").options
 
-        # If there is only one option, squeeze converts it to a number, so
-        # we need to make sure there is at least 1d
-        options = np.atleast_1d(options)
+            # We might have some constraints on what the spin value can be
+            if "spin" in kwargs:
+                spin_options = set(spin_options).intersection(kwargs["spin"])
+
+        # Now get the unique options from the dataframe
+        if keys:
+            options = df.drop_duplicates(subset=keys)[keys].values.astype(np.object)
+        else:
+            # It might be the only key was "spin", then we are going to fake it
+            # to get an options array that can be treated in the same way.
+            options = np.array([[]], dtype=np.object)
+
+        # If "spin" was one of the keys, we are going to incorporate the spin options, taking into
+        # account the position (column index) where they are expected to be returned.
+        if spin_in_keys:
+            options = np.concatenate([np.insert(options, spin_key_i, spin, axis=1) for spin in spin_options])
+
+        # Squeeze the options array, just in case there is only one key
+        # There's a special case: if there is only one option for that key,
+        # squeeze converts it to a number, so we need to make sure there is at least 1d
+        if options.shape[1] == 1:
+            options = options.squeeze()
+            options = np.atleast_1d(options)
 
         return options
 
@@ -293,7 +317,7 @@ class OrbitalQueries(QueriesInput):
 
         return filtered_df.index
 
-    def _split_query(self, query, on, only=None, exclude=None, query_gen=None, **kwargs):
+    def _split_query(self, query, on, only=None, exclude=None, query_gen=None, ignore_constraints=False, **kwargs):
         """
         Splits a query into multiple queries based on one of its parameters.
 
@@ -315,6 +339,13 @@ class OrbitalQueries(QueriesInput):
             request that this method has come up with and gets a chance to do some modifications.
 
             This may be useful, for example, to give each request a color, or a custom name.
+        ignore_constraints: boolean or array-like, optional
+            determines whether constraints (imposed by the query that you want to split) 
+            on the parameters that we want to split along should be taken into consideration.
+
+            If `False`: all constraints considered.
+            If `True`: no constraints considered.
+            If array-like: parameters contained in the list ignore their constraints.
         **kwargs:
             keyword arguments that go directly to each new request.
 
@@ -335,10 +366,15 @@ class OrbitalQueries(QueriesInput):
         # because these will be our constraints. If a parameter is set to None or not
         # provided, we have no constraints for that parameter.
         constraints = {}
-        for key in on:
-            val = query.get(key, None)
-            if val is not None:
-                constraints[key] = val
+        if ignore_constraints is not True:
+
+            if ignore_constraints is False:
+                ignore_constraints = ()
+
+            for key in filter(lambda key: key not in ignore_constraints, on):
+                val = query.get(key, None)
+                if val is not None:
+                    constraints[key] = val
 
         # Knowing what are our constraints (which may be none), get the available options
         values = self.get_options("+".join(on), **constraints)

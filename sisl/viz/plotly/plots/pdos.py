@@ -20,8 +20,9 @@ class PdosPlot(Plot):
     pdos_file: pdosSileSiesta, optional
         This parameter explicitly sets a .PDOS file. Otherwise, the PDOS file
         is attempted to read from the fdf file
-    tbt_nc: optional
-        TBtrans output for plotting PDOS from NEGF calculations
+    tbt_nc: tbtncSileTBtrans, optional
+        This parameter explicitly sets a .TBT.nc file. Otherwise, the PDOS
+        file is attempted to read from the fdf file
     Erange: array-like of shape (2,), optional
         Energy range where PDOS is displayed.
     nE: int, optional
@@ -39,7 +40,12 @@ class PdosPlot(Plot):
         Erange).
     requests: array-like of dict, optional
         Here you can ask for the specific PDOS that you need.
-        TIP: Queries can be activated and deactivated.
+        TIP: Queries can be activated and deactivated.   Each item is a
+        dict. Structure of the expected dicts:{         'name':
+        'species':          'atoms':          'orbitals':          'spin':
+        'normalize':          'color':          'linewidth':          'dash':
+        'split_on':          'scale': The final DOS will be multiplied by
+        this number. }
     root_fdf: fdfSileSiesta, optional
         Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
@@ -177,6 +183,13 @@ class PdosPlot(Plot):
                         "isSearchable": True,
                         "options": [{"value": option, "label": option} for option in ("species", "atoms", "Z", "orbitals", "spin", "n", "l", "m", "zeta")]
                     }
+                ),
+
+                FloatInput(
+                    key="scale", name="Scale",
+                    default=1,
+                    params={"min": None},
+                    help="The final DOS will be multiplied by this number."
                 )
             ]
         ),
@@ -313,23 +326,32 @@ class PdosPlot(Plot):
         """
         from xarray import DataArray
 
-        # Normalize self.PDOS to do the same treatment for both spin-polarized and spinless simulations
-        self.spin_polarized = len(self.PDOS.shape) == 3
+        # Check if the PDOS contains spin resolution (there should be three dimensions,
+        # and the first one should be the spin components)
+        self.spin = sisl.Spin.UNPOLARIZED
+        if self.PDOS.squeeze().ndim == 3:
+            self.spin = {
+                2: sisl.Spin.POLARIZED,
+                4: sisl.Spin.NONCOLINEAR
+            }[self.PDOS.shape[0]]
+        self.spin = sisl.Spin(self.spin)
 
-        # Normalize the PDOS array
-        self.PDOS = np.array([self.PDOS]) if not self.spin_polarized else self.PDOS
+        # Normalize the PDOS array so that we ensure a first dimension for spin even if
+        # there is no spin resolution
+        if self.PDOS.ndim == 2:
+            self.PDOS = np.expand_dims(self.PDOS, axis=0)
+
+        self.get_param('requests').update_options(self.geometry, self.spin)
 
         self.PDOS = DataArray(
             self.PDOS,
             coords={
-                'spin': range(self.PDOS.shape[0]),
+                'spin': self.get_param('requests').get_options("spin"),
                 'orb': range(self.PDOS.shape[1]),
                 'E': self.E
             },
             dims=('spin', 'orb', 'E')
         )
-
-        self.get_param('requests').update_options(self.geometry, "p" if self.spin_polarized else "")
 
     def _set_data(self, requests, E0, Erange):
 
@@ -427,7 +449,7 @@ class PdosPlot(Plot):
 
         self.add_trace({
             'type': 'scatter',
-            'x': req_PDOS.values,
+            'x': req_PDOS.values * request["scale"],
             'y': req_PDOS.E.values - E0,
             'mode': 'lines',
             'name': request["name"],
@@ -454,6 +476,10 @@ class PdosPlot(Plot):
     def _new_request(self, **kwargs):
 
         complete_req = self.get_param("requests").complete_query
+
+        if "spin" not in kwargs and self.spin.is_noncolinear:
+            if "spin" not in kwargs.get("split_on", ""):
+                kwargs["spin"] = ["sum"]
 
         return complete_req({"name": str(len(self.settings["requests"])), **kwargs})
 
@@ -601,7 +627,7 @@ class PdosPlot(Plot):
 
         return self.add_request(**new_request, **kwargs, clean=clean)
 
-    def split_requests(self, *i_or_names, on="species", only=None, exclude=None, remove=True, clean=False, **kwargs):
+    def split_requests(self, *i_or_names, on="species", only=None, exclude=None, remove=True, clean=False, ignore_constraints=False, **kwargs):
         """
         Splits the desired requests into multiple requests
 
@@ -631,6 +657,13 @@ class PdosPlot(Plot):
             whether the plot should be cleaned before drawing.
             If False, all the requests that come from the method will
             be drawn on top of what is already there.
+        ignore_constraints: boolean or array-like, optional
+            determines whether constraints (imposed by the request to be splitted) 
+            on the parameters that we want to split along should be taken into consideration.
+
+            If `False`: all constraints considered.
+            If `True`: no constraints considered.
+            If array-like: parameters contained in the list ignore their constraints.
         **kwargs:
             keyword arguments that go directly to each request.
 
@@ -647,15 +680,21 @@ class PdosPlot(Plot):
         >>>
         >>> # Split requests 0 and 1 along n and l
         >>> plot.split_requests(0, 1, on="n+l")
+        >>> # The same, but this time even if requests 0 or 1 had defined values for "l"
+        >>> # just ignore them and use all possible values for l.
+        >>> plot.split_requests(0, 1, on="n+l", ignore_constraints=["l"])
         """
         reqs = self.requests(*i_or_names)
 
         requests = []
         for req in reqs:
 
-            new_requests = self.get_param("requests")._split_query(req, on=on, only=only, exclude=exclude, req_gen=self._new_request, **kwargs)
+            new_requests = self.get_param("requests")._split_query(
+                req, on=on, only=only, exclude=exclude, req_gen=self._new_request,
+                ignore_constraints=ignore_constraints, **kwargs
+            )
 
-            requests = [*requests, *new_requests]
+            requests.extend(new_requests)
 
         if remove:
             self.remove_requests(*i_or_names, update_fig=False)

@@ -20,7 +20,7 @@ pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 _dir = osp.join('sisl', 'io', 'siesta')
 
 
-@pytest.fixture(params=[True, False], ids=["method_splitting", "inplace_split"])
+@pytest.fixture(params=[True, False], ids=["inplace_split", "method_splitting"])
 def inplace_split(request):
     return request.param
 
@@ -59,7 +59,7 @@ class PdosPlotTester(PlotTester):
             "species": (len(self.species), self.species[0]),
             "atoms": (self.na, 1),
             "orbitals": (len(unique_orbs), unique_orbs[0]),
-            "spin": (self.n_spin, None)
+            "spin": (self.n_spin, None),
         }
 
         # Test all splittings
@@ -136,6 +136,22 @@ pdos_plots["siesta_PDOS_file"] = {
     "na": 5,
     "no": 72,
     "n_spin": 1,
+    "species": ('Sr', 'Ti', 'O')
+}
+
+pdos_plots["siesta_PDOS_file_polarized"] = {
+    "plot_file": osp.join(_dir, "SrTiO3_polarized.PDOS"),
+    "na": 5,
+    "no": 72,
+    "n_spin": 2,
+    "species": ('Sr', 'Ti', 'O')
+}
+
+pdos_plots["siesta_PDOS_file_noncollinear"] = {
+    "plot_file": osp.join(_dir, "SrTiO3_noncollinear.PDOS"),
+    "na": 5,
+    "no": 72,
+    "n_spin": 4,
     "species": ('Sr', 'Ti', 'O')
 }
 
