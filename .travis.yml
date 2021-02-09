@@ -78,6 +78,17 @@ before_script:
 - export MPLBACKEND=Agg
 
 
+# Webhooks for discord
+after_success:
+  - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
+  - chmod +x send.sh
+  - ./send.sh success $DISCORD_HOOK
+after_failure:
+  - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
+  - chmod +x send.sh
+  - ./send.sh failure $DISCORD_HOOK
+
+
 deploy:
   provider: pypi
   user: zeroth

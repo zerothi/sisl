@@ -5,7 +5,7 @@ import pytest
 import sisl
 
 
-pytestmark = [pytest.mark.io, pytest.mark.siesta, pytest.mark.only]
+pytestmark = [pytest.mark.io, pytest.mark.siesta]
 _dir = osp.join('sisl', 'io', 'siesta')
 
 

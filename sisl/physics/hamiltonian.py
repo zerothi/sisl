@@ -3,6 +3,7 @@ from scipy.interpolate import CubicSpline
 
 from sisl._internal import set_module
 import sisl._array as _a
+from ..messages import deprecate_method
 from .distribution import get_distribution
 from .electron import EigenvalueElectron, EigenstateElectron, spin_squared
 from .sparse import SparseOrbitalBZSpin
