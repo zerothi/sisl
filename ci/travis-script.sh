@@ -36,7 +36,8 @@ python -OO -c "import sisl"
 
 if [[ ${COVERAGE:-true} == true ]]; then
     py.test -vv --pyargs sisl -rX --cov=sisl --cov-report term-missing --cov-config=../.coveragerc
-    bash <(curl -s https://codecov.io/bash) -X coveragepy
+    bash <(curl -s https://codecov.io/bash) -d
+    bash <(curl -s https://codecov.io/bash) -v
 else
     py.test --doctest-modules sisl
     py.test --pyargs sisl -rX
