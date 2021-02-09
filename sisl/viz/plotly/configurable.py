@@ -85,6 +85,9 @@ class NamedHistory:
 
     def __len__(self):
         """ Returns the number of steps stored in the history """
+        # TODO is this really what you want?
+        # Needs clarification, in any case len(self._hist.values()[0]) would
+        # clarify that you don't really care...?
         for _, hist in self._hist.items():
             return len(hist)
 
@@ -483,7 +486,7 @@ class Configurable(metaclass=ConfigurableMeta):
         cls._run_on_update = updates_dict
 
         for name, f in inspect.getmembers(cls, predicate=inspect.isfunction):
-            for param in getattr(f, "_settings_params", []):
+            for _, param in getattr(f, "_settings", []):
                 cls._run_on_update[param].append(f.__name__)
 
     @property
@@ -925,19 +928,32 @@ def _populate_with_settings(f, class_params):
     >>> plot.some_method(5) # Returns 5
     >>> plot.some_method() # Returns 3
     """
-    params = inspect.signature(f).parameters
     try:
-        settings_indices, settings_params = np.array([(i, param) for i, param in enumerate(params) if param in class_params]).T
+        # This requires python 3.7!
+        # Python 3.6 does not guarentee parameters to be returned in correct order!
+        # While the documentation states that it *may* be so, it can't be guarenteed.
+        params = inspect.signature(f).parameters
+        # Also, there is no need to use numpy if not needed
+        # In this case it was just an overhead.
+        idx_params = tuple(filter(lambda i_p: i_p[1] in class_params,
+                                  enumerate(params)))
     except:
         return f
 
-    f._settings_params = settings_params
-    f._settings_indices = settings_indices.astype(int)
+    if len(idx_params) == 0:
+        # no need to wrap it
+        return f
+
+    # Tuples are immutable, so they should have a *slightly* lower overhead.
+    # Also, get rid of zip below
+    # The below gets called alot, I suspect.
+    # So it should probably be *fast* :)
+    f._settings = idx_params
 
     @wraps(f)
-    def wrapped(self, *args, **kwargs):
+    def f_default_setting_args(self, *args, **kwargs):
         nargs = len(args)
-        for i, param in zip(f._settings_indices, f._settings_params):
+        for i, param in f._settings:
             if i > nargs and param not in kwargs:
                 try:
                     kwargs[param] = self.get_setting(param, copy=False)
@@ -946,4 +962,4 @@ def _populate_with_settings(f, class_params):
 
         return f(self, *args, **kwargs)
 
-    return wrapped
+    return f_default_setting_args

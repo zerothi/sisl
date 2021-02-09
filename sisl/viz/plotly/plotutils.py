@@ -14,21 +14,14 @@ from copy import deepcopy
 from sisl.io.sile import get_siles, get_sile_rules
 from sisl._environ import register_environ_variable, get_environ_variable
 
-__all__ = ["running_in_notebook", "check_widgets"]
-
-__all__ += [
-    "get_plot_classes", "get_plotable_siles", "get_plotable_variables",
-    "get_session_classes", "get_avail_presets"
+__all__ = ["running_in_notebook", "check_widgets",
+           "get_plot_classes", "get_plotable_siles", "get_plotable_variables",
+           "get_session_classes", "get_avail_presets",
+           "get_nested_key", "modify_nested_dict", "dictOfLists2listOfDicts",
+           "get_avail_presets", "random_color",
+           "load", "find_files", "find_plotable_siles",
+           "shift_trace", "normalize_trace", "swap_trace_axes"
 ]
-
-__all__ += [
-    "get_nested_key", "modify_nested_dict", "dictOfLists2listOfDicts",
-    "get_avail_presets", "random_color"
-]
-
-__all__ += ["load", "find_files", "find_plotable_siles"]
-
-__all__ += ["shift_trace", "normalize_trace", "swap_trace_axes"]
 
 #-------------------------------------
 #            Ipython
@@ -164,7 +157,7 @@ def get_plotable_variables(variables):
     plotables = {}
     for vname, obj in list(variables.items()):
 
-        if vname[0] == "_":
+        if vname.startswith("_"):
             continue
 
         is_object = not isinstance(obj, (type, ModuleType))
@@ -234,6 +227,7 @@ def get_configurable_kwargs(cls_or_inst, fake_default):
     str:
         the string containing the described kwargs.
     """
+    # TODO why not just repr(val)? that seems to be the same in all cases?
     def get_string(val):
         if isinstance(val, (float, int, bool)) or val is None:
             return val
@@ -245,11 +239,11 @@ def get_configurable_kwargs(cls_or_inst, fake_default):
     if isinstance(cls_or_inst, type):
         params = cls_or_inst._parameters
         return ", ".join([f'{param.key}={get_string(param.default)}' for param in params])
-    else:
-        # It's really an instance, not the class
-        # In this case, the defaults for the method will be the current values.
-        params = cls_or_inst.params
-        return ", ".join([f'{param.key}={get_string(cls_or_inst.settings[param.key])}' for param in params])
+
+    # It's really an instance, not the class
+    # In this case, the defaults for the method will be the current values.
+    params = cls_or_inst.params
+    return ", ".join([f'{param.key}={get_string(cls_or_inst.settings[param.key])}' for param in params])
 
 
 def get_configurable_kwargs_to_pass(cls):
@@ -274,6 +268,7 @@ def get_configurable_kwargs_to_pass(cls):
         # It's really an instance, not the class
         params = cls.params
 
+    # TODO shouldn't this be param.key = param.value?
     return ", ".join([f'{param.key}={param.key}' for param in params])
 
 
@@ -343,7 +338,7 @@ def get_nested_key(obj, nestedKey, separator="."):
     return ref[splitted[-1]]
 
 
-def modify_nested_dict(obj, nestedKey, val, separator = "."):
+def modify_nested_dict(obj, nestedKey, val, separator="."):
     """ Use it to modify a nested dictionary with ease. 
 
     It modifies the dictionary itself, does not return anything.
@@ -425,7 +420,7 @@ def call_method_if_present(obj, method_name, *args, **kwargs):
         return method(*args, **kwargs)
 
 
-def copy_params(params, only = [], exclude = []):
+def copy_params(params, only=(), exclude=()):
     """ Function that returns a copy of the provided plot parameters.
 
     Arguments
@@ -448,7 +443,11 @@ def copy_params(params, only = [], exclude = []):
     return tuple(param for param in deepcopy(params) if param.key not in exclude)
 
 
-def copy_dict(dictInst, only = [], exclude = []):
+# NOTE: generally use tuples since they are immutable
+#       it clarifies that inside this function the variables don't change.
+#       While it doesn't matter in this case, it is important to be consistent and
+#       make this a habit ;)
+def copy_dict(dictInst, only=(), exclude=()):
     """ Function that returns a copy of a dict. This function is thought to be used for the settings dictionary, for example.
 
     Arguments
@@ -475,6 +474,8 @@ def copy_dict(dictInst, only = [], exclude = []):
 #-------------------------------------
 
 
+# TODO load seems extremely generic. Could we have another name?
+#      consider users doing from dill import *, and same here?
 def load(path):
     """
     Loads a previously saved python object using pickle. To be used for plots, sessions, etc...
@@ -531,7 +532,7 @@ def find_files(root_dir=Path("."), search_string = "*", depth = [0, 0], sort = T
     """
     # Normalize the depth parameter
     if isinstance(depth, int):
-        depth = [depth]*2
+        depth = [depth, depth]
 
     # Normalize the root path to a pathlib path
     if isinstance(root_dir, str):
@@ -543,15 +544,14 @@ def find_files(root_dir=Path("."), search_string = "*", depth = [0, 0], sort = T
     files = []
     for depth in range(depth[0], depth[1] + 1):
         # Path.glob returns a generator
-        new_files = root_dir.glob(("*/" * depth) + search_string)
+        new_files = root_dir.glob(f"*{os.path.sep}" * depth + search_string)
 
         # And we just iterate over all the found paths (if any)
-        files += [path.resolve() for path in new_files]
+        files.extend(map(lambda path: path.resolve(), new_files))
 
     if sort:
         return sorted(files, key=sort_func)
-    else:
-        return files
+    return files
 
 
 def find_plotable_siles(dir_path=None, depth=0):
@@ -607,7 +607,7 @@ def _apply_method(args_tuple):
 
     method, obj, args, kwargs = args_tuple
 
-    if args == None:
+    if args is None:
         args = []
 
     method(obj, *args, **kwargs)
@@ -672,14 +672,18 @@ def run_multiple(func, *args, argsList = None, kwargsList = None, messageFn = No
     """
 
     #Prepare the arguments to be passed to the initSinglePlot function
+    # TODO could itertools.zip_longest perhaps be used instead?
+    # it sure smells like it?
     toZip = [*args, argsList, kwargsList]
     for i, arg in enumerate(toZip):
         if not isinstance(arg, (list, tuple, np.ndarray)):
             toZip[i] = itertools.repeat(arg)
         else:
+            # TODO also, shouldn't this be max(nTasks, len(arg)) ?
             nTasks = len(arg)
 
-    #Run things in serial mode in case it is demanded
+    # Run things in serial mode in case it is demanded
+    serial = serial or _MAX_NPROCS == 1 or nTasks == 1
     if serial:
         return [func(argsTuple) for argsTuple in zip(*toZip)]
 
