@@ -118,11 +118,10 @@ class pdosSileSiesta(SileSiesta):
                 return xr.DataArray(data=process(DOS).reshape(shape),
                                     dims=dims, coords=coords, name='PDOS')
 
-            D = xr.DataArray([])
         else:
             def to(o, DOS):
                 return process(DOS)
-            D = []
+        D = []
 
         for orb in root.findall('orbital'):
 
@@ -166,18 +165,17 @@ class pdosSileSiesta(SileSiesta):
             # it is formed like : spin-1, spin-2 (however already in eV)
             DOS = arrayd(orb.find('data').text.split()).reshape(-1, nspin)
 
-            if as_dataarray:
-                D = D.combine_first(to(O, DOS))
-            else:
-                D.append(process(DOS))
+            D.append(to(O, DOS))
 
         # Now we need to parse the data
         # First reduce the atom
         atoms = [[o for o in a if o] for a in atoms]
-        atoms = Atoms([Atom(Z, os) for Z, os in zip(atom_species, atoms)])
+        atoms = Atoms(map(Atom, atom_species, atoms))
         geom = Geometry(arrayd(xyz) * Bohr2Ang, atoms)
 
         if as_dataarray:
+            # Create a new dimension without coordinates (orbital index)
+            D = xr.concat(D, 'orbital')
             # Add attributes
             D.attrs['geometry'] = geom
             D.attrs['unit'] = '1/eV'
