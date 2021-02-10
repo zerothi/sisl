@@ -1393,6 +1393,10 @@ class Atoms:
             uatoms = catoms.atom[:]
             specie = catoms.specie[:]
 
+        elif isinstance(atoms, (str, Integral)):
+            uatoms = [Atom(atoms)]
+            specie = [0]
+
         elif isinstance(atoms, Iterable):
             uatoms = []
             specie = []
@@ -1405,10 +1409,6 @@ class Atoms:
                     s = len(uatoms)
                     uatoms.append(a)
                 specie.append(s)
-
-        elif isinstance(atoms, (str, Integral)):
-            uatoms = [Atom(atoms)]
-            specie = [0]
 
         else:
             raise ValueError('atoms keyword was wrong input')
