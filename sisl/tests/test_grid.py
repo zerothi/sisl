@@ -197,6 +197,7 @@ class TestGrid:
 
         # The third dimension should contain only two coordinates
         # [1, 2, (HERE) 3, 4, 5, 4, 3, (HERE) 2, 1, 0]
+        assert np.unique(verts[:, 1]).shape == (10,)
         assert np.unique(verts[:, 2]).shape == (2,)
 
     def test_isosurface_non_orthogonal(self, setup):
@@ -211,7 +212,9 @@ class TestGrid:
 
         verts, *returns = grid.isosurface(2.5)
 
-        assert np.unique(verts[:, 2]).shape == (20,)
+        # we have twice as many since the 3rd lattice vector has components in y
+        assert np.unique(verts[:, 1]).shape == (20,)
+        assert np.unique(verts[:, 2]).shape == (2,)
 
     def test_smooth_gaussian(self, setup):
         g = Grid(0.1, sc=[[2, 0, 0], [0, 2, 0], [0, 0, 2]])
