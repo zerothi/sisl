@@ -929,9 +929,8 @@ def _populate_with_settings(f, class_params):
     >>> plot.some_method() # Returns 3
     """
     try:
-        # This requires python 3.7!
-        # Python 3.6 does not guarentee parameters to be returned in correct order!
-        # While the documentation states that it *may* be so, it can't be guarenteed.
+        # note that params takes `self` as argument
+        # So first actual argument has index 1
         params = inspect.signature(f).parameters
         # Also, there is no need to use numpy if not needed
         # In this case it was just an overhead.
@@ -954,6 +953,7 @@ def _populate_with_settings(f, class_params):
     def f_default_setting_args(self, *args, **kwargs):
         nargs = len(args)
         for i, param in f._settings:
+            # nargs does not count `self` and then the above indices will fine
             if i > nargs and param not in kwargs:
                 try:
                     kwargs[param] = self.get_setting(param, copy=False)
