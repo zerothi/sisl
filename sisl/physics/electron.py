@@ -1720,18 +1720,12 @@ class _electron_State:
         See `~sisl.physics.electron.wavefunction` for argument details, the arguments not present
         in this method are automatically passed from this object.
         """
-        try:
-            spin = self.parent.spin
-        except:
-            spin = None
+        spin = getattr(self.parent, "spin", None)
 
         if isinstance(self.parent, Geometry):
             geometry = self.parent
         else:
-            try:
-                geometry = self.parent.geometry
-            except:
-                geometry = None
+            geometry = getattr(self.parent, "geometry", None)
 
         # Ensure we are dealing with the R gauge
         self.change_gauge('R')
