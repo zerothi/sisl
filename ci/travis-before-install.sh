@@ -36,5 +36,5 @@ pip install --upgrade $(grep -v -e '^#' requirements.txt) \
 # Optional packages
 if [[ ${OPTIONAL_DEPENDENCIES:-false} == true ]]; then
     git submodule update --init files
-    pip install --upgrade tqdm pathos matplotlib xarray plotly scikit-image sisl-gui
+    pip install --upgrade tqdm pathos matplotlib xarray dill plotly scikit-image sisl-gui
 fi

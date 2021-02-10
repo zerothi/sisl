@@ -962,7 +962,7 @@ class fdfSileSiesta(SileSiesta):
 
         # Cut-off too small values
         fc_cut = kwargs.get('cutoff', 0.)
-        FC = np.where(np.abs(FC) > fc_cut, FC, 0.)
+        FC = np.where(np.fabs(FC) > fc_cut, FC, 0.)
 
         # Convert the force constant such that a diagonalization returns eV ^ 2
         # FC is in [eV / Ang^2]
@@ -977,7 +977,9 @@ class fdfSileSiesta(SileSiesta):
                 geom.atoms.replace(atom, new_atom)
 
         # Figure out the supercell indices
-        supercell = kwargs.get('supercell', [1, 1, 1])
+        # if the displaced atoms equals the length of the geometry
+        # it means we are not using a supercell.
+        supercell = kwargs.get('supercell', len(geom) != len(FC_atoms))
         if supercell is False:
             supercell = [1] * 3
         elif supercell is True:
