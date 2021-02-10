@@ -12,7 +12,7 @@ that takes effect on 20 May 2019.
 The currently stored constants are (all are given in SI units):
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree: generated/
 
    PhysicalConstant
    q

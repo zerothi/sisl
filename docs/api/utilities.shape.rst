@@ -20,7 +20,7 @@ implements the necessary routines to ensure correct operation.
 
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree: generated/
 
    Shape - base class
    Cuboid - 3d cube

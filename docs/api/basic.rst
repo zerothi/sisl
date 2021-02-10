@@ -17,7 +17,7 @@ Simple objects
 .. index:: basic, geometry, supercell, atom, atom, orbital
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree: generated/
 
    PeriodicTable
    Orbital
@@ -39,7 +39,7 @@ However, it may be beneficial to read the specific matrix
 in :ref:`physics.matrix`.
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree: generated/
 
    oplist
    Quaternion

@@ -6,7 +6,7 @@ VASP
 .. currentmodule:: sisl.io.vasp
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree: generated/
 
    carSileVASP
    doscarSileVASP

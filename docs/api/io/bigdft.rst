@@ -6,7 +6,7 @@ BigDFT
 ======
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree: generated/
 
    asciiSileBigDFT
 

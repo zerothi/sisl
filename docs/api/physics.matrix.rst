@@ -13,7 +13,7 @@ Spin
 ----
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree: generated/
 
    Spin
 
@@ -21,7 +21,7 @@ Matrices
 --------
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree: generated/
 
    EnergyDensityMatrix
    DensityMatrix
@@ -37,7 +37,7 @@ Self-energies are specific physical quantities that enables integrating
 out semi-infinite regions.
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree: generated/
 
    SelfEnergy
    WideBandSE
@@ -54,6 +54,6 @@ Bloch's theorem is a very powerful proceduce that enables one to utilize
 the periodicity of a given direction to describe the complete system.
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree: generated/
 
    Bloch

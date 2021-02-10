@@ -14,7 +14,7 @@ DOS, PDOS, band-velocities and spin moments of non-colinear calculations.
 One may also plot real-space wavefunctions.
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree: generated/
 
    DOS
    PDOS
@@ -40,7 +40,7 @@ argument ``S`` must be :math:`\mathbf S(\mathbf k)`. The `EigenstateElectron` cl
 automatically passes the correct ``S`` because it knows the states :math:`k`-point.
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree: generated/
 
    CoefficientElectron
    StateElectron

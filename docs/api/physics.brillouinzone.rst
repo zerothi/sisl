@@ -136,7 +136,7 @@ and ``imap`` and ``uimap`` methods. See the ``pathos`` documentation for detalis
 
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree: generated/
 
    BrillouinZone
    MonkhorstPack

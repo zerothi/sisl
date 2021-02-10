@@ -6,7 +6,7 @@ Generic files
 .. currentmodule:: sisl.io
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree: generated/
 
    tableSile
    xyzSile

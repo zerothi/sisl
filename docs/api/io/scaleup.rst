@@ -6,7 +6,7 @@ ScaleUP
 .. currentmodule:: sisl.io.scaleup
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree: generated/
 
    orboccSileScaleUp - orbital information
    refSileScaleUp - reference coordinates

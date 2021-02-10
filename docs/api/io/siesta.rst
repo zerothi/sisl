@@ -6,7 +6,7 @@ Siesta
 .. currentmodule:: sisl.io.siesta
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree: generated/
 
    fdfSileSiesta - input file
    outSileSiesta - output file
@@ -34,7 +34,7 @@ TranSiesta
 ==========
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree: generated/
 
    tshsSileSiesta - TranSiesta Hamiltonian
    tsdeSileSiesta - TranSiesta (energy) density matrix
@@ -48,7 +48,7 @@ TBtrans
 .. currentmodule:: sisl.io.tbtrans
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree: generated/
 
    tbtncSileTBtrans
    deltancSileTBtrans
@@ -61,7 +61,7 @@ TBtrans
 be compiled in a ballistic phonon transport mode, named ``PHtrans``.
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree: generated/
 
    phtncSilePHtrans
    phtsencSilePHtrans

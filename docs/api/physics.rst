@@ -38,7 +38,7 @@ States
 ------
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree: generated/
 
    Coefficient
    State
@@ -49,7 +49,7 @@ Sparse matrices
 ---------------
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree: generated/
 
    SparseOrbitalBZ - sparse orbital matrix with k-dependent properties
    SparseOrbitalBZSpin - sparse orbital matrix with k-dependent properties and spin configuration

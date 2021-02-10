@@ -6,7 +6,7 @@ OpenMX
 .. currentmodule:: sisl.io.openmx
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree: generated/
 
    omxSileOpenMX - input file
 

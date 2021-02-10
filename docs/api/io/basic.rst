@@ -9,7 +9,7 @@ Regular users may only need `get_sile` which retrieves the correct *sile*
 based on parsing the filename.
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree: generated/
 
    get_sile
    add_sile - add a file to the list of files that sisl can interact with

@@ -8,7 +8,7 @@ Range routines
 .. currentmodule:: sisl.utils
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree: generated/
 
    array_arange - fast creation of sub-aranges
    strmap
@@ -23,7 +23,7 @@ Miscellaneous routines
 ======================
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree: generated/
 
    str_spec
    direction - abc/012 -> 012

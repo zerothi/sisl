@@ -14,7 +14,7 @@ code where specific unit conversions are required. I.e. if
 the codes unit conversion are not the same as the sisl defaults.
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree: generated/
 
    unit_group - which group does the unit belong to
    unit_convert - conversion factor between two units

@@ -8,7 +8,7 @@ Distribution functions
 Various distributions using different smearing techniques.
 
 .. autosummary::
-   :toctree: api-generated/
+   :toctree: generated/
 
    get_distribution
    gaussian
