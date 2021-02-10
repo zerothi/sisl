@@ -1,17 +1,12 @@
 """
-=========================================
-Physical constants (:mod:`sisl.constant`)
-=========================================
-
-.. module:: sisl.constant
+Physical constants
+==================
 
 Module containing a pre-set set of physical constants. The SI units are following the *new* convention
 that takes effect on 20 May 2019.
 
 The currently stored constants are (all are given in SI units):
 
-.. autosummary::
-
    PhysicalConstant
    q
    c
@@ -21,25 +16,6 @@ The currently stored constants are (all are given in SI units):
    m_p
    G0
    G
-
-
-.. we need to add them to the toctree to be able to create links to them
-
-
-.. autosummary::
-   :toctree:
-   :hidden:
-
-   PhysicalConstant
-   q
-   c
-   h
-   hbar
-   m_e
-   m_p
-   G0
-   G
-
 
 All constants may be used like an ordinary float (which converts it to a float):
 
@@ -52,7 +28,6 @@ while one can just as easily convert the units (which ensures thay stay like ano
 
 >>> c('Ang/ps')
 2997924.58 Ang/ps
-
 """
 
 from ._internal import set_module
