@@ -14,12 +14,6 @@ It features a rich set of settings enabling fine-tuning of many parameters.
    WavefunctionPlot
 
 """
-import sys
-
-if sys.version_info < (3, 7):
-    from sisl.messages import warn
-    warn("sisl.viz.plotly may yield incompatible results due to inspect usage")
-
 from ._presets import *
 from ._templates import *
 from ._user_customs import import_user_plots, import_user_presets, import_user_sessions, import_user_plugins

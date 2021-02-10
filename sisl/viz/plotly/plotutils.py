@@ -268,7 +268,6 @@ def get_configurable_kwargs_to_pass(cls):
         # It's really an instance, not the class
         params = cls.params
 
-    # TODO shouldn't this be param.key = param.value?
     return ", ".join([f'{param.key}={param.key}' for param in params])
 
 
@@ -443,10 +442,6 @@ def copy_params(params, only=(), exclude=()):
     return tuple(param for param in deepcopy(params) if param.key not in exclude)
 
 
-# NOTE: generally use tuples since they are immutable
-#       it clarifies that inside this function the variables don't change.
-#       While it doesn't matter in this case, it is important to be consistent and
-#       make this a habit ;)
 def copy_dict(dictInst, only=(), exclude=()):
     """ Function that returns a copy of a dict. This function is thought to be used for the settings dictionary, for example.
 
@@ -547,7 +542,7 @@ def find_files(root_dir=Path("."), search_string = "*", depth = [0, 0], sort = T
         new_files = root_dir.glob(f"*{os.path.sep}" * depth + search_string)
 
         # And we just iterate over all the found paths (if any)
-        files.extend(map(lambda path: path.resolve(), new_files))
+        files.extend([path.resolve() for path in new_files])
 
     if sort:
         return sorted(files, key=sort_func)
@@ -672,14 +667,11 @@ def run_multiple(func, *args, argsList = None, kwargsList = None, messageFn = No
     """
 
     #Prepare the arguments to be passed to the initSinglePlot function
-    # TODO could itertools.zip_longest perhaps be used instead?
-    # it sure smells like it?
     toZip = [*args, argsList, kwargsList]
     for i, arg in enumerate(toZip):
         if not isinstance(arg, (list, tuple, np.ndarray)):
             toZip[i] = itertools.repeat(arg)
         else:
-            # TODO also, shouldn't this be max(nTasks, len(arg)) ?
             nTasks = len(arg)
 
     # Run things in serial mode in case it is demanded
