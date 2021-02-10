@@ -6,6 +6,7 @@ omit =
     sisl/*/tests/*
     */__config__.py
     */setup.py
+    */conftest.py
     sisl/utils/sdata.py
 
 [report]
