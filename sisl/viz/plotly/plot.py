@@ -175,7 +175,6 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
     }
 
     _param_groups = (
-
         {
             "key": "dataread",
             "name": "Data reading settings",
@@ -704,8 +703,10 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
         except Exception as e:
             if self._debug:
                 raise e
-            else:
-                print("The plot has been initialized correctly, but the current settings were not enough to generate the figure.\n (Error: {})".format(e))
+            # TODO this gets printed alot, could you please fix this.
+            # I have no idea what this means, but it seems like an error should be thrown regardless.
+            # Many tests execute this line while still succeeding, I don't get that?
+            print(f"The plot has been initialized correctly, but the current settings were not enough to generate the figure.\nError: {e}")
 
     def __str__(self):
         """ Information to print about the plot """
@@ -825,7 +826,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
                 errors.append("\t- {}: {}.{}".format(entry_point._name, type(e).__name__, e))
         else:
             self.source = None
-            raise ValueError("Could not read or generate data for {} from any of the possible sources.\n\n Here are the errors for each source:\n\n {}  "
+            raise ValueError("Could not read or generate data for {} from any of the possible sources.\nHere are the errors for each source:\n{}"
                              .format(self.__class__.__name__, "\n".join(errors)))
 
     def follow(self, *files, to_abs=True, unfollow=False):
