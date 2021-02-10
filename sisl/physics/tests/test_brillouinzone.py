@@ -377,6 +377,26 @@ class TestBrillouinZone:
         assert np.allclose(bz_arr.DOS(E), DOS)
         assert np.allclose(bz_arr.PDOS(E), PDOS)
 
+    def test_wrap_unzip(self):
+        from sisl import geom, Hamiltonian
+        g = geom.graphene()
+        H = Hamiltonian(g)
+        H.construct([[0.1, 1.44], [0, -2.7]])
+
+        bz = MonkhorstPack(H, [2, 2, 2], trs=False)
+
+        # Check with a wrap function
+        E = np.linspace(-2, 2, 100)
+        def wrap(es):
+            return es.eig, es.DOS(E)
+
+        eig0, DOS0 = bz.apply.renew(unzip=True).list.eigenstate(wrap=wrap)
+        eig_DOS = bz.apply.list.eigenstate(wrap=wrap)
+        eig1, DOS1 = zip(*eig_DOS)
+
+        assert np.allclose(eig0, eig1)
+        assert np.allclose(DOS0, DOS1)
+
     # Check with a wrap function and the weight argument
     def test_wrap_kwargs(arg):
         from sisl import geom, Hamiltonian

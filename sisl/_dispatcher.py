@@ -36,6 +36,10 @@ class AbstractDispatch(metaclass=ABCMeta):
         # This could in principle contain anything.
         self._attrs = attrs
 
+    def renew(self, **attrs):
+        """ Create a new class with updated attributes """
+        return self.__class__(self._obj, **{**self._attrs, **attrs})
+
     def __call__(self, *args, **kwargs):
         return self.dispatch(*args, **kwargs)
 
@@ -87,12 +91,12 @@ class AbstractDispatcher:
         # Attributes associated with the dispatcher
         self._attrs = attrs
 
-    def __len__(self):
-        return len(self._dispatchs)
-
     def renew(self, **attrs):
         """ Create a new class with updated attributes """
         return self.__class__(self._dispatchs, self._default, **{**self._attrs, **attrs})
+
+    def __len__(self):
+        return len(self._dispatchs)
 
     def __str__(self):
         def toline(kv):
@@ -148,6 +152,7 @@ class ErrorDispatcher(AbstractDispatcher):
     to ensure that a certain dispatch attribute will never be called on an instance.
     It won't work on type_dispatcher due to not being able to call `register`.
     """
+    __slots__ = ()
 
     def __init__(self, obj, *args, **kwargs):
         raise ValueError(f"Dispatcher on {obj} must not be called in this way, see documentation.")
@@ -219,15 +224,15 @@ class ObjectDispatcher(AbstractDispatcher):
         self._obj_getattr = obj_getattr
         self._cls_attr_name = cls_attr_name
 
-    def __str__(self):
-        obj = str(self._obj).replace("\n", "\n ")
-        return super().__str__().replace("{", f"{{\n {obj},\n ", 1)
-
     def renew(self, **attrs):
         """ Create a new class with updated attributes """
         return self.__class__(self._obj, self._dispatchs, self._default,
                               self._cls_attr_name, self._obj_getattr,
                               **{**self._attrs, **attrs})
+
+    def __str__(self):
+        obj = str(self._obj).replace("\n", "\n ")
+        return super().__str__().replace("{", f"{{\n {obj},\n ", 1)
 
     def register(self, key, dispatch, default=False, overwrite=False, to_class=True):
         """ Register a dispatch class to this object and to the object class instance (if existing)
@@ -294,7 +299,7 @@ class TypeDispatcher(ObjectDispatcher):
     >>> a("hello world")
     hello world
     """
-    __slots__ = tuple()
+    __slots__ = ()
 
     def register(self, key, dispatch, default=False, overwrite=False, to_class=True):
         """ Register a dispatch class to this object and to the object class instance (if existing)
@@ -325,15 +330,15 @@ class TypeDispatcher(ObjectDispatcher):
     def __call__(self, obj, *args, **kwargs):
         # A call on a TypeDispatcher forces at least a single argument
         # where the type is being dispatched.
-        if not isinstance(obj, type):
-            # Figure out if obj is a class or not
+
+        # Figure out if obj is a class or not
+        if isinstance(obj, type):
+            typ = obj
+        else:
             # If not, then get the type (basically same as obj.__class__)
             typ = type(obj)
-        else:
-            typ = obj
 
-        # if you want obj to be a type, then the dispatcher should
-        # control that
+        # if you want obj to be a type, then the dispatcher should control that
         return self._dispatchs[typ](self._obj)(obj, *args, **kwargs)
 
     def __getitem__(self, key):

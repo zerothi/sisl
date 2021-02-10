@@ -29,17 +29,17 @@ __all__ = ["BrillouinZoneApply", "BrillouinZoneParentApply"]
 
 
 def _asoplist(arg):
-    if isinstance(arg, tuple):
-        return oplist(arg)
-    elif isinstance(arg, list) and not isinstance(arg, oplist):
+    if isinstance(arg, (tuple, list)) and not isinstance(arg, oplist):
         return oplist(arg)
     return arg
 
 
-def _apply_str(s):
-    def __str__(self):
-        return f"Apply{{{s}}}"
-    return __str__
+def _correct_str(orig, insert):
+    """ Correct string with `insert` """
+    if len(insert) == 0:
+        return orig
+    i = orig.index("{") + 1
+    return f"Apply{{{insert}, {orig[i:]}"
 
 
 def _pool_procs(pool):
@@ -67,11 +67,14 @@ def _pool_procs(pool):
 @set_module("sisl.physics")
 class BrillouinZoneApply(AbstractDispatch):
     # this dispatch function will do stuff on the BrillouinZone object
-    pass
+    __slots__ = ()
 
 
 @set_module("sisl.physics")
 class BrillouinZoneParentApply(BrillouinZoneApply):
+
+    def __str__(self, message=''):
+        return _correct_str(super().__str__(), message)
 
     def _parse_kwargs(self, wrap, eta=False, eta_key=""):
         """ Parse kwargs """
@@ -96,7 +99,8 @@ class BrillouinZoneParentApply(BrillouinZoneApply):
 
 @set_module("sisl.physics")
 class IteratorApply(BrillouinZoneParentApply):
-    __str__ = _apply_str("iter")
+    def __str__(self, message="iter"):
+        return super().__str__(message)
 
     def dispatch(self, method, eta_key="iter"):
         """ Dispatch the method by iterating values """
@@ -134,7 +138,8 @@ class IteratorApply(BrillouinZoneParentApply):
 
 @set_module("sisl.physics")
 class SumApply(IteratorApply):
-    __str__ = _apply_str("sum over k")
+    def __str__(self, message="sum over k"):
+        return super().__str__(message)
 
     def dispatch(self, method):
         """ Dispatch the method by summing """
@@ -151,7 +156,8 @@ class SumApply(IteratorApply):
 
 @set_module("sisl.physics")
 class NoneApply(IteratorApply):
-    __str__ = _apply_str("None")
+    def __str__(self, message="None"):
+        return super().__str__(message)
 
     def dispatch(self, method):
         """ Dispatch the method by doing nothing (mostly useful if wrapped) """
@@ -168,33 +174,46 @@ class NoneApply(IteratorApply):
 
 @set_module("sisl.physics")
 class ListApply(IteratorApply):
-    __str__ = _apply_str("list")
+    def __str__(self, message="list"):
+        return super().__str__(message)
 
     def dispatch(self, method):
         """ Dispatch the method by returning list of values """
         iter_func = super().dispatch(method, eta_key="list")
-        @wraps(method)
-        def func(*args, **kwargs):
-            return [v for v in iter_func(*args, **kwargs)]
+        if self._attrs.get("unzip", False):
+            @wraps(method)
+            def func(*args, **kwargs):
+                return zip(*(v for v in iter_func(*args, **kwargs)))
+        else:
+            @wraps(method)
+            def func(*args, **kwargs):
+                return [v for v in iter_func(*args, **kwargs)]
         return func
 
 
 @set_module("sisl.physics")
 class OpListApply(IteratorApply):
-    __str__ = _apply_str("oplist")
+    def __str__(self, message="oplist"):
+        return super().__str__(message)
 
     def dispatch(self, method):
         """ Dispatch the method by returning oplist of values """
         iter_func = super().dispatch(method, eta_key="oplist")
-        @wraps(method)
-        def func(*args, **kwargs):
-            return oplist(v for v in iter_func(*args, **kwargs))
+        if self._attrs.get("unzip", False):
+            @wraps(method)
+            def func(*args, **kwargs):
+                return oplist(zip(*(v for v in iter_func(*args, **kwargs))))
+        else:
+            @wraps(method)
+            def func(*args, **kwargs):
+                return oplist(v for v in iter_func(*args, **kwargs))
         return func
 
 
 @set_module("sisl.physics")
 class ArrayApply(BrillouinZoneParentApply):
-    __str__ = _apply_str("numpy.ndarray")
+    def __str__(self, message="numpy.ndarray"):
+        return super().__str__(message)
 
     def dispatch(self, method, eta_key="array"):
         """ Dispatch the method by one array """
@@ -255,7 +274,8 @@ class ArrayApply(BrillouinZoneParentApply):
 
 @set_module("sisl.physics")
 class AverageApply(BrillouinZoneParentApply):
-    __str__ = _apply_str("average")
+    def __str__(self, message="average"):
+        return super().__str__(message)
 
     def dispatch(self, method):
         """ Dispatch the method by averaging """
@@ -295,7 +315,8 @@ class AverageApply(BrillouinZoneParentApply):
 
 @set_module("sisl.physics")
 class DataArrayApply(ArrayApply):
-    __str__ = _apply_str("xarray.DataArray")
+    def __str__(self, message="xarray.DataArray"):
+        return super().__str__(message)
 
     def dispatch(self, method):
         """ Dispatch the method by returning a DataArray """
