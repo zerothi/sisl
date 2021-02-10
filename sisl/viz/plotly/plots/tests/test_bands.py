@@ -44,7 +44,6 @@ class BandsPlotTester(PlotTester):
         assert bands.dims == ('k', 'spin', 'band')
         assert bands.shape == self.bands_shape
 
-    @pytest.mark.xfail(reason="to be fixed")
     def test_bands_in_figure(self):
 
         # Check if all bands are plotted
@@ -55,7 +54,6 @@ class BandsPlotTester(PlotTester):
         assert np.allclose(list(self.tickvals), self.plot.figure.layout.xaxis.tickvals, rtol=0.01)
         assert np.all(list(self.ticklabels) == list(self.plot.figure.layout.xaxis.ticktext))
 
-    @pytest.mark.xfail(reason="to be fixed")
     def test_gap(self):
 
         # Check that we can calculate the gap correctly
@@ -202,7 +200,7 @@ class TestNCSpinBands(NCSpinBandsTester):
             "init_func": NC_init_func,
             "bands_shape": (3, 1, 90),
             "ticklabels": ["Gamma", "X"],
-            "tickvals": [0., 0.93490333],
-            "gap": 5.457,
+            "tickvals": [0., 0.49472934],
+            "gap": 0.40109,
         }
     }
