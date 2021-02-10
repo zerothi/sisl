@@ -38,14 +38,9 @@ def test_create2():
         assert atom.maxR(True)[ia] == 1.45
 
 
-def test_create3():
-    with pytest.raises(ValueError):
-        Atoms([{0: Atom(4)}])
-
-
-def test_create4():
-    with pytest.raises(ValueError):
-        Atoms({0: Atom(4)})
+def test_create_map():
+    atom = Atoms(map(lambda x: x, [1, 2, 3]))
+    assert len(atom) == 3
 
 
 def test_len(setup):
