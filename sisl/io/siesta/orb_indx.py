@@ -99,7 +99,7 @@ class orbindxSileSiesta(SileSiesta):
             P = line[9] == 'T'
             rc = float(line[11]) * Bohr2Ang
             # Create the orbital
-            o = AtomicOrbital(n=nlmz[0], l=nlmz[1], m=nlmz[2], Z=nlmz[3], P=P, R=rc)
+            o = AtomicOrbital(n=nlmz[0], l=nlmz[1], m=nlmz[2], zeta=nlmz[3], P=P, R=rc)
             orbs.append(o)
 
         if i_s not in specs:
