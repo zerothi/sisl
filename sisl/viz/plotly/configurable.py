@@ -8,6 +8,7 @@ import sys
 
 import numpy as np
 
+from sisl.messages import info
 from sisl._dispatcher import AbstractDispatch
 from ._presets import get_preset
 from .plotutils import get_configurable_docstring, get_configurable_kwargs, get_configurable_kwargs_to_pass
@@ -618,8 +619,8 @@ class Configurable(metaclass=ConfigurableMeta):
             if run_updates:
                 self._run_updates(diff)
         except IndexError:
-            print(f"This instance of {self.__class__.__name__} does not "
-                  f"contain earlier settings as requested ({steps} step(s) back)")
+            info(f"This instance of {self.__class__.__name__} does not "
+                 f"contain earlier settings as requested ({steps} step(s) back)")
 
         return self
 
@@ -636,37 +637,37 @@ class Configurable(metaclass=ConfigurableMeta):
         i = self.settings_history.last_update_for(key)
 
         if i is None:
-            print(f"There is no registry of the setting '{key}' having been changed. Sorry :(")
+            info(f"key={key} was never changed; cannot undo nothing.")
 
         self.update_settings(key=self.settings_history[key][i])
 
         return self
 
-    def undo_settings_group(self, group_key):
+    def undo_settings_group(self, group):
         """ Takes the desired group of settings one step back, but the rest of the settings remain unchanged
 
         At the moment it is a 'fake' undo function, since it actually updates the settings.
 
         Parameters
         -----------
-        group_key: str
+        group: str
             the key of the settings group for which you want to undo its values.
         """
         #Get the actual settings for that group
-        actualSettings = self.get_settings_group(group_key)
+        actualSettings = self.get_settings_group(group)
 
         #Try to find any different values for the settings
         for i in range(len(self.settings_history)):
 
-            previousSettings = self.get_settings_group(group_key, steps_back = i)
+            previousSettings = self.get_settings_group(group, steps_back = i)
 
             if previousSettings != actualSettings:
 
                 return self.update_settings(previousSettings)
         else:
-            print(f"There is no registry of any setting of the group '{group_key}' having been changed. Sorry :(")
+            info(f"group={group} was never changed; cannot undo nothing.")
 
-            return self
+        return self
 
     def get_param(self, key, as_dict=False, paramsExtractor=False):
         """ Gets the parameter for a given setting
@@ -800,12 +801,12 @@ class Configurable(metaclass=ConfigurableMeta):
 
         return deepcopy(val) if copy else val
 
-    def get_settings_group(self, group_key, steps_back=0):
+    def get_settings_group(self, group, steps_back=0):
         """ Gets the subset of the settings that corresponds to a given group
 
         Arguments
         ---------
-        group_key: str
+        group: str
             The key of the settings group that we desire.
         steps_back: optional, int
             If you don't want the actual settings, but some point of the settings history,
@@ -821,7 +822,7 @@ class Configurable(metaclass=ConfigurableMeta):
         else:
             settings = self.settings
 
-        return deepcopy({setting.key: settings[setting.key] for setting in self.params if getattr(setting, "group", None) == group_key})
+        return deepcopy({setting.key: settings[setting.key] for setting in self.params if getattr(setting, "group", None) == group})
 
     def has_these_settings(self, settings={}, **kwargs):
         """ Checks if the object settings match the provided settings

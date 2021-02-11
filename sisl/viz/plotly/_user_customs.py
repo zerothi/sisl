@@ -3,6 +3,7 @@ from pathlib import Path
 import sys
 import importlib
 
+from sisl.messages import warn
 from sisl._environ import get_environ_variable
 
 __all__ = ["import_user_presets", "import_user_plots",
@@ -56,8 +57,7 @@ def import_user_presets():
         if PRESETS_VARIABLE in vars(module):
             add_presets(**vars(module)[PRESETS_VARIABLE])
         else:
-            print(
-                f"We found the custom presets file ({PRESETS_FILE}) but no '{PRESETS_VARIABLE}' variable was found.\n Please put your presets as a dict under this variable.")
+            warn(f"We found the custom presets file ({PRESETS_FILE}) but no '{PRESETS_VARIABLE}' variable was found.\n Please put your presets as a dict under this variable.")
 
     return module
 
