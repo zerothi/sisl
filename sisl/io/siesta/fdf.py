@@ -951,6 +951,7 @@ class fdfSileSiesta(SileSiesta):
         #  FC(NEW) = (n_displ, 3, na, 3)
         # In fact, after averaging this becomes the Hessian
         FC = FC.sum(axis=2) * 0.5
+        na_full = FC.shape[2]
         hermitian = kwargs.get("hermitian", True)
 
         # Figure out the "original" periodic directions
@@ -1038,13 +1039,12 @@ class fdfSileSiesta(SileSiesta):
             for _ in (supercell > 1).nonzero()[0]:
                 first_isc = (np.around(isc_xyz[FC_atoms + offset, :]) == 1.).sum(0)
                 axis_tiling.append(np.argmax(first_isc))
-                # Fix the offset
-                offset *= supercell[axis_tiling[-1]]
+                # Fix the offset and wrap-around
+                offset = (offset * supercell[axis_tiling[-1]]) % na_full
 
-            while len(axis_tiling) < 3:
-                for i in range(3):
-                    if not i in axis_tiling:
-                        axis_tiling.append(i)
+            for i in range(3):
+                if not i in axis_tiling:
+                    axis_tiling.append(i)
 
             # Now we have the tiling operation, check it sort of matches
             geom_tile = geom_small.copy()
@@ -1052,9 +1052,11 @@ class fdfSileSiesta(SileSiesta):
                 geom_tile = geom_tile.tile(supercell[axis], axis)
 
             # Proximity check of 0.01 Ang (TODO add this as an argument)
-            if not np.allclose(geom_tile.xyz, geom.xyz, rtol=0, atol=0.01):
-                raise SislError(f"{str(self)}.read_dynamical_matrix(FC) could "
-                                "not figure out the tiling method for the supercell")
+            for ax in range(3):
+                daxis = geom_tile.xyz[:, ax] - geom.xyz[:, ax]
+                if not np.allclose(daxis, daxis[0], rtol=0., atol=0.01):
+                    raise SislError(f"{str(self)}.read_dynamical_matrix(FC) could "
+                                    "not figure out the tiling method for the supercell")
 
             # Convert the FC matrix to a "rollable" matrix
             # This will make it easier to symmetrize
@@ -1065,12 +1067,28 @@ class fdfSileSiesta(SileSiesta):
             #  4. tile-axis_tiling[2]
             #  5. na
             #  6. x, y, z (force components)
-            FC.shape = (na_fc, 3, *supercell[axis_tiling], na_fc, 3)
+            # order of FC is reversed of the axis_tiling (because of contiguous arrays)
+            # so reverse
+            axis_tiling.reverse()
+            FC.shape = (na_fc, 3, *supercell[axis_tiling], -1, 3)
+
+            # now ensure we have the correct order of the supercell
+            # If the input supercell is
+            # [-2] [-1] [0] [1] [2]
+            # we need to convert it to
+            #  [0] [1] [2] [3] [4] [5]
+            isc_xyz.shape = (*supercell[axis_tiling], na_fc, 3)
+            for axis in axis_tiling:
+                nroll = isc_xyz[..., axis].min()
+                inroll = int(round(nroll))
+                if inroll != 0:
+                    # offset axis by 2 due to (na_fc, 3, ...)
+                    FC = np.roll(FC, inroll, axis=axis + 2)
+            FC_atoms -= FC_atoms.min()
 
             # Now swap the [2, 3, 4] dimensions so that we get in order of lattice vectors
-            swap = np.array([2, 3, 4])[axis_tiling]
-            swap = (0, 1, *swap, 5, 6)
-            FC = np.transpose(FC, swap)
+            #  x, y, z
+            FC = np.transpose(FC, (0, 1, *(axis_tiling.index(i)+2 for i in range(3)), 5, 6))
             del axis_tiling
             # Now FC is sorted according to the supercell tiling
 
@@ -1186,7 +1204,7 @@ class fdfSileSiesta(SileSiesta):
                         iter_j_FC_atoms = iter_FC_atoms[dist(ia, aoff + iter_FC_atoms) <= R]
 
                     for ja in iter_j_FC_atoms:
-                        D[ia*3:(ia+1)*3, joff+ja*3:joff+(ja+1)*3] = FC[ia, :, x, y, z, ja, :]
+                        D[ia*3:(ia+1)*3, joff+ja*3:joff+(ja+1)*3] += FC[ia, :, x, y, z, ja, :]
 
         D = D.tocsr()
         # Remove all zeros
