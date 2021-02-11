@@ -11,6 +11,7 @@ import tqdm
 
 from copy import deepcopy
 
+from sisl.messages import info
 from sisl.io.sile import get_siles, get_sile_rules
 from sisl._environ import register_environ_variable, get_environ_variable
 
@@ -823,6 +824,10 @@ def repeat_if_childs(method):
 #             Fun stuff
 #-------------------------------------
 
+# TODO these would be ideal to put in the sisl configdir so users can
+# alter the commands used ;)
+# However, not really needed now.
+
 
 def trigger_notification(title, message, sound="Submarine"):
     """ Triggers a notification.
@@ -842,8 +847,7 @@ def trigger_notification(title, message, sound="Submarine"):
         sound_string = f'sound name "{sound}"' if sound else ''
         os.system(f"""osascript -e 'display notification "{message}" with title "{title}" {sound_string}' """)
     else:
-        print(f'Notifications are not implemented in your operating system ({sys.platform}).'
-        ' Maybe consider switching to linux? https://www.amazon.com/s?k=linux+computers&rh=n%3A565108&ref=nb_sb_noss :)')
+        info(f"sisl cannot issue notifications through the operating system ({sys.platform})")
 
 
 def spoken_message(message):
@@ -865,8 +869,7 @@ def spoken_message(message):
     elif sys.platform == 'darwin':
         os.system(f"""osascript -e 'say "{message}"' """)
     else:
-        print(f'Notifications are not implemented in your operating system ({sys.platform}).'
-        ' Maybe consider switching to linux? https://www.amazon.com/s?k=linux+computers&rh=n%3A565108&ref=nb_sb_noss :)')
+        info(f"sisl cannot issue notifications through the operating system ({sys.platform})")
 
 #-------------------------------------
 #        Plot manipulation
