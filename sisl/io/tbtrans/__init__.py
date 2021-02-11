@@ -62,7 +62,6 @@ phonon transport.
 
 """
 from .sile import *
-
 from .binaries import *
 from .delta import *
 from .se import *
@@ -70,6 +69,3 @@ from .tbt import *
 from .pht import *
 from .tbtproj import *
 from .phtproj import *
-
-
-__all__ = [s for s in dir() if not s.startswith('_')]

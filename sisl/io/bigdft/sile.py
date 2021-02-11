@@ -1,7 +1,6 @@
 """
 Define a common BigDFT Sile
 """
-
 from sisl._internal import set_module
 from ..sile import Sile, SileCDF, SileBin
 

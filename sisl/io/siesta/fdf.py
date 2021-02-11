@@ -799,7 +799,7 @@ class fdfSileSiesta(SileSiesta):
         Returns
         -------
         force_constant : numpy.ndarray
-            vector [*, 3, 2, *, 3]  with force constant element for each of the atomic displacements
+            vector ``[*, 3, 2, *, 3]``  with force constant element for each of the atomic displacements
         """
         order = _listify_str(kwargs.pop('order', ['nc', 'FC']))
         for f in order:

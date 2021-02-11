@@ -3,7 +3,7 @@
 Phonon related functions
 ==========================
 
-.. currentmodule:: sisl.physics.phonon
+.. module:: sisl.physics.phonon
 
 In sisl phonon calculations are relying on routines
 specific for phonons. For instance density of states calculations from

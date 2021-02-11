@@ -1,9 +1,9 @@
 .. _io.scaleup:
 
+.. module:: sisl.io.scaleup
+
 ScaleUP
 =======
-
-.. currentmodule:: sisl.io.scaleup
 
 .. autosummary::
    :toctree: generated/
@@ -11,4 +11,13 @@ ScaleUP
    orboccSileScaleUp - orbital information
    refSileScaleUp - reference coordinates
    rhamSileScaleUp - Hamiltonian file
+
+
+.. autosummary::
+   :toctree: generated/
+   :hidden:
+
+   SileScaleUp
+   SileCDFScaleUp
+   SileBinScaleUp
 

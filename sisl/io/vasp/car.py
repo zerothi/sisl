@@ -15,7 +15,7 @@ __all__ = ['carSileVASP']
 
 @set_module("sisl.io.vasp")
 class carSileVASP(SileVASP):
-    """ *CAR VASP files for defining geomtries
+    """ CAR VASP files for defining geomtries
 
     This file-object handles both POSCAR and CONTCAR files
     """

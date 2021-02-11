@@ -23,4 +23,4 @@ mkdir -p build
 #fi
 
 # Clean-up autosummary docs
-rm -rf api/generated
+rm -rf api/generated api/io/generated

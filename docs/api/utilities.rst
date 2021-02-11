@@ -4,6 +4,8 @@
 Utilities
 =========
 
+.. module:: sisl.utils
+
 Various helper classes and functions that make using `sisl` easier.
 
 

@@ -3,7 +3,7 @@
 Constants
 =========
 
-.. currentmodule:: sisl.constant
+.. module:: sisl.constant
 
 
 A pre-set set of physical constants. The SI units are following the *new* convention

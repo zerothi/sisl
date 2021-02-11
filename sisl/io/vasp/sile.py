@@ -2,7 +2,6 @@
 Define a common VASP Sile
 """
 from ..sile import Sile, SileCDF, SileBin
-
 from sisl._internal import set_module
 import sisl._array as _a
 

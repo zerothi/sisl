@@ -944,19 +944,6 @@ class Atom(metaclass=AtomMeta):
 
     The `Atom` object is `pickle`-able.
 
-    Attributes
-    ----------
-    Z : int
-        atomic number
-    no : int
-        number of orbitals belonging to the `Atom`
-    R : numpy.ndarray
-        the range of each orbital associated with this `Atom` (see `Orbital.R` for details)
-    q0 : numpy.ndarray
-        the charge of each orbital associated with this `Atom` (see `Orbital.q0` for details)
-    mass : float
-        mass of `Atom`
-
     Parameters
     ----------
     Z : int or str
@@ -1030,18 +1017,22 @@ class Atom(metaclass=AtomMeta):
 
     @property
     def Z(self):
+        """ Atomic number """
         return self._Z
 
     @property
     def orbitals(self):
+        """ List of orbitals """
         return self._orbitals
 
     @property
     def mass(self):
+        """ Atomic mass """
         return self._mass
 
     @property
     def tag(self):
+        """ Tag for atom """
         return self._tag
 
     @property
@@ -1350,26 +1341,6 @@ class Atoms:
     na : int or None
        total number of atoms, if ``len(atom)`` is smaller than `na` it will
        be repeated to match `na`.
-
-    Attributes
-    ----------
-    atom : list of Atom
-        a list of unique atoms in this object
-    specie : (na, )
-        a list of unique specie indices
-    no : int
-        total number of orbitals
-    q0 : (no, )
-        initial charge on each orbital
-    mass : (na, )
-        mass for each atom
-    firsto : (no + 1,)
-        a list of orbital indices for each atom, this corresponds to the first
-        orbital on each of the atoms. The last element is the total number of
-        orbitals and is equivalent to `no`.
-    lasto : (no, )
-        a list of orbital indices for each atom, this corresponds to the last
-        orbital on each of the atoms.
     """
 
     # Using the slots should make this class slightly faster.
@@ -1450,28 +1421,28 @@ class Atoms:
 
     @property
     def specie(self):
-        """ Atomic specie list """
+        """ List of atomic species """
         return self._specie
 
     @property
     def no(self):
-        """ Return the total number of orbitals in this list of atoms """
+        """ Total number of orbitals in this list of atoms """
         uorbs = _a.arrayi([a.no for a in self.atom])
         return uorbs[self.specie].sum()
 
     @property
     def orbitals(self):
-        """ Return an array of orbitals of the contained objects """
+        """ Array of orbitals of the contained objects """
         return np.diff(self.firsto)
 
     @property
     def firsto(self):
-        """ The first orbital of the corresponding atom in the consecutive list of orbitals """
+        """ First orbital of the corresponding atom in the consecutive list of orbitals """
         return self._firsto
 
     @property
     def lasto(self):
-        """ The lasto orbital of the corresponding atom in the consecutive list of orbitals """
+        """ Last orbital of the corresponding atom in the consecutive list of orbitals """
         return self._firsto[1:] - 1
 
     @property
@@ -1510,13 +1481,13 @@ class Atoms:
 
     @property
     def mass(self):
-        """ Return an array of masses of the contained objects """
+        """ Array of masses of the contained objects """
         umass = _a.arrayd([a.mass for a in self.atom])
         return umass[self.specie[:]]
 
     @property
     def Z(self):
-        """ Return an array of atomic numbers (integers) """
+        """ Array of atomic numbers """
         uZ = _a.arrayi([a.Z for a in self.atom])
         return uZ[self.specie[:]]
 

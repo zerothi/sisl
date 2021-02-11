@@ -3,11 +3,20 @@
 Wannier90
 =========
 
-.. currentmodule:: sisl.io.wannier90
+.. module:: sisl.io.wannier90
 
 .. autosummary::
    :toctree: generated/
 
    winSileWannier90 - input file
+
+
+.. autosummary::
+   :toctree: generated/
+   :hidden:
+
+   SileWannier90
+   SileCDFWannier90
+   SileBinWannier90
 
 

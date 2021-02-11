@@ -3,7 +3,7 @@
 Electron related functions
 ==========================
 
-.. currentmodule:: sisl.physics.electron
+.. module:: sisl.physics.electron
 
 In sisl electronic structure calculations are relying on routines
 specific for electrons. For instance density of states calculations from

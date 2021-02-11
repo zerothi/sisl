@@ -30,4 +30,4 @@ All methods and submodules are listed  :ref:`here <genindex>` and
 .. toctree::
    :maxdepth: 1
 
-   io
+   io/index

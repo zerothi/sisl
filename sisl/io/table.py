@@ -76,7 +76,7 @@ class tableSile(Sile):
 
         Parameters
         ----------
-        *args : array_like or list of array_like
+        args : array_like or list of array_like
             the different columns in the tabular data.
             This may either be several 1D data, or 2D arrays.
             Internally the data is stacked via `numpy.vstack` and for
@@ -88,9 +88,9 @@ class tableSile(Sile):
             The formatting string (for all columns), defaults to ``fmt * len(args)``.
             `fmts` has precedence over `fmt`.
         newline : str, optional
-            Defaults to ``\n``.
+            Defaults to ``\\n``.
         delimiter : str, optional
-            Defaults to ``\t``.
+            Defaults to ``\\t``.
         comment : str or list of str, optional
             A pre-header text at the top of the file.
             This comment is automatically prepended a ``#`` at the

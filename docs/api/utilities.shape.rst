@@ -3,7 +3,7 @@
 Shapes
 ======
 
-.. currentmodule:: sisl.shape
+.. module:: sisl.shape
 
 Shapes are geometric objects that enables one to locate positions in- or
 out-side a given shape.
@@ -22,9 +22,9 @@ implements the necessary routines to ensure correct operation.
 .. autosummary::
    :toctree: generated/
 
-   Shape - base class
-   Cuboid - 3d cube
-   Cube - 3d box
-   Ellipsoid
-   Sphere
-   NullShape
+   ~sisl.shape.Shape - base class
+   ~sisl.shape.Cuboid - 3d cube
+   ~sisl.shape.Cube - 3d box
+   ~sisl.shape.Ellipsoid
+   ~sisl.shape.Sphere
+   ~sisl.shape.NullShape

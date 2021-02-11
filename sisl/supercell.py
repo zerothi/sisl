@@ -42,11 +42,6 @@ class SuperCell:
        number of supercells along each latticevector
     origo : (3,) of float
        the origo of the supercell.
-
-    Attributes
-    ----------
-    cell : (3, 3) of float
-       the lattice vectors (``cell[i, :]`` is the i'th vector)
     """
 
     # We limit the scope of this SuperCell object.

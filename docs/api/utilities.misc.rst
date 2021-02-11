@@ -30,4 +30,4 @@ Miscellaneous routines
    angle - radian to degree
    iter_shape
    math_eval
-   PropertyDict
+   ~sisl.utils.PropertyDict

@@ -4,7 +4,7 @@
 Input/Output
 ============
 
-.. currentmodule:: sisl.io
+.. module:: sisl.io
 
 Available files for reading/writing
 
@@ -18,12 +18,12 @@ to distinguish them from files from other packages.
 .. toctree::
    :maxdepth: 2
 
-   io/basic
-   io/generic
-   io/bigdft
-   io/gulp
-   io/openmx
-   io/scaleup
-   io/siesta
-   io/vasp
-   io/wannier90
+   basic
+   generic
+   bigdft
+   gulp
+   openmx
+   scaleup
+   siesta
+   vasp
+   wannier90

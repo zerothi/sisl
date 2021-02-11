@@ -4,7 +4,7 @@
 Common geometries
 *****************
 
-.. currentmodule:: sisl.geom
+.. module:: sisl.geom
 
 
 A selection of default geometries that `sisl` can construct on the fly.

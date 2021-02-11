@@ -134,6 +134,7 @@ autoclass_content = 'class'
 autodoc_default_options = {
     'members': True,
     'undoc-members': True,
+    'special-members': '__init__,__call__',
     'inherited-members': True,
     'show-inheritance': True,
 }
@@ -363,9 +364,9 @@ texinfo_documents = [
 # These two options should solve the "toctree contains reference to nonexisting document"
 # problem.
 # See here: numpydoc #69
-class_members_toctree = False
+#class_members_toctree = False
 # If this is false we do not have double method sections
-numpydoc_show_class_members = False
+#numpydoc_show_class_members = False
 
 # -----------------------------------------------------------------------------
 # Intersphinx configuration
@@ -424,19 +425,25 @@ def sisl_method2class(meth):
 
 
 def sisl_skip(app, what, name, obj, skip, options):
+    global autodoc_default_options
     # When adding routines here, please also add them
     # to the _templates/autosummary/class.rst file to limit
     # the documentation.
     if what == 'class':
-        if name in ['is_keys', 'key2case', 'keys2case',
+        if name in ['ArgumentParser', 'ArgumentParser_out',
+		    'is_keys', 'key2case', 'keys2case',
                     'line_has_key', 'line_has_keys', 'readline',
-                    'step_either', 'step_to']:
+                    'step_either', 'step_to',
+		    'isDataset', 'isDimension', 'isGroup',
+		    'isRoot', 'isVariable']:
             return True
-        if name in ['isDataset', 'isDimension', 'isGroup',
-                    'isRoot', 'isVariable']:
-            return True
-        if name in ['ArgumentParser', 'ArgumentParser_out']:
-            return True
+    #elif what == "attribute":
+    #    return True
+
+    # check for special methods (we don't want all)
+    if (name.startswith("_") and
+        name not in autodoc_default_options.get("special-members", '').split(',')):
+        return True
 
     try:
         cls = sisl_method2class(obj)
@@ -447,18 +454,17 @@ def sisl_skip(app, what, name, obj, skip, options):
     if cls is None:
         return skip
 
-    cls = cls.__name__
     # Currently inherited members will never be processed
     # Apparently they will be linked directly.
     # Now we have some things to disable the output of
-    if "projncSile" in cls:
+    if "projncSile" in cls.__name__:
         if name in ["current", "current_parameter", "shot_noise",
                     "noise_power", "fano", "density_matrix",
                     "write_tbtav",
                     "orbital_COOP", "atom_COOP",
                     "orbital_COHP", "atom_COHP"]:
             return True
-    if "SilePHtrans" in cls:
+    if "SilePHtrans" in cls.__name__:
         if name in ["chemical_potential", "electron_temperature",
                     "kT", "current", "current_parameter", "shot_noise",
                     "noise_power"]:

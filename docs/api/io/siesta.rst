@@ -3,7 +3,7 @@
 Siesta
 ======
 
-.. currentmodule:: sisl.io.siesta
+.. module:: sisl.io.siesta
 
 .. autosummary::
    :toctree: generated/
@@ -45,7 +45,7 @@ TranSiesta
 TBtrans
 =======
 
-.. currentmodule:: sisl.io.tbtrans
+.. module:: sisl.io.tbtrans
 
 .. autosummary::
    :toctree: generated/
@@ -67,3 +67,16 @@ be compiled in a ballistic phonon transport mode, named ``PHtrans``.
    phtsencSilePHtrans
    phtavncSilePHtrans
    phtprojncSilePHtrans
+
+   
+.. autosummary::
+   :toctree: generated/
+   :hidden:
+
+   SileSiesta
+   SileCDFSiesta
+   SileBinSiesta
+   SileTBtrans
+   SileCDFTBtrans
+   SileBinTBtrans
+

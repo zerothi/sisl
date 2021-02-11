@@ -1,6 +1,5 @@
-from ..sile import Sile, SileCDF, SileBin
-
 from sisl._internal import set_module
+from ..sile import Sile, SileCDF, SileBin
 
 __all__ = ['SileSiesta', 'SileCDFSiesta', 'SileBinSiesta']
 

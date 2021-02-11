@@ -110,17 +110,6 @@ class SparseCSR(NDArrayOperatorsMixin):
        pointer index in the 1D column indices of the corresponding row
     col : int-array
        column indices of the sparse elements
-    data:
-       the data in the sparse matrix
-    dim : int
-       the extra dimension of the sparse matrix
-    nnz : int
-       number of contained sparse elements
-    shape : tuple, 3*(,)
-       size of contained matrix, M, N, K
-    finalized : boolean
-       whether the sparse matrix is finalized and non-set elements
-       are removed
     """
     # We don't really need slots, but it is useful
     # to keep a good overview of which variables are present

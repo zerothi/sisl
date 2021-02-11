@@ -41,7 +41,6 @@ The TranSiesta specific output files are:
 
 """
 from .sile import *
-
 from .bands import *
 from .basis import *
 from .binaries import *
@@ -57,5 +56,3 @@ from .siesta_nc import *
 from .siesta_grid import *
 from .transiesta_grid import *
 from .xv import *
-
-__all__ = [s for s in dir() if not s.startswith('_')]
