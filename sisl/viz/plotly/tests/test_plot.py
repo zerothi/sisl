@@ -202,8 +202,7 @@ class TestSubPlots(TestMultiplePlot):
 
         plot.update_settings(cols=1, rows=1)
 
-        with pytest.raises(Exception):
-            plot.update_settings(cols=None, rows=None, arrange='square')
+        plot.update_settings(cols=None, rows=None, arrange='square')
 
 # ------------------------------------------------------------
 #              Tests for the Animation class

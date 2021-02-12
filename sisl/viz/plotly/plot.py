@@ -2437,6 +2437,9 @@ class SubPlots(MultiplePlot):
             elif arrange == 'square':
                 cols = nplots ** 0.5
                 rows = nplots ** 0.5
+                # we will correct so it *fits*, always have more columns
+                rows, cols = int(rows), int(cols)
+                cols = nplots // rows + min(1, nplots % rows)
         elif rows is None:
             # ensure it is large enough by adding 1 if they don't add up
             rows = nplots // cols + min(1, nplots % cols)
