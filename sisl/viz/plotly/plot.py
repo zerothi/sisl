@@ -5,7 +5,6 @@ import uuid
 from io import StringIO, BytesIO
 import inspect
 import numpy as np
-import dill
 from copy import deepcopy
 from collections import defaultdict
 import time
@@ -14,18 +13,30 @@ import itertools
 from functools import partial
 from pathlib import Path
 
+import dill
 import plotly
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 import sisl
+from sisl.messages import info, warn
 
-from .configurable import Configurable, ConfigurableMeta, vizplotly_settings, _populate_with_settings
+from .configurable import (
+    Configurable, ConfigurableMeta,
+    vizplotly_settings, _populate_with_settings
+)
 from ._presets import get_preset
-from .plotutils import init_multiple_plots, repeat_if_childs, dictOfLists2listOfDicts, trigger_notification, \
-     spoken_message, running_in_notebook, check_widgets, call_method_if_present
-from .input_fields import TextInput, SileInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, \
-    FloatInput, RangeSlider, QueriesInput, ProgramaticInput, PlotableInput
+from .plotutils import (
+    init_multiple_plots, repeat_if_childs, dictOfLists2listOfDicts,
+    trigger_notification, spoken_message,
+    running_in_notebook, check_widgets, call_method_if_present
+)
+from .input_fields import (
+    TextInput, SileInput, SwitchInput,
+    ColorPicker, DropdownInput, IntegerInput,
+    FloatInput, RangeSlider, QueriesInput,
+    ProgramaticInput, PlotableInput
+)
 from ._shortcuts import ShortCutable
 
 
@@ -165,7 +176,6 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
     }
 
     _param_groups = (
-
         {
             "key": "dataread",
             "name": "Data reading settings",
@@ -312,7 +322,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
             string += (entry_point.help or "").lstrip()
 
             string += "\nSettings used:\n\t- "
-            string += '\n\t- '.join(entry_point._method._settings_params)
+            string += '\n\t- '.join(map(lambda ab: ab[1], entry_point._method._settings))
             string += "\n\n"
 
         return string
@@ -694,8 +704,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
         except Exception as e:
             if self._debug:
                 raise e
-            else:
-                print("The plot has been initialized correctly, but the current settings were not enough to generate the figure.\n (Error: {})".format(e))
+            info(f"The plot has been initialized correctly, but the current settings were not enough to generate the figure.\nError: {e}")
 
     def __str__(self):
         """ Information to print about the plot """
@@ -815,8 +824,8 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
                 errors.append("\t- {}: {}.{}".format(entry_point._name, type(e).__name__, e))
         else:
             self.source = None
-            raise Exception("Could not read or generate data for {} from any of the possible sources.\n\n Here are the errors for each source:\n\n {}  "
-                            .format(self.__class__.__name__, "\n".join(errors)))
+            raise ValueError("Could not read or generate data for {} from any of the possible sources.\nHere are the errors for each source:\n{}"
+                             .format(self.__class__.__name__, "\n".join(errors)))
 
     def follow(self, *files, to_abs=True, unfollow=False):
         """ Makes sure that the object knows which files to follow in order to trigger updates
@@ -1175,8 +1184,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
             try:
                 return self._ipython_display_(listen=listen, return_figWidget=return_figWidget, **kwargs)
             except Exception as e:
-                print(e)
-                pass
+                warn(e)
 
         return self.figure.show(*args, **kwargs)
 
@@ -1653,7 +1661,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
 
     def dispatch_event(self, event, *args, **kwargs):
         """ Not functional yet """
-        print(event, args, kwargs)
+        warn((event, args, kwargs))
         # Of course this needs to be done
         raise NotImplementedError
 
@@ -2427,24 +2435,19 @@ class SubPlots(MultiplePlot):
                 cols = nplots
                 rows = 1
             elif arrange == 'square':
-                cols = np.sqrt(nplots)
-                rows = np.sqrt(nplots)
+                cols = nplots ** 0.5
+                rows = nplots ** 0.5
         elif rows is None:
-            rows = nplots/cols
+            # ensure it is large enough by adding 1 if they don't add up
+            rows = nplots // cols + min(1, nplots % cols)
         elif cols is None:
-            cols = nplots/rows
+            # ensure it is large enough by adding 1 if they don't add up
+            cols = nplots // rows + min(1, nplots % rows)
 
-        if cols % 1 != 0 or rows % 1 != 0:
-            raise Exception(f'It is impossible to draw a layout with {rows} rows and {cols} cols.' +
-                f' Please review the values provided, keeping in mind that the layout should accomodate {nplots} plots')
-        elif cols*rows > nplots:
-            # They will see the empty spaces, not worth it to print something I believe
-            pass
-        elif cols*rows < nplots:
-            print(f'{nplots - cols*rows} plots will be missing, because a {rows}x{cols} layout was requested and you have {nplots}')
+        rows, cols = int(rows), int(cols)
 
-        rows = int(rows)
-        cols = int(cols)
+        if cols * rows < nplots:
+            warn(f'requested {nplots} on a {rows}x{cols} grid layout. {nplots - cols*rows} plots will be missing.")
 
         # Check if all childplots have the same xaxis or yaxis titles.
         axes_titles = defaultdict(list)

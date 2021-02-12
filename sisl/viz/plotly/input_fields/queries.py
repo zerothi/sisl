@@ -98,7 +98,7 @@ class QueriesInput(InputField):
 
         if raise_not_active:
             if not group["active"]:
-                raise Exception(f"Query {query} is not active and you are trying to use it")
+                raise ValueError(f"Query {query} is not active and you are trying to use it")
 
         query_str = []
         for key, val in query.items():

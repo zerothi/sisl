@@ -8,6 +8,7 @@ import sys
 
 import numpy as np
 
+from sisl.messages import info
 from sisl._dispatcher import AbstractDispatch
 from ._presets import get_preset
 from .plotutils import get_configurable_docstring, get_configurable_kwargs, get_configurable_kwargs_to_pass
@@ -85,6 +86,9 @@ class NamedHistory:
 
     def __len__(self):
         """ Returns the number of steps stored in the history """
+        # TODO is this really what you want?
+        # Needs clarification, in any case len(self._hist.values()[0]) would
+        # clarify that you don't really care...?
         for _, hist in self._hist.items():
             return len(hist)
 
@@ -350,7 +354,7 @@ class NamedHistory:
             else:
                 self.restore_initial()
         else:
-            raise Exception("Defaults were not kept! You need to use keep_defaults=True on initialization")
+            raise RuntimeError("Defaults were not kept! You need to use keep_defaults=True on initialization")
 
         return self
 
@@ -363,7 +367,7 @@ class NamedHistory:
             else:
                 return self.step(0)
         else:
-            raise Exception("Defaults were not kept! You need to use keep_defaults=True on initialization")
+            raise RuntimeError("Defaults were not kept! You need to use keep_defaults=True on initialization")
 
         return self
 
@@ -483,7 +487,7 @@ class Configurable(metaclass=ConfigurableMeta):
         cls._run_on_update = updates_dict
 
         for name, f in inspect.getmembers(cls, predicate=inspect.isfunction):
-            for param in getattr(f, "_settings_params", []):
+            for _, param in getattr(f, "_settings", []):
                 cls._run_on_update[param].append(f.__name__)
 
     @property
@@ -615,8 +619,8 @@ class Configurable(metaclass=ConfigurableMeta):
             if run_updates:
                 self._run_updates(diff)
         except IndexError:
-            print(f"This instance of {self.__class__.__name__} does not "
-                  f"contain earlier settings as requested ({steps} step(s) back)")
+            info(f"This instance of {self.__class__.__name__} does not "
+                 f"contain earlier settings as requested ({steps} step(s) back)")
 
         return self
 
@@ -633,37 +637,37 @@ class Configurable(metaclass=ConfigurableMeta):
         i = self.settings_history.last_update_for(key)
 
         if i is None:
-            print(f"There is no registry of the setting '{key}' having been changed. Sorry :(")
+            info(f"key={key} was never changed; cannot undo nothing.")
 
         self.update_settings(key=self.settings_history[key][i])
 
         return self
 
-    def undo_settings_group(self, group_key):
+    def undo_settings_group(self, group):
         """ Takes the desired group of settings one step back, but the rest of the settings remain unchanged
 
         At the moment it is a 'fake' undo function, since it actually updates the settings.
 
         Parameters
         -----------
-        group_key: str
+        group: str
             the key of the settings group for which you want to undo its values.
         """
         #Get the actual settings for that group
-        actualSettings = self.get_settings_group(group_key)
+        actualSettings = self.get_settings_group(group)
 
         #Try to find any different values for the settings
         for i in range(len(self.settings_history)):
 
-            previousSettings = self.get_settings_group(group_key, steps_back = i)
+            previousSettings = self.get_settings_group(group, steps_back = i)
 
             if previousSettings != actualSettings:
 
                 return self.update_settings(previousSettings)
         else:
-            print(f"There is no registry of any setting of the group '{group_key}' having been changed. Sorry :(")
+            info(f"group={group} was never changed; cannot undo nothing.")
 
-            return self
+        return self
 
     def get_param(self, key, as_dict=False, paramsExtractor=False):
         """ Gets the parameter for a given setting
@@ -797,12 +801,12 @@ class Configurable(metaclass=ConfigurableMeta):
 
         return deepcopy(val) if copy else val
 
-    def get_settings_group(self, group_key, steps_back=0):
+    def get_settings_group(self, group, steps_back=0):
         """ Gets the subset of the settings that corresponds to a given group
 
         Arguments
         ---------
-        group_key: str
+        group: str
             The key of the settings group that we desire.
         steps_back: optional, int
             If you don't want the actual settings, but some point of the settings history,
@@ -818,7 +822,7 @@ class Configurable(metaclass=ConfigurableMeta):
         else:
             settings = self.settings
 
-        return deepcopy({setting.key: settings[setting.key] for setting in self.params if getattr(setting, "group", None) == group_key})
+        return deepcopy({setting.key: settings[setting.key] for setting in self.params if getattr(setting, "group", None) == group})
 
     def has_these_settings(self, settings={}, **kwargs):
         """ Checks if the object settings match the provided settings
@@ -925,19 +929,32 @@ def _populate_with_settings(f, class_params):
     >>> plot.some_method(5) # Returns 5
     >>> plot.some_method() # Returns 3
     """
-    params = inspect.signature(f).parameters
     try:
-        settings_indices, settings_params = np.array([(i, param) for i, param in enumerate(params) if param in class_params]).T
+        # note that params takes `self` as argument
+        # So first actual argument has index 1
+        params = inspect.signature(f).parameters
+        # Also, there is no need to use numpy if not needed
+        # In this case it was just an overhead.
+        idx_params = tuple(filter(lambda i_p: i_p[1] in class_params,
+                                  enumerate(params)))
     except:
         return f
 
-    f._settings_params = settings_params
-    f._settings_indices = settings_indices.astype(int)
+    if len(idx_params) == 0:
+        # no need to wrap it
+        return f
+
+    # Tuples are immutable, so they should have a *slightly* lower overhead.
+    # Also, get rid of zip below
+    # The below gets called alot, I suspect.
+    # So it should probably be *fast* :)
+    f._settings = idx_params
 
     @wraps(f)
-    def wrapped(self, *args, **kwargs):
+    def f_default_setting_args(self, *args, **kwargs):
         nargs = len(args)
-        for i, param in zip(f._settings_indices, f._settings_params):
+        for i, param in f._settings:
+            # nargs does not count `self` and then the above indices will fine
             if i > nargs and param not in kwargs:
                 try:
                     kwargs[param] = self.get_setting(param, copy=False)
@@ -946,4 +963,4 @@ def _populate_with_settings(f, class_params):
 
         return f(self, *args, **kwargs)
 
-    return wrapped
+    return f_default_setting_args

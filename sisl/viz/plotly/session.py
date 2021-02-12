@@ -7,6 +7,7 @@ from pathlib import Path
 from copy import deepcopy, copy
 
 import sisl
+from sisl.messages import warn
 from sisl._environ import register_environ_variable, get_environ_variable
 from .plot import Plot
 from .configurable import Configurable, vizplotly_settings
@@ -314,7 +315,7 @@ class Session(Configurable):
                     ReqPlotClass = PlotClass
                     break
             else:
-                raise Exception("Didn't find the desired plot class: {}".format(plotClass))
+                raise ValueError(f"Didn't find the desired plot class: {plotClass}")
 
         if plotable_path is not None:
             args = (plotable_path,)
@@ -469,7 +470,7 @@ class Session(Configurable):
             try:
                 self.plots[plotID].read_data(update_fig=True)
             except Exception as e:
-                print(f"Could not update plot {plotID}. \n Error: {e}")
+                warn(f"Could not update plot {plotID}.\nError: {e}")
 
         return self
 

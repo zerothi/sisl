@@ -200,9 +200,9 @@ class BondLengthMap(GeometryPlot):
         ),
 
         IntegerInput(
-            key = "points_per_bond", name = "Points per bond",
-            default = 10,
-            help = "Number of points that fill a bond. <br>More points will make it look more like a line but will slow plot rendering down."
+            key="points_per_bond", name="Points per bond",
+            default=10,
+            help="Number of points that fill a bond. <br>More points will make it look more like a line but will slow plot rendering down."
         ),
 
     )
