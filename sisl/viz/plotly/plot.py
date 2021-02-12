@@ -2447,7 +2447,7 @@ class SubPlots(MultiplePlot):
         rows, cols = int(rows), int(cols)
 
         if cols * rows < nplots:
-            warn(f'requested {nplots} on a {rows}x{cols} grid layout. {nplots - cols*rows} plots will be missing.")
+            warn(f"requested {nplots} on a {rows}x{cols} grid layout. {nplots - cols*rows} plots will be missing.")
 
         # Check if all childplots have the same xaxis or yaxis titles.
         axes_titles = defaultdict(list)
