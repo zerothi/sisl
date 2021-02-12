@@ -4,6 +4,7 @@ import numpy as np
 from .sile import SileVASP
 from ..sile import add_sile, sile_fh_open
 
+from sisl.utils import PropertyDict
 from sisl._internal import set_module
 
 
@@ -60,19 +61,19 @@ class outSileVASP(SileVASP):
 
         Returns
         -------
-        dict : all energies from the "Free energy of the ion-electron system" segment of VASP output
+        PropertyDict : all energies from the "Free energy of the ion-electron system" segment of VASP output
         """
         name_conv = {
             "alpha": "Z",
             "Ewald": "Ewald",
-            "-Hartree": "Ehartree",
-            "-exchange": "ExcHF",
-            "-V(xc)+E(xc)": "Exc",
-            "PAW": "Epaw",
-            "entropy": "Ets",
-            "eigenvalues": "Ebs",
-            "atomic": "Eion",
-            "Solvation": "Esolv",
+            "-Hartree": "hartree",
+            "-exchange": "xcHF",
+            "-V(xc)+E(xc)": "xc",
+            "PAW": "paw",
+            "entropy": "entropy",
+            "eigenvalues": "band",
+            "atomic": "ion",
+            "Solvation": "solvation",
         }
 
         def readE(itt):
@@ -83,7 +84,7 @@ class outSileVASP(SileVASP):
                 return None
             next(itt) # -----
             line = next(itt)
-            E = {}
+            E = PropertyDict()
             while "----" not in line:
                 key, *v = line.split()
                 if key == "PAW":
@@ -93,12 +94,12 @@ class outSileVASP(SileVASP):
                     E[name_conv[key]] = float(v[-1])
                 line = next(itt)
             line = next(itt)
-            E["Efree"] = float(line.split()[-2])
+            E["free"] = float(line.split()[-2])
             line = next(itt)
             line = next(itt)
             v = line.split()
-            E["Etot"] = float(v[4])
-            E["Esigma0"] = float(v[-1])
+            E["total"] = float(v[4])
+            E["sigma0"] = float(v[-1])
             return E
 
         itt = iter(self)

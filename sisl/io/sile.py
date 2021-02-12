@@ -840,14 +840,15 @@ class SileCDF(BaseSile):
         if name in n.variables:
             return n.variables[name]
 
-        attr = None
-        if 'attr' in kwargs:
-            attr = kwargs.pop('attr')
-        v = n.createVariable(name, *args, **kwargs)
-        if attr is not None:
-            for name in attr:
-                setattr(v, name, attr[name])
-        return v
+        if 'attrs' in kwargs:
+            attrs = kwargs.pop('attrs')
+        else:
+            attrs = None
+        var = n.createVariable(name, *args, **kwargs)
+        if attrs is not None:
+            for name, value in attrs.items():
+                setattr(var, name, value)
+        return var
 
     @classmethod
     def isDimension(cls, obj):

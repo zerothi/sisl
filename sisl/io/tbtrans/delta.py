@@ -242,13 +242,13 @@ class deltancSileTBtrans(SileCDFTBtrans):
             if ilvl in [2, 4]:
                 self._crt_dim(lvl, 'nkpt', None)
                 self._crt_var(lvl, 'kpt', 'f8', ('nkpt', 'xyz'),
-                              attr = {'info': 'k-points for delta values',
-                                      'unit': 'b**-1'})
+                              attrs={'info': 'k-points for delta values',
+                                     'unit': 'b**-1'})
             if ilvl in [3, 4]:
                 self._crt_dim(lvl, 'ne', None)
                 self._crt_var(lvl, 'E', 'f8', ('ne',),
-                              attr = {'info': 'Energy points for delta values',
-                                      'unit': 'Ry'})
+                              attrs={'info': 'Energy points for delta values',
+                                     'unit': 'Ry'})
 
         return lvl
 
@@ -380,12 +380,12 @@ class deltancSileTBtrans(SileCDFTBtrans):
         if delta.dtype.kind == 'c':
             v1 = self._crt_var(lvl, 'Redelta', 'f8', dim,
                                chunksizes=csize,
-                               attr = {'info': "Real part of delta",
-                                       'unit': "Ry"}, **self._cmp_args)
+                               attrs={'info': "Real part of delta",
+                                     'unit': "Ry"}, **self._cmp_args)
             v2 = self._crt_var(lvl, 'Imdelta', 'f8', dim,
                                chunksizes=csize,
-                               attr = {'info': "Imaginary part of delta",
-                                       'unit': "Ry"}, **self._cmp_args)
+                               attrs={'info': "Imaginary part of delta",
+                                      'unit': "Ry"}, **self._cmp_args)
             for i in range(len(delta.spin)):
                 sl[-2] = i
                 v1[sl] = csr._D[:, i].real * eV2Ry
@@ -394,8 +394,8 @@ class deltancSileTBtrans(SileCDFTBtrans):
         else:
             v = self._crt_var(lvl, 'delta', 'f8', dim,
                               chunksizes=csize,
-                              attr = {'info': "delta",
-                                      'unit': "Ry"},  **self._cmp_args)
+                              attrs={'info': "delta",
+                                     'unit': "Ry"},  **self._cmp_args)
             for i in range(len(delta.spin)):
                 sl[-2] = i
                 v[sl] = csr._D[:, i] * eV2Ry

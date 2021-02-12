@@ -1,4 +1,5 @@
 from collections import defaultdict, ChainMap
+from collections.abc import Iterable
 from abc import ABCMeta, abstractmethod
 from functools import lru_cache
 import numpy as np
@@ -8,9 +9,6 @@ from ._internal import set_module, singledispatchmethod
 __all__ = ["Category", "CompositeCategory", "NullCategory"]
 __all__ += ["AndCategory", "OrCategory", "XOrCategory"]
 __all__ += ["InstanceCache"]
-
-
-_list_types = (tuple, list, np.ndarray)
 
 
 class InstanceCache:
@@ -238,15 +236,13 @@ class Category(metaclass=CategoryMeta):
             return False
         return self == other
 
-    @__eq__.register(list)
-    @__eq__.register(tuple)
-    @__eq__.register(np.ndarray)
+    @__eq__.register(Iterable)
     def _(self, other):
         return [self.__eq__(o) for o in other]
 
     def __ne__(self, other):
         eq = self == other
-        if isinstance(eq, _list_types):
+        if isinstance(eq, Iterable):
             return [not e for e in eq]
         return not eq
 
@@ -298,9 +294,7 @@ class NullCategory(GenericCategory):
             return True
         return self.__class__ == other.__class__
 
-    @__eq__.register(list)
-    @__eq__.register(tuple)
-    @__eq__.register(np.ndarray)
+    @__eq__.register(Iterable)
     def _(self, other):
         return super().__eq__(other)
 
@@ -332,8 +326,8 @@ class NotCategory(GenericCategory):
                 return self
             return _null
 
-        if isinstance(cat, _list_types):
-            return list(map(check, cat))
+        if isinstance(cat, Iterable):
+            return [check(c) for c in cat]
         return check(cat)
 
     @singledispatchmethod
@@ -342,9 +336,7 @@ class NotCategory(GenericCategory):
             return self._cat == other._cat
         return False
 
-    @__eq__.register(list)
-    @__eq__.register(tuple)
-    @__eq__.register(np.ndarray)
+    @__eq__.register(Iterable)
     def _(self, other):
         # this will call the list approach
         return super().__eq__(other)
@@ -424,8 +416,8 @@ class OrCategory(CompositeCategory):
                 return b
             return a
 
-        if isinstance(catA, _list_types):
-            return list(map(cmp, catA, catB))
+        if isinstance(catA, Iterable):
+            return [cmp(a, b) for a, b in zip(catA, catB)]
         return cmp(catA, catB)
 
     name = _composite_name("|")
@@ -458,8 +450,8 @@ class AndCategory(CompositeCategory):
                 return b
             return self
 
-        if isinstance(catA, _list_types):
-            return list(map(cmp, catA, catB))
+        if isinstance(catA, Iterable):
+            return [cmp(a, b) for a, b in zip(catA, catB)]
         return cmp(catA, catB)
 
     name = _composite_name("&")
@@ -494,8 +486,8 @@ class XOrCategory(CompositeCategory):
             # is exclusive, so we return the NullCategory
             return NullCategory()
 
-        if isinstance(catA, _list_types):
-            return list(map(cmp, catA, catB))
+        if isinstance(catA, Iterable):
+            return [cmp(a, b) for a, b in zip(catA, catB)]
         return cmp(catA, catB)
 
     name = _composite_name("⊕")
