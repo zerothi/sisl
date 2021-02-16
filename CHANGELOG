@@ -1,11 +1,18 @@
 0.X.Y
 =====
 
-- Enabled plotting grids using the command-line
-
 - **Major addition**: plotly backend for plotting and interaction with
 	output. This is still a work in progress made by Pol Febrer.
 	Many thanks to @pfebrer!
+
+- Added unzip argument to BZ.apply methods to unzip multiple
+	return values, also added documentation to reflect this
+
+- Fixed reading data-arrays from Siesta-PDOS files
+
+- Enabled minimization method for basis information and pseudo generation
+
+- Enabled plotting grids using the command-line
 
 - Bug in how non-colinear matrices are dealt with, now fixed
 	Thanks to Xe Hu for discovering this.

@@ -213,7 +213,7 @@ class OpListApply(IteratorApply):
 
 @set_module("sisl.physics")
 class NDArrayApply(BrillouinZoneParentApply):
-    def __str__(self, message="numpy.ndarray"):
+    def __str__(self, message="ndarray"):
         return super().__str__(message)
 
     def dispatch(self, method, eta_key="ndarray"):
@@ -222,7 +222,7 @@ class NDArrayApply(BrillouinZoneParentApply):
         unzip = self._attrs.get("unzip", False)
 
         def _create_v(nk, v):
-            out = np.empty((nk, ) + v.shape, dtype=v.dtype)
+            out = np.empty((nk, *v.shape), dtype=v.dtype)
             out[0] = v
             return out
 
@@ -272,8 +272,9 @@ class NDArrayApply(BrillouinZoneParentApply):
                 if unzip:
                     a = tuple(_create_v(nk, vi) for vi in v)
                     for i, v in enumerate(it):
+                        i += 1
                         for ai, vi in zip(a, v):
-                            ai[i+1] = vi
+                            ai[i] = vi
                 else:
                     a = _create_v(nk, v)
                     for i, v in enumerate(it):

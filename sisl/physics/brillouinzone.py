@@ -417,9 +417,17 @@ class BrillouinZone:
 
         return BrillouinZone(sc, k, w)
 
-    def copy(self):
-        """ Create a copy of this object """
-        bz = self.__class__(self.parent, self._k, self.weight)
+    def copy(self, parent=None):
+        """ Create a copy of this object, optionally changing the parent
+
+        Parameters
+        ----------
+        parent : optional
+           change the parent
+        """
+        if parent is None:
+            parent = self.parent
+        bz = self.__class__(parent, self._k, self.weight)
         bz._k = self._k.copy()
         bz._w = self._w.copy()
         return bz
@@ -1307,9 +1315,17 @@ class MonkhorstPack(BrillouinZone):
         self._centered = state['centered']
         self._trs = state['trs']
 
-    def copy(self):
-        """ Create a copy of this object """
-        bz = self.__class__(self.parent, self._diag, self._displ, self._size, self._centered, self._trs >= 0)
+    def copy(self, parent=None):
+        """ Create a copy of this object, optionally changing the parent
+
+        Parameters
+        ----------
+        parent : optional
+           change the parent
+        """
+        if parent is None:
+            parent = self.parent
+        bz = self.__class__(parent, self._diag, self._displ, self._size, self._centered, self._trs >= 0)
         bz._k = self._k.copy()
         bz._w = self._w.copy()
         return bz
@@ -1738,8 +1754,7 @@ class BandStructure(BrillouinZone):
 
             division = div[:]
 
-        self.division = _a.arrayi(division)
-        self.division.shape = (-1,)
+        self.division = _a.arrayi(division).ravel()
 
         if name is None:
             self.name = 'ABCDEFGHIJKLMNOPQRSTUVXYZ'[:len(self.point)]
@@ -1748,6 +1763,19 @@ class BandStructure(BrillouinZone):
 
         self._k = _a.arrayd([k for k in self])
         self._w = _a.fulld(len(self.k), 1 / len(self.k))
+
+    def copy(self, parent=None):
+        """ Create a copy of this object, optionally changing the parent
+
+        Parameters
+        ----------
+        parent : optional
+           change the parent
+        """
+        if parent is None:
+            parent = self.parent
+        bz = self.__class__(parent, self.point, self.division, self.name)
+        return bz
 
     def __getstate__(self):
         """ Return dictionary with the current state """
