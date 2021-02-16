@@ -22,9 +22,9 @@ implements the necessary routines to ensure correct operation.
 .. autosummary::
    :toctree: generated/
 
-   ~sisl.shape.Shape - base class
-   ~sisl.shape.Cuboid - 3d cube
-   ~sisl.shape.Cube - 3d box
-   ~sisl.shape.Ellipsoid
-   ~sisl.shape.Sphere
-   ~sisl.shape.NullShape
+   Shape - base class
+   Cuboid - 3d cube
+   Cube - 3d box
+   Ellipsoid
+   Sphere
+   NullShape
