@@ -431,11 +431,11 @@ def sisl_skip(app, what, name, obj, skip, options):
     # the documentation.
     if what == 'class':
         if name in ['ArgumentParser', 'ArgumentParser_out',
-		    'is_keys', 'key2case', 'keys2case',
+                    'is_keys', 'key2case', 'keys2case',
                     'line_has_key', 'line_has_keys', 'readline',
                     'step_either', 'step_to',
-		    'isDataset', 'isDimension', 'isGroup',
-		    'isRoot', 'isVariable']:
+                    'isDataset', 'isDimension', 'isGroup',
+                    'isRoot', 'isVariable']:
             return True
     #elif what == "attribute":
     #    return True

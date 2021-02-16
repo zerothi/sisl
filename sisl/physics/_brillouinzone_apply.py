@@ -3,6 +3,7 @@
 This module should not expose any methods!
 """
 from functools import wraps, reduce
+from itertools import zip_longest
 import operator as op
 
 import numpy as np
@@ -211,35 +212,45 @@ class OpListApply(IteratorApply):
 
 
 @set_module("sisl.physics")
-class ArrayApply(BrillouinZoneParentApply):
+class NDArrayApply(BrillouinZoneParentApply):
     def __str__(self, message="numpy.ndarray"):
         return super().__str__(message)
 
-    def dispatch(self, method, eta_key="array"):
+    def dispatch(self, method, eta_key="ndarray"):
         """ Dispatch the method by one array """
         pool = _pool_procs(self._attrs.get("pool", None))
+        unzip = self._attrs.get("unzip", False)
+
+        def _create_v(nk, v):
+            out = np.empty((nk, ) + v.shape, dtype=v.dtype)
+            out[0] = v
+            return out
+
         if pool is None:
             @wraps(method)
             def func(*args, wrap=None, eta=False, **kwargs):
                 bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key=eta_key)
                 k = bz.k
+                nk = len(k)
                 w = bz.weight
 
                 # Get first values
                 v = wrap(method(*args, k=k[0], **kwargs), parent=parent, k=k[0], weight=w[0])
                 eta.update()
 
-                # Create full array
-                if v.ndim == 0:
-                    a = np.empty([len(k)], dtype=v.dtype)
+                if unzip:
+                    a = tuple(_create_v(nk, vi) for vi in v)
+                    for i in range(1, len(k)):
+                        v = wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
+                        for ai, vi in zip(a, v):
+                            ai[i] = vi
+                        eta.update()
                 else:
-                    a = np.empty((len(k), ) + v.shape, dtype=v.dtype)
-                a[0] = v
-                del v
-
-                for i in range(1, len(k)):
-                    a[i] = wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
-                    eta.update()
+                    a = _create_v(nk, v)
+                    del v
+                    for i in range(1, len(k)):
+                        a[i] = wrap(method(*args, k=k[i], **kwargs), parent=parent, k=k[i], weight=w[i])
+                        eta.update()
                 eta.close()
 
                 return a
@@ -249,6 +260,7 @@ class ArrayApply(BrillouinZoneParentApply):
                 pool.restart()
                 bz, parent, wrap, _ = self._parse_kwargs(wrap)
                 k = bz.k
+                nk = len(k)
                 w = bz.weight
 
                 def func(k, w):
@@ -256,15 +268,16 @@ class ArrayApply(BrillouinZoneParentApply):
 
                 it = pool.imap(func, k, w)
                 v = next(it)
-                # Create full array
-                if v.ndim == 0:
-                    a = np.empty([len(k)], dtype=v.dtype)
-                else:
-                    a = np.empty((len(k), ) + v.shape, dtype=v.dtype)
-                a[0] = v
 
-                for i, v in enumerate(it):
-                    a[i+1] = v
+                if unzip:
+                    a = tuple(_create_v(nk, vi) for vi in v)
+                    for i, v in enumerate(it):
+                        for ai, vi in zip(a, v):
+                            ai[i+1] = vi
+                else:
+                    a = _create_v(nk, v)
+                    for i, v in enumerate(it):
+                        a[i+1] = v
                 del v
                 pool.terminate()
                 return a
@@ -314,37 +327,84 @@ class AverageApply(BrillouinZoneParentApply):
 
 
 @set_module("sisl.physics")
-class DataArrayApply(ArrayApply):
-    def __str__(self, message="xarray.DataArray"):
+class XArrayApply(NDArrayApply):
+    def __str__(self, message="xarray"):
         return super().__str__(message)
 
     def dispatch(self, method):
-        """ Dispatch the method by returning a DataArray """
-        # Get data as array
-        array_func = super().dispatch(method, eta_key="dataarray")
+        """ Dispatch the method by returning a DataArray or data-set """
 
-        @wraps(method)
-        def func(*args, coords=None, name=method.__name__, **kwargs):
-            # xarray specific data (default to function name)
-            bz = self._obj
-
-            # retrieve ALL data
-            array = array_func(*args, **kwargs)
-
-            # Create coords
-            if coords is None:
-                coords = [('k', _a.arangei(len(bz)))]
+        def _fix_coords_dims(nk, array, coords, dims, prefix="v"):
+            if coords is None and dims is None:
+                # we need to manually create them
+                coords = [('k', _a.arangei(nk))]
                 for i, v in enumerate(array.shape[1:]):
-                    coords.append((f"v{i+1}", _a.arangei(v)))
+                    coords.append((f"{prefix}{i+1}", _a.arangei(v)))
+            elif coords is None:
+                coords = [('k', _a.arangei(nk))]
+                for i, v in enumerate(array.shape[1:]):
+                    coords.append((dims[i], _a.arangei(v)))
+                # everything is in coords, no need to pass dims
+                dims = None
+            elif isinstance(coords, dict):
+                # ensure coords has "k" as dimensions
+                if "k" not in coords:
+                    coords["k"] = _a.arangei(nk)
+                    dims = list(dims)
+                    # ensure we have dims first
+                    dims.insert(0, "k")
             else:
+                # add "k" correctly
                 coords = list(coords)
-                coords.insert(0, ('k', _a.arangei(len(bz))))
+                coords.insert(0, ('k', _a.arangei(nk)))
                 for i in range(1, len(coords)):
                     if isinstance(coords[i], str):
                         coords[i] = (coords[i], _a.arangei(array.shape[i]))
-            attrs = {'bz': bz, 'parent': bz.parent}
+                # ensure dims is not used, everything is in coords
+                # and since it is a list, it should also be the correct order
+                # TODO add check that dims and coords match in order
+                # or convert dims to list and prepend "k"
+                dims = None
+            return coords, dims
 
-            return xarray.DataArray(array, coords=coords, name=name, attrs=attrs)
+        # Get data as array
+        if self._attrs.get("unzip", False):
+            array_func = super().dispatch(method, eta_key="dataset")
+
+            @wraps(method)
+            def func(*args, coords=(), dims=(), name=method.__name__, **kwargs):
+                # xarray specific data (default to function name)
+                bz = self._obj
+                # retrieve ALL data
+                array = array_func(*args, **kwargs)
+
+                def _create_DA(array, coords, dims, name):
+                    coords, dims = _fix_coords_dims(len(bz), array, coords, dims,
+                                                    prefix=f"{name}.v")
+                    return xarray.DataArray(array, coords=coords, dims=dims, name=name)
+
+                if isinstance(name, str):
+                    name = [f"{name}{i}" for i in range(len(array))]
+
+                data = {nam: _create_DA(arr, coord, dim, nam)
+                        for arr, coord, dim, nam
+                        in zip_longest(array, coords, dims, name)
+                }
+
+                attrs = {'bz': bz, 'parent': bz.parent}
+                return xarray.Dataset(data, attrs=attrs)
+        else:
+            array_func = super().dispatch(method, eta_key="dataarray")
+
+            @wraps(method)
+            def func(*args, coords=None, dims=None, name=method.__name__, **kwargs):
+                # xarray specific data (default to function name)
+                bz = self._obj
+                # retrieve ALL data
+                array = array_func(*args, **kwargs)
+                coords, dims = _fix_coords_dims(len(bz), array, coords, dims)
+                attrs = {'bz': bz, 'parent': bz.parent}
+                return xarray.DataArray(array, coords=coords, dims=dims, name=name, attrs=attrs)
 
         return func
 
@@ -359,8 +419,10 @@ setattr(BrillouinZone, "apply",
 BrillouinZone.apply.register("iter", IteratorApply, default=True)
 BrillouinZone.apply.register("average", AverageApply)
 BrillouinZone.apply.register("sum", SumApply)
-BrillouinZone.apply.register("array", ArrayApply)
+BrillouinZone.apply.register("array", NDArrayApply)
+BrillouinZone.apply.register("ndarray", NDArrayApply)
 BrillouinZone.apply.register("none", NoneApply)
 BrillouinZone.apply.register("list", ListApply)
 BrillouinZone.apply.register("oplist", OpListApply)
-BrillouinZone.apply.register("dataarray", DataArrayApply)
+BrillouinZone.apply.register("dataarray", XArrayApply)
+BrillouinZone.apply.register("xarray", XArrayApply)

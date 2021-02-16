@@ -87,6 +87,25 @@ to use `~sisl.oplist` to handle cases of `BrillouinZone.apply.average` and `Bril
 Which does mathematical operations (averaging/summing) using `~sisl.oplist`.
 
 
+In some cases quantities are needed for all :math:`k` points and in such cases
+it may not always be that the returned quantities are commensurate.
+Lets re-use the previous ``wrap_multiple`` function and try and return the
+full quantity:
+
+>>> DOS_PDOS_v = mp.apply.eigenstate(wrap=wrap_multiple, eta=True)
+
+This will raise an error since ``wrap_multiple`` returns an `oplist` (same as a `list`)
+and thus is unable to convert this into an equivalent `numpy.ndarray`. Additionally
+this can not be merged together in a single `numpy.ndarray` since the shapes of the returned
+quantities are not commensurate. One cannot concatenate the 3 different quantities.
+
+To accomblish this one may use an ``unzip`` flag:
+
+>>> DOS, PDOS, v = mp.apply.array.renew(unzip=True).eigenstate(wrap=wrap_multiple, eta=True)
+
+and the data is unpacked as wanted.
+
+
 Parallel calculations
 ---------------------
 

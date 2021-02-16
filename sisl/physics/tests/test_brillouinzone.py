@@ -274,6 +274,38 @@ class TestBrillouinZone:
         asdarray = bz_da.eigh(coords=['orb'])
         assert asdarray.dims == ('k', 'orb')
 
+    def test_as_dataarray_unzip(self):
+        pytest.importorskip("xarray", reason="xarray not available")
+
+        from sisl import geom, Hamiltonian
+        g = geom.graphene()
+        H = Hamiltonian(g)
+        H.construct([[0.1, 1.44], [0, -2.7]])
+
+        E = np.linspace(-2, 2, 20)
+        bz = MonkhorstPack(H, [2, 2, 1], trs=False)
+        def wrap(es):
+            return es.eig, es.DOS(E), es.PDOS(E)
+
+        with bz.apply.renew(unzip=True) as unzip:
+            eig, DOS, PDOS = unzip.ndarray.eigenstate(wrap=wrap)
+            ds0 = unzip.dataarray.eigenstate(wrap=wrap, name=["eig", "DOS", "PDOS"])
+            # explicitly create dimensions
+            ds1 = unzip.dataarray.eigenstate(wrap=wrap,
+                                             coords=[
+                                                 {"orb": np.arange(len(H))},
+                                                 {"E": E},
+                                                 {"orb": np.arange(len(H)),
+                                                  "E": E},
+                                             ],
+                                             dims=(['orb'], ['E'], ['orb', 'E']),
+                                             name=["eig", "DOS", "PDOS"])
+
+        for var, data in zip(["eig", "DOS", "PDOS"], [eig, DOS, PDOS]):
+            assert np.allclose(ds0.data_vars[var].values, data)
+            assert np.allclose(ds1.data_vars[var].values, data)
+        assert len(ds1.coords) < len(ds0.coords)
+
     def test_pathos(self):
         pytest.importorskip("pathos", reason="pathos not available")
 
@@ -367,7 +399,7 @@ class TestBrillouinZone:
         assert len(bz) == 2 ** 3
 
         # Check with a wrap function
-        E = np.linspace(-2, 2, 100)
+        E = np.linspace(-2, 2, 20)
         def wrap_sum(es, weight):
             PDOS = es.PDOS(E) * weight
             return PDOS.sum(0), PDOS
@@ -386,16 +418,24 @@ class TestBrillouinZone:
         bz = MonkhorstPack(H, [2, 2, 2], trs=False)
 
         # Check with a wrap function
-        E = np.linspace(-2, 2, 100)
+        E = np.linspace(-2, 2, 20)
         def wrap(es):
             return es.eig, es.DOS(E)
 
-        eig0, DOS0 = bz.apply.renew(unzip=True).list.eigenstate(wrap=wrap)
-        eig_DOS = bz.apply.list.eigenstate(wrap=wrap)
-        eig1, DOS1 = zip(*eig_DOS)
+        eig0, DOS0 = zip(*bz.apply.list.eigenstate(wrap=wrap))
+        with bz.apply.renew(unzip=True) as k_unzip:
+            eig1, DOS1 = k_unzip.list.eigenstate(wrap=wrap)
+            eig2, DOS2 = k_unzip.array.eigenstate(wrap=wrap)
+
+        #eig0 and DOS0 are generators, and not list's
+        #eig1 and DOS1 are generators, and not list's
+        assert isinstance(eig2, np.ndarray)
+        assert isinstance(DOS2, np.ndarray)
 
         assert np.allclose(eig0, eig1)
         assert np.allclose(DOS0, DOS1)
+        assert np.allclose(eig0, eig2)
+        assert np.allclose(DOS0, DOS2)
 
     # Check with a wrap function and the weight argument
     def test_wrap_kwargs(arg):
@@ -412,7 +452,7 @@ class TestBrillouinZone:
         def wrap_kwargs(arg, parent, k, weight):
             return arg * weight
 
-        E = np.linspace(-2, 2, 100)
+        E = np.linspace(-2, 2, 20)
         bz_array = bz.apply.array
         asarray1 = (bz_array.DOS(E, wrap=wrap_none) * bz.weight.reshape(-1, 1)).sum(0)
         asarray2 = bz_array.DOS(E, wrap=wrap_kwargs).sum(0)
