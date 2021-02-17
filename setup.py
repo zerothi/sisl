@@ -386,7 +386,7 @@ def cythonizer(extensions, *args, **kwargs):
 MAJOR = 0
 MINOR = 11
 MICRO = 0
-ISRELEASED = True
+ISRELEASED = False
 VERSION = f"{MAJOR}.{MINOR}.{MICRO}"
 GIT_REVISION = "ad878e687045793c53d0c628c5345832beb60695"
 REVISION_YEAR = 2021
