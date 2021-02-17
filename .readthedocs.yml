@@ -1,22 +1,17 @@
 version: 2
 
-sphinx:
-  configuration: docs/conf.py
-  fail_on_warning: false
+submodules:
+  include:
+    - files
 
 build:
   image: latest
 
+sphinx:
+  configuration: docs/conf.py
+  fail_on_warning: false
+
 conda:
-  environment: docs/conda.yml
+  environment: ci/doc.yml
 
-python:
-  version: 3.7
-  system_packages: true
-  #install:
-  #  - requirements: docs/requirements.txt
-  #  - method: setuptools
-  #    path: .
-
-formats:
-  - htmlzip
+formats: []

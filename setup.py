@@ -40,8 +40,8 @@ min_version ={
 
 viz = {
     "plotly": [
-        'dill >= 0.3.2', # for pathos and for saving plots (a lower version raises https://github.com/pfebrer96/sisl/issues/11)
-        'pathos', # for multiprocessing,
+        'dill >= 0.3.2', # see https://github.com/pfebrer/sisl/issues/11
+        'pathos',
         'plotly',
         'pandas',
         "xarray >= " + min_version["xarray"],

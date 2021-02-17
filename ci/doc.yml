@@ -1,0 +1,35 @@
+name: sisl_docs
+
+channels:
+  - conda-forge
+  - nodefaults
+dependencies:
+  - python=3.8
+  - fortran-compiler
+  - setuptools
+  - pyparsing>=1.5.7
+  - numpy
+  - cython
+  - tqdm
+  - scipy
+  - netcdf4
+  - matplotlib-base
+  - xarray
+  - pathos
+  - dill
+  - scikit-image
+  - plotly
+  - sphinx
+  - sphinx_rtd_theme
+  - sphinx-gallery
+  - numpydoc
+  - nbsphinx
+  - jupyter_client
+  - ipykernel
+#  - jinja2
+#  - tornado
+#  - nbformat
+#  - jupyter_client
+  - pip
+  - pip:
+    - -e ../
