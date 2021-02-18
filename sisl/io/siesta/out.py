@@ -878,5 +878,143 @@ class outSileSiesta(SileSiesta):
             return MDstep_dataframe(scf)
         return scf
 
+    @sile_fh_open()
+    def read_net_charges(self, which):
+        """Reads the net charges printed in the output
+
+        Parameters
+        ---------
+        which: {"voronoi", "hirshfeld"}
+            the name of the charges that you want to read.
+        """
+
+        # Normalize the "which" argument to lowercase
+        if not isinstance(which, str):
+            raise TypeError("The 'which' argument should be a string")
+        which = which.lower()
+
+        # Check that a known charge has been requested
+        known_charges = ("voronoi", "hirshfeld")
+        if which not in known_charges:
+            raise ValueError(f"'which' should be one of {known_charges}, you passed {which}")
+
+        # Now capitalize, because it is written as capitalized in SIESTA output (see _read below)
+        which = which.capitalize()
+
+        # Define a helper function that actually reads the charge values
+        def _read(stop_string=None):
+            """Tries to read the charges until a stop sequence or end of file is reached.
+
+            Parameters
+            ---------
+            stop_string: str, optional
+                if provided, it will stop attempting to read when this string is reached.
+
+            Returns
+            ---------
+            list or None
+                Returns the list of net charges that has found. If it hasn't found any, returns None. 
+            """
+
+            if stop_string is None:
+                def should_stop_reading(line):
+                    return line == ''
+            else:
+                def should_stop_reading(line):
+                    return line == '' or stop_string in line
+
+            # Find the next header for atomic charges
+            line = self.readline()
+            while True:
+                # Note that the format of writing charges has been changed recently,
+                # so we support both formats
+                if f'{which} Net Atomic Populations:' in line:
+                    format = "old"
+                    break
+                elif f'{which} Atomic Populations:' in line:
+                    format = "new"
+                    break
+                line = self.readline()
+
+                # If we reach a stop sequence, cease in the attempt to find charges.
+                if should_stop_reading(line):
+                    return None
+
+            # We have found the header, prepare a list to read the charges
+            atom_charges = []
+
+            # Choose the appropiate parsing function according to the format that charges are
+            # written in.
+            if format == "old":
+                def _parse_charge(line):
+
+                    at, charge, symbol = line.split()
+                    at = int(line.split()[0])
+                    return charge
+            else:
+                def _parse_charge(line):
+                    at, dQ, charge, symbol = line.split()
+                    at = int(line.split()[0])
+                    return dQ
+
+            # Now try to parse each following line until the line can't be parsed
+            while line != '':
+                try:
+                    charge = _parse_charge(line)
+                    atom_charges.append(float(charge))
+
+                    line = self.readline()
+                except:
+                    if len(atom_charges) == 0:
+                        # It has not been possible to parse the line, but we still have no charges,
+                        # this is a subheader, keep reading
+                        line = self.readline()
+                    else:
+                        # We already have the charge values and we reached a line that can't be parsed,
+                        # this means we have reached the end.
+                        break
+
+            return atom_charges
+
+        # This is the main loop to read all the charges. It loops through all MD steps
+        # trying to find charges.
+        charges = []
+        while True:
+
+            # Get to the next scf cycle
+            line = self.readline()
+            while "scf:" not in line:
+                line = self.readline()
+                if line == '':
+                    break
+
+            # If we got out of the previous loop because it's the end of the file, we're done
+            if line == '':
+                break
+
+            # If not, prepare to read the charges for the scf step.
+            step_charges = []
+            while True:
+                # We use "constrained" as a stop string because it is always present after
+                # an SCF cycle (maybe find a better one?)
+                scf_charge = _read(stop_string="constrained")
+                if scf_charge is None:
+                    # We have reached the stop string, we are done with this MD step
+                    break
+                step_charges.append(scf_charge)
+
+            # Append the MD step charges to the list of charges
+            if step_charges:
+                charges.append(_a.arrayd(step_charges))
+
+            # If no charges have been found in this MD step, this means charges are not written
+            # neither per scf step or MD step. The only possibility left is that only final charges
+            # are written. So don't bother trying to read the next steps. Just try to find charges from here
+            # to the end of the file and break out of the cycle.
+            if not step_charges:
+                charges = _a.arrayd(_read())
+                break
+
+        return charges
 
 add_sile('out', outSileSiesta, case=False, gzip=True)
