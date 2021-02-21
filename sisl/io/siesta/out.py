@@ -878,6 +878,8 @@ class outSileSiesta(SileSiesta):
             return MDstep_dataframe(scf)
         return scf
 
+    _md_step_last_line = "Target enthalpy"
+
     @sile_fh_open()
     def read_charge(self, name, iscf=None, imd=None, as_dataframe=False):
         """Reads the net charges printed in the output
@@ -911,7 +913,7 @@ class outSileSiesta(SileSiesta):
               - "iscf": The scf iteration. Not present if a particular scf iteration was requested (`iscf`).
               - "imd": The MD step. Not present if a particular MD step was requested (`imd`).
         """
-        # Normalize the "which" argument to lowercase
+        # Normalize the "name" argument to lowercase
         if not isinstance(name, str):
             raise TypeError("The 'name' argument should be a string")
         which = name.lower()
@@ -927,74 +929,63 @@ class outSileSiesta(SileSiesta):
         # Define the names of the columns that are valid. We could directly read the column names
         # from the header, but some names have spaces so we can not do header_line.split()
         valid_columns = ["dQatom", "Atom pop", "S", "Sx", "Sy", "Sz"]
-        info = {"header": "", "read_final": False}
+        # Some information values that will help us with the parsing and processing
+        info = {
+            "header": "", # The header line for the charges, contains the name of each column
+            "read_final": False, # Whether we have read the charges at the end of the file
+        }
 
         # Define a helper function that actually reads the charge values
-        def _read(stop_string=None):
+        def _read(stop_strings=(), just_check=False):
             """Tries to read the charges until a stop sequence or end of file is reached.
 
             Parameters
             ---------
-            stop_string: str, optional
-                if provided, it will stop attempting to read when this string is reached.
+            stop_strings: array-like of str, optional
+                if provided, it will stop attempting to read when any of these strings is found.
+            just_check: boolean, optional
+                this argument is meant so that you can use the function as a checker to know whether
+                charges are present or not, without needing to read them.
+
+                If `True`, returns True when charges are available or the results of the
+                self.step_either() call otherwise.
 
             Returns
             ---------
             list or None
                 Returns the list of net charges that has found. If it hasn't found any, returns None. 
             """
+            # Try to find the next charges block
+            found, i_found, line = self.step_either([f"{which} Atomic Populations", f"{which} Net Atomic Populations", *stop_strings])
 
-            if stop_string is None:
-                def should_stop_reading(line):
-                    return line == ''
-            else:
-                def should_stop_reading(line):
-                    return line == '' or stop_string in line
+            # We didn't find a charges block
+            if not found or i_found > 1:
+                if just_check:
+                    return found, i_found - 2, line
+                return None
 
-            # Find the next header for atomic charges
-            line = self.readline()
-            while True:
-                # Note that the format of writing charges has been changed recently,
-                # so we support both formats
-                if f'{which} Net Atomic Populations:' in line:
-                    format = "old"
-                    break
-                elif f'{which} Atomic Populations:' in line:
-                    format = "new"
-                    break
-                line = self.readline()
-
-                # If we reach a stop sequence, cease in the attempt to find charges.
-                if should_stop_reading(line):
-                    return None
+            if just_check:
+                return True
 
             # The next line contains a header with the names of the columns
-            line = self.readline()
             # We inform about the header. In the old format, dQatom was called Q atom, we
             # standarize the column names.
+            line = self.readline()
             info["header"] = line.replace(" Qatom", " dQatom")
 
             # We have found the header, prepare a list to read the charges
             atom_charges = []
 
-            # Choose the appropiate parsing function according to the format that charges are
-            # written in.
-            if format == "old":
-                def _parse_charge(line):
-
-                    at, *vals, symbol = line.split()
-                    at = int(line.split()[0])
-                    return vals
-            else:
-                def _parse_charge(line):
-                    at, *vals, symbol = line.split()
-                    at = int(line.split()[0])
-                    return vals
+            # Define the function that parses the charges
+            def _parse_charge(line):
+                at, *vals, symbol = line.split()
+                at = int(line.split()[0])
+                return vals
 
             # Now try to parse each following line until the line can't be parsed
-            while line != '':
-                line = self.readline()
+            while line != "":
                 try:
+                    line = self.readline()
                     charge_vals = _parse_charge(line)
                     atom_charges.append(charge_vals)
                 except:
@@ -1004,75 +995,109 @@ class outSileSiesta(SileSiesta):
 
             return atom_charges
 
-        # This is the main loop to read all the charges. It loops through all MD steps
-        # trying to find charges.
-        charges = []
-        md_step = 0
+        # Perform some checks on the first MD step to know what we are dealing with
+
+        # Here we check if there are charges written for each scf iteration
+        info["scf_charges"] = _read(("scf:",), just_check=True) is True
+
+        # This will let us know if there are charges at the end of each MD step
+        # Basically, we are going to build an array where True means we found charges
+        # and anything else means that we didn't. Checking for the second to last item
+        # will tell us if there are charges between the last "scf:" and the end of the MD step.
+        found = []
         while True:
+            ret = _read(("scf:", self._md_step_last_line), just_check=True)
+            found.append(ret)
 
-            # Get to the next scf cycle
-            found, line = self.step_to("scf:", reread=False)
-
-            # If we didn't find another scf cycle, we reached the end of the file
-            if not found:
-                if imd is not None and imd >= 0:
-                    # A positive md step was requested, but we reached the end of the file before finding it
-                    raise ValueError(f"You requested md step number {imd}, but the last md step in this file is: {md_step}")
-                # Otherwise, there's no problem with reaching the end of the file, we're done reading!
-                break
-
-            # If a specific md step was requested and this is not it, just go to the next
-            if imd is not None and imd >= 0 and md_step != imd:
-                self.step_to("constrained", reread=False)
-                # Increase the md step for the next cycle
-                md_step += 1
-                continue
-
-            # If not, prepare to read the charges for the scf step.
-            step_charges = []
-            while True:
-                # We use "constrained" as a stop string because it is always present after
-                # an SCF cycle (maybe find a better one?)
-                scf_charge = _read(stop_string="constrained")
-                if scf_charge is None:
-                    # We have reached the stop string, we are done with this MD step
+            if ret is not True:
+                if not ret[0]:
+                    raise Exception("We can't seem to find the end of a MD step in this file")
+                elif ret[1] == 1:
                     break
-                step_charges.append(scf_charge)
+        info["MD_step_charges"] = found[-2] is True
 
-            # Append the MD step charges to the list of charges
-            if step_charges:
-                if iscf is not None:
-                    try:
-                        step_charges = [step_charges[iscf]]
-                    except IndexError:
-                        raise ValueError(f"You are asking for scf iteration {iscf}, but MD step {md_step} has {len(step_charges)} iterations.")
+        # Raise errors if the requested charges are impossible to get given the information
+        # written in this file.
+        if not info["MD_step_charges"] and imd not in [None, -1]:
+            raise ValueError(f"You requested charges for MD step {imd}, but the file does not contain charges for each MD step")
+        if not info["scf_charges"] and iscf not in [None, -1]:
+            raise ValueError(f"You requested charges for scf iteration {iscf}, but the file does not contain charges for each scf step")
+
+        # Now that we know what we are looking at, we just close and open the file again
+        # so that we can read it all from the beggining
+        self.fh.close()
+        self._open()
+
+        # If there are no scf charges and no md step charges, just go on to read the final ones.
+        if not info["MD_step_charges"] and not info["scf_charges"]:
+            charges = [_a.arrayd([_read()])]
+            if charges[0] is None:
+                raise Exception(f"We couldn't find any {which} charges in the file")
+            info["read_final"] = True
+
+        # If there are charges inside the MD steps (either md step or scf-wise), loop through
+        # all MD steps.
+        else:
+            charges = []
+            md_step = 0
+            while True:
+                # If a specific md step was requested and this is not it, just go to the next
+                if imd is not None and imd >= 0 and md_step != imd:
+                    found, _ = self.step_to(self._md_step_last_line, reread=False)
+                    if not found:
+                        break
+                    md_step += 1
+                    continue
+
+                # Read all charges in the MD step.
+                step_charges = []
+                while True:
+                    scf_charge = _read((self._md_step_last_line, ))
+                    if scf_charge is None:
+                        # We have reached the end of the MD step
+                        break
+                    step_charges.append(scf_charge)
+
+                # If we didn't read any charges for this md step, it basically means that there are
+                # no more steps, just leave
+                if not step_charges:
+                    md_step -=1
+                    break
+
+                # Now, do some sanitizing of the charges we have obtained for this step
+                if info["scf_charges"]:
+                    # There is a first charge printout before the first scf iteration
+                    step_charges = step_charges[1:]
+                    # Also, if both scf and md charges are turned on, the last printout is repeated
+                    if info["MD_step_charges"]:
+                        step_charges = step_charges[:-1]
+
+                    # If a specific scf iteration was requested, try to get it
+                    if iscf is not None:
+                        try:
+                            step_charges = [step_charges[iscf]]
+                        except IndexError:
+                            raise ValueError(f"You are asking for scf iteration {iscf}, but MD step {md_step} has {len(step_charges)} iterations.")
+
+                # Append the MD step charges to the list of charges
                 charges.append(_a.arrayd(step_charges))
 
-            # If no charges have been found in this MD step, this means charges are not written
-            # neither per scf step or MD step. The only possibility left is that only final charges
-            # are written. So don't bother trying to read the next steps. Just try to find charges from here
-            # to the end of the file and break out of the cycle.
-            if not step_charges:
-                if imd not in [None, -1]:
-                    raise ValueError(f"You requested charges for MD step {imd}, but the file does not contain charges for each MD step")
-                if iscf not in [None, -1]:
-                    raise ValueError(f"You requested charges for scf iteration {iscf}, but the file does not contain charges for each scf step")
+                # If this was the md step requested, we're done!
+                if imd is not None and imd >= 0 and md_step == imd:
+                    break
 
-                info["read_final"] = True
-                charges = [_a.arrayd([_read()])]
-                break
+                md_step += 1
 
-            # If this was the md step requested, we're done!
-            if imd is not None and imd >= 0 and md_step == imd:
-                break
+            # Now we have read all the MD steps that we needed to read if they were available.
+            if imd is not None:
+                if imd > md_step or imd < -(md_step + 1):
+                    raise ValueError(f"You requested md step number {imd}, but there are only {md_step} steps in this file.")
+                elif imd < 0:
+                    # If imd was negative, we have obviously needed to read all the md steps,
+                    # and now we can retrieve the one that the user needed
+                    charges = [charges[imd]]
 
-            # Increase the md step for the next cycle
-            md_step += 1
-
-        # If imd was negative, we have obviously needed to read all the md steps,
-        # and now we can retrieve the one that the user needed
-        if imd is not None and imd <= 0:
-            charges = [charges[imd]]
+        # At this point, we have read all the charges, we just need to do some processing before returning them
 
         # Convert charges list to a dataframe if requested
         if as_dataframe:
@@ -1088,7 +1113,7 @@ class outSileSiesta(SileSiesta):
                     df = pd.DataFrame(step_charges[0])
                     df.index.name = "atom"
                 else:
-                    if info["read_final"]:
+                    if info["read_final"] or (info["MD_step_charges"] and not info["scf_charges"]):
                         # If we read from the final charges and there was no iscf specified,
                         # we inform that the information belongs to the last iscf
                         keys = [-1]
@@ -1101,6 +1126,8 @@ class outSileSiesta(SileSiesta):
 
             # Get all the dataframes for each MD step
             dfs = [MD_step_dataframe(step_charges) for step_charges in charges]
+
+            print(dfs)
 
             if len(dfs) == 1 and imd is not None:
                 # If the user requested a specific imd, we don't need to add any index
