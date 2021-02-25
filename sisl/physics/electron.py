@@ -1563,7 +1563,7 @@ class _electron_State:
                 opt = {'k': self.info.get('k', (0, 0, 0)),
                        "dtype": self.dtype,
                        "format": format}
-                for key in ["gauge", "spin"]:
+                for key in ("gauge",):
                     val = self.info.get(key, None)
                     if not val is None:
                         opt[key] = val
@@ -1576,7 +1576,7 @@ class _electron_State:
 
         class __FakeSk:
             """ Replacement object which superseedes a matrix """
-            __slots__ = []
+            __slots__ = ()
             shape = (n, n)
             @staticmethod
             def dot(v):
@@ -1826,7 +1826,7 @@ class StateCElectron(_electron_State, StateC):
         """
         try:
             opt = {'k': self.info.get('k', (0, 0, 0)), "dtype": self.dtype}
-            for key in ["gauge", "format"]:
+            for key in ("gauge", "format"):
                 val = self.info.get(key, None)
                 if not val is None:
                     opt[key] = val
@@ -1863,7 +1863,7 @@ class StateCElectron(_electron_State, StateC):
         """
         try:
             opt = {'k': self.info.get('k', (0, 0, 0)), "dtype": self.dtype}
-            for key in ["gauge", "format"]:
+            for key in ("gauge", "format"):
                 val = self.info.get(key, None)
                 if not val is None:
                     opt[key] = val
@@ -1901,7 +1901,7 @@ class StateCElectron(_electron_State, StateC):
         """
         try:
             opt = {'k': self.info.get('k', (0, 0, 0)), "dtype": self.dtype}
-            for key in ["gauge", "format"]:
+            for key in ("gauge", "format"):
                 val = self.info.get(key, None)
                 if not val is None:
                     opt[key] = val
@@ -1951,7 +1951,7 @@ class StateCElectron(_electron_State, StateC):
             self.change_gauge('r')
 
             opt = {'k': self.info.get('k', (0, 0, 0)), "dtype": self.dtype}
-            for key in ["gauge", "format"]:
+            for key in ("gauge", "format"):
                 val = self.info.get(key, None)
                 if not val is None:
                     opt[key] = val

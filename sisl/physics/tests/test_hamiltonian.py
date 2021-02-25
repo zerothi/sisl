@@ -732,6 +732,27 @@ class TestHamiltonian:
         str(ie2)
         assert np.allclose(ie1, ie2)
 
+    def test_eigenstate_polarized_orthogonal_sk(self, setup):
+        R, param = [0.1, 1.5], [1., [0.1, 0.1]]
+        H = Hamiltonian(setup.g, spin='P')
+        H.construct((R, param))
+
+        k = [0.1] * 3
+        ie1 = H.eigenstate(k, spin=0, format='array').Sk()
+        ie2 = H.eigenstate(k, spin=1, format='array').Sk()
+        assert np.allclose(ie1.dot(1.), 1.)
+        assert np.allclose(ie2.dot(1.), 1.)
+
+    def test_eigenstate_polarized_non_ortogonal_sk(self, setup):
+        R, param = [0.1, 1.5], [[1., 1., 1.], [0.1, 0.1, 0.05]]
+        H = Hamiltonian(setup.g, spin='P', orthogonal=False)
+        H.construct((R, param))
+
+        k = [0.1] * 3
+        ie1 = H.eigenstate(k, spin=0, format='array').Sk()
+        ie2 = H.eigenstate(k, spin=1, format='array').Sk()
+        assert np.allclose(ie1, ie2)
+
     def test_change_gauge(self, setup):
         # Test of eigenvalues vs eigenstate class
         HS = setup.HS.copy()
