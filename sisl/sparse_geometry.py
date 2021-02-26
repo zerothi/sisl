@@ -1531,8 +1531,9 @@ class SparseOrbital(_SparseGeometry):
         >>> # all other orbitals are retained
         >>> obj.remove_orbital(1, 1)
         """
-        # Get specie index of the atom
+        # Get specie index of the atom (convert to list of indices)
         atoms = self.geometry._sanitize_atoms(atoms).ravel()
+
         # Figure out if all atoms have the same species
         specie = self.geometry.atoms.specie[atoms]
         uniq_specie, indices = unique(specie, return_inverse=True)
@@ -1542,18 +1543,21 @@ class SparseOrbital(_SparseGeometry):
             new = self
             for i in range(uniq_specie.size):
                 idx = (indices == i).nonzero()[0]
+                # now determine whether it is the whole atom
+                # or only part of the geometry
                 new = new.remove_orbital(atoms[idx], orbitals)
             return new
 
         # Get the atom object we wish to reduce
         # We know np.all(geom.atoms[atom] == old_atom)
         old_atom = self.geometry.atoms[atoms[0]]
-
         # Retrieve index of orbital
         if isinstance(orbitals, Orbital):
             orbitals = old_atom.index(orbitals)
         # Create the reverse index-table to delete those not required
         orbitals = delete(_a.arangei(len(old_atom)), np.asarray(orbitals).ravel())
+
+        # now call sub_orbital
         return self.sub_orbital(atoms, orbitals)
 
     def sub(self, atoms):
@@ -1621,13 +1625,6 @@ class SparseOrbital(_SparseGeometry):
         >>> # all other orbitals are retained
         >>> obj.sub_orbital(1, 1)
         """
-        # Get specie index of the atom
-        if isinstance(atoms, (tuple, list)):
-            if isinstance(atoms[0], Atom):
-                spg = self
-                for a in atoms:
-                    spg = spg.sub_orbital(a, orbitals)
-                return spg
         atoms = self.geometry._sanitize_atoms(atoms).ravel()
 
         # Figure out if all atoms have the same species
@@ -1639,6 +1636,8 @@ class SparseOrbital(_SparseGeometry):
             new = self
             for i in range(uniq_specie.size):
                 idx = (indices == i).nonzero()[0]
+                # now determine whether it is the whole atom
+                # or only part of the geometry
                 new = new.sub_orbital(atoms[idx], orbitals)
             return new
 
@@ -1647,22 +1646,43 @@ class SparseOrbital(_SparseGeometry):
 
         # Get the atom object we wish to reduce
         old_atom = geom.atoms[atoms[0]]
+        old_atom_specie = geom.atoms.index(old_atom)
+        old_atom_count = (geom.atoms.specie == old_atom_specie).sum()
 
         # Retrieve index of orbital
         if isinstance(orbitals, Orbital):
             orbitals = old_atom.index(orbitals)
         orbitals = np.sort(np.asarray(orbitals).ravel())
         if len(orbitals) == 0:
-            raise ValueError('trying to retain 0 orbitals on a given atom. This is not allowed!')
+            raise ValueError(f"{self.__class__.__name__}.sub_orbital trying to retain 0 orbitals on a given atom. This is not allowed!")
 
+        # create the new atom
         new_atom = old_atom.sub(orbitals)
         # Rename the new-atom to <>_1_2 for orbital == [1, 2]
         new_atom._tag += '_' + '_'.join(map(str, orbitals))
 
-        # We catch the warning about reducing the number of orbitals!
-        with warnings.catch_warnings():
-            warnings.filterwarnings('ignore')
-            geom.atoms.replace_atom(old_atom, new_atom)
+        # There are now 2 cases.
+        #  1. we replace all atoms of a given specie
+        #  2. we replace a subset of atoms of a given specie
+        if len(atoms) == old_atom_count:
+            new_atom_specie = old_atom_specie
+            # We catch the warning about reducing the number of orbitals!
+            with warnings.catch_warnings():
+                warnings.filterwarnings('ignore')
+                # this is in-place operation and we don't need to worry about
+                geom.atoms.replace_atom(old_atom, new_atom)
+
+        else:
+            # we have to add the new one (in case it does not exist)
+            try:
+                new_atom_specie = geom.atoms.index(new_atom)
+            except:
+                new_atom_specie = geom.atoms.nspecie
+                # the above checks that it is indeed a new atom
+                geom._atoms._atom.append(new_atom)
+            # transfer specie index
+            geom.atoms._specie[atoms] = new_atom_specie
+            geom.atoms._update_orbitals()
 
         # Now create the new sparse orbital class
         SG = self.__class__(geom, self.dim, self.dtype, 1, **self._cls_kwargs())
@@ -1679,6 +1699,9 @@ class SparseOrbital(_SparseGeometry):
         sc_off = _a.arangei(n_s) * self.no
         sub_idx = tile(sub_idx, n_s).reshape(n_s, -1) + sc_off.reshape(-1, 1)
         SG._csr = self._csr.sub(sub_idx)
+
+        # just ensure we are doing the correct thing
+        assert SG._csr.shape[0] == SG.geometry.no
 
         return SG
 
