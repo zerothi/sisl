@@ -948,7 +948,7 @@ class outSileSiesta(SileSiesta):
                 charges are present or not, without needing to read them.
 
                 If `True`, returns True when charges are available or the results of the
-                self.step_either() call otherwise.
+                self.step_to() call otherwise.
 
             Returns
             ---------
@@ -956,7 +956,9 @@ class outSileSiesta(SileSiesta):
                 Returns the list of net charges that has found. If it hasn't found any, returns None. 
             """
             # Try to find the next charges block
-            found, i_found, line = self.step_either([f"{which} Atomic Populations", f"{which} Net Atomic Populations", *stop_strings])
+            found, line, i_found = self.step_to([f"{which} Atomic Populations",
+                                                 f"{which} Net Atomic Populations",
+                                                 *stop_strings], ret_index=True)
 
             # We didn't find a charges block
             if not found or i_found > 1:
