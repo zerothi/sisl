@@ -99,7 +99,7 @@ class gotSileGULP(SileGULP):
 
         for _ in [0, 1]:
             # Step to either the geometry or
-            f, ki, _ = self.step_either([self._keys['sc'], self._keys['geometry']])
+            f, _, ki = self.step_to([self._keys['sc'], self._keys['geometry']], ret_index=True)
             if not f and ki == 0:
                 raise ValueError('SileGULP tries to lookup the SuperCell vectors '
                                  'using key "' + self._keys['sc'] + '". \n'

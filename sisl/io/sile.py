@@ -80,7 +80,7 @@ class _sile_rule:
         while len(children) != nl:
             nl = len(children)
             # Remove baseclasses everybody have
-            for obj in [object, BaseSile, Sile, SileBin, SileCDF]:
+            for obj in (object, BaseSile, Sile, SileBin, SileCDF):
                 try:
                     i = children.index(obj)
                     children.pop(i)
@@ -564,8 +564,8 @@ class Sile(BaseSile):
 
     @staticmethod
     def is_keys(keys):
-        """ Returns true if ``isinstance(keys,(list,np.ndarray))`` """
-        return isinstance(keys, (list, np.ndarray))
+        """ Returns true if ``not isinstance(keys, str)`` """
+        return not isinstance(keys, str)
 
     @staticmethod
     def key2case(key, case):
@@ -614,26 +614,22 @@ class Sile(BaseSile):
             self._line += 1
         return l
 
-    def step_to(self, keywords, case=True, reread=True):
-        r""" Steps the file-handle until the keyword is found in the input """
+    def step_to(self, keywords, case=True, reread=True, ret_index=False):
+        r""" Steps the file-handle until the keyword(s) is found in the input """
         # If keyword is a list, it just matches one of the inputs
         found = False
         # The previously read line...
         line = self._line
-
-        # Do checking outside line checks
-        if self.is_keys(keywords):
-            line_has = self.line_has_keys
-            keys = self.keys2case(keywords, case)
-        else:
-            line_has = self.line_has_key
-            keys = self.key2case(keywords, case)
+        if isinstance(keywords, str):
+            # convert to list
+            keywords = [keywords]
+        keys = self.keys2case(keywords, case)
 
         while not found:
             l = self.readline()
             if l == '':
                 break
-            found = line_has(l, keys, case=case)
+            found = self.line_has_keys(l, keys, case)
 
         if not found and (l == '' and line > 0) and reread:
             # We may be in the case where the user request
@@ -648,42 +644,23 @@ class Sile(BaseSile):
                 l = self.readline()
                 if l == '':
                     break
-                found = line_has(l, keys, case=case)
+                found = self.line_has_keys(l, keys, case)
+
+        if ret_index:
+            idx = -1
+            if found:
+                idx = 0
+
+            # force return an index
+            if is_keys:
+                for i, key in enumerate(keys):
+                    if self.line_has_key(l, key, case):
+                        return found, l, i
+            return found, l, idx
 
         # sometimes the line contains information, as a
         # default we return the line found
         return found, l
-
-    def step_either(self, keywords, case=True):
-        """ Steps the file-handle until the keyword is found in the input """
-        # If keyword is a list, it just matches one of the inputs
-
-        # Do checking outside line checks
-        if self.is_keys(keywords):
-            line_has = self.line_has_key
-            keys = self.keys2case(keywords, case)
-        else:
-            found, l = self.step_to(keywords, case)
-            return found, 0, l
-
-        # initialize
-        found = False
-        j = -1
-
-        while not found:
-            l = self.readline()
-            if l == '':
-                break
-
-            for i, key in enumerate(keys):
-                found = line_has(l, key, case=case)
-                if found:
-                    j = i
-                    break
-
-        # sometimes the line contains information, as a
-        # default we return the line found
-        return found, j, l
 
     def _write(self, *args, **kwargs):
         """ Wrapper to default the write statements """

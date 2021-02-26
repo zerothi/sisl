@@ -433,7 +433,7 @@ def sisl_skip(app, what, name, obj, skip, options):
         if name in ['ArgumentParser', 'ArgumentParser_out',
                     'is_keys', 'key2case', 'keys2case',
                     'line_has_key', 'line_has_keys', 'readline',
-                    'step_either', 'step_to',
+                    'step_to',
                     'isDataset', 'isDimension', 'isGroup',
                     'isRoot', 'isVariable']:
             return True
