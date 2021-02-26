@@ -652,10 +652,9 @@ class Sile(BaseSile):
                 idx = 0
 
             # force return an index
-            if is_keys:
-                for i, key in enumerate(keys):
-                    if self.line_has_key(l, key, case):
-                        return found, l, i
+            for i, key in enumerate(keys):
+                if self.line_has_key(l, key, case):
+                    return found, l, i
             return found, l, idx
 
         # sometimes the line contains information, as a
