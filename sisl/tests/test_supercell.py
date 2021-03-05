@@ -57,6 +57,7 @@ class TestSuperCell:
         for s in range(setup.sc.n_s):
             assert setup.sc.sc_index(setup.sc.sc_off[s, :]) == s
         arng = np.arange(setup.sc.n_s)
+        np.random.seed(42)
         np.random.shuffle(arng)
         sc_off = setup.sc.sc_off[arng, :]
         assert np.all(setup.sc.sc_index(sc_off) == arng)

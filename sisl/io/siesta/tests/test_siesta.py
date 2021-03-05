@@ -75,6 +75,8 @@ def test_nc_multiple_checks(sisl_tmp, sisl_system, sort):
     H.construct([sisl_system.R, sisl_system.t])
     H.write(sile, sort=sort)
 
+    # fix seed
+    np.random.seed(42)
     shuffle = np.random.shuffle
     for io in range(len(H)):
         edges = H.edges(io) # get all edges

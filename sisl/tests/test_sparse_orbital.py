@@ -62,10 +62,13 @@ def test_sparse_orbital_append(n0, n1, n2, axis):
     idx1 = np.arange(s1.na)
     idx2 = np.arange(s2.na)
 
+    np.random.seed(42)
+    shuffle = np.random.shuffle
+
     # Test 4 permutations
     for _ in range(3):
-        np.random.shuffle(idx1)
-        np.random.shuffle(idx2)
+        shuffle(idx1)
+        shuffle(idx2)
         sout = s1.sub(idx1).append(s2.sub(idx2), axis)
         sout.finalize()
 
@@ -97,10 +100,13 @@ def test_sparse_orbital_append_scale(n0, n1, n2, axis):
     idx1 = np.arange(s1.na)
     idx2 = np.arange(s2.na)
 
+    np.random.seed(42)
+    shuffle = np.random.shuffle
+
     # Test 4 permutations
     for _ in range(3):
-        np.random.shuffle(idx1)
-        np.random.shuffle(idx2)
+        shuffle(idx1)
+        shuffle(idx2)
 
         s = sf.sub(np.concatenate([idx1, s1.na + idx2]))
         s.finalize()

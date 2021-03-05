@@ -8,6 +8,7 @@ pytestmark = [pytest.mark.linalg, pytest.mark.eig]
 
 
 def test_solve1():
+    np.random.seed(1285947159)
     a = np.random.rand(10, 10)
     b = np.random.rand(10, 10)
     xs = sl.solve(a, b)
@@ -16,6 +17,7 @@ def test_solve1():
 
 
 def test_solve2():
+    np.random.seed(1285947159)
     a = np.random.rand(10, 10)
     ac = a.copy()
     b = np.random.rand(10)
@@ -29,6 +31,7 @@ def test_solve2():
 
 
 def test_solve3():
+    np.random.seed(1285947159)
     a = np.random.rand(10, 2)
     b = np.random.rand(10)
     with pytest.raises(ValueError):
@@ -36,6 +39,7 @@ def test_solve3():
 
 
 def test_solve4():
+    np.random.seed(1285947159)
     a = np.random.rand(10, 10)
     b = np.random.rand(10)
     xs = sl.solve(a, b)
