@@ -427,7 +427,7 @@ setuptools_kwargs = {
     "python_requires": ">= " + min_version["python"],
     "install_requires": [
         "setuptools",
-        "cython",
+        "Cython",
         "numpy >= " + min_version["numpy"],
         "scipy",
         "netCDF4",
