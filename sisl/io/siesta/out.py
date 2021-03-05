@@ -975,7 +975,8 @@ class outSileSiesta(SileSiesta):
 
             # first line is the header
             header = (self.readline()
-                      .replace("Qatom", "q") # Qatom in 4.1, dQatom in master
+                      .replace("dQatom", "dq") # dQatom in master
+                      .replace(" Qatom", " dq") # Qatom in 4.1
                       .replace("Atom pop", "e") # not found in 4.1
                       .split())[2:-1]
 
@@ -1002,8 +1003,7 @@ class outSileSiesta(SileSiesta):
 
             # the precision is limited, so no need for double precision
             return pd.DataFrame(atom_charges, columns=header, dtype=np.float32,
-                                index=pd.RangeIndex(stop=len(atom_charges),
-                                                    name="atom", dtype=np.int32))
+                                index=pd.RangeIndex(stop=len(atom_charges), name="atom"))
 
         # define helper function for reading voronoi+hirshfeld charges
         def _mulliken_charges():
@@ -1156,11 +1156,11 @@ class outSileSiesta(SileSiesta):
             # regardless of user requests. This is an overhead... But probably not that big of a problem.
             if FOUND_SCF:
                 md_scf_charge = pd.concat([pd.concat(iscf,
-                                                     keys=pd.RangeIndex(1, len(iscf)+1, dtype=np.int32, name="iscf"))
+                                                     keys=pd.RangeIndex(1, len(iscf)+1, name="iscf"))
                                            for iscf in md_scf_charge],
-                                          keys=pd.RangeIndex(1, len(md_scf_charge)+1, dtype=np.int32, name="imd"))
+                                          keys=pd.RangeIndex(1, len(md_scf_charge)+1, name="imd"))
             if FOUND_MD:
-                md_charge = pd.concat(md_charge, keys=pd.RangeIndex(1, len(md_charge)+1, dtype=np.int32, name="imd"))
+                md_charge = pd.concat(md_charge, keys=pd.RangeIndex(1, len(md_charge)+1, name="imd"))
         else:
             if FOUND_SCF:
                 nan_array = _a.emptyf(md_scf_charge[0][0].shape)
