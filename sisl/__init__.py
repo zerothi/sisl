@@ -56,6 +56,9 @@ from .info import (
     cite
 )
 
+# import the common options used
+from ._common import *
+
 # Import the Selector
 from .selector import *
 
