@@ -427,6 +427,7 @@ setuptools_kwargs = {
     "python_requires": ">= " + min_version["python"],
     "install_requires": [
         "setuptools",
+        "cython",
         "numpy >= " + min_version["numpy"],
         "scipy",
         "netCDF4",
@@ -439,6 +440,7 @@ setuptools_kwargs = {
         # We currently use xarray for additional data-analysis
         # And tqdm for progressbars
         "analysis": [
+            # this also encompass pandas
             "xarray >= " + min_version["xarray"],
             "tqdm",
         ],
