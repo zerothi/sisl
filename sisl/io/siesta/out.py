@@ -881,7 +881,7 @@ class outSileSiesta(SileSiesta):
 
     @sile_fh_open()
     def read_charge(self, name, iscf=Opt.ANY, imd=Opt.ANY, key_scf="scf", as_dataframe=False):
-        r"""Read charges printed in the output
+        r"""Read charges calculated in SCF loop or MD loop (or both)
 
         Siesta enables many different modes of writing out charges.
 
@@ -905,13 +905,13 @@ class outSileSiesta(SileSiesta):
 
         Notes
         -----
-        Users may experience ``None`` returns where data is expected. Generally
-        this occurs if one force requests a specific SCF index or MD index
-        and the output file does not fulfil *A*, *B* or *C* cases in the
-        above table.
-        Generally.
-        Pass `Opt.ANY` as arguments to `imd` for cases *B* and *D*.
-        Pass `Opt.ANY` as arguments to `iscf` for cases *A* and *D*.
+        Errors will be raised if one requests information not present. I.e.
+        passing an integer or `Opt.ALL` for `iscf` will raise an error if
+        the SCF charges are not present. For `Opt.ANY` it will return
+        the most information, effectively SCF will be returned if present.
+
+        Currently Mulliken is not implemented, any help in reading this would be
+        very welcome.
 
         Parameters
         ----------
@@ -921,10 +921,14 @@ class outSileSiesta(SileSiesta):
             index (0-based) of the scf iteration you want the charges for.
             If the enum specifier `Opt.ANY` or `Opt.ALL` are used, then
             the returned quantities depend on what is present.
+            If ``None/Opt.NONE`` it will not return any SCF charges.
+            If both `imd` and `iscf` are ``None`` then only the final charges will be returned.
         imd: int or Opt, optional
             index (0-based) of the md step you want the charges for.
             If the enum specifier `Opt.ANY` or `Opt.ALL` are used, then
             the returned quantities depend on what is present.
+            If ``None/Opt.NONE`` it will not return any MD charges.
+            If both `imd` and `iscf` are ``None`` then only the final charges will be returned.
         key_scf : str, optional
             the key lookup for the scf iterations (a ":" will automatically be appended)
         as_dataframe: boolean, optional
@@ -936,10 +940,9 @@ class outSileSiesta(SileSiesta):
             if a specific MD+SCF index is requested (or special cases where output is
             not complete)
         list of numpy.ndarray
-            if one of `iscf` or `imd` is None and the output contains the other.
+            if one both `iscf` or `imd` is different from ``None/Opt.NONE``.
         pandas.DataFrame
-            if `as_dataframe` is requested. Here the returned data frames may be
-            empty; see Notes above. The dataframe will have multi-indices if multiple
+            if `as_dataframe` is requested. The dataframe will have multi-indices if multiple
             SCF or MD steps are requested.
         """
         if not hasattr(self, 'fh'):
