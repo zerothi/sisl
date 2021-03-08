@@ -287,7 +287,7 @@ class PdosPlot(Plot):
         self.PDOS = tbt_sile.DOS(sum=False).data.T
         self.E = tbt_sile.E
 
-        self.geometry = sisl.get_sile(root_fdf).read_geometry().sub(tbt_sile.a_dev)
+        self.geometry = tbt_sile.read_geometry().sub(tbt_sile.a_dev)
 
     @entry_point('hamiltonian')
     def _read_from_H(self, kgrid, kgrid_displ, Erange, nE, E0):
