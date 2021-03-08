@@ -13,5 +13,14 @@ Plotly
 
 The plotly backend.
 """
+# from ._presets import *
+# from ._templates import *
+# from ._user_customs import import_user_plots, import_user_presets, import_user_sessions, import_user_plugins
 
-from ._plotables import *
+from .plot import Plot, Animation, MultiplePlot, SubPlots
+from .plots import *
+from .session import Session
+from .sessions import *
+from .plotutils import load
+from ._plotables import register_plotable
+from ._plotly_plotables import register_plotly_plotable
