@@ -17,13 +17,12 @@ from functools import partial
 from pathlib import Path
 
 import dill
-import plotly
-import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 import sisl
 from sisl.messages import info, warn
 
+from .drawers._plot_drawers import Drawers
 from .configurable import (
     Configurable, ConfigurableMeta,
     vizplotly_settings, _populate_with_settings
@@ -206,6 +205,16 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
             default = "",
             params = {
                 "placeholder": "Write the path here..."
+            },
+            width = "s100% m50% l33%",
+            help = "Directory where the files with the simulations results are located.<br> This path has to be relative to the root fdf.",
+        ),
+
+        DropdownInput(
+            key="drawer", name="Drawer",
+            default="plotly",
+            params = {
+                "options": [{"label": drawer, "value": drawer} for drawer in ("plotly", "matplotlib")]
             },
             width = "s100% m50% l33%",
             help = "Directory where the files with the simulations results are located.<br> This path has to be relative to the root fdf.",
@@ -617,6 +626,8 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
             # After registering an entry point, we will just set the method
             setattr(cls, key, _populate_with_settings(val._method, [param["key"] for param in cls._get_class_params()[0]]))
 
+        cls._drawers = Drawers(cls)
+
         # from ._plotables import register_plotly_plotable
 
         # for param in cls._get_class_params()[0]:
@@ -631,8 +642,8 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
         # Inform whether the plot is in debug mode or not:
         self._debug = _debug
 
-        # Initialize the figure
-        self.figure = go.Figure()
+        # Initialize the drawer
+        self._drawers.setup(self, self.get_setting("drawer"))
 
         # Initialize shortcut management
         ShortCutable.__init__(self)
@@ -655,9 +666,6 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
             self.PROVIDED_H = True
             self.H = H
             self.setup_hamiltonian()
-
-        # Update its layout if a layout is provided
-        self.update_layout(**getattr(self.__class__, "_layout_defaults", {}), **layout)
 
         if presets is not None:
             if isinstance(presets, str):
@@ -725,10 +733,10 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
             - The attribute is in the figure object (self.figure)
             - The attribute is currently being shared with other plots (only possible if it's a childplot)
         """
-        if key in ["figure", "shared_attr"]:
+        if key in ["_drawers", "shared_attr"]:
             pass
-        elif hasattr(self.figure, key):
-            return getattr(self.figure, key)
+        elif hasattr(self._drawers, key):
+            return getattr(self._drawers, key)
         else:
             #If it is a childPlot, maybe the attribute is in the shared storage to save memory and time
             try:
@@ -780,10 +788,6 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
         self._files_to_follow = []
 
         call_method_if_present(self, "_before_read")
-
-        # Update the title of the plot if there is none
-        if not self.figure.layout["title"]:
-            self.update_layout(title = '{} {}'.format(getattr(self, "struct", ""), self.plot_name()))
 
         # We try to read from the different entry points available
         self._read_from_sources()
@@ -1124,17 +1128,10 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
         # Clear all the traces from the figure before drawing the new ones
         self.clear()
 
-        # This is used to know how many traces have been added, so that the user can clear only
-        # the traces written by the plot methods and keep traces that they have added later, if they want
-        self._starting_traces = len(self.data)
-
         self._set_data()
 
         if update_fig:
             self.get_figure()
-
-        # The explanation for this is above (in the definition of _starting_traces)
-        self._own_traces_slice = slice(self._starting_traces, len(self.data))
 
         return self
 
@@ -1189,7 +1186,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
             except Exception as e:
                 warn(e)
 
-        return self.figure.show(*args, **kwargs)
+        return self._drawers.show(*args, **kwargs)
 
     def _ipython_display_(self, return_figWidget=False, **kwargs):
         """ Handles all things needed to display the plot in a jupyter notebook
@@ -1205,28 +1202,37 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
             get the figure widget as a return so that you can act on it.
         """
 
-        if self._widgets["plotly"] and not isinstance(self, Animation):
+        def _try_drawer():
+            kwargs.pop("listen", None)
+            display_method = getattr(self._drawers, "_ipython_display_", None)
+            if display_method is not None:
+                return display_method(**kwargs)
+            self._drawers.show(**kwargs)
+
+        if not isinstance(self, Animation):
 
             from IPython.display import display
             import ipywidgets as widgets
 
-            f = go.FigureWidget(self.figure, )
+            try:
+                widget = self._drawers.get_ipywidget()
+            except:
+                return _try_drawer()
 
             if self._widgets["events"]:
                 # If ipyevents is available, show with shortcut support
-                self._ipython_display_with_shortcuts(f, **kwargs)
+                self._ipython_display_with_shortcuts(widget, **kwargs)
             else:
                 # Else, show without shortcut support
-                display(f)
+                display(widget)
 
-            self._listening_shortcut(fig_widget=f)
+            self._listening_shortcut(fig_widget=widget)
 
             if return_figWidget:
-                return f
+                return widget
 
         else:
-            kwargs.pop("listen", None)
-            self.figure._ipython_display_(**kwargs)
+            _try_drawer()
 
     def _ipython_display_with_shortcuts(self, fig_widget, **kwargs):
         """
@@ -1525,35 +1531,6 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
                 name=trace.customdata[0]["name"]
             )
         )
-
-        return self
-
-    def clear(self, plot_traces=True, added_traces=True, frames=True, layout=False):
-        """ Clears the plot canvas so that data can be reset
-
-        Parameters
-        --------
-        plot_traces: boolean, optional
-            whether traces added by the plot's code should be cleared.
-        added_traces: boolean, optional
-            whether traces added externally (by the user) should be cleared.
-        frames: boolean, optional
-            whether frames should also be deleted
-        """
-        own_slice = getattr(self, '_own_traces_slice', slice(0, 0))
-
-        if not plot_traces and added_traces:
-            self.figure.data = self.figure.data[own_slice]
-        elif not added_traces and plot_traces:
-            self.figure.data = [trace for i, trace in enumerate(self.data) if i < own_slice.start or i >= own_slice.stop]
-        else:
-            self.figure.data = []
-
-        if frames:
-            self.figure.frames = []
-
-        if layout:
-            self.figure.layout = {}
 
         return self
 

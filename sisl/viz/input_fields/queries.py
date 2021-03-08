@@ -211,7 +211,7 @@ class OrbitalQueries(QueriesInput):
 
         See also
         ---------
-        sisl.viz.plotly.input_fields.dropdown.SpinSelect
+        sisl.viz.input_fields.dropdown.SpinSelect
         sisl.physics.Spin
         """
         self.geometry = geometry

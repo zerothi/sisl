@@ -326,14 +326,6 @@ class BandsPlot(Plot):
         "get_figure": []
     }
 
-    _layout_defaults = {
-        'xaxis_title': 'K',
-        'xaxis_mirror': True,
-        'yaxis_mirror': True,
-        'xaxis_showgrid': True,
-        'yaxis_title': 'Energy [eV]'
-    }
-
     @classmethod
     def _default_animation(cls, wdir=None, frame_names=None, **kwargs):
         """
@@ -598,57 +590,21 @@ class BandsPlot(Plot):
                     raise ValueError(f"You requested spin texture ({spin[0]}), but spin moments have not been calculated. The spin class is {self.spin.kind}")
                 self.spin_texture = True
 
-        if not callable(add_band_trace_data):
-            add_band_trace_data = lambda *args, **kwargs: {}
-
         # Give the oportunity to draw before bands are drawn (used by Fatbands, for example)
         if callable(draw_before_bands):
             draw_before_bands()
 
         if self.spin_texture:
-
-            def scatter_additions(band, spin_index):
-
-                return {
-                    "mode": "markers",
-                    "marker": {"color": self.spin_moments.sel(band=band, axis=spin[0]).values, "size": bands_width, "showscale": True, "coloraxis": "coloraxis"},
-                    "showlegend": False
-                }
+            spin_moments = self.spin_moments.sel(band=band, axis=spin[0]).values
         else:
+            spin_moments = []
 
-            def scatter_additions(band, spin_index):
-
-                return {
-                    "mode": "lines",
-                    'line': {"color": [bands_color, spindown_color][spin_index], 'width': bands_width},
-                }
-
-        #Define the data of the plot as a list of dictionaries {x, y, 'type', 'name'}
-        self.add_traces(np.ravel([[{
-                        'type': 'scatter',
-                        'x': band.k.values,
-                        'y': (band).values,
-                        'mode': 'lines',
-                        'name': "{} spin {}".format(band.band.values, ["up", "down"][spin]) if self.spin.is_polarized else str(band.band.values),
-                        **scatter_additions(band.band.values, spin),
-                        'hoverinfo':'name',
-                        "hovertemplate": '%{y:.2f} eV',
-                        **add_band_trace_data(band, self)
-                        } for band in spin_bands] for spin_bands, spin in zip(filtered_bands.transpose('spin', 'band', 'k'), filtered_bands.spin.values)]).tolist())
+        self._drawers.draw_bands(filtered_bands, self.spin_texture, spin_moments, self.spin.is_polarized, bands_color, spindown_color, bands_width, spin, add_band_trace_data)
 
         self._draw_gaps()
 
     def _after_get_figure(self, Erange, spin, spin_texture_colorscale):
-        #Add the ticks
-        self.figure.layout.xaxis.tickvals = getattr(self.bands, "ticks", None)
-        self.figure.layout.xaxis.ticktext = getattr(self.bands, "ticklabels", None)
-        self.figure.layout.yaxis.range = Erange
-        self.figure.layout.xaxis.range = self.bands.k.values[[0, -1]]
-
-        # If we are showing spin textured bands, customize the colorbar
-        if self.spin_texture:
-            self.layout.coloraxis.colorbar = {"title": f"Spin texture ({spin[0]})"}
-            self.update_layout(coloraxis = {"cmin": -1, "cmax": 1, "colorscale": spin_texture_colorscale})
+        self._drawers.after_get_figure(self, Erange, spin, spin_texture_colorscale)
 
     def _calculate_gaps(self):
         """
@@ -806,18 +762,7 @@ class BandsPlot(Plot):
             ks = [np.ravel(E.k)[0] for E in Es]
             Es = [np.ravel(E)[0] for E in Es]
 
-        self.add_trace({
-            'type': 'scatter',
-            'mode': 'lines+markers+text',
-            'x': ks,
-            'y': Es,
-            'text': [f'Gap: {Es[1] - Es[0]:.3f} eV', ''],
-            'marker': {'color': color},
-            'line': {'color': color},
-            'name': name,
-            'textposition': 'top right',
-            **kwargs
-        })
+        self._drawers.draw_gap(ks, Es, color, name, **kwargs)
 
         return self
 

@@ -15,7 +15,7 @@ from .plots import *
 from .plot import Plot
 from .plotutils import get_plot_classes
 
-from .._plotables import register_plotable
+from ._plotables import register_plotable
 
 # -----------------------------------------------------
 #               Register plotable siles
