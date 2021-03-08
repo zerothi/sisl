@@ -2,8 +2,9 @@ import os
 import numpy as np
 
 from .sile import SileSiesta
-from ..sile import add_sile, sile_fh_open
+from ..sile import add_sile, sile_fh_open, SileError
 
+from sisl._common import Opt
 from sisl._internal import set_module
 import sisl._array as _a
 from sisl import Geometry, Atom, SuperCell
@@ -877,6 +878,420 @@ class outSileSiesta(SileSiesta):
         if as_dataframe:
             return MDstep_dataframe(scf)
         return scf
+
+    @sile_fh_open()
+    def read_charge(self, name, iscf=Opt.ANY, imd=Opt.ANY, key_scf="scf", as_dataframe=False):
+        r"""Read charges calculated in SCF loop or MD loop (or both)
+
+        Siesta enables many different modes of writing out charges.
+
+        NOTE: currently Mulliken charges are not implemented.
+
+        The below table shows a list of different cases that
+        may be encountered, the letters are referred to in the
+        return section to indicate what is returned.
+
+        +-----------+-----+-----+--------+-------+------------------+
+        | Case      | *A* | *B* | *C*    | *D*   | *E*              |
+        +-----------+-----+-----+--------+-------+------------------+
+        | Charge    | MD  | SCF | MD+SCF | Final | Orbital resolved |
+        +-----------+-----+-----+--------+-------+------------------+
+        | Voronoi   | +   | +   | +      | +     | -                |
+        +-----------+-----+-----+--------+-------+------------------+
+        | Hirshfeld | +   | +   | +      | +     | -                |
+        +-----------+-----+-----+--------+-------+------------------+
+        | Mulliken  | +   | +   | +      | +     | +                |
+        +-----------+-----+-----+--------+-------+------------------+
+
+        Notes
+        -----
+        Errors will be raised if one requests information not present. I.e.
+        passing an integer or `Opt.ALL` for `iscf` will raise an error if
+        the SCF charges are not present. For `Opt.ANY` it will return
+        the most information, effectively SCF will be returned if present.
+
+        Currently Mulliken is not implemented, any help in reading this would be
+        very welcome.
+
+        Parameters
+        ----------
+        name: {"voronoi", "hirshfeld"}
+            the name of the charges that you want to read
+        iscf: int or Opt, optional
+            index (0-based) of the scf iteration you want the charges for.
+            If the enum specifier `Opt.ANY` or `Opt.ALL` are used, then
+            the returned quantities depend on what is present.
+            If ``None/Opt.NONE`` it will not return any SCF charges.
+            If both `imd` and `iscf` are ``None`` then only the final charges will be returned.
+        imd: int or Opt, optional
+            index (0-based) of the md step you want the charges for.
+            If the enum specifier `Opt.ANY` or `Opt.ALL` are used, then
+            the returned quantities depend on what is present.
+            If ``None/Opt.NONE`` it will not return any MD charges.
+            If both `imd` and `iscf` are ``None`` then only the final charges will be returned.
+        key_scf : str, optional
+            the key lookup for the scf iterations (a ":" will automatically be appended)
+        as_dataframe: boolean, optional
+            whether charges should be returned as a pandas dataframe.
+
+        Returns
+        -------
+        numpy.ndarray
+            if a specific MD+SCF index is requested (or special cases where output is
+            not complete)
+        list of numpy.ndarray
+            if one both `iscf` or `imd` is different from ``None/Opt.NONE``.
+        pandas.DataFrame
+            if `as_dataframe` is requested. The dataframe will have multi-indices if multiple
+            SCF or MD steps are requested.
+        """
+        if not hasattr(self, 'fh'):
+            with self:
+                return read_charge(self, name, iscf, imd, key_scf, as_dataframe)
+        namel = name.lower()
+        if as_dataframe:
+            import pandas as pd
+            def _empty_charge():
+                # build a fake dataframe with no indices
+                return pd.DataFrame(index=pd.Index([], name="atom", dtype=np.int32),
+                                    dtype=np.float32)
+        else:
+            pd = None
+            def _empty_charge():
+                # return for single value with nan values
+                return _a.arrayf([[None]])
+
+        # define helper function for reading voronoi+hirshfeld charges
+        def _voronoi_hirshfeld_charges():
+            """ Read output from Voronoi/Hirshfeld charges """
+            nonlocal pd
+
+            # Expecting something like this:
+            # Voronoi Atomic Populations:
+            # Atom #     dQatom  Atom pop         S        Sx        Sy        Sz  Species
+            #      1   -0.02936   4.02936   0.00000  -0.00000   0.00000   0.00000  C
+
+            # Define the function that parses the charges
+            def _parse_charge(line):
+                atom_idx, *vals, symbol = line.split()
+                return list(map(float, vals))
+
+            # first line is the header
+            header = (self.readline()
+                      .replace("dQatom", "dq") # dQatom in master
+                      .replace(" Qatom", " dq") # Qatom in 4.1
+                      .replace("Atom pop", "e") # not found in 4.1
+                      .split())[2:-1]
+
+            # We have found the header, prepare a list to read the charges
+            atom_charges = []
+            line = ' '
+            while line != "":
+                try:
+                    line = self.readline()
+                    charge_vals = _parse_charge(line)
+                    atom_charges.append(charge_vals)
+                except:
+                    # We already have the charge values and we reached a line that can't be parsed,
+                    # this means we have reached the end.
+                    break
+            if pd is None:
+                # not as_dataframe
+                return _a.arrayf(atom_charges)
+
+            # determine how many columns we have
+            # this will remove atom indices and species, so only inside
+            ncols = len(atom_charges[0])
+            assert ncols == len(header)
+
+            # the precision is limited, so no need for double precision
+            return pd.DataFrame(atom_charges, columns=header, dtype=np.float32,
+                                index=pd.RangeIndex(stop=len(atom_charges), name="atom"))
+
+        # define helper function for reading voronoi+hirshfeld charges
+        def _mulliken_charges():
+            """ Read output from Mulliken charges """
+            raise NotImplementedError("Mulliken charges are not implemented currently")
+
+        # Check that a known charge has been requested
+        if namel == "voronoi":
+            _read_charge = _voronoi_hirshfeld_charges
+            charge_keys = ["Voronoi Atomic Populations",
+                           "Voronoi Net Atomic Populations"]
+        elif namel == "hirshfeld":
+            _read_charge = _voronoi_hirshfeld_charges
+            charge_keys = ["Hirshfeld Atomic Populations",
+                           "Hirshfeld Net Atomic Populations"]
+        elif namel == "mulliken":
+            _read_charge = _mulliken_charges
+            charge_keys = ["mulliken: Atomic and Orbital Populations"]
+        else:
+            raise ValueError(f"{self.__class__.__name__}.read_charge name argument should be one of {known_charges}, got {name}?")
+
+        # Ensure the key_scf matches exactly (prepend a space)
+        key_scf = f" {key_scf.strip()}:"
+
+        # Reading charges may be quite time consuming for large MD simulations.
+
+        # to see if we finished a MD read, we check for these keys
+        search_keys = [
+            # two keys can signal ending SCF
+            "SCF Convergence", "SCF_NOT_CONV",
+            "siesta: Final energy",
+            key_scf,
+            *charge_keys
+        ]
+        # adjust the below while loop to take into account any additional
+        # segments of search_keys
+        IDX_SCF_END = [0, 1]
+        IDX_FINAL = [2]
+        IDX_SCF = [3]
+        # the rest are charge keys
+        IDX_CHARGE = list(range(len(search_keys) - len(charge_keys),
+                                len(search_keys)))
+
+        # state to figure out where we are
+        state = PropertyDict()
+        state.INITIAL = 0
+        state.MD = 1
+        state.SCF = 2
+        state.CHARGE = 3
+        state.FINAL = 4
+
+        # a list of scf_charge
+        md_charge = []
+        md_scf_charge = []
+        scf_charge = []
+        final_charge = None
+
+        # signal that any first reads are INITIAL charges
+        current_state = state.INITIAL
+        charge = _empty_charge()
+        FOUND_SCF = False
+        FOUND_MD = False
+        FOUND_FINAL = False
+
+        # TODO whalrus
+        ret = self.step_to(search_keys, case=True, ret_index=True, reread=False)
+        while ret[0]:
+            if ret[2] in IDX_SCF_END:
+                # we finished all SCF iterations
+                current_state = state.MD
+                md_scf_charge.append(scf_charge)
+                scf_charge = []
+
+            elif ret[2] in IDX_SCF:
+                current_state = state.SCF
+                # collect scf-charges (possibly none)
+                scf_charge.append(charge)
+
+            elif ret[2] in IDX_FINAL:
+                current_state = state.FINAL
+                # don't do anything, this is the final charge construct
+                # regardless of where it comes from.
+
+            elif ret[2] in IDX_CHARGE:
+                FOUND_CHARGE = True
+                # also read charge
+                charge = _read_charge()
+
+                if state.INITIAL == current_state or state.CHARGE == current_state:
+                    # this signals scf charges
+                    FOUND_SCF = True
+                    # There *could* be 2 steps if we are mixing H,
+                    # this is because it first does
+                    # compute H -> compute DM -> compute H
+                    # in the first iteration, subsequently we only do
+                    # compute compute DM -> compute H
+                    # once we hit ret[2] in IDX_SCF we will append
+                    scf_charge = []
+
+                elif state.MD == current_state:
+                    FOUND_MD = True
+                    # we just finished an SCF cycle.
+                    # So any output between SCF ending and
+                    # a new one beginning *must* be that geometries
+                    # charge
+
+                    # Here `charge` may be NONE signalling
+                    # we don't have charge in MD steps.
+                    md_charge.append(charge)
+
+                    # reset charge
+                    charge = _empty_charge()
+
+                elif state.SCF == current_state:
+                    FOUND_SCF = True
+
+                elif state.FINAL == current_state:
+                    FOUND_FINAL = True
+                    # a special state writing out the charges after everything
+                    final_charge = charge
+                    charge = _empty_charge()
+                    scf_charge = []
+                    # we should be done and no other charge reads should be found!
+                    # should we just break?
+
+                current_state = state.CHARGE
+
+            # step to next entry
+            ret = self.step_to(search_keys, case=True, ret_index=True, reread=False)
+
+        if not any((FOUND_SCF, FOUND_MD, FOUND_FINAL)):
+            raise SileError(f"{str(self)} does not contain any charges ({name})")
+
+        # if the scf-charges are not stored, it means that the MD step finalization
+        # has not been read. So correct
+        if len(scf_charge) > 0:
+            assert False, "this test shouldn't reach here"
+            # we must not have read through the entire MD step
+            # so this has to be a running simulation
+            if charge is not None:
+                scf_charge.append(charge)
+                charge = _empty_charge()
+            md_scf_charge.append(scf_charge)
+
+        # otherwise there is some *parsing* error, so for now we use assert
+        assert len(scf_charge) == 0
+
+        if as_dataframe:
+            # convert data to proper data structures
+            # regardless of user requests. This is an overhead... But probably not that big of a problem.
+            if FOUND_SCF:
+                md_scf_charge = pd.concat([pd.concat(iscf,
+                                                     keys=pd.RangeIndex(1, len(iscf)+1, name="iscf"))
+                                           for iscf in md_scf_charge],
+                                          keys=pd.RangeIndex(1, len(md_scf_charge)+1, name="imd"))
+            if FOUND_MD:
+                md_charge = pd.concat(md_charge, keys=pd.RangeIndex(1, len(md_charge)+1, name="imd"))
+        else:
+            if FOUND_SCF:
+                nan_array = _a.emptyf(md_scf_charge[0][0].shape)
+                nan_array.fill(np.nan)
+                def get_md_scf_charge(scf_charge, iscf):
+                    try:
+                        return scf_charge[iscf]
+                    except:
+                        return nan_array
+            if FOUND_MD:
+                md_charge = np.stack(md_charge)
+
+        # option parsing is a bit *difficult* with flag enums
+        # So first figure out what is there, and handle this based
+        # on arguments
+        def _p(flag, found):
+            """ Helper routine to do the following:
+
+            Returns
+            -------
+            is_opt : bool
+                whether the flag is an `Opt`
+            flag :
+                corrected flag
+            """
+            if isinstance(flag, Opt):
+                # correct flag depending on what `found` is
+                # If the values have been found we
+                # change flag to None only if flag == NONE
+                # If the case has not been found, we
+                # change flag to None if ANY or NONE is in flags
+
+                if found:
+                    # flag is only NONE, then pass none
+                    if not (Opt.NONE ^ flag):
+                        flag = None
+                else: # not found
+                    # we convert flag to none
+                    # if ANY or NONE in flag
+                    if (Opt.NONE | Opt.ANY) & flag:
+                        flag = None
+
+            return isinstance(flag, Opt), flag
+
+        opt_imd, imd = _p(imd, FOUND_MD)
+        opt_iscf, iscf = _p(iscf, FOUND_SCF)
+
+        if not (FOUND_SCF or FOUND_MD):
+            # none of these are found
+            # we request that user does not request any input
+            if (opt_iscf or (not iscf is None)) or \
+               (opt_imd or (not imd is None)):
+                raise SileError(f"{str(self)} does not contain MD/SCF charges")
+
+        elif not FOUND_SCF:
+            if opt_iscf or (not iscf is None):
+                raise SileError(f"{str(self)} does not contain SCF charges")
+
+        elif not FOUND_MD:
+            if opt_imd or (not imd is None):
+                raise SileError(f"{str(self)} does not contain MD charges")
+
+        # if either are options they may hold
+        if opt_imd and opt_iscf:
+            if FOUND_SCF:
+                return md_scf_charge
+            elif FOUND_MD:
+                return md_charge
+            elif FOUND_FINAL:
+                # I think this will never be reached
+                # If neither are found they will be converted to
+                # None
+                return final_charge
+
+            raise SileError(f"{str(self)} unknown argument for 'imd' and 'iscf'")
+
+        elif opt_imd:
+            # flag requested imd
+            if not (imd & (Opt.ANY | Opt.ALL)):
+                # wrong flag
+                raise SileError(f"{str(self)} unknown argument for 'imd'")
+
+            if FOUND_SCF and iscf is not None:
+                # this should be handled, i.e. the scf should be taken out
+                if as_dataframe:
+                    return md_scf_charge.groupby(level=[0, 2]).nth(iscf)
+                return np.stack(tuple(get_md_scf_charge(x, iscf) for x in md_scf_charge))
+
+            elif FOUND_MD and iscf is None:
+                return md_charge
+            raise SileError(f"{str(self)} unknown argument for 'imd' and 'iscf', could not find SCF charges")
+
+        elif opt_iscf:
+            # flag requested imd
+            if not (iscf & (Opt.ANY | Opt.ALL)):
+                # wrong flag
+                raise SileError(f"{str(self)} unknown argument for 'iscf'")
+            if imd is None:
+                # correct imd
+                imd = -1
+            if as_dataframe:
+                md_scf_charge = md_scf_charge.groupby(level=0)
+                group = list(md_scf_charge.groups.keys())[imd]
+                return md_scf_charge.get_group(group).droplevel(0)
+            return np.stack(md_scf_charge[imd])
+
+        elif imd is None and iscf is None:
+            if FOUND_FINAL:
+                return final_charge
+            raise SileError(f"{str(self)} does not contain final charges")
+
+        elif imd is None:
+            # iscf is not None, so pass through as though explicitly passed
+            imd = -1
+
+        elif iscf is None:
+            # we return the last MD step and the requested scf iteration
+            if as_dataframe:
+                return md_charge.groupby(level=1).nth(imd)
+            return md_charge[imd]
+
+        if as_dataframe:
+            # first select imd
+            md_scf_charge = md_scf_charge.groupby(level=0)
+            group = list(md_scf_charge.groups.keys())[imd]
+            md_scf_charge = md_scf_charge.get_group(group).droplevel(0)
+            return md_scf_charge.groupby(level=1).nth(iscf)
+        return md_scf_charge[imd][iscf]
 
 
 add_sile('out', outSileSiesta, case=False, gzip=True)
