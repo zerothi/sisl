@@ -151,7 +151,7 @@ register(siesta.bandsSileSiesta, BandsPlot, 'bands_file', default=True)
 register(siesta.bandsSileSiesta, FatbandsPlot, 'bands_file')
 
 register(siesta.pdosSileSiesta, PdosPlot, 'pdos_file', default=True)
-register(tbtrans.tbtncSileTBtrans, PdosPlot, 'tbt_out', default=True)
+register(tbtrans.tbtncSileTBtrans, PdosPlot, 'tbt_nc', default=True)
 
 # -----------------------------------------------------
 #           Register plotable sisl objects
