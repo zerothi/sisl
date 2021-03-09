@@ -23,50 +23,50 @@ from ._plotables import register_plotable
 
 register = register_plotable
 
-for GridSile in get_siles(attrs=["read_grid"]):
-    register(GridSile, GridPlot, 'grid_file', default=True)
+# for GridSile in get_siles(attrs=["read_grid"]):
+#     register(GridSile, GridPlot, 'grid_file', default=True)
 
-for GeomSile in get_siles(attrs=["read_geometry"]):
-    register(GeomSile, GeometryPlot, 'geom_file', default=True)
-    register(GeomSile, BondLengthMap, 'geom_file')
+# for GeomSile in get_siles(attrs=["read_geometry"]):
+#     register(GeomSile, GeometryPlot, 'geom_file', default=True)
+#     register(GeomSile, BondLengthMap, 'geom_file')
 
 for HSile in get_siles(attrs=["read_hamiltonian"]):
-    register(HSile, WavefunctionPlot, 'H', default=HSile != siesta.fdfSileSiesta)
-    register(HSile, PdosPlot, "H")
+    # register(HSile, WavefunctionPlot, 'H', default=HSile != siesta.fdfSileSiesta)
+    # register(HSile, PdosPlot, "H")
     register(HSile, BandsPlot, "H")
-    register(HSile, FatbandsPlot, "H")
+    # register(HSile, FatbandsPlot, "H")
 
-for cls in get_plot_classes():
-    register(siesta.fdfSileSiesta, cls, "root_fdf", overwrite=True)
+# for cls in get_plot_classes():
+#     register(siesta.fdfSileSiesta, cls, "root_fdf", overwrite=True)
 
-register(siesta.outSileSiesta, ForcesPlot, 'out_file', default=True)
+# register(siesta.outSileSiesta, ForcesPlot, 'out_file', default=True)
 
 register(siesta.bandsSileSiesta, BandsPlot, 'bands_file', default=True)
-register(siesta.bandsSileSiesta, FatbandsPlot, 'bands_file')
+# register(siesta.bandsSileSiesta, FatbandsPlot, 'bands_file')
 
-register(siesta.pdosSileSiesta, PdosPlot, 'pdos_file', default=True)
-register(tbtrans.tbtncSileTBtrans, PdosPlot, 'tbt_nc', default=True)
+# register(siesta.pdosSileSiesta, PdosPlot, 'pdos_file', default=True)
+# register(tbtrans.tbtncSileTBtrans, PdosPlot, 'tbt_out', default=True)
 
 # -----------------------------------------------------
 #           Register plotable sisl objects
 # -----------------------------------------------------
 
 # Geometry
-register(sisl.Geometry, GeometryPlot, 'geometry', default=True)
-register(sisl.Geometry, BondLengthMap, 'geometry')
+# register(sisl.Geometry, GeometryPlot, 'geometry', default=True)
+# register(sisl.Geometry, BondLengthMap, 'geometry')
 
 # Grid
-register(sisl.Grid, GridPlot, 'grid', default=True)
+# register(sisl.Grid, GridPlot, 'grid', default=True)
 
 # Hamiltonian
-register(sisl.Hamiltonian, WavefunctionPlot, 'H', default=True)
-register(sisl.Hamiltonian, PdosPlot, "H")
+# register(sisl.Hamiltonian, WavefunctionPlot, 'H', default=True)
+# register(sisl.Hamiltonian, PdosPlot, "H")
 register(sisl.Hamiltonian, BandsPlot, "H")
-register(sisl.Hamiltonian, FatbandsPlot, "H")
+# register(sisl.Hamiltonian, FatbandsPlot, "H")
 
 # Band structure
 register(sisl.BandStructure, BandsPlot, "band_structure", default=True)
-register(sisl.BandStructure, FatbandsPlot, "band_structure")
+# register(sisl.BandStructure, FatbandsPlot, "band_structure")
 
 # Eigenstate
-register(sisl.EigenstateElectron, WavefunctionPlot, 'eigenstate', default=True)
+# register(sisl.EigenstateElectron, WavefunctionPlot, 'eigenstate', default=True)

@@ -10,8 +10,8 @@ class MatplotlibBandsDrawer(MatplotlibDrawer):
         'ylabel': 'Energy [eV]'
     }
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
+    def _init_ax(self):
+        super()._init_ax()
         self.ax.grid(axis="x")
     
     def draw_bands(self, filtered_bands, spin_texture, spin_moments, spin_polarized, bands_color, spindown_color, bands_width, spin, add_band_trace_data):
@@ -84,9 +84,5 @@ class MatplotlibBandsDrawer(MatplotlibDrawer):
         # if plot.spin_texture:
         #     self.layout.coloraxis.colorbar = {"title": f"Spin texture ({spin[0]})"}
         #     self.update_layout(coloraxis = {"cmin": -1, "cmax": 1, "colorscale": spin_texture_colorscale})
-        pass
-
-    # def get_ipywidget(self):
-    #     return self.figure
 
 BandsPlot._drawers.register("matplotlib", MatplotlibBandsDrawer)

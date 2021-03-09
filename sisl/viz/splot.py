@@ -9,8 +9,6 @@ import sys
 import argparse
 import ast
 
-import plotly
-
 import sisl
 from sisl.utils import cmd
 
@@ -33,9 +31,9 @@ def general_arguments(parser):
     parser.add_argument('--presets', '-p', type=str, nargs="*", required=False,
                     help=f'The names of the stored presets that you want to use for the settings. Current available presets: {get_avail_presets()}')
 
-    parser.add_argument('--template', '-t', type=str, required=False,
-                        help=f"""The plotly layout template that you want to use. It is equivalent as passing a template to --layout. 
-                        Available templates: {list(plotly.io.templates.keys())}. Default: {plotly.io.templates.default}""")
+    # parser.add_argument('--template', '-t', type=str, required=False,
+    #                     help=f"""The plotly layout template that you want to use. It is equivalent as passing a template to --layout. 
+    #                     Available templates: {list(plotly.io.templates.keys())}. Default: {plotly.io.templates.default}""")
 
     parser.add_argument('--layout', '-l', type=ast.literal_eval, required=False,
                         help=f'A dict containing all the layout attributes that you want to pass to the plot.')
