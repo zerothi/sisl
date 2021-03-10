@@ -163,6 +163,39 @@ except ImportError:
 __all__ = ["BrillouinZone", "MonkhorstPack", "BandStructure"]
 
 
+class BrillouinZoneDispatcher(ClassDispatcher):
+    r""" Loop over all k-points by applying `parent` methods for all k.
+
+    This allows potential for running and collecting various computationally
+    heavy methods from a single point on all k-points.
+
+    The `apply` method will *dispatch* the parent methods through all k-points
+    and passing `k` as arguments to the parent methods in a straight-forward manner.
+
+    For instance to iterate over all eigenvalues of a Hamiltonian
+
+    >>> H = Hamiltonian(...)
+    >>> bz = BrillouinZone(H)
+    >>> for ik, eigh in enumerate(bz.apply.eigh()):
+    ...    # do something with eigh which corresponds to bz.k[ik]
+
+    By default the `apply` method exposes a set of dispatch methods:
+
+    - `apply.iter`, the default iterator module
+    - `apply.average` reduced result by averaging (using `BrillouinZone.weight` as the weight per k-point.
+    - `apply.sum` reduced result without weighing
+    - `apply.array` return a single array with all values; has `len` equal to number of k-points
+    - `apply.none`, specialized method that is mainly useful when wrapping methods
+    - `apply.list` same as `apply.array` but using Python list as return value
+    - `apply.oplist` using `sisl.oplist` allows greater flexibility for mathematical operations element wise
+    - `apply.datarray` if `xarray` is available one can retrieve an `xarray.DataArray` instance
+
+    Please see :ref:`_physics.brillouinzone` for further examples.
+    """
+    pass
+
+
+
 @set_module("sisl.physics")
 class BrillouinZone:
     """ A class to construct Brillouin zone related quantities
@@ -213,41 +246,7 @@ class BrillouinZone:
             warnings.filterwarnings('ignore')
             self.asarray()
 
-    # Add dispatcher methods
-    apply = ClassDispatcher("apply", obj_getattr=lambda obj, key: getattr(obj.parent, key))
-    r""" Loop over all k-points by applying `parent` methods for all k.
-
-    This allows great potential for running and collecting various computationally
-    heavy methods from a single point on all k-points.
-
-    The `apply` method will *dispatch* the parent methods through all k-points
-    and passing `k` as arguments to the parent methods in a straight-forward manner.
-
-    For instance to iterate over all eigenvalues of a Hamiltonian
-
-    >>> H = Hamiltonian(...)
-    >>> bz = BrillouinZone(H)
-    >>> for ik, eigh in enumerate(bz.apply.eigh()):
-    ...    # do something with eigh which corresponds to bz.k[ik]
-
-    By default the `apply` method exposes a set of dispatch methods:
-
-    - `apply.iter`, the default iterator module
-    - `apply.average` reduced result by averaging (using `BrillouinZone.weight`
-       as the weight per k-point.
-    - `apply.sum` reduced result without weighing
-    - `apply.array` return a single array with all values; has `len` equal to
-       number of k-points
-    - `apply.none`, specialized method that is mainly useful when wrapping
-       methods
-    - `apply.list` same as `apply.array` but using Python list as return value
-    - `apply.oplist` using `sisl.oplist` allows greater flexibility for mathematical
-       operations element wise
-    - `apply.datarray` if `xarray` is available one can retrieve an `xarray.DataArray`
-       instance
-
-    Please see `sisl.physics.brillouinzone` for further examples.
-    """
+    apply = BrillouinZoneDispatcher("apply", obj_getattr=lambda obj, key: getattr(obj.parent, key))
 
     def set_parent(self, parent):
         """ Update the parent associated to this object

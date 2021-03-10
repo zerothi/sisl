@@ -74,7 +74,7 @@ class AbstractDispatch(metaclass=ABCMeta):
         return attr
 
 
-class AbstractDispatcher:
+class AbstractDispatcher(metaclass=ABCMeta):
     """ A container for dispatchers
 
     This is an abstract class holding the dispatch classes (`AbstractDispatch`)
@@ -122,6 +122,10 @@ class AbstractDispatcher:
             dispatch class to be registered
         """
         self.register(key, dispatch)
+
+    def __dir__(self):
+        """ Return instances belonging to this object """
+        return list(self._dispatchs.keys()) + ["renew", "register"]
 
     def register(self, key, dispatch, default=False, overwrite=False):
         """ Register a dispatch class to this container

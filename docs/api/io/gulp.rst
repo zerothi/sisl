@@ -18,5 +18,4 @@ GULP
 
    SileGULP
    SileCDFGULP
-   SileBinGULP
 

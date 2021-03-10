@@ -73,9 +73,9 @@ be compiled in a ballistic phonon transport mode, named ``PHtrans``.
    :toctree: generated/
    :hidden:
 
-   SileSiesta
-   SileCDFSiesta
-   SileBinSiesta
+   ~sisl.io.siesta.SileSiesta
+   ~sisl.io.siesta.SileCDFSiesta
+   ~sisl.io.siesta.SileBinSiesta
    SileTBtrans
    SileCDFTBtrans
    SileBinTBtrans
