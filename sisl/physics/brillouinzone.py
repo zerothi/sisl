@@ -151,6 +151,7 @@ import sisl._array as _a
 from sisl.messages import info, SislError, tqdm_eta, deprecate_method, deprecate
 from sisl.supercell import SuperCell
 from sisl.grid import Grid
+from sisl._dispatcher import ClassDispatcher
 
 try:
     import xarray
@@ -212,41 +213,41 @@ class BrillouinZone:
             warnings.filterwarnings('ignore')
             self.asarray()
 
-    def apply(self, **attrs):
-        r""" Loop over all k-points by applying `parent` methods for all k.
+    # Add dispatcher methods
+    apply = ClassDispatcher("apply", obj_getattr=lambda obj, key: getattr(obj.parent, key))
+    r""" Loop over all k-points by applying `parent` methods for all k.
 
-        This allows great potential for running and collecting various computationally
-        heavy methods from a single point on all k-points.
+    This allows great potential for running and collecting various computationally
+    heavy methods from a single point on all k-points.
 
-        The `apply` method will *dispatch* the parent methods through all k-points
-        and passing `k` as arguments to the parent methods in a straight-forward manner.
+    The `apply` method will *dispatch* the parent methods through all k-points
+    and passing `k` as arguments to the parent methods in a straight-forward manner.
 
-        For instance to iterate over all eigenvalues of a Hamiltonian
+    For instance to iterate over all eigenvalues of a Hamiltonian
 
-        >>> H = Hamiltonian(...)
-        >>> bz = BrillouinZone(H)
-        >>> for ik, eigh in enumerate(bz.apply.eigh()):
-        ...    # do something with eigh which corresponds to bz.k[ik]
+    >>> H = Hamiltonian(...)
+    >>> bz = BrillouinZone(H)
+    >>> for ik, eigh in enumerate(bz.apply.eigh()):
+    ...    # do something with eigh which corresponds to bz.k[ik]
 
-        By default the `apply` method exposes a set of dispatch methods:
+    By default the `apply` method exposes a set of dispatch methods:
 
-        - `apply.iter`, the default iterator module
-        - `apply.average` reduced result by averaging (using `BrillouinZone.weight`
-           as the weight per k-point.
-        - `apply.sum` reduced result without weighing
-        - `apply.array` return a single array with all values; has `len` equal to
-           number of k-points
-        - `apply.none`, specialized method that is mainly useful when wrapping
-           methods
-        - `apply.list` same as `apply.array` but using Python list as return value
-        - `apply.oplist` using `sisl.oplist` allows greater flexibility for mathematical
-           operations element wise
-        - `apply.datarray` if `xarray` is available one can retrieve an `xarray.DataArray`
-           instance
+    - `apply.iter`, the default iterator module
+    - `apply.average` reduced result by averaging (using `BrillouinZone.weight`
+       as the weight per k-point.
+    - `apply.sum` reduced result without weighing
+    - `apply.array` return a single array with all values; has `len` equal to
+       number of k-points
+    - `apply.none`, specialized method that is mainly useful when wrapping
+       methods
+    - `apply.list` same as `apply.array` but using Python list as return value
+    - `apply.oplist` using `sisl.oplist` allows greater flexibility for mathematical
+       operations element wise
+    - `apply.datarray` if `xarray` is available one can retrieve an `xarray.DataArray`
+       instance
 
-        Please see `sisl.physics.brillouinzone` for further examples.
-        """
-        pass
+    Please see `sisl.physics.brillouinzone` for further examples.
+    """
 
     def set_parent(self, parent):
         """ Update the parent associated to this object
@@ -565,8 +566,8 @@ class BrillouinZone:
 
         Notes
         -----
-        Please use ``self.apply.array`` instead. This method will be deprecated
-        >0.9.9.
+        This method will be deprecated >0.9.9.
+        Please use ``self.apply.array`` instead.
 
         All invocations of sub-methods are added these keyword-only arguments:
 
@@ -647,8 +648,8 @@ class BrillouinZone:
 
         Notes
         -----
-        Please use ``self.apply.none`` instead. This method will be deprecated
-        >0.9.9.
+        This method will be deprecated >0.9.9.
+        Please use ``self.apply.none`` instead.
 
         All invocations of sub-methods are added these keyword-only arguments:
 
@@ -696,8 +697,8 @@ class BrillouinZone:
 
             Notes
             -----
-            Please use ``self.apply.dataarray`` instead. This method will be deprecated
-            >0.9.9.
+            This method will be deprecated >0.9.9.
+            Please use ``self.apply.dataarray`` instead.
 
             If you wrap the sub-method to return multiple data-sets, you should use `asdataset`
             instead which returns a combination of data-arrays (so-called `xarray.Dataset`).
@@ -793,8 +794,8 @@ class BrillouinZone:
 
         Notes
         -----
-        Please use ``self.apply.list`` instead. This method will be deprecated
-        >0.9.9.
+        This method will be deprecated >0.9.9.
+        Please use ``self.apply.list`` instead.
 
         All invocations of sub-methods are added these keyword-only arguments:
 
@@ -853,8 +854,8 @@ class BrillouinZone:
 
         Notes
         -----
-        Please use ``self.apply.iter`` instead. This method will be deprecated
-        >0.9.9.
+        This method will be deprecated >0.9.9.
+        Please use ``self.apply.iter`` instead.
 
         All invocations of sub-methods are added these keyword-only arguments:
 
@@ -908,8 +909,8 @@ class BrillouinZone:
 
         Notes
         -----
-        Please use ``self.apply.average`` instead. This method will be deprecated
-        >0.9.9.
+        This method will be deprecated >0.9.9.
+        Please use ``self.apply.average`` instead.
 
         All invocations of sub-methods are added these keyword-only arguments:
 
@@ -980,8 +981,8 @@ class BrillouinZone:
 
         Notes
         -----
-        Please use ``self.apply.sum`` instead. This method will be deprecated
-        >0.9.9.
+        This method will be deprecated >0.9.9.
+        Please use ``self.apply.sum`` instead.
 
         All invocations of sub-methods are added these keyword-only arguments:
 

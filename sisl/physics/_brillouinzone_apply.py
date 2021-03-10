@@ -13,7 +13,7 @@ try:
 except ImportError:
     _has_xarray = False
 
-from sisl._dispatcher import ClassDispatcher, AbstractDispatch
+from sisl._dispatcher import AbstractDispatch
 from sisl._environ import get_environ_variable
 from sisl._internal import set_module
 from sisl.utils.misc import allow_kwargs
@@ -409,13 +409,6 @@ class XArrayApply(NDArrayApply):
 
         return func
 
-# Add dispatcher methods
-# Since apply is a built-in, we cannot do "BrillouinZone.apply = ..."
-setattr(BrillouinZone, "apply",
-        ClassDispatcher("apply",
-                        obj_getattr=lambda obj, key: getattr(obj.parent, key)
-        )
-)
 # Register dispatched functions
 BrillouinZone.apply.register("iter", IteratorApply, default=True)
 BrillouinZone.apply.register("average", AverageApply)
