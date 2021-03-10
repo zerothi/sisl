@@ -57,7 +57,7 @@ A set of classes are utility classes that are used throughout the `sisl` code
 and using them will be encouraged in combination with sisl.
 
 In particular `oplist` is useful when calculating averages in Brillouin zones (see
-:ref:`physics.brillouin`).
+:ref:`physics.brillouinzone`).
 
 .. autosummary::
    :toctree: generated/

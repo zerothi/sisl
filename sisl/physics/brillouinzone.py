@@ -190,7 +190,7 @@ class BrillouinZoneDispatcher(ClassDispatcher):
     - `apply.oplist` using `sisl.oplist` allows greater flexibility for mathematical operations element wise
     - `apply.datarray` if `xarray` is available one can retrieve an `xarray.DataArray` instance
 
-    Please see :ref:`_physics.brillouinzone` for further examples.
+    Please see :ref:`physics.brillouinzone` for further examples.
     """
     pass
 
