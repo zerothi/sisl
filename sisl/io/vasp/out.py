@@ -52,12 +52,32 @@ class outSileVASP(SileVASP):
 
     @sile_fh_open()
     def read_energy(self, all=False):
-        """ Reads the energy specification from the  and energy(sigma->0) in units of eV
+        """ Reads the energy specification from OUTCAR and returns energy dictionary in units of eV
+
+        Notes
+        -----
+        The name convention in the dictionary is as follows:
+            OUTCAR string           Key
+
+            alpha Z        PSCENC = Z
+            Ewald energy   TEWEN  = Ewald
+            -Hartree energ DENC   = hartree
+            -exchange      EXHF   = xcHF
+            -V(xc)+E(xc)   XCENC  = xc
+            PAW double counting   = paw1 paw2
+            entropy T*S    EENTRO = entropy
+            eigenvalues    EBANDS = band
+            atomic energy  EATOM  = ion
+            Solvation  Ediel_sol  = solvation
+
+            free energy    TOTEN  = free
+            energy without entropy= total
+            energy(sigma->0)      = sigma0
 
         Parameters
         ----------
         all: bool, optional
-            return a list of energies from each step
+            return a list of energy dictionaries from each step
 
         Returns
         -------
