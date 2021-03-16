@@ -974,6 +974,10 @@ class outSileSiesta(SileSiesta):
             # Define the function that parses the charges
             def _parse_charge(line):
                 atom_idx, *vals, symbol = line.split()
+                # assert that this is a proper line
+                # this should catch cases where the following line of charge output
+                # is still parseable
+                atom_idx = int(atom_idx)
                 return list(map(float, vals))
 
             # first line is the header
