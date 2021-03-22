@@ -7,7 +7,7 @@ from sisl.io.siesta.out import *
 import numpy as np
 
 
-pytestmark = [pytest.mark.io, pytest.mark.siesta, pytest.mark.only]
+pytestmark = [pytest.mark.io, pytest.mark.siesta]
 _dir = osp.join('sisl', 'io', 'siesta', 'outs')
 
 # tests here tests charge reads for output
