@@ -508,3 +508,25 @@ def test_1_graphene_all_warn_atom(sisl_files):
     tbt = sisl.get_sile(sisl_files(_dir, '1_graphene_all.TBT.nc'))
     with pytest.warns(sisl.SislWarning):
         tbt.a2p(1)
+
+
+def test_1_graphene_all_sparse_data_isc_request(sisl_files):
+    tbt = sisl.get_sile(sisl_files(_dir, '1_graphene_all.TBT.nc'))
+
+    # get supercell with isc
+    sc = tbt.read_supercell()
+
+    # request the full matrix
+    for elec in [0, 1]:
+        J_all = tbt.orbital_current(elec, 204)
+        J_all.eliminate_zeros()
+
+        # Ensure we actually have something
+        assert J_all.nnz > 0
+
+        # partial summed isc
+        # Test that the full matrix and individual access is the same
+        J_sum = sum(tbt.orbital_current(elec, 204, isc=isc)
+                    for isc in sc.sc_off)
+        assert J_sum.nnz == J_all.nnz
+        assert (J_sum - J_all).nnz == 0

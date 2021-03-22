@@ -195,7 +195,6 @@ class BrillouinZoneDispatcher(ClassDispatcher):
     pass
 
 
-
 @set_module("sisl.physics")
 class BrillouinZone:
     """ A class to construct Brillouin zone related quantities

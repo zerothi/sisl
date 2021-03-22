@@ -3,10 +3,11 @@ try:
     from StringIO import StringIO
 except Exception:
     from io import StringIO
+import itertools
 
 import numpy as np
 from numpy import in1d, sqrt
-import itertools
+from numpy import repeat, unique
 
 # The sparse matrix for the orbital/bond currents
 from scipy.sparse import csr_matrix
@@ -370,7 +371,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                 NORM = float(len(self.o2p(orbitals)))
             elif norm == 'atom':
                 geom = self.geometry
-                a = np.unique(geom.o2a(orbitals))
+                a = unique(geom.o2a(orbitals))
                 # Now sum the orbitals per atom
                 NORM = float(_a.sumi(geom.firsto[a+1] - geom.firsto[a]))
             return NORM
@@ -981,7 +982,8 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         geom = self.geometry
 
         # These are the row-pointers...
-        rptr = _ncol_to_indptr(self._value('n_col'))
+        ncol = self._value('n_col')
+        rptr = _ncol_to_indptr(ncol)
 
         # Get column indices
         col = self._value('list_col') - 1
@@ -1026,26 +1028,27 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             for i, (ix, iy, iz) in enumerate(itertools.product(x, y, z)):
                 all_col[i] = geom.sc_index([ix, iy, iz])
 
-            # If the user requests a single supercell index, we will
-            # return a square matrix
-            if len(all_col) == 1:
-                mat_size[1] = mat_size[0]
-
             # Transfer all_col to the range
             all_col = array_arange(all_col * geom.no,
                                    n=_a.fulli(len(all_col), geom.no))
 
+            # get both row and column indices
+            row_nonzero = (ncol > 0).nonzero()[0]
+            # Now we have [0 0 0 0 1 1 1 1 2 2 ... no-1 no-1]
+            row = repeat(row_nonzero, ncol[row_nonzero])
+
             # Create a logical array for sub-indexing
-            all_col = in1d(col, _a.arrayi(all_col))
+            all_col = in1d(col, all_col)
+            row = row[all_col]
             col = col[all_col]
 
-            # recreate row-pointer
-            cnz = np.count_nonzero
-            def func(ptr1, ptr2):
-                return cnz(all_col[ptr1:ptr2])
-            tmp = _a.fromiteri(map(func, rptr[:geom.no], rptr[1:]))
-            rptr = _ncol_to_indptr(tmp)
-            del tmp
+            # now calculate new subset rows
+            row, nrow = unique(row, return_counts=True)
+            ncol = _a.zerosi(geom.no)
+            ncol[row] = nrow
+
+            rptr = _ncol_to_indptr(ncol)
+            del ncol, row, nrow
 
         if all_col is None:
             D = self._value_E(data, elec, kavg, E)
@@ -2079,9 +2082,9 @@ class tbtncSileTBtrans(_devncSileTBtrans):
             # However, we still do not know whether TRS is
             # applied.
             kpt = self.k
-            nA = len(np.unique(kpt[:, 0]))
-            nB = len(np.unique(kpt[:, 1]))
-            nC = len(np.unique(kpt[:, 2]))
+            nA = len(unique(kpt[:, 0]))
+            nB = len(unique(kpt[:, 1]))
+            nC = len(unique(kpt[:, 2]))
             prnt(("  - number of kpoints: {} <- "
                    "[ A = {} , B = {} , C = {} ] (time-reversal unknown)").format(self.nk, nA, nB, nC))
         prnt("  - energy range:")
@@ -2219,7 +2222,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                     else:
                         E.append(range(ns._tbt.Eindex(begin), ns._tbt.Eindex(end)+1))
                 # Issuing unique also sorts the entries
-                ns._Erng = np.unique(_a.arrayi(E).flatten())
+                ns._Erng = unique(_a.arrayi(E).flatten())
         p.add_argument('--energy', '-E', action=ERange,
                        help="""Denote the sub-section of energies that are extracted: "-1:0,1:2" [eV]
 
