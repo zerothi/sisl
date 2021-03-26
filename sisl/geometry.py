@@ -326,7 +326,7 @@ class Geometry(SuperCellChild):
 
         - boolean array -> nonzero()[0]
         - name -> self._names[name]
-        - `Atom` -> (self.atoms.index(atom) == self.atoms.specie).nonzero()[0]
+        - `Atom` -> self.atoms.index(atom)
         - range/list/ndarray -> ndarray
         """
         if atoms is None:
@@ -345,7 +345,7 @@ class Geometry(SuperCellChild):
 
     @_sanitize_atoms.register(Atom)
     def _(self, atoms):
-        return (self.atoms.specie == self.atoms.index(atoms)).nonzero()[0]
+        return self.atoms.index(atoms)
 
     @_sanitize_atoms.register(AtomCategory)
     @_sanitize_atoms.register(GenericCategory)
@@ -365,21 +365,32 @@ class Geometry(SuperCellChild):
         # First do categorization
         return self._sanitize_atoms(AtomCategory.kw(**atoms))
 
-    def _sanitize_orbs(self, orbital):
+    @singledispatchmethod
+    def _sanitize_orbs(self, orbitals):
         """ Converts an `orbital` to index under given inputs
 
         `orbital` may be one of the following:
 
         - boolean array -> nonzero()[0]
+        - dict -> {atom: sub_orbital}
         """
-        if isinstance(orbital, ndarray) and orbital.dtype == bool_:
-            return np.flatnonzero(orbital)
-        # We shouldn't .ravel() since the calling routine may expect
-        # a 0D vector.
-        orbital = _a.asarrayi(orbital)
-        if orbital.ndim > 1:
-            raise ValueError('Indexing geometries with a multi-dimensional array is not supported, ensure 0D or 1D arrays.')
-        return orbital
+        if orbitals is None:
+            return _a.arangei(self.no)
+        return np.asarray(orbitals)
+
+    @_sanitize_orbs.register(ndarray)
+    def _(self, orbitals):
+        if orbitals.dtype == bool_:
+            return np.flatnonzero(orbitals)
+        return np.asarray(orbitals)
+
+    @_sanitize_orbs.register(dict)
+    def _(self, orbitals):
+        """ A dict has atoms as keys """
+        def conv(atom, orbs):
+            atom = self._sanitize_atoms(atom)
+            return np.add.outer(self.firsto[atom], orbs).ravel()
+        return np.concatenate(tuple(conv(atom, orbs) for atom, orbs in orbitals.items()))
 
     def as_primary(self, na_primary, ret_super=False):
         """ Try and reduce the geometry to the primary unit-cell comprising `na_primary` atoms

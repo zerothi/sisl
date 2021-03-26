@@ -110,6 +110,9 @@ class Orbital:
         self._q0 = float(q0)
         self._tag = tag
 
+    def __hash__(self):
+        return hash((hash(self._R), hash(self._q0), hash(self._tag)))
+
     @property
     def R(self):
         """ Maxmimum radius of orbital """
@@ -374,6 +377,10 @@ class SphericalOrbital(Orbital):
         # Note that the maximum range of the orbital will be the
         # maximum value in r.
         super().__init__(self.R, q0, tag)
+
+    def __hash__(self):
+        return hash((super(Orbital, self).__hash__(),
+                     hash(self._l), hash(self.f)))
 
     @property
     def l(self):
@@ -888,6 +895,11 @@ class AtomicOrbital(Orbital):
             self._orb = Orbital(self.R)
 
         self._R = self._orb.R
+
+    def __hash__(self):
+        return hash((super(Orbital, self).__hash__(),
+                     hash(self._l), hash(self._n), hash(self._m),
+                     hash(self._zeta), hash(self._P), hash(self._orb)))
 
     @property
     def n(self):

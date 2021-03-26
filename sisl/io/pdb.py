@@ -238,7 +238,7 @@ class pdbSile(Sile):
         atoms = Atoms(Atom(Z[0], tag=tags[0]), na=len(Z))
         for i, a in enumerate(map(Atom, Z, tags)):
             try:
-                s = atoms.index(a)
+                s = atoms.specie_index(a)
             except:
                 s = len(atoms.atom)
                 atoms._atom.append(a)

@@ -1475,3 +1475,15 @@ def test_geometry_sanitize_atom():
                        bi._sanitize_atoms(list_01))
     assert np.allclose(bi._sanitize_atoms(ndarray_01),
                        bi._sanitize_atoms(list_01))
+
+
+def test_geometry_sanitize_orbs():
+    bot = Atom(6, [1, 2, 3])
+    top = [Atom(5, [1, 2]), Atom(7, [1, 2])]
+
+    bi = sisl_geom.bilayer(bottom_atoms=bot, top_atoms=top).tile(2, 0).repeat(2, 1)
+
+    C_idx = (bi.atoms.Z == 6).nonzero()[0]
+    assert np.allclose(bi._sanitize_orbs({bot: [0]}), bi.firsto[C_idx])
+    assert np.allclose(bi._sanitize_orbs({bot: 1}), bi.firsto[C_idx] + 1)
+    assert np.allclose(bi._sanitize_orbs({bot: [1, 2]}), np.add.outer(bi.firsto[C_idx], [1, 2]).ravel())

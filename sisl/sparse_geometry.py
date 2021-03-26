@@ -1646,7 +1646,7 @@ class SparseOrbital(_SparseGeometry):
 
         # Get the atom object we wish to reduce
         old_atom = geom.atoms[atoms[0]]
-        old_atom_specie = geom.atoms.index(old_atom)
+        old_atom_specie = geom.atoms.specie_index(old_atom)
         old_atom_count = (geom.atoms.specie == old_atom_specie).sum()
 
         # Retrieve index of orbital
@@ -1675,7 +1675,7 @@ class SparseOrbital(_SparseGeometry):
         else:
             # we have to add the new one (in case it does not exist)
             try:
-                new_atom_specie = geom.atoms.index(new_atom)
+                new_atom_specie = geom.atoms.specie_index(new_atom)
             except:
                 new_atom_specie = geom.atoms.nspecie
                 # the above checks that it is indeed a new atom

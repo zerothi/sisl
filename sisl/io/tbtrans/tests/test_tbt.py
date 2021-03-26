@@ -530,3 +530,13 @@ def test_1_graphene_all_sparse_data_isc_request(sisl_files):
                     for isc in sc.sc_off)
         assert J_sum.nnz == J_all.nnz
         assert (J_sum - J_all).nnz == 0
+
+
+def test_1_graphene_all_sparse_data_orbitals(sisl_files):
+    tbt = sisl.get_sile(sisl_files(_dir, '1_graphene_all.TBT.nc'))
+
+    # request the full matrix
+    J_all = tbt.orbital_current(0, 204)
+    J_12 = tbt.orbital_current(0, 204, orbitals=[2, 3])
+
+    assert J_12.nnz < J_all.nnz // 2

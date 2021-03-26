@@ -156,7 +156,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
             elec_mol_proj_to = '.'.join(elec_mol_proj_to)
         return self._value_avg(elec_mol_proj_to + '.T.Eig', mol_proj_elec, kavg=kavg)
 
-    def Adensity_matrix(self, elec_mol_proj, E, kavg=True, isc=None, geometry=None):
+    def Adensity_matrix(self, elec_mol_proj, E, kavg=True, isc=None, orbitals=None, geometry=None):
         r""" Projected spectral function density matrix at energy `E` (1/eV)
 
         The projected density matrix can be used to calculate the LDOS in real-space.
@@ -186,6 +186,9 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
            the returned density matrix from unit-cell (``[None, None, None]``) to
            the given supercell, the default is all density matrix elements for the supercell.
            To only get unit cell orbital currents, pass ``[0, 0, 0]``.
+        orbitals : array-like or dict, optional
+           only retain density matrix elements for a subset of orbitals, all
+           other are set to 0.
         geometry: Geometry, optional
            geometry that will be associated with the density matrix. By default the
            geometry contained in this file will be used. However, then the
@@ -198,7 +201,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         DensityMatrix: the object containing the Geometry and the density matrix elements
         """
         mol_proj_elec = self._mol_proj_elec(elec_mol_proj)
-        dm = self._sparse_data('DM', mol_proj_elec, E, kavg, isc) * eV2Ry
+        dm = self._sparse_data('DM', mol_proj_elec, E, kavg, isc, orbitals) * eV2Ry
         # Now create the density matrix object
         geom = self.read_geometry()
         if geometry is None:
@@ -209,7 +212,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
             DM = DensityMatrix.fromsp(geometry, dm)
         return DM
 
-    def orbital_ACOOP(self, elec_mol_proj, E, kavg=True, isc=None):
+    def orbital_ACOOP(self, elec_mol_proj, E, kavg=True, isc=None, orbitals=None):
         r""" Orbital COOP analysis of the projected spectral function
 
         This will return a sparse matrix, see `~scipy.sparse.csr_matrix` for details.
@@ -251,6 +254,9 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
            the returned COOP from unit-cell (``[None, None, None]``) to
            the given supercell, the default is all COOP for the supercell.
            To only get unit cell orbital currents, pass ``[0, 0, 0]``.
+        orbitals : array-like or dict, optional
+           only retain COOP matrix elements for a subset of orbitals, all
+           other are set to 0.
 
         Examples
         --------
@@ -269,10 +275,10 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         atom_ACOHP : atomic COHP analysis of the projected spectral function
         """
         mol_proj_elec = self._mol_proj_elec(elec_mol_proj)
-        COOP = self._sparse_data('COOP', mol_proj_elec, E, kavg, isc) * eV2Ry
+        COOP = self._sparse_data('COOP', mol_proj_elec, E, kavg, isc, orbitals) * eV2Ry
         return COOP
 
-    def orbital_ACOHP(self, elec_mol_proj, E, kavg=True, isc=None):
+    def orbital_ACOHP(self, elec_mol_proj, E, kavg=True, isc=None, orbitals=None):
         r""" Orbital COHP analysis of the projected spectral function
 
         This will return a sparse matrix, see ``scipy.sparse.csr_matrix`` for details.
@@ -300,6 +306,9 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
            the returned COHP from unit-cell (``[None, None, None]``) to
            the given supercell, the default is all COHP for the supercell.
            To only get unit cell orbital currents, pass ``[0, 0, 0]``.
+        orbitals : array-like or dict, optional
+           only retain COHP matrix elements for a subset of orbitals, all
+           other are set to 0.
 
         See Also
         --------
@@ -310,7 +319,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         atom_ACOOP : atomic COOP analysis of the projected spectral function
         """
         mol_proj_elec = self._mol_proj_elec(elec_mol_proj)
-        COHP = self._sparse_data('COHP', mol_proj_elec, E, kavg, isc)
+        COHP = self._sparse_data('COHP', mol_proj_elec, E, kavg, isc, orbitals)
         return COHP
 
     @default_ArgumentParser(description="Extract data from a TBT.Proj.nc file")

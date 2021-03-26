@@ -1015,6 +1015,10 @@ class Atom(metaclass=AtomMeta):
         else:
             self._tag = tag
 
+    def __hash__(self):
+        return hash((hash(self._tag), hash(self._mass),
+                     hash(self._Z), *(hash(orb) for orb in self._orbitals)))
+
     @property
     def Z(self):
         """ Atomic number """
@@ -1505,6 +1509,10 @@ class Atoms:
         return atoms
 
     def index(self, atom):
+        """ Return the indices of the atom object """
+        return (self._specie == self.specie_index(atom)).nonzero()[0]
+
+    def specie_index(self, atom):
         """ Return the species index of the atom object """
         if not isinstance(atom, Atom):
             atom = self[atom]
@@ -1643,8 +1651,8 @@ class Atoms:
 
     def swap_atom(self, a, b):
         """ Swap specie index positions """
-        speciea = self.index(a)
-        specieb = self.index(b)
+        speciea = self.specie_index(a)
+        specieb = self.specie_index(b)
 
         idx_a = (self._specie == speciea).nonzero()[0]
         idx_b = (self._specie == specieb).nonzero()[0]
@@ -1676,7 +1684,7 @@ class Atoms:
         spec = np.copy(other._specie)
         for i, atom in enumerate(other.atom):
             try:
-                s = atoms.index(atom)
+                s = atoms.specie_index(atom)
             except KeyError:
                 s = len(atoms.atom)
                 atoms._atom.append(atom)
@@ -1721,7 +1729,7 @@ class Atoms:
                 s = len(atoms.atom)
                 atoms._atom.append(atom)
             else:
-                s = atoms.index(atom)
+                s = atoms.specie_index(atom)
             spec = np.where(spec == i, s, spec)
         atoms._specie = np.insert(atoms._specie, index, spec)
         atoms._update_orbitals()
@@ -1816,7 +1824,7 @@ class Atoms:
         for atom, s_i in other.iter(True):
             if atom not in self:
                 self._atom.append(atom)
-            self._specie[key[s_i]] = self.index(atom)
+            self._specie[key[s_i]] = self.specie_index(atom)
         self._update_orbitals()
 
     def replace(self, index, atom):
@@ -1845,7 +1853,7 @@ class Atoms:
             self._atom.append(atom)
 
         # Get specie index of the atom
-        specie = self.index(atom)
+        specie = self.specie_index(atom)
 
         # Loop unique species and check that we have the correct number of orbitals
         for ius in np.unique(self._specie[index]):
@@ -1888,9 +1896,9 @@ class Atoms:
                              'be of the class Atom')
 
         # Get index of `atom_from`
-        idx_from = self.index(atom_from)
+        idx_from = self.specie_index(atom_from)
         try:
-            idx_to = self.index(atom_to)
+            idx_to = self.specie_index(atom_to)
             if idx_from == idx_to:
                 raise KeyError("")
 
