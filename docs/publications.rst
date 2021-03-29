@@ -7,7 +7,11 @@ The `sisl` tool-suite has been used one way or the other in the listed
 publications below.
 
 Please help maintaining the list complete via a `pull request <pr_>`_ or
-by writing an email to `nickpapior@gmail.com <mailto:nickpapior@gmail.com>`_.
+by writing an email to `nickpapior AT gmail.com <mailto:nickpapior@gmail.com>`_.
+
+#. B. Focassio, G.R. Schleder, M. Costa, A. Fazzio, C. Lewenkopf,
+  *Structural and electronic properties of realistic two-dimensional amorphous topological insulators*,
+   2D Materials **8**, `2 (2021) <https://doi.org/10.1088/2053-1583/abdb97>`_.
 
 #. J. Tong, F. Luo, L. Ruan, G. Qin, L. Zhou, F. Tian, X. Zhang,
    *High and reversible spin polarization in a collinear antiferromagnet*,
@@ -131,9 +135,9 @@ arXiv publications
 
 These publications are as far as we know in the review process.
 
-- B. Focassio, G.R. Schleder, M. Costa, A. Fazzio, C. Lewenkopf,
-  *Structural and electronic properties of realistic two-dimensional amorphous topological insulators*,
-  `2010.14239 <https://arxiv.org/abs/2010.14239>`_
+- D. Li, J. L. Bertelsen, N. Papior, M. Brandbyge,
+  *Surface states and related quantum interference in ab initio electron transport*,
+  `2103.11120 <https://arxiv.org/abs/2103.11120>`_
 
 - D. Weckbecker, M. Fleischmann, R. Gupta, W. Landgraf, S. Leitherer, O. Pankratov, S. Sharma, V. Meded, S. Shallcross,
   *Moiré ordered current loops in the graphene twist bilayer*,
