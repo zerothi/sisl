@@ -1,13 +1,16 @@
 import pytest
-
+import os.path as osp
 import itertools
 import math as m
+
 import numpy as np
 
 import sisl.geom as sisl_geom
 from sisl import SislWarning, SislError
 from sisl import Cube, Sphere
 from sisl import Geometry, Atom, SuperCell
+
+_dir = osp.join('sisl')
 
 
 @pytest.fixture
@@ -1297,7 +1300,7 @@ class TestGeometry:
     def test_geometry_pandas_to(self):
         pytest.importorskip("pandas", reason="pandas not available")
         gr = sisl_geom.graphene()
-        df = gr.to.df()
+        df = gr.to.dataframe()
         assert np.allclose(df["x"], gr.xyz[:, 0])
         assert np.allclose(df["y"], gr.xyz[:, 1])
         assert np.allclose(df["z"], gr.xyz[:, 2])
@@ -1487,3 +1490,21 @@ def test_geometry_sanitize_orbs():
     assert np.allclose(bi._sanitize_orbs({bot: [0]}), bi.firsto[C_idx])
     assert np.allclose(bi._sanitize_orbs({bot: 1}), bi.firsto[C_idx] + 1)
     assert np.allclose(bi._sanitize_orbs({bot: [1, 2]}), np.add.outer(bi.firsto[C_idx], [1, 2]).ravel())
+
+
+def test_geometry_new_xyz(sisl_tmp):
+    # test that Geometry.new works
+    out = sisl_tmp('out.xyz', _dir)
+    C = Atom[6]
+    gr = sisl_geom.graphene(atoms=C)
+    # writing doesn't save orbital information, so we force
+    # an empty atom
+    gr.write(out)
+
+    gr2 = Geometry.new(out)
+    assert np.allclose(gr.xyz, gr2.xyz)
+    assert gr == gr2
+
+    gr2 = gr.new(out)
+    assert np.allclose(gr.xyz, gr2.xyz)
+    assert gr == gr2

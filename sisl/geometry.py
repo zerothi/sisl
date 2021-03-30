@@ -148,7 +148,9 @@ class Geometry(SuperCellChild):
     # new Geometries
     #  Geometry.new("run.fdf") will invoke Geometry.read("run.fdf")
     new = ClassDispatcher("new",
+                          # both the instance and the type will use the type dispatcher
                           instance_dispatcher=TypeDispatcher,
+                          type_dispatcher=TypeDispatcher,
                           obj_getattr=lambda obj, key:
                           (_ for _ in ()).throw(
                               AttributeError((f"{obj}.new does not implement '{key}' "
@@ -4613,7 +4615,7 @@ class GeometryToDataframeDispatcher(GeometryToDispatcher):
         # - valence q
         # - norbs
         data = {}
-        x, y, z = geom.xyz.T.tolist()
+        x, y, z = geom.xyz.T
         data["x"] = x
         data["y"] = y
         data["z"] = z
@@ -4626,7 +4628,7 @@ class GeometryToDataframeDispatcher(GeometryToDispatcher):
         data["norbitals"] = atoms.orbitals
 
         return pd.DataFrame(data)
-Geometry.to.register("df", GeometryToDataframeDispatcher)
+Geometry.to.register("dataframe", GeometryToDataframeDispatcher)
 
 
 @set_module("sisl")
