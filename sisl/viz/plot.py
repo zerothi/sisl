@@ -1123,19 +1123,14 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
         return self
 
     @vizplotly_settings('before')
-    def get_figure(self, drawer, **kwargs):
+    def get_figure(self, drawer, clear_fig=True, **kwargs):
         """
-        This is here mainly for historic reasons. At the beggining, the plot's figure was not
-        constructed until this point (each time a new figure was constructed). However, it seemed
-        better to construct a figure only once on `__init__` so that it can be manipulated at any
-        point of the plotting process.
+        Generates a figure out of the already processed data.
 
-        Therefore, there is nothing left to do here.
-
-        HOWEVER, `MultiplePlot` and its child classes overwrite this method and actually make use of it,
-        because they need to collect the data from all their child_plots and build the figure.
-
-        This method can be applied after updating the data so that the plot object is refreshed.
+        Parameters
+        ---------
+        clear_fig: boolean, optional
+            whether the figure should be cleared before drawing.
 
         Returns
         ---------
@@ -1145,8 +1140,9 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
         # Initialize the drawer
         self._drawers.setup(self, drawer)
 
-        # Clear all the traces from the figure before drawing the new ones
-        self.clear()
+        if clear_fig:
+            # Clear all the traces from the figure before drawing the new ones
+            self.clear()
 
         self.draw(getattr(self, "_for_drawer", None))
 
@@ -1497,7 +1493,6 @@ class MultiplePlot(Plot):
         # Take the plots if they have already been created and are provided by the user
         self.PLOTS_PROVIDED = plots is not None
         if self.PLOTS_PROVIDED:
-
             self.set_child_plots(plots)
 
         self.has_template_plot = False
@@ -1729,6 +1724,8 @@ class MultiplePlot(Plot):
 
         return self
 
+    def draw(self, drawer_info):
+        self._drawer.draw(drawer_info, self.child_plots)
 
 class Animation(MultiplePlot):
     """ Version of MultiplePlot that renders each plot in a different animation frame

@@ -53,7 +53,7 @@ class MatplotlibMultiplePlotDrawer(MatplotlibDrawer):
         child_ax = child._drawer.ax
         child._drawer.ax = ax
         child._init_ax()
-        child.get_figure()
+        child.get_figure(clear_fig=False)
         child._drawer.ax = child_ax
 
 class MatplotlibSubplotsDrawer(MatplotlibMultiplePlotDrawer):

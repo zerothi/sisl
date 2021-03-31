@@ -313,7 +313,7 @@ class PlotlyMultiplePlotDrawer(PlotlyDrawer):
     def _draw_child_in_fig(self, child, figure):
         child_fig = child._drawer.figure
         child._drawer.figure = figure
-        child.get_figure()
+        child.get_figure(clear_fig=False)
         child._drawer.figure = child_fig
 
 class PlotlySubplotsDrawer(PlotlyDrawer):
