@@ -1365,6 +1365,18 @@ def test_fromsp_csr():
     assert np.abs(csr2 - csr_2).sum() == 0.
 
 
+def test_convert():
+    csr1 = sc.sparse.random(10, 100, 0.01, random_state=24812)
+    csr2 = sc.sparse.random(10, 100, 0.02, random_state=24813)
+    csr = SparseCSR.fromsp(csr1, csr2)
+
+    scale = [[0.25, 0.75]]
+    conv = csr.convert(scale=scale)
+
+    assert conv.shape[:2] == csr.shape[:2]
+    assert conv.shape[2] == len(scale)
+    assert np.abs(conv.tocsr() - 0.25 * csr1 - 0.75 * csr2).sum() == 0.
+
 @pytest.mark.slow
 def test_fromsp_csr_large():
     csr1 = sc.sparse.random(10000, 10, 0.1, format="csr", random_state=23583)
