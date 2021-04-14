@@ -16,7 +16,8 @@ class SileCDFTBtrans(SileCDF):
     def _setup(self, *args, **kwargs):
         # all NetCDF routines actually returns masked arrays
         # this is to prevent TBtrans CDF files from doing this.
-        self.fh.set_auto_mask(False)
+        if hasattr(self, "fh"):
+            self.fh.set_auto_mask(False)
 
 
 @set_module("sisl.io.tbtrans")
