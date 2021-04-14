@@ -11,7 +11,12 @@ class SileSiesta(Sile):
 
 @set_module("sisl.io.siesta")
 class SileCDFSiesta(SileCDF):
-    pass
+
+    # all netcdf output should not be masked
+    def _setup(self, *args, **kwargs):
+        # all NetCDF routines actually returns masked arrays
+        # this is to prevent Siesta CDF files from doing this.
+        self.fh.set_auto_mask(False)
 
 
 @set_module("sisl.io.siesta")

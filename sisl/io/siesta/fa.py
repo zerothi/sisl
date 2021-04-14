@@ -49,3 +49,5 @@ class faSileSiesta(SileSiesta):
 
 add_sile('FA', faSileSiesta, gzip=True)
 add_sile('FAC', faSileSiesta, gzip=True)
+add_sile('TSFA', faSileSiesta, gzip=True)
+add_sile('TSFAC', faSileSiesta, gzip=True)
