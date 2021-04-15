@@ -212,6 +212,7 @@ class BTD:
                 self._M12[i] = M
             elif not np.allclose(M, 0.):
                 raise IndexError(f"{self.__class__.__name__} does not have index ({i},{j}); only (i,i+-1) are allowed.")
+            assert M.shape == (self.btd[j], self.btd[i])
         else:
             raise ValueError(f"{self.__class__.__name__} index retrieval must be done with a tuple.")
 
