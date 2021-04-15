@@ -24,6 +24,7 @@ from numbers import Integral
 import numpy as np
 from numpy import einsum
 from numpy import conjugate as conj
+from scipy.sparse import csr_matrix
 
 import sisl as si
 from sisl import _array as _a
@@ -293,15 +294,15 @@ class DeviceGreen:
         self._data.tX = tX
         self._data.tY = tY
         
-    def green(self, method='btd', full=True):
+    def green(self, method='btd'):
         method = method.lower()
         if method == 'btd':
-            return self._green_btd(full)
-        raise ValueError(f"{self.__class__.__name__}.green method not valid input [btd]")
+            return self._green_btd()
+        elif method == 'sparse':
+            return self._green_sparse()
+        raise ValueError(f"{self.__class__.__name__}.green method not valid input [btd,sparse]")
 
-    def _green_btd(self, full):
-        if not full:
-            raise NotImplementedError
+    def _green_btd(self):
         n = len(self.pvt)
         G = np.empty([n, n], dtype=self._data.A[0].dtype)
 
@@ -353,6 +354,73 @@ class DeviceGreen:
                 G[sla, sl0] = - tX[a - 1] @ G[slp, sl0]
                 slp = sla
                 next_sum += btd[a]
+
+        return G
+
+    def _green_sparse(self):
+        n = len(self.pvt)
+
+        # create a sparse matrix
+        G = self.H.Sk(format='csr', dtype=self._data.A[0].dtype)
+        # pivot the matrix
+        G = G[self.pvt, :][:, self.pvt]
+
+        # Get row and column entries
+        ncol = np.diff(G.indptr)
+        row = (ncol > 0).nonzero()[0]
+        # Now we have [0 0 0 0 1 1 1 1 2 2 ... no-1 no-1]
+        row = np.repeat(row.astype(np.int32, copy=False), ncol[row])
+        col = G.indices
+
+        def get_idx(row, col, row_b, col_b=None):
+            if col_b is None:
+                col_b = row_b
+            idx = (row_b[0] <= row).nonzero()[0]
+            idx = idx[row[idx] < row_b[1]]
+            idx = idx[col_b[0] <= col[idx]]
+            return idx[col[idx] < col_b[1]]
+
+        btd = self.btd
+        nb = len(btd)
+        nbm1 = nb - 1
+        A = self._data.A
+        B = self._data.B
+        C = self._data.C
+        tX = self._data.tX
+        tY = self._data.tY
+        sumbsn, sumbs, sumbsp = 0, 0, 0
+        for b, bs in enumerate(btd):
+            sumbsp = sumbs + bs
+            if b < nbm1:
+                bsp = btd[b + 1]
+
+            # Calculate diagonal part
+            if b == 0:
+                GM = inv_destroy(A[b] - C[b + 1] @ tX[b])
+            elif b == nbm1:
+                GM = inv_destroy(A[b] - B[b - 1] @ tY[b])
+            else:
+                GM = inv_destroy(A[b] - B[b - 1] @ tY[b] - C[b + 1] @ tX[b])
+
+            # get all entries where G is non-zero
+            idx = get_idx(row, col, (sumbs, sumbsp))
+            G.data[idx] = GM[row[idx] - sumbs, col[idx] - sumbs]
+
+            # check if we should do block above
+            if b > 0:
+                idx = get_idx(row, col, (sumbsn, sumbs), (sumbs, sumbsp))
+                if len(idx) > 0:
+                    G.data[idx] = -(tY[b] @ GM)[row[idx] - sumbsn, col[idx] - sumbs]
+
+            # check if we should do block below
+            if b < nbm1:
+                idx = get_idx(row, col, (sumbsp, sumbsp + bsp), (sumbs, sumbsp))
+                if len(idx) > 0:
+                    G.data[idx] = -(tX[b] @ GM)[row[idx] - sumbsp, col[idx] - sumbs]
+
+            bsn = bs
+            sumbsn = sumbs
+            sumbs += bs
 
         return G
 
