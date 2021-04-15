@@ -50,6 +50,7 @@ def get_maxerrr(u):
     uidx = np.argmax(np.absolute(u))
     return a.max(), a[:, 0], np.unravel_index(aidx, a.shape), u.ravel()[uidx], np.unravel_index(uidx, a.shape)
 
+
 def gram_schmidt(u, modified=True):
     """ Assumes u is in fortran indexing as returned from eigh
 
@@ -128,7 +129,7 @@ class PivotSelfEnergy(si.physics.SelfEnergy):
 
         # Retrieve BTD matrices for the corresponding electrode
         self.btd = pivot.btd(name).reshape(-1, 1)
-        
+
         # Get the individual matrices
         cbtd = np.cumsum(self.btd)
         pvt_btd = []
@@ -165,13 +166,59 @@ class PivotSelfEnergy(si.physics.SelfEnergy):
     def self_energy(self, *args, **kwargs):
         return self._func[0](*args, **kwargs)
 
-    def scattering_matrix(self,*args, **kwargs):
+    def scattering_matrix(self, *args, **kwargs):
         return self._func[1](*args, **kwargs)
+
+
+class BTD:
+    """ Container class that holds a BTD matrix """
+
+    def __init__(self, btd):
+        self._btd = btd
+        # diagonal
+        self._M11 = [None] * len(btd)
+        # above
+        self._M10 = [None] * (len(btd)-1)
+        # below
+        self._M12 = [None] * (len(btd)-1)
+
+    @property
+    def btd(self):
+        return self._btd
+
+    def diagonal(self):
+        return np.concatenate([M.diagonal() for M in self._M11])
+
+    def __getitem__(self, key):
+        if isinstance(key, tuple):
+            i, j = key
+            if i == j:
+                return self._M11[i]
+            elif i - 1 == j: # (i, i-1)
+                return self._M10[j]
+            elif i + 1 == j: # (i, i+1)
+                return self._M12[i]
+            raise IndexError(f"{self.__class__.__name__} does not have index ({i},{j}), only (i,i+-1) are allowed.")
+        raise ValueError(f"{self.__class__.__name__} index retrieval must be done with a tuple.")
+
+    def __setitem__(self, key, M):
+        if isinstance(key, tuple):
+            i, j = key
+            if i == j:
+                self._M11[i] = M
+            elif i - 1 == j: # (i, i-1)
+                self._M10[j] = M
+            elif i + 1 == j: # (i, i+1)
+                self._M12[i] = M
+            elif not np.allclose(M, 0.):
+                raise IndexError(f"{self.__class__.__name__} does not have index ({i},{j}); only (i,i+-1) are allowed.")
+        else:
+            raise ValueError(f"{self.__class__.__name__} index retrieval must be done with a tuple.")
 
 
 class DeviceGreen:
     """
-    
+
     Basic usage:
 
     .. code::
@@ -186,6 +233,11 @@ class DeviceGreen:
        G.green()
 
     """
+
+    # TODO we should speed this up by overwriting A with the inverse once
+    #      calculated. We don't need it at that point.
+    #      That would probably require us to use a method to retrieve
+    #      the elements which determines if it has been calculated or not.
 
     def __init__(self, H, elec, pivot):
         """ Create Green function with Hamiltonian and BTD matrix elements """
@@ -293,16 +345,18 @@ class DeviceGreen:
 
         self._data.tX = tX
         self._data.tY = tY
-        
-    def green(self, method='btd'):
-        method = method.lower()
-        if method == 'btd':
-            return self._green_btd()
-        elif method == 'sparse':
-            return self._green_sparse()
-        raise ValueError(f"{self.__class__.__name__}.green method not valid input [btd,sparse]")
 
-    def _green_btd(self):
+    def green(self, format='array'):
+        format = format.lower()
+        if format in ('array', 'dense'):
+            return self._green_array()
+        elif format == 'sparse':
+            return self._green_sparse()
+        elif format == 'btd':
+            return self._green_btd()
+        raise ValueError(f"{self.__class__.__name__}.green 'format' not valid input [array,sparse,btd]")
+
+    def _green_array(self):
         n = len(self.pvt)
         G = np.empty([n, n], dtype=self._data.A[0].dtype)
 
@@ -354,6 +408,34 @@ class DeviceGreen:
                 G[sla, sl0] = - tX[a - 1] @ G[slp, sl0]
                 slp = sla
                 next_sum += btd[a]
+
+        return G
+
+    def _green_btd(self):
+        btd = self.btd
+        G = BTD(btd)
+        nbm1 = len(btd) - 1
+        A = self._data.A
+        B = self._data.B
+        C = self._data.C
+        tX = self._data.tX
+        tY = self._data.tY
+        for b, bs in enumerate(btd):
+            # Calculate diagonal part
+            if b == 0:
+                G11 = inv_destroy(A[b] - C[b + 1] @ tX[b])
+                G[b, b]
+            elif b == nbm1:
+                G11 = inv_destroy(A[b] - B[b - 1] @ tY[b])
+            else:
+                G11 = inv_destroy(A[b] - B[b - 1] @ tY[b] - C[b + 1] @ tX[b])
+
+            # Do above
+            G[b, b] = G11
+            if b > 0:
+                G[b, b-1] = - tY[b] @ G11
+            if b < nbm1:
+                G[b, b+1] = - tX[b] @ G11
 
         return G
 
@@ -424,19 +506,18 @@ class DeviceGreen:
 
         return G
 
-    def spectral(self, elec, method='column', full=True):
+    def spectral(self, elec, format='array', method='column'):
         elec = self._elec(elec)
+        format = format.lower()
         method = method.lower()
-        if method == 'column':
-            return self._spectral_column(elec, full)
-        elif method == 'btd':
-            return self._spectral_propagate(elec, full)
-        raise ValueError(f"{self.__class__.__name__}.spectral method is not [column,btd]")
+        if format in ('array', 'dense'):
+            if method == 'column':
+                return self._spectral_column(elec)
+            elif method == 'propagate':
+                return self._spectral_propagate(elec)
+        raise ValueError(f"{self.__class__.__name__}.spectral format/method not recognized.")
 
-    def _spectral_column(self, elec, full):
-        if not full:
-            raise NotImplementedError
-
+    def _spectral_column(self, elec):
         # To calculate the full A we simply calculate the
         # G column where the electrode resides
         nb = len(self.btd)
@@ -521,9 +602,7 @@ class DeviceGreen:
         # Now calculate the full spectral function
         return G @ self._data.gamma[elec] @ dagger(G)
 
-    def _spectral_propagate(self, elec, full):
-        if not full:
-            raise NotImplementedError
+    def _spectral_propagate(self, elec):
         raise NotImplementedError
 
     def _scattering_state_reduce(self, elec, DOS, U, cutoff):
@@ -547,18 +626,18 @@ class DeviceGreen:
 
         return DOS, U
 
-    def scattering_state_from_spectral(self, A, elec, cutoff=0., method='btd', *args, **kwargs):
+    def scattering_state_from_spectral(self, A, elec, cutoff=0., method='full', *args, **kwargs):
         """ On entry `A` contains the spectral function in format appropriate for the method.
 
         This routine will change the values in `A`. So retain a copy if needed.
         """
         elec = self._elec(elec)
         method = method.lower()
-        if method in ('full', 'dense'):
+        if method == 'full':
             return self._scattering_state_from_spectral_full(A, elec, cutoff, *args, **kwargs)
-        elif method == 'btd':
-            return self._scattering_state_from_spectral_btd(A, elec, cutoff, *args, **kwargs)
-        raise ValueError(f"{self.__class__.__name__}.scattering_state_from_spectral method is not [full,btd]")
+        elif method == 'propagate':
+            return self._scattering_state_from_spectral_propagate(A, elec, cutoff, *args, **kwargs)
+        raise ValueError(f"{self.__class__.__name__}.scattering_state_from_spectral method is not [full,propagate]")
 
     def _scattering_state_from_spectral_full(self, A, elec, cutoff):
         # add something to the diagonal (improves diag precision)
@@ -582,7 +661,7 @@ class DeviceGreen:
         # always have the first state with the largest values
         return si.physics.StateC(A.T[::-1], DOS[::-1], self, **info)
 
-    def _scattering_state_from_spectral_btd(self, blocks_A, elec, cutoff):
+    def _scattering_state_from_spectral_propagate(self, blocks_A, elec, cutoff):
         blocks, U = blocks_A
 
         # add something to the diagonal (improves diag precision)
@@ -593,7 +672,7 @@ class DeviceGreen:
         DOS -= 0.1
 
         DOS, U = self._scattering_state_reduce(elec, DOS, U, cutoff)
-        
+
         nb = len(self.btd)
         u = [None] * nb
         u[blocks[0]] = U[:self.btd[blocks[0]], :]
@@ -630,13 +709,13 @@ class DeviceGreen:
         # For a non-propagated version, the above should yield a
         # diagonal matrix with 1's.
         # Also, note the above mentioning of the Gram-Schmidt orthogonalization.
-        
+
         # And now rescale the eigenvectors for unity
         u /= unorm.reshape(-1, 1) ** 0.5
 
         # We then need to sort again since the eigenvalues may change
         idx = np.argsort(-DOS)
-            
+
         # Now we have the full u, create it and transpose to get it in C indexing
         data = self._data
         info = dict(
@@ -651,17 +730,17 @@ class DeviceGreen:
     def scattering_state(self, elec, cutoff=0., method='full', *args, **kwargs):
         elec = self._elec(elec)
         method = method.lower()
-        if method in ('full', 'dense'):
+        if method == 'full':
             return self._scattering_state_full(elec, cutoff, *args, **kwargs)
-        elif method == 'btd':
-            return self._scattering_state_btd(elec, cutoff, *args, **kwargs)
-        raise ValueError(f"{self.__class__.__name__}.scattering_state method is not [full,btd]")
+        elif method == 'propagate':
+            return self._scattering_state_propagate(elec, cutoff, *args, **kwargs)
+        raise ValueError(f"{self.__class__.__name__}.scattering_state method is not [full,propagate]")
 
     def _scattering_state_full(self, elec, cutoff=0., **kwargs):
         A = self.spectral(elec, **kwargs)
         return self._scattering_state_from_spectral_full(A, elec, cutoff)
 
-    def _scattering_state_btd(self, elec, cutoff=0):
+    def _scattering_state_propagate(self, elec, cutoff=0):
         # First we need to calculate diagonal blocks of the spectral matrix
         # This is basically the same thing as calculating the Gf column
         # But only in the 1/2 diagonal blocks of Gf
@@ -670,7 +749,7 @@ class DeviceGreen:
         # Calculate the spectral function only for the blocks that host the
         # scattering matrix
         A = A @ self._data.gamma[elec] @ dagger(A)
-        return self._scattering_state_from_spectral_btd((blocks, A), elec, cutoff)
+        return self._scattering_state_from_spectral_propagate((blocks, A), elec, cutoff)
 
     def eigen_channel(self, state, elec_to):
         if isinstance(elec_to, (Integral, str)):
