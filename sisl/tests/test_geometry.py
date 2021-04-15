@@ -1297,6 +1297,14 @@ class TestGeometry:
         from_ase = gr.new(to_ase)
         assert gr.equal(from_ase, R=False)
 
+    def test_geometry_pymatgen_to(self):
+        pytest.importorskip("pymatgen", reason="pymatgen not available")
+        gr = sisl_geom.graphene()
+        to_pymatgen = gr.to.pymatgen()
+        from_pymatgen = gr.new(to_pymatgen)
+        assert gr.equal(from_pymatgen, R=False)
+        # TODO add test for Molecule as well (cell will then be different)
+
     def test_geometry_pandas_to(self):
         pytest.importorskip("pandas", reason="pandas not available")
         gr = sisl_geom.graphene()

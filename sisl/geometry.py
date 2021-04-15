@@ -4548,6 +4548,42 @@ except:
     pass
 
 
+class GeometryNewpymatgenDispatcher(GeometryNewDispatcher):
+    def dispatch(self, struct, **kwargs):
+        """ Convert a ``pymatgen`` structure/molecule object into a `Geometry` """
+        from pymatgen.core import Structure
+
+        Z = []
+        xyz = []
+        for site in struct.sites:
+            Z.append(site.species)
+            xyz.append(site.coords)
+        xyz = np.array(xyz)
+
+        if isinstance(struct, Structure):
+            # we also have the lattice
+            cell = struct.lattice.matrix
+            nsc = [3, 3, 3] # really, this is unknown
+        else:
+            cell = xyz.max() - xyz.min(0) + 15.
+            nsc = [1, 1, 1]
+        sc = SuperCell(cell, nsc=nsc)
+        return self._obj(xyz, atoms=Z, sc=sc, **kwargs)
+Geometry.new.register("pymatgen", GeometryNewpymatgenDispatcher)
+
+# currently we can't ensure the pymatgen classes
+# to get it by type(). That requires pymatgen to be importable.
+try:
+    from pymatgen.core import Molecule as pymatgen_Molecule
+    from pymatgen.core import Structure as pymatgen_Structure
+    Geometry.new.register(pymatgen_Molecule, GeometryNewpymatgenDispatcher)
+    Geometry.new.register(pymatgen_Structure, GeometryNewpymatgenDispatcher)
+    # ensure we don't pollute name-space
+    del pymatgen_Molecule, pymatgen_Structure
+except:
+    pass
+
+
 # Bypass regular Geometry to be returned as is
 class GeometryNewGeometryDispatcher(GeometryNewDispatcher):
     def dispatch(self, geom):
@@ -4584,6 +4620,30 @@ class GeometryToAseDispatcher(GeometryToDispatcher):
                          cell=geom.cell.tolist(), pbc=geom.nsc > 1, **kwargs)
 
 Geometry.to.register("ase", GeometryToAseDispatcher)
+
+class GeometryTopymatgenDispatcher(GeometryToDispatcher):
+    def dispatch(self, *args, **kwargs):
+        from pymatgen.core import Lattice, Structure, Molecule
+        from sisl.atom import PeriodicTable
+
+        # ensure we have an object
+        geom = self._obj
+        self._ensure_object(geom)
+        if len(args) > 0:
+            raise ValueError(f"{geom}.to.pymatgen only accepts keyword arguments")
+
+        lattice = Lattice(geom.cell)
+        # get atomic letters and coordinates
+        PT = PeriodicTable()
+        xyz = geom.xyz
+        species = [PT.Z_label(Z) for Z in geom.atoms.Z]
+        
+        if all(self.nsc == 1):
+            # we define a molecule
+            return Molecule(species, xyz, **kwargs)
+        return Structure(lattice, species, xyz, coords_are_cartesian=True, **kwargs)
+
+Geometry.to.register("pymatgen", GeometryTopymatgenDispatcher)
 
 
 class GeometryToSileDispatcher(GeometryToDispatcher):
