@@ -6,7 +6,7 @@ from ..plotutils import find_files, random_color
 from ..input_fields import (
     TextInput, SileInput, SwitchInput, ColorPicker, DropdownInput, CreatableDropdown,
     IntegerInput, FloatInput, RangeInput, RangeSlider, OrbitalQueries,
-    ProgramaticInput, Array1DInput, ListInput
+    ProgramaticInput, Array1DInput, ListInput, GeometryInput
 )
 from ..input_fields.range import ErangeInput
 
@@ -18,39 +18,42 @@ class PdosPlot(Plot):
     Parameters
     -------------
     pdos_file: pdosSileSiesta, optional
-        This parameter explicitly sets a .PDOS file. Otherwise, the PDOS file
-        is attempted to read from the fdf file
+    	This parameter explicitly sets a .PDOS file. Otherwise, the PDOS file
+    	is attempted to read from the fdf file
     tbt_nc: tbtncSileTBtrans, optional
-        This parameter explicitly sets a .TBT.nc file. Otherwise, the PDOS
-        file is attempted to read from the fdf file
+    	This parameter explicitly sets a .TBT.nc file. Otherwise, the PDOS
+    	file is attempted to read from the fdf file
+    geometry: Geometry or sile (or path to file) that contains a geometry, optional
+    	If this is passed, the geometry that has been read is ignored and
+    	this one is used instead.
     Erange: array-like of shape (2,), optional
-        Energy range where PDOS is displayed.
+    	Energy range where PDOS is displayed.
     nE: int, optional
-        If calculating the PDOS from a hamiltonian, the number of energy
-        points used
+    	If calculating the PDOS from a hamiltonian, the number of energy
+    	points used
     kgrid: array-like, optional
-        The number of kpoints in each reciprocal direction.              A
-        Monkhorst-Pack grid will be generated to calculate the PDOS.
-        If not provided, it will be set to 3 for the periodic directions
-        and 1 for the non-periodic ones.
+    	The number of kpoints in each reciprocal direction.              A
+    	Monkhorst-Pack grid will be generated to calculate the PDOS.
+    	If not provided, it will be set to 3 for the periodic directions
+    	and 1 for the non-periodic ones.
     kgrid_displ: array-like, optional
-        Displacement of the Monkhorst-Pack grid
+    	Displacement of the Monkhorst-Pack grid
     E0: float, optional
-        The energy to which all energies will be referenced (including
-        Erange).
+    	The energy to which all energies will be referenced (including
+    	Erange).
     requests: array-like of dict, optional
-        Here you can ask for the specific PDOS that you need.
-        TIP: Queries can be activated and deactivated.   Each item is a
-        dict. Structure of the expected dicts:{         'name':
-        'species':          'atoms':          'orbitals':          'spin':
-        'normalize':          'color':          'linewidth':          'dash':
-        'split_on':          'scale': The final DOS will be multiplied by
-        this number. }
+    	Here you can ask for the specific PDOS that you need.
+    	TIP: Queries can be activated and deactivated.   Each item is a
+    	dict. Structure of the expected dicts:{         'name':
+    	'species':          'atoms':          'orbitals':          'spin':
+    	'normalize':          'color':          'linewidth':          'dash':
+    	'split_on':          'scale': The final DOS will be multiplied by
+    	this number. }
     root_fdf: fdfSileSiesta, optional
-        Path to the fdf file that is the 'parent' of the results.
+    	Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
     """
 
     #Define all the class attributes
@@ -89,6 +92,12 @@ class PdosPlot(Plot):
                 "placeholder": "Write the path to your TBT.nc file here...",
             },
             help = """This parameter explicitly sets a .TBT.nc file. Otherwise, the PDOS file is attempted to read from the fdf file """
+        ),
+
+        GeometryInput(
+            key = "geometry", name = "Geometry to force on the plot",
+            group="dataread",
+            help = """If this is passed, the geometry that has been read is ignored and this one is used instead."""
         ),
 
         ErangeInput(
@@ -287,7 +296,15 @@ class PdosPlot(Plot):
         self.PDOS = tbt_sile.DOS(sum=False).data.T
         self.E = tbt_sile.E
 
-        self.geometry = tbt_sile.read_geometry().sub(tbt_sile.a_dev)
+        read_geometry_kwargs = {}
+        # Try to get the basis information from the root_fdf, if possible
+        try:
+            read_geometry_kwargs["atom"] = self.get_sile("root_fdf").read_geometry(output=True).atoms
+        except (FileNotFoundError, TypeError):
+            pass
+        
+        # Read the geometry from the TBT.nc file and get only the device part
+        self.geometry = tbt_sile.read_geometry(**read_geometry_kwargs).sub(tbt_sile.a_dev)
 
     @entry_point('hamiltonian')
     def _read_from_H(self, kgrid, kgrid_displ, Erange, nE, E0):
@@ -320,7 +337,7 @@ class PdosPlot(Plot):
             PDOS.append(self.mp.apply.average.PDOS(self.E, spin=spin, eta=True))
         self.PDOS = np.array(PDOS)
 
-    def _after_read(self):
+    def _after_read(self, geometry):
         """
         Creates the PDOS dataarray and updates the "requests" input field.
         """
@@ -340,6 +357,12 @@ class PdosPlot(Plot):
         # there is no spin resolution
         if self.PDOS.ndim == 2:
             self.PDOS = np.expand_dims(self.PDOS, axis=0)
+
+        # Set the geometry.
+        if geometry is not None:
+            if geometry.no != self.PDOS.shape[1]:
+                raise ValueError(f"The geometry provided contains {geometry.no} orbitals, while we have PDOS information of {self.PDOS.shape[1]}.")
+            self.geometry = geometry
 
         self.get_param('requests').update_options(self.geometry, self.spin)
 
