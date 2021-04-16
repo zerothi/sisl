@@ -1,4 +1,5 @@
 """ This input field is prepared to receive sisl objects that are plotables """
+from pathlib import Path
 
 import sisl
 
@@ -31,10 +32,12 @@ class SislObjectInput(InputField):
 
     def __init__(self, key, *args, **kwargs):
 
-        if 'dtype' not in kwargs:
+        super().__init__(key, *args, **kwargs)
+
+        if self.dtype is None:
             raise ValueError(f'Please provide a dtype for {key}')
 
-        valid_key = forced_keys.get(kwargs['dtype'], None)
+        valid_key = forced_keys.get(self.dtype, None)
 
         if valid_key is not None and not key.endswith(valid_key):
 
@@ -44,16 +47,15 @@ class SislObjectInput(InputField):
                 f'If there are multiple settings that accept {kwargs["dtype"]}, please use *_{valid_key}'
             )
 
-        super().__init__(key, *args, **kwargs)
-
 
 class GeometryInput(SislObjectInput):
 
+    dtype = (sisl.Geometry, "sile (or path to file) that contains a geometry")
     _dtype = (str, sisl.Geometry, *sisl.get_siles(attrs=['read_geometry']))
 
     def parse(self, val):
 
-        if isinstance(val, str):
+        if isinstance(val, (str, Path)):
             val = sisl.get_sile(val)
         if isinstance(val, sisl.io.Sile):
             val = val.read_geometry()
