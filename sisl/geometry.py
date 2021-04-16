@@ -4621,6 +4621,7 @@ class GeometryToAseDispatcher(GeometryToDispatcher):
 
 Geometry.to.register("ase", GeometryToAseDispatcher)
 
+
 class GeometryTopymatgenDispatcher(GeometryToDispatcher):
     def dispatch(self, *args, **kwargs):
         from pymatgen.core import Lattice, Structure, Molecule
@@ -4637,7 +4638,7 @@ class GeometryTopymatgenDispatcher(GeometryToDispatcher):
         PT = PeriodicTable()
         xyz = geom.xyz
         species = [PT.Z_label(Z) for Z in geom.atoms.Z]
-        
+
         if all(self.nsc == 1):
             # we define a molecule
             return Molecule(species, xyz, **kwargs)
