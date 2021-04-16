@@ -57,7 +57,7 @@ class GeometryInput(SislObjectInput):
 
         if isinstance(val, (str, Path)):
             val = sisl.get_sile(val)
-        if isinstance(val, sisl.io.Sile):
+        if isinstance(val, sisl.io.BaseSile):
             val = val.read_geometry()
 
         return val
