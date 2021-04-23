@@ -1735,7 +1735,7 @@ class Geometry(SuperCellChild):
         new = self.sub(_a.arangei(off, off + n), cell=sc)
         if not np.allclose(new.tile(seps, axis).xyz, self.xyz, rtol=rtol, atol=atol):
             st = 'The cut structure cannot be re-created by tiling'
-            st += '\nThe difference between the coordinates can be altered using rtol, atol'
+            st += '\nThe tolerance between the coordinates can be altered using rtol, atol'
             warn(st)
         return new
 
