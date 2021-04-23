@@ -923,32 +923,32 @@ class SparseAtom(_SparseGeometry):
             except:
                 break
 
+            # TODO this is inconsistent if seg= is used as argument
             sub = S[0:geom.na, idx * na:(idx + 1) * na].indices[:]
 
             if len(sub) == 0:
                 break
 
-            c_max = np.amax(sub)
-            # Count the number of cells it interacts with
-            i = (c_max % na) // geom.na
+            # figure out how many cells it is connecting to
+            ncell = np.amax(sub % na) // geom.na
             ic = idx * na
-            for j in range(i):
-                idx = ic + geom.na * j
+            for icell in range(ncell):
+                idx = ic + geom.na * icell
                 # We need to ensure that every "in between" index exists
                 # if it does not we discard those indices
                 if len(np.logical_and(idx <= sub,
                                       sub < idx + geom.na).nonzero()[0]) == 0:
-                    i = j - 1
+                    ncell = icell - 1
                     out = True
                     break
-            nsc[axis] = isc[axis] * seps + i
+            nsc[axis] = isc[axis] * seps + ncell
 
             if out:
                 warn('Cut the connection at nsc={} in direction {}.'.format(nsc[axis], axis))
 
         # Update number of super-cells
         nsc[:] = nsc[:] * 2 + 1
-        geom.sc.set_nsc(nsc)
+        geom.set_nsc(nsc)
 
         # Now we have a correct geometry, and
         # we are now ready to create the sparsity pattern
@@ -978,9 +978,10 @@ class SparseAtom(_SparseGeometry):
             a, afp, afm = _sca2sca(self.geometry, ia, S.geometry, seps, axis)
             if a is None:
                 continue
-            S[ja, a + afp] = self[ja, ia]
+            d = self[ja, ia]
+            S[ja, a + afp] = d
             # TODO check that we indeed have Hermiticity for non-collinear and spin-orbit
-            S[a, ja + afm] = self[ja, ia]
+            S[a, ja + afm] = d
 
         return S
 
@@ -1435,32 +1436,32 @@ class SparseOrbital(_SparseGeometry):
             except:
                 break
 
+            # TODO this is inconsistent if seg= is used as argument
             sub = S[0:geom.no, idx * no:(idx + 1) * no].indices[:]
 
             if len(sub) == 0:
                 break
 
-            c_max = np.amax(sub)
-            # Count the number of cells it interacts with
-            i = (c_max % no) // geom.no
+            # figure out how many cells it is connecting to
+            ncell = np.amax(sub % no) // geom.no
             ic = idx * no
-            for j in range(i):
-                idx = ic + geom.no * j
+            for icell in range(ncell):
+                idx = ic + geom.no * icell
                 # We need to ensure that every "in between" index exists
                 # if it does not we discard those indices
                 if len(np.logical_and(idx <= sub,
                                       sub < idx + geom.no).nonzero()[0]) == 0:
-                    i = j - 1
+                    ncell = icell - 1
                     out = True
                     break
-            nsc[axis] = isc[axis] * seps + i
+            nsc[axis] = isc[axis] * seps + ncell
 
             if out:
                 warn('Cut the connection at nsc={} in direction {}.'.format(nsc[axis], axis))
 
         # Update number of super-cells
         nsc[:] = nsc[:] * 2 + 1
-        geom.sc.set_nsc(nsc)
+        geom.set_nsc(nsc)
 
         # Now we have a correct geometry, and
         # we are now ready to create the sparsity pattern
@@ -1492,6 +1493,7 @@ class SparseOrbital(_SparseGeometry):
                 continue
             d = self[jo, io]
             S[jo, o + ofp] = d
+            # TODO check that we indeed have Hermiticity for non-collinear and spin-orbit
             S[o, jo + ofm] = d
 
         return S
