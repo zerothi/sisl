@@ -427,13 +427,13 @@ setuptools_kwargs = {
     "python_requires": ">= " + min_version["python"],
     "install_requires": [
         "setuptools",
-        "Cython",
         "numpy >= " + min_version["numpy"],
         "scipy",
         "netCDF4",
         "pyparsing >= " + min_version["pyparsing"],
     ],
     "setup_requires": [
+        "Cython",
         "numpy >= " + min_version["numpy"],
     ],
     "extras_require": {
