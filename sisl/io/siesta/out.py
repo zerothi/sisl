@@ -535,6 +535,10 @@ class outSileSiesta(SileSiesta):
              external field energy
         ``xc``
              exchange-correlation energy
+        ``exchange``
+             exchange energy
+        ``correlation``
+             correlation energy
         ``bulkV``
              bulk-bias correction energy
         ``total``
@@ -583,6 +587,8 @@ class outSileSiesta(SileSiesta):
             "Eso": "spin_orbit",
             "Ext. field": "extE",
             "Exch.-corr.": "xc",
+            "Exch.": "exchange",
+            "Corr.": "correlation",
             "Ekinion": "ion.kinetic",
             "Ion-electron": "ion.electron",
             "Ion-ion": "ion.ion",
