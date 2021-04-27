@@ -53,6 +53,10 @@ import sisl as si
 import pyamg
 import os
 
+
+__all__ = ['pyamg_solve', 'solve_poisson', 'fftpoisson_fix_cli', 'fftpoisson_fix_run']
+
+
 # Base-script name
 _script = Path(sys.argv[0]).name
 
@@ -108,8 +112,10 @@ def solve_poisson(geometry, shape, radius="empirical",
     else:
         bc = []
         def bc2bc(s):
-            return {'periodic': 'PERIODIC', 'dirichlet': 'DIRICHLET', 'neumann': 'NEUMANN',
-                    'p': 'PERIODIC', 'd': 'DIRICHLET', 'n': 'NEUMANN'}.get(s.lower(), s.upper())
+            return {'periodic': 'PERIODIC', 'p': 'PERIODIC', si.Grid.PERIODIC: 'PERIODIC',
+                    'dirichlet': 'DIRICHLET', 'd': 'DIRICHLET', si.Grid.DIRICHLET: 'DIRICHLET',
+                    'neumann': 'NEUMANN', 'n': 'NEUMANN',si.Grid.NEUMANN: 'NEUMANN',
+            }.get(s.lower(), s.upper())
         for bottom, top in boundary:
             bc.append([getattr(si.Grid, bc2bc(bottom)), getattr(si.Grid, bc2bc(top))])
         if len(bc) != 3:
