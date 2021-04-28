@@ -39,6 +39,8 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
             elec_mol_proj = elec_mol_proj.split('.')
         if len(elec_mol_proj) == 1:
             return elec_mol_proj
+        elif len(elec_mol_proj) != 3:
+            raise ValueError(f"Projection specification does not contain 3 fields: <electrode>.<molecule>.<projection> is required.")
         return [elec_mol_proj[i] for i in [1, 2, 0]]
 
     @property
@@ -467,7 +469,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
         else:
             prnt(f"     {Em:.5f} -- {EM:.5f} eV  [{dEm:.3f} -- {dEM:.3f} meV]")
         prnt("  - imaginary part (eta): {:.4f} meV".format(self.eta() * 1e3))
-        prnt("  - atoms with DOS (fortran indices):")
+        prnt("  - atoms with DOS (1-based):")
         prnt("     " + list2str(self.a_dev + 1))
         prnt("  - number of BTD blocks: {}".format(self.n_btd()))
         if molecule is None:
@@ -493,7 +495,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
                 prnt(" " * ns + "-> {elec}".format(elec=elec_mol_proj[0]))
             elif len(elec_mol_proj) == 3:
                 elec2, mol2, proj2 = elec_mol_proj
-                prnt(" " * ns + f"-> {elec2}|{mol2}|{proj2}")
+                prnt(" " * ns + f"-> {elec2}.{mol2}.{proj2}")
 
         def _print_to_full(s, vars):
             if len(vars) == 0:
@@ -503,29 +505,47 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
             for var in vars:
                 _print_to(ns, var)
 
+        eig_kwargs = {'precision': 4, 'threshold': 1e6, 'suffix': '', 'prefix': ''}
+
         # Print out information for each electrode
         for mol in mols:
             opt = {'mol1': mol}
             gmol = self.groups[mol]
             prnt()
             prnt(f"Molecule: {mol}")
-            prnt("  - molecule atoms (fortran indices):")
+            prnt("  - molecule atoms (1-based):")
             prnt("     " + list2str(gmol.variables['atom'][:]))
+
+            # molecule states and eigenvalues stored
+            lvls = gmol.variables['lvl'][:]
+            lvls = np.where(lvls < 0, lvls + 1, lvls) + gmol.HOMO_index
+            eigs = gmol.variables['eig'][:] * Ry2eV
+            prnt(f"  - state indices (1-based) (total={lvls.size}):")
+            prnt("     " + list2str(lvls))
+            prnt("  - state eigenvalues (eV):")
+            prnt("     " + np.array2string(eigs[lvls-1], **eig_kwargs)[1:-1])
 
             projs = self.projections(mol)
             prnt("  - number of projections: {}".format(len(projs)))
             for proj in projs:
                 opt['proj1'] = proj
                 gproj = gmol.groups[proj]
-                prnt("    > Projection: {mol1}|{proj1}".format(**opt))
-                prnt("      - number of states: {}".format(len(gproj.dimensions['nlvl'])))
+                prnt("    > Projection: {mol1}.{proj1}".format(**opt))
+                # Also pretty print the eigenvalues associated with these
+                lvls = gproj.variables['lvl'][:]
+                lvls = np.where(lvls < 0, lvls + 1, lvls) + gmol.HOMO_index
+                prnt(f"      - state indices (1-based) (total={lvls.size}):")
+                prnt("         " + list2str(lvls))
+                prnt("      - state eigenvalues:")
+                prnt("         " + np.array2string(eigs[lvls-1], **eig_kwargs)[1:-1])
+
                 # Figure out the electrode projections
                 elecs = gproj.groups.keys()
                 for elec in elecs:
                     opt['elec1'] = elec
                     gelec = gproj.groups[elec]
                     vars = list(gelec.variables.keys()) # ensure a copy
-                    prnt("      > Electrode: {elec1}|{mol1}|{proj1}".format(**opt))
+                    prnt("      > Electrode: {elec1}.{mol1}.{proj1}".format(**opt))
 
                     # Loop and figure out what is in it.
                     if 'ADOS' in vars:

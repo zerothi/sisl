@@ -2173,7 +2173,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         else:
             prnt(f"     {Em:.5f} -- {EM:.5f} eV  [{dEm:.3f} -- {dEM:.3f} meV]")
         prnt("  - imaginary part (eta): {:.4f} meV".format(self.eta() * 1e3))
-        prnt("  - atoms with DOS (fortran indices):")
+        prnt("  - atoms with DOS (1-based):")
         prnt("     " + list2str(self.a_dev + 1))
         prnt("  - number of BTD blocks: {}".format(self.n_btd()))
         truefalse('DOS' in self.variables, "DOS Green function", ['TBT.DOS.Gf'])
