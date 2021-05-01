@@ -9,6 +9,10 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior AT gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. J.M. Marmolejo-Tejada, A. Jaramillo-Botero,
+   *Four-terminal graphene nanoribbon sensor devices: In-silico design and characterization*,
+   Computational Materials Science **196**, `110506 (2021) <https://doi.org/10.1016/j.commatsci.2021.110506>`_
+
 #. D. Perera and J. Rohrer,
    *Semi-analytical approach to transport gaps in polycrystalline graphene*
    Nanoscale, `(2021) <https://doi.org/10.1039/d1nr00186h>`_
