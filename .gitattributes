@@ -1,0 +1,2 @@
+# Export hash variable into setup.py
+setup.py export-subst
