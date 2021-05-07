@@ -24,6 +24,7 @@ All methods and submodules are listed  :ref:`here <genindex>` and
    basic
    default_geom
    physics
+   mixing
    unit_constant
    utilities
 
