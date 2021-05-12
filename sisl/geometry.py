@@ -2181,14 +2181,18 @@ class Geometry(SuperCellChild):
            the xyz (Cartesian) axis are swapped.
            Both may be in `swap`.
         """
-        xyz = np.copy(self.xyz)
-        if 'xyz' in swap:
-            xyz[:, axis_a] = self.xyz[:, axis_b]
-            xyz[:, axis_b] = self.xyz[:, axis_a]
         if 'cell' in swap:
             sc = self.sc.swapaxes(axis_a, axis_b)
         else:
             sc = self.sc.copy()
+
+        xyz = np.copy(self.xyz)
+        if 'xyz' in swap:
+            xyz[:, axis_a] = self.xyz[:, axis_b]
+            xyz[:, axis_b] = self.xyz[:, axis_a]
+            sc.origo[[axis_a, axis_b]] = sc.origo[[axis_b, axis_a]]
+            sc.cell[:, [axis_a, axis_b]] = sc.cell[:, [axis_b, axis_a]]
+
         return self.__class__(xyz, atoms=self.atoms.copy(), sc=sc)
 
     def center(self, atoms=None, what='xyz'):
