@@ -30,6 +30,15 @@ Siesta
    rkpSileSiesta - k-points to simulation
 
 
+.. autosummary::
+   :toctree: generated/
+   :hidden:
+
+   SileSiesta
+   SileCDFSiesta
+   SileBinSiesta
+
+
 TranSiesta
 ==========
 
@@ -57,6 +66,14 @@ TBtrans
    tbtavncSileTBtrans
    tbtprojncSileTBtrans
 
+.. autosummary::
+   :toctree: generated/
+   :hidden:
+
+   SileTBtrans
+   SileCDFTBtrans
+   SileBinTBtrans
+
 `TBtrans`_ is per default a ballistic electron transport utility. It may also
 be compiled in a ballistic phonon transport mode, named ``PHtrans``.
 
@@ -68,15 +85,5 @@ be compiled in a ballistic phonon transport mode, named ``PHtrans``.
    phtavncSilePHtrans
    phtprojncSilePHtrans
 
-   
-.. autosummary::
-   :toctree: generated/
-   :hidden:
 
-   ~sisl.io.siesta.SileSiesta
-   ~sisl.io.siesta.SileCDFSiesta
-   ~sisl.io.siesta.SileBinSiesta
-   SileTBtrans
-   SileCDFTBtrans
-   SileBinTBtrans
 
