@@ -1637,23 +1637,28 @@ class SparseOrbital(_SparseGeometry):
         will note species that are different from the original by a ``'`` in the list.
 
         Retain 2nd orbital on the 2nd atom: ``[C, O', C, O, C, O]``
+
         >>> new_obj = obj.sub_orbital(1, 1)
 
         Retain 2nd orbital on 1st and 2nd atom: ``[C', O', C, O, C, O]``
+
         >>> new_obj = obj.sub_orbital([0, 1], 1)
 
         Retain 2nd orbital on the 1st atom and 3rd orbital on 4th atom: ``[C', O, C, O', C, O]``
+
         >>> new_obj = obj.sub_orbital(0, 1).sub_orbital(3, 2)
 
         Retain 2nd orbital on all atoms equivalent to the first atom: ``[C', O, C', O, C', O]``
+
         >>> new_obj = obj.sub_orbital(obj.geometry.atoms[0], 1)
 
         Retain 1st orbital on 1st atom, and 2nd orbital on 3rd and 5th atom: ``[C', O, C'', O, C'', O]``
+
         >>> new_obj = obj.sub_orbital(0, 0).sub_orbital([2, 4], 1)
 
         See Also
         --------
-        remove_orbital : removing a set of orbitals
+        remove_orbital : removing a set of orbitals (opposite of this)
         """
         atoms = self.geometry._sanitize_atoms(atoms).ravel()
 
