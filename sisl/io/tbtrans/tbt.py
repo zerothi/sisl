@@ -333,21 +333,21 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            :math:`N` equals the number of orbitals in the total device region.
         ``'atom'``
            :math:`N` equals the total number of orbitals in the selected
-           atoms. If `orbital` is an argument a conversion of `orbital` to the equivalent
+           atoms. If `orbitals` is an argument a conversion of `orbitals` to the equivalent
            unique atoms is performed, and subsequently the total number of orbitals on the
            atoms is used. This makes it possible to compare the fraction of orbital DOS easier.
         ``'orbital'``
-           :math:`N` is the sum of selected orbitals, if `atom` is specified, this
+           :math:`N` is the sum of selected orbitals, if `atoms` is specified, this
            is equivalent to the 'atom' option.
 
         Parameters
         ----------
         atoms : array_like of int or bool, optional
            only return for a given set of atoms (default to all).
-           *NOT* allowed with `orbital` keyword
+           *NOT* allowed with `orbitals` keyword
         orbitals : array_like of int or bool, optional
            only return for a given set of orbitals (default to all)
-           *NOT* allowed with `atom` keyword
+           *NOT* allowed with `atoms` keyword
         norm : {'none', 'atom', 'orbital', 'all'}
            how the normalization of the summed DOS is performed (see `norm` routine)
         """
@@ -396,10 +396,10 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            data to process
         atoms : array_like of int, optional
            only return for a given set of atoms (default to all).
-           *NOT* allowed with `orbital` keyword
+           *NOT* allowed with `orbitals` keyword
         orbitals : array_like of int, optional
            only return for a given set of orbitals (default to all)
-           *NOT* allowed with `atom` keyword
+           *NOT* allowed with `atoms` keyword
         sum : bool, optional
            whether the returned quantities are summed or returned *as is*, i.e. resolved per atom/orbital.
         norm : {'none', 'atom', 'orbital', 'all'}
@@ -409,7 +409,7 @@ class tbtncSileTBtrans(_devncSileTBtrans):
         -------
         numpy.ndarray
             in order of the geometry orbitals (i.e. pivoted back to the device region).
-            If `atom` or `orbital` is specified they are returned in that order.
+            If `atoms` or `orbitals` is specified they are returned in that order.
         """
         # Force False equivalent as None.
         if isinstance(atoms, bool):
@@ -521,11 +521,11 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            is returned
         atoms : array_like of int or bool, optional
            only return for a given set of atoms (default to all).
-           *NOT* allowed with `orbital` keyword. If `True` it will use all atoms in the device.
+           *NOT* allowed with `orbitals` keyword. If `True` it will use all atoms in the device.
            False is equivalent to None.
         orbitals : array_like of int or bool, optional
            only return for a given set of orbitals (default to all)
-           *NOT* allowed with `atom` keyword. If `True` it will use all orbitals in the device.
+           *NOT* allowed with `atoms` keyword. If `True` it will use all orbitals in the device.
            False is equivalent to None.
         sum : bool, optional
            whether the returned quantities are summed or returned *as is*, i.e. resolved per atom/orbital.
@@ -561,11 +561,11 @@ class tbtncSileTBtrans(_devncSileTBtrans):
            is returned
         atoms : array_like of int or bool, optional
            only return for a given set of atoms (default to all).
-           *NOT* allowed with `orbital` keyword. If `True` it will use all atoms in the device.
+           *NOT* allowed with `orbitals` keyword. If `True` it will use all atoms in the device.
            False is equivalent to None.
         orbitals : array_like of int or bool, optional
            only return for a given set of orbitals (default to all)
-           *NOT* allowed with `atom` keyword. If `True` it will use all orbitals in the device.
+           *NOT* allowed with `atoms` keyword. If `True` it will use all orbitals in the device.
            False is equivalent to None.
         sum : bool, optional
            whether the returned quantities are summed or returned *as is*, i.e. resolved per atom/orbital.

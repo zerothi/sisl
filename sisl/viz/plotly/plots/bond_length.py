@@ -92,10 +92,10 @@ class BondLengthMap(GeometryPlot):
     bind_bonds_to_ats: bool, optional
         whether only the bonds that belong to an atom that is present should
         be displayed.             If False, all bonds are displayed
-        regardless of the `atom` parameter
+        regardless of the `atoms` parameter
     show_atoms: bool, optional
         If set to False, it will not display atoms.              Basically
-        this is a shortcut for `atom = [], bind_bonds_to_ats=False`.
+        this is a shortcut for ``atoms = [], bind_bonds_to_ats=False``.
         Therefore, it will override these two parameters.
     root_fdf: fdfSileSiesta, optional
         Path to the fdf file that is the 'parent' of the results.

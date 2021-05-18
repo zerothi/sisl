@@ -105,7 +105,7 @@ class tbtprojncSileTBtrans(tbtncSileTBtrans):
            *NOT* allowed with `orbital` keyword
         orbitals : array_like of int or bool, optional
            only return for a given set of orbitals (default to all)
-           *NOT* allowed with `atom` keyword
+           *NOT* allowed with `atoms` keyword
         sum : bool, optional
            whether the returned quantities are summed or returned *as is*, i.e. resolved per atom/orbital.
         norm : {'none', 'atom', 'orbital', 'all'}

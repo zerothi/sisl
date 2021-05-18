@@ -92,10 +92,10 @@ class GeometryPlot(Plot):
     bind_bonds_to_ats: bool, optional
         whether only the bonds that belong to an atom that is present should
         be displayed. If False, all bonds are displayed
-        regardless of the `atom` parameter
+        regardless of the `atoms` parameter
     show_atoms: bool, optional
         If set to False, it will not display atoms. Basically
-        this is a shortcut for `atom = [], bind_bonds_to_ats=False`.
+        this is a shortcut for ``atoms = [], bind_bonds_to_ats=False``.
         Therefore, it will override these two parameters.
     root_fdf: fdfSileSiesta, optional
         Path to the fdf file that is the 'parent' of the results.
@@ -215,13 +215,13 @@ class GeometryPlot(Plot):
         SwitchInput(key="bind_bonds_to_ats", name="Bind bonds to atoms",
             default=True,
             help="""whether only the bonds that belong to an atom that is present should be displayed.
-            If False, all bonds are displayed regardless of the `atom` parameter"""
+            If False, all bonds are displayed regardless of the `atoms` parameter"""
         ),
 
         SwitchInput(key="show_atoms", name="Show atoms",
             default=True,
             help="""If set to False, it will not display atoms. 
-            Basically this is a shortcut for `atom = [], bind_bonds_to_ats=False`.
+            Basically this is a shortcut for ``atoms = [], bind_bonds_to_ats=False``.
             Therefore, it will override these two parameters."""
         )
 
@@ -613,7 +613,7 @@ class GeometryPlot(Plot):
             whether bonds should be plotted.
         bind_bonds_to_ats: boolean, optional
             whether only the bonds that belong to an atom that is present should be displayed.
-            If False, all bonds are displayed regardless of the `atom` parameter.
+            If False, all bonds are displayed regardless of the `atoms` parameter.
         bonds_together: boolean, optional
             If set to True, it draws all bonds in one trace, which may be faster for rendering.
             The only limitation that it has is that you can't set individual widths.
@@ -926,7 +926,7 @@ class GeometryPlot(Plot):
             the indices of the atoms that you want to plot
         bind_bonds_to_ats: boolean, optional
             whether only the bonds that belong to an atom that is present should be displayed.
-            If False, all bonds are displayed regardless of the `atom` parameter
+            If False, all bonds are displayed regardless of the `atoms` parameter
         atoms_vertices: int
             the "definition" of the atom sphere, if not in cheap mode. The more vertices, the more defined the sphere
             will be. However, it will also be more expensive to render.

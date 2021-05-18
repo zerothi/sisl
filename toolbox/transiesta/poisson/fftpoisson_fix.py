@@ -114,7 +114,7 @@ def solve_poisson(geometry, shape, radius="empirical",
         def bc2bc(s):
             return {'periodic': 'PERIODIC', 'p': 'PERIODIC', si.Grid.PERIODIC: 'PERIODIC',
                     'dirichlet': 'DIRICHLET', 'd': 'DIRICHLET', si.Grid.DIRICHLET: 'DIRICHLET',
-                    'neumann': 'NEUMANN', 'n': 'NEUMANN',si.Grid.NEUMANN: 'NEUMANN',
+                    'neumann': 'NEUMANN', 'n': 'NEUMANN', si.Grid.NEUMANN: 'NEUMANN',
             }.get(s.lower(), s.upper())
         for bottom, top in boundary:
             bc.append([getattr(si.Grid, bc2bc(bottom)), getattr(si.Grid, bc2bc(top))])
