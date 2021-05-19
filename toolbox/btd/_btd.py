@@ -641,7 +641,7 @@ class DeviceGreen:
         raise ValueError(f"{self.__class__.__name__}.scattering_state_from_spectral method is not [full,propagate]")
 
     def _scattering_state_from_spectral_full(self, A, elec, cutoff):
-        # add something to the diagonal (improves diag precision)
+        # add something to the diagonal (improves diag precision for small states)
         np.fill_diagonal(A, A.diagonal() + 0.1)
 
         # Now diagonalize A
@@ -757,8 +757,11 @@ class DeviceGreen:
             elec_to = [elec_to]
         elec_to = [self._elec(e) for e in elec_to]
 
+        # Retrive the scattering states `A`
         A = state.state
-        sqDOS = np.sqrt(np.fabs(state.c)).reshape(-1, 1)
+        # The sign shouldn't really matter since the states should always
+        # have a finite DOS, however, for completeness sake we retain the sign.
+        sqDOS = (np.sign(state.c) * np.sqrt(np.fabs(state.c))).reshape(-1, 1)
 
         # create shorthands
         elec = self.elec
@@ -768,31 +771,23 @@ class DeviceGreen:
         el = elec_to[0]
         idx = elec[el].pvt_dev.ravel()
         u = A[:, idx] * sqDOS
+        # the summed transmission matrix
         Ut = u @ G[el] @ dagger(u)
-        # Create the rest of the electrode projections
         for el in elec_to[1:]:
             idx = elec[el].pvt_dev.ravel()
             u = A[:, idx] * sqDOS
             Ut += u @ G[el] @ dagger(u)
+
+        # diagonalize the transmission matrix tt
         tt, Ut = eigh_destroy(Ut)
+        Ut *= 1 / (2 * np.pi) ** 0.5
 
         info = {**state.info}
         info["elec_to"] = [self._elec_name(e) for e in elec_to]
 
         # Backtransform U to form the eigenchannels
-        return si.physics.StateC((Ut.T @ A)[::-1, :], tt[::-1], self, **info)
-
-    def __split_T_eig(self, elecs, eig, Ut):
-        elecs = [self._elec(e) for e in elecs]
-        eigT = np.empty([len(elecs), len(eig)], dtype=eig.dtype)
-        for ie, elec in enumerate(elecs):
-            idx = self.elec[elec].pvt_dev
-            u = Ut[:, idx]
-            #  Equivalent to:
-            #    (dot(u.conj(), self._data.gamma[elec]) * u).sum(axis=1).real
-            eigT[ie, :] = einsum("ij,ij->i", u.conj(), self._data.gamma[elec] @ u).real
-
-        return eigT * (2 * np.pi)
+        return si.physics.StateC((Ut.T @ A)[::-1, :],
+                                 tt[::-1], self, **info)
 
     def _green_diag_block(self, idx):
         nb = len(self.btd)
