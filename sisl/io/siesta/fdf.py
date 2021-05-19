@@ -477,8 +477,17 @@ class fdfSileSiesta(SileSiesta):
 
     @sile_fh_open()
     def write_supercell(self, sc, fmt='.8f', *args, **kwargs):
-        """ Writes the supercell to the contained file """
-        # Check that we can write to the file
+        """ Writes the supercell
+
+        Parameters
+        ----------
+        sc : SuperCell
+           supercell object to write
+        fmt : str, optional
+           precision used to store the lattice vectors
+        unit : {'Ang', 'Bohr'}
+           the unit used when writing the data.
+        """
         sile_raise_write(self)
 
         fmt_str = ' {{0:{0}}} {{1:{0}}} {{2:{0}}}\n'.format(fmt)
@@ -500,8 +509,18 @@ class fdfSileSiesta(SileSiesta):
 
     @sile_fh_open()
     def write_geometry(self, geometry, fmt='.8f', *args, **kwargs):
-        """ Writes the geometry to the contained file """
-        # Check that we can write to the file
+        """ Writes the geometry
+
+        Parameters
+        ----------
+        geometry : Geometry
+           geometry object to write
+        fmt : str, optional
+           precision used to store the atomic coordinates
+        unit : {'Ang', 'Bohr', 'fractional', 'frac'}
+           the unit used when writing the data.
+           fractional and frac are the same.
+        """
         sile_raise_write(self)
 
         self.write_supercell(geometry.sc, fmt, *args, **kwargs)
@@ -509,7 +528,7 @@ class fdfSileSiesta(SileSiesta):
         self._write('\n')
         self._write(f'NumberOfAtoms {geometry.na}\n')
         unit = kwargs.get('unit', 'Ang').capitalize()
-        is_fractional = unit in ['Frac', 'Fractional']
+        is_fractional = unit in ('Frac', 'Fractional')
         if is_fractional:
             self._write('AtomicCoordinatesFormat Fractional\n')
         else:
