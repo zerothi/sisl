@@ -80,13 +80,44 @@ __all__ += ['CoefficientElectron', 'StateElectron', 'StateCElectron']
 __all__ += ['EigenvalueElectron', 'EigenvectorElectron', 'EigenstateElectron']
 
 
-def _decouple_eigh(M):
-    """ Return eigenvectors and sort according to the first absolute entry
+def _decouple_eigh(state, *M, *, sum=True):
+    r""" Return eigenvectors and sort according to the first absolute entry
 
     This should make returned values consistent where small numerical noises
     may swap two degenerate states.
+
+    The decoupling algorithm is this recursive algorithm starting from :math:`i=0`:
+
+    .. math::
+
+       \mathbf p &= \mathbf V^\dagger \mathbf M_i \mathbf V
+       \\
+       \mathbf p \mathbf u &= \boldsymbol \lambda \mathbf u
+       \\
+       \mathbf V &= \mathbf u^T \mathbf V
+
+    Parameters
+    ----------
+    state : numpy.ndarray
+       states to be decoupled on matrices `M`
+       The states must have C-ordering, i.e. ``[0, ...]`` is the first
+       state.
+    *M : list of matrices
+       the matrices to project to before disentangling the states
+    sum : bool, optional
+       whether the list `M` is summed before disentanglement. If false,
+       they are done recursively.
     """
-    return eigh_destroy(M)[1].T
+    if sum:
+        m = 0
+        for mm in M:
+            m = m + mm
+        M = [m]
+    for m in M:
+        # since m may be a sparse matrix, we cannot use __matmul__
+        p = conj(state) @ m.dot(state.T)
+        state = eigh_destroy(p)[1].T @ state
+    return state
 
 
 @set_module("sisl.physics.electron")
@@ -519,12 +550,7 @@ def _velocity_non_ortho(state, dHk, energy, dSk, degenerate, project):
             # Now diagonalize to find the contributions from individual states
             # then re-construct the seperated degenerate states
             # Since we do this for all directions we should decouple them all
-            vv = conj(state[deg, :]).dot((dHk[0] - e * dSk[0]).dot(state[deg, :].T))
-            S = _decouple_eigh(vv).dot(state[deg, :])
-            vv = conj(S).dot((dHk[1] - e * dSk[1]).dot(S.T))
-            S = _decouple_eigh(vv).dot(S)
-            vv = conj(S).dot((dHk[2] - e * dSk[2]).dot(S.T))
-            state[deg, :] = _decouple_eigh(vv).dot(S)
+            state[deg] = _decouple_eigh(state[deg], *[dh - e * ds for dh, ds in zip(dHk, dSk)])
 
     if project:
         v = np.empty([state.shape[0], state.shape[1], 3], dtype=dtype_complex_to_real(state.dtype))
@@ -556,12 +582,7 @@ def _velocity_ortho(state, dHk, degenerate, project):
             # Now diagonalize to find the contributions from individual states
             # then re-construct the seperated degenerate states
             # Since we do this for all directions we should decouple them all
-            vv = conj(state[deg, :]).dot(dHk[0].dot(state[deg, :].T))
-            S = _decouple_eigh(vv).dot(state[deg, :])
-            vv = conj(S).dot((dHk[1]).dot(S.T))
-            S = _decouple_eigh(vv).dot(S)
-            vv = conj(S).dot((dHk[2]).dot(S.T))
-            state[deg, :] = _decouple_eigh(vv).dot(S)
+            state[deg] = _decouple_eigh(state[deg], *dHk)
 
     cs = conj(state)
     if project:
@@ -654,12 +675,7 @@ def _velocity_matrix_non_ortho(state, dHk, energy, dSk, degenerate, dtype):
             # Now diagonalize to find the contributions from individual states
             # then re-construct the seperated degenerate states
             # Since we do this for all directions we should decouple them all
-            vv = conj(state[deg, :]).dot((dHk[0] - e * dSk[0]).dot(state[deg, :].T))
-            S = _decouple_eigh(vv).dot(state[deg, :])
-            vv = conj(S).dot((dHk[1] - e * dSk[1]).dot(S.T))
-            S = _decouple_eigh(vv).dot(S)
-            vv = conj(S).dot((dHk[2] - e * dSk[2]).dot(S.T))
-            state[deg, :] = _decouple_eigh(vv).dot(S)
+            state[deg] = _decouple_eigh(state[deg], *[dh - e * ds for dh, ds in zip(dHk, dSk)])
 
     # Since they depend on the state energies and dSk we have to loop them individually.
     cs = conj(state)
@@ -687,12 +703,7 @@ def _velocity_matrix_ortho(state, dHk, degenerate, dtype):
             # Now diagonalize to find the contributions from individual states
             # then re-construct the seperated degenerate states
             # Since we do this for all directions we should decouple them all
-            vv = conj(state[deg, :]).dot(dHk[0].dot(state[deg, :].T))
-            S = _decouple_eigh(vv).dot(state[deg, :])
-            vv = conj(S).dot((dHk[1]).dot(S.T))
-            S = _decouple_eigh(vv).dot(S)
-            vv = conj(S).dot((dHk[2]).dot(S.T))
-            state[deg, :] = _decouple_eigh(vv).dot(S)
+            state[deg] = _decouple_eigh(state[deg], *dHk)
 
     cs = conj(state)
     for s in range(n):
@@ -952,12 +963,7 @@ def _inv_eff_mass_tensor_non_ortho(state, ddHk, energy, ddSk, degenerate, as_mat
             # Now diagonalize to find the contributions from individual states
             # then re-construct the seperated degenerate states
             # We only do this along the double derivative directions
-            vv = conj(state[deg, :]).dot((ddHk[0] - e * ddSk[0]).dot(state[deg, :].T))
-            S = _decouple_eigh(vv).dot(state[deg, :])
-            vv = conj(S).dot((ddHk[1] - e * ddSk[1]).dot(S.T))
-            S = _decouple_eigh(vv).dot(S)
-            vv = conj(S).dot((ddHk[2] - e * ddSk[2]).dot(S.T))
-            state[deg, :] = _decouple_eigh(vv).dot(S)
+            state[deg] = _decouple_eigh(state[deg], *[ddh - e * dds for ddh, dds in zip(ddHk, ddSk)])
 
     # Since they depend on the state energies and ddSk we have to loop them individually.
     for s, e in enumerate(energy):
@@ -996,12 +1002,7 @@ def _inv_eff_mass_tensor_ortho(state, ddHk, degenerate, as_matrix):
             # Now diagonalize to find the contributions from individual states
             # then re-construct the seperated degenerate states
             # We only do this along the double derivative directions
-            vv = conj(state[deg, :]).dot(ddHk[0].dot(state[deg, :].T))
-            S = _decouple_eigh(vv).dot(state[deg, :])
-            vv = conj(S).dot(ddHk[1].dot(S.T))
-            S = _decouple_eigh(vv).dot(S)
-            vv = conj(S).dot(ddHk[2].dot(S.T))
-            state[deg, :] = _decouple_eigh(vv).dot(S)
+            state[deg] = _decouple_eigh(state[deg], *ddHk)
 
     for i in range(6):
         M[:, i] = einsum('ij,ji->i', conj(state), ddHk[i].dot(state.T)).real
