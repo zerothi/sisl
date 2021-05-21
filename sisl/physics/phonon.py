@@ -184,12 +184,7 @@ def _velocity(mode, hw, dDk, degenerate, project):
             # Now diagonalize to find the contributions from individual modes
             # then re-construct the seperated degenerate modes
             # Since we do this for all directions we should decouple them all
-            vv = conj(mode[deg, :]).dot(dDk[0].dot(mode[deg, :].T))
-            S = _decouple_eigh(vv).dot(mode[deg, :])
-            vv = conj(S).dot((dDk[1]).dot(S.T))
-            S = _decouple_eigh(vv).dot(S)
-            vv = conj(S).dot((dDk[2]).dot(S.T))
-            mode[deg, :] = _decouple_eigh(vv).dot(S)
+            mode[deg] = _decouple_eigh(mode[deg], *dDk)
 
     cm = conj(mode)
     if project:
