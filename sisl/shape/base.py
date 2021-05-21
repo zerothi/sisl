@@ -59,7 +59,7 @@ class Shape:
     """
     __slots__ = ('_center', )
 
-    def __init__(self, center):
+    def __init__(self, center=None):
         if center is None:
             self._center = _a.zerosd(3)
         else:

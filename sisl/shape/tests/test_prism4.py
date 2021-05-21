@@ -12,6 +12,7 @@ def test_create_cuboid():
     cube = Cuboid([1.0]*3)
     cube = Cuboid([1.0]*3, [1.]*3)
     cube = Cuboid([1.0, 2.0, 3.0], [1.]*3)
+    cube = Cuboid([1.0, 2.0, 3.0], origo=[1.]*3)
     v0 = [1., 0.2, 1.0]
     v1 = [1., -0.2, 1.0]
     v2 = [1., -0.2, -1.0]
@@ -26,6 +27,8 @@ def test_create_fail():
     v3 = [1., -0.2, -1.0]
     with pytest.raises(ValueError):
         el = Cuboid([v0, v1, v2, v3])
+    with pytest.raises(ValueError):
+        el = Cuboid(2, center=v1, origo=v2)
 
 
 def test_tosphere():
