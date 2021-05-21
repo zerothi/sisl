@@ -3,6 +3,8 @@
 
 - added pymatgen conversion (Geometry.to/from.pymatgen)
 
+- Enabled atom indexing by shapes #337
+
 0.11.0
 ======
 

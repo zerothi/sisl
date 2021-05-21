@@ -1461,7 +1461,7 @@ def test_geometry_sort_fail_keyword():
 
 @pytest.mark.category
 @pytest.mark.geom_category
-def test_geometry_sanitize_atom():
+def test_geometry_sanitize_atom_category():
     bi = sisl_geom.bilayer(bottom_atoms=Atom[6], top_atoms=(Atom[5], Atom[7])).tile(2, 0).repeat(2, 1)
     C_idx = (bi.atoms.Z == 6).nonzero()[0]
     check_C = bi.axyz(C_idx)
@@ -1486,6 +1486,12 @@ def test_geometry_sanitize_atom():
                        bi._sanitize_atoms(list_01))
     assert np.allclose(bi._sanitize_atoms(ndarray_01),
                        bi._sanitize_atoms(list_01))
+
+
+def test_geometry_sanitize_atom_shape():
+    bi = sisl_geom.bilayer(bottom_atoms=Atom[6], top_atoms=(Atom[5], Atom[7])).tile(2, 0).repeat(2, 1)
+    cube = Cube(10)
+    assert len(bi.axyz(cube)) != 0
 
 
 def test_geometry_sanitize_orbs():

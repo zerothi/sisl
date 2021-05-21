@@ -367,6 +367,14 @@ class Geometry(SuperCellChild):
         # First do categorization
         return self._sanitize_atoms(AtomCategory.kw(**atoms))
 
+    @_sanitize_atoms.register(Shape)
+    def _(self, atoms):
+        # This is perhaps a bit weird since a shape could
+        # extend into the supercell.
+        # Since the others only does this for unit-cell atoms
+        # then it seems natural to also do that here...
+        return atoms.within_index(self.xyz)
+
     @singledispatchmethod
     def _sanitize_orbs(self, orbitals):
         """ Converts an `orbital` to index under given inputs
