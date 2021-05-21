@@ -1653,7 +1653,7 @@ class _electron_State:
                 if self.shape[0] != right.shape[0]:
                     raise ValueError(f"{self.__class__.__name__}.inner with align=True requires exactly the same shape!")
                 # Align the states
-                right = self.align_phase(right, copy=False)
+                right = self.align_phase(right)
 
             if diagonal:
                 if self.shape[0] != right.shape[0]:
