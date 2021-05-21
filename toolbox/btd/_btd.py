@@ -617,11 +617,7 @@ class DeviceGreen:
         U = U[:, -N:]
 
         if cutoff > 0:
-            # Reduce again to the cutoff
-            # The cutoff is DOS / eV / site
-            # I.e. calculate the actual cutoff
-            c = cutoff / U.shape[0]
-            idx = (DOS > c).nonzero()[0]
+            idx = (DOS > cutoff).nonzero()[0]
             DOS = DOS[idx]
             U = U[:, idx]
 
@@ -648,6 +644,8 @@ class DeviceGreen:
         DOS, A = eigh_destroy(A)
         # backconvert diagonal
         DOS -= 0.1
+        # TODO check with overlap convert with correct magnitude (Tr[A] / 2pi)
+        DOS /= 2 * np.pi
         DOS, A = self._scattering_state_reduce(elec, DOS, A, cutoff)
 
         data = self._data
@@ -660,7 +658,7 @@ class DeviceGreen:
         )
 
         # always have the first state with the largest values
-        return si.physics.StateC(A.T[::-1], DOS[::-1], self, **info)
+        return si.physics.StateCElectron(A.T[::-1], DOS[::-1], self, **info)
 
     def _scattering_state_from_spectral_propagate(self, blocks_A, elec, cutoff):
         blocks, U = blocks_A
@@ -670,8 +668,14 @@ class DeviceGreen:
 
         # Calculate eigenvalues
         DOS, U = eigh_destroy(U)
+        # backconvert diagonal
         DOS -= 0.1
+        # TODO check with overlap convert with correct magnitude (Tr[A] / 2pi)
+        DOS /= 2 * np.pi
 
+        # Remove states for cutoff and size
+        # Since there cannot be any addition of states later, we
+        # can do the reduction here.
         DOS, U = self._scattering_state_reduce(elec, DOS, U, cutoff)
 
         nb = len(self.btd)
@@ -692,10 +696,9 @@ class DeviceGreen:
         for b in range(blocks[-1], nb - 1):
             u[b + 1] = - t[b] @ u[b]
 
-        # create the full U and get C-ordering
+        # Now the full U is created (C-order), but the DOS is *not* correct
         u = np.concatenate(u).T
 
-        # Now the full U is created, but the DOS is *not* correct since that
         # reflects the DOS in the electrode region
         # this is:
         #    Diag[u^H u]
@@ -726,7 +729,7 @@ class DeviceGreen:
             eta=data.eta,
             cutoff=cutoff
         )
-        return si.physics.StateC(u[idx], DOS[idx], self, **info)
+        return si.physics.StateCElectron(u[idx], DOS[idx], self, **info)
 
     def scattering_state(self, elec, cutoff=0., method='full', *args, **kwargs):
         elec = self._elec(elec)
@@ -778,16 +781,21 @@ class DeviceGreen:
             u = A[:, idx] * sqDOS
             Ut += u @ G[el] @ dagger(u)
 
+        # TODO currently a factor depends on what is used
+        #      in `scattering_states`, so go check there.
+        #      The resulting Ut should have a factor: 1 / 2pi ** 0.5
+        #      When the states DOS values (`state.c`) has the factor 1 / 2pi
+        #      then `u` has the correct magnitude and all we need to do is to add the factor 2pi
         # diagonalize the transmission matrix tt
         tt, Ut = eigh_destroy(Ut)
-        Ut *= 1 / (2 * np.pi) ** 0.5
+        tt *= 2 * np.pi
 
         info = {**state.info}
         info["elec_to"] = [self._elec_name(e) for e in elec_to]
 
         # Backtransform U to form the eigenchannels
-        return si.physics.StateC((Ut.T @ A)[::-1, :],
-                                 tt[::-1], self, **info)
+        return si.physics.StateCElectron((Ut.T @ A)[::-1, :],
+                                         tt[::-1], self, **info)
 
     def _green_diag_block(self, idx):
         nb = len(self.btd)

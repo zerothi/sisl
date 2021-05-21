@@ -80,7 +80,7 @@ __all__ += ['CoefficientElectron', 'StateElectron', 'StateCElectron']
 __all__ += ['EigenvalueElectron', 'EigenvectorElectron', 'EigenstateElectron']
 
 
-def _decouple_eigh(state, *M, *, sum=True):
+def _decouple_eigh(state, *M, sum=True):
     r""" Return eigenvectors and sort according to the first absolute entry
 
     This should make returned values consistent where small numerical noises
