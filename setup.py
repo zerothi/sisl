@@ -459,6 +459,21 @@ def readme():
         return ""
     return open("README.md", "r").read()
 
+
+# We need to add sisl.* since that recursively adds modules
+packages = find_packages(include=["sisl", "sisl.*"])
+# Add toolboxes
+# This requires some name-mangling since we can't place them
+# in the correct place unless we use 'package_dir' and this trick.
+# 1. Here we list files as they should appear in packages for end-users
+# 2. In 'package_dir' we defer the package name to the local file path
+packages += map(lambda x: f"sisl_toolbox.{x}", find_packages("toolbox"))
+
+# Also ensure we have all "pxd" files
+package_data = {p: ["*.pxd"] for p in packages}
+# Add toolbox data
+package_data["sisl_toolbox.siesta.minimizer"] = ["basis.yaml", "pseudo.yaml"]
+
 metadata = dict(
     name=DISTNAME,
     author=AUTHOR,
@@ -471,17 +486,8 @@ metadata = dict(
     license=LICENSE,
     # Ensure the packages are being found in the correct locations
     package_dir={"sisl_toolbox": "toolbox"},
-    package_data={},
-    packages=
-    # We need to add sisl.* since that recursively adds modules
-    find_packages(include=["sisl", "sisl.*"])
-    +
-    # Add toolboxes
-    # This requires some name-mangling since we can't place them
-    # in the correct place unless we use 'package_dir' and this trick.
-    # 1. Here we list files as they should appear in packages for end-users
-    # 2. In 'package_dir' we defer the package name to the local file path
-    list(map(lambda x: f"sisl_toolbox.{x}", find_packages("toolbox"))),
+    package_data=package_data,
+    packages=packages,
     ext_modules=cythonizer(extensions, compiler_directives=directives),
     entry_points={
         "console_scripts":
