@@ -396,3 +396,9 @@ def test_fdf_argumentparser(sisl_tmp):
         fh.write('Flag3 true\n')
 
     fdfSileSiesta(f).ArgumentParser()
+
+
+def test_fdf_fe_basis(sisl_files):
+    geom = fdfSileSiesta(sisl_files(_dir, 'fe.fdf')).read_geometry()
+    assert geom.no == 15
+    assert geom.na == 1

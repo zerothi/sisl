@@ -76,7 +76,7 @@ class AtomBasis:
             nonlocal block
             out = ""
             while len(out) == 0:
-                out = block.pop(0).split('#')[0]
+                out = block.pop(0).split('#')[0].strip()
             return out
 
         # define global opts
@@ -112,11 +112,13 @@ class AtomBasis:
             # contration lines rather than next orbital line.
             # This is because the first n=<integer> should never
             # contain a ".", whereas the contraction *should*.
-            if '.' in block[0].split()[0]:
-                contract_line = blockline()
+            if len(block) > 0:
+                if '.' in block[0].split()[0]:
+                    contract_line = blockline()
 
             # remove n=
             nl_line = nl_line.replace("n=", "").split()
+
             # first 3 are n, l, Nzeta
             n = int(nl_line.pop(0))
             l = int(nl_line.pop(0))
@@ -166,11 +168,26 @@ class AtomBasis:
                     nlopts["charge"] = [charge, yukawa, width]
 
             # now we have everything to build the orbitals etc.
-            for izeta, rc in enumerate(map(float, rc_line.split())):
-                orb = si.AtomicOrbital(n=n, l=l, m=0, zeta=izeta+1, R=rc / _Ang2Bohr)
+            for izeta, rc in enumerate(map(float, rc_line.split()), 1):
+                if rc > 0:
+                    rc /= _Ang2Bohr
+                elif rc == 0:
+                    rc = orbs[-1].R
+                elif izeta > 1:
+                    rc *= -orbs[-1].R
+                else:
+                    raise ValueError(f"Could not parse the PAO.Basis block for the zeta ranges {rc_line}.")
+                orb = si.AtomicOrbital(n=n, l=l, m=0, zeta=izeta, R=rc)
                 nzeta -= 1
                 orbs.append(orb)
-            assert nzeta == 0
+
+            # In case the final orbitals hasn't been defined.
+            # They really should be defined in this one, but sometimes it may be
+            # useful to leave the rc's definitions out.
+            rc = orbs[-1].R
+            for izeta in range(nzeta):
+                orb = si.AtomicOrbital(n=n, l=l, m=0, zeta=orbs[-1].zeta+1, R=rc)
+                orbs.append(orb)
             opts[(n, l)] = nlopts
 
         # Now create the atom

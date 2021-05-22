@@ -28,7 +28,8 @@ from .siesta_nc import ncSileSiesta
 from .basis import ionxmlSileSiesta, ionncSileSiesta
 from .orb_indx import orbindxSileSiesta
 from .xv import xvSileSiesta
-from sisl import Geometry, Orbital, Atom, AtomGhost, Atoms, SuperCell, DynamicalMatrix
+from sisl import Orbital, SphericalOrbital, Atom, AtomGhost, Atoms
+from sisl import Geometry, SuperCell, DynamicalMatrix
 
 from sisl.utils.cmd import default_ArgumentParser, default_namespace
 from sisl.utils.misc import merge_instances
@@ -1618,12 +1619,17 @@ class fdfSileSiesta(SileSiesta):
             # so return nothing
             return None
 
+        # We create a dictionary with the different atomic species
+        # and create defaults with another dictionary.
+        atoms = [{} for _ in spcs]
+
+        pao_basis = self.get("PAO.Basis", default=[])
+
         all_mass = self.get('AtomicMass', default=[])
         # default mass
         mass = None
 
         # Now spcs contains the block of the chemicalspecieslabel
-        atoms = [None] * len(spcs)
         for spc in spcs:
             idx, Z, lbl = spc.split()[:3]
             idx = int(idx) - 1 # F-indexing
@@ -1639,8 +1645,140 @@ class fdfSileSiesta(SileSiesta):
                 else:
                     mass = None
 
-            atoms[idx] = Atom(Z=Z, mass=mass, tag=lbl)
-        return atoms
+            atoms[idx]["Z"] = Z
+            atoms[idx]["mass"] = mass
+            atoms[idx]["tag"] = lbl
+            try:
+                # Only in some cases can we parse the PAO.Basis block.
+                # There are many corner cases where we can't parse it
+                # And the we just don't do anything...
+                # We don't even warn the user...
+                atoms[idx]["orbitals"] = self._parse_pao_basis(pao_basis, lbl)
+            except Exception as e:
+                pass
+
+        # Now check if we can find the orbitals
+        return [Atom(**atom) for atom in atoms]
+
+    def _parse_pao_basis(self, block, specie=None):
+        """ Parse the full PAO.Basis block with *optionally* only a single specie
+
+        Notes
+        -----
+        This parsing of the basis set is not complete, in any sense.
+        Especially if users requests filtered orbitals.
+
+        Parameters
+        ----------
+        block : list of str
+           the entire PAO.Basis block as read by ``self.get("PAO.Basis")``
+        specie : str, optional
+           which specie to parse
+
+        Returns
+        -------
+        orbitals : list of AtomicOrbital
+            if the specie is not found the returned list will be length 0
+        """
+        if len(block) == 0:
+            return []
+
+        # make a copy
+        block = list(block)
+
+        def blockline():
+            nonlocal block
+            out = ""
+            while len(out) == 0:
+                out = block.pop(0).split('#')[0].strip()
+            return out
+
+        # read until we find the correct specie
+        line = blockline()
+        while line.split()[0] != specie:
+            line = blockline()
+
+        # quick return if nothing found
+        if len(block) == 0:
+            return []
+
+        line = line.split()
+        # In this basis range we don't care about the options for
+        # the specification
+        tag, nl, *_ = line
+
+        # now loop orbitals
+        orbs = []
+        # we just use a non-physical number to signal it didn't get added
+        # in siesta it can automatically determine this, we can't... (yet!)
+        n = 0
+        for _ in range(int(nl)):
+            # we have 2 or 3 lines
+            nl_line = blockline()
+            rc_line = blockline()
+            # check if we have contraction in the line
+            # This is not perfect, but should grab
+            # contration lines rather than next orbital line.
+            # This is because the first n=<integer> should never
+            # contain a ".", whereas the contraction *should*.
+            if len(block) > 0:
+                if '.' in block[0].split()[0]:
+                    contract_line = blockline()
+
+            # remove n=
+            nl_line = nl_line.replace("n=", "").split()
+
+            # first 3|2: are n?, l, Nzeta
+            first = int(nl_line.pop(0))
+            second = int(nl_line.pop(0))
+            try:
+                int(nl_line[0])
+                n = first
+                l = second
+                nzeta = int(nl_line.pop(0))
+            except:
+                l = first
+                nzeta = second
+
+            # Number of polarizations
+            npol = 0
+            while len(nl_line) > 0:
+                opt = nl_line.pop(0)
+                if opt == "P":
+                    try:
+                        npol = int(nl_line[0])
+                        nl_line.pop(0)
+                    except:
+                        npol = 1
+
+            # now we have everything to build the orbitals etc.
+            first_zeta = None
+            for izeta, rc in enumerate(map(float, rc_line.split()), 1):
+                if rc > 0:
+                    rc *= Bohr2Ang
+                elif rc == 0:
+                    rc = orbs[-1].R
+                else:
+                    rc *= -orbs[-1].R
+                orb = SphericalOrbital(l, None, R=rc)
+                orbs.extend(orb.toAtomicOrbital(n=n, zeta=izeta))
+                if izeta == 1:
+                    first_zeta = orb
+                nzeta -= 1
+
+            # In case the final orbitals hasn't been defined.
+            # They really should be defined in this one, but sometimes it may be
+            # useful to leave the rc's definitions out.
+            orb = orbs[-1]
+            rc = orb.R
+            for izeta in range(orb.zeta, orb.zeta + nzeta):
+                orb = SphericalOrbital(l, None, R=rc)
+                orbs.extend(orb.toAtomicOrbital(n=n, zeta=izeta))
+            for ipol in range(1, npol+1):
+                orb = SphericalOrbital(l+1, None, R=first_zeta.R)
+                orbs.extend(orb.toAtomicOrbital(n=n, zeta=ipol, P=True))
+
+        return orbs
 
     def _r_add_overlap(self, parent_call, M):
         """ Internal routine to ensure that the overlap matrix is read and added to the matrix `M` """

@@ -368,7 +368,7 @@ class SphericalOrbital(Orbital):
         elif rf_or_func is None:
             # We don't do anything
             self.f = NotImplemented
-            self._R = -1.
+            self._R = kwargs.pop('R', -1.)
         else:
             # it must be two arguments
             self.set_radial(rf_or_func[0], rf_or_func[1], **kwargs)
@@ -685,8 +685,8 @@ class SphericalOrbital(Orbital):
         if m is None:
             m = range(-self.l, self.l + 1)
         elif isinstance(m, Integral):
-            return AtomicOrbital(n=n, l=self.l, m=m, zeta=zeta, P=P, spherical=self, q0=q0)
-        return [AtomicOrbital(n=n, l=self.l, m=mm, zeta=zeta, P=P, spherical=self, q0=q0) for mm in m]
+            return AtomicOrbital(n=n, l=self.l, m=m, zeta=zeta, P=P, spherical=self, q0=q0, R=self.R)
+        return [AtomicOrbital(n=n, l=self.l, m=mm, zeta=zeta, P=P, spherical=self, q0=q0, R=self.R) for mm in m]
 
     def __getstate__(self):
         """ Return the state of this object """
