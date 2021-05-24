@@ -1214,10 +1214,17 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
     def convert(self, spin, dtype=None):
         """ Create a new matrix of the specified spin type through the following conversion rules:
 
-        unpolarized -> (polarized, non-colinear, spinorbit): Duplicate up/down components
-        (polarized, non-colinear, spinorbit) -> unpolarized: Average up/down components
-        non-colinear -> spinorbit: set spin components 4-7 to zero
-        spinorbit -> non-colinear: ignore spin components 4-7 (should one rather average?)
+        Up-conversion:
+        * unpolarized -> (polarized, non-colinear, spinorbit): Copy unpolarized value to both up and down components
+        * polarized -> (non-colinear, spinorbit): Copy up and down components
+        * non-colinear -> spinorbit: Copy first four spin components
+        * all other new spin components are set to zero
+
+        Down-conversion:
+        * (polarized, non-colinear, spinorbit) -> unpolarized: Set unpolarized value to a mix 0.5*up + 0.5*down
+        * (non-colinear, spinorbit) -> polarized: Keep up and down spin components
+        * spinorbit -> non-colinear: Keep first four spin components
+        * all other spin components are dropped
 
         Parameters
         ----------
