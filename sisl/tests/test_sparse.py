@@ -1365,17 +1365,61 @@ def test_fromsp_csr():
     assert np.abs(csr2 - csr_2).sum() == 0.
 
 
-def test_convert():
+def test_transform1():
     csr1 = sc.sparse.random(10, 100, 0.01, random_state=24812)
     csr2 = sc.sparse.random(10, 100, 0.02, random_state=24813)
     csr = SparseCSR.fromsp(csr1, csr2)
 
-    scale = [[0.25, 0.75]]
-    conv = csr.convert(scale=scale)
+    # real 1x2 matrix, dtype=np.complex128
+    matrix = [[0.3, 0.7]]
+    conv = csr.transform(matrix=matrix, dtype=np.complex128)
 
     assert conv.shape[:2] == csr.shape[:2]
-    assert conv.shape[2] == len(scale)
-    assert np.abs(conv.tocsr() - 0.25 * csr1 - 0.75 * csr2).sum() == 0.
+    assert conv.shape[2] == len(matrix)
+    assert np.abs(conv.tocsr(0) - 0.3 * csr1 - 0.7 * csr2).sum() == 0.
+
+def test_transform2():
+    csr1 = sc.sparse.random(10, 100, 0.01, random_state=24812)
+    csr2 = sc.sparse.random(10, 100, 0.02, random_state=24813)
+    csr = SparseCSR.fromsp(csr1, csr2)
+
+    # real 2x2 matrix, dtype=np.float64
+    matrix = [[0.3, 0], [0, 0.7]]
+    conv = csr.transform(matrix=matrix, dtype=np.float64)
+
+    assert conv.shape[:2] == csr.shape[:2]
+    assert conv.shape[2] == len(matrix)
+    assert np.abs(conv.tocsr(0) - 0.3 * csr1).sum() == 0.
+    assert np.abs(conv.tocsr(1) - 0.7 * csr2).sum() == 0.
+
+def test_transform3():
+    csr1 = sc.sparse.random(10, 100, 0.01, random_state=24812)
+    csr2 = sc.sparse.random(10, 100, 0.02, random_state=24813)
+    csr = SparseCSR.fromsp(csr1, csr2)
+
+    # real 3x2 matrix
+    matrix = [[0.3, 0], [0, 0.7], [0.1, 0.2]]
+    conv = csr.transform(matrix=matrix)
+
+    assert conv.shape[:2] == csr.shape[:2]
+    assert conv.shape[2] == len(matrix)
+    assert np.abs(conv.tocsr(0) - 0.3 * csr1).sum() == 0.
+    assert np.abs(conv.tocsr(1) - 0.7 * csr2).sum() == 0.
+    assert np.abs(conv.tocsr(2) - 0.1 * csr1 - 0.2 * csr2).sum() == 0.
+
+def test_transform4():
+    csr1 = sc.sparse.random(10, 100, 0.01, random_state=24812)
+    csr2 = sc.sparse.random(10, 100, 0.02, random_state=24813)
+    csr = SparseCSR.fromsp(csr1, csr2)
+
+    # complex 1x2 matrix
+    matrix = [[0.3j, 0.7j]]
+    conv = csr.transform(matrix=matrix)
+
+    assert conv.shape[:2] == csr.shape[:2]
+    assert conv.shape[2] == len(matrix)
+    assert np.abs(conv.tocsr(0) - 0.3j * csr1 - 0.7j * csr2).sum() == 0.
+
 
 @pytest.mark.slow
 def test_fromsp_csr_large():

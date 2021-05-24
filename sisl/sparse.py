@@ -1350,37 +1350,6 @@ class SparseCSR(NDArrayOperatorsMixin):
 
         return new
 
-    def convert(self, scale, dtype=None):
-        """ Convert sparse matrix data to a different dimension by mixing with specified coefficients
-
-        Parameters
-        ----------
-        scale : array_like
-            coefficients [with shape (new_dim, old_dim)] for mixing of the sparse matrix data
-        """
-        if dtype is None:
-            dtype = self.dtype
-
-        dim = len(scale)
-        shape = list(self.shape[:])
-        shape[2] = dim
-
-        new = self.__class__(shape, dtype=dtype, nnz=1)
-
-        copyto(new.ptr, self.ptr, casting='no')
-        copyto(new.ncol, self.ncol, casting='no')
-        new.col = self.col.copy()
-        new._nnz = self.nnz
-
-        new._D = zeros([len(self.col), dim], dtype)
-        for i, sc in enumerate(scale):
-            for j, factor in enumerate(sc):
-                new._D[:, i] += factor * self._D[:, j]
-
-        new._finalized = self._finalized
-
-        return new
-
     def tocsr(self, dim=0, **kwargs):
         """ Convert dimension `dim` into a :class:`~scipy.sparse.csr_matrix` format
 
@@ -1405,6 +1374,39 @@ class SparseCSR(NDArrayOperatorsMixin):
 
         return csr_matrix((self._D[idx, dim].copy(), self.col[idx], ptr.astype(int32, copy=False)),
                           shape=shape, **kwargs)
+
+    def transform(self, matrix, dtype=None):
+        """ Apply a linear transformation :math:`R^n \rightarrow R^m` to the :math:`n`-dimensional elements of the sparse matrix.
+
+        Parameters
+        ----------
+        matrix : array_like
+            transformation matrix of shape :math:`m \times n`
+        dtype : `numpy.dtype`, optional
+            defaults to the common dtype of the object and the transformation matrix
+        """
+        matrix = np.asarray(matrix)
+
+        if dtype is None:
+            dtype = np.find_common_type([self.dtype, matrix.dtype], [])
+
+        # set dimension of new sparse matrix
+        new_dim = len(matrix)
+        shape = list(self.shape[:])
+        shape[2] = new_dim
+
+        new = self.__class__(shape, dtype=dtype, nnz=1)
+
+        copyto(new.ptr, self.ptr, casting='no')
+        copyto(new.ncol, self.ncol, casting='no')
+        new.col = self.col.copy()
+        new._nnz = self.nnz
+
+        new._D = self._D.dot(matrix.T).astype(dtype, copy=False)
+
+        new._finalized = self._finalized
+
+        return new
 
     @classmethod
     def fromsp(cls, *sps, dtype=None):
