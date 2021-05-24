@@ -133,10 +133,6 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         new._csr = self._csr.copy(dtype=dtype)
         return new
 
-    def convert(self, scale):
-        new = self._csr.convert(scale)
-        return new
-
     @property
     def dim(self):
         """ Number of components per element """
