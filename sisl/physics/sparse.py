@@ -1210,6 +1210,62 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         return new
 
+
+    def convert(self, spin, dtype=None):
+        """ Create a new matrix of the specified spin type through the following conversion rules:
+
+        unpolarized -> (polarized, non-colinear, spinorbit): Duplicate up/down components
+        (polarized, non-colinear, spinorbit) -> unpolarized: Average up/down components
+        non-colinear -> spinorbit: set spin components 4-7 to zero
+        spinorbit -> non-colinear: ignore spin components 4-7 (should one rather average?)
+
+        Parameters
+        ----------
+        spin : str, sisl.Spin
+            the desired new spin dimension
+        dtype : np.dtype, optional
+            data type contained in the matrix. See details of `Spin` for default values.
+        """
+        if not isinstance(spin, Spin):
+            spin = Spin(spin, dtype)
+
+        if spin == self._spin:
+            # same type, no conversion needed
+            return self.copy()
+
+        if dtype is None:
+            dtype = spin.dtype
+
+        # determine transformation matrix
+        n = self._spin.spins
+        m = spin.spins
+        matrix = np.eye(m, n, dtype=dtype)
+
+        if spin.is_unpolarized:
+            # average up and down components
+            matrix[0, 0] = 0.5
+            matrix[0, 1] = 0.5
+
+        else:
+            # at least two spin components
+            if self._spin.is_unpolarized:
+                # set up and down components to unpolarized value
+                matrix[0, 0] = 1.
+                matrix[1, 0] = 1.
+
+        if not self.orthogonal:
+            # include overlap matrix
+            matrix2 = np.zeros((m + 1, n + 1), dtype=dtype)
+            matrix2[:m, :n] = matrix
+            matrix2[-1, -1] = 1.
+            matrix = matrix2
+
+        new = self.__class__(self.geometry.copy(), spin=spin, dtype=dtype, nnzpr=1, orthogonal=self.orthogonal)
+        new._csr = self._csr.transform(matrix, dtype=dtype)
+
+        return new
+
+
     def __getstate__(self):
         return {
             'sparseorbitalbzspin': super().__getstate__(),
