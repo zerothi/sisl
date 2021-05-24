@@ -966,6 +966,81 @@ class TestHamiltonian:
             H2[0, j] = (i, i*2)
         assert H.spsame(H2)
 
+    def test_convert_up(self):
+        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(100, nsc=[3, 3, 1]))
+        H = Hamiltonian(g, dtype=np.float64, spin=Spin.UNPOLARIZED)
+        for i in range(10):
+            H[0, i] = i + 0.1
+
+        Hconv = H.convert(spin=Spin.POLARIZED)
+        assert np.abs(H.tocsr(0) - Hconv.tocsr(0)).sum() == 0
+        assert np.abs(H.tocsr(0) - Hconv.tocsr(1)).sum() == 0
+        Hconv = H.convert(spin=Spin.NONCOLINEAR)
+        assert np.abs(H.tocsr(0) - Hconv.tocsr(0)).sum() == 0
+        assert np.abs(H.tocsr(0) - Hconv.tocsr(1)).sum() == 0
+        Hconv = H.convert(spin=Spin.SPINORBIT)
+        assert np.abs(H.tocsr(0) - Hconv.tocsr(0)).sum() == 0
+        assert np.abs(H.tocsr(0) - Hconv.tocsr(1)).sum() == 0
+
+    def test_convert_up_nonortho(self):
+        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(100, nsc=[3, 3, 1]))
+        H = Hamiltonian(g, dtype=np.float64, spin=Spin.UNPOLARIZED, orthogonal=False)
+        for i in range(10):
+            H[0, i] = (i + 0.1, 1.)
+
+        Hconv = H.convert(spin=Spin.POLARIZED)
+        assert np.abs(H.tocsr(0) - Hconv.tocsr(0)).sum() == 0
+        assert np.abs(H.tocsr(0) - Hconv.tocsr(1)).sum() == 0
+        assert np.abs(H.tocsr(-1) - Hconv.tocsr(-1)).sum() == 0
+        Hconv = H.convert(spin=Spin.NONCOLINEAR)
+        assert np.abs(H.tocsr(0) - Hconv.tocsr(0)).sum() == 0
+        assert np.abs(H.tocsr(0) - Hconv.tocsr(1)).sum() == 0
+        assert np.abs(H.tocsr(-1) - Hconv.tocsr(-1)).sum() == 0
+        Hconv = H.convert(spin=Spin.SPINORBIT)
+        assert np.abs(H.tocsr(0) - Hconv.tocsr(0)).sum() == 0
+        assert np.abs(H.tocsr(0) - Hconv.tocsr(1)).sum() == 0
+        assert np.abs(H.tocsr(-1) - Hconv.tocsr(-1)).sum() == 0
+
+    def test_convert_down(self):
+        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(100, nsc=[3, 3, 1]))
+        H = Hamiltonian(g, dtype=np.float64, spin=Spin.SPINORBIT)
+        for i in range(10):
+            for j in range(8):
+                H[0, i, j] = i + 0.1 + j
+
+        Hconv = H.convert(spin=Spin.UNPOLARIZED)
+        assert np.abs(0.5 * H.tocsr(0) + 0.5 * H.tocsr(1) - Hconv.tocsr(0)).sum() == 0
+        Hconv = H.convert(spin=Spin.POLARIZED)
+        assert np.abs(H.tocsr(0) - Hconv.tocsr(0)).sum() == 0
+        assert np.abs(H.tocsr(1) - Hconv.tocsr(1)).sum() == 0
+        Hconv = H.convert(spin=Spin.NONCOLINEAR)
+        assert np.abs(H.tocsr(0) - Hconv.tocsr(0)).sum() == 0
+        assert np.abs(H.tocsr(1) - Hconv.tocsr(1)).sum() == 0
+        assert np.abs(H.tocsr(2) - Hconv.tocsr(2)).sum() == 0
+        assert np.abs(H.tocsr(3) - Hconv.tocsr(3)).sum() == 0
+
+    def test_convert_down_nonortho(self):
+        g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(100, nsc=[3, 3, 1]))
+        H = Hamiltonian(g, dtype=np.float64, spin=Spin.SPINORBIT, orthogonal=False)
+        for i in range(10):
+            for j in range(8):
+                H[0, i, j] = i + 0.1 + j
+            H[0, i, -1] = 1.
+
+        Hconv = H.convert(spin=Spin.UNPOLARIZED)
+        assert np.abs(0.5 * H.tocsr(0) + 0.5 * H.tocsr(1) - Hconv.tocsr(0)).sum() == 0
+        assert np.abs(H.tocsr(-1) - Hconv.tocsr(-1)).sum() == 0
+        Hconv = H.convert(spin=Spin.POLARIZED)
+        assert np.abs(H.tocsr(0) - Hconv.tocsr(0)).sum() == 0
+        assert np.abs(H.tocsr(1) - Hconv.tocsr(1)).sum() == 0
+        assert np.abs(H.tocsr(-1) - Hconv.tocsr(-1)).sum() == 0
+        Hconv = H.convert(spin=Spin.NONCOLINEAR)
+        assert np.abs(H.tocsr(0) - Hconv.tocsr(0)).sum() == 0
+        assert np.abs(H.tocsr(1) - Hconv.tocsr(1)).sum() == 0
+        assert np.abs(H.tocsr(2) - Hconv.tocsr(2)).sum() == 0
+        assert np.abs(H.tocsr(3) - Hconv.tocsr(3)).sum() == 0
+        assert np.abs(H.tocsr(-1) - Hconv.tocsr(-1)).sum() == 0
+
     @pytest.mark.parametrize("k", [[0, 0, 0], [0.1, 0, 0]])
     def test_spin_squared(self, setup, k):
         g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(1, nsc=[3, 1, 1]))
