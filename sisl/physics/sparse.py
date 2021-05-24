@@ -1237,21 +1237,18 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             dtype = spin.dtype
 
         # determine transformation matrix
-        n = self._spin.spins
         m = spin.spins
+        n = self._spin.spins
         matrix = np.eye(m, n, dtype=dtype)
 
         if spin.is_unpolarized:
             # average up and down components
             matrix[0, 0] = 0.5
             matrix[0, 1] = 0.5
-
-        else:
-            # at least two spin components
-            if self._spin.is_unpolarized:
-                # set up and down components to unpolarized value
-                matrix[0, 0] = 1.
-                matrix[1, 0] = 1.
+        elif self._spin.is_unpolarized:
+            # at least two spin components, set up and down components to unpolarized value
+            matrix[0, 0] = 1.
+            matrix[1, 0] = 1.
 
         if not self.orthogonal:
             # include overlap matrix
