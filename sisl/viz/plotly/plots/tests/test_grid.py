@@ -20,9 +20,9 @@ _dir = osp.join('sisl', 'io', 'siesta')
 
 try:
     import skimage
-    skip_skimage = pytest.mark.skip(False, reason="scikit-image (skimage) not available")
+    skip_skimage = pytest.mark.skipif(False, reason="scikit-image (skimage) not available")
 except ImportError:
-    skip_skimage = pytest.mark.skip(True, reason="scikit-image (skimage) not available")
+    skip_skimage = pytest.mark.skipif(True, reason="scikit-image (skimage) not available")
 
 
 class GridPlotTester(PlotTester):
