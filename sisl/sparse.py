@@ -1310,7 +1310,7 @@ class SparseCSR(NDArrayOperatorsMixin):
 
         Parameters
         ----------
-        dims : array-like, optional
+        dims : int or array-like, optional
            which dimensions to store in the copy, defaults to all.
         dtype : `numpy.dtype`
            this defaults to the dtype of the object,
@@ -1319,9 +1319,10 @@ class SparseCSR(NDArrayOperatorsMixin):
         # Create sparse matrix (with only one entry per
         # row, we overwrite it immediately afterward)
         if dims is None:
-            dim = self.dim
-        else:
-            dim = len(dims)
+            dims = range(self.dim)
+        elif isinstance(dims, Integral):
+            dims = [dims]
+        dim = len(dims)
 
         if dtype is None:
             dtype = self.dtype
@@ -1340,12 +1341,9 @@ class SparseCSR(NDArrayOperatorsMixin):
         new.col = self.col.copy()
         new._nnz = self.nnz
 
-        if dims is None:
-            new._D = self._D.astype(dtype, copy=True)
-        else:
-            new._D = empty([len(self.col), dim], dtype)
-            for i, dim in enumerate(dims):
-                new._D[:, i] = self._D[:, dim]
+        new._D = empty([len(self.col), dim], dtype)
+        for i, dim in enumerate(dims):
+            new._D[:, i] = self._D[:, dim]
 
         # Mark it as the same state as the other one
         new._finalized = self._finalized
@@ -1526,36 +1524,82 @@ class SparseCSR(NDArrayOperatorsMixin):
 
         return csr
 
-    def sum(self, axis=None):
-        """ Calculate the sum, if `axis` is ``None`` the sum of all elements are returned, else a new sparse matrix is returned
+    def transpose(self, sort=True):
+        """ Create the transposed sparse matrix
 
         Parameters
         ----------
-        axis : int, optional
-           which axis to perform the sum of. If ``None`` the element sum is returned, if either ``0`` or ``1`` is passed a
-           vector is returned, and for ``2`` it returns a new sparse matrix with the last dimension reduced to 1 (summed).
+        sort : bool, optional
+           the returned columns for the transposed structure will be sorted
+           if this is true, default
 
-        Raises
-        ------
-        NotImplementedError : when ``axis = 1``
+        Notes
+        -----
+        The components for each sparse element are not changed in this method.
+
+        Returns
+        -------
+        object
+            an equivalent sparse matrix with transposed matrix elements
         """
-        if axis is None:
-            return self._D.sum()
-        if axis == -1 or axis == 2:
-            # We simply create a new sparse matrix with only one entry
-            ret = self.copy([0])
-            ret._D[:, 0] = self._D.sum(1)
-        elif axis == -2 or axis == 1:
-            ret = zeros(self.shape[1], dtype=self.dtype)
-            raise NotImplementedError('Currently performing a sum on the columns is not implemented')
-        elif axis == 0:
-            ret = empty([self.shape[0], self.shape[2]], dtype=self.dtype)
-            ptr = self.ptr
-            ncol = self.ncol
-            for r in range(self.shape[0]):
-                ret[r, :] = self._D[ptr[r]:ptr[r]+ncol[r], :].sum(0)
+        # Create a temporary copy to put data into
+        T = self.copy()
+        # properly set the shape!
+        T._shape = (self.shape[1], self.shape[0], self.shape[2])
+        # clean memory to not crowd memory too much
+        T.ptr = None
+        T.col = None
+        T.ncol = None
+        T._D = None
 
-        return ret
+        # First extract the actual data
+        ncol = self.ncol.view()
+        if self.finalized:
+            ptr = self.ptr.view()
+            col = self.col.copy()
+            D = self._D.copy()
+        else:
+            idx = array_arange(self.ptr[:-1], n=ncol, dtype=int32)
+            ptr = _ncol_to_indptr(ncol)
+            col = self.col[idx]
+            D = self._D[idx, :].copy()
+            del idx
+
+        # figure out rows where ncol is > 0
+        # we skip the first column
+        row_nonzero = (ncol > 0).nonzero()[0]
+        row = repeat(row_nonzero.astype(np.int32, copy=False), ncol[row_nonzero])
+
+        # Now we have the DOK format
+        #  row, col, _D
+
+        # Now we can re-create the sparse matrix
+        # All we need is to count the number of non-zeros per column.
+        rows, nrow = unique(col, return_counts=True)
+        T.ncol = _a.zerosi(T.shape[0])
+        T.ncol[rows] = nrow
+        del rows
+
+        if sort:
+            # also sort individual rows for each column
+            idx = lexsort((row, col))
+        else:
+            # sort columns to get transposed values.
+            # This will randomize the rows
+            idx = argsort(col)
+
+        # Our new data will then be
+        T.col = row[idx]
+        del row
+        T._D = D[idx]
+        del D
+        T.ptr = _ncol_to_indptr(T.ncol)
+
+        # If `sort` we have everything sorted, otherwise it
+        # is not ensured
+        T._finalized = sort
+
+        return T
 
     def __str__(self):
         """ Representation of the sparse matrix model """
@@ -1569,6 +1613,7 @@ class SparseCSR(NDArrayOperatorsMixin):
     __array_priority__ = 14
 
     def __array_ufunc__(self, ufunc, method, *inputs, **kwargs):
+        #print(f"{self.__class__.__name__}.__array_ufunc__ :", ufunc, method)
         out = kwargs.pop("out", None)
 
         if getattr(ufunc, "signature", None) is not None:
@@ -1580,11 +1625,9 @@ class SparseCSR(NDArrayOperatorsMixin):
             kwargs["dtype"] = out.dtype
 
         if method == "__call__":
-            result = _ufunc_pre(ufunc, *inputs, **kwargs)
+            result = _ufunc_call(ufunc, *inputs, **kwargs)
         elif method == "reduce":
-            #print("running reduce ", ufunc)
-            # to be handled
-            return NotImplemented
+            result = _ufunc_reduce(ufunc, *inputs, **kwargs)
         elif method == "outer":
             #print("running outer")
             # Currently I don't know what to do here
@@ -1596,10 +1639,8 @@ class SparseCSR(NDArrayOperatorsMixin):
             return NotImplemented
 
         if out is None:
-            return result
-
-        # we have to explicitly save it *somewhere*
-        if isinstance(out, ndarray):
+            out = result
+        elif isinstance(out, ndarray):
             out[...] = result[...]
         elif isinstance(out, SparseCSR):
             if out.shape != result.shape:
@@ -1611,9 +1652,9 @@ class SparseCSR(NDArrayOperatorsMixin):
             # this will copy
             out.col = result.col
             out._D = result._D.astype(kwargs.get("dtype", out.dtype))
-            return out
-        #print("what happened here?")
-        return NotImplemented
+        else:
+            out = NotImplemented
+        return out
 
     def __getstate__(self):
         """ Return dictionary with the current state (finalizing the object may reduce memory footprint) """
@@ -1775,7 +1816,7 @@ def _ufunc_sp_sp(ufunc, a, b, **kwargs):
     return out
 
 
-def _ufunc_pre(ufunc, *in_args, **kwargs):
+def _ufunc_call(ufunc, *in_args, **kwargs):
 
     # first process in_args to args
     # by numpy-fying and checking for sparsecsr
@@ -1823,6 +1864,47 @@ def _ufunc_pre(ufunc, *in_args, **kwargs):
     def _(a, b):
         return _ufunc(ufunc, a, b, **kwargs)
     return reduce(_, args)
+
+
+def _ufunc_reduce(ufunc, array, axis=0, *args, **kwargs):
+
+    if "dtype" not in kwargs:
+        kwargs["dtype"] = np.result_type(array, *args)
+
+    # currently the initial argument does not work properly if the
+    # size isn't correct
+    if np.asarray(kwargs.get("initial", 0.)).ndim > 1:
+        raise ValueError(f"{array.__class__.__name__}.{ufunc.__name__}.reduce currently does not implement initial values in different dimensions")
+
+    # correct axis
+    if axis is None:
+        # reduction on all axes
+        return ufunc.reduce(array, axis, *args, **kwargs)
+    elif axis < 0:
+        # correct for negative axis specification
+        axis = axis + len(array.shape)
+
+    if axis == 0:
+        # no need to sorting
+        array = array.transpose(sort=False)
+    elif axis == 1:
+        pass
+    elif axis == (0, 1) or axis == (1, 0):
+        return ufunc.reduce(array._D, axis=0, *args, **kwargs)
+    elif axis == 2:
+        out = array.copy(dims=1, dtype=kwargs.get("dtype"))
+        out._D[:, 0] = ufunc.reduce(array._D, axis=1, *args, **kwargs)
+        return out
+    else:
+        raise ValueError(f"Unknown axis argument in ufunc.reduce call on {array.__class__.__name__}")
+
+    ret = empty([array.shape[0], array.shape[2]], dtype=kwargs.get("dtype", array.dtype))
+    # Now do ufunc calculations, note that initial gets passed directly
+    ptr = array.ptr
+    ncol = array.ncol
+    for r in range(array.shape[0]):
+        ret[r, :] = ufunc.reduce(array._D[ptr[r]:ptr[r]+ncol[r], :], axis=0, *args, **kwargs)
+    return ret
 
 
 @set_module("sisl")

@@ -395,6 +395,17 @@ def test_create_2d_data_3d(setup):
     assert (s1 - s2).sum() == 0
 
 
+def test_copy_dims(setup):
+    s1 = setup.s2.copy(dims=0)
+    assert np.allclose(setup.s2._D[:, 0], s1._D[:, 0])
+    s1 = setup.s2.copy(dims=1)
+    assert np.allclose(setup.s2._D[:, 1], s1._D[:, 0])
+
+    s1 = setup.s2.copy(dims=[1, 0])
+    assert np.allclose(setup.s2._D[:, 1], s1._D[:, 0])
+    assert np.allclose(setup.s2._D[:, 0], s1._D[:, 1])
+
+
 def test_fail_data_3d_to_1d(setup):
     s2 = setup.s2
     # matrix assignment
@@ -1211,13 +1222,51 @@ def test_op_numpy_scalar():
     assert s.dtype == np.complex64
 
 
-def test_sum1():
+@pytest.mark.only
+def test_op_sparse_dim():
+    S = SparseCSR((10, 100, 2), dtype=np.float32)
+    assert S.shape == (10, 100, 2)
+    I = np.ones(1, dtype=np.complex64)[0]
+    # Create initial stuff
+    for i in range(10):
+        j = range(i*4, i*4+3)
+        S[0, j] = i
+    S.finalize()
+
+    # Try and add different values to the last 2 dimensions
+    s = S + [2, 2]
+    assert np.allclose(s._D, (S + 2)._D)
+    s = S + [1, 2]
+    assert np.allclose(s._D[:, 0], (S + 1)._D[:, 0])
+    assert not np.any(np.isclose(s._D[:, 0], (S + 1)._D[:, 1]))
+    assert np.allclose(s._D[:, 1], (S + 2)._D[:, 1])
+    assert not np.any(np.isclose(s._D[:, 0], (S + 2)._D[:, 1]))
+
+
+def test_sparse_transpose():
+    S = SparseCSR((10, 100, 2), dtype=np.float32)
+    assert S.shape == (10, 100, 2)
+    I = np.ones(1, dtype=np.complex64)[0]
+    # Create initial stuff
+    for i in range(10):
+        j = range(i*4, i*4+3)
+        S[0, j] = i
+    S.finalize()
+
+    s = S.transpose(False)
+    assert s.shape == (100, 10, 2)
+
+    s = s.transpose(False)
+    assert s.shape == (10, 100, 2)
+
+
+def test_op_reduce():
     S1 = SparseCSR((10, 10, 2), dtype=np.int32)
     S1[0, 0] = [1, 2]
     S1[2, 0] = [1, 2]
     S1[2, 2] = [1, 2]
 
-    S2 = S1.sum(-1)
+    S2 = np.sum(S1, axis=-1)
     assert S1.spsame(S2)
     assert S2[0, 0] == 3
     assert S2[0, 1] == 0
@@ -1226,7 +1275,7 @@ def test_sum1():
 
     assert S1.sum() == 1 * 3 + 2 * 3
 
-    S = S1.sum(0)
+    S = np.sum(S1, axis=0)
     v = np.zeros([S1.shape[0], S1.shape[2]], np.int32)
     v[0] = [1, 2]
     v[2] = [2, 4]
@@ -1237,14 +1286,11 @@ def test_sum1():
     v[2] = 6
     assert np.allclose(S.sum(1), v)
 
+    S = np.sum(S1, axis=1)
 
-@pytest.mark.xfail(reason="Not implemented for summing on columns TODO")
-def test_sum2():
-    S1 = SparseCSR((10, 10, 2), dtype=np.int32)
-    S1[0, 0] = [1, 2]
-    S1[2, 0] = [1, 2]
-    S1[2, 2] = [1, 2]
-    S1.sum(1)
+    d = np.diff(S1, axis=2)
+    assert d[0, 0] == 1
+    assert d[2, 0] == 1
 
 
 def test_unfinalized_math():

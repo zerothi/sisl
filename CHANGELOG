@@ -1,9 +1,16 @@
 0.X.Y
 =====
 
+- enabled doing ufunc.reduce on SparseCSR matrix
+	This does have the problem of *wrong* values for np.prod
+	since there may be 0 values. In fact the prod should probably
+	never be used. Be CAUTIOUS with reduction operations.
+
+- enabled transposing a SparseCSR matrix
+
 - added pymatgen conversion (Geometry.to/from.pymatgen)
 
-- Enabled atom indexing by shapes #337
+- enabled atom indexing by shapes #337
 
 0.11.0
 ======
