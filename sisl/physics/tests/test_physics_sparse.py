@@ -240,158 +240,228 @@ def test_sparse_orbital_bz_spin_orbit_hermitian_not():
     assert np.abs((M - new)._csr._D).sum() == 0
 
 
-def test_sparse_orbital_convert_ortho_unpolarized():
+def test_sparse_orbital_transform_ortho_unpolarized():
     M = SparseOrbitalBZSpin(geom.graphene(), spin='unpolarized')
     a = np.arange(M.spin.spins) + 0.3
     M.construct(([0.1, 1.44], [a, a + 0.1]))
     M.finalize()
 
-    Mconv = M.convert('unpolarized')
-    assert np.abs(M.tocsr(0) - Mconv.tocsr(0)).sum() == 0
+    Mt = M.transform('unpolarized')
+    assert np.abs(M.tocsr(0) - Mt.tocsr(0)).sum() == 0
 
-    Mconv = M.convert('polarized')
-    assert np.abs(M.tocsr(0) - Mconv.tocsr(0)).sum() == 0
-    assert np.abs(M.tocsr(0) - Mconv.tocsr(1)).sum() == 0
+    Mt = M.transform('polarized')
+    assert np.abs(M.tocsr(0) - Mt.tocsr(0)).sum() == 0
+    assert np.abs(M.tocsr(0) - Mt.tocsr(1)).sum() == 0
 
-    Mconv = M.convert('non-colinear')
-    assert np.abs(M.tocsr(0) - Mconv.tocsr(0)).sum() == 0
-    assert np.abs(M.tocsr(0) - Mconv.tocsr(1)).sum() == 0
-    assert np.abs(Mconv.tocsr(2)).sum() == 0
-    assert np.abs(Mconv.tocsr(-1)).sum() == 0
+    Mt = M.transform('non-colinear')
+    assert np.abs(M.tocsr(0) - Mt.tocsr(0)).sum() == 0
+    assert np.abs(M.tocsr(0) - Mt.tocsr(1)).sum() == 0
+    assert np.abs(Mt.tocsr(2)).sum() == 0
+    assert np.abs(Mt.tocsr(-1)).sum() == 0
 
-    Mconv = M.convert('so')
-    assert np.abs(M.tocsr(0) - Mconv.tocsr(0)).sum() == 0
-    assert np.abs(M.tocsr(0) - Mconv.tocsr(1)).sum() == 0
-    assert np.abs(Mconv.tocsr(2)).sum() == 0
-    assert np.abs(Mconv.tocsr(-1)).sum() == 0
+    Mt = M.transform('so')
+    assert np.abs(M.tocsr(0) - Mt.tocsr(0)).sum() == 0
+    assert np.abs(M.tocsr(0) - Mt.tocsr(1)).sum() == 0
+    assert np.abs(Mt.tocsr(2)).sum() == 0
+    assert np.abs(Mt.tocsr(-1)).sum() == 0
 
-def test_sparse_orbital_convert_nonortho_unpolarized():
+def test_sparse_orbital_transform_nonortho_unpolarized():
     M = SparseOrbitalBZSpin(geom.graphene(), spin='unpolarized', orthogonal=False)
     a = np.arange(M.spin.spins + 1) + 0.3
     M.construct(([0.1, 1.44], [a, a + 0.1]))
     M.finalize()
 
-    Mconv = M.convert('unpolarized')
-    assert np.abs(M.tocsr(0) - Mconv.tocsr(0)).sum() == 0
-    assert np.abs(M.tocsr(-1) - Mconv.tocsr(-1)).sum() == 0
+    Mt = M.transform('unpolarized')
+    assert np.abs(M.tocsr(0) - Mt.tocsr(0)).sum() == 0
+    assert np.abs(M.tocsr(-1) - Mt.tocsr(-1)).sum() == 0
 
-    Mconv = M.convert('polarized')
-    assert np.abs(M.tocsr(0) - Mconv.tocsr(0)).sum() == 0
-    assert np.abs(M.tocsr(0) - Mconv.tocsr(1)).sum() == 0
-    assert np.abs(M.tocsr(-1) - Mconv.tocsr(-1)).sum() == 0
+    Mt = M.transform('polarized')
+    assert np.abs(M.tocsr(0) - Mt.tocsr(0)).sum() == 0
+    assert np.abs(M.tocsr(0) - Mt.tocsr(1)).sum() == 0
+    assert np.abs(M.tocsr(-1) - Mt.tocsr(-1)).sum() == 0
 
-    Mconv = M.convert('non-colinear')
-    assert np.abs(M.tocsr(0) - Mconv.tocsr(0)).sum() == 0
-    assert np.abs(M.tocsr(0) - Mconv.tocsr(1)).sum() == 0
-    assert np.abs(Mconv.tocsr(2)).sum() == 0
-    assert np.abs(M.tocsr(-1) - Mconv.tocsr(-1)).sum() == 0
+    Mt = M.transform('non-colinear')
+    assert np.abs(M.tocsr(0) - Mt.tocsr(0)).sum() == 0
+    assert np.abs(M.tocsr(0) - Mt.tocsr(1)).sum() == 0
+    assert np.abs(Mt.tocsr(2)).sum() == 0
+    assert np.abs(M.tocsr(-1) - Mt.tocsr(-1)).sum() == 0
 
-    Mconv = M.convert('so')
-    assert np.abs(M.tocsr(0) - Mconv.tocsr(0)).sum() == 0
-    assert np.abs(M.tocsr(0) - Mconv.tocsr(1)).sum() == 0
-    assert np.abs(Mconv.tocsr(2)).sum() == 0
-    assert np.abs(M.tocsr(-1) - Mconv.tocsr(-1)).sum() == 0
+    Mt = M.transform('so')
+    assert np.abs(M.tocsr(0) - Mt.tocsr(0)).sum() == 0
+    assert np.abs(M.tocsr(0) - Mt.tocsr(1)).sum() == 0
+    assert np.abs(Mt.tocsr(2)).sum() == 0
+    assert np.abs(M.tocsr(-1) - Mt.tocsr(-1)).sum() == 0
 
-def test_sparse_orbital_convert_ortho_polarized():
+def test_sparse_orbital_transform_ortho_polarized():
     M = SparseOrbitalBZSpin(geom.graphene(), spin='polarized')
     a = np.arange(M.spin.spins) + 0.3
     M.construct(([0.1, 1.44], [a, a + 0.1]))
     M.finalize()
 
-    Mconv = M.convert('unpolarized')
-    assert np.abs(0.5 * M.tocsr(0) + 0.5 * M.tocsr(1) - Mconv.tocsr(0)).sum() == 0
+    Mt = M.transform('unpolarized')
+    assert np.abs(0.5 * M.tocsr(0) + 0.5 * M.tocsr(1) - Mt.tocsr(0)).sum() == 0
 
-    Mconv = M.convert('polarized')
-    assert np.abs(M.tocsr(0) - Mconv.tocsr(0)).sum() == 0
-    assert np.abs(M.tocsr(1) - Mconv.tocsr(1)).sum() == 0
+    Mt = M.transform('polarized')
+    assert np.abs(M.tocsr(0) - Mt.tocsr(0)).sum() == 0
+    assert np.abs(M.tocsr(1) - Mt.tocsr(1)).sum() == 0
 
-    Mconv = M.convert('non-colinear')
-    assert np.abs(M.tocsr(0) - Mconv.tocsr(0)).sum() == 0
-    assert np.abs(M.tocsr(1) - Mconv.tocsr(1)).sum() == 0
-    assert np.abs(Mconv.tocsr(2)).sum() == 0
-    assert np.abs(Mconv.tocsr(-1)).sum() == 0
+    Mt = M.transform('non-colinear')
+    assert np.abs(M.tocsr(0) - Mt.tocsr(0)).sum() == 0
+    assert np.abs(M.tocsr(1) - Mt.tocsr(1)).sum() == 0
+    assert np.abs(Mt.tocsr(2)).sum() == 0
+    assert np.abs(Mt.tocsr(-1)).sum() == 0
 
-    Mconv = M.convert('so')
-    assert np.abs(M.tocsr(0) - Mconv.tocsr(0)).sum() == 0
-    assert np.abs(M.tocsr(1) - Mconv.tocsr(1)).sum() == 0
-    assert np.abs(Mconv.tocsr(2)).sum() == 0
-    assert np.abs(Mconv.tocsr(-1)).sum() == 0
+    Mt = M.transform('so')
+    assert np.abs(M.tocsr(0) - Mt.tocsr(0)).sum() == 0
+    assert np.abs(M.tocsr(1) - Mt.tocsr(1)).sum() == 0
+    assert np.abs(Mt.tocsr(2)).sum() == 0
+    assert np.abs(Mt.tocsr(-1)).sum() == 0
 
-def test_sparse_orbital_convert_ortho_nc():
+def test_sparse_orbital_transform_ortho_nc():
     M = SparseOrbitalBZSpin(geom.graphene(), spin='non-colinear')
     a = np.arange(M.spin.spins) + 0.3
     M.construct(([0.1, 1.44], [a, a + 0.1]))
     M.finalize()
 
-    Mconv = M.convert('unpolarized')
-    assert np.abs(0.5 * M.tocsr(0) + 0.5 * M.tocsr(1) - Mconv.tocsr(0)).sum() == 0
+    Mt = M.transform('unpolarized')
+    assert np.abs(0.5 * M.tocsr(0) + 0.5 * M.tocsr(1) - Mt.tocsr(0)).sum() == 0
 
-    Mconv = M.convert('polarized')
-    assert np.abs(M.tocsr(0) - Mconv.tocsr(0)).sum() == 0
-    assert np.abs(M.tocsr(1) - Mconv.tocsr(1)).sum() == 0
+    Mt = M.transform('polarized')
+    assert np.abs(M.tocsr(0) - Mt.tocsr(0)).sum() == 0
+    assert np.abs(M.tocsr(1) - Mt.tocsr(1)).sum() == 0
 
-    Mconv = M.convert('non-colinear')
-    assert np.abs(M.tocsr(0) - Mconv.tocsr(0)).sum() == 0
-    assert np.abs(M.tocsr(1) - Mconv.tocsr(1)).sum() == 0
-    assert np.abs(M.tocsr(2) - Mconv.tocsr(2)).sum() == 0
-    assert np.abs(M.tocsr(3) - Mconv.tocsr(3)).sum() == 0
+    Mt = M.transform('non-colinear')
+    assert np.abs(M.tocsr(0) - Mt.tocsr(0)).sum() == 0
+    assert np.abs(M.tocsr(1) - Mt.tocsr(1)).sum() == 0
+    assert np.abs(M.tocsr(2) - Mt.tocsr(2)).sum() == 0
+    assert np.abs(M.tocsr(3) - Mt.tocsr(3)).sum() == 0
 
-    Mconv = M.convert('so')
-    assert np.abs(M.tocsr(0) - Mconv.tocsr(0)).sum() == 0
-    assert np.abs(M.tocsr(1) - Mconv.tocsr(1)).sum() == 0
-    assert np.abs(M.tocsr(2) - Mconv.tocsr(2)).sum() == 0
-    assert np.abs(M.tocsr(3) - Mconv.tocsr(3)).sum() == 0
+    Mt = M.transform('so')
+    assert np.abs(M.tocsr(0) - Mt.tocsr(0)).sum() == 0
+    assert np.abs(M.tocsr(1) - Mt.tocsr(1)).sum() == 0
+    assert np.abs(M.tocsr(2) - Mt.tocsr(2)).sum() == 0
+    assert np.abs(M.tocsr(3) - Mt.tocsr(3)).sum() == 0
 
-def test_sparse_orbital_convert_ortho_so():
+def test_sparse_orbital_transform_ortho_so():
     M = SparseOrbitalBZSpin(geom.graphene(), spin='so')
     a = np.arange(M.spin.spins) + 0.3
     M.construct(([0.1, 1.44], [a, a + 0.1]))
     M.finalize()
 
-    Mconv = M.convert('unpolarized')
-    assert np.abs(0.5 * M.tocsr(0) + 0.5 * M.tocsr(1) - Mconv.tocsr(0)).sum() == 0
+    Mt = M.transform('unpolarized')
+    assert np.abs(0.5 * M.tocsr(0) + 0.5 * M.tocsr(1) - Mt.tocsr(0)).sum() == 0
 
-    Mconv = M.convert('polarized')
-    assert np.abs(M.tocsr(0) - Mconv.tocsr(0)).sum() == 0
-    assert np.abs(M.tocsr(1) - Mconv.tocsr(1)).sum() == 0
+    Mt = M.transform('polarized')
+    assert np.abs(M.tocsr(0) - Mt.tocsr(0)).sum() == 0
+    assert np.abs(M.tocsr(1) - Mt.tocsr(1)).sum() == 0
 
-    Mconv = M.convert('non-colinear')
-    assert np.abs(M.tocsr(0) - Mconv.tocsr(0)).sum() == 0
-    assert np.abs(M.tocsr(1) - Mconv.tocsr(1)).sum() == 0
-    assert np.abs(M.tocsr(2) - Mconv.tocsr(2)).sum() == 0
-    assert np.abs(M.tocsr(3) - Mconv.tocsr(3)).sum() == 0
+    Mt = M.transform('non-colinear')
+    assert np.abs(M.tocsr(0) - Mt.tocsr(0)).sum() == 0
+    assert np.abs(M.tocsr(1) - Mt.tocsr(1)).sum() == 0
+    assert np.abs(M.tocsr(2) - Mt.tocsr(2)).sum() == 0
+    assert np.abs(M.tocsr(3) - Mt.tocsr(3)).sum() == 0
 
-    Mconv = M.convert('so')
-    assert np.abs(M.tocsr(0) - Mconv.tocsr(0)).sum() == 0
-    assert np.abs(M.tocsr(1) - Mconv.tocsr(1)).sum() == 0
-    assert np.abs(M.tocsr(2) - Mconv.tocsr(2)).sum() == 0
-    assert np.abs(M.tocsr(3) - Mconv.tocsr(3)).sum() == 0
+    Mt = M.transform('so')
+    assert np.abs(M.tocsr(0) - Mt.tocsr(0)).sum() == 0
+    assert np.abs(M.tocsr(1) - Mt.tocsr(1)).sum() == 0
+    assert np.abs(M.tocsr(2) - Mt.tocsr(2)).sum() == 0
+    assert np.abs(M.tocsr(3) - Mt.tocsr(3)).sum() == 0
 
-def test_sparse_orbital_convert_nonortho_so():
+def test_sparse_orbital_transform_nonortho_so():
     M = SparseOrbitalBZSpin(geom.graphene(), spin='so', orthogonal=False)
     a = np.arange(M.spin.spins + 1) + 0.3
     M.construct(([0.1, 1.44], [a, a + 0.1]))
     M.finalize()
 
-    Mconv = M.convert('unpolarized')
-    assert np.abs(0.5 * M.tocsr(0) + 0.5 * M.tocsr(1) - Mconv.tocsr(0)).sum() == 0
-    assert np.abs(M.tocsr(-1) - Mconv.tocsr(-1)).sum() == 0
+    Mt = M.transform('unpolarized')
+    assert np.abs(0.5 * M.tocsr(0) + 0.5 * M.tocsr(1) - Mt.tocsr(0)).sum() == 0
+    assert np.abs(M.tocsr(-1) - Mt.tocsr(-1)).sum() == 0
 
-    Mconv = M.convert('polarized')
-    assert np.abs(M.tocsr(0) - Mconv.tocsr(0)).sum() == 0
-    assert np.abs(M.tocsr(1) - Mconv.tocsr(1)).sum() == 0
-    assert np.abs(M.tocsr(-1) - Mconv.tocsr(-1)).sum() == 0
+    Mt = M.transform('polarized')
+    assert np.abs(M.tocsr(0) - Mt.tocsr(0)).sum() == 0
+    assert np.abs(M.tocsr(1) - Mt.tocsr(1)).sum() == 0
+    assert np.abs(M.tocsr(-1) - Mt.tocsr(-1)).sum() == 0
 
-    Mconv = M.convert('non-colinear')
-    assert np.abs(M.tocsr(0) - Mconv.tocsr(0)).sum() == 0
-    assert np.abs(M.tocsr(1) - Mconv.tocsr(1)).sum() == 0
-    assert np.abs(M.tocsr(2) - Mconv.tocsr(2)).sum() == 0
-    assert np.abs(M.tocsr(3) - Mconv.tocsr(3)).sum() == 0
-    assert np.abs(M.tocsr(-1) - Mconv.tocsr(-1)).sum() == 0
+    Mt = M.transform('non-colinear')
+    assert np.abs(M.tocsr(0) - Mt.tocsr(0)).sum() == 0
+    assert np.abs(M.tocsr(1) - Mt.tocsr(1)).sum() == 0
+    assert np.abs(M.tocsr(2) - Mt.tocsr(2)).sum() == 0
+    assert np.abs(M.tocsr(3) - Mt.tocsr(3)).sum() == 0
+    assert np.abs(M.tocsr(-1) - Mt.tocsr(-1)).sum() == 0
 
-    Mconv = M.convert('so')
-    assert np.abs(M.tocsr(0) - Mconv.tocsr(0)).sum() == 0
-    assert np.abs(M.tocsr(1) - Mconv.tocsr(1)).sum() == 0
-    assert np.abs(M.tocsr(2) - Mconv.tocsr(2)).sum() == 0
-    assert np.abs(M.tocsr(3) - Mconv.tocsr(3)).sum() == 0
-    assert np.abs(M.tocsr(-1) - Mconv.tocsr(-1)).sum() == 0
+    Mt = M.transform('so')
+    assert np.abs(M.tocsr(0) - Mt.tocsr(0)).sum() == 0
+    assert np.abs(M.tocsr(1) - Mt.tocsr(1)).sum() == 0
+    assert np.abs(M.tocsr(2) - Mt.tocsr(2)).sum() == 0
+    assert np.abs(M.tocsr(3) - Mt.tocsr(3)).sum() == 0
+    assert np.abs(M.tocsr(-1) - Mt.tocsr(-1)).sum() == 0
+
+def test_sparse_orbital_transform_basis():
+    M = SparseOrbitalBZSpin(geom.graphene(), spin='polarized', orthogonal=False)
+    M.construct(([0.1, 1.44], [(3., 2., 1.), (0.3, 0.2, 0.)]))
+    M.finalize()
+
+    Mt = M.transform(orthogonal=True).transform(orthogonal=False)
+    assert M.dim == Mt.dim
+    assert np.abs(M.tocsr(0) - Mt.tocsr(0)).sum() == 0
+    assert np.abs(M.tocsr(1) - Mt.tocsr(1)).sum() == 0
+    assert np.abs(M.tocsr(-1) - Mt.tocsr(-1)).sum() == 0
+
+def test_sparse_orbital_transform_combinations():
+    M = SparseOrbitalBZSpin(geom.graphene(), spin='polarized', orthogonal=False, dtype=np.int32)
+    M.construct(([0.1, 1.44], [(3, 2, 1), (2, 1, 0)]))
+    M.finalize()
+
+    Mt = M.transform(spin='non-colinear', dtype=np.float64, orthogonal=True).transform(spin='polarized', orthogonal=False)
+    assert M.dim == Mt.dim
+    assert np.abs(M.tocsr(0) - Mt.tocsr(0)).sum() == 0
+    assert np.abs(M.tocsr(1) - Mt.tocsr(1)).sum() == 0
+    assert np.abs(M.tocsr(-1) - Mt.tocsr(-1)).sum() == 0
+
+    Mt = M.transform(dtype=np.float128, orthogonal=True).transform(spin='so', dtype=np.float64, orthogonal=False)
+    assert np.abs(M.tocsr(0) - Mt.tocsr(0)).sum() == 0
+    assert np.abs(M.tocsr(1) - Mt.tocsr(1)).sum() == 0
+    assert np.abs(Mt.tocsr(2)).sum() == 0
+    assert np.abs(M.tocsr(-1) - Mt.tocsr(-1)).sum() == 0
+
+    Mt = M.transform(spin='polarized', orthogonal=True).transform(spin='so', dtype=np.float64, orthogonal=False)
+    assert np.abs(M.tocsr(0) - Mt.tocsr(0)).sum() == 0
+    assert np.abs(M.tocsr(1) - Mt.tocsr(1)).sum() == 0
+    assert np.abs(Mt.tocsr(2)).sum() == 0
+    assert np.abs(M.tocsr(-1) - Mt.tocsr(-1)).sum() == 0
+
+    Mt = M.transform('unpolarized', dtype=np.float32, orthogonal=True).transform(dtype=np.complex128, orthogonal=False)
+    assert np.abs(0.5 * M.tocsr(0) + 0.5 * M.tocsr(1) - Mt.tocsr(0)).sum() == 0
+
+def test_sparse_orbital_transform_matrix():
+    M = SparseOrbitalBZSpin(geom.graphene(), spin='polarized', orthogonal=False, dtype=np.int32)
+    M.construct(([0.1, 1.44], [(1, 2, 3), (4, 5, 6)]))
+    M.finalize()
+
+    Mt = M.transform(spin='unpolarized', matrix=np.ones((1, 3)), orthogonal=True)
+    assert Mt.dim == 1
+    assert np.abs(M.tocsr(0) + M.tocsr(1) + M.tocsr(2) - Mt.tocsr(0)).sum() == 0
+
+    Mt = M.transform(spin='polarized', matrix=np.ones((2, 3)), orthogonal=True)
+    assert Mt.dim == 2
+    assert np.abs(M.tocsr(0) + M.tocsr(1) + M.tocsr(2) - Mt.tocsr(1)).sum() == 0
+
+    Mt = M.transform(matrix=np.ones((3, 3)), dtype=np.float64)
+    assert Mt.dim == 3
+    assert np.abs(M.tocsr(0) + M.tocsr(1) + M.tocsr(2) - Mt.tocsr(2)).sum() == 0
+
+    Mt = M.transform(spin='non-colinear', matrix=np.ones((4, 3)), orthogonal=True, dtype=np.float64)
+    assert Mt.dim == 4
+    assert np.abs(M.tocsr(0) + M.tocsr(1) + M.tocsr(2) - Mt.tocsr(3)).sum() == 0
+
+    Mt = M.transform(spin='non-colinear', matrix=np.ones((5, 3)), dtype=np.float64)
+    assert Mt.dim == 5
+    assert np.abs(M.tocsr(0) + M.tocsr(1) + M.tocsr(2) - Mt.tocsr(4)).sum() == 0
+
+    Mt = M.transform(spin='so', matrix=np.ones((8, 3)), orthogonal=True, dtype=np.float64)
+    assert Mt.dim == 8
+    assert np.abs(M.tocsr(0) + M.tocsr(1) + M.tocsr(2) - Mt.tocsr(7)).sum() == 0
+
+    Mt = M.transform(spin='so', matrix=np.ones((9, 3)), dtype=np.float64)
+    assert Mt.dim == 9
+    assert np.abs(M.tocsr(0) + M.tocsr(1) + M.tocsr(2) - Mt.tocsr(8)).sum() == 0

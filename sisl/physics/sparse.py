@@ -1210,65 +1210,96 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         return new
 
+    def transform(self, spin=None, orthogonal=None, matrix=None, dtype=None):
+        r""" Create a new matrix of the specified type according to the following
+        transformation rules:
 
-    def convert(self, spin, dtype=None):
-        """ Create a new matrix of the specified spin type through the following conversion rules:
+        1. General transformation:
+        * If `matrix` is provided, a linear transformation :math:`R^n \rightarrow R^m` is applied
+        to the :math:`n`-dimensional elements of the original sparse matrix.
+        The `spin` and `orthogonal` flags need to be consistent with the creation of an
+        `m`-dimensional matrix.
 
-        Up-conversion:
+        2. Spin conversion:
+        If `spin` is provided (without `matrix`), the spin class
+        is changed according to the following conversions:
+
+        Upscaling
         * unpolarized -> (polarized, non-colinear, spinorbit): Copy unpolarized value to both up and down components
         * polarized -> (non-colinear, spinorbit): Copy up and down components
         * non-colinear -> spinorbit: Copy first four spin components
         * all other new spin components are set to zero
 
-        Down-conversion:
+        Downscaling
         * (polarized, non-colinear, spinorbit) -> unpolarized: Set unpolarized value to a mix 0.5*up + 0.5*down
         * (non-colinear, spinorbit) -> polarized: Keep up and down spin components
         * spinorbit -> non-colinear: Keep first four spin components
         * all other spin components are dropped
 
+        3. Orthogonality:
+        If the `orthogonal` flag is provided, the overlap matrix is either dropped
+        or explicitly introduced as the identity matrix.
+
+
         Parameters
         ----------
-        spin : str, sisl.Spin
-            the desired new spin dimension
+        spin : str, sisl.Spin, optional
+            spin class of created matrix. Defaults to the input type.
+        orthogonal : bool, optional
+            flag to control if the new matrix includes overlaps. Defaults to the input type.
+        matrix : array_like, optional
+            transformation matrix of shape :math:`m \times n`. Default is no transformation.
         dtype : np.dtype, optional
-            data type contained in the matrix. See details of `Spin` for default values.
+            data type contained in the matrix. Defaults to the input type.
         """
-        if not isinstance(spin, Spin):
+        if dtype is None:
+            dtype = self.dtype
+
+        if spin is None:
+            spin = self.spin
+        else:
             spin = Spin(spin, dtype)
 
-        if spin == self._spin:
-            # same type, no conversion needed
-            return self.copy()
+        if orthogonal is None:
+            orthogonal = self.orthogonal
 
-        if dtype is None:
-            dtype = spin.dtype
+        if matrix is None:
 
-        # determine transformation matrix
-        m = spin.spins
-        n = self._spin.spins
-        matrix = np.eye(m, n, dtype=dtype)
+            if spin == self.spin and orthogonal == self.orthogonal:
+                # no transformations needed
+                return self.copy(dtype)
 
-        if spin.is_unpolarized:
-            # average up and down components
-            matrix[0, 0] = 0.5
-            matrix[0, 1] = 0.5
-        elif self._spin.is_unpolarized:
-            # at least two spin components, set up and down components to unpolarized value
-            matrix[0, 0] = 1.
-            matrix[1, 0] = 1.
+            # construct transformation matrix
+            M = m = spin.spins
+            N = n = self._spin.spins
+            if not orthogonal:
+                M += 1
+            if not self.orthogonal:
+                N += 1
+            matrix = np.zeros((M, N), dtype=dtype)
+            matrix[:m, :n] = np.eye(m, n, dtype=dtype)
+            if M > m and N > n:
+                # carry over the overlap matrix
+                matrix[-1, -1] = 1.
 
-        if not self.orthogonal:
-            # include overlap matrix
-            matrix2 = np.zeros((m + 1, n + 1), dtype=dtype)
-            matrix2[:m, :n] = matrix
-            matrix2[-1, -1] = 1.
-            matrix = matrix2
+            if spin.is_unpolarized and self._spin.spins > 1:
+                # average up and down components
+                matrix[0, 0] = 0.5
+                matrix[0, 1] = 0.5
+            elif spin.spins > 1 and self._spin.is_unpolarized:
+                # set up and down components to unpolarized value
+                matrix[0, 0] = 1.
+                matrix[1, 0] = 1.
 
-        new = self.__class__(self.geometry.copy(), spin=spin, dtype=dtype, nnzpr=1, orthogonal=self.orthogonal)
+        new = self.__class__(self.geometry.copy(), spin=spin, dtype=dtype, nnzpr=1, orthogonal=orthogonal)
         new._csr = self._csr.transform(matrix, dtype=dtype)
 
-        return new
+        if not orthogonal and self.orthogonal:
+            # set identity overlap matrix, loop over rows
+            for i in range(new._csr.shape[0]):
+                new._csr[i, i, -1] = 1.
 
+        return new
 
     def __getstate__(self):
         return {

@@ -1376,7 +1376,7 @@ class SparseCSR(NDArrayOperatorsMixin):
                           shape=shape, **kwargs)
 
     def transform(self, matrix, dtype=None):
-        """ Apply a linear transformation :math:`R^n \rightarrow R^m` to the :math:`n`-dimensional elements of the sparse matrix.
+        r""" Apply a linear transformation :math:`R^n \rightarrow R^m` to the :math:`n`-dimensional elements of the sparse matrix.
 
         Parameters
         ----------
