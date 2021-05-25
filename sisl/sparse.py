@@ -1582,14 +1582,17 @@ class SparseCSR(NDArrayOperatorsMixin):
         if method == "__call__":
             result = _ufunc_pre(ufunc, *inputs, **kwargs)
         elif method == "reduce":
+            #print("running reduce ", ufunc)
             # to be handled
             return NotImplemented
         elif method == "outer":
+            #print("running outer")
             # Currently I don't know what to do here
             # We don't have multidimensional sparse matrices,
             # but perhaps that could be needed later?
             return NotImplemented
         else:
+            #print("running method = ", method)
             return NotImplemented
 
         if out is None:
@@ -1609,6 +1612,7 @@ class SparseCSR(NDArrayOperatorsMixin):
             out.col = result.col
             out._D = result._D.astype(kwargs.get("dtype", out.dtype))
             return out
+        #print("what happened here?")
         return NotImplemented
 
     def __getstate__(self):
@@ -1779,7 +1783,7 @@ def _ufunc_pre(ufunc, *in_args, **kwargs):
     for arg in in_args:
         if isinstance(arg, SparseCSR):
             args.append(arg)
-        elif isscalar(arg) or isinstance(arg, ndarray):
+        elif isscalar(arg) or isinstance(arg, (tuple, list, ndarray)):
             args.append(asarray(arg))
         elif isinstance(arg, spmatrix):
             args.append(arg)
