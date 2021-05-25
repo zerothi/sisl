@@ -1384,7 +1384,7 @@ class SparseCSR(NDArrayOperatorsMixin):
         ----------
         matrix : array_like
             transformation matrix of shape :math:`m \times n`
-        dtype : `numpy.dtype`, optional
+        dtype : numpy.dtype, optional
             defaults to the common dtype of the object and the transformation matrix
         """
         matrix = np.asarray(matrix)
