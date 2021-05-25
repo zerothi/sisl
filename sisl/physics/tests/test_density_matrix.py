@@ -374,3 +374,49 @@ class TestDensityMatrix:
         d = p.loads(s)
         assert d.spsame(D)
         assert np.allclose(d.eigh(), D.eigh())
+
+    def test_transform(self, setup):
+        D = DensityMatrix(setup.g, spin='so')
+        a = np.arange(8)
+        for ia in setup.g:
+            D[ia, ia] = a
+
+        Dt = D.transform(spin='unpolarized', dtype=np.float32)
+        assert np.abs(0.5 * D.tocsr(0) + 0.5 * D.tocsr(1) - Dt.tocsr(0)).sum() == 0
+        Dt = D.transform(spin='polarized', orthogonal=False)
+        assert np.abs(D.tocsr(0) - Dt.tocsr(0)).sum() == 0
+        assert np.abs(D.tocsr(1) - Dt.tocsr(1)).sum() == 0
+        assert np.abs(Dt.tocsr(2)).sum() != 0
+        Dt = D.transform(spin='non-colinear', orthogonal=False)
+        assert np.abs(D.tocsr(0) - Dt.tocsr(0)).sum() == 0
+        assert np.abs(D.tocsr(1) - Dt.tocsr(1)).sum() == 0
+        assert np.abs(D.tocsr(2) - Dt.tocsr(2)).sum() == 0
+        assert np.abs(D.tocsr(3) - Dt.tocsr(3)).sum() == 0
+        assert np.abs(Dt.tocsr(-1)).sum() != 0
+
+    def test_transform_nonortho(self, setup):
+        D = DensityMatrix(setup.g, spin='polarized', orthogonal=False)
+        a = np.arange(3)
+        a[-1] = 1.
+        for ia in setup.g:
+            D[ia, ia] = a
+
+        Dt = D.transform(spin='unpolarized', dtype=np.float32)
+        assert np.abs(0.5 * D.tocsr(0) + 0.5 * D.tocsr(1) - Dt.tocsr(0)).sum() == 0
+        assert np.abs(D.tocsr(-1) - Dt.tocsr(-1)).sum() == 0
+        Dt = D.transform(spin='polarized')
+        assert np.abs(D.tocsr(0) - Dt.tocsr(0)).sum() == 0
+        assert np.abs(D.tocsr(1) - Dt.tocsr(1)).sum() == 0
+        Dt = D.transform(spin='polarized', orthogonal=True)
+        assert np.abs(D.tocsr(0) - Dt.tocsr(0)).sum() == 0
+        assert np.abs(D.tocsr(1) - Dt.tocsr(1)).sum() == 0
+        Dt = D.transform(spin='non-colinear', orthogonal=False)
+        assert np.abs(D.tocsr(0) - Dt.tocsr(0)).sum() == 0
+        assert np.abs(D.tocsr(1) - Dt.tocsr(1)).sum() == 0
+        assert np.abs(Dt.tocsr(2)).sum() == 0
+        assert np.abs(Dt.tocsr(3)).sum() == 0
+        assert np.abs(D.tocsr(-1) - Dt.tocsr(-1)).sum() == 0
+        Dt = D.transform(spin='so', orthogonal=True)
+        assert np.abs(D.tocsr(0) - Dt.tocsr(0)).sum() == 0
+        assert np.abs(D.tocsr(1) - Dt.tocsr(1)).sum() == 0
+        assert np.abs(Dt.tocsr(-1)).sum() == 0
