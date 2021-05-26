@@ -380,18 +380,21 @@ class TestDensityMatrix:
         a = np.arange(8)
         for ia in setup.g:
             D[ia, ia] = a
+        Dcsr = [D.tocsr(i) for i in range(D.shape[2])]
 
         Dt = D.transform(spin='unpolarized', dtype=np.float32)
-        assert np.abs(0.5 * D.tocsr(0) + 0.5 * D.tocsr(1) - Dt.tocsr(0)).sum() == 0
+        assert np.abs(0.5 * Dcsr[0] + 0.5 * Dcsr[1] - Dt.tocsr(0)).sum() == 0
+
         Dt = D.transform(spin='polarized', orthogonal=False)
-        assert np.abs(D.tocsr(0) - Dt.tocsr(0)).sum() == 0
-        assert np.abs(D.tocsr(1) - Dt.tocsr(1)).sum() == 0
+        assert np.abs(Dcsr[0] - Dt.tocsr(0)).sum() == 0
+        assert np.abs(Dcsr[1] - Dt.tocsr(1)).sum() == 0
         assert np.abs(Dt.tocsr(2)).sum() != 0
+
         Dt = D.transform(spin='non-colinear', orthogonal=False)
-        assert np.abs(D.tocsr(0) - Dt.tocsr(0)).sum() == 0
-        assert np.abs(D.tocsr(1) - Dt.tocsr(1)).sum() == 0
-        assert np.abs(D.tocsr(2) - Dt.tocsr(2)).sum() == 0
-        assert np.abs(D.tocsr(3) - Dt.tocsr(3)).sum() == 0
+        assert np.abs(Dcsr[0] - Dt.tocsr(0)).sum() == 0
+        assert np.abs(Dcsr[1] - Dt.tocsr(1)).sum() == 0
+        assert np.abs(Dcsr[2] - Dt.tocsr(2)).sum() == 0
+        assert np.abs(Dcsr[3] - Dt.tocsr(3)).sum() == 0
         assert np.abs(Dt.tocsr(-1)).sum() != 0
 
     def test_transform_nonortho(self, setup):
