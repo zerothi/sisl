@@ -1329,6 +1329,7 @@ def test_transform1():
     assert conv.shape[2] == len(matrix)
     assert np.abs(conv.tocsr(0) - 0.3 * csr1 - 0.7 * csr2).sum() == 0.
 
+
 def test_transform2():
     csr1 = sc.sparse.random(10, 100, 0.01, random_state=24812)
     csr2 = sc.sparse.random(10, 100, 0.02, random_state=24813)
@@ -1342,6 +1343,7 @@ def test_transform2():
     assert conv.shape[2] == len(matrix)
     assert np.abs(conv.tocsr(0) - 0.3 * csr1).sum() == 0.
     assert np.abs(conv.tocsr(1) - 0.7 * csr2).sum() == 0.
+
 
 def test_transform3():
     csr1 = sc.sparse.random(10, 100, 0.01, random_state=24812)
@@ -1357,6 +1359,7 @@ def test_transform3():
     assert np.abs(conv.tocsr(0) - 0.3 * csr1).sum() == 0.
     assert np.abs(conv.tocsr(1) - 0.7 * csr2).sum() == 0.
     assert np.abs(conv.tocsr(2) - 0.1 * csr1 - 0.2 * csr2).sum() == 0.
+
 
 def test_transform4():
     csr1 = sc.sparse.random(10, 100, 0.01, random_state=24812)
