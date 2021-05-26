@@ -1821,10 +1821,9 @@ class Geometry(SuperCellChild):
         # We may use broadcasting rules instead of repeating stuff
         xyz.shape = (reps, self.na, 3)
         nr = _a.arangei(reps)
-        nr.shape = (reps, 1)
-        for i in range(3):
-            # Correct the unit-cell offsets along `i`
-            xyz[:, :, i] += nr * self.cell[axis, i]
+        nr.shape = (reps, 1, 1)
+        # Correct the unit-cell offsets
+        xyz += nr * self.cell[axis, :].reshape(1, 1, 3)
         xyz.shape = (-1, 3)
 
         # Create the geometry and return it (note the smaller atoms array
