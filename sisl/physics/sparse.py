@@ -1292,7 +1292,6 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             elif spin.spins > 1 and self.spin.is_unpolarized:
                 # set up and down components to unpolarized value
                 matrix[[0, 1], 0] = 1.
-            print(matrix)
 
         if matrix.shape[0] != M or matrix.shape[1] != N:
             # while this check also occurs in the SparseCSR.transform
