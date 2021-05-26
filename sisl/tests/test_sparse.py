@@ -1372,11 +1372,11 @@ def test_transform1():
 
     # real 1x2 matrix, dtype=np.complex128
     matrix = [[0.3, 0.7]]
-    conv = csr.transform(matrix=matrix, dtype=np.complex128)
+    tr = csr.transform(matrix=matrix, dtype=np.complex128)
 
-    assert conv.shape[:2] == csr.shape[:2]
-    assert conv.shape[2] == len(matrix)
-    assert np.abs(conv.tocsr(0) - 0.3 * csr1 - 0.7 * csr2).sum() == 0.
+    assert tr.shape[:2] == csr.shape[:2]
+    assert tr.shape[2] == len(matrix)
+    assert np.abs(tr.tocsr(0) - 0.3 * csr1 - 0.7 * csr2).sum() == 0.
 
 
 def test_transform2():
@@ -1386,12 +1386,12 @@ def test_transform2():
 
     # real 2x2 matrix, dtype=np.float64
     matrix = [[0.3, 0], [0, 0.7]]
-    conv = csr.transform(matrix=matrix, dtype=np.float64)
+    tr = csr.transform(matrix=matrix, dtype=np.float64)
 
-    assert conv.shape[:2] == csr.shape[:2]
-    assert conv.shape[2] == len(matrix)
-    assert np.abs(conv.tocsr(0) - 0.3 * csr1).sum() == 0.
-    assert np.abs(conv.tocsr(1) - 0.7 * csr2).sum() == 0.
+    assert tr.shape[:2] == csr.shape[:2]
+    assert tr.shape[2] == len(matrix)
+    assert np.abs(tr.tocsr(0) - 0.3 * csr1).sum() == 0.
+    assert np.abs(tr.tocsr(1) - 0.7 * csr2).sum() == 0.
 
 
 def test_transform3():
@@ -1401,13 +1401,13 @@ def test_transform3():
 
     # real 3x2 matrix
     matrix = [[0.3, 0], [0, 0.7], [0.1, 0.2]]
-    conv = csr.transform(matrix=matrix)
+    tr = csr.transform(matrix=matrix)
 
-    assert conv.shape[:2] == csr.shape[:2]
-    assert conv.shape[2] == len(matrix)
-    assert np.abs(conv.tocsr(0) - 0.3 * csr1).sum() == 0.
-    assert np.abs(conv.tocsr(1) - 0.7 * csr2).sum() == 0.
-    assert np.abs(conv.tocsr(2) - 0.1 * csr1 - 0.2 * csr2).sum() == 0.
+    assert tr.shape[:2] == csr.shape[:2]
+    assert tr.shape[2] == len(matrix)
+    assert np.abs(tr.tocsr(0) - 0.3 * csr1).sum() == 0.
+    assert np.abs(tr.tocsr(1) - 0.7 * csr2).sum() == 0.
+    assert np.abs(tr.tocsr(2) - 0.1 * csr1 - 0.2 * csr2).sum() == 0.
 
 
 def test_transform4():
@@ -1417,11 +1417,11 @@ def test_transform4():
 
     # complex 1x2 matrix
     matrix = [[0.3j, 0.7j]]
-    conv = csr.transform(matrix=matrix)
+    tr = csr.transform(matrix=matrix)
 
-    assert conv.shape[:2] == csr.shape[:2]
-    assert conv.shape[2] == len(matrix)
-    assert np.abs(conv.tocsr(0) - 0.3j * csr1 - 0.7j * csr2).sum() == 0.
+    assert tr.shape[:2] == csr.shape[:2]
+    assert tr.shape[2] == len(matrix)
+    assert np.abs(tr.tocsr(0) - 0.3j * csr1 - 0.7j * csr2).sum() == 0.
 
 
 @pytest.mark.slow
