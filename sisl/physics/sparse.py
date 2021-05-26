@@ -1210,14 +1210,13 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
         return new
 
-    def transform(self, spin=None, orthogonal=None, matrix=None, dtype=None):
-        r""" Create a new matrix of the specified type according to the following
-        transformation rules:
+    def transform(self, matrix=None, dtype=None, spin=None, orthogonal=None):
+        r""" Transform the matrix by either a matrix or new spin configuration
 
         1. General transformation:
         * If `matrix` is provided, a linear transformation :math:`R^n \rightarrow R^m` is applied
         to the :math:`n`-dimensional elements of the original sparse matrix.
-        The `spin` and `orthogonal` flags need to be consistent with the creation of an
+        The `spin` and `orthogonal` flags are optional but need to be consistent with the creation of an
         `m`-dimensional matrix.
 
         2. Spin conversion:
@@ -1240,17 +1239,21 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         If the `orthogonal` flag is provided, the overlap matrix is either dropped
         or explicitly introduced as the identity matrix.
 
+        Notes
+        -----
+        The transformation matrix does *not* act on the rows and columns, only on the
+        final dimension of the matrix.
 
         Parameters
         ----------
+        matrix : array_like, optional
+            transformation matrix of shape :math:`m \times n`. Default is no transformation.
+        dtype : numpy.dtype, optional
+            data type contained in the matrix. Defaults to the input type.
         spin : str, sisl.Spin, optional
             spin class of created matrix. Defaults to the input type.
         orthogonal : bool, optional
             flag to control if the new matrix includes overlaps. Defaults to the input type.
-        matrix : array_like, optional
-            transformation matrix of shape :math:`m \times n`. Default is no transformation.
-        dtype : np.dtype, optional
-            data type contained in the matrix. Defaults to the input type.
         """
         if dtype is None:
             dtype = self.dtype
@@ -1263,33 +1266,40 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         if orthogonal is None:
             orthogonal = self.orthogonal
 
-        if matrix is None:
+        # get dimensions to check
+        N = n = self.spin.spins
+        if not self.orthogonal:
+            N += 1
+        M = m = spin.spins
+        if not orthogonal:
+            M += 1
 
+        if matrix is None:
             if spin == self.spin and orthogonal == self.orthogonal:
                 # no transformations needed
                 return self.copy(dtype)
 
             # construct transformation matrix
-            M = m = spin.spins
-            N = n = self._spin.spins
-            if not orthogonal:
-                M += 1
-            if not self.orthogonal:
-                N += 1
-            matrix = np.zeros((M, N), dtype=dtype)
+            matrix = np.zeros([M, N], dtype=dtype)
             matrix[:m, :n] = np.eye(m, n, dtype=dtype)
-            if M > m and N > n:
-                # carry over the overlap matrix
+            if not self.orthogonal and not orthogonal:
+                # ensure the overlap matrix is carried over
                 matrix[-1, -1] = 1.
 
-            if spin.is_unpolarized and self._spin.spins > 1:
+            if spin.is_unpolarized and self.spin.spins > 1:
                 # average up and down components
-                matrix[0, 0] = 0.5
-                matrix[0, 1] = 0.5
-            elif spin.spins > 1 and self._spin.is_unpolarized:
+                matrix[0, [0, 1]] = 0.5
+            elif spin.spins > 1 and self.spin.is_unpolarized:
                 # set up and down components to unpolarized value
-                matrix[0, 0] = 1.
-                matrix[1, 0] = 1.
+                matrix[[0, 1], 0] = 1.
+            print(matrix)
+
+        if matrix.shape[0] != M or matrix.shape[1] != N:
+            # while this check also occurs in the SparseCSR.transform
+            # code, but the error message is better placed here.
+            raise ValueError(f"{self.__class__.__name__}.transform incompatible "
+                             f"transformation matrix and spin dimensions: "
+                             f"matrix.shape={matrix.shape} and self.spin={N} ; out.spin={M}")
 
         new = self.__class__(self.geometry.copy(), spin=spin, dtype=dtype, nnzpr=1, orthogonal=orthogonal)
         new._csr = self._csr.transform(matrix, dtype=dtype)

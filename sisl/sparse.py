@@ -1376,7 +1376,12 @@ class SparseCSR(NDArrayOperatorsMixin):
                           shape=shape, **kwargs)
 
     def transform(self, matrix, dtype=None):
-        r""" Apply a linear transformation :math:`R^n \rightarrow R^m` to the :math:`n`-dimensional elements of the sparse matrix.
+        r""" Apply a linear transformation :math:`R^n \rightarrow R^m` to the :math:`n`-dimensional elements of the sparse matrix
+
+        Notes
+        -----
+        The transformation matrix does *not* act on the rows and columns, only on the
+        final dimension of the matrix.
 
         Parameters
         ----------
@@ -1389,6 +1394,11 @@ class SparseCSR(NDArrayOperatorsMixin):
 
         if dtype is None:
             dtype = np.find_common_type([self.dtype, matrix.dtype], [])
+
+        if matrix.shape[1] != self.shape[2]:
+            raise ValueError(f"{self.__class__.__name__}.transform incompatible "
+                             f"transformation matrix and spin dimensions: "
+                             f"matrix.shape={matrix.shape} and self.spin={N} ; out.spin={M}")
 
         # set dimension of new sparse matrix
         new_dim = len(matrix)
