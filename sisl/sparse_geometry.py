@@ -1210,7 +1210,7 @@ class SparseAtom(_SparseGeometry):
         structure is completed.
         """
         R = self.Rij(dtype)
-        R._csr = (R._csr ** 2).sum(-1) ** 0.5
+        R._csr = np.sum(R._csr ** 2, axis=-1) ** 0.5
         return R
 
     def Rij(self, dtype=np.float64):
@@ -1954,7 +1954,7 @@ class SparseOrbital(_SparseGeometry):
         structure is completed.
         """
         R = self.Rij(what, dtype)
-        R._csr = (R._csr ** 2).sum(-1) ** 0.5
+        R._csr = np.sum(R._csr ** 2, axis=-1) ** 0.5
         return R
 
     def Rij(self, what='orbital', dtype=np.float64):
@@ -2187,7 +2187,7 @@ class SparseOrbital(_SparseGeometry):
 
         Notes
         -----
-        The current implentation does not preserve the hermiticity of the matrix.
+        The current implementation does not preserve the hermiticity of the matrix.
         If you want to preserve hermiticity of the matrix you have to do the
         following:
 

@@ -194,8 +194,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
             # align with vector
             # add factor 1/2 here (instead when unwrapping)
-            A[:, :] = 0.5 * vec.reshape(1, 3) * ((A ** 2)
-                                                 .sum(1)
+            A[:, :] = 0.5 * vec.reshape(1, 3) * (np.sum(A ** 2, axis=1)
                                                  .reshape(-1, 1)) ** 0.5
 
             out = self.copy()
@@ -225,8 +224,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
             # align with vector
             # add factor 1/2 here (instead when unwrapping)
-            A[:, :, :] = 0.5 * vec.reshape(1, 1, 3) * ((A ** 2)
-                                                       .sum(2)
+            A[:, :, :] = 0.5 * vec.reshape(1, 1, 3) * (np.sum(A ** 2, axis=2)
                                                        .reshape(-1, 2, 1)) ** 0.5
 
             out = self.copy()
@@ -341,7 +339,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
             else:
                 D = self._csr.copy(range(self.shape[2] - 1))
                 D._D *= self._csr._D[:, -1].reshape(-1, 1)
-                D = D.sum(0)
+                D = np.sum(D, axis=1)
 
             return _convert(D)
 
@@ -352,7 +350,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
             else:
                 D = self._csr.copy(range(self.shape[2] - 1))
                 D._D *= self._csr._D[:, -1].reshape(-1, 1)
-                D = D.sum(0)
+                D = np.sum(D, axis=1)
 
             # Now perform summation per atom
             geom = self.geometry

@@ -1879,7 +1879,7 @@ def _ufunc_reduce(ufunc, array, axis=0, *args, **kwargs):
     # correct axis
     if axis is None:
         # reduction on all axes
-        return ufunc.reduce(array, axis, *args, **kwargs)
+        return ufunc.reduce(array._D, axis=None, *args, **kwargs)
     elif axis < 0:
         # correct for negative axis specification
         axis = axis + len(array.shape)
@@ -1892,7 +1892,7 @@ def _ufunc_reduce(ufunc, array, axis=0, *args, **kwargs):
     elif axis == (0, 1) or axis == (1, 0):
         return ufunc.reduce(array._D, axis=0, *args, **kwargs)
     elif axis == 2:
-        out = array.copy(dims=1, dtype=kwargs.get("dtype"))
+        out = array.copy(dims=range(array.shape[2] - 1), dtype=kwargs.get("dtype"))
         out._D[:, 0] = ufunc.reduce(array._D, axis=1, *args, **kwargs)
         return out
     else:

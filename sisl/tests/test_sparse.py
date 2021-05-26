@@ -266,7 +266,7 @@ def test_create_1d_bcasting_data_1d(setup):
         s2[np.arange(4).reshape(-1, 1), j] = i
 
     assert s1.spsame(s2)
-    assert (s1 - s2).sum() == 0
+    assert np.sum(s1 - s2) == 0
 
 
 def test_create_1d_bcasting_data_2d(setup):
@@ -285,7 +285,7 @@ def test_create_1d_bcasting_data_2d(setup):
         s2[np.arange(4).reshape(-1, 1), j] = data
 
     assert s1.spsame(s2)
-    assert (s1 - s2).sum() == 0
+    assert np.sum(s1 - s2) == 0
 
 
 def test_create_1d_diag(setup):
@@ -299,7 +299,7 @@ def test_create_1d_diag(setup):
     s2[d, d] = data
 
     assert s1.spsame(s2)
-    assert (s1 - s2).sum() == 0
+    assert np.sum(s1 - s2) == 0
 
 
 def test_create_2d_diag_0d(setup):
@@ -315,9 +315,9 @@ def test_create_2d_diag_0d(setup):
     s3[d, d, 1] = data
 
     assert s1.spsame(s2)
-    assert (s1 - s2).sum() == 0
+    assert np.sum(s1 - s2) == 0
     assert s1.spsame(s3)
-    assert (s1 - s3).sum() == 0
+    assert np.sum(s1 - s3) == 0
 
 
 def test_create_2d_diag_1d(setup):
@@ -333,9 +333,9 @@ def test_create_2d_diag_1d(setup):
     s3[d, d, 1] = data
 
     assert s1.spsame(s2)
-    assert (s1 - s2).sum() == 0
+    assert np.sum(s1 - s2) == 0
     assert s1.spsame(s3)
-    assert (s1 - s3).sum() == 0
+    assert np.sum(s1 - s3) == 0
 
 
 def test_create_2d_diag_2d(setup):
@@ -351,9 +351,9 @@ def test_create_2d_diag_2d(setup):
     s3[d, d, 1] = data[:, 1]
 
     assert s1.spsame(s2)
-    assert (s1 - s2).sum() == 0
+    assert np.sum(s1 - s2) == 0
     assert s1.spsame(s3)
-    assert (s1 - s3).sum() == 0
+    assert np.sum(s1 - s3) == 0
 
 
 def test_create_2d_data_2d(setup):
@@ -374,9 +374,9 @@ def test_create_2d_data_2d(setup):
     s3[I, I.T] = data[:, :, None]
 
     assert s1.spsame(s2)
-    assert (s1 - s2).sum() == 0
+    assert np.sum(s1 - s2) == 0
     assert s1.spsame(s3)
-    assert (s1 - s3).sum() == 0
+    assert np.sum(s1 - s3) == 0
 
 
 def test_create_2d_data_3d(setup):
@@ -392,7 +392,7 @@ def test_create_2d_data_3d(setup):
     s2[I, I.T] = data
 
     assert s1.spsame(s2)
-    assert (s1 - s2).sum() == 0
+    assert np.sum(s1 - s2) == 0
 
 
 def test_copy_dims(setup):
@@ -1222,7 +1222,6 @@ def test_op_numpy_scalar():
     assert s.dtype == np.complex64
 
 
-@pytest.mark.only
 def test_op_sparse_dim():
     S = SparseCSR((10, 100, 2), dtype=np.float32)
     assert S.shape == (10, 100, 2)
@@ -1238,9 +1237,15 @@ def test_op_sparse_dim():
     assert np.allclose(s._D, (S + 2)._D)
     s = S + [1, 2]
     assert np.allclose(s._D[:, 0], (S + 1)._D[:, 0])
-    assert not np.any(np.isclose(s._D[:, 0], (S + 1)._D[:, 1]))
-    assert np.allclose(s._D[:, 1], (S + 2)._D[:, 1])
-    assert not np.any(np.isclose(s._D[:, 0], (S + 2)._D[:, 1]))
+
+    # check both
+    ss = S + 1
+    assert np.any(np.isclose(s._D[:, 0], ss._D[:, 0]))
+    assert not np.any(np.isclose(s._D[:, 1], ss._D[:, 1]))
+
+    ss = S + 2
+    assert not np.any(np.isclose(s._D[:, 0], ss._D[:, 0]))
+    assert np.all(np.isclose(s._D[:, 1], ss._D[:, 1]))
 
 
 def test_sparse_transpose():
@@ -1261,7 +1266,7 @@ def test_sparse_transpose():
 
 
 def test_op_reduce():
-    S1 = SparseCSR((10, 10, 2), dtype=np.int32)
+    S1 = SparseCSR((10, 11, 2), dtype=np.int32)
     S1[0, 0] = [1, 2]
     S1[2, 0] = [1, 2]
     S1[2, 2] = [1, 2]
@@ -1273,24 +1278,22 @@ def test_op_reduce():
     assert S2[2, 0] == 3
     assert S2[2, 2] == 3
 
-    assert S1.sum() == 1 * 3 + 2 * 3
+    assert np.sum(S1) == 1 * 3 + 2 * 3
 
     S = np.sum(S1, axis=0)
+    v = np.zeros([S1.shape[1], S1.shape[2]], np.int32)
+    v[0] = [2, 4]
+    v[2] = [1, 2]
+    assert np.allclose(S, v)
+
+    v = v.sum(1)
+    assert np.allclose(np.sum(S, 1), v)
+
+    S = np.sum(S1, axis=1)
     v = np.zeros([S1.shape[0], S1.shape[2]], np.int32)
     v[0] = [1, 2]
     v[2] = [2, 4]
     assert np.allclose(S, v)
-
-    v = np.zeros([S1.shape[0]], np.int32)
-    v[0] = 3
-    v[2] = 6
-    assert np.allclose(S.sum(1), v)
-
-    S = np.sum(S1, axis=1)
-
-    d = np.diff(S1, axis=2)
-    assert d[0, 0] == 1
-    assert d[2, 0] == 1
 
 
 def test_unfinalized_math():
