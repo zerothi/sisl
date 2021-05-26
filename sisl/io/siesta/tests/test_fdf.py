@@ -402,3 +402,61 @@ def test_fdf_fe_basis(sisl_files):
     geom = fdfSileSiesta(sisl_files(_dir, 'fe.fdf')).read_geometry()
     assert geom.no == 15
     assert geom.na == 1
+
+
+def test_fdf_pao_basis():
+    fdf = fdfSileSiesta
+
+    block = """
+Mg                    1                    # Species label, number of l-shells
+ n=3   0   1                         # n, l, Nzeta
+   6.620
+   1.000
+C                     2                    # Species label, number of l-shells
+ n=2   0   1                         # n, l, Nzeta
+   4.192
+   1.000
+ n=2   1   1                         # n, l, Nzeta
+   4.870
+   1.000
+O                     2                    # Species label, number of l-shells
+ n=2   0   1                         # n, l, Nzeta
+   3.305
+   1.000
+ n=2   1   1                         # n, l, Nzeta
+   3.937
+   1.000
+    """.splitlines()
+
+    atom_orbs = fdf._parse_pao_basis(block)
+    assert len(atom_orbs) == 3
+    assert len(atom_orbs["Mg"]) == 1
+    assert len(atom_orbs["C"]) == 4
+    assert len(atom_orbs["O"]) == 4
+    for i, (tag, orbs) in enumerate(atom_orbs.items()):
+        specie_orbs = fdf._parse_pao_basis(block, specie=tag)
+        assert specie_orbs == orbs
+
+    block = """
+Fe_SOC                2                    # Species label, number of l-shells
+ n=4   0   2 P   1                   # n, l, Nzeta, Polarization, NzetaPol
+   7.329      6.153
+   1.000      1.000
+ n=3   2   2                         # n, l, Nzeta
+   4.336      2.207
+   1.000      1.000
+Pt_SOC                2                    # Species label, number of l-shells
+ n=6   0   2 P   1                   # n, l, Nzeta, Polarization, NzetaPol
+   7.158      6.009
+   1.000      1.000
+ n=5   2   2                         # n, l, Nzeta
+   5.044      3.022
+   1.000      1.000
+"""
+    atom_orbs = fdf._parse_pao_basis(block)
+    assert len(atom_orbs) == 2
+    assert len(atom_orbs["Fe_SOC"]) == 5 + 10
+    assert len(atom_orbs["Pt_SOC"]) == 5 + 10
+    for i, (tag, orbs) in enumerate(atom_orbs.items()):
+        specie_orbs = fdf._parse_pao_basis(block, specie=tag)
+        assert specie_orbs == orbs

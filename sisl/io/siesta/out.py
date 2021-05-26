@@ -1,5 +1,6 @@
 import os
 import numpy as np
+from functools import lru_cache
 
 from .sile import SileSiesta
 from ..sile import add_sile, sile_fh_open, SileError
@@ -18,11 +19,13 @@ __all__ = ['outSileSiesta']
 Bohr2Ang = unit_convert('Bohr', 'Ang')
 
 
-def _ensure_species(species):
-    """ Ensures that the species list is a list with entries (converts `None` to a list). """
-    if species is None:
+def _ensure_atoms(atoms):
+    """ Ensures that the atoms list is a list with entries (converts `None` to a list). """
+    if atoms is None:
         return [Atom(i) for i in range(150)]
-    return species
+    elif len(atoms) == 0:
+        return [Atom(i) for i in range(150)]
+    return atoms
 
 
 @set_module("sisl.io.siesta")
@@ -52,48 +55,60 @@ class outSileSiesta(SileSiesta):
             self._completed = True
         return completed
 
-    @sile_fh_open()
-    def read_species(self):
-        """ Reads the species from the top of the output file.
+    @lru_cache(1)
+    @sile_fh_open(True)
+    def read_basis(self):
+        """ Reads the basis as found in the output file
 
-        If wanting the species this HAS to be the first routine called.
+        This parses 3 things:
 
-        It returns an array of `Atom` objects which may easily be indexed.
+        1. At the start of the file there are some initatom output
+           specifying which species in the calculation.
+        2. Reading the <basis_specs> entries for the masses
+        3. Reading the PAO.Basis block output for orbital information
         """
+        found, line = self.step_to("Species number:")
+        if not found:
+            return []
 
-        line = self.readline()
-        while not 'Species number:' in line:
-            line = self.readline()
-            if line == '':
-                # We fake the species by direct atomic number
-                return None
-
-        atom = []
+        atoms = {}
+        order = []
         while 'Species number:' in line:
             ls = line.split()
             if ls[3] == 'Atomic':
-                atom.append(Atom(int(ls[5]), tag=ls[7]))
+                atoms[ls[7]] = {'Z': int(ls[5]), 'tag': ls[7]}
+                order.append(ls[7])
             else:
-                atom.append(Atom(int(ls[7]), tag=ls[4]))
+                atoms[ls[4]] = {'Z': int(ls[7]), 'tag': ls[4]}
+                order.append(ls[4])
             line = self.readline()
 
-        return atom
+                # Now go down to basis_specs
+        found, line = self.step_to("<basis_specs>")
+        while found:
+            # =====
+            self.readline()
+            # actual line
+            line = self.readline().split("=")
+            tag = line[0].split()[0]
+            atoms[tag]["mass"] = float(line[2].split()[0])
+            found, line = self.step_to("<basis_specs>", reread=False)
 
-    @sile_fh_open(True)
-    def read_basis_block(self):
-        """ Reads the PAO.Basis block that Siesta writes """
+        block = []
         found, line = self.step_to("%block PAO.Basis")
-        if not found:
-            raise ValueError(f"{self.__class__.__name__}.read_basis_block could not find PAO.Basis in output")
-
-        basis = []
+        line = self.readline()
         while not line.startswith("%endblock PAO.Basis"):
+            block.append(line)
             line = self.readline()
-            basis.append(line)
 
-        return basis
+        from .fdf import fdfSileSiesta
+        atom_orbs = fdfSileSiesta._parse_pao_basis(block)
+        for atom, orbs in atom_orbs.items():
+            atoms[atom]["orbitals"] = orbs
 
-    def _read_supercell_outcell(self):
+        return [Atom(**atoms[tag]) for tag in order]
+
+    def _r_supercell_outcell(self):
         """ Wrapper for reading the unit-cell from the outcoor block """
 
         # Read until outcell is found
@@ -118,9 +133,9 @@ class outSileSiesta(SileSiesta):
 
         return SuperCell(cell)
 
-    def _read_geometry_outcoor(self, line, species=None):
+    def _r_geometry_outcoor(self, line, atoms=None):
         """ Wrapper for reading the geometry as in the outcoor output """
-        species = _ensure_species(species)
+        atoms_order = _ensure_atoms(atoms)
 
         # Now we have outcoor
         scaled = 'scaled' in line
@@ -129,16 +144,16 @@ class outSileSiesta(SileSiesta):
 
         # Read in data
         xyz = []
-        spec = []
+        atoms = []
         line = self.readline()
         while len(line.strip()) > 0:
             line = line.split()
             xyz.append([float(x) for x in line[:3]])
-            spec.append(int(line[3]))
+            atoms.append(atoms_order[int(line[3]) - 1])
             line = self.readline()
 
         # in outcoor we know it is always just after
-        cell = self._read_supercell_outcell()
+        cell = self._r_supercell_outcell()
         xyz = _a.arrayd(xyz)
 
         # Now create the geometry
@@ -152,32 +167,29 @@ class outSileSiesta(SileSiesta):
         elif not Ang:
             xyz *= Bohr2Ang
 
-        # Assign the correct species
-        geom = Geometry(xyz, [species[ia - 1] for ia in spec], sc=cell)
+        return Geometry(xyz, atoms, sc=cell)
 
-        return geom
-
-    def _read_geometry_atomic(self, line, species=None):
+    def _r_geometry_atomic(self, line, atoms=None):
         """ Wrapper for reading the geometry as in the outcoor output """
-        species = _ensure_species(species)
+        atoms_order = _ensure_atoms(atoms)
 
         # Now we have outcoor
         Ang = 'Ang' in line
 
         # Read in data
         xyz = []
-        atom = []
+        atoms = []
         line = self.readline()
         while len(line.strip()) > 0:
             line = line.split()
             xyz.append([float(x) for x in line[1:4]])
-            atom.append(species[int(line[4])-1])
+            atoms.append(atoms_order[int(line[4])-1])
             line = self.readline()
 
         # Retrieve the unit-cell (but do not skip file-descriptor position)
         # This is because the current unit-cell is not always written.
         pos = self.fh.tell()
-        cell = self._read_supercell_outcell()
+        cell = self._r_supercell_outcell()
         self.fh.seek(pos, os.SEEK_SET)
 
         # Convert xyz
@@ -185,7 +197,7 @@ class outSileSiesta(SileSiesta):
         if not Ang:
             xyz *= Bohr2Ang
 
-        return Geometry(xyz, atom, sc=cell)
+        return Geometry(xyz, atoms, sc=cell)
 
     @sile_fh_open()
     def read_geometry(self, last=True, all=False):
@@ -205,13 +217,7 @@ class outSileSiesta(SileSiesta):
              if all is False only one geometry will be returned (or None). Otherwise
              a list of geometries corresponding to the MD-runs.
         """
-
-        # The first thing we do is reading the species.
-        # Sadly, if this routine is called AFTER some other
-        # reading process, it may fail...
-        # Perhaps we should rewind to ensure this...
-        # But...
-        species = self.read_species()
+        atoms = self.read_basis()
         if all:
             # force last to be false
             last = False
@@ -233,9 +239,9 @@ class outSileSiesta(SileSiesta):
                 coord = type_coord(line)
 
             if coord == 1:
-                return 1, self._read_geometry_outcoor(line, species)
+                return 1, self._r_geometry_outcoor(line, atoms)
             elif coord == 2:
-                return 2, self._read_geometry_atomic(line, species)
+                return 2, self._r_geometry_atomic(line, atoms)
 
         # Read until a coordinate block is found
         geom0 = None
@@ -1025,15 +1031,15 @@ class outSileSiesta(SileSiesta):
 
         # Check that a known charge has been requested
         if namel == "voronoi":
-            _read_charge = _voronoi_hirshfeld_charges
+            _r_charge = _voronoi_hirshfeld_charges
             charge_keys = ["Voronoi Atomic Populations",
                            "Voronoi Net Atomic Populations"]
         elif namel == "hirshfeld":
-            _read_charge = _voronoi_hirshfeld_charges
+            _r_charge = _voronoi_hirshfeld_charges
             charge_keys = ["Hirshfeld Atomic Populations",
                            "Hirshfeld Net Atomic Populations"]
         elif namel == "mulliken":
-            _read_charge = _mulliken_charges
+            _r_charge = _mulliken_charges
             charge_keys = ["mulliken: Atomic and Orbital Populations"]
         else:
             raise ValueError(f"{self.__class__.__name__}.read_charge name argument should be one of {known_charges}, got {name}?")
@@ -1103,7 +1109,7 @@ class outSileSiesta(SileSiesta):
             elif ret[2] in IDX_CHARGE:
                 FOUND_CHARGE = True
                 # also read charge
-                charge = _read_charge()
+                charge = _r_charge()
 
                 if state.INITIAL == current_state or state.CHARGE == current_state:
                     # this signals scf charges

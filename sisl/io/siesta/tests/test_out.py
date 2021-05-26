@@ -3,6 +3,7 @@ import pytest
 import os.path as osp
 import sisl
 from sisl.io.siesta.out import *
+from sisl.io.siesta.fdf import *
 import numpy as np
 
 
@@ -121,3 +122,38 @@ def test_md_nose_out_energy(sisl_files):
     f = sisl_files(_dir, 'md_nose.out')
     energy = outSileSiesta(f).read_energy()
     assert isinstance(energy, sisl.utils.PropertyDict)
+
+
+def test_md_nose_pao_basis(sisl_files):
+    f = sisl_files(_dir, 'md_nose.out')
+
+    block = """
+Mg                    1                    # Species label, number of l-shells
+ n=3   0   1                         # n, l, Nzeta
+   6.620
+   1.000
+C                     2                    # Species label, number of l-shells
+ n=2   0   1                         # n, l, Nzeta
+   4.192
+   1.000
+ n=2   1   1                         # n, l, Nzeta
+   4.870
+   1.000
+O                     2                    # Species label, number of l-shells
+ n=2   0   1                         # n, l, Nzeta
+   3.305
+   1.000
+ n=2   1   1                         # n, l, Nzeta
+   3.937
+   1.000
+    """
+
+    atom_orbs = fdfSileSiesta._parse_pao_basis(block)
+    assert len(atom_orbs) == 3
+    assert len(atom_orbs["Mg"]) == 1
+    assert len(atom_orbs["C"]) == 4
+    assert len(atom_orbs["O"]) == 4
+
+    atoms = outSileSiesta(f).read_basis()
+    for atom in atoms:
+        assert atom.orbitals == atom_orbs[atom.tag]
