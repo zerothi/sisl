@@ -2141,14 +2141,14 @@ class SparseOrbital(_SparseGeometry):
 
         return full
 
-    def prepend(self, other, axis, eps=0.01):
+    def prepend(self, other, axis, eps=0.01, scale=1):
         r""" See `append` for details
 
         This is currently equivalent to:
 
-        >>> other.append(self, axis, eps)
+        >>> other.append(self, axis, eps, scale)
         """
-        return other.append(self, axis, eps)
+        return other.append(self, axis, eps, scale)
 
     def append(self, other, axis, eps=0.01, scale=1):
         r""" Append `other` along `axis` to construct a new connected sparse matrix
