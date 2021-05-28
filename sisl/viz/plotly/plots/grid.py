@@ -555,7 +555,7 @@ class GridPlot(Plot):
     def _get_offset(self, ax, offset, x_range, y_range, z_range):
 
         ax_range = [x_range, y_range, z_range][ax]
-        grid_offset = _a.asarrayd(offset) + self.offsets["vacuum"] + self.offsets["cell_transform"]
+        grid_offset = self.grid.origo[ax] + _a.asarrayd(offset) + self.offsets["vacuum"] + self.offsets["cell_transform"]
 
         if ax_range is not None:
             offset = ax_range[0]
