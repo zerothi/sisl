@@ -35,6 +35,7 @@ def _ospath(path):
 
 # Define a list of minimum versions
 min_version ={
+    "Cython": "0.28",
     "python": "3.6",
     "numpy": "1.13",
     "pyparsing": "1.5.7",
@@ -437,7 +438,7 @@ setuptools_kwargs = {
         "pyparsing >= " + min_version["pyparsing"],
     ],
     "setup_requires": [
-        "Cython",
+        "Cython >= " + min_version["Cython"],
         "numpy >= " + min_version["numpy"],
     ],
     "extras_require": {

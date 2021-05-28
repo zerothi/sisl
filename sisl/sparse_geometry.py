@@ -6,12 +6,14 @@ import warnings
 import functools as ftool
 import itertools
 import operator
+from collections import namedtuple
 import numpy as np
 from numpy.lib.mixins import NDArrayOperatorsMixin
 from numpy import (
-    int32,
+    int32, intersect1d,
     take, delete, argsort, lexsort,
-    unique, diff, allclose,
+    insert, unique, diff, allclose,
+    searchsorted,
     tile, repeat, concatenate
 )
 
@@ -2145,7 +2147,7 @@ class SparseOrbital(_SparseGeometry):
 
         return full
 
-    def prepend(self, other, axis, eps=0.01, scale=1):
+    def prepend(self, other, axis, eps=0.005, scale=1):
         r""" See `append` for details
 
         This is currently equivalent to:
@@ -2154,7 +2156,7 @@ class SparseOrbital(_SparseGeometry):
         """
         return other.append(self, axis, eps, scale)
 
-    def append(self, other, axis, eps=0.01, scale=1):
+    def append(self, other, axis, eps=0.005, scale=1):
         r""" Append `other` along `axis` to construct a new connected sparse matrix
 
         This method tries to append two sparse geometry objects together by
@@ -2195,7 +2197,7 @@ class SparseOrbital(_SparseGeometry):
         If you want to preserve hermiticity of the matrix you have to do the
         following:
 
-        >>> h = (h + h.transpose()) / 2
+        >>> sm = (sm + sm.transpose()) / 2
 
         Parameters
         ----------
@@ -2220,6 +2222,7 @@ class SparseOrbital(_SparseGeometry):
         prepend : equivalent scheme as this method
         add : merge two matrices without considering overlap or commensurability
         transpose : ensure hermiticity by using this routine
+        replace : replace a sub-set of atoms with another sparse matrix
         Geometry.append
         Geometry.prepend
         SparseCSR.scale_columns : method used to scale the two matrix elements values
@@ -2425,6 +2428,373 @@ class SparseOrbital(_SparseGeometry):
 
         full._csr.translate_columns(col_from, col_to)
         return full
+
+    def replace(self, atoms, other, other_atoms=None, eps=0.005, scale=1.):
+        r""" Replace `atoms` in `self` with `other_atoms` in `other` and retain couplings between them
+
+        This method tries to replace a subset of atoms in `self` with
+        another sparse geometry retaining any couplings between them.
+        The algorithm checks whether the coupling atoms are have the same number of
+        orbitals. Meaning that atoms in the overlapping region should have the same
+        connections and number of orbitals per atom.
+        It will _not_ check whether the orbitals or atoms _are_ the same.
+
+        Examples
+        --------
+        >>> minimal = SparseOrbital(....)
+        >>> big = minimal.tile(2, 0)
+        >>> big2 = big.replace(np.arange(big.na), minimal)
+        >>> big.spsame(big2)
+        True
+
+        To retain couplings only from the ``big`` sparse matrix, one should
+        do the following (note the subsequent transposing which ensures hermiticy
+        and is effectively copying couplings from ``big`` to the replaced region.
+
+        >>> big2 = big.replace(np.arange(big.na), minimal, scale=(2, 0))
+        >>> big2 = (big2 + big2.transpose()) * 0.5
+
+        To only retain couplings from the ```minial`` sparse matrix:
+
+        >>> big2 = big.replace(np.arange(big.na), minimal, scale=(0, 2))
+        >>> big2 = (big2 + big2.transpose()) * 0.5
+
+        Notes
+        -----
+        The current implementation does not preserve the hermiticity of the matrix.
+        If you want to preserve hermiticity of the matrix you have to do the
+        following:
+
+        >>> sm = (sm + sm.transpose()) / 2
+
+        Also note that the ordering of the atoms will be ``range(atoms.min()), range(len(other_atoms)), <rest>``.
+        So algorithms using atomic indices should be careful.
+
+        Parameters
+        ----------
+        atoms : array_like
+            which atoms in `self` that are removed and replaced with ``other.sub(other_atoms)``
+        other : object
+            must be an object of the same type as `self`, a subset is taken from this
+            sparse matrix and combined with `self` to create a new sparse matrix
+        other_atoms : array_like, optional
+            to select a subset of atoms in `other` that are taken out.
+            Defaults to all atoms.
+        eps : float, optional
+            tolerance that all coordinates *must* be within to allow a replacement.
+            It is important that this value is smaller than half the distance between
+            the two closests atoms such that there is no ambiguity in selecting
+            equivalent atoms.
+        scale : float or array_like, optional
+            the scale used for the overlapping region. For scalar values it corresponds
+            to passing: ``(scale, scale)``.
+            For array-like input ``scale[0]`` refers to the scale of the matrix elements
+            coupling from `self`, while ``scale[1]`` is the scale of the matrix elements
+            in `other`.
+
+        See Also
+        --------
+        prepend : equivalent scheme as this method
+        add : merge two matrices without considering overlap or commensurability
+        transpose : ensure hermiticity by using this routine
+        append : append two sparse matrices
+        Geometry.append
+        Geometry.prepend
+        SparseCSR.scale_columns : method used to scale the two matrix elements values
+
+        Raises
+        ------
+        ValueError if the two geometries are not compatible for either coordinate, orbital or supercell errors
+        AssertionError if the two geometries are not compatible for either coordinate, orbital or supercell errors
+
+        Returns
+        -------
+        object
+            a new instance with two sparse matrices merged together by removing and adding
+        """
+        if np.asarray(scale).size == 1:
+            scale = np.array([scale, scale])
+        scale = np.asarray(scale)
+
+        # here our connection is defined as what is connected to "in"
+        # and what is connected to "out"
+        # Say 0 -> 1
+        # And `atoms` is [0].
+        # Then in = [0], out = [1]
+        # since atoms connect out to [1]
+
+        # figure out the atoms that needs replacement
+        def get_reduced_system(sp, atoms):
+            """ convert the geometry in `sp` to only atoms `atoms` and return the following:
+
+            1. atoms (sanitized and no order change)
+            2. orbitals (ordered as `atoms`
+            3. the atoms that are connected to OUT and IN
+            4. the orbitals that are connected to OUT and IN
+            """
+            geom = sp.geometry
+            atoms = _a.asarrayi(geom._sanitize_atoms(atoms)).ravel()
+            if unique(atoms).size != atoms.size:
+                raise ValueError(f"{self.__class__.__name__}.replace requires a unique set of atoms")
+            orbs = geom.a2o(atoms, all=True)
+            other_orbs = geom.ouc2sc(np.delete(_a.arangei(geom.no), orbs))
+
+            # Find the orbitals that these atoms connect to such that we can compare
+            # atomic coordinates
+            out_connect_orb_sc = sp.edges(orbitals=orbs, exclude=orbs)
+            out_connect_orb = geom.osc2uc(out_connect_orb_sc, True)
+            out_connect_atom_sc = geom.o2a(out_connect_orb_sc, True)
+            out_connect_atom = geom.asc2uc(out_connect_atom_sc, True)
+
+            # figure out connecting back
+            atoms_orbs = list(map(_a.arangei, geom.firsto[atoms], geom.firsto[atoms+1]))
+            in_connect_atom = []
+            in_connect_orb = []
+
+            for atom, atom_orbs in zip(atoms, atoms_orbs):
+                edges = sp.edges(orbitals=atom_orbs, exclude=orbs)
+                if len(intersect1d(edges, out_connect_orb_sc)) > 0:
+                    in_connect_atom.append(atom)
+                    in_connect_orb.append(atom_orbs)
+
+            in_connect_atom = _a.arrayi(in_connect_atom)
+            in_connect_orb = concatenate(in_connect_orb)
+
+            # create the connection tables
+            atom_uc = Connect(in_connect_atom, out_connect_atom)
+            atom_sc = Connect(in_connect_atom, out_connect_atom_sc)
+            orb_uc = Connect(in_connect_orb, out_connect_orb)
+            orb_sc = Connect(in_connect_orb, out_connect_orb_sc)
+            atom_connect = UCSC(atom_uc, atom_sc)
+            orb_connect = UCSC(orb_uc, orb_sc)
+
+            return Info(atoms, orbs, atom_connect, orb_connect)
+
+        UCSC = namedtuple("UCSC", ["uc", "sc"])
+        Connect = namedtuple("Connect", ["IN", "OUT"])
+        Info = namedtuple("Info", ["atoms", "orbitals", "atom_connect", "orb_connect"])
+
+        sgeom = self.geometry
+        s_info = get_reduced_system(self, atoms)
+        atoms = s_info.atoms # sanitized (no order change)
+
+        ogeom = other.geometry
+        o_info = get_reduced_system(other, other_atoms)
+        other_atoms = o_info.atoms # sanitized (no order change)
+
+        # Get overlapping atoms by their offset
+        # We need to get a 1-1 correspondance between the two connecting geometries
+        # For instance `self` may be ordered differently than `other`.
+        # So we need to figure out how the atoms are arranged in *both* regions.
+        # This is where `eps` comes into play since we have to ensure that the
+        # connecting regions are within some given tolerance.
+
+        # 1. Create the `self.geometry` order of atoms
+        def create_geometry(geom, atoms):
+            """ Create the supercell geometry with coordinates as given """
+            xyz = geom.axyz(atoms)
+            uc_atoms = geom.sc2uc(atoms)
+            return Geometry(xyz, atoms=geom.atoms[uc_atoms])
+
+        # we can only ensure the orbitals that connect *out* have the same count
+        # For supercell connections hopping *IN* might be different due to the supercell
+        assert len(s_info.orb_connect.sc.OUT) == len(o_info.orb_connect.sc.OUT)
+        sgeom_out = create_geometry(sgeom, s_info.atom_connect.sc.OUT)
+        ogeom_out = create_geometry(ogeom, o_info.atom_connect.sc.OUT)
+        soverlap_out, ooverlap_out = sgeom_out.overlap(ogeom_out, eps=eps,
+                                                       offset=-sgeom_out.xyz.min(0),
+                                                       offset_other=-ogeom_out.xyz.min(0))
+        #print("out:")
+        #print(s_info.atom_connect.uc.OUT)
+        #print(soverlap_out)
+        #print(o_info.atom_connect.uc.OUT)
+        #print(ooverlap_out)
+
+        # [so]overlap_out are now in the order of [so]_info.atom_connect.out
+        # so we still have to convert them to proper indices if used
+        assert len(sgeom_out) == len(soverlap_out)
+        assert len(ogeom_out) == len(ooverlap_out)
+        # Also ensure we check that the atoms connected to has the same
+        # number of orbitals.
+        assert np.allclose(sgeom_out.orbitals[soverlap_out],
+                           ogeom_out.orbitals[ooverlap_out])
+        # We cannot really check the soverlap_out == len(sgeom_out)
+        # in case we have a replaced sparse matrix in the middle of another bigger
+        # sparse matrix.
+
+        # Now do the same overlap checks for the *inside* region
+
+        # also check the connections *in* are ok
+        assert len(s_info.orb_connect.sc.IN) == len(o_info.orb_connect.sc.IN)
+        # We know that the *IN* connections are in the primary unit-cell
+        # so we don't need to handle supercell information
+        sgeom_in = sgeom.sub(s_info.atom_connect.uc.IN)
+        ogeom_in = ogeom.sub(o_info.atom_connect.uc.IN)
+        soverlap_in, ooverlap_in = sgeom_in.overlap(ogeom_in, eps=eps,
+                                                    offset=-sgeom_in.xyz.min(0),
+                                                    offset_other=-ogeom_in.xyz.min(0))
+        #print("in:")
+        #print(s_info.atom_connect.uc.IN)
+        #print(soverlap_in)
+        #print(o_info.atom_connect.uc.IN)
+        #print(ooverlap_in)
+
+        assert len(sgeom_in) == len(soverlap_in)
+        assert len(ogeom_in) == len(ooverlap_in)
+        assert np.allclose(sgeom_in.orbitals[soverlap_in],
+                           ogeom_in.orbitals[ooverlap_in])
+
+        # clean-up to make it clear that we are not going to use them.
+        del sgeom_out, ogeom_out
+
+        # this is where other.sub(other_atoms) gets inserted
+        ainsert_idx = atoms.min()
+        oinsert_idx = sgeom.a2o(ainsert_idx)
+        # this is the indices of the new atoms in the new geometry
+        self_other_atoms = _a.arangei(ainsert_idx, ainsert_idx + len(other_atoms))
+
+        # We need to do the replacement in two steps
+        # A. the geometry
+        #    This will insert other at ainsert_idx
+        #    Note that sub(other_atoms) re-arranges the atoms correctly
+        idx = np.argmin((sgeom_in.xyz[soverlap_in] ** 2).sum(1))
+        offset = sgeom_in.xyz[soverlap_in[idx]] - ogeom_in.xyz[ooverlap_in[idx]]
+        # this will perhaps re-order atoms from other_atoms
+        geom = sgeom.replace(atoms, other.geometry.sub(other_atoms), offset=offset)
+        del sgeom_in, ogeom_in
+        # A. DONE
+
+        # B. Merge the two sparse patterns
+        scsr = self._csr
+        ncol = scsr.ncol
+        col = scsr.col
+        D = scsr._D
+        # helper function
+        def a2o(geom, atoms, sc=True):
+            if sc:
+                return geom.ouc2sc(geom.a2o(atoms, all=True))
+            return geom.a2o(atoms, all=True)
+
+        # Our first task is to merge the two sparse patterns.
+        # Delete the *old* values
+        # To ensure that inserting will not leave *empty* values
+        # we first reduce arrays so that the ptr array is not needed
+        idx = array_arange(scsr.ptr[:-1], n=scsr.ncol)
+        col = col[idx]
+        D = D[idx]
+        # Now we don't need the pointer any more
+        ncol = delete(ncol, s_info.orbitals)
+        idx = array_arange(scsr.ptr[s_info.orbitals], n=scsr.ncol[s_info.orbitals])
+        col = delete(col, idx)
+        D = delete(D, idx, axis=0)
+
+        # Do the same reduction for the inserted values
+        ocsr = other._csr
+        idx = array_arange(ocsr.ptr[o_info.orbitals], n=ocsr.ncol[o_info.orbitals])
+        # we offset the new columns by self.shape[1], in this way we know
+        # which couplings belong to the inserted and the original csr
+        col = insert(col, ncol[:oinsert_idx].sum(), ocsr.col[idx] + self.shape[1])
+        D = insert(D, ncol[:oinsert_idx].sum(), ocsr._D[idx], axis=0)
+        ncol = insert(ncol, oinsert_idx, ocsr.ncol[o_info.orbitals])
+
+        # Create the sparse pattern
+        csr = SparseCSR((D, col, _ncol_to_indptr(ncol)),
+                        shape=(geom.no, sgeom.no_s + ogeom.no_s, D.shape[1]))
+        del D, col, ncol
+
+        # Now we have merged the two sparse patterns
+        # But we need to correct the orbital couplings
+        # : *outside* refers to the original sparse pattern (without `atoms`)
+        # : *inside* refers to the inserted sparse pattern (other.sub(other_atoms))
+        # We have to do 1 and 2 simultaneously.
+        # We have to do 3 and 4 simultaneously.
+        # This is because they may have overlapping columns
+
+        # 1: couplings from *outside* to *outside* (no scale)
+        # 2: couplings from *outside* to *inside* (scaled)
+        # 3: couplings from *inside* to *inside* (no scale)
+        # 4: couplings from *inside* to *outside* (scaled)
+        convert = [[], []]
+        conc = np.concatenate
+        def assert_unique(old, new):
+            old = conc(old)
+            new = conc(new)
+            assert len(unique(old)) == len(old)
+            assert len(unique(new)) == len(new)
+            return old, new
+
+        # 1:
+        #print("1:")
+        old = delete(_a.arangei(len(sgeom)), atoms)
+        new = _a.arangei(len(old))
+        new[ainsert_idx:] += len(other_atoms)
+        old = a2o(sgeom, old)
+        convert[0].append(old)
+        new = a2o(geom, new)
+        convert[1].append(new)
+        rows = geom.osc2uc(new, unique=True)
+
+        # 2:
+        #print("2:")
+        old = s_info.atom_connect.uc.IN[soverlap_in]
+        # algorithm to get indices in other_atoms
+        new = o_info.atom_connect.uc.IN[ooverlap_in]
+        tmp = argsort(other_atoms)
+        new = tmp[searchsorted(other_atoms, new, sorter=tmp)] + ainsert_idx
+        old = a2o(sgeom, old)
+        convert[0].append(old)
+        new = a2o(geom, new)
+        convert[1].append(new)
+
+        # translate columns
+        csr.translate_columns(*assert_unique(convert[0], convert[1]), rows=rows)
+        # scale columns that connects inside
+        csr.scale_columns(convert[1][1], scale=scale[0], rows=rows)
+
+        # on to the *inside* 3, 4
+        convert = [[], []]
+
+        # 3:
+        #print("3:")
+        # we have all the *inside* column indices offset by self.shape[1]
+        old = a2o(ogeom, other_atoms, False) + self.shape[1]
+        new = ainsert_idx + _a.arangei(len(other_atoms))
+        #print("old: ", old)
+        #print("new: ", new)
+        new = a2o(geom, new, False)
+        convert[0].append(old)
+        convert[1].append(new)
+        rows = geom.osc2uc(new, unique=True)
+
+        # 4:
+        #print("4:")
+        old = o_info.atom_connect.sc.OUT
+        new = _a.emptyi(len(old))
+        for i, atom in enumerate(old):
+            idx = geom.close(ogeom.axyz(atom) + offset, R=eps)
+            assert len(idx) == 1, f"More than 1 atom {idx} for atom {atom} = {ogeom.axyz(atom)}, {geom.axyz(idx)}"
+            new[i] = idx[0]
+        #print("old: ", old)
+        #print("new: ", new)
+        old = a2o(ogeom, old, False) + self.shape[1]
+        new = a2o(geom, new, False)
+
+        convert[0].append(old)
+        convert[1].append(new)
+
+        # translate columns
+        csr.translate_columns(*assert_unique(convert[0], convert[1]), rows=rows)
+        # scale columns that connects inside
+        csr.scale_columns(convert[1][1], scale=scale[1], rows=rows)
+
+        # ensure we have translated all columns correctly
+        assert len((csr.col >= geom.no_s).nonzero()[0]) == 0
+        # correct shape of column matrix
+        csr._shape = (csr.shape[0], geom.no_s, csr.shape[2])
+        out = self.copy()
+        out._csr = csr
+        out._geometry = geom
+        return out
 
     def toSparseAtom(self, dim=None, dtype=None):
         """ Convert the sparse object (without data) to a new sparse object with equivalent but reduced sparse pattern

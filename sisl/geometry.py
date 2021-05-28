@@ -1109,8 +1109,7 @@ class Geometry(SuperCellChild):
         """
         # sanitize `other`
         other = self.new(other)
-        s_xyz = self.xyz + (_a.arrayd(offset) - _a.arrayd(offset_other)).reshape(1, 3)
-
+        s_xyz = self.xyz + (_a.arrayd(offset) - _a.arrayd(offset_other))
         idx_self = []
         self_extend = idx_self.extend
         idx_other = []
