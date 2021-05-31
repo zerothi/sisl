@@ -175,12 +175,11 @@ class AtomInput:
 
         # Store the defined names
         if define is None:
-            self.define = []
+            define = []
         elif isinstance(define, str):
-            self.define = [define]
-        else:
-            # must be list-like
-            self.define = define
+            define = [define]
+        # store
+        self.define = define
 
     @classmethod
     def from_input(cls, inp):
@@ -593,7 +592,7 @@ def atom_plot_cli(subp=None):
 
     is_sub = not subp is None
 
-    title = "Plotting facility for atom output"
+    title = "Plotting facility for atom output (run in the atom output directory)"
     if is_sub:
         global _script
         _script = f"{_script} atom-plot"

@@ -4,6 +4,8 @@
 Plotting `atom` output
 ======================
 
+Suggestions and improvements to this utility is most welcome!
+
 Creating pseudopotentials using `atom`_ will often require users to
 post-analyze the output of the program.
 
@@ -18,7 +20,7 @@ It may be called using
 
 .. code:: bash
 
-   stoolbox atom-plot <output-directory>
+   stoolbox atom-plot <atom-output-directory>
 
 which by default will create 4 plots.
 
@@ -28,7 +30,7 @@ which by default will create 4 plots.
    :alt: Default `stoolbox atom-plot` output
 
 
-It mimicks the shell commands provided by atom for plotting with some additional details.
+It mimicks the shell commands provided by `atom`_ for plotting with some additional details.
 
 By default the program will output details regarding the core-charge and valence charge
 overlap (use full for determining whether core-corrections should be used).
@@ -53,6 +55,28 @@ The full overlap is printed in the title of the charge plot. It is calculated as
    \mathcal O = \int \mathrm{min}(\rho_{\mathrm{core}}(r), \rho_{\mathrm{valence}}(r)) \mathrm dr
 
 
-Suggestions and improvements to this utility is most welcome!
+Input generation
+----------------
 
+The tool can also be used to generate the input files for `atom`_. While it is possible to read
+input files from ``INP`` files, one may also define a specific `Atom` object which
+will be used to generate the input file.
+
+
+.. code:: python
+
+   from sisl import *
+   from sisl_toolbox.siesta.atom import *
+
+   s = AtomicOrbital(n=5, l=0, q0=1., R=2.4)
+   p = AtomicOrbital(n=5, l=1, q0=0., R=1.6)
+   d = AtomicOrbital(n=4, l=2, q0=10., R=1.4)
+   f = AtomicOrbital(n=4, l=3, q0=0., R=2.)
+
+   Ag = Atom("Ag", orbitals=[s, p, d, f])
+
+   atom_input = AtomInput(Ag, rcore=2., xc="pb", flavor="tm2")
+
+   # write the INP file in current directory
+   atom_input.pg()
 
