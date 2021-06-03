@@ -1,6 +1,9 @@
 0.X.Y
 =====
 
+- direction now accepts `abc` and `xyz` keywords to automatically
+	retrieve vectors depending on direction input.
+
 - enabled transform of SparseCSR and SparseOrbitalBZSpin
 	matrices. For the latter, one can also use the function
 	to convert to new spin configuration (#320)

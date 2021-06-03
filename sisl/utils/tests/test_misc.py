@@ -1,6 +1,7 @@
 import pytest
 
 import math as m
+import numpy as np
 
 from sisl.utils.misc import *
 
@@ -34,6 +35,7 @@ def test_direction_str():
     assert direction(' 0') == 0
     assert direction(' 1  ') == 1
     assert direction('   2   ') == 2
+    assert np.allclose(direction('   2   ', abc=np.diag([1, 2, 3])), [0, 0, 3])
 
 
 def test_direction_int_raises():

@@ -1904,8 +1904,8 @@ class Geometry(SuperCellChild):
         # Create the geometry and return it
         return self.__class__(xyz, atoms=self.atoms.repeat(reps), sc=sc)
 
-    def __mul__(self, m):
-        """ Implement easy repeat function
+    def __mul__(self, m, method='tile'):
+        """ Implement easy tile/repeat function
 
         Parameters
         ----------
@@ -1949,11 +1949,12 @@ class Geometry(SuperCellChild):
             return self * m[0]
 
         # Look-up table
-        method_tbl = {'r': 'repeat',
-                  'repeat': 'repeat',
-                  't': 'tile',
-                  'tile': 'tile'}
-        method = 'tile'
+        method_tbl = {
+            'r': 'repeat',
+            'repeat': 'repeat',
+            't': 'tile',
+            'tile': 'tile'
+        }
 
         # Determine the type
         if len(m) == 2:
@@ -1986,7 +1987,9 @@ class Geometry(SuperCellChild):
 
         return g
 
-    __rmul__ = __mul__
+    def __rmul__(self, m):
+        """ Default to repeating the atomic structure """
+        return self.__mul__(m, 'repeat')
 
     def angle(self, atoms, dir=(1., 0, 0), ref=None, rad=False):
         r""" The angle between atom `atoms` and the direction `dir`, with possibility of a reference coordinate `ref`
@@ -2005,22 +2008,22 @@ class Geometry(SuperCellChild):
         atoms : int or array_like
            indices/boolean of all atoms where angles should be calculated on
         dir : str, int or array_like, optional
-           the direction from which the angle is calculated from, default to ``x``
+           the direction from which the angle is calculated from, default to ``x``.
+           An integer specifies the corresponding lattice vector as the direction.
         ref : int or array_like, optional
            the reference point from which the vectors are drawn, default to origo
+           An integer species an atomic index.
         rad : bool, optional
            whether the returned value is in radians
         """
         xi = self.axyz(atoms)
         if isinstance(dir, (str, Integral)):
-            dir = self.cell[direction(dir), :]
+            dir = direction(dir, abc=self.cell, xyz=np.diag([1]*3))
         else:
             dir = _a.asarrayd(dir)
         # Normalize so we don't have to have this in the
         # below formula
-        dir /= fnorm(dir)
-        # Broad-casting
-        dir.shape = (1, -1)
+        dir = dir / fnorm(dir)
 
         if ref is None:
             pass
@@ -2029,7 +2032,9 @@ class Geometry(SuperCellChild):
         else:
             xi -= _a.asarrayd(ref)[None, :]
         nx = sqrt(square(xi).sum(1))
-        ang = np.where(nx > 1e-6, np.arccos((xi * dir).sum(axis=1) / nx), 0.)
+        ang = np.zeros_like(nx)
+        idx = (nx > 1e-6).nonzero()[0]
+        ang[idx] = np.arccos(xi[idx] @ dir / nx[idx])
         if rad:
             return ang
         return np.degrees(ang)
@@ -2048,7 +2053,7 @@ class Geometry(SuperCellChild):
         angle : float
              the angle in degrees to rotate the geometry. Set the ``rad``
              argument to use radians.
-        v     : array_like
+        v     : int or str or array_like
              the normal vector to the rotated plane, i.e.
              v = [1,0,0] will rotate the ``yz`` plane
         origo : int or array_like, optional
@@ -2078,6 +2083,9 @@ class Geometry(SuperCellChild):
         if not atoms is None:
             # Only rotate the unique values
             atoms = self.sc2uc(atoms, unique=True)
+
+        if isinstance(v, (str, Integral)):
+            v = direction(v, abc=self.cell, xyz=np.diag([1]*3))
 
         # Ensure the normal vector is normalized... (flatten == copy)
         vn = _a.asarrayd(v).flatten()
@@ -4264,14 +4272,7 @@ class Geometry(SuperCellChild):
                 # Convert value[0] to the direction
                 # The rotate function expects degree
                 ang = angle(values[0], rad=False, in_rad=False)
-                d = direction(values[1])
-                if d == 0:
-                    v = [1, 0, 0]
-                elif d == 1:
-                    v = [0, 1, 0]
-                elif d == 2:
-                    v = [0, 0, 1]
-                ns._geometry = ns._geometry.rotate(ang, v)
+                ns._geometry = ns._geometry.rotate(ang, values[1])
         p.add_argument(*opts('--rotate', '-R'), nargs=2, metavar=('ANGLE', 'DIR'),
                        action=Rotation,
                        help='Rotate geometry around given axis. ANGLE defaults to be specified in degree. Prefix with "r" for input in radians.')
@@ -4282,7 +4283,7 @@ class Geometry(SuperCellChild):
                 def __call__(self, parser, ns, value, option_string=None):
                     # The rotate function expects degree
                     ang = angle(value, rad=False, in_rad=False)
-                    ns._geometry = ns._geometry.rotate(ang, [1, 0, 0])
+                    ns._geometry = ns._geometry.rotate(ang, "x")
             p.add_argument(*opts('--rotate-x', '-Rx'), metavar='ANGLE',
                            action=RotationX,
                            help='Rotate geometry around first cell vector. ANGLE defaults to be specified in degree. Prefix with "r" for input in radians.')
@@ -4292,7 +4293,7 @@ class Geometry(SuperCellChild):
                 def __call__(self, parser, ns, value, option_string=None):
                     # The rotate function expects degree
                     ang = angle(value, rad=False, in_rad=False)
-                    ns._geometry = ns._geometry.rotate(ang, [0, 1, 0])
+                    ns._geometry = ns._geometry.rotate(ang, "y")
             p.add_argument(*opts('--rotate-y', '-Ry'), metavar='ANGLE',
                            action=RotationY,
                            help='Rotate geometry around second cell vector. ANGLE defaults to be specified in degree. Prefix with "r" for input in radians.')
@@ -4302,7 +4303,7 @@ class Geometry(SuperCellChild):
                 def __call__(self, parser, ns, value, option_string=None):
                     # The rotate function expects degree
                     ang = angle(value, rad=False, in_rad=False)
-                    ns._geometry = ns._geometry.rotate(ang, [0, 0, 1])
+                    ns._geometry = ns._geometry.rotate(ang, "z")
             p.add_argument(*opts('--rotate-z', '-Rz'), metavar='ANGLE',
                            action=RotationZ,
                            help='Rotate geometry around third cell vector. ANGLE defaults to be specified in degree. Prefix with "r" for input in radians.')

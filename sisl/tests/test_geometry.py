@@ -600,6 +600,7 @@ class TestGeometry:
         g = setup.g.copy()
         assert g * 2 == g.tile(2, 0).tile(2, 1).tile(2, 2)
         assert g * [2, 1] == g.tile(2, 1)
+        assert [2, 1] * g == g.repeat(2, 1)
         assert g * (2, 2, 2) == g.tile(2, 0).tile(2, 1).tile(2, 2)
         assert g * [1, 2, 2] == g.tile(1, 0).tile(2, 1).tile(2, 2)
         assert g * [1, 3, 2] == g.tile(1, 0).tile(3, 1).tile(2, 2)
@@ -639,8 +640,11 @@ class TestGeometry:
     def test_angle(self, setup):
         # There are 2 orbitals per C atom
         g = Geometry([[0] * 3, [1, 0, 0]])
+        cell = g.cell.copy()
         g.angle([0])
         g.angle([0], ref=1)
+        g.angle([0], dir=1)
+        assert np.allclose(g.cell[1], cell[1])
 
     def test_2uc(self, setup):
         # functions for any-thing to UC

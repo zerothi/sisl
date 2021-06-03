@@ -146,7 +146,7 @@ def str_spec(name):
 
 
 # Transform a string to a Cartesian direction
-def direction(d):
+def direction(d, abc=None, xyz=None):
     """ Index coordinate corresponding to the Cartesian coordinate system.
 
     Parameters
@@ -154,11 +154,18 @@ def direction(d):
     d : {0, "x", "a", 1, "y", "b", 2, "z", "c"}
        returns the integer that corresponds to the coordinate index (strings are
        lower-cased).
+    abc : (3, 3), optional
+       for ``"abc"`` inputs the returned value will be the vector ``abc[direction(d)]``
 
     Returns
     -------
-    int
-       The index of the Cartesian coordinate system.
+    index : int 
+       index of the Cartesian coordinate system, only if both `abc` and `xyz` are none
+       or if the requested direction is not present, only returned if the corresponding direction
+       is none
+    vector : (3,)
+       the vector corresponding to the value gotten from `abc` or `xyz`, only returned
+       if the corresponding direction is not none
 
     Examples
     --------
@@ -174,6 +181,14 @@ def direction(d):
     2
     >>> direction("b")
     1
+    >>> direction("b", abc=np.diag([1, 2, 3])
+    [0, 2, 0]
+    >>> direction("x", abc=np.diag([1, 2, 3])
+    0
+    >>> direction(1, abc=np.diag([1, 2, 3])
+    [0, 2, 0]
+    >>> direction(1, abc=np.diag([1, 2, 3], xyz=np.diag([4, 5, 6])
+    [0, 2, 0]
     """
     if isinstance(d, Integral):
         # pass through to find it
@@ -181,10 +196,14 @@ def direction(d):
 
     # We take it as a string
     d = d.lower().strip()
-    # We must use an array to not allow 'xy' input
-    if d in ("x", "y", "z", "a", "b", "c", "0", "1", "2"):
-        return "xa0yb1zc2".index(d) // 3
 
+    if not abc is None and d in "abc012":
+        return abc["a0b1c2".index(d) // 2]
+    elif not xyz is None and d in "xyz012":
+        return xyz["x0y1z2".index(d) // 2]
+    else:
+        if d in ("x", "y", "z", "a", "b", "c", "0", "1", "2"):
+            return "xa0yb1zc2".index(d) // 3
     raise ValueError("direction: Input direction is not an integer, nor a string in 'xyz/abc/012'")
 
 
