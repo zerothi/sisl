@@ -5,7 +5,10 @@ Tests specific functionality of the grid plot.
 Different inputs are tested (siesta .RHO and sisl Hamiltonian).
 
 """
+from functools import reduce
+import itertools
 import os.path as osp
+from numpy.lib.function_base import average
 import pytest
 import numpy as np
 import plotly.graph_objs as go
@@ -24,6 +27,40 @@ try:
 except ImportError:
     skip_skimage = pytest.mark.skipif(True, reason="scikit-image (skimage) not available")
 
+@pytest.fixture(params=["imag", "mod", "rad_phase", "deg_phase", "real"])
+def grid_representation(request):
+    """
+    Fixture that returns all possible grid representations of the grid that we are testing.
+
+    To be used only in methods of test classes. 
+
+    Yields
+    -----------
+    sisl.Grid:
+        a new grid that contains the specific representation of the plot's grid
+    str:
+        the name of the representation that we are returning
+    """
+
+    representation = request.param
+
+    # Copy the plot's grid
+    new_grid = request.function.__self__.plot.grid.copy()
+
+    # Substitute the values by the appropiate representations
+    new_grid.grid = GridPlot._get_representation(new_grid, representation)
+
+    yield (new_grid, representation)
+
+@pytest.fixture(params=[1,2,3])
+def ndim(request):
+    if request.param > 1:
+        pytest.importorskip("skimage")
+    yield request.param
+
+@pytest.fixture()
+def axes(ndim):
+    return {1:[0], 2:[0,1], 3:[0,1,2]}[ndim]
 
 class GridPlotTester(PlotTester):
 
@@ -31,26 +68,49 @@ class GridPlotTester(PlotTester):
         "grid_shape" # Tuple indicating the grid shape
     ]
 
-    @pytest.mark.parametrize("axes,go", [
-        ([0], go.Scatter),
-        pytest.param([0, 1], go.Heatmap, marks=skip_skimage),
-        pytest.param([0, 1, 2], go.Mesh3d, marks=skip_skimage),
-    ])
-    def test_plotting_modes(self, axes, go):
+    def _get_trace_class(self, ndim):
+        return [go.Scatter, go.Heatmap, go.Mesh3d][ndim - 1]
+
+    def _get_plotted_values(self, plot=None):
+        plot = plot or self.plot
+
+        ndim = len(plot.get_setting("axes"))
+        if ndim == 1:
+            return plot.figure.data[0].y
+        elif ndim == 2:
+            return plot.figure.data[0].z.T
+        elif ndim == 3:
+            trace = plot.figure.data[0]
+            return np.array([trace.i, trace.j, trace.k])
+
+    def test_plotting_modes(self, axes):
         plot = self.plot
+        trace_type = self._get_trace_class(len(axes))
 
         plot.update_settings(axes=axes)
-        assert isinstance(plot.data[0], go), f"Not displaying grid in {len(axes)}D correctly?"
+        assert isinstance(plot.data[0], trace_type), f"Not displaying grid in {len(axes)}D correctly"
 
-    @skip_skimage
-    def test_complex_representations(self):
-        for repr in ["imag", "mod", "rad_phase", "deg_phase", "real"]:
-            self.plot.update_settings(represent=repr)
+    def test_representation(self, axes, grid_representation):
+
+        kwargs = {"isos": []}
+
+        ndim = len(axes)
+        if ndim == 3:
+            kwargs["isos"] = [{"frac": 0.5}]
+
+        new_grid, representation = grid_representation
+
+        if new_grid.grid.min() == new_grid.grid.max() and ndim == 3:
+            return
+        
+        self.plot.update_settings(axes=axes, represent=representation, **kwargs)
+        new_plot = new_grid.plot(axes=axes, represent="real", **kwargs)
+        
+        assert np.allclose(
+            self._get_plotted_values(), self._get_plotted_values(plot=new_plot)
+        ), f"'{representation}' representation of the {ndim}D plot is not correct"         
 
     def test_grid(self):
-
-        assert osp.exists(self.plot.get_setting("grid_file")), "You provided a non-existent grid_file"
-
         grid = self.plot.grid
 
         assert isinstance(grid, sisl.Grid)
@@ -103,15 +163,43 @@ class GridPlotTester(PlotTester):
 
         plot.update_settings(nsc=[1, 1, 1])
 
-    def test_transforms(self):
+    @pytest.mark.parametrize("reduce_method", ["sum", "average"])
+    def test_reduce_method(self, reduce_method, axes, grid_representation):
+        new_grid, representation = grid_representation
+
+        # If this is a 3D plot, no dimension is reduced, therefore it makes no sense
+        if len(axes) == 3:
+            return
+
+        numpy_func = getattr(np, reduce_method)
+
+        self.plot.update_settings(axes=axes, reduce_method=reduce_method, represent=representation)
+
+        assert np.allclose(
+            self._get_plotted_values(), numpy_func(new_grid.grid, axis=tuple(ax for ax in [0,1,2] if ax not in axes))
+        )
+
+    def test_transforms(self, axes, grid_representation):
+
+        if len(axes) == 3:
+            return
 
         plot = self.plot
 
-        plot.update_settings(axes=[0], transforms=["cos"])
+        new_grid, representation = grid_representation
+
+        plot.update_settings(axes=axes, transforms=["cos"], represent=representation)
 
         # Check that transforms = ["cos"] applies np.cos
-        assert np.allclose(plot.data[0].y, np.cos(plot.grid.grid).mean(2).mean(1))
+        assert np.allclose(
+            self._get_plotted_values(), np.cos(new_grid.grid).mean(axis=tuple(ax for ax in [0,1,2] if ax not in axes))
+        )
 
+# Generate a complex-valued grid for testing
+complex_grid_shape = (8,10,10)
+values = np.random.random(complex_grid_shape).astype(np.complex128) + np.random.random(complex_grid_shape) * 1j
+complex_grid = sisl.Grid(complex_grid_shape, sc=1)
+complex_grid.grid = values
 
 class TestGridPlot(GridPlotTester):
 
@@ -120,5 +208,9 @@ class TestGridPlot(GridPlotTester):
         "siesta_RHO": {
             "plot_file": osp.join(_dir, "SrTiO3.RHO"),
             "grid_shape": (48, 48, 48)
+        },
+        "complex_grid": {
+            "init_func": complex_grid.plot,
+            "grid_shape": complex_grid_shape
         }
     }
