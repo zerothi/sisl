@@ -1,3 +1,6 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
 #
 # sisl documentation build configuration file, created by
 # sphinx-quickstart on Wed Dec  2 19:55:34 2015.
