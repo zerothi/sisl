@@ -1,3 +1,6 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
 """
 
 Tests specific functionality of the grid plot.
@@ -27,6 +30,7 @@ try:
 except ImportError:
     skip_skimage = pytest.mark.skipif(True, reason="scikit-image (skimage) not available")
 
+
 @pytest.fixture(params=["imag", "mod", "rad_phase", "deg_phase", "real"])
 def grid_representation(request):
     """
@@ -52,15 +56,18 @@ def grid_representation(request):
 
     yield (new_grid, representation)
 
-@pytest.fixture(params=[1,2,3])
+
+@pytest.fixture(params=[1, 2, 3])
 def ndim(request):
     if request.param > 1:
         pytest.importorskip("skimage")
     yield request.param
 
+
 @pytest.fixture()
 def axes(ndim):
-    return {1:[0], 2:[0,1], 3:[0,1,2]}[ndim]
+    return {1: [0], 2: [0, 1], 3: [0, 1, 2]}[ndim]
+
 
 class GridPlotTester(PlotTester):
 
@@ -102,13 +109,13 @@ class GridPlotTester(PlotTester):
 
         if new_grid.grid.min() == new_grid.grid.max() and ndim == 3:
             return
-        
+
         self.plot.update_settings(axes=axes, represent=representation, **kwargs)
         new_plot = new_grid.plot(axes=axes, represent="real", **kwargs)
-        
+
         assert np.allclose(
             self._get_plotted_values(), self._get_plotted_values(plot=new_plot)
-        ), f"'{representation}' representation of the {ndim}D plot is not correct"         
+        ), f"'{representation}' representation of the {ndim}D plot is not correct"
 
     def test_grid(self):
         grid = self.plot.grid
@@ -176,7 +183,7 @@ class GridPlotTester(PlotTester):
         self.plot.update_settings(axes=axes, reduce_method=reduce_method, represent=representation)
 
         assert np.allclose(
-            self._get_plotted_values(), numpy_func(new_grid.grid, axis=tuple(ax for ax in [0,1,2] if ax not in axes))
+            self._get_plotted_values(), numpy_func(new_grid.grid, axis=tuple(ax for ax in [0, 1, 2] if ax not in axes))
         )
 
     def test_transforms(self, axes, grid_representation):
@@ -192,14 +199,15 @@ class GridPlotTester(PlotTester):
 
         # Check that transforms = ["cos"] applies np.cos
         assert np.allclose(
-            self._get_plotted_values(), np.cos(new_grid.grid).mean(axis=tuple(ax for ax in [0,1,2] if ax not in axes))
+            self._get_plotted_values(), np.cos(new_grid.grid).mean(axis=tuple(ax for ax in [0, 1, 2] if ax not in axes))
         )
 
 # Generate a complex-valued grid for testing
-complex_grid_shape = (8,10,10)
+complex_grid_shape = (8, 10, 10)
 values = np.random.random(complex_grid_shape).astype(np.complex128) + np.random.random(complex_grid_shape) * 1j
 complex_grid = sisl.Grid(complex_grid_shape, sc=1)
 complex_grid.grid = values
+
 
 class TestGridPlot(GridPlotTester):
 

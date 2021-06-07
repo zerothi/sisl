@@ -1,3 +1,6 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
 subroutine write_gf_header( iu, nspin, cell, na_u, no_u, na_used, no_used, &
     xa_used, lasto_used, Bloch, pre_expand, mu, nkpt, kpt, kw, NE, E)
   use io_m, only: iostat_update

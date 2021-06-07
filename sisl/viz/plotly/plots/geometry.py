@@ -1,3 +1,6 @@
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from functools import wraps
 from collections import defaultdict
 from collections.abc import Iterable
@@ -868,7 +871,7 @@ class GeometryPlot(Plot):
             'type': 'scatter',
             'mode': 'markers+lines',
             'x': np.array([0, vec[0]]) + origo_xy[0],
-            'y': np.array([0, vec[1]]) + origo_xy[1], 
+            'y': np.array([0, vec[1]]) + origo_xy[1],
             'name': f'Axis {i}'
         } for i, vec in enumerate(cell_xy)]
 

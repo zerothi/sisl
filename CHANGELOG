@@ -1,6 +1,8 @@
 0.X.Y
 =====
 
+- changed license to MPLv2, we encourage contribution of toolboxes
+
 - direction now accepts `abc` and `xyz` keywords to automatically
 	retrieve vectors depending on direction input.
 
