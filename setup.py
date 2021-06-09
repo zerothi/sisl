@@ -396,7 +396,7 @@ REVISION_YEAR = 2021
 
 
 DISTNAME = "sisl"
-LICENSE = "LGPLv3"
+LICENSE = "MPLv2"
 AUTHOR = "sisl developers"
 URL = "https://github.com/zerothi/sisl"
 DOWNLOAD_URL = "https://github.com/zerothi/sisl/releases"
@@ -409,7 +409,7 @@ CLASSIFIERS = [
     "Development Status :: 5 - Production/Stable",
     "Environment :: Console",
     "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
+    "License :: OSI Approved :: Mozilla Public License v2 (MPLv2)",
     "Operating System :: OS Independent",
     "Programming Language :: Python",
     "Programming Language :: Python :: 3",
@@ -417,6 +417,7 @@ CLASSIFIERS = [
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
     "Programming Language :: Cython",
     "Topic :: Scientific/Engineering",
     "Topic :: Scientific/Engineering :: Physics",

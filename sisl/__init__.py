@@ -43,7 +43,7 @@ Advanced classes
 """
 
 __author__ = "Nick Papior"
-__copyright__ = "LGPL-3.0"
+__license__ = "MPL-2.0"
 
 from . import _environ
 
@@ -152,4 +152,4 @@ if _environ.get_environ_variable("SISL_VIZ_AUTOLOAD"):
 __all__ = [s for s in dir() if not s.startswith('_')]
 __all__ += [f'__{s}__' for s in ['bibtex', 'version', 'major', 'minor', 'micro']]
 __all__ += [f'__{s}__' for s in ['git_revision']]
-__all__ += [f'__{s}__' for s in ['author', 'copyright']]
+__all__ += [f'__{s}__' for s in ['author', 'license']]

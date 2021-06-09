@@ -5,7 +5,7 @@
 [![DOI for citation](https://zenodo.org/badge/doi/10.5281/zenodo.597181.svg)](http://dx.doi.org/10.5281/zenodo.597181)
 [![Join discussion on Discord](https://img.shields.io/discord/742636379871379577.svg?label=&logo=discord&logoColor=ffffff&color=green&labelColor=red)](https://discord.gg/5XnFXFdkv2)
 <!--- [![Documentation on RTD](https://readthedocs.org/projects/docs/badge/?version=latest)](http://sisl.readthedocs.io/en/latest/) -->
-[![License: LGPL v3](https://img.shields.io/badge/License-LGPL%20v3-blue.svg)](https://www.gnu.org/licenses/lgpl-3.0)
+[![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://www.mozilla.org/en-US/MPL/2.0/)
 [![Build Status](https://travis-ci.org/zerothi/sisl.svg?branch=master)](https://travis-ci.org/zerothi/sisl)
 [![Checkout sisl code coverage](https://codecov.io/gh/zerothi/sisl/branch/master/graph/badge.svg)](https://codecov.io/gh/zerothi/sisl)
 [![Donate money to support development of sisl](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=NGNU2AA3JXX94&lc=DK&item_name=Papior%2dCodes&item_number=codes&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted)
@@ -149,7 +149,7 @@ Links to external and internal sites.
 [tbtrans]: https://gitlab.com/siesta-project/siesta
 [workshop]: https://github.com/zerothi/ts-tbt-sisl-tutorial
 [doi]: http://dx.doi.org/10.5281/zenodo.597181
-[lgpl]: http://www.gnu.org/licenses/lgpl.html
+[mpl]: https://www.mozilla.org/en-US/MPL/2.0/
 [ase]: https://wiki.fysik.dtu.dk/ase/
 
 <!---

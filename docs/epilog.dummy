@@ -10,7 +10,7 @@
 .. _sisl-doi: http://dx.doi.org/10.5281/zenodo.597181
 
 .. These are external links:
-.. _LGPL: http://www.gnu.org/licenses/lgpl.html
+.. _MPL: https://www.mozilla.org/en-US/MPL/2.0/
 .. _Python: https://www.python.org/
 .. _setuptools: https://pypi.python.org/pypi/setuptools
 .. _NetCDF: https://www.unidata.ucar.edu/netcdf

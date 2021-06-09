@@ -4,7 +4,7 @@ Citing sisl
 ===========
 
 sisl is an open-source software package intended for the scientific community. It is
-released under the LGPL-3 license.
+released under the MPL-2 license.
 
 You are encouraged to cite sisl you use it to produce scientific contributions.
 

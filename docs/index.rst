@@ -159,8 +159,8 @@ a table of contents for the sub-modules may be found :ref:`here <modindex>`.
 .. |pypi| image:: https://badge.fury.io/py/sisl.svg
 .. _pypi: https://badge.fury.io/py/sisl
 
-.. |license| image:: https://img.shields.io/badge/License-LGPL%20v3-blue.svg
-.. _license: https://www.gnu.org/licenses/lgpl-3.0
+.. |license| image:: https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg
+.. _license: https://www.mozilla.org/en-US/MPL/2.0/
 
 .. |conda| image:: https://anaconda.org/conda-forge/sisl/badges/installer/conda.svg
 .. _conda: https://anaconda.org/conda-forge/sisl
