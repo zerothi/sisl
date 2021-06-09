@@ -39,36 +39,6 @@ class SiestaMetric(Metric):
         self.failure = failure
 
 
-class EnergyMetric(SiestaMetric):
-    """ Metric is the energy (default total), read from the output file
-
-    Parameters
-    ----------
-    out : str, Path
-       the output from a Siesta run
-    failure : float, optional
-       in case the output does not contain anything runner fails, then we should return a "fake" metric.
-    energy: str, optional
-       which energy to minimize, default total, can be anything `sisl.io.siesta.outSileSiesta` returns
-    """
-
-    def __init__(self, out, failure=0., energy='total'):
-        super().__init__(failure)
-        self.out = path_rel_or_abs(out)
-        self.energy = energy
-
-    def metric(self, variables):
-        """ Read the energy from the out file in `path` """
-        out = io_siesta.outSileSiesta(self.out)
-        if _siesta_out_accept(out):
-            metric = out.read_energy()[self.energy]
-            _log.debug(f"metric.energy [{self.out}:{self.energy}] success {metric}")
-        else:
-            metric = self.failure
-            _log.warning(f"metric.energy [{self.out}:{self.energy}] fail {metric}")
-        return metric
-
-
 class EigenvalueMetric(SiestaMetric):
     """ Compare eigenvalues between two calculations and return the difference as the metric """
 
@@ -113,6 +83,52 @@ class EigenvalueMetric(SiestaMetric):
         return metric
 
 
+class EnergyMetric(SiestaMetric):
+    """ Metric is the energy (default total), read from the output file
+
+    Alternatively the metric could be any operation of the energies that is returned.
+
+    Parameters
+    ----------
+    out : str, Path
+       the output from a Siesta run
+    energy : func, str, optional
+       an operation to post-process the energy.
+       If a `str` it will use the given energy, otherwise the function should accept a single
+       dictionary (output from: `sisl.io.siesta.outSileSiesta.read_energy`) and convert that
+       to a single energy metric
+    failure : float, optional
+       in case the output does not contain anything runner fails, then we should return a "fake" metric.
+    """
+
+    def __init__(self, out, energy='total', failure=0.):
+        super().__init__(failure)
+        self.out = path_rel_or_abs(out)
+        if isinstance(energy, str):
+            energy_str = energy
+            def energy(energy_dict):
+                f""" {energy_str} metric """
+                return energy_dict[energy_str]
+        if not callable(energy):
+            raise ValueError(f"{self.__class__.__name__} requires energy to be callable or str")
+        self.energy = energy
+        try:
+            self._op_doc = self.energy.__doc__.strip()
+        except:
+            self._op_doc = "user-defined"
+
+    def metric(self, variables):
+        """ Read the energy from the out file in `path` """
+        out = io_siesta.outSileSiesta(self.out)
+        if _siesta_out_accept(out):
+            metric = self.energy(out.read_energy())
+            _log.debug(f"metric.energy [{self.out}:{self._op_doc}] success {metric}")
+        else:
+            metric = self.failure
+            _log.warning(f"metric.energy [{self.out}:{self._op_doc}] fail {metric}")
+        return metric
+
+
 class StressMetric(SiestaMetric):
     """ Metric is the stress tensor, read from the output file
 
@@ -120,30 +136,35 @@ class StressMetric(SiestaMetric):
     ----------
     out : str, Path
        output from a Siesta run
-    stress_op : func, optional
+    stress : func, optional
        function which transforms the stress to a single number (the metric).
        By default it sums the diagonal stress components.
     failure : float, optional
        in case the output does not contain anything runner fails, then we should return a "fake" metric.
     """
 
-    def __init__(self, out, stress_op=None, failure=2.):
+    def __init__(self, out, stress=None, failure=2.):
         super().__init__(failure)
         self.out = path_rel_or_abs(out)
-        if stress_op is None:
-            def stress_op(stress):
-                return np.diag(stress).sum()
-        if not callable(stress_op):
-            raise ValueError(f"{self.__class__.__name__} requires stress_op to be callable")
-        self.stress_op = stress_op
+        if stress is None:
+            def stress(stress_matrix):
+                """ diagonal-sum """
+                return np.diag(stress_matrix).sum()
+        if not callable(stress):
+            raise ValueError(f"{self.__class__.__name__} requires stress to be callable")
+        self.stress = stress
+        try:
+            self._op_doc = self.stress.__doc__.strip()
+        except:
+            self._op_doc = "user-defined"
 
     def metric(self, variables):
         """ Convert the stress-tensor to a single metric that should be minimized """
         out = io_siesta.outSileSiesta(self.out)
         if _siesta_out_accept(out):
             metric = self.stress_op(out.read_stress())
-            _log.debug(f"metric.stress [{self.out}] success {metric}")
+            _log.debug(f"metric.stress [{self.out}:{self._op_doc}] success {metric}")
         else:
             metric = self.failure
-            _log.warning(f"metric.stress [{self.out}] fail {metric}")
+            _log.warning(f"metric.stress [{self.out}:{self._op_doc}] fail {metric}")
         return metric
