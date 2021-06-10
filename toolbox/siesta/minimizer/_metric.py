@@ -19,14 +19,26 @@ class Metric:
     def __sub__(self, other):
         return SubMetric(self, other)
 
+    def __rsub__(self, other):
+        return SubMetric(other, self)
+
     def __mul__(self, factor):
         return MulMetric(self, factor)
 
     def __truediv__(self, divisor):
-        return MulMetric(self, 1. / divisor)
+        return DivMetric(self, divisor)
+
+    def __rtruediv__(self, divisor):
+        return DivMetric(divisor, self)
 
     def __neg__(self):
         return MulMetric(-1, self)
+
+    def __pow__(self, other, mod=None):
+        return PowMetric(self, other, mod)
+
+    def __rpow__(self, other, mod=None):
+        return PowMetric(other, self, mod)
 
     def min(self, other):
         return MinMetric(self, other)
@@ -82,3 +94,21 @@ class MulMetric(CompositeMetric):
     def metric(self, variables, *args, **kwargs):
         A, B = self._metric_composite(variables, *args, **kwargs)
         return A * B
+
+
+class DivMetric(CompositeMetric):
+    def metric(self, variables, *args, **kwargs):
+        A, B = self._metric_composite(variables, *args, **kwargs)
+        return A / B
+
+
+class PowMetric(CompositeMetric):
+    def __init__(self, A, B, mod=None):
+        super().__init__(A, B)
+        self.mod = mod
+
+    def metric(self, variables, *args, **kwargs):
+        A, B = self._metric_composite(variables, *args, **kwargs)
+        if self.mod is None:
+            return pow(A, B)
+        return pow(A, B, self.mod)
