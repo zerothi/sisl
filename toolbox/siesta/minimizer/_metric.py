@@ -44,11 +44,11 @@ class CompositeMetric(Metric):
 
     def _metric_composite(self, variables, *args, **kwargs):
         if isinstance(self.A, Metric):
-            A = self.A(variables, *args, **kwargs)
+            A = self.A.metric(variables, *args, **kwargs)
         else:
             A = self.A
         if isinstance(self.B, Metric):
-            B = self.B(variables, *args, **kwargs)
+            B = self.B.metric(variables, *args, **kwargs)
         else:
             B = self.B
         return A, B

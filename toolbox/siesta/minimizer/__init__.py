@@ -45,8 +45,8 @@ that this file is read by Siesta.
 
     # Define the metric we wish to minimize.
     # This could essentially be anything depending on the basis set
-    metric = (TotalEnergyMetric(siesta1) * 1.1
-              TotalEnergyMetric(siesta2) * 0.9)
+    metric = (EnergyMetric(siesta1) * 1.1 +
+              EnergyMetric(siesta2) * 0.9)
 
     # Use a local minimization technique, storing intermediate
     # data in local_etot.dat

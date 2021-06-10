@@ -2,13 +2,15 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import logging
+from sisl.io import get_sile
+from sisl.utils import direction
 import sisl.io.siesta as io_siesta
 
 from ._path import path_abs, path_rel_or_abs
 from ._metric import Metric
 
 
-__all__ = ["SiestaMetric", "EnergyMetric", "EigenvalueMetric", "StressMetric"]
+__all__ = ["SiestaMetric", "EnergyMetric", "EigenvalueMetric", "ForceMetric", "StressMetric"]
 
 
 _log = logging.getLogger("sisl_toolbox.siesta.pseudo")
@@ -92,7 +94,7 @@ class EnergyMetric(SiestaMetric):
     ----------
     out : str, Path
        the output from a Siesta run
-    energy : func, str, optional
+    energy : callable, str, optional
        an operation to post-process the energy.
        If a `str` it will use the given energy, otherwise the function should accept a single
        dictionary (output from: `sisl.io.siesta.outSileSiesta.read_energy`) and convert that
@@ -129,6 +131,54 @@ class EnergyMetric(SiestaMetric):
         return metric
 
 
+class ForceMetric(SiestaMetric):
+    """ Metric is the force (default maximum), read from the FA file
+
+    Alternatively the metric could be any operation on the forces.
+
+    Parameters
+    ----------
+    file : str, Path
+       the file from which to read the forces
+    force : {'abs.max', 'l2.max'} or callable, optional
+       an operation to post-process the energy.
+       If a `str` it will use the given numpy operation on the flattened force array.
+       dictionary (output from: `sisl.io.siesta.*.read_force`) and convert that
+       to a single metric
+    failure : float, optional
+       in case the output does not contain anything runner fails, then we should return a "fake" metric.
+    """
+
+    def __init__(self, file, force='abs.max', failure=0.):
+        super().__init__(failure)
+        self.file = path_rel_or_abs(file)
+        if isinstance(force, str):
+            force_op = force.split(".")
+            def force(forces):
+                f""" {force_op} metric """
+                out = forces
+                for op in force_op:
+                    if op == "l2":
+                        out = (out ** 2).sum(-1) ** 0.5
+                    else:
+                        out = getattr(np, op)(out)
+                return out
+        if not callable(force):
+            raise ValueError(f"{self.__class__.__name__} requires force to be callable or str")
+        self.force = force
+        try:
+            self._op_doc = self.force.__doc__.strip()
+        except:
+            self._op_doc = "user-defined"
+
+    def metric(self, variables):
+        """ Read the force from the `self.file` in `path` """
+        forces = get_sile(self.file).read_force()
+        metric = self.force(forces)
+        _log.debug(f"metric.force [{self.file}:{self._op_doc}] success {metric}")
+        return metric
+
+
 class StressMetric(SiestaMetric):
     """ Metric is the stress tensor, read from the output file
 
@@ -136,20 +186,21 @@ class StressMetric(SiestaMetric):
     ----------
     out : str, Path
        output from a Siesta run
-    stress : func, optional
+    stress : callable, optional
        function which transforms the stress to a single number (the metric).
        By default it sums the diagonal stress components.
     failure : float, optional
        in case the output does not contain anything runner fails, then we should return a "fake" metric.
     """
 
-    def __init__(self, out, stress=None, failure=2.):
+    def __init__(self, out, stress='ABC', failure=2.):
         super().__init__(failure)
         self.out = path_rel_or_abs(out)
-        if stress is None:
+        if isinstance(stress, str):
+            stress_directions = list(map(direction, stress))
             def stress(stress_matrix):
-                """ diagonal-sum """
-                return np.diag(stress_matrix).sum()
+                f""" {stress_directions} metric """
+                return stress_matrix[stress_directions, stress_directions].sum()
         if not callable(stress):
             raise ValueError(f"{self.__class__.__name__} requires stress to be callable")
         self.stress = stress
@@ -162,7 +213,7 @@ class StressMetric(SiestaMetric):
         """ Convert the stress-tensor to a single metric that should be minimized """
         out = io_siesta.outSileSiesta(self.out)
         if _siesta_out_accept(out):
-            metric = self.stress_op(out.read_stress())
+            metric = self.stress(out.read_stress())
             _log.debug(f"metric.stress [{self.out}:{self._op_doc}] success {metric}")
         else:
             metric = self.failure

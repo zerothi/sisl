@@ -5,7 +5,7 @@ from functools import partial
 
 import sisl as si
 
-from ._variable import UpdateVariable
+from ._variable import UpdateVariable, read_variable_yaml
 
 
 __all__ = ["AtomBasis"]
@@ -289,12 +289,7 @@ class AtomBasis:
 
     def get_variables(self, dict_or_yaml):
         """ Convert a dictionary or yaml file input to variables usable by the minimizer """
-        if not isinstance(dict_or_yaml, dict):
-            # Then it must be a yaml file
-            import yaml
-            yaml_dict = yaml.load(open(dict_or_yaml, 'r'), Loader=yaml.CLoader)
-            dict_or_yaml = yaml_dict[self.atom.tag]
-        return self._get_variables_dict(dict_or_yaml)
+        return self._get_variables_dict(read_variable_yaml(dict_or_yaml, self.atom.tag))
 
     def _get_variables_dict(self, dic):
         """ Parse a dictionary adding potential variables to the minimize model """

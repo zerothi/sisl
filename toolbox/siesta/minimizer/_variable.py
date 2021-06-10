@@ -1,10 +1,23 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from collections.abc import Iterable
 import numpy as np
 
 
-__all__ = ['Variable', 'UpdateVariable']
+__all__ = ['Variable', 'UpdateVariable', 'read_variable_yaml']
+
+
+def read_variable_yaml(dict_or_yaml, name=None):
+    r""" Reads entries in a yaml file """
+    if not isinstance(dict_or_yaml, dict):
+        # Then it must be a yaml file
+        import yaml
+        dict_or_yaml = yaml.load(open(dict_or_yaml, 'r'), Loader=yaml.CLoader)
+    if name is not None:
+        if name in dict_or_yaml:
+            dict_or_yaml = dict_or_yaml[name]
+    return dict_or_yaml
 
 
 class Variable:
@@ -26,6 +39,7 @@ class Variable:
         self.name = name
         self.bounds = np.array(bounds, np.float64)
         assert self.bounds.size == 2
+        assert self.bounds[0] <= self.bounds[1]
         self.value = value
         self.attrs = attrs
 
@@ -37,10 +51,10 @@ class Variable:
 
     def _parse_norm(self, norm, with_offset):
         """ Return offset, scale factor """
-        if isinstance(norm, (tuple, list)):
-            norm, scale = norm
-        elif isinstance(norm, str):
+        if isinstance(norm, str):
             scale = 1.
+        elif isinstance(norm, Iterable):
+            norm, scale = norm
         else:
             scale = norm
             norm = 'l2'
@@ -54,16 +68,14 @@ class Variable:
             return 0., 1.
         elif norm == 'l2':
             return off, scale / (self.bounds[1] - self.bounds[0])
-        elif norm == 'max':
-            return off, scale / np.fabs(self.bounds).max()
-        raise ValueError("norm not found in [none/identity, l2, max]")
+        raise ValueError("norm not found in [none/identity, l2]")
 
     def normalize(self, value, norm='l2', with_offset=True):
         """ Normalize a value in terms of the norms of this variable
 
         Parameters
         ----------
-        norm : {l2, max, none/identity} or (str, float) or float
+        norm : {l2, none/identity} or (str, float) or float
            whether to scale according to bounds or not
            if a scale value (float) is used then that will be the [0, scale] bounds
            of the normalized value, only passing a float is equivalent to ``('l2', scale)``
