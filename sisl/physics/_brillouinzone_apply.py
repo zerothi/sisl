@@ -334,42 +334,43 @@ class AverageApply(BrillouinZoneParentApply):
 class XArrayApply(NDArrayApply):
     def __str__(self, message="xarray"):
         return super().__str__(message)
+    
+    @staticmethod
+    def _fix_coords_dims(nk, array, coords, dims, prefix="v"):
+        if coords is None and dims is None:
+            # we need to manually create them
+            coords = [('k', _a.arangei(nk))]
+            for i, v in enumerate(array.shape[1:]):
+                coords.append((f"{prefix}{i+1}", _a.arangei(v)))
+        elif coords is None:
+            coords = [('k', _a.arangei(nk))]
+            for i, v in enumerate(array.shape[1:]):
+                coords.append((dims[i], _a.arangei(v)))
+            # everything is in coords, no need to pass dims
+            dims = None
+        elif isinstance(coords, dict):
+            # ensure coords has "k" as dimensions
+            if "k" not in coords:
+                coords["k"] = _a.arangei(nk)
+                dims = list(dims)
+                # ensure we have dims first
+                dims.insert(0, "k")
+        else:
+            # add "k" correctly
+            coords = list(coords)
+            coords.insert(0, ('k', _a.arangei(nk)))
+            for i in range(1, len(coords)):
+                if isinstance(coords[i], str):
+                    coords[i] = (coords[i], _a.arangei(array.shape[i]))
+            # ensure dims is not used, everything is in coords
+            # and since it is a list, it should also be the correct order
+            # TODO add check that dims and coords match in order
+            # or convert dims to list and prepend "k"
+            dims = None
+        return coords, dims
 
     def dispatch(self, method):
         """ Dispatch the method by returning a DataArray or data-set """
-
-        def _fix_coords_dims(nk, array, coords, dims, prefix="v"):
-            if coords is None and dims is None:
-                # we need to manually create them
-                coords = [('k', _a.arangei(nk))]
-                for i, v in enumerate(array.shape[1:]):
-                    coords.append((f"{prefix}{i+1}", _a.arangei(v)))
-            elif coords is None:
-                coords = [('k', _a.arangei(nk))]
-                for i, v in enumerate(array.shape[1:]):
-                    coords.append((dims[i], _a.arangei(v)))
-                # everything is in coords, no need to pass dims
-                dims = None
-            elif isinstance(coords, dict):
-                # ensure coords has "k" as dimensions
-                if "k" not in coords:
-                    coords["k"] = _a.arangei(nk)
-                    dims = list(dims)
-                    # ensure we have dims first
-                    dims.insert(0, "k")
-            else:
-                # add "k" correctly
-                coords = list(coords)
-                coords.insert(0, ('k', _a.arangei(nk)))
-                for i in range(1, len(coords)):
-                    if isinstance(coords[i], str):
-                        coords[i] = (coords[i], _a.arangei(array.shape[i]))
-                # ensure dims is not used, everything is in coords
-                # and since it is a list, it should also be the correct order
-                # TODO add check that dims and coords match in order
-                # or convert dims to list and prepend "k"
-                dims = None
-            return coords, dims
 
         # Get data as array
         if self._attrs.get("unzip", False):
@@ -383,7 +384,7 @@ class XArrayApply(NDArrayApply):
                 array = array_func(*args, **kwargs)
 
                 def _create_DA(array, coords, dims, name):
-                    coords, dims = _fix_coords_dims(len(bz), array, coords, dims,
+                    coords, dims = self._fix_coords_dims(len(bz), array, coords, dims,
                                                     prefix=f"{name}.v")
                     return xarray.DataArray(array, coords=coords, dims=dims, name=name)
 
@@ -406,11 +407,71 @@ class XArrayApply(NDArrayApply):
                 bz = self._obj
                 # retrieve ALL data
                 array = array_func(*args, **kwargs)
-                coords, dims = _fix_coords_dims(len(bz), array, coords, dims)
+                coords, dims = self._fix_coords_dims(len(bz), array, coords, dims)
                 attrs = {'bz': bz, 'parent': bz.parent}
                 return xarray.DataArray(array, coords=coords, dims=dims, name=name, attrs=attrs)
 
         return func
+
+@set_module("sisl.physics")
+class XArrayDatasetApply(NDArrayApply):
+
+    def __str__(self, message="xarray dataset"):
+        return super().__str__(message)
+
+    def dispatch(self, method):
+        """ Dispatch the method by returning an xarray Dataset"""
+
+        array_func = super().dispatch(method, eta_key="dataset")
+
+        @wraps(method)
+        def func(*args, coords=None, datavars=method.__name__, **kwargs):
+            # xarray specific data (default to function name)
+            bz = self._obj
+            # retrieve ALL data
+            array = array_func(*args, **kwargs)
+            
+            if isinstance(coords, dict):
+                raise TypeError(f"{self.__class__.__name__} doesn't accept dictionaries for the coords argument.")
+            
+            attrs = {'bz': bz, 'parent': bz.parent}
+            
+            if isinstance(datavars, str):
+                datavars = [f"{datavars}{i}" for i in range(array.shape[-1])]
+            
+            self._counter = -1
+            def _create_DA(datavar):
+                self._counter += 1
+                
+                name = datavar
+                if isinstance(name, tuple):
+                    name, var_name, data_coords = name
+                    if isinstance(data_coords, int):
+                        data_coords = range(data_coords)
+                        
+                    data_len = len(data_coords)
+                    selector = slice(self._counter, self._counter + data_len)
+                    self._counter += data_len - 1
+                    array_coords = [*coords, var_name]
+                else:
+                    array_coords = coords
+                    selector = self._counter
+                
+                arr = array[..., selector]
+                array_coords, _ = XArrayApply._fix_coords_dims(len(bz), arr, array_coords, None)
+                    
+                return xarray.DataArray(arr, coords=array_coords, name=name)
+
+            # Create all the dataarrays
+            data = {}
+            for datavar in datavars:
+                dataarray = _create_DA(datavar)
+                data[dataarray.name] = dataarray
+            
+            return xarray.Dataset(data, attrs=attrs)
+        
+        return func
+
 
 # Register dispatched functions
 BrillouinZone.apply.register("iter", IteratorApply, default=True)
@@ -422,4 +483,5 @@ BrillouinZone.apply.register("none", NoneApply)
 BrillouinZone.apply.register("list", ListApply)
 BrillouinZone.apply.register("oplist", OpListApply)
 BrillouinZone.apply.register("dataarray", XArrayApply)
+BrillouinZone.apply.register("dataset", XArrayDatasetApply)
 BrillouinZone.apply.register("xarray", XArrayApply)
