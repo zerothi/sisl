@@ -1,6 +1,6 @@
-# This Source Code Form is subject to the terms of the Mozilla Public
-# License, v. 2.0. If a copy of the MPL was not distributed with this
-# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+! This Source Code Form is subject to the terms of the Mozilla Public
+! License, v. 2.0. If a copy of the MPL was not distributed with this
+! file, You can obtain one at https://mozilla.org/MPL/2.0/.
 subroutine write_dm(fname, nspin, no_u, nsc, nnz, ncol, list_col, DM)
   use io_m, only: open_file, close_file
   use io_m, only: iostat_update
