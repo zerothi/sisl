@@ -2,15 +2,19 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from functools import partial
+import logging
 
 import sisl as si
+from sisl.utils import NotNonePropertyDict
 
-from ._variable import UpdateVariable, read_variable_yaml
+from ._yaml_reader import read_yaml, parse_variable
+from ._variable import Variable, UpdateVariable
 
 
 __all__ = ["AtomBasis"]
 
 
+_log = logging.getLogger("sisl_toolbox.siesta.minimize")
 _Ang2Bohr = si.units.convert("Ang", "Bohr")
 _eV2Ry = si.units.convert("eV", "Ry")
 
@@ -26,7 +30,7 @@ class AtomBasis:
         #              "filter": cutoff,
         #              "pol" : npol,
         #             }
-        #         "charge": ionic_charge,
+        #         "ion_charge": ionic_charge,
         #         "type": "split"|"splitgauss"|"nodes"|"nonodes"|"filteret"
         # }
         # All arguments should be in Ang, eV
@@ -60,6 +64,84 @@ class AtomBasis:
             self.opts.setdefault((n, l), {})
 
     @classmethod
+    def from_dict(cls, dic):
+        """ Return an `AtomBasis` from a dictionary
+
+        Parameters
+        ----------
+        dic : dict
+        """
+        from sisl_toolbox.siesta.atom._atom import _shell_order
+        element = dic["element"]
+        tag = dic.get("tag")
+        mass = dic.get("mass", None)
+
+        # get default options for pseudo
+        opts = NotNonePropertyDict()
+
+        basis = dic.get("basis", {})
+        opts["ion_charge"] = parse_variable(basis.get("ion-charge")).value
+        opts["type"] = basis.get("type")
+
+        def get_radius(orbs, zeta):
+            for orb in orbs:
+                if orb.zeta == zeta:
+                    return orb.R
+            raise ValueError("Could parse the negative R value")
+
+        orbs = []
+        for nl in dic:
+            if nl not in _shell_order:
+                continue
+
+            n, l = int(nl[0]), 'spdfg'.index(nl[1])
+            # Now we are sure we are dealing with valence shells
+            basis = dic[nl].get("basis", {})
+
+            opt_nl = NotNonePropertyDict()
+            orbs_nl = []
+
+            # Now read through the entries
+            for key, entry in basis.items():
+                if key in ("charge-confinement", "charge-conf"):
+                    opt_nl["charge"] = [
+                        parse_variable(entry.get("charge")).value,
+                        parse_variable(entry.get("yukawa"), unit='1/Ang').value,
+                        parse_variable(entry.get("width"), unit='Ang').value
+                    ]
+                elif key in ("soft-confinement", "soft-conf"):
+                    opt_nl["soft"] = [
+                        parse_variable(entry.get("V0"), unit='eV').value,
+                        parse_variable(entry.get("ri"), unit='Ang').value
+                    ]
+                elif key in ("filter",):
+                    opt_nl["filter"] = parse_variable(entry, unit='eV').value
+                elif key in ("split-norm", "split"):
+                    opt_nl["split"] = parse_variable(entry).value
+                elif key in ("polarization", "pol"):
+                    opt_nl["pol"] = parse_variable(entry).value
+                elif key.startswith("zeta"):
+                    # cutoff of zeta
+                    zeta = int(key[4:])
+                    R = parse_variable(entry, unit='Ang').value
+                    if R < 0:
+                        R *= -get_radius(orbs_nl, zeta-1)
+                    orbs_nl.append(si.AtomicOrbital(n=n, l=l, m=0, zeta=zeta, R=R))
+
+            if len(orbs_nl) > 0:
+                opts[(n, l)] = opt_nl
+                orbs.extend(orbs_nl)
+
+        atom = si.Atom(element, orbs, mass=mass, tag=tag)
+        return cls(atom, opts)
+
+    @classmethod
+    def from_yaml(cls, file, nodes=()):
+        """ Parse the yaml file """
+        from ._yaml_reader import read_yaml
+        return cls.from_dict(read_yaml(file, nodes))
+
+    @classmethod
     def from_block(cls, block):
         """ Return an `Atom` for a specified basis block
 
@@ -89,14 +171,14 @@ class AtomBasis:
         specie = specie.split()
         if len(specie) == 4:
             # we have Symbol, nl, type, ionic_charge
-            symbol, nl, opts["type"], opts["charge"] = specie
+            symbol, nl, opts["type"], opts["ion_charge"] = specie
         elif len(specie) == 3:
             # we have Symbol, nl, type
             # or
             # we have Symbol, nl, ionic_charge
             symbol, nl, opt = specie
             try:
-                opts["charge"] = float(opt)
+                opts["ion_charge"] = float(opt)
             except:
                 opts["type"] = opt
         elif len(specie) == 2:
@@ -174,10 +256,12 @@ class AtomBasis:
             for izeta, rc in enumerate(map(float, rc_line.split()), 1):
                 if rc > 0:
                     rc /= _Ang2Bohr
-                elif rc == 0:
-                    rc = orbs[-1].R
-                elif izeta > 1:
+                elif rc < 0 and izeta > 1:
                     rc *= -orbs[-1].R
+                elif rc == 0 and izeta > 1:
+                    # this is ok, the split-norm will be used to
+                    # calculate the radius
+                    pass
                 else:
                     raise ValueError(f"Could not parse the PAO.Basis block for the zeta ranges {rc_line}.")
                 orb = si.AtomicOrbital(n=n, l=l, m=0, zeta=izeta, R=rc)
@@ -219,8 +303,8 @@ class AtomBasis:
         line = f"{self.atom.symbol} {nl}"
         if "type" in self.opts:
             line += f" {self.opts['type']}"
-        if "charge" in self.opts:
-            line += f" {self.opts['charge']:.10f}"
+        if "ion_charge" in self.opts:
+            line += f" {self.opts['ion_charge']:.10f}"
         block.append(line)
 
         # Now add basis lines
@@ -287,187 +371,88 @@ class AtomBasis:
             #block.append(line)
         return block
 
-    def get_variables(self, dict_or_yaml):
+    def get_variables(self, dict_or_yaml, nodes=()):
         """ Convert a dictionary or yaml file input to variables usable by the minimizer """
-        return self._get_variables_dict(read_variable_yaml(dict_or_yaml, self.atom.tag))
+        if not isinstance(dict_or_yaml, dict):
+            dict_or_yaml = read_yaml(dict_or_yaml)
+        if isinstance(nodes, str):
+            nodes = [nodes]
+        for node in nodes:
+            dict_or_yaml = dict_or_yaml[node]
+        return self._get_variables_dict(dict_or_yaml)
 
     def _get_variables_dict(self, dic):
         """ Parse a dictionary adding potential variables to the minimize model """
-        symbol = self.atom.tag
+        symbol = self.atom.symbol
+        tag = self.atom.tag
 
-        # Now loop and find coincidences in the dictionary
         # with respect to the basis
         def update_orb(old, new, orb):
-            """ Update an orbital's radii """
+            """ Update an orbital's radius """
             orb._R = new
 
         # Define other options
-        def update(old, new, d, key, idx=None):
+        def update(old, new, d, key, index=None):
             """ An updater for a dictionary with optional keys """
-            if idx is None:
+            if index is None:
                 d[key] = new
             else:
-                d[key][idx] = new
+                d[key][index] = new
 
-        def parse_nl(self, n, l, orbs, dic):
-            V = []
-
-            if len(dic) == 0:
-                # quick return if empty
-                return V
-
-            # Now parse dictionary for nl
-            # Loop keys to figure out what is there
-            for key, value in dic.items():
-                # we don't need to parse POLARIZATION
-                # since that is implicitly handled
-                if key == "filter":
-                    # Extract values
-                    v0 = value["initial"]
-                    bounds = value["bounds"]
-                    delta = value["delta"]
-                    # Ensure it is defined
-                    self.opts[(n, l)][key] = v0
-                    var = UpdateVariable(f"{symbol}.n{n}l{l}.filter", v0, bounds,
-                                         partial(update, d=self.opts[(n, l)], key=key),
-                                         delta=delta)
-                    V.append(var)
-
-                elif key == "split":
-                    # Extract values
-                    v0 = value["initial"]
-                    bounds = value["bounds"]
-                    delta = value["delta"]
-                    # Ensure it is defined
-                    self.opts[(n, l)][key] = v0
-                    var = UpdateVariable(f"{symbol}.n{n}l{l}.split", v0, bounds,
-                                         partial(update, d=self.opts[(n, l)], key=key),
-                                         delta=delta)
-                    V.append(var)
-
-                elif key == "soft":
-                    # Soft confinement is comprised of two variables
-                    #  1. V0, potential hight
-                    # *2. turn-on radius for the potential
-                    # function is defined in ri < r < rc
-                    # and has shape:
-                    #   V0 * e^(- (rc - ri)/(r - ri)) / (rc - r)
-
-                    if "ri" in value:
-                        def_ri = value["ri"]["initial"]
-                    else:
-                        def_ri = self.opts[(n, l)].get(key, [0, None])[1]
-
-                    # Extract values
-                    V0 = value["V0"]
-                    v0 = V0["initial"]
-                    bounds = V0["bounds"]
-                    delta = V0["delta"]
-                    # Ensure it is defined
-                    self.opts[(n, l)][key] = [v0, def_ri]
-                    var = UpdateVariable(f"{symbol}.n{n}l{l}.soft.V0", v0, bounds,
-                                         partial(update, d=self.opts[(n, l)], key=key, idx=0),
-                                         delta=delta)
-                    V.append(var)
-
-                    if "ri" in value:
-                        ri = value["ri"]
-                        v0 = ri["initial"]
-                        bounds = ri["bounds"]
-                        delta = ri["delta"]
-                        var = UpdateVariable(f"{symbol}.n{n}l{l}.soft.ri", v0, bounds,
-                                             partial(update, d=self.opts[(n, l)], key=key, idx=1),
-                                             delta=delta)
-                        V.append(var)
-
-                elif key == "charge":
-                    # Charge confinement is comprised of three variables
-                    #  1. Q, charge value for confinement potential
-                    # *2. Yukawa screening length (inverse length), lambda
-                    # *3. width of the potential
-                    # function is defined in r < rc
-                    # and has shape:
-                    #   Q * e^(- lambda * r) / (r**2 + width ** 2) ** 0.5
-
-                    if "yukawa" in value:
-                        def_yukawa = value["yukawa"]["initial"]
-                    else:
-                        def_yukawa = self.opts[(n, l)].get(key, [0, None, None])[1]
-                    if "width" in value:
-                        def_width = value["width"]["initial"]
-                    else:
-                        def_width = self.opts[(n, l)].get(key, [0, None, None])[2]
-
-                        # Extract values
-                    Q = value["Q"]
-                    v0 = Q["initial"]
-                    bounds = Q["bounds"]
-                    delta = Q["delta"]
-                    # Ensure it is defined
-                    self.opts[(n, l)][key] = [v0, def_yukawa, def_width]
-                    var = UpdateVariable(f"{symbol}.n{n}l{l}.charge.Q", v0, bounds,
-                                         partial(update, d=self.opts[(n, l)], key=key, idx=0),
-                                         delta=delta)
-                    V.append(var)
-
-                    if "yukawa" in value:
-                        yukawa = value["yukawa"]
-                        v0 = yukawa["initial"]
-                        bounds = yukawa["bounds"]
-                        delta = yukawa["delta"]
-                        var = UpdateVariable(f"{symbol}.n{n}l{l}.charge.yukawa", v0, bounds,
-                                             partial(update, d=self.opts[(n, l)], key=key, idx=1),
-                                             delta=delta)
-                        V.append(var)
-
-                    if "width" in value:
-                        width = value["width"]
-                        v0 = width["initial"]
-                        bounds = width["bounds"]
-                        delta = width["delta"]
-                        var = UpdateVariable(f"{symbol}.n{n}l{l}.charge.width", v0, bounds,
-                                             partial(update, d=self.opts[(n, l)], key=key, idx=2),
-                                             delta=delta)
-                        V.append(var)
-
-                elif key.startswith("zeta"):
-                    zeta = int(key[4:])
-                    found = False
-                    for orb in orbs:
-                        if orb.zeta == zeta:
-                            found = True
-                            # create variable for this
-                            # 6 Ang should be more than enough
-                            v0 = value["initial"]
-                            bounds = value["bounds"]
-                            delta = value["delta"]
-                            # ensure we start correctly
-                            orb._R = v0
-                            var = UpdateVariable(f"{symbol}.n{n}l{l}.z{zeta}", v0, bounds,
-                                                 partial(update_orb, orb=orb),
-                                                 delta=delta)
-                            V.append(var)
-                    if not found:
-                        raise ValueError("Could not find zeta value in the orbitals?")
-                else:
-                    raise ValueError(f"Could not find something useful to do with: {key} = {value}, a typo perhaps?")
-
-            return V
-
+        # returned variables
         V = []
-        for (n, l), orbs in self.yield_nl_orbs():
-            V.extend(parse_nl(self, n, l, orbs,
-                              dic.get(f"{n}" + "spdfg"[l], {})))
+        def add_variable(var):
+            nonlocal V
+            if var.value is not None:
+                _log.info(f"{self.__class__.__name__} adding {var}")
+            if isinstance(var, Variable):
+                if var.name in V:
+                    return
+                V.append(var)
 
-        # Now add atomic charge
-        charge = dic.get("charge", {})
-        if len(charge) > 0:
-            v0 = charge["initial"]
-            bounds = charge["bounds"]
-            delta = charge["delta"]
-            var = UpdateVariable(f"{symbol}.charge", v0, bounds,
-                                 partial(update, d=self.opts, key="charge"),
-                                 delta=delta)
-            V.append(var)
+        # get default options for pseudo
+        basis = dic.get("basis", {})
+        add_variable(parse_variable(basis.get("ion-charge"), name=f"{tag}.ion-q",
+                                    update_func=partial(update, d=self.opts, key="ion_charge")))
 
+        # parse depending on shells in the atom
+        parsed_nl = []
+        spdf = 'spdfg'
+        for orb in self.atom:
+            n, l = orb.n, orb.l
+            nl = f"{n}{spdf[l]}"
+            basis = dic.get(nl, {}).get("basis")
+            if basis is None:
+                _log.info(f"{self.__class__.__name__} skipping node: {nl}.basis")
+                continue
+
+            for flag in ("charge-confinement", "charge-conf"):
+                # Now parse this one
+                d = basis.get(flag, {})
+                for var in [parse_variable(d.get("charge"), name=f"{tag}.{nl}.charge.q",
+                                           update_func=partial(update, d=self.opts[(n, l)], key="charge", index=0)),
+                            parse_variable(d.get("yukawa"), unit='1/Ang', name=f"{tag}.{nl}.charge.yukawa",
+                                           update_func=partial(update, d=self.opts[(n, l)], key="charge", index=1)),
+                            parse_variable(d.get("width"), unit='Ang', name=f"{tag}.{nl}.charge.width",
+                                           update_func=partial(update, d=self.opts[(n, l)], key="charge", index=2))]:
+                    add_variable(var)
+
+            for flag in ("soft-confinement", "soft-conf"):
+                # Now parse this one
+                d = basis.get(flag, {})
+                for var in [parse_variable(d.get("V0"), unit='eV', name=f"{tag}.{nl}.soft.V0",
+                                           update_func=partial(update, d=self.opts[(n, l)], key="soft", index=0)),
+                            parse_variable(d.get("ri"), unit='Ang', name=f"{tag}.{nl}.soft.ri",
+                                           update_func=partial(update, d=self.opts[(n, l)], key="soft", index=1))]:
+                    add_variable(var)
+
+            add_variable(parse_variable(basis.get("filter"), unit='eV', name=f"{tag}.{nl}.filter",
+                                        update_func=partial(update, d=self.opts[(n, l)], key="filter")))
+
+            for flag in ("split-norm", "split"):
+                add_variable(parse_variable(basis.get(flag), name=f"{tag}.{nl}.split",
+                                            update_func=partial(update, d=self.opts[(n, l)], key="split")))
+
+            add_variable(parse_variable(basis.get(f"zeta{orb.zeta}"), name=f"{tag}.{nl}.z{orb.zeta}",
+                                        update_func=partial(update_orb, orb=orb)))
         return V

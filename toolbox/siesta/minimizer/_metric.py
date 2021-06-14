@@ -13,6 +13,9 @@ class Metric:
     def metric(self, variables, *args, **kwargs):
         """ Return a single number quantifying the metric of the system """
 
+    def __abs__(self):
+        return AbsMetric(self)
+
     def __add__(self, other):
         return SumMetric(self, other)
 
@@ -64,6 +67,14 @@ class CompositeMetric(Metric):
         else:
             B = self.B
         return A, B
+
+
+class AbsMetric(Metric):
+    def __init__(self, A):
+        self.A = A
+
+    def metric(self, variables, *args, **kwargs):
+        return abs(super().metric(variables, *args, **kwargs))
 
 
 class MinMetric(CompositeMetric):

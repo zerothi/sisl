@@ -13,7 +13,7 @@ from ._metric import Metric
 __all__ = ["SiestaMetric", "EnergyMetric", "EigenvalueMetric", "ForceMetric", "StressMetric"]
 
 
-_log = logging.getLogger("sisl_toolbox.siesta.pseudo")
+_log = logging.getLogger("sisl_toolbox.siesta.minimize")
 
 
 def _siesta_out_accept(out):

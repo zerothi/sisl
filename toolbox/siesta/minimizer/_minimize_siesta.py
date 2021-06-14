@@ -10,12 +10,13 @@ import numpy as np
 from sisl.io import tableSile
 from sisl.io.siesta import fdfSileSiesta
 from sisl._array import arrayi, zerosd, arangei
+from sisl.utils import PropertyDict
 
 from ._runner import AndRunner
 from ._minimize import *
 
 
-_log = logging.getLogger("sisl_toolbox.siesta.pseudo")
+_log = logging.getLogger("sisl_toolbox.siesta.minimize")
 
 
 class MinimizeSiesta(BaseMinimize): # no inheritance!

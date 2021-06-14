@@ -42,27 +42,31 @@ that this file is read by Siesta.
 
     siesta1 = SiestaRunner("geometry1")
     siesta2 = SiestaRunner("geometry2")
+    runner = (siesta1 & siesta2)
 
     # Define the metric we wish to minimize.
     # This could essentially be anything depending on the basis set
-    metric = (EnergyMetric(siesta1) * 1.1 +
-              EnergyMetric(siesta2) * 0.9)
+    metric = (EnergyMetric(siesta1.absattr("stdout")) * 1.1 +
+              EnergyMetric(siesta2.absattr("stdout")) * 0.9)
 
     # Use a local minimization technique, storing intermediate
     # data in local_etot.dat
-    minimize = LocalMinimizeBasis(metric, out="local_etot.dat")
+    minimize = LocalMinimizeSiesta(runner, metric, out="local_etot.dat")
 
     # We need to define the basis of the atom we wish to minimize
     # Here we have an output file from a previous calculation
     # The only thing that is read is the PAO.Basis block and the *size* of the
     # basis. If the PAO.Basis block contains DZP data, then this is the basis set
     # used in the reference calculations.
-    minimize.set_basis(sisl.io.siesta.outSileSiesta("REF.out", 'r').read_basis_block())
+    # The optimize.yaml contains the required data which creates the basis
+    # used in the minimization procedure.
+    basis = AtomBasis.from_yaml("optimize.yaml", "atom")
 
-    # Our configuration file (default.yaml) contain what to minimize
-    # and what ranges are allowed.
-    # See default.yaml for details
-    minimize.add_yaml("default.yaml")
+    # add variables (and skip parameters).
+    # This 2nd step is required to disentangle the parameters in the
+    # `basis` from the variables.
+    for v in basis.get_variables("optimize.yaml", "atom"):
+       minimize.add_variable(v)
 
     # We have found that for some cases normalized variables behave better
     # than non-normalized data. By default the Minimize class normalizes
@@ -74,12 +78,11 @@ that this file is read by Siesta.
     # - displacements for Jacobian
     # - tolerance for the minimization
     constraints = minimize.get_constraints()
-    bounds = minimize.normalize_bounds()
     eps = minimize.normalize("delta", with_offset=False)
     tolerance = 1e-5
 
     # now run minimization
-    vopt = minimize.run(bounds=bounds, constraints=constraints, tol=tolerance,
+    vopt = minimize.run(tol=tolerance, constraints=constraints,
                         options={"ftol": tolerance,
                                  "eps": eps,
                                  "finite_diff_rel_step": eps,

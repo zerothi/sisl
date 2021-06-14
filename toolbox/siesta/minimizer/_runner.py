@@ -14,11 +14,11 @@ from ._path import path_abs, path_rel_or_abs
 
 
 __all__ = ["AbstractRunner", "AndRunner", "PathRunner",
-           "CleanRunner", "CopyRunner", "ScriptRunner",
+           "CleanRunner", "CopyRunner", "CommandRunner",
            "AtomRunner", "SiestaRunner", "FunctionRunner"]
 
 
-_log = logging.getLogger("sisl_toolbox.siesta.pseudo")
+_log = logging.getLogger("sisl_toolbox.siesta.minimize")
 
 
 class AbstractRunner(ABC):
@@ -141,9 +141,9 @@ class CopyRunner(PathRunner):
         self.files = files
         self.rename = rename
         if not self.path.is_dir():
-            raise ValueError(f"script {self.path} must be a directory")
+            raise ValueError(f"{self.__class__.__name__} path={self.path} must be a directory")
         if not self.to.is_dir():
-            raise ValueError(f"script {self.to} must be a directory")
+            raise ValueError(f"{self.__class__.__name__} path={self.to} must be a directory")
 
     def run(self):
         copy = []
@@ -160,29 +160,31 @@ class CopyRunner(PathRunner):
         for fin, fout in self.rename.items():
             f_in = self.path / fin
             f_out = self.to / fout
+            common = os.path.commonprefix([f_in.parts, f_out.parts])
             if f_in.is_file():
-                copy.append("{}->{}".format(str(fin), str(fout)))
+                copy.append("[{}] {}->{}".format(str(common), str(f_in.relative_to(common)),
+                                            str(f_out.relative_to(common))))
                 shutil.copyfile(f_in, f_out)
             elif f_out.is_file():
-                rem.append("->{}".format(str(fout)))
+                rem.append("[{}] rm {}".format(str(common), str(fout)))
                 os.remove(f_out)
         _log.debug(f"copying {copy}; removing {rem}")
 
 
-class ScriptRunner(PathRunner):
-    def __init__(self, path, script="run.sh"):
+class CommandRunner(PathRunner):
+    def __init__(self, path, cmd="run.sh"):
         super().__init__(path)
-        self.script = path_abs(script, self.path)
+        abs_cmd = path_abs(cmd, self.path)
+        if abs_cmd.is_file():
+            self.cmd = [abs_cmd]
+            if not os.access(self.cmd, os.X_OK):
+                raise ValueError(f"{self.__class__.__name__} shell script {self.cmd.relative_to(self.path.cwd())} not executable")
+        else:
+            self.cmd = cmd.split()
 
-        if not self.script.is_file():
-            raise ValueError(f"script {self.script.relative_to(self.path.cwd())} must be a file")
-        # ensure scirpt is executable
-        if not os.access(self.script, os.X_OK):
-            raise ValueError(f"Script {self.script.relative_to(self.path.cwd())} not executable")
 
-
-class AtomRunner(ScriptRunner):
-    """ Run a script with atom-input file as first argument and output file as second argument
+class AtomRunner(CommandRunner):
+    """ Run a command with atom-input file as first argument and output file as second argument
 
     This is tailored for atom in the sense of arguments for this class, but not
     restricted in any way.
@@ -199,24 +201,24 @@ class AtomRunner(ScriptRunner):
     ... # cd ..
     """
 
-    def __init__(self, path, script="run.sh", input="INP", out="OUT"):
-        super().__init__(path, script)
-        self.input = path_rel_or_abs(input)
-        self.out = path_rel_or_abs(out)
+    def __init__(self, path, cmd="atom", input="INP", out="OUT"):
+        super().__init__(path, cmd)
+        self.input = path_rel_or_abs(input, self.path)
+        self.out = path_rel_or_abs(out, self.path)
 
     def run(self):
-        _log.debug(f"running atom using script: {self.script}")
+        cmd = [str(cmd) for cmd in self.cmd + [self.input, self.out]]
+        _log.debug(f"running atom using command: {' '.join(cmd)}")
         # atom generates lots of files
         # We need to clean the directory so that subsequent VPSFMT users don't
         # accidentially use a prior output
         self.clean("RHO", "OUT", "PS*", "AE*", "CHARGE", "COREQ", "FOURIER*", "VPS*")
-        return subprocess.run([self.script, self.input, self.out], cwd=self.path,
-                              encoding='utf-8',
-                              capture_output=True, check=False)
+        return subprocess.run(cmd, cwd=self.path,
+                              encoding='utf-8', capture_output=True, check=False)
 
 
-class SiestaRunner(ScriptRunner):
-    """ Run a script with fdf as first argument and output file as second argument
+class SiestaRunner(CommandRunner):
+    """ Run a script/cmd with fdf as first argument and output file as second argument
 
     This is tailored for Siesta in the sense of arguments for this class, but not
     restricted in any way.
@@ -231,21 +233,22 @@ class SiestaRunner(ScriptRunner):
     ... # cd ..
     """
 
-    def __init__(self, path, script="run.sh", fdf="RUN.fdf", out="RUN.out"):
-        super().__init__(path, script)
-        self.fdf = path_rel_or_abs(fdf)
-        self.out = path_rel_or_abs(out)
+    def __init__(self, path, cmd="siesta", fdf="RUN.fdf", stdout="RUN.out"):
+        super().__init__(path, cmd)
+        self.fdf = path_rel_or_abs(fdf, self.path)
+        self.stdout = path_rel_or_abs(stdout, self.path)
 
         fdf = self.absattr("fdf")
         self.systemlabel = fdfSileSiesta(fdf, base=self.path).get("SystemLabel", "siesta")
 
     def run(self):
-        _log.debug(f"running siesta using script: {self.script}")
+        cmd = [str(cmd) for cmd in self.cmd + [self.fdf]]
+        _log.debug(f"running Siesta using command[{self.path}]: {' '.join(cmd)} > {self.stdout}")
         # Remove stuff to ensure that we don't read information from prior calculations
-        self.clean("*.ion*", "fdf-*.log", f"{self.systemlabel}.*", self.out)
-        return subprocess.run([self.script, self.fdf, self.out], cwd=self.path,
-                              encoding='utf-8',
-                              capture_output=True, check=False)
+        self.clean("*.ion*", "fdf-*.log", f"{self.systemlabel}.*")
+        return subprocess.run(cmd, cwd=self.path, encoding='utf-8',
+                              stdout=open(self.stdout, 'w'), stderr=subprocess.PIPE,
+                              check=False)
 
 
 class FunctionRunner(AbstractRunner):

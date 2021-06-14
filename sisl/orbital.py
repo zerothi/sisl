@@ -801,10 +801,10 @@ class AtomicOrbital(Orbital):
                     # Remove n specification
                     s = s[1:]
                 except:
-                    n = _n.get(s[0])
+                    n = _n.get(s[0], n)
 
                 # Get l
-                l = _l.get(s[0])
+                l = _l.get(s[0], l)
 
                 # Get number of zeta shell
                 iZ = s.find('Z')
@@ -821,7 +821,7 @@ class AtomicOrbital(Orbital):
                         s = s[:iZ] + s[iZ+1:]
 
                 # We should be left with m specification
-                m = _m.get(s)
+                m = _m.get(s, m)
 
                 # Now we should figure out how the spherical orbital
                 # has been passed.
@@ -834,7 +834,7 @@ class AtomicOrbital(Orbital):
                     if isinstance(args[0], SphericalOrbital):
                         self._orb = args.pop(0)
                     else:
-                        self._orb = SphericalOrbital(l, args.pop(0))
+                        self._orb = SphericalOrbital(l, args.pop(0), q0=self.q0)
             else:
 
                 # Arguments *have* to be
@@ -863,7 +863,7 @@ class AtomicOrbital(Orbital):
                     if isinstance(args[0], SphericalOrbital):
                         self._orb = args.pop(0)
                     else:
-                        self._orb = SphericalOrbital(l, args.pop(0))
+                        self._orb = SphericalOrbital(l, args.pop(0), q0=self.q0)
 
         # Still if n is None, we assign the default (lowest) quantum number
         if n is None:
@@ -890,12 +890,12 @@ class AtomicOrbital(Orbital):
         elif isinstance(s, Orbital):
             self._orb = s
         else:
-            self._orb = SphericalOrbital(l, s)
+            self._orb = SphericalOrbital(l, s, q0=self.q0)
 
         if self._orb is None:
             # Default orbital to none, this will not create any radial functions
             # But any use of the orbital will still work
-            self._orb = Orbital(self.R)
+            self._orb = Orbital(self.R, q0=self.q0)
 
         self._R = self._orb.R
 

@@ -14,7 +14,7 @@ import importlib
 __all__ = ["merge_instances", "str_spec", "direction", "angle"]
 __all__ += ["iter_shape", "math_eval", "allow_kwargs"]
 __all__ += ["import_attr", "lazy_import"]
-__all__ += ["PropertyDict"]
+__all__ += ["PropertyDict", "NotNonePropertyDict"]
 
 
 # supported operators
@@ -419,3 +419,11 @@ class PropertyDict(dict):
 
     def __dir__(self):
         return list(self.keys())
+
+
+class NotNonePropertyDict(PropertyDict):
+
+    def __setitem__(self, key, value):
+        if value is None:
+            return
+        super().__setitem__(key, value)

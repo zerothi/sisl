@@ -17,7 +17,10 @@ from sisl.io import tableSile
 from sisl.utils import PropertyDict
 
 
-_log = logging.getLogger("sisl_toolbox.siesta.pseudo")
+__all__ = ["BaseMinimize", "LocalMinimize", "DualAnnealingMinimize",
+           "MinimizeToDispatcher"]
+
+_log = logging.getLogger("sisl_toolbox.siesta.minimize")
 
 
 def _convert_optimize_result(minimizer, result):

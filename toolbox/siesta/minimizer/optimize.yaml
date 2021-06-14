@@ -1,0 +1,91 @@
+# Overall optimization yaml input file
+
+# This is a complete overview of what the minimizer can parse
+# For pseudo+basis set minimizations one needs to define a segment for
+# the atom that needs minimization.
+
+# One may use custom units by specifying them at the value entry, or
+# by doing it at the group level:
+#  V0: {initial: 0. Ang, bounds: [0, 200], delta: 50., unit=Bohr}
+# The above will use Bohr for bounds and delta, but Ang for initial.
+# Alternatively for a single value:
+#  V0: 0. Ang
+# Anything that has numeric values may be defined either as a variable
+# (see former V0) or a parameter (see latter V0).
+
+
+# Here a default input variable for the aluminium atom.
+atom_Al:
+  # the element to sample.
+  element: Al
+  # *mass: 20.
+  pseudo:
+     # Optional flags are:
+     # log-radii: 1. # [length]
+     # core-correction: 1. # [length]
+     # libxc: int
+     define:
+       - NEW_CC
+       - FREE_FORMAT_RC_INPUT
+       - NO_PS_CUTOFFS
+     flavor: tm2
+     xc: pb
+     equation: r
+     core-correction: 1.2647821553 Bohr
+  #basis:
+     # optional flags are
+     # ion-charge: 0.
+     # type: nodes|split|splitgauss|nonodes|filteret
+  3s:
+    pseudo:
+      cutoff: {initial: 1.2, bounds: [0.8, 2.3], delta: 0.1}
+      charge: 2.
+    basis:
+      # Optional flags are:
+      # charge-confinement: {
+      #    charge: 2., # charge [electrons]
+      #   *yukawa: 1., # screening length [inverse Ang]
+      #   * width: 2.  # width of the potential [Ang]
+      # }
+      # soft-confinement: {
+      #    V0: 2., # potential [eV]
+      #   *ri: 1., # turn-on radius for the potential [Ang]
+      # }
+      # filter: 20 # energy [eV]
+      # split-norm: 0.15 # fraction, unit-less
+      # zeta[1-]: 2. # cut-off radius
+      # ionic-charge: 2. # ionic charge [holes]
+      # polarization: 1 (or any higher number)
+      soft-confinement:
+        V0: {initial: 0., bounds: [0., 1000.], delta: 50.}
+        ri: {initial: -0.8, bounds: [-0.95, -0.5], delta: 0.08}
+      zeta1: {initial: 2.4, bounds: [1., 5.5], delta: 0.5}
+      zeta2: {initial: 1.6, bounds: [1., 5.5], delta: 0.5}
+  3p:      
+    pseudo:
+      cutoff: {initial: 1.1, bounds: [0.8, 2.3], delta: 0.1}
+      charge: 1.
+    basis:
+      soft-confinement:
+        V0: {initial: 0., bounds: [0., 1000.], delta: 50.}
+        ri: {initial: -0.8, bounds: [-0.95, -0.5], delta: 0.08}
+      zeta1: {initial: 2.4, bounds: [1., 5.5], delta: 0.25}
+      zeta2: {initial: 2.0, bounds: [1., 5.5], delta: 0.25}
+  3d:
+    pseudo:
+      cutoff: {initial: 1.15, bounds: [0.8, 2.3], delta: 0.1}
+    basis:
+      charge-confinement:
+        # Definition of charge-confinement minimization
+        charge: {initial: 0., bounds: [0., 5.], delta: 0.5}
+        # Screening length (Ang-1)
+        yukawa: {initial: 0., bounds: [0., 3.], delta: 0.5}
+        # Width for the potential (Ang)
+        width: {initial: 0.0053, bounds: [0.0, 0.5], delta: 0.05}
+      soft-confinement:
+        V0: {initial: 0., bounds: [0., 1000.], delta: 50.}
+        ri: {initial: -0.8, bounds: [-0.95, -0.5], delta: 0.08}
+      zeta1: {initial: 2.4, bounds: [1., 5.5], delta: 0.25}
+  4f:
+    pseudo:
+      cutoff: {initial: 1.2, bounds: [0.8, 2.3], delta: 0.1}
