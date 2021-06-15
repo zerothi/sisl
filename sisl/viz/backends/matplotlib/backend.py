@@ -43,22 +43,22 @@ class MatplotlibBackend(Backend):
 
 class MatplotlibMultiplePlotBackend(MatplotlibBackend):
 
-    def draw(self, drawer_info, childs):
+    def draw(self, backend_info, childs):
 
         # Start assigning each plot to a position of the layout
         for child in childs:
             self._draw_child_in_ax(child, self.ax)
             
     def _draw_child_in_ax(self, child, ax):
-        child_ax = child._drawer.ax
-        child._drawer.ax = ax
+        child_ax = child._backend.ax
+        child._backend.ax = ax
         child._init_ax()
         child.get_figure(clear_fig=False)
-        child._drawer.ax = child_ax
+        child._backend.ax = child_ax
 
 class MatplotlibSubplotsBackend(MatplotlibMultiplePlotBackend):
 
-    def draw_subplots(self, drawer_info, rows, cols, childs, **make_subplots_kwargs):
+    def draw_subplots(self, backend_info, rows, cols, childs, **make_subplots_kwargs):
 
         self.figure, self.axes = plt.subplots(rows, cols)
 
