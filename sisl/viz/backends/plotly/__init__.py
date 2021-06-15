@@ -14,5 +14,5 @@ It features a rich set of settings enabling fine-tuning of many parameters.
    WavefunctionPlot
 
 """
-from .drawers import *
+from .backends import *
 from ._templates import *

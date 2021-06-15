@@ -1,9 +1,9 @@
 import numpy as np
 
 from ....plots import BandsPlot
-from ..drawer import PlotlyDrawer
+from ..backend import PlotlyBackend
 
-class PlotlyBandsDrawer(PlotlyDrawer):
+class PlotlyBandsBackend(PlotlyBackend):
 
     _layout_defaults = {
         'xaxis_title': 'K',
@@ -76,4 +76,4 @@ class PlotlyBandsDrawer(PlotlyDrawer):
             self.layout.coloraxis.colorbar = {"title": f"Spin texture ({spin[0]})"}
             self.update_layout(coloraxis = {"cmin": -1, "cmax": 1, "colorscale": spin_texture_colorscale})
 
-BandsPlot._drawers.register("plotly", PlotlyBandsDrawer)
+BandsPlot._backends.register("plotly", PlotlyBandsBackend)

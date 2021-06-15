@@ -1,9 +1,9 @@
 import numpy as np
 
 from ....plots import BandsPlot
-from ..drawer import MatplotlibDrawer
+from ..backend import MatplotlibBackend
 
-class MatplotlibBandsDrawer(MatplotlibDrawer):
+class MatplotlibBandsBackend(MatplotlibBackend):
 
     _ax_defaults = {
         'xlabel': 'K',
@@ -85,4 +85,4 @@ class MatplotlibBandsDrawer(MatplotlibDrawer):
         #     self.layout.coloraxis.colorbar = {"title": f"Spin texture ({spin[0]})"}
         #     self.update_layout(coloraxis = {"cmin": -1, "cmax": 1, "colorscale": spin_texture_colorscale})
 
-BandsPlot._drawers.register("matplotlib", MatplotlibBandsDrawer)
+BandsPlot._backends.register("matplotlib", MatplotlibBandsBackend)
