@@ -359,6 +359,8 @@ class XArrayApply(NDArrayApply):
                     dims.insert(0, "k")
             else:
                 # add "k" correctly
+                if isinstance(coords, str):
+                    coords = [coords]
                 coords = list(coords)
                 coords.insert(0, ('k', _a.arangei(nk)))
                 for i in range(1, len(coords)):

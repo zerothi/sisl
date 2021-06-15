@@ -237,6 +237,9 @@ class ObjectDispatcher(AbstractDispatcher):
                               self._cls_attr_name, self._obj_getattr,
                               **{**self._attrs, **attrs})
 
+    def __call__(self, **attrs):
+        return self.renew(**attrs)
+
     def __str__(self):
         obj = str(self._obj).replace("\n", "\n ")
         return super().__str__().replace("{", f"{{\n {obj},\n ", 1)
