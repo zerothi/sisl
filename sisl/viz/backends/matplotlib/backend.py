@@ -3,10 +3,10 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 import numpy as np
 
-from .._plot_drawers import Drawer
+from .._plot_backends import Backend
 from ...plot import SubPlots, MultiplePlot, Animation
 
-class MatplotlibDrawer(Drawer):
+class MatplotlibBackend(Backend):
     
     _ax_defaults = {}
 
@@ -41,7 +41,7 @@ class MatplotlibDrawer(Drawer):
     def show(self):
         return self.figure.show()
 
-class MatplotlibMultiplePlotDrawer(MatplotlibDrawer):
+class MatplotlibMultiplePlotBackend(MatplotlibBackend):
 
     def draw(self, drawer_info, childs):
 
@@ -56,7 +56,7 @@ class MatplotlibMultiplePlotDrawer(MatplotlibDrawer):
         child.get_figure(clear_fig=False)
         child._drawer.ax = child_ax
 
-class MatplotlibSubplotsDrawer(MatplotlibMultiplePlotDrawer):
+class MatplotlibSubplotsBackend(MatplotlibMultiplePlotBackend):
 
     def draw_subplots(self, drawer_info, rows, cols, childs, **make_subplots_kwargs):
 
@@ -75,5 +75,5 @@ class MatplotlibSubplotsDrawer(MatplotlibMultiplePlotDrawer):
         for (row, col) , child in zip(indices, childs):
             self._draw_child_in_ax(child, self.axes[row, col])
 
-MultiplePlot._drawers.register("matplotlib", MatplotlibMultiplePlotDrawer)
-SubPlots._drawers.register("matplotlib", MatplotlibSubplotsDrawer)
+MultiplePlot._backends.register("matplotlib", MatplotlibMultiplePlotBackend)
+SubPlots._backends.register("matplotlib", MatplotlibSubplotsBackend)

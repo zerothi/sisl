@@ -23,4 +23,4 @@ from .session import Session
 from .sessions import *
 from .plotutils import load
 from ._plotables import register_plotable
-from ._plotly_plotables import register_plotly_plotable
+from ._plotables_register import *

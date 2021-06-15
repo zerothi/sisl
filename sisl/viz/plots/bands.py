@@ -602,13 +602,13 @@ class BandsPlot(Plot):
             "draw_bands": [filtered_bands, self.spin_texture, spin_moments, self.spin.is_polarized, bands_color, spindown_color, bands_width, spin, add_band_trace_data],
         }
 
-    def draw(self, drawer_info):
-        self._drawer.draw_bands(*drawer_info["draw_bands"])
+    def draw(self, backend_info):
+        self._backend.draw_bands(*backend_info["draw_bands"])
 
         self._draw_gaps()
 
     def _after_get_figure(self, Erange, spin, spin_texture_colorscale):
-        self._drawer.after_get_figure(self, Erange, spin, spin_texture_colorscale)
+        self._backend.after_get_figure(self, Erange, spin, spin_texture_colorscale)
 
     def _calculate_gaps(self):
         """
@@ -766,7 +766,7 @@ class BandsPlot(Plot):
             ks = [np.ravel(E.k)[0] for E in Es]
             Es = [np.ravel(E)[0] for E in Es]
 
-        self._drawer.draw_gap(ks, Es, color, name, **kwargs)
+        self._backend.draw_gap(ks, Es, color, name, **kwargs)
 
         return self
 

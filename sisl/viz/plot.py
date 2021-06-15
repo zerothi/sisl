@@ -21,7 +21,7 @@ import dill
 import sisl
 from sisl.messages import info, warn
 
-from .drawers._plot_drawers import Drawers
+from .backends._plot_backends import Backends
 from .configurable import (
     Configurable, ConfigurableMeta,
     vizplotly_settings, _populate_with_settings
@@ -207,10 +207,10 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
         ),
 
         DropdownInput(
-            key="drawer", name="Drawer",
+            key="backend", name="Backend",
             default="plotly",
             params = {
-                "options": [{"label": drawer, "value": drawer} for drawer in ("plotly", "matplotlib")]
+                "options": [{"label": backend, "value": backend} for backend in ("plotly", "matplotlib")]
             },
             width = "s100% m50% l33%",
             help = "Directory where the files with the simulations results are located.<br> This path has to be relative to the root fdf.",
@@ -622,7 +622,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
             # After registering an entry point, we will just set the method
             setattr(cls, key, _populate_with_settings(val._method, [param["key"] for param in cls._get_class_params()[0]]))
 
-        cls._drawers = Drawers(cls)
+        cls._backends = Backends(cls)
 
         # from ._plotables import register_plotly_plotable
 
@@ -723,13 +723,13 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
         """ This method is executed only after python has found that there is no such attribute in the instance
 
         So let's try to find it elsewhere. There are two options:
-            - The attribute is in the drawer object (self._drawer)
+            - The attribute is in the backend object (self._backend)
             - The attribute is currently being shared with other plots (only possible if it's a childplot)
         """
-        if key in ["_drawer", "_get_shared_attr"]:
+        if key in ["_backend", "_get_shared_attr"]:
             pass
-        elif hasattr(self._drawer, key):
-            return getattr(self._drawer, key)
+        elif hasattr(self._backend, key):
+            return getattr(self._backend, key)
         else:
             #If it is a childPlot, maybe the attribute is in the shared storage to save memory and time
             try:
@@ -737,7 +737,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
             except (KeyError, AttributeError):
                 pass
 
-        raise AttributeError(f"The attribute '{key}' was not found either in the plot, its drawer, or in shared attributes.")
+        raise AttributeError(f"The attribute '{key}' was not found either in the plot, its backend, or in shared attributes.")
 
     def __setattr__(self, key, val):
         """
@@ -1006,7 +1006,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
                         if show and fig_widget is None:
                             pt.show()
                         else:
-                            pt._drawer._update_ipywidget(fig_widget)
+                            pt._backend._update_ipywidget(fig_widget)
 
                         if not forever:
                             self._listening_task.cancel()
@@ -1115,7 +1115,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
         If everything is succesful, it calls the next step in plotting (`get_figure`)
         """
 
-        self._for_drawer = self._set_data()
+        self._for_backend = self._set_data()
 
         if update_fig:
             self.get_figure()
@@ -1123,7 +1123,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
         return self
 
     @vizplotly_settings('before')
-    def get_figure(self, drawer, clear_fig=True, **kwargs):
+    def get_figure(self, backend, clear_fig=True, **kwargs):
         """
         Generates a figure out of the already processed data.
 
@@ -1137,14 +1137,14 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
         self.figure: plotly.graph_objs.Figure
             the plotly figure.
         """
-        # Initialize the drawer
-        self._drawers.setup(self, drawer)
+        # Initialize the backend
+        self._backends.setup(self, backend)
 
         if clear_fig:
             # Clear all the traces from the figure before drawing the new ones
             self.clear()
 
-        self.draw(getattr(self, "_for_drawer", None))
+        self.draw(getattr(self, "_for_backend", None))
 
         call_method_if_present(self, '_after_get_figure')
 
@@ -1177,7 +1177,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
             except Exception as e:
                 warn(e)
 
-        return self._drawer.show(*args, **kwargs)
+        return self._backend.show(*args, **kwargs)
 
     def _ipython_display_(self, return_figWidget=False, **kwargs):
         """ Handles all things needed to display the plot in a jupyter notebook
@@ -1193,21 +1193,21 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
             get the figure widget as a return so that you can act on it.
         """
 
-        def _try_drawer():
+        def _try_backend():
             kwargs.pop("listen", None)
-            display_method = getattr(self._drawer, "_ipython_display_", None)
+            display_method = getattr(self._backend, "_ipython_display_", None)
             if display_method is not None:
                 return display_method(**kwargs)
-            self._drawer.show(**kwargs)
+            self._backend.show(**kwargs)
 
         if not isinstance(self, Animation):
 
             from IPython.display import display
 
             try:
-                widget = self._drawer.get_ipywidget()
+                widget = self._backend.get_ipywidget()
             except:
-                return _try_drawer()
+                return _try_backend()
 
             if self._widgets["events"]:
                 # If ipyevents is available, show with shortcut support
@@ -1222,7 +1222,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
                 return widget
 
         else:
-            _try_drawer()
+            _try_backend()
 
     def _ipython_display_with_shortcuts(self, fig_widget, **kwargs):
         """
@@ -1724,8 +1724,8 @@ class MultiplePlot(Plot):
 
         return self
 
-    def draw(self, drawer_info):
-        self._drawer.draw(drawer_info, self.child_plots)
+    def draw(self, backend_info):
+        self._backend.draw(backend_info, self.child_plots)
 
 class Animation(MultiplePlot):
     """ Version of MultiplePlot that renders each plot in a different animation frame
@@ -1815,8 +1815,8 @@ class Animation(MultiplePlot):
 
         super().__init__(*args, **kwargs, _plugins=_plugins)
     
-    def draw(self, drawer_info):
-        self._drawer.draw(drawer_info, self.child_plots, self._get_frame_names)
+    def draw(self, backend_info):
+        self._backend.draw(backend_info, self.child_plots, self._get_frame_names)
 
 
 class SubPlots(MultiplePlot):
@@ -1890,7 +1890,7 @@ class SubPlots(MultiplePlot):
         )
     )
 
-    def draw(self, drawer_info, rows, cols, arrange, make_subplot_kwargs):
+    def draw(self, backend_info, rows, cols, arrange, make_subplot_kwargs):
         """ Builds the subplots layout from the child plots' data """
         nplots = len(self.child_plots)
         if rows is None and cols is None:
@@ -1918,4 +1918,4 @@ class SubPlots(MultiplePlot):
         if cols * rows < nplots:
             warn(f"requested {nplots} on a {rows}x{cols} grid layout. {nplots - cols*rows} plots will be missing.")
 
-        self._drawer.draw_subplots(drawer_info, rows, cols, self.child_plots)
+        self._backend.draw_subplots(backend_info, rows, cols, self.child_plots)

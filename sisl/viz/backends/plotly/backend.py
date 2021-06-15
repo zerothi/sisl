@@ -6,10 +6,10 @@ import plotly
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-from .._plot_drawers import Drawer
+from .._plot_backends import Backend
 from ...plot import SubPlots, MultiplePlot, Animation
 
-class PlotlyDrawer(Drawer):
+class PlotlyBackend(Backend):
 
     _layout_defaults = {}
 
@@ -304,19 +304,19 @@ class PlotlyDrawer(Drawer):
 
         return py.plot(self.figure, *args, **kwargs)
 
-class PlotlyMultiplePlotDrawer(PlotlyDrawer):
+class PlotlyMultiplePlotBackend(PlotlyBackend):
     
     def draw(self, drawer_info, childs):
         for child in childs:
             self._draw_child_in_fig(child, self.figure)
 
     def _draw_child_in_fig(self, child, figure):
-        child_fig = child._drawer.figure
-        child._drawer.figure = figure
+        child_fig = child._backend.figure
+        child._backend.figure = figure
         child.get_figure(clear_fig=False)
-        child._drawer.figure = child_fig
+        child._backend.figure = child_fig
 
-class PlotlySubplotsDrawer(PlotlyDrawer):
+class PlotlySubplotsBackend(PlotlyBackend):
 
     def draw_subplots(self, drawer_info, rows, cols, childs, **make_subplots_kwargs):
         # Check if all childplots have the same xaxis or yaxis titles.
@@ -372,7 +372,7 @@ class PlotlySubplotsDrawer(PlotlyDrawer):
 
         self.update_layout(**new_layouts)
 
-class PlotlyAnimationDrawer(PlotlyDrawer):
+class PlotlyAnimationBackend(PlotlyBackend):
 
     def draw(self, drawer_info, childs, get_frame_names):
         frames_layout = self._build_frames(childs, None, get_frame_names)
@@ -534,6 +534,6 @@ class PlotlyAnimationDrawer(PlotlyDrawer):
 
         return steps, updatemenus
 
-Animation._drawers.register("plotly", PlotlyAnimationDrawer)
-MultiplePlot._drawers.register("plotly", PlotlyMultiplePlotDrawer)
-SubPlots._drawers.register("plotly", PlotlySubplotsDrawer)
+Animation._backends.register("plotly", PlotlyAnimationBackend)
+MultiplePlot._backends.register("plotly", PlotlyMultiplePlotBackend)
+SubPlots._backends.register("plotly", PlotlySubplotsBackend)
