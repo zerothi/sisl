@@ -24,3 +24,6 @@ from .sessions import *
 from .plotutils import load
 from ._plotables import register_plotable
 from ._plotables_register import *
+
+from .backends import load_backends
+load_backends()
