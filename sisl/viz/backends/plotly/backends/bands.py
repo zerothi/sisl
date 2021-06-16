@@ -2,8 +2,9 @@ import numpy as np
 
 from ....plots import BandsPlot
 from ..backend import PlotlyBackend
+from ...templates import BandsBackend
 
-class PlotlyBandsBackend(PlotlyBackend):
+class PlotlyBandsBackend(PlotlyBackend, BandsBackend):
 
     _layout_defaults = {
         'xaxis_title': 'K',

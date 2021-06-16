@@ -1,9 +1,8 @@
-import numpy as np
-
 from ....plots import BandsPlot
 from ..backend import MatplotlibBackend
+from ...templates import BandsBackend
 
-class MatplotlibBandsBackend(MatplotlibBackend):
+class MatplotlibBandsBackend(MatplotlibBackend, BandsBackend):
 
     _ax_defaults = {
         'xlabel': 'K',

@@ -6,7 +6,7 @@ import plotly
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
-from .._plot_backends import Backend
+from ..templates.backend import Backend, MultiplePlotBackend, SubPlotsBackend, AnimationBackend
 from ...plot import SubPlots, MultiplePlot, Animation
 
 class PlotlyBackend(Backend):
@@ -304,7 +304,7 @@ class PlotlyBackend(Backend):
 
         return py.plot(self.figure, *args, **kwargs)
 
-class PlotlyMultiplePlotBackend(PlotlyBackend):
+class PlotlyMultiplePlotBackend(PlotlyBackend, MultiplePlotBackend):
     
     def draw(self, drawer_info, childs):
         for child in childs:
@@ -316,7 +316,7 @@ class PlotlyMultiplePlotBackend(PlotlyBackend):
         child.get_figure(clear_fig=False)
         child._backend.figure = child_fig
 
-class PlotlySubplotsBackend(PlotlyBackend):
+class PlotlySubplotsBackend(PlotlyBackend, SubPlotsBackend):
 
     def draw_subplots(self, drawer_info, rows, cols, childs, **make_subplots_kwargs):
         # Check if all childplots have the same xaxis or yaxis titles.
@@ -372,7 +372,7 @@ class PlotlySubplotsBackend(PlotlyBackend):
 
         self.update_layout(**new_layouts)
 
-class PlotlyAnimationBackend(PlotlyBackend):
+class PlotlyAnimationBackend(PlotlyBackend, AnimationBackend):
 
     def draw(self, drawer_info, childs, get_frame_names):
         frames_layout = self._build_frames(childs, None, get_frame_names)

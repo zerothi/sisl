@@ -1,11 +1,11 @@
-from abc import ABC, abstractmethod
-
 __all__ = []
 
 class Backends:
+    """The backends manager for a plot class"""
 
     def __init__(self, plot_cls):
         self._backends = {}
+        self._template = None
 
         self._cls = plot_cls
         self._cls_params = self._cls._get_class_params()
@@ -14,6 +14,11 @@ class Backends:
         self._cls._backend = None
 
     def register(self, backend_name, backend):
+
+        if self._template is not None:
+            if not issubclass(backend, self._template):
+                raise TypeError(f"Error registering '{backend_name}': Backends for {self._cls.__name__} should inherit from {self._template.__name__}")
+
         backend._backend_name = backend_name
         self._backends[backend_name] = backend
 
@@ -23,9 +28,6 @@ class Backends:
             if backend_name not in self._backends:
                 raise NotImplementedError(f"There is no '{backend_name}' backend implemented for {self._plot_cls.__name__} or the backend has not been loaded.")
             plot._backend = self._backends[backend_name]()
-
-class Backend(ABC):
-
-    @abstractmethod
-    def clear(self):
-        """Clears the figure so that we can draw again."""
+    
+    def register_template(self, template):
+        self._template = template

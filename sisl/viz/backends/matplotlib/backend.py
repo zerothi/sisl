@@ -1,10 +1,9 @@
 import itertools
 import matplotlib.pyplot as plt
-from matplotlib.animation import FuncAnimation
 import numpy as np
 
-from .._plot_backends import Backend
-from ...plot import SubPlots, MultiplePlot, Animation
+from ..templates.backend import Backend, MultiplePlotBackend, SubPlotsBackend
+from ...plot import SubPlots, MultiplePlot
 
 class MatplotlibBackend(Backend):
     
@@ -41,7 +40,7 @@ class MatplotlibBackend(Backend):
     def show(self):
         return self.figure.show()
 
-class MatplotlibMultiplePlotBackend(MatplotlibBackend):
+class MatplotlibMultiplePlotBackend(MatplotlibBackend, MultiplePlotBackend):
 
     def draw(self, backend_info, childs):
 
@@ -56,7 +55,7 @@ class MatplotlibMultiplePlotBackend(MatplotlibBackend):
         child.get_figure(clear_fig=False)
         child._backend.ax = child_ax
 
-class MatplotlibSubplotsBackend(MatplotlibMultiplePlotBackend):
+class MatplotlibSubplotsBackend(MatplotlibMultiplePlotBackend, SubPlotsBackend):
 
     def draw_subplots(self, backend_info, rows, cols, childs, **make_subplots_kwargs):
 
