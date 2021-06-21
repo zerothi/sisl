@@ -2,6 +2,10 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import yaml
+try:
+    from yaml import CLoader as Loader
+except ImportError:
+    from yaml import Loader
 from sisl.unit.siesta import units
 
 
@@ -15,7 +19,7 @@ def read_yaml(file, nodes=()):
     nodes : iterable, optional
        extract the node in a consecutive manner
     """
-    dic = yaml.load(open(file, 'r'), Loader=yaml.CLoader)
+    dic = yaml.load(open(file, 'r'), Loader=Loader)
     if isinstance(nodes, str):
         nodes = [nodes]
     for node in nodes:
