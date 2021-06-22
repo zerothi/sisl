@@ -23,11 +23,15 @@ def _siesta_out_accept(out):
     accept = out.completed()
     if accept:
         with out:
-            # We do accept
-            # KBproj: WARNING: Cut off radius for the KB projector too big
             # We do not accept:
             # KBproj: WARNING: KB projector does not decay to zero
             accept = not out.step_to("KB projector does not decay to zero")[0]
+    if accept and False:
+        with out:
+            # We do not accept
+            # KBproj: WARNING: Cut off radius for the KB projector too big
+            accept = not out.step_to("KBproj: WARNING: Cut off radius for the KB projector too big")[0]
+
     return accept
 
 
