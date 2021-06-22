@@ -188,8 +188,7 @@ class ForceMetric(SiestaMetric):
             force = self.force(get_sile(self.file).read_force())
             metric = self.failure(force, False)
             _log.debug(f"metric.force [{self.file}:{self._op_doc}] success {metric}")
-        except Exception as e:
-            print(e)
+        except:
             metric = self.failure(0., True)
             _log.debug(f"metric.force [{self.file}:{self._op_doc}] fail {metric}")
         return metric
