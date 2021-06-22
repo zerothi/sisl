@@ -53,7 +53,6 @@ import warnings
 import argparse as argp
 import numpy as np
 import sisl as si
-import pyamg
 import os
 
 
@@ -69,6 +68,7 @@ _DEBUG = _DEBUG.lower() in ("true", "t", "1", "y", "yes", "on")
 
 
 def pyamg_solve(A, b, tolerance=1e-12, accel=None, title=""):
+    import pyamg
     print(f"\nSetting up pyamg solver... {title}")
     ml = pyamg.aggregation.smoothed_aggregation_solver(A, max_levels=1000)
     del A

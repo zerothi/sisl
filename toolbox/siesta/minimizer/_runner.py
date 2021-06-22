@@ -175,7 +175,7 @@ class CopyRunner(PathRunner):
 
 
 class CommandRunner(PathRunner):
-    def __init__(self, path, cmd="run.sh"):
+    def __init__(self, path, cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, hook=None):
         super().__init__(path)
         abs_cmd = path_abs(cmd, self.path)
         if abs_cmd.is_file():
@@ -185,7 +185,41 @@ class CommandRunner(PathRunner):
         else:
             self.cmd = cmd.split()
 
+        if isinstance(stdout, type(subprocess.PIPE)):
+            self.stdout = stdout
+        else:
+            self.stdout = path_rel_or_abs(stdout, self.path)
+        if isinstance(stderr, type(subprocess.PIPE)):
+            self.stderr = stderr
+        else:
+            self.stderr = path_rel_or_abs(stderr, self.path)
 
+        if hook is None:
+            def hook(subprocess_output):
+                return subprocess_output
+        assert callable(hook)
+        self.hook = hook
+
+    def _get_standard(self):
+        out = self.stdout
+        if isinstance(out, (Path, str)):
+            out = open(out, 'w')
+        err = self.stderr
+        if isinstance(err, (Path, str)):
+            err = open(err, 'w')
+        return out, err
+
+    def run(self):
+        cmd = [str(cmd) for cmd in self.cmd]
+        _log.debug(f"running command: {' '.join(cmd)}")
+        # atom generates lots of files
+        # We need to clean the directory so that subsequent VPSFMT users don't
+        # accidentially use a prior output
+        stdout, stderr = self._get_standard()
+        return self.hook(subprocess.run(cmd, cwd=self.path, encoding='utf-8',
+                                        stdout=stdout, stderr=stderr, check=False))
+
+            
 class AtomRunner(CommandRunner):
     """ Run a command with atom-input file as first argument and output file as second argument
 
@@ -204,20 +238,20 @@ class AtomRunner(CommandRunner):
     ... # cd ..
     """
 
-    def __init__(self, path, cmd="atom", input="INP", out="OUT"):
-        super().__init__(path, cmd)
+    def __init__(self, path, cmd="atom", input="INP", stdout=subprocess.PIPE, stderr=subprocess.PIPE, hook=None):
+        super().__init__(path, cmd, stdout, stderr, hook)
         self.input = path_rel_or_abs(input, self.path)
-        self.out = path_rel_or_abs(out, self.path)
 
     def run(self):
-        cmd = [str(cmd) for cmd in self.cmd + [self.input, self.out]]
+        cmd = [str(cmd) for cmd in self.cmd + [self.input]]
         _log.debug(f"running atom using command: {' '.join(cmd)}")
         # atom generates lots of files
         # We need to clean the directory so that subsequent VPSFMT users don't
         # accidentially use a prior output
         self.clean("RHO", "OUT", "PS*", "AE*", "CHARGE", "COREQ", "FOURIER*", "VPS*")
-        return subprocess.run(cmd, cwd=self.path,
-                              encoding='utf-8', capture_output=True, check=False)
+        stdout, stderr = self._get_standard()
+        return self.hook(subprocess.run(cmd, cwd=self.path, encoding='utf-8',
+                                        stdout=stdout, stderr=stderr, check=False))
 
 
 class SiestaRunner(CommandRunner):
@@ -236,34 +270,27 @@ class SiestaRunner(CommandRunner):
     ... # cd ..
     """
 
-    def __init__(self, path, cmd="siesta", fdf="RUN.fdf", stdout="RUN.out", stderr=subprocess.PIPE):
-        super().__init__(path, cmd)
+    def __init__(self, path, cmd="siesta", fdf="RUN.fdf", stdout="RUN.out", stderr=subprocess.PIPE, hook=None):
+        super().__init__(path, cmd, stdout, stderr, hook)
         self.fdf = path_rel_or_abs(fdf, self.path)
-        self.stdout = path_rel_or_abs(stdout, self.path)
-        if isinstance(stderr, type(subprocess.PIPE)):
-            self.stderr = stderr
-        else:
-            self.stderr = path_rel_or_abs(stderr, self.path)
 
         fdf = self.absattr("fdf")
         self.systemlabel = fdfSileSiesta(fdf, base=self.path).get("SystemLabel", "siesta")
 
     def run(self):
         pipe = ""
-        stdout = self.stdout
-        if not isinstance(stdout, type(subprocess.PIPE)):
-            pipe = f"> {stdout}"
-            stdout = open(stdout, 'w')
-        stderr = self.stderr
-        if not isinstance(stderr, type(subprocess.PIPE)):
-            pipe = f"{pipe} 2> {stderr}"
-            stderr = open(stderr, 'w')
+        stdout, stderr = self._get_standard()
+        for pre, f in [('>', stdout), ('2>', stderr)]:
+            try:
+                pipe += f"{pre} {f.name}"
+            except:
+                pass
         cmd = [str(cmd) for cmd in self.cmd + [self.fdf]]
         _log.debug(f"running Siesta using command[{self.path}]: {' '.join(cmd)} {pipe}")
         # Remove stuff to ensure that we don't read information from prior calculations
         self.clean("*.ion*", "fdf-*.log", f"{self.systemlabel}.*")
-        return subprocess.run(cmd, cwd=self.path, encoding='utf-8',
-                              stdout=stdout, stderr=stderr, check=False)
+        return self.hook(subprocess.run(cmd, cwd=self.path, encoding='utf-8',
+                                        stdout=stdout, stderr=stderr, check=False))
 
 
 class FunctionRunner(AbstractRunner):
