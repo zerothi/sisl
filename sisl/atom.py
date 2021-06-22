@@ -1107,8 +1107,10 @@ class Atom(metaclass=AtomMeta):
 
     def copy(self, Z=None, orbitals=None, mass=None, tag=None):
         """ Return copy of this object """
+        if orbitals is None:
+            orbitals = [orb.copy() for orb in self]
         return self.__class__(self.Z if Z is None else Z,
-                              self.orbitals if orbitals is None else orbitals,
+                              orbitals,
                               self.mass if mass is None else mass,
                               self.tag if tag is None else tag)
 

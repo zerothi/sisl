@@ -105,7 +105,7 @@ class Orbital:
     >>> orbq.q0
     1.
     """
-    __slots__ = ['_R', '_tag', '_q0']
+    __slots__ = ('_R', '_tag', '_q0')
 
     def __init__(self, R, q0=0., tag=''):
         """ Initialize orbital object """
@@ -359,7 +359,7 @@ class SphericalOrbital(Orbital):
     True
     """
     # Additional slots (inherited classes retain the same slots)
-    __slots__ = ['_l', 'f']
+    __slots__ = ('_l', 'f')
 
     def __init__(self, l, rf_or_func, q0=0., tag='', **kwargs):
         """ Initialize spherical orbital object """
@@ -749,7 +749,7 @@ class AtomicOrbital(Orbital):
     #   P = polarization shell or not
     # orb is the SphericalOrbital class that retains the radial
     # grid and enables to calculate psi(r)
-    __slots__ = ['_n', '_l', '_m', '_zeta', '_P', '_orb']
+    __slots__ = ('_n', '_l', '_m', '_zeta', '_P', '_orb')
 
     def __init__(self, *args, **kwargs):
         """ Initialize atomic orbital object """
@@ -762,7 +762,7 @@ class AtomicOrbital(Orbital):
         # Extract shell information
         n = kwargs.get('n', None)
         l = kwargs.get('l', None)
-        m = kwargs.get('m', None)
+        m = kwargs.get('m', 0.)
         if 'Z' in kwargs:
             deprecate(f"{self.__class__.__name__}(Z=) is deprecated, please use (zeta=) instead")
         zeta = kwargs.get('zeta', kwargs.get('Z', 1))
