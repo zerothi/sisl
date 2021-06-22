@@ -2,6 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import logging
+from numbers import Number
 from sisl.io import get_sile
 from sisl.utils import direction
 import sisl.io.siesta as io_siesta
@@ -38,7 +39,16 @@ class SiestaMetric(Metric):
     """
 
     def __init__(self, failure=0.):
-        self.failure = failure
+        if isinstance(failure, Number):
+            def func(metric, fail):
+                if fail:
+                    return failure
+                return metric
+            self.failure = func
+        elif callable(failure):
+            self.failure = failure
+        else:
+            raise ValueError(f"{self.__class__.__name__} could not initialize failure, not number or callable")
 
 
 class EigenvalueMetric(SiestaMetric):
@@ -78,9 +88,10 @@ class EigenvalueMetric(SiestaMetric):
 
             # Calculate the metric, also average around k-points
             metric = (((eig - self.eig_ref) * self.dist) ** 2).sum() ** 0.5 / eig.shape[1]
+            metric = self.failure(metric, False)
             _log.debug(f"metric.eigenvalue [{self.eig_file}] success {metric}")
         except:
-            metric = self.failure
+            metric = self.failure(0., True)
             _log.warning(f"metric.eigenvalue [{self.eig_file}] fail {metric}")
         return metric
 
@@ -123,10 +134,10 @@ class EnergyMetric(SiestaMetric):
         """ Read the energy from the out file in `path` """
         out = io_siesta.outSileSiesta(self.out)
         if _siesta_out_accept(out):
-            metric = self.energy(out.read_energy())
+            metric = self.failure(self.energy(out.read_energy()), False)
             _log.debug(f"metric.energy [{self.out}:{self._op_doc}] success {metric}")
         else:
-            metric = self.failure
+            metric = self.failure(0., True)
             _log.warning(f"metric.energy [{self.out}:{self._op_doc}] fail {metric}")
         return metric
 
@@ -169,13 +180,18 @@ class ForceMetric(SiestaMetric):
         try:
             self._op_doc = self.force.__doc__.strip()
         except:
-            self._op_doc = "user-defined"
+            self._op_doc = "undocumented user-defined"
 
     def metric(self, variables):
         """ Read the force from the `self.file` in `path` """
-        forces = get_sile(self.file).read_force()
-        metric = self.force(forces)
-        _log.debug(f"metric.force [{self.file}:{self._op_doc}] success {metric}")
+        try:
+            force = self.force(get_sile(self.file).read_force())
+            metric = self.failure(force, False)
+            _log.debug(f"metric.force [{self.file}:{self._op_doc}] success {metric}")
+        except Exception as e:
+            print(e)
+            metric = self.failure(0., True)
+            _log.debug(f"metric.force [{self.file}:{self._op_doc}] fail {metric}")
         return metric
 
 
@@ -207,15 +223,16 @@ class StressMetric(SiestaMetric):
         try:
             self._op_doc = self.stress.__doc__.strip()
         except:
-            self._op_doc = "user-defined"
+            self._op_doc = "undocumented user-defined"
 
     def metric(self, variables):
         """ Convert the stress-tensor to a single metric that should be minimized """
         out = io_siesta.outSileSiesta(self.out)
         if _siesta_out_accept(out):
-            metric = self.stress(out.read_stress())
+            stress = self.stress(out.read_stress())
+            metric = self.failure(stress, False)
             _log.debug(f"metric.stress [{self.out}:{self._op_doc}] success {metric}")
         else:
-            metric = self.failure
+            metric = self.failure(0., True)
             _log.warning(f"metric.stress [{self.out}:{self._op_doc}] fail {metric}")
         return metric

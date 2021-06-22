@@ -20,6 +20,10 @@ __all__ = ["AbstractRunner", "AndRunner", "PathRunner",
 
 _log = logging.getLogger("sisl_toolbox.siesta.minimize")
 
+def commonprefix(*paths):
+    common = os.path.commonprefix(paths)
+    return common, [Path(path).relative_to(common) for path in paths]
+
 
 class AbstractRunner(ABC):
     """ Define a runner """
@@ -160,13 +164,12 @@ class CopyRunner(PathRunner):
         for fin, fout in self.rename.items():
             f_in = self.path / fin
             f_out = self.to / fout
-            common = os.path.commonprefix([f_in.parts, f_out.parts])
+            common, (f_in_rel, f_out_rel) = commonprefix(f_in, f_out)
             if f_in.is_file():
-                copy.append("[{}] {}->{}".format(str(common), str(f_in.relative_to(common)),
-                                            str(f_out.relative_to(common))))
+                copy.append(f"Path({common}) {f_in_rel}->{f_out_rel}")
                 shutil.copyfile(f_in, f_out)
             elif f_out.is_file():
-                rem.append("[{}] rm {}".format(str(common), str(fout)))
+                rem.append(f"[{common}] rm {fout}")
                 os.remove(f_out)
         _log.debug(f"copying {copy}; removing {rem}")
 
@@ -233,22 +236,34 @@ class SiestaRunner(CommandRunner):
     ... # cd ..
     """
 
-    def __init__(self, path, cmd="siesta", fdf="RUN.fdf", stdout="RUN.out"):
+    def __init__(self, path, cmd="siesta", fdf="RUN.fdf", stdout="RUN.out", stderr=subprocess.PIPE):
         super().__init__(path, cmd)
         self.fdf = path_rel_or_abs(fdf, self.path)
         self.stdout = path_rel_or_abs(stdout, self.path)
+        if isinstance(stderr, type(subprocess.PIPE)):
+            self.stderr = stderr
+        else:
+            self.stderr = path_rel_or_abs(stderr, self.path)
 
         fdf = self.absattr("fdf")
         self.systemlabel = fdfSileSiesta(fdf, base=self.path).get("SystemLabel", "siesta")
 
     def run(self):
+        pipe = ""
+        stdout = self.stdout
+        if not isinstance(stdout, type(subprocess.PIPE)):
+            pipe = f"> {stdout}"
+            stdout = open(stdout, 'w')
+        stderr = self.stderr
+        if not isinstance(stderr, type(subprocess.PIPE)):
+            pipe = f"{pipe} 2> {stderr}"
+            stderr = open(stderr, 'w')
         cmd = [str(cmd) for cmd in self.cmd + [self.fdf]]
-        _log.debug(f"running Siesta using command[{self.path}]: {' '.join(cmd)} > {self.stdout}")
+        _log.debug(f"running Siesta using command[{self.path}]: {' '.join(cmd)} {pipe}")
         # Remove stuff to ensure that we don't read information from prior calculations
         self.clean("*.ion*", "fdf-*.log", f"{self.systemlabel}.*")
         return subprocess.run(cmd, cwd=self.path, encoding='utf-8',
-                              stdout=open(self.stdout, 'w'), stderr=subprocess.PIPE,
-                              check=False)
+                              stdout=stdout, stderr=stderr, check=False)
 
 
 class FunctionRunner(AbstractRunner):
