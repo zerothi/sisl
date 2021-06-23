@@ -29,11 +29,12 @@ def read_yaml(file, nodes=()):
 
 def parse_value(value, unit=None, value_unit=None):
     """ Converts a float/str to proper value """
-    value_unit = unit
     if isinstance(value, str):
         value, value_unit = value.split()
         if len(value_unit) == 0:
             value_unit = None
+    if value_unit is None:
+        value_unit = unit
     value = float(value)
     # Now parse unit
     if unit == value_unit:
@@ -64,7 +65,7 @@ def parse_variable(value, default=None, unit=None, name='', update_func=None):
         attrs = {'unit': unit}
 
     if isinstance(value, dict):
-        value_unit = value.get("unit")
+        value_unit = value.get("unit", unit)
         val = parse_value(value["initial"], unit, value_unit)
         bounds = value["bounds"]
         bounds = [parse_value(bound, unit, value_unit) for bound in bounds]

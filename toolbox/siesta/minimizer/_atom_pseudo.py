@@ -18,6 +18,7 @@ __all__ = ["AtomPseudo"]
 
 
 _log = logging.getLogger("sisl_toolbox.siesta.minimize")
+_spdfg = 'spdfg'
 
 
 class AtomPseudo(AtomInput):
@@ -68,9 +69,8 @@ class AtomPseudo(AtomInput):
                                     update_func=partial(update, d=self.opts, key="rcore")))
 
         # parse depending on shells in the atom
-        spdf = 'spdfg'
         for orb in self.atom:
-            nl = f"{orb.n}{spdf[orb.l]}"
+            nl = f"{orb.n}{_spdfg[orb.l]}"
             pseudo = dic.get(nl, {}).get("pseudo")
             if pseudo is None:
                 _log.info(f"{self.__class__.__name__} skipping node: {nl}.pseudo")

@@ -155,7 +155,9 @@ class CopyRunner(PathRunner):
         for f in self.files:
             fin = self.path / f
             fout = self.to / f
-            if fin.is_file():
+            if not f_in.is_file():
+                copy.append(f"Path({common}) {f_in_rel}->{f_out_rel}")
+            elif fin.is_file():
                 copy.append(str(f))
                 shutil.copyfile(fin, fout)
             elif fout.is_file():
@@ -165,7 +167,9 @@ class CopyRunner(PathRunner):
             f_in = self.path / fin
             f_out = self.to / fout
             common, (f_in_rel, f_out_rel) = commonprefix(f_in, f_out)
-            if f_in.is_file():
+            if not f_in.is_file():
+                _log.warning(f"file {f_in} not found for copying")
+            elif f_in.is_file():
                 copy.append(f"Path({common}) {f_in_rel}->{f_out_rel}")
                 shutil.copyfile(f_in, f_out)
             elif f_out.is_file():

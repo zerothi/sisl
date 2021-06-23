@@ -26,11 +26,12 @@ def _siesta_out_accept(out):
             # We do not accept:
             # KBproj: WARNING: KB projector does not decay to zero
             accept = not out.step_to("KB projector does not decay to zero")[0]
-    if accept and False:
-        with out:
-            # We do not accept
-            # KBproj: WARNING: Cut off radius for the KB projector too big
-            accept = not out.step_to("KBproj: WARNING: Cut off radius for the KB projector too big")[0]
+    if accept:
+        for l in (0, 1, 2):
+            with out:
+                # We do not accept
+                # KBproj: WARNING: Cut off radius for the KB projector too big
+                accept &= not out.step_to(f"KBproj: WARNING: Rc({l})=")[0]
 
     return accept
 
@@ -129,20 +130,16 @@ class EnergyMetric(SiestaMetric):
         if not callable(energy):
             raise ValueError(f"{self.__class__.__name__} requires energy to be callable or str")
         self.energy = energy
-        try:
-            self._op_doc = self.energy.__doc__.strip()
-        except:
-            self._op_doc = "user-defined"
 
     def metric(self, variables):
         """ Read the energy from the out file in `path` """
         out = io_siesta.outSileSiesta(self.out)
         if _siesta_out_accept(out):
             metric = self.failure(self.energy(out.read_energy()), False)
-            _log.debug(f"metric.energy [{self.out}:{self._op_doc}] success {metric}")
+            _log.debug(f"metric.energy [{self.out}] success {metric}")
         else:
             metric = self.failure(0., True)
-            _log.warning(f"metric.energy [{self.out}:{self._op_doc}] fail {metric}")
+            _log.warning(f"metric.energy [{self.out}] fail {metric}")
         return metric
 
 
@@ -181,20 +178,16 @@ class ForceMetric(SiestaMetric):
         if not callable(force):
             raise ValueError(f"{self.__class__.__name__} requires force to be callable or str")
         self.force = force
-        try:
-            self._op_doc = self.force.__doc__.strip()
-        except:
-            self._op_doc = "undocumented user-defined"
 
     def metric(self, variables):
         """ Read the force from the `self.file` in `path` """
         try:
             force = self.force(get_sile(self.file).read_force())
             metric = self.failure(force, False)
-            _log.debug(f"metric.force [{self.file}:{self._op_doc}] success {metric}")
+            _log.debug(f"metric.force [{self.file}] success {metric}")
         except:
             metric = self.failure(0., True)
-            _log.debug(f"metric.force [{self.file}:{self._op_doc}] fail {metric}")
+            _log.debug(f"metric.force [{self.file}] fail {metric}")
         return metric
 
 
@@ -223,10 +216,6 @@ class StressMetric(SiestaMetric):
         if not callable(stress):
             raise ValueError(f"{self.__class__.__name__} requires stress to be callable")
         self.stress = stress
-        try:
-            self._op_doc = self.stress.__doc__.strip()
-        except:
-            self._op_doc = "undocumented user-defined"
 
     def metric(self, variables):
         """ Convert the stress-tensor to a single metric that should be minimized """
@@ -234,8 +223,8 @@ class StressMetric(SiestaMetric):
         if _siesta_out_accept(out):
             stress = self.stress(out.read_stress())
             metric = self.failure(stress, False)
-            _log.debug(f"metric.stress [{self.out}:{self._op_doc}] success {metric}")
+            _log.debug(f"metric.stress [{self.out}] success {metric}")
         else:
             metric = self.failure(0., True)
-            _log.warning(f"metric.stress [{self.out}:{self._op_doc}] fail {metric}")
+            _log.warning(f"metric.stress [{self.out}] fail {metric}")
         return metric
