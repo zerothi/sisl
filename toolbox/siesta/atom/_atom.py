@@ -156,7 +156,7 @@ class AtomInput:
         # default to true if set
         self.opts.setdefault("cc", "rcore" in self.opts)
         # rcore only used if cc is True
-        self.opts.setdefault("rcore", 2.)
+        self.opts.setdefault("rcore", 0.)
         self.opts.setdefault("xc", "pb")
 
         # Read in the core valence shells for this atom
@@ -676,7 +676,7 @@ class AtomInput:
                     emark.shape = (1, -1)
                 emark = emark[:, 0]
                 if not e is None:
-                    p = ax.plot(e, log, label=f"PS {_spdfg[il]}")
+                    p = ax.plot(e, log, ':', label=f"PS {_spdfg[il]}")
 
                     idx_mark = (np.fabs(e.reshape(-1, 1) - emark.reshape(1, -1))
                                 .argmin(axis=0))

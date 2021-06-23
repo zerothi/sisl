@@ -65,7 +65,7 @@ class AtomPseudo(AtomInput):
         add_variable(parse_variable(pseudo.get("log-radii"), unit="Ang", name=f"{tag}.logr",
                                     update_func=partial(update, d=self.opts, key="logr")))
 
-        add_variable(parse_variable(pseudo.get("core-correction"), unit="Ang", name=f"{tag}.core",
+        add_variable(parse_variable(pseudo.get("core-correction"), 0., unit="Ang", name=f"{tag}.core",
                                     update_func=partial(update, d=self.opts, key="rcore")))
 
         # parse depending on shells in the atom
