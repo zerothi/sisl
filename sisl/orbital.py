@@ -365,13 +365,13 @@ class SphericalOrbital(Orbital):
         """ Initialize spherical orbital object """
         self._l = l
 
+        self._R = kwargs.pop('R', -1.)
         # Set the internal function
         if callable(rf_or_func):
             self.set_radial(rf_or_func, **kwargs)
-        elif rf_or_func is None:
+        elif rf_or_func is None or rf_or_func is NotImplemented:
             # We don't do anything
             self.f = NotImplemented
-            self._R = kwargs.pop('R', -1.)
         else:
             # it must be two arguments
             self.set_radial(rf_or_func[0], rf_or_func[1], **kwargs)
@@ -762,7 +762,7 @@ class AtomicOrbital(Orbital):
         # Extract shell information
         n = kwargs.get('n', None)
         l = kwargs.get('l', None)
-        m = kwargs.get('m', 0.)
+        m = kwargs.get('m', None)
         if 'Z' in kwargs:
             deprecate(f"{self.__class__.__name__}(Z=) is deprecated, please use (zeta=) instead")
         zeta = kwargs.get('zeta', kwargs.get('Z', 1))
@@ -843,11 +843,8 @@ class AtomicOrbital(Orbital):
                     n = args.pop(0)
                 if l is None and len(args) > 0:
                     l = args.pop(0)
-                if l > 0:
-                    if m is None and len(args) > 0:
-                        m = args.pop(0)
-                else:
-                    m = 0
+                if m is None and len(args) > 0:
+                    m = args.pop(0)
 
                 # Now we need to figure out if they are shell
                 # information or radial functions
@@ -868,6 +865,9 @@ class AtomicOrbital(Orbital):
         # Still if n is None, we assign the default (lowest) quantum number
         if n is None:
             n = l + 1
+        # Still if m is None, we assign the default value of 0
+        if m is None:
+            m = 0
 
         # Copy over information
         self._n = n
