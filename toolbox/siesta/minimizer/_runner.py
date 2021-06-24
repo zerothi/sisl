@@ -20,6 +20,7 @@ __all__ = ["AbstractRunner", "AndRunner", "PathRunner",
 
 _log = logging.getLogger("sisl_toolbox.siesta.minimize")
 
+
 def commonprefix(*paths):
     common = os.path.commonprefix(paths)
     return common, [Path(path).relative_to(common) for path in paths]
@@ -223,7 +224,7 @@ class CommandRunner(PathRunner):
         return self.hook(subprocess.run(cmd, cwd=self.path, encoding='utf-8',
                                         stdout=stdout, stderr=stderr, check=False))
 
-            
+
 class AtomRunner(CommandRunner):
     """ Run a command with atom-input file as first argument and output file as second argument
 
