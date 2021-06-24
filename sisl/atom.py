@@ -1358,7 +1358,7 @@ class Atoms:
     # Using the slots should make this class slightly faster.
     __slots__ = ['_atom', '_specie', '_firsto']
 
-    def __init__(self, atoms=None, na=None):
+    def __init__(self, atoms='H', na=None):
 
         # Default value of the atom object
         if atoms is None:
@@ -1381,6 +1381,7 @@ class Atoms:
             specie = [0]
 
         elif isinstance(atoms, Iterable):
+            # TODO this is very inefficient for large MD files
             uatoms = []
             specie = []
             for a in atoms:
