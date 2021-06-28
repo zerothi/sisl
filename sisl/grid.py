@@ -1366,7 +1366,6 @@ class Grid(SuperCellChild):
            to create a new.
         limit_arguments : bool, True
            If `False` additional options will be created which are similar to other options.
-           For instance `--repeat-x` which is equivalent to `--repeat x`.
         short : bool, False
            Create short options for a selected range of options
         positional_out : bool, False

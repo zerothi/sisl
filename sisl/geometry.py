@@ -4196,7 +4196,7 @@ class Geometry(SuperCellChild):
            to create a new.
         limit_arguments : bool, optional
            If ``False`` additional options will be created which are similar to other options.
-           For instance ``--repeat-x`` which is equivalent to ``--repeat x``.
+           For instance ``--repeat-x <>`` which is equivalent to ``--repeat <> x``.
            Default `True`.
         short : bool, optional
            Create short options for a selected range of options.
@@ -4737,18 +4737,18 @@ def sgeom(geometry=None, argv=None, ret_geometry=False):
 This manipulation utility is highly advanced and one should note that the ORDER of
 options is determining the final structure. For instance:
 
-   {exe} geom.xyz --repeat x 2 --repeat y 2
+   {exe} geom.xyz --repeat 2 x --repeat 2 y
 
 is NOT equivalent to:
 
-   {exe} geom.xyz --repeat y 2 --repeat x 2
+   {exe} geom.xyz --repeat 2 y --repeat 2 x
 
 This may be unexpected but enables one to do advanced manipulations.
 
 Additionally, in between arguments, one may store the current state of the geometry
 by writing to a standard file.
 
-   {exe} geom.xyz --repeat y 2 geom_repy.xyz --repeat x 2 geom_repy_repx.xyz
+   {exe} geom.xyz --repeat 2 y geom_repy.xyz --repeat 2 x geom_repy_repx.xyz
 
 will create two files:
    geom_repy.xyz
