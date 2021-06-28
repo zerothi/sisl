@@ -1104,16 +1104,16 @@ class Geometry(SuperCellChild):
         # sanitize `other`
         other = self.new(other)
         s_xyz = self.xyz + (_a.arrayd(offset) - _a.arrayd(offset_other)).reshape(1, 3)
+
         idx_self = []
-        self_append = idx_self.append
+        self_extend = idx_self.extend
         idx_other = []
-        other_append = idx_other.append
+        other_extend = idx_other.extend
 
         for ia, xyz in enumerate(s_xyz):
             idx = other.close_sc(xyz, R=(eps,))
-            for ja in idx:
-                self_append(ia)
-                other_append(ja)
+            self_extend([ia] * idx.size)
+            other_extend(idx)
         return _a.arrayi(idx_self), _a.arrayi(idx_other)
 
     def sort(self, **kwargs):
