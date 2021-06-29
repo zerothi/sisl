@@ -48,6 +48,10 @@ class MatplotlibBandsBackend(MatplotlibBackend, BandsBackend):
                     lc.set_array(color)
                     lc.set_linewidth(bands_width)
                     line = self.ax.add_collection(lc)
+        
+        if spin_texture:
+            # Add the colorbar for spin texture.
+            self.figure.colorbar(line)
                     
 
     def draw_gap(self, ks, Es, color, name, **kwargs):
@@ -63,12 +67,7 @@ class MatplotlibBandsBackend(MatplotlibBackend, BandsBackend):
         self.ax.set_xticks(getattr(plot.bands, "ticks", None))
         self.ax.set_xticklabels(getattr(plot.bands, "ticklabels", None))
         self.ax.set_xlim(*plot.bands.k.values[[0, -1]])
-        self.ax.set_ylim(*Erange)
-
-        # # If we are showing spin textured bands, customize the colorbar
-        # if plot.spin_texture:
-        #     self.layout.coloraxis.colorbar = {"title": f"Spin texture ({spin[0]})"}
-        #     self.update_layout(coloraxis = {"cmin": -1, "cmax": 1, "colorscale": spin_texture_colorscale})
+        self.ax.set_ylim(*Erange) 
     
     def _test_is_gap_drawn(self):
         return self.ax.lines[-1].get_label().startswith("Gap")
