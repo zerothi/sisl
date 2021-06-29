@@ -8,6 +8,11 @@ class Backend(ABC):
     def clear(self):
         """Clears the figure so that we can draw again."""
 
+    # Methods needed for testing
+    def _test_number_of_items_drawn(self):
+        """Returns the number of items drawn currently in the plot."""
+        raise NotImplementedError
+
 class MultiplePlotBackend(Backend):
 
     @abstractmethod

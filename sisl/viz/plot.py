@@ -5,11 +5,9 @@
 This file contains the Plot class, which should be inherited by all plot classes
 """
 import uuid
-from io import StringIO, BytesIO
 import inspect
 import numpy as np
 from copy import deepcopy
-from collections import defaultdict
 import time
 from types import MethodType, FunctionType
 import itertools
@@ -1164,6 +1162,9 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
             if the plot is displayed in a jupyter notebook, whether you want to
             get the figure widget as a return so that you can act on it.
         """
+        if self._backend is None:
+            return warn("There is no plotting backend selected, so the plot can't be displayed.")
+
         if listen:
             self.listen(show=True, **kwargs)
 
@@ -1190,6 +1191,9 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
         """
 
         def _try_backend():
+            if self._backend is None:
+                return display(repr(self))
+
             kwargs.pop("listen", None)
             display_method = getattr(self._backend, "_ipython_display_", None)
             if display_method is not None:

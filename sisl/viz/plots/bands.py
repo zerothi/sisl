@@ -403,8 +403,8 @@ class BandsPlot(Plot):
         eig_map = eigenstate_map
 
         # Also, in this wrapper we will get the spin moments in case it is a non_colinear
-        # calculation
-        if self.spin.is_noncolinear:
+        # or spin-orbit calculation
+        if self.spin.is_noncolinear or self.spin.is_spinorbit:
             self.spin_moments = []
         elif hasattr(self, "spin_moments"):
             del self.spin_moments
@@ -545,7 +545,7 @@ class BandsPlot(Plot):
             "marks": {int(i): str(i) for i in i_bands},
         })
 
-    def _set_data(self, Erange, E0, bands_range, spin, bands_width, bands_color, spindown_color, add_band_trace_data, draw_before_bands=None):
+    def _set_data(self, Erange, E0, bands_range, spin, spin_texture_colorscale, bands_width, bands_color, spindown_color, add_band_trace_data, draw_before_bands=None):
         """
         Converts the bands dataframe into a data object for plotly.
 
@@ -594,12 +594,12 @@ class BandsPlot(Plot):
             draw_before_bands()
 
         if self.spin_texture:
-            spin_moments = self.spin_moments.sel(band=band, axis=spin[0]).values
+            spin_moments = self.spin_moments.sel(band=filtered_bands.band, axis=spin[0])
         else:
             spin_moments = []
 
         return {
-            "draw_bands": [filtered_bands, self.spin_texture, spin_moments, self.spin.is_polarized, bands_color, spindown_color, bands_width, spin, add_band_trace_data],
+            "draw_bands": [filtered_bands, self.spin_texture, spin_moments, spin_texture_colorscale, self.spin.is_polarized, bands_color, spindown_color, bands_width, spin, add_band_trace_data],
         }
 
     def draw(self, backend_info):
