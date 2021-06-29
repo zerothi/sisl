@@ -19,4 +19,12 @@ class BandsBackend(Backend):
         The color of the line should be determined by `color`, and `name` should be used for labeling.
         """
 
+    # Methods needed for testing
+
+    def _test_is_gap_drawn(self):
+        """
+        Should return `True` if the gap is currently drawn, otherwise `False`.
+        """
+        raise NotImplementedError
+
 BandsPlot._backends.register_template(BandsBackend)

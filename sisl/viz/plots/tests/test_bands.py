@@ -16,13 +16,16 @@ from xarray import DataArray
 import numpy as np
 
 import sisl
-from sisl.viz.plotly import BandsPlot
+from sisl.viz import BandsPlot
 from sisl.viz.plots.tests.conftest import PlotTester
 
 
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 _dir = osp.join('sisl', 'io', 'siesta')
 
+@pytest.fixture(params=BandsPlot.get_class_param("backend").options)
+def backend(request):
+    return request.param
 
 class BandsPlotTester(PlotTester):
 
@@ -64,24 +67,37 @@ class BandsPlotTester(PlotTester):
         # are precision differences
         assert abs(self.plot.gap - self.gap) < 0.01
 
-    def test_gap_in_figure(self):
+    def test_gap_in_figure(self, backend):
         # Check that the gap can be drawn correctly
-        self.plot.update_settings(gap=True)
-        assert len([True for trace in self.plot.data if trace.name == "Gap"]) > 0
+        self.plot.update_settings(backend=backend, gap=False)
+        assert not self.plot._test_is_gap_drawn(), f"Test for gap doesn't work properly in {backend} backend"
 
-    def test_custom_gaps(self):
+        self.plot.update_settings(gap=True)
+        assert self.plot._test_is_gap_drawn(), f"Gap is not drawn by {backend} backend"
+
+    def test_custom_gaps_in_figure(self, backend):
 
         plot = self.plot
 
-        plot.update_settings(gap=False, custom_gaps=[])
+        plot.update_settings(gap=False, custom_gaps=[], backend=backend)
 
-        prev_traces = len(plot.data)
+        prev_traces = plot._test_number_of_items_drawn()
 
         gaps = list(itertools.combinations(self.ticklabels, 2))
 
         plot.update_settings(custom_gaps=[{"from": gap[0], "to": gap[1]} for gap in gaps])
 
-        assert len(plot.data) == prev_traces + len(gaps)
+        assert plot._test_number_of_items_drawn() == prev_traces + len(gaps)
+    
+    def test_custom_gaps_correct(self):
+
+        plot = self.plot
+
+        # We only test this with plotly.
+        gaps = list(itertools.combinations(self.ticklabels, 2))
+        plot.update_settings(custom_gaps=[{"from": gap[0], "to": gap[1]} for gap in gaps], backend="plotly")
+
+        n_items = self.plot._test_number_of_items_drawn()
 
         # Get the traces that have been generated and assert that they are
         # exactly the same as if we define the gaps with numerical values for the ks
@@ -91,7 +107,7 @@ class BandsPlotTester(PlotTester):
         plot.update_settings(
             custom_gaps=[{"from": gap[0], "to": gap[1]} for gap in gaps])
 
-        assert len(plot.data) == prev_traces + len(gaps)
+        assert self.plot._test_number_of_items_drawn() == n_items
         assert np.all([
             np.allclose(old_trace.y, new_trace.y)
             for old_trace, new_trace in zip(from_labels, plot.data[-len(gaps):])])
@@ -116,7 +132,7 @@ class NCSpinBandsTester(BandsPlotTester):
 
         plot = self.plot
 
-        plot.update_settings(spin="x")
+        plot.update_settings(spin="x", backend="plotly")
 
         # If this is a fatbands plot, the first traces are drawing the weights
         # (the actual fatbands). Therefore we need to find where the traces that

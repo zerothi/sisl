@@ -14,7 +14,7 @@ class PlotlyBandsBackend(PlotlyBackend, BandsBackend):
         'yaxis_title': 'Energy [eV]'
     }
     
-    def draw_bands(self, filtered_bands, spin_texture, spin_moments, spin_polarized, bands_color, spindown_color, bands_width, spin, add_band_trace_data):
+    def draw_bands(self, filtered_bands, spin_texture, spin_moments, spin_texture_colorscale, spin_polarized, bands_color, spindown_color, bands_width, spin, add_band_trace_data):
 
         if not callable(add_band_trace_data):
             add_band_trace_data = lambda band, plot: {}
@@ -25,7 +25,7 @@ class PlotlyBandsBackend(PlotlyBackend, BandsBackend):
 
                 return {
                     "mode": "markers",
-                    "marker": {"color": spin_moments, "size": bands_width, "showscale": True, "coloraxis": "coloraxis"},
+                    "marker": {"color": spin_moments.sel(band=band).values, "size": bands_width, "showscale": True, "coloraxis": "coloraxis"},
                     "showlegend": False
                 }
         else:
@@ -76,5 +76,8 @@ class PlotlyBandsBackend(PlotlyBackend, BandsBackend):
         if plot.spin_texture:
             self.layout.coloraxis.colorbar = {"title": f"Spin texture ({spin[0]})"}
             self.update_layout(coloraxis = {"cmin": -1, "cmax": 1, "colorscale": spin_texture_colorscale})
+    
+    def _test_is_gap_drawn(self):
+        return len([True for trace in self.figure.data if trace.name == "Gap"]) > 0
 
 BandsPlot._backends.register("plotly", PlotlyBandsBackend)

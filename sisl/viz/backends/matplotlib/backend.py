@@ -40,6 +40,10 @@ class MatplotlibBackend(Backend):
     def show(self):
         return self.figure.show()
 
+    # Methods for testing
+    def _test_number_of_items_drawn(self):
+        return len(self.ax.lines + self.ax.collections)
+
 class MatplotlibMultiplePlotBackend(MatplotlibBackend, MultiplePlotBackend):
 
     def draw(self, backend_info, childs):

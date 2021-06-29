@@ -304,6 +304,13 @@ class PlotlyBackend(Backend):
 
         return py.plot(self.figure, *args, **kwargs)
 
+    # -----------------------------
+    #      METHODS FOR TESTING
+    # -----------------------------
+
+    def _test_number_of_items_drawn(self):
+        return len(self.figure.data)
+
 class PlotlyMultiplePlotBackend(PlotlyBackend, MultiplePlotBackend):
     
     def draw(self, drawer_info, childs):
