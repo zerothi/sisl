@@ -34,7 +34,7 @@ class xsfSile(Sile):
         self._comment = ['#']
 
     def _write_key(self, key):
-        self._write(key + "\n")
+        self._write(f"{key}\n")
 
     _write_once = Sile._write
 
@@ -101,7 +101,7 @@ class xsfSile(Sile):
 
         self._write_once('#\n# Atomic coordinates (in primitive coordinates)\n#\n')
         self._write_key("PRIMCOORD")
-        self._write('{} {}\n'.format(len(geometry), 1))
+        self._write(f'{len(geometry)} 1\n')
 
         non_valid_Z = (geometry.atoms.Z <= 0).nonzero()[0]
         if len(non_valid_Z) > 0:
@@ -314,7 +314,7 @@ class xsfSile(Sile):
         for i, grid in enumerate(args):
             is_complex = np.iscomplexobj(grid.grid)
 
-            name = kwargs.get('grid' + str(i), str(i))
+            name = kwargs.get(f'grid{i}', str(i))
             if is_complex:
                 self._write(f' BEGIN_DATAGRID_3D_real_{name}\n')
             else:
@@ -379,7 +379,6 @@ class xsfSile(Sile):
 
         # We will add the vector data
         class VectorScale(argparse.Action):
-
             def __call__(self, parser, ns, value, option_string=None):
                 setattr(ns, '_vector_scale', float(value))
         p.add_argument('--vector-scale', '-sv', metavar='SCALE',
@@ -388,7 +387,6 @@ class xsfSile(Sile):
 
         # We will add the vector data
         class Vectors(argparse.Action):
-
             def __call__(self, parser, ns, values, option_string=None):
                 routine = values.pop(0)
 

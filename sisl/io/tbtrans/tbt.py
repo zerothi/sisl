@@ -2592,7 +2592,6 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                        help='Print out what information is contained in the TBT.nc file, optionally only for one of the electrodes.')
 
         class Out(argparse.Action):
-
             @run_actions
             def __call__(self, parser, ns, value, option_string=None):
 
