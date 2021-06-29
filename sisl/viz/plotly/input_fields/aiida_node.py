@@ -4,7 +4,7 @@
 from .._input_field import InputField
 
 try:
-    import aiida
+    from aiida import orm
     AIIDA_AVAILABLE = True
 except ModuleNotFoundError:
     AIIDA_AVAILABLE = False
@@ -12,11 +12,11 @@ except ModuleNotFoundError:
 
 class AiidaNodeInput(InputField):
 
-    dtype = aiida.orm.Node if AIIDA_AVAILABLE else None
+    dtype = orm.Node if AIIDA_AVAILABLE else None
 
     def parse(self, val):
 
         if AIIDA_AVAILABLE and val is not None and not isinstance(val, self.dtype):
-            val = aiida.orm.load_node(val)
+            val = orm.load_node(val)
 
         return val
