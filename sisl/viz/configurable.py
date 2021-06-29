@@ -405,14 +405,30 @@ class ConfigurableMeta(type):
         """Prepares a subclass of Configurable, as explained in this class' docstring."""
         # If there are no bases, it is the Configurable class, and we don't need to modify its methods.
         if bases:
-            # If this is a sub class
+            # If this is a sub class, we add the parameters from its parents.
             class_params = attrs.get("_parameters", [])
+            class_param_groups = attrs.get("_class_params_group", [])
             for base in bases:
                 if "_parameters" in vars(base):
-                    class_params = [*class_params, *base._parameters]
+                    class_params = [*class_params, *deepcopy(base._parameters)]
+                if "_param_groups" in vars(base):
+                    class_param_groups = [*class_params, *deepcopy(base._param_groups)]
+
+            # Build an extra group for unclassified settings
+            class_param_groups.append({
+                "key": None,
+                "name": "Other settings",
+                "icon": "settings",
+                "description": "Here are some unclassified settings. Even if they don't belong to any group, they might still be important. They may be here just because the developer was too lazy to categorize them or forgot to do so. <b>If you are the developer</b> and it's the first case, <b>shame on you<b>."
+            })
+            
+            attrs["_parameters"] = class_params
+            attrs["_param_groups"] = class_param_groups
+
             for f_name, f in attrs.items():
                 if callable(f) and not f_name.startswith("__"):
                     attrs[f_name] = _populate_with_settings(f, [param["key"] for param in class_params])
+            
         new_cls = super().__new__(cls, name, bases, attrs)
 
         new_cls._create_update_maps()
@@ -452,7 +468,7 @@ class Configurable(metaclass=ConfigurableMeta):
                 kwargs[key] = val
 
         #Get the parameters of all the classes the object belongs to
-        self.params, self.param_groups = self._get_class_params()
+        self.params, self.param_groups = deepcopy(self._parameters), deepcopy(self._param_groups)
 
         if presets is not None:
             if isinstance(presets, str):
@@ -464,7 +480,7 @@ class Configurable(metaclass=ConfigurableMeta):
 
         # Define the settings dictionary, taking the value of each parameter from kwargs if it is there or from the defaults otherwise.
         # And initialize the settings history
-        defaults = {param.key: deepcopy(param.default) for param in self.params}
+        defaults = {param.key: param.default for param in self.params}
         self.settings_history = NamedHistory(
             {key: kwargs.get(key, val) for key, val in defaults.items()},
             defaults=defaults, history_len=20, keep_defaults=True
@@ -509,22 +525,8 @@ class Configurable(metaclass=ConfigurableMeta):
 
         Probably there should be a variable `_exclude_params` to avoid some parameters.
         """
-        params, param_groups = [], []
-        for clss in type.mro(cls):
-            if "_parameters" in vars(clss):
-                params = [*params, *deepcopy(clss._parameters)]
-            if "_param_groups" in vars(clss):
-                param_groups = [*deepcopy(clss._param_groups), *param_groups]
 
-        # Build an extra group for unclassified settings
-        param_groups.append({
-            "key": None,
-            "name": "Other settings",
-            "icon": "settings",
-            "description": "Here are some unclassified settings. Even if they don't belong to any group, they might still be important. They may be here just because the developer was too lazy to categorize them or forgot to do so. <b>If you are the developer</b> and it's the first case, <b>shame on you<b>."
-        })
-
-        return params, param_groups
+        return cls._parameters, cls._param_groups
 
     def update_settings(self, *args, **kwargs):
         """ This method will be overwritten for each class. See `_update_settings` """
@@ -672,7 +674,7 @@ class Configurable(metaclass=ConfigurableMeta):
 
         return self
 
-    def get_param(self, key, as_dict=False, paramsExtractor=False):
+    def get_param(self, key, as_dict=False, params_extractor=False):
         """ Gets the parameter for a given setting
 
         By default it returns its dictionary, so that one can check the information that it contains.
@@ -685,7 +687,7 @@ class Configurable(metaclass=ConfigurableMeta):
             The key of the desired parameter.
         as_dict: bool, optional
             If set to True, returns a dictionary instead of the actual parameter object.
-        paramsExtractor: function, optional
+        params_extractor: function, optional
             A function that accepts the object (self) and returns its params (NOT A COPY OF THEM!).
             This will only be used in case this method is used outside the class, where objects
             have a different structure (e.g. QueriesInput inputField) or if there is some nested params
@@ -696,11 +698,19 @@ class Configurable(metaclass=ConfigurableMeta):
         param: dict or InputField
             The parameter in the form specified by as_dict.
         """
-        for param in self.params if not paramsExtractor else paramsExtractor(self):
+        for param in self.params if not params_extractor else params_extractor(self):
             if param.key == key:
                 return param.__dict__ if as_dict else param
         else:
             raise KeyError(f"There is no parameter '{key}' in {self.__class__.__name__}")
+    
+    @classmethod
+    def get_class_param(cls, key, as_dict=False):
+        try:
+            return cls.get_param(cls, key, as_dict=as_dict, params_extractor=lambda cls: cls._parameters)
+        except KeyError:
+            raise KeyError(f"There is no parameter '{key}' in {cls.__name__}")
+        
 
     def modify_param(self, key, *args, **kwargs):
         """ Modifies a given parameter

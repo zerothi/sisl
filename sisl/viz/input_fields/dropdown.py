@@ -39,15 +39,14 @@ class DropdownInput(InputField):
 
         super().__init__(*args, **kwargs)
 
-    def _get_options(self):
-
-        return [opt["value"] for opt in self['inputField.params.options']]
+    def get_options(self, raw=False):
+        return [opt if raw else opt["value"] for opt in self['inputField.params.options']]
 
     def _set_options(self, val):
+        self.modify("inputField.params.options", val)
 
-        self.modify("inputField.params.options", options)
+    options = property(fget=get_options, fset=_set_options)
 
-    options = property(fget=_get_options, fset=_set_options)
 
 
 class CreatableDropdown(DropdownInput):

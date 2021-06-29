@@ -208,10 +208,8 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
 
         DropdownInput(
             key="backend", name="Backend",
-            default="plotly",
-            params = {
-                "options": [{"label": backend, "value": backend} for backend in ("plotly", "matplotlib")]
-            },
+            default=None,
+            params = {},
             width = "s100% m50% l33%",
             help = "Directory where the files with the simulations results are located.<br> This path has to be relative to the root fdf.",
         ),
@@ -624,12 +622,6 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
 
         cls._backends = Backends(cls)
 
-        # from ._plotables import register_plotly_plotable
-
-        # for param in cls._get_class_params()[0]:
-        #     if isinstance(param, PlotableInput):
-        #         register_plotly_plotable(param.dtype, cls, param.key)
-
     @vizplotly_settings('before', init=True)
     def __init__(self, *args, H = None, attrs_for_plot={}, only_init=False, presets=None, layout={}, _debug=False, **kwargs):
         # Give an ID to the plot
@@ -641,7 +633,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
         # Initialize shortcut management
         ShortCutable.__init__(self)
 
-        #Give the user the possibility to do things before initialization (IDK why)
+        # Give the user the possibility to do things before initialization (IDK why)
         call_method_if_present(self, "_before_init")
 
         #Set the isChildPlot attribute to let the plot know if it is part of a bigger picture (e.g. Animation)
@@ -1138,6 +1130,10 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
             the plotly figure.
         """
         # Initialize the backend
+        if backend is None:
+            # It is possible to not use any plotting backend. 
+            # In that case, we just simply process the data, but we do not plot anything
+            return
         self._backends.setup(self, backend)
 
         if clear_fig:
