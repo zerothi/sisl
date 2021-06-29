@@ -41,7 +41,7 @@ class PlotlyBandsBackend(PlotlyBackend, BandsBackend):
         self.add_traces(np.ravel([[{
             'type': 'scatter',
             'x': band.k.values,
-            'y': (band).values,
+            'y': band.values,
             'mode': 'lines',
             'name': "{} spin {}".format(band.band.values, ["up", "down"][spin]) if spin_polarized else str(band.band.values),
             **scatter_additions(band.band.values, spin),
@@ -67,7 +67,9 @@ class PlotlyBandsBackend(PlotlyBackend, BandsBackend):
 
     def after_get_figure(self, plot, Erange, spin, spin_texture_colorscale):
         # Add the ticks
-        self.figure.layout.xaxis.tickvals = getattr(plot.bands, "ticks", None)
+        tickvals = getattr(plot.bands, "ticks", None)
+        # We need to convert tick values to a list, otherwise sometimes plotly fails to display them
+        self.figure.layout.xaxis.tickvals = list(tickvals) if tickvals is not None else None
         self.figure.layout.xaxis.ticktext = getattr(plot.bands, "ticklabels", None)
         self.figure.layout.yaxis.range = Erange
         self.figure.layout.xaxis.range = plot.bands.k.values[[0, -1]]

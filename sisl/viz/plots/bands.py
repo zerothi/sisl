@@ -395,7 +395,6 @@ class BandsPlot(Plot):
         self.spin = self.H.spin
 
         self.ticks = band_structure.lineartick()
-        self.kPath = band_structure._k
 
         # We define a wrapper to get the values out of the eigenstates
         # to give the possibility to the user to do something inbetween
@@ -442,6 +441,7 @@ class BandsPlot(Plot):
         self.bands = xr.concat(bands_arrays, "spin").assign_coords({"spin": spin_indices}).transpose("k", "spin", "band")
 
         self.bands['k'] = band_structure.lineark()
+        # Inform of where to place the ticks
         self.bands.attrs = {"ticks": self.ticks[0], "ticklabels": self.ticks[1], **bands_arrays[0].attrs}
 
         if hasattr(self, "spin_moments"):
