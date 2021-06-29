@@ -17,7 +17,7 @@ import numpy as np
 
 import sisl
 from sisl.viz.plotly import BandsPlot
-from sisl.viz.plotly.plots.tests.conftest import PlotTester
+from sisl.viz.plots.tests.conftest import PlotTester
 
 
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
@@ -64,6 +64,7 @@ class BandsPlotTester(PlotTester):
         # are precision differences
         assert abs(self.plot.gap - self.gap) < 0.01
 
+    def test_gap_in_figure(self):
         # Check that the gap can be drawn correctly
         self.plot.update_settings(gap=True)
         assert len([True for trace in self.plot.data if trace.name == "Gap"]) > 0
