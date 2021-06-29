@@ -47,7 +47,7 @@ class QueriesInput(InputField):
         """
         Gets the parameter info for a given key. It uses the Configurable.get_param method.
         """
-        return Configurable.get_param(self, key, paramsExtractor = lambda obj: obj.inputField["queryForm"], **kwargs)
+        return Configurable.get_param(self, key, params_extractor = lambda obj: obj.inputField["queryForm"], **kwargs)
 
     def get_param(self, *args, **kwargs):
         """
