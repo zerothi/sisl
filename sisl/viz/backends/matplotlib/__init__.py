@@ -6,4 +6,4 @@ Implementations of the sisl-provided matplotlib backends.
 """
 import matplotlib
 
-from .backends import *
+from ._plots import *
