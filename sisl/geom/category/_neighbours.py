@@ -22,7 +22,7 @@ class AtomNeighbours(AtomCategory):
        minimum number of neighbours
     max : int
        maximum number of neighbours
-    neigh_cat : Category, optional
+    neighbour : Category, optional
        a category the neighbour must be in to be counted
     R : tuple, float, callable or None, optional
        Value passed to `Geometry.close`.
@@ -45,7 +45,7 @@ class AtomNeighbours(AtomCategory):
     def __init__(self, *args, **kwargs):
         if len(args) > 0:
             if isinstance(args[-1], AtomCategory):
-                *args, kwargs["neigh_cat"] = args
+                *args, kwargs["neighbour"] = args
 
         self._min = 0
         self._max = 2 ** 31
@@ -70,7 +70,7 @@ class AtomNeighbours(AtomCategory):
         else:
             name = f" ∈ [{self._min};{self._max}]"
 
-        self._in = kwargs.get("neigh_cat", None)
+        self._in = kwargs.get("neighbour", None)
         self._R = kwargs.get("R", None)
 
         # Determine name. If there are requirements for the neighbours
@@ -92,8 +92,7 @@ class AtomNeighbours(AtomCategory):
     @_sanitize_loop
     def categorize(self, geometry, atoms=None):
         """ Check if geometry and atoms matches the neighbour criteria """
-        idx, rij = geometry.close(atoms, R=self.R(geometry.atoms[atoms]), ret_rij=True)
-        idx, rij = idx[1], rij[1]
+        idx = geometry.close(atoms, R=self.R(geometry.atoms[atoms]))[1]
         if len(idx) < self._min:
             return NullCategory()
 
@@ -101,12 +100,8 @@ class AtomNeighbours(AtomCategory):
         if not self._in is None:
             # Get category of neighbours
             cat = self._in.categorize(geometry, geometry.asc2uc(idx))
-            idx1, rij1 = [], []
-            for i in range(len(idx)):
-                if not isinstance(cat[i], NullCategory):
-                    idx1.append(idx[i])
-                    rij1.append(rij[i])
-            idx, rij = idx1, rij1
+            idx = [i for i, c in zip(idx, cat)
+                   if not isinstance(c, NullCategory)]
         n = len(idx)
         if self._min <= n and n <= self._max:
             return self

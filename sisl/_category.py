@@ -76,7 +76,7 @@ class CategoryMeta(ABCMeta):
         If a category class is called, we will attempt to instantiate it.
 
         However, it may be that this is a parent class (e.g. `AtomCategory`)
-        that does not make sense to instantiate. Since this classes are abstract,
+        that does not make sense to instantiate. Since these classes are abstract,
         they will raise an error that we will use to build the categories that the user
         requested.
 
