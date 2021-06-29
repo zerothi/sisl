@@ -9,6 +9,14 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior AT gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. S.A. Sozykin,
+   *GUI4dft --- A SIESTA oriented GUI*,
+   Computer Physics Communication **262**, `107843 (2021) <https://doi.org/10.1016/j.cpc.2021.107843>`_
+
+#. F. Gao, Y. Zhang, L. He, S. Gao, M. Brandbyge,
+   *Control of the local magnetic states in graphene with voltage and gating*,
+   Physical Review B **103**, `L241402 (2021) <https://doi.org/10.1103/PhysRevB.103.L241402>`_
+
 #. J.M. Marmolejo-Tejada, A. Jaramillo-Botero,
    *Four-terminal graphene nanoribbon sensor devices: In-silico design and characterization*,
    Computational Materials Science **196**, `110506 (2021) <https://doi.org/10.1016/j.commatsci.2021.110506>`_
@@ -142,10 +150,6 @@ arXiv publications
 ------------------
 
 These publications are as far as we know in the review process.
-
-- D. Li, J. L. Bertelsen, N. Papior, M. Brandbyge,
-  *Surface states and related quantum interference in ab initio electron transport*,
-  `2103.11120 <https://arxiv.org/abs/2103.11120>`_
 
 - D. Weckbecker, M. Fleischmann, R. Gupta, W. Landgraf, S. Leitherer, O. Pankratov, S. Sharma, V. Meded, S. Shallcross,
   *Moiré ordered current loops in the graphene twist bilayer*,

@@ -498,7 +498,6 @@ metadata = dict(
         ["sgeom = sisl.geometry:sgeom",
          "sgrid = sisl.grid:sgrid",
          "sdata = sisl.utils._sisl_cmd:sisl_cmd",
-         "sisl = sisl.utils._sisl_cmd:sisl_cmd",
          # Add toolbox CLI
          "stool = sisl_toolbox.cli:stoolbox_cli",
          "stoolbox = sisl_toolbox.cli:stoolbox_cli",

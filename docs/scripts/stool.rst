@@ -2,8 +2,8 @@
 
 .. _script_stoolbox:
 
-`stoolbox`
-==========
+`stool`
+=======
 
 sisl exposes user contributed tool-box command line interfaces through a common
 interface.
@@ -18,7 +18,7 @@ For a short description of the possible toolboxes do:
 
 ::
 
-   stoolbox --help
+   stool --help
 
 For available toolboxes, please see :ref:`toc-toolbox`.
 
