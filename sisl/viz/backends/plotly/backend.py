@@ -1,8 +1,8 @@
 from collections import defaultdict
 import itertools
+from functools import partial
 import numpy as np
 
-import plotly
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
@@ -234,7 +234,7 @@ class PlotlyBackend(Backend):
             method. You can check its documentation. One important thing is that you can pass a
             'selector', which will choose if the trace is updated or not. 
         """
-        from .plotutils import normalize_trace
+        from ...plotutils import normalize_trace
 
         self.for_each_trace(partial(normalize_trace, min_val=min_val, max_val=max_val, axis=axis), **kwargs)
 
@@ -252,7 +252,7 @@ class PlotlyBackend(Backend):
             method. You can check its documentation. One important thing is that you can pass a
             'selector', which will choose if the trace is updated or not. 
         """
-        from .plotutils import swap_trace_axes
+        from ...plotutils import swap_trace_axes
         # Swap the traces
         self.for_each_trace(partial(swap_trace_axes, ax1=ax1, ax2=ax2), **kwargs)
 
@@ -282,7 +282,7 @@ class PlotlyBackend(Backend):
             method. You can check its documentation. One important thing is that you can pass a
             'selector', which will choose if the trace is updated or not. 
         """
-        from .plotutils import shift_trace
+        from ...plotutils import shift_trace
 
         self.for_each_trace(partial(shift_trace, shift=shift, axis=axis), **kwargs)
 
