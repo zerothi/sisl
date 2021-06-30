@@ -130,6 +130,11 @@ class Spin:
         return self._spins
 
     @property
+    def spinor(self):
+        """ Number of spinor components (1 or 2) """
+        return min(2, self._spins)
+
+    @property
     def kind(self):
         """ A unique ID for the kind of spin configuration """
         return self._kind
