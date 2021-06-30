@@ -1,6 +1,8 @@
 0.X.Y
 =====
 
+- enabled reading the SuperCell block from fdf
+
 - added Spin.spinor to get number of spinor components
 
 - added sc argument to xyzSile.read_geometry for user defined sc

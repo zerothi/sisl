@@ -1419,10 +1419,30 @@ class fdfSileSiesta(SileSiesta):
                 elif opt == 'yz' or opt == 'zy':
                     origo[0] = 0.
 
+        # create geometry
         xyz += origo
+        geom = Geometry(xyz, atoms, sc=sc)
 
-        # Create and return geometry object
-        return Geometry(xyz, atoms, sc=sc)
+        # and finally check for supercell constructs
+        supercell = self.get('SuperCell')
+        if supercell is not None:
+            # we need to expand
+            # check that we are only dealing with an orthogonal supercell
+            supercell = np.array([[int(x) for x in line.split()]
+                                  for line in supercell])
+            assert supercell.shape == (3, 3)
+
+            # Check it is diagonal
+            diag = np.diag(supercell)
+
+            if not np.allclose(supercell - np.diag(diag), 0):
+                raise SileError('SuperCell input is not diagonal, currently not implemented in sisl')
+
+            # now tile it
+            for axis, nt in enumerate(diag):
+                geom = geom.tile(nt, axis)
+
+        return geom
 
     def read_grid(self, name, *args, **kwargs):
         """ Read grid related information from any of the output files
