@@ -128,7 +128,7 @@ class GridPlot(Plot):
 
     _update_methods = {
         "read_data": [],
-        "set_data": ["_plot1D", "_plot2D", "_plot3D"],
+        "set_data": ["_prepare1D", "_prepare2D", "_prepare3D"],
         "get_figure": []
     }
 
@@ -526,26 +526,31 @@ class GridPlot(Plot):
         #Remove the leftover dimensions
         values = np.squeeze(grid.grid)
 
-        # Choose which plotting function we need to use
-        plot_func = getattr(self, f"_plot{values.ndim}D")
+        # Choose which function we need to use to prepare the data
+        self._ndim = values.ndim
+        prepare_func = getattr(self, f"_prepare{self._ndim}D")
 
         # Use it
-        plot_func(grid, values, axes, nsc, trace_name, showlegend=bool(trace_name) or values.ndim == 3)
+        return prepare_func(grid, values, axes, nsc, trace_name, showlegend=bool(trace_name) or values.ndim == 3)
 
         # Add also the geometry if the user requested it
         # This should probably not work like this. It should make use
         # of MultiplePlot somehow. The problem is that right now, the bonds
         # are calculated each time this method is called, for example
-        if plot_geom:
-            geom = getattr(self.grid, 'geometry', None)
-            if geom is None:
-                print('You asked to plot the geometry, but the grid does not contain any geometry')
-            else:
-                geom_plot = geom.plot(**{'axes': axes, "nsc": self.get_setting("nsc"), **geom_kwargs})
+        # if plot_geom:
+        #     geom = getattr(self.grid, 'geometry', None)
+        #     if geom is None:
+        #         print('You asked to plot the geometry, but the grid does not contain any geometry')
+        #     else:
+        #         geom_plot = geom.plot(**{'axes': axes, "nsc": self.get_setting("nsc"), **geom_kwargs})
 
-                self.add_traces(geom_plot.data)
+        #         self.add_traces(geom_plot.data)
+    
+    def draw(self, drawer_info):
+        # Choose which function we need to use to plot
+        drawing_func = getattr(self._backend, f"draw_{self._ndim}D")
 
-        self.update_layout(legend_orientation='h')
+        drawing_func(drawer_info)
 
     def _get_ax_range(self, grid, ax, nsc):
 
@@ -618,33 +623,17 @@ class GridPlot(Plot):
 
         return values
 
-    def _plot1D(self, grid, values, display_axes, nsc, name, **kwargs):
-        """Takes care of plotting the grid in 1D"""
+    def _prepare1D(self, grid, values, display_axes, nsc, name, **kwargs):
+        """Takes care of preparing the values to plot in 1D"""
         ax = display_axes[0]
 
         if nsc[ax] > 1:
             values = np.tile(values, nsc[ax])
 
-        self.data = [{
-            'type': 'scatter',
-            'mode': 'lines',
-            'y': values,
-            'x': self._get_ax_range(grid, ax, nsc),
-            'name': name,
-            **kwargs
-        }]
+        return {"ax": ax, "values": values, "ax_range": self._get_ax_range(grid, ax, nsc), "name": name}
 
-        axes_titles = {'xaxis_title': f'{("X","Y", "Z")[ax]} axis [Ang]', 'yaxis_title': 'Values'}
-
-        self.update_layout(**axes_titles)
-
-    def _plot2D(self, grid, values, display_axes, nsc, name, crange, cmid, colorscale, zsmooth, isos, **kwargs):
-        """
-        Takes care of plotting the grid in 2D
-
-        - It uses plotly's heatmap trace.
-        - It also draws contours for the isovalues.
-        """
+    def _prepare2D(self, grid, values, display_axes, nsc, name, crange, cmid, colorscale, zsmooth, isos, **kwargs):
+        """Takes care of preparing the values to plot in 2D"""
         from skimage.measure import find_contours
         xaxis = display_axes[0]
         yaxis = display_axes[1]
@@ -668,20 +657,6 @@ class GridPlot(Plot):
 
         is_cartesian = grid.sc.is_cartesian()
 
-        self.add_trace({
-            'type': 'heatmap',
-            'name': name,
-            'z': values,
-            'x': xs,
-            'y': ys,
-            'zsmooth': zsmooth,
-            'zmin': cmin,
-            'zmax': cmax,
-            'zmid': cmid,
-            'colorscale': colorscale,
-            **kwargs
-        })
-
         # Draw the contours (if any)
         if len(isos) > 0:
             offsets = self._get_offsets(grid, display_axes)
@@ -689,6 +664,7 @@ class GridPlot(Plot):
             minval = np.nanmin(values)
             maxval = np.nanmax(values)
 
+        isos_to_draw = []
         for iso in isos:
 
             iso = isos_param.complete_query(iso)
@@ -715,17 +691,19 @@ class GridPlot(Plot):
                 contour_xs = [*contour_xs, None, *contour_coords[:, 0]]
                 contour_ys = [*contour_ys, None, *contour_coords[:, 1]]
 
-            color = iso.get("color")
-            self.add_scatter(
-                x=contour_xs, y=contour_ys,
-                marker_color=color, line_color=color,
-                opacity=iso.get("opacity"),
-                name=iso.get("name", "").replace("$isoval$", str(isoval))
-            )
-
-        axes_titles = {'xaxis_title': f'{("X","Y", "Z")[xaxis]} axis [Ang]', 'yaxis_title': f'{("X","Y", "Z")[yaxis]} axis [Ang]'}
-
-        self.update_layout(**axes_titles)
+            # Add the information about this isoline to the list of isolines
+            isos_to_draw.append({
+                "x": contour_xs, "y": contour_ys,
+                "color": iso.get("color"), "opacity": iso.get("opacity"),
+                "name": iso.get("name", "").replace("$isoval$", str(isoval))
+            })
+        
+        return {
+            "values": values, "x": xs, "y": ys, "zsmooth": zsmooth,
+            "xaxis": xaxis, "yaxis": yaxis,
+            "cmin": cmin, "cmax": cmax, "cmid": cmid, "colorscale": colorscale,
+            "name": name, "contours": isos_to_draw
+        }
 
     @staticmethod
     def _transform_grid_cell(grid, cell=np.eye(3), output_shape=None, mode="constant", order=1, **kwargs):
@@ -807,8 +785,8 @@ class GridPlot(Plot):
         # Find the offset between the origin before and after the transformation
         return new_grid, new_grid.dcell.dot(forward_t.dot(offset))
 
-    def _plot3D(self, grid, values, display_axes, nsc, name, isos, **kwargs):
-        """Takes care of plotting the grid in 3D"""
+    def _prepare3D(self, grid, values, display_axes, nsc, name, isos, **kwargs):
+        """Takes care of preparing the values to plot in 3D"""
         # The minimum and maximum values might be needed at some places
         minval, maxval = np.min(values), np.max(values)
 
@@ -827,7 +805,8 @@ class GridPlot(Plot):
                 {"frac": 1-default_iso_frac}
             ]
 
-        # Go through each iso query to draw the isosurface
+        isos_to_draw = []
+        # Go through each iso query to prepare the isosurface
         for iso in isos:
 
             iso = isos_param.complete_query(iso)
@@ -848,30 +827,14 @@ class GridPlot(Plot):
 
             vertices = vertices + self._get_offsets(grid)
 
-            # Create the mesh trace and add it to the plot
-            x, y, z = vertices.T
-            I, J, K = faces.T
+            # Add all the isosurface info to the list that will be passed to the drawer
+            isos_to_draw.append({
+                "vertices": vertices, "faces": faces,
+                "color": iso.get("color"), "opacity": iso.get("opacity"),
+                "name": iso.get("name", "").replace("$isoval$", str(isoval))
+            })
 
-            self.add_trace(go.Mesh3d(x=x,
-                        y=y,
-                        z=z,
-                        i=I,
-                        j=J,
-                        k=K,
-                        color=iso.get("color"),
-                        opacity=iso.get("opacity"),
-                        name=iso.get("name", "").replace("$isoval$", str(isoval)),
-                        **kwargs
-            ))
-
-        self.layout.scene = {'aspectmode': 'data'}
-
-    def _after_get_figure(self, axes):
-
-        # If we are plotting the 2D version, use a 1:1 ratio
-        if len(axes) == 2:
-            self.figure.layout.yaxis.scaleanchor = "x"
-            self.figure.layout.yaxis.scaleratio = 1
+        return {"isosurfaces": isos_to_draw}
 
     def _add_shortcuts(self):
 
