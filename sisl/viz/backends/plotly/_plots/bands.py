@@ -14,41 +14,18 @@ class PlotlyBandsBackend(PlotlyBackend, BandsBackend):
         'yaxis_title': 'Energy [eV]'
     }
     
-    def draw_bands(self, filtered_bands, spin_texture, spin_moments, spin_texture_colorscale, spin_polarized, bands_color, spindown_color, bands_width, spin, add_band_trace_data):
-
-        if not callable(add_band_trace_data):
-            add_band_trace_data = lambda band, plot: {}
-
-        if spin_texture:
-
-            def scatter_additions(band, spin_index):
-
-                return {
-                    "mode": "markers",
-                    "marker": {"color": spin_moments.sel(band=band).values, "size": bands_width, "showscale": True, "coloraxis": "coloraxis"},
-                    "showlegend": False
-                }
-        else:
-
-            def scatter_additions(band, spin_index):
-
-                return {
-                    "mode": "lines",
-                    'line': {"color": [bands_color, spindown_color][spin_index], 'width': bands_width},
-                }
-
-        # Define the data of the plot as a list of dictionaries {x, y, 'type', 'name'}
-        self.add_traces(np.ravel([[{
-            'type': 'scatter',
-            'x': band.k.values,
-            'y': band.values,
-            'mode': 'lines',
-            'name': "{} spin {}".format(band.band.values, ["up", "down"][spin]) if spin_polarized else str(band.band.values),
-            **scatter_additions(band.band.values, spin),
-            'hoverinfo':'name',
-            "hovertemplate": '%{y:.2f} eV',
-            **add_band_trace_data(band, self)
-            } for band in spin_bands] for spin_bands, spin in zip(filtered_bands.transpose('spin', 'band', 'k'), filtered_bands.spin.values)]).tolist())
+    def _draw_band(self, x, y, *args, **kwargs):
+        kwargs["hovertemplate"] = '%{y:.2f} eV (spin moment: %{marker.color:.2f})'
+        kwargs["hoverinfo"] = "name"
+        return super()._draw_band(x, y, *args, **kwargs)
+    
+    def _draw_spin_textured_band(self, *args, spin_texture_vals=None, **kwargs):
+        kwargs.update({
+            "mode": "markers",
+            "marker": {"color": spin_texture_vals,  "size": kwargs["line"]["width"], "showscale": True, "coloraxis": "coloraxis"},
+            "showlegend": False
+        })
+        return self._draw_band(*args, **kwargs)
 
     def draw_gap(self, ks, Es, color, name, **kwargs):
 

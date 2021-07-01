@@ -8,8 +8,7 @@ from ...templates import GridBackend
 class MatplotlibGridBackend(MatplotlibBackend, GridBackend):
 
     def draw_1D(self, backend_info, **kwargs):
-
-        self.ax.plot(backend_info["ax_range"], backend_info["values"], label=backend_info["name"], **kwargs)
+        super().draw_1D(backend_info, **kwargs)
 
         self.ax.set_xlabel(f'{("X","Y", "Z")[backend_info["ax"]]} axis [Ang]')
         self.ax.set_ylabel('Values')

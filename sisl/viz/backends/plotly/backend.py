@@ -311,6 +311,20 @@ class PlotlyBackend(Backend):
     def _test_number_of_items_drawn(self):
         return len(self.figure.data)
 
+    def draw_line(self, x, y, name, line={}, **kwargs):
+        """Draws a line in the current plot."""
+
+        self.add_trace({
+            'type': 'scatter',
+            'x': x,
+            'y': y,
+            'mode': 'lines',
+            'name': name,
+            'line': line,
+            "hoverinfo": "name",
+            **kwargs,
+        })
+
 class PlotlyMultiplePlotBackend(PlotlyBackend, MultiplePlotBackend):
     
     def draw(self, drawer_info, childs):

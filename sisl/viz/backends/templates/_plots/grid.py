@@ -5,8 +5,8 @@ from ....plots import GridPlot
 class GridBackend(Backend):
     
     def draw_1D(self, backend_info, **kwargs):
-        """Should draw the grid in 1D"""
-        raise NotImplementedError(f"{self.__class__.__name__} does not implement displaying grids in 1D")
+        """Draws the grid in 1D"""
+        self.draw_line(backend_info["ax_range"], backend_info["values"], name=backend_info["name"], **kwargs)
 
     def draw_2D(self, backend_info, **kwargs):
         """Should draw the grid in 2D, and draw contours if requested."""

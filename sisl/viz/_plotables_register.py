@@ -34,7 +34,7 @@ for GridSile in get_siles(attrs=["read_grid"]):
 
 for HSile in get_siles(attrs=["read_hamiltonian"]):
     # register(HSile, WavefunctionPlot, 'H', default=HSile != siesta.fdfSileSiesta)
-    # register(HSile, PdosPlot, "H")
+    register(HSile, PdosPlot, "H")
     register(HSile, BandsPlot, "H")
     # register(HSile, FatbandsPlot, "H")
 
@@ -46,8 +46,8 @@ for HSile in get_siles(attrs=["read_hamiltonian"]):
 register(siesta.bandsSileSiesta, BandsPlot, 'bands_file', default=True)
 # register(siesta.bandsSileSiesta, FatbandsPlot, 'bands_file')
 
-# register(siesta.pdosSileSiesta, PdosPlot, 'pdos_file', default=True)
-# register(tbtrans.tbtncSileTBtrans, PdosPlot, 'tbt_out', default=True)
+register(siesta.pdosSileSiesta, PdosPlot, 'pdos_file', default=True)
+register(tbtrans.tbtncSileTBtrans, PdosPlot, 'tbt_out', default=True)
 
 # -----------------------------------------------------
 #           Register plotable sisl objects
@@ -58,11 +58,11 @@ register(siesta.bandsSileSiesta, BandsPlot, 'bands_file', default=True)
 # register(sisl.Geometry, BondLengthMap, 'geometry')
 
 # Grid
-# register(sisl.Grid, GridPlot, 'grid', default=True)
+register(sisl.Grid, GridPlot, 'grid', default=True)
 
 # Hamiltonian
 # register(sisl.Hamiltonian, WavefunctionPlot, 'H', default=True)
-# register(sisl.Hamiltonian, PdosPlot, "H")
+register(sisl.Hamiltonian, PdosPlot, "H")
 register(sisl.Hamiltonian, BandsPlot, "H")
 # register(sisl.Hamiltonian, FatbandsPlot, "H")
 

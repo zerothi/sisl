@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from .bands import BandsPlot
 # from .fatbands import FatbandsPlot
-# from .pdos import PdosPlot
+from .pdos import PdosPlot
 # from .bond_length import BondLengthMap
 # from .forces import ForcesPlot
 from .grid import GridPlot, WavefunctionPlot
