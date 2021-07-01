@@ -1781,6 +1781,8 @@ class Geometry(SuperCellChild):
         sub : the negative of this routine, i.e. retain a subset of atoms
         """
         atoms = self.sc2uc(atoms)
+        if len(atoms) == 0:
+            return self.copy()
         atoms = np.delete(_a.arangei(self.na), atoms)
         return self.sub(atoms)
 
