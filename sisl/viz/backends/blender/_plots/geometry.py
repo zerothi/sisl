@@ -16,7 +16,7 @@ class BlenderGeometryBackend(BlenderBackend, GeometryBackend):
 
         # For now, draw only the atoms
         for atom_props in drawer_info["atoms_props"]:
-            self._draw_single_atom3D(**atom_props)
+            self._draw_single_atom_3D(**atom_props)
 
     def _draw_single_atom_3D(self, xyz, size, color="gray", name=None, vertices=15, **kwargs):
 
