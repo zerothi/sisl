@@ -8,18 +8,9 @@ from ...templates import GridBackend
 class PlotlyGridBackend(PlotlyBackend, GridBackend):
 
     def draw_1D(self, backend_info, **kwargs):
-
-        self.add_trace({
-            'type': 'scatter',
-            'mode': 'lines',
-            'y': backend_info["values"],
-            'x': backend_info["ax_range"],
-            'name': backend_info["name"],
-            **kwargs
-        })
+        super().draw_1D(backend_info, **kwargs)
 
         axes_titles = {'xaxis_title': f'{("X","Y", "Z")[backend_info["ax"]]} axis [Ang]', 'yaxis_title': 'Values'}
-
         self.update_layout(**axes_titles)
 
     def draw_2D(self, backend_info, **kwargs):

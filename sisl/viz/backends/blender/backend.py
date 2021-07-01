@@ -34,7 +34,7 @@ class BlenderBackend(Backend):
         return color
 
 
-class BlenderMultiplePlotBackend(BlenderBackend):
+class BlenderMultiplePlotBackend(MultiplePlotBackend, BlenderBackend):
 
     def draw(self, backend_info, childs):
         # Start assigning each plot to a position of the layout

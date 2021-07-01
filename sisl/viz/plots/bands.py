@@ -798,11 +798,9 @@ class BandsPlot(Plot):
 
         fig = px.line(x=self.bands.k.values, y=diff)
 
-        plt = super().from_plotly(fig)
+        fig.update_layout({"title": f"Energy difference between bands {band1} and {band2}", "yaxis_range": [np.min(diff), np.max(diff)]})
 
-        plt.update_layout({**self.layout.to_plotly_json(), "title": f"Energy difference between bands {band1} and {band2}", "yaxis_range": [np.min(diff), np.max(diff)]})
-
-        return plt
+        return fig
 
     def _plot_Kdiff(self, band1, band2, E=None, offsetE=False):
         """

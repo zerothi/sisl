@@ -12,6 +12,9 @@ class Backend(ABC):
     def _test_number_of_items_drawn(self):
         """Returns the number of items drawn currently in the plot."""
         raise NotImplementedError
+    
+    def draw_line(self, x, y, name, line={}):
+        raise NotImplementedError(f"{self.__class__.__name__} doesn't implement a draw_line method.")
 
 class MultiplePlotBackend(Backend):
 
