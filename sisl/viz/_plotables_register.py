@@ -30,10 +30,10 @@ for GridSile in get_siles(attrs=["read_grid"]):
 
 for GeomSile in get_siles(attrs=["read_geometry"]):
     register(GeomSile, GeometryPlot, 'geom_file', default=True)
-#     register(GeomSile, BondLengthMap, 'geom_file')
+    register(GeomSile, BondLengthMap, 'geom_file')
 
 for HSile in get_siles(attrs=["read_hamiltonian"]):
-    # register(HSile, WavefunctionPlot, 'H', default=HSile != siesta.fdfSileSiesta)
+    register(HSile, WavefunctionPlot, 'H', default=HSile != siesta.fdfSileSiesta)
     register(HSile, PdosPlot, "H")
     register(HSile, BandsPlot, "H")
     register(HSile, FatbandsPlot, "H")
@@ -55,13 +55,13 @@ register(tbtrans.tbtncSileTBtrans, PdosPlot, 'tbt_out', default=True)
 
 # Geometry
 register(sisl.Geometry, GeometryPlot, 'geometry', default=True)
-# register(sisl.Geometry, BondLengthMap, 'geometry')
+register(sisl.Geometry, BondLengthMap, 'geometry')
 
 # Grid
 register(sisl.Grid, GridPlot, 'grid', default=True)
 
 # Hamiltonian
-# register(sisl.Hamiltonian, WavefunctionPlot, 'H', default=True)
+register(sisl.Hamiltonian, WavefunctionPlot, 'H', default=True)
 register(sisl.Hamiltonian, PdosPlot, "H")
 register(sisl.Hamiltonian, BandsPlot, "H")
 register(sisl.Hamiltonian, FatbandsPlot, "H")
@@ -71,4 +71,4 @@ register(sisl.BandStructure, BandsPlot, "band_structure", default=True)
 register(sisl.BandStructure, FatbandsPlot, "band_structure")
 
 # Eigenstate
-# register(sisl.EigenstateElectron, WavefunctionPlot, 'eigenstate', default=True)
+register(sisl.EigenstateElectron, WavefunctionPlot, 'eigenstate', default=True)

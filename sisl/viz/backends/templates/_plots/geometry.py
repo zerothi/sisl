@@ -17,8 +17,6 @@ class GeometryBackend(Backend):
         yaxis = backend_info["yaxis"]
         bonds_props = backend_info["bonds_props"]
 
-        traces = []
-
         # If there are bonds to draw, draw them
         if len(bonds_props) > 0:
             bonds_kwargs = {}
@@ -49,7 +47,7 @@ class GeometryBackend(Backend):
         self.draw_scatter(xy[0], xy[1], name=name, marker={'size': size, 'color': color, 'colorscale': marker_colorscale}, **kwargs)
 
     def _draw_bonds_2D(self, xys, points_per_bond=5, force_bonds_as_points=False,
-        bonds_color='gray', bonds_size=3, bonds_text=None, name="bonds", **kwargs):
+        bonds_color='#cccccc', bonds_size=3, bonds_name=None, name="bonds", **kwargs):
         """
         Cheaper than _bond_trace2D because it draws all bonds in a single trace.
         It is also more flexible, since it allows providing bond colors as floats that all
@@ -80,8 +78,8 @@ class GeometryBackend(Backend):
                 x = [*x, x1, x2, None]
                 y = [*y, y1, y2, None]
 
-                if bonds_text:
-                    text = np.repeat(bonds_text, 3)
+                if bonds_name:
+                    text = np.repeat(bonds_name, 3)
 
             draw_bonds_func = self._draw_bonds_2D_single_color_size
 
@@ -94,16 +92,16 @@ class GeometryBackend(Backend):
                 y = [*y, *np.linspace(y1, y2, points_per_bond)]
 
             draw_bonds_func = self._draw_bonds_2D_multi_color_size
-            if bonds_text:
-                text = np.repeat(bonds_text, points_per_bond)
+            if bonds_name:
+                text = np.repeat(bonds_name, points_per_bond)
 
         draw_bonds_func(x, y, bonds_color, bonds_size, name=name, text=text if len(text) != 0 else None, **kwargs)
 
     def _draw_bonds_2D_single_color_size(self, x, y, color, size, name, text, **kwargs):
         self.draw_line(x, y, name=name, line={"color": color, "width": size}, text=text, **kwargs)
 
-    def _draw_bonds_2D_multi_color_size(self, x, y, color, size, name, text, **kwargs):
-        self.draw_scatter(x, y, name=name, marker={"color": color, "size": size}, text=text, **kwargs)
+    def _draw_bonds_2D_multi_color_size(self, x, y, color, size, name, text, coloraxis="coloraxis", colorscale=None, **kwargs):
+        self.draw_scatter(x, y, name=name, marker={"color": color, "size": size, "coloraxis": coloraxis, "colorscale": colorscale}, text=text, **kwargs)
 
     def _draw_cell_2D_axes(self, geometry, cell, xaxis="x", yaxis="y"):
         cell_xy = GeometryPlot._projected_2Dcoords(geometry, xyz=cell, xaxis=xaxis, yaxis=yaxis).T
@@ -153,7 +151,7 @@ class GeometryBackend(Backend):
                         v = [x[k] for x in bonds_props]
                     bonds_kwargs[f"bonds_{k}"] = v
 
-                self._bonds_3D_scatter(backend_info["bonds"], **bonds_kwargs)
+                self._bonds_3D_scatter(geometry, backend_info["bonds"], **bonds_kwargs)
 
         # Now draw the atoms
         for atom_props in backend_info["atoms_props"]:
@@ -167,9 +165,10 @@ class GeometryBackend(Backend):
         elif show_cell == "box":
             self._draw_cell_3D_box(cell=cell, geometry=geometry)
 
-    def _bonds_3D_scatter(self, bonds, bonds_xyz1, bonds_xyz2, bonds_r=10, bonds_color='gray', bonds_labels=None,
+    def _bonds_3D_scatter(self, geometry, bonds, bonds_xyz1, bonds_xyz2, bonds_r=10, bonds_color='gray', bonds_name=None,
         atoms=False, atoms_color="blue", atoms_size=None, name=None, coloraxis='coloraxis', **kwargs):
         """This method is capable of plotting all the geometry in one 3d trace."""
+        bonds_labels=bonds_name
         # If only bonds are in this trace, we will name it "bonds".
         if not name:
             name = 'Bonds and atoms' if atoms else 'Bonds'
@@ -217,7 +216,7 @@ class GeometryBackend(Backend):
         
         x_labels, y_labels, z_labels = None, None, None
         if bonds_labels:
-            x_labels, y_labels, z_labels = np.array([geom_xyz[bond].mean(axis=0) for bond in bonds]).T
+            x_labels, y_labels, z_labels = np.array([geometry.xyz[bond].mean(axis=0) for bond in bonds]).T
 
         
         self._draw_bonds_3D(
