@@ -275,7 +275,13 @@ class BondLengthMap(GeometryPlot):
 
         self.colors.append(color)
 
-        return (*self.geometry[bond], 15), {"color": color, "name": name}
+        return {
+            "xyz1": self.geometry[bond[0]],
+            "xyz2": self.geometry[bond[1]],
+            "r": 15,
+            "color": color, 
+            "name": name
+        }
 
     def _wrap_bond2D(self, bond, xys, show_strain=False):
         """
@@ -290,7 +296,7 @@ class BondLengthMap(GeometryPlot):
 
         self.colors.append(color)
 
-        return (*xys, ), {"color": color, "name": name}
+        return {"xys": xys, "color": color, "name": name}
 
     @staticmethod
     def _bond_length(geom, bond):
@@ -343,7 +349,7 @@ class BondLengthMap(GeometryPlot):
         self.colors = []
 
         # Let GeometryPlot set the data
-        super()._set_data(
+        for_backend = super()._set_data(
             kwargs3d={
                 "wrap_bond": partial(self._wrap_bond3D, show_strain=show_strain),
                 "cheap_bonds": True,
@@ -359,10 +365,12 @@ class BondLengthMap(GeometryPlot):
         )
 
         if self.colors:
-            self.update_layout(coloraxis={"cmin": cmin or min(self.colors),
-                                        "cmax": cmax or max(self.colors),
-                                        "colorscale": colorscale,
-                                        'showscale': colorbar,
-                                        'colorbar_title': 'Strain' if show_strain else 'Bond length [Ang]'})
+            for_backend["bonds_coloraxis"] = {
+                "cmin": cmin or min(self.colors),
+                "cmax": cmax or max(self.colors),
+                "colorscale": colorscale,
+                'showscale': colorbar,
+                'colorbar_title': 'Strain' if show_strain else 'Bond length [Ang]'
+            }
 
-        self.update_layout(legend_orientation='h')
+        return for_backend
