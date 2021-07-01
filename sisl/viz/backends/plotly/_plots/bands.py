@@ -15,14 +15,18 @@ class PlotlyBandsBackend(PlotlyBackend, BandsBackend):
     }
     
     def _draw_band(self, x, y, *args, **kwargs):
-        kwargs["hovertemplate"] = '%{y:.2f} eV (spin moment: %{marker.color:.2f})'
-        kwargs["hoverinfo"] = "name"
+        kwargs = {
+            "hovertemplate": '%{y:.2f} eV',
+            "hoverinfo": "name",
+            **kwargs
+        }
         return super()._draw_band(x, y, *args, **kwargs)
     
     def _draw_spin_textured_band(self, *args, spin_texture_vals=None, **kwargs):
         kwargs.update({
             "mode": "markers",
             "marker": {"color": spin_texture_vals,  "size": kwargs["line"]["width"], "showscale": True, "coloraxis": "coloraxis"},
+            "hovertemplate": '%{y:.2f} eV (spin moment: %{marker.color:.2f})',
             "showlegend": False
         })
         return self._draw_band(*args, **kwargs)

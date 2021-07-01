@@ -36,7 +36,7 @@ for HSile in get_siles(attrs=["read_hamiltonian"]):
     # register(HSile, WavefunctionPlot, 'H', default=HSile != siesta.fdfSileSiesta)
     register(HSile, PdosPlot, "H")
     register(HSile, BandsPlot, "H")
-    # register(HSile, FatbandsPlot, "H")
+    register(HSile, FatbandsPlot, "H")
 
 # for cls in get_plot_classes():
 #     register(siesta.fdfSileSiesta, cls, "root_fdf", overwrite=True)
@@ -44,7 +44,7 @@ for HSile in get_siles(attrs=["read_hamiltonian"]):
 # register(siesta.outSileSiesta, ForcesPlot, 'out_file', default=True)
 
 register(siesta.bandsSileSiesta, BandsPlot, 'bands_file', default=True)
-# register(siesta.bandsSileSiesta, FatbandsPlot, 'bands_file')
+register(siesta.bandsSileSiesta, FatbandsPlot, 'bands_file')
 
 register(siesta.pdosSileSiesta, PdosPlot, 'pdos_file', default=True)
 register(tbtrans.tbtncSileTBtrans, PdosPlot, 'tbt_out', default=True)
@@ -64,11 +64,11 @@ register(sisl.Grid, GridPlot, 'grid', default=True)
 # register(sisl.Hamiltonian, WavefunctionPlot, 'H', default=True)
 register(sisl.Hamiltonian, PdosPlot, "H")
 register(sisl.Hamiltonian, BandsPlot, "H")
-# register(sisl.Hamiltonian, FatbandsPlot, "H")
+register(sisl.Hamiltonian, FatbandsPlot, "H")
 
 # Band structure
 register(sisl.BandStructure, BandsPlot, "band_structure", default=True)
-# register(sisl.BandStructure, FatbandsPlot, "band_structure")
+register(sisl.BandStructure, FatbandsPlot, "band_structure")
 
 # Eigenstate
 # register(sisl.EigenstateElectron, WavefunctionPlot, 'eigenstate', default=True)
