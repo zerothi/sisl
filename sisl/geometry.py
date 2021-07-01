@@ -405,7 +405,7 @@ class Geometry(SuperCellChild):
             return np.add.outer(self.firsto[atom], orbs).ravel()
         return np.concatenate(tuple(conv(atom, orbs) for atom, orbs in orbitals.items()))
 
-    def as_primary(self, na_primary, ret_super=False):
+    def as_primary(self, na_primary, axes=(0, 1, 2), ret_super=False):
         """ Try and reduce the geometry to the primary unit-cell comprising `na_primary` atoms
 
         This will basically try and find the tiling/repetitions required for the geometry to only have
@@ -415,6 +415,8 @@ class Geometry(SuperCellChild):
         ----------
         na_primary : int
            number of atoms in the primary unit cell
+        axes : array_like, optional
+           only search the given directions for supercells, default to all directions
         ret_super : bool, optional
            also return the number of supercells used in each direction
 
@@ -434,6 +436,8 @@ class Geometry(SuperCellChild):
         if na % na_primary != 0:
             raise ValueError(f'{self.__class__.__name__}.as_primary requires the number of atoms to be divisable by the '
                              'total number of atoms.')
+
+        axes = _a.arrayi(axes)
 
         n_supercells = len(self) // na_primary
         if n_supercells == 1:
@@ -459,15 +463,17 @@ class Geometry(SuperCellChild):
             bins = np.linspace(0, 1, n_bin + 1)
 
             # Loop directions where we need to check
-            for i in (supercell == 1).nonzero()[0]:
+            for axis in axes:
+                if supercell[axis] != 1:
+                    continue
 
                 # A histogram should yield an equal splitting for each bins
                 # if the geometry is a n_bin repetition along the i'th direction.
                 # Hence if diff == 0 for all elements we have a match.
-                diff_bin = np.diff(np.histogram(fxyz[:, i], bins)[0])
+                diff_bin = np.diff(np.histogram(fxyz[:, axis], bins)[0])
 
                 if diff_bin.sum() == 0:
-                    supercell[i] = n_bin
+                    supercell[axis] = n_bin
                     if np.product(supercell) > n_supercells:
                         # For geometries with more than 1 atom in the primary unit cell
                         # we can get false positives (each layer can be split again)
