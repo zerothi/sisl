@@ -311,9 +311,12 @@ class PlotlyBackend(Backend):
     def _test_number_of_items_drawn(self):
         return len(self.figure.data)
 
-    def draw_line(self, x, y, name, line={}, **kwargs):
-        """Draws a line in the current plot."""
+    # --------------------------------
+    #  METHODS TO STANDARIZE BACKENDS
+    # --------------------------------
 
+    def draw_line(self, x, y, name=None, line={}, **kwargs):
+        """Draws a line in the current plot."""
         self.add_trace({
             'type': 'scatter',
             'x': x,
@@ -321,9 +324,17 @@ class PlotlyBackend(Backend):
             'mode': 'lines',
             'name': name,
             'line': line,
-            "hoverinfo": "name",
             **kwargs,
         })
+
+    def draw_scatter(self, x, y, name=None, marker={}, **kwargs):
+        self.draw_line(x, y, name, marker=marker, mode="markers", **kwargs)
+    
+    def draw_line3D(self, x, y, z, **kwargs):
+        self.draw_line(x, y, type="scatter3d", z=z, **kwargs)
+    
+    def draw_scatter3D(self, *args, **kwargs):
+        self.draw_line3D(*args, mode="markers", **kwargs)
 
 class PlotlyMultiplePlotBackend(PlotlyBackend, MultiplePlotBackend):
     

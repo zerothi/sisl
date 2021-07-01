@@ -44,8 +44,11 @@ class MatplotlibBackend(Backend):
     def _test_number_of_items_drawn(self):
         return len(self.ax.lines + self.ax.collections)
     
-    def draw_line(self, x, y, name, line):
-        return self.ax.plot(x, y, color=line.get("color"), linewidth=line.get("width", 1), label=name)
+    def draw_line(self, x, y, name, line, marker={}, text=None, **kwargs):
+        return self.ax.plot(x, y, color=line.get("color"), linewidth=line.get("width", 1), markersize=marker.get("size"), label=name)
+
+    def draw_scatter(self, x, y, name, marker={}, text=None, **kwargs):
+        return self.ax.scatter(x, y, c=marker.get("color"), s=marker.get("size", 1), cmap=marker.get("colorscale"), label=name, **kwargs)
 
 class MatplotlibMultiplePlotBackend(MatplotlibBackend, MultiplePlotBackend):
 

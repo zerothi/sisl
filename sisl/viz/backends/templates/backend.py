@@ -13,8 +13,17 @@ class Backend(ABC):
         """Returns the number of items drawn currently in the plot."""
         raise NotImplementedError
     
-    def draw_line(self, x, y, name, line={}):
+    def draw_line(self, x, y, name=None, line={}, marker={}, text=None, **kwargs):
         raise NotImplementedError(f"{self.__class__.__name__} doesn't implement a draw_line method.")
+
+    def draw_scatter(self, x, y, name=None, marker={}, text=None, **kwargs):
+        raise NotImplementedError(f"{self.__class__.__name__} doesn't implement a draw_scatter method.")
+
+    def draw_line3D(self, x, y, z, name=None, line={}, marker={}, text=None, **kwargs):
+        raise NotImplementedError(f"{self.__class__.__name__} doesn't implement a draw_line3D method.")
+    
+    def draw_scatter3D(self, x, y, z, name=None, marker={}, text=None, **kwargs):
+        raise NotImplementedError(f"{self.__class__.__name__} doesn't implement a draw_scatter3D method.")
 
 class MultiplePlotBackend(Backend):
 
