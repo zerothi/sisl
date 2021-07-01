@@ -589,10 +589,6 @@ class BandsPlot(Plot):
                     raise ValueError(f"You requested spin texture ({spin[0]}), but spin moments have not been calculated. The spin class is {self.spin.kind}")
                 self.spin_texture = True
 
-        # Give the oportunity to draw before bands are drawn (used by Fatbands, for example)
-        if callable(draw_before_bands):
-            draw_before_bands()
-
         if self.spin_texture:
             spin_moments = self.spin_moments.sel(band=filtered_bands.band, axis=spin[0])
         else:
