@@ -24,7 +24,7 @@ from .messages import info, warn, SislError, deprecate_method
 from ._help import isndarray
 from .utils import default_ArgumentParser, default_namespace, cmd, str_spec
 from .utils import angle, direction
-from .utils import lstranges, strmap, array_arange
+from .utils import lstranges, strmap
 from .utils.mathematics import fnorm
 from .quaternion import Quaternion
 from .supercell import SuperCell, SuperCellChild
@@ -3621,7 +3621,7 @@ class Geometry(SuperCellChild):
         if isinstance(ob, Integral):
             return _a.arangei(ob, oe)
 
-        return array_arange(ob, oe)
+        return _a.array_arange(ob, oe)
 
     def o2a(self, io, unique=False):
         """ Atomic index corresponding to the orbital indicies.

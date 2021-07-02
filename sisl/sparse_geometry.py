@@ -17,13 +17,14 @@ from numpy import (
 
 from ._internal import set_module
 from . import _array as _a
+from ._array import array_arange
 from .atom import Atom
 from .orbital import Orbital
 from .geometry import Geometry
 from .messages import warn, SislError, SislWarning, tqdm_eta, deprecate_method
 from ._indices import indices_only
 from ._help import get_dtype
-from .utils.ranges import array_arange, list2str
+from .utils.ranges import list2str
 from .sparse import SparseCSR, isspmatrix, _ncol_to_indptr
 
 

@@ -4,10 +4,11 @@
 import re
 from itertools import groupby
 
-from numpy import zeros, ones, cumsum, take, int32, int64
-from numpy import asarray
+from sisl._array import array_arange
+
 
 __all__ = ["strmap", "strseq", "lstranges", "erange", "list2str", "fileindex"]
+# this will be deprecated sooner or later
 __all__ += ["array_arange"]
 
 
@@ -259,62 +260,3 @@ def fileindex(f, cast=int):
     if len(rng) == 1:
         return fname, rng[0]
     return fname, rng
-
-
-def array_arange(start, end=None, n=None, dtype=int64):
-    """ Creates a single array from a sequence of `numpy.arange`
-
-    Parameters
-    ----------
-    start : array_like
-       a list of start elements for `numpy.arange`
-    end : array_like
-       a list of end elements (exclusive) for `numpy.arange`.
-       This argument is not used if `n` is passed.
-    n : array_like
-       a list of counts of elements for `numpy.arange`.
-       This is equivalent to ``end=start + n``.
-    dtype : numpy.dtype
-       the returned lists data-type
-
-    Examples
-    --------
-    >>> array_arange([1, 5], [3, 6])
-    array([1, 2, 5], dtype=int64)
-    >>> array_arange([1, 6], [4, 9])
-    array([1, 2, 3, 6, 7, 8], dtype=int64)
-    >>> array_arange([1, 6], n=[2, 2])
-    array([1, 2, 6, 7], dtype=int64)
-    """
-    # Tests show that the below code is faster than
-    # implicit for-loops, or list-comprehensions
-    # concatenate(map(..)
-    # The below is much faster and does not require _any_ loops
-    if n is None:
-        # We need n to speed things up
-        n = asarray(end) - asarray(start)
-    else:
-        n = asarray(n)
-    # The below algorithm only works for non-zero n
-    idx = n.nonzero()[0]
-
-    # Grab corner case
-    if len(idx) == 0:
-        return zeros(0, dtype=dtype)
-
-    # Reduce size
-    start = take(start, idx)
-    n = take(n, idx)
-
-    # Create array of 1's.
-    # The 1's are important when issuing the cumultative sum
-    a = ones(n.sum(), dtype=dtype)
-
-    # set pointers such that we can
-    # correct for final cumsum
-    ptr = cumsum(n[:-1])
-    a[0] = start[0]
-    # Define start and correct for previous values
-    a[ptr] = start[1:] - start[:-1] - n[:-1] + 1
-
-    return cumsum(a, dtype=dtype)

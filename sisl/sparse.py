@@ -30,11 +30,10 @@ from scipy.sparse import (
 
 from ._internal import set_module
 from . import _array as _a
-from ._array import asarrayi, arrayi, fulli
+from ._array import asarrayi, arrayi, fulli, array_arange
 from ._indices import indices, indices_only, sorted_unique
 from .messages import warn, SislError
 from ._help import array_fill_repeat, get_dtype, isiterable
-from .utils.ranges import array_arange
 from .utils.mathematics import intersect_and_diff_sets
 from ._sparse import sparse_dense
 

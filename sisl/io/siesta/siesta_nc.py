@@ -10,7 +10,7 @@ from .sile import SileCDFSiesta
 from ..sile import add_sile, sile_fh_open, sile_raise_write
 
 from sisl._internal import set_module
-from sisl._array import aranged
+from sisl._array import aranged, array_arange
 from sisl.unit.siesta import unit_convert
 from sisl import Geometry, Atom, AtomGhost, Atoms, SuperCell, Grid, SphericalOrbital
 from sisl.sparse import _ncol_to_indptr
