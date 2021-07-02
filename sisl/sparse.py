@@ -294,7 +294,26 @@ class SparseCSR(NDArrayOperatorsMixin):
 
     def diagonal(self):
         r""" Return the diagonal elements from the matrix """
-        return np.array([self[i, i] for i in range(self.shape[0])], dtype=self.dtype)
+        # get the diagonal components
+        diag = np.zeros([self.shape[0], self.shape[2]], dtype=self.dtype)
+
+        ptr = self.ptr
+        ncol = self.ncol
+        col = self.col
+        D = self._D
+
+        # Now retrieve rows and cols
+        idx = (ncol > 0).nonzero()[0]
+        row = repeat(idx.astype(int32, copy=False), ncol[idx])
+        idx = array_arange(ptr[:-1], n=ncol, dtype=int32)
+        col = col[idx]
+        # figure out the indices where we have a diagonal index
+        diag_idx = np.equal(row, col)
+        idx = idx[diag_idx]
+        diag[row[diag_idx]] = D[idx]
+        if self.shape[2] == 1:
+            return diag.ravel()
+        return diag
 
     def diags(self, diagonals, offsets=0, dim=None, dtype=None):
         """ Create a `SparseCSR` with diagonal elements with the same shape as the routine
