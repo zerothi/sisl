@@ -8,20 +8,13 @@ class BlenderGridBackend(BlenderBackend, GridBackend):
 
     def draw_3D(self, backend_info, **kwargs):
 
-        for isosurf in backend_info["isosurfaces"]:
+        col = self.get_collection("Grid")
 
-            x, y, z = isosurf["vertices"].T
-            I, J, K = isosurf["faces"].T
+        for isosurf in backend_info["isosurfaces"]:
 
             mesh = bpy.data.meshes.new(isosurf["name"])
 
             obj = bpy.data.objects.new(mesh.name, mesh)
-
-            col = bpy.data.collections.get("Grids")
-
-            if col is None:
-                col = bpy.data.collections.new("Grids")
-                bpy.context.scene.collection.children.link(col)
 
             col.objects.link(obj)
             bpy.context.view_layer.objects.active = obj
