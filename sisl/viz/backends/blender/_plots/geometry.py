@@ -6,16 +6,16 @@ import bpy
 
 class BlenderGeometryBackend(BlenderBackend, GeometryBackend):
 
-    def draw_1D(self, drawer_info, **kwargs):
+    def draw_1D(self, backend_info, **kwargs):
         raise NotImplementedError("A way of drawing 1D geometry representations is not implemented for blender")
 
-    def draw_1D(self, drawer_info, **kwargs):
+    def draw_2D(self, backend_info, **kwargs):
         raise NotImplementedError("A way of drawing 2D geometry representations is not implemented for blender")
 
-    def draw_3D(self, drawer_info, **kwargs):
+    def draw_3D(self, backend_info, **kwargs):
 
         # For now, draw only the atoms
-        for atom_props in drawer_info["atoms_props"]:
+        for atom_props in backend_info["atoms_props"]:
             self._draw_single_atom_3D(**atom_props)
 
     def _draw_single_atom_3D(self, xyz, size, color="gray", name=None, vertices=15, **kwargs):
@@ -26,7 +26,17 @@ class BlenderGeometryBackend(BlenderBackend, GeometryBackend):
             location=xyz, radius=size
         )
 
-        atom = bpy.context.selected_objects[0]
+        atom = bpy.context.object
+
+        # Unlink the atom from the default collection and link it to the Atoms collection
+        context_col = bpy.context.collection
+        atoms_col = self.get_collection("Atoms")
+        if context_col is not atoms_col:
+            context_col.objects.unlink(atom)
+            atoms_col.objects.link(atom)
+
+        atom.name = name
+        atom.data.name = name
 
         color = self._to_rgb_color(color)
 

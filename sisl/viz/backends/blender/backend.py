@@ -7,16 +7,33 @@ import bpy
 class BlenderBackend(Backend):
 
     figure = None
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+        self._collections = {}
 
     def clear(self):
         """ Clears the blender scene so that data can be reset
         Parameters
         --------
         """
-        bpy.ops.object.select_all(action='SELECT')
-        bpy.ops.object.delete(use_global=False, confirm=False)
+        
+        for key, collection in self._collections.items():
+    
+            for obj in collection.objects:
+                bpy.data.objects.remove(obj, do_unlink=True)
+                
+            bpy.data.collections.remove(collection)
 
-        return self
+            del self._collections[key]
+
+    def get_collection(self, key):
+        if key not in self._collections:
+            self._collections[key] = bpy.data.collections.new(key)
+            bpy.context.scene.collection.children.link(self._collections[key])
+        
+        return self._collections[key]
 
     @staticmethod
     def _to_rgb_color(color):
