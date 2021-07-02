@@ -1984,20 +1984,19 @@ class Geometry(SuperCellChild):
                 method = method_tbl[m[1]]
                 m = m[0]
 
+        g = self
         if len(m) == 1:
             #  r
             m = m[0]
-            g = self.copy()
             for i in range(3):
                 g = getattr(g, method)(m, i)
 
         elif len(m) == 2:
             #  (r, axis)
-            g = getattr(self, method)(m[0], m[1])
+            g = getattr(g, method)(m[0], m[1])
 
         elif len(m) == 3:
             #  (r, r, r)
-            g = self.copy()
             for i in range(3):
                 g = getattr(g, method)(m[i], i)
 
