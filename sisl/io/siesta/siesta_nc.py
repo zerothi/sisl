@@ -529,16 +529,32 @@ class ncSileSiesta(SileCDFSiesta):
             # We need to create the orthogonal pattern
             tmp = csr.copy(dims=[0])
             tmp.empty(keep_nnz=True)
-            for i in range(tmp.shape[0]):
-                tmp[i, i] = 1.
+            ptr = tmp.ptr
+            ncol = tmp.ncol
+            col = tmp.col
+            D = tmp._D
 
-            if tmp.nnz != csr.nnz:
-                # We have added more stuff, something that we currently do not allow.
-                raise ValueError(self.__class__.__name__ + '._write_overlap '
+            # Now retrieve rows and cols
+            idx = (ncol > 0).nonzero()[0]
+            row = np.repeat(idx.astype(np.int32, copy=False), ncol[idx])
+            idx = array_arange(ptr[:-1], n=ncol, dtype=np.int32)
+            col = col[idx]
+
+            # Now figure out the diagonal components
+            diag_idx = np.equal(row, col)
+
+            # Ensure we have only len(tmp) equal number of
+            # elements
+            if diag_idx.sum() != len(tmp):
+                # Figure out which row is missing
+                row = row[diag_idx]
+                idx = (np.diff(row) != 1).nonzero()[0]
+                row = row[idx] + 1
+                raise ValueError(f'{self.__class__.__name__}._write_overlap '
                                  'is trying to write an Overlap in Siesta format with '
-                                 'not all diagonal terms defined. Please correct. '
-                                 'I.e. explicitly add *all* diagonal overlap terms.')
+                                 f'missing diagonal terms on rows {row}. Please explicitly add *all* diagonal overlap terms.')
 
+            D[idx[diag_idx]] = 1.
             v[:] = tmp._D[:, 0]
             del tmp
         else:
