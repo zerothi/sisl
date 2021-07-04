@@ -4,6 +4,8 @@
 import numpy as np
 
 from sisl._internal import set_module
+from sisl.messages import deprecate_method
+
 
 __all__ = ['Spin']
 
@@ -54,14 +56,14 @@ class Spin:
     #: The :math:`\boldsymbol\sigma_z` Pauli matrix
     Z = np.array([[1, 0], [0, -1]], np.complex128)
 
-    __slots__ = ['_spins', '_kind', '_dtype']
+    __slots__ = ('_size', '_kind', '_dtype')
 
     def __init__(self, kind='', dtype=np.float64):
 
         if isinstance(kind, Spin):
             self._kind = kind._kind
             self._dtype = kind._dtype
-            self._spins = kind._spins
+            self._size = kind._size
             return
 
         # Copy data-type
@@ -73,6 +75,7 @@ class Spin:
         kind = {'unpolarized': Spin.UNPOLARIZED, '': Spin.UNPOLARIZED,
                 Spin.UNPOLARIZED: Spin.UNPOLARIZED,
                 'polarized': Spin.POLARIZED, 'p': Spin.POLARIZED,
+                'pol': Spin.POLARIZED,
                 Spin.POLARIZED: Spin.POLARIZED,
                 'non-colinear': Spin.NONCOLINEAR,
                 'non-collinear': Spin.NONCOLINEAR, 'nc': Spin.NONCOLINEAR,
@@ -87,28 +90,27 @@ class Spin:
         self._kind = kind
 
         if np.dtype(dtype).kind == 'c':
-            spins = {self.UNPOLARIZED: 1,
+            size = {self.UNPOLARIZED: 1,
                      self.POLARIZED: 2,
                      self.NONCOLINEAR: 4,
                      self.SPINORBIT: 4}.get(kind)
 
         else:
-            spins = {self.UNPOLARIZED: 1,
+            size = {self.UNPOLARIZED: 1,
                      self.POLARIZED: 2,
                      self.NONCOLINEAR: 4,
                      self.SPINORBIT: 8}.get(kind)
 
-        self._spins = spins
+        self._size = size
 
     def __str__(self):
-        s = self.__class__.__name__
         if self.is_unpolarized:
-            return s + f'{{unpolarized, kind={self.dkind}}}'
+            return f'{self.__class__.__name__}{{unpolarized, kind={self.dkind}}}'
         if self.is_polarized:
-            return s + f'{{polarized, kind={self.dkind}}}'
+            return f'{self.__class__.__name__}{{polarized, kind={self.dkind}}}'
         if self.is_noncolinear:
-            return s + f'{{non-colinear, kind={self.dkind}}}'
-        return s + f'{{spin-orbit, kind={self.dkind}}}'
+            return f'{self.__class__.__name__}{{non-colinear, kind={self.dkind}}}'
+        return f'{self.__class__.__name__}{{spin-orbit, kind={self.dkind}}}'
 
     def copy(self):
         """ Create a copy of the spin-object """
@@ -125,14 +127,20 @@ class Spin:
         return np.dtype(self._dtype).kind
 
     @property
+    def size(self):
+        """ Number of elements to describe the spin-components """
+        return self._size
+
+    @property
+    @deprecate_method("Use Spin.size instead")
     def spins(self):
-        """ Number of spin-components """
-        return self._spins
+        """ Number of elements to describe the spin-components """
+        return self._size
 
     @property
     def spinor(self):
         """ Number of spinor components (1 or 2) """
-        return min(2, self._spins)
+        return min(2, self._size)
 
     @property
     def kind(self):
@@ -168,7 +176,7 @@ class Spin:
         return self.kind == Spin.SPINORBIT
 
     def __len__(self):
-        return self._spins
+        return self._size
 
     # Comparisons
     def __lt__(self, other):
@@ -191,12 +199,12 @@ class Spin:
 
     def __getstate__(self):
         return {
-            'spins': self.spins,
+            'size': self.size,
             'kind': self.kind,
             'dtype': self.dtype
         }
 
     def __setstate__(self, state):
-        self._spins = state['spins']
+        self._size = state['size']
         self._kind = state['kind']
         self._dtype = state['dtype']
