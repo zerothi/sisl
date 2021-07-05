@@ -9,6 +9,10 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior AT gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. D. Li, J.L. Bertelsen, N. Papior, A. Smogunov, M. Brandbyge,
+   *Surface states and related quantum interference in ab initio electron transport*,
+   Physical Review Research **3**, `033017 (2021) <https://doi.org/10.1103/PhysRevResearch.3.033017>`_
+
 #. S.A. Sozykin,
    *GUI4dft --- A SIESTA oriented GUI*,
    Computer Physics Communication **262**, `107843 (2021) <https://doi.org/10.1016/j.cpc.2021.107843>`_
