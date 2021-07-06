@@ -28,7 +28,6 @@ class Backends:
 
     def setup(self, plot, backend_name):
         current_backend = getattr(plot, "_backend", None)
-        print(current_backend, current_backend._backend_name if current_backend is not None else "", backend_name)
         if current_backend is None or current_backend._backend_name != backend_name:
             if backend_name not in self._backends:
                 raise NotImplementedError(f"There is no '{backend_name}' backend implemented for {self._plot_cls.__name__} or the backend has not been loaded.")
