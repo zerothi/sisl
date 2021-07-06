@@ -67,7 +67,7 @@ class MatplotlibMultiplePlotBackend(MatplotlibBackend, MultiplePlotBackend):
 
 class MatplotlibSubplotsBackend(MatplotlibMultiplePlotBackend, SubPlotsBackend):
 
-    def draw_subplots(self, backend_info, rows, cols, childs, **make_subplots_kwargs):
+    def draw(self, backend_info, rows, cols, childs, **make_subplots_kwargs):
 
         self.figure, self.axes = plt.subplots(rows, cols)
 

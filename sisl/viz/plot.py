@@ -1727,6 +1727,7 @@ class MultiplePlot(Plot):
     def draw(self, backend_info):
         self._backend.draw(backend_info, self.child_plots)
 
+
 class Animation(MultiplePlot):
     """ Version of MultiplePlot that renders each plot in a different animation frame
 
@@ -1918,4 +1919,4 @@ class SubPlots(MultiplePlot):
         if cols * rows < nplots:
             warn(f"requested {nplots} on a {rows}x{cols} grid layout. {nplots - cols*rows} plots will be missing.")
 
-        self._backend.draw_subplots(backend_info, rows, cols, self.child_plots)
+        self._backend.draw(backend_info, rows, cols, self.child_plots)

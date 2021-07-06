@@ -1,4 +1,4 @@
-from ....plots import GridPlot
+from ....plots.grid import GridPlot
 from ..backend import BlenderBackend
 from ...templates import GridBackend
 

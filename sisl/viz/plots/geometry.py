@@ -316,7 +316,7 @@ class GeometryPlot(Plot):
 
         return tuple(ensure_nsc(prop) for prop in props)
 
-    def _set_data(self, axes, atoms, atoms_color, atoms_size, show_atoms, bind_bonds_to_ats, dataaxis_1d, kwargs3d={}, kwargs2d={}, kwargs1d={}):
+    def _set_data(self, axes, atoms, atoms_color, atoms_size, show_atoms, bind_bonds_to_ats, dataaxis_1d, show_cell, kwargs3d={}, kwargs2d={}, kwargs1d={}):
         self._ndim = len(axes)
 
         if show_atoms == False:
@@ -329,12 +329,17 @@ class GeometryPlot(Plot):
         atoms_kwargs = {"atoms": atoms, "atoms_color": atoms_color, "atoms_size": atoms_size}
 
         if self._ndim == 3:
-            return self._prepare3D(**atoms_kwargs, bind_bonds_to_ats=bind_bonds_to_ats, **kwargs3d)
+            backend_info = self._prepare3D(**atoms_kwargs, bind_bonds_to_ats=bind_bonds_to_ats, **kwargs3d)
         elif self._ndim == 2:
             xaxis, yaxis = axes
-            return self._prepare2D(xaxis=xaxis, yaxis=yaxis, **atoms_kwargs, bind_bonds_to_ats=bind_bonds_to_ats, **kwargs2d)
+            backend_info = self._prepare2D(xaxis=xaxis, yaxis=yaxis, **atoms_kwargs, bind_bonds_to_ats=bind_bonds_to_ats, **kwargs2d)
         elif self._ndim == 1:
-            return self._prepare1D(atoms=atoms, coords_axis=axes[0], data_axis=dataaxis_1d, **kwargs1d)
+            backend_info = self._prepare1D(atoms=atoms, coords_axis=axes[0], data_axis=dataaxis_1d, **kwargs1d)
+
+        backend_info["ndim"] = self._ndim
+        backend_info["show_cell"] = show_cell
+
+        return backend_info
 
     # From here, we start to define all the helper methods:
     @property
@@ -841,11 +846,3 @@ class GeometryPlot(Plot):
             "xyz2": self.geometry[bond[1]],
             "r": 15
         }
-
-    def draw(self, backend_info, show_cell):
-
-        drawing_func = getattr(self._backend, f"draw_{self._ndim}D")
-
-        backend_info["show_cell"] = show_cell
-
-        drawing_func(backend_info)

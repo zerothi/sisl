@@ -9,7 +9,8 @@ from scipy.ndimage import affine_transform
 import sisl
 from sisl._supercell import cell_invert
 from sisl import _array as _a
-from ..plot import Plot, entry_point
+from ..plot import Plot, entry_point, MultiplePlot
+from .geometry import GeometryPlot
 from ..input_fields import (
     TextInput, SileInput, Array1DInput, SwitchInput,
     ColorPicker, DropdownInput, CreatableDropdown, IntegerInput, FloatInput, RangeInput, RangeSlider,
@@ -42,11 +43,6 @@ class GridPlot(Plot):
                      The axis along you want to see the grid, it will be
         reduced along the other ones, according to the the `reduce_method`
         setting.
-    plot_geom: bool, optional
-        If True the geometry associated to the grid will also be plotted
-    geom_kwargs: dict, optional
-        Extra arguments that are passed to geom.plot() if plot_geom is set to
-        True
     zsmooth:  optional
         Parameter that smoothens how data looks in a heatmap.
         'best' interpolates data, 'fast' interpolates pixels, 'False'
@@ -207,17 +203,6 @@ class GridPlot(Plot):
                 'isClearable': False
             },
             help = """The axis along you want to see the grid, it will be reduced along the other ones, according to the the `reduce_method` setting."""
-        ),
-
-        SwitchInput(key='plot_geom', name='Plot geometry',
-            default=False,
-            help="""If True the geometry associated to the grid will also be plotted"""
-        ),
-
-        ProgramaticInput(key='geom_kwargs', name='Geometry plot extra arguments',
-            default={},
-            dtype=dict,
-            help="""Extra arguments that are passed to geom.plot() if plot_geom is set to True"""
         ),
 
         DropdownInput(
@@ -462,7 +447,7 @@ class GridPlot(Plot):
             self.get_param(key, as_dict=False).update_marks()
 
     def _set_data(self, axes, nsc, interp, trace_name, transforms, represent, cut_vacuum, grid_file,
-        x_range, y_range, z_range, plot_geom, geom_kwargs, transform_bc, reduce_method):
+        x_range, y_range, z_range, transform_bc, reduce_method):
 
         if trace_name is None and grid_file:
             trace_name = grid_file.name
@@ -531,7 +516,10 @@ class GridPlot(Plot):
         prepare_func = getattr(self, f"_prepare{self._ndim}D")
 
         # Use it
-        return prepare_func(grid, values, axes, nsc, trace_name, showlegend=bool(trace_name) or values.ndim == 3)
+        backend_info = prepare_func(grid, values, axes, nsc, trace_name, showlegend=bool(trace_name) or values.ndim == 3)
+
+        backend_info["ndim"] = self._ndim
+        return backend_info
 
         # Add also the geometry if the user requested it
         # This should probably not work like this. It should make use
@@ -545,12 +533,6 @@ class GridPlot(Plot):
         #         geom_plot = geom.plot(**{'axes': axes, "nsc": self.get_setting("nsc"), **geom_kwargs})
 
         #         self.add_traces(geom_plot.data)
-    
-    def draw(self, drawer_info):
-        # Choose which function we need to use to plot
-        drawing_func = getattr(self._backend, f"draw_{self._ndim}D")
-
-        drawing_func(drawer_info)
 
     def _get_ax_range(self, grid, ax, nsc):
 
@@ -1150,7 +1132,6 @@ class GridPlot(Plot):
 
         return fig
 
-
 class WavefunctionPlot(GridPlot):
     """
     An extension of GridPlot specifically tailored for plotting wavefunctions
@@ -1202,11 +1183,6 @@ class WavefunctionPlot(GridPlot):
                      The axis along you want to see the grid, it will be
         reduced along the other ones, according to the the `reduce_method`
         setting.
-    plot_geom: bool, optional
-        If True the geometry associated to the grid will also be plotted
-    geom_kwargs: dict, optional
-        Extra arguments that are passed to geom.plot() if plot_geom is set to
-        True
     zsmooth:  optional
         Parameter that smoothens how data looks in a heatmap.
         'best' interpolates data, 'fast' interpolates pixels, 'False'
@@ -1334,7 +1310,7 @@ class WavefunctionPlot(GridPlot):
 
     _overwrite_defaults = {
         'axes': [0, 1, 2],
-        'plot_geom': True,
+        'atoms': None,
     }
 
     @entry_point('eigenstate')

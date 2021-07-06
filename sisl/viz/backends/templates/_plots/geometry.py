@@ -7,6 +7,11 @@ from ....plots import GeometryPlot
 
 class GeometryBackend(Backend):
 
+    def draw(self, backend_info):
+        drawing_func = getattr(self, f"draw_{backend_info['ndim']}D")
+
+        drawing_func(backend_info)
+
     def draw_1D(self, backend_info, **kwargs):
         # Add the atoms trace
         self._draw_atoms_2D_scatter(**backend_info["atoms_props"])

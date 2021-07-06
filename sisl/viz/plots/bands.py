@@ -545,7 +545,8 @@ class BandsPlot(Plot):
             "marks": {int(i): str(i) for i in i_bands},
         })
 
-    def _set_data(self, Erange, E0, bands_range, spin, spin_texture_colorscale, bands_width, bands_color, spindown_color, add_band_trace_data, draw_before_bands=None):
+    def _set_data(self, Erange, E0, bands_range, spin, spin_texture_colorscale, bands_width, bands_color, spindown_color,
+        add_band_trace_data, gap, gap_tol, gap_color, direct_gaps_only, custom_gaps):
         """
         Converts the bands dataframe into a data object for plotly.
 
@@ -596,12 +597,8 @@ class BandsPlot(Plot):
 
         return {
             "draw_bands": [filtered_bands, self.spin_texture, spin_moments, spin_texture_colorscale, self.spin.is_polarized, bands_color, spindown_color, bands_width, spin, add_band_trace_data],
+            "gaps": self._get_gaps(gap, gap_tol, gap_color, direct_gaps_only, custom_gaps)
         }
-
-    def draw(self, backend_info):
-        self._backend.draw_bands(*backend_info["draw_bands"])
-
-        self._draw_gaps()
 
     def _after_get_figure(self, Erange, spin, spin_texture_colorscale):
         self._backend.after_get_figure(self, Erange, spin, spin_texture_colorscale)
@@ -630,10 +627,12 @@ class BandsPlot(Plot):
             'Es': [float(VBtop), float(CBbot)]
         }
 
-    def _draw_gaps(self, gap, gap_tol, gap_color, direct_gaps_only, custom_gaps):
+    def _get_gaps(self, gap, gap_tol, gap_color, direct_gaps_only, custom_gaps):
         """
         Draws the calculated gaps and the custom gaps in the plot
         """
+        gaps_to_draw = []
+
         # Draw gaps
         if gap:
 
@@ -657,7 +656,10 @@ class BandsPlot(Plot):
                 if direct_gaps_only and abs(gap_ks[1] - gap_ks[0]) > gap_tol:
                     continue
 
-                self.draw_gap(*gap_ks, color=gap_color, true_gap=True)
+                ks, Es = self._get_gap_coords(*gap_ks, color=gap_color)
+                name = "Gap"
+
+                gaps_to_draw.append({"ks": ks, "Es": Es, "color": gap_color, "name": name})
 
         # Draw the custom gaps. These are gaps that do not necessarily represent
         # the maximum and the minimum of the VB and CB.
@@ -669,7 +671,15 @@ class BandsPlot(Plot):
 
             for spin in self.bands.spin:
                 if spin in requested_spin:
-                    self.draw_gap(custom_gap["from"], custom_gap["to"], color=custom_gap.get("color", None), gap_spin=spin)
+                    from_k = custom_gap["from"]
+                    to_k = custom_gap["to"]
+                    color = custom_gap.get("color", None)
+                    name = f"Gap ({from_k}-{to_k})"
+                    ks, Es = self._get_gap_coords(from_k, to_k, color=color, gap_spin=spin)
+
+                    gaps_to_draw.append({"ks": ks, "Es": Es, "color": color, "name": name})
+        
+        return gaps_to_draw
 
     def _sanitize_k(self, k):
         """Returns the float value of a k point in the plot.
@@ -702,12 +712,9 @@ class BandsPlot(Plot):
 
         return san_k
 
-    def draw_gap(self, from_k, to_k=None, color=None, true_gap=False, gap_spin=0, save=False, **kwargs):
+    def _get_gap_coords(self, from_k, to_k=None, gap_spin=0, **kwargs):
         """
-        Function that draws a given gap in the plot.
-
-        Please note that if you want gaps to persist through updates you should
-        use the "custom_gaps" setting or indicate save=True in this function.
+        Calculates the coordinates of a gap given some k values.
 
         Parameters
         -----------
@@ -725,23 +732,18 @@ class BandsPlot(Plot):
             same as "from_k" but in this case represents the top limit.
 
             If not provided, "from_k" will be used.
-        color: str, optional
-            the color with which the gap should be represented.
-        true_gap: bool, optional
-            whether it is the true gap of the structure. You should probably
-            never use this, it is just used internally to save time.
         gap_spin: int, optional
             the spin component where you want to draw the gap.
-        save: bool, optional
-            whether you want this gap to persist through updates.
         **kwargs:
             keyword arguments that are passed directly to the new trace.
+        
+        Returns
+        -----------
+        tuple
+            A tuple containing (k_values, E_values)
         """
         if to_k is None:
             to_k = from_k
-
-        if save:
-            return self.update_settings(custom_gaps=[*self.settings["custom_gaps"], {"from": from_k, "to": to_k, "color": color, "spin": [gap_spin]}])
 
         ks = [None, None]
         # Parse the names of the kpoints into their numeric values
@@ -749,22 +751,14 @@ class BandsPlot(Plot):
         for i, val in enumerate((from_k, to_k)):
             ks[i] = self._sanitize_k(val)
 
-        if true_gap:
-            # Take the energies from the gap information
-            Es = self.gap_info["Es"]
-            name = "Gap"
-        else:
-            name = f"Gap ({from_k}-{to_k})"
-            VB, CB = self.gap_info["bands"]
-            Es = [self.bands.sel(k=k, band=band, spin=gap_spin, method="nearest") for k, band in zip(ks, (VB, CB))]
-            # Get the real values of ks that have been obtained
-            # because we might not have exactly the ks requested
-            ks = [np.ravel(E.k)[0] for E in Es]
-            Es = [np.ravel(E)[0] for E in Es]
+        VB, CB = self.gap_info["bands"]
+        Es = [self.bands.sel(k=k, band=band, spin=gap_spin, method="nearest") for k, band in zip(ks, (VB, CB))]
+        # Get the real values of ks that have been obtained
+        # because we might not have exactly the ks requested
+        ks = [np.ravel(E.k)[0] for E in Es]
+        Es = [np.ravel(E)[0] for E in Es]
 
-        self._backend.draw_gap(ks, Es, color, name, **kwargs)
-
-        return self
+        return ks, Es
 
     def toggle_gap(self):
         """
