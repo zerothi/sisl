@@ -366,6 +366,8 @@ class GeometryPlot(Plot):
         color = cls._atoms_colors.get(atom.symbol, cls._atoms_colors["else"])
 
         if ghost:
+            import matplotlib.colors
+
             color = (np.array(matplotlib.colors.to_rgb(color))*255).astype(int)
             color = f'rgba({",".join(color.astype(str))}, 0.4)'
 
