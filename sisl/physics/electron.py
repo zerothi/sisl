@@ -1615,7 +1615,7 @@ class _electron_State:
         S = self.Sk()
         return conj(self.state) * S.dot(self.state.T).T
 
-    def inner(self, right=None, matrix=None, diagonal=True):
+    def inner(self, right=None, matrix=None, diag=True):
         r""" Return the inner product by :math:`\mathbf M_{ij} = \langle\psi_i| \mathbf M |\psi'_j\rangle`
 
         Parameters
@@ -1625,7 +1625,7 @@ class _electron_State:
            product with itself. This object will always be the left :math:`\langle\psi_i|`.
         matrix : array_like, optional
            a matrix that expresses the operator `M`. Defaults to the overlap matrix `S`.
-        diagonal : bool, optional
+        diag : bool, optional
            only return the diagonal matrix :math:`\mathbf M_{ii}`.
 
         Raises
@@ -1645,7 +1645,7 @@ class _electron_State:
 
         # TODO, perhaps check that it is correct... and fix multiple transposes
         if right is None:
-            if diagonal:
+            if diag:
                 return einsum('ij,ji->i', conj(self.state), M.dot(self.state.T))
             return dot(conj(self.state), M.dot(self.state.T))
 
@@ -1655,7 +1655,7 @@ class _electron_State:
 
             # Same as State.inner
             # In the current implementation we require no overlap matrix!
-            if diagonal:
+            if diag:
                 if self.shape[0] != right.shape[0]:
                     return np.diag(dot(conj(self.state), M.dot(right.state.T)))
                 return einsum('ij,ji->i', conj(self.state), M.dot(right.state.T))
