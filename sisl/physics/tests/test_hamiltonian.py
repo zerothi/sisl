@@ -589,9 +589,9 @@ class TestHamiltonian:
             assert np.allclose(e, es.eig)
             assert np.allclose(v, es.state.T)
             assert np.allclose(es.norm2(), 1)
-            assert np.allclose(es.inner(diag=False) - np.eye(len(es)), 0)
+            assert np.allclose(es.inner(diag=False), np.eye(len(es)))
 
-            assert es.inner(es.sub(0)).shape == (1, )
+            assert es.inner(es.sub(0)).shape == (len(es), )
             assert es.inner(es.sub(0), diag=False).shape == (len(es), 1)
 
             eig1 = HS.eigh(k)
@@ -792,14 +792,14 @@ class TestHamiltonian:
         for k in ([0] *3, [0.2] * 3):
             es = H.eigenstate(k)
 
-            d = es.expectation(D)
+            d = es.inner(matrix=D)
             assert np.allclose(d, D)
-            d = es.expectation(D, diag=False)
+            d = es.inner(matrix=D, diag=False)
             assert np.allclose(d, I)
 
-            d = es.expectation(I)
+            d = es.inner(matrix=I)
             assert np.allclose(d, D)
-            d = es.expectation(I, diag=False)
+            d = es.inner(matrix=I, diag=False)
             assert np.allclose(d, I)
 
     def test_velocity_orthogonal(self, setup):
@@ -1158,7 +1158,7 @@ class TestHamiltonian:
 
             # Perform spin-moment calculation
             sm = es.spin_moment()
-            sm2 = es.expectation(SZ).real
+            sm2 = es.inner(matrix=SZ).real
             sm3 = np.diag(np.dot(np.conj(es.state), SZ).dot(es.state.T)).real
             assert np.allclose(sm[:, 2], sm2)
             assert np.allclose(sm[:, 2], sm3)
@@ -1299,7 +1299,7 @@ class TestHamiltonian:
             assert np.allclose(es.eig, eig1)
 
             sm = es.spin_moment()
-            sm2 = es.expectation(SZ).real
+            sm2 = es.inner(matrix=SZ).real
             sm3 = np.diag(np.dot(np.conj(es.state), SZ).dot(es.state.T)).real
             assert np.allclose(sm[:, 2], sm2)
             assert np.allclose(sm[:, 2], sm3)

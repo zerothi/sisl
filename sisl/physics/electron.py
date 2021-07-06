@@ -1624,7 +1624,7 @@ class _electron_State:
            the right object to calculate the inner product with, if not passed it will do the inner
            product with itself. This object will always be the left :math:`\langle\psi_i|`.
         matrix : array_like, optional
-           a matrix that expresses the operator `M`. Defaults to the overlap matrix `S`.
+           a vector or matrix that expresses the operator `M`. Defaults to the overlap matrix `S`.
         diag : bool, optional
            only return the diagonal matrix :math:`\mathbf M_{ii}`.
 
@@ -1640,26 +1640,33 @@ class _electron_State:
         if matrix is None:
             # Retrieve the overlap matrix (FULL S is required for NC)
             M = self.Sk()
+            ndim = 2
         else:
             M = matrix
+            ndim = M.ndim
 
         # TODO, perhaps check that it is correct... and fix multiple transposes
         if right is None:
-            if diag:
-                return einsum('ij,ji->i', conj(self.state), M.dot(self.state.T))
-            return dot(conj(self.state), M.dot(self.state.T))
-
+            right = self.state
         else:
-            if "FakeSk" in M.__class__.__name__:
+            if "FakeSk" in right.__class__.__name__:
                 raise NotImplementedError(f"{self.__class__.__name__}.inner does not implement the inner product between two different overlap matrices.")
+            if isinstance(right, self.__class__):
+                right = right.state
+            if len(right.shape) == 1:
+                right = right.reshape(1, -1)
 
-            # Same as State.inner
-            # In the current implementation we require no overlap matrix!
-            if diag:
-                if self.shape[0] != right.shape[0]:
-                    return np.diag(dot(conj(self.state), M.dot(right.state.T)))
-                return einsum('ij,ji->i', conj(self.state), M.dot(right.state.T))
-            return dot(conj(self.state), M.dot(right.state.T))
+        if diag:
+            if ndim == 2:
+                Mij = einsum('ij,ji->i', conj(self.state), M.dot(right.T))
+            elif ndim == 1:
+                Mij = einsum('ij,j,ij->i', conj(self.state), M, right)
+        elif ndim == 2:
+            Mij = dot(conj(self.state), M.dot(right.T))
+        elif ndim == 1:
+            Mij = einsum('ij,j,kj->ik', conj(self.state), M, right)
+
+        return Mij
 
     def spin_moment(self, project=False):
         r""" Calculate spin moment from the states
