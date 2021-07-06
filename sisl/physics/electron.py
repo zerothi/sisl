@@ -1615,14 +1615,16 @@ class _electron_State:
         S = self.Sk()
         return conj(self.state) * S.dot(self.state.T).T
 
-    def inner(self, right=None, diagonal=True, align=False):
-        r""" Return the inner product by :math:`\mathbf M_{ij} = \langle\psi_i|\psi'_j\rangle`
+    def inner(self, right=None, matrix=None, diagonal=True, align=False):
+        r""" Return the inner product by :math:`\mathbf M_{ij} = \langle\psi_i| \mathbf M |\psi'_j\rangle`
 
         Parameters
         ----------
         right : State, optional
            the right object to calculate the inner product with, if not passed it will do the inner
            product with itself. This object will always be the left :math:`\langle\psi_i|`.
+        matrix : array_like, optional
+           a matrix that expresses the operator `M`. Defaults to the overlap matrix `S`.
         diagonal : bool, optional
            only return the diagonal matrix :math:`\mathbf M_{ii}`.
         align : bool, optional
@@ -1637,17 +1639,20 @@ class _electron_State:
         numpy.ndarray
             a matrix with the sum of inner state products
         """
-        # Retrieve the overlap matrix (FULL S is required for NC)
-        S = self.Sk()
+        if matrix is None:
+            # Retrieve the overlap matrix (FULL S is required for NC)
+            M = self.Sk()
+        else:
+            M = matrix
 
         # TODO, perhaps check that it is correct... and fix multiple transposes
         if right is None:
             if diagonal:
-                return einsum('ij,ji->i', conj(self.state), S.dot(self.state.T))
-            return dot(conj(self.state), S.dot(self.state.T))
+                return einsum('ij,ji->i', conj(self.state), M.dot(self.state.T))
+            return dot(conj(self.state), M.dot(self.state.T))
 
         else:
-            if "FakeSk" in S.__class__.__name__:
+            if "FakeSk" in M.__class__.__name__:
                 raise NotImplementedError(f"{self.__class__.__name__}.inner does not implement the inner product between two different overlap matrices.")
 
             # Same as State.inner
@@ -1660,9 +1665,9 @@ class _electron_State:
 
             if diagonal:
                 if self.shape[0] != right.shape[0]:
-                    return np.diag(dot(conj(self.state), S.dot(right.state.T)))
-                return einsum('ij,ji->i', conj(self.state), S.dot(right.state.T))
-            return dot(conj(self.state), S.dot(right.state.T))
+                    return np.diag(dot(conj(self.state), M.dot(right.state.T)))
+                return einsum('ij,ji->i', conj(self.state), M.dot(right.state.T))
+            return dot(conj(self.state), M.dot(right.state.T))
 
     def spin_moment(self, project=False):
         r""" Calculate spin moment from the states
