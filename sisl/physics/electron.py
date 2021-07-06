@@ -1739,54 +1739,6 @@ class _electron_State:
 
         wavefunction(self.state, grid, geometry=geometry, k=k, spinor=spinor, spin=spin, eta=eta)
 
-    def change_gauge(self, gauge):
-        r""" In-place change of the gauge of the state coefficients
-
-        The two gauges are related through:
-
-        .. math::
-
-            \tilde C_j = e^{i\mathbf k\mathbf r_j} C_j
-
-        where :math:`C_j` and :math:`\tilde C_j` belongs to the ``r`` and ``R`` gauge, respectively.
-
-        Parameters
-        ----------
-        gauge : {'R', 'r'}
-            specify the new gauge for the state coefficients
-        """
-        # These calls will fail if the gauge is not specified.
-        # In that case it will not do anything
-        if self.info.get("gauge", gauge) == gauge:
-            # Quick return
-            return
-
-        # Update gauge value
-        self.info["gauge"] = gauge
-
-        # Check that we can do a gauge transformation
-        k = _a.asarrayd(self.info.get('k'))
-        if k.dot(k) <= 0.000000001:
-            # no gauge transformation necessary
-            return
-
-        g = self.parent.geometry
-        phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], dot(k, g.rcell))
-
-        try:
-            if self.parent.spin.has_noncolinear:
-                # for NC/SOC we have a 2x2 spin-box per orbital
-                phase = np.repeat(phase, 2)
-        except:
-            pass
-
-        if gauge == 'r':
-            # R -> r gauge tranformation.
-            self.state *= exp(-1j * phase).reshape(1, -1)
-        elif gauge == 'R':
-            # r -> R gauge tranformation.
-            self.state *= exp(1j * phase).reshape(1, -1)
-
 
 @set_module("sisl.physics.electron")
 class CoefficientElectron(Coefficient):

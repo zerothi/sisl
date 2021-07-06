@@ -2,7 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
-from numpy import einsum
+from numpy import einsum, exp
 from numpy import ndarray, bool_
 
 from sisl._internal import set_module
@@ -583,7 +583,7 @@ class State(ParentContainer):
            whether the rotation is per state, or a single maximum component is chosen.
         """
         # Convert angle to complex phase
-        phi = np.exp(1j * phi)
+        phi = exp(1j * phi)
         s = self.state.view()
         if individual:
             for i in range(len(self)):
@@ -594,6 +594,54 @@ class State(ParentContainer):
             # Find the maximum amplitude index among all elements
             idx = np.unravel_index(_argmax(_abs(s)), s.shape)
             s *= phi * _conj(s[idx] / _abs(s[idx]))
+
+
+    def change_gauge(self, gauge):
+        r""" In-place change of the gauge of the state coefficients
+
+        The two gauges are related through:
+
+        .. math::
+
+            \tilde C_j = e^{i\mathbf k\mathbf r_j} C_j
+
+        where :math:`C_j` and :math:`\tilde C_j` belongs to the ``r`` and ``R`` gauge, respectively.
+
+        Parameters
+        ----------
+        gauge : {'R', 'r'}
+            specify the new gauge for the mode coefficients
+        """
+        # These calls will fail if the gauge is not specified.
+        # In that case it will not do anything
+        if self.info.get('gauge', gauge) == gauge:
+            # Quick return
+            return
+
+        # Update gauge value
+        self.info['gauge'] = gauge
+
+        # Check that we can do a gauge transformation
+        k = _a.asarrayd(self.info.get('k', [0., 0., 0.]))
+        if k.dot(k) <= 0.000000001:
+            return
+
+        g = self.parent.geometry
+        phase = g.xyz[g.o2a(_a.arangei(g.no)), :] @ (k @ g.rcell)
+
+        try:
+            if self.parent.spin.has_noncolinear:
+                # for NC/SOC we have a 2x2 spin-box per orbital
+                phase = np.repeat(phase, 2)
+        except:
+            pass
+
+        if gauge == 'r':
+            # R -> r gauge tranformation.
+            self.state *= exp(-1j * phase).reshape(1, -1)
+        elif gauge == 'R':
+            # r -> R gauge tranformation.
+            self.state *= exp(1j * phase).reshape(1, -1)
 
     # def toStateC(self, norm=1.):
     #     r""" Transforms the states into normalized values equal to `norm` and specifies the coefficients in `StateC` as the norm
