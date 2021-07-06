@@ -1676,45 +1676,6 @@ class _electron_State:
         """
         return spin_moment(self.state, self.Sk(), project=project)
 
-    def expectation(self, A, diag=True):
-        r""" Calculate the expectation value of matrix `A`
-
-        The expectation matrix is calculated as:
-
-        .. math::
-            A_{ij} = \langle \psi_i | \mathbf A | \psi_j \rangle
-
-        If `diag` is true, only the diagonal elements are returned.
-
-        Parameters
-        ----------
-        A : array_like
-           a vector or matrix that expresses the operator `A`
-        diag : bool, optional
-           whether only the diagonal elements are calculated or if the full expectation
-           matrix is calculated
-
-        Returns
-        -------
-        numpy.ndarray
-            a vector if `diag` is true, otherwise a matrix with expectation values
-        """
-        ndim = A.ndim
-        s = self.state
-
-        if diag:
-            if ndim == 2:
-                a = einsum("ij,ji->i", s.conj(), A.dot(s.T))
-            elif ndim == 1:
-                a = einsum("ij,j,ij->i", s.conj(), A, s)
-        elif ndim == 2:
-            a = s.conj().dot(A.dot(s.T))
-        elif ndim == 1:
-            a = einsum("ij,j,jk", s.conj(), A, s.T)
-        else:
-            raise ValueError("expectation: requires matrix A to be 1D or 2D")
-        return a
-
     def wavefunction(self, grid, spinor=0, eta=False):
         r""" Expand the coefficients as the wavefunction on `grid` *as-is*
 
