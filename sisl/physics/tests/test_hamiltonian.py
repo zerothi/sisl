@@ -591,7 +591,7 @@ class TestHamiltonian:
             assert np.allclose(es.norm2(), 1)
             assert np.allclose(es.inner(diag=False), np.eye(len(es)))
 
-            assert es.inner(es.sub(0)).shape == (len(es), )
+            assert es.inner(es.sub(0)).shape == (1, )
             assert es.inner(es.sub(0), diag=False).shape == (len(es), 1)
 
             eig1 = HS.eigh(k)
@@ -606,6 +606,32 @@ class TestHamiltonian:
 
             assert es.inner(matrix=HS.Hk([0.1] * 3), right=HS.eigenstate([0.3] * 3),
                             diag=False).shape == (len(es), len(es))
+
+    def test_inner(self, setup):
+        HS = setup.HS.copy()
+        HS.construct([(0.1, 1.5), ((2., 1.), (3., 0.))])
+        HS = HS.tile(2, 0).tile(2, 1)
+
+        es1 = HS.eigenstate([0.1] * 3)
+        es2 = HS.eigenstate([0.2] * 3)
+        m1 = es1.inner(es2, diag=False)
+        assert m1.shape == (len(es1), len(es2))
+        m2 = es2.inner(es1, diag=False)
+        assert np.allclose(m1, m2.conj().T)
+        m3 = es2.inner(es1.state, diag=False)
+        assert np.allclose(m1, m3.conj().T)
+
+        r = range(3)
+        m1 = es1.sub(r).inner(es2, diag=False)
+        m2 = es2.inner(es1.sub(r), diag=False)
+        assert np.allclose(m1, m2.conj().T)
+        assert es1.sub(r).inner(es2, diag=False).shape == (len(r), len(es2))
+        assert es1.inner(es2.sub(r), diag=False).shape == (len(es1), len(r))
+        m1 = es1.sub(r).inner(es2, diag=True)
+        assert m1.shape == (len(r), )
+        m2 = es2.inner(es1.sub(r), diag=True)
+        assert m2.shape == (len(r), )
+        assert np.allclose(m1, m2.conj())
 
     def test_gauge_eig(self, setup):
         # Test of eigenvalues

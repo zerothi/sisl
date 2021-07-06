@@ -1646,6 +1646,7 @@ class _electron_State:
             ndim = M.ndim
 
         # TODO, perhaps check that it is correct... and fix multiple transposes
+        left = self.state
         if right is None:
             right = self.state
         else:
@@ -1655,16 +1656,25 @@ class _electron_State:
                 right = right.state
             if len(right.shape) == 1:
                 right = right.reshape(1, -1)
+            if diag:
+                if len(left) != len(right):
+                    warn(f"{self.__class__.__name__}.inner matrix product is non-square, only the first {min(len(left), len(right))} diagonal elements will be returned")
+                    if len(left) < len(right):
+                        right = right[:len(left)]
+                    else:
+                        left = left[:len(right)]
+                elif not np.allclose(left, right):
+                    warn(f"{self.__class__.__name__}.inner only diagonal elements requested, although left.state != right.state")
 
         if diag:
             if ndim == 2:
-                Mij = einsum('ij,ji->i', conj(self.state), M.dot(right.T))
+                Mij = einsum('ij,ji->i', conj(left), M.dot(right.T))
             elif ndim == 1:
-                Mij = einsum('ij,j,ij->i', conj(self.state), M, right)
+                Mij = einsum('ij,j,ij->i', conj(left), M, right)
         elif ndim == 2:
-            Mij = dot(conj(self.state), M.dot(right.T))
+            Mij = dot(conj(left), M.dot(right.T))
         elif ndim == 1:
-            Mij = einsum('ij,j,kj->ik', conj(self.state), M, right)
+            Mij = einsum('ij,j,kj->ik', conj(left), M, right)
 
         return Mij
 
