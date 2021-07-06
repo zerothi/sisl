@@ -421,7 +421,7 @@ class FatbandsPlot(BandsPlot):
 
         if values_storage is not None:
             if group_name in values_storage:
-                raise ValueError(f"There are multiple groups that are named '{req_name}'")
+                raise ValueError(f"There are multiple groups that are named '{group_name}'")
             values_storage[group_name] = values
 
         if metadata_storage is not None:
