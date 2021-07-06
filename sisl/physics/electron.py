@@ -1615,7 +1615,7 @@ class _electron_State:
         S = self.Sk()
         return conj(self.state) * S.dot(self.state.T).T
 
-    def inner(self, right=None, matrix=None, diagonal=True, align=False):
+    def inner(self, right=None, matrix=None, diagonal=True):
         r""" Return the inner product by :math:`\mathbf M_{ij} = \langle\psi_i| \mathbf M |\psi'_j\rangle`
 
         Parameters
@@ -1627,8 +1627,6 @@ class _electron_State:
            a matrix that expresses the operator `M`. Defaults to the overlap matrix `S`.
         diagonal : bool, optional
            only return the diagonal matrix :math:`\mathbf M_{ii}`.
-        align : bool, optional
-           first align `right` with the angles for this state (see `align`)
 
         Raises
         ------
@@ -1657,12 +1655,6 @@ class _electron_State:
 
             # Same as State.inner
             # In the current implementation we require no overlap matrix!
-            if align:
-                if self.shape[0] != right.shape[0]:
-                    raise ValueError(f"{self.__class__.__name__}.inner with align=True requires exactly the same shape!")
-                # Align the states
-                right = self.align_phase(right)
-
             if diagonal:
                 if self.shape[0] != right.shape[0]:
                     return np.diag(dot(conj(self.state), M.dot(right.state.T)))
