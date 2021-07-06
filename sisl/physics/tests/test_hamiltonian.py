@@ -589,10 +589,10 @@ class TestHamiltonian:
             assert np.allclose(e, es.eig)
             assert np.allclose(v, es.state.T)
             assert np.allclose(es.norm2(), 1)
-            assert np.allclose(es.inner(diagonal=False) - np.eye(len(es)), 0)
+            assert np.allclose(es.inner(diag=False) - np.eye(len(es)), 0)
 
             assert es.inner(es.sub(0)).shape == (1, )
-            assert es.inner(es.sub(0), diagonal=False).shape == (len(es), 1)
+            assert es.inner(es.sub(0), diag=False).shape == (len(es), 1)
 
             eig1 = HS.eigh(k)
             eig2 = np.sort(HS.eig(k).real)
@@ -605,7 +605,7 @@ class TestHamiltonian:
             assert np.allclose(eig1, eig5, atol=1e-5)
 
             assert es.inner(matrix=HS.Hk([0.1] * 3), right=HS.eigenstate([0.3] * 3),
-                            diagonal=False).shape == (len(es), len(es))
+                            diag=False).shape == (len(es), len(es))
 
     def test_gauge_eig(self, setup):
         # Test of eigenvalues

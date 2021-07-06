@@ -1134,7 +1134,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
             # Loop remaining eigenstates
             for second in eigenstates:
                 second.change_gauge('r')
-                prd = _process(prd, prev.inner(second, diagonal=False))
+                prd = _process(prd, prev.inner(second, diag=False))
                 prev = second
 
             # Complete the loop
@@ -1152,7 +1152,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
                         prev.state *= exp(1j * phase)
 
                 # Include last-to-first segment
-                prd = _process(prd, prev.inner(first, diagonal=False))
+                prd = _process(prd, prev.inner(first, diag=False))
             return prd
 
     else:
@@ -1164,7 +1164,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
             for second in eigenstates:
                 second = second.sub(sub)
                 second.change_gauge('r')
-                prd = _process(prd, prev.inner(second, diagonal=False))
+                prd = _process(prd, prev.inner(second, diag=False))
                 prev = second
             if closed:
                 if method == "zak":
@@ -1177,7 +1177,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
                         prev.state *= np.repeat(exp(1j * phase), 2, axis=1)
                     else:
                         prev.state *= exp(1j * phase)
-                prd = _process(prd, prev.inner(first, diagonal=False))
+                prd = _process(prd, prev.inner(first, diag=False))
             return prd
 
     # Do the actual calculation of the final matrix
