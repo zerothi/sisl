@@ -338,7 +338,7 @@ class PlotlyBackend(Backend):
 
 class PlotlyMultiplePlotBackend(PlotlyBackend, MultiplePlotBackend):
     
-    def draw(self, drawer_info, childs):
+    def draw(self, backend_info, childs):
         for child in childs:
             self._draw_child_in_fig(child, self.figure)
 
@@ -350,7 +350,7 @@ class PlotlyMultiplePlotBackend(PlotlyBackend, MultiplePlotBackend):
 
 class PlotlySubplotsBackend(PlotlyBackend, SubPlotsBackend):
 
-    def draw_subplots(self, drawer_info, rows, cols, childs, **make_subplots_kwargs):
+    def draw(self, drawer_info, rows, cols, childs, **make_subplots_kwargs):
         # Check if all childplots have the same xaxis or yaxis titles.
         axes_titles = defaultdict(list)
         for child_plot in childs:

@@ -333,11 +333,6 @@ class FatbandsPlot(BandsPlot):
             **self._get_groups_weights()
         }
 
-    def draw(self, *args, **kwargs):
-        self._backend.draw(*args, **kwargs)
-
-        self._draw_gaps()
-
     def _get_groups_weights(self, groups, E0, bands_range, scale):
         """Returns a dictionary with information about all the weights that have been requested
         The return of this function is expected to be passed to the drawers.

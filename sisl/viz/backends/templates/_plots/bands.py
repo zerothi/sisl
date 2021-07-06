@@ -5,6 +5,11 @@ from ....plots import BandsPlot
 
 class BandsBackend(Backend):
 
+    def draw(self, backend_info):
+        self.draw_bands(*backend_info["draw_bands"])
+
+        self._draw_gaps(backend_info["gaps"])
+
     def draw_bands(self, filtered_bands, spin_texture, spin_moments, spin_texture_colorscale, spin_polarized, bands_color, spindown_color, bands_width, spin, add_band_trace_data):
 
         if spin_texture:
@@ -39,6 +44,10 @@ class BandsBackend(Backend):
 
     def _draw_spin_textured_band(self, *args, **kwargs):
         return NotImplementedError(f"{self.__class__.__name__} doesn't implement plotting spin_textured bands.")
+
+    def _draw_gaps(self, gaps_info):
+        for gap_info in gaps_info:
+            self.draw_gap(**gap_info)
 
     @abstractmethod
     def draw_gap(self, ks, Es, color, name, **kwargs):

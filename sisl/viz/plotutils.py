@@ -801,6 +801,9 @@ def repeat_if_childs(method):
 
             kwargs_list = kwargs.get("kwargs_list", kwargs)
 
+            if isinstance(childs_sel, int):
+                childs_sel = [childs_sel]
+
             # Get all the child plots that we are going to modify
             childs = obj.child_plots
             if childs_sel is not None:

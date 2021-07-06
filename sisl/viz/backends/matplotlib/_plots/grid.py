@@ -1,6 +1,6 @@
 import matplotlib.pyplot as plt
 
-from ....plots import GridPlot
+from ....plots.grid import GridPlot
 from ..backend import MatplotlibBackend
 from ...templates import GridBackend
 

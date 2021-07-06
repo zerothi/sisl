@@ -1,6 +1,6 @@
 import plotly.graph_objects as go
 
-from ....plots import GridPlot
+from ....plots.grid import GridPlot
 from ..backend import PlotlyBackend
 from ...templates import GridBackend
 

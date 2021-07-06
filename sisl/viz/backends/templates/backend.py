@@ -5,6 +5,10 @@ from ...plot import MultiplePlot, SubPlots, Animation
 class Backend(ABC):
 
     @abstractmethod
+    def draw(self, backend_info):
+        """Draws the plot, given the info passed by it. This is implemented in template backends"""
+
+    @abstractmethod
     def clear(self):
         """Clears the figure so that we can draw again."""
 
@@ -34,7 +38,7 @@ class MultiplePlotBackend(Backend):
 class SubPlotsBackend(Backend):
 
     @abstractmethod
-    def draw_subplots(self, drawer_info, rows, cols, childs, **make_subplots_kwargs):
+    def draw(self, drawer_info, rows, cols, childs, **make_subplots_kwargs):
         """Draws the subplots layout
 
         It must use `rows` and `cols`, and draw the childs row by row.

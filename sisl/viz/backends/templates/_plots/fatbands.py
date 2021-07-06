@@ -1,9 +1,9 @@
 from abc import abstractmethod
-from ..backend import Backend
+from .bands import BandsBackend
 
 from ....plots import FatbandsPlot
 
-class FatbandsBackend(Backend):
+class FatbandsBackend(BandsBackend):
 
     def draw(self, backend_info):
         """Controls the flow for drawing Fatbands, so that specific backends are easy to implement.
@@ -25,6 +25,8 @@ class FatbandsBackend(Backend):
 
         self.draw_bands(*backend_info["draw_bands"])
 
+        self._draw_gaps(backend_info["gaps"])
+
     def draw_group_weights(self, weights, metadata, name, bands, x):
         """Draws all weights for a group
         
@@ -42,7 +44,7 @@ class FatbandsBackend(Backend):
                     color=metadata["style"]["line"]["color"], name=name,
                     is_group_first=i==0
                 )
-    
+
     @abstractmethod
     def _draw_band_weights(self, x, y, weights, color, name):
         """Implement this method to draw a fatband"""

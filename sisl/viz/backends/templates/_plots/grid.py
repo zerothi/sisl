@@ -1,8 +1,14 @@
 from ..backend import Backend
 
-from ....plots import GridPlot
+from ....plots.grid import GridPlot
 
 class GridBackend(Backend):
+
+    def draw(self, backend_info):
+        # Choose which function we need to use to plot
+        drawing_func = getattr(self, f"draw_{backend_info['ndim']}D")
+
+        drawing_func(backend_info)
     
     def draw_1D(self, backend_info, **kwargs):
         """Draws the grid in 1D"""
