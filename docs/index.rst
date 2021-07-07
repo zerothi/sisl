@@ -140,7 +140,7 @@ which fills in the version number.
    :caption: Visualization
    
    visualization/ase/index
-   visualization/plotly/index
+   visualization/viz_module/index
 
 .. toctree::
    :maxdepth: 3

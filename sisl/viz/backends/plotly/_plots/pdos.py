@@ -20,4 +20,4 @@ class PlotlyPDOSBackend(PlotlyBackend, PdosBackend):
         self.update_layout(yaxis_range=[min(Es), max(Es)])
 
 
-PdosPlot._backends.register("plotly", PlotlyPDOSBackend)
+PdosPlot.backends.register("plotly", PlotlyPDOSBackend)

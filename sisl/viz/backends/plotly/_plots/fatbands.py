@@ -27,4 +27,4 @@ class PlotlyFatbandsBackend(PlotlyBandsBackend, FatbandsBackend):
             "fill": "toself"
         })
 
-FatbandsPlot._backends.register("plotly", PlotlyFatbandsBackend)
+FatbandsPlot.backends.register("plotly", PlotlyFatbandsBackend)

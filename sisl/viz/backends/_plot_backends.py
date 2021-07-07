@@ -55,7 +55,7 @@ class Backends:
         current_backend = getattr(plot, "_backend", None)
         if current_backend is None or current_backend._backend_name != backend_name:
             if backend_name not in self._backends:
-                raise NotImplementedError(f"There is no '{backend_name}' backend implemented for {self._plot_cls.__name__} or the backend has not been loaded.")
+                raise NotImplementedError(f"There is no '{backend_name}' backend implemented for {self._cls.__name__} or the backend has not been loaded.")
             plot._backend = self._backends[backend_name](plot)
     
     def register_template(self, template):

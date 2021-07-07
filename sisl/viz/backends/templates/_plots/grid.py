@@ -3,6 +3,17 @@ from ..backend import Backend
 from ....plots.grid import GridPlot
 
 class GridBackend(Backend):
+    """Draws a grid as provided by `GridPlot`.
+
+    Checks the dimensionality of the grid and then calls:
+        - 1D case: `self.draw_1D`, generic implementation that uses `self.draw_line`
+        - 2D case: `self.draw_2D`, NOT IMPLEMENTED (optional)
+        - 3D case: `self.draw_3D`, NOT IMPLEMENTED (optional)
+        
+    Then, if the geometry needs to be plotted, it plots the geometry. This will use
+    the `GeometryBackend` with the same name as your grid backend, so make sure it is implemented
+    if you want to allow showing geometries along with the grid.
+    """
 
     def draw(self, backend_info):
         # Choose which function we need to use to plot
@@ -25,4 +36,4 @@ class GridBackend(Backend):
         """Should draw all the isosurfaces of the grid in 3D"""
         raise NotImplementedError(f"{self.__class__.__name__} does not implement displaying grids in 3D")
 
-GridPlot._backends.register_template(GridBackend)
+GridPlot.backends.register_template(GridBackend)

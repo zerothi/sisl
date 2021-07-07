@@ -618,7 +618,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
             # After registering an entry point, we will just set the method
             setattr(cls, key, _populate_with_settings(val._method, [param["key"] for param in cls._get_class_params()[0]]))
 
-        cls._backends = Backends(cls)
+        cls.backends = Backends(cls)
 
     @vizplotly_settings('before', init=True)
     def __init__(self, *args, H = None, attrs_for_plot={}, only_init=False, presets=None, layout={}, _debug=False, **kwargs):
@@ -1131,7 +1131,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
             # It is possible to not use any plotting backend. 
             # In that case, we just simply process the data, but we do not plot anything
             return
-        self._backends.setup(self, backend)
+        self.backends.setup(self, backend)
 
         if clear_fig:
             # Clear all the traces from the figure before drawing the new ones
@@ -1143,7 +1143,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
 
         call_method_if_present(self, 'on_figure_change')
 
-        return self.figure
+        return self
 
     #-------------------------------------------
     #       PLOT DISPLAY METHODS

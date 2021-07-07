@@ -31,4 +31,4 @@ class MatplotlibGeometryBackend(MatplotlibBackend, GeometryBackend):
     def draw_3D(self, backend_info):
         return NotImplementedError(f"3D geometry plots are not implemented by {self.__class__.__name__}")
 
-GeometryPlot._backends.register("matplotlib", MatplotlibGeometryBackend)
+GeometryPlot.backends.register("matplotlib", MatplotlibGeometryBackend)

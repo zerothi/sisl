@@ -63,4 +63,4 @@ class PlotlyBandsBackend(PlotlyBackend, BandsBackend):
     def _test_is_gap_drawn(self):
         return len([True for trace in self.figure.data if trace.name == "Gap"]) > 0
 
-BandsPlot._backends.register("plotly", PlotlyBandsBackend)
+BandsPlot.backends.register("plotly", PlotlyBandsBackend)

@@ -50,4 +50,4 @@ class BlenderGeometryBackend(BlenderBackend, GeometryBackend):
 
         bpy.ops.object.shade_smooth()
 
-GeometryPlot._backends.register("blender", BlenderGeometryBackend)
+GeometryPlot.backends.register("blender", BlenderGeometryBackend)

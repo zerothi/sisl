@@ -2,7 +2,7 @@ from ....plots import BondLengthMap
 from .geometry import MatplotlibGeometryBackend
 from ...templates import BondLengthMapBackend
 
-class MatplotlibBondLengthMapBackend(MatplotlibGeometryBackend, BondLengthMapBackend):
+class MatplotlibBondLengthMapBackend(BondLengthMapBackend, MatplotlibGeometryBackend):
 
     def draw_2D(self, backend_info, **kwargs):
         self._colorscale = None
@@ -15,4 +15,4 @@ class MatplotlibBondLengthMapBackend(MatplotlibGeometryBackend, BondLengthMapBac
         kwargs["colorscale"] = self._colorscale
         super()._draw_bonds_2D_multi_color_size(*args, **kwargs)
 
-BondLengthMap._backends.register("matplotlib", MatplotlibBondLengthMapBackend)
+BondLengthMap.backends.register("matplotlib", MatplotlibBondLengthMapBackend)

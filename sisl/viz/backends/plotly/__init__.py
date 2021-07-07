@@ -16,5 +16,6 @@ It features a rich set of settings enabling fine-tuning of many parameters.
 """
 import plotly
 
+from .backend import PlotlyBackend, PlotlyMultiplePlotBackend, PlotlySubPlotsBackend, PlotlyAnimationBackend
 from ._plots import *
 from ._templates import *

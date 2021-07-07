@@ -10,6 +10,16 @@ from ..templates.backend import Backend, MultiplePlotBackend, SubPlotsBackend, A
 from ...plot import Plot, SubPlots, MultiplePlot, Animation
 
 class PlotlyBackend(Backend):
+    """Generic backend for the plotly framework.
+
+    On initialization, a plotly.graph_objs.Figure object is created and stored 
+    under `self.figure`. If an attribute is not found on the backend, it is looked for
+    in the figure. Therefore, you can apply all the methods that are appliable to a plotly
+    figure!
+
+    On initialization, we also take the class attribute `_layout_defaults` (a dictionary) 
+    and run `update_layout` with those parameters.
+    """
 
     _layout_defaults = {}
 
@@ -362,7 +372,7 @@ class PlotlyBackend(Backend):
 class PlotlyMultiplePlotBackend(PlotlyBackend, MultiplePlotBackend):
     pass
 
-class PlotlySubplotsBackend(PlotlyBackend, SubPlotsBackend):
+class PlotlySubPlotsBackend(PlotlyBackend, SubPlotsBackend):
 
     def draw(self, drawer_info, rows, cols, childs, **make_subplots_kwargs):
         # Check if all childplots have the same xaxis or yaxis titles.
@@ -580,6 +590,6 @@ class PlotlyAnimationBackend(PlotlyBackend, AnimationBackend):
 
         return steps, updatemenus
 
-Animation._backends.register("plotly", PlotlyAnimationBackend)
-MultiplePlot._backends.register("plotly", PlotlyMultiplePlotBackend)
-SubPlots._backends.register("plotly", PlotlySubplotsBackend)
+Animation.backends.register("plotly", PlotlyAnimationBackend)
+MultiplePlot.backends.register("plotly", PlotlyMultiplePlotBackend)
+SubPlots.backends.register("plotly", PlotlySubPlotsBackend)
