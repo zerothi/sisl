@@ -589,16 +589,49 @@ class TestHamiltonian:
             assert np.allclose(e, es.eig)
             assert np.allclose(v, es.state.T)
             assert np.allclose(es.norm2(), 1)
-            assert np.allclose(es.inner(diagonal=False) - np.eye(len(es)), 0)
+            assert np.allclose(es.inner(diag=False), np.eye(len(es)))
 
             assert es.inner(es.sub(0)).shape == (1, )
-            assert es.inner(es.sub(0), diagonal=False).shape == (len(es), 1)
+            assert es.inner(es.sub(0), diag=False).shape == (len(es), 1)
 
             eig1 = HS.eigh(k)
             eig2 = np.sort(HS.eig(k).real)
             eig3 = np.sort(HS.eig(k, eigvals_only=False)[0].real)
+            eig4 = es.inner(matrix=HS.Hk(k))
+            eig5 = es.inner(ket=es, matrix=HS.Hk(k))
             assert np.allclose(eig1, eig2, atol=1e-5)
             assert np.allclose(eig1, eig3, atol=1e-5)
+            assert np.allclose(eig1, eig4, atol=1e-5)
+            assert np.allclose(eig1, eig5, atol=1e-5)
+
+            assert es.inner(matrix=HS.Hk([0.1] * 3), ket=HS.eigenstate([0.3] * 3),
+                            diag=False).shape == (len(es), len(es))
+
+    def test_inner(self, setup):
+        HS = setup.HS.copy()
+        HS.construct([(0.1, 1.5), ((2., 1.), (3., 0.))])
+        HS = HS.tile(2, 0).tile(2, 1)
+
+        es1 = HS.eigenstate([0.1] * 3)
+        es2 = HS.eigenstate([0.2] * 3)
+        m1 = es1.inner(es2, diag=False)
+        assert m1.shape == (len(es1), len(es2))
+        m2 = es2.inner(es1, diag=False)
+        assert np.allclose(m1, m2.conj().T)
+        m3 = es2.inner(es1.state, diag=False)
+        assert np.allclose(m1, m3.conj().T)
+
+        r = range(3)
+        m1 = es1.sub(r).inner(es2, diag=False)
+        m2 = es2.inner(es1.sub(r), diag=False)
+        assert np.allclose(m1, m2.conj().T)
+        assert es1.sub(r).inner(es2, diag=False).shape == (len(r), len(es2))
+        assert es1.inner(es2.sub(r), diag=False).shape == (len(es1), len(r))
+        m1 = es1.sub(r).inner(es2, diag=True)
+        assert m1.shape == (len(r), )
+        m2 = es2.inner(es1.sub(r), diag=True)
+        assert m2.shape == (len(r), )
+        assert np.allclose(m1, m2.conj())
 
     def test_gauge_eig(self, setup):
         # Test of eigenvalues
@@ -785,14 +818,14 @@ class TestHamiltonian:
         for k in ([0] *3, [0.2] * 3):
             es = H.eigenstate(k)
 
-            d = es.expectation(D)
+            d = es.inner(matrix=D)
             assert np.allclose(d, D)
-            d = es.expectation(D, diag=False)
+            d = es.inner(matrix=D, diag=False)
             assert np.allclose(d, I)
 
-            d = es.expectation(I)
+            d = es.inner(matrix=I)
             assert np.allclose(d, D)
-            d = es.expectation(I, diag=False)
+            d = es.inner(matrix=I, diag=False)
             assert np.allclose(d, I)
 
     def test_velocity_orthogonal(self, setup):
@@ -1151,7 +1184,7 @@ class TestHamiltonian:
 
             # Perform spin-moment calculation
             sm = es.spin_moment()
-            sm2 = es.expectation(SZ).real
+            sm2 = es.inner(matrix=SZ).real
             sm3 = np.diag(np.dot(np.conj(es.state), SZ).dot(es.state.T)).real
             assert np.allclose(sm[:, 2], sm2)
             assert np.allclose(sm[:, 2], sm3)
@@ -1292,7 +1325,7 @@ class TestHamiltonian:
             assert np.allclose(es.eig, eig1)
 
             sm = es.spin_moment()
-            sm2 = es.expectation(SZ).real
+            sm2 = es.inner(matrix=SZ).real
             sm3 = np.diag(np.dot(np.conj(es.state), SZ).dot(es.state.T)).real
             assert np.allclose(sm[:, 2], sm2)
             assert np.allclose(sm[:, 2], sm3)

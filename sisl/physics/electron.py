@@ -69,7 +69,7 @@ from sisl._help import dtype_complex_to_real, dtype_real_to_complex
 from .distribution import get_distribution
 from .spin import Spin
 from .sparse import SparseOrbitalBZSpin
-from .state import Coefficient, State, StateC
+from .state import Coefficient, State, StateC, _FakeMatrix
 
 
 __all__ = ['DOS', 'PDOS']
@@ -1134,7 +1134,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
             # Loop remaining eigenstates
             for second in eigenstates:
                 second.change_gauge('r')
-                prd = _process(prd, prev.inner(second, diagonal=False))
+                prd = _process(prd, prev.inner(second, diag=False))
                 prev = second
 
             # Complete the loop
@@ -1152,7 +1152,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
                         prev.state *= exp(1j * phase)
 
                 # Include last-to-first segment
-                prd = _process(prd, prev.inner(first, diagonal=False))
+                prd = _process(prd, prev.inner(first, diag=False))
             return prd
 
     else:
@@ -1164,7 +1164,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
             for second in eigenstates:
                 second = second.sub(sub)
                 second.change_gauge('r')
-                prd = _process(prd, prev.inner(second, diagonal=False))
+                prd = _process(prd, prev.inner(second, diag=False))
                 prev = second
             if closed:
                 if method == "zak":
@@ -1177,7 +1177,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
                         prev.state *= np.repeat(exp(1j * phase), 2, axis=1)
                     else:
                         prev.state *= exp(1j * phase)
-                prd = _process(prd, prev.inner(first, diagonal=False))
+                prd = _process(prd, prev.inner(first, diag=False))
             return prd
 
     # Do the actual calculation of the final matrix
@@ -1578,18 +1578,7 @@ class _electron_State:
         else:
             n = self.shape[1]
 
-        class __FakeSk:
-            """ Replacement object which superseedes a matrix """
-            __slots__ = ()
-            shape = (n, n)
-            @staticmethod
-            def dot(v):
-                return v
-            @property
-            def T(self):
-                return self
-
-        return __FakeSk
+        return _FakeMatrix(n)
 
     def norm2(self, sum=True):
         r""" Return a vector with the norm of each state :math:`\langle\psi|\mathbf S|\psi\rangle`
@@ -1615,54 +1604,33 @@ class _electron_State:
         S = self.Sk()
         return conj(self.state) * S.dot(self.state.T).T
 
-    def inner(self, right=None, diagonal=True, align=False):
-        r""" Return the inner product by :math:`\mathbf M_{ij} = \langle\psi_i|\psi'_j\rangle`
+    def inner(self, ket=None, matrix=None, diag=True):
+        r""" Calculate the inner product by :math:`\mathbf A_{ij} = \langle\psi_i| \mathbf M |\psi'_j\rangle`
+
+        The bra will be `self.state`.
 
         Parameters
         ----------
-        right : State, optional
-           the right object to calculate the inner product with, if not passed it will do the inner
-           product with itself. This object will always be the left :math:`\langle\psi_i|`.
-        diagonal : bool, optional
-           only return the diagonal matrix :math:`\mathbf M_{ii}`.
-        align : bool, optional
-           first align `right` with the angles for this state (see `align`)
-
-        Raises
-        ------
-        ValueError : in case where `right` is not None and `self` and `right` has differing overlap matrix.
+        ket : State or array_like, optional
+           the ket object to calculate the inner product with, if not passed it will do the inner
+           product with itself.
+        matrix : array_like, optional
+           a vector or matrix that expresses the operator `M`. Defaults to the overlap matrix :math:`\mathbf S`.
+        diag : bool, optional
+           only return the diagonal matrix :math:`\mathbf A_{ii}`.
 
         Returns
         -------
         numpy.ndarray
             a matrix with the sum of inner state products
         """
-        # Retrieve the overlap matrix (FULL S is required for NC)
-        S = self.Sk()
+        if matrix is None:
+            # Retrieve the overlap matrix (FULL S is required for NC)
+            matrix = self.Sk()
+            if ket is not None:
+                warn(f"{self.__class__.__name__}.inner uses an overlap matrix that may be incompatible with your ket states, please be aware of this!")
 
-        # TODO, perhaps check that it is correct... and fix multiple transposes
-        if right is None:
-            if diagonal:
-                return einsum('ij,ji->i', conj(self.state), S.dot(self.state.T))
-            return dot(conj(self.state), S.dot(self.state.T))
-
-        else:
-            if "FakeSk" in S.__class__.__name__:
-                raise NotImplementedError(f"{self.__class__.__name__}.inner does not implement the inner product between two different overlap matrices.")
-
-            # Same as State.inner
-            # In the current implementation we require no overlap matrix!
-            if align:
-                if self.shape[0] != right.shape[0]:
-                    raise ValueError(f"{self.__class__.__name__}.inner with align=True requires exactly the same shape!")
-                # Align the states
-                right = self.align_phase(right)
-
-            if diagonal:
-                if self.shape[0] != right.shape[0]:
-                    return np.diag(dot(conj(self.state), S.dot(right.state.T)))
-                return einsum('ij,ji->i', conj(self.state), S.dot(right.state.T))
-            return dot(conj(self.state), S.dot(right.state.T))
+        return super().inner(ket, matrix, diag)
 
     def spin_moment(self, project=False):
         r""" Calculate spin moment from the states
@@ -1678,45 +1646,6 @@ class _electron_State:
            whether the moments are orbitally resolved or not
         """
         return spin_moment(self.state, self.Sk(), project=project)
-
-    def expectation(self, A, diag=True):
-        r""" Calculate the expectation value of matrix `A`
-
-        The expectation matrix is calculated as:
-
-        .. math::
-            A_{ij} = \langle \psi_i | \mathbf A | \psi_j \rangle
-
-        If `diag` is true, only the diagonal elements are returned.
-
-        Parameters
-        ----------
-        A : array_like
-           a vector or matrix that expresses the operator `A`
-        diag : bool, optional
-           whether only the diagonal elements are calculated or if the full expectation
-           matrix is calculated
-
-        Returns
-        -------
-        numpy.ndarray
-            a vector if `diag` is true, otherwise a matrix with expectation values
-        """
-        ndim = A.ndim
-        s = self.state
-
-        if diag:
-            if ndim == 2:
-                a = einsum("ij,ji->i", s.conj(), A.dot(s.T))
-            elif ndim == 1:
-                a = einsum("ij,j,ij->i", s.conj(), A, s)
-        elif ndim == 2:
-            a = s.conj().dot(A.dot(s.T))
-        elif ndim == 1:
-            a = einsum("ij,j,jk", s.conj(), A, s.T)
-        else:
-            raise ValueError("expectation: requires matrix A to be 1D or 2D")
-        return a
 
     def wavefunction(self, grid, spinor=0, eta=False):
         r""" Expand the coefficients as the wavefunction on `grid` *as-is*

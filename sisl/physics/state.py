@@ -28,6 +28,27 @@ def _inner(v1, v2):
     return _dot(_conj(v1), v2)
 
 
+class _FakeMatrix:
+    """ Replacement object which superseedes a matrix """
+    __slots__ = ('n',)
+    ndim = 2
+
+    def __init__(self, n):
+        self.n = n
+
+    @property
+    def shape(self):
+        return (self.n, self.n)
+
+    @staticmethod
+    def dot(v):
+        return v
+
+    @property
+    def T(self):
+        return self
+
+
 @set_module("sisl.physics")
 class ParentContainer:
     """ A container for parent and information """
@@ -375,16 +396,16 @@ class State(ParentContainer):
         s.info = self.info
         return s
 
-    def outer(self, right=None, align=True):
+    def outer(self, ket=None, align=True):
         r""" Return the outer product by :math:`\sum_i|\psi_i\rangle\langle\psi'_i|`
 
         Parameters
         ----------
-        right : State, optional
-           the right object to calculate the outer product of, if not passed it will do the outer
-           product with itself. This object will always be the left :math:`|\psi_i\rangle`
+        ket : State, optional
+           the ket object to calculate the outer product of, if not passed it will do the outer
+           product with itself. The object itself will always be the bra :math:`|\psi_i\rangle`
         align : bool, optional
-           first align `right` with the angles for this state (see `align`)
+           first align `ket` with the angles for this state (see `align`)
 
         Notes
         -----
@@ -395,59 +416,78 @@ class State(ParentContainer):
         numpy.ndarray
             a matrix with the sum of outer state products
         """
-        if right is None:
+        if ket is None:
             return einsum('ki,kj->ij', self.state, _conj(self.state))
-        if not np.array_equal(self.shape, right.shape):
+        if not np.array_equal(self.shape, ket.shape):
             raise ValueError(f"{self.__class__.__name__}.outer requires the objects to have the same shape")
         if align:
             # Align the states
-            right = self.align_phase(right, copy=False)
-        return einsum('ki,kj->ij', self.state, _conj(right.state))
+            ket = self.align_phase(ket, copy=False)
+        return einsum('ki,kj->ij', self.state, _conj(ket.state))
 
-    def inner(self, right=None, diagonal=True, align=False):
-        r""" Return the inner product as :math:`\mathbf M_{ij} = \langle\psi_i|\psi'_j\rangle`
+    def inner(self, ket=None, matrix=None, diag=True):
+        r""" Calculate the inner product as :math:`\mathbf A_{ij} = \langle\psi_i|\mathbf M|\psi'_j\rangle`
 
         Parameters
         ----------
-        right : State, optional
-           the right object to calculate the inner product with, if not passed it will do the inner
-           product with itself. This object will always be the left :math:`\langle\psi_i|`
-        diagonal : bool, optional
-           only return the diagonal matrix :math:`\mathbf M_{ii}`.
-        align : bool, optional
-           first align `right` with the angles for this state (see `align`)
+        ket : State, optional
+           the ket object to calculate the inner product with, if not passed it will do the inner
+           product with itself. The object itself will always be the bra :math:`\langle\psi_i|`
+        matrix : array_like, optional
+           whether a matrix is sandwiched between the bra and ket, default to the identity matrix
+        diag : bool, optional
+           only return the diagonal matrix :math:`\mathbf A_{ii}`.
 
         Notes
         -----
         This does *not* take into account a possible overlap matrix when non-orthogonal basis sets are used.
+
+        Raises
+        ------
+        ValueError : if the number of state coefficients are different for the bra and ket
 
         Returns
         -------
         numpy.ndarray
             a matrix with the sum of inner state products
         """
-        if right is None:
-            if diagonal:
-                return einsum('ij,ij->i', _conj(self.state), self.state).real
-            return _inner(self.state, self.state.T)
+        if matrix is None:
+            M = _FakeMatrix(self.shape[-1])
+        else:
+            M = matrix
+        ndim = M.ndim
+
+        bra = self.state
+        # decide on the ket
+        if ket is None:
+            ket = self.state
+        elif isinstance(ket, State):
+            # check whether this, and ket are both originating from
+            # non-orthogonal basis. That would be non-ideal
+            ket = ket.state
+        if len(ket.shape) == 1:
+            ket.shape = (1, -1)
 
         # They *must* have same number of basis points per state
-        if self.shape[-1] != right.shape[-1]:
-            raise ValueError(f"{self.__class__.__name__}.inner requires the objects to have the same shape")
+        if self.shape[-1] != ket.shape[-1]:
+            raise ValueError(f"{self.__class__.__name__}.inner requires the objects to have the same number of coefficients per vector {self.shape[-1]} != {ket.shape[-1]}")
 
-        if align:
-            if self.shape[0] != right.shape[0]:
-                raise ValueError(f"{self.__class__.__name__}.inner with align=True requires exactly the same shape!")
-            # Align the states
-            right = self.align_phase(right, copy=False)
-
-        if diagonal:
-            if self.shape[0] < right.shape[0]:
-                return einsum('ij,kj->i', _conj(self.state), right.state)
-            elif self.shape[0] > right.shape[0]:
-                return einsum('ij,kj->k', _conj(self.state), right.state)
-            return einsum('ij,ij->i', _conj(self.state), right.state)
-        return _conj(self.state).dot(right.state.T)
+        if diag:
+            if len(bra) != len(ket):
+                warn(f"{self.__class__.__name__}.inner matrix product is non-square, only the first {min(len(bra), len(ket))} diagonal elements will be returned.")
+                if len(bra) < len(ket):
+                    ket = ket[:len(bra)]
+                else:
+                    bra = bra[:len(ket)]
+            if ndim == 2:
+                Aij = einsum('ij,ji->i', _conj(bra), M.dot(ket.T))
+            elif ndim == 1:
+                Aij = einsum('ij,j,ij->i', _conj(bra), M, ket)
+        elif ndim == 2:
+            Aij = _conj(bra) @ M.dot(ket.T)
+        elif ndim == 1:
+            Aij = einsum('ij,j,kj->ik', _conj(bra), M, ket)
+        return Aij
 
     def phase(self, method='max', return_indices=False):
         r""" Calculate the Euler angle (phase) for the elements of the state, in the range :math:`]-\pi;\pi]`
@@ -594,7 +634,6 @@ class State(ParentContainer):
             # Find the maximum amplitude index among all elements
             idx = np.unravel_index(_argmax(_abs(s)), s.shape)
             s *= phi * _conj(s[idx] / _abs(s[idx]))
-
 
     def change_gauge(self, gauge):
         r""" In-place change of the gauge of the state coefficients
