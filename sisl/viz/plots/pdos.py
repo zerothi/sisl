@@ -4,6 +4,7 @@
 import numpy as np
 
 import sisl
+from sisl.messages import warn
 from ..plot import Plot, entry_point
 from ..plotutils import find_files, random_color
 from ..input_fields import (
@@ -205,23 +206,6 @@ class PdosPlot(Plot):
                 )
             ]
         ),
-
-        # DropdownInput(
-        #     key="add_customdata", name="Add customdata",
-        #     default=[],
-        #     params={
-        #         'options': [
-        #             {"label": key, "value": key}
-        #             for key in ("iAtom", "Species", "Orbital name", "Spin")
-        #         ],
-        #         'isMulti': True,
-        #         'isClearable': True,
-        #         'isSearchable': True
-        #     },
-        #     help="""Which info about the provenance of each trace should be added in their customdata attribute.
-        #     This is good for post-processing the plot (grouping, filtering...), but it can make the memory requirements
-        #     significantly larger, specially for large systems"""
-        # )
 
     )
 
@@ -495,9 +479,6 @@ class PdosPlot(Plot):
             metadata_storage[req_name] = metadata
 
         return values
-    
-    def draw(self, backend_info):
-        self._backend.draw_PDOS_lines(backend_info)
 
     # ----------------------------------
     #        CONVENIENCE METHODS
@@ -564,7 +545,7 @@ class PdosPlot(Plot):
             requests = [request] if clean else [*self.settings["requests"], request]
             self.update_settings(requests=requests)
         except Exception as e:
-            print("There was a problem with your new request ({}): \n\n {}".format(request, e))
+            warn("There was a problem with your new request ({}): \n\n {}".format(request, e))
             self.undo_settings()
 
         return self

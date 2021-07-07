@@ -4,14 +4,17 @@ from ..backend import Backend
 from ....plots import PdosPlot
 
 class PdosBackend(Backend):
-    
-    def draw_PDOS_lines(self, drawer_info):
 
-        lines = drawer_info["PDOS_values"]
-        Es = drawer_info["Es"]
+    def draw(self, backend_info):
+        self.draw_PDOS_lines(backend_info)
+    
+    def draw_PDOS_lines(self, backend_info):
+
+        lines = backend_info["PDOS_values"]
+        Es = backend_info["Es"]
 
         for name, values in lines.items():
-            self.draw_PDOS_line(Es, values, drawer_info["request_metadata"][name], name)
+            self.draw_PDOS_line(Es, values, backend_info["request_metadata"][name], name)
 
     def draw_PDOS_line(self, Es, values, request_metadata, name):
 
