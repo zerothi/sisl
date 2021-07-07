@@ -141,19 +141,16 @@ def test_state_inner1():
     state = State(state)
     inner = state.inner()
     assert np.allclose(inner, state.inner(state))
-    inner = state.inner(diagonal=False)
-    assert np.allclose(inner, state.inner(state, diagonal=False))
+    inner = state.inner(diag=False)
+    assert np.allclose(inner, state.inner(state, diag=False))
 
 
 def test_state_inner_differing_size():
     state1 = State(ar(8, 10))
     state2 = State(ar(4, 10))
 
-    inner = state1.inner(state2, diagonal=False)
+    inner = state1.inner(state2, diag=False)
     assert inner.shape == (8, 4)
-
-    inner = state1.inner(state2)
-    assert inner.shape == (4, )
 
 
 def test_state_phase_max():

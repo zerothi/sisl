@@ -69,7 +69,7 @@ from sisl._help import dtype_complex_to_real, dtype_real_to_complex
 from .distribution import get_distribution
 from .spin import Spin
 from .sparse import SparseOrbitalBZSpin
-from .state import Coefficient, State, StateC
+from .state import Coefficient, State, StateC, _FakeMatrix
 
 
 __all__ = ['DOS', 'PDOS']
@@ -1578,18 +1578,7 @@ class _electron_State:
         else:
             n = self.shape[1]
 
-        class __FakeSk:
-            """ Replacement object which superseedes a matrix """
-            __slots__ = ()
-            shape = (n, n)
-            @staticmethod
-            def dot(v):
-                return v
-            @property
-            def T(self):
-                return self
-
-        return __FakeSk
+        return _FakeMatrix(n)
 
     def norm2(self, sum=True):
         r""" Return a vector with the norm of each state :math:`\langle\psi|\mathbf S|\psi\rangle`
@@ -1616,17 +1605,19 @@ class _electron_State:
         return conj(self.state) * S.dot(self.state.T).T
 
     def inner(self, right=None, matrix=None, diag=True):
-        r""" Return the inner product by :math:`\mathbf M_{ij} = \langle\psi_i| \mathbf M |\psi'_j\rangle`
+        r""" Calculate the inner product by :math:`\mathbf A_{ij} = \langle\psi_i| \mathbf M |\psi'_j\rangle`
+
+        The bra will be `self.state`.
 
         Parameters
         ----------
-        right : State, optional
+        right : State or array_like, optional
            the right object to calculate the inner product with, if not passed it will do the inner
-           product with itself. This object will always be the left :math:`\langle\psi_i|`.
+           product with itself.
         matrix : array_like, optional
            a vector or matrix that expresses the operator `M`. Defaults to the overlap matrix `S`.
         diag : bool, optional
-           only return the diagonal matrix :math:`\mathbf M_{ii}`.
+           only return the diagonal matrix :math:`\mathbf A_{ii}`.
 
         Raises
         ------
@@ -1639,44 +1630,9 @@ class _electron_State:
         """
         if matrix is None:
             # Retrieve the overlap matrix (FULL S is required for NC)
-            M = self.Sk()
-            ndim = 2
-        else:
-            M = matrix
-            ndim = M.ndim
+            matrix = self.Sk()
 
-        # TODO, perhaps check that it is correct... and fix multiple transposes
-        left = self.state
-        if right is None:
-            right = self.state
-        else:
-            if "FakeSk" in right.__class__.__name__:
-                raise NotImplementedError(f"{self.__class__.__name__}.inner does not implement the inner product between two different overlap matrices.")
-            if isinstance(right, self.__class__):
-                right = right.state
-            if len(right.shape) == 1:
-                right = right.reshape(1, -1)
-            if diag:
-                if len(left) != len(right):
-                    warn(f"{self.__class__.__name__}.inner matrix product is non-square, only the first {min(len(left), len(right))} diagonal elements will be returned")
-                    if len(left) < len(right):
-                        right = right[:len(left)]
-                    else:
-                        left = left[:len(right)]
-                elif not np.allclose(left, right):
-                    warn(f"{self.__class__.__name__}.inner only diagonal elements requested, although left.state != right.state")
-
-        if diag:
-            if ndim == 2:
-                Mij = einsum('ij,ji->i', conj(left), M.dot(right.T))
-            elif ndim == 1:
-                Mij = einsum('ij,j,ij->i', conj(left), M, right)
-        elif ndim == 2:
-            Mij = dot(conj(left), M.dot(right.T))
-        elif ndim == 1:
-            Mij = einsum('ij,j,kj->ik', conj(left), M, right)
-
-        return Mij
+        return super().inner(right, matrix, diag)
 
     def spin_moment(self, project=False):
         r""" Calculate spin moment from the states

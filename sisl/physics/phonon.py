@@ -277,7 +277,6 @@ class _phonon_Mode:
         return self.state
 
 
-
 @set_module("sisl.physics.phonon")
 class CoefficientPhonon(Coefficient):
     """ Coefficients describing some physical quantity related to phonons """

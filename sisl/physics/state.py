@@ -28,6 +28,27 @@ def _inner(v1, v2):
     return _dot(_conj(v1), v2)
 
 
+class _FakeMatrix:
+    """ Replacement object which superseedes a matrix """
+    __slots__ = ('n',)
+    ndim = 2
+
+    def __init__(self, n):
+        self.n = n
+
+    @property
+    def shape(self):
+        return (self.n, self.n)
+
+    @staticmethod
+    def dot(v):
+        return v
+
+    @property
+    def T(self):
+        return self
+
+
 @set_module("sisl.physics")
 class ParentContainer:
     """ A container for parent and information """
@@ -404,18 +425,18 @@ class State(ParentContainer):
             right = self.align_phase(right, copy=False)
         return einsum('ki,kj->ij', self.state, _conj(right.state))
 
-    def inner(self, right=None, diagonal=True, align=False):
-        r""" Return the inner product as :math:`\mathbf M_{ij} = \langle\psi_i|\psi'_j\rangle`
+    def inner(self, right=None, matrix=None, diag=True):
+        r""" Calculate the inner product as :math:`\mathbf A_{ij} = \langle\psi_i|\mathbf M|\psi'_j\rangle`
 
         Parameters
         ----------
         right : State, optional
            the right object to calculate the inner product with, if not passed it will do the inner
            product with itself. This object will always be the left :math:`\langle\psi_i|`
-        diagonal : bool, optional
-           only return the diagonal matrix :math:`\mathbf M_{ii}`.
-        align : bool, optional
-           first align `right` with the angles for this state (see `align`)
+        matrix : array_like, optional
+           whether a matrix is sandwiched between the bra and ket, default to the identity matrix
+        diag : bool, optional
+           only return the diagonal matrix :math:`\mathbf A_{ii}`.
 
         Notes
         -----
@@ -426,28 +447,43 @@ class State(ParentContainer):
         numpy.ndarray
             a matrix with the sum of inner state products
         """
+        if matrix is None:
+            M = _FakeMatrix(self.shape[-1])
+        else:
+            M = matrix
+        ndim = M.ndim
+
+        left = self.state
+        # decide on the right
         if right is None:
-            if diagonal:
-                return einsum('ij,ij->i', _conj(self.state), self.state).real
-            return _inner(self.state, self.state.T)
+            right = self.state
+        elif isinstance(right, State):
+            # check whether this, and right are both originating from
+            # non-orthogonal basis. That would be non-ideal
+            right = right.state
+        if len(right.shape) == 1:
+            right.shape = (1, -1)
 
         # They *must* have same number of basis points per state
         if self.shape[-1] != right.shape[-1]:
-            raise ValueError(f"{self.__class__.__name__}.inner requires the objects to have the same shape")
+            raise ValueError(f"{self.__class__.__name__}.inner requires the objects to have the same number of coefficients per vector {self.shape[-1]} != {right.shape[-1]}")
 
-        if align:
-            if self.shape[0] != right.shape[0]:
-                raise ValueError(f"{self.__class__.__name__}.inner with align=True requires exactly the same shape!")
-            # Align the states
-            right = self.align_phase(right, copy=False)
-
-        if diagonal:
-            if self.shape[0] < right.shape[0]:
-                return einsum('ij,kj->i', _conj(self.state), right.state)
-            elif self.shape[0] > right.shape[0]:
-                return einsum('ij,kj->k', _conj(self.state), right.state)
-            return einsum('ij,ij->i', _conj(self.state), right.state)
-        return _conj(self.state).dot(right.state.T)
+        if diag:
+            if len(left) != len(right):
+                warn(f"{self.__class__.__name__}.inner matrix product is non-square, only the first {min(len(left), len(right))} diagonal elements will be returned.")
+                if len(left) < len(right):
+                    right = right[:len(left)]
+                else:
+                    left = left[:len(right)]
+            if ndim == 2:
+                Mij = einsum('ij,ji->i', _conj(left), M.dot(right.T))
+            elif ndim == 1:
+                Mij = einsum('ij,j,ij->i', _conj(left), M, right)
+        elif ndim == 2:
+            Mij = _conj(left) @ M.dot(right.T)
+        elif ndim == 1:
+            Mij = einsum('ij,j,kj->ik', _conj(left), M, right)
+        return Mij
 
     def phase(self, method='max', return_indices=False):
         r""" Calculate the Euler angle (phase) for the elements of the state, in the range :math:`]-\pi;\pi]`
@@ -594,7 +630,6 @@ class State(ParentContainer):
             # Find the maximum amplitude index among all elements
             idx = np.unravel_index(_argmax(_abs(s)), s.shape)
             s *= phi * _conj(s[idx] / _abs(s[idx]))
-
 
     def change_gauge(self, gauge):
         r""" In-place change of the gauge of the state coefficients
