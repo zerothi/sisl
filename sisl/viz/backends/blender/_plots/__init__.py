@@ -1,4 +1,2 @@
-from .grid import *
-from .geometry import *
-
-__all__ = []
+from .grid import BlenderGridBackend
+from .geometry import BlenderGeometryBackend

@@ -69,4 +69,4 @@ class PlotlyGeometryBackend(PlotlyBackend, GeometryBackend):
     def _draw_cell_3D_axes(self, cell, geometry):
         return super()._draw_cell_3D_axes(cell, geometry, mode="lines+markers")
 
-GeometryPlot._backends.register("plotly", PlotlyGeometryBackend)
+GeometryPlot.backends.register("plotly", PlotlyGeometryBackend)

@@ -65,4 +65,4 @@ class MatplotlibBandsBackend(MatplotlibBackend, BandsBackend):
     def _test_is_gap_drawn(self):
         return self.ax.lines[-1].get_label().startswith("Gap")
 
-BandsPlot._backends.register("matplotlib", MatplotlibBandsBackend)
+BandsPlot.backends.register("matplotlib", MatplotlibBandsBackend)

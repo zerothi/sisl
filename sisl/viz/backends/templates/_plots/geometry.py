@@ -6,6 +6,52 @@ from ..backend import Backend
 from ....plots import GeometryPlot
 
 class GeometryBackend(Backend):
+    """Draws the geometry as provided by `GeometryPlot`.
+
+    Checks the dimensionality of the geometry and then calls:
+        - 1D case: `self.draw_1D`
+        - 2D case: `self.draw_2D`
+        - 3D case: `self.draw_3D`
+    
+    These 3 functions contain generic implementations, although some parts may need
+    a method to be implemented. Here are more details of each case:
+
+    1D workflow (`self.draw_1D`):
+        `self._draw_atoms_2D_scatter()`, generic implementation that calls `self.draw_scatter`
+    
+    2D workflow (`self.draw_2D`):
+        if (bonds need to be drawn):
+            Calls `self._draw_bonds_2D()` which may call:
+            if (all bonds are same size and same color):
+                `self._draw_bonds_2D_single_color_size`, generic implementation that calls `self.draw_line`
+            else:
+                `self._draw_bonds_2D_multi_color_size`, generic implementation that calls `self.draw_scatter`
+        Then call `self._draw_atoms_2D_scatter()` to draw the atoms, generic implementation that calls `self.draw_scatter`
+        And finally draw the cell:
+            if (cell to be drawn as axes):
+                `self._draw_cell_2D_axes()`:
+                for axis in axes:
+                    `self._draw_axis_2D()`, generic implementation that calls `self.draw_line`
+            elif (cell to be drawn as a box):
+                `self._draw_cell_2D_box()`, generic implementation that calls `self.draw_line`
+        
+    3D workflow (`self.draw_3D`):
+        if (bonds need to be drawn):
+            if (all bonds are same size and same color):
+                `self._bonds_3D_scatter()`:
+                Manages all arguments and then calls `self._draw_bonds_3D`, generic implementation that uses `self.draw_line3D`.
+            else:
+                for bond in bonds:
+                    `self._draw_single_bond_3D()`, generic implementation that uses `self.draw_line3D`.
+        if (atoms need to be drawn):
+            for atom in atoms:
+                `self._draw_single_atom_3D`, NOT IMPLEMENTED (optional)
+        And finally draw the cell:
+            if (cell to be drawn as axes):
+                `self._draw_cell_3D_axes()`, generic implementation that calls `self.draw_line3D` for each axis.
+            elif (cell to be drawn as a box):
+                `self._draw_cell_3D_box()`, generic implementation that calls `self.draw_line3D`
+    """
 
     def draw(self, backend_info):
         drawing_func = getattr(self, f"draw_{backend_info['ndim']}D")
@@ -266,4 +312,4 @@ class GeometryBackend(Backend):
 
         self.draw_line3D(x, y, z, line={'color': color, 'width': width}, **kwargs)
 
-GeometryPlot._backends.register_template(GeometryBackend)
+GeometryPlot.backends.register_template(GeometryBackend)

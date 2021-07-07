@@ -17,4 +17,4 @@ class MatplotlibPDOSBackend(MatplotlibBackend, PdosBackend):
         self.ax.set_ylim(min(Es), max(Es))
 
 
-PdosPlot._backends.register("matplotlib", MatplotlibPDOSBackend)
+PdosPlot.backends.register("matplotlib", MatplotlibPDOSBackend)

@@ -56,4 +56,4 @@ class MatplotlibGridBackend(MatplotlibBackend, GridBackend):
 
             self.ax.plot_trisurf(x, y, z, linewidth=0, antialiased=True)
 
-GridPlot._backends.register("matplotlib", MatplotlibGridBackend)
+GridPlot.backends.register("matplotlib", MatplotlibGridBackend)

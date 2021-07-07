@@ -67,4 +67,4 @@ class PlotlyGridBackend(PlotlyBackend, GridBackend):
     def _after_get_figure(self):
         self.update_layout(legend_orientation='h')
 
-GridPlot._backends.register("plotly", PlotlyGridBackend)
+GridPlot.backends.register("plotly", PlotlyGridBackend)

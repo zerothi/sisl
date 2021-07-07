@@ -9,7 +9,7 @@ import numpy as np
 
 import sisl
 from ..plot import Plot, entry_point
-from ..plotutils import find_files
+from ..plotutils import call_method_if_present, find_files
 from ..input_fields import (
     TextInput, SwitchInput, ColorPicker, DropdownInput,
     IntegerInput, FloatInput, RangeInput, RangeSlider,
@@ -601,7 +601,8 @@ class BandsPlot(Plot):
         }
 
     def _after_get_figure(self, Erange, spin, spin_texture_colorscale):
-        self._backend.after_get_figure(self, Erange, spin, spin_texture_colorscale)
+        if hasattr(self._backend, "after_get_figure"):
+            self._backend.after_get_figure(self, Erange, spin, spin_texture_colorscale)
 
     def _calculate_gaps(self):
         """

@@ -5,8 +5,16 @@ import bpy
 
 
 class BlenderBackend(Backend):
+    """Generic backend for the blender framework.
 
-    figure = None
+    This is the first experiment with it, so it is quite simple.
+
+    Everything is drawn in the same scene. On initialization, a collections
+    dictionary is started. The keys should be the local name of a collection
+    in the backend environment and the values are the actual collections.
+    Plots should try to organize the items they draw in collections. However,
+    as said before, this is just a proof of concept.
+    """
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -64,4 +72,4 @@ class BlenderMultiplePlotBackend(MultiplePlotBackend, BlenderBackend):
     def _draw_child_in_ax(self, child):
         child.get_figure(clear_fig=False)
 
-MultiplePlot._backends.register("blender", BlenderMultiplePlotBackend)
+MultiplePlot.backends.register("blender", BlenderMultiplePlotBackend)

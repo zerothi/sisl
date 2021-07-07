@@ -7,6 +7,17 @@ from ..templates.backend import Backend, MultiplePlotBackend, SubPlotsBackend
 from ...plot import Plot, SubPlots, MultiplePlot
 
 class MatplotlibBackend(Backend):
+    """Generic backend for the matplotlib framework.
+
+    On initialization, `matplotlib.pyplot.subplots` is called and the figure and and
+    axes obtained are stored under `self.figure` and `self.ax`, respectively.
+    If an attribute is not found on the backend, it is looked for
+    in the axes.
+
+    On initialization, we also take the class attribute `_ax_defaults` (a dictionary) 
+    and run `self.ax.update` with those parameters. Therefore this parameter can be used
+    to provide default parameters for the axes.
+    """
     
     _ax_defaults = {}
 
@@ -78,7 +89,7 @@ class MatplotlibBackend(Backend):
 class MatplotlibMultiplePlotBackend(MatplotlibBackend, MultiplePlotBackend):
     pass
 
-class MatplotlibSubplotsBackend(MatplotlibMultiplePlotBackend, SubPlotsBackend):
+class MatplotlibSubPlotsBackend(MatplotlibMultiplePlotBackend, SubPlotsBackend):
 
     def draw(self, backend_info, rows, cols, childs, **make_subplots_kwargs):
 
@@ -97,5 +108,5 @@ class MatplotlibSubplotsBackend(MatplotlibMultiplePlotBackend, SubPlotsBackend):
         for (row, col) , child in zip(indices, childs):
             child.draw_on(self.axes[row, col])
 
-MultiplePlot._backends.register("matplotlib", MatplotlibMultiplePlotBackend)
-SubPlots._backends.register("matplotlib", MatplotlibSubplotsBackend)
+MultiplePlot.backends.register("matplotlib", MatplotlibMultiplePlotBackend)
+SubPlots.backends.register("matplotlib", MatplotlibSubPlotsBackend)

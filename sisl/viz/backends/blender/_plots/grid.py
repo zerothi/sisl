@@ -34,4 +34,4 @@ class BlenderGridBackend(BlenderBackend, GridBackend):
 
             mesh.materials.append(mat)
 
-GridPlot._backends.register("blender", BlenderGridBackend)
+GridPlot.backends.register("blender", BlenderGridBackend)

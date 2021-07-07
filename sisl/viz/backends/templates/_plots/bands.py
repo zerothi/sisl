@@ -4,6 +4,19 @@ from ..backend import Backend
 from ....plots import BandsPlot
 
 class BandsBackend(Backend):
+    """Draws the bands provided by a `BandsPlot`
+
+    The workflow implemented by it is as follows:
+        First, `self.draw_bands` draws all bands like:
+            for band in bands:
+                if (spin texture needs to be drawn):
+                    `self._draw_spin_textured_band()`, NO GENERIC IMPLEMENTATION (optional) 
+                else:
+                    `self._draw_band()`, generic implementation that calls `self._draw_line`
+        Once all bands are drawn, `self.draw_gaps` loops through all the gaps to be drawn:
+            for gap in gaps:
+                `self.draw_gap()`, MUST BE IMPLEMENTED!
+    """
 
     def draw(self, backend_info):
         self.draw_bands(*backend_info["draw_bands"])
@@ -46,6 +59,7 @@ class BandsBackend(Backend):
         return NotImplementedError(f"{self.__class__.__name__} doesn't implement plotting spin_textured bands.")
 
     def _draw_gaps(self, gaps_info):
+        """Iterates over all gaps to draw them"""
         for gap_info in gaps_info:
             self.draw_gap(**gap_info)
 
@@ -54,6 +68,17 @@ class BandsBackend(Backend):
         """This method should draw a gap, given the k and E coordinates.
 
         The color of the line should be determined by `color`, and `name` should be used for labeling.
+
+        Parameters
+        -----------
+        ks: numpy array of shape (2,)
+            The two k coordinates of the gap.
+        Es: numpy array of shape (2,)
+            The two E coordinates of the gap, sorted from minor to major.
+        color: str
+            Color with which the gap should be drawn.
+        name: str
+            Label that should be asigned to the gap.
         """
 
     # Methods needed for testing
@@ -64,4 +89,4 @@ class BandsBackend(Backend):
         """
         raise NotImplementedError
 
-BandsPlot._backends.register_template(BandsBackend)
+BandsPlot.backends.register_template(BandsBackend)

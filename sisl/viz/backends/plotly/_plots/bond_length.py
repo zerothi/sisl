@@ -3,7 +3,7 @@ from .geometry import PlotlyGeometryBackend
 from ...templates import BondLengthMapBackend
 
 
-class PlotlyBondLengthMapBackend(PlotlyGeometryBackend, BondLengthMapBackend):
+class PlotlyBondLengthMapBackend(BondLengthMapBackend, PlotlyGeometryBackend):
     
     def draw_2D(self, backend_info, **kwargs):
         super().draw_2D(backend_info, **kwargs)
@@ -19,4 +19,4 @@ class PlotlyBondLengthMapBackend(PlotlyGeometryBackend, BondLengthMapBackend):
 
         self.update_layout(legend_orientation='h')
 
-BondLengthMap._backends.register("plotly", PlotlyBondLengthMapBackend)
+BondLengthMap.backends.register("plotly", PlotlyBondLengthMapBackend)

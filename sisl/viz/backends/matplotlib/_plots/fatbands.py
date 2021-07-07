@@ -12,4 +12,4 @@ class MatplotlibFatbandsBackend(MatplotlibBandsBackend, FatbandsBackend):
             color=color, label=name
         )
 
-FatbandsPlot._backends.register("matplotlib", MatplotlibFatbandsBackend)
+FatbandsPlot.backends.register("matplotlib", MatplotlibFatbandsBackend)
