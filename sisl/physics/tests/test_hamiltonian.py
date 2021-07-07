@@ -651,6 +651,27 @@ class TestHamiltonian:
         assert np.allclose(es1.eig, es2.eig)
         assert not np.allclose(es1.state, es2.state)
 
+    def test_eigenstate_tile(self, setup):
+        # Test of eigenvalues
+        R, param = [0.1, 1.5], [0., 2.7]
+        H1 = setup.H.copy()
+        H1.construct((R, param))
+        H2 = H1.tile(2, 1)
+
+        k = [0] * 3
+        # we must select a k that does not fold on
+        # itself which then creates degenerate states
+        for k1 in [0.5, 1/3]:
+            k[1] = k1
+            es1 = H1.eigenstate(k)
+            es1_2 = es1.tile(2, 1, normalize=True)
+            es2 = H2.eigenstate(es1_2.info['k'])
+
+            # we need to check that these are somewhat the same
+            out = es1_2.inner(es2, diag=False)
+            abs_out = np.absolute(out)
+            assert np.isclose(abs_out, 1).sum() == len(es1)
+
     def test_gauge_velocity(self, setup):
         R, param = [0.1, 1.5], [1., 0.1]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)

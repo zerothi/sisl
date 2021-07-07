@@ -305,6 +305,72 @@ class State(ParentContainer):
         sub.info = self.info
         return sub
 
+    def tile(self, reps, axis, normalize=False):
+        r"""Tile the state vectors for a new supercell
+
+        Tiling a state vector makes use of the Bloch factors for a state by utilizing
+
+        .. math::
+
+           \psi_{\mathbf k}(\mathbf r + \mathbf T) \propto e^{i\mathbf k\cdot \mathbf T}
+
+        where :math:`\mathbf T = i\mathbf a_0 + j\mathbf a_1 + k\mathbf a_2`.
+
+        Parameters
+        ----------
+        reps : int
+           number of repetitions along a specific lattice vector
+        axis : int
+           lattice to tile along
+        normalize: bool, optional
+           whether the states are normalized upon return, may be useful for
+           eigenstates
+
+        See Also
+        --------
+        Geometry.tile
+        """
+        # the parent gets tiled
+        parent = self.parent.tile(reps, axis)
+        # the k-point gets reduced
+        k = _a.asarrayd(self.info.get("k", [0]*3))
+
+        # now tile the state vectors
+        state = np.tile(self.state, (1, reps)).astype(np.complex128, copy=False)
+        # re-shape to apply phase-factors
+        state.shape = (len(self), reps, -1)
+
+        # Tiling stuff is trivial since we simply
+        # translate the bloch coefficients with:
+        #   exp(i k.T)
+        # with T being
+        #   i * a_0 + j * a_1 + k * a_2
+        # We can leave out the lattice vectors entirely
+        phase = exp(k[axis] * _a.aranged(reps) * 2j * _pi)
+
+        state *= phase.reshape(1, -1, 1)
+        state.shape = (len(self), -1)
+
+        # update new k; when we double the system, we halve the periodicity
+        # and hence we need to account for this
+        k[axis] = (k[axis] * reps % 1)
+        while k[axis] > 0.5:
+            k[axis] -= 1
+        while k[axis] <= -0.5:
+            k[axis] += 1
+
+        # this allows us to make the same usable for StateC classes
+        s = self.copy()
+        s.parent = parent
+        s.state = state
+        # update the k-point
+        s.info = dict(**self.info)
+        s.info.update({'k': k})
+
+        if normalize:
+            return s.normalize()
+        return s
+
     def __getitem__(self, key):
         """ Return a new state with only one associated state
 
