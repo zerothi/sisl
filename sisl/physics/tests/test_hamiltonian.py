@@ -598,13 +598,13 @@ class TestHamiltonian:
             eig2 = np.sort(HS.eig(k).real)
             eig3 = np.sort(HS.eig(k, eigvals_only=False)[0].real)
             eig4 = es.inner(matrix=HS.Hk(k))
-            eig5 = es.inner(right=es, matrix=HS.Hk(k))
+            eig5 = es.inner(ket=es, matrix=HS.Hk(k))
             assert np.allclose(eig1, eig2, atol=1e-5)
             assert np.allclose(eig1, eig3, atol=1e-5)
             assert np.allclose(eig1, eig4, atol=1e-5)
             assert np.allclose(eig1, eig5, atol=1e-5)
 
-            assert es.inner(matrix=HS.Hk([0.1] * 3), right=HS.eigenstate([0.3] * 3),
+            assert es.inner(matrix=HS.Hk([0.1] * 3), ket=HS.eigenstate([0.3] * 3),
                             diag=False).shape == (len(es), len(es))
 
     def test_inner(self, setup):

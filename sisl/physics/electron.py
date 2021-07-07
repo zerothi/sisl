@@ -1604,15 +1604,15 @@ class _electron_State:
         S = self.Sk()
         return conj(self.state) * S.dot(self.state.T).T
 
-    def inner(self, right=None, matrix=None, diag=True):
+    def inner(self, ket=None, matrix=None, diag=True):
         r""" Calculate the inner product by :math:`\mathbf A_{ij} = \langle\psi_i| \mathbf M |\psi'_j\rangle`
 
         The bra will be `self.state`.
 
         Parameters
         ----------
-        right : State or array_like, optional
-           the right object to calculate the inner product with, if not passed it will do the inner
+        ket : State or array_like, optional
+           the ket object to calculate the inner product with, if not passed it will do the inner
            product with itself.
         matrix : array_like, optional
            a vector or matrix that expresses the operator `M`. Defaults to the overlap matrix `S`.
@@ -1621,7 +1621,7 @@ class _electron_State:
 
         Raises
         ------
-        ValueError : in case where `right` is not None and `self` and `right` has differing overlap matrix.
+        ValueError : in case where `ket` is not None and `self` and `ket` has differing overlap matrix.
 
         Returns
         -------
@@ -1632,7 +1632,7 @@ class _electron_State:
             # Retrieve the overlap matrix (FULL S is required for NC)
             matrix = self.Sk()
 
-        return super().inner(right, matrix, diag)
+        return super().inner(ket, matrix, diag)
 
     def spin_moment(self, project=False):
         r""" Calculate spin moment from the states

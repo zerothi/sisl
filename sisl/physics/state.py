@@ -396,16 +396,16 @@ class State(ParentContainer):
         s.info = self.info
         return s
 
-    def outer(self, right=None, align=True):
+    def outer(self, ket=None, align=True):
         r""" Return the outer product by :math:`\sum_i|\psi_i\rangle\langle\psi'_i|`
 
         Parameters
         ----------
-        right : State, optional
-           the right object to calculate the outer product of, if not passed it will do the outer
-           product with itself. This object will always be the left :math:`|\psi_i\rangle`
+        ket : State, optional
+           the ket object to calculate the outer product of, if not passed it will do the outer
+           product with itself. The object itself will always be the bra :math:`|\psi_i\rangle`
         align : bool, optional
-           first align `right` with the angles for this state (see `align`)
+           first align `ket` with the angles for this state (see `align`)
 
         Notes
         -----
@@ -416,23 +416,23 @@ class State(ParentContainer):
         numpy.ndarray
             a matrix with the sum of outer state products
         """
-        if right is None:
+        if ket is None:
             return einsum('ki,kj->ij', self.state, _conj(self.state))
-        if not np.array_equal(self.shape, right.shape):
+        if not np.array_equal(self.shape, ket.shape):
             raise ValueError(f"{self.__class__.__name__}.outer requires the objects to have the same shape")
         if align:
             # Align the states
-            right = self.align_phase(right, copy=False)
-        return einsum('ki,kj->ij', self.state, _conj(right.state))
+            ket = self.align_phase(ket, copy=False)
+        return einsum('ki,kj->ij', self.state, _conj(ket.state))
 
-    def inner(self, right=None, matrix=None, diag=True):
+    def inner(self, ket=None, matrix=None, diag=True):
         r""" Calculate the inner product as :math:`\mathbf A_{ij} = \langle\psi_i|\mathbf M|\psi'_j\rangle`
 
         Parameters
         ----------
-        right : State, optional
-           the right object to calculate the inner product with, if not passed it will do the inner
-           product with itself. This object will always be the left :math:`\langle\psi_i|`
+        ket : State, optional
+           the ket object to calculate the inner product with, if not passed it will do the inner
+           product with itself. The object itself will always be the bra :math:`\langle\psi_i|`
         matrix : array_like, optional
            whether a matrix is sandwiched between the bra and ket, default to the identity matrix
         diag : bool, optional
@@ -453,36 +453,36 @@ class State(ParentContainer):
             M = matrix
         ndim = M.ndim
 
-        left = self.state
-        # decide on the right
-        if right is None:
-            right = self.state
-        elif isinstance(right, State):
-            # check whether this, and right are both originating from
+        bra = self.state
+        # decide on the ket
+        if ket is None:
+            ket = self.state
+        elif isinstance(ket, State):
+            # check whether this, and ket are both originating from
             # non-orthogonal basis. That would be non-ideal
-            right = right.state
-        if len(right.shape) == 1:
-            right.shape = (1, -1)
+            ket = ket.state
+        if len(ket.shape) == 1:
+            ket.shape = (1, -1)
 
         # They *must* have same number of basis points per state
-        if self.shape[-1] != right.shape[-1]:
-            raise ValueError(f"{self.__class__.__name__}.inner requires the objects to have the same number of coefficients per vector {self.shape[-1]} != {right.shape[-1]}")
+        if self.shape[-1] != ket.shape[-1]:
+            raise ValueError(f"{self.__class__.__name__}.inner requires the objects to have the same number of coefficients per vector {self.shape[-1]} != {ket.shape[-1]}")
 
         if diag:
-            if len(left) != len(right):
-                warn(f"{self.__class__.__name__}.inner matrix product is non-square, only the first {min(len(left), len(right))} diagonal elements will be returned.")
-                if len(left) < len(right):
-                    right = right[:len(left)]
+            if len(bra) != len(ket):
+                warn(f"{self.__class__.__name__}.inner matrix product is non-square, only the first {min(len(bra), len(ket))} diagonal elements will be returned.")
+                if len(bra) < len(ket):
+                    ket = ket[:len(bra)]
                 else:
-                    left = left[:len(right)]
+                    bra = bra[:len(ket)]
             if ndim == 2:
-                Mij = einsum('ij,ji->i', _conj(left), M.dot(right.T))
+                Mij = einsum('ij,ji->i', _conj(bra), M.dot(ket.T))
             elif ndim == 1:
-                Mij = einsum('ij,j,ij->i', _conj(left), M, right)
+                Mij = einsum('ij,j,ij->i', _conj(bra), M, ket)
         elif ndim == 2:
-            Mij = _conj(left) @ M.dot(right.T)
+            Mij = _conj(bra) @ M.dot(ket.T)
         elif ndim == 1:
-            Mij = einsum('ij,j,kj->ik', _conj(left), M, right)
+            Mij = einsum('ij,j,kj->ik', _conj(bra), M, ket)
         return Mij
 
     def phase(self, method='max', return_indices=False):
