@@ -1615,13 +1615,9 @@ class _electron_State:
            the ket object to calculate the inner product with, if not passed it will do the inner
            product with itself.
         matrix : array_like, optional
-           a vector or matrix that expresses the operator `M`. Defaults to the overlap matrix `S`.
+           a vector or matrix that expresses the operator `M`. Defaults to the overlap matrix :math:`\mathbf S`.
         diag : bool, optional
            only return the diagonal matrix :math:`\mathbf A_{ii}`.
-
-        Raises
-        ------
-        ValueError : in case where `ket` is not None and `self` and `ket` has differing overlap matrix.
 
         Returns
         -------
@@ -1631,6 +1627,8 @@ class _electron_State:
         if matrix is None:
             # Retrieve the overlap matrix (FULL S is required for NC)
             matrix = self.Sk()
+            if ket is not None:
+                warn(f"{self.__class__.__name__}.inner uses an overlap matrix that may be incompatible with your ket states, please be aware of this!")
 
         return super().inner(ket, matrix, diag)
 

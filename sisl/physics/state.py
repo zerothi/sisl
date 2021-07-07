@@ -442,6 +442,10 @@ class State(ParentContainer):
         -----
         This does *not* take into account a possible overlap matrix when non-orthogonal basis sets are used.
 
+        Raises
+        ------
+        ValueError : if the number of state coefficients are different for the bra and ket
+
         Returns
         -------
         numpy.ndarray
