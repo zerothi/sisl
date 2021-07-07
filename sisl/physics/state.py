@@ -476,14 +476,14 @@ class State(ParentContainer):
                 else:
                     bra = bra[:len(ket)]
             if ndim == 2:
-                Mij = einsum('ij,ji->i', _conj(bra), M.dot(ket.T))
+                Aij = einsum('ij,ji->i', _conj(bra), M.dot(ket.T))
             elif ndim == 1:
-                Mij = einsum('ij,j,ij->i', _conj(bra), M, ket)
+                Aij = einsum('ij,j,ij->i', _conj(bra), M, ket)
         elif ndim == 2:
-            Mij = _conj(bra) @ M.dot(ket.T)
+            Aij = _conj(bra) @ M.dot(ket.T)
         elif ndim == 1:
-            Mij = einsum('ij,j,kj->ik', _conj(bra), M, ket)
-        return Mij
+            Aij = einsum('ij,j,kj->ik', _conj(bra), M, ket)
+        return Aij
 
     def phase(self, method='max', return_indices=False):
         r""" Calculate the Euler angle (phase) for the elements of the state, in the range :math:`]-\pi;\pi]`
