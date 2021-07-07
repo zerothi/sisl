@@ -1627,7 +1627,7 @@ class _electron_State:
         if matrix is None:
             # Retrieve the overlap matrix (FULL S is required for NC)
             matrix = self.Sk()
-            if ket is not None:
+            if ket is not None and not isinstance(matrix, _FakeMatrix):
                 warn(f"{self.__class__.__name__}.inner uses an overlap matrix that may be incompatible with your ket states, please be aware of this!")
 
         return super().inner(ket, matrix, diag)
