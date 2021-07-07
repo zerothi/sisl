@@ -33,6 +33,7 @@ Remark that the `gridSileSiesta` file encompass all ``RHO``, ``RHOINIT``, ``DRHO
    fcSileSiesta - Force constant matrix
    kpSileSiesta - k-points from simulation
    rkpSileSiesta - k-points to simulation
+   structSileSiesta - geometry in STRUCT_* files
 
 
 The TranSiesta specific output files are:
@@ -55,6 +56,7 @@ from .kp import *
 from .orb_indx import *
 from .out import *
 from .pdos import *
+from .struct import *
 from .siesta_nc import *
 from .siesta_grid import *
 from .transiesta_grid import *

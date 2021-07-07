@@ -1,6 +1,8 @@
 0.X.Y
 =====
 
+- enabled reading from STRUCT_* files (Siesta input/output) #308
+
 - enabled reading the SuperCell block from fdf
 
 - added Spin.spinor to get number of spinor components
