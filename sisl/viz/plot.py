@@ -1112,7 +1112,6 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
 
         return self
 
-    @vizplotly_settings('before')
     def get_figure(self, backend, clear_fig=True, **kwargs):
         """
         Generates a figure out of the already processed data.

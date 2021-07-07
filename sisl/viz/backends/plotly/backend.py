@@ -7,13 +7,15 @@ import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 
 from ..templates.backend import Backend, MultiplePlotBackend, SubPlotsBackend, AnimationBackend
-from ...plot import SubPlots, MultiplePlot, Animation
+from ...plot import Plot, SubPlots, MultiplePlot, Animation
 
 class PlotlyBackend(Backend):
 
     _layout_defaults = {}
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
         self.figure = go.Figure()
         self.update_layout(**self._layout_defaults)
 
@@ -21,6 +23,27 @@ class PlotlyBackend(Backend):
         if key != "figure":
             return getattr(self.figure, key)
         raise AttributeError(key)
+
+    def draw_on(self, figure):
+        """Draws this plot in a different figure.
+
+        Parameters
+        -----------
+        figure: Plot, PlotlyBackend or plotly.graph_objs.Figure
+            The figure to draw this plot in.
+        """
+        if isinstance(figure, Plot):
+            figure = figure._backend.figure
+        elif isinstance(figure, PlotlyBackend):
+            figure = figure.figure
+
+        if not isinstance(figure, go.Figure):
+            raise TypeError(f"{self.__class__.__name__} was provided a {figure.__class__.__name__} to draw on.")
+
+        self_fig = self.figure
+        self.figure = figure
+        self._plot.get_figure(backend=self._backend_name, clear_fig=False)
+        self.figure = self_fig
 
     def clear(self, frames=True, layout=False):
         """ Clears the plot canvas so that data can be reset
@@ -337,16 +360,7 @@ class PlotlyBackend(Backend):
         self.draw_line3D(*args, mode="markers", **kwargs)
 
 class PlotlyMultiplePlotBackend(PlotlyBackend, MultiplePlotBackend):
-    
-    def draw(self, backend_info, childs):
-        for child in childs:
-            self._draw_child_in_fig(child, self.figure)
-
-    def _draw_child_in_fig(self, child, figure):
-        child_fig = child._backend.figure
-        child._backend.figure = figure
-        child.get_figure(clear_fig=False)
-        child._backend.figure = child_fig
+    pass
 
 class PlotlySubplotsBackend(PlotlyBackend, SubPlotsBackend):
 

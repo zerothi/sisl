@@ -7,10 +7,10 @@ import plotly.graph_objects as go
 from scipy.ndimage import affine_transform
 
 import sisl
+from sisl.messages import warn
 from sisl._supercell import cell_invert
 from sisl import _array as _a
-from ..plot import Plot, entry_point, MultiplePlot
-from .geometry import GeometryPlot
+from ..plot import Plot, entry_point
 from ..input_fields import (
     TextInput, SileInput, Array1DInput, SwitchInput,
     ColorPicker, DropdownInput, CreatableDropdown, IntegerInput, FloatInput, RangeInput, RangeSlider,
@@ -60,11 +60,6 @@ class GridPlot(Plot):
     offset: array-like, optional
         The offset of the grid along each axis. This is important if you are
         planning to match this grid with other geometry related plots.
-    cut_vacuum: bool, optional
-        Whether the vacuum should not be taken into account for displaying
-        the grid.             This is essential especially in 3D
-        representations, since plotly needs to calculate the
-        isosurfaces of the grid.
     trace_name: str, optional
         The name that the trace will show in the legend. Good when merging
         with other plots to be able to toggle the trace in the legend
@@ -119,7 +114,7 @@ class GridPlot(Plot):
         located. This path has to be relative to the root fdf.
     """
 
-    #Define all the class attributes
+    # Define all the class attributes
     _plot_type = "Grid"
 
     _update_methods = {
@@ -268,14 +263,6 @@ class GridPlot(Plot):
             help="""The offset of the grid along each axis. This is important if you are planning to match this grid with other geometry related plots."""
         ),
 
-        SwitchInput(
-            key="cut_vacuum", name="Cut vacuum",
-            default=False,
-            help="""Whether the vacuum should not be taken into account for displaying the grid.
-            This is essential especially in 3D representations, since plotly needs to calculate the
-            isosurfaces of the grid."""
-        ),
-
         TextInput(
             key="trace_name", name="Trace name",
             default=None,
@@ -412,6 +399,17 @@ class GridPlot(Plot):
             ]
         ),
 
+        SwitchInput(key='plot_geom', name='Plot geometry',
+            default=False,
+            help="""If True the geometry associated to the grid will also be plotted"""
+        ),
+
+        ProgramaticInput(key='geom_kwargs', name='Geometry plot extra arguments',
+            default={},
+            dtype=dict,
+            help="""Extra arguments that are passed to geom.plot() if plot_geom is set to True"""
+        ),
+
     )
 
     def _after_init(self):
@@ -446,8 +444,8 @@ class GridPlot(Plot):
             self.modify_param(key, "inputField.params.max", self.grid.cell[ax, ax])
             self.get_param(key, as_dict=False).update_marks()
 
-    def _set_data(self, axes, nsc, interp, trace_name, transforms, represent, cut_vacuum, grid_file,
-        x_range, y_range, z_range, transform_bc, reduce_method):
+    def _set_data(self, axes, nsc, interp, trace_name, transforms, represent, grid_file,
+        x_range, y_range, z_range, plot_geom, geom_kwargs, transform_bc, reduce_method):
 
         if trace_name is None and grid_file:
             trace_name = grid_file.name
@@ -519,20 +517,24 @@ class GridPlot(Plot):
         backend_info = prepare_func(grid, values, axes, nsc, trace_name, showlegend=bool(trace_name) or values.ndim == 3)
 
         backend_info["ndim"] = self._ndim
-        return backend_info
 
         # Add also the geometry if the user requested it
         # This should probably not work like this. It should make use
         # of MultiplePlot somehow. The problem is that right now, the bonds
         # are calculated each time this method is called, for example
-        # if plot_geom:
-        #     geom = getattr(self.grid, 'geometry', None)
-        #     if geom is None:
-        #         print('You asked to plot the geometry, but the grid does not contain any geometry')
-        #     else:
-        #         geom_plot = geom.plot(**{'axes': axes, "nsc": self.get_setting("nsc"), **geom_kwargs})
+        geom_plot = None
+        if plot_geom:
+            geom = getattr(self.grid, 'geometry', None)
+            if geom is None:
+                warn('You asked to plot the geometry, but the grid does not contain any geometry')
+            else:
+                geom_plot = geom.plot(**{'axes': axes, "nsc": self.get_setting("nsc"), **geom_kwargs})
 
-        #         self.add_traces(geom_plot.data)
+        backend_info["geom_plot"] = geom_plot
+
+        return backend_info
+
+        
 
     def _get_ax_range(self, grid, ax, nsc):
 
@@ -1200,11 +1202,6 @@ class WavefunctionPlot(GridPlot):
     offset: array-like, optional
         The offset of the grid along each axis. This is important if you are
         planning to match this grid with other geometry related plots.
-    cut_vacuum: bool, optional
-        Whether the vacuum should not be taken into account for displaying
-        the grid.             This is essential especially in 3D
-        representations, since plotly needs to calculate the
-        isosurfaces of the grid.
     trace_name: str, optional
         The name that the trace will show in the legend. Good when merging
         with other plots to be able to toggle the trace in the legend
