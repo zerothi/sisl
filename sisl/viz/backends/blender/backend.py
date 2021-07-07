@@ -13,6 +13,9 @@ class BlenderBackend(Backend):
 
         self._collections = {}
 
+    def draw_on(self, figure):
+        self._plot.get_figure(backend=self._backend_name, clear_fig=False)
+
     def clear(self):
         """ Clears the blender scene so that data can be reset
         Parameters

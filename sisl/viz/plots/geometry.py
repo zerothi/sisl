@@ -2,8 +2,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from functools import wraps
-from collections import defaultdict
-from collections.abc import Iterable
 
 import numpy as np
 
@@ -11,12 +9,12 @@ from sisl import Geometry, PeriodicTable, Atom, AtomGhost
 from sisl.utils.mathematics import fnorm
 from ..plot import Plot, entry_point
 from ..input_fields import (
-    ProgramaticInput, FunctionInput, FloatInput,
+    ProgramaticInput,
     SwitchInput, DropdownInput, AtomSelect, GeomAxisSelect,
     FilePathInput, PlotableInput, IntegerInput, TextInput, Array1DInput
 )
 from ..plotutils import values_to_colors
-from sisl._dispatcher import AbstractDispatch, ClassDispatcher
+from sisl._dispatcher import AbstractDispatch
 
 
 class BoundGeometry(AbstractDispatch):

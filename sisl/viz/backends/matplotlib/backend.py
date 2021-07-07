@@ -1,17 +1,42 @@
 import itertools
 import matplotlib.pyplot as plt
+from matplotlib.axes import Axes
 import numpy as np
 
 from ..templates.backend import Backend, MultiplePlotBackend, SubPlotsBackend
-from ...plot import SubPlots, MultiplePlot
+from ...plot import Plot, SubPlots, MultiplePlot
 
 class MatplotlibBackend(Backend):
     
     _ax_defaults = {}
 
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
         self.figure, self.ax = plt.subplots()
         self._init_ax()
+
+    def draw_on(self, ax):
+        """Draws this plot in a different figure.
+
+        Parameters
+        -----------
+        ax: Plot, PlotlyBackend or matplotlib.axes.Axes
+            The axes to draw this plot in.
+        """
+        if isinstance(ax, Plot):
+            ax = ax._backend.ax
+        elif isinstance(ax, MatplotlibBackend):
+            ax = ax.ax
+
+        if not isinstance(ax, Axes):
+            raise TypeError(f"{self.__class__.__name__} was provided a {ax.__class__.__name__} to draw on.")
+        
+        self_ax = self.ax
+        self.ax = ax
+        self._init_ax()
+        self._plot.get_figure(backend=self._backend_name, clear_fig=False)
+        self.ax = self_ax
     
     def _init_ax(self):
         self.ax.update(self._ax_defaults)
@@ -51,19 +76,7 @@ class MatplotlibBackend(Backend):
         return self.ax.scatter(x, y, c=marker.get("color"), s=marker.get("size", 1), cmap=marker.get("colorscale"), label=name, **kwargs)
 
 class MatplotlibMultiplePlotBackend(MatplotlibBackend, MultiplePlotBackend):
-
-    def draw(self, backend_info, childs):
-
-        # Start assigning each plot to a position of the layout
-        for child in childs:
-            self._draw_child_in_ax(child, self.ax)
-            
-    def _draw_child_in_ax(self, child, ax):
-        child_ax = child._backend.ax
-        child._backend.ax = ax
-        child._init_ax()
-        child.get_figure(clear_fig=False)
-        child._backend.ax = child_ax
+    pass
 
 class MatplotlibSubplotsBackend(MatplotlibMultiplePlotBackend, SubPlotsBackend):
 
@@ -82,7 +95,7 @@ class MatplotlibSubplotsBackend(MatplotlibMultiplePlotBackend, SubPlotsBackend):
         indices = itertools.product(range(rows), range(cols))
         # Start assigning each plot to a position of the layout
         for (row, col) , child in zip(indices, childs):
-            self._draw_child_in_ax(child, self.axes[row, col])
+            child.draw_on(self.axes[row, col])
 
 MultiplePlot._backends.register("matplotlib", MatplotlibMultiplePlotBackend)
 SubPlots._backends.register("matplotlib", MatplotlibSubplotsBackend)

@@ -9,6 +9,9 @@ class GridBackend(Backend):
         drawing_func = getattr(self, f"draw_{backend_info['ndim']}D")
 
         drawing_func(backend_info)
+
+        if backend_info["geom_plot"] is not None:
+            self.draw_other_plot(backend_info["geom_plot"])
     
     def draw_1D(self, backend_info, **kwargs):
         """Draws the grid in 1D"""
