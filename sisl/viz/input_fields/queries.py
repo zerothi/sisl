@@ -100,7 +100,7 @@ class QueriesInput(InputField):
         query = self.complete_query(query)
 
         if raise_not_active:
-            if not group["active"]:
+            if not query["active"]:
                 raise ValueError(f"Query {query} is not active and you are trying to use it")
 
         query_str = []
