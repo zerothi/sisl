@@ -696,15 +696,15 @@ class TestHamiltonian:
     def test_eigenstate_translate(self, setup):
         # Test of eigenvalues
         R, param = [0.1, 1.5], [0., 2.7]
-        H1 = setup.H.copy()
-        H1.construct((R, param))
+        H = setup.H.copy()
+        H.construct((R, param))
 
         k = [0] * 3
         # we must select a k that does not fold on
         # itself which then creates degenerate states
         for k1 in [0.5, 1/3]:
             k[1] = k1
-            es1 = H1.eigenstate(k)
+            es1 = H.eigenstate(k)
             es1_2 = es1.tile(2, 1)
             es2 = es1.translate([0, 1, 0])
             assert np.allclose(es1_2.state[:, :len(es1)],
