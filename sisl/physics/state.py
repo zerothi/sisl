@@ -305,6 +305,38 @@ class State(ParentContainer):
         sub.info = self.info
         return sub
 
+    @property
+    def state_sc(self):
+        r""" Calculate the state coefficients in the auxiliary supercell
+
+        The format of this state vector is usable for `inner` as the ``ket`` argument.
+        The order of the state vectors is equivalent to the auxiliary supercell order.
+
+        See Also
+        --------
+        inner : these state vectors may be used in the inner product
+        tile : equivalent form along a single given axis
+        translate : a single translation of the state vectors
+
+        Examples
+        --------
+        The returned state vectors can be formulated like this:
+
+        >>> state = State(...)
+        >>> state_sc = np.stack([state.translate(isc)
+        ...                      for _, isc in state.parent.sc])
+        >>> assert state_sc.shape == (len(state) * state.parent.n_s, state.shape[1])
+        """
+        k = _a.asarrayd(self.info.get("k", [0]*3))
+        sc = self.parent.sc
+        if np.allclose(k, 0):
+            def translate(isc):
+                return self.state
+        else:
+            def translate(isc):
+                return self.state * exp(2j*_pi * k @ isc)
+        return np.concatenate([translate(isc) for _, isc in sc], axis=0)
+
     def translate(self, isc):
         r""" Translate the vectors to a new unit-cell position
 
