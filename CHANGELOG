@@ -1,6 +1,8 @@
 0.X.Y
 =====
 
+- enabled tiling a State object, #354 and #355
+
 - enabled reading from STRUCT_* files (Siesta input/output) #308
 
 - enabled reading the SuperCell block from fdf
