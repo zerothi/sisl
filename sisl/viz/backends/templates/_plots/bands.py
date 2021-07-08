@@ -19,34 +19,53 @@ class BandsBackend(Backend):
     """
 
     def draw(self, backend_info):
-        self.draw_bands(*backend_info["draw_bands"])
+        self.draw_bands(**backend_info["draw_bands"])
 
         self._draw_gaps(backend_info["gaps"])
 
-    def draw_bands(self, filtered_bands, spin_texture, spin_moments, spin_texture_colorscale, spin_polarized, bands_color, spindown_color, bands_width, spin, add_band_trace_data):
+    def draw_bands(self, filtered_bands, line, spindown_line, spin, spin_texture):
+        """
+        Manages the flow of drawing all the bands
 
-        if spin_texture:
+        Parameters
+        -----------
+        filtered_bands: xarray.DataArray
+            The bands values, with only those bands that need to be plotted.
+        line: dict
+            The line style of the bands, as with plotly standards.
+        spindown_line: dict
+            Special styles for spin down bands. All styles not specified will be taken
+            from `line`.
+        spin: Spin
+            The spin class associated to the bands calculation
+        spin_texture: dict
+            Containing the keys:
+                - "show": bool, whether spin texture needs to be displayed
+                - "values": xarray.DataArray, the spin texture values that have to be displayed.
+                - "colorscale": str, the colorscale to use for the spin texture values.
+        """
+        if spin_texture["show"]:
             draw_band_func = self._draw_spin_textured_band
+            spin_moments = spin_texture["values"]
         else:
             draw_band_func = self._draw_band
 
-        if not callable(add_band_trace_data):
-            add_band_trace_data = lambda band, drawer: {}
-
         # Now loop through all bands to draw them
-        for spin_bands, spin in zip(filtered_bands.transpose('spin', 'band', 'k'), filtered_bands.spin.values):
+        for spin_bands, ispin in zip(filtered_bands.transpose('spin', 'band', 'k'), filtered_bands.spin.values):
+            line_style = line
+            if ispin == 1:
+                line_style.update(spindown_line)
             for band in spin_bands:
                 # Get the xy values for the band
                 x = band.k.values
                 y = band.values
                 kwargs = {
-                    "name": "{} spin {}".format(band.band.values, ["up", "down"][spin]) if spin_polarized else str(band.band.values),
-                    "line": {"color": [bands_color, spindown_color][spin], "width": bands_width},
-                    **add_band_trace_data(band, self)
+                    "name": "{} spin {}".format(band.band.values, ["up", "down"][ispin]) if spin.is_polarized else str(band.band.values),
+                    "line": line_style,
                 }
 
                 # And plot it differently depending on whether we need to display spin texture or not.
-                if not spin_texture:
+                if not spin_texture["show"]:
                     draw_band_func(x, y, **kwargs)
                 else:
                     spin_texture_vals = spin_moments.sel(band=band.band.values).values

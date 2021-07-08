@@ -25,14 +25,14 @@ class FatbandsBackend(BandsBackend):
 
         groups_weights = backend_info["groups_weights"]
         groups_metadata = backend_info["groups_metadata"]
-        existing_bands = backend_info["draw_bands"][0]
+        filtered_bands = backend_info["draw_bands"]["filtered_bands"]
 
-        x = backend_info["draw_bands"][0].k.values
+        x = filtered_bands.k.values
 
         for group_name in groups_weights:
             self.draw_group_weights(
                 weights=groups_weights[group_name], metadata=groups_metadata[group_name],
-                name=group_name, bands=existing_bands, x=x
+                name=group_name, bands=filtered_bands, x=x
             )
         
         super().draw(backend_info)
