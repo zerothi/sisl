@@ -305,6 +305,106 @@ class State(ParentContainer):
         sub.info = self.info
         return sub
 
+    def translate(self, isc):
+        r""" Translate the vectors to a new unit-cell position
+
+        The method is thoroughly explained in `tile` while this one only
+        selects the corresponding state vector
+
+        Parameters
+        ----------
+        isc : (3,)
+           number of offsets for the statevector
+
+        See Also
+        --------
+        tile : equivalent method for generating more cells simultaneously
+        """
+        # the k-point gets reduced
+        k = _a.asarrayd(self.info.get("k", [0]*3))
+        assert len(isc) == 3
+
+        s = self.copy()
+        # translate the bloch coefficients with:
+        #   exp(i k.T)
+        # with T being
+        #   i * a_0 + j * a_1 + k * a_2
+        if not np.allclose(k, 0):
+            # there will only be a phase if k != 0
+            s.state *= exp(2j*_pi * k @ isc)
+        return s
+
+    def tile(self, reps, axis, normalize=False, offset=0):
+        r"""Tile the state vectors for a new supercell
+
+        Tiling a state vector makes use of the Bloch factors for a state by utilizing
+
+        .. math::
+
+           \psi_{\mathbf k}(\mathbf r + \mathbf T) \propto e^{i\mathbf k\cdot \mathbf T}
+
+        where :math:`\mathbf T = i\mathbf a_0 + j\mathbf a_1 + l\mathbf a_2`. Note that `axis`
+        selects which of the :math:`\mathbf a_i` vectors that are translated and `reps` corresponds
+        to the :math:`i`, :math:`j` and :math:`l` variables. The `offset` moves the individual states
+        by said amount, i.e. :math:`i\to i+\mathrm{offset}`.
+
+        Parameters
+        ----------
+        reps : int
+           number of repetitions along a specific lattice vector
+        axis : int
+           lattice vector to tile along
+        normalize: bool, optional
+           whether the states are normalized upon return, may be useful for
+           eigenstates
+        offset: float, optional
+           the offset for the phase factors
+
+        See Also
+        --------
+        Geometry.tile
+        """
+        # the parent gets tiled
+        parent = self.parent.tile(reps, axis)
+        # the k-point gets reduced
+        k = _a.asarrayd(self.info.get("k", [0]*3))
+
+        # now tile the state vectors
+        state = np.tile(self.state, (1, reps)).astype(np.complex128, copy=False)
+        # re-shape to apply phase-factors
+        state.shape = (len(self), reps, -1)
+
+        # Tiling stuff is trivial since we simply
+        # translate the bloch coefficients with:
+        #   exp(i k.T)
+        # with T being
+        #   i * a_0 + j * a_1 + k * a_2
+        # We can leave out the lattice vectors entirely
+        phase = exp(2j*_pi * k[axis] * (_a.aranged(reps) + offset))
+
+        state *= phase.reshape(1, -1, 1)
+        state.shape = (len(self), -1)
+
+        # update new k; when we double the system, we halve the periodicity
+        # and hence we need to account for this
+        k[axis] = (k[axis] * reps % 1)
+        while k[axis] > 0.5:
+            k[axis] -= 1
+        while k[axis] <= -0.5:
+            k[axis] += 1
+
+        # this allows us to make the same usable for StateC classes
+        s = self.copy()
+        s.parent = parent
+        s.state = state
+        # update the k-point
+        s.info = dict(**self.info)
+        s.info.update({'k': k})
+
+        if normalize:
+            return s.normalize()
+        return s
+
     def __getitem__(self, key):
         """ Return a new state with only one associated state
 
