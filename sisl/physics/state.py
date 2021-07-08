@@ -305,6 +305,35 @@ class State(ParentContainer):
         sub.info = self.info
         return sub
 
+    def translate(self, isc):
+        r""" Translate the vectors to a new unit-cell position
+
+        The method is thoroughly explained in `tile` while this one only
+        selects the corresponding state vector
+
+        Parameters
+        ----------
+        isc : (3,)
+           number of offsets for the statevector
+
+        See Also
+        --------
+        tile : equivalent method for generating more cells simultaneously
+        """
+        # the k-point gets reduced
+        k = _a.asarrayd(self.info.get("k", [0]*3))
+        assert len(isc) == 3
+
+        s = self.copy()
+        # translate the bloch coefficients with:
+        #   exp(i k.T)
+        # with T being
+        #   i * a_0 + j * a_1 + k * a_2
+        if not np.allclose(k, 0):
+            # there will only be a phase if k != 0
+            s.state *= exp(2j*_pi * k @ isc)
+        return s
+
     def tile(self, reps, axis, normalize=False, offset=0):
         r"""Tile the state vectors for a new supercell
 
@@ -324,7 +353,7 @@ class State(ParentContainer):
         reps : int
            number of repetitions along a specific lattice vector
         axis : int
-           lattice to tile along
+           lattice vector to tile along
         normalize: bool, optional
            whether the states are normalized upon return, may be useful for
            eigenstates
@@ -351,7 +380,7 @@ class State(ParentContainer):
         # with T being
         #   i * a_0 + j * a_1 + k * a_2
         # We can leave out the lattice vectors entirely
-        phase = exp(k[axis] * (_a.aranged(reps) - offset) * 2j * _pi)
+        phase = exp(2j*_pi * k[axis] * (_a.aranged(reps) - offset))
 
         state *= phase.reshape(1, -1, 1)
         state.shape = (len(self), -1)
