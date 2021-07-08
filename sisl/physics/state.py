@@ -346,7 +346,7 @@ class State(ParentContainer):
         where :math:`\mathbf T = i\mathbf a_0 + j\mathbf a_1 + l\mathbf a_2`. Note that `axis`
         selects which of the :math:`\mathbf a_i` vectors that are translated and `reps` corresponds
         to the :math:`i`, :math:`j` and :math:`l` variables. The `offset` moves the individual states
-        by said amount, i.e. :math:`i\to i-\mathrm{offset}`.
+        by said amount, i.e. :math:`i\to i+\mathrm{offset}`.
 
         Parameters
         ----------
@@ -380,7 +380,7 @@ class State(ParentContainer):
         # with T being
         #   i * a_0 + j * a_1 + k * a_2
         # We can leave out the lattice vectors entirely
-        phase = exp(2j*_pi * k[axis] * (_a.aranged(reps) - offset))
+        phase = exp(2j*_pi * k[axis] * (_a.aranged(reps) + offset))
 
         state *= phase.reshape(1, -1, 1)
         state.shape = (len(self), -1)
