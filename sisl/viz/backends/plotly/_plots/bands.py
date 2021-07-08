@@ -13,6 +13,22 @@ class PlotlyBandsBackend(PlotlyBackend, BandsBackend):
         'xaxis_showgrid': True,
         'yaxis_title': 'Energy [eV]'
     }
+
+    def draw_bands(self, filtered_bands, spin_texture, **kwargs):
+        super().draw_bands(filtered_bands=filtered_bands, spin_texture=spin_texture, **kwargs)
+
+        # Add the ticks
+        tickvals = getattr(filtered_bands, "ticks", None)
+        # We need to convert tick values to a list, otherwise sometimes plotly fails to display them
+        self.figure.layout.xaxis.tickvals = list(tickvals) if tickvals is not None else None
+        self.figure.layout.xaxis.ticktext = getattr(filtered_bands, "ticklabels", None)
+        self.figure.layout.yaxis.range = [filtered_bands.min(), filtered_bands.max()]
+        self.figure.layout.xaxis.range = filtered_bands.k.values[[0, -1]]
+
+        # If we are showing spin textured bands, customize the colorbar
+        if spin_texture["show"]:
+            self.layout.coloraxis.colorbar = {"title": f"Spin texture ({str(spin_texture['values'].axis.item())})"}
+            self.update_layout(coloraxis = {"cmin": spin_texture["values"].min().item(), "cmax": spin_texture["values"].max().item(), "colorscale": spin_texture["colorscale"]})
     
     def _draw_band(self, x, y, *args, **kwargs):
         kwargs = {
@@ -25,7 +41,7 @@ class PlotlyBandsBackend(PlotlyBackend, BandsBackend):
     def _draw_spin_textured_band(self, *args, spin_texture_vals=None, **kwargs):
         kwargs.update({
             "mode": "markers",
-            "marker": {"color": spin_texture_vals,  "size": kwargs["line"]["width"], "showscale": True, "coloraxis": "coloraxis"},
+            "marker": {"color": spin_texture_vals, "size": kwargs["line"]["width"], "showscale": True, "coloraxis": "coloraxis"},
             "hovertemplate": '%{y:.2f} eV (spin moment: %{marker.color:.2f})',
             "showlegend": False
         })
@@ -45,20 +61,6 @@ class PlotlyBandsBackend(PlotlyBackend, BandsBackend):
             'textposition': 'top right',
             **kwargs
         })
-
-    def after_get_figure(self, plot, Erange, spin, spin_texture_colorscale):
-        # Add the ticks
-        tickvals = getattr(plot.bands, "ticks", None)
-        # We need to convert tick values to a list, otherwise sometimes plotly fails to display them
-        self.figure.layout.xaxis.tickvals = list(tickvals) if tickvals is not None else None
-        self.figure.layout.xaxis.ticktext = getattr(plot.bands, "ticklabels", None)
-        self.figure.layout.yaxis.range = Erange
-        self.figure.layout.xaxis.range = plot.bands.k.values[[0, -1]]
-
-        # If we are showing spin textured bands, customize the colorbar
-        if plot.spin_texture:
-            self.layout.coloraxis.colorbar = {"title": f"Spin texture ({spin[0]})"}
-            self.update_layout(coloraxis = {"cmin": -1, "cmax": 1, "colorscale": spin_texture_colorscale})
     
     def _test_is_gap_drawn(self):
         return len([True for trace in self.figure.data if trace.name == "Gap"]) > 0

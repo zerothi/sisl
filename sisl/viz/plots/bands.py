@@ -545,18 +545,8 @@ class BandsPlot(Plot):
             "marks": {int(i): str(i) for i in i_bands},
         })
 
-    def _set_data(self, Erange, E0, bands_range, spin, spin_texture_colorscale, bands_width, bands_color, spindown_color,
-        add_band_trace_data, gap, gap_tol, gap_color, direct_gaps_only, custom_gaps):
-        """
-        Converts the bands dataframe into a data object for plotly.
-
-        It stores the data under self.data, so that it can be accessed by posterior methods.
-
-        Returns
-        ---------
-        self.data: list of dicts
-            contains a dictionary for each bandStruct with all its information.
-        """
+    def _set_data(self, Erange, E0, bands_range, spin, spin_texture_colorscale, bands_width, bands_color, spindown_color, 
+        gap, gap_tol, gap_color, direct_gaps_only, custom_gaps):
 
         # Shift all the bands to the reference
         filtered_bands = self.bands - E0
@@ -579,6 +569,9 @@ class BandsPlot(Plot):
             Erange = np.array(Erange)
             filtered_bands = filtered_bands.where((filtered_bands <= Erange[1]) & (filtered_bands >= Erange[0])).dropna("band", "all")
             self.update_settings(run_updates=False, bands_range=[int(filtered_bands['band'].min()), int(filtered_bands['band'].max())], no_log=True)
+        
+        # Give the filtered bands the same attributes as the full bands
+        filtered_bands.attrs = self.bands.attrs
 
         # Let's treat the spin if the user requested it
         self.spin_texture = False
@@ -596,13 +589,15 @@ class BandsPlot(Plot):
             spin_moments = []
 
         return {
-            "draw_bands": [filtered_bands, self.spin_texture, spin_moments, spin_texture_colorscale, self.spin.is_polarized, bands_color, spindown_color, bands_width, spin, add_band_trace_data],
+            "draw_bands": {
+                "filtered_bands": filtered_bands,
+                "line": {"color": bands_color, "width": bands_width},
+                "spindown_line": {"color": spindown_color},
+                "spin": self.spin,
+                "spin_texture": {"show": self.spin_texture, "values": spin_moments, "colorscale": spin_texture_colorscale},
+            },
             "gaps": self._get_gaps(gap, gap_tol, gap_color, direct_gaps_only, custom_gaps)
         }
-
-    def _after_get_figure(self, Erange, spin, spin_texture_colorscale):
-        if hasattr(self._backend, "after_get_figure"):
-            self._backend.after_get_figure(self, Erange, spin, spin_texture_colorscale)
 
     def _calculate_gaps(self):
         """

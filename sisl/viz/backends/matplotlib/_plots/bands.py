@@ -17,19 +17,25 @@ class MatplotlibBandsBackend(MatplotlibBackend, BandsBackend):
         super()._init_ax()
         self.ax.grid(axis="x")
 
-    def draw_bands(self, filtered_bands, spin_texture, spin_moments, spin_texture_colorscale, spin_polarized, bands_color, spindown_color, bands_width, spin, add_band_trace_data):
+    def draw_bands(self, filtered_bands, spin_texture, **kwargs):
         
-        if spin_texture:
+        if spin_texture["show"]:
             # Create the normalization for the colorscale of spin_moments.
-            self._spin_texture_norm = Normalize(spin_moments.min(), spin_moments.max())
-            self._spin_texture_colorscale = spin_texture_colorscale
+            self._spin_texture_norm = Normalize(spin_texture["values"].min(), spin_texture["values"].max())
+            self._spin_texture_colorscale = spin_texture["colorscale"]
         
-        super().draw_bands(filtered_bands, spin_texture, spin_moments, spin_texture_colorscale, spin_polarized, bands_color, spindown_color, bands_width, spin, add_band_trace_data)
+        super().draw_bands(filtered_bands=filtered_bands, spin_texture=spin_texture, **kwargs)
 
-        if spin_texture:
+        if spin_texture["show"]:
             # Add the colorbar for spin texture.
             self.figure.colorbar(self._colorbar)
-
+        
+        # Add the ticks
+        self.ax.set_xticks(getattr(filtered_bands, "ticks", None))
+        self.ax.set_xticklabels(getattr(filtered_bands, "ticklabels", None))
+        # Set the limits
+        self.ax.set_xlim(*filtered_bands.k.values[[0, -1]])
+        self.ax.set_ylim(filtered_bands.min(), filtered_bands.max()) 
     
     def _draw_spin_textured_band(self, x, y, spin_texture_vals=None, **kwargs):
         # This is heavily based on 
@@ -44,7 +50,6 @@ class MatplotlibBandsBackend(MatplotlibBackend, BandsBackend):
         lc.set_array(spin_texture_vals)
         lc.set_linewidth(kwargs["line"].get("width", 1))
         self._colorbar = self.ax.add_collection(lc)
-                    
 
     def draw_gap(self, ks, Es, color, name, **kwargs):
 
@@ -54,13 +59,6 @@ class MatplotlibBandsBackend(MatplotlibBackend, BandsBackend):
         )
 
         self.ax.legend(gap, [name])
-
-    def after_get_figure(self, plot, Erange, spin, spin_texture_colorscale):
-        #Add the ticks
-        self.ax.set_xticks(getattr(plot.bands, "ticks", None))
-        self.ax.set_xticklabels(getattr(plot.bands, "ticklabels", None))
-        self.ax.set_xlim(*plot.bands.k.values[[0, -1]])
-        self.ax.set_ylim(*Erange) 
     
     def _test_is_gap_drawn(self):
         return self.ax.lines[-1].get_label().startswith("Gap")
