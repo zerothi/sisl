@@ -305,7 +305,7 @@ class State(ParentContainer):
         sub.info = self.info
         return sub
 
-    def tile(self, reps, axis, normalize=False):
+    def tile(self, reps, axis, normalize=False, offset=0):
         r"""Tile the state vectors for a new supercell
 
         Tiling a state vector makes use of the Bloch factors for a state by utilizing
@@ -314,7 +314,10 @@ class State(ParentContainer):
 
            \psi_{\mathbf k}(\mathbf r + \mathbf T) \propto e^{i\mathbf k\cdot \mathbf T}
 
-        where :math:`\mathbf T = i\mathbf a_0 + j\mathbf a_1 + k\mathbf a_2`.
+        where :math:`\mathbf T = i\mathbf a_0 + j\mathbf a_1 + l\mathbf a_2`. Note that `axis`
+        selects which of the :math:`\mathbf a_i` vectors that are translated and `reps` corresponds
+        to the :math:`i`, :math:`j` and :math:`l` variables. The `offset` moves the individual states
+        by said amount, i.e. :math:`i\to i-\mathrm{offset}`.
 
         Parameters
         ----------
@@ -325,6 +328,8 @@ class State(ParentContainer):
         normalize: bool, optional
            whether the states are normalized upon return, may be useful for
            eigenstates
+        offset: float, optional
+           the offset for the phase factors
 
         See Also
         --------
@@ -346,7 +351,7 @@ class State(ParentContainer):
         # with T being
         #   i * a_0 + j * a_1 + k * a_2
         # We can leave out the lattice vectors entirely
-        phase = exp(k[axis] * _a.aranged(reps) * 2j * _pi)
+        phase = exp(k[axis] * (_a.aranged(reps) - offset) * 2j * _pi)
 
         state *= phase.reshape(1, -1, 1)
         state.shape = (len(self), -1)
