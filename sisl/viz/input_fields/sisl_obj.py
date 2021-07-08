@@ -7,7 +7,9 @@ from pathlib import Path
 import sisl
 
 from .._input_field import InputField
-from .text import FilePathInput
+from .queries import QueriesInput
+from .number import FloatInput, IntegerInput
+from .text import FilePathInput, TextInput
 
 from sisl import BaseSile
 
@@ -70,8 +72,84 @@ class HamiltonianInput(SislObjectInput):
     pass
 
 
-class BandStructureInput(SislObjectInput):
-    pass
+class BandStructureInput(QueriesInput, SislObjectInput):
+
+    dtype = sisl.BandStructure
+    
+    def __init__(self, *args, **kwargs):
+        kwargs["help"] = """A band structure. it can either be provided as a sisl.BandStructure object or
+        as a list of points, which will be parsed into a band structure object.
+        """
+
+        # Let's define the queryform. Each query will be a point of the path.
+        kwargs["queryForm"] = [
+
+            FloatInput(
+                key="x", name="X",
+                width = "s50% m20% l10%",
+                default=0,
+                params={
+                    "step": 0.01
+                }
+            ),
+
+            FloatInput(
+                key="y", name="Y",
+                width = "s50% m20% l10%",
+                default=0,
+                params={
+                    "step": 0.01
+                }
+            ),
+
+            FloatInput(
+                key="z", name="Z",
+                width="s50% m20% l10%",
+                default=0,
+                params={
+                    "step": 0.01
+                }
+            ),
+
+            IntegerInput(
+                key="divisions", name="Divisions",
+                width="s50% m20% l10%",
+                default=50,
+                params={
+                    "min": 0,
+                    "step": 10
+                }
+            ),
+
+            TextInput(
+                key="name", name="Name",
+                width = "s50% m20% l10%",
+                default=None,
+                params = {
+                    "placeholder": "Name..."
+                },
+                help = "Tick that should be displayed at this corner of the path."
+            )
+        ]
+
+        super().__init__(*args, **kwargs)
+    
+    def parse(self, val):
+        if not isinstance(val, sisl.BandStructure):
+            # Then let's parse the list of points into a band structure object.
+            # Use only those points that are active.
+            val = [point for point in val if point.get("active", True)]
+            
+            val = sisl.BandStructure(
+                None,
+                point=[[
+                        point.get("x", None) or 0, point.get("y", None) or 0, point.get("z", None) or 0
+                    ] for point in val],
+                division=[int(point["divisions"]) for point in val[1:]],
+                name=[point.get("name", '') for point in val]
+            )
+
+        return val
 
 
 class BrillouinZoneInput(SislObjectInput):

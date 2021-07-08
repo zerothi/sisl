@@ -8,10 +8,13 @@ class PlotlyFatbandsBackend(PlotlyBandsBackend, FatbandsBackend):
     def draw(self, backend_info):
         # We are going to need a trace that goes forward and then back so that
         # it is self-fillable
-        xs = backend_info["draw_bands"][0].k.values
+        xs = backend_info["draw_bands"]["filtered_bands"].k.values
         self._area_xs = [*xs, *reversed(xs)]
 
         super().draw(backend_info)
+
+        if backend_info["draw_bands"]["spin_texture"]["show"]:
+            self.update_layout(legend_orientation="h")
 
     def _draw_band_weights(self, x, y, weights, name, color, is_group_first):
 

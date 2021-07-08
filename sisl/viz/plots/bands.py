@@ -14,7 +14,7 @@ from ..input_fields import (
     TextInput, SwitchInput, ColorPicker, DropdownInput,
     IntegerInput, FloatInput, RangeInput, RangeSlider,
     QueriesInput, ProgramaticInput, FunctionInput, SileInput,
-    PlotableInput, SpinSelect, AiidaNodeInput
+    PlotableInput, SpinSelect, AiidaNodeInput, BandStructureInput
 )
 from ..input_fields.range import ErangeInput
 
@@ -26,79 +26,74 @@ class BandsPlot(Plot):
     Parameters
     -------------
     bands_file: bandsSileSiesta, optional
-        This parameter explicitly sets a .bands file. Otherwise, the bands
-        file is attempted to read from the fdf file
+    	This parameter explicitly sets a .bands file. Otherwise, the bands
+    	file is attempted to read from the fdf file
     band_structure: BandStructure, optional
-        The BandStructure object to be used.
-    aiida_bands : aiida.BandsData, optional
-        the bands from an Aiida BandsData node
-    add_band_trace_data:  optional
-        A function that receives each band (as a DataArray) and adds data to
-        the trace. It also recieves the plot object.              The
-        returned data may even overwrite the existing one, therefore it can
-        be useful to fully customize your bands plot (individual style for
-        each band if you want).
+    	A band structure. it can either be provided as a sisl.BandStructure
+    	object or         as a list of points, which will be parsed into a
+    	band structure object.            Each item is a dict. Structure of
+    	the expected dicts:{         'x':          'y':          'z':
+    	'divisions':          'name': Tick that should be displayed at this
+    	corner of the path. }
+    aiida_bands:  optional
+    	An aiida BandsData node.
     eigenstate_map:  optional
-        This function receives the eigenstate object for each k value when
-        the bands are being extracted from a hamiltonian.             You can
-        do whatever you want with it, the point of this function is to avoid
-        running the diagonalization process twice.
+    	This function receives the eigenstate object for each k value when
+    	the bands are being extracted from a hamiltonian.             You can
+    	do whatever you want with it, the point of this function is to avoid
+    	running the diagonalization process twice.
     Erange: array-like of shape (2,), optional
-        Energy range where the bands are displayed.
+    	Energy range where the bands are displayed.
     E0: float, optional
-        The energy to which all energies will be referenced (including
-        Erange).
+    	The energy to which all energies will be referenced (including
+    	Erange).
     bands_range: array-like of shape (2,), optional
-        The bands that should be displayed. Only relevant if Erange is None.
-    path: array-like of dict, optional
-        Path along which bands are drawn in units of reciprocal lattice
-        vectors.             Note that if you want to provide a path
-        programatically you can do it more easily with the `band_structure`
-        setting   Each item is a dict. Structure of the expected dicts:{
-        'x':          'y':          'z':          'divisions':
-        'tick': Tick that should be displayed at this corner of the path. }
+    	The bands that should be displayed. Only relevant if Erange is None.
     spin:  optional
-        Determines how the different spin configurations should be displayed.
-        In spin polarized calculations, it allows you to choose between spin
-        0 and 1.             In non-colinear spin calculations, it allows you
-        to ask for a given spin texture,             by specifying the
-        direction.
+    	Determines how the different spin configurations should be displayed.
+    	In spin polarized calculations, it allows you to choose between spin
+    	0 and 1.             In non-colinear spin calculations, it allows you
+    	to ask for a given spin texture,             by specifying the
+    	direction.
     spin_texture_colorscale: str, optional
-        The plotly colorscale to use for the spin texture (if displayed)
+    	The plotly colorscale to use for the spin texture (if displayed)
     gap: bool, optional
-        Whether the gap should be displayed in the plot
+    	Whether the gap should be displayed in the plot
     direct_gaps_only: bool, optional
-        Whether to show only gaps that are direct, according to the gap
-        tolerance
+    	Whether to show only gaps that are direct, according to the gap
+    	tolerance
     gap_tol: float, optional
-        The difference in k that must exist to consider to gaps
-        different.             If two gaps' positions differ in less than
-        this, only one gap will be drawn.             Useful in cases
-        where there are degenerated bands with exactly the same values.
+    	The difference in k that must exist to consider to gaps
+    	different.             If two gaps' positions differ in less than
+    	this, only one gap will be drawn.             Useful in cases
+    	where there are degenerated bands with exactly the same values.
     gap_color: str, optional
-        Color to display the gap
+    	Color to display the gap
     custom_gaps: array-like of dict, optional
-        List of all the gaps that you want to display.   Each item is a dict.
-        Structure of the expected dicts:{         'from': K value where to
-        start measuring the gap.                      It can be either the
-        label of the k-point or the numeric value in the plot.         'to':
-        K value where to end measuring the gap.                      It can
-        be either the label of the k-point or the numeric value in the plot.
-        'color': The color with which the gap should be displayed
-        'spin': The spin components where the gap should be calculated. }
+    	List of all the gaps that you want to display.   Each item is a dict.
+    	Structure of the expected dicts:{         'from': K value where to
+    	start measuring the gap.                      It can be either the
+    	label of the k-point or the numeric value in the plot.         'to':
+    	K value where to end measuring the gap.                      It can
+    	be either the label of the k-point or the numeric value in the plot.
+    	'color': The color with which the gap should be displayed
+    	'spin': The spin components where the gap should be calculated. }
     bands_width: float, optional
-        Width of the lines that represent the bands
+    	Width of the lines that represent the bands
     bands_color: str, optional
-        Choose the color to display the bands.  This will be used for the
-        spin up bands if the calculation is spin polarized
+    	Choose the color to display the bands.  This will be used for the
+    	spin up bands if the calculation is spin polarized
     spindown_color: str, optional
-        Choose the color for the spin down bands.Only used if the
-        calculation is spin polarized.
+    	Choose the color for the spin down bands.Only used if the
+    	calculation is spin polarized.
     root_fdf: fdfSileSiesta, optional
-        Path to the fdf file that is the 'parent' of the results.
+    	Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
+    backend:  optional
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
     """
 
     _plot_type = "Bands"
@@ -115,25 +110,11 @@ class BandsPlot(Plot):
             help = """This parameter explicitly sets a .bands file. Otherwise, the bands file is attempted to read from the fdf file """
         ),
 
-        PlotableInput(key = "band_structure", name = "Band structure object",
-            default= None,
-            dtype=sisl.BandStructure,
-            help = "The BandStructure object to be used."
-        ),
+        BandStructureInput(key="band_structure", name="Band structure"),
 
         AiidaNodeInput(key="aiida_bands", name="Aiida BandsData node",
             default=None,
-            help="""
-            An aiida BandsData node.
-            """
-        ),
-
-        FunctionInput(key="add_band_trace_data", name="Additional data for band traces",
-            default=None,
-            positional=["band", "plot"],
-            returns=[dict],
-            help="""A function that receives each band (as a DataArray) and adds data to the trace. It also recieves the plot object. 
-            The returned data may even overwrite the existing one, therefore it can be useful to fully customize your bands plot (individual style for each band if you want)."""
+            help="""An aiida BandsData node."""
         ),
 
         FunctionInput(key="eigenstate_map", name="Eigenstate map function",
@@ -160,62 +141,6 @@ class BandsPlot(Plot):
                 'step': 1,
             },
             help = "The bands that should be displayed. Only relevant if Erange is None."
-        ),
-
-        QueriesInput(key = "path", name = "Bands path",
-            default = [],
-            help="""Path along which bands are drawn in units of reciprocal lattice vectors.<br>
-            Note that if you want to provide a path programatically you can do it more easily with the `band_structure` setting""",
-            queryForm=[
-
-                FloatInput(
-                    key="x", name="X",
-                    width = "s50% m20% l10%",
-                    default=0,
-                    params={
-                        "step": 0.01
-                    }
-                ),
-
-                FloatInput(
-                    key="y", name="Y",
-                    width = "s50% m20% l10%",
-                    default=0,
-                    params={
-                        "step": 0.01
-                    }
-                ),
-
-                FloatInput(
-                    key="z", name="Z",
-                    width="s50% m20% l10%",
-                    default=0,
-                    params={
-                        "step": 0.01
-                    }
-                ),
-
-                IntegerInput(
-                    key="divisions", name="Divisions",
-                    width="s50% m20% l10%",
-                    default=50,
-                    params={
-                        "min": 0,
-                        "step": 10
-                    }
-                ),
-
-                TextInput(
-                    key="tick", name="Tick",
-                    width = "s50% m20% l10%",
-                    default=None,
-                    params = {
-                        "placeholder": "Tick..."
-                    },
-                    help = "Tick that should be displayed at this corner of the path."
-                )
-
-            ]
         ),
 
         SpinSelect(key="spin", name="Spin",
@@ -376,7 +301,7 @@ class BandsPlot(Plot):
         )
 
     @entry_point('band structure')
-    def _read_from_band_structure(self, band_structure, eigenstate_map):
+    def _read_from_H(self, band_structure, eigenstate_map):
         """
         Uses a sisl's `BandStructure` object to calculate the bands.
         """
@@ -455,69 +380,15 @@ class BandsPlot(Plot):
                 dims=("k", "band", "axis")
             )
 
-    @entry_point('path')
-    def _read_from_H(self, path, band_structure, eigenstate_map=None):
-        """
-        This entry point just generates a band structure from the path and
-        then the band_structure entry point takes it from there.
-
-        (it seems stupid now, but this is because of how things were at the beggining)
-
-        Therefore it should be removed. Only one of "path" or "band_structure"
-        inputs should exist. And then it should be always parsed into a sisl.BandStructure.
-        """
-        #Get the requested path
-        self.path = path
-        if not self.path and band_structure:
-            return self._read_from_band_structure(eigenstate_map=eigenstate_map)
-        if self.path and len(self.path) > 1:
-            self.path = [point for point in path if point.get("active", True)]
-        else:
-            raise ValueError(f"You need to provide at least 2 points of the path to draw the bands. Please update the 'path' setting. The current path is: {self.path}")
-
-        band_struct = sisl.BandStructure(
-            None, # The band structure entry_point will take care of this
-            point=np.array([[
-                    point.get("x", None) or 0, point.get("y", None) or 0, point.get("z", None) or 0
-                ] for point in self.path], dtype=float),
-            division=np.array([point["divisions"] for point in self.path[1:]], dtype=int),
-            name=np.array([point.get("tick", '') for point in self.path])
-        )
-
-        self._read_from_band_structure(band_structure=band_struct, eigenstate_map=eigenstate_map)
-
     @entry_point('bands file')
-    def _read_siesta_output(self, bands_file, path, band_structure):
+    def _read_siesta_output(self, bands_file, band_structure):
         """
         Reads the bands information from a SIESTA bands file.
         """
-        #Get the info from the bands file
-        self.path = path
-
-        if self.path and self.path != getattr(self, "siesta_path", None) or band_structure:
+        if band_structure:
             raise ValueError("A path was provided, therefore we can not use the .bands file even if there is one")
 
         self.bands = self.get_sile(bands_file or "bands_file").read_data(as_dataarray=True)
-
-        # Inform of the path that it's being used if we can
-        # THIS IS ONLY WORKING PROPERLY FOR FRACTIONAL UNITS OF THE BAND POINTS RN
-        if hasattr(self, "fdf_sile") and self.fdf_sile.get("BandLines"):
-
-            try:
-                self.siesta_path = []
-                points = self.fdf_sile.get("BandLines")
-
-                for i, point in enumerate(points):
-
-                    divisions, x, y, z, *others = point.split()
-                    divisions = int(divisions) - int(points[i-1].split()[0]) if i > 0 else None
-                    tick = others[0] if len(others) > 0 else None
-
-                    self.siesta_path.append({"active": True, "x": float(x), "y": float(y), "z": float(z), "divisions": divisions, "tick": tick})
-
-                    self.update_settings(path=self.siesta_path, run_updates=False, no_log=True)
-            except Exception as e:
-                print(f"Could not correctly read the bands path from siesta.\n Error {e}")
 
         # Define the spin class of the results we have retrieved
         if len(self.bands.spin.values) == 2:
@@ -708,61 +579,25 @@ class BandsPlot(Plot):
 
         return san_k
 
-    def _get_gap_coords(self, from_k, to_k=None, gap_spin=0, **kwargs):
-        """
-        Calculates the coordinates of a gap given some k values.
+        # Inform of the path that it's being used if we can
+        # THIS IS ONLY WORKING PROPERLY FOR FRACTIONAL UNITS OF THE BAND POINTS RN
+        if hasattr(self, "fdf_sile") and self.fdf_sile.get("BandLines"):
 
-        Parameters
-        -----------
-        from_k: float or str
-            The k value where you want the gap to start (bottom limit).
-            If "to_k" is not provided, it will be interpreted also as the top limit.
+            try:
+                self.siesta_path = []
+                points = self.fdf_sile.get("BandLines")
 
-            If a k-value is a float, it will be directly interpreted
-            as the position in the graph's k axis.
+                for i, point in enumerate(points):
 
-            If a k-value is a string, it will be attempted to be parsed
-            into a float. If not possible, it will be interpreted as a label
-            (e.g. "Gamma").
-        to_k: float or str, optional
-            same as "from_k" but in this case represents the top limit.
+                    divisions, x, y, z, *others = point.split()
+                    divisions = int(divisions) - int(points[i-1].split()[0]) if i > 0 else None
+                    tick = others[0] if len(others) > 0 else None
 
-            If not provided, "from_k" will be used.
-        gap_spin: int, optional
-            the spin component where you want to draw the gap.
-        **kwargs:
-            keyword arguments that are passed directly to the new trace.
-        
-        Returns
-        -----------
-        tuple
-            A tuple containing (k_values, E_values)
-        """
-        if to_k is None:
-            to_k = from_k
+                    self.siesta_path.append({"active": True, "x": float(x), "y": float(y), "z": float(z), "divisions": divisions, "tick": tick})
 
-        ks = [None, None]
-        # Parse the names of the kpoints into their numeric values
-        # if a string was provided.
-        for i, val in enumerate((from_k, to_k)):
-            ks[i] = self._sanitize_k(val)
-
-        VB, CB = self.gap_info["bands"]
-        Es = [self.bands.sel(k=k, band=band, spin=gap_spin, method="nearest") for k, band in zip(ks, (VB, CB))]
-        # Get the real values of ks that have been obtained
-        # because we might not have exactly the ks requested
-        ks = [np.ravel(E.k)[0] for E in Es]
-        Es = [np.ravel(E)[0] for E in Es]
-
-        return ks, Es
-
-    def toggle_gap(self):
-        """
-        If the gap was being displayed, hide it. Else, show it.
-        """
-        return self.update_settings(gap= not self.settings["gap"])
-
-    def plot_Ediff(self, band1, band2):
+                    self.update_settings(path=self.siesta_path, run_updates=False, no_log=True)
+            except Exception as e:
+                print(f"Could not correctly read the bands path from siesta.\n Error {e}")
         """
         Plots the energy difference between two bands.
 
