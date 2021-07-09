@@ -73,7 +73,7 @@ class Backend(ABC):
         # prefixed with the name of the current backend. I.e. if the current backend is "plotly"
         # "plotly_*" backends are assumed to be compatible.
         if plot_backend is None or not plot_backend._backend_name.startswith(backend_name):
-            plot._backends.setup(plot, backend_name)
+            plot.backends.setup(plot, backend_name)
 
         # Make the plot draw in this backend instance
         plot.draw_on(self)
