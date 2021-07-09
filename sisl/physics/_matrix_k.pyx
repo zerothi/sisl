@@ -2,7 +2,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 cimport cython
-from libc.math cimport fabs
 
 import numpy as np
 cimport numpy as np
@@ -88,8 +87,14 @@ def _matrix_sc_k(csr, const int nc, const int idx, phases, dtype, format, p_opt)
         if format in ["array", "matrix", "dense"]:
             return _sc_phase_array_c64(csr.ptr, csr.ncol, csr.col, csr._D, nc, idx, phases, p_opt)
         return _sc_phase_csr_c64(csr.ptr, csr.ncol, csr.col, csr._D, nc, idx, phases, p_opt).asformat(format)
+    elif dtype in [np.float32, np.float64]:
+        # direct conversion, should be simple (generally only at Gamma-point)
+        m = csr.tocsr(idx)
+        if format in ["array", "matrix", "dense"]:
+            return m.A
+        return m
 
-    raise ValueError("matrix_k: (supercell format) currently only supports dtype in [complex64, complex128].")
+    raise ValueError("matrix_k: (supercell format) currently only supports dtype in [float32, float64, complex64, complex128].")
 
 
 def matrix_k_nc(gauge, M, sc,
