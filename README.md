@@ -121,11 +121,13 @@ which fills in the version number.
 
 ## Help sisl help you! ##
 
-- If you've ideas of missing features
-- If you've ideas for improving documentation
-- If you've found a bug
-- If you've found a documentation error
-- If you've created a tutorial
+If you have
+
+- ideas of missing features
+- ideas for improving documentation
+- found a bug
+- found a documentation error
+- created a tutorial
 
 Then please share them [here][issue]!
 
