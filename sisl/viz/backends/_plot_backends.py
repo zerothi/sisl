@@ -6,6 +6,7 @@ class Backends:
     def __init__(self, plot_cls):
         self._backends = {}
         self._template = None
+        self._childs = []
 
         self._cls = plot_cls
 
@@ -40,6 +41,9 @@ class Backends:
         backend._backend_name = backend_name
         self._backends[backend_name] = backend
 
+        for child in self._childs:
+            child.register(backend_name, backend, default=default)
+
     def setup(self, plot, backend_name):
         """Sets up the backend for a given plot.
 
@@ -69,6 +73,32 @@ class Backends:
             The backend class that should be used as a template.
         """
         self._template = template
+        for child in self._childs:
+            child.register_template(template)
+    
+    def register_child(self, child):
+        """Registers a backend manager to follow this one.
+
+        This is useful if an extension of a plot class can use exactly the same
+        backends.
+
+        Parameters
+        -----------
+        child: Backends
+            The backends manager that you want to make follow this one.
+
+        Examples
+        -----------
+        `WavefunctionPlot` is an extension of `GridPlot`, but it can use the same
+        backends.
+
+        >>> GridPlot.backends.register_child(WavefunctionPlot.backends)
+
+        will make the backends registered at `GridPlot` automatically available for `WavefunctionPlot`.
+        Note that the opposite is not True, so you can register wavefunction specific backends without
+        problem.
+        """
+        self._childs.append(child)
     
     @property
     def options(self):

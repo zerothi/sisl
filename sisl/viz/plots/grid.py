@@ -1321,9 +1321,9 @@ class WavefunctionPlot(GridPlot):
 
     _overwrite_defaults = {
         'axes': [0, 1, 2],
-        'atoms': None,
+        'plot_geom': True
     }
-
+    
     @entry_point('eigenstate')
     def _read_nosource(self, eigenstate):
         """
@@ -1377,4 +1377,6 @@ class WavefunctionPlot(GridPlot):
 
         self.eigenstate[i].wavefunction(self.grid)
 
-        super()._set_data(nsc=nsc)
+        return super()._set_data(nsc=nsc)
+
+GridPlot.backends.register_child(WavefunctionPlot.backends)
