@@ -135,7 +135,7 @@ class BandStructureInput(QueriesInput, SislObjectInput):
         super().__init__(*args, **kwargs)
     
     def parse(self, val):
-        if not isinstance(val, sisl.BandStructure):
+        if not isinstance(val, sisl.BandStructure) and val is not None:
             # Then let's parse the list of points into a band structure object.
             # Use only those points that are active.
             val = [point for point in val if point.get("active", True)]
