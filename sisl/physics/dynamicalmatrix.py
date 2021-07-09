@@ -5,6 +5,7 @@ import numpy as np
 from scipy.sparse import lil_matrix
 
 from sisl._internal import set_module
+from ..messages import deprecate_method
 from .sparse import SparseOrbitalBZ
 from .phonon import EigenvaluePhonon, EigenmodePhonon
 
@@ -344,6 +345,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
             with get_sile(sile, 'w') as fh:
                 fh.write_dynamical_matrix(self, *args, **kwargs)
 
+    @deprecate_method("use DynamicalMatrix.eigenstate(...).velocity() instead", "0.13.0")
     def velocity(self, k=(0, 0, 0), project=False, **kwargs):
         r""" Calculate the velocity for the eigenmodes for a given `k` point
 
@@ -364,6 +366,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         """
         return self.eigenmode(k, **kwargs).velocity(project=project)
 
+    @deprecate_method("use DynamicalMatrix.eigenstate(...).displacement() instead", "0.13.0")
     def displacement(self, k=(0, 0, 0), **kwargs):
         r""" Calculate the displacement for the eigenmodes for a given `k` point
 
@@ -382,6 +385,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         """
         return self.eigenmode(k, **kwargs).displacement()
 
+    @deprecate_method("use DynamicalMatrix.eigenstate(...).DOS() instead", "0.13.0")
     def DOS(self, E, k=(0, 0, 0), distribution='gaussian', **kwargs):
         r""" Calculate the DOS at the given energies for a specific `k` point
 
@@ -406,6 +410,7 @@ class DynamicalMatrix(SparseOrbitalBZ):
         """
         return self.eigenvalue(k, **kwargs).DOS(E, distribution)
 
+    @deprecate_method("use DynamicalMatrix.eigenstate(...).PDOS() instead", "0.13.0")
     def PDOS(self, E, k=(0, 0, 0), distribution='gaussian', **kwargs):
         r""" Calculate the projected DOS at the given energies for a specific `k` point
 

@@ -65,29 +65,36 @@ class SislInfo(SislWarning):
 
 
 @set_module("sisl")
-def deprecate(message):
+def deprecate(message, from_version=None):
     """ Issue sisl deprecation warnings
 
     Parameters
     ----------
     message : str
+       the displayed message
+    from_version : optional
+       which version to deprecate this method from
     """
+    if from_version is not None:
+        message = f"{message} [>={from_version}]"
     warnings.warn_explicit(message, SislDeprecation, 'dep', 0, registry=_sisl_warn_registry)
 
 
 @set_module("sisl")
-def deprecate_method(msg):
+def deprecate_method(message, from_version=None):
     """ Decorator for deprecating a method
 
     Parameters
     ----------
-    msg : str
+    message : str
        message displayed
+    from_version : optional
+       which version to deprecate this method from
     """
     def install_deprecate(func):
         @wraps(func)
         def wrapped(*args, **kwargs):
-            deprecate(msg)
+            deprecate(message, from_version)
             return func(*args, **kwargs)
         return wrapped
     return install_deprecate
