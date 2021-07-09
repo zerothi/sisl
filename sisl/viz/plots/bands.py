@@ -579,25 +579,13 @@ class BandsPlot(Plot):
 
         return san_k
 
-        # Inform of the path that it's being used if we can
-        # THIS IS ONLY WORKING PROPERLY FOR FRACTIONAL UNITS OF THE BAND POINTS RN
-        if hasattr(self, "fdf_sile") and self.fdf_sile.get("BandLines"):
+    def toggle_gap(self):
+        """
+        If the gap was being displayed, hide it. Else, show it.
+        """
+        return self.update_settings(gap= not self.settings["gap"])
 
-            try:
-                self.siesta_path = []
-                points = self.fdf_sile.get("BandLines")
-
-                for i, point in enumerate(points):
-
-                    divisions, x, y, z, *others = point.split()
-                    divisions = int(divisions) - int(points[i-1].split()[0]) if i > 0 else None
-                    tick = others[0] if len(others) > 0 else None
-
-                    self.siesta_path.append({"active": True, "x": float(x), "y": float(y), "z": float(z), "divisions": divisions, "tick": tick})
-
-                    self.update_settings(path=self.siesta_path, run_updates=False, no_log=True)
-            except Exception as e:
-                print(f"Could not correctly read the bands path from siesta.\n Error {e}")
+    def plot_Ediff(self, band1, band2):
         """
         Plots the energy difference between two bands.
 
