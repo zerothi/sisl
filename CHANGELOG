@@ -1,6 +1,11 @@
 0.X.Y
 =====
 
+- removed keywords align for State.inner|outer, instead one
+	should manually align, if required
+
+- removed methods State.expectation
+
 - enabled tiling a State object, #354 and #355
 
 - enabled reading from STRUCT_* files (Siesta input/output) #308

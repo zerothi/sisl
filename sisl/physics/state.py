@@ -496,7 +496,7 @@ class State(ParentContainer):
         s.info = self.info
         return s
 
-    def outer(self, ket=None, align=True):
+    def outer(self, ket=None):
         r""" Return the outer product by :math:`\sum_i|\psi_i\rangle\langle\psi'_i|`
 
         Parameters
@@ -504,8 +504,6 @@ class State(ParentContainer):
         ket : State, optional
            the ket object to calculate the outer product of, if not passed it will do the outer
            product with itself. The object itself will always be the bra :math:`|\psi_i\rangle`
-        align : bool, optional
-           first align `ket` with the angles for this state (see `align`)
 
         Notes
         -----
@@ -517,13 +515,13 @@ class State(ParentContainer):
             a matrix with the sum of outer state products
         """
         if ket is None:
-            return einsum('ki,kj->ij', self.state, _conj(self.state))
+            ket = self.state
+        elif isinstance(ket, State):
+            ket = ket.state
+
         if not np.array_equal(self.shape, ket.shape):
             raise ValueError(f"{self.__class__.__name__}.outer requires the objects to have the same shape")
-        if align:
-            # Align the states
-            ket = self.align_phase(ket, copy=False)
-        return einsum('ki,kj->ij', self.state, _conj(ket.state))
+        return einsum('ki,kj->ij', self.state, _conj(ket))
 
     def inner(self, ket=None, matrix=None, diag=True):
         r""" Calculate the inner product as :math:`\mathbf A_{ij} = \langle\psi_i|\mathbf M|\psi'_j\rangle`
