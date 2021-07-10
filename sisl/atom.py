@@ -1746,10 +1746,10 @@ class Atoms:
 
     def __str__(self):
         """ Return the `Atoms` in str """
-        s = self.__class__.__name__ + '{{species: {0},\n'.format(len(self._atom))
+        s = f"{self.__class__.__name__}{{species: {len(self._atom)},\n"
         for a, idx in self.iter(True):
             s += ' {1}: {0},\n'.format(len(idx), str(a).replace('\n', '\n '))
-        return s + '}'
+        return f"{s}}}"
 
     def __repr__(self):
         return f"<{self.__module__}.{self.__class__.__name__} nspecies={len(self._atom)}, na={len(self)}, no={self.no}>"

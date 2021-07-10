@@ -2370,7 +2370,7 @@ class SparseOrbital(_SparseGeometry):
         # [other|self]: self sc-connections backward must be on right-aligned matching atoms
         _check_edges_and_coordinates(self, idx_s_last, isc_back, err_help=("self", "backward"))
         # [self|other]: other sc-connections backward must be on right-aligned matching atoms
-        _check_edges_and_coordinates(other, idx_o_last, isc_back, ("other", "backward"))
+        _check_edges_and_coordinates(other, idx_o_last, isc_back, err_help=("other", "backward"))
 
         # Now we have ensured that the overlapping coordinates and the connectivity graph
         # co-incide and that we can actually perform the merge.

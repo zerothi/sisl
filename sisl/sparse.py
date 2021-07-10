@@ -667,8 +667,7 @@ class SparseCSR(NDArrayOperatorsMixin):
         # Get indices of valid column entries
         idx = array_arange(self.ptr[:-1], n=self.ncol)
         # Convert the old column indices to new ones
-        col = self.col
-        col[idx] = pvt[col[idx]]
+        self.col[idx] = pvt[self.col[idx]]
 
         # After translation, set to not finalized
         self._finalized = False
@@ -676,32 +675,37 @@ class SparseCSR(NDArrayOperatorsMixin):
             if np_any(new >= self.shape[1]):
                 self._clean_columns()
 
-    def scale_columns(self, col, scale):
+    def scale_columns(self, cols, scale, rows=None):
         r""" Scale all values with certain column values with a number
 
         This will multiply all values with certain column values with `scale`
 
         .. math::
-            M[:, cols] *= scale
+            M[rows, cols] *= scale
 
         This is an in-place operation.
 
         Parameters
         ----------
-        col : int or array_like
-           column indices
+        cols : int or array_like
+           column indices to scale
         scale : float or array_like
            scale value for each value (if array-like it has to have the same
            dimension as the sparsity dimension)
+        rows : int or array_like, optional
+           only scale the column values that exists in these rows, default to all
         """
-        col = _a.asarrayi(col)
+        cols = _a.asarrayi(cols)
 
-        if np_any(col >= self.shape[1]):
+        if np_any(cols >= self.shape[1]):
             raise ValueError(self.__class__.__name__+".scale_columns has non-existing old column values")
 
         # Find indices
-        idx = array_arange(self.ptr[:-1], n=self.ncol)
-        scale_idx = np.isin(self.col[idx], col).nonzero()[0]
+        if rows is None:
+            idx = array_arange(self.ptr[:-1], n=self.ncol)
+        else:
+            idx = array_arange(self.ptr[rows], n=self.ncol[rows])
+        scale_idx = np.isin(self.col[idx], cols).nonzero()[0]
 
         # Scale values where columns coincide with scaling factor
         self._D[idx[scale_idx]] *= scale

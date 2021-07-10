@@ -1791,9 +1791,6 @@ class Geometry(SuperCellChild):
 
         The atomic indices are retained for the base structure.
 
-        This method allows to utilise Bloch's theorem when creating
-        Hamiltonian parameter sets for TBtrans.
-
         Tiling and repeating a geometry will result in the same geometry.
         The *only* difference between the two is the final ordering of the atoms.
 
@@ -1862,9 +1859,6 @@ class Geometry(SuperCellChild):
         ...     for id,r in args:
         ...        for i in range(r):
         ...           ja = ia + cell[id,:] * i
-
-        This method allows to utilise Bloch's theorem when creating
-        Hamiltonian parameter sets for TBtrans.
 
         For geometries with a single atom this routine returns the same as
         `tile`.
@@ -2599,6 +2593,30 @@ class Geometry(SuperCellChild):
         # We do not know how to handle the lattice-vectors,
         # so we will do nothing...
         return self.add(o)
+
+    def replace(self, atoms, other):
+        """ Create a new geometry from `self` and replace `atoms` with `other`
+
+        Parameters
+        ----------
+        atoms : array_like of int, optional
+            atoms in `self` to be removed and replaced by other
+            `other` will be placed in the geometry at the lowest index of `atoms`
+        other : Geometry
+            the other Geometry to insert instead, the unit-cell will not
+            be used.
+        """
+        # Find lowest value in atoms
+        atoms = self._sanitize_atoms(atoms)
+        index = atoms.min()
+
+        # remove atoms, preparing for inserting new geometry
+        out = self.remove(atoms)
+
+        # insert new positions etc.
+        out.xyz = np.insert(out.xyz, index, other.xyz)
+        out.atoms.insert(index, other.atoms)
+        return out
 
     def reverse(self, atoms=None):
         """ Returns a reversed geometry
@@ -3534,9 +3552,9 @@ class Geometry(SuperCellChild):
         """ Transposes connections from `orb1` to `orb2` such that supercell connections are transposed
 
         When handling supercell indices it is useful to get the *transposed* connection. I.e. if you have
-        a connection from site ``i`` (in unit cell indices) to site ``j`` (in supercell indices) it may be
+        a connection from site ``i`` (in unit cell indices) to site ``J`` (in supercell indices) it may be
         useful to get the equivalent supercell connection such for site ``j`` (in unit cell indices) to
-        site ``i`` (in supercell indices) such that they correspond to the transposed coupling.
+        site ``I`` (in supercell indices) such that they correspond to the transposed coupling.
 
         Note that since this transposes couplings the indices returned are always expanded to the full
         length if either of the inputs are a single index.
@@ -3680,20 +3698,20 @@ class Geometry(SuperCellChild):
         return atoms
     asc2uc = sc2uc
 
-    def osc2uc(self, orb, unique=False):
+    def osc2uc(self, orbitals, unique=False):
         """ Returns orbitals from supercell indices to unit-cell indices, possibly removing dublicates
 
         Parameters
         ----------
-        orb : array_like or int
+        orbitals : array_like or int
            the orbital supercell indices to be converted to unit-cell indices
         unique : bool, optional
            If True the returned indices are unique and sorted.
         """
-        orb = _a.asarrayi(orb) % self.no
+        orbs = _a.asarrayi(orbitals) % self.no
         if unique:
-            return np.unique(orb)
-        return orb
+            return np.unique(orbitals)
+        return orbitals
 
     def ouc2sc(self, orbitals, unique=False):
         """ Returns orbitals from unit-cell indices to supercell indices, possibly removing dublicates
