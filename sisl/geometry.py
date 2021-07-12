@@ -3708,7 +3708,7 @@ class Geometry(SuperCellChild):
         unique : bool, optional
            If True the returned indices are unique and sorted.
         """
-        orbs = _a.asarrayi(orbitals) % self.no
+        orbitals = _a.asarrayi(orbitals) % self.no
         if unique:
             return np.unique(orbitals)
         return orbitals
