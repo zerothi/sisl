@@ -51,29 +51,26 @@ class TestBandsPlot(_TestPlot):
             H = sisl.Hamiltonian(gr)
             H.construct([(0.1, 1.44), (0, -2.7)])
 
+            # Let's create the same graphene bands plot using the hamiltonian
+            # from two different prespectives
             if name == "sisl_H":
-                # From a hamiltonian generated in sisl
-                bz = sisl.BandStructure(H, [[0, 0, 0], [2/3, 1/3, 0], [1/2, 0, 0]], 9, ["Gamma", "M", "K"])
+                # Directly creating a BandStructure object
+                bz = sisl.BandStructure(H, [[0, 0, 0], [2/3, 1/3, 0], [1/2, 0, 0]], 6, ["Gamma", "M", "K"])
                 init_func = bz.plot
-                attrs = {
-                    "bands_shape": (9, 1, 2),
-                    "ticklabels": ["Gamma", "M", "K"],
-                    "tickvals": [0., 1.70309799, 2.55464699],
-                    "gap": 0
-                }
+                
             elif name == "sisl_H_path":
-                # From a hamiltonian generated in sisl but passing a path
-                # (as if we were providing the input from the GUI)
+                # Passing a list of points (as if we were interacting from a GUI)
                 path = [{"active": True, "x": x, "y": y, "z": z, "divisions": 3,
-                    "tick": tick} for tick, (x, y, z) in zip(["Gamma", "M", "K"], [[0, 0, 0], [2/3, 1/3, 0], [1/2, 0, 0]])]
+                    "name": tick} for tick, (x, y, z) in zip(["Gamma", "M", "K"], [[0, 0, 0], [2/3, 1/3, 0], [1/2, 0, 0]])]
 
-                init_func = partial(H.plot.bands, path=path)
-                attrs =  {
-                    "bands_shape": (6, 1, 2),
-                    "ticklabels": ["Gamma", "M", "K"],
-                    "tickvals": [0., 1.70309799, 2.55464699],
-                    "gap": 0,
-                }
+                init_func = partial(H.plot.bands, band_structure=path)
+            
+            attrs = {
+                "bands_shape": (6, 1, 2),
+                "ticklabels": ["Gamma", "M", "K"],
+                "tickvals": [0., 1.70309799, 2.55464699],
+                "gap": 0
+            }
             
         return init_func, attrs
 
