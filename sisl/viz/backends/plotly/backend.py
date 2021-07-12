@@ -1,7 +1,6 @@
 from collections import defaultdict
 import itertools
 from functools import partial
-from sisl.viz.plots.tests.test_bands import backend
 import numpy as np
 
 import plotly.graph_objects as go
