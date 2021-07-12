@@ -3,8 +3,10 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 """ This input field is prepared to receive sisl objects that are plotables """
 from pathlib import Path
+from sisl.viz.input_fields.dropdown import DropdownInput
 
 import sisl
+from sisl.physics import distribution
 
 from .._input_field import InputField
 from .queries import QueriesInput
@@ -171,6 +173,53 @@ class PlotableInput(SislObjectInput):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+class DistributionInput(QueriesInput, SislObjectInput):
+    
+    def __init__(self, *args, **kwargs):
+        # Let's define the queryform (although we only want one point for now we use QueriesInput for convenience)
+        kwargs["queryForm"] = [
+
+            DropdownInput(
+                key="method", name="Method",
+                default="gaussian",
+                params={
+                    "options": [{"label": dist, "value": dist} for dist in distribution.__all__ if dist != "get_distribution"],
+                    "isMulti": False,
+                    "isClearable": False,
+                }
+            ),
+
+            FloatInput(
+                key="smearing", name="Smearing",
+                default=0.1,
+                params={
+                    "step": 0.01
+                }
+            ),
+
+            FloatInput(
+                key="x0", name="Center",
+                default=0.0,
+                params={
+                    "step": 0.01
+                }
+            ),
+        ]
+
+        super().__init__(*args, **kwargs)
+    
+    def parse(self, val):
+        if val and not callable(val):
+            if isinstance(val, str):
+                val = distribution.get_distribution(val)
+            else:
+                # QueriesInput returns a list of dicts, we only want one.
+                if not isinstance(val, dict):
+                    val = val[0]
+
+                val = distribution.get_distribution(**val)
+
+        return val
 
 class SileInput(FilePathInput, SislObjectInput):
 

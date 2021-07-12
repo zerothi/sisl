@@ -1,10 +1,12 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from sisl.viz.input_fields.sisl_obj import DistributionInput
 import numpy as np
 
 import sisl
 from sisl.messages import warn
+from sisl.physics import distribution as sisl_distribution
 from ..plot import Plot, entry_point
 from ..plotutils import find_files, random_color
 from ..input_fields import (
@@ -108,6 +110,17 @@ class PdosPlot(Plot):
             key="Erange",
             default=[-2, 2],
             help = "Energy range where PDOS is displayed."
+        ),
+
+        DistributionInput(
+            key="distribution", name="distribution",
+            default=[{"method": "gaussian", "smearing": 0.01, "x0": 0.0}],
+            help="""The distribution used for the smearing of the PDOS if calculated by sisl.
+            It accepts the same types of values as the `distribution` argument of `H.PDOS`. 
+            Additionally, it accepts a dictionary containing arguments that are passed directly
+            to `sisl.physics.distribution.get_distribution`. E.g.: {"method": "gaussian", 
+            "smearing": 0.01, "x0": 0.0}
+            """  
         ),
 
         IntegerInput(
@@ -286,7 +299,7 @@ class PdosPlot(Plot):
         self.geometry = tbt_sile.read_geometry(**read_geometry_kwargs).sub(tbt_sile.a_dev)
 
     @entry_point('hamiltonian')
-    def _read_from_H(self, kgrid, kgrid_displ, Erange, nE, E0):
+    def _read_from_H(self, kgrid, kgrid_displ, Erange, nE, E0, distribution):
         """
         Calculates the PDOS from a sisl Hamiltonian.
         """
@@ -313,7 +326,9 @@ class PdosPlot(Plot):
         # Calculate the PDOS for all available spins
         PDOS = []
         for spin in spin_indices:
-            PDOS.append(self.mp.apply.average.PDOS(self.E, spin=spin, eta=True))
+            PDOS.append(self.mp.apply.average.PDOS(self.E, spin=spin, distribution=distribution))
+        if self.H.spin.is_noncolinear or self.H.spin.is_spinorbit:
+            PDOS = PDOS[0]
         self.PDOS = np.array(PDOS)
 
     def _after_read(self, geometry):
