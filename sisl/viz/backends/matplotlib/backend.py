@@ -27,7 +27,7 @@ class MatplotlibBackend(Backend):
         self.figure, self.ax = plt.subplots()
         self._init_ax()
 
-    def draw_on(self, ax):
+    def draw_on(self, ax, ax_indices=None):
         """Draws this plot in a different figure.
 
         Parameters
@@ -39,6 +39,9 @@ class MatplotlibBackend(Backend):
             ax = ax._backend.ax
         elif isinstance(ax, MatplotlibBackend):
             ax = ax.ax
+
+        if ax_indices is not None:
+            ax = ax[ax_indices]
 
         if not isinstance(ax, Axes):
             raise TypeError(f"{self.__class__.__name__} was provided a {ax.__class__.__name__} to draw on.")
@@ -91,22 +94,24 @@ class MatplotlibMultiplePlotBackend(MatplotlibBackend, MultiplePlotBackend):
 
 class MatplotlibSubPlotsBackend(MatplotlibMultiplePlotBackend, SubPlotsBackend):
 
-    def draw(self, backend_info, rows, cols, childs, **make_subplots_kwargs):
+    def draw(self, backend_info):
+        childs = backend_info["child_plots"]
+        rows, cols = backend_info["rows"], backend_info["cols"]
 
-        self.figure, self.axes = plt.subplots(rows, cols)
+        self.figure, self.ax = plt.subplots(rows, cols)
 
         # Normalize the axes array to have two dimensions
         if rows == 1 and cols == 1:
-            self.axes = np.array([[self.axes]])
+            self.ax = np.array([[self.ax]])
         elif rows == 1:
-            self.axes = np.expand_dims(self.axes, axis=0)
+            self.ax = np.expand_dims(self.ax, axis=0)
         elif cols == 1:
-            self.axes = np.expand_dims(self.axes, axis=1)
+            self.ax = np.expand_dims(self.ax, axis=1)
             
         indices = itertools.product(range(rows), range(cols))
         # Start assigning each plot to a position of the layout
         for (row, col) , child in zip(indices, childs):
-            child.draw_on(self.axes[row, col])
+            self.draw_other_plot(child, ax_indices=(row, col))
 
 MultiplePlot.backends.register("matplotlib", MatplotlibMultiplePlotBackend)
 SubPlots.backends.register("matplotlib", MatplotlibSubPlotsBackend)
