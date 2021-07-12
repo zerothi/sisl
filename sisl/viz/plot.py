@@ -1723,8 +1723,10 @@ class MultiplePlot(Plot):
 
         return self
 
-    def draw(self, backend_info):
-        self._backend.draw(backend_info, self.child_plots)
+    def get_figure(self, backend, **kwargs):
+        self._for_backend = getattr(self, "_for_backend", {})
+        self._for_backend["child_plots"] = self.child_plots
+        return super().get_figure(backend, **kwargs)
 
 
 class Animation(MultiplePlot):
@@ -1814,9 +1816,18 @@ class Animation(MultiplePlot):
             _plugins["_get_frame_names"] = lambda self, i: f"Frame {i}"
 
         super().__init__(*args, **kwargs, _plugins=_plugins)
-    
-    def draw(self, backend_info):
-        self._backend.draw(backend_info, self.child_plots, self._get_frame_names)
+
+    def get_figure(self, backend, **kwargs):
+        self._for_backend = getattr(self, "_for_backend", {})
+
+        # Get the names for each frame
+        frame_names = []
+        for i, plot in enumerate(self.child_plots):
+            frame_name = self._get_frame_names(i)
+            frame_names.append(frame_name)
+        self._for_backend["frame_names"] = frame_names
+
+        return super().get_figure(backend, **kwargs)
 
 
 class SubPlots(MultiplePlot):
@@ -1837,7 +1848,7 @@ class SubPlots(MultiplePlot):
         be inferred from `rows` and the number of plots. If
         neither `cols` or `rows` are provided, the `arrange` parameter will
         decide how the layout should look like.
-    make_subplot_kwargs: dict, optional
+    make_subplots_kwargs: dict, optional
         Extra keyword arguments that will be passed to make_subplots.
     reading_order:  optional
         Order in which the plot tries to read the data it needs.
@@ -1883,14 +1894,14 @@ class SubPlots(MultiplePlot):
             how the layout should look like."""
         ),
 
-        ProgramaticInput(key='make_subplot_kwargs', name='make_subplot additional arguments',
+        ProgramaticInput(key='make_subplots_kwargs', name='make_subplot additional arguments',
             dtype=dict,
             default={},
             help="""Extra keyword arguments that will be passed to make_subplots."""
         )
     )
 
-    def draw(self, backend_info, rows, cols, arrange, make_subplot_kwargs):
+    def get_figure(self, backend, rows, cols, arrange, make_subplots_kwargs, **kwargs):
         """ Builds the subplots layout from the child plots' data """
         nplots = len(self.child_plots)
         if rows is None and cols is None:
@@ -1918,4 +1929,10 @@ class SubPlots(MultiplePlot):
         if cols * rows < nplots:
             warn(f"requested {nplots} on a {rows}x{cols} grid layout. {nplots - cols*rows} plots will be missing.")
 
-        self._backend.draw(backend_info, rows, cols, self.child_plots)
+        self._for_backend = {
+            "rows": rows,
+            "cols": cols,
+            "make_subplots_kwargs": make_subplots_kwargs,
+        }
+
+        super().get_figure(backend, **kwargs)

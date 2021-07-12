@@ -45,7 +45,7 @@ class Backend(ABC):
         manages the flow of drawing the bands.
         """
        
-    def draw_other_plot(self, plot, backend=None):
+    def draw_other_plot(self, plot, backend=None, **kwargs):
         """Method that draws a different plot in the current canvas.
 
         Note that the other plot might have a different active backend, which might be incompatible.
@@ -62,6 +62,8 @@ class Backend(ABC):
         backend: str, optional
             The name of the backend that we want to force on the plot to be drawn. If not provided, we use
             the name of the current backend.
+        **kwargs:
+            passed directly to `draw_on`
         """
         backend_name = backend or self._backend_name
 
@@ -76,12 +78,12 @@ class Backend(ABC):
             plot.backends.setup(plot, backend_name)
 
         # Make the plot draw in this backend instance
-        plot.draw_on(self)
+        plot.draw_on(self, **kwargs)
 
         # Restore the initial backend of the plot, so that it doesn't feel affected
         plot._backend = plot_backend
 
-    def draw_on(self, figure):
+    def draw_on(self, figure, **kwargs):
         """Should draw the method in another instance of a compatible backend.
         
         Parameters
@@ -214,15 +216,15 @@ class Backend(ABC):
 
 class MultiplePlotBackend(Backend):
 
-    def draw(self, backend_info, childs):
+    def draw(self, backend_info):
         """Recieves the child plots and is responsible for drawing all of them in the same canvas"""
-        for child in childs:
+        for child in backend_info["childs"]:
             self.draw_other_plot(child)
 
 class SubPlotsBackend(Backend):
 
     @abstractmethod
-    def draw(self, drawer_info, rows, cols, childs, **make_subplots_kwargs):
+    def draw(self, backend_info):
         """Draws the subplots layout
 
         It must use `rows` and `cols`, and draw the childs row by row.
@@ -231,7 +233,7 @@ class SubPlotsBackend(Backend):
 class AnimationBackend(Backend):
 
     @abstractmethod
-    def draw(self, drawer_info, childs, get_frame_names):
+    def draw(self, backend_info):
         """Generates an animation out of the child plots.
         """
 

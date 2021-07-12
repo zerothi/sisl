@@ -64,7 +64,8 @@ class BlenderBackend(Backend):
 
 class BlenderMultiplePlotBackend(MultiplePlotBackend, BlenderBackend):
 
-    def draw(self, backend_info, childs):
+    def draw(self, backend_info):
+        childs = backend_info["child_plots"]
         # Start assigning each plot to a position of the layout
         for child in childs:
             self._draw_child_in_scene(child)

@@ -1,6 +1,7 @@
 from collections import defaultdict
 import itertools
 from functools import partial
+from sisl.viz.plots.tests.test_bands import backend
 import numpy as np
 
 import plotly.graph_objects as go
@@ -374,7 +375,10 @@ class PlotlyMultiplePlotBackend(PlotlyBackend, MultiplePlotBackend):
 
 class PlotlySubPlotsBackend(PlotlyBackend, SubPlotsBackend):
 
-    def draw(self, drawer_info, rows, cols, childs, **make_subplots_kwargs):
+    def draw(self, backend_info):
+        childs = backend_info["child_plots"]
+        rows, cols = backend_info["rows"], backend_info["cols"]
+
         # Check if all childplots have the same xaxis or yaxis titles.
         axes_titles = defaultdict(list)
         for child_plot in childs:
@@ -388,7 +392,7 @@ class PlotlySubPlotsBackend(PlotlyBackend, SubPlotsBackend):
         self.figure = make_subplots(**{
             "rows": rows, "cols": cols,
             **axes_titles,
-            **make_subplots_kwargs
+            **backend_info["make_subplots_kwargs"]
         })
 
         # Start assigning each plot to a position of the layout
@@ -430,11 +434,13 @@ class PlotlySubPlotsBackend(PlotlyBackend, SubPlotsBackend):
 
 class PlotlyAnimationBackend(PlotlyBackend, AnimationBackend):
 
-    def draw(self, drawer_info, childs, get_frame_names):
-        frames_layout = self._build_frames(childs, None, get_frame_names)
+    def draw(self, backend_info):
+        childs = backend_info["child_plots"]
+        frame_names = backend_info["frame_names"]
+        frames_layout = self._build_frames(childs, None, frame_names)
         self.update_layout(**frames_layout)
 
-    def _build_frames(self, childs, ani_method, get_frame_names):
+    def _build_frames(self, childs, ani_method, frame_names):
         """ Builds the frames of the plotly figure from the child plots' data
 
         It actually sets the frames of the figure.
@@ -445,13 +451,6 @@ class PlotlyAnimationBackend(PlotlyBackend, AnimationBackend):
             keys and values that need to be added to the layout
             in order for frames to work.
         """
-        # Get the names for each frame
-        frame_names = []
-        for i, plot in enumerate(childs):
-            frame_name = get_frame_names(i)
-            
-            frame_names.append(frame_name)
-
         if ani_method is None:
             same_traces = np.unique(
                 [len(plot.data) for plot in childs]
