@@ -579,6 +579,50 @@ class BandsPlot(Plot):
 
         return san_k
 
+    def _get_gap_coords(self, from_k, to_k=None, gap_spin=0, **kwargs):
+        """
+        Calculates the coordinates of a gap given some k values.
+        Parameters
+        -----------
+        from_k: float or str
+            The k value where you want the gap to start (bottom limit).
+            If "to_k" is not provided, it will be interpreted also as the top limit.
+            If a k-value is a float, it will be directly interpreted
+            as the position in the graph's k axis.
+            If a k-value is a string, it will be attempted to be parsed
+            into a float. If not possible, it will be interpreted as a label
+            (e.g. "Gamma").
+        to_k: float or str, optional
+            same as "from_k" but in this case represents the top limit.
+            If not provided, "from_k" will be used.
+        gap_spin: int, optional
+            the spin component where you want to draw the gap.
+        **kwargs:
+            keyword arguments that are passed directly to the new trace.
+        
+        Returns
+        -----------
+        tuple
+            A tuple containing (k_values, E_values)
+        """
+        if to_k is None:
+            to_k = from_k
+        
+        ks = [None, None]
+        # Parse the names of the kpoints into their numeric values
+        # if a string was provided.
+        for i, val in enumerate((from_k, to_k)):
+            ks[i] = self._sanitize_k(val)
+
+        VB, CB = self.gap_info["bands"]
+        Es = [self.bands.sel(k=k, band=band, spin=gap_spin, method="nearest") for k, band in zip(ks, (VB, CB))]
+        # Get the real values of ks that have been obtained
+        # because we might not have exactly the ks requested
+        ks = [np.ravel(E.k)[0] for E in Es]
+        Es = [np.ravel(E)[0] for E in Es]
+
+        return ks, Es
+        
     def toggle_gap(self):
         """
         If the gap was being displayed, hide it. Else, show it.
