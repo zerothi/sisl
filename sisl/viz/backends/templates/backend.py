@@ -218,7 +218,7 @@ class MultiplePlotBackend(Backend):
 
     def draw(self, backend_info):
         """Recieves the child plots and is responsible for drawing all of them in the same canvas"""
-        for child in backend_info["childs"]:
+        for child in backend_info["children"]:
             self.draw_other_plot(child)
 
 class SubPlotsBackend(Backend):
@@ -227,7 +227,7 @@ class SubPlotsBackend(Backend):
     def draw(self, backend_info):
         """Draws the subplots layout
 
-        It must use `rows` and `cols`, and draw the childs row by row.
+        It must use `rows` and `cols`, and draw the children row by row.
         """
 
 class AnimationBackend(Backend):

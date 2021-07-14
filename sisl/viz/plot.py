@@ -26,7 +26,7 @@ from .configurable import (
 )
 from ._presets import get_preset
 from .plotutils import (
-    init_multiple_plots, repeat_if_childs, dictOfLists2listOfDicts,
+    init_multiple_plots, repeat_if_children, dictOfLists2listOfDicts,
     trigger_notification, spoken_message,
     running_in_notebook, check_widgets, call_method_if_present
 )
@@ -564,7 +564,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
 
             If it is a function, it should accept `self` (the animation object) and return a list of strings
             with the frame names. Note that you can access the plot instance responsible for each frame under
-            `self.child_plots`. The function will be run each time the figure is generated, so in this way your
+            `self.children`. The function will be run each time the figure is generated, so in this way your
             frame names will be dynamic.
 
             FRAME NAMES SHOULD BE UNIQUE, OTHERWISE THE ANIMATION WILL HAVE A WEIRD BEHAVIOR.
@@ -756,7 +756,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
 
         self.add_shortcut("ctrl+z", "Undo settings", self.undo_settings, _description="Takes the settings of the plot one step back")
 
-    @repeat_if_childs
+    @repeat_if_children
     @vizplotly_settings('before')
     def read_data(self, update_fig=True, **kwargs):
         """ This method is responsible for organizing the data-reading step
@@ -987,7 +987,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
 
                         if as_animation:
                             new_plot = self.clone()
-                            pt.add_child_plots(new_plot)
+                            pt.add_children(new_plot)
                             pt.get_figure()
 
                         if clear_previous and fig_widget is None:
@@ -1097,7 +1097,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
 
         return self
 
-    @repeat_if_childs
+    @repeat_if_children
     @vizplotly_settings('before')
     def set_data(self, update_fig = True, **kwargs):
         """ Method to process the data that has been read beforehand by read_data() and prepare the figure
@@ -1327,8 +1327,8 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
             - "subplots": The layout is divided in different subplots.
             - "animation": Each plot is converted into the frame of an animation.
         extend_multiples: boolean, optional
-            if True, if `MultiplePlot`s are passed, they are splitted into their child_plots, so that the result
-            is the merge of its child_plots with the rest.
+            if True, if `MultiplePlot`s are passed, they are splitted into their children, so that the result
+            is the merge of its children with the rest.
             If False, a `MultiplePlot` is treated as a solid unit.
         kwargs:
             extra arguments that are directly passed to `MultiplePlot`, `Subplots`
@@ -1343,11 +1343,11 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
         if not isinstance(others, (list, tuple, np.ndarray)):
             others = [others]
 
-        child_plots = [self, *others]
+        children = [self, *others]
         if extend_multiples:
-            child_plots = [[pt] if not isinstance(pt, MultiplePlot) else pt.child_plots for pt in child_plots]
+            children = [[pt] if not isinstance(pt, MultiplePlot) else pt.children for pt in children]
             # Flatten the list
-            child_plots = [pt for plots in child_plots for pt in plots]
+            children = [pt for plots in children for pt in plots]
 
         PlotClass = {
             "multiple": MultiplePlot,
@@ -1355,7 +1355,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
             "animation": Animation
         }[to]
 
-        return PlotClass(plots=child_plots, **kwargs)
+        return PlotClass(plots=children, **kwargs)
 
     def copy(self):
         """ Returns a copy of the plot
@@ -1492,7 +1492,7 @@ class MultiplePlot(Plot):
         # Take the plots if they have already been created and are provided by the user
         self.PLOTS_PROVIDED = plots is not None
         if self.PLOTS_PROVIDED:
-            self.set_child_plots(plots)
+            self.set_children(plots)
 
         self.has_template_plot = False
         if isinstance(template_plot, Plot):
@@ -1503,7 +1503,7 @@ class MultiplePlot(Plot):
 
     def __getitem__(self, i):
         """ Gets a given child plot """
-        return self.child_plots[i]
+        return self.children[i]
 
     @staticmethod
     def _kw_from_cls(cls):
@@ -1518,8 +1518,8 @@ class MultiplePlot(Plot):
             return None
 
     @property
-    def _attrs_for_child_plots(self):
-        """ Returns all the attributes that its child_plots should have """
+    def _attrs_for_children(self):
+        """ Returns all the attributes that its children should have """
         return {
             'isChildPlot': True,
             '_get_shared_attr': lambda key: self.shared_attr(key),
@@ -1558,7 +1558,7 @@ class MultiplePlot(Plot):
             plots = init_multiple_plots(
                 self._plot_classes,
                 kwargsList = [
-                    {**template_settings, **kwargs, "attrs_for_plot": self._attrs_for_child_plots, "only_init": SINGLE_CLASS and try_sharing}
+                    {**template_settings, **kwargs, "attrs_for_plot": self._attrs_for_children, "only_init": SINGLE_CLASS and try_sharing}
                     for kwargs in self._getInitKwargsList()
                 ],
                 serial=SINGLE_CLASS and try_sharing
@@ -1589,7 +1589,7 @@ class MultiplePlot(Plot):
                     # happily set the data, avoiding the read data step. Plots will take
                     # their missing attributes from the shared store or from the plot
                     # template
-                    self.set_child_plots(plots)
+                    self.set_children(plots)
 
                     if not self.has_template_plot:
                         leading_plot._SHOULD_SHARE_WITH_SIBLINGS = True
@@ -1599,83 +1599,83 @@ class MultiplePlot(Plot):
 
             else:
                 # If we haven't tried sharing data, the plots are already prepared (with read data of their own)
-                self.set_child_plots(plots)
+                self.set_children(plots)
 
-            call_method_if_present(self, "_after_childs_updated")
+            call_method_if_present(self, "_after_children_updated")
 
         if update_fig:
             self.get_figure()
 
         return self
 
-    def update_child_settings(self, childs_sel=None, **kwargs):
+    def update_children_settings(self, children_sel=None, **kwargs):
         """ Updates the settings of all child plots
 
         Parameters
         -----------
-        childs_sel: array-like of int, optional
+        children_sel: array-like of int, optional
             The indices of the child plots that you want to update.
         **kwargs
             Keyword arguments specifying the settings that you want to update
             and the values you want them to have
         """
-        return self.update_settings(on_child_plots=True, on_parent_plot=False, childs_sel=childs_sel, **kwargs)
+        return self.update_settings(on_children=True, on_parent_plot=False, children_sel=children_sel, **kwargs)
 
-    def _update_settings(self, on_child_plots=False, on_parent_plot=True, childs_sel=None, **kwargs):
-        """ This method takes into account that on plots that contain childs, one may want to update only the parent settings or all the child's settings.
+    def _update_settings(self, on_children=False, on_parent_plot=True, children_sel=None, **kwargs):
+        """ This method takes into account that on plots that contain children, one may want to update only the parent settings or all the child's settings.
 
         Parameters
         -----------
-        on_child_plots: boolean, optional
+        on_children: boolean, optional
             whether the settings should be updated on child plots
         on_parent_plot: boolean, optional
             whether the settings should be updated on the parent plot.
-        childs_sel: array-like of int, optional
+        children_sel: array-like of int, optional
             The indices of the child plots that you want to update.
         """
         if on_parent_plot:
             super()._update_settings(**kwargs)
 
-        if on_child_plots:
+        if on_children:
 
-            repeat_if_childs(Configurable._update_settings)(self, childs_sel=childs_sel, **kwargs)
+            repeat_if_children(Configurable._update_settings)(self, children_sel=children_sel, **kwargs)
 
-            call_method_if_present(self, "_after_childs_updated")
+            call_method_if_present(self, "_after_children_updated")
 
         return self
 
-    def set_child_plots(self, plots, keep=False):
-        """ Sets the child_plots of a multiple plot
+    def set_children(self, plots, keep=False):
+        """ Sets the children of a multiple plot
 
         Parameters
         --------
         plots: array-like of sisl.viz.plotly.Plot or plotly Figure
-            the plots that should be set as child_plots for the animation. 
+            the plots that should be set as children for the animation. 
         keep: boolean, optional
-            whether the existing child_plots should be kept.
+            whether the existing children should be kept.
 
             If `True`, `plots` is added after them.
         """
         for plot in plots:
-            for key, val in self._attrs_for_child_plots.items():
+            for key, val in self._attrs_for_children.items():
                 setattr(plot, key, val)
 
-        self.child_plots = plots if not keep else [*self.child_plots, *plots]
+        self.children = plots if not keep else [*self.children, *plots]
 
         return self
 
-    def add_child_plots(self, *plots):
-        """ Append child_plots to the existing ones
+    def add_children(self, *plots):
+        """ Append children to the existing ones
 
         Parameters
         -----------
         *plots: Plot
             all the plots that you want to add as child plots of this one.
         """
-        self.set_child_plots(plots, keep=True)
+        self.set_children(plots, keep=True)
 
     def insert_childplot(self, index, plot):
-        """ Inserts a plot in a given position of the child_plots list
+        """ Inserts a plot in a given position of the children list
 
         Parameters
         ----------
@@ -1684,13 +1684,13 @@ class MultiplePlot(Plot):
         plot: sisl Plot or plotly Figure
             The plot to insert in the list
         """
-        self.child_plots.insert(index, plot)
+        self.children.insert(index, plot)
 
     def shared_attr(self, key):
         """ Gets an attribute that is located in the shared storage of the MultiplePlot
 
-        This method will be given to all child_plots so that they can retreive the shared
-        attributes. This is done in `set_child_plots`.
+        This method will be given to all children so that they can retreive the shared
+        attributes. This is done in `set_children`.
 
         Parameters
         ------------
@@ -1725,7 +1725,7 @@ class MultiplePlot(Plot):
 
     def get_figure(self, backend, **kwargs):
         self._for_backend = getattr(self, "_for_backend", {})
-        self._for_backend["child_plots"] = self.child_plots
+        self._for_backend["children"] = self.children
         return super().get_figure(backend, **kwargs)
 
 
@@ -1822,7 +1822,7 @@ class Animation(MultiplePlot):
 
         # Get the names for each frame
         frame_names = []
-        for i, plot in enumerate(self.child_plots):
+        for i, plot in enumerate(self.children):
             frame_name = self._get_frame_names(i)
             frame_names.append(frame_name)
         self._for_backend["frame_names"] = frame_names
@@ -1903,7 +1903,7 @@ class SubPlots(MultiplePlot):
 
     def get_figure(self, backend, rows, cols, arrange, make_subplots_kwargs, **kwargs):
         """ Builds the subplots layout from the child plots' data """
-        nplots = len(self.child_plots)
+        nplots = len(self.children)
         if rows is None and cols is None:
             if arrange == 'rows':
                 rows = nplots

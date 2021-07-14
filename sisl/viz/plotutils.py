@@ -792,30 +792,30 @@ def apply_method_on_multiple_objs(method, objs, argsList = None, kwargsList = No
     return run_multiple(_apply_method, method, objs, argsList = argsList, kwargsList = kwargsList, **kwargs)
 
 
-def repeat_if_childs(method):
-    """ Decorator that will force a method to be run on all the plot's child_plots in case there are any """
+def repeat_if_children(method):
+    """ Decorator that will force a method to be run on all the plot's children in case there are any """
 
-    def apply_to_all_plots(obj, *args, childs_sel=None, **kwargs):
+    def apply_to_all_plots(obj, *args, children_sel=None, **kwargs):
 
-        if hasattr(obj, "child_plots"):
+        if hasattr(obj, "children"):
 
             kwargs_list = kwargs.get("kwargs_list", kwargs)
 
-            if isinstance(childs_sel, int):
-                childs_sel = [childs_sel]
+            if isinstance(children_sel, int):
+                children_sel = [children_sel]
 
             # Get all the child plots that we are going to modify
-            childs = obj.child_plots
-            if childs_sel is not None:
-                childs = np.array(childs)[childs_sel].tolist()
+            children = obj.child_plots
+            if children_sel is not None:
+                children = np.array(children)[children_sel].tolist()
             else:
-                childs_sel = range(len(childs))
+                children_sel = range(len(children))
 
-            new_childs = apply_method_on_multiple_objs(method, childs, kwargsList=kwargs_list, serial=True)
+            new_children = apply_method_on_multiple_objs(method, children, kwargsList=kwargs_list, serial=True)
 
             # Set the new plots. We need to do this because apply_method_on_multiple_objs
             # can use multiprocessing, and therefore will not modify the plot in place.
-            for i, new_child in zip(childs_sel, new_childs):
+            for i, new_child in zip(children_sel, new_children):
                 obj.child_plots[i] = new_child
 
             obj.get_figure()
