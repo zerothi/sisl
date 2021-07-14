@@ -6,7 +6,7 @@ class Backends:
     def __init__(self, plot_cls):
         self._backends = {}
         self._template = None
-        self._childs = []
+        self._children = []
 
         self._cls = plot_cls
 
@@ -41,7 +41,7 @@ class Backends:
         backend._backend_name = backend_name
         self._backends[backend_name] = backend
 
-        for child in self._childs:
+        for child in self._children:
             child.register(backend_name, backend, default=default)
 
     def setup(self, plot, backend_name):
@@ -73,7 +73,7 @@ class Backends:
             The backend class that should be used as a template.
         """
         self._template = template
-        for child in self._childs:
+        for child in self._children:
             child.register_template(template)
     
     def register_child(self, child):
@@ -98,7 +98,7 @@ class Backends:
         Note that the opposite is not True, so you can register wavefunction specific backends without
         problem.
         """
-        self._childs.append(child)
+        self._children.append(child)
     
     @property
     def options(self):

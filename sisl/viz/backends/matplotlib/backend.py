@@ -95,7 +95,7 @@ class MatplotlibMultiplePlotBackend(MatplotlibBackend, MultiplePlotBackend):
 class MatplotlibSubPlotsBackend(MatplotlibMultiplePlotBackend, SubPlotsBackend):
 
     def draw(self, backend_info):
-        childs = backend_info["child_plots"]
+        children = backend_info["children"]
         rows, cols = backend_info["rows"], backend_info["cols"]
 
         self.figure, self.axes = plt.subplots(rows, cols)
@@ -110,7 +110,7 @@ class MatplotlibSubPlotsBackend(MatplotlibMultiplePlotBackend, SubPlotsBackend):
             
         indices = itertools.product(range(rows), range(cols))
         # Start assigning each plot to a position of the layout
-        for (row, col) , child in zip(indices, childs):
+        for (row, col) , child in zip(indices, children):
             self.draw_other_plot(child, axes_indices=(row, col))
 
 MultiplePlot.backends.register("matplotlib", MatplotlibMultiplePlotBackend)

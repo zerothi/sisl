@@ -375,12 +375,12 @@ class PlotlyMultiplePlotBackend(PlotlyBackend, MultiplePlotBackend):
 class PlotlySubPlotsBackend(PlotlyBackend, SubPlotsBackend):
 
     def draw(self, backend_info):
-        childs = backend_info["child_plots"]
+        children = backend_info["children"]
         rows, cols = backend_info["rows"], backend_info["cols"]
 
         # Check if all childplots have the same xaxis or yaxis titles.
         axes_titles = defaultdict(list)
-        for child_plot in childs:
+        for child_plot in children:
             axes_titles["x"].append(child_plot.layout.xaxis.title.text)
             axes_titles["y"].append(child_plot.layout.yaxis.title.text)
 
@@ -395,7 +395,7 @@ class PlotlySubPlotsBackend(PlotlyBackend, SubPlotsBackend):
         })
 
         # Start assigning each plot to a position of the layout
-        for (row, col), plot in zip(itertools.product(range(1, rows + 1), range(1, cols + 1)), childs):
+        for (row, col), plot in zip(itertools.product(range(1, rows + 1), range(1, cols + 1)), children):
 
             ntraces = len(plot.data)
 
@@ -434,12 +434,12 @@ class PlotlySubPlotsBackend(PlotlyBackend, SubPlotsBackend):
 class PlotlyAnimationBackend(PlotlyBackend, AnimationBackend):
 
     def draw(self, backend_info):
-        childs = backend_info["child_plots"]
+        children = backend_info["children"]
         frame_names = backend_info["frame_names"]
-        frames_layout = self._build_frames(childs, None, frame_names)
+        frames_layout = self._build_frames(children, None, frame_names)
         self.update_layout(**frames_layout)
 
-    def _build_frames(self, childs, ani_method, frame_names):
+    def _build_frames(self, children, ani_method, frame_names):
         """ Builds the frames of the plotly figure from the child plots' data
 
         It actually sets the frames of the figure.
@@ -452,7 +452,7 @@ class PlotlyAnimationBackend(PlotlyBackend, AnimationBackend):
         """
         if ani_method is None:
             same_traces = np.unique(
-                [len(plot.data) for plot in childs]
+                [len(plot.data) for plot in children]
             ).shape[0] == 1
 
             ani_method = "animate" if same_traces else "update"
@@ -463,7 +463,7 @@ class PlotlyAnimationBackend(PlotlyBackend, AnimationBackend):
         elif ani_method == "update":
             figure_builder = self._figure_update_method
 
-        steps, updatemenus = figure_builder(childs, frame_names)
+        steps, updatemenus = figure_builder(children, frame_names)
 
         frames_layout = {
 
@@ -492,13 +492,13 @@ class PlotlyAnimationBackend(PlotlyBackend, AnimationBackend):
 
         return frames_layout
 
-    def _figure_update_method(self, childs, frame_names):
+    def _figure_update_method(self, children, frame_names):
         """
         In the update method, we give all the traces to data, and we are just going to toggle
         their visibility depending on which 'frame' needs to be displayed.
         """
         # Add all the traces
-        for i, (frame_name, plot) in enumerate(zip(frame_names, childs)):
+        for i, (frame_name, plot) in enumerate(zip(frame_names, children)):
 
             visible = i == 0
 
@@ -524,7 +524,7 @@ class PlotlyAnimationBackend(PlotlyBackend, AnimationBackend):
 
         return steps, []
 
-    def _figure_animate_method(self, childs, frame_names):
+    def _figure_animate_method(self, children, frame_names):
         """
         In the animate method, we explicitly define frames, And the transition from one to the other
         will be animated
@@ -534,12 +534,12 @@ class PlotlyAnimationBackend(PlotlyBackend, AnimationBackend):
         redraw = True
 
         # Data will actually only be the first frame
-        self.figure.update(data=childs[0].data)
+        self.figure.update(data=children[0].data)
 
         frames = []
 
-        maxN = np.max([len(plot.data) for plot in childs])
-        for frame_name, plot in zip(frame_names, childs):
+        maxN = np.max([len(plot.data) for plot in children])
+        for frame_name, plot in zip(frame_names, children):
 
             data = plot.data
             nTraces = len(data)
