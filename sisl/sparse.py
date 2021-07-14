@@ -634,7 +634,7 @@ class SparseCSR(NDArrayOperatorsMixin):
         # We are *only* deleting columns, so if it is finalized,
         # it will still be
 
-    def translate_columns(self, old, new, clean=True):
+    def translate_columns(self, old, new, rows=None, clean=True):
         """ Takes all `old` columns and translates them to `new`.
 
         Parameters
@@ -643,6 +643,8 @@ class SparseCSR(NDArrayOperatorsMixin):
            old column indices
         new : int or array_like
            new column indices
+        rows : int or array_like
+           only translate columns for the given rows
         clean : bool, optional
            whether the new translated columns, outside the shape, should be deleted or not (default delete)
         """
@@ -650,7 +652,7 @@ class SparseCSR(NDArrayOperatorsMixin):
         new = _a.asarrayi(new)
 
         if len(old) != len(new):
-            raise ValueError(self.__class__.__name__+".translate_columns requires input and output columns with "
+            raise ValueError(f"{self.__class__.__name__}.translate_columns requires input and output columns with "
                              "equal length")
 
         if allclose(old, new):
@@ -658,15 +660,18 @@ class SparseCSR(NDArrayOperatorsMixin):
             return
 
         if np_any(old >= self.shape[1]):
-            raise ValueError(self.__class__.__name__+".translate_columns has non-existing old column values")
+            raise ValueError(f"{self.__class__.__name__}.translate_columns has non-existing old column values")
 
         # Now do the translation
         pvt = _a.arangei(self.shape[1])
         pvt[old] = new
 
         # Get indices of valid column entries
-        idx = array_arange(self.ptr[:-1], n=self.ncol)
-        # Convert the old column indices to new ones
+        if rows is None:
+            idx = array_arange(self.ptr[:-1], n=self.ncol)
+        else:
+            idx = array_arange(self.ptr[rows], n=self.ncol[rows])
+            # Convert the old column indices to new ones
         self.col[idx] = pvt[self.col[idx]]
 
         # After translation, set to not finalized
@@ -698,7 +703,7 @@ class SparseCSR(NDArrayOperatorsMixin):
         cols = _a.asarrayi(cols)
 
         if np_any(cols >= self.shape[1]):
-            raise ValueError(self.__class__.__name__+".scale_columns has non-existing old column values")
+            raise ValueError(f"{self.__class__.__name__}.scale_columns has non-existing old column values")
 
         # Find indices
         if rows is None:

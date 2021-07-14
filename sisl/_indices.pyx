@@ -11,26 +11,26 @@ cimport numpy as np
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def indices_only(np.ndarray[np.int32_t, ndim=1, mode='c'] search, np.ndarray[np.int32_t, ndim=1, mode='c'] value):
-    """ Return indices of all `value` in the search array.
+def indices_only(np.ndarray[np.int32_t, ndim=1, mode='c'] element, np.ndarray[np.int32_t, ndim=1, mode='c'] test_element):
+    """ Return indices of all `test_element` in the element array.
 
     Parameters
     ----------
-    search : np.ndarray(np.int32)
+    element : np.ndarray(np.int32)
         array to search in
-    value : np.ndarray(np.int32)
-        values to find the indices of in `search`
+    test_element : np.ndarray(np.int32)
+        values to find the indices of in `element`
     """
     # Ensure contiguous arrays
-    cdef int[::1] SEARCH = search
-    cdef int[::1] VALUE = value
-    cdef Py_ssize_t n_search = SEARCH.shape[0]
-    cdef Py_ssize_t n_value = VALUE.shape[0]
+    cdef int[::1] ELEMENT = element
+    cdef int[::1] TEST_ELEMENT = test_element
+    cdef Py_ssize_t n_element = ELEMENT.shape[0]
+    cdef Py_ssize_t n_test_element = TEST_ELEMENT.shape[0]
 
-    cdef np.ndarray[np.int32_t, ndim=1, mode='c'] idx = np.empty([max(n_value, n_search)], dtype=np.int32)
+    cdef np.ndarray[np.int32_t, ndim=1, mode='c'] idx = np.empty([max(n_test_element, n_element)], dtype=np.int32)
     cdef int[::1] IDX = idx
 
-    cdef Py_ssize_t n = _indices_only(n_search, SEARCH, n_value, VALUE, IDX)
+    cdef Py_ssize_t n = _indices_only(n_element, ELEMENT, n_test_element, TEST_ELEMENT, IDX)
 
     return idx[:n]
 
@@ -38,31 +38,31 @@ def indices_only(np.ndarray[np.int32_t, ndim=1, mode='c'] search, np.ndarray[np.
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef Py_ssize_t _indices_only(const int n_search, const int[::1] search,
-                       const int n_value, const int[::1] value,
+cdef Py_ssize_t _indices_only(const Py_ssize_t n_element, const int[::1] element,
+                       const Py_ssize_t n_test_element, const int[::1] test_element,
                        int[::1] idx) nogil:
     cdef Py_ssize_t i, j, n
 
     # Fast return
-    if n_value == 0:
+    if n_test_element == 0:
         return 0
-    elif n_search == 0:
+    elif n_element == 0:
         return 0
 
-    elif n_value > n_search:
+    elif n_test_element > n_element:
         n = 0
-        for j in range(n_value):
-            for i in range(n_search):
-                if value[j] == search[i]:
+        for j in range(n_test_element):
+            for i in range(n_element):
+                if test_element[j] == element[i]:
                     idx[n] = i
                     n += 1
                     break
 
     else:
         n = 0
-        for i in range(n_search):
-            for j in range(n_value):
-                if value[j] == search[i]:
+        for i in range(n_element):
+            for j in range(n_test_element):
+                if test_element[j] == element[i]:
                     idx[n] = i
                     n += 1
                     break
@@ -71,31 +71,31 @@ cdef Py_ssize_t _indices_only(const int n_search, const int[::1] search,
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def indices(np.ndarray[np.int32_t, ndim=1, mode='c'] search, np.ndarray[np.int32_t, ndim=1, mode='c'] value, int offset, both_sorted=False):
-    """ Return indices of all `value` in the search array. If not found the index will be ``-1``
+def indices(np.ndarray[np.int32_t, ndim=1, mode='c'] element, np.ndarray[np.int32_t, ndim=1, mode='c'] test_element, int offset, both_sorted=False):
+    """ Return indices of all `test_element` in the search array. If not found the index will be ``-1``
 
     Parameters
     ----------
-    search : np.ndarray(np.int32)
+    element : np.ndarray(np.int32)
         array to search in
-    value : np.ndarray(np.int32)
-        values to find the indices of in `search`
+    test_element : np.ndarray(np.int32)
+        values to find the indices of in `element`
     offset : int
         index offset
     """
     # Ensure contiguous arrays
-    cdef int[::1] SEARCH = search
-    cdef int[::1] VALUE = value
-    cdef int n_search = SEARCH.shape[0]
-    cdef int n_value = VALUE.shape[0]
+    cdef int[::1] ELEMENT = element
+    cdef int[::1] TEST_ELEMENT = test_element
+    cdef Py_ssize_t n_element = ELEMENT.shape[0]
+    cdef Py_ssize_t n_test_element = TEST_ELEMENT.shape[0]
 
-    cdef np.ndarray[np.int32_t, ndim=1, mode='c'] idx = np.empty([n_value], dtype=np.int32)
+    cdef np.ndarray[np.int32_t, ndim=1, mode='c'] idx = np.empty([n_test_element], dtype=np.int32)
     cdef int[::1] IDX = idx
 
     if both_sorted:
-        _indices_sorted_arrays(n_search, SEARCH, n_value, VALUE, offset, IDX)
+        _indices_sorted_arrays(n_element, ELEMENT, n_test_element, TEST_ELEMENT, offset, IDX)
     else:
-        _indices(n_search, SEARCH, n_value, VALUE, offset, IDX)
+        _indices(n_element, ELEMENT, n_test_element, TEST_ELEMENT, offset, IDX)
 
     return idx
 
@@ -103,34 +103,34 @@ def indices(np.ndarray[np.int32_t, ndim=1, mode='c'] search, np.ndarray[np.int32
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef void _indices(const int n_search, const int[::1] search,
-                   const int n_value, const int[::1] value,
+cdef void _indices(const Py_ssize_t n_element, const int[::1] element,
+                   const Py_ssize_t n_test_element, const int[::1] test_element,
                    const int offset, int[::1] idx) nogil:
     cdef Py_ssize_t i, j
 
     # Fast return
-    if n_value == 0:
+    if n_test_element == 0:
         pass
-    elif n_search == 0:
-        for j in range(n_value):
+    elif n_element == 0:
+        for j in range(n_test_element):
             idx[j] = -1
         pass
 
-    elif n_value > n_search:
-        for j in range(n_value):
+    elif n_test_element > n_element:
+        for j in range(n_test_element):
             idx[j] = -1
-            for i in range(n_search):
-                if value[j] == search[i]:
+            for i in range(n_element):
+                if test_element[j] == element[i]:
                     idx[j] = offset + i
                     break
 
     else:
         # We need to initialize
-        for j in range(n_value):
+        for j in range(n_test_element):
             idx[j] = -1
-        for i in range(n_search):
-            for j in range(n_value):
-                if value[j] == search[i]:
+        for i in range(n_element):
+            for j in range(n_test_element):
+                if test_element[j] == element[i]:
                     idx[j] = offset + i
                     break
 
@@ -138,34 +138,34 @@ cdef void _indices(const int n_search, const int[::1] search,
 @cython.boundscheck(False)
 @cython.wraparound(False)
 @cython.initializedcheck(False)
-cdef void _indices_sorted_arrays(const int n_search, const int[::1] search,
-                                 const int n_value, const int[::1] value,
+cdef void _indices_sorted_arrays(const Py_ssize_t n_element, const int[::1] element,
+                                 const Py_ssize_t n_test_element, const int[::1] test_element,
                                  const int offset, int[::1] idx) nogil:
     cdef Py_ssize_t i, j
-    cdef int cvalue, csearch
+    cdef int ctest_element, celement
 
     # Fast return
-    if n_value == 0:
+    if n_test_element == 0:
         pass
-    elif n_search == 0:
-        for j in range(n_value):
+    elif n_element == 0:
+        for j in range(n_test_element):
             idx[j] = -1
         return
 
     i = 0
     j = 0
-    while (i < n_search) and (j < n_value):
-        csearch = search[i]
-        cvalue = value[j]
-        if csearch == cvalue:
+    while (i < n_element) and (j < n_test_element):
+        celement = element[i]
+        ctest_element = test_element[j]
+        if celement == ctest_element:
             idx[j] = i + offset
             j += 1
-        elif csearch < cvalue:
+        elif celement < ctest_element:
             i += 1
-        elif csearch > cvalue:
+        elif celement > ctest_element:
             idx[j] = -1
             j += 1
-    for j in range(j, n_value):
+    for j in range(j, n_test_element):
         idx[j] = -1
 
 
