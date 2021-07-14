@@ -12,7 +12,9 @@ from sisl.geom import fcc, graphene
 from sisl.sparse_geometry import *
 
 
-pytestmark = [pytest.mark.sparse, pytest.mark.sparse_geometry]
+pytestmark = [pytest.mark.sparse,
+              pytest.mark.sparse_geometry,
+              pytest.mark.sparse_orbital]
 
 
 @pytest.mark.parametrize("n0", [1, 3])
@@ -315,7 +317,7 @@ def test_sparse_orbital_replace_simple():
 
 
 def test_sparse_orbital_replace_hole():
-    """ Create a big graphene flake remove a hole """
+    """ Create a big graphene flake remove a hole (1 orbital system) """
     g = graphene(orthogonal=True)
     spo = SparseOrbital(g)
     # create the sparse-orbital
@@ -336,6 +338,48 @@ def test_sparse_orbital_replace_hole():
     # now replace every position that can be replaced
     for y in [0, 2, 3]:
         for x in [1, 2, 3]:
+            cube = Cuboid(hole.sc.cell, origo=g.sc.offset([x, y, 0]) - 0.1)
+            atoms = big.within(cube)
+            assert len(atoms) == 4 * 6 * 6
+            new = big.replace(atoms, hole)
+            new_copy = create_sp(new.geometry)
+            assert np.fabs((new - new_copy)._csr._D).sum() == 0.
+
+
+def test_sparse_orbital_replace_hole_norbs():
+    """ Create a big graphene flake remove a hole (multiple orbitals) """
+    a1 = Atom(5, R=(1.44, 1.44))
+    a2 = Atom(7, R=(1.44, 1.44, 1.44))
+    g = graphene(atoms=[a1, a2], orthogonal=True)
+    spo = SparseOrbital(g)
+    def func(self, ia, atoms, atoms_xyz=None):
+        geom = self.geometry
+        def a2o(idx):
+            return geom.a2o(idx, True)
+        io = a2o(ia)
+        idx = self.geometry.close(ia, R=[0.1, 1.44], atoms=atoms, atoms_xyz=atoms_xyz)
+        idx = list(map(a2o, idx))
+        self[io, idx[0]] = 0
+        for i in io:
+            self[i, idx[1]] = 2.7
+    # create the sparse-orbital
+    spo.construct(func)
+
+    # create 10x10 geoemetry
+    nx, ny = 10, 10
+    big = spo.tile(10, 0).tile(10, 1)
+    hole = spo.tile(6, 0).tile(6, 1)
+    hole = hole.remove(hole.close(hole.center(), R=3))
+
+    def create_sp(geom):
+        spo = SparseOrbital(geom)
+        # create the sparse-orbital
+        spo.construct(func)
+        return spo
+
+    # now replace every position that can be replaced
+    for y in [0, 3]:
+        for x in [1, 3]:
             cube = Cuboid(hole.sc.cell, origo=g.sc.offset([x, y, 0]) - 0.1)
             atoms = big.within(cube)
             assert len(atoms) == 4 * 6 * 6
