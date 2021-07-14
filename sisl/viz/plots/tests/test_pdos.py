@@ -8,19 +8,15 @@ Tests specific functionality of the PDOS plot.
 Different inputs are tested (siesta .PDOS and sisl Hamiltonian).
 
 """
-import os.path as osp
 from functools import partial
 import pytest
 from xarray import DataArray
-import numpy as np
 
 import sisl
-from sisl.viz import PdosPlot
 from sisl.viz.plots.tests.conftest import _TestPlot
 
 
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
-_dir = osp.join('sisl', 'io', 'siesta')
 
 
 @pytest.fixture(params=[True, False], ids=["inplace_split", "method_splitting"])
