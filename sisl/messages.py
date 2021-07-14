@@ -24,6 +24,7 @@ import warnings
 from functools import wraps
 
 from ._internal import set_module
+from ._environ import get_environ_variable
 
 
 __all__ = ['SislDeprecation', 'SislInfo', 'SislWarning', 'SislException', 'SislError']
@@ -205,6 +206,8 @@ except ImportError:
             _stdout.flush()
 
 
+_default_eta = get_environ_variable("SISL_SHOW_PROGRESS")
+
 @set_module("sisl")
 def tqdm_eta(count, desc, unit, eta):
     """ Create a TQDM eta progress bar in when it is requested. Otherwise returns a fake object
@@ -217,15 +220,18 @@ def tqdm_eta(count, desc, unit, eta):
        description on the stdout when running the progressbar
     unit : str
        unit shown in the progressbar
-    eta : bool or str
+    eta : bool or str or None
        if True a ``tqdm`` progressbar is returned. Else a fake instance is returned.
-       If a str, that will be used as the description
+       If a str, that will be used as the description.
+       If None, use SISL_SHOW_PROGRESS environment variable as the value
 
     Returns
     -------
     object
        progress bar if `eta` is true, otherwise an object which does nothing
     """
+    if eta is None:
+        eta = _default_eta
     if eta:
         if isinstance(eta, str):
             desc = eta

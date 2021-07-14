@@ -2,7 +2,9 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import os
+import inspect
 from pathlib import Path
+from textwrap import dedent
 
 __all__ = ["register_environ_variable", "get_environ_variable"]
 
@@ -27,7 +29,7 @@ def register_environ_variable(name, default,
         a description of what this variable does.
     process : callable, optional
         a callable which will be used to post-process the value when retrieving
-        it
+        it.
 
     Raises
     ------
@@ -79,12 +81,20 @@ register_environ_variable("SISL_CONFIGDIR", Path.home() / ".config" / "sisl",
                           process=Path)
 
 register_environ_variable("SISL_FILES_TESTS", "_THIS_DIRECTORY_DOES_NOT_EXIST_",
-                          """Full path of the sisl/files folder.
-                          Generally this is only used for tests and for documentations.""",
+                          dedent("""\
+                          Full path of the sisl/files folder.
+                          Generally this is only used for tests and for documentations.
+                          """),
                           process=Path)
 
 register_environ_variable("SISL_VIZ_AUTOLOAD", "false",
-                          """Determines whether the visualization module is automatically loaded.
+                          dedent("""\
+                          Determines whether the visualization module is automatically loaded.
                           It may be good to leave auto load off if you are doing performance critical
-                          calculations to avoid the overhead of loading the visualization module.""",
+                          calculations to avoid the overhead of loading the visualization module.
+                          """),
+                          process=lambda val: val and val.lower().strip() in ["1", "t", "true"])
+
+register_environ_variable("SISL_SHOW_PROGRESS", "false",
+                          "Whether routines which can enable progress bars should show them by default or not.",
                           process=lambda val: val and val.lower().strip() in ["1", "t", "true"])

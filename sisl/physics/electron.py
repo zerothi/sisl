@@ -1194,7 +1194,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
 
 
 @set_module("sisl.physics.electron")
-def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=False):
+def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
     r""" Add the wave-function (`Orbital.psi`) component of each orbital to the grid
 
     This routine calculates the real-space wave-function components in the
@@ -1647,7 +1647,7 @@ class _electron_State:
         """
         return spin_moment(self.state, self.Sk(), project=project)
 
-    def wavefunction(self, grid, spinor=0, eta=False):
+    def wavefunction(self, grid, spinor=0, eta=None):
         r""" Expand the coefficients as the wavefunction on `grid` *as-is*
 
         See `~sisl.physics.electron.wavefunction` for argument details, the arguments not present

@@ -365,7 +365,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
         raise NotImplementedError(f"{self.__class__.__name__}.mulliken only allows projection [orbital, atom]")
 
-    def density(self, grid, spinor=None, tol=1e-7, eta=False):
+    def density(self, grid, spinor=None, tol=1e-7, eta=None):
         r""" Expand the density matrix to the charge density on a grid
 
         This routine calculates the real-space density components on a specified grid.

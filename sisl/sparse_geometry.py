@@ -521,7 +521,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
 
         return func
 
-    def construct(self, func, na_iR=1000, method='rand', eta=False):
+    def construct(self, func, na_iR=1000, method='rand', eta=None):
         """ Automatically construct the sparse model based on a function that does the setting up of the elements
 
         This may be called in two variants.

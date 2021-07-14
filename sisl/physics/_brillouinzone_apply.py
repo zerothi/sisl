@@ -80,7 +80,7 @@ class BrillouinZoneParentApply(BrillouinZoneApply):
     def __str__(self, message=''):
         return _correct_str(super().__str__(), message)
 
-    def _parse_kwargs(self, wrap, eta=False, eta_key=""):
+    def _parse_kwargs(self, wrap, eta=None, eta_key=""):
         """ Parse kwargs """
         bz = self._obj
         parent = bz.parent
@@ -111,7 +111,7 @@ class IteratorApply(BrillouinZoneParentApply):
         pool = _pool_procs(self._attrs.get("pool", None))
         if pool is None:
             @wraps(method)
-            def func(*args, wrap=None, eta=False, **kwargs):
+            def func(*args, wrap=None, eta=None, **kwargs):
                 bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key=eta_key)
                 k = bz.k
                 w = bz.weight
@@ -121,7 +121,7 @@ class IteratorApply(BrillouinZoneParentApply):
                 eta.close()
         else:
             @wraps(method)
-            def func(*args, wrap=None, eta=False, **kwargs):
+            def func(*args, wrap=None, eta=None, **kwargs):
                 pool.restart()
                 bz, parent, wrap, _ = self._parse_kwargs(wrap)
                 k = bz.k
@@ -231,7 +231,7 @@ class NDArrayApply(BrillouinZoneParentApply):
 
         if pool is None:
             @wraps(method)
-            def func(*args, wrap=None, eta=False, **kwargs):
+            def func(*args, wrap=None, eta=None, **kwargs):
                 bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key=eta_key)
                 k = bz.k
                 nk = len(k)
@@ -299,7 +299,7 @@ class AverageApply(BrillouinZoneParentApply):
         pool = _pool_procs(self._attrs.get("pool", None))
         if pool is None:
             @wraps(method)
-            def func(*args, wrap=None, eta=False, **kwargs):
+            def func(*args, wrap=None, eta=None, **kwargs):
                 bz, parent, wrap, eta = self._parse_kwargs(wrap, eta, eta_key="average")
                 # Do actual average
                 k = bz.k
