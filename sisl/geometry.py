@@ -1117,6 +1117,7 @@ class Geometry(SuperCellChild):
         other_extend = idx_other.extend
 
         for ia, xyz in enumerate(s_xyz):
+            # only search in the primary unit-cell
             idx = other.close_sc(xyz, R=(eps,))
             self_extend([ia] * idx.size)
             other_extend(idx)
@@ -1839,7 +1840,7 @@ class Geometry(SuperCellChild):
         nr = _a.arangei(reps)
         nr.shape = (reps, 1, 1)
         # Correct the unit-cell offsets
-        xyz += nr * self.cell[axis, :].reshape(1, 1, 3)
+        xyz += nr * self.cell[axis, :]
         xyz.shape = (-1, 3)
 
         # Create the geometry and return it (note the smaller atoms array
@@ -2594,7 +2595,7 @@ class Geometry(SuperCellChild):
         # so we will do nothing...
         return self.add(o)
 
-    def replace(self, atoms, other):
+    def replace(self, atoms, other, offset=None):
         """ Create a new geometry from `self` and replace `atoms` with `other`
 
         Parameters
@@ -2605,17 +2606,21 @@ class Geometry(SuperCellChild):
         other : Geometry
             the other Geometry to insert instead, the unit-cell will not
             be used.
+        offset : (3,), optional
+            the offset for `other` when adding its coordinates, default to no offset
         """
         # Find lowest value in atoms
         atoms = self._sanitize_atoms(atoms)
         index = atoms.min()
+        if offset is None:
+            offset = _a.zerosd(3)
 
         # remove atoms, preparing for inserting new geometry
         out = self.remove(atoms)
 
         # insert new positions etc.
-        out.xyz = np.insert(out.xyz, index, other.xyz)
-        out.atoms.insert(index, other.atoms)
+        out.xyz = np.insert(out.xyz, index, other.xyz + offset, axis=0)
+        out._atoms = out.atoms.insert(index, other.atoms)
         return out
 
     def reverse(self, atoms=None):
@@ -2728,9 +2733,7 @@ class Geometry(SuperCellChild):
         """
         if atoms is None and isc is None:
             return self.xyz
-
-        if not atoms is None:
-            atoms = self._sanitize_atoms(atoms)
+        atoms = self._sanitize_atoms(atoms)
 
         # If only atoms has been specified
         if isc is None:
@@ -2739,17 +2742,8 @@ class Geometry(SuperCellChild):
             offset = self.sc.offset(isc)
             return self.xyz[self.sc2uc(atoms), :] + offset
 
-        elif atoms is None:
-            offset = self.sc.offset(isc)
-            return self.xyz[:, :] + offset[None, :]
-
         # Neither of atoms, or isc are `None`, we add the offset to all coordinates
-        offset = self.sc.offset(isc)
-
-        if atoms.ndim == 0:
-            return self.axyz(atoms) + offset
-
-        return self.axyz(atoms) + offset[None, :]
+        return self.axyz(atoms) + self.sc.offset(isc)
 
     def scale(self, scale):
         """ Scale coordinates and unit-cell to get a new geometry with proper scaling
