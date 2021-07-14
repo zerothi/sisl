@@ -5,7 +5,7 @@ from ...templates import PdosBackend
 
 class MatplotlibPDOSBackend(MatplotlibBackend, PdosBackend):
 
-    _ax_defaults = {
+    _axes_defaults = {
         'xlabel': 'Density of states [1/eV]',
         'ylabel': 'Energy [eV]'
     }
@@ -14,7 +14,7 @@ class MatplotlibPDOSBackend(MatplotlibBackend, PdosBackend):
         super().draw_PDOS_lines(backend_info)
 
         Es = backend_info["Es"]
-        self.ax.set_ylim(min(Es), max(Es))
+        self.axes.set_ylim(min(Es), max(Es))
 
 
 PdosPlot.backends.register("matplotlib", MatplotlibPDOSBackend)

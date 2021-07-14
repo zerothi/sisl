@@ -14,15 +14,15 @@ class MatplotlibGeometryBackend(MatplotlibBackend, GeometryBackend):
         xaxis = backend_info["xaxis"]
         yaxis = backend_info["yaxis"]
 
-        self.ax.set_xlabel(f'{("X","Y","Z")[xaxis]} axis [Ang]')
-        self.ax.set_ylabel(yaxis)
+        self.axes.set_xlabel(f'{("X","Y","Z")[xaxis]} axis [Ang]')
+        self.axes.set_ylabel(yaxis)
 
     def draw_2D(self, backend_info, **kwargs):
         super().draw_2D(backend_info, **kwargs)
 
-        self.ax.set_xlabel(f'{("X","Y", "Z")[backend_info["xaxis"]]} axis [Ang]')
-        self.ax.set_ylabel(f'{("X","Y", "Z")[backend_info["yaxis"]]} axis [Ang]')
-        self.ax.axis("equal")
+        self.axes.set_xlabel(f'{("X","Y", "Z")[backend_info["xaxis"]]} axis [Ang]')
+        self.axes.set_ylabel(f'{("X","Y", "Z")[backend_info["yaxis"]]} axis [Ang]')
+        self.axes.axis("equal")
     
     def _draw_atoms_2D_scatter(self, *args, **kwargs):
         kwargs["zorder"] = 2.1

@@ -10,8 +10,8 @@ class MatplotlibGridBackend(MatplotlibBackend, GridBackend):
     def draw_1D(self, backend_info, **kwargs):
         super().draw_1D(backend_info, **kwargs)
 
-        self.ax.set_xlabel(f'{("X","Y", "Z")[backend_info["ax"]]} axis [Ang]')
-        self.ax.set_ylabel('Values')
+        self.axes.set_xlabel(f'{("X","Y", "Z")[backend_info["ax"]]} axis [Ang]')
+        self.axes.set_ylabel('Values')
 
     def draw_2D(self, backend_info, **kwargs):
 
@@ -22,7 +22,7 @@ class MatplotlibGridBackend(MatplotlibBackend, GridBackend):
         extent = [x[0], x[-1], y[0], y[-1]]
 
         # Draw the values of the grid
-        self.ax.imshow(
+        self.axes.imshow(
             backend_info["values"], vmin=backend_info["cmin"], vmax=backend_info["cmax"],
             label=backend_info["name"], cmap=backend_info["colorscale"], extent=extent,
             origin="lower"
@@ -30,15 +30,15 @@ class MatplotlibGridBackend(MatplotlibBackend, GridBackend):
 
         # Draw the isocontours
         for contour in backend_info["contours"]:
-            self.ax.plot(
+            self.axes.plot(
                 contour["x"], contour["y"],
                 color=contour["color"],
                 alpha=contour["opacity"],
                 label=contour["name"]
             )
 
-        self.ax.set_xlabel(f'{("X","Y", "Z")[backend_info["xaxis"]]} axis [Ang]')
-        self.ax.set_ylabel(f'{("X","Y", "Z")[backend_info["yaxis"]]} axis [Ang]')
+        self.axes.set_xlabel(f'{("X","Y", "Z")[backend_info["xaxis"]]} axis [Ang]')
+        self.axes.set_ylabel(f'{("X","Y", "Z")[backend_info["yaxis"]]} axis [Ang]')
 
     def draw_3D(self, backend_info, **kwargs):
         # This will basically raise the NotImplementedError
@@ -47,13 +47,13 @@ class MatplotlibGridBackend(MatplotlibBackend, GridBackend):
         # The following code is just here as reference of how this MIGHT
         # be done in matplotlib.
         self.figure = plt.figure()
-        self.ax = self.figure.add_subplot(projection="3d")
+        self.axes = self.figure.add_subplot(projection="3d")
 
         for isosurf in backend_info["isosurfaces"]:
 
             x, y, z = isosurf["vertices"].T
             I, J, K = isosurf["faces"].T
 
-            self.ax.plot_trisurf(x, y, z, linewidth=0, antialiased=True)
+            self.axes.plot_trisurf(x, y, z, linewidth=0, antialiased=True)
 
 GridPlot.backends.register("matplotlib", MatplotlibGridBackend)
