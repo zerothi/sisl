@@ -412,7 +412,7 @@ class ConfigurableMeta(type):
                 if "_parameters" in vars(base):
                     class_params = [*class_params, *deepcopy(base._parameters)]
                 if "_param_groups" in vars(base):
-                    class_param_groups = [*class_params, *deepcopy(base._param_groups)]
+                    class_param_groups = [*class_param_groups, *deepcopy(base._param_groups)]
 
             # Build an extra group for unclassified settings
             class_param_groups.append({

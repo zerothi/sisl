@@ -17,99 +17,94 @@ class FatbandsPlot(BandsPlot):
     Parameters
     -------------
     wfsx_file: wfsxSileSiesta, optional
-        The WFSX file to get the weights of the different orbitals in the
-        bands.             In standard SIESTA nomenclature, this should be
-        the *.bands.WFSX file, as it is the one             that contains the
-        weights that correspond to the bands.                          This
-        file is only meaningful (and required) if fatbands are plotted from
-        the .bands file.             Otherwise, the bands and weights will be
-        generated from the hamiltonian by sisl.              If the *.bands
-        file is provided but the wfsx one isn't, we will try to find it.
-        If `bands_file` is SystemLabel.bands, we will look for
-        SystemLabel.bands.WFSX
+    	The WFSX file to get the weights of the different orbitals in the
+    	bands.             In standard SIESTA nomenclature, this should be
+    	the *.bands.WFSX file, as it is the one             that contains the
+    	weights that correspond to the bands.                          This
+    	file is only meaningful (and required) if fatbands are plotted from
+    	the .bands file.             Otherwise, the bands and weights will be
+    	generated from the hamiltonian by sisl.             If the *.bands
+    	file is provided but the wfsx one isn't, we will try to find it.
+    	If `bands_file` is SystemLabel.bands, we will look for
+    	SystemLabel.bands.WFSX
     scale: float, optional
-        The factor by which the width of all fatbands should be multiplied.
-        Note that each group has an additional individual factor that you can
-        also tweak.
+    	The factor by which the width of all fatbands should be multiplied.
+    	Note that each group has an additional individual factor that you can
+    	also tweak.
     groups: array-like of dict, optional
-        The different groups that are displayed in the fatbands   Each item
-        is a dict. Structure of the expected dicts:{         'name':
-        'species':          'atoms':          'orbitals':          'spin':
-        'normalize':          'color':          'scale':  }
+    	The different groups that are displayed in the fatbands   Each item
+    	is a dict. Structure of the expected dicts:{         'name':
+    	'species':          'atoms':          'orbitals':          'spin':
+    	'normalize':          'color':          'scale':  }
     bands_file: bandsSileSiesta, optional
-        This parameter explicitly sets a .bands file. Otherwise, the bands
-        file is attempted to read from the fdf file
+    	This parameter explicitly sets a .bands file. Otherwise, the bands
+    	file is attempted to read from the fdf file
     band_structure: BandStructure, optional
-        The BandStructure object to be used.
+    	A band structure. it can either be provided as a sisl.BandStructure
+    	object or         as a list of points, which will be parsed into a
+    	band structure object.            Each item is a dict. Structure of
+    	the expected dicts:{         'x':          'y':          'z':
+    	'divisions':          'name': Tick that should be displayed at this
+    	corner of the path. }
     aiida_bands:  optional
-                     An aiida BandsData node.
-    add_band_trace_data:  optional
-        A function that receives each band (as a DataArray) and adds data to
-        the trace. It also recieves the plot object.              The
-        returned data may even overwrite the existing one, therefore it can
-        be useful to fully customize your bands plot (individual style for
-        each band if you want).
+    	An aiida BandsData node.
     eigenstate_map:  optional
-        This function receives the eigenstate object for each k value when
-        the bands are being extracted from a hamiltonian.             You can
-        do whatever you want with it, the point of this function is to avoid
-        running the diagonalization process twice.
+    	This function receives the eigenstate object for each k value when
+    	the bands are being extracted from a hamiltonian.             You can
+    	do whatever you want with it, the point of this function is to avoid
+    	running the diagonalization process twice.
     Erange: array-like of shape (2,), optional
-        Energy range where the bands are displayed.
+    	Energy range where the bands are displayed.
     E0: float, optional
-        The energy to which all energies will be referenced (including
-        Erange).
+    	The energy to which all energies will be referenced (including
+    	Erange).
     bands_range: array-like of shape (2,), optional
-        The bands that should be displayed. Only relevant if Erange is None.
-    path: array-like of dict, optional
-        Path along which bands are drawn in units of reciprocal lattice
-        vectors.             Note that if you want to provide a path
-        programatically you can do it more easily with the `band_structure`
-        setting   Each item is a dict. Structure of the expected dicts:{
-        'x':          'y':          'z':          'divisions':
-        'tick': Tick that should be displayed at this corner of the path. }
+    	The bands that should be displayed. Only relevant if Erange is None.
     spin:  optional
-        Determines how the different spin configurations should be displayed.
-        In spin polarized calculations, it allows you to choose between spin
-        0 and 1.             In non-colinear spin calculations, it allows you
-        to ask for a given spin texture,             by specifying the
-        direction.
+    	Determines how the different spin configurations should be displayed.
+    	In spin polarized calculations, it allows you to choose between spin
+    	0 and 1.             In non-colinear spin calculations, it allows you
+    	to ask for a given spin texture,             by specifying the
+    	direction.
     spin_texture_colorscale: str, optional
-        The plotly colorscale to use for the spin texture (if displayed)
+    	The plotly colorscale to use for the spin texture (if displayed)
     gap: bool, optional
-        Whether the gap should be displayed in the plot
+    	Whether the gap should be displayed in the plot
     direct_gaps_only: bool, optional
-        Whether to show only gaps that are direct, according to the gap
-        tolerance
+    	Whether to show only gaps that are direct, according to the gap
+    	tolerance
     gap_tol: float, optional
-        The difference in k that must exist to consider to gaps
-        different.             If two gaps' positions differ in less than
-        this, only one gap will be drawn.             Useful in cases
-        where there are degenerated bands with exactly the same values.
+    	The difference in k that must exist to consider to gaps
+    	different.             If two gaps' positions differ in less than
+    	this, only one gap will be drawn.             Useful in cases
+    	where there are degenerated bands with exactly the same values.
     gap_color: str, optional
-        Color to display the gap
+    	Color to display the gap
     custom_gaps: array-like of dict, optional
-        List of all the gaps that you want to display.   Each item is a dict.
-        Structure of the expected dicts:{         'from': K value where to
-        start measuring the gap.                      It can be either the
-        label of the k-point or the numeric value in the plot.         'to':
-        K value where to end measuring the gap.                      It can
-        be either the label of the k-point or the numeric value in the plot.
-        'color': The color with which the gap should be displayed
-        'spin': The spin components where the gap should be calculated. }
+    	List of all the gaps that you want to display.   Each item is a dict.
+    	Structure of the expected dicts:{         'from': K value where to
+    	start measuring the gap.                      It can be either the
+    	label of the k-point or the numeric value in the plot.         'to':
+    	K value where to end measuring the gap.                      It can
+    	be either the label of the k-point or the numeric value in the plot.
+    	'color': The color with which the gap should be displayed
+    	'spin': The spin components where the gap should be calculated. }
     bands_width: float, optional
-        Width of the lines that represent the bands
+    	Width of the lines that represent the bands
     bands_color: str, optional
-        Choose the color to display the bands.  This will be used for the
-        spin up bands if the calculation is spin polarized
+    	Choose the color to display the bands.  This will be used for the
+    	spin up bands if the calculation is spin polarized
     spindown_color: str, optional
-        Choose the color for the spin down bands.Only used if the
-        calculation is spin polarized.
+    	Choose the color for the spin down bands.Only used if the
+    	calculation is spin polarized.
     root_fdf: fdfSileSiesta, optional
-        Path to the fdf file that is the 'parent' of the results.
+    	Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
+    backend:  optional
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
     """
 
     _plot_type = 'Fatbands'

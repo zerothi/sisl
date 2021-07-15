@@ -26,6 +26,8 @@ class PlotlyGeometryBackend(PlotlyBackend, GeometryBackend):
         self.layout.yaxis.scaleratio = 1
 
     def draw_3D(self, backend_info):
+        self._one_atom_trace = False
+
         super().draw_3D(backend_info)
 
         self.layout.scene.aspectmode = 'data'
@@ -45,12 +47,12 @@ class PlotlyGeometryBackend(PlotlyBackend, GeometryBackend):
                 "showlegend": False
             })
 
-    def _draw_single_atom_3D(self, xyz, size, color="gray", name=None, group=None, showlegend=False, vertices=15, **kwargs):
+    def _draw_single_atom_3D(self, xyz, size, color="gray", name=None, group="Atoms", vertices=15, **kwargs):
 
         self.add_trace({
             'type': 'mesh3d',
             **{key: np.ravel(val) for key, val in GeometryPlot._sphere(xyz, size, vertices=vertices).items()},
-            'showlegend': showlegend,
+            'showlegend': not self._one_atom_trace,
             'alphahull': 0,
             'color': color,
             'showscale': False,
@@ -60,6 +62,8 @@ class PlotlyGeometryBackend(PlotlyBackend, GeometryBackend):
             'hovertemplate': '%{meta[0]}',
             **kwargs
         })
+
+        self._one_atom_trace = True
 
     def _draw_single_bond_3D(self, *args, group=None, showlegend=False, line_kwargs={}, **kwargs):
         kwargs["legendgroup"] = group

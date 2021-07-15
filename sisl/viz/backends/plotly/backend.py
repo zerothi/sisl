@@ -76,9 +76,6 @@ class PlotlyBackend(Backend):
         return self
 
     def get_ipywidget(self):
-        # Update the title of the plot if there is none
-        if not self.figure.layout["title"]:
-            self.update_layout(title = '{} {}'.format(getattr(self, "struct", ""), self.plot_name()))
         return go.FigureWidget(self.figure, )
     
     def _update_ipywidget(self, fig_widget):

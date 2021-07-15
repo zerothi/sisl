@@ -125,30 +125,14 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
 
     Parameters
     ----------
-    reading_order: None, optional
-        Order in which the plot tries to read the data it needs.
-    root_fdf: str, optional
-        Path to the fdf file that is the 'parent' of the results.
+    root_fdf: fdfSileSiesta, optional
+    	Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
-    animate: str, array-like of str or dict, optional
-        the settings to animate. 
-        If it's a dict it should contain the values of the settings for each frame.
-        You only need to pass the ones that are changing! The rest of settings you can
-        still specify them as usual.
-
-        If it's a string or a list of strings, it will basically create the above mentioned
-        dictionary using the values that you passed. E.g:
-            object.plot(i=[1,4,5], animate="i")
-        will create a plot with 3 frames where i=1, i=4 and i=5. Note that of course you should
-        provide a list, tuple, etc... for the values of the settings that you want to animate.
-    varying: str, array-like of str or dict, optional
-        works exactly like `animate` but will create a MultiplePlot instead of an Animation. That is,
-        it will render all the different plots in the same canvas.
-    subplots: str, array-like of str or dict, optional
-        works exactly like `animate` but will create a SubPlots instead of an Animation. That is,
-        it will display a layout with subplots corresponding to each configuration.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
+    backend:  optional
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
 
     Attributes
     ----------
@@ -653,8 +637,6 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
         if presets is not None:
             if isinstance(presets, str):
                 presets = [presets]
-            for preset in presets:
-                self.update_layout(**get_preset(preset)['layout'])
 
         # on_figure_change is triggered after get_figure.
         self.on_figure_change = None
@@ -1475,13 +1457,14 @@ class MultiplePlot(Plot):
 
     Parameters
     ----------
-    reading_order: None, optional
-        Order in which the plot tries to read the data it needs.
-    root_fdf: str, optional
-        Path to the fdf file that is the 'parent' of the results.
+    root_fdf: fdfSileSiesta, optional
+    	Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
+    backend:  optional
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
     """
 
     _trigger_kw = "varying"
@@ -1735,23 +1718,24 @@ class Animation(MultiplePlot):
     Parameters
     ----------
     frame_duration: int, optional
-        Time (in ms) that each frame will be displayed.  This is only
-        meaningful if you have an animation
+    	Time (in ms) that each frame will be displayed.  This is only
+    	meaningful if you have an animation
     redraw: bool, optional
-        Whether each frame of the animation should be redrawn
-        If False, the animation will try to interpolate between one frame and
-        the other             Set this to False if you are sure that the
-        frames contain the same number of traces, otherwise new traces will
-        not appear.
-    ani_method: None, optional
-        It determines how the animation is rendered.
-    reading_order: None, optional
-        Order in which the plot tries to read the data it needs.
-    root_fdf: str, optional
-        Path to the fdf file that is the 'parent' of the results.
+    	Whether each frame of the animation should be redrawn
+    	If False, the animation will try to interpolate between one frame and
+    	the other             Set this to False if you are sure that the
+    	frames contain the same number of traces, otherwise new traces will
+    	not appear.
+    ani_method:  optional
+    	It determines how the animation is rendered.
+    root_fdf: fdfSileSiesta, optional
+    	Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
+    backend:  optional
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
     """
 
     _trigger_kw = "animate"
@@ -1836,27 +1820,28 @@ class SubPlots(MultiplePlot):
     Parameters
     -----------
     arrange:  optional
-        The way in which subplots should be aranged if the `rows` and/or
-        `cols` parameters are not provided.
+    	The way in which subplots should be aranged if the `rows` and/or
+    	`cols`             parameters are not provided.
     rows: int, optional
-        The number of rows of the plot grid. If not provided, it will be
-        inferred from `cols` and the number of plots. If neither
-        `cols` or `rows` are provided, the `arrange` parameter will decide
-        how the layout should look like.
+    	The number of rows of the plot grid. If not provided, it will be
+    	inferred from `cols`             and the number of plots. If neither
+    	`cols` or `rows` are provided, the `arrange` parameter will decide
+    	how the layout should look like.
     cols: int, optional
-        The number of columns of the subplot grid. If not provided, it will
-        be inferred from `rows` and the number of plots. If
-        neither `cols` or `rows` are provided, the `arrange` parameter will
-        decide how the layout should look like.
+    	The number of columns of the subplot grid. If not provided, it will
+    	be inferred from `rows`             and the number of plots. If
+    	neither `cols` or `rows` are provided, the `arrange` parameter will
+    	decide             how the layout should look like.
     make_subplots_kwargs: dict, optional
-        Extra keyword arguments that will be passed to make_subplots.
-    reading_order:  optional
-        Order in which the plot tries to read the data it needs.
-    root_fdf: str, optional
-        Path to the fdf file that is the 'parent' of the results.
+    	Extra keyword arguments that will be passed to make_subplots.
+    root_fdf: fdfSileSiesta, optional
+    	Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
+    backend:  optional
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
     """
 
     _trigger_kw = "subplots"

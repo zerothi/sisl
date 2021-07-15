@@ -267,7 +267,7 @@ class GeometryBackend(Backend):
         
         x_labels, y_labels, z_labels = None, None, None
         if bonds_labels:
-            x_labels, y_labels, z_labels = np.array([geometry.xyz[bond].mean(axis=0) for bond in bonds]).T
+            x_labels, y_labels, z_labels = np.array([geometry[bond].mean(axis=0) for bond in bonds]).T
 
         
         self._draw_bonds_3D(

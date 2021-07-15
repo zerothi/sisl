@@ -21,90 +21,96 @@ class BondLengthMap(GeometryPlot):
     Parameters
     -------------
     geom_from_output: bool, optional
-        In case the geometry is read from the fdf file, this will determine
-        whether the input or the output geometry is taken.This setting
-        will be ignored if geom_file is passed
+    	In case the geometry is read from the fdf file, this will determine
+    	whether the input or the output geometry is taken.This setting
+    	will be ignored if geom_file is passed
     strain_ref: str or Geometry, optional
-        The path to a geometry or a Geometry object used to calculate strain
-        from.             This geometry will probably be the relaxed
-        one             If provided, colors can indicate strain values.
-        Otherwise they are just bond length
+    	The path to a geometry or a Geometry object used to calculate strain
+    	from.             This geometry will probably be the relaxed
+    	one             If provided, colors can indicate strain values.
+    	Otherwise they are just bond length
     strain: bool, optional
-        Determines whether strain values should be displayed instead of
-        lengths
+    	Determines whether strain values should be displayed instead of
+    	lengths
     bond_thresh: float, optional
-        Maximum distance between two atoms to draw a bond
+    	Maximum distance between two atoms to draw a bond
     colorscale: str, optional
-        This determines the colormap to be used for the bond lengths
-        display.             You can see all valid colormaps here:
-        https://plot.ly/python/builtin-colorscales/
-        Note that you can reverse a color map by adding _r
+    	This determines the colormap to be used for the bond lengths
+    	display.             You can see all valid colormaps here:
+    	https://plot.ly/python/builtin-colorscales/
+    	Note that you can reverse a color map by adding _r
     cmin: float, optional
-
+    	Minimum color scale
     cmax: float, optional
-
+    	Maximum color scale
     cmid: float, optional
-        Sets the middle point of the color scale. Only meaningful in
-        diverging colormaps             If this is set 'cmin' and 'cmax'
-        are ignored. In strain representations this might be set to 0.
+    	Sets the middle point of the color scale. Only meaningful in
+    	diverging colormaps             If this is set 'cmin' and 'cmax'
+    	are ignored. In strain representations this might be set to 0.
     colorbar: bool, optional
-        Whether the color bar should be displayed or not.
+    	Whether the color bar should be displayed or not.
     points_per_bond: int, optional
-        Number of points that fill a bond. More points will make it look
-        more like a line but will slow plot rendering down.
+    	Number of points that fill a bond. More points will make it look
+    	more like a line but will slow plot rendering down.
     geometry: Geometry, optional
-
+    	A geometry object
     geom_file: str, optional
-
+    	A file name that can read a geometry
     show_bonds: bool, optional
-
+    	Also show bonds between atoms.
     axes:  optional
-        The axis along which you want to see the geometry.              You
-        can provide as many axes as dimensions you want for your plot.
-        Note that the order is important and will result in setting the plot
-        axes diferently.             For 2D and 1D representations, you can
-        pass an arbitrary direction as an axis (array of shape (3,))
+    	The axis along which you want to see the geometry.              You
+    	can provide as many axes as dimensions you want for your plot.
+    	Note that the order is important and will result in setting the plot
+    	axes diferently.             For 2D and 1D representations, you can
+    	pass an arbitrary direction as an axis (array of shape (3,))
     dataaxis_1d: array-like or function, optional
-        If you want a 1d representation, you can provide a data axis.
-        It determines the second coordinate of the atoms.
-        If it's a function, it will recieve the projected 1D coordinates and
-        needs to returns              the coordinates for the other axis as
-        an array.                          If not provided, the other axis
-        will just be 0 for all points.
+    	If you want a 1d representation, you can provide a data axis.
+    	It determines the second coordinate of the atoms.
+    	If it's a function, it will recieve the projected 1D coordinates and
+    	needs to returns              the coordinates for the other axis as
+    	an array.                          If not provided, the other axis
+    	will just be 0 for all points.
     show_cell:  optional
-        Specifies how the cell should be rendered.              (False: not
-        rendered, 'axes': render axes only, 'box': render a bounding box)
+    	Specifies how the cell should be rendered.              (False: not
+    	rendered, 'axes': render axes only, 'box': render a bounding box)
+    nsc: array-like, optional
+    	Make the geometry larger by tiling it along each lattice vector
     atoms:  optional
-        The atoms that are going to be displayed in the plot.
-        This also has an impact on bonds (see the `bind_bonds_to_ats` and
-        `show_atoms` parameters).             If set to None, all atoms are
-        displayed
+    	The atoms that are going to be displayed in the plot.
+    	This also has an impact on bonds (see the `bind_bonds_to_ats` and
+    	`show_atoms` parameters).             If set to None, all atoms are
+    	displayed
     atoms_color: array-like, optional
-        A list containing the color for each atom.
+    	A list containing the color for each atom.
     atoms_size: array-like, optional
-        A list containing the size for each atom.
+    	A list containing the size for each atom.
     atoms_colorscale: str, optional
-        The colorscale to use to map values to colors for the atoms.
-        Only used if atoms_color is provided and is an array of values.
+    	The colorscale to use to map values to colors for the atoms.
+    	Only used if atoms_color is provided and is an array of values.
     atoms_vertices: int, optional
-        In a 3D representation, the number of vertices that each atom sphere
-        is composed of.
-    nsc: (3,) of ints, optional
-        number of tilings of the input geometry along each lattice vector
-        Path to the fdf file that is the 'parent' of the results.
+    	In a 3D representation, the number of vertices that each atom sphere
+    	is composed of.
     bind_bonds_to_ats: bool, optional
-        whether only the bonds that belong to an atom that is present should
-        be displayed.             If False, all bonds are displayed
-        regardless of the `atoms` parameter
+    	whether only the bonds that belong to an atom that is present should
+    	be displayed.             If False, all bonds are displayed
+    	regardless of the `atoms` parameter
     show_atoms: bool, optional
-        If set to False, it will not display atoms.              Basically
-        this is a shortcut for ``atoms = [], bind_bonds_to_ats=False``.
-        Therefore, it will override these two parameters.
+    	If set to False, it will not display atoms.              Basically
+    	this is a shortcut for ``atoms = [], bind_bonds_to_ats=False``.
+    	Therefore, it will override these two parameters.
+    points_per_bond: int, optional
+    	Number of points that fill a bond in 2D in case each bond has a
+    	different color or different size. More points will make it look
+    	more like a line but will slow plot rendering down.
     root_fdf: fdfSileSiesta, optional
-        Path to the fdf file that is the 'parent' of the results.
+    	Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
+    backend:  optional
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
     """
 
     _plot_type = "Bond length"

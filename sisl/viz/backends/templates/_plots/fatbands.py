@@ -63,7 +63,7 @@ class FatbandsBackend(BandsBackend):
                 self._draw_band_weights(
                     x=x, y=band_values, weights=band_weights.values, 
                     color=metadata["style"]["line"]["color"], name=name,
-                    is_group_first=i==0
+                    is_group_first=i==0 and ispin == 0
                 )
 
     @abstractmethod
