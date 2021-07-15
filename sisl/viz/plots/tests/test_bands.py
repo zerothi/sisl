@@ -19,10 +19,6 @@ from sisl.viz import BandsPlot
 from sisl.viz.plots.tests.conftest import _TestPlot
 
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
-
-@pytest.fixture(params=BandsPlot.get_class_param("backend").options)
-def backend(request):
-    return request.param
     
 class TestBandsPlot(_TestPlot):
 
@@ -33,6 +29,10 @@ class TestBandsPlot(_TestPlot):
         "tickvals", # Array-like with the expected positions of the ticks
         "spin_texture" # Whether spin texture should be possible to draw or not.
     ]
+
+    @pytest.fixture(params=BandsPlot.get_class_param("backend").options)
+    def backend(self, request):
+        return request.param
 
     @pytest.fixture(scope="class", params=[
         "siesta_output", 

@@ -8,22 +8,17 @@ ensure that at least they do not break basic session functionality.
 """
 import pytest
 
-from sisl.viz.plotly.tests.test_session import BaseSessionTester
-from sisl.viz.plotly import Session
-from sisl.viz.plotly.sessions import *
+from sisl.viz.tests.test_session import _TestSessionClass
+from sisl.viz import Session
+from sisl.viz.sessions import *
 
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 
-
-def get_basic_functionality_test(SessionSubClass):
-
-    class BasicSubClassTest(BaseSessionTester):
-
-        SessionClass = SessionSubClass
-
-    return BasicSubClassTest
+@pytest.fixture(autouse=True, scope="class", params=Session.__subclasses__())
+def plot_class(request):
+    request.cls._cls = request.param
 
 
-for SessionSubClass in Session.__subclasses__():
+class TestSessionSubClass(_TestSessionClass):
+    pass
 
-    globals()[f'Test{SessionSubClass.__name__}'] = get_basic_functionality_test(SessionSubClass)

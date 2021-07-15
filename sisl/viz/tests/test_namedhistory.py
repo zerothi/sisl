@@ -5,7 +5,7 @@ import pytest
 
 import numpy as np
 
-from sisl.viz.plotly.configurable import NamedHistory
+from sisl.viz.configurable import NamedHistory
 
 
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]

@@ -13,10 +13,10 @@ import pytest
 import numpy as np
 
 import sisl
-from sisl.viz.plotly.plot import Plot, MultiplePlot, SubPlots, Animation
-from sisl.viz.plotly.plots import *
-from sisl.viz.plotly.plotutils import get_plotable_siles, load
-from sisl.viz.plotly._presets import PRESETS
+from sisl.viz.plot import Plot, MultiplePlot, SubPlots, Animation
+from sisl.viz.plots import *
+from sisl.viz.plotutils import load
+from sisl.viz._presets import PRESETS
 
 # ------------------------------------------------------------
 # Checks that will be available to be used on any plot class
@@ -25,32 +25,32 @@ from sisl.viz.plotly._presets import PRESETS
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 
 
-class BasePlotTester:
+class _TestPlotClass:
 
-    PlotClass = Plot
+    _cls = Plot
 
     def test_documentation(self):
 
-        doc = self.PlotClass.__doc__
+        doc = self._cls.__doc__
 
         # Check that it has documentation
-        assert doc is not None, f'{self.PlotClass.__name__} does not have documentation'
+        assert doc is not None, f'{self._cls.__name__} does not have documentation'
 
         # Check that all params are in the documentation
-        params = [param.key for param in self.PlotClass._get_class_params()[0]]
+        params = [param.key for param in self._cls._get_class_params()[0]]
         missing_params = list(filter(lambda key: key not in doc, params))
-        assert len(missing_params) == 0, f"The following parameters are missing in the documentation of {self.PlotClass.__name__}: {missing_params}"
+        assert len(missing_params) == 0, f"The following parameters are missing in the documentation of {self._cls.__name__}: {missing_params}"
 
         missing_help = list(map(lambda p: p.key,
-                                filter(lambda p: not getattr(p, "help", None), self.PlotClass._parameters)
+                                filter(lambda p: not getattr(p, "help", None), self._cls._parameters)
         ))
-        assert len(missing_help) == 0, f"Parameters {missing_help} in {self.PlotClass.__name__} are missing a help message. Don't be lazy!"
+        assert len(missing_help) == 0, f"Parameters {missing_help} in {self._cls.__name__} are missing a help message. Don't be lazy!"
 
     def test_plot_settings(self):
 
-        plot = self.PlotClass()
+        plot = self._cls()
         # Check that all the parameters have been passed to the settings
-        assert np.all([param.key in plot.settings for param in self.PlotClass._parameters])
+        assert np.all([param.key in plot.settings for param in self._cls._parameters])
         # Build some test settings
         new_settings = {'root_fdf': 'Test'}
         # Update settings and check they have been succesfully updated
@@ -64,12 +64,12 @@ class BasePlotTester:
                     val for key, val in old_settings.items()])
 
         # Build a plot directly with test settings and check if it works
-        plot = self.PlotClass(**new_settings)
+        plot = self._cls(**new_settings)
         assert np.all([plot.settings[key] == val for key, val in new_settings.items()])
 
     def test_plot_shortcuts(self):
 
-        plot = self.PlotClass()
+        plot = self._cls()
         # Build a fake shortcut and test it.
         def dumb_shortcut(a=2):
             plot.a_value = a
@@ -89,7 +89,7 @@ class BasePlotTester:
 
     def test_presets(self):
 
-        plot = self.PlotClass(presets="dark")
+        plot = self._cls(presets="dark")
 
         assert np.all([key not in plot.settings or plot.settings[key] == val for key, val in PRESETS["dark"].items()])
 
@@ -98,7 +98,7 @@ class BasePlotTester:
         file_name = "./__sislsaving_test"
 
         if obj is None:
-            obj = self.PlotClass()
+            obj = self._cls()
 
         obj.save(file_name)
 
@@ -115,68 +115,57 @@ class BasePlotTester:
 # ------------------------------------------------------------
 
 
-class TestPlot(BasePlotTester):
+class TestPlot(_TestPlotClass):
 
-    PlotClass = Plot
-
-    # def test_plotable_siles(self):
-    #     """
-    #     Checks that all the siles that are registered as plotables get the corresponding plot.
-    #     """
-
-    #     for sile_rule in get_plotable_siles(rules=True):
-
-    #         file_name = f"file.{sile_rule.suffix}"
-
-    #         plot = Plot(file_name)
+    _cls = Plot
 
 
 # ------------------------------------------------------------
 #            Tests for the MultiplePlot class
 # ------------------------------------------------------------
 
-class TestMultiplePlot(BasePlotTester):
+class TestMultiplePlot(_TestPlotClass):
 
-    PlotClass = MultiplePlot
+    _cls = MultiplePlot
 
     def test_init_from_kw(self):
 
-        kw = MultiplePlot._kw_from_cls(self.PlotClass)
+        kw = MultiplePlot._kw_from_cls(self._cls)
 
         geom = sisl.geom.graphene()
 
         multiple_plot = geom.plot(show_cell=["box", False, False], axes=[0, 1], **{kw: "show_cell"})
 
-        assert isinstance(multiple_plot, self.PlotClass), f"{self.PlotClass} was not correctly initialized using the {kw} keyword argument"
-        assert len(multiple_plot.child_plots) == 3, "Child plots were not properly generated"
+        assert isinstance(multiple_plot, self._cls), f"{self._cls} was not correctly initialized using the {kw} keyword argument"
+        assert len(multiple_plot.children) == 3, "Child plots were not properly generated"
 
     def test_object_sharing(self):
 
-        kw = MultiplePlot._kw_from_cls(self.PlotClass)
+        kw = MultiplePlot._kw_from_cls(self._cls)
 
         geom = sisl.geom.graphene()
 
         multiple_plot = geom.plot(show_cell=["box", False, False], axes=[0, 1], **{kw: "show_cell"})
         geoms_ids = [id(plot.geometry) for plot in multiple_plot]
-        assert len(set(geoms_ids)) == 1, f"{self.PlotClass} is not properly sharing objects"
+        assert len(set(geoms_ids)) == 1, f"{self._cls} is not properly sharing objects"
 
         multiple_plot = GeometryPlot(geometry=[sisl.geom.graphene(bond=bond) for bond in (1.2, 1.6)], axes=[0, 1], **{kw: "geometry"})
         geoms_ids = [id(plot.geometry) for plot in multiple_plot]
-        assert len(set(geoms_ids)) > 1, f"{self.PlotClass} is sharing objects that should not be shared"
+        assert len(set(geoms_ids)) > 1, f"{self._cls} is sharing objects that should not be shared"
 
     def test_update_settings(self):
 
-        kw = MultiplePlot._kw_from_cls(self.PlotClass)
+        kw = MultiplePlot._kw_from_cls(self._cls)
 
         geom = sisl.geom.graphene()
 
         multiple_plot = geom.plot(show_cell=["box", False, False], axes=[0, 1], **{kw: "show_cell"})
-        assert len(multiple_plot.child_plots) == 3
+        assert len(multiple_plot.children) == 3
 
         prev_data_lens = [len(plot.data) for plot in multiple_plot]
         assert prev_data_lens[0] > prev_data_lens[1]
 
-        multiple_plot.update_child_settings(show_cell="box", childs_sel=[1])
+        multiple_plot.update_children_settings(show_cell="box", children_sel=[1])
         data_lens = [len(plot.data) for plot in multiple_plot]
         assert data_lens[0] == data_lens[1]
         assert data_lens[1] > data_lens[2]
@@ -188,7 +177,7 @@ class TestMultiplePlot(BasePlotTester):
 
 class TestSubPlots(TestMultiplePlot):
 
-    PlotClass = SubPlots
+    _cls = SubPlots
 
     def test_subplots_arrangement(self):
 

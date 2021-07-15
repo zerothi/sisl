@@ -805,7 +805,7 @@ def repeat_if_children(method):
                 children_sel = [children_sel]
 
             # Get all the child plots that we are going to modify
-            children = obj.child_plots
+            children = obj.children
             if children_sel is not None:
                 children = np.array(children)[children_sel].tolist()
             else:
@@ -816,7 +816,7 @@ def repeat_if_children(method):
             # Set the new plots. We need to do this because apply_method_on_multiple_objs
             # can use multiprocessing, and therefore will not modify the plot in place.
             for i, new_child in zip(children_sel, new_children):
-                obj.child_plots[i] = new_child
+                obj.children[i] = new_child
 
             obj.get_figure()
 

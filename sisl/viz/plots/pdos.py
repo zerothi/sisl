@@ -24,42 +24,54 @@ class PdosPlot(Plot):
     Parameters
     -------------
     pdos_file: pdosSileSiesta, optional
-        This parameter explicitly sets a .PDOS file. Otherwise, the PDOS file
-        is attempted to read from the fdf file
+    	This parameter explicitly sets a .PDOS file. Otherwise, the PDOS file
+    	is attempted to read from the fdf file
     tbt_nc: tbtncSileTBtrans, optional
-        This parameter explicitly sets a .TBT.nc file. Otherwise, the PDOS
-        file is attempted to read from the fdf file
+    	This parameter explicitly sets a .TBT.nc file. Otherwise, the PDOS
+    	file is attempted to read from the fdf file
     geometry: Geometry or sile (or path to file) that contains a geometry, optional
-        If this is passed, the geometry that has been read is ignored and
-        this one is used instead.
+    	If this is passed, the geometry that has been read is ignored and
+    	this one is used instead.
     Erange: array-like of shape (2,), optional
-        Energy range where PDOS is displayed.
+    	Energy range where PDOS is displayed.
+    distribution: array-like of dict, optional
+    	The distribution used for the smearing of the PDOS if calculated by
+    	sisl.             It accepts the same types of values as the
+    	`distribution` argument of `H.PDOS`.              Additionally, it
+    	accepts a dictionary containing arguments that are passed directly
+    	to `sisl.physics.distribution.get_distribution`. E.g.: {"method":
+    	"gaussian",              "smearing": 0.01, "x0": 0.0}
+    	Each item is a dict. Structure of the expected dicts:{
+    	'method':          'smearing':          'x0':  }
     nE: int, optional
-        If calculating the PDOS from a hamiltonian, the number of energy
-        points used
+    	If calculating the PDOS from a hamiltonian, the number of energy
+    	points used
     kgrid: array-like, optional
-        The number of kpoints in each reciprocal direction.              A
-        Monkhorst-Pack grid will be generated to calculate the PDOS.
-        If not provided, it will be set to 3 for the periodic directions
-        and 1 for the non-periodic ones.
+    	The number of kpoints in each reciprocal direction.              A
+    	Monkhorst-Pack grid will be generated to calculate the PDOS.
+    	If not provided, it will be set to 3 for the periodic directions
+    	and 1 for the non-periodic ones.
     kgrid_displ: array-like, optional
-        Displacement of the Monkhorst-Pack grid
+    	Displacement of the Monkhorst-Pack grid
     E0: float, optional
-        The energy to which all energies will be referenced (including
-        Erange).
+    	The energy to which all energies will be referenced (including
+    	Erange).
     requests: array-like of dict, optional
-        Here you can ask for the specific PDOS that you need.
-        TIP: Queries can be activated and deactivated.   Each item is a
-        dict. Structure of the expected dicts:{         'name':
-        'species':          'atoms':          'orbitals':          'spin':
-        'normalize':          'color':          'linewidth':          'dash':
-        'split_on':          'scale': The final DOS will be multiplied by
-        this number. }
+    	Here you can ask for the specific PDOS that you need.
+    	TIP: Queries can be activated and deactivated.   Each item is a
+    	dict. Structure of the expected dicts:{         'name':
+    	'species':          'atoms':          'orbitals':          'spin':
+    	'normalize':          'color':          'linewidth':          'dash':
+    	'split_on':          'scale': The final DOS will be multiplied by
+    	this number. }
     root_fdf: fdfSileSiesta, optional
-        Path to the fdf file that is the 'parent' of the results.
+    	Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
+    backend:  optional
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
     """
 
     #Define all the class attributes

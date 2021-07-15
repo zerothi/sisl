@@ -6,9 +6,9 @@ import pytest
 
 import numpy as np
 
-from sisl.viz.plotly import Session, Plot
-from sisl.viz.plotly.plots import *
-from sisl.viz.plotly.tests.test_plot import BasePlotTester
+from sisl.viz import Session
+from sisl.viz.plots import *
+from sisl.viz.tests.test_plot import _TestPlotClass
 
 # This file tests general session behavior
 
@@ -19,15 +19,15 @@ from sisl.viz.plotly.tests.test_plot import BasePlotTester
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 
 
-class BaseSessionTester:
+class _TestSessionClass:
 
-    SessionClass = Session
+    _cls = Session
 
     def test_session_settings(self):
 
-        session = self.SessionClass()
+        session = self._cls()
         # Check that all the parameters have been passed to the settings
-        assert np.all([param.key in session.settings for param in self.SessionClass._parameters])
+        assert np.all([param.key in session.settings for param in self._cls._parameters])
         # Build some test settings
         new_settings = {'root_dir': 'Test', 'search_depth': [4, 6]}
         # Update settings and check they have been succesfully updated
@@ -40,18 +40,18 @@ class BaseSessionTester:
                     val for key, val in old_settings.items()])
 
         # Build a session directly with test settings and check if it works
-        session = self.SessionClass(**new_settings)
+        session = self._cls(**new_settings)
         assert np.all([session.settings[key] == val for key, val in new_settings.items()])
 
     def test_save_and_load(self):
 
-        BasePlotTester.test_save_and_load(self, obj=self.SessionClass())
+        _TestPlotClass.test_save_and_load(self, obj=self._cls())
 
 
 # ------------------------------------------------------------
 #           Actual tests on the Session parent class
 # ------------------------------------------------------------
 
-class TestSession(BaseSessionTester):
+class TestSession(_TestSessionClass):
 
-    SessionClass = Session
+    _cls = Session
