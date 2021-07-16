@@ -2,6 +2,7 @@ from .geometry import GeometryBackend
 
 from ....plots import BondLengthMap
 
+
 class BondLengthMapBackend(GeometryBackend):
     """Draws a bond length map provided by `BondLengthMap`
 
@@ -13,7 +14,7 @@ class BondLengthMapBackend(GeometryBackend):
     class MyBondLengthMapBackend(BondLengthMapBackend, MyGeometryBackend):
         pass
     ```
-    
+
     """
 
     def draw_1D(self, backend_info, **kwargs):

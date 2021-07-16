@@ -2,11 +2,12 @@ from abc import ABC, abstractmethod
 
 from ...plot import MultiplePlot, SubPlots, Animation
 
+
 class Backend(ABC):
     """Base backend class that all backends should inherit from.
 
     This class contains various methods that need to be implemented by its subclasses.
-    
+
     Methods that MUST be implemented are marked as abstract methods, therefore you won't
     even be able to use the class if you don't implement them. On the other hand, there are
     methods that are not absolutely essential to the general workings of the framework. 
@@ -23,10 +24,10 @@ class Backend(ABC):
         - `draw_line3D`, optional
         - `draw_scatter3D`, optional
         - `show`, optional
-    
+
     (2) specific backend of a plot:
         - `draw`, MUST
-    
+
     Also, you probably need to write an `__init__` method to initialize the state of the plot.
     Usually drawing methods will add to the state and finally on `show` you display the full
     plot.
@@ -39,12 +40,12 @@ class Backend(ABC):
     @abstractmethod
     def draw(self, backend_info):
         """Draws the plot, given the info passed by it. 
-        
+
         This is plot specific and is implemented in the templates, you don't need to worry about it!
         For example: if you inherit from `BandsBackend`, this class already contains a draw method that
         manages the flow of drawing the bands.
         """
-       
+
     def draw_other_plot(self, plot, backend=None, **kwargs):
         """Method that draws a different plot in the current canvas.
 
@@ -69,7 +70,7 @@ class Backend(ABC):
 
         # Get the current backend of the plot that we have to draw
         plot_backend = getattr(plot, "_backend", None)
-        
+
         # If the current backend of the plot is incompatible with this backend, we are going to
         # setup a compatible backend. Note that here we assume a backend to be compatible if its
         # prefixed with the name of the current backend. I.e. if the current backend is "plotly"
@@ -85,7 +86,7 @@ class Backend(ABC):
 
     def draw_on(self, figure, **kwargs):
         """Should draw the method in another instance of a compatible backend.
-        
+
         Parameters
         -----------
         figure:
@@ -99,7 +100,7 @@ class Backend(ABC):
     @abstractmethod
     def clear(self):
         """Clears the figure so that we can draw again."""
-    
+
     def show(self):
         pass
 
@@ -107,7 +108,7 @@ class Backend(ABC):
     def _test_number_of_items_drawn(self):
         """Returns the number of items drawn currently in the plot."""
         raise NotImplementedError
-    
+
     def draw_line(self, x, y, name=None, line={}, marker={}, text=None, **kwargs):
         """Should draw a line satisfying the specifications
 
@@ -187,7 +188,7 @@ class Backend(ABC):
             the line. This will of course be framework specific
         """
         raise NotImplementedError(f"{self.__class__.__name__} doesn't implement a draw_line3D method.")
-    
+
     def draw_scatter3D(self, x, y, z, name=None, marker={}, text=None, **kwargs):
         """Should draw a 3D scatter satisfying the specifications
 
@@ -214,12 +215,14 @@ class Backend(ABC):
         """
         raise NotImplementedError(f"{self.__class__.__name__} doesn't implement a draw_scatter3D method.")
 
+
 class MultiplePlotBackend(Backend):
 
     def draw(self, backend_info):
         """Recieves the child plots and is responsible for drawing all of them in the same canvas"""
         for child in backend_info["children"]:
             self.draw_other_plot(child)
+
 
 class SubPlotsBackend(Backend):
 
@@ -229,6 +232,7 @@ class SubPlotsBackend(Backend):
 
         It must use `rows` and `cols`, and draw the children row by row.
         """
+
 
 class AnimationBackend(Backend):
 

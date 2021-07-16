@@ -15,7 +15,7 @@ class BlenderBackend(Backend):
     Plots should try to organize the items they draw in collections. However,
     as said before, this is just a proof of concept.
     """
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
@@ -29,12 +29,12 @@ class BlenderBackend(Backend):
         Parameters
         --------
         """
-        
+
         for key, collection in self._collections.items():
-    
+
             for obj in collection.objects:
                 bpy.data.objects.remove(obj, do_unlink=True)
-                
+
             bpy.data.collections.remove(collection)
 
             del self._collections[key]
@@ -43,7 +43,7 @@ class BlenderBackend(Backend):
         if key not in self._collections:
             self._collections[key] = bpy.data.collections.new(key)
             bpy.context.scene.collection.children.link(self._collections[key])
-        
+
         return self._collections[key]
 
     @staticmethod

@@ -26,74 +26,74 @@ class BandsPlot(Plot):
     Parameters
     -------------
     bands_file: bandsSileSiesta, optional
-    	This parameter explicitly sets a .bands file. Otherwise, the bands
-    	file is attempted to read from the fdf file
+        This parameter explicitly sets a .bands file. Otherwise, the bands
+        file is attempted to read from the fdf file
     band_structure: BandStructure, optional
-    	A band structure. it can either be provided as a sisl.BandStructure
-    	object or         as a list of points, which will be parsed into a
-    	band structure object.            Each item is a dict. Structure of
-    	the expected dicts:{         'x':          'y':          'z':
-    	'divisions':          'name': Tick that should be displayed at this
-    	corner of the path. }
+        A band structure. it can either be provided as a sisl.BandStructure
+        object or         as a list of points, which will be parsed into a
+        band structure object.            Each item is a dict. Structure of
+        the expected dicts:{         'x':          'y':          'z':
+        'divisions':          'name': Tick that should be displayed at this
+        corner of the path. }
     aiida_bands:  optional
-    	An aiida BandsData node.
+        An aiida BandsData node.
     eigenstate_map:  optional
-    	This function receives the eigenstate object for each k value when
-    	the bands are being extracted from a hamiltonian.             You can
-    	do whatever you want with it, the point of this function is to avoid
-    	running the diagonalization process twice.
+        This function receives the eigenstate object for each k value when
+        the bands are being extracted from a hamiltonian.             You can
+        do whatever you want with it, the point of this function is to avoid
+        running the diagonalization process twice.
     Erange: array-like of shape (2,), optional
-    	Energy range where the bands are displayed.
+        Energy range where the bands are displayed.
     E0: float, optional
-    	The energy to which all energies will be referenced (including
-    	Erange).
+        The energy to which all energies will be referenced (including
+        Erange).
     bands_range: array-like of shape (2,), optional
-    	The bands that should be displayed. Only relevant if Erange is None.
+        The bands that should be displayed. Only relevant if Erange is None.
     spin:  optional
-    	Determines how the different spin configurations should be displayed.
-    	In spin polarized calculations, it allows you to choose between spin
-    	0 and 1.             In non-colinear spin calculations, it allows you
-    	to ask for a given spin texture,             by specifying the
-    	direction.
+        Determines how the different spin configurations should be displayed.
+        In spin polarized calculations, it allows you to choose between spin
+        0 and 1.             In non-colinear spin calculations, it allows you
+        to ask for a given spin texture,             by specifying the
+        direction.
     spin_texture_colorscale: str, optional
-    	The plotly colorscale to use for the spin texture (if displayed)
+        The plotly colorscale to use for the spin texture (if displayed)
     gap: bool, optional
-    	Whether the gap should be displayed in the plot
+        Whether the gap should be displayed in the plot
     direct_gaps_only: bool, optional
-    	Whether to show only gaps that are direct, according to the gap
-    	tolerance
+        Whether to show only gaps that are direct, according to the gap
+        tolerance
     gap_tol: float, optional
-    	The difference in k that must exist to consider to gaps
-    	different.             If two gaps' positions differ in less than
-    	this, only one gap will be drawn.             Useful in cases
-    	where there are degenerated bands with exactly the same values.
+        The difference in k that must exist to consider to gaps
+        different.             If two gaps' positions differ in less than
+        this, only one gap will be drawn.             Useful in cases
+        where there are degenerated bands with exactly the same values.
     gap_color: str, optional
-    	Color to display the gap
+        Color to display the gap
     custom_gaps: array-like of dict, optional
-    	List of all the gaps that you want to display.   Each item is a dict.
-    	Structure of the expected dicts:{         'from': K value where to
-    	start measuring the gap.                      It can be either the
-    	label of the k-point or the numeric value in the plot.         'to':
-    	K value where to end measuring the gap.                      It can
-    	be either the label of the k-point or the numeric value in the plot.
-    	'color': The color with which the gap should be displayed
-    	'spin': The spin components where the gap should be calculated. }
+        List of all the gaps that you want to display.   Each item is a dict.
+        Structure of the expected dicts:{         'from': K value where to
+        start measuring the gap.                      It can be either the
+        label of the k-point or the numeric value in the plot.         'to':
+        K value where to end measuring the gap.                      It can
+        be either the label of the k-point or the numeric value in the plot.
+        'color': The color with which the gap should be displayed
+        'spin': The spin components where the gap should be calculated. }
     bands_width: float, optional
-    	Width of the lines that represent the bands
+        Width of the lines that represent the bands
     bands_color: str, optional
-    	Choose the color to display the bands.  This will be used for the
-    	spin up bands if the calculation is spin polarized
+        Choose the color to display the bands.  This will be used for the
+        spin up bands if the calculation is spin polarized
     spindown_color: str, optional
-    	Choose the color for the spin down bands.Only used if the
-    	calculation is spin polarized.
+        Choose the color for the spin down bands.Only used if the
+        calculation is spin polarized.
     root_fdf: fdfSileSiesta, optional
-    	Path to the fdf file that is the 'parent' of the results.
+        Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
-    	Directory where the files with the simulations results are
-    	located. This path has to be relative to the root fdf.
+        Directory where the files with the simulations results are
+        located. This path has to be relative to the root fdf.
     backend:  optional
-    	Directory where the files with the simulations results are
-    	located. This path has to be relative to the root fdf.
+        Directory where the files with the simulations results are
+        located. This path has to be relative to the root fdf.
     """
 
     _plot_type = "Bands"
@@ -123,6 +123,17 @@ class BandsPlot(Plot):
             returns=[],
             help="""This function receives the eigenstate object for each k value when the bands are being extracted from a hamiltonian.
             You can do whatever you want with it, the point of this function is to avoid running the diagonalization process twice."""
+        ),
+
+        FunctionInput(key="add_band_data", name="Add band data function",
+            default=lambda band, plot: {},
+            positional=["band", "plot"],
+            returns=["band_data"],
+            help="""This function receives each band and should return a dictionary with additional arguments 
+            that are passed to the band drawing routine. It also receives the plot as the second argument.
+            See the docs of `sisl.viz.backends.templates.Backend.draw_line` to understand what are the supported arguments
+            to be returned. Notice that the arguments that the backend is able to process can be very framework dependant.
+            """
         ),
 
         ErangeInput(key="Erange",
@@ -416,7 +427,7 @@ class BandsPlot(Plot):
             "marks": {int(i): str(i) for i in i_bands},
         })
 
-    def _set_data(self, Erange, E0, bands_range, spin, spin_texture_colorscale, bands_width, bands_color, spindown_color, 
+    def _set_data(self, Erange, E0, bands_range, spin, spin_texture_colorscale, bands_width, bands_color, spindown_color,
         gap, gap_tol, gap_color, direct_gaps_only, custom_gaps):
 
         # Shift all the bands to the reference
@@ -440,7 +451,7 @@ class BandsPlot(Plot):
             Erange = np.array(Erange)
             filtered_bands = filtered_bands.where((filtered_bands <= Erange[1]) & (filtered_bands >= Erange[0])).dropna("band", "all")
             self.update_settings(run_updates=False, bands_range=[int(filtered_bands['band'].min()), int(filtered_bands['band'].max())], no_log=True)
-        
+
         # Give the filtered bands the same attributes as the full bands
         filtered_bands.attrs = self.bands.attrs
 
@@ -469,6 +480,10 @@ class BandsPlot(Plot):
             },
             "gaps": self._get_gaps(gap, gap_tol, gap_color, direct_gaps_only, custom_gaps)
         }
+
+    def get_figure(self, backend, add_band_data, **kwargs):
+        self._for_backend["draw_bands"]["add_band_data"] = add_band_data
+        return super().get_figure(backend, **kwargs)
 
     def _calculate_gaps(self):
         """
@@ -545,7 +560,7 @@ class BandsPlot(Plot):
                     ks, Es = self._get_gap_coords(from_k, to_k, color=color, gap_spin=spin)
 
                     gaps_to_draw.append({"ks": ks, "Es": Es, "color": color, "name": name})
-        
+
         return gaps_to_draw
 
     def _sanitize_k(self, k):
@@ -599,7 +614,7 @@ class BandsPlot(Plot):
             the spin component where you want to draw the gap.
         **kwargs:
             keyword arguments that are passed directly to the new trace.
-        
+
         Returns
         -----------
         tuple
@@ -607,7 +622,7 @@ class BandsPlot(Plot):
         """
         if to_k is None:
             to_k = from_k
-        
+
         ks = [None, None]
         # Parse the names of the kpoints into their numeric values
         # if a string was provided.
@@ -622,7 +637,7 @@ class BandsPlot(Plot):
         Es = [np.ravel(E)[0] for E in Es]
 
         return ks, Es
-        
+
     def toggle_gap(self):
         """
         If the gap was being displayed, hide it. Else, show it.

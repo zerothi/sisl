@@ -77,7 +77,7 @@ class HamiltonianInput(SislObjectInput):
 class BandStructureInput(QueriesInput, SislObjectInput):
 
     dtype = sisl.BandStructure
-    
+
     def __init__(self, *args, **kwargs):
         kwargs["help"] = """A band structure. it can either be provided as a sisl.BandStructure object or
         as a list of points, which will be parsed into a band structure object.
@@ -135,13 +135,13 @@ class BandStructureInput(QueriesInput, SislObjectInput):
         ]
 
         super().__init__(*args, **kwargs)
-    
+
     def parse(self, val):
         if not isinstance(val, sisl.BandStructure) and val is not None:
             # Then let's parse the list of points into a band structure object.
             # Use only those points that are active.
             val = [point for point in val if point.get("active", True)]
-            
+
             val = sisl.BandStructure(
                 None,
                 point=[[
@@ -173,8 +173,9 @@ class PlotableInput(SislObjectInput):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+
 class DistributionInput(QueriesInput, SislObjectInput):
-    
+
     def __init__(self, *args, **kwargs):
         # Let's define the queryform (although we only want one point for now we use QueriesInput for convenience)
         kwargs["queryForm"] = [
@@ -207,7 +208,7 @@ class DistributionInput(QueriesInput, SislObjectInput):
         ]
 
         super().__init__(*args, **kwargs)
-    
+
     def parse(self, val):
         if val and not callable(val):
             if isinstance(val, str):
@@ -220,6 +221,7 @@ class DistributionInput(QueriesInput, SislObjectInput):
                 val = distribution.get_distribution(**val)
 
         return val
+
 
 class SileInput(FilePathInput, SislObjectInput):
 

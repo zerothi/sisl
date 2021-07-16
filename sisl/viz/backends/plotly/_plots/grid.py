@@ -8,6 +8,9 @@ from ...templates import GridBackend
 class PlotlyGridBackend(PlotlyBackend, GridBackend):
 
     def draw_1D(self, backend_info, **kwargs):
+        self.figure.layout.yaxis.scaleanchor = None
+        self.figure.layout.yaxis.scaleratio = None
+
         super().draw_1D(backend_info, **kwargs)
 
         axes_titles = {'xaxis_title': f'{("X","Y", "Z")[backend_info["ax"]]} axis [Ang]', 'yaxis_title': 'Values'}

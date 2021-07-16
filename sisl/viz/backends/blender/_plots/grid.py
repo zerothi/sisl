@@ -4,6 +4,7 @@ from ...templates import GridBackend
 
 import bpy
 
+
 class BlenderGridBackend(BlenderBackend, GridBackend):
 
     def draw_3D(self, backend_info, **kwargs):

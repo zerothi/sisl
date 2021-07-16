@@ -126,13 +126,13 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
     Parameters
     ----------
     root_fdf: fdfSileSiesta, optional
-    	Path to the fdf file that is the 'parent' of the results.
+        Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
-    	Directory where the files with the simulations results are
-    	located. This path has to be relative to the root fdf.
+        Directory where the files with the simulations results are
+        located. This path has to be relative to the root fdf.
     backend:  optional
-    	Directory where the files with the simulations results are
-    	located. This path has to be relative to the root fdf.
+        Directory where the files with the simulations results are
+        located. This path has to be relative to the root fdf.
 
     Attributes
     ----------
@@ -1110,7 +1110,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
         """
         # Initialize the backend
         if backend is None:
-            # It is possible to not use any plotting backend. 
+            # It is possible to not use any plotting backend.
             # In that case, we just simply process the data, but we do not plot anything
             return
         self.backends.setup(self, backend)
@@ -1190,12 +1190,10 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
             except:
                 return _try_backend()
 
-            if self._widgets["events"]:
-                try:
-                    # If ipyevents is available, show with shortcut support
-                    self._ipython_display_with_shortcuts(widget, **kwargs)
-                except:
-                    display(widget)
+            if False and self._widgets["events"]:
+                # For now we want provide keyboard shortcut support
+                # If ipyevents is available, show with shortcut support
+                self._ipython_display_with_shortcuts(widget, **kwargs)
             else:
                 # Else, show without shortcut support
                 display(widget)
@@ -1454,19 +1452,21 @@ def entry_point(name):
 #------------------------------------------------
 #       CLASSES TO SUPPORT COMPOSITE PLOTS
 #------------------------------------------------
+
+
 class MultiplePlot(Plot):
     """ General handler of a group of plots that need to be rendered together
 
     Parameters
     ----------
     root_fdf: fdfSileSiesta, optional
-    	Path to the fdf file that is the 'parent' of the results.
+        Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
-    	Directory where the files with the simulations results are
-    	located. This path has to be relative to the root fdf.
+        Directory where the files with the simulations results are
+        located. This path has to be relative to the root fdf.
     backend:  optional
-    	Directory where the files with the simulations results are
-    	located. This path has to be relative to the root fdf.
+        Directory where the files with the simulations results are
+        located. This path has to be relative to the root fdf.
     """
 
     _trigger_kw = "varying"
@@ -1720,24 +1720,24 @@ class Animation(MultiplePlot):
     Parameters
     ----------
     frame_duration: int, optional
-    	Time (in ms) that each frame will be displayed.  This is only
-    	meaningful if you have an animation
+        Time (in ms) that each frame will be displayed.  This is only
+        meaningful if you have an animation
     redraw: bool, optional
-    	Whether each frame of the animation should be redrawn
-    	If False, the animation will try to interpolate between one frame and
-    	the other             Set this to False if you are sure that the
-    	frames contain the same number of traces, otherwise new traces will
-    	not appear.
+        Whether each frame of the animation should be redrawn
+        If False, the animation will try to interpolate between one frame and
+        the other             Set this to False if you are sure that the
+        frames contain the same number of traces, otherwise new traces will
+        not appear.
     ani_method:  optional
-    	It determines how the animation is rendered.
+        It determines how the animation is rendered.
     root_fdf: fdfSileSiesta, optional
-    	Path to the fdf file that is the 'parent' of the results.
+        Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
-    	Directory where the files with the simulations results are
-    	located. This path has to be relative to the root fdf.
+        Directory where the files with the simulations results are
+        located. This path has to be relative to the root fdf.
     backend:  optional
-    	Directory where the files with the simulations results are
-    	located. This path has to be relative to the root fdf.
+        Directory where the files with the simulations results are
+        located. This path has to be relative to the root fdf.
     """
 
     _trigger_kw = "animate"
@@ -1822,28 +1822,28 @@ class SubPlots(MultiplePlot):
     Parameters
     -----------
     arrange:  optional
-    	The way in which subplots should be aranged if the `rows` and/or
-    	`cols`             parameters are not provided.
+        The way in which subplots should be aranged if the `rows` and/or
+        `cols`             parameters are not provided.
     rows: int, optional
-    	The number of rows of the plot grid. If not provided, it will be
-    	inferred from `cols`             and the number of plots. If neither
-    	`cols` or `rows` are provided, the `arrange` parameter will decide
-    	how the layout should look like.
+        The number of rows of the plot grid. If not provided, it will be
+        inferred from `cols`             and the number of plots. If neither
+        `cols` or `rows` are provided, the `arrange` parameter will decide
+        how the layout should look like.
     cols: int, optional
-    	The number of columns of the subplot grid. If not provided, it will
-    	be inferred from `rows`             and the number of plots. If
-    	neither `cols` or `rows` are provided, the `arrange` parameter will
-    	decide             how the layout should look like.
+        The number of columns of the subplot grid. If not provided, it will
+        be inferred from `rows`             and the number of plots. If
+        neither `cols` or `rows` are provided, the `arrange` parameter will
+        decide             how the layout should look like.
     make_subplots_kwargs: dict, optional
-    	Extra keyword arguments that will be passed to make_subplots.
+        Extra keyword arguments that will be passed to make_subplots.
     root_fdf: fdfSileSiesta, optional
-    	Path to the fdf file that is the 'parent' of the results.
+        Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
-    	Directory where the files with the simulations results are
-    	located. This path has to be relative to the root fdf.
+        Directory where the files with the simulations results are
+        located. This path has to be relative to the root fdf.
     backend:  optional
-    	Directory where the files with the simulations results are
-    	located. This path has to be relative to the root fdf.
+        Directory where the files with the simulations results are
+        located. This path has to be relative to the root fdf.
     """
 
     _trigger_kw = "subplots"

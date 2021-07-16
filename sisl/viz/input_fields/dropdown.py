@@ -48,7 +48,6 @@ class DropdownInput(InputField):
     options = property(fget=get_options, fset=_set_options)
 
 
-
 class CreatableDropdown(DropdownInput):
 
     _type = "creatable dropdown"

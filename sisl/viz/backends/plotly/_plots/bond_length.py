@@ -4,11 +4,11 @@ from ...templates import BondLengthMapBackend
 
 
 class PlotlyBondLengthMapBackend(BondLengthMapBackend, PlotlyGeometryBackend):
-    
+
     def draw_2D(self, backend_info, **kwargs):
         super().draw_2D(backend_info, **kwargs)
         self._setup_coloraxis(backend_info)
-    
+
     def draw_3D(self, backend_info, **kwargs):
         super().draw_3D(backend_info, **kwargs)
         self._setup_coloraxis(backend_info)

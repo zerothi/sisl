@@ -3,6 +3,7 @@ from ..backend import Backend
 
 from ....plots import PdosPlot
 
+
 class PdosBackend(Backend):
     """It draws the PDOS values provided by a `PdosPlot`
 
@@ -13,7 +14,7 @@ class PdosBackend(Backend):
 
     def draw(self, backend_info):
         self.draw_PDOS_lines(backend_info)
-    
+
     def draw_PDOS_lines(self, backend_info):
         lines = backend_info["PDOS_values"]
         Es = backend_info["Es"]

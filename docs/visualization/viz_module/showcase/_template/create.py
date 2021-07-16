@@ -4,7 +4,7 @@
 import argparse
 from pathlib import Path
 
-from sisl.viz.plotly.plotutils import get_plot_classes
+from sisl.viz.plotutils import get_plot_classes
 
 
 def create_showcase_nb(cls, force=False):

@@ -1,5 +1,6 @@
 __all__ = []
 
+
 class Backends:
     """The backends manager for a plot class"""
 
@@ -61,12 +62,12 @@ class Backends:
             if backend_name not in self._backends:
                 raise NotImplementedError(f"There is no '{backend_name}' backend implemented for {self._cls.__name__} or the backend has not been loaded.")
             plot._backend = self._backends[backend_name](plot)
-    
+
     def register_template(self, template):
         """Sets a template that all registered backends have to satisfy.
 
         That is, any backend that you want to register here needs to inherit from this template.
-        
+
         Parameters
         -----------
         template: Backend
@@ -75,7 +76,7 @@ class Backends:
         self._template = template
         for child in self._children:
             child.register_template(template)
-    
+
     def register_child(self, child):
         """Registers a backend manager to follow this one.
 
@@ -99,7 +100,7 @@ class Backends:
         problem.
         """
         self._children.append(child)
-    
+
     @property
     def options(self):
         return list(self._backends)

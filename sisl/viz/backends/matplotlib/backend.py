@@ -6,6 +6,7 @@ import numpy as np
 from ..templates.backend import Backend, MultiplePlotBackend, SubPlotsBackend
 from ...plot import Plot, SubPlots, MultiplePlot
 
+
 class MatplotlibBackend(Backend):
     """Generic backend for the matplotlib framework.
 
@@ -18,7 +19,7 @@ class MatplotlibBackend(Backend):
     and run `self.axes.update` with those parameters. Therefore this parameter can be used
     to provide default parameters for the axes.
     """
-    
+
     _axes_defaults = {}
 
     def __init__(self, *args, **kwargs):
@@ -45,13 +46,13 @@ class MatplotlibBackend(Backend):
 
         if not isinstance(axes, Axes):
             raise TypeError(f"{self.__class__.__name__} was provided a {axes.__class__.__name__} to draw on.")
-        
+
         self_axes = self.axes
         self.axes = axes
         self._init_axes()
         self._plot.get_figure(backend=self._backend_name, clear_fig=False)
         self.axes = self_axes
-    
+
     def _init_axes(self):
         self.axes.update(self._axes_defaults)
 
@@ -85,15 +86,17 @@ class MatplotlibBackend(Backend):
     # Methods for testing
     def _test_number_of_items_drawn(self):
         return len(self.axes.lines + self.axes.collections)
-    
+
     def draw_line(self, x, y, name=None, line={}, marker={}, text=None, **kwargs):
         return self.axes.plot(x, y, color=line.get("color"), linewidth=line.get("width", 1), markersize=marker.get("size"), label=name)
 
     def draw_scatter(self, x, y, name=None, marker={}, text=None, **kwargs):
         return self.axes.scatter(x, y, c=marker.get("color"), s=marker.get("size", 1), cmap=marker.get("colorscale"), label=name, **kwargs)
 
+
 class MatplotlibMultiplePlotBackend(MatplotlibBackend, MultiplePlotBackend):
     pass
+
 
 class MatplotlibSubPlotsBackend(MatplotlibMultiplePlotBackend, SubPlotsBackend):
 
@@ -110,10 +113,10 @@ class MatplotlibSubPlotsBackend(MatplotlibMultiplePlotBackend, SubPlotsBackend):
             self.axes = np.expand_dims(self.axes, axis=0)
         elif cols == 1:
             self.axes = np.expand_dims(self.axes, axis=1)
-            
+
         indices = itertools.product(range(rows), range(cols))
         # Start assigning each plot to a position of the layout
-        for (row, col) , child in zip(indices, children):
+        for (row, col), child in zip(indices, children):
             self.draw_other_plot(child, axes_indices=(row, col))
 
 MultiplePlot.backends.register("matplotlib", MatplotlibMultiplePlotBackend)

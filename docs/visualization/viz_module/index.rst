@@ -8,7 +8,7 @@ with your results can be as fast as possible.
 
 The plots that you can generate with it are **not bound to a specific visualization framework**. Instead, the users
 can choose the one that they want based on their taste or on what is available in their environment. Currently,
-there is support for visualizing the plots with `plotly`_, `matplotlib`_, `blender`_. The flexibility of the framework
+there is support for visualizing the plots with `plotly`_, `matplotlib`_, `blender <https://www.blender.org/>`_. The flexibility of the framework
 allows for the user to **extend the visualizing options** quite simply without modifying ``sisl``'s internal code.   
 
 The framework started as a GUI, but then evolved to make it usable by ``sisl`` users directly. Therefore,
@@ -37,6 +37,7 @@ The following notebooks will help you develop a deeper understanding of what eac
     showcase/GeometryPlot.ipynb
     showcase/GridPlot.ipynb
     showcase/BandsPlot.ipynb
+    showcase/FatbandsPlot.ipynb
     showcase/PdosPlot.ipynb
     showcase/WavefunctionPlot.ipynb
 

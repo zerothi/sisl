@@ -3,6 +3,7 @@ from ..backend import Backend
 
 from ....plots import BandsPlot
 
+
 class BandsBackend(Backend):
     """Draws the bands provided by a `BandsPlot`
 
@@ -23,7 +24,7 @@ class BandsBackend(Backend):
 
         self._draw_gaps(backend_info["gaps"])
 
-    def draw_bands(self, filtered_bands, line, spindown_line, spin, spin_texture):
+    def draw_bands(self, filtered_bands, line, spindown_line, spin, spin_texture, add_band_data):
         """
         Manages the flow of drawing all the bands
 
@@ -62,6 +63,7 @@ class BandsBackend(Backend):
                 kwargs = {
                     "name": "{} spin {}".format(band.band.values, ["up", "down"][ispin]) if spin.is_polarized else str(band.band.values),
                     "line": line_style,
+                    **add_band_data(band, self._plot)
                 }
 
                 # And plot it differently depending on whether we need to display spin texture or not.
@@ -70,7 +72,7 @@ class BandsBackend(Backend):
                 else:
                     spin_texture_vals = spin_moments.sel(band=band.band.values).values
                     draw_band_func(x, y, spin_texture_vals=spin_texture_vals, **kwargs)
-    
+
     def _draw_band(self, *args, **kwargs):
         return self.draw_line(*args, **kwargs)
 
