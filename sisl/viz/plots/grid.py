@@ -1054,7 +1054,7 @@ class GridPlot(Plot):
         return scan
 
     def _moving_slice_scan(self, along, breakpoints):
-
+        import plotly.graph_objs as go
         ax = along
         displayed_axes = [i for i in range(3) if i != ax]
         shape = np.array(self.grid.shape)[displayed_axes]

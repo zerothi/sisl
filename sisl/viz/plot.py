@@ -1191,8 +1191,11 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
                 return _try_backend()
 
             if self._widgets["events"]:
-                # If ipyevents is available, show with shortcut support
-                self._ipython_display_with_shortcuts(widget, **kwargs)
+                try:
+                    # If ipyevents is available, show with shortcut support
+                    self._ipython_display_with_shortcuts(widget, **kwargs)
+                except:
+                    display(widget)
             else:
                 # Else, show without shortcut support
                 display(widget)
@@ -1373,20 +1376,22 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
     #       DATA TRANSFER/STORAGE METHODS
     #-------------------------------------------
 
-    def _get_pickleable(self):
-        """ Removes from the instance the attributes that are not pickleable """
-        # Currently there is nothing unpickleable in plots :)
-        return self
+    def __getstate__(self):
+        """Returns the object to be pickled"""
+        # We just simply remove any sile from the settings history (as they are not pickleable)
+        # and replace it with a posix path. Note that this does not fix the problem if there are
+        # nested siles.
+        for key, item in self.settings_history._vals.items():
+            self.settings_history._vals[key] = [val.file if isinstance(val, sisl.io.BaseSile) else val for val in item]
+        return self.__dict__
 
-    def save(self, path, html=False):
+    def save(self, path):
         """ Saves the plot so that it can be loaded in the future
 
         Parameters
         ---------
         path: str
             The path to the file where you want to save the plot
-        html: bool
-            If set to true, saves just an html file of the plot visualization.
 
         Returns
         ---------
@@ -1394,9 +1399,6 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
         """
         if isinstance(path, str):
             path = Path(path)
-
-        #The following method actually modifies 'self', so there's no need to get the return
-        self._get_pickleable()
 
         with open(path, 'wb') as handle:
             dill.dump(self, handle, protocol=dill.HIGHEST_PROTOCOL)

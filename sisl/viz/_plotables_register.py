@@ -38,8 +38,8 @@ for HSile in get_siles(attrs=["read_hamiltonian"]):
     register(HSile, BandsPlot, "H")
     register(HSile, FatbandsPlot, "H")
 
-# for cls in get_plot_classes():
-#     register(siesta.fdfSileSiesta, cls, "root_fdf", overwrite=True)
+for cls in get_plot_classes():
+    register(siesta.fdfSileSiesta, cls, "root_fdf", overwrite=True)
 
 # register(siesta.outSileSiesta, ForcesPlot, 'out_file', default=True)
 
