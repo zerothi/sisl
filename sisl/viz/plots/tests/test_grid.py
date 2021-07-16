@@ -136,7 +136,6 @@ class TestGridPlot(_TestPlot):
         assert grid.shape == test_attrs["grid_shape"]
 
     @skip_skimage
-    @pytest.mark.skip("We have to reorganize the scan method")
     def test_scan(self, plot):
         # AS_IS SCAN
         # Provide number of steps
