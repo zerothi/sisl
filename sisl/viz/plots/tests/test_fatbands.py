@@ -54,7 +54,7 @@ class TestFatbandsPlot(_TestBandsPlot):
             # Directly creating a BandStructure object
             bz = sisl.BandStructure(H, [[0, 0, 0], [2/3, 1/3, 0], [1/2, 0, 0]], 6, ["Gamma", "M", "K"])
             init_func = bz.plot.fatbands
-            
+
             attrs = {
                 "bands_shape": (6, n_spin, n_states),
                 "weights_shape": (n_spin, 6, n_states, 2),
@@ -64,7 +64,7 @@ class TestFatbandsPlot(_TestBandsPlot):
                 "spin_texture": H.spin.is_spinorbit or H.spin.is_noncolinear,
                 "soc_or_nc": H.spin.is_spinorbit or H.spin.is_noncolinear,
             }
-            
+
         return init_func, attrs
 
     def test_weights_dataarray_avail(self, plot, test_attrs):
@@ -80,7 +80,7 @@ class TestFatbandsPlot(_TestBandsPlot):
         assert isinstance(weights, DataArray)
         assert weights.dims == ("spin", "k", "band", "orb")
         assert weights.shape == test_attrs["weights_shape"]
-    
+
     def test_weights_values(self, plot, test_attrs):
         assert np.allclose(plot.weights.sum("orb"), 1), "Weight values do not sum 1 for all states."
         assert np.allclose(plot.weights.sum("band"), 2 if test_attrs["soc_or_nc"] else 1)
@@ -120,4 +120,3 @@ class TestFatbandsPlot(_TestBandsPlot):
             plot.split_groups(group_by)
             err_message = f'Not correctly grouping by {group_by}'
             assert len(plot.data) - traces_before, err_message
-

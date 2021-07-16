@@ -4,6 +4,7 @@ from ...templates import GeometryBackend
 
 import bpy
 
+
 class BlenderGeometryBackend(BlenderBackend, GeometryBackend):
 
     def draw_1D(self, backend_info, **kwargs):

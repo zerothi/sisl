@@ -49,7 +49,7 @@ class TestPdosPlot(_TestPlot):
                 "polarized": (2, "SrTiO3_polarized.PDOS"),
                 "noncollinear": (4, "SrTiO3_noncollinear.PDOS")
             }[spin_type]
-            
+
             init_func = sisl.get_sile(siesta_test_files(filename)).plot
             attrs = {
                 "na": 5,
@@ -78,7 +78,6 @@ class TestPdosPlot(_TestPlot):
                 "n_spin": n_spin,
                 "species": ('C',)
             }
-                
 
         return init_func, attrs
 

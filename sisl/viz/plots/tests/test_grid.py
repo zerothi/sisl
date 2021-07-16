@@ -34,6 +34,7 @@ def ndim(request):
         pytest.importorskip("skimage")
     return request.param
 
+
 @pytest.fixture()
 def axes(ndim):
     return {1: [0], 2: [0, 1], 3: [0, 1, 2]}[ndim]
@@ -57,7 +58,7 @@ class TestGridPlot(_TestPlot):
             values = np.random.random(complex_grid_shape).astype(np.complex128) + np.random.random(complex_grid_shape) * 1j
             complex_grid = sisl.Grid(complex_grid_shape, sc=1)
             complex_grid.grid = values
-            
+
             init_func = complex_grid.plot
             attrs = {"grid_shape": complex_grid_shape}
 
@@ -209,4 +210,3 @@ class TestGridPlot(_TestPlot):
         assert np.allclose(
             self._get_plotted_values(plot), np.cos(new_grid.grid).mean(axis=tuple(ax for ax in [0, 1, 2] if ax not in axes))
         )
-

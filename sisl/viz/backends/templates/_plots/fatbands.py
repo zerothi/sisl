@@ -3,6 +3,7 @@ from .bands import BandsBackend
 
 from ....plots import FatbandsPlot
 
+
 class FatbandsBackend(BandsBackend):
     """Draws fatbands provided by `FatbandsPlot`
 
@@ -34,12 +35,12 @@ class FatbandsBackend(BandsBackend):
                 weights=groups_weights[group_name], metadata=groups_metadata[group_name],
                 name=group_name, bands=filtered_bands, x=x
             )
-        
+
         super().draw(backend_info)
 
     def draw_group_weights(self, weights, metadata, name, bands, x):
         """Draws all weights for a group
-        
+
         It will iterate over all the bands that need to be drawn for a certain group
         and ask the backend to draw them. The backend should implement `_draw_band_weights`
         as specified below.
@@ -61,7 +62,7 @@ class FatbandsBackend(BandsBackend):
                 band_values = bands.sel(band=band_weights.band, spin=band_weights.spin)
 
                 self._draw_band_weights(
-                    x=x, y=band_values, weights=band_weights.values, 
+                    x=x, y=band_values, weights=band_weights.values,
                     color=metadata["style"]["line"]["color"], name=name,
                     is_group_first=i==0 and ispin == 0
                 )
@@ -71,7 +72,7 @@ class FatbandsBackend(BandsBackend):
         """Implement this method to draw a fatband.
 
         This method should not draw the band itself, just the weight.
-        
+
         Parameters
         -----------
         x: np.ndarray of shape (nk,)

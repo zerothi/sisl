@@ -6,6 +6,7 @@ import pytest
 
 import os.path as osp
 
+
 @pytest.fixture(scope="session")
 def importables():
     # Find out which packages are impo
@@ -19,13 +20,15 @@ def importables():
 
     return importables_info
 
+
 @pytest.fixture(scope="session")
 def siesta_test_files(sisl_files):
 
     def _siesta_test_files(path):
         return sisl_files(osp.join('sisl', 'io', 'siesta', path))
-    
+
     return _siesta_test_files
+
 
 class _TestPlot:
 
@@ -60,6 +63,5 @@ class _TestPlot:
         missing_attrs = set(getattr(self, "_required_attrs", [])) - set(attrs)
         if len(missing_attrs) > 0:
             pytest.skip(f"Tests could not be ran because some testing attributes are missing: {missing_attrs}")
-        
-        return attrs
 
+        return attrs

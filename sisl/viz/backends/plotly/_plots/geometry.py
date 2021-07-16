@@ -35,7 +35,7 @@ class PlotlyGeometryBackend(PlotlyBackend, GeometryBackend):
     def _draw_bonds_3D(self, *args, line={}, show_markers=False, bonds_labels=None, x_labels=None, y_labels=None, z_labels=None, **kwargs):
         if show_markers:
             kwargs["mode"] = "lines+markers"
-        
+
         super()._draw_bonds_3D(*args, line=line, **kwargs)
 
         if bonds_labels:
@@ -69,7 +69,7 @@ class PlotlyGeometryBackend(PlotlyBackend, GeometryBackend):
         kwargs["legendgroup"] = group
         kwargs["showlegend"] = showlegend
         super()._draw_single_bond_3D(*args, **kwargs)
-    
+
     def _draw_cell_3D_axes(self, cell, geometry):
         return super()._draw_cell_3D_axes(cell, geometry, mode="lines+markers")
 

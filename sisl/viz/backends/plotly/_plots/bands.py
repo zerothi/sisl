@@ -4,6 +4,7 @@ from ....plots import BandsPlot
 from ..backend import PlotlyBackend
 from ...templates import BandsBackend
 
+
 class PlotlyBandsBackend(PlotlyBackend, BandsBackend):
 
     _layout_defaults = {
@@ -29,7 +30,7 @@ class PlotlyBandsBackend(PlotlyBackend, BandsBackend):
         if spin_texture["show"]:
             self.layout.coloraxis.colorbar = {"title": f"Spin texture ({str(spin_texture['values'].axis.item())})"}
             self.update_layout(coloraxis = {"cmin": spin_texture["values"].min().item(), "cmax": spin_texture["values"].max().item(), "colorscale": spin_texture["colorscale"]})
-    
+
     def _draw_band(self, x, y, *args, **kwargs):
         kwargs = {
             "hovertemplate": '%{y:.2f} eV',
@@ -37,7 +38,7 @@ class PlotlyBandsBackend(PlotlyBackend, BandsBackend):
             **kwargs
         }
         return super()._draw_band(x, y, *args, **kwargs)
-    
+
     def _draw_spin_textured_band(self, *args, spin_texture_vals=None, **kwargs):
         kwargs.update({
             "mode": "markers",
@@ -61,7 +62,7 @@ class PlotlyBandsBackend(PlotlyBackend, BandsBackend):
             'textposition': 'top right',
             **kwargs
         })
-    
+
     def _test_is_gap_drawn(self):
         return len([True for trace in self.figure.data if trace.name == "Gap"]) > 0
 

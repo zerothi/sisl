@@ -9,6 +9,7 @@ from plotly.subplots import make_subplots
 from ..templates.backend import Backend, MultiplePlotBackend, SubPlotsBackend, AnimationBackend
 from ...plot import Plot, SubPlots, MultiplePlot, Animation
 
+
 class PlotlyBackend(Backend):
     """Generic backend for the plotly framework.
 
@@ -33,7 +34,7 @@ class PlotlyBackend(Backend):
         if key != "figure":
             return getattr(self.figure, key)
         raise AttributeError(key)
-    
+
     def show(self, *args, **kwargs):
         return self.figure.show(*args, **kwargs)
 
@@ -80,7 +81,7 @@ class PlotlyBackend(Backend):
 
     def get_ipywidget(self):
         return go.FigureWidget(self.figure, )
-    
+
     def _update_ipywidget(self, fig_widget):
         """ Updates a figure widget so that it is in sync with this plot's data
 
@@ -362,15 +363,17 @@ class PlotlyBackend(Backend):
 
     def draw_scatter(self, x, y, name=None, marker={}, **kwargs):
         self.draw_line(x, y, name, marker=marker, mode="markers", **kwargs)
-    
+
     def draw_line3D(self, x, y, z, **kwargs):
         self.draw_line(x, y, type="scatter3d", z=z, **kwargs)
-    
+
     def draw_scatter3D(self, *args, **kwargs):
         self.draw_line3D(*args, mode="markers", **kwargs)
 
+
 class PlotlyMultiplePlotBackend(PlotlyBackend, MultiplePlotBackend):
     pass
+
 
 class PlotlySubPlotsBackend(PlotlyBackend, SubPlotsBackend):
 
@@ -430,6 +433,7 @@ class PlotlySubPlotsBackend(PlotlyBackend, SubPlotsBackend):
                 new_layouts[ax] = layout
 
         self.update_layout(**new_layouts)
+
 
 class PlotlyAnimationBackend(PlotlyBackend, AnimationBackend):
 

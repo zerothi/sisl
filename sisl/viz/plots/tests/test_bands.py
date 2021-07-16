@@ -19,7 +19,8 @@ from sisl.viz import BandsPlot
 from sisl.viz.plots.tests.conftest import _TestPlot
 
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
-    
+
+
 class TestBandsPlot(_TestPlot):
 
     _required_attrs = [
@@ -35,7 +36,7 @@ class TestBandsPlot(_TestPlot):
         return request.param
 
     @pytest.fixture(scope="class", params=[
-        "siesta_output", 
+        "siesta_output",
         "sisl_H_unpolarized", "sisl_H_polarized", "sisl_H_noncolinear", "sisl_H_spinorbit",
         "sisl_H_path_unpolarized",
     ])
@@ -70,7 +71,7 @@ class TestBandsPlot(_TestPlot):
                 n_states *= 2
 
             # Let's create the same graphene bands plot using the hamiltonian
-            # from two different prespectives    
+            # from two different prespectives
             if name.startswith("sisl_H_path"):
                 # Passing a list of points (as if we were interacting from a GUI)
                 path = [{"active": True, "x": x, "y": y, "z": z, "divisions": 3,
@@ -81,7 +82,7 @@ class TestBandsPlot(_TestPlot):
                 # Directly creating a BandStructure object
                 bz = sisl.BandStructure(H, [[0, 0, 0], [2/3, 1/3, 0], [1/2, 0, 0]], 6, ["Gamma", "M", "K"])
                 init_func = bz.plot
-            
+
             attrs = {
                 "bands_shape": (6, n_spin, n_states),
                 "ticklabels": ["Gamma", "M", "K"],
@@ -89,7 +90,7 @@ class TestBandsPlot(_TestPlot):
                 "gap": 0,
                 "spin_texture": H.spin.is_spinorbit or H.spin.is_noncolinear
             }
-            
+
         return init_func, attrs
 
     def test_bands_dataarray(self, plot, test_attrs):
@@ -142,7 +143,7 @@ class TestBandsPlot(_TestPlot):
         plot.update_settings(custom_gaps=[{"from": gap[0], "to": gap[1], "spin": [0]} for gap in gaps])
 
         assert plot._test_number_of_items_drawn() == prev_traces + len(gaps)
-    
+
     def test_custom_gaps_correct(self, plot, test_attrs):
 
         # We only test this with plotly.
@@ -163,7 +164,7 @@ class TestBandsPlot(_TestPlot):
         assert np.all([
             np.allclose(old_trace.y, new_trace.y)
             for old_trace, new_trace in zip(from_labels, plot.data[-len(gaps):])])
-        
+
         # We have finished with all the gaps tests here, so just clean up before continuing
         plot.update_settings(custom_gaps=[], gap=False)
 
@@ -207,4 +208,3 @@ class TestBandsPlot(_TestPlot):
             assert np.all(expected == displayed), f"Colors of spin textured bands not correctly set (band {band})"
 
         plot.update_settings(spin=None)
-

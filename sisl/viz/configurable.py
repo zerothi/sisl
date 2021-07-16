@@ -421,14 +421,14 @@ class ConfigurableMeta(type):
                 "icon": "settings",
                 "description": "Here are some unclassified settings. Even if they don't belong to any group, they might still be important. They may be here just because the developer was too lazy to categorize them or forgot to do so. <b>If you are the developer</b> and it's the first case, <b>shame on you<b>."
             })
-            
+
             attrs["_parameters"] = class_params
             attrs["_param_groups"] = class_param_groups
 
             for f_name, f in attrs.items():
                 if callable(f) and not f_name.startswith("__"):
                     attrs[f_name] = _populate_with_settings(f, [param["key"] for param in class_params])
-            
+
         new_cls = super().__new__(cls, name, bases, attrs)
 
         new_cls._create_update_maps()
@@ -703,14 +703,13 @@ class Configurable(metaclass=ConfigurableMeta):
                 return param.__dict__ if as_dict else param
         else:
             raise KeyError(f"There is no parameter '{key}' in {self.__class__.__name__}")
-    
+
     @classmethod
     def get_class_param(cls, key, as_dict=False):
         try:
             return cls.get_param(cls, key, as_dict=as_dict, params_extractor=lambda cls: cls._parameters)
         except KeyError:
             raise KeyError(f"There is no parameter '{key}' in {cls.__name__}")
-        
 
     def modify_param(self, key, *args, **kwargs):
         """ Modifies a given parameter

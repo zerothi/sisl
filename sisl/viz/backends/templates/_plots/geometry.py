@@ -5,6 +5,7 @@ from ..backend import Backend
 
 from ....plots import GeometryPlot
 
+
 class GeometryBackend(Backend):
     """Draws the geometry as provided by `GeometryPlot`.
 
@@ -12,13 +13,13 @@ class GeometryBackend(Backend):
         - 1D case: `self.draw_1D`
         - 2D case: `self.draw_2D`
         - 3D case: `self.draw_3D`
-    
+
     These 3 functions contain generic implementations, although some parts may need
     a method to be implemented. Here are more details of each case:
 
     1D workflow (`self.draw_1D`):
         `self._draw_atoms_2D_scatter()`, generic implementation that calls `self.draw_scatter`
-    
+
     2D workflow (`self.draw_2D`):
         if (bonds need to be drawn):
             Calls `self._draw_bonds_2D()` which may call:
@@ -34,7 +35,7 @@ class GeometryBackend(Backend):
                     `self._draw_axis_2D()`, generic implementation that calls `self.draw_line`
             elif (cell to be drawn as a box):
                 `self._draw_cell_2D_box()`, generic implementation that calls `self.draw_line`
-        
+
     3D workflow (`self.draw_3D`):
         if (bonds need to be drawn):
             if (all bonds are same size and same color):
@@ -163,7 +164,7 @@ class GeometryBackend(Backend):
             y = np.array([0, vec[1]]) + origo_xy[1]
             name = f'Axis {i}'
             self._draw_axis_2D(x, y, name=name)
-    
+
     def _draw_axis_2D(self, x, y, name):
         self.draw_line(x, y, name=name)
 
@@ -264,24 +265,23 @@ class GeometryBackend(Backend):
                 marker_size = [*marker_size, *atoms_size[bond], 0]
             if build_line_color:
                 line_color = [*line_color, bonds_color[i], bonds_color[i], 0]
-        
+
         x_labels, y_labels, z_labels = None, None, None
         if bonds_labels:
             x_labels, y_labels, z_labels = np.array([geometry[bond].mean(axis=0) for bond in bonds]).T
 
-        
         self._draw_bonds_3D(
             x, y, z, name=name,
             line={'width': bonds_r, 'color': line_color, 'coloraxis': coloraxis},
             marker={'size': marker_size, 'color': marker_color},
             show_markers=atoms,
             bonds_labels=bonds_labels, x_labels=x_labels, y_labels=y_labels, z_labels=z_labels,
-            **kwargs 
+            **kwargs
         )
-    
+
     def _draw_bonds_3D(self, x, y, z, name=None, line={}, marker={}, show_markers=False, bonds_labels=None, x_labels=None, y_labels=None, z_labels=None, **kwargs):
         """Draws all bonds in a single line in 3D
-        
+
         This method should be overwritten to implement:
             - show_markers=True -> Draw markers as well
             - Write bonds_labels

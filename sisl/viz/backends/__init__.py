@@ -2,6 +2,7 @@ import importlib
 
 __all__ = ["load_backends"]
 
+
 def load_backends():
     for backend in ("templates", "plotly", "matplotlib", "blender"):
         try:

@@ -31,7 +31,7 @@ class TestGeometry(_TestPlot):
             init_func = sisl.Geometry([[0, 0, 1], [1, 0, 0]], atoms=[sisl.Atom(6), sisl.Atom(-6)]).plot
 
         attrs = {}
-        
+
         return init_func, attrs
 
     def test_1d(self):
@@ -208,4 +208,4 @@ class TestGeometry(_TestPlot):
         # Otherwise an index error would be raised.
         plot.update_settings(atoms_color=np.random.random(geom.na), nsc=[2, 1, 1])
 
-        plot.update_settings(atoms_size=geom.atoms.Z+1, atoms_color=None, nsc=[2, 1, 1])    
+        plot.update_settings(atoms_size=geom.atoms.Z+1, atoms_color=None, nsc=[2, 1, 1])

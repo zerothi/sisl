@@ -14,6 +14,7 @@ from sisl.viz.sessions import *
 
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 
+
 @pytest.fixture(autouse=True, scope="class", params=Session.__subclasses__())
 def plot_class(request):
     request.cls._cls = request.param
@@ -21,4 +22,3 @@ def plot_class(request):
 
 class TestSessionSubClass(_TestSessionClass):
     pass
-

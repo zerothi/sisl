@@ -1,5 +1,6 @@
 import bpy
 
+
 def delete_all_objects():
     """Deletes all objects present in the scene"""
     bpy.ops.object.select_all(action='SELECT')
