@@ -24,7 +24,6 @@ Following, you will find some tutorials that will introduce you to the framework
     :name: viz-tutorials-gallery
 
     basic-tutorials/Demo.ipynb
-    basic-tutorials/GUI with Python Demo.ipynb
 
 
 Showcase of plot classes
@@ -64,7 +63,6 @@ developer or you are building a framework (e.g. GUI) around `sisl.viz`, this is 
     :name: viz-plotly-diy-gallery
 
     diy/Adding new backends.ipynb
-    diy/Building a plot class.ipynb
 
 
 .. note::
