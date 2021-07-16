@@ -33,6 +33,9 @@ class PlotlyBackend(Backend):
         if key != "figure":
             return getattr(self.figure, key)
         raise AttributeError(key)
+    
+    def show(self, *args, **kwargs):
+        return self.figure.show(*args, **kwargs)
 
     def draw_on(self, figure):
         """Draws this plot in a different figure.

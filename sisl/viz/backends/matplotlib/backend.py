@@ -56,8 +56,8 @@ class MatplotlibBackend(Backend):
         self.axes.update(self._axes_defaults)
 
     def __getattr__(self, key):
-        if key != "figure":
-            return getattr(self.figure, key)
+        if key != "axes":
+            return getattr(self.axes, key)
         raise AttributeError(key)
 
     def clear(self, layout=False):
@@ -76,17 +76,20 @@ class MatplotlibBackend(Backend):
 
         return self
 
-    def show(self):
-        return self.figure.show()
+    def get_ipywidget(self):
+        return self.figure
+
+    def show(self, *args, **kwargs):
+        return self.figure.show(*args, **kwargs)
 
     # Methods for testing
     def _test_number_of_items_drawn(self):
         return len(self.axes.lines + self.axes.collections)
     
-    def draw_line(self, x, y, name, line, marker={}, text=None, **kwargs):
+    def draw_line(self, x, y, name=None, line={}, marker={}, text=None, **kwargs):
         return self.axes.plot(x, y, color=line.get("color"), linewidth=line.get("width", 1), markersize=marker.get("size"), label=name)
 
-    def draw_scatter(self, x, y, name, marker={}, text=None, **kwargs):
+    def draw_scatter(self, x, y, name=None, marker={}, text=None, **kwargs):
         return self.axes.scatter(x, y, c=marker.get("color"), s=marker.get("size", 1), cmap=marker.get("colorscale"), label=name, **kwargs)
 
 class MatplotlibMultiplePlotBackend(MatplotlibBackend, MultiplePlotBackend):
