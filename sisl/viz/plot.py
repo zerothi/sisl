@@ -1373,7 +1373,6 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
     #-------------------------------------------
     #       DATA TRANSFER/STORAGE METHODS
     #-------------------------------------------
-
     def __getstate__(self):
         """Returns the object to be pickled"""
         # We just simply remove any sile from the settings history (as they are not pickleable)

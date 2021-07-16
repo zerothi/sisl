@@ -611,7 +611,7 @@ def _apply_method(args_tuple):
 
     method(obj, *args, **kwargs)
 
-    return obj._get_pickleable()
+    return obj
 
 
 def _init_single_plot(args_tuple):
@@ -619,7 +619,7 @@ def _init_single_plot(args_tuple):
 
     PlotClass, args, kwargs = args_tuple
 
-    return PlotClass(**kwargs)._get_pickleable()
+    return PlotClass(**kwargs)
 
 
 def run_multiple(func, *args, argsList = None, kwargsList = None, messageFn = None, serial = False):
