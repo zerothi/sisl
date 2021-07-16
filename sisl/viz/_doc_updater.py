@@ -22,7 +22,7 @@ class FakePlot(Plot):
 
 IF YOU HAVE MORE THAN ONE PLOT CLASS IN A FILE, YOU SHOULD SPECIFY %%FakePlot_configurable_settings%%
 
-Then, just run this script and it will update all the classes documentation.
+Then, just run `python -m sisl.viz._doc_updater`.
 Or you can use fill_class_docs to only update a certain class.
 """
 from sisl.viz.plotutils import get_plot_classes, get_session_classes
