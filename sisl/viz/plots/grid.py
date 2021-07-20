@@ -1351,9 +1351,24 @@ class WavefunctionPlot(GridPlot):
 
         if geometry is not None:
             self.geometry = geometry
-        if getattr(self, 'geometry', None) is None:
+        elif isinstance(self.eigenstate.parent, sisl.Geometry):
+            self.geometry = self.eigenstate.parent
+        else:
+            self.geometry = getattr(self.eigenstate.parent, "geometry", None)
+        if self.geometry is None:
             raise ValueError('No geometry was provided and we need it the basis orbitals to build the wavefunctions from the coefficients!')
 
+        # Move all atoms inside the unit cell, otherwise the wavefunction is not
+        # properly displayed.
+        self.geometry = self.geometry.copy()
+        self.geometry.xyz = (self.geometry.fxyz % 1).dot(self.geometry.cell)
+
+        # Note that this might be dangerous, as we are modifying the eigenstate, which
+        # could be shared if this is a children of a MultiplePlot. However, we have no
+        # other option because EigenstateElectron.wavefunction doesn't allow providing a
+        # geometry.
+        self.eigenstate.parent = self.geometry
+        
         # If we are calculating the wavefunction for any point other than gamma,
         # the periodicity of the WF will be bigger than the cell. Therefore, if
         # the user wants to see more than the unit cell, we need to generate the
