@@ -43,13 +43,22 @@ min_version ={
 }
 
 viz = {
-    "plotly": [
-        'dill >= 0.3.2', # see https://github.com/pfebrer/sisl/issues/11
+    "core": [
+        # These are the dependencies needed by the sisl.viz module regardless
+        # of the backend chosen.
+        'dill >= 0.3.2',  # see https://github.com/pfebrer/sisl/issues/11
         'pathos',
-        'plotly',
         'pandas',
         "xarray >= " + min_version["xarray"],
         'scikit-image'
+    ],
+    # Here are specific requirements for each of the backends implemented by
+    # sisl.
+    "plotly": [
+        'plotly',
+    ],
+    "matplotlib": [
+        'matplotlib'
     ],
     "blender": [
     ], # for when blender enters
@@ -449,10 +458,11 @@ setuptools_kwargs = {
             "xarray >= " + min_version["xarray"],
             "tqdm",
         ],
-        "viz": reduce(lambda a, b: a + b, viz.values()),
-        "visualization": reduce(lambda a, b: a + b, viz.values()),
-        "viz-plotly": viz["plotly"],
-        "viz-blender": viz["blender"],
+        "viz": viz["core"],
+        "visualization": viz["core"],
+        "viz-plotly": viz["core"] + viz["plotly"],
+        "viz-matplotlib": viz["core"] + viz["matplotlib"],
+        "viz-blender": viz["core"] + viz["blender"],
         "viz-ase": viz["ase"],
     },
     "zip_safe": False,
