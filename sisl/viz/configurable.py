@@ -4,17 +4,14 @@
 from copy import copy, deepcopy
 from functools import wraps
 import inspect
-from types import MethodType
 from collections import deque, defaultdict
 from collections.abc import Iterable
-import sys
 
 import numpy as np
 
 from sisl.messages import info
-from sisl._dispatcher import AbstractDispatch
 from ._presets import get_preset
-from .plotutils import get_configurable_docstring, get_configurable_kwargs, get_configurable_kwargs_to_pass
+from .plotutils import get_configurable_docstring
 
 __all__ = ["Configurable", "vizplotly_settings"]
 
@@ -149,9 +146,11 @@ class NamedHistory:
                             if val == saved_val:
                                 new_index = i
                                 break
-                        except ValueError:
+                        except:
                             # It is possible that the value itself is not a numpy array
                             # but contains one. This is very hard to handle
+                            # Also we will assume that any other exception raised mean the
+                            # values are not equal.
                             pass
                 else:
                     self._vals[key].append(val)
@@ -407,7 +406,7 @@ class ConfigurableMeta(type):
         if bases:
             # If this is a sub class, we add the parameters from its parents.
             class_params = attrs.get("_parameters", [])
-            class_param_groups = attrs.get("_class_params_group", [])
+            class_param_groups = list(attrs.get("_param_groups", []))
             for base in bases:
                 if "_parameters" in vars(base):
                     class_params = [*class_params, *deepcopy(base._parameters)]
@@ -575,7 +574,7 @@ class Configurable(metaclass=ConfigurableMeta):
         """
         # Get the functions that need to be executed for each key that has been updated and
         # put them in a list
-        func_names = [self._run_on_update.get(setting_key, None) for setting_key in for_keys]
+        func_names = [self._run_on_update.get(setting_key, []) for setting_key in for_keys]
 
         # Flatten that list (list comprehension) and take only the unique values (set)
         func_names = set([f_name for sublist in func_names for f_name in sublist])

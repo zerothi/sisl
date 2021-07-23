@@ -9,14 +9,13 @@ from pathlib import Path
 
 from copy import deepcopy, copy
 
-import sisl
 from sisl.messages import warn
-from sisl._environ import register_environ_variable, get_environ_variable
+from sisl._environ import get_environ_variable
 from .plot import Plot
 from .configurable import Configurable, vizplotly_settings
 from .plotutils import find_files, find_plotable_siles, call_method_if_present, get_plot_classes
 
-from .input_fields import TextInput, FilePathInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, Array1DInput
+from .input_fields import TextInput, FilePathInput, SwitchInput, RangeSlider, Array1DInput
 
 __all__ = ["Session"]
 
@@ -105,12 +104,6 @@ class Session(Configurable):
             "description": "Your computer is pretty big and most of it is not important for the analysis of simulations (e.g. the folder with your holidays pictures). Also, everyone likes to store things differently. Please <b>indicate how exactly do you want the interface to look for simulations results</b> in your filesystem. "
         },
 
-        {
-            "key": None,
-            "name": "Other settings",
-            "icon": "settings",
-            "description": "Here are some unclassified settings. Even if they don't belong to any group, they might still be important :) They may be here just because the developer was too lazy to categorize them or forgot to do so. <b>If you are the developer</b> and it's the first case, <b>shame on you<b>."
-        }
     )
 
     _parameters = (
@@ -777,8 +770,8 @@ class Session(Configurable):
 
         for SileClass, filepaths in files.items():
 
-            avail_plots = list(SileClass.plot.plotly._raw_methods)
-            default_plot = SileClass.plot.plotly._default
+            avail_plots = list(SileClass.plot._dispatchs)
+            default_plot = SileClass.plot._default
 
             # Extend the plotables dict with the files that we find that belong to this sile
             self.warehouse["plotables"] = {**self.warehouse["plotables"], **{
