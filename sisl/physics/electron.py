@@ -387,7 +387,7 @@ def spin_moment(state, S=None, project=False):
             cs = conj(state[i]).reshape(-1, 2)
             Sstate = S.dot(state[i].reshape(-1, 2))
             D = cs.T @ Sstate
-            s[i, 2] = D[0, 0] - D[1, 1]
+            s[i, 2] = (D[0, 0] - D[1, 1]).real
             s[i, 0] = (D[1, 0] + D[0, 1]).real
             s[i, 1] = (D[1, 0] - D[0, 1]).imag
 
