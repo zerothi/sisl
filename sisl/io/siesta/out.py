@@ -226,7 +226,7 @@ class outSileSiesta(SileSiesta):
             last = False
 
         def type_coord(line):
-            if 'outcoor' in line:
+            if 'outcoor' in line and 'coordinates' in line:
                 return 1
             elif 'siesta: Atomic coordinates' in line:
                 return 2
@@ -238,13 +238,14 @@ class outSileSiesta(SileSiesta):
             while coord == 0:
                 line = self.readline()
                 if line == '':
-                    return 0, None
+                    break
                 coord = type_coord(line)
 
             if coord == 1:
                 return 1, self._r_geometry_outcoor(line, atoms)
             elif coord == 2:
                 return 2, self._r_geometry_atomic(line, atoms)
+            return 0, None
 
         # Read until a coordinate block is found
         geom0 = None
