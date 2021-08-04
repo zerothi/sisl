@@ -41,6 +41,7 @@ class SiestaBarriersIO():
     """
     """
     def __init__(self,
+                 neb_type,
                  sisl_images,
                  flos_path ,
                  flos_file_name_relax,
@@ -48,14 +49,14 @@ class SiestaBarriersIO():
                  number_of_images,
                  initial_relaxed_path,
                  final_relaxed_path,
+                 initial_relaxed_fdf_name,
+                 final_relaxed_fdf_name,
                  relax_engine,
                  relaxed,
                  ghost,
-                 initial_relaxed_fdf_name,
-                 final_relaxed_fdf_name,
                  neb_results_path = None,
                  ):
-        
+        self.neb_type = neb_type
         self.sisl_images = sisl_images
         self.flos_path = flos_path
         self.flos_file_name_relax = flos_file_name_relax
@@ -70,7 +71,7 @@ class SiestaBarriersIO():
         self.final_relaxed_fdf_name = final_relaxed_fdf_name
         self.neb_results_path = neb_results_path
 
-    def write_all_images_sisl(self, fname = 'images',folder_name = 'all' , out_format = 'xyz'):
+    def Write_All_Images(self, fname = 'images',folder_name = 'all' , out_format = 'xyz'):
         """
         """
         if self.relaxed == True:
@@ -101,13 +102,13 @@ class SiestaBarriersIO():
                     self.sisl_images[i].write(fname +'-'+str(i)+"."+out_format)
                 os.chdir('../')
 
-    def write_image_n_sisl(self,n,fname = 'images' , out_format = 'xyz' ):
+    def Write_Image_N(self,n,fname = 'images' , out_format = 'xyz' ):
         """
 
         """
         self.sisl_images[n].write(fname +'-'+str(n)+"."+out_format)
 
-    def prepare_endpoint_relax(self, folder_name="image", fname = 'input' , out_format = 'fdf'):
+    def Prepare_Endpoint_Relax(self, folder_name="image", fname = 'input' , out_format = 'fdf'):
 
         """
         """
@@ -133,7 +134,7 @@ class SiestaBarriersIO():
                     print ("Adding Ghost Constaint Block")
                     Ghost_block(self.sisl_images)
                     file_cat('input.fdf','ghost_block_temp','input.fdf')
-                    os.remove("ghost_block_temp")
+                    #os.remove("ghost_block_temp")
                 os.chdir('../')
             if os.path.isdir(folder_name+"-"+str(final_image_n)):
                 print (" The Image {}  Folder is there".format(final_image_n))
@@ -157,7 +158,79 @@ class SiestaBarriersIO():
                 os.chdir('../')
             print ("Endpoint Relaxation Images Folder Created!")
 
-    def prepare_neb(self,neb_folder_name='neb'):
+    def Prepare_NEB(self,neb_folder_name='neb'):
+        """
+        """
+        if self.neb_type == "manual":
+            print ("FOLDER FOR MANUAL")
+            """
+            """
+            if os.path.isdir(neb_folder_name):
+                print (" The NEB Folder is there Already PASS")
+                print (" Check The Folder: '{}' ".format(neb_folder_name))
+            else:
+                os.mkdir(neb_folder_name)
+                os.chdir(neb_folder_name)
+                self.sisl_images[0].write('input.fdf')
+                #self.write_all_images_sisl()
+                for i in range(self.number_of_images+2):
+                    self.Write_Image_N(i)
+                shutil.copy(self.flos_path + self.flos_file_name_neb,'./')
+                os.chdir('../')
+                print("NEB Folder Ready to Run!")
+
+
+        if self.neb_type == "vacancy-exchange" or self.neb_type == "kick" or self.neb_type =="exchange":
+            if self.relaxed == True:
+                if self.initial_relaxed_path == None or self.final_relaxed_path == None :
+                    sys.exit("intial/final relaxed path not provided")
+                if self.initial_relaxed_fdf_name == None or self.final_relaxed_fdf_name == None :
+                    sys.exit("intial/final relaxed fdf not provided")
+
+                if os.path.isdir(neb_folder_name):
+                    print (" The NEB Folder is there Already PASS")
+                    print (" Check The Folder: '{}' ".format(neb_folder_name))
+                    pass
+                else:
+                    os.mkdir(neb_folder_name)
+                    os.chdir(neb_folder_name)
+                    self.sisl_images[0].write('input.fdf')
+                    #self.write_all_images_sisl()
+                    for i in range(self.number_of_images+2):
+                        self.Write_Image_N(i)
+                    if self.ghost == True:
+                        #-----------------------
+                        # Adding Constrant
+                        #------------------------
+                        print ("Adding Ghost Constaint Block")
+                        Ghost_block(self.sisl_images)
+                        file_cat('input.fdf','ghost_block_temp','input.fdf')
+                        os.remove("ghost_block_temp")
+                    else:
+                        string_cat("input.fdf","%include parameters.fdf","input.fdf")
+                    for file in glob.glob(self.initial_relaxed_path+"/*.DM"):
+                        print("Copying DM 0  ...")
+                        print(file)
+                        shutil.copy(file,'./NEB.DM.0')
+                    for file in glob.glob(self.final_relaxed_path+"/*.DM"):
+                        print("Copying DM {} ... ".format(self.number_of_images+1))
+                        print(file)
+                        shutil.copy(file,'./NEB.DM.{}'.format(self.number_of_images+1))
+
+                    shutil.copy(self.flos_path + self.flos_file_name_neb,'./')
+                    replace("local n_images = 7" , "local n_images = " + str(self.number_of_images) , "neb.lua")
+                    os.chdir('../')
+                    print("NEB Folder Ready to Run!")
+            else:
+                print("RELAX Your Endpoint Images First!")
+
+
+            
+        if self.neb_type == "Ring":
+            print ("FOLDER FOR Ring")
+
+
+    def prepare_neb_deprecated(self,neb_folder_name='neb'):
         """
         """
         if self.relaxed == True:

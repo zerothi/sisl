@@ -8,6 +8,28 @@
 from __future__ import absolute_import
 
 import numpy as np
+def is_frac_or_cart_or_index(Position):
+    """
+    """
+    a_dummy = np.array([])
+    if type(Position) == type(a_dummy) :
+        if Position.shape == (3,):
+            print("It's either Cart or Frac")
+            if Position.max()>1.0:
+                print("The Atom Positions given in Cartesian (Ang)  " )
+                out = 'cartesian'
+            else:
+                print("The Atom Positions given in Internal (fractional)  " )
+                out = 'frac'
+        else:
+            print("Something is Wrong in InitialAtomPosition or FinalAtomPosition")
+    elif type(Position) == type(1):
+        print ("It's index")
+        out = 'index'
+    else:
+        print("Something is Wrong in InitialAtomPosition")
+
+    return out
 
 
 
@@ -41,28 +63,28 @@ def AtomIndex(Positions,AtomPosition,rtol,atol):
 #        Frac = True
 #    return 
 
-def is_frac_or_cart_or_index(Position):
-    """
-    """
-    a_dummy = np.array([])
-    if type(Position) == type(a_dummy) :
-        if Position.shape == (3,):
-            print("It's either Cart or Frac")
-            if Position.max()>1.0:
-                print("The Atom Positions given in Cartesian (Ang)  " )
-                out = 'cartesian'
-            else:
-                print("The Atom Positions given in Internal (fractional)  " )
-                out = 'frac'
-        else:
-            print("Something is Wrong in InitialAtomPosition or FinalAtomPosition")
-    elif type(Position) == type(1):
-        print ("It's index")
-        out = 'index'
-    else:
-        print("Something is Wrong in InitialAtomPosition")
-
-    return out
+#def is_frac_or_cart_or_index(Position):
+#    """
+#    """
+#    a_dummy = np.array([])
+#    if type(Position) == type(a_dummy) :
+#        if Position.shape == (3,):
+#            print("It's either Cart or Frac")
+#            if Position.max()>1.0:
+#                print("The Atom Positions given in Cartesian (Ang)  " )
+#                out = 'cartesian'
+#            else:
+#                print("The Atom Positions given in Internal (fractional)  " )
+#                out = 'frac'
+#        else:
+#            print("Something is Wrong in InitialAtomPosition or FinalAtomPosition")
+#    elif type(Position) == type(1):
+#        print ("It's index")
+#        out = 'index'
+#    else:
+#        print("Something is Wrong in InitialAtomPosition")
+#
+#    return out
 
 
 def ASE2Siesta(A):

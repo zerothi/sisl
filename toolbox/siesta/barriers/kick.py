@@ -7,14 +7,7 @@
 ########################################################################################
 from __future__ import absolute_import
 
-from SiestaBarriers.SiestaBarriersBase import SiestaBarriersBase
-from SiestaBarriers.Utils.utils_siesta import read_siesta_fdf,read_siesta_XV,FixingSislImages
-from SiestaBarriers.Utils.utils_kick import pre_prepare_sisl,is_frac_or_cart_or_index,pre_prepare_ase_after_relax
-import os
-import glob,shutil
-import numpy as np 
-import sys
-from SiestaBarriers.SiestaBarriersIO import SiestaBarriersIO
+from .BarriersBase import SiestaBarriersBase
 
 __author__ = "Arsalan Akhatar"
 __copyright__ = "Copyright 2021, SIESTA Group"
@@ -30,107 +23,56 @@ class Kick(SiestaBarriersBase):
     """
     """
     def __init__(self,
-                 host_path = None,
-                 host_fdf_name = None,
-                 host_structure = None ,
-                 initial_relaxed_path = None,
-                 initial_relaxed_fdf_name = None,
-                 initial_structure = None,
-                 final_relaxed_path = None,
-                 final_relaxed_fdf_name = None,
-                 final_structure = None,
-                 trace_atom_initial_position = None,
-                 trace_atom_final_position = None,
-                 tolerance_radius = None,
-                 kicked_atom_final_position = None,
-                 flos_path = None,
-                 flos_file_name_relax = None,
-                 flos_file_name_neb = None,
-                 #relaxed = None,
-                 #ghost = None ,
-                 #interpolation_method = None,
-                 atol = 1e-2,
-                 rtol = 1e-2
-                 ):
+                 host_structure  ,
+                 number_of_images ,
+                 trace_atom_initial_position ,
+                 trace_atom_final_position ,
+                 kicked_atom_final_position,
+                 ghost = False ,
+                 interpolation_method = 'idpp',
+                ):
 
 
         super().__init__(
-                host_path,
-                host_fdf_name,
-                host_structure,
-                initial_relaxed_path,
-                initial_relaxed_fdf_name,
-                initial_structure,
-                final_relaxed_path,
-                final_relaxed_fdf_name,
-                final_structure,
-                trace_atom_initial_position,
-                trace_atom_final_position,
+                neb_scheme = 'kick',
+                relaxed = False,
+                host_structure = host_structure ,
+                number_of_images = number_of_images,
+                initial_relaxed_path = None,
+                initial_relaxed_fdf_name = None,
+                final_relaxed_path = None,
+                final_relaxed_fdf_name = None,
+                trace_atom_initial_position  = trace_atom_initial_position,
+                trace_atom_final_position = trace_atom_final_position,
+                kicked_atom_final_position = kicked_atom_final_position,
+                atol = 1e-2,
+                rtol = 1e-2
                 )
         
 
-        self.atol = atol 
-        self.rtol = rtol
-        #self.host_path = host_path
-        #self.host_fdf_name = host_fdf_name 
-        #self.host_structure = host_structure
-        self.initial_relaxed_path = initial_relaxed_path
-        self.initial_relaxed_fdf_name = initial_relaxed_fdf_name 
-        #self.initial_structure = initial_structure        
-        self.final_relaxed_path = final_relaxed_path 
-        self.final_relaxed_fdf_name = final_relaxed_fdf_name 
-        #self.final_structure = final_structure
-        self.tolerance_radius = tolerance_radius
-        #self.kicked_atom_final_position = kicked_atom_final_position
+        self.host_structure = host_structure
+        self.number_of_images = number_of_images
+        self.interpolation_method = interpolation_method
+        self.ghost = ghost
+
         
-    #---------------------------------------------------------
-    # Set Methods
-    #---------------------------------------------------------
-    def set_atol(self,atol):
-        """
-        """
-        self.atol = atol 
-    def set_rtol(self,rtol):
-        """
-        """
-        self.rtol = rtol
-    def set_host_fdf_name(self,host_fdf_name):
-        """
-        """
-        self.host_fdf_name = host_fdf_name
-
-    def set_initial_relaxed_fdf_name(self,initial_relaxed_fdf_name):
-        """
-        """
-        self.initial_relaxed_fdf_name = initial_relaxed_fdf_name
-    
-    def set_final_relaxed_fdf_name(self,final_relaxed_fdf_name):
-        """
-        """
-        self.final_relaxed_fdf_name = final_relaxed_fdf_name
-    def set_tolerance_radius(self,tolerance_radius):
-        """
-        """
-        self.tolerance_radius = tolerance_radius
-     
-    def set_initial_relaxed_path(self,initial_relaxed_path):
-        """
-        """
-        self.initial_relaxed_path = initial_relaxed_path
-    def set_final_relaxed_path(self,final_relaxed_path):
-        """
-        """
-        self.final_relaxed_path = final_relaxed_path
-
-
     #---------------------------------------------------------
     # Main Methods
     #---------------------------------------------------------
  
-    def generate_kick_images(self):
+    def Generate_Kick_Images(self):
         """
 
         """
+        from .Utils.utils_siesta import read_siesta_fdf,read_siesta_XV,FixingSislImages
+        from .Utils.utils_kick import pre_prepare_sisl,is_frac_or_cart_or_index,pre_prepare_ase_after_relax
+        import os
+        import glob,shutil
+        import numpy as np 
+        import sys
+        from .BarriersIO import SiestaBarriersIO
+
+
         import sisl
         from ase.neb import NEB 
         if self.relaxed == True:
@@ -156,10 +98,11 @@ class Kick(SiestaBarriersBase):
              print ("=================================================")
              print ("     The Initial Kick Image Generation ...   ")
              print ("=================================================")
-             self.host_structure = read_siesta_fdf(self.host_path,self.host_fdf_name)
+             #self.host_structure = read_siesta_fdf(self.host_path,self.host_fdf_name)
              frac_or_cart_or_index = is_frac_or_cart_or_index(self.trace_atom_initial_position )
              self.test = pre_prepare_sisl(frac_or_cart_or_index,
-                                     self.host_structure['Geometry'],
+                                     #self.host_structure['Geometry'],
+                                     self.host_structure,
                                      self.trace_atom_initial_position , 
                                      self.trace_atom_final_position,
                                      self.kicked_atom_final_position,
@@ -245,14 +188,21 @@ class Kick(SiestaBarriersBase):
         Offset=Offset.reshape(len(MovingAtomKick),3)
         
         MovingAtomKick=Offset+MovingAtomKick[0]
-
+        self.MovingAtomKick = MovingAtomKick
+        print("DEBUG: {}".format(self.MovingAtomKick))
         sisl_moving=[]
-        
-        # Fixing the Tag
-        KickedAtomInfo = sisl.Atom(self.test['trace_atom_B_kicked'].atoms.Z)
+       
+
+
+       # Fixing the Tag
+        self.KickedAtomInfo = self.test['trace_atom_B_kicked']
+        print("DEBUG: {}".format(self.KickedAtomInfo))
+        #KickedAtomInfo = sisl.Atom(self.test['trace_atom_B_kicked'].atoms.Z)
 
         for i in range(self.number_of_images+2):
-            sisl_moving.append(sisl.Geometry(MovingAtomKick[i],atoms= sisl.Atom (KickedAtomInfo.Z,tag=KickedAtomInfo.symbol+"_kicked")))
+            #sisl_moving.append(sisl.Geometry(MovingAtomKick[i],atoms= sisl.Atom (KickedAtomInfo.Z,tag=KickedAtomInfo.symbol+"_kicked")))
+            sisl_moving.append(sisl.Geometry(xyz = self.MovingAtomKick[i],
+                                             atoms = sisl.Atom(Z = self.KickedAtomInfo.atom[0].Z,tag=self.KickedAtomInfo.atoms.atom[0].symbol+"_kicked")))
             #sisl_moving.append(sisl.Geometry(MovingAtomKick[i],atoms=self.test['trace_atom_B_kicked'].atoms.Z))
         print(" Putting Kicked Specie in Sisl Geometry Object ")
         
@@ -260,18 +210,19 @@ class Kick(SiestaBarriersBase):
             self.sisl_images[i] = self.sisl_images[i].add(sisl_moving[i])
         #    self.sisl_images[i] = self.sisl_images[i].add(moving_specie_B[i])
 
-        self.IO = SiestaBarriersIO(self.sisl_images,
-                                          self.flos_path,
-                                          self.flos_file_name_relax,
-                                          self.flos_file_name_neb,
-                                          self.number_of_images,
-                                          self.initial_relaxed_path,
-                                          self.final_relaxed_path,
-                                          self.relax_engine,
-                                          self.relaxed,
-                                          self.ghost,
-                                          self.initial_relaxed_fdf_name,
-                                          self.final_relaxed_fdf_name,
+        self.IO = SiestaBarriersIO(neb_type = 'kick',
+                                   sisl_images = self.sisl_images,
+                                   flos_path =  self.flos_path,
+                                   flos_file_name_relax = self.flos_file_name_relax,
+                                   flos_file_name_neb =  self.flos_file_name_neb,
+                                   number_of_images = self.number_of_images,
+                                   initial_relaxed_path = self.initial_relaxed_path,
+                                   final_relaxed_path = self.final_relaxed_path,
+                                   initial_relaxed_fdf_name = self.final_relaxed_path,
+                                   final_relaxed_fdf_name = self.final_relaxed_fdf_name,
+                                   relax_engine = self.relax_engine,
+                                   relaxed = self.relaxed,
+                                   ghost = self.ghost,
                                           )
 
 

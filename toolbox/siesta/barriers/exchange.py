@@ -5,17 +5,7 @@
 # SiestaBarriers is hosted on GitHub at https://github.com/.................. #
 # For further information on the license, see the LICENSE.txt file                     #
 ########################################################################################
-from __future__ import absolute_import
-
-from ..SiestaBarriersBase import SiestaBarriersBase
-from ..Utils.utils_siesta import read_siesta_fdf,read_siesta_XV
-from ..Utils.utils_exchange import pre_prepare_sisl,is_frac_or_cart_or_index,pre_prepare_ase_after_relax_AA,pre_prepare_ase_after_relax_AB,pre_prepare_ase_after_relax_A,pre_prepare_ase_after_relax_B
-
-import os
-import glob,shutil
-import numpy as np
-import sys
-from ..SiestaBarriersIO import SiestaBarriersIO
+from .BarriersBase import SiestaBarriersBase
 
 __author__ = "Arsalan Akhatar"
 __copyright__ = "Copyright 2021, SIESTA Group"
@@ -31,91 +21,64 @@ class Exchange(SiestaBarriersBase):
     """
     """
     def __init__(self,
-                 number_of_images,
-                 host_path = None,
-                 host_fdf_name = None,
-                 host_structure = None ,
-                 initial_relaxed_path = None,
-                 initial_relaxed_fdf_name = None,
-                 initial_structure = None,
-                 final_relaxed_path = None,
-                 final_relaxed_fdf_name = None,
-                 final_structure = None,
-                 #image_direction = None ,
-                 trace_atom_initial_position = None,
-                 trace_atom_final_position = None,
-                 tolerance_radius = None,
-                 #relaxed = None,
-                 #ghost = None ,
-                 #interpolation_method = None,
-                 flos_path = None,
-                 neb_scheme = 'exchange',
-                 atol = 1e-2,
-                 rtol = 1e-2
+                 host_structure ,
+                 number_of_images ,
+                 trace_atom_initial_position ,
+                 trace_atom_final_position ,
+                 exchange_direction = 'xyz',
+                 tolerance_radius = [0.5,0.5,0.5],
+                 ghost = False ,
+                 interpolation_method = 'idpp',
                  ):
-        super().__init__(host_path,
-                host_fdf_name,
-                host_structure,
-                initial_relaxed_path,
-                initial_relaxed_fdf_name,
-                final_relaxed_path,
-                final_relaxed_fdf_name,
-                #neb_results_path,
+        
+        super().__init__( 
+                neb_scheme = 'exchange',
+                relaxed = False,
+                host_structure = host_structure,
+                initial_relaxed_path = None,
+                initial_relaxed_fdf_name = None,
+                final_relaxed_path = None,
+                final_relaxed_fdf_name = None ,
+                trace_atom_initial_position = trace_atom_initial_position ,
+                trace_atom_final_position = trace_atom_final_position ,
+                atol = 1e-2,
+                rtol = 1e-2
                 )
-        self.atol = atol 
-        self.rtol = rtol
-        self.host_fdf_name = host_fdf_name 
-        self.initial_relaxed_fdf_name = initial_relaxed_fdf_name 
-        self.final_relaxed_fdf_name = final_relaxed_fdf_name 
+        self.host_structure = host_structure
+        self.number_of_images = number_of_images
         self.tolerance_radius = tolerance_radius
         self.trace_atom_initial_position  = trace_atom_initial_position
         self.trace_atom_final_position = trace_atom_final_position
-        self.number_of_images = number_of_images  
-    #---------------------------------------------------------
-    # Set Methods
-    #---------------------------------------------------------
-    #def set_atol(self,atol):
-    #    """
-    #    """
-    #    self.atol = atol 
-    #def set_rtol(self,rtol):
-    #    """
-    #    """
-    #    self.rtol = rtol
-    #def set_host_fdf_name(self,host_fdf_name):
-    #    """
-    #    """
-    #    self.host_fdf_name = host_fdf_name
+        self.exchange_direction = exchange_direction 
+        self.tolerance_radius = tolerance_radius
+        self.ghost = ghost
+        self.interpolation_method = interpolation_method
 
-    #def set_initial_relaxed_fdf_name(self,initial_relaxed_fdf_name):
-    #    """
-    #    """
-    #    self.initial_relaxed_fdf_name = initial_relaxed_fdf_name
-
-    #def set_final_relaxed_fdf_name(self,final_relaxed_fdf_name):
-    #    """
-    #    """
-    #    self.final_relaxed_fdf_name = final_relaxed_fdf_name
-    #def set_tolerance_radius(self,tolerance_radius):
-    #    """
-    #    """
-    #    self.tolerance_radius = tolerance_radius
     #---------------------------------------------------------
     # Main Methods
     #---------------------------------------------------------
  
-    def generate_exchange_images(self):
+    def Generate_Exchange_Images(self):
         """
 
         """
+        from .Utils.utils_siesta import read_siesta_fdf,read_siesta_XV
+        from .Utils.utils_exchange import pre_prepare_sisl,is_frac_or_cart_or_index,pre_prepare_ase_after_relax_AA,pre_prepare_ase_after_relax_AB,pre_prepare_ase_after_relax_A,pre_prepare_ase_after_relax_B
+
+        import os
+        import glob,shutil
+        import numpy as np
+        import sys
+        from .BarriersIO import SiestaBarriersIO
         import sisl
         from ase.neb import NEB 
+
         if self.relaxed == True:
              print ("=================================================")
              print ("     The Relaxed Exchange Image Generation ...   ")
              print ("=================================================")
 
-             self.host_structure = read_siesta_fdf(self.host_path,self.host_fdf_name)
+             #self.host_structure = read_siesta_fdf(self.host_path,self.host_fdf_name)
              self.initial_structure = read_siesta_XV(self.initial_relaxed_path,self.initial_relaxed_fdf_name)
              self.final_structure = read_siesta_XV(self.final_relaxed_path,self.final_relaxed_fdf_name)
              
@@ -137,10 +100,10 @@ class Exchange(SiestaBarriersBase):
              print ("     The Initial Exchange Image Generation ...   ")
              print ("=================================================")
 
-             self.host_structure = read_siesta_fdf(self.host_path,self.host_fdf_name)
              frac_or_cart_or_index = is_frac_or_cart_or_index(self.trace_atom_initial_position )
+             
              self.test = pre_prepare_sisl(frac_or_cart_or_index,
-                                     self.host_structure['Geometry'],
+                                     self.host_structure,
                                      self.trace_atom_initial_position , 
                                      self.trace_atom_final_position,
                                      self.rtol,
@@ -212,7 +175,7 @@ class Exchange(SiestaBarriersBase):
             print ("d",d)
             print ("dsum",dsum)
             print("Tolernace Radius :{}".format(self.tolerance_radius)) 
-            Migration_Direction = self.image_direction
+            Migration_Direction = self.exchange_direction
             NumberOfImages = self.number_of_images 
         
             if Migration_Direction.lower()=="x":
@@ -318,7 +281,7 @@ class Exchange(SiestaBarriersBase):
             print ("d",d)
             print ("dsum",dsum)
             print("Tolernace Radius :{}".format(self.tolerance_radius))
-            Migration_Direction = self.image_direction
+            Migration_Direction = self.exchange_direction
             NumberOfImages = self.number_of_images
 
             if Migration_Direction.lower()=="x":
@@ -374,18 +337,19 @@ class Exchange(SiestaBarriersBase):
                 self.sisl_images[i] = self.sisl_images[i].add(moving_specie_A[i])
                 self.sisl_images[i] = self.sisl_images[i].add(moving_specie_B[i])
 
-        self.IO = SiestaBarriersIO(self.sisl_images,
-                                          self.flos_path,
-                                          self.flos_file_name_relax,
-                                          self.flos_file_name_neb,
-                                          self.number_of_images,
-                                          self.initial_relaxed_path,
-                                          self.final_relaxed_path,
-                                          self.relax_engine,
-                                          self.relaxed,
-                                          self.ghost,
-                                          self.initial_relaxed_fdf_name,
-                                          self.final_relaxed_fdf_name,
+        self.IO = SiestaBarriersIO( neb_type = 'exchange',
+                                    sisl_images = self.sisl_images,
+                                    flos_path = self.flos_path,
+                                    flos_file_name_relax = self.flos_file_name_relax,
+                                    flos_file_name_neb = self.flos_file_name_neb,
+                                    number_of_images = self.number_of_images,
+                                    initial_relaxed_path = self.initial_relaxed_path,
+                                    initial_relaxed_fdf_name = self.initial_relaxed_fdf_name,
+                                    final_relaxed_path = self.final_relaxed_path ,
+                                    final_relaxed_fdf_name = self.final_relaxed_fdf_name,
+                                    relax_engine = self.relax_engine,
+                                    relaxed = self.relaxed,
+                                    ghost = self.ghost,
                                           )
 
     def NEB_Results(self):
@@ -406,95 +370,6 @@ class Exchange(SiestaBarriersBase):
                                           self.neb_results_path
                                           )
 
-    #=========================================================================
-    #  Writing Methods
-    #=========================================================================
-
-    #def write_all_images_sisl(self, fname = 'images' , out_format = 'xyz'):
-    #    """
-    #    """
-    #    for i in range(self.number_of_images+2):
-    #        self.sisl_images[i].write(fname +'-'+str(i)+"."+out_format)
-
-    #def write_image_n_sisl(self,n,fname = 'images' , out_format = 'xyz' ):
-    #    """
-    #
-    #    """
-    #    self.sisl_images[n].write(fname +'-'+str(n)+"."+out_format)
-    #    print ("DONE!")
-
-
-
-    #def prepare_endpoint_relax(self, folder_name="image", fname = 'input' , out_format = 'fdf'):
-    # 
-    #    """
-    #    """
-    #   if self.relaxed == True :
-    #        print (" The Relaxed Flag is True endpoint relaxation PASS...!")
-    #        pass
-    #    else:
-    #        final_image_n = self.number_of_images +  1
-    #        if os.path.isdir(folder_name+"-0"):
-    #            print (" The Image 0  Folder is there Already PASS")
-    #            print (" Check The Folder: '{}' ".format(folder_name+"-0"))
-    #            pass
-    #        else:
-    #            os.mkdir(folder_name+"-0")
-    #            os.chdir(folder_name+"-0")
-    #            self.sisl_images[0].write(fname+'.fdf')
-    #            if self.relax_engine == 'lua':
-    #                shutil.copy(self.flos_path + self.flos_file_name_relax,'./')
-    #            os.chdir('../')
-    #        if os.path.isdir(folder_name+"-"+str(final_image_n)):
-    #            print (" The Image {}  Folder is there".format(final_image_n))
-    #            print (" Check The Folder: '{}' ".format(folder_name+"-"+str(final_image_n)))
-    #            pass
-    #        else:
-    #            os.mkdir(folder_name+"-"+str(final_image_n))
-    #            os.chdir(folder_name+"-"+str(final_image_n))
-    #            self.sisl_images[final_image_n].write(fname+'.fdf')
-    #            if self.relax_engine == 'lua':
-    #                shutil.copy(self.flos_path + self.flos_file_name_relax,'./')
-    #            os.chdir('../')
-
-    
-    #def prepare_neb(self,folder_name='neb'):
-    #    """
-    #    """
-    #    if self.relaxed == True:
-    #        if self.initial_relaxed_path == None or self.final_relaxed_path == None :
-    #            sys.exit("intial/final relaxed path not provided")
-    #        if self.initial_relaxed_fdf_name == None or self.final_relaxed_fdf_name == None :
-    #            sys.exit("intial/final relaxed fdf not provided")        
-    #        #import glob,shutil
-    #        if os.path.isdir(folder_name):
-    #            print (" The NEB Folder is there Already PASS")
-    #            print (" Check The Folder: '{}' ".format(folder_name))
-    #            pass
-    #        else:
-    #            os.mkdir(folder_name)
-    #            os.chdir(folder_name)
-    #            self.sisl_images[0].write('input.fdf')
-    #            self.write_all_images_sisl()
-    #
-    #            for file in glob.glob(self.initial_relaxed_path+"/*.DM"):
-    #                print("Copying DM 0  ...")
-    #                print(file)
-    #                shutil.copy(file,'./NEB.DM.0')
-    #            for file in glob.glob(self.final_relaxed_path+"/*.DM"):
-    #                print("Copying DM {} ... ".format(self.number_of_images+1))
-    #                print(file)
-    #                shutil.copy(file,'./NEB.DM.{}'.format(self.number_of_images+1))
-    #
-    #            shutil.copy(self.flos_path + self.flos_file_name_neb,'./')
-    #            os.chdir('../')
-    #            print("NEB Folder Ready to Run!")
-    #    else:
-    #        print("RELAX Your Endpoint Images First!")
-
-
-
-
 
     #=========================================================================
     #  Checking Methods
@@ -511,14 +386,27 @@ class Exchange(SiestaBarriersBase):
     def check_AA_or_AB(self):
         """
         """
-        if self.initial_structure['XV'].atoms.Z[-1] == self.initial_structure['XV'].atoms.Z[-2]:
-            print ("!----------------------------------!")
-            print ("The Exchange Species Are Same Atoms!")
-            print ("!----------------------------------!")
-            return True
+        from .Utils.utils_siestabarrier import is_frac_or_cart_or_index
+        if self.relaxed :
+            if self.initial_structure['XV'].atoms.Z[-1] == self.initial_structure['XV'].atoms.Z[-2]:
+                print ("!----------------------------------!")
+                print ("The Exchange Species Are Same Atoms!")
+                print ("!----------------------------------!")
+                return True
+            else:
+                print ("!----------------------------------!")
+                print ("The Exchange Species Are Different Atoms!")
+                print ("!----------------------------------!")
+                return False
         else:
-            print ("!----------------------------------!")
-            print ("The Exchange Species Are Different Atoms!")
-            print ("!----------------------------------!")
-            return False
+            print("DEBUG:")
+            if self.test['trace_atom_A_initial'].atoms.Z[0] == self.test['trace_atom_B_initial'].atoms.Z[0]:
+                print ("!----------------------------------!")
+                print ("The Exchange Species Are Same Atoms!")
+                print ("!----------------------------------!")
+            else:
+                print ("!----------------------------------!")
+                print ("The Exchange Species Are Different Atoms!")
+                print ("!----------------------------------!")
+ 
         

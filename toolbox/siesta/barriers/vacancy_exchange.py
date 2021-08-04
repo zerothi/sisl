@@ -5,15 +5,10 @@
 # SiestaBarriers is hosted on GitHub at https://github.com/.................. #
 # For further information on the license, see the LICENSE.txt file                     #
 ########################################################################################
-from __future__ import absolute_import
+#from __future__ import absolute_import
 
-from ..SiestaBarriersBase import SiestaBarriersBase
-from ..Utils.utils_siesta import read_siesta_fdf,read_siesta_XV ,read_siesta_XV_before_relax, FixingSislImages
-from ..Utils.utils_vacancy_exchange import pre_prepare_sisl ,is_frac_or_cart_or_index,pre_prepare_ase_after_relax
-import os,sys 
-import glob,shutil
-from ..SiestaBarriersIO import SiestaBarriersIO
-
+from .BarriersBase import SiestaBarriersBase
+import logging
 __author__ = "Arsalan Akhatar"
 __copyright__ = "Copyright 2021, SIESTA Group"
 __version__ = "0.1"
@@ -23,68 +18,62 @@ __email__ = "arsalan_akhtar@outlook.com," + \
 __status__ = "Development"
 __date__ = "Janurary 30, 2021"
 
+_log = logging.getLogger("toolbox.siesta.barrires.vacancy_exchange")
 
 class VacancyExchange(SiestaBarriersBase):
     """
+    Init Object for VacancyExchange
+    INPUTs:
+           host_structure = Sisl Stucture Object
+           number_of_images = # of images for NEB
+           trace_atom_initial_position = initial Atom Position/Index
+           trace_atom_final_position = final Atom Position/Index
+           interpolation_method = idpp
     """
+    
     def __init__(self,
-                 host_path ,
-                 host_fdf_name ,
                  host_structure ,
                  number_of_images  ,
-                 initial_relaxed_path = None,
-                 initial_relaxed_fdf_name = None,
-                 initial_structure = None,
-                 final_relaxed_path = None,
-                 final_relaxed_fdf_name = None,
-                 final_structure = None,
-                 image_direction = None ,
-                 trace_atom_initial_position = None,
-                 trace_atom_final_position = None,
-                 interpolation_method = None,
-                 flos_path = None,
-                 ghost = False ,
-                 relaxed = False,
-                 atol = 1e-2,
-                 rtol = 1e-2,
-                 ):
-   
-        super().__init__(host_path,
-                 host_fdf_name ,
-                 host_structure  ,
-                 initial_relaxed_path ,
-                 initial_relaxed_fdf_name ,
-                 initial_structure ,
-                 final_relaxed_path ,
-                 final_relaxed_fdf_name,
-                 final_structure ,
-                 image_direction  ,
-                 #number_of_images ,
                  trace_atom_initial_position ,
                  trace_atom_final_position ,
-                 interpolation_method ,
-                 flos_path ,
-                 ghost  ,
-                 relaxed ,
+                 interpolation_method = 'idpp',
+                 ghost = True ,
+                 ):
+   
+        super().__init__(
+                 neb_scheme = 'vacancy-exchange',
+                 relaxed = False,
+                 host_structure = host_structure ,
+                 number_of_images = number_of_images,
+                 initial_relaxed_path = None,
+                 initial_relaxed_fdf_name = None ,
+                 final_relaxed_path = None ,
+                 final_relaxed_fdf_name = None,
+                 trace_atom_initial_position = trace_atom_initial_position ,
+                 trace_atom_final_position = trace_atom_final_position ,
+                 atol = 1e-2,
+                 rtol = 1e-2,
                 )
-        
-
-        self.ghost = ghost
-        self.atol = atol 
-        self.rtol = rtol
-        self.interpolation_method = interpolation_method  
+        self.host_structure = host_structure
         self.number_of_images = number_of_images
-        self.initial_relaxed_fdf_name = initial_relaxed_fdf_name
-        self.final_relaxed_fdf_name = final_relaxed_fdf_name
+        self.interpolation_method = interpolation_method 
+        self.ghost = ghost
 
     #---------------------------------------------------------
     # Main Methods
     #---------------------------------------------------------
  
-    def generate_vacancy_exchange_images(self):
+    def Generate_Vacancy_Exchange_Images(self):
         """
 
         """
+        from .Utils.utils_siesta import read_siesta_fdf,read_siesta_XV ,read_siesta_XV_before_relax, FixingSislImages
+        from .Utils.utils_vacancy_exchange import pre_prepare_sisl ,is_frac_or_cart_or_index,pre_prepare_ase_after_relax
+        import os,sys 
+        import glob,shutil
+        from .BarriersIO import SiestaBarriersIO
+
+
         import sisl
         from ase.neb import NEB 
         if self.relaxed == True:
@@ -111,10 +100,11 @@ class VacancyExchange(SiestaBarriersBase):
              print ("=================================================")
              print ("The Initial Vacancy Exchange Image Generation ...")
              print ("=================================================")
-             if "fdf" in self.host_fdf_name:
-                 self.host_structure = read_siesta_fdf(self.host_path,self.host_fdf_name)['Geometry']
-             if "XV" in self.host_fdf_name:
-                 self.host_structure = read_siesta_XV_before_relax(self.host_path,self.host_fdf_name)['XV']
+             #if "fdf" in self.host_fdf_name:
+             #    self.host_structure = read_siesta_fdf(self.host_path,self.host_fdf_name)['Geometry']
+             #if "XV" in self.host_fdf_name:
+             #    self.host_structure = read_siesta_XV_before_relax(self.host_path,self.host_fdf_name)['XV']
+             #self.host_structure
              frac_or_cart_or_index = is_frac_or_cart_or_index(self.trace_atom_initial_position )
              self.test = pre_prepare_sisl(frac_or_cart_or_index,
                                      #self.host_structure['Geometry'],
@@ -144,7 +134,13 @@ class VacancyExchange(SiestaBarriersBase):
         print ("Copying ASE For NEB Image ",i+1)
         #%% 
         self.neb = NEB(self.images)
-        self.neb.interpolate(self.interpolation_method)
+        if self.interpolation_method == 'li':
+            #self.neb.interpolate(self.interpolation_method)
+            print("DEBUG: NEB LI INTERPOLATED!")
+            self.neb.interpolate(mic=True)
+        if self.interpolation_method == 'idpp':
+            print("DEBUG: NEB IDPP INTERPOLATED!")
+            self.neb.interpolate('idpp',mic=True)
  
         
         self.sisl_images = []
@@ -161,19 +157,19 @@ class VacancyExchange(SiestaBarriersBase):
                 self.sisl_images[i] = self.sisl_images[i].add(self.test['Ghost_final'])
 
                 
-        self.IO = SiestaBarriersIO(self.sisl_images,
-                                          self.flos_path,
-                                          self.flos_file_name_relax,
-                                          self.flos_file_name_neb,
-                                          self.number_of_images,
-                                          self.initial_relaxed_path,
-                                          self.final_relaxed_path,
-                                          self.relax_engine,
-                                          self.relaxed,
-                                          self.ghost,
-                                          self.initial_relaxed_fdf_name,
-                                          self.final_relaxed_fdf_name,
-                                          #self.neb_results_path
+        self.IO = SiestaBarriersIO(neb_type = 'vacancy-exchange',
+                                   sisl_images = self.sisl_images,
+                                   flos_path = self.flos_path,
+                                   flos_file_name_relax = self.flos_file_name_relax,
+                                   flos_file_name_neb = self.flos_file_name_neb,
+                                   number_of_images = self.number_of_images,
+                                   initial_relaxed_path = self.initial_relaxed_path,
+                                   final_relaxed_path = self.final_relaxed_path,
+                                   final_relaxed_fdf_name = self.final_relaxed_fdf_name,
+                                   initial_relaxed_fdf_name = self.final_relaxed_path,
+                                   relax_engine = self.relax_engine,
+                                   relaxed = self.relaxed,
+                                   ghost = self.ghost,
                                           )
 
     def NEB_Results(self):

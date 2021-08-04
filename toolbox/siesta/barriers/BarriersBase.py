@@ -5,8 +5,7 @@
 # SiestaBarriers is hosted on GitHub at https://github.com/.................. #
 # For further information on the license, see the LICENSE.txt file                     #
 ########################################################################################
-
-from __future__ import absolute_import
+#from __future__ import absolute_import
 
 #from SiestaBarriers.Utils.utils_siesta import print_siesta_fdf,read_siesta_fdf
 
@@ -52,7 +51,7 @@ class SiestaBarriersBase():
     ghost_info                   :
     """
     def __init__(self,
-                 host_path = None,
+                 host_path = "./",
                  host_fdf_name = None,
                  host_structure = None ,
                  initial_relaxed_path = None,
@@ -74,12 +73,14 @@ class SiestaBarriersBase():
                  flos_file_name_relax = 'relax_geometry_lbfgs.lua',
                  relax_engine = 'lua',
                  interpolation_method = 'idpp',
-                 image_direction = 'z' ,
+                 exchange_direction = 'z' ,
                  number_of_images = None,
                  neb_scheme = 'vacancy-exchange',
                  ghost = False,
                  relaxed = False,
-                 tolerance_radius = [1.0,1.0,1.0]
+                 tolerance_radius = [1.0,1.0,1.0],
+                 atol = 1e-2,
+                 rtol = 1e-2,
                 ):
 
         self.host_path = host_path
@@ -105,7 +106,7 @@ class SiestaBarriersBase():
         self.neb_results_path = neb_results_path
 
         self.interpolation_method = interpolation_method
-        self.image_direction = image_direction   
+        self.exchange_direction = exchange_direction   
         self.number_of_images = number_of_images
         self.neb_scheme = neb_scheme
         self.ghost = ghost
@@ -117,14 +118,27 @@ class SiestaBarriersBase():
         self.relax_engine = relax_engine
 
         self.tolerance_radius = tolerance_radius
+        self.atol = atol
+        self.rtol = rtol
         
+        self.wellcome()
+        self.setup()
+
+    def wellcome(self):
+        """
+        """
+        print ("---------------------------")
+        print ("Wellcome To SiestaBarriers")
+        print ("      Version : {}".format(__version__))
+        print ("---------------------------")
+
 
     def setup(self):
         """
         Setup the workchain
         """
 
-        print(" Check if correction scheme is valid ...")
+        print(" Check If NEB scheme is valid ...")
         neb_schemes_available = ["vacancy-exchange",
                                  "exchange",
                                  "interstitial",
@@ -136,7 +150,7 @@ class SiestaBarriersBase():
         if self.neb_scheme is not None:
             if self.neb_scheme not in neb_schemes_available:
                 print("NOT IMPLEMENTED")
-                #sys.exit()
+                sys.exit()
             else:
                 print("NEB image scheme is: {}".format(self.neb_scheme))
                 #return self.neb_scheme
@@ -144,6 +158,7 @@ class SiestaBarriersBase():
             print(" NOTE: The Ghost Support Basis is True You Have To Provide The Basis Set Of Ghost Specie/s via PAO.Basisblock! ")
         else:
             print(" No Ghost Support Basis")
+
     def is_none_scheme(self):
         """
         Check if None correction scheme is being used
@@ -219,10 +234,10 @@ class SiestaBarriersBase():
         """
         """
         self.final_structure = final_structure
-    def set_image_direction(self,image_direction):
+    def set_exchange_direction(self,exchange_direction):
         """
         """
-        self.image_direction = image_direction
+        self.exchange_direction = exchange_direction
     def set_kicked_atom_final_position(self,kicked_atom_final_position):
         """
         """
