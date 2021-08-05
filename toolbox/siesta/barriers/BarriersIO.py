@@ -1,41 +1,20 @@
 # -*- coding: utf-8 -*-
 ########################################################################################
-# Copyright (c), The SiestaBarriers authors. All rights reserved.                       #
-#                                                                                      #
-# SiestaBarriers is hosted on GitHub at https://github.com/.................. #
+# Copyright (c), The SislSiestaBarriers authors. All rights reserved.                  #
+# SislSiestaBarriers is hosted on GitHub at :                                          #
+# https://github.com/zerothi/sisl/toolbox/siesta/barriers                              #
 # For further information on the license, see the LICENSE.txt file                     #
 ########################################################################################
-from __future__ import absolute_import
 
-#from SiestaBarriers import SiestaBarriersBase
-#from neb_siesta import NEBBase
-#from SiestaBarriers.Utils.utils_siesta import read_siesta_fdf,read_siesta_XV
-#from SiestaBarriers.Utils.utils_vacancy_exchange import pre_prepare_sisl,is_frac_or_cart_or_index,pre_prepare_ase_after_relax
 from .Utils.utils_siesta import read_siesta_fdf,read_siesta_XV
 from .Utils.utils_vacancy_exchange import pre_prepare_sisl,is_frac_or_cart_or_index,pre_prepare_ase_after_relax
 
 import os
 import glob,shutil
-#from SiestaBarriers.Utils.utils_io import Ghost_block , file_cat,string_cat
-#from SiestaBarriers.Utils.utils_analysis import NEB_Barrier
-#from SiestaBarriers.Utils.utils_io import replace
-#from SiestaBarriers.Utils.utils_analysis import NEB_Fix
-
 from .Utils.utils_io import Ghost_block , file_cat,string_cat
 from .Utils.utils_analysis import NEB_Barrier
 from .Utils.utils_io import replace
 from .Utils.utils_analysis import NEB_Fix
-
-
-__author__ = "Arsalan Akhatar"
-__copyright__ = "Copyright 2021, SIESTA Group"
-__version__ = "0.1"
-__maintainer__ = "Arsalan Akhtar"
-__email__ = "arsalan_akhtar@outlook.com," + \
-        " miguel.pruneda@icn2.cat "
-__status__ = "Development"
-__date__ = "Janurary 30, 2021"
-
 
 class SiestaBarriersIO():
     """
@@ -302,7 +281,7 @@ class SiestaBarriersIO():
         print (self.neb_results_path) 
         NEB_Barrier(self.neb_results_path,self.number_of_images,figname , dpi_in)
 
-    def prepare_neb_analysis(self,image_n,folder_name ="neb-analysis-image",flos_name="neb_analysis.lua"):
+    def Prepare_NEB_Analysis(self,image_n,folder_name ="neb-analysis-image",flos_name="neb_analysis.lua"):
         """
         """
         self.flos_file_name_neb = flos_name 
@@ -336,7 +315,7 @@ class SiestaBarriersIO():
             replace("local image_number = 3" , "local image_number = " + str(image_n) , "neb_analysis.lua")
             os.chdir('../')
 
-    def write_n_NEB_image(self,image_n,fdf_name = "input.fdf",image_in="images",image_out="neb_images"):
+    def Write_n_NEB_Image(self,image_n,fdf_name = "input.fdf",image_in="images",image_out="neb_images"):
         """
         """
 

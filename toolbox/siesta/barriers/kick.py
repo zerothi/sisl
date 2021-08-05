@@ -1,23 +1,12 @@
 # -*- coding: utf-8 -*-
 ########################################################################################
-# Copyright (c), The SiestaBarriers authors. All rights reserved.                       #
-#                                                                                      #
-# SiestaBarriers is hosted on GitHub at https://github.com/.................. #
+# Copyright (c), The SislSiestaBarriers authors. All rights reserved.                  #
+# SislSiestaBarriers is hosted on GitHub at :                                          #
+# https://github.com/zerothi/sisl/toolbox/siesta/barriers                              #
 # For further information on the license, see the LICENSE.txt file                     #
 ########################################################################################
-from __future__ import absolute_import
 
 from .BarriersBase import SiestaBarriersBase
-
-__author__ = "Arsalan Akhatar"
-__copyright__ = "Copyright 2021, SIESTA Group"
-__version__ = "0.1"
-__maintainer__ = "Arsalan Akhtar"
-__email__ = "arsalan_akhtar@outlook.com," + \
-        " miguel.pruneda@icn2.cat "
-__status__ = "Development"
-__date__ = "Janurary 30, 2021"
-
 
 class Kick(SiestaBarriersBase):
     """
@@ -244,84 +233,6 @@ class Kick(SiestaBarriersBase):
                                           self.final_relaxed_fdf_name,
                                           self.neb_results_path
                                           )
-
-    #=========================================================================
-    #  Writing Methods
-    #=========================================================================
-
-    #def write_all_images_sisl(self, fname = 'images' , out_format = 'xyz'):
-    #    """
-    #    """
-    #    for i in range(self.number_of_images+2):
-    #        self.sisl_images[i].write(fname +'-'+str(i)+"."+out_format)
-
-    #def write_image_n_sisl(self,n,fname = 'images' , out_format = 'xyz' ):
-    #    """
-    #
-    #    """
-    #    self.sisl_images[n].write(fname +'-'+str(n)+"."+out_format)
-    #    print ("DONE!")
-
-    #def prepare_endpoint_relax(self, folder_name="image", fname = 'input' , out_format = 'fdf'):
-    #
-    #    """
-    #    """
-    #    if self.relaxed == True :
-    #        print (" The Relaxed Flag is True endpoint relaxation PASS...!")
-    #        pass
-    #    else:
-    #        final_image_n = self.number_of_images +  1
-    #        if os.path.isdir(folder_name+"-0"):
-    #            print (" The Image 0  Folder is there Already PASS")
-    #            print (" Check The Folder: '{}' ".format(folder_name+"-0"))
-    #            pass
-    #        else:
-    #            os.mkdir(folder_name+"-0")
-    #            os.chdir(folder_name+"-0")
-    #            self.sisl_images[0].write(fname+'.fdf')
-    #            if self.relax_engine == 'lua':
-    #                shutil.copy(self.flos_path + self.flos_file_name_relax,'./')
-    #            os.chdir('../')
-    #        if os.path.isdir(folder_name+"-"+str(final_image_n)):
-    #            print (" The Image {}  Folder is there".format(final_image_n))
-    #            print (" Check The Folder: '{}' ".format(folder_name+"-"+str(final_image_n)))
-    #            pass
-    #        else:
-    #            os.mkdir(folder_name+"-"+str(final_image_n))
-    #            os.chdir(folder_name+"-"+str(final_image_n))
-    #            self.sisl_images[final_image_n].write(fname+'.fdf')
-    #            if self.relax_engine == 'lua':
-    #                shutil.copy(self.flos_path + self.flos_file_name_relax,'./')
-    #            os.chdir('../')
-
-    #def prepare_neb(self,folder_name='neb'):
-    #    """
-    #    """
-    #    #import glob,shutil
-    #    if os.path.isdir(folder_name):
-    #        print (" The NEB Folder is there Already PASS")
-    #        print (" Check The Folder: '{}' ".format(folder_name))
-    #        pass
-    #    else:
-    #        os.mkdir(folder_name)
-    #        os.chdir(folder_name)
-    #        self.sisl_images[0].write('input.fdf')
-    #        self.write_all_images_sisl()
-    #
-    #        for file in glob.glob(self.initial_relaxed_path+"/*.DM"):
-    #            print("Copying DM 0  ...")
-    #            print(file)
-    #            shutil.copy(file,'./NEB.DM.0')
-    #        for file in glob.glob(self.final_relaxed_path+"/*.DM"):
-    #            print("Copying DM {} ... ".format(self.number_of_images+1))
-    #            print(file)
-    #            shutil.copy(file,'./NEB.DM.{}'.format(self.number_of_images+1))
-    #
-    #        shutil.copy(self.flos_path + self.flos_file_name_neb,'./')
-    #        os.chdir('../')
-    #        print("NEB Folder Ready to Run!")
-  
-
 
     #=========================================================================
     #  Checking Methods

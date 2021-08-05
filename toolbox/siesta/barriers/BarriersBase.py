@@ -1,29 +1,21 @@
 # -*- coding: utf-8 -*-
 ########################################################################################
-# Copyright (c), The SiestaBarriers authors. All rights reserved.                       #
-#                                                                                      #
-# SiestaBarriers is hosted on GitHub at https://github.com/.................. #
+# Copyright (c), The SislSiestaBarriers authors. All rights reserved.                  #
+# SislSiestaBarriers is hosted on GitHub at :                                          #
+# https://github.com/zerothi/sisl/toolbox/siesta/barriers                              #
 # For further information on the license, see the LICENSE.txt file                     #
 ########################################################################################
-#from __future__ import absolute_import
 
-#from SiestaBarriers.Utils.utils_siesta import print_siesta_fdf,read_siesta_fdf
-
-from .Utils.utils_siesta import print_siesta_fdf,read_siesta_fdf
-#from Utils.utils_general import AtomIndex
-#from SiestaBarriers.Utils.utils_siesta import print_siesta_fdf
-from .Utils.utils_siesta import print_siesta_fdf
-import sys
+from .Utils.utils_siesta import print_siesta_fdf 
 import inspect
 pacakge_dir= inspect.getabsfile(print_siesta_fdf).split("utils_siesta.py")[0]+"flos/"
-#pacakge_dir= inspect.getabsfile(print_siesta_fdf).split("neb_base.py")[0]+"flos/"
 
 
 __author__ = "Arsalan Akhatar"
 __copyright__ = "Copyright 2021, SIESTA Group"
 __version__ = "0.1"
 __maintainer__ = "Arsalan Akhtar"
-__email__ = "arsalan_akhtar@outlook.com," #+ \" miguel.pruneda@icn2.cat "
+__email__ = "arsalan_akhtar@outlook.com," 
 __status__ = "Development"
 __date__ = "Janurary 30, 2021"
 
@@ -32,27 +24,97 @@ class SiestaBarriersBase():
     """
     The base class to compute the different images for neb
     
-    host_path                    : Path of Calculations
-    host_structure               :
-    initial_relaxed_path         :
-    initial_structure            :
-    final_relaxed_path           :
-    final_structure              : 
-    number_of_images             :
-    image_direction              :
-    neb_scheme                   :
-    trace_atom_initial_position  :
-    trace_atom_final_position    :
-    kicked_atom_final_position   :
-    switched_atom_final_position :
-    ring_atoms_paths             :
-    ghost                        :
-    relaxed                      :
-    ghost_info                   :
+    Inputs:
+    --------------------------------------------------------------------------------------------------------------------------------
+    
+    host_structure               :  Sisl Structure Object
+    initial_relaxed_path         :  Siesta relaxation Calculation for initial Configuration
+    initial_relaxed_fdf_name     :  Siesta fdf name for initial Configuration
+    initial_structure            :  Sisl Structure of initial Configuration
+    final_relaxed_path           :  Siesta relaxation Calculation for final Configuration
+    final_relaxed_fdf_name       :  Siesta fdf name for final Configuration
+    final_structure              :  Sisl Structure of final configuration
+    number_of_images             :  Number of images to be generate
+    interpolation_method         :  The method of interpolation of images Linear Interpolation(li) or Image Dependent Pair Potential (idpp)
+    exchange_direction           :  Direction of migration path for Exchange 
+    
+    Note: This is just for Exchange path
+    
+    tolerance_radius             :  Tolerance_radius threshold for Exchange path to not overlap the species
+    trace_atom_initial_position  :  Index / Fractional Position / Cartesian Position , of Initial Specie to migrate
+    trace_atom_final_position    :  Index / Fractional Position / Cartesian Position , of Final Specie to migrate 
+    
+    NOTE: in the case of interstitial there will be no Index option Since there is no specie in crystal in final configuration!)
+    
+    kicked_atom_final_position   : Index / Fractional Position / Cartesian Position of kicked Specie 
+    ring_atoms_index             : Ring atoms index to specify which atoms are involve in ring path
+    ring_atoms_paths             : Ring atoms path which indicate the path where the atoms moving 
+    neb_results_path             : The Path of NEB calculations for Post-Processing 
+    flos_path                    : Path to the flos directory for copying lua scripts the generated folders     
+    flos_file_name_neb           : Name of neb lua script
+    flos_file_name_relax         : Name of relaxing lua script
+    relax_engine                 : Flag for relaxing using Siesta (CG) or LUA optimizer
+    neb_scheme                   : NEB name string to check/pass/debug extra info 
+    ghost                        : This is just for SIESTA or Codes with Localized Basis to have better descrition of basis especially when using VacancyExchange and Interstitial Case where there is no Basis in Initial/Final configuration
+    relaxed                      : The Flag for checking the neb initial path generation is for unrelaxed or relaxed structures
+    atol,rtol                    : threshould for finding specie via AtomIndex subroutine which takes the Frac/Cart coordinate and returns the index number of specie in the Geometry object array
+
+    --------------------------------------------------------------------------------------------------------------------------------
+    
+    HOW it works:
+            Each Barrier Type is a child class of SiestaBarriersBase & wil initialized with its own parameters ...
+            in Most of cases user provide the host_structure sisl geometry object , and species index/position for the migration, the program will generate the initial and final configuration folders to relax, after running siesta or X code , user again pass the fdf name & path to results folder to generate the relaxed initial path for neb calculation and setup the folder for neb calculation...
+            after running neb user could post-process the neb results via providing the neb result folder....
+            
+
+    HOW To USE :
+
+    from toolbox.siesta.barriers import Manual
+    import sisl
+    initial= sisl.get_sile("./input-neg.fdf").read_geometry()
+    final= sisl.get_sile("./input-pos.fdf").read_geometry()
+
+    A = Manual(initial_structure=initial,
+          final_structure=final,
+          number_of_images=7,
+          interpolation_method=''
+              )
+    A.Generate_Manual_Images()
+    A.IO.Write_All_Images(folder_name='xsf',out_format='xsf')
+    A.IO.Prepare_Endpoint_Relax()
+    
+    #########################
+    ### AFter relaxation: ###
+    #########################
+
+    A.set_relaxed(True)
+    A.set_initial_relaxed_path("/home/aakhtar/Calculations/2020/siesta/SiestaBarriers/Manual/new_domainwall/negative/results-fixing-cell/")
+    A.set_final_relaxed_path("/home/aakhtar/Calculations/2020/siesta/SiestaBarriers/Manual/new_domainwall/positive/results-VC-Coor/")
+    A.set_initial_relaxed_fdf_name("input.fdf")
+    A.set_final_relaxed_fdf_name("input.fdf")
+
+    A.Generate_Manual_Images()
+    A.IO.Write_All_Images(folder_name='xsf',out_format='xsf')
+    A.IO.prepare_NEB()
+
+    ##################
+    ### AFter NEB: ###
+    ##################
+
+
+    A.set_neb_results_path(PATH TO THE RESULT)
+    A.NEB_Result()
+    
+    A.IO.Prepare_NEB_Analysis(.....)
+        .Plot_NEB(....)
+        .Write_n_NEB_Image(....)
+
+
     """
+    
+
+
     def __init__(self,
-                 host_path = "./",
-                 host_fdf_name = None,
                  host_structure = None ,
                  initial_relaxed_path = None,
                  initial_relaxed_fdf_name = None,
@@ -60,11 +122,13 @@ class SiestaBarriersBase():
                  final_relaxed_path = None,
                  final_relaxed_fdf_name =None,
                  final_structure = None,
-                 pseudos_path = None,
+                 number_of_images = None,
+                 interpolation_method = 'idpp',
+                 exchange_direction = 'z' ,
+                 tolerance_radius = [1.0,1.0,1.0],
                  trace_atom_initial_position = None,
                  trace_atom_final_position = None,
                  kicked_atom_final_position = None,
-                 switched_atom_final_position = None,
                  ring_atoms_index = None,
                  ring_atoms_paths = None,
                  neb_results_path = None,
@@ -72,19 +136,13 @@ class SiestaBarriersBase():
                  flos_file_name_neb = 'neb.lua',
                  flos_file_name_relax = 'relax_geometry_lbfgs.lua',
                  relax_engine = 'lua',
-                 interpolation_method = 'idpp',
-                 exchange_direction = 'z' ,
-                 number_of_images = None,
                  neb_scheme = 'vacancy-exchange',
                  ghost = False,
                  relaxed = False,
-                 tolerance_radius = [1.0,1.0,1.0],
                  atol = 1e-2,
                  rtol = 1e-2,
                 ):
 
-        self.host_path = host_path
-        self.host_fdf_name = host_fdf_name
         self.host_structure = host_structure
         
         self.initial_relaxed_path = initial_relaxed_path
@@ -93,42 +151,34 @@ class SiestaBarriersBase():
         self.final_relaxed_path = final_relaxed_path
         self.final_relaxed_fdf_name = final_relaxed_fdf_name 
         self.final_structure = final_structure
-        
-        self.pseudos_path = pseudos_path
-
-
+        self.number_of_images = number_of_images
+        self.interpolation_method = interpolation_method
+        self.exchange_direction = exchange_direction   
+        self.tolerance_radius = tolerance_radius
         self.trace_atom_initial_position = trace_atom_initial_position
         self.trace_atom_final_position = trace_atom_final_position
         self.kicked_atom_final_position = kicked_atom_final_position 
-        self.switched_atom_final_position = switched_atom_final_position
         self.ring_atoms_index = ring_atoms_index
         self.ring_atoms_paths = ring_atoms_paths 
         self.neb_results_path = neb_results_path
-
-        self.interpolation_method = interpolation_method
-        self.exchange_direction = exchange_direction   
-        self.number_of_images = number_of_images
-        self.neb_scheme = neb_scheme
-        self.ghost = ghost
-        self.relaxed = relaxed 
-
         self.flos_path = pacakge_dir
         self.flos_file_name_neb = flos_file_name_neb
         self.flos_file_name_relax = flos_file_name_relax
         self.relax_engine = relax_engine
-
-        self.tolerance_radius = tolerance_radius
+        self.neb_scheme = neb_scheme
+        self.ghost = ghost
+        self.relaxed = relaxed 
         self.atol = atol
         self.rtol = rtol
         
-        self.wellcome()
+        self.welcome()
         self.setup()
 
-    def wellcome(self):
+    def welcome(self):
         """
         """
         print ("---------------------------")
-        print ("Wellcome To SiestaBarriers")
+        print (" Welcome To SiestaBarriers ")
         print ("      Version : {}".format(__version__))
         print ("---------------------------")
 
@@ -137,6 +187,7 @@ class SiestaBarriersBase():
         """
         Setup the workchain
         """
+        import sys
 
         print(" Check If NEB scheme is valid ...")
         neb_schemes_available = ["vacancy-exchange",
@@ -273,10 +324,6 @@ class SiestaBarriersBase():
         if ghost == False and self.neb_scheme == "vacancy-exchange":
             print ("For Vacancy Exchange Be Carefull with Localized Basis Set Codes !!!")
         self.ghost = ghost
-    def set_pseudos_path(self,pseudos_path):
-        """
-        """
-        self.pseudos_path = pseudos_path
     def set_relaxed(self,relaxed):
         """
         """
