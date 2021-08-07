@@ -139,6 +139,7 @@ class outSileSiesta(SileSiesta):
     def _r_geometry_outcoor(self, line, atoms=None):
         """ Wrapper for reading the geometry as in the outcoor output """
         atoms_order = _ensure_atoms(atoms)
+        is_final = 'Relaxed' in line or 'Final (unrelaxed)' in line
 
         # Now we have outcoor
         scaled = 'scaled' in line
@@ -151,12 +152,21 @@ class outSileSiesta(SileSiesta):
         line = self.readline()
         while len(line.strip()) > 0:
             line = line.split()
-            xyz.append([float(x) for x in line[:3]])
+            if len(line) != 6:
+                break
+            xyz.append(line[:3])
             atoms.append(atoms_order[int(line[3]) - 1])
             line = self.readline()
 
         # in outcoor we know it is always just after
+        # But not if not variable cell.
+        # Retrieve the unit-cell (but do not skip file-descriptor position)
+        # This is because the current unit-cell is not always written.
+        pos = self.fh.tell()
         cell = self._r_supercell_outcell()
+        if is_final and self.fh.tell() < pos:
+            # we have wrapped around the file
+            self.fh.seek(pos, os.SEEK_SET)
         xyz = _a.arrayd(xyz)
 
         # Now create the geometry
@@ -225,27 +235,20 @@ class outSileSiesta(SileSiesta):
             # force last to be false
             last = False
 
-        def type_coord(line):
-            if 'outcoor' in line and 'coordinates' in line:
-                return 1
-            elif 'siesta: Atomic coordinates' in line:
-                return 2
-            # Signal not found
-            return 0
+        def func_none(*args, **kwargs):
+            """ Wrapper to return None """
+            return None
 
         def next_geom():
-            coord = 0
-            while coord == 0:
+            coord, func = 0, func_none
+            line = ' '
+            while coord == 0 and line != '':
                 line = self.readline()
-                if line == '':
-                    break
-                coord = type_coord(line)
-
-            if coord == 1:
-                return 1, self._r_geometry_outcoor(line, atoms)
-            elif coord == 2:
-                return 2, self._r_geometry_atomic(line, atoms)
-            return 0, None
+                if 'outcoor' in line and 'coordinates' in line:
+                    coord, func = 1, self._r_geometry_outcoor
+                elif 'siesta: Atomic coordinates' in line:
+                    coord, func = 2, self._r_geometry_atomic
+            return coord, func(line, atoms)
 
         # Read until a coordinate block is found
         geom0 = None
