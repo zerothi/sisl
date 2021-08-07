@@ -11,14 +11,13 @@ graft sisl
 
 include sisl/info.py
 
-recursive-include toolbox *.py *.md README
+recursive-include toolbox *.pxd *.md README
+recursive-include toolbox/siesta/minimizer *.yaml
+recursive-include sisl *.pxd
 
 exclude DEPLOY.md
-global-exclude *.html
-global-exclude *.sh
-global-exclude .git*
-global-exclude *.so
-global-exclude *.pyc
+global-exclude *.py[cod] __pycache__ *.so *.sh
+global-exclude *.html .git*
 
 prune .github
 prune benchmarks

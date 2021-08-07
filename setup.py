@@ -474,10 +474,11 @@ packages = find_packages(include=["sisl", "sisl.*"])
 # 2. In 'package_dir' we defer the package name to the local file path
 packages += map(lambda x: f"sisl_toolbox.{x}", find_packages("toolbox"))
 
-# Also ensure we have all "pxd" files
+# Please update MANIFEST.in file for stuff to be shipped in the distribution.
+# Otherwise we should use package_data to ensure it gets installed.
 package_data = {p: ["*.pxd"] for p in packages}
-# Add toolbox data
-package_data["sisl_toolbox.siesta.minimizer"] = ["basis.yaml", "pseudo.yaml"]
+package_data["sisl_toolbox.siesta.minimizer"] = ["*.yaml"]
+
 
 metadata = dict(
     name=DISTNAME,
@@ -489,8 +490,15 @@ metadata = dict(
     url="https://github.com/zerothi/sisl",
     download_url=DOWNLOAD_URL,
     license=LICENSE,
+    classifiers=CLASSIFIERS,
+    platforms="any",
+    project_urls=PROJECT_URLS,
+    cmdclass=cmdclass,
+
     # Ensure the packages are being found in the correct locations
     package_dir={"sisl_toolbox": "toolbox"},
+    # This forces MANIFEST.in usage
+    include_package_data=True,
     package_data=package_data,
     packages=packages,
     ext_modules=cythonizer(extensions, compiler_directives=directives),
@@ -505,10 +513,6 @@ metadata = dict(
          ]
         #"splotly = sisl.viz.plotly.splot:splot",
     },
-    classifiers=CLASSIFIERS,
-    platforms="any",
-    project_urls=PROJECT_URLS,
-    cmdclass=cmdclass,
     **setuptools_kwargs
 )
 
