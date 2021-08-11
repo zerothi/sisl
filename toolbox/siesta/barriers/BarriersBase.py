@@ -5,8 +5,14 @@
 # https://github.com/zerothi/sisl/toolbox/siesta/barriers                              #
 # For further information on the license, see the LICENSE.txt file                     #
 ########################################################################################
+import pathlib
+import shutil
 
-from .Utils.utils_siesta import print_siesta_fdf 
+from sisl import Geometry
+
+from .Utils.utils_siesta import print_siesta_fdf
+
+# You shouldn't use inspect, I assume __file__ would do just fine!
 import inspect
 pacakge_dir= inspect.getabsfile(print_siesta_fdf).split("utils_siesta.py")[0]+"flos/"
 
@@ -15,12 +21,26 @@ __author__ = "Arsalan Akhatar"
 __copyright__ = "Copyright 2021, SIESTA Group"
 __version__ = "0.1"
 __maintainer__ = "Arsalan Akhtar"
-__email__ = "arsalan_akhtar@outlook.com," 
+__email__ = "arsalan_akhtar@outlook.com" 
 __status__ = "Development"
 __date__ = "Janurary 30, 2021"
 
 
-class SiestaBarriersBase():
+class SiestaBarriersBase:
+
+    # the documentation is not sphinx compatible. I would suggest
+    # you read in the sisl code how to format the documentation.
+    # Say read the sisl.geometry.py code
+    # Also, the documention does not explain why the different parameters are
+    # needed, for instance:
+    #   host_structure               :  Sisl Structure Object
+    # yes, it is a structure, but what does *host* mean? :)
+    # Also, you should decide how much you want to use ase and how much
+    # you want this to be an independent tool.
+    # If you want this to rely on ASE, then perhaps it might be better to simply
+    # use ase tools?
+
+    
     """
     The base class to compute the different images for neb
     
@@ -255,6 +275,9 @@ class SiestaBarriersBase():
 
     #---------------------------------------------------------
     # Set Methods
+    # all these methods are never used, if they don't have a meaningful
+    # usage, I would simply delete them.
+    # If they are needed later, then they can be added.
     #---------------------------------------------------------
     def set_host_path(self,host_path):
         """
@@ -378,3 +401,187 @@ class SiestaBarriersBase():
 
    #===========================================================
 
+
+class SiestaBarriersBaseNick:
+    """
+    The base class to compute the different images for neb
+    
+    Parameters
+    ----------
+    images : list of Geometry objects
+       the images (including relaxed, first, and final image, last).
+    path : callable or pathlib.Path or str
+       path to write geometry to.
+       If a callable it should have the following arguments ``image, index, total``
+       where ``image`` corresponds to ``images[index]`` and ``total`` is the length of `images`.
+       If a `pathlib.Path` it will be appended ``_{index}_{total}`` for checking indices.
+       If a `str` it may contain formatting rules with ``{index}`` or ``{total}``.
+       Internally ``self.path`` will be a callable with the above arguments.
+    engine : handler for NEB calculation
+
+    Examples
+    --------
+
+    I don't think you should implement this class to do the interpolation, what if the
+    user wants to try some them-selves, it might be easier to provide wrappers for functions
+    that interpolates, and then returns the full thing.
+    It becomes much simpler and easier for the end user to fit their needs.
+
+    Generally classes should do as little as possible, and preferably one thing only.
+    Your classes are simply too difficult to understand for a new user. Is my bet.
+    I am suggesting major changes here since I think that is required if this is to be used.
+    Sorry to be this blunt.
+    
+    It also isn't clear to me the exact procedure or scope of these classes.
+    Are you only focusing on using these scripts for the Lua engines? Or would
+    you imagine later to extend with Python back-ends (say I-Pi?).
+
+    I don't think you should have an IO class as well. It might be a set of
+    functions, but otherwise it might be useful *in* the class if needed.
+
+    """
+
+    def __init__(self, images, path='image_{index}_{total}'):
+        # Store all images in the class, convert to sisl.Geometry
+        self.images = [Geometry.new(image) for image in images]
+        # we need to have at least initial and final
+        # While it doesn't make sense to calculate barriers for
+        # two points, it might be useful for setting up initial and final
+        # geometries in specific directories.
+        assert len(self.images) >= 2
+
+        if isinstance(path, str):
+            path = pathlib.Path(path)
+
+        if callable(path):
+            def _path(image, index, total):
+                return pathlib.Path(path(image, index, total))
+        elif isinstance(path, pathlib.Path):
+            # Convert to func
+            def _path(image, index, total):
+                return path.with_suffix(path.suffix + f"_{index}_{total}")
+        else:
+            raise ValueError("Unknown argument type for 'path' not one of [callable, str, Path]")
+        self.path = _path
+
+        # do you really need a welcome?
+        # Users presumably know that they will use this script, and seeing this
+        # everytime may be annoying and without any information.
+        self.welcome()
+
+    def __len__(self):
+        """ Number of images (excluding initial and final) """
+        return len(self.images) - 2
+
+    @property
+    def initial(self):
+        return self.images[0]
+
+    @property
+    def final(self):
+        return self.images[-1]
+
+    def welcome(self):
+        """
+        """
+        print ("---------------------------")
+        print (" Welcome To SiestaBarriers ")
+        print ("      Version : {}".format(__version__))
+        print ("---------------------------")
+
+    def _prepare_flags(self, files, overwrite):
+        if isinstance(files, str):
+            files = [files]
+        if isinstance(overwrite, bool):
+            # ensure a value per image
+            overwrite = [overwrite for _ in range(total)]
+        return files, overwrite
+
+    def prepare(self, files='image.xyz', overwrite=False):
+        """ Prepare the NEB calculation. This will create all the folders and geometries.
+
+        Parameters
+        ----------
+        files : str or list of str
+           write the image files in the ``self.path`` returned directory.
+           If a list, all suffixes will be written.
+           The directory will be created if not existing.
+           The `files` argument may contain formatted strings ``{index}`` or
+           ``{total}`` will be accessible.
+        overwrite : bool or list of bool, optional
+           whether to overwrite any existing files. Optionally a flag per image.
+        """
+        # generally you should try and avoid using os.chdir
+        # It will cause you more pain than actual gain. ;)
+        # Using relative paths are way more versatile and powerful
+        total = len(self.images)
+        files, overwrite = self._prepare_flags(files, overwrite)
+        assert len(overwrite) == total
+
+        for index, (overwrite, image) in enumerate(zip(overwrite, self.images)):
+            path = self.path(image, index, total)
+            path.mkdir(parents=True, exist_ok=True)
+            # prepare the directory
+            for file in files:
+                file = path / file.format(index=index, total=total)
+                if overwrite or not file.is_file():
+                    # now write geometry
+                    image.write(file)
+                    
+
+    # if you are not going to use the `set_*` methods, then don't add them.
+    # If you have a set you should generally use them in your __init__ call
+    # to ensure any setup is done correctly.
+    # Also, there seemed to be quite a bit of inconsistency there.
+    # I.e. you could setup everything, then change the number of images?
+    # This does not make sense and it might be much better to have a simpler
+    # class that is easier to maintain.
+
+
+# The ManualNEB is simple the same as the base class (now)
+# It may need some adjustments later.
+class ManualNEB(SiestaBarriersBaseNick):
+    pass
+
+
+# It isn't clear at all how a user should use your scripts.
+# Perhaps I should refrain from commenting more and you should
+# ask a co-worker to run through it. I would highly suggest you
+# make it *simpler* since it is too complicated to use.
+# Possibly also ask Pol about some suggestions to make it simpler.
+
+# You have lots of Utils.utils_*.py files.
+# Instead, put everything that belongs to one method in 1 file.
+# This is much simpler and is easier to figure out when things goes
+# wrong.
+# Also, you seem to have lots of duplicate code around? Why?
+# I.e. utils_exchange.py and utils_interstitial.py?
+# It really makes the code hard to follow ;)
+# Could you also give examples of when the fractional vs. cartesian coordinates
+# are useful? The way you check for fractional coordinates is not optimal, if useful at all.
+# Why not force users to always use cartesian coordinates?
+
+# I only think you should use CamelCase for classes.
+# Methods should be lower_case_like_this (my opinion, makes it easier to
+# remember method names).
+
+
+class LuaNEB(SiestaBarriersBaseNick):
+    # this class should implemnet the Lua stuff with copying files etc.
+    def __init__(self, lua_scripts, images, *args, **kwargs):
+        super().__init__(images, *args, **kwargs)
+        if isinstance(lua_scripts, (str, Path)):
+            lua_scripts = [lua_scripts]
+        self.lua_scripts = [Path(lua_script) for lua_script in lua_scripts]
+
+    def prepare(self, files='image.xyz', overwrite=False):
+        super().prepare(files, overwrite)
+        _, overwrite = self._prepare_flags(files, overwrite)
+
+        for index, (overwrite, image) in enumerate(zip(overwrite, self.images)):
+            path = self.path(image, index, total)
+            for lua_script in self.lua_scripts:
+                out = path / lua_script.name
+                if overwrite or not out.is_file():
+                    shutil.copy(lua_script, out)
+    
