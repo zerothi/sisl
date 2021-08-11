@@ -1050,7 +1050,7 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
     method : {'berry', 'zak'}
        'berry' will return the usual integral of the Berry connection over the specified contour
        'zak' will compute the Zak phase for 1D systems by performing a closed loop integration but
-       taking into account the Bloch factor :math:`e^{-i2\pi/a x}` accumulated over a Brillouin zone,
+       taking into account the Bloch factor :math:`e^{i2\pi/a x}` accumulated over a Brillouin zone,
        see [1]_.
 
     Notes
@@ -1205,8 +1205,8 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
     It may be instructive to check that an eigenstate is normalized:
 
     >>> grid = Grid(...)
-    >>> psi(state, grid)
-    >>> (np.abs(grid.grid) ** 2).sum() * grid.dvolume == 1.
+    >>> wavefunction(state, grid)
+    >>> (np.absolute(grid.grid) ** 2).sum() * grid.dvolume == 1.
 
     Note: To calculate :math:`\psi(\mathbf r)` in a unit-cell different from the
     originating geometry, simply pass a grid with a unit-cell smaller than the originating
@@ -1215,13 +1215,13 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
     The wavefunctions are calculated in real-space via:
 
     .. math::
-       \psi(\mathbf r) = \sum_i\phi_i(\mathbf r) |\psi\rangle_i \exp(-i\mathbf k \mathbf R)
+       \psi(\mathbf r) = \sum_i\phi_i(\mathbf r) |\psi\rangle_i \exp(i\mathbf k \mathbf R)
 
     While for non-colinear/spin-orbit calculations the wavefunctions are determined from the
     spinor component (`spinor`)
 
     .. math::
-       \psi_{\alpha/\beta}(\mathbf r) = \sum_i\phi_i(\mathbf r) |\psi_{\alpha/\beta}\rangle_i \exp(-i\mathbf k \mathbf R)
+       \psi_{\alpha/\beta}(\mathbf r) = \sum_i\phi_i(\mathbf r) |\psi_{\alpha/\beta}\rangle_i \exp(i\mathbf k \mathbf R)
 
     where ``spinor in [0, 1]`` determines :math:`\alpha` or :math:`\beta`, respectively.
 
@@ -1231,7 +1231,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
     you are passing a `v` with the incorrect gauge you will find a phase-shift according to:
 
     .. math::
-        \tilde v_j = e^{-i\mathbf k\mathbf r_j} v_j
+        \tilde v_j = e^{i\mathbf k\mathbf r_j} v_j
 
     where :math:`j` is the orbital index and :math:`\mathbf r_j` is the orbital position.
 
@@ -1477,7 +1477,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
         io = geometry.a2o(ia)
 
         if has_k:
-            phase = exp(-1j * phk.dot(isc))
+            phase = exp(1j * phk.dot(isc))
 
         # Allocate a temporary array where we add the psi elements
         psi = psi_init(n)
