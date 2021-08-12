@@ -738,7 +738,7 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
         """
         if len(R) != len(param):
             raise ValueError(f"{self.__class__.__name__}.create_construct got different lengths of `R` and `param`")
-        if self.spin.has_noncolinear:
+        if not self.spin.is_diagonal:
             is_complex = self.dkind == 'c'
             if self.spin.is_spinorbit:
                 if is_complex:
@@ -810,9 +810,9 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
 
     def __len__(self):
         r""" Returns number of rows in the basis (if non-collinear or spin-orbit, twice the number of orbitals) """
-        if self.spin.has_noncolinear:
-            return self.no * 2
-        return self.no
+        if self.spin.is_diagonal:
+            return self.no
+        return self.no * 2
 
     def __str__(self):
         r""" Representation of the model """

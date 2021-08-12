@@ -166,6 +166,16 @@ class Spin:
         return self.kind == Spin.NONCOLINEAR
 
     @property
+    def is_diagonal(self):
+        """ Whether the spin-box is only using the diagonal components
+
+        This will return true for non-polarized and polarized spin configurations.
+        Otherwise false.
+        """
+        return self.kind in (Spin.UNPOLARIZED, Spin.POLARIZED)
+
+    @property
+    @deprecate_method("Use 'not Spin.is_diagonal' instead")
     def has_noncolinear(self):
         """ True if the configuration is non-collinear or spin-orbit """
         return self.kind >= Spin.NONCOLINEAR

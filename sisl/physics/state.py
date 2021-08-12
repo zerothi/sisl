@@ -767,7 +767,7 @@ class State(ParentContainer):
         phase = g.xyz[g.o2a(_a.arangei(g.no)), :] @ (k @ g.rcell)
 
         try:
-            if self.parent.spin.has_noncolinear:
+            if not self.parent.spin.is_diagonal:
                 # for NC/SOC we have a 2x2 spin-box per orbital
                 phase = np.repeat(phase, 2)
         except:

@@ -1145,11 +1145,11 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
                     axis = contour.k[1] - contour.k[0]
                     axis /= axis.dot(axis) ** 0.5
                     phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], dot(axis, g.rcell)).reshape(1, -1)
-                    if spin.has_noncolinear:
+                    if spin.is_diagonal:
+                        prev.state *= exp(1j * phase)
+                    else:
                         # for NC/SOC we have a 2x2 spin-box per orbital
                         prev.state *= np.repeat(exp(1j * phase), 2, axis=1)
-                    else:
-                        prev.state *= exp(1j * phase)
 
                 # Include last-to-first segment
                 prd = _process(prd, prev.inner(first, diag=False))
@@ -1172,11 +1172,11 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
                     axis = contour.k[1] - contour.k[0]
                     axis /= axis.dot(axis) ** 0.5
                     phase = dot(g.xyz[g.o2a(_a.arangei(g.no)), :], dot(axis, g.rcell)).reshape(1, -1)
-                    if spin.has_noncolinear:
+                    if spin.is_diagonal:
+                        prev.state *= exp(1j * phase)
+                    else:
                         # for NC/SOC we have a 2x2 spin-box per orbital
                         prev.state *= np.repeat(exp(1j * phase), 2, axis=1)
-                    else:
-                        prev.state *= exp(1j * phase)
                 prd = _process(prd, prev.inner(first, diag=False))
             return prd
 
@@ -1542,7 +1542,7 @@ class _electron_State:
     def __is_nc(self):
         """ Internal routine to check whether this is a non-colinear calculation """
         try:
-            return self.parent.spin.has_noncolinear
+            return not self.parent.spin.is_diagonal
         except:
             return False
 
