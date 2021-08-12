@@ -1270,10 +1270,10 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
             orthogonal = self.orthogonal
 
         # get dimensions to check
-        N = n = self.spin.spins
+        N = n = self.spin.size
         if not self.orthogonal:
             N += 1
-        M = m = spin.spins
+        M = m = spin.size
         if not orthogonal:
             M += 1
 
@@ -1289,10 +1289,10 @@ class SparseOrbitalBZSpin(SparseOrbitalBZ):
                 # ensure the overlap matrix is carried over
                 matrix[-1, -1] = 1.
 
-            if spin.is_unpolarized and self.spin.spins > 1:
+            if spin.is_unpolarized and self.spin.size > 1:
                 # average up and down components
                 matrix[0, [0, 1]] = 0.5
-            elif spin.spins > 1 and self.spin.is_unpolarized:
+            elif spin.size > 1 and self.spin.is_unpolarized:
                 # set up and down components to unpolarized value
                 matrix[[0, 1], 0] = 1.
 

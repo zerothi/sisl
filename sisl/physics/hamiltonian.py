@@ -258,12 +258,12 @@ class Hamiltonian(SparseOrbitalBZSpin):
 
         if self.orthogonal:
             for i in range(self.shape[0]):
-                for j in range(min(self.spin.spins, 2)):
+                for j in range(self.spin.spinor):
                     self[i, i, j] = self[i, i, j] + E[j]
         else:
             # For non-collinear and SO only the diagonal (real) components
             # should be shifted.
-            for i in range(min(self.spin.spins, 2)):
+            for i in range(self.spin.spinor):
                 self._csr._D[:, i] += self._csr._D[:, self.S_idx] * E[i]
 
     def eigenvalue(self, k=(0, 0, 0), gauge='R', **kwargs):

@@ -273,7 +273,7 @@ class FatbandsPlot(BandsPlot):
 
             weights = eigenstate.norm2(sum=False)
 
-            if plot.spin.spins > 2:
+            if plot.spin.has_noncolinear:
                 # If it is a non-colinear or spin orbit calculation, we have two weights for each
                 # orbital (one for each spin component of the state), so we just pair them together
                 # and sum their contributions to get the weight of the orbital.

@@ -258,7 +258,7 @@ class EnergyDensityMatrix(_densitymatrix):
             # When the energy is zero, there is no shift
             return
 
-        for i in range(min(self.spin.spins, 2)):
+        for i in range(self.spin.spinor):
             self._csr._D[:, i] += DM._csr._D[:, i] * E[i]
 
     @staticmethod
