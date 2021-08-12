@@ -4095,8 +4095,8 @@ class Geometry(SuperCellChild):
             length tolerance for the fractional coordinates to be on a duplicate site (in Ang).
             This allows atoms within `tol` of the cell boundaries to be taken as *inside* the
             cell.
-        origo : (3, ) of float
-            origo that is the basis for comparison
+        origo : (3,) of float, optional
+            origo that is the basis for comparison, default to 0.
 
         Returns
         -------

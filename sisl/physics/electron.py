@@ -1268,6 +1268,9 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
         geometry = grid.geometry
     if geometry is None:
         raise SislError("wavefunction: did not find a usable Geometry through keywords or the Grid!")
+    # Ensure coordinates are in the primary unit-cell, regardless of origo etc.
+    geometry = geometry.copy()
+    geometry.xyz = (geometry.fxyz % 1) @ geometry.sc.cell
 
     # In case the user has passed several vectors we sum them to plot the summed state
     if v.ndim == 2:
