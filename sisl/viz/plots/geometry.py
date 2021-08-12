@@ -6,6 +6,7 @@ from functools import wraps
 import numpy as np
 
 from sisl import Geometry, PeriodicTable, Atom, AtomGhost
+from sisl.utils import direction
 from sisl.utils.mathematics import fnorm
 from ..plot import Plot, entry_point
 from ..input_fields import (
@@ -407,7 +408,7 @@ class GeometryPlot(Plot):
             for neigh in neighs:
                 summed_radius = pt.radius([abs(geometry.atoms[at].Z), abs(geometry.atoms[neigh % geometry.na].Z)]).sum()
                 bond_thresh = (1+tol) * summed_radius
-                if  bond_thresh > np.linalg.norm(geometry[neigh] - geometry[at]):
+                if  bond_thresh > fnorm(geometry[neigh] - geometry[at]):
                     bonds.append(np.sort([at, neigh]))
 
         if bonds:
@@ -417,21 +418,13 @@ class GeometryPlot(Plot):
 
     @staticmethod
     def _sanitize_axis(geometry, axis):
-
         if isinstance(axis, str):
-            try:
-                i = ["x", "y", "z"].index(axis)
-                axis = np.zeros(3)
-                axis[i] = 1
-            except:
-                i = ["a", "b", "c"].index(axis)
-                axis = geometry.cell[i]
-        elif isinstance(axis, int):
-            i = axis
-            axis = np.zeros(3)
-            axis[i] = 1
+            return direction(axis, abc=geometry.cell, xyz=np.diag([1., 1., 1.]))
 
-        return np.array(axis)
+        i = axis
+        axis = np.zeros(3)
+        axis[i] = 1
+        return axis
 
     @staticmethod
     def _get_cell_corners(cell, unique=False):
@@ -498,7 +491,7 @@ class GeometryPlot(Plot):
         # is an axis index
         axis = cls._sanitize_axis(geometry, axis)
 
-        return xyz.dot(axis)/np.linalg.norm(axis)
+        return xyz.dot(axis)/fnorm(axis)
 
     @classmethod
     def _projected_2Dcoords(cls, geometry, xyz=None, xaxis="x", yaxis="y"):
