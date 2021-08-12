@@ -1,6 +1,15 @@
 0.X.Y
 =====
 
+- enabled replacing atoms in SparseOrbital geometries #139
+
+- partially fixed #102, much related to #365 and how
+	origin is interpreted in the code
+
+- fixed reading coordinates from siesta.out when bands are calculated #362
+
+- fixed complex warning for spin_moment #360 and #363
+
 - removed keywords align for State.inner|outer, instead one
 	should manually align, if required
 
