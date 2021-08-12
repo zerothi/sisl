@@ -10,9 +10,9 @@ from sisl.linalg import inv
 from sisl.utils.mathematics import fnorm, expand
 from sisl._math_small import dot3, cross3
 from sisl._indices import indices_gt_le
+from sisl._dispatcher import ClassDispatcher
 
-
-from .base import PureShape
+from .base import PureShape, ShapeToDispatcher
 
 
 __all__ = ['Cuboid', 'Cube']
@@ -43,6 +43,10 @@ class Cuboid(PureShape):
     True
     """
     __slots__ = ('_v', '_iv')
+
+    # Define a dispatcher for converting Shapes
+    #  Cuboid().to.ellipsoid() will convert to an sisl.shape.Ellipsoid object
+    to = PureShape.to.copy()
 
     def __init__(self, v, center=None, origo=None):
 
@@ -168,6 +172,36 @@ class Cuboid(PureShape):
         return fnorm(self._v)
 
 
+class CuboidToEllipsoid(ShapeToDispatcher):
+    def dispatch(self, *args, **kwargs):
+        from .ellipsoid import Ellipsoid
+        shape = self._obj
+        # Rescale each vector
+        return Ellipsoid(shape._v / 2 * 3 ** .5, shape.center.copy())
+
+Cuboid.to.register("ellipsoid", CuboidToEllipsoid)
+Cuboid.to.register("Ellipsoid", CuboidToEllipsoid)
+
+
+class CuboidToSphere(ShapeToDispatcher):
+    def dispatch(self, *args, **kwargs):
+        from .ellipsoid import Sphere
+        shape = self._obj
+        # Rescale each vector
+        return Sphere(shape.edge_length.max() / 2 * 3 ** .5, shape.center.copy())
+
+Cuboid.to.register("sphere", CuboidToSphere)
+Cuboid.to.register("Sphere", CuboidToSphere)
+
+
+class CuboidToCuboid(ShapeToDispatcher):
+    def dispatch(self, *args, **kwargs):
+        return self._obj.copy()
+
+Cuboid.to.register("cuboid", CuboidToCuboid)
+Cuboid.to.register("Cuboid", CuboidToCuboid)
+
+
 @set_module("sisl.shape")
 class Cube(Cuboid):
     """ 3D Cube with equal sides
@@ -185,6 +219,7 @@ class Cube(Cuboid):
        the lower left corner of the cuboid.
        Not allowed as argument if `center` is passed.
     """
+    __slots__ = ()
 
     def __init__(self, side, center=None, origo=None):
         side = _a.asarrayd(side).ravel()[0]

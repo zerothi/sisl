@@ -11,7 +11,7 @@ Here is a small snippet showing how to utilize this module.
 
 from abc import ABCMeta, abstractmethod
 from functools import wraps
-from collections import namedtuple
+from collections import namedtuple, ChainMap
 
 
 __all__ = ["AbstractDispatch", "ObjectDispatcher", "MethodDispatcher",
@@ -38,6 +38,10 @@ class AbstractDispatch(metaclass=ABCMeta):
         # Local dictionary with attributes.
         # This could in principle contain anything.
         self._attrs = attrs
+
+    def copy(self):
+        """ Create a copy of this object """
+        return self.__class__(self._obj, **self._attrs)
 
     def renew(self, **attrs):
         """ Create a new class with updated attributes """
@@ -88,11 +92,21 @@ class AbstractDispatcher(metaclass=ABCMeta):
     def __init__(self, dispatchs=None, default=None, **attrs):
         if dispatchs is None:
             dispatchs = dict()
+        if not isinstance(dispatchs, ChainMap):
+            dispatchs = ChainMap(dispatchs)
+        # we will always use a chainmap to store the dispatches
+        # We must not *copy*
+        # It should be the same memory location in case we are
+        # passing around the dispatch sequences
         self._dispatchs = dispatchs
         self._default = default
         self.__name__ = self.__class__.__name__
         # Attributes associated with the dispatcher
         self._attrs = attrs
+
+    def copy(self):
+        """ Create a copy of this object (making a new child for the dispatch lookup) """
+        return self.__class__(self._dispatchs.new_child(), self._default, **self._attrs)
 
     def renew(self, **attrs):
         """ Create a new class with updated attributes """
@@ -145,7 +159,7 @@ class AbstractDispatcher(metaclass=ABCMeta):
             if true and `key` already exists in the list of dispatchs, then
             it will be overwritten, otherwise a `LookupError` is raised.
         """
-        if key in self._dispatchs and not overwrite:
+        if key in self._dispatchs.maps[0] and not overwrite:
             raise LookupError(f"{self.__class__.__name__} already has {key} registered (and overwrite is false)")
         self._dispatchs[key] = dispatch
         if default:
@@ -183,6 +197,11 @@ class MethodDispatcher(AbstractDispatcher):
         self.__call__.__func__.__doc__ = method.__doc__
         # Storing the name is required for help on functions
         self.__name__ = method.__name__
+
+    def copy(self):
+        """ Create a copy of this object (making a new child for the dispatch lookup) """
+        return self.__class__(self._method, self._dispatchs.new_child(), self._default,
+                              self._obj, **self._attrs)
 
     def renew(self, **attrs):
         """ Create a new class with updated attributes """
@@ -230,6 +249,12 @@ class ObjectDispatcher(AbstractDispatcher):
                 return getattr(obj, key)
         self._obj_getattr = obj_getattr
         self._cls_attr_name = cls_attr_name
+
+    def copy(self):
+        """ Create a copy of this object (making a new child for the dispatch lookup) """
+        return self.__class__(self._obj, self._dispatchs.new_child(), self._default,
+                              self._cls_attr_name, self._obj_getattr,
+                              **self._attrs)
 
     def renew(self, **attrs):
         """ Create a new class with updated attributes """
@@ -288,8 +313,8 @@ class ObjectDispatcher(AbstractDispatcher):
         attr = self._obj_getattr(self._obj, key)
         if callable(attr):
             # This will also ensure that if the user calls immediately after it will use the default
-            return MethodDispatcher(attr, dispatchs=self._dispatchs,
-                                    default=self._default, obj=self._obj, **self._attrs)
+            return MethodDispatcher(attr, self._dispatchs, self._default,
+                                    self._obj, **self._attrs)
         return attr
 
 
@@ -359,7 +384,7 @@ class TypeDispatcher(ObjectDispatcher):
 class ClassDispatcher(AbstractDispatcher):
     """ A dispatcher for classes, using `__get__` it converts into `ObjectDispatcher` upon invocation from an object, or a `TypeDispatcher` when invoked from a class
 
-    This is a class-placeholder allowing a dispatecher to be a class attribute and converted into an
+    This is a class-placeholder allowing a dispatcher to be a class attribute and converted into an
     `ObjectDispatcher` when invoked from an object.
 
     If it is called on the class, it will return a `TypeDispatcher`.
@@ -411,6 +436,13 @@ class ClassDispatcher(AbstractDispatcher):
                 return getattr(obj, key)
         self._obj_getattr = obj_getattr
 
+    def copy(self):
+        """ Create a copy of this object (making a new child for the dispatch lookup) """
+        return self.__class__(self._attr_name, self._dispatchs.new_child(), self._default,
+                              self._obj_getattr,
+                              self._get.instance, self._get.type,
+                              **self._attrs)
+
     def renew(self, **attrs):
         """ Create a new class with updated attributes """
         return self.__class__(self._attr_name, self._dispatchs, self._default,
@@ -448,7 +480,7 @@ class ClassDispatcher(AbstractDispatcher):
 
 
 '''
-For use when doing cached dispatechers
+For use when doing cached dispatchers
 class CachedClassDispatcher(ClassDispatcher):
     __slots__ = ("_obj_getattr", "_attr_name")
 

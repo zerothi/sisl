@@ -136,7 +136,7 @@ from .io.sile import (
 # We have to do it after loading BaseSile and Geometry
 # Since __getitem__ always instantiate the class, we have to use the
 # contained lookup table.
-Geometry.new.register(BaseSile, Geometry.new._dispatchs[type("str")].__class__)
+Geometry.new.register(BaseSile, Geometry.new._dispatchs[str].__class__)
 
 # Import the default geom structure
 # This enables:

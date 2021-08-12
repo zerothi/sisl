@@ -41,6 +41,8 @@ def test_tosphere():
     assert el.toSphere().radius == pytest.approx(1)
     el = Ellipsoid([1., 2., 3.])
     assert el.toSphere().radius == pytest.approx(3)
+    assert isinstance(el.to.sphere(), Sphere)
+    assert el.to.Sphere().radius == pytest.approx(3)
 
 
 def test_create_ellipsoid_fail():

@@ -9,9 +9,10 @@ from numpy import union1d, intersect1d, setdiff1d, setxor1d
 from sisl._internal import set_module
 import sisl._array as _a
 from sisl.utils.mathematics import fnorm
+from sisl._dispatcher import AbstractDispatch, ClassDispatcher
 
 
-__all__ = ["Shape", "PureShape", "NullShape",
+__all__ = ["Shape", "PureShape", "NullShape", "ShapeToDispatcher",
            "CompositeShape", "OrShape", "XOrShape", "AndShape", "SubShape"]
 
 
@@ -66,7 +67,7 @@ class Shape:
         if center is None:
             self._center = _a.zerosd(3)
         else:
-            self._center = _a.asarrayd(center)
+            self._center = _a.asarrayd(center).copy()
 
     @property
     def center(self):
@@ -76,6 +77,16 @@ class Shape:
     def scale(self, scale):
         """ Return a new Shape with a scaled size """
         raise NotImplementedError(f"{self.__class__.__name__}.scale has not been implemented")
+
+    # Define a dispatcher for converting Shapes
+    #  Shape().to.ellipsoid() will convert to an sisl.shape.Ellipsoid object
+    to = ClassDispatcher("to",
+                         obj_getattr=lambda obj, key:
+                         (_ for _ in ()).throw(
+                             AttributeError((f"{obj}.to does not implement '{key}' "
+                                             f"dispatcher, are you using it incorrectly?"))
+                         )
+    )
 
     def toSphere(self):
         """ Create a sphere which is surely encompassing the *full* shape """
@@ -141,6 +152,29 @@ class Shape:
 
     def __xor__(self, other):
         return XOrShape(self, other)
+
+
+# Add dispatcher systems
+class ShapeToDispatcher(AbstractDispatch):
+    """ Base dispatcher from class passing from a Shape class """
+    @staticmethod
+    def _ensure_object(obj):
+        if isinstance(obj, type):
+            raise ValueError(f"Dispatcher on {obj} must not be called on the class.")
+
+
+class ToEllipsoidDispatcher(ShapeToDispatcher):
+    def dispatch(self, *args, **kwargs):
+        return self._obj.to.sphere().to.ellipsoid()
+Shape.to.register("ellipsoid", ToEllipsoidDispatcher)
+Shape.to.register("Ellipsoid", ToEllipsoidDispatcher)
+
+
+class ToCuboidDispatcher(ShapeToDispatcher):
+    def dispatch(self, *args, **kwargs):
+        return self._obj.to.ellipsoid().to.cuboid()
+Shape.to.register("cuboid", ToCuboidDispatcher)
+Shape.to.register("Cuboid", ToCuboidDispatcher)
 
 
 @set_module("sisl.shape")
@@ -361,6 +395,7 @@ class NullShape(PureShape):
     has any meaning.
     """
     __slots__ = ()
+    to = PureShape.to.copy()
 
     def __init__(self, *args, **kwargs):
         """ Initialize a null-shape """
@@ -389,3 +424,12 @@ class NullShape(PureShape):
     def volume(self, *args, **kwargs):
         """ The volume of a null shape is exactly 0. """
         return 0.
+
+
+class ToSphereDispatcher(ShapeToDispatcher):
+    def dispatch(self, *args, **kwargs):
+        from .ellipsoid import Sphere
+        return Sphere(1.e-64, center=self._obj.center.copy())
+
+NullShape.to.register("sphere", ToSphereDispatcher)
+NullShape.to.register("Sphere", ToSphereDispatcher)

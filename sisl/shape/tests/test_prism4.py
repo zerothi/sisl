@@ -6,7 +6,7 @@ import pytest
 import math as m
 import numpy as np
 
-from sisl.shape.prism4 import *
+from sisl.shape import *
 
 pytestmark = pytest.mark.shape
 
@@ -41,6 +41,8 @@ def test_tosphere():
     assert cube.toSphere().radius == pytest.approx(1.5 * 3 ** 0.5)
     cube = Cuboid([1., 2., 3.])
     assert cube.toSphere().radius == pytest.approx(1.5 * 3 ** 0.5)
+    assert cube.to.Sphere().radius == pytest.approx(1.5 * 3 ** 0.5)
+    assert isinstance(cube.to.Sphere(), Sphere)
 
 
 def test_toellipsoid():

@@ -208,6 +208,7 @@ except ImportError:
 
 _default_eta = get_environ_variable("SISL_SHOW_PROGRESS")
 
+
 @set_module("sisl")
 def tqdm_eta(count, desc, unit, eta):
     """ Create a TQDM eta progress bar in when it is requested. Otherwise returns a fake object
