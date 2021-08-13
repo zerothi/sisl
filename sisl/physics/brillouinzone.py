@@ -151,7 +151,7 @@ from sisl.quaternion import Quaternion
 from sisl.utils.mathematics import cart2spher, fnorm
 from sisl.utils.misc import allow_kwargs
 import sisl._array as _a
-from sisl.messages import info, SislError, tqdm_eta, deprecate_method, deprecate
+from sisl.messages import info, SislError, progressbar, deprecate_method, deprecate
 from sisl.supercell import SuperCell
 from sisl.grid import Grid
 from sisl._dispatcher import ClassDispatcher
@@ -610,7 +610,7 @@ class BrillouinZone:
             has_wrap = 'wrap' in kwargs
             if has_wrap:
                 wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap'))
-            eta = tqdm_eta(len(self), f'{self.__class__.__name__}.asarray',
+            eta = progressbar(len(self), f'{self.__class__.__name__}.asarray',
                            'k', kwargs.pop('eta', False))
             parent = self.parent
             k = self.k
@@ -676,7 +676,7 @@ class BrillouinZone:
         def asnone(self, *args, **kwargs):
             func = self._bz_get_func()
             wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', lambda x: x))
-            eta = tqdm_eta(len(self), f'{self.__class__.__name__}.asnone',
+            eta = progressbar(len(self), f'{self.__class__.__name__}.asnone',
                            'k', kwargs.pop('eta', False))
             parent = self.parent
             k = self.k
@@ -740,7 +740,7 @@ class BrillouinZone:
                 has_wrap = 'wrap' in kwargs
                 if has_wrap:
                     wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap'))
-                eta = tqdm_eta(len(self), f'{self.__class__.__name__}.asarray',
+                eta = progressbar(len(self), f'{self.__class__.__name__}.asarray',
                                'k', kwargs.pop('eta', False))
                 parent = self.parent
                 k = self.k
@@ -826,7 +826,7 @@ class BrillouinZone:
             has_wrap = 'wrap' in kwargs
             if has_wrap:
                 wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap'))
-            eta = tqdm_eta(len(self), f'{self.__class__.__name__}.aslist',
+            eta = progressbar(len(self), f'{self.__class__.__name__}.aslist',
                            'k', kwargs.pop('eta', False))
             a = [None] * len(self)
             parent = self.parent
@@ -884,7 +884,7 @@ class BrillouinZone:
             has_wrap = 'wrap' in kwargs
             if has_wrap:
                 wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap'))
-            eta = tqdm_eta(len(self), f'{self.__class__.__name__}.asyield',
+            eta = progressbar(len(self), f'{self.__class__.__name__}.asyield',
                            'k', kwargs.pop('eta', False))
             parent = self.parent
             k = self.k
@@ -951,7 +951,7 @@ class BrillouinZone:
             has_wrap = 'wrap' in kwargs
             if has_wrap:
                 wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap'))
-            eta = tqdm_eta(len(self), f'{self.__class__.__name__}.asaverage',
+            eta = progressbar(len(self), f'{self.__class__.__name__}.asaverage',
                            'k', kwargs.pop('eta', False))
             parent = self.parent
             k = self.k
@@ -1027,7 +1027,7 @@ class BrillouinZone:
             has_wrap = 'wrap' in kwargs
             if has_wrap:
                 wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap'))
-            eta = tqdm_eta(len(self), f'{self.__class__.__name__}.assum',
+            eta = progressbar(len(self), f'{self.__class__.__name__}.assum',
                            'k', kwargs.pop('eta', False))
             parent = self.parent
             k = self.k
@@ -1376,7 +1376,7 @@ class MonkhorstPack(BrillouinZone):
 
             func = self._bz_get_func()
             wrap = allow_kwargs('parent', 'k', 'weight')(kwargs.pop('wrap', lambda x: x))
-            eta = tqdm_eta(len(self), f'{self.__class__.__name__}.asgrid',
+            eta = progressbar(len(self), f'{self.__class__.__name__}.asgrid',
                            'k', kwargs.pop('eta', False))
             parent = self.parent
             k = self.k

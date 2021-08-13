@@ -29,7 +29,7 @@ from ._environ import get_environ_variable
 
 __all__ = ['SislDeprecation', 'SislInfo', 'SislWarning', 'SislException', 'SislError']
 __all__ += ['warn', 'info', 'deprecate', "deprecate_method"]
-__all__ += ['tqdm_eta']
+__all__ += ['progressbar', 'tqdm_eta']
 
 # The local registry for warnings issued
 _sisl_warn_registry = {}
@@ -210,19 +210,19 @@ _default_eta = get_environ_variable("SISL_SHOW_PROGRESS")
 
 
 @set_module("sisl")
-def tqdm_eta(count, desc, unit, eta):
-    """ Create a TQDM eta progress bar in when it is requested. Otherwise returns a fake object
+def progressbar(total, desc, unit, eta, **kwargs):
+    """ Create a progress bar in when it is requested. Otherwise returns a fake object
 
     Parameters
     ----------
-    count : int
+    total : int
        number of total iterations
     desc : str
        description on the stdout when running the progressbar
     unit : str
        unit shown in the progressbar
     eta : bool or str or None
-       if True a ``tqdm`` progressbar is returned. Else a fake instance is returned.
+       if True a progressbar is returned (default from ``tqdm``). Else a fake instance is returned.
        If a str, that will be used as the description.
        If None, use SISL_SHOW_PROGRESS environment variable as the value
 
@@ -236,7 +236,7 @@ def tqdm_eta(count, desc, unit, eta):
     if eta:
         if isinstance(eta, str):
             desc = eta
-        bar = _tqdm(total=count, desc=desc, unit=unit)
+        bar = _tqdm(total=total, desc=desc, unit=unit, **kwargs)
     else:
         # Since the eta bar is not needed we simply create a fake object which
         # has the required 2 methods, update and close.
@@ -248,3 +248,5 @@ def tqdm_eta(count, desc, unit, eta):
                 pass
         bar = Fake()
     return bar
+
+tqdm_eta = deprecate_method("Use sisl.messages.progress_bar instead", "0.13")(progressbar)

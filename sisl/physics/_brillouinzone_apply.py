@@ -22,7 +22,7 @@ from sisl._internal import set_module
 from sisl.utils.misc import allow_kwargs
 from sisl.oplist import oplist
 import sisl._array as _a
-from sisl.messages import tqdm_eta
+from sisl.messages import progressbar
 
 # Stuff used for patching
 from .brillouinzone import BrillouinZone
@@ -90,7 +90,7 @@ class BrillouinZoneParentApply(BrillouinZoneApply):
                 return v
         else:
             wrap = allow_kwargs("parent", "k", "weight")(wrap)
-        eta = tqdm_eta(len(bz), f"{bz.__class__.__name__}.{eta_key}", "k", eta)
+        eta = progressbar(len(bz), f"{bz.__class__.__name__}.{eta_key}", "k", eta)
         return bz, parent, wrap, eta
 
     def __getattr__(self, key):

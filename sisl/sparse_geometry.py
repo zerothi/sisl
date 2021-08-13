@@ -23,7 +23,7 @@ from ._array import array_arange
 from .atom import Atom
 from .orbital import Orbital
 from .geometry import Geometry
-from .messages import warn, SislError, SislWarning, tqdm_eta, deprecate_method
+from .messages import warn, SislError, SislWarning, progressbar, deprecate_method
 from ._indices import indices_only
 from ._help import get_dtype
 from .utils.ranges import list2str
@@ -581,7 +581,7 @@ class _SparseGeometry(NDArrayOperatorsMixin):
         iR = self.geometry.iR(na_iR)
 
         # Create eta-object
-        eta = tqdm_eta(self.na, self.__class__.__name__ + '.construct', 'atom', eta)
+        eta = progressbar(self.na, self.__class__.__name__ + '.construct', 'atom', eta)
 
         # Do the loop
         for ias, idxs in self.geometry.iter_block(iR=iR, method=method):

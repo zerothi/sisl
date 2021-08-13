@@ -15,7 +15,7 @@ from sisl.supercell import SuperCell
 import sisl._array as _a
 from sisl._indices import indices_le, indices_fabs_le
 from sisl._math_small import xyz_to_spherical_cos_phi
-from sisl.messages import warn, tqdm_eta
+from sisl.messages import warn, progressbar
 from sisl.utils.ranges import array_arange
 from .spin import Spin
 from sisl.sparse import SparseCSR, _ncol_to_indptr
@@ -552,7 +552,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
         XYZ -= grid.sc.origo.reshape(1, 3)
 
         # Retrieve progressbar
-        eta = tqdm_eta(len(IA), f"{self.__class__.__name__}.density", "atom", eta)
+        eta = progressbar(len(IA), f"{self.__class__.__name__}.density", "atom", eta)
 
         cell = geometry.cell
         atoms = geometry.atoms

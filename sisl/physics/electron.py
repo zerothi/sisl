@@ -64,7 +64,7 @@ from sisl._math_small import xyz_to_spherical_cos_phi
 import sisl._array as _a
 from sisl.linalg import svd_destroy, eigvals_destroy
 from sisl.linalg import eigh, eigh_destroy, det_destroy
-from sisl.messages import info, warn, SislError, tqdm_eta
+from sisl.messages import info, warn, SislError, progressbar
 from sisl._help import dtype_complex_to_real, dtype_real_to_complex
 from .distribution import get_distribution
 from .spin import Spin
@@ -1431,7 +1431,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
     phase = 1
 
     # Retrieve progressbar
-    eta = tqdm_eta(len(IA), "wavefunction", "atom", eta)
+    eta = progressbar(len(IA), "wavefunction", "atom", eta)
 
     # Loop over all atoms in the grid-cell
     for ia, xyz, isc in zip(IA, XYZ, ISC):

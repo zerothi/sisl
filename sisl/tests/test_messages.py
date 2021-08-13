@@ -60,15 +60,15 @@ def test_exception():
         raise sm.SislException('This is an error')
 
 
-def test_tqdm_eta_true():
-    eta = sm.tqdm_eta(2, 'Hello', 'unit', True)
+def test_progressbar_true():
+    eta = sm.progressbar(2, 'Hello', 'unit', True)
     eta.update()
     eta.update()
     eta.close()
 
 
-def test_tqdm_false():
-    eta = sm.tqdm_eta(2, 'Hello', 'unit', False)
+def test_progressbar_false():
+    eta = sm.progressbar(2, 'Hello', 'unit', False)
     eta.update()
     eta.update()
     eta.close()
