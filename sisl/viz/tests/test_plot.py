@@ -8,9 +8,12 @@ This file tests general Plot behavior.
 """
 from copy import deepcopy
 import os
+from sisl.messages import SislWarning
 
 import pytest
 import numpy as np
+
+import warnings
 
 import sisl
 from sisl.viz.plot import Plot, MultiplePlot, SubPlots, Animation
@@ -28,6 +31,12 @@ pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 class _TestPlotClass:
 
     _cls = Plot
+
+    def _init_plot_without_warnings(self, *args, **kwargs):
+
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore")
+            return self._cls(*args, **kwargs)
 
     def test_documentation(self):
 
@@ -48,7 +57,7 @@ class _TestPlotClass:
 
     def test_plot_settings(self):
 
-        plot = self._cls()
+        plot = self._init_plot_without_warnings()
         # Check that all the parameters have been passed to the settings
         assert np.all([param.key in plot.settings for param in self._cls._parameters])
         # Build some test settings
@@ -64,12 +73,12 @@ class _TestPlotClass:
                     val for key, val in old_settings.items()])
 
         # Build a plot directly with test settings and check if it works
-        plot = self._cls(**new_settings)
+        plot = self._init_plot_without_warnings(**new_settings)
         assert np.all([plot.settings[key] == val for key, val in new_settings.items()])
 
     def test_plot_shortcuts(self):
 
-        plot = self._cls()
+        plot = self._init_plot_without_warnings()
         # Build a fake shortcut and test it.
         def dumb_shortcut(a=2):
             plot.a_value = a
@@ -89,7 +98,7 @@ class _TestPlotClass:
 
     def test_presets(self):
 
-        plot = self._cls(presets="dark")
+        plot = self._init_plot_without_warnings(presets="dark")
 
         assert np.all([key not in plot.settings or plot.settings[key] == val for key, val in PRESETS["dark"].items()])
 
@@ -98,7 +107,7 @@ class _TestPlotClass:
         file_name = "./__sislsaving_test"
 
         if obj is None:
-            obj = self._cls()
+            obj = self._init_plot_without_warnings()
 
         obj.save(file_name)
 
@@ -192,7 +201,9 @@ class TestSubPlots(TestMultiplePlot):
 
         plot.update_settings(rows=2)
 
-        plot.update_settings(cols=1, rows=1)
+        # This should issue a warning stating that one plot will be missing
+        with pytest.warns(SislWarning):
+            plot.update_settings(cols=1, rows=1)
 
         plot.update_settings(cols=None, rows=None, arrange='square')
 

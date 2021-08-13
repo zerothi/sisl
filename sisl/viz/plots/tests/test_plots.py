@@ -41,7 +41,7 @@ class TestPlotSubClass(_TestPlotClass):
 
     def test_param_groups(self):
 
-        plot = self._cls()
+        plot = self._init_plot_without_warnings()
 
         for group in plot.param_groups:
             for key in ("key", "name", "icon", "description"):
