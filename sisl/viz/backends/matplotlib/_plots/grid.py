@@ -10,7 +10,7 @@ class MatplotlibGridBackend(MatplotlibBackend, GridBackend):
     def draw_1D(self, backend_info, **kwargs):
         super().draw_1D(backend_info, **kwargs)
 
-        self.axes.set_xlabel(f'{("X","Y", "Z")[backend_info["ax"]]} axis [Ang]')
+        self.axes.set_xlabel(backend_info["axes_titles"]["xaxis"])
         self.axes.set_ylabel('Values')
 
     def draw_2D(self, backend_info, **kwargs):
@@ -37,12 +37,12 @@ class MatplotlibGridBackend(MatplotlibBackend, GridBackend):
                 label=contour["name"]
             )
 
-        self.axes.set_xlabel(f'{("X","Y", "Z")[backend_info["xaxis"]]} axis [Ang]')
-        self.axes.set_ylabel(f'{("X","Y", "Z")[backend_info["yaxis"]]} axis [Ang]')
+        self.axes.set_xlabel(backend_info["axes_titles"]["xaxis"])
+        self.axes.set_ylabel(backend_info["axes_titles"]["yaxis"])
 
     def draw_3D(self, backend_info, **kwargs):
         # This will basically raise the NotImplementedError
-        super().draw3D(backend_info, **kwargs)
+        super().draw_3D(backend_info, **kwargs)
 
         # The following code is just here as reference of how this MIGHT
         # be done in matplotlib.

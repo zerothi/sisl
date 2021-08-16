@@ -137,28 +137,29 @@ class TestGridPlot(_TestPlot):
 
     @skip_skimage
     def test_scan(self, plot):
+        plot.update_settings(axes="xy")
         # AS_IS SCAN
         # Provide number of steps
-        scanned = plot.scan(num=2, mode="as_is")
+        scanned = plot.scan("z", num=2, mode="as_is")
         assert isinstance(scanned, Animation)
         assert len(scanned.frames) == 2
 
         # Provide step in Ang
         step = plot.grid.cell[0, 0]/2
-        scanned = plot.scan(along=0, step=step, mode="as_is")
+        scanned = plot.scan(along="z", step=step, mode="as_is")
         assert len(scanned.frames) == 2
 
         # Provide breakpoints
         breakpoints = [plot.grid.cell[0, 0]*frac for frac in [1/3, 2/3, 3/3]]
-        scanned = plot.scan(along=0, breakpoints=breakpoints, mode="as_is")
+        scanned = plot.scan(along="z", breakpoints=breakpoints, mode="as_is")
         assert len(scanned.frames) == 2
 
         # Check that it doesn't accept step and breakpoints at the same time
         with pytest.raises(ValueError):
-            plot.scan(along=0, step=4.5, breakpoints=breakpoints, mode="as_is")
+            plot.scan(along="z", step=4.5, breakpoints=breakpoints, mode="as_is")
 
         # 3D SCAN
-        scanned = plot.scan(0, mode="moving_slice", breakpoints=breakpoints)
+        scanned = plot.scan(along="z", mode="moving_slice", breakpoints=breakpoints)
 
         assert isinstance(scanned, go.Figure)
         assert len(scanned.frames) == 3 # One cross section for each breakpoint

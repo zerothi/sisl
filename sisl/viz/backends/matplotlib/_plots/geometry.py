@@ -11,17 +11,14 @@ class MatplotlibGeometryBackend(MatplotlibBackend, GeometryBackend):
     def draw_1D(self, backend_info, **kwargs):
         super().draw_1D(backend_info, **kwargs)
 
-        xaxis = backend_info["xaxis"]
-        yaxis = backend_info["yaxis"]
-
-        self.axes.set_xlabel(f'{("X","Y","Z")[xaxis]} axis [Ang]')
-        self.axes.set_ylabel(yaxis)
+        self.axes.set_xlabel(backend_info["axes_titles"]["xaxis"])
+        self.axes.set_ylabel(backend_info["axes_titles"]["yaxis"])
 
     def draw_2D(self, backend_info, **kwargs):
         super().draw_2D(backend_info, **kwargs)
 
-        self.axes.set_xlabel(f'{("X","Y", "Z")[backend_info["xaxis"]]} axis [Ang]')
-        self.axes.set_ylabel(f'{("X","Y", "Z")[backend_info["yaxis"]]} axis [Ang]')
+        self.axes.set_xlabel(backend_info["axes_titles"]["xaxis"])
+        self.axes.set_ylabel(backend_info["axes_titles"]["yaxis"])
         self.axes.axis("equal")
 
     def _draw_atoms_2D_scatter(self, *args, **kwargs):
