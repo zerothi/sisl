@@ -13,8 +13,7 @@ class PlotlyGridBackend(PlotlyBackend, GridBackend):
 
         super().draw_1D(backend_info, **kwargs)
 
-        axes_titles = {'xaxis_title': f'{("X","Y", "Z")[backend_info["ax"]]} axis [Ang]', 'yaxis_title': 'Values'}
-        self.update_layout(**axes_titles)
+        self.update_layout(**{f"{k}_title": v for k,v in backend_info["axes_titles"].items()})
 
     def draw_2D(self, backend_info, **kwargs):
 
@@ -42,9 +41,7 @@ class PlotlyGridBackend(PlotlyBackend, GridBackend):
                 name=contour["name"]
             )
 
-        axes_titles = {f'{ax}_title': f'{("X","Y", "Z")[backend_info[ax]]} axis [Ang]' for ax in ("xaxis", "yaxis")}
-
-        self.update_layout(**axes_titles)
+        self.update_layout(**{f"{k}_title": v for k,v in backend_info["axes_titles"].items()})
 
         self.figure.layout.yaxis.scaleanchor = "x"
         self.figure.layout.yaxis.scaleratio = 1
@@ -66,6 +63,7 @@ class PlotlyGridBackend(PlotlyBackend, GridBackend):
             ))
 
         self.layout.scene = {'aspectmode': 'data'}
+        self.update_layout(**{f"scene_{k}_title": v for k,v in backend_info["axes_titles"].items()})
 
     def _after_get_figure(self):
         self.update_layout(legend_orientation='h')

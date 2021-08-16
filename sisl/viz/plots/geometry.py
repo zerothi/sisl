@@ -16,6 +16,7 @@ from ..input_fields import (
 )
 from ..plotutils import values_to_colors
 from sisl._dispatcher import AbstractDispatch
+from sisl._supercell import cell_invert
 
 
 class BoundGeometry(AbstractDispatch):
@@ -336,17 +337,45 @@ class GeometryPlot(Plot):
         atoms_kwargs = {"atoms": atoms, "atoms_color": atoms_color, "atoms_size": atoms_size}
 
         if self._ndim == 3:
+            xaxis, yaxis, zaxis = axes
             backend_info = self._prepare3D(**atoms_kwargs, bind_bonds_to_ats=bind_bonds_to_ats, **kwargs3d)
         elif self._ndim == 2:
             xaxis, yaxis = axes
             backend_info = self._prepare2D(xaxis=xaxis, yaxis=yaxis, **atoms_kwargs, bind_bonds_to_ats=bind_bonds_to_ats, **kwargs2d)
         elif self._ndim == 1:
-            backend_info = self._prepare1D(atoms=atoms, coords_axis=axes[0], data_axis=dataaxis_1d, **kwargs1d)
+            xaxis = axes[0]
+            yaxis = dataaxis_1d
+            backend_info = self._prepare1D(atoms=atoms, coords_axis=xaxis, data_axis=yaxis, **kwargs1d)
+
+        # Define the axes titles
+        backend_info["axes_titles"] = {
+            "xaxis": self._get_ax_title(xaxis),
+            "yaxis": self._get_ax_title(yaxis),
+        }
+        if self._ndim == 3:
+            backend_info["axes_titles"]["zaxis"] = self._get_ax_title(zaxis)
+        
 
         backend_info["ndim"] = self._ndim
         backend_info["show_cell"] = show_cell
 
         return backend_info
+    
+    @staticmethod
+    def _get_ax_title(ax):
+        """Generates the title for a given axis"""
+        if hasattr(ax, "__name__"):
+            title = ax.__name__
+        elif not isinstance(ax, str):
+            title = str(ax)
+        elif ax.lower() in ("x", "y", "z"):
+            title = f'{ax.upper()} axis [Ang]'
+        elif ax.lower() in ("a", "b", "c"):
+            title = f'{ax.upper()} lattice vector'
+        else:
+            title = ax
+
+        return title
 
     # From here, we start to define all the helper methods:
     @property
@@ -415,16 +444,13 @@ class GeometryPlot(Plot):
             return np.unique(bonds, axis=0)
         else:
             return bonds
-
+    
     @staticmethod
-    def _sanitize_axis(geometry, axis):
-        if isinstance(axis, str):
-            return direction(axis, abc=geometry.cell, xyz=np.diag([1., 1., 1.]))
-
-        i = axis
-        axis = np.zeros(3)
-        axis[i] = 1
-        return axis
+    def _direction(ax, cell):
+        if isinstance(ax, (int, str)):
+            ax = direction(ax, abc=cell, xyz=np.diag([1., 1., 1.]))
+        
+        return ax
 
     @staticmethod
     def _get_cell_corners(cell, unique=False):
@@ -467,6 +493,11 @@ class GeometryPlot(Plot):
 
         In this way, we can plot the structure from the "point of view" that we want.
 
+        NOTE: If axis is one of {"a", "b", "c", "1", "2", "3"} the function doesn't
+        project the coordinates in the direction of the lattice vector. The fractional
+        coordinates, taking in consideration the three lattice vectors, are returned
+        instead.
+
         Parameters
         ------------
         geometry: sisl.Geometry
@@ -474,24 +505,25 @@ class GeometryPlot(Plot):
         xyz: array-like of shape (natoms, 3), optional
             the 3D coordinates that we want to project.
             otherwise they are taken from the geometry. 
-        axis: {0,1,2, "x", "y", "z", "a", "b", "c"} or array-like of shape 3, optional
+        axis: {"x", "y", "z", "a", "b", "c", "1", "2", "3"} or array-like of shape 3, optional
             the direction to be displayed along the X axis. 
-            If it's an int, it will interpreted as the index of the cell axis.
 
         Returns
         ----------
         np.ndarray of shape (natoms, )
-            the 2D coordinates of the geometry, with all positions projected into the plane
-            defined by xaxis and yaxis.
+            the 1D coordinates of the geometry, with all positions projected into the line
+            defined by axis.
         """
         if xyz is None:
             xyz = geometry.xyz
 
-        # Get the directions that these axes represent if the provided input
-        # is an axis index
-        axis = cls._sanitize_axis(geometry, axis)
+        if axis in ["a", "b", "c", "0", "1", "2"]:
+            return cls._projected_2Dcoords(geometry, xyz, xaxis=axis, yaxis="a" if axis == "c" else "c")[..., 0]
 
-        return xyz.dot(axis)/fnorm(axis)
+        # Get the direction that the axis represents
+        axis = cls._direction(axis, geometry.cell)
+
+        return xyz.dot(axis/fnorm(axis)) / fnorm(axis)
 
     @classmethod
     def _projected_2Dcoords(cls, geometry, xyz=None, xaxis="x", yaxis="y"):
@@ -500,6 +532,11 @@ class GeometryPlot(Plot):
 
         In this way, we can plot the structure from the "point of view" that we want.
 
+        NOTE: If xaxis/yaxis is one of {"a", "b", "c", "1", "2", "3"} the function doesn't
+        project the coordinates in the direction of the lattice vector. The fractional
+        coordinates, taking in consideration the three lattice vectors, are returned
+        instead.
+
         Parameters
         ------------
         geometry: sisl.Geometry
@@ -507,12 +544,10 @@ class GeometryPlot(Plot):
         xyz: array-like of shape (natoms, 3), optional
             the 3D coordinates that we want to project.
             otherwise they are taken from the geometry. 
-        xaxis: {0,1,2, "x", "y", "z", "a", "b", "c"} or array-like of shape 3, optional
+        xaxis: {"x", "y", "z", "a", "b", "c"} or array-like of shape 3, optional
             the direction to be displayed along the X axis. 
-            If it's an int, it will interpreted as the index of the cell axis.
-        yaxis: {0,1,2, "x", "y", "z", "a", "b", "c"} or array-like of shape 3, optional
+        yaxis: {"x", "y", "z", "a", "b", "c"} or array-like of shape 3, optional
             the direction to be displayed along the X axis. 
-            If it's an int, it will interpreted as the index of the cell axis.
 
         Returns
         ----------
@@ -523,12 +558,19 @@ class GeometryPlot(Plot):
         if xyz is None:
             xyz = geometry.xyz
 
-        # Get the directions that these axes represent if the provided input
-        # is an axis index
-        xaxis = cls._sanitize_axis(geometry, xaxis)
-        yaxis = cls._sanitize_axis(geometry, yaxis)
+        if len(set([xaxis, yaxis]).intersection(["a", "b", "c", "0", "1", "2"])) == 2:
+            icell = geometry.icell
+            coord_indices = [int({"a": 0, "b": 1, "c": 2}.get(ax, ax)) for ax in (xaxis, yaxis)]
+        else:
+            # Get the directions that these axes represent
+            xaxis = cls._direction(xaxis, geometry.cell)
+            yaxis = cls._direction(yaxis, geometry.cell)
 
-        return np.array([xyz.dot(ax)/fnorm(ax) for ax in (xaxis, yaxis)])
+            fake_cell = np.array([xaxis, yaxis, np.cross(xaxis, yaxis)])
+            icell = cell_invert(fake_cell)
+            coord_indices = [0,1]
+
+        return np.dot(xyz, icell.T)[..., coord_indices]
 
     def _get_atoms_bonds(self, bonds, atom, geom=None, sanitize_atom=True):
         """
@@ -580,7 +622,6 @@ class GeometryPlot(Plot):
             passed directly to the atoms scatter trace
         """
         wrap_atoms = wrap_atoms or self._default_wrap_atoms1D
-        traces = []
 
         atoms = self.geometry._sanitize_atoms(atoms)
 
@@ -647,12 +688,10 @@ class GeometryPlot(Plot):
 
         Parameters
         -----------
-        xaxis: {0,1,2, "x", "y", "z", "a", "b", "c"} or array-like of shape 3, optional
+        xaxis: {"x", "y", "z", "a", "b", "c"} or array-like of shape 3, optional
             the direction to be displayed along the X axis. 
-            If it's an int, it will interpreted as the index of the cell axis.
-        yaxis: {0,1,2, "x", "y", "z", "a", "b", "c"} or array-like of shape 3, optional
+        yaxis: {"x", "y", "z", "a", "b", "c"} or array-like of shape 3, optional
             the direction to be displayed along the X axis. 
-            If it's an int, it will interpreted as the index of the cell axis.
         atoms: array-like of int, optional
             the indices of the atoms that you want to plot
         atoms_color: array-like, optional
@@ -702,7 +741,7 @@ class GeometryPlot(Plot):
         self._display_props["atoms"]["size"] = atoms_size
         self._display_props["atoms"]["colorscale"] = atoms_colorscale
 
-        xy = self._projected_2Dcoords(self.geometry, self.geometry[atoms], xaxis=xaxis, yaxis=yaxis)
+        xy = self._projected_2Dcoords(self.geometry, self.geometry[atoms], xaxis=xaxis, yaxis=yaxis).T
 
         # Add atoms
         atoms_props = wrap_atoms(atoms, xy)
@@ -718,10 +757,6 @@ class GeometryPlot(Plot):
             bonds_xyz = np.array([self.geometry[bond] for bond in bonds])
             if len(bonds_xyz) != 0:
                 xys = self._projected_2Dcoords(self.geometry, bonds_xyz, xaxis=xaxis, yaxis=yaxis)
-
-                # By reshaping we get the following: First axis -> bond (length: number of bonds),
-                # Second axis -> atoms in the bond (length 2), Third axis -> coordinate (x, y)
-                xys = xys.transpose((1, 2, 0))
 
                 # Try to get the bonds colors (It might be that the user is not setting them)
                 bonds_props = [wrap_bond(bond, xy) for bond, xy in zip(bonds, xys)]

@@ -156,8 +156,8 @@ class GeometryBackend(Backend):
         self.draw_scatter(x, y, name=name, marker={"color": color, "size": size, "coloraxis": coloraxis, "colorscale": colorscale}, text=text, **kwargs)
 
     def _draw_cell_2D_axes(self, geometry, cell, xaxis="x", yaxis="y"):
-        cell_xy = GeometryPlot._projected_2Dcoords(geometry, xyz=cell, xaxis=xaxis, yaxis=yaxis).T
-        origo_xy = GeometryPlot._projected_2Dcoords(geometry, xyz=geometry.origo, xaxis=xaxis, yaxis=yaxis).T
+        cell_xy = GeometryPlot._projected_2Dcoords(geometry, xyz=cell, xaxis=xaxis, yaxis=yaxis)
+        origo_xy = GeometryPlot._projected_2Dcoords(geometry, xyz=geometry.origo, xaxis=xaxis, yaxis=yaxis)
 
         for i, vec in enumerate(cell_xy):
             x = np.array([0, vec[0]]) + origo_xy[0]
@@ -171,7 +171,7 @@ class GeometryBackend(Backend):
     def _draw_cell_2D_box(self, cell, geometry, xaxis="x", yaxis="y", color=None, **kwargs):
 
         cell_corners = GeometryPlot._get_cell_corners(cell) + geometry.origo
-        x, y = GeometryPlot._projected_2Dcoords(geometry, xyz=cell_corners, xaxis=xaxis, yaxis=yaxis)
+        x, y = GeometryPlot._projected_2Dcoords(geometry, xyz=cell_corners, xaxis=xaxis, yaxis=yaxis).T
 
         self.draw_line(x, y, line={"color": color}, name="Unit cell", **kwargs)
 

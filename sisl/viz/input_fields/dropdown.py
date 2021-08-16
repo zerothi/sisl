@@ -232,3 +232,14 @@ class GeomAxisSelect(DropdownInput):
             "isSearchable": True,
         }
     }
+
+    def _sanitize_axis(self, ax):
+        if isinstance(ax, str) and ax in ("0", "1", "2"):
+            ax = int(ax)
+        if isinstance(ax, int):
+            ax = ["a", "b", "c"][ax]
+        return ax
+
+    def parse(self, val):
+        return [self._sanitize_axis(ax) for ax in val]
+

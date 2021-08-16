@@ -2,8 +2,10 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from collections import defaultdict
+import enum
+from sisl.viz.plots.geometry import GeometryPlot
+from sisl.viz.input_fields.dropdown import GeomAxisSelect
 import numpy as np
-import plotly.graph_objects as go
 from scipy.ndimage import affine_transform
 
 import sisl
@@ -190,20 +192,10 @@ class GridPlot(Plot):
             transforms might not be necessarily commutable (e.g. "abs" and "cos")."""
         ),
 
-        DropdownInput(
+        GeomAxisSelect(
             key = "axes", name="Axes to display",
-            default=[2],
+            default=["z"],
             width = "s100% m50% l90%",
-            params={
-                'options': [
-                    {'label': 'X', 'value': 0},
-                    {'label': 'Y', 'value': 1},
-                    {'label': 'Z', 'value': 2},
-                ],
-                'isMulti': True,
-                'isSearchable': True,
-                'isClearable': False
-            },
             help = """The axis along you want to see the grid, it will be reduced along the other ones, according to the the `reduce_method` setting."""
         ),
 
@@ -236,7 +228,7 @@ class GridPlot(Plot):
         ),
 
         DropdownInput(key="transform_bc", name="Transform boundary conditions",
-            default="constant",
+            default="wrap",
             params={
                 'options': [
                     {'label': 'constant', 'value': 'constant'},
@@ -244,7 +236,7 @@ class GridPlot(Plot):
                 ],
             },
             help="""The boundary conditions when a cell transform is applied to the grid. Cell transforms are only
-            applied when the grid's cell doesn't follow the cartesian coordinates and the requested display is 2D.
+            applied when the grid's cell doesn't follow the cartesian coordinates and the requested display is 2D or 1D.
             """
         ),
 
@@ -451,6 +443,55 @@ class GridPlot(Plot):
             self.modify_param(key, "inputField.params.max", self.grid.cell[ax, ax])
             self.get_param(key, as_dict=False).update_marks()
 
+    def _infer_grid_axes(self, axes, cell, tol=1e-3):
+        """Returns which are the lattice vectors that correspond to each cartesian direction"""
+        grid_axes = []
+        for ax in axes:
+            if ax in ("x", "y", "z"):
+                coord_index = {"x": 0, "y": 1, "z": 2}[ax]
+                lattice_vecs = np.where(cell[:, coord_index] > tol)[0]
+                if lattice_vecs.shape[0] != 1:
+                    raise ValueError(f"There are {lattice_vecs.shape[0]} lattice vectors that contribute to the {['x', 'y','z'][coord_index]} coordinate.")
+                grid_axes.append(lattice_vecs[0])
+            else:
+                grid_axes.append({"a": 0, "b": 1, "c": 2}[ax])
+
+        return grid_axes
+
+    def _is_cartesian_unordered(self, cell, tol=1e-3):
+        """Whether a cell has cartesian axes as lattice vectors, regardless of their order.
+        
+        Parameters
+        -----------
+        cell: np.array of shape (3, 3)
+            The cell that you want to check.
+        tol: float, optional
+            Threshold value to consider a component of the cell nonzero.
+        """
+        bigger_than_tol = cell > tol
+        return bigger_than_tol.sum() == 3 and bigger_than_tol.any(axis=0).all() and bigger_than_tol.any(axis=1).all()
+
+    def _is_1D_cartesian(self, cell, coord_ax, tol=1e-3):
+        """Whether a cell contains only one vector that contributes only to a given coordinate.
+
+        That is, one vector follows the direction of the cartesian axis and the other vectors don't
+        have any component in that direction.
+        
+        Parameters
+        -----------
+        cell: np.array of shape (3, 3)
+            The cell that you want to check.
+        coord_ax: {"x", "y", "z"}
+            The cartesian axis that you are looking for in the cell.
+        tol: float, optional
+            Threshold value to consider a component of the cell nonzero.
+        """
+        coord_index = {"x": 0, "y": 1, "z": 2}[coord_ax]
+        lattice_vecs = np.where(cell[:, coord_index] > tol)[0]
+
+        is_1D_cartesian = lattice_vecs.shape[0] == 1
+        return is_1D_cartesian and (cell[lattice_vecs[0]] > tol).sum() == 1
+
     def _set_data(self, axes, nsc, interp, trace_name, transforms, represent, grid_file,
         x_range, y_range, z_range, plot_geom, geom_kwargs, transform_bc, reduce_method):
 
@@ -459,27 +500,51 @@ class GridPlot(Plot):
 
         grid = self.grid.copy()
 
+        self._ndim = len(axes)
+        self.offsets["origin"] = grid.origo
+
         # Choose the representation of the grid that we want to display
         grid.grid = self._get_representation(grid, represent)
 
-        is_skewed_2d = not grid.sc.is_cartesian() and len(axes) == 2
-        if is_skewed_2d or len(axes) == 3:
-            # We will tile the grid now, as at the moment there's no good way to tile it afterwards
-            # Note that this means extra computation, as we are transforming (skewed_2d) or calculating
-            # the isosurfaces (3d) using more than one unit cell (FIND SMARTER WAYS!)
-            for ax, reps in enumerate(nsc):
-                grid = grid.tile(reps, ax)
-            # We have already tiled the grid, so we will set nsc to [1,1,1]
-            nsc = [1, 1, 1]
+        # We will tile the grid now, as at the moment there's no good way to tile it afterwards
+        # Note that this means extra computation, as we are transforming (skewed_2d) or calculating
+        # the isosurfaces (3d) using more than one unit cell (FIND SMARTER WAYS!)
+        for ax, reps in enumerate(nsc):
+            grid = grid.tile(reps, ax)
 
-        if is_skewed_2d:
-            # If the grid doesn't follow the cartesian axes and we want to display it in 2D,
-            # we will transform it to make our lives easier.
+        # Determine whether we should transform the grid to cartesian axes. This will be needed
+        # if the grid is skewed. However, it is never needed for the 3D representation, since we
+        # compute the coordinates of each point in the isosurface, and we don't need to reduce the
+        # grid.
+        should_orthogonalize = ~self._is_cartesian_unordered(grid.cell) and self._ndim < 3
+        # We also don't need to orthogonalize if cartesian coordinates are not requested
+        # (this would mean that axes is a combination of "a", "b" and "c")
+        should_orthogonalize = should_orthogonalize and set(axes).intersection(["x", "y", "z"])
+        
+        if should_orthogonalize and self._ndim == 1:
+            # In 1D representations, even if the cell is skewed, we might not need to transform.
+            # An example of a cell that we don't need to transform is:
+            # a = [1, 1, 0], b = [1, -1, 0], c = [0, 0, 1] 
+            # If the user wants to display the values on the z coordinate, we can safely reduce the
+            # first two axes, as they don't contribute in the Z direction. Also, it is required that
+            # "c" doesn't contribute to any of the other two directions.
+            should_orthogonalize &= not self._is_1D_cartesian(grid.cell, axes[0])
+
+        if should_orthogonalize:
             grid, self.offsets["cell_transform"] = self._transform_grid_cell(
                 grid, mode=transform_bc, output_shape=(np.array(interp)*grid.shape).astype(int), cval=np.nan
             )
             # The interpolation has already happened, so just set it to [1,1,1] for the rest of the method
             interp = [1, 1, 1]
+
+            # Now the grid axes correspond to the cartesian coordinates.
+            grid_axes = [{"x": 0, "y": 1, "z": 2}[ax] for ax in axes]
+        elif self._ndim < 3:
+            # If we are not transforming the grid, we need to get the axes of the grid that contribute to the
+            # directions we have to plot.
+            grid_axes = self._infer_grid_axes(axes, grid.cell)
+        elif self._ndim == 3:
+            grid_axes = [0,1,2]
 
         # Apply all transforms requested by the user
         for transform in transforms:
@@ -487,14 +552,13 @@ class GridPlot(Plot):
 
         # Get only the part of the grid that we need
         ax_ranges = [x_range, y_range, z_range]
-
         for ax, ax_range in enumerate(ax_ranges):
             if ax_range is not None:
                 # Build an array with the limits
                 lims = np.zeros((2, 3))
-                # If the cell was transformed (is_skewed_2d), then we need to modify
+                # If the cell was transformed, then we need to modify
                 # the range to get what the user wants.
-                lims[:, ax] = ax_range + self.offsets["cell_transform"][ax] - grid.origo[ax]
+                lims[:, ax] = ax_range + self.offsets["cell_transform"][ax] - self.offsets["origin"][ax]
 
                 # Get the indices of those points
                 indices = np.array([grid.index(lim) for lim in lims], dtype=int)
@@ -504,24 +568,23 @@ class GridPlot(Plot):
 
         # Reduce the dimensions that are not going to be displayed
         for ax in [0, 1, 2]:
-            if ax not in axes:
+            if ax not in grid_axes:
                 grid = getattr(grid, reduce_method)(ax)
 
         # Interpolate the grid to a different shape, if needed
-        interp_factors = np.array([factor if ax in axes else 1 for ax, factor in enumerate(interp)], dtype=int)
+        interp_factors = np.array([factor if ax in grid_axes else 1 for ax, factor in enumerate(interp)], dtype=int)
         interpolate = (interp_factors != 1).any()
         if interpolate:
             grid = grid.interp((np.array(interp_factors)*grid.shape).astype(int))
 
-        #Remove the leftover dimensions
+        # Remove the leftover dimensions
         values = np.squeeze(grid.grid)
 
         # Choose which function we need to use to prepare the data
-        self._ndim = values.ndim
         prepare_func = getattr(self, f"_prepare{self._ndim}D")
 
         # Use it
-        backend_info = prepare_func(grid, values, axes, nsc, trace_name, showlegend=bool(trace_name) or values.ndim == 3)
+        backend_info = prepare_func(grid, values, axes, grid_axes, nsc, trace_name, showlegend=bool(trace_name) or values.ndim == 3)
 
         backend_info["ndim"] = self._ndim
 
@@ -539,33 +602,46 @@ class GridPlot(Plot):
 
         backend_info["geom_plot"] = geom_plot
 
+        # Define the axes titles
+        backend_info["axes_titles"] = {
+            f"{ax_name}axis": GeometryPlot._get_ax_title(ax) for ax_name, ax in zip(("x", "y", "z"), axes)
+        }
+
         return backend_info
 
     def _get_ax_range(self, grid, ax, nsc):
+        if isinstance(ax, int) or ax in ("a", "b", "c"):
+            ax = {"a": 0, "b": 1, "c": 2}.get(ax, ax)
+            ax_vals = np.linspace(0, nsc[ax], grid.shape[ax])
+        else:
+            offset = self._get_offset(grid, ax)
 
-        offset = self._get_offset(grid, ax)
+            ax = {"x": 0, "y": 1, "z": 2}[ax]
 
-        ax_vals = np.arange(0, nsc[ax]*grid.cell[ax, ax], grid.dcell[ax, ax]) + offset
+            ax_vals = np.arange(0, nsc[ax]*grid.cell[ax, ax], grid.dcell[ax, ax]) + offset
 
-        if len(ax_vals) == grid.shape[ax] + 1:
-            ax_vals = ax_vals[:-1]
+            if len(ax_vals) == grid.shape[ax] + 1:
+                ax_vals = ax_vals[:-1]
 
         return ax_vals
 
     def _get_offset(self, grid, ax, offset, x_range, y_range, z_range):
-
-        ax_range = [x_range, y_range, z_range][ax]
-        grid_offset =  _a.asarrayd(offset) + self.offsets["vacuum"]
-
-        # Now let's get the offset due to the minimum value of the axis range
-        if ax_range is not None:
-            offset = ax_range[0]
+        if isinstance(ax, int) or ax in ("a", "b", "c"):
+            return 0
         else:
-            # If a range was specified, the cell_transform and origo offsets were applied
-            # when subbing the grid. Otherwise they have not been applied yet.
-            offset = self.offsets["cell_transform"][ax] + grid.origo[ax]
+            coord_range = {"x": x_range, "y": y_range, "z": z_range}[ax]
+            grid_offset =  _a.asarrayd(offset) + self.offsets["vacuum"]
 
-        return offset + grid_offset[ax]
+            coord_index = {"x": 0, "y": 1, "z": 2}[ax]
+            # Now let's get the offset due to the minimum value of the axis range
+            if coord_range is not None:
+                offset = coord_range[0]
+            else:
+                # If a range was specified, the cell_transform and origo offsets were applied
+                # when subbing the grid. Otherwise they have not been applied yet.
+                offset = self.offsets["cell_transform"][coord_index] + self.offsets["origin"][coord_index]
+
+            return offset + grid_offset[coord_index]
 
     def _get_offsets(self, grid, display_axes=[0, 1, 2]):
         return np.array([self._get_offset(grid, ax) for ax in display_axes])
@@ -612,25 +688,20 @@ class GridPlot(Plot):
 
         return values
 
-    def _prepare1D(self, grid, values, display_axes, nsc, name, **kwargs):
+    def _prepare1D(self, grid, values, display_axes, grid_axes, nsc, name, **kwargs):
         """Takes care of preparing the values to plot in 1D"""
-        ax = display_axes[0]
+        display_ax = display_axes[0]
 
-        if nsc[ax] > 1:
-            values = np.tile(values, nsc[ax])
+        return {"ax": display_ax, "values": values, "ax_range": self._get_ax_range(grid, display_ax, nsc), "name": name}
 
-        return {"ax": ax, "values": values, "ax_range": self._get_ax_range(grid, ax, nsc), "name": name}
-
-    def _prepare2D(self, grid, values, display_axes, nsc, name, crange, cmid, colorscale, zsmooth, isos, **kwargs):
+    def _prepare2D(self, grid, values, display_axes, grid_axes, nsc, name, crange, cmid, colorscale, zsmooth, isos, **kwargs):
         """Takes care of preparing the values to plot in 2D"""
         from skimage.measure import find_contours
         xaxis = display_axes[0]
         yaxis = display_axes[1]
 
-        if xaxis < yaxis:
+        if grid_axes[0] < grid_axes[1]:
             values = values.T
-
-        values = np.tile(values, (nsc[yaxis], nsc[xaxis]))
 
         if crange is None:
             crange = [None, None]
@@ -644,14 +715,21 @@ class GridPlot(Plot):
         xs = self._get_ax_range(grid, xaxis, nsc)
         ys = self._get_ax_range(grid, yaxis, nsc)
 
-        is_cartesian = grid.sc.is_cartesian()
-
         # Draw the contours (if any)
         if len(isos) > 0:
             offsets = self._get_offsets(grid, display_axes)
             isos_param = self.get_param("isos")
             minval = np.nanmin(values)
             maxval = np.nanmax(values)
+
+        if set(display_axes).intersection(["x", "y", "z"]):
+            coord_indices = [{"x": 0, "y": 1, "z": 2}[ax] for ax in display_axes]
+
+            def _indices_to_2Dspace(contour_coords):
+                return contour_coords.dot(grid.dcell[grid_axes, :])[:, coord_indices]
+        else:
+            def _indices_to_2Dspace(contour_coords):
+                return contour_coords / np.array(grid.shape)[grid_axes]
 
         isos_to_draw = []
         for iso in isos:
@@ -675,8 +753,8 @@ class GridPlot(Plot):
                 # Swap the first and second columns so that we have [x,y] for each
                 # contour point (instead of [row, col], which means [y, x])
                 contour_coords = contour[:, [1, 0]]
-                # Then convert from indices to
-                contour_coords = contour_coords.dot(grid.dcell[display_axes])[:, display_axes] + offsets
+                # Then convert from indices to coordinates in the 2D space
+                contour_coords = _indices_to_2Dspace(contour_coords) + offsets
                 contour_xs = [*contour_xs, None, *contour_coords[:, 0]]
                 contour_ys = [*contour_ys, None, *contour_coords[:, 1]]
 
@@ -774,7 +852,7 @@ class GridPlot(Plot):
         # Find the offset between the origin before and after the transformation
         return new_grid, new_grid.dcell.dot(forward_t.dot(offset))
 
-    def _prepare3D(self, grid, values, display_axes, nsc, name, isos, **kwargs):
+    def _prepare3D(self, grid, values, display_axes, grid_axes, nsc, name, isos, **kwargs):
         """Takes care of preparing the values to plot in 3D"""
         # The minimum and maximum values might be needed at some places
         minval, maxval = np.min(values), np.max(values)
@@ -814,7 +892,7 @@ class GridPlot(Plot):
             # Calculate the isosurface
             vertices, faces, normals, intensities = grid.isosurface(isoval, iso.get("step_size", 1))
 
-            vertices = vertices + self._get_offsets(grid)
+            vertices = vertices + self._get_offsets(grid) + self.offsets["origin"]
 
             # Add all the isosurface info to the list that will be passed to the drawer
             isos_to_draw.append({
@@ -827,28 +905,23 @@ class GridPlot(Plot):
 
     def _add_shortcuts(self):
 
-        axes = self.get_param("axes")["inputField.params.options"]
+        axes = ["x", "y", "z"]
 
         for ax in axes:
 
-            ax_name = ax["label"]
-            ax_val = ax["value"]
+            self.add_shortcut(f'{ax.lower()}+enter', f"Show {ax} axis", self.update_settings, axes=[ax])
 
-            self.add_shortcut(f'{ax_name.lower()}+enter', f"Show {ax_name} axis", self.update_settings, axes=[ax_val])
+            self.add_shortcut(f'{ax.lower()} {ax.lower()}', f"Duplicate {ax} axis", self.tile, 2, ax)
 
-            self.add_shortcut(f'{ax_name.lower()} {ax_name.lower()}', f"Duplicate {ax_name} axis", self.tile, 2, ax_val)
+            self.add_shortcut(f'{ax.lower()}+-', f"Substract a unit cell along {ax}", self.tighten, 1, ax)
 
-            self.add_shortcut(f'{ax_name.lower()}+-', f"Substract a unit cell along {ax_name}", self.tighten, 1, ax_val)
-
-            self.add_shortcut(f'{ax_name.lower()}++', f"Add a unit cell along {ax_name}", self.tighten, -1, ax_val)
+            self.add_shortcut(f'{ax.lower()}++', f"Add a unit cell along {ax}", self.tighten, -1, ax)
 
         for xaxis in axes:
-            xaxis_name = xaxis["label"]
             for yaxis in [ax for ax in axes if ax != xaxis]:
-                yaxis_name = yaxis["label"]
                 self.add_shortcut(
-                    f'{xaxis_name.lower()}+{yaxis_name.lower()}', f"Show {xaxis_name} and {yaxis_name} axes",
-                    self.update_settings, axes=[xaxis["value"], yaxis['value']]
+                    f'{xaxis.lower()}+{yaxis.lower()}', f"Show {xaxis} and {yaxis} axes",
+                    self.update_settings, axes=[xaxis, yaxis]
                 )
 
     def tighten(self, steps, ax):
@@ -906,13 +979,13 @@ class GridPlot(Plot):
 
         return self.update_settings(nsc=nsc)
 
-    def scan(self, along=None, start=None, stop=None, step=None, num=None, breakpoints=None, mode="moving_slice", animation_kwargs=None, **kwargs):
+    def scan(self, along, start=None, stop=None, step=None, num=None, breakpoints=None, mode="moving_slice", animation_kwargs=None, **kwargs):
         """
         Returns an animation containing multiple frames scaning along an axis.
 
         Parameters
         -----------
-        along: int, optional
+        along: {"x", "y", "z"}
             the axis along which the scan is performed. If not provided, it will scan along the axes that are not displayed.
         start: float, optional
             the starting value for the scan (in Angstrom).
@@ -956,15 +1029,24 @@ class GridPlot(Plot):
         # Do some checks on the args provided
         if sum(1 for arg in (step, num, breakpoints) if arg is not None) > 1:
             raise ValueError(f"Only one of ('step', 'num', 'breakpoints') should be passed.")
+        
+        axes = self.get_setting('axes')
+        if mode == "as_is" and set(axes) - set(["x", "y", "z"]):
+            raise ValueError("To perform a scan, the axes need to be cartesian. Please set the axes to a combination of 'x', 'y' and 'z'.")
+        
+        if self.grid.sc.is_cartesian():
+            grid = self.grid
+        else:
+            transform_bc = kwargs.pop("transform_bc", self.get_setting("transform_bc"))
+            grid, transform_offset = self._transform_grid_cell(
+                self.grid, mode=transform_bc, output_shape=self.grid.shape, cval=np.nan
+            )
 
-        # If no axis is provided, let's get the first one that is not displayed
-        if along is None:
-            displayed = self.get_setting('axes')
-            not_displayed = [ax["value"] for ax in self.get_param('axes')['inputField.params.options'] if ax["value"] not in displayed]
-            along = not_displayed[0] if not_displayed else 2
+            kwargs["offset"] = transform_offset + kwargs.get("offset", self.get_setting("offset"))
 
         # We get the key that needs to be animated (we will divide the full range in frames)
-        range_key = ["x_range", "y_range", "z_range"][along]
+        range_key = f"{along}_range"
+        along_i = {"x": 0, "y": 1, "z": 2}[along]
 
         # Get the full range
         if start is not None and stop is not None:
@@ -991,15 +1073,15 @@ class GridPlot(Plot):
             # therefore we will add an extra step
             breakpoints = np.linspace(*along_range, int(num) + 1)
 
-        if breakpoints[-1] == self.grid.cell[along, along]:
-            breakpoints[-1] = self.grid.cell[along, along] - self.grid.dcell[along, along]
+        if breakpoints[-1] == grid.cell[along_i, along_i]:
+            breakpoints[-1] = grid.cell[along_i, along_i] - grid.dcell[along_i, along_i]
 
         if mode == "moving_slice":
-            return self._moving_slice_scan(along, breakpoints)
+            return self._moving_slice_scan(grid, along_i, breakpoints)
         elif mode == "as_is":
-            return self._asis_scan(range_key, breakpoints, animation_kwargs=animation_kwargs, **kwargs)
+            return self._asis_scan(grid, range_key, breakpoints, animation_kwargs=animation_kwargs, **kwargs)
 
-    def _asis_scan(self, range_key, breakpoints, animation_kwargs=None, **kwargs):
+    def _asis_scan(self, grid, range_key, breakpoints, animation_kwargs=None, **kwargs):
         """
         Returns an animation containing multiple frames scaning along an axis.
 
@@ -1029,8 +1111,7 @@ class GridPlot(Plot):
             {
                 range_key: [[bp, breakpoints[i+1]] for i, bp in enumerate(breakpoints[:-1])]
             },
-            plot_template=self,
-            fixed={**{key: val for key, val in self.settings.items() if key != range_key}, **kwargs},
+            fixed={**{key: val for key, val in self.settings.items() if key != range_key}, **kwargs, "grid": grid},
             frame_names=[f'{bp:2f}' for bp in breakpoints],
             **(animation_kwargs or {})
         )
@@ -1051,21 +1132,21 @@ class GridPlot(Plot):
 
         return scan
 
-    def _moving_slice_scan(self, along, breakpoints):
+    def _moving_slice_scan(self, grid, along_i, breakpoints):
         import plotly.graph_objs as go
-        ax = along
+        ax = along_i
         displayed_axes = [i for i in range(3) if i != ax]
-        shape = np.array(self.grid.shape)[displayed_axes]
-        cmin = np.min(self.grid.grid)
-        cmax = np.max(self.grid.grid)
+        shape = np.array(grid.shape)[displayed_axes]
+        cmin = np.min(grid.grid)
+        cmax = np.max(grid.grid)
         x_ax, y_ax = displayed_axes
-        x = np.linspace(0, self.grid.cell[x_ax, x_ax], self.grid.shape[x_ax])
-        y = np.linspace(0, self.grid.cell[y_ax, y_ax], self.grid.shape[y_ax])
+        x = np.linspace(0, grid.cell[x_ax, x_ax], grid.shape[x_ax])
+        y = np.linspace(0, grid.cell[y_ax, y_ax], grid.shape[y_ax])
 
         fig = go.Figure(frames=[go.Frame(data=go.Surface(
             x=x, y=y,
-            z=bp * np.ones(shape),
-            surfacecolor=np.squeeze(self.grid.cross_section(self.grid.index(bp, ax), ax).grid),
+            z=(bp * np.ones(shape)).T,
+            surfacecolor=np.squeeze(grid.cross_section(grid.index(bp, ax), ax).grid).T,
             cmin=cmin, cmax=cmax,
             ),
             name=f'{bp:.2f}'
@@ -1110,8 +1191,8 @@ class GridPlot(Plot):
                 scene=dict(
                             xaxis=dict(title=ax_title(x_ax)),
                             yaxis=dict(title=ax_title(y_ax)),
-                            zaxis=dict(range=[0, self.grid.cell[ax, ax]], autorange=False, title=ax_title(ax)),
-                            aspectratio=dict(x=1, y=1, z=1),
+                            zaxis=dict(autorange=True, title=ax_title(ax)),
+                            aspectmode="data",
                             ),
                 updatemenus = [
                     {
@@ -1136,6 +1217,9 @@ class GridPlot(Plot):
                 ],
                 sliders=sliders
         )
+
+        # We need to add an invisible trace so that the z axis stays with the correct range
+        fig.add_trace({"type": "scatter3d", "mode": "markers", "marker_size": 0.001, "x": [0,0], "y": [0,0], "z": [0, grid.cell[ax, ax]]})
 
         return fig
 
