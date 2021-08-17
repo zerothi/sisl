@@ -310,6 +310,6 @@ class GeometryBackend(Backend):
     def _draw_cell_3D_box(self, cell, geometry, color=None, width=2, **kwargs):
         x, y, z = (GeometryPlot._get_cell_corners(cell) + geometry.origo).T
 
-        self.draw_line3D(x, y, z, line={'color': color, 'width': width}, **kwargs)
+        self.draw_line3D(x, y, z, line={'color': color, 'width': width}, name="Unit cell", **kwargs)
 
 GeometryPlot.backends.register_template(GeometryBackend)

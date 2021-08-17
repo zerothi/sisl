@@ -36,8 +36,17 @@ def ndim(request):
 
 
 @pytest.fixture()
-def axes(ndim):
+def lattice_axes(ndim):
     return {1: [0], 2: [0, 1], 3: [0, 1, 2]}[ndim]
+
+
+@pytest.fixture(params=["cartesian", "lattice"])
+def axes(request, ndim):
+    if request.param == "cartesian":
+        return {1: "x", 2: "xy", 3: "xyz"}[ndim]
+    elif request.param == "lattice":
+        # We don't test the 3D case because it doesn't work
+        return {1: "a", 2: "ab", 3: "ab"}[ndim]
 
 
 class TestGridPlot(_TestPlot):
@@ -182,31 +191,31 @@ class TestGridPlot(_TestPlot):
         plot.update_settings(nsc=[1, 1, 1])
 
     @pytest.mark.parametrize("reduce_method", ["sum", "average"])
-    def test_reduce_method(self, plot, reduce_method, axes, grid_representation):
+    def test_reduce_method(self, plot, reduce_method, lattice_axes, grid_representation):
         new_grid, representation = grid_representation
 
         # If this is a 3D plot, no dimension is reduced, therefore it makes no sense
-        if len(axes) == 3:
+        if len(lattice_axes) == 3:
             return
 
         numpy_func = getattr(np, reduce_method)
 
-        plot.update_settings(axes=axes, reduce_method=reduce_method, represent=representation)
+        plot.update_settings(axes=lattice_axes, reduce_method=reduce_method, represent=representation)
 
         assert np.allclose(
-            self._get_plotted_values(plot), numpy_func(new_grid.grid, axis=tuple(ax for ax in [0, 1, 2] if ax not in axes))
+            self._get_plotted_values(plot), numpy_func(new_grid.grid, axis=tuple(ax for ax in [0, 1, 2] if ax not in lattice_axes))
         )
 
-    def test_transforms(self, plot, axes, grid_representation):
+    def test_transforms(self, plot, lattice_axes, grid_representation):
 
-        if len(axes) == 3:
+        if len(lattice_axes) == 3:
             return
 
         new_grid, representation = grid_representation
 
-        plot.update_settings(axes=axes, transforms=["cos"], represent=representation)
+        plot.update_settings(axes=lattice_axes, transforms=["cos"], represent=representation)
 
         # Check that transforms = ["cos"] applies np.cos
         assert np.allclose(
-            self._get_plotted_values(plot), np.cos(new_grid.grid).mean(axis=tuple(ax for ax in [0, 1, 2] if ax not in axes))
+            self._get_plotted_values(plot), np.cos(new_grid.grid).mean(axis=tuple(ax for ax in [0, 1, 2] if ax not in lattice_axes))
         )
