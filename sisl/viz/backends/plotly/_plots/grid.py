@@ -59,6 +59,7 @@ class PlotlyGridBackend(PlotlyBackend, GridBackend):
                 color=isosurf["color"],
                 opacity=isosurf["opacity"],
                 name=isosurf["name"],
+                showlegend=True,
                 **kwargs
             ))
 

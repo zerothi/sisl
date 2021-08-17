@@ -448,13 +448,13 @@ class GridPlot(Plot):
         grid_axes = []
         for ax in axes:
             if ax in ("x", "y", "z"):
-                coord_index = {"x": 0, "y": 1, "z": 2}[ax]
+                coord_index = "xyz".index(ax)
                 lattice_vecs = np.where(cell[:, coord_index] > tol)[0]
                 if lattice_vecs.shape[0] != 1:
-                    raise ValueError(f"There are {lattice_vecs.shape[0]} lattice vectors that contribute to the {['x', 'y','z'][coord_index]} coordinate.")
+                    raise ValueError(f"There are {lattice_vecs.shape[0]} lattice vectors that contribute to the {'xyz'[coord_index]} coordinate.")
                 grid_axes.append(lattice_vecs[0])
             else:
-                grid_axes.append({"a": 0, "b": 1, "c": 2}[ax])
+                grid_axes.append("abc".index(ax))
 
         return grid_axes
 
@@ -486,7 +486,7 @@ class GridPlot(Plot):
         tol: float, optional
             Threshold value to consider a component of the cell nonzero.
         """
-        coord_index = {"x": 0, "y": 1, "z": 2}[coord_ax]
+        coord_index = "xyz".index(coord_ax)
         lattice_vecs = np.where(cell[:, coord_index] > tol)[0]
 
         is_1D_cartesian = lattice_vecs.shape[0] == 1
@@ -632,7 +632,7 @@ class GridPlot(Plot):
             coord_range = {"x": x_range, "y": y_range, "z": z_range}[ax]
             grid_offset =  _a.asarrayd(offset) + self.offsets["vacuum"]
 
-            coord_index = {"x": 0, "y": 1, "z": 2}[ax]
+            coord_index = "xyz".index(ax)
             # Now let's get the offset due to the minimum value of the axis range
             if coord_range is not None:
                 offset = coord_range[0]
@@ -723,13 +723,13 @@ class GridPlot(Plot):
             maxval = np.nanmax(values)
 
         if set(display_axes).intersection(["x", "y", "z"]):
-            coord_indices = [{"x": 0, "y": 1, "z": 2}[ax] for ax in display_axes]
+            coord_indices = ["xyz".index(ax) for ax in display_axes]
 
             def _indices_to_2Dspace(contour_coords):
                 return contour_coords.dot(grid.dcell[grid_axes, :])[:, coord_indices]
         else:
             def _indices_to_2Dspace(contour_coords):
-                return contour_coords / np.array(grid.shape)[grid_axes]
+                return contour_coords / (np.array(grid.shape) / nsc)[grid_axes]
 
         isos_to_draw = []
         for iso in isos:
@@ -762,7 +762,7 @@ class GridPlot(Plot):
             isos_to_draw.append({
                 "x": contour_xs, "y": contour_ys,
                 "color": iso.get("color"), "opacity": iso.get("opacity"),
-                "name": iso.get("name", "").replace("$isoval$", str(isoval))
+                "name": iso.get("name", "").replace("$isoval$", f"{isoval:.4f}")
             })
 
         return {
@@ -898,7 +898,7 @@ class GridPlot(Plot):
             isos_to_draw.append({
                 "vertices": vertices, "faces": faces,
                 "color": iso.get("color"), "opacity": iso.get("opacity"),
-                "name": iso.get("name", "").replace("$isoval$", str(isoval))
+                "name": iso.get("name", "").replace("$isoval$", f"{isoval:.4f}")
             })
 
         return {"isosurfaces": isos_to_draw}
@@ -1403,7 +1403,7 @@ class WavefunctionPlot(GridPlot):
     )
 
     _overwrite_defaults = {
-        'axes': [0, 1, 2],
+        'axes': "xyz",
         'plot_geom': True
     }
 

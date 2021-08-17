@@ -237,7 +237,23 @@ class GeomAxisSelect(DropdownInput):
         if isinstance(ax, str) and ax in ("0", "1", "2"):
             ax = int(ax)
         if isinstance(ax, int):
-            ax = ["a", "b", "c"][ax]
+            ax = 'abc'[ax]
+        elif isinstance(ax, (list, tuple)):
+            ax = np.array(ax)
+        elif isinstance(ax, str):
+            ax = ax.lower()
+
+        # Now perform some checks
+        invalid = True
+        if isinstance(ax, str):
+            invalid = not ( len(ax) == 1 and ax in "xyzabc")
+        elif isinstance(ax, np.ndarray):
+            invalid = ax.shape != (3,)
+        
+        if invalid:
+            raise ValueError(f"Incorrect axis passed. Axes must be one of ('x', 'y', 'z', 'a', 'b', 'c', '0', '1', '2', 0, 1, 2)"+
+                " or a numpy array/list/tuple of shape (3, )")
+
         return ax
 
     def parse(self, val):

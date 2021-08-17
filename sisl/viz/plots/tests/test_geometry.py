@@ -33,14 +33,19 @@ class TestGeometry(_TestPlot):
         attrs = {}
 
         return init_func, attrs
+    
+    @pytest.fixture(scope="function", params=["xy", "ab", [[1,1,0], [1,-1,0]], ["x", [1, -1, 0]]])
+    def axes_2D(self, request):
+        """Fixture returning all valid combinations of axes in 2D"""
+        return request.param
 
     def test_1d(self):
         # Remains untested for now as there is no clear behavior
         pass
 
-    def test_2d(self, plot):
+    def test_2d(self, plot, axes_2D):
 
-        plot.update_settings(axes=[0, 1], show_bonds=True, show_cell='box', atoms=None)
+        plot.update_settings(axes=axes_2D, show_bonds=True, show_cell='box', atoms=None)
 
         # Check that the first trace is 2d
         assert np.all([hasattr(plot.data[0], ax) for ax in ('x', 'y')])

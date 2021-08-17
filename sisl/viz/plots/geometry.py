@@ -324,7 +324,7 @@ class GeometryPlot(Plot):
 
         return tuple(ensure_nsc(prop) for prop in props)
 
-    def _set_data(self, axes, atoms, atoms_color, atoms_size, show_atoms, bind_bonds_to_ats, dataaxis_1d, show_cell, kwargs3d={}, kwargs2d={}, kwargs1d={}):
+    def _set_data(self, axes, atoms, atoms_color, atoms_size, show_atoms, bind_bonds_to_ats, dataaxis_1d, show_cell, nsc, kwargs3d={}, kwargs2d={}, kwargs1d={}):
         self._ndim = len(axes)
 
         if show_atoms == False:
@@ -341,11 +341,11 @@ class GeometryPlot(Plot):
             backend_info = self._prepare3D(**atoms_kwargs, bind_bonds_to_ats=bind_bonds_to_ats, **kwargs3d)
         elif self._ndim == 2:
             xaxis, yaxis = axes
-            backend_info = self._prepare2D(xaxis=xaxis, yaxis=yaxis, **atoms_kwargs, bind_bonds_to_ats=bind_bonds_to_ats, **kwargs2d)
+            backend_info = self._prepare2D(xaxis=xaxis, yaxis=yaxis, **atoms_kwargs, bind_bonds_to_ats=bind_bonds_to_ats, nsc=nsc, **kwargs2d)
         elif self._ndim == 1:
             xaxis = axes[0]
             yaxis = dataaxis_1d
-            backend_info = self._prepare1D(atoms=atoms, coords_axis=xaxis, data_axis=yaxis, **kwargs1d)
+            backend_info = self._prepare1D(atoms=atoms, coords_axis=xaxis, data_axis=yaxis, nsc=nsc, **kwargs1d)
 
         # Define the axes titles
         backend_info["axes_titles"] = {
@@ -366,8 +366,10 @@ class GeometryPlot(Plot):
         """Generates the title for a given axis"""
         if hasattr(ax, "__name__"):
             title = ax.__name__
-        elif not isinstance(ax, str):
+        elif isinstance(ax, np.ndarray) and ax.shape == (3,):
             title = str(ax)
+        elif not isinstance(ax, str):
+            title = ""
         elif ax.lower() in ("x", "y", "z"):
             title = f'{ax.upper()} axis [Ang]'
         elif ax.lower() in ("a", "b", "c"):
@@ -487,7 +489,7 @@ class GeometryPlot(Plot):
         return np.array([xyz(coeffs) for coeffs in points])
 
     @classmethod
-    def _projected_1Dcoords(cls, geometry, xyz=None, axis="x"):
+    def _projected_1Dcoords(cls, geometry, xyz=None, axis="x", nsc=(1,1,1)):
         """
         Moves the 3D positions of the atoms to a 2D supspace.
 
@@ -506,7 +508,10 @@ class GeometryPlot(Plot):
             the 3D coordinates that we want to project.
             otherwise they are taken from the geometry. 
         axis: {"x", "y", "z", "a", "b", "c", "1", "2", "3"} or array-like of shape 3, optional
-            the direction to be displayed along the X axis. 
+            the direction to be displayed along the X axis.
+        nsc: array-like of shape (3, ), optional
+            only used if `axis` is a lattice vector. It is used to rescale everything to the unit
+            cell lattice vectors, otherwise `GeometryPlot` doesn't play well with `GridPlot`.
 
         Returns
         ----------
@@ -517,8 +522,8 @@ class GeometryPlot(Plot):
         if xyz is None:
             xyz = geometry.xyz
 
-        if axis in ["a", "b", "c", "0", "1", "2"]:
-            return cls._projected_2Dcoords(geometry, xyz, xaxis=axis, yaxis="a" if axis == "c" else "c")[..., 0]
+        if isinstance(axis, str) and axis in ("a", "b", "c", "0", "1", "2"):
+            return cls._projected_2Dcoords(geometry, xyz, xaxis=axis, yaxis="a" if axis == "c" else "c", nsc=nsc)[..., 0]
 
         # Get the direction that the axis represents
         axis = cls._direction(axis, geometry.cell)
@@ -526,7 +531,7 @@ class GeometryPlot(Plot):
         return xyz.dot(axis/fnorm(axis)) / fnorm(axis)
 
     @classmethod
-    def _projected_2Dcoords(cls, geometry, xyz=None, xaxis="x", yaxis="y"):
+    def _projected_2Dcoords(cls, geometry, xyz=None, xaxis="x", yaxis="y", nsc=(1,1,1)):
         """
         Moves the 3D positions of the atoms to a 2D supspace.
 
@@ -547,7 +552,10 @@ class GeometryPlot(Plot):
         xaxis: {"x", "y", "z", "a", "b", "c"} or array-like of shape 3, optional
             the direction to be displayed along the X axis. 
         yaxis: {"x", "y", "z", "a", "b", "c"} or array-like of shape 3, optional
-            the direction to be displayed along the X axis. 
+            the direction to be displayed along the X axis.
+        nsc: array-like of shape (3, ), optional
+            only used if `xaxis`/`yaxis` is a lattice vector. It is used to rescale everything to the unit
+            cell lattice vectors, otherwise `GeometryPlot` doesn't play well with `GridPlot`. 
 
         Returns
         ----------
@@ -557,16 +565,25 @@ class GeometryPlot(Plot):
         """
         if xyz is None:
             xyz = geometry.xyz
+        
+        try:
+            all_lattice_vecs = len(set([xaxis, yaxis]).intersection(["a", "b", "c"])) == 2
+        except:
+            # If set fails it is because xaxis/yaxis is unhashable, which means it
+            # is a numpy array
+            all_lattice_vecs = False
 
-        if len(set([xaxis, yaxis]).intersection(["a", "b", "c", "0", "1", "2"])) == 2:
-            icell = geometry.icell
-            coord_indices = [int({"a": 0, "b": 1, "c": 2}.get(ax, ax)) for ax in (xaxis, yaxis)]
+        if all_lattice_vecs:
+            coord_indices = ["abc".index(ax) for ax in (xaxis, yaxis)]
+
+            nsc = np.array(nsc).reshape(3,1)
+            icell = cell_invert(geometry.cell / nsc)
         else:
             # Get the directions that these axes represent
             xaxis = cls._direction(xaxis, geometry.cell)
             yaxis = cls._direction(yaxis, geometry.cell)
 
-            fake_cell = np.array([xaxis, yaxis, np.cross(xaxis, yaxis)])
+            fake_cell = np.array([xaxis, yaxis, np.cross(xaxis, yaxis)], dtype=np.float64)
             icell = cell_invert(fake_cell)
             coord_indices = [0,1]
 
@@ -589,7 +606,8 @@ class GeometryPlot(Plot):
     #                  1D plotting
     #---------------------------------------------------
 
-    def _prepare1D(self, atoms=None, coords_axis="x", data_axis=None, wrap_atoms=None, atoms_color=None, atoms_size=None, atoms_colorscale="viridis", **kwargs):
+    def _prepare1D(self, atoms=None, coords_axis="x", data_axis=None, wrap_atoms=None, atoms_color=None, atoms_size=None, atoms_colorscale="viridis", 
+        nsc=(1,1,1), **kwargs):
         """
         Returns a 1D representation of the plot's geometry.
 
@@ -618,6 +636,9 @@ class GeometryPlot(Plot):
             function that takes the 2D positions of the atoms in the plot and returns a tuple of (args, kwargs),
             that are passed to self._atoms_scatter_trace2D.
             If not provided self._default_wrap_atoms is used.
+        nsc: array-like of shape (3,), optional
+            the number of times the geometry has been tiled in each direction. This is only used to rescale
+            fractional coordinates.
         **kwargs: 
             passed directly to the atoms scatter trace
         """
@@ -629,7 +650,7 @@ class GeometryPlot(Plot):
         self._display_props["atoms"]["size"] = atoms_size
         self._display_props["atoms"]["colorscale"] = atoms_colorscale
 
-        x = self._projected_1Dcoords(self.geometry, self.geometry[atoms], axis=coords_axis)
+        x = self._projected_1Dcoords(self.geometry, self.geometry[atoms], axis=coords_axis, nsc=nsc)
         if data_axis is None:
             def data_axis(x):
                 return np.zeros(x.shape[0])
@@ -683,7 +704,7 @@ class GeometryPlot(Plot):
 
     def _prepare2D(self, xaxis="x", yaxis="y", atoms=None, atoms_color=None, atoms_size=None, atoms_colorscale="viridis",
         show_bonds=True, bind_bonds_to_ats=True, bonds_together=True, points_per_bond=5,
-        show_cell='box', wrap_atoms=None, wrap_bond=None):
+        show_cell='box', wrap_atoms=None, wrap_bond=None, nsc=(1,1,1)):
         """Returns a 2D representation of the plot's geometry.
 
         Parameters
@@ -741,7 +762,7 @@ class GeometryPlot(Plot):
         self._display_props["atoms"]["size"] = atoms_size
         self._display_props["atoms"]["colorscale"] = atoms_colorscale
 
-        xy = self._projected_2Dcoords(self.geometry, self.geometry[atoms], xaxis=xaxis, yaxis=yaxis).T
+        xy = self._projected_2Dcoords(self.geometry, self.geometry[atoms], xaxis=xaxis, yaxis=yaxis, nsc=nsc).T
 
         # Add atoms
         atoms_props = wrap_atoms(atoms, xy)
@@ -756,7 +777,7 @@ class GeometryPlot(Plot):
 
             bonds_xyz = np.array([self.geometry[bond] for bond in bonds])
             if len(bonds_xyz) != 0:
-                xys = self._projected_2Dcoords(self.geometry, bonds_xyz, xaxis=xaxis, yaxis=yaxis)
+                xys = self._projected_2Dcoords(self.geometry, bonds_xyz, xaxis=xaxis, yaxis=yaxis, nsc=nsc)
 
                 # Try to get the bonds colors (It might be that the user is not setting them)
                 bonds_props = [wrap_bond(bond, xy) for bond, xy in zip(bonds, xys)]
