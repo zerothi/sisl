@@ -501,7 +501,7 @@ class GridPlot(Plot):
         grid = self.grid.copy()
 
         self._ndim = len(axes)
-        self.offsets["origin"] = grid.origo
+        self.offsets["origin"] = grid.origin
 
         # Choose the representation of the grid that we want to display
         grid.grid = self._get_representation(grid, represent)

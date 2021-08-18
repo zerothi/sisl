@@ -1071,8 +1071,8 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
     >>> N = 30
     >>> kR = 0.01
     >>> normal = [0, 0, 1]
-    >>> origo = [1/3, 2/3, 0]
-    >>> bz = BrillouinZone.param_circle(H, N, kR, normal, origo)
+    >>> origin = [1/3, 2/3, 0]
+    >>> bz = BrillouinZone.param_circle(H, N, kR, normal, origin)
     >>> phase = berry_phase(bz)
 
     Calculate Berry-phase for first band
@@ -1080,8 +1080,8 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
     >>> N = 30
     >>> kR = 0.01
     >>> normal = [0, 0, 1]
-    >>> origo = [1/3, 2/3, 0]
-    >>> bz = BrillouinZone.param_circle(H, N, kR, normal, origo)
+    >>> origin = [1/3, 2/3, 0]
+    >>> bz = BrillouinZone.param_circle(H, N, kR, normal, origin)
     >>> phase = berry_phase(bz, sub=0)
 
     References
@@ -1268,7 +1268,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
         geometry = grid.geometry
     if geometry is None:
         raise SislError("wavefunction: did not find a usable Geometry through keywords or the Grid!")
-    # Ensure coordinates are in the primary unit-cell, regardless of origo etc.
+    # Ensure coordinates are in the primary unit-cell, regardless of origin etc.
     geometry = geometry.copy()
     geometry.xyz = (geometry.fxyz % 1) @ geometry.sc.cell
 
@@ -1365,7 +1365,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
     del ctheta_sphi, stheta_sphi, cphi, idx, rxyz, nrxyz
 
     # Fast loop (only per specie)
-    origo = grid.sc.origo.reshape(1, 3)
+    origin = grid.sc.origin.reshape(1, 3)
     idx_mm = _a.emptyd([geometry.na, 2, 3])
     all_negative_R = True
     for atom, ia in geometry.atoms.iter(True):
@@ -1376,9 +1376,9 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
 
         # Now do it for all the atoms to get indices of the middle of
         # the atoms
-        # The coordinates are relative to origo, so we need to shift (when writing a grid
-        # it is with respect to origo)
-        idx = dot(geometry.xyz[ia, :] - origo, ic_shape.T)
+        # The coordinates are relative to origin, so we need to shift (when writing a grid
+        # it is with respect to origin)
+        idx = dot(geometry.xyz[ia, :] - origin, ic_shape.T)
 
         # Get min-max for all atoms
         idx_mm[ia, 0, :] = idxm * R + idx
@@ -1391,7 +1391,7 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
     # When we run the below loop all indices can be retrieved by looking
     # up in the above table.
     # Before continuing, we can easily clean up the temporary arrays
-    del origo, idx
+    del origin, idx
 
     arangei = _a.arangei
 
@@ -1416,16 +1416,16 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
     # them square.
 
     o = sc.toCuboid(True)
-    sc = SuperCell(o._v + np.diag(2 * add_R), origo=o.origo - add_R)
+    sc = SuperCell(o._v + np.diag(2 * add_R), origin=o.origin - add_R)
 
     # Retrieve all atoms within the grid supercell
     # (and the neighbours that connect into the cell)
-    # Note that we cannot pass the "moved" origo because then ISC would be wrong
+    # Note that we cannot pass the "moved" origin because then ISC would be wrong
     IA, XYZ, ISC = geometry.within_inf(sc, periodic=pbc)
-    # We need to revert the grid supercell origo as that is not subtracted in the `within_inf` returned
-    # coordinates (and the below loop expects positions with respect to the origo of the plotting
+    # We need to revert the grid supercell origin as that is not subtracted in the `within_inf` returned
+    # coordinates (and the below loop expects positions with respect to the origin of the plotting
     # grid).
-    XYZ -= grid.sc.origo.reshape(1, 3)
+    XYZ -= grid.sc.origin.reshape(1, 3)
 
     phk = k * 2 * np.pi
     phase = 1

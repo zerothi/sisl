@@ -29,7 +29,7 @@ class Ellipsoid(PureShape):
        I.e. the first vector is considered a principal axis, then the second vector will
        be orthogonalized onto the first, and this is the second principal axis. And so on.
     center : (3,), optional
-       the center of the ellipsoid. Defaults to the origo.
+       the center of the ellipsoid. Defaults to the origin.
 
     Examples
     --------
@@ -125,10 +125,6 @@ class Ellipsoid(PureShape):
         """ Return a cuboid with side lengths equal to the diameter of each ellipsoid vectors """
         from .prism4 import Cuboid
         return Cuboid(self._v * 2, self.center)
-
-    def set_center(self, center):
-        """ Change the center of the object """
-        super().__init__(center)
 
     def within_index(self, other, tol=1.e-8):
         r""" Return indices of the points that are within the shape

@@ -1,6 +1,8 @@
 0.X.Y
 =====
 
+- renamed origo to origin, see #365
+
 - enabled copying Dispatchers for subclasses.
 	This allows chained dictionary look-ups for subclasses.
 	By default the dispatch dictionary is a chainmap and

@@ -74,6 +74,11 @@ class Shape:
         """ The geometric center of the shape """
         return self._center
 
+    @center.setter
+    def center(self, center):
+        """ Set the geometric center of the shape """
+        self._center[:] = center
+
     def scale(self, scale):
         """ Return a new Shape with a scaled size """
         raise NotImplementedError(f"{self.__class__.__name__}.scale has not been implemented")

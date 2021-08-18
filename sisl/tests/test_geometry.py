@@ -776,8 +776,8 @@ class TestGeometry:
         g = setup.mol.translate([0.05] * 3)
         sc = SuperCell(1.5)
         for o in range(10):
-            origo = [o - 0.5, -0.5, -0.5]
-            sc.origo = origo
+            origin = [o - 0.5, -0.5, -0.5]
+            sc.origin = origin
             idx = g.within_inf(sc)[0]
             assert len(idx) == 1
             assert idx[0] == o

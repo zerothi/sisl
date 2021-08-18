@@ -338,7 +338,7 @@ def test_sparse_orbital_replace_hole():
     # now replace every position that can be replaced
     for y in [0, 2, 3]:
         for x in [1, 2, 3]:
-            cube = Cuboid(hole.sc.cell, origo=g.sc.offset([x, y, 0]) - 0.1)
+            cube = Cuboid(hole.sc.cell, origin=g.sc.offset([x, y, 0]) - 0.1)
             atoms = big.within(cube)
             assert len(atoms) == 4 * 6 * 6
             new = big.replace(atoms, hole)
@@ -380,7 +380,7 @@ def test_sparse_orbital_replace_hole_norbs():
     # now replace every position that can be replaced
     for y in [0, 3]:
         for x in [1, 3]:
-            cube = Cuboid(hole.sc.cell, origo=g.sc.offset([x, y, 0]) - 0.1)
+            cube = Cuboid(hole.sc.cell, origin=g.sc.offset([x, y, 0]) - 0.1)
             atoms = big.within(cube)
             assert len(atoms) == 4 * 6 * 6
             new = big.replace(atoms, hole)

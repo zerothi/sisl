@@ -20,7 +20,7 @@ class cubeSile(Sile):
     """ CUBE file object """
 
     @sile_fh_open()
-    def write_supercell(self, sc, fmt='15.10e', size=None, origo=None,
+    def write_supercell(self, sc, fmt='15.10e', size=None, origin=None,
                         *args, **kwargs):
         """ Writes `SuperCell` object attached to this grid
 
@@ -32,8 +32,8 @@ class cubeSile(Sile):
             floating point format for stored values
         size : (3, ), optional
             shape of the stored grid (``[1, 1, 1]``)
-        origo : (3, ), optional
-            origo of the cell (``[0, 0, 0]``)
+        origin : (3, ), optional
+            origin of the cell (``[0, 0, 0]``)
         """
         sile_raise_write(self)
 
@@ -43,13 +43,13 @@ class cubeSile(Sile):
 
         if size is None:
             size = np.ones([3], np.int32)
-        if origo is None:
-            origo = sc.origo[:]
+        if origin is None:
+            origin = sc.origin[:]
 
         _fmt = '{:d} {:15.10e} {:15.10e} {:15.10e}\n'
 
-        # Add #-of atoms and origo
-        self._write(_fmt.format(1, *(origo * Ang2Bohr)))
+        # Add #-of atoms and origin
+        self._write(_fmt.format(1, *(origin * Ang2Bohr)))
 
         # Write the cell and voxels
         for ix in range(3):
@@ -59,7 +59,7 @@ class cubeSile(Sile):
         self._write('1 0. 0. 0. 0.\n')
 
     @sile_fh_open()
-    def write_geometry(self, geometry, fmt='15.10e', size=None, origo=None,
+    def write_geometry(self, geometry, fmt='15.10e', size=None, origin=None,
             *args, **kwargs):
         """ Writes `Geometry` object attached to this grid
 
@@ -71,8 +71,8 @@ class cubeSile(Sile):
             floating point format for stored values
         size : (3, ), optional
             shape of the stored grid (``[1, 1, 1]``)
-        origo : (3, ), optional
-            origo of the cell (``[0, 0, 0]``)
+        origin : (3, ), optional
+            origin of the cell (``[0, 0, 0]``)
         """
         sile_raise_write(self)
 
@@ -82,16 +82,16 @@ class cubeSile(Sile):
 
         if size is None:
             size = np.ones([3], np.int32)
-        if origo is None:
-            origo = geometry.origo[:]
+        if origin is None:
+            origin = geometry.origin[:]
 
         _fmt = '{:d} {:15.10e} {:15.10e} {:15.10e}\n'
 
         valid_Z = (geometry.atoms.Z > 0).nonzero()[0]
         geometry = geometry.sub(valid_Z)
 
-        # Add #-of atoms and origo
-        self._write(_fmt.format(len(geometry), *(origo * Ang2Bohr)))
+        # Add #-of atoms and origin
+        self._write(_fmt.format(len(geometry), *(origin * Ang2Bohr)))
 
         # Write the cell and voxels
         for ix in range(3):
@@ -168,9 +168,9 @@ class cubeSile(Sile):
         """
         self.readline()  # header 1
         self.readline()  # header 2
-        origo = self.readline().split() # origo
-        lna = int(origo[0])
-        origo = np.fromiter(map(float, origo[1:]), np.float64)
+        origin = self.readline().split() # origin
+        lna = int(origin[0])
+        origin = np.fromiter(map(float, origin[1:]), np.float64)
 
         cell = np.empty([3, 3], np.float64)
         for i in [0, 1, 2]:
@@ -181,10 +181,10 @@ class cubeSile(Sile):
                 cell[i, j] = float(tmp[j]) * s
 
         cell = cell / Ang2Bohr
-        origo = origo / Ang2Bohr
+        origin = origin / Ang2Bohr
         if na:
-            return lna, SuperCell(cell, origo=origo)
-        return SuperCell(cell, origo=origo)
+            return lna, SuperCell(cell, origin=origin)
+        return SuperCell(cell, origin=origin)
 
     @sile_fh_open()
     def read_geometry(self):
@@ -230,7 +230,7 @@ class cubeSile(Sile):
         # Now seek behind to read grid sizes
         self.fh.seek(0)
 
-        # Skip headers and origo
+        # Skip headers and origin
         self.readline()
         self.readline()
         na = int(self.readline().split()[0])

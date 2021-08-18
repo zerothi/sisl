@@ -15,7 +15,7 @@ def test_create_cuboid():
     cube = Cuboid([1.0]*3)
     cube = Cuboid([1.0]*3, [1.]*3)
     cube = Cuboid([1.0, 2.0, 3.0], [1.]*3)
-    cube = Cuboid([1.0, 2.0, 3.0], origo=[1.]*3)
+    cube = Cuboid([1.0, 2.0, 3.0], origin=[1.]*3)
     v0 = [1., 0.2, 1.0]
     v1 = [1., -0.2, 1.0]
     v2 = [1., -0.2, -1.0]
@@ -31,7 +31,7 @@ def test_create_fail():
     with pytest.raises(ValueError):
         el = Cuboid([v0, v1, v2, v3])
     with pytest.raises(ValueError):
-        el = Cuboid(2, center=v1, origo=v2)
+        el = Cuboid(2, center=v1, origin=v2)
 
 
 def test_tosphere():
@@ -87,11 +87,11 @@ def test_vol1():
     assert cube.volume() == 1.
 
 
-def test_origo():
+def test_origin():
     cube = Cuboid([1.0]*3)
-    assert np.allclose(cube.origo, -0.5)
-    cube.set_origo(1)
-    assert np.allclose(cube.origo, 1)
+    assert np.allclose(cube.origin, -0.5)
+    cube.origin = 1
+    assert np.allclose(cube.origin, 1)
 
 
 def test_within1():

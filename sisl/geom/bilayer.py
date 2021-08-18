@@ -95,7 +95,7 @@ def bilayer(bond=1.42, bottom_atoms=None, top_atoms=None, stacking='AB',
         natoms = 2 * (n ** 2 + n * m + m ** 2)
 
     if rep > 1:
-        # Set origo through an A atom near the middle of the geometry
+        # Set origin through an A atom near the middle of the geometry
         align_vec = - rep * (ref_cell[0] + ref_cell[1]) / 2
 
         bottom = (bottom
