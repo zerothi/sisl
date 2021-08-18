@@ -544,12 +544,12 @@ class _densitymatrix(SparseOrbitalBZSpin):
         # For extremely skewed lattices this will be way too much, hence we make
         # them square.
         o = sc.toCuboid(True)
-        sc = SuperCell(o._v + np.diag(2 * add_R), origo=o.origo - add_R)
+        sc = SuperCell(o._v + np.diag(2 * add_R), origin=o.origin - add_R)
 
         # Retrieve all atoms within the grid supercell
         # (and the neighbours that connect into the cell)
         IA, XYZ, ISC = geometry.within_inf(sc, periodic=pbc)
-        XYZ -= grid.sc.origo.reshape(1, 3)
+        XYZ -= grid.sc.origin.reshape(1, 3)
 
         # Retrieve progressbar
         eta = progressbar(len(IA), f"{self.__class__.__name__}.density", "atom", eta)
@@ -619,8 +619,8 @@ class _densitymatrix(SparseOrbitalBZSpin):
 
         # Get offset in supercell in orbitals
         off = geometry.no * primary_i_s
-        origo = grid.origo
-        # TODO sum the non-origo atoms to the csrDM matrix
+        origin = grid.origin
+        # TODO sum the non-origin atoms to the csrDM matrix
         #      this would further decrease the loops required.
 
         # Loop over all atoms in the grid-cell
@@ -629,7 +629,7 @@ class _densitymatrix(SparseOrbitalBZSpin):
             ia_atom = atoms[ia]
             IO = a2o(ia)
             IO_range = range(ia_atom.no)
-            cell_offset = (cell * isc.reshape(3, 1)).sum(0) - origo
+            cell_offset = (cell * isc.reshape(3, 1)).sum(0) - origin
 
             # Extract maximum R
             R = ia_atom.maxR()

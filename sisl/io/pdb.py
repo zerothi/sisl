@@ -117,7 +117,7 @@ class pdbSile(Sile):
         #46 - 55         Real(10.5)    t[n]          Tn
         fmt = 'ORIGX{:1d}   ' + '{:10.6f}' * 3 + '{:10.5f}\n'
         for i in range(3):
-            args = [i + 1, 0, 0, 0, sc.origo[i]]
+            args = [i + 1, 0, 0, 0, sc.origin[i]]
             self._write(fmt.format(*args))
 
     @sile_fh_open()
@@ -147,13 +147,13 @@ class pdbSile(Sile):
                 raise SileError(str(self) + ' found SCALE1 but not SCALE3!')
             cell[2, :] = float(line[11:20]), float(line[21:30]), float(line[31:40])
 
-        origo = np.zeros(3)
+        origin = np.zeros(3)
         for i in range(3):
             f, line = self._step_record('ORIGX{}'.format(i + 1))
             if f:
-                origo[i] = float(line[45:55])
+                origin[i] = float(line[45:55])
 
-        return SuperCell(cell, origo=origo)
+        return SuperCell(cell, origin=origin)
 
     @sile_fh_open()
     def write_geometry(self, geometry):

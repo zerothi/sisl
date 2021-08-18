@@ -28,10 +28,10 @@ class Cuboid(PureShape):
        vectors describing the cuboid, if only 3 the cuboid will be
        along the Euclidean vectors.
     center : (3,), optional
-       the center of the cuboid. Defaults to the origo.
-       Not allowed as argument if `origo` is passed.
-    origo : (3,), optional
-       the offset for the cuboid. The center will be equal to ``v.sum(0) + origo``.
+       the center of the cuboid. Defaults to the origin.
+       Not allowed as argument if `origin` is passed.
+    origin : (3,), optional
+       the offset for the cuboid. The center will be equal to ``v.sum(0) + origin``.
        Not allowed as argument if `center` is passed.
 
     Examples
@@ -48,7 +48,7 @@ class Cuboid(PureShape):
     #  Cuboid().to.ellipsoid() will convert to an sisl.shape.Ellipsoid object
     to = PureShape.to.copy()
 
-    def __init__(self, v, center=None, origo=None):
+    def __init__(self, v, center=None, origin=None):
 
         v = _a.asarrayd(v)
         if v.size == 1:
@@ -60,10 +60,10 @@ class Cuboid(PureShape):
         else:
             raise ValueError(f"{self.__class__.__name__} requires initialization with 3 vectors defining the cuboid")
 
-        if center is not None and origo is not None:
-            raise ValueError(f"{self.__class__.__name__} only allows either origo or center argument")
-        elif origo is not None:
-            center = self._v.sum(0) / 2 + origo
+        if center is not None and origin is not None:
+            raise ValueError(f"{self.__class__.__name__} only allows either origin or center argument")
+        elif origin is not None:
+            center = self._v.sum(0) / 2 + origin
 
         # initialize the center
         super().__init__(center)
@@ -75,15 +75,11 @@ class Cuboid(PureShape):
         return self.__class__(self._v, self.center)
 
     def __str__(self):
-        return self.__class__.__name__ + '{{O({1} {2} {3}), vol: {0}}}'.format(self.volume(), *self.origo)
+        return self.__class__.__name__ + '{{O({1} {2} {3}), vol: {0}}}'.format(self.volume(), *self.origin)
 
     def volume(self):
         """ Return volume of Cuboid """
         return abs(dot3(self._v[0, :], cross3(self._v[1, :], self._v[2, :])))
-
-    def set_center(self, center):
-        """ Re-setting the center can sometimes be necessary """
-        super().__init__(center)
 
     def scale(self, scale):
         """ Scale the cuboid box size (center is retained)
@@ -148,8 +144,8 @@ class Cuboid(PureShape):
         """
         other = _a.asarrayd(other).reshape(-1, 3)
 
-        # Offset origo
-        tmp = dot(other - self.origo[None, :], self._iv)
+        # Offset origin
+        tmp = dot(other - self.origin[None, :], self._iv)
 
         # First reject those that are definitely not inside
         # The proximity is 1e-12 of the inverse cell.
@@ -158,13 +154,14 @@ class Cuboid(PureShape):
         return indices_gt_le(tmp, -tol, 1. + tol)
 
     @property
-    def origo(self):
+    def origin(self):
         """ Return the origin of the Cuboid (lower-left corner) """
         return self.center - (self._v * 0.5).sum(0)
 
-    def set_origo(self, origo):
-        """ Re-setting the origo can sometimes be necessary """
-        super().__init__(origo + (self._v * 0.5).sum(0))
+    @origin.setter
+    def origin(self, origin):
+        """ Re-setting the origin can sometimes be necessary """
+        super().__init__(origin + (self._v * 0.5).sum(0))
 
     @property
     def edge_length(self):
@@ -213,14 +210,14 @@ class Cube(Cuboid):
     side : float
        side-length of the cube, or vector
     center : (3,), optional
-       the center of the cuboid. Defaults to the origo.
-       Not allowed as argument if `origo` is passed.
-    origo : (3,), optional
+       the center of the cuboid. Defaults to the origin.
+       Not allowed as argument if `origin` is passed.
+    origin : (3,), optional
        the lower left corner of the cuboid.
        Not allowed as argument if `center` is passed.
     """
     __slots__ = ()
 
-    def __init__(self, side, center=None, origo=None):
+    def __init__(self, side, center=None, origin=None):
         side = _a.asarrayd(side).ravel()[0]
-        super().__init__(side, center, origo)
+        super().__init__(side, center, origin)

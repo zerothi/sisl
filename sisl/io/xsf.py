@@ -306,7 +306,7 @@ class xsfSile(Sile):
         def write_cell(grid):
             # Now write the grid
             self._write('  {} {} {}\n'.format(*grid.shape))
-            self._write('  ' + _v3.format(*grid.origo))
+            self._write('  ' + _v3.format(*grid.origin))
             self._write('  ' + _v3.format(*grid.cell[0, :]))
             self._write('  ' + _v3.format(*grid.cell[1, :]))
             self._write('  ' + _v3.format(*grid.cell[2, :]))

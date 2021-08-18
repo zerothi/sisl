@@ -15,6 +15,7 @@ from numpy import dot
 from ._internal import set_module
 from . import _plot as plt
 from . import _array as _a
+from .messages import deprecate_method
 from .utils.mathematics import fnorm
 from .shape.prism4 import Cuboid
 from .quaternion import Quaternion
@@ -43,14 +44,14 @@ class SuperCell:
        is returned from `tocell`.
     nsc : array_like of int
        number of supercells along each latticevector
-    origo : (3,) of float
-       the origo of the supercell.
+    origin : (3,) of float, optional
+       the origin of the supercell.
     """
 
     # We limit the scope of this SuperCell object.
-    __slots__ = ('cell', '_origo', 'volume', 'nsc', 'n_s', '_sc_off', '_isc_off')
+    __slots__ = ('cell', '_origin', 'volume', 'nsc', 'n_s', '_sc_off', '_isc_off')
 
-    def __init__(self, cell, nsc=None, origo=None):
+    def __init__(self, cell, nsc=None, origin=None):
 
         if nsc is None:
             nsc = [1, 1, 1]
@@ -59,12 +60,12 @@ class SuperCell:
         # actual cell coordinates
         self.cell = self.tocell(cell)
 
-        if origo is None:
-            self._origo = _a.zerosd(3)
+        if origin is None:
+            self._origin = _a.zerosd(3)
         else:
-            self._origo = _a.arrayd(origo)
-            if self._origo.size != 3:
-                raise ValueError("Origo *must* be 3 numbers.")
+            self._origin = _a.arrayd(origin)
+            if self._origin.size != 3:
+                raise ValueError("Origin *must* be 3 numbers.")
 
         # Set the volume
         self._update_vol()
@@ -79,21 +80,33 @@ class SuperCell:
         return fnorm(self.cell)
 
     @property
+    def origin(self):
+        """ Origin for the cell """
+        return self._origin
+
+    @origin.setter
+    def origin(self, origin):
+        """ Set origin for the cell """
+        self._origin[:] = origin
+
+    @property
+    @deprecate_method("use .origin instead")
     def origo(self):
-        """ Origo for the cell """
-        return self._origo
+        """ Origin for the cell """
+        return self._origin
 
     @origo.setter
-    def origo(self, origo):
-        """ Set origo """
-        self._origo[:] = origo
+    @deprecate_method("use .origin instead")
+    def origo(self, origin):
+        """ Set origin """
+        self._origin[:] = origin
 
     def area(self, ax0, ax1):
         """ Calculate the area spanned by the two axis `ax0` and `ax1` """
         return (cross3(self.cell[ax0, :], self.cell[ax1, :]) ** 2).sum() ** 0.5
 
     def toCuboid(self, orthogonal=False):
-        """ A cuboid with vectors as this unit-cell and center with respect to its origo
+        """ A cuboid with vectors as this unit-cell and center with respect to its origin
 
         Parameters
         ----------
@@ -101,7 +114,7 @@ class SuperCell:
            if true the cuboid has orthogonal sides such that the entire cell is contained
         """
         if not orthogonal:
-            return Cuboid(self.cell.copy(), self.center() + self.origo)
+            return Cuboid(self.cell.copy(), self.center() + self.origin)
         def find_min_max(cmin, cmax, new):
             for i in range(3):
                 cmin[i] = min(cmin[i], new[i])
@@ -112,7 +125,7 @@ class SuperCell:
         find_min_max(cmin, cmax, self.cell[[0, 2], :].sum(0))
         find_min_max(cmin, cmax, self.cell[[1, 2], :].sum(0))
         find_min_max(cmin, cmax, self.cell.sum(0))
-        return Cuboid(cmax - cmin, self.center() + self.origo)
+        return Cuboid(cmax - cmin, self.center() + self.origin)
 
     def parameters(self, rad=False):
         r""" Cell parameters of this cell in 3 lengths and 3 angles
@@ -287,22 +300,22 @@ class SuperCell:
         """ Iterate the supercells and the indices of the supercells """
         yield from enumerate(self.sc_off)
 
-    def copy(self, cell=None, origo=None):
+    def copy(self, cell=None, origin=None):
         """ A deepcopy of the object
 
         Parameters
         ----------
         cell : array_like
            the new cell parameters
-        origo : array_like
-           the new origo
+        origin : array_like
+           the new origin
         """
-        if origo is None:
-            origo = self.origo.copy()
+        if origin is None:
+            origin = self.origin.copy()
         if cell is None:
-            copy = self.__class__(np.copy(self.cell), nsc=np.copy(self.nsc), origo=origo)
+            copy = self.__class__(np.copy(self.cell), nsc=np.copy(self.nsc), origin=origin)
         else:
-            copy = self.__class__(np.copy(cell), nsc=np.copy(self.nsc), origo=origo)
+            copy = self.__class__(np.copy(cell), nsc=np.copy(self.nsc), origin=origin)
         # Ensure that the correct super-cell information gets carried through
         if not np.allclose(copy.sc_off, self.sc_off):
             copy.sc_off = self.sc_off
@@ -391,9 +404,9 @@ class SuperCell:
         # There _can_ be errors when sc_off isn't created by sisl
         return self.__class__(np.copy(self.cell[idx, :], order='C'),
                               nsc=self.nsc[idx],
-                              origo=np.copy(self.origo[idx], order='C'))
+                              origin=np.copy(self.origin[idx], order='C'))
 
-    def plane(self, ax1, ax2, origo=True):
+    def plane(self, ax1, ax2, origin=True):
         """ Query point and plane-normal for the plane spanning `ax1` and `ax2`
 
         Parameters
@@ -402,8 +415,8 @@ class SuperCell:
            the first axis vector
         ax2 : int
            the second axis vector
-        origo : bool, optional
-           whether the plane intersects the origo or the opposite corner of the
+        origin : bool, optional
+           whether the plane intersects the origin or the opposite corner of the
            unit-cell.
 
         Returns
@@ -460,7 +473,7 @@ class SuperCell:
         if dot3(n, up / 2) > 0.:
             n *= -1
 
-        if origo:
+        if origin:
             return n, _a.zerosd([3])
         # We have to reverse the normal vector
         return -n, up
@@ -577,9 +590,9 @@ class SuperCell:
         if not isinstance(other, SuperCell):
             other = SuperCell(other)
         cell = self.cell + other.cell
-        origo = self.origo + other.origo
+        origin = self.origin + other.origin
         nsc = np.where(self.nsc > other.nsc, self.nsc, other.nsc)
-        return self.__class__(cell, nsc=nsc, origo=origo)
+        return self.__class__(cell, nsc=nsc, origin=origin)
 
     def __add__(self, other):
         return self.add(other)
@@ -660,7 +673,7 @@ class SuperCell:
     def scale(self, scale):
         """ Scale lattice vectors
 
-        Does not scale `origo`.
+        Does not scale `origin`.
 
         Parameters
         ----------
@@ -685,7 +698,7 @@ class SuperCell:
         """
         cell = np.copy(self.cell)
         nsc = np.copy(self.nsc)
-        origo = np.copy(self.origo)
+        origin = np.copy(self.origin)
         cell[axis, :] *= reps
         # Only reduce the size if it is larger than 5
         if nsc[axis] > 3 and reps > 1:
@@ -693,7 +706,7 @@ class SuperCell:
             h_nsc = nsc[axis] // 2
             # The new number of supercells will then be
             nsc[axis] = max(1, int(math.ceil(h_nsc / reps))) * 2 + 1
-        return self.__class__(cell, nsc=nsc, origo=origo)
+        return self.__class__(cell, nsc=nsc, origin=origin)
 
     def repeat(self, reps, axis):
         """ Extend the unit-cell `reps` times along the `axis` lattice vector
@@ -925,14 +938,14 @@ class SuperCell:
         Parameters
         ----------
         tol : float, optional
-            tolerance value for the cell vectors and origo
+            tolerance value for the cell vectors and origin
         """
         if not isinstance(other, (SuperCell, SuperCellChild)):
             return False
         for tol in [1e-2, 1e-3, 1e-4]:
             same = np.allclose(self.cell, other.cell, atol=tol)
         same = same and np.allclose(self.nsc, other.nsc)
-        same = same and np.allclose(self.origo, other.origo, atol=tol)
+        same = same and np.allclose(self.origin, other.origin, atol=tol)
         return same
 
     def __str__(self):
@@ -956,11 +969,11 @@ class SuperCell:
     # Create pickling routines
     def __getstate__(self):
         """ Returns the state of this object """
-        return {'cell': self.cell, 'nsc': self.nsc, 'sc_off': self.sc_off, 'origo': self.origo}
+        return {'cell': self.cell, 'nsc': self.nsc, 'sc_off': self.sc_off, 'origin': self.origin}
 
     def __setstate__(self, d):
         """ Re-create the state of this object """
-        self.__init__(d['cell'], d['nsc'], d['origo'])
+        self.__init__(d['cell'], d['nsc'], d['origin'])
         self.sc_off = d['sc_off']
 
     def __plot__(self, axis=None, axes=False, *args, **kwargs):
@@ -994,7 +1007,7 @@ class SuperCell:
         axes = plt.get_axes(axes, **d)
 
         # Create vector objects
-        o = self.origo
+        o = self.origin
         v = []
         for a in axis:
             v.append(np.vstack((o[axis], o[axis] + self.cell[a, axis])))
@@ -1097,8 +1110,13 @@ class SuperCellChild:
         return self.sc.rcell
 
     @property
+    def origin(self):
+        """ Returns the inherent `SuperCell` objects `origin` """
+        return self.sc.origin
+
+    @property
     def origo(self):
-        """ Returns the inherent `SuperCell` objects `origo` """
+        """ Returns the inherent `SuperCell` objects `origin` """
         return self.sc.origo
 
     @property

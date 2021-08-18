@@ -292,7 +292,7 @@ class Orbital:
         from .grid import Grid
         from .atom import Atom
         from .physics.electron import wavefunction
-        sc = SuperCell(R*2, origo=[-R] * 3)
+        sc = SuperCell(R*2, origin=[-R] * 3)
         if isinstance(atom, Atom):
             atom = atom.copy(orbitals=self)
         else:
