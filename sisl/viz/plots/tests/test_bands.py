@@ -104,8 +104,8 @@ class TestBandsPlot(_TestPlot):
         # Check that it is a dataarray containing the right information
         bands = plot.bands
         assert isinstance(bands, DataArray)
-        assert bands.dims == ('k', 'spin', 'band')
-        assert bands.shape == test_attrs['bands_shape']
+        assert set(bands.dims) == set(['k', 'spin', 'band'])
+        assert bands.transpose("k", "spin", "band").shape == test_attrs['bands_shape']
 
     def test_bands_in_figure(self, plot, test_attrs):
 
@@ -178,7 +178,7 @@ class TestBandsPlot(_TestPlot):
         # Check that it is a dataarray containing the right information
         spin_moments = plot.spin_moments
         assert isinstance(spin_moments, DataArray)
-        assert spin_moments.dims == ('k', 'band', 'axis')
+        assert set(spin_moments.dims) == set(('k', 'band', 'axis'))
         assert spin_moments.shape == (test_attrs['bands_shape'][0], test_attrs['bands_shape'][-1], 3)
 
     def test_spin_texture(self, plot, test_attrs):

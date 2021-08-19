@@ -3,18 +3,24 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from sisl.viz.input_fields.sisl_obj import DistributionInput
 import numpy as np
+import os
 
 import sisl
 from sisl.messages import warn
-from sisl.physics import distribution as sisl_distribution
 from ..plot import Plot, entry_point
 from ..plotutils import find_files, random_color
 from ..input_fields import (
-    TextInput, SileInput, SwitchInput, ColorPicker, DropdownInput, CreatableDropdown,
-    IntegerInput, FloatInput, RangeInput, RangeSlider, OrbitalQueries,
-    ProgramaticInput, Array1DInput, ListInput, GeometryInput
+    TextInput, SileInput, SwitchInput, ColorPicker, DropdownInput,
+    IntegerInput, FloatInput, OrbitalQueries,
+    Array1DInput, GeometryInput
 )
 from ..input_fields.range import ErangeInput
+
+try:
+    import pathos
+    _do_parallel_calc = True
+except:
+    _do_parallel_calc = False
 
 
 class PdosPlot(Plot):
@@ -339,9 +345,10 @@ class PdosPlot(Plot):
         # Calculate the PDOS for all available spins
         PDOS = []
         for spin in spin_indices:
-            spin_PDOS = self.mp.apply.average.eigenstate(
-                spin=spin,
-                wrap=lambda eig: eig.PDOS(self.E, distribution=distribution)
+            with self.mp.apply(pool=_do_parallel_calc) as parallel:
+                spin_PDOS = parallel.average.eigenstate(
+                    spin=spin,
+                    wrap=lambda eig: eig.PDOS(self.E, distribution=distribution)
                 )
 
             PDOS.append(spin_PDOS)

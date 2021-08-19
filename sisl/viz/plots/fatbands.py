@@ -186,6 +186,10 @@ class FatbandsPlot(BandsPlot):
 
     )
 
+    @property
+    def weights(self):
+        return self.bands_data["weight"]
+
     @entry_point("siesta output")
     def _read_siesta_output(self, wfsx_file, bands_file, root_fdf):
         """Generates fatbands from SIESTA output.
@@ -257,9 +261,6 @@ class FatbandsPlot(BandsPlot):
         """
         Calculates the fatbands from a sisl hamiltonian.
         """
-
-        self.weights = [[], []]
-
         # Define the function that will "catch" each eigenstate and
         # build the weights array. See BandsPlot._read_from_H to understand where
         # this will go exactly
@@ -267,19 +268,19 @@ class FatbandsPlot(BandsPlot):
 
             weights = eigenstate.norm2(sum=False)
 
-            if plot.spin.has_noncolinear:
+            if not plot.spin.is_diagonal:
                 # If it is a non-colinear or spin orbit calculation, we have two weights for each
                 # orbital (one for each spin component of the state), so we just pair them together
                 # and sum their contributions to get the weight of the orbital.
                 weights = weights.reshape(len(weights), -1, 2).sum(2)
 
-            plot.weights[spin_index].append(weights)
+            return weights.real
 
         # We make bands plot read the bands, which will also populate the weights
         # thanks to the above step
         bands_read = False; err = None
         try:
-            super()._read_from_H(eigenstate_map=_weights_from_eigenstate)
+            super()._read_from_H(extra_vars=[{"coords": ("band", "orb"), "name": "weight", "getter": _weights_from_eigenstate}])
             bands_read = True
         except Exception as e:
             # Let's keep this error, we are going to at least set the group options so that the
@@ -289,24 +290,6 @@ class FatbandsPlot(BandsPlot):
         self._set_group_options()
         if not bands_read:
             raise err
-
-        # If there was only one spin component then we just take the first item in self.weights
-        if not self.weights[1]:
-            self.weights = [self.weights[0]]
-
-        # Then we just convert the weights to a DataArray
-        self.weights = np.array(self.weights).real
-
-        self.weights = DataArray(
-            self.weights,
-            coords={
-                "k": self.bands.k,
-                "spin": np.arange(self.weights.shape[0]),
-                "band": np.arange(self.weights.shape[2]),
-                "orb": np.arange(self.weights.shape[3]),
-            },
-            dims=("spin", "k", "band", "orb")
-        )
 
     def _set_group_options(self):
 
