@@ -11,7 +11,8 @@ from sisl._help import xml_parse
 from sisl.utils import (
     default_ArgumentParser, default_namespace,
     collect_action, run_actions,
-    strmap, lstranges
+    strmap, lstranges,
+    direction
 )
 from sisl.messages import warn, SislWarning
 from sisl._array import arrayd, arrayi, emptyd, asarrayi
@@ -216,13 +217,14 @@ class pdosSileSiesta(SileSiesta):
             if PDOS.ndim == 2:
                 # non-polarized
                 return PDOS
-            elif PDOS.ndim == 3:
+            elif PDOS.shape[0] == 2:
                 # polarized
                 return PDOS.sum(0)
             return PDOS[0]
         namespace = default_namespace(_geometry=geometry,
                                       _E=E, _PDOS=PDOS,
                                       _Erng=None,
+                                      _PDOS_filter_name=None,
                                       _PDOS_filter=_sum_filter,
                                       _data=[],
                                       _data_header=[])
@@ -266,39 +268,54 @@ class pdosSileSiesta(SileSiesta):
                        
                        This flag takes effect on all energy-resolved quantities and is reset whenever --plot or --out is called""")
 
-        if PDOS.ndim == 3:
+        if PDOS.ndim == 2:
+            # do nothing
+            pass
+        elif PDOS.shape[0] == 2:
             # Add a spin-action
             class Spin(argparse.Action):
 
+                @collect_action
                 def __call__(self, parser, ns, value, option_string=None):
-                    if value.lower() in ["up", "u"]:
+                    value = value[0].lower()
+                    if value in ["up", "u"]:
+                        name = "up"
                         def _filter(PDOS):
                             return PDOS[0]
-                    elif value.lower() in ["down", "dn", "dw", "d"]:
+                    elif value in ["down", "dn", "dw", "d"]:
+                        name = "down"
                         def _filter(PDOS):
                             return PDOS[1]
-                    elif value.lower() in ["sum", "+"]:
+                    elif value in ["sum", "+"]:
+                        name = "total"
                         def _filter(PDOS):
                             return PDOS.sum(0)
+                    else:
+                        raise ValueError(f"Wrong argument for --spin [up, down, sum], found {value}")
+                    ns._PDOS_filter_name = name
                     ns._PDOS_filter = _filter
             p.add_argument('--spin', '-S', action=Spin, nargs=1,
                            help="Which spin-component to store, up/u, down/d or sum/+")
 
-        elif PDOS.ndim == 3:
+        elif PDOS.shape[0] == 4:
             # Add a spin-action
             class Spin(argparse.Action):
 
+                @collect_action
                 def __call__(self, parser, ns, value, option_string=None):
-                    value = value.lower()
-                    if value in ["sum", "+"]:
+                    value = value[0].lower()
+                    if value in ("sum", "+"):
+                        name = "total"
                         def _filter(PDOS):
                             return PDOS[0]
                     else:
                         # the stuff must be a range of directions
                         # so simply put it in
                         idx = list(map(direction, value))
+                        name = value
                         def _filter(PDOS):
                             return PDOS[idx].sum(0)
+                    ns._PDOS_filter_name = name
                     ns._PDOS_filter = _filter
             p.add_argument('--spin', '-S', action=Spin, nargs=1,
                            help="Which spin-component to store, sum/+, x, y, z or a sum of either of the directions xy, zx etc.")
@@ -367,7 +384,11 @@ class pdosSileSiesta(SileSiesta):
             def __call__(self, parser, ns, value, option_string=None):
                 orbs = parse_atom_range(ns._geometry, value)
                 ns._data.append(ns._PDOS_filter(ns._PDOS)[orbs].sum(0))
-                ns._data_header.append(f"PDOS[1/eV]{value}")
+                if ns._PDOS_filter_name is not None:
+                    ns._data_header.append(f"PDOS[spin={ns._PDOS_filter_name}][1/eV]{value}")
+                else:
+                    ns._data_header.append(f"PDOS[1/eV]{value}")
+
 
         p.add_argument('--atom', '-a', type=str, action=AtomRange,
                        help="""Limit orbital resolved PDOS to a sub-set of atoms/orbitals: "1-2[3,4]" will yield the 1st and 2nd atom and their 3rd and fourth orbital. Multiple comma-separated specifications are allowed. Note that some shells does not allow [] as text-input (due to expansion), {, [ or * are allowed orbital delimiters. Each invocation will create a new column/line in output""")
@@ -391,10 +412,13 @@ class pdosSileSiesta(SileSiesta):
                     pass
 
                 if len(ns._data) == 0:
-                    orbs = parse_atom_range(ns._geometry, f"1-{len(geometry)}")
                     ns._data.append(ns._E)
-                    ns._data.append(ns._PDOS_filter(ns._PDOS)[orbs].sum(0))
-                    ns._data_header.append("DOS[1/eV]")
+                    ns._data_header.append('Energy[eV]')
+                    ns._data.append(ns._PDOS_filter(ns._PDOS).sum(0))
+                    if ns._PDOS_filter_name is not None:
+                        ns._data_header.append(f"DOS[spin={ns._PDOS_filter_name}][1/eV]")
+                    else:
+                        ns._data_header.append("DOS[1/eV]")
 
                 from sisl.io import tableSile
                 tableSile(out, mode='w').write(*ns._data,
@@ -403,6 +427,7 @@ class pdosSileSiesta(SileSiesta):
                 # Clean all data
                 ns._data = []
                 ns._data_header = []
+                ns._PDOS_filter_name = None
                 ns._PDOS_filter = _sum_filter
                 ns._Erng = None
         p.add_argument('--out', '-o', nargs=1, action=Out,
@@ -414,22 +439,32 @@ class pdosSileSiesta(SileSiesta):
             def __call__(self, parser, ns, value, option_string=None):
 
                 if len(ns._data) == 0:
-                    orbs = parse_atom_range(ns._geometry, f"1-{len(geometry)}")
                     ns._data.append(ns._E)
-                    ns._data.append(ns._PDOS_filter(ns._PDOS)[orbs].sum(0))
-                    ns._data_header.append("DOS[1/eV]")
+                    ns._data_header.append('Energy[eV]')
+                    ns._data.append(ns._PDOS_filter(ns._PDOS).sum(0))
+                    if ns._PDOS_filter_name is not None:
+                        ns._data_header.append(f"DOS[spin={ns._PDOS_filter_name}][1/eV]")
+                    else:
+                        ns._data_header.append("DOS[1/eV]")
 
                 from matplotlib import pyplot as plt
                 plt.figure()
 
                 def _get_header(header):
-                    header = header.split(']', 1)[1]
+                    header = (header
+                              .replace("PDOS", "")
+                              .replace("DOS", "")
+                              .replace("[1/eV]", "")
+                    )
                     if len(header) == 0:
-                        return "DOS"
+                        return "Total"
                     return header
 
+                kwargs = {}
+                if len(ns._data) > 2:
+                    kwargs['alpha'] = 0.6
                 for i in range(1, len(ns._data)):
-                    plt.plot(ns._data[0], ns._data[i], label=_get_header(ns._data_header[i]))
+                    plt.plot(ns._data[0], ns._data[i], label=_get_header(ns._data_header[i]), **kwargs)
 
                 plt.ylabel('DOS [1/eV]')
                 if 'unknown' in comment:
@@ -446,6 +481,7 @@ class pdosSileSiesta(SileSiesta):
                 # Clean all data
                 ns._data = []
                 ns._data_header = []
+                ns._PDOS_filter_name = None
                 ns._PDOS_filter = _sum_filter
                 ns._Erng = None
         p.add_argument('--plot', '-p', action=Plot, nargs='?', metavar='FILE',
