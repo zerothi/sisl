@@ -254,7 +254,9 @@ class FatbandsPlot(BandsPlot):
         weights = weights.expand_dims("spin")
 
         # Merge everything into a dataset
+        attrs = self.bands_data.attrs
         self.bands_data = Dataset({"E": self.bands_data, "weight": weights})
+        self.bands_data.attrs = attrs
 
         # Set up the options for the 'groups' setting based on the plot's associated geometry
         self._set_group_options()
