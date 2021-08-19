@@ -91,6 +91,12 @@ class TestPdosPlot(_TestPlot):
 
         # Check if we have the correct number of orbitals
         assert len(PDOS.orb) == test_attrs["no"] == geom.no
+    
+    def test_request_PDOS(self, plot):
+        total_DOS = plot._get_request_PDOS({})
+
+        assert total_DOS.ndim == 1
+        assert total_DOS.shape == (plot.PDOS.E.shape)
 
     def test_splitDOS(self, plot, test_attrs, inplace_split):
         if inplace_split:

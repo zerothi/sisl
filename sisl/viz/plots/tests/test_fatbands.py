@@ -85,6 +85,13 @@ class TestFatbandsPlot(_TestBandsPlot):
             expected_dims = ("k", "band", "orb")
         assert weights.dims == expected_dims
         assert weights.shape == test_attrs["weights_shape"]
+    
+    def test_group_weights(self, plot):
+
+        total_weights = plot._get_group_weights({})
+
+        assert isinstance(total_weights, DataArray)
+        assert set(total_weights.dims) == set(("spin", "band", "k"))
 
     def test_weights_values(self, plot, test_attrs):
         assert np.allclose(plot.weights.sum("orb"), 1), "Weight values do not sum 1 for all states."

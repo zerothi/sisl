@@ -491,10 +491,11 @@ class PdosPlot(Plot):
             return
 
         req_PDOS = E_PDOS.sel(orb=orb)
-        if request['spin'] is not None and 'spin' in req_PDOS.coords:
+        if request['spin'] is not None and 'spin' in req_PDOS.dims:
             req_PDOS = req_PDOS.sel(spin=request['spin'])
 
-        reduce_coords = set(["orb", "spin"]).intersection(req_PDOS.coords)
+        reduce_coords = set(["orb", "spin"]).intersection(req_PDOS.dims)
+
         if request["normalize"]:
             req_PDOS = req_PDOS.mean(reduce_coords)
         else:
