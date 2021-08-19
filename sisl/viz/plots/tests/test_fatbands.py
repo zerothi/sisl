@@ -56,13 +56,13 @@ class TestFatbandsPlot(_TestBandsPlot):
             init_func = bz.plot.fatbands
 
             attrs = {
-                "bands_shape": (6, n_spin, n_states),
-                "weights_shape": (n_spin, 6, n_states, 2),
+                "bands_shape": (6, n_spin, n_states) if H.spin.is_polarized else (6, n_states),
+                "weights_shape": (n_spin, 6, n_states, 2) if H.spin.is_polarized else (6, n_states, 2),
                 "ticklabels": ["Gamma", "M", "K"],
                 "tickvals": [0., 1.70309799, 2.55464699],
                 "gap": 0,
-                "spin_texture": H.spin.is_spinorbit or H.spin.is_noncolinear,
-                "soc_or_nc": H.spin.is_spinorbit or H.spin.is_noncolinear,
+                "spin_texture": not H.spin.is_diagonal,
+                "spin": H.spin
             }
 
         return init_func, attrs
@@ -78,12 +78,17 @@ class TestFatbandsPlot(_TestBandsPlot):
         # Check that it is a dataarray containing the right information
         weights = plot.weights
         assert isinstance(weights, DataArray)
-        assert weights.dims == ("spin", "k", "band", "orb")
+
+        if test_attrs["spin"].is_polarized:
+            expected_dims = ("spin", "k", "band", "orb")
+        else:
+            expected_dims = ("k", "band", "orb")
+        assert weights.dims == expected_dims
         assert weights.shape == test_attrs["weights_shape"]
 
     def test_weights_values(self, plot, test_attrs):
         assert np.allclose(plot.weights.sum("orb"), 1), "Weight values do not sum 1 for all states."
-        assert np.allclose(plot.weights.sum("band"), 2 if test_attrs["soc_or_nc"] else 1)
+        assert np.allclose(plot.weights.sum("band"), 2 if not test_attrs["spin"].is_diagonal else 1)
 
     def test_groups(self, plot):
         """

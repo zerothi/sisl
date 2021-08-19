@@ -2,7 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
-from xarray import DataArray
+from xarray import DataArray, Dataset
 
 import sisl
 from ..plot import entry_point
@@ -239,7 +239,7 @@ class FatbandsPlot(BandsPlot):
         weights = np.array(weights).real
 
         # Finally, build the weights dataarray so that it can be used by _set_data
-        self.weights = DataArray(
+        weights = DataArray(
             weights,
             coords={
                 "k": self.bands.k,
@@ -251,7 +251,10 @@ class FatbandsPlot(BandsPlot):
 
         # Add the spin dimension so that the weights array is normalized,
         # even though spin is not yet supported by this entrypoint
-        self.weights = self.weights.expand_dims("spin")
+        weights = weights.expand_dims("spin")
+
+        # Merge everything into a dataset
+        self.bands_data = Dataset({"E": self.bands_data, "weight": weights})
 
         # Set up the options for the 'groups' setting based on the plot's associated geometry
         self._set_group_options()
@@ -381,6 +384,8 @@ class FatbandsPlot(BandsPlot):
 
         if weights is None:
             weights = self.weights
+        if "spin" not in weights.coords:
+            weights = weights.expand_dims("spin")
 
         groups_param = self.get_param("groups")
 

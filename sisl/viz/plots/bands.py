@@ -287,7 +287,7 @@ class BandsPlot(Plot):
 
     @property
     def spin_moments(self):
-        return self.bands_data["spin_moments"].sel(spin=0)
+        return self.bands_data["spin_moments"]
 
     def _after_init(self):
         self.spin = sisl.Spin("")
@@ -419,6 +419,11 @@ class BandsPlot(Plot):
             self.bands_data = xr.Dataset({"E": self.bands_data})
             self.bands_data.attrs = attrs
 
+        # If the calculation is not spin polarized it makes no sense to
+        # retain a spin index
+        if "spin" in self.bands_data and not self.spin.is_polarized:
+            self.bands_data = self.bands_data.sel(spin=self.bands_data.spin[0], drop=True)
+
         # Inform the spin input of what spin class are we handling
         self.get_param("spin").update_options(self.spin)
         self.get_param("custom_gaps").get_param("spin").update_options(self.spin)
@@ -471,9 +476,11 @@ class BandsPlot(Plot):
         self.spin_texture = False
         if spin is not None and len(spin) > 0:
             if isinstance(spin[0], int):
-                filtered_bands = filtered_bands.sel(spin=spin)
+                # Only use the spin setting if there is a spin index
+                if "spin" in filtered_bands.coords:
+                    filtered_bands = filtered_bands.sel(spin=spin)
             elif isinstance(spin[0], str):
-                if not hasattr(self, "spin_moments"):
+                if "spin_moments" not in self.bands_data:
                     raise ValueError(f"You requested spin texture ({spin[0]}), but spin moments have not been calculated. The spin class is {self.spin.kind}")
                 self.spin_texture = True
 
@@ -563,7 +570,9 @@ class BandsPlot(Plot):
             if requested_spin is None:
                 requested_spin = [0, 1]
 
-            for spin in self.bands.spin:
+            avail_spins = self.bands_data.get("spin", [0])
+
+            for spin in avail_spins:
                 if spin in requested_spin:
                     from_k = custom_gap["from"]
                     to_k = custom_gap["to"]
@@ -642,7 +651,8 @@ class BandsPlot(Plot):
             ks[i] = self._sanitize_k(val)
 
         VB, CB = self.gap_info["bands"]
-        Es = [self.bands.sel(k=k, band=band, spin=gap_spin, method="nearest") for k, band in zip(ks, (VB, CB))]
+        spin_bands = self.bands.sel(spin=gap_spin) if "spin" in self.bands.coords else self.bands
+        Es = [spin_bands.sel(k=k, band=band, method="nearest") for k, band in zip(ks, (VB, CB))]
         # Get the real values of ks that have been obtained
         # because we might not have exactly the ks requested
         ks = [np.ravel(E.k)[0] for E in Es]
@@ -765,7 +775,11 @@ class BandsPlot(Plot):
         from sisl.unit.base import units
 
         # Get the band that we want to fit
-        band_vals = self.bands.sel(band=band, spin=band_spin)
+        bands = self.bands
+        if "spin" in bands.coords:
+            band_vals = bands.sel(band=band, spin=band_spin)
+        else:
+            band_vals = bands.sel(band=band)
 
         # Sanitize k to a float
         k = self._sanitize_k(k)
@@ -784,7 +798,7 @@ class BandsPlot(Plot):
 
         # Grab the slice of the band that we are going to fit
         sel_band = band_vals[sel_slice] * units("eV", "Hartree")
-        sel_k = self.bands.k[sel_slice] - k
+        sel_k = bands.k[sel_slice] - k
 
         # Fit the band to a second order polynomial
         polyfit = np.polynomial.Polynomial.fit(sel_k, sel_band, 2)

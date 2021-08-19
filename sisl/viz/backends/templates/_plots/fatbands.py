@@ -56,10 +56,12 @@ class FatbandsBackend(BandsBackend):
         bands: xarray.DataArray with indices (spin, band, k)
             Contains all the eigenvalues of the band structure.
         """
+        if "spin" not in bands.coords:
+            bands = bands.expand_dims("spin")
 
-        for ispin, spin_weights in enumerate(weights):
+        for ispin, spin_weights in enumerate(weights.transpose("spin", "band", "k")):
             for i, band_weights in enumerate(spin_weights):
-                band_values = bands.sel(band=band_weights.band, spin=band_weights.spin)
+                band_values = bands.sel(band=band_weights.band, spin=ispin)
 
                 self._draw_band_weights(
                     x=x, y=band_values, weights=band_weights.values,
