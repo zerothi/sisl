@@ -115,6 +115,7 @@ class Manual(SiestaBarriersBase):
     def NEB_Result(self):
         """
         """
+        from .BarriersIO import SiestaBarriersIO
         self.IO = SiestaBarriersIO( neb_type = "manual",
                                     sisl_images = self.sisl_images,
                                     flos_path = self.flos_path,
