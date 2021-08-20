@@ -156,10 +156,10 @@ class SpinSelect(DropdownInput):
     }
 
     _options = {
-        Spin.UNPOLARIZED: [{"label": "Total", "value": 0}],
+        Spin.UNPOLARIZED: [],
         Spin.POLARIZED: [{"label": "↑", "value": 0}, {"label": "↓", "value": 1}],
-        Spin.NONCOLINEAR: [{"label": val, "value": val} for val in ("sum", "x", "y", "z")],
-        Spin.SPINORBIT: [{"label": val, "value": val} for val in ("sum", "x", "y", "z")]
+        Spin.NONCOLINEAR: [{"label": val, "value": val} for val in ("total", "x", "y", "z")],
+        Spin.SPINORBIT: [{"label": val, "value": val} for val in ("total", "x", "y", "z")]
     }
 
     def __init__(self, *args, only_if_polarized=False, **kwargs):

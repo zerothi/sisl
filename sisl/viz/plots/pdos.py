@@ -3,18 +3,24 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from sisl.viz.input_fields.sisl_obj import DistributionInput
 import numpy as np
+import os
 
 import sisl
 from sisl.messages import warn
-from sisl.physics import distribution as sisl_distribution
 from ..plot import Plot, entry_point
 from ..plotutils import find_files, random_color
 from ..input_fields import (
-    TextInput, SileInput, SwitchInput, ColorPicker, DropdownInput, CreatableDropdown,
-    IntegerInput, FloatInput, RangeInput, RangeSlider, OrbitalQueries,
-    ProgramaticInput, Array1DInput, ListInput, GeometryInput
+    TextInput, SileInput, SwitchInput, ColorPicker, DropdownInput,
+    IntegerInput, FloatInput, OrbitalQueries,
+    Array1DInput, GeometryInput
 )
 from ..input_fields.range import ErangeInput
+
+try:
+    import pathos
+    _do_parallel_calc = True
+except:
+    _do_parallel_calc = False
 
 
 class PdosPlot(Plot):
@@ -339,15 +345,17 @@ class PdosPlot(Plot):
         # Calculate the PDOS for all available spins
         PDOS = []
         for spin in spin_indices:
-            spin_PDOS = self.mp.apply.average.eigenstate(
-                spin=spin,
-                wrap=lambda eig: eig.PDOS(self.E, distribution=distribution)
+            with self.mp.apply(pool=_do_parallel_calc) as parallel:
+                spin_PDOS = parallel.average.eigenstate(
+                    spin=spin,
+                    wrap=lambda eig: eig.PDOS(self.E, distribution=distribution)
                 )
 
             PDOS.append(spin_PDOS)
 
-        if self.H.spin.is_noncolinear or self.H.spin.is_spinorbit:
+        if not self.H.spin.is_diagonal:
             PDOS = PDOS[0]
+
         self.PDOS = np.array(PDOS)
 
     def _after_read(self, geometry):
@@ -366,11 +374,6 @@ class PdosPlot(Plot):
             }[self.PDOS.shape[0]]
         self.spin = sisl.Spin(self.spin)
 
-        # Normalize the PDOS array so that we ensure a first dimension for spin even if
-        # there is no spin resolution
-        if self.PDOS.ndim == 2:
-            self.PDOS = np.expand_dims(self.PDOS, axis=0)
-
         # Set the geometry.
         if geometry is not None:
             if geometry.no != self.PDOS.shape[1]:
@@ -379,15 +382,18 @@ class PdosPlot(Plot):
 
         self.get_param('requests').update_options(self.geometry, self.spin)
 
-        self.PDOS = DataArray(
-            self.PDOS,
-            coords={
-                'spin': self.get_param('requests').get_options("spin"),
-                'orb': range(self.PDOS.shape[1]),
-                'E': self.E
-            },
-            dims=('spin', 'orb', 'E')
-        )
+        # If there's one dimension for spin but the calculation is spin unpolarized,
+        # remove the spurious spin dimension
+        if self.spin.is_unpolarized and self.PDOS.ndim == 3:
+            self.PDOS = self.PDOS[0]
+
+        coords = {'E': self.E}
+        dims = ('orb', 'E')
+        if not self.spin.is_unpolarized:
+            coords['spin'] = self.get_param('requests').get_options("spin")
+            dims = ('spin', 'orb', 'E')
+
+        self.PDOS = DataArray(self.PDOS, coords=coords, dims=dims)
 
     def _set_data(self, requests, E0, Erange):
 
@@ -485,13 +491,15 @@ class PdosPlot(Plot):
             return
 
         req_PDOS = E_PDOS.sel(orb=orb)
-        if request['spin'] is not None:
+        if request['spin'] is not None and 'spin' in req_PDOS.dims:
             req_PDOS = req_PDOS.sel(spin=request['spin'])
 
+        reduce_coords = set(["orb", "spin"]).intersection(req_PDOS.dims)
+
         if request["normalize"]:
-            req_PDOS = req_PDOS.mean(["orb", "spin"])
+            req_PDOS = req_PDOS.mean(reduce_coords)
         else:
-            req_PDOS = req_PDOS.sum(["orb", "spin"])
+            req_PDOS = req_PDOS.sum(reduce_coords)
 
         # Finally, multiply the values by the scale factor
         values = req_PDOS.values * request["scale"]
@@ -534,9 +542,9 @@ class PdosPlot(Plot):
 
         complete_req = self.get_param("requests").complete_query
 
-        if "spin" not in kwargs and self.spin.is_noncolinear:
+        if "spin" not in kwargs and not self.spin.is_diagonal:
             if "spin" not in kwargs.get("split_on", ""):
-                kwargs["spin"] = ["sum"]
+                kwargs["spin"] = ["total"]
 
         return complete_req({"name": str(len(self.settings["requests"])), **kwargs})
 

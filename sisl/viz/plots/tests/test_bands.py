@@ -28,7 +28,8 @@ class TestBandsPlot(_TestPlot):
         "gap", # Float. The value of the gap in eV
         "ticklabels", # Array-like with the tick labels
         "tickvals", # Array-like with the expected positions of the ticks
-        "spin_texture" # Whether spin texture should be possible to draw or not.
+        "spin_texture", # Whether spin texture should be possible to draw or not.
+        "spin", # The spin class of the calculation
     ]
 
     @pytest.fixture(params=BandsPlot.get_class_param("backend").options)
@@ -47,11 +48,12 @@ class TestBandsPlot(_TestPlot):
             # From a siesta .bands file
             init_func = sisl.get_sile(siesta_test_files("SrTiO3.bands")).plot
             attrs = {
-                "bands_shape": (150, 1, 72),
+                "bands_shape": (150, 72),
                 "ticklabels": ('Gamma', 'X', 'M', 'Gamma', 'R', 'X'),
                 "tickvals": [0.0, 0.429132, 0.858265, 1.465149, 2.208428, 2.815313],
                 "gap": 1.677,
-                "spin_texture": False
+                "spin_texture": False,
+                "spin": sisl.Spin("")
             }
         elif name.startswith("sisl_H"):
             gr = sisl.geom.graphene()
@@ -60,14 +62,14 @@ class TestBandsPlot(_TestPlot):
 
             spin_type = name.split("_")[-1]
             n_spin, H = {
-                "unpolarized": (1, H),
+                "unpolarized": (0, H),
                 "polarized": (2, H.transform(spin=sisl.Spin.POLARIZED)),
-                "noncolinear": (1, H.transform(spin=sisl.Spin.NONCOLINEAR)),
-                "spinorbit": (1, H.transform(spin=sisl.Spin.SPINORBIT))
+                "noncolinear": (0, H.transform(spin=sisl.Spin.NONCOLINEAR)),
+                "spinorbit": (0, H.transform(spin=sisl.Spin.SPINORBIT))
             }.get(spin_type)
 
             n_states = 2
-            if H.spin.is_spinorbit or H.spin.is_noncolinear:
+            if not H.spin.is_diagonal:
                 n_states *= 2
 
             # Let's create the same graphene bands plot using the hamiltonian
@@ -84,11 +86,12 @@ class TestBandsPlot(_TestPlot):
                 init_func = bz.plot
 
             attrs = {
-                "bands_shape": (6, n_spin, n_states),
+                "bands_shape": (6, n_spin, n_states) if n_spin != 0 else (6, n_states),
                 "ticklabels": ["Gamma", "M", "K"],
                 "tickvals": [0., 1.70309799, 2.55464699],
                 "gap": 0,
-                "spin_texture": H.spin.is_spinorbit or H.spin.is_noncolinear
+                "spin_texture": not H.spin.is_diagonal,
+                "spin": H.spin
             }
 
         return init_func, attrs
@@ -104,8 +107,14 @@ class TestBandsPlot(_TestPlot):
         # Check that it is a dataarray containing the right information
         bands = plot.bands
         assert isinstance(bands, DataArray)
-        assert bands.dims == ('k', 'spin', 'band')
-        assert bands.shape == test_attrs['bands_shape']
+
+        if test_attrs["spin"].is_polarized:
+            expected_coords = ('k', 'spin', 'band')
+        else:
+            expected_coords = ('k', 'band')
+
+        assert set(bands.dims) == set(expected_coords)
+        assert bands.transpose(*expected_coords).shape == test_attrs['bands_shape']
 
     def test_bands_in_figure(self, plot, test_attrs):
 
@@ -178,7 +187,7 @@ class TestBandsPlot(_TestPlot):
         # Check that it is a dataarray containing the right information
         spin_moments = plot.spin_moments
         assert isinstance(spin_moments, DataArray)
-        assert spin_moments.dims == ('k', 'band', 'axis')
+        assert set(spin_moments.dims) == set(('k', 'band', 'axis'))
         assert spin_moments.shape == (test_attrs['bands_shape'][0], test_attrs['bands_shape'][-1], 3)
 
     def test_spin_texture(self, plot, test_attrs):

@@ -299,7 +299,7 @@ class OrbitalQueries(QueriesInput):
 
         # If "spin" was one of the keys, we are going to incorporate the spin options, taking into
         # account the position (column index) where they are expected to be returned.
-        if spin_in_keys:
+        if spin_in_keys and len(spin_options) > 0:
             options = np.concatenate([np.insert(options, spin_key_i, spin, axis=1) for spin in spin_options])
 
         # Squeeze the options array, just in case there is only one key
