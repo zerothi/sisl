@@ -136,6 +136,11 @@ class QueriesInput(InputField):
 
         return sanitized_form
 
+    def parse(self, val):
+        if isinstance(val, dict):
+            val = [val]
+        return val
+
     def __getitem__(self, key):
 
         for field in self.inputField['queryForm']:

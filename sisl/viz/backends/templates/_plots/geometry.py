@@ -95,8 +95,8 @@ class GeometryBackend(Backend):
                 xaxis=xaxis, yaxis=yaxis
                 )
 
-    def _draw_atoms_2D_scatter(self, xy, color="gray", size=10, name='atoms', marker_colorscale=None, **kwargs):
-        self.draw_scatter(xy[0], xy[1], name=name, marker={'size': size, 'color': color, 'colorscale': marker_colorscale}, **kwargs)
+    def _draw_atoms_2D_scatter(self, xy, color="gray", size=10, name='atoms', marker_colorscale=None, opacity=None, **kwargs):
+        self.draw_scatter(xy[0], xy[1], name=name, marker={'size': size, 'color': color, 'colorscale': marker_colorscale, "opacity": opacity}, **kwargs)
 
     def _draw_bonds_2D(self, xys, points_per_bond=5, force_bonds_as_points=False,
         bonds_color='#cccccc', bonds_size=3, bonds_name=None, name="bonds", **kwargs):

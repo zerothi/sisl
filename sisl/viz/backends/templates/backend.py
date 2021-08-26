@@ -149,7 +149,8 @@ class Backend(ABC):
             the name of the scatter
         marker: dict, optional
             specifications for the markers style, following plotly standards. The backend
-            should at least be able to implement `marker["color"]` and `marker["size"]`
+            should at least be able to implement `marker["color"]` and `marker["size"]`, but
+            it is very advisable that it supports also `marker["opacity"]` and `marker["colorscale"]`
         text: str, optional
             contains the text asigned to each marker. On plotly this is seen on hover,
             other options could be annotating. However, it is not necessary that this
