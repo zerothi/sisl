@@ -606,6 +606,8 @@ class GridPlot(Plot):
         backend_info["axes_titles"] = {
             f"{ax_name}axis": GeometryPlot._get_ax_title(ax) for ax_name, ax in zip(("x", "y", "z"), axes)
         }
+        if self._ndim == 1:
+            backend_info["axes_titles"]["yaxis"] = "Values"
 
         return backend_info
 
@@ -618,7 +620,7 @@ class GridPlot(Plot):
 
             ax = {"x": 0, "y": 1, "z": 2}[ax]
 
-            ax_vals = np.arange(0, nsc[ax]*grid.cell[ax, ax], grid.dcell[ax, ax]) + offset
+            ax_vals = np.arange(0, grid.cell[ax, ax], grid.dcell[ax, ax]) + offset
 
             if len(ax_vals) == grid.shape[ax] + 1:
                 ax_vals = ax_vals[:-1]
