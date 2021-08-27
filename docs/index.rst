@@ -12,7 +12,6 @@
 |license|_
 |buildstatus|_
 |codecov|_
-|donate|_
 
 
 .. title:: sisl: Toolbox for electronic structure calculations
@@ -167,9 +166,6 @@ a table of contents for the sub-modules may be found :ref:`here <modindex>`.
 
 .. |codecov| image:: https://codecov.io/gh/zerothi/sisl/branch/master/graph/badge.svg
 .. _codecov: https://codecov.io/gh/zerothi/sisl
-
-.. |donate| image:: https://img.shields.io/badge/Donate-PayPal-green.svg
-.. _donate: https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=NGNU2AA3JXX94&lc=DK&item_name=Papior%2dCodes&item_number=codes&currency_code=EUR&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted
 
 .. |zenodo| image:: https://zenodo.org/badge/doi/10.5281/zenodo.597181.svg
 .. _zenodo: http://dx.doi.org/10.5281/zenodo.597181
