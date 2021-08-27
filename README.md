@@ -60,8 +60,8 @@ which may be analysed using VMD, XCrySDen or other tools.
 
 Installing sisl using PyPi or Conda is the easiest:
 
-    pip3 install sisl
-    pip3 install sisl[analysis] # also installs tqdm and xarray
+    python3 -m pip install sisl
+    python3 -m pip install sisl[analysis] # also installs tqdm and xarray
     # or
     conda install -c conda-forge sisl
 
@@ -78,6 +78,7 @@ If performing a manual installation, these packages are required:
    - __matplotlib__, encouraged optional dependency
    - __tqdm__, encouraged optional dependency
    - __xarray__, optional dependency
+   - __plotly__, optional dependency
 
 Subsequently manual installation may be done using this command:
 
@@ -108,7 +109,7 @@ We recommend to specify the version of sisl in combination of this citation:
     @misc{zerothi_sisl,
       author = {Papior, Nick},
       title  = {sisl: v<fill-version>},
-      year   = {2020},
+      year   = {2021},
       doi    = {10.5281/zenodo.597181},
       url    = {https://doi.org/10.5281/zenodo.597181}
     }
