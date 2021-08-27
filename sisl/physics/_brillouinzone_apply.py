@@ -59,8 +59,11 @@ def _pool_procs(pool):
     if pool is False or pool is None:
         return None
     elif pool is True:
+        nprocs = get_environ_variable("SISL_NPROCS")
+        if nprocs <= 1:
+            return None
         import pathos as pos
-        pool = pos.pools.ProcessPool(nodes=get_environ_variable("SISL_NPROCS"))
+        pool = pos.pools.ProcessPool(nodes=nprocs)
     elif isinstance(pool, int):
         import pathos as pos
         pool = pos.pools.ProcessPool(nodes=pool)
