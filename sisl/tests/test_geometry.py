@@ -15,6 +15,8 @@ from sisl import Geometry, Atom, SuperCell
 
 _dir = osp.join('sisl')
 
+pytestmark = [pytest.mark.geom, pytest.mark.geometry]
+
 
 @pytest.fixture
 def setup():
@@ -34,8 +36,6 @@ def setup():
     return t()
 
 
-@pytest.mark.geom
-@pytest.mark.geometry
 class TestGeometry:
 
     def test_objects(self, setup):
@@ -1499,6 +1499,17 @@ def test_geometry_sanitize_atom_shape():
     bi = sisl_geom.bilayer(bottom_atoms=Atom[6], top_atoms=(Atom[5], Atom[7])).tile(2, 0).repeat(2, 1)
     cube = Cube(10)
     assert len(bi.axyz(cube)) != 0
+
+
+def test_geometry_sanitize_atom_0_length():
+    gr = sisl_geom.graphene()
+    assert len(gr.axyz([])) == 0
+
+
+def test_geometry_sanitize_atom_0_length_float_fail():
+    gr = sisl_geom.graphene()
+    with pytest.raises(IndexError):
+        gr.axyz(np.array([], dtype=np.float64))
 
 
 def test_geometry_sanitize_orbs():

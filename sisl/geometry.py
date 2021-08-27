@@ -336,7 +336,7 @@ class Geometry(SuperCellChild):
         """
         if atoms is None:
             return np.arange(self.na)
-        return np.asarray(atoms)
+        return _a.asarrayl(atoms)
 
     @_sanitize_atoms.register(str)
     def _(self, atoms):
@@ -389,13 +389,13 @@ class Geometry(SuperCellChild):
         """
         if orbitals is None:
             return np.arange(self.no)
-        return np.asarray(orbitals)
+        return _a.asarrayi(orbitals)
 
     @_sanitize_orbs.register(ndarray)
     def _(self, orbitals):
         if orbitals.dtype == bool_:
             return np.flatnonzero(orbitals)
-        return np.asarray(orbitals)
+        return orbitals
 
     @_sanitize_orbs.register(dict)
     def _(self, orbitals):
