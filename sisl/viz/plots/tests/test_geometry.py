@@ -34,6 +34,18 @@ class TestGeometry(_TestPlot):
 
         return init_func, attrs
     
+    @pytest.fixture(params=[1, 2, 3])
+    def ndim(self, request):
+        return request.param
+
+    @pytest.fixture(params=["cartesian", "lattice"])
+    def axes(self, request, ndim):
+        if request.param == "cartesian":
+            return {1: "x", 2: "xy", 3: "xyz"}[ndim]
+        elif request.param == "lattice":
+            # We don't test the 3D case because it doesn't work
+            return {1: "a", 2: "ab", 3: "ab"}[ndim]
+
     @pytest.fixture(scope="function", params=["xy", "ab", [[1,1,0], [1,-1,0]], ["x", [1, -1, 0]]])
     def axes_2D(self, request):
         """Fixture returning all valid combinations of axes in 2D"""
@@ -214,3 +226,8 @@ class TestGeometry(_TestPlot):
         plot.update_settings(atoms_color=np.random.random(geom.na), nsc=[2, 1, 1])
 
         plot.update_settings(atoms_size=geom.atoms.Z+1, atoms_color=None, nsc=[2, 1, 1])
+    
+    def test_no_atoms(self, plot, axes):
+        plot.update_settings(atoms=[], axes=axes)
+
+        plot.update_settings(atoms=None, show_atoms=False)

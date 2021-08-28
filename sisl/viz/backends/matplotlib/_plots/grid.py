@@ -11,7 +11,7 @@ class MatplotlibGridBackend(MatplotlibBackend, GridBackend):
         super().draw_1D(backend_info, **kwargs)
 
         self.axes.set_xlabel(backend_info["axes_titles"]["xaxis"])
-        self.axes.set_ylabel('Values')
+        self.axes.set_ylabel(backend_info["axes_titles"]["yaxis"])
 
     def draw_2D(self, backend_info, **kwargs):
 
