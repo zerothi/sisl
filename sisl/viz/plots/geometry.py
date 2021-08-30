@@ -1,6 +1,7 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+from ast import parse
 from functools import wraps
 from sisl.viz.input_fields.color import ColorPicker
 
@@ -223,11 +224,29 @@ class GeometryPlot(Plot):
                 FloatInput(key="opacity", name="Opacity",
                     default=1,
                     params={"min": 0, "max": 1},
-                ),  
+                ),
+
+                ProgramaticInput(key="arrow", name="Arrow", default=None),
 
                 IntegerInput(key="vertices", name="Vertices", default=15,
                     help="""In a 3D representation, the number of vertices that each atom sphere is composed of."""),   
 
+            ]
+        ),
+
+        QueriesInput(key="arrow_style", name="Arrows style",
+            default=[],
+            help = """Customize the style of the arrows (if drawn)""",
+            queryForm = [
+                FloatInput(key="scale", name="Scale", default=1),
+
+                ColorPicker(key="color", name="Color", default=None),
+
+                FloatInput(key="width", name="Width", default=None),
+
+                FloatInput(key="arrowhead_scale", name="Arrowhead scale", default=0.2),
+
+                FloatInput(key="arrowhead_angle", name="Arrowhead angle", default=np.pi/9),
             ]
         ),
 
@@ -333,7 +352,7 @@ class GeometryPlot(Plot):
 
         return tuple(ensure_nsc(prop) for prop in props)
 
-    def _parse_atoms_style(self, atoms_style, ndim):
+    def _parse_atoms_style(self, atoms_style, ndim, axes, nsc, arrow_scale):
         """Parses the `atoms_style` setting to a dictionary of style specifications.
         
         Parameters
@@ -355,11 +374,12 @@ class GeometryPlot(Plot):
                 "size": [self._pt.radius(abs(atom.Z))*radius_scale for atom in self.geometry.atoms],
                 "opacity": [0.4 if isinstance(atom, AtomGhost) else 1 for atom in self.geometry.atoms],
                 "vertices": 15,
+                "arrow": None,
             },
             *atoms_style
         ]
 
-        def _tile_if_needed(atoms, spec):
+        def _tile_if_needed(atoms, spec, container_shape):
             """Function that tiles an array style specification.
             
             It does so if the specification needs to be applied to more atoms
@@ -367,7 +387,7 @@ class GeometryPlot(Plot):
             if isinstance(spec, (tuple, list, np.ndarray)):
                 n_ats = len(atoms)
                 n_spec = len(spec)
-                if n_ats != n_spec and n_ats % n_spec == 0:
+                if n_ats != n_spec and not (container_shape and n_spec == container_shape[0]) and n_ats % n_spec == 0:
                     spec = np.tile(spec, n_ats // n_spec)
             return spec
 
@@ -376,8 +396,11 @@ class GeometryPlot(Plot):
             "color": np.empty((self.geometry.na, ), dtype=object),
             "size": np.empty((self.geometry.na, ), dtype=float),
             "vertices": np.empty((self.geometry.na, ), dtype=int),
-            "opacity": np.empty((self.geometry.na), dtype=float)
+            "opacity": np.empty((self.geometry.na), dtype=float),
+            "arrow":  np.empty((self.geometry.na, 3), dtype=float),
         }
+
+        parsed_atoms_style["arrow"].fill(np.nan)
         
         # Go specification by specification and apply the styles
         # to the corresponding atoms.
@@ -385,12 +408,24 @@ class GeometryPlot(Plot):
             atoms = self.geometry._sanitize_atoms(style_spec.get("atoms"))
             for key in parsed_atoms_style:
                 if style_spec.get(key) is not None:
-                    parsed_atoms_style[key][atoms] = _tile_if_needed(atoms, style_spec[key])
+                    parsed_atoms_style[key][atoms] = _tile_if_needed(atoms, style_spec[key], parsed_atoms_style[key].shape[1:])
+        
+        if np.isnan(parsed_atoms_style["arrow"]).all():
+            # Avoid storing arrows if there aren't any.
+            parsed_atoms_style["arrow"] = None
+        else:
+            # Otherwise, get the projected directions if we are not in 3D.
+            if ndim == 1:
+                parsed_atoms_style["arrow"] = self._projected_1Dcoords(self.geometry, parsed_atoms_style["arrow"], axis=axes[0], nsc=nsc)
+            elif ndim == 2:
+                parsed_atoms_style["arrow"] = self._projected_2Dcoords(self.geometry, parsed_atoms_style["arrow"], xaxis=axes[0], yaxis=axes[1], nsc=nsc)
+            # Finally, scale all arrows according to the scale factor provided
+            parsed_atoms_style["arrow"] = parsed_atoms_style["arrow"] * arrow_scale
 
         return parsed_atoms_style
 
     def _set_data(self, axes, 
-        atoms, atoms_style, atoms_scale, atoms_colorscale, show_atoms, bind_bonds_to_ats, 
+        atoms, atoms_style, atoms_scale, atoms_colorscale, arrow_style, show_atoms, bind_bonds_to_ats,
         dataaxis_1d, show_cell, nsc, kwargs3d={}, kwargs2d={}, kwargs1d={}):
         self._ndim = len(axes)
 
@@ -398,10 +433,10 @@ class GeometryPlot(Plot):
             atoms = []
             bind_bonds_to_ats = False
 
-        # Account for supercell extensions
-        #atoms_color, atoms_size = self._atoms_props_nsc(atoms_color, atoms_size)
+        arrow_style = arrow_style[0] if len(arrow_style) > 0 else {}
+        arrow_style = self.get_param("arrow_style").complete_query(arrow_style)
 
-        atoms_styles = self._parse_atoms_style(atoms_style, self._ndim)
+        atoms_styles = self._parse_atoms_style(atoms_style, self._ndim, axes, nsc, arrow_style["scale"])
         atoms_styles["colorscale"] = atoms_colorscale
 
         atoms_kwargs = {"atoms": atoms, "atoms_styles": atoms_styles, "atoms_scale": atoms_scale}
@@ -415,7 +450,7 @@ class GeometryPlot(Plot):
         elif self._ndim == 1:
             xaxis = axes[0]
             yaxis = dataaxis_1d
-            backend_info = self._prepare1D(atoms=atoms, coords_axis=xaxis, data_axis=yaxis, nsc=nsc, **kwargs1d)
+            backend_info = self._prepare1D(**atoms_kwargs, coords_axis=xaxis, data_axis=yaxis, nsc=nsc, **kwargs1d)
 
         # Define the axes titles
         backend_info["axes_titles"] = {
@@ -427,6 +462,7 @@ class GeometryPlot(Plot):
 
         backend_info["ndim"] = self._ndim
         backend_info["show_cell"] = show_cell
+        backend_info["arrow_style"] = {k: v for k, v in arrow_style.items() if k not in ("scale", "active")}
 
         return backend_info
 
@@ -738,6 +774,7 @@ class GeometryPlot(Plot):
         color = atoms_styles["color"][ats]
         size = atoms_styles["size"][ats]
         opacity = atoms_styles["opacity"][ats]
+        arrow = atoms_styles["arrow"][ats] if atoms_styles["arrow"] is not None else None
 
         try:
             color.astype(float)
@@ -753,6 +790,7 @@ class GeometryPlot(Plot):
             "color": color,
             "size": size,
             "opacity": opacity,
+            "arrow": arrow,
             **extra_kwargs
         }
 
@@ -934,6 +972,7 @@ class GeometryPlot(Plot):
         size = atoms_styles["size"][at]
         vertices = atoms_styles["vertices"][at]
         opacity = atoms_styles["opacity"][at]
+        arrow = atoms_styles["arrow"][at] if atoms_styles["arrow"] is not None else None
 
         return {
             "xyz": self.geometry[at],
@@ -941,7 +980,8 @@ class GeometryPlot(Plot):
             "color": color,
             "size": size,
             "vertices": vertices,
-            "opacity": opacity
+            "opacity": opacity,
+            "arrow": arrow,
         }
 
     def _default_wrap_bond3D(self, bond):

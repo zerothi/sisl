@@ -1,4 +1,6 @@
 from collections.abc import Iterable
+from sisl import atom
+from sisl.messages import warn
 import numpy as np
 
 from ..backend import Backend
@@ -60,8 +62,18 @@ class GeometryBackend(Backend):
         drawing_func(backend_info)
 
     def draw_1D(self, backend_info, **kwargs):
-        # Add the atoms trace
-        self._draw_atoms_2D_scatter(**backend_info["atoms_props"])
+        # Add the atoms
+        self._draw_atoms_2D_scatter(**{k: v for k,v in backend_info["atoms_props"].items() if k != "arrow"})
+        # Now draw the arrows
+        if backend_info["atoms_props"]["arrow"] is not None:
+            arrow = backend_info["atoms_props"]["arrow"]
+            is_arrow = ~np.isnan(arrow)
+            arrow = np.array([arrow, np.zeros(arrow.shape)]).T
+            self.draw_arrows(
+                xy=backend_info["atoms_props"]["xy"].T[is_arrow], dxy=arrow[is_arrow],
+                arrowhead_angle=backend_info["arrow_style"]["arrowhead_angle"], arrowhead_scale=backend_info["arrow_style"]["arrowhead_scale"],
+                line={k: v for k, v in backend_info["arrow_style"].items() if not k.startswith("arrowhead")},
+            )
 
     def draw_2D(self, backend_info, **kwargs):
         geometry = backend_info["geometry"]
@@ -81,8 +93,16 @@ class GeometryBackend(Backend):
 
             self._draw_bonds_2D(**bonds_kwargs, points_per_bond=backend_info["points_per_bond"])
 
-        # Add the atoms trace
-        self._draw_atoms_2D_scatter(**backend_info["atoms_props"])
+        # Add the atoms scatter
+        self._draw_atoms_2D_scatter(**{k: v for k,v in backend_info["atoms_props"].items() if k != "arrow"})
+        # Now draw the arrows from the atoms
+        if backend_info["atoms_props"]["arrow"] is not None:
+            is_arrow = ~np.isnan(backend_info["atoms_props"]["arrow"]).any(axis=1)
+            self.draw_arrows(
+                xy=backend_info["atoms_props"]["xy"].T[is_arrow], dxy=backend_info["atoms_props"]["arrow"][is_arrow],
+                arrowhead_angle=backend_info["arrow_style"]["arrowhead_angle"], arrowhead_scale=backend_info["arrow_style"]["arrowhead_scale"],
+                line={k: v for k, v in backend_info["arrow_style"].items() if not k.startswith("arrowhead")},
+            )
 
         # And finally draw the unit cell
         show_cell = backend_info["show_cell"]
@@ -207,7 +227,16 @@ class GeometryBackend(Backend):
 
         # Now draw the atoms
         for atom_props in backend_info["atoms_props"]:
-            self._draw_single_atom_3D(**atom_props)
+            self._draw_single_atom_3D(**{k:v for k,v in atom_props.items() if k != "arrow"})
+        # Draw the arrows
+        for atom_props in backend_info["atoms_props"]:
+            if atom_props["arrow"] is not None:
+                try:
+                    self.draw_arrow3D(atom_props["xyz"], atom_props["arrow"], style=backend_info["arrow_style"])
+                except NotImplementedError as e:
+                    warn(str(e))
+                    break
+            
 
         # And finally draw the unit cell
         show_cell = backend_info["show_cell"]

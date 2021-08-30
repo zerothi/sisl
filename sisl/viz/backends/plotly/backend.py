@@ -370,6 +370,41 @@ class PlotlyBackend(Backend):
     def draw_scatter3D(self, *args, **kwargs):
         self.draw_line3D(*args, mode="markers", **kwargs)
 
+    def draw_arrow3D(self, xyz, dxyz, **kwargs):
+        # Will raise NotImplementedError
+        super().draw_arrow3D(xyz, dxyz, **kwargs)
+
+        xyz = np.array(xyz)
+        final_xyz = xyz + dxyz
+
+        color = "red"
+
+        self.figure.add_traces([{
+            "x": [xyz[0], final_xyz[0]],
+            "y": [xyz[1], final_xyz[1]],
+            "z": [xyz[2], final_xyz[2]],
+            "mode": "lines",
+            "type": "scatter3d",
+            "hoverinfo": "none",
+            "line": {
+                "color": color,
+                "width": 3
+            }
+        },
+        {
+            "type": "cone",
+            "x": [final_xyz[0]],
+            "y": [final_xyz[1]],
+            "z": [final_xyz[2]],
+            "u": [0.3*(dxyz[0])],
+            "v": [0.3*(dxyz[1])],
+            "w": [0.3*(dxyz[2])],
+            "anchor": "tip",
+            "hoverinfo": "none",
+            "colorscale": [[0, color], [1, color]],
+            "showscale": False,
+        }])
+
 
 class PlotlyMultiplePlotBackend(PlotlyBackend, MultiplePlotBackend):
     pass
