@@ -226,16 +226,16 @@ class GeometryBackend(Backend):
                 self._bonds_3D_scatter(geometry, backend_info["bonds"], **bonds_kwargs)
 
         # Now draw the atoms
-        for atom_props in backend_info["atoms_props"]:
-            self._draw_single_atom_3D(**{k:v for k,v in atom_props.items() if k != "arrow"})
+        for i, _ in enumerate(backend_info["atoms"]):
+            self._draw_single_atom_3D(**{k:v[i] for k, v in backend_info["atoms_props"].items() if k != "arrow"})
         # Draw the arrows
-        for atom_props in backend_info["atoms_props"]:
-            if atom_props["arrow"] is not None:
-                try:
-                    self.draw_arrow3D(atom_props["xyz"], atom_props["arrow"], style=backend_info["arrow_style"])
-                except NotImplementedError as e:
-                    warn(str(e))
-                    break
+        if backend_info["atoms_props"]["arrow"] is not None:
+            is_arrow = ~np.isnan(backend_info["atoms_props"]["arrow"]).any(axis=1)
+            try:
+                self.draw_arrows3D(backend_info["atoms_props"]["xyz"][is_arrow], backend_info["atoms_props"]["arrow"][is_arrow], arrow_style=backend_info["arrow_style"])
+            except NotImplementedError as e:
+                warn(str(e))
+        
             
 
         # And finally draw the unit cell

@@ -259,9 +259,10 @@ class Backend(ABC):
         """
         raise NotImplementedError(f"{self.__class__.__name__} doesn't implement a draw_scatter3D method.")
     
-    def draw_arrows3D(self, xyzs, dxyzs, **kwargs):
-        for xyz, dxyz in zip(xyzs, dxyzs):
+    def draw_arrows3D(self, xyz, dxyz, **kwargs):
+        for xyz, dxyz in zip(xyz, dxyz):
             self.draw_arrow3D(xyz, dxyz, **kwargs)
+        return self
 
     def draw_arrow3D(self, xyz, dxyz, **kwargs):
         raise NotImplementedError(f"{self.__class__.__name__} doesn't implement a draw_arrows3D method.")

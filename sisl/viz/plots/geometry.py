@@ -844,7 +844,7 @@ class GeometryPlot(Plot):
             wrap_atom: function, optional
             function that recieves the index of an atom and returns
             the args (array-like) and kwargs (dict) that go into self._atom_trace3D()
-            If not provided, self._default_wrap_atom3D will be used.
+            If not provided, self._default_wrap_atoms3D will be used.
         wrap_bond: function, optional
             function that recieves "a bond" (list of 2 atom indices) and its coordinates ((x1,y1), (x2, y2)).
             It should return the args (array-like) and kwargs (dict) that go into `self._bond_trace2D()`
@@ -897,17 +897,17 @@ class GeometryPlot(Plot):
     #                  3D plotting
     #---------------------------------------------------
 
-    def _prepare3D(self, wrap_atom=None, wrap_bond=None, show_cell='box',
+    def _prepare3D(self, wrap_atoms=None, wrap_bond=None, show_cell='box',
         atoms=None, atoms_styles=None, bind_bonds_to_ats=True, atoms_scale=1., atoms_colorscale="viridis",
         show_bonds=True, cheap_bonds=True, cheap_atoms=False, cheap_bonds_kwargs={}):
         """Returns a 3D representation of the plot's geometry.
 
         Parameters
         -----------
-        wrap_atom: function, optional
-            function that recieves the index of an atom and returns
-            the args (array-like) and kwargs (dict) that go into self._atom_trace3D()
-            If not provided, self._default_wrap_atom3D will be used.
+        wrap_atoms: function, optional
+            function that recieves the index of the atoms and returns
+            a dictionary with properties of the atoms.
+            If not provided, self._default_wrap_atoms3D will be used.
         wrap_bond: function, optional
             function that recieves "a bond" (list of 2 atom indices) and returns
             the args (array-like) and kwargs (dict) that go into self._bond_trace3D()
@@ -937,7 +937,7 @@ class GeometryPlot(Plot):
         cheap_bonds_kwargs: dict, optional
             dict that is passed directly as keyword arguments to `self._bonds_trace3D`.
         """
-        wrap_atom = wrap_atom or self._default_wrap_atom3D
+        wrap_atoms = wrap_atoms or self._default_wrap_atoms3D
         wrap_bond = wrap_bond or self._default_wrap_bond3D
 
         atoms = self.geometry._sanitize_atoms(atoms)
@@ -947,10 +947,8 @@ class GeometryPlot(Plot):
         except:
             pass
 
-        atoms_props = []
-        for at in atoms:
-            atoms_props.append(wrap_atom(at, atoms_styles))
-            atoms_props[-1]["size"] *= atoms_scale
+        atoms_props = wrap_atoms(atoms, atoms_styles)
+        atoms_props["size"] *= atoms_scale
 
         if show_bonds:
             # Try to get the bonds colors (It might be that the user is not setting them)
@@ -964,19 +962,17 @@ class GeometryPlot(Plot):
 
         return {"geometry": self.geometry, "atoms": atoms, "bonds": bonds, "atoms_props": atoms_props, "bonds_props": bonds_props}
 
-    def _default_wrap_atom3D(self, at, atoms_styles):
+    def _default_wrap_atoms3D(self, ats, atoms_styles):
 
-        atom = self.geometry.atoms[at]
-
-        color = atoms_styles["color"][at]
-        size = atoms_styles["size"][at]
-        vertices = atoms_styles["vertices"][at]
-        opacity = atoms_styles["opacity"][at]
-        arrow = atoms_styles["arrow"][at] if atoms_styles["arrow"] is not None else None
+        color = atoms_styles["color"][ats]
+        size = atoms_styles["size"][ats]
+        vertices = atoms_styles["vertices"][ats]
+        opacity = atoms_styles["opacity"][ats]
+        arrow = atoms_styles["arrow"][ats] if atoms_styles["arrow"] is not None else None
 
         return {
-            "xyz": self.geometry[at],
-            "name": f'{at} ({atom.tag})',
+            "xyz": self.geometry[ats],
+            "name": [f'{at} ({self.geometry.atoms[at].tag})' for at in ats],
             "color": color,
             "size": size,
             "vertices": vertices,
