@@ -1618,8 +1618,8 @@ class MonkhorstPack(BrillouinZone):
 
         Raises
         ------
-        SislError : if the size of the replacement `MonkhorstPack` grid is not compatible with the
-                    k-point spacing in this object.
+        SislError
+            if the size of the replacement `MonkhorstPack` grid is not compatible with the k-point spacing in this object.
         """
         # First we find all k-points within k +- mp.size
         # Those are the points we wish to remove.

@@ -1074,7 +1074,8 @@ class Atom(metaclass=AtomMeta):
 
         Raises
         ------
-        ValueError : if the number of orbitals removed is too large or some indices are outside the allowed range
+        ValueError
+           if the number of orbitals removed is too large or some indices are outside the allowed range
         """
         orbitals = _a.arrayi(orbitals).ravel()
         if len(orbitals) > self.no:
@@ -1894,8 +1895,10 @@ class Atoms:
 
         Raises
         ------
-        KeyError : if `atom_from` does not exist in the list of atoms
-        UserWarning : if the atoms does not have the same number of orbitals.
+        KeyError
+           if `atom_from` does not exist in the list of atoms
+        UserWarning
+           if the atoms does not have the same number of orbitals.
         """
         if not isinstance(atom_from, Atom):
             raise ValueError(f'{self.__class__.__name__}.replace_atom requires input arguments to '

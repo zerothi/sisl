@@ -2229,7 +2229,8 @@ class SparseOrbital(_SparseGeometry):
 
         Raises
         ------
-        ValueError if the two geometries are not compatible for either coordinate, orbital or supercell errors
+        ValueError
+            if the two geometries are not compatible for either coordinate, orbital or supercell errors
 
         Returns
         -------

@@ -83,7 +83,8 @@ def _geometry_align(geom_b, geom_u, cls, method):
 
     Raises
     ------
-    SislError : if the geometries have non-equal atom count
+    SislError
+        if the geometries have non-equal atom count
     """
     if geom_b is None:
         return geom_u

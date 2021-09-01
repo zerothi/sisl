@@ -542,7 +542,8 @@ class State(ParentContainer):
 
         Raises
         ------
-        ValueError : if the number of state coefficients are different for the bra and ket
+        ValueError
+            if the number of state coefficients are different for the bra and ket
 
         Returns
         -------

@@ -353,7 +353,8 @@ class Grid(SuperCellChild):
 
         Raises
         ------
-        ValueError : if specifying periodic one one boundary, so must the opposite side.
+        ValueError
+            if specifying periodic one one boundary, so must the opposite side.
         """
         if not boundary is None:
             if isinstance(boundary, Integral):
@@ -1001,7 +1002,8 @@ class Grid(SuperCellChild):
 
         Raises
         ------
-        ValueError: if the grids are not compatible (different shapes)
+        ValueError
+            if the grids are not compatible (different shapes)
         """
         if isinstance(other, Grid):
             grid = self._compatible_copy(other, 'they cannot be added')
@@ -1016,7 +1018,8 @@ class Grid(SuperCellChild):
 
         Raises
         ------
-        ValueError: if the grids are not compatible (different shapes)
+        ValueError
+            if the grids are not compatible (different shapes)
         """
         if isinstance(other, Grid):
             self._check_compatibility(other, 'they cannot be added')
@@ -1030,7 +1033,8 @@ class Grid(SuperCellChild):
 
         Raises
         ------
-        ValueError: if the grids are not compatible (different shapes)
+        ValueError
+            if the grids are not compatible (different shapes)
         """
         if isinstance(other, Grid):
             grid = self._compatible_copy(other, 'they cannot be subtracted')
@@ -1045,7 +1049,8 @@ class Grid(SuperCellChild):
 
         Raises
         ------
-        ValueError: if the grids are not compatible (different shapes)
+        ValueError
+            if the grids are not compatible (different shapes)
         """
         if isinstance(other, Grid):
             self._check_compatibility(other, 'they cannot be subtracted')
@@ -1145,7 +1150,8 @@ class Grid(SuperCellChild):
 
         Raises
         ------
-        ValueError : if any of the passed indices are below 0 or above the number of elements per axis
+        ValueError
+            if any of the passed indices are below 0 or above the number of elements per axis
         """
         index = _a.asarrayi(index).reshape(-1, 3)
         grid = _a.arrayi(self.shape[:])

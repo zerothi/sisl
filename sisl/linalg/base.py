@@ -56,7 +56,8 @@ def linalg_info(method, dtype, method_dict=_linalg_info_base, dtype_dict=_linalg
 
     Raises
     ------
-    ValueError: if the corresponding method is not present
+    ValueError
+        if the corresponding method is not present
     """
     # dtype as string
     dtype_str = dtype_dict[dtype]

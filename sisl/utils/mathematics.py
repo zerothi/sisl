@@ -88,7 +88,8 @@ def orthogonalize(ref, vector):
 
     Raises
     ------
-    ValueError : if `vector` is parallel to `ref`
+    ValueError
+        if `vector` is parallel to `ref`
     """
     ref = asarray(ref).ravel()
     nr = fnorm(ref)

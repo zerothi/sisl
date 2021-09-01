@@ -382,7 +382,8 @@ class UnitParser:
 
         Raises
         ------
-        UnitSislError : if the units are not commensurate
+        UnitSislError
+            if the units are not commensurate
         """
         if len(args) == 2:
             # basic unit conversion

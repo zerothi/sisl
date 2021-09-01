@@ -637,7 +637,8 @@ class fdfSileSiesta(SileSiesta):
 
         Raises
         ------
-        SislWarning if none of the files can be read
+        SislWarning
+            if none of the files can be read
         """
         order = _listify_str(kwargs.pop('order', ['nc', 'ORB_INDX']))
         for f in order:

@@ -857,7 +857,8 @@ class SparseCSR(NDArrayOperatorsMixin):
 
         Raises
         ------
-        IndexError for indices out of bounds
+        IndexError
+            for indices out of bounds
         """
         if asarray(i).size == 0:
             return arrayi([])
@@ -974,7 +975,8 @@ class SparseCSR(NDArrayOperatorsMixin):
 
         Raises
         ------
-        IndexError for indices out of bounds
+        IndexError
+            for indices out of bounds
         """
         if i < 0 or i >= self.shape[0]:
             raise IndexError('row index is out-of-bounds')
