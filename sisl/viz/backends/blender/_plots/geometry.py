@@ -13,12 +13,6 @@ class BlenderGeometryBackend(BlenderBackend, GeometryBackend):
     def draw_2D(self, backend_info, **kwargs):
         raise NotImplementedError("A way of drawing 2D geometry representations is not implemented for blender")
 
-    def draw_3D(self, backend_info, **kwargs):
-
-        # For now, draw only the atoms
-        for atom_props in backend_info["atoms_props"]:
-            self._draw_single_atom_3D(**atom_props)
-
     def _draw_single_atom_3D(self, xyz, size, color="gray", name=None, vertices=15, **kwargs):
 
         bpy.ops.mesh.primitive_uv_sphere_add(
@@ -39,16 +33,20 @@ class BlenderGeometryBackend(BlenderBackend, GeometryBackend):
         atom.name = name
         atom.data.name = name
 
-        color = self._to_rgb_color(color)
-
-        if color is not None:
-            mat = bpy.data.materials.new("material")
-            mat.use_nodes = True
-
-            mat.node_tree.nodes["Principled BSDF"].inputs[0].default_value = (*color, 1)
-
-            atom.active_material = mat
-
+        self._color_obj(atom, color, opacity=1)
+        
         bpy.ops.object.shade_smooth()
+
+    def _draw_bonds_3D(self, *args, line=None, **kwargs):
+        # Set the width of the bonds to 0.2, otherwise they look gigantic.
+        line = line or {}
+        line["width"] = 0.2
+        # And call the method to draw bonds (which will use self.draw_line3D)
+        super()._draw_bonds_3D(*args, line=line, **kwargs)
+    
+    def _draw_cell_3D_box(self, *args, width=0.1, **kwargs):
+        # This method is only defined to provide a better default for the width in blender
+        # otherwise it looks gigantic, as the bonds
+        super()._draw_cell_3D_box(*args, width=width, **kwargs)
 
 GeometryPlot.backends.register("blender", BlenderGeometryBackend)

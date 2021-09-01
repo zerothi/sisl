@@ -236,8 +236,6 @@ class GeometryBackend(Backend):
             except NotImplementedError as e:
                 warn(str(e))
         
-            
-
         # And finally draw the unit cell
         show_cell = backend_info["show_cell"]
         cell = geometry.cell
