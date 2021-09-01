@@ -367,7 +367,7 @@ class CompositeCategory(GenericCategory):
         self.A = A
         self.B = B
 
-    def categorize(self, *args, **kwargs):
+    def categorizeAB(self, *args, **kwargs):
         r""" Base method for queriyng whether an object is a certain category """
         catA = self.A.categorize(*args, **kwargs)
         catB = self.B.categorize(*args, **kwargs)
@@ -412,7 +412,7 @@ class OrCategory(CompositeCategory):
 
     def categorize(self, *args, **kwargs):
         r""" Base method for queriyng whether an object is a certain category """
-        catA, catB = super().categorize(*args, **kwargs)
+        catA, catB = self.categorizeAB(*args, **kwargs)
 
         def cmp(a, b):
             if isinstance(a, NullCategory):
@@ -444,7 +444,7 @@ class AndCategory(CompositeCategory):
 
     def categorize(self, *args, **kwargs):
         r""" Base method for queriyng whether an object is a certain category """
-        catA, catB = super().categorize(*args, **kwargs)
+        catA, catB = self.categorizeAB(*args, **kwargs)
 
         def cmp(a, b):
             if isinstance(a, NullCategory):
@@ -478,7 +478,7 @@ class XOrCategory(CompositeCategory):
 
     def categorize(self, *args, **kwargs):
         r""" Base method for queriyng whether an object is a certain category """
-        catA, catB = super().categorize(*args, **kwargs)
+        catA, catB = self.categorizeAB(*args, **kwargs)
 
         def cmp(a, b):
             if isinstance(a, NullCategory):
