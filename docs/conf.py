@@ -24,6 +24,12 @@ from datetime import date
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 # make sure the source version is preferred (#3567)
 _root = pathlib.Path(__file__).absolute().parent.parent
+
+# If building this on RTD, mock out fortran sources
+on_rtd = os.environ.get('READTHEDOCS', 'false').lower() == 'true'
+if on_rtd:
+    os.environ["SISL_NPROCS"] = 1
+
 try:
     import sisl
     print(f"Located sisl here: {sisl.__path__}")
@@ -100,7 +106,6 @@ author = 'Nick Papior'
 copyright = f"2015-{date.today().year}, {author}"
 
 # If building this on RTD, mock out fortran sources
-on_rtd = os.environ.get('READTHEDOCS', 'false').lower() == 'true'
 if on_rtd:
     nbsphinx_allow_errors = True
 else:
