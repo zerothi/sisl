@@ -2432,12 +2432,13 @@ class SparseOrbital(_SparseGeometry):
     def replace(self, atoms, other, other_atoms=None, eps=0.005, scale=1.):
         r""" Replace `atoms` in `self` with `other_atoms` in `other` and retain couplings between them
 
-        This method tries to replace a subset of atoms in `self` with
+        This method replaces a subset of atoms in `self` with
         another sparse geometry retaining any couplings between them.
-        The algorithm checks whether the coupling atoms are have the same number of
+        The algorithm checks whether the coupling atoms have the same number of
         orbitals. Meaning that atoms in the overlapping region should have the same
         connections and number of orbitals per atom.
-        It will _not_ check whether the orbitals or atoms _are_ the same.
+        It will _not_ check whether the orbitals or atoms _are_ the same, nor the order
+        of the orbitals.
 
         Examples
         --------
@@ -2454,7 +2455,7 @@ class SparseOrbital(_SparseGeometry):
         >>> big2 = big.replace(np.arange(big.na), minimal, scale=(2, 0))
         >>> big2 = (big2 + big2.transpose()) * 0.5
 
-        To only retain couplings from the ```minial`` sparse matrix:
+        To only retain couplings from the ``minimal`` sparse matrix:
 
         >>> big2 = big.replace(np.arange(big.na), minimal, scale=(0, 2))
         >>> big2 = (big2 + big2.transpose()) * 0.5
@@ -2481,7 +2482,7 @@ class SparseOrbital(_SparseGeometry):
             to select a subset of atoms in `other` that are taken out.
             Defaults to all atoms.
         eps : float, optional
-            tolerance that all coordinates *must* be within to allow a replacement.
+            coordinate tolerance to allow a replacement.
             It is important that this value is smaller than half the distance between
             the two closests atoms such that there is no ambiguity in selecting
             equivalent atoms.
@@ -2504,8 +2505,10 @@ class SparseOrbital(_SparseGeometry):
 
         Raises
         ------
-        ValueError if the two geometries are not compatible for either coordinate, orbital or supercell errors
-        AssertionError if the two geometries are not compatible for either coordinate, orbital or supercell errors
+        ValueError
+           if the two geometries are not compatible for either coordinate, orbital or supercell errors
+        AssertionError
+           if the two geometries are not compatible for either coordinate, orbital or supercell errors
 
         Returns
         -------
