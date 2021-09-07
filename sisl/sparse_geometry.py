@@ -2602,7 +2602,10 @@ class SparseOrbital(_SparseGeometry):
 
         # we can only ensure the orbitals that connect *out* have the same count
         # For supercell connections hopping *IN* might be different due to the supercell
-        assert len(s_info.orb_connect.sc.OUT) == len(o_info.orb_connect.sc.OUT)
+        if len(s_info.orb_connect.sc.OUT) != len(o_info.orb_connect.sc.OUT):
+            raise ValueError(f"{self.__class__.__name__}.replace found that self connects out with {len(s_info.orb_connect.sc.OUT)} orbitals "
+                             f"and other connects out with {len(o_info.orb_connect.sc.OUT)} orbitals. They *must* be the same.")
+
         sgeom_out = create_geometry(sgeom, s_info.atom_connect.sc.OUT)
         ogeom_out = create_geometry(ogeom, o_info.atom_connect.sc.OUT)
         soverlap_out, ooverlap_out = sgeom_out.overlap(ogeom_out, eps=eps,
@@ -2620,8 +2623,9 @@ class SparseOrbital(_SparseGeometry):
         assert len(ogeom_out) == len(ooverlap_out)
         # Also ensure we check that the atoms connected to has the same
         # number of orbitals.
-        assert np.allclose(sgeom_out.orbitals[soverlap_out],
-                           ogeom_out.orbitals[ooverlap_out])
+        if not np.allclose(sgeom_out.orbitals[soverlap_out], ogeom_out.orbitals[ooverlap_out])
+            raise ValueError(f"{self.__class__.__name__}.replace overlapping atoms does not have the same number "
+                             f"of orbitals.")
         # We cannot really check the soverlap_out == len(sgeom_out)
         # in case we have a replaced sparse matrix in the middle of another bigger
         # sparse matrix.
@@ -2629,7 +2633,9 @@ class SparseOrbital(_SparseGeometry):
         # Now do the same overlap checks for the *inside* region
 
         # also check the connections *in* are ok
-        assert len(s_info.orb_connect.sc.IN) == len(o_info.orb_connect.sc.IN)
+        if len(s_info.orb_connect.sc.IN) != len(o_info.orb_connect.sc.IN):
+            raise ValueError(f"{self.__class__.__name__}.replace found that self connects in with {len(s_info.orb_connect.sc.IN)} orbitals "
+                             f"and other connects in with {len(o_info.orb_connect.sc.IN)} orbitals. They *must* be the same.")
         # We know that the *IN* connections are in the primary unit-cell
         # so we don't need to handle supercell information
         sgeom_in = sgeom.sub(s_info.atom_connect.uc.IN)
@@ -2645,8 +2651,9 @@ class SparseOrbital(_SparseGeometry):
 
         assert len(sgeom_in) == len(soverlap_in)
         assert len(ogeom_in) == len(ooverlap_in)
-        assert np.allclose(sgeom_in.orbitals[soverlap_in],
-                           ogeom_in.orbitals[ooverlap_in])
+        if not np.allclose(sgeom_in.orbitals[soverlap_in], ogeom_in.orbitals[ooverlap_in])
+            raise ValueError(f"{self.__class__.__name__}.replace atoms connecting into the overlapping "
+                             "region does not have the same number of orbitals.")
 
         # clean-up to make it clear that we are not going to use them.
         del sgeom_out, ogeom_out
