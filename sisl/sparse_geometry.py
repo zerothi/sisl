@@ -2623,7 +2623,7 @@ class SparseOrbital(_SparseGeometry):
         assert len(ogeom_out) == len(ooverlap_out)
         # Also ensure we check that the atoms connected to has the same
         # number of orbitals.
-        if not np.allclose(sgeom_out.orbitals[soverlap_out], ogeom_out.orbitals[ooverlap_out])
+        if not np.allclose(sgeom_out.orbitals[soverlap_out], ogeom_out.orbitals[ooverlap_out]):
             raise ValueError(f"{self.__class__.__name__}.replace overlapping atoms does not have the same number "
                              f"of orbitals.")
         # We cannot really check the soverlap_out == len(sgeom_out)
@@ -2651,7 +2651,7 @@ class SparseOrbital(_SparseGeometry):
 
         assert len(sgeom_in) == len(soverlap_in)
         assert len(ogeom_in) == len(ooverlap_in)
-        if not np.allclose(sgeom_in.orbitals[soverlap_in], ogeom_in.orbitals[ooverlap_in])
+        if not np.allclose(sgeom_in.orbitals[soverlap_in], ogeom_in.orbitals[ooverlap_in]):
             raise ValueError(f"{self.__class__.__name__}.replace atoms connecting into the overlapping "
                              "region does not have the same number of orbitals.")
 
