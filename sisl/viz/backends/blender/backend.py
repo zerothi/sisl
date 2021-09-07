@@ -52,14 +52,17 @@ class BlenderBackend(Backend):
         # Then get it from the context
         curve_obj = bpy.context.object
         # And give it a name
-        curve_obj.name = name
+        if name is None:
+            name = ""
+        curve_obj.name = name 
 
         # Retrieve the curve from the object
         curve = curve_obj.data
         # And modify some attributes to make it look cylindric
         curve.dimensions = '3D'
         curve.fill_mode = 'FULL'
-        curve.bevel_depth = line.get("width", 0.1)
+        width = line.get("width")
+        curve.bevel_depth = width if width is not None else 0.1
         curve.bevel_resolution = 10
         # Clear all existing splines from the curve, as we are going to add them
         curve.splines.clear()
