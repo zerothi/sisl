@@ -460,7 +460,7 @@ class GridPlot(Plot):
 
     def _is_cartesian_unordered(self, cell, tol=1e-3):
         """Whether a cell has cartesian axes as lattice vectors, regardless of their order.
-        
+
         Parameters
         -----------
         cell: np.array of shape (3, 3)
@@ -476,7 +476,7 @@ class GridPlot(Plot):
 
         That is, one vector follows the direction of the cartesian axis and the other vectors don't
         have any component in that direction.
-        
+
         Parameters
         -----------
         cell: np.array of shape (3, 3)
@@ -520,11 +520,11 @@ class GridPlot(Plot):
         # We also don't need to orthogonalize if cartesian coordinates are not requested
         # (this would mean that axes is a combination of "a", "b" and "c")
         should_orthogonalize = should_orthogonalize and set(axes).intersection(["x", "y", "z"])
-        
+
         if should_orthogonalize and self._ndim == 1:
             # In 1D representations, even if the cell is skewed, we might not need to transform.
             # An example of a cell that we don't need to transform is:
-            # a = [1, 1, 0], b = [1, -1, 0], c = [0, 0, 1] 
+            # a = [1, 1, 0], b = [1, -1, 0], c = [0, 0, 1]
             # If the user wants to display the values on the z coordinate, we can safely reduce the
             # first two axes, as they don't contribute in the Z direction. Also, it is required that
             # "c" doesn't contribute to any of the other two directions.
@@ -544,7 +544,7 @@ class GridPlot(Plot):
             # directions we have to plot.
             grid_axes = self._infer_grid_axes(axes, grid.cell)
         elif self._ndim == 3:
-            grid_axes = [0,1,2]
+            grid_axes = [0, 1, 2]
 
         # Apply all transforms requested by the user
         for transform in transforms:
@@ -1031,11 +1031,11 @@ class GridPlot(Plot):
         # Do some checks on the args provided
         if sum(1 for arg in (step, num, breakpoints) if arg is not None) > 1:
             raise ValueError(f"Only one of ('step', 'num', 'breakpoints') should be passed.")
-        
+
         axes = self.get_setting('axes')
         if mode == "as_is" and set(axes) - set(["x", "y", "z"]):
             raise ValueError("To perform a scan, the axes need to be cartesian. Please set the axes to a combination of 'x', 'y' and 'z'.")
-        
+
         if self.grid.sc.is_cartesian():
             grid = self.grid
         else:
@@ -1221,7 +1221,7 @@ class GridPlot(Plot):
         )
 
         # We need to add an invisible trace so that the z axis stays with the correct range
-        fig.add_trace({"type": "scatter3d", "mode": "markers", "marker_size": 0.001, "x": [0,0], "y": [0,0], "z": [0, grid.cell[ax, ax]]})
+        fig.add_trace({"type": "scatter3d", "mode": "markers", "marker_size": 0.001, "x": [0, 0], "y": [0, 0], "z": [0, grid.cell[ax, ax]]})
 
         return fig
 
@@ -1454,7 +1454,7 @@ class WavefunctionPlot(GridPlot):
         # other option because EigenstateElectron.wavefunction doesn't allow providing a
         # geometry.
         self.eigenstate.parent = self.geometry
-        
+
         # If we are calculating the wavefunction for any point other than gamma,
         # the periodicity of the WF will be bigger than the cell. Therefore, if
         # the user wants to see more than the unit cell, we need to generate the

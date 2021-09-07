@@ -118,20 +118,20 @@ class TestGridPlot(_TestPlot):
         plot.update_settings(axes=axes)
         assert isinstance(plot.data[0], trace_type), f"Not displaying grid in {len(axes)}D correctly"
 
-    @pytest.mark.parametrize("nsc", [[1,1,1], [2,2,2]])
+    @pytest.mark.parametrize("nsc", [[1, 1, 1], [2, 2, 2]])
     def test_ax_ranges(self, plot, axes, ndim, nsc):
         if ndim == 3:
             return
-        
+
         plot.update_settings(axes=axes, nsc=nsc)
-        
+
         if ndim == 1:
             assert plot._for_backend["values"].shape == plot._for_backend["ax_range"].shape
         if ndim == 2:
             assert (plot._for_backend["values"].shape[1], ) == plot._for_backend["x"].shape
             assert (plot._for_backend["values"].shape[0], ) == plot._for_backend["y"].shape
 
-        plot.update_settings(nsc=[1,1,1])
+        plot.update_settings(nsc=[1, 1, 1])
 
     def test_representation(self, plot, axes, grid_representation):
 

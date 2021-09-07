@@ -10,12 +10,12 @@ class PlotlyGeometryBackend(PlotlyBackend, GeometryBackend):
     def draw_1D(self, backend_info, **kwargs):
         super().draw_1D(backend_info, **kwargs)
 
-        self.update_layout(**{f"{k}_title": v for k,v in backend_info["axes_titles"].items()})
+        self.update_layout(**{f"{k}_title": v for k, v in backend_info["axes_titles"].items()})
 
     def draw_2D(self, backend_info, **kwargs):
         super().draw_2D(backend_info, **kwargs)
 
-        self.update_layout(**{f"{k}_title": v for k,v in backend_info["axes_titles"].items()})
+        self.update_layout(**{f"{k}_title": v for k, v in backend_info["axes_titles"].items()})
 
         self.layout.yaxis.scaleanchor = "x"
         self.layout.yaxis.scaleratio = 1

@@ -85,7 +85,7 @@ class TestFatbandsPlot(_TestBandsPlot):
             expected_dims = ("k", "band", "orb")
         assert weights.dims == expected_dims
         assert weights.shape == test_attrs["weights_shape"]
-    
+
     def test_group_weights(self, plot):
 
         total_weights = plot._get_group_weights({})

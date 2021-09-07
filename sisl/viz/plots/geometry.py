@@ -354,13 +354,12 @@ class GeometryPlot(Plot):
         }
         if self._ndim == 3:
             backend_info["axes_titles"]["zaxis"] = self._get_ax_title(zaxis)
-        
 
         backend_info["ndim"] = self._ndim
         backend_info["show_cell"] = show_cell
 
         return backend_info
-    
+
     @staticmethod
     def _get_ax_title(ax):
         """Generates the title for a given axis"""
@@ -446,12 +445,12 @@ class GeometryPlot(Plot):
             return np.unique(bonds, axis=0)
         else:
             return bonds
-    
+
     @staticmethod
     def _direction(ax, cell):
         if isinstance(ax, (int, str)):
             ax = direction(ax, abc=cell, xyz=np.diag([1., 1., 1.]))
-        
+
         return ax
 
     @staticmethod
@@ -489,7 +488,7 @@ class GeometryPlot(Plot):
         return np.array([xyz(coeffs) for coeffs in points])
 
     @classmethod
-    def _projected_1Dcoords(cls, geometry, xyz=None, axis="x", nsc=(1,1,1)):
+    def _projected_1Dcoords(cls, geometry, xyz=None, axis="x", nsc=(1, 1, 1)):
         """
         Moves the 3D positions of the atoms to a 2D supspace.
 
@@ -531,7 +530,7 @@ class GeometryPlot(Plot):
         return xyz.dot(axis/fnorm(axis)) / fnorm(axis)
 
     @classmethod
-    def _projected_2Dcoords(cls, geometry, xyz=None, xaxis="x", yaxis="y", nsc=(1,1,1)):
+    def _projected_2Dcoords(cls, geometry, xyz=None, xaxis="x", yaxis="y", nsc=(1, 1, 1)):
         """
         Moves the 3D positions of the atoms to a 2D supspace.
 
@@ -565,7 +564,7 @@ class GeometryPlot(Plot):
         """
         if xyz is None:
             xyz = geometry.xyz
-        
+
         try:
             all_lattice_vecs = len(set([xaxis, yaxis]).intersection(["a", "b", "c"])) == 2
         except:
@@ -576,7 +575,7 @@ class GeometryPlot(Plot):
         if all_lattice_vecs:
             coord_indices = ["abc".index(ax) for ax in (xaxis, yaxis)]
 
-            nsc = np.array(nsc).reshape(3,1)
+            nsc = np.array(nsc).reshape(3, 1)
             icell = cell_invert(geometry.cell / nsc)
         else:
             # Get the directions that these axes represent
@@ -585,7 +584,7 @@ class GeometryPlot(Plot):
 
             fake_cell = np.array([xaxis, yaxis, np.cross(xaxis, yaxis)], dtype=np.float64)
             icell = cell_invert(fake_cell)
-            coord_indices = [0,1]
+            coord_indices = [0, 1]
 
         return np.dot(xyz, icell.T)[..., coord_indices]
 
@@ -606,8 +605,8 @@ class GeometryPlot(Plot):
     #                  1D plotting
     #---------------------------------------------------
 
-    def _prepare1D(self, atoms=None, coords_axis="x", data_axis=None, wrap_atoms=None, atoms_color=None, atoms_size=None, atoms_colorscale="viridis", 
-        nsc=(1,1,1), **kwargs):
+    def _prepare1D(self, atoms=None, coords_axis="x", data_axis=None, wrap_atoms=None, atoms_color=None, atoms_size=None, atoms_colorscale="viridis",
+        nsc=(1, 1, 1), **kwargs):
         """
         Returns a 1D representation of the plot's geometry.
 
@@ -704,7 +703,7 @@ class GeometryPlot(Plot):
 
     def _prepare2D(self, xaxis="x", yaxis="y", atoms=None, atoms_color=None, atoms_size=None, atoms_colorscale="viridis",
         show_bonds=True, bind_bonds_to_ats=True, bonds_together=True, points_per_bond=5,
-        show_cell='box', wrap_atoms=None, wrap_bond=None, nsc=(1,1,1)):
+        show_cell='box', wrap_atoms=None, wrap_bond=None, nsc=(1, 1, 1)):
         """Returns a 2D representation of the plot's geometry.
 
         Parameters

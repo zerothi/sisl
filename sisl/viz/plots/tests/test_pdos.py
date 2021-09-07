@@ -91,7 +91,7 @@ class TestPdosPlot(_TestPlot):
 
         # Check if we have the correct number of orbitals
         assert len(PDOS.orb) == test_attrs["no"] == geom.no
-    
+
     def test_request_PDOS(self, plot):
         total_DOS = plot._get_request_PDOS({})
 

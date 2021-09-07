@@ -17,6 +17,7 @@ def load_backend(backend):
     """
     importlib.import_module(f".{backend}", __name__)
 
+
 def load_backends():
     """ Loads all available backends from this module level
 

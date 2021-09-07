@@ -389,7 +389,6 @@ class pdosSileSiesta(SileSiesta):
                 else:
                     ns._data_header.append(f"PDOS[1/eV]{value}")
 
-
         p.add_argument('--atom', '-a', type=str, action=AtomRange,
                        help="""Limit orbital resolved PDOS to a sub-set of atoms/orbitals: "1-2[3,4]" will yield the 1st and 2nd atom and their 3rd and fourth orbital. Multiple comma-separated specifications are allowed. Note that some shells does not allow [] as text-input (due to expansion), {, [ or * are allowed orbital delimiters. Each invocation will create a new column/line in output""")
 

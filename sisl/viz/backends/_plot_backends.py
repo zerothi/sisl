@@ -10,7 +10,7 @@ class Backends:
         self._children = []
 
         self._cls = plot_cls
-        
+
         self._cls._backend = None
 
     def register(self, backend_name, backend, default=False):
