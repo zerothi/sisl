@@ -370,13 +370,15 @@ class PlotlyBackend(Backend):
     def draw_scatter3D(self, *args, **kwargs):
         self.draw_line3D(*args, mode="markers", **kwargs)
 
-    def draw_arrows3D(self, xyz, dxyz, arrow_style, **kwargs):
-        # Will raise NotImplementedError
-        #super().draw_arrow3D(xyz, dxyz, **kwargs)
+    def draw_arrows3D(self, xyz, dxyz, arrowhead_angle=20, arrowhead_scale=0.3, **kwargs):
+        """Draws 3D arrows in plotly using a combination of a scatter3D and a Cone trace."""
         final_xyz = xyz + dxyz
 
-        color = arrow_style.get("color")
-        width = arrow_style.get("width")
+        color = kwargs.get("line", {}).get("color")
+        if color is None:
+            color = "red"
+
+        name = kwargs.get("name", "Arrows")
 
         arrows_coords = np.empty((xyz.shape[0]*3, 3), dtype=np.float64)
 
@@ -384,8 +386,7 @@ class PlotlyBackend(Backend):
         arrows_coords[1::3] = final_xyz
         arrows_coords[2::3] = np.nan
 
-        arrowhead_scale = arrow_style.get("arrowhead_scale", 0.3)
-        name = kwargs.get("name", "Arrows")
+        conebase_xyz = xyz + (1 - arrowhead_scale) * dxyz
 
         self.figure.add_traces([{
             "x": arrows_coords[:, 0],
@@ -394,26 +395,22 @@ class PlotlyBackend(Backend):
             "mode": "lines",
             "type": "scatter3d",
             "hoverinfo": "none",
-            "line": {
-                "color": color,
-                "width": width
-            },
+            "line": {**kwargs.get("line"), "color": color,},
             "legendgroup": name,
             "name": f"{name} lines",
             "showlegend": False,
         },
         {
             "type": "cone",
-            "x": final_xyz[:, 0],
-            "y": final_xyz[:, 1],
-            "z": final_xyz[:, 2],
-            "u": dxyz[:, 0],
-            "v": dxyz[:, 1],
-            "w": dxyz[:, 2],
-            "anchor": "tip",
+            "x": conebase_xyz[:, 0],
+            "y": conebase_xyz[:, 1],
+            "z": conebase_xyz[:, 2],
+            "u": arrowhead_scale * dxyz[:, 0],
+            "v": arrowhead_scale * dxyz[:, 1],
+            "w": arrowhead_scale * dxyz[:, 2],
             "hovertemplate": "[%{u}, %{v}, %{w}]",
             "sizemode": "absolute",
-            "sizeref": arrowhead_scale*np.linalg.norm(dxyz, axis=1).max() / 0.25,
+            "sizeref": arrowhead_scale * np.linalg.norm(dxyz, axis=1).max() / 2,
             "colorscale": [[0, color], [1, color]],
             "showscale": False,
             "legendgroup": name,

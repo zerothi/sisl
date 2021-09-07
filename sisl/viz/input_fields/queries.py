@@ -296,11 +296,11 @@ class OrbitalQueries(QueriesInput):
 
         # Now get the unique options from the dataframe
         if keys:
-            options = df.drop_duplicates(subset=keys)[keys].values.astype(np.object)
+            options = df.drop_duplicates(subset=keys)[keys].values.astype(object)
         else:
             # It might be the only key was "spin", then we are going to fake it
             # to get an options array that can be treated in the same way.
-            options = np.array([[]], dtype=np.object)
+            options = np.array([[]], dtype=object)
 
         # If "spin" was one of the keys, we are going to incorporate the spin options, taking into
         # account the position (column index) where they are expected to be returned.

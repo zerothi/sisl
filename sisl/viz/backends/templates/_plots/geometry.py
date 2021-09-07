@@ -65,14 +65,14 @@ class GeometryBackend(Backend):
         # Add the atoms
         self._draw_atoms_2D_scatter(**{k: v for k,v in backend_info["atoms_props"].items() if k != "arrow"})
         # Now draw the arrows
-        if backend_info["atoms_props"]["arrow"] is not None:
-            arrow = backend_info["atoms_props"]["arrow"]
-            is_arrow = ~np.isnan(arrow)
-            arrow = np.array([arrow, np.zeros(arrow.shape)]).T
+        for arrow_spec in backend_info["arrows"]:
+            is_arrow = ~np.isnan(arrow_spec["data"]).any(axis=1)
+            arrow_data = np.array([arrow_spec["data"][:, 0], np.zeros_like(arrow_spec["data"][:, 0])]).T
             self.draw_arrows(
-                xy=backend_info["atoms_props"]["xy"].T[is_arrow], dxy=arrow[is_arrow],
-                arrowhead_angle=backend_info["arrow_style"]["arrowhead_angle"], arrowhead_scale=backend_info["arrow_style"]["arrowhead_scale"],
-                line={k: v for k, v in backend_info["arrow_style"].items() if not k.startswith("arrowhead")},
+                xy=backend_info["atoms_props"]["xy"].T[is_arrow], dxy=arrow_data[is_arrow]*arrow_spec["scale"],
+                arrowhead_angle=arrow_spec["arrowhead_angle"], arrowhead_scale=arrow_spec["arrowhead_scale"],
+                line={k: arrow_spec.get(k) for k in ("color", "width", "dash")},
+                name=arrow_spec["name"]
             )
 
     def draw_2D(self, backend_info, **kwargs):
@@ -96,12 +96,13 @@ class GeometryBackend(Backend):
         # Add the atoms scatter
         self._draw_atoms_2D_scatter(**{k: v for k,v in backend_info["atoms_props"].items() if k != "arrow"})
         # Now draw the arrows from the atoms
-        if backend_info["atoms_props"]["arrow"] is not None:
-            is_arrow = ~np.isnan(backend_info["atoms_props"]["arrow"]).any(axis=1)
+        for arrow_spec in backend_info["arrows"]:
+            is_arrow = ~np.isnan(arrow_spec["data"]).any(axis=1)
             self.draw_arrows(
-                xy=backend_info["atoms_props"]["xy"].T[is_arrow], dxy=backend_info["atoms_props"]["arrow"][is_arrow],
-                arrowhead_angle=backend_info["arrow_style"]["arrowhead_angle"], arrowhead_scale=backend_info["arrow_style"]["arrowhead_scale"],
-                line={k: v for k, v in backend_info["arrow_style"].items() if not k.startswith("arrowhead")},
+                xy=backend_info["atoms_props"]["xy"].T[is_arrow], dxy=arrow_spec["data"][is_arrow]*arrow_spec["scale"],
+                arrowhead_angle=arrow_spec["arrowhead_angle"], arrowhead_scale=arrow_spec["arrowhead_scale"],
+                line={k: arrow_spec.get(k) for k in ("color", "width", "dash")},
+                name=arrow_spec["name"]
             )
 
         # And finally draw the unit cell
@@ -223,18 +224,25 @@ class GeometryBackend(Backend):
                         v = [x[k] for x in bonds_props]
                     bonds_kwargs[f"bonds_{k}"] = v
 
-                self._bonds_3D_scatter(geometry, backend_info["bonds"], **bonds_kwargs)
+                self._bonds_3D_scatter(backend_info["bonds"], **bonds_kwargs)
 
         # Now draw the atoms
-        for i, _ in enumerate(backend_info["atoms"]):
-            self._draw_single_atom_3D(**{k:v[i] for k, v in backend_info["atoms_props"].items() if k != "arrow"})
+        for i, _ in enumerate(backend_info["atoms_props"]["xyz"]):
+            self._draw_single_atom_3D(**{k: v[i] for k,v in backend_info["atoms_props"].items()})
         # Draw the arrows
-        if backend_info["atoms_props"]["arrow"] is not None:
-            is_arrow = ~np.isnan(backend_info["atoms_props"]["arrow"]).any(axis=1)
+        for arrow_spec in backend_info["arrows"]:
+            is_arrow = ~np.isnan(arrow_spec["data"]).any(axis=1)
             try:
-                self.draw_arrows3D(backend_info["atoms_props"]["xyz"][is_arrow], backend_info["atoms_props"]["arrow"][is_arrow], arrow_style=backend_info["arrow_style"])
+                self.draw_arrows3D(
+                    xyz=backend_info["atoms_props"]["xyz"][is_arrow], dxyz=arrow_spec["data"][is_arrow]*arrow_spec["scale"],
+                    arrowhead_angle=arrow_spec["arrowhead_angle"], arrowhead_scale=arrow_spec["arrowhead_scale"],
+                    line={k: arrow_spec.get(k) for k in ("color", "width", "dash")},
+                    name=arrow_spec["name"]
+                )
             except NotImplementedError as e:
+                # If the arrows can not be drawn in 3D, we will just warn the user and not draw them
                 warn(str(e))
+                break
         
         # And finally draw the unit cell
         show_cell = backend_info["show_cell"]
@@ -244,7 +252,7 @@ class GeometryBackend(Backend):
         elif show_cell == "box":
             self._draw_cell_3D_box(cell=cell, geometry=geometry)
 
-    def _bonds_3D_scatter(self, geometry, bonds, bonds_xyz1, bonds_xyz2, bonds_r=10, bonds_color='gray', bonds_name=None,
+    def _bonds_3D_scatter(self, bonds, bonds_xyz1, bonds_xyz2, bonds_r=10, bonds_color='gray', bonds_name=None,
         atoms=False, atoms_color="blue", atoms_size=None, name=None, coloraxis='coloraxis', **kwargs):
         """This method is capable of plotting all the geometry in one 3d trace."""
         bonds_labels=bonds_name
@@ -295,7 +303,7 @@ class GeometryBackend(Backend):
 
         x_labels, y_labels, z_labels = None, None, None
         if bonds_labels:
-            x_labels, y_labels, z_labels = np.array([geometry[bond].mean(axis=0) for bond in bonds]).T
+            x_labels, y_labels, z_labels = ((np.array(bonds_xyz1) + bonds_xyz2) / 2).T
 
         self._draw_bonds_3D(
             x, y, z, name=name,

@@ -1,8 +1,8 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from ast import parse
 from functools import wraps
+from sisl.messages import warn
 from sisl.viz.input_fields.color import ColorPicker
 
 import numpy as np
@@ -94,6 +94,13 @@ class GeometryPlot(Plot):
     	'atoms':          'color':          'size':          'opacity':
     	'vertices': In a 3D representation, the number of vertices that each
     	atom sphere is composed of. }
+    arrows: array-like of dict, optional
+    	Add arrows centered at the atoms to display some vector property.
+    	You can add as many arrows as you want, each with different styles.
+    	Each item is a dict. Structure of the expected dicts:{
+    	'atoms':          'data':          'scale':          'color':
+    	'width':          'name':          'arrowhead_scale':
+    	'arrowhead_angle':  }
     atoms_scale: float, optional
     	A scaling factor for atom sizes. This is a very quick way to rescale.
     atoms_colorscale: str, optional
@@ -226,27 +233,33 @@ class GeometryPlot(Plot):
                     params={"min": 0, "max": 1},
                 ),
 
-                ProgramaticInput(key="arrow", name="Arrow", default=None),
-
                 IntegerInput(key="vertices", name="Vertices", default=15,
                     help="""In a 3D representation, the number of vertices that each atom sphere is composed of."""),   
 
             ]
         ),
 
-        QueriesInput(key="arrow_style", name="Arrows style",
+        QueriesInput(key="arrows", name="Arrows",
             default=[],
-            help = """Customize the style of the arrows (if drawn)""",
+            help = """Add arrows centered at the atoms to display some vector property.
+            You can add as many arrows as you want, each with different styles.""",
             queryForm = [
+
+                AtomSelect(key="atoms", name="Atoms", default=None),
+
+                ProgramaticInput(key="data", name="Data", default=None),
+
                 FloatInput(key="scale", name="Scale", default=1),
 
                 ColorPicker(key="color", name="Color", default=None),
 
                 FloatInput(key="width", name="Width", default=None),
 
+                TextInput(key="name", name="Name", default=None),
+
                 FloatInput(key="arrowhead_scale", name="Arrowhead scale", default=0.2),
 
-                FloatInput(key="arrowhead_angle", name="Arrowhead angle", default=np.pi/9),
+                FloatInput(key="arrowhead_angle", name="Arrowhead angle", default=20),
             ]
         ),
 
@@ -297,13 +310,6 @@ class GeometryPlot(Plot):
 
     _pt = PeriodicTable()
 
-    _layout_defaults = {
-        'xaxis_showgrid': False,
-        'xaxis_zeroline': False,
-        'yaxis_showgrid': False,
-        'yaxis_zeroline': False,
-    }
-
     _update_methods = {
         "read_data": [],
         "set_data": ["_prepare1D", "_prepare2D", "_prepare3D"],
@@ -332,27 +338,16 @@ class GeometryPlot(Plot):
     def _after_read(self, show_bonds, nsc):
         # Tile the geometry. It shouldn't be done here, since we will need to calculate the bonds for
         # the whole supercell. FIND A SMARTER WAY!!
+        self._tiled_geometry = self.geometry
         for ax, reps in enumerate(nsc):
-            self.geometry = self.geometry.tile(reps, ax)
+            self._tiled_geometry = self._tiled_geometry.tile(reps, ax)
 
         if show_bonds:
-            self.bonds = self.find_all_bonds(self.geometry)
+            self.bonds = self.find_all_bonds(self._tiled_geometry)
 
         self.get_param("atoms").update_options(self.geometry)
 
-    def _atoms_props_nsc(self, *props):
-        """
-        Makes sure that atoms properties such as atoms_size or atoms_color are coherent with nsc.
-        """
-        def ensure_nsc(prop):
-            list_like = isinstance(prop, (np.ndarray, list, tuple))
-            if list_like and not self.geometry.na % len(prop):
-                prop = np.tile(prop, self.geometry.na // len(prop))
-            return prop
-
-        return tuple(ensure_nsc(prop) for prop in props)
-
-    def _parse_atoms_style(self, atoms_style, ndim, axes, nsc, arrow_scale):
+    def _parse_atoms_style(self, atoms_style, ndim):
         """Parses the `atoms_style` setting to a dictionary of style specifications.
         
         Parameters
@@ -374,12 +369,11 @@ class GeometryPlot(Plot):
                 "size": [self._pt.radius(abs(atom.Z))*radius_scale for atom in self.geometry.atoms],
                 "opacity": [0.4 if isinstance(atom, AtomGhost) else 1 for atom in self.geometry.atoms],
                 "vertices": 15,
-                "arrow": None,
             },
             *atoms_style
         ]
 
-        def _tile_if_needed(atoms, spec, container_shape):
+        def _tile_if_needed(atoms, spec):
             """Function that tiles an array style specification.
             
             It does so if the specification needs to be applied to more atoms
@@ -387,7 +381,7 @@ class GeometryPlot(Plot):
             if isinstance(spec, (tuple, list, np.ndarray)):
                 n_ats = len(atoms)
                 n_spec = len(spec)
-                if n_ats != n_spec and not (container_shape and n_spec == container_shape[0]) and n_ats % n_spec == 0:
+                if n_ats != n_spec and n_ats % n_spec == 0:
                     spec = np.tile(spec, n_ats // n_spec)
             return spec
 
@@ -397,10 +391,7 @@ class GeometryPlot(Plot):
             "size": np.empty((self.geometry.na, ), dtype=float),
             "vertices": np.empty((self.geometry.na, ), dtype=int),
             "opacity": np.empty((self.geometry.na), dtype=float),
-            "arrow":  np.empty((self.geometry.na, 3), dtype=float),
         }
-
-        parsed_atoms_style["arrow"].fill(np.nan)
         
         # Go specification by specification and apply the styles
         # to the corresponding atoms.
@@ -408,35 +399,80 @@ class GeometryPlot(Plot):
             atoms = self.geometry._sanitize_atoms(style_spec.get("atoms"))
             for key in parsed_atoms_style:
                 if style_spec.get(key) is not None:
-                    parsed_atoms_style[key][atoms] = _tile_if_needed(atoms, style_spec[key], parsed_atoms_style[key].shape[1:])
-        
-        if np.isnan(parsed_atoms_style["arrow"]).all():
-            # Avoid storing arrows if there aren't any.
-            parsed_atoms_style["arrow"] = None
-        else:
-            # Otherwise, get the projected directions if we are not in 3D.
-            if ndim == 1:
-                parsed_atoms_style["arrow"] = self._projected_1Dcoords(self.geometry, parsed_atoms_style["arrow"], axis=axes[0], nsc=nsc)
-            elif ndim == 2:
-                parsed_atoms_style["arrow"] = self._projected_2Dcoords(self.geometry, parsed_atoms_style["arrow"], xaxis=axes[0], yaxis=axes[1], nsc=nsc)
-            # Finally, scale all arrows according to the scale factor provided
-            parsed_atoms_style["arrow"] = parsed_atoms_style["arrow"] * arrow_scale
+                    parsed_atoms_style[key][atoms] = _tile_if_needed(atoms, style_spec[key])
 
         return parsed_atoms_style
 
+    def _parse_arrows(self, arrows, atoms, ndim, axes, nsc):
+        arrows_param = self.get_param("arrows")
+
+        def _sanitize_spec(arrow_spec):
+            arrow_spec = arrows_param.complete_query(arrow_spec)
+
+            arrow_spec["atoms"] = np.atleast_1d(self.geometry._sanitize_atoms(arrow_spec["atoms"]))
+            arrow_atoms = arrow_spec["atoms"]
+
+            not_displayed = set(arrow_atoms) - set(atoms)
+            if not_displayed:
+                warn(f"Arrow data for atoms {not_displayed} will not be displayed because these atoms are not displayed.")
+            if set(atoms) == set(atoms) - set(arrow_atoms):
+                # Then it makes no sense to store atoms, as nothing will be drawn
+                return None
+
+            arrow_data = np.full((self.geometry.na, ndim), np.nan, dtype=np.float64)
+            provided_data = np.array(arrow_spec["data"])
+
+            # Get the projected directions if we are not in 3D.
+            if ndim == 1:
+                provided_data = self._projected_1Dcoords(self.geometry, provided_data, axis=axes[0])
+                provided_data = np.expand_dims(provided_data, axis=-1)
+            elif ndim == 2:
+                provided_data = self._projected_2Dcoords(self.geometry, provided_data, xaxis=axes[0], yaxis=axes[1])
+
+            arrow_data[arrow_atoms] = provided_data
+            arrow_spec["data"] = arrow_data[atoms]
+
+            arrow_spec["data"] = self._tile_atomic_data(arrow_spec["data"])
+
+            return arrow_spec
+        
+        arrows = [_sanitize_spec(arrow_spec) for arrow_spec in arrows]
+
+        return [arrow_spec for arrow_spec in arrows if arrow_spec is not None]
+
+    def _tile_atomic_data(self, data):
+        tiles = np.ones(np.array(data).ndim, dtype=int)
+        tiles[0] = self._tiled_geometry.na // self.geometry.na
+        return np.tile(data, tiles)
+
+    def _tiled_atoms(self, atoms):
+        if len(atoms) == 0:
+            return atoms
+
+        n_tiles = self._tiled_geometry.na // self.geometry.na
+
+        tiled_atoms = np.tile(atoms, n_tiles).reshape(-1, atoms.shape[0])
+
+        tiled_atoms += np.linspace(0, self.geometry.na*(n_tiles - 1), n_tiles, dtype=int).reshape(-1, 1)
+        return tiled_atoms.ravel()
+
+    def _tiled_coords(self, atoms):
+        return self._tiled_geometry[self._tiled_atoms(atoms)]
+
     def _set_data(self, axes, 
-        atoms, atoms_style, atoms_scale, atoms_colorscale, arrow_style, show_atoms, bind_bonds_to_ats,
+        atoms, atoms_style, atoms_scale, atoms_colorscale, show_atoms, bind_bonds_to_ats, arrows,
         dataaxis_1d, show_cell, nsc, kwargs3d={}, kwargs2d={}, kwargs1d={}):
         self._ndim = len(axes)
 
         if show_atoms == False:
             atoms = []
             bind_bonds_to_ats = False
+        
+        atoms = np.atleast_1d(self.geometry._sanitize_atoms(atoms))
 
-        arrow_style = arrow_style[0] if len(arrow_style) > 0 else {}
-        arrow_style = self.get_param("arrow_style").complete_query(arrow_style)
+        arrows = self._parse_arrows(arrows, atoms, self._ndim, axes, nsc)
 
-        atoms_styles = self._parse_atoms_style(atoms_style, self._ndim, axes, nsc, arrow_style["scale"])
+        atoms_styles = self._parse_atoms_style(atoms_style, self._ndim)
         atoms_styles["colorscale"] = atoms_colorscale
 
         atoms_kwargs = {"atoms": atoms, "atoms_styles": atoms_styles, "atoms_scale": atoms_scale}
@@ -462,7 +498,7 @@ class GeometryPlot(Plot):
 
         backend_info["ndim"] = self._ndim
         backend_info["show_cell"] = show_cell
-        backend_info["arrow_style"] = {k: v for k, v in arrow_style.items() if k not in ("scale", "active")}
+        backend_info["arrows"] = arrows
 
         return backend_info
 
@@ -541,17 +577,14 @@ class GeometryPlot(Plot):
         for at in geometry:
             neighs = geometry.close(at, R=[0.1, 3])[-1]
 
-            for neigh in neighs:
+            for neigh in neighs[neighs > at]:
                 summed_radius = pt.radius([abs(geometry.atoms[at].Z), abs(geometry.atoms[neigh % geometry.na].Z)]).sum()
                 bond_thresh = (1+tol) * summed_radius
                 if  bond_thresh > fnorm(geometry[neigh] - geometry[at]):
-                    bonds.append(np.sort([at, neigh]))
+                    bonds.append([at, neigh])
 
-        if bonds:
-            return np.unique(bonds, axis=0)
-        else:
-            return bonds
-
+        return np.array(bonds, dtype=int)
+    
     @staticmethod
     def _direction(ax, cell):
         if isinstance(ax, (int, str)):
@@ -594,7 +627,7 @@ class GeometryPlot(Plot):
         return np.array([xyz(coeffs) for coeffs in points])
 
     @classmethod
-    def _projected_1Dcoords(cls, geometry, xyz=None, axis="x", nsc=(1, 1, 1)):
+    def _projected_1Dcoords(cls, geometry, xyz=None, axis="x"):
         """
         Moves the 3D positions of the atoms to a 2D supspace.
 
@@ -628,7 +661,7 @@ class GeometryPlot(Plot):
             xyz = geometry.xyz
 
         if isinstance(axis, str) and axis in ("a", "b", "c", "0", "1", "2"):
-            return cls._projected_2Dcoords(geometry, xyz, xaxis=axis, yaxis="a" if axis == "c" else "c", nsc=nsc)[..., 0]
+            return cls._projected_2Dcoords(geometry, xyz, xaxis=axis, yaxis="a" if axis == "c" else "c")[..., 0]
 
         # Get the direction that the axis represents
         axis = cls._direction(axis, geometry.cell)
@@ -636,7 +669,7 @@ class GeometryPlot(Plot):
         return xyz.dot(axis/fnorm(axis)) / fnorm(axis)
 
     @classmethod
-    def _projected_2Dcoords(cls, geometry, xyz=None, xaxis="x", yaxis="y", nsc=(1, 1, 1)):
+    def _projected_2Dcoords(cls, geometry, xyz=None, xaxis="x", yaxis="y"):
         """
         Moves the 3D positions of the atoms to a 2D supspace.
 
@@ -658,9 +691,6 @@ class GeometryPlot(Plot):
             the direction to be displayed along the X axis. 
         yaxis: {"x", "y", "z", "a", "b", "c"} or array-like of shape 3, optional
             the direction to be displayed along the X axis.
-        nsc: array-like of shape (3, ), optional
-            only used if `xaxis`/`yaxis` is a lattice vector. It is used to rescale everything to the unit
-            cell lattice vectors, otherwise `GeometryPlot` doesn't play well with `GridPlot`. 
 
         Returns
         ----------
@@ -681,8 +711,7 @@ class GeometryPlot(Plot):
         if all_lattice_vecs:
             coord_indices = ["abc".index(ax) for ax in (xaxis, yaxis)]
 
-            nsc = np.array(nsc).reshape(3, 1)
-            icell = cell_invert(geometry.cell / nsc)
+            icell = cell_invert(geometry.cell)
         else:
             # Get the directions that these axes represent
             xaxis = cls._direction(xaxis, geometry.cell)
@@ -694,18 +723,11 @@ class GeometryPlot(Plot):
 
         return np.dot(xyz, icell.T)[..., coord_indices]
 
-    def _get_atoms_bonds(self, bonds, atom, geom=None, sanitize_atom=True):
+    def _get_atoms_bonds(self, bonds, atoms):
         """
         Gets the bonds where the given atoms are involved
         """
-        if atom is None:
-            return bonds
-
-        if sanitize_atom:
-            geom = geom or self.geometry
-            atom = geom._sanitize_atoms(atom)
-
-        return [bond for bond in bonds if np.any([at in atom for at in bond])]
+        return [bond for bond in bonds if np.any([at in atoms for at in bond])]
 
     #---------------------------------------------------
     #                  1D plotting
@@ -747,9 +769,7 @@ class GeometryPlot(Plot):
         """
         wrap_atoms = wrap_atoms or self._default_wrap_atoms1D
 
-        atoms = self.geometry._sanitize_atoms(atoms)
-
-        x = self._projected_1Dcoords(self.geometry, self.geometry[atoms], axis=coords_axis, nsc=nsc)
+        x = self._projected_1Dcoords(self.geometry, self._tiled_coords(atoms), axis=coords_axis)
         if data_axis is None:
             def data_axis(x):
                 return np.zeros(x.shape[0])
@@ -772,25 +792,19 @@ class GeometryPlot(Plot):
         extra_kwargs = {}
 
         color = atoms_styles["color"][ats]
-        size = atoms_styles["size"][ats]
-        opacity = atoms_styles["opacity"][ats]
-        arrow = atoms_styles["arrow"][ats] if atoms_styles["arrow"] is not None else None
 
         try:
             color.astype(float)
             extra_kwargs["marker_colorscale"] = atoms_styles["colorscale"]
-            extra_kwargs["text"] = [f"Color: {c}" for c in color]
+            extra_kwargs["text"] = self._tile_atomic_data([f"Color: {c}" for c in color])
         except ValueError:
             pass
         
         return {
             "xy": xy,
-            "text": [f'{self.geometry[at]}<br>{at} ({self.geometry.atoms[at].tag})' for at in ats],
+            "text": self._tile_atomic_data([f'{self.geometry[at]}<br>{at} ({self.geometry.atoms[at].tag})' for at in ats]),
             "name": "Atoms",
-            "color": color,
-            "size": size,
-            "opacity": opacity,
-            "arrow": arrow,
+            **{k: self._tile_atomic_data(atoms_styles[k][ats]) for k in ("color", "size", "opacity")},
             **extra_kwargs
         }
 
@@ -800,8 +814,8 @@ class GeometryPlot(Plot):
 
     def _prepare2D(self, xaxis="x", yaxis="y", 
         atoms=None, atoms_styles=None, atoms_scale=1.,
-        show_bonds=True, bind_bonds_to_ats=True, bonds_together=True, points_per_bond=5,
-        show_cell='box', wrap_atoms=None, wrap_bond=None, nsc=(1, 1, 1)):
+        show_bonds=True, bind_bonds_to_ats=True, points_per_bond=5,
+        wrap_atoms=None, wrap_bond=None, nsc=(1,1,1)):
         """Returns a 2D representation of the plot's geometry.
 
         Parameters
@@ -824,19 +838,9 @@ class GeometryPlot(Plot):
         bind_bonds_to_ats: boolean, optional
             whether only the bonds that belong to an atom that is present should be displayed.
             If False, all bonds are displayed regardless of the `atom` parameter.
-        bonds_together: boolean, optional
-            If set to True, it draws all bonds in one trace, which may be faster for rendering.
-            The only limitation that it has is that you can't set individual widths.
-            If you provide variable color and/or size for the bonds, bonds will be drawn as dots
-            (if you use enough points per bond it almost looks like a line). If you don't like this, use individual
-            bonds instead, but then note that you can not share a colorscale between bonds. This indirectly means that you 
-            can not provide the color as a number, so you will need to calculate the colors yourself if you want
-            a colorscale-like behavior.
         points_per_bond: int, optional
             If `bonds_together` is True and you provide a variable color or size (using `wrap_bonds`), this is
             the number of points that are used for each bond. See `bonds_together` for more info.
-        show_cell: {False, "box", "axes"}, optional
-            determines how the unit cell is represented.
         wrap_atoms: function, optional
             function that recieves the 2D coordinates and returns
             the args (array-like) and kwargs (dict) that go into self._atoms_scatter_trace2D()
@@ -853,9 +857,7 @@ class GeometryPlot(Plot):
         wrap_atoms = wrap_atoms or self._default_wrap_atoms2D
         wrap_bond = wrap_bond or self._default_wrap_bond2D
 
-        atoms = self.geometry._sanitize_atoms(atoms)
-
-        xy = self._projected_2Dcoords(self.geometry, self.geometry[atoms], xaxis=xaxis, yaxis=yaxis, nsc=nsc).T
+        xy = self._projected_2Dcoords(self.geometry, self._tiled_coords(atoms), xaxis=xaxis, yaxis=yaxis).T
 
         # Add atoms
         atoms_props = wrap_atoms(atoms, xy, atoms_styles)
@@ -867,11 +869,11 @@ class GeometryPlot(Plot):
             # atoms are requested
             bonds = self.bonds
             if bind_bonds_to_ats:
-                bonds = self._get_atoms_bonds(bonds, atoms, sanitize_atom=False)
+                bonds = self._get_atoms_bonds(bonds, self._tiled_atoms(atoms))
 
-            bonds_xyz = np.array([self.geometry[bond] for bond in bonds])
+            bonds_xyz = np.array([self._tiled_geometry[bond] for bond in bonds])
             if len(bonds_xyz) != 0:
-                xys = self._projected_2Dcoords(self.geometry, bonds_xyz, xaxis=xaxis, yaxis=yaxis, nsc=nsc)
+                xys = self._projected_2Dcoords(self.geometry, bonds_xyz, xaxis=xaxis, yaxis=yaxis)
 
                 # Try to get the bonds colors (It might be that the user is not setting them)
                 bonds_props = [wrap_bond(bond, xy) for bond, xy in zip(bonds, xys)]
@@ -897,9 +899,9 @@ class GeometryPlot(Plot):
     #                  3D plotting
     #---------------------------------------------------
 
-    def _prepare3D(self, wrap_atoms=None, wrap_bond=None, show_cell='box',
-        atoms=None, atoms_styles=None, bind_bonds_to_ats=True, atoms_scale=1., atoms_colorscale="viridis",
-        show_bonds=True, cheap_bonds=True, cheap_atoms=False, cheap_bonds_kwargs={}):
+    def _prepare3D(self, wrap_atoms=None, wrap_bond=None,
+        atoms=None, atoms_styles=None, bind_bonds_to_ats=True, atoms_scale=1.,
+        show_bonds=True):
         """Returns a 3D representation of the plot's geometry.
 
         Parameters
@@ -924,26 +926,12 @@ class GeometryPlot(Plot):
             will be. However, it will also be more expensive to render.
         atoms_styles: dict, optional
             dictionary containing all the style properties of the atoms, it should be build by `self._parse_atoms_style`.
-        atoms_colorscale: str or list, optional
-            the name of a plotly colorscale or a list of colors.
-            Only used if atoms_color is an array of values.
-        cheap_bonds: boolean, optional
-            If set to True, it draws all in one trace, which results in a dramatically faster rendering.
-            The only limitation that it has is that you can't set individual widths.
-        cheap_atoms: boolean, optional
-            Whether atoms are drawn in a cheap way (all in one scatter trace). 
-            If `False`, each atom is drawn individually as a sphere. It's more expensive, but by doing
-            this you avoid variable size problems (and looks better).
-        cheap_bonds_kwargs: dict, optional
-            dict that is passed directly as keyword arguments to `self._bonds_trace3D`.
         """
         wrap_atoms = wrap_atoms or self._default_wrap_atoms3D
         wrap_bond = wrap_bond or self._default_wrap_bond3D
 
-        atoms = self.geometry._sanitize_atoms(atoms)
-
         try:
-            atoms_styles["color"] = values_to_colors(atoms_styles["color"], atoms_styles["colorscale"])
+            atoms_styles["color"] = np.array(values_to_colors(atoms_styles["color"], atoms_styles["colorscale"]))
         except:
             pass
 
@@ -954,7 +942,7 @@ class GeometryPlot(Plot):
             # Try to get the bonds colors (It might be that the user is not setting them)
             bonds = self.bonds
             if bind_bonds_to_ats:
-                bonds = self._get_atoms_bonds(bonds, atoms, sanitize_atom=False)
+                bonds = self._get_atoms_bonds(bonds, self._tiled_atoms(atoms))
             bonds_props = [wrap_bond(bond) for bond in bonds]
         else:
             bonds = []
@@ -964,26 +952,16 @@ class GeometryPlot(Plot):
 
     def _default_wrap_atoms3D(self, ats, atoms_styles):
 
-        color = atoms_styles["color"][ats]
-        size = atoms_styles["size"][ats]
-        vertices = atoms_styles["vertices"][ats]
-        opacity = atoms_styles["opacity"][ats]
-        arrow = atoms_styles["arrow"][ats] if atoms_styles["arrow"] is not None else None
-
         return {
-            "xyz": self.geometry[ats],
-            "name": [f'{at} ({self.geometry.atoms[at].tag})' for at in ats],
-            "color": color,
-            "size": size,
-            "vertices": vertices,
-            "opacity": opacity,
-            "arrow": arrow,
+            "xyz": self._tiled_coords(ats),
+            "name": self._tile_atomic_data([f'{at} ({self.geometry.atoms[at].tag})' for at in ats]),
+            **{k: self._tile_atomic_data(atoms_styles[k][ats]) for k in ("color", "size", "vertices", "opacity")}
         }
 
     def _default_wrap_bond3D(self, bond):
 
         return {
-            "xyz1": self.geometry[bond[0]],
-            "xyz2": self.geometry[bond[1]],
+            "xyz1": self._tiled_geometry[bond[0]],
+            "xyz2": self._tiled_geometry[bond[1]],
             "r": 15
         }

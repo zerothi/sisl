@@ -7,6 +7,13 @@ from ...templates import GeometryBackend
 
 class PlotlyGeometryBackend(PlotlyBackend, GeometryBackend):
 
+    _layout_defaults = {
+        'xaxis_showgrid': False,
+        'xaxis_zeroline': False,
+        'yaxis_showgrid': False,
+        'yaxis_zeroline': False,
+    }
+
     def draw_1D(self, backend_info, **kwargs):
         super().draw_1D(backend_info, **kwargs)
 
