@@ -1763,7 +1763,14 @@ class Animation(MultiplePlot):
             params = {
                 "step": 100
             },
-            help = "Time (in ms) that each frame will be displayed. <br> This is only meaningful if you have an animation"
+            help = "Time (in ms) that each frame will be displayed. <br> This is only meaningful in the plotly backend"
+        ),
+
+        IntegerInput(
+            key="interpolated_frames", name="Frames between images",
+            default=5,
+            group="animation",
+            help = "The number of frames that should be interpolated between two plots. This is only meaningful in the blender backend."
         ),
 
         SwitchInput(
@@ -1802,7 +1809,7 @@ class Animation(MultiplePlot):
 
         super().__init__(*args, **kwargs, _plugins=_plugins)
 
-    def get_figure(self, backend, **kwargs):
+    def get_figure(self, backend, interpolated_frames, **kwargs):
         self._for_backend = getattr(self, "_for_backend", {})
 
         # Get the names for each frame
@@ -1811,6 +1818,7 @@ class Animation(MultiplePlot):
             frame_name = self._get_frame_names(i)
             frame_names.append(frame_name)
         self._for_backend["frame_names"] = frame_names
+        self._for_backend["interpolated_frames"] = interpolated_frames
 
         return super().get_figure(backend, **kwargs)
 

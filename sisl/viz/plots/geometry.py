@@ -293,6 +293,18 @@ class GeometryPlot(Plot):
             help="Number of points that fill a bond in 2D in case each bond has a different color or different size. <br>More points will make it look more like a line but will slow plot rendering down."
         ),
 
+        QueriesInput(key="cell_style", name="Cell style",
+            default=[{"color": "green"}],
+            help = """The style of the unit cell lines""",
+            queryForm = [
+
+                ColorPicker(key="color", name="Color", default="green"),
+
+                FloatInput(key="width", name="Width", default=None),
+
+            ]
+        ),
+
     )
 
     # Colors of the atoms following CPK rules
@@ -461,7 +473,7 @@ class GeometryPlot(Plot):
 
     def _set_data(self, axes, 
         atoms, atoms_style, atoms_scale, atoms_colorscale, show_atoms, bind_bonds_to_ats, arrows,
-        dataaxis_1d, show_cell, nsc, kwargs3d={}, kwargs2d={}, kwargs1d={}):
+        dataaxis_1d, show_cell, cell_style, nsc, kwargs3d={}, kwargs2d={}, kwargs1d={}):
         self._ndim = len(axes)
 
         if show_atoms == False:
@@ -499,6 +511,7 @@ class GeometryPlot(Plot):
         backend_info["ndim"] = self._ndim
         backend_info["show_cell"] = show_cell
         backend_info["arrows"] = arrows
+        backend_info["cell_style"] = self.get_param("cell_style").complete_query(cell_style[0])
 
         return backend_info
 

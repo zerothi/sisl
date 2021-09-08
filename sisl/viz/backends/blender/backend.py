@@ -1,9 +1,39 @@
-from ..templates.backend import Backend, MultiplePlotBackend
-from ...plot import MultiplePlot
+from ..templates.backend import Backend, MultiplePlotBackend, AnimationBackend
+from ...plot import MultiplePlot, Animation
 
 import numpy as np
 
 import bpy
+
+def add_line_frame(ani_objects, child_objects, frame):
+    """Creates the frames for a child plot lines.
+    
+    Given the objects of the lines collection in the animation, it uses
+    the corresponding lines in the child to set keyframes.
+
+    Parameters
+    -----------
+    ani_objects: CollectionObjects
+        the objects of the Atoms collection in the animation.
+    child_objects: CollectionObjects
+        the objects of the Atoms collection in the child plot.
+    frame: int
+        the frame number to which the keyframe values should be set. 
+    """
+    # Loop through all objects in the collections
+    for ani_obj, child_obj in zip(ani_objects, child_objects):
+        # Each curve object has multiple splines
+        for ani_spline, child_spline in zip(ani_obj.data.splines, child_obj.data.splines):
+            # And each spline has multiple points
+            for ani_point, child_point in zip(ani_spline.bezier_points, child_spline.bezier_points):
+                # Set the position of that point
+                ani_point.co = child_point.co
+                ani_point.keyframe_insert(data_path="co", frame=frame)
+
+        # Loop through all the materials that the object might have associated
+        for ani_material, child_material in zip(ani_obj.data.materials, child_obj.data.materials):    
+            ani_material.node_tree.nodes["Principled BSDF"].inputs[0].default_value = child_material.node_tree.nodes["Principled BSDF"].inputs[0].default_value
+            ani_material.node_tree.nodes["Principled BSDF"].inputs[0].keyframe_insert(data_path="default_value", frame=frame)
 
 
 class BlenderBackend(Backend):
@@ -18,9 +48,15 @@ class BlenderBackend(Backend):
     as said before, this is just a proof of concept.
     """
 
+    _animatable_collections = {
+        "Lines": {"add_frame": add_line_frame},
+    }
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
+        # This is the collection that will store everything related to the plot.
+        self._collection = bpy.data.collections.new(f"sislplot_{self._plot.id}")
         self._collections = {}
 
     def draw_on(self, figure):
@@ -36,25 +72,33 @@ class BlenderBackend(Backend):
 
             bpy.data.collections.remove(collection)
 
-            del self._collections[key]
+        self._collections = {}
 
     def get_collection(self, key):
         if key not in self._collections:
             self._collections[key] = bpy.data.collections.new(key)
-            bpy.context.scene.collection.children.link(self._collections[key])
+            self._collection.children.link(self._collections[key])
 
         return self._collections[key]
 
-    def draw_line3D(self, x, y, z, line={}, name="", **kwargs):
+    def draw_line3D(self, x, y, z, line={}, name="", collection=None, **kwargs):
         """Draws a line using a bezier curve."""
+        if collection is None:
+            collection = self.get_collection("Lines")
         # First, generate the curve object
         bpy.ops.curve.primitive_bezier_curve_add()
         # Then get it from the context
-        curve_obj = bpy.context.object
+        curve_obj = bpy.context.object        
         # And give it a name
         if name is None:
             name = ""
-        curve_obj.name = name 
+        curve_obj.name = name
+
+        # Link the curve to our collection (remove it from the context one)
+        context_col = bpy.context.collection
+        if context_col is not collection:
+            context_col.objects.unlink(curve_obj)
+            collection.objects.link(curve_obj)
 
         # Retrieve the curve from the object
         curve = curve_obj.data
@@ -141,6 +185,8 @@ class BlenderBackend(Backend):
 
             obj.active_material = mat
 
+    def show(self, *args, **kwargs):
+        bpy.context.scene.collection.children.link(self._collection)
 
 class BlenderMultiplePlotBackend(MultiplePlotBackend, BlenderBackend):
 
@@ -153,4 +199,39 @@ class BlenderMultiplePlotBackend(MultiplePlotBackend, BlenderBackend):
     def _draw_child_in_ax(self, child):
         child.get_figure(clear_fig=False)
 
+class BlenderAnimationBackend(BlenderBackend, AnimationBackend):
+    
+    def draw(self, backend_info):
+        
+        # Get the collections that make sense to implement. This property is defined
+        # in each backend. See for example BlenderGeometryBackend
+        animatable_collections = backend_info["children"][0]._animatable_collections
+        # Get the number of frames that should be interpolated between two animation frames.
+        interpolated_frames = backend_info["interpolated_frames"]
+        
+        # Iterate over all collections
+        for key, animate_config in animatable_collections.items():
+            
+            # Get the collection in the animation's instance
+            collection = self.get_collection(key)
+            # Copy all the objects from first child's collection
+            for obj in backend_info["children"][0].get_collection(key).objects:
+                new_obj = obj.copy()
+                new_obj.data = obj.data.copy()
+                # Some objects don't have materials associated.
+                try:
+                    new_obj.data.materials[0] = obj.data.materials[0].copy()
+                except:
+                    pass
+                collection.objects.link(new_obj)
+                
+            # Loop over all child plots
+            for i_plot, plot in enumerate(backend_info["children"]):
+                # Calculate the frame number
+                frame = i_plot * interpolated_frames
+                # Ask the provided function to build the keyframes.
+                animate_config["add_frame"](collection.objects, plot.get_collection(key).objects, frame=frame)
+                
+                
+Animation.backends.register("blender", BlenderAnimationBackend)
 MultiplePlot.backends.register("blender", BlenderMultiplePlotBackend)

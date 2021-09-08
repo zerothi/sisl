@@ -109,11 +109,12 @@ class GeometryBackend(Backend):
         show_cell = backend_info["show_cell"]
         cell = geometry.cell
         if show_cell == "axes":
-            self._draw_cell_2D_axes(geometry=geometry, cell=cell, xaxis=xaxis, yaxis=yaxis)
+            self._draw_cell_2D_axes(geometry=geometry, cell=cell, xaxis=xaxis, yaxis=yaxis, **backend_info["cell_style"])
         elif show_cell == "box":
             self._draw_cell_2D_box(
-                geometry=geometry, cell=cell,
-                xaxis=xaxis, yaxis=yaxis
+                    geometry=geometry, cell=cell,
+                    xaxis=xaxis, yaxis=yaxis,
+                    **backend_info["cell_style"]
                 )
 
     def _draw_atoms_2D_scatter(self, xy, color="gray", size=10, name='atoms', marker_colorscale=None, opacity=None, **kwargs):
@@ -189,12 +190,12 @@ class GeometryBackend(Backend):
     def _draw_axis_2D(self, x, y, name):
         self.draw_line(x, y, name=name)
 
-    def _draw_cell_2D_box(self, cell, geometry, xaxis="x", yaxis="y", color=None, **kwargs):
+    def _draw_cell_2D_box(self, cell, geometry, xaxis="x", yaxis="y", color=None, width=None, **kwargs):
 
         cell_corners = GeometryPlot._get_cell_corners(cell) + geometry.origin
         x, y = GeometryPlot._projected_2Dcoords(geometry, xyz=cell_corners, xaxis=xaxis, yaxis=yaxis).T
 
-        self.draw_line(x, y, line={"color": color}, name="Unit cell", **kwargs)
+        self.draw_line(x, y, line={"color": color, "width": width}, name="Unit cell", **kwargs)
 
     def draw_3D(self, backend_info):
 
@@ -250,7 +251,7 @@ class GeometryBackend(Backend):
         if show_cell == "axes":
             self._draw_cell_3D_axes(cell=cell, geometry=geometry)
         elif show_cell == "box":
-            self._draw_cell_3D_box(cell=cell, geometry=geometry)
+            self._draw_cell_3D_box(cell=cell, geometry=geometry, **backend_info["cell_style"])
 
     def _bonds_3D_scatter(self, bonds, bonds_xyz1, bonds_xyz2, bonds_r=10, bonds_color='gray', bonds_name=None,
         atoms=False, atoms_color="blue", atoms_size=None, name=None, coloraxis='coloraxis', **kwargs):
