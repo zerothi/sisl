@@ -263,6 +263,9 @@ class DeviceGreen:
 
         self._data = PropertyDict()
 
+    def __len__(self):
+        return len(self.pvt)
+
     def _elec(self, elec):
         """ Convert a string electrode to the proper linear index """
         if isinstance(elec, str):
@@ -543,7 +546,7 @@ class DeviceGreen:
         # a Gamma, so same for BTD
         assert len(blocks) <= 2
 
-        n = len(self.pvt)
+        n = len(self)
         G = np.empty([n, len(idx)], dtype=self._data.A[0].dtype)
 
         c = np.append(0, self.btd_cum)
@@ -607,7 +610,96 @@ class DeviceGreen:
         return G @ self._data.gamma[elec] @ dagger(G)
 
     def _spectral_propagate(self, elec):
-        raise NotImplementedError
+        nb = len(self.btd)
+        nbm1 = nb - 1
+
+        # First we need to calculate diagonal blocks of the spectral matrix
+        blocks, A = self._green_diag_block(self.elec[elec].pvt_dev.ravel())
+        A = A @ self._data.gamma[elec] @ dagger(A)
+
+        # Allocate space for the full matrix
+        S = np.empty([len(self), len(self)], dtype=A.dtype)
+
+        c = np.append(0, self.btd_cum)
+        S[c[blocks[0]]:c[blocks[-1]+1], c[blocks[0]]:c[blocks[-1]+1]] = A
+        del A
+
+        # now loop backwards
+        tX = self._data.tX
+        tY = self._data.tY
+
+        def left(i, j):
+            """ Calculate the next block LEFT of block (i,j) """
+            if j <= 0:
+                return
+            #print('left', i, j)
+            ij = slice(c[i], c[i+1]), slice(c[j], c[j+1])
+            ijm1 = ij[0], slice(c[j-1], c[j])
+            S[ijm1] = - S[ij] @ dagger(tY[j])
+
+        def right(i, j):
+            """ Calculate the next block RIGHT of block (i,j) """
+            if nbm1 <= j:
+                return
+            #print('right', i, j)
+            ij = slice(c[i], c[i+1]), slice(c[j], c[j+1])
+            ijp1 = ij[0], slice(c[j+1], c[j+2])
+            S[ijp1] = - S[ij] @ dagger(tX[j])
+
+        def above(i, j):
+            """ Calculate the next block ABOVE of block (i,j) """
+            if i <= 0:
+                return
+            #print('above', i, j)
+            ij = slice(c[i], c[i+1]), slice(c[j], c[j+1])
+            im1j = slice(c[i-1], c[i]), ij[1]
+            S[im1j] = - tY[i] @ S[ij]
+            del ij, im1j
+            above(i-1, j)
+
+        def below(i, j):
+            """ Calculate the next block BELOW of block (i,j) """
+            if nbm1 <= i:
+                return
+            #print('below', i, j)
+            ij = slice(c[i], c[i+1]), slice(c[j], c[j+1])
+            ip1j = slice(c[i+1], c[i+2]), ij[1]
+            S[ip1j] = - tX[i] @ S[ij]
+            del ij, ip1j
+            below(i+1, j)
+
+        if len(blocks) == 1:
+            for b in range(blocks[0], -1, -1):
+                left(blocks[0], b)
+                above(blocks[0], b)
+                below(blocks[0], b)
+
+            # to grab first block on the right
+            right(blocks[0], blocks[0])
+            for b in range(blocks[0] + 1, nb):
+                right(blocks[0], b)
+                above(blocks[0], b)
+                below(blocks[0], b)
+        else:
+            for b in range(blocks[0], -1, -1):
+                left(blocks[0], b)
+                above(blocks[0], b)
+                left(blocks[1], b)
+                below(blocks[1], b)
+
+            # calculating everything above/below
+            # the 2nd block
+            above(blocks[0], blocks[1])
+            below(blocks[1], blocks[1])
+            # to grab first blocks on the right
+            right(blocks[0], blocks[1])
+            right(blocks[1], blocks[1])
+            for b in range(blocks[1] + 1, nb):
+                right(blocks[0], b)
+                above(blocks[0], b)
+                right(blocks[1], b)
+                below(blocks[1], b)
+        return S
 
     def _scattering_state_reduce(self, elec, DOS, U, cutoff):
         """ U on input is a fortran-index as returned from eigh """
