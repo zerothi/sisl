@@ -10,6 +10,7 @@ import scipy as sc
 from sisl import Geometry, Atom, SuperCell, Cuboid
 from sisl.geom import fcc, graphene
 from sisl.sparse_geometry import *
+import sisl.messages as sm
 
 
 pytestmark = [pytest.mark.sparse,
@@ -314,6 +315,27 @@ def test_sparse_orbital_replace_simple():
         # replace second atom
         new = spo44.replace([position+1], spo, 1)
         assert np.fabs((new - spo44)._csr._D).sum() == 0.
+
+
+def test_sparse_orbital_replace_specie_warn():
+    """
+    Replacing an atom with another one but retaining couplings.
+    """
+    C = graphene()
+    spC = SparseOrbital(C)
+    spC.construct([(0.1, 1.45), (0, 2.7)])
+
+    N = graphene(atoms=C.atoms[1].copy(Z=5))
+    spN = SparseOrbital(N)
+    spN.construct([(0.1, 1.45), (0, 2.7)])
+
+    # Replace
+    with pytest.warns(sm.SislWarning):
+        sp = spC.copy()
+        sp.replace(0, spN, 0)
+    with pytest.warns(sm.SislWarning):
+        sp = spC.copy()
+        sp.replace(1, spN, 1)
 
 
 def test_sparse_orbital_replace_hole():

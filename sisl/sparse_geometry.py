@@ -2511,6 +2511,12 @@ class SparseOrbital(_SparseGeometry):
         AssertionError
            if the two geometries are not compatible for either coordinate, orbital or supercell errors
 
+
+        Warns
+        -----
+        SislWarning
+           in case the overlapping atoms are not comprising the same atomic specie. In some cases this may not be a problem. However, care must be taken by the user if this warning is issued.
+
         Returns
         -------
         object
@@ -2719,7 +2725,36 @@ Number of orbitals connecting to replacement region is not consistent
 between 'self' and 'other'."""
 
         if err_msg:
-            raise ValueError(err_msg)
+            raise ValueError(err_msg[1:])
+
+        warn_msg = ""
+        S_ = s_info.atom_connect.uc.IN
+        O_ = o_info.atom_connect.uc.IN
+        for s_, o_ in zip(soverlap_in, ooverlap_in):
+            if sgeom_in.atoms[s_] != ogeom_in.atoms[o_]:
+                warn_msg = f"""{warn_msg}
+Atom 'self[{S_[s_]}]' is not equivalent to 'other[{O_[o_]}]':
+  {sgeom_in.atoms[s_]}  !=  {ogeom_in.atoms[o_]}"""
+
+        if warn_msg:
+            warn(f"""Inequivalent atoms found in replacement region, this may or may not be a problem
+depending on your use case. Please be careful though.{warn_msg}""")
+
+        warn_msg = ""
+        S_ = s_info.atom_connect.sc.OUT
+        O_ = o_info.atom_connect.sc.OUT
+        checked1d = _a.zerosi([self.geometry.na])
+        for s_, o_ in zip(soverlap_out, ooverlap_out):
+            uc_s_ = S_[s_] % self.geometry.na
+            if sgeom_out.atoms[s_] != ogeom_out.atoms[o_] and checked1d[uc_s_] == 0:
+                checked1d[uc_s_] = 1
+                warn_msg = f"""{warn_msg}
+Atom 'self[{S_[s_]}]' is not equivalent to 'other[{O_[o_]}]':
+  {sgeom_out.atoms[s_]}  !=  {ogeom_out.atoms[o_]}"""
+
+        if warn_msg:
+            warn(f"""Inequivalent atoms found in connection region, this may or may not be a problem
+depending on your use case. Note indices in the following are supercell indices. Please be careful though.{warn_msg}""")
 
         # clean-up to make it clear that we are not going to use them.
         del sgeom_out, ogeom_out
@@ -2757,14 +2792,11 @@ between 'self' and 'other'."""
         # Delete the *old* values
         # To ensure that inserting will not leave *empty* values
         # we first reduce arrays so that the ptr array is not needed
-        idx = array_arange(scsr.ptr[:-1], n=scsr.ncol)
+        ncol = delete(ncol, s_info.orbitals)
+        ptr = delete(scsr.ptr, s_info.orbitals)
+        idx = array_arange(ptr[:-1], n=ncol)
         col = col[idx]
         D = D[idx]
-        # Now we don't need the pointer any more
-        ncol = delete(ncol, s_info.orbitals)
-        idx = array_arange(scsr.ptr[s_info.orbitals], n=scsr.ncol[s_info.orbitals])
-        col = delete(col, idx)
-        D = delete(D, idx, axis=0)
 
         # Do the same reduction for the inserted values
         ocsr = other._csr
