@@ -41,6 +41,16 @@ The following notebooks will help you develop a deeper understanding of what eac
     showcase/PdosPlot.ipynb
     showcase/WavefunctionPlot.ipynb
 
+Using it with blender
+^^^^^^^^^^^^^^^^^^^^^
+
+The sisl visualization framework is independent of the plotting backend used, but `blender <https://www.blender.org/>`_ is a special one. Therefore
+we dedicate this section to it with the hope of making the usage of it less confusing.
+
+.. nbgallery::
+    :name: viz-plotly-blender
+
+    blender/Getting started.rst
 
 Combining plots
 ^^^^^^^^^^^^^^^
@@ -52,8 +62,6 @@ to the right place!
     :name: viz-plotly-combining-plots-gallery
 
     combining-plots/Intro to multiple plots.ipynb
-
-
 Do it yourself
 ^^^^^^^^^^^^^^
 

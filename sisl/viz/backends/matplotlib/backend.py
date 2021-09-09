@@ -91,7 +91,7 @@ class MatplotlibBackend(Backend):
         return self.axes.plot(x, y, color=line.get("color"), linewidth=line.get("width", 1), markersize=marker.get("size"), label=name)
 
     def draw_scatter(self, x, y, name=None, marker={}, text=None, **kwargs):
-        return self.axes.scatter(x, y, c=marker.get("color"), s=marker.get("size", 1), cmap=marker.get("colorscale"), label=name, **kwargs)
+        return self.axes.scatter(x, y, c=marker.get("color"), s=marker.get("size", 1), cmap=marker.get("colorscale"), alpha=marker.get("opacity"),label=name, **kwargs)
 
 
 class MatplotlibMultiplePlotBackend(MatplotlibBackend, MultiplePlotBackend):

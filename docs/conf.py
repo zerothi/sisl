@@ -408,9 +408,7 @@ nbsphinx_prolog = r"""
 
 """
 
-nbsphinx_thumbnails = {
-    "visualization/plotly/basic-tutorials/GUI with Python Demo": "_static/visualization/plotly/basic-tutorials/GUIScreenshot.png"
-}
+nbsphinx_thumbnails = {}
 
 import inspect
 
