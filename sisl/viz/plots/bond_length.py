@@ -114,6 +114,9 @@ class BondLengthMap(GeometryPlot):
     	Number of points that fill a bond in 2D in case each bond has a
     	different color or different size. More points will make it look
     	more like a line but will slow plot rendering down.
+    cell_style: array-like of dict, optional
+    	The style of the unit cell lines   Each item is a dict. Structure of
+    	the expected dicts:{         'color':          'width':  }
     root_fdf: fdfSileSiesta, optional
     	Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional

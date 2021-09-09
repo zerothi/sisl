@@ -1719,24 +1719,27 @@ class Animation(MultiplePlot):
     Parameters
     ----------
     frame_duration: int, optional
-        Time (in ms) that each frame will be displayed.  This is only
-        meaningful if you have an animation
+    	Time (in ms) that each frame will be displayed.  This is only
+    	meaningful in the plotly backend
+    interpolated_frames: int, optional
+    	The number of frames that should be interpolated between two plots.
+    	This is only meaningful in the blender backend.
     redraw: bool, optional
-        Whether each frame of the animation should be redrawn
-        If False, the animation will try to interpolate between one frame and
-        the other             Set this to False if you are sure that the
-        frames contain the same number of traces, otherwise new traces will
-        not appear.
+    	Whether each frame of the animation should be redrawn
+    	If False, the animation will try to interpolate between one frame and
+    	the other             Set this to False if you are sure that the
+    	frames contain the same number of traces, otherwise new traces will
+    	not appear.
     ani_method:  optional
-        It determines how the animation is rendered.
+    	It determines how the animation is rendered.
     root_fdf: fdfSileSiesta, optional
-        Path to the fdf file that is the 'parent' of the results.
+    	Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
     backend:  optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
     """
 
     _trigger_kw = "animate"

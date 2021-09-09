@@ -43,7 +43,7 @@ You probably don't need the exact micro version. In our case asking for ``3.9`` 
 Then install all the packages you want to use in blender::
 
     conda activate blender-python
-    pip install sisl[viz]
+    python -m pip install sisl[viz]
 
 4. **Find the path to the python libraries of your environment**. There are many ways to get this. 
 In conda, this path is in the ``CONDA_PREFIX`` environment variable. So you can just::
@@ -72,9 +72,7 @@ and it shouldn't raise any error. Congratulations, you are ready to use sisl wit
 First steps
 ^^^^^^^^^^^
 
-Now that you have everything set up, let's open blender. You should see something like this:
-
-.. image:: img/Initial_screen.png
+Now that you have everything set up, let's open blender.
 
 At first, blender might look intimidating because of all the options that it has, but we'll
 keep it very simple. Our aim is just to show you how to use ``sisl``, the rest is in your hands.
@@ -82,11 +80,9 @@ What you see in the center of the screen is the default cube, you can just delet
 just press ``Supr``.
 
 Currently, you are now in the ``Layout`` tab. The easiest way to start programming is to go to the
-``Scripting`` tab, where you should see something like this:
+``Scripting`` tab. It is the last tab at the right of the tool bar. 
 
-.. image:: img/Scripting_tab.png
-
-Here, we have an interactive console and a text editor to write our scripts. Let's make our first
+You should see an interactive console and a text editor to write our scripts. Let's make our first
 plot using the console!
 
 We want to plot graphene, so the simplest way is
@@ -95,29 +91,21 @@ We want to plot graphene, so the simplest way is
 
     import sisl
     import sisl.viz
-    sisl.geom.graphene().plot(backend="blender")
+    geom_plot = sisl.geom.graphene().plot(backend="blender")
+    geom_plot.show()
 
-If we write these lines on the console, we should get the graphene structure in the viewport:
-
-.. image:: img/graphene_plot_console.png
+If we write these lines on the console, we should get the graphene structure in the viewport.
 
 This is the 3D model. To get an image, we need to **render**. Rendering is a process that generates an image
 from a camera (in our case the camera is the black wireframe that we see in the viewport) and the 3D model (objects, materials, lighting...).
-We can trigger our first render by pressing ``F12`` or ``Render > Render image``. We should get something like this:
-
-.. image:: img/first_graphene_eeve.png
+We can trigger our first render by pressing ``F12`` or ``Render > Render image``. 
 
 There are infinite things that you can tweak in blender, but one important thing to know about is the rendering engine.
 For this image, you have used ``Eeve`` which is the default engine. It is very fast, which makes it suitable for real-time
 rendering applications. For single images that you want to publish, it is **usually worth it to use the** ``Cycles``
 **engine**. This engine does more complex calculations (following light rays as they travel through the scene). You can change it
-in the right hand side of the window, by clicking the tab with the microwave icon (*Render properties*).
-
-.. image:: img/cycles_setting.png
-
-This should give you more realistic looking results. If you render again, you should obtain something like this: 
-
-.. image:: img/first_graphene_cycles.png
+in the right hand side of the window, by clicking the tab with the microwave icon (*Render properties*). This should give you more realistic 
+looking results.
 
 Now you **know how to use sisl inside blender** play with all the settings of the ``GeometryPlot``, move the camera,
 change the lighting, the background, etc... to **get amazing images for your talks or publications**!

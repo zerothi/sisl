@@ -244,6 +244,12 @@ class TestGeometry(_TestPlot):
         assert len(atom_traces) == len(sized_atom_traces)
         assert np.all([np.any(old.x != new.x) for old, new in zip(atom_traces, sized_atom_traces)])
     
+    def test_cell_styles(self, plot):
+        cell_style = {"color": "red", "width": 2}
+        plot.update_settings(cell_style=cell_style)
+
+        assert plot._for_backend["cell_style"] == cell_style
+
     def test_arrows(self, plot, axes, ndim):
         # Check that arrows accepts both a dictionary and a list and the data is properly transferred
         for arrows in ({"data": [0,0,2]}, [{"data": [0,0,2]}]):

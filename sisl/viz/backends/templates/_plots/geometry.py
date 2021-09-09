@@ -109,7 +109,7 @@ class GeometryBackend(Backend):
         show_cell = backend_info["show_cell"]
         cell = geometry.cell
         if show_cell == "axes":
-            self._draw_cell_2D_axes(geometry=geometry, cell=cell, xaxis=xaxis, yaxis=yaxis, **backend_info["cell_style"])
+            self._draw_cell_2D_axes(geometry=geometry, cell=cell, xaxis=xaxis, yaxis=yaxis)
         elif show_cell == "box":
             self._draw_cell_2D_box(
                     geometry=geometry, cell=cell,
