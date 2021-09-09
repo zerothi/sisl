@@ -35,6 +35,9 @@ def add_line_frame(ani_objects, child_objects, frame):
             ani_material.node_tree.nodes["Principled BSDF"].inputs[0].default_value = child_material.node_tree.nodes["Principled BSDF"].inputs[0].default_value
             ani_material.node_tree.nodes["Principled BSDF"].inputs[0].keyframe_insert(data_path="default_value", frame=frame)
 
+            ani_material.node_tree.nodes["Principled BSDF"].inputs[19].default_value = child_material.node_tree.nodes["Principled BSDF"].inputs[19].default_value
+            ani_material.node_tree.nodes["Principled BSDF"].inputs[19].keyframe_insert(data_path="default_value", frame=frame)
+
 
 class BlenderBackend(Backend):
     """Generic backend for the blender framework.
@@ -181,7 +184,8 @@ class BlenderBackend(Backend):
             mat = bpy.data.materials.new("material")
             mat.use_nodes = True
 
-            mat.node_tree.nodes["Principled BSDF"].inputs[0].default_value = (*color, opacity)
+            mat.node_tree.nodes["Principled BSDF"].inputs[0].default_value = (*color, 1)
+            mat.node_tree.nodes["Principled BSDF"].inputs[19].default_value = opacity
 
             obj.active_material = mat
 

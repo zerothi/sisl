@@ -35,6 +35,10 @@ def add_atoms_frame(ani_objects, child_objects, frame):
         ani_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs[0].default_value = child_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs[0].default_value
         ani_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs[0].keyframe_insert(data_path="default_value", frame=frame)
 
+        # And opacity
+        ani_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs[19].default_value = child_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs[19].default_value
+        ani_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs[19].keyframe_insert(data_path="default_value", frame=frame)
+
 class BlenderGeometryBackend(BlenderBackend, GeometryBackend):
 
     _animatable_collections = {
@@ -49,7 +53,7 @@ class BlenderGeometryBackend(BlenderBackend, GeometryBackend):
     def draw_2D(self, backend_info, **kwargs):
         raise NotImplementedError("A way of drawing 2D geometry representations is not implemented for blender")
 
-    def _draw_single_atom_3D(self, xyz, size, color="gray", name=None, vertices=15, **kwargs):
+    def _draw_single_atom_3D(self, xyz, size, color="gray", name=None, opacity=1, vertices=15, **kwargs):
 
         try:
             atom = self._template_atom.copy()
@@ -70,7 +74,7 @@ class BlenderGeometryBackend(BlenderBackend, GeometryBackend):
         atom.name = name
         atom.data.name = name
 
-        self._color_obj(atom, color, opacity=1)
+        self._color_obj(atom, color, opacity=opacity)
 
     def _draw_bonds_3D(self, *args, line=None, **kwargs):
         # Set the width of the bonds to 0.2, otherwise they look gigantic.
