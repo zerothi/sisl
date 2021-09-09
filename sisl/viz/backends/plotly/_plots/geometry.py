@@ -72,7 +72,7 @@ class PlotlyGeometryBackend(PlotlyBackend, GeometryBackend):
         kwargs["showlegend"] = showlegend
         super()._draw_single_bond_3D(*args, **kwargs)
 
-    def _draw_cell_3D_axes(self, cell, geometry):
-        return super()._draw_cell_3D_axes(cell, geometry, mode="lines+markers")
+    def _draw_cell_3D_axes(self, cell, geometry, **kwargs):
+        return super()._draw_cell_3D_axes(cell, geometry, mode="lines+markers", **kwargs)
 
 GeometryPlot.backends.register("plotly", PlotlyGeometryBackend)

@@ -351,6 +351,7 @@ class PlotlyBackend(Backend):
 
     def draw_line(self, x, y, name=None, line={}, **kwargs):
         """Draws a line in the current plot."""
+        opacity = line.pop("opacity", None)
         self.add_trace({
             'type': 'scatter',
             'x': x,
@@ -358,6 +359,7 @@ class PlotlyBackend(Backend):
             'mode': 'lines',
             'name': name,
             'line': line,
+            'opacity': opacity,
             **kwargs,
         })
 
