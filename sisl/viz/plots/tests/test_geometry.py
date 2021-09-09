@@ -185,7 +185,7 @@ class TestGeometry(_TestPlot):
         plot.update_settings(atoms_style={"color": colors}, atoms_colorscale="RdBu")
         rdbu_atom_traces = [trace for trace in plot.data if trace.name == "Atoms"]
 
-        assert np.all(rdbu_atom_traces[0].marker.color.astype(float) == colors)
+        assert np.all(np.array(rdbu_atom_traces[0].marker.color).astype(float) == colors)
 
         plot.update_settings(atoms_colorscale="viridis")
         viridis_atom_traces = [trace for trace in plot.data if trace.name == "Atoms"]
