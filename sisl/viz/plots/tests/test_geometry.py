@@ -245,7 +245,7 @@ class TestGeometry(_TestPlot):
         assert np.all([np.any(old.x != new.x) for old, new in zip(atom_traces, sized_atom_traces)])
     
     def test_cell_styles(self, plot):
-        cell_style = {"color": "red", "width": 2}
+        cell_style = {"color": "red", "width": 2, "opacity": 0.6}
         plot.update_settings(cell_style=cell_style)
 
         assert plot._for_backend["cell_style"] == cell_style

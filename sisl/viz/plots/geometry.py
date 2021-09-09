@@ -2,6 +2,8 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from functools import wraps
+import itertools
+
 from sisl.messages import warn
 from sisl.viz.input_fields.color import ColorPicker
 
@@ -304,6 +306,8 @@ class GeometryPlot(Plot):
                 ColorPicker(key="color", name="Color", default="green"),
 
                 FloatInput(key="width", name="Width", default=None),
+
+                FloatInput(key="opacity", name="Opacity", default=1),
 
             ]
         ),
@@ -628,22 +632,24 @@ class GeometryPlot(Plot):
         np.ndarray of shape (x, 3)
             where x is 16 if unique=False and 8 if unique=True.
         """
-
-        def xyz(coeffs):
-            return np.dot(coeffs, cell)
-
-        # Define the vertices of the cube. They follow an order so that we can
-        # draw a line that represents the cell's box
-        points = [
-            (0, 0, 0), (0, 1, 0), (1, 1, 0), (1, 0, 0), (0, 0, 0),
-            (0, 0, 1), (0, 1, 1), (0, 1, 0), (0, 1, 1), (1, 1, 1),
-            (1, 1, 0), (1, 0, 0), (1, 0, 1), (1, 1, 1), (1, 0, 1), (0, 0, 1)
-        ]
-
         if unique:
-            points = np.unique(points, axis=0)
+            verts = list(itertools.product([0,1], [0,1], [0,1]))
+        else:
+            # Define the vertices of the cube. They follow an order so that we can
+            # draw a line that represents the cell's box
+            verts = [
+                (0, 0, 0), (0, 1, 0), (1, 1, 0), (1, 1, 1), (0, 1, 1), (0, 1, 0),
+                (np.nan, np.nan, np.nan),
+                (0, 1, 1), (0, 0, 1), (0, 0, 0), (1, 0, 0), (1, 0, 1), (0, 0, 1),
+                (np.nan, np.nan, np.nan),
+                (1, 1, 0), (1, 0, 0),
+                (np.nan, np.nan, np.nan),
+                (1, 1, 1), (1, 0, 1)
+            ]
 
-        return np.array([xyz(coeffs) for coeffs in points])
+        verts = np.array(verts, dtype=np.float64)
+
+        return verts.dot(cell)
 
     @classmethod
     def _projected_1Dcoords(cls, geometry, xyz=None, axis="x"):

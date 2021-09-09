@@ -3,8 +3,6 @@ from abc import ABC, abstractmethod
 from ...plot import MultiplePlot, SubPlots, Animation
 
 import numpy as np
-import math
-
 
 class Backend(ABC):
     """Base backend class that all backends should inherit from.
