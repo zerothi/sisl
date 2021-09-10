@@ -12,7 +12,7 @@ from sisl.sparse import *
 from sisl.sparse import indices
 
 
-pytestmark = pytest.mark.sparse
+pytestmark = [pytest.mark.sparse, pytest.mark.filterwarnings("ignore", category=sc.sparse.SparseEfficiencyWarning)]
 
 
 @pytest.fixture

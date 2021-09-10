@@ -31,7 +31,7 @@ def test_read_fc(sisl_tmp):
     assert np.allclose(fc, fc2)
 
 
-@pytest.mark.filterwarnings("ignore:assumes displacement=")
+@pytest.mark.filterwarnings("ignore", message="*assumes displacement=")
 def test_read_fc_old(sisl_tmp):
     f = sisl_tmp('test2.FC', _dir)
 

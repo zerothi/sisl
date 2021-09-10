@@ -344,7 +344,7 @@ class TestObject:
         except UnicodeDecodeError as e:
             pass
 
-    @pytest.mark.filterwarnings("ignore:gridncSileSiesta.read_grid cannot determine")
+    @pytest.mark.filterwarnings("ignore", message="*gridncSileSiesta.read_grid cannot determine")
     @pytest.mark.parametrize("sile", _my_intersect(["read_grid"], ["write_grid"]))
     def test_read_write_grid(self, sisl_tmp, sisl_system, sile):
         g = sisl_system.g.rotate(-30, sisl_system.g.cell[2, :])

@@ -7,6 +7,7 @@ from functools import partial
 import warnings
 import numpy as np
 from scipy.linalg import block_diag
+from scipy.sparse import SparseEfficiencyWarning
 
 from sisl import Geometry, Atom, SuperCell, Hamiltonian, Spin, BandStructure, MonkhorstPack, BrillouinZone
 from sisl import get_distribution
@@ -15,7 +16,7 @@ from sisl import Grid, SphericalOrbital, SislError
 from sisl.physics.electron import berry_phase, spin_squared, conductivity
 
 
-pytestmark = pytest.mark.hamiltonian
+pytestmark = [pytest.mark.hamiltonian, pytest.mark.filterwarnings("ignore", category=SparseEfficiencyWarning)]
 
 
 @pytest.fixture
@@ -578,6 +579,7 @@ class TestHamiltonian:
         assert np.allclose(eigs, eig2)
         setup.HS.empty()
 
+    @pytest.mark.filterwarnings("ignore", message="*uses an overlap matrix that")
     def test_eig4(self, setup):
         # Test of eigenvalues vs eigenstate class
         HS = setup.HS.copy()
@@ -607,6 +609,7 @@ class TestHamiltonian:
             assert es.inner(matrix=HS.Hk([0.1] * 3), ket=HS.eigenstate([0.3] * 3),
                             diag=False).shape == (len(es), len(es))
 
+    @pytest.mark.filterwarnings("ignore", message="*uses an overlap matrix that")
     def test_inner(self, setup):
         HS = setup.HS.copy()
         HS.construct([(0.1, 1.5), ((2., 1.), (3., 0.))])
@@ -807,6 +810,7 @@ class TestHamiltonian:
         ie2 = H.eigenstate(k, gauge='r').berry_curvature()
         assert np.allclose(ie1, ie2)
 
+    @pytest.mark.filterwarnings('ignore', category=np.ComplexWarning)
     def test_conductivity(self, setup):
         R, param = [0.1, 1.5], [1., 0.1]
         g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
@@ -899,6 +903,7 @@ class TestHamiltonian:
             vsub = es.sub([0]).velocity()
             assert np.allclose(v[0, :], vsub)
 
+    @pytest.mark.filterwarnings('ignore', category=np.ComplexWarning)
     def test_velocity_nonorthogonal(self, setup):
         HS = setup.HS.copy()
         HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])
@@ -919,6 +924,7 @@ class TestHamiltonian:
             vsub = es.sub([0, 1]).velocity_matrix()
             assert np.allclose(v[:2, :2, :], vsub)
 
+    @pytest.mark.filterwarnings('ignore', category=np.ComplexWarning)
     def test_velocity_matrix_nonorthogonal(self, setup):
         HS = setup.HS.copy()
         HS.construct([(0.1, 1.5), ((1., 1.), (0.1, 0.1))])

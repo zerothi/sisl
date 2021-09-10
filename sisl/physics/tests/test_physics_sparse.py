@@ -212,6 +212,7 @@ def test_sparse_orbital_bz_spin_orbit():
     assert np.abs((MT - MH)._csr._D).sum() != 0
 
 
+@pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
 def test_sparse_orbital_bz_spin_orbit_trs_kramers_theorem():
     M = SparseOrbitalBZSpin(geom.graphene(), spin='SO')
 
@@ -231,6 +232,7 @@ def test_sparse_orbital_bz_spin_orbit_trs_kramers_theorem():
     assert np.allclose(eig1, eig2)
 
 
+@pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
 @pytest.mark.xfail(reason="Construct does not impose hermitian property")
 def test_sparse_orbital_bz_spin_orbit_hermitian_not():
     M = SparseOrbitalBZSpin(geom.graphene(), spin='SO')
@@ -353,6 +355,7 @@ def test_sparse_orbital_transform_ortho_nc():
     assert np.abs(Mcsr[3] - Mt.tocsr(3)).sum() == 0
 
 
+@pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
 def test_sparse_orbital_transform_ortho_so():
     M = SparseOrbitalBZSpin(geom.graphene(), spin='so')
     a = np.arange(M.spin.size) + 0.3
@@ -380,6 +383,7 @@ def test_sparse_orbital_transform_ortho_so():
     assert np.abs(Mcsr[3] - Mt.tocsr(3)).sum() == 0
 
 
+@pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
 def test_sparse_orbital_transform_nonortho_so():
     M = SparseOrbitalBZSpin(geom.graphene(), spin='so', orthogonal=False)
     a = np.arange(M.spin.size + 1) + 0.3

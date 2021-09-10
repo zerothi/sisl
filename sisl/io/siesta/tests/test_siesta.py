@@ -211,6 +211,7 @@ def test_nc_EDM_non_colinear(sisl_tmp):
     assert np.allclose(EDM1._csr._D, EDM2._csr._D)
 
 
+@pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
 def test_nc_H_spin_orbit(sisl_tmp):
     H1 = Hamiltonian(sisl.geom.graphene(), spin=sisl.Spin('SO'))
     H1.construct(([0.1, 1.44],
@@ -230,6 +231,7 @@ def test_nc_H_spin_orbit(sisl_tmp):
     assert np.allclose(H1._csr._D, H3._csr._D)
 
 
+@pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
 def test_nc_H_spin_orbit_nc2tshs2nc(sisl_tmp):
     H1 = Hamiltonian(sisl.geom.graphene(), spin=sisl.Spin('SO'))
     H1.construct(([0.1, 1.44],
@@ -249,6 +251,7 @@ def test_nc_H_spin_orbit_nc2tshs2nc(sisl_tmp):
     assert np.allclose(H1._csr._D, H3._csr._D)
 
 
+@pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
 def test_nc_DM_spin_orbit(sisl_tmp):
     DM1 = DensityMatrix(sisl.geom.graphene(), spin=sisl.Spin('SO'))
     DM1.construct(([0.1, 1.44],
@@ -268,6 +271,7 @@ def test_nc_DM_spin_orbit(sisl_tmp):
     assert np.allclose(DM1._csr._D, DM3._csr._D)
 
 
+@pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
 def test_nc_DM_spin_orbit_nc2dm2nc(sisl_tmp):
     DM1 = DensityMatrix(sisl.geom.graphene(), orthogonal=False, spin=sisl.Spin('SO'))
     DM1.construct(([0.1, 1.44],

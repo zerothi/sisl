@@ -42,7 +42,7 @@ def test_si_pdos_kgrid_tsde_edm(sisl_files):
     assert np.allclose(EDM1._csr._D[:, :-1], EDM2._csr._D[:, :-1])
 
 
-@pytest.mark.filterwarnings("ignore:wrong sparse pattern")
+@pytest.mark.filterwarnings("ignore", message="*wrong sparse pattern")
 def test_si_pdos_kgrid_tsde_dm_edm_rw(sisl_files, sisl_tmp):
     fdf = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.fdf'), base=sisl_files(_dir))
     geom = fdf.read_geometry()

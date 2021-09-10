@@ -134,6 +134,7 @@ def test_tshs_si_pdos_kgrid_overlap(sisl_files):
     assert np.allclose(HS._csr._D[:, HS.S_idx], S._csr._D[:, 0])
 
 
+@pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
 def test_tshs_spin_orbit(sisl_tmp):
     H1 = sisl.Hamiltonian(sisl.geom.graphene(), spin=sisl.Spin('SO'))
     H1.construct(([0.1, 1.44],
@@ -153,6 +154,7 @@ def test_tshs_spin_orbit(sisl_tmp):
     assert np.allclose(H1._csr._D, H3._csr._D)
 
 
+@pytest.mark.filterwarnings("ignore", message="*is NOT Hermitian for on-site")
 def test_tshs_spin_orbit_tshs2nc2tshs(sisl_tmp):
     H1 = sisl.Hamiltonian(sisl.geom.graphene(), spin=sisl.Spin('SO'))
     H1.construct(([0.1, 1.44],

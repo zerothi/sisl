@@ -15,7 +15,7 @@ _dir = osp.join('sisl', 'io', 'tbtrans')
 
 
 @pytest.mark.slow
-@pytest.mark.filterwarnings("ignore:.*.o2p")
+@pytest.mark.filterwarnings("ignore", message="*.*.o2p")
 def test_1_graphene_all_content(sisl_files):
     """ This tests manifolds itself as:
 

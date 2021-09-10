@@ -13,7 +13,7 @@ import numpy as np
 
 
 pytestmark = [pytest.mark.io, pytest.mark.siesta, pytest.mark.fdf,
-              pytest.mark.filterwarnings("ignore:number of supercells")
+              pytest.mark.filterwarnings("ignore", message="*number of supercells")
 ]
 _dir = osp.join('sisl', 'io', 'siesta')
 

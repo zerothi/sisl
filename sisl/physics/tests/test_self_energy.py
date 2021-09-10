@@ -6,6 +6,7 @@ import pytest
 import math as m
 import warnings
 import numpy as np
+from scipy.sparse import SparseEfficiencyWarning
 
 from sisl import Geometry, Atom, SuperCell, Hamiltonian
 from sisl import BrillouinZone
@@ -13,7 +14,7 @@ from sisl import SelfEnergy, WideBandSE, SemiInfinite, RecursiveSI
 from sisl import RealSpaceSE, RealSpaceSI
 
 
-pytestmark = pytest.mark.self_energy
+pytestmark = [pytest.mark.self_energy, pytest.mark.filterwarnings("ignore", category=SparseEfficiencyWarning)]
 
 
 @pytest.fixture

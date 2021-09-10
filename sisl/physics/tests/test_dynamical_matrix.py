@@ -108,6 +108,7 @@ class TestDynamicalMatrix:
         em2.change_gauge('R')
         assert np.allclose(em.mode, em2.mode)
 
+    @pytest.mark.filterwarnings('ignore', category=np.ComplexWarning)
     def test_dos_pdos_velocity(self, setup):
         D = setup.D.copy()
         D.construct(setup.func)
