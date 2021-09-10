@@ -10,7 +10,6 @@ Different inputs are tested (siesta .PDOS and sisl Hamiltonian).
 """
 from functools import partial
 import pytest
-from xarray import DataArray
 
 import sisl
 from sisl.viz.plots.tests.conftest import _TestPlot
@@ -82,6 +81,7 @@ class TestPdosPlot(_TestPlot):
         return init_func, attrs
 
     def test_dataarray(self, plot, test_attrs):
+        from xarray import DataArray
 
         PDOS = plot.PDOS
         geom = plot.geometry

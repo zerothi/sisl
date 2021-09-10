@@ -11,7 +11,6 @@ Different inputs are tested (siesta .bands and sisl Hamiltonian).
 import itertools
 from functools import partial
 import pytest
-from xarray import DataArray
 import numpy as np
 
 import sisl
@@ -100,6 +99,7 @@ class TestBandsPlot(_TestPlot):
         """
         Check that the data array was created and contains the correct information.
         """
+        from xarray import DataArray
 
         # Check that there is a bands attribute
         assert hasattr(plot, 'bands')
@@ -180,6 +180,7 @@ class TestBandsPlot(_TestPlot):
     def test_spin_moments(self, plot, test_attrs):
         if not test_attrs["spin_texture"]:
             return
+        from xarray import DataArray
 
         # Check that spin moments have been calculated
         assert hasattr(plot, "spin_moments")

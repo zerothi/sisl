@@ -8,7 +8,6 @@ Tests specific functionality of a fatbands plot
 """
 import pytest
 import numpy as np
-from xarray import DataArray
 
 import sisl
 from sisl.viz.plots.tests.test_bands import TestBandsPlot as _TestBandsPlot
@@ -71,6 +70,7 @@ class TestFatbandsPlot(_TestBandsPlot):
         """
         Check that the data array was created and contains the correct information.
         """
+        from xarray import DataArray
 
         # Check that there is a weights attribute
         assert hasattr(plot, "weights")
@@ -87,6 +87,7 @@ class TestFatbandsPlot(_TestBandsPlot):
         assert weights.shape == test_attrs["weights_shape"]
 
     def test_group_weights(self, plot):
+        from xarray import DataArray
 
         total_weights = plot._get_group_weights({})
 

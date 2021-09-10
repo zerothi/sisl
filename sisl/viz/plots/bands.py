@@ -6,7 +6,6 @@ from functools import partial
 import itertools
 
 import numpy as np
-import xarray as xr
 
 import sisl
 from sisl.messages import warn
@@ -332,6 +331,7 @@ class BandsPlot(Plot):
         """
         Uses a sisl's `BandStructure` object to calculate the bands.
         """
+        import xarray as xr
         if band_structure is None:
             raise ValueError("No band structure (k points path) was provided")
 
@@ -415,6 +415,7 @@ class BandsPlot(Plot):
             self.spin = sisl.Spin("p")
 
     def _after_read(self):
+        import xarray as xr
         if isinstance(self.bands_data, xr.DataArray):
             attrs = self.bands_data.attrs
             self.bands_data = xr.Dataset({"E": self.bands_data})

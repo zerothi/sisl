@@ -2,7 +2,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
-from xarray import DataArray, Dataset
 
 import sisl
 from ..plot import entry_point
@@ -197,6 +196,7 @@ class FatbandsPlot(BandsPlot):
         Uses the `.bands` file to read the bands and a `.wfsx` file to
         retrieve the wavefunctions coefficients. 
         """
+        from xarray import DataArray, Dataset
 
         # Try to get the wfsx file either by user input or by guessing it
         # from bands_file

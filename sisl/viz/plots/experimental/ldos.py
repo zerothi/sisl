@@ -2,7 +2,6 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
-import xarray as xr
 
 import os
 import shutil
@@ -195,6 +194,7 @@ class LDOSmap(Plot):
     @entry_point('siesta')
     def _read_siesta_output(self, Erange, nE, STSEta, root_fdf, trajectory, points, dist_step, widen_func):
         """Function that uses denchar to get STSpecra along a path"""
+        import xarray as xr
 
         fdf_sile = self.get_sile(root_fdf)
         root_dir = fdf_sile._directory
