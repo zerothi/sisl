@@ -14,8 +14,6 @@ import itertools
 from functools import partial
 from pathlib import Path
 
-import dill
-
 import sisl
 from sisl.messages import info, warn
 
@@ -1394,6 +1392,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
         ---------
         self
         """
+        import dill
         if isinstance(path, str):
             path = Path(path)
 

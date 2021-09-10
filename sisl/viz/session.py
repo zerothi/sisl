@@ -1,8 +1,6 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-import dill
-
 import uuid
 import os
 from pathlib import Path
@@ -792,6 +790,7 @@ class Session(Configurable):
         figs_only: boolean, optional
             Whether only figures should be saved, the rest of plot's data will be ignored.
         """
+        import dill
         session = copy(self)
 
         if figs_only:

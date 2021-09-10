@@ -3,14 +3,11 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import os
 import glob
-import dill
 import sys
 from pathlib import Path
 
 import numpy as np
 import itertools
-from pathos.pools import ProcessPool as Pool
-import tqdm
 
 from copy import deepcopy
 
@@ -489,6 +486,7 @@ def load(path):
     loadedObj: object
         The object that was saved.
     """
+    import dill
 
     with open(path, 'rb') as handle:
         loadedObj = dill.load(handle)
@@ -669,6 +667,8 @@ def run_multiple(func, *args, argsList = None, kwargsList = None, messageFn = No
         A list with all the returned values or objects from each function execution.
         This list is ordered, so results[0] is the result of executing the function with argsList[0] and kwargsList[0].  
     """
+    from pathos.pools import ProcessPool as Pool
+    import tqdm
 
     #Prepare the arguments to be passed to the initSinglePlot function
     toZip = [*args, argsList, kwargsList]

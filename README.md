@@ -6,7 +6,7 @@
 [![Join discussion on Discord](https://img.shields.io/discord/742636379871379577.svg?label=&logo=discord&logoColor=ffffff&color=green&labelColor=red)](https://discord.gg/5XnFXFdkv2)
 <!--- [![Documentation on RTD](https://readthedocs.org/projects/docs/badge/?version=latest)](http://sisl.readthedocs.io/en/latest/) -->
 [![License: MPL 2.0](https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg)](https://www.mozilla.org/en-US/MPL/2.0/)
-[![Build Status](https://travis-ci.org/zerothi/sisl.svg?branch=master)](https://travis-ci.org/zerothi/sisl)
+[![Build Status](https://travis-ci.com/zerothi/sisl.svg?branch=master)](https://travis-ci.com/zerothi/sisl)
 [![Checkout sisl code coverage](https://codecov.io/gh/zerothi/sisl/branch/master/graph/badge.svg)](https://codecov.io/gh/zerothi/sisl)
 
 ## Why sisl ##
