@@ -950,6 +950,11 @@ class fdfSileSiesta(SileSiesta):
         hermitian: bool, optional
             if true (default), the returned dynamical matrix will be hermitian
 
+        Notes
+        -----
+        This is highly untested and may result in errorneous matrices.
+        Please report back to developers about problems and suggestions.
+
         Returns
         -------
         dynamic_matrix : DynamicalMatrix
@@ -961,6 +966,7 @@ class fdfSileSiesta(SileSiesta):
             if v is not None:
                 if self.track:
                     info(f"{self.file}(read_dynamical_matrix) found in file={f}")
+                info(f"{self.file}.read_dynamical_matrix is experimental, untested!")
                 return v
         return None
 

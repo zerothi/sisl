@@ -243,7 +243,7 @@ class ncSileSiesta(SileCDFSiesta):
 
         sp = self.groups['SPARSE']
         if sp.variables['H'].unit != 'Ry':
-            raise SileError(self.__class__.__name__ + '.read_hamiltonian requires the stored matrix to be in Ry!')
+            raise SileError(f'{self}.read_hamiltonian requires the stored matrix to be in Ry!')
 
         for i in range(len(H.spin)):
             H._csr._D[:, i] = sp.variables['H'][i, :] * Ry2eV
@@ -267,7 +267,7 @@ class ncSileSiesta(SileCDFSiesta):
 
         sp = self.groups['SPARSE']
         if sp.variables['H'].unit != 'Ry**2':
-            raise SileError(self.__class__.__name__ + '.read_dynamical_matrix requires the stored matrix to be in Ry**2!')
+            raise SileError(f'{self}.read_dynamical_matrix requires the stored matrix to be in Ry**2!')
         D._csr._D[:, 0] = sp.variables['H'][0, :] * Ry2eV ** 2
 
         return D.transpose(sort=kwargs.get("sort", True))
@@ -315,7 +315,7 @@ class ncSileSiesta(SileCDFSiesta):
                  contains the directions, and 3rd dimensions contains -/+ displacements.
         """
         if not 'FC' in self.groups:
-            raise SislError(str(self) + '.read_force_constant cannot find the FC group.')
+            raise SislError(f'{self}.read_force_constant cannot find the FC group.')
         fc = self.groups['FC']
 
         disp = fc.variables['disp'][0] * Bohr2Ang
@@ -381,7 +381,7 @@ class ncSileSiesta(SileCDFSiesta):
             grid.grid = v[spin, :, :, :] * unit
         else:
             if len(spin) > v.shape[0]:
-                raise SileError(self.__class__.__name__ + '.read_grid requires spin to be an integer or '
+                raise SileError(f'{self}.read_grid requires spin to be an integer or '
                                 'an array of length equal to the number of spin components.')
             grid.grid[:, :, :] = v[0, :, :, :] * (spin[0] * unit)
             for i, scale in enumerate(spin[1:]):
@@ -550,7 +550,7 @@ class ncSileSiesta(SileCDFSiesta):
                 row = row[diag_idx]
                 idx = (np.diff(row) != 1).nonzero()[0]
                 row = row[idx] + 1
-                raise ValueError(f'{self.__class__.__name__}._write_overlap '
+                raise ValueError(f'{self}._write_overlap '
                                  'is trying to write an Overlap in Siesta format with '
                                  f'missing diagonal terms on rows {row}. Please explicitly add *all* diagonal overlap terms.')
 
@@ -564,7 +564,7 @@ class ncSileSiesta(SileCDFSiesta):
         """ Write the overlap matrix to the NetCDF file """
         csr = S.transpose(sort=False)._csr
         if csr.nnz == 0:
-            raise SileError(str(self) + '.write_overlap cannot write a zero element sparse matrix!')
+            raise SileError(f'{self}.write_overlap cannot write a zero element sparse matrix!')
 
         # Convert to siesta CSR
         _csr_to_siesta(S.geometry, csr)
@@ -590,7 +590,7 @@ class ncSileSiesta(SileCDFSiesta):
         """
         csr = H.transpose(spin=False, sort=False)._csr
         if csr.nnz == 0:
-            raise SileError(str(self) + '.write_hamiltonian cannot write a zero element sparse matrix!')
+            raise SileError(f'{self}.write_hamiltonian cannot write a zero element sparse matrix!')
 
         # Convert to siesta CSR
         _csr_to_siesta(H.geometry, csr)
@@ -638,7 +638,7 @@ class ncSileSiesta(SileCDFSiesta):
         """
         csr = DM.transpose(spin=False, sort=False)._csr
         if csr.nnz == 0:
-            raise SileError(str(self) + '.write_density_matrix cannot write a zero element sparse matrix!')
+            raise SileError(f'{self}.write_density_matrix cannot write a zero element sparse matrix!')
 
         # Convert to siesta CSR (we don't need to sort this matrix)
         _csr_to_siesta(DM.geometry, csr)
@@ -685,7 +685,7 @@ class ncSileSiesta(SileCDFSiesta):
         """
         csr = EDM.transpose(spin=False, sort=False)._csr
         if csr.nnz == 0:
-            raise SileError(str(self) + '.write_energy_density_matrix cannot write a zero element sparse matrix!')
+            raise SileError(f'{self}.write_energy_density_matrix cannot write a zero element sparse matrix!')
 
         # no need to sort this matrix
         _csr_to_siesta(EDM.geometry, csr)
@@ -737,7 +737,7 @@ class ncSileSiesta(SileCDFSiesta):
         """
         csr = D.transpose(sort=False)._csr
         if csr.nnz == 0:
-            raise SileError(str(self) + '.write_dynamical_matrix cannot write a zero element sparse matrix!')
+            raise SileError(f'{self}.write_dynamical_matrix cannot write a zero element sparse matrix!')
 
         # Convert to siesta CSR
         _csr_to_siesta(D.geometry, csr)

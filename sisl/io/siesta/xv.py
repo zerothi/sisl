@@ -40,7 +40,7 @@ class xvSileSiesta(SileSiesta):
         if velocity is None:
             velocity = np.zeros([geometry.na, 3], np.float32)
         if geometry.xyz.shape != velocity.shape:
-            raise SislError(str(self) + '.write_geometry requires the input'
+            raise SislError(f'{self}.write_geometry requires the input'
                             'velocity to have equal length to the input geometry.')
 
         # Write unit-cell
