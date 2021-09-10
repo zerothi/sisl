@@ -12,7 +12,6 @@ from functools import reduce
 import os.path as osp
 import pytest
 import numpy as np
-import plotly.graph_objs as go
 
 import sisl
 from sisl.viz import GridPlot, Animation
@@ -99,6 +98,7 @@ class TestGridPlot(_TestPlot):
         return (new_grid, representation)
 
     def _get_trace_class(self, ndim):
+        import plotly.graph_objs as go
         return [go.Scatter, go.Heatmap, go.Mesh3d][ndim - 1]
 
     def _get_plotted_values(self, plot):
@@ -161,6 +161,8 @@ class TestGridPlot(_TestPlot):
 
     @skip_skimage
     def test_scan(self, plot):
+        import plotly.graph_objs as go
+
         plot.update_settings(axes="xy")
         # AS_IS SCAN
         # Provide number of steps
