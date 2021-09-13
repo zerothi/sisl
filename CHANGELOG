@@ -1,6 +1,18 @@
 0.X.Y
 =====
 
+- much faster plotting and enabling arrows #368
+
+- added spectral propagation in BTD code
+
+- fixed empty array handlings in `_sanitize_*` #370
+
+- doc fixes for recommending `python -m pip`
+
+- parallel calculations in viz module
+
+- fixed non-collinear PDOS plotting
+
 - renamed origo to origin, see #365
 
 - enabled copying Dispatchers for subclasses.
