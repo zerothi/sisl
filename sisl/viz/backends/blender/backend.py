@@ -5,9 +5,10 @@ import numpy as np
 
 import bpy
 
+
 def add_line_frame(ani_objects, child_objects, frame):
     """Creates the frames for a child plot lines.
-    
+
     Given the objects of the lines collection in the animation, it uses
     the corresponding lines in the child to set keyframes.
 
@@ -31,7 +32,7 @@ def add_line_frame(ani_objects, child_objects, frame):
                 ani_point.keyframe_insert(data_path="co", frame=frame)
 
         # Loop through all the materials that the object might have associated
-        for ani_material, child_material in zip(ani_obj.data.materials, child_obj.data.materials):    
+        for ani_material, child_material in zip(ani_obj.data.materials, child_obj.data.materials):
             ani_material.node_tree.nodes["Principled BSDF"].inputs[0].default_value = child_material.node_tree.nodes["Principled BSDF"].inputs[0].default_value
             ani_material.node_tree.nodes["Principled BSDF"].inputs[0].keyframe_insert(data_path="default_value", frame=frame)
 
@@ -91,7 +92,7 @@ class BlenderBackend(Backend):
         # First, generate the curve object
         bpy.ops.curve.primitive_bezier_curve_add()
         # Then get it from the context
-        curve_obj = bpy.context.object        
+        curve_obj = bpy.context.object
         # And give it a name
         if name is None:
             name = ""
@@ -113,8 +114,8 @@ class BlenderBackend(Backend):
         curve.bevel_resolution = 10
         # Clear all existing splines from the curve, as we are going to add them
         curve.splines.clear()
-        
-        xyz = np.array([x,y,z], dtype=float).T
+
+        xyz = np.array([x, y, z], dtype=float).T
 
         # To be compatible with other frameworks such as plotly and matplotlib,
         # we allow x, y and z to contain None values that indicate discontinuities
@@ -123,16 +124,16 @@ class BlenderBackend(Backend):
         # Here, we get the breakpoints (i.e. indices where there is a None). We add
         # -1 and None at the sides o facilitate iterating.
         breakpoint_indices = [-1, *np.where(np.isnan(xyz).any(axis=1))[0], None]
-        
+
         # Now loop through all segments using the known breakpoints
         for start_i, end_i in zip(breakpoint_indices, breakpoint_indices[1:]):
             # Get the coordinates of the segment
             segment_xyz = xyz[start_i+1: end_i]
-            
+
             # If there is nothing to draw, go to next segment
             if len(segment_xyz) == 0:
                 continue
-            
+
             # Create a new spline (within the curve, we are not creating a new object!)
             segment = curve.splines.new("BEZIER")
             # Splines by default have only 1 point, add as many as we need
@@ -143,7 +144,7 @@ class BlenderBackend(Backend):
             # We want linear interpolation between points. If we wanted cubic interpolation,
             # we would set this parameter to 3, for example.
             segment.resolution_u = 1
-        
+
         # Give a color to our new curve object if it needs to be colored.
         self._color_obj(curve_obj, line.get("color", None), line.get("opacity", 1))
 
@@ -192,6 +193,7 @@ class BlenderBackend(Backend):
     def show(self, *args, **kwargs):
         bpy.context.scene.collection.children.link(self._collection)
 
+
 class BlenderMultiplePlotBackend(MultiplePlotBackend, BlenderBackend):
 
     def draw(self, backend_info):
@@ -203,19 +205,20 @@ class BlenderMultiplePlotBackend(MultiplePlotBackend, BlenderBackend):
     def _draw_child_in_ax(self, child):
         child.get_figure(clear_fig=False)
 
+
 class BlenderAnimationBackend(BlenderBackend, AnimationBackend):
-    
+
     def draw(self, backend_info):
-        
+
         # Get the collections that make sense to implement. This property is defined
         # in each backend. See for example BlenderGeometryBackend
         animatable_collections = backend_info["children"][0]._animatable_collections
         # Get the number of frames that should be interpolated between two animation frames.
         interpolated_frames = backend_info["interpolated_frames"]
-        
+
         # Iterate over all collections
         for key, animate_config in animatable_collections.items():
-            
+
             # Get the collection in the animation's instance
             collection = self.get_collection(key)
             # Copy all the objects from first child's collection
@@ -228,14 +231,14 @@ class BlenderAnimationBackend(BlenderBackend, AnimationBackend):
                 except:
                     pass
                 collection.objects.link(new_obj)
-                
+
             # Loop over all child plots
             for i_plot, plot in enumerate(backend_info["children"]):
                 # Calculate the frame number
                 frame = i_plot * interpolated_frames
                 # Ask the provided function to build the keyframes.
                 animate_config["add_frame"](collection.objects, plot.get_collection(key).objects, frame=frame)
-                
-                
+
+
 Animation.backends.register("blender", BlenderAnimationBackend)
 MultiplePlot.backends.register("blender", BlenderMultiplePlotBackend)

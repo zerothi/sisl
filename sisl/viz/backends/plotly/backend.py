@@ -397,7 +397,7 @@ class PlotlyBackend(Backend):
             "mode": "lines",
             "type": "scatter3d",
             "hoverinfo": "none",
-            "line": {**kwargs.get("line"), "color": color,},
+            "line": {**kwargs.get("line"), "color": color, },
             "legendgroup": name,
             "name": f"{name} lines",
             "showlegend": False,

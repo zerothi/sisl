@@ -62,7 +62,7 @@ class GeometryBackend(Backend):
 
     def draw_1D(self, backend_info, **kwargs):
         # Add the atoms
-        self._draw_atoms_2D_scatter(**{k: v for k,v in backend_info["atoms_props"].items() if k != "arrow"})
+        self._draw_atoms_2D_scatter(**{k: v for k, v in backend_info["atoms_props"].items() if k != "arrow"})
         # Now draw the arrows
         for arrow_spec in backend_info["arrows"]:
             is_arrow = ~np.isnan(arrow_spec["data"]).any(axis=1)
@@ -93,7 +93,7 @@ class GeometryBackend(Backend):
             self._draw_bonds_2D(**bonds_kwargs, points_per_bond=backend_info["points_per_bond"])
 
         # Add the atoms scatter
-        self._draw_atoms_2D_scatter(**{k: v for k,v in backend_info["atoms_props"].items() if k != "arrow"})
+        self._draw_atoms_2D_scatter(**{k: v for k, v in backend_info["atoms_props"].items() if k != "arrow"})
         # Now draw the arrows from the atoms
         for arrow_spec in backend_info["arrows"]:
             is_arrow = ~np.isnan(arrow_spec["data"]).any(axis=1)
@@ -228,7 +228,7 @@ class GeometryBackend(Backend):
 
         # Now draw the atoms
         for i, _ in enumerate(backend_info["atoms_props"]["xyz"]):
-            self._draw_single_atom_3D(**{k: v[i] for k,v in backend_info["atoms_props"].items()})
+            self._draw_single_atom_3D(**{k: v[i] for k, v in backend_info["atoms_props"].items()})
         # Draw the arrows
         for arrow_spec in backend_info["arrows"]:
             is_arrow = ~np.isnan(arrow_spec["data"]).any(axis=1)
@@ -243,7 +243,7 @@ class GeometryBackend(Backend):
                 # If the arrows can not be drawn in 3D, we will just warn the user and not draw them
                 warn(str(e))
                 break
-        
+
         # And finally draw the unit cell
         show_cell = backend_info["show_cell"]
         cell = geometry.cell

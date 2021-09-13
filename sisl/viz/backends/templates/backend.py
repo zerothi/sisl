@@ -4,6 +4,7 @@ from ...plot import MultiplePlot, SubPlots, Animation
 
 import numpy as np
 
+
 class Backend(ABC):
     """Base backend class that all backends should inherit from.
 
@@ -162,7 +163,7 @@ class Backend(ABC):
             the scatter. This will of course be framework specific
         """
         raise NotImplementedError(f"{self.__class__.__name__} doesn't implement a draw_scatter method.")
-    
+
     def draw_arrows(self, xy, dxy, arrowhead_scale=0.2, arrowhead_angle=20, **kwargs):
         """Draws multiple arrows using the generic draw_line method.
 
@@ -203,7 +204,7 @@ class Backend(ABC):
         arrows[4::7] = final_xy
         arrows[5::7] = arrowhead_tips2
         arrows[6::7] = np.nan
-        
+
         return self.draw_line(arrows[:, 0], arrows[:, 1], **kwargs)
 
     def draw_line3D(self, x, y, z, name=None, line={}, marker={}, text=None, **kwargs):
@@ -260,7 +261,7 @@ class Backend(ABC):
             the scatter. This will of course be framework specific
         """
         raise NotImplementedError(f"{self.__class__.__name__} doesn't implement a draw_scatter3D method.")
-    
+
     def draw_arrows3D(self, xyz, dxyz, arrowhead_scale=0.3, arrowhead_angle=15, **kwargs):
         """Draws multiple arrows using the generic draw_line method.
 
@@ -280,7 +281,7 @@ class Backend(ABC):
 
         # Convert from degrees to radians.
         arrowhead_angle = np.radians(arrowhead_angle)
-        
+
         # Calculate the arrowhead positions. This is a bit more complex than the 2D case,
         # since there's no unique plane to rotate all vectors.
         # First, we get a unitary vector that is perpendicular to the direction of the arrow in xy.
@@ -289,7 +290,7 @@ class Backend(ABC):
         # We avoid problems by dividinc
         dx_p = np.divide(dxyz[:, 1], dxy_norm, where=dxy_norm != 0, out=np.zeros(dxyz.shape[0], dtype=np.float64))
         dy_p = np.divide(-dxyz[:, 0], dxy_norm, where=dxy_norm != 0, out=np.ones(dxyz.shape[0], dtype=np.float64))
-        
+
         # And then we build the rotation matrices. Since each arrow needs a unique rotation matrix,
         # we will have n 3x3 matrices, where n is the number of arrows, for each arrowhead tip.
         c = np.cos(arrowhead_angle)
@@ -305,7 +306,7 @@ class Backend(ABC):
         inv_rots = rot_matrices.copy()
         inv_rots[[0, 1, 2, 2], [2, 2, 0, 1]] *= -1
 
-        # Calculate the tips of the arrow heads. 
+        # Calculate the tips of the arrow heads.
         arrowhead_tips1 = final_xyz - np.einsum("ij...,...j->...i", rot_matrices, dxyz * arrowhead_scale)
         arrowhead_tips2 = final_xyz - np.einsum("ij...,...j->...i", inv_rots, dxyz * arrowhead_scale)
 
@@ -321,7 +322,7 @@ class Backend(ABC):
         arrows[4::7] = final_xyz
         arrows[5::7] = arrowhead_tips2
         arrows[6::7] = np.nan
-        
+
         return self.draw_line3D(arrows[:, 0], arrows[:, 1], arrows[:, 2], **kwargs)
 
 

@@ -6,9 +6,10 @@ import bpy
 
 __all__ = ["BlenderGeometryBackend"]
 
+
 def add_atoms_frame(ani_objects, child_objects, frame):
     """Creates the frames for a child plot atoms.
-    
+
     Given the objects of the Atoms collection in the animation, it uses
     the corresponding atoms in the child to set keyframes.
 
@@ -26,12 +27,12 @@ def add_atoms_frame(ani_objects, child_objects, frame):
         # Set the atom position
         ani_obj.location = child_obj.location
         ani_obj.keyframe_insert(data_path="location", frame=frame)
-        
+
         # Set the atom size
         ani_obj.scale = child_obj.scale
         ani_obj.keyframe_insert(data_path="scale", frame=frame)
 
-        # Set the atom color    
+        # Set the atom color
         ani_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs[0].default_value = child_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs[0].default_value
         ani_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs[0].keyframe_insert(data_path="default_value", frame=frame)
 
@@ -39,11 +40,12 @@ def add_atoms_frame(ani_objects, child_objects, frame):
         ani_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs[19].default_value = child_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs[19].default_value
         ani_obj.data.materials[0].node_tree.nodes["Principled BSDF"].inputs[19].keyframe_insert(data_path="default_value", frame=frame)
 
+
 class BlenderGeometryBackend(BlenderBackend, GeometryBackend):
 
     _animatable_collections = {
         **BlenderBackend._animatable_collections,
-        "Atoms": {"add_frame": add_atoms_frame },
+        "Atoms": {"add_frame": add_atoms_frame},
         "Unit cell": BlenderBackend._animatable_collections["Lines"]
     }
 
@@ -63,7 +65,7 @@ class BlenderGeometryBackend(BlenderBackend, GeometryBackend):
             self._template_atom = bpy.context.object
             atom = self._template_atom
             bpy.context.collection.objects.unlink(atom)
-        
+
         atom.location = xyz
         atom.scale = (size, size, size)
 
@@ -83,7 +85,7 @@ class BlenderGeometryBackend(BlenderBackend, GeometryBackend):
         # And call the method to draw bonds (which will use self.draw_line3D)
         collection = self.get_collection("Bonds")
         super()._draw_bonds_3D(*args, line=line, collection=collection, **kwargs)
-    
+
     def _draw_cell_3D_box(self, *args, width=None, **kwargs):
         width = width or 0.1
         # This method is only defined to provide a better default for the width in blender

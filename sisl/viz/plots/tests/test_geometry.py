@@ -173,7 +173,7 @@ class TestGeometry(_TestPlot):
 
     def test_atom_colors_2d(self, plot):
 
-        plot.update_settings(axes="xy", atoms=None, atoms_style=[], nsc=[1,1,1])
+        plot.update_settings(axes="xy", atoms=None, atoms_style=[], nsc=[1, 1, 1])
 
         geom = plot.geometry
 
@@ -223,7 +223,7 @@ class TestGeometry(_TestPlot):
         atom_traces = [trace for trace in plot.data if trace.name == "Atoms"]
         assert len(atom_traces) == 1
 
-        plot.update_settings(atoms_style={"size":geom.atoms.Z+1})
+        plot.update_settings(atoms_style={"size": geom.atoms.Z+1})
         sized_atom_traces = [trace for trace in plot.data if trace.name == "Atoms"]
 
         assert len(atom_traces) == len(sized_atom_traces)
@@ -238,12 +238,12 @@ class TestGeometry(_TestPlot):
         atom_traces = [trace for trace in plot.data if trace["legendgroup"] == "Atoms"]
         assert len(atom_traces) == geom.na
 
-        plot.update_settings(atoms_style={"size":geom.atoms.Z+1})
+        plot.update_settings(atoms_style={"size": geom.atoms.Z+1})
         sized_atom_traces = [trace for trace in plot.data if trace["legendgroup"] == "Atoms"]
 
         assert len(atom_traces) == len(sized_atom_traces)
         assert np.all([np.any(old.x != new.x) for old, new in zip(atom_traces, sized_atom_traces)])
-    
+
     def test_cell_styles(self, plot):
         cell_style = {"color": "red", "width": 2, "opacity": 0.6}
         plot.update_settings(cell_style=cell_style)
@@ -252,14 +252,14 @@ class TestGeometry(_TestPlot):
 
     def test_arrows(self, plot, axes, ndim):
         # Check that arrows accepts both a dictionary and a list and the data is properly transferred
-        for arrows in ({"data": [0,0,2]}, [{"data": [0,0,2]}]):
+        for arrows in ({"data": [0, 0, 2]}, [{"data": [0, 0, 2]}]):
             plot.update_settings(axes=axes, arrows=arrows, atoms=None, nsc=[1, 1, 1])
             arrow_data = plot._for_backend["arrows"][0]["data"]
             assert arrow_data.shape == (plot.geometry.na, ndim)
             assert not np.isnan(arrow_data).any()
 
         # Now check that atom selection works
-        plot.update_settings(arrows=[{"atoms": 0, "data": [0,0,2]}])
+        plot.update_settings(arrows=[{"atoms": 0, "data": [0, 0, 2]}])
         arrow_data = plot._for_backend["arrows"][0]["data"]
         assert arrow_data.shape == (plot.geometry.na, ndim)
         assert np.isnan(arrow_data).any()
@@ -267,7 +267,7 @@ class TestGeometry(_TestPlot):
 
         # Check that if atoms is provided, data is only stored for those atoms that are going to be
         # displayed
-        plot.update_settings(atoms=0, arrows=[{"atoms": 0, "data": [0,0,2]}])
+        plot.update_settings(atoms=0, arrows=[{"atoms": 0, "data": [0, 0, 2]}])
         arrow_data = plot._for_backend["arrows"][0]["data"]
         assert arrow_data.shape == (1, ndim)
         assert not np.isnan(arrow_data).any()
@@ -276,15 +276,15 @@ class TestGeometry(_TestPlot):
         # We also check that a warning is being raised because we are providing arrow data for atoms that
         # are not being displayed.
         with pytest.warns(SislWarning):
-            plot.update_settings(atoms=1, arrows=[{"atoms": 0, "data": [0,0,2]}])
+            plot.update_settings(atoms=1, arrows=[{"atoms": 0, "data": [0, 0, 2]}])
         assert len(plot._for_backend["arrows"]) == 0
 
         # Finally, check that multiple arrows are passed to the backend
-        plot.update_settings(atoms=None, arrows=[{"data": [0,0,2]}, {"data": [1,0,0]}])
+        plot.update_settings(atoms=None, arrows=[{"data": [0, 0, 2]}, {"data": [1, 0, 0]}])
         assert len(plot._for_backend["arrows"]) == 2
-    
+
     def test_arrows_sc(self, plot):
-        plot.update_settings(atoms=None, arrows={"data": [0,0,2]}, nsc=[2,1,1])
+        plot.update_settings(atoms=None, arrows={"data": [0, 0, 2]}, nsc=[2, 1, 1])
 
     def test_no_atoms(self, plot, axes):
         plot.update_settings(atoms=[], axes=axes, arrows=[])
