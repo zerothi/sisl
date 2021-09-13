@@ -149,7 +149,7 @@ To install the development version using :code:`pip` you may use the URL command
 
 .. code-block:: bash
 
-   python3 -m pip install git+https://github.com/zerothi/sisl.git
+   python3 -m pip install -U git+https://github.com/zerothi/sisl.git
 
 Otherwise follow the manual installation by cloning the `git repository <sisl-git_>`_.
 Remark that the :code:`git+https` protocol is buggy (as of pip v19.0.3) because you cannot pass compiler
@@ -160,9 +160,11 @@ the Intel compilers you should do:
 
    git clone git+https://github.com/zerothi/sisl.git
    cd sisl
-   python3 -m pip install --global-option="build" --global-option="--compiler=intelem" --global-option="--fcompiler=intelem" .
+   python3 -m pip install -U --global-option="build" --global-option="--compiler=intelem" --global-option="--fcompiler=intelem" .
 
 which will pass the correct options to the build system.
+
+The `-U` flag ensures that prior installations are overwritten.
 
 
 .. _sisl-test-files: http://github.com/zerothi/sisl-files
