@@ -1393,6 +1393,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
         self
         """
         import dill
+
         if isinstance(path, str):
             path = Path(path)
 

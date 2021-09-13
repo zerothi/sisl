@@ -12,6 +12,7 @@ import numpy as np
 import sisl
 from sisl.viz.plots.tests.test_bands import TestBandsPlot as _TestBandsPlot
 
+from xarray import DataArray
 
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 
@@ -26,6 +27,10 @@ class TestFatbandsPlot(_TestBandsPlot):
         *_TestBandsPlot._required_attrs,
         "weights_shape", # Tuple. The shape that self.weights dataarray is expected to have
     ]
+
+    @pytest.fixture(scope="class", params=[None, *sisl.viz.FatbandsPlot.get_class_param("backend").options])
+    def backend(self, request):
+        return request.param
 
     @pytest.fixture(scope="class", params=[
         "sisl_H_unpolarized", "sisl_H_polarized", "sisl_H_noncolinear", "sisl_H_spinorbit",
@@ -70,7 +75,6 @@ class TestFatbandsPlot(_TestBandsPlot):
         """
         Check that the data array was created and contains the correct information.
         """
-        from xarray import DataArray
 
         # Check that there is a weights attribute
         assert hasattr(plot, "weights")
@@ -87,7 +91,6 @@ class TestFatbandsPlot(_TestBandsPlot):
         assert weights.shape == test_attrs["weights_shape"]
 
     def test_group_weights(self, plot):
-        from xarray import DataArray
 
         total_weights = plot._get_group_weights({})
 
@@ -98,7 +101,7 @@ class TestFatbandsPlot(_TestBandsPlot):
         assert np.allclose(plot.weights.sum("orb"), 1), "Weight values do not sum 1 for all states."
         assert np.allclose(plot.weights.sum("band"), 2 if not test_attrs["spin"].is_diagonal else 1)
 
-    def test_groups(self, plot):
+    def test_groups(self, plot, test_attrs):
         """
         Check that we can request groups
         """
@@ -107,13 +110,24 @@ class TestFatbandsPlot(_TestBandsPlot):
 
         plot.update_settings(groups=[{"atoms": [1], "color": color, "name": name}])
 
-        fatbands_traces = [trace for trace in plot.data if trace.fill == 'toself']
+        assert "groups_weights" in plot._for_backend
+        assert len(plot._for_backend["groups_weights"]) == 1
+        assert name in plot._for_backend["groups_weights"]
 
-        assert len(fatbands_traces) > 0
-        assert fatbands_traces[0].line.color == color
-        assert fatbands_traces[0].name == name
+        group_weights = plot._for_backend["groups_weights"][name]
+        assert isinstance(group_weights, DataArray)
+        assert set(group_weights.dims) == set(("spin", "k", "band"))
+        group_weights_shape = test_attrs["weights_shape"][:-1]
+        if not test_attrs["spin"].is_polarized:
+            group_weights_shape = (1, *group_weights_shape)
+        assert group_weights.transpose("spin", "k", "band").shape == group_weights_shape
 
-    def test_split_groups(self, plot):
+        assert "groups_metadata" in plot._for_backend
+        assert len(plot._for_backend["groups_metadata"]) == 1
+        assert name in plot._for_backend["groups_metadata"]
+        assert plot._for_backend["groups_metadata"][name]["style"]["line"]["color"] == color
+
+    def _test_split_groups(self, plot):
 
         # Number of groups that each splitting should give
         expected_splits = [
@@ -122,14 +136,14 @@ class TestFatbandsPlot(_TestBandsPlot):
             ('orbitals', plot.geometry.no)
         ]
 
-        # Check how many traces are there before generating groups
-        # (these traces correspond to bands)
         plot.update_settings(groups=[])
-        traces_before = len(plot.data)
+        # Check that there are no groups
+        assert len(plot._for_backend["groups_weights"]) == 0
+        assert len(plot._for_backend["groups_metadata"]) == 0
 
         # Check that each splitting works as expected
-        for group_by, length in expected_splits:
-
+        for group_by, n_groups in expected_splits:
             plot.split_groups(group_by)
             err_message = f'Not correctly grouping by {group_by}'
-            assert len(plot.data) - traces_before, err_message
+            assert len(plot._for_backend["groups_weights"]) == n_groups, err_message
+            assert len(plot._for_backend["groups_metadata"]) == n_groups, err_message

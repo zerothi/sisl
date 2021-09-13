@@ -4,6 +4,7 @@
 from functools import partial
 
 import pytest
+import numpy as np
 
 import sisl
 
@@ -20,6 +21,10 @@ pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 class TestBondLengthMap(_TestGeometry):
 
     _required_attrs = ["has_strain_ref"]
+
+    @pytest.fixture(scope="class", params=[None, *sisl.viz.BondLengthMap.get_class_param("backend").options])
+    def backend(self, request):
+        return request.param
 
     @pytest.fixture(scope="class", params=["sisl_geom", "sisl_geom_strain"])
     def init_func_and_attrs(self, request):
@@ -43,7 +48,7 @@ class TestBondLengthMap(_TestGeometry):
         if test_attrs["has_strain_ref"]:
             plot.update_settings(axes=[0, 1, 2], strain=True, show_bonds=True)
 
-            strains = plot.data[0].line.color
+            strains = [bond["color"] for bond in plot._for_backend["bonds_props"]]
 
             plot.update_settings(strain=False)
-            assert plot.data[0].line.color != strains
+            assert not np.allclose([bond["color"] for bond in plot._for_backend["bonds_props"]], strains)

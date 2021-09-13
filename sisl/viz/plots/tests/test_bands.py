@@ -17,6 +17,8 @@ import sisl
 from sisl.viz import BandsPlot
 from sisl.viz.plots.tests.conftest import _TestPlot
 
+from xarray import DataArray
+
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 
 
@@ -31,7 +33,7 @@ class TestBandsPlot(_TestPlot):
         "spin", # The spin class of the calculation
     ]
 
-    @pytest.fixture(params=BandsPlot.get_class_param("backend").options)
+    @pytest.fixture(scope="class", params=[None, *BandsPlot.get_class_param("backend").options])
     def backend(self, request):
         return request.param
 
@@ -95,84 +97,81 @@ class TestBandsPlot(_TestPlot):
 
         return init_func, attrs
 
-    def test_bands_dataarray(self, plot, test_attrs):
-        """
-        Check that the data array was created and contains the correct information.
-        """
-        from xarray import DataArray
-
-        # Check that there is a bands attribute
-        assert hasattr(plot, 'bands')
-
-        # Check that it is a dataarray containing the right information
-        bands = plot.bands
+    def _check_bands_array(self, bands, spin, expected_shape):
         assert isinstance(bands, DataArray)
 
-        if test_attrs["spin"].is_polarized:
+        if spin.is_polarized:
             expected_coords = ('k', 'spin', 'band')
         else:
             expected_coords = ('k', 'band')
 
         assert set(bands.dims) == set(expected_coords)
-        assert bands.transpose(*expected_coords).shape == test_attrs['bands_shape']
+        assert bands.transpose(*expected_coords).shape == expected_shape
 
-    def test_bands_in_figure(self, plot, test_attrs):
+    def test_bands_dataarray(self, plot, test_attrs):
+        """
+        Check that the data array was created and contains the correct information.
+        """
+        # Check that there is a bands attribute
+        assert hasattr(plot, 'bands')
 
-        # Check if all bands are plotted
-        plot.update_settings(bands_range=[0, test_attrs['bands_shape'][-1]], Erange=None)
-        assert len(plot.data) >= test_attrs['bands_shape'][-1]
+        self._check_bands_array(plot.bands, test_attrs["spin"], test_attrs['bands_shape'])
 
-        # Now check if the ticks are correctly set
-        assert np.allclose(list(test_attrs['tickvals']), plot.figure.layout.xaxis.tickvals, rtol=0.01)
-        assert np.all(list(test_attrs['ticklabels']) == list(plot.figure.layout.xaxis.ticktext))
+    def test_bands_filtered(self, plot, test_attrs):
+        # Check that we can correctly filter the bands to draw.
+        plot.update_settings(bands_range=[0, 1], Erange=None)
+
+        # Check that the filtered bands are correctly passed to the backend
+        assert "draw_bands" in plot._for_backend
+        assert "filtered_bands" in plot._for_backend["draw_bands"]
+
+        # Check that everything is fine with the dimensions of the filtered bands. Since we filtered,
+        # it should contain only one band
+        filtered_bands = plot._for_backend["draw_bands"]["filtered_bands"]
+        self._check_bands_array(filtered_bands, test_attrs["spin"], (*test_attrs["bands_shape"][:-1], 1))
 
     def test_gap(self, plot, test_attrs):
-
         # Check that we can calculate the gap correctly
         # Allow for a small variability just in case there
         # are precision differences
         assert abs(plot.gap - test_attrs['gap']) < 0.01
 
-    def test_gap_in_figure(self, plot, backend):
-        # Check that the gap can be drawn correctly
-        plot.update_settings(backend=backend, gap=False)
-        assert not plot._test_is_gap_drawn(), f"Test for gap doesn't work properly in {backend} backend"
+    def test_gap_to_backend(self, plot, test_attrs):
+        # Check that the gap is correctly transmitted to the backend
+        plot.update_settings(gap=False, custom_gaps=[])
+        assert len(plot._for_backend["gaps"]) == 0
 
         plot.update_settings(gap=True)
-        assert plot._test_is_gap_drawn(), f"Gap is not drawn by {backend} backend"
+        assert len(plot._for_backend["gaps"]) > 0
+        for gap in plot._for_backend["gaps"]:
+            assert len(set(["ks", "Es", "color", "name"]) - set(gap)) == 0
+            assert abs(np.diff(gap["Es"]) - test_attrs['gap']) < 0.01
 
-    def test_custom_gaps_in_figure(self, plot, test_attrs, backend):
-
-        plot.update_settings(gap=False, custom_gaps=[], backend=backend)
-
-        prev_traces = plot._test_number_of_items_drawn()
+    def test_custom_gaps_to_backend(self, plot, test_attrs):
+        plot.update_settings(gap=False, custom_gaps=[])
+        assert len(plot._for_backend["gaps"]) == 0
 
         gaps = list(itertools.combinations(test_attrs['ticklabels'], 2))
 
         plot.update_settings(custom_gaps=[{"from": gap[0], "to": gap[1], "spin": [0]} for gap in gaps])
 
-        assert plot._test_number_of_items_drawn() == prev_traces + len(gaps)
+        assert len(plot._for_backend["gaps"]) + len(gaps)
+        for gap in plot._for_backend["gaps"]:
+            assert len(set(["ks", "Es", "color", "name"]) - set(gap)) == 0
 
     def test_custom_gaps_correct(self, plot, test_attrs):
-
-        # We only test this with plotly.
+        # Generate custom gaps from labels
         gaps = list(itertools.combinations(test_attrs['ticklabels'], 2))
-        plot.update_settings(custom_gaps=[{"from": gap[0], "to": gap[1]} for gap in gaps], backend="plotly")
+        plot.update_settings(custom_gaps=[{"from": gap[0], "to": gap[1]} for gap in gaps])
 
-        n_items = plot._test_number_of_items_drawn()
+        gaps_from_labels = np.unique([np.diff(gap["Es"]) for gap in plot._for_backend["gaps"]])
 
-        # Get the traces that have been generated and assert that they are
-        # exactly the same as if we define the gaps with numerical values for the ks
-        from_labels = plot.data[-len(gaps):]
+        # Generate custom gaps from k values
         gaps = list(itertools.combinations(test_attrs['tickvals'], 2))
+        plot.update_settings(custom_gaps=[{"from": gap[0], "to": gap[1]} for gap in gaps])
 
-        plot.update_settings(
-            custom_gaps=[{"from": gap[0], "to": gap[1]} for gap in gaps])
-
-        assert plot._test_number_of_items_drawn() == n_items
-        assert np.all([
-            np.allclose(old_trace.y, new_trace.y)
-            for old_trace, new_trace in zip(from_labels, plot.data[-len(gaps):])])
+        # Check that we get the same values for the gaps
+        assert abs(gaps_from_labels.sum() - np.unique([np.diff(gap["Es"]) for gap in plot._for_backend["gaps"]]).sum()) < 0.03
 
         # We have finished with all the gaps tests here, so just clean up before continuing
         plot.update_settings(custom_gaps=[], gap=False)
@@ -192,29 +191,22 @@ class TestBandsPlot(_TestPlot):
         assert spin_moments.shape == (test_attrs['bands_shape'][0], test_attrs['bands_shape'][-1], 3)
 
     def test_spin_texture(self, plot, test_attrs):
+        assert plot._for_backend["draw_bands"]["spin_texture"]["show"] is False
+
         if not test_attrs["spin_texture"]:
             return
 
-        plot.update_settings(spin="x", backend="plotly")
+        plot.update_settings(spin="x", bands_range=[0, 1], Erange=None)
 
-        # If this is a fatbands plot, the first traces are drawing the weights
-        # (the actual fatbands). Therefore we need to find where the traces that
-        # belong to the bands begin.
-        if plot.data[0].fill is None:
-            first_band_trace = 0
-        else:
-            for i, trace in enumerate(plot.data):
-                if trace.fill is None:
-                    first_band_trace = i
-                    break
-            else:
-                raise Exception(f"We didn't find any band traces in the plot")
+        spin_texture = plot._for_backend["draw_bands"]["spin_texture"]
+        assert spin_texture["show"] is True
+        assert "colorscale" in spin_texture
+        assert "values" in spin_texture
 
-        # Check that spin texture has been
-        for band in range(*plot.settings["bands_range"]):
-            expected = plot.spin_moments.sel(band=band, axis="x").values
-            displayed = plot.data[first_band_trace + band].marker.color
+        spin_texture_arr = spin_texture["values"]
 
-            assert np.all(expected == displayed), f"Colors of spin textured bands not correctly set (band {band})"
+        self._check_bands_array(spin_texture_arr, test_attrs["spin"], (*test_attrs["bands_shape"][:-1], 1))
+        assert "axis" in spin_texture_arr.coords
+        assert str(spin_texture_arr.axis.values) == "x"
 
         plot.update_settings(spin=None)

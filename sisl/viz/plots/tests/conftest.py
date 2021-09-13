@@ -11,7 +11,8 @@ import os.path as osp
 def importables():
     # Find out which packages are impo
     importables_info = {True: [], False: []}
-    for modname in ("plotly", "skimage", "pandas", "xarray"):
+    for modname in ("pandas", "xarray", "bpy", "pathos", "dill", "tqdm",
+        "skimage", "plotly", "matplotlib"):
         try:
             importlib.import_module(modname)
             importables_info[True].append(modname)
@@ -32,13 +33,16 @@ def siesta_test_files(sisl_files):
 
 class _TestPlot:
 
+    @pytest.fixture(scope="class", params=[None])
+    def backend(self, request):
+        return request.param
+
     @pytest.fixture(scope="class")
-    def plot(self, init_func_and_attrs, importables):
+    def plot(self, backend, init_func_and_attrs, importables):
         """Initializes the plot using the initializin function.
 
         If the plot can't be initialized it skips all tests for that plot.
         """
-
         init_func = init_func_and_attrs[0]
 
         msg = ""
@@ -48,7 +52,7 @@ class _TestPlot:
             msg = f'{", ".join(importables[True]) + " is/are importable"}; {msg}'
 
         try:
-            return init_func(_debug=True)
+            return init_func(backend=backend, _debug=True)
         except Exception as e:
             pytest.skip(f"Plot was not initialized. Error: {e}. \n\n{msg}")
 

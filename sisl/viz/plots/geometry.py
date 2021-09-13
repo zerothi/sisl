@@ -803,13 +803,13 @@ class GeometryPlot(Plot):
         if callable(data_axis):
             data_axis = np.array(data_axis(x))
 
-        xy = np.array([x, data_axis])
+        xy = np.array([x, data_axis]).T
 
         atoms_props = wrap_atoms(atoms, xy, atoms_styles)
         atoms_props["size"] *= atoms_scale
 
         return {
-            "geometry": self.geometry, "xaxis": coords_axis, "yaxis": data_axis_name, "atoms_props": atoms_props,
+            "geometry": self.geometry, "xaxis": coords_axis, "yaxis": data_axis_name, "atoms_props": atoms_props, "bonds_props": []
         }
 
     def _default_wrap_atoms1D(self, ats, xy, atoms_styles):
@@ -882,7 +882,7 @@ class GeometryPlot(Plot):
         wrap_atoms = wrap_atoms or self._default_wrap_atoms2D
         wrap_bond = wrap_bond or self._default_wrap_bond2D
 
-        xy = self._projected_2Dcoords(self.geometry, self._tiled_coords(atoms), xaxis=xaxis, yaxis=yaxis).T
+        xy = self._projected_2Dcoords(self.geometry, self._tiled_coords(atoms), xaxis=xaxis, yaxis=yaxis)
 
         # Add atoms
         atoms_props = wrap_atoms(atoms, xy, atoms_styles)
@@ -973,7 +973,7 @@ class GeometryPlot(Plot):
             bonds = []
             bonds_props = []
 
-        return {"geometry": self.geometry, "atoms": atoms, "bonds": bonds, "atoms_props": atoms_props, "bonds_props": bonds_props}
+        return {"geometry": self.geometry, "atoms_props": atoms_props, "bonds_props": bonds_props}
 
     def _default_wrap_atoms3D(self, ats, atoms_styles):
 

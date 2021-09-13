@@ -21,6 +21,12 @@ from sisl.viz.plots import *
 from sisl.viz.plotutils import load
 from sisl.viz._presets import PRESETS
 
+try:
+    import dill
+    skip_dill = pytest.mark.skipif(False, reason="dill not available")
+except ImportError:
+    skip_dill = pytest.mark.skipif(True, reason="dill not available")
+
 # ------------------------------------------------------------
 # Checks that will be available to be used on any plot class
 # ------------------------------------------------------------
@@ -102,6 +108,7 @@ class _TestPlotClass:
 
         assert np.all([key not in plot.settings or plot.settings[key] == val for key, val in PRESETS["dark"].items()])
 
+    @skip_dill
     def test_save_and_load(self, obj=None):
 
         file_name = "./__sislsaving_test"
@@ -143,7 +150,7 @@ class TestMultiplePlot(_TestPlotClass):
 
         geom = sisl.geom.graphene()
 
-        multiple_plot = geom.plot(show_cell=["box", False, False], axes=[0, 1], **{kw: "show_cell"})
+        multiple_plot = geom.plot(show_cell=["box", False, False], backend=None, axes=[0, 1], **{kw: "show_cell"})
 
         assert isinstance(multiple_plot, self._cls), f"{self._cls} was not correctly initialized using the {kw} keyword argument"
         assert len(multiple_plot.children) == 3, "Child plots were not properly generated"
@@ -154,11 +161,11 @@ class TestMultiplePlot(_TestPlotClass):
 
         geom = sisl.geom.graphene()
 
-        multiple_plot = geom.plot(show_cell=["box", False, False], axes=[0, 1], **{kw: "show_cell"})
+        multiple_plot = geom.plot(show_cell=["box", False, False], backend=None, axes=[0, 1], **{kw: "show_cell"})
         geoms_ids = [id(plot.geometry) for plot in multiple_plot]
         assert len(set(geoms_ids)) == 1, f"{self._cls} is not properly sharing objects"
 
-        multiple_plot = GeometryPlot(geometry=[sisl.geom.graphene(bond=bond) for bond in (1.2, 1.6)], axes=[0, 1], **{kw: "geometry"})
+        multiple_plot = GeometryPlot(geometry=[sisl.geom.graphene(bond=bond) for bond in (1.2, 1.6)], backend=None, axes=[0, 1], **{kw: "geometry"})
         geoms_ids = [id(plot.geometry) for plot in multiple_plot]
         assert len(set(geoms_ids)) > 1, f"{self._cls} is sharing objects that should not be shared"
 
@@ -167,17 +174,19 @@ class TestMultiplePlot(_TestPlotClass):
         kw = MultiplePlot._kw_from_cls(self._cls)
 
         geom = sisl.geom.graphene()
+        show_cell = ["box", False, False]
 
-        multiple_plot = geom.plot(show_cell=["box", False, False], axes=[0, 1], **{kw: "show_cell"})
+        multiple_plot = geom.plot(show_cell=show_cell, backend=None, axes=[0, 1], **{kw: "show_cell"})
         assert len(multiple_plot.children) == 3
 
-        prev_data_lens = [len(plot.data) for plot in multiple_plot]
-        assert prev_data_lens[0] > prev_data_lens[1]
+        for i, show_cell_val in enumerate(show_cell):
+            assert multiple_plot[i]._for_backend["show_cell"] == show_cell_val
 
         multiple_plot.update_children_settings(show_cell="box", children_sel=[1])
-        data_lens = [len(plot.data) for plot in multiple_plot]
-        assert data_lens[0] == data_lens[1]
-        assert data_lens[1] > data_lens[2]
+        for i, show_cell_val in enumerate(show_cell):
+            if i == 1:
+                show_cell_val = "box"
+            assert multiple_plot[i]._for_backend["show_cell"] == show_cell_val
 
 # ------------------------------------------------------------
 #            Tests for the SubPlots class
@@ -194,8 +203,8 @@ class TestSubPlots(TestMultiplePlot):
 
         # We are going to try some things here and check that they don't fail
         # as we have no way of checking the actual layout of the subplots
-        plot = GeometryPlot.subplots('show_bonds', [True, False],
-            fixed={'geometry': geom, 'axes': [0, 1]}, _debug=True)
+        plot = GeometryPlot.subplots('show_bonds', [True, False], backend=None,
+            fixed={'geometry': geom, 'axes': [0, 1], "backend": None}, _debug=True)
 
         plot.update_settings(cols=2)
 
@@ -212,6 +221,6 @@ class TestSubPlots(TestMultiplePlot):
 # ------------------------------------------------------------
 
 
-class TestAnimation(TestMultiplePlot):
+class _TestAnimation(TestMultiplePlot):
 
     PlotClass = Animation

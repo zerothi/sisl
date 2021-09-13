@@ -10,6 +10,12 @@ from sisl.viz import Session
 from sisl.viz.plots import *
 from sisl.viz.tests.test_plot import _TestPlotClass
 
+try:
+    import dill
+    skip_dill = pytest.mark.skipif(False, reason="dill not available")
+except ImportError:
+    skip_dill = pytest.mark.skipif(True, reason="dill not available")
+
 # This file tests general session behavior
 
 # ------------------------------------------------------------
@@ -43,6 +49,7 @@ class _TestSessionClass:
         session = self._cls(**new_settings)
         assert np.all([session.settings[key] == val for key, val in new_settings.items()])
 
+    @skip_dill
     def test_save_and_load(self):
 
         _TestPlotClass.test_save_and_load(self, obj=self._cls())
