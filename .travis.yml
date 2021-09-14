@@ -53,16 +53,22 @@ env:
 
 jobs:
   include:
-    - stage: Initial test
+    - stage: first
+      name: "Py3.6 initial"
       python: 3.6
 
-    - stage: Full tests
+    - stage: full
+      name: "Py3.9 initial"
       python: 3.9
 
     - python: 3.6
-      env: OPTIONAL_DEPENDENCIES=true
+      name: "Py3.6 optional"
+      env:
+        - OPTIONAL_DEPENDENCIES=true
     - python: 3.8
-      env: OPTIONAL_DEPENDENCIES=true
+      name: "Py3.8 optional"
+      env:
+        - OPTIONAL_DEPENDENCIES=true
 
 before_install: ./ci/travis-before-install.sh
 install: ./ci/travis-install.sh
@@ -79,14 +85,14 @@ before_script:
 
 
 # Webhooks for discord
-after_success:
-  - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
-  - chmod +x send.sh
-  - ./send.sh success $DISCORD_HOOK
-after_failure:
-  - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
-  - chmod +x send.sh
-  - ./send.sh failure $DISCORD_HOOK
+#after_success:
+#  - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
+#  - chmod +x send.sh
+#  - ./send.sh success $DISCORD_HOOK
+#after_failure:
+#  - wget https://raw.githubusercontent.com/DiscordHooks/travis-ci-discord-webhook/master/send.sh
+#  - chmod +x send.sh
+#  - ./send.sh failure $DISCORD_HOOK
 
 
 deploy:
