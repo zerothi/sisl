@@ -119,7 +119,8 @@ def test_state_sub1():
     for i, sub in enumerate(state.iter(True)):
         assert (sub ** 2).sum() == norm2[i]
 
-    assert np.allclose(state.sub([False, True, False, True]).state, state.sub([1, 3]).state)
+    assert np.allclose(state.sub(np.array([False, True, False, True])).state,
+                       state.sub([1, 3]).state)
 
 
 def test_state_outer1():

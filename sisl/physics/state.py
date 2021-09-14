@@ -982,7 +982,7 @@ class StateC(State):
         """
         if idx is None:
             return einsum('k,ki,kj->ij', self.c, self.state, _conj(self.state))
-        idx = self._sanitize_index(idx)
+        idx = self._sanitize_index(idx).ravel()
         return einsum('k,ki,kj->ij', self.c[idx], self.state[idx], _conj(self.state[idx]))
 
     def sort(self, ascending=True):
@@ -1042,7 +1042,7 @@ class StateC(State):
         StateC
             a new object with a subset of the states
         """
-        idx = self._sanitize_index(idx)
+        idx = self._sanitize_index(idx).ravel()
         sub = self.__class__(self.state[idx, ...], self.c[idx], self.parent)
         sub.info = self.info
         return sub
