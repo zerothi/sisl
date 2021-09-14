@@ -519,7 +519,7 @@ class GridPlot(Plot):
         should_orthogonalize = ~self._is_cartesian_unordered(grid.cell) and self._ndim < 3
         # We also don't need to orthogonalize if cartesian coordinates are not requested
         # (this would mean that axes is a combination of "a", "b" and "c")
-        should_orthogonalize = should_orthogonalize and set(axes).intersection(["x", "y", "z"])
+        should_orthogonalize = should_orthogonalize and bool(set(axes).intersection(["x", "y", "z"]))
 
         if should_orthogonalize and self._ndim == 1:
             # In 1D representations, even if the cell is skewed, we might not need to transform.

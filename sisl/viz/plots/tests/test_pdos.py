@@ -80,7 +80,12 @@ class TestPdosPlot(_TestPlot):
 
         return init_func, attrs
 
+    @pytest.fixture(scope="class", params=[None, *sisl.viz.PdosPlot.get_class_param("backend").options])
+    def backend(self, request):
+        return request.param
+
     def test_dataarray(self, plot, test_attrs):
+        pytest.importorskip("xarray")
         from xarray import DataArray
 
         PDOS = plot.PDOS
@@ -117,10 +122,10 @@ class TestPdosPlot(_TestPlot):
         # Test all splittings
         for on, (n, toggle_val) in expected_splits.items():
             err_message = f'Error splitting DOS based on {on}'
-            assert len(split_DOS(on=on).data) == n, err_message
+            assert len(split_DOS(on=on)._for_backend["PDOS_values"]) == n, err_message
             if toggle_val is not None and not inplace_split:
-                assert len(split_DOS(on=on, only=[toggle_val]).data) == 1, err_message
-                assert len(split_DOS(on=on, exclude=[toggle_val]).data) == n - 1, err_message
+                assert len(split_DOS(on=on, only=[toggle_val])._for_backend["PDOS_values"]) == 1, err_message
+                assert len(split_DOS(on=on, exclude=[toggle_val])._for_backend["PDOS_values"]) == n - 1, err_message
 
     def test_composite_splitting(self, plot, inplace_split):
 
@@ -132,17 +137,17 @@ class TestPdosPlot(_TestPlot):
 
         split_DOS(on="species+orbitals", name="This is $species")
 
-        first_trace = plot.data[0]
-        assert "This is " in first_trace.name, "Composite splitting not working"
-        assert "species" not in first_trace.name, "Name templating not working in composite splitting"
-        assert "orbitals=" in first_trace.name, "Name templating not working in composite splitting"
+        first_trace_name = list(plot._for_backend["PDOS_values"].keys())[0]
+        assert "This is " in first_trace_name, "Composite splitting not working"
+        assert "species" not in first_trace_name, "Name templating not working in composite splitting"
+        assert "orbitals=" in first_trace_name, "Name templating not working in composite splitting"
 
     def test_request_splitting(self, plot, inplace_split):
 
         # Here we are just checking that, when splitting a request
         # the plot understands that it has constrains
         plot.update_settings(requests=[{"atoms": 0}])
-        prev_len = len(plot.data)
+        prev_len = len(plot._for_backend["PDOS_values"])
 
         # Even if there are more atoms, the plot should understand
         # that it is constrained to the values of the current request
@@ -152,21 +157,21 @@ class TestPdosPlot(_TestPlot):
         else:
             plot.split_requests(0, on="atoms")
 
-        assert len(plot.data) == prev_len
+        assert len(plot._for_backend["PDOS_values"]) == prev_len
 
     def test_request_management(self, plot, test_attrs):
 
         plot.update_settings(requests=[])
-        assert len(plot.data) == 0
+        assert len(plot._for_backend["PDOS_values"]) == 0
 
         sel_species = test_attrs["species"][0]
         plot.add_request({"species": [sel_species]})
-        assert len(plot.data) == 1
+        assert len(plot._for_backend["PDOS_values"]) == 1
 
         # Try to split this request in multiple ones
         plot.split_requests(0, on="orbitals")
         species_no = len(plot.geometry.atoms[sel_species].orbitals)
-        assert len(plot.data) == species_no
+        assert len(plot._for_backend["PDOS_values"]) == species_no
 
         # Then try to merge
         # if species_no >= 2:
@@ -174,5 +179,5 @@ class TestPdosPlot(_TestPlot):
         #     assert len(plot.data) == species_no - 1
 
         # And try to remove one request
-        prev = len(plot.data)
-        assert len(plot.remove_requests(0).data) == prev - 1
+        prev = len(plot._for_backend["PDOS_values"])
+        assert len(plot.remove_requests(0)._for_backend["PDOS_values"]) == prev - 1

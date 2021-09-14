@@ -2,12 +2,22 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import os
-import glob
 import sys
 from pathlib import Path
 
 import numpy as np
 import itertools
+
+try:
+    from pathos.pools import ProcessPool as Pool
+    pathos_avail = True
+except:
+    pathos_avail = False
+try:
+    import tqdm
+    tqdm_avail = True
+except:
+    tqdm_avail = False
 
 from copy import deepcopy
 
@@ -470,8 +480,6 @@ def copy_dict(dictInst, only=(), exclude=()):
 #-------------------------------------
 
 
-# TODO load seems extremely generic. Could we have another name?
-#      consider users doing from dill import *, and same here?
 def load(path):
     """
     Loads a previously saved python object using pickle. To be used for plots, sessions, etc...
@@ -667,9 +675,6 @@ def run_multiple(func, *args, argsList = None, kwargsList = None, messageFn = No
         A list with all the returned values or objects from each function execution.
         This list is ordered, so results[0] is the result of executing the function with argsList[0] and kwargsList[0].  
     """
-    from pathos.pools import ProcessPool as Pool
-    import tqdm
-
     #Prepare the arguments to be passed to the initSinglePlot function
     toZip = [*args, argsList, kwargsList]
     for i, arg in enumerate(toZip):
@@ -678,8 +683,8 @@ def run_multiple(func, *args, argsList = None, kwargsList = None, messageFn = No
         else:
             nTasks = len(arg)
 
-    # Run things in serial mode in case it is demanded
-    serial = serial or _MAX_NPROCS == 1 or nTasks == 1
+    # Run things in serial mode in case it is demanded or pathos is not available
+    serial = not pathos_avail or serial or _MAX_NPROCS == 1 or nTasks == 1
     if serial:
         return [func(argsTuple) for argsTuple in zip(*toZip)]
 
@@ -689,18 +694,20 @@ def run_multiple(func, *args, argsList = None, kwargsList = None, messageFn = No
     results = [None]*nTasks
 
     #Initialize the pool iterator and the progress bar that controls it
-    progress = tqdm.tqdm(pool.imap(func, zip(*toZip)), total = nTasks)
+    imap = pool.imap(func, zip(*toZip))
+    if tqdm_avail:
+        imap = tqdm.tqdm(imap, total = nTasks)
 
-    #Set a description for the progress bar
-    if not callable(messageFn):
-        message = "Updating {} plots in {} processes".format(nTasks, pool.nodes)
-    else:
-        message = messageFn(nTasks, pool.nodes)
+        #Set a description for the progress bar
+        if not callable(messageFn):
+            message = "Updating {} plots in {} processes".format(nTasks, pool.nodes)
+        else:
+            message = messageFn(nTasks, pool.nodes)
 
-    progress.set_description(message)
+        imap.set_description(message)
 
     #Run the processes and store each result in the plots array
-    for i, res in enumerate(progress):
+    for i, res in enumerate(imap):
         results[i] = res
 
     pool.close()

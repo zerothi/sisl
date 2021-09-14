@@ -34,10 +34,9 @@ class PlotlyGeometryBackend(PlotlyBackend, GeometryBackend):
 
         self.layout.scene.aspectmode = 'data'
 
-    def _draw_bonds_3D(self, *args, line={}, show_markers=False, bonds_labels=None, x_labels=None, y_labels=None, z_labels=None, **kwargs):
-        if show_markers:
-            kwargs["mode"] = "lines+markers"
-
+    def _draw_bonds_3D(self, *args, line={}, bonds_labels=None, x_labels=None, y_labels=None, z_labels=None, **kwargs):
+        if "hoverinfo" not in kwargs:
+            kwargs["hoverinfo"] = None
         super()._draw_bonds_3D(*args, line=line, **kwargs)
 
         if bonds_labels:

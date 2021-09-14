@@ -9,7 +9,11 @@ Different inputs are tested (siesta .RHO and sisl Hamiltonian).
 
 """
 from functools import reduce
-import os.path as osp
+from types import GetSetDescriptorType
+from typing import ChainMap
+
+from numpy.core.arrayprint import DatetimeFormat
+from sisl.messages import SislDeprecation
 import pytest
 import numpy as np
 
@@ -26,26 +30,11 @@ try:
 except ImportError:
     skip_skimage = pytest.mark.skipif(True, reason="scikit-image (skimage) not available")
 
-
-@pytest.fixture(params=[1, 2, 3])
-def ndim(request):
-    if request.param > 1:
-        pytest.importorskip("skimage")
-    return request.param
-
-
-@pytest.fixture()
-def lattice_axes(ndim):
-    return {1: [0], 2: [0, 1], 3: [0, 1, 2]}[ndim]
-
-
-@pytest.fixture(params=["cartesian", "lattice"])
-def axes(request, ndim):
-    if request.param == "cartesian":
-        return {1: "x", 2: "xy", 3: "xyz"}[ndim]
-    elif request.param == "lattice":
-        # We don't test the 3D case because it doesn't work
-        return {1: "a", 2: "ab", 3: "ab"}[ndim]
+try:
+    import plotly
+    skip_plotly = pytest.mark.skipif(False, reason="plotly not available")
+except ImportError:
+    skip_plotly = pytest.mark.skipif(True, reason="plotly not available")
 
 
 class TestGridPlot(_TestPlot):
@@ -63,6 +52,7 @@ class TestGridPlot(_TestPlot):
             attrs = {"grid_shape": (48, 48, 48)}
         elif name == "complex_grid":
             complex_grid_shape = (8, 10, 10)
+            np.random.seed(1)
             values = np.random.random(complex_grid_shape).astype(np.complex128) + np.random.random(complex_grid_shape) * 1j
             complex_grid = sisl.Grid(complex_grid_shape, sc=1)
             complex_grid.grid = values
@@ -71,6 +61,10 @@ class TestGridPlot(_TestPlot):
             attrs = {"grid_shape": complex_grid_shape}
 
         return init_func, attrs
+
+    @pytest.fixture(scope="class", params=[None, *sisl.viz.GridPlot.get_class_param("backend").options])
+    def backend(self, request):
+        return request.param
 
     @pytest.fixture(scope="function", params=["imag", "mod", "rad_phase", "deg_phase", "real"])
     def grid_representation(self, request, plot):
@@ -97,47 +91,81 @@ class TestGridPlot(_TestPlot):
 
         return (new_grid, representation)
 
-    def _get_trace_class(self, ndim):
-        import plotly.graph_objs as go
-        return [go.Scatter, go.Heatmap, go.Mesh3d][ndim - 1]
+    @pytest.fixture(scope="class", params=[1, 2, 3])
+    def ndim(self, request, backend):
+        if backend == "matplotlib" and request.param == 3:
+            pytest.skip("Matplotlib 3D representations are not available yet")
+        if request.param > 1:
+            pytest.importorskip("skimage")
+        return request.param
+
+    @pytest.fixture(scope="class", params=["cartesian", "lattice"])
+    def axes(self, request, ndim):
+        if request.param == "cartesian":
+            return {1: "x", 2: "xy", 3: "xyz"}[ndim]
+        elif request.param == "lattice":
+            # We don't test the 3D case because it doesn't work
+            if ndim == 3:
+                pytest.skip("3D view doesn't support fractional coordinates")
+            return {1: "a", 2: "ab"}[ndim]
+
+    @pytest.fixture(scope="class")
+    def lattice_axes(self, ndim):
+        return {1: [0], 2: [0, 1], 3: [0, 1, 2]}[ndim]
+
+    @pytest.fixture(params=["Unit cell", "supercell"])
+    def nsc(self, request):
+        return {"Unit cell": [1, 1, 1], "supercell": [2, 2, 2]}[request.param]
 
     def _get_plotted_values(self, plot):
 
         ndim = len(plot.get_setting("axes"))
-        if ndim == 1:
-            return plot.figure.data[0].y
-        elif ndim == 2:
-            return plot.figure.data[0].z.T
+        if ndim < 3:
+            values = plot._for_backend["values"]
+            if ndim == 2:
+                values = values.T
+            return values
         elif ndim == 3:
-            trace = plot.figure.data[0]
-            return np.array([trace.i, trace.j, trace.k])
+            return plot._for_backend["isosurfaces"][0]["vertices"]
 
-    def test_plotting_modes(self, plot, axes):
-        trace_type = self._get_trace_class(len(axes))
+    def test_values(self, plot, ndim, axes, nsc):
+        plot.update_settings(axes=axes, nsc=nsc)
 
-        plot.update_settings(axes=axes)
-        assert isinstance(plot.data[0], trace_type), f"Not displaying grid in {len(axes)}D correctly"
+        if ndim < 3:
+            assert "values" in plot._for_backend
+            assert plot._for_backend["values"].ndim == ndim
 
-    @pytest.mark.parametrize("nsc", [[1, 1, 1], [2, 2, 2]])
+        elif ndim == 3:
+            plot.update_settings(isos=[])
+            assert "isosurfaces" in plot._for_backend
+
+            assert len(plot._for_backend["isosurfaces"]) == 2
+
+            for iso in plot._for_backend["isosurfaces"]:
+                assert set(("vertices", "faces", "color", "opacity", "name")) == set(iso)
+                assert iso["vertices"].shape[1] == 3
+                assert iso["faces"].shape[1] == 3
+
     def test_ax_ranges(self, plot, axes, ndim, nsc):
         if ndim == 3:
             return
 
         plot.update_settings(axes=axes, nsc=nsc)
+        values = plot._for_backend["values"]
 
         if ndim == 1:
-            assert plot._for_backend["values"].shape == plot._for_backend["ax_range"].shape
+            assert values.shape == plot._for_backend["ax_range"].shape
         if ndim == 2:
-            assert (plot._for_backend["values"].shape[1], ) == plot._for_backend["x"].shape
-            assert (plot._for_backend["values"].shape[0], ) == plot._for_backend["y"].shape
+            assert (values.shape[1], ) == plot._for_backend["x"].shape
+            assert (values.shape[0], ) == plot._for_backend["y"].shape
 
         plot.update_settings(nsc=[1, 1, 1])
 
-    def test_representation(self, plot, axes, grid_representation):
+    def test_representation(self, plot, lattice_axes, grid_representation):
 
-        kwargs = {"isos": []}
+        kwargs = {"isos": [], "reduce_method": "average"}
 
-        ndim = len(axes)
+        ndim = len(lattice_axes)
         if ndim == 3:
             kwargs["isos"] = [{"frac": 0.5}]
 
@@ -146,8 +174,8 @@ class TestGridPlot(_TestPlot):
         if new_grid.grid.min() == new_grid.grid.max() and ndim == 3:
             return
 
-        plot.update_settings(axes=axes, represent=representation, **kwargs)
-        new_plot = new_grid.plot(axes=axes, represent="real", **kwargs)
+        plot.update_settings(axes=lattice_axes, represent=representation, nsc=[1, 1, 1], **kwargs)
+        new_plot = new_grid.plot(**ChainMap(plot.settings, dict(axes=lattice_axes, represent="real", grid_file=None)))
 
         assert np.allclose(
             self._get_plotted_values(plot), self._get_plotted_values(plot=new_plot)
@@ -160,31 +188,33 @@ class TestGridPlot(_TestPlot):
         assert grid.shape == test_attrs["grid_shape"]
 
     @skip_skimage
-    def test_scan(self, plot):
+    @skip_plotly
+    def test_scan(self, plot, backend):
         import plotly.graph_objs as go
-
         plot.update_settings(axes="xy")
         # AS_IS SCAN
         # Provide number of steps
-        scanned = plot.scan("z", num=2, mode="as_is")
-        assert isinstance(scanned, Animation)
-        assert len(scanned.frames) == 2
+        if backend == "plotly":
+            scanned = plot.scan("z", num=2, mode="as_is")
+            assert isinstance(scanned, Animation)
+            assert len(scanned.frames) == 2
 
-        # Provide step in Ang
-        step = plot.grid.cell[0, 0]/2
-        scanned = plot.scan(along="z", step=step, mode="as_is")
-        assert len(scanned.frames) == 2
+            # Provide step in Ang
+            step = plot.grid.cell[0, 0]/2
+            scanned = plot.scan(along="z", step=step, mode="as_is")
+            assert len(scanned.frames) == 2
 
-        # Provide breakpoints
-        breakpoints = [plot.grid.cell[0, 0]*frac for frac in [1/3, 2/3, 3/3]]
-        scanned = plot.scan(along="z", breakpoints=breakpoints, mode="as_is")
-        assert len(scanned.frames) == 2
+            # Provide breakpoints
+            breakpoints = [plot.grid.cell[0, 0]*frac for frac in [1/3, 2/3, 3/3]]
+            scanned = plot.scan(along="z", breakpoints=breakpoints, mode="as_is")
+            assert len(scanned.frames) == 2
 
-        # Check that it doesn't accept step and breakpoints at the same time
-        with pytest.raises(ValueError):
-            plot.scan(along="z", step=4.5, breakpoints=breakpoints, mode="as_is")
+            # Check that it doesn't accept step and breakpoints at the same time
+            with pytest.raises(ValueError):
+                plot.scan(along="z", step=4.5, breakpoints=breakpoints, mode="as_is")
 
         # 3D SCAN
+        breakpoints = [plot.grid.cell[0, 0]*frac for frac in [1/3, 2/3, 3/3]]
         scanned = plot.scan(along="z", mode="moving_slice", breakpoints=breakpoints)
 
         assert isinstance(scanned, go.Figure)
@@ -192,18 +222,17 @@ class TestGridPlot(_TestPlot):
 
     @skip_skimage
     def test_supercell(self, plot):
-
         plot.update_settings(axes=[0, 1], interp=[1, 1, 1], nsc=[1, 1, 1])
 
-        # Check that the initial shapes are right
-        prev_shape = (len(plot.data[0].x), len(plot.data[0].y))
-        assert prev_shape == (plot.grid.shape[0], plot.grid.shape[1])
+        # Check that the shapes for the unit cell are right
+        uc_shape = plot._for_backend["values"].shape
+        assert uc_shape == (plot.grid.shape[1], plot.grid.shape[0])
 
         # Check that the supercell is displayed
         plot.update_settings(nsc=[2, 1, 1])
-        sc_shape = (len(plot.data[0].x), len(plot.data[0].y))
-        assert sc_shape[0] == 2*prev_shape[0]
-        assert sc_shape[1] == prev_shape[1]
+        sc_shape = plot._for_backend["values"].shape
+        assert sc_shape[1] == 2*uc_shape[1]
+        assert sc_shape[0] == uc_shape[0]
 
         plot.update_settings(nsc=[1, 1, 1])
 
@@ -217,7 +246,7 @@ class TestGridPlot(_TestPlot):
 
         numpy_func = getattr(np, reduce_method)
 
-        plot.update_settings(axes=lattice_axes, reduce_method=reduce_method, represent=representation)
+        plot.update_settings(axes=lattice_axes, reduce_method=reduce_method, represent=representation, transforms=[])
 
         assert np.allclose(
             self._get_plotted_values(plot), numpy_func(new_grid.grid, axis=tuple(ax for ax in [0, 1, 2] if ax not in lattice_axes))
@@ -230,7 +259,7 @@ class TestGridPlot(_TestPlot):
 
         new_grid, representation = grid_representation
 
-        plot.update_settings(axes=lattice_axes, transforms=["cos"], represent=representation)
+        plot.update_settings(axes=lattice_axes, reduce_method="average", transforms=["cos"], represent=representation, nsc=[1, 1, 1])
 
         # Check that transforms = ["cos"] applies np.cos
         assert np.allclose(
