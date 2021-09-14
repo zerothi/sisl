@@ -725,6 +725,7 @@ class TestHamiltonian:
         es1 = H.eigenstate(k, gauge='R')
         es2 = H.eigenstate(k, gauge='r')
         assert np.allclose(es1.velocity(), es2.velocity())
+        assert np.allclose(es1.velocity(), es2.velocity(degenerate_dir=(1, 1, 0)))
 
         es2.change_gauge('R')
         assert np.allclose(es1.velocity(), es2.velocity())
@@ -807,7 +808,7 @@ class TestHamiltonian:
 
         k = [0.1] * 3
         ie1 = H.eigenstate(k, gauge='R').berry_curvature()
-        ie2 = H.eigenstate(k, gauge='r').berry_curvature()
+        ie2 = H.eigenstate(k, gauge='r').berry_curvature(degenerate_dir=(1, 1, 0))
         assert np.allclose(ie1, ie2)
 
     @pytest.mark.filterwarnings('ignore', category=np.ComplexWarning)
