@@ -85,6 +85,7 @@ class TestPdosPlot(_TestPlot):
         return request.param
 
     def test_dataarray(self, plot, test_attrs):
+        pytest.importorskip("xarray")
         from xarray import DataArray
 
         PDOS = plot.PDOS

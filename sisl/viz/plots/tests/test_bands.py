@@ -17,7 +17,6 @@ import sisl
 from sisl.viz import BandsPlot
 from sisl.viz.plots.tests.conftest import _TestPlot
 
-from xarray import DataArray
 
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 
@@ -98,6 +97,9 @@ class TestBandsPlot(_TestPlot):
         return init_func, attrs
 
     def _check_bands_array(self, bands, spin, expected_shape):
+        pytest.importorskip("xarray")
+        from xarray import DataArray
+
         assert isinstance(bands, DataArray)
 
         if spin.is_polarized:
@@ -179,6 +181,7 @@ class TestBandsPlot(_TestPlot):
     def test_spin_moments(self, plot, test_attrs):
         if not test_attrs["spin_texture"]:
             return
+        pytest.importorskip("xarray")
         from xarray import DataArray
 
         # Check that spin moments have been calculated

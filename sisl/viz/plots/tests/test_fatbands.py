@@ -12,7 +12,6 @@ import numpy as np
 import sisl
 from sisl.viz.plots.tests.test_bands import TestBandsPlot as _TestBandsPlot
 
-from xarray import DataArray
 
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 
@@ -75,6 +74,8 @@ class TestFatbandsPlot(_TestBandsPlot):
         """
         Check that the data array was created and contains the correct information.
         """
+        pytest.importorskip("xarray")
+        from xarray import DataArray
 
         # Check that there is a weights attribute
         assert hasattr(plot, "weights")
@@ -91,6 +92,8 @@ class TestFatbandsPlot(_TestBandsPlot):
         assert weights.shape == test_attrs["weights_shape"]
 
     def test_group_weights(self, plot):
+        pytest.importorskip("xarray")
+        from xarray import DataArray
 
         total_weights = plot._get_group_weights({})
 
@@ -105,6 +108,9 @@ class TestFatbandsPlot(_TestBandsPlot):
         """
         Check that we can request groups
         """
+        pytest.importorskip("xarray")
+        from xarray import DataArray
+
         color = "green"
         name = "Nice group"
 
