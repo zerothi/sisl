@@ -5,7 +5,7 @@ import numpy as np
 from numpy import einsum, exp
 from numpy import ndarray, bool_
 
-from sisl._internal import set_module
+from sisl._internal import set_module, singledispatchmethod
 from sisl.linalg import eigh_destroy
 import sisl._array as _a
 from sisl.messages import warn
@@ -91,13 +91,19 @@ class ParentContainer:
         self.parent = parent
         self.info = info
 
+    @singledispatchmethod
     def _sanitize_index(self, idx):
         r""" Ensure indices are transferred to acceptable integers """
-        if isinstance(idx, ndarray) and idx.dtype == bool_:
+        if idx is None:
+            # in case __len__ is not defined, this will fail...
+            return np.arange(len(self))
+        return _a.asarrayl(idx)
+
+    @_sanitize_index.register(ndarray)
+    def _(self, idx):
+        if idx.dtype == bool_:
             return np.flatnonzero(idx)
-        elif isinstance(idx, (list, tuple)) and isinstance(idx[0], bool):
-            return np.flatnonzero(idx)
-        return _a.asarrayi(idx).ravel()
+        return idx
 
 
 @set_module("sisl.physics")
@@ -210,6 +216,22 @@ class Coefficient(ParentContainer):
         sub = self.__class__(self.c[idx].copy(), self.parent)
         sub.info = self.info
         return sub
+
+    def remove(self, idx):
+        """ Return a new coefficient without the specified coefficients
+
+        Parameters
+        ----------
+        idx : int or array_like
+            indices that are removed in the returned object
+
+        Returns
+        -------
+        Coefficient
+            a new coefficient without containing the requested elements
+        """
+        idx = np.delete(np.arange(len(self)), self._sanitize_index(idx))
+        return self.sub(idx)
 
     def __getitem__(self, key):
         """ Return a new coefficient object with only one associated coefficient
@@ -337,6 +359,22 @@ class State(ParentContainer):
         sub = self.__class__(self.state[idx].copy(), self.parent)
         sub.info = self.info
         return sub
+
+    def remove(self, idx):
+        """ Return a new state without the specified vectors
+
+        Parameters
+        ----------
+        idx : int or array_like
+            indices that are removed in the returned object
+
+        Returns
+        -------
+        State
+            a new state without containing the requested elements
+        """
+        idx = np.delete(np.arange(len(self)), self._sanitize_index(idx))
+        return self.sub(idx)
 
     def translate(self, isc):
         r""" Translate the vectors to a new unit-cell position
@@ -1008,6 +1046,22 @@ class StateC(State):
         sub = self.__class__(self.state[idx, ...], self.c[idx], self.parent)
         sub.info = self.info
         return sub
+
+    def remove(self, idx):
+        """ Return a new state without the specified indices
+
+        Parameters
+        ----------
+        idx : int or array_like
+            indices that are removed in the returned object
+
+        Returns
+        -------
+        StateC
+            a new state without containing the requested elements
+        """
+        idx = np.delete(np.arange(len(self)), self._sanitize_index(idx))
+        return self.sub(idx)
 
     def asState(self):
         s = State(self.state.copy(), self.parent)

@@ -54,19 +54,19 @@ def get_distribution(method, smearing=0.1, x0=0.):
         a function which accepts one argument
     """
     m = method.lower().replace('-', '_')
-    if m in ['gauss', 'gaussian']:
+    if m in ('gauss', 'gaussian'):
         return partial(gaussian, sigma=smearing, x0=x0)
-    elif m in ['lorentz', 'lorentzian']:
+    elif m in ('lorentz', 'lorentzian'):
         return partial(lorentzian, gamma=smearing, x0=x0)
-    elif m in ['fd', 'fermi', 'fermi_dirac']:
+    elif m in ('fd', 'fermi', 'fermi_dirac'):
         return partial(fermi_dirac, kT=smearing, mu=x0)
-    elif m in ['be', 'bose_einstein']:
+    elif m in ('be', 'bose_einstein'):
         return partial(bose_einstein, kT=smearing, mu=x0)
-    elif m in ['cold']:
+    elif m in ('cold'):
         return partial(cold, kT=smearing, mu=x0)
-    elif m in ['step', 'step_function']:
+    elif m in ('step', 'step_function'):
         return partial(step_function, x0=x0)
-    elif m in ['heavi', 'heavy', 'heaviside']:
+    elif m in ('heavi', 'heavy', 'heaviside'):
         return partial(heaviside, x0=x0)
     raise ValueError(f"get_distribution does not implement the {method} distribution function, have you mispelled?")
 
