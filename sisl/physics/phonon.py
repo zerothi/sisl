@@ -40,9 +40,8 @@ from sisl._internal import set_module
 import sisl._array as _a
 from sisl import units, constant
 from sisl._help import dtype_complex_to_real
-from .state import Coefficient, State, StateC
+from .state import degenerate_decouple, Coefficient, State, StateC
 
-from .electron import _decouple_eigh
 from .electron import DOS as electron_DOS
 from .electron import PDOS as electron_PDOS
 
@@ -130,7 +129,7 @@ def PDOS(E, mode, hw, distribution='gaussian'):
 
 
 @set_module("sisl.physics.phonon")
-def velocity(mode, hw, dDk, degenerate=None, project=False):
+def velocity(mode, hw, dDk, degenerate=None, degenerate_dir=(1, 1, 1), project=False):
     r""" Calculate the velocity of a set of modes
 
     These are calculated using the analytic expression (:math:`\alpha` corresponding to the Cartesian directions):
@@ -153,6 +152,8 @@ def velocity(mode, hw, dDk, degenerate=None, project=False):
     degenerate : list of array_like, optional
        a list containing the indices of degenerate modes. In that case a prior diagonalization
        is required to decouple them. This is done 3 times along each of the Cartesian directions.
+    degenerate_dir : (3,), optional
+       a direction used for degenerate decoupling. The decoupling based on the velocity along this direction
     project : bool, optional
        if true, velocities will be returned projected per mode component
 
@@ -166,9 +167,8 @@ def velocity(mode, hw, dDk, degenerate=None, project=False):
         Units *may* change in future releases.
     """
     if mode.ndim == 1:
-        return velocity(mode.reshape(1, -1), hw, dDk, degenerate, project)[0]
-
-    return _velocity(mode, hw, dDk, degenerate, project)
+        return velocity(mode.reshape(1, -1), hw, dDk, degenerate, degenerate_dir, project)[0]
+    return _velocity(mode, hw, dDk, degenerate, degenerate_dir, project)
 
 
 # dDk is in [Ang * eV ** 2]
@@ -176,10 +176,13 @@ def velocity(mode, hw, dDk, degenerate=None, project=False):
 _velocity_const = units('ps', 's') / constant.hbar('eV s')
 
 
-def _velocity(mode, hw, dDk, degenerate, project):
+def _velocity(mode, hw, dDk, degenerate, degenerate_dir, project):
     r""" For modes in an orthogonal basis """
     # Decouple the degenerate modes
     if not degenerate is None:
+        degenerate_dir = _a.asarrayd(degenerate_dir)
+        degenerate_dir /= (degenerate_dir ** 2).sum() ** 0.5
+        deg_dDk = sum(d*dd for d, dd in zip(degenerate_dir, dDk))
         for deg in degenerate:
             # Set the average frequency
             hw[deg] = np.average(hw[deg])
@@ -187,7 +190,8 @@ def _velocity(mode, hw, dDk, degenerate, project):
             # Now diagonalize to find the contributions from individual modes
             # then re-construct the seperated degenerate modes
             # Since we do this for all directions we should decouple them all
-            mode[deg] = _decouple_eigh(mode[deg], *dDk)
+            mode[deg] = degenerate_decouple(mode[deg], deg_dDk)
+        del deg_dDk
 
     cm = conj(mode)
     if project:
@@ -294,7 +298,7 @@ class ModeCPhonon(_phonon_Mode, StateC):
     """ A mode describing a physical quantity related to phonons, with associated coefficients of the mode """
     __slots__ = []
 
-    def velocity(self, eps=1e-7, project=False):
+    def velocity(self, eps=1e-7, degenerate_dir=(1, 1, 1), project=False):
         r""" Calculate velocity for the modes
 
         This routine calls `~sisl.physics.phonon.velocity` with appropriate arguments
@@ -315,7 +319,10 @@ class ModeCPhonon(_phonon_Mode, StateC):
         ----------
         eps : float, optional
            precision used to find degenerate modes.
+        degenerate_dir: (3,), optional
+           which direction is used to decouple the degenerate states.
         project: bool, optional
+           whether to return projected velocities (per direction), see `velocity` for details
         """
         opt = {'k': self.info.get('k', (0, 0, 0))}
         gauge = self.info.get('gauge', None)
@@ -323,7 +330,7 @@ class ModeCPhonon(_phonon_Mode, StateC):
             opt['gauge'] = gauge
 
         deg = self.degenerate(eps)
-        return velocity(self.mode, self.hw, self.parent.dDk(**opt), degenerate=deg, project=project)
+        return velocity(self.mode, self.hw, self.parent.dDk(**opt), degenerate=deg, degenerate_dir=degenerate_dir, project=project)
 
 
 @set_module("sisl.physics.phonon")

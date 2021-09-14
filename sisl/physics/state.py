@@ -6,11 +6,12 @@ from numpy import einsum, exp
 from numpy import ndarray, bool_
 
 from sisl._internal import set_module
+from sisl.linalg import eigh_destroy
 import sisl._array as _a
 from sisl.messages import warn
 
 
-__all__ = ['Coefficient', 'State', 'StateC']
+__all__ = ['degenerate_decouple', 'Coefficient', 'State', 'StateC']
 
 _abs = np.absolute
 _phase = np.angle
@@ -26,6 +27,38 @@ _pi2 = np.pi * 2
 
 def _inner(v1, v2):
     return _dot(_conj(v1), v2)
+
+
+@set_module("sisl.physics")
+def degenerate_decouple(state, M):
+    r""" Return `vec` decoupled via matrix `M`
+
+    The decoupling algorithm is this recursive algorithm starting from :math:`i=0`:
+
+    .. math::
+
+       \mathbf p &= \mathbf V^\dagger \mathbf M_i \mathbf V
+       \\
+       \mathbf p \mathbf u &= \boldsymbol \lambda \mathbf u
+       \\
+       \mathbf V &= \mathbf u^T \mathbf V
+
+    Parameters
+    ----------
+    state : numpy.ndarray or State
+       states to be decoupled on matrices `M`
+       The states must have C-ordering, i.e. ``[0, ...]`` is the first
+       state.
+    M : numpy.ndarray
+       matrix to project to before disentangling the states
+    """
+    if isinstance(state, State):
+        state.state = degenerate_decouple(state.state, M)
+    else:
+        # since M may be a sparse matrix, we cannot use __matmul__
+        p = _conj(state) @ M.dot(state.T)
+        state = eigh_destroy(p)[1].T @ state
+    return state
 
 
 class _FakeMatrix:

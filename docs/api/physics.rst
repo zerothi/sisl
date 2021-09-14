@@ -40,6 +40,7 @@ States
 .. autosummary::
    :toctree: generated/
 
+   degenerate_decouple
    Coefficient
    State
    StateC
