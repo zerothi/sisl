@@ -5,6 +5,7 @@ import numpy as np
 
 from ..templates.backend import Backend, MultiplePlotBackend, SubPlotsBackend
 from ...plot import Plot, SubPlots, MultiplePlot
+from sisl.messages import warn
 
 
 class MatplotlibBackend(Backend):
@@ -91,7 +92,14 @@ class MatplotlibBackend(Backend):
         return self.axes.plot(x, y, color=line.get("color"), linewidth=line.get("width", 1), markersize=marker.get("size"), label=name)
 
     def draw_scatter(self, x, y, name=None, marker={}, text=None, **kwargs):
-        return self.axes.scatter(x, y, c=marker.get("color"), s=marker.get("size", 1), cmap=marker.get("colorscale"), alpha=marker.get("opacity"), label=name, **kwargs)
+        try:
+            return self.axes.scatter(x, y, c=marker.get("color"), s=marker.get("size", 1), cmap=marker.get("colorscale"), alpha=marker.get("opacity"), label=name, **kwargs)
+        except TypeError as e:
+            if str(e) == "alpha must be a float or None":
+                warn(f"Your matplotlib version doesn't support multiple opacity values, please upgrade to >=3.4 if you want to use opacity.")
+                return self.axes.scatter(x, y, c=marker.get("color"), s=marker.get("size", 1), cmap=marker.get("colorscale"), label=name, **kwargs)
+            else:
+                raise e
 
 
 class MatplotlibMultiplePlotBackend(MatplotlibBackend, MultiplePlotBackend):
