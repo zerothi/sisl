@@ -30,7 +30,7 @@ by writing an email to `nickpapior AT gmail.com <mailto:nickpapior@gmail.com>`_.
    Nanoscale, `(2021) <https://doi.org/10.1039/d1nr00186h>`_
 
 #. B. Focassio, G.R. Schleder, M. Costa, A. Fazzio, C. Lewenkopf,
-  *Structural and electronic properties of realistic two-dimensional amorphous topological insulators*,
+   *Structural and electronic properties of realistic two-dimensional amorphous topological insulators*,
    2D Materials **8**, `2 (2021) <https://doi.org/10.1088/2053-1583/abdb97>`_.
 
 #. J. Tong, F. Luo, L. Ruan, G. Qin, L. Zhou, F. Tian, X. Zhang,
