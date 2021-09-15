@@ -13,7 +13,7 @@ gcc --version
 gfortran --version
 python -c 'import sys ; print(sys.version)'
 unset LDFLAGS
-pip install --no-deps -v .
+python -m pip install --no-deps -v .
 
 # Show location and other information
-pip show sisl
+python -m pip show sisl
