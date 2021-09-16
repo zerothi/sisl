@@ -28,7 +28,7 @@ _root = pathlib.Path(__file__).absolute().parent.parent
 # If building this on RTD, mock out fortran sources
 on_rtd = os.environ.get('READTHEDOCS', 'false').lower() == 'true'
 if on_rtd:
-    os.environ["SISL_NPROCS"] = 1
+    os.environ["SISL_NPROCS"] = "1"
 
 try:
     import sisl
@@ -109,8 +109,7 @@ copyright = f"2015-{date.today().year}, {author}"
 if on_rtd:
     nbsphinx_allow_errors = True
 else:
-    # TODO change to False
-    nbsphinx_allow_errors = True
+    nbsphinx_allow_errors = False
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the

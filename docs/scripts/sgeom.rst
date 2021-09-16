@@ -122,7 +122,7 @@ To rotate the structure around certain cell directions one can do:
    
    sgeom <in> --rotate <angle> [ax|yb|zc] <out>
 
-which rotates the structure around the origo with a normal vector along the
+which rotates the structure around the origin with a normal vector along the
 specified cell direction. The input angle is in degrees and *not* in radians.
 If one wish to use radians append an ``r`` in the angle specification.
 

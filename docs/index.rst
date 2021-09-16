@@ -61,7 +61,7 @@ one would do::
     H = sisl.get_sile('RUN.fdf').read_hamiltonian()
     mp = sisl.MonkhorstPack(H, [13, 13, 13])
     E = np.linspace(-4, 4, 500)
-    DOS = mp.asaverage().DOS(E)
+    DOS = mp.apply.average.DOS(E)
     from matplotlib import pyplot as plt
     plt.plot(E, DOS)
 
@@ -87,7 +87,6 @@ of places to search/ask for answers:
 - Workshop examples showing different uses, see `workshop`_
 - Ask questions on its use on the Github `issue page <issue_>`_
 - Ask questions on `Discord <sisl-discord_>`_
-- Ask questions on `Gitter <sisl-gitter_>`_
 
 If sisl was used to produce scientific contributions, please use this `DOI <sisl-doi_>`_ for citation.
 We recommend to specify the version of sisl in combination of this citation:
@@ -97,7 +96,7 @@ We recommend to specify the version of sisl in combination of this citation:
     @misc{zerothi_sisl,
       author       = {Papior, Nick},
       title        = {sisl: v<fill-version>},
-      year         = {2020},
+      year         = {2021},
       doi          = {10.5281/zenodo.597181},
       url          = {https://doi.org/10.5281/zenodo.597181}
     }
