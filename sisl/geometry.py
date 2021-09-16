@@ -2647,8 +2647,6 @@ class Geometry(SuperCellChild):
         This will typically move the atomic coordinates outside of the unit-cell.
         This method should be used with care.
 
-        Currently this does not take into account about a specific position.
-
         Parameters
         ----------
         method : {'xy'/'z', ..., 'ab', ..., v}
@@ -2662,6 +2660,16 @@ class Geometry(SuperCellChild):
         point: (3,), optional
            mirror coordinates around the plane that intersects the *method* vector
            and this point
+
+        Examples
+        --------
+        >>> geom = geom.graphene()
+        >>> out = geom.mirror('x')
+        >>> out.xyz[:, 0]
+        [0.  -1.42]
+        >>> out = geom.mirror('x', point=(1.42/2, 0, 0))
+        >>> out.xyz[:, 0]
+        [1.42  0.]
         """
         atoms = self._sanitize_atoms(atoms)
         point = _a.asarrayd(point)
