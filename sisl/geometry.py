@@ -2641,11 +2641,13 @@ class Geometry(SuperCellChild):
             xyz[atoms, :] = self.xyz[atoms[::-1], :]
         return self.__class__(xyz, atoms=self.atoms.reverse(atoms), sc=self.sc.copy())
 
-    def mirror(self, method, atoms=None):
-        r""" Mirrors the atomic coordinates about the plane
+    def mirror(self, method, atoms=None, point=(0, 0, 0)):
+        r""" Mirrors the atomic coordinates about a plane given by its normal vector
 
         This will typically move the atomic coordinates outside of the unit-cell.
         This method should be used with care.
+
+        Currently this does not take into account about a specific position.
 
         Parameters
         ----------
@@ -2654,21 +2656,24 @@ class Geometry(SuperCellChild):
            plane (``xy``, ``xz``, ``yz``) or about user defined vectors (``v``).
            A vector may also be specified by ``'ab'`` which is the vector normal
            to the plane spanned by the first and second lattice vector.
-           or user defined vector (`v`)
+           or user defined vector (`v`) which is defining a plane.
         atoms : array_like, optional
            only mirror a subset of atoms
+        point: (3,), optional
+           mirror coordinates around the plane that intersects the *method* vector
+           and this point
         """
         atoms = self._sanitize_atoms(atoms)
+        point = _a.asarrayd(point)
 
-        g = self.copy()
         if isinstance(method, str):
             method = ''.join(sorted(method.lower()))
-            if method in ['z', 'xy']:
-                g.xyz[atoms, 2] *= -1
-            elif method in ['x', 'yz']:
-                g.xyz[atoms, 0] *= -1
-            elif method in ['y', 'xz']:
-                g.xyz[atoms, 1] *= -1
+            if method in ('z', 'xy'):
+                method = _a.arrayd([0, 0, 1])
+            elif method in ('x', 'yz'):
+                method = _a.arrayd([1, 0, 0])
+            elif method in ('y', 'xz'):
+                method = _a.arrayd([0, 1, 0])
             elif method == 'a':
                 method = self.cell[0]
             elif method == 'b':
@@ -2684,20 +2689,19 @@ class Geometry(SuperCellChild):
             else:
                 raise ValueError(f"{self.__class__.__name__}.mirror unrecognized 'method' value")
 
-        if not isinstance(method, str):
-            # it has to be an array of length 3
-            # Mirror about a user defined vector
-            method = _a.asarrayd(method).copy()
-            method /= fnorm(method)
+        # it has to be an array of length 3
+        # Mirror about a user defined vector
+        method = _a.asarrayd(method).copy()
+        method /= fnorm(method)
 
-            # project onto vector
-            vp = self.xyz[atoms, :].dot(method) * 2
+        # project onto vector
+        vp = (self.xyz[atoms, :] - point).dot(method) * 2
 
-            # convert coordinates
-            # first subtract the projection, then its mirror position
-            self.xyz[atoms, :] -= vp.reshape(-1, 1) * method.reshape(1, 3)
-
-        return self.__class__(g.xyz, atoms=g.atoms, sc=self.sc.copy())
+        # convert coordinates
+        # first subtract the projection, then its mirror position
+        g = self.copy()
+        g.xyz[atoms, :] -= vp.reshape(-1, 1) * method.reshape(1, 3)
+        return g
 
     @property
     def fxyz(self):
