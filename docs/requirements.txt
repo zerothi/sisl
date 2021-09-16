@@ -8,4 +8,9 @@ pyparsing>=1.5.7
 matplotlib
 ipykernel
 nbsphinx
-
+matplotlib
+dill>=0.3.2
+pathos
+xarray>=0.10.0
+scikit-image
+plotly
