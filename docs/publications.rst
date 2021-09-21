@@ -9,6 +9,14 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior AT gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. I. Alcon, G. Calogero, N. Papior, M. Brandbyge,
+   *Electrochemical Control of Charge Current Flow in Nanoporous Graphene*,
+   Advanced Functional Materials, `2104031 (2021) <https://doi.org/10.1002/adfm.202104031>`_
+
+#. J. Li, *et. al.*,
+   *Topological phase transition in chiral graphene nanoribbons: from edge bands to end states*,
+   Nature Communications **12**, `5538 (2021) <https://doi.org/10.1038/s41467-021-25688-z>`_
+
 #. D. Li, J.L. Bertelsen, N. Papior, A. Smogunov, M. Brandbyge,
    *Surface states and related quantum interference in ab initio electron transport*,
    Physical Review Research **3**, `033017 (2021) <https://doi.org/10.1103/PhysRevResearch.3.033017>`_
