@@ -178,8 +178,15 @@ def test_state_align_phase1():
     state2 = State(-state)
 
     # This should rotate all back
-    align2 = state1.align_phase(state2)
+    align2 = state2.align_phase(state1)
     assert np.allclose(state1.state, align2.state)
+    align2, idx = state2.align_phase(state1, ret_index=True)
+    assert not np.allclose(state1.state, state2.state)
+    state2.align_phase(state1, inplace=True)
+    assert np.allclose(state1.state, state2.state)
+    state2 = State(-state)
+    idx = state2.align_phase(state1, inplace=True, ret_index=True)
+    assert np.allclose(state1.state, state2.state)
 
 
 def test_state_align_norm1():
@@ -190,8 +197,13 @@ def test_state_align_norm1():
     state2 = state1.sub(idx)
 
     # This should swap all back
-    align2 = state1.align_norm(state2)
+    align2 = state2.align_norm(state1)
     assert np.allclose(state1.state, align2.state)
+    # This should swap all back
+    align2, idx2 = state2.align_norm(state1, ret_index=True)
+    assert np.allclose(state1.state, align2.state)
+    align1 = state2.sub(idx2)
+    assert np.allclose(state1.state, align1.state)
 
 
 def test_state_align_norm2():
@@ -202,7 +214,7 @@ def test_state_align_norm2():
     state2 = state1.sub(idx)
 
     # This should swap all back
-    align2, idx2 = state1.align_norm(state2, ret_index=True)
+    align2, idx2 = state2.align_norm(state1, ret_index=True)
     assert np.allclose(state1.state, align2.state)
     assert np.allclose(state1.state, state2.sub(idx2).state)
 

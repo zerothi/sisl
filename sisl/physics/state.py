@@ -97,7 +97,12 @@ class ParentContainer:
         if idx is None:
             # in case __len__ is not defined, this will fail...
             return np.arange(len(self))
-        return _a.asarrayl(idx)
+        idx = _a.asarray(idx)
+        if idx.size == 0:
+            return _a.asarrayl([])
+        elif idx.dtype == bool_:
+            return idx.nonzero()[0]
+        return idx
 
     @_sanitize_index.register(ndarray)
     def _(self, idx):
@@ -659,7 +664,7 @@ class State(ParentContainer):
             Aij = einsum('ij,j,kj->ik', _conj(bra), M, ket)
         return Aij
 
-    def phase(self, method='max', return_indices=False):
+    def phase(self, method='max', ret_index=False):
         r""" Calculate the Euler angle (phase) for the elements of the state, in the range :math:`]-\pi;\pi]`
 
         Parameters
@@ -667,20 +672,20 @@ class State(ParentContainer):
         method : {'max', 'all'}
            for max, the phase for the element which has the largest absolute magnitude is returned,
            for all, all phases are calculated
-        return_indices : bool, optional
+        ret_index : bool, optional
            return indices for the elements used when ``method=='max'``
         """
         if method == 'max':
             idx = _argmax(_abs(self.state), 1)
-            if return_indices:
-                return _phase(self.state[_a.arangei(len(self)), idx]), idx
-            return _phase(self.state[_a.arangei(len(self)), idx])
+            if ret_index:
+                return _phase(self.state[:, idx]), idx
+            return _phase(self.state[:, idx])
         elif method == 'all':
             return _phase(self.state)
         raise ValueError(f"{self.__class__.__name__}.phase only accepts method in [max, all]")
 
-    def align_phase(self, other, copy=False):
-        r""" Align `other.state` with the phases for this state, a copy of `other` is returned with rotated elements
+    def align_phase(self, other, inplace=False, ret_index=False):
+        r""" Align `self` with the phases for `other`, a copy may be returned 
 
         States will be rotated by :math:`\pi` provided the phase difference between the states are above :math:`|\Delta\theta| > \pi/2`.
 
@@ -688,59 +693,65 @@ class State(ParentContainer):
         ----------
         other : State
            the other state to align onto this state
-        copy : bool, optional
-           sometimes no states require rotation, if this is the case this flag determines whether `other` will be
-           copied or not
+        inplace : bool, optional
+           rotate the states in-place
+        ret_index : bool, optional
+           return which indices got swapped
 
         See Also
         --------
         align_norm : re-order states such that site-norms have a smaller residual
         """
-        phase, idx = self.phase(return_indices=True)
-        other_phase = _phase(other.state[_a.arangei(len(other)), idx])
+        other_phase, idx = other.phase(ret_index=True)
+        phase = _phase(self.state[:, idx])
 
         # Calculate absolute phase difference
         abs_phase = _abs((phase - other_phase + _pi) % _pi2 - _pi)
 
         idx = (abs_phase > _pi / 2).nonzero()[0]
-        if len(idx) == 0:
-            if copy:
-                return other.copy()
-            return other
 
-        out = other.copy()
-        out.state[idx, :] *= -1
+        ret = None
+        if inplace:
+            if ret_index:
+                ret = ret_index
+            self.state[idx] *= -1
+            return ret
+
+        out = self.copy()
+        out.state[idx] *= -1
+        if ret_index:
+            return out, idx
         return out
 
     def align_norm(self, other, ret_index=False):
-        r""" Align `other.state` with the site-norms for this state, a copy of `other` is returned with re-ordered states
+        r""" Align `self` with the site-norms of `other`, a copy may optionally be returned
 
-        To determine the new ordering of `other` we first calculate the residual norm of the site-norms.
+        To determine the new ordering of `self` first calculate the residual norm of the site-norms.
 
         .. math::
            \delta N_{\alpha\beta} = \sum_i \big(\langle \psi^\alpha_i | \psi^\alpha_i\rangle - \langle \psi^\beta_i | \psi^\beta_i\rangle\big)^2
 
         where :math:`\alpha` and :math:`\beta` correspond to state indices in `self` and `other`, respectively.
-        The new states (from `other`) returned is then ordered such that the index
+        The new states (from `self`) returned is then ordered such that the index
         :math:`\alpha \equiv \beta'` where :math:`\delta N_{\alpha\beta}` is smallest.
 
         Parameters
         ----------
         other : State
-           the other state to align onto this state
+           the other state to align against
         ret_index : bool, optional
            also return indices for the swapped indices
 
         Returns
         -------
-        other_swap : State
-            A swapped instance of `other`
+        self_swap : State
+            A swapped instance of `self`
         index : array of int
-            the indices that swaps `other` to be ``other_swap``, i.e. ``other_swap = other.sub(index)``
+            the indices that swaps `self` to be ``self_swap``, i.e. ``self_swap = self.sub(index)``
 
         Notes
         -----
-        The input state and output state have the same states, but their ordering is not necessarily the same.
+        The input state and output state have the same number of states, but their ordering is not necessarily the same.
 
         See Also
         --------
@@ -751,10 +762,10 @@ class State(ParentContainer):
 
         # Now find new orderings
         show_warn = False
-        idx = _a.fulli(len(other), -1)
-        idxr = _a.emptyi(len(other))
-        for i in range(len(other)):
-            R = snorm - onorm[i, :].reshape(1, -1)
+        idx = _a.fulli(len(self), -1)
+        idxr = _a.emptyi(len(self))
+        for i in range(len(self)):
+            R = snorm[i] - onorm
             R = einsum('ij,ij->i', R, R)
 
             # Figure out which band it should correspond to
@@ -767,11 +778,11 @@ class State(ParentContainer):
                 show_warn = True
 
         if show_warn:
-            warn(self.__class__.__name__ + '.align_norm found multiple possible candidates with minimal residue, swapping not unique')
+            warn(f"{self.__class__.__name__}.align_norm found multiple possible candidates with minimal residue, swapping not unique")
 
         if ret_index:
-            return other.sub(idxr), idxr
-        return other.sub(idxr)
+            return self.sub(idxr), idxr
+        return self.sub(idxr)
 
     def rotate(self, phi=0., individual=False):
         r""" Rotate all states (in-place) to rotate the largest component to be along the angle `phi`
