@@ -4,7 +4,7 @@
 import pytest
 import os.path as osp
 
-from sisl import Atom, Geometry
+from sisl import Atom, Geometry, get_sile
 from sisl.io.siesta.struct import *
 
 import numpy as np
@@ -51,3 +51,19 @@ def test_struct_ghost(sisl_tmp):
     assert g.atoms[0].__class__ is g2.atoms[0].__class__
     assert g.atoms[1].__class__ is g2.atoms[1].__class__
     assert g.atoms[0].__class__ is not g2.atoms[1].__class__
+
+
+def test_si_pdos_kgrid_struct_out(sisl_files):
+    fdf = get_sile(sisl_files(_dir, 'si_pdos_kgrid.fdf'))
+    struct = get_sile(sisl_files(_dir, 'si_pdos_kgrid.STRUCT_OUT'))
+
+    struct_geom = struct.read_geometry()
+    fdf_geom = fdf.read_geometry(order='STRUCT')
+
+    assert np.allclose(struct_geom.cell, fdf_geom.cell)
+    assert np.allclose(struct_geom.xyz, fdf_geom.xyz)
+
+    struct_sc = struct.read_supercell()
+    fdf_sc = fdf.read_supercell(order='STRUCT')
+
+    assert np.allclose(struct_sc.cell, fdf_sc.cell)

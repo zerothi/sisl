@@ -23,6 +23,11 @@ def test_si_pdos_kgrid_hsx_H(sisl_files, sisl_tmp):
     si.read_hamiltonian(geometry=si_pdos_kgrid_geom())
 
 
+def test_si_pdos_kgrid_hsx_H(sisl_files, sisl_tmp):
+    si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.fdf'))
+    si.read_hamiltonian(order='HSX')
+
+
 def test_si_pdos_kgrid_hsx_H_no_geometry(sisl_files, sisl_tmp):
     si = sisl.get_sile(sisl_files(_dir, 'si_pdos_kgrid.HSX'))
     H0 = si.read_hamiltonian()

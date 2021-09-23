@@ -591,47 +591,6 @@ class fdfSileSiesta(SileSiesta):
         if not _write_block:
             self._write('%endblock\n')
 
-    @staticmethod
-    def _SpGeom_replace_geom(spgeom, geometry):
-        """ Replace all atoms in spgeom with the atom in geometry while retaining the number of orbitals
-
-        Currently we need some way of figuring out whether the number of atoms and orbitals are
-        consistent.
-
-        Parameters
-        ----------
-        spgeom : SparseGeometry
-           the sparse object with attached geometry
-        geometry : Geometry
-           geometry to grab atoms from
-        full_replace : bool, optional
-           whether the full geometry may be replaced in case ``spgeom.na != geometry.na && spgeom.no == geometry.no``.
-           This is required when `spgeom` does not contain information about atoms.
-        """
-        if spgeom.na != geometry.na and spgeom.no == geometry.no:
-            # In this case we cannot compare individiual atoms # of orbitals.
-            # I.e. we suspect the incoming geometry to be correct.
-            spgeom._geometry = geometry
-            return True
-
-        elif spgeom.na != geometry.na:
-            warn('cannot replace geometry due to insufficient information regarding number of '
-                 'atoms and orbitals, ensuring correct geometry failed...')
-
-        no_no = spgeom.no == geometry.no
-        # Loop and make sure the number of orbitals is consistent
-        for a, idx in geometry.atoms.iter(True):
-            if len(idx) == 0:
-                continue
-            Sa = spgeom.geometry.atoms[idx[0]]
-            if Sa.no != a.no:
-                # Make sure the atom we replace with retains the same information
-                # *except* the number of orbitals.
-                a = a.__class__(a.Z, Sa.orbital, mass=a.mass, tag=a.tag)
-            spgeom.geometry.atoms.replace(idx, a)
-            spgeom.geometry.reduce()
-        return no_no
-
     def read_supercell_nsc(self, *args, **kwargs):
         """ Read supercell size using any method available
 
