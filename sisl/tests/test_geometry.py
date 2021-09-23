@@ -1518,6 +1518,15 @@ def test_geometry_sanitize_atom_0_length():
     assert len(gr.axyz([])) == 0
 
 
+@pytest.mark.parametrize("atoms", [[True, False],
+                                   (True, False),
+                                   [0], (0,)
+])
+def test_geometry_sanitize_atom_other_bool(atoms):
+    gr = sisl_geom.graphene()
+    assert len(gr.axyz(atoms)) == 1
+
+
 def test_geometry_sanitize_atom_0_length_float_fail():
     gr = sisl_geom.graphene()
     with pytest.raises(IndexError):
