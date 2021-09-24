@@ -654,6 +654,19 @@ class TestHamiltonian:
         assert np.allclose(es1.eig, es2.eig)
         assert not np.allclose(es1.state, es2.state)
 
+    def test_eigenstate_ipr(self, setup):
+        # Test of eigenvalues
+        R, param = [0.1, 1.5], [1., 0.1]
+        g = setup.g.tile(2, 0).tile(2, 1).tile(2, 2)
+        H = Hamiltonian(g)
+        H.construct((R, param))
+
+        k = [0.1] * 3
+        es = H.eigenstate(k)
+        ipr = es.ipr()
+        assert ipr.shape == (len(es),)
+
+
     def test_eigenstate_tile(self, setup):
         # Test of eigenvalues
         R, param = [0.1, 1.5], [0., 2.7]

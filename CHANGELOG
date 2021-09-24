@@ -1,6 +1,16 @@
 0.X.Y
 =====
 
+- added inverse participation ration calculations (with arbitrary q)
+
+- changed `State.align_*` routines to align `self` rather than `other`
+
+- enhanced mirror functionality to be about a point different from origin
+
+- added `State.remove` to complement `State.sub`
+
+- added degenerate_dir for velocity calculations
+
 - much faster plotting and enabling arrows #368
 
 - added spectral propagation in BTD code

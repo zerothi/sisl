@@ -549,6 +549,33 @@ class State(ParentContainer):
             return self.inner()
         return _conj(self.state) * self.state
 
+    def ipr(self, q=2):
+        r""" Calculate the inverse participation ratio (IPR) for arbitrary `q` values
+
+        The inverse participation ratio is defined as
+
+        .. math::
+            I_{q,i} = \frac{\sum_\nu |\psi_{i\nu}|^{2q}}{
+               \big[\sum_\nu |\psi_{i\nu}|^2\big]^q}
+
+        where :math:`i` is the band index and :math:`\nu` is the orbital.
+        The order of the IPR is defaulted to :math:`q=2`.
+        The IPR may be used to distinguish Anderson localization and extended
+        states, see [1]_ for details.
+
+        Parameters
+        ----------
+        q : int, optional
+          order parameter for the IPR
+
+        References
+        ----------
+        .. [1] N. C. Murphy *et.al.*, "Generalized inverse participation ratio as a possible measure of localization for interacting systems", PRB, *83*, 184206 (2011)
+        """
+        state_abs2 = self.norm2(sum=False)
+        assert q >= 1, f"{self.__class__.__name__}.ipr requires q>=1"
+        return (state_abs2 ** q).sum(-1) / state_abs2.sum(-1) ** q
+
     def normalize(self):
         r""" Return a normalized state where each state has :math:`|\psi|^2=1`
 

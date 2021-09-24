@@ -189,6 +189,12 @@ def test_state_align_phase1():
     assert np.allclose(state1.state, state2.state)
 
 
+def test_state_ipr():
+    state = State(ortho_matrix(15))
+    ipr = state.ipr()
+    assert ipr.shape == (15,)
+
+
 def test_state_align_norm1():
     state = ortho_matrix(10)
     state1 = State(state)
