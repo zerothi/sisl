@@ -63,18 +63,32 @@ def degenerate_decouple(state, M):
 
 class _FakeMatrix:
     """ Replacement object which superseedes a matrix """
-    __slots__ = ('n',)
+    __slots__ = ('n', 'm')
     ndim = 2
 
-    def __init__(self, n):
+    def __init__(self, n, m=None):
         self.n = n
+        if m is None:
+            m = n
+        self.m = m
 
     @property
     def shape(self):
-        return (self.n, self.n)
+        return (self.n, self.m)
 
     @staticmethod
     def dot(v):
+        return v
+
+    def multiply(self, v):
+        try:
+            if v.shape == self.shape:
+                diag = np.diagonal(v)
+                out = np.zeros_like(v)
+                np.fill_diagonal(out, diag)
+                return out
+        except:
+            pass
         return v
 
     @property

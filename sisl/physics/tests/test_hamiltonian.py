@@ -666,7 +666,6 @@ class TestHamiltonian:
         ipr = es.ipr()
         assert ipr.shape == (len(es),)
 
-
     def test_eigenstate_tile(self, setup):
         # Test of eigenvalues
         R, param = [0.1, 1.5], [0., 2.7]
@@ -1044,6 +1043,44 @@ class TestHamiltonian:
         PDOS = es.PDOS(E)
         assert PDOS.dtype.kind == 'f'
         assert np.allclose(PDOS.sum(0), DOS)
+
+    def test_coop_against_pdos_nonortho(self, setup):
+        HS = setup.HS.copy()
+        HS.construct([(0.1, 1.5), ((0., 1.), (1., 0.1))])
+        E = np.linspace(-4, 4, 100)
+        for k in ([0] *3, [0.2] * 3):
+            es = HS.eigenstate(k)
+            COOP = es.COOP(E, 'lorentzian')
+
+            DOS = es.DOS(E, 'lorentzian')
+            COOP2DOS = np.array([C.sum() for C in COOP])
+            assert DOS.shape == COOP2DOS.shape
+            assert np.allclose(DOS, COOP2DOS)
+
+            # This one returns sparse matrices, so we have to
+            # deal with that.
+            DOS = es.PDOS(E, 'lorentzian')
+            COOP2DOS = np.array([C.sum(1).A.ravel() for C in COOP]).T
+            assert DOS.shape == COOP2DOS.shape
+            assert np.allclose(DOS, COOP2DOS)
+
+    def test_coop_against_pdos_ortho(self, setup):
+        H = setup.H.copy()
+        H.construct([(0.1, 1.5), (0., 1.)])
+        E = np.linspace(-4, 4, 100)
+        for k in ([0] *3, [0.2] * 3):
+            es = H.eigenstate(k)
+            COOP = es.COOP(E, 'lorentzian')
+
+            DOS = es.DOS(E, 'lorentzian')
+            COOP2DOS = np.array([C.sum() for C in COOP])
+            assert DOS.shape == COOP2DOS.shape
+            assert np.allclose(DOS, COOP2DOS)
+
+            DOS = es.PDOS(E, 'lorentzian')
+            COOP2DOS = np.array([C.sum(1).ravel() for C in COOP]).T
+            assert DOS.shape == COOP2DOS.shape
+            assert np.allclose(DOS, COOP2DOS)
 
     def test_spin1(self, setup):
         g = Geometry([[i, 0, 0] for i in range(10)], Atom(6, R=1.01), sc=SuperCell(100, nsc=[3, 3, 1]))
