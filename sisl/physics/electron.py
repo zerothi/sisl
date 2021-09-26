@@ -313,7 +313,6 @@ def COP(E, eig, state, M, distribution='gaussian'):
     ~sisl.oplist.oplist
         COP calculated at energies, has dimension ``(len(E), *M.shape)``.
     """
-    warn("COP calculation is currently untested")
     if isinstance(distribution, str):
         distribution = get_distribution(distribution)
 
