@@ -110,7 +110,7 @@ def DOS(E, eig, distribution='gaussian'):
 
     See Also
     --------
-    ~sisl.physics.distribution : a selected set of implemented distribution functions
+    sisl.physics.distribution : a selected set of implemented distribution functions
     COP : calculate COOP or COHP curves
     PDOS : projected DOS (same as this, but projected onto each orbital)
     spin_moment : spin moment
@@ -189,7 +189,7 @@ def PDOS(E, eig, state, S=None, distribution='gaussian', spin=None):
 
     See Also
     --------
-    ~sisl.physics.distribution : a selected set of implemented distribution functions
+    sisl.physics.distribution : a selected set of implemented distribution functions
     DOS : total DOS (same as summing over orbitals)
     COP : calculate COOP or COHP curves
     spin_moment : spin moment
@@ -303,7 +303,7 @@ def COP(E, eig, state, M, distribution='gaussian'):
 
     See Also
     --------
-    ~sisl.physics.distribution : a selected set of implemented distribution functions
+    sisl.physics.distribution : a selected set of implemented distribution functions
     DOS : total DOS
     PDOS : projected DOS over all orbitals
     spin_moment : spin moment
@@ -705,7 +705,7 @@ def velocity_matrix(state, dHk, energy=None, dSk=None, degenerate=None, degenera
     Returns
     -------
     numpy.ndarray
-        velocity matrixstate with final dimension ``(state.shape[0], state.shape[0], 3)``, the velocity unit is Ang/ps. Units *may* change in future releases.
+        velocity matrix state with final dimension ``(state.shape[0], state.shape[0], 3)``, the velocity unit is Ang/ps. Units *may* change in future releases.
     """
     if state.ndim == 1:
         return velocity_matrix(state.reshape(1, -1), dHk, energy, dSk, degenerate, degenerate_dir)
@@ -1783,7 +1783,7 @@ class StateCElectron(_electron_State, StateC):
 
         See Also
         --------
-        PDOS : for an explanation of the projections in case of `project` being True
+        velocity : for an explanation of the projections in case of `project` being True
         """
         try:
             opt = {'k': self.info.get('k', (0, 0, 0)), "dtype": self.dtype}
@@ -2037,6 +2037,13 @@ class EigenstateElectron(StateCElectron):
         See `~sisl.physics.electron.PDOS` for argument details.
         """
         return PDOS(E, self.c, self.state, self.Sk(), distribution, getattr(self.parent, "spin", None))
+
+    def COP(self, M, E, distribution="gaussian"):
+        r""" Calculate COP for provided energies, `E` using matrix `M`
+
+        This routine calls `~sisl.physics.electron.COP` with appropriate arguments.
+        """
+        return COP(E, self.c, self.state, M, distribution)
 
     def COOP(self, E, distribution="gaussian"):
         r""" Calculate COOP for provided energies, `E`.

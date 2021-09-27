@@ -3,7 +3,7 @@
 Mixing self-consistent quantities
 =================================
 
-.. currentmodule:: sisl.mixing
+.. module:: sisl.mixing
 
 Mixing various quantities in self-consistent manners are quite frequent.
 This module enables a variety of methods based on the Pulay (DIIS) mixing

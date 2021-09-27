@@ -103,7 +103,7 @@ class Bloch:
 
         Returns
         -------
-        k_unfold
+        numpy.ndarray
             a list of ``np.prod(self.bloch)`` k-points used for the unfolding
         """
         k = _a.arrayd(k)

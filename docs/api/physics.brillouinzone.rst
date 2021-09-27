@@ -99,9 +99,10 @@ and thus is unable to convert this into an equivalent `numpy.ndarray`. Additiona
 this can not be merged together in a single `numpy.ndarray` since the shapes of the returned
 quantities are not commensurate. One cannot concatenate the 3 different quantities.
 
-To accomblish this one may use an ``unzip`` flag:
+To accomblish this one may use an ``unzip`` flag where the two lines are equivalent:
 
 >>> DOS, PDOS, v = mp.apply.array.renew(unzip=True).eigenstate(wrap=wrap_multiple, eta=True)
+>>> DOS, PDOS, v = mp.apply(unzip=True).array.eigenstate(wrap=wrap_multiple, eta=True)
 
 and the data is unpacked as wanted.
 
