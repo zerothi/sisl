@@ -8,6 +8,7 @@ Tests specific functionality of the bands plot.
 Different inputs are tested (siesta .bands and sisl Hamiltonian).
 
 """
+from sisl.viz.plots.geometry import GeometryPlot
 from sisl.messages import SislWarning
 import numpy as np
 
@@ -19,6 +20,18 @@ from sisl.viz.plots.tests.conftest import _TestPlot
 
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 
+def test_cross_product():
+    cell = np.eye(3) * 2
+    z_dir = np.array([0,0,1])
+
+    products = [
+        ["x", "y", z_dir], ["-x", "y", -z_dir], ["-x", "-y", z_dir],
+        ["b", "c", cell[0]], ["c", "b", -cell[0]],
+        np.eye(3)
+    ]
+
+    for v1, v2, result in products:
+        assert np.all(GeometryPlot._cross_product(v1, v2, cell) == result)
 
 class TestGeometry(_TestPlot):
 
@@ -48,12 +61,12 @@ class TestGeometry(_TestPlot):
     @pytest.fixture(params=["cartesian", "lattice", "explicit"])
     def axes(self, request, ndim):
         if request.param == "cartesian":
-            return {1: "x", 2: "xy", 3: "xyz"}[ndim]
+            return {1: "x", 2: "x-y", 3: "xyz"}[ndim]
         elif request.param == "lattice":
             # We don't test the 3D case because it doesn't work
             if ndim == 3:
                 pytest.skip("3D view doesn't support fractional coordinates")
-            return {1: "a", 2: "ab"}[ndim]
+            return {1: "a", 2: "a-b"}[ndim]
         elif request.param == "explicit":
             if ndim == 3:
                 pytest.skip("3D view doesn't support explicit directions")
@@ -124,15 +137,29 @@ class TestGeometry(_TestPlot):
 
         assert plot._for_backend["cell_style"] == cell_style
 
+    def test_atoms_sorted_2d(self, plot):
+        plot.update_settings(atoms=None, axes="yz", nsc=[1,1,1])
+
+        # Check that atoms are sorted along x
+        assert np.allclose(plot.geometry.xyz[:, 1:][plot.geometry.xyz[:, 0].argsort()], plot._for_backend["atoms_props"]["xy"])
+
     def test_atoms_style(self, plot, axes, ndim, nsc):
+        plot.update_settings(atoms=None, axes=axes, nsc=nsc)
+        
         rand_values = np.random.random(plot.geometry.na)
         atoms_style = {"color": rand_values, "size": rand_values, "opacity": rand_values}
 
         new_atoms_style = {"atoms": 0, "color": 2, "size": 2, "opacity": 0.3}
 
+        if ndim == 2:
+            depth_vector = plot._cross_product(*plot.get_setting("axes"), plot.geometry.cell)
+            sorted_atoms = np.concatenate(plot.geometry.sort(vector=depth_vector, ret_atoms=True)[1])
+        else:
+            sorted_atoms = plot.geometry._sanitize_atoms(None)
+
         # Try both passing a dictionary and a list with one dictionary
         for i, atoms_style_val in enumerate((atoms_style, [atoms_style], [atoms_style, new_atoms_style])):
-            plot.update_settings(atoms=None, axes=axes, nsc=nsc, atoms_style=atoms_style_val)
+            plot.update_settings(atoms_style=atoms_style_val)
 
             backend_info = plot._for_backend
             self._check_all_atomic_props_shape(backend_info, plot.geometry.na, nsc)
@@ -142,19 +169,14 @@ class TestGeometry(_TestPlot):
                     if not (ndim == 3 and key == "color"):
                         assert np.allclose(
                             backend_info["atoms_props"][key].astype(float),
-                            np.tile(atoms_style[key], nsc[0]*nsc[1]*nsc[2])
+                            np.tile(atoms_style[key][sorted_atoms], nsc[0]*nsc[1]*nsc[2])
                         )
             else:
                 for key in atoms_style:
                     if not (ndim == 3 and key == "color"):
-                        assert np.allclose(
-                            backend_info["atoms_props"][key][0::plot.geometry.na].astype(float),
-                            np.tile([new_atoms_style[key]], nsc[0]*nsc[1]*nsc[2])
-                        )
-
                         assert np.isclose(
                             backend_info["atoms_props"][key].astype(float),
-                            np.tile(atoms_style[key], nsc[0]*nsc[1]*nsc[2])
+                            np.tile(atoms_style[key][sorted_atoms], nsc[0]*nsc[1]*nsc[2])
                         ).sum() == (plot.geometry.na - 1) * nsc[0]*nsc[1]*nsc[2]
 
     def test_arrows(self, plot, axes, ndim, nsc):
