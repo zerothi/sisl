@@ -3,6 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from functools import wraps
 import itertools
+import re
 
 from sisl.messages import warn
 from sisl.viz.input_fields.color import ColorPicker
@@ -435,7 +436,7 @@ class GeometryPlot(Plot):
             if not_displayed:
                 warn(f"Arrow data for atoms {not_displayed} will not be displayed because these atoms are not displayed.")
             if set(atoms) == set(atoms) - set(arrow_atoms):
-                # Then it makes no sense to store atoms, as nothing will be drawn
+                # Then it makes no sense to store arrows, as nothing will be drawn
                 return None
 
             arrow_data = np.full((self.geometry.na, ndim), np.nan, dtype=np.float64)
@@ -534,9 +535,9 @@ class GeometryPlot(Plot):
             title = str(ax)
         elif not isinstance(ax, str):
             title = ""
-        elif ax.lower() in ("x", "y", "z"):
+        elif re.match("[+-]?[xXyYzZ]", ax):
             title = f'{ax.upper()} axis [Ang]'
-        elif ax.lower() in ("a", "b", "c"):
+        elif re.match("[+-]?[aAbBcC]", ax):
             title = f'{ax.upper()} lattice vector'
         else:
             title = ax
@@ -609,11 +610,47 @@ class GeometryPlot(Plot):
         return np.array(bonds, dtype=int)
 
     @staticmethod
-    def _direction(ax, cell):
+    def _direction(ax, cell=None):
         if isinstance(ax, (int, str)):
-            ax = direction(ax, abc=cell, xyz=np.diag([1., 1., 1.]))
+            sign = 1
+            # If the axis contains a -, we need to mirror the direction.
+            if isinstance(ax, str) and ax[0] == "-":
+                sign = -1
+                ax = ax[1]
+            ax = sign * direction(ax, abc=cell, xyz=np.diag([1., 1., 1.]))
 
         return ax
+    
+    @classmethod
+    def _cross_product(cls, v1, v2, cell=None):
+        """An enhanced version of the cross product.
+        
+        It is an enhanced version because both bectors accept strings that represent
+        the cartesian axes or the lattice vectors (see `v1`, `v2` below). It has been built
+        so that cross product between lattice vectors (-){"a", "b", "c"} follows the same rules
+        as (-){"x", "y", "z"}
+        Parameters
+        ----------
+        v1, v2: array-like of shape (3,) or (-){"x", "y", "z", "a", "b", "c"}
+            The vectors to take the cross product of.
+        cell: array-like of shape (3, 3)
+            The cell of the structure, only needed if lattice vectors {"a", "b", "c"}
+            are passed for `v1` and `v2`.
+        """
+        # Make abc follow the same rules as xyz to find the orthogonal direction
+        # That is, a X b = c; -a X b = -c and so on.
+        if isinstance(v1, str) and isinstance(v2, str):
+            if re.match("([+-]?[abc]){2}", v1 + v2):
+                v1 = v1.replace("a", "x").replace("b", "y").replace("c", "z")
+                v2 = v2.replace("a", "x").replace("b", "y").replace("c", "z")
+                ort = cls._cross_product(v1, v2)
+                ort_ax = "abc"[np.where(ort != 0)[0][0]]
+                if ort.sum() == -1:
+                    ort_ax = "-" + ort_ax
+                return cls._direction(ort_ax, cell)
+
+        # If the vectors are not abc, we just need to take the cross product.
+        return np.cross(cls._direction(v1, cell), cls._direction(v2, cell))
 
     @staticmethod
     def _get_cell_corners(cell, unique=False):
@@ -882,10 +919,17 @@ class GeometryPlot(Plot):
         wrap_atoms = wrap_atoms or self._default_wrap_atoms2D
         wrap_bond = wrap_bond or self._default_wrap_bond2D
 
-        xy = self._projected_2Dcoords(self.geometry, self._tiled_coords(atoms), xaxis=xaxis, yaxis=yaxis)
+        # We need to sort the geometry according to depth, because when atoms are drawn they can be one
+        # on top of the other. The last atoms should be the ones on top.
+        if len(atoms) > 0:
+            depth_vector = self._cross_product(xaxis, yaxis, self.geometry.cell)
+            sorted_atoms = np.concatenate(self.geometry.sort(atoms=atoms, vector=depth_vector, ret_atoms=True)[1])
+        else:
+            sorted_atoms = atoms
+        xy = self._projected_2Dcoords(self.geometry, self._tiled_coords(sorted_atoms), xaxis=xaxis, yaxis=yaxis)
 
         # Add atoms
-        atoms_props = wrap_atoms(atoms, xy, atoms_styles)
+        atoms_props = wrap_atoms(sorted_atoms, xy, atoms_styles)
         atoms_props["size"] *= atoms_scale
 
         # Add bonds
