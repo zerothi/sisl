@@ -413,14 +413,6 @@ class ConfigurableMeta(type):
                 if "_param_groups" in vars(base):
                     class_param_groups = [*class_param_groups, *deepcopy(base._param_groups)]
 
-            # Build an extra group for unclassified settings
-            class_param_groups.append({
-                "key": None,
-                "name": "Other settings",
-                "icon": "settings",
-                "description": "Here are some unclassified settings. Even if they don't belong to any group, they might still be important. They may be here just because the developer was too lazy to categorize them or forgot to do so. <b>If you are the developer</b> and it's the first case, <b>shame on you<b>."
-            })
-
             attrs["_parameters"] = class_params
             attrs["_param_groups"] = class_param_groups
 

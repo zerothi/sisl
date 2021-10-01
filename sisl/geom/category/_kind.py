@@ -7,6 +7,7 @@ from numbers import Integral
 
 import numpy as np
 from numpy import dot
+import re
 
 from sisl._internal import set_module, singledispatchmethod
 from sisl._help import isiterable
@@ -49,6 +50,39 @@ class AtomZ(AtomCategory):
 
         if self.__class__ is other.__class__:
             return len(self._Z ^ other._Z) == 0
+        return False
+
+
+@set_module("sisl.geom")
+class AtomTag(AtomCategory):
+    r""" Classify atoms based on their tag.
+
+    Parameters
+    ----------
+    tag : str
+       The tag you want atoms to match. It can be a regex expression.
+    """
+    __slots__ = ("_compiled_re", "_re")
+
+    def __init__(self, tag):
+        self._re = tag
+        self._compiled_re = re.compile(self._re)
+        super().__init__(f"tag={self._re}")
+
+    @_sanitize_loop
+    def categorize(self, geometry, atoms=None):
+        # _sanitize_loop will ensure that atoms will always be an integer
+        if self._compiled_re.match(geometry.atoms[atoms].tag):
+            return self
+        return NullCategory()
+
+    def __eq__(self, other):
+        if isinstance(other, (list, tuple, np.ndarray)):
+            # this *should* use the dispatch method for different classes
+            return super().__eq__(other)
+
+        if self.__class__ is other.__class__:
+            return self._re == other._re
         return False
 
 
@@ -109,13 +143,12 @@ class AtomIndex(AtomCategory):
                 return is_true
             return make_partial
 
-        if len(idx) == 0:
-            operator = []
-        else:
+        operator = []
+        if len(idx) > 0:
             @wraps(op.contains)
             def func_wrap(a, b):
                 return op.contains(b, a)
-            operator.append((func_wrap, b))
+            operator.append((func_wrap, idx))
 
         for func, value in kwargs.items():
             if callable(func):

@@ -6,7 +6,6 @@ import itertools
 import re
 
 from sisl.messages import warn
-from sisl.viz.input_fields.color import ColorPicker
 
 import numpy as np
 
@@ -15,7 +14,7 @@ from sisl.utils import direction
 from sisl.utils.mathematics import fnorm
 from ..plot import Plot, entry_point
 from ..input_fields import (
-    ProgramaticInput,
+    ProgramaticInput, ColorPicker,
     SwitchInput, DropdownInput, AtomSelect, GeomAxisSelect, QueriesInput,
     FilePathInput, PlotableInput, IntegerInput, FloatInput, TextInput, Array1DInput
 )
@@ -253,7 +252,7 @@ class GeometryPlot(Plot):
 
                 AtomSelect(key="atoms", name="Atoms", default=None),
 
-                ProgramaticInput(key="data", name="Data", default=None),
+                Array1DInput(key="data", name="Data", default=None, params={"shape":(3,)}),
 
                 FloatInput(key="scale", name="Scale", default=1),
 
@@ -366,6 +365,8 @@ class GeometryPlot(Plot):
             self.bonds = self.find_all_bonds(self._tiled_geometry)
 
         self.get_param("atoms").update_options(self.geometry)
+        self.get_param("atoms_style").get_param("atoms").update_options(self.geometry)
+        self.get_param("arrows").get_param("atoms").update_options(self.geometry)
 
     def _parse_atoms_style(self, atoms_style, ndim):
         """Parses the `atoms_style` setting to a dictionary of style specifications.

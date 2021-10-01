@@ -71,6 +71,8 @@ class AtomNeighbours(AtomCategory):
             name = f" ∈ [{self._min};{self._max}]"
 
         self._in = kwargs.get("neighbour", None)
+        if isinstance(self._in, dict):
+            self._in = AtomCategory(**self._in)
         self._R = kwargs.get("R", None)
 
         # Determine name. If there are requirements for the neighbours
