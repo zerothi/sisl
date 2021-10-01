@@ -161,6 +161,13 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
             "description": "In such a busy world, one may forget how the files are structured in their computer. Please take a moment to <b>make sure your data is being read exactly in the way you expect<b>."
         },
 
+        {
+            "key": None,
+            "name": "Other settings",
+            "icon": "settings",
+            "description": "Here are some unclassified settings. Even if they don't belong to any group, they might still be important. They may be here just because the developer was too lazy to categorize them or forgot to do so. <b>If you are the developer</b> and it's the first case, <b>shame on you<b>."
+        }
+
     )
 
     _parameters = (
@@ -698,7 +705,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
         """
         if key in ["_backend", "_get_shared_attr"]:
             pass
-        elif hasattr(self._backend, key):
+        elif hasattr(self, "_backend") and hasattr(self._backend, key):
             return getattr(self._backend, key)
         else:
             #If it is a childPlot, maybe the attribute is in the shared storage to save memory and time

@@ -56,6 +56,8 @@ class CreatableDropdown(DropdownInput):
 
 class AtomSelect(DropdownInput):
 
+    _type = "atom selector"
+
     _default={
         "width": "s100% m50% l33%",
         "default": None,
@@ -226,7 +228,7 @@ class GeomAxisSelect(DropdownInput):
         "params": {
             "placeholder": "Choose axis...",
             "options": [
-                {'label': ax, 'value': ax} for ax in ["x", "y", "z", 0, 1, 2, "a", "b", "c"]
+                {'label': ax, 'value': ax} for ax in ["x", "y", "z", "-x", "-y", "-z", "a", "b", "c", "-a", "-b", "-c"]
             ],
             "isMulti": True,
             "isClearable": False,
