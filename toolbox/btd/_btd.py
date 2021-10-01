@@ -513,18 +513,18 @@ class DeviceGreen:
 
         return G
 
-    def spectral(self, elec, format='array', method='column'):
+    def spectral(self, elec, format='array', method='column', herm=True):
         elec = self._elec(elec)
         format = format.lower()
         method = method.lower()
         if format in ('array', 'dense'):
             if method == 'column':
-                return self._spectral_column(elec)
+                return self._spectral_column(elec, herm)
             elif method == 'propagate':
-                return self._spectral_propagate(elec)
+                return self._spectral_propagate(elec, herm)
         raise ValueError(f"{self.__class__.__name__}.spectral format/method not recognized.")
 
-    def _spectral_column(self, elec):
+    def _spectral_column(self, elec, herm):
         # To calculate the full A we simply calculate the
         # G column where the electrode resides
         nb = len(self.btd)
@@ -609,7 +609,7 @@ class DeviceGreen:
         # Now calculate the full spectral function
         return G @ self._data.gamma[elec] @ dagger(G)
 
-    def _spectral_propagate(self, elec):
+    def _spectral_propagate(self, elec, herm):
         nb = len(self.btd)
         nbm1 = nb - 1
 
@@ -628,77 +628,134 @@ class DeviceGreen:
         tX = self._data.tX
         tY = self._data.tY
 
-        def left(i, j):
+        def left_calc(i, j, c, S, tY):
             """ Calculate the next block LEFT of block (i,j) """
-            if j <= 0:
-                return
-            #print('left', i, j)
             ij = slice(c[i], c[i+1]), slice(c[j], c[j+1])
             ijm1 = ij[0], slice(c[j-1], c[j])
             S[ijm1] = - S[ij] @ dagger(tY[j])
 
-        def right(i, j):
+        def right_calc(i, j, c, S, tX):
             """ Calculate the next block RIGHT of block (i,j) """
-            if nbm1 <= j:
-                return
-            #print('right', i, j)
             ij = slice(c[i], c[i+1]), slice(c[j], c[j+1])
             ijp1 = ij[0], slice(c[j+1], c[j+2])
             S[ijp1] = - S[ij] @ dagger(tX[j])
 
-        def above(i, j):
+        def above_calc(i, j, c, S, tY):
             """ Calculate the next block ABOVE of block (i,j) """
-            if i <= 0:
-                return
-            #print('above', i, j)
             ij = slice(c[i], c[i+1]), slice(c[j], c[j+1])
             im1j = slice(c[i-1], c[i]), ij[1]
             S[im1j] = - tY[i] @ S[ij]
-            del ij, im1j
-            above(i-1, j)
 
-        def below(i, j):
+        def below_calc(i, j, c, S, tX):
             """ Calculate the next block BELOW of block (i,j) """
-            if nbm1 <= i:
-                return
-            #print('below', i, j)
             ij = slice(c[i], c[i+1]), slice(c[j], c[j+1])
             ip1j = slice(c[i+1], c[i+2]), ij[1]
             S[ip1j] = - tX[i] @ S[ij]
-            del ij, ip1j
-            below(i+1, j)
 
-        if len(blocks) == 1:
-            for b in range(blocks[0], -1, -1):
-                left(blocks[0], b)
-                above(blocks[0], b)
-                below(blocks[0], b)
+        # define lefts
+        if herm:
+            def copy_herm(i, j, c, S):
+                """ Copy block (j,i) to (i,j) """
+                ij = slice(c[i], c[i+1]), slice(c[j], c[j+1])
+                S[ij] = S[ij[1], ij[0]].T.conj()
 
-            # to grab first block on the right
-            right(blocks[0], blocks[0])
-            for b in range(blocks[0] + 1, nb):
-                right(blocks[0], b)
-                above(blocks[0], b)
-                below(blocks[0], b)
+            def left(i, j, a, b, c, S, tX, tY):
+                if j <= 0:
+                    return
+                jm1 = j - 1
+                if i >= jm1:
+                    left_calc(i, j, c, S, tY)
+                else:
+                    copy_herm(i, jm1, c, S)
+                left(i, jm1, a, b, c, S, tX, tY)
+                if b:
+                    below(i, jm1, c, S, tX)
+                if a:
+                    above(i, jm1, c, S, tY)
+
+            def right(i, j, a, b, c, S, tX, tY):
+                if nbm1 <= j:
+                    return
+                jp1 = j + 1
+                if i >= jp1:
+                    right_calc(i, j, c, S, tX)
+                else:
+                    copy_herm(i, jp1, c, S)
+                if a:
+                    above(i, jp1, c, S, tY)
+                if b:
+                    below(i, jp1, c, S, tX)
+                right(i, jp1, a, b, c, S, tX, tY)
+
+            def below(i, j, c, S, tX):
+                if nbm1 <= i:
+                    return
+                ip1 = i + 1
+                if ip1 >= j:
+                    below_calc(i, j, c, S, tX)
+                else:
+                    copy_herm(ip1, j, c, S)
+                below(ip1, j, c, S, tX)
+
+            def above(i, j, c, S, tY):
+                if i <= 0:
+                    return
+                im1 = i - 1
+                if im1 >= j:
+                    above_calc(i, j, c, S, tY)
+                else:
+                    copy_herm(im1, j, c, S)
+                above(im1, j, c, S, tY)
+
         else:
-            for b in range(blocks[0], -1, -1):
-                left(blocks[0], b)
-                above(blocks[0], b)
-                left(blocks[1], b)
-                below(blocks[1], b)
+            def left(i, j, a, b, c, S, tX, tY):
+                if j <= 0:
+                    return
+                left_calc(i, j, c, S, tY)
+                left(i, j-1, a, b, c, S, tX, tY)
+                if b:
+                    below(i, j-1, c, S, tX)
+                if a:
+                    above(i, j-1, c, S, tY)
 
-            # calculating everything above/below
-            # the 2nd block
-            above(blocks[0], blocks[1])
-            below(blocks[1], blocks[1])
-            # to grab first blocks on the right
-            right(blocks[0], blocks[1])
-            right(blocks[1], blocks[1])
-            for b in range(blocks[1] + 1, nb):
-                right(blocks[0], b)
-                above(blocks[0], b)
-                right(blocks[1], b)
-                below(blocks[1], b)
+            def right(i, j, a, b, c, S, tX, tY):
+                if nbm1 <= j:
+                    return
+                right_calc(i, j, c, S, tX)
+                right(i, j+1, a, b, c, S, tX, tY)
+                if a:
+                    above(i, j+1, c, S, tY)
+                if b:
+                    below(i, j+1, c, S, tX)
+
+            def below(i, j, c, S, tX):
+                if nbm1 <= i:
+                    return
+                below_calc(i, j, c, S, tX)
+                below(i+1, j, c, S, tX)
+
+            def above(i, j, c, S, tY):
+                if i <= 0:
+                    return
+                above_calc(i, j, c, S, tY)
+                above(i-1, j, c, S, tY)
+
+        # start calculating
+        if len(blocks) == 1:
+            left(blocks[0], blocks[0], True, True, c, S, tX, tY)
+            above(blocks[0], blocks[0], c, S, tY)
+            below(blocks[0], blocks[0], c, S, tX)
+            right(blocks[0], blocks[0], True, True, c, S, tX, tY)
+        else:
+            left(blocks[1], blocks[0], False, True, c, S, tX, tY)
+            left(blocks[0], blocks[0], True, False, c, S, tX, tY)
+            above(blocks[0], blocks[0], c, S, tY)
+            above(blocks[0], blocks[1], c, S, tY)
+            below(blocks[1], blocks[0], c, S, tX)
+            below(blocks[1], blocks[1], c, S, tX)
+            right(blocks[0], blocks[1], True, False, c, S, tX, tY)
+            right(blocks[1], blocks[1], False, True, c, S, tX, tY)
+
         return S
 
     def _scattering_state_reduce(self, elec, DOS, U, cutoff):
@@ -903,7 +960,7 @@ class DeviceGreen:
             blocks = [block1]
         else:
             blocks = list(range(block1, block2+1))
-        assert len(blocks) <= 2
+        assert len(blocks) <= 2, f"{self.__class__.__name__} requires G calculation for only 1 or 2 blocks"
 
         n = self.btd[blocks].sum()
         G = np.empty([n, len(idx)], dtype=self._data.A[0].dtype)
