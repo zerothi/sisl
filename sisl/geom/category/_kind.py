@@ -11,10 +11,11 @@ import re
 
 from sisl._internal import set_module, singledispatchmethod
 from sisl._help import isiterable
+from sisl.utils import strmap, lstranges
 from .base import AtomCategory, NullCategory, _sanitize_loop
 
 
-__all__ = ["AtomZ", "AtomIndex", "AtomOdd", "AtomEven"]
+__all__ = ["AtomZ", "AtomIndex", "AtomSeq", "AtomTag", "AtomOdd", "AtomEven"]
 
 
 @set_module("sisl.geom")
@@ -181,6 +182,53 @@ class AtomIndex(AtomCategory):
                 # Check they are the same
                 return reduce(op.and_, (op_val in other._op_val for op_val in self._op_val), True)
         return False
+
+
+@set_module("sisl.geom")
+class AtomSeq(AtomIndex):
+    r""" Classify atoms based on their indices using a sequence string.
+
+    Parameters
+    ----------
+    seq: str
+       sequence indicating the indices that you want to match (see examples)
+    **kwargs : key, value
+       if key is a function it must accept two values ``value, atom``
+       where ``value`` is the value on this command. The function should
+       return anything that can be interpreted as a True/False.
+       Multiple ``key`` equates to an `and` statement.
+
+    Examples
+    --------
+    >>> seq = AtomSeq("1-3")
+    >>> geom.sub(seq) == geom.sub([1,2,3])
+    >>> seq = AtomSeq("1-3,7")
+    >>> geom.sub(seq) == geom.sub([1,2,3,7])
+    >>> seq = AtomSeq("1-3,7:")
+    >>> geom.sub(seq) == geom.sub([1,2,3,*range(7, len(geom))])
+    >>> seq = AtomSeq("1-3,6,9:2:")
+    >>> geom.sub(seq) == geom.sub([1,2,3,6,*range(9, len(geom), 2)])
+    
+    See also
+    ---------
+    `strmap`, `lstranges`:
+        the functions used to parse the sequence string into indices.
+    """
+
+    def __init__(self, seq):
+        self._seq = seq
+        self.set_name(self._seq)
+
+    def categorize(self, geometry, *args, **kwargs):
+        # Now that we have the geometry, we know what is the end index
+        # and we can finally safely convert the sequence o indices.
+        indices = lstranges(strmap(int, self._seq, end=geometry.na - 1))
+
+        # Initialize the machinery of AtomIndex
+        super().__init__(indices)
+        self.set_name(self._seq)
+        # Finally categorize
+        return super().categorize(geometry, *args, **kwargs)
 
 
 class AtomEven(AtomCategory):
