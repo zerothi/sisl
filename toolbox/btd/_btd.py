@@ -669,7 +669,7 @@ class DeviceGreen:
         raise ValueError(f"{self.__class__.__name__}.spectral format/method not recognized.")
 
     def _spectral_column(self, elec, herm):
-        G = self._green_column(self.elec[elec].pvt_dev)
+        G = self._green_column(self.elec[elec].pvt_dev.ravel())
         # Now calculate the full spectral function
         return G @ self._data.gamma[elec] @ dagger(G)
 
@@ -827,7 +827,7 @@ class DeviceGreen:
         # Select only the first N components where N is the
         # number of orbitals in the electrode (there can't be
         # any more propagating states anyhow).
-        N = len(self.elec[elec].pvt_dev)
+        N = self.elec[elec].pvt_dev.size
 
         # sort and take N highest values
         idx = np.argsort(-DOS)[:N]
@@ -841,7 +841,17 @@ class DeviceGreen:
 
         return DOS, U
 
-    def _scattering_state_from_spectral_full(self, A, elec, cutoff):
+    def scattering_state(self, elec, cutoff=0., method='svd', *args, **kwargs):
+        elec = self._elec(elec)
+        method = method.lower()
+        func = getattr(self, f"_scattering_state_{method}", None)
+        if func is None:
+            raise ValueError(f"{self.__class__.__name__}.scattering_state method is not [full,svd,propagate]")
+        return func(elec, cutoff, *args, **kwargs)
+
+    def _scattering_state_full(self, elec, cutoff=0., **kwargs):
+        A = self.spectral(elec, **kwargs)
+
         # add something to the diagonal (improves diag precision for small states)
         np.fill_diagonal(A, A.diagonal() + 0.1)
 
@@ -866,10 +876,12 @@ class DeviceGreen:
         # always have the first state with the largest values
         return si.physics.StateCElectron(A.T, DOS, self, **info)
 
-    def _scattering_state_from_spectral_svd(self, Gf, elec, cutoff):
+    def _scattering_state_svd(self, elec, cutoff=0., **kwargs):
+        A = self._green_column(self.elec[elec].pvt_dev.ravel())
+
         # This calculation uses the sqrt(Gamma) calculation combined with svd
         Gamma_sqrt = sqrtm(self._data.gamma[elec])
-        A = Gf @ Gamma_sqrt
+        A = A @ Gamma_sqrt
 
         # We only need the minimal eigenspace, we already know we only have
         # len(Gamma_sqrt) eigenvalues (maximally)
@@ -893,11 +905,19 @@ class DeviceGreen:
         # always have the first state with the largest values
         return si.physics.StateCElectron(A.T, DOS, self, **info)
 
-    def _scattering_state_from_spectral_propagate(self, blocks_A, elec, cutoff):
+    def _scattering_state_propagate(self, elec, cutoff=0):
         warn(f"{self.__class__.__name__}.scattering_state(method=propagate) "
              "is generally returning the wrong scattering states since orthogonality is not "
              "enforced, consider using method=svd.")
-        blocks, U = blocks_A
+
+        # First we need to calculate diagonal blocks of the spectral matrix
+        # This is basically the same thing as calculating the Gf column
+        # But only in the 1/2 diagonal blocks of Gf
+        blocks, U = self._green_diag_block(self.elec[elec].pvt_dev.ravel())
+
+        # Calculate the spectral function only for the blocks that host the
+        # scattering matrix
+        U = U @ self._data.gamma[elec] @ dagger(U)
 
         # add something to the diagonal (improves diag precision)
         np.fill_diagonal(U, U.diagonal() + 0.1)
@@ -967,33 +987,6 @@ class DeviceGreen:
             cutoff=cutoff
         )
         return si.physics.StateCElectron(u[idx], DOS[idx], self, **info)
-
-    def scattering_state(self, elec, cutoff=0., method='svd', *args, **kwargs):
-        elec = self._elec(elec)
-        method = method.lower()
-        func = getattr(self, f"_scattering_state_{method}", None)
-        if func is None:
-            raise ValueError(f"{self.__class__.__name__}.scattering_state method is not [full,svd,propagate]")
-        return func(elec, cutoff, *args, **kwargs)
-
-    def _scattering_state_full(self, elec, cutoff=0., **kwargs):
-        A = self.spectral(elec, **kwargs)
-        return self._scattering_state_from_spectral_full(A, elec, cutoff)
-
-    def _scattering_state_svd(self, elec, cutoff=0., **kwargs):
-        G = self._green_column(self.elec[elec].pvt_dev)
-        return self._scattering_state_from_spectral_svd(G, elec, cutoff)
-
-    def _scattering_state_propagate(self, elec, cutoff=0):
-        # First we need to calculate diagonal blocks of the spectral matrix
-        # This is basically the same thing as calculating the Gf column
-        # But only in the 1/2 diagonal blocks of Gf
-        blocks, A = self._green_diag_block(self.elec[elec].pvt_dev.ravel())
-
-        # Calculate the spectral function only for the blocks that host the
-        # scattering matrix
-        A = A @ self._data.gamma[elec] @ dagger(A)
-        return self._scattering_state_from_spectral_propagate((blocks, A), elec, cutoff)
 
     def eigen_channel(self, state, elec_to):
         if isinstance(elec_to, (Integral, str)):
