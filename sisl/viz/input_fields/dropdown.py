@@ -243,7 +243,7 @@ class GeomAxisSelect(DropdownInput):
             ax = 'abc'[ax]
         elif isinstance(ax, (list, tuple)):
             ax = np.array(ax)
-            
+
         # Now perform some checks
         invalid = True
         if isinstance(ax, str):

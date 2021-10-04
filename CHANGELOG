@@ -1,6 +1,13 @@
 0.X.Y
 =====
 
+- correctly calculating scattering states and eigenchannels for
+	BTD matrices using very fast methods.
+
+- several bugs and fixes added for the `sisl.viz` module, #376, #382
+
+- Added COOP and COHP calculations for eigenstates
+
 - added inverse participation ration calculations (with arbitrary q)
 
 - changed `State.align_*` routines to align `self` rather than `other`

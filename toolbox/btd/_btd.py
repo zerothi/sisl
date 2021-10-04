@@ -23,10 +23,12 @@ It requires two inputs and has several optional flags.
     any implications for the requirement of the TBT.nc file.
 """
 from numbers import Integral
+from sisl.messages import warn
 
 import numpy as np
 from numpy import einsum
 from numpy import conjugate as conj
+from scipy.linalg import sqrtm
 from scipy.sparse import csr_matrix
 
 import sisl as si
@@ -144,10 +146,8 @@ class PivotSelfEnergy(si.physics.SelfEnergy):
         self.pvt_btd = np.concatenate(pvt_btd).reshape(-1, 1)
         self.pvt_btd_sort = np.arange(o)
 
-        self._func = (
-            se_func,
-            scat_func
-        )
+        self._se_func = se_func
+        self._scat_func = scat_func
 
     def __len__(self):
         return len(self.pvt_dev)
@@ -167,10 +167,10 @@ class PivotSelfEnergy(si.physics.SelfEnergy):
         return [(i, i.T) for i in self.pvt_btd]
 
     def self_energy(self, *args, **kwargs):
-        return self._func[0](*args, **kwargs)
+        return self._se_func(*args, **kwargs)
 
     def scattering_matrix(self, *args, **kwargs):
-        return self._func[1](*args, **kwargs)
+        return self._scat_func(*args, **kwargs)
 
 
 class BTD:
@@ -513,26 +513,73 @@ class DeviceGreen:
 
         return G
 
-    def spectral(self, elec, format='array', method='column', herm=True):
-        elec = self._elec(elec)
-        format = format.lower()
-        method = method.lower()
-        if format in ('array', 'dense'):
-            if method == 'column':
-                return self._spectral_column(elec, herm)
-            elif method == 'propagate':
-                return self._spectral_propagate(elec, herm)
-        raise ValueError(f"{self.__class__.__name__}.spectral format/method not recognized.")
-
-    def _spectral_column(self, elec, herm):
-        # To calculate the full A we simply calculate the
-        # G column where the electrode resides
+    def _green_diag_block(self, idx):
         nb = len(self.btd)
         nbm1 = nb - 1
 
-        # These are the indices in the device (after pivoting)
-        # So they refer to the
-        idx = self.elec[elec].pvt_dev
+        # Find parts we need to calculate
+        block1 = (idx.min() < self.btd_cum).nonzero()[0][0]
+        block2 = (idx.max() < self.btd_cum).nonzero()[0][0]
+        if block1 == block2:
+            blocks = [block1]
+        else:
+            blocks = list(range(block1, block2+1))
+        assert len(blocks) <= 2, f"{self.__class__.__name__} requires G calculation for only 1 or 2 blocks"
+
+        n = self.btd[blocks].sum()
+        G = np.empty([n, len(idx)], dtype=self._data.A[0].dtype)
+
+        btd = self.btd
+        c = np.append(0, self.btd_cum)
+        A = self._data.A
+        B = self._data.B
+        C = self._data.C
+        tX = self._data.tX
+        tY = self._data.tY
+        for b in blocks:
+            # Find the indices in the block
+            i = idx[c[b] <= idx].copy()
+            i = i[i < c[b + 1]].astype(np.int32)
+
+            c_idx = _a.arangei(c[b], c[b + 1]).reshape(-1, 1)
+            b_idx = indices_only(c_idx.ravel(), i)
+            # Subtract the first block to put it only in the sub-part
+            c_idx -= c[blocks[0]]
+
+            if b == blocks[0]:
+                sl = slice(0, btd[b])
+                r_idx = np.arange(len(b_idx))
+            else:
+                sl = slice(btd[blocks[0]], btd[blocks[0]] + btd[b])
+                r_idx = np.arange(len(idx) - len(b_idx), len(idx))
+
+            if b == 0:
+                G[sl, r_idx] = inv_destroy(A[b] - C[b + 1] @ tX[b])[:, b_idx]
+            elif b == nbm1:
+                G[sl, r_idx] = inv_destroy(A[b] - B[b - 1] @ tY[b])[:, b_idx]
+            else:
+                G[sl, r_idx] = inv_destroy(A[b] - B[b - 1] @ tY[b] - C[b + 1] @ tX[b])[:, b_idx]
+
+            if len(blocks) == 1:
+                break
+
+            # Now calculate the thing (below/above)
+            if b == blocks[0]:
+                # Calculate below
+                slp = slice(btd[b], btd[b] + btd[blocks[1]])
+                G[slp, r_idx] = - tX[b] @ G[sl, r_idx]
+            else:
+                # Calculate above
+                slp = slice(0, btd[blocks[0]])
+                G[slp, r_idx] = - tY[b] @ G[sl, r_idx]
+
+        return blocks, G
+
+    def _green_column(self, idx):
+        # To calculate the full Gf for specific column indices
+        # These indices should maximally be spanning 2 blocks
+        nb = len(self.btd)
+        nbm1 = nb - 1
 
         # Find parts we need to calculate
         block1 = (idx.min() < self.btd_cum).nonzero()[0][0]
@@ -541,10 +588,12 @@ class DeviceGreen:
             blocks = [block1]
         else:
             blocks = [block1, block2]
-
+            assert block1 + 1 == block2, (f"{self.__class__.__name__} Green column requires "
+                                          "consecutive indices maximally spanning 2 blocks.")
         # We can only have 2 consecutive blocks for
         # a Gamma, so same for BTD
-        assert len(blocks) <= 2
+        assert len(blocks) <= 2, (f"{self.__class__.__name__} Green column requires "
+                                  "consecutive indices maximally spanning 2 blocks.")
 
         n = len(self)
         G = np.empty([n, len(idx)], dtype=self._data.A[0].dtype)
@@ -606,6 +655,21 @@ class DeviceGreen:
             G[sl, :] = - tX[b - 1] @ G[slp, :]
             slp = sl
 
+        return G
+
+    def spectral(self, elec, format='array', method='column', herm=True):
+        elec = self._elec(elec)
+        format = format.lower()
+        method = method.lower()
+        if format in ('array', 'dense'):
+            if method == 'column':
+                return self._spectral_column(elec, herm)
+            elif method == 'propagate':
+                return self._spectral_propagate(elec, herm)
+        raise ValueError(f"{self.__class__.__name__}.spectral format/method not recognized.")
+
+    def _spectral_column(self, elec, herm):
+        G = self._green_column(self.elec[elec].pvt_dev)
         # Now calculate the full spectral function
         return G @ self._data.gamma[elec] @ dagger(G)
 
@@ -759,14 +823,16 @@ class DeviceGreen:
         return S
 
     def _scattering_state_reduce(self, elec, DOS, U, cutoff):
-        """ U on input is a fortran-index as returned from eigh """
+        """ U on input is a fortran-index as returned from eigh or svd """
         # Select only the first N components where N is the
         # number of orbitals in the electrode (there can't be
         # any more propagating states anyhow).
         N = len(self.elec[elec].pvt_dev)
-        # this assumes DOS is ordered
-        DOS = DOS[-N:]
-        U = U[:, -N:]
+
+        # sort and take N highest values
+        idx = np.argsort(-DOS)[:N]
+        DOS = DOS[idx]
+        U = U[:, idx]
 
         if cutoff > 0:
             idx = (DOS > cutoff).nonzero()[0]
@@ -774,19 +840,6 @@ class DeviceGreen:
             U = U[:, idx]
 
         return DOS, U
-
-    def scattering_state_from_spectral(self, A, elec, cutoff=0., method='full', *args, **kwargs):
-        """ On entry `A` contains the spectral function in format appropriate for the method.
-
-        This routine will change the values in `A`. So retain a copy if needed.
-        """
-        elec = self._elec(elec)
-        method = method.lower()
-        if method == 'full':
-            return self._scattering_state_from_spectral_full(A, elec, cutoff, *args, **kwargs)
-        elif method == 'propagate':
-            return self._scattering_state_from_spectral_propagate(A, elec, cutoff, *args, **kwargs)
-        raise ValueError(f"{self.__class__.__name__}.scattering_state_from_spectral method is not [full,propagate]")
 
     def _scattering_state_from_spectral_full(self, A, elec, cutoff):
         # add something to the diagonal (improves diag precision for small states)
@@ -802,6 +855,7 @@ class DeviceGreen:
 
         data = self._data
         info = dict(
+            method='full',
             elec=self._elec_name(elec),
             E=data.E,
             k=data.k,
@@ -810,9 +864,39 @@ class DeviceGreen:
         )
 
         # always have the first state with the largest values
-        return si.physics.StateCElectron(A.T[::-1], DOS[::-1], self, **info)
+        return si.physics.StateCElectron(A.T, DOS, self, **info)
+
+    def _scattering_state_from_spectral_svd(self, Gf, elec, cutoff):
+        # This calculation uses the sqrt(Gamma) calculation combined with svd
+        Gamma_sqrt = sqrtm(self._data.gamma[elec])
+        A = Gf @ Gamma_sqrt
+
+        # We only need the minimal eigenspace, we already know we only have
+        # len(Gamma_sqrt) eigenvalues (maximally)
+        A, DOS, _ = svd_destroy(A, full_matrices=False)
+        del _
+
+        # TODO check with overlap convert with correct magnitude (Tr[A] / 2pi)
+        DOS = DOS ** 2 / (2 * np.pi)
+        DOS, A = self._scattering_state_reduce(elec, DOS, A, cutoff)
+
+        data = self._data
+        info = dict(
+            method='svd',
+            elec=self._elec_name(elec),
+            E=data.E,
+            k=data.k,
+            eta=data.eta,
+            cutoff=cutoff
+        )
+
+        # always have the first state with the largest values
+        return si.physics.StateCElectron(A.T, DOS, self, **info)
 
     def _scattering_state_from_spectral_propagate(self, blocks_A, elec, cutoff):
+        warn(f"{self.__class__.__name__}.scattering_state(method=propagate) "
+             "is generally returning the wrong scattering states since orthogonality is not "
+             "enforced, consider using method=svd.")
         blocks, U = blocks_A
 
         # add something to the diagonal (improves diag precision)
@@ -875,6 +959,7 @@ class DeviceGreen:
         # Now we have the full u, create it and transpose to get it in C indexing
         data = self._data
         info = dict(
+            method='propagate',
             elec=self._elec_name(elec),
             E=data.E,
             k=data.k,
@@ -883,18 +968,21 @@ class DeviceGreen:
         )
         return si.physics.StateCElectron(u[idx], DOS[idx], self, **info)
 
-    def scattering_state(self, elec, cutoff=0., method='full', *args, **kwargs):
+    def scattering_state(self, elec, cutoff=0., method='svd', *args, **kwargs):
         elec = self._elec(elec)
         method = method.lower()
-        if method == 'full':
-            return self._scattering_state_full(elec, cutoff, *args, **kwargs)
-        elif method == 'propagate':
-            return self._scattering_state_propagate(elec, cutoff, *args, **kwargs)
-        raise ValueError(f"{self.__class__.__name__}.scattering_state method is not [full,propagate]")
+        func = getattr(self, f"_scattering_state_{method}", None)
+        if func is None:
+            raise ValueError(f"{self.__class__.__name__}.scattering_state method is not [full,svd,propagate]")
+        return func(elec, cutoff, *args, **kwargs)
 
     def _scattering_state_full(self, elec, cutoff=0., **kwargs):
         A = self.spectral(elec, **kwargs)
         return self._scattering_state_from_spectral_full(A, elec, cutoff)
+
+    def _scattering_state_svd(self, elec, cutoff=0., **kwargs):
+        G = self._green_column(self.elec[elec].pvt_dev)
+        return self._scattering_state_from_spectral_svd(G, elec, cutoff)
 
     def _scattering_state_propagate(self, elec, cutoff=0):
         # First we need to calculate diagonal blocks of the spectral matrix
@@ -948,68 +1036,6 @@ class DeviceGreen:
         # Backtransform U to form the eigenchannels
         return si.physics.StateCElectron((Ut.T @ A)[::-1, :],
                                          tt[::-1], self, **info)
-
-    def _green_diag_block(self, idx):
-        nb = len(self.btd)
-        nbm1 = nb - 1
-
-        # Find parts we need to calculate
-        block1 = (idx.min() < self.btd_cum).nonzero()[0][0]
-        block2 = (idx.max() < self.btd_cum).nonzero()[0][0]
-        if block1 == block2:
-            blocks = [block1]
-        else:
-            blocks = list(range(block1, block2+1))
-        assert len(blocks) <= 2, f"{self.__class__.__name__} requires G calculation for only 1 or 2 blocks"
-
-        n = self.btd[blocks].sum()
-        G = np.empty([n, len(idx)], dtype=self._data.A[0].dtype)
-
-        btd = self.btd
-        c = np.append(0, self.btd_cum)
-        A = self._data.A
-        B = self._data.B
-        C = self._data.C
-        tX = self._data.tX
-        tY = self._data.tY
-        for b in blocks:
-            # Find the indices in the block
-            i = idx[c[b] <= idx].copy()
-            i = i[i < c[b + 1]].astype(np.int32)
-
-            c_idx = _a.arangei(c[b], c[b + 1]).reshape(-1, 1)
-            b_idx = indices_only(c_idx.ravel(), i)
-            # Subtract the first block to put it only in the sub-part
-            c_idx -= c[blocks[0]]
-
-            if b == blocks[0]:
-                sl = slice(0, btd[b])
-                r_idx = np.arange(len(b_idx))
-            else:
-                sl = slice(btd[blocks[0]], btd[blocks[0]] + btd[b])
-                r_idx = np.arange(len(idx) - len(b_idx), len(idx))
-
-            if b == 0:
-                G[sl, r_idx] = inv_destroy(A[b] - C[b + 1] @ tX[b])[:, b_idx]
-            elif b == nbm1:
-                G[sl, r_idx] = inv_destroy(A[b] - B[b - 1] @ tY[b])[:, b_idx]
-            else:
-                G[sl, r_idx] = inv_destroy(A[b] - B[b - 1] @ tY[b] - C[b + 1] @ tX[b])[:, b_idx]
-
-            if len(blocks) == 1:
-                break
-
-            # Now calculate the thing (below/above)
-            if b == blocks[0]:
-                # Calculate below
-                slp = slice(btd[b], btd[b] + btd[blocks[1]])
-                G[slp, r_idx] = - tX[b] @ G[sl, r_idx]
-            else:
-                # Calculate above
-                slp = slice(0, btd[blocks[0]])
-                G[slp, r_idx] = - tY[b] @ G[sl, r_idx]
-
-        return blocks, G
 
     def reset(self):
         self._data = PropertyDict()

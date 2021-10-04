@@ -620,11 +620,11 @@ class GeometryPlot(Plot):
             ax = sign * direction(ax, abc=cell, xyz=np.diag([1., 1., 1.]))
 
         return ax
-    
+
     @classmethod
     def _cross_product(cls, v1, v2, cell=None):
         """An enhanced version of the cross product.
-        
+
         It is an enhanced version because both bectors accept strings that represent
         the cartesian axes or the lattice vectors (see `v1`, `v2` below). It has been built
         so that cross product between lattice vectors (-){"a", "b", "c"} follows the same rules

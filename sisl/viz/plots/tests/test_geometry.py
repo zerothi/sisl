@@ -20,9 +20,10 @@ from sisl.viz.plots.tests.conftest import _TestPlot
 
 pytestmark = [pytest.mark.viz, pytest.mark.plotly]
 
+
 def test_cross_product():
     cell = np.eye(3) * 2
-    z_dir = np.array([0,0,1])
+    z_dir = np.array([0, 0, 1])
 
     products = [
         ["x", "y", z_dir], ["-x", "y", -z_dir], ["-x", "-y", z_dir],
@@ -32,6 +33,7 @@ def test_cross_product():
 
     for v1, v2, result in products:
         assert np.all(GeometryPlot._cross_product(v1, v2, cell) == result)
+
 
 class TestGeometry(_TestPlot):
 
@@ -138,14 +140,14 @@ class TestGeometry(_TestPlot):
         assert plot._for_backend["cell_style"] == cell_style
 
     def test_atoms_sorted_2d(self, plot):
-        plot.update_settings(atoms=None, axes="yz", nsc=[1,1,1])
+        plot.update_settings(atoms=None, axes="yz", nsc=[1, 1, 1])
 
         # Check that atoms are sorted along x
         assert np.allclose(plot.geometry.xyz[:, 1:][plot.geometry.xyz[:, 0].argsort()], plot._for_backend["atoms_props"]["xy"])
 
     def test_atoms_style(self, plot, axes, ndim, nsc):
         plot.update_settings(atoms=None, axes=axes, nsc=nsc)
-        
+
         rand_values = np.random.random(plot.geometry.na)
         atoms_style = {"color": rand_values, "size": rand_values, "opacity": rand_values}
 
