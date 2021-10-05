@@ -906,6 +906,16 @@ class DeviceGreen:
         return si.physics.StateCElectron(A.T, DOS, self, **info)
 
     def _scattering_state_propagate(self, elec, cutoff=0):
+
+        # Parse the cutoff value
+        # Here we may use 2 values, one for cutting off the initial space
+        # and one for the returned space.
+        cutoff = np.array(cutoff).ravel()
+        if cutoff.size != 2:
+            cutoff0 = cutoff1 = cutoff[0]
+        else:
+            cutoff0, cutoff1 = cutoff[0], cutoff[1]
+
         # First we need to calculate diagonal blocks of the spectral matrix
         # This is basically the same thing as calculating the Gf column
         # But only in the 1/2 diagonal blocks of Gf
@@ -928,11 +938,15 @@ class DeviceGreen:
         # Remove states for cutoff and size
         # Since there cannot be any addition of states later, we
         # can do the reduction here.
-        DOS, U = self._scattering_state_reduce(elec, DOS, U, cutoff)
+        # This will greatly increase performance for very wide systems
+        # since the number of contributing states is generally a fraction
+        # of the total electrode space.
+        DOS, U = self._scattering_state_reduce(elec, DOS, U, cutoff0)
         # Back-convert to retain scale of the vectors before SVD
         U *= (DOS * 2 * np.pi) ** 0.5
 
         nb = len(self.btd)
+
         u = [None] * nb
         u[blocks[0]] = U[:self.btd[blocks[0]], :]
         if len(blocks) > 1:
@@ -950,17 +964,21 @@ class DeviceGreen:
         for b in range(blocks[-1], nb - 1):
             u[b + 1] = - t[b] @ u[b]
 
-        # Now the full U is created (still F-order), but the DOS is *not* correct
+        # Now the full U is created (still F-order)
         u = np.concatenate(u)
 
         # We only need the minimal eigenspace, we already know we only have
         # len(Gamma_sqrt) eigenvalues (maximally)
+        # But contrary to the _scattering_state_svd we here have an even
+        # smaller dimension due to the above reduction of the eigenspace.
+        # Therefore this method is more sensitive to the `cutoff` value
+        # since it is applied twice.
         u, DOS, _ = svd_destroy(u, full_matrices=False)
         del _
 
         # TODO check with overlap convert with correct magnitude (Tr[A] / 2pi)
         DOS = DOS ** 2 / (2 * np.pi)
-        DOS, u = self._scattering_state_reduce(elec, DOS, u, cutoff)
+        DOS, u = self._scattering_state_reduce(elec, DOS, u, cutoff1)
 
         # Now we have the full u, create it and transpose to get it in C indexing
         data = self._data
@@ -970,7 +988,8 @@ class DeviceGreen:
             E=data.E,
             k=data.k,
             eta=data.eta,
-            cutoff=cutoff
+            cutoff_space=cutoff0,
+            cutoff=cutoff1
         )
         return si.physics.StateCElectron(u.T, DOS, self, **info)
 
