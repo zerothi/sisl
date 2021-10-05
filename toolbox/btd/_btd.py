@@ -906,10 +906,6 @@ class DeviceGreen:
         return si.physics.StateCElectron(A.T, DOS, self, **info)
 
     def _scattering_state_propagate(self, elec, cutoff=0):
-        warn(f"{self.__class__.__name__}.scattering_state(method=propagate) "
-             "is generally returning the wrong scattering states since orthogonality is not "
-             "enforced, consider using method=svd.")
-
         # First we need to calculate diagonal blocks of the spectral matrix
         # This is basically the same thing as calculating the Gf column
         # But only in the 1/2 diagonal blocks of Gf
@@ -933,6 +929,8 @@ class DeviceGreen:
         # Since there cannot be any addition of states later, we
         # can do the reduction here.
         DOS, U = self._scattering_state_reduce(elec, DOS, U, cutoff)
+        # Back-convert to retain scale of the vectors before SVD
+        U *= (DOS * 2 * np.pi) ** 0.5
 
         nb = len(self.btd)
         u = [None] * nb
@@ -952,29 +950,17 @@ class DeviceGreen:
         for b in range(blocks[-1], nb - 1):
             u[b + 1] = - t[b] @ u[b]
 
-        # Now the full U is created (C-order), but the DOS is *not* correct
-        u = np.concatenate(u).T
+        # Now the full U is created (still F-order), but the DOS is *not* correct
+        u = np.concatenate(u)
 
-        # reflects the DOS in the electrode region
-        # this is:
-        #    Diag[u^H u]
-        unorm = einsum('ij,ij->i', conj(u), u).real
-        DOS *= unorm
+        # We only need the minimal eigenspace, we already know we only have
+        # len(Gamma_sqrt) eigenvalues (maximally)
+        u, DOS, _ = svd_destroy(u, full_matrices=False)
+        del _
 
-        # We could check the orthogonality via this:
-        #  unorm = conj(u) @ u.T
-        #  np.fill_diagonal(unorm, 1j * unorm.diagonal().imag)
-        #  max_non_ortho = np.absolute(unorm).max()
-        # Since we don't know the real part, we retain the imaginary values.
-        # For a non-propagated version, the above should yield a
-        # diagonal matrix with 1's.
-        # Also, note the above mentioning of the Gram-Schmidt orthogonalization.
-
-        # And now rescale the eigenvectors for unity
-        u /= unorm.reshape(-1, 1) ** 0.5
-
-        # We then need to sort again since the eigenvalues may change
-        idx = np.argsort(-DOS)
+        # TODO check with overlap convert with correct magnitude (Tr[A] / 2pi)
+        DOS = DOS ** 2 / (2 * np.pi)
+        DOS, u = self._scattering_state_reduce(elec, DOS, u, cutoff)
 
         # Now we have the full u, create it and transpose to get it in C indexing
         data = self._data
@@ -986,7 +972,7 @@ class DeviceGreen:
             eta=data.eta,
             cutoff=cutoff
         )
-        return si.physics.StateCElectron(u[idx], DOS[idx], self, **info)
+        return si.physics.StateCElectron(u.T, DOS, self, **info)
 
     def eigen_channel(self, state, elec_to):
         if isinstance(elec_to, (Integral, str)):
