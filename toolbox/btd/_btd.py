@@ -23,12 +23,13 @@ It requires two inputs and has several optional flags.
     any implications for the requirement of the TBT.nc file.
 """
 from numbers import Integral
-from sisl.messages import warn
+from functools import lru_cache
 
 import numpy as np
 from numpy import einsum
 from numpy import conjugate as conj
 from scipy.linalg import sqrtm
+import scipy.sparse as ssp
 from scipy.sparse import csr_matrix
 
 import sisl as si
@@ -39,8 +40,9 @@ from sisl.utils.misc import PropertyDict
 
 arange = _a.arangei
 indices_only = si._indices.indices_only
+indices = si._indices.indices
 
-__all__ = ['PivotSelfEnergy', 'DeviceGreen']
+__all__ = ['PivotSelfEnergy', 'DownfoldSelfEnergy', 'DeviceGreen']
 
 
 def dagger(M):
@@ -103,22 +105,24 @@ class PivotSelfEnergy(si.physics.SelfEnergy):
         #  tbtgfSileTBtrans
         #  SelfEnergy object (for direct calculation)
         self._se = se
+
         if isinstance(se, si.io.tbtrans.tbtsencSileTBtrans):
             def se_func(*args, **kwargs):
-                return se.self_energy(self.name, *args, **kwargs)
+                return self._se.self_energy(self.name, *args, **kwargs)
             def scat_func(*args, **kwargs):
-                return se.scattering_matrix(self.name, *args, **kwargs)
+                return self._se.scattering_matrix(self.name, *args, **kwargs)
         else:
             def se_func(*args, **kwargs):
-                return se.self_energy(*args, **kwargs)
+                return self._se.self_energy(*args, **kwargs)
             def scat_func(*args, **kwargs):
-                return se.scattering_matrix(*args, **kwargs)
-
-        if pivot is None:
-            if isinstance(se, si.io.tbtrans.tbtsencSileTBtrans):
-                pivot = se
+                return self._se.scattering_matrix(*args, **kwargs)
 
         # Store the pivoting for faster indexing
+        if pivot is None:
+            if not isinstance(se, si.io.tbtrans.tbtsencSileTBtrans):
+                raise ValueError(f"{self.__class__.__name__} must be passed a sisl.io.tbtrans.tbtsencSileTBtrans. "
+                                 "Otherwise use the DownfoldSelfEnergy method with appropriate arguments.")
+            pivot = se
 
         # Pivoting indices for the self-energy for the device region
         # but with respect to the full system size
@@ -133,7 +137,7 @@ class PivotSelfEnergy(si.physics.SelfEnergy):
         self.pvt_down = pivot.pivot_down(name).reshape(-1, 1)
 
         # Retrieve BTD matrices for the corresponding electrode
-        self.btd = pivot.btd(name).reshape(-1, 1)
+        self.btd = pivot.btd(name)
 
         # Get the individual matrices
         cbtd = np.cumsum(self.btd)
@@ -143,28 +147,14 @@ class PivotSelfEnergy(si.physics.SelfEnergy):
             # collect the pivoting indices for the downfolding
             pvt_btd.append(self.pvt_down[o:i, 0])
             o += i
-        self.pvt_btd = np.concatenate(pvt_btd).reshape(-1, 1)
-        self.pvt_btd_sort = np.arange(o)
+        #self.pvt_btd = np.concatenate(pvt_btd).reshape(-1, 1)
+        #self.pvt_btd_sort = np.arange(o)
 
         self._se_func = se_func
         self._scat_func = scat_func
 
     def __len__(self):
         return len(self.pvt_dev)
-
-    def index_slice(self, in_device=True):
-        if in_device:
-            return self.pvt_dev, self.pvt_dev.T
-        return self.pvt, self.pvt.T
-
-    def btd_slices(self, sort=True):
-        """ BTD slices for down-folding the self-energies
-
-        This is *not* related to the device region.
-        """
-        if sort:
-            return [(i, i.T) for i in self.pvt_btd_sort]
-        return [(i, i.T) for i in self.pvt_btd]
 
     def self_energy(self, *args, **kwargs):
         return self._se_func(*args, **kwargs)
@@ -173,17 +163,127 @@ class PivotSelfEnergy(si.physics.SelfEnergy):
         return self._scat_func(*args, **kwargs)
 
 
+class DownfoldSelfEnergy(PivotSelfEnergy):
+
+    def __init__(self, name, se, pivot, Hdevice, bulk=True):
+        super().__init__(name, se, pivot)
+
+        # To re-create the downfoldable self-energies we need a few things:
+        # pivot == for pivoting indices and BTD downfolding region
+        # se == SelfEnergy for calculating self-energies and scattering matrix
+        # Hdevice == device H for downfolding the electrode self-energy
+        # bulk == whether the electrode self-energy argument should be passed bulk
+        #         or not
+        # name == just the name
+
+        # storage data
+        self._data = PropertyDict()
+        self._data.bulk = bulk
+
+        # Retain the device for only the downfold region
+        # a_down is sorted!
+        a_elec = pivot.a_elec(self.name)
+
+        # Now figure out all the atoms in the downfolding region
+        # pivot_down is the electrode + all orbitals including the orbitals
+        # reaching into the device
+        pivot_down = pivot.pivot_down(self.name)
+        # note that the last orbitals in pivot_down is the returned self-energies
+        # that we want to calculate in this class
+
+        geometry = pivot.geometry
+        # Figure out the full device part of the downfolding region
+        down_atoms = geometry.o2a(pivot_down, unique=True).astype(np.int32, copy=False)
+        down_orbitals = geometry.a2o(down_atoms, all=True).astype(np.int32, copy=False)
+
+        # The orbital indices in self.H.device.geometry
+        # which transfers the orbitals to the downfolding region
+
+        # Now we need to figure out the pivoting indices from the sub-set
+        # geometry
+
+        self._data.H = PropertyDict()
+        self._data.H.electrode = se.spgeom0
+        self._data.H.device = Hdevice.sub(down_atoms)
+        geometry_down = self._data.H.device.geometry
+
+        # Now we retain the positions of the electrode orbitals in the
+        # non pivoted structure for inserting the self-energy
+        # Once the down-folded matrix is formed we can pivot it
+        # in the BTD class
+        pvt = indices(down_atoms, a_elec)
+        self._data.elec = geometry_down.a2o(pvt[pvt >= 0], all=True).reshape(-1, 1)
+        pvt = indices(down_orbitals, pivot_down)
+        self._data.dev = pvt[pvt >= 0].reshape(-1, 1)
+
+        # Create BTD indices
+        self._data.cumbtd = np.append(0, np.cumsum(self.btd))
+
+    def _prepare(self, E, k=(0, 0, 0)):
+        if hasattr(self._data, "E"):
+            if np.allclose(self._data.E, E) and np.allclose(self._data.k, k):
+                # we have already prepared the calculation
+                return
+
+        # Prepare the matrices
+        data = self._data
+        H = data.H
+
+        data.SeH = H.device.Sk(k, dtype=np.complex128) * E - H.device.Hk(k, dtype=np.complex128)
+        if self.bulk:
+            E_bulk = E
+            if np.isrealobj(E):
+                try:
+                    E_bulk = E + 1j * self._se.eta
+                except:
+                    pass
+            data.SeH[data.elec, data.elec.T] = H.electrode.Sk(k, dtype=np.complex128) * E_bulk - H.electrode.Hk(k, dtype=np.complex128)
+        data.E = E
+        data.k = _a.asarrayd(k)
+
+    def self_energy(self, E, k=(0, 0, 0), *args, **kwargs):
+        self._prepare(E, k)
+        data = self._data
+        se = super().self_energy(E, k, *args, **kwargs)
+
+        # now put it in the matrix
+        M = data.SeH.copy()
+        M[data.elec, data.elec.T] -= se
+
+        # transfer to BTD
+        pvt = data.dev
+        cumbtd = data.cumbtd
+
+        def gM(M, idx1, idx2):
+            return M[idx1, idx2].A
+
+        Mr = 0
+        pvt_i = pvt[cumbtd[0]:cumbtd[1]].reshape(-1, 1)
+        for b in range(len(self.btd) - 1):
+            pvt_i1 = pvt[cumbtd[b+1]:cumbtd[b+2]].reshape(-1, 1)
+
+            Mr = gM(M, pvt_i1, pvt_i.T) @ solve(gM(M, pvt_i, pvt_i.T) - Mr,
+                                                gM(M, pvt_i, pvt_i1.T),
+                                                overwrite_a=True, overwrite_b=True)
+            pvt_i = pvt_i1
+
+        return Mr
+
+    def scattering_matrix(self, *args, **kwargs):
+        return self.se2scat(self.self_energy(*args, **kwargs))
+
+
 class BTD:
     """ Container class that holds a BTD matrix """
 
     def __init__(self, btd):
         self._btd = btd
         # diagonal
-        self._M11 = [None] * len(btd)
-        # above
-        self._M10 = [None] * (len(btd)-1)
+        self._M00 = [None] * len(btd)
         # below
-        self._M12 = [None] * (len(btd)-1)
+        self._M10 = [None] * (len(btd)-1)
+        # right
+        self._M01 = [None] * (len(btd)-1)
 
     @property
     def btd(self):
@@ -195,46 +295,82 @@ class BTD:
     def __getitem__(self, key):
         if isinstance(key, tuple):
             i, j = key
-            if i == j:
+            if i == j: # (i, i)
                 return self._M11[i]
             elif i - 1 == j: # (i, i-1)
                 return self._M10[j]
             elif i + 1 == j: # (i, i+1)
-                return self._M12[i]
-            raise IndexError(f"{self.__class__.__name__} does not have index ({i},{j}), only (i,i+-1) are allowed.")
+                return self._M01[i]
+            raise IndexError(f"{self.__class__.__name__} does not have index [{i},{j}]; only [i,i±1] are allowed.")
         raise ValueError(f"{self.__class__.__name__} index retrieval must be done with a tuple.")
 
     def __setitem__(self, key, M):
         if isinstance(key, tuple):
             i, j = key
-            if i == j:
-                self._M11[i] = M
-            elif i - 1 == j: # (i, i-1)
+            if i == j: # (i, i)
+                self._M00[i] = M
+            elif i == j + 1: # (i+1, i)
                 self._M10[j] = M
             elif i + 1 == j: # (i, i+1)
-                self._M12[i] = M
+                self._M01[i] = M
             elif not np.allclose(M, 0.):
-                raise IndexError(f"{self.__class__.__name__} does not have index ({i},{j}); only (i,i+-1) are allowed.")
+                raise IndexError(f"{self.__class__.__name__} does not have index [{i},{j}]; only [i,i±1] are allowed.")
             assert M.shape == (self.btd[j], self.btd[i])
         else:
             raise ValueError(f"{self.__class__.__name__} index retrieval must be done with a tuple.")
 
 
 class DeviceGreen:
-    """
+    r""" Block-tri-diagonal Green function calculator
 
-    Basic usage:
+    This class enables the extraction and calculation of some important
+    quantities not currently accessible in TBtrans.
+
+    For instance it may be used to calculate scattering states from
+    the Green function.
+    Once scattering states have been calculated one may also calculate
+    the eigenchannels.
+
+    Both calculations are very efficient and uses very little memory
+    compared to the full matrices normally used.
+
+
+    Consider a regular 2 electrode setup with transport direction
+    along the 3rd lattice vector. Then the following example may
+    be used to calculate the eigen-channels:
 
     .. code::
 
        import sisl
        from sisl_toolbox.btd import *
-       left = PivotSelfEnergy("Left", sisl.get_sile("siesta.TBT.SE.nc"))
-       right = PivotSelfEnergy("Right", sisl.get_sile("siesta.TBT.SE.nc"))
+       # First read in the required data
+       H_elec = sisl.Hamiltonian.read("ELECTRODE.nc")
        H = sisl.Hamiltonian.read("DEVICE.nc")
+       # remove couplings along the self-energy direction
+       # to ensure no fake couplings.
+       H.set_nsc(c=1)
+
+       # Read in a single tbtrans output which contains the BTD matrices
+       # and instructs this class how it should pivot the matrix to obtain
+       # a BTD matrix.
+       tbt = sisl.get_sile("siesta.TBT.nc")
+
+       # Define the self-energy calculators which will downfold the
+       # self-energies into the device region.
+       # Since a downfolding will be done it requires the device Hamiltonian.
+       H_elec.shift(tbt.mu("Left"))
+       left = DownfoldSelfEnergy("Left", s.RecursiveSI(H_elec, '-C', eta=tbt.eta("Left"),
+                                 tbt, H)
+       H_elec.shift(tbt.mu("Right") - tbt.mu("Left"))
+       left = DownfoldSelfEnergy("Right", s.RecursiveSI(H_elec, '+C', eta=tbt.eta("Right"),
+                                 tbt, H)
+
        G = DeviceGreen(H, [left, right], tbt)
-       G.prepare(0.1, [0.1, 0.1, 0.1])
-       G.green()
+
+       # Calculate the scattering state from the left electrode
+       # and then the eigen channels to the right electrode
+       state = G.scattering_state("Left", E=0.1)
+       eig_channel = G.eigen_channel(state, "Right")
 
     """
 
@@ -250,17 +386,22 @@ class DeviceGreen:
         # Store electrodes (for easy retrieval of the SE)
         # There may be no electrodes
         self.elec = elec
+        self.elec_pvt_dev = [pivot.pivot(el.name, in_device=True).reshape(-1, 1)
+                             for el in elec]
 
         self.pvt = pivot.pivot()
         self.btd = pivot.btd()
 
         # Create BTD indices
         self.btd_cum = np.cumsum(self.btd)
-        cumbtd = np.append(0, self.btd_cum)
+        #cumbtd = np.append(0, self.btd_cum)
 
-        self.btd_idx = [self.pvt[cumbtd[i]:cumbtd[i + 1]]
-                        for i in range(len(self.btd))]
+        #self.btd_idx = [self.pvt[cumbtd[i]:cumbtd[i+1]]
+        #                for i in range(len(self.btd))]
+        self.reset()
 
+    def reset(self):
+        """ Clean any memory used by this object """
         self._data = PropertyDict()
 
     def __len__(self):
@@ -280,13 +421,15 @@ class DeviceGreen:
             return elec
         return self.elec[elec].name
 
-    def prepare(self, E, k=(0, 0, 0), eta=0.0):
-        self._data.E = E
-        self._data.k = _a.asarrayd(k)
-        self._data.eta = eta
+    def _prepare(self, E, k=(0, 0, 0)):
+        data = self._data
+        if hasattr(data, "E"):
+            if np.allclose(data.E, E) and np.allclose(data.k, k):
+                # we have already prepared the calculation
+                return
 
         # Prepare the Green function calculation
-        inv_G = self.H.Sk(k) * (E + 1j * eta) - self.H.Hk(k)
+        inv_G = self.H.Sk(k, dtype=np.complex128) * E - self.H.Hk(k, dtype=np.complex128)
 
         # Create all self-energies (and store the Gamma's)
         gamma = []
@@ -295,7 +438,7 @@ class DeviceGreen:
             SE = elec.self_energy(E, k)
             inv_G[elec.pvt, elec.pvt.T] -= SE
             gamma.append(elec.se2scat(SE))
-        self._data.gamma = gamma
+        data.gamma = gamma
 
         # Now reduce the sparse matrix to the device region (plus do the pivoting)
         inv_G = inv_G[self.pvt, :][:, self.pvt]
@@ -332,9 +475,9 @@ class DeviceGreen:
         # clean-up, not used anymore
         del inv_G
 
-        self._data.A = A
-        self._data.B = B
-        self._data.C = C
+        data.A = A
+        data.B = B
+        data.C = C
 
         # Now do propagation forward, tilde matrices
         tX = [0] * nb
@@ -350,10 +493,28 @@ class DeviceGreen:
             # \tilde X
             tX[p] = solve(A[p+1] - C[p+2] @ tX[p+1], B[p], overwrite_a=True)
 
-        self._data.tX = tX
-        self._data.tY = tY
+        data.tX = tX
+        data.tY = tY
+        data.E = E
+        data.k = _a.asarrayd(k)
 
-    def green(self, format='array'):
+    def green(self, E, k=(0, 0, 0), format='array'):
+        r""" Calculate the Green function for a given `E` and `k` point
+
+        The Green function is calculated as:
+
+        .. math::
+            \mathbf G(E,\mathbf k) = \big[\mathbf S(\mathbf k) E - \mathbf H(\mathbf k)
+                  - \sum \boldsymbol \Sigma(E,\mathbf k)\big]^{-1}
+
+        Parameters
+        ----------
+        E : float
+           the energy to calculate at, may be a complex value.
+        k : array_like, optional
+           k-point to calculate the Green function at
+        """
+        self._prepare(E, k)
         format = format.lower()
         if format in ('array', 'dense'):
             return self._green_array()
@@ -657,8 +818,34 @@ class DeviceGreen:
 
         return G
 
-    def spectral(self, elec, format='array', method='column', herm=True):
+    def spectral(self, elec, E, k=(0, 0, 0), format='array', method='column', herm=True):
+        r""" Calculate the spectral function for a given `E` and `k` point from a given electrode
+
+        The spectral function is calculated as:
+
+        .. math::
+            \mathbf A_{\mathfrak{e}}(E,\mathbf k) = \mathbf G(E,\mathbf k)\boldsymbol\Gamma_{\mathfrak{e}}(E,\mathbf k)
+                   \mathbf G^\dagger(E,\mathbf k)
+
+        Parameters
+        ----------
+        elec : str or int
+           the electrode to calculate the spectral function from
+        E : float
+           the energy to calculate at, may be a complex value.
+        k : array_like, optional
+           k-point to calculate the spectral function at
+        method : {'column', 'propagate'}
+           which method to use for calculating the spectral function.
+           Depending on the size of the BTD blocks one may be faster than the
+           other. For large systems you are recommended to time the different methods
+           and stick with the fastest one, they are numerically identical.
+        """
+        # the herm flag is considered useful for testing, there is no need to
+        # play with it. So it isn't documented.
+
         elec = self._elec(elec)
+        self._prepare(E, k)
         format = format.lower()
         method = method.lower()
         if format in ('array', 'dense'):
@@ -669,7 +856,7 @@ class DeviceGreen:
         raise ValueError(f"{self.__class__.__name__}.spectral format/method not recognized.")
 
     def _spectral_column(self, elec, herm):
-        G = self._green_column(self.elec[elec].pvt_dev.ravel())
+        G = self._green_column(self.elec_pvt_dev[elec].ravel())
         # Now calculate the full spectral function
         return G @ self._data.gamma[elec] @ dagger(G)
 
@@ -678,7 +865,7 @@ class DeviceGreen:
         nbm1 = nb - 1
 
         # First we need to calculate diagonal blocks of the spectral matrix
-        blocks, A = self._green_diag_block(self.elec[elec].pvt_dev.ravel())
+        blocks, A = self._green_diag_block(self.elec_pvt_dev[elec].ravel())
         A = A @ self._data.gamma[elec] @ dagger(A)
 
         # Allocate space for the full matrix
@@ -827,7 +1014,7 @@ class DeviceGreen:
         # Select only the first N components where N is the
         # number of orbitals in the electrode (there can't be
         # any more propagating states anyhow).
-        N = self.elec[elec].pvt_dev.size
+        N = len(self._data.gamma[elec])
 
         # sort and take N highest values
         idx = np.argsort(-DOS)[:N]
@@ -835,14 +1022,46 @@ class DeviceGreen:
         U = U[:, idx]
 
         if cutoff > 0:
-            idx = (DOS > cutoff).nonzero()[0]
+            # also retain values with large negative DOS.
+            # These should correspond to states with large weight, but in some
+            # way unphysical. The DOS *should* be positive.
+            idx = (np.fabs(DOS) > cutoff).nonzero()[0]
             DOS = DOS[idx]
             U = U[:, idx]
 
         return DOS, U
 
-    def scattering_state(self, elec, cutoff=0., method='svd', *args, **kwargs):
+    def scattering_state(self, elec, E, k=(0, 0, 0), cutoff=0., method='svd', *args, **kwargs):
+        r""" Calculate the scattering states for a given `E` and `k` point from a given electrode
+
+        The scattering states are the eigen states of the spectral function:
+
+        .. math::
+            \mathbf A_{\mathfrak{e}}(E,\mathbf k) \mathbf u = 2\pi\mathbf a \mathbf u
+
+        where :math:`\mathbf a_i` is the DOS carried by the :math:`i`'th scattering
+        state.
+
+        Parameters
+        ----------
+        elec : str or int
+           the electrode to calculate the spectral function from
+        E : float
+           the energy to calculate at, may be a complex value.
+        k : array_like, optional
+           k-point to calculate the spectral function at
+        cutoff : float, optional
+           cutoff the returned scattering states at some DOS value.
+        method : {'svd', 'propagate', 'full'}
+           which method to use for calculating the scattering states.
+           Use only the _full_ method testing purposes as it is extremely slow
+           and requires a substantial amount of memory.
+           The SVD method is the fastests considering its complete precision.
+           The propagate method may be even faster for very large systems with
+           very little loss of precision, depends on `cutoff`.
+        """
         elec = self._elec(elec)
+        self._prepare(E, k)
         method = method.lower()
         func = getattr(self, f"_scattering_state_{method}", None)
         if func is None:
@@ -850,7 +1069,8 @@ class DeviceGreen:
         return func(elec, cutoff, *args, **kwargs)
 
     def _scattering_state_full(self, elec, cutoff=0., **kwargs):
-        A = self.spectral(elec, **kwargs)
+        # We know that scattering_state has called prepare!
+        A = self.spectral(elec, self._data.E, self._data.k, **kwargs)
 
         # add something to the diagonal (improves diag precision for small states)
         np.fill_diagonal(A, A.diagonal() + 0.1)
@@ -869,7 +1089,6 @@ class DeviceGreen:
             elec=self._elec_name(elec),
             E=data.E,
             k=data.k,
-            eta=data.eta,
             cutoff=cutoff
         )
 
@@ -877,7 +1096,7 @@ class DeviceGreen:
         return si.physics.StateCElectron(A.T, DOS, self, **info)
 
     def _scattering_state_svd(self, elec, cutoff=0., **kwargs):
-        A = self._green_column(self.elec[elec].pvt_dev.ravel())
+        A = self._green_column(self.elec_pvt_dev[elec].ravel())
 
         # This calculation uses the sqrt(Gamma) calculation combined with svd
         Gamma_sqrt = sqrtm(self._data.gamma[elec])
@@ -898,7 +1117,6 @@ class DeviceGreen:
             elec=self._elec_name(elec),
             E=data.E,
             k=data.k,
-            eta=data.eta,
             cutoff=cutoff
         )
 
@@ -906,7 +1124,6 @@ class DeviceGreen:
         return si.physics.StateCElectron(A.T, DOS, self, **info)
 
     def _scattering_state_propagate(self, elec, cutoff=0):
-
         # Parse the cutoff value
         # Here we may use 2 values, one for cutting off the initial space
         # and one for the returned space.
@@ -919,7 +1136,7 @@ class DeviceGreen:
         # First we need to calculate diagonal blocks of the spectral matrix
         # This is basically the same thing as calculating the Gf column
         # But only in the 1/2 diagonal blocks of Gf
-        blocks, U = self._green_diag_block(self.elec[elec].pvt_dev.ravel())
+        blocks, U = self._green_diag_block(self.elec_pvt_dev[elec].ravel())
 
         # Calculate the spectral function only for the blocks that host the
         # scattering matrix
@@ -943,6 +1160,8 @@ class DeviceGreen:
         # of the total electrode space.
         DOS, U = self._scattering_state_reduce(elec, DOS, U, cutoff0)
         # Back-convert to retain scale of the vectors before SVD
+        # and also take the sqrt to ensure U U^dagger returns
+        # a sensible value.
         U *= (DOS * 2 * np.pi) ** 0.5
 
         nb = len(self.btd)
@@ -987,15 +1206,33 @@ class DeviceGreen:
             elec=self._elec_name(elec),
             E=data.E,
             k=data.k,
-            eta=data.eta,
             cutoff_space=cutoff0,
             cutoff=cutoff1
         )
         return si.physics.StateCElectron(u.T, DOS, self, **info)
 
     def eigen_channel(self, state, elec_to):
+        r""" Calculate the eigen channel from scattering states entering electrodes `elec_to`
+
+        The energy and k-point is inferred from the `state` object and it should have
+        been a returned value from `scattering_state`.
+
+        The eigenchannels are the eigen states of the transmission matrix in the
+        energy weighted scattering states:
+
+        .. math::
+            \mathbf A_{\mathfrak{e}}(E,\mathbf k) \mathbf u &= 2\pi\mathbf a \mathbf u
+            \\
+            \mathbf t_{\mathbf u} &= \sum \langle \mathbf u | \boldsymbol\Gamma_{\mathfrak{e\to}} | \mathbf u\rangle
+
+        where the eigenvectors of :math:`\mathbf t_{\mathbf u}` is the coefficients of the
+        scattering states for the individual eigen channels. The eigenvalues are the
+        transmission eigenvalues.
+        """
+        self._prepare(state.info["E"], state.info["k"])
         if isinstance(elec_to, (Integral, str)):
             elec_to = [elec_to]
+        # convert to indices
         elec_to = [self._elec(e) for e in elec_to]
 
         # Retrive the scattering states `A`
@@ -1005,17 +1242,17 @@ class DeviceGreen:
         sqDOS = (np.sign(state.c) * np.sqrt(np.fabs(state.c))).reshape(-1, 1)
 
         # create shorthands
-        elec = self.elec
+        elec_pvt_dev = self.elec_pvt_dev
         G = self._data.gamma
 
         # Create the first electrode
         el = elec_to[0]
-        idx = elec[el].pvt_dev.ravel()
+        idx = elec_pvt_dev[el].ravel()
         u = A[:, idx] * sqDOS
         # the summed transmission matrix
         Ut = u @ G[el] @ dagger(u)
         for el in elec_to[1:]:
-            idx = elec[el].pvt_dev.ravel()
+            idx = elec_pvt_dev[el].ravel()
             u = A[:, idx] * sqDOS
             Ut += u @ G[el] @ dagger(u)
 
@@ -1034,6 +1271,3 @@ class DeviceGreen:
         # Backtransform U to form the eigenchannels
         return si.physics.StateCElectron((Ut.T @ A)[::-1, :],
                                          tt[::-1], self, **info)
-
-    def reset(self):
-        self._data = PropertyDict()
