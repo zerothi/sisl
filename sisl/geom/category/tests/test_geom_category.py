@@ -5,7 +5,7 @@ import pytest
 
 import numpy as np
 
-from sisl import Atom, PeriodicTable, Cuboid
+from sisl import Atom, PeriodicTable, Cuboid, Geometry
 from sisl.geom import *
 
 
@@ -84,6 +84,9 @@ def test_geom_category_even_odd():
 def test_geom_category_index():
     hBN = honeycomb(1.42, Atom[5, 7]) * (4, 5, 1)
 
+    first_and_third = AtomIndex([0,2])
+    assert set([0,2]) == set(hBN.asc2uc(first_and_third))
+
     odd = AtomIndex(mod=2)
     even = ~odd
     str(odd)
@@ -98,6 +101,64 @@ def test_geom_category_index():
             assert c == even
         else:
             assert c == odd
+
+
+def test_geom_category_seq():
+    geom = honeycomb(1.42, Atom[5, 7]) * (4, 5, 1)
+
+    cat = AtomSeq("")
+    assert len(geom.asc2uc(cat)) == 0
+
+    cat = AtomSeq("0:")
+    assert len(geom.asc2uc(cat)) == geom.na
+
+    cat = AtomSeq(":")
+    assert len(geom.asc2uc(cat)) == geom.na
+
+    cat = AtomSeq(":-2")
+    assert len(geom.asc2uc(cat)) == geom.na - 1
+
+    cat = AtomSeq("-2:")
+    assert len(geom.asc2uc(cat)) == 2
+
+    cat = AtomSeq("-2:2:")
+    assert len(geom.asc2uc(cat)) == 1
+
+    # Standalone negative numbers are not supported,
+    # they are understood as ranges.
+    cat = AtomSeq("-2")
+    assert set(geom.asc2uc(cat)) == set([0,1,2])
+
+    cat = AtomSeq("0,3,5")
+    assert set(geom.asc2uc(cat)) == set([0,3,5])
+
+    cat = AtomSeq(":3,5")
+    assert set(geom.asc2uc(cat)) == set([0,1,2,3,5])
+
+def test_geom_category_tag():
+    atoms = [Atom(Z=6, tag="C1"), Atom(Z=6, tag="C2"), Atom(Z=6, tag="C3"), Atom(Z=1, tag="H")]
+    geom = Geometry([[0, 0, 0]]*4, atoms=atoms)
+
+    cat = AtomTag("")
+    assert len(geom.asc2uc(cat)) == 4
+
+    cat = AtomTag("C")
+    assert set(geom.asc2uc(cat)) == set([0,1,2])
+
+    cat = AtomTag("C1")
+    assert set(geom.asc2uc(cat)) == set([0])
+
+    cat = AtomTag("C$")
+    assert len(geom.asc2uc(cat)) == 0
+
+    cat = AtomTag("C[13]")
+    assert set(geom.asc2uc(cat)) == set([0,2])
+
+    cat = AtomTag("[CH]")
+    assert set(geom.asc2uc(cat)) == set([0,1,2,3])
+
+    cat = AtomTag("[CH]$")
+    assert set(geom.asc2uc(cat)) == set([3])
 
 
 def test_geom_category_frac_site():
