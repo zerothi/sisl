@@ -1,7 +1,6 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
-from sisl.viz.input_fields.sisl_obj import DistributionInput
 import numpy as np
 import os
 
@@ -10,11 +9,11 @@ from sisl.messages import warn
 from ..plot import Plot, entry_point
 from ..plotutils import find_files, random_color
 from ..input_fields import (
-    TextInput, SileInput, SwitchInput, ColorPicker, DropdownInput,
+    TextInput, SileInput, BoolInput, ColorInput, OptionsInput,
     IntegerInput, FloatInput, OrbitalQueries,
-    Array1DInput, GeometryInput
+    Array1DInput, GeometryInput, ErangeInput,
+    DistributionInput
 )
-from ..input_fields.range import ErangeInput
 
 try:
     import pathos
@@ -30,55 +29,61 @@ class PdosPlot(Plot):
     Parameters
     -------------
     pdos_file: pdosSileSiesta, optional
-        This parameter explicitly sets a .PDOS file. Otherwise, the PDOS file
-        is attempted to read from the fdf file
+    	This parameter explicitly sets a .PDOS file. Otherwise, the PDOS file
+    	is attempted to read from the fdf file
     tbt_nc: tbtncSileTBtrans, optional
-        This parameter explicitly sets a .TBT.nc file. Otherwise, the PDOS
-        file is attempted to read from the fdf file
+    	This parameter explicitly sets a .TBT.nc file. Otherwise, the PDOS
+    	file is attempted to read from the fdf file
     geometry: Geometry or sile (or path to file) that contains a geometry, optional
-        If this is passed, the geometry that has been read is ignored and
-        this one is used instead.
+    	If this is passed, the geometry that has been read is ignored and
+    	this one is used instead.
     Erange: array-like of shape (2,), optional
-        Energy range where PDOS is displayed.
-    distribution: array-like of dict, optional
-        The distribution used for the smearing of the PDOS if calculated by
-        sisl.             It accepts the same types of values as the
-        `distribution` argument of `EigenstateElectron.PDOS`.
-        Additionally, it accepts a dictionary containing arguments that are
-        passed directly             to
-        `sisl.physics.distribution.get_distribution`. E.g.: {"method":
-        "gaussian",              "smearing": 0.01, "x0": 0.0}
-        Each item is a dict. Structure of the expected dicts:{
-        'method':          'smearing':          'x0':  }
+    	Energy range where PDOS is displayed.
+    distribution: dict, optional
+    	The distribution used for the smearing of the PDOS if calculated by
+    	sisl.             It accepts the same types of values as the
+    	`distribution` argument of `EigenstateElectron.PDOS`.
+    	Additionally, it accepts a dictionary containing arguments that are
+    	passed directly             to
+    	`sisl.physics.distribution.get_distribution`. E.g.: {"method":
+    	"gaussian",              "smearing": 0.01, "x0": 0.0}
+    	Structure of the dict: {         'method':          'smearing':
+    	'x0':  }
     nE: int, optional
-        If calculating the PDOS from a hamiltonian, the number of energy
-        points used
+    	If calculating the PDOS from a hamiltonian, the number of energy
+    	points used
     kgrid: array-like, optional
-        The number of kpoints in each reciprocal direction.              A
-        Monkhorst-Pack grid will be generated to calculate the PDOS.
-        If not provided, it will be set to 3 for the periodic directions
-        and 1 for the non-periodic ones.
+    	The number of kpoints in each reciprocal direction.              A
+    	Monkhorst-Pack grid will be generated to calculate the PDOS.
+    	If not provided, it will be set to 3 for the periodic directions
+    	and 1 for the non-periodic ones.
     kgrid_displ: array-like, optional
-        Displacement of the Monkhorst-Pack grid
+    	Displacement of the Monkhorst-Pack grid
     E0: float, optional
-        The energy to which all energies will be referenced (including
-        Erange).
+    	The energy to which all energies will be referenced (including
+    	Erange).
     requests: array-like of dict, optional
-        Here you can ask for the specific PDOS that you need.
-        TIP: Queries can be activated and deactivated.   Each item is a
-        dict. Structure of the expected dicts:{         'name':
-        'species':          'atoms':          'orbitals':          'spin':
-        'normalize':          'color':          'linewidth':          'dash':
-        'split_on':          'scale': The final DOS will be multiplied by
-        this number. }
+    	Here you can ask for the specific PDOS that you need.
+    	TIP: Queries can be activated and deactivated.   Each item is a
+    	dict.    Structure of the dict: {         'name':          'species':
+    	'atoms':    Structure of the dict: {         'index':    Structure of
+    	the dict: {         'in':  }         'fx':          'fy':
+    	'fz':          'x':          'y':          'z':          'Z':
+    	'neighbours':    Structure of the dict: {         'range':
+    	'R':          'neigh_tag':  }         'tag':          'seq':  }
+    	'orbitals':          'spin':          'normalize':          'color':
+    	'linewidth':          'dash':          'split_on':          'scale':
+    	The final DOS will be multiplied by this number. }
     root_fdf: fdfSileSiesta, optional
-        Path to the fdf file that is the 'parent' of the results.
+    	Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
+    entry_points_order: array-like, optional
+    	Order with which entry points will be attempted.
     backend:  optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
     """
 
     #Define all the class attributes
@@ -100,7 +105,6 @@ class PdosPlot(Plot):
         SileInput(
             key = "pdos_file", name = "Path to PDOS file",
             dtype=sisl.io.siesta.pdosSileSiesta,
-            width = "s100% m50% l33%",
             group="dataread",
             params = {
                 "placeholder": "Write the path to your PDOS file here...",
@@ -111,7 +115,6 @@ class PdosPlot(Plot):
         SileInput(
             key = "tbt_nc", name = "Path to the TBT.nc file",
             dtype=sisl.io.tbtrans.tbtncSileTBtrans,
-            width = "s100% m50% l33%",
             group="dataread",
             params = {
                 "placeholder": "Write the path to your TBT.nc file here...",
@@ -133,7 +136,8 @@ class PdosPlot(Plot):
 
         DistributionInput(
             key="distribution", name="distribution",
-            default=[{"method": "gaussian", "smearing": 0.01, "x0": 0.0}],
+            default={"method": "gaussian", "smearing": 0.01, "x0": 0.0},
+            group="Hparams",
             help="""The distribution used for the smearing of the PDOS if calculated by sisl.
             It accepts the same types of values as the `distribution` argument of `EigenstateElectron.PDOS`. 
             Additionally, it accepts a dictionary containing arguments that are passed directly
@@ -182,7 +186,6 @@ class PdosPlot(Plot):
                 TextInput(
                     key="name", name="Name",
                     default="DOS",
-                    width="s100% m50% l20%",
                     params={
                         "placeholder": "Name of the line..."
                     },
@@ -190,7 +193,7 @@ class PdosPlot(Plot):
 
                 'species', 'atoms', 'orbitals', 'spin',
 
-                SwitchInput(
+                BoolInput(
                     key="normalize", name="Normalize",
                     default=False,
                     params={
@@ -199,7 +202,7 @@ class PdosPlot(Plot):
                     }
                 ),
 
-                ColorPicker(
+                ColorInput(
                     key="color", name="Line color",
                     default=None,
                 ),
@@ -209,7 +212,7 @@ class PdosPlot(Plot):
                     default=1,
                 ),
 
-                DropdownInput(
+                OptionsInput(
                     key="dash", name="Line style",
                     default="solid",
                     params={
@@ -220,7 +223,7 @@ class PdosPlot(Plot):
                     }
                 ),
 
-                DropdownInput(
+                OptionsInput(
                     key="split_on", name="Split",
                     default=None,
                     params={
@@ -289,7 +292,7 @@ class PdosPlot(Plot):
             _description="Split the total DOS along the different spin"
         )
 
-    @entry_point('siesta output')
+    @entry_point('siesta output', 0)
     def _read_siesta_output(self, pdos_file):
         """
         Reads the pdos from a SIESTA .PDOS file.
@@ -297,7 +300,7 @@ class PdosPlot(Plot):
         #Get the info from the .PDOS file
         self.geometry, self.E, self.PDOS = self.get_sile(pdos_file or "pdos_file").read_data()
 
-    @entry_point("TB trans")
+    @entry_point("TB trans", 1)
     def _read_TBtrans(self, root_fdf, tbt_nc):
         """
         Reads the PDOS from a *.TBT.nc file coming from a TBtrans run.
@@ -317,7 +320,7 @@ class PdosPlot(Plot):
         # Read the geometry from the TBT.nc file and get only the device part
         self.geometry = tbt_sile.read_geometry(**read_geometry_kwargs).sub(tbt_sile.a_dev)
 
-    @entry_point('hamiltonian')
+    @entry_point('hamiltonian', 2)
     def _read_from_H(self, kgrid, kgrid_displ, Erange, nE, E0, distribution):
         """
         Calculates the PDOS from a sisl Hamiltonian.

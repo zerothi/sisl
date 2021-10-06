@@ -13,7 +13,7 @@ from .plot import Plot
 from .configurable import Configurable, vizplotly_settings
 from .plotutils import find_files, find_plotable_siles, call_method_if_present, get_plot_classes
 
-from .input_fields import TextInput, FilePathInput, SwitchInput, RangeSlider, Array1DInput
+from .input_fields import TextInput, FilePathInput, BoolInput, RangeSliderInput, Array1DInput
 
 __all__ = ["Session"]
 
@@ -110,7 +110,6 @@ class Session(Configurable):
             key = "root_dir", name = "Root directory",
             group = "filesystem",
             default = os.getcwd(),
-            width = "s100% l50%",
             params = {
                 "placeholder": "Write the path here..."
             }
@@ -120,26 +119,23 @@ class Session(Configurable):
             key="file_storage_dir", name="File storage directory",
             group="filesystem",
             default= get_environ_variable("SISL_TMP"),
-            width="s100% l50%",
             params={
                 "placeholder": "Write the path here..."
             },
             help="Directory where files uploaded in the GUI will be stored"
         ),
 
-        SwitchInput(
+        BoolInput(
             key="keep_uploaded", name="Keep uploaded files",
             group="filesystem",
             default=False,
-            width="s100% l50%",
             help="Whether uploaded files should be kept in disk or directly removed after plotting them."
         ),
 
-        RangeSlider(
+        RangeSliderInput(
             key = "search_depth", name = "Search depth",
             group = "filesystem",
             default = [0, 3],
-            width = "s100% l50%",
             params = {
                 "min": 0,
                 "max": 15,
@@ -152,7 +148,7 @@ class Session(Configurable):
             help = "Determines the depth limits of the search for structures (from the root directory)."
         ),
 
-        SwitchInput(
+        BoolInput(
             key = "showTooltips", name = "Show Tooltips",
             group = "gui",
             default = True,
@@ -163,7 +159,7 @@ class Session(Configurable):
             help = "Tooltips help you understand how something works or what something will do.<br>If you are already familiar with the interface, you can turn this off."
         ),
 
-        SwitchInput(
+        BoolInput(
             key = "listenForUpdates", name = "Listen for updates",
             group = "gui",
             default = True,

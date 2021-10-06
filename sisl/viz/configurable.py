@@ -411,10 +411,16 @@ class ConfigurableMeta(type):
                 if "_parameters" in vars(base):
                     class_params = [*class_params, *deepcopy(base._parameters)]
                 if "_param_groups" in vars(base):
-                    class_param_groups = [*class_param_groups, *deepcopy(base._param_groups)]
+                    class_param_groups = [*deepcopy(base._param_groups), *class_param_groups]
 
             attrs["_parameters"] = class_params
-            attrs["_param_groups"] = class_param_groups
+            attrs["_param_groups"] = [group for group in class_param_groups if group["key"] is not None]
+            attrs["_param_groups"].append({
+                "key": None,
+                "name": "Other settings",
+                "icon": "settings",
+                "description": "Here are some unclassified settings. Even if they don't belong to any group, they might still be important. They may be here just because the developer was too lazy to categorize them or forgot to do so. <b>If you are the developer</b> and it's the first case, <b>shame on you<b>."
+            })
 
             for f_name, f in attrs.items():
                 if callable(f) and not f_name.startswith("__"):
@@ -667,10 +673,6 @@ class Configurable(metaclass=ConfigurableMeta):
 
     def get_param(self, key, as_dict=False, params_extractor=False):
         """ Gets the parameter for a given setting
-
-        By default it returns its dictionary, so that one can check the information that it contains.
-        You can ask for the parameter itself by setting as_dict to False. However, if you want to
-        modify the parameter you should use the modify_param() method instead.
 
         Arguments
         ---------

@@ -9,7 +9,7 @@ import shutil
 import sisl
 from ...plot import Plot, entry_point
 from ...plotutils import run_multiple
-from ...input_fields import TextInput, SwitchInput, ColorPicker, DropdownInput, IntegerInput, FloatInput, RangeSlider, QueriesInput, ProgramaticInput
+from ...input_fields import TextInput, BoolInput, ColorInput, OptionsInput, IntegerInput, FloatInput, RangeSliderInput, QueriesInput, ProgramaticInput
 
 
 class LDOSmap(Plot):
@@ -40,7 +40,7 @@ class LDOSmap(Plot):
 
     _parameters = (
 
-        RangeSlider(
+        RangeSliderInput(
             key = "Erange", name = "Energy range",
             default = [-2, 4],
             width = "s90%",
@@ -101,7 +101,7 @@ class LDOSmap(Plot):
                     All points of the path must be widened with the same amount of points, otherwise you will get an error."""
         ),
 
-        DropdownInput(
+        OptionsInput(
             key = "widen_method", name = "Widen method",
             default = "sum",
             width = "s100% m50% l40%",
@@ -129,7 +129,7 @@ class LDOSmap(Plot):
                     }
                 ) for key in ("x", "y", "z")],
 
-                DropdownInput(
+                OptionsInput(
                     key = "atom", name = "Atom index",
                     default = None,
                     params = {
