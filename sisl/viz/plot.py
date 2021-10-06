@@ -29,10 +29,9 @@ from .plotutils import (
     running_in_notebook, check_widgets, call_method_if_present
 )
 from .input_fields import (
-    TextInput, SileInput, SwitchInput,
-    ColorPicker, DropdownInput, IntegerInput,
-    FloatInput, RangeSlider, QueriesInput,
-    ProgramaticInput, PlotableInput
+    TextInput, SileInput, BoolInput,
+    OptionsInput, IntegerInput,
+    ListInput, ProgramaticInput
 )
 from ._shortcuts import ShortCutable
 
@@ -124,13 +123,15 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
     Parameters
     ----------
     root_fdf: fdfSileSiesta, optional
-        Path to the fdf file that is the 'parent' of the results.
+    	Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
+    entry_points_order: array-like, optional
+    	Order with which entry points will be attempted.
     backend:  optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
 
     Attributes
     ----------
@@ -160,14 +161,6 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
             "icon": "import_export",
             "description": "In such a busy world, one may forget how the files are structured in their computer. Please take a moment to <b>make sure your data is being read exactly in the way you expect<b>."
         },
-
-        {
-            "key": None,
-            "name": "Other settings",
-            "icon": "settings",
-            "description": "Here are some unclassified settings. Even if they don't belong to any group, they might still be important. They may be here just because the developer was too lazy to categorize them or forgot to do so. <b>If you are the developer</b> and it's the first case, <b>shame on you<b>."
-        }
-
     )
 
     _parameters = (
@@ -175,30 +168,37 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
         SileInput(
             key = "root_fdf", name = "Path to fdf file",
             dtype=sisl.io.siesta.fdfSileSiesta,
-            group = "dataread",
-            help = "Path to the fdf file that is the 'parent' of the results.",
-            params = {
+            group="dataread",
+            help="Path to the fdf file that is the 'parent' of the results.",
+            params={
                 "placeholder": "Write the path here..."
             }
         ),
 
         TextInput(
-            key = "results_path", name = "Path to your results",
-            group = "dataread",
-            default = "",
-            params = {
+            key="results_path", name = "Path to your results",
+            group="dataread",
+            default="",
+            params={
                 "placeholder": "Write the path here..."
             },
-            width = "s100% m50% l33%",
             help = "Directory where the files with the simulations results are located.<br> This path has to be relative to the root fdf.",
         ),
 
-        DropdownInput(
+        ListInput(key="entry_points_order", name="Entry points order",
+            group="dataread",
+            default=[],
+            params={
+                "itemInput": OptionsInput(key="-", name="-", params={"options": []})
+            },
+            help="""Order with which entry points will be attempted."""
+        ),
+
+        OptionsInput(
             key="backend", name="Backend",
             default=None,
-            params = {},
-            width = "s100% m50% l33%",
-            help = "Directory where the files with the simulations results are located.<br> This path has to be relative to the root fdf.",
+            params={},
+            help="Directory where the files with the simulations results are located.<br> This path has to be relative to the root fdf.",
         ),
 
     )
@@ -207,7 +207,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
     def read_data_methods(self):
         entry_points_names = [entry_point._method.__name__ for entry_point in self.entry_points]
 
-        return ["_before_read", "_after_read", *entry_points_names, *self._update_methods["read_data"]]
+        return ["_before_read", "_after_read", "_read_from_sources", *entry_points_names, *self._update_methods["read_data"]]
 
     @property
     def set_data_methods(self):
@@ -606,6 +606,16 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
             cls.entry_points.append(val)
             # After registering an entry point, we will just set the method
             setattr(cls, key, _populate_with_settings(val._method, [param["key"] for param in cls._get_class_params()[0]]))
+        
+        entry_points_order = cls.get_class_param("entry_points_order")
+        entry_points_order.modify_item_input(
+            "inputField.params.options", 
+            [{"label": entry._name, "value": entry._name } for entry in cls.entry_points]
+        )
+        entry_points_order.modify(
+            "default",
+            [entry._name for entry in sorted(cls.entry_points, key=lambda entry: entry._sort_key)]
+        )
 
         cls.backends = Backends(cls)
 
@@ -774,7 +784,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
 
         return self
 
-    def _read_from_sources(self):
+    def _read_from_sources(self, entry_points_order):
         """ Tries to read the data from the different available entry points in the plot class
 
         If it fails to read from all entry points, it raises an exception.
@@ -789,7 +799,14 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
         # Try to read data using all the different entry points
         # This is just a first implementation. One of the reasons entry points
         # have been implemented is that we can do smarter things than this.
-        for entry_point in self.entry_points:
+        for entry_point_name in entry_points_order:
+            for entry_point in self.entry_points:
+                if entry_point._name == entry_point_name:
+                    break
+            else:
+                warn(f"Entry point {entry_point_name} not found in {self.__class__.__name__}")
+                continue
+
             try:
                 returns = getattr(self, entry_point._method_attr)()
                 self.source = entry_point
@@ -1412,15 +1429,16 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
 
 class EntryPoint:
 
-    def __init__(self, name, setting_key, method, instance=None):
+    def __init__(self, name, sort_key, setting_key, method, instance=None):
         self._name = name
+        self._sort_key = sort_key
         self._method_attr = method.__name__
         self._setting_key = setting_key
         self._method = method
         self.help = method.__doc__
 
 
-def entry_point(name):
+def entry_point(name, sort_key=0):
     """ Helps registering entry points for plots
 
     See the usage section to get a fast intuitive way of how to use it.
@@ -1452,8 +1470,10 @@ def entry_point(name):
     -----------
     name: str
         the name of the entry point that the decorated function implements.
+    sort_key: any
+        the entry points order will be sorted according to this key.
     """
-    return partial(EntryPoint, name, ())
+    return partial(EntryPoint, name, sort_key, ())
 
 #------------------------------------------------
 #       CLASSES TO SUPPORT COMPOSITE PLOTS
@@ -1466,13 +1486,15 @@ class MultiplePlot(Plot):
     Parameters
     ----------
     root_fdf: fdfSileSiesta, optional
-        Path to the fdf file that is the 'parent' of the results.
+    	Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
+    entry_points_order: array-like, optional
+    	Order with which entry points will be attempted.
     backend:  optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
     """
 
     _trigger_kw = "varying"
@@ -1726,27 +1748,29 @@ class Animation(MultiplePlot):
     Parameters
     ----------
     frame_duration: int, optional
-        Time (in ms) that each frame will be displayed.  This is only
-        meaningful in the plotly backend
+    	Time (in ms) that each frame will be displayed.  This is only
+    	meaningful in the plotly backend
     interpolated_frames: int, optional
-        The number of frames that should be interpolated between two plots.
-        This is only meaningful in the blender backend.
+    	The number of frames that should be interpolated between two plots.
+    	This is only meaningful in the blender backend.
     redraw: bool, optional
-        Whether each frame of the animation should be redrawn
-        If False, the animation will try to interpolate between one frame and
-        the other             Set this to False if you are sure that the
-        frames contain the same number of traces, otherwise new traces will
-        not appear.
+    	Whether each frame of the animation should be redrawn
+    	If False, the animation will try to interpolate between one frame and
+    	the other             Set this to False if you are sure that the
+    	frames contain the same number of traces, otherwise new traces will
+    	not appear.
     ani_method:  optional
-        It determines how the animation is rendered.
+    	It determines how the animation is rendered.
     root_fdf: fdfSileSiesta, optional
-        Path to the fdf file that is the 'parent' of the results.
+    	Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
+    entry_points_order: array-like, optional
+    	Order with which entry points will be attempted.
     backend:  optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
     """
 
     _trigger_kw = "animate"
@@ -1783,7 +1807,7 @@ class Animation(MultiplePlot):
             help = "The number of frames that should be interpolated between two plots. This is only meaningful in the blender backend."
         ),
 
-        SwitchInput(
+        BoolInput(
             key='redraw', name='Redraw each frame',
             default=True,
             group='animation',
@@ -1792,7 +1816,7 @@ class Animation(MultiplePlot):
             Set this to False if you are sure that the frames contain the same number of traces, otherwise new traces will not appear."""
         ),
 
-        DropdownInput(
+        OptionsInput(
             key='ani_method', name="Animation method",
             default=None,
             group='animation',
@@ -1839,28 +1863,30 @@ class SubPlots(MultiplePlot):
     Parameters
     -----------
     arrange:  optional
-        The way in which subplots should be aranged if the `rows` and/or
-        `cols`             parameters are not provided.
+    	The way in which subplots should be aranged if the `rows` and/or
+    	`cols`             parameters are not provided.
     rows: int, optional
-        The number of rows of the plot grid. If not provided, it will be
-        inferred from `cols`             and the number of plots. If neither
-        `cols` or `rows` are provided, the `arrange` parameter will decide
-        how the layout should look like.
+    	The number of rows of the plot grid. If not provided, it will be
+    	inferred from `cols`             and the number of plots. If neither
+    	`cols` or `rows` are provided, the `arrange` parameter will decide
+    	how the layout should look like.
     cols: int, optional
-        The number of columns of the subplot grid. If not provided, it will
-        be inferred from `rows`             and the number of plots. If
-        neither `cols` or `rows` are provided, the `arrange` parameter will
-        decide             how the layout should look like.
+    	The number of columns of the subplot grid. If not provided, it will
+    	be inferred from `rows`             and the number of plots. If
+    	neither `cols` or `rows` are provided, the `arrange` parameter will
+    	decide             how the layout should look like.
     make_subplots_kwargs: dict, optional
-        Extra keyword arguments that will be passed to make_subplots.
+    	Extra keyword arguments that will be passed to make_subplots.
     root_fdf: fdfSileSiesta, optional
-        Path to the fdf file that is the 'parent' of the results.
+    	Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
+    entry_points_order: array-like, optional
+    	Order with which entry points will be attempted.
     backend:  optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
     """
 
     _trigger_kw = "subplots"
@@ -1869,7 +1895,7 @@ class SubPlots(MultiplePlot):
 
     _parameters = (
 
-        DropdownInput(key='arrange', name='Automatic arrangement method',
+        OptionsInput(key='arrange', name='Automatic arrangement method',
             default='rows',
             params={
                 'options': [

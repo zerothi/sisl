@@ -63,13 +63,6 @@ class InputField:
             Normal CSS: {font-size: 10}         React CSS: {fontSize: 10}
 
         You probably won't need to style anything and the defaults are good enough, but we still give this option for more flexibility.
-    width: str, optional
-        A string that determines the width of the input field. Although this is a "style" property, it is set apart because it is special.
-
-        It looks like this: s100% m50% l30%. In this way, you are specifying the width of your parameter if it is displayed in a small
-        ("s", phones), medium ("m", tablets) or large ("l", computers) screen, so that your input doesn't look ugly in any screen. 
-
-        Percentages are relative to the full width of the settings container (see it in the GUI).
     inputFieldAttrs: dict, optional
         A dictionary with additional keys that you want to add to the inputField dictionary.
     group: str, optional
@@ -88,7 +81,7 @@ class InputField:
 
     dtype = None
 
-    def __init__(self, key, name, default=None, params={}, style={}, width="", inputFieldAttrs={}, group=None, subGroup=None, dtype=None, help="", **kwargs):
+    def __init__(self, key, name, default=None, params={}, style={}, input_field_attrs={}, group=None, subGroup=None, dtype=None, help="", **kwargs):
         self.key = key
         self.name = name
         self.default = default
@@ -112,8 +105,7 @@ class InputField:
                 **default_input.get("style", {}),
                 **style
             },
-            "width": width or default_input.get("width"),
-            **inputFieldAttrs
+            **input_field_attrs
         })
 
         for key, value in kwargs.items():
@@ -155,7 +147,6 @@ class InputField:
             .
             "inputField": {
                 "type": whatever,
-                "width": whatever,  (keys that affect the inputField control that is displayed
                 "params": {          they can be modified with Configurable.modifyInputField)
                     whatever
                 },
@@ -179,15 +170,15 @@ class InputField:
 
                     Modifying nested keys is possible using dot notation.
 
-                    Ex: obj.modify_param("length", "inputField.width", 3)
-                    will modify the width key inside inputField on the schema above.
+                    Ex: obj.modify_param("length", "inputField.params.min", 3)
+                    will modify the min key inside inputField params on the schema above.
 
                     The last key, but only the last one, will be created if it does not exist.
 
-                    Ex: obj.modify_param("length", "inputField.width.inWinter.duringDay", 3)
-                    will only work if all the path before duringDay exists and the value of inWinter is a dictionary.
+                    Ex: obj.modify_param("length", "inputField.params.min", 3)
+                    will only work if all the path before `min` exists and the value of `params` is a dictionary.
 
-                    Otherwise you could go like this: obj.modify_param("length", "inputField.width.inWinter", {"duringDay": 3})
+                    Otherwise you could go like this: obj.modify_param("length", "inputField.params", {"min": 3})
 
                 - One argument and it is a dictionary:
                     the keys will be interpreted as attributes that you want to change and the values
@@ -320,3 +311,6 @@ class InputField:
         doc = f'{self.key}: {vals_help}{"," if vals_help else ""} optional\n{help_message}'
 
         return doc
+
+    def _raise_type_error(self, val):
+        raise TypeError(f"{self.__class__.__name__} received input of type {type(val)}: {val}")

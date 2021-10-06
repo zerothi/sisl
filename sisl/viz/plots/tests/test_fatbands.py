@@ -133,7 +133,8 @@ class TestFatbandsPlot(_TestBandsPlot):
         assert name in plot._for_backend["groups_metadata"]
         assert plot._for_backend["groups_metadata"][name]["style"]["line"]["color"] == color
 
-    def _test_split_groups(self, plot):
+    @pytest.mark.parametrize("request_atoms", [None, {"index": 0}])
+    def _test_split_groups(self, plot, constraint_atoms):
 
         # Number of groups that each splitting should give
         expected_splits = [
@@ -149,7 +150,8 @@ class TestFatbandsPlot(_TestBandsPlot):
 
         # Check that each splitting works as expected
         for group_by, n_groups in expected_splits:
-            plot.split_groups(group_by)
-            err_message = f'Not correctly grouping by {group_by}'
-            assert len(plot._for_backend["groups_weights"]) == n_groups, err_message
-            assert len(plot._for_backend["groups_metadata"]) == n_groups, err_message
+            plot.split_groups(group_by, atoms=constraint_atoms)
+            if constraint_atoms is None:
+                err_message = f'Not correctly grouping by {group_by}'
+                assert len(plot._for_backend["groups_weights"]) == n_groups, err_message
+                assert len(plot._for_backend["groups_metadata"]) == n_groups, err_message

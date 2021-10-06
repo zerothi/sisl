@@ -22,8 +22,9 @@ class ObjectPlotHandler(ObjectDispatcher):
     """Handles all plotting possibilities for an object."""
 
     def __call__(self, *args, **kwargs):
-        """If the plot handler is called, we will run the default plotting function"""
-        return getattr(self, self._default)(*args, **kwargs)
+        """If the plot handler is called, we will run the default plotting function
+        unless the keyword method has been passed."""
+        return getattr(self, kwargs.pop("method", self._default))(*args, **kwargs)
 
 
 class PlotDispatch(AbstractDispatch):

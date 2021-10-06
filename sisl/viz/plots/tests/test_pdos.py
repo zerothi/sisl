@@ -142,18 +142,19 @@ class TestPdosPlot(_TestPlot):
         assert "species" not in first_trace_name, "Name templating not working in composite splitting"
         assert "orbitals=" in first_trace_name, "Name templating not working in composite splitting"
 
-    def test_request_splitting(self, plot, inplace_split):
+    @pytest.mark.parametrize("request_atoms", [0, {"index": 0}])
+    def test_request_splitting(self, plot, inplace_split, request_atoms):
 
         # Here we are just checking that, when splitting a request
         # the plot understands that it has constrains
-        plot.update_settings(requests=[{"atoms": 0}])
+        plot.update_settings(requests=[{"atoms": request_atoms}])
         prev_len = len(plot._for_backend["PDOS_values"])
 
         # Even if there are more atoms, the plot should understand
         # that it is constrained to the values of the current request
 
         if inplace_split:
-            plot.update_settings(requests=[{"atoms": 0, "split_on": "atoms"}])
+            plot.update_settings(requests=[{"atoms": request_atoms, "split_on": "atoms"}])
         else:
             plot.split_requests(0, on="atoms")
 
