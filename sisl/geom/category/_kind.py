@@ -188,6 +188,10 @@ class AtomIndex(AtomCategory):
 class AtomSeq(AtomIndex):
     r""" Classify atoms based on their indices using a sequence string.
 
+    NOTE: Standalone negative indices are not supported, as they are understood
+    as a range. The "-2" in "-2,3" is understood as "from the beggining to
+    -2". However, negative numbers can be used in slices, e.g. "3:2:-2".
+
     Parameters
     ----------
     seq: str
@@ -219,16 +223,48 @@ class AtomSeq(AtomIndex):
         self._seq = seq
         self.set_name(self._seq)
 
+    @staticmethod
+    def _sanitize_negs(indices_map, end):
+        """Converts negative indices to their corresponding positive values.
+        
+        Parameters
+        ----------
+        indices_map: list
+            The indices map returned by strmap.
+        end: int
+            The largest valid index.
+        """
+        def _sanitize(item):
+            if isinstance(item, int):
+                if item < 0:
+                    return end + item + 1
+                else:
+                    return item
+            elif isinstance(item, tuple):
+                return (_sanitize(item[0]), *item[1:-1], _sanitize(item[-1]))
+            elif item is None:
+                return item
+            else:
+                raise ValueError(f"Item {item} could not be parsed")
+
+        return [_sanitize(item) for item in indices_map]
+
     def categorize(self, geometry, *args, **kwargs):
         # Now that we have the geometry, we know what is the end index
-        # and we can finally safely convert the sequence o indices.
-        indices = lstranges(strmap(int, self._seq, end=geometry.na - 1))
+        # and we can finally safely convert the sequence to indices.
+        indices_map = strmap(int, self._seq, start=0, end=geometry.na - 1)
+        indices = lstranges(self._sanitize_negs(indices_map, end=geometry.na - 1))
 
         # Initialize the machinery of AtomIndex
         super().__init__(indices)
         self.set_name(self._seq)
         # Finally categorize
         return super().categorize(geometry, *args, **kwargs)
+    
+    def __eq__(self, other):
+        if self.__class__ is other.__class__:
+            return self._seq == other._seq
+        return False
 
 
 class AtomEven(AtomCategory):
