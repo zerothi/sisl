@@ -408,6 +408,28 @@ class _devncSileTBtrans(_ncSileTBtrans):
         return self._value('btd', self._elec(elec))
 
     @lru_cache(maxsize=16)
+    def na_down(self, elec):
+        """ Number of atoms in the downfolding region (without device downfolded region)
+
+        Parameters
+        ----------
+        elec : str or int
+           Number of downfolding atoms for electrode `elec`
+        """
+        return len(self._dimension('na_down', self._elec(elec)))
+
+    @lru_cache(maxsize=16)
+    def no_e(self, elec):
+        """ Number of orbitals in the downfolded region of the electrode in the device
+
+        Parameters
+        ----------
+        elec : str or int
+           Specify the electrode to query number of downfolded orbitals
+        """
+        return len(self._dimension('no_e', self._elec(elec)))
+
+    @lru_cache(maxsize=16)
     def no_down(self, elec):
         """ Number of orbitals in the downfolding region (plus device downfolded region)
 
@@ -495,7 +517,7 @@ class _devncSileTBtrans(_ncSileTBtrans):
             se_pvt = indices(pvt, se_pvt, 0)
         return se_pvt
 
-    def a2p(self, atoms, elec=None):
+    def a2p(self, atoms):
         """ Return the pivoting orbital indices (0-based) for the atoms, possibly on an electrode
 
         This is equivalent to:
@@ -508,9 +530,6 @@ class _devncSileTBtrans(_ncSileTBtrans):
         ----------
         atoms : array_like or int
            atomic indices (0-based)
-        elec : str or int or None, optional
-           electrode to return pivoting indices of (if None it is the
-           device pivoting indices).
         """
         return self.o2p(self.geometry.a2o(atoms, True))
 
