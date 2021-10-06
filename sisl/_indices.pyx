@@ -71,7 +71,7 @@ cdef Py_ssize_t _indices_only(const Py_ssize_t n_element, const int[::1] element
 
 @cython.boundscheck(False)
 @cython.wraparound(False)
-def indices(np.ndarray[np.int32_t, ndim=1, mode='c'] element, np.ndarray[np.int32_t, ndim=1, mode='c'] test_element, int offset, both_sorted=False):
+def indices(np.ndarray[np.int32_t, ndim=1, mode='c'] element, np.ndarray[np.int32_t, ndim=1, mode='c'] test_element, int offset=0, both_sorted=False):
     """ Return indices of all `test_element` in the search array. If not found the index will be ``-1``
 
     Parameters
@@ -91,6 +91,9 @@ def indices(np.ndarray[np.int32_t, ndim=1, mode='c'] element, np.ndarray[np.int3
 
     cdef np.ndarray[np.int32_t, ndim=1, mode='c'] idx = np.empty([n_test_element], dtype=np.int32)
     cdef int[::1] IDX = idx
+
+    if offset < 0:
+        raise ValueError(f"indices requires offset argument >=0, got {offset}")
 
     if both_sorted:
         _indices_sorted_arrays(n_element, ELEMENT, n_test_element, TEST_ELEMENT, offset, IDX)
