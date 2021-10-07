@@ -127,7 +127,7 @@ def test_geom_category_seq():
     # Standalone negative numbers are not supported,
     # they are understood as ranges.
     cat = AtomSeq("-2")
-    assert set(geom.asc2uc(cat)) == set([0,1,2])
+    assert set(geom.asc2uc(cat)) == set([len(geom) - 1 - 2])
 
     cat = AtomSeq("0,3,5")
     assert set(geom.asc2uc(cat)) == set([0,3,5])
