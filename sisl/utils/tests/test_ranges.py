@@ -15,30 +15,44 @@ pytestmark = pytest.mark.utils
 @pytest.mark.ranges
 class TestRanges:
 
-    @pytest.mark.parametrize("sep", ['-', ':'])
-    def test_strseq(self, sep):
-        ranges = strseq(int, sep.join(['1', '2', '5']))
+    def test_strseq_colon(self):
+        ranges = strseq(int, "1:2:5")
         assert ranges == (1, 2, 5)
-        ranges = strseq(int, sep.join(['1', '2']))
+        ranges = strseq(int, "1:2")
         assert ranges == (1, 2)
-        ranges = strseq(int, sep.join(['1', '']))
+        ranges = strseq(int, "1:")
         assert ranges == (1, None)
-        ranges = strseq(int, sep.join(['', '4']))
+        ranges = strseq(int, ":4")
         assert ranges == (None, 4)
-        ranges = strseq(int, sep.join(['', '4', '']))
+        ranges = strseq(int, ":4:")
         assert ranges == (None, 4, None)
+
+    def test_strseq_minus(self):
+        ranges = strseq(int, "1-2-5")
+        assert ranges == (1, 2, 5)
+        ranges = strseq(int, "1-2")
+        assert ranges == (1, 2)
+        ranges = strseq(int, "1-")
+        assert ranges == (1, None)
+        ranges = strseq(int, "-4")
+        assert ranges == -4
+        ranges = strseq(int, "-4", end=5)
+        assert ranges == 1
+        ranges = strseq(int, "-4-")
+        assert ranges == (-4, None)
 
     def test_strmap1(self):
         assert strmap(int, '1') == [1]
         assert strmap(int, '') == [None]
         assert strmap(int, '1-') == [(1, None)]
         assert strmap(int, '-') == [(None, None)]
-        assert strmap(int, '-1') == [(None, 1)]
-        assert strmap(int, '-1', start=1) == [(1, 1)]
+        assert strmap(int, '-1') == [-1]
+        assert strmap(int, '-1', start=1) == [-1]
         assert strmap(int, '-', start=1, end=2) == [(1, 2)]
+        assert strmap(int, '-1:2') == [(-1, 2)]
         assert strmap(int, '1,2') == [1, 2]
         assert strmap(int, '1,2[0,2-]') == [1, (2, [0, (2, None)])]
-        assert strmap(int, '1,2-[0,-2]') == [1, ((2, None), [0, (None, 2)])]
+        assert strmap(int, '1,2-[0,-2]') == [1, ((2, None), [0, -2])]
         assert strmap(int, '1,2[0,2]') == [1, (2, [0, 2])]
         assert strmap(int, '1,2-3[0,2]') == [1, ((2, 3), [0, 2])]
         assert strmap(int, '1,[2,3][0,2]') == [1, (2, [0, 2]), (3, [0, 2])]
@@ -71,7 +85,7 @@ class TestRanges:
         r = strmap(int, '1-', start=0, end=5)
         assert r == [(1, 5)]
         r = strmap(int, '-4', start=0, end=5)
-        assert r == [(0, 4)]
+        assert r == [1]
         r = strmap(int, '-', start=0, end=5)
         assert r == [(0, 5)]
 
