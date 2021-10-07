@@ -1,26 +1,8 @@
-# This Source Code Form is subject to the terms of the Mozilla Public
-# License, v. 2.0. If a copy of the MPL was not distributed with this
-# file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from pathlib import Path
-from types import MethodType
-
-from .._input_field import InputField
-
-
-class TextInput(InputField):
-
-    dtype = str
-
-    _type = "textinput"
-
-    _default = {
-        "width": "s100%",
-        "params": {
-            "placeholder": "Write your value here...",
-        }
-    }
 
 from sisl import BaseSile
+
+from .basic import TextInput
 
 if not hasattr(BaseSile, "to_json"):
     # Little patch so that Siles can be sent to the GUI
@@ -33,7 +15,6 @@ if not hasattr(BaseSile, "to_json"):
 class FilePathInput(TextInput):
 
     _default = {
-        "width": "s100%",
         "params": {
             "placeholder": "Write your path here...",
         }

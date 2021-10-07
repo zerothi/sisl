@@ -6,7 +6,6 @@ import itertools
 import re
 
 from sisl.messages import warn
-from sisl.viz.input_fields.color import ColorPicker
 
 import numpy as np
 
@@ -15,9 +14,9 @@ from sisl.utils import direction
 from sisl.utils.mathematics import fnorm
 from ..plot import Plot, entry_point
 from ..input_fields import (
-    ProgramaticInput,
-    SwitchInput, DropdownInput, AtomSelect, GeomAxisSelect, QueriesInput,
-    FilePathInput, PlotableInput, IntegerInput, FloatInput, TextInput, Array1DInput
+    ProgramaticInput, ColorInput, DictInput,
+    BoolInput, OptionsInput, AtomSelect, GeomAxisSelect, QueriesInput,
+    FilePathInput, PlotableInput, IntegerInput, FloatInput, TextInput, Array1DInput,
 )
 from ..plotutils import values_to_colors
 from sisl._dispatcher import AbstractDispatch
@@ -60,87 +59,126 @@ class GeometryPlot(Plot):
     Parameters
     -------------
     geometry: Geometry, optional
-        A geometry object
+    	A geometry object
     geom_file: str, optional
-        A file name that can read a geometry
+    	A file name that can read a geometry
     show_bonds: bool, optional
-        Also show bonds between atoms.
+    	Show bonds between atoms.
     axes:  optional
-        The axis along which you want to see the geometry.              You
-        can provide as many axes as dimensions you want for your plot.
-        Note that the order is important and will result in setting the plot
-        axes diferently.             For 2D and 1D representations, you can
-        pass an arbitrary direction as an axis (array of shape (3,))
+    	The axis along which you want to see the geometry.              You
+    	can provide as many axes as dimensions you want for your plot.
+    	Note that the order is important and will result in setting the plot
+    	axes diferently.             For 2D and 1D representations, you can
+    	pass an arbitrary direction as an axis (array of shape (3,))
     dataaxis_1d: array-like or function, optional
-        If you want a 1d representation, you can provide a data axis.
-        It determines the second coordinate of the atoms.
-        If it's a function, it will recieve the projected 1D coordinates and
-        needs to returns              the coordinates for the other axis as
-        an array.                          If not provided, the other axis
-        will just be 0 for all points.
+    	If you want a 1d representation, you can provide a data axis.
+    	It determines the second coordinate of the atoms.
+    	If it's a function, it will recieve the projected 1D coordinates and
+    	needs to returns              the coordinates for the other axis as
+    	an array.                          If not provided, the other axis
+    	will just be 0 for all points.
     show_cell:  optional
-        Specifies how the cell should be rendered.              (False: not
-        rendered, 'axes': render axes only, 'box': render a bounding box)
+    	Specifies how the cell should be rendered.              (False: not
+    	rendered, 'axes': render axes only, 'box': render a bounding box)
     nsc: array-like, optional
-        Make the geometry larger by tiling it along each lattice vector
-    atoms:  optional
-        The atoms that are going to be displayed in the plot.
-        This also has an impact on bonds (see the `bind_bonds_to_ats` and
-        `show_atoms` parameters).             If set to None, all atoms are
-        displayed
+    	Make the geometry larger by tiling it along each lattice vector
+    atoms: dict, optional
+    	The atoms that are going to be displayed in the plot.
+    	This also has an impact on bonds (see the `bind_bonds_to_ats` and
+    	`show_atoms` parameters).             If set to None, all atoms are
+    	displayed   Structure of the dict: {         'index':    Structure of
+    	the dict: {         'in':  }         'fx':          'fy':
+    	'fz':          'x':          'y':          'z':          'Z':
+    	'neighbours':    Structure of the dict: {         'range':
+    	'R':          'neigh_tag':  }         'tag':          'seq':  }
     atoms_style: array-like of dict, optional
-        Customize the style of the atoms by passing style specifications.
-        Each style specification can have an "atoms" key to select the atoms
-        for which             that style should be used. If an atom fits into
-        more than one selector, the last             specification is used.
-        Each item is a dict. Structure of the expected dicts:{
-        'atoms':          'color':          'size':          'opacity':
-        'vertices': In a 3D representation, the number of vertices that each
-        atom sphere is composed of. }
+    	Customize the style of the atoms by passing style specifications.
+    	Each style specification can have an "atoms" key to select the atoms
+    	for which             that style should be used. If an atom fits into
+    	more than one selector, the last             specification is used.
+    	Each item is a dict.    Structure of the dict: {         'atoms':
+    	Structure of the dict: {         'index':    Structure of the dict: {
+    	'in':  }         'fx':          'fy':          'fz':          'x':
+    	'y':          'z':          'Z':          'neighbours':    Structure
+    	of the dict: {         'range':          'R':          'neigh_tag':
+    	}         'tag':          'seq':  }         'color':          'size':
+    	'opacity':          'vertices': In a 3D representation, the number of
+    	vertices that each atom sphere is composed of. }
     arrows: array-like of dict, optional
-        Add arrows centered at the atoms to display some vector property.
-        You can add as many arrows as you want, each with different styles.
-        Each item is a dict. Structure of the expected dicts:{
-        'atoms':          'data':          'scale':          'color':
-        'width':          'name':          'arrowhead_scale':
-        'arrowhead_angle':  }
+    	Add arrows centered at the atoms to display some vector property.
+    	You can add as many arrows as you want, each with different styles.
+    	Each item is a dict.    Structure of the dict: {         'atoms':
+    	Structure of the dict: {         'index':    Structure of the dict: {
+    	'in':  }         'fx':          'fy':          'fz':          'x':
+    	'y':          'z':          'Z':          'neighbours':    Structure
+    	of the dict: {         'range':          'R':          'neigh_tag':
+    	}         'tag':          'seq':  }         'data':          'scale':
+    	'color':          'width':          'name':
+    	'arrowhead_scale':          'arrowhead_angle':  }
     atoms_scale: float, optional
-        A scaling factor for atom sizes. This is a very quick way to rescale.
+    	A scaling factor for atom sizes. This is a very quick way to rescale.
     atoms_colorscale: str, optional
-        The colorscale to use to map values to colors for the atoms.
-        Only used if atoms_color is provided and is an array of values.
+    	The colorscale to use to map values to colors for the atoms.
+    	Only used if atoms_color is provided and is an array of values.
     bind_bonds_to_ats: bool, optional
-        whether only the bonds that belong to an atom that is present should
-        be displayed.             If False, all bonds are displayed
-        regardless of the `atoms` parameter
+    	whether only the bonds that belong to an atom that is present should
+    	be displayed.             If False, all bonds are displayed
+    	regardless of the `atoms` parameter
     show_atoms: bool, optional
-        If set to False, it will not display atoms.              Basically
-        this is a shortcut for ``atoms = [], bind_bonds_to_ats=False``.
-        Therefore, it will override these two parameters.
+    	If set to False, it will not display atoms.              Basically
+    	this is a shortcut for ``atoms = [], bind_bonds_to_ats=False``.
+    	Therefore, it will override these two parameters.
     points_per_bond: int, optional
-        Number of points that fill a bond in 2D in case each bond has a
-        different color or different size. More points will make it look
-        more like a line but will slow plot rendering down.
-    cell_style: array-like of dict, optional
-        The style of the unit cell lines   Each item is a dict. Structure of
-        the expected dicts:{         'color':          'width':  }
+    	Number of points that fill a bond in 2D in case each bond has a
+    	different color or different size. More points will make it look
+    	more like a line but will slow plot rendering down.
+    cell_style: dict, optional
+    	The style of the unit cell lines   Structure of the dict: {
+    	'color':          'width':          'opacity':  }
     root_fdf: fdfSileSiesta, optional
-        Path to the fdf file that is the 'parent' of the results.
+    	Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
+    entry_points_order: array-like, optional
+    	Order with which entry points will be attempted.
     backend:  optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
     """
 
     _plot_type = "Geometry"
+
+    _param_groups = (
+        {
+            "key": "cell",
+            "name": "Cell display",
+            "icon": "check_box_outline_blank",
+            "description": "These are all inputs related to the geometry's cell."
+        },
+
+        {
+            "key": "atoms",
+            "name": "Atoms display",
+            "icon": "album",
+            "description": "Inputs related to which and how atoms are displayed."
+        },
+
+        {
+            "key": "bonds",
+            "name": "Bonds display",
+            "icon": "power_input",
+            "description": "Inputs related to which and how bonds are displayed."
+        },
+
+    )
 
     _parameters = (
 
         PlotableInput(key='geometry', name="Geometry",
             dtype=Geometry,
             default=None,
+            group="dataread",
             help="A geometry object",
         ),
 
@@ -150,14 +188,16 @@ class GeometryPlot(Plot):
             help="A file name that can read a geometry",
         ),
 
-        SwitchInput(key='show_bonds', name='Show bonds',
-                    default=True,
-                    help="Also show bonds between atoms."
+        BoolInput(key='show_bonds', name='Show bonds',
+            default=True,
+            group="bonds",
+            help="Show bonds between atoms."
         ),
 
         GeomAxisSelect(
             key="axes", name="Axes to display",
             default=["x", "y", "z"],
+            group="cell",
             help="""The axis along which you want to see the geometry. 
             You can provide as many axes as dimensions you want for your plot.
             Note that the order is important and will result in setting the plot axes diferently.
@@ -178,9 +218,8 @@ class GeometryPlot(Plot):
             """
         ),
 
-        DropdownInput(key="show_cell", name="Cell display",
+        OptionsInput(key="show_cell", name="Cell display",
             default="box",
-            width="s100% m50% l90%",
             params={
                 'options': [
                     {'label': 'False', 'value': False},
@@ -191,6 +230,7 @@ class GeometryPlot(Plot):
                 'isSearchable': True,
                 'isClearable': False
             },
+            group="cell",
             help="""Specifies how the cell should be rendered. 
             (False: not rendered, 'axes': render axes only, 'box': render a bounding box)"""
         ),
@@ -203,6 +243,7 @@ class GeometryPlot(Plot):
                 'shape': (3,),
                 'extendable': False,
             },
+            group="cell",
             help="""Make the geometry larger by tiling it along each lattice vector"""
         ),
 
@@ -214,6 +255,7 @@ class GeometryPlot(Plot):
                 "isMulti": True,
                 "isClearable": True
             },
+            group="atoms",
             help="""The atoms that are going to be displayed in the plot. 
             This also has an impact on bonds (see the `bind_bonds_to_ats` and `show_atoms` parameters).
             If set to None, all atoms are displayed"""
@@ -221,6 +263,7 @@ class GeometryPlot(Plot):
 
         QueriesInput(key="atoms_style", name="Atoms style",
             default=[],
+            group="atoms",
             help = """Customize the style of the atoms by passing style specifications. 
             Each style specification can have an "atoms" key to select the atoms for which
             that style should be used. If an atom fits into more than one selector, the last
@@ -230,7 +273,7 @@ class GeometryPlot(Plot):
 
                 AtomSelect(key="atoms", name="Atoms", default=None),
 
-                ColorPicker(key="color", name="Color", default=None),
+                ColorInput(key="color", name="Color", default=None),
 
                 FloatInput(key="size", name="Size", default=None),
 
@@ -247,17 +290,18 @@ class GeometryPlot(Plot):
 
         QueriesInput(key="arrows", name="Arrows",
             default=[],
+            group="atoms",
             help = """Add arrows centered at the atoms to display some vector property.
             You can add as many arrows as you want, each with different styles.""",
             queryForm = [
 
                 AtomSelect(key="atoms", name="Atoms", default=None),
 
-                ProgramaticInput(key="data", name="Data", default=None),
+                Array1DInput(key="data", name="Data", default=None, params={"shape":(3,)}),
 
                 FloatInput(key="scale", name="Scale", default=1),
 
-                ColorPicker(key="color", name="Color", default=None),
+                ColorInput(key="color", name="Color", default=None),
 
                 FloatInput(key="width", name="Width", default=None),
 
@@ -271,23 +315,27 @@ class GeometryPlot(Plot):
 
         FloatInput(key="atoms_scale", name="Atoms scale",
             default=1.,
+            group="atoms",
             help="A scaling factor for atom sizes. This is a very quick way to rescale."
         ),
 
-        TextInput(key="atoms_colorscale", name="Atoms vertices",
+        TextInput(key="atoms_colorscale", name="Atoms colorscale",
+            group="atoms",
             default="viridis",
             help="""The colorscale to use to map values to colors for the atoms.
             Only used if atoms_color is provided and is an array of values."""
         ),
 
-        SwitchInput(key="bind_bonds_to_ats", name="Bind bonds to atoms",
+        BoolInput(key="bind_bonds_to_ats", name="Bind bonds to atoms",
             default=True,
+            group="bonds",
             help="""whether only the bonds that belong to an atom that is present should be displayed.
             If False, all bonds are displayed regardless of the `atoms` parameter"""
         ),
 
-        SwitchInput(key="show_atoms", name="Show atoms",
+        BoolInput(key="show_atoms", name="Show atoms",
             default=True,
+            group="atoms",
             help="""If set to False, it will not display atoms. 
             Basically this is a shortcut for ``atoms = [], bind_bonds_to_ats=False``.
             Therefore, it will override these two parameters."""
@@ -295,21 +343,21 @@ class GeometryPlot(Plot):
 
         IntegerInput(
             key="points_per_bond", name="Points per bond",
+            group="bonds",
             default=10,
             help="Number of points that fill a bond in 2D in case each bond has a different color or different size. <br>More points will make it look more like a line but will slow plot rendering down."
         ),
 
-        QueriesInput(key="cell_style", name="Cell style",
-            default=[{"color": "green"}],
-            help = """The style of the unit cell lines""",
-            queryForm = [
-
-                ColorPicker(key="color", name="Color", default="green"),
+        DictInput(key="cell_style", name="Cell style",
+            default={"color": "green"},
+            group="cell",
+            help="""The style of the unit cell lines""",
+            fields=[
+                ColorInput(key="color", name="Color", default="green"),
 
                 FloatInput(key="width", name="Width", default=None),
 
                 FloatInput(key="opacity", name="Opacity", default=1),
-
             ]
         ),
 
@@ -336,7 +384,7 @@ class GeometryPlot(Plot):
         "get_figure": []
     }
 
-    @entry_point('geometry')
+    @entry_point('geometry', 0)
     def _read_nosource(self, geometry):
         """
         Reads directly from a sisl geometry.
@@ -346,7 +394,7 @@ class GeometryPlot(Plot):
         if self.geometry is None:
             raise ValueError("No geometry has been provided.")
 
-    @entry_point('geometry file')
+    @entry_point('geometry file', 1)
     def _read_siesta_output(self, geom_file, root_fdf):
         """
         Reads from a sile that contains a geometry using the `read_geometry` method.
@@ -366,6 +414,8 @@ class GeometryPlot(Plot):
             self.bonds = self.find_all_bonds(self._tiled_geometry)
 
         self.get_param("atoms").update_options(self.geometry)
+        self.get_param("atoms_style").get_param("atoms").update_options(self.geometry)
+        self.get_param("arrows").get_param("atoms").update_options(self.geometry)
 
     def _parse_atoms_style(self, atoms_style, ndim):
         """Parses the `atoms_style` setting to a dictionary of style specifications.
@@ -520,8 +570,7 @@ class GeometryPlot(Plot):
         backend_info["show_cell"] = show_cell
         backend_info["arrows"] = arrows
 
-        cell_style = self.get_param("cell_style").complete_query(cell_style[0])
-        cell_style.pop("active")
+        cell_style = self.get_param("cell_style").complete_dict(cell_style)
         backend_info["cell_style"] = cell_style
 
         return backend_info

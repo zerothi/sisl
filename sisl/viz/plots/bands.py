@@ -8,16 +8,15 @@ import itertools
 import numpy as np
 
 import sisl
-from sisl.messages import warn
 from ..plot import Plot, entry_point
 from ..plotutils import find_files
 from ..input_fields import (
-    TextInput, SwitchInput, ColorPicker,
-    FloatInput, RangeSlider,
+    TextInput, BoolInput, ColorInput,
+    FloatInput, RangeSliderInput,
     QueriesInput, FunctionInput, SileInput,
-    SpinSelect, AiidaNodeInput, BandStructureInput
+    SpinSelect, AiidaNodeInput, BandStructureInput,
+    ErangeInput
 )
-from ..input_fields.range import ErangeInput
 
 try:
     import pathos
@@ -33,82 +32,79 @@ class BandsPlot(Plot):
     Parameters
     -------------
     bands_file: bandsSileSiesta, optional
-        This parameter explicitly sets a .bands file. Otherwise, the bands
-        file is attempted to read from the fdf file
+    	This parameter explicitly sets a .bands file. Otherwise, the bands
+    	file is attempted to read from the fdf file
     band_structure: BandStructure, optional
-        A band structure. it can either be provided as a sisl.BandStructure
-        object or         as a list of points, which will be parsed into a
-        band structure object.            Each item is a dict. Structure of
-        the expected dicts:{         'x':          'y':          'z':
-        'divisions':          'name': Tick that should be displayed at this
-        corner of the path. }
+    	A band structure. it can either be provided as a sisl.BandStructure
+    	object or         as a list of points, which will be parsed into a
+    	band structure object.            Each item is a dict.    Structure
+    	of the dict: {         'x':          'y':          'z':
+    	'divisions':          'name': Tick that should be displayed at this
+    	corner of the path. }
     aiida_bands:  optional
-        An aiida BandsData node.
-    eigenstate_map:  optional
-        This function receives the eigenstate object for each k value when
-        the bands are being extracted from a hamiltonian.             You can
-        do whatever you want with it, the point of this function is to avoid
-        running the diagonalization process twice.
+    	An aiida BandsData node.
     add_band_data:  optional
-        This function receives each band and should return a dictionary with
-        additional arguments              that are passed to the band drawing
-        routine. It also receives the plot as the second argument.
-        See the docs of `sisl.viz.backends.templates.Backend.draw_line` to
-        understand what are the supported arguments             to be
-        returned. Notice that the arguments that the backend is able to
-        process can be very framework dependant.
+    	This function receives each band and should return a dictionary with
+    	additional arguments              that are passed to the band drawing
+    	routine. It also receives the plot as the second argument.
+    	See the docs of `sisl.viz.backends.templates.Backend.draw_line` to
+    	understand what are the supported arguments             to be
+    	returned. Notice that the arguments that the backend is able to
+    	process can be very framework dependant.
     Erange: array-like of shape (2,), optional
-        Energy range where the bands are displayed.
+    	Energy range where the bands are displayed.
     E0: float, optional
-        The energy to which all energies will be referenced (including
-        Erange).
+    	The energy to which all energies will be referenced (including
+    	Erange).
     bands_range: array-like of shape (2,), optional
-        The bands that should be displayed. Only relevant if Erange is None.
+    	The bands that should be displayed. Only relevant if Erange is None.
     spin:  optional
-        Determines how the different spin configurations should be displayed.
-        In spin polarized calculations, it allows you to choose between spin
-        0 and 1.             In non-colinear spin calculations, it allows you
-        to ask for a given spin texture,             by specifying the
-        direction.
+    	Determines how the different spin configurations should be displayed.
+    	In spin polarized calculations, it allows you to choose between spin
+    	0 and 1.             In non-colinear spin calculations, it allows you
+    	to ask for a given spin texture,             by specifying the
+    	direction.
     spin_texture_colorscale: str, optional
-        The plotly colorscale to use for the spin texture (if displayed)
+    	The plotly colorscale to use for the spin texture (if displayed)
     gap: bool, optional
-        Whether the gap should be displayed in the plot
+    	Whether the gap should be displayed in the plot
     direct_gaps_only: bool, optional
-        Whether to show only gaps that are direct, according to the gap
-        tolerance
+    	Whether to show only gaps that are direct, according to the gap
+    	tolerance
     gap_tol: float, optional
-        The difference in k that must exist to consider to gaps
-        different.             If two gaps' positions differ in less than
-        this, only one gap will be drawn.             Useful in cases
-        where there are degenerated bands with exactly the same values.
+    	The difference in k that must exist to consider to gaps
+    	different.             If two gaps' positions differ in less than
+    	this, only one gap will be drawn.             Useful in cases
+    	where there are degenerated bands with exactly the same values.
     gap_color: str, optional
-        Color to display the gap
+    	Color to display the gap
     custom_gaps: array-like of dict, optional
-        List of all the gaps that you want to display.   Each item is a dict.
-        Structure of the expected dicts:{         'from': K value where to
-        start measuring the gap.                      It can be either the
-        label of the k-point or the numeric value in the plot.         'to':
-        K value where to end measuring the gap.                      It can
-        be either the label of the k-point or the numeric value in the plot.
-        'color': The color with which the gap should be displayed
-        'spin': The spin components where the gap should be calculated. }
+    	List of all the gaps that you want to display.   Each item is a dict.
+    	Structure of the dict: {         'from': K value where to start
+    	measuring the gap.                      It can be either the label of
+    	the k-point or the numeric value in the plot.         'to': K value
+    	where to end measuring the gap.                      It can be either
+    	the label of the k-point or the numeric value in the plot.
+    	'color': The color with which the gap should be displayed
+    	'spin': The spin components where the gap should be calculated. }
     bands_width: float, optional
-        Width of the lines that represent the bands
+    	Width of the lines that represent the bands
     bands_color: str, optional
-        Choose the color to display the bands.  This will be used for the
-        spin up bands if the calculation is spin polarized
+    	Choose the color to display the bands.  This will be used for the
+    	spin up bands if the calculation is spin polarized
     spindown_color: str, optional
-        Choose the color for the spin down bands.Only used if the
-        calculation is spin polarized.
+    	Choose the color for the spin down bands.Only used if the
+    	calculation is spin polarized.
     root_fdf: fdfSileSiesta, optional
-        Path to the fdf file that is the 'parent' of the results.
+    	Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
+    entry_points_order: array-like, optional
+    	Order with which entry points will be attempted.
     backend:  optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
     """
 
     _plot_type = "Bands"
@@ -116,7 +112,6 @@ class BandsPlot(Plot):
     _parameters = (
 
         SileInput(key = "bands_file", name = "Path to bands file",
-            width = "s100% m50% l33%",
             dtype=sisl.io.siesta.bandsSileSiesta,
             group="dataread",
             params = {
@@ -152,9 +147,8 @@ class BandsPlot(Plot):
             help="""The energy to which all energies will be referenced (including Erange)."""
         ),
 
-        RangeSlider(key = "bands_range", name = "Bands range",
+        RangeSliderInput(key = "bands_range", name = "Bands range",
             default = None,
-            width = "s90%",
             params = {
                 'step': 1,
             },
@@ -174,7 +168,7 @@ class BandsPlot(Plot):
             help="The plotly colorscale to use for the spin texture (if displayed)"
         ),
 
-        SwitchInput(key="gap", name="Show gap",
+        BoolInput(key="gap", name="Show gap",
             default=False,
             params={
                 'onLabel': 'Yes',
@@ -183,7 +177,7 @@ class BandsPlot(Plot):
             help="Whether the gap should be displayed in the plot"
         ),
 
-        SwitchInput(key="direct_gaps_only", name="Only direct gaps",
+        BoolInput(key="direct_gaps_only", name="Only direct gaps",
             default=False,
             params={
                 'onLabel': 'Yes',
@@ -202,7 +196,7 @@ class BandsPlot(Plot):
             Useful in cases where there are degenerated bands with exactly the same values."""
         ),
 
-        ColorPicker(key="gap_color", name="Gap color",
+        ColorInput(key="gap_color", name="Gap color",
             default=None,
             help="Color to display the gap"
         ),
@@ -216,7 +210,6 @@ class BandsPlot(Plot):
                     key="from", name="From",
                     help="""K value where to start measuring the gap. 
                     It can be either the label of the k-point or the numeric value in the plot.""",
-                    width="s50% m20% l10%",
                     default="0",
                 ),
 
@@ -224,14 +217,12 @@ class BandsPlot(Plot):
                     key="to", name="To",
                     help="""K value where to end measuring the gap. 
                     It can be either the label of the k-point or the numeric value in the plot.""",
-                    width="s50% m20% l10%",
                     default="0",
                 ),
 
-                ColorPicker(
+                ColorInput(
                     key="color", name="Line color",
                     help="The color with which the gap should be displayed",
-                    width="s50% m20% l10%",
                     default=None,
                 ),
 
@@ -250,12 +241,12 @@ class BandsPlot(Plot):
             help="Width of the lines that represent the bands"
         ),
 
-        ColorPicker(key = "bands_color", name = "No spin/spin up line color",
+        ColorInput(key = "bands_color", name = "No spin/spin up line color",
             default = "black",
             help = "Choose the color to display the bands. <br> This will be used for the spin up bands if the calculation is spin polarized"
         ),
 
-        ColorPicker(key = "spindown_color", name = "Spin down line color",
+        ColorInput(key = "spindown_color", name = "Spin down line color",
             default = "blue",
             help = "Choose the color for the spin down bands.<br>Only used if the calculation is spin polarized."
         ),
@@ -294,7 +285,7 @@ class BandsPlot(Plot):
 
         self.add_shortcut("g", "Toggle gap", self.toggle_gap)
 
-    @entry_point('aiida bands')
+    @entry_point('aiida bands', 1)
     def _read_aiida_bands(self, aiida_bands):
         """
         Creates the bands plot reading from an aiida BandsData node.
@@ -326,7 +317,7 @@ class BandsPlot(Plot):
             attrs={**tick_info}
         )
 
-    @entry_point('band structure')
+    @entry_point('band structure', 2)
     def _read_from_H(self, band_structure, extra_vars=()):
         """
         Uses a sisl's `BandStructure` object to calculate the bands.
@@ -400,7 +391,7 @@ class BandsPlot(Plot):
         # Inform of where to place the ticks
         self.bands_data.attrs = {"ticks": self.ticks[0], "ticklabels": self.ticks[1], **bands_arrays[0].attrs}
 
-    @entry_point('bands file')
+    @entry_point('bands file', 0)
     def _read_siesta_output(self, bands_file, band_structure):
         """
         Reads the bands information from a SIESTA bands file.

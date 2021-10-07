@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
 
-from .._input_field import InputField
+from ..._input_field import InputField
 
 
 class ArrayNDInput(InputField):
@@ -12,9 +12,7 @@ class ArrayNDInput(InputField):
 
     _type = 'array'
 
-    _default = {
-        "width": "s100% l50%"
-    }
+    _default = {}
 
     def __init__(self, *args, **kwargs):
 
