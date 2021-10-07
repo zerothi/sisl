@@ -191,6 +191,8 @@ class SemiInfinite(SelfEnergy):
             self.semi_inf = 1
         elif INF.endswith("C"):
             self.semi_inf = 2
+        else:
+            raise ValueError(f"{self.__class__.__name__} infinite keyword does not end with `A`, `B` or `C`.")
 
         # Check that the Hamiltonian does have a non-zero V along the semi-infinite direction
         if spgeom.geometry.sc.nsc[self.semi_inf] == 1:
