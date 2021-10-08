@@ -174,7 +174,7 @@ class DownfoldSelfEnergy(PivotSelfEnergy):
                 return func(*args, **kwargs)
             self._bloch = _bloch
         else:
-            self._bloch = Bloch(bloch)
+            self._bloch = si.Bloch(bloch)
 
         # To re-create the downfoldable self-energies we need a few things:
         # pivot == for pivoting indices and BTD downfolding region
@@ -252,7 +252,7 @@ class DownfoldSelfEnergy(PivotSelfEnergy):
     def self_energy(self, E, k=(0, 0, 0), *args, **kwargs):
         self._prepare(E, k)
         data = self._data
-        se = self._bloch(super().self_energy, E, k, *args, **kwargs)
+        se = self._bloch(super().self_energy, k, E=E, *args, **kwargs)
 
         # now put it in the matrix
         M = data.SeH.copy()
@@ -567,12 +567,16 @@ class DeviceGreen:
             for iel, el in enumerate(self.elecs):
                 if el.name == elec:
                     return iel
+        elif isinstance(elec, PivotSelfEnergy):
+            return self._elec(elec.name)
         return elec
 
     def _elec_name(self, elec):
         """ Convert an electrode index or str to the name of the electrode """
         if isinstance(elec, str):
             return elec
+        elif isinstance(elec, PivotSelfEnergy):
+            return elec.name
         return self.elecs[elec].name
 
     def _prepare(self, E, k=(0, 0, 0)):
@@ -1384,7 +1388,7 @@ class DeviceGreen:
         transmission eigenvalues.
         """
         self._prepare(state.info["E"], state.info["k"])
-        if isinstance(elec_to, (Integral, str)):
+        if isinstance(elec_to, (Integral, str, PivotSelfEnergy)):
             elec_to = [elec_to]
         # convert to indices
         elec_to = [self._elec(e) for e in elec_to]
