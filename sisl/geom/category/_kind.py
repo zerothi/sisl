@@ -188,10 +188,6 @@ class AtomIndex(AtomCategory):
 class AtomSeq(AtomIndex):
     r""" Classify atoms based on their indices using a sequence string.
 
-    NOTE: Standalone negative indices are not supported, as they are understood
-    as a range. The "-2" in "-2,3" is understood as "from the beggining to
-    -2". However, negative numbers can be used in slices, e.g. "3:2:-2".
-
     Parameters
     ----------
     seq: str
