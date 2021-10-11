@@ -29,7 +29,7 @@ import os.path as osp
 import numpy as np
 from numpy import einsum
 from numpy import conjugate as conj
-from scipy.linalg import sqrtm
+#from scipy.linalg import sqrtm
 import scipy.sparse as ssp
 from scipy.sparse import csr_matrix
 
@@ -39,7 +39,7 @@ from sisl.linalg import *
 from sisl.utils.misc import PropertyDict
 
 
-arange = _a.arangei
+arangei = _a.arangei
 indices_only = si._indices.indices_only
 indices = si._indices.indices
 
@@ -48,6 +48,28 @@ __all__ = ['PivotSelfEnergy', 'DownfoldSelfEnergy', 'DeviceGreen']
 
 def dagger(M):
     return conj(M.T)
+
+
+def signsqrt(A):
+    """ Calculate the sqrt of the elements `A` by retaining the sign.
+
+    This only influences negative values in `A` by returning ``-abs(A)**0.5``
+    """
+    return np.sign(A) * np.sqrt(np.fabs(A))
+
+
+def sqrtm(H):
+    """ Calculate the sqrt of the Hermitian matrix `H`
+
+    We do this by using eigh and taking the sqrt of the eigenvalues.
+
+    This yields a slightly better value compared to scipy.linalg.sqrtm
+    when comparing H12 @ H12 vs. H12 @ H12.T.conj(). The latter is what
+    we need.
+    """
+    e, ev = eigh(H)
+    sqe = signsqrt(e)
+    return (ev * sqe) @ ev.conj().T
 
 
 def get_maxerrr(u):
@@ -149,7 +171,7 @@ class PivotSelfEnergy(si.physics.SelfEnergy):
             pvt_btd.append(self.pvt_down[o:i, 0])
             o += i
         #self.pvt_btd = np.concatenate(pvt_btd).reshape(-1, 1)
-        #self.pvt_btd_sort = np.arange(o)
+        #self.pvt_btd_sort = arangei(o)
 
         self._se_func = se_func
         self._scat_func = scat_func
@@ -170,8 +192,8 @@ class DownfoldSelfEnergy(PivotSelfEnergy):
         super().__init__(name, se, pivot)
 
         if np.allclose(bloch, 1):
-            def _bloch(func, *args, **kwargs):
-                return func(*args, **kwargs)
+            def _bloch(func, k, E, *args, **kwargs):
+                return func(E, k, *args, **kwargs)
             self._bloch = _bloch
         else:
             self._bloch = si.Bloch(bloch)
@@ -252,7 +274,7 @@ class DownfoldSelfEnergy(PivotSelfEnergy):
     def self_energy(self, E, k=(0, 0, 0), *args, **kwargs):
         self._prepare(E, k)
         data = self._data
-        se = self._bloch(super().self_energy, k, E=E, *args, **kwargs)
+        se = self._bloch(super().self_energy, k, *args, E=E, **kwargs)
 
         # now put it in the matrix
         M = data.SeH.copy()
@@ -263,7 +285,7 @@ class DownfoldSelfEnergy(PivotSelfEnergy):
         cumbtd = data.cumbtd
 
         def gM(M, idx1, idx2):
-            return M[idx1, idx2].A
+            return M[idx1, idx2].toarray()
 
         Mr = 0
         pvt_i = pvt[cumbtd[0]:cumbtd[1]].reshape(-1, 1)
@@ -579,14 +601,38 @@ class DeviceGreen:
             return elec.name
         return self.elecs[elec].name
 
-    def _prepare(self, E, k=(0, 0, 0)):
-        data = self._data
-        if hasattr(data, "E"):
-            if np.allclose(data.E, E) and np.allclose(data.k, k):
+    def _check_Ek(self, E, k):
+        if hasattr(self._data, "E"):
+            if np.allclose(self._data.E, E) and np.allclose(self._data.k, k):
                 # we have already prepared the calculation
-                return
+                return True
+        # while resetting is not necessary, it can
+        # save a lot of memory since some arrays are not
+        # temporarily stored twice.
+        self.reset()
+        return False
+
+    def _prepare_se(self, E, k=(0, 0, 0)):
+        if self._check_Ek(E, k):
+            return
+
+        # Create all self-energies (and store the Gamma's)
+        se = []
+        gamma = []
+        for elec in self.elecs:
+            # Insert values
+            SE = elec.self_energy(E, k)
+            se.append(SE)
+            gamma.append(elec.se2scat(SE))
+        self._data.se = se
+        self._data.gamma = gamma
+
+    def _prepare(self, E, k=(0, 0, 0)):
+        if self._check_Ek(E, k):
+            return
 
         # Prepare the Green function calculation
+        data = self._data
         inv_G = self.H.Sk(k, dtype=np.complex128) * E - self.H.Hk(k, dtype=np.complex128)
 
         # Create all self-energies (and store the Gamma's)
@@ -596,6 +642,7 @@ class DeviceGreen:
             SE = elec.self_energy(E, k)
             inv_G[elec.pvt, elec.pvt.T] -= SE
             gamma.append(elec.se2scat(SE))
+        del SE
         data.gamma = gamma
 
         # Now reduce the sparse matrix to the device region (plus do the pivoting)
@@ -612,23 +659,26 @@ class DeviceGreen:
         cbtd = self.btd_cum
         btd = self.btd
 
-        sl0 = arange(0, cbtd[0]).reshape(-1, 1)
-        slp = arange(cbtd[0], cbtd[1]).reshape(1, -1)
+        sl0 = slice(0, cbtd[0])
+        slp = slice(cbtd[0], cbtd[1])
         # initial matrix A and C
-        A[0] = inv_G[sl0, sl0.T].toarray()
-        C[1] = inv_G[sl0, slp].toarray()
+        iG = inv_G[sl0, :].tocsc()
+        A[0] = iG[:, sl0].toarray()
+        C[1] = iG[:, slp].toarray()
         for b, bs in enumerate(btd[1:-1], 1):
             # rotate slices
-            sln = sl0.T
-            sl0 = slp.T
-            slp = arange(cbtd[b], cbtd[b+1]).reshape(1, -1)
+            sln = sl0
+            sl0 = slp
+            slp = slice(cbtd[b], cbtd[b+1])
+            iG = inv_G[sl0, :].tocsc()
 
-            B[b-1] = inv_G[sl0, sln].toarray()
-            A[b] = inv_G[sl0, sl0.T].toarray()
-            C[b+1] = inv_G[sl0, slp].toarray()
+            B[b-1] = iG[:, sln].toarray()
+            A[b] = iG[:, sl0].toarray()
+            C[b+1] = iG[:, slp].toarray()
         # and final matrix A and B
-        A[-1] = inv_G[slp.T, slp].toarray()
-        B[-2] = inv_G[slp.T, sl0.T].toarray()
+        iG = inv_G[slp, :].tocsc()
+        A[-1] = iG[:, slp].toarray()
+        B[-2] = iG[:, sl0].toarray()
 
         # clean-up, not used anymore
         del inv_G
@@ -750,18 +800,18 @@ class DeviceGreen:
             # Calculate diagonal part
             if b == 0:
                 G11 = inv_destroy(A[b] - C[b + 1] @ tX[b])
-                G[b, b]
             elif b == nbm1:
                 G11 = inv_destroy(A[b] - B[b - 1] @ tY[b])
             else:
                 G11 = inv_destroy(A[b] - B[b - 1] @ tY[b] - C[b + 1] @ tX[b])
 
-            # Do above
             G[b, b] = G11
+            # do above
             if b > 0:
-                G[b, b-1] = - tY[b] @ G11
+                G[b - 1, b] = - tY[b] @ G11
+            # do below
             if b < nbm1:
-                G[b, b+1] = - tX[b] @ G11
+                G[b + 1, b] = - tX[b] @ G11
 
         return G
 
@@ -860,17 +910,17 @@ class DeviceGreen:
             i = idx[c[b] <= idx].copy()
             i = i[i < c[b + 1]].astype(np.int32)
 
-            c_idx = _a.arangei(c[b], c[b + 1]).reshape(-1, 1)
+            c_idx = arangei(c[b], c[b + 1]).reshape(-1, 1)
             b_idx = indices_only(c_idx.ravel(), i)
             # Subtract the first block to put it only in the sub-part
             c_idx -= c[blocks[0]]
 
             if b == blocks[0]:
                 sl = slice(0, btd[b])
-                r_idx = np.arange(len(b_idx))
+                r_idx = arangei(len(b_idx))
             else:
                 sl = slice(btd[blocks[0]], btd[blocks[0]] + btd[b])
-                r_idx = np.arange(len(idx) - len(b_idx), len(idx))
+                r_idx = arangei(len(idx) - len(b_idx), len(idx))
 
             if b == 0:
                 G[sl, r_idx] = inv_destroy(A[b] - C[b + 1] @ tX[b])[:, b_idx]
@@ -928,13 +978,13 @@ class DeviceGreen:
             i = idx[c[b] <= idx]
             i = i[i < c[b + 1]].astype(np.int32)
 
-            c_idx = _a.arangei(c[b], c[b + 1]).reshape(-1, 1)
+            c_idx = arangei(c[b], c[b + 1]).reshape(-1, 1)
             b_idx = indices_only(c_idx.ravel(), i)
 
             if b == blocks[0]:
-                r_idx = np.arange(len(b_idx))
+                r_idx = arangei(len(b_idx))
             else:
-                r_idx = np.arange(len(idx) - len(b_idx), len(idx))
+                r_idx = arangei(len(idx) - len(b_idx), len(idx))
 
             sl = slice(c[b], c[b + 1])
             if b == 0:
@@ -1183,7 +1233,7 @@ class DeviceGreen:
             # also retain values with large negative DOS.
             # These should correspond to states with large weight, but in some
             # way unphysical. The DOS *should* be positive.
-            idx = (np.fabs(DOS) > cutoff).nonzero()[0]
+            idx = (np.fabs(DOS) >= cutoff).nonzero()[0]
             DOS = DOS[idx]
             U = U[:, idx]
 
@@ -1262,7 +1312,7 @@ class DeviceGreen:
 
         # We only need the minimal eigenspace, we already know we only have
         # len(Gamma_sqrt) eigenvalues (maximally)
-        A, DOS, _ = svd_destroy(A, full_matrices=False)
+        A, DOS, _ = svd_destroy(A, full_matrices=False, check_finite=False)
         del _
 
         # TODO check with overlap convert with correct magnitude (Tr[A] / 2pi)
@@ -1320,7 +1370,7 @@ class DeviceGreen:
         # Back-convert to retain scale of the vectors before SVD
         # and also take the sqrt to ensure U U^dagger returns
         # a sensible value.
-        U *= (DOS * 2 * np.pi) ** 0.5
+        U *= signsqrt(DOS * 2 * np.pi)
 
         nb = len(self.btd)
 
@@ -1387,17 +1437,21 @@ class DeviceGreen:
         scattering states for the individual eigen channels. The eigenvalues are the
         transmission eigenvalues.
         """
-        self._prepare(state.info["E"], state.info["k"])
+        self._prepare_se(state.info["E"], state.info["k"])
         if isinstance(elec_to, (Integral, str, PivotSelfEnergy)):
             elec_to = [elec_to]
         # convert to indices
         elec_to = [self._elec(e) for e in elec_to]
 
-        # Retrive the scattering states `A`
-        A = state.state
         # The sign shouldn't really matter since the states should always
         # have a finite DOS, however, for completeness sake we retain the sign.
-        sqDOS = (np.sign(state.c) * np.sqrt(np.fabs(state.c))).reshape(-1, 1)
+        # We scale the vectors by sqrt(DOS/2pi).
+        # This is because the scattering states from self.scattering_state
+        # stores eig(A) / 2pi.
+        sqDOS = signsqrt(state.c).reshape(-1, 1)
+        # Retrive the scattering states `A` and apply the proper scaling
+        # We need this scaling for the eigenchannel construction anyways.
+        A = state.state * sqDOS
 
         # create shorthands
         elec_pvt_dev = self.elecs_pvt_dev
@@ -1406,13 +1460,13 @@ class DeviceGreen:
         # Create the first electrode
         el = elec_to[0]
         idx = elec_pvt_dev[el].ravel()
-        u = A[:, idx] * sqDOS
+        u = A[:, idx]
         # the summed transmission matrix
-        Ut = u @ G[el] @ dagger(u)
+        Ut = u.conj() @ G[el] @ u.T
         for el in elec_to[1:]:
             idx = elec_pvt_dev[el].ravel()
-            u = A[:, idx] * sqDOS
-            Ut += u @ G[el] @ dagger(u)
+            u = A[:, idx]
+            Ut += u.conj() @ G[el] @ u.T
 
         # TODO currently a factor depends on what is used
         #      in `scattering_states`, so go check there.
@@ -1427,5 +1481,5 @@ class DeviceGreen:
         info["elec_to"] = [self._elec_name(e) for e in elec_to]
 
         # Backtransform U to form the eigenchannels
-        return si.physics.StateCElectron((Ut.T @ A)[::-1, :],
+        return si.physics.StateCElectron(Ut[:, ::-1].T @ A,
                                          tt[::-1], self, **info)
