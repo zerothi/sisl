@@ -901,31 +901,19 @@ class DeviceGreen:
         return G
 
     def _green_bm(self):
-        G = BlockMatrix(self.btd)
+        G = self._green_btd()
         BI = G.block_indexer
         nb = len(BI)
         nbm1 = nb - 1
 
-        A = self._data.A
-        B = self._data.B
-        C = self._data.C
         tX = self._data.tX
         tY = self._data.tY
         for b in range(nb):
-            # Calculate diagonal part
-            if b == 0:
-                G11 = inv_destroy(A[b] - C[b + 1] @ tX[b])
-            elif b == nbm1:
-                G11 = inv_destroy(A[b] - B[b - 1] @ tY[b])
-            else:
-                G11 = inv_destroy(A[b] - B[b - 1] @ tY[b] - C[b + 1] @ tX[b])
-
-            BI[b, b] = G11
-            G0 = G11
+            G0 = BI[b, b]
             for bb in range(b, 0, -1):
                 G0 = - tY[bb] @ G0
                 BI[bb-1, b] = G0
-            G0 = G11
+            G0 = BI[b, b]
             for bb in range(b, nbm1):
                 G0 = - tX[bb] @ G0
                 BI[bb+1, b] = G0
@@ -1203,13 +1191,25 @@ class DeviceGreen:
         BI = btd.block_indexer
 
         c = np.append(0, self.btd_cum)
-        # loop columns
-        for jb in range(nb):
-            slj = slice(c[jb], c[jb+1])
-            Gj = Gam @ dagger(G[slj, :])
-            for ib in range(max(0, jb-1), min(jb+1, nbm1)):
-                sli = slice(c[ib], c[ib+1])
-                BI[ib, jb] = G[sli, :] @ Gj
+        if herm:
+            # loop columns
+            for jb in range(nb):
+                slj = slice(c[jb], c[jb+1])
+                Gj = Gam @ dagger(G[slj, :])
+                for ib in range(max(0, jb - 1), jb):
+                    sli = slice(c[ib], c[ib+1])
+                    BI[ib, jb] = G[sli, :] @ Gj
+                    BI[jb, ib] = BI[ib, jb].T.conj()
+                BI[jb, jb] = G[slj, :] @ Gj
+
+        else:
+            # loop columns
+            for jb in range(nb):
+                slj = slice(c[jb], c[jb+1])
+                Gj = Gam @ dagger(G[slj, :])
+                for ib in range(max(0, jb-1), min(jb+1, nbm1)):
+                    sli = slice(c[ib], c[ib+1])
+                    BI[ib, jb] = G[sli, :] @ Gj
 
         return btd
 
@@ -1226,19 +1226,19 @@ class DeviceGreen:
 
         c = np.append(0, self.btd_cum)
 
-        # loop columns
         if herm:
+            # loop columns
             for jb in range(nb):
                 slj = slice(c[jb], c[jb+1])
                 Gj = Gam @ dagger(G[slj, :])
-                for ib in range(jb + 1):
+                for ib in range(jb):
                     sli = slice(c[ib], c[ib+1])
                     BI[ib, jb] = G[sli, :] @ Gj
-            for jb in range(nb):
-                for ib in range(jb + 1, nb):
-                    BI[ib, jb] = BI[jb, ib].T.conj()
+                    BI[jb, ib] = BI[ib, jb].T.conj()
+                BI[jb, jb] = G[slj, :] @ Gj
 
         else:
+            # loop columns
             for jb in range(nb):
                 slj = slice(c[jb], c[jb+1])
                 Gj = Gam @ dagger(G[slj, :])
