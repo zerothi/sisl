@@ -1,6 +1,7 @@
 from ...configurable import Configurable
 from ..._input_field import InputField
 
+
 class DictInput(InputField):
     """Input field for a dictionary.
 
@@ -41,7 +42,7 @@ class DictInput(InputField):
 
         def get_fields_help():
             return "\n\t".join([f"'{param.key}': {param.help}" for param in fields])
-        
+
         help += "\n\n Structure of the dict: {\n\t" + get_fields_help() + "\n}"
 
         super().__init__(*args, **kwargs, help=help, input_field_attrs=input_field_attrs)
@@ -70,7 +71,7 @@ class DictInput(InputField):
         return Configurable.get_param(
             self, key, params_extractor=lambda obj: obj.inputField["fields"], **kwargs
         )
-    
+
     def modify_param(self, key, *args, **kwargs):
         """Modifies a parameter from the fields of this dictionary."""
         return Configurable.modify_param(self, key, *args, **kwargs)
@@ -101,9 +102,9 @@ class DictInput(InputField):
         for field in self.fields:
             if field.key in val:
                 val[field.key] = field.parse(val[field.key])
-        
+
         return val
-    
+
     def __getitem__(self, key):
         for field in self.inputField['fields']:
             if field.key == key:
@@ -118,7 +119,8 @@ class DictInput(InputField):
                 return True
 
         return False
-    
+
+
 class CreatableDictInput(DictInput):
     """Input field for a dictionary for which entries can be created and removed.
 
@@ -129,7 +131,3 @@ class CreatableDictInput(DictInput):
     """
 
     _type = "creatable dict"
-
-        
-
-

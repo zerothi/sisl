@@ -6,7 +6,7 @@ from ..._input_field import InputField
 
 class BoolInput(InputField):
     """Simple input that controls a boolean variable.
-    
+
     GUI indications
     ----------------
     It can be implemented as a switch or a checkbox, for example.

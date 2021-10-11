@@ -84,8 +84,8 @@ def test_geom_category_even_odd():
 def test_geom_category_index():
     hBN = honeycomb(1.42, Atom[5, 7]) * (4, 5, 1)
 
-    first_and_third = AtomIndex([0,2])
-    assert set([0,2]) == set(hBN.asc2uc(first_and_third))
+    first_and_third = AtomIndex([0, 2])
+    assert set([0, 2]) == set(hBN.asc2uc(first_and_third))
 
     odd = AtomIndex(mod=2)
     even = ~odd
@@ -128,10 +128,11 @@ def test_geom_category_seq():
     assert set(geom.asc2uc(cat)) == set([len(geom) - 1 - 2])
 
     cat = AtomSeq("0,3,5")
-    assert set(geom.asc2uc(cat)) == set([0,3,5])
+    assert set(geom.asc2uc(cat)) == set([0, 3, 5])
 
     cat = AtomSeq(":3,5")
-    assert set(geom.asc2uc(cat)) == set([0,1,2,3,5])
+    assert set(geom.asc2uc(cat)) == set([0, 1, 2, 3, 5])
+
 
 def test_geom_category_tag():
     atoms = [Atom(Z=6, tag="C1"), Atom(Z=6, tag="C2"), Atom(Z=6, tag="C3"), Atom(Z=1, tag="H")]
@@ -141,7 +142,7 @@ def test_geom_category_tag():
     assert len(geom.asc2uc(cat)) == 4
 
     cat = AtomTag("C")
-    assert set(geom.asc2uc(cat)) == set([0,1,2])
+    assert set(geom.asc2uc(cat)) == set([0, 1, 2])
 
     cat = AtomTag("C1")
     assert set(geom.asc2uc(cat)) == set([0])
@@ -150,10 +151,10 @@ def test_geom_category_tag():
     assert len(geom.asc2uc(cat)) == 0
 
     cat = AtomTag("C[13]")
-    assert set(geom.asc2uc(cat)) == set([0,2])
+    assert set(geom.asc2uc(cat)) == set([0, 2])
 
     cat = AtomTag("[CH]")
-    assert set(geom.asc2uc(cat)) == set([0,1,2,3])
+    assert set(geom.asc2uc(cat)) == set([0, 1, 2, 3])
 
     cat = AtomTag("[CH]$")
     assert set(geom.asc2uc(cat)) == set([3])

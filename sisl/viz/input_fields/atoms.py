@@ -8,8 +8,10 @@ from .basic import (
     RangeInput, RangeSliderInput
 )
 
+
 class AtomCategoryInput(CategoryInput):
     pass
+
 
 class AtomIndexCatInput(AtomCategoryInput, DictInput):
 
@@ -37,27 +39,31 @@ class AtomIndexCatInput(AtomCategoryInput, DictInput):
             return val
         else:
             return super().parse(val)
-    
+
     def update_options(self, geom):
         self.get_param("in").modify("inputField.params.options",
                [{"label": f"{at} ({geom.atoms[at].symbol})", "value": at}
                 for at in geom])
 
+
 class AtomFracCoordsCatInput(AtomCategoryInput, RangeSliderInput):
 
     _default = {
-        "default": [0,1],
+        "default": [0, 1],
         "params": {"min": 0, "max": 1, "step": 0.01}
     }
 
+
 class AtomCoordsCatInput(AtomCategoryInput, RangeInput):
     pass
+
 
 class AtomZCatInput(AtomCategoryInput, IntegerInput):
 
     _default = {
         "params": {"min": 0}
     }
+
 
 class AtomNeighboursCatInput(AtomCategoryInput, DictInput):
 
@@ -71,7 +77,7 @@ class AtomNeighboursCatInput(AtomCategoryInput, DictInput):
         ]
 
         super().__init__(*args, fields=fields, **kwargs)
-    
+
     def parse(self, val):
 
         if isinstance(val, dict):
@@ -79,8 +85,8 @@ class AtomNeighboursCatInput(AtomCategoryInput, DictInput):
             if "range" in val:
                 val["min"], val["max"] = val.pop("range")
             if "neigh_tag" in val:
-                val["neighbour"] = {"tag": val.pop("neigh_tag")}   
-        
+                val["neighbour"] = {"tag": val.pop("neigh_tag")}
+
         return val
 
 
@@ -100,7 +106,7 @@ class AtomSelect(CreatableDictInput):
         fields = [
             AtomIndexCatInput(key="index", name="Indices"),
 
-            *[AtomFracCoordsCatInput(key=f"f{ax}", name=f"Fractional {ax.upper()}", default=[0,1])
+            *[AtomFracCoordsCatInput(key=f"f{ax}", name=f"Fractional {ax.upper()}", default=[0, 1])
                 for ax in "xyz"],
 
             *[AtomCoordsCatInput(key=ax, name=f"{ax.upper()} coordinate")
@@ -126,7 +132,7 @@ class AtomSelect(CreatableDictInput):
     def parse(self, val):
         if isinstance(val, dict):
             val = super().parse(val)
-        
+
         return val
 
 

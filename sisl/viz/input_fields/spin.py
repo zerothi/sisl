@@ -4,6 +4,7 @@ from .basic import OptionsInput
 from sisl import Spin
 from sisl._help import isiterable
 
+
 class SpinSelect(OptionsInput):
     """ Input field that helps selecting and managing the desired spin.
 

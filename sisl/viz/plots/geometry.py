@@ -59,92 +59,92 @@ class GeometryPlot(Plot):
     Parameters
     -------------
     geometry: Geometry, optional
-    	A geometry object
+        A geometry object
     geom_file: str, optional
-    	A file name that can read a geometry
+        A file name that can read a geometry
     show_bonds: bool, optional
-    	Show bonds between atoms.
+        Show bonds between atoms.
     axes:  optional
-    	The axis along which you want to see the geometry.              You
-    	can provide as many axes as dimensions you want for your plot.
-    	Note that the order is important and will result in setting the plot
-    	axes diferently.             For 2D and 1D representations, you can
-    	pass an arbitrary direction as an axis (array of shape (3,))
+        The axis along which you want to see the geometry.              You
+        can provide as many axes as dimensions you want for your plot.
+        Note that the order is important and will result in setting the plot
+        axes diferently.             For 2D and 1D representations, you can
+        pass an arbitrary direction as an axis (array of shape (3,))
     dataaxis_1d: array-like or function, optional
-    	If you want a 1d representation, you can provide a data axis.
-    	It determines the second coordinate of the atoms.
-    	If it's a function, it will recieve the projected 1D coordinates and
-    	needs to returns              the coordinates for the other axis as
-    	an array.                          If not provided, the other axis
-    	will just be 0 for all points.
+        If you want a 1d representation, you can provide a data axis.
+        It determines the second coordinate of the atoms.
+        If it's a function, it will recieve the projected 1D coordinates and
+        needs to returns              the coordinates for the other axis as
+        an array.                          If not provided, the other axis
+        will just be 0 for all points.
     show_cell:  optional
-    	Specifies how the cell should be rendered.              (False: not
-    	rendered, 'axes': render axes only, 'box': render a bounding box)
+        Specifies how the cell should be rendered.              (False: not
+        rendered, 'axes': render axes only, 'box': render a bounding box)
     nsc: array-like, optional
-    	Make the geometry larger by tiling it along each lattice vector
+        Make the geometry larger by tiling it along each lattice vector
     atoms: dict, optional
-    	The atoms that are going to be displayed in the plot.
-    	This also has an impact on bonds (see the `bind_bonds_to_ats` and
-    	`show_atoms` parameters).             If set to None, all atoms are
-    	displayed   Structure of the dict: {         'index':    Structure of
-    	the dict: {         'in':  }         'fx':          'fy':
-    	'fz':          'x':          'y':          'z':          'Z':
-    	'neighbours':    Structure of the dict: {         'range':
-    	'R':          'neigh_tag':  }         'tag':          'seq':  }
+        The atoms that are going to be displayed in the plot.
+        This also has an impact on bonds (see the `bind_bonds_to_ats` and
+        `show_atoms` parameters).             If set to None, all atoms are
+        displayed   Structure of the dict: {         'index':    Structure of
+        the dict: {         'in':  }         'fx':          'fy':
+        'fz':          'x':          'y':          'z':          'Z':
+        'neighbours':    Structure of the dict: {         'range':
+        'R':          'neigh_tag':  }         'tag':          'seq':  }
     atoms_style: array-like of dict, optional
-    	Customize the style of the atoms by passing style specifications.
-    	Each style specification can have an "atoms" key to select the atoms
-    	for which             that style should be used. If an atom fits into
-    	more than one selector, the last             specification is used.
-    	Each item is a dict.    Structure of the dict: {         'atoms':
-    	Structure of the dict: {         'index':    Structure of the dict: {
-    	'in':  }         'fx':          'fy':          'fz':          'x':
-    	'y':          'z':          'Z':          'neighbours':    Structure
-    	of the dict: {         'range':          'R':          'neigh_tag':
-    	}         'tag':          'seq':  }         'color':          'size':
-    	'opacity':          'vertices': In a 3D representation, the number of
-    	vertices that each atom sphere is composed of. }
+        Customize the style of the atoms by passing style specifications.
+        Each style specification can have an "atoms" key to select the atoms
+        for which             that style should be used. If an atom fits into
+        more than one selector, the last             specification is used.
+        Each item is a dict.    Structure of the dict: {         'atoms':
+        Structure of the dict: {         'index':    Structure of the dict: {
+        'in':  }         'fx':          'fy':          'fz':          'x':
+        'y':          'z':          'Z':          'neighbours':    Structure
+        of the dict: {         'range':          'R':          'neigh_tag':
+        }         'tag':          'seq':  }         'color':          'size':
+        'opacity':          'vertices': In a 3D representation, the number of
+        vertices that each atom sphere is composed of. }
     arrows: array-like of dict, optional
-    	Add arrows centered at the atoms to display some vector property.
-    	You can add as many arrows as you want, each with different styles.
-    	Each item is a dict.    Structure of the dict: {         'atoms':
-    	Structure of the dict: {         'index':    Structure of the dict: {
-    	'in':  }         'fx':          'fy':          'fz':          'x':
-    	'y':          'z':          'Z':          'neighbours':    Structure
-    	of the dict: {         'range':          'R':          'neigh_tag':
-    	}         'tag':          'seq':  }         'data':          'scale':
-    	'color':          'width':          'name':
-    	'arrowhead_scale':          'arrowhead_angle':  }
+        Add arrows centered at the atoms to display some vector property.
+        You can add as many arrows as you want, each with different styles.
+        Each item is a dict.    Structure of the dict: {         'atoms':
+        Structure of the dict: {         'index':    Structure of the dict: {
+        'in':  }         'fx':          'fy':          'fz':          'x':
+        'y':          'z':          'Z':          'neighbours':    Structure
+        of the dict: {         'range':          'R':          'neigh_tag':
+        }         'tag':          'seq':  }         'data':          'scale':
+        'color':          'width':          'name':
+        'arrowhead_scale':          'arrowhead_angle':  }
     atoms_scale: float, optional
-    	A scaling factor for atom sizes. This is a very quick way to rescale.
+        A scaling factor for atom sizes. This is a very quick way to rescale.
     atoms_colorscale: str, optional
-    	The colorscale to use to map values to colors for the atoms.
-    	Only used if atoms_color is provided and is an array of values.
+        The colorscale to use to map values to colors for the atoms.
+        Only used if atoms_color is provided and is an array of values.
     bind_bonds_to_ats: bool, optional
-    	whether only the bonds that belong to an atom that is present should
-    	be displayed.             If False, all bonds are displayed
-    	regardless of the `atoms` parameter
+        whether only the bonds that belong to an atom that is present should
+        be displayed.             If False, all bonds are displayed
+        regardless of the `atoms` parameter
     show_atoms: bool, optional
-    	If set to False, it will not display atoms.              Basically
-    	this is a shortcut for ``atoms = [], bind_bonds_to_ats=False``.
-    	Therefore, it will override these two parameters.
+        If set to False, it will not display atoms.              Basically
+        this is a shortcut for ``atoms = [], bind_bonds_to_ats=False``.
+        Therefore, it will override these two parameters.
     points_per_bond: int, optional
-    	Number of points that fill a bond in 2D in case each bond has a
-    	different color or different size. More points will make it look
-    	more like a line but will slow plot rendering down.
+        Number of points that fill a bond in 2D in case each bond has a
+        different color or different size. More points will make it look
+        more like a line but will slow plot rendering down.
     cell_style: dict, optional
-    	The style of the unit cell lines   Structure of the dict: {
-    	'color':          'width':          'opacity':  }
+        The style of the unit cell lines   Structure of the dict: {
+        'color':          'width':          'opacity':  }
     root_fdf: fdfSileSiesta, optional
-    	Path to the fdf file that is the 'parent' of the results.
+        Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
-    	Directory where the files with the simulations results are
-    	located. This path has to be relative to the root fdf.
+        Directory where the files with the simulations results are
+        located. This path has to be relative to the root fdf.
     entry_points_order: array-like, optional
-    	Order with which entry points will be attempted.
+        Order with which entry points will be attempted.
     backend:  optional
-    	Directory where the files with the simulations results are
-    	located. This path has to be relative to the root fdf.
+        Directory where the files with the simulations results are
+        located. This path has to be relative to the root fdf.
     """
 
     _plot_type = "Geometry"
@@ -297,7 +297,7 @@ class GeometryPlot(Plot):
 
                 AtomSelect(key="atoms", name="Atoms", default=None),
 
-                Array1DInput(key="data", name="Data", default=None, params={"shape":(3,)}),
+                Array1DInput(key="data", name="Data", default=None, params={"shape": (3,)}),
 
                 FloatInput(key="scale", name="Scale", default=1),
 

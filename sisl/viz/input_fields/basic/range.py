@@ -5,9 +5,10 @@ import numpy as np
 
 from ..._input_field import InputField
 
+
 class RangeInput(InputField):
     """Simple range input composed of two values, min and max.
-    
+
     GUI indications
     ----------------
     This input field is the interface to an array of length 2 that specifies

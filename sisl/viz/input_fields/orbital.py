@@ -7,6 +7,7 @@ from .queries import QueriesInput
 from .atoms import AtomSelect, SpeciesSelect
 from .spin import SpinSelect
 
+
 class OrbitalsNameSelect(OptionsInput):
 
     _default = {

@@ -3,6 +3,7 @@ import numpy as np
 
 from .basic import OptionsInput
 
+
 class GeomAxisSelect(OptionsInput):
 
     _default = {

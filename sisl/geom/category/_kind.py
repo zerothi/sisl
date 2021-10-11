@@ -208,7 +208,7 @@ class AtomSeq(AtomIndex):
     >>> geom.sub(seq) == geom.sub([1,2,3,*range(7, len(geom))])
     >>> seq = AtomSeq("1-3,6,9:2:")
     >>> geom.sub(seq) == geom.sub([1,2,3,6,*range(9, len(geom), 2)])
-    
+
     See also
     ---------
     `strmap`, `lstranges`:
@@ -222,7 +222,7 @@ class AtomSeq(AtomIndex):
     @staticmethod
     def _sanitize_negs(indices_map, end):
         """Converts negative indices to their corresponding positive values.
-        
+
         Parameters
         ----------
         indices_map: list
@@ -256,7 +256,7 @@ class AtomSeq(AtomIndex):
         self.set_name(self._seq)
         # Finally categorize
         return super().categorize(geometry, *args, **kwargs)
-    
+
     def __eq__(self, other):
         if self.__class__ is other.__class__:
             return self._seq == other._seq

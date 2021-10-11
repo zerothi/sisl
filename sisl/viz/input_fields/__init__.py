@@ -21,5 +21,3 @@ from .orbital import OrbitalsNameSelect, OrbitalQueries
 from .spin import SpinSelect
 
 from .energy import ErangeInput
-
-

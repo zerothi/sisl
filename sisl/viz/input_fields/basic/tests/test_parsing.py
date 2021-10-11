@@ -7,10 +7,12 @@ from sisl.viz.input_fields import (
     BoolInput, ListInput
 )
 
+
 def test_text_input_parse():
     input_field = TextInput(key="test", name="Test")
 
     assert input_field.parse("Some test input") == "Some test input"
+
 
 def test_integer_input_parse():
     input_field = IntegerInput(key="test", name="Test")
@@ -31,6 +33,7 @@ def test_integer_input_parse():
         assert isinstance(parsed_array, np.ndarray)
         assert np.all(parsed_array == [3])
 
+
 def test_float_input_parse():
     input_field = FloatInput(key="test", name="Test")
 
@@ -46,6 +49,7 @@ def test_float_input_parse():
     parsed_array = input_field.parse([3.2])
     assert isinstance(parsed_array, np.ndarray)
     assert np.all(parsed_array == [3.2])
+
 
 def test_bool_input_parse():
     input_field = BoolInput(key="test", name="Test")
@@ -71,9 +75,10 @@ def test_bool_input_parse():
 
     assert input_field.parse(None) is None
 
+
 def test_dict_input_parse():
     input_field = DictInput(
-        key="test", name="Test", 
+        key="test", name="Test",
         fields=[
             TextInput(key="a", name="A"),
             IntegerInput(key="b", name="B"),
@@ -85,12 +90,13 @@ def test_dict_input_parse():
 
     with pytest.raises(ValueError):
         input_field.parse({"a": "S", "b": "Some non-integer"})
-    
+
     assert input_field.parse(None) == {}
     assert input_field.parse({}) == {}
 
     with pytest.raises(TypeError):
         input_field.parse(3)
+
 
 def test_list_input_parse():
 
@@ -110,5 +116,3 @@ def test_list_input_parse():
         input_field.parse(["Some non-integer"])
 
     assert input_field.parse(None) is None
-
-    

@@ -9,7 +9,7 @@ from ..._input_field import InputField
 
 class NumericInput(InputField):
     """Simple input for a number.
-    
+
     GUI indications
     ----------------
     If you have a `param` that uses a `NumericInput`, you will find a dictionary
@@ -33,7 +33,7 @@ class NumericInput(InputField):
 
 class IntegerInput(NumericInput):
     """Simple input for an integer.
-    
+
     GUI indications
     ----------------
     No implementation needed for this input field, if your `NumericInput`
@@ -61,7 +61,7 @@ class IntegerInput(NumericInput):
 
 class FloatInput(NumericInput):
     """Simple input for an integer.
-    
+
     GUI indications
     ----------------
     No implementation needed for this input field, if your `NumericInput`

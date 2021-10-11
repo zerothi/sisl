@@ -6,7 +6,7 @@ from ..._input_field import InputField
 
 class TextInput(InputField):
     """Simple input for text.
-    
+
     GUI indications
     ----------------
     The implementation of this input should be a simple text field.

@@ -6,6 +6,7 @@ from sisl._help import isiterable
 from ..._input_field import InputField
 from .text import TextInput
 
+
 class ListInput(InputField):
     """A versatile list input.
 
@@ -32,10 +33,10 @@ class ListInput(InputField):
 
     def get_item_input(self):
         return self.inputField["params"]["itemInput"]
-    
+
     def modify_item_input(self, *args, **kwargs):
         return self.get_item_input().modify(*args, **kwargs)
-    
+
     def parse(self, val):
         if val is None:
             return val
