@@ -32,6 +32,7 @@ from numpy import conjugate as conj
 #from scipy.linalg import sqrtm
 import scipy.sparse as ssp
 from scipy.sparse import csr_matrix
+from scipy.sparse.linalg import svds
 
 import sisl as si
 from sisl import _array as _a
@@ -124,13 +125,7 @@ def _scat_state_svd(A, **kwargs):
     lapack_driver : str, optional
        driver queried from `scipy.linalg.svd`
     """
-    # Numerous accounts of SVD algorithms using gesdd results
-    # in poor results when min(M, N) >= 26 (block size).
-    # This may be an error in the D&C algorithm.
-    # Here we resort to precision over time, but user may decide.
-    driver = kwargs.get("lapack_driver", "gesvd")
     scale = kwargs.get("scale", False)
-
     # Scale matrix by a factor to lie in [1e-12; inf[
     if isinstance(scale, bool):
         if scale:
@@ -139,14 +134,45 @@ def _scat_state_svd(A, **kwargs):
                 scale = 10 ** (-12 - _)
             else:
                 scale = False
-    if scale:
-        A, DOS, _ = svd_destroy(A * scale, full_matrices=False, check_finite=False,
-                                lapack_driver=driver)
-        DOS /= scale
+
+    # Numerous accounts of SVD algorithms using gesdd results
+    # in poor results when min(M, N) >= 26 (block size).
+    # This may be an error in the D&C algorithm.
+    # Here we resort to precision over time, but user may decide.
+    driver = kwargs.get("driver", "gesvd").lower()
+    if driver in ('arpack', 'lobpcg', 'sparse'):
+        if driver == 'sparse':
+            driver = 'arpack' # scipy default
+
+        # filter out keys for scipy.sparse.svds
+        svds_kwargs = {key: kwargs[key] for key in ('k', 'ncv', 'tol', 'v0')
+                       if key in kwargs}
+        # do not calculate vt
+        svds_kwargs['return_singular_vectors'] = 'u'
+        svds_kwargs['solver'] = driver
+        if 'k' not in svds_kwargs:
+            k = A.shape[1] // 2
+            if k < 3:
+                k = A.shape[1] - 1
+            svds_kwargs['k'] = k
+
+        if scale:
+            A, DOS, _ = svds(A * scale, **svds_kwargs)
+            DOS /= scale
+        else:
+            A, DOS, _ = svds(A, **svds_kwargs)
+
     else:
-        A, DOS, _ = svd_destroy(A, full_matrices=False, check_finite=False,
-                                lapack_driver=driver)
-    del _
+        # it must be a lapack driver:
+        if scale:
+            A, DOS, _ = svd_destroy(A * scale, full_matrices=False, check_finite=False,
+                                    lapack_driver=driver)
+            DOS /= scale
+        else:
+            A, DOS, _ = svd_destroy(A, full_matrices=False, check_finite=False,
+                                    lapack_driver=driver)
+        del _
+
     return DOS ** 2 / (2 * np.pi), A
 
 
@@ -287,6 +313,9 @@ class DownfoldSelfEnergy(PivotSelfEnergy):
         # Create BTD indices
         self._data.cumbtd = np.append(0, np.cumsum(self.btd))
 
+    def __len__(self):
+        return len(self._data.dev)
+
     def _prepare(self, E, k=(0, 0, 0)):
         if hasattr(self._data, "E"):
             if np.allclose(self._data.E, E) and np.allclose(self._data.k, k):
@@ -341,51 +370,67 @@ class DownfoldSelfEnergy(PivotSelfEnergy):
         return self.se2scat(self.self_energy(*args, **kwargs))
 
 
-class BTD:
-    """ Container class that holds a BTD matrix """
+class BlockMatrixIndexer:
+    def __init__(self, bm):
+        self._bm = bm
 
-    def __init__(self, btd):
-        self._btd = btd
-        # diagonal
-        self._M00 = [None] * len(btd)
-        # below
-        self._M10 = [None] * (len(btd)-1)
-        # right
-        self._M01 = [None] * (len(btd)-1)
-
-    @property
-    def btd(self):
-        return self._btd
-
-    def diagonal(self):
-        return np.concatenate([M.diagonal() for M in self._M11])
+    def __len__(self):
+        return len(self._bm.blocks)
 
     def __getitem__(self, key):
-        if isinstance(key, tuple):
+        if not isinstance(key, tuple):
+            raise ValueError(f"{self.__class__.__name__} index retrieval must be done with a tuple.")
+        M = self._bm._M.get(key)
+        if M is None:
             i, j = key
-            if i == j: # (i, i)
-                return self._M11[i]
-            elif i - 1 == j: # (i, i-1)
-                return self._M10[j]
-            elif i + 1 == j: # (i, i+1)
-                return self._M01[i]
-            raise IndexError(f"{self.__class__.__name__} does not have index [{i},{j}]; only [i,i±1] are allowed.")
-        raise ValueError(f"{self.__class__.__name__} index retrieval must be done with a tuple.")
+            # the data-type is probably incorrect.. :(
+            return np.zeros([self._bm.blocks[i], self._bm.blocks[j]])
+        return M
 
     def __setitem__(self, key, M):
-        if isinstance(key, tuple):
-            i, j = key
-            if i == j: # (i, i)
-                self._M00[i] = M
-            elif i == j + 1: # (i+1, i)
-                self._M10[j] = M
-            elif i + 1 == j: # (i, i+1)
-                self._M01[i] = M
-            elif not np.allclose(M, 0.):
-                raise IndexError(f"{self.__class__.__name__} does not have index [{i},{j}]; only [i,i±1] are allowed.")
-            assert M.shape == (self.btd[j], self.btd[i])
-        else:
-            raise ValueError(f"{self.__class__.__name__} index retrieval must be done with a tuple.")
+        if not isinstance(key, tuple):
+            raise ValueError(f"{self.__class__.__name__} index setting must be done with a tuple.")
+        self._bm._M[key] = M
+
+
+class BlockMatrix:
+    """ Container class that holds a block matrix """
+
+    def __init__(self, blocks):
+        self._blocks = blocks
+        self._M = {}
+
+    @property
+    def blocks(self):
+        return self._blocks
+
+    def toarray(self):
+        BI = self.block_indexer
+        nb = len(BI)
+        # stack stuff together
+        return np.concatenate([
+            np.concatenate([BI[i, j] for i in range(nb)], axis=0)
+            for j in range(nb)], axis=1)
+
+    def tobtd(self):
+        """ Return only the block tridiagonal part of the matrix """
+        ret = self.__class__(self.blocks)
+        sBI = self.block_indexer
+        rBI = ret.block_indexer
+        nb = len(sBI)
+        nbm1 = nb - 1
+        for j in range(nb):
+            for i in range(max(0, j-1), min(j+1, nbm1)):
+                rBI[i, j] = sBI[i, j]
+        return ret
+
+    def diagonal(self):
+        BI = self.block_indexer
+        return np.concatenate([BI[b, b].diagonal() for b in range(len(BI))])
+
+    @property
+    def block_indexer(self):
+        return BlockMatrixIndexer(self)
 
 
 class DeviceGreen:
@@ -462,6 +507,8 @@ class DeviceGreen:
         # Store electrodes (for easy retrieval of the SE)
         # There may be no electrodes
         self.elecs = elecs
+        #self.elecs_pvt = [pivot.pivot(el.name).reshape(-1, 1)
+        #                  for el in elecs]
         self.elecs_pvt_dev = [pivot.pivot(el.name, in_device=True).reshape(-1, 1)
                               for el in elecs]
 
@@ -655,14 +702,11 @@ class DeviceGreen:
             return
 
         # Create all self-energies (and store the Gamma's)
-        se = []
         gamma = []
         for elec in self.elecs:
             # Insert values
             SE = elec.self_energy(E, k)
-            se.append(SE)
             gamma.append(elec.se2scat(SE))
-        self._data.se = se
         self._data.gamma = gamma
 
     def _prepare(self, E, k=(0, 0, 0)):
@@ -673,18 +717,18 @@ class DeviceGreen:
         data = self._data
         inv_G = self.H.Sk(k, dtype=np.complex128) * E - self.H.Hk(k, dtype=np.complex128)
 
+        # Now reduce the sparse matrix to the device region (plus do the pivoting)
+        inv_G = inv_G[self.pvt, :][:, self.pvt]
+
         # Create all self-energies (and store the Gamma's)
         gamma = []
         for elec in self.elecs:
             # Insert values
             SE = elec.self_energy(E, k)
-            inv_G[elec.pvt, elec.pvt.T] -= SE
+            inv_G[elec.pvt_dev, elec.pvt_dev.T] -= SE
             gamma.append(elec.se2scat(SE))
         del SE
         data.gamma = gamma
-
-        # Now reduce the sparse matrix to the device region (plus do the pivoting)
-        inv_G = inv_G[self.pvt, :][:, self.pvt]
 
         nb = len(self.btd)
 
@@ -764,11 +808,13 @@ class DeviceGreen:
         format = format.lower()
         if format in ('array', 'dense'):
             return self._green_array()
-        elif format == 'sparse':
+        elif format in ('sparse',):
             return self._green_sparse()
-        elif format == 'btd':
+        elif format in ('btd',):
             return self._green_btd()
-        raise ValueError(f"{self.__class__.__name__}.green 'format' not valid input [array,sparse,btd]")
+        elif format in ('bm',):
+            return self._green_bm()
+        raise ValueError(f"{self.__class__.__name__}.green 'format' not valid input [array,sparse,btd/bm]")
 
     def _green_array(self):
         n = len(self.pvt)
@@ -801,7 +847,7 @@ class DeviceGreen:
             # Do above
             next_sum = sumbs
             slp = sl0
-            for a in range(b - 1, 0, -1):
+            for a in range(b - 1, -1, -1):
                 # Calculate all parts above
                 sla = slice(next_sum - btd[a], next_sum)
                 G[sla, sl0] = - tY[a + 1] @ G[slp, sl0]
@@ -816,7 +862,7 @@ class DeviceGreen:
             # Do below
             next_sum = sumbs
             slp = sl0
-            for a in range(b + 1, nb - 1):
+            for a in range(b + 1, nb):
                 # Calculate all parts above
                 sla = slice(next_sum, next_sum + btd[a])
                 G[sla, sl0] = - tX[a - 1] @ G[slp, sl0]
@@ -826,15 +872,16 @@ class DeviceGreen:
         return G
 
     def _green_btd(self):
-        btd = self.btd
-        G = BTD(btd)
-        nbm1 = len(btd) - 1
+        G = BlockMatrix(self.btd)
+        BI = G.block_indexer
+        nb = len(BI)
+        nbm1 = nb - 1
         A = self._data.A
         B = self._data.B
         C = self._data.C
         tX = self._data.tX
         tY = self._data.tY
-        for b, bs in enumerate(btd):
+        for b in range(nb):
             # Calculate diagonal part
             if b == 0:
                 G11 = inv_destroy(A[b] - C[b + 1] @ tX[b])
@@ -843,13 +890,45 @@ class DeviceGreen:
             else:
                 G11 = inv_destroy(A[b] - B[b - 1] @ tY[b] - C[b + 1] @ tX[b])
 
-            G[b, b] = G11
+            BI[b, b] = G11
             # do above
             if b > 0:
-                G[b - 1, b] = - tY[b] @ G11
+                BI[b - 1, b] = - tY[b] @ G11
             # do below
             if b < nbm1:
-                G[b + 1, b] = - tX[b] @ G11
+                BI[b + 1, b] = - tX[b] @ G11
+
+        return G
+
+    def _green_bm(self):
+        G = BlockMatrix(self.btd)
+        BI = G.block_indexer
+        nb = len(BI)
+        nbm1 = nb - 1
+
+        A = self._data.A
+        B = self._data.B
+        C = self._data.C
+        tX = self._data.tX
+        tY = self._data.tY
+        for b in range(nb):
+            # Calculate diagonal part
+            if b == 0:
+                G11 = inv_destroy(A[b] - C[b + 1] @ tX[b])
+            elif b == nbm1:
+                G11 = inv_destroy(A[b] - B[b - 1] @ tY[b])
+            else:
+                G11 = inv_destroy(A[b] - B[b - 1] @ tY[b] - C[b + 1] @ tX[b])
+
+            BI[b, b] = G11
+            G0 = G11
+            for bb in range(b, 0, -1):
+                G0 = - tY[bb] @ G0
+                BI[bb-1, b] = G0
+            G0 = G11
+            for bb in range(b, nbm1):
+                G0 = - tX[bb] @ G0
+                BI[bb+1, b] = G0
 
         return G
 
@@ -1037,11 +1116,11 @@ class DeviceGreen:
 
             # Now calculate the thing (above below)
             sl = slice(c[b], c[b + 1])
-            if b == blocks[0]:
+            if b == blocks[0] and b < nb - 1:
                 # Calculate below
                 slp = slice(c[b + 1], c[b + 2])
                 G[slp, r_idx] = - tX[b] @ G[sl, r_idx]
-            else:
+            elif b > 0:
                 # Calculate above
                 slp = slice(c[b - 1], c[b])
                 G[slp, r_idx] = - tY[b] @ G[sl, r_idx]
@@ -1099,12 +1178,94 @@ class DeviceGreen:
                 return self._spectral_column(elec, herm)
             elif method == 'propagate':
                 return self._spectral_propagate(elec, herm)
-        raise ValueError(f"{self.__class__.__name__}.spectral format/method not recognized.")
+        elif format in ('btd',):
+            if method == 'column':
+                return self._spectral_column_btd(elec, herm)
+        elif format in ('bm',):
+            if method == 'column':
+                return self._spectral_column_bm(elec, herm)
+        raise ValueError(f"{self.__class__.__name__}.spectral combination of format+method not recognized {format}+{method}.")
 
     def _spectral_column(self, elec, herm):
         G = self._green_column(self.elecs_pvt_dev[elec].ravel())
         # Now calculate the full spectral function
         return G @ self._data.gamma[elec] @ dagger(G)
+
+    def _spectral_column_btd(self, elec, herm):
+        G = self._green_column(self.elecs_pvt_dev[elec].ravel())
+        nb = len(self.btd)
+        nbm1 = nb - 1
+
+        Gam = self._data.gamma[elec]
+
+        # Now calculate the full spectral function
+        btd = BlockMatrix(self.btd)
+        BI = btd.block_indexer
+
+        c = np.append(0, self.btd_cum)
+        # loop columns
+        for jb in range(nb):
+            slj = slice(c[jb], c[jb+1])
+            Gj = Gam @ dagger(G[slj, :])
+            for ib in range(max(0, jb-1), min(jb+1, nbm1)):
+                sli = slice(c[ib], c[ib+1])
+                BI[ib, jb] = G[sli, :] @ Gj
+
+        return btd
+
+    def _spectral_column_bm(self, elec, herm):
+        G = self._green_column(self.elecs_pvt_dev[elec].ravel())
+        nb = len(self.btd)
+        nbm1 = nb - 1
+
+        Gam = self._data.gamma[elec]
+
+        # Now calculate the full spectral function
+        btd = BlockMatrix(self.btd)
+        BI = btd.block_indexer
+
+        c = np.append(0, self.btd_cum)
+
+        # loop columns
+        if herm:
+            for jb in range(nb):
+                slj = slice(c[jb], c[jb+1])
+                Gj = Gam @ dagger(G[slj, :])
+                for ib in range(jb + 1):
+                    sli = slice(c[ib], c[ib+1])
+                    BI[ib, jb] = G[sli, :] @ Gj
+            for jb in range(nb):
+                for ib in range(jb + 1, nb):
+                    BI[ib, jb] = BI[jb, ib].T.conj()
+
+        else:
+            for jb in range(nb):
+                slj = slice(c[jb], c[jb+1])
+                Gj = Gam @ dagger(G[slj, :])
+                for ib in range(nb):
+                    sli = slice(c[ib], c[ib+1])
+                    BI[ib, jb] = G[sli, :] @ Gj
+
+        return btd
+
+    def _spectral_propagate_btd(self, elec, herm):
+        raise NotImplementedError
+        nb = len(self.btd)
+        nbm1 = nb - 1
+
+        btd = BlockMatrix(self.btd)
+        BI = btd.block_indexer
+
+        # First we need to calculate diagonal blocks of the spectral matrix
+        blocks, A = self._green_diag_block(self.elecs_pvt_dev[elec].ravel())
+        A = A @ self._data.gamma[elec] @ dagger(A)
+
+        c = np.append(0, self.btd_cum)
+        BI[blocks[0], blocks[0]] = A
+
+        # now loop backwards
+        tX = self._data.tX
+        tY = self._data.tY
 
     def _spectral_propagate(self, elec, herm):
         nb = len(self.btd)
@@ -1264,18 +1425,15 @@ class DeviceGreen:
 
         # sort and take N highest values
         idx = np.argsort(-DOS)[:N]
-        DOS = DOS[idx]
-        U = U[:, idx]
 
         if cutoff > 0:
             # also retain values with large negative DOS.
             # These should correspond to states with large weight, but in some
             # way unphysical. The DOS *should* be positive.
-            idx = (np.fabs(DOS) >= cutoff).nonzero()[0]
-            DOS = DOS[idx]
-            U = U[:, idx]
+            idx1 = (np.fabs(DOS[idx]) >= cutoff).nonzero()[0]
+            idx = idx[idx1]
 
-        return DOS, U
+        return DOS[idx], U[:, idx]
 
     def scattering_state(self, elec, E, k=(0, 0, 0), cutoff=0., method='svd', *args, **kwargs):
         r""" Calculate the scattering states for a given `E` and `k` point from a given electrode
@@ -1343,12 +1501,6 @@ class DeviceGreen:
 
     def _scattering_state_svd(self, elec, cutoff=0., **kwargs):
         A = self._green_column(self.elecs_pvt_dev[elec].ravel())
-        # Numerous accounts of SVD algorithms using gesdd results
-        # in poor results when min(M, N) >= 26 (block size).
-        # This may be an error in the D&C algorithm.
-        # Here we resort to precision over time.
-        driver = kwargs.get("lapack_driver", "gesvd")
-        scale = kwargs.get("scale", False)
 
         # This calculation uses the sqrt(Gamma) calculation combined with svd
         Gamma_sqrt = sqrtm(self._data.gamma[elec])
