@@ -112,6 +112,44 @@ def gram_schmidt(u, modified=True):
             u[:, i] -= (((conj(u[:, i]) @ u[:, i+1:]) / norm[i+1:]).reshape(1, -1) * u[:, i+1:]).sum(1)
 
 
+def _scat_state_svd(A, **kwargs):
+    """ Calculating the SVD of matrix A for the scattering state
+
+    Parameters
+    ----------
+    A : numpy.ndarray
+       matrix to obtain SVD from
+    scale : bool or float, optional
+       whether to scale matrix `A` to be above ``1e-12`` or by a user-defined number
+    lapack_driver : str, optional
+       driver queried from `scipy.linalg.svd`
+    """
+    # Numerous accounts of SVD algorithms using gesdd results
+    # in poor results when min(M, N) >= 26 (block size).
+    # This may be an error in the D&C algorithm.
+    # Here we resort to precision over time, but user may decide.
+    driver = kwargs.get("lapack_driver", "gesvd")
+    scale = kwargs.get("scale", False)
+
+    # Scale matrix by a factor to lie in [1e-12; inf[
+    if isinstance(scale, bool):
+        if scale:
+            _ = np.floor(np.log10(np.absolute(A).min())).astype(int)
+            if _ < -12:
+                scale = 10 ** (-12 - _)
+            else:
+                scale = False
+    if scale:
+        A, DOS, _ = svd_destroy(A * scale, full_matrices=False, check_finite=False,
+                                lapack_driver=driver)
+        DOS /= scale
+    else:
+        A, DOS, _ = svd_destroy(A, full_matrices=False, check_finite=False,
+                                lapack_driver=driver)
+    del _
+    return DOS ** 2 / (2 * np.pi), A
+
+
 class PivotSelfEnergy(si.physics.SelfEnergy):
     """ Container for the self-energy object
 
@@ -1316,27 +1354,8 @@ class DeviceGreen:
         Gamma_sqrt = sqrtm(self._data.gamma[elec])
         A = A @ Gamma_sqrt
 
-        # We only need the minimal eigenspace, we already know we only have
-        # len(Gamma_sqrt) eigenvalues (maximally)
-        # Scale matrix by a factor to lie in [1; inf[
-        if isinstance(scale, bool):
-            if scale:
-                _ = np.floor(np.log10(np.absolute(A).min())).astype(int)
-                if _ < -12:
-                    scale = 10 ** (-12 - _)
-                else:
-                    scale = False
-        if scale:
-            A, DOS, _ = svd_destroy(A * scale, full_matrices=False, check_finite=False,
-                                    lapack_driver=driver)
-            DOS /= scale
-        else:
-            A, DOS, _ = svd_destroy(A, full_matrices=False, check_finite=False,
-                                    lapack_driver=driver)
-        del _
-
-        # TODO check with overlap convert with correct magnitude (Tr[A] / 2pi)
-        DOS = DOS ** 2 / (2 * np.pi)
+        # Perform svd
+        DOS, A = _scat_state_svd(A, **kwargs)
         DOS, A = self._scattering_state_reduce(elec, DOS, A, cutoff)
 
         data = self._data
@@ -1414,34 +1433,10 @@ class DeviceGreen:
         # Now the full U is created (still F-order)
         u = np.concatenate(u)
 
-        # Numerous accounts of SVD algorithms using gesdd results
-        # in poor results when min(M, N) >= 26 (block size).
-        # This may be an error in the D&C algorithm.
-        # Here we resort to precision over time.
-        driver = kwargs.get("lapack_driver", "gesvd")
-        scale = kwargs.get("scale", False)
-
-        # We only need the minimal eigenspace, we already know we only have
-        # len(Gamma_sqrt) eigenvalues (maximally)
-        # Scale matrix by a factor to lie in [1e-14; inf[
-        if isinstance(scale, bool):
-            if scale:
-                _ = np.floor(np.log10(np.absolute(u).min())).astype(int)
-                if _ < -12:
-                    scale = 10 ** (-12 - _)
-                else:
-                    scale = False
-        if scale:
-            u, DOS, _ = svd_destroy(u * scale, full_matrices=False, check_finite=False,
-                                    lapack_driver=driver)
-            DOS /= scale
-        else:
-            u, DOS, _ = svd_destroy(u, full_matrices=False, check_finite=False,
-                                    lapack_driver=driver)
-        del _
+        # Perform svd
+        DOS, u = _scat_state_svd(u, **kwargs)
 
         # TODO check with overlap convert with correct magnitude (Tr[A] / 2pi)
-        DOS = DOS ** 2 / (2 * np.pi)
         DOS, u = self._scattering_state_reduce(elec, DOS, u, cutoff1)
 
         # Now we have the full u, create it and transpose to get it in C indexing
