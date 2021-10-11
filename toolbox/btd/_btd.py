@@ -1305,6 +1305,12 @@ class DeviceGreen:
 
     def _scattering_state_svd(self, elec, cutoff=0., **kwargs):
         A = self._green_column(self.elecs_pvt_dev[elec].ravel())
+        # Numerous accounts of SVD algorithms using gesdd results
+        # in poor results when min(M, N) >= 26 (block size).
+        # This may be an error in the D&C algorithm.
+        # Here we resort to precision over time.
+        driver = kwargs.get("lapack_driver", "gesvd")
+        scale = kwargs.get("scale", False)
 
         # This calculation uses the sqrt(Gamma) calculation combined with svd
         Gamma_sqrt = sqrtm(self._data.gamma[elec])
@@ -1312,7 +1318,21 @@ class DeviceGreen:
 
         # We only need the minimal eigenspace, we already know we only have
         # len(Gamma_sqrt) eigenvalues (maximally)
-        A, DOS, _ = svd_destroy(A, full_matrices=False, check_finite=False)
+        # Scale matrix by a factor to lie in [1; inf[
+        if isinstance(scale, bool):
+            if scale:
+                _ = np.floor(np.log10(np.absolute(A).min())).astype(int)
+                if _ < -12:
+                    scale = 10 ** (-12 - _)
+                else:
+                    scale = False
+        if scale:
+            A, DOS, _ = svd_destroy(A * scale, full_matrices=False, check_finite=False,
+                                    lapack_driver=driver)
+            DOS /= scale
+        else:
+            A, DOS, _ = svd_destroy(A, full_matrices=False, check_finite=False,
+                                    lapack_driver=driver)
         del _
 
         # TODO check with overlap convert with correct magnitude (Tr[A] / 2pi)
@@ -1331,7 +1351,7 @@ class DeviceGreen:
         # always have the first state with the largest values
         return si.physics.StateCElectron(A.T, DOS, self, **info)
 
-    def _scattering_state_propagate(self, elec, cutoff=0):
+    def _scattering_state_propagate(self, elec, cutoff=0, **kwargs):
         # Parse the cutoff value
         # Here we may use 2 values, one for cutting off the initial space
         # and one for the returned space.
@@ -1394,13 +1414,30 @@ class DeviceGreen:
         # Now the full U is created (still F-order)
         u = np.concatenate(u)
 
+        # Numerous accounts of SVD algorithms using gesdd results
+        # in poor results when min(M, N) >= 26 (block size).
+        # This may be an error in the D&C algorithm.
+        # Here we resort to precision over time.
+        driver = kwargs.get("lapack_driver", "gesvd")
+        scale = kwargs.get("scale", False)
+
         # We only need the minimal eigenspace, we already know we only have
         # len(Gamma_sqrt) eigenvalues (maximally)
-        # But contrary to the _scattering_state_svd we here have an even
-        # smaller dimension due to the above reduction of the eigenspace.
-        # Therefore this method is more sensitive to the `cutoff` value
-        # since it is applied twice.
-        u, DOS, _ = svd_destroy(u, full_matrices=False)
+        # Scale matrix by a factor to lie in [1e-14; inf[
+        if isinstance(scale, bool):
+            if scale:
+                _ = np.floor(np.log10(np.absolute(u).min())).astype(int)
+                if _ < -12:
+                    scale = 10 ** (-12 - _)
+                else:
+                    scale = False
+        if scale:
+            u, DOS, _ = svd_destroy(u * scale, full_matrices=False, check_finite=False,
+                                    lapack_driver=driver)
+            DOS /= scale
+        else:
+            u, DOS, _ = svd_destroy(u, full_matrices=False, check_finite=False,
+                                    lapack_driver=driver)
         del _
 
         # TODO check with overlap convert with correct magnitude (Tr[A] / 2pi)
