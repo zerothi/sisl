@@ -1331,6 +1331,15 @@ def wavefunction(v, grid, geometry=None, k=None, spinor=0, spin=None, eta=None):
     eta : bool, optional
        Display a console progressbar.
     """
+    # Decipher v from State type
+    if isinstance(v, State):
+        if geometry is None:
+            geometry = v.parent.geometry
+        if k is None:
+            k = v.info.get("k", k)
+        elif not np.allclose(k, v.info.get("k", k)):
+            raise ValueError(f"wavefunction: k passed and k in info does not match: {k} and {v.info.get('k')}")
+        v = v.state
     if geometry is None:
         geometry = grid.geometry
     if geometry is None:
