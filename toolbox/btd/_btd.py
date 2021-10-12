@@ -559,7 +559,7 @@ class DeviceGreen:
         prefix : {'TBT', 'TS'}
            which prefix to use, if TBT it will prefer TBT prefix, but fall back
            to TS prefixes.
-           If TS, only those prefixes will be used.
+           If TS, only these prefixes will be used.
         use_tbt_se : bool, optional
            whether to use the TBT.SE.nc files for self-energies
            or calculate them on the fly.
@@ -694,12 +694,12 @@ class DeviceGreen:
 
             if not np.allclose(bloch, data.bloch):
                 warn(f"{cls.__name__}.from_fdf(electrode={elec}) found inconsistent "
-                     f"Bloch expansions from the fdf file vs. {tbt}, will use fdf value.\n"
-                     f"fdf = {data.bloch} ; {tbt} = {bloch}")
+                     f"Bloch expansions from the fdf vs. TBT output, will use fdf value.\n"
+                     f"  {fdf} = {data.bloch}\n  {tbt} = {bloch}")
             if not np.allclose(eta, data.eta):
                 warn(f"{cls.__name__}.from_fdf(electrode={elec}) found inconsistent "
-                     f"imaginary eta from the fdf file vs. {tbt}, will use fdf value.\n"
-                     f"fdf = {data.eta} eV ; {tbt} = {eta} eV")
+                     f"imaginary eta from the fdf vs. TBT output, will use fdf value.\n"
+                     f"  {fdf} = {data.eta} eV\n  {tbt} = {eta} eV")
 
             # shift according to potential
             data.Helec.shift(mu)
@@ -724,8 +724,8 @@ class DeviceGreen:
             eta = fdf.get("TBT.Contours.Eta", eta, unit='eV')
         if not np.allclose(eta, eta_tbt):
             warn(f"{cls.__name__}.from_fdf found inconsistent "
-                 f"imaginary eta from the fdf file vs. {tbt}, will use fdf value.\n"
-                 f"fdf = {eta} eV ; {tbt} = {eta_tbt} eV")
+                 f"imaginary eta from the fdf vs. TBT output, will use fdf value.\n"
+                 f"  {fdf} = {eta} eV\n  {tbt} = {eta_tbt} eV")
 
         return cls(Hdev, elecs, tbt, eta)
 

@@ -2,7 +2,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from functools import wraps
-from os.path import splitext, isfile, dirname, join, abspath, basename
+from os.path import splitext, isfile, dirname, abspath, basename
 import gzip
 from pathlib import Path
 
@@ -373,7 +373,7 @@ class BaseSile:
         """ File of the current `Sile` """
         if filename is None:
             filename = Path(self._file).name
-        return Path(self._directory) / filename_base / filename
+        return self._directory / filename_base / filename
 
     def exist(self):
         """ Query whether the file exists """
@@ -454,7 +454,7 @@ class BaseSile:
 
     def _base_file(self, f):
         """ Make `f` refer to the file with the appropriate base directory """
-        return join(self._directory, f)
+        return self._directory / f
 
     def __getattr__(self, name):
         """ Override to check the handle """
@@ -490,7 +490,7 @@ class BaseSile:
 
     def __str__(self):
         """ Return a representation of the `Sile` """
-        return "{0}({1!s}, base={2!s})".format(self.__class__.__name__, self.base_file, self._directory)
+        return "{0}({1!s}, base={2!s})".format(self.__class__.__name__, self.base_file, self._directory.relative_to(Path('.').resolve()))
 
 
 def sile_fh_open(from_closed=False):
