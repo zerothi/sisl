@@ -1465,7 +1465,37 @@ class DeviceGreen:
                     BI[jb+1, jb+1] = - BI[jb+1, jb] @ dagger(tX[jb])
 
         else:
-            raise NotImplementedError
+            for jb in range(blocks[0], -1, -1):
+                # above
+                for ib in range(jb, 0, -1):
+                    BI[ib-1, jb] = - tY[ib] @ BI[ib, jb]
+                # calculate next diagonal
+                if jb > 0:
+                    BI[jb-1, jb-1] = - BI[jb-1, jb] @ dagger(tY[jb])
+                # left
+                for ib in range(jb, 0, -1):
+                    BI[jb, ib-1] = - BI[jb, ib] @ dagger(tY[ib])
+
+            if nblocks == 2:
+                # above and left
+                for ib in range(blocks[1], 1, -1):
+                    BI[ib-2, blocks[1]] = - tY[ib-1] @ BI[ib-1, blocks[1]]
+                    BI[blocks[1], ib-2] = - BI[blocks[1], ib-1] @ dagger(tY[ib-1])
+                # below and right
+                for ib in range(blocks[0], nbm1-1):
+                    BI[ib+2, blocks[0]] = - tX[ib+1] @ BI[ib+1, blocks[0]]
+                    BI[blocks[0], ib+2] = - BI[blocks[0], ib+1] @ dagger(tX[ib+1])
+
+            # below right
+            for jb in range(blocks[-1], nb):
+                for ib in range(jb, nbm1):
+                    BI[ib+1, jb] = - tX[ib] @ BI[ib, jb]
+                # calculate next diagonal
+                if jb < nbm1:
+                    BI[jb+1, jb+1] = - BI[jb+1, jb] @ dagger(tX[jb])
+                # right
+                for ib in range(jb, nbm1):
+                    BI[jb, ib+1] = - BI[jb, ib] @ dagger(tX[ib])
 
         return BM
 
@@ -1475,6 +1505,7 @@ class DeviceGreen:
 
         # First we need to calculate diagonal blocks of the spectral matrix
         blocks, A = self._green_diag_block(self.elecs_pvt_dev[elec].ravel())
+        nblocks = len(blocks)
         A = A @ self._data.gamma[elec] @ dagger(A)
 
         # Allocate space for the full matrix
@@ -1488,133 +1519,74 @@ class DeviceGreen:
         tX = self._data.tX
         tY = self._data.tY
 
-        def left_calc(i, j, c, S, tY):
-            """ Calculate the next block LEFT of block (i,j) """
-            ij = slice(c[i], c[i+1]), slice(c[j], c[j+1])
-            ijm1 = ij[0], slice(c[j-1], c[j])
-            S[ijm1] = - S[ij] @ dagger(tY[j])
+        def gs(ib, jb):
+            return slice(c[ib], c[ib+1]), slice(c[jb], c[jb+1])
 
-        def right_calc(i, j, c, S, tX):
-            """ Calculate the next block RIGHT of block (i,j) """
-            ij = slice(c[i], c[i+1]), slice(c[j], c[j+1])
-            ijp1 = ij[0], slice(c[j+1], c[j+2])
-            S[ijp1] = - S[ij] @ dagger(tX[j])
-
-        def above_calc(i, j, c, S, tY):
-            """ Calculate the next block ABOVE of block (i,j) """
-            ij = slice(c[i], c[i+1]), slice(c[j], c[j+1])
-            im1j = slice(c[i-1], c[i]), ij[1]
-            S[im1j] = - tY[i] @ S[ij]
-
-        def below_calc(i, j, c, S, tX):
-            """ Calculate the next block BELOW of block (i,j) """
-            ij = slice(c[i], c[i+1]), slice(c[j], c[j+1])
-            ip1j = slice(c[i+1], c[i+2]), ij[1]
-            S[ip1j] = - tX[i] @ S[ij]
-
-        # define lefts
         if herm:
-            def copy_herm(i, j, c, S):
-                """ Copy block (j,i) to (i,j) """
-                ij = slice(c[i], c[i+1]), slice(c[j], c[j+1])
-                S[ij] = S[ij[1], ij[0]].T.conj()
+            # above left
+            for jb in range(blocks[0], -1, -1):
+                for ib in range(jb, 0, -1):
+                    A = - tY[ib] @ S[gs(ib, jb)]
+                    S[gs(ib-1, jb)] = A
+                    S[gs(jb, ib-1)] = A.T.conj()
+                # calculate next diagonal
+                if jb > 0:
+                    S[gs(jb-1, jb-1)] = - S[gs(jb-1, jb)] @ dagger(tY[jb])
 
-            def left(i, j, a, b, c, S, tX, tY):
-                if j <= 0:
-                    return
-                jm1 = j - 1
-                if i >= jm1:
-                    left_calc(i, j, c, S, tY)
-                else:
-                    copy_herm(i, jm1, c, S)
-                left(i, jm1, a, b, c, S, tX, tY)
-                if b:
-                    below(i, jm1, c, S, tX)
-                if a:
-                    above(i, jm1, c, S, tY)
+            if nblocks == 2:
+                # above
+                for ib in range(blocks[1], 1, -1):
+                    A = - tY[ib-1] @ S[gs(ib-1, blocks[1])]
+                    S[gs(ib-2, blocks[1])] = A
+                    S[gs(blocks[1], ib-2)] = A.T.conj()
+                # below
+                for ib in range(blocks[0], nbm1-1):
+                    A = - tX[ib+1] @ S[gs(ib+1, blocks[0])]
+                    S[gs(ib+2, blocks[0])] = A
+                    S[gs(blocks[0], ib+2)] = A.T.conj()
 
-            def right(i, j, a, b, c, S, tX, tY):
-                if nbm1 <= j:
-                    return
-                jp1 = j + 1
-                if i >= jp1:
-                    right_calc(i, j, c, S, tX)
-                else:
-                    copy_herm(i, jp1, c, S)
-                if a:
-                    above(i, jp1, c, S, tY)
-                if b:
-                    below(i, jp1, c, S, tX)
-                right(i, jp1, a, b, c, S, tX, tY)
-
-            def below(i, j, c, S, tX):
-                if nbm1 <= i:
-                    return
-                ip1 = i + 1
-                if ip1 >= j:
-                    below_calc(i, j, c, S, tX)
-                else:
-                    copy_herm(ip1, j, c, S)
-                below(ip1, j, c, S, tX)
-
-            def above(i, j, c, S, tY):
-                if i <= 0:
-                    return
-                im1 = i - 1
-                if im1 >= j:
-                    above_calc(i, j, c, S, tY)
-                else:
-                    copy_herm(im1, j, c, S)
-                above(im1, j, c, S, tY)
+            # below right
+            for jb in range(blocks[-1], nb):
+                for ib in range(jb, nbm1):
+                    A = - tX[ib] @ S[gs(ib, jb)]
+                    S[gs(ib+1, jb)] = A
+                    S[gs(jb, ib+1)] = A.T.conj()
+                # calculate next diagonal
+                if jb < nbm1:
+                    S[gs(jb+1, jb+1)] = - S[gs(jb+1, jb)] @ dagger(tX[jb])
 
         else:
-            def left(i, j, a, b, c, S, tX, tY):
-                if j <= 0:
-                    return
-                left_calc(i, j, c, S, tY)
-                left(i, j-1, a, b, c, S, tX, tY)
-                if b:
-                    below(i, j-1, c, S, tX)
-                if a:
-                    above(i, j-1, c, S, tY)
+            for jb in range(blocks[0], -1, -1):
+                # above
+                for ib in range(jb, 0, -1):
+                    S[gs(ib-1, jb)] = - tY[ib] @ S[gs(ib, jb)]
+                # calculate next diagonal
+                if jb > 0:
+                    S[gs(jb-1, jb-1)] = - S[gs(jb-1, jb)] @ dagger(tY[jb])
+                # left
+                for ib in range(jb, 0, -1):
+                    S[gs(jb, ib-1)] = - S[gs(jb, ib)] @ dagger(tY[ib])
 
-            def right(i, j, a, b, c, S, tX, tY):
-                if nbm1 <= j:
-                    return
-                right_calc(i, j, c, S, tX)
-                right(i, j+1, a, b, c, S, tX, tY)
-                if a:
-                    above(i, j+1, c, S, tY)
-                if b:
-                    below(i, j+1, c, S, tX)
+            if nblocks == 2:
+                # above and left
+                for ib in range(blocks[1], 1, -1):
+                    S[gs(ib-2, blocks[1])] = - tY[ib-1] @ S[gs(ib-1, blocks[1])]
+                    S[gs(blocks[1], ib-2)] = - S[gs(blocks[1], ib-1)] @ dagger(tY[ib-1])
+                # below and right
+                for ib in range(blocks[0], nbm1-1):
+                    S[gs(ib+2, blocks[0])] = - tX[ib+1] @ S[gs(ib+1, blocks[0])]
+                    S[gs(blocks[0], ib+2)] = - S[gs(blocks[0], ib+1)] @ dagger(tX[ib+1])
 
-            def below(i, j, c, S, tX):
-                if nbm1 <= i:
-                    return
-                below_calc(i, j, c, S, tX)
-                below(i+1, j, c, S, tX)
-
-            def above(i, j, c, S, tY):
-                if i <= 0:
-                    return
-                above_calc(i, j, c, S, tY)
-                above(i-1, j, c, S, tY)
-
-        # start calculating
-        if len(blocks) == 1:
-            left(blocks[0], blocks[0], True, True, c, S, tX, tY)
-            above(blocks[0], blocks[0], c, S, tY)
-            below(blocks[0], blocks[0], c, S, tX)
-            right(blocks[0], blocks[0], True, True, c, S, tX, tY)
-        else:
-            left(blocks[1], blocks[0], False, True, c, S, tX, tY)
-            left(blocks[0], blocks[0], True, False, c, S, tX, tY)
-            above(blocks[0], blocks[0], c, S, tY)
-            above(blocks[0], blocks[1], c, S, tY)
-            below(blocks[1], blocks[0], c, S, tX)
-            below(blocks[1], blocks[1], c, S, tX)
-            right(blocks[0], blocks[1], True, False, c, S, tX, tY)
-            right(blocks[1], blocks[1], False, True, c, S, tX, tY)
+            # below right
+            for jb in range(blocks[-1], nb):
+                for ib in range(jb, nbm1):
+                    S[gs(ib+1, jb)] = - tX[ib] @ S[gs(ib, jb)]
+                # calculate next diagonal
+                if jb < nbm1:
+                    S[gs(jb+1, jb+1)] = - S[gs(jb+1, jb)] @ dagger(tX[jb])
+                # right
+                for ib in range(jb, nbm1):
+                    S[gs(jb, ib+1)] = - S[gs(jb, ib)] @ dagger(tX[ib])
 
         return S
 
