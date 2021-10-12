@@ -35,6 +35,7 @@ from scipy.sparse import csr_matrix
 from scipy.sparse.linalg import svds
 
 import sisl as si
+from sisl.messages import warn
 from sisl import _array as _a
 from sisl.linalg import *
 from sisl.utils.misc import PropertyDict
@@ -687,22 +688,22 @@ class DeviceGreen:
                 if osp.exists(f"{slabel}.TBT.SE.nc"):
                     tbtse = si.get_sile(f"{slabel}.TBT.SE.nc")
                 else:
-                    raise ValueError(f"{cls.__name__}.from_fdf "
-                                     f"could not find file {slabel}.TBT.SE.nc "
-                                     "but it was requested by 'use_tbt_se'!")
+                    raise FileNotFoundError(f"{cls.__name__}.from_fdf "
+                                            f"could not find file {slabel}.TBT.SE.nc "
+                                            "but it was requested by 'use_tbt_se'!")
 
             if not np.allclose(bloch, data.bloch):
-                raise ValueError(f"{cls.__name__}.from_fdf found inconsistent "
-                                 f"Bloch expansions from the fdf file vs. {tbt}.\n"
-                                 f"File = {data.bloch} ; {tbt} = {bloch}")
+                warn(f"{cls.__name__}.from_fdf(electrode={elec}) found inconsistent "
+                     f"Bloch expansions from the fdf file vs. {tbt}, will use fdf value.\n"
+                     f"fdf = {data.bloch} ; {tbt} = {bloch}")
             if not np.allclose(eta, data.eta):
-                raise ValueError(f"{cls.__name__}.from_fdf found inconsistent "
-                                 f"imaginary eta from the fdf file vs. {tbt}.\n"
-                                 f"File = {data.eta} eV ; {tbt} = {eta} eV")
+                warn(f"{cls.__name__}.from_fdf(electrode={elec}) found inconsistent "
+                     f"imaginary eta from the fdf file vs. {tbt}, will use fdf value.\n"
+                     f"fdf = {data.eta} eV ; {tbt} = {eta} eV")
 
             # shift according to potential
             data.Helec.shift(mu)
-            se = si.RecursiveSI(data.Helec, data.semi_inf, eta=eta)
+            se = si.RecursiveSI(data.Helec, data.semi_inf, eta=data.eta)
 
             # Limit connections of the device along the semi-inf directions
             # TODO check whether there are systems where it is important
@@ -717,9 +718,14 @@ class DeviceGreen:
                                              bulk=data.bulk, bloch=data.bloch)
             elecs.append(elec_se)
 
+        eta_tbt = tbt.eta()
         eta = fdf.get("TS.Contours.Eta", 0., unit='eV')
         if is_tbtrans:
             eta = fdf.get("TBT.Contours.Eta", eta, unit='eV')
+        if not np.allclose(eta, eta_tbt):
+            warn(f"{cls.__name__}.from_fdf found inconsistent "
+                 f"imaginary eta from the fdf file vs. {tbt}, will use fdf value.\n"
+                 f"fdf = {eta} eV ; {tbt} = {eta_tbt} eV")
 
         return cls(Hdev, elecs, tbt, eta)
 
