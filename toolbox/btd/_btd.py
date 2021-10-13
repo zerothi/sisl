@@ -419,8 +419,8 @@ class BlockMatrix:
     """ Container class that holds a block matrix """
 
     def __init__(self, blocks):
-        self._blocks = blocks
         self._M = {}
+        self._blocks = blocks
 
     @property
     def blocks(self):
@@ -440,9 +440,8 @@ class BlockMatrix:
         sBI = self.block_indexer
         rBI = ret.block_indexer
         nb = len(sBI)
-        nbm1 = nb - 1
         for j in range(nb):
-            for i in range(max(0, j-1), min(j+1, nbm1) + 1):
+            for i in range(max(0, j-1), min(j+2, nb)):
                 rBI[i, j] = sBI[i, j]
         return ret
 
@@ -908,15 +907,56 @@ class DeviceGreen:
         data.tX = tX
         data.tY = tY
 
-    def Sk(self, k, *args, **kwargs):
-        Sk = self.H.Sk(k, *args, **kwargs)
-        pvt = self.pvt.reshape(-1, 1)
-        return Sk[pvt, pvt.T]
+    def _matrix_to_btd(self, M):
+        BM = BlockMatrix(self.btd)
+        BI = BM.block_indexer
+        c = np.append(0, np.cumsum(BM.blocks))
+        nb = len(BI)
+        if ssp.isspmatrix(M):
+            for jb in range(nb):
+                for ib in range(max(0, jb-1), min(jb+2, nb)):
+                    BI[ib, jb] = M[c[ib]:c[ib+1], c[jb]:c[jb+1]].toarray()
+        else:
+            for jb in range(nb):
+                for ib in range(max(0, jb-1), min(jb+2, nb)):
+                    BI[ib, jb] = M[c[ib]:c[ib+1], c[jb]:c[jb+1]]
+        return BM
 
-    def Hk(self, k, *args, **kwargs):
-        Hk = self.H.Hk(k, *args, **kwargs)
+    def Sk(self, *args, **kwargs):
+        is_btd = False
+        if 'format' in kwargs:
+            if kwargs['format'].lower() == 'btd':
+                is_btd = True
+                del kwargs['format']
+
         pvt = self.pvt.reshape(-1, 1)
-        return Hk[pvt, pvt.T]
+        M = self.H.Sk(*args, **kwargs)[pvt, pvt.T]
+        if is_btd:
+            return self._matrix_to_btd(M)
+        return M
+
+    def Hk(self, *args, **kwargs):
+        is_btd = False
+        if 'format' in kwargs:
+            if kwargs['format'].lower() == 'btd':
+                is_btd = True
+                del kwargs['format']
+
+        pvt = self.pvt.reshape(-1, 1)
+        M = self.H.Hk(*args, **kwargs)[pvt, pvt.T]
+        if is_btd:
+            return self._matrix_to_btd(M)
+        return M
+
+    def _get_blocks(self, idx):
+        # Figure out which blocks are requested
+        block1 = (idx.min() < self.btd_cum).nonzero()[0][0]
+        block2 = (idx.max() < self.btd_cum).nonzero()[0][0]
+        if block1 == block2:
+            blocks = [block1]
+        else:
+            blocks = [b for b in range(block1, block2+1)]
+        return blocks
 
     def green(self, E, k=(0, 0, 0), format='array'):
         r""" Calculate the Green function for a given `E` and `k` point
@@ -1138,13 +1178,10 @@ class DeviceGreen:
         nbm1 = nb - 1
 
         # Find parts we need to calculate
-        block1 = (idx.min() < self.btd_cum).nonzero()[0][0]
-        block2 = (idx.max() < self.btd_cum).nonzero()[0][0]
-        if block1 == block2:
-            blocks = [block1]
-        else:
-            blocks = list(range(block1, block2+1))
-        assert len(blocks) <= 2, f"{self.__class__.__name__} requires G calculation for only 1 or 2 blocks"
+        blocks = self._get_blocks(idx)
+        assert len(blocks) <= 2, f"{self.__class__.__name__} green(diagonal) requires maximally 2 blocks"
+        if len(blocks) == 2:
+            assert blocks[0]+1 == blocks[1], f"{self.__class__.__name__} green(diagonal) requires spanning only 2 blocks"
 
         n = self.btd[blocks].sum()
         G = np.empty([n, len(idx)], dtype=self._data.A[0].dtype)
@@ -1202,18 +1239,10 @@ class DeviceGreen:
         nbm1 = nb - 1
 
         # Find parts we need to calculate
-        block1 = (idx.min() < self.btd_cum).nonzero()[0][0]
-        block2 = (idx.max() < self.btd_cum).nonzero()[0][0]
-        if block1 == block2:
-            blocks = [block1]
-        else:
-            blocks = [block1, block2]
-            assert block1 + 1 == block2, (f"{self.__class__.__name__} Green column requires "
-                                          "consecutive indices maximally spanning 2 blocks.")
-        # We can only have 2 consecutive blocks for
-        # a Gamma, so same for BTD
-        assert len(blocks) <= 2, (f"{self.__class__.__name__} Green column requires "
-                                  "consecutive indices maximally spanning 2 blocks.")
+        blocks = self._get_blocks(idx)
+        assert len(blocks) <= 2, f"{self.__class__.__name__}.green(column) requires maximally 2 blocks"
+        if len(blocks) == 2:
+            assert blocks[0]+1 == blocks[1], f"{self.__class__.__name__}.green(column) requires spanning only 2 blocks"
 
         n = len(self)
         G = np.empty([n, len(idx)], dtype=self._data.A[0].dtype)
@@ -1326,7 +1355,6 @@ class DeviceGreen:
     def _spectral_column_bm(self, elec, herm):
         G = self._green_column(self.elecs_pvt_dev[elec].ravel())
         nb = len(self.btd)
-        nbm1 = nb - 1
 
         Gam = self._data.gamma[elec]
 
@@ -1361,7 +1389,6 @@ class DeviceGreen:
     def _spectral_column_btd(self, elec, herm):
         G = self._green_column(self.elecs_pvt_dev[elec].ravel())
         nb = len(self.btd)
-        nbm1 = nb - 1
 
         Gam = self._data.gamma[elec]
 
@@ -1386,7 +1413,7 @@ class DeviceGreen:
             for jb in range(nb):
                 slj = slice(c[jb], c[jb+1])
                 Gj = Gam @ dagger(G[slj, :])
-                for ib in range(max(0, jb-1), min(jb+1, nbm1) + 1):
+                for ib in range(max(0, jb-1), min(jb+2, nb)):
                     sli = slice(c[ib], c[ib+1])
                     BI[ib, jb] = G[sli, :] @ Gj
 
