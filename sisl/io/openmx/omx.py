@@ -70,7 +70,7 @@ class omxSileOpenMX(SileOpenMX):
             self._parent_fh.append(self.fh)
             self.fh = self.dir_file(f).open(self._mode)
         else:
-            warn(str(self) + f' is trying to include file: {f} but the file seems not to exist? Will disregard file!')
+            warn(f'{self!s} is trying to include file: {f} but the file seems not to exist? Will disregard file!')
 
     def _popfile(self):
         if len(self._parent_fh) > 0:

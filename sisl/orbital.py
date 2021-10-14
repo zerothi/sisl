@@ -1007,8 +1007,8 @@ class AtomicOrbital(Orbital):
     def __str__(self):
         """ A string representation of the object """
         if len(self.tag) > 0:
-            return f'{self.__class__.__name__}{{{self.name()}, q0: {self.q0}, tag: {self.tag}, {str(self.orb)}}}'
-        return f'{self.__class__.__name__}{{{self.name()}, q0: {self.q0}, {str(self.orb)}}}'
+            return f'{self.__class__.__name__}{{{self.name()}, q0: {self.q0}, tag: {self.tag}, {self.orb!s}}}'
+        return f'{self.__class__.__name__}{{{self.name()}, q0: {self.q0}, {self.orb!s}}}'
 
     def __repr__(self):
         if self.tag:

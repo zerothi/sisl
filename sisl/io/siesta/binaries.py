@@ -46,7 +46,7 @@ _eV2Ry = unit_convert('eV', 'Ry')
 def _bin_check(obj, method, message):
     ierr = _siesta.io_m.iostat_query()
     if ierr != 0:
-        raise SileError(f'{str(obj)}.{method} {message} (ierr={ierr})')
+        raise SileError(f'{obj!s}.{method} {message} (ierr={ierr})')
 
 
 def _toF(array, dtype, scale=None):
@@ -312,7 +312,7 @@ class tshsSileSiesta(onlysSileSiesta):
         if np.any(idx > no):
             print(f'Number of orbitals: {no}')
             print(idx)
-            raise SileError(str(self) + '.read_hamiltonian could not assert '
+            raise SileError(f'{self!s}.read_hamiltonian could not assert '
                             'the supercell connections in the primary unit-cell.')
 
         # see onlysSileSiesta.read_overlap for .transpose()
@@ -325,7 +325,7 @@ class tshsSileSiesta(onlysSileSiesta):
         # see onlysSileSiesta.read_overlap for .transpose()
         csr = H.transpose(spin=False, sort=False)._csr
         if csr.nnz == 0:
-            raise SileError(str(self) + '.write_hamiltonian cannot write '
+            raise SileError(f'{self!s}.write_hamiltonian cannot write '
                             'a zero element sparse matrix!')
 
         # Convert to siesta CSR
@@ -393,7 +393,7 @@ class dmSileSiesta(SileBinSiesta):
             geom.set_nsc(nsc)
 
         if geom.no != no:
-            raise SileError(str(self) + '.read_density_matrix could not use the '
+            raise SileError(f'{self!s}.read_density_matrix could not use the '
                             'passed geometry as the number of atoms or orbitals is '
                             'inconsistent with DM file.')
 
@@ -418,7 +418,7 @@ class dmSileSiesta(SileBinSiesta):
         if nsc[0] != 0 or geom.no_s >= col.max():
             _csr_from_siesta(geom, DM._csr)
         else:
-            warn(str(self) + '.read_density_matrix may result in a wrong sparse pattern!')
+            warn(f'{self!s}.read_density_matrix may result in a wrong sparse pattern!')
 
         return DM.transpose(spin=False, sort=kwargs.get("sort", True))
 
@@ -427,7 +427,7 @@ class dmSileSiesta(SileBinSiesta):
         csr = DM.transpose(spin=False, sort=False)._csr
         # This ensures that we don't have any *empty* elements
         if csr.nnz == 0:
-            raise SileError(str(self) + '.write_density_matrix cannot write '
+            raise SileError(f'{self!s}.write_density_matrix cannot write '
                             'a zero element sparse matrix!')
 
         _csr_to_siesta(DM.geometry, csr)
@@ -478,7 +478,7 @@ class tsdeSileSiesta(dmSileSiesta):
             geom.set_nsc(nsc)
 
         if geom.no != no:
-            raise SileError(str(self) + '.read_energy_density_matrix could '
+            raise SileError(f'{self!s}.read_energy_density_matrix could '
                             'not use the passed geometry as the number of atoms or orbitals '
                             'is inconsistent with DM file.')
 
@@ -503,7 +503,7 @@ class tsdeSileSiesta(dmSileSiesta):
         if nsc[0] != 0 or geom.no_s >= col.max():
             _csr_from_siesta(geom, EDM._csr)
         else:
-            warn(str(self) + '.read_energy_density_matrix may result in a wrong sparse pattern!')
+            warn(f'{self!s}.read_energy_density_matrix may result in a wrong sparse pattern!')
 
         return EDM.transpose(spin=False, sort=kwargs.get("sort", True))
 
@@ -536,7 +536,7 @@ class tsdeSileSiesta(dmSileSiesta):
         EDMcsr.align(DMcsr)
 
         if DMcsr.nnz == 0:
-            raise SileError(str(self) + '.write_density_matrices cannot write '
+            raise SileError(f'{self!s}.write_density_matrices cannot write '
                             'a zero element sparse matrix!')
 
         _csr_to_siesta(DM.geometry, DMcsr)
@@ -550,7 +550,7 @@ class tsdeSileSiesta(dmSileSiesta):
         # Ensure everything is correct
         if not (np.allclose(DMcsr.ncol, EDMcsr.ncol) and
                 np.allclose(DMcsr.col, EDMcsr.col)):
-            raise ValueError(str(self) + '.write_density_matrices got non compatible '
+            raise ValueError(f'{self!s}.write_density_matrices got non compatible '
                              'DM and EDM matrices.')
 
         if DM.orthogonal:

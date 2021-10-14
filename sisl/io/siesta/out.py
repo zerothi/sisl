@@ -1161,7 +1161,7 @@ class outSileSiesta(SileSiesta):
             ret = self.step_to(search_keys, case=True, ret_index=True, reread=False)
 
         if not any((FOUND_SCF, FOUND_MD, FOUND_FINAL)):
-            raise SileError(f"{str(self)} does not contain any charges ({name})")
+            raise SileError(f"{self!s} does not contain any charges ({name})")
 
         # if the scf-charges are not stored, it means that the MD step finalization
         # has not been read. So correct
@@ -1239,15 +1239,15 @@ class outSileSiesta(SileSiesta):
             # we request that user does not request any input
             if (opt_iscf or (not iscf is None)) or \
                (opt_imd or (not imd is None)):
-                raise SileError(f"{str(self)} does not contain MD/SCF charges")
+                raise SileError(f"{self!s} does not contain MD/SCF charges")
 
         elif not FOUND_SCF:
             if opt_iscf or (not iscf is None):
-                raise SileError(f"{str(self)} does not contain SCF charges")
+                raise SileError(f"{self!s} does not contain SCF charges")
 
         elif not FOUND_MD:
             if opt_imd or (not imd is None):
-                raise SileError(f"{str(self)} does not contain MD charges")
+                raise SileError(f"{self!s} does not contain MD charges")
 
         # if either are options they may hold
         if opt_imd and opt_iscf:

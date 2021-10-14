@@ -584,7 +584,7 @@ class fdfSileSiesta(SileSiesta):
             if n in geometry.names:
                 idx = list2str(geometry.names[n] + 1).replace('-', ' -- ')
                 if len(idx) > 200:
-                    info(f"{str(self)}.write_geometry will not write the constraints for {n} (too long line).")
+                    info(f"{self!s}.write_geometry will not write the constraints for {n} (too long line).")
                 else:
                     _write_block = write_block(idx, append, _write_block)
 
@@ -1069,7 +1069,7 @@ class fdfSileSiesta(SileSiesta):
             for ax in range(3):
                 daxis = geom_tile.xyz[:, ax] - geom.xyz[:, ax]
                 if not np.allclose(daxis, daxis[0], rtol=0., atol=0.01):
-                    raise SislError(f"{str(self)}.read_dynamical_matrix(FC) could "
+                    raise SislError(f"{self!s}.read_dynamical_matrix(FC) could "
                                     "not figure out the tiling method for the supercell")
 
             # Convert the FC matrix to a "rollable" matrix
@@ -2065,7 +2065,7 @@ class fdfSileSiesta(SileSiesta):
             H = hsxSileSiesta(f).read_hamiltonian(*args, **kwargs)
             Ef = self.read_fermi_level()
             if Ef is None:
-                info(f"{str(self)}.read_hamiltonian from HSX file failed shifting to the Fermi-level.")
+                info(f"{self!s}.read_hamiltonian from HSX file failed shifting to the Fermi-level.")
             else:
                 H.shift(-Ef)
         return H

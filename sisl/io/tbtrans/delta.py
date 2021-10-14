@@ -230,14 +230,14 @@ class deltancSileTBtrans(SileCDFTBtrans):
         return ilvl, ik, iE
 
     def _get_lvl(self, ilvl):
-        slvl = 'LEVEL-'+str(ilvl)
+        slvl = f'LEVEL-{ilvl}'
         if slvl in self.groups:
             return self._crt_grp(self, slvl)
         raise ValueError(f"Level {ilvl} does not exist in {self.file}.")
 
     def _add_lvl(self, ilvl):
         """ Simply adds and returns a group if it does not exist it will be created """
-        slvl = 'LEVEL-' + str(ilvl)
+        slvl = f'LEVEL-{ilvl}'
         if slvl in self.groups:
             lvl = self._crt_grp(self, slvl)
         else:
@@ -278,7 +278,7 @@ class deltancSileTBtrans(SileCDFTBtrans):
         """
         csr = delta._csr.copy()
         if csr.nnz == 0:
-            raise SileError(f"{str(self)}.write_overlap cannot write a zero element sparse matrix!")
+            raise SileError(f"{self!s}.write_overlap cannot write a zero element sparse matrix!")
 
         # convert to siesta thing and store
         _csr_to_siesta(delta.geometry, csr)

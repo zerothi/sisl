@@ -327,8 +327,8 @@ class BrillouinZone:
             k[i, :] = func(sc, i / N, *args, **kwargs)
         return BrillouinZone(sc, k)
 
-    @classmethod
-    def param_circle(self, sc, N_or_dk, kR, normal, origin, loop=False):
+    @staticmethod
+    def param_circle(sc, N_or_dk, kR, normal, origin, loop=False):
         r""" Create a parameterized k-point list where the k-points are generated on a circle around an origin
 
         The generated circle is a perfect circle in the reciprocal space (Cartesian coordinates).

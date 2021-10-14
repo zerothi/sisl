@@ -476,7 +476,7 @@ class BaseSile:
         p : ArgumentParser
            the argument parser to add the arguments to.
         """
-        raise NotImplementedError("The ArgumentParser of '"+self.__class__.__name__+"' has not been implemented yet.")
+        raise NotImplementedError(f"The ArgumentParser of '{self.__class__.__name__}' has not been implemented yet.")
 
     def ArgumentParser_out(self, p=None, *args, **kwargs):
         """ Appends additional arguments based on the output of the file
@@ -490,7 +490,14 @@ class BaseSile:
 
     def __str__(self):
         """ Return a representation of the `Sile` """
-        return "{0}({1!s}, base={2!s})".format(self.__class__.__name__, self.base_file, self._directory.relative_to(Path('.').resolve()))
+        # Check if the directory is relative to the current path
+        # If so, only print the relative path, otherwise print the full path
+        d = self._directory
+        try:
+            # bypass d.is_relative_to, added in 3.9
+            d = d.relative_to(Path('.').resolve())
+        except: pass
+        return f"{self.__class__.__name__}({self.base_file!s}, base={d!s})"
 
 
 def sile_fh_open(from_closed=False):
@@ -982,7 +989,7 @@ class SileError(IOError):
 
     def __str__(self):
         if self.obj:
-            return self.value + ' in ' + str(self.obj)
+            return f"{self.value!s} in {self.obj!s}"
         else:
             return self.value
 
