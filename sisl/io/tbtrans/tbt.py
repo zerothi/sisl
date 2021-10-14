@@ -2581,6 +2581,73 @@ class tbtncSileTBtrans(_devncSileTBtrans):
                        action=DataTEig,
                        help='Store transmission eigenvalues between two electrodes.')
 
+        class DataFano(argparse.Action):
+
+            @collect_action
+            @ensure_E
+            def __call__(self, parser, ns, values, option_string=None):
+                e1 = ns._tbt._elec(values[0])
+                if e1 not in ns._tbt.elecs:
+                    raise ValueError(f"Electrode: '{e1}' cannot be found in the specified file.")
+                e2 = ns._tbt._elec(values[1])
+                if e2 not in ns._tbt.elecs:
+                    if e2.strip() == '.':
+                        for e2 in ns._tbt.elecs:
+                            if e2 != e1:
+                                try: # catches if T isn't calculated
+                                    self(parser, ns, [e1, e2], option_string)
+                                except:
+                                    pass
+                        return
+                    raise ValueError(f"Electrode: '{e2}' cannot be found in the specified file.")
+
+                # Grab the information
+                data = ns._tbt.fano(e1, e2, kavg=ns._krng)[ns._Erng]
+                data.shape = (-1,)
+                ns._data.append(data)
+                ns._data_header.append(f'Fano:{e1}-{e2}')
+                ns._data_description.append(f'Column {len(ns._data)} is fano-factor from {e1} to {e2}')
+        p.add_argument('--fano', nargs=2, metavar=('ELEC1', 'ELEC2'),
+                       action=DataFano,
+                       help='Store fano-factor between two electrodes.')
+
+        class DataShot(argparse.Action):
+
+            @collect_action
+            @ensure_E
+            def __call__(self, parser, ns, values, option_string=None):
+                classical = values[0].lower() in ('classical', 'c')
+
+                e1 = ns._tbt._elec(values[1])
+                if e1 not in ns._tbt.elecs:
+                    raise ValueError(f"Electrode: '{e1}' cannot be found in the specified file.")
+                e2 = ns._tbt._elec(values[2])
+                if e2 not in ns._tbt.elecs:
+                    if e2.strip() == '.':
+                        for e2 in ns._tbt.elecs:
+                            if e2 != e1:
+                                try: # catches if T isn't calculated
+                                    self(parser, ns, [values[0], e1, e2], option_string)
+                                except:
+                                    pass
+                        return
+                    raise ValueError(f"Electrode: '{e2}' cannot be found in the specified file.")
+
+                # Grab the information
+                data = ns._tbt.shot_noise(e1, e2, classical=classical,
+                                          kavg=ns._krng)[ns._Erng]
+                data.shape = (-1,)
+                ns._data.append(data)
+                ns._data_header.append(f'Shot:{e1}-{e2}')
+                if classical:
+                    method = 'classical'
+                else:
+                    method = 'non-classical'
+                ns._data_description.append(f'Column {len(ns._data)} is {method} shot-noise from {e1} to {e2}')
+        p.add_argument('--shot-noise', nargs=3, metavar=('METHOD', 'ELEC1', 'ELEC2'),
+                       action=DataShot,
+                       help='Store shot-noise between two electrodes.')
+
         class Info(argparse.Action):
             """ Action to print information contained in the TBT.nc file, helpful before performing actions """
 
@@ -2664,15 +2731,27 @@ class tbtncSileTBtrans(_devncSileTBtrans):
 
                 is_DOS = True
                 is_T = True
+                is_Teig = True
+                is_SHOT = True
+                is_FANO = True
                 for i in range(1, len(ns._data)):
                     plt.plot(ns._data[0], ns._data[i], label=_get_header(ns._data_header[i]))
                     is_DOS &= 'DOS' in ns._data_header[i]
-                    is_T &= 'T' in ns._data_header[i]
+                    is_T &= 'T:' in ns._data_header[i]
+                    is_Teig &= 'Teig' in ns._data_header[i]
+                    is_SHOT &= 'Shot' in ns._data_header[i]
+                    is_FANO &= 'Fano' in ns._data_header[i]
 
                 if is_DOS:
                     plt.ylabel('DOS [1/eV]')
                 elif is_T:
                     plt.ylabel('Transmission')
+                elif is_Teig:
+                    plt.ylabel('Transmission eigen')
+                elif is_FANO:
+                    plt.ylabel('Fano factor')
+                elif is_SHOT:
+                    plt.ylabel('Shot-noise')
                 else:
                     plt.ylabel('mixed units')
                 plt.xlabel('E - E_F [eV]')
