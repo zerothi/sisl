@@ -23,11 +23,9 @@ It requires two inputs and has several optional flags.
     any implications for the requirement of the TBT.nc file.
 """
 from numbers import Integral
-from functools import lru_cache
 import os.path as osp
 
 import numpy as np
-from numpy import einsum
 from numpy import conjugate as conj
 #from scipy.linalg import sqrtm
 import scipy.sparse as ssp
@@ -104,6 +102,8 @@ def _scat_state_svd(A, **kwargs):
                 scale = 10 ** (-12 - _)
             else:
                 scale = False
+    if scale:
+        A *= scale
 
     # Numerous accounts of SVD algorithms using gesdd results
     # in poor results when min(M, N) >= 26 (block size).
@@ -126,22 +126,15 @@ def _scat_state_svd(A, **kwargs):
                 k = A.shape[1] - 1
             svds_kwargs['k'] = k
 
-        if scale:
-            A, DOS, _ = svds(A * scale, **svds_kwargs)
-            DOS /= scale
-        else:
-            A, DOS, _ = svds(A, **svds_kwargs)
+        A, DOS, _ = svds(A, **svds_kwargs)
 
     else:
         # it must be a lapack driver:
-        if scale:
-            A, DOS, _ = svd_destroy(A * scale, full_matrices=False, check_finite=False,
-                                    lapack_driver=driver)
-            DOS /= scale
-        else:
-            A, DOS, _ = svd_destroy(A, full_matrices=False, check_finite=False,
-                                    lapack_driver=driver)
-        del _
+        A, DOS, _ = svd_destroy(A, full_matrices=False, check_finite=False,
+                                lapack_driver=driver)
+    del _
+    if scale:
+        DOS /= scale
 
     # A note of caution.
     # The DOS values are not actual DOS values.
@@ -705,15 +698,16 @@ class DeviceGreen:
             if not np.allclose(eta, data.eta):
                 warn(f"{cls.__name__}.from_fdf(electrode={elec}) found inconsistent "
                      f"imaginary eta from the fdf vs. TBT output, will use fdf value.\n"
-                     f"  {fdf} = {data.eta} eV\n  {tbt} = {eta} eV")
+                     f"  {tbt} = {eta} eV\n  {fdf} = {data.eta} eV")
 
             bloch = tbt.bloch(elec)
             if not np.allclose(bloch, data.bloch):
                 warn(f"{cls.__name__}.from_fdf(electrode={elec}) found inconsistent "
                      f"Bloch expansions from the fdf vs. TBT output, will use fdf value.\n"
-                     f"  {fdf} = {data.bloch}\n  {tbt} = {bloch}")
+                     f"  {tbt} = {bloch}\n  {fdf} = {data.bloch}")
 
             eta_dev = min(data.eta, eta_dev)
+
         # Correct by a factor 1/100 to minimize smearing for device states.
         # We want the electrode to smear.
         eta_dev /= 100
@@ -728,7 +722,7 @@ class DeviceGreen:
         if not np.allclose(eta_dev, eta_dev_tbt):
             warn(f"{cls.__name__}.from_fdf found inconsistent "
                  f"imaginary eta from the fdf vs. TBT output, will use fdf value.\n"
-                 f"  {fdf} = {eta_dev} eV\n  {tbt} = {eta_dev_tbt} eV")
+                 f"  {tbt} = {eta_dev_tbt} eV\n  {fdf} = {eta_dev} eV")
 
         elecs = []
         for elec in tbt.elecs:
