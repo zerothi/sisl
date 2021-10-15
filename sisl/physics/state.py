@@ -586,7 +586,8 @@ class State(ParentContainer):
         ----------
         .. [1] N. C. Murphy *et.al.*, "Generalized inverse participation ratio as a possible measure of localization for interacting systems", PRB, *83*, 184206 (2011)
         """
-        state_abs2 = self.norm2(sum=False)
+        # This *has* to be a real value C * C^* == real
+        state_abs2 = self.norm2(sum=False).real
         assert q >= 1, f"{self.__class__.__name__}.ipr requires q>=1"
         return (state_abs2 ** q).sum(-1) / state_abs2.sum(-1) ** q
 
