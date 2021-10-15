@@ -72,15 +72,6 @@ def sqrtm(H):
     return (ev * sqe) @ ev.conj().T
 
 
-def get_maxerrr(u):
-    inner = conj(u.T) @ u
-    np.fill_diagonal(inner, inner.diagonal() - 1.)
-    a = np.absolute(inner)
-    aidx = np.argmax(a)
-    uidx = np.argmax(np.absolute(u))
-    return a.max(), a[:, 0], np.unravel_index(aidx, a.shape), u.ravel()[uidx], np.unravel_index(uidx, a.shape)
-
-
 def _scat_state_svd(A, **kwargs):
     """ Calculating the SVD of matrix A for the scattering state
 
@@ -141,7 +132,7 @@ def _scat_state_svd(A, **kwargs):
     # In fact they need to be rescaled by DOS *= <i| S(k) |i>
     # to account for the overlap matrix. For orthogonal basis sets
     # this DOS eigenvalue is correct.
-    return DOS ** 2 / (2 * np.pi), A
+    return DOS ** 2 / (2*np.pi), A
 
 
 class PivotSelfEnergy(si.physics.SelfEnergy):
@@ -544,11 +535,9 @@ class DeviceGreen:
         self.eta = eta
 
         # Create BTD indices
-        self.btd_cum = np.cumsum(self.btd)
-        #cumbtd = np.append(0, self.btd_cum)
-
-        #self.btd_idx = [self.pvt[cumbtd[i]:cumbtd[i+1]]
-        #                for i in range(len(self.btd))]
+        self.btd_cum0 = np.empty([len(self.btd) + 1], dtype=self.btd.dtype)
+        self.btd_cum0[0] = 0
+        self.btd_cum0[1:] = np.cumsum(self.btd)
         self.reset()
 
     def __str__(self):
@@ -853,11 +842,11 @@ class DeviceGreen:
         C = [0] * nb
 
         # Now we can calculate everything
-        cbtd = self.btd_cum
+        cbtd = self.btd_cum0
         btd = self.btd
 
-        sl0 = slice(0, cbtd[0])
-        slp = slice(cbtd[0], cbtd[1])
+        sl0 = slice(cbtd[0], cbtd[1])
+        slp = slice(cbtd[1], cbtd[2])
         # initial matrix A and C
         iG = inv_G[sl0, :].tocsc()
         A[0] = iG[:, sl0].toarray()
@@ -866,7 +855,7 @@ class DeviceGreen:
             # rotate slices
             sln = sl0
             sl0 = slp
-            slp = slice(cbtd[b], cbtd[b+1])
+            slp = slice(cbtd[b+1], cbtd[b+2])
             iG = inv_G[sl0, :].tocsc()
 
             B[b-1] = iG[:, sln].toarray()
@@ -904,7 +893,7 @@ class DeviceGreen:
     def _matrix_to_btd(self, M):
         BM = BlockMatrix(self.btd)
         BI = BM.block_indexer
-        c = np.append(0, np.cumsum(BM.blocks))
+        c = self.btd_cum0
         nb = len(BI)
         if ssp.isspmatrix(M):
             for jb in range(nb):
@@ -944,8 +933,8 @@ class DeviceGreen:
 
     def _get_blocks(self, idx):
         # Figure out which blocks are requested
-        block1 = (idx.min() < self.btd_cum).nonzero()[0][0]
-        block2 = (idx.max() < self.btd_cum).nonzero()[0][0]
+        block1 = (idx.min() < self.btd_cum0[1:]).nonzero()[0][0]
+        block2 = (idx.max() < self.btd_cum0[1:]).nonzero()[0][0]
         if block1 == block2:
             blocks = [block1]
         else:
@@ -1181,7 +1170,7 @@ class DeviceGreen:
         G = np.empty([n, len(idx)], dtype=self._data.A[0].dtype)
 
         btd = self.btd
-        c = np.append(0, self.btd_cum)
+        c = self.btd_cum0
         A = self._data.A
         B = self._data.B
         C = self._data.C
@@ -1241,7 +1230,7 @@ class DeviceGreen:
         n = len(self)
         G = np.empty([n, len(idx)], dtype=self._data.A[0].dtype)
 
-        c = np.append(0, self.btd_cum)
+        c = self.btd_cum0
         A = self._data.A
         B = self._data.B
         C = self._data.C
@@ -1356,7 +1345,7 @@ class DeviceGreen:
         btd = BlockMatrix(self.btd)
         BI = btd.block_indexer
 
-        c = np.append(0, self.btd_cum)
+        c = self.btd_cum0
 
         if herm:
             # loop columns
@@ -1390,7 +1379,7 @@ class DeviceGreen:
         btd = BlockMatrix(self.btd)
         BI = btd.block_indexer
 
-        c = np.append(0, self.btd_cum)
+        c = self.btd_cum0
         if herm:
             # loop columns
             for jb in range(nb):
@@ -1425,7 +1414,7 @@ class DeviceGreen:
         # Allocate space for the full matrix
         S = np.empty([len(self), len(self)], dtype=A.dtype)
 
-        c = np.append(0, self.btd_cum)
+        c = self.btd_cum0
         S[c[blocks[0]]:c[blocks[-1]+1], c[blocks[0]]:c[blocks[-1]+1]] = A
         del A
 
@@ -1517,7 +1506,7 @@ class DeviceGreen:
         nblocks = len(blocks)
         A = A @ self._data.gamma[elec] @ dagger(A)
 
-        c = np.append(0, self.btd_cum)
+        c = self.btd_cum0
         BI[blocks[0], blocks[0]] = A[:btd[blocks[0]], :btd[blocks[0]]]
         if len(blocks) > 1:
             BI[blocks[0], blocks[1]] = A[:btd[blocks[0]], btd[blocks[0]]:]
@@ -1608,7 +1597,7 @@ class DeviceGreen:
         blocks, A = self._green_diag_block(self.elecs_pvt_dev[elec].ravel())
         A = A @ self._data.gamma[elec] @ dagger(A)
 
-        c = np.append(0, self.btd_cum)
+        c = self.btd_cum0
         BI[blocks[0], blocks[0]] = A[:btd[blocks[0]], :btd[blocks[0]]]
         if len(blocks) > 1:
             BI[blocks[0], blocks[1]] = A[:btd[blocks[0]], btd[blocks[0]]:]
@@ -1765,21 +1754,22 @@ class DeviceGreen:
             cutoff0 = cutoff1 = cutoff[0]
         else:
             cutoff0, cutoff1 = cutoff[0], cutoff[1]
+        cutoff1 = kwargs.get("cutoff_A", cutoff1)
 
         # First we need to calculate diagonal blocks of the spectral matrix
         # This is basically the same thing as calculating the Gf column
         # But only in the 1/2 diagonal blocks of Gf
-        blocks, U = self._green_diag_block(self.elecs_pvt_dev[elec].ravel())
+        blocks, u = self._green_diag_block(self.elecs_pvt_dev[elec].ravel())
 
         # Calculate the spectral function only for the blocks that host the
         # scattering matrix
-        U = U @ self._data.gamma[elec] @ dagger(U)
+        u = u @ self._data.gamma[elec] @ dagger(u)
 
         # add something to the diagonal (improves diag precision)
-        np.fill_diagonal(U, U.diagonal() + 0.1)
+        np.fill_diagonal(u, u.diagonal() + 0.1)
 
         # Calculate eigenvalues
-        DOS, U = eigh_destroy(U)
+        DOS, u = eigh_destroy(u)
         # backconvert diagonal
         DOS -= 0.1
         # TODO check with overlap convert with correct magnitude (Tr[A] / 2pi)
@@ -1791,39 +1781,44 @@ class DeviceGreen:
         # This will greatly increase performance for very wide systems
         # since the number of contributing states is generally a fraction
         # of the total electrode space.
-        DOS, U = self._scattering_state_reduce(elec, DOS, U, cutoff0)
+        DOS, u = self._scattering_state_reduce(elec, DOS, u, cutoff0)
         # Back-convert to retain scale of the vectors before SVD
-        # and also take the sqrt to ensure U U^dagger returns
+        # and also take the sqrt to ensure u u^dagger returns
         # a sensible value.
-        U *= signsqrt(DOS * 2 * np.pi)
+        u *= signsqrt(DOS * 2 * np.pi)
 
         nb = len(self.btd)
+        cbtd = self.btd_cum0
 
-        u = [None] * nb
-        u[blocks[0]] = U[:self.btd[blocks[0]], :]
+        # Create full U
+        A = np.empty([len(self), u.shape[1]], dtype=u.dtype)
+
+        sl = slice(cbtd[blocks[0]], cbtd[blocks[0]+1])
+        A[sl, :] = u[:self.btd[blocks[0]], :]
         if len(blocks) > 1:
-            u[blocks[1]] = U[self.btd[blocks[0]]:, :]
+            sl = slice(cbtd[blocks[1]], cbtd[blocks[1]+1])
+            A[sl, :] = u[self.btd[blocks[0]]:, :]
+        del u
 
-        # Clean up
-        del U
-
-        # Propagate U in the full BTD matrix
+        # Propagate A in the full BTD matrix
         t = self._data.tY
+        sl = slice(cbtd[blocks[0]], cbtd[blocks[0]+1])
         for b in range(blocks[0], 0, -1):
-            u[b - 1] = - t[b] @ u[b]
+            sln = slice(cbtd[b-1], cbtd[b])
+            A[sln] = - t[b] @ A[sl]
+            sl = sln
 
         t = self._data.tX
+        sl = slice(cbtd[blocks[-1]], cbtd[blocks[-1]+1])
         for b in range(blocks[-1], nb - 1):
-            u[b + 1] = - t[b] @ u[b]
-
-        # Now the full U is created (still F-order)
-        u = np.concatenate(u)
+            slp = slice(cbtd[b+1], cbtd[b+2])
+            A[slp] = - t[b] @ A[sl]
+            sl = slp
 
         # Perform svd
-        DOS, u = _scat_state_svd(u, **kwargs)
-
         # TODO check with overlap convert with correct magnitude (Tr[A] / 2pi)
-        DOS, u = self._scattering_state_reduce(elec, DOS, u, cutoff1)
+        DOS, A = _scat_state_svd(A, **kwargs)
+        DOS, A = self._scattering_state_reduce(elec, DOS, A, cutoff1)
 
         # Now we have the full u, create it and transpose to get it in C indexing
         data = self._data
@@ -1835,7 +1830,7 @@ class DeviceGreen:
             cutoff_space=cutoff0,
             cutoff=cutoff1
         )
-        return si.physics.StateCElectron(u.T, DOS, self, **info)
+        return si.physics.StateCElectron(A.T, DOS, self, **info)
 
     def eigenchannel(self, state, elec_to):
         r""" Calculate the eigen channel from scattering states entering electrodes `elec_to`
