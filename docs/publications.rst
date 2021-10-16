@@ -9,6 +9,18 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior AT gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. N. Wittemeier, M.J. Verstraete, P. Ordejón, Z. Zanolli,
+   *Interference effects in one-dimensional moiré crystals*,
+   Carbon `(2021) <https://doi.org/10.1016/j.carbon.2021.10.028>`_
+
+#. M. Mohr, A. Weismann, D. Li, M. Brandbyge, R. Berndt,
+   *Current shot noise in atomic contacts: Fe and FeH2 between Au electrodes*
+   Physical Review B **104**, `115431 (2021) <https://doi.org/10.1103/PhysRevB.104.115431>`_
+
+#. J. Zhang, E.P. Fahrenthold,
+   *Spin current distribution in antiferromagnetic zigzag graphene nanoribbons under transverse electric fields*,
+   Scientific Reports **1**, `17088 (2021) <https://doi.org/10.1038/s41598-021-96636-6>`_
+
 #. I. Alcon, G. Calogero, N. Papior, M. Brandbyge,
    *Electrochemical Control of Charge Current Flow in Nanoporous Graphene*,
    Advanced Functional Materials, `2104031 (2021) <https://doi.org/10.1002/adfm.202104031>`_
