@@ -1658,7 +1658,7 @@ class DeviceGreen:
 
         return DOS[idx], U[:, idx]
 
-    def scattering_state(self, elec, E, k=(0, 0, 0), cutoff=0., method='svd', *args, **kwargs):
+    def scattering_state(self, elec, E, k=(0, 0, 0), cutoff=0., method='svd-gamma', *args, **kwargs):
         r""" Calculate the scattering states for a given `E` and `k` point from a given electrode
 
         The scattering states are the eigen states of the spectral function:
@@ -1679,7 +1679,7 @@ class DeviceGreen:
            k-point to calculate the spectral function at
         cutoff : float, optional
            cutoff the returned scattering states at some DOS value.
-        method : {'svd', 'propagate', 'full'}
+        method : {'svd-gamma', 'svd-A', 'full'}
            which method to use for calculating the scattering states.
            Use only the _full_ method testing purposes as it is extremely slow
            and requires a substantial amount of memory.
@@ -1689,7 +1689,7 @@ class DeviceGreen:
         """
         elec = self._elec(elec)
         self._prepare(E, k)
-        method = method.lower()
+        method = method.lower().replace('-', '_')
         func = getattr(self, f"_scattering_state_{method}", None)
         if func is None:
             raise ValueError(f"{self.__class__.__name__}.scattering_state method is not [full,svd,propagate]")
@@ -1722,7 +1722,7 @@ class DeviceGreen:
         # always have the first state with the largest values
         return si.physics.StateCElectron(A.T, DOS, self, **info)
 
-    def _scattering_state_svd(self, elec, cutoff=0., **kwargs):
+    def _scattering_state_svd_gamma(self, elec, cutoff=0., **kwargs):
         A = self._green_column(self.elecs_pvt_dev[elec].ravel())
 
         # This calculation uses the sqrt(Gamma) calculation combined with svd
@@ -1735,7 +1735,7 @@ class DeviceGreen:
 
         data = self._data
         info = dict(
-            method='svd',
+            method='svd(Gamma)',
             elec=self._elec_name(elec),
             E=data.E,
             k=data.k,
@@ -1745,7 +1745,7 @@ class DeviceGreen:
         # always have the first state with the largest values
         return si.physics.StateCElectron(A.T, DOS, self, **info)
 
-    def _scattering_state_propagate(self, elec, cutoff=0, **kwargs):
+    def _scattering_state_svd_a(self, elec, cutoff=0, **kwargs):
         # Parse the cutoff value
         # Here we may use 2 values, one for cutting off the initial space
         # and one for the returned space.
@@ -1823,7 +1823,7 @@ class DeviceGreen:
         # Now we have the full u, create it and transpose to get it in C indexing
         data = self._data
         info = dict(
-            method='propagate',
+            method='svd(A)',
             elec=self._elec_name(elec),
             E=data.E,
             k=data.k,
