@@ -266,6 +266,4 @@ subroutine read_gf_se( iu, no_u, iE, SE )
   read(iu, iostat=ierr) SE
   call iostat_update(ierr)
 
-  SE(:,:) = SE(:,:)
-
 end subroutine read_gf_se
