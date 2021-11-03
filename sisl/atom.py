@@ -1001,6 +1001,8 @@ class Atom(metaclass=AtomMeta):
             elif isinstance(orbitals[0], str):
                 # radius has been given
                 self._orbitals = [Orbital(-1, tag=tag) for tag in orbitals]
+            elif all(orb is None for orb in orbitals):
+                orbitals = None
         elif isinstance(orbitals, Orbital):
             self._orbitals = [orbitals]
         elif isinstance(orbitals, Real):

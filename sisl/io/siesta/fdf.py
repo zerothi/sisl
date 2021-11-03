@@ -1729,10 +1729,12 @@ class fdfSileSiesta(SileSiesta):
         """
         if isinstance(block, str):
             block = block.splitlines()
+
+        # Quick exit if needed
         if len(block) == 0:
             if specie is None:
                 return []
-            return {}
+            return None
 
         # make a copy
         block = list(block)
@@ -1838,7 +1840,7 @@ class fdfSileSiesta(SileSiesta):
 
         if specie is None:
             return atoms
-        return atoms[specie]
+        return atoms.get(specie, None)
 
     def _r_add_overlap(self, parent_call, M):
         """ Internal routine to ensure that the overlap matrix is read and added to the matrix `M` """
