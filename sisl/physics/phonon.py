@@ -157,6 +157,10 @@ def velocity(mode, hw, dDk, degenerate=None, degenerate_dir=(1, 1, 1), project=F
     project : bool, optional
        if true, velocities will be returned projected per mode component
 
+    See Also
+    --------
+    DynamicalMatrix.dDk : function for generating the dynamical matrix derivatives (`dDk` argument)
+
     Returns
     -------
     numpy.ndarray

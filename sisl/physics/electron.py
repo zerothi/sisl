@@ -565,6 +565,11 @@ def velocity(state, dHk, energy=None, dSk=None, degenerate=None, degenerate_dir=
     project : bool, optional
        whether the velocities will be returned projected per orbital
 
+    See Also
+    --------
+    Hamiltonian.dHk : function for generating the Hamiltonian derivatives (`dHk` argument)
+    Hamiltonian.dSk : function for generating the Hamiltonian derivatives (`dSk` argument)
+
     Returns
     -------
     numpy.ndarray
@@ -701,6 +706,8 @@ def velocity_matrix(state, dHk, energy=None, dSk=None, degenerate=None, degenera
     See Also
     --------
     velocity : only calculate the diagonal components of this matrix
+    Hamiltonian.dHk : function for generating the Hamiltonian derivatives (`dHk` argument)
+    Hamiltonian.dSk : function for generating the Hamiltonian derivatives (`dSk` argument)
 
     Returns
     -------
@@ -825,6 +832,8 @@ def berry_curvature(state, energy, dHk, dSk=None, degenerate=None, degenerate_di
     --------
     velocity : calculate state velocities
     velocity_matrix : calculate state velocities between all states
+    Hamiltonian.dHk : function for generating the Hamiltonian derivatives (`dHk` argument)
+    Hamiltonian.dSk : function for generating the Hamiltonian derivatives (`dSk` argument)
 
     References
     ----------
@@ -994,6 +1003,8 @@ def inv_eff_mass_tensor(state, ddHk, energy=None, ddSk=None, degenerate=None, as
     See Also
     --------
     velocity : band velocity
+    Hamiltonian.ddHk : function for generating the Hamiltonian derivatives (`ddHk` argument)
+    Hamiltonian.ddSk : function for generating the Hamiltonian derivatives (`ddSk` argument)
 
     References
     ----------
