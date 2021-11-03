@@ -1,7 +1,164 @@
+# Regarding pyproject.toml see
+# - PEP 517 project metadata https://www.python.org/dev/peps/pep-0517
+# - PEP 518 project metadata https://www.python.org/dev/peps/pep-0518
+# - PEP 621 project metadata https://www.python.org/dev/peps/pep-0621
+
+# First we define the build-system which we will probably alter the most
 [build-system]
+# Sync with dependencies!
 requires = [
-    "setuptools",
+    "setuptools>=46.0",
     "wheel",
-    "Cython",
-    "numpy",
+    "Cython>=0.28",
+    "numpy>=1.13",
 ]
+build-backend = "setuptools.build_meta"
+
+# Top most items are probably changed the most
+[project]
+requires-python = ">=3.6"
+
+dependencies = [
+    "numpy>=1.13",
+    "scipy>=0.18",
+    "netCDF4",
+    "pyparsing>=1.5.7"
+]
+
+
+name = "sisl"
+description = "Manipulating of DFT output, geometries and creating tight-binding parameter sets for NEGF transport"
+readme = "README.md"
+license = {text = "MPL-2.0"}
+keywords = ["tight-binding", "DFT", "LCAO", "NEGF", "physics"]
+
+authors = [
+    {name = "Nick Papior", email = "nickpapior|at|gmail.com"}
+]
+maintainers = [{name="sisl developers"}]
+
+# instead one could do [project.urls] homepage = ... ; documentation = ...
+urls = [
+   {homepage = "https://zerothi.github.io/sisl"},
+   {releases = "https://github.com/zerothi/sisl/releases"},
+   {documentation = "https://zerothi.github.io/sisl"},
+   {repository = "https://github.com/zerothi/sisl"}
+]
+
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Mozilla Public License v2 (MPLv2)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Cython",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Scientific/Engineering :: Physics",
+    "Topic :: Utilities"
+]
+
+# We purposefully get the version dynamically
+dynamic = ["version"]
+
+[project.optional-dependencies]
+
+analysis = [
+    "xarray >= 0.10.0",
+    "tqdm"
+]
+
+viz = [
+    "dill >= 0.3.2",
+    "pathos",
+    "pandas",
+    "xarray >= 0.10.0",
+    "scikit-image",
+]
+
+viz-plotly = [
+    "dill >= 0.3.2",
+    "pathos",
+    "pandas",
+    "xarray >= 0.10.0",
+    "scikit-image",
+
+    "plotly",
+]
+
+viz-matplotlib = [
+    "dill >= 0.3.2",
+    "pathos",
+    "pandas",
+    "xarray >= 0.10.0",
+    "scikit-image",
+
+    "matplotlib",
+]
+
+viz-blender = [
+    "dill >= 0.3.2",
+    "pathos",
+    "pandas",
+    "xarray >= 0.10.0",
+    "scikit-image",
+]
+
+viz-ase = [
+    "dill >= 0.3.2",
+    "pathos",
+    "pandas",
+    "xarray >= 0.10.0",
+    "scikit-image",
+
+    "ase",
+]
+
+
+test = [
+    "pytest",
+    "tqdm",
+    "dill >= 0.3.2",
+    "pathos",
+    "pandas",
+    "xarray >= 0.10.0",
+    "scikit-image",
+    "matplotlib",
+    "plotly",
+]
+
+
+[project.scripts]
+sgeom = "sisl.geometry:sgeom"
+sgrid = "sisl.grid:sgrid"
+sdata = "sisl.utils._sisl_cmd:sisl_cmd"
+stoolbox = "sisl_toolbox.cli:stoolbox_cli"
+
+[project.gui_scripts]
+# nothing yet
+
+
+[tool.pytest.ini_options]
+testpaths = [
+    "sisl"
+]
+markers = [
+    "slow: mark a test as slow",
+]
+
+addopts = "-rXs --durations=20"
+
+
+[tool.versioneer]
+VCS = "git"
+style = "pep440"
+versionfile_source = "sisl/_version.py"
+versionfile_build = "sisl/_version.py"
+tag_prefix = "v"
+parentdir_prefix = "sisl-"

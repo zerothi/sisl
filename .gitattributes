@@ -1,2 +1,2 @@
-# Export hash variable into setup.py
-setup.py export-subst
+sisl/_version.py export-subst
+

@@ -4,12 +4,12 @@ include CHANGELOG
 include README.md
 include setup.py
 include pyproject.toml
+include versioneer.py
+include sisl/_version.py
 
 graft doc
 
 graft sisl
-
-include sisl/info.py
 
 recursive-include toolbox *.pxd *.md README
 recursive-include toolbox/siesta/minimizer *.yaml

@@ -4,68 +4,34 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 
 """
-sisl: Generic library for manipulating DFT output, geometries and tight-binding parameter sets
+Manipulating of DFT output, geometries and creating tight-binding parameter sets for NEGF transport
 """
 
 # We have used a paradigm following pandas and Cython web-page documentation.
 
 if __doc__ is None:
-    __doc__ = """sisl: Generic library for manipulating DFT output, geometries and tight-binding parameter sets"""
+    __doc__ = """Manipulating of DFT output, geometries and creating tight-binding parameter sets for NEGF transport"""
 
 DOCLINES = __doc__.split("\n")
 
 import sys
-import subprocess
 import multiprocessing
 import os
-import os.path as osp
-import argparse
-from functools import reduce
 
-# pkg_resources are part of setuptools
+# pkg_resources is part of setuptools
 import pkg_resources
 
 # We should *always* import setuptools prior to Cython/distutils
 import setuptools
 
+# Ensure path is correctly setup to not use the system-wide versioneer.py file
+sys.path.insert(0, os.path.dirname(__file__))
+import versioneer
+
 
 def _ospath(path):
     """ Changes '/' separators to OS separators """
-    return osp.join(*path.split('/'))
-
-# Define a list of minimum versions
-min_version ={
-    "Cython": "0.28",
-    "python": "3.6",
-    "numpy": "1.13",
-    "pyparsing": "1.5.7",
-    "xarray": "0.10.0",
-}
-
-viz = {
-    "core": [
-        # These are the dependencies needed by the sisl.viz module regardless
-        # of the backend chosen.
-        'dill >= 0.3.2',  # see https://github.com/pfebrer/sisl/issues/11
-        'pathos',
-        'pandas',
-        "xarray >= " + min_version["xarray"],
-        'scikit-image'
-    ],
-    # Here are specific requirements for each of the backends implemented by
-    # sisl.
-    "plotly": [
-        'plotly',
-    ],
-    "matplotlib": [
-        'matplotlib'
-    ],
-    "blender": [
-    ], # for when blender enters
-    "ase": [
-        "ase" # for Jonas's implementation
-    ],
-}
+    return os.path.join(*path.split('/'))
 
 # Macros for use when compiling stuff
 macros = []
@@ -252,9 +218,6 @@ ext_cython = {
     },
 }
 
-# All our extensions depend on numpy/core/include
-numpy_incl = pkg_resources.resource_filename("numpy", _ospath("core/include"))
-
 # List of extensions for setup(...)
 extensions = []
 for name, data in ext_cython.items():
@@ -265,7 +228,7 @@ for name, data in ext_cython.items():
         Extension(name,
                   sources=[f"{pyxfile[:-4]}{suffix}"] + data.get("sources", []),
                   depends=data.get("depends", []),
-                  include_dirs=[numpy_incl] + data.get("include", []),
+                  include_dirs=data.get("include", []),
                   language=data.get("language", "c"),
                   define_macros=macros + data.get("macros", []),
                   extra_compile_args=extra_compile_args,
@@ -371,8 +334,7 @@ def cythonizer(extensions, *args, **kwargs):
     elif not cython:
         raise RuntimeError("Cannot cythonize without Cython installed.")
 
-    # Retrieve numpy include directories for headesr
-    numpy_incl = pkg_resources.resource_filename("numpy", _ospath("core/include"))
+    import argparse
 
     # Allow parallel flags to be used while cythonizing
     parser = argparse.ArgumentParser()
@@ -396,81 +358,15 @@ def cythonizer(extensions, *args, **kwargs):
     return other_extensions + cythonize(cython_extensions, *args, quiet=False, **kwargs)
 
 
-MAJOR = 0
-MINOR = 12
-MICRO = 0
-ISRELEASED = False
-VERSION = f"{MAJOR}.{MINOR}.{MICRO}"
-GIT_REVISION = "$Format:%h$"
-REVISION_YEAR = 2021
-
-
-DISTNAME = "sisl"
-LICENSE = "MPLv2"
-AUTHOR = "sisl developers"
-URL = "https://github.com/zerothi/sisl"
-DOWNLOAD_URL = "https://github.com/zerothi/sisl/releases"
-PROJECT_URLS = {
-    "Bug Tracker": "https://github.com/zerothi/sisl/issues",
-    "Documentation": "https://zerothi.github.io/sisl",
-    "Source Code": "https://github.com/zerothi/sisl",
-}
-CLASSIFIERS = [
-    "Development Status :: 5 - Production/Stable",
-    "Environment :: Console",
-    "Intended Audience :: Science/Research",
-    "License :: OSI Approved :: Mozilla Public License v2 (MPLv2)",
-    "Operating System :: OS Independent",
-    "Programming Language :: Python",
-    "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.6",
-    "Programming Language :: Python :: 3.7",
-    "Programming Language :: Python :: 3.8",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
-    "Programming Language :: Cython",
-    "Topic :: Scientific/Engineering",
-    "Topic :: Scientific/Engineering :: Physics",
-    "Topic :: Utilities",
-]
-
-
 # The install_requires should also be the
 # requirements for the actual running of sisl
 setuptools_kwargs = {
-    "python_requires": ">= " + min_version["python"],
-    "install_requires": [
-        "setuptools",
-        "numpy >= " + min_version["numpy"],
-        "scipy",
-        "netCDF4",
-        "pyparsing >= " + min_version["pyparsing"],
-    ],
-    "setup_requires": [
-        "Cython >= " + min_version["Cython"],
-        "numpy >= " + min_version["numpy"],
-    ],
-    "extras_require": {
-        # We currently use xarray for additional data-analysis
-        # And tqdm for progressbars
-        "analysis": [
-            # this also encompass pandas
-            "xarray >= " + min_version["xarray"],
-            "tqdm",
-        ],
-        "viz": viz["core"],
-        "visualization": viz["core"],
-        "viz-plotly": viz["core"] + viz["plotly"],
-        "viz-matplotlib": viz["core"] + viz["matplotlib"],
-        "viz-blender": viz["core"] + viz["blender"],
-        "viz-ase": viz["ase"],
-    },
     "zip_safe": False,
 }
 
 
 def readme():
-    if not osp.exists("README.md"):
+    if not os.path.exists("README.md"):
         return ""
     return open("README.md", "r").read()
 
@@ -490,20 +386,15 @@ package_data = {p: ["*.pxd"] for p in packages}
 package_data["sisl_toolbox.siesta.minimizer"] = ["*.yaml"]
 
 
+
 metadata = dict(
-    name=DISTNAME,
-    author=AUTHOR,
-    maintainer=AUTHOR,
-    description="Python interface for tight-binding model creation and analysis of DFT output. Input mechanism for large scale transport calculations using NEGF TBtrans (TranSiesta)",
-    long_description=readme(),
-    long_description_content_type="text/markdown",
-    url="https://github.com/zerothi/sisl",
-    download_url=DOWNLOAD_URL,
-    license=LICENSE,
-    classifiers=CLASSIFIERS,
     platforms="any",
-    project_urls=PROJECT_URLS,
-    cmdclass=cmdclass,
+
+    # get version
+    version=versioneer.get_version(),
+
+    # Correct the cmdclass
+    cmdclass=versioneer.get_cmdclass(cmdclass),
 
     # Ensure the packages are being found in the correct locations
     package_dir={"sisl_toolbox": "toolbox"},
@@ -512,142 +403,17 @@ metadata = dict(
     package_data=package_data,
     packages=packages,
     ext_modules=cythonizer(extensions, compiler_directives=directives),
-    entry_points={
-        "console_scripts":
-        ["sgeom = sisl.geometry:sgeom",
-         "sgrid = sisl.grid:sgrid",
-         "sdata = sisl.utils._sisl_cmd:sisl_cmd",
-         # Add toolbox CLI
-         "stool = sisl_toolbox.cli:stoolbox_cli",
-         "stoolbox = sisl_toolbox.cli:stoolbox_cli",
-         ]
-        #"splotly = sisl.viz.plotly.splot:splot",
-    },
     **setuptools_kwargs
 )
 
-cwd = osp.abspath(osp.dirname(__file__))
-if not osp.exists(_ospath(cwd + "/PKG-INFO")):
+cwd = os.path.abspath(os.path.dirname(__file__))
+if not os.path.exists(_ospath(cwd + "/PKG-INFO")):
     # Generate Cython sources, unless building from source release
     # generate_cython()
     pass
 
 
-def git_version():
-    global GIT_REVISION, ISRELEASED
-
-    def _minimal_ext_cmd(cmd):
-        # construct minimal environment
-        env = {}
-        for k in ["SYSTEMROOT", "PATH"]:
-            v = os.environ.get(k)
-            if v is not None:
-                env[k] = v
-        # LANGUAGE is used on win32
-        env["LANGUAGE"] = "C"
-        env["LANG"] = "C"
-        env["LC_ALL"] = "C"
-        out = subprocess.Popen(cmd, stdout=subprocess.PIPE,
-                               stderr=subprocess.PIPE, env=env).communicate()[0]
-        return out.strip().decode("ascii")
-
-    current_path = osp.dirname(osp.realpath(__file__))
-
-    try:
-        # Get top-level directory
-        git_dir = _minimal_ext_cmd(["git", "rev-parse", "--show-toplevel"])
-        # Assert that the git-directory is consistent with this setup.py script
-        if git_dir != current_path:
-            raise ValueError("Not executing the top-setup.py script")
-
-        # Get latest revision tag
-        rev = _minimal_ext_cmd(["git", "rev-parse", "HEAD"])
-        # Get latest tag
-        tag = _minimal_ext_cmd(["git", "describe", "--abbrev=0"])
-        # Get number of commits since tag
-        count = _minimal_ext_cmd(["git", "rev-list", tag + "..", "--count"])
-        if len(count) == 0:
-            count = "1"
-        # Ensure we have the correct ISRELEASED tag
-        ISRELEASED = int(count) == 0
-        # Get year
-        year = int(_minimal_ext_cmd(["git", "show", "-s", "--format=%ci"]).split("-")[0])
-        print("sisl-install: using git revision")
-    except Exception as e:
-        print("sisl-install: using internal shipped revisions")
-        # Retain the revision name
-        rev = GIT_REVISION
-        # Assume it is on tag
-        count = "0"
-        year = REVISION_YEAR
-
-    return rev, int(count), year
-
-
-def write_version(filename=_ospath("sisl/info.py")):
-    version_str = '''# This file is automatically generated from sisl setup.py
-released = {released}
-
-# Git information (specific commit, etc.)
-git_revision = "{git}"
-git_revision_short = git_revision[:7]
-git_count = {count}
-
-# Version information
-major   = {version[0]}
-minor   = {version[1]}
-micro   = {version[2]}
-version = ".".join(map(str,[major, minor, micro]))
-release = version
-
-if git_count > 2 and not released:
-    # Add git-revision to the version string
-    version += "+" + str(git_count)
-
-# BibTeX information if people wish to cite
-bibtex = f"""@misc{{{{zerothi_sisl,
-    author = {{{{Papior, Nick}}}},
-    title  = {{{{sisl: v{{version}}}}}},
-    year   = {{{{{rev_year}}}}},
-    doi    = {{{{10.5281/zenodo.597181}}}},
-    url    = {{{{https://doi.org/10.5281/zenodo.597181}}}},
-}}}}"""
-
-def cite():
-    return bibtex
-'''
-    # If we are in git we try and fetch the
-    # git version as well
-    GIT_REV, GIT_COUNT, REV_YEAR = git_version()
-    with open(filename, "w") as fh:
-        fh.write(version_str.format(version=[MAJOR, MINOR, MICRO],
-                                    released=ISRELEASED,
-                                    count=GIT_COUNT,
-                                    rev_year=REV_YEAR, git=GIT_REV))
-
-
 if __name__ == "__main__":
-
-    # First figure out if we should define the
-    # version file
-    if "only-version" in sys.argv:
-        # Figure out if we should write a specific file
-        print("Only creating the version file")
-        write_version()
-        sys.exit(0)
-
-    try:
-        # Create version file
-        # if allowed
-        write_version()
-    except Exception as e:
-        print("Could not write sisl/info.py:")
-        print(str(e))
-
-    if ISRELEASED:
-        metadata["version"] = VERSION
-    else:
-        metadata["version"] = VERSION + "-dev"
 
     # Freeze to support parallel compilation when using spawn instead of fork
     multiprocessing.freeze_support()

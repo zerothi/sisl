@@ -15,20 +15,6 @@ def test_version():
     sisl.__bibtex__
     sisl.__git_revision__
     sisl.__version__
-    sisl.__major__
-    sisl.__minor__
-    sisl.__micro__
-    # Currently we only do bibtex citation
-    assert sisl.__bibtex__ == sisl.cite()
-    sisl.info.bibtex
-    sisl.info.git_revision
-    sisl.info.version
-    sisl.info.major
-    sisl.info.minor
-    sisl.info.micro
-    sisl.info.release
-    sisl.info.git_revision
-    sisl.info.git_revision_short
 
 
 def test_import1():

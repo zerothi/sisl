@@ -47,17 +47,24 @@ __license__ = "MPL-2.0"
 
 from . import _environ
 
-# Import bibtex, version string and the major, minor, micro as well
-from . import info
-from .info import (
-    bibtex as __bibtex__,
-    git_revision as __git_revision__,
-    version as __version__,
-    major as __major__,
-    minor as __minor__,
-    micro as __micro__,
-    cite
-)
+# Import versioneer specified versions
+from . import _version
+__version__ = _version.get_versions()['version']
+__git_revision__ = _version.get_versions()['full-revisionid']
+__bibtex__ = f"""# BibTeX information if people wish to cite
+@misc{{zerothi_sisl,
+    author = {{Papior, Nick}},
+    title  = {{sisl: v{__version__}}},
+    year   = {{2021}},
+    doi    = {{10.5281/zenodo.597181}},
+    url    = {{https://doi.org/10.5281/zenodo.597181}},
+}}"""
+
+# do not expose this helper package
+del _version
+
+# For now we are skipping major/minor/micro versions
+# and try out the other things.
 
 # import the common options used
 from ._common import *
