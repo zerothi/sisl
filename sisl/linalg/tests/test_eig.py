@@ -13,7 +13,7 @@ pytestmark = [pytest.mark.linalg, pytest.mark.eig]
 
 
 def test_eig1():
-    np.random.seed(1204982)
+    np.random.seed(138012)
     a = np.random.rand(10, 10)
     ac = a.copy()
     b = np.random.rand(10, 10)
@@ -50,7 +50,7 @@ def test_eigh1():
 
 
 def test_eig_d1():
-    np.random.seed(1204982)
+    np.random.seed(138012)
     a = np.random.rand(10, 10)
     b = np.random.rand(10, 10)
     xs, vs = sl.eig(a, b)
