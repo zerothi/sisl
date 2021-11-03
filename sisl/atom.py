@@ -998,12 +998,17 @@ class Atom(metaclass=AtomMeta):
             elif isinstance(orbitals[0], Real):
                 # radius has been given
                 self._orbitals = [Orbital(R) for R in orbitals]
+            elif isinstance(orbitals[0], str):
+                # radius has been given
+                self._orbitals = [Orbital(-1, tag=tag) for tag in orbitals]
         elif isinstance(orbitals, Orbital):
             self._orbitals = [orbitals]
         elif isinstance(orbitals, Real):
             self._orbitals = [Orbital(orbitals)]
 
         if self._orbitals is None:
+            if orbitals is not None:
+                raise ValueError(f"{self.__class__.__name__}.__init__ got unparseable 'orbitals' argument: {orbitals}")
             if 'R' in kwargs:
                 # backwards compatibility (possibly remove this in the future)
                 R = _a.asarrayd(kwargs['R']).ravel()
@@ -1022,8 +1027,7 @@ class Atom(metaclass=AtomMeta):
             self._tag = tag
 
     def __hash__(self):
-        return hash((hash(self._tag), hash(self._mass),
-                     hash(self._Z), *(hash(orb) for orb in self._orbitals)))
+        return hash((self._tag, self._mass, self._Z, *self._orbitals))
 
     @property
     def Z(self):

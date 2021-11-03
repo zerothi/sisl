@@ -114,7 +114,7 @@ class Orbital:
         self._tag = tag
 
     def __hash__(self):
-        return hash((hash(self._R), hash(self._q0), hash(self._tag)))
+        return hash((self._R, self._q0, self._tag))
 
     @property
     def R(self):
@@ -382,8 +382,7 @@ class SphericalOrbital(Orbital):
         super().__init__(self.R, q0, tag)
 
     def __hash__(self):
-        return hash((super(Orbital, self).__hash__(),
-                     hash(self._l), hash(self.f)))
+        return hash((super(Orbital, self), self._l, self.f))
 
     @property
     def l(self):
@@ -900,9 +899,8 @@ class AtomicOrbital(Orbital):
         self._R = self._orb.R
 
     def __hash__(self):
-        return hash((super(Orbital, self).__hash__(),
-                     hash(self._l), hash(self._n), hash(self._m),
-                     hash(self._zeta), hash(self._P), hash(self._orb)))
+        return hash((super(Orbital, self), self._l, self._n, self._m,
+                     self._zeta, self._P, self._orb))
 
     @property
     def n(self):
