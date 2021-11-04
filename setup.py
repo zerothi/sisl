@@ -365,12 +365,6 @@ setuptools_kwargs = {
 }
 
 
-def readme():
-    if not os.path.exists("README.md"):
-        return ""
-    return open("README.md", "r").read()
-
-
 # We need to add sisl.* since that recursively adds modules
 packages = find_packages(include=["sisl", "sisl.*"])
 # Add toolboxes
@@ -384,7 +378,6 @@ packages += map(lambda x: f"sisl_toolbox.{x}", find_packages("toolbox"))
 # Otherwise we should use package_data to ensure it gets installed.
 package_data = {p: ["*.pxd"] for p in packages}
 package_data["sisl_toolbox.siesta.minimizer"] = ["*.yaml"]
-
 
 
 metadata = dict(
