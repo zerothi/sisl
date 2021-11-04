@@ -8,7 +8,7 @@ This file tests general Plot behavior.
 """
 from copy import deepcopy
 import os
-from sisl.messages import SislWarning
+from sisl.messages import SislInfo, SislWarning
 
 import pytest
 import numpy as np
@@ -224,3 +224,10 @@ class TestSubPlots(TestMultiplePlot):
 class _TestAnimation(TestMultiplePlot):
 
     PlotClass = Animation
+
+def test_calling_Plot():
+    # Just check that it doesn't raise any error
+    with pytest.warns(SislInfo):
+        plot = Plot("nonexistent.LDOS")
+
+    assert isinstance(plot, GridPlot)
