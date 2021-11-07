@@ -9,7 +9,7 @@ import numpy as np
 from scipy.sparse import SparseEfficiencyWarning
 
 from sisl import Geometry, Atom, SuperCell, Hamiltonian
-from sisl import BrillouinZone
+from sisl import BrillouinZone, Bloch
 from sisl import SelfEnergy, WideBandSE, SemiInfinite, RecursiveSI
 from sisl import RealSpaceSE, RealSpaceSI
 
@@ -45,15 +45,36 @@ def test_objects(setup):
                        ('-A', 0, -1),
                        ('+B', 1, 1),
                        ('-B', 1, -1)]:
-        SE = SemiInfinite(setup.H, D)
+        SE = SemiInfinite(setup.H.copy(), D)
         assert SE.semi_inf == si
         assert SE.semi_inf_dir == sid
         assert D in str(SE)
 
 
 def test_sancho_orthogonal(setup):
-    SE = RecursiveSI(setup.H, '+A')
+    SE = RecursiveSI(setup.H.copy(), '+A')
     assert not np.allclose(SE.self_energy(0.1), SE.self_energy(0.1, bulk=True))
+
+
+def test_sancho_bloch_zero_off_diag(setup):
+    # check whether the bloch-expansion with 0 transverse
+    # connections returns a block-diagonal matrix
+    H = setup.H.copy()
+    # disconnect transverse directions
+    H.set_nsc(b=1)
+    no = len(H)
+    SE = RecursiveSI(H, '+A')
+
+    for nb in [2, 4, 5]:
+        bloch = Bloch(1, nb, 1)
+        for E in [-0.1, 0.2, 0.4, -0.5]:
+            se = bloch(SE.self_energy, [0.2, 0.2, 0.2], E=E)
+            for b in range(1, nb):
+                off = b*no
+                assert np.allclose(se[:no, :no], se[off:off+no, off:off+no])
+                se[off:off+no, off:off+no] = 0.
+            se[:no, :no] = 0.
+            assert np.allclose(se, 0.)
 
 
 def test_sancho_orthogonal_dtype(setup):
