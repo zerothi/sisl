@@ -270,6 +270,17 @@ def test_atom_getattr_orbs():
     assert all(map(lambda x: len(x) == 0, a.name()))
 
 
+def test_atom_orbitals():
+    a = Atom(5, ["x", "y"])
+    assert len(a) == 2
+    assert a[0].tag == "x"
+    assert a[1].tag == "y"
+    assert a.maxR() < 0.
+    a = Atom(5, [1.2, 1.4])
+    assert len(a) == 2
+    assert a.maxR() == pytest.approx(1.4)
+
+
 def test_pickle(setup):
     import pickle as p
     sC = p.dumps(setup.C)
