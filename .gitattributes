@@ -1,2 +1,3 @@
 sisl/_version.py export-subst
+CITATION.cff export-subst
 
