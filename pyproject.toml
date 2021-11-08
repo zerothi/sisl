@@ -166,3 +166,21 @@ versionfile_source = "sisl/_version.py"
 versionfile_build = "sisl/_version.py"
 tag_prefix = "v"
 parentdir_prefix = "sisl-"
+
+
+[tool.tox]
+
+legacy_tox_ini = """
+[tox]
+minversion = 3.3.0
+envlist = py36,py38,py39
+isolated_build = True
+
+[testenv]
+setenv =
+    SISL_NUM_PROCS=1
+    SISL_VIZ_NUM_PROCS=1
+deps = -rdocs/requirements.txt
+commands = pytest -s -rXs {posargs}
+"""
+
