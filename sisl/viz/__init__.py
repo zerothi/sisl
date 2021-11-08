@@ -16,6 +16,12 @@ The plotly backend.
 # from ._presets import *
 # from ._templates import *
 # from ._user_customs import import_user_plots, import_user_presets, import_user_sessions, import_user_plugins
+import os
+from sisl._environ import register_environ_variable
+
+register_environ_variable("SISL_VIZ_NUM_PROCS", min(1, len(os.sched_getaffinity(0))),
+                          description="Maximum number of processors used for parallel plotting",
+                          process=int)
 
 from .plot import Plot, Animation, MultiplePlot, SubPlots
 from .plots import *

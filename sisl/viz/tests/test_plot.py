@@ -225,6 +225,7 @@ class _TestAnimation(TestMultiplePlot):
 
     PlotClass = Animation
 
+
 def test_calling_Plot():
     # Just check that it doesn't raise any error
     with pytest.warns(SislInfo):

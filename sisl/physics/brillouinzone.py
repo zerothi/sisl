@@ -97,12 +97,12 @@ This requires you also have the package ``pathos`` available.
 The above will run in parallel using a default number of processors
 in priority:
 
-1. Environment variable ``SISL_NPROCS``
+1. Environment variable ``SISL_NUM_PROCS``
 2. Return value of ``os.cpu_count()``.
 
 Note that this may interfere with BLAS implementation which defaults
 to use all CPU's for threading. The total processors/threads that will
-be created is ``SISL_NPROCS * OMP_NUM_THREADS``. Try and ensure this is below
+be created is ``SISL_NUM_PROCS * OMP_NUM_THREADS``. Try and ensure this is below
 or equal to the actual core-count of your machine (or the number of requested
 cores in a HPC environment).
 

@@ -69,7 +69,7 @@ def get_environ_variable(name):
 
 
 # We register a few variables that may be used several places
-register_environ_variable("SISL_NPROCS", os.cpu_count(),
+register_environ_variable("SISL_NUM_PROCS", min(1, len(os.sched_getaffinity(0))),
                           "Maximum number of CPU's used for parallel computing",
                           process=int)
 

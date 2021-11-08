@@ -374,6 +374,8 @@ def test_1_graphene_all_fail_kavg_E(sisl_files, sisl_tmp):
 
 def test_1_graphene_all_ArgumentParser(sisl_files, sisl_tmp):
     pytest.importorskip("matplotlib", reason="matplotlib not available")
+    import matplotlib as mpl
+    mpl.rcParams["text.usetex"] = False
 
     # Local routine to run the collected actions
     def run(ns):

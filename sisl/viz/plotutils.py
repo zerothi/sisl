@@ -23,7 +23,7 @@ from copy import deepcopy
 
 from sisl.messages import info
 from sisl.io.sile import get_siles, get_sile_rules
-from sisl._environ import register_environ_variable, get_environ_variable
+from sisl._environ import get_environ_variable
 
 __all__ = ["running_in_notebook", "check_widgets",
            "get_plot_classes", "get_plotable_siles", "get_plotable_variables",
@@ -601,10 +601,7 @@ def find_plotable_siles(dir_path=None, depth=0):
 #         Multiprocessing
 #-------------------------------------
 
-register_environ_variable("SISL_NPROCS_VIZ", max(os.cpu_count() - 1, 1),
-                          description="Maximum number of processors used for parallel plotting",
-                          process=int)
-_MAX_NPROCS = get_environ_variable("SISL_NPROCS_VIZ")
+_MAX_NPROCS = get_environ_variable("SISL_VIZ_NUM_PROCS")
 
 
 def _apply_method(args_tuple):

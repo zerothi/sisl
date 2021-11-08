@@ -59,7 +59,7 @@ def _pool_procs(pool):
     if pool is False or pool is None:
         return None
     elif pool is True:
-        nprocs = get_environ_variable("SISL_NPROCS")
+        nprocs = get_environ_variable("SISL_NUM_PROCS")
         if nprocs <= 1:
             return None
         import pathos as pos

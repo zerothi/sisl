@@ -28,7 +28,8 @@ _root = pathlib.Path(__file__).absolute().parent.parent
 # If building this on RTD, mock out fortran sources
 on_rtd = os.environ.get('READTHEDOCS', 'false').lower() == 'true'
 if on_rtd:
-    os.environ["SISL_NPROCS"] = "1"
+    os.environ["SISL_NUM_PROCS"] = "1"
+    os.environ["SISL_VIZ_NUM_PROCS"] = "1"
 
 try:
     import sisl
