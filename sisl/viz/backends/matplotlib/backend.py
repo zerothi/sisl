@@ -26,7 +26,7 @@ class MatplotlibBackend(Backend):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        self.figure, self.axes = plt.subplots()
+        self.figure, self.axes = self._init_figure()
         self._init_axes()
 
     def draw_on(self, axes, axes_indices=None):
@@ -54,7 +54,20 @@ class MatplotlibBackend(Backend):
         self._plot.get_figure(backend=self._backend_name, clear_fig=False)
         self.axes = self_axes
 
+    def _init_figure(self):
+        """Initializes the matplotlib figure and axes
+        
+        Returns
+        --------
+        Figure:
+            the matplotlib figure of this plot.
+        Axes:
+            the matplotlib axes of this plot.
+        """
+        return plt.subplots()
+
     def _init_axes(self):
+        """Does some initial modification on the axes."""
         self.axes.update(self._axes_defaults)
 
     def __getattr__(self, key):
