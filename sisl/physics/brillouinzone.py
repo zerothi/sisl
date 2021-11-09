@@ -163,7 +163,7 @@ except ImportError:
     _has_xarray = False
 
 
-__all__ = ["BrillouinZone", "MonkhorstPack", "BandStructure"]
+__all__ = ["BrillouinZone", "MonkhorstPack", "BandStructure", "linspace_bz"]
 
 
 class BrillouinZoneDispatcher(ClassDispatcher):
@@ -196,6 +196,32 @@ class BrillouinZoneDispatcher(ClassDispatcher):
     Please see :ref:`physics.brillouinzone` for further examples.
     """
     pass
+
+
+@set_module("sisl.physics")
+def linspace_bz(bz, stop=None):
+    r""" Convert points from a BZ object into a linear spacing of maximum value `stop`
+
+    Parameters
+    ----------
+    bz : BrillouinZone
+       the object containing the k-points
+    stop : int or None, optional
+       maximum value in the linear space, or if None, will return the cumulative
+       distance of the k-points in the Brillouin zone
+    """
+    cart = bz.tocartesian(bz.k)
+    # calculate vectors between each neighbouring points
+    dcart = np.diff(cart, axis=0, prepend=[[0, 0, 0]])
+    # calculate distances
+    dist = (dcart ** 2).sum(1) ** 0.5
+    # convert to linear scale
+    if stop is None:
+        return np.cumsum(dist)
+
+    total_dist = dist.sum() / stop
+    # Scale to total length 1
+    return np.cumsum(dist) / total_dist
 
 
 @set_module("sisl.physics")
@@ -1861,30 +1887,15 @@ class BandStructure(BrillouinZone):
             labels at `ticks`, only returned if `ticks` is ``True``
         """
         # Calculate points
-        k = [self.tocartesian(pnt) for pnt in self.point]
-        # Get difference between points
-        dk = np.diff(k, axis=0)
-        # Calculate the cumultative distance between points
-        k_len = np.insert(_a.cumsumd((dk ** 2).sum(1) ** .5), 0, 0.)
-        xtick = [None] * len(k)
-        # Prepare output array
-        dK = _a.emptyd(len(self))
-
-        # short-hand
-        ls = np.linspace
-
-        xtick = np.insert(_a.cumsumi(self.division), 0, 0)
-        for i in range(len(dk)):
-            n = self.division[i]
-            end = i == len(dk) - 1
-
-            dK[xtick[i]:xtick[i+1]] = ls(k_len[i], k_len[i+1], n, dtype=np.float64, endpoint=end)
-        xtick[-1] -= 1
+        dK = linspace_bz(self)
 
         # Get label tick, in case self.name is a single string 'ABCD'
-        label_tick = [a for a in self.name]
         if ticks:
-            return dK, dK[xtick], label_tick
+            # Get number of points
+            xtick = np.zeros(len(self.point), dtype=int)
+            xtick[1:] = np.cumsum(self.division) - 1
+            # Ensure the returned label_tick is a copy
+            return dK, dK[xtick], [a for a in self.name]
         return dK
 
     def __len__(self):
