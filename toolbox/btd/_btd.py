@@ -697,9 +697,9 @@ class DeviceGreen:
 
             eta_dev = min(data.eta, eta_dev)
 
-        # Correct by a factor 1/100 to minimize smearing for device states.
+        # Correct by a factor 1/10 to minimize smearing for device states.
         # We want the electrode to smear.
-        eta_dev /= 100
+        eta_dev /= 10
 
         # Now we can estimate the device eta value.
         # It is based on the electrode values
