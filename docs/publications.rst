@@ -9,6 +9,10 @@ publications below.
 Please help maintaining the list complete via a `pull request <pr_>`_ or
 by writing an email to `nickpapior AT gmail.com <mailto:nickpapior@gmail.com>`_.
 
+#. I. Alcon, N. Papior, G. Calogero, F. Vines, P. Gamallo, M. Brandbyge,
+   *Acetylene-Mediated Electron Transport in Nanostructured Graphene and Hexagonal Boron Nitride*,
+   J. Phys. Chem. Lett. **12** `11220 (2021) <https://doi.org/10.1021/acs.jpclett.1c03166>`_
+
 #. N. Wittemeier, M.J. Verstraete, P. Ordejón, Z. Zanolli,
    *Interference effects in one-dimensional moiré crystals*,
    Carbon `(2021) <https://doi.org/10.1016/j.carbon.2021.10.028>`_
