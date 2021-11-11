@@ -1740,8 +1740,40 @@ class BandStructure(BrillouinZone):
     >>> bs = BandStructure(sc, [[0] * 3, [0.5] * 3, [1.] * 3], 200, ['Gamma', 'M', 'Gamma'])
     """
 
-    def __init__(self, parent, points, divisions, names=None):
+    def __init__(self, parent, *args, **kwargs):
+        #points, divisions, names=None):
         super().__init__(parent)
+
+        if "point" in kwargs:
+            deprecate(f"{self.__class__.__name__}(point=) is deprecated, use (points=) instead",
+                      "0.13.0")
+        points = kwargs.get("points", kwargs.get("point"))
+        if points is None:
+            if len(args) > 0:
+                points, *args = args
+            else:
+                raise ValueError(f"{self.__class__.__name__} 'points' argument missing")
+
+        if "division" in kwargs:
+            deprecate(f"{self.__class__.__name__}(division=) is deprecated, use (divisions=) instead",
+                      "0.13.0")
+        divisions = kwargs.get("divisions", kwargs.get("division"))
+        if divisions is None:
+            if len(args) > 0:
+                divisions, *args = args
+            else:
+                raise ValueError(f"{self.__class__.__name__} 'divisions' argument missing")
+
+        if "name" in kwargs:
+            deprecate(f"{self.__class__.__name__}(name=) is deprecated, use (names=) instead",
+                      "0.13.0")
+        names = kwargs.get("names", kwargs.get("name"))
+        if names is None:
+            if len(args) > 0:
+                names, *args = args
+
+        if len(args) > 0:
+            raise ValueError(f"{self.__class__.__name__} unknown arguments after parsing 'points', 'divisions' and 'names': {args}")
 
         # Copy over points
         self.points = _a.arrayd(points)
