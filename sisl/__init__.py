@@ -154,9 +154,5 @@ from . import geom
 if _environ.get_environ_variable("SISL_VIZ_AUTOLOAD"):
     from . import viz
 
-
 # Make these things publicly available
 __all__ = [s for s in dir() if not s.startswith('_')]
-__all__ += [f'__{s}__' for s in ['bibtex', 'version', 'major', 'minor', 'micro']]
-__all__ += [f'__{s}__' for s in ['git_revision']]
-__all__ += [f'__{s}__' for s in ['author', 'license']]
