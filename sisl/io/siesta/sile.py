@@ -1,8 +1,16 @@
 # This Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
+
+try:
+    from . import _siesta
+    found_bin_module = True
+except Exception as e:
+    print(e)
+    found_bin_module = False
+
 from sisl._internal import set_module
-from ..sile import Sile, SileCDF, SileBin
+from ..sile import Sile, SileCDF, SileBin, SileError
 
 __all__ = ['SileSiesta', 'SileCDFSiesta', 'SileBinSiesta']
 
@@ -25,4 +33,38 @@ class SileCDFSiesta(SileCDF):
 
 @set_module("sisl.io.siesta")
 class SileBinSiesta(SileBin):
-    pass
+
+    def _setup(self, *args, **kwargs):
+        """We set up everything to handle the fortran I/O unit"""
+        self._iu = -1
+
+    def _bin_check(self, method, message):
+        ierr = _siesta.io_m.iostat_query()
+        if ierr != 0:
+            raise SileError(f'{self!s}.{method} {message} (ierr={ierr})')
+
+    def _is_fortran_unit_open(self):
+        return self._iu != -1
+
+    def _open_fortran_unit(self, mode, rewind=False):
+        if self._is_fortran_unit_open() and mode == self._mode:
+            if rewind:
+                _siesta.io_m.rewind_file(self._iu)
+            else:
+                # retain indices
+                return
+        else:
+            if mode == 'r':
+                self._iu = _siesta.io_m.open_file_read(self.file)
+            elif mode == 'w':
+                self._iu = _siesta.io_m.open_file_write(self.file)
+            else:
+                raise SileError(f"Mode '{mode}' is not an accepted mode to open a fortran file unit. Use only 'r' or 'w'")
+        self._bin_check('_open_fortran_unit', 'could not open for {}.'.format({'r': 'reading', 'w': 'writing'}[mode]))
+        
+    def _close_fortran_unit(self):
+        if not self._is_fortran_unit_open():
+            return
+        # Close it
+        _siesta.io_m.close_file(self._iu)
+        self._iu = -1
