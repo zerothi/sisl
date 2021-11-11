@@ -1788,8 +1788,8 @@ class BandStructure(BrillouinZone):
 
             divisions = divs[:]
 
-        elif len(divisions) != len(self.points):
-            raise ValueError(f"inconsistent number of elements in 'points' and 'divisions' argument. They need to have same number of elements")
+        elif len(divisions) + 1 != len(self.points):
+            raise ValueError(f"inconsistent number of elements in 'points' and 'divisions' argument. One less 'divisions' elements.")
 
         self.divisions = _a.arrayi(divisions).ravel()
 

@@ -224,7 +224,7 @@ class TestBrillouinZone:
         bz2 = BandStructure(setup.s1, [[0]*2, [.5]*2], 300, ['A', 'C'])
         assert len(bz) == 300
 
-        bz3 = BandStructure(setup.s1, [[0]*2, [.5]*2], [150] * 2)
+        bz3 = BandStructure(setup.s1, [[0]*2, [.5]*2], [150])
         assert len(bz) == 300
         bz.lineartick()
         bz.lineark()
@@ -235,11 +235,17 @@ class TestBrillouinZone:
         bz = BandStructure(setup.s1, [[0]*3, [.25]*3, [.5]*3], n)
         assert len(bz) == n
 
+    def test_pbs_divisions(self, setup):
+        bz = BandStructure(setup.s1, [[0]*3, [.25]*3, [.5]*3], [10, 10])
+        assert len(bz) == 21
+
     def test_pbs_fail(self, setup):
         with pytest.raises(ValueError):
             BandStructure(setup.s1, [[0]*3, [.5]*3, [.25] * 3], 1)
         with pytest.raises(ValueError):
             BandStructure(setup.s1, [[0]*3, [.5]*3, [.25] * 3], [1, 1, 1, 1])
+        with pytest.raises(ValueError):
+            BandStructure(setup.s1, [[0]*3, [.5]*3, [.25] * 3], [1, 1, 1])
 
     def test_as_simple(self):
         from sisl import geom, Hamiltonian

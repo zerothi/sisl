@@ -48,7 +48,7 @@ class FatbandsPlot(BandsPlot):
         object or         as a list of points, which will be parsed into a
         band structure object.            Each item is a dict.    Structure
         of the dict: {         'x':          'y':          'z':
-        'divisions':          'name': Tick that should be displayed at this
+        'divisions':          'names': Tick that should be displayed at this
         corner of the path. }
     aiida_bands:  optional
         An aiida BandsData node.
