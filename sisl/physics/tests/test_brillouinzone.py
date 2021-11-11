@@ -230,9 +230,16 @@ class TestBrillouinZone:
         bz.lineark()
         bz.lineark(True)
 
-    def test_pbz2(self, setup):
-        bz = BandStructure(setup.s1, [[0]*3, [.25]*3, [.5]*3], 300)
-        assert len(bz) == 300
+    @pytest.mark.parametrize("n", range(3, 100, 10))
+    def test_pbz2(self, setup, n):
+        bz = BandStructure(setup.s1, [[0]*3, [.25]*3, [.5]*3], n)
+        assert len(bz) == n
+
+    def test_pbs_fail(self, setup):
+        with pytest.raises(ValueError):
+            BandStructure(setup.s1, [[0]*3, [.5]*3, [.25] * 3], 1)
+        with pytest.raises(ValueError):
+            BandStructure(setup.s1, [[0]*3, [.5]*3, [.25] * 3], [1, 1, 1, 1])
 
     def test_as_simple(self):
         from sisl import geom, Hamiltonian
@@ -543,9 +550,9 @@ class TestBrillouinZone:
         assert np.allclose(bz1.k, bz2.k)
         assert np.allclose(bz1.weight, bz2.weight)
         assert bz1.parent == bz2.parent
-        assert np.allclose(bz1.point, bz2.point)
-        assert np.allclose(bz1.division, bz2.division)
-        assert bz1.name == bz2.name
+        assert np.allclose(bz1.points, bz2.points)
+        assert np.allclose(bz1.divisions, bz2.divisions)
+        assert bz1.names == bz2.names
 
     @pytest.mark.parametrize("n", [[0, 0, 1], [0.5] * 3])
     def test_param_circle(self, n):

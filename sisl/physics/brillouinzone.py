@@ -204,13 +204,16 @@ def linspace_bz(bz, stop=None):
 
     Parameters
     ----------
-    bz : BrillouinZone
+    bz : BrillouinZone, or ndarray
        the object containing the k-points
     stop : int or None, optional
        maximum value in the linear space, or if None, will return the cumulative
        distance of the k-points in the Brillouin zone
     """
-    cart = bz.tocartesian(bz.k)
+    if isinstance(bz, BrillouinZone):
+        cart = bz.tocartesian(bz.k)
+    else:
+        cart = bz
     # calculate vectors between each neighbouring points
     dcart = np.diff(cart, axis=0, prepend=[[0, 0, 0]])
     # calculate distances
@@ -220,7 +223,7 @@ def linspace_bz(bz, stop=None):
         return np.cumsum(dist)
 
     total_dist = dist.sum() / stop
-    # Scale to total length 1
+    # Scale to total length of `stop`
     return np.cumsum(dist) / total_dist
 
 
@@ -1717,15 +1720,16 @@ class BandStructure(BrillouinZone):
     parent : object or array_like
        An object with associated `parentcell` and `parent.rcell` or
        an array of floats which may be turned into a `SuperCell`
-    point : array_like of float
+    points : array_like of float
        a list of points that are the *corners* of the path
-    division : int or array_like of int
+    divisions : int or array_like of int
        number of divisions in each segment.
        If a single integer is passed it is the total number
        of points on the path (equally separated).
        If it is an array_like input it must have length one
-       less than `point`.
-    name : array_like of str
+       less than `point`, in this case the total number of points
+       will be ``sum(divisions) + 1`` due to the end-point constraint.
+    names : array_like of str
        the associated names of the points on the Brillouin Zone path
 
     Examples
@@ -1736,60 +1740,74 @@ class BandStructure(BrillouinZone):
     >>> bs = BandStructure(sc, [[0] * 3, [0.5] * 3, [1.] * 3], 200, ['Gamma', 'M', 'Gamma'])
     """
 
-    def __init__(self, parent, point, division, name=None):
+    def __init__(self, parent, points, divisions, names=None):
         super().__init__(parent)
 
         # Copy over points
-        self.point = _a.arrayd(point)
+        self.points = _a.arrayd(points)
 
         # If the array has fewer points we try and determine
-        if self.point.shape[1] < 3:
-            if self.point.shape[1] != np.sum(self.parent.nsc > 1):
+        if self.points.shape[1] < 3:
+            if self.points.shape[1] != np.sum(self.parent.nsc > 1):
                 raise ValueError('Could not determine the non-periodic direction')
 
             # fix the points where there are no periodicity
-            for i in [0, 1, 2]:
+            for i in (0, 1, 2):
                 if self.parent.nsc[i] == 1:
-                    self.point = np.insert(self.point, i, 0., axis=1)
+                    self.points = np.insert(self.points, i, 0., axis=1)
 
         # Ensure the shape is correct
-        self.point.shape = (-1, 3)
+        self.points.shape = (-1, 3)
 
         # Now figure out what to do with the divisions
-        if isinstance(division, Integral):
+        if isinstance(divisions, Integral):
 
-            # Calculate points (we need correct units for distance)
-            kpts = [self.tocartesian(pnt) for pnt in self.point]
-            if len(kpts) == 2:
-                dists = [sum(np.diff(kpts, axis=0) ** 2) ** .5]
-            else:
-                dists = sum(np.diff(kpts, axis=0)**2, axis=1) ** .5
-            dist = sum(dists)
+            if divisions < len(self.points):
+                raise ValueError(f"Can not evenly split {len(self.points)} points into {divisions} divisions, ensure division>=len(points)")
 
-            div = np.floor(dists / dist * division).astype(dtype=np.int32)
-            n = sum(div)
-            if n < division:
-                div[-1] +=1
-                n = sum(div)
-            while n < division:
-                # Get the separation of k-points
-                delta = dist / n
+            # Get length between different k-points with a total length
+            # of division
+            dists = np.diff(linspace_bz(self.tocartesian(self.points)))
 
-                idx = np.argmin(dists - delta * div)
-                div[idx] += 1
+            # Get floating point divisions
+            divs_r = dists * divisions / dists.sum()
+            # Convert to integers
+            divs = np.rint(divs_r).astype(np.int32)
+            # ensure at least 1 point along each division
+            divs[divs == 0] = 1
+            divs_sum = divs.sum()
+            while divs_sum != divisions - 1:
+                # only check indices where divs > 1
+                idx = (divs > 1).nonzero()[0]
+                dk = dists[idx] / divs[idx]
+                if divs_sum >= divisions:
+                    divs[idx[np.argmin(dk)]] -= 1
+                else:
+                    divs[idx[np.argmax(dk)]] += 1
+                divs_sum = divs.sum()
 
-                n = sum(div)
+            divisions = divs[:]
 
-            division = div[:]
+        elif len(divisions) != len(self.points):
+            raise ValueError(f"inconsistent number of elements in 'points' and 'divisions' argument. They need to have same number of elements")
 
-        self.division = _a.arrayi(division).ravel()
+        self.divisions = _a.arrayi(divisions).ravel()
 
-        if name is None:
-            self.name = 'ABCDEFGHIJKLMNOPQRSTUVXYZ'[:len(self.point)]
+        if names is None:
+            self.names = 'ABCDEFGHIJKLMNOPQRSTUVXYZ'[:len(self.points)]
         else:
-            self.name = name
+            self.names = names
 
-        self._k = _a.arrayd([k for k in self])
+        # Calculate points
+        dpoint = np.diff(self.points, axis=0)
+        k = _a.emptyd([self.divisions.sum() + 1, 3])
+        i = 0
+        for ik, (divs, dk) in enumerate(zip(self.divisions, dpoint)):
+            k[i:i+divs, :] = self.points[ik] + dk * _a.aranged(divs).reshape(-1, 1) / divs
+            i += divs
+        k[-1] = self.points[-1]
+
+        self._k = k
         self._w = _a.fulld(len(self.k), 1 / len(self.k))
 
     def copy(self, parent=None):
@@ -1802,41 +1820,23 @@ class BandStructure(BrillouinZone):
         """
         if parent is None:
             parent = self.parent
-        bz = self.__class__(parent, self.point, self.division, self.name)
+        bz = self.__class__(parent, self.points, self.divisions, self.names)
         return bz
 
     def __getstate__(self):
         """ Return dictionary with the current state """
         state = super().__getstate__()
-        state['point'] = self.point.copy()
-        state['division'] = self.division.copy()
-        state['name'] = list(self.name)
+        state['points'] = self.points.copy()
+        state['divisions'] = self.divisions.copy()
+        state['names'] = list(self.names)
         return state
 
     def __setstate__(self, state):
         """ Reset state of the object """
         super().__setstate__(state)
-        self.point = state['point']
-        self.division = state['division']
-        self.name = state['name']
-
-    def __iter__(self):
-        """ Iterate through the path """
-
-        # Calculate points
-        dk = np.diff(self.point, axis=0)
-
-        for i in range(len(dk)):
-
-            # Calculate this delta
-            if i == len(dk) - 1:
-                # to get end-point
-                delta = dk[i, :] / (self.division[i] - 1)
-            else:
-                delta = dk[i, :] / self.division[i]
-
-            for j in range(self.division[i]):
-                yield self.point[i] + j * delta
+        self.points = state['points']
+        self.divisions = state['divisions']
+        self.names = state['names']
 
     def lineartick(self):
         """ The tick-marks corresponding to the linear-k values
@@ -1889,14 +1889,11 @@ class BandStructure(BrillouinZone):
         # Calculate points
         dK = linspace_bz(self)
 
-        # Get label tick, in case self.name is a single string 'ABCD'
+        # Get label tick, in case self.names is a single string 'ABCD'
         if ticks:
             # Get number of points
-            xtick = np.zeros(len(self.point), dtype=int)
-            xtick[1:] = np.cumsum(self.division) - 1
+            xtick = np.zeros(len(self.points), dtype=int)
+            xtick[1:] = np.cumsum(self.divisions)
             # Ensure the returned label_tick is a copy
-            return dK, dK[xtick], [a for a in self.name]
+            return dK, dK[xtick], [a for a in self.names]
         return dK
-
-    def __len__(self):
-        return sum(self.division)

@@ -138,10 +138,10 @@ class BandStructureInput(QueriesInput, SislObjectInput):
 
             val = sisl.BandStructure(
                 None,
-                point=[[
-                        point.get("x", None) or 0, point.get("y", None) or 0, point.get("z", None) or 0
-                    ] for point in val],
-                division=[int(point["divisions"]) for point in val[1:]],
+                points=[[
+                    point.get("x", None) or 0, point.get("y", None) or 0, point.get("z", None) or 0
+                ] for point in val],
+                divisions=[int(point["divisions"]) for point in val[1:]],
                 name=[point.get("name", '') for point in val]
             )
 

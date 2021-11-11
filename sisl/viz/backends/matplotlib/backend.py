@@ -56,7 +56,7 @@ class MatplotlibBackend(Backend):
 
     def _init_figure(self):
         """Initializes the matplotlib figure and axes
-        
+
         Returns
         --------
         Figure:
