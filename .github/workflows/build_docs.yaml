@@ -39,7 +39,7 @@ jobs:
           python -m pip install .[viz]
           python -m pip install -r docs/requirements.txt
         
-      #- uses: r-lib/actions/setup-pandoc@v1 
+      - uses: r-lib/actions/setup-pandoc@v1 
 
       - name: Build the docs
         run: |
