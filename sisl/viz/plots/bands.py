@@ -6,8 +6,12 @@ from functools import partial
 import itertools
 
 import numpy as np
+from numpy.core.defchararray import array
+import xarray as xr
 
 import sisl
+from sisl.physics.brillouinzone import BrillouinZone
+from sisl.physics.spin import Spin
 from ..plot import Plot, entry_point
 from ..plotutils import find_files
 from ..input_fields import (
@@ -32,79 +36,84 @@ class BandsPlot(Plot):
     Parameters
     -------------
     bands_file: bandsSileSiesta, optional
-        This parameter explicitly sets a .bands file. Otherwise, the bands
-        file is attempted to read from the fdf file
+    	This parameter explicitly sets a .bands file. Otherwise, the bands
+    	file is attempted to read from the fdf file
     band_structure: BandStructure, optional
-        A band structure. it can either be provided as a sisl.BandStructure
-        object or         as a list of points, which will be parsed into a
-        band structure object.            Each item is a dict.    Structure
-        of the dict: {         'x':          'y':          'z':
-        'divisions':          'name': Tick that should be displayed at this
-        corner of the path. }
+    	A band structure. it can either be provided as a sisl.BandStructure
+    	object or         as a list of points, which will be parsed into a
+    	band structure object.            Each item is a dict.    Structure
+    	of the dict: {         'x':          'y':          'z':
+    	'divisions':          'name': Tick that should be displayed at this
+    	corner of the path. }
+    wfsx_file: wfsxSileSiesta, optional
+    	The WFSX file to get the eigenstates.             In standard SIESTA
+    	nomenclature, this should probably be the *.bands.WFSX file, as it is
+    	the one             that contains the eigenstates for the band
+    	structure.
     aiida_bands:  optional
-        An aiida BandsData node.
+    	An aiida BandsData node.
     add_band_data:  optional
-        This function receives each band and should return a dictionary with
-        additional arguments              that are passed to the band drawing
-        routine. It also receives the plot as the second argument.
-        See the docs of `sisl.viz.backends.templates.Backend.draw_line` to
-        understand what are the supported arguments             to be
-        returned. Notice that the arguments that the backend is able to
-        process can be very framework dependant.
+    	This function receives each band and should return a dictionary with
+    	additional arguments              that are passed to the band drawing
+    	routine. It also receives the plot as the second argument.
+    	See the docs of `sisl.viz.backends.templates.Backend.draw_line` to
+    	understand what are the supported arguments             to be
+    	returned. Notice that the arguments that the backend is able to
+    	process can be very framework dependant.
     Erange: array-like of shape (2,), optional
-        Energy range where the bands are displayed.
+    	Energy range where the bands are displayed.
     E0: float, optional
-        The energy to which all energies will be referenced (including
-        Erange).
+    	The energy to which all energies will be referenced (including
+    	Erange).
     bands_range: array-like of shape (2,), optional
-        The bands that should be displayed. Only relevant if Erange is None.
+    	The bands that should be displayed. Only relevant if Erange is None.
     spin:  optional
-        Determines how the different spin configurations should be displayed.
-        In spin polarized calculations, it allows you to choose between spin
-        0 and 1.             In non-colinear spin calculations, it allows you
-        to ask for a given spin texture,             by specifying the
-        direction.
+    	Determines how the different spin configurations should be displayed.
+    	In spin polarized calculations, it allows you to choose between spin
+    	0 and 1.             In non-colinear spin calculations, it allows you
+    	to ask for a given spin texture,             by specifying the
+    	direction.
     spin_texture_colorscale: str, optional
-        The plotly colorscale to use for the spin texture (if displayed)
+    	The plotly colorscale to use for the spin texture (if displayed)
     gap: bool, optional
-        Whether the gap should be displayed in the plot
+    	Whether the gap should be displayed in the plot
     direct_gaps_only: bool, optional
-        Whether to show only gaps that are direct, according to the gap
-        tolerance
+    	Whether to show only gaps that are direct, according to the gap
+    	tolerance
     gap_tol: float, optional
-        The difference in k that must exist to consider to gaps
-        different.             If two gaps' positions differ in less than
-        this, only one gap will be drawn.             Useful in cases
-        where there are degenerated bands with exactly the same values.
+    	The difference in k that must exist to consider to gaps
+    	different.             If two gaps' positions differ in less than
+    	this, only one gap will be drawn.             Useful in cases
+    	where there are degenerated bands with exactly the same values.
     gap_color: str, optional
-        Color to display the gap
+    	Color to display the gap
     custom_gaps: array-like of dict, optional
-        List of all the gaps that you want to display.   Each item is a dict.
-        Structure of the dict: {         'from': K value where to start
-        measuring the gap.                      It can be either the label of
-        the k-point or the numeric value in the plot.         'to': K value
-        where to end measuring the gap.                      It can be either
-        the label of the k-point or the numeric value in the plot.
-        'color': The color with which the gap should be displayed
-        'spin': The spin components where the gap should be calculated. }
+    	List of all the gaps that you want to display.   Each item is a dict.
+    	Structure of the dict: {         'from': K value where to start
+    	measuring the gap.                      It can be either the label of
+    	the k-point or the numeric value in the plot.         'to': K value
+    	where to end measuring the gap.                      It can be either
+    	the label of the k-point or the numeric value in the plot.
+    	'color': The color with which the gap should be displayed
+    	'spin': The spin components where the gap should be calculated. }
     bands_width: float, optional
-        Width of the lines that represent the bands
+    	Width of the lines that represent the bands
     bands_color: str, optional
-        Choose the color to display the bands.  This will be used for the
-        spin up bands if the calculation is spin polarized
+    	Choose the color to display the bands.  This will be used for the
+    	spin up bands if the calculation is spin polarized
     spindown_color: str, optional
-        Choose the color for the spin down bands.Only used if the
-        calculation is spin polarized.
+    	Choose the color for the spin down bands.Only used if the
+    	calculation is spin polarized.
     root_fdf: fdfSileSiesta, optional
-        Path to the fdf file that is the 'parent' of the results.
+    	Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
     entry_points_order: array-like, optional
-        Order with which entry points will be attempted.
+    	Order with which entry points will be attempted.
     backend:  optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
     """
 
     _plot_type = "Bands"
@@ -121,6 +130,15 @@ class BandsPlot(Plot):
         ),
 
         BandStructureInput(key="band_structure", name="Band structure"),
+
+        SileInput(key='wfsx_file', name='Path to WFSX file',
+            dtype=sisl.io.siesta.wfsxSileSiesta,
+            default=None,
+            help="""The WFSX file to get the eigenstates.
+            In standard SIESTA nomenclature, this should probably be the *.bands.WFSX file, as it is the one
+            that contains the eigenstates for the band structure.
+            """
+        ),
 
         AiidaNodeInput(key="aiida_bands", name="Aiida BandsData node",
             default=None,
@@ -285,13 +303,25 @@ class BandsPlot(Plot):
 
         self.add_shortcut("g", "Toggle gap", self.toggle_gap)
 
+    @entry_point('bands file', 0)
+    def _read_siesta_output(self, bands_file, band_structure):
+        """
+        Reads the bands information from a SIESTA bands file.
+        """
+        if band_structure:
+            raise ValueError("A path was provided, therefore we can not use the .bands file even if there is one")
+
+        self.bands_data = self.get_sile(bands_file or "bands_file").read_data(as_dataarray=True)
+
+        # Define the spin class of the results we have retrieved
+        if len(self.bands_data.spin.values) == 2:
+            self.spin = sisl.Spin("p")
+
     @entry_point('aiida bands', 1)
     def _read_aiida_bands(self, aiida_bands):
         """
         Creates the bands plot reading from an aiida BandsData node.
         """
-        import xarray as xr
-
         plot_data = aiida_bands._get_bandplot_data(cartesian=True)
         bands = plot_data["y"]
 
@@ -317,12 +347,178 @@ class BandsPlot(Plot):
             attrs={**tick_info}
         )
 
-    @entry_point('band structure', 2)
+    def _get_eigenstate_wrapper(self, k_vals, extra_vars=()):
+        """Helper function to build the function to call on each eigenstate.
+        
+        Parameters
+        ----------
+        k_vals: array_like of shape (nk,)
+            The (linear) values of the k points. This will be used for plotting
+            the bands.
+        extra_vars: array-like of dict, optional
+            This argument determines the extra quantities that should be included
+            in the final dataset of the bands. Energy and spin moments (if available)
+            are already included, so no need to pass them here.
+            Each item of the array defines a new quantity and should contain a dictionary 
+            with the following keys:
+                - 'name', str: The name of the quantity.
+                - 'getter', callable: A function that gets 3 arguments: eigenstate, plot and
+                spin index, and returns the values of the quantity in a numpy array. This
+                function will be called for each eigenstate object separately. That is, once
+                for each (k-point, spin) combination.
+                - 'coords', tuple of str: The names of the  dimensions of the returned array.
+                The number of coordinates should match the number of dimensions.
+                of 
+                - 'coords_values', dict: If this variable introduces a new coordinate, you should
+                pass the values for that coordinate here. If the coordinates were already defined
+                by another variable, they will already have values. If you are unsure that the
+                coordinates are new, just pass the values for them, they will get overwritten.
+
+        Returns
+        --------
+        function:
+            The function that should be called for each eigenstate and will return a tuple of size
+            n_vars with the values for each variable.
+        tuple of dicts:
+            A tuple containing the dictionaries that define all variables. Exactly the same as
+            the passed `extra_vars`, but with the added Energy and spin moment (if available) variables.
+        dict:
+            Dictionary containing the values for each coordinate involved in the dataset.
+        """
+        # In case it is a non_colinear or spin-orbit calculation we will get the spin moments
+        if not self.spin.is_diagonal:
+            def _spin_moment_getter(eigenstate, plot, spin):
+                return eigenstate.spin_moment().real
+
+            extra_vars = ({
+                "coords": ("band", "axis"), "coords_values": dict(axis=["x", "y", "z"]),
+                "name": "spin_moments", "getter": _spin_moment_getter},
+            *extra_vars)
+
+        # Define the available spin indices. Notice that at the end the spin dimension
+        # is removed from the dataset unless the calculation is spin polarized. So having
+        # spin_indices = [0] is just for convenience.
+        spin_indices = [0]
+        if self.spin.is_polarized:
+            spin_indices = [0, 1]
+
+        # Add a variable to get the eigenvalues.
+        all_vars = ({
+            "coords": ("band",), "coords_values": {"spin": spin_indices, "k": k_vals},
+            "name": "E", "getter": lambda eigenstate, self, spin: eigenstate.eig},
+            *extra_vars
+        )
+        
+        # Now build the function that will be called for each eigenstate and will
+        # return the values for each variable.
+        def bands_wrapper(eigenstate, spin_index):
+            return tuple(var["getter"](eigenstate, self, spin_index) for var in all_vars)
+
+        # Finally get the values for all coordinates involved.
+        coords_values = {}
+        for var in all_vars:
+            coords_values.update(var.get("coords_values", {}))
+
+        return bands_wrapper, all_vars, coords_values
+
+    @entry_point('wfsx file', 2)
+    def _read_from_wfsx(self, root_fdf, wfsx_file, extra_vars=()):
+        """Plots bands from the eigenvalues contained in a WFSX file.
+        
+        It also needs to get a geometry.
+        """
+        # Get the fdf sile
+        fdf = self.get_sile(root_fdf or "root_fdf")
+        # Read the geometry from the fdf sile
+        self.geometry = fdf.read_geometry(output=True)
+
+        # Get the wfsx file
+        wfsx_sile = self.get_sile(wfsx_file or "wfsx_file")
+        
+        # Now read all the information of the k points from the WFSX file
+        wfsx_info = wfsx_sile.read_info(parent=self.geometry)
+        # Get the number of wavefunctions in the file while performing a quick check
+        nwf = np.unique(wfsx_info['nwf'])
+        if len(nwf) > 1:
+            raise ValueError(f"File {wfsx_sile.file} contains different number of wavefunctions in some k points")
+        nwf = nwf[0]
+        # From the k values read in the file, build a brillouin zone object.
+        # We will use it just to get the linear k values for plotting.
+        bz = BrillouinZone(self.geometry, k=wfsx_info['k'], weight=wfsx_info['kw'])
+
+        # Read the sizes of the file, which contain the number of spin channels
+        # and the number of orbitals and the number of k points.
+        wfsx_sizes = wfsx_sile.read_sizes()
+
+        # Find out the spin class of the calculation.
+        self.spin = Spin({
+            1: Spin.UNPOLARIZED, 2: Spin.POLARIZED,
+            4: Spin.NONCOLINEAR, 8: Spin.SPINORBIT
+        }[wfsx_sizes['nspin']])
+        # Now find out how many spin channels we need. Note that if there is only
+        # one spin channel there will be no "spin" dimension on the final dataset.
+        nspin = 2 if self.spin.is_polarized else 1
+
+        # Get the wrapper function that we should call on each eigenstate.
+        # This also returns the coordinates and names to build the final dataset.
+        bands_wrapper, all_vars, coords_values = self._get_eigenstate_wrapper(
+            sisl.physics.linspace_bz(bz), extra_vars=extra_vars
+        )
+        # Make sure all coordinates have values so that we can assume the shape
+        # of arrays below.
+        coords_values['band'] = np.arange(0, nwf)
+        coords_values['orb'] = np.arange(0, wfsx_sizes['nou'])
+
+        self.ticks = None
+
+        # Initialize all the arrays. For each quantity we will initialize
+        # an array of the needed shape.
+        arrays = {}
+        for var in all_vars:
+            # These are all the extra dimensions of the quantity. Note that a
+            # quantity does not need to have extra dimensions.
+            extra_shape = [len(coords_values[coord]) for coord in var['coords']]
+            # First two dimensions will always be the spin channel and the k index.
+            # Then add potential extra dimensions.
+            shape = (nspin, len(bz), *extra_shape)
+            # Initialize the array.
+            arrays[var['name']] = np.empty(shape, dtype=var.get('dtype', np.float64))
+
+        # Loop through eigenstates in the WFSX file and add their contribution to the bands
+        ik = -1
+        for eigenstate in wfsx_sile.yield_eigenstate(self.geometry):
+            spin = eigenstate.info.get("spin", 0)
+            # Every time we encounter spin 0, we are in a new k point.
+            if spin == 0:
+                ik +=1
+                if ik == 0:
+                    # If this is the first eigenstate we read, get the wavefunction
+                    # indices. We will assume that ALL EIGENSTATES have the same indices.
+                    # Note that we already checked previously that they all have the same
+                    # number of wfs, so this is a fair assumption.
+                    coords_values['band'] = eigenstate.info['index']
+            
+            # Get all the values for this eigenstate.
+            returns = bands_wrapper(eigenstate, spin_index=spin)
+            # And store them in the respective arrays.
+            for var, vals in zip(all_vars, returns):
+                arrays[var['name']][spin, ik] = vals
+
+        # Now that we have all the values, just build the dataset.
+        self.bands_data = xr.Dataset(
+            data_vars={
+                var['name']: (("spin", "k", *var['coords']), arrays[var['name']])
+                for var in all_vars
+            }
+        ).assign_coords(coords_values)
+
+        self.bands_data.attrs = {"ticks": None, "ticklabels": None, "parent": bz}
+
+    @entry_point('band structure', 3)
     def _read_from_H(self, band_structure, extra_vars=()):
         """
         Uses a sisl's `BandStructure` object to calculate the bands.
         """
-        import xarray as xr
         if band_structure is None:
             raise ValueError("No band structure (k points path) was provided")
 
@@ -337,38 +533,17 @@ class BandsPlot(Plot):
 
         self.ticks = band_structure.lineartick()
 
-        # In case it is a non_colinear or spin-orbit calculation we will get the spin moments
-        if not self.spin.is_diagonal:
-            def _spin_moment_getter(eigenstate, plot, spin):
-                return eigenstate.spin_moment().real
-
-            extra_vars = ({
-                "coords": ("band", "axis"), "coords_values": dict(axis=["x", "y", "z"]),
-                "name": "spin_moments", "getter": _spin_moment_getter},
-            *extra_vars)
-
-        def bands_wrapper(eigenstate, spin_index):
-            returns = []
-            for extra_var in extra_vars:
-                returns.append(extra_var["getter"](eigenstate, self, spin_index))
-            return (eigenstate.eig, *returns)
-
-        # Define the available spins
-        spin_indices = [0]
-        if self.spin.is_polarized:
-            spin_indices = [0, 1]
-
-        # Get the eigenstates for all the available spin components
-        bands_arrays = []
-        name = ["E"]
-        coords = [('band'), ]
-        coords_values = {"spin": spin_indices, "k": band_structure.lineark()}
-        for extra_var in extra_vars:
-            name.append(extra_var["name"])
-            coords.append(extra_var["coords"])
-            coords_values.update(extra_var.get("coords_values", {}))
-
-        for spin_index in spin_indices:
+        # Get the wrapper function that we should call on each eigenstate.
+        # This also returns the coordinates and names to build the final dataset.
+        bands_wrapper, all_vars, coords_values= self._get_eigenstate_wrapper(
+            band_structure.lineark(), extra_vars=extra_vars
+        )
+        
+        # Get a dataset with all values for all spin indices
+        spin_datasets = []
+        coords = [var['coords'] for var in all_vars]
+        name = [var['name'] for var in all_vars]
+        for spin_index in coords_values['spin']:
 
             # Non collinear routines don't accept the keyword argument "spin"
             spin_kwarg = {"spin": spin_index}
@@ -382,31 +557,15 @@ class BandsPlot(Plot):
                     coords=coords, name=name,
                 )
 
-            bands_arrays.append(spin_bands)
+            spin_datasets.append(spin_bands)
 
         # Merge everything into a single dataset with a spin dimension
-        self.bands_data = xr.concat(bands_arrays, "spin").assign_coords(coords_values)
+        self.bands_data = xr.concat(spin_datasets, "spin").assign_coords(coords_values)
 
-        self.bands['k'] = band_structure.lineark()
         # Inform of where to place the ticks
-        self.bands_data.attrs = {"ticks": self.ticks[0], "ticklabels": self.ticks[1], **bands_arrays[0].attrs}
-
-    @entry_point('bands file', 0)
-    def _read_siesta_output(self, bands_file, band_structure):
-        """
-        Reads the bands information from a SIESTA bands file.
-        """
-        if band_structure:
-            raise ValueError("A path was provided, therefore we can not use the .bands file even if there is one")
-
-        self.bands_data = self.get_sile(bands_file or "bands_file").read_data(as_dataarray=True)
-
-        # Define the spin class of the results we have retrieved
-        if len(self.bands_data.spin.values) == 2:
-            self.spin = sisl.Spin("p")
+        self.bands_data.attrs = {"ticks": self.ticks[0], "ticklabels": self.ticks[1], **spin_datasets[0].attrs}
 
     def _after_read(self):
-        import xarray as xr
         if isinstance(self.bands_data, xr.DataArray):
             attrs = self.bands_data.attrs
             self.bands_data = xr.Dataset({"E": self.bands_data})

@@ -1262,128 +1262,132 @@ class WavefunctionPlot(GridPlot):
     Parameters
     -----------
     eigenstate: EigenstateElectron, optional
-        The eigenstate that contains the coefficients of the wavefunction.
-        Note that an eigenstate can contain coefficients for multiple states.
+    	The eigenstate that contains the coefficients of the wavefunction.
+    	Note that an eigenstate can contain coefficients for multiple states.
+    wfsx_file: wfsxSileSiesta, optional
+    	Siesta WFSX file to directly read the coefficients from.
+    	If the root_fdf file is provided but the wfsx one isn't, we will try
+    	to find it             as SystemLabel.WFSX.
     geometry: Geometry, optional
-        Necessary to generate the grid and to plot the wavefunctions, since
-        the basis orbitals are needed.             If you provide a
-        hamiltonian, the geometry is probably inside the hamiltonian, so you
-        don't need to provide it.             However, this field is
-        compulsory if you are providing the eigenstate directly.
+    	Necessary to generate the grid and to plot the wavefunctions, since
+    	the basis orbitals are needed.             If you provide a
+    	hamiltonian, the geometry is probably inside the hamiltonian, so you
+    	don't need to provide it.             However, this field is
+    	compulsory if you are providing the eigenstate directly.
     k: array-like, optional
-        If the eigenstates need to be calculated from a hamiltonian, the k
-        point for which you want them to be calculated
+    	If the eigenstates need to be calculated from a hamiltonian, the k
+    	point for which you want them to be calculated
     spin:  optional
-        The spin component where the eigenstate should be calculated.
-        Only meaningful if the state needs to be calculated from the
-        hamiltonian.
+    	The spin component where the eigenstate should be calculated.
+    	Only meaningful if the state needs to be calculated from the
+    	hamiltonian.
     grid_prec: float, optional
-        The spacing between points of the grid where the wavefunction will be
-        projected (in Ang).             If you are plotting a 3D
-        representation, take into account that a very fine and big grid could
-        result in             your computer crashing on render. If it's the
-        first time you are using this function,             assess the
-        capabilities of your computer by first using a low-precision grid and
-        increase             it gradually.
+    	The spacing between points of the grid where the wavefunction will be
+    	projected (in Ang).             If you are plotting a 3D
+    	representation, take into account that a very fine and big grid could
+    	result in             your computer crashing on render. If it's the
+    	first time you are using this function,             assess the
+    	capabilities of your computer by first using a low-precision grid and
+    	increase             it gradually.
     i: int, optional
-        The index of the wavefunction
+    	The index of the wavefunction
     grid: Grid, optional
-        A sisl.Grid object. If provided, grid_file is ignored.
+    	A sisl.Grid object. If provided, grid_file is ignored.
     grid_file: cubeSile or rhoSileSiesta or ldosSileSiesta or rhoinitSileSiesta or rhoxcSileSiesta or drhoSileSiesta or baderSileSiesta or iorhoSileSiesta or totalrhoSileSiesta or stsSileSiesta or stmldosSileSiesta or hartreeSileSiesta or neutralatomhartreeSileSiesta or totalhartreeSileSiesta or gridncSileSiesta or ncSileSiesta or fdfSileSiesta or tsvncSileSiesta or chgSileVASP or locpotSileVASP, optional
-        A filename that can be return a Grid through `read_grid`.
+    	A filename that can be return a Grid through `read_grid`.
     represent:  optional
-        The representation of the grid that should be displayed
+    	The representation of the grid that should be displayed
     transforms:  optional
-        Transformations to apply to the whole grid.             It can be a
-        function, or a string that represents the path             to a
-        function (e.g. "scipy.exp"). If a string that is a single
-        word is provided, numpy will be assumed to be the module (e.g.
-        "square" will be converted into "np.square").              Note that
-        transformations will be applied in the order provided. Some
-        transforms might not be necessarily commutable (e.g. "abs" and
-        "cos").
+    	Transformations to apply to the whole grid.             It can be a
+    	function, or a string that represents the path             to a
+    	function (e.g. "scipy.exp"). If a string that is a single
+    	word is provided, numpy will be assumed to be the module (e.g.
+    	"square" will be converted into "np.square").              Note that
+    	transformations will be applied in the order provided. Some
+    	transforms might not be necessarily commutable (e.g. "abs" and
+    	"cos").
     axes:  optional
-        The axis along you want to see the grid, it will be reduced along the
-        other ones, according to the the `reduce_method` setting.
+    	The axis along you want to see the grid, it will be reduced along the
+    	other ones, according to the the `reduce_method` setting.
     zsmooth:  optional
-        Parameter that smoothens how data looks in a heatmap.
-        'best' interpolates data, 'fast' interpolates pixels, 'False'
-        displays the data as is.
+    	Parameter that smoothens how data looks in a heatmap.
+    	'best' interpolates data, 'fast' interpolates pixels, 'False'
+    	displays the data as is.
     interp: array-like, optional
-        Interpolation factors to make the grid finer on each axis.See the
-        zsmooth setting for faster smoothing of 2D heatmap.
+    	Interpolation factors to make the grid finer on each axis.See the
+    	zsmooth setting for faster smoothing of 2D heatmap.
     transform_bc:  optional
-        The boundary conditions when a cell transform is applied to the grid.
-        Cell transforms are only             applied when the grid's cell
-        doesn't follow the cartesian coordinates and the requested display is
-        2D or 1D.
+    	The boundary conditions when a cell transform is applied to the grid.
+    	Cell transforms are only             applied when the grid's cell
+    	doesn't follow the cartesian coordinates and the requested display is
+    	2D or 1D.
     nsc: array-like, optional
-        Number of times the grid should be repeated
+    	Number of times the grid should be repeated
     offset: array-like, optional
-        The offset of the grid along each axis. This is important if you are
-        planning to match this grid with other geometry related plots.
+    	The offset of the grid along each axis. This is important if you are
+    	planning to match this grid with other geometry related plots.
     trace_name: str, optional
-        The name that the trace will show in the legend. Good when merging
-        with other plots to be able to toggle the trace in the legend
+    	The name that the trace will show in the legend. Good when merging
+    	with other plots to be able to toggle the trace in the legend
     x_range: array-like of shape (2,), optional
-        Range where the X is displayed. Should be inside the unit cell,
-        otherwise it will fail.
+    	Range where the X is displayed. Should be inside the unit cell,
+    	otherwise it will fail.
     y_range: array-like of shape (2,), optional
-        Range where the Y is displayed. Should be inside the unit cell,
-        otherwise it will fail.
+    	Range where the Y is displayed. Should be inside the unit cell,
+    	otherwise it will fail.
     z_range: array-like of shape (2,), optional
-        Range where the Z is displayed. Should be inside the unit cell,
-        otherwise it will fail.
+    	Range where the Z is displayed. Should be inside the unit cell,
+    	otherwise it will fail.
     crange: array-like of shape (2,), optional
-        The range of values that the colorbar must enclose. This controls
-        saturation and hides below threshold values.
+    	The range of values that the colorbar must enclose. This controls
+    	saturation and hides below threshold values.
     cmid: int, optional
-        The value to set at the center of the colorbar. If not provided, the
-        color range is used
+    	The value to set at the center of the colorbar. If not provided, the
+    	color range is used
     colorscale: str, optional
-        A valid plotly colorscale. See https://plotly.com/python/colorscales/
+    	A valid plotly colorscale. See https://plotly.com/python/colorscales/
     reduce_method:  optional
-        The method used to reduce the dimensions that will not be displayed
-        in the plot.
+    	The method used to reduce the dimensions that will not be displayed
+    	in the plot.
     isos: array-like of dict, optional
-        The isovalues that you want to represent.             The way they
-        will be represented is of course dependant on the type of
-        representation:                 - 2D representations: A contour (i.e.
-        a line)                 - 3D representations: A surface
-        Each item is a dict.    Structure of the dict: {         'name': The
-        name of the iso query. Note that you can use $isoval$ as a template
-        to indicate where the isoval should go.         'val': The iso value.
-        If not provided, it will be infered from `frac`         'frac': If
-        val is not provided, this is used to calculate where the isosurface
-        should be drawn.                     It calculates them from the
-        minimum and maximum values of the grid like so:
-        If iso_frac = 0.3:                     (min_value-----
-        ISOVALUE(30%)-----------max_value)                     Therefore, it
-        should be a number between 0 and 1.
-        'step_size': The step size to use to calculate the isosurface in case
-        it's a 3D representation                     A bigger step-size can
-        speed up the process dramatically, specially the rendering part
-        and the resolution may still be more than satisfactory (try to use
-        step_size=2). For very big                     grids your computer
-        may not even be able to render very fine surfaces, so it's worth
-        keeping                     this setting in mind.         'color':
-        The color of the surface/contour.         'opacity': Opacity of the
-        surface/contour. Between 0 (transparent) and 1 (opaque). }
+    	The isovalues that you want to represent.             The way they
+    	will be represented is of course dependant on the type of
+    	representation:                 - 2D representations: A contour (i.e.
+    	a line)                 - 3D representations: A surface
+    	Each item is a dict.    Structure of the dict: {         'name': The
+    	name of the iso query. Note that you can use $isoval$ as a template
+    	to indicate where the isoval should go.         'val': The iso value.
+    	If not provided, it will be infered from `frac`         'frac': If
+    	val is not provided, this is used to calculate where the isosurface
+    	should be drawn.                     It calculates them from the
+    	minimum and maximum values of the grid like so:
+    	If iso_frac = 0.3:                     (min_value-----
+    	ISOVALUE(30%)-----------max_value)                     Therefore, it
+    	should be a number between 0 and 1.
+    	'step_size': The step size to use to calculate the isosurface in case
+    	it's a 3D representation                     A bigger step-size can
+    	speed up the process dramatically, specially the rendering part
+    	and the resolution may still be more than satisfactory (try to use
+    	step_size=2). For very big                     grids your computer
+    	may not even be able to render very fine surfaces, so it's worth
+    	keeping                     this setting in mind.         'color':
+    	The color of the surface/contour.         'opacity': Opacity of the
+    	surface/contour. Between 0 (transparent) and 1 (opaque). }
     plot_geom: bool, optional
-        If True the geometry associated to the grid will also be plotted
+    	If True the geometry associated to the grid will also be plotted
     geom_kwargs: dict, optional
-        Extra arguments that are passed to geom.plot() if plot_geom is set to
-        True
+    	Extra arguments that are passed to geom.plot() if plot_geom is set to
+    	True
     root_fdf: fdfSileSiesta, optional
-        Path to the fdf file that is the 'parent' of the results.
+    	Path to the fdf file that is the 'parent' of the results.
     results_path: str, optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
     entry_points_order: array-like, optional
-        Order with which entry points will be attempted.
+    	Order with which entry points will be attempted.
     backend:  optional
-        Directory where the files with the simulations results are
-        located. This path has to be relative to the root fdf.
+    	Directory where the files with the simulations results are
+    	located. This path has to be relative to the root fdf.
     """
 
     _plot_type = 'Wavefunction'
@@ -1395,6 +1399,15 @@ class WavefunctionPlot(GridPlot):
             dtype=sisl.EigenstateElectron,
             help="""The eigenstate that contains the coefficients of the wavefunction.
             Note that an eigenstate can contain coefficients for multiple states.
+            """
+        ),
+
+        SileInput(key='wfsx_file', name='Path to WFSX file',
+            dtype=sisl.io.siesta.wfsxSileSiesta,
+            default=None,
+            help="""Siesta WFSX file to directly read the coefficients from.
+            If the root_fdf file is provided but the wfsx one isn't, we will try to find it
+            as SystemLabel.WFSX.
             """
         ),
 
@@ -1449,8 +1462,28 @@ class WavefunctionPlot(GridPlot):
             raise ValueError('No eigenstate was provided')
 
         self.eigenstate = eigenstate
+    
+    @entry_point('Siesta WFSX file', 1)
+    def _read_from_WFSX_file(self, wfsx_file, k, spin, root_fdf):
+        """Reads the wavefunction coefficients from a SIESTA WFSX file"""
+        # Try to read the geometry
+        fdf = self.get_sile(root_fdf or "root_fdf")
+        if fdf is None:
+            raise ValueError("The setting 'root_fdf' needs to point to an fdf file with a geometry")
+        geometry = fdf.read_geometry(output=True)
 
-    @entry_point('hamiltonian', 1)
+        # Get the WFSX file. If not provided, it is inferred from the fdf.
+        wfsx = self.get_sile(wfsx_file or "wfsx_file")
+        if not wfsx.file.exists():
+            raise ValueError(f"File '{wfsx.file}' does not exist.")
+
+        # Try to find the eigenstate that we need
+        self.eigenstate = wfsx.read_eigenstate(k=k, spin=spin[0], parent=geometry)
+        if self.eigenstate is None:
+            # We have not found it.
+            raise ValueError(f"A state with k={k} was not found in file {wfsx.file}.")
+
+    @entry_point('hamiltonian', 2)
     def _read_from_H(self, k, spin):
         """
         Calculates the eigenstates from a Hamiltonian and then generates the wavefunctions.
@@ -1463,6 +1496,23 @@ class WavefunctionPlot(GridPlot):
         # Just avoid here GridPlot's _after_grid. Note that we are
         # calling it later in _set_data
         pass
+
+    def _get_eigenstate(self, i):
+
+        if "index" in self.eigenstate.info:
+            wf_i = np.nonzero(self.eigenstate.info["index"] == i)[0]
+            if len(wf_i) == 0:
+                raise ValueError(f"Wavefunction with index {i} is not present in the eigenstate. Available indices: {self.eigenstate.info['index']}."
+                    f"Entry point used: {self.source._name}")
+            wf_i = wf_i[0]
+        else:
+            max_index = len(self.eigenstate)
+            if i > max_index:
+                raise ValueError(f"Wavefunction with index {i} is not present in the eigenstate. Available range: [0, {max_index}]."
+                    f"Entry point used: {self.source._name}")
+            wf_i = i
+
+        return self.eigenstate[wf_i]
 
     def _set_data(self, i, geometry, grid, k, grid_prec, nsc):
 
@@ -1498,16 +1548,18 @@ class WavefunctionPlot(GridPlot):
                 tiled_geometry = tiled_geometry.tile(sc_i, ax)
                 nsc[ax] = 1
 
+        is_gamma = (np.array(k) == 0).all()
         if grid is None:
-            dtype = np.float64 if (np.array(k) == 0).all() else np.complex128
+            dtype = np.float64 if is_gamma else np.complex128
             self.grid = sisl.Grid(grid_prec, geometry=tiled_geometry, dtype=dtype)
 
         # GridPlot's after_read basically sets the x_range, y_range and z_range options
         # which need to know what the grid is, that's why we are calling it here
         super()._after_read()
 
-        self.eigenstate[i].wavefunction(self.grid)
+        state = self._get_eigenstate(i)
+        state.wavefunction(self.grid)
 
-        return super()._set_data(nsc=nsc)
+        return super()._set_data(nsc=nsc, trace_name=f"WF {i} ({state.eig[0]:.2f} eV)")
 
 GridPlot.backends.register_child(WavefunctionPlot.backends)
