@@ -158,15 +158,27 @@ markers = [
 
 addopts = "-rXs --durations=20"
 
+[tool.pylint.messages_control]
+max-line-length = 110
 
-[tool.versioneer]
-VCS = "git"
-style = "pep440"
-versionfile_source = "sisl/_version.py"
-versionfile_build = "sisl/_version.py"
-tag_prefix = "v"
-parentdir_prefix = "sisl-"
+disable = [
+  "missing-docstring",
+  "unused-argument",
+  "no-value-for-parameter",
+  "no-member",
+  "no-else-return",
+  "bad-whitespace",
+  "bad-continuation",
+  "line-too-long",
+  "fixme",
+  "protected-access",
+  "too-few-public-methods",
+]
 
+[tool.pylint]
+
+[tool.pylint.format]
+# Currently no formatting rules
 
 [tool.tox]
 
@@ -184,3 +196,11 @@ deps = -rdocs/requirements.txt
 commands = pytest -s -rXs {posargs}
 """
 
+
+[tool.versioneer]
+VCS = "git"
+style = "pep440"
+versionfile_source = "sisl/_version.py"
+versionfile_build = "sisl/_version.py"
+tag_prefix = "v"
+parentdir_prefix = "sisl-"
