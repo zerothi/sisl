@@ -3,6 +3,8 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import logging
 from numbers import Number
+import numpy as np
+
 from sisl.io import get_sile
 from sisl.utils import direction
 import sisl.io.siesta as io_siesta
@@ -19,7 +21,7 @@ _log = logging.getLogger("sisl_toolbox.siesta.minimize")
 
 def _siesta_out_accept(out):
     if not isinstance(out, io_siesta.outSileSiesta):
-        out = io_siesta.outSileSiesta(self.out)
+        out = io_siesta.outSileSiesta(out)
     accept = out.completed()
     if accept:
         with out:

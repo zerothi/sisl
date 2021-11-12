@@ -744,7 +744,8 @@ def atom_plot_cli(subp=None):
         _script = f"{_script} atom-plot"
         p = subp.add_parser("atom-plot", description=title, help=title)
     else:
-        p = argp.ArgumentParser(title)
+        import argparse
+        p = argparse.ArgumentParser(title)
 
     p.add_argument("--plot", '-P', action='append', type=str,
                    choices=('wavefunction', 'charge', 'log', 'potential'),

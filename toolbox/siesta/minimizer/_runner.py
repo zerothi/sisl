@@ -156,8 +156,8 @@ class CopyRunner(PathRunner):
         for f in self.files:
             fin = self.path / f
             fout = self.to / f
-            if not f_in.is_file():
-                copy.append(f"Path({common}) {f_in_rel}->{f_out_rel}")
+            if not fin.is_file():
+                copy.append(f"Path(.) {fin.relative_to('.')}->{fout.relative_to('.')}")
             elif fin.is_file():
                 copy.append(str(f))
                 shutil.copyfile(fin, fout)
