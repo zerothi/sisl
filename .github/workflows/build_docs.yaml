@@ -69,6 +69,7 @@ jobs:
           cd docs
           SISL_FILES_TESTS=${GITHUB_WORKSPACE}/files/tests make html
           rm -rf build/html/_sources
+          touch build/html/.nojekyll
           cd ..
         
       # Deploy to github pages
