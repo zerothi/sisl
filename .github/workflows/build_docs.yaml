@@ -17,7 +17,7 @@ check_commit:
     - uses: actions/checkout@v2
       with:
         fetch-depth: 1
-	submodules: false
+        submodules: false
     - name: Print the latest commit
       run: echo ${{ github.sha }}
 
