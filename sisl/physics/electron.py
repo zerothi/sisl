@@ -1138,8 +1138,10 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
     The implementation is very similar to PythTB and refer to the details outlined in PythTB for
     additional details.
 
-    This implementation does not work for band-crossings or degenerate states. It is thus important that
-    eigenstates are corresponding to the same states for the loop contained in `bz`.
+    Note that for systems with band-crossings or degenerate states there is an arbitrariness to the definition
+    of the Berry phase for *individual* bands. However, the total phase (i.e., sum over filled bands) is
+    invariant and unaffected by this arbitrariness as long as the filled and empty bands do not intersect,
+    see [2]_.
 
     Examples
     --------
@@ -1164,7 +1166,8 @@ def berry_phase(contour, sub=None, eigvals=False, closed=True, method='berry'):
 
     References
     ----------
-    .. [1] J. Zak, "Berry's phase for energy bands in solids", PRL, *62*, 2747 (1989)
+    .. [1] J. Zak, "Berry's phase for energy bands in solids", PRL, **62**, 2747 (1989)
+    .. [2] R. Resta, "Manifestations of Berry's phase in molecules and condensed matter", JPCM, **12**, R107 (2000)
     """
     from .hamiltonian import Hamiltonian
     # Currently we require the Berry phase calculation to *only* accept Hamiltonians
