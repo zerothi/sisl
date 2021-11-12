@@ -77,6 +77,9 @@ extensions = [
 ]
 napoleon_numpy_docstring = True
 
+# There currently is a bug with mathjax >= 3, so we resort to 2.7.7
+mathjax_path = "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 

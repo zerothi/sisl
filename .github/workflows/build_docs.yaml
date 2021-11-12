@@ -1,0 +1,58 @@
+name: Build documentation + upload to gh-pages
+
+on:
+  #push:
+  #  branches:
+  #    - gh-pages-docs
+  schedule:
+    - cron: '37 10 * * SAT'
+  workflow_dispatch:
+  
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+        with:
+          # The files submodule is required for viz documentation
+          submodules: true
+          # the files submodule uses lfs
+          lfs: true
+
+      # This should generally not be required, but in the end it is just easier
+      - name: Ensure system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install gfortran
+
+      - name: Setup python environment
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'
+
+      - name: Install sisl + documentation dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install Cython
+          python -m pip install .[viz]
+          python -m pip install -r docs/requirements.txt
+        
+      - uses: r-lib/actions/setup-pandoc@v1 
+
+      - name: Build the documentation using the sisl-files as well
+        run: |
+          cd docs
+          SISL_FILES_TESTS=${GITHUB_WORKSPACE}/files/tests make html
+          rm -rf build/html/_sources
+          cd ..
+        
+      # Deploy to github pages
+      - name: Deploy to github pages
+        uses: JamesIves/github-pages-deploy-action@4.1.5
+        with:
+          BRANCH: gh-pages
+          FOLDER: docs/build/html
+          GITHUB_TOKEN: ${{ github.token }}
+
