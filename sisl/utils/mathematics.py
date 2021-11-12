@@ -5,6 +5,7 @@ from numpy import dot, sqrt, square
 from numpy import cos, sin, arctan2, arccos
 from numpy import asarray, take, delete, empty
 from numpy import concatenate, argsort
+from scipy.special import sph_harm
 
 from sisl import _array as _a
 from sisl._indices import indices_le

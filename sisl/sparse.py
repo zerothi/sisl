@@ -1418,7 +1418,8 @@ class SparseCSR(NDArrayOperatorsMixin):
         Parameters
         ----------
         matrix : array_like
-            transformation matrix of shape :math:`m \times n`
+            transformation matrix of shape :math:`m \times n`, :math:`n` should correspond to
+            the number of elements in ``self.shape[2]``
         dtype : numpy.dtype, optional
             defaults to the common dtype of the object and the transformation matrix
         """
@@ -1430,10 +1431,10 @@ class SparseCSR(NDArrayOperatorsMixin):
         if matrix.shape[1] != self.shape[2]:
             raise ValueError(f"{self.__class__.__name__}.transform incompatible "
                              f"transformation matrix and spin dimensions: "
-                             f"matrix.shape={matrix.shape} and self.spin={N} ; out.spin={M}")
+                             f"matrix.shape={matrix.shape} and self.spin={self.shape[2]} ; out.spin={matrix.shape[0]}")
 
         # set dimension of new sparse matrix
-        new_dim = len(matrix)
+        new_dim = matrix.shape[0]
         shape = list(self.shape[:])
         shape[2] = new_dim
 

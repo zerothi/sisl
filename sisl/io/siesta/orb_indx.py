@@ -87,6 +87,8 @@ class orbindxSileSiesta(SileSiesta):
             line = self.readline().split()
 
             i_a = int(line[1])
+            i_s = int(line[2]) - 1
+            spec = line[3]
             if i_a != ia:
                 if i_s not in specs:
                     atom.append(crt_atom(i_s, spec, orbs))
@@ -94,10 +96,8 @@ class orbindxSileSiesta(SileSiesta):
                 ia = i_a
                 orbs = []
 
-            i_s = int(line[2]) - 1
             if i_s in specs:
                 continue
-            spec = line[3]
             nlmz = list(map(int, line[5:9]))
             P = line[9] == 'T'
             rc = float(line[11]) * Bohr2Ang

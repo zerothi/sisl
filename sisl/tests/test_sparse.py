@@ -1427,6 +1427,17 @@ def test_transform4():
     assert np.abs(tr.tocsr(0) - 0.3j * csr1 - 0.7j * csr2).sum() == 0.
 
 
+def test_transform_fail():
+    csr1 = sc.sparse.random(10, 100, 0.01, random_state=24812)
+    csr2 = sc.sparse.random(10, 100, 0.02, random_state=24813)
+    csr = SparseCSR.fromsp(csr1, csr2)
+
+    # complex 1x3 matrix
+    matrix = [[0.3j, 0.7j, 1.]]
+    with pytest.raises(ValueError):
+        csr.transform(matrix=matrix)
+
+
 @pytest.mark.slow
 def test_fromsp_csr_large():
     csr1 = sc.sparse.random(10000, 10, 0.1, format="csr", random_state=23583)

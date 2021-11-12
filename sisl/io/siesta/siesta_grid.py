@@ -6,7 +6,7 @@ from numbers import Integral
 import numpy as np
 
 from .sile import SileCDFSiesta
-from ..sile import add_sile, sile_raise_write
+from ..sile import add_sile, sile_raise_write, SileError
 
 from sisl._internal import set_module
 from sisl.messages import info

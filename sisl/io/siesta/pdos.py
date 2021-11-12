@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
 
-from ..sile import add_sile
+from ..sile import add_sile, get_sile
 from .sile import SileSiesta
 
 from sisl._internal import set_module

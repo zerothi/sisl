@@ -263,5 +263,5 @@ class NamedIndex:
     def reduce(self):
         """ Removes names from the object which have no index associated (in-place) """
         for i in range(len(self))[::-1]:
-            if len(self._index[n]) == 0:
+            if len(self._index[i]) == 0:
                 del self[self.names[i]]

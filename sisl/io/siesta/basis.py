@@ -11,7 +11,7 @@ from sisl.orbital import SphericalOrbital
 from sisl._array import arrayd, aranged
 from sisl.unit.siesta import unit_convert
 from sisl.utils.cmd import default_ArgumentParser, default_namespace
-from sisl.utils import PropertyDict
+from sisl.utils import PropertyDict, strmap
 
 
 __all__ = ['ionxmlSileSiesta', 'ionncSileSiesta']

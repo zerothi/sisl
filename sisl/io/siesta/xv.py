@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import numpy as np
 
-from ..sile import add_sile, sile_fh_open, sile_raise_write
+from ..sile import add_sile, sile_fh_open, sile_raise_write, SileError
 from .sile import SileSiesta
 
 from sisl._internal import set_module
@@ -40,7 +40,7 @@ class xvSileSiesta(SileSiesta):
         if velocity is None:
             velocity = np.zeros([geometry.na, 3], np.float32)
         if geometry.xyz.shape != velocity.shape:
-            raise SislError(f'{self}.write_geometry requires the input'
+            raise SileError(f'{self}.write_geometry requires the input'
                             'velocity to have equal length to the input geometry.')
 
         # Write unit-cell

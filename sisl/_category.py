@@ -4,7 +4,7 @@
 from collections import defaultdict, ChainMap
 from collections.abc import Iterable
 from abc import ABCMeta, abstractmethod
-from functools import lru_cache
+from functools import wraps, lru_cache
 import numpy as np
 
 from ._internal import set_module, singledispatchmethod

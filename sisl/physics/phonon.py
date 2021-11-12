@@ -42,6 +42,7 @@ from sisl import units, constant
 from sisl._help import dtype_complex_to_real
 from .state import degenerate_decouple, Coefficient, State, StateC
 
+from .distribution import get_distribution
 from .electron import DOS as electron_DOS
 from .electron import PDOS as electron_PDOS
 

@@ -40,8 +40,8 @@ def argparse_patch(parser):
             except KeyError:
                 args = {'parser_name': parser_name,
                         'choices': ', '.join(self._name_parser_map)}
-                msg = _('unknown parser %(parser_name)r (choices: %(choices)s)') % args
-                raise ArgumentError(self, msg)
+                msg = ('unknown parser %(parser_name)r (choices: %(choices)s)') % args
+                raise argparse.ArgumentError(self, msg)
 
             # parse all the remaining options into the namespace
             # store any unrecognized options on the object, so that the top
@@ -57,8 +57,8 @@ def argparse_patch(parser):
             #    setattr(namespace, key, value)
 
             if arg_strings:
-                vars(namespace).setdefault(_UNRECOGNIZED_ARGS_ATTR, [])
-                getattr(namespace, _UNRECOGNIZED_ARGS_ATTR).extend(arg_strings)
+                vars(namespace).setdefault(argparse._UNRECOGNIZED_ARGS_ATTR, [])
+                getattr(namespace, argparse._UNRECOGNIZED_ARGS_ATTR).extend(arg_strings)
     parser.register('action', 'parsers', MySubParsersAction)
 
 
