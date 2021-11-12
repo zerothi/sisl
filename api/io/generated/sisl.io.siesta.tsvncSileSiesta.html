@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.io.siesta.tsvncSileSiesta &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="sisl.io.tbtrans.tbtncSileTBtrans" href="sisl.io.tbtrans.tbtncSileTBtrans.html" />
+    <link rel="prev" title="sisl.io.siesta.tsgfSileSiesta" href="sisl.io.siesta.tsgfSileSiesta.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../basic.html">Basic classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../default_geom.html">Common geometries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../physics.html">Physical objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mixing.html">Mixing self-consistent quantities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../unit_constant.html">Units and constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities.html">Utilities</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Input/Output</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../basic.html">Basic IO methods/classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../generic.html">Generic files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../bigdft.html">BigDFT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gulp.html">GULP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../openmx.html">OpenMX</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../scaleup.html">ScaleUP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../siesta.html">Siesta</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../siesta.html#transiesta">TranSiesta</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.tshsSileSiesta.html">sisl.io.siesta.tshsSileSiesta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.tsdeSileSiesta.html">sisl.io.siesta.tsdeSileSiesta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.tsgfSileSiesta.html">sisl.io.siesta.tsgfSileSiesta</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.io.siesta.tsvncSileSiesta</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../siesta.html#module-sisl.io.tbtrans">TBtrans</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../vasp.html">VASP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../wannier90.html">Wannier90</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">API documentation</a> &raquo;</li>
+          <li><a href="../index.html">Input/Output</a> &raquo;</li>
+          <li><a href="../siesta.html">Siesta</a> &raquo;</li>
+      <li>sisl.io.siesta.tsvncSileSiesta</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/api/io/generated/sisl.io.siesta.tsvncSileSiesta.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="sisl-io-siesta-tsvncsilesiesta">
+<h1>sisl.io.siesta.tsvncSileSiesta<a class="headerlink" href="#sisl-io-siesta-tsvncsilesiesta" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="sisl.io.siesta.tsvncSileSiesta">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.io.siesta.</span></span><span class="sig-name descname"><span class="pre">tsvncSileSiesta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.tsvncSileSiesta" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="sisl.io.siesta.gridncSileSiesta.html#sisl.io.siesta.gridncSileSiesta" title="sisl.io.siesta.gridncSileSiesta"><code class="xref py py-class docutils literal notranslate"><span class="pre">sisl.io.siesta.gridncSileSiesta</span></code></a></p>
+<p>TranSiesta potential input Grid file object</p>
+<p>This potential input file is mainly intended for the Hartree solution
+which complements N-electrode calculations in TranSiesta.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><code class="xref py py-obj docutils literal notranslate"><span class="pre">Grid.topyamg</span></code></dt><dd><p>intrinsic grid conversion to the Poisson equation</p>
+</dd>
+</dl>
+</div>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.tsvncSileSiesta.close" title="sisl.io.siesta.tsvncSileSiesta.close"><code class="xref py py-obj docutils literal notranslate"><span class="pre">close</span></code></a>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.tsvncSileSiesta.dir_file" title="sisl.io.siesta.tsvncSileSiesta.dir_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dir_file</span></code></a>([filename, filename_base])</p></td>
+<td><p>File of the current <em class="xref py py-obj">Sile</em></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.tsvncSileSiesta.exist" title="sisl.io.siesta.tsvncSileSiesta.exist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exist</span></code></a>()</p></td>
+<td><p>Query whether the file exists</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.tsvncSileSiesta.iter" title="sisl.io.siesta.tsvncSileSiesta.iter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter</span></code></a>([group, dimension, variable, levels, root])</p></td>
+<td><p>Iterator on all groups, variables and dimensions.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.tsvncSileSiesta.read" title="sisl.io.siesta.tsvncSileSiesta.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Generic read method which should be overloaded in child-classes</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.tsvncSileSiesta.read_grid" title="sisl.io.siesta.tsvncSileSiesta.read_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_grid</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Reads the TranSiesta potential input grid</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.tsvncSileSiesta.read_supercell" title="sisl.io.siesta.tsvncSileSiesta.read_supercell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_supercell</span></code></a>()</p></td>
+<td><p>Returns a SuperCell object from a Siesta.grid.nc file</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.tsvncSileSiesta.write" title="sisl.io.siesta.tsvncSileSiesta.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Generic write method which should be overloaded in child-classes</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.tsvncSileSiesta.write_grid" title="sisl.io.siesta.tsvncSileSiesta.write_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_grid</span></code></a>(grid)</p></td>
+<td><p>Write the Poisson solution to the TSV.nc file</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.tsvncSileSiesta.write_supercell" title="sisl.io.siesta.tsvncSileSiesta.write_supercell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write_supercell</span></code></a>(sc)</p></td>
+<td><p>Write a supercell to the grid.nc file</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.tsvncSileSiesta.base_file" title="sisl.io.siesta.tsvncSileSiesta.base_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base_file</span></code></a></p></td>
+<td><p>File of the current <em class="xref py py-obj">Sile</em></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.tsvncSileSiesta.file" title="sisl.io.siesta.tsvncSileSiesta.file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">file</span></code></a></p></td>
+<td><p>File of the current <em class="xref py py-obj">Sile</em></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.tsvncSileSiesta.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lvl</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">access</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.tsvncSileSiesta.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.io.siesta.tsvncSileSiesta.base_file">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">base_file</span></span><a class="headerlink" href="#sisl.io.siesta.tsvncSileSiesta.base_file" title="Permalink to this definition"></a></dt>
+<dd><p>File of the current <em class="xref py py-obj">Sile</em></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.tsvncSileSiesta.close">
+<span class="sig-name descname"><span class="pre">close</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.tsvncSileSiesta.close" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.tsvncSileSiesta.dir_file">
+<span class="sig-name descname"><span class="pre">dir_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename_base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.tsvncSileSiesta.dir_file" title="Permalink to this definition"></a></dt>
+<dd><p>File of the current <em class="xref py py-obj">Sile</em></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.tsvncSileSiesta.exist">
+<span class="sig-name descname"><span class="pre">exist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.tsvncSileSiesta.exist" title="Permalink to this definition"></a></dt>
+<dd><p>Query whether the file exists</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.io.siesta.tsvncSileSiesta.file">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">file</span></span><a class="headerlink" href="#sisl.io.siesta.tsvncSileSiesta.file" title="Permalink to this definition"></a></dt>
+<dd><p>File of the current <em class="xref py py-obj">Sile</em></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.tsvncSileSiesta.iter">
+<span class="sig-name descname"><span class="pre">iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dimension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">variable</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">levels</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">root</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.tsvncSileSiesta.iter" title="Permalink to this definition"></a></dt>
+<dd><p>Iterator on all groups, variables and dimensions.</p>
+<p>This iterator iterates through all groups, variables and dimensions in the <code class="docutils literal notranslate"><span class="pre">Dataset</span></code></p>
+<p>The generator sequence will _always_ be:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Group</p></li>
+<li><p>Dimensions in group</p></li>
+<li><p>Variables in group</p></li>
+</ol>
+</div></blockquote>
+<p>As the dimensions are generated before the variables it is possible to copy
+groups, dimensions, and then variables such that one always ensures correct
+dependencies in the generation of a new <code class="docutils literal notranslate"><span class="pre">SileCDF</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>group</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code> (<em class="xref py py-obj">True</em>)) – whether the iterator yields <em class="xref py py-obj">Group</em> instances</p></li>
+<li><p><strong>dimension</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code> (<em class="xref py py-obj">True</em>)) – whether the iterator yields <em class="xref py py-obj">Dimension</em> instances</p></li>
+<li><p><strong>variable</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code> (<em class="xref py py-obj">True</em>)) – whether the iterator yields <em class="xref py py-obj">Variable</em> instances</p></li>
+<li><p><strong>levels</strong> (<code class="docutils literal notranslate"><span class="pre">int</span></code> (<em class="xref py py-obj">-1</em>)) – number of levels to traverse, with respect to <code class="docutils literal notranslate"><span class="pre">root</span></code> variable, i.e. number of
+sub-groups this iterator will return.</p></li>
+<li><p><strong>root</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code> (<em class="xref py py-obj">None</em>)) – the base root to start iterating from.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>Script for looping and checking each instance.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">gv</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter</span><span class="p">():</span>
+<span class="gp">... </span>    <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">isGroup</span><span class="p">(</span><span class="n">gv</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="c1"># is group</span>
+<span class="gp">... </span>    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isDimension</span><span class="p">(</span><span class="n">gv</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="c1"># is dimension</span>
+<span class="gp">... </span>    <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">isVariable</span><span class="p">(</span><span class="n">gv</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="c1"># is variable</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.tsvncSileSiesta.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.tsvncSileSiesta.read" title="Permalink to this definition"></a></dt>
+<dd><p>Generic read method which should be overloaded in child-classes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>kwargs</strong> – keyword arguments will try and search for the attribute <code class="docutils literal notranslate"><span class="pre">read_&lt;&gt;</span></code>
+and call it with the remaining <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> as arguments.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.tsvncSileSiesta.read_grid">
+<span class="sig-name descname"><span class="pre">read_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/transiesta_grid.html#tsvncSileSiesta.read_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.tsvncSileSiesta.read_grid" title="Permalink to this definition"></a></dt>
+<dd><p>Reads the TranSiesta potential input grid</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.tsvncSileSiesta.read_supercell">
+<span class="sig-name descname"><span class="pre">read_supercell</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.tsvncSileSiesta.read_supercell" title="Permalink to this definition"></a></dt>
+<dd><p>Returns a SuperCell object from a Siesta.grid.nc file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.tsvncSileSiesta.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.tsvncSileSiesta.write" title="Permalink to this definition"></a></dt>
+<dd><p>Generic write method which should be overloaded in child-classes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>**kwargs</strong> – keyword arguments will try and search for the attribute <em class="xref py py-obj">write_</em>
+and call it with the remaining <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> as arguments.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.tsvncSileSiesta.write_grid">
+<span class="sig-name descname"><span class="pre">write_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/transiesta_grid.html#tsvncSileSiesta.write_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.tsvncSileSiesta.write_grid" title="Permalink to this definition"></a></dt>
+<dd><p>Write the Poisson solution to the TSV.nc file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.tsvncSileSiesta.write_supercell">
+<span class="sig-name descname"><span class="pre">write_supercell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.tsvncSileSiesta.write_supercell" title="Permalink to this definition"></a></dt>
+<dd><p>Write a supercell to the grid.nc file</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sisl.io.siesta.tsgfSileSiesta.html" class="btn btn-neutral float-left" title="sisl.io.siesta.tsgfSileSiesta" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.io.tbtrans.tbtncSileTBtrans.html" class="btn btn-neutral float-right" title="sisl.io.tbtrans.tbtncSileTBtrans" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

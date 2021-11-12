@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.physics.hamiltonian &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>sisl.physics.hamiltonian</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sisl.physics.hamiltonian</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
+<span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
+<span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">CubicSpline</span>
+
+<span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
+<span class="kn">from</span> <span class="nn">..messages</span> <span class="kn">import</span> <span class="n">deprecate_method</span>
+<span class="kn">from</span> <span class="nn">.distribution</span> <span class="kn">import</span> <span class="n">get_distribution</span>
+<span class="kn">from</span> <span class="nn">.electron</span> <span class="kn">import</span> <span class="n">EigenvalueElectron</span><span class="p">,</span> <span class="n">EigenstateElectron</span><span class="p">,</span> <span class="n">spin_squared</span>
+<span class="kn">from</span> <span class="nn">.sparse</span> <span class="kn">import</span> <span class="n">SparseOrbitalBZSpin</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Hamiltonian&#39;</span><span class="p">]</span>
+
+
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">Hamiltonian</span><span class="p">(</span><span class="n">SparseOrbitalBZSpin</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Sparse Hamiltonian matrix object</span>
+
+<span class="sd">    Assigning or changing Hamiltonian elements is as easy as with standard `numpy` assignments:</span>
+
+<span class="sd">    &gt;&gt;&gt; ham = Hamiltonian(...)</span>
+<span class="sd">    &gt;&gt;&gt; ham.H[1,2] = 0.1</span>
+
+<span class="sd">    which assigns 0.1 as the coupling constant between orbital 2 and 3.</span>
+<span class="sd">    (remember that Python is 0-based elements).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    geometry : Geometry</span>
+<span class="sd">      parent geometry to create a density matrix from. The density matrix will</span>
+<span class="sd">      have size equivalent to the number of orbitals in the geometry</span>
+<span class="sd">    dim : int or Spin, optional</span>
+<span class="sd">      number of components per element, may be a `Spin` object</span>
+<span class="sd">    dtype : np.dtype, optional</span>
+<span class="sd">      data type contained in the density matrix. See details of `Spin` for default values.</span>
+<span class="sd">    nnzpr : int, optional</span>
+<span class="sd">      number of initially allocated memory per orbital in the density matrix.</span>
+<span class="sd">      For increased performance this should be larger than the actual number of entries</span>
+<span class="sd">      per orbital.</span>
+<span class="sd">    spin : Spin, optional</span>
+<span class="sd">      equivalent to `dim` argument. This keyword-only argument has precedence over `dim`.</span>
+<span class="sd">    orthogonal : bool, optional</span>
+<span class="sd">      whether the density matrix corresponds to a non-orthogonal basis. In this case</span>
+<span class="sd">      the dimensionality of the density matrix is one more than `dim`.</span>
+<span class="sd">      This is a keyword-only argument.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="Hamiltonian.__init__"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nnzpr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Initialize Hamiltonian &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">nnzpr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_reset</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Hk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pk</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dHk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dPk</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ddHk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ddPk</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">H</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Access the Hamiltonian elements &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_def_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">UP</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+<div class="viewcode-block" id="Hamiltonian.Hk"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.Hk">[docs]</a>    <span class="k">def</span> <span class="nf">Hk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Setup the Hamiltonian for a given k-point</span>
+
+<span class="sd">        Creation and return of the Hamiltonian for a given k-point (default to Gamma).</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+
+<span class="sd">        Currently the implemented gauge for the k-point is the cell vector gauge:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">           \mathbf H(k) = \mathbf H_{\nu\mu} e^{i k R}</span>
+
+<span class="sd">        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.</span>
+
+<span class="sd">        Another possible gauge is the orbital distance which can be written as</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">           \mathbf H(k) = \mathbf H_{\nu\mu} e^{i k r}</span>
+
+<span class="sd">        where :math:`r` is the distance between the orbitals.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        k : array_like</span>
+<span class="sd">           the k-point to setup the Hamiltonian at</span>
+<span class="sd">        dtype : numpy.dtype , optional</span>
+<span class="sd">           the data type of the returned matrix. Do NOT request non-complex</span>
+<span class="sd">           data-type for non-Gamma k.</span>
+<span class="sd">           The default data-type is `numpy.complex128`</span>
+<span class="sd">        gauge : {&#39;R&#39;, &#39;r&#39;}</span>
+<span class="sd">           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance</span>
+<span class="sd">           gauge.</span>
+<span class="sd">        format : {&#39;csr&#39;, &#39;array&#39;, &#39;dense&#39;, &#39;coo&#39;, ...}</span>
+<span class="sd">           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,</span>
+<span class="sd">           however if one always requires operations on dense matrices, one can always</span>
+<span class="sd">           return in `numpy.ndarray` (`&#39;array&#39;`/`&#39;dense&#39;`/`&#39;matrix&#39;`).</span>
+<span class="sd">           Prefixing with &#39;sc:&#39;, or simply &#39;sc&#39; returns the matrix in supercell format</span>
+<span class="sd">           with phases. This is useful for e.g. bond-current calculations where individual</span>
+<span class="sd">           hopping + phases are required.</span>
+<span class="sd">        spin : int, optional</span>
+<span class="sd">           if the Hamiltonian is a spin polarized one can extract the specific spin direction</span>
+<span class="sd">           matrix by passing an integer (0 or 1). If the Hamiltonian is not `Spin.POLARIZED`</span>
+<span class="sd">           this keyword is ignored.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        dHk : Hamiltonian derivative with respect to `k`</span>
+<span class="sd">        ddHk : Hamiltonian double derivative with respect to `k`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        matrix : numpy.ndarray or scipy.sparse.*_matrix</span>
+<span class="sd">            the Hamiltonian matrix at :math:`k`. The returned object depends on `format`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Hamiltonian.dHk"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.dHk">[docs]</a>    <span class="k">def</span> <span class="nf">dHk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Setup the Hamiltonian derivative for a given k-point</span>
+
+<span class="sd">        Creation and return of the Hamiltonian derivative for a given k-point (default to Gamma).</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+
+<span class="sd">        Currently the implemented gauge for the k-point is the cell vector gauge:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">           \nabla_k \mathbf H_\alpha(k) = i R_\alpha \mathbf H_{\nu\mu} e^{i k R}</span>
+
+<span class="sd">        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.</span>
+<span class="sd">        And :math:`\alpha` is one of the Cartesian directions.</span>
+
+<span class="sd">        Another possible gauge is the orbital distance which can be written as</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">           \nabla_k \mathbf H_\alpha(k) = i r_\alpha \mathbf H_{\nu\mu} e^{i k r}</span>
+
+<span class="sd">        where :math:`r` is the distance between the orbitals.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        k : array_like</span>
+<span class="sd">           the k-point to setup the Hamiltonian at</span>
+<span class="sd">        dtype : numpy.dtype , optional</span>
+<span class="sd">           the data type of the returned matrix. Do NOT request non-complex</span>
+<span class="sd">           data-type for non-Gamma k.</span>
+<span class="sd">           The default data-type is `numpy.complex128`</span>
+<span class="sd">        gauge : {&#39;R&#39;, &#39;r&#39;}</span>
+<span class="sd">           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance</span>
+<span class="sd">           gauge.</span>
+<span class="sd">        format : {&#39;csr&#39;, &#39;array&#39;, &#39;dense&#39;, &#39;coo&#39;, ...}</span>
+<span class="sd">           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,</span>
+<span class="sd">           however if one always requires operations on dense matrices, one can always</span>
+<span class="sd">           return in `numpy.ndarray` (`&#39;array&#39;`/`&#39;dense&#39;`/`&#39;matrix&#39;`).</span>
+<span class="sd">        spin : int, optional</span>
+<span class="sd">           if the Hamiltonian is a spin polarized one can extract the specific spin direction</span>
+<span class="sd">           matrix by passing an integer (0 or 1). If the Hamiltonian is not `Spin.POLARIZED`</span>
+<span class="sd">           this keyword is ignored.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        Hk : Hamiltonian with respect to `k`</span>
+<span class="sd">        ddHk : Hamiltonian double derivative with respect to `k`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple</span>
+<span class="sd">            for each of the Cartesian directions a :math:`\partial \mathbf H(k)/\partial k_\alpha` is returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Hamiltonian.ddHk"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.ddHk">[docs]</a>    <span class="k">def</span> <span class="nf">ddHk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Setup the Hamiltonian double derivative for a given k-point</span>
+
+<span class="sd">        Creation and return of the Hamiltonian double derivative for a given k-point (default to Gamma).</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+
+<span class="sd">        Currently the implemented gauge for the k-point is the cell vector gauge:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">           \nabla_k^2 \mathbf H_{\alpha\beta}(k) = - R_\alpha R_\beta \mathbf H_{\nu\mu} e^{i k R}</span>
+
+<span class="sd">        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.</span>
+<span class="sd">        And :math:`\alpha` and :math:`\beta` are one of the Cartesian directions.</span>
+
+<span class="sd">        Another possible gauge is the orbital distance which can be written as</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">           \nabla_k^2 \mathbf H_{\alpha\beta}(k) = - r_\alpha r_\beta \mathbf H_{\nu\mu} e^{i k r}</span>
+
+<span class="sd">        where :math:`r` is the distance between the orbitals.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        k : array_like</span>
+<span class="sd">           the k-point to setup the Hamiltonian at</span>
+<span class="sd">        dtype : numpy.dtype , optional</span>
+<span class="sd">           the data type of the returned matrix. Do NOT request non-complex</span>
+<span class="sd">           data-type for non-Gamma k.</span>
+<span class="sd">           The default data-type is `numpy.complex128`</span>
+<span class="sd">        gauge : {&#39;R&#39;, &#39;r&#39;}</span>
+<span class="sd">           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance</span>
+<span class="sd">           gauge.</span>
+<span class="sd">        format : {&#39;csr&#39;, &#39;array&#39;, &#39;dense&#39;, &#39;coo&#39;, ...}</span>
+<span class="sd">           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,</span>
+<span class="sd">           however if one always requires operations on dense matrices, one can always</span>
+<span class="sd">           return in `numpy.ndarray` (`&#39;array&#39;`/`&#39;dense&#39;`/`&#39;matrix&#39;`).</span>
+<span class="sd">        spin : int, optional</span>
+<span class="sd">           if the Hamiltonian is a spin polarized one can extract the specific spin direction</span>
+<span class="sd">           matrix by passing an integer (0 or 1). If the Hamiltonian is not `Spin.POLARIZED`</span>
+<span class="sd">           this keyword is ignored.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        Hk : Hamiltonian with respect to `k`</span>
+<span class="sd">        dHk : Hamiltonian derivative with respect to `k`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of matrices</span>
+<span class="sd">            for each of the Cartesian directions (in Voigt representation); xx, yy, zz, zy, xz, xy</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="Hamiltonian.shift"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.shift">[docs]</a>    <span class="k">def</span> <span class="nf">shift</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Shift the electronic structure by a constant energy</span>
+
+<span class="sd">        This is equal to performing this operation:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">           \mathbf H_\sigma = \mathbf H_\sigma + E \mathbf S</span>
+
+<span class="sd">        where :math:`\mathbf H_\sigma` correspond to the spin diagonal components of the</span>
+<span class="sd">        Hamiltonian.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        E : float or (2,)</span>
+<span class="sd">           the energy (in eV) to shift the electronic structure, if two values are passed</span>
+<span class="sd">           the two first spin-components get shifted individually.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">E</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">E</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>
+            <span class="c1"># When the energy is zero, there is no shift</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">orthogonal</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">spinor</span><span class="p">):</span>
+                    <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">E</span><span class="p">[</span><span class="n">j</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># For non-collinear and SO only the diagonal (real) components</span>
+            <span class="c1"># should be shifted.</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">spinor</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="bp">self</span><span class="o">.</span><span class="n">S_idx</span><span class="p">]</span> <span class="o">*</span> <span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Hamiltonian.eigenvalue"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.eigenvalue">[docs]</a>    <span class="k">def</span> <span class="nf">eigenvalue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Calculate the eigenvalues at `k` and return an `EigenvalueElectron` object containing all eigenvalues for a given `k`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        k : array_like*3, optional</span>
+<span class="sd">            the k-point at which to evaluate the eigenvalues at</span>
+<span class="sd">        gauge : str, optional</span>
+<span class="sd">            the gauge used for calculating the eigenvalues</span>
+<span class="sd">        sparse : bool, optional</span>
+<span class="sd">            if ``True``, `eigsh` will be called, else `eigh` will be</span>
+<span class="sd">            called (default).</span>
+<span class="sd">        format : str, optional</span>
+<span class="sd">            see `eigh` for details, this will be passed to the EigenstateElectron</span>
+<span class="sd">            instance to be used in subsequent calls, may speed up post-processing.</span>
+<span class="sd">        **kwargs : dict, optional</span>
+<span class="sd">            passed arguments to the `eigh` routine</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        eigh : eigenvalue routine</span>
+<span class="sd">        eigsh : eigenvalue routine</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        EigenvalueElectron</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">format</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;format&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;sparse&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigsh</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="n">gauge</span><span class="p">,</span> <span class="n">eigvals_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">gauge</span><span class="p">,</span> <span class="n">eigvals_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;k&#39;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span> <span class="s1">&#39;gauge&#39;</span><span class="p">:</span> <span class="n">gauge</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;spin&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">info</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">info</span><span class="p">[</span><span class="s2">&quot;format&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">format</span>
+        <span class="k">return</span> <span class="n">EigenvalueElectron</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">info</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Hamiltonian.eigenstate"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.eigenstate">[docs]</a>    <span class="k">def</span> <span class="nf">eigenstate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Calculate the eigenstates at `k` and return an `EigenstateElectron` object containing all eigenstates</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        k : array_like*3, optional</span>
+<span class="sd">            the k-point at which to evaluate the eigenstates at</span>
+<span class="sd">        gauge : str, optional</span>
+<span class="sd">            the gauge used for calculating the eigenstates</span>
+<span class="sd">        sparse : bool, optional</span>
+<span class="sd">            if ``True``, `eigsh` will be called, else `eigh` will be</span>
+<span class="sd">            called (default).</span>
+<span class="sd">        format : str, optional</span>
+<span class="sd">            see `eigh` for details, this will be passed to the EigenstateElectron</span>
+<span class="sd">            instance to be used in subsequent calls, may speed up post-processing.</span>
+<span class="sd">        **kwargs : dict, optional</span>
+<span class="sd">            passed arguments to the `eigh`/`eighs` routine</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        eigh : eigenvalue routine</span>
+<span class="sd">        eigsh : eigenvalue routine</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        EigenstateElectron</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">format</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s2">&quot;format&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;sparse&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">e</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigsh</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="n">gauge</span><span class="p">,</span> <span class="n">eigvals_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">e</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">gauge</span><span class="p">,</span> <span class="n">eigvals_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;k&#39;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span> <span class="s1">&#39;gauge&#39;</span><span class="p">:</span> <span class="n">gauge</span><span class="p">}</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;spin&quot;</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+                <span class="n">info</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="o">=</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">format</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">info</span><span class="p">[</span><span class="s2">&quot;format&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">format</span>
+        <span class="c1"># Since eigh returns the eigenvectors [:, i] we have to transpose</span>
+        <span class="k">return</span> <span class="n">EigenstateElectron</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">e</span><span class="p">,</span> <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">info</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Hamiltonian.read"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.read">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Reads Hamiltonian from `Sile` using `read_hamiltonian`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        sile : Sile, str or pathlib.Path</span>
+<span class="sd">            a `Sile` object which will be used to read the Hamiltonian</span>
+<span class="sd">            and the overlap matrix (if any)</span>
+<span class="sd">            if it is a string it will create a new sile using `get_sile`.</span>
+<span class="sd">        * : args passed directly to ``read_hamiltonian(,**)``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># This only works because, they *must*</span>
+        <span class="c1"># have been imported previously</span>
+        <span class="kn">from</span> <span class="nn">sisl.io</span> <span class="kn">import</span> <span class="n">get_sile</span><span class="p">,</span> <span class="n">BaseSile</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">BaseSile</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">sile</span><span class="o">.</span><span class="n">read_hamiltonian</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">get_sile</span><span class="p">(</span><span class="n">sile</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">fh</span><span class="o">.</span><span class="n">read_hamiltonian</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Hamiltonian.write"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sile</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Writes a Hamiltonian to the `Sile` as implemented in the :code:`Sile.write_hamiltonian` method &quot;&quot;&quot;</span>
+        <span class="c1"># This only works because, they *must*</span>
+        <span class="c1"># have been imported previously</span>
+        <span class="kn">from</span> <span class="nn">sisl.io</span> <span class="kn">import</span> <span class="n">get_sile</span><span class="p">,</span> <span class="n">BaseSile</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">BaseSile</span><span class="p">):</span>
+            <span class="n">sile</span><span class="o">.</span><span class="n">write_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">get_sile</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                <span class="n">fh</span><span class="o">.</span><span class="n">write_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Hamiltonian.spin_squared"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.spin_squared">[docs]</a>    <span class="nd">@deprecate_method</span><span class="p">(</span><span class="s2">&quot;use Hamiltonian.eigenstate(...).spin_squared() instead&quot;</span><span class="p">,</span> <span class="s2">&quot;0.13.0&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">spin_squared</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">n_up</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">n_down</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate spin-squared expectation value, see `~sisl.physics.electron.spin_squared` for details</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        k : array_like, optional</span>
+<span class="sd">            k-point at which the spin-squared expectation value is</span>
+<span class="sd">        n_up : int, optional</span>
+<span class="sd">            number of states for spin up configuration, default to all. All states up to and including</span>
+<span class="sd">            `n_up`.</span>
+<span class="sd">        n_down : int, optional</span>
+<span class="sd">            same as `n_up` but for the spin-down configuration</span>
+<span class="sd">        **kwargs : optional</span>
+<span class="sd">            additional parameters passed to the `eigenstate` routine</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_polarized</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;.spin_squared requires as spin-polarized system&#39;</span><span class="p">)</span>
+        <span class="n">es_alpha</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">n_up</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">es_alpha</span> <span class="o">=</span> <span class="n">es_alpha</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_up</span><span class="p">))</span>
+        <span class="n">es_beta</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">spin</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">n_down</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">es_beta</span> <span class="o">=</span> <span class="n">es_beta</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_down</span><span class="p">))</span>
+        <span class="c1"># es_alpha.Sk should equal es_beta.Sk, so just pass one of them</span>
+        <span class="k">return</span> <span class="n">spin_squared</span><span class="p">(</span><span class="n">es_alpha</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">es_beta</span><span class="o">.</span><span class="n">state</span><span class="p">,</span> <span class="n">es_alpha</span><span class="o">.</span><span class="n">Sk</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="Hamiltonian.velocity"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.velocity">[docs]</a>    <span class="nd">@deprecate_method</span><span class="p">(</span><span class="s2">&quot;use Hamiltonian.eigenstate(...).velocity() instead&quot;</span><span class="p">,</span> <span class="s2">&quot;0.13.0&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">project</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the velocity for the eigenstates for a given `k` point</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        k : array_like, optional</span>
+<span class="sd">            k-point at which the velocities are calculated</span>
+<span class="sd">        project : {}</span>
+<span class="sd">            see `sisl.physics.electron.velocity` for details and possible arguments</span>
+<span class="sd">        **kwargs : optional</span>
+<span class="sd">            additional parameters passed to the `eigenstate` routine</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        eigenstate : method used to calculate the eigenstates</span>
+<span class="sd">        EigenvalueElectron.velocity : Underlying method used to calculate the velocity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">velocity</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="n">project</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Hamiltonian.spin_moment"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.spin_moment">[docs]</a>    <span class="nd">@deprecate_method</span><span class="p">(</span><span class="s2">&quot;use Hamiltonian.eigenstate(...).spin_moment() instead&quot;</span><span class="p">,</span> <span class="s2">&quot;0.13.0&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">spin_moment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">project</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the spin moment for the eigenstates for a given `k` point</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        k : array_like, optional</span>
+<span class="sd">            k-point at which the spin moments are calculated</span>
+<span class="sd">        project : bool, optional</span>
+<span class="sd">           whether the moments are orbitally resolved or not</span>
+<span class="sd">        **kwargs : optional</span>
+<span class="sd">            additional parameters passed to the `eigenstate` routine</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        eigenstate : method used to calculate the eigenstates</span>
+<span class="sd">        EigenvalueElectron.spin_moment : Underlying method used to calculate the spin moment</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">spin_moment</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Hamiltonian.DOS"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.DOS">[docs]</a>    <span class="nd">@deprecate_method</span><span class="p">(</span><span class="s2">&quot;use Hamiltonian.eigenstate(...).DOS() instead&quot;</span><span class="p">,</span> <span class="s2">&quot;0.13.0&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">DOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the DOS at the given energies for a specific `k` point</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        E : array_like</span>
+<span class="sd">            energies to calculate the DOS at</span>
+<span class="sd">        k : array_like, optional</span>
+<span class="sd">            k-point at which the DOS is calculated</span>
+<span class="sd">        distribution : func or str, optional</span>
+<span class="sd">            a function that accepts :math:`E-\epsilon` as argument and calculates the</span>
+<span class="sd">            distribution function.</span>
+<span class="sd">        **kwargs : optional</span>
+<span class="sd">            additional parameters passed to the `eigenvalue` routine</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        sisl.physics.distribution : setup a distribution function, see details regarding the `distribution` argument</span>
+<span class="sd">        eigenvalue : method used to calculate the eigenvalues</span>
+<span class="sd">        PDOS : Calculate projected DOS</span>
+<span class="sd">        EigenvalueElectron.DOS : Underlying method used to calculate the DOS</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigenvalue</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">DOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Hamiltonian.PDOS"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.PDOS">[docs]</a>    <span class="nd">@deprecate_method</span><span class="p">(</span><span class="s2">&quot;use Hamiltonian.eigenstate(...).PDOS() instead&quot;</span><span class="p">,</span> <span class="s2">&quot;0.13.0&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">PDOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the projected DOS at the given energies for a specific `k` point</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        E : array_like</span>
+<span class="sd">            energies to calculate the projected DOS at</span>
+<span class="sd">        k : array_like, optional</span>
+<span class="sd">            k-point at which the projected DOS is calculated</span>
+<span class="sd">        distribution : func or str, optional</span>
+<span class="sd">            a function that accepts :math:`E-\epsilon` as argument and calculates the</span>
+<span class="sd">            distribution function.</span>
+<span class="sd">        **kwargs : optional</span>
+<span class="sd">            additional parameters passed to the `eigenstate` routine</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        sisl.physics.distribution : setup a distribution function, see details regarding the `distribution` argument</span>
+<span class="sd">        eigenstate : method used to calculate the eigenstates</span>
+<span class="sd">        DOS : Calculate total DOS</span>
+<span class="sd">        EigenstateElectron.PDOS : Underlying method used to calculate the projected DOS</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">PDOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Hamiltonian.fermi_level"><a class="viewcode-back" href="../../../api/generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.fermi_level">[docs]</a>    <span class="k">def</span> <span class="nf">fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">bz</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;fermi_dirac&#39;</span><span class="p">,</span> <span class="n">q_tol</span><span class="o">=</span><span class="mf">1e-10</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Calculate the Fermi-level using a Brillouinzone sampling and a target charge</span>
+
+<span class="sd">        The Fermi-level will be calculated using an iterative approach by first calculating all eigenvalues</span>
+<span class="sd">        and subsequently fitting the Fermi level to the final charge (`q`).</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        bz : Brillouinzone, optional</span>
+<span class="sd">            sampled k-points and weights, the ``bz.parent`` will be equal to this object upon return</span>
+<span class="sd">            default to Gamma-point</span>
+<span class="sd">        q : float, list of float, optional</span>
+<span class="sd">            seeked charge, if not set will be equal to ``self.geometry.q0``. If a list of two is passed</span>
+<span class="sd">            there will be calculated a Fermi-level per spin-channel. If the Hamiltonian is not spin-polarized</span>
+<span class="sd">            the sum of the list will be used and only a single fermi-level will be returned.</span>
+<span class="sd">        distribution : str, func, optional</span>
+<span class="sd">            used distribution, must accept the keyword ``mu`` as parameter for the Fermi-level</span>
+<span class="sd">        q_tol : float, optional</span>
+<span class="sd">            tolerance of charge for finding the Fermi-level</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float or array_like</span>
+<span class="sd">            the Fermi-level of the system (or two if two different charges are passed)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">bz</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Gamma-point only</span>
+            <span class="kn">from</span> <span class="nn">.brillouinzone</span> <span class="kn">import</span> <span class="n">BrillouinZone</span>
+            <span class="n">bz</span> <span class="o">=</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Overwrite the parent in bz</span>
+            <span class="n">bz</span><span class="o">.</span><span class="n">set_parent</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">q</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_unpolarized</span><span class="p">:</span>
+                <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">q0</span> <span class="o">*</span> <span class="mf">0.5</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">q</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">q0</span>
+
+        <span class="c1"># Ensure we have an &quot;array&quot; in case of spin-polarized calculations</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">q</span> <span class="o">&lt;=</span> <span class="mf">0.</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.fermi_level cannot calculate the Fermi level &quot;</span>
+                             <span class="s2">&quot;for 0 electrons.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">distribution</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
+            <span class="n">distribution</span> <span class="o">=</span> <span class="n">get_distribution</span><span class="p">(</span><span class="n">distribution</span><span class="p">)</span>
+
+        <span class="c1"># B-cast for easier weights</span>
+        <span class="n">w</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">weight</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+        <span class="c1"># Internal class to calculate the Fermi-level</span>
+        <span class="k">def</span> <span class="nf">_Ef</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">eig</span><span class="p">):</span>
+            <span class="c1"># We could reduce it depending on the temperature,</span>
+            <span class="c1"># however the distribution does not have the kT</span>
+            <span class="c1"># parameter available.</span>
+            <span class="n">min_Ef</span><span class="p">,</span> <span class="n">max_Ef</span> <span class="o">=</span> <span class="n">eig</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">eig</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+
+            <span class="n">nextafter</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nextafter</span>
+            <span class="k">while</span> <span class="n">nextafter</span><span class="p">(</span><span class="n">min_Ef</span><span class="p">,</span> <span class="n">max_Ef</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">max_Ef</span><span class="p">:</span>
+                <span class="n">Ef</span> <span class="o">=</span> <span class="p">(</span><span class="n">min_Ef</span> <span class="o">+</span> <span class="n">max_Ef</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
+
+                <span class="c1"># Calculate guessed charge</span>
+                <span class="n">qt</span> <span class="o">=</span> <span class="p">(</span><span class="n">distribution</span><span class="p">(</span><span class="n">eig</span><span class="p">,</span> <span class="n">mu</span><span class="o">=</span><span class="n">Ef</span><span class="p">)</span> <span class="o">*</span> <span class="n">w</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">qt</span> <span class="o">-</span> <span class="n">q</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">q_tol</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">Ef</span>
+
+                <span class="k">if</span> <span class="n">qt</span> <span class="o">&gt;=</span> <span class="n">q</span><span class="p">:</span>
+                    <span class="n">max_Ef</span> <span class="o">=</span> <span class="n">Ef</span>
+                <span class="k">elif</span> <span class="n">qt</span> <span class="o">&lt;=</span> <span class="n">q</span><span class="p">:</span>
+                    <span class="n">min_Ef</span> <span class="o">=</span> <span class="n">Ef</span>
+
+            <span class="k">return</span> <span class="n">Ef</span>
+
+        <span class="c1"># Retrieve dispatcher for averaging</span>
+        <span class="n">eigh</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">apply</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">eigh</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_polarized</span> <span class="ow">and</span> <span class="n">q</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">q</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.fermi_level cannot calculate the Fermi level &quot;</span>
+                                 <span class="s2">&quot;for electrons (</span><span class="si">{q}</span><span class="s2">) equal to or above number of orbitals ({len(self)}).&quot;</span><span class="p">)</span>
+            <span class="c1"># We need to do Fermi-level separately since the user requests</span>
+            <span class="c1"># separate fillings</span>
+            <span class="n">Ef</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">emptyd</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">Ef</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">_Ef</span><span class="p">(</span><span class="n">q</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">eigh</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+            <span class="n">Ef</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">_Ef</span><span class="p">(</span><span class="n">q</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">eigh</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Ensure a single charge</span>
+            <span class="n">q</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">q</span> <span class="o">&gt;=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.fermi_level cannot calculate the Fermi level &quot;</span>
+                                 <span class="s2">&quot;for electrons (</span><span class="si">{q}</span><span class="s2">) equal to or above number of orbitals ({len(self)}).&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">is_polarized</span><span class="p">:</span>
+                <span class="n">Ef</span> <span class="o">=</span> <span class="n">_Ef</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">concatenate</span><span class="p">([</span><span class="n">eigh</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+                                            <span class="n">eigh</span><span class="p">(</span><span class="n">spin</span><span class="o">=</span><span class="mi">1</span><span class="p">)],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">Ef</span> <span class="o">=</span> <span class="n">_Ef</span><span class="p">(</span><span class="n">q</span><span class="p">,</span> <span class="n">eigh</span><span class="p">())</span>
+
+        <span class="k">return</span> <span class="n">Ef</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,1445 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.io.siesta.out &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/index.html">API documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>sisl.io.siesta.out</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sisl.io.siesta.out</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
+<span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
+<span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">lru_cache</span>
+
+<span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileSiesta</span>
+<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span><span class="p">,</span> <span class="n">SileError</span>
+
+<span class="kn">from</span> <span class="nn">sisl._common</span> <span class="kn">import</span> <span class="n">Opt</span>
+<span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
+<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">SuperCell</span>
+<span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="n">PropertyDict</span>
+<span class="kn">from</span> <span class="nn">sisl.utils.cmd</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">sisl.unit.siesta</span> <span class="kn">import</span> <span class="n">unit_convert</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;outSileSiesta&#39;</span><span class="p">]</span>
+
+
+<span class="n">Bohr2Ang</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s1">&#39;Bohr&#39;</span><span class="p">,</span> <span class="s1">&#39;Ang&#39;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_ensure_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Ensures that the atoms list is a list with entries (converts `None` to a list). &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">atoms</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">150</span><span class="p">)]</span>
+    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">150</span><span class="p">)]</span>
+    <span class="k">return</span> <span class="n">atoms</span>
+
+
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">outSileSiesta</span><span class="p">(</span><span class="n">SileSiesta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Output file from Siesta</span>
+
+<span class="sd">    This enables reading the output quantities from the Siesta output.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_completed</span> <span class="o">=</span> <span class="kc">None</span>
+
+    <span class="k">def</span> <span class="nf">readline</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="k">if</span> <span class="s1">&#39;Job completed&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">line</span>
+
+    <span class="n">readline</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="n">SileSiesta</span><span class="o">.</span><span class="n">readline</span><span class="o">.</span><span class="vm">__doc__</span>
+
+<div class="viewcode-block" id="outSileSiesta.completed"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.outSileSiesta.html#sisl.io.siesta.outSileSiesta.completed">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">completed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; True if the full file has been read and &quot;Job completed&quot; was found. &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">completed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;Job completed&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">completed</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span>
+        <span class="k">if</span> <span class="n">completed</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_completed</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">return</span> <span class="n">completed</span></div>
+
+<div class="viewcode-block" id="outSileSiesta.read_basis"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.outSileSiesta.html#sisl.io.siesta.outSileSiesta.read_basis">[docs]</a>    <span class="nd">@lru_cache</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+    <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">read_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Reads the basis as found in the output file</span>
+
+<span class="sd">        This parses 3 things:</span>
+
+<span class="sd">        1. At the start of the file there are some initatom output</span>
+<span class="sd">           specifying which species in the calculation.</span>
+<span class="sd">        2. Reading the &lt;basis_specs&gt; entries for the masses</span>
+<span class="sd">        3. Reading the PAO.Basis block output for orbital information</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">found</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;Species number:&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[]</span>
+
+        <span class="n">atoms</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">while</span> <span class="s1">&#39;Species number:&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+            <span class="n">ls</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">ls</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;Atomic&#39;</span><span class="p">:</span>
+                <span class="n">atoms</span><span class="p">[</span><span class="n">ls</span><span class="p">[</span><span class="mi">7</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Z&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="mi">5</span><span class="p">]),</span> <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="n">ls</span><span class="p">[</span><span class="mi">7</span><span class="p">]}</span>
+                <span class="n">order</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="mi">7</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">atoms</span><span class="p">[</span><span class="n">ls</span><span class="p">[</span><span class="mi">4</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;Z&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="mi">7</span><span class="p">]),</span> <span class="s1">&#39;tag&#39;</span><span class="p">:</span> <span class="n">ls</span><span class="p">[</span><span class="mi">4</span><span class="p">]}</span>
+                <span class="n">order</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+
+                <span class="c1"># Now go down to basis_specs</span>
+        <span class="n">found</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;&lt;basis_specs&gt;&quot;</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">found</span><span class="p">:</span>
+            <span class="c1"># =====</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="c1"># actual line</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)</span>
+            <span class="n">tag</span> <span class="o">=</span> <span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">atoms</span><span class="p">[</span><span class="n">tag</span><span class="p">][</span><span class="s2">&quot;mass&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">found</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;&lt;basis_specs&gt;&quot;</span><span class="p">,</span> <span class="n">reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="n">block</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">found</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;%block PAO.Basis&quot;</span><span class="p">)</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="k">while</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%e</span><span class="s2">ndblock PAO.Basis&quot;</span><span class="p">):</span>
+            <span class="n">block</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+
+        <span class="kn">from</span> <span class="nn">.fdf</span> <span class="kn">import</span> <span class="n">fdfSileSiesta</span>
+        <span class="n">atom_orbs</span> <span class="o">=</span> <span class="n">fdfSileSiesta</span><span class="o">.</span><span class="n">_parse_pao_basis</span><span class="p">(</span><span class="n">block</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">atom</span><span class="p">,</span> <span class="n">orbs</span> <span class="ow">in</span> <span class="n">atom_orbs</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">atoms</span><span class="p">[</span><span class="n">atom</span><span class="p">][</span><span class="s2">&quot;orbitals&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">orbs</span>
+
+        <span class="k">return</span> <span class="p">[</span><span class="n">Atom</span><span class="p">(</span><span class="o">**</span><span class="n">atoms</span><span class="p">[</span><span class="n">tag</span><span class="p">])</span> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="n">order</span><span class="p">]</span></div>
+
+    <span class="k">def</span> <span class="nf">_r_supercell_outcell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Wrapper for reading the unit-cell from the outcoor block &quot;&quot;&quot;</span>
+
+        <span class="c1"># Read until outcell is found</span>
+        <span class="n">found</span><span class="p">,</span> <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;outcell: Unit cell vectors&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">._r_supercell_outcell did not find outcell key&quot;</span><span class="p">)</span>
+
+        <span class="n">Ang</span> <span class="o">=</span> <span class="s1">&#39;Ang&#39;</span> <span class="ow">in</span> <span class="n">line</span>
+
+        <span class="c1"># We read the unit-cell vectors (in Ang)</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="n">cell</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="p">[:</span><span class="mi">3</span><span class="p">]])</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">Ang</span><span class="p">:</span>
+            <span class="n">cell</span> <span class="o">*=</span> <span class="n">Bohr2Ang</span>
+
+        <span class="k">return</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_r_geometry_outcoor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Wrapper for reading the geometry as in the outcoor output &quot;&quot;&quot;</span>
+        <span class="n">atoms_order</span> <span class="o">=</span> <span class="n">_ensure_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
+        <span class="n">is_final</span> <span class="o">=</span> <span class="s1">&#39;Relaxed&#39;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">or</span> <span class="s1">&#39;Final (unrelaxed)&#39;</span> <span class="ow">in</span> <span class="n">line</span>
+
+        <span class="c1"># Now we have outcoor</span>
+        <span class="n">scaled</span> <span class="o">=</span> <span class="s1">&#39;scaled&#39;</span> <span class="ow">in</span> <span class="n">line</span>
+        <span class="n">fractional</span> <span class="o">=</span> <span class="s1">&#39;fractional&#39;</span> <span class="ow">in</span> <span class="n">line</span>
+        <span class="n">Ang</span> <span class="o">=</span> <span class="s1">&#39;Ang&#39;</span> <span class="ow">in</span> <span class="n">line</span>
+
+        <span class="c1"># Read in data</span>
+        <span class="n">xyz</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">atoms</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">6</span><span class="p">:</span>
+                <span class="k">break</span>
+            <span class="n">xyz</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">line</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
+            <span class="n">atoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atoms_order</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span> <span class="o">-</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+
+        <span class="c1"># in outcoor we know it is always just after</span>
+        <span class="c1"># But not if not variable cell.</span>
+        <span class="c1"># Retrieve the unit-cell (but do not skip file-descriptor position)</span>
+        <span class="c1"># This is because the current unit-cell is not always written.</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_supercell_outcell</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">is_final</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">pos</span><span class="p">:</span>
+            <span class="c1"># we have wrapped around the file</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">SEEK_SET</span><span class="p">)</span>
+        <span class="n">xyz</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+
+        <span class="c1"># Now create the geometry</span>
+        <span class="k">if</span> <span class="n">scaled</span><span class="p">:</span>
+            <span class="c1"># The output file for siesta does not</span>
+            <span class="c1"># contain the lattice constant.</span>
+            <span class="c1"># So... :(</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Could not read the lattice-constant for the scaled geometry&quot;</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">fractional</span><span class="p">:</span>
+            <span class="n">xyz</span> <span class="o">=</span> <span class="n">xyz</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">Ang</span><span class="p">:</span>
+            <span class="n">xyz</span> <span class="o">*=</span> <span class="n">Bohr2Ang</span>
+
+        <span class="k">return</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">cell</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_r_geometry_atomic</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">line</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Wrapper for reading the geometry as in the outcoor output &quot;&quot;&quot;</span>
+        <span class="n">atoms_order</span> <span class="o">=</span> <span class="n">_ensure_atoms</span><span class="p">(</span><span class="n">atoms</span><span class="p">)</span>
+
+        <span class="c1"># Now we have outcoor</span>
+        <span class="n">Ang</span> <span class="o">=</span> <span class="s1">&#39;Ang&#39;</span> <span class="ow">in</span> <span class="n">line</span>
+
+        <span class="c1"># Read in data</span>
+        <span class="n">xyz</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">atoms</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="n">xyz</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="mi">4</span><span class="p">]])</span>
+            <span class="n">atoms</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">atoms_order</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+
+        <span class="c1"># Retrieve the unit-cell (but do not skip file-descriptor position)</span>
+        <span class="c1"># This is because the current unit-cell is not always written.</span>
+        <span class="n">pos</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_supercell_outcell</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fh</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="n">pos</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">SEEK_SET</span><span class="p">)</span>
+
+        <span class="c1"># Convert xyz</span>
+        <span class="n">xyz</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">Ang</span><span class="p">:</span>
+            <span class="n">xyz</span> <span class="o">*=</span> <span class="n">Bohr2Ang</span>
+
+        <span class="k">return</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">cell</span><span class="p">)</span>
+
+<div class="viewcode-block" id="outSileSiesta.read_geometry"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.outSileSiesta.html#sisl.io.siesta.outSileSiesta.read_geometry">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Reads the geometry from the Siesta output file</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        last: bool, optional</span>
+<span class="sd">           only read the last geometry</span>
+<span class="sd">        all: bool, optional</span>
+<span class="sd">           return a list of all geometries (like an MD)</span>
+<span class="sd">           If `True` `last` is ignored</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        geometries: list or Geometry or None</span>
+<span class="sd">             if all is False only one geometry will be returned (or None). Otherwise</span>
+<span class="sd">             a list of geometries corresponding to the MD-runs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">atoms</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_basis</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">:</span>
+            <span class="c1"># force last to be false</span>
+            <span class="n">last</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="k">def</span> <span class="nf">func_none</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot; Wrapper to return None &quot;&quot;&quot;</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="k">def</span> <span class="nf">next_geom</span><span class="p">():</span>
+            <span class="n">coord</span><span class="p">,</span> <span class="n">func</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">func_none</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span>
+            <span class="k">while</span> <span class="n">coord</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">line</span> <span class="o">!=</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                <span class="k">if</span> <span class="s1">&#39;outcoor&#39;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="s1">&#39;coordinates&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">coord</span><span class="p">,</span> <span class="n">func</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_geometry_outcoor</span>
+                <span class="k">elif</span> <span class="s1">&#39;siesta: Atomic coordinates&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                    <span class="n">coord</span><span class="p">,</span> <span class="n">func</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_r_geometry_atomic</span>
+            <span class="k">return</span> <span class="n">coord</span><span class="p">,</span> <span class="n">func</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">atoms</span><span class="p">)</span>
+
+        <span class="c1"># Read until a coordinate block is found</span>
+        <span class="n">geom0</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">mds</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="nb">all</span> <span class="ow">or</span> <span class="n">last</span><span class="p">:</span>
+            <span class="c1"># we need to read through all things!</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">coord</span><span class="p">,</span> <span class="n">geom</span> <span class="o">=</span> <span class="n">next_geom</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">coord</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="k">if</span> <span class="n">coord</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">geom0</span> <span class="o">=</span> <span class="n">geom</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">mds</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">geom</span><span class="p">)</span>
+
+            <span class="c1"># Since the user requests only the MD geometries</span>
+            <span class="c1"># we only return those</span>
+            <span class="k">if</span> <span class="n">last</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">mds</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">mds</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="k">return</span> <span class="n">geom0</span>
+            <span class="k">return</span> <span class="n">mds</span>
+
+        <span class="c1"># just read the next geometry we hit</span>
+        <span class="k">return</span> <span class="n">next_geom</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="outSileSiesta.read_force"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.outSileSiesta.html#sisl.io.siesta.outSileSiesta.read_force">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">read_force</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">total</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">max</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Reads the forces from the Siesta output file</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        last: bool, optional</span>
+<span class="sd">           only read the last force</span>
+<span class="sd">        all: bool, optional</span>
+<span class="sd">           return a list of all forces (like an MD)</span>
+<span class="sd">           If `True` `last` is ignored</span>
+<span class="sd">        total: bool, optional</span>
+<span class="sd">            return the total forces instead of the atomic forces.</span>
+<span class="sd">        max: bool, optional</span>
+<span class="sd">            whether only the maximum atomic force should be returned for each step.</span>
+
+<span class="sd">            Setting it to `True` is equivalent to `max(outSile.read_force())` in case atomic forces</span>
+<span class="sd">            are written in the output file (`WriteForces .true.` in the fdf file)</span>
+
+<span class="sd">            Note that this is not the same as doing `max(outSile.read_force(total=True))` since</span>
+<span class="sd">            the forces returned in that case are averages on each axis.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray or None</span>
+<span class="sd">            returns ``None`` if the forces are not found in the</span>
+<span class="sd">            output, otherwise forces will be returned</span>
+
+<span class="sd">            The shape of the array will be different depending on the type of forces requested:</span>
+<span class="sd">                - atomic (default): (nMDsteps, nAtoms, 3)</span>
+<span class="sd">                - total: (nMDsteps, 3)</span>
+<span class="sd">                - max: (nMDsteps, )</span>
+
+<span class="sd">            If `all` is `False`, the first dimension does not exist. In the case of max, the returned value</span>
+<span class="sd">            will therefore be just a float, not an array.</span>
+
+<span class="sd">            If `total` and `max` are both `True`, they are returned separately as a tuple: ``(total, max)``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">:</span>
+            <span class="n">last</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Read until forces are found</span>
+        <span class="k">def</span> <span class="nf">next_force</span><span class="p">():</span>
+
+            <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="k">while</span> <span class="ow">not</span> <span class="s1">&#39;siesta: Atomic forces&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">line</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+
+            <span class="c1"># Now read data</span>
+            <span class="n">F</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="k">if</span> <span class="s1">&#39;siesta:&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="c1"># This is the final summary, we don&#39;t need to read it as it does not contain new information</span>
+                <span class="c1"># and also it make break things since max forces are not written there</span>
+                <span class="k">return</span> <span class="kc">None</span>
+
+            <span class="c1"># First, we encounter the atomic forces</span>
+            <span class="k">while</span> <span class="s1">&#39;---&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">total</span> <span class="ow">or</span> <span class="nb">max</span><span class="p">):</span>
+                    <span class="n">F</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]])</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">line</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                    <span class="k">break</span>
+
+            <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="c1"># Then, the total forces</span>
+            <span class="k">if</span> <span class="n">total</span><span class="p">:</span>
+                <span class="n">F</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]]</span>
+
+            <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="c1">#And after that we can read the max force</span>
+            <span class="k">if</span> <span class="nb">max</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">())</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                <span class="n">maxF</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+
+                <span class="c1"># In case total is also requested, we are going to store it all in the same variable</span>
+                <span class="c1"># It will be separated later</span>
+                <span class="k">if</span> <span class="n">total</span><span class="p">:</span>
+                    <span class="n">F</span> <span class="o">=</span> <span class="p">(</span><span class="o">*</span><span class="n">F</span><span class="p">,</span> <span class="n">maxF</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">F</span> <span class="o">=</span> <span class="n">maxF</span>
+
+            <span class="k">return</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">return_forces</span><span class="p">(</span><span class="n">Fs</span><span class="p">):</span>
+            <span class="c1"># Handle cases where we can&#39;t now if they are found</span>
+            <span class="k">if</span> <span class="n">Fs</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="k">return</span> <span class="kc">None</span>
+            <span class="n">Fs</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">Fs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">max</span> <span class="ow">and</span> <span class="n">total</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">Fs</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">Fs</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="nb">max</span> <span class="ow">and</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">Fs</span><span class="o">.</span><span class="n">ravel</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">Fs</span>
+
+        <span class="k">if</span> <span class="nb">all</span> <span class="ow">or</span> <span class="n">last</span><span class="p">:</span>
+            <span class="c1"># list of all forces</span>
+            <span class="n">Fs</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">F</span> <span class="o">=</span> <span class="n">next_force</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">F</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="n">Fs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">F</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">last</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">return_forces</span><span class="p">(</span><span class="n">Fs</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+            <span class="k">return</span> <span class="n">return_forces</span><span class="p">(</span><span class="n">Fs</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">return_forces</span><span class="p">(</span><span class="n">next_force</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="outSileSiesta.read_stress"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.outSileSiesta.html#sisl.io.siesta.outSileSiesta.read_stress">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">read_stress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s1">&#39;static&#39;</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Reads the stresses from the Siesta output file</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        key : {&#39;static&#39;, &#39;total&#39;}</span>
+<span class="sd">           which stress to read from the output.</span>
+<span class="sd">        last: bool, optional</span>
+<span class="sd">           only read the last stress</span>
+<span class="sd">        all: bool, optional</span>
+<span class="sd">           return a list of all stresses (like an MD)</span>
+<span class="sd">           If `True` `last` is ignored</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray or None</span>
+<span class="sd">            returns ``None`` if the stresses are not found in the</span>
+<span class="sd">            output, otherwise stresses will be returned</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">all</span><span class="p">:</span>
+            <span class="n">last</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># Read until stress are found</span>
+        <span class="k">def</span> <span class="nf">next_stress</span><span class="p">():</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="k">while</span> <span class="ow">not</span> <span class="p">(</span><span class="s1">&#39;siesta: Stress tensor&#39;</span> <span class="ow">in</span> <span class="n">line</span> <span class="ow">and</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">line</span><span class="p">):</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">line</span> <span class="o">==</span> <span class="s1">&#39;&#39;</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">None</span>
+
+            <span class="c1"># Now read data</span>
+            <span class="n">S</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="n">S</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="p">[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]])</span>
+
+            <span class="k">return</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+
+        <span class="c1"># list of all stresses</span>
+        <span class="n">Ss</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">if</span> <span class="nb">all</span> <span class="ow">or</span> <span class="n">last</span><span class="p">:</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">S</span> <span class="o">=</span> <span class="n">next_stress</span><span class="p">()</span>
+                <span class="k">if</span> <span class="n">S</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">break</span>
+                <span class="n">Ss</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">S</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">last</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">Ss</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">completed</span><span class="p">()</span> <span class="ow">and</span> <span class="n">key</span> <span class="o">==</span> <span class="s1">&#39;static&#39;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">Ss</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">Ss</span>
+
+        <span class="k">return</span> <span class="n">next_stress</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="outSileSiesta.read_moment"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.outSileSiesta.html#sisl.io.siesta.outSileSiesta.read_moment">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">read_moment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">quantity</span><span class="o">=</span><span class="s1">&#39;S&#39;</span><span class="p">,</span> <span class="n">last</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">all</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Reads the moments from the Siesta output file</span>
+
+<span class="sd">        These will only be present in case of spin-orbit coupling.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        orbitals: bool, optional</span>
+<span class="sd">           return a table with orbitally resolved</span>
+<span class="sd">           moments.</span>
+<span class="sd">        quantity: {&#39;S&#39;, &#39;L&#39;}, optional</span>
+<span class="sd">           return the spin-moments or the L moments</span>
+<span class="sd">        last: bool, optional</span>
+<span class="sd">           only read the last force</span>
+<span class="sd">        all: bool, optional</span>
+<span class="sd">           return a list of all forces (like an MD)</span>
+<span class="sd">           If `True` `last` is ignored</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Read until outcoor is found</span>
+        <span class="n">itt</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">itt</span><span class="p">:</span>
+            <span class="k">if</span> <span class="s1">&#39;moments: Atomic&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+                <span class="k">break</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="s1">&#39;moments: Atomic&#39;</span> <span class="ow">in</span> <span class="n">line</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># The moments are printed in SPECIES list</span>
+        <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span> <span class="c1"># empty</span>
+        <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span> <span class="c1"># empty</span>
+
+        <span class="n">na</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="c1"># Loop the species</span>
+        <span class="n">tbl</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># Read the species label</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+            <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span> <span class="c1"># &quot;&quot;</span>
+            <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span> <span class="c1"># Atom    Orb ...</span>
+            <span class="c1"># Loop atoms in this species list</span>
+            <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Species&#39;</span><span class="p">)</span> <span class="ow">or</span> \
+                   <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;--&#39;</span><span class="p">):</span>
+                    <span class="k">break</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span>
+                <span class="n">atom</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">ia</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="k">while</span> <span class="ow">not</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;--&#39;</span><span class="p">):</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">ia</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">ia</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">elif</span> <span class="n">ia</span> <span class="o">!=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Error in moments formatting.&quot;</span><span class="p">)</span>
+                    <span class="c1"># Track maximum number of atoms</span>
+                    <span class="n">na</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">ia</span><span class="p">,</span> <span class="n">na</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">quantity</span> <span class="o">==</span> <span class="s1">&#39;S&#39;</span><span class="p">:</span>
+                        <span class="n">atom</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">7</span><span class="p">]])</span>
+                    <span class="k">elif</span> <span class="n">quantity</span> <span class="o">==</span> <span class="s1">&#39;L&#39;</span><span class="p">:</span>
+                        <span class="n">atom</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="p">[</span><span class="mi">7</span><span class="p">:</span><span class="mi">10</span><span class="p">]])</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">()</span> <span class="c1"># Total ...</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">orbitals</span><span class="p">:</span>
+                    <span class="n">ia</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">if</span> <span class="n">quantity</span> <span class="o">==</span> <span class="s1">&#39;S&#39;</span><span class="p">:</span>
+                        <span class="n">atom</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="p">[</span><span class="mi">4</span><span class="p">:</span><span class="mi">7</span><span class="p">]])</span>
+                    <span class="k">elif</span> <span class="n">quantity</span> <span class="o">==</span> <span class="s1">&#39;L&#39;</span><span class="p">:</span>
+                        <span class="n">atom</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">line</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">11</span><span class="p">]])</span>
+                <span class="n">tbl</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">ia</span><span class="p">,</span> <span class="n">atom</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;--&#39;</span><span class="p">):</span>
+                <span class="k">break</span>
+
+        <span class="c1"># Sort according to the atomic index</span>
+        <span class="n">moments</span> <span class="o">=</span> <span class="p">[]</span> <span class="o">*</span> <span class="n">na</span>
+
+        <span class="c1"># Insert in the correct atomic</span>
+        <span class="k">for</span> <span class="n">ia</span><span class="p">,</span> <span class="n">atom</span> <span class="ow">in</span> <span class="n">tbl</span><span class="p">:</span>
+            <span class="n">moments</span><span class="p">[</span><span class="n">ia</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">atom</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">moments</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">moments</span></div>
+
+<div class="viewcode-block" id="outSileSiesta.read_energy"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.outSileSiesta.html#sisl.io.siesta.outSileSiesta.read_energy">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">read_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Reads the final energy distribution</span>
+
+<span class="sd">        Currently the energies translated are:</span>
+
+<span class="sd">        ``band``</span>
+<span class="sd">             band structure energy</span>
+<span class="sd">        ``kinetic``</span>
+<span class="sd">             electronic kinetic energy</span>
+<span class="sd">        ``hartree``</span>
+<span class="sd">             electronic electrostatic Hartree energy</span>
+<span class="sd">        ``dftu``</span>
+<span class="sd">             DFT+U energy</span>
+<span class="sd">        ``spin_orbit``</span>
+<span class="sd">             spin-orbit energy</span>
+<span class="sd">        ``extE``</span>
+<span class="sd">             external field energy</span>
+<span class="sd">        ``xc``</span>
+<span class="sd">             exchange-correlation energy</span>
+<span class="sd">        ``exchange``</span>
+<span class="sd">             exchange energy</span>
+<span class="sd">        ``correlation``</span>
+<span class="sd">             correlation energy</span>
+<span class="sd">        ``bulkV``</span>
+<span class="sd">             bulk-bias correction energy</span>
+<span class="sd">        ``total``</span>
+<span class="sd">             total energy</span>
+<span class="sd">        ``negf``</span>
+<span class="sd">             NEGF energy</span>
+<span class="sd">        ``fermi``</span>
+<span class="sd">             Fermi energy</span>
+<span class="sd">        ``ion.electron``</span>
+<span class="sd">             ion-electron interaction energy</span>
+<span class="sd">        ``ion.ion``</span>
+<span class="sd">             ion-ion interaction energy</span>
+<span class="sd">        ``ion.kinetic``</span>
+<span class="sd">             kinetic ion energy</span>
+
+
+<span class="sd">        Any unrecognized key gets added *as is*.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; energies = sisl.get_sile(&quot;RUN.out&quot;).read_energy()</span>
+<span class="sd">        &gt;&gt;&gt; ion_energies = energies.ion</span>
+<span class="sd">        &gt;&gt;&gt; ion_energies.ion # ion-ion interaction energy</span>
+<span class="sd">        &gt;&gt;&gt; ion_energies.kinetic # ion kinetic energy</span>
+<span class="sd">        &gt;&gt;&gt; energies.fermi # fermi energy</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        PropertyDict : dictionary like lookup table ionic energies are stored in a nested `PropertyDict` at the key ``ion`` (all energies in eV)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">found</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s2">&quot;siesta: Final energy&quot;</span><span class="p">,</span> <span class="n">reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">PropertyDict</span><span class="p">()</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">ion</span> <span class="o">=</span> <span class="n">PropertyDict</span><span class="p">()</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">found</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">out</span>
+        <span class="n">itt</span> <span class="o">=</span> <span class="nb">iter</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+
+        <span class="c1"># Read data</span>
+        <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span>
+        <span class="n">name_conv</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;Band Struct.&quot;</span><span class="p">:</span> <span class="s2">&quot;band&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Kinetic&quot;</span><span class="p">:</span> <span class="s2">&quot;kinetic&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Hartree&quot;</span><span class="p">:</span> <span class="s2">&quot;hartree&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Edftu&quot;</span><span class="p">:</span> <span class="s2">&quot;dftu&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Eldau&quot;</span><span class="p">:</span> <span class="s2">&quot;dftu&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Eso&quot;</span><span class="p">:</span> <span class="s2">&quot;spin_orbit&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Ext. field&quot;</span><span class="p">:</span> <span class="s2">&quot;extE&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Exch.-corr.&quot;</span><span class="p">:</span> <span class="s2">&quot;xc&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Exch.&quot;</span><span class="p">:</span> <span class="s2">&quot;exchange&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Corr.&quot;</span><span class="p">:</span> <span class="s2">&quot;correlation&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Ekinion&quot;</span><span class="p">:</span> <span class="s2">&quot;ion.kinetic&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Ion-electron&quot;</span><span class="p">:</span> <span class="s2">&quot;ion.electron&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Ion-ion&quot;</span><span class="p">:</span> <span class="s2">&quot;ion.ion&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Bulk bias&quot;</span><span class="p">:</span> <span class="s2">&quot;bulkV&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Total&quot;</span><span class="p">:</span> <span class="s2">&quot;total&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Fermi&quot;</span><span class="p">:</span> <span class="s2">&quot;fermi&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;Enegf&quot;</span><span class="p">:</span> <span class="s2">&quot;negf&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">while</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">key</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;=&quot;</span><span class="p">)</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">key</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="n">name_conv</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;ion.&quot;</span><span class="p">):</span>
+                <span class="c1"># sub-nest</span>
+                <span class="n">out</span><span class="o">.</span><span class="n">ion</span><span class="p">[</span><span class="n">key</span><span class="p">[</span><span class="mi">4</span><span class="p">:]]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">out</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">itt</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">out</span></div>
+
+<div class="viewcode-block" id="outSileSiesta.read_data"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.outSileSiesta.html#sisl.io.siesta.outSileSiesta.read_data">[docs]</a>    <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Read specific content in the Siesta out file</span>
+
+<span class="sd">        The currently implemented things are denoted in</span>
+<span class="sd">        the parameters list.</span>
+<span class="sd">        Note that the returned quantities are in the order</span>
+<span class="sd">        of keywords, so:</span>
+
+<span class="sd">        &gt;&gt;&gt; read_data(geometry=True, force=True)</span>
+<span class="sd">        &lt;geometry&gt;, &lt;force&gt;</span>
+<span class="sd">        &gt;&gt;&gt; read_data(force=True, geometry=True)</span>
+<span class="sd">        &lt;force&gt;, &lt;geometry&gt;</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        geometry: bool, optional</span>
+<span class="sd">           read geometry, args are passed to `read_geometry`</span>
+<span class="sd">        force: bool, optional</span>
+<span class="sd">           read force, args are passed to `read_force`</span>
+<span class="sd">        stress: bool, optional</span>
+<span class="sd">           read stress, args are passed to `read_stress`</span>
+<span class="sd">        moment: bool, optional</span>
+<span class="sd">           read moment, args are passed to `read_moment` (only for spin-orbit calculations)</span>
+<span class="sd">        energy: bool, optional</span>
+<span class="sd">           read final energies, args are passed to `read_energy`</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">run</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="c1"># This loops ensures that we preserve the order of arguments</span>
+        <span class="c1"># From Py3.6 and onwards the **kwargs is an OrderedDictionary</span>
+        <span class="k">for</span> <span class="n">kw</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">kw</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">,</span> <span class="s1">&#39;force&#39;</span><span class="p">,</span> <span class="s1">&#39;moment&#39;</span><span class="p">,</span> <span class="s1">&#39;stress&#39;</span><span class="p">,</span> <span class="s1">&#39;energy&#39;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">kwargs</span><span class="p">[</span><span class="n">kw</span><span class="p">]:</span>
+                    <span class="n">run</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">kw</span><span class="p">)</span>
+
+        <span class="c1"># Clean running names</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">run</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+
+        <span class="n">val</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">run</span><span class="p">:</span>
+            <span class="n">val</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()))(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">val</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">val</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">val</span></div>
+
+<div class="viewcode-block" id="outSileSiesta.read_scf"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.outSileSiesta.html#sisl.io.siesta.outSileSiesta.read_scf">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">read_scf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="s2">&quot;scf&quot;</span><span class="p">,</span> <span class="n">iscf</span><span class="o">=-</span><span class="mi">1</span><span class="p">,</span> <span class="n">imd</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">as_dataframe</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Parse SCF information and return a table of SCF information depending on what is requested</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        key : {&#39;scf&#39;, &#39;ts-scf&#39;}</span>
+<span class="sd">            parse SCF information from Siesta SCF or TranSiesta SCF</span>
+<span class="sd">        iscf : int, optional</span>
+<span class="sd">            which SCF cycle should be stored. If ``-1`` only the final SCF step is stored,</span>
+<span class="sd">            for None *all* SCF cycles are returned. When `iscf` values queried are not found they</span>
+<span class="sd">            will be truncated to the nearest SCF step.</span>
+<span class="sd">        imd: int or None, optional</span>
+<span class="sd">            whether only a particular MD step is queried, if None, all MD steps are</span>
+<span class="sd">            parsed and returned. A negative number wraps for the last MD steps.</span>
+<span class="sd">        as_dataframe: boolean, optional</span>
+<span class="sd">            whether the information should be returned as a `pandas.DataFrame`. The advantage of this</span>
+<span class="sd">            format is that everything is indexed and therefore you know what each value means.You can also</span>
+<span class="sd">            perform operations very easily on a dataframe. </span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1">#These are the properties that are written in SIESTA scf</span>
+        <span class="n">props</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;iscf&quot;</span><span class="p">,</span> <span class="s2">&quot;Eharris&quot;</span><span class="p">,</span> <span class="s2">&quot;E_KS&quot;</span><span class="p">,</span> <span class="s2">&quot;FreeEng&quot;</span><span class="p">,</span> <span class="s2">&quot;dDmax&quot;</span><span class="p">,</span> <span class="s2">&quot;Ef&quot;</span><span class="p">,</span> <span class="s2">&quot;dHmax&quot;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">iscf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">iscf</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.read_scf requires iscf argument to *not* be 0!&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">imd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">imd</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.read_scf requires imd argument to *not* be 0!&quot;</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">reset_d</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">line</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;SCF cycle converged&#39;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">d</span><span class="p">[</span><span class="s1">&#39;_final_iscf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;SCF cycle continued&#39;</span><span class="p">):</span>
+                <span class="n">d</span><span class="p">[</span><span class="s1">&#39;_final_iscf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="k">def</span> <span class="nf">common_parse</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;ts-Vha:&#39;</span><span class="p">):</span>
+                <span class="n">d</span><span class="p">[</span><span class="s1">&#39;ts-Vha&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;bulk-bias: |v&#39;</span><span class="p">):</span>
+                <span class="n">d</span><span class="p">[</span><span class="s1">&#39;bb-v&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]))</span>
+                <span class="k">if</span> <span class="s1">&#39;bb-vx&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">props</span><span class="p">:</span>
+                    <span class="n">props</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;BB-vx&#39;</span><span class="p">,</span> <span class="s1">&#39;BB-vy&#39;</span><span class="p">,</span> <span class="s1">&#39;BB-vz&#39;</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;bulk-bias: {q&#39;</span><span class="p">):</span>
+                <span class="n">d</span><span class="p">[</span><span class="s1">&#39;bb-q&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="o">-</span><span class="mi">3</span><span class="p">:]))</span>
+                <span class="k">if</span> <span class="s1">&#39;bb-q+&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">props</span><span class="p">:</span>
+                    <span class="n">props</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s1">&#39;BB-q+&#39;</span><span class="p">,</span> <span class="s1">&#39;BB-q-&#39;</span><span class="p">,</span> <span class="s1">&#39;BB-q0&#39;</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+            <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">if</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;scf&#39;</span><span class="p">:</span>
+            <span class="k">def</span> <span class="nf">parse_next</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span>
+                <span class="n">reset_d</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">common_parse</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+                    <span class="k">pass</span>
+                <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;scf:&#39;</span><span class="p">):</span>
+                    <span class="n">d</span><span class="p">[</span><span class="s1">&#39;_found_iscf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">97</span><span class="p">:</span>
+                        <span class="c1"># this should be for Efup/dwn</span>
+                        <span class="c1"># but I think this will fail for as_dataframe (TODO)</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">9</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">9</span><span class="p">:</span><span class="mi">25</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">25</span><span class="p">:</span><span class="mi">41</span><span class="p">]),</span>
+                                <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">41</span><span class="p">:</span><span class="mi">57</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">57</span><span class="p">:</span><span class="mi">67</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">67</span><span class="p">:</span><span class="mi">77</span><span class="p">]),</span>
+                                <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">77</span><span class="p">:</span><span class="mi">87</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">87</span><span class="p">:</span><span class="mi">97</span><span class="p">])]</span>
+                    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">87</span><span class="p">:</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">9</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">9</span><span class="p">:</span><span class="mi">25</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">25</span><span class="p">:</span><span class="mi">41</span><span class="p">]),</span>
+                                <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">41</span><span class="p">:</span><span class="mi">57</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">57</span><span class="p">:</span><span class="mi">67</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">67</span><span class="p">:</span><span class="mi">77</span><span class="p">]),</span>
+                                <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">77</span><span class="p">:</span><span class="mi">87</span><span class="p">])]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># Populate DATA by splitting</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                        <span class="n">data</span> <span class="o">=</span>  <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">:]))</span>
+                    <span class="n">d</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+
+        <span class="k">elif</span> <span class="n">key</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="o">==</span> <span class="s1">&#39;ts-scf&#39;</span><span class="p">:</span>
+            <span class="n">props</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;ts-Vha&quot;</span><span class="p">)</span>
+            <span class="k">def</span> <span class="nf">parse_next</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+                <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="s1">&#39;0&#39;</span><span class="p">)</span>
+                <span class="n">reset_d</span><span class="p">(</span><span class="n">d</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">common_parse</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+                    <span class="k">pass</span>
+                <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;ts-q:&#39;</span><span class="p">):</span>
+                    <span class="n">data</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">d</span><span class="p">[</span><span class="s1">&#39;ts-q&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">data</span><span class="p">))</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="c1"># We are probably reading a device list</span>
+                        <span class="c1"># ensure that props are appended</span>
+                        <span class="k">if</span> <span class="n">data</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">props</span><span class="p">:</span>
+                            <span class="n">props</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                        <span class="k">pass</span>
+                <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;ts-scf:&#39;</span><span class="p">):</span>
+                    <span class="n">d</span><span class="p">[</span><span class="s1">&#39;_found_iscf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">100</span><span class="p">:</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">12</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">12</span><span class="p">:</span><span class="mi">28</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">28</span><span class="p">:</span><span class="mi">44</span><span class="p">]),</span>
+                                <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">44</span><span class="p">:</span><span class="mi">60</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">60</span><span class="p">:</span><span class="mi">70</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">70</span><span class="p">:</span><span class="mi">80</span><span class="p">]),</span>
+                                <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">80</span><span class="p">:</span><span class="mi">90</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">90</span><span class="p">:</span><span class="mi">100</span><span class="p">]),</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;ts-Vha&#39;</span><span class="p">]]</span> <span class="o">+</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;ts-q&#39;</span><span class="p">]</span>
+                    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">line</span><span class="p">)</span> <span class="o">==</span> <span class="mi">90</span><span class="p">:</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">8</span><span class="p">:</span><span class="mi">12</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">12</span><span class="p">:</span><span class="mi">28</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">28</span><span class="p">:</span><span class="mi">44</span><span class="p">]),</span>
+                                <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">44</span><span class="p">:</span><span class="mi">60</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">60</span><span class="p">:</span><span class="mi">70</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">70</span><span class="p">:</span><span class="mi">80</span><span class="p">]),</span>
+                                <span class="nb">float</span><span class="p">(</span><span class="n">line</span><span class="p">[</span><span class="mi">80</span><span class="p">:</span><span class="mi">90</span><span class="p">]),</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;ts-Vha&#39;</span><span class="p">]]</span> <span class="o">+</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;ts-q&#39;</span><span class="p">]</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="c1"># Populate DATA by splitting</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                        <span class="n">data</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span> <span class="o">+</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">:]))</span> <span class="o">+</span> <span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;ts-Vha&#39;</span><span class="p">]]</span> <span class="o">+</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;ts-q&#39;</span><span class="p">]</span>
+                    <span class="n">d</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span>
+
+        <span class="c1"># A temporary dictionary to hold information while reading the output file</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s1">&#39;_found_iscf&#39;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span>
+            <span class="s1">&#39;_final_iscf&#39;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="s1">&#39;data&#39;</span><span class="p">:</span> <span class="p">[],</span>
+        <span class="p">}</span>
+        <span class="n">md</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">scf</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">:</span>
+            <span class="n">parse_next</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;_found_iscf&#39;</span><span class="p">]:</span>
+                <span class="n">d</span><span class="p">[</span><span class="s1">&#39;_found_iscf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">continue</span>
+
+                <span class="k">if</span> <span class="n">iscf</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">iscf</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">scf</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;=</span> <span class="n">iscf</span><span class="p">:</span>
+                    <span class="c1"># this ensures we will retain the latest iscf in</span>
+                    <span class="c1"># case the requested iscf is too big</span>
+                    <span class="n">scf</span> <span class="o">=</span> <span class="n">data</span>
+
+            <span class="k">if</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;_final_iscf&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">d</span><span class="p">[</span><span class="s1">&#39;_final_iscf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+            <span class="k">elif</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;_final_iscf&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                <span class="n">d</span><span class="p">[</span><span class="s1">&#39;_final_iscf&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">data</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c1"># this traps the case where we read ts-scf</span>
+                    <span class="c1"># but find the final scf iteration.</span>
+                    <span class="c1"># In that case we don&#39;t have any data.</span>
+                    <span class="n">scf</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="k">continue</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">scf</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c1"># this traps cases where final_iscf has</span>
+                    <span class="c1"># been trickered but we haven&#39;t collected anything.</span>
+                    <span class="c1"># I.e. if key == scf but ts-scf also exists.</span>
+                    <span class="k">continue</span>
+
+                <span class="c1"># First figure out which iscf we should store</span>
+                <span class="k">if</span> <span class="n">iscf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span> <span class="c1"># or iscf &gt; 0</span>
+                    <span class="c1"># scf is correct</span>
+                    <span class="k">pass</span>
+                <span class="k">elif</span> <span class="n">iscf</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c1"># truncate to 0</span>
+                    <span class="n">scf</span> <span class="o">=</span> <span class="n">scf</span><span class="p">[</span><span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">scf</span><span class="p">)</span> <span class="o">+</span> <span class="n">iscf</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span>
+
+                <span class="c1"># Populate md</span>
+                <span class="n">md</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">scf</span><span class="p">))</span>
+                <span class="c1"># Reset SCF data</span>
+                <span class="n">scf</span> <span class="o">=</span> <span class="p">[]</span>
+
+                <span class="c1"># In case we wanted a given MD step and it&#39;s this one, just stop reading</span>
+                <span class="c1"># We are going to return the last MD (see below)</span>
+                <span class="k">if</span> <span class="n">imd</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">md</span><span class="p">):</span>
+                    <span class="k">break</span>
+
+        <span class="c1"># Define the function that is going to convert the information of a MDstep to a Dataset</span>
+        <span class="k">if</span> <span class="n">as_dataframe</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+            <span class="k">def</span> <span class="nf">MDstep_dataframe</span><span class="p">(</span><span class="n">scf</span><span class="p">):</span>
+                <span class="n">scf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">atleast_2d</span><span class="p">(</span><span class="n">scf</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+                    <span class="n">scf</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">1</span><span class="p">:],</span>
+                    <span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">(</span><span class="n">scf</span><span class="p">[</span><span class="o">...</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
+                                   <span class="n">name</span><span class="o">=</span><span class="s2">&quot;iscf&quot;</span><span class="p">),</span>
+                    <span class="n">columns</span><span class="o">=</span><span class="n">props</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+                <span class="p">)</span>
+
+        <span class="c1"># Now we know how many MD steps there are</span>
+
+        <span class="c1"># We will return stuff based on what the user requested</span>
+        <span class="c1"># For pandas DataFrame this will be dependent</span>
+        <span class="c1">#  1. all MD steps requested =&gt; imd == index, iscf == column (regardless of iscf==none|int)</span>
+        <span class="c1">#  2. 1 MD step requested =&gt; iscf == index</span>
+
+        <span class="k">if</span> <span class="n">imd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">as_dataframe</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">md</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="c1"># return an empty dataframe (with imd as index)</span>
+                    <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;imd&quot;</span><span class="p">),</span>
+                                        <span class="n">columns</span><span class="o">=</span><span class="n">props</span><span class="p">)</span>
+                <span class="c1"># Regardless of what the user requests we will always have imd == index</span>
+                <span class="c1"># and iscf a column, a user may easily change this.</span>
+                <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">MDstep_dataframe</span><span class="p">,</span> <span class="n">md</span><span class="p">),</span>
+                               <span class="n">keys</span><span class="o">=</span><span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">md</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;imd&quot;</span><span class="p">])</span>
+                <span class="k">if</span> <span class="n">iscf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">df</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="s2">&quot;iscf&quot;</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">df</span>
+
+            <span class="k">if</span> <span class="n">iscf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># since each MD step may be a different number of SCF steps</span>
+                <span class="c1"># we cannot convert to a dense array</span>
+                <span class="k">return</span> <span class="n">md</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">md</span><span class="p">)</span>
+
+        <span class="c1"># correct imd to ensure we check against the final size</span>
+        <span class="n">imd</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">md</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">max</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">md</span><span class="p">)</span> <span class="o">+</span> <span class="n">imd</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">md</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># no data collected</span>
+            <span class="k">if</span> <span class="n">as_dataframe</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;iscf&quot;</span><span class="p">),</span>
+                                    <span class="n">columns</span><span class="o">=</span><span class="n">props</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="n">imd</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">imd</span> <span class="o">&gt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">md</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.read_scf could not find requested MD step (</span><span class="si">{</span><span class="n">imd</span><span class="si">}</span><span class="s2">).&quot;</span><span class="p">)</span>
+
+        <span class="c1"># If a certain imd was requested, get it</span>
+        <span class="c1"># Remember that if imd is positive, we stopped reading at the moment we reached it</span>
+        <span class="n">scf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">md</span><span class="p">[</span><span class="n">imd</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">as_dataframe</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">MDstep_dataframe</span><span class="p">(</span><span class="n">scf</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">scf</span></div>
+
+<div class="viewcode-block" id="outSileSiesta.read_charge"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.outSileSiesta.html#sisl.io.siesta.outSileSiesta.read_charge">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">read_charge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">iscf</span><span class="o">=</span><span class="n">Opt</span><span class="o">.</span><span class="n">ANY</span><span class="p">,</span> <span class="n">imd</span><span class="o">=</span><span class="n">Opt</span><span class="o">.</span><span class="n">ANY</span><span class="p">,</span> <span class="n">key_scf</span><span class="o">=</span><span class="s2">&quot;scf&quot;</span><span class="p">,</span> <span class="n">as_dataframe</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;Read charges calculated in SCF loop or MD loop (or both)</span>
+
+<span class="sd">        Siesta enables many different modes of writing out charges.</span>
+
+<span class="sd">        NOTE: currently Mulliken charges are not implemented.</span>
+
+<span class="sd">        The below table shows a list of different cases that</span>
+<span class="sd">        may be encountered, the letters are referred to in the</span>
+<span class="sd">        return section to indicate what is returned.</span>
+
+<span class="sd">        +-----------+-----+-----+--------+-------+------------------+</span>
+<span class="sd">        | Case      | *A* | *B* | *C*    | *D*   | *E*              |</span>
+<span class="sd">        +-----------+-----+-----+--------+-------+------------------+</span>
+<span class="sd">        | Charge    | MD  | SCF | MD+SCF | Final | Orbital resolved |</span>
+<span class="sd">        +-----------+-----+-----+--------+-------+------------------+</span>
+<span class="sd">        | Voronoi   | +   | +   | +      | +     | -                |</span>
+<span class="sd">        +-----------+-----+-----+--------+-------+------------------+</span>
+<span class="sd">        | Hirshfeld | +   | +   | +      | +     | -                |</span>
+<span class="sd">        +-----------+-----+-----+--------+-------+------------------+</span>
+<span class="sd">        | Mulliken  | +   | +   | +      | +     | +                |</span>
+<span class="sd">        +-----------+-----+-----+--------+-------+------------------+</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Errors will be raised if one requests information not present. I.e.</span>
+<span class="sd">        passing an integer or `Opt.ALL` for `iscf` will raise an error if</span>
+<span class="sd">        the SCF charges are not present. For `Opt.ANY` it will return</span>
+<span class="sd">        the most information, effectively SCF will be returned if present.</span>
+
+<span class="sd">        Currently Mulliken is not implemented, any help in reading this would be</span>
+<span class="sd">        very welcome.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        name: {&quot;voronoi&quot;, &quot;hirshfeld&quot;}</span>
+<span class="sd">            the name of the charges that you want to read</span>
+<span class="sd">        iscf: int or Opt, optional</span>
+<span class="sd">            index (0-based) of the scf iteration you want the charges for.</span>
+<span class="sd">            If the enum specifier `Opt.ANY` or `Opt.ALL` are used, then</span>
+<span class="sd">            the returned quantities depend on what is present.</span>
+<span class="sd">            If ``None/Opt.NONE`` it will not return any SCF charges.</span>
+<span class="sd">            If both `imd` and `iscf` are ``None`` then only the final charges will be returned.</span>
+<span class="sd">        imd: int or Opt, optional</span>
+<span class="sd">            index (0-based) of the md step you want the charges for.</span>
+<span class="sd">            If the enum specifier `Opt.ANY` or `Opt.ALL` are used, then</span>
+<span class="sd">            the returned quantities depend on what is present.</span>
+<span class="sd">            If ``None/Opt.NONE`` it will not return any MD charges.</span>
+<span class="sd">            If both `imd` and `iscf` are ``None`` then only the final charges will be returned.</span>
+<span class="sd">        key_scf : str, optional</span>
+<span class="sd">            the key lookup for the scf iterations (a &quot;:&quot; will automatically be appended)</span>
+<span class="sd">        as_dataframe: boolean, optional</span>
+<span class="sd">            whether charges should be returned as a pandas dataframe.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">            if a specific MD+SCF index is requested (or special cases where output is</span>
+<span class="sd">            not complete)</span>
+<span class="sd">        list of numpy.ndarray</span>
+<span class="sd">            if one both `iscf` or `imd` is different from ``None/Opt.NONE``.</span>
+<span class="sd">        pandas.DataFrame</span>
+<span class="sd">            if `as_dataframe` is requested. The dataframe will have multi-indices if multiple</span>
+<span class="sd">            SCF or MD steps are requested.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;fh&#39;</span><span class="p">):</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">read_charge</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">iscf</span><span class="p">,</span> <span class="n">imd</span><span class="p">,</span> <span class="n">key_scf</span><span class="p">,</span> <span class="n">as_dataframe</span><span class="p">)</span>
+        <span class="n">namel</span> <span class="o">=</span> <span class="n">name</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">as_dataframe</span><span class="p">:</span>
+            <span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+            <span class="k">def</span> <span class="nf">_empty_charge</span><span class="p">():</span>
+                <span class="c1"># build a fake dataframe with no indices</span>
+                <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">Index</span><span class="p">([],</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;atom&quot;</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">),</span>
+                                    <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">pd</span> <span class="o">=</span> <span class="kc">None</span>
+            <span class="k">def</span> <span class="nf">_empty_charge</span><span class="p">():</span>
+                <span class="c1"># return for single value with nan values</span>
+                <span class="k">return</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayf</span><span class="p">([[</span><span class="kc">None</span><span class="p">]])</span>
+
+        <span class="c1"># define helper function for reading voronoi+hirshfeld charges</span>
+        <span class="k">def</span> <span class="nf">_voronoi_hirshfeld_charges</span><span class="p">():</span>
+            <span class="sd">&quot;&quot;&quot; Read output from Voronoi/Hirshfeld charges &quot;&quot;&quot;</span>
+            <span class="k">nonlocal</span> <span class="n">pd</span>
+
+            <span class="c1"># Expecting something like this:</span>
+            <span class="c1"># Voronoi Atomic Populations:</span>
+            <span class="c1"># Atom #     dQatom  Atom pop         S        Sx        Sy        Sz  Species</span>
+            <span class="c1">#      1   -0.02936   4.02936   0.00000  -0.00000   0.00000   0.00000  C</span>
+
+            <span class="c1"># Define the function that parses the charges</span>
+            <span class="k">def</span> <span class="nf">_parse_charge</span><span class="p">(</span><span class="n">line</span><span class="p">):</span>
+                <span class="n">atom_idx</span><span class="p">,</span> <span class="o">*</span><span class="n">vals</span><span class="p">,</span> <span class="n">symbol</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="c1"># assert that this is a proper line</span>
+                <span class="c1"># this should catch cases where the following line of charge output</span>
+                <span class="c1"># is still parseable</span>
+                <span class="n">atom_idx</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">atom_idx</span><span class="p">)</span>
+                <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">vals</span><span class="p">))</span>
+
+            <span class="c1"># first line is the header</span>
+            <span class="n">header</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                      <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;dQatom&quot;</span><span class="p">,</span> <span class="s2">&quot;dq&quot;</span><span class="p">)</span> <span class="c1"># dQatom in master</span>
+                      <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; Qatom&quot;</span><span class="p">,</span> <span class="s2">&quot; dq&quot;</span><span class="p">)</span> <span class="c1"># Qatom in 4.1</span>
+                      <span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;Atom pop&quot;</span><span class="p">,</span> <span class="s2">&quot;e&quot;</span><span class="p">)</span> <span class="c1"># not found in 4.1</span>
+                      <span class="o">.</span><span class="n">split</span><span class="p">())[</span><span class="mi">2</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+            <span class="c1"># We have found the header, prepare a list to read the charges</span>
+            <span class="n">atom_charges</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span>
+            <span class="k">while</span> <span class="n">line</span> <span class="o">!=</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">line</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                    <span class="n">charge_vals</span> <span class="o">=</span> <span class="n">_parse_charge</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                    <span class="n">atom_charges</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">charge_vals</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="c1"># We already have the charge values and we reached a line that can&#39;t be parsed,</span>
+                    <span class="c1"># this means we have reached the end.</span>
+                    <span class="k">break</span>
+            <span class="k">if</span> <span class="n">pd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># not as_dataframe</span>
+                <span class="k">return</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayf</span><span class="p">(</span><span class="n">atom_charges</span><span class="p">)</span>
+
+            <span class="c1"># determine how many columns we have</span>
+            <span class="c1"># this will remove atom indices and species, so only inside</span>
+            <span class="n">ncols</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">atom_charges</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="k">assert</span> <span class="n">ncols</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+
+            <span class="c1"># the precision is limited, so no need for double precision</span>
+            <span class="k">return</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">atom_charges</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">header</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">,</span>
+                                <span class="n">index</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">RangeIndex</span><span class="p">(</span><span class="n">stop</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">atom_charges</span><span class="p">),</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;atom&quot;</span><span class="p">))</span>
+
+        <span class="c1"># define helper function for reading voronoi+hirshfeld charges</span>
+        <span class="k">def</span> <span class="nf">_mulliken_charges</span><span class="p">():</span>
+            <span class="sd">&quot;&quot;&quot; Read output from Mulliken charges &quot;&quot;&quot;</span>
+            <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Mulliken charges are not implemented currently&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Check that a known charge has been requested</span>
+        <span class="k">if</span> <span class="n">namel</span> <span class="o">==</span> <span class="s2">&quot;voronoi&quot;</span><span class="p">:</span>
+            <span class="n">_r_charge</span> <span class="o">=</span> <span class="n">_voronoi_hirshfeld_charges</span>
+            <span class="n">charge_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Voronoi Atomic Populations&quot;</span><span class="p">,</span>
+                           <span class="s2">&quot;Voronoi Net Atomic Populations&quot;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">namel</span> <span class="o">==</span> <span class="s2">&quot;hirshfeld&quot;</span><span class="p">:</span>
+            <span class="n">_r_charge</span> <span class="o">=</span> <span class="n">_voronoi_hirshfeld_charges</span>
+            <span class="n">charge_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Hirshfeld Atomic Populations&quot;</span><span class="p">,</span>
+                           <span class="s2">&quot;Hirshfeld Net Atomic Populations&quot;</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">namel</span> <span class="o">==</span> <span class="s2">&quot;mulliken&quot;</span><span class="p">:</span>
+            <span class="n">_r_charge</span> <span class="o">=</span> <span class="n">_mulliken_charges</span>
+            <span class="n">charge_keys</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;mulliken: Atomic and Orbital Populations&quot;</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.read_charge name argument should be one of </span><span class="si">{</span><span class="n">known_charges</span><span class="si">}</span><span class="s2">, got </span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">?&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Ensure the key_scf matches exactly (prepend a space)</span>
+        <span class="n">key_scf</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot; </span><span class="si">{</span><span class="n">key_scf</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span><span class="si">}</span><span class="s2">:&quot;</span>
+
+        <span class="c1"># Reading charges may be quite time consuming for large MD simulations.</span>
+
+        <span class="c1"># to see if we finished a MD read, we check for these keys</span>
+        <span class="n">search_keys</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="c1"># two keys can signal ending SCF</span>
+            <span class="s2">&quot;SCF Convergence&quot;</span><span class="p">,</span> <span class="s2">&quot;SCF_NOT_CONV&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;siesta: Final energy&quot;</span><span class="p">,</span>
+            <span class="n">key_scf</span><span class="p">,</span>
+            <span class="o">*</span><span class="n">charge_keys</span>
+        <span class="p">]</span>
+        <span class="c1"># adjust the below while loop to take into account any additional</span>
+        <span class="c1"># segments of search_keys</span>
+        <span class="n">IDX_SCF_END</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+        <span class="n">IDX_FINAL</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">IDX_SCF</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="c1"># the rest are charge keys</span>
+        <span class="n">IDX_CHARGE</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">search_keys</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">charge_keys</span><span class="p">),</span>
+                                <span class="nb">len</span><span class="p">(</span><span class="n">search_keys</span><span class="p">)))</span>
+
+        <span class="c1"># state to figure out where we are</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">PropertyDict</span><span class="p">()</span>
+        <span class="n">state</span><span class="o">.</span><span class="n">INITIAL</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="n">state</span><span class="o">.</span><span class="n">MD</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">state</span><span class="o">.</span><span class="n">SCF</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="n">state</span><span class="o">.</span><span class="n">CHARGE</span> <span class="o">=</span> <span class="mi">3</span>
+        <span class="n">state</span><span class="o">.</span><span class="n">FINAL</span> <span class="o">=</span> <span class="mi">4</span>
+
+        <span class="c1"># a list of scf_charge</span>
+        <span class="n">md_charge</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">md_scf_charge</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">scf_charge</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">final_charge</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># signal that any first reads are INITIAL charges</span>
+        <span class="n">current_state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">INITIAL</span>
+        <span class="n">charge</span> <span class="o">=</span> <span class="n">_empty_charge</span><span class="p">()</span>
+        <span class="n">FOUND_SCF</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">FOUND_MD</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">FOUND_FINAL</span> <span class="o">=</span> <span class="kc">False</span>
+
+        <span class="c1"># TODO whalrus</span>
+        <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="n">search_keys</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ret_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">while</span> <span class="n">ret</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+            <span class="k">if</span> <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">in</span> <span class="n">IDX_SCF_END</span><span class="p">:</span>
+                <span class="c1"># we finished all SCF iterations</span>
+                <span class="n">current_state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">MD</span>
+                <span class="n">md_scf_charge</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scf_charge</span><span class="p">)</span>
+                <span class="n">scf_charge</span> <span class="o">=</span> <span class="p">[]</span>
+
+            <span class="k">elif</span> <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">in</span> <span class="n">IDX_SCF</span><span class="p">:</span>
+                <span class="n">current_state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">SCF</span>
+                <span class="c1"># collect scf-charges (possibly none)</span>
+                <span class="n">scf_charge</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">charge</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">in</span> <span class="n">IDX_FINAL</span><span class="p">:</span>
+                <span class="n">current_state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">FINAL</span>
+                <span class="c1"># don&#39;t do anything, this is the final charge construct</span>
+                <span class="c1"># regardless of where it comes from.</span>
+
+            <span class="k">elif</span> <span class="n">ret</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">in</span> <span class="n">IDX_CHARGE</span><span class="p">:</span>
+                <span class="n">FOUND_CHARGE</span> <span class="o">=</span> <span class="kc">True</span>
+                <span class="c1"># also read charge</span>
+                <span class="n">charge</span> <span class="o">=</span> <span class="n">_r_charge</span><span class="p">()</span>
+
+                <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">INITIAL</span> <span class="o">==</span> <span class="n">current_state</span> <span class="ow">or</span> <span class="n">state</span><span class="o">.</span><span class="n">CHARGE</span> <span class="o">==</span> <span class="n">current_state</span><span class="p">:</span>
+                    <span class="c1"># this signals scf charges</span>
+                    <span class="n">FOUND_SCF</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="c1"># There *could* be 2 steps if we are mixing H,</span>
+                    <span class="c1"># this is because it first does</span>
+                    <span class="c1"># compute H -&gt; compute DM -&gt; compute H</span>
+                    <span class="c1"># in the first iteration, subsequently we only do</span>
+                    <span class="c1"># compute compute DM -&gt; compute H</span>
+                    <span class="c1"># once we hit ret[2] in IDX_SCF we will append</span>
+                    <span class="n">scf_charge</span> <span class="o">=</span> <span class="p">[]</span>
+
+                <span class="k">elif</span> <span class="n">state</span><span class="o">.</span><span class="n">MD</span> <span class="o">==</span> <span class="n">current_state</span><span class="p">:</span>
+                    <span class="n">FOUND_MD</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="c1"># we just finished an SCF cycle.</span>
+                    <span class="c1"># So any output between SCF ending and</span>
+                    <span class="c1"># a new one beginning *must* be that geometries</span>
+                    <span class="c1"># charge</span>
+
+                    <span class="c1"># Here `charge` may be NONE signalling</span>
+                    <span class="c1"># we don&#39;t have charge in MD steps.</span>
+                    <span class="n">md_charge</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">charge</span><span class="p">)</span>
+
+                    <span class="c1"># reset charge</span>
+                    <span class="n">charge</span> <span class="o">=</span> <span class="n">_empty_charge</span><span class="p">()</span>
+
+                <span class="k">elif</span> <span class="n">state</span><span class="o">.</span><span class="n">SCF</span> <span class="o">==</span> <span class="n">current_state</span><span class="p">:</span>
+                    <span class="n">FOUND_SCF</span> <span class="o">=</span> <span class="kc">True</span>
+
+                <span class="k">elif</span> <span class="n">state</span><span class="o">.</span><span class="n">FINAL</span> <span class="o">==</span> <span class="n">current_state</span><span class="p">:</span>
+                    <span class="n">FOUND_FINAL</span> <span class="o">=</span> <span class="kc">True</span>
+                    <span class="c1"># a special state writing out the charges after everything</span>
+                    <span class="n">final_charge</span> <span class="o">=</span> <span class="n">charge</span>
+                    <span class="n">charge</span> <span class="o">=</span> <span class="n">_empty_charge</span><span class="p">()</span>
+                    <span class="n">scf_charge</span> <span class="o">=</span> <span class="p">[]</span>
+                    <span class="c1"># we should be done and no other charge reads should be found!</span>
+                    <span class="c1"># should we just break?</span>
+
+                <span class="n">current_state</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">CHARGE</span>
+
+            <span class="c1"># step to next entry</span>
+            <span class="n">ret</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="n">search_keys</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ret_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">reread</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">any</span><span class="p">((</span><span class="n">FOUND_SCF</span><span class="p">,</span> <span class="n">FOUND_MD</span><span class="p">,</span> <span class="n">FOUND_FINAL</span><span class="p">)):</span>
+            <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="s2"> does not contain any charges (</span><span class="si">{</span><span class="n">name</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+
+        <span class="c1"># if the scf-charges are not stored, it means that the MD step finalization</span>
+        <span class="c1"># has not been read. So correct</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">scf_charge</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;this test shouldn&#39;t reach here&quot;</span>
+            <span class="c1"># we must not have read through the entire MD step</span>
+            <span class="c1"># so this has to be a running simulation</span>
+            <span class="k">if</span> <span class="n">charge</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">scf_charge</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">charge</span><span class="p">)</span>
+                <span class="n">charge</span> <span class="o">=</span> <span class="n">_empty_charge</span><span class="p">()</span>
+            <span class="n">md_scf_charge</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">scf_charge</span><span class="p">)</span>
+
+        <span class="c1"># otherwise there is some *parsing* error, so for now we use assert</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">scf_charge</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+
+        <span class="k">if</span> <span class="n">as_dataframe</span><span class="p">:</span>
+            <span class="c1"># convert data to proper data structures</span>
+            <span class="c1"># regardless of user requests. This is an overhead... But probably not that big of a problem.</span>
+            <span class="k">if</span> <span class="n">FOUND_SCF</span><span class="p">:</span>
+                <span class="n">md_scf_charge</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">iscf</span><span class="p">,</span>
+                                                     <span class="n">keys</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">RangeIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">iscf</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;iscf&quot;</span><span class="p">))</span>
+                                           <span class="k">for</span> <span class="n">iscf</span> <span class="ow">in</span> <span class="n">md_scf_charge</span><span class="p">],</span>
+                                          <span class="n">keys</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">RangeIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">md_scf_charge</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;imd&quot;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="n">FOUND_MD</span><span class="p">:</span>
+                <span class="n">md_charge</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">md_charge</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">RangeIndex</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">md_charge</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s2">&quot;imd&quot;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">FOUND_SCF</span><span class="p">:</span>
+                <span class="n">nan_array</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">emptyf</span><span class="p">(</span><span class="n">md_scf_charge</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+                <span class="n">nan_array</span><span class="o">.</span><span class="n">fill</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">nan</span><span class="p">)</span>
+                <span class="k">def</span> <span class="nf">get_md_scf_charge</span><span class="p">(</span><span class="n">scf_charge</span><span class="p">,</span> <span class="n">iscf</span><span class="p">):</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">scf_charge</span><span class="p">[</span><span class="n">iscf</span><span class="p">]</span>
+                    <span class="k">except</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="n">nan_array</span>
+            <span class="k">if</span> <span class="n">FOUND_MD</span><span class="p">:</span>
+                <span class="n">md_charge</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">md_charge</span><span class="p">)</span>
+
+        <span class="c1"># option parsing is a bit *difficult* with flag enums</span>
+        <span class="c1"># So first figure out what is there, and handle this based</span>
+        <span class="c1"># on arguments</span>
+        <span class="k">def</span> <span class="nf">_p</span><span class="p">(</span><span class="n">flag</span><span class="p">,</span> <span class="n">found</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot; Helper routine to do the following:</span>
+
+<span class="sd">            Returns</span>
+<span class="sd">            -------</span>
+<span class="sd">            is_opt : bool</span>
+<span class="sd">                whether the flag is an `Opt`</span>
+<span class="sd">            flag :</span>
+<span class="sd">                corrected flag</span>
+<span class="sd">            &quot;&quot;&quot;</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flag</span><span class="p">,</span> <span class="n">Opt</span><span class="p">):</span>
+                <span class="c1"># correct flag depending on what `found` is</span>
+                <span class="c1"># If the values have been found we</span>
+                <span class="c1"># change flag to None only if flag == NONE</span>
+                <span class="c1"># If the case has not been found, we</span>
+                <span class="c1"># change flag to None if ANY or NONE is in flags</span>
+
+                <span class="k">if</span> <span class="n">found</span><span class="p">:</span>
+                    <span class="c1"># flag is only NONE, then pass none</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">Opt</span><span class="o">.</span><span class="n">NONE</span> <span class="o">^</span> <span class="n">flag</span><span class="p">):</span>
+                        <span class="n">flag</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">else</span><span class="p">:</span> <span class="c1"># not found</span>
+                    <span class="c1"># we convert flag to none</span>
+                    <span class="c1"># if ANY or NONE in flag</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">Opt</span><span class="o">.</span><span class="n">NONE</span> <span class="o">|</span> <span class="n">Opt</span><span class="o">.</span><span class="n">ANY</span><span class="p">)</span> <span class="o">&amp;</span> <span class="n">flag</span><span class="p">:</span>
+                        <span class="n">flag</span> <span class="o">=</span> <span class="kc">None</span>
+
+            <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">flag</span><span class="p">,</span> <span class="n">Opt</span><span class="p">),</span> <span class="n">flag</span>
+
+        <span class="n">opt_imd</span><span class="p">,</span> <span class="n">imd</span> <span class="o">=</span> <span class="n">_p</span><span class="p">(</span><span class="n">imd</span><span class="p">,</span> <span class="n">FOUND_MD</span><span class="p">)</span>
+        <span class="n">opt_iscf</span><span class="p">,</span> <span class="n">iscf</span> <span class="o">=</span> <span class="n">_p</span><span class="p">(</span><span class="n">iscf</span><span class="p">,</span> <span class="n">FOUND_SCF</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">FOUND_SCF</span> <span class="ow">or</span> <span class="n">FOUND_MD</span><span class="p">):</span>
+            <span class="c1"># none of these are found</span>
+            <span class="c1"># we request that user does not request any input</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">opt_iscf</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">iscf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">))</span> <span class="ow">or</span> \
+               <span class="p">(</span><span class="n">opt_imd</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">imd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="s2"> does not contain MD/SCF charges&quot;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">FOUND_SCF</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">opt_iscf</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">iscf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="s2"> does not contain SCF charges&quot;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="ow">not</span> <span class="n">FOUND_MD</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">opt_imd</span> <span class="ow">or</span> <span class="p">(</span><span class="ow">not</span> <span class="n">imd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="si">!s}</span><span class="s2"> does not contain MD charges&quot;</span><span class="p">)</span>
+
+        <span class="c1"># if either are options they may hold</span>
+        <span class="k">if</span> <span class="n">opt_imd</span> <span class="ow">and</span> <span class="n">opt_iscf</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">FOUND_SCF</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">md_scf_charge</span>
+            <span class="k">elif</span> <span class="n">FOUND_MD</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">md_charge</span>
+            <span class="k">elif</span> <span class="n">FOUND_FINAL</span><span class="p">:</span>
+                <span class="c1"># I think this will never be reached</span>
+                <span class="c1"># If neither are found they will be converted to</span>
+                <span class="c1"># None</span>
+                <span class="k">return</span> <span class="n">final_charge</span>
+
+            <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2"> unknown argument for &#39;imd&#39; and &#39;iscf&#39;&quot;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">opt_imd</span><span class="p">:</span>
+            <span class="c1"># flag requested imd</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">imd</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">Opt</span><span class="o">.</span><span class="n">ANY</span> <span class="o">|</span> <span class="n">Opt</span><span class="o">.</span><span class="n">ALL</span><span class="p">)):</span>
+                <span class="c1"># wrong flag</span>
+                <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2"> unknown argument for &#39;imd&#39;&quot;</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="n">FOUND_SCF</span> <span class="ow">and</span> <span class="n">iscf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># this should be handled, i.e. the scf should be taken out</span>
+                <span class="k">if</span> <span class="n">as_dataframe</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">md_scf_charge</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">nth</span><span class="p">(</span><span class="n">iscf</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="nb">tuple</span><span class="p">(</span><span class="n">get_md_scf_charge</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">iscf</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">md_scf_charge</span><span class="p">))</span>
+
+            <span class="k">elif</span> <span class="n">FOUND_MD</span> <span class="ow">and</span> <span class="n">iscf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">md_charge</span>
+            <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2"> unknown argument for &#39;imd&#39; and &#39;iscf&#39;, could not find SCF charges&quot;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">opt_iscf</span><span class="p">:</span>
+            <span class="c1"># flag requested imd</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">iscf</span> <span class="o">&amp;</span> <span class="p">(</span><span class="n">Opt</span><span class="o">.</span><span class="n">ANY</span> <span class="o">|</span> <span class="n">Opt</span><span class="o">.</span><span class="n">ALL</span><span class="p">)):</span>
+                <span class="c1"># wrong flag</span>
+                <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2"> unknown argument for &#39;iscf&#39;&quot;</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">imd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># correct imd</span>
+                <span class="n">imd</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+            <span class="k">if</span> <span class="n">as_dataframe</span><span class="p">:</span>
+                <span class="n">md_scf_charge</span> <span class="o">=</span> <span class="n">md_scf_charge</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">group</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">md_scf_charge</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="n">imd</span><span class="p">]</span>
+                <span class="k">return</span> <span class="n">md_scf_charge</span><span class="o">.</span><span class="n">get_group</span><span class="p">(</span><span class="n">group</span><span class="p">)</span><span class="o">.</span><span class="n">droplevel</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">stack</span><span class="p">(</span><span class="n">md_scf_charge</span><span class="p">[</span><span class="n">imd</span><span class="p">])</span>
+
+        <span class="k">elif</span> <span class="n">imd</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">iscf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">FOUND_FINAL</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">final_charge</span>
+            <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="si">}</span><span class="s2"> does not contain final charges&quot;</span><span class="p">)</span>
+
+        <span class="k">elif</span> <span class="n">imd</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># iscf is not None, so pass through as though explicitly passed</span>
+            <span class="n">imd</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="k">elif</span> <span class="n">iscf</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># we return the last MD step and the requested scf iteration</span>
+            <span class="k">if</span> <span class="n">as_dataframe</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">md_charge</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">nth</span><span class="p">(</span><span class="n">imd</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">md_charge</span><span class="p">[</span><span class="n">imd</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="n">as_dataframe</span><span class="p">:</span>
+            <span class="c1"># first select imd</span>
+            <span class="n">md_scf_charge</span> <span class="o">=</span> <span class="n">md_scf_charge</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">group</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">md_scf_charge</span><span class="o">.</span><span class="n">groups</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="n">imd</span><span class="p">]</span>
+            <span class="n">md_scf_charge</span> <span class="o">=</span> <span class="n">md_scf_charge</span><span class="o">.</span><span class="n">get_group</span><span class="p">(</span><span class="n">group</span><span class="p">)</span><span class="o">.</span><span class="n">droplevel</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">md_scf_charge</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">nth</span><span class="p">(</span><span class="n">iscf</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">md_scf_charge</span><span class="p">[</span><span class="n">imd</span><span class="p">][</span><span class="n">iscf</span><span class="p">]</span></div>
+
+
+<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;out&#39;</span><span class="p">,</span> <span class="n">outSileSiesta</span><span class="p">,</span> <span class="n">case</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

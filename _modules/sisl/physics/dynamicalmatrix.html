@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.physics.dynamicalmatrix &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>sisl.physics.dynamicalmatrix</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sisl.physics.dynamicalmatrix</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
+<span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
+<span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">lil_matrix</span>
+
+<span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span> <span class="nn">..messages</span> <span class="kn">import</span> <span class="n">deprecate_method</span>
+<span class="kn">from</span> <span class="nn">.sparse</span> <span class="kn">import</span> <span class="n">SparseOrbitalBZ</span>
+<span class="kn">from</span> <span class="nn">.phonon</span> <span class="kn">import</span> <span class="n">EigenvaluePhonon</span><span class="p">,</span> <span class="n">EigenmodePhonon</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;DynamicalMatrix&#39;</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_correct_hw</span><span class="p">(</span><span class="n">hw</span><span class="p">):</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">hw</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">HW</span> <span class="o">=</span> <span class="n">hw</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+    <span class="n">HW</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="n">HW</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">HW</span><span class="p">)</span>
+    <span class="n">HW</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">return</span> <span class="n">HW</span>
+
+
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">DynamicalMatrix</span><span class="p">(</span><span class="n">SparseOrbitalBZ</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Dynamical matrix of a geometry &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="DynamicalMatrix.__init__"><a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nnzpr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">nnzpr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_reset</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Dk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_Pk</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dDk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dPk</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ddDk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ddPk</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">D</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Access the dynamical matrix elements &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_def_dim</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+<div class="viewcode-block" id="DynamicalMatrix.Dk"><a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.Dk">[docs]</a>    <span class="k">def</span> <span class="nf">Dk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Setup the dynamical matrix for a given k-point</span>
+
+<span class="sd">        Creation and return of the dynamical matrix for a given k-point (default to Gamma).</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+
+<span class="sd">        Currently the implemented gauge for the k-point is the cell vector gauge:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">           \mathbf D(k) = \mathbf D_{i_\alpha j_\beta} e^{i q R}</span>
+
+<span class="sd">        where :math:`R` is an integer times the cell vector and :math:`\alpha`, :math:`\beta` are Cartesian directions.</span>
+
+<span class="sd">        Another possible gauge is the atomic distance which can be written as</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">           \mathbf D(k) = \mathbf D_{\nu\mu} e^{i k r}</span>
+
+<span class="sd">        where :math:`r` is the distance between the atoms.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        k : array_like</span>
+<span class="sd">           the k-point to setup the dynamical matrix at</span>
+<span class="sd">        dtype : numpy.dtype , optional</span>
+<span class="sd">           the data type of the returned matrix. Do NOT request non-complex</span>
+<span class="sd">           data-type for non-Gamma k.</span>
+<span class="sd">           The default data-type is `numpy.complex128`</span>
+<span class="sd">        gauge : {&#39;R&#39;, &#39;r&#39;}</span>
+<span class="sd">           the chosen gauge, `R` for cell vector gauge, and `r` for atomic distance</span>
+<span class="sd">           gauge.</span>
+<span class="sd">        format : {&#39;csr&#39;, &#39;array&#39;, &#39;dense&#39;, &#39;coo&#39;, ...}</span>
+<span class="sd">           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,</span>
+<span class="sd">           however if one always requires operations on dense matrices, one can always</span>
+<span class="sd">           return in `numpy.ndarray` (`&#39;array&#39;`/`&#39;dense&#39;`/`&#39;matrix&#39;`).</span>
+<span class="sd">           Prefixing with &#39;sc:&#39;, or simply &#39;sc&#39; returns the matrix in supercell format</span>
+<span class="sd">           with phases.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        dDk : dynamical matrix derivative with respect to `k`</span>
+<span class="sd">        ddDk : dynamical matrix double derivative with respect to `k`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        matrix : numpy.ndarray or scipy.sparse.*_matrix</span>
+<span class="sd">            the dynamical matrix at :math:`k`. The returned object depends on `format`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="DynamicalMatrix.dDk"><a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.dDk">[docs]</a>    <span class="k">def</span> <span class="nf">dDk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Setup the dynamical matrix derivative for a given k-point</span>
+
+<span class="sd">        Creation and return of the dynamical matrix derivative for a given k-point (default to Gamma).</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+
+<span class="sd">        Currently the implemented gauge for the k-point is the cell vector gauge:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">           \nabla_k \mathbf D_\gamma(k) = i R_\gamma \mathbf D_{i_\alpha j_\beta} e^{i q R}</span>
+
+<span class="sd">        where :math:`R` is an integer times the cell vector and :math:`\alpha`, :math:`\beta` are atomic indices.</span>
+<span class="sd">        And :math:`\gamma` is one of the Cartesian directions.</span>
+
+<span class="sd">        Another possible gauge is the atomic distance which can be written as</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">          \nabla_k \mathbf D_\gamma(k) = i r_\gamma \mathbf D_{i_\alpha j_\beta} e^{i k r}</span>
+
+<span class="sd">        where :math:`r` is the distance between the atoms.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        k : array_like</span>
+<span class="sd">           the k-point to setup the dynamical matrix at</span>
+<span class="sd">        dtype : numpy.dtype , optional</span>
+<span class="sd">           the data type of the returned matrix. Do NOT request non-complex</span>
+<span class="sd">           data-type for non-Gamma k.</span>
+<span class="sd">           The default data-type is `numpy.complex128`</span>
+<span class="sd">        gauge : {&#39;R&#39;, &#39;r&#39;}</span>
+<span class="sd">           the chosen gauge, `R` for cell vector gauge, and `r` for atomic distance</span>
+<span class="sd">           gauge.</span>
+<span class="sd">        format : {&#39;csr&#39;, &#39;array&#39;, &#39;dense&#39;, &#39;coo&#39;, ...}</span>
+<span class="sd">           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,</span>
+<span class="sd">           however if one always requires operations on dense matrices, one can always</span>
+<span class="sd">           return in `numpy.ndarray` (`&#39;array&#39;`/`&#39;dense&#39;`/`&#39;matrix&#39;`).</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        Dk : dynamical matrix with respect to `k`</span>
+<span class="sd">        ddDk : dynamical matrix double derivative with respect to `k`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple</span>
+<span class="sd">            for each of the Cartesian directions a :math:`\partial \mathbf D(k)/\partial k_\gamma` is returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="DynamicalMatrix.ddDk"><a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.ddDk">[docs]</a>    <span class="k">def</span> <span class="nf">ddDk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Setup the dynamical matrix double derivative for a given k-point</span>
+
+<span class="sd">        Creation and return of the dynamical matrix double derivative for a given k-point (default to Gamma).</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+
+<span class="sd">        Currently the implemented gauge for the k-point is the cell vector gauge:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">           \nabla_k^2 \mathbf D_{\gamma\sigma}(k) = - R_\gamma R_\sigma \mathbf D_{i_\alpha j_\beta} e^{i q R}</span>
+
+<span class="sd">        where :math:`R` is an integer times the cell vector and :math:`\alpha`, :math:`\beta` are Cartesian directions.</span>
+<span class="sd">        And :math:`\gamma`, :math:`\sigma` are one of the Cartesian directions.</span>
+
+<span class="sd">        Another possible gauge is the atomic distance which can be written as</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">           \nabla_k^2 \mathbf D_{\gamma\sigma}(k) = - r_\gamma r_\sigma \mathbf D_{i_\alpha j_\beta} e^{i k r}</span>
+
+<span class="sd">        where :math:`r` is atomic distance.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        k : array_like</span>
+<span class="sd">           the k-point to setup the dynamical matrix at</span>
+<span class="sd">        dtype : numpy.dtype , optional</span>
+<span class="sd">           the data type of the returned matrix. Do NOT request non-complex</span>
+<span class="sd">           data-type for non-Gamma k.</span>
+<span class="sd">           The default data-type is `numpy.complex128`</span>
+<span class="sd">        gauge : {&#39;R&#39;, &#39;r&#39;}</span>
+<span class="sd">           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance</span>
+<span class="sd">           gauge.</span>
+<span class="sd">        format : {&#39;csr&#39;, &#39;array&#39;, &#39;dense&#39;, &#39;coo&#39;, ...}</span>
+<span class="sd">           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,</span>
+<span class="sd">           however if one always requires operations on dense matrices, one can always</span>
+<span class="sd">           return in `numpy.ndarray` (`&#39;array&#39;`/`&#39;dense&#39;`/`&#39;matrix&#39;`).</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        Dk : dynamical matrix with respect to `k`</span>
+<span class="sd">        dDk : dynamical matrix derivative with respect to `k`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of matrices</span>
+<span class="sd">            for each of the Cartesian directions (in Voigt representation); xx, yy, zz, zy, xz, xy</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="DynamicalMatrix.apply_newton"><a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.apply_newton">[docs]</a>    <span class="k">def</span> <span class="nf">apply_newton</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Sometimes the dynamical matrix does not obey Newtons 3rd law.</span>
+
+<span class="sd">        We correct the dynamical matrix by imposing zero force.</span>
+
+<span class="sd">        Correcting for Newton forces the matrix to be finalized.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Create UC dynamical matrix</span>
+        <span class="n">dyn_sc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tocsr</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">no</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">no</span>
+        <span class="n">d_uc</span> <span class="o">=</span> <span class="n">lil_matrix</span><span class="p">((</span><span class="n">no</span><span class="p">,</span> <span class="n">no</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dyn_sc</span><span class="o">.</span><span class="n">dtype</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="p">:</span>
+            <span class="n">d_uc</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="n">dyn_sc</span><span class="p">[:,</span> <span class="n">i</span><span class="o">*</span><span class="n">no</span><span class="p">:</span> <span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">*</span><span class="n">no</span><span class="p">]</span>
+
+        <span class="c1"># A CSC matrix is faster to slice for columns</span>
+        <span class="n">d_uc</span> <span class="o">=</span> <span class="n">d_uc</span><span class="o">.</span><span class="n">tocsc</span><span class="p">()</span>
+
+        <span class="c1"># we need to correct the dynamical matrix such that Newtons 3rd law</span>
+        <span class="c1"># is obeyed (action == reaction)</span>
+        <span class="n">om</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">mass</span><span class="p">)</span>
+        <span class="n">MM</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">om</span><span class="p">)],</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">ja</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="p">:</span>
+
+            <span class="c1"># Create conversion to force-constant in units of the on-site mass scaled</span>
+            <span class="c1"># dynamical matrix.</span>
+            <span class="n">MM</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">om</span><span class="p">[:]</span> <span class="o">/</span> <span class="n">om</span><span class="p">[</span><span class="n">ja</span><span class="p">]</span>
+            <span class="n">jo</span> <span class="o">=</span> <span class="n">ja</span> <span class="o">*</span> <span class="mi">3</span>
+
+            <span class="c1"># Unroll...</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">[</span><span class="n">jo</span><span class="p">,</span> <span class="n">jo</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">[</span><span class="n">jo</span><span class="p">,</span> <span class="n">jo</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span> <span class="o">-</span> <span class="n">d_uc</span><span class="p">[</span><span class="n">jo</span><span class="p">,</span> <span class="p">::</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">MM</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">[</span><span class="n">jo</span><span class="p">,</span> <span class="n">jo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">[</span><span class="n">jo</span><span class="p">,</span> <span class="n">jo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span> <span class="o">-</span> <span class="n">d_uc</span><span class="p">[</span><span class="n">jo</span><span class="p">,</span> <span class="mi">1</span><span class="p">::</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">MM</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">[</span><span class="n">jo</span><span class="p">,</span> <span class="n">jo</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">[</span><span class="n">jo</span><span class="p">,</span> <span class="n">jo</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span> <span class="o">-</span> <span class="n">d_uc</span><span class="p">[</span><span class="n">jo</span><span class="p">,</span> <span class="mi">2</span><span class="p">::</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">MM</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+            <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">[</span><span class="n">jo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">jo</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">[</span><span class="n">jo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">jo</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span> <span class="o">-</span> <span class="n">d_uc</span><span class="p">[</span><span class="n">jo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="p">::</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">MM</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">[</span><span class="n">jo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">jo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">[</span><span class="n">jo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">jo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span> <span class="o">-</span> <span class="n">d_uc</span><span class="p">[</span><span class="n">jo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">::</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">MM</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">[</span><span class="n">jo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">jo</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">[</span><span class="n">jo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">jo</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span> <span class="o">-</span> <span class="n">d_uc</span><span class="p">[</span><span class="n">jo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">::</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">MM</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+            <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">[</span><span class="n">jo</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">jo</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">[</span><span class="n">jo</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">jo</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span> <span class="o">-</span> <span class="n">d_uc</span><span class="p">[</span><span class="n">jo</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="p">::</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">MM</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">[</span><span class="n">jo</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">jo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">[</span><span class="n">jo</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">jo</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span> <span class="o">-</span> <span class="n">d_uc</span><span class="p">[</span><span class="n">jo</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">::</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">MM</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+            <span class="n">D</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">[</span><span class="n">jo</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">jo</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">D</span><span class="p">[</span><span class="n">jo</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="n">jo</span> <span class="o">+</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">D</span> <span class="o">-</span> <span class="n">d_uc</span><span class="p">[</span><span class="n">jo</span> <span class="o">+</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">::</span><span class="mi">3</span><span class="p">]</span><span class="o">.</span><span class="n">multiply</span><span class="p">(</span><span class="n">MM</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+
+        <span class="k">del</span> <span class="n">d_uc</span></div>
+
+<div class="viewcode-block" id="DynamicalMatrix.eigenvalue"><a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.eigenvalue">[docs]</a>    <span class="k">def</span> <span class="nf">eigenvalue</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Calculate the eigenvalues at `k` and return an `EigenvaluePhonon` object containing all eigenvalues for a given `k`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        k : array_like*3, optional</span>
+<span class="sd">            the k-point at which to evaluate the eigenvalues at</span>
+<span class="sd">        gauge : str, optional</span>
+<span class="sd">            the gauge used for calculating the eigenvalues</span>
+<span class="sd">        sparse : bool, optional</span>
+<span class="sd">            if ``True``, `eigsh` will be called, else `eigh` will be</span>
+<span class="sd">            called (default).</span>
+<span class="sd">        **kwargs : dict, optional</span>
+<span class="sd">            passed arguments to the `eigh` routine</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        eigh : eigenvalue routine</span>
+<span class="sd">        eigsh : eigenvalue routine</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        EigenvaluePhonon</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;sparse&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">hw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigsh</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="n">gauge</span><span class="p">,</span> <span class="n">eigvals_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">hw</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">gauge</span><span class="p">,</span> <span class="n">eigvals_only</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;k&#39;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span> <span class="s1">&#39;gauge&#39;</span><span class="p">:</span> <span class="n">gauge</span><span class="p">}</span>
+        <span class="k">return</span> <span class="n">EigenvaluePhonon</span><span class="p">(</span><span class="n">_correct_hw</span><span class="p">(</span><span class="n">hw</span><span class="p">),</span> <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">info</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DynamicalMatrix.eigenmode"><a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.eigenmode">[docs]</a>    <span class="k">def</span> <span class="nf">eigenmode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">gauge</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the eigenmodes at `k` and return an `EigenmodePhonon` object containing all eigenmodes</span>
+
+<span class="sd">        Note that the phonon modes are _not_ mass-scaled.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        k : array_like*3, optional</span>
+<span class="sd">            the k-point at which to evaluate the eigenmodes at</span>
+<span class="sd">        gauge : str, optional</span>
+<span class="sd">            the gauge used for calculating the eigenmodes</span>
+<span class="sd">        sparse : bool, optional</span>
+<span class="sd">            if ``True``, `eigsh` will be called, else `eigh` will be</span>
+<span class="sd">            called (default).</span>
+<span class="sd">        **kwargs : dict, optional</span>
+<span class="sd">            passed arguments to the `eigh`/`eighs` routine</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        eigh : eigenvalue routine (returns hw ** 2)</span>
+<span class="sd">        eigsh : eigenvalue routine</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        EigenmodePhonon</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;sparse&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">):</span>
+            <span class="n">hw</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigsh</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="n">gauge</span><span class="p">,</span> <span class="n">eigvals_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">hw</span><span class="p">,</span> <span class="n">v</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigh</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">gauge</span><span class="p">,</span> <span class="n">eigvals_only</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;k&#39;</span><span class="p">:</span> <span class="n">k</span><span class="p">,</span> <span class="s1">&#39;gauge&#39;</span><span class="p">:</span> <span class="n">gauge</span><span class="p">}</span>
+        <span class="c1"># Since eigh returns the eigenvectors [:, i] we have to transpose</span>
+        <span class="k">return</span> <span class="n">EigenmodePhonon</span><span class="p">(</span><span class="n">v</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">_correct_hw</span><span class="p">(</span><span class="n">hw</span><span class="p">),</span> <span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">info</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DynamicalMatrix.read"><a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.read">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Reads dynamical matrix from `Sile` using `read_dynamical_matrix`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        sile : Sile, str or pathlib.Path</span>
+<span class="sd">            a `Sile` object which will be used to read the dynamical matrix.</span>
+<span class="sd">            If it is a string it will create a new sile using `get_sile`.</span>
+<span class="sd">        * : args passed directly to ``read_dynamical_matrix(,**)``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># This only works because, they *must*</span>
+        <span class="c1"># have been imported previously</span>
+        <span class="kn">from</span> <span class="nn">sisl.io</span> <span class="kn">import</span> <span class="n">get_sile</span><span class="p">,</span> <span class="n">BaseSile</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">BaseSile</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">sile</span><span class="o">.</span><span class="n">read_dynamical_matrix</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">get_sile</span><span class="p">(</span><span class="n">sile</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">fh</span><span class="o">.</span><span class="n">read_dynamical_matrix</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DynamicalMatrix.write"><a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sile</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Writes a dynamical matrix to the `Sile` as implemented in the :code:`Sile.write_dynamical_matrix` method &quot;&quot;&quot;</span>
+        <span class="c1"># This only works because, they *must*</span>
+        <span class="c1"># have been imported previously</span>
+        <span class="kn">from</span> <span class="nn">sisl.io</span> <span class="kn">import</span> <span class="n">get_sile</span><span class="p">,</span> <span class="n">BaseSile</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">BaseSile</span><span class="p">):</span>
+            <span class="n">sile</span><span class="o">.</span><span class="n">write_dynamical_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">get_sile</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                <span class="n">fh</span><span class="o">.</span><span class="n">write_dynamical_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DynamicalMatrix.velocity"><a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.velocity">[docs]</a>    <span class="nd">@deprecate_method</span><span class="p">(</span><span class="s2">&quot;use DynamicalMatrix.eigenstate(...).velocity() instead&quot;</span><span class="p">,</span> <span class="s2">&quot;0.13.0&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">velocity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">project</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the velocity for the eigenmodes for a given `k` point</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        k : array_like, optional</span>
+<span class="sd">            k-point at which the velocities are calculated</span>
+<span class="sd">        project : {}</span>
+<span class="sd">            see `sisl.physics.phonon.velocity` for details and possible arguments</span>
+<span class="sd">        **kwargs : optional</span>
+<span class="sd">            additional parameters passed to the `eigenmode` routine</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        eigenmode : method used to calculate the eigenmodes</span>
+<span class="sd">        displacement : Calculate mode displacements</span>
+<span class="sd">        EigenmodePhonon.velocity : Underlying method used to calculate the velocity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigenmode</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">velocity</span><span class="p">(</span><span class="n">project</span><span class="o">=</span><span class="n">project</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DynamicalMatrix.displacement"><a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.displacement">[docs]</a>    <span class="nd">@deprecate_method</span><span class="p">(</span><span class="s2">&quot;use DynamicalMatrix.eigenstate(...).displacement() instead&quot;</span><span class="p">,</span> <span class="s2">&quot;0.13.0&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">displacement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the displacement for the eigenmodes for a given `k` point</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        k : array_like, optional</span>
+<span class="sd">            k-point at which the displacement are calculated</span>
+<span class="sd">        **kwargs : optional</span>
+<span class="sd">            additional parameters passed to the `eigenmode` routine</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        eigenmode : method used to calculate the eigenmodes</span>
+<span class="sd">        velocity : Calculate mode velocity</span>
+<span class="sd">        EigenmodePhonon.displacement : Underlying method used to calculate the velocity</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigenmode</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">displacement</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="DynamicalMatrix.DOS"><a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.DOS">[docs]</a>    <span class="nd">@deprecate_method</span><span class="p">(</span><span class="s2">&quot;use DynamicalMatrix.eigenstate(...).DOS() instead&quot;</span><span class="p">,</span> <span class="s2">&quot;0.13.0&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">DOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the DOS at the given energies for a specific `k` point</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        E : array_like</span>
+<span class="sd">            energies to calculate the DOS at</span>
+<span class="sd">        k : array_like, optional</span>
+<span class="sd">            k-point at which the DOS is calculated</span>
+<span class="sd">        distribution : func or str, optional</span>
+<span class="sd">            a function that accepts :math:`E-\hbar\omega` as argument and calculates the</span>
+<span class="sd">            distribution function.</span>
+<span class="sd">        **kwargs : optional</span>
+<span class="sd">            additional parameters passed to the `eigenvalue` routine</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        sisl.physics.distribution : setup a distribution function, see details regarding the `distribution` argument</span>
+<span class="sd">        eigenvalue : method used to calculate the eigenvalues</span>
+<span class="sd">        PDOS : Calculate projected DOS</span>
+<span class="sd">        EigenvaluePhonon.DOS : Underlying method used to calculate the DOS</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigenvalue</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">DOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="DynamicalMatrix.PDOS"><a class="viewcode-back" href="../../../api/generated/sisl.physics.DynamicalMatrix.html#sisl.physics.DynamicalMatrix.PDOS">[docs]</a>    <span class="nd">@deprecate_method</span><span class="p">(</span><span class="s2">&quot;use DynamicalMatrix.eigenstate(...).PDOS() instead&quot;</span><span class="p">,</span> <span class="s2">&quot;0.13.0&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">PDOS</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">distribution</span><span class="o">=</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the projected DOS at the given energies for a specific `k` point</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        E : array_like</span>
+<span class="sd">            energies to calculate the projected DOS at</span>
+<span class="sd">        k : array_like, optional</span>
+<span class="sd">            k-point at which the projected DOS is calculated</span>
+<span class="sd">        distribution : func or str, optional</span>
+<span class="sd">            a function that accepts :math:`E-\epsilon` as argument and calculates the</span>
+<span class="sd">            distribution function.</span>
+<span class="sd">        **kwargs : optional</span>
+<span class="sd">            additional parameters passed to the `eigenmode` routine</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        sisl.physics.distribution : setup a distribution function, see details regarding the `distribution` argument</span>
+<span class="sd">        eigenmode : method used to calculate the eigenmodes</span>
+<span class="sd">        DOS : Calculate total DOS</span>
+<span class="sd">        EigenmodePhonon.PDOS : Underlying method used to calculate the projected DOS</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">eigenmode</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span><span class="o">.</span><span class="n">PDOS</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">distribution</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

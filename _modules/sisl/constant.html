@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.constant &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>sisl.constant</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sisl.constant</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
+<span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
+<span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Physical constants</span>
+<span class="sd">==================</span>
+
+<span class="sd">Module containing a pre-set set of physical constants. The SI units are following the *new* convention</span>
+<span class="sd">that takes effect on 20 May 2019.</span>
+
+<span class="sd">The currently stored constants are (all are given in SI units):</span>
+
+<span class="sd">   PhysicalConstant</span>
+<span class="sd">   q</span>
+<span class="sd">   c</span>
+<span class="sd">   h</span>
+<span class="sd">   hbar</span>
+<span class="sd">   m_e</span>
+<span class="sd">   m_p</span>
+<span class="sd">   G0</span>
+<span class="sd">   G</span>
+
+<span class="sd">All constants may be used like an ordinary float (which converts it to a float):</span>
+
+<span class="sd">&gt;&gt;&gt; c</span>
+<span class="sd">299792458.0 m/s</span>
+<span class="sd">&gt;&gt;&gt; c * 2</span>
+<span class="sd">599584916</span>
+
+<span class="sd">while one can just as easily convert the units (which ensures thay stay like another `PhysicalConstant`):</span>
+
+<span class="sd">&gt;&gt;&gt; c(&#39;Ang/ps&#39;)</span>
+<span class="sd">2997924.58 Ang/ps</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span> <span class="nn">.unit.base</span> <span class="kn">import</span> <span class="n">units</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;PhysicalConstant&#39;</span><span class="p">]</span>
+
+
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">PhysicalConstant</span><span class="p">(</span><span class="nb">float</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Class to create a physical constant with unit-conversion capability, works exactly like a float.</span>
+
+<span class="sd">    To change the units simply call it like a method with the desired unit:</span>
+
+<span class="sd">    &gt;&gt;&gt; m = PhysicalConstant(1., &#39;m&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; m.unit</span>
+<span class="sd">    &#39;m&#39;</span>
+<span class="sd">    &gt;&gt;&gt; m2nm = m(&#39;nm&#39;)</span>
+<span class="sd">    &gt;&gt;&gt; m2nm</span>
+<span class="sd">    1000000000.0 nm</span>
+<span class="sd">    &gt;&gt;&gt; m2nm.unit</span>
+<span class="sd">    &#39;nm&#39;</span>
+<span class="sd">    &gt;&gt;&gt; m2nm * 2</span>
+<span class="sd">    1000000000.0</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;_unit&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">unit</span><span class="p">):</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="nb">float</span><span class="o">.</span><span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">_unit</span> <span class="o">=</span> <span class="n">unit</span>
+        <span class="k">return</span> <span class="n">c</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">unit</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Unit of constant &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unit</span>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s1">&#39;</span><span class="si">{}</span><span class="s1"> </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PhysicalConstant.__call__"><a class="viewcode-back" href="../../api/generated/sisl.constant.PhysicalConstant.html#sisl.constant.PhysicalConstant.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">unit</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return the value for the constant in the given unit, otherwise will return the units in SI units &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">unit</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span>
+        <span class="k">return</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="bp">self</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unit</span><span class="p">,</span> <span class="n">unit</span><span class="p">),</span> <span class="n">unit</span><span class="p">)</span></div>
+
+
+<span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;q&#39;</span><span class="p">,</span> <span class="s1">&#39;c&#39;</span><span class="p">,</span> <span class="s1">&#39;h&#39;</span><span class="p">,</span> <span class="s1">&#39;hbar&#39;</span><span class="p">,</span> <span class="s1">&#39;m_e&#39;</span><span class="p">,</span> <span class="s1">&#39;m_p&#39;</span><span class="p">,</span> <span class="s1">&#39;G&#39;</span><span class="p">,</span> <span class="s1">&#39;G0&#39;</span><span class="p">]</span>
+
+
+<span class="c1">#: Unit of charge [C], or [A s]</span>
+<span class="n">q</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">1.602176634e-19</span><span class="p">,</span> <span class="s1">&#39;A s&#39;</span><span class="p">)</span>
+<span class="c1">#: Speed of light [m/s]</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mi">299792458</span><span class="p">,</span> <span class="s1">&#39;m/s&#39;</span><span class="p">)</span>
+<span class="c1">#: Plancks constant [J s]</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">6.62607015e-34</span><span class="p">,</span> <span class="s1">&#39;J s&#39;</span><span class="p">)</span>
+<span class="c1">#: Reduced Plancks constant [J s]</span>
+<span class="n">hbar</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">1.0545718176461565e-34</span><span class="p">,</span> <span class="s1">&#39;J s&#39;</span><span class="p">)</span>
+<span class="c1">#: Mass of electron [kg]</span>
+<span class="n">m_e</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">9.1093835611e-31</span><span class="p">,</span> <span class="s1">&#39;kg&#39;</span><span class="p">)</span>
+<span class="c1">#: Mass of proton [kg]</span>
+<span class="n">m_p</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">1.67262189821e-27</span><span class="p">,</span> <span class="s1">&#39;kg&#39;</span><span class="p">)</span>
+<span class="c1">#: Conductance quantum [S], or [m^2/s^2]</span>
+<span class="n">G0</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">q</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">h</span><span class="p">),</span> <span class="s1">&#39;m^2/s^2&#39;</span><span class="p">)</span>
+<span class="c1">#: Gravitational constant [m^3/kg/s^2]</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">PhysicalConstant</span><span class="p">(</span><span class="mf">6.6740831e-11</span><span class="p">,</span> <span class="s1">&#39;m^3/kg/s^2&#39;</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

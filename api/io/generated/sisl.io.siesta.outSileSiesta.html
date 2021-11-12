@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.io.siesta.outSileSiesta &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+    <link rel="next" title="sisl.io.siesta.xvSileSiesta" href="sisl.io.siesta.xvSileSiesta.html" />
+    <link rel="prev" title="sisl.io.siesta.fdfSileSiesta" href="sisl.io.siesta.fdfSileSiesta.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../../index.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../../basic.html">Basic classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../default_geom.html">Common geometries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../physics.html">Physical objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../mixing.html">Mixing self-consistent quantities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../unit_constant.html">Units and constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../utilities.html">Utilities</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../index.html">Input/Output</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../basic.html">Basic IO methods/classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../generic.html">Generic files</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../bigdft.html">BigDFT</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../gulp.html">GULP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../openmx.html">OpenMX</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../scaleup.html">ScaleUP</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../siesta.html">Siesta</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.fdfSileSiesta.html">sisl.io.siesta.fdfSileSiesta</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.io.siesta.outSileSiesta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.xvSileSiesta.html">sisl.io.siesta.xvSileSiesta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.bandsSileSiesta.html">sisl.io.siesta.bandsSileSiesta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.eigSileSiesta.html">sisl.io.siesta.eigSileSiesta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.pdosSileSiesta.html">sisl.io.siesta.pdosSileSiesta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.gridSileSiesta.html">sisl.io.siesta.gridSileSiesta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.gridncSileSiesta.html">sisl.io.siesta.gridncSileSiesta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.onlysSileSiesta.html">sisl.io.siesta.onlysSileSiesta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.dmSileSiesta.html">sisl.io.siesta.dmSileSiesta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.hsxSileSiesta.html">sisl.io.siesta.hsxSileSiesta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.wfsxSileSiesta.html">sisl.io.siesta.wfsxSileSiesta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.ncSileSiesta.html">sisl.io.siesta.ncSileSiesta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.ionxmlSileSiesta.html">sisl.io.siesta.ionxmlSileSiesta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.ionncSileSiesta.html">sisl.io.siesta.ionncSileSiesta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.orbindxSileSiesta.html">sisl.io.siesta.orbindxSileSiesta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.faSileSiesta.html">sisl.io.siesta.faSileSiesta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.fcSileSiesta.html">sisl.io.siesta.fcSileSiesta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.kpSileSiesta.html">sisl.io.siesta.kpSileSiesta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.rkpSileSiesta.html">sisl.io.siesta.rkpSileSiesta</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.io.siesta.structSileSiesta.html">sisl.io.siesta.structSileSiesta</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../siesta.html#transiesta">TranSiesta</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../siesta.html#module-sisl.io.tbtrans">TBtrans</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../vasp.html">VASP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../wannier90.html">Wannier90</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">API documentation</a> &raquo;</li>
+          <li><a href="../index.html">Input/Output</a> &raquo;</li>
+          <li><a href="../siesta.html">Siesta</a> &raquo;</li>
+      <li>sisl.io.siesta.outSileSiesta</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../../_sources/api/io/generated/sisl.io.siesta.outSileSiesta.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="sisl-io-siesta-outsilesiesta">
+<h1>sisl.io.siesta.outSileSiesta<a class="headerlink" href="#sisl-io-siesta-outsilesiesta" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="sisl.io.siesta.outSileSiesta">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.io.siesta.</span></span><span class="sig-name descname"><span class="pre">outSileSiesta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.outSileSiesta" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="sisl.io.siesta.SileSiesta.html#sisl.io.siesta.SileSiesta" title="sisl.io.siesta.SileSiesta"><code class="xref py py-class docutils literal notranslate"><span class="pre">sisl.io.siesta.SileSiesta</span></code></a></p>
+<p>Output file from Siesta</p>
+<p>This enables reading the output quantities from the Siesta output.</p>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.outSileSiesta.completed" title="sisl.io.siesta.outSileSiesta.completed"><code class="xref py py-obj docutils literal notranslate"><span class="pre">completed</span></code></a>()</p></td>
+<td><p>True if the full file has been read and &quot;Job completed&quot; was found.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.outSileSiesta.dir_file" title="sisl.io.siesta.outSileSiesta.dir_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dir_file</span></code></a>([filename, filename_base])</p></td>
+<td><p>File of the current <em class="xref py py-obj">Sile</em></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.outSileSiesta.exist" title="sisl.io.siesta.outSileSiesta.exist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">exist</span></code></a>()</p></td>
+<td><p>Query whether the file exists</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.outSileSiesta.read" title="sisl.io.siesta.outSileSiesta.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Generic read method which should be overloaded in child-classes</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.outSileSiesta.read_basis" title="sisl.io.siesta.outSileSiesta.read_basis"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_basis</span></code></a>()</p></td>
+<td><p>Reads the basis as found in the output file</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.outSileSiesta.read_charge" title="sisl.io.siesta.outSileSiesta.read_charge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_charge</span></code></a>(name[, iscf, imd, key_scf, ...])</p></td>
+<td><p>Read charges calculated in SCF loop or MD loop (or both)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.outSileSiesta.read_data" title="sisl.io.siesta.outSileSiesta.read_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_data</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Read specific content in the Siesta out file</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.outSileSiesta.read_energy" title="sisl.io.siesta.outSileSiesta.read_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_energy</span></code></a>()</p></td>
+<td><p>Reads the final energy distribution</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.outSileSiesta.read_force" title="sisl.io.siesta.outSileSiesta.read_force"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_force</span></code></a>([last, all, total, max])</p></td>
+<td><p>Reads the forces from the Siesta output file</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.outSileSiesta.read_geometry" title="sisl.io.siesta.outSileSiesta.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a>([last, all])</p></td>
+<td><p>Reads the geometry from the Siesta output file</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.outSileSiesta.read_moment" title="sisl.io.siesta.outSileSiesta.read_moment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_moment</span></code></a>([orbitals, quantity, last, all])</p></td>
+<td><p>Reads the moments from the Siesta output file</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.outSileSiesta.read_scf" title="sisl.io.siesta.outSileSiesta.read_scf"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_scf</span></code></a>([key, iscf, imd, as_dataframe])</p></td>
+<td><p>Parse SCF information and return a table of SCF information depending on what is requested</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.outSileSiesta.read_stress" title="sisl.io.siesta.outSileSiesta.read_stress"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_stress</span></code></a>([key, last, all])</p></td>
+<td><p>Reads the stresses from the Siesta output file</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.outSileSiesta.write" title="sisl.io.siesta.outSileSiesta.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Generic write method which should be overloaded in child-classes</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.io.siesta.outSileSiesta.base_file" title="sisl.io.siesta.outSileSiesta.base_file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base_file</span></code></a></p></td>
+<td><p>File of the current <em class="xref py py-obj">Sile</em></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.io.siesta.outSileSiesta.file" title="sisl.io.siesta.outSileSiesta.file"><code class="xref py py-obj docutils literal notranslate"><span class="pre">file</span></code></a></p></td>
+<td><p>File of the current <em class="xref py py-obj">Sile</em></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.outSileSiesta.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'r'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">comment</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.outSileSiesta.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.io.siesta.outSileSiesta.base_file">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">base_file</span></span><a class="headerlink" href="#sisl.io.siesta.outSileSiesta.base_file" title="Permalink to this definition"></a></dt>
+<dd><p>File of the current <em class="xref py py-obj">Sile</em></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.outSileSiesta.completed">
+<span class="sig-name descname"><span class="pre">completed</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/out.html#outSileSiesta.completed"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.outSileSiesta.completed" title="Permalink to this definition"></a></dt>
+<dd><p>True if the full file has been read and “Job completed” was found.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.outSileSiesta.dir_file">
+<span class="sig-name descname"><span class="pre">dir_file</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename_base</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.outSileSiesta.dir_file" title="Permalink to this definition"></a></dt>
+<dd><p>File of the current <em class="xref py py-obj">Sile</em></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.outSileSiesta.exist">
+<span class="sig-name descname"><span class="pre">exist</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.outSileSiesta.exist" title="Permalink to this definition"></a></dt>
+<dd><p>Query whether the file exists</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.io.siesta.outSileSiesta.file">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">file</span></span><a class="headerlink" href="#sisl.io.siesta.outSileSiesta.file" title="Permalink to this definition"></a></dt>
+<dd><p>File of the current <em class="xref py py-obj">Sile</em></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.outSileSiesta.read">
+<span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.outSileSiesta.read" title="Permalink to this definition"></a></dt>
+<dd><p>Generic read method which should be overloaded in child-classes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>kwargs</strong> – keyword arguments will try and search for the attribute <code class="docutils literal notranslate"><span class="pre">read_&lt;&gt;</span></code>
+and call it with the remaining <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> as arguments.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.outSileSiesta.read_basis">
+<span class="sig-name descname"><span class="pre">read_basis</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/out.html#outSileSiesta.read_basis"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.outSileSiesta.read_basis" title="Permalink to this definition"></a></dt>
+<dd><p>Reads the basis as found in the output file</p>
+<p>This parses 3 things:</p>
+<ol class="arabic simple">
+<li><p>At the start of the file there are some initatom output
+specifying which species in the calculation.</p></li>
+<li><p>Reading the &lt;basis_specs&gt; entries for the masses</p></li>
+<li><p>Reading the PAO.Basis block output for orbital information</p></li>
+</ol>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.outSileSiesta.read_charge">
+<span class="sig-name descname"><span class="pre">read_charge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iscf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Opt.ANY</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Opt.ANY</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key_scf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_dataframe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/out.html#outSileSiesta.read_charge"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.outSileSiesta.read_charge" title="Permalink to this definition"></a></dt>
+<dd><p>Read charges calculated in SCF loop or MD loop (or both)</p>
+<p>Siesta enables many different modes of writing out charges.</p>
+<p>NOTE: currently Mulliken charges are not implemented.</p>
+<p>The below table shows a list of different cases that
+may be encountered, the letters are referred to in the
+return section to indicate what is returned.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 9%" />
+<col style="width: 9%" />
+<col style="width: 15%" />
+<col style="width: 13%" />
+<col style="width: 33%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>Case</p></td>
+<td><p><em>A</em></p></td>
+<td><p><em>B</em></p></td>
+<td><p><em>C</em></p></td>
+<td><p><em>D</em></p></td>
+<td><p><em>E</em></p></td>
+</tr>
+<tr class="row-even"><td><p>Charge</p></td>
+<td><p>MD</p></td>
+<td><p>SCF</p></td>
+<td><p>MD+SCF</p></td>
+<td><p>Final</p></td>
+<td><p>Orbital resolved</p></td>
+</tr>
+<tr class="row-odd"><td><p>Voronoi</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+</tr>
+<tr class="row-even"><td><p>Hirshfeld</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+</tr>
+<tr class="row-odd"><td><p>Mulliken</p></td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+<td><ul class="simple">
+<li></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<p>Errors will be raised if one requests information not present. I.e.
+passing an integer or <em class="xref py py-obj">Opt.ALL</em> for <em class="xref py py-obj">iscf</em> will raise an error if
+the SCF charges are not present. For <em class="xref py py-obj">Opt.ANY</em> it will return
+the most information, effectively SCF will be returned if present.</p>
+<p>Currently Mulliken is not implemented, any help in reading this would be
+very welcome.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<em>{&quot;voronoi&quot;</em><em>, </em><em>&quot;hirshfeld&quot;}</em>) – the name of the charges that you want to read</p></li>
+<li><p><strong>iscf</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>Opt</em><em>, </em><em>optional</em>) – index (0-based) of the scf iteration you want the charges for.
+If the enum specifier <em class="xref py py-obj">Opt.ANY</em> or <em class="xref py py-obj">Opt.ALL</em> are used, then
+the returned quantities depend on what is present.
+If <code class="docutils literal notranslate"><span class="pre">None/Opt.NONE</span></code> it will not return any SCF charges.
+If both <em class="xref py py-obj">imd</em> and <em class="xref py py-obj">iscf</em> are <code class="docutils literal notranslate"><span class="pre">None</span></code> then only the final charges will be returned.</p></li>
+<li><p><strong>imd</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>Opt</em><em>, </em><em>optional</em>) – index (0-based) of the md step you want the charges for.
+If the enum specifier <em class="xref py py-obj">Opt.ANY</em> or <em class="xref py py-obj">Opt.ALL</em> are used, then
+the returned quantities depend on what is present.
+If <code class="docutils literal notranslate"><span class="pre">None/Opt.NONE</span></code> it will not return any MD charges.
+If both <em class="xref py py-obj">imd</em> and <em class="xref py py-obj">iscf</em> are <code class="docutils literal notranslate"><span class="pre">None</span></code> then only the final charges will be returned.</p></li>
+<li><p><strong>key_scf</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – the key lookup for the scf iterations (a “:” will automatically be appended)</p></li>
+<li><p><strong>as_dataframe</strong> (<em>boolean</em><em>, </em><em>optional</em>) – whether charges should be returned as a pandas dataframe.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>numpy.ndarray</em> – if a specific MD+SCF index is requested (or special cases where output is
+not complete)</p></li>
+<li><p><em>list of numpy.ndarray</em> – if one both <em class="xref py py-obj">iscf</em> or <em class="xref py py-obj">imd</em> is different from <code class="docutils literal notranslate"><span class="pre">None/Opt.NONE</span></code>.</p></li>
+<li><p><em>pandas.DataFrame</em> – if <em class="xref py py-obj">as_dataframe</em> is requested. The dataframe will have multi-indices if multiple
+SCF or MD steps are requested.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.outSileSiesta.read_data">
+<span class="sig-name descname"><span class="pre">read_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/out.html#outSileSiesta.read_data"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.outSileSiesta.read_data" title="Permalink to this definition"></a></dt>
+<dd><p>Read specific content in the Siesta out file</p>
+<p>The currently implemented things are denoted in
+the parameters list.
+Note that the returned quantities are in the order
+of keywords, so:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">read_data</span><span class="p">(</span><span class="n">geometry</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">&lt;geometry&gt;, &lt;force&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">read_data</span><span class="p">(</span><span class="n">force</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">geometry</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="go">&lt;force&gt;, &lt;geometry&gt;</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>geometry</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – read geometry, args are passed to <a class="reference internal" href="#sisl.io.siesta.outSileSiesta.read_geometry" title="sisl.io.siesta.outSileSiesta.read_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_geometry</span></code></a></p></li>
+<li><p><strong>force</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – read force, args are passed to <a class="reference internal" href="#sisl.io.siesta.outSileSiesta.read_force" title="sisl.io.siesta.outSileSiesta.read_force"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_force</span></code></a></p></li>
+<li><p><strong>stress</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – read stress, args are passed to <a class="reference internal" href="#sisl.io.siesta.outSileSiesta.read_stress" title="sisl.io.siesta.outSileSiesta.read_stress"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_stress</span></code></a></p></li>
+<li><p><strong>moment</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – read moment, args are passed to <a class="reference internal" href="#sisl.io.siesta.outSileSiesta.read_moment" title="sisl.io.siesta.outSileSiesta.read_moment"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_moment</span></code></a> (only for spin-orbit calculations)</p></li>
+<li><p><strong>energy</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – read final energies, args are passed to <a class="reference internal" href="#sisl.io.siesta.outSileSiesta.read_energy" title="sisl.io.siesta.outSileSiesta.read_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read_energy</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.outSileSiesta.read_energy">
+<span class="sig-name descname"><span class="pre">read_energy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/out.html#outSileSiesta.read_energy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.outSileSiesta.read_energy" title="Permalink to this definition"></a></dt>
+<dd><p>Reads the final energy distribution</p>
+<p>Currently the energies translated are:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">band</span></code></dt><dd><p>band structure energy</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">kinetic</span></code></dt><dd><p>electronic kinetic energy</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">hartree</span></code></dt><dd><p>electronic electrostatic Hartree energy</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">dftu</span></code></dt><dd><p>DFT+U energy</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">spin_orbit</span></code></dt><dd><p>spin-orbit energy</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">extE</span></code></dt><dd><p>external field energy</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">xc</span></code></dt><dd><p>exchange-correlation energy</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">exchange</span></code></dt><dd><p>exchange energy</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">correlation</span></code></dt><dd><p>correlation energy</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">bulkV</span></code></dt><dd><p>bulk-bias correction energy</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">total</span></code></dt><dd><p>total energy</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">negf</span></code></dt><dd><p>NEGF energy</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">fermi</span></code></dt><dd><p>Fermi energy</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">ion.electron</span></code></dt><dd><p>ion-electron interaction energy</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">ion.ion</span></code></dt><dd><p>ion-ion interaction energy</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">ion.kinetic</span></code></dt><dd><p>kinetic ion energy</p>
+</dd>
+</dl>
+<p>Any unrecognized key gets added <em>as is</em>.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">energies</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">get_sile</span><span class="p">(</span><span class="s2">&quot;RUN.out&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">read_energy</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ion_energies</span> <span class="o">=</span> <span class="n">energies</span><span class="o">.</span><span class="n">ion</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ion_energies</span><span class="o">.</span><span class="n">ion</span> <span class="c1"># ion-ion interaction energy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ion_energies</span><span class="o">.</span><span class="n">kinetic</span> <span class="c1"># ion kinetic energy</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">energies</span><span class="o">.</span><span class="n">fermi</span> <span class="c1"># fermi energy</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><strong>PropertyDict</strong></p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>dictionary like lookup table ionic energies are stored in a nested <em class="xref py py-obj">PropertyDict</em> at the key <code class="docutils literal notranslate"><span class="pre">ion</span></code> (all energies in eV)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.outSileSiesta.read_force">
+<span class="sig-name descname"><span class="pre">read_force</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">last</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">total</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/out.html#outSileSiesta.read_force"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.outSileSiesta.read_force" title="Permalink to this definition"></a></dt>
+<dd><p>Reads the forces from the Siesta output file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>last</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – only read the last force</p></li>
+<li><p><strong>all</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – return a list of all forces (like an MD)
+If <em class="xref py py-obj">True</em> <em class="xref py py-obj">last</em> is ignored</p></li>
+<li><p><strong>total</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – return the total forces instead of the atomic forces.</p></li>
+<li><p><strong>max</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – <p>whether only the maximum atomic force should be returned for each step.</p>
+<p>Setting it to <em class="xref py py-obj">True</em> is equivalent to <em class="xref py py-obj">max(outSile.read_force())</em> in case atomic forces
+are written in the output file (<em class="xref py py-obj">WriteForces .true.</em> in the fdf file)</p>
+<p>Note that this is not the same as doing <em class="xref py py-obj">max(outSile.read_force(total=True))</em> since
+the forces returned in that case are averages on each axis.</p>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><p>returns <code class="docutils literal notranslate"><span class="pre">None</span></code> if the forces are not found in the
+output, otherwise forces will be returned</p>
+<dl class="simple">
+<dt>The shape of the array will be different depending on the type of forces requested:</dt><dd><ul class="simple">
+<li><p>atomic (default): (nMDsteps, nAtoms, 3)</p></li>
+<li><p>total: (nMDsteps, 3)</p></li>
+<li><p>max: (nMDsteps, )</p></li>
+</ul>
+</dd>
+</dl>
+<p>If <em class="xref py py-obj">all</em> is <em class="xref py py-obj">False</em>, the first dimension does not exist. In the case of max, the returned value
+will therefore be just a float, not an array.</p>
+<p>If <em class="xref py py-obj">total</em> and <em class="xref py py-obj">max</em> are both <em class="xref py py-obj">True</em>, they are returned separately as a tuple: <code class="docutils literal notranslate"><span class="pre">(total,</span> <span class="pre">max)</span></code></p>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)">None</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.outSileSiesta.read_geometry">
+<span class="sig-name descname"><span class="pre">read_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">last</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/out.html#outSileSiesta.read_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.outSileSiesta.read_geometry" title="Permalink to this definition"></a></dt>
+<dd><p>Reads the geometry from the Siesta output file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>last</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – only read the last geometry</p></li>
+<li><p><strong>all</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – return a list of all geometries (like an MD)
+If <em class="xref py py-obj">True</em> <em class="xref py py-obj">last</em> is ignored</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><strong>geometries</strong> – if all is False only one geometry will be returned (or None). Otherwise
+a list of geometries corresponding to the MD-runs.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)">list</a> or <a class="reference internal" href="../../generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry">Geometry</a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)">None</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.outSileSiesta.read_moment">
+<span class="sig-name descname"><span class="pre">read_moment</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantity</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'S'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/out.html#outSileSiesta.read_moment"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.outSileSiesta.read_moment" title="Permalink to this definition"></a></dt>
+<dd><p>Reads the moments from the Siesta output file</p>
+<p>These will only be present in case of spin-orbit coupling.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>orbitals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – return a table with orbitally resolved
+moments.</p></li>
+<li><p><strong>quantity</strong> (<em>{'S'</em><em>, </em><em>'L'}</em><em>, </em><em>optional</em>) – return the spin-moments or the L moments</p></li>
+<li><p><strong>last</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – only read the last force</p></li>
+<li><p><strong>all</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – return a list of all forces (like an MD)
+If <em class="xref py py-obj">True</em> <em class="xref py py-obj">last</em> is ignored</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.outSileSiesta.read_scf">
+<span class="sig-name descname"><span class="pre">read_scf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scf'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">iscf</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">-</span> <span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">imd</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">as_dataframe</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/out.html#outSileSiesta.read_scf"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.outSileSiesta.read_scf" title="Permalink to this definition"></a></dt>
+<dd><p>Parse SCF information and return a table of SCF information depending on what is requested</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>{'scf'</em><em>, </em><em>'ts-scf'}</em>) – parse SCF information from Siesta SCF or TranSiesta SCF</p></li>
+<li><p><strong>iscf</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – which SCF cycle should be stored. If <code class="docutils literal notranslate"><span class="pre">-1</span></code> only the final SCF step is stored,
+for None <em>all</em> SCF cycles are returned. When <em class="xref py py-obj">iscf</em> values queried are not found they
+will be truncated to the nearest SCF step.</p></li>
+<li><p><strong>imd</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><em>None</em></a><em>, </em><em>optional</em>) – whether only a particular MD step is queried, if None, all MD steps are
+parsed and returned. A negative number wraps for the last MD steps.</p></li>
+<li><p><strong>as_dataframe</strong> (<em>boolean</em><em>, </em><em>optional</em>) – whether the information should be returned as a <a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.3.4)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pandas.DataFrame</span></code></a>. The advantage of this
+format is that everything is indexed and therefore you know what each value means.You can also
+perform operations very easily on a dataframe.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.outSileSiesta.read_stress">
+<span class="sig-name descname"><span class="pre">read_stress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'static'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">last</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">all</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../../_modules/sisl/io/siesta/out.html#outSileSiesta.read_stress"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.io.siesta.outSileSiesta.read_stress" title="Permalink to this definition"></a></dt>
+<dd><p>Reads the stresses from the Siesta output file</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>{'static'</em><em>, </em><em>'total'}</em>) – which stress to read from the output.</p></li>
+<li><p><strong>last</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – only read the last stress</p></li>
+<li><p><strong>all</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – return a list of all stresses (like an MD)
+If <em class="xref py py-obj">True</em> <em class="xref py py-obj">last</em> is ignored</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>returns <code class="docutils literal notranslate"><span class="pre">None</span></code> if the stresses are not found in the
+output, otherwise stresses will be returned</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a> or <a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)">None</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.io.siesta.outSileSiesta.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.io.siesta.outSileSiesta.write" title="Permalink to this definition"></a></dt>
+<dd><p>Generic write method which should be overloaded in child-classes</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>**kwargs</strong> – keyword arguments will try and search for the attribute <em class="xref py py-obj">write_</em>
+and call it with the remaining <code class="docutils literal notranslate"><span class="pre">**kwargs</span></code> as arguments.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sisl.io.siesta.fdfSileSiesta.html" class="btn btn-neutral float-left" title="sisl.io.siesta.fdfSileSiesta" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.io.siesta.xvSileSiesta.html" class="btn btn-neutral float-right" title="sisl.io.siesta.xvSileSiesta" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.io.gulp.got &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/index.html">API documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>sisl.io.gulp.got</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sisl.io.gulp.got</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
+<span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
+<span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Sile object for reading/writing GULP in/output</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">os.path</span> <span class="k">as</span> <span class="nn">osp</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="nb">abs</span> <span class="k">as</span> <span class="n">np_abs</span>
+
+<span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span>
+<span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileGULP</span>
+<span class="kn">from</span> <span class="nn">.fc</span> <span class="kn">import</span> <span class="n">fcSileGULP</span>
+<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">Geometry</span><span class="p">,</span> <span class="n">Atom</span><span class="p">,</span> <span class="n">Orbital</span><span class="p">,</span> <span class="n">SuperCell</span>
+<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="n">constant</span><span class="p">,</span> <span class="n">units</span>
+<span class="kn">from</span> <span class="nn">sisl.physics</span> <span class="kn">import</span> <span class="n">DynamicalMatrix</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;gotSileGULP&#39;</span><span class="p">]</span>
+
+
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.gulp&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">gotSileGULP</span><span class="p">(</span><span class="n">SileGULP</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; GULP output file object</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    filename : str</span>
+<span class="sd">        filename of the file</span>
+<span class="sd">    mode : str, optional</span>
+<span class="sd">        opening mode of file, default to read-only</span>
+<span class="sd">    base : str, optional</span>
+<span class="sd">        base directory of the file</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Setup `gotSileGULP` after initialization &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_keys</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_supercell_key</span><span class="p">(</span><span class="s1">&#39;Cartesian lattice vectors&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_geometry_key</span><span class="p">(</span><span class="s1">&#39;Final fractional coordinates&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_dynamical_matrix_key</span><span class="p">(</span><span class="s1">&#39;Real Dynamical matrix&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="gotSileGULP.set_key"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP.set_key">[docs]</a>    <span class="k">def</span> <span class="nf">set_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">segment</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Sets the segment lookup key &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">key</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_keys</span><span class="p">[</span><span class="n">segment</span><span class="p">]</span> <span class="o">=</span> <span class="n">key</span></div>
+
+<div class="viewcode-block" id="gotSileGULP.set_supercell_key"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP.set_supercell_key">[docs]</a>    <span class="k">def</span> <span class="nf">set_supercell_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Overwrites internal key lookup value for the cell vectors &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_key</span><span class="p">(</span><span class="s1">&#39;sc&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="gotSileGULP.read_super"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP.read_super">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">read_super</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Reads the dimensions of the supercell &quot;&quot;&quot;</span>
+
+        <span class="n">f</span><span class="p">,</span> <span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="s1">&#39;Supercell dimensions&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+        <span class="c1"># Read off the supercell dimensions</span>
+        <span class="n">xyz</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s1">&#39;=&#39;</span><span class="p">)[</span><span class="mi">1</span><span class="p">:]</span>
+
+        <span class="c1"># Now read off the quantities...</span>
+        <span class="n">sc</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">i</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">0</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xyz</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">sc</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="gotSileGULP.read_supercell"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP.read_supercell">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">read_supercell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Reads a `SuperCell` and creates the GULP cell &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_supercell_key</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+
+        <span class="n">f</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_keys</span><span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s1">&#39;SileGULP tries to lookup the SuperCell vectors &#39;</span>
+                 <span class="s1">&#39;using key &quot;&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keys</span><span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;&quot;. </span><span class="se">\n</span><span class="s1">&#39;</span>
+                 <span class="s1">&#39;Use &quot;.set_supercell_key(...)&quot; to search for different name.</span><span class="se">\n</span><span class="s1">&#39;</span>
+                 <span class="s1">&#39;This could not be found found in file: &quot;&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">file</span> <span class="o">+</span> <span class="s1">&#39;&quot;.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># skip 1 line</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
+            <span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+            <span class="n">cell</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">l</span><span class="p">[:</span><span class="mi">3</span><span class="p">]]</span>
+
+        <span class="k">return</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="gotSileGULP.set_geometry_key"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP.set_geometry_key">[docs]</a>    <span class="k">def</span> <span class="nf">set_geometry_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Overwrites internal key lookup value for the geometry vectors &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_key</span><span class="p">(</span><span class="s1">&#39;geometry&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="gotSileGULP.read_geometry"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP.read_geometry">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">read_geometry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Reads a geometry and creates the GULP dynamical geometry &quot;&quot;&quot;</span>
+        <span class="c1"># create default supercell</span>
+        <span class="n">sc</span> <span class="o">=</span> <span class="n">SuperCell</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+
+        <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]:</span>
+            <span class="c1"># Step to either the geometry or</span>
+            <span class="n">f</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">ki</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">_keys</span><span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keys</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]],</span> <span class="n">ret_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span> <span class="ow">and</span> <span class="n">ki</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;SileGULP tries to lookup the SuperCell vectors &#39;</span>
+                                 <span class="s1">&#39;using key &quot;&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keys</span><span class="p">[</span><span class="s1">&#39;sc&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;&quot;. </span><span class="se">\n</span><span class="s1">&#39;</span>
+                                 <span class="s1">&#39;Use &quot;.set_supercell_key(...)&quot; to search for different name.</span><span class="se">\n</span><span class="s1">&#39;</span>
+                                 <span class="s1">&#39;This could not be found found in file: &quot;&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">file</span> <span class="o">+</span> <span class="s1">&#39;&quot;.&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">f</span> <span class="ow">and</span> <span class="n">ki</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="c1"># supercell</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                <span class="n">cell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
+                    <span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                    <span class="n">cell</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="n">cell</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="n">cell</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">l</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+                <span class="n">sc</span> <span class="o">=</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">f</span> <span class="ow">and</span> <span class="n">ki</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;SileGULP tries to lookup the Geometry coordinates &#39;</span>
+                                 <span class="s1">&#39;using key &quot;&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keys</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;&quot;. </span><span class="se">\n</span><span class="s1">&#39;</span>
+                                 <span class="s1">&#39;Use &quot;.set_geom_key(...)&quot; to search for different name.</span><span class="se">\n</span><span class="s1">&#39;</span>
+                                 <span class="s1">&#39;This could not be found found in file: &quot;&#39;</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">file</span> <span class="o">+</span> <span class="s1">&#39;&quot;.&#39;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">f</span> <span class="ow">and</span> <span class="n">ki</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+
+                <span class="n">orbs</span> <span class="o">=</span> <span class="p">[</span><span class="n">Orbital</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">tag</span><span class="o">=</span><span class="n">tag</span><span class="p">)</span> <span class="k">for</span> <span class="n">tag</span> <span class="ow">in</span> <span class="s1">&#39;xyz&#39;</span><span class="p">]</span>
+
+                <span class="c1"># We skip 5 lines</span>
+                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+
+                <span class="n">Z</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="n">xyz</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                    <span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+                    <span class="k">if</span> <span class="n">l</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s1">&#39;-&#39;</span><span class="p">:</span>
+                        <span class="k">break</span>
+
+                    <span class="n">ls</span> <span class="o">=</span> <span class="n">l</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                    <span class="n">Z</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">Atom</span><span class="p">(</span><span class="n">ls</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">orbitals</span><span class="o">=</span><span class="n">orbs</span><span class="p">))</span>
+                    <span class="n">xyz</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ls</span><span class="p">[</span><span class="mi">3</span><span class="p">:</span><span class="mi">6</span><span class="p">]])</span>
+
+                <span class="c1"># Convert to array and correct size</span>
+                <span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+                <span class="n">xyz</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">Z</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="n">xyz</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Could not read in cell information and/or coordinates&#39;</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="ow">not</span> <span class="n">f</span><span class="p">:</span>
+                <span class="c1"># could not find either cell or geometry</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;SileGULP tries to lookup the SuperCell or Geometry.</span><span class="se">\n</span><span class="s1">&#39;</span>
+                                 <span class="s1">&#39;None succeeded, ensure file has correct format.</span><span class="se">\n</span><span class="s1">&#39;</span>
+                                 <span class="s1">&#39;This could not be found found in file: &quot;</span><span class="si">{}</span><span class="s1">&quot;.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">))</span>
+
+        <span class="c1"># as the cell may be read in after the geometry we have</span>
+        <span class="c1"># to wait until here to convert from fractional</span>
+        <span class="k">if</span> <span class="s1">&#39;fractional&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_keys</span><span class="p">[</span><span class="s1">&#39;geometry&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">lower</span><span class="p">():</span>
+            <span class="c1"># Correct for fractional coordinates</span>
+            <span class="n">xyz</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
+
+        <span class="c1"># Return the geometry</span>
+        <span class="k">return</span> <span class="n">Geometry</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">Z</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">sc</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="gotSileGULP.set_dynamical_matrix_key"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP.set_dynamical_matrix_key">[docs]</a>    <span class="k">def</span> <span class="nf">set_dynamical_matrix_key</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Overwrites internal key lookup value for the dynamical matrix vectors &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_key</span><span class="p">(</span><span class="s1">&#39;dyn&#39;</span><span class="p">,</span> <span class="n">key</span><span class="p">)</span></div>
+
+    <span class="n">set_dyn_key</span> <span class="o">=</span> <span class="n">set_dynamical_matrix_key</span>
+
+<div class="viewcode-block" id="gotSileGULP.read_dynamical_matrix"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.gulp.gotSileGULP.html#sisl.io.gulp.gotSileGULP.read_dynamical_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">read_dynamical_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a GULP dynamical matrix model for the output of GULP</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cutoff: float, optional</span>
+<span class="sd">           absolute values below the cutoff are considered 0. Defaults to 0. eV/Ang**2.</span>
+<span class="sd">        hermitian : bool, optional</span>
+<span class="sd">           if true (default), the returned dynamical matrix will be hermitian</span>
+<span class="sd">        dtype: np.dtype (np.float64)</span>
+<span class="sd">           default data-type of the matrix</span>
+<span class="sd">        order: list of str, optional</span>
+<span class="sd">            the order of which to try and read the dynamical matrix</span>
+<span class="sd">            By default this is ``[&#39;got&#39;/&#39;gout&#39;, &#39;FC&#39;]``. Note that ``FC`` corresponds to</span>
+<span class="sd">            the `fcSileGULP` file (``FORCE_CONSTANTS_2ND``).</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">geom</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_geometry</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">order</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;order&#39;</span><span class="p">,</span> <span class="p">[</span><span class="s1">&#39;got&#39;</span><span class="p">,</span> <span class="s1">&#39;FC&#39;</span><span class="p">])</span>
+        <span class="k">for</span> <span class="n">f</span> <span class="ow">in</span> <span class="n">order</span><span class="p">:</span>
+            <span class="n">v</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_r_dynamical_matrix_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">lower</span><span class="p">()))(</span><span class="n">geom</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">v</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Convert the dynamical matrix such that a diagonalization returns eV ^ 2</span>
+                <span class="n">scale</span> <span class="o">=</span> <span class="n">constant</span><span class="o">.</span><span class="n">hbar</span> <span class="o">/</span> <span class="n">units</span><span class="p">(</span><span class="s1">&#39;Ang&#39;</span><span class="p">,</span> <span class="s1">&#39;m&#39;</span><span class="p">)</span> <span class="o">/</span> <span class="n">units</span><span class="p">(</span><span class="s1">&#39;eV amu&#39;</span><span class="p">,</span> <span class="s1">&#39;J kg&#39;</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
+                <span class="n">v</span><span class="o">.</span><span class="n">data</span> <span class="o">*=</span> <span class="n">scale</span> <span class="o">**</span> <span class="mi">2</span>
+                <span class="n">v</span> <span class="o">=</span> <span class="n">DynamicalMatrix</span><span class="o">.</span><span class="n">fromsp</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">v</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;hermitian&quot;</span><span class="p">,</span> <span class="kc">True</span><span class="p">):</span>
+                    <span class="n">v</span> <span class="o">=</span> <span class="p">(</span><span class="n">v</span> <span class="o">+</span> <span class="n">v</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span> <span class="o">*</span> <span class="mf">0.5</span>
+                <span class="k">return</span> <span class="n">v</span>
+
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">_r_dynamical_matrix_got</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; In case the dynamical matrix is read from the file &quot;&quot;&quot;</span>
+        <span class="c1"># Easier for creation of the sparsity pattern</span>
+        <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">lil_matrix</span>
+
+        <span class="c1"># Default cutoff eV / Ang ** 2</span>
+        <span class="n">cutoff</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;cutoff&#39;</span><span class="p">,</span> <span class="mf">0.</span><span class="p">)</span>
+        <span class="n">dtype</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;dtype&#39;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+        <span class="n">nxyz</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">no</span>
+        <span class="n">dyn</span> <span class="o">=</span> <span class="n">lil_matrix</span><span class="p">((</span><span class="n">nxyz</span><span class="p">,</span> <span class="n">nxyz</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+
+        <span class="n">f</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">step_to</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_keys</span><span class="p">[</span><span class="s1">&#39;dyn&#39;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="p">:</span>
+            <span class="n">info</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.read_dynamical_matrix tries to lookup the Dynamical matrix &quot;</span>
+                 <span class="s2">&quot;using key &#39;</span><span class="si">{self._keys[&#39;dyn&#39;]}</span><span class="s2">&#39;. &quot;</span>
+                 <span class="s2">&quot;Use .set_dynamical_matrix_key(...) to search for different name.&quot;</span>
+                 <span class="s2">&quot;This could not be found found in file: </span><span class="si">{self.file}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># skip 1 line</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+
+        <span class="c1"># default range</span>
+        <span class="n">dat</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="n">nxyz</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">dtype</span><span class="p">)</span>
+        <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span>
+        <span class="n">nxyzm1</span> <span class="o">=</span> <span class="n">nxyz</span> <span class="o">-</span> <span class="mi">1</span>
+        <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">nxyz</span><span class="p">:</span>
+            <span class="n">l</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">l</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">break</span>
+
+            <span class="c1"># convert to float list</span>
+            <span class="n">ls</span> <span class="o">=</span> <span class="p">[</span><span class="nb">float</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">l</span><span class="o">.</span><span class="n">split</span><span class="p">()]</span>
+
+            <span class="n">k</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="n">nxyz</span> <span class="o">-</span> <span class="n">j</span><span class="p">)</span>
+
+            <span class="c1"># GULP only prints columns corresponding</span>
+            <span class="c1"># to a full row. Hence the remaining</span>
+            <span class="c1"># data must be nxyz - j - 1</span>
+            <span class="n">dat</span><span class="p">[</span><span class="n">j</span><span class="p">:</span><span class="n">j</span> <span class="o">+</span> <span class="n">k</span><span class="p">]</span> <span class="o">=</span> <span class="n">ls</span><span class="p">[:</span><span class="n">k</span><span class="p">]</span>
+            <span class="n">j</span> <span class="o">+=</span> <span class="n">k</span>
+
+            <span class="k">if</span> <span class="n">j</span> <span class="o">&gt;=</span> <span class="n">nxyz</span><span class="p">:</span>
+                <span class="n">dyn</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">dat</span><span class="p">[:]</span>
+                <span class="c1"># step row</span>
+                <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="c1"># reset column</span>
+                <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># clean-up for memory</span>
+        <span class="k">del</span> <span class="n">dat</span>
+
+        <span class="c1"># Convert to COO matrix format</span>
+        <span class="n">dyn</span> <span class="o">=</span> <span class="n">dyn</span><span class="o">.</span><span class="n">tocoo</span><span class="p">()</span>
+
+        <span class="c1"># Construct mass ** (-.5), so we can check cutoff correctly (in unit eV/Ang**2)</span>
+        <span class="n">mass_sqrt</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">mass</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
+        <span class="n">dyn</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">*=</span> <span class="n">mass_sqrt</span><span class="p">[</span><span class="n">dyn</span><span class="o">.</span><span class="n">row</span><span class="p">]</span> <span class="o">*</span> <span class="n">mass_sqrt</span><span class="p">[</span><span class="n">dyn</span><span class="o">.</span><span class="n">col</span><span class="p">]</span>
+        <span class="n">dyn</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">np_abs</span><span class="p">(</span><span class="n">dyn</span><span class="o">.</span><span class="n">data</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">cutoff</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.</span>
+        <span class="n">dyn</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">*=</span> <span class="mi">1</span> <span class="o">/</span> <span class="p">(</span><span class="n">mass_sqrt</span><span class="p">[</span><span class="n">dyn</span><span class="o">.</span><span class="n">row</span><span class="p">]</span> <span class="o">*</span> <span class="n">mass_sqrt</span><span class="p">[</span><span class="n">dyn</span><span class="o">.</span><span class="n">col</span><span class="p">])</span>
+        <span class="n">dyn</span><span class="o">.</span><span class="n">eliminate_zeros</span><span class="p">()</span>
+
+        <span class="k">return</span> <span class="n">dyn</span>
+
+    <span class="n">_r_dynamical_matrix_gout</span> <span class="o">=</span> <span class="n">_r_dynamical_matrix_got</span>
+
+    <span class="k">def</span> <span class="nf">_r_dynamical_matrix_fc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="c1"># The output of the force constant in the file does not contain the mass-scaling</span>
+        <span class="c1"># nor the unit conversion</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dir_file</span><span class="p">(</span><span class="s1">&#39;FORCE_CONSTANTS_2ND&#39;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">f</span><span class="o">.</span><span class="n">is_file</span><span class="p">():</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="n">fc</span> <span class="o">=</span> <span class="n">fcSileGULP</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">read_force_constant</span><span class="p">(</span><span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">fc</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">//</span> <span class="mi">3</span> <span class="o">!=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">na</span><span class="p">:</span>
+            <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.read_dynamical_matrix(FC) inconsistent force constant file, na_file=</span><span class="si">{</span><span class="n">fc</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">//</span><span class="mi">3</span><span class="si">}</span><span class="s2">, na_geom=</span><span class="si">{</span><span class="n">geometry</span><span class="o">.</span><span class="n">na</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="n">fc</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">!=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">no</span><span class="p">:</span>
+            <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.read_dynamical_matrix(FC) inconsistent geometry, no_file=</span><span class="si">{</span><span class="n">fc</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">, no_geom=</span><span class="si">{</span><span class="n">geometry</span><span class="o">.</span><span class="n">no</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+        <span class="c1"># Construct orbital mass ** (-.5)</span>
+        <span class="n">rmass</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">geometry</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">mass</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
+
+        <span class="c1"># Scale to get dynamical matrix</span>
+        <span class="n">fc</span><span class="o">.</span><span class="n">data</span><span class="p">[:]</span> <span class="o">*=</span> <span class="n">rmass</span><span class="p">[</span><span class="n">fc</span><span class="o">.</span><span class="n">row</span><span class="p">]</span> <span class="o">*</span> <span class="n">rmass</span><span class="p">[</span><span class="n">fc</span><span class="o">.</span><span class="n">col</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">fc</span>
+
+
+<span class="c1"># Old-style GULP output</span>
+<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;gout&#39;</span><span class="p">,</span> <span class="n">gotSileGULP</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;got&#39;</span><span class="p">,</span> <span class="n">gotSileGULP</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

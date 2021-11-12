@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Physical objects &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Brillouin zone" href="physics.brillouinzone.html" />
+    <link rel="prev" title="graphene" href="generated/sisl.geom.graphene.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="basic.html">Basic classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="default_geom.html">Common geometries</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Physical objects</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="physics.brillouinzone.html">Brillouin zone</a></li>
+<li class="toctree-l3"><a class="reference internal" href="physics.matrix.html">Physical quantites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="physics.electron.html">Electron related functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="physics.phonon.html">Phonon related functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="physics.distribution.html">Distribution functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#low-level-objects">Low level objects</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#states">States</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sparse-matrices">Sparse matrices</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="mixing.html">Mixing self-consistent quantities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unit_constant.html">Units and constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="io/index.html">Input/Output</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">API documentation</a> &raquo;</li>
+      <li>Physical objects</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/physics.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="module-sisl.physics">
+<span id="physical-objects"></span><span id="physics"></span><h1>Physical objects<a class="headerlink" href="#module-sisl.physics" title="Permalink to this headline"></a></h1>
+<p>Implementations of various DFT and tight-binding related quantities
+are defined. The implementations range from simple Brillouin zone
+perspectives to self-energy calculations from Hamiltonians.</p>
+<p>In <a class="reference internal" href="index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> the general usage of physical matrices are considering sparse
+matrices. Hence Hamiltonians, density matrices, etc. are considered
+sparse. There are exceptions, but it is generally advisable to have this in mind.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="physics.brillouinzone.html">Brillouin zone</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="physics.brillouinzone.html#multiple-quantities">Multiple quantities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="physics.brillouinzone.html#parallel-calculations">Parallel calculations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="physics.matrix.html">Physical quantites</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="physics.matrix.html#spin">Spin</a></li>
+<li class="toctree-l2"><a class="reference internal" href="physics.matrix.html#matrices">Matrices</a></li>
+<li class="toctree-l2"><a class="reference internal" href="physics.matrix.html#self-energies">Self energies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="physics.matrix.html#bloch-s-theorem">Bloch’s theorem</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="physics.electron.html">Electron related functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated/sisl.physics.electron.DOS.html">DOS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/sisl.physics.electron.PDOS.html">PDOS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/sisl.physics.electron.velocity.html">velocity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/sisl.physics.electron.velocity_matrix.html">velocity_matrix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/sisl.physics.electron.berry_phase.html">berry_phase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/sisl.physics.electron.berry_curvature.html">berry_curvature</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/sisl.physics.electron.conductivity.html">conductivity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/sisl.physics.electron.wavefunction.html">wavefunction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/sisl.physics.electron.spin_moment.html">spin_moment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/sisl.physics.electron.spin_squared.html">spin_squared</a></li>
+<li class="toctree-l2"><a class="reference internal" href="physics.electron.html#supporting-classes">Supporting classes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="physics.phonon.html">Phonon related functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated/sisl.physics.phonon.DOS.html">DOS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/sisl.physics.phonon.PDOS.html">PDOS</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/sisl.physics.phonon.velocity.html">velocity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/sisl.physics.phonon.displacement.html">displacement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="physics.phonon.html#supporting-classes">Supporting classes</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="physics.distribution.html">Distribution functions</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="generated/sisl.physics.get_distribution.html">get_distribution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/sisl.physics.gaussian.html">gaussian</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/sisl.physics.lorentzian.html">lorentzian</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/sisl.physics.fermi_dirac.html">fermi_dirac</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/sisl.physics.bose_einstein.html">bose_einstein</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/sisl.physics.cold.html">cold</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/sisl.physics.step_function.html">step_function</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/sisl.physics.heaviside.html">heaviside</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<section id="low-level-objects">
+<h2>Low level objects<a class="headerlink" href="#low-level-objects" title="Permalink to this headline"></a></h2>
+<p>The low level objects are the driving objects for some of the physical
+objects found here. They are rarely (if ever) required to be used, but they
+may be important for developers wishing to extend the functionality of <a class="reference internal" href="index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a>
+using generic class-structures. For instance the <a class="reference internal" href="generated/sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian" title="sisl.physics.Hamiltonian"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Hamiltonian</span></code></a> inherits the
+<a class="reference internal" href="generated/sisl.physics.SparseOrbitalBZSpin.html#sisl.physics.SparseOrbitalBZSpin" title="sisl.physics.SparseOrbitalBZSpin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SparseOrbitalBZSpin</span></code></a> class and <code class="xref py py-obj docutils literal notranslate"><span class="pre">EigenvalueElectron</span></code> inherits from <a class="reference internal" href="generated/sisl.physics.Coefficient.html#sisl.physics.Coefficient" title="sisl.physics.Coefficient"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Coefficient</span></code></a>.</p>
+<section id="states">
+<h3>States<a class="headerlink" href="#states" title="Permalink to this headline"></a></h3>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.physics.degenerate_decouple.html#sisl.physics.degenerate_decouple" title="sisl.physics.degenerate_decouple"><code class="xref py py-obj docutils literal notranslate"><span class="pre">degenerate_decouple</span></code></a>(state, M)</p></td>
+<td><p>Return <em class="xref py py-obj">vec</em> decoupled via matrix <em class="xref py py-obj">M</em></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.physics.Coefficient.html#sisl.physics.Coefficient" title="sisl.physics.Coefficient"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Coefficient</span></code></a>(c[, parent])</p></td>
+<td><p>An object holding coefficients for a parent with info</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><code class="xref py py-obj docutils literal notranslate"><span class="pre">State</span></code></a>(state[, parent])</p></td>
+<td><p>An object handling a set of vectors describing a given <em>state</em></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.physics.StateC.html#sisl.physics.StateC" title="sisl.physics.StateC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">StateC</span></code></a>(state, c[, parent])</p></td>
+<td><p>An object handling a set of vectors describing a given <em>state</em> with associated coefficients <em class="xref py py-obj">c</em></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="sparse-matrices">
+<h3>Sparse matrices<a class="headerlink" href="#sparse-matrices" title="Permalink to this headline"></a></h3>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.physics.SparseOrbitalBZ.html#sisl.physics.SparseOrbitalBZ" title="sisl.physics.SparseOrbitalBZ"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SparseOrbitalBZ</span></code></a>(geometry[, dim, dtype, nnzpr])</p></td>
+<td><p>Sparse object containing the orbital connections in a Brillouin zone</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.physics.SparseOrbitalBZSpin.html#sisl.physics.SparseOrbitalBZSpin" title="sisl.physics.SparseOrbitalBZSpin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SparseOrbitalBZSpin</span></code></a>(geometry[, dim, dtype, ...])</p></td>
+<td><p>Sparse object containing the orbital connections in a Brillouin zone with possible spin-components</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="generated/sisl.geom.graphene.html" class="btn btn-neutral float-left" title="graphene" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="physics.brillouinzone.html" class="btn btn-neutral float-right" title="Brillouin zone" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

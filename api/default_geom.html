@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Common geometries &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="sc" href="generated/sisl.geom.sc.html" />
+    <link rel="prev" title="sisl.utils.PropertyDict" href="generated/sisl.utils.PropertyDict.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="basic.html">Basic classes</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Common geometries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bulk">Bulk</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.sc.html">sc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.bcc.html">bcc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.fcc.html">fcc</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.hcp.html">hcp</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.diamond.html">diamond</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#d-materials">1D materials</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.nanoribbon.html">nanoribbon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.agnr.html">agnr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.zgnr.html">zgnr</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.graphene_nanoribbon.html">graphene_nanoribbon</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.nanotube.html">nanotube</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">2D materials</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.honeycomb.html">honeycomb</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.bilayer.html">bilayer</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.geom.graphene.html">graphene</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="physics.html">Physical objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mixing.html">Mixing self-consistent quantities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unit_constant.html">Units and constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="io/index.html">Input/Output</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">API documentation</a> &raquo;</li>
+      <li>Common geometries</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/default_geom.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="module-sisl.geom">
+<span id="common-geometries"></span><span id="geom"></span><h1>Common geometries<a class="headerlink" href="#module-sisl.geom" title="Permalink to this headline"></a></h1>
+<p>A selection of default geometries that <a class="reference internal" href="index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> can construct on the fly.</p>
+<p>While this is far from complete we encourage users to contribute additional
+geometries via a <a class="reference external" href="pr">pull request</a>.</p>
+<p>All methods return a <em class="xref py py-obj">Geometry</em> object.</p>
+<section id="bulk">
+<h2>Bulk<a class="headerlink" href="#bulk" title="Permalink to this headline"></a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.sc.html#sisl.geom.sc" title="sisl.geom.sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc</span></code></a>(alat, atom)</p></td>
+<td><p>Simple cubic lattice with 1 atom</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.geom.bcc.html#sisl.geom.bcc" title="sisl.geom.bcc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bcc</span></code></a>(alat, atoms[, orthogonal])</p></td>
+<td><p>Body centered cubic lattice with 1 (non-orthogonal) or 2 atoms (orthogonal)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.fcc.html#sisl.geom.fcc" title="sisl.geom.fcc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fcc</span></code></a>(alat, atoms[, orthogonal])</p></td>
+<td><p>Face centered cubic lattice with 1 (non-orthogonal) or 4 atoms (orthogonal)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.geom.hcp.html#sisl.geom.hcp" title="sisl.geom.hcp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">hcp</span></code></a>(a, atoms[, coa, orthogonal])</p></td>
+<td><p>Hexagonal closed packed lattice with 2 (non-orthogonal) or 4 atoms (orthogonal)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.diamond.html#sisl.geom.diamond" title="sisl.geom.diamond"><code class="xref py py-obj docutils literal notranslate"><span class="pre">diamond</span></code></a>([alat, atoms])</p></td>
+<td><p>Diamond lattice with 2 atoms in the unitcell</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="d-materials">
+<h2>1D materials<a class="headerlink" href="#d-materials" title="Permalink to this headline"></a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.nanoribbon.html#sisl.geom.nanoribbon" title="sisl.geom.nanoribbon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nanoribbon</span></code></a>(bond, atoms, width[, kind])</p></td>
+<td><p>Construction of a nanoribbon unit cell of type armchair or zigzag.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.geom.agnr.html#sisl.geom.agnr" title="sisl.geom.agnr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">agnr</span></code></a>(width[, bond, atoms])</p></td>
+<td><p>Construction of an armchair graphene nanoribbon</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.zgnr.html#sisl.geom.zgnr" title="sisl.geom.zgnr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">zgnr</span></code></a>(width[, bond, atoms])</p></td>
+<td><p>Construction of a zigzag graphene nanoribbon</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.geom.graphene_nanoribbon.html#sisl.geom.graphene_nanoribbon" title="sisl.geom.graphene_nanoribbon"><code class="xref py py-obj docutils literal notranslate"><span class="pre">graphene_nanoribbon</span></code></a>(width[, bond, atoms, kind])</p></td>
+<td><p>Construction of a graphene nanoribbon</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.nanotube.html#sisl.geom.nanotube" title="sisl.geom.nanotube"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nanotube</span></code></a>(bond[, atoms, chirality])</p></td>
+<td><p>Nanotube with user-defined chirality.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="id1">
+<h2>2D materials<a class="headerlink" href="#id1" title="Permalink to this headline"></a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.honeycomb.html#sisl.geom.honeycomb" title="sisl.geom.honeycomb"><code class="xref py py-obj docutils literal notranslate"><span class="pre">honeycomb</span></code></a>(bond, atoms[, orthogonal])</p></td>
+<td><p>Honeycomb lattice with 2 or 4 atoms per unit-cell, latter orthogonal cell</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.geom.bilayer.html#sisl.geom.bilayer" title="sisl.geom.bilayer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">bilayer</span></code></a>([bond, bottom_atoms, top_atoms, ...])</p></td>
+<td><p>Commensurate unit cell of a hexagonal bilayer structure, possibly with a twist angle.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.geom.graphene.html#sisl.geom.graphene" title="sisl.geom.graphene"><code class="xref py py-obj docutils literal notranslate"><span class="pre">graphene</span></code></a>([bond, atoms, orthogonal])</p></td>
+<td><p>Graphene lattice with 2 or 4 atoms per unit-cell, latter orthogonal cell</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="generated/sisl.utils.PropertyDict.html" class="btn btn-neutral float-left" title="sisl.utils.PropertyDict" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="generated/sisl.geom.sc.html" class="btn btn-neutral float-right" title="sc" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Basic classes &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+        <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="sisl.PeriodicTable" href="generated/sisl.PeriodicTable.html" />
+    <link rel="prev" title="API documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">API documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Basic classes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#simple-objects">Simple objects</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.PeriodicTable.html">sisl.PeriodicTable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.Orbital.html">sisl.Orbital</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.SphericalOrbital.html">sisl.SphericalOrbital</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.AtomicOrbital.html">sisl.AtomicOrbital</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.Atom.html">sisl.Atom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.Atoms.html">sisl.Atoms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.Geometry.html">sisl.Geometry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.SuperCell.html">sisl.SuperCell</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.Grid.html">sisl.Grid</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#advanced-classes">Advanced classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.Quaternion.html">sisl.Quaternion</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.SparseCSR.html">sisl.SparseCSR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.SparseAtom.html">sisl.SparseAtom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.SparseOrbital.html">sisl.SparseOrbital</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#utility-classes">Utility classes</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.oplist.oplist.html">sisl.oplist.oplist</a></li>
+<li class="toctree-l4"><a class="reference internal" href="generated/sisl.utils.PropertyDict.html">sisl.utils.PropertyDict</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="default_geom.html">Common geometries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="physics.html">Physical objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="mixing.html">Mixing self-consistent quantities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="unit_constant.html">Units and constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utilities.html">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="io/index.html">Input/Output</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="index.html">API documentation</a> &raquo;</li>
+      <li>Basic classes</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/api/basic.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="basic-classes">
+<span id="basic"></span><h1>Basic classes<a class="headerlink" href="#basic-classes" title="Permalink to this headline"></a></h1>
+<p>sisl provides basic functionality for interacting with orbitals, atoms, geometries,
+unit cells and grid functions.</p>
+<section id="simple-objects">
+<h2>Simple objects<a class="headerlink" href="#simple-objects" title="Permalink to this headline"></a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.PeriodicTable.html#sisl.PeriodicTable" title="sisl.PeriodicTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeriodicTable</span></code></a>()</p></td>
+<td><p>Periodic table for creating an <a class="reference internal" href="generated/sisl.Atom.html#sisl.Atom" title="sisl.Atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atom</span></code></a>, or retrieval of atomic information via atomic numbers</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Orbital</span></code></a>(R[, q0, tag])</p></td>
+<td><p>Base class for orbital information.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.SphericalOrbital.html#sisl.SphericalOrbital" title="sisl.SphericalOrbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SphericalOrbital</span></code></a>(l, rf_or_func[, q0, tag])</p></td>
+<td><p>An <em>arbitrary</em> orbital class where <span class="math notranslate nohighlight">\(\phi(\mathbf r)=f(|\mathbf r|)Y_l^m(\theta,\varphi)\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.AtomicOrbital.html#sisl.AtomicOrbital" title="sisl.AtomicOrbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AtomicOrbital</span></code></a>(*args, **kwargs)</p></td>
+<td><p>A projected atomic orbital consisting of real harmonics</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.Atom.html#sisl.Atom" title="sisl.Atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atom</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Atomic information, mass, name number of orbitals and ranges</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.Atoms.html#sisl.Atoms" title="sisl.Atoms"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atoms</span></code></a>([atoms, na])</p></td>
+<td><p>A list-like object to contain a list of different atoms with minimum data duplication.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a>(xyz[, atoms, sc, names])</p></td>
+<td><p>Holds atomic information, coordinates, species, lattice vectors</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a>(cell[, nsc, origin])</p></td>
+<td><p>A cell class to retain lattice vectors and a supercell structure</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.Grid.html#sisl.Grid" title="sisl.Grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Grid</span></code></a>(shape[, bc, sc, dtype, geometry])</p></td>
+<td><p>Real-space grid information with associated geometry.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="advanced-classes">
+<h2>Advanced classes<a class="headerlink" href="#advanced-classes" title="Permalink to this headline"></a></h2>
+<p>The physical matrices used internally in <a class="reference internal" href="index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> are constructed
+based on these base classes.
+However, it may be beneficial to read the specific matrix
+in <a class="reference internal" href="physics.matrix.html#physics-matrix"><span class="std std-ref">Physical quantites</span></a>.</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.Quaternion.html#sisl.Quaternion" title="sisl.Quaternion"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Quaternion</span></code></a>([angle, v, rad])</p></td>
+<td><p>Quaternion object to enable easy rotational quantities.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.SparseCSR.html#sisl.SparseCSR" title="sisl.SparseCSR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SparseCSR</span></code></a>(arg1[, dim, dtype, nnzpr, nnz])</p></td>
+<td><p>A compressed sparse row matrix, slightly different than <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.SparseAtom.html#sisl.SparseAtom" title="sisl.SparseAtom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SparseAtom</span></code></a>(geometry[, dim, dtype, nnzpr])</p></td>
+<td><p>Sparse object with number of rows equal to the total number of atoms in the <a class="reference internal" href="generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.SparseOrbital.html#sisl.SparseOrbital" title="sisl.SparseOrbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SparseOrbital</span></code></a>(geometry[, dim, dtype, nnzpr])</p></td>
+<td><p>Sparse object with number of rows equal to the total number of orbitals in the <a class="reference internal" href="generated/sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="utility-classes">
+<h2>Utility classes<a class="headerlink" href="#utility-classes" title="Permalink to this headline"></a></h2>
+<p>A set of classes are utility classes that are used throughout the <a class="reference internal" href="index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> code
+and using them will be encouraged in combination with sisl.</p>
+<p>In particular <a class="reference internal" href="generated/sisl.oplist.oplist.html#sisl.oplist.oplist" title="sisl.oplist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">oplist</span></code></a> is useful when calculating averages in Brillouin zones (see
+<a class="reference internal" href="physics.brillouinzone.html#physics-brillouinzone"><span class="std std-ref">Brillouin zone</span></a>).</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/sisl.oplist.oplist.html#sisl.oplist.oplist" title="sisl.oplist.oplist"><code class="xref py py-obj docutils literal notranslate"><span class="pre">oplist</span></code></a>([iterable])</p></td>
+<td><p>list with element-wise operations</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/sisl.utils.PropertyDict.html#sisl.utils.PropertyDict" title="sisl.utils.PropertyDict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PropertyDict</span></code></a></p></td>
+<td><p>Simple dictionary which may access items as properties as well</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="API documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="generated/sisl.PeriodicTable.html" class="btn btn-neutral float-right" title="sisl.PeriodicTable" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

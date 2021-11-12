@@ -1,0 +1,1293 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.supercell &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>sisl.supercell</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sisl.supercell</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
+<span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
+<span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="sd">&quot;&quot;&quot; Define a supercell</span>
+
+<span class="sd">This class is the basis of many different objects.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">math</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Integral</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">dot</span>
+
+<span class="kn">from</span> <span class="nn">._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_plot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">_array</span> <span class="k">as</span> <span class="n">_a</span>
+<span class="kn">from</span> <span class="nn">.messages</span> <span class="kn">import</span> <span class="n">deprecate_method</span>
+<span class="kn">from</span> <span class="nn">.utils.mathematics</span> <span class="kn">import</span> <span class="n">fnorm</span>
+<span class="kn">from</span> <span class="nn">.shape.prism4</span> <span class="kn">import</span> <span class="n">Cuboid</span>
+<span class="kn">from</span> <span class="nn">.quaternion</span> <span class="kn">import</span> <span class="n">Quaternion</span>
+<span class="kn">from</span> <span class="nn">._math_small</span> <span class="kn">import</span> <span class="n">cross3</span><span class="p">,</span> <span class="n">dot3</span>
+<span class="kn">from</span> <span class="nn">._supercell</span> <span class="kn">import</span> <span class="n">cell_invert</span><span class="p">,</span> <span class="n">cell_reciprocal</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;SuperCell&#39;</span><span class="p">,</span> <span class="s1">&#39;SuperCellChild&#39;</span><span class="p">]</span>
+
+
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">SuperCell</span><span class="p">:</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; A cell class to retain lattice vectors and a supercell structure</span>
+
+<span class="sd">    The supercell structure is comprising the *primary* unit-cell and neighbouring</span>
+<span class="sd">    unit-cells. The number of supercells is given by the attribute `nsc` which</span>
+<span class="sd">    is a vector with 3 elements, one per lattice vector. It describes *how many*</span>
+<span class="sd">    times the primary unit-cell is extended along the i&#39;th lattice vector.</span>
+<span class="sd">    For ``nsc[i] == 3`` the supercell is made up of 3 unit-cells. One *behind*, the</span>
+<span class="sd">    primary unit-cell and one *after*.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cell : array_like</span>
+<span class="sd">       the lattice parameters of the unit cell (the actual cell</span>
+<span class="sd">       is returned from `tocell`.</span>
+<span class="sd">    nsc : array_like of int</span>
+<span class="sd">       number of supercells along each latticevector</span>
+<span class="sd">    origin : (3,) of float, optional</span>
+<span class="sd">       the origin of the supercell.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># We limit the scope of this SuperCell object.</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;cell&#39;</span><span class="p">,</span> <span class="s1">&#39;_origin&#39;</span><span class="p">,</span> <span class="s1">&#39;volume&#39;</span><span class="p">,</span> <span class="s1">&#39;nsc&#39;</span><span class="p">,</span> <span class="s1">&#39;n_s&#39;</span><span class="p">,</span> <span class="s1">&#39;_sc_off&#39;</span><span class="p">,</span> <span class="s1">&#39;_isc_off&#39;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SuperCell.__init__"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+
+        <span class="k">if</span> <span class="n">nsc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">nsc</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+        <span class="c1"># If the length of cell is 6 it must be cell-parameters, not</span>
+        <span class="c1"># actual cell coordinates</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">tocell</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_origin</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">zerosd</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_origin</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">(</span><span class="n">origin</span><span class="p">)</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_origin</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Origin *must* be 3 numbers.&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Set the volume</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_vol</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">nsc</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">onesi</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+        <span class="c1"># Set the super-cell</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">length</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Length of each lattice vector &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">fnorm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">origin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Origin for the cell &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_origin</span>
+
+    <span class="nd">@origin</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">origin</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set origin for the cell &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_origin</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">origin</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@deprecate_method</span><span class="p">(</span><span class="s2">&quot;use .origin instead&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">origo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Origin for the cell &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_origin</span>
+
+    <span class="nd">@origo</span><span class="o">.</span><span class="n">setter</span>
+    <span class="nd">@deprecate_method</span><span class="p">(</span><span class="s2">&quot;use .origin instead&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">origo</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">origin</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set origin &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_origin</span><span class="p">[:]</span> <span class="o">=</span> <span class="n">origin</span>
+
+<div class="viewcode-block" id="SuperCell.area"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.area">[docs]</a>    <span class="k">def</span> <span class="nf">area</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax0</span><span class="p">,</span> <span class="n">ax1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Calculate the area spanned by the two axis `ax0` and `ax1` &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">cross3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">ax0</span><span class="p">,</span> <span class="p">:],</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">ax1</span><span class="p">,</span> <span class="p">:])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span></div>
+
+<div class="viewcode-block" id="SuperCell.toCuboid"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.toCuboid">[docs]</a>    <span class="k">def</span> <span class="nf">toCuboid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">orthogonal</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; A cuboid with vectors as this unit-cell and center with respect to its origin</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        orthogonal : bool, optional</span>
+<span class="sd">           if true the cuboid has orthogonal sides such that the entire cell is contained</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">orthogonal</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Cuboid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">copy</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">find_min_max</span><span class="p">(</span><span class="n">cmin</span><span class="p">,</span> <span class="n">cmax</span><span class="p">,</span> <span class="n">new</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                <span class="n">cmin</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">cmin</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">new</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                <span class="n">cmax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="n">cmax</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">new</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+        <span class="n">cmin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">cmax</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">find_min_max</span><span class="p">(</span><span class="n">cmin</span><span class="p">,</span> <span class="n">cmax</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">find_min_max</span><span class="p">(</span><span class="n">cmin</span><span class="p">,</span> <span class="n">cmax</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">find_min_max</span><span class="p">(</span><span class="n">cmin</span><span class="p">,</span> <span class="n">cmax</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="p">:]</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">find_min_max</span><span class="p">(</span><span class="n">cmin</span><span class="p">,</span> <span class="n">cmax</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">Cuboid</span><span class="p">(</span><span class="n">cmax</span> <span class="o">-</span> <span class="n">cmin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">center</span><span class="p">()</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SuperCell.parameters"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.parameters">[docs]</a>    <span class="k">def</span> <span class="nf">parameters</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">rad</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Cell parameters of this cell in 3 lengths and 3 angles</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        Since we return the length and angles between vectors it may not be possible to</span>
+<span class="sd">        recreate the same cell. Only in the case where the first lattice vector *only*</span>
+<span class="sd">        has a Cartesian :math:`x` component will this be the case</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        rad : bool, optional</span>
+<span class="sd">           whether the angles are returned in radians (otherwise in degree)</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        float</span>
+<span class="sd">            length of first lattice vector</span>
+<span class="sd">        float</span>
+<span class="sd">            length of second lattice vector</span>
+<span class="sd">        float</span>
+<span class="sd">            length of third lattice vector</span>
+<span class="sd">        float</span>
+<span class="sd">            angle between b and c vectors</span>
+<span class="sd">        float</span>
+<span class="sd">            angle between a and c vectors</span>
+<span class="sd">        float</span>
+<span class="sd">            angle between a and b vectors</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">rad</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">f</span> <span class="o">=</span> <span class="mi">180</span> <span class="o">/</span> <span class="n">np</span><span class="o">.</span><span class="n">pi</span>
+
+        <span class="c1"># Calculate length of each lattice vector</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">abc</span> <span class="o">=</span> <span class="n">fnorm</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+
+        <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">acos</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">cell</span> <span class="o">/</span> <span class="n">abc</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">alpha</span> <span class="o">=</span> <span class="n">acos</span><span class="p">(</span><span class="n">dot3</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span> <span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]))</span> <span class="o">*</span> <span class="n">f</span>
+        <span class="n">beta</span> <span class="o">=</span> <span class="n">acos</span><span class="p">(</span><span class="n">dot3</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span> <span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]))</span> <span class="o">*</span> <span class="n">f</span>
+        <span class="n">gamma</span> <span class="o">=</span> <span class="n">acos</span><span class="p">(</span><span class="n">dot3</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span> <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]))</span> <span class="o">*</span> <span class="n">f</span>
+
+        <span class="k">return</span> <span class="n">abc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">abc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">abc</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span></div>
+
+    <span class="k">def</span> <span class="nf">_update_vol</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">volume</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dot3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span> <span class="n">cross3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:])))</span>
+
+    <span class="k">def</span> <span class="nf">_fill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">non_filled</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return a zero filled array of length 3 &quot;&quot;&quot;</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">non_filled</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">non_filled</span>
+
+        <span class="c1"># Fill in zeros</span>
+        <span class="c1"># This will purposefully raise an exception</span>
+        <span class="c1"># if the dimensions of the periodic ones</span>
+        <span class="c1"># are not consistent.</span>
+        <span class="k">if</span> <span class="n">dtype</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">dtype</span> <span class="o">=</span> <span class="n">non_filled</span><span class="o">.</span><span class="n">dtype</span>
+            <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+                <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="n">non_filled</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="vm">__class__</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">dtype</span> <span class="o">==</span> <span class="n">np</span><span class="o">.</span><span class="n">dtype</span><span class="p">(</span><span class="nb">int</span><span class="p">):</span>
+                    <span class="c1"># Never go higher than int32 for default</span>
+                    <span class="c1"># guesses on integer lists.</span>
+                    <span class="n">dtype</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">f</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">non_filled</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">f</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">non_filled</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+            <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">f</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">non_filled</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">f</span>
+
+    <span class="k">def</span> <span class="nf">_fill_sc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">supercell_index</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return a filled supercell index by filling in zeros where needed &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fill</span><span class="p">(</span><span class="n">supercell_index</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SuperCell.set_nsc"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.set_nsc">[docs]</a>    <span class="k">def</span> <span class="nf">set_nsc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">a</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">b</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Sets the number of supercells in the 3 different cell directions</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        nsc : list of int, optional</span>
+<span class="sd">           number of supercells in each direction</span>
+<span class="sd">        a : integer, optional</span>
+<span class="sd">           number of supercells in the first unit-cell vector direction</span>
+<span class="sd">        b : integer, optional</span>
+<span class="sd">           number of supercells in the second unit-cell vector direction</span>
+<span class="sd">        c : integer, optional</span>
+<span class="sd">           number of supercells in the third unit-cell vector direction</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">nsc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">nsc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">nsc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">a</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span>
+        <span class="k">if</span> <span class="n">b</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span>
+        <span class="k">if</span> <span class="n">c</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span>
+        <span class="c1"># Correct for misplaced number of unit-cells</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span> <span class="o">%</span> <span class="mi">2</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;Supercells has to be of un-even size. The primary cell counts &quot;</span> <span class="o">+</span>
+                <span class="s2">&quot;one, all others count 2&quot;</span><span class="p">)</span>
+
+        <span class="c1"># We might use this very often, hence we store it</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_s</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">prodi</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sc_off</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">zerosi</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">n_s</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_isc_off</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">zerosi</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="p">)</span>
+
+        <span class="n">n</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nsc</span>
+        <span class="c1"># We define the following ones like this:</span>
+
+        <span class="k">def</span> <span class="nf">ret_range</span><span class="p">(</span><span class="n">val</span><span class="p">):</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">val</span> <span class="o">//</span> <span class="mi">2</span>
+            <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="o">-</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">ret_range</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">y</span> <span class="o">=</span> <span class="n">ret_range</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="n">z</span> <span class="o">=</span> <span class="n">ret_range</span><span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">iz</span> <span class="ow">in</span> <span class="n">z</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">iy</span> <span class="ow">in</span> <span class="n">y</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">ix</span> <span class="ow">in</span> <span class="n">x</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">ix</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">iy</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">iz</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">continue</span>
+                    <span class="c1"># Increment index</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="c1"># The offsets for the supercells in the</span>
+                    <span class="c1"># sparsity pattern</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_sc_off</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">ix</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_sc_off</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">iy</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_sc_off</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">iz</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_isc_off</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_update_isc_off</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Internal routine for updating the supercell indices &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_s</span><span class="p">):</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_isc_off</span><span class="p">[</span><span class="n">d</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span> <span class="o">=</span> <span class="n">i</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sc_off</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Integer supercell offsets &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sc_off</span>
+
+    <span class="nd">@sc_off</span><span class="o">.</span><span class="n">setter</span>
+    <span class="k">def</span> <span class="nf">sc_off</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sc_off</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the supercell offset &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sc_off</span><span class="p">[:,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayi</span><span class="p">(</span><span class="n">sc_off</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_update_isc_off</span><span class="p">()</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">isc_off</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Internal indexed supercell ``[ia, ib, ic] == i`` &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isc_off</span>
+
+    <span class="k">def</span> <span class="fm">__iter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Iterate the supercells and the indices of the supercells &quot;&quot;&quot;</span>
+        <span class="k">yield from</span> <span class="nb">enumerate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sc_off</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SuperCell.copy"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.copy">[docs]</a>    <span class="k">def</span> <span class="nf">copy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cell</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; A deepcopy of the object</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        cell : array_like</span>
+<span class="sd">           the new cell parameters</span>
+<span class="sd">        origin : array_like</span>
+<span class="sd">           the new origin</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">origin</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">origin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">cell</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">copy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">),</span> <span class="n">nsc</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">copy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">cell</span><span class="p">),</span> <span class="n">nsc</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="p">),</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span>
+        <span class="c1"># Ensure that the correct super-cell information gets carried through</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">copy</span><span class="o">.</span><span class="n">sc_off</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc_off</span><span class="p">):</span>
+            <span class="n">copy</span><span class="o">.</span><span class="n">sc_off</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc_off</span>
+        <span class="k">return</span> <span class="n">copy</span></div>
+
+<div class="viewcode-block" id="SuperCell.fit"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xyz</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.05</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Fit the supercell to `xyz` such that the unit-cell becomes periodic in the specified directions</span>
+
+<span class="sd">        The fitted supercell tries to determine the unit-cell parameters by solving a set of linear equations</span>
+<span class="sd">        corresponding to the current supercell vectors.</span>
+
+<span class="sd">        &gt;&gt;&gt; numpy.linalg.solve(self.cell.T, xyz.T)</span>
+
+<span class="sd">        It is important to know that this routine will *only* work if at least some of the atoms are</span>
+<span class="sd">        integer offsets of the lattice vectors. I.e. the resulting fit will depend on the translation</span>
+<span class="sd">        of the coordinates.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        xyz : array_like ``shape(*, 3)``</span>
+<span class="sd">           the coordinates that we will wish to encompass and analyze.</span>
+<span class="sd">        axis : None or array_like</span>
+<span class="sd">           if ``None`` equivalent to ``[0, 1, 2]``, else only the cell-vectors</span>
+<span class="sd">           along the provided axis will be used</span>
+<span class="sd">        tol : float</span>
+<span class="sd">           tolerance (in Angstrom) of the positions. I.e. we neglect coordinates</span>
+<span class="sd">           which are not within the radius of this magnitude</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># In case the passed coordinates are from a Geometry</span>
+        <span class="kn">from</span> <span class="nn">.geometry</span> <span class="kn">import</span> <span class="n">Geometry</span>
+
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">):</span>
+            <span class="n">xyz</span> <span class="o">=</span> <span class="n">xyz</span><span class="o">.</span><span class="n">xyz</span><span class="p">[:,</span> <span class="p">:]</span>
+
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[:,</span> <span class="p">:])</span>
+
+        <span class="c1"># Get fractional coordinates to get the divisions in the current cell</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">dot</span><span class="p">(</span><span class="n">xyz</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">icell</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+
+        <span class="c1"># Now we should figure out the correct repetitions</span>
+        <span class="c1"># by rounding to integer positions of the cell vectors</span>
+        <span class="n">ix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">rint</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+
+        <span class="c1"># Figure out the displacements from integers</span>
+        <span class="c1"># Then reduce search space by removing those coordinates</span>
+        <span class="c1"># that are more than the tolerance.</span>
+        <span class="n">dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">((</span><span class="n">dot</span><span class="p">(</span><span class="n">cell</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">ix</span><span class="p">)</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">))</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="n">dist</span> <span class="o">&lt;=</span> <span class="n">tol</span><span class="p">)</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">idx</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;Could not fit the cell parameters to the coordinates &#39;</span>
+                              <span class="s1">&#39;due to insufficient accuracy (try increase the tolerance)&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Reduce problem to allowed values below the tolerance</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">x</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="n">ix</span> <span class="o">=</span> <span class="n">ix</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:]</span>
+
+        <span class="c1"># Reduce to total repetitions</span>
+        <span class="n">ireps</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">ix</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">ix</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="c1"># Only repeat the axis requested</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">axis</span><span class="p">,</span> <span class="n">Integral</span><span class="p">):</span>
+            <span class="n">axis</span> <span class="o">=</span> <span class="p">[</span><span class="n">axis</span><span class="p">]</span>
+
+        <span class="c1"># Reduce the non-set axis</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">ax</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">ax</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">axis</span><span class="p">:</span>
+                    <span class="n">ireps</span><span class="p">[</span><span class="n">ax</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="c1"># Enlarge the cell vectors</span>
+        <span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*=</span> <span class="n">ireps</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*=</span> <span class="n">ireps</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*=</span> <span class="n">ireps</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SuperCell.swapaxes"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.swapaxes">[docs]</a>    <span class="k">def</span> <span class="nf">swapaxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Swap axis `a` and `b` in a new `SuperCell`</span>
+
+<span class="sd">        If ``swapaxes(0,1)`` it returns the 0 in the 1 values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Create index vector</span>
+        <span class="n">idx</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayi</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+        <span class="n">idx</span><span class="p">[</span><span class="n">b</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span>
+        <span class="n">idx</span><span class="p">[</span><span class="n">a</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span>
+        <span class="c1"># There _can_ be errors when sc_off isn&#39;t created by sisl</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="p">:],</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">),</span>
+                              <span class="n">nsc</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span>
+                              <span class="n">origin</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">[</span><span class="n">idx</span><span class="p">],</span> <span class="n">order</span><span class="o">=</span><span class="s1">&#39;C&#39;</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="SuperCell.plane"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.plane">[docs]</a>    <span class="k">def</span> <span class="nf">plane</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax1</span><span class="p">,</span> <span class="n">ax2</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Query point and plane-normal for the plane spanning `ax1` and `ax2`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ax1 : int</span>
+<span class="sd">           the first axis vector</span>
+<span class="sd">        ax2 : int</span>
+<span class="sd">           the second axis vector</span>
+<span class="sd">        origin : bool, optional</span>
+<span class="sd">           whether the plane intersects the origin or the opposite corner of the</span>
+<span class="sd">           unit-cell.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        normal_V : numpy.ndarray</span>
+<span class="sd">           planes normal vector (pointing outwards with regards to the cell)</span>
+<span class="sd">        p : numpy.ndarray</span>
+<span class="sd">           a point on the plane</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        All 6 faces of the supercell can be retrieved like this:</span>
+
+<span class="sd">        &gt;&gt;&gt; sc = SuperCell(4)</span>
+<span class="sd">        &gt;&gt;&gt; n1, p1 = sc.plane(0, 1, True)</span>
+<span class="sd">        &gt;&gt;&gt; n2, p2 = sc.plane(0, 1, False)</span>
+<span class="sd">        &gt;&gt;&gt; n3, p3 = sc.plane(0, 2, True)</span>
+<span class="sd">        &gt;&gt;&gt; n4, p4 = sc.plane(0, 2, False)</span>
+<span class="sd">        &gt;&gt;&gt; n5, p5 = sc.plane(1, 2, True)</span>
+<span class="sd">        &gt;&gt;&gt; n6, p6 = sc.plane(1, 2, False)</span>
+
+<span class="sd">        However, for performance critical calculations it may be advantageous to</span>
+<span class="sd">        do this:</span>
+
+<span class="sd">        &gt;&gt;&gt; sc = SuperCell(4)</span>
+<span class="sd">        &gt;&gt;&gt; uc = sc.cell.sum(0)</span>
+<span class="sd">        &gt;&gt;&gt; n1, p1 = sc.plane(0, 1)</span>
+<span class="sd">        &gt;&gt;&gt; n2 = -n1</span>
+<span class="sd">        &gt;&gt;&gt; p2 = p1 + uc</span>
+<span class="sd">        &gt;&gt;&gt; n3, p3 = sc.plane(0, 2)</span>
+<span class="sd">        &gt;&gt;&gt; n4 = -n3</span>
+<span class="sd">        &gt;&gt;&gt; p4 = p3 + uc</span>
+<span class="sd">        &gt;&gt;&gt; n5, p5 = sc.plane(1, 2)</span>
+<span class="sd">        &gt;&gt;&gt; n6 = -n5</span>
+<span class="sd">        &gt;&gt;&gt; p6 = p5 + uc</span>
+
+<span class="sd">        Secondly, the variables ``p1``, ``p3`` and ``p5`` are always ``[0, 0, 0]`` and</span>
+<span class="sd">        ``p2``, ``p4`` and ``p6`` are always ``uc``.</span>
+<span class="sd">        Hence this may be used to further reduce certain computations.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">cross3</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="n">ax1</span><span class="p">,</span> <span class="p">:],</span> <span class="n">cell</span><span class="p">[</span><span class="n">ax2</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="c1"># Normalize</span>
+        <span class="n">n</span> <span class="o">/=</span> <span class="n">dot3</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">**</span> <span class="mf">0.5</span>
+        <span class="c1"># Now we need to figure out if the normal vector</span>
+        <span class="c1"># is pointing outwards</span>
+        <span class="c1"># Take the cell center</span>
+        <span class="n">up</span> <span class="o">=</span> <span class="n">cell</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="c1"># Calculate the distance from the plane to the center of the cell</span>
+
+        <span class="c1"># If d is positive then the normal vector is pointing towards</span>
+        <span class="c1"># the center, so rotate 180</span>
+        <span class="k">if</span> <span class="n">dot3</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">up</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.</span><span class="p">:</span>
+            <span class="n">n</span> <span class="o">*=</span> <span class="o">-</span><span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">origin</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">n</span><span class="p">,</span> <span class="n">_a</span><span class="o">.</span><span class="n">zerosd</span><span class="p">([</span><span class="mi">3</span><span class="p">])</span>
+        <span class="c1"># We have to reverse the normal vector</span>
+        <span class="k">return</span> <span class="o">-</span><span class="n">n</span><span class="p">,</span> <span class="n">up</span></div>
+
+    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">m</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Implement easy repeat function</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        m : int or array_like of length 3</span>
+<span class="sd">           a single integer may be regarded as [m, m, m].</span>
+<span class="sd">           A list will expand the unit-cell along the equivalent lattice vector.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        SuperCell</span>
+<span class="sd">             enlarged supercell</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Simple form</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">Integral</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="n">sc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">r</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">m</span><span class="p">):</span>
+            <span class="n">sc</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">sc</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">icell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the reciprocal (inverse) cell for the `SuperCell`.</span>
+
+<span class="sd">        Note: The returned vectors are still in ``[0, :]`` format</span>
+<span class="sd">        and not as returned by an inverse LAPACK algorithm.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">cell_invert</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rcell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the reciprocal cell for the `SuperCell` with ``2*np.pi``</span>
+
+<span class="sd">        Note: The returned vectors are still in [0, :] format</span>
+<span class="sd">        and not as returned by an inverse LAPACK algorithm.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">cell_reciprocal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
+
+<div class="viewcode-block" id="SuperCell.cell_length"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.cell_length">[docs]</a>    <span class="k">def</span> <span class="nf">cell_length</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">length</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Calculate cell vectors such that they each have length `length`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        length : float or array_like</span>
+<span class="sd">            length for cell vectors, if an array it corresponds to the individual</span>
+<span class="sd">            vectors and it must have length 3</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray</span>
+<span class="sd">             cell-vectors with prescribed length</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">length</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">length</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">length</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">length</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">length</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">length</span><span class="o">.</span><span class="n">size</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="s1">&#39;.cell_length length parameter should be a single &#39;</span>
+                             <span class="s1">&#39;float, or an array of 3 values.&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span> <span class="o">*</span> <span class="p">(</span><span class="n">length</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">length</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SuperCell.rotate"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.rotate">[docs]</a>    <span class="k">def</span> <span class="nf">rotate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">angle</span><span class="p">,</span> <span class="n">v</span><span class="p">,</span> <span class="n">only</span><span class="o">=</span><span class="s1">&#39;abc&#39;</span><span class="p">,</span> <span class="n">rad</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Rotates the supercell, in-place by the angle around the vector</span>
+
+<span class="sd">        One can control which cell vectors are rotated by designating them</span>
+<span class="sd">        individually with ``only=&#39;[abc]&#39;``.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        angle : float</span>
+<span class="sd">             the angle of which the geometry should be rotated</span>
+<span class="sd">        v     : array_like</span>
+<span class="sd">             the vector around the rotation is going to happen</span>
+<span class="sd">             ``v = [1,0,0]`` will rotate in the ``yz`` plane</span>
+<span class="sd">        rad : bool, optional</span>
+<span class="sd">             Whether the angle is in radians (True) or in degrees (False)</span>
+<span class="sd">        only : (&#39;abc&#39;), str, optional</span>
+<span class="sd">             only rotate the designated cell vectors.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># flatten =&gt; copy</span>
+        <span class="n">vn</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="o">.</span><span class="n">flatten</span><span class="p">()</span>
+        <span class="n">vn</span> <span class="o">/=</span> <span class="n">fnorm</span><span class="p">(</span><span class="n">vn</span><span class="p">)</span>
+        <span class="n">q</span> <span class="o">=</span> <span class="n">Quaternion</span><span class="p">(</span><span class="n">angle</span><span class="p">,</span> <span class="n">vn</span><span class="p">,</span> <span class="n">rad</span><span class="o">=</span><span class="n">rad</span><span class="p">)</span>
+        <span class="n">q</span> <span class="o">/=</span> <span class="n">q</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span>  <span class="c1"># normalize the quaternion</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s1">&#39;a&#39;</span> <span class="ow">in</span> <span class="n">only</span><span class="p">:</span>
+            <span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="k">if</span> <span class="s1">&#39;b&#39;</span> <span class="ow">in</span> <span class="n">only</span><span class="p">:</span>
+            <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="k">if</span> <span class="s1">&#39;c&#39;</span> <span class="ow">in</span> <span class="n">only</span><span class="p">:</span>
+            <span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">q</span><span class="o">.</span><span class="n">rotate</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SuperCell.offset"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.offset">[docs]</a>    <span class="k">def</span> <span class="nf">offset</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">isc</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the supercell offset of the supercell index &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">isc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">dot</span><span class="p">(</span><span class="n">isc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SuperCell.add"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.add">[docs]</a>    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add two supercell lattice vectors to each other</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        other : SuperCell, array_like</span>
+<span class="sd">           the lattice vectors of the other supercell to add</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">SuperCell</span><span class="p">):</span>
+            <span class="n">other</span> <span class="o">=</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">cell</span>
+        <span class="n">origin</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span> <span class="o">+</span> <span class="n">other</span><span class="o">.</span><span class="n">origin</span>
+        <span class="n">nsc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span> <span class="o">&gt;</span> <span class="n">other</span><span class="o">.</span><span class="n">nsc</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">nsc</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="fm">__radd__</span> <span class="o">=</span> <span class="fm">__add__</span>
+
+<div class="viewcode-block" id="SuperCell.add_vacuum"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.add_vacuum">[docs]</a>    <span class="k">def</span> <span class="nf">add_vacuum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vacuum</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add vacuum along the `axis` lattice vector</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        vacuum : float</span>
+<span class="sd">           amount of vacuum added, in Ang</span>
+<span class="sd">        axis : int</span>
+<span class="sd">           the lattice vector to add vacuum along</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="n">cell</span><span class="p">[</span><span class="n">axis</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="c1"># normalize to get direction vector</span>
+        <span class="n">cell</span><span class="p">[</span><span class="n">axis</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="n">d</span> <span class="o">*</span> <span class="p">(</span><span class="n">vacuum</span> <span class="o">/</span> <span class="n">fnorm</span><span class="p">(</span><span class="n">d</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SuperCell.sc_index"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.sc_index">[docs]</a>    <span class="k">def</span> <span class="nf">sc_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sc_off</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the integer index in the sc_off list that corresponds to `sc_off`</span>
+
+<span class="sd">        Returns the index for the supercell in the global offset.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        sc_off : (3,) or list of (3,)</span>
+<span class="sd">            super cell specification. For each axis having value ``None`` all supercells</span>
+<span class="sd">            along that axis is returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">def</span> <span class="nf">_assert</span><span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">v</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">m</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Requesting a non-existing supercell index&quot;</span><span class="p">)</span>
+        <span class="n">hsc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">nsc</span> <span class="o">//</span> <span class="mi">2</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sc_off</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayi</span><span class="p">([[]])</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sc_off</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+            <span class="n">_assert</span><span class="p">(</span><span class="n">hsc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sc_off</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+            <span class="n">_assert</span><span class="p">(</span><span class="n">hsc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">sc_off</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="n">_assert</span><span class="p">(</span><span class="n">hsc</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">sc_off</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">])</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isc_off</span><span class="p">[</span><span class="n">sc_off</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">sc_off</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">sc_off</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]]</span>
+
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sc_off</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+            <span class="c1"># We are dealing with a list of lists</span>
+            <span class="n">sc_off</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">sc_off</span><span class="p">)</span>
+            <span class="n">_assert</span><span class="p">(</span><span class="n">hsc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sc_off</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">])</span>
+            <span class="n">_assert</span><span class="p">(</span><span class="n">hsc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">sc_off</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">])</span>
+            <span class="n">_assert</span><span class="p">(</span><span class="n">hsc</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">sc_off</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">])</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isc_off</span><span class="p">[</span><span class="n">sc_off</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">sc_off</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">sc_off</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]]</span>
+
+        <span class="c1"># Fall back to the other routines</span>
+        <span class="n">sc_off</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fill_sc</span><span class="p">(</span><span class="n">sc_off</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sc_off</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sc_off</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sc_off</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">_assert</span><span class="p">(</span><span class="n">hsc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sc_off</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+            <span class="n">_assert</span><span class="p">(</span><span class="n">hsc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">sc_off</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">_assert</span><span class="p">(</span><span class="n">hsc</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">sc_off</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_isc_off</span><span class="p">[</span><span class="n">sc_off</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">sc_off</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">sc_off</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span>
+
+        <span class="c1"># We build it because there are &#39;none&#39;</span>
+        <span class="k">if</span> <span class="n">sc_off</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">arangei</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_s</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="n">sc_off</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">sc_off</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">idx</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">sc_off</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">sc_off</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">idx</span><span class="p">[(</span><span class="bp">self</span><span class="o">.</span><span class="n">sc_off</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="n">sc_off</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span><span class="o">.</span><span class="n">nonzero</span><span class="p">()[</span><span class="mi">0</span><span class="p">]]</span>
+
+        <span class="k">return</span> <span class="n">idx</span></div>
+
+<div class="viewcode-block" id="SuperCell.scale"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.scale">[docs]</a>    <span class="k">def</span> <span class="nf">scale</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">scale</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Scale lattice vectors</span>
+
+<span class="sd">        Does not scale `origin`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        scale : ``float``</span>
+<span class="sd">           the scale factor for the new lattice vectors</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span> <span class="o">*</span> <span class="n">scale</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SuperCell.tile"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.tile">[docs]</a>    <span class="k">def</span> <span class="nf">tile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Extend the unit-cell `reps` times along the `axis` lattice vector</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        This is *exactly* equivalent to the `repeat` routine.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        reps : int</span>
+<span class="sd">            number of times the unit-cell is repeated along the specified lattice vector</span>
+<span class="sd">        axis : int</span>
+<span class="sd">            the lattice vector along which the repetition is performed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
+        <span class="n">nsc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="p">)</span>
+        <span class="n">origin</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
+        <span class="n">cell</span><span class="p">[</span><span class="n">axis</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*=</span> <span class="n">reps</span>
+        <span class="c1"># Only reduce the size if it is larger than 5</span>
+        <span class="k">if</span> <span class="n">nsc</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">3</span> <span class="ow">and</span> <span class="n">reps</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="c1"># This is number of connections for the primary cell</span>
+            <span class="n">h_nsc</span> <span class="o">=</span> <span class="n">nsc</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">//</span> <span class="mi">2</span>
+            <span class="c1"># The new number of supercells will then be</span>
+            <span class="n">nsc</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">int</span><span class="p">(</span><span class="n">math</span><span class="o">.</span><span class="n">ceil</span><span class="p">(</span><span class="n">h_nsc</span> <span class="o">/</span> <span class="n">reps</span><span class="p">)))</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">cell</span><span class="p">,</span> <span class="n">nsc</span><span class="o">=</span><span class="n">nsc</span><span class="p">,</span> <span class="n">origin</span><span class="o">=</span><span class="n">origin</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SuperCell.repeat"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.repeat">[docs]</a>    <span class="k">def</span> <span class="nf">repeat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Extend the unit-cell `reps` times along the `axis` lattice vector</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+<span class="sd">        This is *exactly* equivalent to the `tile` routine.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        reps : int</span>
+<span class="sd">            number of times the unit-cell is repeated along the specified lattice vector</span>
+<span class="sd">        axis : int</span>
+<span class="sd">            the lattice vector along which the repetition is performed</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">reps</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SuperCell.cut"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.cut">[docs]</a>    <span class="k">def</span> <span class="nf">cut</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">seps</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Cuts the cell into several different sections. &quot;&quot;&quot;</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
+        <span class="n">cell</span><span class="p">[</span><span class="n">axis</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/=</span> <span class="n">seps</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SuperCell.append"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.append">[docs]</a>    <span class="k">def</span> <span class="nf">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Appends other `SuperCell` to this grid along axis &quot;&quot;&quot;</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
+        <span class="n">cell</span><span class="p">[</span><span class="n">axis</span><span class="p">,</span> <span class="p">:]</span> <span class="o">+=</span> <span class="n">other</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">axis</span><span class="p">,</span> <span class="p">:]</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SuperCell.prepend"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.prepend">[docs]</a>    <span class="k">def</span> <span class="nf">prepend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Prepends other `SuperCell` to this grid along axis</span>
+
+<span class="sd">        For a `SuperCell` object this is equivalent to `append`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">axis</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SuperCell.move"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.move">[docs]</a>    <span class="k">def</span> <span class="nf">move</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">v</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Appends additional space to the object &quot;&quot;&quot;</span>
+        <span class="c1"># check which cell vector resembles v the most,</span>
+        <span class="c1"># use that</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
+        <span class="n">p</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="mi">3</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+        <span class="n">cl</span> <span class="o">=</span> <span class="n">fnorm</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">):</span>
+            <span class="n">p</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="n">v</span><span class="p">))</span> <span class="o">/</span> <span class="n">cl</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="n">cell</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">p</span><span class="p">),</span> <span class="p">:]</span> <span class="o">+=</span> <span class="n">v</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span></div>
+    <span class="n">translate</span> <span class="o">=</span> <span class="n">move</span>
+
+<div class="viewcode-block" id="SuperCell.center"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.center">[docs]</a>    <span class="k">def</span> <span class="nf">center</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns center of the `SuperCell`, possibly with respect to an axis &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.5</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">axis</span><span class="p">,</span> <span class="p">:]</span> <span class="o">*</span> <span class="mf">0.5</span></div>
+
+<div class="viewcode-block" id="SuperCell.tocell"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.tocell">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">tocell</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Returns a 3x3 unit-cell dependent on the input</span>
+
+<span class="sd">        1 argument</span>
+<span class="sd">          a unit-cell along Cartesian coordinates with side-length</span>
+<span class="sd">          equal to the argument.</span>
+
+<span class="sd">        3 arguments</span>
+<span class="sd">          the diagonal components of a Cartesian unit-cell</span>
+
+<span class="sd">        6 arguments</span>
+<span class="sd">          the cell parameters give by :math:`a`, :math:`b`, :math:`c`,</span>
+<span class="sd">          :math:`\alpha`, :math:`\beta` and :math:`\gamma` (angles</span>
+<span class="sd">          in degrees).</span>
+
+<span class="sd">        9 arguments</span>
+<span class="sd">          a 3x3 unit-cell.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        *args : float</span>
+<span class="sd">            May be either, 1, 3, 6 or 9 elements.</span>
+<span class="sd">            Note that the arguments will be put into an array and flattened</span>
+<span class="sd">            before checking the number of arguments.</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+<span class="sd">        &gt;&gt;&gt; cell_1_1_1 = SuperCell.tocell(1.)</span>
+<span class="sd">        &gt;&gt;&gt; cell_1_2_3 = SuperCell.tocell(1., 2., 3.)</span>
+<span class="sd">        &gt;&gt;&gt; cell_1_2_3 = SuperCell.tocell([1., 2., 3.]) # same as above</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Convert into true array (flattened)</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">args</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="n">nargs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+        <span class="c1"># A square-box</span>
+        <span class="k">if</span> <span class="n">nargs</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">([</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">)</span>
+
+        <span class="c1"># Diagonal components</span>
+        <span class="k">if</span> <span class="n">nargs</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+        <span class="c1"># Cell parameters</span>
+        <span class="k">if</span> <span class="n">nargs</span> <span class="o">==</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="n">cell</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">zerosd</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">alpha</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">beta</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+            <span class="n">gamma</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+
+            <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">sqrt</span><span class="p">,</span> <span class="n">cos</span><span class="p">,</span> <span class="n">sin</span><span class="p">,</span> <span class="n">pi</span>
+            <span class="n">pi180</span> <span class="o">=</span> <span class="n">pi</span> <span class="o">/</span> <span class="mf">180.</span>
+
+            <span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">a</span>
+            <span class="n">g</span> <span class="o">=</span> <span class="n">gamma</span> <span class="o">*</span> <span class="n">pi180</span>
+            <span class="n">cg</span> <span class="o">=</span> <span class="n">cos</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+            <span class="n">sg</span> <span class="o">=</span> <span class="n">sin</span><span class="p">(</span><span class="n">g</span><span class="p">)</span>
+            <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span> <span class="o">*</span> <span class="n">cg</span>
+            <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">b</span> <span class="o">*</span> <span class="n">sg</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">beta</span> <span class="o">*</span> <span class="n">pi180</span>
+            <span class="n">cb</span> <span class="o">=</span> <span class="n">cos</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+            <span class="n">sb</span> <span class="o">=</span> <span class="n">sin</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+            <span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span> <span class="o">*</span> <span class="n">cb</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="n">alpha</span> <span class="o">*</span> <span class="n">pi180</span>
+            <span class="n">d</span> <span class="o">=</span> <span class="p">(</span><span class="n">cos</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">-</span> <span class="n">cb</span> <span class="o">*</span> <span class="n">cg</span><span class="p">)</span> <span class="o">/</span> <span class="n">sg</span>
+            <span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span> <span class="o">*</span> <span class="n">d</span>
+            <span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">c</span> <span class="o">*</span> <span class="n">sqrt</span><span class="p">(</span><span class="n">sb</span> <span class="o">**</span> <span class="mi">2</span> <span class="o">-</span> <span class="n">d</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">cell</span>
+
+        <span class="c1"># A complete cell</span>
+        <span class="k">if</span> <span class="n">nargs</span> <span class="o">==</span> <span class="mi">9</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">args</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">)</span>
+
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Creating a unit-cell has to have 1, 3 or 6 arguments, please correct.&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SuperCell.is_orthogonal"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.is_orthogonal">[docs]</a>    <span class="k">def</span> <span class="nf">is_orthogonal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns true if the cell vectors are orthogonal.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        tol: float, optional</span>
+<span class="sd">            the threshold above which the scalar product of two cell vectors will be considered non-zero.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Convert to unit-vector cell</span>
+        <span class="n">cell</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">)</span>
+        <span class="n">cl</span> <span class="o">=</span> <span class="n">fnorm</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
+        <span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/</span> <span class="n">cl</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/</span> <span class="n">cl</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/</span> <span class="n">cl</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="n">i_s</span> <span class="o">=</span> <span class="n">dot3</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span> <span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:])</span> <span class="o">&lt;</span> <span class="n">tol</span>
+        <span class="n">i_s</span> <span class="o">=</span> <span class="n">dot3</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:],</span> <span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:])</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="ow">and</span> <span class="n">i_s</span>
+        <span class="n">i_s</span> <span class="o">=</span> <span class="n">dot3</span><span class="p">(</span><span class="n">cell</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="p">:],</span> <span class="n">cell</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="p">:])</span> <span class="o">&lt;</span> <span class="n">tol</span> <span class="ow">and</span> <span class="n">i_s</span>
+        <span class="k">return</span> <span class="n">i_s</span></div>
+
+<div class="viewcode-block" id="SuperCell.is_cartesian"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.is_cartesian">[docs]</a>    <span class="k">def</span> <span class="nf">is_cartesian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">0.001</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks if cell vectors a,b,c are multiples of the cartesian axis vectors (x, y, z)</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        tol: float, optional</span>
+<span class="sd">            the threshold above which an off diagonal term will be considered non-zero.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the off diagonal terms of the cell</span>
+        <span class="n">off_diagonal</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">ravel</span><span class="p">()[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)[:,</span> <span class="mi">1</span><span class="p">:]</span>
+        <span class="c1"># Check if any of them are above the threshold tolerance</span>
+        <span class="k">return</span> <span class="o">~</span><span class="n">np</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">off_diagonal</span><span class="p">)</span> <span class="o">&gt;</span> <span class="n">tol</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SuperCell.parallel"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.parallel">[docs]</a>    <span class="k">def</span> <span class="nf">parallel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)):</span>
+        <span class="sd">&quot;&quot;&quot; Returns true if the cell vectors are parallel to `other`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        other : SuperCell</span>
+<span class="sd">           the other object to check whether the axis are parallel</span>
+<span class="sd">        axis : int or array_like</span>
+<span class="sd">           only check the specified axis (default to all)</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">axis</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayi</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span><span class="o">.</span><span class="n">ravel</span><span class="p">()</span>
+        <span class="c1"># Convert to unit-vector cell</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">axis</span><span class="p">:</span>
+            <span class="n">a</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/</span> <span class="n">fnorm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:])</span>
+            <span class="n">b</span> <span class="o">=</span> <span class="n">other</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span> <span class="o">/</span> <span class="n">fnorm</span><span class="p">(</span><span class="n">other</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:])</span>
+            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">dot3</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.001</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="kc">True</span></div>
+
+<div class="viewcode-block" id="SuperCell.angle"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.angle">[docs]</a>    <span class="k">def</span> <span class="nf">angle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">,</span> <span class="n">rad</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; The angle between two of the cell vectors</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        i : int</span>
+<span class="sd">           the first cell vector</span>
+<span class="sd">        j : int</span>
+<span class="sd">           the second cell vector</span>
+<span class="sd">        rad : bool, optional</span>
+<span class="sd">           whether the returned value is in radians</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">fnorm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">],</span> <span class="p">:])</span>
+        <span class="n">ang</span> <span class="o">=</span> <span class="n">math</span><span class="o">.</span><span class="n">acos</span><span class="p">(</span><span class="n">dot3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:],</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="p">:])</span> <span class="o">/</span> <span class="p">(</span><span class="n">n</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+        <span class="k">if</span> <span class="n">rad</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ang</span>
+        <span class="k">return</span> <span class="n">math</span><span class="o">.</span><span class="n">degrees</span><span class="p">(</span><span class="n">ang</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SuperCell.read"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.read">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Reads the supercell from the `Sile` using ``Sile.read_supercell``</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        sile : Sile, str or pathlib.Path</span>
+<span class="sd">            a `Sile` object which will be used to read the supercell</span>
+<span class="sd">            if it is a string it will create a new sile using `sisl.io.get_sile`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># This only works because, they *must*</span>
+        <span class="c1"># have been imported previously</span>
+        <span class="kn">from</span> <span class="nn">sisl.io</span> <span class="kn">import</span> <span class="n">get_sile</span><span class="p">,</span> <span class="n">BaseSile</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">BaseSile</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">sile</span><span class="o">.</span><span class="n">read_supercell</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">get_sile</span><span class="p">(</span><span class="n">sile</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">fh</span><span class="o">.</span><span class="n">read_supercell</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="SuperCell.equal"><a class="viewcode-back" href="../../api/generated/sisl.SuperCell.html#sisl.SuperCell.equal">[docs]</a>    <span class="k">def</span> <span class="nf">equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Check whether two supercell are equivalent</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        tol : float, optional</span>
+<span class="sd">            tolerance value for the cell vectors and origin</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="p">(</span><span class="n">SuperCell</span><span class="p">,</span> <span class="n">SuperCellChild</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">for</span> <span class="n">tol</span> <span class="ow">in</span> <span class="p">[</span><span class="mf">1e-2</span><span class="p">,</span> <span class="mf">1e-3</span><span class="p">,</span> <span class="mf">1e-4</span><span class="p">]:</span>
+            <span class="n">same</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span>
+        <span class="n">same</span> <span class="o">=</span> <span class="n">same</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">nsc</span><span class="p">)</span>
+        <span class="n">same</span> <span class="o">=</span> <span class="n">same</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">origin</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">tol</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">same</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns a string representation of the object &quot;&quot;&quot;</span>
+        <span class="c1"># Create format for lattice vectors</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="s1">&#39;,</span><span class="se">\n</span><span class="s1"> &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="s1">&#39;ABC&#39;</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s1">&#39;=[</span><span class="si">{:.3f}</span><span class="s1">, </span><span class="si">{:.3f}</span><span class="s1">, </span><span class="si">{:.3f}</span><span class="s1">]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)])</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="p">(</span><span class="s1">&#39;{{nsc: [</span><span class="si">{:}</span><span class="s1"> </span><span class="si">{:}</span><span class="s1"> </span><span class="si">{:}</span><span class="s1">],</span><span class="se">\n</span><span class="s1"> &#39;</span> <span class="o">+</span> <span class="n">s</span> <span class="o">+</span> <span class="s1">&#39;,</span><span class="se">\n</span><span class="s1">}}&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">alpha</span><span class="p">,</span> <span class="n">beta</span><span class="p">,</span> <span class="n">gamma</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">r</span><span class="p">:</span> <span class="nb">round</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">())</span>
+        <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;&lt;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__module__</span><span class="si">}</span><span class="s2">.</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> a=</span><span class="si">{</span><span class="n">a</span><span class="si">}</span><span class="s2">, b=</span><span class="si">{</span><span class="n">b</span><span class="si">}</span><span class="s2">, c=</span><span class="si">{</span><span class="n">c</span><span class="si">}</span><span class="s2">, α=</span><span class="si">{</span><span class="n">alpha</span><span class="si">}</span><span class="s2">, β=</span><span class="si">{</span><span class="n">beta</span><span class="si">}</span><span class="s2">, γ=</span><span class="si">{</span><span class="n">gamma</span><span class="si">}</span><span class="s2">, nsc=</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="si">}</span><span class="s2">&gt;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Equality check &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">equal</span><span class="p">(</span><span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__ne__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">b</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; In-equality check &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="ow">not</span> <span class="p">(</span><span class="bp">self</span> <span class="o">==</span> <span class="n">b</span><span class="p">)</span>
+
+    <span class="c1"># Create pickling routines</span>
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the state of this object &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">{</span><span class="s1">&#39;cell&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">,</span> <span class="s1">&#39;nsc&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">nsc</span><span class="p">,</span> <span class="s1">&#39;sc_off&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc_off</span><span class="p">,</span> <span class="s1">&#39;origin&#39;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span><span class="p">}</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">d</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Re-create the state of this object &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">d</span><span class="p">[</span><span class="s1">&#39;cell&#39;</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;nsc&#39;</span><span class="p">],</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;origin&#39;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sc_off</span> <span class="o">=</span> <span class="n">d</span><span class="p">[</span><span class="s1">&#39;sc_off&#39;</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">__plot__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">axes</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Plot the supercell in a specified ``matplotlib.Axes`` object.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        axis : array_like, optional</span>
+<span class="sd">           only plot a subset of the axis, defaults to all axis</span>
+<span class="sd">        axes : bool or matplotlib.Axes, optional</span>
+<span class="sd">           the figure axes to plot in (if ``matplotlib.Axes`` object).</span>
+<span class="sd">           If ``True`` it will create a new figure to plot in.</span>
+<span class="sd">           If ``False`` it will try and grap the current figure and the current axes.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Default dictionary for passing to newly created figures</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="c1"># Try and default the color and alpha</span>
+        <span class="k">if</span> <span class="s1">&#39;color&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;color&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;k&#39;</span>
+        <span class="k">if</span> <span class="s1">&#39;alpha&#39;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">kwargs</span><span class="p">:</span>
+            <span class="n">kwargs</span><span class="p">[</span><span class="s1">&#39;alpha&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>
+
+        <span class="k">if</span> <span class="n">axis</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">axis</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+
+        <span class="c1"># Ensure we have a new 3D Axes3D</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">axis</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">d</span><span class="p">[</span><span class="s1">&#39;projection&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="s1">&#39;3d&#39;</span>
+
+        <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">get_axes</span><span class="p">(</span><span class="n">axes</span><span class="p">,</span> <span class="o">**</span><span class="n">d</span><span class="p">)</span>
+
+        <span class="c1"># Create vector objects</span>
+        <span class="n">o</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">origin</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">axis</span><span class="p">:</span>
+            <span class="n">v</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">o</span><span class="p">[</span><span class="n">axis</span><span class="p">],</span> <span class="n">o</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">axis</span><span class="p">])))</span>
+        <span class="n">v</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">axes</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;Axes3D&#39;</span><span class="p">):</span>
+            <span class="c1"># We should plot in 3D plots</span>
+            <span class="k">for</span> <span class="n">vv</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+                <span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">vv</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">vv</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">vv</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="n">v0</span><span class="p">,</span> <span class="n">v1</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span>
+            <span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">v0</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">v1</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">v0</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">v1</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">v0</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">v1</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="n">axes</span><span class="o">.</span><span class="n">set_zlabel</span><span class="p">(</span><span class="s1">&#39;Ang&#39;</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">vv</span> <span class="ow">in</span> <span class="n">v</span><span class="p">:</span>
+                <span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">vv</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">vv</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+            <span class="n">v0</span><span class="p">,</span> <span class="n">v1</span> <span class="o">=</span> <span class="n">v</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">v</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">o</span><span class="p">[</span><span class="n">axis</span><span class="p">]</span>
+            <span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">v0</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">v1</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">v0</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">v1</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="n">axes</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">v1</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="n">v0</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">v1</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">v0</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="n">axes</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Ang&#39;</span><span class="p">)</span>
+        <span class="n">axes</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;Ang&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">axes</span>
+
+
+<span class="k">class</span> <span class="nc">SuperCellChild</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot; Class to be inherited by using the ``self.sc`` as a `SuperCell` object</span>
+
+<span class="sd">    Initialize by a `SuperCell` object and get access to several different</span>
+<span class="sd">    routines directly related to the `SuperCell` class.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">set_nsc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Set the number of super-cells in the `SuperCell` object</span>
+
+<span class="sd">        See `set_nsc` for allowed parameters.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        SuperCell.set_nsc : the underlying called method</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">set_supercell</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sc</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Overwrites the local supercell &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">sc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="c1"># Default supercell is a simple</span>
+            <span class="c1"># 1x1x1 unit-cell</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sc</span> <span class="o">=</span> <span class="n">SuperCell</span><span class="p">([</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">,</span> <span class="mf">1.</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">SuperCell</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sc</span> <span class="o">=</span> <span class="n">sc</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sc</span><span class="p">,</span> <span class="n">SuperCellChild</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sc</span> <span class="o">=</span> <span class="n">sc</span><span class="o">.</span><span class="n">sc</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># The supercell is given as a cell</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">sc</span> <span class="o">=</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">sc</span><span class="p">)</span>
+
+        <span class="c1"># Loop over attributes in this class</span>
+        <span class="c1"># if it inherits SuperCellChild, we call</span>
+        <span class="c1"># set_sc on that too.</span>
+        <span class="c1"># Sadly, getattr fails for @property methods</span>
+        <span class="c1"># which forces us to use try ... except</span>
+        <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">():</span>
+            <span class="n">warnings</span><span class="o">.</span><span class="n">simplefilter</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="nb">dir</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">),</span> <span class="n">SuperCellChild</span><span class="p">):</span>
+                        <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">a</span><span class="p">)</span><span class="o">.</span><span class="n">set_supercell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="p">)</span>
+                <span class="k">except</span><span class="p">:</span>
+                    <span class="k">pass</span>
+
+    <span class="n">set_sc</span> <span class="o">=</span> <span class="n">set_supercell</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">volume</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the inherent `SuperCell` objects `vol` &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">volume</span>
+
+    <span class="k">def</span> <span class="nf">area</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ax0</span><span class="p">,</span> <span class="n">ax1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Calculate the area spanned by the two axis `ax0` and `ax1` &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="n">cross3</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">ax0</span><span class="p">,</span> <span class="p">:],</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="p">[</span><span class="n">ax1</span><span class="p">,</span> <span class="p">:])</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">**</span> <span class="mf">0.5</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">cell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the inherent `SuperCell` objects `cell` &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">cell</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">icell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the inherent `SuperCell` objects `icell` &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">icell</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">rcell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the inherent `SuperCell` objects `rcell` &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">rcell</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">origin</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the inherent `SuperCell` objects `origin` &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">origin</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">origo</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the inherent `SuperCell` objects `origin` &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">origo</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">n_s</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the inherent `SuperCell` objects `n_s` &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">n_s</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">nsc</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the inherent `SuperCell` objects `nsc` &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">nsc</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">sc_off</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the inherent `SuperCell` objects `sc_off` &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">sc_off</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">isc_off</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the inherent `SuperCell` objects `isc_off` &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">isc_off</span>
+
+    <span class="k">def</span> <span class="nf">add_vacuum</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">vacuum</span><span class="p">,</span> <span class="n">axis</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Add vacuum along the `axis` lattice vector</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        vacuum : float</span>
+<span class="sd">           amount of vacuum added, in Ang</span>
+<span class="sd">        axis : int</span>
+<span class="sd">           the lattice vector to add vacuum along</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">copy</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">copy</span><span class="o">.</span><span class="n">set_supercell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">add_vacuum</span><span class="p">(</span><span class="n">vacuum</span><span class="p">,</span> <span class="n">axis</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">copy</span>
+
+    <span class="k">def</span> <span class="nf">_fill</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">non_filled</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">_fill</span><span class="p">(</span><span class="n">non_filled</span><span class="p">,</span> <span class="n">dtype</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_fill_sc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">supercell_index</span><span class="p">):</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">_fill_sc</span><span class="p">(</span><span class="n">supercell_index</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">sc_index</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Call local `SuperCell` object `sc_index` function &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">sc_index</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">is_orthogonal</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return true if all cell vectors are linearly independent&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">is_orthogonal</span><span class="p">()</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

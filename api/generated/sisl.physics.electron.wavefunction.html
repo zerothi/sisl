@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>wavefunction &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+        <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="spin_moment" href="sisl.physics.electron.spin_moment.html" />
+    <link rel="prev" title="conductivity" href="sisl.physics.electron.conductivity.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../basic.html">Basic classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../default_geom.html">Common geometries</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../physics.html">Physical objects</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../physics.brillouinzone.html">Brillouin zone</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../physics.matrix.html">Physical quantites</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../physics.electron.html">Electron related functions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.DOS.html">DOS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.PDOS.html">PDOS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.velocity.html">velocity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.velocity_matrix.html">velocity_matrix</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.berry_phase.html">berry_phase</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.berry_curvature.html">berry_curvature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.conductivity.html">conductivity</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">wavefunction</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.spin_moment.html">spin_moment</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.electron.spin_squared.html">spin_squared</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../physics.electron.html#supporting-classes">Supporting classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../physics.phonon.html">Phonon related functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../physics.distribution.html">Distribution functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../physics.html#low-level-objects">Low level objects</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API documentation</a> &raquo;</li>
+          <li><a href="../physics.html">Physical objects</a> &raquo;</li>
+          <li><a href="../physics.electron.html">Electron related functions</a> &raquo;</li>
+      <li>wavefunction</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/generated/sisl.physics.electron.wavefunction.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="wavefunction">
+<h1>wavefunction<a class="headerlink" href="#wavefunction" title="Permalink to this headline"></a></h1>
+<dl class="py function">
+<dt class="sig sig-object py" id="sisl.physics.electron.wavefunction">
+<span class="sig-prename descclassname"><span class="pre">sisl.physics.electron.</span></span><span class="sig-name descname"><span class="pre">wavefunction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">v</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spinor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">spin</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/electron.html#wavefunction"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.electron.wavefunction" title="Permalink to this definition"></a></dt>
+<dd><p>Add the wave-function (<em class="xref py py-obj">Orbital.psi</em>) component of each orbital to the grid</p>
+<p>This routine calculates the real-space wave-function components in the
+specified grid.</p>
+<p>This is an <em>in-place</em> operation that <em>adds</em> to the current values in the grid.</p>
+<p>It may be instructive to check that an eigenstate is normalized:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">wavefunction</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">grid</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">absolute</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="p">)</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="n">grid</span><span class="o">.</span><span class="n">dvolume</span> <span class="o">==</span> <span class="mf">1.</span>
+</pre></div>
+</div>
+<p>Note: To calculate <span class="math notranslate nohighlight">\(\psi(\mathbf r)\)</span> in a unit-cell different from the
+originating geometry, simply pass a grid with a unit-cell smaller than the originating
+supercell.</p>
+<p>The wavefunctions are calculated in real-space via:</p>
+<div class="math notranslate nohighlight">
+\[\psi(\mathbf r) = \sum_i\phi_i(\mathbf r) |\psi\rangle_i \exp(i\mathbf k \mathbf R)\]</div>
+<p>While for non-colinear/spin-orbit calculations the wavefunctions are determined from the
+spinor component (<em class="xref py py-obj">spinor</em>)</p>
+<div class="math notranslate nohighlight">
+\[\psi_{\alpha/\beta}(\mathbf r) = \sum_i\phi_i(\mathbf r) |\psi_{\alpha/\beta}\rangle_i \exp(i\mathbf k \mathbf R)\]</div>
+<p>where <code class="docutils literal notranslate"><span class="pre">spinor</span> <span class="pre">in</span> <span class="pre">[0,</span> <span class="pre">1]</span></code> determines <span class="math notranslate nohighlight">\(\alpha\)</span> or <span class="math notranslate nohighlight">\(\beta\)</span>, respectively.</p>
+<p class="rubric">Notes</p>
+<p>Currently this method only works for <em class="xref py py-obj">v</em> being coefficients of the gauge=’R’ method. In case
+you are passing a <em class="xref py py-obj">v</em> with the incorrect gauge you will find a phase-shift according to:</p>
+<div class="math notranslate nohighlight">
+\[\tilde v_j = e^{i\mathbf k\mathbf r_j} v_j\]</div>
+<p>where <span class="math notranslate nohighlight">\(j\)</span> is the orbital index and <span class="math notranslate nohighlight">\(\mathbf r_j\)</span> is the orbital position.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>v</strong> (<em>array_like</em>) – coefficients for the orbital expansion on the real-space grid.
+If <em class="xref py py-obj">v</em> is a complex array then the <em class="xref py py-obj">grid</em> <em>must</em> be complex as well. The coefficients
+must be using the <code class="docutils literal notranslate"><span class="pre">R</span></code> gauge.</p></li>
+<li><p><strong>grid</strong> (<a class="reference internal" href="sisl.Grid.html#sisl.Grid" title="sisl.Grid"><em>Grid</em></a>) – grid on which the wavefunction will be plotted.
+If multiple eigenstates are in this object, they will be summed.</p></li>
+<li><p><strong>geometry</strong> (<a class="reference internal" href="sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a><em>, </em><em>optional</em>) – geometry where the orbitals are defined. This geometry’s orbital count must match
+the number of elements in <em class="xref py py-obj">v</em>.
+If this is <code class="docutils literal notranslate"><span class="pre">None</span></code> the geometry associated with <em class="xref py py-obj">grid</em> will be used instead.</p></li>
+<li><p><strong>k</strong> (<em>array_like</em><em>, </em><em>optional</em>) – k-point associated with wavefunction, by default the inherent k-point used
+to calculate the eigenstate will be used (generally shouldn’t be used unless the <a class="reference internal" href="sisl.physics.electron.EigenstateElectron.html#sisl.physics.electron.EigenstateElectron" title="sisl.physics.electron.EigenstateElectron"><code class="xref py py-obj docutils literal notranslate"><span class="pre">EigenstateElectron</span></code></a> object
+has not been created via <a class="reference internal" href="sisl.physics.Hamiltonian.html#sisl.physics.Hamiltonian.eigenstate" title="sisl.physics.Hamiltonian.eigenstate"><code class="xref py py-meth docutils literal notranslate"><span class="pre">eigenstate</span></code></a>).</p></li>
+<li><p><strong>spinor</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – the spinor for non-colinear/spin-orbit calculations. This is only used if the
+eigenstate object has been created from a parent object with a <code class="xref py py-obj docutils literal notranslate"><span class="pre">Spin</span></code> object
+contained, <em>and</em> if the spin-configuration is non-colinear or spin-orbit coupling.
+Default to the first spinor component.</p></li>
+<li><p><strong>spin</strong> (<a class="reference internal" href="sisl.physics.Spin.html#sisl.physics.Spin" title="sisl.physics.Spin"><em>Spin</em></a><em>, </em><em>optional</em>) – specification of the spin configuration of the orbital coefficients. This only has
+influence for non-colinear wavefunctions where <em class="xref py py-obj">spinor</em> choice is important.</p></li>
+<li><p><strong>eta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – Display a console progressbar.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sisl.physics.electron.conductivity.html" class="btn btn-neutral float-left" title="conductivity" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.physics.electron.spin_moment.html" class="btn btn-neutral float-right" title="spin_moment" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

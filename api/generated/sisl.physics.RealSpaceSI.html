@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.physics.RealSpaceSI &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+        <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="sisl.physics.Bloch" href="sisl.physics.Bloch.html" />
+    <link rel="prev" title="sisl.physics.RealSpaceSE" href="sisl.physics.RealSpaceSE.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../basic.html">Basic classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../default_geom.html">Common geometries</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../physics.html">Physical objects</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../physics.brillouinzone.html">Brillouin zone</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../physics.matrix.html">Physical quantites</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="../physics.matrix.html#spin">Spin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../physics.matrix.html#matrices">Matrices</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="../physics.matrix.html#self-energies">Self energies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../physics.matrix.html#bloch-s-theorem">Bloch’s theorem</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../physics.electron.html">Electron related functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../physics.phonon.html">Phonon related functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../physics.distribution.html">Distribution functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../physics.html#low-level-objects">Low level objects</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API documentation</a> &raquo;</li>
+          <li><a href="../physics.html">Physical objects</a> &raquo;</li>
+          <li><a href="../physics.matrix.html">Physical quantites</a> &raquo;</li>
+      <li>sisl.physics.RealSpaceSI</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/generated/sisl.physics.RealSpaceSI.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="sisl-physics-realspacesi">
+<h1>sisl.physics.RealSpaceSI<a class="headerlink" href="#sisl-physics-realspacesi" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="sisl.physics.RealSpaceSI">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.physics.</span></span><span class="sig-name descname"><span class="pre">RealSpaceSI</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">semi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surface</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k_axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unfold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.RealSpaceSI" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="sisl.physics.SelfEnergy.html#sisl.physics.SelfEnergy" title="sisl.physics.SelfEnergy"><code class="xref py py-class docutils literal notranslate"><span class="pre">sisl.physics.SelfEnergy</span></code></a></p>
+<p>Surface real-space self-energy (or Green function) for a given physical object with limited periodicity</p>
+<p>The surface real-space self-energy is calculated via the k-averaged Green function:</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol\Sigma^\mathcal{R}(E) = \mathbf S^\mathcal{R} (E+i\eta) - \mathbf H^\mathcal{R}
+     - \Big[\sum_{\mathbf k} \mathbf G_{\mathbf k}(E)\Big]^{-1}\]</div>
+<p>The method actually used is relying on <a class="reference internal" href="sisl.physics.RecursiveSI.html#sisl.physics.RecursiveSI" title="sisl.physics.RecursiveSI"><code class="xref py py-obj docutils literal notranslate"><span class="pre">RecursiveSI</span></code></a> and <a class="reference internal" href="sisl.physics.Bloch.html#sisl.physics.Bloch" title="sisl.physics.Bloch"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Bloch</span></code></a> objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>semi</strong> (<a class="reference internal" href="sisl.physics.SemiInfinite.html#sisl.physics.SemiInfinite" title="sisl.physics.SemiInfinite"><em>SemiInfinite</em></a>) – physical object which contains the semi-infinite direction, it is from
+this object we calculate the self-energy to be put into the surface.
+a physical object from which to calculate the real-space self-energy.
+<em class="xref py py-obj">semi</em> and <em class="xref py py-obj">surface</em> must have parallel lattice vectors.</p></li>
+<li><p><strong>surface</strong> (<a class="reference internal" href="sisl.physics.SparseOrbitalBZ.html#sisl.physics.SparseOrbitalBZ" title="sisl.physics.SparseOrbitalBZ"><em>SparseOrbitalBZ</em></a>) – parent object containing the surface of system. <em class="xref py py-obj">semi</em> is attached into this
+object via the overlapping regions, the atoms that overlap <em class="xref py py-obj">semi</em> and <em class="xref py py-obj">surface</em>
+are determined in the <a class="reference internal" href="#sisl.physics.RealSpaceSI.initialize" title="sisl.physics.RealSpaceSI.initialize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">initialize</span></code></a> routine.
+<em class="xref py py-obj">semi</em> and <em class="xref py py-obj">surface</em> must have parallel lattice vectors.</p></li>
+<li><p><strong>k_axes</strong> (<em>array_like of int</em>) – axes where k-points are desired. 1 or 2 values are required. The axis cannot be a direction
+along the <em class="xref py py-obj">semi</em> semi-infinite direction.</p></li>
+<li><p><strong>unfold</strong> (<em>(</em><em>3</em><em>,</em><em>) </em><em>of int</em>) – number of times the <em class="xref py py-obj">surface</em> structure is tiled along each direction
+Since this is a surface there will maximally be 2 unfolds being non-unity.</p></li>
+<li><p><strong>eta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – imaginary part in the self-energy calculations (default 1e-4 eV)</p></li>
+<li><p><strong>dk</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – fineness of the default integration grid, specified in units of Ang, default to 1000 which
+translates to 1000 k-points along reciprocal cells of length 1. Ang^-1.</p></li>
+<li><p><strong>bz</strong> (<a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><em>BrillouinZone</em></a><em>, </em><em>optional</em>) – integration k-points, if not passed the number of k-points will be determined using
+<em class="xref py py-obj">dk</em> and time-reversal symmetry will be determined by <em class="xref py py-obj">trs</em>, the number of points refers
+to the unfolded system.</p></li>
+<li><p><strong>trs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – whether time-reversal symmetry is used in the BrillouinZone integration, default
+to true.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graphene</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">graphene</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span> <span class="o">=</span> <span class="n">Hamiltonian</span><span class="p">(</span><span class="n">graphene</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span><span class="o">.</span><span class="n">construct</span><span class="p">([(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.44</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.7</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">se</span> <span class="o">=</span> <span class="n">RecursiveSI</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="s2">&quot;-A&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Hsurf</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Hsurf</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rsi</span> <span class="o">=</span> <span class="n">RealSpaceSI</span><span class="p">(</span><span class="n">se</span><span class="p">,</span> <span class="n">Hsurf</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rsi</span><span class="o">.</span><span class="n">green</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The Brillouin zone integration is determined naturally.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graphene</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">graphene</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span> <span class="o">=</span> <span class="n">Hamiltonian</span><span class="p">(</span><span class="n">graphene</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span><span class="o">.</span><span class="n">construct</span><span class="p">([(</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.44</span><span class="p">),</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mf">2.7</span><span class="p">)])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">se</span> <span class="o">=</span> <span class="n">RecursiveSI</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="s2">&quot;-A&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Hsurf</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Hsurf</span><span class="o">.</span><span class="n">set_nsc</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rsi</span> <span class="o">=</span> <span class="n">RealSpaceSI</span><span class="p">(</span><span class="n">se</span><span class="p">,</span> <span class="n">Hsurf</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rsi</span><span class="o">.</span><span class="n">set_options</span><span class="p">(</span><span class="n">eta</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">bz</span><span class="o">=</span><span class="n">MonkhorstPack</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rsi</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rsi</span><span class="o">.</span><span class="n">green</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span> <span class="c1"># eta = 1e-3</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">rsi</span><span class="o">.</span><span class="n">green</span><span class="p">(</span><span class="mf">0.1</span> <span class="o">+</span> <span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="mf">1e-4</span><span class="p">)</span> <span class="c1"># eta = 1e-4</span>
+</pre></div>
+</div>
+<p>Manually specify Brillouin zone integration and default <span class="math notranslate nohighlight">\(\eta\)</span> value.</p>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.RealSpaceSI.clear" title="sisl.physics.RealSpaceSI.clear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">clear</span></code></a>()</p></td>
+<td><p>Clears the internal arrays created in <a class="reference internal" href="#sisl.physics.RealSpaceSI.initialize" title="sisl.physics.RealSpaceSI.initialize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">initialize</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.RealSpaceSI.green" title="sisl.physics.RealSpaceSI.green"><code class="xref py py-obj docutils literal notranslate"><span class="pre">green</span></code></a>(E[, k, dtype])</p></td>
+<td><p>Calculate the real-space Green function</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.RealSpaceSI.initialize" title="sisl.physics.RealSpaceSI.initialize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">initialize</span></code></a>()</p></td>
+<td><p>Initialize the internal data-arrays used for efficient calculation of the real-space quantities</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.RealSpaceSI.real_space_coupling" title="sisl.physics.RealSpaceSI.real_space_coupling"><code class="xref py py-obj docutils literal notranslate"><span class="pre">real_space_coupling</span></code></a>([ret_indices])</p></td>
+<td><p>Real-space coupling surafec where the outside fold into the surface real-space unit cell</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.RealSpaceSI.real_space_parent" title="sisl.physics.RealSpaceSI.real_space_parent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">real_space_parent</span></code></a>()</p></td>
+<td><p>Fully expanded real-space surface parent</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.RealSpaceSI.scattering_matrix" title="sisl.physics.RealSpaceSI.scattering_matrix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scattering_matrix</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Calculate the scattering matrix by first calculating the self-energy</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.RealSpaceSI.se2scat" title="sisl.physics.RealSpaceSI.se2scat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">se2scat</span></code></a>(SE)</p></td>
+<td><p>Calculate the scattering matrix from the self-energy</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.RealSpaceSI.self_energy" title="sisl.physics.RealSpaceSI.self_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">self_energy</span></code></a>(E[, k, bulk, coupling, dtype])</p></td>
+<td><p>Calculate real-space surface self-energy</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.RealSpaceSI.set_options" title="sisl.physics.RealSpaceSI.set_options"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_options</span></code></a>(**options)</p></td>
+<td><p>Update options in the real-space self-energy</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.RealSpaceSI.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">semi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">surface</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k_axes</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unfold</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(1,</span> <span class="pre">1,</span> <span class="pre">1)</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/self_energy.html#RealSpaceSI.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.RealSpaceSI.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize real-space self-energy calculator</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.RealSpaceSI.clear">
+<span class="sig-name descname"><span class="pre">clear</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/self_energy.html#RealSpaceSI.clear"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.RealSpaceSI.clear" title="Permalink to this definition"></a></dt>
+<dd><p>Clears the internal arrays created in <a class="reference internal" href="#sisl.physics.RealSpaceSI.initialize" title="sisl.physics.RealSpaceSI.initialize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">initialize</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.RealSpaceSI.green">
+<span class="sig-name descname"><span class="pre">green</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/self_energy.html#RealSpaceSI.green"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.RealSpaceSI.green" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the real-space Green function</p>
+<p>The real space Green function is calculated via:</p>
+<div class="math notranslate nohighlight">
+\[\mathbf G^\mathcal{R}(E) = \sum_{\mathbf k} \mathbf G_{\mathbf k}(E)\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>E</strong> (<em>float/complex</em>) – energy to evaluate the real-space Green function at</p></li>
+<li><p><strong>k</strong> (<em>array_like</em><em>, </em><em>optional</em>) – only viable for 3D bulk systems with real-space Green functions along 2 directions.
+I.e. this would correspond to a circular real-space Green function</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.21)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the resulting data type, default to <code class="docutils literal notranslate"><span class="pre">np.complex128</span></code></p></li>
+<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a><em>, </em><em>optional</em>) – arguments passed directly to the <code class="docutils literal notranslate"><span class="pre">self.surface.Pk</span></code> method (not <code class="docutils literal notranslate"><span class="pre">self.surface.Sk</span></code>), for instance <code class="docutils literal notranslate"><span class="pre">spin</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.RealSpaceSI.initialize">
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/self_energy.html#RealSpaceSI.initialize"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.RealSpaceSI.initialize" title="Permalink to this definition"></a></dt>
+<dd><p>Initialize the internal data-arrays used for efficient calculation of the real-space quantities</p>
+<p>This method should first be called <em>after</em> all options has been specified.</p>
+<p>If the user hasn’t specified the <code class="docutils literal notranslate"><span class="pre">bz</span></code> value as an option this method will update the internal
+integration Brillouin zone based on the <code class="docutils literal notranslate"><span class="pre">dk</span></code> option. The <span class="math notranslate nohighlight">\(\mathbf k\)</span> point sampling corresponds
+to the number of points in the non-folded system and thus the final sampling is equivalent to the
+sampling times the unfolding (per <span class="math notranslate nohighlight">\(\mathbf k\)</span> direction).</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.RealSpaceSI.real_space_coupling">
+<span class="sig-name descname"><span class="pre">real_space_coupling</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ret_indices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/self_energy.html#RealSpaceSI.real_space_coupling"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.RealSpaceSI.real_space_coupling" title="Permalink to this definition"></a></dt>
+<dd><p>Real-space coupling surafec where the outside fold into the surface real-space unit cell</p>
+<p>The resulting parent object only contains the inner-cell couplings for the elements that couple
+out of the real-space matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ret_indices</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – if true, also return the atomic indices (corresponding to <a class="reference internal" href="#sisl.physics.RealSpaceSI.real_space_parent" title="sisl.physics.RealSpaceSI.real_space_parent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">real_space_parent</span></code></a>) that encompass the coupling matrix</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>parent</strong> (<em>object</em>) – parent object only retaining the elements of the atoms that couple out of the primary unit cell</p></li>
+<li><p><strong>atom_index</strong> (<em>numpy.ndarray</em>) – indices for the atoms that couple out of the geometry, only if <em class="xref py py-obj">ret_indices</em> is true</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.RealSpaceSI.real_space_parent">
+<span class="sig-name descname"><span class="pre">real_space_parent</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/self_energy.html#RealSpaceSI.real_space_parent"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.RealSpaceSI.real_space_parent" title="Permalink to this definition"></a></dt>
+<dd><p>Fully expanded real-space surface parent</p>
+<p class="rubric">Notes</p>
+<p>The returned object does <em>not</em> obey the <code class="docutils literal notranslate"><span class="pre">semi_bulk</span></code> option. I.e. the matrix elements
+correspond to the <em class="xref py py-obj">self.surface</em> object, always!</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.RealSpaceSI.scattering_matrix">
+<span class="sig-name descname"><span class="pre">scattering_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.RealSpaceSI.scattering_matrix" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the scattering matrix by first calculating the self-energy</p>
+<p>Any arguments that is passed to this method is directly passed to <a class="reference internal" href="#sisl.physics.RealSpaceSI.self_energy" title="sisl.physics.RealSpaceSI.self_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">self_energy</span></code></a>.</p>
+<p>See <a class="reference internal" href="#sisl.physics.RealSpaceSI.self_energy" title="sisl.physics.RealSpaceSI.self_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">self_energy</span></code></a> for details.</p>
+<p>This corresponds to:</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol\Gamma = i(\boldsymbol\Sigma - \boldsymbol \Sigma ^\dagger)\]</div>
+<p class="rubric">Examples</p>
+<p>Calculating both the self-energy and the scattering matrix.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SE</span> <span class="o">=</span> <span class="n">SelfEnergy</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">self_energy</span> <span class="o">=</span> <span class="n">SE</span><span class="o">.</span><span class="n">self_energy</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gamma</span> <span class="o">=</span> <span class="n">SE</span><span class="o">.</span><span class="n">scattering_matrix</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>For a huge performance boost, please do:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">SE</span> <span class="o">=</span> <span class="n">SelfEnergy</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">self_energy</span> <span class="o">=</span> <span class="n">SE</span><span class="o">.</span><span class="n">self_energy</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">gamma</span> <span class="o">=</span> <span class="n">SE</span><span class="o">.</span><span class="n">se2scat</span><span class="p">(</span><span class="n">self_energy</span><span class="p">)</span>
+</pre></div>
+</div>
+<p class="rubric">Notes</p>
+<p>When using <em>both</em> the self-energy <em>and</em> the scattering matrix please use <a class="reference internal" href="#sisl.physics.RealSpaceSI.se2scat" title="sisl.physics.RealSpaceSI.se2scat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">se2scat</span></code></a> after having
+calculated the self-energy, this will be <em>much</em>, <em>MUCH</em> faster!</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.physics.RealSpaceSI.se2scat" title="sisl.physics.RealSpaceSI.se2scat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">se2scat</span></code></a></dt><dd><p>converting the self-energy to the scattering matrix</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.physics.RealSpaceSI.self_energy" title="sisl.physics.RealSpaceSI.self_energy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">self_energy</span></code></a></dt><dd><p>the used routine to calculate the self-energy before calculating the scattering matrix</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.RealSpaceSI.se2scat">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">se2scat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">SE</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.RealSpaceSI.se2scat" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the scattering matrix from the self-energy</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol\Gamma = i(\boldsymbol\Sigma - \boldsymbol \Sigma ^\dagger)\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>SE</strong> (<em>matrix</em>) – self-energy matrix</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.RealSpaceSI.self_energy">
+<span class="sig-name descname"><span class="pre">self_energy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">E</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">k</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bulk</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">coupling</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/self_energy.html#RealSpaceSI.self_energy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.RealSpaceSI.self_energy" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate real-space surface self-energy</p>
+<p>The real space self-energy is calculated via:</p>
+<div class="math notranslate nohighlight">
+\[\boldsymbol\Sigma^{\mathcal{R}}(E) = \mathbf S^{\mathcal{R}} E - \mathbf H^{\mathcal{R}}
+   - \Big[\sum_{\mathbf k} \mathbf G_{\mathbf k}(E)\Big]^{-1}\]</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>E</strong> (<em>float/complex</em>) – energy to evaluate the real-space self-energy at</p></li>
+<li><p><strong>k</strong> (<em>array_like</em><em>, </em><em>optional</em>) – only viable for 3D bulk systems with real-space self-energies along 2 directions.
+I.e. this would correspond to circular self-energies.</p></li>
+<li><p><strong>bulk</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – if true, <span class="math notranslate nohighlight">\(\mathbf S^{\mathcal{R}} E - \mathbf H^{\mathcal{R}} - \boldsymbol\Sigma^\mathcal{R}\)</span>
+is returned, otherwise <span class="math notranslate nohighlight">\(\boldsymbol\Sigma^\mathcal{R}\)</span> is returned</p></li>
+<li><p><strong>coupling</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – if True, only the self-energy terms located on the coupling geometry (<em class="xref py py-obj">coupling_geometry</em>)
+are returned</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.21)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the resulting data type, default to <code class="docutils literal notranslate"><span class="pre">np.complex128</span></code></p></li>
+<li><p><strong>**kwargs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a><em>, </em><em>optional</em>) – arguments passed directly to the <code class="docutils literal notranslate"><span class="pre">self.surface.Pk</span></code> method (not <code class="docutils literal notranslate"><span class="pre">self.surface.Sk</span></code>), for instance <code class="docutils literal notranslate"><span class="pre">spin</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.RealSpaceSI.set_options">
+<span class="sig-name descname"><span class="pre">set_options</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">options</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/self_energy.html#RealSpaceSI.set_options"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.RealSpaceSI.set_options" title="Permalink to this definition"></a></dt>
+<dd><p>Update options in the real-space self-energy</p>
+<p>After updating options one should re-call <a class="reference internal" href="#sisl.physics.RealSpaceSI.initialize" title="sisl.physics.RealSpaceSI.initialize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">initialize</span></code></a> for consistency.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>semi_bulk</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the semi-infinite matrix elements are used for in the surface. Default to true.</p></li>
+<li><p><strong>eta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – imaginary part in the self-energy calculations (default 1e-4 eV)</p></li>
+<li><p><strong>dk</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – fineness of the default integration grid, specified in units of Ang, default to 1000 which
+translates to 1000 k-points along reciprocal cells of length 1. Ang^-1.</p></li>
+<li><p><strong>bz</strong> (<a class="reference internal" href="sisl.physics.BrillouinZone.html#sisl.physics.BrillouinZone" title="sisl.physics.BrillouinZone"><em>BrillouinZone</em></a><em>, </em><em>optional</em>) – integration k-points, if not passed the number of k-points will be determined using
+<em class="xref py py-obj">dk</em> and time-reversal symmetry will be determined by <em class="xref py py-obj">trs</em>, the number of points refers
+to the unfolded system.</p></li>
+<li><p><strong>trs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – whether time-reversal symmetry is used in the BrillouinZone integration, default
+to true.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sisl.physics.RealSpaceSE.html" class="btn btn-neutral float-left" title="sisl.physics.RealSpaceSE" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.physics.Bloch.html" class="btn btn-neutral float-right" title="sisl.physics.Bloch" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.io.siesta.eig &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/index.html">API documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>sisl.io.siesta.eig</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sisl.io.siesta.eig</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
+<span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
+<span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">sile_fh_open</span><span class="p">,</span> <span class="n">SileError</span>
+<span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileSiesta</span>
+
+<span class="kn">from</span> <span class="nn">sisl._array</span> <span class="kn">import</span> <span class="n">arrayd</span>
+<span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span> <span class="nn">sisl.physics</span> <span class="kn">import</span> <span class="n">get_distribution</span>
+<span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="n">strmap</span>
+<span class="kn">from</span> <span class="nn">sisl.utils.cmd</span> <span class="kn">import</span> <span class="n">default_ArgumentParser</span><span class="p">,</span> <span class="n">default_namespace</span>
+<span class="kn">from</span> <span class="nn">sisl.unit.siesta</span> <span class="kn">import</span> <span class="n">units</span>
+<span class="kn">from</span> <span class="nn">.kp</span> <span class="kn">import</span> <span class="n">kpSileSiesta</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;eigSileSiesta&#39;</span><span class="p">]</span>
+
+
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">eigSileSiesta</span><span class="p">(</span><span class="n">SileSiesta</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Eigenvalues as calculated in the SCF loop, easy plots using `sdata`</span>
+
+<span class="sd">    The .EIG file from Siesta contains the eigenvalues for k-points used during the SCF.</span>
+<span class="sd">    Using the command-line utility `sdata` one may plot the eigenvalue spectrum to visualize the</span>
+<span class="sd">    spread of eigenvalues.</span>
+
+<span class="sd">    .. code:: bash</span>
+
+<span class="sd">        sdata siesta.EIG --plot</span>
+<span class="sd">        # or to save to png file</span>
+<span class="sd">        sdata siesta.EIG --plot eig_spread.png</span>
+
+
+<span class="sd">    One may also plot the DOS using the eigenvalues and the k-point weights:</span>
+
+<span class="sd">    .. code:: bash</span>
+
+<span class="sd">        sdata siesta.EIG --dos</span>
+<span class="sd">        # or to save to png file</span>
+<span class="sd">        sdata siesta.EIG --dos dos.png</span>
+
+<span class="sd">    This will default to plot the DOS using these parameters:</span>
+<span class="sd">    dE = 5 meV, kT = 300 K (25 meV), Gaussian distribution and in the full energy-range of the eigenvalue spectrum.</span>
+<span class="sd">    By default the k-point weights will be read in the ``siesta.KP`` file, however if the file does not</span>
+<span class="sd">    exist one may use the option ``--kp-file FILE`` to read in the weights from ``FILE``.</span>
+
+<span class="sd">    To limit the shown energy region, simply use:</span>
+
+<span class="sd">    .. code:: bash</span>
+
+<span class="sd">        sdata siesta.EIG -E -10:10 --dos</span>
+
+<span class="sd">    to reduce to the -10 eV to 10 eV energy range.</span>
+
+<span class="sd">    One may optionally choose the temperature smearing and the used distribution function:</span>
+
+<span class="sd">    .. code:: bash</span>
+
+<span class="sd">        sdata siesta.EIG -E -10:10 --dos 0.01 0.1 lorentzian</span>
+
+<span class="sd">    which will calculate the DOS in steps of 10 meV, the temperature smearing is 0.1 eV and</span>
+<span class="sd">    the used distribution is a Lorentzian.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="eigSileSiesta.read_fermi_level"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.eigSileSiesta.html#sisl.io.siesta.eigSileSiesta.read_fermi_level">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">read_fermi_level</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Query the Fermi-level contained in the file</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Ef : fermi-level of the system</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="eigSileSiesta.read_data"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.eigSileSiesta.html#sisl.io.siesta.eigSileSiesta.read_data">[docs]</a>    <span class="nd">@sile_fh_open</span><span class="p">()</span>
+    <span class="k">def</span> <span class="nf">read_data</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Read eigenvalues, as calculated and written by Siesta</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        numpy.ndarray : all eigenvalues, shifted to :math:`E_F = 0`, shape ``(ns, nk, nb)``</span>
+<span class="sd">                        where ``ns`` number of spin-components, ``nk`` number of k-points and</span>
+<span class="sd">                        ``nb`` number of bands.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">Ef</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_fermi_level</span><span class="p">()</span>
+
+        <span class="c1"># Read the total length of the path</span>
+        <span class="n">nb</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">nk</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+        <span class="k">if</span> <span class="n">ns</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="c1"># This is simply a NC/SOC calculation which is irrelevant in</span>
+            <span class="c1"># regards of the eigenvalues.</span>
+            <span class="n">ns</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="c1"># Allocate</span>
+        <span class="n">eigs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">([</span><span class="n">ns</span><span class="p">,</span> <span class="n">nk</span><span class="p">,</span> <span class="n">nb</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+        <span class="n">readline</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">readline</span>
+        <span class="k">def</span> <span class="nf">iterE</span><span class="p">(</span><span class="n">size</span><span class="p">):</span>
+            <span class="n">ne</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()[</span><span class="mi">1</span><span class="p">:]</span>
+            <span class="n">ne</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+            <span class="k">yield from</span> <span class="n">out</span>
+            <span class="k">while</span> <span class="n">ne</span> <span class="o">&lt;</span> <span class="n">size</span><span class="p">:</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+                <span class="n">ne</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+                <span class="k">yield from</span> <span class="n">out</span>
+
+        <span class="k">for</span> <span class="n">ik</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nk</span><span class="p">):</span>
+            <span class="c1"># The first line is special</span>
+            <span class="n">E_list</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">iterE</span><span class="p">(</span><span class="n">ns</span> <span class="o">*</span> <span class="n">nb</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+            <span class="n">eigs</span><span class="p">[:,</span> <span class="n">ik</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="n">E_list</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="n">nb</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">eigs</span> <span class="o">-</span> <span class="n">Ef</span></div>
+
+    <span class="nd">@default_ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Manipulate Siesta EIG file.&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">ArgumentParser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the arguments that is available for this Sile &quot;&quot;&quot;</span>
+        <span class="c1">#limit_args = kwargs.get(&#39;limit_arguments&#39;, True)</span>
+        <span class="n">short</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;short&#39;</span><span class="p">,</span> <span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">opts</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">short</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">args</span>
+            <span class="k">return</span> <span class="p">[</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+
+        <span class="c1"># We limit the import to occur here</span>
+        <span class="kn">import</span> <span class="nn">argparse</span>
+
+        <span class="c1"># The first thing we do is adding the geometry to the NameSpace of the</span>
+        <span class="c1"># parser.</span>
+        <span class="c1"># This will enable custom actions to interact with the geometry in a</span>
+        <span class="c1"># straight forward manner.</span>
+        <span class="n">d</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;_eigs&quot;</span><span class="p">:</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_data</span><span class="p">(),</span>
+            <span class="s2">&quot;_Emap&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">namespace</span> <span class="o">=</span> <span class="n">default_namespace</span><span class="p">(</span><span class="o">**</span><span class="n">d</span><span class="p">)</span>
+
+        <span class="c1"># Energy grabs</span>
+        <span class="k">class</span> <span class="nc">ERange</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
+
+            <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                <span class="n">ns</span><span class="o">.</span><span class="n">_Emap</span> <span class="o">=</span> <span class="n">strmap</span><span class="p">(</span><span class="nb">float</span><span class="p">,</span> <span class="n">value</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--energy&#39;</span><span class="p">,</span> <span class="s1">&#39;-E&#39;</span><span class="p">,</span>
+                       <span class="n">action</span><span class="o">=</span><span class="n">ERange</span><span class="p">,</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Denote the sub-section of energies that are plotted: &quot;-1:0,1:2&quot; [eV]&#39;</span><span class="p">)</span>
+
+        <span class="c1"># k-point weights</span>
+        <span class="k">class</span> <span class="nc">KP</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
+            <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                <span class="n">ns</span><span class="o">.</span><span class="n">_weights</span> <span class="o">=</span> <span class="n">kpSileSiesta</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span><span class="o">.</span><span class="n">read_data</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--kp-file&#39;</span><span class="p">,</span> <span class="s1">&#39;-kp&#39;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;FILE&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">KP</span><span class="p">,</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;The k-point file from which to read the band-weights (only applicable to --dos option)&#39;</span><span class="p">)</span>
+
+        <span class="k">class</span> <span class="nc">EIGPlot</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
+
+            <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+                <span class="n">E</span> <span class="o">=</span> <span class="n">ns</span><span class="o">.</span><span class="n">_eigs</span>
+                <span class="c1">#Emin = np.min(E)</span>
+                <span class="c1">#Emax = np.max(E)</span>
+                <span class="c1">#n = E.shape[1]</span>
+                <span class="c1"># We need to setup a relatively good size of the scatter</span>
+                <span class="c1"># plots</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="mi">10</span> <span class="c1">#20. / max(Emax - Emin, n)</span>
+
+                <span class="k">def</span> <span class="nf">myplot</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+                    <span class="n">ik</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">for</span> <span class="n">ib</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">y</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+                        <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">ik</span><span class="p">,</span> <span class="n">y</span><span class="p">[:,</span> <span class="n">ib</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="n">s</span><span class="p">)</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;k-index&#39;</span><span class="p">)</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">y</span><span class="p">)</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="ow">not</span> <span class="n">E</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="n">E</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">E</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+                <span class="k">if</span> <span class="n">E</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+                    <span class="n">ax</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;E-Ef [eV]&#39;</span><span class="p">)</span>
+
+                    <span class="c1"># We must plot spin-up/down separately</span>
+                    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ud</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s1">&#39;UP&#39;</span><span class="p">,</span> <span class="s1">&#39;DOWN&#39;</span><span class="p">]):</span>
+                        <span class="n">myplot</span><span class="p">(</span><span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s1">&#39;Eigenspectrum SPIN-&#39;</span><span class="o">+</span><span class="n">ud</span><span class="p">,</span> <span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:],</span> <span class="n">ns</span><span class="o">.</span><span class="n">_Emap</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+                    <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;E-Ef [eV]&#39;</span><span class="p">)</span>
+                    <span class="n">myplot</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s1">&#39;Eigenspectrum&#39;</span><span class="p">,</span> <span class="n">E</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:],</span> <span class="n">ns</span><span class="o">.</span><span class="n">_Emap</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="o">*</span><span class="n">opts</span><span class="p">(</span><span class="s1">&#39;--plot&#39;</span><span class="p">,</span> <span class="s1">&#39;-p&#39;</span><span class="p">),</span> <span class="n">action</span><span class="o">=</span><span class="n">EIGPlot</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;?&#39;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;FILE&#39;</span><span class="p">,</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Plot the eigenvalues from the .EIG file, possibly saving plot to a file.&#39;</span><span class="p">)</span>
+
+        <span class="c1"># Energy grabs</span>
+        <span class="k">class</span> <span class="nc">DOSPlot</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
+            <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="n">dos_self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                <span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">ns</span><span class="p">,</span> <span class="s1">&#39;_weight&#39;</span><span class="p">):</span>
+                    <span class="c1"># Try and read in the k-point-weights</span>
+                    <span class="n">ns</span><span class="o">.</span><span class="n">_weight</span> <span class="o">=</span> <span class="n">kpSileSiesta</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s1">&#39;EIG&#39;</span><span class="p">,</span> <span class="s1">&#39;KP&#39;</span><span class="p">))</span><span class="o">.</span><span class="n">read_data</span><span class="p">()[</span><span class="mi">1</span><span class="p">]</span>
+
+                <span class="k">if</span> <span class="n">ns</span><span class="o">.</span><span class="n">_Emap</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="c1"># We will plot the DOS in the entire energy window</span>
+                    <span class="n">ns</span><span class="o">.</span><span class="n">_Emap</span> <span class="o">=</span> <span class="p">[</span><span class="n">ns</span><span class="o">.</span><span class="n">_eigs</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">ns</span><span class="o">.</span><span class="n">_eigs</span><span class="o">.</span><span class="n">max</span><span class="p">()]</span>
+
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_weight</span><span class="p">)</span> <span class="o">!=</span> <span class="n">ns</span><span class="o">.</span><span class="n">_eigs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+                    <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; --dos the number of k-points for the eigenvalues and k-point weights &#39;</span>
+                                    <span class="s1">&#39;are different, please use --weight correctly.&#39;</span><span class="p">)</span>
+
+                <span class="c1"># Specify default settings</span>
+                <span class="n">dE</span> <span class="o">=</span> <span class="mf">0.005</span> <span class="c1"># 5 meV</span>
+                <span class="n">kT</span> <span class="o">=</span> <span class="n">units</span><span class="p">(</span><span class="s1">&#39;K&#39;</span><span class="p">,</span> <span class="s1">&#39;eV&#39;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">300</span>
+                <span class="n">distr</span> <span class="o">=</span> <span class="n">get_distribution</span><span class="p">(</span><span class="s1">&#39;gaussian&#39;</span><span class="p">,</span> <span class="n">smearing</span><span class="o">=</span><span class="n">kT</span><span class="p">)</span>
+                <span class="n">out</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">dE</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">except</span><span class="p">:</span> <span class="k">pass</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">kT</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+                        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">except</span><span class="p">:</span> <span class="k">pass</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">distr</span> <span class="o">=</span> <span class="n">get_distribution</span><span class="p">(</span><span class="n">value</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">smearing</span><span class="o">=</span><span class="n">kT</span><span class="p">)</span>
+                        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="k">except</span><span class="p">:</span> <span class="k">pass</span>
+                    <span class="k">try</span><span class="p">:</span>
+                        <span class="n">out</span> <span class="o">=</span> <span class="n">value</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                    <span class="k">except</span><span class="p">:</span> <span class="k">pass</span>
+
+                <span class="c1"># Now we are ready to process</span>
+                <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_Emap</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="n">kT</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span> <span class="n">ns</span><span class="o">.</span><span class="n">_Emap</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">kT</span> <span class="o">*</span> <span class="mi">4</span><span class="p">,</span> <span class="n">dE</span><span class="p">)</span>
+
+                <span class="k">def</span> <span class="nf">myplot</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">legend</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">eig</span><span class="p">,</span> <span class="n">w</span><span class="p">):</span>
+                    <span class="n">DOS</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">E</span><span class="p">))</span>
+                    <span class="k">for</span> <span class="n">ib</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">eig</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                        <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">eig</span><span class="p">[</span><span class="n">ib</span><span class="p">,</span> <span class="p">:]:</span>
+                            <span class="n">DOS</span> <span class="o">+=</span> <span class="n">distr</span><span class="p">(</span><span class="n">E</span> <span class="o">-</span> <span class="n">e</span><span class="p">)</span> <span class="o">*</span> <span class="n">w</span><span class="p">[</span><span class="n">ib</span><span class="p">]</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">DOS</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">legend</span><span class="p">)</span>
+                    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+                <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">()</span>
+                <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;DOS kT=</span><span class="si">{:.1f}</span><span class="s1"> K&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">kT</span> <span class="o">*</span> <span class="n">units</span><span class="p">(</span><span class="s1">&#39;eV&#39;</span><span class="p">,</span> <span class="s1">&#39;K&#39;</span><span class="p">)))</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;E - Ef [eV]&#39;</span><span class="p">)</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_xlim</span><span class="p">(</span><span class="n">E</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">E</span><span class="o">.</span><span class="n">max</span><span class="p">())</span>
+                <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s1">&#39;DOS [1/eV]&#39;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">ns</span><span class="o">.</span><span class="n">_eigs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ud</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">([</span><span class="s1">&#39;up&#39;</span><span class="p">,</span> <span class="s1">&#39;down&#39;</span><span class="p">]):</span>
+                        <span class="n">myplot</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="n">ud</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">ns</span><span class="o">.</span><span class="n">_eigs</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:],</span> <span class="n">ns</span><span class="o">.</span><span class="n">_weight</span><span class="p">)</span>
+                    <span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">myplot</span><span class="p">(</span><span class="n">ax</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">ns</span><span class="o">.</span><span class="n">_eigs</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:,</span> <span class="p">:],</span> <span class="n">ns</span><span class="o">.</span><span class="n">_weight</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">out</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--dos&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">DOSPlot</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;dE,kT,DIST,FILE&#39;</span><span class="p">,</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Plot the density of states from the .EIG file, &#39;</span>
+                       <span class="s1">&#39;dE = energy separation, kT = smearing, DIST = distribution function (Gaussian) possibly saving plot to a file.&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">p</span><span class="p">,</span> <span class="n">namespace</span>
+
+
+<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;EIG&#39;</span><span class="p">,</span> <span class="n">eigSileSiesta</span><span class="p">,</span> <span class="n">gzip</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

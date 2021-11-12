@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.shape.Shape &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="sisl.shape.Cuboid" href="sisl.shape.Cuboid.html" />
+    <link rel="prev" title="Shapes" href="../utilities.shape.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../basic.html">Basic classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../default_geom.html">Common geometries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../utilities.html">Utilities</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../utilities.shape.html">Shapes</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.shape.Shape</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.shape.Cuboid.html">sisl.shape.Cuboid</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.shape.Cube.html">sisl.shape.Cube</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.shape.Ellipsoid.html">sisl.shape.Ellipsoid</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.shape.Sphere.html">sisl.shape.Sphere</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.shape.NullShape.html">sisl.shape.NullShape</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities.misc.html">Range routines</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../utilities.misc.html#miscellaneous-routines">Miscellaneous routines</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API documentation</a> &raquo;</li>
+          <li><a href="../utilities.html">Utilities</a> &raquo;</li>
+          <li><a href="../utilities.shape.html">Shapes</a> &raquo;</li>
+      <li>sisl.shape.Shape</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/generated/sisl.shape.Shape.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="sisl-shape-shape">
+<h1>sisl.shape.Shape<a class="headerlink" href="#sisl-shape-shape" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="sisl.shape.Shape">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.shape.</span></span><span class="sig-name descname"><span class="pre">Shape</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.shape.Shape" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Baseclass for all shapes. Logical operations are implemented on this class.</p>
+<p><strong>This class must be sub classed.</strong></p>
+<p>Also all the required methods are predefined although they issue an error if they are
+not implemented in the sub-classed class.</p>
+<p>There are a few routines that are necessary when implementing
+an inherited class:</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.shape.Shape.center" title="sisl.shape.Shape.center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">center</span></code></a></dt><dd><p>return the geometric center of the shape.</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.shape.Shape.within" title="sisl.shape.Shape.within"><code class="xref py py-obj docutils literal notranslate"><span class="pre">within</span></code></a></dt><dd><p>Returns a boolean array which defines whether a coordinate is within
+or outside the shape.</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.shape.Shape.within_index" title="sisl.shape.Shape.within_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">within_index</span></code></a></dt><dd><p>Equivalent to <a class="reference internal" href="#sisl.shape.Shape.within" title="sisl.shape.Shape.within"><code class="xref py py-obj docutils literal notranslate"><span class="pre">within</span></code></a>, however only the indices of those within are returned.</p>
+</dd>
+<dt><a class="reference external" href="https://docs.python.org/3/library/copy.html#module-copy" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a></dt><dd><p>Create a new identical shape.</p>
+</dd>
+</dl>
+<p>The minimal requirement a shape can have are the above attributes.</p>
+<p>Subclassed shapes may have additional methods by which they are defined.</p>
+<p>Any <a class="reference internal" href="#sisl.shape.Shape" title="sisl.shape.Shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Shape</span></code></a> may be used to construct other shapes by applying set operations.
+Currently implemented binary operators are:</p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__or__</span></code>/<code class="xref py py-obj docutils literal notranslate"><span class="pre">__add__</span></code> : set union, either <em class="xref py py-obj">|</em> or <em class="xref py py-obj">+</em> operator (not <em class="xref py py-obj">or</em>)</p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__and__</span></code> : set intersection, <em class="xref py py-obj">&amp;</em> operator (not <em class="xref py py-obj">and</em>)</p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__sub__</span></code> : set complement, <em class="xref py py-obj">-</em> operator</p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">__xor__</span></code> : set disjunctive union, <em class="xref py py-obj">^</em> operator</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>center</strong> (<em>(</em><em>3</em><em>,</em><em>)</em>) – the center of the shape</p>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.shape.Shape.scale" title="sisl.shape.Shape.scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code></a>(scale)</p></td>
+<td><p>Return a new Shape with a scaled size</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.shape.Shape.toCuboid" title="sisl.shape.Shape.toCuboid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toCuboid</span></code></a>()</p></td>
+<td><p>Create a cuboid which is surely encompassing the <em>full</em> shape</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.shape.Shape.toEllipsoid" title="sisl.shape.Shape.toEllipsoid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toEllipsoid</span></code></a>()</p></td>
+<td><p>Create an ellipsoid which is surely encompassing the <em>full</em> shape</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.shape.Shape.toSphere" title="sisl.shape.Shape.toSphere"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toSphere</span></code></a>()</p></td>
+<td><p>Create a sphere which is surely encompassing the <em>full</em> shape</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.shape.Shape.within" title="sisl.shape.Shape.within"><code class="xref py py-obj docutils literal notranslate"><span class="pre">within</span></code></a>(other, *args, **kwargs)</p></td>
+<td><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if <em class="xref py py-obj">other</em> is fully within <em class="xref py py-obj">self</em></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.shape.Shape.within_index" title="sisl.shape.Shape.within_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">within_index</span></code></a>(other, *args, **kwargs)</p></td>
+<td><p>Return indices of the elements of <em class="xref py py-obj">other</em> that are within the shape</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.shape.Shape.center" title="sisl.shape.Shape.center"><code class="xref py py-obj docutils literal notranslate"><span class="pre">center</span></code></a></p></td>
+<td><p>The geometric center of the shape</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.shape.Shape.to" title="sisl.shape.Shape.to"><code class="xref py py-obj docutils literal notranslate"><span class="pre">to</span></code></a></p></td>
+<td><p>A dispatcher for classes, using <em class="xref py py-obj">__get__</em> it converts into <em class="xref py py-obj">ObjectDispatcher</em> upon invocation from an object, or a <em class="xref py py-obj">TypeDispatcher</em> when invoked from a class</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.shape.Shape.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/base.html#Shape.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.Shape.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.shape.Shape.center">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">center</span></span><a class="headerlink" href="#sisl.shape.Shape.center" title="Permalink to this definition"></a></dt>
+<dd><p>The geometric center of the shape</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.shape.Shape.scale">
+<span class="sig-name descname"><span class="pre">scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scale</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/base.html#Shape.scale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.Shape.scale" title="Permalink to this definition"></a></dt>
+<dd><p>Return a new Shape with a scaled size</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.shape.Shape.to">
+<span class="sig-name descname"><span class="pre">to</span></span><a class="headerlink" href="#sisl.shape.Shape.to" title="Permalink to this definition"></a></dt>
+<dd><p>A dispatcher for classes, using <em class="xref py py-obj">__get__</em> it converts into <em class="xref py py-obj">ObjectDispatcher</em> upon invocation from an object, or a <em class="xref py py-obj">TypeDispatcher</em> when invoked from a class</p>
+<p>This is a class-placeholder allowing a dispatcher to be a class attribute and converted into an
+<em class="xref py py-obj">ObjectDispatcher</em> when invoked from an object.</p>
+<p>If it is called on the class, it will return a <em class="xref py py-obj">TypeDispatcher</em>.</p>
+<p>This class should be an attribute of a class. It heavily relies on the <em class="xref py py-obj">__get__</em> special
+method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – name of the attribute in the class</p></li>
+<li><p><strong>dispatchs</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a><em>, </em><em>optional</em>) – dictionary of dispatch methods</p></li>
+<li><p><strong>obj_getattr</strong> (<em>callable</em><em>, </em><em>optional</em>) – method with 2 arguments, an <code class="docutils literal notranslate"><span class="pre">obj</span></code> and the <code class="docutils literal notranslate"><span class="pre">attr</span></code> which may be used
+to control how the attribute is called.</p></li>
+<li><p><strong>instance_dispatcher</strong> (<em>AbstractDispatcher</em><em>, </em><em>optional</em>) – control how instance dispatchers are handled through <em class="xref py py-obj">__get__</em> method.
+This controls the dispatcher used if called from an instance.</p></li>
+<li><p><strong>type_dispatcher</strong> (<em>AbstractDispatcher</em><em>, </em><em>optional</em>) – control how class dispatchers are handled through <em class="xref py py-obj">__get__</em> method.
+This controls the dispatcher used if called from a class.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">class</span> <span class="nc">A</span><span class="p">:</span>
+<span class="gp">... </span>  <span class="n">new</span> <span class="o">=</span> <span class="n">ClassDispatcher</span><span class="p">(</span><span class="s2">&quot;new&quot;</span><span class="p">,</span> <span class="n">obj_getattr</span><span class="o">=</span><span class="k">lambda</span> <span class="n">obj</span><span class="p">,</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">getattr</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">sub</span><span class="p">,</span> <span class="n">attr</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>The above defers any attributes to the contained <em class="xref py py-obj">A.sub</em> attribute.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.shape.Shape.toCuboid">
+<span class="sig-name descname"><span class="pre">toCuboid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/base.html#Shape.toCuboid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.Shape.toCuboid" title="Permalink to this definition"></a></dt>
+<dd><p>Create a cuboid which is surely encompassing the <em>full</em> shape</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.shape.Shape.toEllipsoid">
+<span class="sig-name descname"><span class="pre">toEllipsoid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/base.html#Shape.toEllipsoid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.Shape.toEllipsoid" title="Permalink to this definition"></a></dt>
+<dd><p>Create an ellipsoid which is surely encompassing the <em>full</em> shape</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.shape.Shape.toSphere">
+<span class="sig-name descname"><span class="pre">toSphere</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/base.html#Shape.toSphere"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.Shape.toSphere" title="Permalink to this definition"></a></dt>
+<dd><p>Create a sphere which is surely encompassing the <em>full</em> shape</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.shape.Shape.within">
+<span class="sig-name descname"><span class="pre">within</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/base.html#Shape.within"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.Shape.within" title="Permalink to this definition"></a></dt>
+<dd><p>Return <code class="docutils literal notranslate"><span class="pre">True</span></code> if <em class="xref py py-obj">other</em> is fully within <em class="xref py py-obj">self</em></p>
+<p>If <em class="xref py py-obj">other</em> is an array, an array will be returned for each of these.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>other</strong> (<em>array_like</em>) – the array/object that is checked for containment</p></li>
+<li><p><strong>*args</strong> – passed directly to <a class="reference internal" href="#sisl.shape.Shape.within_index" title="sisl.shape.Shape.within_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">within_index</span></code></a></p></li>
+<li><p><strong>**kwargs</strong> – passed directly to <a class="reference internal" href="#sisl.shape.Shape.within_index" title="sisl.shape.Shape.within_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">within_index</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.shape.Shape.within_index">
+<span class="sig-name descname"><span class="pre">within_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/shape/base.html#Shape.within_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.shape.Shape.within_index" title="Permalink to this definition"></a></dt>
+<dd><p>Return indices of the elements of <em class="xref py py-obj">other</em> that are within the shape</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../utilities.shape.html" class="btn btn-neutral float-left" title="Shapes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.shape.Cuboid.html" class="btn btn-neutral float-right" title="sisl.shape.Cuboid" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

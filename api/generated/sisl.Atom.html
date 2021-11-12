@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.Atom &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="sisl.Atoms" href="sisl.Atoms.html" />
+    <link rel="prev" title="sisl.AtomicOrbital" href="sisl.AtomicOrbital.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../basic.html">Basic classes</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../basic.html#simple-objects">Simple objects</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="sisl.PeriodicTable.html">sisl.PeriodicTable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.Orbital.html">sisl.Orbital</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.SphericalOrbital.html">sisl.SphericalOrbital</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.AtomicOrbital.html">sisl.AtomicOrbital</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.Atom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.Atoms.html">sisl.Atoms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.Geometry.html">sisl.Geometry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.SuperCell.html">sisl.SuperCell</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.Grid.html">sisl.Grid</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../basic.html#advanced-classes">Advanced classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic.html#utility-classes">Utility classes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../default_geom.html">Common geometries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API documentation</a> &raquo;</li>
+          <li><a href="../basic.html">Basic classes</a> &raquo;</li>
+      <li>sisl.Atom</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/generated/sisl.Atom.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="sisl-atom">
+<h1>sisl.Atom<a class="headerlink" href="#sisl-atom" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="sisl.Atom">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.</span></span><span class="sig-name descname"><span class="pre">Atom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Atom" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Atomic information, mass, name number of orbitals and ranges</p>
+<p>Object to handle atomic mass, name, number of orbitals and
+orbital range.</p>
+<p>The <a class="reference internal" href="#sisl.Atom" title="sisl.Atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atom</span></code></a> object handles the atomic species with information
+such as</p>
+<ul class="simple">
+<li><p>atomic number</p></li>
+<li><p>mass</p></li>
+<li><p>number of orbitals</p></li>
+<li><p>radius of each orbital</p></li>
+</ul>
+<p>The <a class="reference internal" href="#sisl.Atom" title="sisl.Atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atom</span></code></a> object is <a class="reference external" href="https://docs.python.org/3/library/pickle.html#module-pickle" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pickle</span></code></a>-able.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Z</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a>) – key lookup for the atomic specie, <em class="xref py py-obj">Atom[key]</em></p></li>
+<li><p><strong>orbitals</strong> (<em>list of Orbital</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – all orbitals associated with this atom. Default to one orbital.</p></li>
+<li><p><strong>mass</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – the atomic mass, if not specified uses the mass from <a class="reference internal" href="sisl.PeriodicTable.html#sisl.PeriodicTable" title="sisl.PeriodicTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeriodicTable</span></code></a></p></li>
+<li><p><strong>tag</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em>, </em><em>optional</em>) – arbitrary designation for user handling similar atoms with
+different settings (defaults to the label of the atom)</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Atom.copy" title="sisl.Atom.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>([Z, orbitals, mass, tag])</p></td>
+<td><p>Return copy of this object</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Atom.equal" title="sisl.Atom.equal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">equal</span></code></a>(other[, R, psi])</p></td>
+<td><p>True if <em class="xref py py-obj">other</em> is the same as this atomic specie</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Atom.index" title="sisl.Atom.index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></a>(orbital)</p></td>
+<td><p>Return the index of the orbital in the atom object</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Atom.iter" title="sisl.Atom.iter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter</span></code></a>([group])</p></td>
+<td><p>Loop on all orbitals in this atom</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Atom.maxR" title="sisl.Atom.maxR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">maxR</span></code></a>()</p></td>
+<td><p>Return the maximum range of orbitals.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Atom.radius" title="sisl.Atom.radius"><code class="xref py py-obj docutils literal notranslate"><span class="pre">radius</span></code></a>([method])</p></td>
+<td><p>Return the atomic radii of the atom (in Ang)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Atom.remove" title="sisl.Atom.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a>(orbitals)</p></td>
+<td><p>Return the same atom without a specific set of orbitals</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Atom.scale" title="sisl.Atom.scale"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scale</span></code></a>(scale)</p></td>
+<td><p>Scale the atomic radii and return an equivalent atom.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Atom.sub" title="sisl.Atom.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a>(orbitals)</p></td>
+<td><p>Return the same atom with only a subset of the orbitals present</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Atom.toSphere" title="sisl.Atom.toSphere"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toSphere</span></code></a>([center])</p></td>
+<td><p>Return a sphere with the maximum orbital radius equal</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Atom.Z" title="sisl.Atom.Z"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Z</span></code></a></p></td>
+<td><p>Atomic number</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Atom.mass" title="sisl.Atom.mass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mass</span></code></a></p></td>
+<td><p>Atomic mass</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Atom.no" title="sisl.Atom.no"><code class="xref py py-obj docutils literal notranslate"><span class="pre">no</span></code></a></p></td>
+<td><p>Number of orbitals on this atom</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Atom.orbitals" title="sisl.Atom.orbitals"><code class="xref py py-obj docutils literal notranslate"><span class="pre">orbitals</span></code></a></p></td>
+<td><p>List of orbitals</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Atom.symbol" title="sisl.Atom.symbol"><code class="xref py py-obj docutils literal notranslate"><span class="pre">symbol</span></code></a></p></td>
+<td><p>Return short atomic name (Au==79).</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Atom.tag" title="sisl.Atom.tag"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tag</span></code></a></p></td>
+<td><p>Tag for atom</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.Atom.Z">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Z</span></span><a class="headerlink" href="#sisl.Atom.Z" title="Permalink to this definition"></a></dt>
+<dd><p>Atomic number</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Atom.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Z</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/atom.html#Atom.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Atom.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Atom.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Z</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mass</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/atom.html#Atom.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Atom.copy" title="Permalink to this definition"></a></dt>
+<dd><p>Return copy of this object</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Atom.equal">
+<span class="sig-name descname"><span class="pre">equal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">R</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">psi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/atom.html#Atom.equal"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Atom.equal" title="Permalink to this definition"></a></dt>
+<dd><p>True if <em class="xref py py-obj">other</em> is the same as this atomic specie</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>other</strong> (<a class="reference internal" href="#sisl.Atom" title="sisl.Atom"><em>Atom</em></a>) – the other object to check againts</p></li>
+<li><p><strong>R</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – if True the equality check also checks the orbital radii, else they are not compared</p></li>
+<li><p><strong>psi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – if True, also check the wave-function component of the orbitals, see <a class="reference internal" href="sisl.Orbital.html#sisl.Orbital.psi" title="sisl.Orbital.psi"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Orbital.psi</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Atom.index">
+<span class="sig-name descname"><span class="pre">index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orbital</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/atom.html#Atom.index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Atom.index" title="Permalink to this definition"></a></dt>
+<dd><p>Return the index of the orbital in the atom object</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Atom.iter">
+<span class="sig-name descname"><span class="pre">iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">group</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/atom.html#Atom.iter"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Atom.iter" title="Permalink to this definition"></a></dt>
+<dd><p>Loop on all orbitals in this atom</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>group</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – if two orbitals share the same radius
+one may be able to group two orbitals together</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>current orbital, if <em class="xref py py-obj">group</em> is <code class="docutils literal notranslate"><span class="pre">True</span></code> this is a list of orbitals,
+otherwise a single orbital is returned</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital">Orbital</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.Atom.mass">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mass</span></span><a class="headerlink" href="#sisl.Atom.mass" title="Permalink to this definition"></a></dt>
+<dd><p>Atomic mass</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Atom.maxR">
+<span class="sig-name descname"><span class="pre">maxR</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/atom.html#Atom.maxR"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Atom.maxR" title="Permalink to this definition"></a></dt>
+<dd><p>Return the maximum range of orbitals.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.Atom.no">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">no</span></span><a class="headerlink" href="#sisl.Atom.no" title="Permalink to this definition"></a></dt>
+<dd><p>Number of orbitals on this atom</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.Atom.orbitals">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">orbitals</span></span><a class="headerlink" href="#sisl.Atom.orbitals" title="Permalink to this definition"></a></dt>
+<dd><p>List of orbitals</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Atom.radius">
+<span class="sig-name descname"><span class="pre">radius</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'calc'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/atom.html#Atom.radius"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Atom.radius" title="Permalink to this definition"></a></dt>
+<dd><p>Return the atomic radii of the atom (in Ang)</p>
+<p>See <a class="reference internal" href="sisl.PeriodicTable.html#sisl.PeriodicTable.radius" title="sisl.PeriodicTable.radius"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeriodicTable.radius</span></code></a> for details on the argument.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Atom.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orbitals</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/atom.html#Atom.remove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Atom.remove" title="Permalink to this definition"></a></dt>
+<dd><p>Return the same atom without a specific set of orbitals</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>orbitals</strong> (<em>array_like</em>) – indices of the orbitals to remove</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>without the specified orbitals</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#sisl.Atom" title="sisl.Atom">Atom</a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.Atom.sub" title="sisl.Atom.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a></dt><dd><p>retain a selected set of orbitals</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Atom.scale">
+<span class="sig-name descname"><span class="pre">scale</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">scale</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/atom.html#Atom.scale"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Atom.scale" title="Permalink to this definition"></a></dt>
+<dd><p>Scale the atomic radii and return an equivalent atom.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – the scale factor for the atomic radii</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Atom.sub">
+<span class="sig-name descname"><span class="pre">sub</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orbitals</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/atom.html#Atom.sub"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Atom.sub" title="Permalink to this definition"></a></dt>
+<dd><p>Return the same atom with only a subset of the orbitals present</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>orbitals</strong> (<em>array_like</em>) – indices of the orbitals to retain</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>with only the subset of orbitals</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#sisl.Atom" title="sisl.Atom">Atom</a></p>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – if the number of orbitals removed is too large or some indices are outside the allowed range</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.Atom.symbol">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">symbol</span></span><a class="headerlink" href="#sisl.Atom.symbol" title="Permalink to this definition"></a></dt>
+<dd><p>Return short atomic name (Au==79).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.Atom.tag">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">tag</span></span><a class="headerlink" href="#sisl.Atom.tag" title="Permalink to this definition"></a></dt>
+<dd><p>Tag for atom</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Atom.toSphere">
+<span class="sig-name descname"><span class="pre">toSphere</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/atom.html#Atom.toSphere"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Atom.toSphere" title="Permalink to this definition"></a></dt>
+<dd><p>Return a sphere with the maximum orbital radius equal</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a sphere with radius equal to the maximum radius of the orbitals</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="sisl.shape.Sphere.html#sisl.shape.Sphere" title="sisl.shape.Sphere">Sphere</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sisl.AtomicOrbital.html" class="btn btn-neutral float-left" title="sisl.AtomicOrbital" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.Atoms.html" class="btn btn-neutral float-right" title="sisl.Atoms" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

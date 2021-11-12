@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.Grid &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+        <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="sisl.Quaternion" href="sisl.Quaternion.html" />
+    <link rel="prev" title="sisl.SuperCell" href="sisl.SuperCell.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../basic.html">Basic classes</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../basic.html#simple-objects">Simple objects</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="sisl.PeriodicTable.html">sisl.PeriodicTable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.Orbital.html">sisl.Orbital</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.SphericalOrbital.html">sisl.SphericalOrbital</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.AtomicOrbital.html">sisl.AtomicOrbital</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.Atom.html">sisl.Atom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.Atoms.html">sisl.Atoms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.Geometry.html">sisl.Geometry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.SuperCell.html">sisl.SuperCell</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.Grid</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../basic.html#advanced-classes">Advanced classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic.html#utility-classes">Utility classes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../default_geom.html">Common geometries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API documentation</a> &raquo;</li>
+          <li><a href="../basic.html">Basic classes</a> &raquo;</li>
+      <li>sisl.Grid</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/generated/sisl.Grid.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="sisl-grid">
+<h1>sisl.Grid<a class="headerlink" href="#sisl-grid" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="sisl.Grid">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.</span></span><span class="sig-name descname"><span class="pre">Grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Grid" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sisl.supercell.SuperCellChild</span></code></p>
+<p>Real-space grid information with associated geometry.</p>
+<p>This grid object handles cell vectors and divisions of said grid.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shape</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> or </em><em>(</em><em>3</em><em>,</em><em>) </em><em>of int</em>) – the shape of the grid. A <code class="docutils literal notranslate"><span class="pre">float</span></code> specifies the grid spacing in Angstrom, while
+a list of integers specifies the exact grid size.</p></li>
+<li><p><strong>bc</strong> (<em>list of int</em><em> (</em><em>3</em><em>, </em><em>2</em><em>) or </em><em>(</em><em>3</em><em>, </em><em>)</em><em>, </em><em>optional</em>) – the boundary conditions for each of the cell’s planes. Default to periodic BC.</p></li>
+<li><p><strong>sc</strong> (<a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><em>SuperCell</em></a><em>, </em><em>optional</em>) – the supercell that this grid represents. <em class="xref py py-obj">sc</em> has precedence if both <code class="xref py py-obj docutils literal notranslate"><span class="pre">geometry</span></code> and <em class="xref py py-obj">sc</em>
+has been specified. Default to <code class="docutils literal notranslate"><span class="pre">[1,</span> <span class="pre">1,</span> <span class="pre">1]</span></code>.</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.21)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the data-type of the grid, default to <a class="reference external" href="https://numpy.org/doc/stable/reference/arrays.scalars.html#numpy.float64" title="(in NumPy v1.21)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.float64</span></code></a>.</p></li>
+<li><p><strong>geometry</strong> (<a class="reference internal" href="sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a><em>, </em><em>optional</em>) – associated geometry with the grid. If <em class="xref py py-obj">sc</em> has not been passed the supercell will
+be taken from this geometry.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">grid1</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">grid2</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">SuperCell</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">grid3</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">SuperCell</span><span class="p">([</span><span class="mi">10</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">grid1</span> <span class="o">==</span> <span class="n">grid2</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">grid1</span> <span class="o">==</span> <span class="n">grid3</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">grid</span> <span class="o">==</span> <span class="n">grid1</span>
+<span class="go">False</span>
+</pre></div>
+</div>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.add_vacuum" title="sisl.Grid.add_vacuum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add_vacuum</span></code></a>(vacuum, axis)</p></td>
+<td><p>Add vacuum along the <em class="xref py py-obj">axis</em> lattice vector</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.append" title="sisl.Grid.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a>(other, axis)</p></td>
+<td><p>Appends other <a class="reference internal" href="#sisl.Grid" title="sisl.Grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Grid</span></code></a> to this grid along axis</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.apply" title="sisl.Grid.apply"><code class="xref py py-obj docutils literal notranslate"><span class="pre">apply</span></code></a>(function_, *args, **kwargs)</p></td>
+<td><p>Applies a function to the grid and returns a new grid.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.area" title="sisl.Grid.area"><code class="xref py py-obj docutils literal notranslate"><span class="pre">area</span></code></a>(ax0, ax1)</p></td>
+<td><p>Calculate the area spanned by the two axis <em class="xref py py-obj">ax0</em> and <em class="xref py py-obj">ax1</em></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.average" title="sisl.Grid.average"><code class="xref py py-obj docutils literal notranslate"><span class="pre">average</span></code></a>(axis[, weights])</p></td>
+<td><p>Average grid values along direction <em class="xref py py-obj">axis</em>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.copy" title="sisl.Grid.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>([dtype])</p></td>
+<td><p>Copy the object, possibly changing the data-type</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.cross_section" title="sisl.Grid.cross_section"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cross_section</span></code></a>(idx, axis)</p></td>
+<td><p>Takes a cross-section of the grid along axis <em class="xref py py-obj">axis</em></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.fill" title="sisl.Grid.fill"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fill</span></code></a>(val)</p></td>
+<td><p>Fill the grid with this value</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.index" title="sisl.Grid.index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></a>(coord[, axis])</p></td>
+<td><p>Find the grid index for a given coordinate (possibly only along a given lattice vector <em class="xref py py-obj">axis</em>)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.index2xyz" title="sisl.Grid.index2xyz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index2xyz</span></code></a>(index)</p></td>
+<td><p>Real-space coordinates of indices related to the grid</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.index_fold" title="sisl.Grid.index_fold"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index_fold</span></code></a>(index[, unique])</p></td>
+<td><p>Converts indices from <em>any</em> placement to only exist in the &quot;primary&quot; grid</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.index_truncate" title="sisl.Grid.index_truncate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index_truncate</span></code></a>(index)</p></td>
+<td><p>Remove indices from <em>outside</em> the grid to only retain indices in the &quot;primary&quot; grid</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.interp" title="sisl.Grid.interp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">interp</span></code></a>(shape[, order, mode])</p></td>
+<td><p>Interpolate grid values to a new grid of a different shape</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.is_orthogonal" title="sisl.Grid.is_orthogonal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_orthogonal</span></code></a>()</p></td>
+<td><p>Return true if all cell vectors are linearly independent</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.isosurface" title="sisl.Grid.isosurface"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isosurface</span></code></a>(level[, step_size])</p></td>
+<td><p>Calculates the isosurface for a given value.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.mean" title="sisl.Grid.mean"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mean</span></code></a>(axis[, weights])</p></td>
+<td><p>Average grid values along direction <em class="xref py py-obj">axis</em>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.mgrid" title="sisl.Grid.mgrid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mgrid</span></code></a>(*slices)</p></td>
+<td><p>Return a list of indices corresponding to the slices</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.pyamg_boundary_condition" title="sisl.Grid.pyamg_boundary_condition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pyamg_boundary_condition</span></code></a>(A, b[, bc])</p></td>
+<td><p>Attach boundary conditions to the <em class="xref py py-obj">pyamg</em> grid-matrix <em class="xref py py-obj">A</em> with default boundary conditions as specified for this <a class="reference internal" href="#sisl.Grid" title="sisl.Grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Grid</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.pyamg_fix" title="sisl.Grid.pyamg_fix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pyamg_fix</span></code></a>(A, b, pyamg_indices, value)</p></td>
+<td><p>Fix values for the stencil to <em class="xref py py-obj">value</em>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.pyamg_index" title="sisl.Grid.pyamg_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pyamg_index</span></code></a>(index)</p></td>
+<td><p>Calculate <em class="xref py py-obj">pyamg</em> matrix indices from a list of grid indices</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.pyamg_source" title="sisl.Grid.pyamg_source"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pyamg_source</span></code></a>(b, pyamg_indices, value)</p></td>
+<td><p>Fix the source term to <em class="xref py py-obj">value</em>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.read" title="sisl.Grid.read"><code class="xref py py-obj docutils literal notranslate"><span class="pre">read</span></code></a>(sile, *args, **kwargs)</p></td>
+<td><p>Reads grid from the <code class="xref py py-obj docutils literal notranslate"><span class="pre">Sile</span></code> using <em class="xref py py-obj">read_grid</em></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.remove" title="sisl.Grid.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a>(idx, axis)</p></td>
+<td><p>Removes certain indices from a specified axis.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.remove_part" title="sisl.Grid.remove_part"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_part</span></code></a>(idx, axis, above)</p></td>
+<td><p>Removes parts of the grid via above/below designations.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.sc_index" title="sisl.Grid.sc_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc_index</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Call local <a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a> object <a class="reference internal" href="#sisl.Grid.sc_index" title="sisl.Grid.sc_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc_index</span></code></a> function</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.set_bc" title="sisl.Grid.set_bc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_bc</span></code></a>([boundary, a, b, c])</p></td>
+<td><p>Set the boundary conditions on the grid</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.set_boundary" title="sisl.Grid.set_boundary"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_boundary</span></code></a>([boundary, a, b, c])</p></td>
+<td><p>Set the boundary conditions on the grid</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.set_boundary_condition" title="sisl.Grid.set_boundary_condition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_boundary_condition</span></code></a>([boundary, a, b, c])</p></td>
+<td><p>Set the boundary conditions on the grid</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.set_geom" title="sisl.Grid.set_geom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_geom</span></code></a>(geometry)</p></td>
+<td><p>deprecated set_geom</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.set_geometry" title="sisl.Grid.set_geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_geometry</span></code></a>(geometry)</p></td>
+<td><p>Sets the <a class="reference internal" href="sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a> for the grid.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.set_grid" title="sisl.Grid.set_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_grid</span></code></a>(shape[, dtype])</p></td>
+<td><p>Create the internal grid of certain size.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.set_nsc" title="sisl.Grid.set_nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_nsc</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Set the number of super-cells in the <a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a> object</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.set_sc" title="sisl.Grid.set_sc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_sc</span></code></a>(sc)</p></td>
+<td><p>Overwrites the local supercell</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.set_supercell" title="sisl.Grid.set_supercell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_supercell</span></code></a>(sc)</p></td>
+<td><p>Overwrites the local supercell</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.smooth" title="sisl.Grid.smooth"><code class="xref py py-obj docutils literal notranslate"><span class="pre">smooth</span></code></a>([r, method, mode])</p></td>
+<td><p>Make a smoother grid by applying a filter.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.sub" title="sisl.Grid.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a>(idx, axis)</p></td>
+<td><p>Retains certain indices from a specified axis.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.sub_part" title="sisl.Grid.sub_part"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub_part</span></code></a>(idx, axis, above)</p></td>
+<td><p>Retains parts of the grid via above/below designations.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.sum" title="sisl.Grid.sum"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sum</span></code></a>(axis)</p></td>
+<td><p>Sum grid values along axis <em class="xref py py-obj">axis</em>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.swapaxes" title="sisl.Grid.swapaxes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">swapaxes</span></code></a>(a, b)</p></td>
+<td><p>Swap two axes in the grid (also swaps axes in the supercell)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.tile" title="sisl.Grid.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a>(reps, axis)</p></td>
+<td><p>Tile grid to create a bigger one</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.topyamg" title="sisl.Grid.topyamg"><code class="xref py py-obj docutils literal notranslate"><span class="pre">topyamg</span></code></a>([dtype])</p></td>
+<td><p>Create a <em class="xref py py-obj">pyamg</em> stencil matrix to be used in pyamg</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.write" title="sisl.Grid.write"><code class="xref py py-obj docutils literal notranslate"><span class="pre">write</span></code></a>(sile, *args, **kwargs)</p></td>
+<td><p>Writes grid to the <code class="xref py py-obj docutils literal notranslate"><span class="pre">Sile</span></code> using <em class="xref py py-obj">write_grid</em></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.DIRICHLET" title="sisl.Grid.DIRICHLET"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DIRICHLET</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.NEUMANN" title="sisl.Grid.NEUMANN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NEUMANN</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.OPEN" title="sisl.Grid.OPEN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">OPEN</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.PERIODIC" title="sisl.Grid.PERIODIC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PERIODIC</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.cell" title="sisl.Grid.cell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cell</span></code></a></p></td>
+<td><p>Returns the inherent <a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a> objects <a class="reference internal" href="#sisl.Grid.cell" title="sisl.Grid.cell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cell</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.dcell" title="sisl.Grid.dcell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dcell</span></code></a></p></td>
+<td><p>Voxel cell size</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.dkind" title="sisl.Grid.dkind"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dkind</span></code></a></p></td>
+<td><p>The data-type of the grid (in str)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.dtype" title="sisl.Grid.dtype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dtype</span></code></a></p></td>
+<td><p>Data-type used in grid</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.dvolume" title="sisl.Grid.dvolume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dvolume</span></code></a></p></td>
+<td><p>Volume of the grid voxel elements</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.geom" title="sisl.Grid.geom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geom</span></code></a></p></td>
+<td><p>deprecated geometry</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.icell" title="sisl.Grid.icell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">icell</span></code></a></p></td>
+<td><p>Returns the inherent <a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a> objects <a class="reference internal" href="#sisl.Grid.icell" title="sisl.Grid.icell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">icell</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.isc_off" title="sisl.Grid.isc_off"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isc_off</span></code></a></p></td>
+<td><p>Returns the inherent <a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a> objects <a class="reference internal" href="#sisl.Grid.isc_off" title="sisl.Grid.isc_off"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isc_off</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.n_s" title="sisl.Grid.n_s"><code class="xref py py-obj docutils literal notranslate"><span class="pre">n_s</span></code></a></p></td>
+<td><p>Returns the inherent <a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a> objects <a class="reference internal" href="#sisl.Grid.n_s" title="sisl.Grid.n_s"><code class="xref py py-obj docutils literal notranslate"><span class="pre">n_s</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.nsc" title="sisl.Grid.nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nsc</span></code></a></p></td>
+<td><p>Returns the inherent <a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a> objects <a class="reference internal" href="#sisl.Grid.nsc" title="sisl.Grid.nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nsc</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.origin" title="sisl.Grid.origin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">origin</span></code></a></p></td>
+<td><p>Returns the inherent <a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a> objects <a class="reference internal" href="#sisl.Grid.origin" title="sisl.Grid.origin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">origin</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.origo" title="sisl.Grid.origo"><code class="xref py py-obj docutils literal notranslate"><span class="pre">origo</span></code></a></p></td>
+<td><p>Returns the inherent <a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a> objects <a class="reference internal" href="#sisl.Grid.origin" title="sisl.Grid.origin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">origin</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.rcell" title="sisl.Grid.rcell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rcell</span></code></a></p></td>
+<td><p>Returns the inherent <a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a> objects <a class="reference internal" href="#sisl.Grid.rcell" title="sisl.Grid.rcell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rcell</span></code></a></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.sc_off" title="sisl.Grid.sc_off"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc_off</span></code></a></p></td>
+<td><p>Returns the inherent <a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a> objects <a class="reference internal" href="#sisl.Grid.sc_off" title="sisl.Grid.sc_off"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc_off</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.shape" title="sisl.Grid.shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shape</span></code></a></p></td>
+<td><p>Grid shape in <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span>, <span class="math notranslate nohighlight">\(z\)</span> directions</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.Grid.size" title="sisl.Grid.size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">size</span></code></a></p></td>
+<td><p>Total number of elements in the grid</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.Grid.volume" title="sisl.Grid.volume"><code class="xref py py-obj docutils literal notranslate"><span class="pre">volume</span></code></a></p></td>
+<td><p>Returns the inherent <a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a> objects <em class="xref py py-obj">vol</em></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.Grid.DIRICHLET">
+<span class="sig-name descname"><span class="pre">DIRICHLET</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#sisl.Grid.DIRICHLET" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.Grid.NEUMANN">
+<span class="sig-name descname"><span class="pre">NEUMANN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#sisl.Grid.NEUMANN" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.Grid.OPEN">
+<span class="sig-name descname"><span class="pre">OPEN</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">4</span></em><a class="headerlink" href="#sisl.Grid.OPEN" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.Grid.PERIODIC">
+<span class="sig-name descname"><span class="pre">PERIODIC</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#sisl.Grid.PERIODIC" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">geometry</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.add_vacuum">
+<span class="sig-name descname"><span class="pre">add_vacuum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vacuum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Grid.add_vacuum" title="Permalink to this definition"></a></dt>
+<dd><p>Add vacuum along the <em class="xref py py-obj">axis</em> lattice vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vacuum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – amount of vacuum added, in Ang</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – the lattice vector to add vacuum along</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.append">
+<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.append"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.append" title="Permalink to this definition"></a></dt>
+<dd><p>Appends other <a class="reference internal" href="#sisl.Grid" title="sisl.Grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Grid</span></code></a> to this grid along axis</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function_</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.apply"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.apply" title="Permalink to this definition"></a></dt>
+<dd><p>Applies a function to the grid and returns a new grid.</p>
+<p>You can also apply a function that does not return a grid (maybe you want to do
+some measurement). In that case, you will get the result instead of a <a class="reference internal" href="#sisl.Grid" title="sisl.Grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Grid</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>function</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><em>function</em>) – for a string the full module path to the function should be given.
+The function that will be called should have the grid as the first argument in its
+interface.</p></li>
+<li><p><strong>kwargs</strong> (<em>args and</em>) – arguments that go directly to the function call</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.area">
+<span class="sig-name descname"><span class="pre">area</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ax0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ax1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Grid.area" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the area spanned by the two axis <em class="xref py py-obj">ax0</em> and <em class="xref py py-obj">ax1</em></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.average">
+<span class="sig-name descname"><span class="pre">average</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.average"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.average" title="Permalink to this definition"></a></dt>
+<dd><p>Average grid values along direction <em class="xref py py-obj">axis</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – unit-cell direction to average across</p></li>
+<li><p><strong>weights</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the weights for the individual axis elements, if boolean it corresponds to 0 and 1
+for false/true.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.average.html#numpy.average" title="(in NumPy v1.21)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.average</span></code></a></dt><dd><p>for details regarding the <em class="xref py py-obj">weights</em> argument</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.Grid.cell">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cell</span></span><a class="headerlink" href="#sisl.Grid.cell" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the inherent <a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a> objects <a class="reference internal" href="#sisl.Grid.cell" title="sisl.Grid.cell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cell</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.copy" title="Permalink to this definition"></a></dt>
+<dd><p>Copy the object, possibly changing the data-type</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.cross_section">
+<span class="sig-name descname"><span class="pre">cross_section</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.cross_section"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.cross_section" title="Permalink to this definition"></a></dt>
+<dd><p>Takes a cross-section of the grid along axis <em class="xref py py-obj">axis</em></p>
+<p>Remark: This API entry might change to handle arbitrary
+cuts via rotation of the axis</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.Grid.dcell">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dcell</span></span><a class="headerlink" href="#sisl.Grid.dcell" title="Permalink to this definition"></a></dt>
+<dd><p>Voxel cell size</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.Grid.dkind">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dkind</span></span><a class="headerlink" href="#sisl.Grid.dkind" title="Permalink to this definition"></a></dt>
+<dd><p>The data-type of the grid (in str)</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.Grid.dtype">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dtype</span></span><a class="headerlink" href="#sisl.Grid.dtype" title="Permalink to this definition"></a></dt>
+<dd><p>Data-type used in grid</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.Grid.dvolume">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dvolume</span></span><a class="headerlink" href="#sisl.Grid.dvolume" title="Permalink to this definition"></a></dt>
+<dd><p>Volume of the grid voxel elements</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.fill">
+<span class="sig-name descname"><span class="pre">fill</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">val</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.fill"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.fill" title="Permalink to this definition"></a></dt>
+<dd><p>Fill the grid with this value</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>val</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.21)"><em>numpy.dtype</em></a>) – all grid-points will have this value after execution</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.Grid.geom">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">geom</span></span><a class="headerlink" href="#sisl.Grid.geom" title="Permalink to this definition"></a></dt>
+<dd><p>deprecated geometry</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.Grid.icell">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">icell</span></span><a class="headerlink" href="#sisl.Grid.icell" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the inherent <a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a> objects <a class="reference internal" href="#sisl.Grid.icell" title="sisl.Grid.icell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">icell</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.index">
+<span class="sig-name descname"><span class="pre">index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">coord</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.index" title="Permalink to this definition"></a></dt>
+<dd><p>Find the grid index for a given coordinate (possibly only along a given lattice vector <em class="xref py py-obj">axis</em>)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>coord</strong> (<em>(</em><em>:</em><em>, </em><em>3</em><em>) or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> or </em><a class="reference internal" href="sisl.shape.Shape.html#sisl.shape.Shape" title="sisl.shape.Shape"><em>Shape</em></a>) – the coordinate of the axis. If a float is passed <em class="xref py py-obj">axis</em> is
+also required in which case it corresponds to the length along the
+lattice vector corresponding to <em class="xref py py-obj">axis</em>.
+If a Shape a list of coordinates that fits the voxel positions
+are returned (all internal points also).</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – the axis direction of the index, or for all axes if none.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.index2xyz">
+<span class="sig-name descname"><span class="pre">index2xyz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.index2xyz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.index2xyz" title="Permalink to this definition"></a></dt>
+<dd><p>Real-space coordinates of indices related to the grid</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>index</strong> (<em>array_like</em>) – indices for grid-positions</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>coordinates of the indices with respect to this grid spacing</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.index_fold">
+<span class="sig-name descname"><span class="pre">index_fold</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.index_fold"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.index_fold" title="Permalink to this definition"></a></dt>
+<dd><p>Converts indices from <em>any</em> placement to only exist in the “primary” grid</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">index_fold</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="mi">9</span><span class="p">)</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>index</strong> (<em>array_like</em>) – indices for grid-positions</p></li>
+<li><p><strong>unique</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – if true the returned indices are made unique after having folded the index points</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>all indices are then within the shape of the grid</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.Grid.index_truncate" title="sisl.Grid.index_truncate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index_truncate</span></code></a></dt><dd><p>truncate indices by removing indices outside the primary cell</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.index_truncate">
+<span class="sig-name descname"><span class="pre">index_truncate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.index_truncate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.index_truncate" title="Permalink to this definition"></a></dt>
+<dd><p>Remove indices from <em>outside</em> the grid to only retain indices in the “primary” grid</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">index_truncate</span><span class="p">([</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">]))</span> <span class="o">==</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>index</strong> (<em>array_like</em>) – indices for grid-positions</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>all indices are then within the shape of the grid (others have been removed</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.Grid.index_fold" title="sisl.Grid.index_fold"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index_fold</span></code></a></dt><dd><p>fold indices into the primary cell</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.interp">
+<span class="sig-name descname"><span class="pre">interp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wrap'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.interp"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.interp" title="Permalink to this definition"></a></dt>
+<dd><p>Interpolate grid values to a new grid of a different shape</p>
+<p>It uses the <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.ndimage.zoom.html#scipy.ndimage.zoom" title="(in SciPy v1.7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.ndimage.zoom</span></code></a>, which creates a finer or
+more spaced grid using spline interpolation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>shape</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>array_like of len 3</em>) – the new shape of the grid.</p></li>
+<li><p><strong>order</strong> (<em>int 0-5</em><em>, </em><em>optional</em>) – the order of the spline interpolation.
+1 means linear, 2 quadratic, etc…</p></li>
+<li><p><strong>mode</strong> (<em>{'wrap'</em><em>, </em><em>'mirror'</em><em>, </em><em>'constant'</em><em>, </em><em>'reflect'</em><em>, </em><em>'nearest'}</em>) – determines how to compute the borders of the grid.
+The default is <code class="docutils literal notranslate"><span class="pre">'wrap'</span></code>, which accounts for periodic conditions.</p></li>
+<li><p><strong>**kwargs</strong> – optional arguments passed to the interpolation algorithm
+The interpolation routine is <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.ndimage.zoom.html#scipy.ndimage.zoom" title="(in SciPy v1.7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.ndimage.zoom</span></code></a></p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.ndimage.zoom.html#scipy.ndimage.zoom" title="(in SciPy v1.7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.ndimage.zoom</span></code></a></dt><dd><p>method used for interpolation</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.is_orthogonal">
+<span class="sig-name descname"><span class="pre">is_orthogonal</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Grid.is_orthogonal" title="Permalink to this definition"></a></dt>
+<dd><p>Return true if all cell vectors are linearly independent</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.Grid.isc_off">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">isc_off</span></span><a class="headerlink" href="#sisl.Grid.isc_off" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the inherent <a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a> objects <a class="reference internal" href="#sisl.Grid.isc_off" title="sisl.Grid.isc_off"><code class="xref py py-obj docutils literal notranslate"><span class="pre">isc_off</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.isosurface">
+<span class="sig-name descname"><span class="pre">isosurface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">level</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">step_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.isosurface"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.isosurface" title="Permalink to this definition"></a></dt>
+<dd><p>Calculates the isosurface for a given value.</p>
+<p>It uses <a class="reference external" href="https://scikit-image.org/docs/stable/api/skimage.measure.html#skimage.measure.marching_cubes" title="(in skimage v0.18.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">skimage.measure.marching_cubes</span></code></a>, so you need to have scikit-image installed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>level</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – contour value to search for isosurfaces in the grid.
+If not given or None, the average of the min and max of the grid is used.</p></li>
+<li><p><strong>step_size</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – step size in voxels. Larger steps yield faster but coarser results.
+The result will always be topologically correct though.</p></li>
+<li><p><strong>**kwargs</strong> – optional arguments passed directly to <a class="reference external" href="https://scikit-image.org/docs/stable/api/skimage.measure.html#skimage.measure.marching_cubes" title="(in skimage v0.18.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">skimage.measure.marching_cubes</span></code></a>
+for the calculation of isosurfaces.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>numpy array of shape (V, 3)</em> – Verts. Spatial coordinates for V unique mesh vertices.</p></li>
+<li><p><em>numpy array of shape (n_faces, 3)</em> – Faces. Define triangular faces via referencing vertex indices from verts.
+This algorithm specifically outputs triangles, so each face has exactly three indices.</p></li>
+<li><p><em>numpy array of shape (V, 3)</em> – Normals. The normal direction at each vertex, as calculated from the data.</p></li>
+<li><p><em>numpy array of shape (V, 3)</em> – Values. Gives a measure for the maximum value of the data in the local region near each vertex.
+This can be used by visualization tools to apply a colormap to the mesh.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference external" href="https://scikit-image.org/docs/stable/api/skimage.measure.html#skimage.measure.marching_cubes" title="(in skimage v0.18.0)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">skimage.measure.marching_cubes</span></code></a></dt><dd><p>method used to calculate the isosurface.</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.mean">
+<span class="sig-name descname"><span class="pre">mean</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">weights</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Grid.mean" title="Permalink to this definition"></a></dt>
+<dd><p>Average grid values along direction <em class="xref py py-obj">axis</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – unit-cell direction to average across</p></li>
+<li><p><strong>weights</strong> (<em>array_like</em><em>, </em><em>optional</em>) – the weights for the individual axis elements, if boolean it corresponds to 0 and 1
+for false/true.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.average.html#numpy.average" title="(in NumPy v1.21)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.average</span></code></a></dt><dd><p>for details regarding the <em class="xref py py-obj">weights</em> argument</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.mgrid">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mgrid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">slices</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.mgrid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.mgrid" title="Permalink to this definition"></a></dt>
+<dd><p>Return a list of indices corresponding to the slices</p>
+<p>The returned values are equivalent to <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.mgrid.html#numpy.mgrid" title="(in NumPy v1.21)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.mgrid</span></code></a> but they are returned
+in a (:, 3) array.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>*slices</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#slice" title="(in Python v3.10)"><em>slice</em></a><em> or </em><em>list of int</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – return a linear list of indices that points to the collective slice
+made by the passed arguments</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>linear indices for each of the sliced values, shape <code class="docutils literal notranslate"><span class="pre">(*,</span> <span class="pre">3)</span></code></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.Grid.n_s">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_s</span></span><a class="headerlink" href="#sisl.Grid.n_s" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the inherent <a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a> objects <a class="reference internal" href="#sisl.Grid.n_s" title="sisl.Grid.n_s"><code class="xref py py-obj docutils literal notranslate"><span class="pre">n_s</span></code></a></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.Grid.nsc">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nsc</span></span><a class="headerlink" href="#sisl.Grid.nsc" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the inherent <a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a> objects <a class="reference internal" href="#sisl.Grid.nsc" title="sisl.Grid.nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nsc</span></code></a></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.Grid.origin">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">origin</span></span><a class="headerlink" href="#sisl.Grid.origin" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the inherent <a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a> objects <a class="reference internal" href="#sisl.Grid.origin" title="sisl.Grid.origin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">origin</span></code></a></p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.Grid.origo">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">origo</span></span><a class="headerlink" href="#sisl.Grid.origo" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the inherent <a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a> objects <a class="reference internal" href="#sisl.Grid.origin" title="sisl.Grid.origin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">origin</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.pyamg_boundary_condition">
+<span class="sig-name descname"><span class="pre">pyamg_boundary_condition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.pyamg_boundary_condition"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.pyamg_boundary_condition" title="Permalink to this definition"></a></dt>
+<dd><p>Attach boundary conditions to the <em class="xref py py-obj">pyamg</em> grid-matrix <em class="xref py py-obj">A</em> with default boundary conditions as specified for this <a class="reference internal" href="#sisl.Grid" title="sisl.Grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Grid</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>A</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.7.1)"><em>scipy.sparse.csr_matrix</em></a>) – sparse matrix describing the grid</p></li>
+<li><p><strong>b</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – a vector containing RHS of <span class="math notranslate nohighlight">\(A x = b\)</span> for the solution of the grid stencil</p></li>
+<li><p><strong>bc</strong> (<em>list of BC</em><em>, </em><em>optional</em>) – the specified boundary conditions.
+Default to the grid’s boundary conditions, else <em class="xref py py-obj">bc</em> <em>must</em> be a list of elements
+with elements corresponding to <a class="reference internal" href="#sisl.Grid.PERIODIC" title="sisl.Grid.PERIODIC"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Grid.PERIODIC</span></code></a>/<a class="reference internal" href="#sisl.Grid.NEUMANN" title="sisl.Grid.NEUMANN"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Grid.NEUMANN</span></code></a>…</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.pyamg_fix">
+<span class="sig-name descname"><span class="pre">pyamg_fix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pyamg_indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.pyamg_fix"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.pyamg_fix" title="Permalink to this definition"></a></dt>
+<dd><p>Fix values for the stencil to <em class="xref py py-obj">value</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>A</strong> (<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">csr_matrix</span></code></a>/<a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.sparse.csc_matrix.html#scipy.sparse.csc_matrix" title="(in SciPy v1.7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">csc_matrix</span></code></a>) – sparse matrix describing the LHS for the linear system of equations</p></li>
+<li><p><strong>b</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – a vector containing RHS of <span class="math notranslate nohighlight">\(A x = b\)</span> for the solution of the grid stencil</p></li>
+<li><p><strong>pyamg_indices</strong> (<em>list of int</em>) – the linear pyamg matrix indices where the value of the grid is fixed. I.e. the indices should
+correspond to returned quantities from <em class="xref py py-obj">pyamg_indices</em>.</p></li>
+<li><p><strong>value</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a>) – the value of the grid to fix the value at</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.pyamg_index">
+<span class="sig-name descname"><span class="pre">pyamg_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">index</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.pyamg_index"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.pyamg_index" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate <em class="xref py py-obj">pyamg</em> matrix indices from a list of grid indices</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>index</strong> (<em>(</em><em>:</em><em>, </em><em>3</em><em>) </em><em>of int</em>) – a list of indices of the grid along each grid axis</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>linear indices for the matrix</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a></p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.Grid.index" title="sisl.Grid.index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">index</span></code></a></dt><dd><p>query indices from coordinates (directly passable to this method)</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.Grid.mgrid" title="sisl.Grid.mgrid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mgrid</span></code></a></dt><dd><p>Grid equivalent to <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.mgrid.html#numpy.mgrid" title="(in NumPy v1.21)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.mgrid</span></code></a>. Grid.mgrid returns indices in shapes (:, 3), contrary to numpy’s <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.mgrid.html#numpy.mgrid" title="(in NumPy v1.21)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.mgrid</span></code></a></p>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – if any of the passed indices are below 0 or above the number of elements per axis</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.pyamg_source">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">pyamg_source</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pyamg_indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.pyamg_source"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.pyamg_source" title="Permalink to this definition"></a></dt>
+<dd><p>Fix the source term to <em class="xref py py-obj">value</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)"><em>numpy.ndarray</em></a>) – a vector containing RHS of <span class="math notranslate nohighlight">\(A x = b\)</span> for the solution of the grid stencil</p></li>
+<li><p><strong>pyamg_indices</strong> (<em>list of int</em>) – the linear pyamg matrix indices where the value of the grid is fixed. I.e. the indices should
+correspond to returned quantities from <em class="xref py py-obj">pyamg_indices</em>.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.Grid.rcell">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rcell</span></span><a class="headerlink" href="#sisl.Grid.rcell" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the inherent <a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a> objects <a class="reference internal" href="#sisl.Grid.rcell" title="sisl.Grid.rcell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rcell</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.read">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">read</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sile</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.read"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.read" title="Permalink to this definition"></a></dt>
+<dd><p>Reads grid from the <code class="xref py py-obj docutils literal notranslate"><span class="pre">Sile</span></code> using <em class="xref py py-obj">read_grid</em></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sile</strong> (<a class="reference internal" href="../io/generated/sisl.io.Sile.html#sisl.io.Sile" title="sisl.io.Sile"><em>Sile</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.10)"><em>pathlib.Path</em></a>) – a <code class="xref py py-obj docutils literal notranslate"><span class="pre">Sile</span></code> object which will be used to read the grid
+if it is a string it will create a new sile using <code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sile</span></code>.</p></li>
+<li><p><strong>*</strong> (args passed directly to <code class="docutils literal notranslate"><span class="pre">read_grid(,**)</span></code>) – </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.remove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.remove" title="Permalink to this definition"></a></dt>
+<dd><p>Removes certain indices from a specified axis.</p>
+<p>Works exactly opposite to <a class="reference internal" href="#sisl.Grid.sub" title="sisl.Grid.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>idx</strong> (<em>array_like</em>) – the indices of the grid axis <em class="xref py py-obj">axis</em> to be removed</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – the axis segment from which we remove all indices <em class="xref py py-obj">idx</em></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.remove_part">
+<span class="sig-name descname"><span class="pre">remove_part</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">above</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.remove_part"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.remove_part" title="Permalink to this definition"></a></dt>
+<dd><p>Removes parts of the grid via above/below designations.</p>
+<p>Works exactly opposite to <a class="reference internal" href="#sisl.Grid.sub_part" title="sisl.Grid.sub_part"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub_part</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – the index of the grid axis <em class="xref py py-obj">axis</em> to be removed
+for <code class="docutils literal notranslate"><span class="pre">above=True</span></code> grid[:idx,…]
+for <code class="docutils literal notranslate"><span class="pre">above=False</span></code> grid[idx:,…]</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – the axis segment from which we retain the indices <em class="xref py py-obj">idx</em></p></li>
+<li><p><strong>above</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – <dl class="simple">
+<dt>if <code class="docutils literal notranslate"><span class="pre">True</span></code> will retain the grid:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">grid[:idx,...]</span></code></p>
+</dd>
+<dt>else it will retain the grid:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">grid[idx:,...]</span></code></p>
+</dd>
+</dl>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.sc_index">
+<span class="sig-name descname"><span class="pre">sc_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Grid.sc_index" title="Permalink to this definition"></a></dt>
+<dd><p>Call local <a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a> object <a class="reference internal" href="#sisl.Grid.sc_index" title="sisl.Grid.sc_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc_index</span></code></a> function</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.Grid.sc_off">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sc_off</span></span><a class="headerlink" href="#sisl.Grid.sc_off" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the inherent <a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a> objects <a class="reference internal" href="#sisl.Grid.sc_off" title="sisl.Grid.sc_off"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sc_off</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.set_bc">
+<span class="sig-name descname"><span class="pre">set_bc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.set_bc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.set_bc" title="Permalink to this definition"></a></dt>
+<dd><p>Set the boundary conditions on the grid</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>boundary</strong> (<em>(</em><em>3</em><em>, </em><em>2</em><em>) or </em><em>(</em><em>3</em><em>, </em><em>) or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – boundary condition for all boundaries (or the same for all)</p></li>
+<li><p><strong>a</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>list of int</em><em>, </em><em>optional</em>) – boundary condition for the first unit-cell vector direction</p></li>
+<li><p><strong>b</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>list of int</em><em>, </em><em>optional</em>) – boundary condition for the second unit-cell vector direction</p></li>
+<li><p><strong>c</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>list of int</em><em>, </em><em>optional</em>) – boundary condition for the third unit-cell vector direction</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – if specifying periodic one one boundary, so must the opposite side.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.set_boundary">
+<span class="sig-name descname"><span class="pre">set_boundary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Grid.set_boundary" title="Permalink to this definition"></a></dt>
+<dd><p>Set the boundary conditions on the grid</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>boundary</strong> (<em>(</em><em>3</em><em>, </em><em>2</em><em>) or </em><em>(</em><em>3</em><em>, </em><em>) or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – boundary condition for all boundaries (or the same for all)</p></li>
+<li><p><strong>a</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>list of int</em><em>, </em><em>optional</em>) – boundary condition for the first unit-cell vector direction</p></li>
+<li><p><strong>b</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>list of int</em><em>, </em><em>optional</em>) – boundary condition for the second unit-cell vector direction</p></li>
+<li><p><strong>c</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>list of int</em><em>, </em><em>optional</em>) – boundary condition for the third unit-cell vector direction</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – if specifying periodic one one boundary, so must the opposite side.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.set_boundary_condition">
+<span class="sig-name descname"><span class="pre">set_boundary_condition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">boundary</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">a</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">c</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Grid.set_boundary_condition" title="Permalink to this definition"></a></dt>
+<dd><p>Set the boundary conditions on the grid</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>boundary</strong> (<em>(</em><em>3</em><em>, </em><em>2</em><em>) or </em><em>(</em><em>3</em><em>, </em><em>) or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – boundary condition for all boundaries (or the same for all)</p></li>
+<li><p><strong>a</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>list of int</em><em>, </em><em>optional</em>) – boundary condition for the first unit-cell vector direction</p></li>
+<li><p><strong>b</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>list of int</em><em>, </em><em>optional</em>) – boundary condition for the second unit-cell vector direction</p></li>
+<li><p><strong>c</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>list of int</em><em>, </em><em>optional</em>) – boundary condition for the third unit-cell vector direction</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – if specifying periodic one one boundary, so must the opposite side.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.set_geom">
+<span class="sig-name descname"><span class="pre">set_geom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.set_geom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.set_geom" title="Permalink to this definition"></a></dt>
+<dd><p>deprecated set_geom</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.set_geometry">
+<span class="sig-name descname"><span class="pre">set_geometry</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.set_geometry"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.set_geometry" title="Permalink to this definition"></a></dt>
+<dd><p>Sets the <a class="reference internal" href="sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a> for the grid.</p>
+<p>Setting the <a class="reference internal" href="sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a> for the grid is a possibility
+to attach atoms to the grid.</p>
+<p>It is not a necessary entity, so passing <em class="xref py py-obj">None</em> is a viable option.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.set_grid">
+<span class="sig-name descname"><span class="pre">set_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">shape</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.set_grid"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.set_grid" title="Permalink to this definition"></a></dt>
+<dd><p>Create the internal grid of certain size.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.set_nsc">
+<span class="sig-name descname"><span class="pre">set_nsc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Grid.set_nsc" title="Permalink to this definition"></a></dt>
+<dd><p>Set the number of super-cells in the <a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a> object</p>
+<p>See <a class="reference internal" href="#sisl.Grid.set_nsc" title="sisl.Grid.set_nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_nsc</span></code></a> for allowed parameters.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell.set_nsc" title="sisl.SuperCell.set_nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell.set_nsc</span></code></a></dt><dd><p>the underlying called method</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.set_sc">
+<span class="sig-name descname"><span class="pre">set_sc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Grid.set_sc" title="Permalink to this definition"></a></dt>
+<dd><p>Overwrites the local supercell</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.set_supercell">
+<span class="sig-name descname"><span class="pre">set_supercell</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.Grid.set_supercell" title="Permalink to this definition"></a></dt>
+<dd><p>Overwrites the local supercell</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.Grid.shape">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#sisl.Grid.shape" title="Permalink to this definition"></a></dt>
+<dd><p>Grid shape in <span class="math notranslate nohighlight">\(x\)</span>, <span class="math notranslate nohighlight">\(y\)</span>, <span class="math notranslate nohighlight">\(z\)</span> directions</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.Grid.size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#sisl.Grid.size" title="Permalink to this definition"></a></dt>
+<dd><p>Total number of elements in the grid</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.smooth">
+<span class="sig-name descname"><span class="pre">smooth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.7</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'gaussian'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'wrap'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.smooth"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.smooth" title="Permalink to this definition"></a></dt>
+<dd><p>Make a smoother grid by applying a filter.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> or </em><em>array-like of len 3</em><em>, </em><em>optional</em>) – <p>the radius of the filter in Angstrom for each axis.
+If the method is <code class="docutils literal notranslate"><span class="pre">&quot;gaussian&quot;</span></code>, this is the standard deviation!</p>
+<p>If a single float is provided, then the same distance will be used for all axes.</p>
+</p></li>
+<li><p><strong>method</strong> (<em>{'gaussian'</em><em>, </em><em>'uniform'}</em>) – the type of filter to apply to smoothen the grid.</p></li>
+<li><p><strong>mode</strong> (<em>{'wrap'</em><em>, </em><em>'mirror'</em><em>, </em><em>'constant'</em><em>, </em><em>'reflect'</em><em>, </em><em>'nearest'}</em>) – determines how to compute the borders of the grid.
+The default is wrap, which accounts for periodic conditions.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.ndimage.gaussian_filter.html#scipy.ndimage.gaussian_filter" title="(in SciPy v1.7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.ndimage.gaussian_filter</span></code></a></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.sub">
+<span class="sig-name descname"><span class="pre">sub</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.sub"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.sub" title="Permalink to this definition"></a></dt>
+<dd><p>Retains certain indices from a specified axis.</p>
+<p>Works exactly opposite to <a class="reference internal" href="#sisl.Grid.remove" title="sisl.Grid.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>idx</strong> (<em>array_like</em>) – the indices of the grid axis <em class="xref py py-obj">axis</em> to be retained</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – the axis segment from which we retain the indices <em class="xref py py-obj">idx</em></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.sub_part">
+<span class="sig-name descname"><span class="pre">sub_part</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">above</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.sub_part"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.sub_part" title="Permalink to this definition"></a></dt>
+<dd><p>Retains parts of the grid via above/below designations.</p>
+<p>Works exactly opposite to <a class="reference internal" href="#sisl.Grid.remove_part" title="sisl.Grid.remove_part"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_part</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – the index of the grid axis <em class="xref py py-obj">axis</em> to be retained
+for <code class="docutils literal notranslate"><span class="pre">above=True</span></code> grid[idx:,…]
+for <code class="docutils literal notranslate"><span class="pre">above=False</span></code> grid[:idx,…]</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – the axis segment from which we retain the indices <em class="xref py py-obj">idx</em></p></li>
+<li><p><strong>above</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – <dl class="simple">
+<dt>if <code class="docutils literal notranslate"><span class="pre">True</span></code> will retain the grid:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">grid[idx:,...]</span></code></p>
+</dd>
+<dt>else it will retain the grid:</dt><dd><p><code class="docutils literal notranslate"><span class="pre">grid[:idx,...]</span></code></p>
+</dd>
+</dl>
+</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.sum">
+<span class="sig-name descname"><span class="pre">sum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.sum"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.sum" title="Permalink to this definition"></a></dt>
+<dd><p>Sum grid values along axis <em class="xref py py-obj">axis</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – unit-cell direction to sum across</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.swapaxes">
+<span class="sig-name descname"><span class="pre">swapaxes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.swapaxes"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.swapaxes" title="Permalink to this definition"></a></dt>
+<dd><p>Swap two axes in the grid (also swaps axes in the supercell)</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">swapaxes(0,1)</span></code> it returns the 0 in the 1 values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – axes indices to be swapped</p></li>
+<li><p><strong>b</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – axes indices to be swapped</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.tile">
+<span class="sig-name descname"><span class="pre">tile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.tile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.tile" title="Permalink to this definition"></a></dt>
+<dd><p>Tile grid to create a bigger one</p>
+<p>The atomic indices for the base Geometry will be retained.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – number of tiles (repetitions)</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – direction of tiling, 0, 1, 2 according to the cell-direction</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.tile" title="sisl.Geometry.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.tile</span></code></a></dt><dd><p>equivalent method for Geometry class</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.topyamg">
+<span class="sig-name descname"><span class="pre">topyamg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.topyamg"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.topyamg" title="Permalink to this definition"></a></dt>
+<dd><p>Create a <em class="xref py py-obj">pyamg</em> stencil matrix to be used in pyamg</p>
+<p>This allows retrieving the grid matrix equivalent of the real-space grid.
+Subsequently the returned matrix may be used in pyamg for solutions etc.</p>
+<p>The <em class="xref py py-obj">pyamg</em> suite is it-self a rather complicated code with many options.
+For details we refer to <a class="reference external" href="pyamghttps://github.com/pyamg/pyamg/">pyamg</a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.21)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – data-type used for the sparse matrix, default to use the grid data-type</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><em>scipy.sparse.csr_matrix</em> – the stencil for the <em class="xref py py-obj">pyamg</em> solver</p></li>
+<li><p><em>numpy.ndarray</em> – RHS of the linear system of equations</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<p>This example proves the best method for a variety of cases in regards of the 3D Poisson problem:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="mf">0.01</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">A</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">topyamg</span><span class="p">()</span> <span class="c1"># automatically setups the current boundary conditions</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># add terms etc. to A and/or b</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pyamg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">scipy.sparse.linalg</span> <span class="kn">import</span> <span class="n">cg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">ml</span> <span class="o">=</span> <span class="n">pyamg</span><span class="o">.</span><span class="n">aggregation</span><span class="o">.</span><span class="n">smoothed_aggregation_solver</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">max_levels</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">M</span> <span class="o">=</span> <span class="n">ml</span><span class="o">.</span><span class="n">aspreconditioner</span><span class="p">(</span><span class="n">cycle</span><span class="o">=</span><span class="s1">&#39;W&#39;</span><span class="p">)</span> <span class="c1"># pre-conditioner</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">x</span><span class="p">,</span> <span class="n">info</span> <span class="o">=</span> <span class="n">cg</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-12</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="n">M</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.Grid.pyamg_index" title="sisl.Grid.pyamg_index"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pyamg_index</span></code></a></dt><dd><p>convert grid indices into the sparse matrix indices for <code class="docutils literal notranslate"><span class="pre">A</span></code></p>
+</dd>
+<dt><a class="reference internal" href="#sisl.Grid.pyamg_fix" title="sisl.Grid.pyamg_fix"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pyamg_fix</span></code></a></dt><dd><p>fixes stencil for indices and fixes the source for the RHS matrix (uses <a class="reference internal" href="#sisl.Grid.pyamg_source" title="sisl.Grid.pyamg_source"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pyamg_source</span></code></a>)</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.Grid.pyamg_source" title="sisl.Grid.pyamg_source"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pyamg_source</span></code></a></dt><dd><p>fix the RHS matrix <code class="docutils literal notranslate"><span class="pre">b</span></code> to a constant value</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.Grid.pyamg_boundary_condition" title="sisl.Grid.pyamg_boundary_condition"><code class="xref py py-obj docutils literal notranslate"><span class="pre">pyamg_boundary_condition</span></code></a></dt><dd><p>setup the sparse matrix <code class="docutils literal notranslate"><span class="pre">A</span></code> to given boundary conditions (called in this routine)</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.Grid.volume">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">volume</span></span><a class="headerlink" href="#sisl.Grid.volume" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the inherent <a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell" title="sisl.SuperCell"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell</span></code></a> objects <em class="xref py py-obj">vol</em></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.Grid.write">
+<span class="sig-name descname"><span class="pre">write</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sile</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/grid.html#Grid.write"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.Grid.write" title="Permalink to this definition"></a></dt>
+<dd><p>Writes grid to the <code class="xref py py-obj docutils literal notranslate"><span class="pre">Sile</span></code> using <em class="xref py py-obj">write_grid</em></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sile</strong> (<a class="reference internal" href="../io/generated/sisl.io.Sile.html#sisl.io.Sile" title="sisl.io.Sile"><em>Sile</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/pathlib.html#pathlib.Path" title="(in Python v3.10)"><em>pathlib.Path</em></a>) – a <code class="xref py py-obj docutils literal notranslate"><span class="pre">Sile</span></code> object which will be used to write the grid
+if it is a string it will create a new sile using <code class="xref py py-obj docutils literal notranslate"><span class="pre">get_sile</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sisl.SuperCell.html" class="btn btn-neutral float-left" title="sisl.SuperCell" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.Quaternion.html" class="btn btn-neutral float-right" title="sisl.Quaternion" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

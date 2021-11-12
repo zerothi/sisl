@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.PeriodicTable &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="sisl.Orbital" href="sisl.Orbital.html" />
+    <link rel="prev" title="Basic classes" href="../basic.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../basic.html">Basic classes</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="../basic.html#simple-objects">Simple objects</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.PeriodicTable</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.Orbital.html">sisl.Orbital</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.SphericalOrbital.html">sisl.SphericalOrbital</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.AtomicOrbital.html">sisl.AtomicOrbital</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.Atom.html">sisl.Atom</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.Atoms.html">sisl.Atoms</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.Geometry.html">sisl.Geometry</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.SuperCell.html">sisl.SuperCell</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.Grid.html">sisl.Grid</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../basic.html#advanced-classes">Advanced classes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../basic.html#utility-classes">Utility classes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../default_geom.html">Common geometries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API documentation</a> &raquo;</li>
+          <li><a href="../basic.html">Basic classes</a> &raquo;</li>
+      <li>sisl.PeriodicTable</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/generated/sisl.PeriodicTable.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="sisl-periodictable">
+<h1>sisl.PeriodicTable<a class="headerlink" href="#sisl-periodictable" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="sisl.PeriodicTable">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.</span></span><span class="sig-name descname"><span class="pre">PeriodicTable</span></span><a class="headerlink" href="#sisl.PeriodicTable" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Periodic table for creating an <a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atom</span></code></a>, or retrieval of atomic information via atomic numbers</p>
+<p>Enables <em>lookup</em> of atomic numbers/names/labels to get
+the atomic number.</p>
+<p>Several quantities available to the atomic species are available
+from &lt;<a class="reference external" href="https://en.wikipedia.org/wiki/Atomic_radii_of_the_elements_(data_page)">https://en.wikipedia.org/wiki/Atomic_radii_of_the_elements_(data_page)</a>&gt;.</p>
+<p>The following values are accessible:</p>
+<ul class="simple">
+<li><p>atomic mass (in atomic units)</p></li>
+<li><p>empirical atomic radii (in Ang)</p></li>
+<li><p>calculated atomic radii (in Ang)</p></li>
+<li><p>van der Waals atomic radii (in Ang)</p></li>
+</ul>
+<p>For certain species the above quantities are not available
+and a negative number is returned.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="mi">79</span> <span class="o">==</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">Z</span><span class="p">(</span><span class="s1">&#39;Au&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mi">79</span> <span class="o">==</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">Z_int</span><span class="p">(</span><span class="s1">&#39;Au&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s1">&#39;Au&#39;</span> <span class="o">==</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">Z_short</span><span class="p">(</span><span class="mi">79</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s1">&#39;Au&#39;</span> <span class="o">==</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">Z_label</span><span class="p">(</span><span class="mi">79</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="s1">&#39;Au&#39;</span> <span class="o">==</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">Z_label</span><span class="p">(</span><span class="s1">&#39;Gold&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mf">12.0107</span> <span class="o">==</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">atomic_mass</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mf">12.0107</span> <span class="o">==</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">atomic_mass</span><span class="p">(</span><span class="mi">6</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mf">12.0107</span> <span class="o">==</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">atomic_mass</span><span class="p">(</span><span class="s1">&#39;Carbon&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mf">.67</span> <span class="o">==</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">radii</span><span class="p">(</span><span class="s1">&#39;Carbon&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mf">.67</span> <span class="o">==</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">radii</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="s1">&#39;calc&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mf">.7</span>  <span class="o">==</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">radii</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="s1">&#39;empirical&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mf">1.7</span> <span class="o">==</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">radii</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="s1">&#39;vdw&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.PeriodicTable.Z" title="sisl.PeriodicTable.Z"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Z</span></code></a>(key)</p></td>
+<td><p>Atomic number based on general input</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.PeriodicTable.Z_int" title="sisl.PeriodicTable.Z_int"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Z_int</span></code></a>(key)</p></td>
+<td><p>Atomic number based on general input</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.PeriodicTable.Z_label" title="sisl.PeriodicTable.Z_label"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Z_label</span></code></a>(key)</p></td>
+<td><p>Atomic label of the corresponding atom</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.PeriodicTable.Z_short" title="sisl.PeriodicTable.Z_short"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Z_short</span></code></a>(key)</p></td>
+<td><p>Atomic label of the corresponding atom</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.PeriodicTable.atomic_mass" title="sisl.PeriodicTable.atomic_mass"><code class="xref py py-obj docutils literal notranslate"><span class="pre">atomic_mass</span></code></a>(key)</p></td>
+<td><p>Atomic mass of the corresponding atom</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.PeriodicTable.radii" title="sisl.PeriodicTable.radii"><code class="xref py py-obj docutils literal notranslate"><span class="pre">radii</span></code></a>(key[, method])</p></td>
+<td><p>Atomic radii using different methods</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.PeriodicTable.radius" title="sisl.PeriodicTable.radius"><code class="xref py py-obj docutils literal notranslate"><span class="pre">radius</span></code></a>(key[, method])</p></td>
+<td><p>Atomic radii using different methods</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.PeriodicTable.Z">
+<span class="sig-name descname"><span class="pre">Z</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/atom.html#PeriodicTable.Z"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.PeriodicTable.Z" title="Permalink to this definition"></a></dt>
+<dd><p>Atomic number based on general input</p>
+<p>Return the atomic number corresponding to the <em class="xref py py-obj">key</em> lookup.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Uses value to lookup the atomic number in the <a class="reference internal" href="#sisl.PeriodicTable" title="sisl.PeriodicTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeriodicTable</span></code></a>
+object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>atomic number corresponding to <em class="xref py py-obj">key</em>, if <em class="xref py py-obj">key</em> is array_like, so
+will the returned value be.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="mi">79</span> <span class="o">==</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">Z_int</span><span class="p">(</span><span class="s1">&#39;Au&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mi">79</span> <span class="o">==</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">Z</span><span class="p">(</span><span class="s1">&#39;Au&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mi">6</span> <span class="o">==</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">Z</span><span class="p">(</span><span class="s1">&#39;Carbon&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.PeriodicTable.Z_int">
+<span class="sig-name descname"><span class="pre">Z_int</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.PeriodicTable.Z_int" title="Permalink to this definition"></a></dt>
+<dd><p>Atomic number based on general input</p>
+<p>Return the atomic number corresponding to the <em class="xref py py-obj">key</em> lookup.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Uses value to lookup the atomic number in the <a class="reference internal" href="#sisl.PeriodicTable" title="sisl.PeriodicTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeriodicTable</span></code></a>
+object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>atomic number corresponding to <em class="xref py py-obj">key</em>, if <em class="xref py py-obj">key</em> is array_like, so
+will the returned value be.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a></p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="mi">79</span> <span class="o">==</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">Z_int</span><span class="p">(</span><span class="s1">&#39;Au&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mi">79</span> <span class="o">==</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">Z</span><span class="p">(</span><span class="s1">&#39;Au&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="mi">6</span> <span class="o">==</span> <span class="n">PeriodicTable</span><span class="p">()</span><span class="o">.</span><span class="n">Z</span><span class="p">(</span><span class="s1">&#39;Carbon&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.PeriodicTable.Z_label">
+<span class="sig-name descname"><span class="pre">Z_label</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/atom.html#PeriodicTable.Z_label"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.PeriodicTable.Z_label" title="Permalink to this definition"></a></dt>
+<dd><p>Atomic label of the corresponding atom</p>
+<p>Return the atomic short name corresponding to the <em class="xref py py-obj">key</em> lookup.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Uses value to lookup the atomic short name in the
+<a class="reference internal" href="#sisl.PeriodicTable" title="sisl.PeriodicTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeriodicTable</span></code></a> object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>atomic short name corresponding to <em class="xref py py-obj">key</em>, if <em class="xref py py-obj">key</em>
+is array_like, so will the returned value be.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.PeriodicTable.Z_short">
+<span class="sig-name descname"><span class="pre">Z_short</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.PeriodicTable.Z_short" title="Permalink to this definition"></a></dt>
+<dd><p>Atomic label of the corresponding atom</p>
+<p>Return the atomic short name corresponding to the <em class="xref py py-obj">key</em> lookup.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Uses value to lookup the atomic short name in the
+<a class="reference internal" href="#sisl.PeriodicTable" title="sisl.PeriodicTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeriodicTable</span></code></a> object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>atomic short name corresponding to <em class="xref py py-obj">key</em>, if <em class="xref py py-obj">key</em>
+is array_like, so will the returned value be.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a> or <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.PeriodicTable.atomic_mass">
+<span class="sig-name descname"><span class="pre">atomic_mass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/atom.html#PeriodicTable.atomic_mass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.PeriodicTable.atomic_mass" title="Permalink to this definition"></a></dt>
+<dd><p>Atomic mass of the corresponding atom</p>
+<p>Return the atomic mass corresponding to the <em class="xref py py-obj">key</em> lookup.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>key</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Uses value to lookup the atomic mass in the
+<a class="reference internal" href="#sisl.PeriodicTable" title="sisl.PeriodicTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeriodicTable</span></code></a> object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>atomic mass in atomic units corresponding to <em class="xref py py-obj">key</em>,
+if <em class="xref py py-obj">key</em> is array_like, so will the returned value be.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.PeriodicTable.radii">
+<span class="sig-name descname"><span class="pre">radii</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'calc'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.PeriodicTable.radii" title="Permalink to this definition"></a></dt>
+<dd><p>Atomic radii using different methods</p>
+<p>Return the atomic radii.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Uses value to lookup the atomic mass in the
+<a class="reference internal" href="#sisl.PeriodicTable" title="sisl.PeriodicTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeriodicTable</span></code></a> object.</p></li>
+<li><p><strong>method</strong> (<em>{'calc'</em><em>, </em><em>'empirical'</em><em>, </em><em>'vdw'}</em>) – <p>There are 3 different radii stored:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">calc</span></code>, the calculated atomic radii</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">empirical</span></code>, the empirically found values</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">vdw</span></code>, the van-der-Waals found values</p></li>
+</ol>
+</div></blockquote>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>atomic radius in <em class="xref py py-obj">Ang</em></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.PeriodicTable.radius">
+<span class="sig-name descname"><span class="pre">radius</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">key</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'calc'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/atom.html#PeriodicTable.radius"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.PeriodicTable.radius" title="Permalink to this definition"></a></dt>
+<dd><p>Atomic radii using different methods</p>
+<p>Return the atomic radii.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>key</strong> (<em>array_like</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – Uses value to lookup the atomic mass in the
+<a class="reference internal" href="#sisl.PeriodicTable" title="sisl.PeriodicTable"><code class="xref py py-obj docutils literal notranslate"><span class="pre">PeriodicTable</span></code></a> object.</p></li>
+<li><p><strong>method</strong> (<em>{'calc'</em><em>, </em><em>'empirical'</em><em>, </em><em>'vdw'}</em>) – <p>There are 3 different radii stored:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">calc</span></code>, the calculated atomic radii</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">empirical</span></code>, the empirically found values</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">vdw</span></code>, the van-der-Waals found values</p></li>
+</ol>
+</div></blockquote>
+</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>atomic radius in <em class="xref py py-obj">Ang</em></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a> or <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)">float</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../basic.html" class="btn btn-neutral float-left" title="Basic classes" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.Orbital.html" class="btn btn-neutral float-right" title="sisl.Orbital" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

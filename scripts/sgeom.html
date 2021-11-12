@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sgeom &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="sgrid" href="sgrid.html" />
+    <link rel="prev" title="sdata" href="sdata.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="scripts.html">Command line scripts</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="sdata.html"><em class="xref py py-obj">sdata</em></a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#"><em class="xref py py-obj">sgeom</em></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#conversion">Conversion</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#available-formats">Available formats</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#advanced-features">Advanced Features</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#repeating-tiling-structures">Repeating/Tiling structures</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#rotating-structure">Rotating structure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#combining-command-line-arguments">Combining command line arguments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="sgrid.html"><em class="xref py py-obj">sgrid</em></a></li>
+<li class="toctree-l2"><a class="reference internal" href="stool.html"><em class="xref py py-obj">stool</em></a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="scripts.html">Command line scripts</a> &raquo;</li>
+      <li><em class="xref py py-obj">sgeom</em></li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/scripts/sgeom.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="sgeom">
+<span id="script-sgeom"></span><h1><em class="xref py py-obj">sgeom</em><a class="headerlink" href="#sgeom" title="Permalink to this headline"></a></h1>
+<p>The <em class="xref py py-obj">sgeom</em> executable is a tool for reading and transforming general
+coordinate formats to other formats, or alter them.</p>
+<p>For a short help description of the possible uses do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom --help
+</pre></div>
+</div>
+<p>Here we list a few of the most frequent used commands.</p>
+<section id="conversion">
+<h2>Conversion<a class="headerlink" href="#conversion" title="Permalink to this headline"></a></h2>
+<p>The simplest usage is transforming from one format to another format.
+<em class="xref py py-obj">sgeom</em> takes at least two mandatory arguments, the first being the
+input file format, and the second (and any third + argumets) the output
+file formats</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom &lt;<span class="k">in</span>&gt; &lt;out&gt; <span class="o">[</span>&lt;out2&gt;<span class="o">]</span> <span class="o">[[</span>&lt;out3&gt;<span class="o">]</span> ...<span class="o">]</span>
+</pre></div>
+</div>
+<p>Hence to convert from an <strong>fdf</strong> Siesta input file to an <strong>xyz</strong> file
+for plotting in a GUI program one can do this:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom RUN.fdf RUN.xyz
+</pre></div>
+</div>
+<p>and the <code class="docutils literal notranslate"><span class="pre">RUN.xyz</span></code> file will be created.</p>
+<p>Remark that the input file <em>must</em> be the first argument of <em class="xref py py-obj">sgeom</em>.</p>
+<section id="available-formats">
+<h3>Available formats<a class="headerlink" href="#available-formats" title="Permalink to this headline"></a></h3>
+<p>A great deal of different file formats are available. For details please see
+<a class="reference internal" href="../api/io/index.html#module-sisl.io" title="sisl.io"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl.io</span></code></a> for a list of all implemented data-files. <em>Any</em> file that implements
+the <code class="docutils literal notranslate"><span class="pre">read_geometry</span></code>/<code class="docutils literal notranslate"><span class="pre">write_geometry</span></code> methods will be usable by <em class="xref py py-obj">sgeom</em>.</p>
+</section>
+</section>
+<section id="advanced-features">
+<h2>Advanced Features<a class="headerlink" href="#advanced-features" title="Permalink to this headline"></a></h2>
+<p>More advanced features are represented here.</p>
+<p>The <em class="xref py py-obj">sgeom</em> utility enables highly advanced creation of several geometry
+structures by invocing the arguments <em>in order</em>.</p>
+<p>I.e. if one performs:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom &lt;<span class="k">in</span>&gt; --repeat <span class="m">3</span> x repx3.xyz --repeat <span class="m">3</span> y repx3_repy3.xyz
+</pre></div>
+</div>
+<p>will read <code class="docutils literal notranslate"><span class="pre">&lt;in&gt;</span></code>, repeat the geometry 3 times along the first unit-cell
+vector, store the resulting geometry in <code class="docutils literal notranslate"><span class="pre">repx3.xyz</span></code>. Subsequently it will repeat
+the already repeated structure 3 times along the second unit-cell vector and store
+the now <code class="docutils literal notranslate"><span class="pre">3x3</span></code> repeated structure as <code class="docutils literal notranslate"><span class="pre">repx3_repy3.xyz</span></code>.</p>
+<section id="repeating-tiling-structures">
+<h3>Repeating/Tiling structures<a class="headerlink" href="#repeating-tiling-structures" title="Permalink to this headline"></a></h3>
+<p>One may use periodicity to create larger structures from a simpler structure.
+This is useful for creating larger bulk structures.
+To repeat a structure do</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom &lt;<span class="k">in</span>&gt; --repeat &lt;int&gt; <span class="o">[</span>ax<span class="p">|</span>yb<span class="p">|</span>zc<span class="o">]</span> &lt;out&gt;
+</pre></div>
+</div>
+<p>which repeats the structure one atom at a time, <code class="docutils literal notranslate"><span class="pre">&lt;int&gt;</span></code> times, in the corresponding direction.
+Note that <code class="docutils literal notranslate"><span class="pre">x</span></code> and <code class="docutils literal notranslate"><span class="pre">a</span></code> correspond to the same cell direction (the first).</p>
+<p>To repeat the structure in <em>chunks</em> one can use the <code class="docutils literal notranslate"><span class="pre">--tile</span></code> option:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom &lt;<span class="k">in</span>&gt; --tile &lt;int&gt; <span class="o">[</span>ax<span class="p">|</span>yb<span class="p">|</span>zc<span class="o">]</span> &lt;out&gt;
+</pre></div>
+</div>
+<p>which results in the same structure as <code class="docutils literal notranslate"><span class="pre">--repeat</span></code> however with different atomic ordering.</p>
+<p>Both tiling and repeating have the shorter variants:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom &lt;<span class="k">in</span>&gt; -t<span class="o">[</span>xyz<span class="o">]</span> &lt;int&gt; -r<span class="o">[</span>xyz<span class="o">]</span> &lt;int&gt;
+</pre></div>
+</div>
+<p>to ease the commands.</p>
+<p>To repeat a structure 4 times along the <em>x</em> cell direction:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom RUN.fdf --repeat <span class="m">4</span> x RUN4x.fdf
+sgeom RUN.fdf --repeat-x <span class="m">4</span> RUN4x.fdf
+sgeom RUN.fdf --tile <span class="m">4</span> x RUN4x.fdf
+sgeom RUN.fdf --tile-x <span class="m">4</span> RUN4x.fdf
+</pre></div>
+</div>
+<p>where all the above yields the same structure, albeit with different orderings.</p>
+</section>
+<section id="rotating-structure">
+<h3>Rotating structure<a class="headerlink" href="#rotating-structure" title="Permalink to this headline"></a></h3>
+<p>To rotate the structure around certain cell directions one can do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom &lt;<span class="k">in</span>&gt; --rotate &lt;angle&gt; <span class="o">[</span>ax<span class="p">|</span>yb<span class="p">|</span>zc<span class="o">]</span> &lt;out&gt;
+</pre></div>
+</div>
+<p>which rotates the structure around the origin with a normal vector along the
+specified cell direction. The input angle is in degrees and <em>not</em> in radians.
+If one wish to use radians append an <code class="docutils literal notranslate"><span class="pre">r</span></code> in the angle specification.</p>
+<p>Again there are shorthand commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom &lt;<span class="k">in</span>&gt; -R<span class="o">[</span>xyz<span class="o">]</span> &lt;angle&gt;
+</pre></div>
+</div>
+</section>
+<section id="combining-command-line-arguments">
+<h3>Combining command line arguments<a class="headerlink" href="#combining-command-line-arguments" title="Permalink to this headline"></a></h3>
+<p>All command line options may be used together. However, one should be aware that
+the order of the command lines determine the order of operations.</p>
+<p>If one starts by repeating the structure, then rotate it, then shift the structure,
+it will be different from, shift the structure, then rotate, then repeat.</p>
+<p>Be also aware that outputting structures are done <em>at the time in the command line order</em>.
+This means one can store the intermediate steps while performing the entire operation:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sgeom &lt;<span class="k">in</span>&gt; --rotate &lt;angle&gt; --out &lt;rotated&gt; -tx <span class="m">2</span> --out &lt;rotate-tile-x&gt; --ty <span class="m">2</span> --out &lt;rotate-tile-y&gt;
+</pre></div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sdata.html" class="btn btn-neutral float-left" title="sdata" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sgrid.html" class="btn btn-neutral float-right" title="sgrid" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

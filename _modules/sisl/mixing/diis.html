@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.mixing.diis &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>sisl.mixing.diis</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sisl.mixing.diis</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
+<span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
+<span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
+<span class="kn">from</span> <span class="nn">operator</span> <span class="kn">import</span> <span class="n">add</span><span class="p">,</span> <span class="n">mul</span>
+<span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Real</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
+<span class="kn">from</span> <span class="nn">sisl.linalg</span> <span class="kn">import</span> <span class="n">solve</span>
+<span class="kn">from</span> <span class="nn">.base</span> <span class="kn">import</span> <span class="n">History</span><span class="p">,</span> <span class="n">Metric</span>
+<span class="kn">from</span> <span class="nn">.linear</span> <span class="kn">import</span> <span class="n">LinearMixer</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;DIISMixer&#39;</span><span class="p">,</span> <span class="s1">&#39;PulayMixer&#39;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s1">&#39;AdaptiveDIISMixer&#39;</span><span class="p">,</span> <span class="s1">&#39;AdaptivePulayMixer&#39;</span><span class="p">]</span>
+
+
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.mixing&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">DIISMixer</span><span class="p">(</span><span class="n">History</span><span class="p">,</span> <span class="n">LinearMixer</span><span class="p">,</span> <span class="n">Metric</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; DIIS mixer &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="DIISMixer.__init__"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span> <span class="n">history</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="c1"># This will call History.__init__</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">history</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">LinearMixer</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weight</span><span class="p">)</span>
+        <span class="n">Metric</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; String representation &quot;&quot;&quot;</span>
+        <span class="n">hist</span> <span class="o">=</span> <span class="n">History</span><span class="o">.</span><span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="p">,</span> <span class="n">History</span><span class="o">.</span><span class="vm">__name__</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="se">{{</span><span class="s2">weight: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">,</span><span class="se">\n</span><span class="s2">  </span><span class="si">{</span><span class="n">hist</span><span class="si">}</span><span class="se">\n}}</span><span class="s2">&quot;</span>
+
+<div class="viewcode-block" id="DIISMixer.solve_lagrange"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.solve_lagrange">[docs]</a>    <span class="k">def</span> <span class="nf">solve_lagrange</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate the coefficients according to Pulay&#39;s method, return everything + Lagrange multiplier &quot;&quot;&quot;</span>
+        <span class="n">n_h</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hist</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">n_h</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># Externally the coefficients should reflect the weight per previous iteration.</span>
+            <span class="c1"># The mixing weight is an additional parameter</span>
+            <span class="k">return</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">([</span><span class="mf">1.</span><span class="p">]),</span> <span class="mf">100.</span>
+        <span class="k">elif</span> <span class="n">n_h</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">([</span><span class="mf">1.</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hist</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hist</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c1"># Initialize the matrix to be solved against</span>
+        <span class="n">B</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">emptyd</span><span class="p">([</span><span class="n">n_h</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_h</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+
+        <span class="c1"># Fill matrix B</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_h</span><span class="p">):</span>
+            <span class="n">ei</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hist</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="p">]</span>
+            <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">n_h</span><span class="p">):</span>
+                <span class="n">ej</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hist</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">j</span><span class="p">]</span>
+
+                <span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">ei</span><span class="p">,</span> <span class="n">ej</span><span class="p">)</span>
+                <span class="n">B</span><span class="p">[</span><span class="n">j</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span>
+            <span class="n">B</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="n">ei</span><span class="p">,</span> <span class="n">ei</span><span class="p">)</span>
+        <span class="n">B</span><span class="p">[:,</span> <span class="n">n_h</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="n">B</span><span class="p">[</span><span class="n">n_h</span><span class="p">,</span> <span class="p">:]</span> <span class="o">=</span> <span class="mf">1.</span>
+        <span class="n">B</span><span class="p">[</span><span class="n">n_h</span><span class="p">,</span> <span class="n">n_h</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.</span>
+
+        <span class="c1"># Although B contains 1 and a number on the order of</span>
+        <span class="c1"># number of elements (self._hist[0].size), it seems very</span>
+        <span class="c1"># numerically stable.</span>
+
+        <span class="c1"># Create RHS</span>
+        <span class="n">RHS</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">zerosd</span><span class="p">(</span><span class="n">n_h</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="n">RHS</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Apparently we cannot use assume_a=&#39;sym&#39;</span>
+            <span class="c1"># Is this because sym also implies positive definitiness?</span>
+            <span class="c1"># However, these are matrices of order ~30, so we don&#39;t care</span>
+            <span class="n">c</span> <span class="o">=</span> <span class="n">solve</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">RHS</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">c</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="o">-</span><span class="n">c</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">except</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">LinAlgError</span><span class="p">:</span>
+            <span class="c1"># We have a LinalgError</span>
+            <span class="k">return</span> <span class="n">_a</span><span class="o">.</span><span class="n">arrayd</span><span class="p">([</span><span class="mf">1.</span><span class="p">]),</span> <span class="bp">self</span><span class="o">.</span><span class="n">inner</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_hist</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hist</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span></div>
+
+<div class="viewcode-block" id="DIISMixer.coefficients"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.coefficients">[docs]</a>    <span class="k">def</span> <span class="nf">coefficients</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate coefficients of the Lagrangian &quot;&quot;&quot;</span>
+        <span class="n">c</span><span class="p">,</span> <span class="n">lagrange</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solve_lagrange</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">c</span></div>
+
+<div class="viewcode-block" id="DIISMixer.__call__"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.__call__">[docs]</a>    <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">df</span><span class="p">):</span>
+        <span class="c1"># Add to history</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">df</span><span class="p">)</span>
+        <span class="c1"># Calculate new mixing quantity</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">mix</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">coefficients</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="DIISMixer.mix"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.DIISMixer.html#sisl.mixing.DIISMixer.mix">[docs]</a>    <span class="k">def</span> <span class="nf">mix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">coeff</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate a new variable :math:`f&#39;` using history and input coefficients</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        coeff : numpy.ndarray</span>
+<span class="sd">           coefficients used for extrapolation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">reduce</span><span class="p">(</span><span class="n">add</span><span class="p">,</span> <span class="nb">map</span><span class="p">(</span><span class="n">mul</span><span class="p">,</span> <span class="n">coeff</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hist</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span> <span class="o">+</span> \
+            <span class="n">reduce</span><span class="p">(</span><span class="n">add</span><span class="p">,</span> <span class="nb">map</span><span class="p">(</span><span class="n">mul</span><span class="p">,</span> <span class="n">coeff</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">weight</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_hist</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span></div>
+
+
+<span class="n">PulayMixer</span> <span class="o">=</span> <span class="n">set_module</span><span class="p">(</span><span class="s2">&quot;sisl.mixing&quot;</span><span class="p">)(</span><span class="nb">type</span><span class="p">(</span><span class="s2">&quot;PulayMixer&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">DIISMixer</span><span class="p">,</span> <span class="p">),</span> <span class="p">{}))</span>
+
+
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.mixing&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">AdaptiveDIISMixer</span><span class="p">(</span><span class="n">DIISMixer</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Adapt the mixing weight according to the Lagrange multiplier</span>
+
+<span class="sd">    The Lagrange multiplier calculated in a DIIS/Pulay mixing scheme</span>
+<span class="sd">    is the squared norm of the residual that is minimized using the</span>
+<span class="sd">    Lagrange method. It holds information on the closeness of the functional</span>
+<span class="sd">    to a minimum.</span>
+
+<span class="sd">    Thus we can use the Lagrange multiplier to adjust the weight such that</span>
+<span class="sd">    for large values we know our next guess (:math:`f_{\mathrm{new}}`) will</span>
+<span class="sd">    be relatively far from the true saddle point, and for small values we</span>
+<span class="sd">    will be close to the saddle point.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="AdaptiveDIISMixer.__init__"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.AdaptiveDIISMixer.html#sisl.mixing.AdaptiveDIISMixer.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="p">(</span><span class="mf">0.03</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">),</span> <span class="n">history</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">weight</span><span class="p">,</span> <span class="n">Real</span><span class="p">):</span>
+            <span class="n">weight</span> <span class="o">=</span> <span class="p">(</span><span class="nb">max</span><span class="p">(</span><span class="mf">0.001</span><span class="p">,</span> <span class="n">weight</span> <span class="o">-</span> <span class="mf">0.1</span><span class="p">),</span> <span class="nb">min</span><span class="p">(</span><span class="mf">1.</span><span class="p">,</span> <span class="n">weight</span> <span class="o">+</span> <span class="mf">0.1</span><span class="p">))</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">weight</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">history</span><span class="p">,</span> <span class="n">metric</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_weight_min</span> <span class="o">=</span> <span class="n">weight</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_weight_delta</span> <span class="o">=</span> <span class="n">weight</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">weight</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="AdaptiveDIISMixer.adjust_weight"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.AdaptiveDIISMixer.html#sisl.mixing.AdaptiveDIISMixer.adjust_weight">[docs]</a>    <span class="k">def</span> <span class="nf">adjust_weight</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">lagrange</span><span class="p">,</span> <span class="n">offset</span><span class="o">=</span><span class="mi">13</span><span class="p">,</span> <span class="n">spread</span><span class="o">=</span><span class="mi">7</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Adjust the weight according to the Lagrange multiplier.</span>
+
+<span class="sd">        Once close to convergence the Lagrange multiplier will be close to 0, otherwise it will go</span>
+<span class="sd">        towards infinity.</span>
+<span class="sd">        We here adjust using the Fermi-function to hit the minimum/maximum weight with a</span>
+<span class="sd">        suitable spread</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">exp_lag_log</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">((</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">lagrange</span><span class="p">)</span> <span class="o">+</span> <span class="n">offset</span><span class="p">)</span> <span class="o">/</span> <span class="n">spread</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_weight</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weight_min</span> <span class="o">+</span> <span class="bp">self</span><span class="o">.</span><span class="n">_weight_delta</span> <span class="o">/</span> <span class="p">(</span><span class="n">exp_lag_log</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="AdaptiveDIISMixer.coefficients"><a class="viewcode-back" href="../../../api/generated/sisl.mixing.AdaptiveDIISMixer.html#sisl.mixing.AdaptiveDIISMixer.coefficients">[docs]</a>    <span class="k">def</span> <span class="nf">coefficients</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Calculate coefficients and adjust weights according to a Lagrange multiplier &quot;&quot;&quot;</span>
+        <span class="n">c</span><span class="p">,</span> <span class="n">lagrange</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">solve_lagrange</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">adjust_weight</span><span class="p">(</span><span class="n">lagrange</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">c</span></div>
+
+
+<span class="n">AdaptivePulayMixer</span> <span class="o">=</span> <span class="n">set_module</span><span class="p">(</span><span class="s2">&quot;sisl.mixing&quot;</span><span class="p">)(</span><span class="nb">type</span><span class="p">(</span><span class="s2">&quot;AdaptivePulayMixer&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">AdaptiveDIISMixer</span><span class="p">,</span> <span class="p">),</span> <span class="p">{}))</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

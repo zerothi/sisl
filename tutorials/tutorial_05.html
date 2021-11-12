@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Electronic structure setup – part 1 &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+        <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Electronic structure setup – part 2" href="tutorial_06.html" />
+    <link rel="prev" title="Specifying super-cell information" href="tutorial_04.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="tutorial_es_1.html">Electronic structure calculation – a walk-through</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_es_2.html">Berry phase calculation for graphene</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials.html#siesta-transiesta-support">Siesta/TranSiesta support</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../tutorials.html#deprecated-tutorials">Deprecated tutorials</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="tutorial_01.html">Geometry creation -- part 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorial_02.html">Geometry creation -- part 2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorial_04.html">Supercells</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Electronic structure setup -- part 1</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#example-square">Example – square</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#example-graphene">Example – graphene</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="tutorial_06.html">Electronic structure setup -- part 2</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../tutorials.html">Tutorials</a> &raquo;</li>
+      <li>Electronic structure setup – part 1</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/tutorial_05.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="electronic-structure-setup-part-1">
+<span id="tutorial-05"></span><h1>Electronic structure setup – part 1<a class="headerlink" href="#electronic-structure-setup-part-1" title="Permalink to this headline"></a></h1>
+<p>A <em class="xref py py-obj">Hamiltonian</em> is an extension of a <em class="xref py py-obj">Geometry</em>. From the <em class="xref py py-obj">Geometry</em> it
+reads the number of orbitals, the supercell information.</p>
+<p>Hamiltonians are matrices, and in sisl all Hamiltonians are treated
+as sparse matrices, i.e. matrices where there are an overweight of
+zeroes in the full matrix.
+As the Hamiltonian is treated as a matrix one can do regular assignments
+of the matrix elements, and basic math operations as well.</p>
+<p>Here we create a square lattice and from this a <em class="xref py py-obj">Hamiltonian</em>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">geometry</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">([[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span> <span class="o">=</span> <span class="n">Hamiltonian</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+<span class="go">{spin: 1, non-zero: 0</span>
+<span class="go"> {na: 1, no: 1, species:</span>
+<span class="go">  {Atoms(1):</span>
+<span class="go">    (1) == [H, Z: 1, orbs: 1, mass(au): 1.00794, maxR: -1.00000],</span>
+<span class="go">  },</span>
+<span class="go"> nsc: [1, 1, 1], maxR: -1.0</span>
+<span class="go"> }</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>which informs that the Hamiltonian currently only has 1 spin-component, is
+a matrix with complete zeroes (<em>non-zero</em> is 0).
+The geometry is a basic geometry with only one orbital per atom as <span class="math notranslate nohighlight">\(na = no\)</span>.</p>
+<p>This geometry and Hamiltonian represents a lone atom with one orbital with zero
+on-site energy, a rather un-interesting case.</p>
+<p>The examples here will be re-performed in <a class="reference internal" href="tutorial_06.html#tutorial-06"><span class="std std-ref">Electronic structure setup – part 2</span></a> by highlighting
+how the Hamiltonian can be setup in a more easy way.</p>
+<section id="example-square">
+<h2>Example – square<a class="headerlink" href="#example-square" title="Permalink to this headline"></a></h2>
+<p>Let us try and continue from <a class="reference internal" href="tutorial_01.html#tutorial-01"><span class="std std-ref">Geometry creation – part 1</span></a> and create a square
+2D lattice with one atom in the unit-cell and a supercell which couples only
+to nearest neighbour atoms.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">square</span> <span class="o">=</span> <span class="n">Geometry</span><span class="p">([[</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.5</span><span class="p">,</span><span class="mi">0</span><span class="p">]],</span> <span class="n">sc</span><span class="o">=</span><span class="n">SuperCell</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">10</span><span class="p">],</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">1</span><span class="p">]))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span> <span class="o">=</span> <span class="n">Hamiltonian</span><span class="p">(</span><span class="n">square</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now we have a periodic structure with couplings allowed only to nearest neighbour
+atoms. Note, that it still only has 1 orbital. In the following we setup the on-site
+and the 4 nearest neighbour couplings to, <span class="math notranslate nohighlight">\(-4\)</span> and <span class="math notranslate nohighlight">\(1\)</span>, respectively:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">H</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">4</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="nb">print</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+<span class="go">{spin: 1, non-zero: 5</span>
+<span class="go"> {na: 1, no: 1, species:</span>
+<span class="go">  {Atoms(1):</span>
+<span class="go">    (1) == [H, Z: 1, orbs: 1, mass(au): 1.00794, maxR: -1.00000],</span>
+<span class="go">  },</span>
+<span class="go">  nsc: [3, 3, 1], maxR: -1.0</span>
+<span class="go"> }</span>
+<span class="go">}</span>
+</pre></div>
+</div>
+<p>There are a couple of things going on here (the items corresponds to
+lines in the above snippet):</p>
+<ol class="arabic simple">
+<li><p>Specifies the on-site energy of the orbital. Note that we
+assign as would do in a normal matrix.</p></li>
+<li><p>Sets the coupling element from the first orbital
+in the primary unit-cell to the first orbital in the unit-cell neighbouring
+in the <span class="math notranslate nohighlight">\(x\)</span> direction, hence <code class="docutils literal notranslate"><span class="pre">(1,</span> <span class="pre">0)</span></code>.</p></li>
+<li><p>Sets the coupling element from the first orbital
+in the primary unit-cell to the first orbital in the unit-cell neighbouring
+in the <span class="math notranslate nohighlight">\(-x\)</span> direction, hence <code class="docutils literal notranslate"><span class="pre">(-1,</span> <span class="pre">0)</span></code>.</p></li>
+<li><p>Sets the coupling element from the first orbital
+in the primary unit-cell to the first orbital in the unit-cell neighbouring
+in the <span class="math notranslate nohighlight">\(y\)</span> direction, hence <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">1)</span></code>.</p></li>
+<li><p>Sets the coupling element from the first orbital
+in the primary unit-cell to the first orbital in the unit-cell neighbouring
+in the <span class="math notranslate nohighlight">\(-y\)</span> direction, hence <code class="docutils literal notranslate"><span class="pre">(0,</span> <span class="pre">-1)</span></code>.</p></li>
+</ol>
+<p>sisl does not intrinsically enforce symmetry, <em>that is the responsibility of the user</em>.
+This completes the Hamiltonian for nearest neighbour interaction and enables the
+calculation of the band-structure of the system.</p>
+<p>In the below figure we plot the band-structure going from the <span class="math notranslate nohighlight">\(\Gamma\)</span> point to the band-edge along <span class="math notranslate nohighlight">\(x\)</span>, to the corner and back.</p>
+<a class="reference internal image-reference" href="../_images/05_square_bs.png"><img alt="../_images/05_square_bs.png" class="align-center" src="../_images/05_square_bs.png" style="width: 300pt;" /></a>
+<p>The complete code for this example (plus the band-structure) can be found <a class="reference download internal" download="" href="../_downloads/632b6216e5aedaa9480f9670d4e566a0/tutorial_05_square.py"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a>.</p>
+</section>
+<section id="example-graphene">
+<h2>Example – graphene<a class="headerlink" href="#example-graphene" title="Permalink to this headline"></a></h2>
+<p>A commonly encountered example is the graphene unit-cell. In a tight-binding picture
+one may suffice with a nearest-neighbour coupling.</p>
+<p>Here we create the simple graphene 2D lattice with 2 atoms per unit-cell and
+a supercell of <code class="docutils literal notranslate"><span class="pre">[3,</span> <span class="pre">3,</span> <span class="pre">1]</span></code> to account for nearest neighbour couplings.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">graphene</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">graphene</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span> <span class="o">=</span> <span class="n">Hamiltonian</span><span class="p">(</span><span class="n">graphene</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The nearest neighbour tight-binding model for graphene uses 0 onsite energy and <span class="math notranslate nohighlight">\(2.7\)</span> as the hopping parameter.
+These are specified as this:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">H</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.7</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">2.7</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">2.7</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.7</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">2.7</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">H</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">2.7</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="../_images/05_graphene_bs.png"><img alt="../_images/05_graphene_bs.png" class="align-center" src="../_images/05_graphene_bs.png" style="width: 300pt;" /></a>
+<p>The complete code for this example (plus the band-structure) can be found <a class="reference download internal" download="" href="../_downloads/b9840085241894d1363a41c720398c0a/tutorial_05_graphene.py"><code class="xref download docutils literal notranslate"><span class="pre">here</span></code></a>.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tutorial_04.html" class="btn btn-neutral float-left" title="Specifying super-cell information" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tutorial_06.html" class="btn btn-neutral float-right" title="Electronic structure setup – part 2" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

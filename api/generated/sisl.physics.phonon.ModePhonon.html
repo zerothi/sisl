@@ -1,0 +1,668 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.physics.phonon.ModePhonon &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+        <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="sisl.physics.phonon.ModeCPhonon" href="sisl.physics.phonon.ModeCPhonon.html" />
+    <link rel="prev" title="sisl.physics.phonon.CoefficientPhonon" href="sisl.physics.phonon.CoefficientPhonon.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../basic.html">Basic classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../default_geom.html">Common geometries</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../physics.html">Physical objects</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../physics.brillouinzone.html">Brillouin zone</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../physics.matrix.html">Physical quantites</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../physics.electron.html">Electron related functions</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../physics.phonon.html">Phonon related functions</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.phonon.DOS.html">DOS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.phonon.PDOS.html">PDOS</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.phonon.velocity.html">velocity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.physics.phonon.displacement.html">displacement</a></li>
+<li class="toctree-l4 current"><a class="reference internal" href="../physics.phonon.html#supporting-classes">Supporting classes</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../physics.distribution.html">Distribution functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../physics.html#low-level-objects">Low level objects</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API documentation</a> &raquo;</li>
+          <li><a href="../physics.html">Physical objects</a> &raquo;</li>
+          <li><a href="../physics.phonon.html">Phonon related functions</a> &raquo;</li>
+      <li>sisl.physics.phonon.ModePhonon</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/generated/sisl.physics.phonon.ModePhonon.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="sisl-physics-phonon-modephonon">
+<h1>sisl.physics.phonon.ModePhonon<a class="headerlink" href="#sisl-physics-phonon-modephonon" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="sisl.physics.phonon.ModePhonon">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.physics.phonon.</span></span><span class="sig-name descname"><span class="pre">ModePhonon</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">info</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/phonon.html#ModePhonon"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.phonon.ModePhonon" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sisl.physics.phonon._phonon_Mode</span></code>, <a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><code class="xref py py-class docutils literal notranslate"><span class="pre">sisl.physics.State</span></code></a></p>
+<p>A mode describing a physical quantity related to phonons</p>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.phonon.ModePhonon.align_norm" title="sisl.physics.phonon.ModePhonon.align_norm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">align_norm</span></code></a>(other[, ret_index])</p></td>
+<td><p>Align <em class="xref py py-obj">self</em> with the site-norms of <em class="xref py py-obj">other</em>, a copy may optionally be returned</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.phonon.ModePhonon.align_phase" title="sisl.physics.phonon.ModePhonon.align_phase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">align_phase</span></code></a>(other[, inplace, ret_index])</p></td>
+<td><p>Align <em class="xref py py-obj">self</em> with the phases for <em class="xref py py-obj">other</em>, a copy may be returned</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.phonon.ModePhonon.change_gauge" title="sisl.physics.phonon.ModePhonon.change_gauge"><code class="xref py py-obj docutils literal notranslate"><span class="pre">change_gauge</span></code></a>(gauge)</p></td>
+<td><p>In-place change of the gauge of the state coefficients</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.phonon.ModePhonon.copy" title="sisl.physics.phonon.ModePhonon.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>()</p></td>
+<td><p>Return a copy (only the state is copied).</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.phonon.ModePhonon.inner" title="sisl.physics.phonon.ModePhonon.inner"><code class="xref py py-obj docutils literal notranslate"><span class="pre">inner</span></code></a>([ket, matrix, diag])</p></td>
+<td><p>Calculate the inner product as <span class="math notranslate nohighlight">\(\mathbf A_{ij} = \langle\psi_i|\mathbf M|\psi'_j\rangle\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.phonon.ModePhonon.ipr" title="sisl.physics.phonon.ModePhonon.ipr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ipr</span></code></a>([q])</p></td>
+<td><p>Calculate the inverse participation ratio (IPR) for arbitrary <em class="xref py py-obj">q</em> values</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.phonon.ModePhonon.iter" title="sisl.physics.phonon.ModePhonon.iter"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter</span></code></a>([asarray])</p></td>
+<td><p>An iterator looping over the states in this system</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.phonon.ModePhonon.norm" title="sisl.physics.phonon.ModePhonon.norm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">norm</span></code></a>()</p></td>
+<td><p>Return a vector with the Euclidean norm of each state <span class="math notranslate nohighlight">\(\sqrt{\langle\psi|\psi\rangle}\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.phonon.ModePhonon.norm2" title="sisl.physics.phonon.ModePhonon.norm2"><code class="xref py py-obj docutils literal notranslate"><span class="pre">norm2</span></code></a>([sum])</p></td>
+<td><p>Return a vector with the norm of each state <span class="math notranslate nohighlight">\(\langle\psi|\psi\rangle\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.phonon.ModePhonon.normalize" title="sisl.physics.phonon.ModePhonon.normalize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">normalize</span></code></a>()</p></td>
+<td><p>Return a normalized state where each state has <span class="math notranslate nohighlight">\(|\psi|^2=1\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.phonon.ModePhonon.outer" title="sisl.physics.phonon.ModePhonon.outer"><code class="xref py py-obj docutils literal notranslate"><span class="pre">outer</span></code></a>([ket])</p></td>
+<td><p>Return the outer product by <span class="math notranslate nohighlight">\(\sum_i|\psi_i\rangle\langle\psi'_i|\)</span></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.phonon.ModePhonon.phase" title="sisl.physics.phonon.ModePhonon.phase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">phase</span></code></a>([method, ret_index])</p></td>
+<td><p>Calculate the Euler angle (phase) for the elements of the state, in the range <span class="math notranslate nohighlight">\(]-\pi;\pi]\)</span></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.phonon.ModePhonon.remove" title="sisl.physics.phonon.ModePhonon.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a>(idx)</p></td>
+<td><p>Return a new state without the specified vectors</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.phonon.ModePhonon.rotate" title="sisl.physics.phonon.ModePhonon.rotate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rotate</span></code></a>([phi, individual])</p></td>
+<td><p>Rotate all states (in-place) to rotate the largest component to be along the angle <em class="xref py py-obj">phi</em></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.phonon.ModePhonon.sub" title="sisl.physics.phonon.ModePhonon.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a>(idx)</p></td>
+<td><p>Return a new state with only the specified states</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.phonon.ModePhonon.tile" title="sisl.physics.phonon.ModePhonon.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a>(reps, axis[, normalize, offset])</p></td>
+<td><p>Tile the state vectors for a new supercell</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.phonon.ModePhonon.translate" title="sisl.physics.phonon.ModePhonon.translate"><code class="xref py py-obj docutils literal notranslate"><span class="pre">translate</span></code></a>(isc)</p></td>
+<td><p>Translate the vectors to a new unit-cell position</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.phonon.ModePhonon.dkind" title="sisl.physics.phonon.ModePhonon.dkind"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dkind</span></code></a></p></td>
+<td><p>The data-type of the state (in str)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.phonon.ModePhonon.dtype" title="sisl.physics.phonon.ModePhonon.dtype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dtype</span></code></a></p></td>
+<td><p>Data-type for the state</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.phonon.ModePhonon.info" title="sisl.physics.phonon.ModePhonon.info"><code class="xref py py-obj docutils literal notranslate"><span class="pre">info</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.phonon.ModePhonon.mode" title="sisl.physics.phonon.ModePhonon.mode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">mode</span></code></a></p></td>
+<td><p>Eigenmodes (states)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.phonon.ModePhonon.parent" title="sisl.physics.phonon.ModePhonon.parent"><code class="xref py py-obj docutils literal notranslate"><span class="pre">parent</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.phonon.ModePhonon.shape" title="sisl.physics.phonon.ModePhonon.shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shape</span></code></a></p></td>
+<td><p>Returns the shape of the state</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.phonon.ModePhonon.state" title="sisl.physics.phonon.ModePhonon.state"><code class="xref py py-obj docutils literal notranslate"><span class="pre">state</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.phonon.ModePhonon.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">state</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">parent</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">info</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.phonon.ModePhonon.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Define a state container with a given set of states</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.phonon.ModePhonon.align_norm">
+<span class="sig-name descname"><span class="pre">align_norm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.phonon.ModePhonon.align_norm" title="Permalink to this definition"></a></dt>
+<dd><p>Align <em class="xref py py-obj">self</em> with the site-norms of <em class="xref py py-obj">other</em>, a copy may optionally be returned</p>
+<p>To determine the new ordering of <em class="xref py py-obj">self</em> first calculate the residual norm of the site-norms.</p>
+<div class="math notranslate nohighlight">
+\[\delta N_{\alpha\beta} = \sum_i \big(\langle \psi^\alpha_i | \psi^\alpha_i\rangle - \langle \psi^\beta_i | \psi^\beta_i\rangle\big)^2\]</div>
+<p>where <span class="math notranslate nohighlight">\(\alpha\)</span> and <span class="math notranslate nohighlight">\(\beta\)</span> correspond to state indices in <em class="xref py py-obj">self</em> and <em class="xref py py-obj">other</em>, respectively.
+The new states (from <em class="xref py py-obj">self</em>) returned is then ordered such that the index
+<span class="math notranslate nohighlight">\(\alpha \equiv \beta'\)</span> where <span class="math notranslate nohighlight">\(\delta N_{\alpha\beta}\)</span> is smallest.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>other</strong> (<a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><em>State</em></a>) – the other state to align against</p></li>
+<li><p><strong>ret_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – also return indices for the swapped indices</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>self_swap</strong> (<em>State</em>) – A swapped instance of <em class="xref py py-obj">self</em></p></li>
+<li><p><strong>index</strong> (<em>array of int</em>) – the indices that swaps <em class="xref py py-obj">self</em> to be <code class="docutils literal notranslate"><span class="pre">self_swap</span></code>, i.e. <code class="docutils literal notranslate"><span class="pre">self_swap</span> <span class="pre">=</span> <span class="pre">self.sub(index)</span></code></p></li>
+</ul>
+</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The input state and output state have the same number of states, but their ordering is not necessarily the same.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.physics.phonon.ModePhonon.align_phase" title="sisl.physics.phonon.ModePhonon.align_phase"><code class="xref py py-obj docutils literal notranslate"><span class="pre">align_phase</span></code></a></dt><dd><p>rotate states such that their phases align</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.phonon.ModePhonon.align_phase">
+<span class="sig-name descname"><span class="pre">align_phase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.phonon.ModePhonon.align_phase" title="Permalink to this definition"></a></dt>
+<dd><p>Align <em class="xref py py-obj">self</em> with the phases for <em class="xref py py-obj">other</em>, a copy may be returned</p>
+<p>States will be rotated by <span class="math notranslate nohighlight">\(\pi\)</span> provided the phase difference between the states are above <span class="math notranslate nohighlight">\(|\Delta\theta| &gt; \pi/2\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>other</strong> (<a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><em>State</em></a>) – the other state to align onto this state</p></li>
+<li><p><strong>inplace</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – rotate the states in-place</p></li>
+<li><p><strong>ret_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – return which indices got swapped</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.physics.phonon.ModePhonon.align_norm" title="sisl.physics.phonon.ModePhonon.align_norm"><code class="xref py py-obj docutils literal notranslate"><span class="pre">align_norm</span></code></a></dt><dd><p>re-order states such that site-norms have a smaller residual</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.phonon.ModePhonon.change_gauge">
+<span class="sig-name descname"><span class="pre">change_gauge</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gauge</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.phonon.ModePhonon.change_gauge" title="Permalink to this definition"></a></dt>
+<dd><p>In-place change of the gauge of the state coefficients</p>
+<p>The two gauges are related through:</p>
+<div class="math notranslate nohighlight">
+\[\tilde C_j = e^{i\mathbf k\mathbf r_j} C_j\]</div>
+<p>where <span class="math notranslate nohighlight">\(C_j\)</span> and <span class="math notranslate nohighlight">\(\tilde C_j\)</span> belongs to the <code class="docutils literal notranslate"><span class="pre">r</span></code> and <code class="docutils literal notranslate"><span class="pre">R</span></code> gauge, respectively.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>gauge</strong> (<em>{'R'</em><em>, </em><em>'r'}</em>) – specify the new gauge for the mode coefficients</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.phonon.ModePhonon.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.phonon.ModePhonon.copy" title="Permalink to this definition"></a></dt>
+<dd><p>Return a copy (only the state is copied). <code class="docutils literal notranslate"><span class="pre">parent</span></code> and <code class="docutils literal notranslate"><span class="pre">info</span></code> are passed by reference</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.physics.phonon.ModePhonon.dkind">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dkind</span></span><a class="headerlink" href="#sisl.physics.phonon.ModePhonon.dkind" title="Permalink to this definition"></a></dt>
+<dd><p>The data-type of the state (in str)</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.physics.phonon.ModePhonon.dtype">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dtype</span></span><a class="headerlink" href="#sisl.physics.phonon.ModePhonon.dtype" title="Permalink to this definition"></a></dt>
+<dd><p>Data-type for the state</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.physics.phonon.ModePhonon.info">
+<span class="sig-name descname"><span class="pre">info</span></span><a class="headerlink" href="#sisl.physics.phonon.ModePhonon.info" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.phonon.ModePhonon.inner">
+<span class="sig-name descname"><span class="pre">inner</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ket</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">matrix</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">diag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.phonon.ModePhonon.inner" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the inner product as <span class="math notranslate nohighlight">\(\mathbf A_{ij} = \langle\psi_i|\mathbf M|\psi'_j\rangle\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ket</strong> (<a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><em>State</em></a><em>, </em><em>optional</em>) – the ket object to calculate the inner product with, if not passed it will do the inner
+product with itself. The object itself will always be the bra <span class="math notranslate nohighlight">\(\langle\psi_i|\)</span></p></li>
+<li><p><strong>matrix</strong> (<em>array_like</em><em>, </em><em>optional</em>) – whether a matrix is sandwiched between the bra and ket, default to the identity matrix</p></li>
+<li><p><strong>diag</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – only return the diagonal matrix <span class="math notranslate nohighlight">\(\mathbf A_{ii}\)</span>.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This does <em>not</em> take into account a possible overlap matrix when non-orthogonal basis sets are used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – if the number of state coefficients are different for the bra and ket</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a matrix with the sum of inner state products</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.phonon.ModePhonon.ipr">
+<span class="sig-name descname"><span class="pre">ipr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.phonon.ModePhonon.ipr" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the inverse participation ratio (IPR) for arbitrary <em class="xref py py-obj">q</em> values</p>
+<p>The inverse participation ratio is defined as</p>
+<div class="math notranslate nohighlight">
+\[I_{q,i} = \frac{\sum_\nu |\psi_{i\nu}|^{2q}}{
+   \big[\sum_\nu |\psi_{i\nu}|^2\big]^q}\]</div>
+<p>where <span class="math notranslate nohighlight">\(i\)</span> is the band index and <span class="math notranslate nohighlight">\(\nu\)</span> is the orbital.
+The order of the IPR is defaulted to <span class="math notranslate nohighlight">\(q=2\)</span>.
+The IPR may be used to distinguish Anderson localization and extended
+states, see <a class="footnote-reference brackets" href="#id2" id="id1">1</a> for details.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>q</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – order parameter for the IPR</p>
+</dd>
+</dl>
+<p class="rubric">References</p>
+<dl class="footnote brackets">
+<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dd><ol class="upperalpha simple" start="14">
+<li><ol class="upperalpha simple" start="3">
+<li><p>Murphy <em>et.al.</em>, “Generalized inverse participation ratio as a possible measure of localization for interacting systems”, PRB, <em>83</em>, 184206 (2011)</p></li>
+</ol>
+</li>
+</ol>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.phonon.ModePhonon.iter">
+<span class="sig-name descname"><span class="pre">iter</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">asarray</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.phonon.ModePhonon.iter" title="Permalink to this definition"></a></dt>
+<dd><p>An iterator looping over the states in this system</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>asarray</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – if true the yielded values are the state vectors, i.e. a numpy array.
+Otherwise an equivalent object is yielded.</p>
+</dd>
+<dt class="field-even">Yields</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>state</strong> (<em>State</em>) – a state <em>only</em> containing individual elements, if <em class="xref py py-obj">asarray</em> is false</p></li>
+<li><p><strong>state</strong> (<em>numpy.ndarray</em>) – a state <em>only</em> containing individual elements, if <em class="xref py py-obj">asarray</em> is true</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.physics.phonon.ModePhonon.mode">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">mode</span></span><a class="headerlink" href="#sisl.physics.phonon.ModePhonon.mode" title="Permalink to this definition"></a></dt>
+<dd><p>Eigenmodes (states)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.phonon.ModePhonon.norm">
+<span class="sig-name descname"><span class="pre">norm</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.phonon.ModePhonon.norm" title="Permalink to this definition"></a></dt>
+<dd><p>Return a vector with the Euclidean norm of each state <span class="math notranslate nohighlight">\(\sqrt{\langle\psi|\psi\rangle}\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the Euclidean norm for each state</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.phonon.ModePhonon.norm2">
+<span class="sig-name descname"><span class="pre">norm2</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sum</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.phonon.ModePhonon.norm2" title="Permalink to this definition"></a></dt>
+<dd><p>Return a vector with the norm of each state <span class="math notranslate nohighlight">\(\langle\psi|\psi\rangle\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sum</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – for true only a single number per state will be returned, otherwise the norm
+per basis element will be returned.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the squared norm for each state</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.phonon.ModePhonon.normalize">
+<span class="sig-name descname"><span class="pre">normalize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.phonon.ModePhonon.normalize" title="Permalink to this definition"></a></dt>
+<dd><p>Return a normalized state where each state has <span class="math notranslate nohighlight">\(|\psi|^2=1\)</span></p>
+<p>This is roughly equivalent to:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">state</span> <span class="o">=</span> <span class="n">State</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">n</span> <span class="o">=</span> <span class="n">state</span><span class="o">.</span><span class="n">norm</span><span class="p">()</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">norm_state</span> <span class="o">=</span> <span class="n">State</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">state</span> <span class="o">/</span> <span class="n">n</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+</pre></div>
+</div>
+<p class="rubric">Notes</p>
+<p>This does <em>not</em> take into account a possible overlap matrix when non-orthogonal basis sets are used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a new state with all states normalized, otherwise equal to this</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State">State</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.phonon.ModePhonon.outer">
+<span class="sig-name descname"><span class="pre">outer</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ket</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.phonon.ModePhonon.outer" title="Permalink to this definition"></a></dt>
+<dd><p>Return the outer product by <span class="math notranslate nohighlight">\(\sum_i|\psi_i\rangle\langle\psi'_i|\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ket</strong> (<a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State"><em>State</em></a><em>, </em><em>optional</em>) – the ket object to calculate the outer product of, if not passed it will do the outer
+product with itself. The object itself will always be the bra <span class="math notranslate nohighlight">\(|\psi_i\rangle\)</span></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This does <em>not</em> take into account a possible overlap matrix when non-orthogonal basis sets are used.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a matrix with the sum of outer state products</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.21)">numpy.ndarray</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.physics.phonon.ModePhonon.parent">
+<span class="sig-name descname"><span class="pre">parent</span></span><a class="headerlink" href="#sisl.physics.phonon.ModePhonon.parent" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.phonon.ModePhonon.phase">
+<span class="sig-name descname"><span class="pre">phase</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'max'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ret_index</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.phonon.ModePhonon.phase" title="Permalink to this definition"></a></dt>
+<dd><p>Calculate the Euler angle (phase) for the elements of the state, in the range <span class="math notranslate nohighlight">\(]-\pi;\pi]\)</span></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>method</strong> (<em>{'max'</em><em>, </em><em>'all'}</em>) – for max, the phase for the element which has the largest absolute magnitude is returned,
+for all, all phases are calculated</p></li>
+<li><p><strong>ret_index</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – return indices for the elements used when <code class="docutils literal notranslate"><span class="pre">method=='max'</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.phonon.ModePhonon.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.phonon.ModePhonon.remove" title="Permalink to this definition"></a></dt>
+<dd><p>Return a new state without the specified vectors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>array_like</em>) – indices that are removed in the returned object</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a new state without containing the requested elements</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State">State</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.phonon.ModePhonon.rotate">
+<span class="sig-name descname"><span class="pre">rotate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">phi</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">individual</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.phonon.ModePhonon.rotate" title="Permalink to this definition"></a></dt>
+<dd><p>Rotate all states (in-place) to rotate the largest component to be along the angle <em class="xref py py-obj">phi</em></p>
+<p>The states will be rotated according to:</p>
+<div class="math notranslate nohighlight">
+\[S' = S / S^\dagger_{\phi-\mathrm{max}} \exp (i \phi),\]</div>
+<p>where <span class="math notranslate nohighlight">\(S^\dagger_{\phi-\mathrm{max}}\)</span> is the phase of the component with the largest amplitude
+and <span class="math notranslate nohighlight">\(\phi\)</span> is the angle to align on.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>phi</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – angle to align the state at (in radians), 0 is the positive real axis</p></li>
+<li><p><strong>individual</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the rotation is per state, or a single maximum component is chosen.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.physics.phonon.ModePhonon.shape">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#sisl.physics.phonon.ModePhonon.shape" title="Permalink to this definition"></a></dt>
+<dd><p>Returns the shape of the state</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.physics.phonon.ModePhonon.state">
+<span class="sig-name descname"><span class="pre">state</span></span><a class="headerlink" href="#sisl.physics.phonon.ModePhonon.state" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.phonon.ModePhonon.sub">
+<span class="sig-name descname"><span class="pre">sub</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">idx</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.phonon.ModePhonon.sub" title="Permalink to this definition"></a></dt>
+<dd><p>Return a new state with only the specified states</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>idx</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>array_like</em>) – indices that are retained in the returned object</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a new state only containing the requested elements</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="sisl.physics.State.html#sisl.physics.State" title="sisl.physics.State">State</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.phonon.ModePhonon.tile">
+<span class="sig-name descname"><span class="pre">tile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.phonon.ModePhonon.tile" title="Permalink to this definition"></a></dt>
+<dd><p>Tile the state vectors for a new supercell</p>
+<p>Tiling a state vector makes use of the Bloch factors for a state by utilizing</p>
+<div class="math notranslate nohighlight">
+\[\psi_{\mathbf k}(\mathbf r + \mathbf T) \propto e^{i\mathbf k\cdot \mathbf T}\]</div>
+<p>where <span class="math notranslate nohighlight">\(\mathbf T = i\mathbf a_0 + j\mathbf a_1 + l\mathbf a_2\)</span>. Note that <em class="xref py py-obj">axis</em>
+selects which of the <span class="math notranslate nohighlight">\(\mathbf a_i\)</span> vectors that are translated and <em class="xref py py-obj">reps</em> corresponds
+to the <span class="math notranslate nohighlight">\(i\)</span>, <span class="math notranslate nohighlight">\(j\)</span> and <span class="math notranslate nohighlight">\(l\)</span> variables. The <em class="xref py py-obj">offset</em> moves the individual states
+by said amount, i.e. <span class="math notranslate nohighlight">\(i\to i+\mathrm{offset}\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – number of repetitions along a specific lattice vector</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – lattice vector to tile along</p></li>
+<li><p><strong>normalize</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – whether the states are normalized upon return, may be useful for
+eigenstates</p></li>
+<li><p><strong>offset</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – the offset for the phase factors</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.tile</span></code></p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.phonon.ModePhonon.translate">
+<span class="sig-name descname"><span class="pre">translate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">isc</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.phonon.ModePhonon.translate" title="Permalink to this definition"></a></dt>
+<dd><p>Translate the vectors to a new unit-cell position</p>
+<p>The method is thoroughly explained in <a class="reference internal" href="#sisl.physics.phonon.ModePhonon.tile" title="sisl.physics.phonon.ModePhonon.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a> while this one only
+selects the corresponding state vector</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>isc</strong> (<em>(</em><em>3</em><em>,</em><em>)</em>) – number of offsets for the statevector</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.physics.phonon.ModePhonon.tile" title="sisl.physics.phonon.ModePhonon.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a></dt><dd><p>equivalent method for generating more cells simultaneously</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sisl.physics.phonon.CoefficientPhonon.html" class="btn btn-neutral float-left" title="sisl.physics.phonon.CoefficientPhonon" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.physics.phonon.ModeCPhonon.html" class="btn btn-neutral float-right" title="sisl.physics.phonon.ModeCPhonon" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

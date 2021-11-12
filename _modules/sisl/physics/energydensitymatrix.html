@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.physics.energydensitymatrix &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>sisl.physics.energydensitymatrix</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sisl.physics.energydensitymatrix</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
+<span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
+<span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
+<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">SislError</span>
+<span class="kn">from</span> <span class="nn">.densitymatrix</span> <span class="kn">import</span> <span class="n">_densitymatrix</span>
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;EnergyDensityMatrix&#39;</span><span class="p">]</span>
+
+
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.physics&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">EnergyDensityMatrix</span><span class="p">(</span><span class="n">_densitymatrix</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Sparse energy density matrix object</span>
+
+<span class="sd">    Assigning or changing elements is as easy as with standard `numpy` assignments:</span>
+
+<span class="sd">    &gt;&gt;&gt; EDM = EnergyDensityMatrix(...)</span>
+<span class="sd">    &gt;&gt;&gt; EDM.E[1,2] = 0.1</span>
+
+<span class="sd">    which assigns 0.1 as the density element between orbital 2 and 3.</span>
+<span class="sd">    (remember that Python is 0-based elements).</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    geometry : Geometry</span>
+<span class="sd">      parent geometry to create a energy density matrix from. The energy density matrix will</span>
+<span class="sd">      have size equivalent to the number of orbitals in the geometry</span>
+<span class="sd">    dim : int or Spin, optional</span>
+<span class="sd">      number of components per element, may be a `Spin` object</span>
+<span class="sd">    dtype : np.dtype, optional</span>
+<span class="sd">      data type contained in the energy density matrix. See details of `Spin` for default values.</span>
+<span class="sd">    nnzpr : int, optional</span>
+<span class="sd">      number of initially allocated memory per orbital in the energy density matrix.</span>
+<span class="sd">      For increased performance this should be larger than the actual number of entries</span>
+<span class="sd">      per orbital.</span>
+<span class="sd">    spin : Spin, optional</span>
+<span class="sd">      equivalent to `dim` argument. This keyword-only argument has precedence over `dim`.</span>
+<span class="sd">    orthogonal : bool, optional</span>
+<span class="sd">      whether the energy density matrix corresponds to a non-orthogonal basis. In this case</span>
+<span class="sd">      the dimensionality of the energy density matrix is one more than `dim`.</span>
+<span class="sd">      This is a keyword-only argument.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="EnergyDensityMatrix.__init__"><a class="viewcode-back" href="../../../api/generated/sisl.physics.EnergyDensityMatrix.html#sisl.physics.EnergyDensityMatrix.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">geometry</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nnzpr</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">geometry</span><span class="p">,</span> <span class="n">dim</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">nnzpr</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_reset</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="nf">_reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_reset</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Ek</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Pk</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">dEk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">dPk</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ddEk</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">ddPk</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">E</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Access the energy density matrix elements &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_def_dim</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">UP</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+<div class="viewcode-block" id="EnergyDensityMatrix.Ek"><a class="viewcode-back" href="../../../api/generated/sisl.physics.EnergyDensityMatrix.html#sisl.physics.EnergyDensityMatrix.Ek">[docs]</a>    <span class="k">def</span> <span class="nf">Ek</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Setup the energy density matrix for a given k-point</span>
+
+<span class="sd">        Creation and return of the energy density matrix for a given k-point (default to Gamma).</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+
+<span class="sd">        Currently the implemented gauge for the k-point is the cell vector gauge:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">           \mathbf E(k) = \mathbf E_{\nu\mu} e^{i k R}</span>
+
+<span class="sd">        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.</span>
+
+<span class="sd">        Another possible gauge is the orbital distance which can be written as</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">           \mathbf E(k) = \mathbf E_{\nu\mu} e^{i k r}</span>
+
+<span class="sd">        where :math:`r` is the distance between the orbitals.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        k : array_like</span>
+<span class="sd">           the k-point to setup the energy density matrix at</span>
+<span class="sd">        dtype : numpy.dtype , optional</span>
+<span class="sd">           the data type of the returned matrix. Do NOT request non-complex</span>
+<span class="sd">           data-type for non-Gamma k.</span>
+<span class="sd">           The default data-type is `numpy.complex128`</span>
+<span class="sd">        gauge : {&#39;R&#39;, &#39;r&#39;}</span>
+<span class="sd">           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance</span>
+<span class="sd">           gauge.</span>
+<span class="sd">        format : {&#39;csr&#39;, &#39;array&#39;, &#39;dense&#39;, &#39;coo&#39;, ...}</span>
+<span class="sd">           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,</span>
+<span class="sd">           however if one always requires operations on dense matrices, one can always</span>
+<span class="sd">           return in `numpy.ndarray` (`&#39;array&#39;`/`&#39;dense&#39;`/`&#39;matrix&#39;`).</span>
+<span class="sd">           Prefixing with &#39;sc:&#39;, or simply &#39;sc&#39; returns the matrix in supercell format</span>
+<span class="sd">           with phases.</span>
+<span class="sd">        spin : int, optional</span>
+<span class="sd">           if the energy density matrix is a spin polarized one can extract the specific spin direction</span>
+<span class="sd">           matrix by passing an integer (0 or 1). If the energy density matrix is not `Spin.POLARIZED`</span>
+<span class="sd">           this keyword is ignored.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        dEk : Energy density matrix derivative with respect to `k`</span>
+<span class="sd">        ddEk : Energy density matrix double derivative with respect to `k`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        matrix : numpy.ndarray or scipy.sparse.*_matrix</span>
+<span class="sd">            the energy density matrix at :math:`k`. The returned object depends on `format`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="EnergyDensityMatrix.dEk"><a class="viewcode-back" href="../../../api/generated/sisl.physics.EnergyDensityMatrix.html#sisl.physics.EnergyDensityMatrix.dEk">[docs]</a>    <span class="k">def</span> <span class="nf">dEk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Setup the energy density matrix derivative for a given k-point</span>
+
+<span class="sd">        Creation and return of the energy density matrix derivative for a given k-point (default to Gamma).</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+
+<span class="sd">        Currently the implemented gauge for the k-point is the cell vector gauge:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">           \nabla_k \mathbf E_\alpha(k) = i R_\alpha \mathbf E_{\nu\mu} e^{i k R}</span>
+
+<span class="sd">        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.</span>
+<span class="sd">        And :math:`\alpha` is one of the Cartesian directions.</span>
+
+<span class="sd">        Another possible gauge is the orbital distance which can be written as</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">           \nabla_k \mathbf E_\alpha(k) = i r_\alpha \mathbf E_{\nu\mu} e^{i k r}</span>
+
+<span class="sd">        where :math:`r` is the distance between the orbitals.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        k : array_like</span>
+<span class="sd">           the k-point to setup the energy density matrix at</span>
+<span class="sd">        dtype : numpy.dtype , optional</span>
+<span class="sd">           the data type of the returned matrix. Do NOT request non-complex</span>
+<span class="sd">           data-type for non-Gamma k.</span>
+<span class="sd">           The default data-type is `numpy.complex128`</span>
+<span class="sd">        gauge : {&#39;R&#39;, &#39;r&#39;}</span>
+<span class="sd">           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance</span>
+<span class="sd">           gauge.</span>
+<span class="sd">        format : {&#39;csr&#39;, &#39;array&#39;, &#39;dense&#39;, &#39;coo&#39;, ...}</span>
+<span class="sd">           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,</span>
+<span class="sd">           however if one always requires operations on dense matrices, one can always</span>
+<span class="sd">           return in `numpy.ndarray` (`&#39;array&#39;`/`&#39;dense&#39;`/`&#39;matrix&#39;`).</span>
+<span class="sd">        spin : int, optional</span>
+<span class="sd">           if the energy density matrix is a spin polarized one can extract the specific spin direction</span>
+<span class="sd">           matrix by passing an integer (0 or 1). If the energy density matrix is not `Spin.POLARIZED`</span>
+<span class="sd">           this keyword is ignored.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        Ek : Energy density matrix with respect to `k`</span>
+<span class="sd">        ddEk : Energy density matrix double derivative with respect to `k`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        tuple</span>
+<span class="sd">            for each of the Cartesian directions a :math:`\partial \mathbf E(k)/\partial k` is returned.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="EnergyDensityMatrix.ddEk"><a class="viewcode-back" href="../../../api/generated/sisl.physics.EnergyDensityMatrix.html#sisl.physics.EnergyDensityMatrix.ddEk">[docs]</a>    <span class="k">def</span> <span class="nf">ddEk</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s1">&#39;R&#39;</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s1">&#39;csr&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Setup the energy density matrix double derivative for a given k-point</span>
+
+<span class="sd">        Creation and return of the energy density matrix double derivative for a given k-point (default to Gamma).</span>
+
+<span class="sd">        Notes</span>
+<span class="sd">        -----</span>
+
+<span class="sd">        Currently the implemented gauge for the k-point is the cell vector gauge:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">           \nabla_k^2 \mathbf E_{\alpha\beta}(k) = - R_\alpha R_\beta \mathbf E_{\nu\mu} e^{i k R}</span>
+
+<span class="sd">        where :math:`R` is an integer times the cell vector and :math:`\nu`, :math:`\mu` are orbital indices.</span>
+<span class="sd">        And :math:`\alpha` and :math:`\beta` are one of the Cartesian directions.</span>
+
+<span class="sd">        Another possible gauge is the orbital distance which can be written as</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">           \nabla_k^2 \mathbf E_{\alpha\beta}(k) = - r_\alpha r_\beta \mathbf E_{\nu\mu} e^{i k r}</span>
+
+<span class="sd">        where :math:`r` is the distance between the orbitals.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        k : array_like</span>
+<span class="sd">           the k-point to setup the energy density matrix at</span>
+<span class="sd">        dtype : numpy.dtype , optional</span>
+<span class="sd">           the data type of the returned matrix. Do NOT request non-complex</span>
+<span class="sd">           data-type for non-Gamma k.</span>
+<span class="sd">           The default data-type is `numpy.complex128`</span>
+<span class="sd">        gauge : {&#39;R&#39;, &#39;r&#39;}</span>
+<span class="sd">           the chosen gauge, `R` for cell vector gauge, and `r` for orbital distance</span>
+<span class="sd">           gauge.</span>
+<span class="sd">        format : {&#39;csr&#39;, &#39;array&#39;, &#39;dense&#39;, &#39;coo&#39;, ...}</span>
+<span class="sd">           the returned format of the matrix, defaulting to the ``scipy.sparse.csr_matrix``,</span>
+<span class="sd">           however if one always requires operations on dense matrices, one can always</span>
+<span class="sd">           return in `numpy.ndarray` (`&#39;array&#39;`/`&#39;dense&#39;`/`&#39;matrix&#39;`).</span>
+<span class="sd">        spin : int, optional</span>
+<span class="sd">           if the energy density matrix is a spin polarized one can extract the specific spin direction</span>
+<span class="sd">           matrix by passing an integer (0 or 1). If the energy density matrix is not `Spin.POLARIZED`</span>
+<span class="sd">           this keyword is ignored.</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        Ek : Energy density matrix with respect to `k`</span>
+<span class="sd">        dEk : Energy density matrix derivative with respect to `k`</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        list of matrices</span>
+<span class="sd">            for each of the Cartesian directions (in Voigt representation); xx, yy, zz, zy, xz, xy</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="EnergyDensityMatrix.shift"><a class="viewcode-back" href="../../../api/generated/sisl.physics.EnergyDensityMatrix.html#sisl.physics.EnergyDensityMatrix.shift">[docs]</a>    <span class="k">def</span> <span class="nf">shift</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">DM</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Shift the energy density matrix to a common energy by using a reference density matrix</span>
+
+<span class="sd">        This is equal to performing this operation:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">           \mathfrak E_\sigma = \mathfrak E_\sigma + E \boldsymbol \rho_\sigma</span>
+
+<span class="sd">        where :math:`\mathfrak E_\sigma` correspond to the spin diagonal components of the</span>
+<span class="sd">        energy density matrix and :math:`\boldsymbol \rho_\sigma` is the spin diagonal</span>
+<span class="sd">        components of the corresponding density matrix.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        E : float or (2,)</span>
+<span class="sd">           the energy (in eV) to shift the energy density matrix, if two values are passed</span>
+<span class="sd">           the two first spin-components get shifted individually.</span>
+<span class="sd">        DM : DensityMatrix</span>
+<span class="sd">           density matrix corresponding to the same geometry</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">spsame</span><span class="p">(</span><span class="n">DM</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">SislError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.shift requires the input DM to have &quot;</span>
+                            <span class="s2">&quot;the same sparsity as the shifted object.&quot;</span><span class="p">)</span>
+
+        <span class="n">E</span> <span class="o">=</span> <span class="n">_a</span><span class="o">.</span><span class="n">asarrayd</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">E</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">E</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mf">0.</span><span class="p">:</span>
+            <span class="c1"># When the energy is zero, there is no shift</span>
+            <span class="k">return</span>
+
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">spin</span><span class="o">.</span><span class="n">spinor</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">+=</span> <span class="n">DM</span><span class="o">.</span><span class="n">_csr</span><span class="o">.</span><span class="n">_D</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">E</span><span class="p">[</span><span class="n">i</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="EnergyDensityMatrix.read"><a class="viewcode-back" href="../../../api/generated/sisl.physics.EnergyDensityMatrix.html#sisl.physics.EnergyDensityMatrix.read">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">read</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Reads density matrix from `Sile` using `read_energy_density_matrix`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        sile : Sile, str or pathlib.Path</span>
+<span class="sd">            a `Sile` object which will be used to read the density matrix</span>
+<span class="sd">            and the overlap matrix (if any)</span>
+<span class="sd">            if it is a string it will create a new sile using `get_sile`.</span>
+<span class="sd">        * : args passed directly to ``read_energy_density_matrix(,**)``</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># This only works because, they *must*</span>
+        <span class="c1"># have been imported previously</span>
+        <span class="kn">from</span> <span class="nn">sisl.io</span> <span class="kn">import</span> <span class="n">get_sile</span><span class="p">,</span> <span class="n">BaseSile</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">BaseSile</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">sile</span><span class="o">.</span><span class="n">read_energy_density_matrix</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">get_sile</span><span class="p">(</span><span class="n">sile</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">fh</span><span class="o">.</span><span class="n">read_energy_density_matrix</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="EnergyDensityMatrix.write"><a class="viewcode-back" href="../../../api/generated/sisl.physics.EnergyDensityMatrix.html#sisl.physics.EnergyDensityMatrix.write">[docs]</a>    <span class="k">def</span> <span class="nf">write</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sile</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Writes a density matrix to the `Sile` as implemented in the :code:`Sile.write_energy_density_matrix` method &quot;&quot;&quot;</span>
+        <span class="c1"># This only works because, they *must*</span>
+        <span class="c1"># have been imported previously</span>
+        <span class="kn">from</span> <span class="nn">sisl.io</span> <span class="kn">import</span> <span class="n">get_sile</span><span class="p">,</span> <span class="n">BaseSile</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="n">BaseSile</span><span class="p">):</span>
+            <span class="n">sile</span><span class="o">.</span><span class="n">write_energy_density_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">with</span> <span class="n">get_sile</span><span class="p">(</span><span class="n">sile</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">fh</span><span class="p">:</span>
+                <span class="n">fh</span><span class="o">.</span><span class="n">write_energy_density_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

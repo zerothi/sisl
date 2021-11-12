@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.utils.ranges &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+        <script src="../../../_static/jquery.js"></script>
+        <script src="../../../_static/underscore.js"></script>
+        <script src="../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../api/index.html">API documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../index.html">Module code</a> &raquo;</li>
+      <li>sisl.utils.ranges</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sisl.utils.ranges</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
+<span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
+<span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">groupby</span>
+
+<span class="kn">from</span> <span class="nn">sisl._array</span> <span class="kn">import</span> <span class="n">array_arange</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;strmap&quot;</span><span class="p">,</span> <span class="s2">&quot;strseq&quot;</span><span class="p">,</span> <span class="s2">&quot;lstranges&quot;</span><span class="p">,</span> <span class="s2">&quot;erange&quot;</span><span class="p">,</span> <span class="s2">&quot;list2str&quot;</span><span class="p">,</span> <span class="s2">&quot;fileindex&quot;</span><span class="p">]</span>
+<span class="c1"># this will be deprecated sooner or later</span>
+<span class="n">__all__</span> <span class="o">+=</span> <span class="p">[</span><span class="s2">&quot;array_arange&quot;</span><span class="p">]</span>
+
+
+<span class="c1"># Function to change a string to a range of integers</span>
+<div class="viewcode-block" id="strmap"><a class="viewcode-back" href="../../../api/generated/sisl.utils.strmap.html#sisl.utils.strmap">[docs]</a><span class="k">def</span> <span class="nf">strmap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;b&quot;</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Parse a string as though it was a slice and map all entries using ``func``.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    func : function</span>
+<span class="sd">       function to parse every match with</span>
+<span class="sd">    s    : str</span>
+<span class="sd">       the string that should be parsed</span>
+<span class="sd">    start  : optional</span>
+<span class="sd">       the replacement in case the LHS of the delimiter is not present</span>
+<span class="sd">    end  : optional</span>
+<span class="sd">       the replacement in case the RHS of the delimiter is not present</span>
+<span class="sd">    sep  : {&quot;b&quot;, &quot;c&quot;}</span>
+<span class="sd">       separator used, ``&quot;b&quot;`` is square brackets, ``&quot;c&quot;``, curly braces</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; strmap(int, &quot;1&quot;)</span>
+<span class="sd">    [1]</span>
+<span class="sd">    &gt;&gt;&gt; strmap(int, &quot;1-2&quot;)</span>
+<span class="sd">    [(1, 2)]</span>
+<span class="sd">    &gt;&gt;&gt; strmap(int, &quot;-2&quot;, end=4)</span>
+<span class="sd">    [2]</span>
+<span class="sd">    &gt;&gt;&gt; strmap(int, &quot;1-&quot;)</span>
+<span class="sd">    [(1, None)]</span>
+<span class="sd">    &gt;&gt;&gt; strmap(int, &quot;1-&quot;, end=4)</span>
+<span class="sd">    [(1, 4)]</span>
+<span class="sd">    &gt;&gt;&gt; strmap(int, &quot;1-10[2-3]&quot;)</span>
+<span class="sd">    [((1, 10), [(2, 3)])]</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">sep</span> <span class="o">==</span> <span class="s2">&quot;b&quot;</span><span class="p">:</span>
+        <span class="n">segment</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\[(.+)\]\[(.+)\]|(.+)\[(.+)\]|(.+)&quot;</span><span class="p">)</span>
+        <span class="n">sep1</span><span class="p">,</span> <span class="n">sep2</span> <span class="o">=</span> <span class="s2">&quot;[&quot;</span><span class="p">,</span> <span class="s2">&quot;]&quot;</span>
+    <span class="k">elif</span> <span class="n">sep</span> <span class="o">==</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span>
+        <span class="n">segment</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\{(.+)\}\{(.+)\}|(.+)\{(.+)\}|(.+)&quot;</span><span class="p">)</span>
+        <span class="n">sep1</span><span class="p">,</span> <span class="n">sep2</span> <span class="o">=</span> <span class="s2">&quot;{&quot;</span><span class="p">,</span> <span class="s2">&quot;}&quot;</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;strmap: unknown separator for the sequence&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Create list</span>
+    <span class="n">s</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[</span><span class="kc">None</span><span class="p">]</span>
+    <span class="k">elif</span> <span class="n">s</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="s2">&quot;:&quot;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="p">[(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">)]</span>
+
+    <span class="n">commas</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Collect all the comma separated quantities that</span>
+    <span class="c1"># may be selected by [..,..]</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">commas</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">commas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">sep1</span><span class="p">)</span> <span class="o">==</span> <span class="n">commas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">sep2</span><span class="p">):</span>
+            <span class="n">i</span> <span class="o">=</span> <span class="n">i</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># there must be more [ than ]</span>
+            <span class="n">commas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">commas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="s2">&quot;,&quot;</span> <span class="o">+</span> <span class="n">commas</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">del</span> <span class="n">commas</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+
+    <span class="c1"># Check the last input...</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">commas</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+    <span class="k">if</span> <span class="n">commas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">sep1</span><span class="p">)</span> <span class="o">!=</span> <span class="n">commas</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="n">sep2</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Unbalanced string: not enough </span><span class="si">{</span><span class="n">sep1</span><span class="si">}</span><span class="s2"> and </span><span class="si">{</span><span class="n">sep2</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Now we have a comma-separated list</span>
+    <span class="c1"># with collected brackets.</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="k">for</span> <span class="n">seg</span> <span class="ow">in</span> <span class="n">commas</span><span class="p">:</span>
+
+        <span class="c1"># Split it in groups of reg-exps</span>
+        <span class="n">m</span> <span class="o">=</span> <span class="n">segment</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">seg</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># this is: [..][..]</span>
+            <span class="n">rhs</span> <span class="o">=</span> <span class="n">strmap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">m</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">sep</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">strmap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">m</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">sep</span><span class="p">):</span>
+                <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">el</span><span class="p">,</span> <span class="n">rhs</span><span class="p">))</span>
+
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="c1"># this is: ..[..]</span>
+            <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">strseq</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">m</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">),</span>
+                      <span class="n">strmap</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">m</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">sep</span><span class="p">)))</span>
+
+        <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">m</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">strseq</span><span class="p">(</span><span class="n">func</span><span class="p">,</span> <span class="n">m</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">l</span></div>
+
+
+<div class="viewcode-block" id="strseq"><a class="viewcode-back" href="../../../api/generated/sisl.utils.strseq.html#sisl.utils.strseq">[docs]</a><span class="k">def</span> <span class="nf">strseq</span><span class="p">(</span><span class="n">cast</span><span class="p">,</span> <span class="n">s</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Accept a string and return the casted tuples of content based on ranges.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    cast : function</span>
+<span class="sd">       parser of the individual elements</span>
+<span class="sd">    s : str</span>
+<span class="sd">       string with content</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; strseq(int, &quot;3&quot;)</span>
+<span class="sd">    3</span>
+<span class="sd">    &gt;&gt;&gt; strseq(int, &quot;3-6&quot;)</span>
+<span class="sd">    (3, 6)</span>
+<span class="sd">    &gt;&gt;&gt; strseq(int, &quot;-2&quot;)</span>
+<span class="sd">    -2</span>
+<span class="sd">    &gt;&gt;&gt; strseq(int, &quot;-2&quot;, end=7)</span>
+<span class="sd">    5</span>
+<span class="sd">    &gt;&gt;&gt; strseq(int, &quot;-2:2&quot;, end=7)</span>
+<span class="sd">    (-2, 2)</span>
+<span class="sd">    &gt;&gt;&gt; strseq(int, &quot;-2-2&quot;, end=7)</span>
+<span class="sd">    (-2, 2)</span>
+<span class="sd">    &gt;&gt;&gt; strseq(int, &quot;3-&quot;)</span>
+<span class="sd">    (3, None)</span>
+<span class="sd">    &gt;&gt;&gt; strseq(int, &quot;3:2:7&quot;)</span>
+<span class="sd">    (3, 2, 7)</span>
+<span class="sd">    &gt;&gt;&gt; strseq(int, &quot;3:2:&quot;, end=8)</span>
+<span class="sd">    (3, 2, 8)</span>
+<span class="sd">    &gt;&gt;&gt; strseq(int, &quot;:2:&quot;, start=2)</span>
+<span class="sd">    (2, 2, None)</span>
+<span class="sd">    &gt;&gt;&gt; strseq(float, &quot;3.2:6.3&quot;)</span>
+<span class="sd">    (3.2, 6.3)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="s2">&quot;:&quot;</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="n">ss</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">ss</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;:&quot;</span><span class="p">)]</span>
+    <span class="k">elif</span> <span class="n">s</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">s</span><span class="o">.</span><span class="n">count</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="n">ss</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">ss</span> <span class="ow">in</span> <span class="n">s</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)]</span>
+            <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;-</span><span class="si">{</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">&quot;</span>
+    <span class="k">elif</span> <span class="s2">&quot;-&quot;</span> <span class="ow">in</span> <span class="n">s</span><span class="p">:</span>
+        <span class="n">s</span> <span class="o">=</span> <span class="p">[</span><span class="n">ss</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="k">for</span> <span class="n">ss</span> <span class="ow">in</span> <span class="n">s</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">s</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">start</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">s</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">s</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">end</span>
+        <span class="k">return</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">ss</span><span class="p">)</span> <span class="k">if</span> <span class="n">ss</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="k">else</span> <span class="kc">None</span> <span class="k">for</span> <span class="n">ss</span> <span class="ow">in</span> <span class="n">s</span><span class="p">)</span>
+    <span class="n">ret</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">s</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">ret</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ret</span> <span class="o">+</span> <span class="n">end</span>
+    <span class="k">return</span> <span class="n">ret</span></div>
+
+
+<div class="viewcode-block" id="erange"><a class="viewcode-back" href="../../../api/generated/sisl.utils.erange.html#sisl.utils.erange">[docs]</a><span class="k">def</span> <span class="nf">erange</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Returns the range with both ends includede &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">end</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">step</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">range</span><span class="p">(</span><span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">step</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="lstranges"><a class="viewcode-back" href="../../../api/generated/sisl.utils.lstranges.html#sisl.utils.lstranges">[docs]</a><span class="k">def</span> <span class="nf">lstranges</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="n">cast</span><span class="o">=</span><span class="n">erange</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Convert a `strmap` list into expanded ranges &quot;&quot;&quot;</span>
+    <span class="n">l</span> <span class="o">=</span> <span class="p">[]</span>
+    <span class="c1"># If an entry is a tuple, it means it is either</span>
+    <span class="c1"># a range 0-1 == tuple(0, 1), or</span>
+    <span class="c1"># a sub-range</span>
+    <span class="c1">#   0[0-1], 0-1[0-1]</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">lst</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="n">l</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="o">*</span><span class="n">lst</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">head</span> <span class="o">=</span> <span class="n">lstranges</span><span class="p">(</span><span class="n">lst</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cast</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+            <span class="n">bot</span> <span class="o">=</span> <span class="n">lstranges</span><span class="p">(</span><span class="n">lst</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">cast</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">el</span> <span class="ow">in</span> <span class="n">head</span><span class="p">:</span>
+                    <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">el</span><span class="p">,</span> <span class="n">bot</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">bot</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="n">head</span><span class="p">,</span> <span class="n">bot</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">l</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">head</span><span class="p">,</span> <span class="n">bot</span><span class="p">))</span>
+
+    <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">lst</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">lt</span> <span class="ow">in</span> <span class="n">lst</span><span class="p">:</span>
+            <span class="n">ls</span> <span class="o">=</span> <span class="n">lstranges</span><span class="p">(</span><span class="n">lt</span><span class="p">,</span> <span class="n">cast</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">ls</span><span class="p">,</span> <span class="nb">list</span><span class="p">):</span>
+                <span class="n">l</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">ls</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">l</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ls</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">lst</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">end</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">end</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">lst</span>
+    <span class="k">return</span> <span class="n">l</span></div>
+
+
+<div class="viewcode-block" id="list2str"><a class="viewcode-back" href="../../../api/generated/sisl.utils.list2str.html#sisl.utils.list2str">[docs]</a><span class="k">def</span> <span class="nf">list2str</span><span class="p">(</span><span class="n">lst</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Convert a list of elements into a string of ranges</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; list2str([2, 4, 5, 6])</span>
+<span class="sd">    &quot;2, 4-6&quot;</span>
+<span class="sd">    &gt;&gt;&gt; list2str([2, 4, 5, 6, 8, 9])</span>
+<span class="sd">    &quot;2, 4-6, 8-9&quot;</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">lst</span> <span class="o">=</span> <span class="n">lst</span><span class="p">[:]</span>
+    <span class="n">lst</span><span class="o">.</span><span class="n">sort</span><span class="p">()</span>
+    <span class="c1"># Create positions</span>
+    <span class="n">pos</span> <span class="o">=</span> <span class="p">[</span><span class="n">j</span> <span class="o">-</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">lst</span><span class="p">)]</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">els</span> <span class="ow">in</span> <span class="n">groupby</span><span class="p">(</span><span class="n">pos</span><span class="p">):</span>
+        <span class="n">ln</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="n">els</span><span class="p">))</span>
+        <span class="n">el</span> <span class="o">=</span> <span class="n">lst</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">t</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">rng</span> <span class="o">+=</span> <span class="s2">&quot;, &quot;</span>
+        <span class="n">t</span> <span class="o">+=</span> <span class="n">ln</span>
+        <span class="k">if</span> <span class="n">ln</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">rng</span> <span class="o">+=</span> <span class="nb">str</span><span class="p">(</span><span class="n">el</span><span class="p">)</span>
+        <span class="c1">#elif ln == 2:</span>
+        <span class="c1">#    rng += &quot;{}, {}&quot;.format(str(el), str(el+ln-1))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">rng</span> <span class="o">+=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">-</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">el</span><span class="p">,</span> <span class="n">el</span><span class="o">+</span><span class="n">ln</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">rng</span></div>
+
+
+<span class="c1"># Function to retrieve an optional index from the</span>
+<span class="c1"># filename</span>
+<span class="c1">#   file[0] returns:</span>
+<span class="c1">#     file, 0</span>
+<span class="c1">#   file returns:</span>
+<span class="c1">#     file, None</span>
+<span class="c1">#   file[0-1] returns</span>
+<span class="c1">#     file, [0,1]</span>
+<div class="viewcode-block" id="fileindex"><a class="viewcode-back" href="../../../api/generated/sisl.utils.fileindex.html#sisl.utils.fileindex">[docs]</a><span class="k">def</span> <span class="nf">fileindex</span><span class="p">(</span><span class="n">f</span><span class="p">,</span> <span class="n">cast</span><span class="o">=</span><span class="nb">int</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; Parses a filename string into the filename and the indices.</span>
+
+<span class="sd">    This range can be formatted like this:</span>
+<span class="sd">      file[1,2,3-6]</span>
+<span class="sd">    in which case it will return:</span>
+<span class="sd">      file, [1,2,3,4,5,6]</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    f : str</span>
+<span class="sd">       filename to parse</span>
+<span class="sd">    cast : function</span>
+<span class="sd">       the function to cast the bracketed value</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; fileindex(&quot;Hello[0]&quot;)</span>
+<span class="sd">    (&quot;Hello&quot;, 0)</span>
+<span class="sd">    &gt;&gt;&gt; fileindex(&quot;Hello[0-2]&quot;)</span>
+<span class="sd">    (&quot;Hello&quot;, [0, 1, 2])</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="s2">&quot;[&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">f</span><span class="p">,</span> <span class="kc">None</span>
+
+    <span class="c1"># Grab the filename</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;[&quot;</span><span class="p">)</span>
+    <span class="n">fname</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="c1"># Re-join and remove the last &quot;]&quot;</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="s2">&quot;[&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">f</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;]&quot;</span><span class="p">:</span>
+        <span class="n">f</span> <span class="o">=</span> <span class="n">f</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="n">ranges</span> <span class="o">=</span> <span class="n">strmap</span><span class="p">(</span><span class="n">cast</span><span class="p">,</span> <span class="n">f</span><span class="p">)</span>
+    <span class="n">rng</span> <span class="o">=</span> <span class="n">lstranges</span><span class="p">(</span><span class="n">ranges</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">rng</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">fname</span><span class="p">,</span> <span class="n">rng</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+    <span class="k">return</span> <span class="n">fname</span><span class="p">,</span> <span class="n">rng</span></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.physics.Spin &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="sisl.physics.EnergyDensityMatrix" href="sisl.physics.EnergyDensityMatrix.html" />
+    <link rel="prev" title="Physical quantites" href="../physics.matrix.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API documentation</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../basic.html">Basic classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../default_geom.html">Common geometries</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../physics.html">Physical objects</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../physics.brillouinzone.html">Brillouin zone</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../physics.matrix.html">Physical quantites</a><ul class="current">
+<li class="toctree-l4 current"><a class="reference internal" href="../physics.matrix.html#spin">Spin</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../physics.matrix.html#matrices">Matrices</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../physics.matrix.html#self-energies">Self energies</a></li>
+<li class="toctree-l4"><a class="reference internal" href="../physics.matrix.html#bloch-s-theorem">Bloch’s theorem</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../physics.electron.html">Electron related functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../physics.phonon.html">Phonon related functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../physics.distribution.html">Distribution functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="../physics.html#low-level-objects">Low level objects</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API documentation</a> &raquo;</li>
+          <li><a href="../physics.html">Physical objects</a> &raquo;</li>
+          <li><a href="../physics.matrix.html">Physical quantites</a> &raquo;</li>
+      <li>sisl.physics.Spin</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/generated/sisl.physics.Spin.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="sisl-physics-spin">
+<h1>sisl.physics.Spin<a class="headerlink" href="#sisl-physics-spin" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="sisl.physics.Spin">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.physics.</span></span><span class="sig-name descname"><span class="pre">Spin</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kind=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=&lt;class</span> <span class="pre">'numpy.float64'&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.physics.Spin" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Spin class to determine configurations and spin components.</p>
+<p>The basic class <a class="reference internal" href="#sisl.physics.Spin" title="sisl.physics.Spin"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Spin</span></code></a> implements a generic method to determine a spin configuration.</p>
+<p>Its usage can be summarized in these few examples:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">Spin</span><span class="p">(</span><span class="n">Spin</span><span class="o">.</span><span class="n">UNPOLARIZED</span><span class="p">)</span> <span class="o">==</span> <span class="n">Spin</span><span class="p">(</span><span class="s1">&#39;unpolarized&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">Spin</span><span class="p">()</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Spin</span><span class="p">(</span><span class="n">Spin</span><span class="o">.</span><span class="n">POLARIZED</span><span class="p">)</span> <span class="o">==</span> <span class="n">Spin</span><span class="p">(</span><span class="s1">&#39;polarized&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">Spin</span><span class="p">(</span><span class="s1">&#39;p&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Spin</span><span class="p">(</span><span class="n">Spin</span><span class="o">.</span><span class="n">NONCOLINEAR</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span> <span class="o">==</span> <span class="n">Spin</span><span class="p">(</span><span class="s1">&#39;non-collinear&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">Spin</span><span class="p">(</span><span class="s1">&#39;nc&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">Spin</span><span class="p">(</span><span class="n">Spin</span><span class="o">.</span><span class="n">SPINORBIT</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">)</span> <span class="o">==</span> <span class="n">Spin</span><span class="p">(</span><span class="s1">&#39;spin-orbit&#39;</span><span class="p">)</span> <span class="o">==</span> <span class="n">Spin</span><span class="p">(</span><span class="s1">&#39;so&#39;</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>Note that a data-type may be associated with a spin-object. This is not to say
+that the data-type is used in the configuration, but merely that it helps
+any sub-classed or classes who use the spin-object to determine the
+usage of the different spin-components.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kind</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><em>str</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><a class="reference internal" href="#sisl.physics.Spin" title="sisl.physics.Spin"><em>Spin</em></a><em>, </em><em>optional</em>) – specify the spin kind</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.21)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the data-type used for the spin-component.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.Spin.copy" title="sisl.physics.Spin.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>()</p></td>
+<td><p>Create a copy of the spin-object</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.Spin.NONCOLINEAR" title="sisl.physics.Spin.NONCOLINEAR"><code class="xref py py-obj docutils literal notranslate"><span class="pre">NONCOLINEAR</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.Spin.POLARIZED" title="sisl.physics.Spin.POLARIZED"><code class="xref py py-obj docutils literal notranslate"><span class="pre">POLARIZED</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.Spin.SPINORBIT" title="sisl.physics.Spin.SPINORBIT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SPINORBIT</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.Spin.UNPOLARIZED" title="sisl.physics.Spin.UNPOLARIZED"><code class="xref py py-obj docutils literal notranslate"><span class="pre">UNPOLARIZED</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.Spin.X" title="sisl.physics.Spin.X"><code class="xref py py-obj docutils literal notranslate"><span class="pre">X</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.Spin.Y" title="sisl.physics.Spin.Y"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Y</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.Spin.Z" title="sisl.physics.Spin.Z"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Z</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.Spin.dkind" title="sisl.physics.Spin.dkind"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dkind</span></code></a></p></td>
+<td><p>Data-type kind</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.Spin.dtype" title="sisl.physics.Spin.dtype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dtype</span></code></a></p></td>
+<td><p>Data-type of the spin configuration</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.Spin.has_noncolinear" title="sisl.physics.Spin.has_noncolinear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">has_noncolinear</span></code></a></p></td>
+<td><p>True if the configuration is non-collinear or spin-orbit</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.Spin.is_colinear" title="sisl.physics.Spin.is_colinear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_colinear</span></code></a></p></td>
+<td><p>True if the configuration is polarized</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.Spin.is_diagonal" title="sisl.physics.Spin.is_diagonal"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_diagonal</span></code></a></p></td>
+<td><p>Whether the spin-box is only using the diagonal components</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.Spin.is_noncolinear" title="sisl.physics.Spin.is_noncolinear"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_noncolinear</span></code></a></p></td>
+<td><p>True if the configuration non-collinear</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.Spin.is_polarized" title="sisl.physics.Spin.is_polarized"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_polarized</span></code></a></p></td>
+<td><p>True if the configuration is polarized</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.Spin.is_spinorbit" title="sisl.physics.Spin.is_spinorbit"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_spinorbit</span></code></a></p></td>
+<td><p>True if the configuration is spin-orbit</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.Spin.is_unpolarized" title="sisl.physics.Spin.is_unpolarized"><code class="xref py py-obj docutils literal notranslate"><span class="pre">is_unpolarized</span></code></a></p></td>
+<td><p>True if the configuration is not polarized</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.Spin.kind" title="sisl.physics.Spin.kind"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kind</span></code></a></p></td>
+<td><p>A unique ID for the kind of spin configuration</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.Spin.size" title="sisl.physics.Spin.size"><code class="xref py py-obj docutils literal notranslate"><span class="pre">size</span></code></a></p></td>
+<td><p>Number of elements to describe the spin-components</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.physics.Spin.spinor" title="sisl.physics.Spin.spinor"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spinor</span></code></a></p></td>
+<td><p>Number of spinor components (1 or 2)</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.physics.Spin.spins" title="sisl.physics.Spin.spins"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spins</span></code></a></p></td>
+<td><p>Number of elements to describe the spin-components</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.physics.Spin.NONCOLINEAR">
+<span class="sig-name descname"><span class="pre">NONCOLINEAR</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">2</span></em><a class="headerlink" href="#sisl.physics.Spin.NONCOLINEAR" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.physics.Spin.POLARIZED">
+<span class="sig-name descname"><span class="pre">POLARIZED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1</span></em><a class="headerlink" href="#sisl.physics.Spin.POLARIZED" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.physics.Spin.SPINORBIT">
+<span class="sig-name descname"><span class="pre">SPINORBIT</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">3</span></em><a class="headerlink" href="#sisl.physics.Spin.SPINORBIT" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.physics.Spin.UNPOLARIZED">
+<span class="sig-name descname"><span class="pre">UNPOLARIZED</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">0</span></em><a class="headerlink" href="#sisl.physics.Spin.UNPOLARIZED" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.physics.Spin.X">
+<span class="sig-name descname"><span class="pre">X</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">array([[0.+0.j,</span> <span class="pre">1.+0.j],</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">[1.+0.j,</span> <span class="pre">0.+0.j]])</span></em><a class="headerlink" href="#sisl.physics.Spin.X" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.physics.Spin.Y">
+<span class="sig-name descname"><span class="pre">Y</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">array([[</span> <span class="pre">0.+0.j,</span> <span class="pre">-0.-1.j],</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">[</span> <span class="pre">0.+1.j,</span>&#160; <span class="pre">0.+0.j]])</span></em><a class="headerlink" href="#sisl.physics.Spin.Y" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="sisl.physics.Spin.Z">
+<span class="sig-name descname"><span class="pre">Z</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">array([[</span> <span class="pre">1.+0.j,</span>&#160; <span class="pre">0.+0.j],</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">[</span> <span class="pre">0.+0.j,</span> <span class="pre">-1.+0.j]])</span></em><a class="headerlink" href="#sisl.physics.Spin.Z" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.Spin.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">kind=''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=&lt;class</span> <span class="pre">'numpy.float64'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/spin.html#Spin.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.Spin.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.physics.Spin.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/physics/spin.html#Spin.copy"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.physics.Spin.copy" title="Permalink to this definition"></a></dt>
+<dd><p>Create a copy of the spin-object</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.physics.Spin.dkind">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dkind</span></span><a class="headerlink" href="#sisl.physics.Spin.dkind" title="Permalink to this definition"></a></dt>
+<dd><p>Data-type kind</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.physics.Spin.dtype">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dtype</span></span><a class="headerlink" href="#sisl.physics.Spin.dtype" title="Permalink to this definition"></a></dt>
+<dd><p>Data-type of the spin configuration</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.physics.Spin.has_noncolinear">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">has_noncolinear</span></span><a class="headerlink" href="#sisl.physics.Spin.has_noncolinear" title="Permalink to this definition"></a></dt>
+<dd><p>True if the configuration is non-collinear or spin-orbit</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.physics.Spin.is_colinear">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_colinear</span></span><a class="headerlink" href="#sisl.physics.Spin.is_colinear" title="Permalink to this definition"></a></dt>
+<dd><p>True if the configuration is polarized</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.physics.Spin.is_diagonal">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_diagonal</span></span><a class="headerlink" href="#sisl.physics.Spin.is_diagonal" title="Permalink to this definition"></a></dt>
+<dd><p>Whether the spin-box is only using the diagonal components</p>
+<p>This will return true for non-polarized and polarized spin configurations.
+Otherwise false.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.physics.Spin.is_noncolinear">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_noncolinear</span></span><a class="headerlink" href="#sisl.physics.Spin.is_noncolinear" title="Permalink to this definition"></a></dt>
+<dd><p>True if the configuration non-collinear</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.physics.Spin.is_polarized">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_polarized</span></span><a class="headerlink" href="#sisl.physics.Spin.is_polarized" title="Permalink to this definition"></a></dt>
+<dd><p>True if the configuration is polarized</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.physics.Spin.is_spinorbit">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_spinorbit</span></span><a class="headerlink" href="#sisl.physics.Spin.is_spinorbit" title="Permalink to this definition"></a></dt>
+<dd><p>True if the configuration is spin-orbit</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.physics.Spin.is_unpolarized">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">is_unpolarized</span></span><a class="headerlink" href="#sisl.physics.Spin.is_unpolarized" title="Permalink to this definition"></a></dt>
+<dd><p>True if the configuration is not polarized</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.physics.Spin.kind">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">kind</span></span><a class="headerlink" href="#sisl.physics.Spin.kind" title="Permalink to this definition"></a></dt>
+<dd><p>A unique ID for the kind of spin configuration</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.physics.Spin.size">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">size</span></span><a class="headerlink" href="#sisl.physics.Spin.size" title="Permalink to this definition"></a></dt>
+<dd><p>Number of elements to describe the spin-components</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.physics.Spin.spinor">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">spinor</span></span><a class="headerlink" href="#sisl.physics.Spin.spinor" title="Permalink to this definition"></a></dt>
+<dd><p>Number of spinor components (1 or 2)</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.physics.Spin.spins">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">spins</span></span><a class="headerlink" href="#sisl.physics.Spin.spins" title="Permalink to this definition"></a></dt>
+<dd><p>Number of elements to describe the spin-components</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../physics.matrix.html" class="btn btn-neutral float-left" title="Physical quantites" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.physics.EnergyDensityMatrix.html" class="btn btn-neutral float-right" title="sisl.physics.EnergyDensityMatrix" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

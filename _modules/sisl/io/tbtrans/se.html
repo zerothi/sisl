@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.io.tbtrans.se &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+        <script src="../../../../_static/jquery.js"></script>
+        <script src="../../../../_static/underscore.js"></script>
+        <script src="../../../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../../api/index.html">API documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../../../index.html">Module code</a> &raquo;</li>
+      <li>sisl.io.tbtrans.se</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sisl.io.tbtrans.se</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
+<span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
+<span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">StringIO</span> <span class="kn">import</span> <span class="n">StringIO</span>
+<span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">StringIO</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">in1d</span><span class="p">,</span> <span class="n">argsort</span>
+
+<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span>
+<span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span> <span class="nn">sisl._indices</span> <span class="kn">import</span> <span class="n">indices</span>
+<span class="kn">from</span> <span class="nn">sisl.utils</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
+<span class="kn">from</span> <span class="nn">._cdf</span> <span class="kn">import</span> <span class="n">_devncSileTBtrans</span>
+
+<span class="c1"># Import the geometry object</span>
+<span class="kn">from</span> <span class="nn">sisl.unit.siesta</span> <span class="kn">import</span> <span class="n">unit_convert</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;tbtsencSileTBtrans&#39;</span><span class="p">,</span> <span class="s1">&#39;phtsencSilePHtrans&#39;</span><span class="p">]</span>
+
+
+<span class="n">Bohr2Ang</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s1">&#39;Bohr&#39;</span><span class="p">,</span> <span class="s1">&#39;Ang&#39;</span><span class="p">)</span>
+<span class="n">Ry2eV</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s1">&#39;Ry&#39;</span><span class="p">,</span> <span class="s1">&#39;eV&#39;</span><span class="p">)</span>
+
+
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.tbtrans&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">tbtsencSileTBtrans</span><span class="p">(</span><span class="n">_devncSileTBtrans</span><span class="p">):</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; TBtrans self-energy file object with downfolded self-energies to the device region</span>
+
+<span class="sd">    The :math:`\Sigma` object contains all self-energies on the specified k- and energy grid projected</span>
+<span class="sd">    into the device region.</span>
+
+<span class="sd">    This is mainly an output file object from TBtrans and can be used as a post-processing utility for</span>
+<span class="sd">    testing various things in Python.</span>
+
+<span class="sd">    Note that *anything* returned from this object are the self-energies in eV.</span>
+
+<span class="sd">    Examples</span>
+<span class="sd">    --------</span>
+<span class="sd">    &gt;&gt;&gt; H = Hamiltonian(device)</span>
+<span class="sd">    &gt;&gt;&gt; se = tbtsencSileTBtrans(...)</span>
+<span class="sd">    &gt;&gt;&gt; # Return the self-energy for the left electrode (unsorted)</span>
+<span class="sd">    &gt;&gt;&gt; se_unsorted = se.self_energy(&#39;Left&#39;, 0.1, [0, 0, 0])</span>
+<span class="sd">    &gt;&gt;&gt; # Return the self-energy for the left electrode (sorted)</span>
+<span class="sd">    &gt;&gt;&gt; se_sorted = se.self_energy(&#39;Left&#39;, 0.1, [0, 0, 0], sort=True)</span>
+<span class="sd">    &gt;&gt;&gt; # Query the indices in the full Hamiltonian</span>
+<span class="sd">    &gt;&gt;&gt; pvt_unsorted = se.pivot(&#39;Left&#39;).reshape(-1, 1)</span>
+<span class="sd">    &gt;&gt;&gt; pvt_sorted = se.pivot(&#39;Left&#39;, sort=True).reshape(-1, 1)</span>
+<span class="sd">    &gt;&gt;&gt; # The following two lines are equivalent</span>
+<span class="sd">    &gt;&gt;&gt; Hfull1[pvt_unsorted, pvt_unsorted.T] -= se_unsorted[:, :]</span>
+<span class="sd">    &gt;&gt;&gt; Hfull2[pvt_sorted, pvt_sorted.T] -= se_sorted[:, :]</span>
+<span class="sd">    &gt;&gt;&gt; np.allclose(Hfull1, Hfull2)</span>
+<span class="sd">    True</span>
+<span class="sd">    &gt;&gt;&gt; # Query the indices in the device Hamiltonian</span>
+<span class="sd">    &gt;&gt;&gt; dev_pvt = se.pivot(&#39;Left&#39;, in_device=True).reshape(-1, 1)</span>
+<span class="sd">    &gt;&gt;&gt; dev_unpvt = se.pivot(&#39;Left&#39;, in_device=True, sort=True).reshape(-1, 1)</span>
+<span class="sd">    &gt;&gt;&gt; Hdev_pvt[dev_pvt, dev_pvt.T] -= se_unsorted[:, :]</span>
+<span class="sd">    &gt;&gt;&gt; Hdev[dpvt_sorted, dpvt_sorted.T] -= se_sorted[:, :]</span>
+<span class="sd">    &gt;&gt;&gt; pvt_dev = se.pivot(in_device=True).reshape(-1, 1)</span>
+<span class="sd">    &gt;&gt;&gt; np.allclose(Hdev_pvt, Hdev[pvt_dev, pvt_dev.T])</span>
+<span class="sd">    True</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">_trans_type</span> <span class="o">=</span> <span class="s1">&#39;TBT&#39;</span>
+    <span class="n">_E2eV</span> <span class="o">=</span> <span class="n">Ry2eV</span>
+
+<div class="viewcode-block" id="tbtsencSileTBtrans.self_energy"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtsencSileTBtrans.html#sisl.io.tbtrans.tbtsencSileTBtrans.self_energy">[docs]</a>    <span class="k">def</span> <span class="nf">self_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return the self-energy from the electrode `elec`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        elec : str or int</span>
+<span class="sd">           the corresponding electrode to return the self-energy from</span>
+<span class="sd">        E : float or int</span>
+<span class="sd">           energy to retrieve the self-energy at, if a floating point the closest</span>
+<span class="sd">           energy value will be found and returned, if an integer it will correspond</span>
+<span class="sd">           to the exact index</span>
+<span class="sd">        k : array_like or int</span>
+<span class="sd">           k-point to retrieve, if an integer it is the k-index in the file</span>
+<span class="sd">        sort : bool, optional</span>
+<span class="sd">           if ``True`` the returned self-energy will be sorted according to the order of</span>
+<span class="sd">           the orbitals in the non-pivoted geometry, otherwise the self-energy will</span>
+<span class="sd">           be returned according to the pivoted orbitals in the device region.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elec</span><span class="p">(</span><span class="n">elec</span><span class="p">)</span>
+        <span class="n">ik</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kindex</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+        <span class="n">iE</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Eindex</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
+
+        <span class="c1"># When storing fortran arrays in C-type files reading it in</span>
+        <span class="c1"># C-codes will transpose the data.</span>
+        <span class="c1"># So we have to transpose back to get the correct order</span>
+        <span class="n">re</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s1">&#39;ReSelfEnergy&#39;</span><span class="p">,</span> <span class="n">tree</span><span class="o">=</span><span class="n">tree</span><span class="p">)[</span><span class="n">ik</span><span class="p">,</span> <span class="n">iE</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s1">&#39;ImSelfEnergy&#39;</span><span class="p">,</span> <span class="n">tree</span><span class="o">=</span><span class="n">tree</span><span class="p">)[</span><span class="n">ik</span><span class="p">,</span> <span class="n">iE</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="n">SE</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_E2eV</span> <span class="o">*</span> <span class="n">re</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_E2eV</span><span class="p">)</span> <span class="o">*</span> <span class="n">im</span>
+        <span class="k">if</span> <span class="n">sort</span><span class="p">:</span>
+            <span class="n">pvt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">elec</span><span class="p">)</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">argsort</span><span class="p">(</span><span class="n">pvt</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># pivot for sorted device region</span>
+            <span class="k">return</span> <span class="n">SE</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="n">idx</span><span class="o">.</span><span class="n">T</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">SE</span></div>
+
+<div class="viewcode-block" id="tbtsencSileTBtrans.scattering_matrix"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtsencSileTBtrans.html#sisl.io.tbtrans.tbtsencSileTBtrans.scattering_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">scattering_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Return the scattering matrix from the electrode `elec`</span>
+
+<span class="sd">        The scattering matrix is calculated as:</span>
+
+<span class="sd">        .. math::</span>
+<span class="sd">            \Gamma(E) = i [\Sigma(E) - \Sigma^\dagger(E)]</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        elec : str or int</span>
+<span class="sd">           the corresponding electrode to return the scattering matrix from</span>
+<span class="sd">        E : float or int</span>
+<span class="sd">           energy to retrieve the scattering matrix at, if a floating point the closest</span>
+<span class="sd">           energy value will be found and returned, if an integer it will correspond</span>
+<span class="sd">           to the exact index</span>
+<span class="sd">        k : array_like or int</span>
+<span class="sd">           k-point to retrieve, if an integer it is the k-index in the file</span>
+<span class="sd">        sort : bool, optional</span>
+<span class="sd">           if ``True`` the returned scattering matrix will be sorted according to the order of</span>
+<span class="sd">           the orbitals in the non-pivoted geometry, otherwise the scattering matrix will</span>
+<span class="sd">           be returned according to the pivoted orbitals in the device region.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elec</span><span class="p">(</span><span class="n">elec</span><span class="p">)</span>
+        <span class="n">ik</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kindex</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
+        <span class="n">iE</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Eindex</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
+
+        <span class="c1"># When storing fortran arrays in C-type files reading it in</span>
+        <span class="c1"># C-codes will transpose the data.</span>
+        <span class="c1"># So we have to transpose back to get the correct order</span>
+        <span class="n">re</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s1">&#39;ReSelfEnergy&#39;</span><span class="p">,</span> <span class="n">tree</span><span class="o">=</span><span class="n">tree</span><span class="p">)[</span><span class="n">ik</span><span class="p">,</span> <span class="n">iE</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s1">&#39;ImSelfEnergy&#39;</span><span class="p">,</span> <span class="n">tree</span><span class="o">=</span><span class="n">tree</span><span class="p">)[</span><span class="n">ik</span><span class="p">,</span> <span class="n">iE</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="n">G</span> <span class="o">=</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">_E2eV</span> <span class="o">*</span> <span class="p">(</span><span class="n">im</span> <span class="o">+</span> <span class="n">im</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_E2eV</span><span class="p">)</span> <span class="o">*</span> <span class="p">(</span><span class="n">re</span> <span class="o">-</span> <span class="n">re</span><span class="o">.</span><span class="n">T</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sort</span><span class="p">:</span>
+            <span class="n">pvt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">elec</span><span class="p">)</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">argsort</span><span class="p">(</span><span class="n">pvt</span><span class="p">)</span>
+            <span class="n">idx</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># pivot for sorted device region</span>
+            <span class="k">return</span> <span class="n">G</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="n">idx</span><span class="o">.</span><span class="n">T</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">G</span></div>
+
+<div class="viewcode-block" id="tbtsencSileTBtrans.self_energy_average"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtsencSileTBtrans.html#sisl.io.tbtrans.tbtsencSileTBtrans.self_energy_average">[docs]</a>    <span class="k">def</span> <span class="nf">self_energy_average</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="p">,</span> <span class="n">E</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Return the k-averaged average self-energy from the electrode `elec`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        elec : str or int</span>
+<span class="sd">           the corresponding electrode to return the self-energy from</span>
+<span class="sd">        E : float or int</span>
+<span class="sd">           energy to retrieve the self-energy at, if a floating point the closest</span>
+<span class="sd">           energy value will be found and returned, if an integer it will correspond</span>
+<span class="sd">           to the exact index</span>
+<span class="sd">        sort : bool, optional</span>
+<span class="sd">           if ``True`` the returned self-energy will be sorted according to the order of</span>
+<span class="sd">           the orbitals in the non-pivoted geometry, otherwise the self-energy will</span>
+<span class="sd">           be returned according to the pivoted orbitals in the device region.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">tree</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elec</span><span class="p">(</span><span class="n">elec</span><span class="p">)</span>
+        <span class="n">iE</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">Eindex</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
+
+        <span class="c1"># When storing fortran arrays in C-type files reading it in</span>
+        <span class="c1"># C-codes will transpose the data.</span>
+        <span class="c1"># So we have to transpose back to get the correct order</span>
+        <span class="n">re</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s1">&#39;ReSelfEnergyMean&#39;</span><span class="p">,</span> <span class="n">tree</span><span class="o">=</span><span class="n">tree</span><span class="p">)[</span><span class="n">iE</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+        <span class="n">im</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_variable</span><span class="p">(</span><span class="s1">&#39;ImSelfEnergyMean&#39;</span><span class="p">,</span> <span class="n">tree</span><span class="o">=</span><span class="n">tree</span><span class="p">)[</span><span class="n">iE</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
+
+        <span class="n">SE</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_E2eV</span> <span class="o">*</span> <span class="n">re</span> <span class="o">+</span> <span class="p">(</span><span class="mi">1</span><span class="n">j</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_E2eV</span><span class="p">)</span> <span class="o">*</span> <span class="n">im</span>
+        <span class="k">if</span> <span class="n">sort</span><span class="p">:</span>
+            <span class="n">pvt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">elec</span><span class="p">)</span>
+            <span class="n">idx</span> <span class="o">=</span> <span class="n">argsort</span><span class="p">(</span><span class="n">pvt</span><span class="p">)</span>
+            <span class="n">idx</span><span class="o">.</span><span class="n">shape</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+
+            <span class="c1"># pivot for sorted device region</span>
+            <span class="k">return</span> <span class="n">SE</span><span class="p">[</span><span class="n">idx</span><span class="p">,</span> <span class="n">idx</span><span class="o">.</span><span class="n">T</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">SE</span></div>
+
+<div class="viewcode-block" id="tbtsencSileTBtrans.info"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.tbtrans.tbtsencSileTBtrans.html#sisl.io.tbtrans.tbtsencSileTBtrans.info">[docs]</a>    <span class="k">def</span> <span class="nf">info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">elec</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Information about the self-energy file available for extracting in this file</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        elec : str or int</span>
+<span class="sd">           the electrode to request information from</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">elec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">elec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_elec</span><span class="p">(</span><span class="n">elec</span><span class="p">)</span>
+
+        <span class="c1"># Create a StringIO object to retain the information</span>
+        <span class="n">out</span> <span class="o">=</span> <span class="n">StringIO</span><span class="p">()</span>
+        <span class="c1"># Create wrapper function</span>
+        <span class="k">def</span> <span class="nf">prnt</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="n">option</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s1">&#39;option&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">option</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;</span><span class="si">{:60s}</span><span class="s1">[</span><span class="si">{}</span><span class="s1">]&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="p">),</span> <span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">option</span><span class="p">)),</span> <span class="n">file</span><span class="o">=</span><span class="n">out</span><span class="p">)</span>
+
+        <span class="k">def</span> <span class="nf">truefalse</span><span class="p">(</span><span class="n">bol</span><span class="p">,</span> <span class="n">string</span><span class="p">,</span> <span class="n">fdf</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">bol</span><span class="p">:</span>
+                <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot;  + &quot;</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span> <span class="s2">&quot;: true&quot;</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot;  - &quot;</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span> <span class="s2">&quot;: false&quot;</span><span class="p">,</span> <span class="n">option</span><span class="o">=</span><span class="n">fdf</span><span class="p">)</span>
+
+        <span class="c1"># Retrieve the device atoms</span>
+        <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot;Device information:&quot;</span><span class="p">)</span>
+        <span class="c1"># Print out some more information related to the</span>
+        <span class="c1"># k-point sampling.</span>
+        <span class="c1"># However, we still do not know whether TRS is</span>
+        <span class="c1"># applied.</span>
+        <span class="n">kpt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">k</span>
+        <span class="n">nA</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">kpt</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]))</span>
+        <span class="n">nB</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">kpt</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]))</span>
+        <span class="n">nC</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">kpt</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">]))</span>
+        <span class="n">prnt</span><span class="p">((</span><span class="s2">&quot;  - number of kpoints: </span><span class="si">{}</span><span class="s2"> &lt;- &quot;</span>
+              <span class="s2">&quot;[ A = </span><span class="si">{}</span><span class="s2"> , B = </span><span class="si">{}</span><span class="s2"> , C = </span><span class="si">{}</span><span class="s2"> ] (time-reversal unknown)&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">nk</span><span class="p">,</span> <span class="n">nA</span><span class="p">,</span> <span class="n">nB</span><span class="p">,</span> <span class="n">nC</span><span class="p">))</span>
+        <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot;  - energy range:&quot;</span><span class="p">)</span>
+        <span class="n">E</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">E</span>
+        <span class="n">Em</span><span class="p">,</span> <span class="n">EM</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">E</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
+        <span class="n">dE</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">diff</span><span class="p">(</span><span class="n">E</span><span class="p">)</span>
+        <span class="n">dEm</span><span class="p">,</span> <span class="n">dEM</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">amin</span><span class="p">(</span><span class="n">dE</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">dE</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1000</span> <span class="c1"># convert to meV</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">dEM</span> <span class="o">-</span> <span class="n">dEm</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mf">1e-3</span><span class="p">:</span> <span class="c1"># 0.001 meV</span>
+            <span class="n">prnt</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;     </span><span class="si">{</span><span class="n">Em</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2"> -- </span><span class="si">{</span><span class="n">EM</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2"> eV  [</span><span class="si">{</span><span class="n">dEm</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> meV]&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">prnt</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;     </span><span class="si">{</span><span class="n">Em</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2"> -- </span><span class="si">{</span><span class="n">EM</span><span class="si">:</span><span class="s2">.5f</span><span class="si">}</span><span class="s2"> eV  [</span><span class="si">{</span><span class="n">dEm</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> -- </span><span class="si">{</span><span class="n">dEM</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2"> meV]&quot;</span><span class="p">)</span>
+        <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot;  - imaginary part (eta): </span><span class="si">{:.4f}</span><span class="s2"> meV&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eta</span><span class="p">()</span> <span class="o">*</span> <span class="mf">1e3</span><span class="p">))</span>
+        <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot;  - atoms with DOS (fortran indices):&quot;</span><span class="p">)</span>
+        <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot;     &quot;</span> <span class="o">+</span> <span class="n">list2str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a_dev</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot;  - number of BTD blocks: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">n_btd</span><span class="p">()))</span>
+        <span class="k">if</span> <span class="n">elec</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">elecs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">elecs</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">elecs</span> <span class="o">=</span> <span class="p">[</span><span class="n">elec</span><span class="p">]</span>
+
+        <span class="c1"># Print out information for each electrode</span>
+        <span class="k">for</span> <span class="n">elec</span> <span class="ow">in</span> <span class="n">elecs</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">elec</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">:</span>
+                <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot;  * no information available&quot;</span><span class="p">)</span>
+                <span class="k">continue</span>
+
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">bloch</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">bloch</span><span class="p">(</span><span class="n">elec</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">bloch</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">n_btd</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">n_btd</span><span class="p">(</span><span class="n">elec</span><span class="p">)</span>
+            <span class="k">except</span><span class="p">:</span>
+                <span class="n">n_btd</span> <span class="o">=</span> <span class="s1">&#39;unknown&#39;</span>
+            <span class="n">prnt</span><span class="p">()</span>
+            <span class="n">prnt</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Electrode: </span><span class="si">{</span><span class="n">elec</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">prnt</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;  - number of BTD blocks: </span><span class="si">{</span><span class="n">n_btd</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot;  - Bloch: [</span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="o">*</span><span class="n">bloch</span><span class="p">))</span>
+            <span class="n">gelec</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">groups</span><span class="p">[</span><span class="n">elec</span><span class="p">]</span>
+            <span class="k">if</span> <span class="s1">&#39;TBT&#39;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_trans_type</span><span class="p">:</span>
+                <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot;  - chemical potential: </span><span class="si">{:.4f}</span><span class="s2"> eV&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">chemical_potential</span><span class="p">(</span><span class="n">elec</span><span class="p">)))</span>
+                <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot;  - electron temperature: </span><span class="si">{:.2f}</span><span class="s2"> K&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">electron_temperature</span><span class="p">(</span><span class="n">elec</span><span class="p">)))</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot;  - phonon temperature: </span><span class="si">{:.4f}</span><span class="s2"> K&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">phonon_temperature</span><span class="p">(</span><span class="n">elec</span><span class="p">)))</span>
+            <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot;  - imaginary part (eta): </span><span class="si">{:.4f}</span><span class="s2"> meV&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">eta</span><span class="p">(</span><span class="n">elec</span><span class="p">)</span> <span class="o">*</span> <span class="mf">1e3</span><span class="p">))</span>
+            <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot;  - atoms in down-folding region (not in device):&quot;</span><span class="p">)</span>
+            <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot;     &quot;</span> <span class="o">+</span> <span class="n">list2str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">a_down</span><span class="p">(</span><span class="n">elec</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+            <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot;  - orbitals in down-folded device region:&quot;</span><span class="p">)</span>
+            <span class="n">prnt</span><span class="p">(</span><span class="s2">&quot;     &quot;</span> <span class="o">+</span> <span class="n">list2str</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sort</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">pivot</span><span class="p">(</span><span class="n">elec</span><span class="p">))</span> <span class="o">+</span> <span class="mi">1</span><span class="p">))</span>
+
+        <span class="n">s</span> <span class="o">=</span> <span class="n">out</span><span class="o">.</span><span class="n">getvalue</span><span class="p">()</span>
+        <span class="n">out</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">s</span></div>
+
+    <span class="nd">@default_ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="s2">&quot;Show information about data in a TBT.SE.nc file&quot;</span><span class="p">)</span>
+    <span class="k">def</span> <span class="nf">ArgumentParser</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Returns the arguments that is available for this Sile &quot;&quot;&quot;</span>
+
+        <span class="c1"># We limit the import to occur here</span>
+        <span class="kn">import</span> <span class="nn">argparse</span>
+
+        <span class="n">namespace</span> <span class="o">=</span> <span class="n">default_namespace</span><span class="p">(</span><span class="n">_tbtse</span><span class="o">=</span><span class="bp">self</span><span class="p">,</span> <span class="n">_geometry</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">geom</span><span class="p">)</span>
+
+        <span class="k">class</span> <span class="nc">Info</span><span class="p">(</span><span class="n">argparse</span><span class="o">.</span><span class="n">Action</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot; Action to print information contained in the TBT.SE.nc file, helpful before performing actions &quot;&quot;&quot;</span>
+
+            <span class="k">def</span> <span class="fm">__call__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parser</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">value</span><span class="p">,</span> <span class="n">option_string</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+                <span class="c1"># First short-hand the file</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">ns</span><span class="o">.</span><span class="n">_tbtse</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="n">value</span><span class="p">))</span>
+
+        <span class="n">p</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span><span class="s1">&#39;--info&#39;</span><span class="p">,</span> <span class="s1">&#39;-i&#39;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="n">Info</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="s1">&#39;?&#39;</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s1">&#39;ELEC&#39;</span><span class="p">,</span>
+                       <span class="n">help</span><span class="o">=</span><span class="s1">&#39;Print out what information is contained in the TBT.SE.nc file, optionally only for one of the electrodes.&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">p</span><span class="p">,</span> <span class="n">namespace</span>
+
+
+<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;TBT.SE.nc&#39;</span><span class="p">,</span> <span class="n">tbtsencSileTBtrans</span><span class="p">)</span>
+<span class="c1"># Add spin-dependent files</span>
+<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;TBT_UP.SE.nc&#39;</span><span class="p">,</span> <span class="n">tbtsencSileTBtrans</span><span class="p">)</span>
+<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;TBT_DN.SE.nc&#39;</span><span class="p">,</span> <span class="n">tbtsencSileTBtrans</span><span class="p">)</span>
+
+
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.phtrans&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">phtsencSilePHtrans</span><span class="p">(</span><span class="n">tbtsencSileTBtrans</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; PHtrans file object &quot;&quot;&quot;</span>
+    <span class="n">_trans_type</span> <span class="o">=</span> <span class="s1">&#39;PHT&#39;</span>
+    <span class="n">_E2eV</span> <span class="o">=</span> <span class="n">Ry2eV</span> <span class="o">**</span> <span class="mi">2</span>
+
+
+<span class="n">add_sile</span><span class="p">(</span><span class="s1">&#39;PHT.SE.nc&#39;</span><span class="p">,</span> <span class="n">phtsencSilePHtrans</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

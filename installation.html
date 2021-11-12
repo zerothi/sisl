@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Installation &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tutorials" href="tutorials.html" />
+    <link rel="prev" title="Publications using sisl" href="publications.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#required-dependencies">Required dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pip">pip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#conda">conda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#manual-installation">Manual installation</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#windows">Windows</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#testing-your-installation">Testing your installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#development-version">Development version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="api/index.html">API documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Installation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/installation.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="installation">
+<span id="id1"></span><h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline"></a></h1>
+<p>sisl is easy to install using any of your preferred methods.</p>
+<section id="required-dependencies">
+<h2>Required dependencies<a class="headerlink" href="#required-dependencies" title="Permalink to this headline"></a></h2>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.python.org/">Python</a> 3.6 or above</p></li>
+<li><p><a class="reference external" href="https://pypi.python.org/pypi/setuptools">setuptools</a></p></li>
+<li><p><a class="reference external" href="http://www.numpy.org/">numpy</a> (1.13 or later)</p></li>
+<li><p><a class="reference external" href="https://scipy.org/scipylib/index.html">scipy</a> (0.18 or later)</p></li>
+<li><p><a class="reference external" href="http://github.com/Unidata/netcdf4-python">netCDF4-python</a></p></li>
+<li><p><a class="reference external" href="https://github.com/pyparsing/pyparsing">pyparsing</a> (1.5.7 or later)</p></li>
+<li><p>A C- and fortran-compiler</p></li>
+</ul>
+<p>Optional dependencies:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://docs.pytest.org/en/stable/">pytest</a> (for running the test suite)</p></li>
+<li><p><a class="reference external" href="https://github.com/uqfoundation/pathos">pathos</a> (for parallel BrillouinZone calculations)</p></li>
+<li><p><a class="reference external" href="https://matplotlib.org/">matplotlib</a></p></li>
+<li><p><a class="reference external" href="https://github.com/tqdm/tqdm">tqdm</a> (for displaying progress-bars)</p></li>
+<li><p><a class="reference external" href="http://xarray.pydata.org/en/stable/index.html">xarray</a> (for advanced table data structures in certain methods)</p></li>
+</ul>
+<p>sisl implements certain methods in Cython which speeds up the execution.
+Cython is required if one wishes to re-generate the C-sources with a different
+Cython version. Note that this is not a necessary step and should typically only
+be considered by developers of Cython modules.</p>
+</section>
+<section id="pip">
+<h2>pip<a class="headerlink" href="#pip" title="Permalink to this headline"></a></h2>
+<p>Installing sisl using PyPi can be done using</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 -m pip install sisl
+<span class="c1"># or</span>
+python3 -m pip install sisl<span class="o">[</span>analysis<span class="o">]</span>
+</pre></div>
+</div>
+<p><code class="code docutils literal notranslate"><span class="pre">pip</span></code> will automatically install the required dependencies. The optional dependencies
+will be used if later installed.</p>
+<p>The latter installation call also installs <code class="code docutils literal notranslate"><span class="pre">tqdm</span></code> and <code class="code docutils literal notranslate"><span class="pre">xarray</span></code> which are part of
+extended analysis methods. These are not required and may be installed later if their usage
+is desired.</p>
+<p>When wanting to pass options to <code class="code docutils literal notranslate"><span class="pre">pip</span></code> simply use the following</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 -m pip install --install-option<span class="o">=</span><span class="s2">&quot;--compiler=intelem&quot;</span> --install-option<span class="o">=</span><span class="s2">&quot;--fcompiler-intelem&quot;</span> sisl
+</pre></div>
+</div>
+<p>note that options are accummulated.</p>
+</section>
+<section id="conda">
+<h2>conda<a class="headerlink" href="#conda" title="Permalink to this headline"></a></h2>
+<p>Installing sisl using conda can be done by</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>conda config --add channels conda-forge
+conda install sisl
+</pre></div>
+</div>
+<p>To find more information about the conda-forge installation please see
+<a class="reference external" href="https://anaconda.org/conda-forge/sisl">here</a>.</p>
+</section>
+<section id="manual-installation">
+<h2>Manual installation<a class="headerlink" href="#manual-installation" title="Permalink to this headline"></a></h2>
+<p>sisl may be installed using the regular <em class="xref py py-obj">setup.py</em> script.
+Ensure the required dependencies are installed before proceeding with the
+manual installation (without <a class="reference external" href="http://www.numpy.org/">numpy</a> installed a spurious error message will
+appear). The dependencies may be installed using this <code class="code docutils literal notranslate"><span class="pre">pip</span></code> module:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 -m pip install -r requirements.txt
+</pre></div>
+</div>
+<p>Simply download the release tar from <a class="reference external" href="http://github.com/zerothi/sisl/releases">this page</a>, or clone
+the <a class="reference external" href="http://github.com/zerothi/sisl/">git repository</a> for the latest developments</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 setup.py install --prefix<span class="o">=</span>&lt;prefix&gt;
+</pre></div>
+</div>
+<section id="windows">
+<h3>Windows<a class="headerlink" href="#windows" title="Permalink to this headline"></a></h3>
+<p>To install <a class="reference internal" href="api/index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> on Windows one will require a specification of
+the compilers used. Typically one may do</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 setup.py install --prefix<span class="o">=</span>&lt;prefix&gt; --fcompiler<span class="o">=</span>gfortran --compiler<span class="o">=</span>mingw32
+</pre></div>
+</div>
+<p>but sometimes <code class="docutils literal notranslate"><span class="pre">setuptools</span></code> does not intercept the flags in the build process.
+To remedy this please ensure <code class="docutils literal notranslate"><span class="pre">%HOME%\pydistutils.cfg</span></code> contains the build options:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="o">[</span>build<span class="o">]</span>
+<span class="nv">compiler</span> <span class="o">=</span> mingw32
+<span class="nv">fcompiler</span> <span class="o">=</span> gfortran
+</pre></div>
+</div>
+<p>Adapt to compilers. For an explanation, see <a class="reference external" href="https://docs.python.org/3/install/index.html#location-and-names-of-config-files">here</a>
+or the <a class="reference external" href="https://github.com/zerothi/sisl/issues/244">user issue</a> which spurred this content.</p>
+</section>
+</section>
+<section id="testing-your-installation">
+<h2>Testing your installation<a class="headerlink" href="#testing-your-installation" title="Permalink to this headline"></a></h2>
+<p>After installation (by either of the above listed methods) you are encouraged
+to perform the shipped tests to ensure everything got installed correctly.</p>
+<p>Note that <a class="reference external" href="https://docs.pytest.org/en/stable/">pytest</a> needs to be installed to run the tests.
+Testing the installation may be done by:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest --pyargs sisl
+</pre></div>
+</div>
+<p>The above will run the default test-suite which covers most of the <a class="reference internal" href="api/index.html#module-sisl" title="sisl"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sisl</span></code></a> tool-box.
+Additional tests may be runned by cloning the <a class="reference external" href="http://github.com/zerothi/sisl-files">sisl-files</a>
+and setting the environment variable <em class="xref py py-obj">SISL_FILES_TESTS</em> as the <code class="docutils literal notranslate"><span class="pre">tests</span></code> path to the repository.</p>
+<p>A basic procedure would be:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/zerothi/sisl-files.git
+<span class="nv">SISL_FILES_TESTS</span><span class="o">=</span><span class="k">$(</span><span class="nb">pwd</span><span class="k">)</span>/sisl-files/tests pytest --pyargs sisl
+</pre></div>
+</div>
+</section>
+<section id="development-version">
+<h2>Development version<a class="headerlink" href="#development-version" title="Permalink to this headline"></a></h2>
+<p>To install the development version using <code class="code docutils literal notranslate"><span class="pre">pip</span></code> you may use the URL command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python3 -m pip install -U git+https://github.com/zerothi/sisl.git
+</pre></div>
+</div>
+<p>Otherwise follow the manual installation by cloning the <a class="reference external" href="http://github.com/zerothi/sisl/">git repository</a>.
+Remark that the <code class="code docutils literal notranslate"><span class="pre">git+https</span></code> protocol is buggy (as of pip v19.0.3) because you cannot pass compiler
+options to <code class="code docutils literal notranslate"><span class="pre">setup.py</span></code>. If you want to install the development version with e.g.
+the Intel compilers you should do:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone git+https://github.com/zerothi/sisl.git
+<span class="nb">cd</span> sisl
+python3 -m pip install -U --global-option<span class="o">=</span><span class="s2">&quot;build&quot;</span> --global-option<span class="o">=</span><span class="s2">&quot;--compiler=intelem&quot;</span> --global-option<span class="o">=</span><span class="s2">&quot;--fcompiler=intelem&quot;</span> .
+</pre></div>
+</div>
+<p>which will pass the correct options to the build system.</p>
+<p>The <em class="xref py py-obj">-U</em> flag ensures that prior installations are overwritten.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="publications.html" class="btn btn-neutral float-left" title="Publications using sisl" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tutorials.html" class="btn btn-neutral float-right" title="Tutorials" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

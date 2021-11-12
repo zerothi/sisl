@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.SparseOrbital &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="sisl.oplist.oplist" href="sisl.oplist.oplist.html" />
+    <link rel="prev" title="sisl.SparseAtom" href="sisl.SparseAtom.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="reference internal" href="../index.html">API documentation</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="../basic.html">Basic classes</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="../basic.html#simple-objects">Simple objects</a></li>
+<li class="toctree-l3 current"><a class="reference internal" href="../basic.html#advanced-classes">Advanced classes</a><ul class="current">
+<li class="toctree-l4"><a class="reference internal" href="sisl.Quaternion.html">sisl.Quaternion</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.SparseCSR.html">sisl.SparseCSR</a></li>
+<li class="toctree-l4"><a class="reference internal" href="sisl.SparseAtom.html">sisl.SparseAtom</a></li>
+<li class="toctree-l4 current"><a class="current reference internal" href="#">sisl.SparseOrbital</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="../basic.html#utility-classes">Utility classes</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="../default_geom.html">Common geometries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../physics.html">Physical objects</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../mixing.html">Mixing self-consistent quantities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../unit_constant.html">Units and constants</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../utilities.html">Utilities</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../io/index.html">Input/Output</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">API documentation</a> &raquo;</li>
+          <li><a href="../basic.html">Basic classes</a> &raquo;</li>
+      <li>sisl.SparseOrbital</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../../_sources/api/generated/sisl.SparseOrbital.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<section id="sisl-sparseorbital">
+<h1>sisl.SparseOrbital<a class="headerlink" href="#sisl-sparseorbital" title="Permalink to this headline"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="sisl.SparseOrbital">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">sisl.</span></span><span class="sig-name descname"><span class="pre">SparseOrbital</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nnzpr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseOrbital" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">sisl.sparse_geometry._SparseGeometry</span></code></p>
+<p>Sparse object with number of rows equal to the total number of orbitals in the <a class="reference internal" href="sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a></p>
+<p class="rubric">Methods</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseOrbital.Rij" title="sisl.SparseOrbital.Rij"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Rij</span></code></a>([what, dtype])</p></td>
+<td><p>Create a sparse matrix with the vectors between atoms/orbitals</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseOrbital.add" title="sisl.SparseOrbital.add"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add</span></code></a>(other[, axis, offset])</p></td>
+<td><p>Add two sparse matrices by adding the parameters to one set.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseOrbital.append" title="sisl.SparseOrbital.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a>(other, axis[, eps, scale])</p></td>
+<td><p>Append <em class="xref py py-obj">other</em> along <em class="xref py py-obj">axis</em> to construct a new connected sparse matrix</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseOrbital.construct" title="sisl.SparseOrbital.construct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">construct</span></code></a>(func[, na_iR, method, eta])</p></td>
+<td><p>Automatically construct the sparse model based on a function that does the setting up of the elements</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseOrbital.copy" title="sisl.SparseOrbital.copy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">copy</span></code></a>([dtype])</p></td>
+<td><p>A copy of this object</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseOrbital.create_construct" title="sisl.SparseOrbital.create_construct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_construct</span></code></a>(R, param)</p></td>
+<td><p>Create a simple function for passing to the <a class="reference internal" href="#sisl.SparseOrbital.construct" title="sisl.SparseOrbital.construct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">construct</span></code></a> function.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseOrbital.cut" title="sisl.SparseOrbital.cut"><code class="xref py py-obj docutils literal notranslate"><span class="pre">cut</span></code></a>(seps, axis, *args, **kwargs)</p></td>
+<td><p>Cuts the sparse orbital model into different parts.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseOrbital.edges" title="sisl.SparseOrbital.edges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edges</span></code></a>([atoms, exclude, orbitals])</p></td>
+<td><p>Retrieve edges (connections) for all <em class="xref py py-obj">atoms</em></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseOrbital.eliminate_zeros" title="sisl.SparseOrbital.eliminate_zeros"><code class="xref py py-obj docutils literal notranslate"><span class="pre">eliminate_zeros</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Removes all zero elements from the sparse matrix</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseOrbital.empty" title="sisl.SparseOrbital.empty"><code class="xref py py-obj docutils literal notranslate"><span class="pre">empty</span></code></a>([keep_nnz])</p></td>
+<td><p>See <code class="xref py py-meth docutils literal notranslate"><span class="pre">empty</span></code> for details</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseOrbital.finalize" title="sisl.SparseOrbital.finalize"><code class="xref py py-obj docutils literal notranslate"><span class="pre">finalize</span></code></a>()</p></td>
+<td><p>Finalizes the model</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseOrbital.fromsp" title="sisl.SparseOrbital.fromsp"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fromsp</span></code></a>(geometry, P, **kwargs)</p></td>
+<td><p>Create a sparse model from a preset <a class="reference internal" href="sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a> and a list of sparse matrices</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseOrbital.iter_nnz" title="sisl.SparseOrbital.iter_nnz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">iter_nnz</span></code></a>([atoms, orbitals])</p></td>
+<td><p>Iterations of the non-zero elements</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseOrbital.nonzero" title="sisl.SparseOrbital.nonzero"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nonzero</span></code></a>([atoms, only_col])</p></td>
+<td><p>Indices row and column indices where non-zero elements exists</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseOrbital.prepend" title="sisl.SparseOrbital.prepend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepend</span></code></a>(other, axis[, eps, scale])</p></td>
+<td><p>See <a class="reference internal" href="#sisl.SparseOrbital.append" title="sisl.SparseOrbital.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a> for details</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseOrbital.remove" title="sisl.SparseOrbital.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a>(atoms)</p></td>
+<td><p>Remove a subset of this sparse matrix by only retaining the atoms corresponding to <em class="xref py py-obj">atoms</em></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseOrbital.remove_orbital" title="sisl.SparseOrbital.remove_orbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_orbital</span></code></a>(atoms, orbitals)</p></td>
+<td><p>Remove a subset of orbitals on <em class="xref py py-obj">atoms</em> according to <em class="xref py py-obj">orbitals</em></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseOrbital.repeat" title="sisl.SparseOrbital.repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat</span></code></a>(reps, axis)</p></td>
+<td><p>Create a repeated sparse orbital object, equivalent to <a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.repeat" title="sisl.Geometry.repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.repeat</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseOrbital.replace" title="sisl.SparseOrbital.replace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace</span></code></a>(atoms, other[, other_atoms, eps, scale])</p></td>
+<td><p>Replace <em class="xref py py-obj">atoms</em> in <em class="xref py py-obj">self</em> with <em class="xref py py-obj">other_atoms</em> in <em class="xref py py-obj">other</em> and retain couplings between them</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseOrbital.reset" title="sisl.SparseOrbital.reset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">reset</span></code></a>([dim, dtype, nnzpr])</p></td>
+<td><p>The sparsity pattern has all elements removed and everything is reset.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseOrbital.rij" title="sisl.SparseOrbital.rij"><code class="xref py py-obj docutils literal notranslate"><span class="pre">rij</span></code></a>([what, dtype])</p></td>
+<td><p>Create a sparse matrix with the distance between atoms/orbitals</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseOrbital.set_nsc" title="sisl.SparseOrbital.set_nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">set_nsc</span></code></a>(*args, **kwargs)</p></td>
+<td><p>Reset the number of allowed supercells in the sparse orbital</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseOrbital.spalign" title="sisl.SparseOrbital.spalign"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spalign</span></code></a>(other)</p></td>
+<td><p>See <code class="xref py py-meth docutils literal notranslate"><span class="pre">align</span></code> for details</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseOrbital.spsame" title="sisl.SparseOrbital.spsame"><code class="xref py py-obj docutils literal notranslate"><span class="pre">spsame</span></code></a>(other)</p></td>
+<td><p>Compare two sparse objects and check whether they have the same entries.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseOrbital.sub" title="sisl.SparseOrbital.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a>(atoms)</p></td>
+<td><p>Create a subset of this sparse matrix by only retaining the atoms corresponding to <em class="xref py py-obj">atoms</em></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseOrbital.sub_orbital" title="sisl.SparseOrbital.sub_orbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub_orbital</span></code></a>(atoms, orbitals)</p></td>
+<td><p>Retain only a subset of the orbitals on <em class="xref py py-obj">atoms</em> according to <em class="xref py py-obj">orbitals</em></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseOrbital.swap" title="sisl.SparseOrbital.swap"><code class="xref py py-obj docutils literal notranslate"><span class="pre">swap</span></code></a>(a, b)</p></td>
+<td><p>Swaps atoms in the sparse geometry to obtain a new order of atoms</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseOrbital.tile" title="sisl.SparseOrbital.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a>(reps, axis)</p></td>
+<td><p>Create a tiled sparse orbital object, equivalent to <a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.tile" title="sisl.Geometry.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.tile</span></code></a></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseOrbital.toSparseAtom" title="sisl.SparseOrbital.toSparseAtom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">toSparseAtom</span></code></a>([dim, dtype])</p></td>
+<td><p>Convert the sparse object (without data) to a new sparse object with equivalent but reduced sparse pattern</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseOrbital.tocsr" title="sisl.SparseOrbital.tocsr"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tocsr</span></code></a>([dim, isc])</p></td>
+<td><p>Return a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> for the specified dimension</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseOrbital.transpose" title="sisl.SparseOrbital.transpose"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transpose</span></code></a>([sort])</p></td>
+<td><p>Create the transposed sparse geometry by interchanging supercell indices</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseOrbital.dim" title="sisl.SparseOrbital.dim"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dim</span></code></a></p></td>
+<td><p>Number of components per element</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseOrbital.dkind" title="sisl.SparseOrbital.dkind"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dkind</span></code></a></p></td>
+<td><p>Data type of sparse elements (in str)</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseOrbital.dtype" title="sisl.SparseOrbital.dtype"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dtype</span></code></a></p></td>
+<td><p>Data type of sparse elements</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseOrbital.finalized" title="sisl.SparseOrbital.finalized"><code class="xref py py-obj docutils literal notranslate"><span class="pre">finalized</span></code></a></p></td>
+<td><p>Whether the contained data is finalized and non-used elements have been removed</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseOrbital.geom" title="sisl.SparseOrbital.geom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geom</span></code></a></p></td>
+<td><p>deprecated geometry</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseOrbital.geometry" title="sisl.SparseOrbital.geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">geometry</span></code></a></p></td>
+<td><p>Associated geometry</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#sisl.SparseOrbital.nnz" title="sisl.SparseOrbital.nnz"><code class="xref py py-obj docutils literal notranslate"><span class="pre">nnz</span></code></a></p></td>
+<td><p>Number of non-zero elements</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#sisl.SparseOrbital.shape" title="sisl.SparseOrbital.shape"><code class="xref py py-obj docutils literal notranslate"><span class="pre">shape</span></code></a></p></td>
+<td><p>Shape of sparse matrix</p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.Rij">
+<span class="sig-name descname"><span class="pre">Rij</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">what='orbital'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=&lt;class</span> <span class="pre">'numpy.float64'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/sparse_geometry.html#SparseOrbital.Rij"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseOrbital.Rij" title="Permalink to this definition"></a></dt>
+<dd><p>Create a sparse matrix with the vectors between atoms/orbitals</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>what</strong> (<em>{'orbital'</em><em>, </em><em>'atom'}</em>) – which kind of sparse vector matrix to return, either an atomic vector matrix
+or an orbital vector matrix. The orbital matrix is equivalent to the atomic
+one with the same vectors repeated for the same atomic orbitals.
+The default is the same type as the parent class.</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.21)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the data-type of the sparse matrix.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The returned sparse matrix with vectors are taken from the current sparse pattern.
+I.e. a subsequent addition of sparse elements will make them inequivalent.
+It is thus important to <em>only</em> create the sparse vector matrix when the sparse
+structure is completed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nnzpr</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseOrbital.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Create sparse object with element between orbitals</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.add">
+<span class="sig-name descname"><span class="pre">add</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">offset</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(0,</span> <span class="pre">0,</span> <span class="pre">0)</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/sparse_geometry.html#SparseOrbital.add"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseOrbital.add" title="Permalink to this definition"></a></dt>
+<dd><p>Add two sparse matrices by adding the parameters to one set. The final matrix will have no couplings between <em class="xref py py-obj">self</em> and <em class="xref py py-obj">other</em></p>
+<p>The final sparse matrix will not have any couplings between <em class="xref py py-obj">self</em> and <em class="xref py py-obj">other</em>. Not even if they
+have commensurate overlapping regions. If you want to create couplings you have to use <a class="reference internal" href="#sisl.SparseOrbital.append" title="sisl.SparseOrbital.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a> but that
+requires the structures are commensurate in the coupling region.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>other</strong> (<em>SparseGeometry</em>) – the other sparse matrix to be added, all atoms will be appended</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><em>None</em></a><em>, </em><em>optional</em>) – whether a specific axis of the cell will be added to the final geometry.
+For <code class="docutils literal notranslate"><span class="pre">None</span></code> the final cell will be that of <em class="xref py py-obj">self</em>, otherwise the lattice
+vector corresponding to <em class="xref py py-obj">axis</em> will be appended.</p></li>
+<li><p><strong>offset</strong> (<em>(</em><em>3</em><em>,</em><em>)</em><em>, </em><em>optional</em>) – offset in geometry of <em class="xref py py-obj">other</em> when adding the atoms.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.SparseOrbital.append" title="sisl.SparseOrbital.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a></dt><dd><p>append two matrices by also adding overlap couplings</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.SparseOrbital.prepend" title="sisl.SparseOrbital.prepend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepend</span></code></a></dt><dd><p>see <a class="reference internal" href="#sisl.SparseOrbital.append" title="sisl.SparseOrbital.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a></p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.append">
+<span class="sig-name descname"><span class="pre">append</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/sparse_geometry.html#SparseOrbital.append"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseOrbital.append" title="Permalink to this definition"></a></dt>
+<dd><p>Append <em class="xref py py-obj">other</em> along <em class="xref py py-obj">axis</em> to construct a new connected sparse matrix</p>
+<p>This method tries to append two sparse geometry objects together by
+the following these steps:</p>
+<ol class="arabic simple">
+<li><p>Create the new extended geometry</p></li>
+<li><p>Use neighbor cell couplings from <em class="xref py py-obj">self</em> as the couplings to <em class="xref py py-obj">other</em>
+This <em>may</em> cause problems if the coupling atoms are not exactly equi-positioned.
+If the coupling coordinates and the coordinates in <em class="xref py py-obj">other</em> differ by more than
+0.01 Ang, a warning will be issued.
+If this difference is above <em class="xref py py-obj">eps</em> the couplings will be removed.</p></li>
+</ol>
+<p>When appending sparse matrices made up of atoms, this method assumes that
+the orbitals on the overlapping atoms have the same orbitals, as well as the
+same orbital ordering.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sporb</span> <span class="o">=</span> <span class="n">SparseOrbital</span><span class="p">(</span><span class="o">....</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sporb2</span> <span class="o">=</span> <span class="n">sporb</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">sporb</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sporbt</span> <span class="o">=</span> <span class="n">sporb</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sporb2</span><span class="o">.</span><span class="n">spsame</span><span class="p">(</span><span class="n">sporbt</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>To retain couplings only from the <em>left</em> sparse matrix, do:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sporb</span> <span class="o">=</span> <span class="n">left</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sporb</span> <span class="o">=</span> <span class="p">(</span><span class="n">sporb</span> <span class="o">+</span> <span class="n">sporb</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span> <span class="o">*</span> <span class="mf">0.5</span>
+</pre></div>
+</div>
+<p>To retain couplings only from the <em>right</em> sparse matrix, do:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sporb</span> <span class="o">=</span> <span class="n">left</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">right</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">2.</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sporb</span> <span class="o">=</span> <span class="p">(</span><span class="n">sporb</span> <span class="o">+</span> <span class="n">sporb</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span> <span class="o">*</span> <span class="mf">0.5</span>
+</pre></div>
+</div>
+<p class="rubric">Notes</p>
+<p>The current implementation does not preserve the hermiticity of the matrix.
+If you want to preserve hermiticity of the matrix you have to do the
+following:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sm</span> <span class="o">=</span> <span class="p">(</span><span class="n">sm</span> <span class="o">+</span> <span class="n">sm</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span> <span class="o">/</span> <span class="mi">2</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>other</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><em>object</em></a>) – must be an object of the same type as <em class="xref py py-obj">self</em></p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – axis to append the two sparse geometries along</p></li>
+<li><p><strong>eps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – tolerance that all coordinates <em>must</em> be within to allow an append.
+It is important that this value is smaller than half the distance between
+the two closests atoms such that there is no ambiguity in selecting
+equivalent atoms. An internal stricter eps is used as a baseline, see above.</p></li>
+<li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> or </em><em>array_like</em><em>, </em><em>optional</em>) – the scale used for the overlapping region. For scalar values it corresponds
+to passing: <code class="docutils literal notranslate"><span class="pre">(scale,</span> <span class="pre">scale)</span></code>.
+For array-like input <code class="docutils literal notranslate"><span class="pre">scale[0]</span></code> refers to the scale of the matrix elements
+coupling from <em class="xref py py-obj">self</em>, while <code class="docutils literal notranslate"><span class="pre">scale[1]</span></code> is the scale of the matrix elements
+in <em class="xref py py-obj">other</em>.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.SparseOrbital.prepend" title="sisl.SparseOrbital.prepend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepend</span></code></a></dt><dd><p>equivalent scheme as this method</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.SparseOrbital.add" title="sisl.SparseOrbital.add"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add</span></code></a></dt><dd><p>merge two matrices without considering overlap or commensurability</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.SparseOrbital.transpose" title="sisl.SparseOrbital.transpose"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transpose</span></code></a></dt><dd><p>ensure hermiticity by using this routine</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.SparseOrbital.replace" title="sisl.SparseOrbital.replace"><code class="xref py py-obj docutils literal notranslate"><span class="pre">replace</span></code></a></dt><dd><p>replace a sub-set of atoms with another sparse matrix</p>
+</dd>
+</dl>
+<p><a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.append" title="sisl.Geometry.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.append</span></code></a>, <a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.prepend" title="sisl.Geometry.prepend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.prepend</span></code></a></p>
+<dl class="simple">
+<dt><a class="reference internal" href="sisl.SparseCSR.html#sisl.SparseCSR.scale_columns" title="sisl.SparseCSR.scale_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SparseCSR.scale_columns</span></code></a></dt><dd><p>method used to scale the two matrix elements values</p>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – if the two geometries are not compatible for either coordinate, orbital or supercell errors</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a new instance with two sparse matrices joined and appended together</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)">object</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.construct">
+<span class="sig-name descname"><span class="pre">construct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">func</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">na_iR</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'rand'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eta</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseOrbital.construct" title="Permalink to this definition"></a></dt>
+<dd><p>Automatically construct the sparse model based on a function that does the setting up of the elements</p>
+<p>This may be called in two variants.</p>
+<ol class="arabic simple">
+<li><p>Pass a function (<em class="xref py py-obj">func</em>), see e.g. <code class="docutils literal notranslate"><span class="pre">create_construct</span></code>
+which does the setting up.</p></li>
+<li><p>Pass a tuple/list in <em class="xref py py-obj">func</em> which consists of two
+elements, one is <code class="docutils literal notranslate"><span class="pre">R</span></code> the radii parameters for
+the corresponding parameters.
+The second is the parameters
+corresponding to the <code class="docutils literal notranslate"><span class="pre">R[i]</span></code> elements.
+In this second case all atoms must only have
+one orbital.</p></li>
+</ol>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>func</strong> (<em>callable</em><em> or </em><em>array_like</em>) – <p>this function <em>must</em> take 4 arguments.
+1. Is this object (<code class="docutils literal notranslate"><span class="pre">self</span></code>)
+2. Is the currently examined atom (<code class="docutils literal notranslate"><span class="pre">ia</span></code>)
+3. Is the currently bounded indices (<code class="docutils literal notranslate"><span class="pre">idxs</span></code>)
+4. Is the currently bounded indices atomic coordinates (<code class="docutils literal notranslate"><span class="pre">idxs_xyz</span></code>)
+An example <em class="xref py py-obj">func</em> could be:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ia</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">atoms_xyz</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">ia</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.44</span><span class="p">],</span> <span class="n">atoms</span><span class="o">=</span><span class="n">atoms</span><span class="p">,</span> <span class="n">atoms_xyz</span><span class="o">=</span><span class="n">atoms_xyz</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="bp">self</span><span class="p">[</span><span class="n">ia</span><span class="p">,</span> <span class="n">idx</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="gp">... </span>    <span class="bp">self</span><span class="p">[</span><span class="n">ia</span><span class="p">,</span> <span class="n">idx</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">2.7</span>
+</pre></div>
+</div>
+</p></li>
+<li><p><strong>na_iR</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – number of atoms within the sphere for speeding
+up the <em class="xref py py-obj">iter_block</em> loop.</p></li>
+<li><p><strong>method</strong> (<em>{'rand'</em><em>, </em><em>str}</em>) – method used in <a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.iter_block" title="sisl.Geometry.iter_block"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.iter_block</span></code></a>, see there for details</p></li>
+<li><p><strong>eta</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – whether an ETA will be printed</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.SparseOrbital.create_construct" title="sisl.SparseOrbital.create_construct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_construct</span></code></a></dt><dd><p>a generic function used to create a generic function which this routine requires</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.SparseOrbital.tile" title="sisl.SparseOrbital.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a></dt><dd><p>tiling <em>after</em> construct is much faster for very large systems</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.SparseOrbital.repeat" title="sisl.SparseOrbital.repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat</span></code></a></dt><dd><p>repeating <em>after</em> construct is much faster for very large systems</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseOrbital.copy" title="Permalink to this definition"></a></dt>
+<dd><p>A copy of this object</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.21)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – it is possible to convert the data to a different data-type
+If not specified, it will use <code class="docutils literal notranslate"><span class="pre">self.dtype</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.create_construct">
+<span class="sig-name descname"><span class="pre">create_construct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">R</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseOrbital.create_construct" title="Permalink to this definition"></a></dt>
+<dd><p>Create a simple function for passing to the <a class="reference internal" href="#sisl.SparseOrbital.construct" title="sisl.SparseOrbital.construct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">construct</span></code></a> function.</p>
+<p>This is simply to leviate the creation of simplistic
+functions needed for setting up the sparse elements.</p>
+<p>Basically this returns a function:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">func</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ia</span><span class="p">,</span> <span class="n">atoms</span><span class="p">,</span> <span class="n">atoms_xyz</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="gp">... </span>    <span class="n">idx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">ia</span><span class="p">,</span> <span class="n">R</span><span class="o">=</span><span class="n">R</span><span class="p">,</span> <span class="n">atoms</span><span class="o">=</span><span class="n">atoms</span><span class="p">,</span> <span class="n">atoms_xyz</span><span class="o">=</span><span class="n">atoms_xyz</span><span class="p">)</span>
+<span class="gp">... </span>    <span class="k">for</span> <span class="n">ix</span><span class="p">,</span> <span class="n">p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">idx</span><span class="p">,</span> <span class="n">param</span><span class="p">):</span>
+<span class="gp">... </span>        <span class="bp">self</span><span class="p">[</span><span class="n">ia</span><span class="p">,</span> <span class="n">ix</span><span class="p">]</span> <span class="o">=</span> <span class="n">p</span>
+</pre></div>
+</div>
+<p class="rubric">Notes</p>
+<p>This function only works for geometry sparse matrices (i.e. one
+element per atom). If you have more than one element per atom
+you have to implement the function your-self.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>R</strong> (<em>array_like</em>) – radii parameters for different shells.
+Must have same length as <em class="xref py py-obj">param</em> or one less.
+If one less it will be extended with <code class="docutils literal notranslate"><span class="pre">R[0]/100</span></code></p></li>
+<li><p><strong>param</strong> (<em>array_like</em>) – coupling constants corresponding to the <em class="xref py py-obj">R</em>
+ranges. <code class="docutils literal notranslate"><span class="pre">param[0,:]</span></code> are the elements
+for the all atoms within <code class="docutils literal notranslate"><span class="pre">R[0]</span></code> of each atom.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.SparseOrbital.construct" title="sisl.SparseOrbital.construct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">construct</span></code></a></dt><dd><p>routine to create the sparse matrix from a generic function (as returned from <a class="reference internal" href="#sisl.SparseOrbital.create_construct" title="sisl.SparseOrbital.create_construct"><code class="xref py py-obj docutils literal notranslate"><span class="pre">create_construct</span></code></a>)</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.cut">
+<span class="sig-name descname"><span class="pre">cut</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">seps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/sparse_geometry.html#SparseOrbital.cut"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseOrbital.cut" title="Permalink to this definition"></a></dt>
+<dd><p>Cuts the sparse orbital model into different parts.</p>
+<p>Recreates a new sparse orbital object with only the cutted
+atoms in the structure.</p>
+<p>Cutting is the opposite of tiling.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>seps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – number of times the structure will be cut</p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – the axis that will be cut</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.dim">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dim</span></span><a class="headerlink" href="#sisl.SparseOrbital.dim" title="Permalink to this definition"></a></dt>
+<dd><p>Number of components per element</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.dkind">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dkind</span></span><a class="headerlink" href="#sisl.SparseOrbital.dkind" title="Permalink to this definition"></a></dt>
+<dd><p>Data type of sparse elements (in str)</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.dtype">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dtype</span></span><a class="headerlink" href="#sisl.SparseOrbital.dtype" title="Permalink to this definition"></a></dt>
+<dd><p>Data type of sparse elements</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.edges">
+<span class="sig-name descname"><span class="pre">edges</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">exclude</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/sparse_geometry.html#SparseOrbital.edges"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseOrbital.edges" title="Permalink to this definition"></a></dt>
+<dd><p>Retrieve edges (connections) for all <em class="xref py py-obj">atoms</em></p>
+<p>The returned edges are unique and sorted (see <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.unique.html#numpy.unique" title="(in NumPy v1.21)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">numpy.unique</span></code></a>) and are returned
+in supercell indices (i.e. <code class="docutils literal notranslate"><span class="pre">0</span> <span class="pre">&lt;=</span> <span class="pre">edge</span> <span class="pre">&lt;</span> <span class="pre">self.geometry.no_s</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>list of int</em>) – the edges are returned only for the given atom (but by using  all orbitals of the
+requested atom). The returned edges are also atoms.</p></li>
+<li><p><strong>exclude</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>list of int</em><em> or </em><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><em>None</em></a><em>, </em><em>optional</em>) – remove edges which are in the <em class="xref py py-obj">exclude</em> list, this list refers to orbitals.</p></li>
+<li><p><strong>orbital</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>list of int</em>) – the edges are returned only for the given orbital. The returned edges are orbitals.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="sisl.SparseCSR.html#sisl.SparseCSR.edges" title="sisl.SparseCSR.edges"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SparseCSR.edges</span></code></a></dt><dd><p>the underlying routine used for extracting the edges</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.eliminate_zeros">
+<span class="sig-name descname"><span class="pre">eliminate_zeros</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseOrbital.eliminate_zeros" title="Permalink to this definition"></a></dt>
+<dd><p>Removes all zero elements from the sparse matrix</p>
+<p>This is an <em>in-place</em> operation.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="sisl.SparseCSR.html#sisl.SparseCSR.eliminate_zeros" title="sisl.SparseCSR.eliminate_zeros"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SparseCSR.eliminate_zeros</span></code></a></dt><dd><p>method called, see there for parameters</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.empty">
+<span class="sig-name descname"><span class="pre">empty</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">keep_nnz</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseOrbital.empty" title="Permalink to this definition"></a></dt>
+<dd><p>See <code class="xref py py-meth docutils literal notranslate"><span class="pre">empty</span></code> for details</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.finalize">
+<span class="sig-name descname"><span class="pre">finalize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseOrbital.finalize" title="Permalink to this definition"></a></dt>
+<dd><p>Finalizes the model</p>
+<p>Finalizes the model so that all non-used elements are removed. I.e. this simply reduces the memory requirement for the sparse matrix.</p>
+<p>Note that adding more elements to the sparse matrix is more time-consuming than for a non-finalized sparse matrix due to the
+internal data-representation.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.finalized">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">finalized</span></span><a class="headerlink" href="#sisl.SparseOrbital.finalized" title="Permalink to this definition"></a></dt>
+<dd><p>Whether the contained data is finalized and non-used elements have been removed</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.fromsp">
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">fromsp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">geometry</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">P</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseOrbital.fromsp" title="Permalink to this definition"></a></dt>
+<dd><p>Create a sparse model from a preset <a class="reference internal" href="sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a> and a list of sparse matrices</p>
+<p>The passed sparse matrices are in one of <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/sparse.html#module-scipy.sparse" title="(in SciPy v1.7.1)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">scipy.sparse</span></code></a> formats.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>geometry</strong> (<a class="reference internal" href="sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><em>Geometry</em></a>) – geometry to describe the new sparse geometry</p></li>
+<li><p><strong>P</strong> (<em>list of scipy.sparse</em><em> or </em><em>scipy.sparse</em>) – the new sparse matrices that are to be populated in the sparse
+matrix</p></li>
+<li><p><strong>**kwargs</strong> (<em>optional</em>) – any arguments that are directly passed to the <code class="docutils literal notranslate"><span class="pre">__init__</span></code> method
+of the class.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>a new sparse matrix that holds the passed geometry and the elements of <em class="xref py py-obj">P</em></p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>SparseGeometry</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.geom">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">geom</span></span><a class="headerlink" href="#sisl.SparseOrbital.geom" title="Permalink to this definition"></a></dt>
+<dd><p>deprecated geometry</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.geometry">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">geometry</span></span><a class="headerlink" href="#sisl.SparseOrbital.geometry" title="Permalink to this definition"></a></dt>
+<dd><p>Associated geometry</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.iter_nnz">
+<span class="sig-name descname"><span class="pre">iter_nnz</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/sparse_geometry.html#SparseOrbital.iter_nnz"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseOrbital.iter_nnz" title="Permalink to this definition"></a></dt>
+<dd><p>Iterations of the non-zero elements</p>
+<p>An iterator on the sparse matrix with, row and column</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">iter_nnz</span><span class="p">():</span>
+<span class="gp">... </span>   <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="c1"># is then the non-zero value</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>array_like</em>) – only loop on the non-zero elements coinciding with the orbitals
+on these atoms (not compatible with the <em class="xref py py-obj">orbitals</em> keyword)</p></li>
+<li><p><strong>orbitals</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>array_like</em>) – only loop on the non-zero elements coinciding with the orbital
+(not compatible with the <em class="xref py py-obj">atoms</em> keyword)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.nnz">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">nnz</span></span><a class="headerlink" href="#sisl.SparseOrbital.nnz" title="Permalink to this definition"></a></dt>
+<dd><p>Number of non-zero elements</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.nonzero">
+<span class="sig-name descname"><span class="pre">nonzero</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_col</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/sparse_geometry.html#SparseOrbital.nonzero"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseOrbital.nonzero" title="Permalink to this definition"></a></dt>
+<dd><p>Indices row and column indices where non-zero elements exists</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atoms</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em> or </em><em>array_like of int</em><em>, </em><em>optional</em>) – only return the tuples for the requested atoms, default is all atoms
+But for <em>all</em> orbitals.</p></li>
+<li><p><strong>only_col</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – only return then non-zero columns</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="sisl.SparseCSR.html#sisl.SparseCSR.nonzero" title="sisl.SparseCSR.nonzero"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SparseCSR.nonzero</span></code></a></dt><dd><p>the equivalent function call</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.prepend">
+<span class="sig-name descname"><span class="pre">prepend</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/sparse_geometry.html#SparseOrbital.prepend"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseOrbital.prepend" title="Permalink to this definition"></a></dt>
+<dd><p>See <a class="reference internal" href="#sisl.SparseOrbital.append" title="sisl.SparseOrbital.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a> for details</p>
+<p>This is currently equivalent to:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">other</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="p">,</span> <span class="n">eps</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.remove">
+<span class="sig-name descname"><span class="pre">remove</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/sparse_geometry.html#SparseOrbital.remove"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseOrbital.remove" title="Permalink to this definition"></a></dt>
+<dd><p>Remove a subset of this sparse matrix by only retaining the atoms corresponding to <em class="xref py py-obj">atoms</em></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>atoms</strong> (<em>array_like of int</em><em> or </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a>) – indices of removed atoms or Atom for direct removal of all atoms</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.remove" title="sisl.Geometry.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.remove</span></code></a></dt><dd><p>equivalent to the resulting <a class="reference internal" href="sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a> from this routine</p>
+</dd>
+<dt><a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.sub" title="sisl.Geometry.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.sub</span></code></a></dt><dd><p>the negative of <a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.remove" title="sisl.Geometry.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.remove</span></code></a></p>
+</dd>
+<dt><a class="reference internal" href="#sisl.SparseOrbital.sub" title="sisl.SparseOrbital.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a></dt><dd><p>the opposite of <a class="reference internal" href="#sisl.SparseOrbital.remove" title="sisl.SparseOrbital.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a>, i.e. retain a subset of atoms</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.remove_orbital">
+<span class="sig-name descname"><span class="pre">remove_orbital</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/sparse_geometry.html#SparseOrbital.remove_orbital"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseOrbital.remove_orbital" title="Permalink to this definition"></a></dt>
+<dd><p>Remove a subset of orbitals on <em class="xref py py-obj">atoms</em> according to <em class="xref py py-obj">orbitals</em></p>
+<p>For more detailed examples, please see the equivalent (but opposite) method
+<a class="reference internal" href="#sisl.SparseOrbital.sub_orbital" title="sisl.SparseOrbital.sub_orbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub_orbital</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atoms</strong> (<em>array_like of int</em><em> or </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a>) – indices of atoms or <a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atom</span></code></a> that will be reduced in size according to <em class="xref py py-obj">orbitals</em></p></li>
+<li><p><strong>orbitals</strong> (<em>array_like of int</em><em> or </em><a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><em>Orbital</em></a>) – indices of the orbitals on <em class="xref py py-obj">atoms</em> that are removed from the sparse matrix.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.SparseOrbital.sub_orbital" title="sisl.SparseOrbital.sub_orbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub_orbital</span></code></a></dt><dd><p>retaining a set of orbitals (see here for examples)</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.repeat">
+<span class="sig-name descname"><span class="pre">repeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/sparse_geometry.html#SparseOrbital.repeat"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseOrbital.repeat" title="Permalink to this definition"></a></dt>
+<dd><p>Create a repeated sparse orbital object, equivalent to <a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.repeat" title="sisl.Geometry.repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.repeat</span></code></a></p>
+<p>The already existing sparse elements are extrapolated
+to the new supercell by repeating them in blocks like the coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – number of repetitions along cell-vector <em class="xref py py-obj">axis</em></p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – 0, 1, 2 according to the cell-direction</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.repeat" title="sisl.Geometry.repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.repeat</span></code></a></dt><dd><p>the same ordering as the final geometry</p>
+</dd>
+<dt><a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.tile" title="sisl.Geometry.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.tile</span></code></a></dt><dd><p>a different ordering of the final geometry</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.SparseOrbital.tile" title="sisl.SparseOrbital.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">tile</span></code></a></dt><dd><p>a different ordering of the final geometry</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.replace">
+<span class="sig-name descname"><span class="pre">replace</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">other_atoms</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">eps</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.005</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/sparse_geometry.html#SparseOrbital.replace"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseOrbital.replace" title="Permalink to this definition"></a></dt>
+<dd><p>Replace <em class="xref py py-obj">atoms</em> in <em class="xref py py-obj">self</em> with <em class="xref py py-obj">other_atoms</em> in <em class="xref py py-obj">other</em> and retain couplings between them</p>
+<p>This method replaces a subset of atoms in <em class="xref py py-obj">self</em> with
+another sparse geometry retaining any couplings between them.
+The algorithm checks whether the coupling atoms have the same number of
+orbitals. Meaning that atoms in the overlapping region should have the same
+connections and number of orbitals per atom.
+It will _not_ check whether the orbitals or atoms _are_ the same, nor the order
+of the orbitals.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">minimal</span> <span class="o">=</span> <span class="n">SparseOrbital</span><span class="p">(</span><span class="o">....</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">big</span> <span class="o">=</span> <span class="n">minimal</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">big2</span> <span class="o">=</span> <span class="n">big</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">big</span><span class="o">.</span><span class="n">na</span><span class="p">),</span> <span class="n">minimal</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">big</span><span class="o">.</span><span class="n">spsame</span><span class="p">(</span><span class="n">big2</span><span class="p">)</span>
+<span class="go">True</span>
+</pre></div>
+</div>
+<p>To retain couplings only from the <code class="docutils literal notranslate"><span class="pre">big</span></code> sparse matrix, one should
+do the following (note the subsequent transposing which ensures hermiticy
+and is effectively copying couplings from <code class="docutils literal notranslate"><span class="pre">big</span></code> to the replaced region.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">big2</span> <span class="o">=</span> <span class="n">big</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">big</span><span class="o">.</span><span class="n">na</span><span class="p">),</span> <span class="n">minimal</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">big2</span> <span class="o">=</span> <span class="p">(</span><span class="n">big2</span> <span class="o">+</span> <span class="n">big2</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span> <span class="o">*</span> <span class="mf">0.5</span>
+</pre></div>
+</div>
+<p>To only retain couplings from the <code class="docutils literal notranslate"><span class="pre">minimal</span></code> sparse matrix:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">big2</span> <span class="o">=</span> <span class="n">big</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">big</span><span class="o">.</span><span class="n">na</span><span class="p">),</span> <span class="n">minimal</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">big2</span> <span class="o">=</span> <span class="p">(</span><span class="n">big2</span> <span class="o">+</span> <span class="n">big2</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span> <span class="o">*</span> <span class="mf">0.5</span>
+</pre></div>
+</div>
+<p class="rubric">Notes</p>
+<p>The current implementation does not preserve the hermiticity of the matrix.
+If you want to preserve hermiticity of the matrix you have to do the
+following:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sm</span> <span class="o">=</span> <span class="p">(</span><span class="n">sm</span> <span class="o">+</span> <span class="n">sm</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span> <span class="o">/</span> <span class="mi">2</span>
+</pre></div>
+</div>
+<p>Also note that the ordering of the atoms will be <code class="docutils literal notranslate"><span class="pre">range(atoms.min()),</span> <span class="pre">range(len(other_atoms)),</span> <span class="pre">&lt;rest&gt;</span></code>.
+So algorithms using atomic indices should be careful.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atoms</strong> (<em>array_like</em>) – which atoms in <em class="xref py py-obj">self</em> that are removed and replaced with <code class="docutils literal notranslate"><span class="pre">other.sub(other_atoms)</span></code></p></li>
+<li><p><strong>other</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><em>object</em></a>) – must be an object of the same type as <em class="xref py py-obj">self</em>, a subset is taken from this
+sparse matrix and combined with <em class="xref py py-obj">self</em> to create a new sparse matrix</p></li>
+<li><p><strong>other_atoms</strong> (<em>array_like</em><em>, </em><em>optional</em>) – to select a subset of atoms in <em class="xref py py-obj">other</em> that are taken out.
+Defaults to all atoms.</p></li>
+<li><p><strong>eps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em>, </em><em>optional</em>) – coordinate tolerance to allow a replacement.
+It is important that this value is smaller than half the distance between
+the two closests atoms such that there is no ambiguity in selecting
+equivalent atoms.</p></li>
+<li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><em>float</em></a><em> or </em><em>array_like</em><em>, </em><em>optional</em>) – the scale used for the overlapping region. For scalar values it corresponds
+to passing: <code class="docutils literal notranslate"><span class="pre">(scale,</span> <span class="pre">scale)</span></code>.
+For array-like input <code class="docutils literal notranslate"><span class="pre">scale[0]</span></code> refers to the scale of the matrix elements
+coupling from <em class="xref py py-obj">self</em>, while <code class="docutils literal notranslate"><span class="pre">scale[1]</span></code> is the scale of the matrix elements
+in <em class="xref py py-obj">other</em>.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.SparseOrbital.prepend" title="sisl.SparseOrbital.prepend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">prepend</span></code></a></dt><dd><p>equivalent scheme as this method</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.SparseOrbital.add" title="sisl.SparseOrbital.add"><code class="xref py py-obj docutils literal notranslate"><span class="pre">add</span></code></a></dt><dd><p>merge two matrices without considering overlap or commensurability</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.SparseOrbital.transpose" title="sisl.SparseOrbital.transpose"><code class="xref py py-obj docutils literal notranslate"><span class="pre">transpose</span></code></a></dt><dd><p>ensure hermiticity by using this routine</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.SparseOrbital.append" title="sisl.SparseOrbital.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">append</span></code></a></dt><dd><p>append two sparse matrices</p>
+</dd>
+</dl>
+<p><a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.append" title="sisl.Geometry.append"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.append</span></code></a>, <a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.prepend" title="sisl.Geometry.prepend"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.prepend</span></code></a></p>
+<dl class="simple">
+<dt><a class="reference internal" href="sisl.SparseCSR.html#sisl.SparseCSR.scale_columns" title="sisl.SparseCSR.scale_columns"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SparseCSR.scale_columns</span></code></a></dt><dd><p>method used to scale the two matrix elements values</p>
+</dd>
+</dl>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Raises</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#ValueError" title="(in Python v3.10)"><strong>ValueError</strong></a> – if the two geometries are not compatible for either coordinate, orbital or supercell errors</p></li>
+<li><p><a class="reference external" href="https://docs.python.org/3/library/exceptions.html#AssertionError" title="(in Python v3.10)"><strong>AssertionError</strong></a> – if the two geometries are not compatible for either coordinate, orbital or supercell errors</p></li>
+</ul>
+</dd>
+<dt class="field-even">Warns</dt>
+<dd class="field-even"><p><strong>SislWarning</strong> – in case the overlapping atoms are not comprising the same atomic specie. In some cases this may not be a problem. However, care must be taken by the user if this warning is issued.</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>a new instance with two sparse matrices merged together by removing and adding</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)">object</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.reset">
+<span class="sig-name descname"><span class="pre">reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=&lt;class</span> <span class="pre">'numpy.float64'&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nnzpr=None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseOrbital.reset" title="Permalink to this definition"></a></dt>
+<dd><p>The sparsity pattern has all elements removed and everything is reset.</p>
+<p>The object will be the same as if it had been
+initialized with the same geometry as it were
+created with.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – number of dimensions per element, default to the current number of
+elements per matrix element.</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.21)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the datatype of the sparse elements</p></li>
+<li><p><strong>nnzpr</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – number of non-zero elements per row</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.rij">
+<span class="sig-name descname"><span class="pre">rij</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">what='orbital'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype=&lt;class</span> <span class="pre">'numpy.float64'&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/sparse_geometry.html#SparseOrbital.rij"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseOrbital.rij" title="Permalink to this definition"></a></dt>
+<dd><p>Create a sparse matrix with the distance between atoms/orbitals</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>what</strong> (<em>{'orbital'</em><em>, </em><em>'atom'}</em>) – which kind of sparse distance matrix to return, either an atomic distance matrix
+or an orbital distance matrix. The orbital matrix is equivalent to the atomic
+one with the same distance repeated for the same atomic orbitals.
+The default is the same type as the parent class.</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.21)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – the data-type of the sparse matrix.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The returned sparse matrix with distances are taken from the current sparse pattern.
+I.e. a subsequent addition of sparse elements will make them inequivalent.
+It is thus important to <em>only</em> create the sparse distance when the sparse
+structure is completed.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.set_nsc">
+<span class="sig-name descname"><span class="pre">set_nsc</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/sparse_geometry.html#SparseOrbital.set_nsc"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseOrbital.set_nsc" title="Permalink to this definition"></a></dt>
+<dd><p>Reset the number of allowed supercells in the sparse orbital</p>
+<p>If one reduces the number of supercells <em>any</em> sparse element
+that references the supercell will be deleted.</p>
+<p>See <a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell.set_nsc" title="sisl.SuperCell.set_nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell.set_nsc</span></code></a> for allowed parameters.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="sisl.SuperCell.html#sisl.SuperCell.set_nsc" title="sisl.SuperCell.set_nsc"><code class="xref py py-obj docutils literal notranslate"><span class="pre">SuperCell.set_nsc</span></code></a></dt><dd><p>the underlying called method</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.shape">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">shape</span></span><a class="headerlink" href="#sisl.SparseOrbital.shape" title="Permalink to this definition"></a></dt>
+<dd><p>Shape of sparse matrix</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.spalign">
+<span class="sig-name descname"><span class="pre">spalign</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseOrbital.spalign" title="Permalink to this definition"></a></dt>
+<dd><p>See <code class="xref py py-meth docutils literal notranslate"><span class="pre">align</span></code> for details</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.spsame">
+<span class="sig-name descname"><span class="pre">spsame</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseOrbital.spsame" title="Permalink to this definition"></a></dt>
+<dd><p>Compare two sparse objects and check whether they have the same entries.</p>
+<p>This does not necessarily mean that the elements are the same</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.sub">
+<span class="sig-name descname"><span class="pre">sub</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/sparse_geometry.html#SparseOrbital.sub"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseOrbital.sub" title="Permalink to this definition"></a></dt>
+<dd><p>Create a subset of this sparse matrix by only retaining the atoms corresponding to <em class="xref py py-obj">atoms</em></p>
+<p>Negative indices are wrapped and thus works, supercell atoms are also wrapped to the unit-cell.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>atoms</strong> (<em>array_like of int</em><em> or </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a>) – indices of retained atoms or <a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atom</span></code></a> for retaining only <em>that</em> atom</p>
+</dd>
+</dl>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">SparseOrbital</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># only retain the second atom in the SparseGeometry</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">atom</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># retain all atoms which is equivalent to</span>
+<span class="gp">&gt;&gt;&gt; </span>                           <span class="c1"># the first atomic specie</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.remove" title="sisl.Geometry.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.remove</span></code></a></dt><dd><p>the negative of <a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.sub" title="sisl.Geometry.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.sub</span></code></a></p>
+</dd>
+<dt><a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.sub" title="sisl.Geometry.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.sub</span></code></a></dt><dd><p>equivalent to the resulting <a class="reference internal" href="sisl.Geometry.html#sisl.Geometry" title="sisl.Geometry"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry</span></code></a> from this routine</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.SparseOrbital.remove" title="sisl.SparseOrbital.remove"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove</span></code></a></dt><dd><p>the negative of <a class="reference internal" href="#sisl.SparseOrbital.sub" title="sisl.SparseOrbital.sub"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sub</span></code></a>, i.e. remove a subset of atoms</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.sub_orbital">
+<span class="sig-name descname"><span class="pre">sub_orbital</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">atoms</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">orbitals</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/sparse_geometry.html#SparseOrbital.sub_orbital"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseOrbital.sub_orbital" title="Permalink to this definition"></a></dt>
+<dd><p>Retain only a subset of the orbitals on <em class="xref py py-obj">atoms</em> according to <em class="xref py py-obj">orbitals</em></p>
+<p>This allows one to retain only a given subset of the sparse matrix elements.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>atoms</strong> (<em>array_like of int</em><em> or </em><a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><em>Atom</em></a>) – indices of atoms or <a class="reference internal" href="sisl.Atom.html#sisl.Atom" title="sisl.Atom"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Atom</span></code></a> that will be reduced in size according to <em class="xref py py-obj">orbitals</em></p></li>
+<li><p><strong>orbitals</strong> (<em>array_like of int</em><em> or </em><a class="reference internal" href="sisl.Orbital.html#sisl.Orbital" title="sisl.Orbital"><em>Orbital</em></a>) – indices of the orbitals on <em class="xref py py-obj">atoms</em> that are retained in the sparse matrix, the list of
+orbitals will be sorted. One cannot re-arrange matrix elements currently.</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>Future implementations may allow one to re-arange orbitals using this method.</p>
+<p>When using this method the internal species list will be populated by another specie
+that is named after the orbitals removed. This is to distinguish different atoms.</p>
+<p class="rubric">Examples</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="c1"># a Carbon atom with 2 orbitals</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">C</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">Atom</span><span class="p">(</span><span class="s1">&#39;C&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># an oxygen atom with 3 orbitals</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">O</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">Atom</span><span class="p">(</span><span class="s1">&#39;O&#39;</span><span class="p">,</span> <span class="p">[</span><span class="mf">1.</span><span class="p">,</span> <span class="mf">2.</span><span class="p">,</span> <span class="mf">2.4</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">geometry</span> <span class="o">=</span> <span class="n">sisl</span><span class="o">.</span><span class="n">Geometry</span><span class="p">([[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">3</span><span class="p">]],</span> <span class="mi">2</span><span class="p">,</span> <span class="p">[</span><span class="n">C</span><span class="p">,</span> <span class="n">O</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">obj</span> <span class="o">=</span> <span class="n">SparseOrbital</span><span class="p">(</span><span class="n">geometry</span><span class="p">)</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># fill in obj data...</span>
+</pre></div>
+</div>
+<p>Now <code class="docutils literal notranslate"><span class="pre">obj</span></code> is a sparse geometry with 2 different species and 6 atoms (3 of each).
+They are ordered <code class="docutils literal notranslate"><span class="pre">[C,</span> <span class="pre">O,</span> <span class="pre">C,</span> <span class="pre">O,</span> <span class="pre">C,</span> <span class="pre">O]</span></code>. In the following we
+will note species that are different from the original by a <code class="docutils literal notranslate"><span class="pre">'</span></code> in the list.</p>
+<p>Retain 2nd orbital on the 2nd atom: <code class="docutils literal notranslate"><span class="pre">[C,</span> <span class="pre">O',</span> <span class="pre">C,</span> <span class="pre">O,</span> <span class="pre">C,</span> <span class="pre">O]</span></code></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">new_obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">sub_orbital</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Retain 2nd orbital on 1st and 2nd atom: <code class="docutils literal notranslate"><span class="pre">[C',</span> <span class="pre">O',</span> <span class="pre">C,</span> <span class="pre">O,</span> <span class="pre">C,</span> <span class="pre">O]</span></code></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">new_obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">sub_orbital</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Retain 2nd orbital on the 1st atom and 3rd orbital on 4th atom: <code class="docutils literal notranslate"><span class="pre">[C',</span> <span class="pre">O,</span> <span class="pre">C,</span> <span class="pre">O',</span> <span class="pre">C,</span> <span class="pre">O]</span></code></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">new_obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">sub_orbital</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">sub_orbital</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Retain 2nd orbital on all atoms equivalent to the first atom: <code class="docutils literal notranslate"><span class="pre">[C',</span> <span class="pre">O,</span> <span class="pre">C',</span> <span class="pre">O,</span> <span class="pre">C',</span> <span class="pre">O]</span></code></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">new_obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">sub_orbital</span><span class="p">(</span><span class="n">obj</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Retain 1st orbital on 1st atom, and 2nd orbital on 3rd and 5th atom: <code class="docutils literal notranslate"><span class="pre">[C',</span> <span class="pre">O,</span> <span class="pre">C'',</span> <span class="pre">O,</span> <span class="pre">C'',</span> <span class="pre">O]</span></code></p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">new_obj</span> <span class="o">=</span> <span class="n">obj</span><span class="o">.</span><span class="n">sub_orbital</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">sub_orbital</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="#sisl.SparseOrbital.remove_orbital" title="sisl.SparseOrbital.remove_orbital"><code class="xref py py-obj docutils literal notranslate"><span class="pre">remove_orbital</span></code></a></dt><dd><p>removing a set of orbitals (opposite of this)</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.swap">
+<span class="sig-name descname"><span class="pre">swap</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">a</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">b</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseOrbital.swap" title="Permalink to this definition"></a></dt>
+<dd><p>Swaps atoms in the sparse geometry to obtain a new order of atoms</p>
+<p>This can be used to reorder elements of a geometry.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a</strong> (<em>array_like</em>) – the first list of atomic coordinates</p></li>
+<li><p><strong>b</strong> (<em>array_like</em>) – the second list of atomic coordinates</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.tile">
+<span class="sig-name descname"><span class="pre">tile</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">reps</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">axis</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/sparse_geometry.html#SparseOrbital.tile"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseOrbital.tile" title="Permalink to this definition"></a></dt>
+<dd><p>Create a tiled sparse orbital object, equivalent to <a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.tile" title="sisl.Geometry.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.tile</span></code></a></p>
+<p>The already existing sparse elements are extrapolated
+to the new supercell by repeating them in blocks like the coordinates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>reps</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – number of repetitions along cell-vector <em class="xref py py-obj">axis</em></p></li>
+<li><p><strong>axis</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a>) – 0, 1, 2 according to the cell-direction</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<dl class="simple">
+<dt><a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.tile" title="sisl.Geometry.tile"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.tile</span></code></a></dt><dd><p>the same ordering as the final geometry</p>
+</dd>
+<dt><a class="reference internal" href="sisl.Geometry.html#sisl.Geometry.repeat" title="sisl.Geometry.repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Geometry.repeat</span></code></a></dt><dd><p>a different ordering of the final geometry</p>
+</dd>
+<dt><a class="reference internal" href="#sisl.SparseOrbital.repeat" title="sisl.SparseOrbital.repeat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">repeat</span></code></a></dt><dd><p>a different ordering of the final geometry</p>
+</dd>
+</dl>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.toSparseAtom">
+<span class="sig-name descname"><span class="pre">toSparseAtom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dtype</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../../_modules/sisl/sparse_geometry.html#SparseOrbital.toSparseAtom"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#sisl.SparseOrbital.toSparseAtom" title="Permalink to this definition"></a></dt>
+<dd><p>Convert the sparse object (without data) to a new sparse object with equivalent but reduced sparse pattern</p>
+<p>This converts the orbital sparse pattern to an atomic sparse pattern.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – number of dimensions allocated in the SparseAtom object, default to the same</p></li>
+<li><p><strong>dtype</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.dtype.html#numpy.dtype" title="(in NumPy v1.21)"><em>numpy.dtype</em></a><em>, </em><em>optional</em>) – used data-type for the sparse object. Defaults to the same.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.tocsr">
+<span class="sig-name descname"><span class="pre">tocsr</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">isc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseOrbital.tocsr" title="Permalink to this definition"></a></dt>
+<dd><p>Return a <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/reference/generated/scipy.sparse.csr_matrix.html#scipy.sparse.csr_matrix" title="(in SciPy v1.7.1)"><code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code></a> for the specified dimension</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – the dimension in the sparse matrix (for non-orthogonal cases the last
+dimension is the overlap matrix)</p></li>
+<li><p><strong>isc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><em>optional</em>) – the supercell index, or all (if <code class="docutils literal notranslate"><span class="pre">isc=None</span></code>)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="sisl.SparseOrbital.transpose">
+<span class="sig-name descname"><span class="pre">transpose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#sisl.SparseOrbital.transpose" title="Permalink to this definition"></a></dt>
+<dd><p>Create the transposed sparse geometry by interchanging supercell indices</p>
+<p>Sparse geometries are (typically) relying on symmetry in the supercell picture.
+Thus when one transposes a sparse geometry one should <em>ideally</em> get the same
+matrix. This is true for the Hamiltonian, density matrix, etc.</p>
+<p>This routine transposes all rows and columns such that any interaction between
+row, <em class="xref py py-obj">r</em>, and column <em class="xref py py-obj">c</em> in a given supercell <em class="xref py py-obj">(i,j,k)</em> will be transposed
+into row <em class="xref py py-obj">c</em>, column <em class="xref py py-obj">r</em> in the supercell <em class="xref py py-obj">(-i,-j,-k)</em>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sort</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a><em>, </em><em>optional</em>) – the returned columns for the transposed structure will be sorted
+if this is true, default</p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The components for each sparse element are not changed in this method.</p>
+<p class="rubric">Examples</p>
+<p>Force a sparse geometry to be Hermitian:</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span> <span class="o">=</span> <span class="n">SparseOrbital</span><span class="p">(</span><span class="o">...</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">sp</span> <span class="o">=</span> <span class="p">(</span><span class="n">sp</span> <span class="o">+</span> <span class="n">sp</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span> <span class="o">*</span> <span class="mf">0.5</span>
+</pre></div>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>an equivalent sparse geometry with transposed matrix elements</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)">object</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="sisl.SparseAtom.html" class="btn btn-neutral float-left" title="sisl.SparseAtom" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="sisl.oplist.oplist.html" class="btn btn-neutral float-right" title="sisl.oplist.oplist" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Electronic structure calculation – a walk-through &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+        <script defer="defer" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+        <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Berry phase calculation for graphene" href="tutorial_es_2.html" />
+    <link rel="prev" title="Tutorials" href="../tutorials.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="../tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Electronic structure calculation – a walk-through</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#Creating-the-geometry-to-investigate">Creating the geometry to investigate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Creating-the-electronic-structure">Creating the electronic structure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Hamiltonian-eigenstates">Hamiltonian eigenstates</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#Brillouin-zone-calculations">Brillouin-zone calculations</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#Bandstructure">Bandstructure</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#Calculating-k-averaged-quantities">Calculating <span class="math notranslate nohighlight">\(k\)</span>-averaged quantities</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#Plotting-eigenstates-on-a-real-space-grid">Plotting eigenstates on a real space grid</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_es_2.html">Berry phase calculation for graphene</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials.html#siesta-transiesta-support">Siesta/TranSiesta support</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../tutorials.html#deprecated-tutorials">Deprecated tutorials</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html">API documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../tutorials.html">Tutorials</a> &raquo;</li>
+      <li>Electronic structure calculation – a walk-through</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/tutorials/tutorial_es_1.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  
+<style>
+/* CSS for nbsphinx extension */
+
+/* remove conflicting styling from Sphinx themes */
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt *,
+div.nbinput.container div.input_area pre,
+div.nboutput.container div.output_area pre,
+div.nbinput.container div.input_area .highlight,
+div.nboutput.container div.output_area .highlight {
+    border: none;
+    padding: 0;
+    margin: 0;
+    box-shadow: none;
+}
+
+div.nbinput.container > div[class*=highlight],
+div.nboutput.container > div[class*=highlight] {
+    margin: 0;
+}
+
+div.nbinput.container div.prompt *,
+div.nboutput.container div.prompt * {
+    background: none;
+}
+
+div.nboutput.container div.output_area .highlight,
+div.nboutput.container div.output_area pre {
+    background: unset;
+}
+
+div.nboutput.container div.output_area div.highlight {
+    color: unset;  /* override Pygments text color */
+}
+
+/* avoid gaps between output lines */
+div.nboutput.container div[class*=highlight] pre {
+    line-height: normal;
+}
+
+/* input/output containers */
+div.nbinput.container,
+div.nboutput.container {
+    display: -webkit-flex;
+    display: flex;
+    align-items: flex-start;
+    margin: 0;
+    width: 100%;
+}
+@media (max-width: 540px) {
+    div.nbinput.container,
+    div.nboutput.container {
+        flex-direction: column;
+    }
+}
+
+/* input container */
+div.nbinput.container {
+    padding-top: 5px;
+}
+
+/* last container */
+div.nblast.container {
+    padding-bottom: 5px;
+}
+
+/* input prompt */
+div.nbinput.container div.prompt pre {
+    color: #307FC1;
+}
+
+/* output prompt */
+div.nboutput.container div.prompt pre {
+    color: #BF5B3D;
+}
+
+/* all prompts */
+div.nbinput.container div.prompt,
+div.nboutput.container div.prompt {
+    width: 4.5ex;
+    padding-top: 5px;
+    position: relative;
+    user-select: none;
+}
+
+div.nbinput.container div.prompt > div,
+div.nboutput.container div.prompt > div {
+    position: absolute;
+    right: 0;
+    margin-right: 0.3ex;
+}
+
+@media (max-width: 540px) {
+    div.nbinput.container div.prompt,
+    div.nboutput.container div.prompt {
+        width: unset;
+        text-align: left;
+        padding: 0.4em;
+    }
+    div.nboutput.container div.prompt.empty {
+        padding: 0;
+    }
+
+    div.nbinput.container div.prompt > div,
+    div.nboutput.container div.prompt > div {
+        position: unset;
+    }
+}
+
+/* disable scrollbars on prompts */
+div.nbinput.container div.prompt pre,
+div.nboutput.container div.prompt pre {
+    overflow: hidden;
+}
+
+/* input/output area */
+div.nbinput.container div.input_area,
+div.nboutput.container div.output_area {
+    -webkit-flex: 1;
+    flex: 1;
+    overflow: auto;
+}
+@media (max-width: 540px) {
+    div.nbinput.container div.input_area,
+    div.nboutput.container div.output_area {
+        width: 100%;
+    }
+}
+
+/* input area */
+div.nbinput.container div.input_area {
+    border: 1px solid #e0e0e0;
+    border-radius: 2px;
+    /*background: #f5f5f5;*/
+}
+
+/* override MathJax center alignment in output cells */
+div.nboutput.container div[class*=MathJax] {
+    text-align: left !important;
+}
+
+/* override sphinx.ext.imgmath center alignment in output cells */
+div.nboutput.container div.math p {
+    text-align: left;
+}
+
+/* standard error */
+div.nboutput.container div.output_area.stderr {
+    background: #fdd;
+}
+
+/* ANSI colors */
+.ansi-black-fg { color: #3E424D; }
+.ansi-black-bg { background-color: #3E424D; }
+.ansi-black-intense-fg { color: #282C36; }
+.ansi-black-intense-bg { background-color: #282C36; }
+.ansi-red-fg { color: #E75C58; }
+.ansi-red-bg { background-color: #E75C58; }
+.ansi-red-intense-fg { color: #B22B31; }
+.ansi-red-intense-bg { background-color: #B22B31; }
+.ansi-green-fg { color: #00A250; }
+.ansi-green-bg { background-color: #00A250; }
+.ansi-green-intense-fg { color: #007427; }
+.ansi-green-intense-bg { background-color: #007427; }
+.ansi-yellow-fg { color: #DDB62B; }
+.ansi-yellow-bg { background-color: #DDB62B; }
+.ansi-yellow-intense-fg { color: #B27D12; }
+.ansi-yellow-intense-bg { background-color: #B27D12; }
+.ansi-blue-fg { color: #208FFB; }
+.ansi-blue-bg { background-color: #208FFB; }
+.ansi-blue-intense-fg { color: #0065CA; }
+.ansi-blue-intense-bg { background-color: #0065CA; }
+.ansi-magenta-fg { color: #D160C4; }
+.ansi-magenta-bg { background-color: #D160C4; }
+.ansi-magenta-intense-fg { color: #A03196; }
+.ansi-magenta-intense-bg { background-color: #A03196; }
+.ansi-cyan-fg { color: #60C6C8; }
+.ansi-cyan-bg { background-color: #60C6C8; }
+.ansi-cyan-intense-fg { color: #258F8F; }
+.ansi-cyan-intense-bg { background-color: #258F8F; }
+.ansi-white-fg { color: #C5C1B4; }
+.ansi-white-bg { background-color: #C5C1B4; }
+.ansi-white-intense-fg { color: #A1A6B2; }
+.ansi-white-intense-bg { background-color: #A1A6B2; }
+
+.ansi-default-inverse-fg { color: #FFFFFF; }
+.ansi-default-inverse-bg { background-color: #000000; }
+
+.ansi-bold { font-weight: bold; }
+.ansi-underline { text-decoration: underline; }
+
+
+div.nbinput.container div.input_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight] > pre,
+div.nboutput.container div.output_area div[class*=highlight].math,
+div.nboutput.container div.output_area.rendered_html,
+div.nboutput.container div.output_area > div.output_javascript,
+div.nboutput.container div.output_area:not(.rendered_html) > img{
+    padding: 5px;
+    margin: 0;
+}
+
+/* fix copybtn overflow problem in chromium (needed for 'sphinx_copybutton') */
+div.nbinput.container div.input_area > div[class^='highlight'],
+div.nboutput.container div.output_area > div[class^='highlight']{
+    overflow-y: hidden;
+}
+
+/* hide copybtn icon on prompts (needed for 'sphinx_copybutton') */
+.prompt a.copybtn {
+    display: none;
+}
+
+/* Some additional styling taken form the Jupyter notebook CSS */
+div.rendered_html table {
+  border: none;
+  border-collapse: collapse;
+  border-spacing: 0;
+  color: black;
+  font-size: 12px;
+  table-layout: fixed;
+}
+div.rendered_html thead {
+  border-bottom: 1px solid black;
+  vertical-align: bottom;
+}
+div.rendered_html tr,
+div.rendered_html th,
+div.rendered_html td {
+  text-align: right;
+  vertical-align: middle;
+  padding: 0.5em 0.5em;
+  line-height: normal;
+  white-space: normal;
+  max-width: none;
+  border: none;
+}
+div.rendered_html th {
+  font-weight: bold;
+}
+div.rendered_html tbody tr:nth-child(odd) {
+  background: #f5f5f5;
+}
+div.rendered_html tbody tr:hover {
+  background: rgba(66, 165, 245, 0.2);
+}
+
+/* CSS overrides for sphinx_rtd_theme */
+
+/* 24px margin */
+.nbinput.nblast.container,
+.nboutput.nblast.container {
+    margin-bottom: 19px;  /* padding has already 5px */
+}
+
+/* ... except between code cells! */
+.nblast.container + .nbinput.container {
+    margin-top: -19px;
+}
+
+.admonition > p:before {
+    margin-right: 4px;  /* make room for the exclamation icon */
+}
+
+/* Fix math alignment, see https://github.com/rtfd/sphinx_rtd_theme/pull/686 */
+.math {
+    text-align: unset;
+}
+</style>
+<div align="right">
+Download IPython notebook <a href="https://raw.githubusercontent.com/zerothi/sisl/master//home/runner/work/sisl/sisl/docs/tutorials/tutorial_es_1.ipynb"> here</a>.
+<span style="white-space: nowrap;"><a href="https://mybinder.org/v2/gh/zerothi/sisl/master?filepath=/home/runner/work/sisl/sisl/docs/tutorials/tutorial_es_1.ipynb"><img alt="Binder badge" src="https://mybinder.org/badge_logo.svg" style="vertical-align:text-bottom"></a>.</span>
+</div><div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sisl</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+</pre></div>
+</div>
+</div>
+<section id="Electronic-structure-calculation-–-a-walk-through">
+<h1>Electronic structure calculation – a walk-through<a class="headerlink" href="#Electronic-structure-calculation-–-a-walk-through" title="Permalink to this headline"></a></h1>
+<p>This tutorial will describe a complete walk-through of a large fraction of the <code class="docutils literal notranslate"><span class="pre">sisl</span></code> functionalities. It will show you how to generated default geometries, constructing Hamiltonians, calculating eigenstates and plotting various physical quantities.</p>
+<section id="Creating-the-geometry-to-investigate">
+<h2>Creating the geometry to investigate<a class="headerlink" href="#Creating-the-geometry-to-investigate" title="Permalink to this headline"></a></h2>
+<p>Our system of interest will be graphene. Instead of creating a graphene flake, or the primary unit-cell of graphene, we will create a vacancy in graphene. We will start by creating a graphene flake</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">graphene</span> <span class="o">=</span> <span class="n">geom</span><span class="o">.</span><span class="n">graphene</span><span class="p">()</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<p>This does <em>a lot</em> of things behind the scenes:</p>
+<ol class="arabic simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">geom.graphene</span></code>:</p>
+<ul class="simple">
+<li><p>create atomic coordinates of pristine graphene with a default bond-length of <span class="math notranslate nohighlight">\(1.42\,\mathrm{Å}\)</span>.</p></li>
+<li><p>create pristine graphene unit cell, by default this will create a supercell with a size <code class="docutils literal notranslate"><span class="pre">3x3</span></code>, i.e. a nearest neighbour unit-cell.</p></li>
+<li><p>assign a carbon atom with a default of one orbital per atom as the basis</p></li>
+</ul>
+</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">Geometry.tile</span></code> tiles the geometry <code class="docutils literal notranslate"><span class="pre">(reps,</span> <span class="pre">axis)</span></code> by <code class="docutils literal notranslate"><span class="pre">reps</span></code> times along the unit cell axis <code class="docutils literal notranslate"><span class="pre">axis</span></code></p></li>
+</ol>
+<p>By printing the object one gets basic information regarding the geometry, such as 1) number and species of atoms, 2) number of orbitals, 3) orbitals associated with each atom and 4) number of supercells.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="nb">print</span><span class="p">(</span><span class="n">graphene</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Geometry{na: 72, no: 72,
+ Atoms{species: 1,
+  Atom{C, Z: 6, mass(au): 12.01070, maxR: 1.43420,
+   Orbital{R: 1.43420, q0: 0.0}
+  }: 72,
+ },
+ maxR: 1.43420,
+ SuperCell{nsc: [3 3 1],
+  A=[12.780, 7.379, 0.000],
+  B=[12.780, -7.379, 0.000],
+  C=[0.000, 0.000, 14.200],
+ }
+}
+</pre></div></div>
+</div>
+<p>In this example we have <code class="docutils literal notranslate"><span class="pre">na=72</span></code> atoms, each have one orbital, hence the total number of orbitals is <code class="docutils literal notranslate"><span class="pre">no=72</span></code>. The description of the atomic specie in the geometry tells us we have a carbon atom, with a single orbital with a radius of <span class="math notranslate nohighlight">\(1.4342\,\mathrm{Å}\)</span>. The number of supercells are <code class="docutils literal notranslate"><span class="pre">[3,</span> <span class="pre">3,</span> <span class="pre">1]</span></code> which means cells <code class="docutils literal notranslate"><span class="pre">{-1,</span> <span class="pre">0,</span> <span class="pre">1}</span></code> along the first and second lattice are taken into account.</p>
+<p>Later we will look into the details of <em>orbitals</em> associated with <em>atoms</em> and how they may be used for wavefunctions etc.</p>
+<p>Lets visualize the atomic positions (here adding atomic indices)</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">plot</span><span class="p">(</span><span class="n">graphene</span><span class="p">,</span> <span class="n">atom_indices</span><span class="o">=</span><span class="kc">True</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_tutorial_es_1_6_0.png" src="../_images/tutorials_tutorial_es_1_6_0.png" />
+</div>
+</div>
+<p>Removing an atom can be done with <code class="docutils literal notranslate"><span class="pre">Geometry.remove</span></code>. The routine takes an index, or a list of indices of the atoms to be removed. For instance removing the first atom will result in the following geometry (red atom is the removed atom)</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">coord</span> <span class="o">=</span> <span class="n">graphene</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="p">:]</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="n">graphene</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="n">ax</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">temp</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">temp</span><span class="o">.</span><span class="n">xyz</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">temp</span><span class="o">.</span><span class="n">xyz</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]);</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">coord</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">coord</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">200</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_tutorial_es_1_8_0.png" src="../_images/tutorials_tutorial_es_1_8_0.png" />
+</div>
+</div>
+<p>For the following it doesn’t matter which atom we remove (since it is peridiodic), however for visualization purposes we will remove an atom in the middle of the unit cell.</p>
+<p>Using <code class="docutils literal notranslate"><span class="pre">sisl</span></code> it is easy to find atoms close to specific positions. The middle of the atomic coordinates is also the <em>center</em> of atomic coordinates, here <code class="docutils literal notranslate"><span class="pre">Geometry.center</span></code> is useful. The complementary method <code class="docutils literal notranslate"><span class="pre">Geometry.close</span></code> finds all atomic indices close to a given position or atom. By default, <code class="docutils literal notranslate"><span class="pre">Geometry.close</span></code> determines all atoms within a radius equal to the maximum orbital radius. Here we explicitly set the <em>search radius</em> to <span class="math notranslate nohighlight">\(1.5\,\mathrm{Å}\)</span>.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">ax</span> <span class="o">=</span> <span class="n">plot</span><span class="p">(</span><span class="n">graphene</span><span class="o">.</span><span class="n">sc</span><span class="p">)</span>
+<span class="n">xyz_center</span> <span class="o">=</span> <span class="n">graphene</span><span class="o">.</span><span class="n">center</span><span class="p">(</span><span class="n">what</span><span class="o">=</span><span class="s1">&#39;xyz&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xyz_center</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xyz_center</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="mi">100</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">);</span> <span class="c1"># center of geometry</span>
+<span class="n">index</span> <span class="o">=</span> <span class="n">graphene</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">xyz_center</span><span class="p">,</span> <span class="mf">1.5</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">index</span><span class="p">:</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">graphene</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">graphene</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">200</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;s&#39;</span><span class="p">,</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">facecolors</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">);</span> <span class="c1"># atoms within 1.5 of center</span>
+<span class="n">index</span> <span class="o">=</span> <span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">xyz_remove</span> <span class="o">=</span> <span class="n">graphene</span><span class="o">.</span><span class="n">xyz</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xyz_remove</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xyz_remove</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">);</span> <span class="c1"># plot the removed atom</span>
+<span class="n">system</span> <span class="o">=</span> <span class="n">graphene</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">index</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">system</span><span class="o">.</span><span class="n">xyz</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">system</span><span class="o">.</span><span class="n">xyz</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]);</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_tutorial_es_1_10_0.png" src="../_images/tutorials_tutorial_es_1_10_0.png" />
+</div>
+</div>
+</section>
+<section id="Creating-the-electronic-structure">
+<h2>Creating the electronic structure<a class="headerlink" href="#Creating-the-electronic-structure" title="Permalink to this headline"></a></h2>
+<p>To calculate eigenstates, DOS and other physical quantities from the Hamiltonian we need to setup the Hamiltonian. Tthis is done by passing a <code class="docutils literal notranslate"><span class="pre">Geometry</span></code> to a <code class="docutils literal notranslate"><span class="pre">Hamiltonian</span></code> class</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">H</span> <span class="o">=</span> <span class="n">Hamiltonian</span><span class="p">(</span><span class="n">system</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Hamiltonian{non-zero: 0, orthogonal: True,
+ Spin{unpolarized, kind=f},
+ Geometry{na: 71, no: 71,
+  Atoms{species: 1,
+   Atom{C, Z: 6, mass(au): 12.01070, maxR: 1.43420,
+    Orbital{R: 1.43420, q0: 0.0}
+   }: 71,
+  },
+  maxR: 1.43420,
+  SuperCell{nsc: [3 3 1],
+   A=[12.780, 7.379, 0.000],
+   B=[12.780, -7.379, 0.000],
+   C=[0.000, 0.000, 14.200],
+  }
+ }
+}
+</pre></div></div>
+</div>
+<div class="line-block">
+<div class="line">In addition to the <code class="docutils literal notranslate"><span class="pre">Geometry</span></code> information it informs us that it is an orthogonal basis (<code class="docutils literal notranslate"><span class="pre">sisl</span></code> also allows non-orthogonal basis’). The spin-configuration is an unpolarized configuration (see <code class="docutils literal notranslate"><span class="pre">Spin</span></code> for details).</div>
+<div class="line">Currently <code class="docutils literal notranslate"><span class="pre">non-zero</span> <span class="pre">=</span> <span class="pre">0</span></code> specifies that there are <em>no</em> associated Hamiltonian elements stored in this Hamiltonian object.</div>
+</div>
+<div class="line-block">
+<div class="line"><code class="docutils literal notranslate"><span class="pre">Hamiltonian.construct</span></code> lets one specify the Hamiltonian elements in a consistent way. However, note that the <code class="docutils literal notranslate"><span class="pre">Hamiltonian</span></code> objet may be used as though it was a matrix, i.e. <code class="docutils literal notranslate"><span class="pre">Hamiltonian[0,</span> <span class="pre">1]</span> <span class="pre">=</span> <span class="pre">a</span></code> will set the hopping element from the 0th orbital to the 1st orbital to <code class="docutils literal notranslate"><span class="pre">a</span></code>.</div>
+<div class="line">We will specify all on-site elements to <span class="math notranslate nohighlight">\(0.\,\mathrm{eV}\)</span>, and all nearest neighbour interactions with <span class="math notranslate nohighlight">\(-2.7\,\mathrm{eV}\)</span>, this is the most common used graphene tight-binding model.</div>
+<div class="line">The arguments for the <code class="docutils literal notranslate"><span class="pre">construct</span></code> method is a list of radii and an accompanying list of energies. Here <code class="docutils literal notranslate"><span class="pre">r</span></code> tells <code class="docutils literal notranslate"><span class="pre">sisl</span></code> to find all atoms within a sphere of <span class="math notranslate nohighlight">\(0.1\,\mathrm{Å}\)</span> from each atom and set the corresponding element to <span class="math notranslate nohighlight">\(0\)</span>, secondly all atoms within a spherical radius of <span class="math notranslate nohighlight">\(0.1\,\mathrm{Å}\)</span> to <span class="math notranslate nohighlight">\(1.44\,\mathrm{Å}\)</span> are given the matrix element <span class="math notranslate nohighlight">\(-2.7\,\mathrm{eV}\)</span></div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">r</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.1</span><span class="p">,</span>  <span class="mf">1.44</span><span class="p">)</span>
+<span class="n">t</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.</span> <span class="p">,</span> <span class="o">-</span><span class="mf">2.7</span> <span class="p">)</span>
+<span class="n">H</span><span class="o">.</span><span class="n">construct</span><span class="p">([</span><span class="n">r</span><span class="p">,</span> <span class="n">t</span><span class="p">])</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">H</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Hamiltonian{non-zero: 281, orthogonal: True,
+ Spin{unpolarized, kind=f},
+ Geometry{na: 71, no: 71,
+  Atoms{species: 1,
+   Atom{C, Z: 6, mass(au): 12.01070, maxR: 1.43420,
+    Orbital{R: 1.43420, q0: 0.0}
+   }: 71,
+  },
+  maxR: 1.43420,
+  SuperCell{nsc: [3 3 1],
+   A=[12.780, 7.379, 0.000],
+   B=[12.780, -7.379, 0.000],
+   C=[0.000, 0.000, 14.200],
+  }
+ }
+}
+</pre></div></div>
+</div>
+<p>Now the Hamiltonian has <span class="math notranslate nohighlight">\(281=71\cdot4-3\)</span> non-zero elements (as expected).</p>
+</section>
+<section id="Hamiltonian-eigenstates">
+<h2>Hamiltonian eigenstates<a class="headerlink" href="#Hamiltonian-eigenstates" title="Permalink to this headline"></a></h2>
+<div class="line-block">
+<div class="line">At this point we have 1) a complete geometry describing a supercell structure with nearest cell neighbour interactions, 2) a Hamiltonian with nearest neighbour interactions describing the electronic structure.</div>
+<div class="line">This completes what is needed to calculate a great deal of physical quantities, e.g. eigenstates, density of states, projected density of states and bandstructures.</div>
+</div>
+<p>To begin with we calculate the <span class="math notranslate nohighlight">\(\Gamma\)</span>-point eigenstates and plot a subset of the eigenstates’ norm on the geometry.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">es</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">()</span>
+<span class="c1"># Reduce the contained eigenstates to only 3 states around the Fermi-level</span>
+<span class="n">es_fermi</span> <span class="o">=</span> <span class="n">es</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">H</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">H</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">_</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">es_fermi</span><span class="o">.</span><span class="n">norm2</span><span class="p">(</span><span class="nb">sum</span><span class="o">=</span><span class="kc">False</span><span class="p">),</span> <span class="s1">&#39;rbg&#39;</span><span class="p">)):</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">system</span><span class="o">.</span><span class="n">xyz</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">system</span><span class="o">.</span><span class="n">xyz</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">600</span> <span class="o">*</span> <span class="n">n</span><span class="p">,</span> <span class="n">facecolor</span><span class="o">=</span><span class="n">c</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">);</span>
+    <span class="n">ax</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xyz_remove</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xyz_remove</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">);</span> <span class="c1"># mark the removed atom</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_tutorial_es_1_17_0.png" src="../_images/tutorials_tutorial_es_1_17_0.png" />
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">Hamiltonian.eigenstate</span></code> (with an optional <span class="math notranslate nohighlight">\(k\)</span>-point argument) routine returns an <code class="docutils literal notranslate"><span class="pre">EigenstateElectron</span></code> object which holds the eigenvalues and eigenvectors for a given <span class="math notranslate nohighlight">\(k\)</span>-point. This object can perform several advanced calculations:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">EigenstateElectron.DOS</span></code>: calculate the DOS at a given set of energy values (in eV), additionally one can pass a distribution function if the default Gaussian with <span class="math notranslate nohighlight">\(\sigma=0.1\,\mathrm{eV}\)</span> is not wanted.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">EigenstateElectron.PDOS</span></code>: calculate the projected DOS at a given set of energy values (in eV), additionally one can pass a distribution function if the default Gaussian with <span class="math notranslate nohighlight">\(\sigma=0.1\,\mathrm{eV}\)</span> is not wanted.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">EigenstateElectron.wavefunction</span></code>: add <em>all</em> contained eigenstates to a passed real-space grid.</p></li>
+</ul>
+<p>Lets first try and calculate the DOS for a given set of energies in the range <span class="math notranslate nohighlight">\(-4\,\mathrm{eV}\)</span> : <span class="math notranslate nohighlight">\(\mathrm{4}\,\mathrm{eV}\)</span></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">400</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">es</span><span class="o">.</span><span class="n">DOS</span><span class="p">(</span><span class="n">E</span><span class="p">));</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;$E - E_F$ [eV]&#39;</span><span class="p">);</span> <span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;DOS at $\Gamma$ [1/eV]&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_tutorial_es_1_19_0.png" src="../_images/tutorials_tutorial_es_1_19_0.png" />
+</div>
+</div>
+<p>The projected DOS (in this case) can aptly be plotted on individual atoms as will be seen in the following. We will integrate the PDOS in the range <span class="math notranslate nohighlight">\(-1\,\mathrm{eV}\)</span> to <span class="math notranslate nohighlight">\(-0.5\,\mathrm{eV}\)</span></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="o">-</span><span class="mf">.5</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="n">dE</span> <span class="o">=</span> <span class="n">E</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">E</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">PDOS</span> <span class="o">=</span> <span class="n">es</span><span class="o">.</span><span class="n">PDOS</span><span class="p">(</span><span class="n">E</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">dE</span> <span class="c1"># perform integration</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">system</span><span class="o">.</span><span class="n">xyz</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">system</span><span class="o">.</span><span class="n">xyz</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">500</span> <span class="o">*</span> <span class="n">PDOS</span><span class="p">);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xyz_remove</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xyz_remove</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">);</span> <span class="c1"># mark the removed atom</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_tutorial_es_1_21_0.png" src="../_images/tutorials_tutorial_es_1_21_0.png" />
+</div>
+</div>
+<p>This highlights a somewhat <em>localized</em> state around the missing atom.</p>
+</section>
+<section id="Brillouin-zone-calculations">
+<h2>Brillouin-zone calculations<a class="headerlink" href="#Brillouin-zone-calculations" title="Permalink to this headline"></a></h2>
+<p>The above DOS and PDOS analysis are useful for investigating a single <span class="math notranslate nohighlight">\(k\)</span>-point at a time. However, they are incomplete in the sense of the full Brillouin zone. To leverage this <code class="docutils literal notranslate"><span class="pre">sisl</span></code>, implements several classes to handle Brillouin-zones.</p>
+<p>In the following we will show how to perform band structure calculations as well as performing <span class="math notranslate nohighlight">\(k\)</span>-averaged quantities in the Brillouin zone.</p>
+<section id="Bandstructure">
+<h3>Bandstructure<a class="headerlink" href="#Bandstructure" title="Permalink to this headline"></a></h3>
+<div class="line-block">
+<div class="line">An easy and useful analysis is the <em>band structure</em>. In <code class="docutils literal notranslate"><span class="pre">sisl</span></code> calculating the band-structure is as easy as anything else.</div>
+<div class="line">Begin by defining the path in the Brillouin zone.</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">band</span> <span class="o">=</span> <span class="n">BandStructure</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="p">[[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+                         <span class="p">[</span><span class="mi">1</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="mi">400</span><span class="p">,</span>
+                        <span class="p">[</span><span class="sa">r</span><span class="s1">&#39;$\Gamma$&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$M$&#39;</span><span class="p">,</span>
+                         <span class="sa">r</span><span class="s1">&#39;$K$&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;$\Gamma$&#39;</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<p>Note that the integer <code class="docutils literal notranslate"><span class="pre">400</span></code> determines the total number of <span class="math notranslate nohighlight">\(k\)</span>-points on the full band. One <em>can</em> define an explicit number between the different points, however we highly encourage only specifying <em>one</em> integer as the divisions will be determined based on the length in the reciprocal space between the points and thus the physical distance in the Brillouin zone will be correct.</p>
+<p>A word of note on the <code class="docutils literal notranslate"><span class="pre">BrillouinZone</span></code> objects.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">BrillouinZone</span></code> objects are <em>extremely</em> handy because they allow to directly call <em>any</em> routine inherent to the passed object. If calling routine <code class="docutils literal notranslate"><span class="pre">band.a()</span></code> it is equivalent to:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>for k in band: yield band.parent.a(k=k)
+</pre></div>
+</div>
+<p>Note that <code class="docutils literal notranslate"><span class="pre">BrillouinZone</span></code> defaults to use <code class="docutils literal notranslate"><span class="pre">BrillouinZone.apply.iter</span></code>.</p>
+<p>However, for large systems this may result in memory problems in which case it may be necessary to return an iterator. To circumvent this we can tell the Brillouin zone object to (always) return a list instead:</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>b_list = band.apply.list
+as_list = b_list.a()
+</pre></div>
+</div>
+<p>Another option is to return <span class="math notranslate nohighlight">\(k\)</span>-point averaged quantities which is roughly equivalent to (internally it is done with minimal memory usage):</p>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>band.apply.average.a() == sum([band.parent.a(k=k) * band.weight[i] for i, k in enumerate(band)])
+</pre></div>
+</div>
+<p>Now we can calculate the band structure. A band-structure requires <em>all</em> eigenvalues and thus we ask the <code class="docutils literal notranslate"><span class="pre">BrillouinZone</span></code> object to return all values using <code class="docutils literal notranslate"><span class="pre">apply.array</span></code>.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">bs</span> <span class="o">=</span> <span class="n">band</span><span class="o">.</span><span class="n">apply</span><span class="o">.</span><span class="n">array</span><span class="o">.</span><span class="n">eigh</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">lk</span><span class="p">,</span> <span class="n">kt</span><span class="p">,</span> <span class="n">kl</span> <span class="o">=</span> <span class="n">band</span><span class="o">.</span><span class="n">lineark</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">kt</span><span class="p">,</span> <span class="n">kl</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">lk</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;$E-E_F$ [eV]&#39;</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">bk</span> <span class="ow">in</span> <span class="n">bs</span><span class="o">.</span><span class="n">T</span><span class="p">:</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">lk</span><span class="p">,</span> <span class="n">bk</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_tutorial_es_1_26_0.png" src="../_images/tutorials_tutorial_es_1_26_0.png" />
+</div>
+</div>
+</section>
+<section id="Calculating-k-averaged-quantities">
+<h3>Calculating <span class="math notranslate nohighlight">\(k\)</span>-averaged quantities<a class="headerlink" href="#Calculating-k-averaged-quantities" title="Permalink to this headline"></a></h3>
+<p>Now we are in a position to calculate a subset of quantities from the Hamiltonian. Before proceeding we will note that the Hamiltonian also implements the <code class="docutils literal notranslate"><span class="pre">DOS</span></code> and <code class="docutils literal notranslate"><span class="pre">PDOS</span></code> methods (equivalent to <code class="docutils literal notranslate"><span class="pre">Hamiltonian.eigenvalue().DOS()</span></code>), hence to calculate these as <span class="math notranslate nohighlight">\(k\)</span>-averaged quantities we can create a Brillouin zone object with proper weights, say a Monkhorst-Pack grid, and calculate the averaged quantities.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">bz</span> <span class="o">=</span> <span class="n">MonkhorstPack</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="p">[</span><span class="mi">35</span><span class="p">,</span> <span class="mi">35</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">bz_average</span> <span class="o">=</span> <span class="n">bz</span><span class="o">.</span><span class="n">apply</span><span class="o">.</span><span class="n">average</span><span class="p">;</span> <span class="c1"># specify the Brillouin zone to perform an average of subsequent method calls</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">E</span><span class="p">,</span> <span class="n">bz_average</span><span class="o">.</span><span class="n">DOS</span><span class="p">(</span><span class="n">E</span><span class="p">));</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;$E - E_F$ [eV]&#39;</span><span class="p">);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;DOS [1/eV]&#39;</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_tutorial_es_1_29_0.png" src="../_images/tutorials_tutorial_es_1_29_0.png" />
+</div>
+</div>
+<p>We can also plot the projected DOS integrated around the Fermi level on the atoms</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">E</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+<span class="n">dE</span> <span class="o">=</span> <span class="n">E</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">E</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">PDOS</span> <span class="o">=</span> <span class="n">bz_average</span><span class="o">.</span><span class="n">PDOS</span><span class="p">(</span><span class="n">E</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">dE</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">system</span><span class="o">.</span><span class="n">xyz</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">system</span><span class="o">.</span><span class="n">xyz</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="mi">400</span> <span class="o">*</span> <span class="n">PDOS</span><span class="p">);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">xyz_remove</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">xyz_remove</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">);</span> <span class="c1"># mark the removed atom</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_tutorial_es_1_32_0.png" src="../_images/tutorials_tutorial_es_1_32_0.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="Plotting-eigenstates-on-a-real-space-grid">
+<h2>Plotting eigenstates on a real space grid<a class="headerlink" href="#Plotting-eigenstates-on-a-real-space-grid" title="Permalink to this headline"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">sisl</span></code> also implements methods to plot orbitals on grids. Often it may also be advantageous to plot simple orbitals to check their appearence. <code class="docutils literal notranslate"><span class="pre">sisl</span></code> implements a simple variation of spherical atomic orbitals. Other orbitals may easily be added, if so desired.</p>
+<p>Since we require orbitals to be zero at some maximum cut-off <span class="math notranslate nohighlight">\(r_\mathrm{max}\)</span> a radial function is used to cutoff the spherical harmonics. In this case we will simply use an exponential function with a cutoff radius of <span class="math notranslate nohighlight">\(1.6\,\mathrm{Å}\)</span></p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">r</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mf">1.6</span><span class="p">,</span> <span class="mi">700</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">exp</span><span class="p">(</span><span class="o">-</span><span class="n">r</span> <span class="o">*</span> <span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Normalization: </span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">f</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">*</span> <span class="p">(</span><span class="n">r</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="n">r</span><span class="p">[</span><span class="mi">0</span><span class="p">])))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">f</span><span class="p">);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">])</span>
+<span class="n">orb</span> <span class="o">=</span> <span class="n">SphericalOrbital</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">r</span><span class="p">,</span> <span class="n">f</span><span class="p">));</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Normalization: 1.0053998295349618
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_tutorial_es_1_34_1.png" src="../_images/tutorials_tutorial_es_1_34_1.png" />
+</div>
+</div>
+<p>To calculate the orbital on a 3D grid, the <code class="docutils literal notranslate"><span class="pre">Orbital.toGrid</span></code> function is available. Here we create an orbital with azimuthal quantum number <span class="math notranslate nohighlight">\(l=1\)</span> and by default it has angular moment <span class="math notranslate nohighlight">\(0\)</span>, i.e. the <span class="math notranslate nohighlight">\(2p_z\)</span> orbital. To create a <span class="math notranslate nohighlight">\(2p_x\)</span> or <span class="math notranslate nohighlight">\(2p_y\)</span> orbital requires the use of an <code class="docutils literal notranslate"><span class="pre">AtomicOrbital</span></code> to denote the <span class="math notranslate nohighlight">\(m\)</span> quantum number. Below we create the grid that describes the <span class="math notranslate nohighlight">\(p_z\)</span> orbital and plot the <span class="math notranslate nohighlight">\(yz\)</span> plane at <span class="math notranslate nohighlight">\(x=0\)</span> (with respect to the position
+of the orbital).</p>
+<p>Note that the real-space orbital will <em>not</em> be normalized and thus <span class="math notranslate nohighlight">\(\int|\psi(\mathbf r)|^2\neq 1\)</span>, as it should. The following analysis is thus a qualitative analysis.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">grid</span> <span class="o">=</span> <span class="n">orb</span><span class="o">.</span><span class="n">toGrid</span><span class="p">()</span>
+<span class="n">index</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="o">-</span><span class="n">grid</span><span class="o">.</span><span class="n">origin</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="p">[</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">:,</span> <span class="p">:]</span><span class="o">.</span><span class="n">T</span><span class="p">);</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_tutorial_es_1_37_0.png" src="../_images/tutorials_tutorial_es_1_37_0.png" />
+</div>
+</div>
+<p>This <em>simple orbital model</em> may be used to plot the real-space tight-binding eigenstates. Our first task will be to tell the geometry that the orbital associated with the Carbon atoms is the <span class="math notranslate nohighlight">\(2p_z\)</span> orbital as noted above. First we create the Carbon atom, then we replace the atom in the system geometry.</p>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">C</span> <span class="o">=</span> <span class="n">Atom</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="n">orb</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">system</span><span class="p">)</span>
+<span class="n">system</span><span class="o">.</span><span class="n">atoms</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">system</span><span class="o">.</span><span class="n">atoms</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">C</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">system</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Geometry{na: 71, no: 71,
+ Atoms{species: 1,
+  Atom{C, Z: 6, mass(au): 12.01070, maxR: 1.43420,
+   Orbital{R: 1.43420, q0: 0.0}
+  }: 71,
+ },
+ maxR: 1.43420,
+ SuperCell{nsc: [3 3 1],
+  A=[12.780, 7.379, 0.000],
+  B=[12.780, -7.379, 0.000],
+  C=[0.000, 0.000, 14.200],
+ }
+}
+Geometry{na: 71, no: 71,
+ Atoms{species: 1,
+  Atom{C, Z: 6, mass(au): 12.01070, maxR: 1.60010,
+   SphericalOrbital{l: 1, R: 1.6001, q0: 0.0}
+  }: 71,
+ },
+ maxR: 1.60010,
+ SuperCell{nsc: [3 3 1],
+  A=[12.780, 7.379, 0.000],
+  B=[12.780, -7.379, 0.000],
+  C=[0.000, 0.000, 14.200],
+ }
+}
+</pre></div></div>
+</div>
+<p>Note the difference between the two <code class="docutils literal notranslate"><span class="pre">print(system)</span></code> statements, before the replacement, an intrinsic <code class="docutils literal notranslate"><span class="pre">Orbital</span></code> object describes the orbital, in effect no knowledge other than the radius. After replacement, the spherical orbital with azimuthal angular moment <span class="math notranslate nohighlight">\(l=1\)</span> is replaced. Now we can plot the real-space grid for an eigenstate.</p>
+<p>Lets plot one of the <span class="math notranslate nohighlight">\(\Gamma\)</span>-point eigenstates close to the Fermi-level.</p>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">es</span> <span class="o">=</span> <span class="n">H</span><span class="o">.</span><span class="n">eigenstate</span><span class="p">(</span><span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span><span class="o">.</span><span class="n">sub</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">H</span><span class="p">)</span> <span class="o">//</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">])</span>
+<span class="n">grid</span> <span class="o">=</span> <span class="n">Grid</span><span class="p">(</span><span class="mf">0.075</span><span class="p">,</span> <span class="n">sc</span><span class="o">=</span><span class="n">H</span><span class="o">.</span><span class="n">sc</span><span class="p">)</span>
+<span class="n">es</span><span class="o">.</span><span class="n">wavefunction</span><span class="p">(</span><span class="n">grid</span><span class="p">)</span>
+<span class="n">index</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">index</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre>
+<span></span><span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">grid</span><span class="o">.</span><span class="n">grid</span><span class="p">[:,</span> <span class="p">:,</span> <span class="n">index</span><span class="p">[</span><span class="mi">2</span><span class="p">]]</span><span class="o">.</span><span class="n">T</span><span class="p">);</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">colorbar</span><span class="p">();</span>
+<span class="n">index</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">xyz_remove</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">index</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;*&#39;</span><span class="p">);</span> <span class="c1"># mark the removed atom</span>
+</pre></div>
+</div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="../_images/tutorials_tutorial_es_1_42_0.png" src="../_images/tutorials_tutorial_es_1_42_0.png" />
+</div>
+</div>
+<p>Please try and disregard the skewedness of the plot. Since the geometry is skewed, the wavefunction plot will be transformed to a square, however the graphene lattice may be recognized. The above plot shows <span class="math notranslate nohighlight">\(\psi(x, y, 0.1\,\mathrm{Å})\)</span> for all <span class="math notranslate nohighlight">\(x\)</span> and <span class="math notranslate nohighlight">\(y\)</span>. Note the similarity with the norm of the Hamiltonian eigenstates. However, in this plot we see that the wavefunction changes sign on alternating atoms.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../tutorials.html" class="btn btn-neutral float-left" title="Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tutorial_es_2.html" class="btn btn-neutral float-right" title="Berry phase calculation for graphene" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

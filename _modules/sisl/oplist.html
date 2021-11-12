@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>sisl.oplist &mdash; sisl latest documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/sg_gallery.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+        <script src="https://unpkg.com/@jupyter-widgets/html-manager@^0.20.0/dist/embed-amd.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> sisl
+          </a>
+              <div class="version">
+                latest
+              </div>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contribute.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../other.html">Other resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../cite.html">Citing sisl</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">User Guide</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scripts/scripts.html">Command line scripts</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Toolboxes</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../toolbox/index.html">Toolboxes</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Visualization</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/ase/index.html">ASE</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../visualization/viz_module/index.html">The <code class="docutils literal notranslate"><span class="pre">sisl.viz</span></code> module</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Reference documentation</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html">API documentation</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">sisl</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>sisl.oplist</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for sisl.oplist</h1><div class="highlight"><pre>
+<span></span><span class="c1"># This Source Code Form is subject to the terms of the Mozilla Public</span>
+<span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
+<span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
+<span class="sa">r</span><span class="sd">&quot;&quot;&quot; Lists with inter-element operations</span>
+
+<span class="sd">In certain cases it may be advantegeous to make operations on list elements rather than doing</span>
+<span class="sd">list extensions.</span>
+
+<span class="sd">This sub-module implements a list which allows to make operations with it-self or with scalars.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">wraps</span>
+<span class="kn">import</span> <span class="nn">operator</span> <span class="k">as</span> <span class="nn">op</span>
+
+<span class="kn">from</span> <span class="nn">._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
+<span class="kn">from</span> <span class="nn">._help</span> <span class="kn">import</span> <span class="n">isiterable</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;oplist&#39;</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">only_self</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">only_self</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">op</span><span class="p">(</span><span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">isiterable</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> requires other data to contain same number of elements (or a scalar).&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">op</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">o</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">op</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_</span>
+
+
+<span class="k">def</span> <span class="nf">_crt_rop</span><span class="p">(</span><span class="n">op</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">isiterable</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> requires other data to contain same number of elements (or a scalar).&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">op</span><span class="p">(</span><span class="n">o</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span><span class="p">,</span> <span class="n">o</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="p">(</span><span class="n">op</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="bp">self</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">_</span>
+
+
+<span class="k">def</span> <span class="nf">_crt_iop</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">only_self</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">only_self</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
+                <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">return</span> <span class="bp">self</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">def</span> <span class="nf">_</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">isiterable</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">other</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> requires other data to contain same number of elements (or a scalar).&quot;</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
+                    <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">other</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)):</span>
+                    <span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">op</span><span class="p">(</span><span class="bp">self</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">other</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span>
+    <span class="k">return</span> <span class="n">_</span>
+
+
+<span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl&quot;</span><span class="p">)</span>
+<span class="k">class</span> <span class="nc">oplist</span><span class="p">(</span><span class="nb">list</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot; list with element-wise operations</span>
+
+<span class="sd">    List-inherited class implementing direct element operations instead of list-extensions/compressions.</span>
+<span class="sd">    When having multiple lists and one wishes to create a sum of individual elements, thus</span>
+<span class="sd">    creating the summed elements list one could do:</span>
+
+<span class="sd">    &gt;&gt;&gt; from functools import reduce</span>
+<span class="sd">    &gt;&gt;&gt; lists = list()</span>
+<span class="sd">    &gt;&gt;&gt; lists.append([1, 2])</span>
+<span class="sd">    &gt;&gt;&gt; lists.append([3, 4])</span>
+<span class="sd">    &gt;&gt;&gt; lists.append([5, 6])</span>
+<span class="sd">    &gt;&gt;&gt; list_sum = reduce(lambda x, y: (x[0] + y[0], x[1] + y[1]), lists)</span>
+<span class="sd">    &gt;&gt;&gt; print(list_sum)</span>
+<span class="sd">    [9, 12]</span>
+
+<span class="sd">    However, the above easily becomes tedious when the number of entries in the list</span>
+<span class="sd">    becomes very large.</span>
+
+<span class="sd">    Instead it may be advantageous to allow operations like this:</span>
+
+<span class="sd">    &gt;&gt;&gt; oplists = list()</span>
+<span class="sd">    &gt;&gt;&gt; oplists.append(oplist([1, 2]))</span>
+<span class="sd">    &gt;&gt;&gt; oplists.append(oplist([3, 4]))</span>
+<span class="sd">    &gt;&gt;&gt; oplists.append(oplist([5, 6]))</span>
+<span class="sd">    &gt;&gt;&gt; oplist_sum = reduce(sum, oplists)</span>
+<span class="sd">    &gt;&gt;&gt; print(oplist_sum)</span>
+<span class="sd">    [9, 12]</span>
+
+<span class="sd">    This is more natural when dealing with multiple variables and wanting</span>
+<span class="sd">    to add them.</span>
+
+<span class="sd">    &gt;&gt;&gt; l1 = oplist([1, 2])</span>
+<span class="sd">    &gt;&gt;&gt; l2 = oplist([3, 4])</span>
+<span class="sd">    &gt;&gt;&gt; l3 = oplist([5, 6])</span>
+<span class="sd">    &gt;&gt;&gt; l = l1 + l2 + l3</span>
+<span class="sd">    &gt;&gt;&gt; print(l)</span>
+<span class="sd">    [9, 12]</span>
+<span class="sd">    &gt;&gt;&gt; print(l * 2)</span>
+<span class="sd">    [18, 24]</span>
+
+
+<span class="sd">    The class also implements a decorator for automatic returning of</span>
+<span class="sd">    oplist lists.</span>
+
+<span class="sd">    &gt;&gt;&gt; @oplist.decorate</span>
+<span class="sd">    &gt;&gt;&gt; def my_func():</span>
+<span class="sd">    ...     return 1</span>
+<span class="sd">    &gt;&gt;&gt; isinstance(my_func(), oplist)</span>
+<span class="sd">    True</span>
+
+<span class="sd">    Currently this class implements the following elementwise mathematical operations</span>
+
+<span class="sd">    - additions</span>
+<span class="sd">    - subtractions</span>
+<span class="sd">    - multiplications</span>
+<span class="sd">    - divisions</span>
+<span class="sd">    - powers</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    iterable : data</span>
+<span class="sd">       elements in `oplist`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="vm">__slots__</span> <span class="o">=</span> <span class="p">()</span>
+
+<div class="viewcode-block" id="oplist.decorate"><a class="viewcode-back" href="../../api/generated/sisl.oplist.oplist.html#sisl.oplist.oplist.decorate">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">decorate</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">func</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Decorate a function to always return an `oplist`, regardless of return values from `func`</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        func : callable</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        callable</span>
+<span class="sd">            a wrapped function which ensures the returned argument is an instance of `oplist`</span>
+
+<span class="sd">        Examples</span>
+<span class="sd">        --------</span>
+
+<span class="sd">        &gt;&gt;&gt; @oplist.decorate</span>
+<span class="sd">        &gt;&gt;&gt; def myret():</span>
+<span class="sd">        ...    return 1</span>
+<span class="sd">        &gt;&gt;&gt; a = myret()</span>
+<span class="sd">        &gt;&gt;&gt; isinstance(a, oplist)</span>
+<span class="sd">        True</span>
+<span class="sd">        &gt;&gt;&gt; print(a)</span>
+<span class="sd">        [1]</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nd">@wraps</span><span class="p">(</span><span class="n">func</span><span class="p">)</span>
+        <span class="k">def</span> <span class="nf">wrap_func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+            <span class="n">val</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="n">oplist</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">val</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="bp">cls</span><span class="p">):</span>
+                <span class="k">return</span> <span class="n">val</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">val</span><span class="p">,</span> <span class="p">(</span><span class="nb">tuple</span><span class="p">,</span> <span class="nb">list</span><span class="p">)):</span>
+                <span class="c1"># Currently we only capture these as converted</span>
+                <span class="k">return</span> <span class="bp">cls</span><span class="p">(</span><span class="n">val</span><span class="p">)</span>
+            <span class="c1"># I should probably check all cases</span>
+            <span class="k">return</span> <span class="bp">cls</span><span class="p">([</span><span class="n">val</span><span class="p">])</span>
+
+        <span class="k">return</span> <span class="n">wrap_func</span></div>
+
+    <span class="c1"># Implement math operations</span>
+    <span class="fm">__abs__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">abs</span><span class="p">,</span> <span class="n">only_self</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="fm">__add__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">add</span><span class="p">)</span>
+    <span class="fm">__radd__</span> <span class="o">=</span> <span class="n">_crt_rop</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">add</span><span class="p">)</span>
+    <span class="fm">__iadd__</span> <span class="o">=</span> <span class="n">_crt_iop</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">iadd</span><span class="p">)</span>
+    <span class="fm">__floordiv__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">floordiv</span><span class="p">)</span>
+    <span class="fm">__rfloordiv__</span> <span class="o">=</span> <span class="n">_crt_rop</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">floordiv</span><span class="p">)</span>
+    <span class="fm">__ifloordiv__</span> <span class="o">=</span> <span class="n">_crt_iop</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">ifloordiv</span><span class="p">)</span>
+    <span class="fm">__mod__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">mod</span><span class="p">)</span>
+    <span class="fm">__imod__</span> <span class="o">=</span> <span class="n">_crt_iop</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">imod</span><span class="p">)</span>
+    <span class="fm">__mul__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">mul</span><span class="p">)</span>
+    <span class="fm">__imul__</span> <span class="o">=</span> <span class="n">_crt_iop</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">imul</span><span class="p">)</span>
+    <span class="fm">__rmul__</span> <span class="o">=</span> <span class="n">_crt_rop</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">mul</span><span class="p">)</span>
+    <span class="fm">__matmul__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">matmul</span><span class="p">)</span>
+    <span class="fm">__imatmul__</span> <span class="o">=</span> <span class="n">_crt_iop</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">imatmul</span><span class="p">)</span>
+    <span class="fm">__neg__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">neg</span><span class="p">,</span> <span class="n">only_self</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="fm">__pos__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span> <span class="n">only_self</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="fm">__pow__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">pow</span><span class="p">)</span>
+    <span class="fm">__ipow__</span> <span class="o">=</span> <span class="n">_crt_iop</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">ipow</span><span class="p">)</span>
+    <span class="fm">__rpow__</span> <span class="o">=</span> <span class="n">_crt_rop</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">pow</span><span class="p">)</span>
+    <span class="fm">__sub__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">sub</span><span class="p">)</span>
+    <span class="fm">__isub__</span> <span class="o">=</span> <span class="n">_crt_iop</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">isub</span><span class="p">)</span>
+    <span class="fm">__rsub__</span> <span class="o">=</span> <span class="n">_crt_rop</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">sub</span><span class="p">)</span>
+    <span class="fm">__truediv__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">truediv</span><span class="p">)</span>
+    <span class="fm">__itruediv__</span> <span class="o">=</span> <span class="n">_crt_iop</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">itruediv</span><span class="p">)</span>
+    <span class="fm">__rtruediv__</span> <span class="o">=</span> <span class="n">_crt_rop</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">truediv</span><span class="p">)</span>
+
+    <span class="c1"># boolean operations</span>
+    <span class="fm">__eq__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">eq</span><span class="p">)</span>
+    <span class="fm">__lt__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">lt</span><span class="p">)</span>
+    <span class="fm">__le__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">le</span><span class="p">)</span>
+    <span class="fm">__ge__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">ge</span><span class="p">)</span>
+    <span class="fm">__gt__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">gt</span><span class="p">)</span>
+    <span class="n">__not__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">not_</span><span class="p">,</span> <span class="n">only_self</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="fm">__and__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">and_</span><span class="p">)</span>
+    <span class="fm">__iand__</span> <span class="o">=</span> <span class="n">_crt_iop</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">iand</span><span class="p">)</span>
+    <span class="fm">__or__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">or_</span><span class="p">)</span>
+    <span class="fm">__ior__</span> <span class="o">=</span> <span class="n">_crt_iop</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">ior</span><span class="p">)</span>
+    <span class="fm">__xor__</span> <span class="o">=</span> <span class="n">_crt_op</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">xor</span><span class="p">)</span>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2015-2021, Nick Papior.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
