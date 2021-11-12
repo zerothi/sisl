@@ -22,7 +22,7 @@ jobs:
           lfs: true
 
       # This should generally not be required, but in the end it is just easier
-      - name: Ensure fortran
+      - name: Ensure system dependencies
         run: |
           sudo apt-get update
           sudo apt-get install gfortran
@@ -30,9 +30,9 @@ jobs:
       - name: Setup python environment
         uses: actions/setup-python@v2
         with:
-          python-version: '3.8'
+          python-version: '3.9'
 
-      - name: Install sisl + doc deps
+      - name: Install sisl + documentation dependencies
         run: |
           python -m pip install --upgrade pip
           python -m pip install Cython
@@ -41,7 +41,7 @@ jobs:
         
       - uses: r-lib/actions/setup-pandoc@v1 
 
-      - name: Build the docs
+      - name: Build the documentation using the sisl-files as well
         run: |
           cd docs
           SISL_FILES_TESTS=${GITHUB_WORKSPACE}/files/tests make html
