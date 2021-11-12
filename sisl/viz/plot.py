@@ -1192,6 +1192,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
             if the plot is displayed in a jupyter notebook, whether you want to
             get the figure widget as a return so that you can act on it.
         """
+        from IPython.display import display
 
         def _try_backend():
             if self._backend is None:
@@ -1204,8 +1205,6 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
             self._backend.show(**kwargs)
 
         if not isinstance(self, Animation):
-
-            from IPython.display import display
 
             try:
                 widget = self._backend.get_ipywidget()
@@ -1239,6 +1238,7 @@ class Plot(ShortCutable, Configurable, metaclass=PlotMeta):
         fig_widget: plotly.graph_objs.FigureWidget
             The figure widget that we need to extend.
         """
+        from IPython.display import display
         from ipyevents import Event
         from ipywidgets import HTML, Output
 
