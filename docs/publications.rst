@@ -11,11 +11,11 @@ by writing an email to `nickpapior AT gmail.com <mailto:nickpapior@gmail.com>`_.
 
 #. I. Alcon, N. Papior, G. Calogero, F. Vines, P. Gamallo, M. Brandbyge,
    *Acetylene-Mediated Electron Transport in Nanostructured Graphene and Hexagonal Boron Nitride*,
-   J. Phys. Chem. Lett. **12** `11220 (2021) <https://doi.org/10.1021/acs.jpclett.1c03166>`_
+   J. Phys. Chem. Lett. **12**, `11220 (2021) <https://doi.org/10.1021/acs.jpclett.1c03166>`_
 
 #. N. Wittemeier, M.J. Verstraete, P. Ordejón, Z. Zanolli,
    *Interference effects in one-dimensional moiré crystals*,
-   Carbon `(2021) <https://doi.org/10.1016/j.carbon.2021.10.028>`_
+   Carbon **186**, `416 (2021) <https://doi.org/10.1016/j.carbon.2021.10.028>`_
 
 #. M. Mohr, A. Weismann, D. Li, M. Brandbyge, R. Berndt,
    *Current shot noise in atomic contacts: Fe and FeH2 between Au electrodes*
@@ -51,7 +51,7 @@ by writing an email to `nickpapior AT gmail.com <mailto:nickpapior@gmail.com>`_.
 
 #. D. Perera and J. Rohrer,
    *Semi-analytical approach to transport gaps in polycrystalline graphene*
-   Nanoscale, `(2021) <https://doi.org/10.1039/d1nr00186h>`_
+   Nanoscale **13**, `7709 (2021) <https://doi.org/10.1039/d1nr00186h>`_
 
 #. B. Focassio, G.R. Schleder, M. Costa, A. Fazzio, C. Lewenkopf,
    *Structural and electronic properties of realistic two-dimensional amorphous topological insulators*,
