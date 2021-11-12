@@ -1,8 +1,11 @@
 0.X.Y
 =====
 
-- correctly calculating scattering states and eigenchannels for
-	BTD matrices using very fast methods.
+- improvement for BandStructure setup, now the arguments
+	are better formatted and more stringent
+
+- for now removed parallel calculations since it is not effective
+  Users may still forcefully run it
 
 - several bugs and fixes added for the `sisl.viz` module, #376, #382
 
@@ -19,6 +22,9 @@
 - added degenerate_dir for velocity calculations
 
 - much faster plotting and enabling arrows #368
+
+- calculation of scattering states and eigenchannels for
+  BTD matrices
 
 - added spectral propagation in BTD code
 

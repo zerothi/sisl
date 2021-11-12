@@ -5,7 +5,7 @@ which python3
 which sphinx-build
 
 # Ensure single-core
-export SISL_NPROCS=1
+export SISL_NUM_PROCS=1
 
 # First make clean
 make clean
