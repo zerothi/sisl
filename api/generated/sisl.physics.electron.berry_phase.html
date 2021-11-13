@@ -4,7 +4,7 @@
   <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>berry_phase &mdash; sisl bed4b2b8d09e570d145de9a4a020153baf2d8bd9 documentation</title>
+  <title>berry_phase &mdash; sisl b7f3c4ef76 documentation</title>
       <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../_static/plot_directive.css" type="text/css" />
@@ -37,7 +37,7 @@
             <a href="../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                bed4b2b8d09e570d145de9a4a020153baf2d8bd9
+                b7f3c4ef76
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
@@ -176,7 +176,7 @@ first and last k-point must not be the same.</p></li>
 <li><p><strong>method</strong> (<em>{'berry'</em><em>, </em><em>'zak'}</em>) – ‘berry’ will return the usual integral of the Berry connection over the specified contour
 ‘zak’ will compute the Zak phase for 1D systems by performing a closed loop integration but
 taking into account the Bloch factor <span class="math notranslate nohighlight">\(e^{i2\pi/a x}\)</span> accumulated over a Brillouin zone,
-see <a class="footnote-reference brackets" href="#id2" id="id1">1</a>.</p></li>
+see <a class="footnote-reference brackets" href="#id3" id="id1">1</a>.</p></li>
 </ul>
 </dd>
 </dl>
@@ -184,8 +184,10 @@ see <a class="footnote-reference brackets" href="#id2" id="id1">1</a>.</p></li>
 <p>The Brillouin zone object <em>need</em> not contain a closed discretized contour by doubling the first point.</p>
 <p>The implementation is very similar to PythTB and refer to the details outlined in PythTB for
 additional details.</p>
-<p>This implementation does not work for band-crossings or degenerate states. It is thus important that
-eigenstates are corresponding to the same states for the loop contained in <em class="xref py py-obj">bz</em>.</p>
+<p>Note that for systems with band-crossings or degenerate states there is an arbitrariness to the definition
+of the Berry phase for <em>individual</em> bands. However, the total phase (i.e., sum over filled bands) is
+invariant and unaffected by this arbitrariness as long as the filled and empty bands do not intersect,
+see <a class="footnote-reference brackets" href="#id4" id="id2">2</a>.</p>
 <p class="rubric">Examples</p>
 <p>Calculate the multi-band Berry-phase</p>
 <div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">N</span> <span class="o">=</span> <span class="mi">30</span>
@@ -207,9 +209,14 @@ eigenstates are corresponding to the same states for the loop contained in <em c
 </div>
 <p class="rubric">References</p>
 <dl class="footnote brackets">
-<dt class="label" id="id2"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
+<dt class="label" id="id3"><span class="brackets"><a class="fn-backref" href="#id1">1</a></span></dt>
 <dd><ol class="upperalpha simple" start="10">
-<li><p>Zak, “Berry’s phase for energy bands in solids”, PRL, <em>62</em>, 2747 (1989)</p></li>
+<li><p>Zak, “Berry’s phase for energy bands in solids”, PRL, <strong>62</strong>, 2747 (1989)</p></li>
+</ol>
+</dd>
+<dt class="label" id="id4"><span class="brackets"><a class="fn-backref" href="#id2">2</a></span></dt>
+<dd><ol class="upperalpha simple" start="18">
+<li><p>Resta, “Manifestations of Berry’s phase in molecules and condensed matter”, JPCM, <strong>12</strong>, R107 (2000)</p></li>
 </ol>
 </dd>
 </dl>
