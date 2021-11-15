@@ -138,13 +138,14 @@ test = [
 ]
 
 
-[project.scripts]
-sgeom = "sisl.geometry:sgeom"
-sgrid = "sisl.grid:sgrid"
-sdata = "sisl.utils._sisl_cmd:sisl_cmd"
-stoolbox = "sisl_toolbox.cli:stoolbox_cli"
+# This is not yet supported
+#[project.scripts]
+#sgeom = "sisl.geometry:sgeom"
+#sgrid = "sisl.grid:sgrid"
+#sdata = "sisl.utils._sisl_cmd:sisl_cmd"
+#stoolbox = "sisl_toolbox.cli:stoolbox_cli"
 
-[project.gui_scripts]
+#[project.gui_scripts]
 # nothing yet
 
 
