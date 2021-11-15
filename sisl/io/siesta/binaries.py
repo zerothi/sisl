@@ -3,7 +3,7 @@
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 from numbers import Integral
 from itertools import product
-from collections import deque
+from collections import deque, namedtuple
 import numpy as np
 from numpy import pi
 
@@ -137,9 +137,9 @@ class onlysSileSiesta(SileBinSiesta):
     def read_supercell(self):
         """ Returns a SuperCell object from a TranSiesta file """
         n_s = _siesta.read_tshs_sizes(self.file)[3]
-        self._bin_check('read_supercell', 'could not read sizes.')
+        self._fortran_check('read_supercell', 'could not read sizes.')
         arr = _siesta.read_tshs_cell(self.file, n_s)
-        self._bin_check('read_supercell', 'could not read cell.')
+        self._fortran_check('read_supercell', 'could not read cell.')
         nsc = np.array(arr[0], np.int32)
         # We have to transpose since the data is read *as-is*
         # The cell in fortran files are (:, A1)
@@ -157,9 +157,9 @@ class onlysSileSiesta(SileBinSiesta):
         sc = self.read_supercell()
 
         na = _siesta.read_tshs_sizes(self.file)[1]
-        self._bin_check('read_geometry', 'could not read sizes.')
+        self._fortran_check('read_geometry', 'could not read sizes.')
         arr = _siesta.read_tshs_geom(self.file, na)
-        self._bin_check('read_geometry', 'could not read geometry.')
+        self._fortran_check('read_geometry', 'could not read geometry.')
         # see onlysSileSiesta.read_supercell for .T
         xyz = arr[0].T * _Bohr2Ang
         lasto = arr[1]
@@ -211,14 +211,14 @@ class onlysSileSiesta(SileBinSiesta):
 
         # read the sizes used...
         sizes = _siesta.read_tshs_sizes(self.file)
-        self._bin_check('read_overlap', 'could not read sizes.')
+        self._fortran_check('read_overlap', 'could not read sizes.')
         # see onlysSileSiesta.read_supercell for .T
         isc = _siesta.read_tshs_cell(self.file, sizes[3])[2].T
-        self._bin_check('read_overlap', 'could not read cell.')
+        self._fortran_check('read_overlap', 'could not read cell.')
         no = sizes[2]
         nnz = sizes[4]
         ncol, col, dS = _siesta.read_tshs_s(self.file, no, nnz)
-        self._bin_check('read_overlap', 'could not read overlap matrix.')
+        self._fortran_check('read_overlap', 'could not read overlap matrix.')
 
         # Create the Hamiltonian container
         S = Overlap(geom, nnzpr=1)
@@ -250,7 +250,7 @@ class onlysSileSiesta(SileBinSiesta):
         Ef : fermi-level of the system
         """
         Ef = _siesta.read_tshs_ef(self.file) * _Ry2eV
-        self._bin_check('read_fermi_level', 'could not read fermi-level.')
+        self._fortran_check('read_fermi_level', 'could not read fermi-level.')
         return Ef
 
 
@@ -265,15 +265,15 @@ class tshsSileSiesta(onlysSileSiesta):
 
         # read the sizes used...
         sizes = _siesta.read_tshs_sizes(self.file)
-        self._bin_check('read_hamiltonian', 'could not read sizes.')
+        self._fortran_check('read_hamiltonian', 'could not read sizes.')
         # see onlysSileSiesta.read_supercell for .T
         isc = _siesta.read_tshs_cell(self.file, sizes[3])[2].T
-        self._bin_check('read_hamiltonian', 'could not read cell.')
+        self._fortran_check('read_hamiltonian', 'could not read cell.')
         spin = sizes[0]
         no = sizes[2]
         nnz = sizes[4]
         ncol, col, dH, dS = _siesta.read_tshs_hs(self.file, spin, no, nnz)
-        self._bin_check('read_hamiltonian', 'could not read Hamiltonian and overlap matrix.')
+        self._fortran_check('read_hamiltonian', 'could not read Hamiltonian and overlap matrix.')
 
         # Check whether it is an orthogonal basis set
         orthogonal = np.abs(dS).sum() == geom.no
@@ -357,7 +357,7 @@ class tshsSileSiesta(onlysSileSiesta):
                               csr.ncol, csr.col + 1,
                               _toF(h, np.float64, _eV2Ry), _toF(s, np.float64),
                               isc)
-        self._bin_check('write_hamiltonian', 'could not write Hamiltonian and overlap matrix.')
+        self._fortran_check('write_hamiltonian', 'could not write Hamiltonian and overlap matrix.')
 
 
 @set_module("sisl.io.siesta")
@@ -369,10 +369,10 @@ class dmSileSiesta(SileBinSiesta):
 
         # Now read the sizes used...
         spin, no, nsc, nnz = _siesta.read_dm_sizes(self.file)
-        self._bin_check('read_density_matrix', 'could not read density matrix sizes.')
+        self._fortran_check('read_density_matrix', 'could not read density matrix sizes.')
 
         ncol, col, dDM = _siesta.read_dm(self.file, spin, no, nsc, nnz)
-        self._bin_check('read_density_matrix', 'could not read density matrix.')
+        self._fortran_check('read_density_matrix', 'could not read density matrix.')
 
         # Try and immediately attach a geometry
         geom = kwargs.get('geometry', kwargs.get('geom', None))
@@ -443,7 +443,7 @@ class dmSileSiesta(SileBinSiesta):
         nsc = DM.geometry.sc.nsc.astype(np.int32)
 
         _siesta.write_dm(self.file, nsc, csr.ncol, csr.col + 1, _toF(dm, np.float64))
-        self._bin_check('write_density_matrix', 'could not write density matrix.')
+        self._fortran_check('write_density_matrix', 'could not write density matrix.')
 
 
 @set_module("sisl.io.siesta")
@@ -455,9 +455,9 @@ class tsdeSileSiesta(dmSileSiesta):
 
         # Now read the sizes used...
         spin, no, nsc, nnz = _siesta.read_tsde_sizes(self.file)
-        self._bin_check('read_energy_density_matrix', 'could not read energy density matrix sizes.')
+        self._fortran_check('read_energy_density_matrix', 'could not read energy density matrix sizes.')
         ncol, col, dEDM = _siesta.read_tsde_edm(self.file, spin, no, nsc, nnz)
-        self._bin_check('read_energy_density_matrix', 'could not read energy density matrix.')
+        self._fortran_check('read_energy_density_matrix', 'could not read energy density matrix.')
 
         # Try and immediately attach a geometry
         geom = kwargs.get('geometry', kwargs.get('geom', None))
@@ -510,7 +510,7 @@ class tsdeSileSiesta(dmSileSiesta):
         Ef : fermi-level of the system
         """
         Ef = _siesta.read_tsde_ef(self.file) * _Ry2eV
-        self._bin_check('read_fermi_level', 'could not read fermi-level.')
+        self._fortran_check('read_fermi_level', 'could not read fermi-level.')
         return Ef
 
     def write_density_matrices(self, DM, EDM, Ef=0., **kwargs):
@@ -562,7 +562,7 @@ class tsdeSileSiesta(dmSileSiesta):
         _siesta.write_tsde_dm_edm(self.file, nsc, DMcsr.ncol, DMcsr.col + 1,
                                   _toF(dm, np.float64),
                                   _toF(edm, np.float64, _eV2Ry), Ef * _eV2Ry)
-        self._bin_check('write_density_matrices', 'could not write DM + EDM matrices.')
+        self._fortran_check('write_density_matrices', 'could not write DM + EDM matrices.')
 
 
 @set_module("sisl.io.siesta")
@@ -870,7 +870,7 @@ class hsxSileSiesta(SileBinSiesta):
         """ Reads basis set and geometry information from the HSX file """
         # Now read the sizes used...
         no, na, nspecies = _siesta.read_hsx_specie_sizes(self.file)
-        self._bin_check('read_geometry', 'could not read specie sizes.')
+        self._fortran_check('read_geometry', 'could not read specie sizes.')
         # Read specie information
         labels, val_q, norbs, isa = _siesta.read_hsx_species(self.file, nspecies, no, na)
         # convert to proper string
@@ -879,7 +879,7 @@ class hsxSileSiesta(SileBinSiesta):
         labels = list(map(lambda s: b''.join(s).decode('utf-8').strip(),
                           labels.tolist())
         )
-        self._bin_check('read_geometry', 'could not read species.')
+        self._fortran_check('read_geometry', 'could not read species.')
         # to python index
         isa -= 1
 
@@ -918,7 +918,7 @@ class hsxSileSiesta(SileBinSiesta):
         atoms = []
         for ispecie in range(nspecies):
             n_l_zeta = _siesta.read_hsx_specie(self.file, ispecie+1, norbs[ispecie])
-            self._bin_check('read_geometry', f'could not read specie {ispecie}.')
+            self._fortran_check('read_geometry', f'could not read specie {ispecie}.')
             # create orbital
             # no shell will have l>5, so m=10 should be more than enough
             m = 10
@@ -935,11 +935,11 @@ class hsxSileSiesta(SileBinSiesta):
 
         # now read in xij to retrieve atomic positions
         Gamma, spin, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
-        self._bin_check('read_geometry', 'could not read matrix sizes.')
+        self._fortran_check('read_geometry', 'could not read matrix sizes.')
         ncol, col, _, dxij = _siesta.read_hsx_sx(self.file, Gamma, spin, no, no_s, nnz)
         dxij = dxij.T * _Bohr2Ang
         col -= 1
-        self._bin_check('read_geometry', 'could not read xij matrix.')
+        self._fortran_check('read_geometry', 'could not read xij matrix.')
 
         # now create atoms object
         atoms = Atoms([atoms[ia] for ia in isa])
@@ -951,11 +951,11 @@ class hsxSileSiesta(SileBinSiesta):
 
         # Now read the sizes used...
         Gamma, spin, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
-        self._bin_check('read_hamiltonian', 'could not read Hamiltonian sizes.')
+        self._fortran_check('read_hamiltonian', 'could not read Hamiltonian sizes.')
         ncol, col, dH, dS, dxij = _siesta.read_hsx_hsx(self.file, Gamma, spin, no, no_s, nnz)
         dxij = dxij.T * _Bohr2Ang
         col -= 1
-        self._bin_check('read_hamiltonian', 'could not read Hamiltonian.')
+        self._fortran_check('read_hamiltonian', 'could not read Hamiltonian.')
 
         ptr = _ncol_to_indptr(ncol)
         xij = SparseCSR((dxij, col, ptr), shape=(no, no_s))
@@ -992,11 +992,11 @@ class hsxSileSiesta(SileBinSiesta):
         """ Returns the overlap matrix from the siesta.HSX file """
         # Now read the sizes used...
         Gamma, spin, no, no_s, nnz = _siesta.read_hsx_sizes(self.file)
-        self._bin_check('read_overlap', 'could not read overlap matrix sizes.')
+        self._fortran_check('read_overlap', 'could not read overlap matrix sizes.')
         ncol, col, dS, dxij = _siesta.read_hsx_sx(self.file, Gamma, spin, no, no_s, nnz)
         dxij = dxij.T * _Bohr2Ang
         col -= 1
-        self._bin_check('read_overlap', 'could not read overlap matrix.')
+        self._fortran_check('read_overlap', 'could not read overlap matrix.')
 
         ptr = _ncol_to_indptr(ncol)
         xij = SparseCSR((dxij, col, ptr), shape=(no, no_s))
@@ -1031,17 +1031,82 @@ class hsxSileSiesta(SileBinSiesta):
 @set_module("sisl.io.siesta")
 class wfsxSileSiesta(SileBinSiesta):
     r""" Binary WFSX file reader for Siesta
-    
-    All _read_next_* methods expect the fortran file unit to be handled
-    and that the position in the file is correct. 
+
+    The WFSX file assumes that users initialize the object with
+    a `parent` argument (or one of the other geometry related objects as
+    shown below).
+
+    The `parent` argument is necessary to convert WFSX k-points from 1/Ang to
+    reduced coordinates.
+    When returning `EigenstateElectron` objects the parent of these objects
+    are the equivalent of the `parent` argument upon initialization.
+    Therefore please remember to pass a correct `parent`.
+
+    Parameters
+    ----------
+    parent : obj, optional
+        a parent may contain a geometry, and/or a supercell
+    geometry : Geometry, optional
+        a geometry contains a cell with corresponding lattice vectors
+        used to convert k [1/Ang] -> [b]
+    sc : SuperCell, optional
+        a supercell contains the lattice vectors to convert k
     """
+
+    def _setup(self, *args, **kwargs):
+        """ Simple setup that needs to be overwritten
+
+        All _read_next_* methods expect the fortran file unit to be handled
+        and that the position in the file is correct.
+        """
+        super()._setup(*args, **kwargs)
+
+        # default sc
+        sc = None
+
+        # In case the instantiation was called with wfsxSileSiesta("path", geometry=geometry)
+        parent = kwargs.get("parent")
+        if parent is None:
+            geometry = None
+        elif isinstance(parent, Geometry):
+            geometry = parent
+        elif isinstance(parent, SuperCell):
+            sc = parent
+        else:
+            geometry = parent.geometry
+
+        geometry = kwargs.get("geometry", geometry)
+        if geometry is not None and sc is None:
+            sc = geometry.sc
+
+        sc = kwargs.get("sc", sc)
+        if sc is None and geometry is not None:
+            raise ValueError(f"{self.__class__.__name__}(geometry=Geometry, sc=None) is not an allowed argument combination.")
+
+        if parent is None:
+            parent = geometry
+        if parent is None:
+            parent = sc
+
+        self._parent = parent
+        self._geometry = geometry
+        self._sc = sc
+        if self._parent is None and self._geometry is None and self._sc is None:
+            def conv(k):
+                if not np.allclose(k, 0.):
+                    warn(f"{self.__class__.__name__} cannot convert stored k-points from 1/Ang to reduced coordinates. Please ensure 'parent=Hamiltonian', 'geometry=Geometry', or 'sc=SuperCell' to ensure reduced k")
+                return k / _Bohr2Ang
+        else:
+            def conv(k):
+                return (k @ sc.cell.T) / (2 * pi * _Bohr2Ang)
+        self._convert_k = conv
 
     def _open_wfsx(self, mode, rewind=False):
         """Open the file unit for the WFSX file.
-        
+
         Here we also initialize some variables to keep track of the state of the read.
         """
-        self._open_fortran_unit(mode, rewind=rewind)
+        self._fortran_open(mode, rewind=rewind)
         # Here we initialize the variables that will keep track of the state of the read.
         # The process for identification is done on this basis:
         #  _ik is the current (Python) index for the k-point to be read
@@ -1056,13 +1121,13 @@ class wfsxSileSiesta(SileBinSiesta):
         self._state = -1
         self._ispin = 0
         self._ik = 0
-        
+
     def _close_wfsx(self):
         """Close the file unit for the WFSX file.
-        
+
         We clean the variables used to keep track of read state.
         """
-        self._close_fortran_unit()
+        self._fortran_close()
 
         # Clean variables
         del self._state
@@ -1081,48 +1146,15 @@ class wfsxSileSiesta(SileBinSiesta):
         except:
             pass
 
-    def _get_convert_k(self, parent=None):
-        """Get the function that will parse k values.
-
-        Notice that k values read from the file are in 1/Bohr.
-
-        Parameters
-        ----------
-        parent: SuperCell or SuperCellChild, optional
-            The parent object containing the information of the cell so that
-            k values can be converted to fractional reciprocal coordinates.
-
-            If not provided, k point values will be returned as they are read
-            from the file.
-
-        Returns
-        --------
-        function:
-            The function that should be used to parse k values.
-        """
-        if parent is None:
-            def convert_k(k):
-                if not np.allclose(k, 0.):
-                    warn(f"{self.__class__.__name__}.yield_eigenstate returns a k-point in 1/Ang (not in reduced format), please pass 'parent' to ensure reduced k")
-                return k / _Bohr2Ang
-        else:
-            # We can succesfully convert to proper reduced k-points
-            if isinstance(parent, SuperCell):
-                def convert_k(k):
-                    return np.dot(k / _Bohr2Ang, parent.cell.T) / (2 * pi)
-            else:
-                def convert_k(k):
-                    return np.dot(k / _Bohr2Ang, parent.sc.cell.T) / (2 * pi)
-        
-        return convert_k
-
     def _setup_parsing(self, close=True, skip_basis=True):
         """Gets all the things needed to parse the wfsx file.
-        
+
         Parameters
         -----------
         close: bool, optional
             Whether the file unit should be closed afterwards.
+        skip_basis : bool, optional
+            whether to also read the basis or not
         """
         self._open_wfsx('r')
         # Read the sizes relevant to the file.
@@ -1132,39 +1164,38 @@ class wfsxSileSiesta(SileBinSiesta):
             self._basis = self._read_next_basis()
 
         # Get the functions that should be used to parse state values.
-        if self._sizes['nspin'] in [4, 8]:
+        if self._sizes.nspin in (4, 8):
             # We will have twice as many coefficients.
-            self._sizes['nspin'] = 1 # only 1 spin
             func_index = 4
-        elif self._sizes["Gamma"]:
+        elif self._sizes.Gamma:
             # State values will be in double precision floats
             func_index = 1
         else:
             # State values will be in double precision complex
             func_index = 2
 
-        self._funcs = {
-            "read_wfsx_index": getattr(_siesta, f"read_wfsx_index_{func_index}"),
-            "read_wfsx_next": getattr(_siesta, f"read_wfsx_next_{func_index}"),
-        }
+        Funcs = namedtuple("WFSXReads", ["read_index", "read_next"])
+        self._funcs = Funcs(
+            getattr(_siesta, f"read_wfsx_index_{func_index}"),
+            getattr(_siesta, f"read_wfsx_next_{func_index}")
+        )
 
         if close:
             self._close_wfsx()
-    
+
     def _read_next_sizes(self, skip_basis=False):
         """Reads the sizes if they are the next thing to be read.
-        
+
         Parameters
         -----------
         skip_basis: boolean, optional
             Whether this method should also skip over the basis information.
 
         Returns
-        --------
-        dict:
-            Dictionary containing the sizes related to the file.
+        -------
+        namedtuple :
                 - 'nspin': int. Number of spin components.
-                - 'nou': int. Number of orbitals in the unit cell.
+                - 'no_u': int. Number of orbitals in the unit cell.
                 - 'nk': int. Number of k points in the file.
                 - 'Gamma': bool. Whether the file contains only the gamma point.
         """
@@ -1172,17 +1203,18 @@ class wfsxSileSiesta(SileBinSiesta):
         if self._state != -1:
             raise SileError(f"We are not in a position to read the sizes. State is: {self._state}")
         # Read the sizes that we can find in the WFSX file
+        Sizes = namedtuple("Sizes", ["nspin", "no_u", "nk", "Gamma"])
         sizes = _siesta.read_wfsx_next_sizes(self._iu, skip_basis)
         # Inform that we are now in front of k point information
         self._state = 1 if skip_basis else 0
         # Check that everything went fine
-        self._bin_check('_read_sizes', "could not read sizes")
+        self._fortran_check('_read_sizes', "could not read sizes")
 
-        return {k:v for k, v in zip(('nspin', 'nou', 'nk', 'Gamma'), sizes)}
+        return Sizes(*sizes)
 
     def _read_next_basis(self):
         """Reads the basis if it is the next thing to be read.
-        
+
         Returns
         -------
         Atoms:
@@ -1192,18 +1224,17 @@ class wfsxSileSiesta(SileBinSiesta):
         if self._state != 0:
             raise SileError(f"We are not in a position to read the basis. State is: {self._state}")
         # Read the basis information that we can find in the WFSX file
-        basis_info = _siesta.read_wfsx_next_basis(self._iu, self._sizes['nou'])
+        basis_info = _siesta.read_wfsx_next_basis(self._iu, self._sizes.no_u)
         # Inform that we are now in front of k point information
         self._state = 1
         # Check that everything went fine
-        self._bin_check('_read_basis', "could not read basis information")
+        self._fortran_check('_read_basis', "could not read basis information")
 
         # Convert the information to a dict so that code is easier to follow.
-        basis_info = {k:v for k, v in zip(('atom_indices', 'atom_labels', 'orb_index_atom', 'orb_n', 'orb_simmetry'), basis_info)}
+        basis_info = dict(zip(('atom_indices', 'atom_labels', 'orb_index_atom', 'orb_n', 'orb_symmetry'), basis_info))
 
         # Sanitize the string information
-        char_keys = ["atom_labels", "orb_simmetry"]
-        for char_key in char_keys:
+        for char_key in ("atom_labels", "orb_symmetry"):
             basis_info[char_key] = np.array(["".join(label).rstrip() for label in basis_info[char_key].astype(str)])
 
         # Find out the unique atom indices
@@ -1213,14 +1244,14 @@ class wfsxSileSiesta(SileBinSiesta):
             """Given an atom index, generates an Atom object with all the information we have about it"""
             atom_orbs = np.where(basis_info["atom_indices"] == at)[0]
             at_label = basis_info["atom_labels"][atom_orbs[0]]
-            
+
             orbitals = [
-                AtomicOrbital(f"{n}{simmetry}") 
-                    for n, simmetry in zip(basis_info["orb_n"][atom_orbs], basis_info["orb_simmetry"][atom_orbs])
+                AtomicOrbital(f"{n}{symmetry}")
+                    for n, symmetry in zip(basis_info["orb_n"][atom_orbs], basis_info["orb_symmetry"][atom_orbs])
             ]
 
             return Atom(at_label, orbitals=orbitals)
-            
+
         # Generate the Atoms oject.
         return Atoms([_get_atom_object(at) for at in unique_ats])
 
@@ -1236,7 +1267,7 @@ class wfsxSileSiesta(SileBinSiesta):
             the (python) spin index of the next eigenstate.
         ik: integer
             the (python) k index of the next eigenstate.
-        
+
         Returns
         -------
         array of shape (3,):
@@ -1253,21 +1284,21 @@ class wfsxSileSiesta(SileBinSiesta):
         # Check that we are in a position where we will read state information
         if self._state != 1:
             raise SileError(f"We are not in a position to read k point information. State is: {self._state}")
-        
+
         # Read the state information
-        file_ispin, file_ik, k, kw, nwf = _siesta.read_wfsx_next_info(self._iu)
+        file_ispin, file_ik, k, weight, nwf = _siesta.read_wfsx_next_info(self._iu)
         # Inform that we are now in front of state values
         self._state = 2
         # Check that the read went fine
-        self._bin_check('_read_next_info', f"could not read next eigenstate info [{ispin + 1}, {ik + 1}]")
+        self._fortran_check('_read_next_info', f"could not read next eigenstate info [{ispin + 1}, {ik + 1}]")
 
         # Check that the read indices match the indices that we were expecting.
         if file_ispin != ispin + 1 or file_ik != ik + 1:
             self._ik = file_ik - 1
             self._ispin = file_ispin - 1
-            raise SileError(f"WFSX indices do not match the expected ones. Expected: [{ispin + 1}, {ik + 1}], obtained [{file_ispin}, {file_ik}]")
+            raise SileError(f"WFSX indices do not match the expected ones. Expected: [{ispin + 1}, {ik + 1}], found [{file_ispin}, {file_ik}]")
 
-        return k, kw, nwf
+        return k, weight, nwf
 
     def _read_next_values(self, ispin, ik, nwf):
         """Reads the next eigenstate values.
@@ -1283,7 +1314,7 @@ class wfsxSileSiesta(SileBinSiesta):
         nwf: integer
             The number of wavefunctions that the next eigenstate contains.
             Should have been obtained by reading the state's info with `_read_next_info`.
-        
+
         Returns
         -------
         array of shape (nwf,):
@@ -1296,17 +1327,17 @@ class wfsxSileSiesta(SileBinSiesta):
         # Check that we are in the right position in the file
         if self._state != 2:
             raise SileError(f"We are not in a position to read k point WFSX values. State is: {self._state}")
-        
+
         # Read the state values
-        idx, eig, state = self._funcs['read_wfsx_next'](self._iu, self._sizes['nou'], nwf)
+        idx, eig, state = self._funcs.read_next(self._iu, self._sizes.no_u, nwf)
         # Inform that we are now in front of the next state info
         self._state = 1
         # Check that everything went fine
-        self._bin_check('_read_next_values', f"could not read next eigenstate values [{ispin + 1}, {ik + 1}]")
+        self._fortran_check('_read_next_values', f"could not read next eigenstate values [{ispin + 1}, {ik + 1}]")
 
         return idx, eig, state
 
-    def _read_next_eigenstate(self, ispin, ik, parent, convert_k):
+    def _read_next_eigenstate(self, ispin, ik):
         """Reads the next eigenstate in the WFSX file.
 
         Parameters
@@ -1315,12 +1346,6 @@ class wfsxSileSiesta(SileBinSiesta):
             the (python) spin index of the next eigenstate.
         ik: integer
             the (python) k index of the next eigenstate.
-        parent: SuperCell or SuperCellChild
-            The parent object containing the information of the cell so that
-            k values can be converted to fractional reciprocal coordinates.
-        convert_k: callable
-            The function used to parse the k values. Should be obtained with
-            `self._get_convert_k`.
 
         Returns
         --------
@@ -1328,47 +1353,45 @@ class wfsxSileSiesta(SileBinSiesta):
             The next eigenstate.
         """
         # Get the information of this eigenstate
-        k, kw, nwf = self._read_next_info(ispin, ik)
+        k, weight, nwf = self._read_next_info(ispin, ik)
         # Now that we have the information, we can read the values because
         # we know the number of wavefunctions stored in the k point (`nwf`)
         idx, eig, state = self._read_next_values(ispin, ik, nwf)
 
         # Build the info dictionary for the eigenstate to know how it was calculated
         # We include the spin index if needed.
-        info = dict(k=convert_k(k), weight=kw, gauge="r", index=idx - 1)
-        if self._sizes['nspin'] > 1:
+        info = dict(k=self._convert_k(k), weight=weight, gauge="r", index=idx - 1)
+        if self._sizes.nspin == 2:
             info["spin"] = ispin
 
         # `eig` is already in eV
         # See onlysSileSiesta.read_supercell to understand why we transpose `state`
-        return EigenstateElectron(state.T, eig, parent=parent, **info)
+        return EigenstateElectron(state.T, eig, parent=self._parent, **info)
 
     def read_sizes(self):
         """Reads the sizes related to this WFSX file
-        
+
         Returns
-        --------
-        dict:
-            Dictionary containing the sizes related to the file.
-                - 'nspin': int. Number of spin components.
-                - 'nou': int. Number of orbitals in the unit cell.
-                - 'nk': int. Number of k points in the file.
-                - 'Gamma': bool. Whether the file contains only the gamma point.
+        -------
+        int : number of spin components
+        int : number of orbitals in the unit-cell
+        int : number of k-points
+        bool : True if the file only contains the Gamma-point
         """
         self._open_wfsx("r")
         sizes = self._read_next_sizes()
         self._close_wfsx()
         return sizes
-    
+
     def read_basis(self):
         """Reads the basis contained in the WFSX file.
-        
+
         The WFSX file only contains information about the atom labels, which atom
-        each orbital belongs to and the orbital quantum numbers. Therefore it should
-        probably be used only as a last resort.
-        
+        each orbital belongs to and the orbital quantum numbers. It is thus not
+        complete in every sense.
+
         Returns
-        ---------
+        -------
         Atoms:
             the basis read.
         """
@@ -1378,175 +1401,103 @@ class wfsxSileSiesta(SileBinSiesta):
         self._close_wfsx()
         return basis
 
-    def yield_eigenstate(self, parent=None, close_on_break=True):
+    def yield_eigenstate(self):
         r""" Iterates over the states in the WFSX file
 
-        Parameters
-        ----------
-        parent: SuperCell or SuperCellChild, optional
-            The parent object containing the information of the cell so that
-            k values can be converted to fractional reciprocal coordinates.
-        close_on_break: bool, optional
-            Wheter the fortran file unit should be closed if the iterator
-            is used in a loop that breaks before ending.
-
         Yields
-        -------
+        ------
         EigenstateElectron
         """
         # Open file and get parsing information
         self._setup_parsing(close=False)
-        # Get the function to parse k values
-        convert_k = self._get_convert_k(parent=parent)
+
+        if self._sizes.nspin == 2:
+            itt_spin = range(2)
+        else:
+            itt_spin = range(1)
 
         try:
             # Iterate over all eigenstates in the WFSX file, yielding control to the caller at
             # each iteration.
-            for ik, ispin in product(range(0, self._sizes['nk']), range(0, self._sizes['nspin'])):
-                yield self._read_next_eigenstate(ispin, ik, parent, convert_k)
-            else:
-                # We ran out of eigenstates
-                self._close_wfsx()
+            for ik, ispin in product(range(self._sizes.nk), itt_spin):
+                yield self._read_next_eigenstate(ispin, ik)
+            # We ran out of eigenstates
+            self._close_wfsx()
         except GeneratorExit:
             # The loop in which the generator was used has been broken.
-            if close_on_break:
-                self._close_wfsx()
+            self._close_wfsx()
 
-    def read_eigenstate(self, k=(0,0,0), spin=0, ktol=1e-4, parent=None):
+    def read_eigenstate(self, k=(0, 0, 0), spin=0, ktol=1e-4):
         """Reads a specific eigenstate from the file.
 
         This method iterates over the states until it finds a match. Don't call
-        this method repeatedly. If you want multiple states, use `yield_eigenstate`.
+        this method repeatedly. If you want to loop eigenstates, use `yield_eigenstate`.
 
         Parameters
         ----------
         k: array-like of shape (3,), optional
             The k point of the state you want to find.
         spin: integer, optional
-            The spin index of the state you want to find.
+            The spin index of the state you want to find. Only meaningful for polarized
+            calculations.
         ktol: float, optional
-            The threshold value for considering two kpoints the same (i.e. to match
+            The threshold value for considering two k-points the same (i.e. to match
             the query k point with the state's k point).
-        parent: SuperCell or SuperCellChild, optional
-            The parent object containing the information of the cell so that
-            k values can be converted to fractional reciprocal coordinates.
+
+        See Also
+        --------
+        yield_eigenstate
 
         Returns
-        ---------
+        -------
         EigenstateElectron or None:
             If found, the state that was queried.
-            If not found, returns `None`.
+            If not found, returns `None`. NOTE this may change to an exception in the future
         """
         # Iterate over all eigenstates in the file
-        for state in self.yield_eigenstate(parent=parent):
+        for state in self.yield_eigenstate():
             if state.info.get("spin", 0) == spin and np.allclose(state.info['k'], k, atol=ktol):
                 # This is the state that the user requested
-
-                # If the file contains not only the gamma point, states are returned in
-                # an array of complex values. However, the user might be requesting the gamma
-                # point here, and we should remove the imaginary part then.
-                if np.allclose(k, 0.):
-                    state.state = state.state.real
-
                 return state
-        else:
-            # We haven't found the state that we were looking for
-            return None
+        return None
 
-    def read_info(self, parent=None):
+    def read_info(self):
         """Reads the information for all the k points contained in the file
-        
-        Parameters
-        ----------
-        parent: SuperCell or SuperCellChild, optional
-            The parent object containing the information of the cell so that
-            k values can be converted to fractional reciprocal coordinates.
 
         Returns
-        ----------
-        dict:
-            A dictionary containing all the information contained in the file.
-            It contains the following keys:
-                k: array of shape (nk, 3)
-                    k values of the k points contained in the file.
-                kw: array of shape (nk,)
-                    weight of each k point
-                nwf: array of shape (nspin, nk)
-                    number of wavefunctions that each kpoint(-spin) contains.
+        -------
+        k: array of shape (nk, 3)
+            k values of the k points contained in the file.
+        weight: array of shape (nk,)
+            weight of each k point
+        nwf: array of shape (nspin, nk)
+            number of wavefunctions that each kpoint(-spin) contains.
         """
         # Open file and get parsing information
         self._setup_parsing(close=False, skip_basis=True)
-        # Get the function to parse k values
-        convert_k = self._get_convert_k(parent=parent)
 
         # Check if we are in the correct position in the file (we should be just after the header)
         if self._state != 1:
             raise ValueError(f"We are not in a position to read eigenstate info in the file. State: {self._state}")
-        
+
         # Read all the information. Parse here the k values obtained.
         # Store the information that should be returned under `returns`.
-        k, kw, nwf = _siesta.read_wfsx_next_all_info(self._iu, self._sizes['nspin'], self._sizes['nk'])
-        returns = {"k": convert_k(k), "kw": kw, "nwf": nwf}
+        if self._sizes.nspin == 2:
+            nspin = 2
+        else:
+            nspin = 1
+        k, kw, nwf = _siesta.read_wfsx_next_all_info(self._iu, 1, self._sizes.nk)
 
         # Close the file unit
         self._close_wfsx()
         # Check for errors in the read.
-        self._bin_check("read_info", "could not read file information.")
+        self._fortran_check("read_info", "could not read file information.")
+        return self._convert_k(k), kw, nwf
 
-        return returns
-
-    def read_bz(self, parent=None):
-        file_info = self.read_info(parent=parent)
-
-        return BrillouinZone(parent=parent, k=file_info['k'], weight=file_info['kw'])
-
-    def old_yield_eigenstate(self, parent=None):
-        r""" Reads eigenstates from the WFSX file
-        Returns
-        -------
-        state: EigenstateElectron
-        """
-        # First query information
-        nspin, nou, nk, Gamma = _siesta.read_wfsx_sizes(self.file)
-        self._bin_check('yield_eigenstate', 'could not read sizes.')
-
-        if nspin in [4, 8]:
-            nspin = 1 # only 1 spin
-            func = _siesta.read_wfsx_index_4
-        elif Gamma:
-            func = _siesta.read_wfsx_index_1
-        else:
-            func = _siesta.read_wfsx_index_2
-
-        if parent is None:
-            def convert_k(k):
-                if not np.allclose(k, 0.):
-                    warn(f"{self.__class__.__name__}.yield_eigenstate returns a k-point in 1/Ang (not in reduced format), please pass 'parent' to ensure reduced k")
-                return k
-        else:
-            # We can succesfully convert to proper reduced k-points
-            if isinstance(parent, SuperCell):
-                def convert_k(k):
-                    return np.dot(k, parent.cell.T) / (2 * pi)
-            else:
-                def convert_k(k):
-                    return np.dot(k, parent.sc.cell.T) / (2 * pi)
-
-        for ispin, ik in product(range(1, nspin + 1), range(1, nk + 1)):
-            k, _, nwf = _siesta.read_wfsx_index_info(self.file, ispin, ik)
-            # Convert to 1/Ang
-            k /= _Bohr2Ang
-            self._bin_check('yield_eigenstate', f"could not read index info [{ispin}, {ik}]")
-
-            idx, eig, state = func(self.file, ispin, ik, nou, nwf)
-            self._bin_check('yield_eigenstate', f"could not read state information [{ispin}, {ik}, {nwf}]")
-
-            # eig is already in eV
-            # we probably need to add spin
-            # see onlysSileSiesta.read_supercell for .T
-            es = EigenstateElectron(state.T, eig, parent=parent,
-                                    k=convert_k(k), gauge="r", index=idx - 1)
-            yield es
+    def read_brillouinzone(self):
+        """ Read the brillouin zone object """
+        k, weight, _ = self.read_info()
+        return BrillouinZone(self._parent, k=k, weight=weight)
 
 
 @set_module("sisl.io.siesta")
@@ -1561,7 +1512,7 @@ class _gridSileSiesta(SileBinSiesta):
         r""" Return the cell contained in the file """
 
         cell = _siesta.read_grid_cell(self.file).T * _Bohr2Ang
-        self._bin_check('read_supercell', 'could not read cell.')
+        self._fortran_check('read_supercell', 'could not read cell.')
 
         return SuperCell(cell)
 
@@ -1576,7 +1527,7 @@ class _gridSileSiesta(SileBinSiesta):
 
         # Read the sizes
         nspin, mesh = _siesta.read_grid_sizes(self.file)
-        self._bin_check('read_grid_size', 'could not read grid sizes.')
+        self._fortran_check('read_grid_size', 'could not read grid sizes.')
         return nspin, mesh
 
     def read_grid(self, index=0, dtype=np.float64, *args, **kwargs):
@@ -1597,7 +1548,7 @@ class _gridSileSiesta(SileBinSiesta):
         nspin, mesh = self.read_grid_size()
         sc = self.read_supercell()
         grid = _siesta.read_grid(self.file, nspin, mesh[0], mesh[1], mesh[2])
-        self._bin_check('read_grid', 'could not read grid.')
+        self._fortran_check('read_grid', 'could not read grid.')
 
         if isinstance(index, Integral):
             grid = grid[:, :, :, index]
@@ -1646,20 +1597,22 @@ class _gfSileSiesta(SileBinSiesta):
     ...        if new_k:
     ...            f.write_hamiltonian(H, S)
     ...        f.write_self_energy(SeHSE)
+
     """
 
     def _setup(self, *args, **kwargs):
         """ Simple setup that needs to be overwritten """
-        self._iu = -1
+        super()._setup(*args, **kwargs)
+
         # The unit convention used for energy-points
         # This is necessary until Siesta uses CODATA values
-        if kwargs.get("unit", "old").lower() in ("old", "4.1"):
+        if kwargs.get("version", "old").lower() in ("old", "4.1"):
             self._E_Ry2eV = 13.60580
         else:
             self._E_Ry2eV = _Ry2eV
 
     def _open_gf(self, mode, rewind=False):
-        self._open_fortran_unit(mode, rewind=rewind)
+        self._fortran_open(mode, rewind=rewind)
 
         # They will at any given time
         # correspond to the current Python indices that is to be read
@@ -1684,7 +1637,9 @@ class _gfSileSiesta(SileBinSiesta):
         self._iE = 0
 
     def _close_gf(self):
-        self._close_fortran_unit()
+        if not self._fortran_is_open():
+            return
+        self._fortran_close()
 
         # Clean variables
         del self._state
@@ -1845,12 +1800,12 @@ class _gfSileSiesta(SileBinSiesta):
         E : energy points in the GF file
         """
         # Ensure it is open (in read-mode)
-        if self._is_fortran_unit_open():
+        if self._fortran_is_open():
             _siesta.io_m.rewind_file(self._iu)
         else:
             self._open_gf('r')
         nspin, no_u, nkpt, NE = _siesta.read_gf_sizes(self._iu)
-        self._bin_check('read_header', 'could not read sizes.')
+        self._fortran_check('read_header', 'could not read sizes.')
         self._nspin = nspin
         self._nk = nkpt
         self._nE = NE
@@ -1859,7 +1814,7 @@ class _gfSileSiesta(SileBinSiesta):
         _siesta.io_m.rewind_file(self._iu)
         self._step_counter('read_header', header=True, read=True)
         k, E = _siesta.read_gf_header(self._iu, nkpt, NE)
-        self._bin_check('read_header', 'could not read header information.')
+        self._fortran_check('read_header', 'could not read header information.')
 
         if self._nspin > 2: # non-colinear
             self._no_u = no_u * 2
@@ -1877,7 +1832,7 @@ class _gfSileSiesta(SileBinSiesta):
         -------
         estimated disk-space used in GB
         """
-        is_open = self._is_fortran_unit_open()
+        is_open = self._fortran_is_open()
         if not is_open:
             self.read_header()
 
@@ -1906,7 +1861,7 @@ class _gfSileSiesta(SileBinSiesta):
         """
         self._step_counter('read_hamiltonian', HS=True, read=True)
         H, S = _siesta.read_gf_hs(self._iu, self._no_u)
-        self._bin_check('read_hamiltonian', 'could not read Hamiltonian and overlap matrices.')
+        self._fortran_check('read_hamiltonian', 'could not read Hamiltonian and overlap matrices.')
         # we don't convert to C order!
         return H * _Ry2eV, S
 
@@ -1924,7 +1879,7 @@ class _gfSileSiesta(SileBinSiesta):
         """
         self._step_counter('read_self_energy', read=True)
         SE = _siesta.read_gf_se(self._iu, self._no_u, self._iE)
-        self._bin_check('read_self_energy', 'could not read self-energy.')
+        self._fortran_check('read_self_energy', 'could not read self-energy.')
         # we don't convert to C order!
         return SE * _Ry2eV
 
@@ -1940,7 +1895,7 @@ class _gfSileSiesta(SileBinSiesta):
         spin : int, optional
            spin-index for the Hamiltonian and overlap matrices
         """
-        if not self._is_fortran_unit_open():
+        if not self._fortran_is_open():
             self.read_header()
 
         # find k-index that is requested
@@ -1948,7 +1903,7 @@ class _gfSileSiesta(SileBinSiesta):
         _siesta.read_gf_find(self._iu, self._nspin, self._nk, self._nE,
                              self._state, self._ispin, self._ik, self._iE, self._is_read,
                              0, spin, ik, 0)
-        self._bin_check('HkSk', 'could not find Hamiltonian and overlap matrix.')
+        self._fortran_check('HkSk', 'could not find Hamiltonian and overlap matrix.')
 
         self._state = 0
         self._ispin = spin
@@ -1969,7 +1924,7 @@ class _gfSileSiesta(SileBinSiesta):
         spin : int, optional
            spin-index to retrieve self-energy at
         """
-        if not self._is_fortran_unit_open():
+        if not self._fortran_is_open():
             self.read_header()
 
         ik = self.kindex(k)
@@ -1977,7 +1932,7 @@ class _gfSileSiesta(SileBinSiesta):
         _siesta.read_gf_find(self._iu, self._nspin, self._nk, self._nE,
                              self._state, self._ispin, self._ik, self._iE, self._is_read,
                              1, spin, ik, iE)
-        self._bin_check('self_energy', 'could not find requested self-energy.')
+        self._fortran_check('self_energy', 'could not find requested self-energy.')
 
         self._state = 1
         self._ispin = spin
@@ -2050,7 +2005,7 @@ class _gfSileSiesta(SileBinSiesta):
                                 lasto, bloch, 0, mu * _eV2Ry, _toF(k.T, np.float64),
                                 w, self._E / self._E_Ry2eV,
                                 **sizes)
-        self._bin_check('write_header', 'could not write header information.')
+        self._fortran_check('write_header', 'could not write header information.')
 
     def write_hamiltonian(self, H, S=None):
         """ Write the current energy, k-point and H and S to the file
@@ -2070,7 +2025,7 @@ class _gfSileSiesta(SileBinSiesta):
         _siesta.write_gf_hs(self._iu, self._ik, self._E[self._iE] / self._E_Ry2eV,
                             _toF(H, np.complex128, _eV2Ry),
                             _toF(S, np.complex128), no_u=no)
-        self._bin_check('write_hamiltonian', 'could not write Hamiltonian and overlap matrices.')
+        self._fortran_check('write_hamiltonian', 'could not write Hamiltonian and overlap matrices.')
 
     def write_self_energy(self, SE):
         r""" Write the current self energy, k-point and H and S to the file
@@ -2089,7 +2044,7 @@ class _gfSileSiesta(SileBinSiesta):
         self._step_counter('write_self_energy', read=True)
         _siesta.write_gf_se(self._iu, self._ik, self._iE, self._E[self._iE] / self._E_Ry2eV,
                             _toF(SE, np.complex128, _eV2Ry), no_u=no)
-        self._bin_check('write_self_energy', 'could not write self-energy.')
+        self._fortran_check('write_self_energy', 'could not write self-energy.')
 
     def __len__(self):
         return self._nE * self._nk * self._nspin
@@ -2104,17 +2059,19 @@ class _gfSileSiesta(SileBinSiesta):
         # get everything
         e = self._E
         if self._nspin in [1, 2]:
+            GFStep = namedtuple("GFStep", ["spin", "do_HS", "k", "E"])
             for ispin in range(self._nspin):
                 for k in self._k:
-                    yield ispin, True, k, e[0]
+                    yield GFStep(ispin, True, k, e[0])
                     for E in e[1:]:
-                        yield ispin, False, k, E
+                        yield GFStep(ispin, False, k, E)
 
         else:
+            GFStep = namedtuple("GFStep", ["do_HS", "k", "E"])
             for k in self._k:
-                yield True, k, e[0]
+                yield GFStep(True, k, e[0])
                 for E in e[1:]:
-                    yield False, k, E
+                    yield GFStep(False, k, E)
 
         # We will automatically close once we hit the end
         self._close_gf()

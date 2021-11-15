@@ -190,7 +190,7 @@ class FatbandsPlot(BandsPlot):
     def _read_from_H(self):
         """Calculates the fatbands from a sisl hamiltonian."""
         self._entry_point_with_extra_vars(super()._read_from_H)
-        
+
     def _entry_point_with_extra_vars(self, entry_point):
         # Define the function that will "catch" each eigenstate and
         # build the weights array. See BandsPlot._read_from_H to understand where

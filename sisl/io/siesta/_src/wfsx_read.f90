@@ -54,7 +54,7 @@ subroutine read_wfsx_sizes(fname, nspin, no_u, nk, Gamma)
   logical, intent(out) :: Gamma
 
   ! Internal variables and arrays
-  integer :: iu, ierr
+  integer :: iu
 
   call open_file(fname, 'read', 'old', 'unformatted', iu)
 
@@ -67,23 +67,23 @@ end subroutine read_wfsx_sizes
 subroutine read_wfsx_next_basis(iu, no_u, atom_indices, atom_labels, &
    orb_index_atom, orb_n, orb_simmetry)  
     use io_m, only: iostat_update
-  
+
     implicit none
-  
+
     ! Input parameters
     integer, intent(in) :: iu, no_u
     integer, intent(out) :: atom_indices(no_u), orb_index_atom(no_u)
     character, intent(out) :: atom_labels(no_u, 20), orb_simmetry(no_u, 20)
     integer, intent(out) :: orb_n(no_u)
-  
+
   ! Internal variables and arrays
     integer :: j, ierr
-  
+
     read(iu, iostat=ierr) (atom_indices(j), atom_labels(j, :), orb_index_atom(j), &
                  orb_n(j), orb_simmetry(j, :), j=1,no_u)
 
     call iostat_update(ierr)
-  
+
 end subroutine read_wfsx_next_basis
 
 ! --------------------------------------------------------------
@@ -94,21 +94,20 @@ end subroutine read_wfsx_next_basis
 
 subroutine read_wfsx_next_info(iu, ispin, ik, k, kw, nwf)
     use io_m, only: iostat_update
-  
+
     implicit none
-  
+
     integer, parameter :: dp = selected_real_kind(p=15)
-  
+
     ! Input parameters
     integer, intent(in) :: iu
     integer, intent(out) :: ispin, ik
     real(dp), intent(out) :: k(3), kw
     integer, intent(out) :: nwf
-  
-    integer :: i
+
   ! Internal variables and arrays
     integer :: ierr
-  
+
     ! read information here
     read(iu, iostat=ierr) ik, k, kw
     call iostat_update(ierr)
@@ -116,7 +115,7 @@ subroutine read_wfsx_next_info(iu, ispin, ik, k, kw, nwf)
     call iostat_update(ierr)
     read(iu, iostat=ierr) nwf
     call iostat_update(ierr)
-  
+
 end subroutine read_wfsx_next_info
 
 subroutine read_wfsx_index_info(fname, ispin, ik, k, kw, nwf)
@@ -133,10 +132,9 @@ subroutine read_wfsx_index_info(fname, ispin, ik, k, kw, nwf)
   real(dp), intent(out) :: k(3), kw
   integer, intent(out) :: nwf
 
-  integer :: i
   integer :: file_ispin, file_ik
   ! Internal variables and arrays
-  integer :: iu, ierr
+  integer :: iu
 
   call open_file(fname, 'read', 'old', 'unformatted', iu)
 
@@ -373,7 +371,6 @@ subroutine read_wfsx_index_1(fname, ispin, ik, no_u, nwf, idx, eig, state)
   real(dp), intent(out) :: eig(nwf)
   real(sp), intent(out) :: state(no_u, nwf)
 
-  integer :: iwf
   ! Internal variables and arrays
   integer :: iu, ierr
 
@@ -410,7 +407,6 @@ subroutine read_wfsx_index_2(fname, ispin, ik, no_u, nwf, idx, eig, state)
   real(dp), intent(out) :: eig(nwf)
   complex(sp), intent(out) :: state(no_u, nwf)
 
-  integer :: iwf
   ! Internal variables and arrays
   integer :: iu, ierr
 
@@ -447,7 +443,6 @@ subroutine read_wfsx_index_4(fname, ispin, ik, no_u, nwf, idx, eig, state)
   real(dp), intent(out) :: eig(nwf)
   complex(sp), intent(out) :: state(2*no_u, nwf)
 
-  integer :: iwf
   ! Internal variables and arrays
   integer :: iu, ierr
 
@@ -492,9 +487,12 @@ subroutine read_wfsx_next_all_info(iu, nspin, nk, ks, kw, nwf)
 
   ! Internal variables and arrays
   integer :: ik, ispin, file_ik, file_ispin
+  integer :: l_nspin
+
+  l_nspin = size(nwf, 1)
 
   do ik = 1 , nk
-    do ispin = 1, nspin
+    do ispin = 1, l_nspin
       ! Notice that if there is more than one spin, we write more than once
       ! to the same position. It doesn't matter, since the k value and the k weight
       ! is the same for all spin indices.
