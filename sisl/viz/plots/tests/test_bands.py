@@ -76,8 +76,11 @@ class TestBandsPlot(_TestPlot):
             # from two different prespectives
             if name.startswith("sisl_H_path"):
                 # Passing a list of points (as if we were interacting from a GUI)
+                # We want 6 points in total. This is the path that we want to get:
+                # [0,0,0] --2-- [2/3, 1/3, 0] --1-- [1/2, 0, 0]
                 path = [{"active": True, "x": x, "y": y, "z": z, "divisions": 3,
                     "name": tick} for tick, (x, y, z) in zip(["Gamma", "M", "K"], [[0, 0, 0], [2/3, 1/3, 0], [1/2, 0, 0]])]
+                path[-1]['divisions'] = 2
 
                 init_func = partial(H.plot.bands, band_structure=path)
             else:

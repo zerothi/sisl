@@ -1264,6 +1264,10 @@ class WavefunctionPlot(GridPlot):
     eigenstate: EigenstateElectron, optional
         The eigenstate that contains the coefficients of the wavefunction.
         Note that an eigenstate can contain coefficients for multiple states.
+    wfsx_file: wfsxSileSiesta, optional
+        Siesta WFSX file to directly read the coefficients from.
+        If the root_fdf file is provided but the wfsx one isn't, we will try
+        to find it             as SystemLabel.WFSX.
     geometry: Geometry, optional
         Necessary to generate the grid and to plot the wavefunctions, since
         the basis orbitals are needed.             If you provide a
@@ -1398,6 +1402,15 @@ class WavefunctionPlot(GridPlot):
             """
         ),
 
+        SileInput(key='wfsx_file', name='Path to WFSX file',
+            dtype=sisl.io.siesta.wfsxSileSiesta,
+            default=None,
+            help="""Siesta WFSX file to directly read the coefficients from.
+            If the root_fdf file is provided but the wfsx one isn't, we will try to find it
+            as SystemLabel.WFSX.
+            """
+        ),
+
         SislObjectInput(key='geometry', name='Geometry',
             default=None,
             dtype=sisl.Geometry,
@@ -1450,7 +1463,27 @@ class WavefunctionPlot(GridPlot):
 
         self.eigenstate = eigenstate
 
-    @entry_point('hamiltonian', 1)
+    @entry_point('Siesta WFSX file', 1)
+    def _read_from_WFSX_file(self, wfsx_file, k, spin, root_fdf):
+        """Reads the wavefunction coefficients from a SIESTA WFSX file"""
+        # Try to read the geometry
+        fdf = self.get_sile(root_fdf or "root_fdf")
+        if fdf is None:
+            raise ValueError("The setting 'root_fdf' needs to point to an fdf file with a geometry")
+        geometry = fdf.read_geometry(output=True)
+
+        # Get the WFSX file. If not provided, it is inferred from the fdf.
+        wfsx = self.get_sile(wfsx_file or "wfsx_file")
+        if not wfsx.file.exists():
+            raise ValueError(f"File '{wfsx.file}' does not exist.")
+
+        # Try to find the eigenstate that we need
+        self.eigenstate = wfsx.read_eigenstate(k=k, spin=spin[0], parent=geometry)
+        if self.eigenstate is None:
+            # We have not found it.
+            raise ValueError(f"A state with k={k} was not found in file {wfsx.file}.")
+
+    @entry_point('hamiltonian', 2)
     def _read_from_H(self, k, spin):
         """
         Calculates the eigenstates from a Hamiltonian and then generates the wavefunctions.
@@ -1463,6 +1496,23 @@ class WavefunctionPlot(GridPlot):
         # Just avoid here GridPlot's _after_grid. Note that we are
         # calling it later in _set_data
         pass
+
+    def _get_eigenstate(self, i):
+
+        if "index" in self.eigenstate.info:
+            wf_i = np.nonzero(self.eigenstate.info["index"] == i)[0]
+            if len(wf_i) == 0:
+                raise ValueError(f"Wavefunction with index {i} is not present in the eigenstate. Available indices: {self.eigenstate.info['index']}."
+                    f"Entry point used: {self.source._name}")
+            wf_i = wf_i[0]
+        else:
+            max_index = len(self.eigenstate)
+            if i > max_index:
+                raise ValueError(f"Wavefunction with index {i} is not present in the eigenstate. Available range: [0, {max_index}]."
+                    f"Entry point used: {self.source._name}")
+            wf_i = i
+
+        return self.eigenstate[wf_i]
 
     def _set_data(self, i, geometry, grid, k, grid_prec, nsc):
 
@@ -1498,16 +1548,18 @@ class WavefunctionPlot(GridPlot):
                 tiled_geometry = tiled_geometry.tile(sc_i, ax)
                 nsc[ax] = 1
 
+        is_gamma = (np.array(k) == 0).all()
         if grid is None:
-            dtype = np.float64 if (np.array(k) == 0).all() else np.complex128
+            dtype = np.float64 if is_gamma else np.complex128
             self.grid = sisl.Grid(grid_prec, geometry=tiled_geometry, dtype=dtype)
 
         # GridPlot's after_read basically sets the x_range, y_range and z_range options
         # which need to know what the grid is, that's why we are calling it here
         super()._after_read()
 
-        self.eigenstate[i].wavefunction(self.grid)
+        state = self._get_eigenstate(i)
+        state.wavefunction(self.grid)
 
-        return super()._set_data(nsc=nsc)
+        return super()._set_data(nsc=nsc, trace_name=f"WF {i} ({state.eig[0]:.2f} eV)")
 
 GridPlot.backends.register_child(WavefunctionPlot.backends)

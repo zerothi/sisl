@@ -90,7 +90,7 @@ def test_gf_write_read_spin(sisl_tmp, sisl_system):
         gf.write_self_energy(S * e - Hk)
 
     # Check it isn't opened
-    assert not gf._is_open()
+    assert not gf._fortran_is_open()
 
     nspin, no_u, k, E_file = gf.read_header()
     assert nspin == 2
@@ -132,7 +132,7 @@ def test_gf_write_read_direct(sisl_tmp, sisl_system):
         gf.write_self_energy(S * e - Hk)
 
     # ensure it is not opened
-    assert not gf._is_open()
+    assert not gf._fortran_is_open()
 
     # First try from beginning
     for e in [0, 1, E[1], 0, E[0]]:

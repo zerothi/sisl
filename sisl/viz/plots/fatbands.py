@@ -4,6 +4,7 @@
 import numpy as np
 
 import sisl
+from sisl.physics.spin import Spin
 from ..plot import entry_point
 from .bands import BandsPlot
 from ..plotutils import random_color
@@ -126,20 +127,6 @@ class FatbandsPlot(BandsPlot):
 
     _parameters = (
 
-        SileInput(key='wfsx_file', name='Path to WFSX file',
-            dtype=sisl.io.siesta.wfsxSileSiesta,
-            default=None,
-            help="""The WFSX file to get the weights of the different orbitals in the bands.
-            In standard SIESTA nomenclature, this should be the *.bands.WFSX file, as it is the one
-            that contains the weights that correspond to the bands.
-            
-            This file is only meaningful (and required) if fatbands are plotted from the .bands file.
-            Otherwise, the bands and weights will be generated from the hamiltonian by sisl.
-            If the *.bands file is provided but the wfsx one isn't, we will try to find it.
-            If `bands_file` is SystemLabel.bands, we will look for SystemLabel.bands.WFSX
-            """
-        ),
-
         FloatInput(key='scale', name='Scale factor',
             default=None,
             help="""The factor by which the width of all fatbands should be multiplied.
@@ -190,83 +177,21 @@ class FatbandsPlot(BandsPlot):
     def weights(self):
         return self.bands_data["weight"]
 
-    @entry_point("siesta output", 0)
-    def _read_siesta_output(self, wfsx_file, bands_file, root_fdf):
+    @entry_point("wfsx file", 0)
+    def _read_from_wfsx(self, root_fdf, wfsx_file):
         """Generates fatbands from SIESTA output.
 
-        Uses the `.bands` file to read the bands and a `.wfsx` file to
-        retrieve the wavefunctions coefficients. 
+        Uses the `.wfsx` file to retrieve the eigenstates. From them, it computes
+        all the needed quantities (eigenvalues, orbital contribution, ...). 
         """
-        from xarray import DataArray, Dataset
-
-        # Try to get the wfsx file either by user input or by guessing it
-        # from bands_file
-        bands_file = self.get_sile(bands_file or "bands_file").file
-        if wfsx_file is None:
-            wfsx_file = bands_file.with_suffix(bands_file.suffix + ".WFSX")
-
-        # We will need the overlap matrix from the hamiltonian to get the correct
-        # weights.
-        # If there is no root_fdf we will try to guess it from bands_file
-        if root_fdf is None and not hasattr(self, "H"):
-            possible_fdf = bands_file.with_suffix(".fdf")
-            print(f"We are assuming that the fdf associated to {bands_file} is {possible_fdf}."+
-            ' If it is not, please provide a "root_fdf" by using the update_settings method.')
-            self.update_settings(root_fdf=root_fdf, run_updates=False)
-
-        self.setup_hamiltonian()
-
-        # If the wfsx doesn't exist, we will not even bother to read the bands
-        if not wfsx_file.exists():
-            raise ValueError(f"We did not find a WFSX file in the location {wfsx_file}")
-
-        # Otherwise we will make BandsPlot read the bands
-        super()._read_siesta_output()
-
-        # And then read the weights from the wfsx file
-        wfsx_sile = self.get_sile(wfsx_file)
-
-        weights = []
-        for i, state in enumerate(wfsx_sile.yield_eigenstate(self.H)):
-            # Each eigenstate represents all the states for a given k-point
-
-            # Get the band indices to which these states correspond
-            if i == 0:
-                bands = state.info["indices"]
-
-            # Get the weights for this eigenstate
-            weights.append(state.norm2(sum=False))
-
-        weights = np.array(weights).real
-
-        # Finally, build the weights dataarray so that it can be used by _set_data
-        weights = DataArray(
-            weights,
-            coords={
-                "k": self.bands.k,
-                "band": bands,
-                "orb": np.arange(0, weights.shape[2]),
-            },
-            dims=("k", "band", "orb")
-        )
-
-        # Add the spin dimension so that the weights array is normalized,
-        # even though spin is not yet supported by this entrypoint
-        weights = weights.expand_dims("spin")
-
-        # Merge everything into a dataset
-        attrs = self.bands_data.attrs
-        self.bands_data = Dataset({"E": self.bands_data, "weight": weights})
-        self.bands_data.attrs = attrs
-
-        # Set up the options for the 'groups' setting based on the plot's associated geometry
-        self._set_group_options()
+        self._entry_point_with_extra_vars(super()._read_from_wfsx)
 
     @entry_point("hamiltonian", 1)
     def _read_from_H(self):
-        """
-        Calculates the fatbands from a sisl hamiltonian.
-        """
+        """Calculates the fatbands from a sisl hamiltonian."""
+        self._entry_point_with_extra_vars(super()._read_from_H)
+
+    def _entry_point_with_extra_vars(self, entry_point):
         # Define the function that will "catch" each eigenstate and
         # build the weights array. See BandsPlot._read_from_H to understand where
         # this will go exactly
@@ -286,7 +211,7 @@ class FatbandsPlot(BandsPlot):
         # thanks to the above step
         bands_read = False; err = None
         try:
-            super()._read_from_H(extra_vars=[{"coords": ("band", "orb"), "name": "weight", "getter": _weights_from_eigenstate}])
+            entry_point(extra_vars=[{"coords": ("band", "orb"), "name": "weight", "getter": _weights_from_eigenstate}])
             bands_read = True
         except Exception as e:
             # Let's keep this error, we are going to at least set the group options so that the
@@ -307,13 +232,7 @@ class FatbandsPlot(BandsPlot):
             if band_struct is not None:
                 self.geometry = band_struct.parent.geometry
 
-        if getattr(self, "H", None) is not None:
-            spin = self.H.spin
-        else:
-            # There is yet no spin support reading from bands.WFSX
-            spin = sisl.Spin.UNPOLARIZED
-
-        self.get_param('groups').update_options(self.geometry, spin)
+        self.get_param('groups').update_options(self.geometry, self.spin)
 
     def _set_data(self):
         # We get the information that the Bandsplot wants to send to the drawer
