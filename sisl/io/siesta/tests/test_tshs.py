@@ -179,3 +179,26 @@ def test_tshs_spin_orbit_tshs2nc2tshs(sisl_tmp):
     assert np.allclose(H1._csr._D, H2._csr._D)
     assert H1._csr.spsame(H3._csr)
     assert np.allclose(H1._csr._D, H3._csr._D)
+
+
+def test_tshs_missing_diagonal(sisl_tmp):
+    H1 = sisl.Hamiltonian(sisl.geom.graphene())
+    H1.construct(([0.1, 1.44], [0., -2.7]))
+    # remove diagonal component here
+    del H1[0, 0]
+
+    f1 = sisl_tmp('tmp1.TSHS', _dir)
+    H1.write(f1)
+
+    f2 = sisl_tmp('tmp2.TSHS', _dir)
+    H2 = sisl.get_sile(f1).read_hamiltonian()
+    H2.write(f2)
+    H3 = sisl.get_sile(f2).read_hamiltonian()
+
+    H1.finalize()
+    assert not H1._csr.spsame(H2._csr)
+    assert H2._csr.spsame(H3._csr)
+    assert np.allclose(H2._csr._D, H3._csr._D)
+    H1[0, 0] = 0.
+    H1.finalize()
+    assert H1._csr.spsame(H2._csr)

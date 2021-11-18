@@ -16,6 +16,27 @@ __all__ += ['_csr_to_siesta', '_csr_to_sc_off']
 __all__ += ['_mat_spin_convert', "_fc_correct"]
 
 
+def _ensure_diagonal(csr):
+    """ Ensures that the sparsity pattern has diagonal entries
+
+    This will set the wrong values in non-orthogonal basis-sets
+    since missing items will be set to 0 which should be 1 in
+    non-orthogonal basis sets.
+    """
+    # Create index arrays
+    row = (csr.ncol > 0).nonzero()[0]
+    row = np.repeat(row, csr.ncol[row])
+
+    # figure out where they are the same (diagonals)
+    present_diags = row[row == csr.col]
+
+    # Now figure out which elements are missing
+    missing_diags = np.delete(np.arange(csr.shape[0]), present_diags)
+
+    for row in missing_diags:
+        csr[row, row] = 0.
+
+
 def _csr_from_siesta(geom, csr):
     """ Internal routine to convert *any* SparseCSR matrix from sisl nsc to siesta nsc """
     _csr_from_sc_off(geom, _siesta.siesta_sc_off(*geom.nsc).T, csr)
@@ -23,6 +44,7 @@ def _csr_from_siesta(geom, csr):
 
 def _csr_to_siesta(geom, csr):
     """ Internal routine to convert *any* SparseCSR matrix from sisl nsc to siesta nsc """
+    _ensure_diagonal(csr)
     _csr_to_sc_off(geom, _siesta.siesta_sc_off(*geom.nsc).T, csr)
 
 
