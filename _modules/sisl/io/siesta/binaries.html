@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>sisl.io.siesta.binaries &mdash; sisl b7f3c4ef76 documentation</title>
+  <title>sisl.io.siesta.binaries &mdash; sisl 0470e5b172 documentation</title>
       <link rel="stylesheet" href="../../../../_static/pygments.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/css/theme.css" type="text/css" />
       <link rel="stylesheet" href="../../../../_static/plot_directive.css" type="text/css" />
@@ -32,7 +32,7 @@
             <a href="../../../../index.html" class="icon icon-home"> sisl
           </a>
               <div class="version">
-                b7f3c4ef76
+                0470e5b172
               </div>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../../../search.html" method="get">
@@ -97,8 +97,8 @@
 <span class="c1"># License, v. 2.0. If a copy of the MPL was not distributed with this</span>
 <span class="c1"># file, You can obtain one at https://mozilla.org/MPL/2.0/.</span>
 <span class="kn">from</span> <span class="nn">numbers</span> <span class="kn">import</span> <span class="n">Integral</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span><span class="p">,</span> <span class="n">groupby</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">product</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">deque</span><span class="p">,</span> <span class="n">namedtuple</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">pi</span>
 
@@ -109,10 +109,10 @@
     <span class="nb">print</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
     <span class="n">found_module</span> <span class="o">=</span> <span class="kc">False</span>
 
-<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">SileError</span>
+<span class="kn">from</span> <span class="nn">..sile</span> <span class="kn">import</span> <span class="n">add_sile</span><span class="p">,</span> <span class="n">SileError</span><span class="p">,</span> <span class="n">SileWarning</span>
 <span class="kn">from</span> <span class="nn">.sile</span> <span class="kn">import</span> <span class="n">SileBinSiesta</span>
 <span class="kn">from</span> <span class="nn">sisl._internal</span> <span class="kn">import</span> <span class="n">set_module</span>
-<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">warn</span><span class="p">,</span> <span class="n">SislError</span>
+<span class="kn">from</span> <span class="nn">sisl.messages</span> <span class="kn">import</span> <span class="n">info</span><span class="p">,</span> <span class="n">warn</span><span class="p">,</span> <span class="n">SislError</span>
 
 <span class="kn">from</span> <span class="nn">._help</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">import</span> <span class="nn">sisl._array</span> <span class="k">as</span> <span class="nn">_a</span>
@@ -122,6 +122,7 @@
 <span class="kn">from</span> <span class="nn">sisl.unit.siesta</span> <span class="kn">import</span> <span class="n">unit_convert</span>
 <span class="kn">from</span> <span class="nn">sisl.physics.sparse</span> <span class="kn">import</span> <span class="n">SparseOrbitalBZ</span>
 <span class="kn">from</span> <span class="nn">sisl.physics</span> <span class="kn">import</span> <span class="n">Hamiltonian</span><span class="p">,</span> <span class="n">DensityMatrix</span><span class="p">,</span> <span class="n">EnergyDensityMatrix</span>
+<span class="kn">from</span> <span class="nn">sisl.physics</span> <span class="kn">import</span> <span class="n">BrillouinZone</span>
 <span class="kn">from</span> <span class="nn">sisl.physics.overlap</span> <span class="kn">import</span> <span class="n">Overlap</span>
 <span class="kn">from</span> <span class="nn">sisl.physics.electron</span> <span class="kn">import</span> <span class="n">EigenstateElectron</span>
 
@@ -136,12 +137,6 @@
 <span class="n">_Bohr2Ang</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s1">&#39;Bohr&#39;</span><span class="p">,</span> <span class="s1">&#39;Ang&#39;</span><span class="p">)</span>
 <span class="n">_Ry2eV</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s1">&#39;Ry&#39;</span><span class="p">,</span> <span class="s1">&#39;eV&#39;</span><span class="p">)</span>
 <span class="n">_eV2Ry</span> <span class="o">=</span> <span class="n">unit_convert</span><span class="p">(</span><span class="s1">&#39;eV&#39;</span><span class="p">,</span> <span class="s1">&#39;Ry&#39;</span><span class="p">)</span>
-
-
-<span class="k">def</span> <span class="nf">_bin_check</span><span class="p">(</span><span class="n">obj</span><span class="p">,</span> <span class="n">method</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
-    <span class="n">ierr</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">io_m</span><span class="o">.</span><span class="n">iostat_query</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">ierr</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">obj</span><span class="si">!s}</span><span class="s1">.</span><span class="si">{</span><span class="n">method</span><span class="si">}</span><span class="s1"> </span><span class="si">{</span><span class="n">message</span><span class="si">}</span><span class="s1"> (ierr=</span><span class="si">{</span><span class="n">ierr</span><span class="si">}</span><span class="s1">)&#39;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_toF</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="n">dtype</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -237,9 +232,9 @@
 <div class="viewcode-block" id="onlysSileSiesta.read_supercell"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.onlysSileSiesta.html#sisl.io.siesta.onlysSileSiesta.read_supercell">[docs]</a>    <span class="k">def</span> <span class="nf">read_supercell</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Returns a SuperCell object from a TranSiesta file &quot;&quot;&quot;</span>
         <span class="n">n_s</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tshs_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)[</span><span class="mi">3</span><span class="p">]</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_supercell&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read sizes.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_supercell&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read sizes.&#39;</span><span class="p">)</span>
         <span class="n">arr</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tshs_cell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">n_s</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_supercell&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read cell.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_supercell&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read cell.&#39;</span><span class="p">)</span>
         <span class="n">nsc</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
         <span class="c1"># We have to transpose since the data is read *as-is*</span>
         <span class="c1"># The cell in fortran files are (:, A1)</span>
@@ -257,9 +252,9 @@
         <span class="n">sc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_supercell</span><span class="p">()</span>
 
         <span class="n">na</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tshs_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_geometry&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read sizes.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_geometry&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read sizes.&#39;</span><span class="p">)</span>
         <span class="n">arr</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tshs_geom</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">na</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_geometry&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read geometry.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_geometry&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read geometry.&#39;</span><span class="p">)</span>
         <span class="c1"># see onlysSileSiesta.read_supercell for .T</span>
         <span class="n">xyz</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">_Bohr2Ang</span>
         <span class="n">lasto</span> <span class="o">=</span> <span class="n">arr</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
@@ -311,14 +306,14 @@
 
         <span class="c1"># read the sizes used...</span>
         <span class="n">sizes</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tshs_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_overlap&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read sizes.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_overlap&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read sizes.&#39;</span><span class="p">)</span>
         <span class="c1"># see onlysSileSiesta.read_supercell for .T</span>
         <span class="n">isc</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tshs_cell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">sizes</span><span class="p">[</span><span class="mi">3</span><span class="p">])[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_overlap&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read cell.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_overlap&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read cell.&#39;</span><span class="p">)</span>
         <span class="n">no</span> <span class="o">=</span> <span class="n">sizes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
         <span class="n">nnz</span> <span class="o">=</span> <span class="n">sizes</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
         <span class="n">ncol</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">dS</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tshs_s</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">no</span><span class="p">,</span> <span class="n">nnz</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_overlap&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read overlap matrix.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_overlap&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read overlap matrix.&#39;</span><span class="p">)</span>
 
         <span class="c1"># Create the Hamiltonian container</span>
         <span class="n">S</span> <span class="o">=</span> <span class="n">Overlap</span><span class="p">(</span><span class="n">geom</span><span class="p">,</span> <span class="n">nnzpr</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -350,7 +345,7 @@
 <span class="sd">        Ef : fermi-level of the system</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Ef</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tshs_ef</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span> <span class="o">*</span> <span class="n">_Ry2eV</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_fermi_level&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read fermi-level.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_fermi_level&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read fermi-level.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Ef</span></div>
 
 
@@ -365,15 +360,15 @@
 
         <span class="c1"># read the sizes used...</span>
         <span class="n">sizes</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tshs_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_hamiltonian&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read sizes.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_hamiltonian&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read sizes.&#39;</span><span class="p">)</span>
         <span class="c1"># see onlysSileSiesta.read_supercell for .T</span>
         <span class="n">isc</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tshs_cell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">sizes</span><span class="p">[</span><span class="mi">3</span><span class="p">])[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">T</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_hamiltonian&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read cell.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_hamiltonian&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read cell.&#39;</span><span class="p">)</span>
         <span class="n">spin</span> <span class="o">=</span> <span class="n">sizes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">no</span> <span class="o">=</span> <span class="n">sizes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
         <span class="n">nnz</span> <span class="o">=</span> <span class="n">sizes</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
         <span class="n">ncol</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">dH</span><span class="p">,</span> <span class="n">dS</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tshs_hs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">no</span><span class="p">,</span> <span class="n">nnz</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_hamiltonian&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read Hamiltonian and overlap matrix.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_hamiltonian&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read Hamiltonian and overlap matrix.&#39;</span><span class="p">)</span>
 
         <span class="c1"># Check whether it is an orthogonal basis set</span>
         <span class="n">orthogonal</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">abs</span><span class="p">(</span><span class="n">dS</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="n">geom</span><span class="o">.</span><span class="n">no</span>
@@ -457,7 +452,7 @@
                               <span class="n">csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">,</span> <span class="n">csr</span><span class="o">.</span><span class="n">col</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
                               <span class="n">_toF</span><span class="p">(</span><span class="n">h</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">_eV2Ry</span><span class="p">),</span> <span class="n">_toF</span><span class="p">(</span><span class="n">s</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
                               <span class="n">isc</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;write_hamiltonian&#39;</span><span class="p">,</span> <span class="s1">&#39;could not write Hamiltonian and overlap matrix.&#39;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;write_hamiltonian&#39;</span><span class="p">,</span> <span class="s1">&#39;could not write Hamiltonian and overlap matrix.&#39;</span><span class="p">)</span></div>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
@@ -469,10 +464,10 @@
 
         <span class="c1"># Now read the sizes used...</span>
         <span class="n">spin</span><span class="p">,</span> <span class="n">no</span><span class="p">,</span> <span class="n">nsc</span><span class="p">,</span> <span class="n">nnz</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_dm_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_density_matrix&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read density matrix sizes.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_density_matrix&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read density matrix sizes.&#39;</span><span class="p">)</span>
 
         <span class="n">ncol</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">dDM</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_dm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">no</span><span class="p">,</span> <span class="n">nsc</span><span class="p">,</span> <span class="n">nnz</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_density_matrix&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read density matrix.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_density_matrix&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read density matrix.&#39;</span><span class="p">)</span>
 
         <span class="c1"># Try and immediately attach a geometry</span>
         <span class="n">geom</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;geometry&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;geom&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
@@ -543,7 +538,7 @@
         <span class="n">nsc</span> <span class="o">=</span> <span class="n">DM</span><span class="o">.</span><span class="n">geometry</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">nsc</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
 
         <span class="n">_siesta</span><span class="o">.</span><span class="n">write_dm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">nsc</span><span class="p">,</span> <span class="n">csr</span><span class="o">.</span><span class="n">ncol</span><span class="p">,</span> <span class="n">csr</span><span class="o">.</span><span class="n">col</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="n">_toF</span><span class="p">(</span><span class="n">dm</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">))</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;write_density_matrix&#39;</span><span class="p">,</span> <span class="s1">&#39;could not write density matrix.&#39;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;write_density_matrix&#39;</span><span class="p">,</span> <span class="s1">&#39;could not write density matrix.&#39;</span><span class="p">)</span></div>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
@@ -555,9 +550,9 @@
 
         <span class="c1"># Now read the sizes used...</span>
         <span class="n">spin</span><span class="p">,</span> <span class="n">no</span><span class="p">,</span> <span class="n">nsc</span><span class="p">,</span> <span class="n">nnz</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tsde_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_energy_density_matrix&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read energy density matrix sizes.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_energy_density_matrix&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read energy density matrix sizes.&#39;</span><span class="p">)</span>
         <span class="n">ncol</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">dEDM</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tsde_edm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">no</span><span class="p">,</span> <span class="n">nsc</span><span class="p">,</span> <span class="n">nnz</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_energy_density_matrix&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read energy density matrix.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_energy_density_matrix&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read energy density matrix.&#39;</span><span class="p">)</span>
 
         <span class="c1"># Try and immediately attach a geometry</span>
         <span class="n">geom</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;geometry&#39;</span><span class="p">,</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;geom&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">))</span>
@@ -610,7 +605,7 @@
 <span class="sd">        Ef : fermi-level of the system</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">Ef</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_tsde_ef</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span> <span class="o">*</span> <span class="n">_Ry2eV</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_fermi_level&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read fermi-level.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_fermi_level&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read fermi-level.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">Ef</span></div>
 
 <div class="viewcode-block" id="tsdeSileSiesta.write_density_matrices"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.tsdeSileSiesta.html#sisl.io.siesta.tsdeSileSiesta.write_density_matrices">[docs]</a>    <span class="k">def</span> <span class="nf">write_density_matrices</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">DM</span><span class="p">,</span> <span class="n">EDM</span><span class="p">,</span> <span class="n">Ef</span><span class="o">=</span><span class="mf">0.</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -662,7 +657,7 @@
         <span class="n">_siesta</span><span class="o">.</span><span class="n">write_tsde_dm_edm</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">nsc</span><span class="p">,</span> <span class="n">DMcsr</span><span class="o">.</span><span class="n">ncol</span><span class="p">,</span> <span class="n">DMcsr</span><span class="o">.</span><span class="n">col</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
                                   <span class="n">_toF</span><span class="p">(</span><span class="n">dm</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
                                   <span class="n">_toF</span><span class="p">(</span><span class="n">edm</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="n">_eV2Ry</span><span class="p">),</span> <span class="n">Ef</span> <span class="o">*</span> <span class="n">_eV2Ry</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;write_density_matrices&#39;</span><span class="p">,</span> <span class="s1">&#39;could not write DM + EDM matrices.&#39;</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;write_density_matrices&#39;</span><span class="p">,</span> <span class="s1">&#39;could not write DM + EDM matrices.&#39;</span><span class="p">)</span></div>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
@@ -970,7 +965,7 @@
         <span class="sd">&quot;&quot;&quot; Reads basis set and geometry information from the HSX file &quot;&quot;&quot;</span>
         <span class="c1"># Now read the sizes used...</span>
         <span class="n">no</span><span class="p">,</span> <span class="n">na</span><span class="p">,</span> <span class="n">nspecies</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_specie_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_geometry&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read specie sizes.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_geometry&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read specie sizes.&#39;</span><span class="p">)</span>
         <span class="c1"># Read specie information</span>
         <span class="n">labels</span><span class="p">,</span> <span class="n">val_q</span><span class="p">,</span> <span class="n">norbs</span><span class="p">,</span> <span class="n">isa</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_species</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">nspecies</span><span class="p">,</span> <span class="n">no</span><span class="p">,</span> <span class="n">na</span><span class="p">)</span>
         <span class="c1"># convert to proper string</span>
@@ -979,7 +974,7 @@
         <span class="n">labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">s</span><span class="p">:</span> <span class="sa">b</span><span class="s1">&#39;&#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">s</span><span class="p">)</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s1">&#39;utf-8&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">(),</span>
                           <span class="n">labels</span><span class="o">.</span><span class="n">tolist</span><span class="p">())</span>
         <span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_geometry&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read species.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_geometry&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read species.&#39;</span><span class="p">)</span>
         <span class="c1"># to python index</span>
         <span class="n">isa</span> <span class="o">-=</span> <span class="mi">1</span>
 
@@ -1018,7 +1013,7 @@
         <span class="n">atoms</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">ispecie</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">nspecies</span><span class="p">):</span>
             <span class="n">n_l_zeta</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_specie</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">ispecie</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">norbs</span><span class="p">[</span><span class="n">ispecie</span><span class="p">])</span>
-            <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_geometry&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;could not read specie </span><span class="si">{</span><span class="n">ispecie</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_geometry&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s1">&#39;could not read specie </span><span class="si">{</span><span class="n">ispecie</span><span class="si">}</span><span class="s1">.&#39;</span><span class="p">)</span>
             <span class="c1"># create orbital</span>
             <span class="c1"># no shell will have l&gt;5, so m=10 should be more than enough</span>
             <span class="n">m</span> <span class="o">=</span> <span class="mi">10</span>
@@ -1035,11 +1030,11 @@
 
         <span class="c1"># now read in xij to retrieve atomic positions</span>
         <span class="n">Gamma</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">no</span><span class="p">,</span> <span class="n">no_s</span><span class="p">,</span> <span class="n">nnz</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_geometry&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read matrix sizes.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_geometry&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read matrix sizes.&#39;</span><span class="p">)</span>
         <span class="n">ncol</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">dxij</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_sx</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">Gamma</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">no</span><span class="p">,</span> <span class="n">no_s</span><span class="p">,</span> <span class="n">nnz</span><span class="p">)</span>
         <span class="n">dxij</span> <span class="o">=</span> <span class="n">dxij</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">_Bohr2Ang</span>
         <span class="n">col</span> <span class="o">-=</span> <span class="mi">1</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_geometry&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read xij matrix.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_geometry&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read xij matrix.&#39;</span><span class="p">)</span>
 
         <span class="c1"># now create atoms object</span>
         <span class="n">atoms</span> <span class="o">=</span> <span class="n">Atoms</span><span class="p">([</span><span class="n">atoms</span><span class="p">[</span><span class="n">ia</span><span class="p">]</span> <span class="k">for</span> <span class="n">ia</span> <span class="ow">in</span> <span class="n">isa</span><span class="p">])</span>
@@ -1051,11 +1046,11 @@
 
         <span class="c1"># Now read the sizes used...</span>
         <span class="n">Gamma</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">no</span><span class="p">,</span> <span class="n">no_s</span><span class="p">,</span> <span class="n">nnz</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_hamiltonian&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read Hamiltonian sizes.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_hamiltonian&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read Hamiltonian sizes.&#39;</span><span class="p">)</span>
         <span class="n">ncol</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">dH</span><span class="p">,</span> <span class="n">dS</span><span class="p">,</span> <span class="n">dxij</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_hsx</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">Gamma</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">no</span><span class="p">,</span> <span class="n">no_s</span><span class="p">,</span> <span class="n">nnz</span><span class="p">)</span>
         <span class="n">dxij</span> <span class="o">=</span> <span class="n">dxij</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">_Bohr2Ang</span>
         <span class="n">col</span> <span class="o">-=</span> <span class="mi">1</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_hamiltonian&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read Hamiltonian.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_hamiltonian&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read Hamiltonian.&#39;</span><span class="p">)</span>
 
         <span class="n">ptr</span> <span class="o">=</span> <span class="n">_ncol_to_indptr</span><span class="p">(</span><span class="n">ncol</span><span class="p">)</span>
         <span class="n">xij</span> <span class="o">=</span> <span class="n">SparseCSR</span><span class="p">((</span><span class="n">dxij</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">ptr</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">no</span><span class="p">,</span> <span class="n">no_s</span><span class="p">))</span>
@@ -1092,11 +1087,11 @@
         <span class="sd">&quot;&quot;&quot; Returns the overlap matrix from the siesta.HSX file &quot;&quot;&quot;</span>
         <span class="c1"># Now read the sizes used...</span>
         <span class="n">Gamma</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">no</span><span class="p">,</span> <span class="n">no_s</span><span class="p">,</span> <span class="n">nnz</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_overlap&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read overlap matrix sizes.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_overlap&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read overlap matrix sizes.&#39;</span><span class="p">)</span>
         <span class="n">ncol</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">dS</span><span class="p">,</span> <span class="n">dxij</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_hsx_sx</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">Gamma</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">no</span><span class="p">,</span> <span class="n">no_s</span><span class="p">,</span> <span class="n">nnz</span><span class="p">)</span>
         <span class="n">dxij</span> <span class="o">=</span> <span class="n">dxij</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">_Bohr2Ang</span>
         <span class="n">col</span> <span class="o">-=</span> <span class="mi">1</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_overlap&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read overlap matrix.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_overlap&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read overlap matrix.&#39;</span><span class="p">)</span>
 
         <span class="n">ptr</span> <span class="o">=</span> <span class="n">_ncol_to_indptr</span><span class="p">(</span><span class="n">ncol</span><span class="p">)</span>
         <span class="n">xij</span> <span class="o">=</span> <span class="n">SparseCSR</span><span class="p">((</span><span class="n">dxij</span><span class="p">,</span> <span class="n">col</span><span class="p">,</span> <span class="n">ptr</span><span class="p">),</span> <span class="n">shape</span><span class="o">=</span><span class="p">(</span><span class="n">no</span><span class="p">,</span> <span class="n">no_s</span><span class="p">))</span>
@@ -1130,56 +1125,474 @@
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">wfsxSileSiesta</span><span class="p">(</span><span class="n">SileBinSiesta</span><span class="p">):</span>
-    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Binary WFSX file reader for Siesta &quot;&quot;&quot;</span>
+    <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Binary WFSX file reader for Siesta</span>
 
-<div class="viewcode-block" id="wfsxSileSiesta.yield_eigenstate"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.wfsxSileSiesta.html#sisl.io.siesta.wfsxSileSiesta.yield_eigenstate">[docs]</a>    <span class="k">def</span> <span class="nf">yield_eigenstate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Reads eigenstates from the WFSX file</span>
+<span class="sd">    The WFSX file assumes that users initialize the object with</span>
+<span class="sd">    a `parent` argument (or one of the other geometry related objects as</span>
+<span class="sd">    shown below).</span>
+
+<span class="sd">    The `parent` argument is necessary to convert WFSX k-points from 1/Ang to</span>
+<span class="sd">    reduced coordinates.</span>
+<span class="sd">    When returning `EigenstateElectron` objects the parent of these objects</span>
+<span class="sd">    are the equivalent of the `parent` argument upon initialization.</span>
+<span class="sd">    Therefore please remember to pass a correct `parent`.</span>
+
+<span class="sd">    Parameters</span>
+<span class="sd">    ----------</span>
+<span class="sd">    parent : obj, optional</span>
+<span class="sd">        a parent may contain a geometry, and/or a supercell</span>
+<span class="sd">    geometry : Geometry, optional</span>
+<span class="sd">        a geometry contains a cell with corresponding lattice vectors</span>
+<span class="sd">        used to convert k [1/Ang] -&gt; [b]</span>
+<span class="sd">    sc : SuperCell, optional</span>
+<span class="sd">        a supercell contains the lattice vectors to convert k</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Simple setup that needs to be overwritten</span>
+
+<span class="sd">        All _read_next_* methods expect the fortran file unit to be handled</span>
+<span class="sd">        and that the position in the file is correct.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
+        <span class="c1"># default sc</span>
+        <span class="n">sc</span> <span class="o">=</span> <span class="kc">None</span>
+
+        <span class="c1"># In case the instantiation was called with wfsxSileSiesta(&quot;path&quot;, geometry=geometry)</span>
+        <span class="n">parent</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;parent&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">geometry</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">Geometry</span><span class="p">):</span>
+            <span class="n">geometry</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">SuperCell</span><span class="p">):</span>
+            <span class="n">sc</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">geometry</span> <span class="o">=</span> <span class="n">parent</span><span class="o">.</span><span class="n">geometry</span>
+
+        <span class="n">geometry</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;geometry&quot;</span><span class="p">,</span> <span class="n">geometry</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">geometry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">sc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">sc</span> <span class="o">=</span> <span class="n">geometry</span><span class="o">.</span><span class="n">sc</span>
+
+        <span class="n">sc</span> <span class="o">=</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;sc&quot;</span><span class="p">,</span> <span class="n">sc</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">sc</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">geometry</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">(geometry=Geometry, sc=None) is not an allowed argument combination.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">parent</span> <span class="o">=</span> <span class="n">geometry</span>
+        <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">parent</span> <span class="o">=</span> <span class="n">sc</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="o">=</span> <span class="n">parent</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_geometry</span> <span class="o">=</span> <span class="n">geometry</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sc</span> <span class="o">=</span> <span class="n">sc</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_parent</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_geometry</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">def</span> <span class="nf">conv</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="mf">0.</span><span class="p">):</span>
+                    <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> cannot convert stored k-points from 1/Ang to reduced coordinates. Please ensure &#39;parent=Hamiltonian&#39;, &#39;geometry=Geometry&#39;, or &#39;sc=SuperCell&#39; to ensure reduced k&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="n">k</span> <span class="o">/</span> <span class="n">_Bohr2Ang</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">def</span> <span class="nf">conv</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">k</span> <span class="o">@</span> <span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pi</span> <span class="o">*</span> <span class="n">_Bohr2Ang</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_convert_k</span> <span class="o">=</span> <span class="n">conv</span>
+
+    <span class="k">def</span> <span class="nf">_open_wfsx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">rewind</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Open the file unit for the WFSX file.</span>
+
+<span class="sd">        Here we also initialize some variables to keep track of the state of the read.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_open</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="n">rewind</span><span class="o">=</span><span class="n">rewind</span><span class="p">)</span>
+        <span class="c1"># Here we initialize the variables that will keep track of the state of the read.</span>
+        <span class="c1"># The process for identification is done on this basis:</span>
+        <span class="c1">#  _ik is the current (Python) index for the k-point to be read</span>
+        <span class="c1">#  _ispin is the current (Python) index for the spin-index to be read (only has meaning for a spin-polarized</span>
+        <span class="c1">#         WFSX files)</span>
+        <span class="c1">#  _state is:</span>
+        <span class="c1">#        -1 : the file-descriptor has just been opened (i.e. in front of header)</span>
+        <span class="c1">#         0 : it means that the file-descriptor is in front of basis information</span>
+        <span class="c1">#         1 : it means that the file-descriptor is in front of k point information</span>
+        <span class="c1">#         2 : it means that the file-descriptor is in front of k point WFSX values</span>
+        <span class="c1">#</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ispin</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ik</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">def</span> <span class="nf">_close_wfsx</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Close the file unit for the WFSX file.</span>
+
+<span class="sd">        We clean the variables used to keep track of read state.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_close</span><span class="p">()</span>
+
+        <span class="c1"># Clean variables</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ik</span>
+        <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ispin</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sizes</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_basis</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_funcs</span>
+        <span class="k">except</span><span class="p">:</span>
+            <span class="k">pass</span>
+
+    <span class="k">def</span> <span class="nf">_setup_parsing</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">close</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">skip_basis</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Gets all the things needed to parse the wfsx file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        close: bool, optional</span>
+<span class="sd">            Whether the file unit should be closed afterwards.</span>
+<span class="sd">        skip_basis : bool, optional</span>
+<span class="sd">            whether to also read the basis or not</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_open_wfsx</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
+        <span class="c1"># Read the sizes relevant to the file.</span>
+        <span class="c1"># We also read whether there&#39;s only gamma point information or there are multiple points</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sizes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_sizes</span><span class="p">(</span><span class="n">skip_basis</span><span class="o">=</span><span class="n">skip_basis</span><span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">skip_basis</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_basis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_basis</span><span class="p">()</span>
+
+        <span class="c1"># Get the functions that should be used to parse state values.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sizes</span><span class="o">.</span><span class="n">nspin</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">):</span>
+            <span class="c1"># We will have twice as many coefficients.</span>
+            <span class="n">func_index</span> <span class="o">=</span> <span class="mi">4</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sizes</span><span class="o">.</span><span class="n">Gamma</span><span class="p">:</span>
+            <span class="c1"># State values will be in double precision floats</span>
+            <span class="n">func_index</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># State values will be in double precision complex</span>
+            <span class="n">func_index</span> <span class="o">=</span> <span class="mi">2</span>
+
+        <span class="n">Funcs</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;WFSXReads&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;read_index&quot;</span><span class="p">,</span> <span class="s2">&quot;read_next&quot;</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_funcs</span> <span class="o">=</span> <span class="n">Funcs</span><span class="p">(</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">_siesta</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;read_wfsx_index_</span><span class="si">{</span><span class="n">func_index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">),</span>
+            <span class="nb">getattr</span><span class="p">(</span><span class="n">_siesta</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;read_wfsx_next_</span><span class="si">{</span><span class="n">func_index</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">close</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_close_wfsx</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">_read_next_sizes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">skip_basis</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reads the sizes if they are the next thing to be read.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        -----------</span>
+<span class="sd">        skip_basis: boolean, optional</span>
+<span class="sd">            Whether this method should also skip over the basis information.</span>
 
 <span class="sd">        Returns</span>
 <span class="sd">        -------</span>
-<span class="sd">        state: EigenstateElectron</span>
+<span class="sd">        namedtuple :</span>
+<span class="sd">                - &#39;nspin&#39;: int. Number of spin components.</span>
+<span class="sd">                - &#39;no_u&#39;: int. Number of orbitals in the unit cell.</span>
+<span class="sd">                - &#39;nk&#39;: int. Number of k points in the file.</span>
+<span class="sd">                - &#39;Gamma&#39;: bool. Whether the file contains only the gamma point.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="c1"># First query information</span>
-        <span class="n">nspin</span><span class="p">,</span> <span class="n">nou</span><span class="p">,</span> <span class="n">nk</span><span class="p">,</span> <span class="n">Gamma</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_wfsx_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;yield_eigenstate&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read sizes.&#39;</span><span class="p">)</span>
+        <span class="c1"># Check that we are in the right position in the file</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;We are not in a position to read the sizes. State is: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="c1"># Read the sizes that we can find in the WFSX file</span>
+        <span class="n">Sizes</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;Sizes&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;nspin&quot;</span><span class="p">,</span> <span class="s2">&quot;no_u&quot;</span><span class="p">,</span> <span class="s2">&quot;nk&quot;</span><span class="p">,</span> <span class="s2">&quot;Gamma&quot;</span><span class="p">])</span>
+        <span class="n">sizes</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_wfsx_next_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iu</span><span class="p">,</span> <span class="n">skip_basis</span><span class="p">)</span>
+        <span class="c1"># Inform that we are now in front of k point information</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">skip_basis</span> <span class="k">else</span> <span class="mi">0</span>
+        <span class="c1"># Check that everything went fine</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;_read_sizes&#39;</span><span class="p">,</span> <span class="s2">&quot;could not read sizes&quot;</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">nspin</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">]:</span>
-            <span class="n">nspin</span> <span class="o">=</span> <span class="mi">1</span> <span class="c1"># only 1 spin</span>
-            <span class="n">func</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_wfsx_index_4</span>
-        <span class="k">elif</span> <span class="n">Gamma</span><span class="p">:</span>
-            <span class="n">func</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_wfsx_index_1</span>
+        <span class="k">return</span> <span class="n">Sizes</span><span class="p">(</span><span class="o">*</span><span class="n">sizes</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_read_next_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reads the basis if it is the next thing to be read.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Atoms:</span>
+<span class="sd">            the basis read.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check that we are in the right position in the file</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;We are not in a position to read the basis. State is: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="c1"># Read the basis information that we can find in the WFSX file</span>
+        <span class="n">basis_info</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_wfsx_next_basis</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sizes</span><span class="o">.</span><span class="n">no_u</span><span class="p">)</span>
+        <span class="c1"># Inform that we are now in front of k point information</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># Check that everything went fine</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;_read_basis&#39;</span><span class="p">,</span> <span class="s2">&quot;could not read basis information&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Convert the information to a dict so that code is easier to follow.</span>
+        <span class="n">basis_info</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">((</span><span class="s1">&#39;atom_indices&#39;</span><span class="p">,</span> <span class="s1">&#39;atom_labels&#39;</span><span class="p">,</span> <span class="s1">&#39;orb_index_atom&#39;</span><span class="p">,</span> <span class="s1">&#39;orb_n&#39;</span><span class="p">,</span> <span class="s1">&#39;orb_symmetry&#39;</span><span class="p">),</span> <span class="n">basis_info</span><span class="p">))</span>
+
+        <span class="c1"># Sanitize the string information</span>
+        <span class="k">for</span> <span class="n">char_key</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;atom_labels&quot;</span><span class="p">,</span> <span class="s2">&quot;orb_symmetry&quot;</span><span class="p">):</span>
+            <span class="n">basis_info</span><span class="p">[</span><span class="n">char_key</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">label</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span> <span class="k">for</span> <span class="n">label</span> <span class="ow">in</span> <span class="n">basis_info</span><span class="p">[</span><span class="n">char_key</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)])</span>
+
+        <span class="c1"># Find out the unique atom indices</span>
+        <span class="n">unique_ats</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">basis_info</span><span class="p">[</span><span class="s2">&quot;atom_indices&quot;</span><span class="p">])</span>
+
+        <span class="k">def</span> <span class="nf">_get_atom_object</span><span class="p">(</span><span class="n">at</span><span class="p">):</span>
+            <span class="sd">&quot;&quot;&quot;Given an atom index, generates an Atom object with all the information we have about it&quot;&quot;&quot;</span>
+            <span class="n">atom_orbs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">basis_info</span><span class="p">[</span><span class="s2">&quot;atom_indices&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">at</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">at_label</span> <span class="o">=</span> <span class="n">basis_info</span><span class="p">[</span><span class="s2">&quot;atom_labels&quot;</span><span class="p">][</span><span class="n">atom_orbs</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
+
+            <span class="n">orbitals</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">AtomicOrbital</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">n</span><span class="si">}{</span><span class="n">symmetry</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+                    <span class="k">for</span> <span class="n">n</span><span class="p">,</span> <span class="n">symmetry</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">basis_info</span><span class="p">[</span><span class="s2">&quot;orb_n&quot;</span><span class="p">][</span><span class="n">atom_orbs</span><span class="p">],</span> <span class="n">basis_info</span><span class="p">[</span><span class="s2">&quot;orb_symmetry&quot;</span><span class="p">][</span><span class="n">atom_orbs</span><span class="p">])</span>
+            <span class="p">]</span>
+
+            <span class="k">return</span> <span class="n">Atom</span><span class="p">(</span><span class="n">at_label</span><span class="p">,</span> <span class="n">orbitals</span><span class="o">=</span><span class="n">orbitals</span><span class="p">)</span>
+
+        <span class="c1"># Generate the Atoms oject.</span>
+        <span class="k">return</span> <span class="n">Atoms</span><span class="p">([</span><span class="n">_get_atom_object</span><span class="p">(</span><span class="n">at</span><span class="p">)</span> <span class="k">for</span> <span class="n">at</span> <span class="ow">in</span> <span class="n">unique_ats</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">_read_next_info</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ispin</span><span class="p">,</span> <span class="n">ik</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reads the next eigenstate information.</span>
+
+<span class="sd">        This function should only be called after reading the sizes</span>
+<span class="sd">        or reading the previous state&#39;s values.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ispin: integer</span>
+<span class="sd">            the (python) spin index of the next eigenstate.</span>
+<span class="sd">        ik: integer</span>
+<span class="sd">            the (python) k index of the next eigenstate.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        array of shape (3,):</span>
+<span class="sd">            The k point of the state.</span>
+<span class="sd">        float:</span>
+<span class="sd">            The weight of the k point.</span>
+<span class="sd">        int:</span>
+<span class="sd">            Number of wavefunctions that the state contains. It is needed by the</span>
+<span class="sd">            function that reads the eigenstates values.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Store the indices of the current state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ik</span> <span class="o">=</span> <span class="n">ik</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ispin</span> <span class="o">=</span> <span class="n">ispin</span>
+        <span class="c1"># Check that we are in a position where we will read state information</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;We are not in a position to read k point information. State is: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Read the state information</span>
+        <span class="n">file_ispin</span><span class="p">,</span> <span class="n">file_ik</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">nwf</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_wfsx_next_info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iu</span><span class="p">)</span>
+        <span class="c1"># Inform that we are now in front of state values</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="mi">2</span>
+        <span class="c1"># Check that the read went fine</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;_read_next_info&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;could not read next eigenstate info [</span><span class="si">{</span><span class="n">ispin</span> <span class="o">+</span> <span class="mi">1</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">ik</span> <span class="o">+</span> <span class="mi">1</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Check that the read indices match the indices that we were expecting.</span>
+        <span class="k">if</span> <span class="n">file_ispin</span> <span class="o">!=</span> <span class="n">ispin</span> <span class="o">+</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">file_ik</span> <span class="o">!=</span> <span class="n">ik</span> <span class="o">+</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ik</span> <span class="o">=</span> <span class="n">file_ik</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_ispin</span> <span class="o">=</span> <span class="n">file_ispin</span> <span class="o">-</span> <span class="mi">1</span>
+            <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;WFSX indices do not match the expected ones. Expected: [</span><span class="si">{</span><span class="n">ispin</span> <span class="o">+</span> <span class="mi">1</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">ik</span> <span class="o">+</span> <span class="mi">1</span><span class="si">}</span><span class="s2">], found [</span><span class="si">{</span><span class="n">file_ispin</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">file_ik</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">k</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">nwf</span>
+
+    <span class="k">def</span> <span class="nf">_read_next_values</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ispin</span><span class="p">,</span> <span class="n">ik</span><span class="p">,</span> <span class="n">nwf</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reads the next eigenstate values.</span>
+
+<span class="sd">        This function should only be called after reading the state&#39;s information</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ispin: integer</span>
+<span class="sd">            the (python) spin index of the next eigenstate.</span>
+<span class="sd">        ik: integer</span>
+<span class="sd">            the (python) k index of the next eigenstate.</span>
+<span class="sd">        nwf: integer</span>
+<span class="sd">            The number of wavefunctions that the next eigenstate contains.</span>
+<span class="sd">            Should have been obtained by reading the state&#39;s info with `_read_next_info`.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        array of shape (nwf,):</span>
+<span class="sd">            The indices of each wavefunction that the state contains.</span>
+<span class="sd">        array of shape (nwf,):</span>
+<span class="sd">            The eigenvalues (in eV) of each wavefunction that the state contains.</span>
+<span class="sd">        array of shape (norbitals, nwf):</span>
+<span class="sd">            The coefficients for each wavefunction that the state contains.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Check that we are in the right position in the file</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">SileError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;We are not in a position to read k point WFSX values. State is: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Read the state values</span>
+        <span class="n">idx</span><span class="p">,</span> <span class="n">eig</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_funcs</span><span class="o">.</span><span class="n">read_next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sizes</span><span class="o">.</span><span class="n">no_u</span><span class="p">,</span> <span class="n">nwf</span><span class="p">)</span>
+        <span class="c1"># Inform that we are now in front of the next state info</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="c1"># Check that everything went fine</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;_read_next_values&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;could not read next eigenstate values [</span><span class="si">{</span><span class="n">ispin</span> <span class="o">+</span> <span class="mi">1</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">ik</span> <span class="o">+</span> <span class="mi">1</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">idx</span><span class="p">,</span> <span class="n">eig</span><span class="p">,</span> <span class="n">state</span>
+
+    <span class="k">def</span> <span class="nf">_read_next_eigenstate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ispin</span><span class="p">,</span> <span class="n">ik</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reads the next eigenstate in the WFSX file.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        ispin: integer</span>
+<span class="sd">            the (python) spin index of the next eigenstate.</span>
+<span class="sd">        ik: integer</span>
+<span class="sd">            the (python) k index of the next eigenstate.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        --------</span>
+<span class="sd">        EigenstateElectron:</span>
+<span class="sd">            The next eigenstate.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Get the information of this eigenstate</span>
+        <span class="n">k</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">nwf</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_info</span><span class="p">(</span><span class="n">ispin</span><span class="p">,</span> <span class="n">ik</span><span class="p">)</span>
+        <span class="c1"># Now that we have the information, we can read the values because</span>
+        <span class="c1"># we know the number of wavefunctions stored in the k point (`nwf`)</span>
+        <span class="n">idx</span><span class="p">,</span> <span class="n">eig</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_values</span><span class="p">(</span><span class="n">ispin</span><span class="p">,</span> <span class="n">ik</span><span class="p">,</span> <span class="n">nwf</span><span class="p">)</span>
+
+        <span class="c1"># Build the info dictionary for the eigenstate to know how it was calculated</span>
+        <span class="c1"># We include the spin index if needed.</span>
+        <span class="n">info</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="n">k</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_convert_k</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">,</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sizes</span><span class="o">.</span><span class="n">nspin</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">info</span><span class="p">[</span><span class="s2">&quot;spin&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ispin</span>
+
+        <span class="c1"># `eig` is already in eV</span>
+        <span class="c1"># See onlysSileSiesta.read_supercell to understand why we transpose `state`</span>
+        <span class="k">return</span> <span class="n">EigenstateElectron</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">eig</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="p">,</span> <span class="o">**</span><span class="n">info</span><span class="p">)</span>
+
+<div class="viewcode-block" id="wfsxSileSiesta.read_sizes"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.wfsxSileSiesta.html#sisl.io.siesta.wfsxSileSiesta.read_sizes">[docs]</a>    <span class="k">def</span> <span class="nf">read_sizes</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reads the sizes related to this WFSX file</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        int : number of spin components</span>
+<span class="sd">        int : number of orbitals in the unit-cell</span>
+<span class="sd">        int : number of k-points</span>
+<span class="sd">        bool : True if the file only contains the Gamma-point</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_open_wfsx</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+        <span class="n">sizes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_sizes</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_close_wfsx</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">sizes</span></div>
+
+<div class="viewcode-block" id="wfsxSileSiesta.read_basis"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.wfsxSileSiesta.html#sisl.io.siesta.wfsxSileSiesta.read_basis">[docs]</a>    <span class="k">def</span> <span class="nf">read_basis</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reads the basis contained in the WFSX file.</span>
+
+<span class="sd">        The WFSX file only contains information about the atom labels, which atom</span>
+<span class="sd">        each orbital belongs to and the orbital quantum numbers. It is thus not</span>
+<span class="sd">        complete in every sense.</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        Atoms:</span>
+<span class="sd">            the basis read.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_open_wfsx</span><span class="p">(</span><span class="s2">&quot;r&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_sizes</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_sizes</span><span class="p">(</span><span class="n">skip_basis</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="n">basis</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_basis</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_close_wfsx</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">basis</span></div>
+
+<div class="viewcode-block" id="wfsxSileSiesta.yield_eigenstate"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.wfsxSileSiesta.html#sisl.io.siesta.wfsxSileSiesta.yield_eigenstate">[docs]</a>    <span class="k">def</span> <span class="nf">yield_eigenstate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Iterates over the states in the WFSX file</span>
+
+<span class="sd">        Yields</span>
+<span class="sd">        ------</span>
+<span class="sd">        EigenstateElectron</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Open file and get parsing information</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_parsing</span><span class="p">(</span><span class="n">close</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sizes</span><span class="o">.</span><span class="n">nspin</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">itt_spin</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">func</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_wfsx_index_2</span>
+            <span class="n">itt_spin</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
 
-        <span class="k">if</span> <span class="n">parent</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">def</span> <span class="nf">convert_k</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
-                <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="mf">0.</span><span class="p">):</span>
-                    <span class="n">warn</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2">.yield_eigenstate returns a k-point in 1/Ang (not in reduced format), please pass &#39;parent&#39; to ensure reduced k&quot;</span><span class="p">)</span>
-                <span class="k">return</span> <span class="n">k</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># Iterate over all eigenstates in the WFSX file, yielding control to the caller at</span>
+            <span class="c1"># each iteration.</span>
+            <span class="k">for</span> <span class="n">ik</span><span class="p">,</span> <span class="n">ispin</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_sizes</span><span class="o">.</span><span class="n">nk</span><span class="p">),</span> <span class="n">itt_spin</span><span class="p">):</span>
+                <span class="k">yield</span> <span class="bp">self</span><span class="o">.</span><span class="n">_read_next_eigenstate</span><span class="p">(</span><span class="n">ispin</span><span class="p">,</span> <span class="n">ik</span><span class="p">)</span>
+            <span class="c1"># We ran out of eigenstates</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_close_wfsx</span><span class="p">()</span>
+        <span class="k">except</span> <span class="ne">GeneratorExit</span><span class="p">:</span>
+            <span class="c1"># The loop in which the generator was used has been broken.</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_close_wfsx</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="wfsxSileSiesta.read_eigenstate"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.wfsxSileSiesta.html#sisl.io.siesta.wfsxSileSiesta.read_eigenstate">[docs]</a>    <span class="k">def</span> <span class="nf">read_eigenstate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">spin</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">ktol</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reads a specific eigenstate from the file.</span>
+
+<span class="sd">        This method iterates over the states until it finds a match. Don&#39;t call</span>
+<span class="sd">        this method repeatedly. If you want to loop eigenstates, use `yield_eigenstate`.</span>
+
+<span class="sd">        Parameters</span>
+<span class="sd">        ----------</span>
+<span class="sd">        k: array-like of shape (3,), optional</span>
+<span class="sd">            The k point of the state you want to find.</span>
+<span class="sd">        spin: integer, optional</span>
+<span class="sd">            The spin index of the state you want to find. Only meaningful for polarized</span>
+<span class="sd">            calculations.</span>
+<span class="sd">        ktol: float, optional</span>
+<span class="sd">            The threshold value for considering two k-points the same (i.e. to match</span>
+<span class="sd">            the query k point with the state&#39;s k point).</span>
+
+<span class="sd">        See Also</span>
+<span class="sd">        --------</span>
+<span class="sd">        yield_eigenstate</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        EigenstateElectron or None:</span>
+<span class="sd">            If found, the state that was queried.</span>
+<span class="sd">            If not found, returns `None`. NOTE this may change to an exception in the future</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Iterate over all eigenstates in the file</span>
+        <span class="k">for</span> <span class="n">state</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">yield_eigenstate</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="n">spin</span> <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">info</span><span class="p">[</span><span class="s1">&#39;k&#39;</span><span class="p">],</span> <span class="n">k</span><span class="p">,</span> <span class="n">atol</span><span class="o">=</span><span class="n">ktol</span><span class="p">):</span>
+                <span class="c1"># This is the state that the user requested</span>
+                <span class="k">return</span> <span class="n">state</span>
+        <span class="k">return</span> <span class="kc">None</span></div>
+
+<div class="viewcode-block" id="wfsxSileSiesta.read_info"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.wfsxSileSiesta.html#sisl.io.siesta.wfsxSileSiesta.read_info">[docs]</a>    <span class="k">def</span> <span class="nf">read_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Reads the information for all the k points contained in the file</span>
+
+<span class="sd">        Returns</span>
+<span class="sd">        -------</span>
+<span class="sd">        k: array of shape (nk, 3)</span>
+<span class="sd">            k values of the k points contained in the file.</span>
+<span class="sd">        weight: array of shape (nk,)</span>
+<span class="sd">            weight of each k point</span>
+<span class="sd">        nwf: array of shape (nspin, nk)</span>
+<span class="sd">            number of wavefunctions that each kpoint(-spin) contains.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># Open file and get parsing information</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_setup_parsing</span><span class="p">(</span><span class="n">close</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">skip_basis</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+        <span class="c1"># Check if we are in the correct position in the file (we should be just after the header)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">!=</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;We are not in a position to read eigenstate info in the file. State: </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Read all the information. Parse here the k values obtained.</span>
+        <span class="c1"># Store the information that should be returned under `returns`.</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sizes</span><span class="o">.</span><span class="n">nspin</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="n">nspin</span> <span class="o">=</span> <span class="mi">2</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="c1"># We can succesfully convert to proper reduced k-points</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">parent</span><span class="p">,</span> <span class="n">SuperCell</span><span class="p">):</span>
-                <span class="k">def</span> <span class="nf">convert_k</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">parent</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pi</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">def</span> <span class="nf">convert_k</span><span class="p">(</span><span class="n">k</span><span class="p">):</span>
-                    <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">k</span><span class="p">,</span> <span class="n">parent</span><span class="o">.</span><span class="n">sc</span><span class="o">.</span><span class="n">cell</span><span class="o">.</span><span class="n">T</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">pi</span><span class="p">)</span>
+            <span class="n">nspin</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="n">k</span><span class="p">,</span> <span class="n">kw</span><span class="p">,</span> <span class="n">nwf</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_wfsx_next_all_info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iu</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_sizes</span><span class="o">.</span><span class="n">nk</span><span class="p">)</span>
 
-        <span class="k">for</span> <span class="n">ispin</span><span class="p">,</span> <span class="n">ik</span> <span class="ow">in</span> <span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nspin</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">nk</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)):</span>
-            <span class="n">k</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">nwf</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_wfsx_index_info</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">ispin</span><span class="p">,</span> <span class="n">ik</span><span class="p">)</span>
-            <span class="c1"># Convert to 1/Ang</span>
-            <span class="n">k</span> <span class="o">/=</span> <span class="n">_Bohr2Ang</span>
-            <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;yield_eigenstate&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;could not read index info [</span><span class="si">{</span><span class="n">ispin</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">ik</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
+        <span class="c1"># Close the file unit</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_close_wfsx</span><span class="p">()</span>
+        <span class="c1"># Check for errors in the read.</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s2">&quot;read_info&quot;</span><span class="p">,</span> <span class="s2">&quot;could not read file information.&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_convert_k</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">kw</span><span class="p">,</span> <span class="n">nwf</span></div>
 
-            <span class="n">idx</span><span class="p">,</span> <span class="n">eig</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="n">func</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">ispin</span><span class="p">,</span> <span class="n">ik</span><span class="p">,</span> <span class="n">nou</span><span class="p">,</span> <span class="n">nwf</span><span class="p">)</span>
-            <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;yield_eigenstate&#39;</span><span class="p">,</span> <span class="sa">f</span><span class="s2">&quot;could not read state information [</span><span class="si">{</span><span class="n">ispin</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">ik</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">nwf</span><span class="si">}</span><span class="s2">]&quot;</span><span class="p">)</span>
-
-            <span class="c1"># eig is already in eV</span>
-            <span class="c1"># we probably need to add spin</span>
-            <span class="c1"># see onlysSileSiesta.read_supercell for .T</span>
-            <span class="n">es</span> <span class="o">=</span> <span class="n">EigenstateElectron</span><span class="p">(</span><span class="n">state</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">eig</span><span class="p">,</span> <span class="n">parent</span><span class="o">=</span><span class="n">parent</span><span class="p">,</span>
-                                    <span class="n">k</span><span class="o">=</span><span class="n">convert_k</span><span class="p">(</span><span class="n">k</span><span class="p">),</span> <span class="n">gauge</span><span class="o">=</span><span class="s2">&quot;r&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">idx</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="k">yield</span> <span class="n">es</span></div>
+<div class="viewcode-block" id="wfsxSileSiesta.read_brillouinzone"><a class="viewcode-back" href="../../../../api/io/generated/sisl.io.siesta.wfsxSileSiesta.html#sisl.io.siesta.wfsxSileSiesta.read_brillouinzone">[docs]</a>    <span class="k">def</span> <span class="nf">read_brillouinzone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot; Read the brillouin zone object &quot;&quot;&quot;</span>
+        <span class="n">k</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_info</span><span class="p">()</span>
+        <span class="k">return</span> <span class="n">BrillouinZone</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_parent</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="n">k</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">)</span></div>
 
 
 <span class="nd">@set_module</span><span class="p">(</span><span class="s2">&quot;sisl.io.siesta&quot;</span><span class="p">)</span>
@@ -1194,7 +1607,7 @@
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Return the cell contained in the file &quot;&quot;&quot;</span>
 
         <span class="n">cell</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_grid_cell</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="n">_Bohr2Ang</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_supercell&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read cell.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_supercell&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read cell.&#39;</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">SuperCell</span><span class="p">(</span><span class="n">cell</span><span class="p">)</span>
 
@@ -1209,7 +1622,7 @@
 
         <span class="c1"># Read the sizes</span>
         <span class="n">nspin</span><span class="p">,</span> <span class="n">mesh</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_grid_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_grid_size&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read grid sizes.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_grid_size&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read grid sizes.&#39;</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">nspin</span><span class="p">,</span> <span class="n">mesh</span>
 
     <span class="k">def</span> <span class="nf">read_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
@@ -1230,7 +1643,7 @@
         <span class="n">nspin</span><span class="p">,</span> <span class="n">mesh</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_grid_size</span><span class="p">()</span>
         <span class="n">sc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">read_supercell</span><span class="p">()</span>
         <span class="n">grid</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_grid</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">,</span> <span class="n">nspin</span><span class="p">,</span> <span class="n">mesh</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">mesh</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">mesh</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_grid&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read grid.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_grid&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read grid.&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">Integral</span><span class="p">):</span>
             <span class="n">grid</span> <span class="o">=</span> <span class="n">grid</span><span class="p">[:,</span> <span class="p">:,</span> <span class="p">:,</span> <span class="n">index</span><span class="p">]</span>
@@ -1279,34 +1692,22 @@
 <span class="sd">    ...        if new_k:</span>
 <span class="sd">    ...            f.write_hamiltonian(H, S)</span>
 <span class="sd">    ...        f.write_self_energy(SeHSE)</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
 
     <span class="k">def</span> <span class="nf">_setup</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Simple setup that needs to be overwritten &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_iu</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">_setup</span><span class="p">(</span><span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+
         <span class="c1"># The unit convention used for energy-points</span>
         <span class="c1"># This is necessary until Siesta uses CODATA values</span>
-        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;unit&quot;</span><span class="p">,</span> <span class="s2">&quot;old&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;old&quot;</span><span class="p">,</span> <span class="s2">&quot;4.1&quot;</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">kwargs</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;version&quot;</span><span class="p">,</span> <span class="s2">&quot;old&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;old&quot;</span><span class="p">,</span> <span class="s2">&quot;4.1&quot;</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_E_Ry2eV</span> <span class="o">=</span> <span class="mf">13.60580</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_E_Ry2eV</span> <span class="o">=</span> <span class="n">_Ry2eV</span>
 
-    <span class="k">def</span> <span class="nf">_is_open</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iu</span> <span class="o">!=</span> <span class="o">-</span><span class="mi">1</span>
-
     <span class="k">def</span> <span class="nf">_open_gf</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">mode</span><span class="p">,</span> <span class="n">rewind</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_open</span><span class="p">()</span> <span class="ow">and</span> <span class="n">mode</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">_mode</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">rewind</span><span class="p">:</span>
-                <span class="n">_siesta</span><span class="o">.</span><span class="n">io_m</span><span class="o">.</span><span class="n">rewind_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iu</span><span class="p">)</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="c1"># retain indices</span>
-                <span class="k">return</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;r&#39;</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_iu</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">io_m</span><span class="o">.</span><span class="n">open_file_read</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="n">mode</span> <span class="o">==</span> <span class="s1">&#39;w&#39;</span><span class="p">:</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">_iu</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">io_m</span><span class="o">.</span><span class="n">open_file_write</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">file</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;_open_gf&#39;</span><span class="p">,</span> <span class="s1">&#39;could not open for </span><span class="si">{}</span><span class="s1">.&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">({</span><span class="s1">&#39;r&#39;</span><span class="p">:</span> <span class="s1">&#39;reading&#39;</span><span class="p">,</span> <span class="s1">&#39;w&#39;</span><span class="p">:</span> <span class="s1">&#39;writing&#39;</span><span class="p">}[</span><span class="n">mode</span><span class="p">]))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_open</span><span class="p">(</span><span class="n">mode</span><span class="p">,</span> <span class="n">rewind</span><span class="o">=</span><span class="n">rewind</span><span class="p">)</span>
 
         <span class="c1"># They will at any given time</span>
         <span class="c1"># correspond to the current Python indices that is to be read</span>
@@ -1331,11 +1732,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_iE</span> <span class="o">=</span> <span class="mi">0</span>
 
     <span class="k">def</span> <span class="nf">_close_gf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_open</span><span class="p">():</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_is_open</span><span class="p">():</span>
             <span class="k">return</span>
-        <span class="c1"># Close it</span>
-        <span class="n">_siesta</span><span class="o">.</span><span class="n">io_m</span><span class="o">.</span><span class="n">close_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iu</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_iu</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_close</span><span class="p">()</span>
 
         <span class="c1"># Clean variables</span>
         <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span>
@@ -1496,12 +1895,12 @@
 <span class="sd">        E : energy points in the GF file</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="c1"># Ensure it is open (in read-mode)</span>
-        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_open</span><span class="p">():</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_is_open</span><span class="p">():</span>
             <span class="n">_siesta</span><span class="o">.</span><span class="n">io_m</span><span class="o">.</span><span class="n">rewind_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iu</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_open_gf</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">)</span>
         <span class="n">nspin</span><span class="p">,</span> <span class="n">no_u</span><span class="p">,</span> <span class="n">nkpt</span><span class="p">,</span> <span class="n">NE</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_gf_sizes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iu</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_header&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read sizes.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_header&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read sizes.&#39;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_nspin</span> <span class="o">=</span> <span class="n">nspin</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_nk</span> <span class="o">=</span> <span class="n">nkpt</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_nE</span> <span class="o">=</span> <span class="n">NE</span>
@@ -1510,7 +1909,7 @@
         <span class="n">_siesta</span><span class="o">.</span><span class="n">io_m</span><span class="o">.</span><span class="n">rewind_file</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iu</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_step_counter</span><span class="p">(</span><span class="s1">&#39;read_header&#39;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">read</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">k</span><span class="p">,</span> <span class="n">E</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_gf_header</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iu</span><span class="p">,</span> <span class="n">nkpt</span><span class="p">,</span> <span class="n">NE</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_header&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read header information.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_header&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read header information.&#39;</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nspin</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">:</span> <span class="c1"># non-colinear</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">_no_u</span> <span class="o">=</span> <span class="n">no_u</span> <span class="o">*</span> <span class="mi">2</span>
@@ -1528,7 +1927,7 @@
 <span class="sd">        -------</span>
 <span class="sd">        estimated disk-space used in GB</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">is_open</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_open</span><span class="p">()</span>
+        <span class="n">is_open</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_is_open</span><span class="p">()</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">is_open</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">read_header</span><span class="p">()</span>
 
@@ -1557,7 +1956,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_step_counter</span><span class="p">(</span><span class="s1">&#39;read_hamiltonian&#39;</span><span class="p">,</span> <span class="n">HS</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">read</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">H</span><span class="p">,</span> <span class="n">S</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_gf_hs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no_u</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_hamiltonian&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read Hamiltonian and overlap matrices.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_hamiltonian&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read Hamiltonian and overlap matrices.&#39;</span><span class="p">)</span>
         <span class="c1"># we don&#39;t convert to C order!</span>
         <span class="k">return</span> <span class="n">H</span> <span class="o">*</span> <span class="n">_Ry2eV</span><span class="p">,</span> <span class="n">S</span>
 
@@ -1575,7 +1974,7 @@
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_step_counter</span><span class="p">(</span><span class="s1">&#39;read_self_energy&#39;</span><span class="p">,</span> <span class="n">read</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">SE</span> <span class="o">=</span> <span class="n">_siesta</span><span class="o">.</span><span class="n">read_gf_se</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_no_u</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iE</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;read_self_energy&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read self-energy.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;read_self_energy&#39;</span><span class="p">,</span> <span class="s1">&#39;could not read self-energy.&#39;</span><span class="p">)</span>
         <span class="c1"># we don&#39;t convert to C order!</span>
         <span class="k">return</span> <span class="n">SE</span> <span class="o">*</span> <span class="n">_Ry2eV</span>
 
@@ -1591,7 +1990,7 @@
 <span class="sd">        spin : int, optional</span>
 <span class="sd">           spin-index for the Hamiltonian and overlap matrices</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_open</span><span class="p">():</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_is_open</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">read_header</span><span class="p">()</span>
 
         <span class="c1"># find k-index that is requested</span>
@@ -1599,7 +1998,7 @@
         <span class="n">_siesta</span><span class="o">.</span><span class="n">read_gf_find</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nspin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nk</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nE</span><span class="p">,</span>
                              <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ispin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ik</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iE</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_read</span><span class="p">,</span>
                              <span class="mi">0</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">ik</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;HkSk&#39;</span><span class="p">,</span> <span class="s1">&#39;could not find Hamiltonian and overlap matrix.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;HkSk&#39;</span><span class="p">,</span> <span class="s1">&#39;could not find Hamiltonian and overlap matrix.&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ispin</span> <span class="o">=</span> <span class="n">spin</span>
@@ -1620,7 +2019,7 @@
 <span class="sd">        spin : int, optional</span>
 <span class="sd">           spin-index to retrieve self-energy at</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_open</span><span class="p">():</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_is_open</span><span class="p">():</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">read_header</span><span class="p">()</span>
 
         <span class="n">ik</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">kindex</span><span class="p">(</span><span class="n">k</span><span class="p">)</span>
@@ -1628,7 +2027,7 @@
         <span class="n">_siesta</span><span class="o">.</span><span class="n">read_gf_find</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nspin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nk</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nE</span><span class="p">,</span>
                              <span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ispin</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ik</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iE</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_is_read</span><span class="p">,</span>
                              <span class="mi">1</span><span class="p">,</span> <span class="n">spin</span><span class="p">,</span> <span class="n">ik</span><span class="p">,</span> <span class="n">iE</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;self_energy&#39;</span><span class="p">,</span> <span class="s1">&#39;could not find requested self-energy.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;self_energy&#39;</span><span class="p">,</span> <span class="s1">&#39;could not find requested self-energy.&#39;</span><span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="mi">1</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_ispin</span> <span class="o">=</span> <span class="n">spin</span>
@@ -1701,7 +2100,7 @@
                                 <span class="n">lasto</span><span class="p">,</span> <span class="n">bloch</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">mu</span> <span class="o">*</span> <span class="n">_eV2Ry</span><span class="p">,</span> <span class="n">_toF</span><span class="p">(</span><span class="n">k</span><span class="o">.</span><span class="n">T</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">),</span>
                                 <span class="n">w</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_E</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_E_Ry2eV</span><span class="p">,</span>
                                 <span class="o">**</span><span class="n">sizes</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;write_header&#39;</span><span class="p">,</span> <span class="s1">&#39;could not write header information.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;write_header&#39;</span><span class="p">,</span> <span class="s1">&#39;could not write header information.&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">write_hamiltonian</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">H</span><span class="p">,</span> <span class="n">S</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot; Write the current energy, k-point and H and S to the file</span>
@@ -1721,7 +2120,7 @@
         <span class="n">_siesta</span><span class="o">.</span><span class="n">write_gf_hs</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ik</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_E</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_iE</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_E_Ry2eV</span><span class="p">,</span>
                             <span class="n">_toF</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span> <span class="n">_eV2Ry</span><span class="p">),</span>
                             <span class="n">_toF</span><span class="p">(</span><span class="n">S</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">),</span> <span class="n">no_u</span><span class="o">=</span><span class="n">no</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;write_hamiltonian&#39;</span><span class="p">,</span> <span class="s1">&#39;could not write Hamiltonian and overlap matrices.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;write_hamiltonian&#39;</span><span class="p">,</span> <span class="s1">&#39;could not write Hamiltonian and overlap matrices.&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">write_self_energy</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">SE</span><span class="p">):</span>
         <span class="sa">r</span><span class="sd">&quot;&quot;&quot; Write the current self energy, k-point and H and S to the file</span>
@@ -1740,7 +2139,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">_step_counter</span><span class="p">(</span><span class="s1">&#39;write_self_energy&#39;</span><span class="p">,</span> <span class="n">read</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">_siesta</span><span class="o">.</span><span class="n">write_gf_se</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_iu</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ik</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_iE</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_E</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_iE</span><span class="p">]</span> <span class="o">/</span> <span class="bp">self</span><span class="o">.</span><span class="n">_E_Ry2eV</span><span class="p">,</span>
                             <span class="n">_toF</span><span class="p">(</span><span class="n">SE</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">complex128</span><span class="p">,</span> <span class="n">_eV2Ry</span><span class="p">),</span> <span class="n">no_u</span><span class="o">=</span><span class="n">no</span><span class="p">)</span>
-        <span class="n">_bin_check</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s1">&#39;write_self_energy&#39;</span><span class="p">,</span> <span class="s1">&#39;could not write self-energy.&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_fortran_check</span><span class="p">(</span><span class="s1">&#39;write_self_energy&#39;</span><span class="p">,</span> <span class="s1">&#39;could not write self-energy.&#39;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="fm">__len__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nE</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nk</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nspin</span>
@@ -1755,17 +2154,19 @@
         <span class="c1"># get everything</span>
         <span class="n">e</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_E</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_nspin</span> <span class="ow">in</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]:</span>
+            <span class="n">GFStep</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;GFStep&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;spin&quot;</span><span class="p">,</span> <span class="s2">&quot;do_HS&quot;</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">])</span>
             <span class="k">for</span> <span class="n">ispin</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_nspin</span><span class="p">):</span>
                 <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_k</span><span class="p">:</span>
-                    <span class="k">yield</span> <span class="n">ispin</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="k">yield</span> <span class="n">GFStep</span><span class="p">(</span><span class="n">ispin</span><span class="p">,</span> <span class="kc">True</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
                     <span class="k">for</span> <span class="n">E</span> <span class="ow">in</span> <span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
-                        <span class="k">yield</span> <span class="n">ispin</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">E</span>
+                        <span class="k">yield</span> <span class="n">GFStep</span><span class="p">(</span><span class="n">ispin</span><span class="p">,</span> <span class="kc">False</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">E</span><span class="p">)</span>
 
         <span class="k">else</span><span class="p">:</span>
+            <span class="n">GFStep</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s2">&quot;GFStep&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;do_HS&quot;</span><span class="p">,</span> <span class="s2">&quot;k&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">])</span>
             <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_k</span><span class="p">:</span>
-                <span class="k">yield</span> <span class="kc">True</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">yield</span> <span class="n">GFStep</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">e</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
                 <span class="k">for</span> <span class="n">E</span> <span class="ow">in</span> <span class="n">e</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
-                    <span class="k">yield</span> <span class="kc">False</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">E</span>
+                    <span class="k">yield</span> <span class="n">GFStep</span><span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="n">k</span><span class="p">,</span> <span class="n">E</span><span class="p">)</span>
 
         <span class="c1"># We will automatically close once we hit the end</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_close_gf</span><span class="p">()</span>
