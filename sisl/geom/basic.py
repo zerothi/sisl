@@ -116,7 +116,7 @@ def hcp(a, atoms, coa=1.63333, orthogonal=False):
     """
     # height of hcp structure
     c = a * coa
-    a2sq = a / 2 ** .5
+    a3sq = a / 3 ** .5
     if orthogonal:
         sc = SuperCell([[a + a * _c60 * 2, 0, 0],
                         [0, a * _c30 * 2, 0],
@@ -136,7 +136,7 @@ def hcp(a, atoms, coa=1.63333, orthogonal=False):
         g = gt.append(gr, 2)
     else:
         sc = SuperCell([a, a, c, 90, 90, 60])
-        g = Geometry([[0, 0, 0], [a2sq * _c30, a2sq * _s30, c / 2]],
+        g = Geometry([[0, 0, 0], [a3sq * _c30, a3sq * _s30, c / 2]],
                      atoms, sc=sc)
     if np.all(g.maxR(True) > 0.):
         g.optimize_nsc()
