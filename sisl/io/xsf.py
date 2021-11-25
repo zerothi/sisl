@@ -9,7 +9,7 @@ import numpy as np
 from .sile import *
 
 from sisl._internal import set_module
-from sisl import Geometry, AtomUnknown, SuperCell
+from sisl import Geometry, AtomUnknown, SuperCell, PeriodicTable
 from sisl.utils import str_spec
 import sisl._array as _a
 
@@ -205,7 +205,7 @@ class xsfSile(Sile):
                 for _ in range(int(line[0])):
                     line = self.readline().split()
                     if not xyz_set[istep]:
-                        iatom.append(int(line[0]))
+                        iatom.append(PeriodicTable().Z(line[0]))
                         ixyz.append([float(x) for x in line[1:4]])
                     if ret_data and len(line) > 4:
                         idata.append([float(x) for x in line[4:]])
