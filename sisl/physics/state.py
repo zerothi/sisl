@@ -188,12 +188,12 @@ class Coefficient(ParentContainer):
         copy.info = self.info
         return copy
 
-    def degenerate(self, eps):
+    def degenerate(self, eps=1e-8):
         """ Find degenerate coefficients with a specified precision
 
         Parameters
         ----------
-        eps : float
+        eps : float, optional
            the precision above which coefficients are not considered degenerate
 
         Returns
@@ -206,7 +206,7 @@ class Coefficient(ParentContainer):
         dc = _diff(self.c[sidx])
 
         # Degenerate indices
-        idx = (dc < eps).nonzero()[0]
+        idx = (np.absolute(dc) <= eps).nonzero()[0]
         if len(idx) == 0:
             # There are no degenerate coefficients
             return deg
