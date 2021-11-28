@@ -129,7 +129,8 @@ def _scat_state_svd(A, **kwargs):
 
     # A note of caution.
     # The DOS values are not actual DOS values.
-    # In fact they need to be rescaled by DOS *= <i| S(k) |i>
+    # In fact the DOS should be calculated as:
+    #   DOS * <i| S(k) |i>
     # to account for the overlap matrix. For orthogonal basis sets
     # this DOS eigenvalue is correct.
     return DOS ** 2 / (2*np.pi), A
@@ -1681,10 +1682,10 @@ class DeviceGreen:
            cutoff the returned scattering states at some DOS value.
         method : {'svd-gamma', 'svd-A', 'full'}
            which method to use for calculating the scattering states.
-           Use only the _full_ method testing purposes as it is extremely slow
+           Use only the 'full' method for testing purposes as it is extremely slow
            and requires a substantial amount of memory.
-           The SVD method is the fastests considering its complete precision.
-           The propagate method may be even faster for very large systems with
+           The 'svd-gamma' is the fastests while retaining complete precision.
+           The 'svd-A' may be even faster for very large systems with
            very little loss of precision, depends on `cutoff`.
         """
         elec = self._elec(elec)
@@ -1784,7 +1785,7 @@ class DeviceGreen:
         DOS, u = self._scattering_state_reduce(elec, DOS, u, cutoff0)
         # Back-convert to retain scale of the vectors before SVD
         # and also take the sqrt to ensure u u^dagger returns
-        # a sensible value.
+        # a sensible value, the 2*pi factor ensures the *original* scale.
         u *= signsqrt(DOS * 2 * np.pi)
 
         nb = len(self.btd)
@@ -1832,7 +1833,7 @@ class DeviceGreen:
         )
         return si.physics.StateCElectron(A.T, DOS, self, **info)
 
-    def eigenchannel(self, state, elec_to):
+    def eigenchannel(self, state, elec_to, ret_coeff=False):
         r""" Calculate the eigen channel from scattering states entering electrodes `elec_to`
 
         The energy and k-point is inferred from the `state` object and it should have
@@ -1849,6 +1850,27 @@ class DeviceGreen:
         where the eigenvectors of :math:`\mathbf t_{\mathbf u}` is the coefficients of the
         scattering states for the individual eigen channels. The eigenvalues are the
         transmission eigenvalues.
+
+        Parameters
+        ----------
+        state : sisl.physics.StateCElectron
+            the scattering states as obtained from `scattering_state`
+        elec_to : str, or list
+            which electrodes to consider for the transmission eigenchannel
+            decomposition (the sum in the above equation)
+        ret_coeff : bool, optional
+            return also the scattering state coefficients
+
+        Returns
+        -------
+        T_eig : sisl.physics.StateCElectron
+            the transmission eigenchannels, the ``T_eig.c`` contains the transmission
+            eigenvalues.
+        state_coeff : sisl.physics.StateElectron
+            coefficients of `state` that creates the transmission eigenchannels
+            Only returned if `ret_coeff` is True. There is a one-to-one correspondance
+            between ``state_coeff`` and ``T_eig``. This is equivalent to the ``T_eig``
+            states in the scattering state basis.
         """
         self._prepare_se(state.info["E"], state.info["k"])
         if isinstance(elec_to, (Integral, str, PivotSelfEnergy)):
@@ -1894,5 +1916,8 @@ class DeviceGreen:
         info["elec_to"] = [self._elec_name(e) for e in elec_to]
 
         # Backtransform U to form the eigenchannels
-        return si.physics.StateCElectron(Ut[:, ::-1].T @ A,
+        teig = si.physics.StateCElectron(Ut[:, ::-1].T @ A,
                                          tt[::-1], self, **info)
+        if ret_coeff:
+            return teig, si.physics.StateElectron(Ut[:, ::-1].T, self, **info)
+        return teig
