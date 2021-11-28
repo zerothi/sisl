@@ -5,7 +5,9 @@ on:
   #  branches:
   #    - gh-pages-docs
   schedule:
-    - cron: '37 10 * * SAT'
+    # only once every month, at the 23rd
+    # We can always force run this.
+    - cron: '37 10 23 * *'
   workflow_dispatch:
 
 
