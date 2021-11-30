@@ -463,3 +463,31 @@ Pt_SOC                2                    # Species label, number of l-shells
     for i, (tag, orbs) in enumerate(atom_orbs.items()):
         specie_orbs = fdf._parse_pao_basis(block, specie=tag)
         assert specie_orbs == orbs
+
+
+def test_fdf_gz(sisl_files):
+    f = sisl_files(osp.join(_dir, 'fdf'), 'main.fdf.gz')
+    fdf = fdfSileSiesta(f)
+
+    # read from gzipped file
+    assert fdf.get("Main.Foo") == "hello"
+    assert fdf.get("Main.Bar") == "world"
+
+    # read from included non-gzipped file
+    assert fdf.get("Lvl2.Foo") == "world"
+    assert fdf.get("Lvl2.Bar") == "hello"
+
+    # read from nested included gzipped file
+    assert fdf.get("Lvl3.Foo") == "world3"
+    assert fdf.get("Lvl3.Bar") == "hello3"
+
+    f = sisl_files(osp.join(_dir, 'fdf'), 'level2.fdf')
+    fdf = fdfSileSiesta(f)
+
+    # read from non-gzipped file
+    assert fdf.get("Lvl2.Foo") == "world"
+    assert fdf.get("Lvl2.Bar") == "hello"
+
+    # read from included gzipped file
+    assert fdf.get("Lvl3.Foo") == "world3"
+    assert fdf.get("Lvl3.Bar") == "hello3"

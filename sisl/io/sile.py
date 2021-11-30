@@ -555,7 +555,12 @@ class Sile(BaseSile):
 
     def _open(self):
         if self.file.suffix == ".gz":
-            self.fh = gzip.open(str(self.file), mode='rt')
+            if self._mode == 'r':
+                # assume the file is a text file and open in text-mode
+                self.fh = gzip.open(str(self.file), mode='rt')
+            else:
+                # assume this is opening in binary or write mode
+                self.fh = gzip.open(str(self.file), mode=self._mode)
         else:
             self.fh = self.file.open(self._mode)
         self._line = 0
