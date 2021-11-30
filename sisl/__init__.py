@@ -49,8 +49,8 @@ from . import _environ
 
 # Import versioneer specified versions
 from . import _version
-__version__ = _version.get_versions()['version']
-__git_revision__ = _version.get_versions()['full-revisionid']
+__version__ = _version.version
+__version_tuple__ = _version.version_tuple
 __bibtex__ = f"""# BibTeX information if people wish to cite
 @misc{{zerothi_sisl,
     author = {{Papior, Nick}},

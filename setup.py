@@ -24,10 +24,6 @@ import pkg_resources
 # We should *always* import setuptools prior to Cython/distutils
 import setuptools
 
-# Ensure path is correctly setup to not use the system-wide versioneer.py file
-sys.path.insert(0, os.path.dirname(__file__))
-import versioneer
-
 
 def _ospath(path):
     """ Changes '/' separators to OS separators """
@@ -295,28 +291,6 @@ class EnsureBuildExt(numpy_build_ext):
 cmdclass["build_ext"] = EnsureBuildExt
 
 
-class InfoCommand(Command):
-    """
-    Custom distutils command to create the sisl/info.py file.
-    It will additionally print out standard information abou
-    the version.
-    """
-    description = "create info.py file"
-    user_options = []
-    boolean_options = []
-
-    def initialize_options(self):
-        pass
-
-    def finalize_options(self):
-        pass
-
-    def run(self):
-        print('info RUNNING')
-
-cmdclass["info.py"] = InfoCommand
-
-
 # Run cythonizer
 def cythonizer(extensions, *args, **kwargs):
     """
@@ -383,11 +357,12 @@ package_data["sisl_toolbox.siesta.minimizer"] = ["*.yaml"]
 metadata = dict(
     platforms="any",
 
-    # get version
-    version=versioneer.get_version(),
+    # specify setuptools_scm version creation
+    setup_requires=['setuptools_scm>=6.2'],
+    use_scm_version=True,
 
     # Correct the cmdclass
-    cmdclass=versioneer.get_cmdclass(cmdclass),
+    cmdclass=cmdclass,
 
     # Ensure the packages are being found in the correct locations
     package_dir={"sisl_toolbox": "toolbox"},

@@ -13,5 +13,6 @@ docs/sisl
 sisl.egg-info
 sisl/io/siesta/_siesta.so
 sisl/**/*.html
+sisl/_version.py
 .ipynb_checkpoints/
 .vscode/

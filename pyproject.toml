@@ -13,6 +13,7 @@
 requires = [
     "setuptools>=46.0",
     "wheel",
+    "setuptools_scm>=6.2",
     "Cython>=0.28",
     "numpy>=1.13",
 ]
@@ -197,11 +198,5 @@ deps = -rdocs/requirements.txt
 commands = pytest -s -rXs {posargs}
 """
 
-
-[tool.versioneer]
-VCS = "git"
-style = "pep440"
-versionfile_source = "sisl/_version.py"
-versionfile_build = "sisl/_version.py"
-tag_prefix = "v"
-parentdir_prefix = "sisl-"
+[tool.setuptools_scm]
+write_to = "sisl/_version.py"

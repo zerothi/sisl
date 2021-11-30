@@ -13,7 +13,6 @@ pytestmark = pytest.mark.version
 
 def test_version():
     sisl.__bibtex__
-    sisl.__git_revision__
     sisl.__version__
 
 

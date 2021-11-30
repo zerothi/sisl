@@ -101,13 +101,13 @@ def add_sisl_version_cite_arg(parser):
     parser : `argparse.ArgumentParser`
        the parser to add the version string too
     """
-    from sisl import __version__, __git_revision__, __bibtex__
+    from sisl import __version__, __bibtex__
 
     group = parser.add_argument_group("version information")
 
     class PrintVersion(argparse.Action):
         def __call__(self, parser, ns, values, option_string=None):
-            print(f"sisl: {__version__}\ngit-hash: {__git_revision__}")
+            print(f"sisl: {__version__}")
     group.add_argument('--version', nargs=0, action=PrintVersion,
                        help=f'Show detailed sisl version information (v{__version__})')
 
