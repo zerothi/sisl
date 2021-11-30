@@ -1,108 +1,63 @@
-0.X.Y
-=====
+# Changelog
+All notable changes to this project will be documented in this file.
 
-- improvement for BandStructure setup, now the arguments
-	are better formatted and more stringent
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html) once
+we hit release version 1.0.0.
 
-- for now removed parallel calculations since it is not effective
-  Users may still forcefully run it
+## [Unreleased] - YYYY-MM-DD
+### Added
+- COOP and COHP calculations for eigenstates
+- inverse participation ration calculations (with arbitrary q)
+- origin point for mirror functionality (Geometry)
+- degenerate_dir for `velocity` directions
+- `State.remove` complementary to `State.sub`
+- copying Dispatchers for subclasses.
+- dispatchers to `Shape`
+- `Spin.spinor` to get number of spinor components
+- `sc` argument to `xyzSile.read_geometry` for user defined cells
+- tiling a State object, #354 and #355
+- replacing atoms in SparseOrbital geometries #139
+- direction now accepts `abc` and `xyz` keywords to retrieve vectors depending on direction input.
+- replacing atoms in SparseOrbital geometries #139
+- reading from STRUCT_* files (Siesta input/output) #308
+- reading the SuperCell block from fdf
+- reading PAO.Basis blocks from both out and fdf files, almost complete functionality #90
+- generic `transform` method for matrix transformations
+- doing ufunc.reduce on SparseCSR matrices; *wrong* values for e.g. np.prod, generally be **CAUTIOUS** with reduction operations
+- transposing a SparseCSR matrix
+- added pymatgen conversion (Geometry.to/from.pymatgen)
+- atom indexing by shapes #337
 
-- several bugs and fixes added for the `sisl.viz` module, #376, #382
+### Fixed
+- reading coordinates from siesta.out when bands are calculated #362
+- complex warning for spin_moment #360 and #363
+- partially fixed #102 (`wavefunction` for `fxyz` outside box, related to #365 and how origin is interpreted in the code
+- non-collinear PDOS plotting
+- improvement for BandStructure setup, arguments more stringent
+- several fixes for `sisl.viz`; #368, #376 and #382
+- empty array handlings in `_sanitize_*` #370
+- ensured AtomicOrbital can be instantiated without specifying m (default to 0)
+- fixed bug when copying orbitals
 
-- Added COOP and COHP calculations for eigenstates
-
-- added inverse participation ration calculations (with arbitrary q)
-
+### Changed
+- changed license to MPLv2 makes toolboxes easier to contribute under different license
+- renamed origo to origin, see #365
+- default parallel calculations are disabled
 - changed `State.align_*` routines to align `self` rather than `other`
-
-- enhanced mirror functionality to be about a point different from origin
-
-- added `State.remove` to complement `State.sub`
-
-- added degenerate_dir for velocity calculations
-
-- much faster plotting and enabling arrows #368
-
-- calculation of scattering states and eigenchannels for
-  BTD matrices
-
-- added spectral propagation in BTD code
-
-- fixed empty array handlings in `_sanitize_*` #370
-
 - doc fixes for recommending `python -m pip`
 
-- parallel calculations in viz module
+### Removed
+- removed keywords align for State.inner|outer, manually use `align` if required
+- removed method `State.expectation`
 
-- fixed non-collinear PDOS plotting
+### toolbox.btd
+#### Added
+- calculation of scattering states and eigenchannels
+- multiple variants of scattering state methods
 
-- renamed origo to origin, see #365
 
-- enabled copying Dispatchers for subclasses.
-	This allows chained dictionary look-ups for subclasses.
-	By default the dispatch dictionary is a chainmap and
-	one can then of course have multiple same keys in the chain,
-	but only the highest will have precedence.
-
-- added dispatchers to Shapes, Ellipsoid.to.sphere()
-	is now effective.
-
-- enabled replacing atoms in SparseOrbital geometries #139
-
-- partially fixed #102, much related to #365 and how
-	origin is interpreted in the code
-
-- fixed reading coordinates from siesta.out when bands are calculated #362
-
-- fixed complex warning for spin_moment #360 and #363
-
-- removed keywords align for State.inner|outer, instead one
-	should manually align, if required
-
-- removed methods State.expectation
-
-- enabled tiling a State object, #354 and #355
-
-- enabled reading from STRUCT_* files (Siesta input/output) #308
-
-- enabled reading the SuperCell block from fdf
-
-- added Spin.spinor to get number of spinor components
-
-- added sc argument to xyzSile.read_geometry for user defined sc
-
-- enabled stool as a future replacement for stoolbox (shorter)
-
-- ensured AtomicOrbital can be instantiated without specifying m
-	default to 0
-
-- fixed bug in copying orbitals
-
-- changed license to MPLv2, we encourage contribution of toolboxes
-
-- direction now accepts `abc` and `xyz` keywords to automatically
-	retrieve vectors depending on direction input.
-
-- enabled transform of SparseCSR and SparseOrbitalBZSpin
-	matrices. For the latter, one can also use the function
-	to convert to new spin configuration (#320)
-
-- enabled reading PAO.Basis blocks from both out and fdf files
-	Basis sets should be more complete now (except for filtered, #90)
-
-- enabled doing ufunc.reduce on SparseCSR matrix
-	This does have the problem of *wrong* values for np.prod
-	since there may be 0 values. In fact the prod should probably
-	never be used. Be CAUTIOUS with reduction operations.
-
-- enabled transposing a SparseCSR matrix
-
-- added pymatgen conversion (Geometry.to/from.pymatgen)
-
-- enabled atom indexing by shapes #337
-
-0.11.0
-======
+## [0.11.0] - 2021-02-17
 
 - **Major addition**: plotly backend for plotting and interaction with
 	output. This is still a work in progress made by Pol Febrer.
@@ -1084,9 +1039,10 @@ Here is a compressed list of changes:
   I would really like help with creating more tests!
   Please help if you can!
 
-
+<!--
 # Local Variables:
 # mode: text
 # comment-column: 0
 # tab-width: 2
 # End:
+-->
