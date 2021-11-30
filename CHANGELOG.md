@@ -59,7 +59,7 @@ we hit release version 1.0.0.
 - multiple variants of scattering state methods
 
 
-## [0.11.0] - 2021-02-17
+## [0.11.0] - 2021-2-17
 
 - **Major addition**: plotly backend for plotting and interaction with
 	output. This is still a work in progress made by Pol Febrer.
@@ -152,8 +152,7 @@ we hit release version 1.0.0.
 
 - Many small bug-fixes and performance improvements
 
-0.10.0
-======
+## [0.10.0] - 2020-6-9
 
 - Exposing sisl_toolbox as a module for external contributions
 	Now stuff contributed from 3rd parties can easily be included
@@ -209,8 +208,7 @@ This release was helped by the following committers (THANKS):
 - Jonas Lundholm Bertelsen
 - Bernhard Kretz
 
-0.9.8
-=====
+## [0.9.8] - 2020-2-10
 
 - fixed #160 by removing all(?) TRS k-points in a Monkhorst Pack grid
 
@@ -240,8 +238,7 @@ This release was helped by the following committers (THANKS):
 A huge thanks to Jonas L. B. for fixes, suggestions etc.
 
 
-0.9.7
-=====
+## [0.9.7] - 2019-9-26
 
 - Bug-fix for reading geometries in outSiesta
 
@@ -307,8 +304,7 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
   too much of a problem.
 
 
-0.9.6
-=====
+## [0.9.6] - 2019-6-18
 
 - Officially added real-space self-energy calculations
 
@@ -400,8 +396,8 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
   * Added a toolbox to calculate the Poisson solution for arbitrary
 		electrodes for TranSiesta
 
-0.9.5
-=====
+
+## [0.9.5] - 2018-11-12
 
 - Fixed temperature for phonon output pht*nc files
 
@@ -433,8 +429,8 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
 
 - added more VASP files
 
-0.9.4
-=====
+
+## [0.9.4] - 2018-8-4
 
 - Fixes for the GULP dynamical matrix reads
 
@@ -583,13 +579,13 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
 - Several added files
 
 
-0.9.2
-=====
+## [0.9.3] - 2018-8-4
+
+## [0.9.2] - 2017-10-25
 
 - Various minor bug-fixes
 
-0.9.1
-=====
+## [0.9.1] - 2017-10-23
 
 - Fixed scaling of bond-currents in case 'all' is used, makes comparison
   with '+' and '-' easier.
@@ -600,8 +596,7 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
 - Updated defaults in vector_current to '+' such that only forward
   going electrons are captured.
 
-0.9.0
-=====
+## [0.9.0] - 2017-10-16
 
 - Enabled reading a tabular data-file
 
@@ -680,8 +675,7 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
   a small reference cell, tile/repeat it, remove atoms.
 
 
-0.8.5
-=====
+## [0.8.5] - 2017-7-21
 
 - Added the following routines:
   * `SuperCell.fit` routine to determine a new supercell object
@@ -747,8 +741,7 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
   This may break old scripts if one use the `dR` keyword in arguments.
 
 
-0.8.4
-=====
+## [0.8.4] - 2017-6-11
 
 - Added BrillouinZone class to easily create BrillouinZone plots etc.
   When calculating the eigenspectrum of a Hamiltonian one may pass
@@ -787,8 +780,7 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
   as one may then simply "update" the Hamiltonian elements subsequently.
 
 
-0.8.3
-=====
+## [0.8.3] - 2017-4-5
 
 - Fixed bug in __write_default (should have been _write_default)
 
@@ -811,8 +803,7 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
   supercell with 10 A of vacuum along each Cartesian direction.
 
 
-0.8.2
-=====
+## [0.8.2] - 2017-3-31
 
 - Fixed reading _hr.dat from Wannier90, now the band-structure of
   SrTiO3 (Junquera's test example) is correct.
@@ -941,8 +932,8 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
 
   * Preliminary implementation of the non-collinear spin-case. Needs testing.
 
-0.8.1
-=====
+
+## [0.8.1] - 2017-2-23
 
 - Fix a bug when reading non-Gamma TSHS files, now the
   supercell information is correct.
@@ -982,8 +973,7 @@ A huge thanks to Jonas L. B. for fixes, suggestions etc.
   and easier construction of complex Hamiltonians
 
 
-0.8.0
-=====
+## [0.8.0] - 2017-1-7
 
 This release introduces many API changes and a much more stream-lined
 interface for interacting with sisl.
