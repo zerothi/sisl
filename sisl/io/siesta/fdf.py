@@ -7,6 +7,7 @@ import numpy as np
 import scipy as sp
 from os.path import isfile
 import itertools as itools
+import gzip
 
 from ..sile import add_sile, get_sile_class, sile_fh_open, sile_raise_write, SileError
 from .sile import SileSiesta
@@ -107,6 +108,9 @@ class fdfSileSiesta(SileSiesta):
         if self.dir_file(f).is_file():
             self._parent_fh.append(self.fh)
             self.fh = self.dir_file(f).open(self._mode)
+        elif self.dir_file(f + '.gz').is_file():
+            self._parent_fh.append(self.fh)
+            self.fh = gzip.open(self.dir_file(f + '.gz'), mode='rt')
         else:
             warn(str(self) + f' is trying to include file: {f} but the file seems not to exist? Will disregard file!')
 
