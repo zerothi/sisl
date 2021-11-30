@@ -39,6 +39,8 @@ we hit release version 1.0.0.
 - empty array handlings in `_sanitize_*` #370
 - ensured AtomicOrbital can be instantiated without specifying m (default to 0)
 - fixed bug when copying orbitals
+- fixed reading atomic labels in xsf files #402
+- fixed hpc parameters #403
 
 ### Changed
 - changed license to MPLv2 makes toolboxes easier to contribute under different license
