@@ -18,8 +18,6 @@ requires = [
     # see https://github.com/scipy/oldest-supported-numpy/
     # should fix #310
     "oldest-supported-numpy",
-    # manual requirement
-    "numpy>=1.13",
 ]
 build-backend = "setuptools.build_meta"
 
@@ -204,3 +202,4 @@ commands = pytest -s -rXs {posargs}
 
 [tool.setuptools_scm]
 write_to = "sisl/_version.py"
+
