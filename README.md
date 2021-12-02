@@ -133,7 +133,7 @@ If you have
 Then please share them [here][sisl@issue]!
 
 All of the above may be done via a [pull-request][sisl@pr] or by opening
-an [sisl@issue].
+an [issue][sisl@issue].
 
 Remember:
 
