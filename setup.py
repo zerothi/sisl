@@ -104,6 +104,8 @@ from distutils.command.sdist import sdist
 from numpy.distutils.command.build_ext import build_ext as numpy_build_ext
 from numpy.distutils.core import Extension as FortranExtension
 from numpy.distutils.core import setup
+from numpy import __version__ as np_version
+print(f"numpy.__version__ = {np_version}")
 if not cython:
     cython_build_ext = numpy_build_ext
 
