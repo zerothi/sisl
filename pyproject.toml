@@ -15,6 +15,10 @@ requires = [
     "wheel",
     "setuptools_scm>=6.2",
     "Cython>=0.28",
+    # see https://github.com/scipy/oldest-supported-numpy/
+    # should fix #310
+    "oldest-supported-numpy",
+    # manual requirement
     "numpy>=1.13",
 ]
 build-backend = "setuptools.build_meta"
