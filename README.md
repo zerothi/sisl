@@ -98,10 +98,10 @@ Once installed, the installation can be tested by executing the following:
 There are different places for getting information on using sisl, here is a short list
 of places to search/ask for answers:
 
-- [Documentation][sisl-api], recommended reference page
+- [Documentation][sisl@api], recommended reference page
 - [Workshop][workshop] examples showing different uses
-- Ask questions on the Github [issue page][issue]
-- Ask questions on the [Gitter page][sisl-gitter]
+- Ask questions on the Github [issue page][sisl@issue]
+- Ask questions on the [Discord page][sisl@discord]
 
 If sisl was used to produce scientific contributions, please use this [DOI][doi] for citation.
 We recommend to specify the version of sisl in combination of this citation:
@@ -130,10 +130,10 @@ If you have
 - found a documentation error
 - created a tutorial
 
-Then please share them [here][issue]!
+Then please share them [here][sisl@issue]!
 
-All of the above may be done via a [pull-request][pr] or by opening
-an [issue].
+All of the above may be done via a [pull-request][sisl@pr] or by opening
+an [sisl@issue].
 
 Remember:
 
@@ -144,10 +144,10 @@ Remember:
 Links to external and internal sites.
 -->
 [sisl@git]: https://github.com/zerothi/sisl
-[sisl-api]: https://zerothi.github.io/sisl
-[sisl-gitter]: https://gitter.im/sisl-tool/Lobby
-[issue]: https://github.com/zerothi/sisl/issues
-[pr]: https://github.com/zerothi/sisl/pulls
+[sisl@api]: https://zerothi.github.io/sisl
+[sisl@discord]: https://discord.gg/5XnFXFdkv2
+[sisl@issue]: https://github.com/zerothi/sisl/issues
+[sisl@pr]: https://github.com/zerothi/sisl/pulls
 [siesta]: https://gitlab.com/siesta-project/siesta
 [tbtrans]: https://gitlab.com/siesta-project/siesta
 [workshop]: https://github.com/zerothi/ts-tbt-sisl-tutorial
