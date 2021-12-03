@@ -202,4 +202,4 @@ commands = pytest -s -rXs {posargs}
 
 [tool.setuptools_scm]
 write_to = "sisl/_version.py"
-
+fallback_version = "0.0.0.dev+$Format:%H$"

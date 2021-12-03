@@ -105,7 +105,7 @@ from numpy.distutils.command.build_ext import build_ext as numpy_build_ext
 from numpy.distutils.core import Extension as FortranExtension
 from numpy.distutils.core import setup
 from numpy import __version__ as np_version
-print(f"numpy.__version__ = {np_version}")
+print(f"sisl-build: numpy.__version__ = {np_version}")
 if not cython:
     cython_build_ext = numpy_build_ext
 
@@ -334,13 +334,6 @@ def cythonizer(extensions, *args, **kwargs):
     return other_extensions + cythonize(cython_extensions, *args, quiet=False, **kwargs)
 
 
-# The install_requires should also be the
-# requirements for the actual running of sisl
-setuptools_kwargs = {
-    "zip_safe": False,
-}
-
-
 # We need to add sisl.* since that recursively adds modules
 packages = find_packages(include=["sisl", "sisl.*"])
 # Add toolboxes
@@ -361,7 +354,8 @@ metadata = dict(
 
     # specify setuptools_scm version creation
     setup_requires=['setuptools_scm>=6.2'],
-    use_scm_version=True,
+    # Options should be specified in pyproject.toml
+    use_scm_version={'fallback_version': '0.0.0.dev+$Format:%H$'},
 
     # Correct the cmdclass
     cmdclass=cmdclass,
@@ -373,7 +367,7 @@ metadata = dict(
     package_data=package_data,
     packages=packages,
     ext_modules=cythonizer(extensions, compiler_directives=directives),
-    **setuptools_kwargs
+    zip_safe=False,
 )
 
 cwd = os.path.abspath(os.path.dirname(__file__))
