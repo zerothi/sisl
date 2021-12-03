@@ -1734,7 +1734,7 @@ class BandStructure(BrillouinZone):
     Parameters
     ----------
     parent : object or array_like
-       An object with associated `parentcell` and `parent.rcell` or
+       An object with associated `parent.cell` and `parent.rcell` or
        an array of floats which may be turned into a `SuperCell`
     points : array_like of float
        a list of points that are the *corners* of the path
@@ -1748,9 +1748,11 @@ class BandStructure(BrillouinZone):
     names : array_like of str
        the associated names of the points on the Brillouin Zone path
     jump_dk: float, optional
-       when supplying empty ranges, this is the percentage of the total
-       band-structure distance travelled in the BZ.
-       BrillouinZone (returned in `lineark`). Default value is 5% of the total distance.
+       Percentage of sum(dk) that is used as separation between two non-connected
+       points in the band-structure.
+       For band-structures with disconnected points the `lineark` and `lineartick` methods
+       returns a separation between the disconnected points according to this percentage.
+       Default value is 5% of the total distance.
        Keyword only, argument.
 
     Examples
@@ -1759,6 +1761,12 @@ class BandStructure(BrillouinZone):
     >>> bs = BandStructure(sc, [[0] * 3, [0.5] * 3], 200)
     >>> bs = BandStructure(sc, [[0] * 3, [0.5] * 3, [1.] * 3], 200)
     >>> bs = BandStructure(sc, [[0] * 3, [0.5] * 3, [1.] * 3], 200, ['Gamma', 'M', 'Gamma'])
+
+    A disconnected band structure may be created by either having a point of 0 length, or None.
+    Note that the number of names does not contain the empty points (they are simply removed).
+    Such a band-structure may be useful when one is not interested in a fully connected band structure.
+
+    >>> bs = BandStructure(sc, [[0, 0, 0], [0, 0.5, 0], None, [0.5, 0, 0], [0.5, 0.5, 0]], 200, ['A', 'B', 'C', 'D'])
     """
 
     def __init__(self, parent, *args, **kwargs):
@@ -1890,6 +1898,8 @@ class BandStructure(BrillouinZone):
             k[i:i+divs, :] = self.points[ik] + dk * _a.aranged(divs).reshape(-1, 1) / divs
             i += divs
         k[-1] = self.points[-1]
+        # sanity check that should always be obeyed
+        assert i + 1 == len(k)
 
         self._k = k
         self._w = _a.fulld(len(self.k), 1 / len(self.k))
