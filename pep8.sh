@@ -16,12 +16,12 @@ select="$select,E401"
 
 # pretty print command select running
 echo "autopep8 --select \"$select\""
-autopep8 -j -1 --select "$select" --in-place -r --exclude build,dist . **/*.pyx **/*.pxd
+autopep8 -j -1 --select "$select" --in-place -r --exclude build,sisl.egg-info,dist . **/*.pyx **/*.pxd
 
 # Non-Python files
-autopep8 --select "W291,W293" --in-place CHANGELOG
+autopep8 --select "W291,W293" --in-place CHANGELOG.md &
 
 # Remove white-space on empty lines
-sed -i -s -e 's/^[[:space:]]*$//g' **/*.f90
+sed -i -s -e 's/^[[:space:]]*$//g' {sisl,toolbox}/**/*.f90
 # Remove trailing white-space
-sed -i -s -e 's/\([^[:space:]]\)[[:space:]]?$/\1/g' **/*.f90
+sed -i -s -e 's/\([^[:space:]]\)[[:space:]]?$/\1/g' {sisl,toolbox}/**/*.f90
