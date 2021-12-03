@@ -45,9 +45,6 @@ Advanced classes
 __author__ = "Nick Papior"
 __license__ = "MPL-2.0"
 
-from . import _environ
-
-# Import versioneer specified versions
 from . import _version
 __version__ = _version.version
 __version_tuple__ = _version.version_tuple
@@ -63,8 +60,7 @@ __bibtex__ = f"""# BibTeX information if people wish to cite
 # do not expose this helper package
 del _version
 
-# For now we are skipping major/minor/micro versions
-# and try out the other things.
+from . import _environ
 
 # import the common options used
 from ._common import *

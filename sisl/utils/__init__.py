@@ -32,5 +32,3 @@ from .cmd import *
 from .misc import *
 from .ranges import *
 from . import mathematics as math
-
-__all__ = [s for s in dir() if not s.startswith('_')]

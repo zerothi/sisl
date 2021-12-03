@@ -45,9 +45,5 @@ will use the unit definitions in `Siesta`_.
 """
 from .base import unit_group, unit_convert, unit_default, units
 
-__all__ = [s for s in dir() if not s.startswith('_')]
-
 # Enable the siesta unit-conversion
 from . import siesta
-
-__all__ += ['siesta']

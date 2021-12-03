@@ -166,5 +166,3 @@ from .vasp import *
 from .wannier90 import *
 from .xsf import *
 from .xyz import *
-
-__all__ = [s for s in dir() if not s.startswith('_')]
