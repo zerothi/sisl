@@ -199,7 +199,7 @@ class BrillouinZoneDispatcher(ClassDispatcher):
 
 
 @set_module("sisl.physics")
-def linspace_bz(bz, stop=None):
+def linspace_bz(bz, stop=None, jumps=None, jump_dk=0.05):
     r""" Convert points from a BZ object into a linear spacing of maximum value `stop`
 
     Parameters
@@ -209,6 +209,14 @@ def linspace_bz(bz, stop=None):
     stop : int or None, optional
        maximum value in the linear space, or if None, will return the cumulative
        distance of the k-points in the Brillouin zone
+    jumps: array_like, optional
+       whether there are any jumps for the k-points that should not be taken into account
+    jump_dk: float, optional
+       how much total distance the jump points will take
+
+    Returns
+    -------
+
     """
     if isinstance(bz, BrillouinZone):
         cart = bz.tocartesian(bz.k)
@@ -218,6 +226,14 @@ def linspace_bz(bz, stop=None):
     dcart = np.diff(cart, axis=0, prepend=[[0, 0, 0]])
     # calculate distances
     dist = (dcart ** 2).sum(1) ** 0.5
+    # Zero out the jumps
+    dist[jumps] = 0.
+
+    # calculate the total distance
+    total_dist = dist.sum()
+    # correct jumps
+    dist[jumps] = total_dist * jump_dk
+
     # convert to linear scale
     if stop is None:
         return np.cumsum(dist)
@@ -1731,6 +1747,11 @@ class BandStructure(BrillouinZone):
        will be ``sum(divisions) + 1`` due to the end-point constraint.
     names : array_like of str
        the associated names of the points on the Brillouin Zone path
+    jump_dk: float, optional
+       when supplying empty ranges, this is the percentage of the total
+       band-structure distance travelled in the BZ.
+       BrillouinZone (returned in `lineark`). Default value is 5% of the total distance.
+       Keyword only, argument.
 
     Examples
     --------
@@ -1775,8 +1796,35 @@ class BandStructure(BrillouinZone):
         if len(args) > 0:
             raise ValueError(f"{self.__class__.__name__} unknown arguments after parsing 'points', 'divisions' and 'names': {args}")
 
+        # Store empty split size
+        self._jump_dk = kwargs.get("jump_dk", 0.05)
+
         # Copy over points
-        self.points = _a.arrayd(points)
+        # Check if any of the points is None or has length 0
+        # In that case it is a disconnected path
+        def is_empty(ix):
+            try:
+                return len(ix[1]) == 0
+            except:
+                return ix[1] is None
+
+        # filter out jump directions
+        jump_idx = _a.arrayi([i for i, _ in filter(is_empty, enumerate(points))])
+
+        # store only *valid* points
+        self.points = _a.arrayd([p for i, p in enumerate(points) if i not in jump_idx])
+
+        # remove erroneous jumps
+        if len(points) - 1 in jump_idx:
+            jump_idx = jump_idx[:-1]
+        if 0 in jump_idx:
+            jump_idx = jump_idx[1:]
+
+        # The jump-idx is equal to using np.split(self.points, jump_idx)
+        # which then returns continuous sections
+        # correct for removed indices
+        jump_idx -= np.arange(len(jump_idx))
+        self._jump_idx = jump_idx
 
         # If the array has fewer points we try and determine
         if self.points.shape[1] < 3:
@@ -1799,14 +1847,16 @@ class BandStructure(BrillouinZone):
 
             # Get length between different k-points with a total length
             # of division
-            dists = np.diff(linspace_bz(self.tocartesian(self.points)))
+            dists = np.diff(linspace_bz(self.tocartesian(self.points), jumps=jump_idx, jump_dk=0.))
 
             # Get floating point divisions
             divs_r = dists * divisions / dists.sum()
             # Convert to integers
             divs = np.rint(divs_r).astype(np.int32)
             # ensure at least 1 point along each division
+            # 1 division means only the starting point
             divs[divs == 0] = 1
+            divs[jump_idx-1] = 1
             divs_sum = divs.sum()
             while divs_sum != divisions - 1:
                 # only check indices where divs > 1
@@ -1829,6 +1879,8 @@ class BandStructure(BrillouinZone):
             self.names = 'ABCDEFGHIJKLMNOPQRSTUVXYZ'[:len(self.points)]
         else:
             self.names = names
+        if len(self.names) != len(self.points):
+            raise ValueError(f"inconsistent number of elements in 'points' and 'names' argument")
 
         # Calculate points
         dpoint = np.diff(self.points, axis=0)
@@ -1852,7 +1904,7 @@ class BandStructure(BrillouinZone):
         """
         if parent is None:
             parent = self.parent
-        bz = self.__class__(parent, self.points, self.divisions, self.names)
+        bz = self.__class__(parent, self.points, self.divisions, self.names, jump_dk=self._jump_dk)
         return bz
 
     def __getstate__(self):
@@ -1860,7 +1912,9 @@ class BandStructure(BrillouinZone):
         state = super().__getstate__()
         state['points'] = self.points.copy()
         state['divisions'] = self.divisions.copy()
+        state['jump_idx'] = self._jump_idx.copy()
         state['names'] = list(self.names)
+        state['jump_dk'] = self._jump_dk
         return state
 
     def __setstate__(self, state):
@@ -1869,6 +1923,8 @@ class BandStructure(BrillouinZone):
         self.points = state['points']
         self.divisions = state['divisions']
         self.names = state['names']
+        self._jump_dk = state['jump_dk']
+        self._jump_idx = state['jump_idx']
 
     def lineartick(self):
         """ The tick-marks corresponding to the linear-k values
@@ -1918,14 +1974,16 @@ class BandStructure(BrillouinZone):
         ticklabels : list of str
             labels at `ticks`, only returned if `ticks` is ``True``
         """
+        cum_divs = np.cumsum(self.divisions)
         # Calculate points
-        dK = linspace_bz(self)
+        # First we also need to calculate the jumps
+        dK = linspace_bz(self, jumps=cum_divs[self._jump_idx-1], jump_dk=self._jump_dk)
 
         # Get label tick, in case self.names is a single string 'ABCD'
         if ticks:
             # Get number of points
             xtick = np.zeros(len(self.points), dtype=int)
-            xtick[1:] = np.cumsum(self.divisions)
+            xtick[1:] = cum_divs
             # Ensure the returned label_tick is a copy
             return dK, dK[xtick], [a for a in self.names]
         return dK

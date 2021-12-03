@@ -1,4 +1,4 @@
-# This Source Code Form is subject to the terms of the Mozilla Public
+# Source Code Form is subject to the terms of the Mozilla Public
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 import pytest
@@ -587,3 +587,14 @@ class TestBrillouinZone:
         bz.replace([0] * 3, bz_gamma)
         assert len(bz) == N_bz + N_bz_gamma - 1
         assert bz.weight.sum() == pytest.approx(1.)
+
+    def test_bs_jump(self):
+        g = geom.graphene()
+        bs = BandStructure(g, [[0]*3, [0.5, 0, 0], None, [0]*3, [0., 0.5, 0]], 300, ['A', 'B', 'C', 'D'])
+        assert len(bs) == 300
+
+    def test_bs_jump_skipping_none(self):
+        g = geom.graphene()
+        bs1 = BandStructure(g, [[0]*3, [0.5, 0, 0], None, [0]*3, [0., 0.5, 0]], 300, ['A', 'B', 'C', 'D'])
+        bs2 = BandStructure(g, [[0]*3, [0.5, 0, 0], None, [0]*3, [0., 0.5, 0], None], 300, ['A', 'B', 'C', 'D'])
+        assert np.allclose(bs1.k, bs2.k)

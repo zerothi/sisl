@@ -7,6 +7,7 @@ we hit release version 1.0.0.
 
 ## [Unreleased] - YYYY-MM-DD
 ### Added
+- Enabled jumps in band-structures (pass points as None)
 - COOP and COHP calculations for eigenstates
 - inverse participation ration calculations (with arbitrary q)
 - origin point for mirror functionality (Geometry)
