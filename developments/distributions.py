@@ -42,15 +42,13 @@ distributions = [
                       .integrate(x)
                       .doit(simplify=True)
                       .expand()
-                      .simplify()
-                      , (n, 0, N)),
+                      .simplify(), (n, 0, N)),
                  entropy=-1/sy.sqrt(sy.pi)*sy.Sum(
                      (sy.exp(-x**2)*hermite(2*n, x) * x)
                      .integrate((x, -sy.oo, y)).subs(y, x)
                      .doit(simplify=True)
                      .expand()
-                     .simplify()
-                     , (n, 0, N))),
+                     .simplify(), (n, 0, N))),
     Distribution("gaussian",
                  pdf=sy.exp(-x**2/2)/sy.sqrt(2*sy.pi)),
     Distribution("cauchy",
@@ -81,7 +79,6 @@ for dist in distributions:
     assert norm == 1
     print(f"  pdf|delta = {dist.pdf}")
 
-    
     if dist.cdf is None:
         dist.cdf = sy.integrate(dist.pdf.expand(), x).doit(simplify=True).simplify()
     # Ensure that the cdf is 0 at -inf
@@ -100,7 +97,6 @@ for dist in distributions:
         pass
         #func = lambda x: np.exp(-x**2)/np.pi**0.5
     axs[0].plot(E, func(E), label=dist.name)
-    
 
     if dist.sf is None:
         dist.sf = (1 - dist.cdf).expand().simplify()
@@ -135,4 +131,4 @@ assert (fd_enpy - fd.entropy).simplify() == 0.
 axs[0].legend()
 axs[1].legend()
 axs[2].legend()
-plt.show()    
+plt.show()
