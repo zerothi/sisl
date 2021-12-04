@@ -602,18 +602,18 @@ class TestBrillouinZone:
     def test_bs_insert_jump(self):
         g = geom.graphene()
         nk = 10
-        bs = BandStructure(g, [[0]*3, [0.5, 0, 0], None, [0]*3, [0., 0.5, 0]], nk, ['A', 'B', 'C', 'D'])
+        bs = BandStructure(g, [[0]*3, [0.5, 0, 0], None, [0]*3, None, [0., 0.5, 0]], nk, ['A', 'B', 'C', 'D'])
         d = np.empty([nk])
         d_jump = bs.insert_jump(d)
-        assert d_jump.shape == (nk+1,)
+        assert d_jump.shape == (nk+2,)
 
         d = np.empty([nk, 5])
         d_jump = bs.insert_jump(d)
-        assert d_jump.shape == (nk+1, 5)
+        assert d_jump.shape == (nk+2, 5)
         assert np.isnan(d_jump).sum() == 5
 
         d_jump = bs.insert_jump(d.T, value=np.inf)
-        assert d_jump.shape == (5, nk+1)
+        assert d_jump.shape == (5, nk+2)
         assert np.isinf(d_jump).sum() == 5
 
     def test_bs_insert_jump_fail(self):

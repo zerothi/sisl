@@ -1983,7 +1983,9 @@ class BandStructure(BrillouinZone):
             nans = np.empty(len(full_jumps), dtype=array.dtype)
             nans.fill(value)
             axis = array.shape.index(nk)
-            return np.insert(array, full_jumps, nans, axis=axis)
+            shape = list(1 for _ in array.shape)
+            shape[axis] = -1
+            return np.insert(array, full_jumps, nans.reshape(shape), axis=axis)
 
         # convert all
         arrays = tuple(_insert(array) for array in arrays)
