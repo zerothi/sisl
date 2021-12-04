@@ -590,11 +590,36 @@ class TestBrillouinZone:
 
     def test_bs_jump(self):
         g = geom.graphene()
-        bs = BandStructure(g, [[0]*3, [0.5, 0, 0], None, [0]*3, [0., 0.5, 0]], 300, ['A', 'B', 'C', 'D'])
-        assert len(bs) == 300
+        bs = BandStructure(g, [[0]*3, [0.5, 0, 0], None, [0]*3, [0., 0.5, 0]], 30, ['A', 'B', 'C', 'D'])
+        assert len(bs) == 30
 
     def test_bs_jump_skipping_none(self):
         g = geom.graphene()
-        bs1 = BandStructure(g, [[0]*3, [0.5, 0, 0], None, [0]*3, [0., 0.5, 0]], 300, ['A', 'B', 'C', 'D'])
-        bs2 = BandStructure(g, [[0]*3, [0.5, 0, 0], None, [0]*3, [0., 0.5, 0], None], 300, ['A', 'B', 'C', 'D'])
+        bs1 = BandStructure(g, [[0]*3, [0.5, 0, 0], None, [0]*3, [0., 0.5, 0]], 30, ['A', 'B', 'C', 'D'])
+        bs2 = BandStructure(g, [[0]*3, [0.5, 0, 0], None, [0]*3, [0., 0.5, 0], None], 30, ['A', 'B', 'C', 'D'])
         assert np.allclose(bs1.k, bs2.k)
+
+    def test_bs_insert_jump(self):
+        g = geom.graphene()
+        nk = 10
+        bs = BandStructure(g, [[0]*3, [0.5, 0, 0], None, [0]*3, [0., 0.5, 0]], nk, ['A', 'B', 'C', 'D'])
+        d = np.empty([nk])
+        d_jump = bs.insert_jump(d)
+        assert d_jump.shape == (nk+1,)
+
+        d = np.empty([nk, 5])
+        d_jump = bs.insert_jump(d)
+        assert d_jump.shape == (nk+1, 5)
+        assert np.isnan(d_jump).sum() == 5
+
+        d_jump = bs.insert_jump(d.T, value=np.inf)
+        assert d_jump.shape == (5, nk+1)
+        assert np.isinf(d_jump).sum() == 5
+
+    def test_bs_insert_jump_fail(self):
+        g = geom.graphene()
+        nk = 10
+        bs = BandStructure(g, [[0]*3, [0.5, 0, 0], None, [0]*3, [0., 0.5, 0]], nk, ['A', 'B', 'C', 'D'])
+        d = np.empty([nk+1])
+        with pytest.raises(ValueError):
+            bs.insert_jump(d)

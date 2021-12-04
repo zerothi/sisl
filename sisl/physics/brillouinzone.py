@@ -211,7 +211,7 @@ def linspace_bz(bz, stop=None, jumps=None, jump_dk=0.05):
        distance of the k-points in the Brillouin zone
     jumps: array_like, optional
        whether there are any jumps for the k-points that should not be taken into account
-    jump_dk: float, optional
+    jump_dk: float or array_like, optional
        how much total distance the jump points will take
 
     Returns
@@ -232,7 +232,7 @@ def linspace_bz(bz, stop=None, jumps=None, jump_dk=0.05):
     # calculate the total distance
     total_dist = dist.sum()
     # correct jumps
-    dist[jumps] = total_dist * jump_dk
+    dist[jumps] = total_dist * np.asarray(jump_dk)
 
     # convert to linear scale
     if stop is None:
@@ -1747,12 +1747,13 @@ class BandStructure(BrillouinZone):
        will be ``sum(divisions) + 1`` due to the end-point constraint.
     names : array_like of str
        the associated names of the points on the Brillouin Zone path
-    jump_dk: float, optional
-       Percentage of sum(dk) that is used as separation between two non-connected
-       points in the band-structure.
-       For band-structures with disconnected points the `lineark` and `lineartick` methods
+    jump_dk: float or array_like, optional
+       Percentage of ``self.lineark()[-1]`` that is used as separation between discontinued
+       jumps in the band-structure.
+       For band-structures with disconnected jumps the `lineark` and `lineartick` methods
        returns a separation between the disconnected points according to this percentage.
-       Default value is 5% of the total distance.
+       Default value is 5% of the total distance. Alternatively an array equal to the
+       number of discontinuity jumps may be passed for individual percentages.
        Keyword only, argument.
 
     Examples
@@ -1766,7 +1767,7 @@ class BandStructure(BrillouinZone):
     Note that the number of names does not contain the empty points (they are simply removed).
     Such a band-structure may be useful when one is not interested in a fully connected band structure.
 
-    >>> bs = BandStructure(sc, [[0, 0, 0], [0, 0.5, 0], None, [0.5, 0, 0], [0.5, 0.5, 0]], 200, ['A', 'B', 'C', 'D'])
+    >>> bs = BandStructure(sc, [[0, 0, 0], [0, 0.5, 0], None, [0.5, 0, 0], [0.5, 0.5, 0]], 200)
     """
 
     def __init__(self, parent, *args, **kwargs):
@@ -1936,6 +1937,60 @@ class BandStructure(BrillouinZone):
         self._jump_dk = state['jump_dk']
         self._jump_idx = state['jump_idx']
 
+    def insert_jump(self, *arrays, value=np.nan):
+        """ Return a copy of `arrays` filled with `value` at indices of discontinuity jumps
+
+        Arrays with `value` in jumps is easier to plot since those lines will be naturally discontinued.
+        For band structures without discontinuity jumps in the Brillouin zone the `arrays` will
+        be return as is.
+
+        It will insert `value` along the first dimension matching the length of `self`.
+        For each discontinuity jump an element will be inserted.
+
+        This may be useful for plotting since `np.nan` gets interpreted as a discontinuity
+        in the graph thus removing connections between the segments.
+
+        Parameters
+        ----------
+        *arrays : array_like
+           arrays will get `value` inserted where there are jumps in the band structure
+        value : optional
+           the value to be inserted at the jump points in the data array
+
+        Examples
+        --------
+        Create a bandrstructure with a discontinuity.
+
+        >>> gr = geom.graphene()
+        >>> bs = BandStructure(gr, [[0, 0, 0], [0.5, 0, 0], None, [0, 0, 0], [0, 0.5, 0]], 4)
+        >>> data = np.zeros([len(bs), 10])
+        >>> data_with_jump = bs.insert_jump(data)
+        >>> assert data_with_jump.shape == (len(bs)+1, 10)
+        >>> np.all(data_with_jump[2] == np.nan)
+        True
+        """
+        # quick return if nothing needs changed
+        if len(self._jump_idx) == 0:
+            if len(arrays) == 1:
+                return arrays[0]
+            return arrays
+
+        nk = len(self)
+        full_jumps = np.cumsum(self.divisions)[self._jump_idx-1]
+        def _insert(array):
+            array = np.asarray(array)
+            # ensure dtype is equivalent as input array
+            nans = np.empty(len(full_jumps), dtype=array.dtype)
+            nans.fill(value)
+            axis = array.shape.index(nk)
+            return np.insert(array, full_jumps, nans, axis=axis)
+
+        # convert all
+        arrays = tuple(_insert(array) for array in arrays)
+        if len(arrays) == 1:
+            return arrays[0]
+        return arrays
+
     def lineartick(self):
         """ The tick-marks corresponding to the linear-k values
 
@@ -1953,7 +2008,8 @@ class BandStructure(BrillouinZone):
     def lineark(self, ticks=False):
         """ A 1D array which corresponds to the delta-k values of the path
 
-        This is meant for plotting
+        This is mainly meant for plotting but may be useful for finding out
+        distances in the reciprocal lattice.
 
         Examples
         --------
@@ -1974,6 +2030,10 @@ class BandStructure(BrillouinZone):
         ----------
         ticks : bool, optional
            if `True` the ticks for the points are also returned
+
+        See Also
+        --------
+        linspace_bz : converts k-points into a linear distance parameterization
 
         Returns
         -------
