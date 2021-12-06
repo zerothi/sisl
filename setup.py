@@ -353,7 +353,17 @@ metadata = dict(
     platforms="any",
 
     # specify setuptools_scm version creation
-    setup_requires=['setuptools_scm>=6.2'],
+    # TODO update this together with pyproject.toml
+    setup_requires=[
+        "setuptools>=46.0",
+        "wheel",
+        "setuptools_scm>=6.2",
+        "Cython>=0.28",
+        # see https://github.com/scipy/oldest-supported-numpy/
+        # should fix #310
+        "oldest-supported-numpy"
+    ],
+
     # Options should be specified in pyproject.toml
     use_scm_version={'fallback_version': '0.0.0.dev+$Format:%H$'},
 

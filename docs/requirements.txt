@@ -1,5 +1,8 @@
+# For installation
+wheel
+setuptools>=46.0
+setuptools_scm>=6.2
 # For running
-setuptools
 cython
 numpy>=1.13
 scipy>=0.18

@@ -9,10 +9,10 @@
 
 # First we define the build-system which we will probably alter the most
 [build-system]
-# Sync with dependencies!
+# TODO update this together with setup.py
 requires = [
-    "setuptools>=46.0",
     "wheel",
+    "setuptools>=46.0",
     "setuptools_scm>=6.2",
     "Cython>=0.28",
     # see https://github.com/scipy/oldest-supported-numpy/
@@ -87,6 +87,10 @@ viz = [
     "pandas",
     "xarray >= 0.10.0",
     "scikit-image",
+
+    "plotly",
+    "matplotlib",
+    "ase",
 ]
 
 viz-plotly = [

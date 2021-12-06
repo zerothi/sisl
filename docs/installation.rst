@@ -9,13 +9,24 @@ sisl is easy to install using any of your preferred methods.
 Required dependencies
 ---------------------
 
-- `Python`_ 3.6 or above
+For installation some basic packages are required:
+
 - `setuptools`_
+- `setuptools_scm`_
+- `Cython`_
+- C compiler
+- fortran compiler
+
+When installing the package they should be readily installed before
+the actual installation begins.
+
+For running sisl you are required these versions:
+
+- `Python`_ 3.6 or above
 - `numpy`_ (1.13 or later)
 - `scipy`_ (0.18 or later)
 - `netCDF4-python <netcdf4-py_>`_
 - `pyparsing`_ (1.5.7 or later)
-- A C- and fortran-compiler
 
 Optional dependencies:
 
@@ -24,6 +35,7 @@ Optional dependencies:
 - `matplotlib`_
 - `tqdm`_ (for displaying progress-bars)
 - `xarray`_ (for advanced table data structures in certain methods)
+- `plotly`_ (for advanced visualization)
 
 
 sisl implements certain methods in Cython which speeds up the execution.
@@ -40,13 +52,16 @@ Installing sisl using PyPi can be done using
 .. code-block:: bash
 
    python3 -m pip install sisl
-   # or
+   # for better analysis
    python3 -m pip install sisl[analysis]
+   # for advanced plotting functionality
+   python3 -m pip install sisl[viz]
+
 
 :code:`pip` will automatically install the required dependencies. The optional dependencies
 will be used if later installed.
 
-The latter installation call also installs :code:`tqdm` and :code:`xarray` which are part of
+The latter installations call also installs dependent packages which are part of
 extended analysis methods. These are not required and may be installed later if their usage
 is desired.
 
@@ -76,22 +91,15 @@ To find more information about the conda-forge installation please see
 Manual installation
 -------------------
 
-sisl may be installed using the regular `setup.py` script.
-Ensure the required dependencies are installed before proceeding with the
-manual installation (without `numpy`_ installed a spurious error message will
-appear). The dependencies may be installed using this :code:`pip` module:
-
-.. code-block:: bash
-
-   python3 -m pip install -r requirements.txt
-
+The regular :code:`pip` codes may be used to install git clones or downloaded
+tarballs.
 
 Simply download the release tar from `this page <gh-releases_>`_, or clone
 the `git repository <sisl-git_>`_ for the latest developments
 
 .. code-block:: bash
 
-   python3 setup.py install --prefix=<prefix>
+   python3 -m pip install . --prefix=<prefix>
 
 
 Windows
@@ -102,7 +110,7 @@ the compilers used. Typically one may do
 
 .. code-block:: bash
 
-   python3 setup.py install --prefix=<prefix> --fcompiler=gfortran --compiler=mingw32
+   python3 -m pip install . --prefix=<prefix> --install-option='--fcompiler=gfortran' --install-option='--compiler=mingw32'
 
 but sometimes ``setuptools`` does not intercept the flags in the build process.
 To remedy this please ensure ``%HOME%\pydistutils.cfg`` contains the build options:
@@ -153,14 +161,14 @@ To install the development version using :code:`pip` you may use the URL command
 
 Otherwise follow the manual installation by cloning the `git repository <sisl-git_>`_.
 Remark that the :code:`git+https` protocol is buggy (as of pip v19.0.3) because you cannot pass compiler
-options to :code:`setup.py`. If you want to install the development version with e.g.
+options to :code:`setuptools`. If you want to install the development version with e.g.
 the Intel compilers you should do:
 
 .. code-block:: bash
 
    git clone git+https://github.com/zerothi/sisl.git
    cd sisl
-   python3 -m pip install -U --global-option="build" --global-option="--compiler=intelem" --global-option="--fcompiler=intelem" .
+   python3 -m pip install . -U --build-option="--compiler=intelem" --build-option="--fcompiler=intelem" .
 
 which will pass the correct options to the build system.
 

@@ -1,6 +1,4 @@
-setuptools
 # We use some functionality in 1.13 (np.unique)
-Cython>=0.28
 numpy>=1.13
 scipy>=0.18
 netCDF4

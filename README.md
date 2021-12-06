@@ -73,6 +73,7 @@ If performing a manual installation, these packages are required:
    - __scipy__ (0.18 or later)
    - __netCDF4__
    - __setuptools__
+   - __setuptools_scm__
    - __pyparsing__ (1.5.7 or later)
    - __pytest__, optional dependency for running the tests
    - __matplotlib__, encouraged optional dependency
@@ -82,12 +83,11 @@ If performing a manual installation, these packages are required:
 
 Subsequently manual installation may be done using this command:
 
-    python3 setup.py install --prefix=<prefix>
+    python3 -m pip install . --prefix=<prefix>
 
 If trying to install without root access, you may be required to use this command:
 
-    python3 setup.py install --user --prefix=<prefix>
-
+    python3 -m pip install . --user --prefix=<prefix>
 
 Once installed, the installation can be tested by executing the following:
 
