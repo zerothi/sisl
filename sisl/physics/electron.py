@@ -1783,6 +1783,15 @@ class StateCElectron(_electron_State, StateC):
     r""" A state describing a physical quantity related to electrons, with associated coefficients of the state """
     __slots__ = []
 
+    def derivative(self, *args, **kwargs):
+        """ Calculate the derivative of the state vectors.
+
+        This is formally the same as the velocity calculation without the prefactor 1/hbar
+
+        See `velocity` for arguments and details.
+        """
+        return self.velocity(*args, **kwargs) / _velocity_const
+
     def velocity(self, eps=1e-4, degenerate_dir=(1, 1, 1), project=False):
         r""" Calculate velocity for the states
 

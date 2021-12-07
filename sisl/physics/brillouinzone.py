@@ -151,7 +151,7 @@ from sisl.quaternion import Quaternion
 from sisl.utils.mathematics import cart2spher, fnorm
 from sisl.utils.misc import allow_kwargs
 import sisl._array as _a
-from sisl.messages import info, SislError, progressbar, deprecate_method, deprecate
+from sisl.messages import info, warn, SislError, progressbar, deprecate_method, deprecate
 from sisl.supercell import SuperCell
 from sisl.grid import Grid
 from sisl._dispatcher import ClassDispatcher
@@ -1806,7 +1806,7 @@ class BandStructure(BrillouinZone):
             raise ValueError(f"{self.__class__.__name__} unknown arguments after parsing 'points', 'divisions' and 'names': {args}")
 
         # Store empty split size
-        self._jump_dk = kwargs.get("jump_dk", 0.05)
+        self._jump_dk = np.asarray(kwargs.get("jump_dk", 0.05))
 
         # Copy over points
         # Check if any of the points is None or has length 0
@@ -1828,6 +1828,9 @@ class BandStructure(BrillouinZone):
             jump_idx = jump_idx[:-1]
         if 0 in jump_idx:
             jump_idx = jump_idx[1:]
+
+        if self._jump_dk.size > 1 and jump_idx.size != self._jump_dk.size:
+            raise ValueError(f"{self.__class__.__name__} got inconsistent argument lengths (jump_dk does not match jumps in points)")
 
         # The jump-idx is equal to using np.split(self.points, jump_idx)
         # which then returns continuous sections
@@ -2006,6 +2009,44 @@ class BandStructure(BrillouinZone):
         lineark : Routine used to calculate the tick-marks.
         """
         return self.lineark(True)[1:3]
+
+    def tolinear(self, k, ret_index=False, tol=1e-4):
+        """ Convert a k-point into the equivalent linear k-point via the distance
+
+        Finds the index of the k-point in `self.k` that is closests to `k`.
+        The returned value is then the equivalent index in `lineark`.
+
+        This is very useful for extracting certain points along the band structure.
+
+        Parameters
+        ----------
+        k : array_like
+           the k-point(s) to locate in the linear values
+        ret_index : bool, optional
+           whether the indices are also returned
+        tol : float, optional
+           when the found k-point has a distance (in Cartesian coordinates)
+           is differing by more than `tol` a warning will be issued.
+           The tolerance is in units 1/Ang.
+        """
+        # Faster than to do sqrt all the time
+        tol = tol ** 2
+        # first convert to the cartesian coordinates (for proper distances)
+        ks = self.tocartesian(np.atleast_2d(k))
+        kk = self.tocartesian(self.k)
+
+        # find closest values
+        def find(k):
+            dist = ((kk - k) ** 2).sum(-1)
+            idx = np.argmin(dist)
+            if dist[idx] > tol:
+                warn(f"{self.__class__.__name__}.tolinear could not find a k-point within given tolerance ({self.toreduced(k)})")
+            return idx
+
+        idxs = [find(k) for k in ks]
+        if ret_index:
+            return self.lineark()[idxs], idxs
+        return self.lineark()[idxs]
 
     def lineark(self, ticks=False):
         """ A 1D array which corresponds to the delta-k values of the path
