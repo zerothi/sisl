@@ -12,6 +12,8 @@ __all__ = ["register_plotable"]
 class ClassPlotHandler(ClassDispatcher):
     """Handles all plotting possibilities for a class"""
 
+    # TODO fix handling with default type_dispatcher=None
+
     def __init__(self, *args, **kwargs):
         if not "instance_dispatcher" in kwargs:
             kwargs["instance_dispatcher"] = ObjectPlotHandler

@@ -420,7 +420,7 @@ class ClassDispatcher(AbstractDispatcher):
     def __init__(self, attr_name, dispatchs=None, default=None,
                  obj_getattr=None,
                  instance_dispatcher=ObjectDispatcher,
-                 type_dispatcher=None,
+                 type_dispatcher=TypeDispatcher,
                  **attrs):
         # obj_getattr is necessary for the ObjectDispatcher to create the correct
         # MethodDispatcher

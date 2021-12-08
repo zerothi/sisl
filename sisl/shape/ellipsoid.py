@@ -153,12 +153,15 @@ class Ellipsoid(PureShape):
         return fnorm(self._v)
 
 
+to_dispatch = Ellipsoid.to
+
+
 class EllipsoidToEllipsoid(ShapeToDispatcher):
     def dispatch(self, *args, **kwargs):
         return self._obj.copy()
 
-Ellipsoid.to.register("ellipsoid", EllipsoidToEllipsoid)
-Ellipsoid.to.register("Ellipsoid", EllipsoidToEllipsoid)
+to_dispatch.register("ellipsoid", EllipsoidToEllipsoid)
+to_dispatch.register("Ellipsoid", EllipsoidToEllipsoid)
 
 
 class EllipsoidToSphere(ShapeToDispatcher):
@@ -166,8 +169,8 @@ class EllipsoidToSphere(ShapeToDispatcher):
         shape = self._obj
         return Sphere(shape.radius.max(), shape.center)
 
-Ellipsoid.to.register("sphere", EllipsoidToSphere)
-Ellipsoid.to.register("Sphere", EllipsoidToSphere)
+to_dispatch.register("sphere", EllipsoidToSphere)
+to_dispatch.register("Sphere", EllipsoidToSphere)
 
 
 class EllipsoidToCuboid(ShapeToDispatcher):
@@ -176,8 +179,10 @@ class EllipsoidToCuboid(ShapeToDispatcher):
         shape = self._obj
         return Cuboid(shape._v * 2, shape.center)
 
-Ellipsoid.to.register("cuboid", EllipsoidToCuboid)
-Ellipsoid.to.register("Cuboid", EllipsoidToCuboid)
+to_dispatch.register("cuboid", EllipsoidToCuboid)
+to_dispatch.register("Cuboid", EllipsoidToCuboid)
+
+del to_dispatch
 
 
 @set_module("sisl.shape")

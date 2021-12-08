@@ -293,7 +293,10 @@ class BrillouinZone:
             warnings.filterwarnings('ignore')
             self.asarray()
 
-    apply = BrillouinZoneDispatcher("apply", obj_getattr=lambda obj, key: getattr(obj.parent, key))
+    apply = BrillouinZoneDispatcher("apply",
+                                    # Do not allow class dispatching
+                                    type_dispatcher=None,
+                                    obj_getattr=lambda obj, key: getattr(obj.parent, key))
 
     def set_parent(self, parent):
         """ Update the parent associated to this object

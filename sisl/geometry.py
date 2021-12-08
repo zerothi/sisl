@@ -153,7 +153,6 @@ class Geometry(SuperCellChild):
     new = ClassDispatcher("new",
                           # both the instance and the type will use the type dispatcher
                           instance_dispatcher=TypeDispatcher,
-                          type_dispatcher=TypeDispatcher,
                           obj_getattr=lambda obj, key:
                           (_ for _ in ()).throw(
                               AttributeError((f"{obj}.new does not implement '{key}' "
@@ -164,6 +163,8 @@ class Geometry(SuperCellChild):
     # Define a dispatcher for converting Geometries
     #  Geometry().to.ase() will convert to an ase.Atoms object
     to = ClassDispatcher("to",
+                         # Do not allow calling this from a class
+                         type_dispatcher=None,
                          obj_getattr=lambda obj, key:
                          (_ for _ in ()).throw(
                              AttributeError((f"{obj}.to does not implement '{key}' "
@@ -4474,6 +4475,10 @@ class Geometry(SuperCellChild):
         return p, namespace
 
 
+new_dispatch = Geometry.new
+to_dispatch = Geometry.to
+
+
 # Define base-class for this
 class GeometryNewDispatcher(AbstractDispatch):
     """ Base dispatcher from class passing arguments to Geometry class
@@ -4494,13 +4499,13 @@ class GeometryNewAseDispatcher(GeometryNewDispatcher):
         nsc = [3 if pbc else 1 for pbc in aseg.pbc]
         sc = SuperCell(cell, nsc=nsc)
         return self._obj(xyz, atoms=Z, sc=sc, **kwargs)
-Geometry.new.register("ase", GeometryNewAseDispatcher)
+new_dispatch.register("ase", GeometryNewAseDispatcher)
 
 # currently we can't ensure the ase Atoms type
 # to get it by type(). That requires ase to be importable.
 try:
     from ase import Atoms as ase_Atoms
-    Geometry.new.register(ase_Atoms, GeometryNewAseDispatcher)
+    new_dispatch.register(ase_Atoms, GeometryNewAseDispatcher)
     # ensure we don't pollute name-space
     del ase_Atoms
 except:
@@ -4528,15 +4533,15 @@ class GeometryNewpymatgenDispatcher(GeometryNewDispatcher):
             nsc = [1, 1, 1]
         sc = SuperCell(cell, nsc=nsc)
         return self._obj(xyz, atoms=Z, sc=sc, **kwargs)
-Geometry.new.register("pymatgen", GeometryNewpymatgenDispatcher)
+new_dispatch.register("pymatgen", GeometryNewpymatgenDispatcher)
 
 # currently we can't ensure the pymatgen classes
 # to get it by type(). That requires pymatgen to be importable.
 try:
     from pymatgen.core import Molecule as pymatgen_Molecule
     from pymatgen.core import Structure as pymatgen_Structure
-    Geometry.new.register(pymatgen_Molecule, GeometryNewpymatgenDispatcher)
-    Geometry.new.register(pymatgen_Structure, GeometryNewpymatgenDispatcher)
+    new_dispatch.register(pymatgen_Molecule, GeometryNewpymatgenDispatcher)
+    new_dispatch.register(pymatgen_Structure, GeometryNewpymatgenDispatcher)
     # ensure we don't pollute name-space
     del pymatgen_Molecule, pymatgen_Structure
 except:
@@ -4548,16 +4553,16 @@ class GeometryNewGeometryDispatcher(GeometryNewDispatcher):
     def dispatch(self, geom):
         """ Return geometry as-is (no copy), for sanitization purposes """
         return geom
-Geometry.new.register(Geometry, GeometryNewGeometryDispatcher)
+new_dispatch.register(Geometry, GeometryNewGeometryDispatcher)
 
 
 class GeometryNewFileDispatcher(GeometryNewDispatcher):
     def dispatch(self, *args, **kwargs):
         """ Defer the `Geometry.read` method by passing down arguments """
         return self._obj.read(*args, **kwargs)
-Geometry.new.register(str, GeometryNewFileDispatcher)
-Geometry.new.register(Path, GeometryNewFileDispatcher)
-# see sisl/__init__.py for Geometry.new.register(BaseSile, GeometryNewFileDispatcher)
+new_dispatch.register(str, GeometryNewFileDispatcher)
+new_dispatch.register(Path, GeometryNewFileDispatcher)
+# see sisl/__init__.py for new_dispatch.register(BaseSile, GeometryNewFileDispatcher)
 
 
 class GeometryToDispatcher(AbstractDispatch):
@@ -4578,7 +4583,7 @@ class GeometryToAseDispatcher(GeometryToDispatcher):
         return ase_Atoms(symbols=geom.atoms.Z, positions=geom.xyz.tolist(),
                          cell=geom.cell.tolist(), pbc=geom.nsc > 1, **kwargs)
 
-Geometry.to.register("ase", GeometryToAseDispatcher)
+to_dispatch.register("ase", GeometryToAseDispatcher)
 
 
 class GeometryTopymatgenDispatcher(GeometryToDispatcher):
@@ -4603,7 +4608,7 @@ class GeometryTopymatgenDispatcher(GeometryToDispatcher):
             return Molecule(species, xyz, **kwargs)
         return Structure(lattice, species, xyz, coords_are_cartesian=True, **kwargs)
 
-Geometry.to.register("pymatgen", GeometryTopymatgenDispatcher)
+to_dispatch.register("pymatgen", GeometryTopymatgenDispatcher)
 
 
 class GeometryToSileDispatcher(GeometryToDispatcher):
@@ -4611,11 +4616,11 @@ class GeometryToSileDispatcher(GeometryToDispatcher):
         geom = self._obj
         self._ensure_object(geom)
         return geom.write(*args, **kwargs)
-Geometry.to.register("str", GeometryToSileDispatcher)
-Geometry.to.register("path", GeometryToSileDispatcher)
+to_dispatch.register("str", GeometryToSileDispatcher)
+to_dispatch.register("path", GeometryToSileDispatcher)
 # to do geom.to[Path](path)
-Geometry.to.register(str, GeometryToSileDispatcher)
-Geometry.to.register(Path, GeometryToSileDispatcher)
+to_dispatch.register(str, GeometryToSileDispatcher)
+to_dispatch.register(Path, GeometryToSileDispatcher)
 
 
 class GeometryToDataframeDispatcher(GeometryToDispatcher):
@@ -4648,7 +4653,10 @@ class GeometryToDataframeDispatcher(GeometryToDispatcher):
         data["norbitals"] = atoms.orbitals
 
         return pd.DataFrame(data)
-Geometry.to.register("dataframe", GeometryToDataframeDispatcher)
+to_dispatch.register("dataframe", GeometryToDataframeDispatcher)
+
+# Remove references
+del new_dispatch, to_dispatch
 
 
 @set_module("sisl")

@@ -86,6 +86,8 @@ class Shape:
     # Define a dispatcher for converting Shapes
     #  Shape().to.ellipsoid() will convert to an sisl.shape.Ellipsoid object
     to = ClassDispatcher("to",
+                         # Do not allow class calls
+                         type_dispatcher=None,
                          obj_getattr=lambda obj, key:
                          (_ for _ in ()).throw(
                              AttributeError((f"{obj}.to does not implement '{key}' "
@@ -159,7 +161,11 @@ class Shape:
         return XOrShape(self, other)
 
 
+to_dispatch = Shape.to
+
 # Add dispatcher systems
+
+
 class ShapeToDispatcher(AbstractDispatch):
     """ Base dispatcher from class passing from a Shape class """
     @staticmethod
@@ -171,15 +177,15 @@ class ShapeToDispatcher(AbstractDispatch):
 class ToEllipsoidDispatcher(ShapeToDispatcher):
     def dispatch(self, *args, **kwargs):
         return self._obj.to.sphere().to.ellipsoid()
-Shape.to.register("ellipsoid", ToEllipsoidDispatcher)
-Shape.to.register("Ellipsoid", ToEllipsoidDispatcher)
+to_dispatch.register("ellipsoid", ToEllipsoidDispatcher)
+to_dispatch.register("Ellipsoid", ToEllipsoidDispatcher)
 
 
 class ToCuboidDispatcher(ShapeToDispatcher):
     def dispatch(self, *args, **kwargs):
         return self._obj.to.ellipsoid().to.cuboid()
-Shape.to.register("cuboid", ToCuboidDispatcher)
-Shape.to.register("Cuboid", ToCuboidDispatcher)
+to_dispatch.register("cuboid", ToCuboidDispatcher)
+to_dispatch.register("Cuboid", ToCuboidDispatcher)
 
 
 @set_module("sisl.shape")
@@ -436,5 +442,8 @@ class ToSphereDispatcher(ShapeToDispatcher):
         from .ellipsoid import Sphere
         return Sphere(1.e-64, center=self._obj.center.copy())
 
-NullShape.to.register("sphere", ToSphereDispatcher)
-NullShape.to.register("Sphere", ToSphereDispatcher)
+to_dispatch = NullShape.to
+to_dispatch.register("sphere", ToSphereDispatcher)
+to_dispatch.register("Sphere", ToSphereDispatcher)
+
+del to_dispatch

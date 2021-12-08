@@ -418,13 +418,17 @@ class XArrayApply(NDArrayApply):
         return func
 
 # Register dispatched functions
-BrillouinZone.apply.register("iter", IteratorApply, default=True)
-BrillouinZone.apply.register("average", AverageApply)
-BrillouinZone.apply.register("sum", SumApply)
-BrillouinZone.apply.register("array", NDArrayApply)
-BrillouinZone.apply.register("ndarray", NDArrayApply)
-BrillouinZone.apply.register("none", NoneApply)
-BrillouinZone.apply.register("list", ListApply)
-BrillouinZone.apply.register("oplist", OpListApply)
-BrillouinZone.apply.register("dataarray", XArrayApply)
-BrillouinZone.apply.register("xarray", XArrayApply)
+apply_dispatch = BrillouinZone.apply
+apply_dispatch.register("iter", IteratorApply, default=True)
+apply_dispatch.register("average", AverageApply)
+apply_dispatch.register("sum", SumApply)
+apply_dispatch.register("array", NDArrayApply)
+apply_dispatch.register("ndarray", NDArrayApply)
+apply_dispatch.register("none", NoneApply)
+apply_dispatch.register("list", ListApply)
+apply_dispatch.register("oplist", OpListApply)
+apply_dispatch.register("dataarray", XArrayApply)
+apply_dispatch.register("xarray", XArrayApply)
+
+# Remove refernce
+del apply_dispatch
